@@ -129,9 +129,7 @@ export class ConsoleInput extends React.PureComponent<Props, State> {
           <ChevronRight />
         </IconContainer>
         <InputWrapper>
-          <CodeMirrorContainer>
-            <div ref={this.mountCodeMirror} />
-          </CodeMirrorContainer>
+          <CodeMirrorContainer ref={this.mountCodeMirror} />
         </InputWrapper>
       </Container>
     );

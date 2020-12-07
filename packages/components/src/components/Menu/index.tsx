@@ -6,6 +6,7 @@ import {
   css as styledcss,
   keyframes,
 } from 'styled-components';
+import { Link } from 'react-router-dom';
 import * as ReachMenu from './reach-menu.fork';
 import { Element, Button, IconButton, List } from '../..';
 
@@ -31,7 +32,7 @@ export const MenuStyles = createGlobalStyle(
     '[data-reach-menu]': {
       zIndex: 11, // TODO: we need to sort out our z indexes!
       fontFamily: 'Inter, sans-serif',
-      fontWeight: 500,
+      fontWeight: 400,
     },
     '[data-reach-menu][hidden],[data-reach-menu-popover][hidden]': {
       display: 'none',
@@ -49,7 +50,7 @@ export const MenuStyles = createGlobalStyle(
       // override reach ui styles
       padding: 0,
     },
-    '[data-reach-menu-item][data-component=MenuItem]': {
+    '[data-reach-menu-item][data-component=MenuItem], [data-reach-menu-item][data-component=MenuLink]': {
       fontSize: 2,
       paddingY: 2,
       paddingX: 3,
@@ -60,6 +61,13 @@ export const MenuStyles = createGlobalStyle(
         outline: 'none',
         backgroundColor: 'menuList.hoverBackground',
         color: 'menuList.hoverForeground',
+      },
+      '&[data-disabled], &[data-disabled]:hover': {
+        outline: 'none',
+        backgroundColor: 'transparent',
+        color: 'inherit',
+        opacity: 0.5,
+        cursor: 'not-allowed',
       },
       // override reach ui styles
       font: 'inherit',
@@ -143,40 +151,36 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
   const suggestedWidth = 180;
 
   return (
-    <>
-      <Element as={ReachMenu.Menu} {...props}>
-        {({ isExpanded, dispatch }) => {
-          if (visible && !isExpanded) {
-            // keep it open if prop is set to visible
-            dispatch({ type: 'OPEN_MENU_AT_FIRST_ITEM' });
-          }
+    <Element as={ReachMenu.Menu} {...props}>
+      {({ isExpanded, dispatch }) => {
+        if (visible && !isExpanded) {
+          // keep it open if prop is set to visible
+          dispatch({ type: 'OPEN_MENU_AT_FIRST_ITEM' });
+        }
 
-          return (
-            <MenuContext.Provider value={{ trigger: null, portal: false }}>
-              <ReachMenu.MenuPopover
-                position={(targetRect, popoverRect) => ({
-                  position: 'fixed',
-                  left: Math.min(
-                    position.x,
-                    window.innerWidth -
-                      (popoverRect.width || suggestedWidth) -
-                      16
-                  ),
-                  top: Math.min(
-                    position.y,
-                    window.innerHeight -
-                      (popoverRect.height || suggestedHeight) -
-                      16
-                  ),
-                })}
-              >
-                <Menu.List>{props.children}</Menu.List>
-              </ReachMenu.MenuPopover>
-            </MenuContext.Provider>
-          );
-        }}
-      </Element>
-    </>
+        return (
+          <MenuContext.Provider value={{ trigger: null, portal: false }}>
+            <ReachMenu.MenuPopover
+              position={(targetRect, popoverRect) => ({
+                position: 'fixed',
+                left: Math.min(
+                  position.x,
+                  window.innerWidth - (popoverRect.width || suggestedWidth) - 16
+                ),
+                top: Math.min(
+                  position.y,
+                  window.innerHeight -
+                    (popoverRect.height || suggestedHeight) -
+                    16
+                ),
+              })}
+            >
+              <Menu.List>{props.children}</Menu.List>
+            </ReachMenu.MenuPopover>
+          </MenuContext.Provider>
+        );
+      }}
+    </Element>
   );
 };
 
@@ -222,6 +226,38 @@ const MenuItem = props => (
   <Element as={ReachMenu.MenuItem} data-component="MenuItem" {...props} />
 );
 
+type MenuLinkProps = {
+  to?: string;
+  href?: string;
+  title?: string;
+  children: any;
+};
+
+const MenuLink: React.FunctionComponent<MenuLinkProps> = ({
+  children,
+  to,
+  title,
+  href,
+}) => {
+  if (to) {
+    return (
+      <ReachMenu.MenuLink
+        data-component="MenuLink"
+        as={Link}
+        to={to}
+        title={title}
+      >
+        {children}
+      </ReachMenu.MenuLink>
+    );
+  }
+  return (
+    <ReachMenu.MenuLink data-component="MenuLink" href={href} title={title}>
+      {children}
+    </ReachMenu.MenuLink>
+  );
+};
+
 const MenuDivider = props => (
   <Element
     as="hr"
@@ -235,6 +271,7 @@ Menu.Button = MenuButton;
 Menu.IconButton = MenuIconButton;
 Menu.List = MenuList;
 Menu.Item = MenuItem;
+Menu.Link = MenuLink;
 Menu.Divider = MenuDivider;
 Menu.ContextMenu = ContextMenu;
 

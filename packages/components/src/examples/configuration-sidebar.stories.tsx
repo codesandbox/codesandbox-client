@@ -198,7 +198,7 @@ export const Basic = () => (
         <Element>
           <Stack gap={2} marginBottom={2}>
             <VercelIcon />
-            <Text size={2}>now.json</Text>
+            <Text size={2}>vercel.json</Text>
           </Stack>
           <Stack gap={4} align="flex-end" justify="space-between">
             <Text size={2} variant="muted">

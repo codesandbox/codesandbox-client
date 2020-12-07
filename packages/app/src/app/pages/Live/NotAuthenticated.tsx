@@ -10,7 +10,7 @@ export const NotAuthenticated: FunctionComponent = () => {
       live: { signInToRoom },
     },
   } = useOvermind();
-  const { roomId } = useParams();
+  const { roomId } = useParams<{ roomId: string }>();
 
   return (
     <>

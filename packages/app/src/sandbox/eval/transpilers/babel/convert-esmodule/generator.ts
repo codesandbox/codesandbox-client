@@ -1,6 +1,7 @@
 import * as astring from 'astring';
 import * as meriyah from 'meriyah';
 import { Identifier } from 'meriyah/dist/estree';
+import jsxGenerator from './generator-jsx';
 
 // Enables parenthesis regardless of precedence
 const NEEDS_PARENTHESES = 17;
@@ -89,4 +90,5 @@ export const customGenerator = {
       state.write(node.operator);
     }
   },
+  ...jsxGenerator,
 };

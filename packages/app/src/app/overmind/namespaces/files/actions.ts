@@ -6,6 +6,7 @@ import {
 import getDefinition from '@codesandbox/common/lib/templates';
 import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Action, AsyncAction } from 'app/overmind';
 import { RecoverData } from 'app/overmind/effects/moduleRecover';
 import { withOwnedSandbox } from 'app/overmind/factories';
@@ -555,6 +556,7 @@ export const filesUploaded: AsyncAction<{
       });
 
       effects.executor.updateFiles(sandbox);
+      actions.git.updateGitChanges();
     } catch (error) {
       if (error.message.indexOf('413') !== -1) {
         actions.internal.handleError({
@@ -889,4 +891,47 @@ export const syncSandbox: AsyncAction<any[]> = async (
     state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
       state.editor.currentSandbox
     );
+};
+
+export const updateWorkspaceConfig: AsyncAction<{}> = async (
+  { state, actions },
+  update
+) => {
+  if (hasPermission(state.editor.currentSandbox!.authorization, 'write_code')) {
+    const devtoolsModule = state.editor.modulesByPath[
+      '/.codesandbox/workspace.json'
+    ] as Module;
+
+    if (devtoolsModule) {
+      const updatedCode = JSON.stringify(
+        Object.assign(JSON.parse(devtoolsModule.code), update)
+      );
+      actions.editor.codeChanged({
+        moduleShortid: devtoolsModule.shortid,
+        code: updatedCode,
+      });
+      await actions.editor.codeSaved({
+        code: updatedCode,
+        moduleShortid: devtoolsModule.shortid,
+        cbID: null,
+      });
+    } else {
+      await actions.files.createModulesByPath({
+        files: {
+          '/.codesandbox/workspace.json': {
+            content: JSON.stringify(update, null, 2),
+            isBinary: false,
+          },
+        },
+      });
+    }
+  } else {
+    state.editor.workspaceConfigCode = JSON.stringify(
+      state.editor.workspaceConfigCode
+        ? Object.assign(JSON.parse(state.editor.workspaceConfigCode), update)
+        : update,
+      null,
+      2
+    );
+  }
 };

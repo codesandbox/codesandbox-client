@@ -7,7 +7,7 @@ class SandboxCount extends Component {
   };
 
   static defaultProps = {
-    fallback: 800000,
+    fallback: 900000,
   };
 
   componentDidMount() {

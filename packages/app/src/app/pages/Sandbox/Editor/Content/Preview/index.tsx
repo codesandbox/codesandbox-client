@@ -1,9 +1,11 @@
 import { ServerContainerStatus } from '@codesandbox/common/lib/types';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
-import React, { FunctionComponent, useState } from 'react';
 
+import React, { FunctionComponent, useState } from 'react';
 import { useOvermind } from 'app/overmind';
+
+import { ResponsiveWrapper } from './ResponsiveWrapper';
 
 type Props = {
   hidden?: boolean;
@@ -19,12 +21,14 @@ export const Preview: FunctionComponent<Props> = ({
 }) => {
   const {
     actions: {
+      preview: previewActions,
       editor: { errorsCleared, previewActionReceived, projectViewToggled },
     },
     effects: {
       preview: { initializePreview },
     },
     state: {
+      preview,
       editor: {
         currentModule,
         currentSandbox,
@@ -36,6 +40,7 @@ export const Preview: FunctionComponent<Props> = ({
       preferences: { settings },
       server: { containerStatus, error, hasUnrecoverableError },
     },
+    effects,
   } = useOvermind();
   const [running, setRunning] = useState(!runOnClick);
 
@@ -60,6 +65,8 @@ export const Preview: FunctionComponent<Props> = ({
     return undefined;
   };
 
+  const canAddComments = effects.preview.canAddComments(currentSandbox);
+
   return running ? (
     <BasePreview
       currentModule={currentModule}
@@ -67,16 +74,31 @@ export const Preview: FunctionComponent<Props> = ({
       initialPath={initialPath}
       isInProjectView={isInProjectView}
       isResizing={isResizing}
-      onAction={action => previewActionReceived(action)}
-      onClearErrors={() => errorsCleared()}
+      onAction={previewActionReceived}
+      onClearErrors={errorsCleared}
       onMount={initializePreview}
       noPreview={!previewWindowVisible}
-      onToggleProjectView={() => projectViewToggled()}
+      onToggleProjectView={projectViewToggled}
+      Wrapper={ResponsiveWrapper}
+      isResponsiveModeActive={
+        preview.mode === 'responsive' ||
+        preview.mode === 'responsive-add-comment'
+      }
+      isPreviewCommentModeActive={
+        preview.mode === 'add-comment' ||
+        preview.mode === 'responsive-add-comment'
+      }
+      toggleResponsiveMode={previewActions.toggleResponsiveMode}
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
       privacy={currentSandbox.privacy}
+      customNpmRegistries={currentSandbox.npmRegistries}
       sandbox={currentSandbox}
       settings={settings}
+      isScreenshotLoading={preview.screenshot.isLoading}
+      createPreviewComment={
+        canAddComments && previewActions.createPreviewComment
+      }
       url={options.url}
     />
   ) : (

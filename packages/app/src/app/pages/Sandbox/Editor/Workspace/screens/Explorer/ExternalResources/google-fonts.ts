@@ -972,4 +972,5 @@ export const fonts = [
   'Sulphur Point',
   'Solway',
   'Gupter',
+  'Inter',
 ];

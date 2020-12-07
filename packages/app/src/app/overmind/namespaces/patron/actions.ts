@@ -1,6 +1,7 @@
 import { AsyncAction, Action } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { StripeErrorCode } from '@codesandbox/common/lib/types';
+import { NotificationStatus } from '@codesandbox/notifications';
 
 export const patronMounted: AsyncAction = withLoadApp();
 
@@ -97,9 +98,24 @@ export const cancelSubscriptionClicked: AsyncAction = async ({
 
     try {
       state.user = await effects.api.cancelPatronSubscription();
-      effects.notificationToast.success(
-        'Sorry to see you go, but thanks for using CodeSandbox!'
-      );
+      effects.notificationToast.add({
+        status: NotificationStatus.SUCCESS,
+        title: 'Successfully Cancelled',
+        message:
+          'Sorry to see you go, but thanks for using CodeSandbox! It would help us tremendously if you could answer this one quick question.',
+        actions: {
+          primary: {
+            label: 'Open Question',
+            run: () => {
+              effects.browser.openPopup(
+                'https://codesandbox.typeform.com/to/SsMUYr6y#email=' +
+                  state.user!.email,
+                'cancel survey'
+              );
+            },
+          },
+        },
+      });
     } catch (error) {
       /* ignore */
     }

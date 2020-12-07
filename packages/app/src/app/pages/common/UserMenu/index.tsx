@@ -1,15 +1,19 @@
+import {
+  curatorUrl,
+  dashboardUrl,
+  patronUrl,
+  profileUrl,
+  searchUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
+import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
-import { MenuDisclosure, useMenuState } from 'reakit/Menu';
 
-import {
-  ClickableContainer,
-  ProfileImage,
-  UserMenuContainer,
-} from './elements';
-import { Menu } from './Menu';
+import { ProfileImage } from './elements';
 
-export const UserMenu: FunctionComponent = props => {
+export const UserMenu: FunctionComponent & {
+  Button: (props: any) => JSX.Element;
+} = props => {
   const {
     actions: {
       modalOpened,
@@ -18,51 +22,133 @@ export const UserMenu: FunctionComponent = props => {
     },
     state: { user },
   } = useOvermind();
-  const menu = useMenuState({
-    placement: 'bottom-end',
-  });
 
   if (!user) {
     return null;
   }
 
-  return (
-    <UserMenuContainer>
-      <div
-        css={`
-          position: relative;
-        `}
-      >
-        <MenuDisclosure
-          as={ClickableContainer}
-          {...menu}
-          aria-label="profile menu"
-        >
-          {props.children || (
-            <ProfileImage
-              alt={user.username}
-              width={30}
-              height={30}
-              src={user.avatarUrl}
-            />
-          )}
-        </MenuDisclosure>
+  const showPatron = user.subscription?.plan === 'patron';
+  const showCurator = user.curatorAt;
+  const showBecomePro = !user.subscription;
+  const showManageSubscription = user.subscription?.plan === 'pro';
 
-        <Menu
-          openPreferences={() => modalOpened({ modal: 'preferences' })}
-          openStorageManagement={() => gotUploadedFiles(null)}
-          signOut={() => signOutClicked()}
-          username={user.username}
-          curator={user.curatorAt}
-          openFeedback={() => modalOpened({ modal: 'feedback' })}
-          menuProps={menu}
-          showPatron={user.subscription && user.subscription.plan === 'patron'}
-          showManageSubscription={
-            user.subscription && user.subscription.plan === 'pro'
-          }
-          showBecomePro={!user.subscription}
-        />
-      </div>
-    </UserMenuContainer>
+  return (
+    <Element>
+      <Menu>
+        {props.children || (
+          <ProfileImage
+            alt={user.username}
+            width={30}
+            height={30}
+            src={user.avatarUrl}
+            as={Menu.Button}
+          />
+        )}
+
+        <Menu.List>
+          <Menu.Link to={profileUrl(user.username)}>
+            <Stack align="center" gap={1}>
+              <Icon name="profile" size={24} />
+              <Text>My Profile</Text>
+            </Stack>
+          </Menu.Link>
+
+          <Menu.Divider />
+
+          <Menu.Link to={dashboardUrl()}>
+            <Stack align="center" gap={1}>
+              <Icon name="dashboard" size={24} />
+              <Text>Dashboard</Text>
+            </Stack>
+          </Menu.Link>
+
+          <Menu.Link href="/docs">
+            <Stack align="center" gap={1}>
+              <Icon name="documentation" size={24} />
+              <Text>Documentation</Text>
+            </Stack>
+          </Menu.Link>
+
+          <Menu.Link to={searchUrl()}>
+            <Stack align="center" gap={1}>
+              <Icon name="searchBubble" size={24} />
+              <Text>Search Sandboxes</Text>
+            </Stack>
+          </Menu.Link>
+
+          {showCurator && (
+            <Menu.Link to={curatorUrl()}>
+              <Stack align="center" gap={1}>
+                <Icon name="curator" size={24} />
+                <Text>Curator Dashboard</Text>
+              </Stack>
+            </Menu.Link>
+          )}
+
+          {showPatron && (
+            <Menu.Link to={patronUrl()}>
+              <Stack align="center" gap={1}>
+                <Icon name="patron" size={24} />
+                <Text>Patron Page</Text>
+              </Stack>
+            </Menu.Link>
+          )}
+
+          {showBecomePro && (
+            <Menu.Link href="/pricing">
+              <Stack align="center" gap={1}>
+                <Icon name="proBadge" size={24} />
+                <Text>Upgrade to Pro</Text>
+              </Stack>
+            </Menu.Link>
+          )}
+
+          <Menu.Divider />
+
+          {showManageSubscription && (
+            <Menu.Link href="/pro">
+              <Stack align="center" gap={1}>
+                <Icon name="proBadge" size={24} />
+                <Text>Manage Subscription</Text>
+              </Stack>
+            </Menu.Link>
+          )}
+
+          <Menu.Item onClick={() => gotUploadedFiles(null)}>
+            <Stack align="center" gap={1}>
+              <Icon name="folder" size={24} />
+              <Text>Storage Management</Text>
+            </Stack>
+          </Menu.Item>
+
+          <Menu.Item onClick={() => modalOpened({ modal: 'preferences' })}>
+            <Stack align="center" gap={2} paddingLeft={1}>
+              <Icon name="gear" size={16} />
+              <Text>Preferences</Text>
+            </Stack>
+          </Menu.Item>
+
+          <Menu.Divider />
+
+          <Menu.Item onClick={() => modalOpened({ modal: 'feedback' })}>
+            <Stack align="center" gap={1}>
+              <Icon name="feedback" size={24} />
+              <Text>Submit Feedback</Text>
+            </Stack>
+          </Menu.Item>
+
+          <Menu.Divider />
+
+          <Menu.Item onClick={() => signOutClicked()}>
+            <Stack align="center" gap={1}>
+              <Icon name="signout" size={24} />
+              <Text>Sign out</Text>
+            </Stack>
+          </Menu.Item>
+        </Menu.List>
+      </Menu>
+    </Element>
   );
 };
+
+UserMenu.Button = Menu.Button;

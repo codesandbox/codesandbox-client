@@ -32,6 +32,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
+import { isPrivateScope } from 'app/utils/private-registry';
 import { debounce } from 'lodash-es';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
@@ -67,10 +68,7 @@ export const persistCursorToUrl: Action<{
   // and all the browsers do too.
   if (newUrl) {
     effects.router.replace(
-      newUrl
-        .toString()
-        .replace(/%2F/g, '/')
-        .replace('%3A', ':')
+      newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
     );
   }
 }, 500);
@@ -117,13 +115,68 @@ export const addNpmDependency: AsyncAction<{
   isDev?: boolean;
 }> = withOwnedSandbox(
   async ({ actions, effects, state }, { name, version, isDev }) => {
-    effects.analytics.track('Add NPM Dependency');
+    const currentSandbox = state.editor.currentSandbox;
+    const isPrivatePackage =
+      currentSandbox && isPrivateScope(currentSandbox, name);
+
+    effects.analytics.track('Add NPM Dependency', {
+      private: isPrivatePackage,
+    });
     state.currentModal = null;
     let newVersion = version || 'latest';
 
     if (!isAbsoluteVersion(newVersion)) {
-      const dependency = await effects.api.getDependency(name, newVersion);
-      newVersion = dependency.version;
+      if (isPrivatePackage && currentSandbox) {
+        try {
+          const manifest = await effects.api.getDependencyManifest(
+            currentSandbox.id,
+            name
+          );
+          const absoluteVersion = manifest['dist-tags'][newVersion];
+
+          if (absoluteVersion) {
+            newVersion = absoluteVersion;
+          }
+        } catch (e) {
+          if (currentSandbox.privacy !== 2) {
+            effects.notificationToast.add({
+              status: NotificationStatus.ERROR,
+              title: 'There was a problem adding the private package',
+              message:
+                'Private packages can only be added to private sandboxes',
+              actions: {
+                primary: {
+                  label: 'Make Sandbox Private',
+                  run: async () => {
+                    await actions.workspace.sandboxPrivacyChanged({
+                      privacy: 2,
+                      source: 'Private Package Notification',
+                    });
+                    actions.editor.addNpmDependency({ name, version });
+                  },
+                },
+                secondary: {
+                  label: 'Learn More',
+                  run: () => {
+                    effects.browser.openWindow(
+                      'https://codesandbox.io/docs/custom-npm-registry'
+                    );
+                  },
+                },
+              },
+            });
+          } else {
+            actions.internal.handleError({
+              error: e,
+              message: 'There was a problem adding the private package',
+            });
+          }
+          return;
+        }
+      } else {
+        const dependency = await effects.api.getDependency(name, newVersion);
+        newVersion = dependency.version;
+      }
     }
 
     await actions.editor.internal.addNpmDependencyToPackageJson({
@@ -131,6 +184,9 @@ export const addNpmDependency: AsyncAction<{
       version: newVersion,
       isDev: Boolean(isDev),
     });
+
+    actions.workspace.changeDependencySearch('');
+    actions.workspace.clearExplorerDependencies();
 
     effects.preview.executeCodeImmediately();
   }
@@ -372,7 +428,9 @@ export const onOperationApplied: Action<{
     code,
   });
 
-  actions.editor.internal.updatePreviewCode();
+  if (state.preferences.settings.livePreviewEnabled) {
+    actions.editor.internal.updatePreviewCode();
+  }
 
   // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {
@@ -602,7 +660,6 @@ export const forkExternalSandbox: AsyncAction<{
     state.editor.sandboxes[forkedSandbox.id] = forkedSandbox;
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
   } catch (error) {
-    console.error(error);
     actions.internal.handleError({
       message: 'We were unable to fork the sandbox',
       error,
@@ -1174,13 +1231,9 @@ export const onDevToolsTabAdded: Action<{
     json(devToolTabs),
     tab
   );
-
-  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
   const nextPos = position;
 
-  actions.editor.internal.updateDevtools({
-    code,
-  });
+  actions.editor.internal.updateDevtools(newDevToolTabs);
 
   state.editor.currentDevToolsPosition = nextPos;
 };
@@ -1195,11 +1248,8 @@ export const onDevToolsTabMoved: Action<{
     prevPos,
     nextPos
   );
-  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
 
-  actions.editor.internal.updateDevtools({
-    code,
-  });
+  actions.editor.internal.updateDevtools(newDevToolTabs);
 
   state.editor.currentDevToolsPosition = nextPos;
 };
@@ -1210,11 +1260,8 @@ export const onDevToolsTabClosed: Action<{
   const { devToolTabs } = state.editor;
   const closePos = pos;
   const newDevToolTabs = closeDevToolsTabUtil(json(devToolTabs), closePos);
-  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
 
-  actions.editor.internal.updateDevtools({
-    code,
-  });
+  actions.editor.internal.updateDevtools(newDevToolTabs);
 };
 
 export const onDevToolsPositionChanged: Action<{

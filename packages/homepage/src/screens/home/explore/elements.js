@@ -1,58 +1,46 @@
-import styled, { keyframes } from 'styled-components';
-
-export const itemWidth = 324;
-export const smallItemHeight = 420;
-export const bigItemHeight = 548;
-export const viewPortMargin = 60;
+import styled from 'styled-components';
 
 export const Container = styled.div`
   position: relative;
-  height: 900px;
-
-  ${props => props.theme.breakpoints.md} {
-    transform: scale(0.75, 0.75);
-    transform-origin: 100% 0%;
-    height: 600px;
-  }
-
-  ${props => props.theme.breakpoints.sm} {
-    transform: scale(0.5, 0.5);
-    transform-origin: 100% 0%;
-    height: 340px;
-  }
 `;
 
 export const ImageWrapper = styled.div`
-  position: absolute;
-  margin-top: 2rem;
-  height: 900px;
-  right: 0;
-  top: 0;
-  width: ${props => props.width}px;
+  position: relative;
+  max-height: 500px;
   overflow: hidden;
 
-  margin-left: -${itemWidth + viewPortMargin}px;
+  section {
+    max-width: 100vw;
+    display: grid;
+    grid-template-columns: repeat(4, 324px);
+    justify-content: center;
+    transform: rotateX(60deg) rotateY(0deg) rotateZ(39deg) translateY(-20rem)
+      translateX(-20rem);
 
-  ${props => props.theme.breakpoints.md} {
-    margin-top: 0;
-  }
+    ${props => props.theme.breakpoints.sm} {
+      transform: rotateX(60deg) rotateY(0deg) rotateZ(39deg) translateY(-40rem)
+        translateX(-10rem);
+    }
 
-  > section {
-    display: flex;
-    align-items: center;
+    > div {
+      display: grid;
+    }
   }
 
   img {
     cursor: pointer;
-    max-width: initial;
   }
 
-  div > div {
-    margin-bottom: 2rem;
-  }
+  img {
+    transition: 250ms cubic-bezier(0.05, 0.03, 0.35, 1);
+    border-radius: 0.5rem;
+    height: 570px;
+    width: 100%;
 
-  div {
-    margin: 1rem;
+    :hover {
+      transform: scale(1.05);
+      z-index: 10;
+    }
   }
 
   &::-webkit-scrollbar {
@@ -70,62 +58,10 @@ export const ImageWrapper = styled.div`
   }
 `;
 
-export const Button = styled.a`
+export const StylessButton = styled.a`
   border: 0;
   background: transparent;
   padding: 0;
   margin: 0;
   text-decoration: none;
-`;
-
-const floatAnimation = keyframes`
-  0% {
-    transform: translateY(10px);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
-
-  100% {
-    transform: translateY(10px);
-  }
-`;
-
-export const Wrapper = styled.div`
-  transition: 0.3s ease opacity;
-
-  animation: 7s ${floatAnimation} infinite;
-  animation-delay: ${props => (props.index || 0) * 250}ms;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
-
-  will-change: transform;
-  animation-fill-mode: backwards;
-  animation-timing-function: ease;
-
-  position: absolute;
-  left: ${props => props.index * 334}px;
-  top: 0;
-
-  width: ${itemWidth}px;
-  height: ${props =>
-    props.big ? bigItemHeight + 'px' : smallItemHeight + 'px'};
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-export const Image = styled.img``;
-
-export const Iframe = styled.iframe`
-  width: ${itemWidth}px;
-  height: ${props =>
-    props.big ? bigItemHeight + 'px' : smallItemHeight + 'px'};
-  border: 0;
-  border-radius: 4;
-  overflow: hidden;
 `;

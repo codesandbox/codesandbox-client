@@ -59,7 +59,7 @@ type DecoratedItemProps<T> = {
   isScrolling?: boolean;
   page?: PageTypes;
 };
-interface ComponentForTypes {
+interface IComponentForTypes {
   sandbox: React.FC<DecoratedItemProps<DashboardSandbox>>;
   template: React.FC<DecoratedItemProps<DashboardTemplate>>;
   folder: React.FC<DecoratedItemProps<DashboardFolder>>;
@@ -74,7 +74,7 @@ interface ComponentForTypes {
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
 }
 
-const ComponentForTypes: ComponentForTypes = {
+const ComponentForTypes: IComponentForTypes = {
   sandbox: React.memo(props => (
     <Sandbox
       page={props.page}
@@ -302,9 +302,11 @@ export const VariableGrid = ({
                   MAX_COLUMN_COUNT
                 );
 
-          const filledItems: Array<DashboardGridItem & {
-            viewMode?: 'list' | 'grid';
-          }> = [];
+          const filledItems: Array<
+            DashboardGridItem & {
+              viewMode?: 'list' | 'grid';
+            }
+          > = [];
           const blankItem = { type: 'blank' as 'blank' };
           const skeletonItem = { type: 'skeleton' as 'skeleton' };
 

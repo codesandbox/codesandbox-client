@@ -2,27 +2,12 @@ import isImage from '@codesandbox/common/lib/utils/is-image';
 
 const svgRegex = /\.svg$/;
 
-type regexCasesMap = {
-  markdown: RegExp;
-  markojs: RegExp;
-  yaml: RegExp;
-  react: RegExp;
-  reason: RegExp;
-  sass: RegExp;
-  javascript: RegExp;
-  typescript: RegExp;
-  console: RegExp;
-  prisma: RegExp;
-  git: RegExp;
-  flow: RegExp;
-};
-
 const specialCasesMap = {
   'favicon.ico': 'favicon',
   'yarn.lock': 'yarn',
   'package.json': 'npm',
   'sandbox.config.json': 'codesandbox',
-  'now.json': 'now',
+  'vercel.json': 'now',
   prisma: 'prisma',
   'netlify.toml': 'netlify',
   'readme.md': 'readme',
@@ -48,7 +33,7 @@ const regexCasesMap = {
   flow: /^.flow/i,
 };
 
-const getKeyByValue = (object: regexCasesMap, value: RegExp) =>
+const getKeyByValue = (object: typeof regexCasesMap, value: RegExp) =>
   Object.keys(object).find(key => object[key] === value);
 
 export function getMode(title: string = '') {

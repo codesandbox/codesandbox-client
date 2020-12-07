@@ -49,8 +49,7 @@ export const Summary = () => {
   const { url: templateUrl } = getTemplateDefinition(template);
 
   return (
-    <>
-      <Collapsible
+    <Collapsible
         title={customTemplate ? 'Template Info' : 'Sandbox Info'}
         defaultOpen
       >
@@ -162,7 +161,6 @@ export const Summary = () => {
           </List>
         </Stack>
       </Collapsible>
-    </>
   );
 };
 

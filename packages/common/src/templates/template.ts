@@ -40,7 +40,7 @@ const defaultConfigurations = {
   '/package.json': configurations.packageJSON,
   '/.prettierrc': configurations.prettierRC,
   '/sandbox.config.json': configurations.sandboxConfig,
-  '/now.json': configurations.nowConfig,
+  '/vercel.json': configurations.nowConfig,
   '/netlify.toml': configurations.netlifyConfig,
 };
 

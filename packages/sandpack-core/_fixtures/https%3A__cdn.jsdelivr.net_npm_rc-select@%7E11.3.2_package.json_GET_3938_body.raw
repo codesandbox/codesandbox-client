@@ -1,0 +1,70 @@
+{
+  "name": "rc-select",
+  "version": "11.3.3",
+  "description": "React Select",
+  "engines": {
+    "node": ">=8.x"
+  },
+  "keywords": [
+    "react",
+    "react-component",
+    "react-select",
+    "select"
+  ],
+  "main": "./lib/index",
+  "module": "./es/index",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "assets/*.css",
+    "assets/*.less",
+    "es",
+    "lib"
+  ],
+  "homepage": "http://github.com/react-component/select",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/select.git"
+  },
+  "bugs": {
+    "url": "http://github.com/react-component/select/issues"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "build": "father doc build --storybook",
+    "compile": "father build",
+    "prepublishOnly": "npm run compile && np --yolo --no-publish",
+    "lint": "eslint src/ examples/ --ext .tsx,.ts,.jsx,.js",
+    "test": "father test",
+    "now-build": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.10.1",
+    "classnames": "2.x",
+    "rc-motion": "^2.0.1",
+    "rc-trigger": "^5.0.4",
+    "rc-util": "^5.0.1",
+    "rc-virtual-list": "^3.0.3",
+    "warning": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/enzyme": "^3.10.5",
+    "@types/jest": "^26.0.0",
+    "@types/react": "^16.8.19",
+    "@types/react-dom": "^16.8.4",
+    "@types/warning": "^3.0.0",
+    "cross-env": "^7.0.0",
+    "enzyme": "^3.3.0",
+    "enzyme-to-json": "^3.4.0",
+    "eslint": "^7.1.0",
+    "father": "^2.13.2",
+    "jsonp": "^0.2.1",
+    "np": "^6.0.0",
+    "rc-dialog": "^8.1.1",
+    "typescript": "^3.9.3"
+  }
+}

@@ -1,25 +1,39 @@
-import {
-  Button,
-  Collapsible,
-  List,
-  SidebarRow,
-  Text,
-} from '@codesandbox/components';
+import { Collapsible, List, SidebarRow, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import React, { FunctionComponent } from 'react';
+import { motion } from 'framer-motion';
+import React, { FunctionComponent, useState } from 'react';
 
 import { Dependency } from './Dependency';
+import { AddDependency } from './AddDependency';
 
-type Props = {
-  readonly: boolean;
-};
-export const Dependencies: FunctionComponent<Props> = ({ readonly }) => {
+const Animated = ({ children, showMountAnimations }) => (
+  <motion.div
+    animate={{ opacity: 1, height: 'auto' }}
+    initial={showMountAnimations ? { opacity: 0, height: 0 } : null}
+    exit={{ opacity: 0, height: 0 }}
+    style={{ width: '100%', overflow: 'hidden' }}
+  >
+    {children}
+  </motion.div>
+);
+
+export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
+  readonly = false,
+}) => {
   const {
-    actions: { modalOpened },
+    actions: {
+      editor: { addNpmDependency, npmDependencyRemoved },
+    },
     state: {
       editor: { parsedConfigurations },
     },
   } = useOvermind();
+  const [showMountAnimations, setShowMountAnimations] = useState(false);
+
+  React.useEffect(() => {
+    setShowMountAnimations(true);
+  }, [setShowMountAnimations]);
 
   if (!parsedConfigurations?.package) {
     return (
@@ -30,6 +44,7 @@ export const Dependencies: FunctionComponent<Props> = ({ readonly }) => {
   }
 
   const { error, parsed } = parsedConfigurations.package;
+
   if (error) {
     return (
       <SidebarRow marginX={2}>
@@ -39,30 +54,35 @@ export const Dependencies: FunctionComponent<Props> = ({ readonly }) => {
   }
 
   const { dependencies = {} } = parsed;
+
   return (
-    <Collapsible defaultOpen title="Dependencies">
-      <List marginBottom={2}>
+    <Collapsible
+      title="Dependencies"
+      defaultOpen
+      css={css({
+        'div[open]': {
+          overflow: 'visible',
+        },
+      })}
+    >
+      {!readonly && <AddDependency />}
+      <List>
         {Object.keys(dependencies)
           .sort()
           .map(dependency => (
-            <Dependency
-              dependencies={dependencies}
-              dependency={dependency}
-              key={dependency}
-            />
+            <Animated showMountAnimations={showMountAnimations}>
+              <Dependency
+                dependencies={dependencies}
+                dependency={dependency}
+                key={dependency}
+                onRefresh={(name, version) =>
+                  addNpmDependency({ name, version })
+                }
+                onRemove={npmDependencyRemoved}
+              />
+            </Animated>
           ))}
       </List>
-
-      {readonly ? null : (
-        <SidebarRow marginX={2}>
-          <Button
-            onClick={() => modalOpened({ modal: 'searchDependencies' })}
-            variant="secondary"
-          >
-            Add dependency
-          </Button>
-        </SidebarRow>
-      )}
     </Collapsible>
   );
 };

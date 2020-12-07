@@ -41,10 +41,29 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const label = isTemplate ? 'Template' : 'Sandbox';
   const isPro = user && Boolean(user.subscription);
 
-  const isOwner = React.useMemo(() => {
-    if (item.type !== 'template') {
+  // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
+  // responding with teamId == null for personal templates anymore.
+  const hasAccess = React.useMemo(() => {
+    if (item.sandbox.teamId === activeTeam) {
       return true;
     }
+
+    if (item.sandbox.teamId === null) {
+      if (!item.sandbox.authorId) {
+        return false;
+      }
+
+      return true;
+    }
+
+    return false;
+  }, [item, activeTeam]);
+
+  const isOwner = React.useMemo(() => {
+    if (item.type !== 'template') {
+      return item.sandbox.teamId === activeTeam || item.sandbox.teamId === null;
+    }
+
     return (
       item.sandbox.author && item.sandbox.author.username === user.username
     );
@@ -78,6 +97,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       </Menu.ContextMenu>
     );
   }
+  // TODO(@CompuIves): refactor this to an array
 
   return (
     <Menu.ContextMenu
@@ -158,7 +178,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </MenuItem>
       )}
 
-      {isPro ? (
+      {hasAccess && activeWorkspaceAuthorization !== 'READ' && isPro ? (
         <>
           <Menu.Divider />
           {sandbox.privacy !== 0 && (
@@ -199,9 +219,14 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           )}
         </>
       ) : null}
-      <Menu.Divider />
-      <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
-      {activeWorkspaceAuthorization !== 'READ' &&
+      {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
+        <>
+          <Menu.Divider />
+          <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
+        </>
+      )}
+      {hasAccess &&
+        activeWorkspaceAuthorization !== 'READ' &&
         !isTemplate &&
         (sandbox.isFrozen ? (
           <MenuItem
@@ -226,52 +251,57 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             Freeze {label}
           </MenuItem>
         ))}
-      {isTemplate ? (
-        <MenuItem
-          onSelect={() => {
-            actions.dashboard.unmakeTemplates({
-              templateIds: [sandbox.id],
-            });
-          }}
-        >
-          Convert to Sandbox
-        </MenuItem>
-      ) : (
-        <MenuItem
-          onSelect={() => {
-            actions.dashboard.makeTemplates({
-              sandboxIds: [sandbox.id],
-            });
-          }}
-        >
-          Make Sandbox a Template
-        </MenuItem>
-      )}
-      <Menu.Divider />
-      {isTemplate ? (
-        <MenuItem
-          onSelect={() => {
-            const template = item as DashboardTemplate;
-            actions.dashboard.deleteTemplate({
-              sandboxId: template.sandbox.id,
-              templateId: template.template.id,
-            });
-            setVisibility(false);
-          }}
-        >
-          Delete Template
-        </MenuItem>
-      ) : (
-        <MenuItem
-          onSelect={() => {
-            actions.dashboard.deleteSandbox({
-              ids: [sandbox.id],
-            });
-            setVisibility(false);
-          }}
-        >
-          Delete Sandbox
-        </MenuItem>
+      {hasAccess &&
+        (isTemplate ? (
+          <MenuItem
+            onSelect={() => {
+              actions.dashboard.unmakeTemplates({
+                templateIds: [sandbox.id],
+              });
+            }}
+          >
+            Convert to Sandbox
+          </MenuItem>
+        ) : (
+          <MenuItem
+            onSelect={() => {
+              actions.dashboard.makeTemplates({
+                sandboxIds: [sandbox.id],
+              });
+            }}
+          >
+            Make Sandbox a Template
+          </MenuItem>
+        ))}
+      {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
+        <>
+          <Menu.Divider />
+          {isTemplate ? (
+            <MenuItem
+              onSelect={() => {
+                const template = item as DashboardTemplate;
+                actions.dashboard.deleteTemplate({
+                  sandboxId: template.sandbox.id,
+                  templateId: template.template.id,
+                });
+                setVisibility(false);
+              }}
+            >
+              Delete Template
+            </MenuItem>
+          ) : (
+            <MenuItem
+              onSelect={() => {
+                actions.dashboard.deleteSandbox({
+                  ids: [sandbox.id],
+                });
+                setVisibility(false);
+              }}
+            >
+              Delete Sandbox
+            </MenuItem>
+          )}
+        </>
       )}
     </Menu.ContextMenu>
   );

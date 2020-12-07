@@ -88,6 +88,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
               {isLoggedIn ? (
                 <UserMenu>
                   <Button
+                    as={UserMenu.Button}
                     variant="secondary"
                     css={css({
                       padding: 0,

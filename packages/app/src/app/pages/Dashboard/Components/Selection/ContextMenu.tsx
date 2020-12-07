@@ -99,7 +99,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   } else if (selectedItems.length > 1) {
     menu = <MultiMenu page={page} selectedItems={selectedItems} />;
   } else if (
-    selectedItems[0].type === 'sandbox' ||
+    (selectedItems[0] && selectedItems[0].type === 'sandbox') ||
     selectedItems[0].type === 'template'
   ) {
     menu = <SandboxMenu item={selectedItems[0]} setRenaming={setRenaming} />;

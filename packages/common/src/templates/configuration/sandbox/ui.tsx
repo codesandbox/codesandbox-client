@@ -144,11 +144,28 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
           Which template to use for this sandbox.
         </ConfigDescription>
       </PaddedConfig>
+      {!currentTemplate.isServer ? (
+        <PaddedConfig>
+          <ConfigItem>
+            <PaddedPreference
+              title="Disable Console"
+              type="boolean"
+              {...bindValue(parsedFile, 'disableLogging')}
+            />
+          </ConfigItem>
+          <ConfigDescription>
+            Disable the in-browser console to prevent slowing down of the page when there are many logs to the console.
+          </ConfigDescription>
+        </PaddedConfig>
+      ) : null}
       {currentTemplate.isServer ? (
         <PaddedConfig>
           <PaddedPreference
             title="Port"
             type="number"
+            innerStyle={{ width: '5rem' }}
+            min={1024}
+            max={65535}
             {...bindValue(parsedFile, 'container.port')}
           />
           <ConfigDescription>

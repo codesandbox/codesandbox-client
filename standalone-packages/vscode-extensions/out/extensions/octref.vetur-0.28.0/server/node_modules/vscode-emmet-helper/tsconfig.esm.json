@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"target": "es6",
+		"lib": ["es2016"],
+		"module": "es6",
+		"moduleResolution": "node",
+		"outDir": "./lib/esm",
+		"sourceMap": true,
+		"allowJs": true,
+		"declaration": true,
+		"esModuleInterop": true
+	},
+	"exclude": ["node_modules", "lib"]
+}

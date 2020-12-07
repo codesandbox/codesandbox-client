@@ -105,30 +105,26 @@ export const Actions = () => {
 
       {user?.experiments?.collaborator && isLive ? (
         <CollaboratorHeads />
+      ) : hasLogIn ? (
+        <TooltipButton
+          tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
+          variant="link"
+          onClick={() => likeSandboxToggled(id)}
+        >
+          <LikeIcon
+            css={css({
+              height: 3,
+              marginRight: 1,
+              color: userLiked ? 'reds.500' : 'inherit',
+            })}
+          />{' '}
+          <span>{likeCount}</span>
+        </TooltipButton>
       ) : (
-        <>
-          {hasLogIn ? (
-            <TooltipButton
-              tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
-              variant="link"
-              onClick={() => likeSandboxToggled(id)}
-            >
-              <LikeIcon
-                css={css({
-                  height: 3,
-                  marginRight: 1,
-                  color: userLiked ? 'reds.500' : 'inherit',
-                })}
-              />{' '}
-              <span>{likeCount}</span>
-            </TooltipButton>
-          ) : (
-            <Stack gap={1} paddingX={2} align="center">
-              <LikeIcon css={css({ height: 3 })} />
-              <span>{likeCount}</span>
-            </Stack>
-          )}
-        </>
+        <Stack gap={1} paddingX={2} align="center">
+          <LikeIcon css={css({ height: 3 })} />
+          <span>{likeCount}</span>
+        </Stack>
       )}
 
       {user?.curatorAt && (
@@ -141,29 +137,26 @@ export const Actions = () => {
         </Button>
       )}
 
-      {user?.experiments.collaborator && (
-        <>
-          {author ? (
-            <Collaborators
-              renderButton={props => (
-                <Button
-                  variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
-                  {...props}
-                >
-                  <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Share
-                </Button>
-              )}
-            />
-          ) : (
-            <Button
-              variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
-              onClick={() => modalOpened({ modal: 'share' })}
-            >
-              <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Embed
-            </Button>
-          )}
-        </>
-      )}
+      {user?.experiments.collaborator &&
+        (author ? (
+          <Collaborators
+            renderButton={props => (
+              <Button
+                variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
+                {...props}
+              >
+                <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Share
+              </Button>
+            )}
+          />
+        ) : (
+          <Button
+            variant={primaryAction === 'Share' ? 'primary' : 'secondary'}
+            onClick={() => modalOpened({ modal: 'share' })}
+          >
+            <EmbedIcon css={css({ height: 3, marginRight: 1 })} /> Embed
+          </Button>
+        ))}
 
       {!user?.experiments.collaborator && (
         <Button
@@ -202,6 +195,7 @@ export const Actions = () => {
         <UserMenu>
           {user?.experiments.collaborator ? (
             <Button
+              as={UserMenu.Button}
               variant="secondary"
               css={css({
                 width: 26,
@@ -211,12 +205,21 @@ export const Actions = () => {
               <MoreMenuIcon />
             </Button>
           ) : (
-            <Avatar
-              user={{ ...user, subscriptionSince: null }}
+            <Button
+              as={UserMenu.Button}
               css={css({
-                size: '26px', // match button size next to it
+                display: 'flex',
+                width: 26,
+                height: 26, // match button size next to it
               })}
-            />
+            >
+              <Avatar
+                user={{ ...user, subscriptionSince: null }}
+                css={css({
+                  size: '26px', // match button size next to it
+                })}
+              />
+            </Button>
           )}
         </UserMenu>
       ) : (

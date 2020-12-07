@@ -20,7 +20,7 @@ const MoveSandboxFolderModal = Loadable(() =>
   import(
     /* webpackChunkName: 'move-sandbox-modal' */ './common/Modals/MoveSandboxFolderModal'
   ).then(module => ({
-    default: module.MoveSandboxFolderModal
+    default: module.MoveSandboxFolderModal,
   }))
 );
 
@@ -28,54 +28,49 @@ const DuplicateAccount = Loadable(() =>
   import(
     /* webpackChunkName: 'move-sandbox-modal' */ './DuplicateAccount'
   ).then(module => ({
-    default: module.DuplicateAccount
+    default: module.DuplicateAccount,
   }))
 );
 
 const routeDebugger = _debug('cs:app:router');
 
-const SignInAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
+const SignInAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
 );
-const SignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
+const SignIn = Loadable(
+  () => import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
 );
 const Live = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
-    default: module.Live
+    default: module.Live,
   }))
 );
-const VercelSignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
+const VercelSignIn = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
 );
-const PreviewAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
+const PreviewAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
     module => ({
-      default: module.NotFound
+      default: module.NotFound,
     })
   )
 );
-const Profile = Loadable(() =>
-  import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
-    default: module.Profile
-  }))
-);
 const Profile2 = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile2').then(module => ({
-    default: module.Profile
+    default: module.Profile,
   }))
 );
 const Search = Loadable(() =>
   import(/* webpackChunkName: 'page-search' */ './Search').then(module => ({
-    default: module.Search
+    default: module.Search,
   }))
 );
 const CLI = Loadable(() =>
   import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
-    default: module.CLI
+    default: module.CLI,
   }))
 );
 
@@ -83,13 +78,13 @@ const TeamInvitation = Loadable(() =>
   import(
     /* webpackChunkName: 'page-team-invitation' */ './TeamInvitation'
   ).then(module => ({
-    default: module.TeamInvitation
+    default: module.TeamInvitation,
   }))
 );
 
 const GitHub = Loadable(() =>
   import(/* webpackChunkName: 'page-github' */ './GitHub').then(module => ({
-    default: module.GitHub
+    default: module.GitHub,
   }))
 );
 const CliInstructions = Loadable(() =>
@@ -97,20 +92,21 @@ const CliInstructions = Loadable(() =>
     /* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'
   ).then(module => ({ default: module.CLIInstructions }))
 );
-const Patron = Loadable(() =>
-  import(/* webpackChunkName: 'page-patron' */ './Patron')
+const Patron = Loadable(
+  () => import(/* webpackChunkName: 'page-patron' */ './Patron')
 );
 const SignUp = Loadable(() =>
   import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
-    default: module.SignUp
+    default: module.SignUp,
   }))
 );
 const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
-    default: module.Curator
+    default: module.Curator,
   }))
 );
+// @ts-ignore
 const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
@@ -118,7 +114,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
-    state: { modals }
+    state: { modals },
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -169,7 +165,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
-            <Route path="/u/:username" component={Profile} />
+            <Route path="/u/:username" component={Profile2} />
             <Route path="/u2/:username" component={Profile2} />
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />

@@ -112,4 +112,19 @@ export default {
         .catch(reject);
     });
   },
+  getUserAgent() {
+    return navigator.userAgent;
+  },
+  getElementBoundingRect(elementId: string): DOMRect | null {
+    const el = document.querySelector(elementId);
+
+    if (!el) {
+      return null;
+    }
+
+    return el.getBoundingClientRect();
+  },
+  onWindowMessage(cb: (event: MessageEvent) => void) {
+    window.addEventListener('message', cb)
+  }
 };

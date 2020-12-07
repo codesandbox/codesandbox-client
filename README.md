@@ -259,12 +259,14 @@ Thanks goes to these wonderful people
   <tr>
     <td align="center"><a href="https://github.com/NinoMaj"><img src="https://avatars0.githubusercontent.com/u/20380632?v=4" width="100px;" alt="Nino"/><br /><sub><b>Nino</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=NinoMaj" title="Documentation">📖</a></td>
     <td align="center"><a href="https://saurabhdaware.in/"><img src="https://avatars1.githubusercontent.com/u/30949385?v=4" width="100px;" alt="Saurabh Daware"/><br /><sub><b>Saurabh Daware</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=saurabhdaware" title="Code">💻</a> <a href="#plugin-saurabhdaware" title="Plugin/utility libraries">🔌</a></td>
-    <td align="center"><a href="https://pablo.pink"><img src="https://avatars0.githubusercontent.com/u/4324982?v=4" width="100px;" alt="Pablo P Varela"/><br /><sub><b>Pablo P Varela</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=pablopunk" title="Code">💻</a></td>
+    <td align="center"><a href="https://pablo.pink"><img src="https://avatars0.githubusercontent.com/u/4324982?v=4" width="100px;" alt="Pablo Varela"/><br /><sub><b>Pablo Varela</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=pablopunk" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/ryanpwaldon"><img src="https://avatars0.githubusercontent.com/u/12480362?v=4" width="100px;" alt="Ryan Waldon"/><br /><sub><b>Ryan Waldon</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=ryanpwaldon" title="Code">💻</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Thanks

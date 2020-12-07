@@ -165,6 +165,7 @@ export class VSCodeEffect {
     // correctly
     this.sandboxFsSync = new SandboxFsSync({
       getSandboxFs: () => ({}),
+      getCurrentSandbox: () => null,
     });
 
     import(
@@ -844,7 +845,7 @@ export class VSCodeEffect {
       recover,
     ] = fileSystems;
 
-    const mfs = await this.createFileSystem('MountableFileSystem', {
+    const mfs = (await this.createFileSystem('MountableFileSystem', {
       '/': root,
       '/sandbox': sandbox,
       '/vscode': vscode,
@@ -852,7 +853,7 @@ export class VSCodeEffect {
       '/extensions': extensions,
       '/extensions/custom-theme': customTheme,
       '/recover': recover,
-    });
+    })) as any;
 
     window.BrowserFS.initialize(mfs);
 
@@ -1034,6 +1035,30 @@ export class VSCodeEffect {
     });
   }
 
+  private _cachedDependencies = {};
+  private _cachedDependenciesCode: string | undefined = undefined;
+  private getDependencies(sandbox: Sandbox): { [depName: string]: string } {
+    try {
+      const module = resolveModule(
+        '/package.json',
+        sandbox.modules,
+        sandbox.directories
+      );
+      if (this._cachedDependenciesCode !== module.code) {
+        this._cachedDependenciesCode = module.code;
+        const parsedPkg = JSON.parse(module.code);
+        this._cachedDependencies = {
+          ...(parsedPkg.dependencies || {}),
+          ...(parsedPkg.devDependencies || {}),
+        };
+      }
+    } catch (e) {
+      /* ignore */
+    }
+
+    return this._cachedDependencies;
+  }
+
   private prepareElements() {
     this.elements.editor.className = 'monaco-workbench';
     this.elements.editor.style.width = '100%';
@@ -1159,7 +1184,8 @@ export class VSCodeEffect {
           activeEditor.getModel().getValue(),
           modulePath,
           activeEditor.getModel().getVersionId(),
-          sandbox.template
+          sandbox.template,
+          this.getDependencies(sandbox)
         );
       }
 
@@ -1284,11 +1310,13 @@ export class VSCodeEffect {
     if (!sandbox || !this.linter) {
       return;
     }
+
     this.linter.lint(
       model.getValue(),
       title,
       model.getVersionId(),
-      sandbox.template
+      sandbox.template,
+      this.getDependencies(sandbox)
     );
   }
 

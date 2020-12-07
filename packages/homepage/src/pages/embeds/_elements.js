@@ -34,7 +34,7 @@ export const Wrapper = styled.div`
 export const Title = styled.h1`
   ${({ theme }) => css`
     font-family: ${theme.homepage.appleFont};
-    font-weight: 500;
+    font-weight: 900;
     font-size: 2.5rem;
     line-height: 3rem;
     color: ${theme.homepage.white};

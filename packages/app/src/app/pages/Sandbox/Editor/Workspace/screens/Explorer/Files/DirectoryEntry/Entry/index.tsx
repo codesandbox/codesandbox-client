@@ -2,7 +2,7 @@ import theme from '@codesandbox/common/lib/theme';
 import { Directory, Module } from '@codesandbox/common/lib/types';
 import { ListAction, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { ContextMenu, Item } from 'app/components/ContextMenu';
+import { ContextMenu, ContextMenuItemType } from 'app/components/ContextMenu';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
 
@@ -169,7 +169,7 @@ const Entry: React.FC<IEntryProps> = ({
         icon: DeleteIcon,
       },
     ].filter(Boolean),
-  ].filter(Boolean) as Item[];
+  ].filter(Boolean) as ContextMenuItemType[];
 
   return connectDragSource(
     <div>

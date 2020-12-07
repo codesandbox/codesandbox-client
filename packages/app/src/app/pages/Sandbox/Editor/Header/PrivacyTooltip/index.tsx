@@ -54,17 +54,15 @@ export const PrivacyTooltip: FunctionComponent = () => {
             <>
               <Text size="3" marginBottom={4}>
                 {owned ? (
-                  <>
-                    {user?.subscription ? (
-                      'Adjust privacy settings.'
-                    ) : (
-                      <>
-                        You can change privacy of a sandbox as a Pro.
-                        <br />
-                        <Link href="/pricing">Upgrade to Pro</Link>
-                      </>
-                    )}
-                  </>
+                  user?.subscription ? (
+                    'Adjust privacy settings.'
+                  ) : (
+                    <>
+                      You can change privacy of a sandbox as a Pro.
+                      <br />
+                      <Link href="/pricing">Upgrade to Pro</Link>
+                    </>
+                  )
                 ) : (
                   'The author has set privacy to'
                 )}

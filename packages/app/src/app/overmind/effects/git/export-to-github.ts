@@ -2,7 +2,7 @@ import { Sandbox } from '@codesandbox/common/lib/types';
 import JSZip from 'jszip';
 import { createZip, BLOB_ID } from '../zip/create-zip';
 
-interface IAPIModule {
+export interface IAPIModule {
   content: string;
   isBinary: boolean;
   path: string;

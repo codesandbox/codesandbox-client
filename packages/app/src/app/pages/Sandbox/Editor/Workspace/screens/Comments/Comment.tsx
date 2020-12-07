@@ -13,6 +13,7 @@ import { css } from '@styled-system/css';
 import { Markdown } from 'app/components/Markdown';
 import { CodeReferenceMetadata, CommentFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
+import { convertImageReferencesToMarkdownImages } from 'app/overmind/utils/comments';
 import React from 'react';
 
 import { AvatarBlock } from './components/AvatarBlock';
@@ -73,7 +74,7 @@ export const Comment = React.memo<{
         itemScope
         itemType="http://schema.org/Comment"
       >
-        <Stack align="flex-start" justify="space-between" marginBottom={4}>
+        <Stack align="flex-start" justify="space-between" marginBottom={2}>
           <AvatarBlock comment={comment} />
           <Stack align="center">
             {comment.isResolved && (
@@ -114,26 +115,47 @@ export const Comment = React.memo<{
             </Menu>
           </Stack>
         </Stack>
-        {comment.anchorReference && comment.anchorReference.type === 'code' && (
-          <Link
-            variant="muted"
-            css={css({
-              marginTop: -2,
-              opacity: 0.6,
-              paddingBottom: 2,
-              display: 'block',
-              transition: 'all ease',
-              transitionDuration: theme => theme.speeds[1],
+        <Stack align="center" marginBottom={2} gap={2}>
+          {comment.anchorReference && comment.anchorReference.type === 'code' && (
+            <Link
+              variant="muted"
+              css={css({
+                opacity: 0.6,
+                marginRight: 2,
+                display: 'block',
+                transition: 'all ease',
+                transitionDuration: theme => theme.speeds[1],
 
-              ':hover': {
-                opacity: 1,
-                color: 'sidebar.foreground',
-              },
-            })}
-          >
-            {(comment.anchorReference.metadata as CodeReferenceMetadata).path}
-          </Link>
-        )}
+                ':hover': {
+                  opacity: 1,
+                  color: 'sidebar.foreground',
+                },
+              })}
+            >
+              {(comment.anchorReference.metadata as CodeReferenceMetadata).path}
+            </Link>
+          )}
+          {comment.anchorReference &&
+            comment.anchorReference.type === 'preview' && (
+              <Icon name="responsive" title="Preview Comment" size={12} />
+            )}
+          {comment.replyCount ? (
+            <Stack align="center" gap={1}>
+              <Icon
+                name="comment"
+                title="Reply Count"
+                size={12}
+                css={css({
+                  color: 'button.background',
+                })}
+              />
+              {comment.replyCount}
+              <VisuallyHidden itemProp="commentCount">
+                {comment.replyCount}
+              </VisuallyHidden>
+            </Stack>
+          ) : null}
+        </Stack>
         <Element
           as="p"
           marginY={0}
@@ -147,22 +169,15 @@ export const Comment = React.memo<{
           })}
         >
           <Text itemProp="text" block css={truncateText} marginBottom={2}>
-            <Markdown source={comment.content} />
-          </Text>
-          <Text variant="muted" size={2}>
-            {getRepliesString(comment.replyCount)}
-            <VisuallyHidden itemProp="commentCount">
-              {comment.replyCount}
-            </VisuallyHidden>
+            <Markdown
+              source={convertImageReferencesToMarkdownImages(
+                comment.content,
+                comment.references
+              )}
+            />
           </Text>
         </Element>
       </Element>
     </ListAction>
   );
 });
-
-const getRepliesString = length => {
-  if (length === 0) return 'No Replies';
-  if (length === 1) return '1 Reply';
-  return length + ' Replies';
-};

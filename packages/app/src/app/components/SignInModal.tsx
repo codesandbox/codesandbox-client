@@ -9,16 +9,16 @@ import { useOvermind } from 'app/overmind';
 export const SignInModal = () => {
   const {
     actions: { toggleSignInModal },
-    state: { redirectOnLogin, signInModalOpen, user }
+    state: { redirectOnLogin, signInModalOpen, user },
   } = useOvermind();
 
   const closeModal = useCallback(
     event => {
-      if (event.keyCode === ESC && open) {
+      if (event.keyCode === ESC && signInModalOpen) {
         toggleSignInModal();
       }
     },
-    [toggleSignInModal]
+    [toggleSignInModal, signInModalOpen]
   );
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export const SignInModal = () => {
               right: 0,
               bottom: 0,
               zIndex: 9999,
-              background: 'rgba(0, 0, 0, 0.75)'
+              background: 'rgba(0, 0, 0, 0.75)',
             }}
           >
             <OutsideClickHandler onOutsideClick={toggleSignInModal}>
