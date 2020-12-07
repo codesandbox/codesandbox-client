@@ -36,6 +36,8 @@ import { SurveyModal } from './SurveyModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
 import { DeleteWorkspace } from './DeleteWorkspace';
+import { MinimumPrivacyModal } from './MinimumPrivacyModal';
+import { GenericAlertModal } from './GenericAlertModal';
 
 const modals = {
   preferences: {
@@ -151,6 +153,10 @@ const modals = {
     width: '90%',
     top: 10, // vh
   },
+  minimumPrivacy: {
+    Component: MinimumPrivacyModal,
+    width: 450,
+  },
 };
 
 const Modals: FunctionComponent = () => {
@@ -188,6 +194,8 @@ const Modals: FunctionComponent = () => {
 
   const modal = currentModal && modals[currentModal];
 
+  const { state } = useOvermind();
+
   return (
     <ThemeProvider theme={localState.theme.vscodeTheme}>
       <Modal
@@ -205,6 +213,8 @@ const Modals: FunctionComponent = () => {
             })
           : null}
       </Modal>
+
+      {state.modals.alertModal.isCurrent && <GenericAlertModal />}
     </ThemeProvider>
   );
 };

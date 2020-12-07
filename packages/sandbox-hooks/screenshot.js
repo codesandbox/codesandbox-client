@@ -7,11 +7,17 @@ export default function setupScreenshotListener() {
         const html2canvas = lib.default;
 
         html2canvas(document.body, {
-          // When the sandbox is public we redirect same origin requests to other origins,
-          // which means we need to force the CORS attribute. This removes cookies, but no worries,
-          // it is a public sandbox. In private sandboxes same origin requests does indeed go to
-          // same origin, where we need the cookie, so no CORS being set there
-          useCORS: (_, isSameOrigin) => !(data.data.isPrivateSandbox && isSameOrigin),
+          useCORS: isSameOrigin => {
+            // When it is a public sandbox the image url will be redirected to a
+            // cross origin url, so we need to force CORS
+            if (!data.data.isPrivateSandbox && isSameOrigin) {
+              return true;
+            }
+
+            // By default we do not use cors, which means cross origin images will use the proxy
+            return false;
+          },
+          proxy: 'https://h2c-proxy.csb.dev/',
           logging: false,
           allowTaint: false,
         }).then(canvas => {
@@ -23,4 +29,18 @@ export default function setupScreenshotListener() {
       });
     }
   });
+
+  const listener = event => {
+    if (
+      event.key === 's' &&
+      event.shiftKey &&
+      (event.metaKey || event.ctrlKey)
+    ) {
+      event.preventDefault();
+      dispatch({
+        type: 'screenshot-requested-from-preview',
+      });
+    }
+  };
+  window.addEventListener('keydown', listener);
 }

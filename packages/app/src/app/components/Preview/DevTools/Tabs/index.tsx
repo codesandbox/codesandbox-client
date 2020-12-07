@@ -22,6 +22,7 @@ export interface Props {
 
   panes: ViewTab[];
   views: IViews;
+  disableLogging: boolean;
 }
 
 export const DevToolTabs = ({
@@ -34,6 +35,7 @@ export const DevToolTabs = ({
   setPane,
   moveTab,
   closeTab,
+  disableLogging,
   status,
 }: Props) => {
   const currentPane = views[panes[currentPaneIndex].id];
@@ -60,6 +62,7 @@ export const DevToolTabs = ({
           /* eslint-disable react/no-array-index-key */
           return (
             <TypedTab
+              disableLogging={disableLogging}
               canDrag={panes.length !== 1}
               pane={view}
               options={pane.options || {}}

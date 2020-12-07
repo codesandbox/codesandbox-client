@@ -112,6 +112,10 @@ export const teamFragmentDashboard = gql`
     creatorId
     avatarUrl
 
+    settings {
+      minimumPrivacy
+    }
+
     userAuthorizations {
       userId
       authorization
@@ -159,5 +163,22 @@ export const currentTeamInfoFragment = gql`
       userId
       authorization
     }
+
+    settings {
+      minimumPrivacy
+    }
+  }
+`;
+
+export const npmRegistryFragment = gql`
+  fragment npmRegistry on PrivateRegistry {
+    id
+    enabledScopes
+    limitToScopes
+    proxyEnabled
+    registryAuthKey
+    registryType
+    registryUrl
+    teamId
   }
 `;

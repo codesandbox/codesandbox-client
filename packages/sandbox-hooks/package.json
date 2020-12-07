@@ -8,7 +8,6 @@
     "directory": "packages/sandbox-hooks"
   },
   "scripts": {
-    "build": "rimraf html2canvas-lib && tsc",
     "build-sse-404": "rimraf dist && parcel build --no-source-maps not-found-screen/index.html && node inline-js"
   },
   "dependencies": {

@@ -641,7 +641,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 event.stopPropagation();
               }}
               css={css({
-                width: 5,
+                width: 4,
                 height: '100%',
                 borderRadius: 0,
                 svg: {
@@ -655,15 +655,9 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
             <Element as="span" css={css({ width: 5, flexShrink: 0 })} />
           )}
 
-          <Stack align="center" gap={3} css={{ width: 'calc(100% - 28px)' }}>
-            <Stack
-              as="span"
-              css={css({ width: 4 })}
-              align="center"
-              justify="center"
-            >
-              <Icon name="folder" />
-            </Stack>
+          <Stack align="center" gap={2} css={{ width: 'calc(100% - 28px)' }}>
+            <Icon name="folder" size={24} css={css({ flexShrink: 0 })} />
+
             {isRenaming || isNewFolder ? (
               <form onSubmit={onSubmit}>
                 <Input

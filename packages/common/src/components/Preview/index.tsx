@@ -12,7 +12,7 @@ import { Spring } from 'react-spring/renderprops.cjs';
 import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
-import { Module, Sandbox } from '../../types';
+import { Module, NpmRegistry, Sandbox } from '../../types';
 import track from '../../utils/analytics';
 import { getSandboxName } from '../../utils/get-sandbox-name';
 import { frameUrl, host } from '../../utils/url-generator';
@@ -27,6 +27,7 @@ export type Props = {
   privacy?: number;
   previewSecret?: string;
   settings: Settings;
+  customNpmRegistries: NpmRegistry[];
   onInitialized?: (preview: BasePreview) => () => void; // eslint-disable-line no-use-before-define
   extraModules?: { [path: string]: { code: string; path: string } };
   currentModule?: Module;
@@ -443,6 +444,7 @@ class BasePreview extends React.PureComponent<Props, State> {
           type: 'compile',
           version: 3,
           entry: this.getRenderedModule(),
+          customNpmRegistries: this.props.customNpmRegistries,
           modules: modulesToSend,
           sandboxId: sandbox.id,
           externalResources: sandbox.externalResources,
@@ -606,6 +608,7 @@ class BasePreview extends React.PureComponent<Props, State> {
             openNewWindow={this.openNewWindow}
             createPreviewComment={createPreviewComment}
             zenMode={settings.zenMode}
+            sandbox={sandbox}
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
@@ -622,7 +625,7 @@ class BasePreview extends React.PureComponent<Props, State> {
                 <StyledFrame
                   key="PREVIEW"
                   allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+                  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts allow-downloads"
                   src={this.state.url}
                   ref={this.setIframeElement}
                   title={getSandboxName(sandbox)}

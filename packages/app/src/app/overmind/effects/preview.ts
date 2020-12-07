@@ -1,6 +1,9 @@
 import { dispatch, listen } from 'codesandbox-api';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { blocker } from 'app/utils/blocker';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { PREVIEW_COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
+import { Sandbox } from '@codesandbox/common/lib/types';
 
 let _preview = blocker<BasePreview>();
 
@@ -47,6 +50,32 @@ export default {
 
     return path.substr(path.indexOf('/'));
   },
+  takeExtensionScreenshot(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let waitForExtension;
+      const extensionListener = event => {
+        if (event.data.type === 'extension-screenshot-taken') {
+          clearTimeout(waitForExtension);
+          window.removeEventListener('message', extensionListener);
+          resolve(event.data.url);
+        }
+      };
+      waitForExtension = setTimeout(() => {
+        reject(
+          new Error(
+            'Extension did not create screenshot, please try to refresh browser'
+          )
+        );
+      }, 3000);
+      window.addEventListener('message', extensionListener);
+      window.postMessage(
+        {
+          type: 'extension-screenshot',
+        },
+        '*'
+      );
+    });
+  },
   takeScreenshot(isPrivateSandbox: boolean): Promise<string> {
     return new Promise((resolve, reject) => {
       let timeout;
@@ -70,8 +99,6 @@ export default {
         reject(new Error('Creating screenshot timed out'));
       }, 3000);
 
-      // this dispatch triggers a "screenshot-generated" message
-      // which is received inside the PreviewCommentWrapper
       dispatch({
         type: 'take-screenshot',
         data: {
@@ -221,6 +248,13 @@ export default {
 
         return canvas.toDataURL();
       }
+    );
+  },
+  canAddComments(currentSandbox: Sandbox) {
+    return Boolean(
+      localStorage.getItem(PREVIEW_COMMENTS_ON) &&
+        currentSandbox.featureFlags.comments &&
+        hasPermission(currentSandbox.authorization, 'comment')
     );
   },
 };

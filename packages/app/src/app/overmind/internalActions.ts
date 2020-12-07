@@ -124,6 +124,9 @@ export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
   }
 };
 
+/**
+ * @deprecated
+ */
 export const addNotification: Action<{
   title: string;
   type: 'notice' | 'success' | 'warning' | 'error';

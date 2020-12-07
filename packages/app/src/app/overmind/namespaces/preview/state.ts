@@ -17,6 +17,7 @@ type State = {
   };
   previousMode: Mode;
   mode: Mode;
+  hasExtension: boolean;
 };
 
 export const defaultPresets: Presets = {
@@ -43,4 +44,5 @@ export const state: State = {
   },
   previousMode: null,
   mode: null,
+  hasExtension: false,
 };

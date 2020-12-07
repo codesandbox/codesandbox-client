@@ -5,7 +5,6 @@ import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 import React, { FunctionComponent, useState } from 'react';
 import { useOvermind } from 'app/overmind';
 
-import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { ResponsiveWrapper } from './ResponsiveWrapper';
 
 type Props = {
@@ -41,6 +40,7 @@ export const Preview: FunctionComponent<Props> = ({
       preferences: { settings },
       server: { containerStatus, error, hasUnrecoverableError },
     },
+    effects,
   } = useOvermind();
   const [running, setRunning] = useState(!runOnClick);
 
@@ -65,9 +65,7 @@ export const Preview: FunctionComponent<Props> = ({
     return undefined;
   };
 
-  const canAddComments =
-    currentSandbox.featureFlags.comments &&
-    hasPermission(currentSandbox.authorization, 'comment');
+  const canAddComments = effects.preview.canAddComments(currentSandbox);
 
   return running ? (
     <BasePreview
@@ -94,6 +92,7 @@ export const Preview: FunctionComponent<Props> = ({
       overlayMessage={getOverlayMessage()}
       previewSecret={currentSandbox.previewSecret}
       privacy={currentSandbox.privacy}
+      customNpmRegistries={currentSandbox.npmRegistries}
       sandbox={currentSandbox}
       settings={settings}
       isScreenshotLoading={preview.screenshot.isLoading}

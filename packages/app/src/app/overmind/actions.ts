@@ -90,7 +90,8 @@ type ModalName =
   | 'signInForTemplates'
   | 'userSurvey'
   | 'liveSessionEnded'
-  | 'sandboxPicker';
+  | 'sandboxPicker'
+  | 'minimumPrivacy';
 
 export const modalOpened: Action<{
   modal: ModalName;
@@ -287,6 +288,7 @@ export const refetchSandboxInfo: AsyncAction = async ({
   sandbox.authorization = updatedSandbox.authorization;
   sandbox.privacy = updatedSandbox.privacy;
   sandbox.featureFlags = updatedSandbox.featureFlags;
+  sandbox.npmRegistries = updatedSandbox.npmRegistries;
 
   await actions.editor.internal.initializeSandbox(sandbox);
 };

@@ -2,12 +2,7 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { ThemeProvider, Stack, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  RouteComponentProps,
-} from 'react-router-dom';
+import { Switch, Route, RouteComponentProps } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 import { Helmet } from 'react-helmet';
@@ -50,56 +45,54 @@ export const Profile: React.FunctionComponent<RouteComponentProps<{
 
   return (
     <ThemeProvider>
-      <Router basename={`/u2/${user.username}`}>
+      <Stack
+        direction="vertical"
+        gap={104}
+        css={css({
+          width: '100vw',
+          minHeight: '100vh',
+          backgroundColor: 'grays.900',
+          color: 'white',
+          fontFamily: 'Inter, sans-serif',
+        })}
+      >
+        <Helmet>
+          <title>{user.name || user.username} - CodeSandbox</title>
+        </Helmet>
+        <Header />
+
         <Stack
-          direction="vertical"
-          gap={104}
+          gap={8}
           css={css({
-            width: '100vw',
-            minHeight: '100vh',
-            backgroundColor: 'grays.900',
-            color: 'white',
-            fontFamily: 'Inter, sans-serif',
+            flexDirection: ['column', 'row'],
+            marginX: [32, 64],
           })}
         >
-          <Helmet>
-            <title>{user.name || user.username} - CodeSandbox</title>
-          </Helmet>
-          <Header />
-
-          <Stack
-            gap={8}
-            css={css({
-              flexDirection: ['column', 'row'],
-              marginX: [32, 64],
-            })}
-          >
-            <Element css={css({ width: ['100%', '320px'] })}>
-              <ProfileCard />
-            </Element>
-            <Element css={css({ width: ['100%', 'calc(100% - 320px)'] })}>
-              <Switch>
-                <Route path="/likes">
-                  <LikedSandboxes />
-                </Route>
-                <Route path="/search">
-                  <SearchedSandboxes />
-                </Route>
-                <Route path="/">
-                  <DndProvider backend={Backend}>
-                    <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
-                      <ShowcaseSandbox />
-                      <PinnedSandboxes />
-                      <AllSandboxes />
-                    </Stack>
-                  </DndProvider>
-                </Route>
-              </Switch>
-            </Element>
-          </Stack>
+          <Element css={css({ width: ['100%', '320px'] })}>
+            <ProfileCard />
+          </Element>
+          <Element css={css({ width: ['100%', 'calc(100% - 320px)'] })}>
+            <Switch>
+              <Route path={`/u/${user.username}/likes`}>
+                <LikedSandboxes />
+              </Route>
+              <Route path={`/u/${user.username}/search`}>
+                <SearchedSandboxes />
+              </Route>
+              <Route path={`/u/${user.username}`}>
+                <DndProvider backend={Backend}>
+                  <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
+                    <ShowcaseSandbox />
+                    <PinnedSandboxes />
+                    <AllSandboxes />
+                  </Stack>
+                </DndProvider>
+              </Route>
+            </Switch>
+          </Element>
         </Stack>
-        <ContextMenu />
-      </Router>
+      </Stack>
+      <ContextMenu />
     </ThemeProvider>
   );
 };
