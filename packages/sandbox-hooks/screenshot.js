@@ -7,16 +7,17 @@ export default function setupScreenshotListener() {
         const html2canvas = lib.default;
 
         html2canvas(document.body, {
-          useCORS: (_, isSameOrigin) => {
+          useCORS: isSameOrigin => {
             // When it is a public sandbox the image url will be redirected to a
             // cross origin url, so we need to force CORS
             if (!data.data.isPrivateSandbox && isSameOrigin) {
               return true;
             }
 
-            // By default we use CORS if the url is not the same origin
-            return !isSameOrigin;
+            // By default we do not use cors, which means cross origin images will use the proxy
+            return false;
           },
+          proxy: 'https://h2c-proxy.csb.dev/',
           logging: false,
           allowTaint: false,
         }).then(canvas => {
@@ -35,8 +36,9 @@ export default function setupScreenshotListener() {
       event.shiftKey &&
       (event.metaKey || event.ctrlKey)
     ) {
+      event.preventDefault();
       dispatch({
-        type: 'take-screenshot',
+        type: 'screenshot-requested-from-preview',
       });
     }
   };

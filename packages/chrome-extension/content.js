@@ -36,19 +36,9 @@ const addButton = () => {
 addButton();
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.type === "start") {
-    start();
-  } else if (request.type === "screenshot-bounds-found") {
-    const indicator1 = document.getElementById('screenshot-indicator-1')
-    const indicator2 = document.getElementById('screenshot-indicator-2')
-
-    indicator1.style.display = 'none'
-    indicator2.style.display = 'none'
-
-    send({
-      type: "screenshot-snap",
-      bounds: request.bounds
-    })
+  console.log(request)
+  if (request.type === "screenshot") {
+    screenshot();
   } else if (request.type === "screenshot-taken") {
     window.postMessage({
       type: 'extension-screenshot-taken',
@@ -63,17 +53,25 @@ function send(request) {
   chrome.runtime.sendMessage(request, function (response) { });
 }
 
-function start() {
-  const topLeftIndicator = document.querySelector('#screenshot-indicator-1')
-  const bottomRightIndicator = document.querySelector('#screenshot-indicator-2')
+function screenshot() {
+  const preview = document.querySelector('#sandbox-preview')
+  const bounds = preview.getBoundingClientRect()
 
-  topLeftIndicator.style.display = 'block'
-  bottomRightIndicator.style.display = 'block'
-
-  // Have to wait for indicators to show up
-  setTimeout(() => {
-    send({
-      type: "screenshot"
-    })
-  }, 100)
+  send({
+    type: "screenshot",
+    bounds
+  })
 }
+
+window.addEventListener('message', (event) => {
+  if (event.source !== window)
+    return
+
+  if (event.data.type === 'extension-ping') {
+    window.postMessage({
+      type: 'extension-pong'
+    })
+  } else if (event.data.type === 'extension-screenshot') {
+    screenshot()
+  }
+})

@@ -1,4 +1,5 @@
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { Action, AsyncAction } from 'app/overmind';
 import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
@@ -160,24 +161,54 @@ export const editPresets: AsyncAction<Presets> = async (
   });
 };
 
+export const setExtension: Action<boolean> = ({ state }, hasExtension) => {
+  state.preview.hasExtension = hasExtension;
+};
+
 export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
+  const currentSandbox = state.editor.currentSandbox;
+
+  if (!currentSandbox || !effects.preview.canAddComments(currentSandbox)) {
+    return;
+  }
+
   const existingMode = state.preview.mode;
 
   state.preview.screenshot.source = null;
-  state.preview.screenshot.fromExtension = false;
 
   const takeScreenshot = async () => {
     try {
-      const screenshot = await effects.preview.takeScreenshot(
-        state.editor.currentSandbox!.privacy === 2,
-        () => {
-          state.preview.screenshot.isLoading = true;
+      if (state.preview.hasExtension) {
+        const screenshot = await effects.preview.takeExtensionScreenshot();
+        state.preview.screenshot.source = screenshot;
+      } else {
+        state.preview.screenshot.isLoading = true;
+
+        const screenshot = await effects.preview.takeScreenshot(
+          state.editor.currentSandbox!.privacy === 2
+        );
+
+        if (!effects.browserExtension.hasNotifiedImprovedScreenshots()) {
+          effects.notificationToast.add({
+            status: NotificationStatus.NOTICE,
+            message:
+              'By installing the CodeSandbox browser extension you will get a better experience creating Preview Comments',
+            actions: {
+              primary: {
+                label: 'Install extension',
+                run: () => {
+                  effects.browserExtension.install();
+                },
+              },
+            },
+          });
+          effects.browserExtension.setNotifiedImprovedScreenshots();
         }
-      );
-      state.preview.screenshot.isLoading = false;
-      state.preview.screenshot.source = screenshot;
-    } catch {
-      // Not experienced this process erroring yet
+        state.preview.screenshot.isLoading = false;
+        state.preview.screenshot.source = screenshot;
+      }
+    } catch (error) {
+      effects.notificationToast.error(error.message);
     }
   };
 
