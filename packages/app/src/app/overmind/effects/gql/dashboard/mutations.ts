@@ -55,8 +55,8 @@ import {
   SetWorkspaceSandboxSettingsMutationVariables,
   SetPreventSandboxesLeavingWorkspaceMutation,
   SetPreventSandboxesLeavingWorkspaceMutationVariables,
-  SetPreventSandboxesExportWorkspaceMutation,
-  SetPreventSandboxesExportWorkspaceMutationVariables,
+  SetPreventSandboxesExportMutation,
+  SetPreventSandboxesExportMutationVariables,
   SetDefaultTeamMemberAuthorizationMutation,
   SetDefaultTeamMemberAuthorizationMutationVariables,
 } from 'app/graphql/types';
@@ -452,18 +452,18 @@ export const setPreventSandboxesLeavingWorkspace: Query<
 `;
 
 export const setPreventSandboxesExport: Query<
-  SetPreventSandboxesExportWorkspaceMutation,
-  SetPreventSandboxesExportWorkspaceMutationVariables
+  SetPreventSandboxesExportMutation,
+  SetPreventSandboxesExportMutationVariables
 > = gql`
-  mutation setPreventSandboxesExportWorkspace(
+  mutation setPreventSandboxesExport(
     $sandboxIds: [ID!]!
     $preventSandboxExport: Boolean!
   ) {
-    setPreventSandboxesExportWorkspace(
+    setPreventSandboxesExport(
       sandboxIds: $sandboxIds
       preventSandboxExport: $preventSandboxExport
     ) {
-      preventSandboxExport
+      id
     }
   }
 `;

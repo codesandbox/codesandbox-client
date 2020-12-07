@@ -2753,12 +2753,12 @@ export type SetPreventSandboxesLeavingWorkspaceMutation = {
   id: Sandbox['id'];
 };
 
-export type SetPreventSandboxesExportWorkspaceMutationVariables = Exact<{
+export type SetPreventSandboxesExportMutationVariables = Exact<{
   sandboxIds: Array<Sandbox['id']>;
   preventSandboxExport: SandboxPermissions['preventSandboxExport'];
 }>;
 
-export type SetPreventSandboxesExportWorkspaceMutation = {
+export type SetPreventSandboxesExportMutation = {
   __typename?: 'RootMutationType';
 } & {
   id: Sandbox['id'];
