@@ -65,6 +65,11 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
     state.preview.mode === 'add-comment' ||
     state.preview.mode === 'responsive-add-comment';
 
+  /*
+      Due to Chrome (and others?) for some reason does not change the cursor when "injecting"
+      the screenshot element, without moving the cursor, we need to do a bit of trickery to
+      force the browser to detect that we indeed "injected" an element with the bubble cursor
+    */
   React.useEffect(() => {
     if (
       isAddingPreviewComment &&
