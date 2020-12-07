@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import sortBy from 'lodash/sortBy';
 import * as templates from '../../../templates';
 import Template from '../../../templates/template';
@@ -12,42 +12,54 @@ import {
 import { ConfigurationUIProps } from '../types';
 
 export const ConfigWizard = (props: ConfigurationUIProps) => {
-  const bindValue = (
-    file: Object,
-    property: string,
-    defaultValue?: any
-  ): {
-    value: any;
-    setValue: (p: any) => void;
-  } => ({
-    value: file[property] || defaultValue,
-    setValue: (value: any) => {
-      let code = JSON.stringify(
-        {
-          ...file,
-          [property]: value,
-        },
-        null,
-        2
-      );
-      if (property.includes('.')) {
-        const [parent, key] = property.split('.');
-        code = JSON.stringify(
+  const getValue = (file: Object, property: string, defaultValue: string) => {
+    if (property.includes('.')) {
+      const [parent, key] = property.split('.');
+      if (!file[parent]) return defaultValue;
+      const value = file[parent][key];
+      return value ? value.toString() : defaultValue;
+    }
+
+    return file[property] || defaultValue;
+  };
+  const bindValue = useCallback(
+    (
+      file: Object,
+      property: string,
+      defaultValue?: any
+    ): {
+      value: any;
+      setValue: (p: any) => void;
+    } => ({
+      value: getValue(file, property, defaultValue),
+      setValue: (value: any) => {
+        let code = JSON.stringify(
           {
             ...file,
-            [parent]: {
-              ...file[parent],
-              [key]: value,
-            },
+            [property]: value,
           },
           null,
           2
         );
-      }
-
-      return props.updateFile(code);
-    },
-  });
+        if (property.includes('.')) {
+          const [parent, key] = property.split('.');
+          code = JSON.stringify(
+            {
+              ...file,
+              [parent]: {
+                ...file[parent],
+                [key]: value,
+              },
+            },
+            null,
+            2
+          );
+        }
+        return props.updateFile(code);
+      },
+    }),
+    [props.file]
+  );
 
   const { file, sandbox } = props;
 
