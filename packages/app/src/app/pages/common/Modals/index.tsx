@@ -4,6 +4,7 @@ import {
   COLUMN_MEDIA_THRESHOLD,
   CreateSandbox,
 } from 'app/components/CreateNewSandbox/CreateSandbox';
+import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
@@ -38,7 +39,6 @@ import UploadModal from './UploadModal';
 import { DeleteWorkspace } from './DeleteWorkspace';
 import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
-import { useLocation } from 'react-router-dom';
 
 const modals = {
   preferences: {
@@ -166,7 +166,7 @@ const Modals: FunctionComponent = () => {
   const {
     actions,
     state: {
-      modals,
+      modals: stateModals,
       preferences: {
         settings: { customVSCodeTheme },
       },
@@ -204,7 +204,7 @@ const Modals: FunctionComponent = () => {
           }
         : {}
     );
-  }, [pathname]);
+  }, [pathname, localState]);
 
   const modal = currentModal && modals[currentModal];
   return (
@@ -225,7 +225,7 @@ const Modals: FunctionComponent = () => {
           : null}
       </Modal>
 
-      {modals.alertModal.isCurrent && <GenericAlertModal />}
+      {stateModals.alertModal.isCurrent && <GenericAlertModal />}
     </ThemeProvider>
   );
 };
