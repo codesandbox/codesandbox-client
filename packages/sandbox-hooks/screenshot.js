@@ -36,6 +36,7 @@ export default function setupScreenshotListener() {
       event.shiftKey &&
       (event.metaKey || event.ctrlKey)
     ) {
+      event.preventDefault();
       dispatch({
         type: 'screenshot-requested-from-preview',
       });
