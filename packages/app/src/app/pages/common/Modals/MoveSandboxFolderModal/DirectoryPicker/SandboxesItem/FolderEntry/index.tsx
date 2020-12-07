@@ -393,7 +393,6 @@ class FolderEntry extends React.Component<Props, State> {
           </ReactShow>
           {this.state.creatingDirectory && (
             <CreateFolderEntry
-              teamId={teamId}
               depth={this.props.depth}
               close={() => this.setState({ creatingDirectory: false })}
               basePath={path}
