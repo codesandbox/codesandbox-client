@@ -40,8 +40,7 @@ export const CreateFolderEntry = ({
         <form
           onSubmit={e => {
             e.preventDefault();
-            const path = join(basePath, input.value);
-
+            const path = join(basePath || '/', input.value);
             track('Dashboard - Create Directory', {
               path,
             });
