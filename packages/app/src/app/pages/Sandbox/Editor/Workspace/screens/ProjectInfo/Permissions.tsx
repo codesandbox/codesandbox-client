@@ -28,7 +28,6 @@ export const Permissions: FunctionComponent = () => {
     state: {
       editor: { currentSandbox },
       user,
-      dashboard,
       activeTeam,
       activeTeamInfo,
       activeWorkspaceAuthorization,
