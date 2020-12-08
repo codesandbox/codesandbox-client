@@ -30,7 +30,7 @@ type MenuAction =
     };
 
 export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
-  const { actions, state } = useOvermind();
+  const { actions, state, effects } = useOvermind();
   const { visible, setVisibility, position } = React.useContext(Context);
 
   /*
@@ -54,10 +54,27 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   const exportItems = () => {
     const ids = [
-      ...sandboxes.map(sandbox => sandbox.sandbox.id),
+      ...sandboxes
+        .filter(sandbox => !sandbox.sandbox.permissions.preventSandboxExport)
+        .map(sandbox => sandbox.sandbox.id),
       ...templates.map(template => template.sandbox.id),
     ];
+
     actions.dashboard.downloadSandboxes(ids);
+
+    const skippedSandboxes = sandboxes.filter(
+      sandbox => sandbox.sandbox.permissions.preventSandboxExport
+    );
+
+    if (skippedSandboxes.length) {
+      effects.notificationToast.error(
+        `${skippedSandboxes.length} ${
+          skippedSandboxes.length === 1 ? 'sandbox was' : 'sandboxes were'
+        } skipped because you do not have permission to export ${
+          skippedSandboxes.length === 1 ? 'it' : 'them'
+        }.`
+      );
+    }
   };
 
   const convertToTemplates = () => {
@@ -153,7 +170,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     isTeamPro && state.activeWorkspaceAuthorization === 'ADMIN'
       ? [
           sandboxes.some(s => !s.sandbox.permissions.preventSandboxLeaving) && {
-            label: 'Allow Leaving Workspace',
+            label: 'Prevent Leaving Workspace',
             fn: () => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -162,7 +179,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
             },
           },
           sandboxes.some(s => s.sandbox.permissions.preventSandboxLeaving) && {
-            label: 'Prevent Leaving Workspace',
+            label: 'Allow Leaving Workspace',
             fn: () => {
               actions.dashboard.setPreventSandboxesLeavingWorkspace({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -171,7 +188,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
             },
           },
           sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) && {
-            label: 'Allow Export as .zip',
+            label: 'Prevent Export as .zip',
             fn: () => {
               actions.dashboard.setPreventSandboxesExport({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -180,7 +197,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
             },
           },
           sandboxes.some(s => s.sandbox.permissions.preventSandboxExport) && {
-            label: 'Prevent Export as .zip',
+            label: 'Allow Export as .zip',
             fn: () => {
               actions.dashboard.setPreventSandboxesExport({
                 sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
@@ -191,7 +208,12 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
         ].filter(Boolean)
       : [];
 
-  const EXPORT = { label: 'Export Items', fn: exportItems };
+  const EXPORT = sandboxes.some(
+    s => !s.sandbox.permissions.preventSandboxExport
+  )
+    ? [{ label: 'Export Items', fn: exportItems }]
+    : [];
+
   const DELETE = { label: 'Delete Items', fn: deleteItems };
   const RECOVER = {
     label: 'Recover Sandboxes',
@@ -229,11 +251,11 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   } else if (folders.length) {
     options = [DELETE];
   } else if (sandboxes.length && templates.length) {
-    options = [...PRIVACY_ITEMS, EXPORT, MOVE_ITEMS, DIVIDER, DELETE];
+    options = [...PRIVACY_ITEMS, ...EXPORT, MOVE_ITEMS, DIVIDER, DELETE];
   } else if (templates.length) {
     options = [
       ...PRIVACY_ITEMS,
-      EXPORT,
+      ...EXPORT,
       MOVE_ITEMS,
       CONVERT_TO_SANDBOX,
       DIVIDER,
@@ -242,7 +264,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   } else if (sandboxes.length) {
     options = [
       ...PRIVACY_ITEMS,
-      EXPORT,
+      ...EXPORT,
       DIVIDER,
       ...FROZEN_ITEMS,
       DIVIDER,
