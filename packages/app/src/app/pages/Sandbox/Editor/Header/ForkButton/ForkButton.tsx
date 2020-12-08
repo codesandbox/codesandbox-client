@@ -132,12 +132,22 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
     otherWorkspaces = teams.filter(t => t !== currentSpace)!;
   }
 
+  // if this user is not part of this workspace,
+  // they should not be able to fork inside the workspace
+  const inActiveWorkspace =
+    state.editor.currentSandbox.team.id === state.activeTeam;
+  const preventForkInsideWorkspace =
+    state.activeWorkspaceAuthorization === 'READ' || !inActiveWorkspace;
+
   const preventForksOutsideWorkspace =
     state.editor.currentSandbox.permissions.preventSandboxLeaving;
 
+  // If you can't fork at all, hide the button completely
+  if (preventForkInsideWorkspace && preventForksOutsideWorkspace) return null;
+
   return (
     <Stack>
-      {state.activeWorkspaceAuthorization === 'READ' ? null : (
+      {preventForkInsideWorkspace ? null : (
         <Button
           onClick={() => props.forkClicked()}
           loading={state.editor.isForkingSandbox}
@@ -159,7 +169,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
         <Tooltip
           label={
             preventForksOutsideWorkspace
-              ? 'This sandbox can not be forked outside of the workspace'
+              ? 'You don not have permission to fork this sandbox outside of the workspace'
               : null
           }
         >
@@ -169,7 +179,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
                 variant={props.variant}
                 disabled={preventForksOutsideWorkspace}
                 css={
-                  state.activeWorkspaceAuthorization === 'READ'
+                  preventForkInsideWorkspace
                     ? {}
                     : {
                         width: '26px',
@@ -178,7 +188,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
                       }
                 }
               >
-                {state.activeWorkspaceAuthorization === 'READ' ? (
+                {preventForkInsideWorkspace ? (
                   <>
                     <ForkIcon css={css({ height: 3, marginRight: 1 })} />{' '}
                     <Text css={css({ marginRight: 2 })}>Fork</Text>
