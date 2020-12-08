@@ -180,13 +180,13 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       <Tooltip
         label={
           preventSandboxExport
-            ? 'You do not permission to export this sandbox'
+            ? 'You do not have permission to export this sandbox'
             : null
         }
       >
         <div>
           <MenuItem
-            data-disabled={preventSandboxExport}
+            data-disabled={preventSandboxExport ? true : null}
             onSelect={() => {
               if (preventSandboxExport) return;
               actions.dashboard.downloadSandboxes([sandbox.id]);
