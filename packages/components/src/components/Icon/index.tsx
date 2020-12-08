@@ -1,8 +1,9 @@
 import React from 'react';
 import { IElementProps } from '../Element';
 import * as icons from './icons';
+import * as iconsNewStyle from './icons-new-style';
 
-export type IconNames = keyof typeof icons;
+export type IconNames = keyof typeof icons | keyof typeof iconsNewStyle;
 
 type IconProps = React.SVGAttributes<SVGElement> &
   IElementProps & {
@@ -19,7 +20,7 @@ export const Icon: React.FC<IconProps> = ({
   size = 16,
   ...props
 }) => {
-  const SVG = icons[name];
+  const SVG = icons[name] || iconsNewStyle[name];
 
   return <SVG width={size} height={size} {...props} />;
 };
