@@ -12,6 +12,7 @@ import sid from '../assets/images/people/sid.jpg';
 import christian from '../assets/images/people/christian.png';
 import sanne from '../assets/images/people/sanne.png';
 import andras from '../assets/images/people/andras.png';
+import alex from '../assets/images/people/alex.jpg';
 
 const people = [
   {
@@ -77,6 +78,12 @@ const people = [
   {
     name: 'András Bácsai',
     pic: andras,
+    color: '#F24E62',
+    team: 'Engineering',
+  },
+  {
+    name: 'Alex Moldovan',
+    pic: alex,
     color: '#F24E62',
     team: 'Engineering',
   },
