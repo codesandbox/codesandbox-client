@@ -107,6 +107,16 @@ export default {
       });
     });
   },
+  showCommentCursor() {
+    dispatch({
+      type: 'show-screenshot-cursor',
+    });
+  },
+  hideCommentCursor() {
+    dispatch({
+      type: 'hide-screenshot-cursor',
+    });
+  },
   createScreenshot({
     screenshotSource,
     bubbleSource,

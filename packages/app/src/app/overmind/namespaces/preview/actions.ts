@@ -179,6 +179,7 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
   const takeScreenshot = async () => {
     try {
       if (state.preview.hasExtension) {
+        effects.preview.showCommentCursor();
         const screenshot = await effects.preview.takeExtensionScreenshot();
         state.preview.screenshot.source = screenshot;
       } else {
@@ -204,6 +205,7 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
           });
           effects.browserExtension.setNotifiedImprovedScreenshots();
         }
+        effects.preview.showCommentCursor();
         state.preview.screenshot.isLoading = false;
         state.preview.screenshot.source = screenshot;
       }
@@ -218,9 +220,11 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
       await takeScreenshot();
       break;
     case 'add-comment':
+      effects.preview.hideCommentCursor();
       state.preview.mode = null;
       break;
     case 'responsive-add-comment':
+      effects.preview.hideCommentCursor();
       state.preview.mode = 'responsive';
       break;
     default:
