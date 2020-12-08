@@ -28,13 +28,19 @@ export const Permissions: FunctionComponent = () => {
     state: {
       editor: { currentSandbox },
       user,
+      dashboard,
+      activeTeam,
       activeTeamInfo,
       activeWorkspaceAuthorization,
     },
   } = useOvermind();
 
   const isPaidUser = user?.subscription;
-  const isTeamPro = activeTeamInfo.joinedPilotAt;
+
+  // if this user is not part of this workspace,
+  // they should not see permissions at all
+  const isActiveTeam = currentSandbox.team.id === activeTeam;
+  const sandoxPermissionsVisible = isActiveTeam && activeTeamInfo.joinedPilotAt;
 
   const togglePreventSandboxLeaving = () => {
     setPreventSandboxLeaving(!currentSandbox.permissions.preventSandboxLeaving);
@@ -75,30 +81,44 @@ export const Permissions: FunctionComponent = () => {
             </Text>
           ) : null}
         </Stack>
-        {isTeamPro && activeWorkspaceAuthorization === 'ADMIN' && (
+        {sandoxPermissionsVisible ? (
           <Stack direction="vertical">
             <ListAction
               justify="space-between"
-              onClick={togglePreventSandboxLeaving}
+              disabled={activeWorkspaceAuthorization !== 'ADMIN'}
             >
-              <Label htmlFor="frozen">Prevent Leaving Workspace</Label>
+              <Label
+                htmlFor="preventLeaving"
+                css={css({ flexGrow: 1, height: 8, lineHeight: '32px' })}
+              >
+                Prevent Leaving Workspace
+              </Label>
               <Switch
+                id="preventLeaving"
                 on={currentSandbox.permissions.preventSandboxLeaving}
                 onChange={togglePreventSandboxLeaving}
+                disabled={activeWorkspaceAuthorization !== 'ADMIN'}
               />
             </ListAction>
             <ListAction
               justify="space-between"
-              onClick={togglePreventSandboxExport}
+              disabled={activeWorkspaceAuthorization !== 'ADMIN'}
             >
-              <Label htmlFor="frozen">Disable export</Label>
+              <Label
+                htmlFor="preventExport"
+                css={css({ flexGrow: 1, height: 8, lineHeight: '32px' })}
+              >
+                Disable export
+              </Label>
               <Switch
+                id="preventExport"
                 on={currentSandbox.permissions.preventSandboxExport}
                 onChange={togglePreventSandboxExport}
+                disabled={activeWorkspaceAuthorization !== 'ADMIN'}
               />
             </ListAction>
           </Stack>
-        )}
+        ) : null}
       </Stack>
     </Collapsible>
   );
