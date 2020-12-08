@@ -58,49 +58,21 @@ type Props = {
 export const PreviewCommentWrapper = ({ children, scale }: Props) => {
   const { state, actions } = useOvermind();
   const previewReference = getPreviewReference(state.comments.currentComment);
-  const [screenshotState, setScreenshotState] = React.useState<
-    'SHOW_HIDDEN_SCREENSHOT' | 'TEMP_REMOVE_SCREENSHOT' | 'SHOW_SCREENSHOT'
-  >('SHOW_HIDDEN_SCREENSHOT');
   const isAddingPreviewComment =
     state.preview.mode === 'add-comment' ||
     state.preview.mode === 'responsive-add-comment';
 
-  /*
-      Due to Chrome (and others?) for some reason does not change the cursor when "injecting"
-      the screenshot element, without moving the cursor, we need to do a bit of trickery to
-      force the browser to detect that we indeed "injected" an element with the bubble cursor
-    */
-  React.useEffect(() => {
-    if (
-      isAddingPreviewComment &&
-      screenshotState === 'SHOW_HIDDEN_SCREENSHOT'
-    ) {
-      setScreenshotState('TEMP_REMOVE_SCREENSHOT');
-    } else if (
-      isAddingPreviewComment &&
-      screenshotState === 'TEMP_REMOVE_SCREENSHOT'
-    ) {
-      setScreenshotState('SHOW_SCREENSHOT');
-    } else if (!isAddingPreviewComment) {
-      setScreenshotState('SHOW_HIDDEN_SCREENSHOT');
-    }
-  }, [isAddingPreviewComment, screenshotState]);
-
   return (
     <Wrapper>
       {children}
-      {isAddingPreviewComment &&
-      screenshotState !== 'TEMP_REMOVE_SCREENSHOT' ? (
+      {isAddingPreviewComment ? (
         <Screenshot
           showCommentCursor={
             !state.comments.currentComment &&
             Boolean(state.preview.screenshot.source)
           }
-          style={{
-            visibility: (screenshotState === 'SHOW_SCREENSHOT'
-              ? 'visible'
-              : 'hidden') as any,
-            ...(state.preview.screenshot.source
+          style={
+            state.preview.screenshot.source
               ? {
                   backgroundImage: `url(${state.preview.screenshot.source})`,
                 }
@@ -108,8 +80,8 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
                   backgroundColor: state.preview.screenshot.isLoading
                     ? 'rgba(0,0,0,0.5)'
                     : 'rgba(0,0,0,0)',
-                }),
-          }}
+                }
+          }
           onClick={event => {
             if (state.preview.screenshot.isLoading) {
               return;
