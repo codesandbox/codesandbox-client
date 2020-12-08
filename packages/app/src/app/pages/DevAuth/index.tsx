@@ -46,12 +46,13 @@ export const DevAuthPage = withTheme(({ theme }) => {
         setError(e.message);
       });
   };
-  let baseSignInDomain = 'https://codesandbox.io';
+  /*   let baseSignInDomain = 'https://codesandbox.io';
   if (process.env.ENDPOINT) {
     baseSignInDomain = process.env.ENDPOINT;
   } else if (process.env.CODESANDBOX_HOST) {
     baseSignInDomain = process.env.CODESANDBOX_HOST;
-  }
+  } */
+  const baseSignInDomain = process.env.ENDPOINT || 'https://codesandbox.io';
   const cliLoginUrl = `${baseSignInDomain}/cli/login`;
   return (
     <ThemeProvider theme={theme.vsCode}>
