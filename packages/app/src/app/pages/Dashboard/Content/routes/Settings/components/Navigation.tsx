@@ -61,7 +61,7 @@ export const SettingNavigation = (props: SettingsNavigationProps) => (
       {!props.isPersonal && (
         <NavigationLink
           url={dashboardUrls.registrySettings(props.teamId)}
-          label="Npm Registry"
+          label="NPM Registry"
         />
       )}
       {props.isAdmin && (
