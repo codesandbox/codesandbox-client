@@ -356,10 +356,6 @@ module.exports = merge(commonConfig, {
         from: '../sse-hooks/dist',
         to: 'public/[name].[hash].[ext]',
       },
-      {
-        from: '../sse-hooks/dist',
-        to: 'public/sse-hooks',
-      },
     ]),
     new ImageminPlugin({
       pngquant: {
