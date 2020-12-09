@@ -42,6 +42,7 @@ export function initializeSettings() {
           'workbench.editor.openSideBySideDirection': 'down',
           'svelte.plugin.typescript.diagnostics.enable': false,
           'typescript.locale': 'en',
+          'relativeLineHeight.value': 1.6,
         },
         null,
         2
