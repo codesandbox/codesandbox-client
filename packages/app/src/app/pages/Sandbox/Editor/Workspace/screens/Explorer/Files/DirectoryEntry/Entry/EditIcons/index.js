@@ -13,6 +13,7 @@ import {
   UndoIcon,
   // eslint-disable-next-line import/extensions
 } from '../../../icons.tsx';
+import { ErrorBoundary } from './ErrorBoundary';
 
 import { Container, Icon } from './elements';
 
@@ -43,63 +44,65 @@ function EditIcons({
 
   return (
     <div className={className}>
-      {hovering || (window.__isTouch && active) || forceShow ? (
-        <SingletonTooltip>
-          {singleton => (
-            <Container>
-              {onDownload && (
-                <Tooltip content="Export to ZIP" singleton={singleton}>
-                  <Icon onClick={handleClick(onDownload)}>
-                    <DownloadIcon />
-                  </Icon>
-                </Tooltip>
-              )}
-              {onUploadFile && (
-                <Tooltip content="Upload Files" singleton={singleton}>
-                  <Icon onClick={handleClick(onUploadFile)}>
-                    <UploadFileIcon />
-                  </Icon>
-                </Tooltip>
-              )}
-              {onDiscardChanges && (
-                <Tooltip content="Discard Changes">
-                  <Icon onClick={handleClick(onDiscardChanges)}>
-                    <UndoIcon />
-                  </Icon>
-                </Tooltip>
-              )}
-              {onEdit && (
-                <Tooltip content="Rename" singleton={singleton}>
-                  <Icon onClick={handleClick(onEdit)}>
-                    <EditIcon />
-                  </Icon>
-                </Tooltip>
-              )}
-              {onCreateFile && (
-                <Tooltip content="New File" singleton={singleton}>
-                  <Icon onClick={handleClick(onCreateFile)}>
-                    <AddFileIcon />
-                  </Icon>
-                </Tooltip>
-              )}
-              {onCreateDirectory && (
-                <Tooltip content="New Directory" singleton={singleton}>
-                  <Icon onClick={handleClick(onCreateDirectory)}>
-                    <AddDirectoryIcon />
-                  </Icon>
-                </Tooltip>
-              )}
-              {onDelete && (
-                <Tooltip content="Delete" singleton={singleton}>
-                  <Icon onClick={handleClick(onDelete)}>
-                    <CrossIcon />
-                  </Icon>
-                </Tooltip>
-              )}
-            </Container>
-          )}
-        </SingletonTooltip>
-      ) : null}
+      <ErrorBoundary>
+        {hovering || (window.__isTouch && active) || forceShow ? (
+          <SingletonTooltip>
+            {singleton => (
+              <Container>
+                {onDownload && (
+                  <Tooltip content="Export to ZIP" singleton={singleton}>
+                    <Icon onClick={handleClick(onDownload)}>
+                      <DownloadIcon />
+                    </Icon>
+                  </Tooltip>
+                )}
+                {onUploadFile && (
+                  <Tooltip content="Upload Files" singleton={singleton}>
+                    <Icon onClick={handleClick(onUploadFile)}>
+                      <UploadFileIcon />
+                    </Icon>
+                  </Tooltip>
+                )}
+                {onDiscardChanges && (
+                  <Tooltip content="Discard Changes">
+                    <Icon onClick={handleClick(onDiscardChanges)}>
+                      <UndoIcon />
+                    </Icon>
+                  </Tooltip>
+                )}
+                {onEdit && (
+                  <Tooltip content="Rename" singleton={singleton}>
+                    <Icon onClick={handleClick(onEdit)}>
+                      <EditIcon />
+                    </Icon>
+                  </Tooltip>
+                )}
+                {onCreateFile && (
+                  <Tooltip content="New File" singleton={singleton}>
+                    <Icon onClick={handleClick(onCreateFile)}>
+                      <AddFileIcon />
+                    </Icon>
+                  </Tooltip>
+                )}
+                {onCreateDirectory && (
+                  <Tooltip content="New Directory" singleton={singleton}>
+                    <Icon onClick={handleClick(onCreateDirectory)}>
+                      <AddDirectoryIcon />
+                    </Icon>
+                  </Tooltip>
+                )}
+                {onDelete && (
+                  <Tooltip content="Delete" singleton={singleton}>
+                    <Icon onClick={handleClick(onDelete)}>
+                      <CrossIcon />
+                    </Icon>
+                  </Tooltip>
+                )}
+              </Container>
+            )}
+          </SingletonTooltip>
+        ) : null}
+      </ErrorBoundary>
     </div>
   );
 }
