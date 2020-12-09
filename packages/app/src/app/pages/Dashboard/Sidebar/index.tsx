@@ -52,7 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     name: string;
     avatarUrl: string;
   } | null>(null);
-  const { dashboard, activeTeam } = state;
+  const { dashboard, activeTeam, activeTeamInfo } = state;
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
@@ -196,6 +196,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.repos(activeTeam)}
             icon="fork"
           />
+          {activeTeamInfo?.joinedPilotAt && (
+            <RowItem
+              name="Always-On"
+              page="always-on"
+              path={dashboardUrls.alwaysOn(activeTeam)}
+              icon="server"
+            />
+          )}
           <RowItem
             name="Recently Modified"
             page="recents"
@@ -266,12 +274,13 @@ const linkStyles = {
   flexShrink: 0,
 };
 
-const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents'];
+const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
   'home',
   'recents',
   'drafts',
   'templates',
+  'always-on',
 ];
 
 const isSamePath = (

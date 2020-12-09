@@ -8,7 +8,8 @@ export type PageTypes =
   | 'templates'
   | 'drafts'
   | 'sandboxes'
-  | 'repos';
+  | 'repos'
+  | 'always-on';
 
 export type OrderBy = {
   field: string;
@@ -32,4 +33,5 @@ export enum sandboxesTypes {
   ALL = 'ALL',
   SEARCH = 'SEARCH',
   REPOS = 'REPOS',
+  ALWAYS_ON = 'ALWAYS_ON',
 }
