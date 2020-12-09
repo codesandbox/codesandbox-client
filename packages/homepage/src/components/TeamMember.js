@@ -13,6 +13,7 @@ import christian from '../assets/images/people/christian.png';
 import sanne from '../assets/images/people/sanne.png';
 import andras from '../assets/images/people/andras.png';
 import alex from '../assets/images/people/alex.jpg';
+import maurice from '../assets/images/people/maurice.jpg';
 
 const people = [
   {
@@ -86,6 +87,12 @@ const people = [
     pic: alex,
     color: '#F24E62',
     team: 'Engineering',
+  },
+  {
+    name: 'Maurice Cherry',
+    pic: maurice,
+    color: '#F7A239',
+    team: 'Growth',
   },
 ];
 
