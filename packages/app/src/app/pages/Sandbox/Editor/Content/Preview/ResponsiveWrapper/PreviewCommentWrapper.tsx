@@ -5,7 +5,7 @@ import {
 import { useOvermind } from 'app/overmind';
 import * as React from 'react';
 import { Icon } from '@codesandbox/components';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
 const BUBBLE_SIZE = 16;
 
@@ -55,15 +55,67 @@ type Props = {
   scale: number;
 };
 
+const FlashAnimationGlobalStyle = createGlobalStyle`
+  @keyframes screenshot-flash {
+    0% { opacity: 0 }
+    25% { opacity: 1 }
+    35% { opacity: 1 }
+    100% { opacity: 0 }
+  }
+  .screenshot-flash {
+    animation: screenshot-flash 0.5s linear;
+  }
+`;
+
+const useFlash = (
+  ref: React.MutableRefObject<HTMLElement>,
+  activate: boolean
+) => {
+  React.useEffect(() => {
+    if (ref.current && activate) {
+      const flashEl = document.createElement('div');
+      flashEl.style.position = 'absolute';
+      flashEl.style.left = '0';
+      flashEl.style.top = '0';
+      flashEl.style.width = '100%';
+      flashEl.style.height = '100%';
+      flashEl.style.opacity = '0';
+      flashEl.style.zIndex = '999999';
+      flashEl.style.backgroundColor = 'white';
+      flashEl.className = 'screenshot-flash';
+
+      const disposer = () => {
+        if (ref.current) {
+          flashEl.removeEventListener('animationend', onAnimationEnd);
+          if (flashEl.parentNode) {
+            flashEl.parentNode.removeChild(flashEl);
+          }
+        }
+      };
+      const onAnimationEnd = disposer;
+      flashEl.addEventListener('animationend', onAnimationEnd);
+      ref.current.appendChild(flashEl);
+
+      return disposer;
+    }
+
+    return () => {};
+  }, [ref.current, activate]);
+};
+
 export const PreviewCommentWrapper = ({ children, scale }: Props) => {
   const { state, actions } = useOvermind();
+  const wrapperRef = React.useRef(null);
   const previewReference = getPreviewReference(state.comments.currentComment);
   const isAddingPreviewComment =
     state.preview.mode === 'add-comment' ||
     state.preview.mode === 'responsive-add-comment';
 
+  useFlash(wrapperRef, isAddingPreviewComment);
+
   return (
-    <Wrapper>
+    <Wrapper ref={wrapperRef}>
+      <FlashAnimationGlobalStyle />
       {children}
       {isAddingPreviewComment ? (
         <Screenshot

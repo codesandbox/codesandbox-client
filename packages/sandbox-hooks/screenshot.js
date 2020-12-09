@@ -7,7 +7,7 @@ export default function setupScreenshotListener() {
       import('./html2canvas-lib').then(lib => {
         const html2canvas = lib.default;
 
-        html2canvas(document.body, {
+        html2canvas(document.documentElement, {
           useCORS: isSameOrigin => {
             // When it is a public sandbox the image url will be redirected to a
             // cross origin url, so we need to force CORS
