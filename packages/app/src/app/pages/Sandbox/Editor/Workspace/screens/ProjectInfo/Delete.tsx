@@ -1,18 +1,24 @@
-import React, { MouseEvent } from 'react';
-import { useOvermind } from 'app/overmind';
-import css from '@styled-system/css';
 import { Button, Stack, Element, Link } from '@codesandbox/components';
-import { GithubIcon, TwitterIcon } from './icons';
+import css from '@styled-system/css';
+import React, { FunctionComponent, MouseEvent } from 'react';
+
+import { useOvermind } from 'app/overmind';
+
+import { DiscordIcon, GithubIcon, TwitterIcon } from './icons';
 
 const links = [
-  { href: 'https://twitter.com/codesandbox', icon: <TwitterIcon /> },
+  { href: 'https://twitter.com/codesandbox', Icon: TwitterIcon },
   {
     href: 'https://github.com/codesandbox/codesandbox-client',
-    icon: <GithubIcon />,
+    Icon: GithubIcon,
+  },
+  {
+    href: 'https://discord.gg/5BpufEP7MH',
+    Icon: DiscordIcon,
   },
 ];
 
-export const Delete = () => {
+export const Delete: FunctionComponent = () => {
   const {
     actions: {
       modalOpened,
@@ -39,26 +45,29 @@ export const Delete = () => {
     <Element>
       <Stack justify="center" marginBottom={6}>
         <Button
+          css={css({
+            ':hover:not(:disabled),:focus:not(:disabled)': {
+              color: 'errorForeground',
+            },
+          })}
           // @ts-ignore
           onClick={onDelete}
           variant="link"
-          css={css({
-            ':hover,:focus': { color: 'errorForeground' },
-          })}
         >
           {`Delete ${customTemplate ? `Template` : `Sandbox`}`}
         </Button>
       </Stack>
+
       <Element marginBottom={3} paddingX={2}>
-        <Stack gap={2}>
-          {links.map(({ href, icon }) => (
+        <Stack>
+          {links.map(({ href, Icon }) => (
             <Link
-              target="_blank"
-              rel="noopener noreferrer"
               css={css({ color: 'sideBar.border' })}
               href={href}
+              rel="noopener noreferrer"
+              target="_blank"
             >
-              {icon}
+              <Icon />
             </Link>
           ))}
         </Stack>

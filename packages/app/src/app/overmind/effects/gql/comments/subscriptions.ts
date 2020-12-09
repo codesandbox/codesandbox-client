@@ -6,8 +6,7 @@ import {
   CommentRemovedSubscription,
   CommentRemovedSubscriptionVariables,
 } from 'app/graphql/types';
-import gql from 'graphql-tag';
-import { Query } from 'overmind-graphql';
+import { gql, Query } from 'overmind-graphql';
 
 import { commentFragment } from './fragments';
 

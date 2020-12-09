@@ -47,9 +47,8 @@ export default function setupHistoryListeners() {
         origHistoryProto.replaceState.call(window.history, state, '', url);
         const newURL = document.location.href;
         sendUrlChange(newURL);
-        if (newURL.indexOf('#') === -1) {
-          window.dispatchEvent(new PopStateEvent('popstate', { state }));
-        } else {
+        window.dispatchEvent(new PopStateEvent('popstate', { state }));
+        if (newURL.indexOf('#') !== -1) {
           disableNextHashChange = true;
           window.dispatchEvent(
             new HashChangeEvent('hashchange', { oldURL, newURL })
@@ -102,35 +101,6 @@ export default function setupHistoryListeners() {
       disableNextHashChange = false;
     }
   });
-
-  document.addEventListener(
-    'click',
-    ev => {
-      const el = ev.target;
-      if (
-        el.nodeName === 'A' &&
-        !el.__vue__ && // workaround for vue-router <router-link>
-        el.href.indexOf('#') !== -1 &&
-        el.href.substr(-1) !== '#'
-      ) {
-        const url = el.href;
-        const oldURL = document.location.href;
-        origHistoryProto.replaceState.call(window.history, null, '', url);
-        const newURL = document.location.href;
-        if (oldURL !== newURL) {
-          disableNextHashChange = true;
-          window.dispatchEvent(
-            new HashChangeEvent('hashchange', { oldURL, newURL })
-          );
-          pushHistory(pathWithHash(document.location), null);
-          sendUrlChange(document.location.href);
-        }
-        ev.preventDefault();
-        ev.stopPropagation();
-      }
-    },
-    true
-  );
 
   pushHistory(pathWithHash(document.location), null);
 

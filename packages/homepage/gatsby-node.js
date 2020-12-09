@@ -20,9 +20,7 @@ const getBlogNodeInfo = ({
   photo,
 });
 const getDocsSlug = ({ node: { fileAbsolutePath } }) => {
-  const fileName = getRelativePath(fileAbsolutePath)
-    .split('/')
-    .reverse()[0];
+  const fileName = getRelativePath(fileAbsolutePath).split('/').reverse()[0];
 
   return fileName.split('.md')[0].split('-')[1];
 };
@@ -169,7 +167,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const docsTemplate = resolve(__dirname, './src/templates/docs.js');
   const blogTemplate = resolve(__dirname, './src/templates/post.js');
-  const jobTemplate = resolve(__dirname, './src/templates/job.js');
+
   const featureTemplate = resolve(__dirname, './src/templates/feature.js');
   // Redirect /index.html to root.
   createRedirect({
@@ -207,11 +205,18 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const allDocs = await graphql(`
     {
-      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/docs/" } }) {
+      allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/docs/" }
+          fields: { slug: { nin: ["/api", "/faqs"] } }
+        }
+        sort: { fields: [fileAbsolutePath], order: [ASC] }
+      ) {
         edges {
           node {
             fields {
               slug
+              title
             }
           }
         }
@@ -223,47 +228,23 @@ exports.createPages = async ({ graphql, actions }) => {
 
     throw Error(allDocs.errors);
   }
-  allDocs.data.allMarkdownRemark.edges.forEach(
-    ({
-      node: {
-        fields: { slug },
+  allDocs.data.allMarkdownRemark.edges.forEach(({ node }, index) => {
+    const {
+      fields: { slug },
+    } = node;
+    const all = allDocs.data.allMarkdownRemark.edges;
+    const prev = index === 0 ? {} : all[index - 1].node;
+    const next = index === all.length - 1 ? {} : all[index + 1].node;
+    createPage({
+      path: `docs${slug}`,
+      component: docsTemplate,
+      context: {
+        slug,
+        prev,
+        next,
       },
-    }) => {
-      createPage({
-        path: `docs${slug}`,
-        component: docsTemplate,
-        context: {
-          slug,
-        },
-      });
-    }
-  );
-
-  // JOBS
-
-  const allJobs = await graphql(`
-    {
-      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/jobs/" } }) {
-        edges {
-          node {
-            id
-            frontmatter {
-              slug
-            }
-          }
-        }
-      }
-    }
-  `);
-  if (allJobs.data) {
-    allJobs.data.allMarkdownRemark.edges.forEach(edge => {
-      createPage({
-        path: 'job/' + edge.node.frontmatter.slug,
-        component: jobTemplate,
-        context: { id: edge.node.id },
-      });
     });
-  }
+  });
 
   // FEATURES
 

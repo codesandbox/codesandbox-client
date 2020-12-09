@@ -20,6 +20,10 @@ aliases:
       - packages/notifications/lib
       - packages/template-icons/lib
       - packages/sse-hooks/dist
+      - packages/sandpack-core/lib
+      - packages/browser-eslint-rules/lib
+      - packages/vue3-browser-compiler/lib
+      - packages/vue3-transpiler/lib
       - standalone-packages/codesandbox-browserfs/dist
       - standalone-packages/codesandbox-browserfs/build
       - standalone-packages/vscode-textmate/out
@@ -27,12 +31,12 @@ aliases:
 
   - &restore_deps_cache
     keys:
-      - v36-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - v36-dependency-cache-{{ .Branch }}
-      - v36-dependency-cache
+      - v37-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v37-dependency-cache-{{ .Branch }}
+      - v37-dependency-cache
 
   - &save_deps_cache
-    key: v36-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    key: v37-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
     paths:
       - node_modules
       - packages/app/node_modules
@@ -50,54 +54,58 @@ aliases:
       - packages/react-embed/node_modules
       - packages/sandbox-hooks/node_modules
       - packages/sse-hooks/node_modules
+      - packages/sandpack-core/node_modules
+      - packages/browser-eslint-rules/node_modules
+      - packages/vue3-browser-compiler/node_modules
+      - packages/vue3-transpiler/node_modules
 
   - &restore_standalone_deps_cache
     keys:
-      - v36-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      - v37-standalone-dependency-cache-{{ .Branch }}-{{ checksum
         "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-      - v36-standalone-dependency-cache-{{ .Branch }}
-      - v36-standalone-dependency-cache
+      - v37-standalone-dependency-cache-{{ .Branch }}
+      - v37-standalone-dependency-cache
 
   - &save_standalone_deps_cache
     key:
-      v36-standalone-dependency-cache-{{ .Branch }}-{{ checksum
+      v37-standalone-dependency-cache-{{ .Branch }}-{{ checksum
       "standalone-packages/codesandbox-browserfs/yarn.lock" }}
     paths:
       - standalone-packages/codesandbox-browserfs/node_modules
 
   - &restore_prod_homepage_cache
-    key: v36-prod-homepage-build-cache-master
+    key: v37-prod-homepage-build-cache-master
 
   - &restore_prod_result
     key:
-      v36-prod-build-result-{{ .Environment.CIRCLE_BRANCH
+      v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
 
   - &save_prod_build_cache
     key:
-      v36-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
       }}-{{.Environment.CIRCLE_SHA1 }}
     paths:
       - packages/app/node_modules/.cache
 
   - &restore_prod_build_cache
     keys:
-      - v36-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
+      - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH
         }}-{{.Environment.CIRCLE_SHA1 }}
-      - v36-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
-      - v36-prod-build-cache-master-
+      - v37-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-
+      - v37-prod-build-cache-master-
 
   # To persist the images built by sharp
   - &save_prod_homepage_cache
     key:
-      v36-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v37-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./packages/homepage/public
 
   - &save_prod_result
     key:
-      v36-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
+      v37-prod-build-result-{{ .Environment.CIRCLE_BRANCH }}-{{
       .Environment.CIRCLE_SHA1 }}
     paths:
       - ./www
@@ -143,14 +151,14 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v36-source-cache-{{ .Branch }}-{{ .Revision }}
-            - v36-source-cache-{{ .Branch }}-
-            - v36-source-cache-
+            - v37-source-cache-{{ .Branch }}-{{ .Revision }}
+            - v37-source-cache-{{ .Branch }}-
+            - v37-source-cache-
 
       - checkout
 
       - save_cache:
-          key: v36-source-cache-{{ .Branch }}-{{ .Revision }}
+          key: v37-source-cache-{{ .Branch }}-{{ .Revision }}
           paths:
             - '.git'
   build_deps:

@@ -3,6 +3,7 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 /* eslint-enable import/default */
 import hookConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
+import setupScreenshotListener from 'sandbox-hooks/screenshot'
 import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { isStandalone } from 'codesandbox-api';
 
@@ -13,7 +14,7 @@ for (let i = 0; i < 3; i++) {
 
   // Warm up the babel worker
   worker.postMessage({
-    type: 'compiler',
+    type: 'warmup',
     path: 'test.js',
     code: 'const a = "b"',
     config: { presets: ['env'] },
@@ -27,4 +28,5 @@ if (!isStandalone) {
   setupHistoryListeners();
   hookConsole();
   listenForPreviewSecret();
+  setupScreenshotListener()
 }

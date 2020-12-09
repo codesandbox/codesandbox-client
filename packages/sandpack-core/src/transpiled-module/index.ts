@@ -1,0 +1,1 @@
+export * from './transpiled-module';

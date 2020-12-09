@@ -1,56 +1,53 @@
-import { sortBy } from 'lodash-es';
-import isSameWeek from 'date-fns/isSameWeek';
+import {
+  SandboxFragmentDashboardFragment as Sandbox,
+  RepoFragmentDashboardFragment as Repo,
+  Team,
+  TemplateFragmentDashboardFragment as Template,
+  NpmRegistryFragment,
+} from 'app/graphql/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
-import { Derive } from 'app/overmind';
-import {
-  Team,
-  SandboxFragmentDashboardFragment as Sandbox,
-  TemplateFragmentDashboardFragment as Template,
-  SidebarCollectionDashboardFragment as Collection,
-} from 'app/graphql/types';
+import isSameWeek from 'date-fns/isSameWeek';
+import { sortBy } from 'lodash-es';
+import { zonedTimeToUtc } from 'date-fns-tz';
+import { derived } from 'overmind';
 
-export type OrderBy = {
-  field: string;
-  order: 'desc' | 'asc';
+import { DELETE_ME_COLLECTION, OrderBy } from './types';
+
+export type DashboardSandboxStructure = {
+  DRAFTS: Sandbox[] | null;
+  TEMPLATES: Template[] | null;
+  DELETED: Sandbox[] | null;
+  RECENT: Sandbox[] | null;
+  SEARCH: Sandbox[] | null;
+  TEMPLATE_HOME: Template[] | null;
+  RECENT_HOME: Sandbox[] | null;
+  ALL: {
+    [path: string]: Sandbox[];
+  } | null;
+  REPOS: {
+    [path: string]: {
+      branch: string;
+      name: string;
+      owner: string;
+      lastEdited: Date;
+      sandboxes: Repo[];
+    };
+  } | null;
 };
 
-export type DELETE_ME_COLLECTION = Collection & {
-  name: string;
-  level: number;
-  parent: string;
-  sandboxes: number;
-};
-
-export enum sandboxesTypes {
-  DRAFTS = 'DRAFTS',
-  TEMPLATES = 'TEMPLATES',
-  DELETED = 'DELETED',
-  RECENT = 'RECENT',
-  START_PAGE = 'START_PAGE',
-  TEMPLATE_START_PAGE = 'TEMPLATE_START_PAGE',
-  RECENT_START_PAGE = 'RECENT_START_PAGE',
-  ALL = 'ALL',
-  SEARCH = 'SEARCH',
-}
-
-type State = {
-  sandboxes: {
-    DRAFTS: Sandbox[] | null;
-    TEMPLATES: Template[] | null;
-    DELETED: Sandbox[] | null;
-    RECENT: Sandbox[] | null;
-    SEARCH: Sandbox[] | null;
-    TEMPLATE_START_PAGE: Template[] | null;
-    RECENT_START_PAGE: Sandbox[] | null;
-    ALL: {
-      [path: string]: Sandbox[];
-    } | null;
+export type State = {
+  sandboxes: DashboardSandboxStructure;
+  teams: Array<
+    { __typename?: 'Team' } & Pick<
+      Team,
+      'id' | 'name' | 'avatarUrl' | 'userAuthorizations' | 'settings'
+    >
+  >;
+  workspaceSettings: {
+    npmRegistry: NpmRegistryFragment | null;
   };
-  teams: Array<{ __typename?: 'Team' } & Pick<Team, 'id' | 'name'>>;
   allCollections: DELETE_ME_COLLECTION[] | null;
-  activeTeam: string | null;
-  activeTeamInfo: any | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
   isDragging: boolean;
@@ -60,93 +57,91 @@ type State = {
     blacklistedTemplates: string[];
     search: string;
   };
-  isTemplateSelected: Derive<State, (templateName: string) => boolean>;
-  getFilteredSandboxes: Derive<State, (sandboxes: Sandbox[]) => Sandbox[]>;
-  recentSandboxesByTime: Derive<
-    State,
-    {
+  isTemplateSelected: (templateName: string) => boolean;
+  getFilteredSandboxes: (
+    sandboxes: Array<Sandbox | Repo | Template['sandbox']>
+  ) => Sandbox[];
+  recentSandboxesByTime: {
+    day: Sandbox[];
+    week: Sandbox[];
+    month: Sandbox[];
+    older: Sandbox[];
+  };
+  deletedSandboxesByTime: {
+    week: Sandbox[];
+    older: Sandbox[];
+  };
+};
+
+export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
+  DRAFTS: null,
+  TEMPLATES: null,
+  DELETED: null,
+  RECENT: null,
+  SEARCH: null,
+  TEMPLATE_HOME: null,
+  RECENT_HOME: null,
+  ALL: null,
+  REPOS: null,
+};
+
+export const state: State = {
+  sandboxes: DEFAULT_DASHBOARD_SANDBOXES,
+  viewMode: 'grid',
+  allCollections: null,
+  teams: [],
+  workspaceSettings: {
+    npmRegistry: null,
+  },
+  recentSandboxesByTime: derived(({ sandboxes }: State) => {
+    const recentSandboxes = sandboxes.RECENT;
+
+    const base: {
       day: Sandbox[];
       week: Sandbox[];
       month: Sandbox[];
       older: Sandbox[];
-    }
-  >;
-  deletedSandboxesByTime: Derive<
-    State,
-    {
-      week: Sandbox[];
-      older: Sandbox[];
-    }
-  >;
-};
-
-export const state: State = {
-  sandboxes: {
-    DRAFTS: null,
-    TEMPLATES: null,
-    DELETED: null,
-    RECENT: null,
-    TEMPLATE_START_PAGE: null,
-    RECENT_START_PAGE: null,
-    ALL: null,
-    SEARCH: null,
-  },
-  viewMode: 'grid',
-  allCollections: null,
-  activeTeam: null,
-  activeTeamInfo: null,
-  teams: [],
-  recentSandboxesByTime: ({ sandboxes }) => {
-    const recentSandboxes = sandboxes.RECENT;
+    } = {
+      day: [],
+      week: [],
+      month: [],
+      older: [],
+    };
     if (!recentSandboxes) {
-      return {
-        day: [],
-        week: [],
-        month: [],
-        older: [],
-      };
+      return base;
     }
 
     const noTemplateSandboxes = recentSandboxes.filter(s => !s.customTemplate);
     const timeSandboxes = noTemplateSandboxes.reduce(
-      (accumulator, currentValue: any) => {
+      (accumulator, currentValue) => {
         if (!currentValue.updatedAt) return accumulator;
-        if (isSameDay(new Date(currentValue.updatedAt), new Date())) {
-          // these errors make no sense
-          // @ts-ignore
+        const date = zonedTimeToUtc(currentValue.updatedAt, 'Etc/UTC');
+        if (isSameDay(date, new Date())) {
           accumulator.day.push(currentValue);
 
           return accumulator;
         }
-        if (isSameWeek(new Date(currentValue.updatedAt), new Date())) {
-          // @ts-ignore
+        if (isSameWeek(date, new Date())) {
           accumulator.week.push(currentValue);
 
           return accumulator;
         }
-        if (isSameMonth(new Date(currentValue.updatedAt), new Date())) {
-          // @ts-ignore
+        if (isSameMonth(date, new Date())) {
           accumulator.month.push(currentValue);
 
           return accumulator;
         }
 
-        // @ts-ignore
         accumulator.older.push(currentValue);
 
         return accumulator;
       },
-      {
-        day: [],
-        week: [],
-        month: [],
-        older: [],
-      }
+      base
     );
 
     return timeSandboxes;
-  },
-  deletedSandboxesByTime: ({ sandboxes }) => {
+  }),
+  deletedSandboxesByTime: derived(({ sandboxes }: State) => {
     const deletedSandboxes = sandboxes.DELETED;
     if (!deletedSandboxes)
       return {
@@ -176,7 +171,7 @@ export const state: State = {
     );
 
     return timeSandboxes;
-  },
+  }),
   selectedSandboxes: [],
   trashSandboxIds: [],
   isDragging: false,
@@ -188,37 +183,48 @@ export const state: State = {
     blacklistedTemplates: [],
     search: '',
   },
-  isTemplateSelected: ({ filters }) => templateName =>
-    !filters.blacklistedTemplates.includes(templateName),
-  getFilteredSandboxes: ({ orderBy, filters }) => sandboxes => {
-    const orderField = orderBy.field;
-    const orderOrder = orderBy.order;
-    const { blacklistedTemplates } = filters;
+  isTemplateSelected: derived(({ filters }: State) => (templateName: string) =>
+    !filters.blacklistedTemplates.includes(templateName)
+  ),
+  getFilteredSandboxes: derived(
+    ({ orderBy, filters }: State) => (
+      sandboxes: Array<Sandbox | Template['sandbox']>
+    ) => {
+      const orderField = orderBy.field;
+      const orderOrder = orderBy.order;
+      const { blacklistedTemplates } = filters;
 
-    const isDateField =
-      orderField === 'insertedAt' || orderField === 'updatedAt';
+      const isDateField =
+        orderField === 'insertedAt' || orderField === 'updatedAt';
 
-    let orderedSandboxes = (sortBy(sandboxes, s => {
-      if (isDateField) {
-        return +new Date(s[orderField]);
+      let orderedSandboxes = (sortBy(sandboxes, s => {
+        const sandbox = s!;
+        if (isDateField) {
+          return +zonedTimeToUtc(sandbox[orderField], 'Etc/UTC');
+        }
+
+        if (orderField === 'title') {
+          const field = sandbox.title || sandbox.alias || sandbox.id;
+          return field.toLowerCase();
+        }
+
+        if (orderField === 'views') {
+          return sandbox.viewCount;
+        }
+
+        return sandbox[orderField];
+      }) as Sandbox[]).filter(
+        x =>
+          x.source &&
+          x.source.template &&
+          blacklistedTemplates.indexOf(x.source.template) === -1
+      );
+
+      if (orderOrder === 'desc') {
+        orderedSandboxes = orderedSandboxes.reverse();
       }
 
-      if (orderField === 'title') {
-        return s.title || s.id;
-      }
-
-      return s[orderField];
-    }) as Sandbox[]).filter(
-      x =>
-        x.source &&
-        x.source.template &&
-        blacklistedTemplates.indexOf(x.source.template) === -1
-    );
-
-    if (orderOrder === 'desc') {
-      orderedSandboxes = orderedSandboxes.reverse();
+      return orderedSandboxes;
     }
-
-    return orderedSandboxes;
-  },
+  ),
 };

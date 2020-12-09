@@ -1,25 +1,39 @@
-import React, { FunctionComponent } from 'react';
+import { Collapsible, List, SidebarRow, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { motion } from 'framer-motion';
+import React, { FunctionComponent, useState } from 'react';
 
-import {
-  Collapsible,
-  Text,
-  SidebarRow,
-  List,
-  Button,
-} from '@codesandbox/components';
 import { Dependency } from './Dependency';
+import { AddDependency } from './AddDependency';
 
-export const Dependencies: FunctionComponent = () => {
+const Animated = ({ children, showMountAnimations }) => (
+  <motion.div
+    animate={{ opacity: 1, height: 'auto' }}
+    initial={showMountAnimations ? { opacity: 0, height: 0 } : null}
+    exit={{ opacity: 0, height: 0 }}
+    style={{ width: '100%', overflow: 'hidden' }}
+  >
+    {children}
+  </motion.div>
+);
+
+export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
+  readonly = false,
+}) => {
   const {
     actions: {
-      modalOpened,
       editor: { addNpmDependency, npmDependencyRemoved },
     },
     state: {
       editor: { parsedConfigurations },
     },
   } = useOvermind();
+  const [showMountAnimations, setShowMountAnimations] = useState(false);
+
+  React.useEffect(() => {
+    setShowMountAnimations(true);
+  }, [setShowMountAnimations]);
 
   if (!parsedConfigurations?.package) {
     return (
@@ -42,28 +56,33 @@ export const Dependencies: FunctionComponent = () => {
   const { dependencies = {} } = parsed;
 
   return (
-    <Collapsible title="Dependencies" defaultOpen>
-      <List marginBottom={2}>
+    <Collapsible
+      title="Dependencies"
+      defaultOpen
+      css={css({
+        'div[open]': {
+          overflow: 'visible',
+        },
+      })}
+    >
+      {!readonly && <AddDependency />}
+      <List>
         {Object.keys(dependencies)
           .sort()
           .map(dependency => (
-            <Dependency
-              dependencies={dependencies}
-              dependency={dependency}
-              key={dependency}
-              onRefresh={(name, version) => addNpmDependency({ name, version })}
-              onRemove={npmDependencyRemoved}
-            />
+            <Animated showMountAnimations={showMountAnimations}>
+              <Dependency
+                dependencies={dependencies}
+                dependency={dependency}
+                key={dependency}
+                onRefresh={(name, version) =>
+                  addNpmDependency({ name, version })
+                }
+                onRemove={npmDependencyRemoved}
+              />
+            </Animated>
           ))}
       </List>
-      <SidebarRow marginX={2}>
-        <Button
-          variant="secondary"
-          onClick={() => modalOpened({ modal: 'searchDependencies' })}
-        >
-          Add dependency
-        </Button>
-      </SidebarRow>
     </Collapsible>
   );
 };

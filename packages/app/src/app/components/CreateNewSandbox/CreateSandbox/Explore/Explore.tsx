@@ -9,7 +9,11 @@ import { ITemplateInfo } from '../TemplateList';
 import { DynamicWidthTemplateList } from '../TemplateList/DynamicWidthTemplateList';
 import { getTemplateInfosFromAPI } from '../utils/api';
 
-export const Explore = () => {
+interface ExploreProps {
+  collectionId?: string;
+}
+
+export const Explore: React.FC<ExploreProps> = ({ collectionId }) => {
   const [search, setSearch] = useState('');
   const [exploreTemplates, setExploreTemplates] = useState<ITemplateInfo[]>([]);
   const [loading, setLoading] = useState(false);
@@ -43,6 +47,7 @@ export const Explore = () => {
     };
   }, []);
 
+  const isLoading = (!exploreTemplates.length && !search) || loading;
   return (
     <>
       <Header>
@@ -55,16 +60,16 @@ export const Explore = () => {
           />
         </div>
       </Header>
-
       <Scrollable>
-        {loading ? (
-          <Loader />
-        ) : search ? (
+        {isLoading ? <Loader /> : null}
+
+        {search ? (
           <SearchResults search={search} />
         ) : (
           <DynamicWidthTemplateList
             forkOnOpen={false}
             templateInfos={exploreTemplates}
+            collectionId={collectionId}
           />
         )}
       </Scrollable>

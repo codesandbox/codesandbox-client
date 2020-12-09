@@ -1,0 +1,56 @@
+{
+	"name": "horizon-theme-vscode",
+	"version": "2.0.2",
+	"author": "Jonathan Olaleye <j.olaleye.o@gmail.com>",
+	"displayName": "Horizon Theme",
+	"description": "A beautifully warm dual theme for Visual Studio Code",
+	"publisher": "jolaleye",
+	"license": "MIT",
+	"icon": "logo.png",
+	"scripts": {
+		"build": "npm run build:dark && npm run build:bright",
+		"build:dark": "node src/dark/build",
+		"build:bright": "node src/bright/build"
+	},
+	"engines": {
+		"vscode": "^1.26.0"
+	},
+	"galleryBanner": {
+		"color": "#FCEAE5",
+		"theme": "light"
+	},
+	"categories": [
+		"Themes"
+	],
+	"keywords": [
+		"theme",
+		"dark",
+		"horizon",
+		"warm"
+	],
+	"contributes": {
+		"themes": [
+			{
+				"label": "Horizon",
+				"uiTheme": "vs-dark",
+				"path": "./themes/horizon.json"
+			}
+		]
+	},
+	"devDependencies": {
+		"mustache": "^3.0.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jolaleye/horizon-theme-vscode"
+	},
+	"homepage": "https://horizontheme.com/",
+	"bugs": {
+		"url": "https://github.com/jolaleye/horizon-theme-vscode/issues"
+	},
+	"__metadata": {
+		"id": "fcf0848c-96b3-487a-a655-01aed955a594",
+		"publisherId": "25219af3-1e18-4473-9b20-a231f88d9800",
+		"publisherDisplayName": "jolaleye"
+	}
+}

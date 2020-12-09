@@ -31,6 +31,7 @@ export const Title = styled(H2)`
   top: 180px;
   z-index: 2;
   max-width: 547px;
+
   margin: auto;
 
   ${props => props.theme.breakpoints.md} {
@@ -55,8 +56,7 @@ export const MacBookWrapper = styled.div`
 `;
 
 export const Titles = styled.h3`
-  font-style: normal;
-  font-weight: 500;
+  font-weight: 900;
   font-size: 2rem;
   line-height: 38px;
   text-align: center;
@@ -79,7 +79,8 @@ export const ArtWorkWrapper = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: ${props => props.bg};
+  background: url(${props => props.bg}) center;
+  background-size: cover;
   border: 1px solid ${props => props.theme.homepage.grey};
   box-sizing: border-box;
   border-radius: 4px;
@@ -156,6 +157,11 @@ export const TweetsWrapper = styled.div`
     position: absolute;
     margin-top: 2rem;
     z-index: 10;
+
+    ::-webkit-scrollbar {
+      display: none;
+      overflow-style: none;
+    }
 
     ${props => props.theme.breakpoints.sm} {
       display: none;

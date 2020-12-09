@@ -40,7 +40,7 @@ declare global {
 // @ts-ignore
 const oldamd = self.define.amd;
 (self as any).define.amd = null;
-(self as any).importScripts(`/static/browserfs9/browserfs.min.js`);
+(self as any).importScripts(`/static/browserfs12/browserfs.min.js`);
 (self as any).define.amd = oldamd;
 
 (self as any).BrowserFS = BrowserFS;

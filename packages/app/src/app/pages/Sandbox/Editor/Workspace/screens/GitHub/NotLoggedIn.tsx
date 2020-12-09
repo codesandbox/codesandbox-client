@@ -11,7 +11,7 @@ import { useOvermind } from 'app/overmind';
 
 export const NotLoggedIn = () => {
   const {
-    actions: { signInClicked },
+    actions: { toggleSignInModal },
   } = useOvermind();
 
   return (
@@ -23,8 +23,8 @@ export const NotLoggedIn = () => {
             commits and pull requests to it.
           </Text>
         </Stack>
-        <Button variant="primary" onClick={() => signInClicked()}>
-          Sign in with GitHub
+        <Button variant="primary" onClick={() => toggleSignInModal()}>
+          Sign in
         </Button>
       </Element>
     </Collapsible>

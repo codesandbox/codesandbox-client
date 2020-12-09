@@ -65,6 +65,8 @@ export type Module = {
   insertedAt: string;
   updatedAt: string;
   path: string;
+  uploadId?: string;
+  sha?: string;
   type: 'file';
 };
 
@@ -116,7 +118,6 @@ export type CurrentUser = {
   name: string | null;
   username: string;
   avatarUrl: string;
-  jwt: string | null;
   subscription: {
     since: string;
     amount: number;
@@ -129,6 +130,7 @@ export type CurrentUser = {
   };
   curatorAt: string;
   badges: Badge[];
+  provider: 'github' | 'google';
   integrations: {
     zeit: {
       token: string;
@@ -278,11 +280,48 @@ export type GitCommit = {
 };
 
 export type GitPr = {
-  git: GitInfo;
-  newBranch: string;
-  sha: string;
-  url: string;
-  prURL: string;
+  number: number;
+  repo: string;
+  username: string;
+  branch: string;
+  merged: boolean;
+  state: string;
+  mergeable: boolean;
+  mergeableState: string;
+  commitSha: string;
+  baseCommitSha: string;
+  rebaseable: boolean;
+  commits: number;
+  additions: number;
+  deletions: number;
+  changed_files: number;
+};
+
+export type GitFileCompare = {
+  additions: number;
+  changes: number;
+  deletions: number;
+  filename: string;
+  status: 'added' | 'modified' | 'removed';
+  isBinary: boolean;
+  content?: string;
+};
+
+export enum SandboxGitState {
+  SYNCED = 'synced',
+  CONFLICT_SOURCE = 'conflict in source',
+  CONFLICT_PR_BASE = 'conflict in pr base',
+  OUT_OF_SYNC_SOURCE = 'out of sync with source',
+  OUT_OF_SYNC_PR_BASE = 'out of sync with pr base',
+  SYNCING = 'syncing',
+  RESOLVED_SOURCE = 'resolved source',
+  RESOLVED_PR_BASE = 'resolved pr base',
+}
+
+export type UserQuery = {
+  id: string;
+  avatarUrl: string;
+  username: string;
 };
 
 export type PopularSandboxes = {
@@ -309,6 +348,14 @@ export type SandboxAuthor = {
   avatarUrl: string;
   badges: Badge[];
   subscriptionSince: string | null;
+  subscriptionPlan: 'pro' | 'patron';
+  personalWorkspaceId: string;
+};
+
+export type NpmRegistry = {
+  enabledScopes: string[];
+  limitToScopes: boolean;
+  registryUrl: string;
 };
 
 export enum CommentsFilterOption {
@@ -316,6 +363,37 @@ export enum CommentsFilterOption {
   OPEN = 'Open',
   RESOLVED = 'Resolved',
 }
+
+type PackageVersionInfo = {
+  name: string;
+  description: string;
+  version: string;
+  author: string;
+  bugs: unknown | null;
+  dependencies: unknown | null;
+  devDependencies: unknown | null;
+  peerDependencies: unknown | null;
+  main: string;
+  scripts: {
+    [script: string]: string;
+  };
+  dist: {
+    integrity: string;
+    shasum: string;
+    tarball: string;
+  };
+};
+
+export type NpmManifest = {
+  name: string;
+  description: string;
+  'dist-tags': {
+    [tag: string]: string;
+  };
+  versions: {
+    [version: string]: PackageVersionInfo;
+  };
+};
 
 export type Sandbox = {
   id: string;
@@ -328,6 +406,7 @@ export type Sandbox = {
   userLiked: boolean;
   modules: Module[];
   directories: Directory[];
+  npmRegistries: NpmRegistry[];
   featureFlags: {
     [key: string]: boolean;
   };
@@ -352,6 +431,7 @@ export type Sandbox = {
   team: {
     id: string;
     name: string;
+    avatarUrl: string | undefined;
   } | null;
   roomId: string | null;
   privacy: 0 | 1 | 2;
@@ -360,6 +440,7 @@ export type Sandbox = {
   git: GitInfo | null;
   tags: string[];
   isFrozen: boolean;
+  isSse?: boolean;
   environmentVariables: {
     [key: string]: string;
   } | null;
@@ -375,7 +456,10 @@ export type Sandbox = {
   template: TemplateType;
   entry: string;
   originalGit: GitInfo | null;
+  baseGit: GitInfo | null;
+  prNumber: number | null;
   originalGitCommitSha: string | null;
+  baseGitCommitSha: string | null;
   originalGitChanges: {
     added: string[];
     modified: string[];
@@ -454,6 +538,7 @@ export type PackageJSON = {
   name: string;
   version: string;
   description?: string;
+  alias?: { [key: string]: string };
   keywords?: string[];
   main?: string;
   module?: string;
@@ -504,10 +589,12 @@ export enum WindowOrientation {
 
 export type Profile = {
   viewCount: number;
+  githubUsername: string | null;
   username: string;
   subscriptionSince: string;
   showcasedSandboxShortid: string;
   sandboxCount: number;
+  templateCount: number;
   receivedLikeCount: number;
   name: string;
   id: string;
@@ -515,6 +602,15 @@ export type Profile = {
   forkedCount: number;
   badges: Badge[];
   avatarUrl: string;
+  bio?: string;
+  socialLinks?: string[];
+  featuredSandboxes: Sandbox[];
+  personalWorkspaceId: string;
+  teams: Array<{
+    id: string;
+    name: string;
+    avatarUrl?: string;
+  }>;
 };
 
 export type UserSandbox = {
@@ -546,7 +642,7 @@ export type ServerPort = {
   name?: string;
 };
 
-export type ZeitUser = {
+export type VercelUser = {
   uid: string;
   email: string;
   name: string;
@@ -568,23 +664,23 @@ export type ZeitUser = {
   }>;
 };
 
-export type ZeitCreator = {
+export type VercelCreator = {
   uid: string;
 };
 
-export type ZeitScale = {
+export type VercelScale = {
   current: number;
   min: number;
   max: number;
 };
 
-export type ZeitAlias = {
+export type VercelAlias = {
   alias: string;
   created: string;
   uid: string;
 };
 
-export enum ZeitDeploymentState {
+export enum VercelDeploymentState {
   DEPLOYING = 'DEPLOYING',
   INITIALIZING = 'INITIALIZING',
   DEPLOYMENT_ERROR = 'DEPLOYMENT_ERROR',
@@ -596,27 +692,27 @@ export enum ZeitDeploymentState {
   ERROR = 'ERROR',
 }
 
-export enum ZeitDeploymentType {
+export enum VercelDeploymentType {
   'NPM',
   'DOCKER',
   'STATIC',
   'LAMBDAS',
 }
 
-export type ZeitDeployment = {
+export type VercelDeployment = {
   uid: string;
   name: string;
   url: string;
   created: number;
-  state: ZeitDeploymentState;
+  state: VercelDeploymentState;
   instanceCount: number;
-  alias: ZeitAlias[];
-  scale: ZeitScale;
-  createor: ZeitCreator;
-  type: ZeitDeploymentType;
+  alias: VercelAlias[];
+  scale: VercelScale;
+  createor: VercelCreator;
+  type: VercelDeploymentType;
 };
 
-export type ZeitConfig = {
+export type VercelConfig = {
   name?: string;
   alias?: string;
 };
@@ -659,11 +755,20 @@ export type DiffTab = {
 
 export type Tabs = Array<ModuleTab | DiffTab>;
 
-export type GitChanges = {
+export type GitPathChanges = {
   added: string[];
   deleted: string[];
   modified: string[];
-  rights: string;
+};
+
+export type GitChanges = {
+  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'base64' }>;
+  deleted: string[];
+  modified: Array<{
+    path: string;
+    content: string;
+    encoding: 'utf-8' | 'base64';
+  }>;
 };
 
 export type EnvironmentVariable = {

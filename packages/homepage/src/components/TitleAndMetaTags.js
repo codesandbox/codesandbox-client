@@ -1,8 +1,17 @@
 import React from 'react';
 import Helmet from 'react-helmet';
+import { host } from '@codesandbox/common/lib/utils/url-generator';
+
+const notRelative = image => {
+  if (image.startsWith('/')) {
+    return `https://${host()}${image}`;
+  }
+
+  return image;
+};
 
 export default ({
-  title = 'CodeSandbox: Online IDE for Rapid Web Development',
+  title = 'CodeSandbox: Online Code Editor and IDE for Rapid Web Development',
   description = 'CodeSandbox is an online code editor and prototyping tool that makes creating and sharing web apps faster',
   image = 'https://codesandbox.io/static/img/banner.png',
 }) => (
@@ -13,8 +22,8 @@ export default ({
       { name: 'description', content: description },
       { name: 'og:description', content: description },
       { name: 'twitter:description', content: description },
-      { name: 'og:image', content: image },
-      { name: 'twitter:image:src', content: image },
+      { name: 'og:image', content: notRelative(image) },
+      { name: 'twitter:image:src', content: notRelative(image) },
       {
         name: 'keywords',
         content:

@@ -117,10 +117,11 @@ dependency and shift through the examples sandboxes.
 
 ![Deploy with the big button](./images/6.png)
 
-We have a deployment integration with [Now](https://zeit.co/now). When you want
-to create a production version of your sandbox you can click 'Deploy Now'. This
-will deploy the sandbox, install the `node_modules` and start it under a new
-URL. We then give this URL back which you can alias to any domain that you like.
+We have a deployment integration with [Vercel](https://vercel.com). When you
+want to create a production version of your sandbox you can click 'Deploy with
+Vercel'. This will deploy the sandbox, install the `node_modules` and start it
+under a new URL. We then give this URL back which you can alias to any domain
+that you like.
 
 We are also adding support for other deployment providers in the near future!
 

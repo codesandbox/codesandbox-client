@@ -9,7 +9,6 @@ type ResultsProps = InfiniteHitsProvided<AlgoliaSandboxHit> & {};
 
 const Results = (props: ResultsProps) => {
   const { hits } = props;
-
   const bottomDetectionEl = React.useRef<HTMLDivElement>();
 
   useEffect(() => {

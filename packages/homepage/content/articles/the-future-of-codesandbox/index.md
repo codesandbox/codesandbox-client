@@ -209,15 +209,15 @@ all sandboxes using this library. We're hoping to turn CodeSandbox into a
 central place for finding React examples. This feature will also allow you to
 tag sandboxes.
 
-#### Deploy with ZEIT Now
+#### Deploy with Vercel
 
-We're also working together with [ZEIT](https://zeit.co) to integrate
-[Now](https://zeit.co/now) with sandboxes. There'll be a 'Deploy to Now' which
-will deploy a production-ready version of your application using the magic of
-Now. This is really cool, because now (pun intended), you'll finally be able to
-build applications on CodeSandbox from start to finish. This has already been
-done before, but the deploy step was missing. The people at ZEIT are incredibly
-helpful and it's really great to see that we're sharing the same vision.
+We're also working together with [Vercel](https://vercel.com) to integrate
+deployment with sandboxes. There'll be a 'Deploy with Vercel' which will deploy
+a production-ready version of your application using the magic of Vercel. This
+is really cool, because now, you'll finally be able to build applications on
+CodeSandbox from start to finish. This has already been done before, but the
+deploy step was missing. The people at Vercel are incredibly helpful and it's
+really great to see that we're sharing the same vision.
 
 #### Static file support
 

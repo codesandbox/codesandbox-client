@@ -11,7 +11,8 @@ tweetText: All our web workshops are built with it!
 tweetJob: Founder of Vue Vixens
 tweetName: Jen Looper
 tweetHandle: jenlooper
-bgColor: BF5AF2
+bgColor: FBCC43
+bgImage: ./yellow.jpg
 coverImage: ./onboarding.svg
 coverReversed: true
 coverSmaller: true
@@ -52,7 +53,7 @@ environments until later.
 
 ### Bake-in best practices
 
-Create team templates which provide starting points for new projects,
+Create workspace templates which provide starting points for new projects,
 pre-configured with styles, libraries, and settings that work exactly how you
 need them to.
 

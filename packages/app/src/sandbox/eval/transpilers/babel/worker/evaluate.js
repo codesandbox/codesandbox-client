@@ -5,9 +5,12 @@ import * as crypto from 'crypto';
 import * as util from 'util';
 import { dirname, basename } from 'path';
 import type FSType from 'fs';
+import isESModule from 'sandbox/eval/utils/is-es-module';
+import evaluateCode from 'sandpack-core/lib/runner/eval';
 import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
 import { packageFilter } from '../../../utils/resolve-utils';
-import evaluateCode from '../../../loaders/eval';
+import { patchedResolve } from './utils/resolvePatch';
+import { getBabelTypes } from './utils/babelTypes';
 
 let cache = {};
 let cachedPaths = {};
@@ -16,7 +19,6 @@ let transpileBeforeExec = detectOldBrowser();
 export const resetCache = () => {
   cache = {};
   cachedPaths = {};
-  transpileBeforeExec = detectOldBrowser();
 };
 
 export default function evaluate(
@@ -52,6 +54,22 @@ export default function evaluate(
       return {};
     }
 
+    if (requirePath === 'os') {
+      return {
+        homedir() {
+          return '/';
+        },
+      };
+    }
+
+    if (requirePath === 'module') {
+      return {};
+    }
+
+    if (requirePath === 'resolve') {
+      return patchedResolve();
+    }
+
     if (requirePath === 'babel-register') {
       transpileBeforeExec = true;
       return () => {};
@@ -67,6 +85,10 @@ export default function evaluate(
           availablePlugins,
           availablePresets
         );
+    }
+
+    if (requirePath === '@babel/types') {
+      return getBabelTypes();
     }
 
     const requiredNativeModule = BFSRequire(requirePath);
@@ -114,7 +136,7 @@ export default function evaluate(
         filename: path,
         extensions: ['.js', '.json'],
         moduleDirectory: ['node_modules'],
-        packageFilter,
+        packageFilter: packageFilter(),
       });
 
     cachedPaths[dirName][requirePath] = resolvedPath;
@@ -155,31 +177,9 @@ export default function evaluate(
   }
   finalCode += `\n//# sourceURL=${location.origin}${path}`;
 
-  if (transpileBeforeExec) {
+  if (transpileBeforeExec || isESModule(finalCode)) {
     const { code: transpiledCode } = self.Babel.transform(finalCode, {
-      presets: ['es2015', 'react', 'stage-0'],
-      plugins: [
-        'transform-async-to-generator',
-        'transform-object-rest-spread',
-        'transform-decorators-legacy',
-        'transform-class-properties',
-        // Polyfills the runtime needed for async/await and generators
-        [
-          'transform-runtime',
-          {
-            helpers: false,
-            polyfill: false,
-            regenerator: true,
-          },
-        ],
-        [
-          'transform-regenerator',
-          {
-            // Async functions are converted to generators by babel-preset-env
-            async: false,
-          },
-        ],
-      ],
+      presets: ['env'],
     });
 
     finalCode = transpiledCode;
@@ -210,6 +210,7 @@ export function evaluateFromPath(
     filename: currentPath,
     extensions: ['.js', '.json'],
     moduleDirectory: ['node_modules'],
+    packageFilter: packageFilter(),
   });
 
   const code = fs.readFileSync(resolvedPath).toString();

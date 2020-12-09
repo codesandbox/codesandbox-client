@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Element } from '../Element';
@@ -26,7 +27,9 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   dateTime?: string;
 }
 
-export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
+export const Text = styled(Element).attrs(p => ({
+  as: ((p as unknown) as { as: string }).as || 'span',
+}))<ITextProps>(
   ({
     size,
     fontStyle,
@@ -41,6 +44,7 @@ export const Text = styled(Element).attrs({ as: 'span' })<ITextProps>(
       fontSize: size || 'inherit', // from theme.fontSizes
       textAlign: align || 'left',
       fontWeight: weight || null, // from theme.fontWeights
+      lineHeight: 'normal',
       fontStyle: fontStyle || null, // from theme.fontWeights
       display: block || maxWidth ? 'block' : 'inline',
       color: variants[variant],

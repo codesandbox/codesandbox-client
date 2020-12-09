@@ -1549,6 +1549,71 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "akash-joshi",
+      "name": "Akash Joshi",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22196279?v=4",
+      "profile": "http://akashj.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "layershifter",
+      "name": "Oleksandr Fediashov",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/14183168?v=4",
+      "profile": "https://twitter.com/layershifter",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "tehnuge",
+      "name": "John D.",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1928236?v=4",
+      "profile": "https://github.com/tehnuge",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "NinoMaj",
+      "name": "Nino",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/20380632?v=4",
+      "profile": "https://github.com/NinoMaj",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "saurabhdaware",
+      "name": "Saurabh Daware",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/30949385?v=4",
+      "profile": "https://saurabhdaware.in/",
+      "contributions": [
+        "code",
+        "plugin"
+      ]
+    },
+    {
+      "login": "pablopunk",
+      "name": "Pablo Varela",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4324982?v=4",
+      "profile": "https://pablo.pink",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ryanpwaldon",
+      "name": "Ryan Waldon",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/12480362?v=4",
+      "profile": "https://github.com/ryanpwaldon",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

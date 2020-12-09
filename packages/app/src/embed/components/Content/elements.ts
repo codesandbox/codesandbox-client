@@ -20,8 +20,8 @@ export const Container = styled.div(
 export const Tabs = styled.div(
   css({
     display: 'flex',
-    height: 32,
-    minHeight: 32,
+    height: 36,
+    minHeight: 34,
     backgroundColor: 'tab.inactiveBackground',
     /* shadow instead of border to align with the border of the child tab */
     boxShadow: theme => 'inset 0px -1px 0 ' + theme['sideBar.border'],
@@ -43,11 +43,17 @@ export const Tabs = styled.div(
   })
 );
 
-export const MenuInTabs = styled.span(
+export const MenuInTabs = styled.button(
   css({
     display: 'inline-flex',
     alignItems: 'center',
     height: '100%',
+    margin: 0,
+    padding: 0,
     paddingLeft: 2,
+    cursor: 'pointer',
+    backgroundColor: 'transparent',
+    outline: 'none',
+    border: 'none',
   })
 );

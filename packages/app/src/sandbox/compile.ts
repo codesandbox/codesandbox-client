@@ -11,7 +11,18 @@ import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
+import {
+  consumeCache,
+  deleteAPICache,
+  saveCache,
+} from 'sandpack-core/lib/cache';
+import { Module } from 'sandpack-core/lib/types/module';
+import * as metrics from '@codesandbox/common/lib/utils/metrics';
+import { NpmRegistry } from '@codesandbox/common/lib/types';
+import { Manager, TranspiledModule } from 'sandpack-core';
 
+import { loadDependencies, NPMDependencies } from 'sandpack-core/lib/npm';
+import { NpmRegistryFetcher } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
 import {
   evalBoilerplates,
   findBoilerplate,
@@ -20,15 +31,10 @@ import {
 import defaultBoilerplates from './boilerplates/default-boilerplates';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import getPreset from './eval';
-import { consumeCache, deleteAPICache, saveCache } from './eval/cache';
-import { Module } from './eval/types/module';
-import Manager from './eval/manager';
-import TranspiledModule from './eval/transpiled-module';
 import handleExternalResources from './external-resources';
-import { loadDependencies, NPMDependencies } from './npm';
-import { resetScreen } from './status-screen';
+import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
-import * as metrics from './utils/metrics';
+import { SCRIPT_VERSION } from '.';
 
 let initializedResizeListener = false;
 let manager: Manager | null = null;
@@ -60,11 +66,8 @@ export function getHTMLParts(html: string) {
   return { head: '', body: html };
 }
 
-function sendTestCount(
-  givenManager: Manager,
-  modules: { [path: string]: Module }
-) {
-  const { testRunner } = givenManager;
+let testRunner: import('./eval/tests/jest-lite').default | undefined;
+function sendTestCount(modules: { [path: string]: Module }) {
   const tests = testRunner.findTests(modules);
 
   dispatch({
@@ -293,15 +296,13 @@ function getDependencies(
   // packager will only include the package.json for it.
   if (isBabel7(d, devDependencies)) {
     returnedDependencies['@babel/runtime'] =
-      returnedDependencies['@babel/runtime'] || '7.3.1';
+      returnedDependencies['@babel/runtime'] || '^7.3.1';
   } else {
     returnedDependencies['babel-runtime'] =
       returnedDependencies['babel-runtime'] || '6.26.0';
   }
 
-  // This is used for cache busting
-  returnedDependencies.csbbust = '1.0.0';
-  returnedDependencies['node-libs-browser'] = '2.2.0';
+  returnedDependencies['node-libs-browser'] = '2.2.1';
 
   preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {
@@ -317,16 +318,44 @@ function initializeManager(
   template: TemplateType,
   modules: { [path: string]: Module },
   configurations: ParsedConfigurationFiles,
-  { hasFileResolver = false }: { hasFileResolver?: boolean } = {}
+  {
+    hasFileResolver = false,
+    customNpmRegistries = [],
+  }: { hasFileResolver?: boolean; customNpmRegistries?: NpmRegistry[] } = {}
 ) {
-  return new Manager(
+  const newManager = new Manager(
     sandboxId,
     getPreset(template, configurations.package.parsed),
     modules,
     {
       hasFileResolver,
+      versionIdentifier: SCRIPT_VERSION,
     }
   );
+
+  // Add the custom registered npm registries
+  customNpmRegistries.forEach(registry => {
+    const cleanUrl = registry.registryUrl.replace(/\/$/, '');
+
+    const options = registry.limitToScopes
+      ? {
+          scopeWhitelist: registry.enabledScopes,
+          // With our custom proxy on the server we want to handle downloading
+          // the tarball. So we proxy it.
+          provideTarballUrl: (name: string, version: string) =>
+            `${cleanUrl}/${name.replace('/', '%2f')}/${version}`,
+        }
+      : {};
+
+    const protocol = new NpmRegistryFetcher(cleanUrl, options);
+
+    newManager.prependNpmProtocolDefinition({
+      protocol,
+      condition: protocol.condition,
+    });
+  });
+
+  return newManager;
 }
 
 async function updateManager(
@@ -395,6 +424,7 @@ inject();
 interface CompileOptions {
   sandboxId: string;
   modules: { [path: string]: Module };
+  customNpmRegistries?: NpmRegistry[];
   externalResources: string[];
   hasActions?: boolean;
   isModuleView?: boolean;
@@ -404,12 +434,14 @@ interface CompileOptions {
   skipEval?: boolean;
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
+  clearConsoleDisabled?: boolean;
 }
 
 async function compile({
   sandboxId,
   modules,
   externalResources,
+  customNpmRegistries = [],
   hasActions,
   isModuleView = false,
   template,
@@ -418,10 +450,18 @@ async function compile({
   skipEval = false,
   hasFileResolver = false,
   disableDependencyPreprocessing = false,
+  clearConsoleDisabled = false,
 }: CompileOptions) {
-  dispatch({
-    type: 'start',
-  });
+  if (firstLoad) {
+    // Clear the console on first load, but don't clear the console on HMR updates
+    if (!clearConsoleDisabled) {
+      // @ts-ignore Chrome behaviour
+      console.clear('__internal__'); // eslint-disable-line no-console
+      dispatch({ type: 'clear-console' });
+    }
+  }
+
+  dispatch({ type: 'start' });
   metrics.measure('compilation');
 
   const startTime = Date.now();
@@ -476,6 +516,7 @@ async function compile({
       manager ||
       initializeManager(sandboxId, template, modules, configurations, {
         hasFileResolver,
+        customNpmRegistries,
       });
 
     let dependencies: NPMDependencies = getDependencies(
@@ -487,12 +528,42 @@ async function compile({
     dependencies = await manager.preset.processDependencies(dependencies);
 
     metrics.measure('dependencies');
+
+    if (firstLoad) {
+      setScreen({
+        type: 'loading',
+        showFullScreen: firstLoad,
+        text: 'Installing Dependencies',
+      });
+    }
+
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
+      ({ done, total, remainingDependencies }) => {
+        const progress = total - done;
+        if (done === total) {
+          return;
+        }
+
+        if (progress <= 6) {
+          setScreen({
+            type: 'loading',
+            showFullScreen: firstLoad,
+            text: `Installing Dependencies ${progress}/${total} (${remainingDependencies.join(
+              ','
+            )})`,
+          });
+        } else {
+          setScreen({
+            type: 'loading',
+            showFullScreen: firstLoad,
+            text: `Installing Dependencies ${progress}/${total}`,
+          });
+        }
+      },
       {
         disableExternalConnection: disableDependencyPreprocessing,
         resolutions: parsedPackageJSON.resolutions,
-        showFullScreen: firstLoad,
       }
     );
     metrics.endMeasure('dependencies', { displayName: 'Dependencies' });
@@ -541,6 +612,12 @@ async function compile({
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
 
+    setScreen({
+      type: 'loading',
+      text: 'Transpiling Modules...',
+      showFullScreen: firstLoad,
+    });
+
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
 
@@ -577,9 +654,8 @@ async function compile({
       await manager.preset.preEvaluate(manager, updatedModules);
 
       if (!manager.webpackHMR) {
-        const htmlModulePath = templateDefinition
-          .getHTMLEntries(configurations)
-          .find(p => Boolean(modules[p]));
+        const htmlEntries = templateDefinition.getHTMLEntries(configurations);
+        const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
         const htmlModule = modules[htmlModulePath];
 
         const { head, body } = getHTMLParts(
@@ -597,11 +673,12 @@ async function compile({
           manager.clearCompiledCache();
         }
 
-        if (
-          !manager.preset.htmlDisabled ||
-          !firstLoad ||
-          process.env.LOCAL_SERVER
-        ) {
+        // Whether the server has provided the HTML file. If that isn't the case
+        // we have to fall back to setting `document.body.innerHTML`, which isn't
+        // preferred.
+        const serverProvidedHTML =
+          modules[htmlEntries[0]] || manager.preset.htmlDisabled;
+        if (!serverProvidedHTML || !firstLoad || process.env.LOCAL_SERVER) {
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run.
           document.body.innerHTML = body;
@@ -687,8 +764,13 @@ async function compile({
 
     setTimeout(async () => {
       try {
-        await manager.initializeTestRunner();
-        sendTestCount(manager, modules);
+        testRunner =
+          testRunner ||
+          (await import('./eval/tests/jest-lite')
+            .then(s => s.default)
+            .then(TestRunner => new TestRunner(manager)));
+
+        sendTestCount(modules);
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {
           console.error('Test error', e);
@@ -704,7 +786,7 @@ async function compile({
       manager.clearCache();
 
       if (firstLoad && changedModuleCount === 0) {
-        await deleteAPICache(manager.id);
+        await deleteAPICache(manager.id, SCRIPT_VERSION);
       }
     }
 

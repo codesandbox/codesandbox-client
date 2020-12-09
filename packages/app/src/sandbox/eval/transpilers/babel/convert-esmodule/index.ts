@@ -2,39 +2,65 @@
 /* eslint-disable no-loop-func, no-continue */
 import * as meriyah from 'meriyah';
 import * as astring from 'astring';
+import * as escope from 'escope';
 import { basename } from 'path';
 import { walk } from 'estree-walker';
-import { AssignmentExpression, ExpressionStatement } from 'meriyah/dist/estree';
+import { flatten } from 'lodash-es';
+import {
+  AssignmentExpression,
+  Identifier,
+  Property,
+  Statement,
+} from 'meriyah/dist/estree';
 import { Syntax as n } from './syntax';
 import {
   generateRequireStatement,
   generateAllExportsIterator,
-  generateExportMemberStatement,
   generateExportStatement,
   generateEsModuleSpecifier,
   generateInteropRequire,
   generateInteropRequireExpression,
+  generateExportGetter,
 } from './utils';
 import { customGenerator } from './generator';
 
 /**
  * Converts esmodule code to commonjs code, built to be as fast as possible
  */
-export function convertEsModule(code: string) {
-  const usedVarNames = [];
+export function convertEsModule(
+  code: string
+): { code: string; ast: meriyah.ESTree.Program } {
+  const usedVarNames = {};
+  const varsToRename = {};
+  const trackedExports = {};
+  /**
+   * All names we export, used to predefine the exports at the start
+   */
+  const exportNames = new Set<string>();
 
   const getVarName = (name: string) => {
-    let usedName = name.replace(/[.-]/g, '');
-    while (usedVarNames.includes(usedName)) {
+    let usedName = name.replace(/(\s|\.|-|@|\?|&|=|{|})/g, '');
+    while (usedVarNames[usedName]) {
       usedName += '_';
     }
-    usedVarNames.push(usedName);
+    usedVarNames[usedName] = true;
     return usedName;
   };
 
-  let program = meriyah.parseModule(code, { next: true });
+  let program = meriyah.parseModule(code, {
+    next: true,
+    raw: true,
+    jsx: true,
+  });
 
   let i = 0;
+  let importOffset = 0;
+
+  function addNodeInImportSpace(oldPosition: number, node: Statement) {
+    program.body.splice(oldPosition, 1);
+    program.body.splice(importOffset, 0, node);
+    importOffset++;
+  }
 
   let addedSpecifier = false;
   function addEsModuleSpecifier() {
@@ -44,6 +70,10 @@ export function convertEsModule(code: string) {
     addedSpecifier = true;
 
     program.body.unshift(generateEsModuleSpecifier());
+
+    // Make sure imports will stay after this
+    importOffset++;
+
     i++;
   }
 
@@ -56,6 +86,93 @@ export function convertEsModule(code: string) {
 
     program.body.push(generateInteropRequire());
   }
+
+  /**
+   * Adds the export identifiers (exports.a = exports.b = exports.c = void 0)
+   */
+  function addExportVoids() {
+    const exportNamesArray = [...exportNames];
+    while (exportNamesArray.length !== 0) {
+      // We need to chunk the exports by 50, otherwise this line will get too long
+      // and the visitor will create a Maximum call stack size exceeded error
+      const exportNamesToUse = exportNamesArray.splice(0, 50);
+      const totalNode = {
+        type: n.ExpressionStatement,
+        expression: {
+          type: n.AssignmentExpression,
+          operator: '=',
+        },
+      };
+      let currentNode: Partial<AssignmentExpression> = totalNode.expression;
+      while (exportNamesToUse.length > 0) {
+        const exportName = exportNamesToUse.pop();
+        currentNode.left = {
+          type: n.MemberExpression,
+          object: {
+            type: n.Identifier,
+            name: 'exports',
+          },
+          property: {
+            type: n.Identifier,
+            name: exportName,
+          } as Identifier,
+        };
+        if (exportNamesToUse.length) {
+          // @ts-expect-error This will be filled in in the next loop
+          currentNode.right = {
+            type: n.AssignmentExpression,
+            operator: '=',
+          } as Partial<AssignmentExpression>;
+          currentNode = currentNode.right as Partial<AssignmentExpression>;
+        } else {
+          currentNode.right = {
+            type: n.UnaryExpression,
+            operator: 'void',
+            prefix: true,
+            argument: {
+              type: n.Literal,
+              value: 0,
+            },
+          };
+        }
+      }
+
+      // @ts-expect-error TS thinks this is a partial type, but by now it's full
+      program.body.unshift(totalNode);
+    }
+  }
+
+  // If there is a declaration of `exports` (`var exports = []`), we need to rename this
+  // variable as it's a reserved keyword
+  let exportsDefined = false;
+  // @ts-ignore
+  program = walk(program, {
+    enter(node, parent) {
+      if (node.type === n.VariableDeclaration) {
+        // We don't rename exports vars in functions, only on root level
+        if (parent.type === n.BlockStatement && exportsDefined === false) {
+          this.skip();
+        }
+      } else if (node.type === n.VariableDeclarator) {
+        const declNode = node as meriyah.ESTree.VariableDeclarator;
+        if (
+          declNode.id.type === n.Identifier &&
+          declNode.id.name === 'exports'
+        ) {
+          exportsDefined = true;
+        }
+      } else if (node.type === n.Identifier && exportsDefined) {
+        const idNode = node as meriyah.ESTree.Identifier;
+        if (idNode.name === 'exports') {
+          idNode.name = '__$csb_exports';
+          this.replace(idNode);
+        }
+      } else if (!exportsDefined && parent != null) {
+        // Skip, we don't need to go deeper now
+        this.skip();
+      }
+    },
+  });
 
   for (; i < program.body.length; i++) {
     const statement = program.body[i];
@@ -76,10 +193,9 @@ export function convertEsModule(code: string) {
         continue;
       }
       const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
+      addNodeInImportSpace(i, generateRequireStatement(varName, source.value));
 
-      program.body[i] = generateRequireStatement(varName, source.value);
-      i++;
-      program.body.splice(i, 0, generateAllExportsIterator(varName));
+      program.body.push(generateAllExportsIterator(varName));
     } else if (statement.type === n.ExportNamedDeclaration) {
       // export { a } from './test';
       // TO:
@@ -95,27 +211,79 @@ export function convertEsModule(code: string) {
         }
         const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
 
-        program.body[i] = generateRequireStatement(varName, source.value);
-        i++;
+        if (
+          statement.specifiers.length === 1 &&
+          statement.specifiers[0].type === n.ExportSpecifier &&
+          statement.specifiers[0].local.name === 'default'
+        ) {
+          // In this case there's a default re-export. So we need to wrap it in a interopRequireDefault to make sure
+          // that default is exposed.
+          addDefaultInterop();
+          addNodeInImportSpace(
+            i,
+            generateInteropRequireExpression(
+              {
+                type: n.CallExpression,
+                callee: {
+                  type: n.Identifier,
+                  name: 'require',
+                },
+                arguments: [
+                  {
+                    type: n.Literal,
+                    value: source.value,
+                  },
+                ],
+              },
+              varName
+            )
+          );
+        } else {
+          addNodeInImportSpace(
+            i,
+            generateRequireStatement(varName, source.value)
+          );
+        }
 
-        statement.specifiers
-          .reverse()
-          .forEach((specifier: meriyah.ESTree.ExportSpecifier) => {
-            program.body.splice(
-              i,
-              0,
-              generateExportMemberStatement(
-                varName,
-                specifier.exported.name,
-                specifier.local.name
-              )
-            );
+        if (statement.specifiers.length) {
+          statement.specifiers.forEach(specifier => {
+            if (specifier.type === n.ExportSpecifier) {
+              exportNames.add(specifier.exported.name);
+              program.body.splice(
+                importOffset++,
+                0,
+                generateExportGetter(
+                  { type: n.Literal, value: specifier.exported.name },
+                  {
+                    type: n.MemberExpression,
+                    object: {
+                      type: n.Identifier,
+                      name: varName,
+                    },
+                    property: {
+                      type: n.Identifier,
+                      name: specifier.local.name,
+                    },
+                  }
+                )
+              );
+            } else if (specifier.type === n.ExportNamespaceSpecifier) {
+              program.body.splice(
+                importOffset++,
+                0,
+                generateExportGetter(
+                  { type: n.Literal, value: specifier.specifier.name },
+                  { type: n.Identifier, name: varName }
+                )
+              );
+            }
+
+            i++;
           });
+        }
       } else if (statement.declaration) {
         // First remove the export statement
         program.body[i] = statement.declaration;
-
-        let varName: string;
 
         if (
           statement.declaration.type === n.FunctionDeclaration ||
@@ -123,24 +291,78 @@ export function convertEsModule(code: string) {
         ) {
           // export function test() {}
 
-          varName = statement.declaration.id.name;
+          const varName = statement.declaration.id.name;
+          i++;
+          // Add to start of the file, after the defineModule for __esModule. This way this export is already
+          // defined before requiring other modules. This is only possible for function exports.
+          const positionToInsert =
+            statement.declaration.type === n.FunctionDeclaration ? 1 : i;
+          program.body.splice(
+            positionToInsert,
+            0,
+            generateExportStatement(varName, varName)
+          );
+          exportNames.add(varName);
         } else {
           // export const a = {}
 
           const declaration = statement.declaration as meriyah.ESTree.VariableDeclaration;
 
-          const foundDeclaration = declaration.declarations.find(
-            d => d.id.type === n.Identifier
-          ) as { id: meriyah.ESTree.Identifier };
+          program.body.splice(
+            i,
+            1,
+            declaration,
+            // @ts-ignore
+            ...flatten(
+              declaration.declarations.map(node => {
+                if (node.id.type === n.ObjectPattern) {
+                  // export const { a } = c;
+                  return flatten(
+                    node.id.properties.map(property => {
+                      if (
+                        property.type !== n.Property ||
+                        property.value.type !== n.Identifier
+                      ) {
+                        return false;
+                      }
 
-          if (!foundDeclaration) {
-            continue;
-          }
+                      exportNames.add(property.value.name);
+                      trackedExports[property.value.name] = property.value.name;
+                      return generateExportStatement(
+                        property.value.name,
+                        property.value.name
+                      );
+                    })
+                  ).filter(Boolean);
+                }
+                if (node.id.type === n.Identifier) {
+                  trackedExports[node.id.name] = node.id.name;
 
-          varName = foundDeclaration.id.name;
+                  exportNames.add(node.id.name);
+                  return generateExportStatement(node.id.name, node.id.name);
+                }
+
+                return null;
+              })
+            ).filter(Boolean)
+          );
         }
-        i++;
-        program.body.splice(i, 0, generateExportStatement(varName, varName));
+      } else if (statement.specifiers) {
+        program.body.splice(i, 1);
+        i--;
+        statement.specifiers.forEach(specifier => {
+          if (specifier.type === n.ExportSpecifier) {
+            i++;
+
+            exportNames.add(specifier.exported.name);
+            program.body.unshift(
+              generateExportGetter(
+                { type: n.Literal, value: specifier.exported.name },
+                { type: n.Identifier, name: specifier.local.name }
+              )
+            );
+          }
+        });
       }
     } else if (statement.type === n.ExportDefaultDeclaration) {
       addEsModuleSpecifier();
@@ -181,7 +403,6 @@ export function convertEsModule(code: string) {
             0,
             generateExportStatement(statement.declaration.id.name, 'default')
           );
-          i++;
         } else {
           program.body[i] = {
             type: n.VariableDeclaration,
@@ -211,40 +432,7 @@ export function convertEsModule(code: string) {
           newDeclaration.type === n.ClassDeclaration ||
           newDeclaration.type === n.FunctionExpression
         ) {
-          // @ts-ignore Different libraries with the same types
-          program = walk(program, {
-            enter(node, parent, prop, index) {
-              if (node.type === n.AssignmentExpression) {
-                const { left } = node as AssignmentExpression;
-                if (
-                  left.type === n.Identifier &&
-                  left.name === newDeclaration.id.name
-                ) {
-                  this.replace({
-                    type: n.ExpressionStatement,
-                    expression: {
-                      type: n.AssignmentExpression,
-                      left: {
-                        type: n.MemberExpression,
-                        object: {
-                          type: n.Identifier,
-                          name: 'exports',
-                        },
-                        computed: false,
-                        property: {
-                          type: n.Identifier,
-                          name: 'default',
-                        },
-                      },
-                      operator: '=' as '=',
-                      right: node,
-                    },
-                  } as ExpressionStatement);
-                  this.skip();
-                }
-              }
-            },
-          });
+          trackedExports[newDeclaration.id.name] = 'default';
         }
       }
     } else if (statement.type === n.ImportDeclaration) {
@@ -256,13 +444,27 @@ export function convertEsModule(code: string) {
       }
       const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
 
-      // Create require statement instead of the import
-      program.body[i] = generateRequireStatement(varName, source.value);
-      i++;
+      addNodeInImportSpace(i, generateRequireStatement(varName, source.value));
 
       statement.specifiers.reverse().forEach(specifier => {
         let localName: string;
         let importName: string;
+
+        if (specifier.type === n.ImportSpecifier) {
+          // import {Test} from 'test';
+          // const _test = require('test');
+          // var Test = _test.Test;
+
+          // Mark that we need to rename all references to this variable
+          // to the new require statement. This will happen in the second pass.
+          varsToRename[specifier.local.name] = [
+            varName,
+            specifier.imported.name,
+          ];
+
+          return;
+        }
+        i++;
 
         if (specifier.type === n.ImportDefaultSpecifier) {
           // import Test from 'test';
@@ -273,19 +475,21 @@ export function convertEsModule(code: string) {
           addDefaultInterop();
 
           program.body.splice(
-            i,
+            // After the require statement
+            importOffset,
             0,
-            generateInteropRequireExpression(varName, localName)
+            generateInteropRequireExpression(
+              { type: n.Identifier, name: varName },
+              localName
+            )
           );
+
+          varsToRename[localName] = [localName, 'default'];
+          importOffset++;
           return;
         }
-        if (specifier.type === n.ImportSpecifier) {
-          // import {Test} from 'test';
-          // const _test = require('test');
-          // var Test = _test.Test;
-          localName = specifier.local.name;
-          importName = specifier.imported.name;
-        } else if (specifier.type === n.ImportNamespaceSpecifier) {
+
+        if (specifier.type === n.ImportNamespaceSpecifier) {
           // import * as Test from 'test';
           // const _test = require('test');
           // var Test = _test;
@@ -293,7 +497,8 @@ export function convertEsModule(code: string) {
           importName = null;
         }
 
-        program.body.splice(i, 0, {
+        // insert in index 1 instead of 0 to be after the interopRequireDefault
+        program.body.splice(importOffset, 0, {
           type: n.VariableDeclaration,
           kind: 'var' as 'var',
           declarations: [
@@ -323,11 +528,78 @@ export function convertEsModule(code: string) {
             },
           ],
         });
+        importOffset++;
       });
     }
   }
 
-  return astring.generate(program as any, {
+  // console.log(exportNames);
+  if (
+    Object.keys(varsToRename).length > 0 ||
+    Object.keys(trackedExports).length > 0
+  ) {
+    // Convert all the object shorthands to not shorthands, needed later when we rename variables so we
+    // don't change to the key literals
+    // @ts-ignore
+    program = walk(program, {
+      enter(node, parent, prop, index) {
+        if (node.type === n.Property) {
+          const property = node as Property;
+          if (
+            property.shorthand &&
+            property.value.type !== n.AssignmentPattern // Not a default initializer
+          ) {
+            property.value = {
+              ...property.key,
+            };
+            property.shorthand = false;
+          }
+        }
+      },
+    });
+
+    // A second pass where we rename all references to imports that were marked before.
+    const scopeManager = escope.analyze(program, { ecmaVersion: 6 });
+
+    scopeManager.acquire(program);
+    scopeManager.scopes.forEach(scope => {
+      scope.references.forEach(ref => {
+        // If the variable cannot be resolved, it must be the var that we had
+        // just changed.
+        if (
+          Object.prototype.hasOwnProperty.call(
+            varsToRename,
+            ref.identifier.name
+          ) &&
+          ref.resolved === null &&
+          !ref.writeExpr
+        ) {
+          ref.identifier.name = `(0, ${varsToRename[ref.identifier.name].join(
+            '.'
+          )})`;
+        }
+
+        if (
+          Object.prototype.hasOwnProperty.call(
+            trackedExports,
+            ref.identifier.name
+          ) &&
+          ref.isWrite() &&
+          ref.resolved === null &&
+          !ref.init
+        ) {
+          const name = trackedExports[ref.identifier.name];
+          ref.identifier.name = `exports.${name} = ${ref.identifier.name}`;
+        }
+      });
+    });
+    scopeManager.detach();
+  }
+
+  addExportVoids();
+  const finalCode = astring.generate(program as any, {
     generator: customGenerator,
   });
+
+  return { code: `"use strict";\n${finalCode}`, ast: program };
 }

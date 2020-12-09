@@ -1,15 +1,16 @@
 ---
-title: Jest Tests
-authors: ['CompuIves']
-description: CodeSandbox has a native integration with Jest for running tests.
+title: Tests
+authors: ['CompuIves', 'christianalfoni']
+description: CodeSandbox has a native integration with a test runner.
 ---
 
-## What is Jest
+## How does CodeSandbox runs tests?
 
-Jest is a zero configuration test runner that allows you easily write JavaScript
-tests without setting anything up. More info on [Jest](https://jestjs.io/).
+CodeSandbox uses [Jest](https://jestjs.io) library to run the tests directly in
+the browser. That means you can write tests, but adding additional plugins is
+not possible in the Client Sandbox experience.
 
-## How to use Jest in CodeSandbox Client Sandboxes
+## How to write tests in the CodeSandbox Client Sandboxes
 
 In [Client sandboxes](/docs/environment) you can run Jest tests by creating
 files that end with `.test.js`, `.spec.js`, `.test.ts(x)` and `.spec.js(x)`. We
@@ -46,4 +47,4 @@ And will also show squiggles in the editor:
 
 Here's a failing Jest test running in a sandbox:
 
-<iframe src="https://codesandbox.io/embed/n9m2w9q8x0?view=preview" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+<iframe src="https://codesandbox.io/embed/n9m2w9q8x0?view=preview" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>

@@ -1,5 +1,5 @@
 ---
-title: CI
+title: CodeSandbox CI
 authors: ['Ives van Hoorne']
 description:
   Here's what CodeSandbox CI is, how it will benefit you as a library
@@ -41,6 +41,8 @@ your library by creating a file called `ci.json` in a folder called
 `.codesandbox` (`.codesandbox/ci.json`) in the root of your repo. An example PR
 can be found [here](https://github.com/facebook/react/pull/17175).
 
+**Note:** CodeSandbox CI only works in public repositories for now.
+
 ## Configuration
 
 You can configure how your projects build on CodeSandbox CI by creating a file
@@ -53,30 +55,33 @@ These are all the configuration options you can set. They are all optional.
 
 ```json
 {
-  // which script in package.json to run to install instead of `npm ci` or `yarn install`,
-  // can be `false` if you want to skip this step
+  // Which script in package.json to run to install instead of `npm ci` or `yarn install`,
+  // can be `false` if you want to skip this step.
   "installCommand": "install",
-  // which script in package.json to run to build,
-  // can be `false` if you want to skip this step
+  // Which script in package.json to run to build,
+  // can be `false` if you want to skip this step.
   "buildCommand": "build",
-  // if you have a monorepo, put the paths of the packages here. We'll infer the package names.
-  // globs are supported
+  // If you have a monorepo, put the paths of the packages here. We'll infer the package names.
+  // Globs are supported.
   "packages": ["packages/react", "packages/react-dom"],
-  // if you don't publish from the package directory, specify per dependency
+  // If you don't publish from the package directory, specify per dependency
   // where the contents of the built dependency are. These files will be uploaded
-  // to our registry
+  // to our registry.
   "publishDirectory": {
     "react": "build/node_modules/react",
     "react-dom": "build/node_modules/react-dom"
   },
-  // a list of sandboxes that you want generated for a PR, if this list
+  // A list of sandboxes that you want generated for a PR, if this list
   // is not set we will default to `vanilla`. The built library will automatically
   // be installed in the fork of these sandboxes in the place of the library. So if
   // you have a sandbox with `lodash`, and you built `lodash` and `vue`, we will only
   // replace `lodash` with the built version.
   // You can also set absolute paths to a directory in your repository. We will make sure
   // to generate a sandbox from the contents of that directory.
-  "sandboxes": ["vanilla", "new", "/examples/todomvc"]
+  "sandboxes": ["vanilla", "new", "/examples/todomvc"],
+  // Node.js version to use for building the PR.
+  // Supported versions are '10' (10.23.0, default), '12' (12.20.0) and '14' (14.15.1).
+  "node": "14"
 }
 ```
 

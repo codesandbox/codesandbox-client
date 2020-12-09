@@ -1,20 +1,19 @@
+import { TemplateType } from '@codesandbox/common/lib/templates';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
+import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { Elastic, TweenMax } from 'gsap';
 import React from 'react';
-import { TweenMax, Elastic } from 'gsap';
 import FaAngleUp from 'react-icons/lib/fa/angle-up';
 import store from 'store/dist/store.modern';
 
-import { TemplateType } from '@codesandbox/common/lib/templates';
-import { ViewConfig } from '@codesandbox/common/lib/templates/template';
-import track from '@codesandbox/common/lib/utils/analytics';
-
-import { DevToolsTabPosition } from '@codesandbox/common/lib/types';
 import { console } from './Console';
-import { DevToolTabs } from './Tabs';
+import { Container, ContentContainer, Header } from './elements';
 import { problems } from './Problems';
 import { reactDevTools } from './React-Devtools';
+import { DevToolTabs } from './Tabs';
 import { terminal } from './Terminal';
 import { tests } from './Tests';
-import { Container, Header, ContentContainer } from './elements';
 
 function unFocus(document, window) {
   if (document.selection) {
@@ -45,14 +44,14 @@ export interface IViews {
 export interface IViewAction {
   title: string;
   onClick: () => void;
-  Icon: React.ComponentClass<any, any>;
+  Icon: React.ComponentType<any>;
   disabled?: boolean;
 }
 
 export interface IViewType {
   id: string;
   title: string | ((options: any) => string);
-  Content: React.ComponentType<DevToolProps>;
+  Content: React.ComponentType<any>;
   actions: IViewAction[] | ((info: { owned: boolean }) => IViewAction[]);
 }
 
@@ -65,6 +64,7 @@ export type Status = {
 
 export type DevToolProps = {
   hidden: boolean;
+  disableLogging: boolean;
   updateStatus: (type: StatusType, count?: number) => void;
   sandboxId: string;
   openDevTools: () => void;
@@ -105,6 +105,7 @@ type Props = {
   hideTabs?: boolean;
   currentDevToolIndex: number;
   currentTabPosition: number;
+  disableLogging?: boolean;
 };
 type State = {
   status: { [title: string]: Status | undefined };
@@ -117,6 +118,7 @@ type State = {
 };
 
 export class DevTools extends React.PureComponent<Props, State> {
+  draftState: State | null = null;
   constructor(props: Props) {
     super(props);
 
@@ -140,11 +142,55 @@ export class DevTools extends React.PureComponent<Props, State> {
     };
   }
 
+  setStateTimer = null;
+  /**
+   * We can call setState 100s of times per second, which puts great strain
+   * on rendering from React. We debounce the rendering so that we flush changes
+   * after a while. This prevents the editor from getting stuck.
+   *
+   * Every setState call will have to go through this, otherwise we get race conditions
+   * where the underlying state has changed, but the draftState didn't change.
+   */
+  setStateDelayedFlush = (
+    setStateFunc:
+      | Partial<State>
+      | ((state: State, props: Props) => Partial<State>),
+    time = 200,
+    callback?: () => void
+  ) => {
+    const draftState = this.draftState || this.state;
+
+    const newState =
+      typeof setStateFunc === 'function'
+        ? setStateFunc(draftState, this.props)
+        : setStateFunc;
+    this.draftState = { ...draftState, ...newState };
+
+    if (this.setStateTimer) {
+      clearTimeout(this.setStateTimer);
+    }
+
+    const updateFunc = () => {
+      if (this.draftState) {
+        this.setState(this.draftState, callback);
+      }
+
+      this.draftState = null;
+      this.setStateTimer = null;
+    };
+
+    if (time === 0) {
+      updateFunc();
+    } else {
+      this.setStateTimer = window.setTimeout(updateFunc, time);
+    }
+  };
+
   normalizeHeight = (el: HTMLDivElement) => {
     if (typeof this.state.height === 'string') {
       const { height } = el.getBoundingClientRect();
 
-      this.setState({ height });
+      this.setStateDelayedFlush({ height }, 0);
     }
   };
 
@@ -205,16 +251,19 @@ export class DevTools extends React.PureComponent<Props, State> {
 
   setHidden = (hidden: boolean) => {
     if (!hidden) {
-      return this.setState(state => ({
-        status: {
-          ...state.status,
-          [this.getCurrentPane().id]: null,
-        },
-        hidden: false,
-      }));
+      return this.setStateDelayedFlush(
+        state => ({
+          status: {
+            ...state.status,
+            [this.getCurrentPane().id]: null,
+          },
+          hidden: false,
+        }),
+        0
+      );
     }
 
-    return this.setState({ hidden }, () => {
+    return this.setStateDelayedFlush({ hidden }, 0, () => {
       if (this.props.setDevToolsOpen) {
         const { setDevToolsOpen } = this.props;
         setTimeout(() => setDevToolsOpen(!this.state.hidden), 100);
@@ -229,39 +278,40 @@ export class DevTools extends React.PureComponent<Props, State> {
     status: 'success' | 'warning' | 'error' | 'info' | 'clear',
     count?: number
   ) => {
-    const currentStatus = (status !== 'clear' && this.state.status[id]) || {
-      unread: 0,
-      type: 'info',
-    };
-    let newStatus = currentStatus.type;
+    this.setStateDelayedFlush(state => {
+      const currentStatus = (status !== 'clear' && state.status[id]) || {
+        unread: 0,
+        type: 'info',
+      };
+      let newStatus = currentStatus.type;
 
-    if (
-      status === 'success' &&
-      newStatus !== 'error' &&
-      newStatus !== 'warning'
-    ) {
-      newStatus = 'success';
-    } else if (status === 'warning' && newStatus !== 'error') {
-      newStatus = 'warning';
-    } else if (status === 'error') {
-      newStatus = 'error';
-    }
+      if (
+        status === 'success' &&
+        newStatus !== 'error' &&
+        newStatus !== 'warning'
+      ) {
+        newStatus = 'success';
+      } else if (status === 'warning' && newStatus !== 'error') {
+        newStatus = 'warning';
+      } else if (status === 'error') {
+        newStatus = 'error';
+      }
 
-    let unread = currentStatus.unread + (status !== 'clear' ? 1 : 0);
+      let unread = currentStatus.unread + (status !== 'clear' ? 1 : 0);
 
-    if (count != null) {
-      unread = count;
-    }
-
-    this.setState(state => ({
-      status: {
-        ...state.status,
-        [id]: {
-          type: newStatus,
-          unread,
+      if (count != null) {
+        unread = count;
+      }
+      return {
+        status: {
+          ...state.status,
+          [id]: {
+            type: newStatus,
+            unread,
+          },
         },
-      },
-    }));
+      };
+    }, 50);
   };
 
   handleTouchStart = (event: React.TouchEvent) => {
@@ -276,12 +326,15 @@ export class DevTools extends React.PureComponent<Props, State> {
     if (!this.state.mouseDown && typeof this.state.height === 'number') {
       const { clientY } = event;
       unFocus(document, window);
-      // @ts-ignore
-      this.setState(state => ({
-        startY: clientY,
-        startHeight: state.height,
-        mouseDown: true,
-      }));
+      this.setStateDelayedFlush(
+        // @ts-ignore
+        state => ({
+          startY: clientY,
+          startHeight: state.height,
+          mouseDown: true,
+        }),
+        0
+      );
       if (this.props.setDragging) {
         this.props.setDragging(true);
       }
@@ -294,7 +347,7 @@ export class DevTools extends React.PureComponent<Props, State> {
 
   handleMouseUp = (e: Event) => {
     if (this.state.mouseDown) {
-      this.setState({ mouseDown: false });
+      this.setStateDelayedFlush({ mouseDown: false }, 0);
       if (this.props.setDragging) {
         this.props.setDragging(false);
       }
@@ -338,9 +391,12 @@ export class DevTools extends React.PureComponent<Props, State> {
         this.state.startHeight - (event.clientY - this.state.startY)
       );
 
-      this.setState({
-        height: Math.max(this.closedHeight() - 2, newHeight),
-      });
+      this.setStateDelayedFlush(
+        {
+          height: Math.max(this.closedHeight() - 2, newHeight),
+        },
+        0
+      );
       this.setHidden(newHeight < 64);
     }
   };
@@ -368,7 +424,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     TweenMax.to(heightObject, 0.3, {
       height: store.get('devtools.height') || 300,
       onUpdate: () => {
-        this.setState(heightObject);
+        this.setStateDelayedFlush(heightObject, 0);
       },
       ease: Elastic.easeOut.config(0.25, 1),
     });
@@ -383,7 +439,7 @@ export class DevTools extends React.PureComponent<Props, State> {
     TweenMax.to(heightObject, 0.3, {
       height: this.closedHeight(),
       onUpdate: () => {
-        this.setState(heightObject);
+        this.setStateDelayedFlush(heightObject, 0);
       },
       ease: Elastic.easeOut.config(0.25, 1),
     });
@@ -440,6 +496,7 @@ export class DevTools extends React.PureComponent<Props, State> {
       primary,
       viewConfig,
       devToolIndex,
+      disableLogging,
     } = this.props;
     const { hidden, height } = this.state;
 
@@ -477,18 +534,9 @@ export class DevTools extends React.PureComponent<Props, State> {
               setPane={this.setPane}
               devToolIndex={devToolIndex}
               status={this.state.status}
-              moveTab={
-                this.props.moveTab
-                  ? (prevPos, nextPos) => {
-                      track('DevTools - Move Pane', {
-                        pane: this.props.viewConfig.views[prevPos.tabPosition]
-                          .id,
-                      });
-                      this.props.moveTab(prevPos, nextPos);
-                    }
-                  : undefined
-              }
+              moveTab={this.props.moveTab}
               closeTab={this.props.closeTab}
+              disableLogging={disableLogging}
             />
 
             {!primary && (
@@ -505,6 +553,7 @@ export class DevTools extends React.PureComponent<Props, State> {
         )}
         <ContentContainer>
           {panes.map((view, i) => {
+            if (!this.getViews()[view.id]) return null;
             const { Content } = this.getViews()[view.id];
 
             return (
@@ -514,6 +563,7 @@ export class DevTools extends React.PureComponent<Props, State> {
                 hidden={hidden || i !== this.state.currentTabIndex}
                 updateStatus={this.updateStatus(view.id)}
                 sandboxId={sandboxId}
+                disableLogging={disableLogging}
                 openDevTools={this.openDevTools}
                 hideDevTools={this.hideDevTools}
                 selectCurrentPane={() => {

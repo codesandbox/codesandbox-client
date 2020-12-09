@@ -1,4 +1,4 @@
-import Preset from '..';
+import { Preset } from 'sandpack-core';
 
 import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
@@ -9,7 +9,7 @@ import { aliases, cleanUsingUnmount } from './utils';
 export default function initialize() {
   const preset = new Preset(
     'create-react-app',
-    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx'],
+    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx', 'mjs'],
     aliases,
     {
       hasDotEnv: true,
@@ -25,8 +25,37 @@ export default function initialize() {
     { transpiler: stylesTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
-    { transpiler: babelTranspiler },
+  preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+    {
+      transpiler: babelTranspiler,
+      options: {
+        config: {
+          presets: ['es2015', 'react', 'stage-0'],
+          plugins: [
+            'transform-async-to-generator',
+            'transform-object-rest-spread',
+            'transform-decorators-legacy',
+            'transform-class-properties',
+            // Polyfills the runtime needed for async/await and generators
+            [
+              'transform-runtime',
+              {
+                helpers: false,
+                polyfill: false,
+                regenerator: true,
+              },
+            ],
+            [
+              'transform-regenerator',
+              {
+                // Async functions are converted to generators by babel-preset-env
+                async: false,
+              },
+            ],
+          ],
+        },
+      },
+    },
   ]);
 
   preset.registerTranspiler(module => /\.json$/.test(module.path), [

@@ -1,30 +1,57 @@
+import { UserQuery } from '@codesandbox/common/lib/types';
+import { Button, Stack } from '@codesandbox/components';
 import React from 'react';
-import { Stack, Textarea, Button } from '@codesandbox/components';
+
+import { useCodesandboxCommentEditor } from '../hooks/useCodesandboxCommentEditor';
 
 export const EditComment: React.FC<{
   initialValue?: string;
-  onSave: (value: string) => void;
+  initialMentions?: { [mentionName: string]: UserQuery };
+  initialImages?: {
+    [fileName: string]: { src: string; resolution: [number, number] };
+  };
+  onSave: (
+    value: string,
+    mentions: { [mentionName: string]: UserQuery },
+    images: {
+      [fileName: string]: { src: string; resolution: [number, number] };
+    }
+  ) => void;
   onCancel: () => void;
-}> = ({ initialValue = '', onSave, onCancel }) => {
-  const [value, setValue] = React.useState(initialValue);
+}> = ({
+  initialValue = '',
+  initialMentions = {},
+  initialImages = {},
+  onSave,
+  onCancel,
+}) => {
+  const [elements, value, mentions, images] = useCodesandboxCommentEditor({
+    initialValue,
+    initialMentions,
+    initialImages,
+    onSubmit: onSave,
+    fixed: false,
+    props: {
+      autosize: true,
+      autoFocus: true,
+      style: { lineHeight: 1.2 },
+    },
+  });
 
   return (
     <Stack
       as="form"
       onSubmit={event => {
         event.preventDefault();
-        onSave(value);
+        onSave(value, mentions, images);
+      }}
+      css={{
+        position: 'relative',
       }}
       direction="vertical"
       gap={2}
     >
-      <Textarea
-        autosize
-        autoFocus
-        value={value}
-        style={{ lineHeight: 1.2 }}
-        onChange={event => setValue(event.target.value)}
-      />
+      {elements}
       <Stack justify="flex-end">
         <Button
           type="button"

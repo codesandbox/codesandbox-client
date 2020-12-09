@@ -1,26 +1,25 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import React, { ChangeEvent } from 'react';
 import {
-  Collapsible,
-  Input,
-  Element,
-  Stack,
   Button,
-  Text,
+  Collapsible,
+  Element,
   FormField,
+  Input,
+  Link,
+  Stack,
+  Text,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import React, { ChangeEvent } from 'react';
 
 export const CreateRepo = () => {
   const {
     actions: {
       git: { createRepoClicked, repoTitleChanged },
+      openCreateSandboxModal,
     },
     state: {
-      editor: {
-        isAllModulesSynced,
-        currentSandbox: { originalGit },
-      },
+      editor: { isAllModulesSynced, currentSandbox },
       git: { error, repoTitle },
     },
   } = useOvermind();
@@ -39,13 +38,21 @@ export const CreateRepo = () => {
 
   return (
     <Collapsible
-      title={originalGit ? 'Export to GitHub' : 'GitHub'}
-      defaultOpen={!originalGit}
+      title="Export to new GitHub repository"
+      defaultOpen={!currentSandbox.originalGit}
     >
       <Element paddingX={2}>
         <Text variant="muted" marginBottom={4} block>
-          Create a GitHub repository to host your sandbox code and keep it in
-          sync with CodeSandbox.
+          Export the content of this sandbox to a new GitHub repository,
+          allowing you to commit changes made on Codesandbox to GitHub. If you
+          want to rather import an existing repository,{' '}
+          <Link
+            css={{ color: 'white' }}
+            onClick={() => openCreateSandboxModal({ initialTab: 'Import' })}
+          >
+            open the GitHub import
+          </Link>
+          .
         </Text>
         {!isAllModulesSynced && (
           <Text marginBottom={2} block variant="danger">
@@ -71,12 +78,12 @@ export const CreateRepo = () => {
               type="text"
               onChange={updateRepoTitle}
               value={repoTitle}
-              placeholder="Enter repository name"
+              placeholder="Repository name..."
             />
           </FormField>
           <Element paddingX={2}>
             <Button type="submit" disabled={disabled} variant="secondary">
-              Create Repository
+              Create new repository on GitHub
             </Button>
           </Element>
         </Stack>

@@ -22,6 +22,7 @@ module.exports = {
     `./src/app/overmind/effects/gql/**/*.ts`,
     `./src/**/queries.ts`,
     `./src/**/mutations.ts`,
+    `./src/**/subscriptions.ts`,
   ],
   overwrite: true,
   hooks: {

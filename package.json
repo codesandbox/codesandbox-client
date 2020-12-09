@@ -10,7 +10,7 @@
   "workspaces": {
     "packages": [
       "packages/@styled-system/css",
-      "packages/@types/ot",
+      "packages/@types/styled-components",
       "packages/app",
       "packages/homepage",
       "packages/common",
@@ -24,7 +24,11 @@
       "packages/notifications",
       "packages/deps",
       "packages/executors",
-      "packages/template-icons"
+      "packages/template-icons",
+      "packages/vue3-transpiler",
+      "packages/vue3-browser-compiler",
+      "packages/browser-eslint-rules",
+      "packages/sandpack-core"
     ],
     "nohoist": [
       "**/react-codemirror2",
@@ -50,11 +54,13 @@
     "start": "yarn build:deps && cross-env NODE_ENV=development lerna run start --scope @codesandbox/common --scope @codesandbox/components --scope app --parallel",
     "start:common": "lerna run start --scope @codesandbox/common --stream",
     "start:components": "lerna run start --scope @codesandbox/components --stream",
-    "start:dev_api": "concurrently --raw \"cd packages/app && yarn start:dev_api\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:dev_api": "(tmux new-session -d -s csb \"NODE_OPTIONS=--max_old_space_size=8192 concurrently --raw 'cd packages/app && yarn start:dev_api' 'cd packages/common && yarn start' 'cd packages/components && yarn start'\" || tmux attach -t csb) && tmux attach -t csb",
     "start:dynamic": "lerna run dev --scope dynamic-pages --stream",
     "start:fast": "cross-env NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:profiling": "cross-env NODE_ENV=production PROFILING=true concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:hot": "cross-env NODE_ENV=development APP_ONLY=true concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
-    "start:fast:stream": "cross-env STAGING_API=1 NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:fast:stream": "cross-env ENDPOINT=https://codesandbox.stream NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
+    "start:fast:local": "cross-env ENDPOINT=http://localhost:4000 NODE_ENV=development concurrently --raw \"cd packages/app && yarn start\" \"cd packages/common && yarn start\" \"cd packages/components && yarn start\"",
     "start:home": "yarn build:deps && yarn start:home:fast",
     "start:home:fast": "cd packages/homepage && yarn start",
     "start:overmind": "yarn build:deps && concurrently \"lerna run start --scope app --stream\" \"overmind-devtools\"",
@@ -67,16 +73,17 @@
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
     "chromatic": "lerna run chromatic --scope=@codesandbox/components --stream",
-    "typecheck": "lerna run typecheck"
+    "typecheck": "lerna run typecheck",
+    "prettify": "prettier -w ."
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
     "opencollective": "^1.0.3"
   },
   "devDependencies": {
     "all-contributors-cli": "^6.9.2",
-    "babel-eslint": "^10.0.2",
+    "babel-eslint": "10.0.2",
     "concurrently": "^4.1.0",
     "cross-env": "^6.0.0",
     "eslint": "5.16.0",
@@ -86,15 +93,16 @@
     "eslint-loader": "^1.7.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "~7.14.3",
-    "eslint-plugin-react-hooks": "^1.7.0",
+    "eslint-plugin-react": "~7.21.2",
+    "eslint-plugin-react-hooks": "^4.1.0",
     "gulp": "^3.9.1",
-    "husky": "^2.2.0",
+    "husky": "^4.3.0",
     "lerna": "^3.16.4",
     "lint-staged": "^9.2.5",
-    "prettier": "1.19.1",
-    "pretty-quick": "^2.0.1",
-    "typescript": "3.7.4",
+    "overmind-devtools": "^26.0.2",
+    "prettier": "2.1.1",
+    "pretty-quick": "^3.0.0",
+    "typescript": "4.0.3",
     "username": "^5.1.0"
   },
   "husky": {
@@ -110,7 +118,7 @@
     ]
   },
   "engines": {
-    "node": "^10.0.0"
+    "node": "^10.13.0"
   },
   "collective": {
     "type": "opencollective",

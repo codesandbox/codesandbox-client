@@ -2,6 +2,7 @@ import resolve from 'browser-resolve';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import getRequireStatements from './simple-get-require-statements';
 import { packageFilter } from '../../../utils/resolve-utils';
+import { convertEsModule } from '../convert-esmodule';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -112,7 +113,7 @@ function downloadRequires(currentPath: string, code: string) {
             filename: currentPath,
             extensions: ['.js', '.json'],
             moduleDirectory: ['node_modules'],
-            packageFilter,
+            packageFilter: packageFilter(),
           });
         } catch (e) {
           await downloadFromError(e);
@@ -173,9 +174,17 @@ export async function downloadPath(
   }
 
   mkDirByPathSync(path.dirname(r.path));
-  fs.writeFileSync(r.path, r.code);
 
-  await downloadRequires(r.path, r.code);
+  let code = r.code;
+  try {
+    code = convertEsModule(r.code).code;
+  } catch (e) {
+    console.warn(e);
+  }
+
+  fs.writeFileSync(r.path, code);
+
+  await downloadRequires(r.path, code);
 
   return r;
 }

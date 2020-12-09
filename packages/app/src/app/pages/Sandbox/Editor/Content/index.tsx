@@ -129,7 +129,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
       >
         <SplitPane
           maxSize={-100}
-          onDragFinished={() => {
+          onDragFinished={props => {
             actions.editor.resizingStopped();
           }}
           onDragStarted={() => {
@@ -204,6 +204,9 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                 // show console devtool if showConsoleDevtool is enabled and if it's in the current view(v)
                 const devToolsOpen =
                   showConsoleDevtool && consoleDevtoolIndex === i;
+                const disableLogging =
+                  state.editor.parsedConfigurations?.sandbox?.parsed
+                    ?.disableLogging;
 
                 return (
                   <DevTools
@@ -223,6 +226,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                     }}
                     sandboxId={sandbox.id}
                     template={sandbox.template}
+                    disableLogging={disableLogging}
                     shouldExpandDevTools={state.preferences.showDevtools}
                     zenMode={preferences.settings.zenMode}
                     setDevToolsOpen={open => {

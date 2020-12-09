@@ -6,6 +6,7 @@ import {
 import getDefinition from '@codesandbox/common/lib/templates';
 import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Action, AsyncAction } from 'app/overmind';
 import { RecoverData } from 'app/overmind/effects/moduleRecover';
 import { withOwnedSandbox } from 'app/overmind/factories';
@@ -262,6 +263,10 @@ export const moduleMovedToDirectory: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -313,6 +318,10 @@ export const directoryMovedToDirectory: AsyncAction<{
         message: 'Could not save new directory location',
         error,
       });
+    }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
     }
   },
   async () => {},
@@ -388,6 +397,10 @@ export const directoryDeleted: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -411,20 +424,13 @@ export const directoryRenamed: AsyncAction<{
     }
 
     const oldTitle = directory.title;
-    const oldPath = directory.path;
 
-    directory.title = title;
-    directory.path = getDirectoryPath(
-      sandbox.modules,
-      sandbox.directories,
-      directory.id
-    );
+    actions.files.internal.renameDirectoryInState({
+      directory,
+      sandbox,
+      title,
+    });
 
-    effects.vscode.sandboxFsSync.rename(
-      state.editor.modulesByPath,
-      oldPath!,
-      directory.path
-    );
     actions.editor.internal.updatePreviewCode();
     try {
       await effects.api.saveDirectoryTitle(sandbox.id, directoryShortid, title);
@@ -435,8 +441,11 @@ export const directoryRenamed: AsyncAction<{
 
       effects.executor.updateFiles(sandbox);
     } catch (error) {
-      directory.title = oldTitle;
-      state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
+      actions.files.internal.renameDirectoryInState({
+        directory,
+        sandbox,
+        title: oldTitle,
+      });
       actions.internal.handleError({
         message: 'Could not rename directory',
         error,
@@ -487,6 +496,10 @@ export const addedFileToSandbox: AsyncAction<Pick<
     });
 
     effects.executor.updateFiles(state.editor.currentSandbox);
+
+    if (state.editor.currentSandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -543,6 +556,7 @@ export const filesUploaded: AsyncAction<{
       });
 
       effects.executor.updateFiles(sandbox);
+      actions.git.updateGitChanges();
     } catch (error) {
       if (error.message.indexOf('413') !== -1) {
         actions.internal.handleError({
@@ -724,6 +738,10 @@ export const moduleCreated: AsyncAction<{
         error,
       });
     }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
+    }
   },
   async () => {},
   'write_code'
@@ -766,6 +784,10 @@ export const moduleDeleted: AsyncAction<{
       sandbox.modules.push(removedModule);
       state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(sandbox);
       actions.internal.handleError({ message: 'Could not delete file', error });
+    }
+
+    if (sandbox.originalGit) {
+      actions.git.updateGitChanges();
     }
   },
   async () => {},
@@ -869,4 +891,47 @@ export const syncSandbox: AsyncAction<any[]> = async (
     state.editor.modulesByPath = effects.vscode.sandboxFsSync.create(
       state.editor.currentSandbox
     );
+};
+
+export const updateWorkspaceConfig: AsyncAction<{}> = async (
+  { state, actions },
+  update
+) => {
+  if (hasPermission(state.editor.currentSandbox!.authorization, 'write_code')) {
+    const devtoolsModule = state.editor.modulesByPath[
+      '/.codesandbox/workspace.json'
+    ] as Module;
+
+    if (devtoolsModule) {
+      const updatedCode = JSON.stringify(
+        Object.assign(JSON.parse(devtoolsModule.code), update)
+      );
+      actions.editor.codeChanged({
+        moduleShortid: devtoolsModule.shortid,
+        code: updatedCode,
+      });
+      await actions.editor.codeSaved({
+        code: updatedCode,
+        moduleShortid: devtoolsModule.shortid,
+        cbID: null,
+      });
+    } else {
+      await actions.files.createModulesByPath({
+        files: {
+          '/.codesandbox/workspace.json': {
+            content: JSON.stringify(update, null, 2),
+            isBinary: false,
+          },
+        },
+      });
+    }
+  } else {
+    state.editor.workspaceConfigCode = JSON.stringify(
+      state.editor.workspaceConfigCode
+        ? Object.assign(JSON.parse(state.editor.workspaceConfigCode), update)
+        : update,
+      null,
+      2
+    );
+  }
 };

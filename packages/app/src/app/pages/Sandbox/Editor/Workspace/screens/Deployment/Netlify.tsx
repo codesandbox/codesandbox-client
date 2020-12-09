@@ -1,34 +1,34 @@
-import React, { useEffect } from 'react';
 import getTemplate from '@codesandbox/common/lib/templates';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useOvermind } from 'app/overmind';
-
 import {
+  Button,
   Element,
-  ListAction,
-  Text,
+  Integration,
   Link,
   List,
+  ListAction,
   ListItem,
-  Button,
-  Integration,
+  Text,
 } from '@codesandbox/components';
+import React, { FunctionComponent, useEffect } from 'react';
 
-import { NetlifyIcon, FileIcon, VisitIcon, FlagIcon } from './icons';
+import { useOvermind } from 'app/overmind';
 
-export const Netlify = () => {
+import { FileIcon, FlagIcon, NetlifyIcon, VisitIcon } from './icons';
+
+export const Netlify: FunctionComponent = () => {
   const {
     actions: {
-      modalOpened,
       deployment: { deployWithNetlify, getNetlifyDeploys },
+      modalOpened,
     },
     state: {
       deployment: {
-        deploying,
-        netlifySite,
         building,
-        netlifyLogs,
+        deploying,
         netlifyClaimUrl,
+        netlifyLogs,
+        netlifySite,
       },
       editor: { currentSandbox },
     },
@@ -42,19 +42,20 @@ export const Netlify = () => {
 
   return (
     template.netlify !== false && (
-      <>
-        <Integration icon={NetlifyIcon} title="Netlify">
-          <Element marginX={2} marginBottom={netlifySite ? 6 : 0}>
-            <Text variant="muted" block marginBottom={4}>
+      <Integration icon={NetlifyIcon} title="Netlify">
+          <Element marginBottom={netlifySite ? 6 : 0} marginX={2}>
+            <Text block marginBottom={4} variant="muted">
               Deploy your sandbox site to{' '}
               <Link href="https://www.netlify.com/" target="_blank">
                 Netlify
               </Link>
             </Text>
+
             <Button
               disabled={deploying || building}
               onClick={() => {
                 track('Deploy Clicked', { provider: 'netlify' });
+
                 deployWithNetlify();
               }}
             >
@@ -67,13 +68,14 @@ export const Netlify = () => {
               <ListItem>
                 <Text weight="bold">{netlifySite.name}</Text>
               </ListItem>
-              {building && !netlifyLogs && (
+
+              {building && !netlifyLogs ? (
                 <ListItem>
                   <Text variant="muted">Building</Text>
                 </ListItem>
-              )}
+              ) : null}
 
-              {netlifySite.url && (
+              {netlifySite.url ? (
                 <ListAction
                   onClick={() => window.open(netlifySite.url, '_blank')}
                 >
@@ -82,9 +84,9 @@ export const Netlify = () => {
                   </Element>{' '}
                   Visit Site
                 </ListAction>
-              )}
+              ) : null}
 
-              {netlifySite.url && (
+              {netlifySite.url ? (
                 <ListAction
                   onClick={() => window.open(netlifyClaimUrl, '_blank')}
                 >
@@ -93,9 +95,9 @@ export const Netlify = () => {
                   </Element>{' '}
                   Claim Site
                 </ListAction>
-              )}
+              ) : null}
 
-              {netlifyLogs && (
+              {netlifyLogs ? (
                 <ListAction
                   onClick={() => modalOpened({ modal: 'netlifyLogs' })}
                 >
@@ -104,11 +106,10 @@ export const Netlify = () => {
                   </Element>{' '}
                   View Logs
                 </ListAction>
-              )}
+              ) : null}
             </List>
           )}
         </Integration>
-      </>
     )
   );
 };

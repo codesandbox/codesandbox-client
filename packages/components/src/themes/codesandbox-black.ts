@@ -47,7 +47,6 @@ const colors = {
   },
   editorBracketMatch: {
     background: tokens.grays[600],
-    border: tokens.grays[600],
   },
   editorCodeLens: {
     foreground: tokens.grays[600],

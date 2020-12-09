@@ -1,11 +1,9 @@
 import {
   IAction,
   IConfig,
-  IDerive,
   IOnInitialize,
   IOperator,
   IReaction,
-  IState,
   Overmind,
 } from 'overmind';
 import { createHook } from 'overmind-react';
@@ -30,6 +28,7 @@ import * as profile from './namespaces/profile';
 import * as server from './namespaces/server';
 import * as userNotifications from './namespaces/userNotifications';
 import * as workspace from './namespaces/workspace';
+import * as preview from './namespaces/preview';
 import { onInitialize } from './onInitialize';
 import { state } from './state';
 
@@ -55,31 +54,36 @@ export const config = merge(
     profile,
     server,
     comments,
+    preview,
     modals: createModals(modals),
   })
 );
 
-export interface Config extends IConfig<typeof config> {}
+export interface Config
+  extends IConfig<{
+    state: typeof config.state;
+    actions: typeof config.actions;
+    effects: typeof config.effects;
+  }> { }
 
-export interface OnInitialize extends IOnInitialize<Config> {}
+export type RootState = typeof config.state;
+
+export interface OnInitialize extends IOnInitialize<Config> { }
 
 export interface Action<Input = void, Output = void>
-  extends IAction<Config, Input, Output> {}
+  extends IAction<Config, Input, Output> { }
 
 export interface AsyncAction<Input = void, Output = void>
-  extends IAction<Config, Input, Promise<Output>> {}
+  extends IAction<Config, Input, Promise<Output>> { }
 
 export interface Operator<Input = void, Output = Input>
-  extends IOperator<Config, Input, Output> {}
+  extends IOperator<Config, Input, Output> { }
 
-export interface Derive<Parent extends IState, Output>
-  extends IDerive<Config, Parent, Output> {}
+export interface Reaction extends IReaction<Config> { }
 
-export interface Reaction extends IReaction<Config> {}
+export const connect = createConnect<Config>();
 
-export const connect = createConnect<typeof config>();
-
-export const useOvermind = createHook<typeof config>();
+export const useOvermind = createHook<Config>();
 
 export const Observer: React.FC<{
   children: <T>(overmind: {

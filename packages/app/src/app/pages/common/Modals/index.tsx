@@ -1,20 +1,22 @@
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
+import { ThemeProvider } from '@codesandbox/components';
 import {
   COLUMN_MEDIA_THRESHOLD,
   CreateSandbox,
 } from 'app/components/CreateNewSandbox/CreateSandbox';
+import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
-import Loadable from 'app/utils/Loadable';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { ThemeProvider } from '@codesandbox/components';
 
-import CommitModal from './CommitModal';
+import { AddPreset } from './AddPreset';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
+import { DeletePreset } from './DeletePreset';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
 import { DeploymentModal } from './DeploymentModal';
+import { EditPresets } from './EditPresets';
 import { EmptyTrash } from './EmptyTrash';
 import ExportGitHubModal from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
@@ -23,21 +25,20 @@ import { LiveSessionEnded } from './LiveSessionEnded';
 import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
-import PreferencesModal from './PreferencesModal';
-import { PRModal } from './PRModal';
+import { PreferencesModal } from './PreferencesModal';
+import { RecoverFilesModal } from './RecoverFilesModal';
+import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
 import SignInForTemplates from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
+import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
-
-const MoveSandboxFolderModal = Loadable(() =>
-  import('./MoveSandboxFolderModal').then(module => ({
-    default: module.MoveSandboxFolderModal,
-  }))
-);
+import { DeleteWorkspace } from './DeleteWorkspace';
+import { MinimumPrivacyModal } from './MinimumPrivacyModal';
+import { GenericAlertModal } from './GenericAlertModal';
 
 const modals = {
   preferences: {
@@ -54,22 +55,26 @@ const modals = {
   },
   deployment: {
     Component: DeploymentModal,
+    width: 600,
+  },
+  deleteWorkspace: {
+    Component: DeleteWorkspace,
+    width: 400,
+  },
+  recoveredFiles: {
+    Component: RecoverFilesModal,
+    width: 400,
+  },
+  teamInvite: {
+    Component: TeamInviteModal,
     width: 400,
   },
   exportGithub: {
     Component: ExportGitHubModal,
     width: 400,
   },
-  commit: {
-    Component: CommitModal,
-    width: 400,
-  },
   signInForTemplates: {
     Component: SignInForTemplates,
-    width: 400,
-  },
-  pr: {
-    Component: PRModal,
     width: 400,
   },
   netlifyLogs: {
@@ -92,6 +97,18 @@ const modals = {
     Component: DeleteProfileSandboxModal,
     width: 400,
   },
+  deletePreset: {
+    Component: DeletePreset,
+    width: 400,
+  },
+  addPreset: {
+    Component: AddPreset,
+    width: 400,
+  },
+  editPresets: {
+    Component: EditPresets,
+    width: 600,
+  },
   emptyTrash: {
     Component: EmptyTrash,
     width: 400,
@@ -102,7 +119,7 @@ const modals = {
   },
   searchDependencies: {
     Component: SearchDependenciesModal,
-    width: 600,
+    width: 716,
   },
   liveSessionEnded: {
     Component: LiveSessionEnded,
@@ -124,10 +141,6 @@ const modals = {
     Component: ForkServerModal,
     width: 400,
   },
-  moveSandbox: {
-    Component: MoveSandboxFolderModal,
-    width: 350,
-  },
   feedback: {
     Component: FeedbackModal,
     width: 450,
@@ -136,12 +149,24 @@ const modals = {
     Component: SurveyModal,
     width: 850,
   },
+  sandboxPicker: {
+    Component: SandboxPickerModal,
+    width: '90%',
+    top: 10, // vh
+  },
+  minimumPrivacy: {
+    Component: MinimumPrivacyModal,
+    width: 450,
+  },
 };
 
 const Modals: FunctionComponent = () => {
+  const [themeProps, setThemeProps] = useState({});
+  const { pathname } = useLocation();
   const {
     actions,
     state: {
+      modals: stateModals,
       preferences: {
         settings: { customVSCodeTheme },
       },
@@ -171,16 +196,26 @@ const Modals: FunctionComponent = () => {
     }
   }, [localState.customVSCodeTheme, customVSCodeTheme]);
 
-  const modal = currentModal && modals[currentModal];
+  useEffect(() => {
+    setThemeProps(
+      pathname.includes('/s/')
+        ? {
+            theme: localState.theme.vscodeTheme,
+          }
+        : {}
+    );
+  }, [pathname, localState]);
 
+  const modal = currentModal && modals[currentModal];
   return (
-    <ThemeProvider theme={localState.theme.vscodeTheme}>
+    <ThemeProvider {...themeProps}>
       <Modal
         isOpen={Boolean(modal)}
         width={
           modal &&
           (typeof modal.width === 'function' ? modal.width() : modal.width)
         }
+        top={modal && modal.top}
         onClose={isKeyDown => actions.modalClosed()}
       >
         {modal
@@ -189,6 +224,8 @@ const Modals: FunctionComponent = () => {
             })
           : null}
       </Modal>
+
+      {stateModals.alertModal.isCurrent && <GenericAlertModal />}
     </ThemeProvider>
   );
 };

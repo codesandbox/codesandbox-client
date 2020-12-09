@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTooltip, TooltipPopup } from '@reach/tooltip';
+import { useTooltip, TooltipPopup, Position } from '@reach/tooltip';
 import '@reach/tooltip/styles.css';
 import Portal from '@reach/portal';
 import {
@@ -58,7 +58,7 @@ const animation = styledcss`
  * so we apply global styles with their [data-reach-name]
  */
 
-const TooltipStyles = createGlobalStyle(
+export const TooltipStyles = createGlobalStyle(
   css({
     '[data-reach-tooltip][data-component=Tooltip]': {
       backgroundColor: 'grays.900',
@@ -70,7 +70,7 @@ const TooltipStyles = createGlobalStyle(
       paddingY: 1,
       fontSize: 3,
       lineHeight: 1,
-      zIndex: 3,
+      zIndex: 20, // TODO: we need to sort out our z indexes!
 
       // multiline
       maxWidth: 160,
@@ -80,6 +80,10 @@ const TooltipStyles = createGlobalStyle(
   }),
   animation
 );
+interface TooltipProps {
+  label: string | null;
+  children: React.ReactElement;
+}
 
 /** Dragon number 3:
  * to attach a triangle and transitions to the tooltip,
@@ -87,13 +91,20 @@ const TooltipStyles = createGlobalStyle(
  * TooltipPopup and create the triangle in another component
  */
 
-const Tooltip = props => {
+/**
+ * Render a tooltip around the children, if you pass `null` to `label` the Tooltip
+ * won't be rendered.
+ */
+const Tooltip: React.FC<TooltipProps> = props => {
   const [trigger, tooltip] = useTooltip();
   const { isVisible, triggerRect } = tooltip;
 
+  if (props.label === null) {
+    return props.children;
+  }
+
   return (
     <>
-      <TooltipStyles />
       {React.cloneElement(props.children, trigger)}
       <TooltipPopup
         {...tooltip}
@@ -107,13 +118,17 @@ const Tooltip = props => {
 };
 
 // center the tooltip with respect to the trigger
-const centered = (triggerRect, tooltipRect) => {
-  const triggerCenter = triggerRect.left + triggerRect.width / 2;
-  const left = triggerCenter - tooltipRect.width / 2;
-  const maxLeft = window.innerWidth - tooltipRect.width - 2;
+const centered: Position = (targetRect, popoverRect) => {
+  if (!targetRect || !popoverRect) {
+    return {};
+  }
+
+  const triggerCenter = targetRect.left + targetRect.width / 2;
+  const left = triggerCenter - popoverRect.width / 2;
+  const maxLeft = window.innerWidth - popoverRect.width - 2;
   return {
     left: Math.min(Math.max(2, left), maxLeft) + window.scrollX,
-    top: triggerRect.bottom + 8 + window.scrollY,
+    top: targetRect.bottom + 8 + window.scrollY,
   };
 };
 

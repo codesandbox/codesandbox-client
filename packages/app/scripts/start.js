@@ -20,9 +20,7 @@ const { staticAssets } = require('../config/build');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
-const PROXY_DOMAIN = process.env.STAGING_API
-  ? 'https://codesandbox.stream'
-  : 'https://codesandbox.io';
+const PROXY_DOMAIN = process.env.ENDPOINT || 'https://codesandbox.io';
 var compiler;
 var handleCompile;
 var compileStart;
@@ -320,6 +318,9 @@ function run(port) {
   if (process.env.LOCAL_SERVER) {
     // Sandbox server
     const proxy = httpProxy.createProxyServer({});
+    proxy.on('error', error => {
+      console.error('Got an error', error);
+    });
     http
       .createServer(function(req, res) {
         if (req.url.includes('.js')) {

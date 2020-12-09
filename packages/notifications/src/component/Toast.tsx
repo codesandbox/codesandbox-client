@@ -1,13 +1,19 @@
 import * as React from 'react';
+import { Stack, Element, Text } from '@codesandbox/components';
 
 import { NotificationToast } from './Toasts';
 import { NotificationStatus } from '../state';
-
 import { ErrorIcon } from './icons/ErrorIcon';
 import { SuccessIcon } from './icons/SuccessIcon';
 import { WarningIcon } from './icons/WarningIcon';
 import { InfoIcon } from './icons/InfoIcon';
-import { StyledCrossIcon } from './elements';
+import {
+  StyledCrossIcon,
+  Container,
+  ColorLine,
+  InnerWrapper,
+  TertiaryButton,
+} from './elements';
 
 const getColor = (colors: IColors, status: NotificationStatus) =>
   colors[status];
@@ -35,10 +41,9 @@ export interface IColors {
 }
 
 export type IButtonType = React.ComponentType<{
-  small?: boolean;
-  secondary?: boolean;
   style?: React.CSSProperties;
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  variant: 'primary' | 'secondary' | 'link' | 'danger';
 }>;
 
 export type Props = {
@@ -50,139 +55,100 @@ export type Props = {
 };
 
 export function Toast({ toast, removeToast, getRef, colors, Button }: Props) {
-  const Icon = getIcon(toast.notification.status);
+  const {
+    notification: { actions, title, message, status },
+  } = toast;
+  const Icon = getIcon(status);
+  const fullWidth = { width: '100%' };
+
+  const action = (type: 'primary' | 'secondary') => {
+    if (actions) {
+      if (Array.isArray(actions[type])) {
+        return actions[type][0];
+      }
+
+      return actions[type];
+    }
+
+    return null;
+  };
+
   return (
-    <div
+    <Container
+      // @ts-ignore
       ref={getRef}
-      style={{
-        display: 'flex',
-        backgroundColor: '#141618',
-        color: 'white',
-        borderRadius: 3,
-        position: 'relative',
-
-        width: 450,
-        overflow: 'hidden',
-        marginBottom: '0.5rem',
-      }}
+      marginBottom={2}
     >
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          backgroundColor: getColor(colors, toast.notification.status),
-          width: 4,
-        }}
-      />
-      <div style={{ display: 'flex', padding: '.75rem 1rem', width: '100%' }}>
-        <div
-          style={{
-            color: getColor(colors, toast.notification.status),
-            width: 32,
-            fontSize: '1.25rem',
-            lineHeight:
-              toast.notification.message && toast.notification.title
-                ? 1.4
-                : undefined,
-            verticalAlign: 'middle',
-          }}
-        >
-          <Icon />
-        </div>
-        <div style={{ width: '100%' }}>
-          <div style={{ display: 'flex', width: '100%' }}>
-            <div style={{ width: '100%' }}>
-              <div
-                style={{
-                  fontSize: '.875rem',
-                  fontWeight: 500,
-                  color: 'white',
-                  fontFamily: 'Poppins, sans-serif',
-                  marginBottom:
-                    toast.notification.title && toast.notification.message
-                      ? '.5rem'
-                      : 0,
-                  lineHeight: 1.6,
-                }}
+      <ColorLine bg={getColor(colors, status)} />
+      <InnerWrapper padding={4}>
+        <Element style={fullWidth}>
+          <Stack style={fullWidth}>
+            <Element style={fullWidth}>
+              <Stack
+                marginBottom={title && message ? 3 : 0}
+                align="center"
+                gap={2}
               >
-                {toast.notification.title
-                  ? toast.notification.title
-                  : toast.notification.message}
-              </div>
-
-              {toast.notification.title && (
-                <div
+                <Stack style={{ color: getColor(colors, status) }}>
+                  <Icon />
+                </Stack>
+                <Text
                   style={{
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    fontSize: '.875rem',
+                    fontWeight: 500,
                   }}
                 >
-                  {toast.notification.message}
-                </div>
+                  {title || message}
+                </Text>
+              </Stack>
+
+              {title && (
+                <Text size={3} block>
+                  {message}
+                </Text>
               )}
-            </div>
+            </Element>
 
-            <div style={{ width: 24 }}>
-              <StyledCrossIcon onClick={() => removeToast(toast.id)} />
-            </div>
-          </div>
+            <StyledCrossIcon onClick={() => removeToast(toast.id)} />
+          </Stack>
 
-          <div>
-            {toast.notification.actions && (
-              <div
-                style={{
-                  display: 'flex',
-                  fontSize: '.875rem',
-                }}
-              >
-                {toast.notification.actions.primary &&
-                  toast.notification.actions.primary.map(primary => (
-                    <Button
-                      small
-                      onClick={() => {
-                        // By default we hide the notification on clicking primary buttons
-                        if (primary.hideOnClick !== false) {
-                          removeToast(toast.id);
-                        }
-                        primary.run();
-                      }}
-                      style={{
-                        marginTop: '1rem',
-                        marginRight: '0.75rem',
-                        lineHeight: 1,
-                      }}
-                    >
-                      {primary.label}
-                    </Button>
-                  ))}
-
-                {toast.notification.actions.secondary &&
-                  toast.notification.actions.secondary.map(secondary => (
-                    <Button
-                      secondary
-                      small
-                      onClick={() => {
-                        if (secondary.hideOnClick) {
-                          removeToast(toast.id);
-                        }
-                        secondary.run();
-                      }}
-                      style={{
-                        marginTop: '1rem',
-                        marginRight: '0.75rem',
-                        lineHeight: 1,
-                      }}
-                    >
-                      {secondary.label}
-                    </Button>
-                  ))}
-              </div>
+          <Element>
+            {actions && (
+              <Stack marginTop={3} gap={2} justify="flex-end">
+                {action('secondary') && (
+                  <TertiaryButton
+                    variant="secondary"
+                    onClick={() => {
+                      if (action('secondary').hideOnClick) {
+                        removeToast(toast.id);
+                      }
+                      action('secondary').run();
+                    }}
+                  >
+                    {action('secondary').label}
+                  </TertiaryButton>
+                )}
+                {action('primary') && (
+                  <Button
+                    variant="secondary"
+                    style={{
+                      width: 'auto',
+                    }}
+                    onClick={() => {
+                      // By default we hide the notification on clicking action("primary") buttons
+                      if (action('primary').hideOnClick !== false) {
+                        removeToast(toast.id);
+                      }
+                      action('primary').run();
+                    }}
+                  >
+                    {action('primary').label}
+                  </Button>
+                )}
+              </Stack>
             )}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Element>
+        </Element>
+      </InnerWrapper>
+    </Container>
   );
 }

@@ -13,7 +13,7 @@ export const restartSandbox: Action = ({ effects }) => {
   effects.executor.emit('sandbox:restart');
 };
 
-export const restartContainer: Action = ({ state, effects }) => {
+export const restartContainer: Action = ({ effects, state }) => {
   state.server.containerStatus = ServerContainerStatus.INITIALIZING;
   effects.executor.emit('sandbox:restart-container');
 };
@@ -115,14 +115,10 @@ export const onSSEMessage: Action<{
             message: `The server is listening on port ${port.port}, do you want to open it?`,
             status: NotificationStatus.NOTICE,
             actions: {
-              primary: [
-                {
-                  label: 'Open Browser Pane',
-                  run: () => {
-                    actions.server.onBrowserFromPortOpened({ port });
-                  },
-                },
-              ],
+              primary: {
+                label: 'Open Browser Pane',
+                run: () => actions.server.onBrowserFromPortOpened(port),
+              },
             },
           });
         }
@@ -174,16 +170,13 @@ export const onCodeSandboxAPIMessage: Action<{
 };
 
 type BrowserOptions = { title?: string; url?: string } & (
-  | {
-      port: number;
-    }
+  | { port: number }
   | { url: string }
 );
-
 export const onBrowserTabOpened: Action<{
   closeable?: boolean;
   options?: BrowserOptions;
-}> = ({ actions, state }, { options, closeable }) => {
+}> = ({ actions, state }, { closeable, options }) => {
   const tab: ViewTab = {
     id: 'codesandbox.browser',
   };
@@ -208,17 +201,18 @@ export const onBrowserTabOpened: Action<{
   }
 };
 
-export const onBrowserFromPortOpened: Action<{
-  port: ServerPort;
-}> = ({ actions }, { port }) => {
-  if (port.main) {
+export const onBrowserFromPortOpened: Action<ServerPort> = (
+  { actions },
+  { hostname, main, port }
+) => {
+  if (main) {
     actions.server.onBrowserTabOpened({});
   } else {
     actions.server.onBrowserTabOpened({
       closeable: true,
       options: {
-        port: port.port,
-        url: `https://${port.hostname}`,
+        port,
+        url: `https://${hostname}`,
       },
     });
   }

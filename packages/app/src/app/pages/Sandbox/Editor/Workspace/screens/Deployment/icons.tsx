@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { FunctionComponent, SVGProps } from 'react';
 
-export const NetlifyIcon = props => (
+type IconProps = SVGProps<SVGSVGElement>;
+
+export const NetlifyIcon: FunctionComponent<IconProps> = props => (
   <svg width={11} height={11} fill="none" viewBox="0 0 40 40" {...props}>
     <path
       fill="url(#paint0_radial)"
@@ -24,13 +26,13 @@ export const NetlifyIcon = props => (
   </svg>
 );
 
-export const ZeitIcon = props => (
+export const VercelIcon: FunctionComponent<IconProps> = props => (
   <svg width={12} height={10} fill="none" viewBox="0 0 12 10" {...props}>
     <path fill="currentColor" d="M6 0l6 10H0L6 0z" />
   </svg>
 );
 
-export const FileIcon = props => (
+export const FileIcon: FunctionComponent<IconProps> = props => (
   <svg width={8} height={11} fill="none" viewBox="0 0 8 11" {...props}>
     <mask id="path-1-inside-1" fill="#fff">
       <path
@@ -53,7 +55,7 @@ export const FileIcon = props => (
   </svg>
 );
 
-export const VisitIcon = props => (
+export const VisitIcon: FunctionComponent<IconProps> = props => (
   <svg width={12} height={12} fill="none" viewBox="0 0 12 12" {...props}>
     <path
       fill="#999"
@@ -62,7 +64,7 @@ export const VisitIcon = props => (
   </svg>
 );
 
-export const FlagIcon = props => (
+export const FlagIcon: FunctionComponent<IconProps> = props => (
   <svg width={9} height={11} fill="none" viewBox="0 0 9 11" {...props}>
     <path
       fill="#999"
@@ -73,7 +75,7 @@ export const FlagIcon = props => (
   </svg>
 );
 
-export const TrashIcon = props => (
+export const TrashIcon: FunctionComponent<IconProps> = props => (
   <svg width={10} height={12} fill="none" viewBox="0 0 10 12" {...props}>
     <path
       fill="#999"

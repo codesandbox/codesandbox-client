@@ -41,7 +41,7 @@ export const FilesList: FunctionComponent = () => {
     <Element marginTop={4}>
       <Stack gap={2} marginBottom={6} justify="space-between">
         <Button
-          style={{ width: 'auto' }}
+          autoWidth
           disabled={selectedItems.length === 0 || !currentSandbox}
           onClick={() => getSelection().map(addedFileToSandbox)}
         >
@@ -50,7 +50,7 @@ export const FilesList: FunctionComponent = () => {
 
         <Button
           variant="danger"
-          style={{ width: 'auto' }}
+          autoWidth
           disabled={selectedItems.length === 0}
           onClick={() => selectedItems.map(deletedUploadedFile)}
         >

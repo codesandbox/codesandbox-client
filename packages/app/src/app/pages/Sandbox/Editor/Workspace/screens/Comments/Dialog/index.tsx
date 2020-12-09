@@ -1,4 +1,5 @@
-import { ENTER, ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { UserQuery } from '@codesandbox/common/lib/types';
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import {
   Avatar,
@@ -7,17 +8,22 @@ import {
   Menu,
   Stack,
   Text,
-  Textarea,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { Markdown } from 'app/components/Markdown';
 import {
   DIALOG_TRANSITION_DURATION,
   DIALOG_WIDTH,
   REPLY_TRANSITION_DELAY,
 } from 'app/constants';
-import { CommentFragment } from 'app/graphql/types';
+import { CommentWithRepliesFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
+import { Image } from 'app/components/Markdown/Image'
+import {
+  convertImageReferencesToMarkdownImages,
+  convertUserReferencesToMentions,
+} from 'app/overmind/utils/comments';
 import { motion, useAnimation } from 'framer-motion';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -25,18 +31,23 @@ import { createGlobalStyle } from 'styled-components';
 
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
-import { Markdown } from './Markdown';
+import { useCodesandboxCommentEditor } from '../hooks/useCodesandboxCommentEditor';
 import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
 
-export const CommentDialog = props =>
+interface CommentDialogProps {
+  comment: CommentWithRepliesFragment;
+}
+
+
+export const CommentDialog: React.FC<CommentDialogProps> = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
-export const Dialog: React.FC = () => {
+export const Dialog: React.FC<CommentDialogProps> = props => {
   const { state, actions } = useOvermind();
   const controller = useAnimation();
 
-  const comment = state.comments.currentComment;
+  const { comment } = props;
   const replies = comment.comments;
 
   // This comment doens't exist in the database, it's an optimistic comment
@@ -76,7 +87,6 @@ export const Dialog: React.FC = () => {
     isCodeComment,
     isNewComment,
     repliesRendered,
-    comment.comments.length,
   ]);
 
   React.useEffect(() => {
@@ -87,8 +97,8 @@ export const Dialog: React.FC = () => {
 
   const onDragHandlerPan = (deltaX: number, deltaY: number) => {
     controller.set((_, target) => ({
-      x: Number(target.x) + deltaX,
-      y: Number(target.y) + deltaY,
+      x: Math.round(Number(target.x) + deltaX),
+      y: Math.round(Number(target.y) + deltaY),
     }));
     setDragging(true);
   };
@@ -133,17 +143,23 @@ export const Dialog: React.FC = () => {
             borderColor: 'dialog.border',
             borderRadius: 4,
             width: DIALOG_WIDTH,
+            paddingBottom: 4,
             height: 'auto',
             maxHeight: '80vh',
             fontFamily: 'Inter, sans-serif',
-            overflow: 'hidden',
             boxShadow: 2,
           })}
         >
           {isNewComment && editing ? (
             <DialogAddComment
               comment={comment}
-              onSave={() => setEditing(false)}
+              onSave={(content, mentions) => {
+                actions.comments.saveOptimisticComment({
+                  content,
+                  mentions,
+                });
+                setEditing(false);
+              }}
               onDragHandlerPan={onDragHandlerPan}
               onDragHandlerPanEnd={onDragHandlerPanEnd}
             />
@@ -155,7 +171,17 @@ export const Dialog: React.FC = () => {
               >
                 <DialogHeader comment={comment} hasShadow={scrollTop > 0} />
               </DragHandle>
-              <Element as="div" css={{ overflow: 'auto' }} ref={listRef}>
+              <Element
+                as="div"
+                css={
+                  editing
+                    ? null
+                    : {
+                        overflow: 'auto',
+                      }
+                }
+                ref={listRef}
+              >
                 <CommentBody
                   comment={comment}
                   editing={editing}
@@ -189,28 +215,47 @@ export const Dialog: React.FC = () => {
   );
 };
 
+const PreviewScreenshot: React.FC<{url: string}> = ({ url }) => (
+    <Element css={css({
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingBottom: 4,
+      'img': {
+        maxWidth: '100%'
+      }
+    })}><Image src={url} alt="Preview Screenshot" ignorePrivateSandboxRestriction /></Element>
+  )
+
 const DialogAddComment: React.FC<{
-  comment: CommentFragment;
-  onSave: () => void;
+  comment: CommentWithRepliesFragment;
+  onSave: (value: string, mentions: { [username: string]: UserQuery }) => void;
   onDragHandlerPan: (deltaX: number, deltaY: number) => void;
   onDragHandlerPanEnd: () => void;
 }> = ({ comment, onSave, onDragHandlerPan, onDragHandlerPanEnd }) => {
   const { actions } = useOvermind();
-  const [value, setValue] = useState('');
-
-  const saveComment = async () => {
-    await actions.comments.updateComment({
-      commentId: comment.id,
-      content: value,
-    });
-    setValue('');
-    onSave();
-  };
+  const [elements] = useCodesandboxCommentEditor({
+    initialValue: '',
+    initialMentions: {},
+    initialImages: {},
+    onSubmit: onSave,
+    fixed: false,
+    props: {
+      autosize: true,
+      autoFocus: true,
+      css: css({
+        backgroundColor: 'transparent',
+        border: 'none',
+        paddingLeft: 4,
+      }),
+      style: { lineHeight: 1.2, minHeight: 32 },
+    },
+  });
 
   const closeDialog = () => actions.comments.closeComment();
 
   return (
-    <Stack direction="vertical" css={css({ paddingBottom: 4 })}>
+    <Stack direction="vertical">
       <DragHandle onPan={onDragHandlerPan} onPanEnd={onDragHandlerPanEnd}>
         <Stack
           justify="space-between"
@@ -238,25 +283,8 @@ const DialogAddComment: React.FC<{
           />
         </Stack>
       </DragHandle>
-      <Textarea
-        autosize
-        autoFocus
-        css={css({
-          backgroundColor: 'transparent',
-          border: 'none',
-          paddingLeft: 4,
-        })}
-        style={{ lineHeight: 1.2, minHeight: 32 }}
-        value={value}
-        onChange={e => setValue(e.target.value)}
-        placeholder="Add comment..."
-        onKeyDown={async event => {
-          if (event.keyCode === ENTER && !event.shiftKey) {
-            saveComment();
-            event.preventDefault();
-          }
-        }}
-      />
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={(comment.anchorReference.metadata as any).screenshotUrl} /> : null}
+      {elements}
     </Stack>
   );
 };
@@ -396,6 +424,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
           </Menu>
         </Stack>
       </Stack>
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={comment.anchorReference.metadata.screenshotUrl} /> : null}
       <Element
         marginY={0}
         marginX={4}
@@ -407,15 +436,25 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
       >
         {!editing ? (
           <Element itemProp="text">
-            <Markdown source={comment.content} />
+            <Markdown
+              source={convertImageReferencesToMarkdownImages(
+                comment.content,
+                comment.references
+              )}
+            />
           </Element>
         ) : (
           <EditComment
             initialValue={comment.content}
-            onSave={async newValue => {
+            initialMentions={convertUserReferencesToMentions(
+              comment.references
+            )}
+            onSave={async (newValue, mentions, images) => {
               await comments.updateComment({
                 commentId: comment.id,
                 content: newValue,
+                mentions,
+                images,
               });
               setEditing(false);
             }}
@@ -608,52 +647,43 @@ const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
           listStyle: 'none',
         }}
       >
-        <>
-          {replies.map(
-            reply => reply && <Reply reply={reply} key={reply.id} />
-          )}
-        </>
+        {replies.map(reply => reply && <Reply reply={reply} key={reply.id} />)}
       </motion.ul>
     </>
   );
 };
 
-const AddReply = ({ comment, ...props }) => {
+const AddReply: React.FC<any> = ({ comment, ...props }) => {
   const { actions } = useOvermind();
-  const [value, setValue] = useState('');
-
-  const onSubmit = e => {
-    e.preventDefault();
-    actions.comments.addComment({
-      content: value,
-      parentCommentId: comment.id,
-    });
-    setValue('');
-    if (props.onSubmit) props.onSubmit();
-  };
-
-  return (
-    <Textarea
-      autosize
-      css={css({
+  const [elements] = useCodesandboxCommentEditor({
+    initialValue: '',
+    initialMentions: {},
+    initialImages: {},
+    onSubmit: (value, mentions, images) => {
+      actions.comments.saveNewComment({
+        content: value,
+        mentions,
+        images,
+        parentCommentId: comment.id,
+      });
+      if (props.onSubmit) props.onSubmit();
+    },
+    fixed: false,
+    props: {
+      autosize: true,
+      css: css({
         backgroundColor: 'transparent',
         border: 'none',
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
         borderRadius: 0,
         padding: 4,
-      })}
-      style={{ lineHeight: 1.2, minHeight: 54 }}
-      value={value}
-      onChange={e => setValue(e.target.value)}
-      placeholder="Reply..."
-      onKeyDown={e => {
-        if (e.keyCode === ENTER && !e.shiftKey) {
-          onSubmit(e);
-        }
-      }}
-    />
-  );
+      }),
+      style: { lineHeight: 1.2, minHeight: 54 },
+    },
+  });
+
+  return elements;
 };
 
 /** We use an transparent overlay when dragging
@@ -700,7 +730,6 @@ const getInitialPosition = currentCommentPositions => {
 const getEndPosition = (currentCommentPositions, isCodeComment, dialogRef) => {
   const OVERLAP_WITH_SIDEBAR = -20;
   const OFFSET_TOP_FOR_ALIGNMENT = -90;
-  const OFFSET_FOR_CODE = 500;
 
   let dialogPosition = { x: null, y: null };
 
@@ -708,7 +737,7 @@ const getEndPosition = (currentCommentPositions, isCodeComment, dialogRef) => {
     // if we know the expected dialog position
     // true for comments with code reference
     dialogPosition = {
-      x: currentCommentPositions.dialog.left + OFFSET_FOR_CODE,
+      x: currentCommentPositions.dialog.left,
       y: currentCommentPositions.dialog.top + OFFSET_TOP_FOR_ALIGNMENT,
     };
   } else if (currentCommentPositions?.trigger) {
@@ -717,7 +746,7 @@ const getEndPosition = (currentCommentPositions, isCodeComment, dialogRef) => {
 
     if (isCodeComment) {
       dialogPosition = {
-        x: currentCommentPositions.trigger.right + OFFSET_FOR_CODE,
+        x: currentCommentPositions.trigger.right,
         y: currentCommentPositions.trigger.top + OFFSET_TOP_FOR_ALIGNMENT,
       };
     } else {

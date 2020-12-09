@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'overmind-graphql';
 
 export const sandboxFragmentDashboard = gql`
   fragment sandboxFragmentDashboard on Sandbox {
@@ -10,10 +10,9 @@ export const sandboxFragmentDashboard = gql`
     updatedAt
     removedAt
     privacy
+    isFrozen
     screenshotUrl
     screenshotOutdated
-    likeCount
-    forkCount
     viewCount
 
     source {
@@ -27,19 +26,46 @@ export const sandboxFragmentDashboard = gql`
     forkedTemplate {
       id
       color
+      iconUrl
     }
 
     collection {
       path
-      teamId
     }
+
+    authorId
+    teamId
   }
+`;
+
+export const repoFragmentDashboard = gql`
+  fragment repoFragmentDashboard on Sandbox {
+    ...sandboxFragmentDashboard
+    baseGit {
+      branch
+      id
+      repo
+      username
+      path
+    }
+    originalGit {
+      branch
+      id
+      repo
+      username
+      path
+    }
+    prNumber
+  }
+
+  ${sandboxFragmentDashboard}
 `;
 
 export const sidebarCollectionDashboard = gql`
   fragment sidebarCollectionDashboard on Collection {
     id
     path
+    sandboxCount
   }
 `;
 
@@ -50,22 +76,19 @@ export const templateFragmentDashboard = gql`
     iconUrl
     published
     sandbox {
-      id
-      alias
-      title
-      description
-      insertedAt
-      updatedAt
-      likeCount
-      forkCount
-      viewCount
-      screenshotUrl
-      screenshotOutdated
+      ...sandboxFragmentDashboard
 
-      collection {
-        team {
-          name
-        }
+      git {
+        id
+        username
+        commitSha
+        path
+        repo
+        branch
+      }
+
+      team {
+        name
       }
 
       author {
@@ -77,6 +100,7 @@ export const templateFragmentDashboard = gql`
       }
     }
   }
+  ${sandboxFragmentDashboard}
 `;
 
 export const teamFragmentDashboard = gql`
@@ -85,6 +109,16 @@ export const teamFragmentDashboard = gql`
     name
     description
     creatorId
+    avatarUrl
+
+    settings {
+      minimumPrivacy
+    }
+
+    userAuthorizations {
+      userId
+      authorization
+    }
 
     users {
       id
@@ -99,5 +133,51 @@ export const teamFragmentDashboard = gql`
       username
       avatarUrl
     }
+  }
+`;
+
+export const currentTeamInfoFragment = gql`
+  fragment currentTeamInfoFragment on Team {
+    id
+    creatorId
+    description
+    inviteToken
+    joinedPilotAt
+    name
+    avatarUrl
+
+    users {
+      id
+      avatarUrl
+      username
+    }
+
+    invitees {
+      id
+      avatarUrl
+      username
+    }
+
+    userAuthorizations {
+      userId
+      authorization
+    }
+
+    settings {
+      minimumPrivacy
+    }
+  }
+`;
+
+export const npmRegistryFragment = gql`
+  fragment npmRegistry on PrivateRegistry {
+    id
+    enabledScopes
+    limitToScopes
+    proxyEnabled
+    registryAuthKey
+    registryType
+    registryUrl
+    teamId
   }
 `;

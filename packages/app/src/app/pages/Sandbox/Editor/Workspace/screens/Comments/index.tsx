@@ -1,4 +1,4 @@
-import { CommentsFilterOption } from '@codesandbox/common/lib/types';
+import { CommentsFilterOption, UserQuery } from '@codesandbox/common/lib/types';
 import {
   Icon,
   List,
@@ -52,9 +52,17 @@ export const Comments: React.FC = () => {
     }
   };
 
-  const onSubmit = value => {
-    commentsActions.addComment({
+  const onSubmit = (
+    value: string,
+    mentions: { [username: string]: UserQuery },
+    images: {
+      [fileName: string]: { src: string; resolution: [number, number] };
+    }
+  ) => {
+    commentsActions.saveNewComment({
       content: value,
+      mentions,
+      images,
     });
     scrollRef.current.scrollTop = 0;
   };

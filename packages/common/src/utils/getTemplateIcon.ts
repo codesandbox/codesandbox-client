@@ -1,3 +1,4 @@
+import React from 'react';
 import { ColorIcons as Icons } from 'template-icons';
 import getColorIcons from '../templates/icons';
 

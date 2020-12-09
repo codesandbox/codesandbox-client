@@ -20,7 +20,7 @@ const extendedSandboxConfig = {
 export default new Template(
   'sapper',
   'Sapper',
-  'https://sapper.svelte.technology/',
+  'https://sapper.svelte.dev/',
   'github/codesandbox-app/sapper-template',
   decorateSelector(() => '#159497'),
   {

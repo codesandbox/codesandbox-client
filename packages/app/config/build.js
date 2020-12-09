@@ -7,7 +7,11 @@ const staticAssets = [
   },
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-extensions/out',
-    to: 'public/vscode-extensions/v13',
+    to: 'public/vscode-extensions/v14',
+  },
+  !SANDBOX_ONLY && {
+    from: 'node_modules/vscode-oniguruma/release/onig.wasm',
+    to: 'public/vscode-oniguruma/1.3.1/onig.wasm',
   },
   !SANDBOX_ONLY && {
     from: 'node_modules/onigasm/lib/onigasm.wasm',
@@ -34,6 +38,27 @@ const staticAssets = [
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs12',
+  },
+  // For caching purposes
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs11',
+  },
+  // For caching purposes
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
+    to: 'static/browserfs10',
+  },
+  // For caching purposes
+  {
+    from: isDev
+      ? 'standalone-packages/codesandbox-browserfs/build'
+      : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs9',
   },
   {
@@ -41,27 +66,6 @@ const staticAssets = [
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs8',
-  },
-  // For caching purposes
-  {
-    from: isDev
-      ? 'standalone-packages/codesandbox-browserfs/build'
-      : 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs7',
-  },
-  // For caching purposes
-  {
-    from: isDev
-      ? 'standalone-packages/codesandbox-browserfs/build'
-      : 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs6',
-  },
-  // For caching purposes
-  {
-    from: isDev
-      ? 'standalone-packages/codesandbox-browserfs/build'
-      : 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs5',
   },
   // For Monaco
   {

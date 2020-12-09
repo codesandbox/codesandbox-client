@@ -1,6 +1,7 @@
 import getTemplateDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import {
   Module,
   ModuleTab,
@@ -34,13 +35,14 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
 };
 
 export const initializeSandbox: AsyncAction<Sandbox> = async (
-  { actions, effects },
+  { actions },
   sandbox
 ) => {
   await Promise.all([
     actions.editor.internal.initializeLiveSandbox(sandbox),
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
+    actions.internal.switchCurrentWorkspaceBySandbox({ sandbox }),
   ]);
 };
 
@@ -100,7 +102,7 @@ export const setModuleSavedCode: Action<{
   );
 
   if (moduleIndex > -1) {
-    const module = state.editor.sandboxes[sandbox.id].modules[moduleIndex];
+    const module = sandbox.modules[moduleIndex];
 
     module.savedCode = module.code === savedCode ? null : savedCode;
   }
@@ -125,6 +127,8 @@ export const saveCode: AsyncAction<{
     return;
   }
 
+  effects.preview.executeCodeImmediately();
+
   try {
     let updatedModule: {
       updatedAt: string;
@@ -132,7 +136,8 @@ export const saveCode: AsyncAction<{
       code: string;
       isBinary: boolean;
     };
-    if (state.user?.experiments.comments) {
+    if (sandbox.featureFlags.comments) {
+      await effects.live.waitForLiveReady();
       const {
         saved_code,
         updated_at,
@@ -174,7 +179,7 @@ export const saveCode: AsyncAction<{
     if (
       state.live.isLive &&
       state.live.isCurrentEditor &&
-      !state.user?.experiments.comments
+      !sandbox.featureFlags.comments
     ) {
       setTimeout(() => {
         // Send the save event 50ms later so the operation can be sent first (the operation that says the
@@ -190,17 +195,6 @@ export const saveCode: AsyncAction<{
       effects.vscode.callCallback(cbID);
     }
 
-    if (
-      sandbox.originalGit &&
-      state.workspace.openedWorkspaceItem === 'github'
-    ) {
-      state.git.isFetching = true;
-      state.git.originalGitChanges = await effects.api.getGitChanges(
-        sandbox.id
-      );
-      state.git.isFetching = false;
-    }
-
     // If the executor is a server we only should send updates if the sandbox has been
     // started already
     if (
@@ -208,6 +202,10 @@ export const saveCode: AsyncAction<{
       state.server.containerStatus === ServerContainerStatus.SANDBOX_STARTED
     ) {
       effects.executor.updateFiles(sandbox);
+    }
+
+    if (sandbox.template === 'static') {
+      effects.preview.refresh();
     }
 
     await actions.editor.internal.updateCurrentTemplate();
@@ -386,11 +384,12 @@ export const updateModuleCode: Action<{
 
 export const forkSandbox: AsyncAction<{
   sandboxId: string;
+  teamId?: string | null;
   body?: { collectionId: string | undefined };
   openInNewWindow?: boolean;
 }> = async (
   { state, effects, actions },
-  { sandboxId: id, body, openInNewWindow = false }
+  { sandboxId: id, teamId, body, openInNewWindow = false }
 ) => {
   const sandbox = state.editor.currentSandbox;
   const currentSandboxId = state.editor.currentId;
@@ -415,7 +414,20 @@ export const forkSandbox: AsyncAction<{
   try {
     state.editor.isForkingSandbox = true;
 
-    const forkedSandbox = await effects.api.forkSandbox(id, body);
+    const usedBody: {
+      collectionId?: string;
+      teamId?: string;
+    } = body || {};
+
+    if (state.user) {
+      if (teamId === undefined && state.activeTeam) {
+        usedBody.teamId = state.activeTeam;
+      } else if (teamId !== null) {
+        usedBody.teamId = teamId;
+      }
+    }
+
+    const forkedSandbox = await effects.api.forkSandbox(id, usedBody);
 
     // Copy over any unsaved code
     Object.assign(forkedSandbox, {
@@ -453,7 +465,10 @@ export const forkSandbox: AsyncAction<{
       actions.server.startContainer(forkedSandbox);
     }
 
-    if (state.workspace.openedWorkspaceItem === 'project-summary') {
+    if (
+      state.workspace.openedWorkspaceItem === 'project-summary' ||
+      state.workspace.openedWorkspaceItem === 'github-summary'
+    ) {
       actions.workspace.openDefaultItem();
     }
 
@@ -464,6 +479,12 @@ export const forkSandbox: AsyncAction<{
     }
 
     effects.router.updateSandboxUrl(forkedSandbox, { openInNewWindow });
+
+    if (sandbox.originalGit) {
+      actions.git.loadGitSource();
+    }
+
+    actions.internal.currentSandboxChanged();
   } catch (error) {
     console.error(error);
     actions.internal.handleError({
@@ -549,40 +570,17 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   });
 };
 
-export const updateDevtools: AsyncAction<{
-  code: string;
-}> = async ({ state, actions }, { code }) => {
+export const updateDevtools: AsyncAction<ViewConfig[]> = async (
+  { state, actions },
+  viewConfig
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
-  if (state.editor.currentSandbox.owned) {
-    const devtoolsModule =
-      state.editor.modulesByPath['/.codesandbox/workspace.json'];
-
-    if (devtoolsModule) {
-      actions.editor.codeChanged({
-        moduleShortid: devtoolsModule.shortid,
-        code,
-      });
-      await actions.editor.codeSaved({
-        code,
-        moduleShortid: devtoolsModule.shortid,
-        cbID: null,
-      });
-    } else {
-      await actions.files.createModulesByPath({
-        files: {
-          '/.codesandbox/workspace.json': {
-            content: code,
-            isBinary: false,
-          },
-        },
-      });
-    }
-  } else {
-    state.editor.workspaceConfigCode = code;
-  }
+  await actions.files.updateWorkspaceConfig({
+    preview: viewConfig,
+  });
 };
 
 export const updatePreviewCode: Action = ({ state, effects }) => {

@@ -1,31 +1,32 @@
-import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import { Element, FormField, Textarea } from '@codesandbox/components';
+import { UserQuery } from '@codesandbox/common/lib/types';
+import { Element } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-import React, { useState } from 'react';
+import React from 'react';
+
+import { useCodesandboxCommentEditor } from './hooks/useCodesandboxCommentEditor';
 
 type Props = {
-  onSubmit: (value: string) => void;
+  onSubmit: (
+    value: string,
+    mentions: { [username: string]: UserQuery },
+    images: {
+      [fileName: string]: { src: string; resolution: [number, number] };
+    }
+  ) => void;
 };
 
 export const AddComment: React.FC<Props> = ({ onSubmit }) => {
-  const [value, setValue] = useState('');
-
-  const submit = event => {
-    event.preventDefault();
-    if (value) {
-      onSubmit(value);
-      setValue('');
-    }
-  };
-
-  // Form elements submit on Enter, except Textarea :)
-  const submitOnEnter = event => {
-    if (event.keyCode === ENTER && !event.shiftKey) {
-      event.preventDefault();
-      submit(event);
-    }
-  };
-
+  const [elements] = useCodesandboxCommentEditor({
+    initialValue: '',
+    initialMentions: {},
+    initialImages: {},
+    onSubmit,
+    fixed: true,
+    props: {
+      autosize: true,
+      style: { lineHeight: 1.2, minHeight: 32 },
+    },
+  });
   return (
     <Element
       paddingX={2}
@@ -37,18 +38,7 @@ export const AddComment: React.FC<Props> = ({ onSubmit }) => {
         boxShadow: theme => `0px -32px 32px ${theme.colors.dialog.background}`,
       })}
     >
-      <form onSubmit={submit}>
-        <FormField label="Add a comment" hideLabel>
-          <Textarea
-            autosize
-            value={value}
-            onChange={e => setValue(e.target.value)}
-            onKeyDown={submitOnEnter}
-            placeholder="Write a comment"
-            style={{ lineHeight: 1.2, minHeight: 32 }}
-          />
-        </FormField>
-      </form>
+      <form css={{ position: 'relative' }}>{elements}</form>
     </Element>
   );
 };

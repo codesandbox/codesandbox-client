@@ -29,6 +29,7 @@ export interface ITemplateListProps {
   forkOnOpen?: boolean;
   columnCount?: number;
   showSecondaryShortcuts?: boolean;
+  collectionId?: string;
 }
 
 const MODIFIER_KEY = isMac ? 'Ctrl' : '⇧';
@@ -46,6 +47,7 @@ export const TemplateList = ({
   forkOnOpen,
   showSecondaryShortcuts,
   columnCount = 2,
+  collectionId,
 }: ITemplateListProps) => {
   const { actions, state } = useOvermind();
   const [focusedTemplateIndex, setFocusedTemplate] = React.useState(0);
@@ -62,9 +64,13 @@ export const TemplateList = ({
     const cannotFork = templateDefinition.isServer && !state.isLoggedIn;
 
     if (forkOnOpen && !cannotFork) {
+      actions.modals.newSandboxModal.close();
       actions.editor.forkExternalSandbox({
         sandboxId: sandbox.id,
         openInNewWindow,
+        body: {
+          collectionId,
+        },
       });
     } else {
       history.push(sandboxUrl(sandbox));
@@ -354,13 +360,16 @@ export const TemplateList = ({
           return (
             <TemplateInfoContainer key={key}>
               {title !== undefined && <SubHeader>{title}</SubHeader>}
-              <Grid columnCount={columnCount}>
+              <Grid
+                columnCount={window.screen.availWidth < 600 ? 1 : columnCount}
+              >
                 {templates.map((template: TemplateFragment, i) => {
                   const index = offset + i;
                   const focused = focusedTemplateIndex === offset + i;
-                  const owner =
-                    template.sandbox.collection?.team?.name ||
-                    template.sandbox.author?.username;
+                  const owner = template.sandbox
+                    ? template.sandbox.collection?.team?.name ||
+                      template.sandbox.author?.username
+                    : '';
 
                   const shortKey = showSecondaryShortcuts
                     ? index < 9

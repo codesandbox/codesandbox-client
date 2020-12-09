@@ -1,6 +1,6 @@
 import {
   getChildren as calculateChildren,
-  inDirectory,
+  inDirectory
 } from '@codesandbox/common/lib/sandbox/modules';
 import { Directory, Module } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
@@ -35,7 +35,7 @@ const getFiles = async (files: File[] | FileList): Promise<parsedFiles> => {
         // @ts-ignore
         returnedFiles[file.path || file.name] = {
           dataURI,
-          type: file.type,
+          type: file.type
         };
       })
   );
@@ -55,6 +55,7 @@ type Modal = {
 interface Props {
   id: string;
   root?: boolean;
+  readonly?: boolean;
   initializeProperties?: Function;
   shortid?: string;
   store?: any;
@@ -62,7 +63,7 @@ interface Props {
   isOver?: boolean;
   canDrop?: boolean;
   signals?: any;
-  title?: string;
+  title: string;
   sandboxId?: string;
   sandboxTemplate?: any;
   mainModuleId?: string;
@@ -81,6 +82,7 @@ interface Props {
 
 const DirectoryEntry: React.FunctionComponent<Props> = ({
   id,
+  readonly,
   root,
   initializeProperties,
   shortid,
@@ -89,14 +91,15 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
   depth = 0,
   getModulePath,
   canDrop,
+  title: directoryTitle
 }) => {
   const {
     state: {
       isLoggedIn,
       editor: {
         currentSandbox: { modules, directories, privacy },
-        shouldDirectoryBeOpen,
-      },
+        shouldDirectoryBeOpen
+      }
     },
     actions: {
       files: {
@@ -106,11 +109,11 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
         directoryRenamed,
         directoryDeleted,
         moduleDeleted,
-        filesUploaded,
+        filesUploaded
       },
-      editor: { moduleSelected, moduleDoubleClicked, discardModuleChanges },
+      editor: { moduleSelected, moduleDoubleClicked, discardModuleChanges }
     },
-    reaction,
+    reaction
   } = useOvermind();
 
   const [creating, setCreating] = React.useState<ItemTypes>(null);
@@ -124,7 +127,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
       initializeProperties({
         onCreateModuleClick,
         onCreateDirectoryClick,
-        onUploadFileClick,
+        onUploadFileClick
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -167,7 +170,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     (_, title: string) => {
       moduleCreated({
         title,
-        directoryShortid: shortid,
+        directoryShortid: shortid
       });
 
       resetState();
@@ -208,9 +211,9 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
         onConfirm: () => {
           closeModals();
           moduleDeleted({
-            moduleShortid,
+            moduleShortid
           });
-        },
+        }
       });
     },
     [closeModals, moduleDeleted]
@@ -227,7 +230,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     (_, title: string) => {
       directoryCreated({
         title,
-        directoryShortid: shortid,
+        directoryShortid: shortid
       });
       resetState();
     },
@@ -244,7 +247,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
 
       filesUploaded({
         files,
-        directoryShortid: shortid,
+        directoryShortid: shortid
       });
     };
 
@@ -272,9 +275,9 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
         onConfirm: () => {
           closeModals();
           directoryDeleted({
-            directoryShortid,
+            directoryShortid
           });
-        },
+        }
       });
     },
     [closeModals, directoryDeleted]
@@ -293,9 +296,9 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
         onConfirm: () => {
           closeModals();
           discardModuleChanges({
-            moduleShortid,
+            moduleShortid
           });
-        },
+        }
       });
     },
     [closeModals, discardModuleChanges]
@@ -336,8 +339,6 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
     moduleDoubleClicked();
   }, [moduleDoubleClicked]);
 
-  const title = root ? 'Project' : directories.find(m => m.id === id).title;
-
   return connectDropTarget(
     <div style={{ position: 'relative' }}>
       <Overlay isOver={isOver && canDrop} />
@@ -346,7 +347,8 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
           <Entry
             id={id}
             shortid={shortid}
-            title={title}
+            readonly={readonly}
+            title={directoryTitle}
             depth={depth}
             type={open ? 'directory-open' : 'directory'}
             root={root}
@@ -354,7 +356,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
             onClick={toggleOpen}
             renameValidator={validateDirectoryTitle}
             discardModuleChanges={confirmDiscardChanges}
-            rename={!root && renameDirectory}
+            rename={!readonly && !root && renameDirectory}
             onCreateModuleClick={onCreateModuleClick}
             onCreateDirectoryClick={onCreateDirectoryClick}
             onUploadFileClick={isLoggedIn && privacy === 0 && onUploadFileClick}
@@ -386,6 +388,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
           )}
           <DirectoryChildren
             depth={depth}
+            readonly={readonly}
             renameModule={renameModule}
             parentShortid={shortid}
             renameValidator={validateModuleTitle}
@@ -414,7 +417,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
 
 const FILES_TO_IGNORE = [
   '.DS_Store', // macOs
-  'Thumbs.db', // Windows
+  'Thumbs.db' // Windows
 ];
 
 const entryTarget = {
@@ -434,23 +437,24 @@ const entryTarget = {
 
         props.signals.files.filesUploaded({
           files,
-          directoryShortid: props.shortid,
+          directoryShortid: props.shortid
         });
       });
     } else if (sourceItem.directory) {
       props.signals.files.directoryMovedToDirectory({
         shortid: sourceItem.shortid,
-        directoryShortid: props.shortid,
+        directoryShortid: props.shortid
       });
     } else {
       props.signals.files.moduleMovedToDirectory({
         moduleShortid: sourceItem.shortid,
-        directoryShortid: props.shortid,
+        directoryShortid: props.shortid
       });
     }
   },
 
   canDrop: (props, monitor) => {
+    if (props.readonly) return false;
     if (monitor == null) return false;
     const source = monitor.getItem();
     if (source == null) return false;
@@ -459,7 +463,7 @@ const entryTarget = {
     if (props.root) return true;
 
     return !inDirectory(props.directories, source.shortid, props.shortid);
-  },
+  }
 };
 
 function collectTarget(connectMonitor, monitor: DropTargetMonitor) {
@@ -470,7 +474,7 @@ function collectTarget(connectMonitor, monitor: DropTargetMonitor) {
     // You can ask the monitor about the current drag state:
     isOver: monitor.isOver({ shallow: true }),
     canDrop: monitor.canDrop(),
-    itemType: monitor.getItemType(),
+    itemType: monitor.getItemType()
   };
 }
 

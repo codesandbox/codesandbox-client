@@ -1,25 +1,24 @@
 import React, { useEffect, useCallback } from 'react';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { ThemeProvider, Stack } from '@codesandbox/components';
-import codeSandboxBlack from '@codesandbox/components/lib/themes/codesandbox-black';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
-import { useOvermind } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useOvermind } from 'app/overmind';
 
 export const SignInModal = () => {
   const {
     actions: { toggleSignInModal },
-    state: { redirectOnLogin },
+    state: { redirectOnLogin, signInModalOpen, user },
   } = useOvermind();
 
   const closeModal = useCallback(
     event => {
-      if (event.keyCode === ESC && open) {
+      if (event.keyCode === ESC && signInModalOpen) {
         toggleSignInModal();
       }
     },
-    [toggleSignInModal]
+    [toggleSignInModal, signInModalOpen]
   );
 
   useEffect(() => {
@@ -27,8 +26,12 @@ export const SignInModal = () => {
     return () => document.removeEventListener('keydown', closeModal, false);
   }, [closeModal]);
 
+  if (!signInModalOpen || user) {
+    return null;
+  }
+
   return (
-    <ThemeProvider theme={codeSandboxBlack}>
+    <ThemeProvider>
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0, zIndex: 9999 }}

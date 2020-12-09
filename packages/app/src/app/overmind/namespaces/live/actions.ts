@@ -2,11 +2,11 @@ import {
   IModuleStateModule,
   LiveMessage,
   LiveMessageEvent,
+  RoomInfo,
   UserSelection,
   UserViewRange,
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
-import { COMMENTS } from '@codesandbox/common/lib/utils/feature-flags';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
@@ -18,17 +18,15 @@ import * as liveMessage from './liveMessageOperators';
 
 export const internal = internalActions;
 
-export const signInToRoom: AsyncAction<{
-  roomId: string;
-}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
-  await actions.internal.signIn({});
+export const signInToRoom: AsyncAction<string> = withLoadApp(
+  async ({ actions, state }, roomId) => {
+    state.signInModalOpen = true;
 
-  if (state.isLoggedIn) {
-    await actions.live.roomJoined({
-      roomId,
-    });
+    if (state.isLoggedIn) {
+      await actions.live.roomJoined(roomId);
+    }
   }
-});
+);
 
 export const onOperationError: Action<{
   moduleShortid: string;
@@ -40,54 +38,57 @@ export const onOperationError: Action<{
   });
 };
 
-export const roomJoined: AsyncAction<{
-  roomId: string;
-}> = withLoadApp(async ({ state, effects, actions }, { roomId }) => {
-  if (!state.isLoggedIn) {
-    return;
+export const roomJoined: AsyncAction<string> = withLoadApp(
+  async ({ actions, effects, state }, roomId) => {
+    if (!state.isLoggedIn) {
+      return;
+    }
+
+    await effects.vscode.initialized;
+    await effects.vscode.closeAllTabs();
+
+    state.live.joinSource = 'live';
+
+    if (state.live.isLive) {
+      actions.live.internal.disconnect();
+    }
+
+    const sandbox = await actions.live.internal.initialize(roomId);
+
+    if (!sandbox) {
+      return;
+    }
+
+    if (state.updateStatus === 'available') {
+      const modal = 'liveVersionMismatch';
+      effects.analytics.track('Open Modal', { modal });
+      state.currentModal = modal;
+    }
+
+    await actions.internal.setCurrentSandbox(sandbox);
+
+    actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id });
+    const items = getItems(state);
+    const defaultItem = items.find(i => i.defaultOpen) || items[0];
+
+    state.workspace.openedWorkspaceItem = defaultItem.id;
+
+    await effects.vscode.changeSandbox(sandbox, fs => {
+      state.editor.modulesByPath = fs;
+    });
+
+    effects.vscode.openModule(state.editor.currentModule);
+
+    if (
+      sandbox.featureFlags.comments &&
+      hasPermission(sandbox.authorization, 'comment')
+    ) {
+      actions.comments.getSandboxComments(sandbox.id);
+    }
+
+    state.editor.isLoading = false;
   }
-
-  await effects.vscode.initialized;
-  await effects.vscode.closeAllTabs();
-
-  state.live.joinSource = 'live';
-
-  if (state.live.isLive) {
-    actions.live.internal.disconnect();
-  }
-
-  const sandbox = await actions.live.internal.initialize(roomId);
-
-  if (!sandbox) {
-    return;
-  }
-
-  if (state.updateStatus === 'available') {
-    const modal = 'liveVersionMismatch';
-    effects.analytics.track('Open Modal', { modal });
-    state.currentModal = modal;
-  }
-
-  await actions.internal.setCurrentSandbox(sandbox);
-
-  actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id });
-  const items = getItems(state);
-  const defaultItem = items.find(i => i.defaultOpen) || items[0];
-
-  state.workspace.openedWorkspaceItem = defaultItem.id;
-
-  await effects.vscode.changeSandbox(sandbox, fs => {
-    state.editor.modulesByPath = fs;
-  });
-
-  effects.vscode.openModule(state.editor.currentModule);
-
-  if (COMMENTS && hasPermission(sandbox.authorization, 'comment')) {
-    actions.comments.getSandboxComments(sandbox.id);
-  }
-
-  state.editor.isLoading = false;
-});
+);
 
 export const createLiveClicked: AsyncAction<string> = async (
   { actions, effects, state },
@@ -273,9 +274,9 @@ export const onSelectionChanged: Action<UserSelection> = (
   }
 };
 
-export const onModeChanged: Action<{ mode: string }> = (
-  { state, effects },
-  { mode }
+export const onModeChanged: Action<RoomInfo['mode']> = (
+  { effects, state },
+  mode
 ) => {
   if (state.live.isOwner && state.live.roomInfo) {
     state.live.roomInfo.mode = mode;
@@ -283,31 +284,30 @@ export const onModeChanged: Action<{ mode: string }> = (
   }
 };
 
-export const onAddEditorClicked: Action<{
-  liveUserId: string;
-}> = ({ state, effects }, { liveUserId }) => {
+export const onAddEditorClicked: Action<string> = (
+  { effects, state },
+  liveUserId
+) => {
   if (!state.live.roomInfo) {
     return;
   }
+
   state.live.roomInfo.editorIds.push(liveUserId);
 
   effects.live.sendEditorAdded(liveUserId);
 };
 
-export const onRemoveEditorClicked: Action<any> = (
-  { state, effects },
-  { liveUserId, data }
+export const onRemoveEditorClicked: Action<string> = (
+  { effects, state },
+  liveUserId
 ) => {
-  const userId = liveUserId || data.editor_user_id;
-
   if (!state.live.roomInfo) {
     return;
   }
 
-  const editors = state.live.roomInfo.editorIds;
-  const newEditors = editors.filter(id => id !== userId);
-
-  state.live.roomInfo.editorIds = newEditors;
+  state.live.roomInfo.editorIds = state.live.roomInfo.editorIds.filter(
+    id => id !== liveUserId
+  );
 
   effects.live.sendEditorRemoved(liveUserId);
 };
@@ -344,16 +344,17 @@ export const onChatEnabledToggle: Action = ({ effects, state }) => {
   }
 };
 
-export const onFollow: Action<{
-  liveUserId: string;
-}> = ({ state, effects, actions }, { liveUserId }) => {
+export const onFollow: Action<{ liveUserId: string }> = (
+  { actions, effects, state },
+  { liveUserId }
+) => {
   if (!state.live.roomInfo) {
     return;
   }
 
   effects.analytics.track('Follow Along in Live');
   state.live.followingUserId = liveUserId;
-  actions.live.revealViewRange({ liveUserId });
+  actions.live.revealViewRange(liveUserId);
 
   if (state.editor.currentModule) {
     // In case the selections were hidden first
@@ -393,15 +394,15 @@ export const onStopFollow: Action = ({ state, effects, actions }) => {
   }
 };
 
-export const revealViewRange: Action<{ liveUserId: string }> = (
-  { state, effects, actions },
-  { liveUserId }
+export const revealViewRange: Action<string> = (
+  { actions, effects, state },
+  liveUserId
 ) => {
   if (!state.live.roomInfo) {
     return;
   }
 
-  const user = state.live.roomInfo.users.find(u => u.id === liveUserId);
+  const user = state.live.roomInfo.users.find(({ id }) => id === liveUserId);
 
   if (user && user.currentModuleShortid && state.editor.currentSandbox) {
     const { modules } = state.editor.currentSandbox;

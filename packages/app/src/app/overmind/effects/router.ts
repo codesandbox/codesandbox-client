@@ -49,6 +49,10 @@ export default new (class RouterEffect {
     history.replace('/s/');
   }
 
+  redirectToDashboard() {
+    history.replace('/dashboard/home');
+  }
+
   getSandboxOptions() {
     return getSandboxOptions(decodeURIComponent(document.location.href));
   }

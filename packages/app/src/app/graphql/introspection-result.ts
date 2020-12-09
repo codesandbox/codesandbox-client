@@ -9,10 +9,27 @@ export interface IntrospectionResultData {
     }[];
   };
 }
-
 const result: IntrospectionResultData = {
   __schema: {
     types: [
+      {
+        kind: 'UNION',
+        name: 'ReferenceMetadata',
+        possibleTypes: [
+          {
+            name: 'CodeReferenceMetadata',
+          },
+          {
+            name: 'ImageReferenceMetadata',
+          },
+          {
+            name: 'PreviewReferenceMetadata',
+          },
+          {
+            name: 'UserReferenceMetadata',
+          },
+        ],
+      },
       {
         kind: 'UNION',
         name: 'BookmarkEntity',
@@ -25,17 +42,7 @@ const result: IntrospectionResultData = {
           },
         ],
       },
-      {
-        kind: 'UNION',
-        name: 'ReferenceMetadata',
-        possibleTypes: [
-          {
-            name: 'CodeReferenceMetadata',
-          },
-        ],
-      },
     ],
   },
 };
-
 export default result;

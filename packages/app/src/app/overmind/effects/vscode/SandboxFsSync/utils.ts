@@ -11,7 +11,7 @@ export const writeFile = (fs: SandboxFs, module: Module) => {
 
 export const rename = (fs: SandboxFs, fromPath: string, toPath: string) => {
   Object.keys(fs).forEach(path => {
-    if (path.startsWith(fromPath)) {
+    if (path.startsWith(fromPath + '/') || path === fromPath) {
       const newPath = path.replace(fromPath, toPath);
       const module = fs[path];
 

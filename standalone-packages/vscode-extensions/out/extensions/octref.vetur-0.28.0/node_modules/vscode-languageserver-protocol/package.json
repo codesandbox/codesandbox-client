@@ -1,0 +1,30 @@
+{
+	"name": "vscode-languageserver-protocol",
+	"description": "VSCode Language Server Protocol implementation",
+	"version": "3.15.3",
+	"author": "Microsoft Corporation",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Microsoft/vscode-languageserver-node.git",
+		"directory": "protocol"
+	},
+	"bugs": {
+		"url": "https://github.com/Microsoft/vscode-languageserver-node/issues"
+	},
+	"main": "./lib/main.js",
+	"typings": "./lib/main",
+	"dependencies": {
+		"vscode-jsonrpc": "^5.0.1",
+		"vscode-languageserver-types": "3.15.1"
+	},
+	"scripts": {
+		"prepublishOnly": "npm run clean && npm run compile && npm test",
+		"postpublish": "node ../build/npm/post-publish.js",
+		"compile": "node ../build/bin/tsc -b ./tsconfig.json",
+		"watch": "node ../build/bin/tsc -b ./tsconfig.json -w",
+		"test": "node ../node_modules/mocha/bin/_mocha",
+		"clean": "node ../node_modules/rimraf/bin.js lib",
+		"preversion": "npm test"
+	}
+}

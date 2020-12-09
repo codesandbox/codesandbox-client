@@ -6,7 +6,7 @@ import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
-const getZeitErrorMessage = (error: AxiosError) =>
+const getVercelErrorMessage = (error: AxiosError) =>
   get(
     error,
     'response.data.error.message',
@@ -83,17 +83,17 @@ export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
   state.deployment.gettingDeploys = true;
 
   try {
-    const zeitConfig = effects.zeit.getConfig(state.editor.currentSandbox);
+    const vercelConfig = effects.vercel.getConfig(state.editor.currentSandbox);
 
-    state.deployment.hasAlias = !!zeitConfig.alias;
-    if (zeitConfig.name) {
-      state.deployment.sandboxDeploys = await effects.zeit.getDeployments(
-        zeitConfig.name
+    state.deployment.hasAlias = !!vercelConfig.alias;
+    if (vercelConfig.name) {
+      state.deployment.sandboxDeploys = await effects.vercel.getDeployments(
+        vercelConfig.name
       );
     }
   } catch (error) {
     actions.internal.handleError({
-      message: getZeitErrorMessage(error),
+      message: getVercelErrorMessage(error),
       error,
     });
   }
@@ -116,10 +116,20 @@ export const deployClicked: AsyncAction = async ({
     state.deployment.deploying = true;
     const zip = await effects.zip.create(sandbox);
     const contents = await effects.jsZip.loadAsync(zip.file);
-    state.deployment.url = await effects.zeit.deploy(contents, sandbox);
+
+    if (sandbox.isSse && state.editor.currentSandbox) {
+      const envs = await effects.api.getEnvironmentVariables(
+        state.editor.currentSandbox.id
+      );
+      if (envs) {
+        await effects.vercel.checkEnvironmentVariables(sandbox, envs);
+      }
+    }
+
+    state.deployment.url = await effects.vercel.deploy(contents, sandbox);
   } catch (error) {
     actions.internal.handleError({
-      message: getZeitErrorMessage(error),
+      message: getVercelErrorMessage(error),
       error,
     });
   }
@@ -130,24 +140,24 @@ export const deployClicked: AsyncAction = async ({
 };
 
 export const deploySandboxClicked: AsyncAction = async ({
-  state,
   actions,
   effects,
+  state,
 }) => {
   state.currentModal = 'deployment';
 
-  const zeitIntegration = state.user && state.user.integrations.zeit;
+  const vercelIntegration = state.user && state.user.integrations.zeit;
 
-  if (!zeitIntegration || !zeitIntegration.token) {
+  if (!vercelIntegration || !vercelIntegration.token) {
     effects.notificationToast.error(
       'You are not authorized with Vercel, please refresh and log in again'
     );
     return;
   }
 
-  if (!zeitIntegration.email) {
+  if (!vercelIntegration.email) {
     try {
-      const user = await effects.zeit.getUser();
+      const user = await effects.vercel.getUser();
 
       if (state.user && state.user.integrations.zeit) {
         state.user.integrations.zeit.email = user.email;
@@ -163,9 +173,7 @@ export const deploySandboxClicked: AsyncAction = async ({
   state.deployment.url = null;
 };
 
-export const setDeploymentToDelete: Action<{
-  id: string;
-}> = ({ state }, { id }) => {
+export const setDeploymentToDelete: Action<string> = ({ state }, id) => {
   state.deployment.deployToDelete = id;
 };
 
@@ -184,7 +192,7 @@ export const deleteDeployment: AsyncAction = async ({
   state.deployment.deploysBeingDeleted.push(id);
 
   try {
-    await effects.zeit.deleteDeployment(id);
+    await effects.vercel.deleteDeployment(id);
 
     effects.notificationToast.success('Deployment deleted');
     actions.deployment.getDeploys();
@@ -209,10 +217,10 @@ export const aliasDeployment: AsyncAction<string> = async (
     return;
   }
 
-  const zeitConfig = effects.zeit.getConfig(state.editor.currentSandbox);
+  const vercelConfig = effects.vercel.getConfig(state.editor.currentSandbox);
 
   try {
-    const url = await effects.zeit.aliasDeployment(id, zeitConfig);
+    const url = await effects.vercel.aliasDeployment(id, vercelConfig);
 
     effects.notificationToast.success(`Deployed to ${url}`);
     actions.deployment.getDeploys();

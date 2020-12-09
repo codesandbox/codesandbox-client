@@ -12,6 +12,7 @@ tweetJob: Software Engineer, Preact Core Team
 tweetName: Marvin Hagemeister
 tweetHandle: marvinhagemeist
 bgColor: 0971F1
+bgImage: ./blue.jpg
 coverImage: ./hiring.svg
 coverReversed: true
 coverSmaller: true

@@ -1,10 +1,13 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { dispatch, actions } from 'codesandbox-api';
 
-import Transpiler, { TranspilerResult } from '.';
+import {
+  LoaderContext,
+  Transpiler,
+  TranspilerResult,
+  Manager,
+} from 'sandpack-core';
 import { parseWorkerError } from './utils/worker-error-handler';
-import { LoaderContext } from '../transpiled-module';
-import Manager from '../manager';
 
 const debug = _debug('cs:compiler:worker-transpiler');
 
@@ -153,6 +156,17 @@ export default abstract class WorkerTranspiler extends Transpiler {
 
         if (data.type === 'clear-warnings') {
           dispatch(actions.correction.clear(data.path, data.source));
+        }
+
+        if (data.type === 'resolve-fs') {
+          const { id } = data;
+
+          const modules = loaderContext.getModules();
+          worker.postMessage({
+            type: 'resolve-fs-response',
+            id,
+            modules,
+          });
         }
 
         if (data.type === 'resolve-async-transpiled-module') {

@@ -85,12 +85,11 @@ share for code interviews, reviews, and demoing or teaching one or many others.
 ## Be Part of the Future of Code Collaboration
 
 These updates provide new ways to use CodeSandbox with others, but they also lay
-the groundwork for what's to come. Sign up now to be one of the first to try our
-upcoming collaboration features, which will forever change how you work with
-others to create things with code. We'll be opening up beta access to one of
-many in just a few weeks.
-
-<div class="typeform-widget" data-url="https://codesandbox.typeform.com/to/ktD2rd" style="width: 100%; height: 350px;"></div> <script> (function() { var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id="typef_orm", b="https://embed.typeform.com/"; if(!gi.call(d,id)) { js=ce.call(d,"script"); js.id=id; js.src=b+"embed.js"; q=gt.call(d,"script")[0]; q.parentNode.insertBefore(js,q) } })() </script> <div style="font-family: Sans-Serif;font-size: 12px;color: #999;opacity: 0.5; padding-top: 5px;"> powered by <a href="https://admin.typeform.com/signup?utm_campaign=ktD2rd&utm_source=typeform.com-01DH8PS45JWZKYBJ6B37YX56NZ-pro&utm_medium=typeform&utm_content=typeform-embedded-poweredbytypeform&utm_term=EN" style="color: #999" target="_blank">Typeform</a></div>
+the groundwork for what's to come.
+[Sign up now](https://airtable.com/shrlgLSJWiX8rYqyG) to be one of the first to
+try our upcoming collaboration features, which will forever change how you work
+with others to create things with code. We'll be opening up beta access to one
+of many in just a few weeks.
 
 In the meantime, [create a team](/dashboard/teams/new) and invite your friends
 and co-workers to try out the all-new CodeSandbox Live today.

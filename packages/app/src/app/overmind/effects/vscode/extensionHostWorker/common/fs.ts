@@ -87,6 +87,14 @@ export async function initializeBrowserFS({
             },
           },
         };
+
+        config.options['/extensions/node_modules/typescript'] = {
+          fs: 'JSDelivrRequest',
+          options: {
+            dependency: 'typescript',
+            version: '4.0.3',
+          },
+        };
       }
 
       config.options['/sandbox'] = {
@@ -94,6 +102,7 @@ export async function initializeBrowserFS({
         options: {
           api: {
             getSandboxFs: () => currentSandboxFs,
+            getJwt: () => '',
           },
         },
       };
