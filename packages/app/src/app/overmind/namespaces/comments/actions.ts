@@ -218,8 +218,10 @@ export const closeComment: Action = ({ state, effects }) => {
 
   if (state.preview.mode === 'add-comment') {
     state.preview.mode = null;
+    effects.preview.hideCommentCursor();
   } else if (state.preview.mode === 'responsive-add-comment') {
     state.preview.mode = 'responsive';
+    effects.preview.hideCommentCursor();
   }
 };
 
