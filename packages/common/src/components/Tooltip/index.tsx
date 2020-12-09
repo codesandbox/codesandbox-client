@@ -45,7 +45,7 @@ export const SingletonTooltip = styled(
       ...props,
     });
 
-    return children(singleton);
+    return <div>{children(singleton)}</div>;
   }
 )`
   ${mainStyles}
