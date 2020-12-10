@@ -40,7 +40,7 @@ let rootDomain = `codesandbox.${hostParts[hostParts.length - 1]}`;
 let sseLbHost = `sse-lb.${rootDomain}`;
 
 
-if (hostParts[0] !== 'codesandbox' && hostParts[0] !== 'localhost') {
+if (hostParts[0] !== 'codesandbox' && hostParts[0] !== 'localhost' && hostParts[0].search(/pr.*/) === -1) {
   rootDomain = `${hostParts[hostParts.length - 2]}.${hostParts[hostParts.length - 1]}`
   sseLbHost = null;
 }

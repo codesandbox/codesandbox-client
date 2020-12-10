@@ -70,6 +70,9 @@ if (process.env.ENDPOINT) {
 } else if (process.env.CODESANDBOX_HOST) {
   sseDomain = process.env.CODESANDBOX_HOST;
 }
+if (sseDomain.match(/.*pr.*/)) {
+  sseDomain = 'https://codesandbox.io';
+}
 
 const getSSEUrl = (sandbox?: Sandbox, initialPath: string = '') =>
   `https://${sandbox ? `${sandbox.id}.` : ''}sse.${sseDomain

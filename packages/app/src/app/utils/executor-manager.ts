@@ -80,6 +80,9 @@ export class ExecutorsManager {
     } else if (process.env.CODESANDBOX_HOST) {
       sseHost = process.env.CODESANDBOX_HOST;
     }
+    if (sseHost.match(/.*pr.*/)) {
+      sseHost = 'https://codesandbox.io';
+    }
     await this.executor!.initialize({
       sandboxId: sandbox.id,
       files: getModulesToSend(sandbox),

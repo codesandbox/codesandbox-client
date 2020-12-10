@@ -762,6 +762,9 @@ export class VSCodeEffect {
     } else if (process.env.CODESANDBOX_HOST) {
       sseHost = process.env.CODESANDBOX_HOST;
     }
+    if (sseHost.match(/.*pr.*/)) {
+      sseHost = 'https://codesandbox.io';
+    }
     return sseHost.replace(
       'https://',
       `wss://${this.options.getCurrentSandbox()?.id}-lsp.sse.`
