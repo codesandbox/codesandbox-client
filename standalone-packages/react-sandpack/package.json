@@ -21,7 +21,7 @@
   "typings": "dist/types/react-sandpack.d.ts",
   "scripts": {
     "prebuild": "rimraf dist && rimraf es",
-    "build": "tsc && rollup -c rollup.config.ts && yarn build:min && gulp build",
+    "build": "tsc && rollup -c rollup.config.ts && yarn build:min",
     "build:min": "cross-env BUILD_MINIFY=1 rollup -c rollup.config.ts",
     "commit": "git-cz",
     "deploy-docs": "ts-node tools/gh-pages-publish",
@@ -34,7 +34,6 @@
     "start": "tsc --watch",
     "storybook": "CODESANDBOX_ENV=development start-storybook -p 6006 --no-dll",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
-    "watch:gulp": "gulp sass:watch",
     "watch:rollup": "rollup -c rollup.config.ts -w",
     "install-dependencies": "yarn",
     "build-storybook": "build-storybook --no-dll"
@@ -106,11 +105,6 @@
     "coveralls": "^3.0.0",
     "cross-env": "^5.1.3",
     "cz-conventional-changelog": "^2.0.0",
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.1",
-    "gulp-cssimport": "^6.0.1",
-    "gulp-plugin-prettier": "^1.1.0",
-    "gulp-sass": "^3.1.0",
     "jest": "^24.9.0",
     "lodash.camelcase": "^4.3.0",
     "npm-run-all": "^4.1.2",
