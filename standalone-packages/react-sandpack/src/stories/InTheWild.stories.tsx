@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { listen } from 'codesandbox-api';
-
 import SandpackProvider from '../components/SandpackProvider';
 import SandpackConsumer from '../components/SandpackConsumer';
 import FileExplorer from '../components/FileExplorer';
@@ -10,8 +8,7 @@ import TranspiledCodeView from '../components/TranspiledCodeView';
 import CodeEditor from '../components/CodeEditor/CodeMirror';
 import { CodeMirrorNext } from '../components/CodeEditor/CodeMirror/CodeMirrorNext';
 import { Navigator, Preview } from '../components';
-
-// listen(console.log);
+import { BasicEditor } from '../presets/BasicEditor';
 
 export default {
   title: 'In the Wild',
@@ -110,8 +107,7 @@ font-size: 1.5rem;
 export const NewEditor = () => (
   <div
     style={{
-      width: '100vw',
-      height: '100vh',
+      width: '100%',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -128,7 +124,7 @@ export const NewEditor = () => (
       }}
       entry="/index.js"
       openedPath="/App.js"
-      showOpenInCodeSandbox={false}
+      showOpenInCodeSandbox={true}
     >
       <div
         style={{
@@ -137,6 +133,7 @@ export const NewEditor = () => (
           overflow: 'hidden',
         }}
       >
+        <FileExplorer style={{ width: 600 }} />
         <CodeMirrorNext
           style={{
             width: 600,
@@ -147,22 +144,32 @@ export const NewEditor = () => (
             backgroundColor: '#F8F9FB',
           }}
         />
+
         <Navigator />
-        <Preview
+        <Preview />
+        <TranspiledCodeView
           style={{
             width: 600,
-            maxHeight: 215,
-            overflow: 'hidden',
+            height: 200,
           }}
         />
       </div>
-
-      <SandpackConsumer>
-        {sandpack => {
-          console.log(sandpack);
-          return <div />;
-        }}
-      </SandpackConsumer>
     </SandpackProvider>
+  </div>
+);
+
+export const MultipleInstances = () => (
+  <div
+    style={{
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+    }}
+  >
+    <BasicEditor files={files} />
+    <BasicEditor files={files} />
+    <BasicEditor files={files} />
   </div>
 );

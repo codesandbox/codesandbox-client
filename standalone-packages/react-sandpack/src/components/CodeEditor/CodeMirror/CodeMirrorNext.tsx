@@ -11,7 +11,6 @@ import {
 import { EditorState } from '@codemirror/next/state';
 import { history, historyKeymap } from '@codemirror/next/history';
 import { foldKeymap } from '@codemirror/next/fold';
-import { oneDark } from '@codemirror/next/theme-one-dark';
 import { defaultKeymap } from '@codemirror/next/commands';
 import { bracketMatching } from '@codemirror/next/matchbrackets';
 import {
@@ -42,7 +41,6 @@ import { styled } from '../../../stitches.config';
 interface Props {
   sandpack: ISandpackContext;
   style?: React.CSSProperties;
-  className?: string;
 }
 
 const Container = styled('div', {
@@ -113,24 +111,23 @@ const CodeMirror = ({ style, sandpack }: Props) => {
     // eslint-disable-next-line
   }, []);
 
-  // Todo: Fix
-  // const currentCode = sandpack.files[sandpack.openedPath]?.code || '';
-  // React.useEffect(() => {
-  //   const view = cmView.current;
+  React.useEffect(() => {
+    const view = cmView.current;
+    const currentCode = sandpack.files[sandpack.openedPath]?.code || '';
 
-  //   if (view && currentCode !== view.state.sliceDoc(0, view.state.doc.length)) {
-  //     console.log('not here right');
-  //     view.update([
-  //       view.state.update({
-  //         changes: {
-  //           from: 0,
-  //           to: view?.state.doc.length,
-  //           insert: currentCode,
-  //         },
-  //       }),
-  //     ]);
-  //   }
-  // }, [currentCode, cmView]);
+    if (view && currentCode !== view.state.sliceDoc(0, view.state.doc.length)) {
+      view.update([
+        view.state.update({
+          changes: {
+            from: 0,
+            to: view?.state.doc.length,
+            insert: currentCode,
+          },
+        }),
+      ]);
+    }
+    // eslint-disable-next-line
+  }, [sandpack.openedPath, cmView]);
 
   return <Container style={style} ref={wrapper} />;
 };

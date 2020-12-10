@@ -3,6 +3,10 @@ import React from 'react';
 import SandpackProvider from '../components/SandpackProvider';
 import OpenInCodeSandbox from '../components/OpenInCodeSandbox';
 
+export default {
+  title: 'Open in CodeSandbox',
+};
+
 export const Minimal = () => (
   <SandpackProvider
     entry="/index.js"

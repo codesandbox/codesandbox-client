@@ -1,19 +1,18 @@
 import * as React from 'react';
-import { listen } from 'codesandbox-api';
-import { Controlled } from 'react-codemirror2';
-
-import classNames from 'classnames';
-
 import { ISandpackContext } from '../../types';
-
-import cn from '../../utils/cn';
 import SandpackConsumer from '../SandpackConsumer';
-import CodeMirrorComponent from '../../helper-components/CodeMirror';
+import { styled } from '../../stitches.config';
+import { ErrorMessage } from '../../elements';
 
 export interface Props {
   style?: Object;
-  className?: string;
 }
+
+const Wrapper = styled('div', {
+  position: 'relative',
+  height: '100%',
+  padding: '0.5rem',
+});
 
 export default class TranspiledCodeView extends React.Component<Props> {
   getTranspiledCode(sandpack: ISandpackContext) {
@@ -22,41 +21,25 @@ export default class TranspiledCodeView extends React.Component<Props> {
       return null;
     }
 
-    const tModule = managerState.transpiledModules[managerState.entry + ':'];
-    if (tModule && tModule.source) {
-      const { compiledCode } = tModule.source;
-
-      if (compiledCode) {
-        return compiledCode;
-      }
-    }
-
-    return null;
+    const tModule = managerState.transpiledModules[openedPath + ':'];
+    return tModule?.source?.compiledCode ?? null;
   }
 
   render() {
-    const className = classNames(
-      cn('TranspiledCodeView', 'container'),
-      this.props.className
-    );
-
     return (
       <SandpackConsumer>
-        {sandpack => (
-          <div className={className} style={this.props.style}>
-            <CodeMirrorComponent
-              onBeforeChange={() => {
-                /* empty */
-              }}
-              value={this.getTranspiledCode(sandpack) || '// loading...'}
-            />
-            {sandpack.errors.length && (
-              <div className={cn('TranspiledCodeView', 'error')}>
-                {sandpack.errors[0].message}
-              </div>
-            )}
-          </div>
-        )}
+        {sandpack => {
+          const transpiledCode = this.getTranspiledCode(sandpack);
+
+          return (
+            <Wrapper style={this.props.style}>
+              <pre>{transpiledCode}</pre>
+              {sandpack.errors.length > 0 && (
+                <ErrorMessage>{sandpack.errors[0].message}</ErrorMessage>
+              )}
+            </Wrapper>
+          );
+        }}
       </SandpackConsumer>
     );
   }
