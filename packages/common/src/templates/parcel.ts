@@ -56,7 +56,6 @@ export default new ParcelTemplate(
       '/.babelrc': configurations.babelrc,
       '/tsconfig.json': configurations.tsconfig,
     },
-    externalResourcesEnabled: false,
     distDir: 'dist',
     main: true,
     isTypescript: true,

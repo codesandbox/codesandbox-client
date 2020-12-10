@@ -42,6 +42,7 @@ export const ExternalResources: FunctionComponent<Props> = ({ readonly }) => {
   );
 
   const { externalResourcesEnabled } = getTemplateDefinition(template);
+
   if (!externalResourcesEnabled) {
     return null;
   }
@@ -183,9 +184,6 @@ const getFontFamily = (search: string) => {
 
   return {
     name: family.split('+').join(' '),
-    id: family
-      .split('+')
-      .join('-')
-      .toLowerCase(),
+    id: family.split('+').join('-').toLowerCase(),
   };
 };
