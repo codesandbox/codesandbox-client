@@ -63,9 +63,10 @@ const Info = () => {
         backgroundColor: 'grays.600',
         borderRadius: 'medium',
         padding: 2,
+        paddingX: 3,
       })}
     >
-      <Icon name="info" size={24} css={{ flexShrink: 0 }} />
+      <Icon name="info" size={16} css={{ flexShrink: 0 }} />
       <Text variant="muted">
         Pilot users can make up to 3 server sandboxes Always-On.{' '}
         <Button
