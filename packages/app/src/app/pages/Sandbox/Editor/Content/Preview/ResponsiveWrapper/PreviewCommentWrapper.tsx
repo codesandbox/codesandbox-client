@@ -119,10 +119,7 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
       {children}
       {isAddingPreviewComment ? (
         <Screenshot
-          showCommentCursor={
-            !state.comments.currentComment &&
-            Boolean(state.preview.screenshot.source)
-          }
+          showCommentCursor={Boolean(state.preview.screenshot.source)}
           style={
             state.preview.screenshot.source
               ? {
