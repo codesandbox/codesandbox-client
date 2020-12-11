@@ -59,7 +59,12 @@ function screenshot() {
 
   send({
     type: "screenshot",
-    bounds
+    bounds: {
+      left: bounds.left * window.devicePixelRatio,
+      top: bounds.top * window.devicePixelRatio,
+      width: bounds.width * window.devicePixelRatio,
+      height: bounds.height * window.devicePixelRatio
+    }
   })
 }
 
