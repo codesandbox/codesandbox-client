@@ -84,7 +84,7 @@ export type TemplateType =
   | 'gridsome'
   | 'vuepress'
   | 'mdx-deck'
-  | 'quasar-framework'
+  | 'quasar'
   | 'unibit'
   | 'node'
   | 'ember'
