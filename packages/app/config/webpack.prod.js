@@ -350,13 +350,24 @@ module.exports = merge(commonConfig, {
     new ManifestPlugin({
       fileName: 'file-manifest.json',
       publicPath: commonConfig.output.publicPath,
-    }),
-    new CopyWebpackPlugin([
-      {
-        from: '../sse-hooks/dist',
-        to: 'public/[name].[hash].[ext]',
+
+      map: fileDescriptor => {
+        const { name } = fileDescriptor;
+
+        // Removes the ".[contenthash]" part from name
+        return merge(fileDescriptor, {
+          name: name.replace(/(\.[a-f0-9]+)(\.[a-z]{2,})$/, '$2'),
+        });
       },
-    ]),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: '../sse-hooks/dist/sse-hooks.js',
+          to: 'public/sse-hooks/[name].[contenthash].[ext]',
+        },
+      ],
+    }),
     new ImageminPlugin({
       pngquant: {
         quality: '95-100',
