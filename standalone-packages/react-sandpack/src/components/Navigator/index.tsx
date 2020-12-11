@@ -1,13 +1,10 @@
 import * as React from 'react';
 import { listen } from 'codesandbox-api';
 
-import RefreshIcon from './RefreshIcon';
-import BackwardIcon from './BackwardIcon';
-import ForwardIcon from './ForwardIcon';
-
-import withSandpack from '../../utils/with-sandpack';
 import { ISandpackContext } from '../../types';
 import { styled } from '../../stitches.config';
+import { withSandpack } from '../../utils/sandpack-context';
+import { BackwardIcon, ForwardIcon, RefreshIcon } from './icons';
 
 interface Props {
   sandpack: ISandpackContext;
@@ -62,7 +59,7 @@ const NavigatorButton = styled('button', {
   ':hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
 });
 
-class Navigator extends React.Component<Props, State> {
+class NavigatorComponent extends React.Component<Props, State> {
   listener: Function;
 
   constructor(props: Props) {
@@ -255,4 +252,4 @@ class Navigator extends React.Component<Props, State> {
   }
 }
 
-export default withSandpack(Navigator);
+export const Navigator = withSandpack(NavigatorComponent);

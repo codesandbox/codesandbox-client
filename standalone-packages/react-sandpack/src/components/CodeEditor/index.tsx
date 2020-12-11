@@ -34,12 +34,11 @@ import { lintKeymap } from '@codemirror/next/lint';
 import { javascript } from '@codemirror/next/lang-javascript';
 import { reactDocs } from './theme/react-docs';
 
-import { ISandpackContext } from '../../../types';
-import withSandpack from '../../../utils/with-sandpack';
-import { styled } from '../../../stitches.config';
+import { styled } from '../../stitches.config';
+import { SandpackContext } from '../../utils/sandpack-context';
+import { ISandpackContext } from '../../types';
 
 interface Props {
-  sandpack: ISandpackContext;
   style?: React.CSSProperties;
 }
 
@@ -49,12 +48,13 @@ const Container = styled('div', {
   },
 });
 
-const CodeMirror = ({ style, sandpack }: Props) => {
+export const CodeEditor = ({ style }: Props) => {
   const wrapper = React.useRef<HTMLDivElement | null>(null);
   const cmView = React.useRef<EditorView>();
+  const sandpack = React.useContext(SandpackContext) as ISandpackContext;
 
   React.useEffect(() => {
-    if (!wrapper.current) {
+    if (!wrapper.current || !sandpack) {
       return () => {};
     }
 
@@ -131,5 +131,3 @@ const CodeMirror = ({ style, sandpack }: Props) => {
 
   return <Container style={style} ref={wrapper} />;
 };
-
-export const CodeMirrorNext = withSandpack(CodeMirror);

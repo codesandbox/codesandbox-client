@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { IFiles } from '../../../types';
+import { IFiles } from '../../types';
 
-import File from '../File';
-import Directory from '../Directory';
+import { File } from './File';
+import { Directory } from './Directory';
 
 export interface Props {
   prefixedPath: string;
@@ -12,7 +12,7 @@ export interface Props {
   depth?: number;
 }
 
-export default class ModuleList extends React.PureComponent<Props> {
+export class ModuleList extends React.PureComponent<Props> {
   render(): JSX.Element {
     const {
       depth = 0,

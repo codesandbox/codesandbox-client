@@ -2,16 +2,16 @@ import { EditorView } from '@codemirror/next/view';
 import { Extension } from '@codemirror/next/state';
 import { highlighter } from '@codemirror/next/highlight';
 
-const chalky = '#e5c07b';
+// const chalky = '#e5c07b';
 const coral = '#e06c75';
 const dark = '#5c6370';
 const fountainBlue = '#56b6c2';
-const green = '#98c379';
+// const green = '#98c379';
 const invalid = '#ffffff';
 const lightDark = '#1F2933';
 const lightWhite = '#1F2933';
 const malibu = '#61afef';
-const purple = '#c678dd';
+// const purple = '#c678dd';
 const whiskey = '#d19a66';
 const background = '#F8F9FB';
 const selection = '#ebedf0';
@@ -89,5 +89,5 @@ const reactDocsHighlighter = highlighter({
   'atom, bool': { color: whiskey },
 });
 
-/// Extension to enable the One Dark theme.
+// / Extension to enable the One Dark theme.
 export const reactDocs: Extension = [reactDocsTheme, reactDocsHighlighter];

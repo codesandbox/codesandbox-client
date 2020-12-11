@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { Broadcast } from 'react-broadcast';
+import React from 'react';
 import { Manager, generatePackageJSON } from 'smooshpack';
 import { listen } from 'codesandbox-api';
 
@@ -10,7 +9,9 @@ import {
   IModuleError,
   ManagerStatus,
   IFile,
-} from '../../types';
+} from '../types';
+
+const SandpackContext = React.createContext<ISandpackContext | null>(null);
 
 export interface State {
   files: IFiles;
@@ -52,10 +53,10 @@ export interface Props {
   };
 }
 
-export default class SandpackProvider extends React.PureComponent<
-  Props,
-  State
-> {
+// TODO: Why is iframe on both class and state
+// TODO: Provider API (props)
+// TODO: Get rid of the codesandbox-api dependency
+class SandpackProvider extends React.PureComponent<Props, State> {
   static defaultProps = {
     skipEval: false,
   };
@@ -267,10 +268,9 @@ export default class SandpackProvider extends React.PureComponent<
 
   render() {
     const { children, className, style } = this.props;
-    const { iframe } = this.state;
 
     return (
-      <Broadcast channel="sandpack" value={this._getSandpackState()}>
+      <SandpackContext.Provider value={this._getSandpackState()}>
         <div style={style} className={`${className || ''} sandpack`}>
           {/* We create a hidden iframe, the bundler will live in this.
             We expose this iframe to the Consumer, so other components can show the full
@@ -292,7 +292,29 @@ export default class SandpackProvider extends React.PureComponent<
           />
           {children}
         </div>
-      </Broadcast>
+      </SandpackContext.Provider>
     );
   }
 }
+
+const SandpackConsumer = SandpackContext.Consumer;
+
+function getDisplayName(
+  WrappedComponent: React.ComponentClass<any> | React.FC<any>
+) {
+  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+}
+
+function withSandpack(Component: React.ComponentClass<any> | React.FC<any>) {
+  const WrappedComponent = (props: any) => (
+    <SandpackConsumer>
+      {sandpack => <Component {...props} sandpack={sandpack} />}
+    </SandpackConsumer>
+  );
+
+  WrappedComponent.displayName = `WithSandpack(${getDisplayName(Component)})`;
+
+  return WrappedComponent;
+}
+
+export { SandpackProvider, SandpackConsumer, SandpackContext, withSandpack };

@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import File from '../File';
-import ModuleList from '../ModuleList';
+import { File } from './File';
+import { ModuleList } from './ModuleList';
 
-import { IFiles } from '../../../types';
+import { IFiles } from '../../types';
 
 export interface Props {
   prefixedPath: string;
@@ -13,13 +13,17 @@ export interface Props {
   depth: number;
 }
 
-export default class Directory extends React.Component<Props> {
+interface State {
+  open: boolean;
+}
+
+export class Directory extends React.Component<Props, State> {
   state = {
     open: true,
   };
 
   toggleOpen = () => {
-    this.setState({ open: !this.state.open });
+    this.setState(state => ({ open: !state.open }));
   };
 
   render() {

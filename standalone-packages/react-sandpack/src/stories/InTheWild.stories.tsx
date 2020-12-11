@@ -1,14 +1,12 @@
 import React from 'react';
 
-import SandpackProvider from '../components/SandpackProvider';
-import SandpackConsumer from '../components/SandpackConsumer';
-import FileExplorer from '../components/FileExplorer';
-import BrowserPreview from '../components/BrowserPreview';
-import TranspiledCodeView from '../components/TranspiledCodeView';
-import CodeEditor from '../components/CodeEditor/CodeMirror';
-import { CodeMirrorNext } from '../components/CodeEditor/CodeMirror/CodeMirrorNext';
-import { Navigator, Preview } from '../components';
+import { FileExplorer } from '../components/FileExplorer';
+import { Preview } from '../components/Preview';
+import { TranspiledCodeView } from '../components/TranspiledCodeView';
+import { CodeEditor } from '../components/CodeEditor';
+import { Navigator } from '../components/Navigator';
 import { BasicEditor } from '../presets/BasicEditor';
+import { SandpackConsumer, SandpackProvider } from '../utils/sandpack-context';
 
 export default {
   title: 'In the Wild',
@@ -32,7 +30,7 @@ export const OneFile = () => (
           overflow: 'hidden',
         }}
       />
-      <BrowserPreview
+      <Preview
         style={{
           width: '33%',
           overflow: 'hidden',
@@ -134,7 +132,7 @@ export const NewEditor = () => (
         }}
       >
         <FileExplorer style={{ width: 600 }} />
-        <CodeMirrorNext
+        <CodeEditor
           style={{
             width: 600,
             overflow: 'hidden',
@@ -168,8 +166,6 @@ export const MultipleInstances = () => (
       flexDirection: 'column',
     }}
   >
-    <BasicEditor files={files} />
-    <BasicEditor files={files} />
     <BasicEditor files={files} />
   </div>
 );

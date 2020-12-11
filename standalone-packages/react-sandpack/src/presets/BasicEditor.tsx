@@ -1,8 +1,9 @@
 import React from 'react';
-import { Preview, SandpackProvider } from '../components';
-import { CodeMirrorNext } from '../components/CodeEditor/CodeMirror/CodeMirrorNext';
 import { SandpackWrapper } from '../elements';
 import { IFiles } from '../types';
+import { SandpackProvider } from '../utils/sandpack-context';
+import { CodeEditor } from '../components/CodeEditor';
+import { Preview } from '../components/Preview';
 
 export interface PresetProps {
   files: IFiles;
@@ -21,7 +22,7 @@ export const BasicEditor: React.FC<PresetProps> = ({ files }) => (
     openedPath="/App.js"
   >
     <SandpackWrapper>
-      <CodeMirrorNext
+      <CodeEditor
         style={{
           width: 600,
           overflow: 'hidden',

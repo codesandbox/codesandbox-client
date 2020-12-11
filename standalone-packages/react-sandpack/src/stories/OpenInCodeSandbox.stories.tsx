@@ -1,7 +1,7 @@
 import React from 'react';
+import { OpenInCodeSandboxButton } from '../components/OpenInCodeSandboxButton';
 
-import SandpackProvider from '../components/SandpackProvider';
-import OpenInCodeSandbox from '../components/OpenInCodeSandbox';
+import { SandpackProvider } from '../utils/sandpack-context';
 
 export default {
   title: 'Open in CodeSandbox',
@@ -17,7 +17,7 @@ export const Minimal = () => (
     }}
     dependencies={{}}
   >
-    <OpenInCodeSandbox />
+    <OpenInCodeSandboxButton />
   </SandpackProvider>
 );
 
@@ -39,7 +39,7 @@ export const WithMultipleFiles = () => (
       uuid: 'latest',
     }}
   >
-    <OpenInCodeSandbox />
+    <OpenInCodeSandboxButton />
   </SandpackProvider>
 );
 
@@ -53,7 +53,7 @@ export const WithRenderProp = () => (
     }}
     dependencies={{}}
   >
-    <OpenInCodeSandbox
+    <OpenInCodeSandboxButton
       render={() => {
         return <button type="submit">CodeSandbox is awesome!</button>;
       }}
