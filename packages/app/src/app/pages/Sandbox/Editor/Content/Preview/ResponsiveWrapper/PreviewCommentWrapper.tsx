@@ -34,6 +34,7 @@ const PreviewBubble = styled(Icon)<{ active: boolean }>({
   height: BUBBLE_SIZE,
   color: '#FF3B30',
   zIndex: 2,
+  cursor: 'inherit',
 });
 
 function getPreviewReference(
@@ -119,10 +120,7 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
       {children}
       {isAddingPreviewComment ? (
         <Screenshot
-          showCommentCursor={
-            !state.comments.currentComment &&
-            Boolean(state.preview.screenshot.source)
-          }
+          showCommentCursor={Boolean(state.preview.screenshot.source)}
           style={
             state.preview.screenshot.source
               ? {
@@ -148,20 +146,19 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
               scale,
             });
           }}
-        />
-      ) : null}
-      {previewReference &&
-      (state.preview.mode === 'add-comment' ||
-        state.preview.mode === 'responsive-add-comment') ? (
-        <PreviewBubble
-          id="preview-comment-bubble"
-          name="comment"
-          active
-          style={{
-            top: Math.round(previewReference.y) + 'px',
-            left: Math.round(previewReference.x) + 'px',
-          }}
-        />
+        >
+          {previewReference ? (
+            <PreviewBubble
+              id="preview-comment-bubble"
+              name="comment"
+              active
+              style={{
+                top: Math.round(previewReference.y) + 'px',
+                left: Math.round(previewReference.x) + 'px',
+              }}
+            />
+          ) : null}
+        </Screenshot>
       ) : null}
     </Wrapper>
   );

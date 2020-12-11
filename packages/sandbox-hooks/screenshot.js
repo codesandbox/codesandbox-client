@@ -22,9 +22,28 @@ export default function setupScreenshotListener() {
           logging: false,
           allowTaint: false,
         }).then(canvas => {
+          const scrollCroppedCanvas = document.createElement('canvas');
+          const cropScroll = document.documentElement.scrollTop;
+
+          scrollCroppedCanvas.width = canvas.width;
+          scrollCroppedCanvas.height = canvas.height - cropScroll;
+          scrollCroppedCanvas
+            .getContext('2d')
+            .drawImage(
+              canvas,
+              0,
+              cropScroll,
+              scrollCroppedCanvas.width,
+              scrollCroppedCanvas.height,
+              0,
+              0,
+              scrollCroppedCanvas.width,
+              scrollCroppedCanvas.height
+            );
+
           dispatch({
             type: 'screenshot-generated',
-            screenshot: canvas.toDataURL(),
+            screenshot: scrollCroppedCanvas.toDataURL(),
           });
         });
       });
