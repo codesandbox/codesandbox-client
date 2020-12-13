@@ -13,6 +13,17 @@ import {
   ManagerStatus,
 } from '../typings/types';
 
+interface IFileInfo {
+  content: string,
+  contentType: string,
+};
+
+interface IFileResolver {
+  isFile: (path: string) => Promise<boolean>;
+  readFile: (path: string) => Promise<string>;
+  readFileInfo?: (path: string) => Promise<IFileInfo>;
+}
+
 export interface IManagerOptions {
   /**
    * Location of the bundler.
@@ -35,10 +46,7 @@ export interface IManagerOptions {
    * You can pass a custom file resolver that is responsible for resolving files.
    * We will use this to get all files from the file system.
    */
-  fileResolver?: {
-    isFile: (path: string) => Promise<boolean>;
-    readFile: (path: string) => Promise<string>;
-  };
+  fileResolver?: IFileResolver,
 }
 
 export interface IFile {
@@ -78,6 +86,16 @@ export interface ISandboxInfo {
    * to AWS.
    */
   disableDependencyPreprocessing?: boolean;
+}
+
+const tryReadFileInfo = async (fileResolver: IFileResolver, path: string): Promise<IFileInfo> => {
+  if (!fileResolver.readFileInfo) {
+    const content = await fileResolver.readFile(path);
+
+    return { content, contentType: '' };
+  }
+
+  return fileResolver.readFileInfo(path);
 }
 
 const BUNDLER_URL =
@@ -149,12 +167,15 @@ export default class PreviewManager {
               if (this.options.fileResolver) {
                 this.fileResolverProtocol = new Protocol(
                   'file-resolver',
-                  async (data: { m: 'isFile' | 'readFile'; p: string }) => {
-                    if (data.m === 'isFile') {
-                      return this.options.fileResolver!.isFile(data.p);
+                  async (data: { m: 'isFile' | 'readFile' | 'readFileInfo'; p: string }) => {
+                    switch(data.m) {
+                      case 'isFile':
+                        return this.options.fileResolver!.isFile(data.p);
+                      case 'readFileInfo':
+                        return tryReadFileInfo(this.options.fileResolver!, data.p);
+                      default:
+                        return this.options.fileResolver!.readFile(data.p);
                     }
-
-                    return this.options.fileResolver!.readFile(data.p);
                   },
                   this.iframe.contentWindow
                 );

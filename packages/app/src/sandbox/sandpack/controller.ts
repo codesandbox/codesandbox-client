@@ -36,14 +36,16 @@ const handleRequest = async ({ requestId, path }: SandpackRequestPayload) => {
     return;
   }
 
-  const content = await manager.fileResolver.readFile(path);
+  const fileInfo = await manager.fileResolver.readFileInfo(path);
+
+  const { content, contentType } = fileInfo;
 
   postServiceWorkerMessage(
     createResponseEvent({
       requestId,
       isFile: true,
       content,
-      contentType: 'image/png',
+      contentType,
     })
   );
 };

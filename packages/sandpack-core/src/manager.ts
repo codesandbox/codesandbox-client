@@ -72,10 +72,16 @@ export type Manifest = {
   };
 };
 
+interface IFileInfo {
+  content?: string;
+  contentType?: string;
+}
+
 interface IFileResolver {
   protocol: Protocol;
   isFile: (path: string) => Promise<boolean>;
   readFile: (path: string) => Promise<string>;
+  readFileInfo: (path: string) => Promise<IFileInfo>;
 }
 
 const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
@@ -255,6 +261,8 @@ export default class Manager implements IEvaluator {
         protocol.sendMessage<boolean>({ m: 'isFile', p: path }),
       readFile: (path: string) =>
         protocol.sendMessage<string>({ m: 'readFile', p: path }),
+      readFileInfo: (path: string) =>
+        protocol.sendMessage<IFileInfo>({ m: 'readFileInfo', p: path }),
     };
   }
 
