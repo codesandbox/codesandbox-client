@@ -15,7 +15,7 @@ import { Live } from './screens/Live';
 import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './screens/ProjectInfo';
 import { Server } from './screens/Server';
-import { SignInBanner } from './SgnInBanner';
+import { SignInBanner } from './SignInBanner';
 
 const workspaceTabs = {
   project: ProjectInfo,

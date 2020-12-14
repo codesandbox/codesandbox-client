@@ -2,6 +2,7 @@ import React from 'react';
 import css from '@styled-system/css';
 import { Stack, Text, Button, Element } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 export const SignInBanner = ({ theme }) => {
   const { actions } = useOvermind();
@@ -61,7 +62,10 @@ export const SignInBanner = ({ theme }) => {
         </Element>
         <Button
           variant="secondary"
-          onClick={() => actions.signInClicked()}
+          onClick={() => {
+            track('Sign In Ad Clicked');
+            actions.signInClicked();
+          }}
           marginTop={2}
         >
           Sign In
