@@ -5,14 +5,14 @@ import { useOvermind } from 'app/overmind';
 
 export const SignInBanner = ({ theme }) => {
   const { actions } = useOvermind();
-  const light = theme.type === 'light';
+  const dark = theme.type !== 'light';
 
   const Checkmark = ({ children }) => (
     <Text
       block
       marginBottom={1}
       css={css({
-        color: light ? 'grays.200' : 'grays.400',
+        color: 'grays.200',
         lineHeight: '150%',
         span: {
           color: 'blues.500',
@@ -26,39 +26,44 @@ export const SignInBanner = ({ theme }) => {
   );
 
   return (
-    <Element padding={3}>
+    <Element
+      css={css({
+        fontFamily: 'Inter, Roboto, sans-serif',
+        borderTop: '1px solid',
+        borderColor: 'sideBar.border',
+        filter: dark ? 'drop-shadow(0px -16px 8px rgba(0,0,0,.32))' : null,
+        zIndex: 999,
+      })}
+    >
       <Stack
         gap={2}
         justify="center"
         direction="vertical"
         css={css({
           padding: 4,
-          paddingBottom: 2,
-          backgroundColor: light ? 'grays.600' : 'white',
-          boxShadow: '2',
-          borderRadius: 'medium',
+          backgroundColor: 'grays.800',
         })}
       >
         <Text
           size={22}
+          paddingBottom={2}
           css={css({
-            color: light ? 'grays.200' : 'grays.800',
-            fontFamily: "'SF Compact Display', 'Inter', sans-serif",
+            color: 'grays.200',
             fontWeight: 900,
           })}
         >
           Sign in to
         </Text>
-        <Element
-          css={css({
-            fontFamily: "'SF Pro Text', 'Inter', sans-serif",
-          })}
-        >
+        <Element>
           <Checkmark>Save your work</Checkmark>
           <Checkmark>Work from any device</Checkmark>
           <Checkmark>Deploy & collaborate</Checkmark>
         </Element>
-        <Button onClick={() => actions.signInClicked()} marginTop={2}>
+        <Button
+          variant="secondary"
+          onClick={() => actions.signInClicked()}
+          marginTop={2}
+        >
           Sign In
         </Button>
       </Stack>
