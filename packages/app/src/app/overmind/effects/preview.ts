@@ -194,6 +194,7 @@ export default {
 
         const radius = 5;
 
+        ctx.strokeStyle = '#262626';
         ctx.beginPath();
         ctx.moveTo(
           PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
@@ -240,6 +241,7 @@ export default {
           PREVIEW_COMMENT_BUBBLE_OFFSET
         );
         ctx.closePath();
+        ctx.stroke();
         ctx.save();
         ctx.clip();
         ctx.drawImage(

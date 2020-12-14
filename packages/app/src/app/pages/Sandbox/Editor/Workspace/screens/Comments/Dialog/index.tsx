@@ -19,7 +19,7 @@ import {
 import { CommentWithRepliesFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
-import { Image } from 'app/components/Markdown/Image'
+import { Image } from 'app/components/Markdown/Image';
 import {
   convertImageReferencesToMarkdownImages,
   convertUserReferencesToMentions,
@@ -38,7 +38,6 @@ import { useScrollTop } from './use-scroll-top';
 interface CommentDialogProps {
   comment: CommentWithRepliesFragment;
 }
-
 
 export const CommentDialog: React.FC<CommentDialogProps> = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
@@ -215,17 +214,26 @@ export const Dialog: React.FC<CommentDialogProps> = props => {
   );
 };
 
-const PreviewScreenshot: React.FC<{url: string}> = ({ url }) => (
-    <Element css={css({
+const PreviewScreenshot: React.FC<{ url: string }> = ({ url }) => (
+  <Element
+    css={css({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       paddingBottom: 4,
-      'img': {
-        maxWidth: '100%'
-      }
-    })}><Image src={url} alt="Preview Screenshot" ignorePrivateSandboxRestriction /></Element>
-  )
+      img: {
+        maxWidth: '100%',
+      },
+    })}
+  >
+    <Image
+      src={url}
+      alt="Preview Screenshot"
+      ignorePrivateSandboxRestriction
+      transparentBorder
+    />
+  </Element>
+);
 
 const DialogAddComment: React.FC<{
   comment: CommentWithRepliesFragment;
@@ -283,7 +291,11 @@ const DialogAddComment: React.FC<{
           />
         </Stack>
       </DragHandle>
-      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={(comment.anchorReference.metadata as any).screenshotUrl} /> : null}
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? (
+        <PreviewScreenshot
+          url={(comment.anchorReference.metadata as any).screenshotUrl}
+        />
+      ) : null}
       {elements}
     </Stack>
   );
@@ -424,7 +436,11 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
           </Menu>
         </Stack>
       </Stack>
-      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={comment.anchorReference.metadata.screenshotUrl} /> : null}
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? (
+        <PreviewScreenshot
+          url={comment.anchorReference.metadata.screenshotUrl}
+        />
+      ) : null}
       <Element
         marginY={0}
         marginX={4}
