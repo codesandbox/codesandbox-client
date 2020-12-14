@@ -23,16 +23,17 @@ export default function setupScreenshotListener() {
           allowTaint: false,
         }).then(canvas => {
           const scrollCroppedCanvas = document.createElement('canvas');
-          const cropScroll = document.documentElement.scrollTop;
+          const cropScrollLeft = document.documentElement.scrollLeft;
+          const cropScrollTop = document.documentElement.scrollTop;
 
-          scrollCroppedCanvas.width = canvas.width;
-          scrollCroppedCanvas.height = canvas.height - cropScroll;
+          scrollCroppedCanvas.width = canvas.width - cropScrollLeft;
+          scrollCroppedCanvas.height = canvas.height - cropScrollTop;
           scrollCroppedCanvas
             .getContext('2d')
             .drawImage(
               canvas,
-              0,
-              cropScroll,
+              cropScrollLeft,
+              cropScrollTop,
               scrollCroppedCanvas.width,
               scrollCroppedCanvas.height,
               0,
