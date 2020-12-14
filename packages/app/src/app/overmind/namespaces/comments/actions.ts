@@ -204,15 +204,6 @@ export const closeComment: Action = ({ state, effects }) => {
 
   effects.analytics.track('Comments - Close Comments');
 
-  // When closing comments we want to move back to previous mode. This
-  // is related to users skimming through existing comments. But
-  // you can also close an optimistic preview comment, meaning you
-  // want to stay in the same mode as you probably want to add a new comment
-  if (state.comments.currentCommentId !== OPTIMISTIC_COMMENT_ID) {
-    state.preview.mode = state.preview.previousMode;
-    state.preview.previousMode = null;
-  }
-
   state.comments.currentCommentId = null;
   state.comments.currentCommentPositions = null;
 
@@ -294,7 +285,6 @@ export const selectComment: AsyncAction<{
     // if it wasn't in preview mode do not put it in preview mode
     if (metadata.responsive) {
       state.preview.responsive.resolution = [metadata.width, metadata.height];
-      state.preview.previousMode = state.preview.mode;
       state.preview.mode = 'responsive';
     } else {
       state.preview.mode = null;
@@ -539,7 +529,7 @@ export const addOptimisticPreviewComment: AsyncAction<{
 export const saveOptimisticComment: AsyncAction<{
   content: string;
   mentions: { [username: string]: UserQuery };
-}> = async ({ state, actions }, { content: rawContent, mentions }) => {
+}> = async ({ state, actions, effects }, { content: rawContent, mentions }) => {
   const sandbox = state.editor.currentSandbox!;
   const sandboxId = sandbox.id;
   const id = uuid.v4();
@@ -552,6 +542,8 @@ export const saveOptimisticComment: AsyncAction<{
   state.comments.comments[sandbox.id][id] = comment;
   state.comments.currentCommentId = state.comments.currentCommentId ? id : null;
   delete state.comments.comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
+
+  effects.preview.hideCommentCursor();
 
   if (state.preview.mode === 'responsive-add-comment') {
     state.preview.mode = 'responsive';
