@@ -43,21 +43,20 @@ export const WorkspaceComponent = ({ theme }) => {
   }
 
   const Component = workspaceTabs[activeTab];
-  const showSignInBanner = !user && activeTab === 'project-summary';
 
   return (
     <Container
       style={{
         // this does exist in webkit
         // @ts-ignore
-        overflowY: showSignInBanner ? 'hidden' : 'overlay',
+        overflowY: !user ? 'hidden' : 'overlay',
       }}
     >
       <ThemeProvider theme={theme.vscodeTheme}>
         <>
           <div
             style={{
-              flex: showSignInBanner ? 1 : null,
+              flex: !user ? 1 : null,
               overflowY: 'auto',
               fontFamily: 'Inter, Roboto, sans-serif',
               height: 'calc(100% - 170px)',
@@ -67,7 +66,7 @@ export const WorkspaceComponent = ({ theme }) => {
           </div>
 
           {isLive && roomInfo.chatEnabled && <Chat />}
-          {showSignInBanner && <SignInBanner theme={theme.vscodeTheme} />}
+          {!user && <SignInBanner theme={theme.vscodeTheme} />}
         </>
       </ThemeProvider>
     </Container>
