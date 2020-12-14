@@ -5,9 +5,9 @@ import { Text, Element, Button, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const Image: React.FC<{
-  src: string
-  alt: string
-  ignorePrivateSandboxRestriction?: boolean
+  src: string;
+  alt: string;
+  ignorePrivateSandboxRestriction?: boolean;
 }> = props => {
   const { state } = useOvermind();
   const [modalOpen, setModalOpen] = useState(false);
@@ -67,9 +67,10 @@ export const Image: React.FC<{
           onClick={() => setModalOpen(false)}
           css={{
             position: 'absolute',
-            right: 4,
-            top: 4,
+            right: 24,
+            top: 24,
             color: 'white',
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
           }}
         />
         <img
