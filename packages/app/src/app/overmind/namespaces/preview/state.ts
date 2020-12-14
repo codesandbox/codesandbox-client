@@ -15,7 +15,6 @@ type State = {
     source: string | null;
     isLoading: boolean;
   };
-  previousMode: Mode;
   mode: Mode;
   hasExtension: boolean;
 };
@@ -42,7 +41,6 @@ export const state: State = {
     source: null,
     isLoading: false,
   },
-  previousMode: null,
   mode: null,
   hasExtension: false,
 };

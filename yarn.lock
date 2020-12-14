@@ -3774,6 +3774,14 @@
     "@reach/utils" "^0.10.3"
     tslib "^1.11.2"
 
+"@reach/auto-id@0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@reach/auto-id/-/auto-id-0.12.1.tgz#2e4a7250d2067ec16a9b4ea732695bc75572405c"
+  integrity sha512-s8cdY6dF0hEBB/28BbidB2EX6JfEBVIWLP6S2Jg0Xqq2H3xijL+zrsjL40jACwXRkignjuP+CvYsuFuO0+/GRA==
+  dependencies:
+    "@reach/utils" "0.12.1"
+    tslib "^2.0.0"
+
 "@reach/descendants@^0.10.3":
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/@reach/descendants/-/descendants-0.10.3.tgz#c2cbd14c172cb82189bf6f290b09577193926a1a"
@@ -3794,6 +3802,11 @@
     prop-types "^15.7.2"
     tslib "^1.11.2"
 
+"@reach/observe-rect@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@reach/observe-rect/-/observe-rect-1.2.0.tgz#d7a6013b8aafcc64c778a0ccb83355a11204d3b2"
+  integrity sha512-Ba7HmkFgfQxZqqaeIWWkNK0rEhpxVQHIoVyW1YDSkGsGIXzcaW4deC8B0pZrNSSyLTdIk7y+5olKt5+g0GmFIQ==
+
 "@reach/observe-rect@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@reach/observe-rect/-/observe-rect-1.1.0.tgz#4e967a93852b6004c3895d9ed8d4e5b41895afde"
@@ -3810,6 +3823,14 @@
     tabbable "^4.0.0"
     tslib "^1.11.2"
 
+"@reach/portal@0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@reach/portal/-/portal-0.12.1.tgz#995858a6e758d9446870937b60b8707a2efa11cb"
+  integrity sha512-Lhmtd2Qw1DzNZ2m0GHNzCu+2TYUf6kBREPSQJf44AP6kThRs02p1clntbJcmW/rrpYFYgFNbgf5Lso7NyW9ZXg==
+  dependencies:
+    "@reach/utils" "0.12.1"
+    tslib "^2.0.0"
+
 "@reach/portal@^0.10.3":
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/@reach/portal/-/portal-0.10.3.tgz#2eb408cc246d3eabbbf3b47ca4dc9c381cdb1d88"
@@ -3817,6 +3838,16 @@
   dependencies:
     "@reach/utils" "^0.10.3"
     tslib "^1.11.2"
+
+"@reach/rect@0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@reach/rect/-/rect-0.12.1.tgz#5b018da4dccca852df21668ae54d5941c16f5bf7"
+  integrity sha512-c+EjKc+9ud832MpmYKsxu+2R0/XHyXk47ik/N+DIHsugIgKJn2B34r4r9benqsaHncUO1IQk5rTv40D7x+yR0g==
+  dependencies:
+    "@reach/observe-rect" "1.2.0"
+    "@reach/utils" "0.12.1"
+    prop-types "^15.7.2"
+    tslib "^2.0.0"
 
 "@reach/rect@^0.10.3":
   version "0.10.3"
@@ -3846,18 +3877,18 @@
     "@reach/utils" "0.10.4"
     tslib "^2.0.0"
 
-"@reach/tooltip@0.10.3":
-  version "0.10.3"
-  resolved "https://registry.yarnpkg.com/@reach/tooltip/-/tooltip-0.10.3.tgz#0f34630aceaba7da7ad2dd23f92cc0d484e7113f"
-  integrity sha512-tbj569uSJ+O86fAvR62lK8Tb00aTQxah6dFKgf06lskCGUoYzeFxkZTds9b+TRjzz9G1v68McQHwuAZUH0XrGA==
+"@reach/tooltip@0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@reach/tooltip/-/tooltip-0.12.1.tgz#76f8e2337aa7dda20928ec4bbca247d39b4326af"
+  integrity sha512-9qk7WcgAjN/2tFEHN3Oi1m7BrSsL+MBFTFaxTaNqQacXYIKO3jNVFzLxkDVgyFP82h6EMJ5CkAJjOMi4aNyicQ==
   dependencies:
-    "@reach/auto-id" "^0.10.3"
-    "@reach/portal" "^0.10.3"
-    "@reach/rect" "^0.10.3"
-    "@reach/utils" "^0.10.3"
-    "@reach/visually-hidden" "^0.10.2"
+    "@reach/auto-id" "0.12.1"
+    "@reach/portal" "0.12.1"
+    "@reach/rect" "0.12.1"
+    "@reach/utils" "0.12.1"
+    "@reach/visually-hidden" "0.12.0"
     prop-types "^15.7.2"
-    tslib "^1.11.2"
+    tslib "^2.0.0"
 
 "@reach/utils@0.10.4", "@reach/utils@^0.10.3":
   version "0.10.4"
@@ -3868,12 +3899,28 @@
     tslib "^2.0.0"
     warning "^4.0.3"
 
-"@reach/visually-hidden@0.10.2", "@reach/visually-hidden@^0.10.2":
+"@reach/utils@0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@reach/utils/-/utils-0.12.1.tgz#02b9c15ba5cddf23e16f2d2ca77aef98a9702607"
+  integrity sha512-5uH4OgO+GupAzZuf3b6Wv/9uC6NdMBlxS6FSKD6YqSxP4QJ0vjD34RVon6N/RMRORacCLyD/aaZIA7283YgeOg==
+  dependencies:
+    "@types/warning" "^3.0.0"
+    tslib "^2.0.0"
+    warning "^4.0.3"
+
+"@reach/visually-hidden@0.10.2":
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/@reach/visually-hidden/-/visually-hidden-0.10.2.tgz#cbe391c78be2139be9583bae5666ab58eb82f682"
   integrity sha512-RWC2CZsEB6sUOMnBCiuemyesMVNOOKJP53j4RgbdaJ2zGFL6N+bh/E5bfZnAiVhjJ0G0laViE9s7iROaRWNFew==
   dependencies:
     tslib "^1.11.2"
+
+"@reach/visually-hidden@0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@reach/visually-hidden/-/visually-hidden-0.12.0.tgz#c6c39f0bf292ae97a480ba3ed32e8a6149e852d4"
+  integrity sha512-VXtyR36WOS0FHmFQ/BzfswwPyBXICl/YjmTPtx/I0Vy5C6djjhD9kDsE+h/FpHzP3ugTdqdqiPBVElIZTSwOSA==
+  dependencies:
+    tslib "^2.0.0"
 
 "@react-hook/hover@^1.0.1":
   version "1.0.1"

@@ -112,7 +112,10 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
     state.preview.mode === 'add-comment' ||
     state.preview.mode === 'responsive-add-comment';
 
-  useFlash(wrapperRef, isAddingPreviewComment);
+  useFlash(
+    wrapperRef,
+    isAddingPreviewComment && Boolean(state.preview.screenshot.source)
+  );
 
   return (
     <Wrapper ref={wrapperRef}>
