@@ -63,7 +63,7 @@ export const SignInBanner = ({ theme }) => {
         <Button
           variant="secondary"
           onClick={() => {
-            track('Sign In Ad Clicked');
+            track('Sidebar Sign In Ad Clicked');
             actions.signInClicked();
           }}
           marginTop={2}
