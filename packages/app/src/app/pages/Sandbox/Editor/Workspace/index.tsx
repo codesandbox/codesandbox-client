@@ -15,6 +15,7 @@ import { Live } from './screens/Live';
 import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './screens/ProjectInfo';
 import { Server } from './screens/Server';
+import { SignInBanner } from './SgnInBanner';
 
 const workspaceTabs = {
   project: ProjectInfo,
@@ -34,6 +35,7 @@ export const WorkspaceComponent = ({ theme }) => {
   const {
     live: { isLive, roomInfo },
     workspace: { openedWorkspaceItem: activeTab },
+    user,
   } = state;
 
   if (!activeTab) {
@@ -41,22 +43,25 @@ export const WorkspaceComponent = ({ theme }) => {
   }
 
   const Component = workspaceTabs[activeTab];
+  const showSignInBanner = !user && activeTab === 'project-summary';
 
   return (
-    <Container>
+    <Container style={{ overflow: 'hidden' }}>
       <ThemeProvider theme={theme.vscodeTheme}>
         <>
           <div
             style={{
-              flex: 1,
+              flex: showSignInBanner ? 1 : null,
               overflowY: 'auto',
               fontFamily: 'Inter, Roboto, sans-serif',
+              height: 'calc(100% - 170px)',
             }}
           >
             {state.editor.currentSandbox && <Component />}
           </div>
 
           {isLive && roomInfo.chatEnabled && <Chat />}
+          {showSignInBanner && <SignInBanner theme={theme.vscodeTheme} />}
         </>
       </ThemeProvider>
     </Container>
