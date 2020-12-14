@@ -46,7 +46,13 @@ export const WorkspaceComponent = ({ theme }) => {
   const showSignInBanner = !user && activeTab === 'project-summary';
 
   return (
-    <Container style={{ overflow: 'hidden' }}>
+    <Container
+      style={{
+        // this does exist in webkit
+        // @ts-ignore
+        overflowY: showSignInBanner ? 'hidden' : 'overlay',
+      }}
+    >
       <ThemeProvider theme={theme.vscodeTheme}>
         <>
           <div
