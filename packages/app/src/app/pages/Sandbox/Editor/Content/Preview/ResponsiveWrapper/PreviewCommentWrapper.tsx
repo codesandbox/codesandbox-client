@@ -37,6 +37,15 @@ const PreviewBubble = styled(Icon)<{ active: boolean }>({
   cursor: 'inherit',
 });
 
+const ScreenshotBorder = styled.div<{ showBorder: boolean }>(props => ({
+  position: 'absolute',
+  top: -4,
+  left: -4,
+  width: '100%',
+  height: '100%',
+  border: props.showBorder ? '4px solid #FFF' : '4px solid transparent',
+}));
+
 function getPreviewReference(
   comment: CommentWithRepliesFragment | null
 ): PreviewReferenceMetadata | null {
@@ -122,46 +131,48 @@ export const PreviewCommentWrapper = ({ children, scale }: Props) => {
       <FlashAnimationGlobalStyle />
       {children}
       {isAddingPreviewComment ? (
-        <Screenshot
-          showCommentCursor={Boolean(state.preview.screenshot.source)}
-          style={
-            state.preview.screenshot.source
-              ? {
-                  backgroundImage: `url(${state.preview.screenshot.source})`,
-                }
-              : {
-                  backgroundColor: state.preview.screenshot.isLoading
-                    ? 'rgba(0,0,0,0.5)'
-                    : 'rgba(0,0,0,0)',
-                }
-          }
-          onClick={event => {
-            if (state.preview.screenshot.isLoading) {
-              return;
+        <ScreenshotBorder showBorder={Boolean(state.preview.screenshot.source)}>
+          <Screenshot
+            showCommentCursor={Boolean(state.preview.screenshot.source)}
+            style={
+              state.preview.screenshot.source
+                ? {
+                    backgroundImage: `url(${state.preview.screenshot.source})`,
+                  }
+                : {
+                    backgroundColor: state.preview.screenshot.isLoading
+                      ? 'rgba(0,0,0,0.5)'
+                      : 'rgba(0,0,0,0)',
+                  }
             }
+            onClick={event => {
+              if (state.preview.screenshot.isLoading) {
+                return;
+              }
 
-            const parentBounds = (event.target as any).parentNode.getBoundingClientRect();
+              const parentBounds = (event.target as any).parentNode.getBoundingClientRect();
 
-            actions.comments.addOptimisticPreviewComment({
-              x: event.clientX - parentBounds.left,
-              y: event.clientY - parentBounds.top,
-              screenshot: state.preview.screenshot.source,
-              scale,
-            });
-          }}
-        >
-          {previewReference ? (
-            <PreviewBubble
-              id="preview-comment-bubble"
-              name="comment"
-              active
-              style={{
-                top: Math.round(previewReference.y) + 'px',
-                left: Math.round(previewReference.x) + 'px',
-              }}
-            />
-          ) : null}
-        </Screenshot>
+              actions.comments.addOptimisticPreviewComment({
+                x: event.clientX - parentBounds.left,
+                y: event.clientY - parentBounds.top,
+                screenshot: state.preview.screenshot.source,
+                scale,
+              });
+            }}
+          >
+            {previewReference ? (
+              <PreviewBubble
+                id="preview-comment-bubble"
+                name="comment"
+                active
+                style={{
+                  top: Math.round(previewReference.y) + 'px',
+                  left: Math.round(previewReference.x) + 'px',
+                }}
+              />
+            ) : null}
+          </Screenshot>
+        </ScreenshotBorder>
       ) : null}
     </Wrapper>
   );

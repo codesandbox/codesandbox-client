@@ -7,7 +7,6 @@ import css from '@styled-system/css';
 export const Image: React.FC<{
   src: string;
   alt: string;
-  transparentBorder?: boolean;
   ignorePrivateSandboxRestriction?: boolean;
 }> = props => {
   const { state } = useOvermind();
@@ -68,8 +67,8 @@ export const Image: React.FC<{
           onClick={() => setModalOpen(false)}
           css={{
             position: 'absolute',
-            right: props.transparentBorder ? 24 : 4,
-            top: props.transparentBorder ? 24 : 4,
+            right: 8,
+            top: 8,
             color: 'white',
             backgroundColor: 'rgba(0, 0, 0, 0.4)',
           }}
@@ -79,9 +78,9 @@ export const Image: React.FC<{
           alt={props.alt}
           css={css({
             maxWidth: '100%',
-            borderRadius: 'small',
+            borderRadius: 'medium',
             maxHeight: '80vh',
-            border: props.transparentBorder ? undefined : '1px solid #262626',
+            border: '1px solid #262626',
           })}
         />
       </Modal>
