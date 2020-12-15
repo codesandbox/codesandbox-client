@@ -59,7 +59,7 @@ export const WorkspaceComponent = ({ theme }) => {
               flex: !user ? 1 : null,
               overflowY: 'auto',
               fontFamily: 'Inter, Roboto, sans-serif',
-              height: 'calc(100% - 170px)',
+              height: user ? '100%' : 'calc(100% - 170px)',
             }}
           >
             {state.editor.currentSandbox && <Component />}
