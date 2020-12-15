@@ -27,15 +27,11 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     modals.moveSandboxModal.defaultOpenedPath
   );
   const [teamId, setTeamId] = useState(activeTeam);
-  const [selectedTeam, setSelectedTeam] = useState(
-    activeTeamInfo
-      ? {
-          id: activeTeamInfo.id,
-          name: activeTeamInfo.name,
-          avatarUrl: activeTeamInfo.avatarUrl,
-        }
-      : null
-  );
+  const [selectedTeam, setSelectedTeam] = useState({
+    id: activeTeamInfo.id,
+    name: activeTeamInfo.name,
+    avatarUrl: activeTeamInfo.avatarUrl,
+  });
 
   const handleMove = () => {
     setLoading(true);
@@ -66,8 +62,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     setTeamId(newTeamId);
     setPath(newPath);
   };
-
-  if (!selectedTeam) return null;
 
   return (
     <ThemeProvider>
