@@ -51,8 +51,8 @@ import {
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
   SetTeamMinimumPrivacyMutationVariables,
-  ChangeSandboxAlwaysOnMutation,
-  ChangeSandboxAlwaysOnMutationVariables,
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -409,8 +409,8 @@ export const setTeamMinimumPrivacy: Query<
 `;
 
 export const changeSandboxAlwaysOn: Query<
-  ChangeSandboxAlwaysOnMutation,
-  ChangeSandboxAlwaysOnMutationVariables
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables
 > = gql`
   mutation setSandboxAlwaysOn($sandboxId: ID!, $alwaysOn: Boolean!) {
     setSandboxAlwaysOn(sandboxId: $sandboxId, alwaysOn: $alwaysOn) {

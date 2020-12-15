@@ -37,8 +37,8 @@ import {
   GetPersonalWorkspaceIdQueryVariables,
   GetPrivateNpmRegistryQuery,
   GetPrivateNpmRegistryQueryVariables,
-  TeamAlwaysOnSandboxesQuery,
-  TeamAlwaysOnSandboxesQueryVariables,
+  _AlwaysOnTeamSandboxesQuery,
+  _AlwaysOnTeamSandboxesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -386,8 +386,8 @@ export const getPrivateNpmRegistry: Query<
 `;
 
 export const alwaysOnTeamSandboxes: Query<
-  TeamAlwaysOnSandboxesQuery,
-  TeamAlwaysOnSandboxesQueryVariables
+  _AlwaysOnTeamSandboxesQuery,
+  _AlwaysOnTeamSandboxesQueryVariables
 > = gql`
   query _AlwaysOnTeamSandboxes($teamId: UUID4!) {
     me {
