@@ -1,4 +1,5 @@
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { Action, AsyncAction } from 'app/overmind';
 import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
@@ -160,22 +161,56 @@ export const editPresets: AsyncAction<Presets> = async (
   });
 };
 
+export const setExtension: Action<boolean> = ({ state }, hasExtension) => {
+  state.preview.hasExtension = hasExtension;
+};
+
 export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
+  const currentSandbox = state.editor.currentSandbox;
+
+  if (!currentSandbox || !effects.preview.canAddComments(currentSandbox)) {
+    return;
+  }
+
   const existingMode = state.preview.mode;
 
   state.preview.screenshot.source = null;
-  state.preview.screenshot.fromExtension = false;
 
   const takeScreenshot = async () => {
     try {
-      state.preview.screenshot.isLoading = true;
-      const screenshot = await effects.preview.takeScreenshot(
-        state.editor.currentSandbox!.privacy === 2
-      );
-      state.preview.screenshot.isLoading = false;
-      state.preview.screenshot.source = screenshot;
-    } catch {
-      // Not experienced this process erroring yet
+      if (state.preview.hasExtension) {
+        effects.preview.showCommentCursor();
+        const screenshot = await effects.preview.takeExtensionScreenshot();
+        state.preview.screenshot.source = screenshot;
+      } else {
+        state.preview.screenshot.isLoading = true;
+
+        const screenshot = await effects.preview.takeScreenshot(
+          state.editor.currentSandbox!.privacy === 2
+        );
+
+        if (!effects.browserExtension.hasNotifiedImprovedScreenshots()) {
+          effects.notificationToast.add({
+            status: NotificationStatus.NOTICE,
+            message:
+              'By installing the CodeSandbox browser extension you will get a better experience creating Preview Comments',
+            actions: {
+              primary: {
+                label: 'Install extension',
+                run: () => {
+                  effects.browserExtension.install();
+                },
+              },
+            },
+          });
+          effects.browserExtension.setNotifiedImprovedScreenshots();
+        }
+        effects.preview.showCommentCursor();
+        state.preview.screenshot.isLoading = false;
+        state.preview.screenshot.source = screenshot;
+      }
+    } catch (error) {
+      effects.notificationToast.error(error.message);
     }
   };
 
@@ -185,9 +220,11 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
       await takeScreenshot();
       break;
     case 'add-comment':
+      effects.preview.hideCommentCursor();
       state.preview.mode = null;
       break;
     case 'responsive-add-comment':
+      effects.preview.hideCommentCursor();
       state.preview.mode = 'responsive';
       break;
     default:
@@ -197,30 +234,6 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
 
   if (state.preview.mode && state.preview.mode.includes('comment')) {
     effects.analytics.track('Preview Comment - Toggle', {
-      mode: state.preview.mode,
-    });
-  }
-};
-
-export const createPreviewCommentFromExtension: Action<string> = (
-  { state, effects },
-  dataUrl
-) => {
-  const existingMode = state.preview.mode;
-
-  state.preview.screenshot.source = dataUrl;
-  state.preview.screenshot.fromExtension = true;
-
-  switch (existingMode) {
-    case 'responsive':
-      state.preview.mode = 'responsive-add-comment';
-      break;
-    default:
-      state.preview.mode = 'add-comment';
-  }
-
-  if (state.preview.mode && state.preview.mode.includes('comment')) {
-    effects.analytics.track('Preview Comment - From Extension', {
       mode: state.preview.mode,
     });
   }

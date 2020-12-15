@@ -536,3 +536,34 @@ export const toggleShowingSelectedDependencies: Action = ({ state }) => {
   state.workspace.showingSelectedDependencies = !state.workspace
     .showingSelectedDependencies;
 };
+
+export const sandboxAlwaysOnChanged: AsyncAction<{
+  alwaysOn: boolean;
+}> = async ({ actions, effects, state }, { alwaysOn }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  track('Sandbox - Always On', { alwaysOn });
+
+  const oldAlwaysOn = state.editor.currentSandbox.alwaysOn;
+  state.editor.currentSandbox.alwaysOn = alwaysOn;
+
+  try {
+    await effects.gql.mutations.changeSandboxAlwaysOn({
+      sandboxId: state.editor.currentSandbox.id,
+      alwaysOn,
+    });
+  } catch (error) {
+    state.editor.currentSandbox.alwaysOn = oldAlwaysOn;
+
+    // this is odd to handle it in the action
+    // TODO: we need a cleaner way to read graphql errors
+    const message = error.response?.errors[0]?.message;
+
+    actions.internal.handleError({
+      message: "We weren't able to update always on status",
+      error: { name: 'Always on', message },
+    });
+  }
+};

@@ -904,6 +904,26 @@ export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
   }
 };
 
+export const getAlwaysOnSandboxes: AsyncAction = async ({ state, effects }) => {
+  const { dashboard } = state;
+  try {
+    const activeTeam = state.activeTeam;
+    if (!activeTeam) return;
+
+    const data = await effects.gql.queries.alwaysOnTeamSandboxes({
+      teamId: activeTeam,
+    });
+
+    if (data?.me?.team?.sandboxes == null) return;
+
+    dashboard.sandboxes[sandboxesTypes.ALWAYS_ON] = data.me.team.sandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
+  }
+};
+
 export const getPage: AsyncAction<sandboxesTypes> = async (
   { actions: { dashboard } },
   page
@@ -926,6 +946,9 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
       break;
     case sandboxesTypes.SEARCH:
       dashboard.getSearchSandboxes();
+      break;
+    case sandboxesTypes.ALWAYS_ON:
+      dashboard.getAlwaysOnSandboxes();
       break;
 
     default:
@@ -1378,5 +1401,54 @@ export const setTeamMinimumPrivacy: AsyncAction<{
     effects.notificationToast.error(
       'There was a problem updating your settings'
     );
+  }
+};
+
+export const changeSandboxAlwaysOn: AsyncAction<{
+  sandboxId: string;
+  alwaysOn: boolean;
+}> = async ({ state, actions, effects }, { sandboxId, alwaysOn }) => {
+  effects.analytics.track('Sandbox - Always On', {
+    alwaysOn,
+    source: 'dashboard',
+    dashboardVersion: 2,
+  });
+
+  // optimistic update
+  const {
+    changedSandboxes,
+  } = actions.dashboard.internal.changeSandboxesInState({
+    sandboxIds: [sandboxId],
+    sandboxMutation: sandbox => ({ ...sandbox, alwaysOn }),
+  });
+
+  // optimisically remove from always on
+  if (!alwaysOn && state.dashboard.sandboxes.ALWAYS_ON) {
+    state.dashboard.sandboxes.ALWAYS_ON = state.dashboard.sandboxes.ALWAYS_ON.filter(
+      sandbox => sandbox.id !== sandboxId
+    );
+  }
+
+  try {
+    await effects.gql.mutations.changeSandboxAlwaysOn({ sandboxId, alwaysOn });
+  } catch (error) {
+    changedSandboxes.forEach(oldSandbox =>
+      actions.dashboard.internal.changeSandboxesInState({
+        sandboxIds: [oldSandbox.id],
+        sandboxMutation: sandbox => ({
+          ...sandbox,
+          alwaysOn: oldSandbox.alwaysOn,
+        }),
+      })
+    );
+
+    // this is odd to handle it in the action
+    // TODO: we need a cleaner way to read graphql errors
+    const message = error.response?.errors[0]?.message;
+
+    actions.internal.handleError({
+      message: 'We were not able to update Always-On for this sandbox',
+      error: { name: 'Always on', message },
+    });
   }
 };

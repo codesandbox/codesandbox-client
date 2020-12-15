@@ -2,7 +2,7 @@ import Template from './template';
 import { decorateSelector } from '../utils/decorate-selector';
 
 export default new Template(
-  'quasar-framework',
+  'quasar',
   'Quasar',
   'https://quasar-framework.org/',
   'github/quasarframework/quasar-codesandbox',

@@ -4,6 +4,7 @@ import {
   COLUMN_MEDIA_THRESHOLD,
   CreateSandbox,
 } from 'app/components/CreateNewSandbox/CreateSandbox';
+import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
@@ -165,9 +166,12 @@ const modals = {
 };
 
 const Modals: FunctionComponent = () => {
+  const [themeProps, setThemeProps] = useState({});
+  const { pathname } = useLocation();
   const {
     actions,
     state: {
+      modals: stateModals,
       preferences: {
         settings: { customVSCodeTheme },
       },
@@ -197,12 +201,19 @@ const Modals: FunctionComponent = () => {
     }
   }, [localState.customVSCodeTheme, customVSCodeTheme]);
 
+  useEffect(() => {
+    setThemeProps(
+      pathname.includes('/s/')
+        ? {
+            theme: localState.theme.vscodeTheme,
+          }
+        : {}
+    );
+  }, [pathname, localState]);
+
   const modal = currentModal && modals[currentModal];
-
-  const { state } = useOvermind();
-
   return (
-    <ThemeProvider theme={localState.theme.vscodeTheme}>
+    <ThemeProvider {...themeProps}>
       <Modal
         isOpen={Boolean(modal)}
         width={
@@ -219,7 +230,7 @@ const Modals: FunctionComponent = () => {
           : null}
       </Modal>
 
-      {state.modals.alertModal.isCurrent && <GenericAlertModal />}
+      {stateModals.alertModal.isCurrent && <GenericAlertModal />}
     </ThemeProvider>
   );
 };

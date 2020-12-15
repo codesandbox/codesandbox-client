@@ -30,11 +30,12 @@ type Props = {
 
 export const Feedback: FunctionComponent<Props> = ({ id, user }) => {
   const {
+    state: { currentModalMessage },
     actions: { notificationAdded, modalClosed },
   } = useOvermind();
   const [email, setEmail] = useState((user || {}).email);
   const [emoji, setEmoji] = useState(null);
-  const [feedback, setFeedback] = useState('');
+  const [feedback, setFeedback] = useState(currentModalMessage || '');
   const [loading, setLoading] = useState(false);
 
   const listenForEsc = e => {
