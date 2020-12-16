@@ -135,12 +135,12 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
   // if this user is not part of this workspace,
   // they should not be able to fork inside the workspace
   const inActiveWorkspace =
-    state.editor.currentSandbox.team.id === state.activeTeam;
+    state.editor.currentSandbox.team?.id === state.activeTeam;
   const preventForkInsideWorkspace =
     state.activeWorkspaceAuthorization === 'READ' || !inActiveWorkspace;
 
   const preventForksOutsideWorkspace =
-    state.editor.currentSandbox.permissions.preventSandboxLeaving;
+    state.editor.currentSandbox.permissions?.preventSandboxLeaving;
 
   // If you can't fork at all, hide the button completely
   if (preventForkInsideWorkspace && preventForksOutsideWorkspace) return null;
