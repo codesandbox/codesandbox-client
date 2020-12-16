@@ -75,3 +75,11 @@ export type ManagerStatus =
   | 'evaluating'
   | 'running-tests'
   | 'idle';
+
+export type SandboxTemplate = {
+  files: IFiles;
+  dependencies: Record<string, string>;
+  entry: string;
+};
+
+export type SandboxTemplateType = 'cra' | 'vue';

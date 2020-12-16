@@ -1,22 +1,21 @@
 import { listen } from 'codesandbox-api';
-import React from 'react';
-import { SandpackContext } from '../utils/sandpack-context';
+import React, { useRef, useEffect } from 'react';
+import { useSandpack } from '../utils/sandpack-context';
+import { Navigator } from './Navigator';
 
 export interface PreviewProps {
   style?: React.CSSProperties;
+  showNavigator?: boolean;
 }
 
-export const Preview: React.FC<PreviewProps> = props => {
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const sandpack = React.useContext(SandpackContext);
+export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sandpack = useSandpack();
 
   // TODO: is this still needed?
-  React.useEffect(() => {
+  // TODO: unlisten
+  useEffect(() => {
     listen((message: any) => {
-      if (!sandpack) {
-        return;
-      }
-
       if (message.type === 'resize') {
         if (sandpack.browserFrame) {
           sandpack.browserFrame.style.height = message.height;
@@ -25,8 +24,8 @@ export const Preview: React.FC<PreviewProps> = props => {
     });
   }, []);
 
-  React.useEffect(() => {
-    if (!sandpack || !sandpack.browserFrame || !containerRef.current) {
+  useEffect(() => {
+    if (!sandpack.browserFrame || !containerRef.current) {
       return;
     }
 
@@ -39,5 +38,10 @@ export const Preview: React.FC<PreviewProps> = props => {
     containerRef.current.appendChild(browserFrame);
   }, [sandpack?.browserFrame]);
 
-  return <div style={props.style} ref={containerRef} />;
+  return (
+    <>
+      {showNavigator && <Navigator />}
+      <div style={style} ref={containerRef} />
+    </>
+  );
 };

@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { IFiles } from '../types';
-import { SandpackContext } from '../utils/sandpack-context';
+import { useSandpack } from '../utils/sandpack-context';
 
 export interface Props {
   render?: () => React.ReactNode;
@@ -25,11 +25,7 @@ const getFileParameters = (files: IFiles) => {
 };
 
 export const OpenInCodeSandboxButton: React.FC<Props> = ({ render }) => {
-  const sandpack = React.useContext(SandpackContext);
-
-  if (!sandpack) {
-    return null;
-  }
+  const sandpack = useSandpack();
 
   return (
     <form

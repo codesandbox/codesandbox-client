@@ -1,9 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 
 import { ModuleList } from './ModuleList';
 
 import { styled } from '../../stitches.config';
-import { SandpackContext } from '../../utils/sandpack-context';
+import { useSandpack } from '../../utils/sandpack-context';
 
 export interface Props {
   style?: Object;
@@ -16,10 +16,7 @@ const Container = styled('div', {
 });
 
 export const FileExplorer: React.FC<Props> = props => {
-  const sandpack = React.useContext(SandpackContext);
-  if (!sandpack) {
-    return null;
-  }
+  const sandpack = useSandpack();
 
   return (
     <Container style={props.style}>

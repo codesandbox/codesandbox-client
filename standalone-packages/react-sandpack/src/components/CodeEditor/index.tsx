@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import {
   highlightSpecialChars,
@@ -35,8 +35,7 @@ import { javascript } from '@codemirror/next/lang-javascript';
 import { reactDocs } from './theme/react-docs';
 
 import { styled } from '../../stitches.config';
-import { SandpackContext } from '../../utils/sandpack-context';
-import { ISandpackContext } from '../../types';
+import { useSandpack } from '../../utils/sandpack-context';
 
 interface Props {
   style?: React.CSSProperties;
@@ -49,11 +48,11 @@ const Container = styled('div', {
 });
 
 export const CodeEditor = ({ style }: Props) => {
-  const wrapper = React.useRef<HTMLDivElement | null>(null);
-  const cmView = React.useRef<EditorView>();
-  const sandpack = React.useContext(SandpackContext) as ISandpackContext;
+  const wrapper = useRef<HTMLDivElement | null>(null);
+  const cmView = useRef<EditorView>();
+  const sandpack = useSandpack();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!wrapper.current || !sandpack) {
       return () => {};
     }
@@ -111,7 +110,7 @@ export const CodeEditor = ({ style }: Props) => {
     // eslint-disable-next-line
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const view = cmView.current;
     const currentCode = sandpack.files[sandpack.openedPath]?.code || '';
 

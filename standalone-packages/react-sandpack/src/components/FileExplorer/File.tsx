@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { PureComponent } from 'react';
 import { styled } from '../../stitches.config';
 
 const Container = styled('button', {
@@ -38,7 +38,7 @@ export interface Props {
   className?: string;
 }
 
-export class File extends React.PureComponent<Props> {
+export class File extends PureComponent<Props> {
   selectFile = () => {
     if (this.props.selectFile) {
       this.props.selectFile(this.props.path);

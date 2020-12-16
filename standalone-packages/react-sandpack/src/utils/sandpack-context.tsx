@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext, useContext, PureComponent } from 'react';
 import { Manager, generatePackageJSON } from 'smooshpack';
 import { listen } from 'codesandbox-api';
 
@@ -11,7 +11,7 @@ import {
   IFile,
 } from '../types';
 
-const SandpackContext = React.createContext<ISandpackContext | null>(null);
+const SandpackContext = createContext<ISandpackContext | null>(null);
 
 export interface State {
   files: IFiles;
@@ -31,9 +31,7 @@ export interface Props {
   initialPath?: string;
   entry?: string;
   openedPath?: string;
-  dependencies?: {
-    [depName: string]: string;
-  };
+  dependencies?: Record<string, string>;
   width?: number | string;
   height?: number | string;
   bundlerURL?: string;
@@ -56,7 +54,7 @@ export interface Props {
 // TODO: Why is iframe on both class and state
 // TODO: Provider API (props)
 // TODO: Get rid of the codesandbox-api dependency
-class SandpackProvider extends React.PureComponent<Props, State> {
+class SandpackProvider extends PureComponent<Props, State> {
   static defaultProps = {
     skipEval: false,
   };
@@ -305,6 +303,10 @@ function getDisplayName(
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
+function useSandpack() {
+  return useContext(SandpackContext) as ISandpackContext;
+}
+
 function withSandpack(Component: React.ComponentClass<any> | React.FC<any>) {
   const WrappedComponent = (props: any) => (
     <SandpackConsumer>
@@ -317,4 +319,10 @@ function withSandpack(Component: React.ComponentClass<any> | React.FC<any>) {
   return WrappedComponent;
 }
 
-export { SandpackProvider, SandpackConsumer, SandpackContext, withSandpack };
+export {
+  SandpackProvider,
+  SandpackConsumer,
+  SandpackContext,
+  withSandpack,
+  useSandpack,
+};

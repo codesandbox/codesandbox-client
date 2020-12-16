@@ -4,7 +4,7 @@ import { OpenInCodeSandboxButton } from '../components/OpenInCodeSandboxButton';
 import { SandpackProvider } from '../utils/sandpack-context';
 
 export default {
-  title: 'Open in CodeSandbox',
+  title: 'components/Open in CodeSandbox',
 };
 
 export const Minimal = () => (

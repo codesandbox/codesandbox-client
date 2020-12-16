@@ -21,4 +21,5 @@ export const SandpackWrapper = styled('div', {
   border: '1px solid #EBEDF0',
   borderRadius: 4,
   overflow: 'hidden',
+  maxWidth: 600,
 });

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { PureComponent } from 'react';
 import { IFiles } from '../../types';
 
 import { File } from './File';
@@ -12,7 +12,7 @@ export interface Props {
   depth?: number;
 }
 
-export class ModuleList extends React.PureComponent<Props> {
+export class ModuleList extends PureComponent<Props> {
   render(): JSX.Element {
     const {
       depth = 0,

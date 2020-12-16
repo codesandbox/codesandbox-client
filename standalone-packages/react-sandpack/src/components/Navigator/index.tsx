@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 import { listen } from 'codesandbox-api';
 
 import { ISandpackContext } from '../../types';
@@ -59,7 +59,7 @@ const NavigatorButton = styled('button', {
   ':hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
 });
 
-class NavigatorComponent extends React.Component<Props, State> {
+class NavigatorComponent extends Component<Props, State> {
   listener: Function;
 
   constructor(props: Props) {

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { Component } from 'react';
 
 import { File } from './File';
 import { ModuleList } from './ModuleList';
@@ -17,7 +17,7 @@ interface State {
   open: boolean;
 }
 
-export class Directory extends React.Component<Props, State> {
+export class Directory extends Component<Props, State> {
   state = {
     open: true,
   };
