@@ -19,7 +19,7 @@ import { DirectoryPicker } from './DirectoryPicker';
 export const MoveSandboxFolderModal: FunctionComponent = () => {
   const {
     actions: { dashboard, refetchSandboxInfo, modals: modalsActions },
-    state: { activeTeamInfo, activeTeam, modals },
+    state: { activeTeam, modals, activeTeamInfo },
   } = useOvermind();
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,6 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     modals.moveSandboxModal.defaultOpenedPath
   );
   const [teamId, setTeamId] = useState(activeTeam);
-
   const [selectedTeam, setSelectedTeam] = useState({
     id: activeTeamInfo.id,
     name: activeTeamInfo.name,

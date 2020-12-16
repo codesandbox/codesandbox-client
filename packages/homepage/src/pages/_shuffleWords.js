@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const ShuffleWords = styled.section`
   color: ${props => props.theme.homepage.white};
   font-size: 2em;
-  font-family: 'dank mono', 'dm', monospace;
+  font-family: 'MonoLisa', monospace;
   text-align: center;
   margin-top: 2rem;
   margin-bottom: 6rem;

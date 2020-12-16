@@ -74,11 +74,11 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
       >
         <ListAction
           align="center"
-          gap={2}
+          gap={1}
           css={css({ height: 10, paddingLeft: 4 })}
           onClick={() => setPath('/')}
         >
-          <Icon name="folder" />
+          <Icon name="folder" size={24} />
           <Text>All Sandboxes</Text>
         </ListAction>
         {collections.length ? (
@@ -232,14 +232,14 @@ const SubCollections: React.FC<{
           <ListAction
             key={collection.path || 'all'}
             align="center"
-            gap={2}
+            gap={1}
             css={css({
               height: 10,
               paddingLeft: 8 + 4 * collection.level,
             })}
             onClick={() => setPath(collection.path)}
           >
-            <Icon name="folder" />
+            <Icon name="folder" size={24} />
             <Text>{collection.name}</Text>
           </ListAction>
           <SubCollections

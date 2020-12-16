@@ -1489,6 +1489,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'viewCount'
   | 'authorId'
   | 'teamId'
+  | 'alwaysOn'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
     customTemplate: Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>;
@@ -1961,6 +1962,24 @@ export type TeamDraftsQuery = { __typename?: 'RootQueryType' } & {
       team: Maybe<
         { __typename?: 'Team' } & {
           drafts: Array<
+            { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
+          >;
+        }
+      >;
+    }
+  >;
+};
+
+export type TeamAlwaysOnSandboxesQueryVariables = Exact<{
+  teamId: Scalars['UUID4'];
+}>;
+
+export type TeamAlwaysOnSandboxesQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      team: Maybe<
+        { __typename?: 'Team' } & {
+          sandboxes: Array<
             { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
           >;
         }
@@ -2726,6 +2745,19 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
   redeemTeamInviteToken: { __typename?: 'Team' } & Pick<
     Team,
     'id' | 'name' | 'joinedPilotAt'
+  >;
+};
+
+export type ChangeSandboxAlwaysOnMutationVariables = Exact<{
+  sandboxId: Scalars['ID'];
+  alwaysOn: Scalars['Boolean'];
+}>;
+
+export type ChangeSandboxAlwaysOnMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  setSandboxAlwaysOn: Array<
+    { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
   >;
 };
 

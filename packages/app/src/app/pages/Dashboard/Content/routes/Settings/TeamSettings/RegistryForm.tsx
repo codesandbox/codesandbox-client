@@ -258,7 +258,7 @@ export const RegistryForm = ({
                       >
                         <Input
                           required
-                          pattern="@\w+"
+                          pattern="@[\w-_]+"
                           css={css({ width: '100%' })}
                           placeholder="Enter a scope (@acme)"
                           disabled={disabled}

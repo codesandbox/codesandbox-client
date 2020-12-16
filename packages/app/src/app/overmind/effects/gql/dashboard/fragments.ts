@@ -14,6 +14,7 @@ export const sandboxFragmentDashboard = gql`
     screenshotUrl
     screenshotOutdated
     viewCount
+    alwaysOn
 
     source {
       template

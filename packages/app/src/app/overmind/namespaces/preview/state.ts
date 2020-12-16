@@ -14,10 +14,9 @@ type State = {
   screenshot: {
     source: string | null;
     isLoading: boolean;
-    fromExtension: boolean;
   };
-  previousMode: Mode;
   mode: Mode;
+  hasExtension: boolean;
 };
 
 export const defaultPresets: Presets = {
@@ -41,8 +40,7 @@ export const state: State = {
   screenshot: {
     source: null,
     isLoading: false,
-    fromExtension: false,
   },
-  previousMode: null,
   mode: null,
+  hasExtension: false,
 };

@@ -1,5 +1,5 @@
-import FontFaceObserver from 'fontfaceobserver';
 import React from 'react';
+import FontFaceObserver from 'fontfaceobserver';
 
 function noop() {}
 
@@ -65,7 +65,7 @@ class MonacoEditor extends React.PureComponent {
         firstFont = JSON.parse(firstFont);
       }
 
-      if (firstFont === 'dm') {
+      if (firstFont === 'MonoLisa') {
         const font = new FontFaceObserver(firstFont);
 
         font.load().then(
