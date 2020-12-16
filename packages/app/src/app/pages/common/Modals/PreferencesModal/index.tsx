@@ -35,6 +35,25 @@ import { SideNavigation } from './SideNavigation';
 type MenuItem = ComponentProps<typeof SideNavigation>['menuItems'][0] & {
   Content: ComponentType;
 };
+
+const ProfileIcon = props => (
+  <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
+    <g clipPath="url(#clip0)">
+      <path
+        fill="#fff"
+        fillRule="evenodd"
+        d="M3 3.41A.41.41 0 013.41 3h3.68a.41.41 0 01.41.41v9.18a.41.41 0 01-.41.41H3.41a.41.41 0 01-.41-.41V3.41zm5.5 0A.41.41 0 018.91 3h3.68a.41.41 0 01.41.41v2.68a.41.41 0 01-.41.41H8.91a.41.41 0 01-.41-.41V3.41zm.41 4.09a.41.41 0 00-.41.41v4.68c0 .227.183.41.41.41h3.68a.41.41 0 00.41-.41V7.91a.41.41 0 00-.41-.41H8.91z"
+        clipRule="evenodd"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0">
+        <path fill="#fff" d="M0 0H16V16H0z" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
 const getItems = (
   isLoggedIn: boolean,
   isPatron: boolean,
@@ -104,9 +123,9 @@ const getItems = (
     },
     user && {
       Content: PreferencesSync,
-      Icon: FlaskIcon,
+      Icon: ProfileIcon,
       id: 'preferencesSync',
-      title: 'Preferences Sync',
+      title: 'Preferece Profiles',
     },
   ].filter(Boolean);
 

@@ -1,6 +1,7 @@
 import { Badge } from '@codesandbox/common/lib/types';
-
+import { saveAs } from 'file-saver';
 import { Action, AsyncAction } from 'app/overmind';
+import { SettingSync } from './state';
 
 export const viewModeChanged: Action<{
   showEditor: boolean;
@@ -253,6 +254,31 @@ export const syncSettings: AsyncAction = async ({
       'There has been a problem syncing your Preferences'
     );
   }
+};
+
+export const deleteUserSetting: AsyncAction<string> = async (
+  { state, effects },
+  id
+) => {
+  try {
+    await effects.api.removeUserSetting(id);
+
+    state.preferences.settingsSync.settings = state.preferences.settingsSync.settings.filter(
+      s => s.id !== id
+    );
+  } catch (e) {
+    effects.notificationToast.error(
+      'There has been a problem removing your profile'
+    );
+  }
+};
+
+export const downloadPreferences: AsyncAction<SettingSync> = async (
+  { state },
+  settings
+) => {
+  const blob = new Blob([settings.settings], { type: 'application/json' });
+  saveAs(blob, `CodeSandboxSettings-${settings.name}.json`);
 };
 
 export const applyPreferences: AsyncAction = async ({ state, effects }) => {

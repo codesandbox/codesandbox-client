@@ -3,6 +3,14 @@ import { KEYBINDINGS } from '@codesandbox/common/lib/utils/keybindings';
 import { isIOS } from '@codesandbox/common/lib/utils/platform';
 import { derived } from 'overmind';
 
+export type SettingSync = {
+  id: string;
+  insertedAt: string;
+  name: string;
+  settings: string;
+  updatedAt: string;
+};
+
 type State = {
   settings: Settings;
   isLoadingPaymentDetails: boolean;
@@ -20,15 +28,7 @@ type State = {
     syncing: boolean;
     applying: boolean;
     fetching: boolean;
-    settings:
-      | {
-          id: string;
-          insertedAt: string;
-          name: string;
-          settings: string;
-          updatedAt: string;
-        }[]
-      | null;
+    settings: SettingSync[] | null;
   };
 };
 

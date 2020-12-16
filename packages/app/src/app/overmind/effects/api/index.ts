@@ -650,4 +650,7 @@ export default {
   getUserSettings(): Promise<SettingsSync> {
     return api.get(`/users/current_user/editor_settings`);
   },
+  removeUserSetting(id: string): Promise<SettingsSync> {
+    return api.delete(`/users/current_user/editor_settings`);
+  },
 };

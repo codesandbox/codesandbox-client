@@ -29,7 +29,7 @@ export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
         borderWidth: 1,
         borderRightStyle: 'solid',
         borderColor: 'sideBar.border',
-        width: 220,
+        width: 240,
       })}
       paddingBottom={8}
     >
