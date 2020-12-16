@@ -36,11 +36,6 @@ export const sandboxFragmentDashboard = gql`
 
     authorId
     teamId
-
-    permissions {
-      preventSandboxLeaving
-      preventSandboxExport
-    }
   }
 `;
 
@@ -171,9 +166,6 @@ export const currentTeamInfoFragment = gql`
 
     settings {
       minimumPrivacy
-      preventSandboxExport
-      preventSandboxLeaving
-      defaultAuthorization
     }
   }
 `;

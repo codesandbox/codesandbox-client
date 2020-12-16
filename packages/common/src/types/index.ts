@@ -470,10 +470,6 @@ export type Sandbox = {
   version: number;
   screenshotUrl: string | null;
   previewSecret: string | null;
-  permissions: {
-    preventSandboxLeaving: boolean;
-    preventSandboxExport: boolean;
-  };
 };
 
 export type PrettierConfig = {

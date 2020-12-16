@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Menu, Tooltip } from '@codesandbox/components';
+import { Menu } from '@codesandbox/components';
 import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
 
 import {
@@ -41,7 +41,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   const label = isTemplate ? 'Template' : 'Sandbox';
   const isPro = user && Boolean(user.subscription);
-  const isTeamPro = activeTeamInfo.joinedPilotAt;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
@@ -99,11 +98,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       </Menu.ContextMenu>
     );
   }
-
-  const preventSandboxExport =
-    activeWorkspaceAuthorization === 'READ' ||
-    sandbox.permissions.preventSandboxExport;
-
   // TODO(@CompuIves): refactor this to an array
 
   return (
@@ -169,34 +163,21 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
               sandboxIds: [item.sandbox.id],
-              preventSandboxLeaving:
-                item.sandbox.permissions.preventSandboxLeaving,
             });
           }}
         >
           Move to Folder
         </MenuItem>
       ) : null}
-
-      <Tooltip
-        label={
-          preventSandboxExport
-            ? 'You do not have permission to export this sandbox'
-            : null
-        }
-      >
-        <div>
-          <MenuItem
-            data-disabled={preventSandboxExport ? true : null}
-            onSelect={() => {
-              if (preventSandboxExport) return;
-              actions.dashboard.downloadSandboxes([sandbox.id]);
-            }}
-          >
-            Export {label}
-          </MenuItem>
-        </div>
-      </Tooltip>
+      {activeWorkspaceAuthorization !== 'READ' && (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.downloadSandboxes([sandbox.id]);
+          }}
+        >
+          Export {label}
+        </MenuItem>
+      )}
 
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && isPro ? (
         <>
@@ -318,59 +299,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
           >
             Make Sandbox a Template
-          </MenuItem>
-        ))}
-      {hasAccess &&
-        isTeamPro &&
-        activeWorkspaceAuthorization === 'ADMIN' &&
-        (sandbox.permissions.preventSandboxLeaving ? (
-          <MenuItem
-            onSelect={() => {
-              actions.dashboard.setPreventSandboxesLeavingWorkspace({
-                sandboxIds: [sandbox.id],
-                preventSandboxLeaving: false,
-              });
-            }}
-          >
-            Allow Leaving Workspace
-          </MenuItem>
-        ) : (
-          <MenuItem
-            onSelect={() => {
-              actions.dashboard.setPreventSandboxesLeavingWorkspace({
-                sandboxIds: [sandbox.id],
-                preventSandboxLeaving: true,
-              });
-            }}
-          >
-            Prevent Leaving Workspace
-          </MenuItem>
-        ))}
-
-      {hasAccess &&
-        isTeamPro &&
-        activeWorkspaceAuthorization === 'ADMIN' &&
-        (sandbox.permissions.preventSandboxExport ? (
-          <MenuItem
-            onSelect={() => {
-              actions.dashboard.setPreventSandboxesExport({
-                sandboxIds: [sandbox.id],
-                preventSandboxExport: false,
-              });
-            }}
-          >
-            Allow Export as .zip
-          </MenuItem>
-        ) : (
-          <MenuItem
-            onSelect={() => {
-              actions.dashboard.setPreventSandboxesExport({
-                sandboxIds: [sandbox.id],
-                preventSandboxExport: true,
-              });
-            }}
-          >
-            Prevent Export as .zip
           </MenuItem>
         ))}
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && (

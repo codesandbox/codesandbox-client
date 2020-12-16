@@ -217,8 +217,6 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
         }
         settings {
           minimumPrivacy
-          preventSandboxExport
-          preventSandboxLeaving
         }
       }
     }

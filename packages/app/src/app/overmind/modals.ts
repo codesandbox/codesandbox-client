@@ -15,16 +15,10 @@ export const moveSandboxModal: {
     sandboxIds: string[];
     collectionIds?: string[];
     defaultOpenedPath?: string | null;
-    preventSandboxLeaving?: boolean;
   };
   result: undefined;
 } = {
-  state: {
-    sandboxIds: [],
-    collectionIds: [],
-    defaultOpenedPath: null,
-    preventSandboxLeaving: false,
-  },
+  state: { sandboxIds: [], collectionIds: [], defaultOpenedPath: null },
   result: undefined,
 };
 

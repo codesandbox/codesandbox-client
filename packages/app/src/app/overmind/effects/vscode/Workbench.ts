@@ -211,21 +211,14 @@ export class Workbench {
       },
     });
 
-    if (
-      this.controller.getState().editor?.currentSandbox?.permissions
-        .preventSandboxExport
-    ) {
-      // don't add the option to add export
-    } else {
-      this.appendMenuItem(MenuId.MenubarFileMenu, {
-        group: '4_zsandbox',
-        order: 2,
-        command: {
-          id: 'codesandbox.sandbox.exportzip',
-          title: 'Export to ZIP',
-        },
-      });
-    }
+    this.appendMenuItem(MenuId.MenubarFileMenu, {
+      group: '4_zsandbox',
+      order: 2,
+      command: {
+        id: 'codesandbox.sandbox.exportzip',
+        title: 'Export to ZIP',
+      },
+    });
 
     this.appendMenuItem(MenuId.MenubarPreferencesMenu, {
       group: '1_settings',
