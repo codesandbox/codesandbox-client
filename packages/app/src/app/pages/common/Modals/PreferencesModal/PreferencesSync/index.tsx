@@ -16,6 +16,15 @@ import { useOvermind } from 'app/overmind';
 
 import { SubContainer } from '../elements';
 
+const readDataURL = (file: File): Promise<string | ArrayBuffer> =>
+  new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      resolve(e.target.result);
+    };
+    reader.readAsText(file);
+  });
+
 const NewButton = ({ children, ...props }) => (
   <Button
     variant="link"
@@ -47,6 +56,7 @@ export const PreferencesSync: FunctionComponent = () => {
     state: {
       preferences: { settingsSync },
     },
+    effects,
     actions,
   } = useOvermind();
 
@@ -59,13 +69,40 @@ export const PreferencesSync: FunctionComponent = () => {
 
   const uploadPreferences = () => {};
 
+  const importFile = React.useCallback(() => {
+    const fileSelector = document.createElement('input');
+    fileSelector.setAttribute('type', 'file');
+    fileSelector.setAttribute('accept', 'application/json');
+    fileSelector.onchange = async event => {
+      const target = event.target as HTMLInputElement;
+      const file = (await readDataURL(target.files[0])) as string;
+      let contents;
+
+      try {
+        contents = JSON.parse(file);
+      } catch {
+        effects.notificationToast.error('JSON file not formatted correctly');
+      }
+
+      if (!contents || !contents.themeData || !contents.vscode) {
+        effects.notificationToast.error('JSON file not formatted correctly');
+
+        return;
+      }
+
+      actions.preferences.appllySettings(file);
+    };
+
+    fileSelector.click();
+  }, []);
+
   return (
     <>
       <Stack justify="space-between" align="baseline">
         <Text block marginBottom={6} size={4} variant="muted" weight="bold">
           Preferences Sync
         </Text>
-        {settingsSync.settings.length ? (
+        {settingsSync.settings?.length ? (
           <button
             type="button"
             style={{
@@ -89,7 +126,7 @@ export const PreferencesSync: FunctionComponent = () => {
         <>Getting your latest saved preferences</>
       ) : (
         <SubContainer>
-          {!settingsSync.settings.length ? (
+          {!settingsSync.settings?.length ? (
             <>
               <Element marginBottom={5}>
                 <Text variant="muted">
@@ -106,7 +143,7 @@ export const PreferencesSync: FunctionComponent = () => {
                 >
                   New Profile
                 </NewButton>
-                <NewButton>Import Profile</NewButton>
+                <NewButton onClick={importFile}>Import Profile</NewButton>
               </Stack>
             </>
           ) : (

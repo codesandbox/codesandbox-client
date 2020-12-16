@@ -222,38 +222,47 @@ export const syncSettings: AsyncAction = async ({
       themeData[key] = localStorage.getItem(key);
     });
 
-    const {
-      id,
-      insertedAt,
-      name,
-      settings,
-      updatedAt,
-    } = await effects.api.createUserSettings({
-      name: state.user.username,
-      settings: JSON.stringify({
+    actions.preferences.applySettings(
+      JSON.stringify({
         themeData,
         vscode,
-      }),
-    });
-
-    state.preferences.settingsSync.syncing = false;
-    state.preferences.settingsSync.settings = [
-      {
-        id,
-        insertedAt,
-        name,
-        settings,
-        updatedAt,
-      },
-    ];
-    effects.notificationToast.success(
-      'Your Preferences have been sucefully synced'
+      })
     );
   } catch (e) {
     effects.notificationToast.error(
       'There has been a problem syncing your Preferences'
     );
   }
+};
+
+export const appllySettings: AsyncAction<string> = async (
+  { state, effects },
+  settingsStringfied
+) => {
+  const {
+    id,
+    insertedAt,
+    name,
+    settings,
+    updatedAt,
+  } = await effects.api.createUserSettings({
+    name: state.user.username,
+    settings: settingsStringfied,
+  });
+
+  state.preferences.settingsSync.syncing = false;
+  state.preferences.settingsSync.settings = [
+    {
+      id,
+      insertedAt,
+      name,
+      settings,
+      updatedAt,
+    },
+  ];
+  effects.notificationToast.success(
+    'Your Preferences have been sucefully synced'
+  );
 };
 
 export const deleteUserSetting: AsyncAction<string> = async (
