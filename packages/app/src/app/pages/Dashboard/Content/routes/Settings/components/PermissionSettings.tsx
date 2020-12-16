@@ -9,29 +9,70 @@ import {
   Icon,
   Select,
   Switch,
-  Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { TeamMemberAuthorization } from 'app/graphql/types';
+import { Alert } from './Alert';
 
 export const PermissionSettings = () => {
   const {
     state: {
-      activeTeamInfo: { joinedPilotAt },
+      activeTeamInfo,
+      user,
+      personalWorkspaceId,
+      activeWorkspaceAuthorization,
     },
   } = useOvermind();
 
+  // different scenarios
+  const isPersonalWorkspace = activeTeamInfo.id === personalWorkspaceId;
+  const isTeamPro = activeTeamInfo.joinedPilotAt;
+  const isPersonalPro =
+    isPersonalWorkspace && user && Boolean(user.subscription);
+  const isAdmin =
+    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+
+  let alert: {
+    message: string;
+    cta?: { label: string; href: string };
+  } | null = null;
+
+  if (isPersonalWorkspace) {
+    if (!isPersonalPro) {
+      alert = {
+        message: 'Upgrade to Pro to change sandbox permissions.',
+        cta: { label: 'Upgrade to Pro', href: 'https://codesandbox.io/pro' },
+      };
+    }
+  } else if (!isTeamPro) {
+    alert = {
+      message:
+        'Your workspace needs to be in the Pro workspaces pilot to change sandbox permissions.',
+      cta: {
+        label: 'Apply for Pilot',
+        href: 'https://airtable.com/shrlgLSJWiX8rYqyG',
+      },
+    };
+  } else if (!isAdmin) {
+    alert = {
+      message: 'Please contact your admin to change sandbox permissions.',
+    };
+  }
+
   return (
-    <Grid columnGap={12}>
-      <Column span={[12, 12, 6]}>
-        <MinimumPrivacy />
-      </Column>
-      {joinedPilotAt && (
+    <Stack direction="vertical" gap={6}>
+      {alert && <Alert message={alert.message} cta={alert.cta} />}
+      <Grid columnGap={12}>
         <Column span={[12, 12, 6]}>
-          <SandboxSecurity />
+          <MinimumPrivacy disabled={Boolean(alert)} />
         </Column>
-      )}
-    </Grid>
+        {!isPersonalWorkspace && (
+          <Column span={[12, 12, 6]}>
+            <SandboxSecurity disabled={Boolean(alert)} />
+          </Column>
+        )}
+      </Grid>
+    </Stack>
   );
 };
 
@@ -50,21 +91,13 @@ const privacyOptions = {
   },
 };
 
-const MinimumPrivacy = () => {
+const MinimumPrivacy = ({ disabled }: { disabled: boolean }) => {
   const {
-    state: { activeTeamInfo, user, personalWorkspaceId },
+    state: { activeTeamInfo },
     actions: {
       dashboard: { setTeamMinimumPrivacy },
     },
   } = useOvermind();
-
-  const isTeamPro = activeTeamInfo.joinedPilotAt;
-  const isPersonalPro =
-    activeTeamInfo.id === personalWorkspaceId &&
-    user &&
-    Boolean(user.subscription);
-
-  const hasFeature = isTeamPro || isPersonalPro;
 
   const [minimumPrivacy, setMinimumPrivacy] = React.useState(
     activeTeamInfo.settings.minimumPrivacy
@@ -92,51 +125,18 @@ const MinimumPrivacy = () => {
         border: '1px solid',
         borderColor: 'grays.500',
         borderRadius: 'medium',
+        opacity: disabled ? 0.4 : 1,
       })}
     >
-      <Stack
-        direction="vertical"
-        gap={8}
-        css={{ opacity: hasFeature ? 1 : 0.4 }}
-      >
+      <Stack direction="vertical" gap={8}>
         <Stack direction="vertical" gap={8}>
-          <Stack justify="space-between">
-            <Text size={4} weight="bold">
-              Default Privacy
-            </Text>
-            {!hasFeature && (
-              <Tooltip
-                label={`Upgrade to ${
-                  activeTeamInfo.id === personalWorkspaceId
-                    ? 'Pro'
-                    : 'Pro Workspaces'
-                } to change default privacy settings to hide your drafts.`}
-              >
-                <Stack gap={1} align="center">
-                  <Text
-                    size={3}
-                    weight="bold"
-                    css={css({
-                      color:
-                        activeTeamInfo.id === personalWorkspaceId
-                          ? 'white'
-                          : 'purple',
-                    })}
-                  >
-                    Pro
-                  </Text>
-                  <Text size={3} weight="bold">
-                    {activeTeamInfo.id !== personalWorkspaceId && 'Workspace'}
-                  </Text>
-                  <Icon name="info" size={12} />
-                </Stack>
-              </Tooltip>
-            )}
-          </Stack>
+          <Text size={4} weight="bold">
+            Default Privacy
+          </Text>
 
           <Stack direction="vertical" gap={3}>
             <Select
-              disabled={!hasFeature}
+              disabled={disabled}
               icon={privacyOptions[minimumPrivacy].icon}
               value={minimumPrivacy}
               onChange={({ target: { value } }) =>
@@ -157,7 +157,7 @@ const MinimumPrivacy = () => {
             </Text>
             <Switch
               on={updateDrafts}
-              disabled={!hasFeature}
+              disabled={disabled}
               onChange={() => setUpdateDrafts(!updateDrafts)}
             />
           </Stack>
@@ -166,7 +166,7 @@ const MinimumPrivacy = () => {
       <Stack justify="flex-end">
         <Button
           autoWidth
-          disabled={!hasFeature}
+          disabled={disabled}
           onClick={async () => {
             await setTeamMinimumPrivacy({
               teamId: activeTeamInfo.id,
@@ -183,7 +183,7 @@ const MinimumPrivacy = () => {
   );
 };
 
-const SandboxSecurity = () => {
+const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
   const {
     state: {
       activeTeamInfo: { settings },
@@ -220,8 +220,6 @@ const SandboxSecurity = () => {
     ]
   );
 
-  const permissionMap = { ADMIN: 'Admin', WRITE: 'Editor', READ: 'Viewer' };
-
   const onSubmit = () => {
     setWorkspaceSandboxSettings({
       preventSandboxLeaving,
@@ -242,6 +240,7 @@ const SandboxSecurity = () => {
         border: '1px solid',
         borderColor: 'grays.500',
         borderRadius: 'medium',
+        opacity: disabled ? 0.4 : 1,
       })}
     >
       <Stack direction="vertical" gap={8}>
@@ -259,6 +258,7 @@ const SandboxSecurity = () => {
             <Switch
               on={preventSandboxLeaving}
               onChange={() => setPreventSandboxLeaving(!preventSandboxLeaving)}
+              disabled={disabled}
             />
           </Stack>
           <Stack as="label" justify="space-between" align="center">
@@ -266,6 +266,7 @@ const SandboxSecurity = () => {
             <Switch
               on={preventSandboxExport}
               onChange={() => setPreventSandboxExport(!preventSandboxExport)}
+              disabled={disabled}
             />
           </Stack>
           <Stack justify="space-between" align="center">
@@ -276,16 +277,17 @@ const SandboxSecurity = () => {
               onChange={({ target: { value } }) => {
                 setDefaultAuthorization(value as TeamMemberAuthorization);
               }}
+              disabled={disabled}
             >
-              <option value="WRITE">{permissionMap.WRITE}</option>
-              <option value="READ">{permissionMap.READ}</option>
-              <option value="ADMIN">{permissionMap.ADMIN}</option>
+              <option value={TeamMemberAuthorization.Write}>Write</option>
+              <option value={TeamMemberAuthorization.Read}>Read</option>
+              <option value={TeamMemberAuthorization.Admin}>Admin</option>
             </Select>
           </Stack>
         </Stack>
       </Stack>
       <Stack justify="flex-end">
-        <Button autoWidth onClick={onSubmit}>
+        <Button autoWidth onClick={onSubmit} disabled={disabled}>
           Change Settings
         </Button>
       </Stack>
