@@ -196,10 +196,10 @@ export const renameUserSettings: AsyncAction<{
   name: string;
   id: string;
 }> = async ({ state, effects }, { name, id }) => {
-  if (!name) return;
+  const { settingsSync } = state.preferences;
+  if (!name || !settingsSync.settings) return;
 
   try {
-    const { settingsSync } = state.preferences;
     const response = await effects.api.editUserSettings(
       {
         ...settingsSync.settings.find(s => s.id === id),
@@ -255,7 +255,7 @@ export const syncSettings: AsyncAction = async ({
       themeData[key] = localStorage.getItem(key);
     });
 
-    actions.preferences.applySettings(
+    actions.preferences.appllySettings(
       JSON.stringify({
         themeData,
         vscode,
@@ -272,6 +272,7 @@ export const appllySettings: AsyncAction<string> = async (
   { state, effects },
   settingsStringfied
 ) => {
+  if (!state.user) return;
   const {
     id,
     insertedAt,
@@ -302,6 +303,7 @@ export const deleteUserSetting: AsyncAction<string> = async (
   { state, effects },
   id
 ) => {
+  if (!state.preferences.settingsSync.settings) return;
   try {
     await effects.api.removeUserSetting(id);
 
@@ -324,6 +326,7 @@ export const downloadPreferences: AsyncAction<SettingSync> = async (
 };
 
 export const applyPreferences: AsyncAction = async ({ state, effects }) => {
+  if (!state.preferences.settingsSync.settings) return;
   const { settings } = state.preferences.settingsSync.settings[0];
   const fs = window.BrowserFS.BFSRequire('fs');
 
