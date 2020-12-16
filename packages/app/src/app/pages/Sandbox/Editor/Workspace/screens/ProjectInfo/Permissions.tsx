@@ -39,7 +39,8 @@ export const Permissions: FunctionComponent = () => {
   // if this user is not part of this workspace,
   // they should not see permissions at all
   const isActiveTeam = currentSandbox.team?.id === activeTeam;
-  const sandoxPermissionsVisible = isActiveTeam && activeTeamInfo.joinedPilotAt;
+  const sandoxPermissionsVisible =
+    isActiveTeam && activeTeamInfo?.joinedPilotAt;
 
   const togglePreventSandboxLeaving = () => {
     setPreventSandboxLeaving(!currentSandbox.permissions.preventSandboxLeaving);
