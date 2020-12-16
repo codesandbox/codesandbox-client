@@ -18,11 +18,15 @@ import { Collaborators } from './Collaborators';
 import { CollaboratorHeads } from './CollaboratorHeads';
 import { ForkButton } from './ForkButton';
 
-const TooltipButton = ({ tooltip, ...props }) => (
-  <Tooltip content={tooltip}>
-    <Button {...props} />
-  </Tooltip>
-);
+const TooltipButton = ({ tooltip, ...props }) => {
+  if (!tooltip) return <Button {...props} />;
+
+  return (
+    <Tooltip content={tooltip}>
+      <Button {...props} />
+    </Tooltip>
+  );
+};
 
 export const Actions = () => {
   const {
@@ -48,6 +52,7 @@ export const Actions = () => {
           description,
           likeCount,
           userLiked,
+          permissions,
         },
       },
     },
@@ -174,14 +179,21 @@ export const Actions = () => {
           variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
         />
       ) : (
-        <Button
+        <TooltipButton
+          tooltip={
+            permissions.preventSandboxLeaving
+              ? 'You don not have permission to fork this sandbox'
+              : null
+          }
           loading={isForkingSandbox}
           variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
           onClick={() => forkSandboxClicked({})}
+          disabled={permissions.preventSandboxLeaving}
         >
           <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
-        </Button>
+        </TooltipButton>
       )}
+
       <Button
         variant="secondary"
         css={css({ paddingX: 3 })}
@@ -190,6 +202,7 @@ export const Actions = () => {
       >
         Create Sandbox
       </Button>
+
       {hasLogIn && <Notifications />}
       {hasLogIn ? (
         <UserMenu>
