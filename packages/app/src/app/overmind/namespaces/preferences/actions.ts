@@ -192,6 +192,39 @@ export const getVSCodeSettings = () => {
   return files;
 };
 
+export const renameUserSettings: AsyncAction<{
+  name: string;
+  id: string;
+}> = async ({ state, effects }, { name, id }) => {
+  if (!name) return;
+
+  try {
+    const { settingsSync } = state.preferences;
+    const response = await effects.api.editUserSettings(
+      {
+        ...settingsSync.settings.find(s => s.id === id),
+        name,
+      },
+      id
+    );
+
+    settingsSync.settings = settingsSync.settings.map(setting => {
+      if (setting.id === response.id) {
+        return {
+          ...setting,
+          name,
+        };
+      }
+
+      return setting;
+    });
+  } catch (e) {
+    effects.notificationToast.error(
+      'There has been a problem renaming your profile'
+    );
+  }
+};
+
 export const getUserSettings: AsyncAction = async ({ state, effects }) => {
   const { settingsSync } = state.preferences;
   settingsSync.fetching = true;

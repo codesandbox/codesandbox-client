@@ -647,8 +647,11 @@ export default {
       settings,
     });
   },
-  getUserSettings(): Promise<SettingsSync> {
+  getUserSettings(): Promise<SettingsSync[]> {
     return api.get(`/users/current_user/editor_settings`);
+  },
+  editUserSettings(body: any, id: string): Promise<SettingsSync> {
+    return api.patch(`/users/current_user/editor_settings/${id}`, body);
   },
   removeUserSetting(id: string): Promise<SettingsSync> {
     return api.delete(`/users/current_user/editor_settings`);
