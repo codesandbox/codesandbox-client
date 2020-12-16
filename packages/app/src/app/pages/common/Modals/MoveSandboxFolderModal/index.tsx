@@ -33,6 +33,8 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
     avatarUrl: activeTeamInfo.avatarUrl,
   });
 
+  const preventSandboxLeaving = modals.moveSandboxModal.preventSandboxLeaving;
+
   const handleMove = () => {
     setLoading(true);
     setError(undefined);
@@ -89,11 +91,12 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
               })}
             >
               <WorkspaceSelect
+                activeAccount={selectedTeam}
+                disabled={preventSandboxLeaving}
                 onSelect={workspace => {
                   setSelectedTeam(workspace);
                   setTeamId(workspace.id);
                 }}
-                activeAccount={selectedTeam}
               />
             </Element>
             <Stack direction="vertical" gap={4}>
