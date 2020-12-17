@@ -9,6 +9,7 @@ import {
   Menu,
   Input,
 } from '@codesandbox/components';
+import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import css from '@styled-system/css';
 import { format } from 'date-fns';
 import { useOvermind } from 'app/overmind';
@@ -81,7 +82,11 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
             height: 6,
           })}
         >
-          {isSynced && <SyncedIcon />}
+          {isSynced && (
+            <Tooltip content="Your local preferences are in sync with the server">
+              <SyncedIcon />
+            </Tooltip>
+          )}
         </Element>
         <Menu>
           <Menu.Button css={{ color: 'white' }}>

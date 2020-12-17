@@ -16,7 +16,7 @@ export const Badges: FunctionComponent = () => {
 
   return (
     <>
-      <Text block marginBottom={6} size={4} variant="muted" weight="bold">
+      <Text block marginBottom={6} size={4} weight="bold">
         Badges
       </Text>
 

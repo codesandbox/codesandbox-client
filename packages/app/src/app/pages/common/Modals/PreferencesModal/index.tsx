@@ -108,7 +108,7 @@ const getItems = (
       Content: PreferencesSync,
       Icon: ProfileIcon,
       id: 'preferencesSync',
-      title: 'Preferece Profiles',
+      title: 'Preferences Profiles',
     },
   ].filter(Boolean);
 
