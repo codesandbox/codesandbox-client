@@ -248,7 +248,6 @@ export type OrderBy = {
 export type PreviewReference = {
   height: Scalars['Int'];
   previewPath: Scalars['String'];
-  responsive: Scalars['Boolean'];
   screenshotSrc: Maybe<Scalars['Base64']>;
   userAgent: Scalars['String'];
   width: Scalars['Int'];
@@ -260,7 +259,6 @@ export type PreviewReferenceMetadata = {
   __typename?: 'PreviewReferenceMetadata';
   height: Scalars['Int'];
   previewPath: Scalars['String'];
-  responsive: Scalars['Boolean'];
   screenshotUrl: Maybe<Scalars['String']>;
   userAgent: Scalars['String'];
   width: Scalars['Int'];
@@ -1232,7 +1230,7 @@ export type PreviewReferenceMetadataFragment = {
   __typename?: 'PreviewReferenceMetadata';
 } & Pick<
   PreviewReferenceMetadata,
-  'width' | 'height' | 'x' | 'y' | 'screenshotUrl' | 'responsive'
+  'width' | 'height' | 'x' | 'y' | 'screenshotUrl'
 >;
 
 export type CommentFragment = { __typename?: 'Comment' } & Pick<
