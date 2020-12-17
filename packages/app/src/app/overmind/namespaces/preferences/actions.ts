@@ -263,7 +263,7 @@ export const createPreferencesProfile: AsyncAction = async ({
   try {
     const { vscode, themeData } = actions.preferences.getUserLocalSettings({});
 
-    actions.preferences.appllySettings(
+    actions.preferences.updateServerSettings(
       JSON.stringify({
         themeData,
         vscode,
@@ -276,7 +276,7 @@ export const createPreferencesProfile: AsyncAction = async ({
   }
 };
 
-export const appllySettings: AsyncAction<string> = async (
+export const updateServerSettings: AsyncAction<string> = async (
   { state, effects },
   settingsStringfied
 ) => {

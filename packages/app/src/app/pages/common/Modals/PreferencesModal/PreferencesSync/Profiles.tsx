@@ -3,7 +3,7 @@ import {
   Text,
   Element,
   List,
-  ListAction,
+  ListItem,
   Stack,
   Icon,
   Menu,
@@ -33,10 +33,7 @@ export const Profiles = () => {
 };
 
 const Profile = ({ setting }) => {
-  const {
-    actions,
-    state: { preferences },
-  } = useOvermind();
+  const { actions } = useOvermind();
   const [rename, setRename] = useState(false);
   const [isSynced, setIsSynced] = useState(null);
   const [name, setName] = useState(setting.name);
@@ -61,9 +58,7 @@ const Profile = ({ setting }) => {
   }, []);
 
   return (
-    <ListAction
-      onClick={() => actions.preferences.applyPreferences(setting.settings)}
-      disabled={preferences.settingsSync.applying}
+    <ListItem
       justify="space-between"
       align="center"
       css={css({
@@ -111,6 +106,17 @@ const Profile = ({ setting }) => {
             <Icon css={css({ color: 'mutedForeground' })} name="more" />
           </Menu.Button>
           <Menu.List>
+            <Menu.Item
+              onSelect={() =>
+                actions.preferences.applyPreferences(setting.settings)
+              }
+            >
+              Pull
+            </Menu.Item>
+            <Menu.Item onSelect={actions.preferences.createPreferencesProfile}>
+              Push
+            </Menu.Item>
+            <Menu.Divider />
             <Menu.Item onSelect={() => setRename(true)}>Rename</Menu.Item>
             <Menu.Item
               onSelect={() => actions.preferences.downloadPreferences(setting)}
@@ -128,6 +134,6 @@ const Profile = ({ setting }) => {
           </Menu.List>
         </Menu>
       </Stack>
-    </ListAction>
+    </ListItem>
   );
 };

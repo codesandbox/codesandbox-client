@@ -51,7 +51,7 @@ export const PreferencesSync: FunctionComponent = () => {
         return;
       }
 
-      actions.preferences.appllySettings(file);
+      actions.preferences.updateServerSettings(file);
     };
 
     fileSelector.click();
