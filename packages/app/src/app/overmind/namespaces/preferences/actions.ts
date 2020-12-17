@@ -1,3 +1,4 @@
+import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { Badge } from '@codesandbox/common/lib/types';
 import { isEqual } from 'lodash-es';
 import { saveAs } from 'file-saver';
@@ -162,7 +163,10 @@ export const toggleContainerLspExperiment: AsyncAction = async ({
   }
 };
 
-export const getUserLocalSettings = (): { themeData: any; vscode: any } => {
+export const getUserLocalSettings: Action<
+  void,
+  { themeData: any; vscode: any }
+> = () => {
   const fs = window.BrowserFS.BFSRequire('fs');
   const all = fs.readdirSync('/vscode');
   const files = {};
@@ -261,7 +265,7 @@ export const createPreferencesProfile: AsyncAction = async ({
 }) => {
   state.preferences.settingsSync.syncing = true;
   try {
-    const { vscode, themeData } = actions.preferences.getUserLocalSettings({});
+    const { vscode, themeData } = actions.preferences.getUserLocalSettings();
 
     actions.preferences.updateServerSettings(
       JSON.stringify({
@@ -271,7 +275,7 @@ export const createPreferencesProfile: AsyncAction = async ({
     );
   } catch (e) {
     effects.notificationToast.error(
-      'There has been a problem syncing your Preferences'
+      'There has been a problem uploading your preferences'
     );
   }
 };
@@ -304,26 +308,46 @@ export const updateServerSettings: AsyncAction<string> = async (
   ];
   localStorage.setItem(`profile-${id}`, updatedAt);
   effects.notificationToast.success(
-    'Your Preferences have been sucefully synced'
+    'Your preferences have been sucefully synced'
   );
 };
 
-export const checkifSynced = ({ state, actions }, savedSetting) => {
-  const currentSettings = actions.preferences.getUserLocalSettings({});
+export const checkifSynced: Action<string, boolean> = (
+  { actions },
+  savedSetting
+) => {
+  const currentSettings = actions.preferences.getUserLocalSettings();
   return isEqual(currentSettings, JSON.parse(savedSetting));
 };
 
 export const deleteUserSetting: AsyncAction<string> = async (
-  { state, effects },
+  { state, effects, actions },
   id
 ) => {
   if (!state.preferences.settingsSync.settings) return;
   try {
     await effects.api.removeUserSetting(id);
+    const removed = state.preferences.settingsSync.settings.find(
+      setting => setting.id === id
+    );
 
     state.preferences.settingsSync.settings = state.preferences.settingsSync.settings.filter(
-      s => s.id !== id
+      setting => setting.id !== id
     );
+    effects.notificationToast.add({
+      title: 'Your profile has been removed',
+      message: null,
+      status: convertTypeToStatus('success'),
+      sticky: false,
+      actions: {
+        primary: {
+          label: 'Undo',
+          run: () => {
+            actions.preferences.createPreferencesProfile(removed.settings);
+          },
+        },
+      },
+    });
   } catch (e) {
     effects.notificationToast.error(
       'There has been a problem removing your profile'
@@ -332,7 +356,7 @@ export const deleteUserSetting: AsyncAction<string> = async (
 };
 
 export const downloadPreferences: AsyncAction<SettingSync> = async (
-  { state },
+  _,
   settings
 ) => {
   const blob = new Blob([settings.settings], { type: 'application/json' });
@@ -357,17 +381,13 @@ export const applyPreferences: AsyncAction<string> = async (
       fs.writeFileSync(key, parsedSyncedSettings.vscode[key]);
     });
     effects.notificationToast.success(
-      'Your settings have been applied. The page will now reload'
+      'Your preferences have been applied. The page will now reload'
     );
 
     window.setTimeout(() => location.reload(), 1000);
   } catch (e) {
     effects.notificationToast.error(
-      'There has been a problem applying your Preferences'
+      'There has been a problem applying your preferences'
     );
   }
-};
-
-export const openApplySettingsModal: Action = ({ state }) => {
-  state.currentModal = 'applyPreferences';
 };
