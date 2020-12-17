@@ -1,7 +1,8 @@
 import React, { FunctionComponent, useEffect } from 'react';
-
+import css from '@styled-system/css';
 import { Text, Stack, Icon } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import { SpinnerWrapper } from '@codesandbox/common/lib/components/Preview/Navigator/elements';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { SubContainer } from '../elements';
@@ -18,7 +19,9 @@ export const PreferencesSync: FunctionComponent = () => {
   } = useOvermind();
 
   useEffect(() => {
-    actions.preferences.getUserSettings();
+    if (!settingsSync.settings) {
+      actions.preferences.getUserSettings();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -58,6 +61,8 @@ export const PreferencesSync: FunctionComponent = () => {
     fileSelector.click();
   }, []);
 
+  if (!settingsSync.settings) return null;
+
   return (
     <>
       <Stack justify="space-between" align="baseline">
@@ -86,7 +91,7 @@ export const PreferencesSync: FunctionComponent = () => {
           </Tooltip>
         ) : null}
       </Stack>
-      {true ? (
+      {settingsSync.fetching ? (
         <Stack
           align="center"
           justify="center"
@@ -95,7 +100,11 @@ export const PreferencesSync: FunctionComponent = () => {
             height: 382,
           })}
         >
-          <Icon name="spinner" />
+          <SpinnerWrapper
+            style={{ transformOrigin: '50% 50%', width: 14, height: 14 }}
+          >
+            <Icon name="spinner" />
+          </SpinnerWrapper>
         </Stack>
       ) : (
         <SubContainer>
