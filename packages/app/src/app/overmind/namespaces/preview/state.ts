@@ -17,6 +17,7 @@ type State = {
   };
   mode: Mode;
   hasExtension: boolean;
+  showExtensionBanner: boolean;
 };
 
 export const defaultPresets: Presets = {
@@ -43,4 +44,5 @@ export const state: State = {
   },
   mode: null,
   hasExtension: false,
+  showExtensionBanner: false,
 };

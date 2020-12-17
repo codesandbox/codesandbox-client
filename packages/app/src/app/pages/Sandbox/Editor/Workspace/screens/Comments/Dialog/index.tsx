@@ -226,12 +226,7 @@ const PreviewScreenshot: React.FC<{ url: string }> = ({ url }) => (
       },
     })}
   >
-    <Image
-      src={url}
-      alt="Preview Screenshot"
-      ignorePrivateSandboxRestriction
-      transparentBorder
-    />
+    <Image src={url} alt="Preview Screenshot" ignorePrivateSandboxRestriction />
   </Element>
 );
 

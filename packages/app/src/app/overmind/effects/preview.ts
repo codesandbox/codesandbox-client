@@ -7,8 +7,6 @@ import { Sandbox } from '@codesandbox/common/lib/types';
 
 let _preview = blocker<BasePreview>();
 
-const PREVIEW_COMMENT_BUBBLE_OFFSET = 16;
-
 export default {
   initialize() {},
   initializePreview(preview: any) {
@@ -186,75 +184,13 @@ export default {
         const sx = Math.min(scaledX - leftSideSpace, screenshot.width - width);
         const sy = Math.min(scaledY - topSideSpace, screenshot.height - height);
 
-        const bubbleX = PREVIEW_COMMENT_BUBBLE_OFFSET + scaledX - sx;
-        const bubbleY = PREVIEW_COMMENT_BUBBLE_OFFSET + scaledY - sy;
+        const bubbleX = scaledX - sx;
+        const bubbleY = scaledY - sy;
 
-        canvas.width = width + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
-        canvas.height = height + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
+        canvas.width = width;
+        canvas.height = height;
 
-        const radius = 5;
-
-        ctx.strokeStyle = '#262626';
-        ctx.beginPath();
-        ctx.moveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width - radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height - radius
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width - radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height - radius
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET
-        );
-        ctx.closePath();
-        ctx.stroke();
-        ctx.save();
-        ctx.clip();
-        ctx.drawImage(
-          screenshot,
-          sx,
-          sy,
-          width,
-          height,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          width,
-          height
-        );
+        ctx.drawImage(screenshot, sx, sy, width, height, 0, 0, width, height);
         ctx.restore();
         ctx.drawImage(bubble, bubbleX, bubbleY);
 

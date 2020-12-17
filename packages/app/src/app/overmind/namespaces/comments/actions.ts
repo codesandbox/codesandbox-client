@@ -282,14 +282,9 @@ export const selectComment: AsyncAction<{
       .metadata as PreviewReferenceMetadata;
 
     const previewBounds = await effects.preview.getIframeBoundingRect();
-    // if it wasn't in preview mode do not put it in preview mode
-    if (metadata.responsive) {
-      state.preview.responsive.resolution = [metadata.width, metadata.height];
-      state.preview.mode = 'responsive';
-    } else {
-      state.preview.mode = null;
-    }
 
+    state.preview.responsive.resolution = [metadata.width, metadata.height];
+    state.preview.mode = 'responsive';
     state.comments.currentCommentId = commentId;
 
     // We have to wait for the bubble to appear
@@ -463,7 +458,6 @@ export const addOptimisticPreviewComment: AsyncAction<{
   const isResponsive = state.preview.mode === 'responsive-add-comment';
   const metadata: PreviewReferenceMetadata = {
     userAgent: effects.browser.getUserAgent(),
-    responsive: isResponsive,
     screenshotUrl,
     width: isResponsive
       ? state.preview.responsive.resolution[0]
@@ -700,12 +694,10 @@ export const saveComment: AsyncAction<CommentFragment> = async (
           },
         });
       } else if (reference.type === 'preview') {
-        const isResponsive = state.preview.mode === 'responsive-add-comment';
         const metadata = reference.metadata as PreviewReferenceMetadata;
         await effects.gql.mutations.createPreviewComment({
           ...baseCommentPayload,
           anchorReference: {
-            responsive: isResponsive,
             height: Math.round(metadata.height),
             previewPath: metadata.previewPath,
             userAgent: metadata.userAgent,
