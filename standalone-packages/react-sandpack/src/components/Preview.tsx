@@ -13,15 +13,16 @@ export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
   const sandpack = useSandpack();
 
   // TODO: is this still needed?
-  // TODO: unlisten
   useEffect(() => {
-    listen((message: any) => {
+    const unsub = listen((message: any) => {
       if (message.type === 'resize') {
         if (sandpack.browserFrame) {
           sandpack.browserFrame.style.height = message.height;
         }
       }
     });
+
+    return unsub;
   }, []);
 
   useEffect(() => {

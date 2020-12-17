@@ -4,7 +4,7 @@ import { styled } from '../stitches.config';
 import { ErrorMessage } from '../elements';
 import { useSandpack } from '../utils/sandpack-context';
 
-export interface Props {
+export interface TranspiledCodeViewProps {
   style?: Object;
 }
 
@@ -24,7 +24,7 @@ function getTranspiledCode(sandpack: ISandpackContext) {
   return tModule?.source?.compiledCode ?? null;
 }
 
-export const TranspiledCodeView: React.FC<Props> = props => {
+export const TranspiledCodeView: React.FC<TranspiledCodeViewProps> = props => {
   const sandpack = useSandpack();
   const transpiledCode = getTranspiledCode(sandpack);
 

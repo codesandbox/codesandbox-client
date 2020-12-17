@@ -37,7 +37,7 @@ import { reactDocs } from './theme/react-docs';
 import { styled } from '../../stitches.config';
 import { useSandpack } from '../../utils/sandpack-context';
 
-interface Props {
+export interface CodeEditorProps {
   style?: React.CSSProperties;
 }
 
@@ -47,7 +47,7 @@ const Container = styled('div', {
   },
 });
 
-export const CodeEditor = ({ style }: Props) => {
+export const CodeEditor = ({ style }: CodeEditorProps) => {
   const wrapper = useRef<HTMLDivElement | null>(null);
   const cmView = useRef<EditorView>();
   const sandpack = useSandpack();

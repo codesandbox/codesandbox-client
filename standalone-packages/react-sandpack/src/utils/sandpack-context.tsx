@@ -1,4 +1,9 @@
-import React, { createContext, useContext, PureComponent } from 'react';
+import React, {
+  createContext,
+  createRef,
+  useContext,
+  PureComponent,
+} from 'react';
 import { Manager, generatePackageJSON } from 'smooshpack';
 import { listen } from 'codesandbox-api';
 
@@ -18,7 +23,6 @@ export interface State {
   files: IFiles;
   browserPath: string;
   openedPath: string;
-  iframe: HTMLIFrameElement | null;
   managerState: IManagerState | undefined;
   errors: Array<IModuleError>;
   status: ManagerStatus;
@@ -38,15 +42,12 @@ export interface Props {
   bundlerURL?: string;
   skipEval?: boolean;
   template?: SandboxEnvironment;
-
-  onFileChange?: (files: IFiles, sandpack: ISandpackContext) => void;
   fileResolver?: {
     isFile: (path: string) => Promise<boolean>;
     readFile: (path: string) => Promise<string>;
   };
 }
 
-// TODO: Why is iframe on both class and state
 // TODO: Provider API (props)
 // TODO: Get rid of the codesandbox-api dependency
 class SandpackProvider extends PureComponent<Props, State> {
@@ -55,8 +56,8 @@ class SandpackProvider extends PureComponent<Props, State> {
   };
 
   manager?: Manager;
-  iframe?: HTMLIFrameElement;
-  listener: Function;
+  iframeRef: React.RefObject<HTMLIFrameElement>;
+  unsubscribe: Function;
 
   constructor(props: Props) {
     super(props);
@@ -69,13 +70,13 @@ class SandpackProvider extends PureComponent<Props, State> {
       ),
       browserPath: props.initialPath || '/',
       openedPath: props.openedPath || props.entry || '/index.js',
-      iframe: null,
       managerState: undefined,
       errors: [],
       status: 'initializing',
     };
 
-    this.listener = listen(this.handleMessage);
+    this.iframeRef = createRef<HTMLIFrameElement>();
+    this.unsubscribe = listen(this.handleMessage);
   }
 
   handleMessage = (m: any) => {
@@ -137,28 +138,6 @@ class SandpackProvider extends PureComponent<Props, State> {
     skipEval: this.props.skipEval,
   });
 
-  setupFrame = (el: HTMLIFrameElement) => {
-    if (el) {
-      this.manager = new Manager(
-        el,
-        {
-          files: generatePackageJSON(
-            this.props.files,
-            this.props.dependencies,
-            this.props.entry
-          ),
-          template: this.props.template,
-          showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
-        },
-        this.getOptions()
-      );
-
-      this.iframe = el;
-
-      this.setState({ iframe: el });
-    }
-  };
-
   updateCurrentFile = (file: IFile) => {
     if (file.code !== this.state.files[this.state.openedPath]?.code) {
       this.updateFiles({
@@ -171,10 +150,6 @@ class SandpackProvider extends PureComponent<Props, State> {
   updateFiles = (files: IFiles) => {
     this.setState({ files });
 
-    if (this.props.onFileChange) {
-      this.props.onFileChange(files, this._getSandpackState());
-    }
-
     if (this.manager) {
       this.manager.updatePreview({
         showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
@@ -183,6 +158,28 @@ class SandpackProvider extends PureComponent<Props, State> {
       });
     }
   };
+
+  componentDidMount() {
+    if (!this.iframeRef.current) {
+      throw new Error(
+        'Sandpack iframe was not initialized. Check the render function of <SandpackProvider>'
+      );
+    }
+
+    this.manager = new Manager(
+      this.iframeRef.current,
+      {
+        files: generatePackageJSON(
+          this.props.files,
+          this.props.dependencies,
+          this.props.entry
+        ),
+        template: this.props.template,
+        showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
+      },
+      this.getOptions()
+    );
+  }
 
   componentDidUpdate(props: Props) {
     if (
@@ -206,7 +203,7 @@ class SandpackProvider extends PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    this.listener();
+    this.unsubscribe();
   }
 
   openFile = (path: string) => {
@@ -217,6 +214,7 @@ class SandpackProvider extends PureComponent<Props, State> {
    * Get information about the transpilers that are currently registered to the
    * preset
    */
+  // TODO: Is this still needed?
   getManagerTranspilerContext = (): Promise<{ [transpiler: string]: Object }> =>
     new Promise(resolve => {
       const listener = listen((message: any) => {
@@ -234,7 +232,6 @@ class SandpackProvider extends PureComponent<Props, State> {
 
   _getSandpackState = (): ISandpackContext => {
     const {
-      iframe,
       files,
       browserPath,
       openedPath,
@@ -252,7 +249,7 @@ class SandpackProvider extends PureComponent<Props, State> {
       managerStatus: status,
       openFile: this.openFile,
       getManagerTranspilerContext: this.getManagerTranspilerContext,
-      browserFrame: iframe,
+      browserFrame: this.iframeRef.current,
       updateFiles: this.updateFiles,
       updateCurrentFile: this.updateCurrentFile,
       bundlerURL: this.manager ? this.manager.bundlerURL : undefined,
@@ -269,7 +266,7 @@ class SandpackProvider extends PureComponent<Props, State> {
             We expose this iframe to the Consumer, so other components can show the full
             iframe for preview. An implementation can be found in `Preview` component. */}
           <iframe
-            ref={this.setupFrame}
+            ref={this.iframeRef}
             title="sandpack-sandbox"
             style={{
               width: 0,

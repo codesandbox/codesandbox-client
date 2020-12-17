@@ -3,7 +3,7 @@ import { getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { IFiles } from '../types';
 import { useSandpack } from '../utils/sandpack-context';
 
-export interface Props {
+export interface OpenInCodeSandboxButtonProps {
   render?: () => React.ReactNode;
 }
 
@@ -24,7 +24,9 @@ const getFileParameters = (files: IFiles) => {
   return getParameters({ files: normalized });
 };
 
-export const OpenInCodeSandboxButton: React.FC<Props> = ({ render }) => {
+export const OpenInCodeSandboxButton: React.FC<OpenInCodeSandboxButtonProps> = ({
+  render,
+}) => {
   const sandpack = useSandpack();
 
   return (

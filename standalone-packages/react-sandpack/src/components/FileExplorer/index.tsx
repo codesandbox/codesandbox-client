@@ -5,7 +5,7 @@ import { ModuleList } from './ModuleList';
 import { styled } from '../../stitches.config';
 import { useSandpack } from '../../utils/sandpack-context';
 
-export interface Props {
+export interface FileExplorerProps {
   style?: Object;
 }
 
@@ -15,7 +15,7 @@ const Container = styled('div', {
   paddingTop: '0.5em',
 });
 
-export const FileExplorer: React.FC<Props> = props => {
+export const FileExplorer: React.FC<FileExplorerProps> = props => {
   const sandpack = useSandpack();
 
   return (

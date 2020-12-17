@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const ForwardIcon = () => (
+export const BackwardIcon = () => (
   <svg
     fill="currentColor"
     preserveAspectRatio="xMidYMid meet"
@@ -13,7 +13,7 @@ export const ForwardIcon = () => (
   </svg>
 );
 
-export const BackwardIcon = () => (
+export const ForwardIcon = () => (
   <svg
     fill="currentColor"
     preserveAspectRatio="xMidYMid meet"
