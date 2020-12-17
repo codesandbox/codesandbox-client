@@ -9,6 +9,7 @@ import {
   IModuleError,
   ManagerStatus,
   IFile,
+  SandboxEnvironment,
 } from '../types';
 
 const SandpackContext = createContext<ISandpackContext | null>(null);
@@ -36,13 +37,7 @@ export interface Props {
   height?: number | string;
   bundlerURL?: string;
   skipEval?: boolean;
-  template?:
-    | 'create-react-app'
-    | 'create-react-app-typescript'
-    | 'parcel'
-    | 'vue-cli'
-    | 'angular-cli'
-    | 'preact-cli';
+  template?: SandboxEnvironment;
 
   onFileChange?: (files: IFiles, sandpack: ISandpackContext) => void;
   fileResolver?: {

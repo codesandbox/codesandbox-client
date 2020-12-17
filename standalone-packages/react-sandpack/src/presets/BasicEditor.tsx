@@ -1,39 +1,53 @@
 import React from 'react';
 import { SandpackWrapper } from '../elements';
-import { IFile, SandboxTemplateType } from '../types';
+import { IFile, SandboxEnvironment, SandboxTemplate } from '../types';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { CodeEditor } from '../components/CodeEditor';
 import { Preview } from '../components/Preview';
-import { projectTemplates } from '../utils/project-templates';
+import { SANDBOX_TEMPLATES } from '../utils/sandbox-templates';
 
-export interface PresetProps {
+export interface BasicEditorProps {
   code: string;
-  mainFileName?: string;
-  template?: SandboxTemplateType;
+  template?: SandboxEnvironment;
+  customSetup?: Partial<SandboxTemplate>;
   showNavigator?: boolean;
 }
 
-export const BasicEditor: React.FC<PresetProps> = ({
+export const BasicEditor: React.FC<BasicEditorProps> = ({
   code,
-  mainFileName = '/App.js',
-  template = 'cra',
+  template = 'create-react-app',
+  customSetup,
   showNavigator = false,
 }) => {
-  const projectTemplate = projectTemplates[template];
+  const baseTemplate = SANDBOX_TEMPLATES[template] as SandboxTemplate;
+  let projectTemplate = baseTemplate;
+
+  if (customSetup) {
+    projectTemplate = {
+      files: { ...baseTemplate.files, ...customSetup.files },
+      dependencies: {
+        ...baseTemplate.dependencies,
+        ...customSetup.dependencies,
+      },
+      entry: customSetup.entry || baseTemplate.entry,
+      main: customSetup.main || baseTemplate.main,
+    };
+  }
+
+  const mainFileName = projectTemplate.main;
   const mainFile: IFile = {
     code,
-  };
-  const files = {
-    ...projectTemplates[template].files,
-    [mainFileName]: mainFile,
   };
 
   return (
     <SandpackProvider
-      files={files}
+      files={{
+        ...projectTemplate.files,
+        [mainFileName]: mainFile,
+      }}
       dependencies={projectTemplate.dependencies}
       entry={projectTemplate.entry}
-      openedPath="/App.js"
+      openedPath={projectTemplate.main}
     >
       <SandpackWrapper>
         <CodeEditor

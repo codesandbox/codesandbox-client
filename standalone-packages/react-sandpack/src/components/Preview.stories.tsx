@@ -1,5 +1,5 @@
 import React from 'react';
-import { Preview } from '../components/Preview';
+import { Preview } from './Preview';
 import { SandpackWrapper } from '../elements';
 
 import { SandpackProvider } from '../utils/sandpack-context';
@@ -8,7 +8,7 @@ export default {
   title: 'components/Preview',
 };
 
-export const Configurable = () => (
+export const Component = () => (
   <SandpackProvider
     entry="/index.js"
     files={{

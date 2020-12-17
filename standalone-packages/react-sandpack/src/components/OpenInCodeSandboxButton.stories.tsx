@@ -1,5 +1,5 @@
 import React from 'react';
-import { OpenInCodeSandboxButton } from '../components/OpenInCodeSandboxButton';
+import { OpenInCodeSandboxButton } from './OpenInCodeSandboxButton';
 
 import { SandpackProvider } from '../utils/sandpack-context';
 
@@ -54,9 +54,7 @@ export const WithRenderProp = () => (
     dependencies={{}}
   >
     <OpenInCodeSandboxButton
-      render={() => {
-        return <button type="submit">CodeSandbox is awesome!</button>;
-      }}
+      render={() => <button type="submit">CodeSandbox is awesome!</button>}
     />
   </SandpackProvider>
 );

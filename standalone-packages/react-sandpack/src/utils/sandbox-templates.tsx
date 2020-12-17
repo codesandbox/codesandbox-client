@@ -1,7 +1,10 @@
-import { SandboxTemplate, SandboxTemplateType } from '../types';
+import { SandboxEnvironment, SandboxTemplate } from '../types';
 
-export const projectTemplates: Record<SandboxTemplateType, SandboxTemplate> = {
-  cra: {
+export const SANDBOX_TEMPLATES: Partial<Record<
+  SandboxEnvironment,
+  SandboxTemplate
+>> = {
+  'create-react-app': {
     files: {
       '/App.js': {
         code: `import React from 'react';
@@ -57,9 +60,10 @@ font-size: 1.5rem;
       '@babel/runtime': 'latest',
     },
     entry: '/index.js',
+    main: '/App.js',
   },
 
-  vue: {
+  'vue-cli': {
     files: {
       '/src/main.js': {
         code: `import Vue from "vue";
@@ -126,5 +130,6 @@ export default {
       '@vue/cli-plugin-babel': '4.1.1',
     },
     entry: '/src/main.js',
+    main: '/src/App.vue',
   },
 };

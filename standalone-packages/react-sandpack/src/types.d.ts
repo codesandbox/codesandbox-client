@@ -80,6 +80,13 @@ export type SandboxTemplate = {
   files: IFiles;
   dependencies: Record<string, string>;
   entry: string;
+  main: string;
 };
 
-export type SandboxTemplateType = 'cra' | 'vue';
+export type SandboxEnvironment =
+  | 'create-react-app'
+  | 'create-react-app-typescript'
+  | 'parcel'
+  | 'vue-cli'
+  | 'angular-cli'
+  | 'preact-cli';
