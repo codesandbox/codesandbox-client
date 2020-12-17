@@ -92,30 +92,6 @@ export const PreferencesSync: FunctionComponent = () => {
           ) : (
             <Profiles />
           )}
-
-          {/* {settingsSync.settings && (
-            <>
-              <Text size={4} align="center" weight="bold" paddingTop={4}>
-                Your Saved Settings
-              </Text>
-              {settingsSync.settings.map(setting => (
-                <Element marginTop={1}>
-                  <Text block>
-                    Last Updated at:{' '}
-                    {format(new Date(setting.updatedAt), 'dd/MM/yyyy')}
-                  </Text>
-                  <Button
-                    marginTop={2}
-                    autoWidth
-                    disabled={settingsSync.applying}
-                    onClick={openModal}
-                  >
-                    Apply Preferences
-                  </Button>
-                </Element>
-              ))}
-            </>
-          )} */}
         </SubContainer>
       )}
     </>

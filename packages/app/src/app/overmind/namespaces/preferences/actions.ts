@@ -1,4 +1,5 @@
 import { Badge } from '@codesandbox/common/lib/types';
+import { isEqual } from 'lodash-es';
 import { saveAs } from 'file-saver';
 import { Action, AsyncAction } from 'app/overmind';
 import { SettingSync } from './state';
@@ -161,13 +162,16 @@ export const toggleContainerLspExperiment: AsyncAction = async ({
   }
 };
 
-export const getVSCodeSettings = () => {
+export const getUserLocalSettings = (): { themeData: any; vscode: any } => {
   const fs = window.BrowserFS.BFSRequire('fs');
   const all = fs.readdirSync('/vscode');
   const files = {};
 
   const readFromDirectory = (path: string) => {
     const filesInDirectory = fs.readdirSync(path);
+    if (path === '/vscode/userdata/CachedExtensions') {
+      return;
+    }
 
     filesInDirectory.forEach(p => {
       const newPath = path + '/' + p;
@@ -189,7 +193,22 @@ export const getVSCodeSettings = () => {
     }
   });
 
-  return files;
+  const LOCAL_STORAGE_KEYS = [
+    'vs-global://colorThemeData',
+    'VIEW_MODE_DASHBOARD',
+    'vs-global://iconThemeData',
+    ...Object.keys(localStorage).filter(key => key.includes('settings.')),
+  ];
+  const themeData = {};
+
+  LOCAL_STORAGE_KEYS.forEach(key => {
+    themeData[key] = localStorage.getItem(key);
+  });
+
+  return {
+    themeData,
+    vscode: files,
+  };
 };
 
 export const renameUserSettings: AsyncAction<{
@@ -235,25 +254,14 @@ export const getUserSettings: AsyncAction = async ({ state, effects }) => {
   settingsSync.fetching = false;
 };
 
-export const syncSettings: AsyncAction = async ({
+export const createPreferencesProfile: AsyncAction = async ({
   state,
   effects,
   actions,
 }) => {
   state.preferences.settingsSync.syncing = true;
   try {
-    const vscode = actions.preferences.getVSCodeSettings({});
-    const LOCAL_STORAGE_KEYS = [
-      'vs-global://colorThemeData',
-      'VIEW_MODE_DASHBOARD',
-      'vs-global://iconThemeData',
-      ...Object.keys(localStorage).filter(key => key.includes('settings.')),
-    ];
-    const themeData = {};
-
-    LOCAL_STORAGE_KEYS.forEach(key => {
-      themeData[key] = localStorage.getItem(key);
-    });
+    const { vscode, themeData } = actions.preferences.getUserLocalSettings({});
 
     actions.preferences.appllySettings(
       JSON.stringify({
@@ -294,9 +302,15 @@ export const appllySettings: AsyncAction<string> = async (
       updatedAt,
     },
   ];
+  localStorage.setItem(`profile-${id}`, updatedAt);
   effects.notificationToast.success(
     'Your Preferences have been sucefully synced'
   );
+};
+
+export const checkifSynced = ({ state, actions }, savedSetting) => {
+  const currentSettings = actions.preferences.getUserLocalSettings({});
+  return isEqual(currentSettings, JSON.parse(savedSetting));
 };
 
 export const deleteUserSetting: AsyncAction<string> = async (
@@ -325,9 +339,11 @@ export const downloadPreferences: AsyncAction<SettingSync> = async (
   saveAs(blob, `CodeSandboxSettings-${settings.name}.json`);
 };
 
-export const applyPreferences: AsyncAction = async ({ state, effects }) => {
+export const applyPreferences: AsyncAction<string> = async (
+  { state, effects },
+  settings
+) => {
   if (!state.preferences.settingsSync.settings) return;
-  const { settings } = state.preferences.settingsSync.settings[0];
   const fs = window.BrowserFS.BFSRequire('fs');
 
   try {

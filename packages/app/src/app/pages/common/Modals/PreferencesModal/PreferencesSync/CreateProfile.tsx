@@ -37,7 +37,8 @@ export const CreateProfile = ({ importFile }) => {
     actions,
   } = useOvermind();
 
-  const savePreferences = () => actions.preferences.syncSettings();
+  const createPreferencesProfile = () =>
+    actions.preferences.createPreferencesProfile();
 
   return (
     <>
@@ -49,7 +50,10 @@ export const CreateProfile = ({ importFile }) => {
         </Text>
       </Element>
       <Stack gap={5}>
-        <NewButton disabled={settingsSync.syncing} onClick={savePreferences}>
+        <NewButton
+          disabled={settingsSync.syncing}
+          onClick={createPreferencesProfile}
+        >
           New Profile
         </NewButton>
         <NewButton onClick={importFile}>Import Profile</NewButton>

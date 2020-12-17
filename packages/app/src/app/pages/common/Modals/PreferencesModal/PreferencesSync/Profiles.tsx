@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   Element,
   List,
-  ListItem,
+  ListAction,
   Stack,
   Icon,
   Menu,
@@ -12,6 +12,7 @@ import {
 import css from '@styled-system/css';
 import { format } from 'date-fns';
 import { useOvermind } from 'app/overmind';
+import { SyncedIcon } from './Icons';
 
 export const Profiles = () => {
   const {
@@ -32,8 +33,12 @@ export const Profiles = () => {
 };
 
 const Profile = ({ setting }) => {
-  const { actions } = useOvermind();
+  const {
+    actions,
+    state: { preferences },
+  } = useOvermind();
   const [rename, setRename] = useState(false);
+  const [isSynced, setIsSynced] = useState(null);
   const [name, setName] = useState(setting.name);
 
   const renameProfile = async (e: React.FormEvent) => {
@@ -47,8 +52,18 @@ const Profile = ({ setting }) => {
     }
   };
 
+  useEffect(() => {
+    const settingFromComputer = localStorage.getItem(`profile-${setting.id}`);
+    if (settingFromComputer) {
+      const synced = actions.preferences.checkifSynced(setting.settings);
+      setIsSynced(synced);
+    }
+  }, []);
+
   return (
-    <ListItem
+    <ListAction
+      onClick={() => actions.preferences.applyPreferences(setting.settings)}
+      disabled={preferences.settingsSync.applying}
       justify="space-between"
       align="center"
       css={css({
@@ -81,8 +96,16 @@ const Profile = ({ setting }) => {
       )}
 
       <Stack gap={2} align="center">
-        {format(new Date(setting.updatedAt), 'dd/MM/yyyy')}
-        <Element />
+        <span>{format(new Date(setting.updatedAt), 'dd/MM/yyyy')}</span>
+
+        <Element
+          css={css({
+            width: 6,
+            height: 6,
+          })}
+        >
+          {isSynced && <SyncedIcon />}
+        </Element>
         <Menu>
           <Menu.Button css={{ color: 'white' }}>
             <Icon css={css({ color: 'mutedForeground' })} name="more" />
@@ -105,6 +128,6 @@ const Profile = ({ setting }) => {
           </Menu.List>
         </Menu>
       </Stack>
-    </ListItem>
+    </ListAction>
   );
 };
