@@ -34,7 +34,7 @@ export const Image: React.FC<{
           alt={props.alt}
           css={css({
             maxWidth: '100%',
-            borderRadius: 'small',
+            borderRadius: 'medium',
           })}
         />
       </Button>
@@ -78,7 +78,7 @@ export const Image: React.FC<{
           alt={props.alt}
           css={css({
             maxWidth: '100%',
-            borderRadius: 'medium',
+            borderRadius: 'large',
             maxHeight: '80vh',
             border: '1px solid #262626',
           })}

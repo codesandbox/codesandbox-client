@@ -7,8 +7,6 @@ import { Sandbox } from '@codesandbox/common/lib/types';
 
 let _preview = blocker<BasePreview>();
 
-const BORDER_SIZE = 6;
-
 export default {
   initialize() {},
   initializePreview(preview: any) {
@@ -186,25 +184,13 @@ export default {
         const sx = Math.min(scaledX - leftSideSpace, screenshot.width - width);
         const sy = Math.min(scaledY - topSideSpace, screenshot.height - height);
 
-        const bubbleX = BORDER_SIZE + scaledX - sx;
-        const bubbleY = BORDER_SIZE + scaledY - sy;
+        const bubbleX = scaledX - sx;
+        const bubbleY = scaledY - sy;
 
-        canvas.width = width + BORDER_SIZE * 2;
-        canvas.height = height + BORDER_SIZE * 2;
+        canvas.width = width;
+        canvas.height = height;
 
-        ctx.fillStyle = '#FFF';
-        ctx.fillRect(0, 0, width + BORDER_SIZE * 2, height + BORDER_SIZE * 2);
-        ctx.drawImage(
-          screenshot,
-          sx,
-          sy,
-          width,
-          height,
-          BORDER_SIZE,
-          BORDER_SIZE,
-          width,
-          height
-        );
+        ctx.drawImage(screenshot, sx, sy, width, height, 0, 0, width, height);
         ctx.restore();
         ctx.drawImage(bubble, bubbleX, bubbleY);
 
