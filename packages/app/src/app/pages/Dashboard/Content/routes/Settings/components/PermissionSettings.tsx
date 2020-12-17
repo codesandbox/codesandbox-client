@@ -12,14 +12,28 @@ import {
   Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 
-export const PermissionSettings = () => (
-  <Grid columnGap={12}>
-    <Column span={[12, 12, 6]}>
-      <MinimumPrivacy />
-    </Column>
-  </Grid>
-);
+export const PermissionSettings = () => {
+  const {
+    state: {
+      activeTeamInfo: { joinedPilotAt },
+    },
+  } = useOvermind();
+
+  return (
+    <Grid columnGap={12}>
+      <Column span={[12, 12, 6]}>
+        <MinimumPrivacy />
+      </Column>
+      {joinedPilotAt && (
+        <Column span={[12, 12, 6]}>
+          <SandboxSecurity />
+        </Column>
+      )}
+    </Grid>
+  );
+};
 
 const privacyOptions = {
   0: {
@@ -163,6 +177,116 @@ const MinimumPrivacy = () => {
           }}
         >
           Change Privacy
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+
+const SandboxSecurity = () => {
+  const {
+    state: {
+      activeTeamInfo: { settings },
+    },
+    actions: {
+      dashboard: {
+        setWorkspaceSandboxSettings,
+        setDefaultTeamMemberAuthorization,
+      },
+    },
+  } = useOvermind();
+
+  const [preventSandboxExport, setPreventSandboxExport] = React.useState(
+    settings.preventSandboxExport
+  );
+  const [preventSandboxLeaving, setPreventSandboxLeaving] = React.useState(
+    settings.preventSandboxLeaving
+  );
+
+  const [defaultAuthorization, setDefaultAuthorization] = React.useState(
+    settings.defaultAuthorization
+  );
+
+  React.useEffect(
+    function resetOnWorkspaceChange() {
+      setPreventSandboxLeaving(settings.preventSandboxLeaving);
+      setPreventSandboxExport(settings.preventSandboxExport);
+      setDefaultAuthorization(settings.defaultAuthorization);
+    },
+    [
+      settings.preventSandboxLeaving,
+      settings.preventSandboxExport,
+      settings.defaultAuthorization,
+    ]
+  );
+
+  const permissionMap = { ADMIN: 'Admin', WRITE: 'Editor', READ: 'Viewer' };
+
+  const onSubmit = () => {
+    setWorkspaceSandboxSettings({
+      preventSandboxLeaving,
+      preventSandboxExport,
+    });
+    setDefaultTeamMemberAuthorization({ defaultAuthorization });
+  };
+
+  return (
+    <Stack
+      direction="vertical"
+      justify="space-between"
+      gap={114}
+      css={css({
+        backgroundColor: 'grays.800',
+        paddingY: 8,
+        paddingX: 6,
+        border: '1px solid',
+        borderColor: 'grays.500',
+        borderRadius: 'medium',
+      })}
+    >
+      <Stack direction="vertical" gap={8}>
+        <Stack direction="vertical" gap={8}>
+          <Stack justify="space-between">
+            <Text size={4} weight="bold">
+              Sandbox Security
+            </Text>
+          </Stack>
+
+          <Stack as="label" justify="space-between" align="center">
+            <Text size={3}>
+              Disable forking and moving sandboxes outside of the workspace
+            </Text>
+            <Switch
+              on={preventSandboxLeaving}
+              onChange={() => setPreventSandboxLeaving(!preventSandboxLeaving)}
+            />
+          </Stack>
+          <Stack as="label" justify="space-between" align="center">
+            <Text size={3}>Disable exporting sandboxes as .zip</Text>
+            <Switch
+              on={preventSandboxExport}
+              onChange={() => setPreventSandboxExport(!preventSandboxExport)}
+            />
+          </Stack>
+          <Stack justify="space-between" align="center">
+            <Text size={3}>Default new member role</Text>
+            <Select
+              css={{ width: 120 }}
+              value={defaultAuthorization}
+              onChange={({ target: { value } }) => {
+                setDefaultAuthorization(value as TeamMemberAuthorization);
+              }}
+            >
+              <option value="WRITE">{permissionMap.WRITE}</option>
+              <option value="READ">{permissionMap.READ}</option>
+              <option value="ADMIN">{permissionMap.ADMIN}</option>
+            </Select>
+          </Stack>
+        </Stack>
+      </Stack>
+      <Stack justify="flex-end">
+        <Button autoWidth onClick={onSubmit}>
+          Change Settings
         </Button>
       </Stack>
     </Stack>

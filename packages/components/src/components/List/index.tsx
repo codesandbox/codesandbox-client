@@ -31,7 +31,7 @@ export const ListItem = styled(Stack).attrs({
 export const ListAction = styled(ListItem)<ListActionProps>(({ disabled }) =>
   css({
     ':hover, &[aria-selected="true"]': {
-      cursor: !disabled ? 'pointer' : 'disabled',
+      cursor: !disabled ? 'pointer' : 'not-allowed',
       color: !disabled ? 'list.hoverForeground' : 'inherit',
       backgroundColor: !disabled ? 'list.hoverBackground' : 'inherit',
     },

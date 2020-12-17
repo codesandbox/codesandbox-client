@@ -52,6 +52,10 @@ const SwitchContainer = styled(Element)(
     '*': {
       boxSizing: 'border-box',
     },
+    '&[data-disabled] > [data-component=SwitchBackground]': {
+      opacity: 0.4,
+      cursor: 'not-allowed',
+    },
   })
 );
 
@@ -69,7 +73,7 @@ export const Switch: React.FC<ISwitchProps> = ({
   disabled,
   ...props
 }) => (
-  <SwitchContainer as="label">
+  <SwitchContainer as="label" data-disabled={disabled ? true : null}>
     <SwitchInput
       type="checkbox"
       checked={on}

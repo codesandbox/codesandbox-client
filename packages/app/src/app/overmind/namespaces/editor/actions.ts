@@ -636,6 +636,14 @@ export const createZipClicked: Action = ({ state, effects }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
+
+  if (state.editor.currentSandbox.permissions.preventSandboxExport) {
+    effects.notificationToast.error(
+      'You do not permission to export this sandbox'
+    );
+    return;
+  }
+
   effects.zip.download(state.editor.currentSandbox);
 };
 
@@ -1633,5 +1641,60 @@ export const changeInvitationAuthorization: AsyncAction<{
     if (existingInvitation && oldAuthorization) {
       existingInvitation.authorization = oldAuthorization;
     }
+  }
+};
+
+export const setPreventSandboxLeaving: AsyncAction<boolean> = async (
+  { effects, state },
+  preventSandboxLeaving
+) => {
+  if (!state.editor.currentSandbox) return;
+
+  // optimistic update
+  const oldValue =
+    state.editor.currentSandbox.permissions.preventSandboxLeaving;
+  state.editor.currentSandbox.permissions.preventSandboxLeaving = preventSandboxLeaving;
+
+  effects.analytics.track(`Editor - Change sandbox permissions`, {
+    preventSandboxLeaving,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesLeavingWorkspace({
+      sandboxIds: [state.editor.currentSandbox.id],
+      preventSandboxLeaving,
+    });
+  } catch (error) {
+    state.editor.currentSandbox.permissions.preventSandboxLeaving = oldValue;
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
+  }
+};
+
+export const setPreventSandboxExport: AsyncAction<boolean> = async (
+  { effects, state },
+  preventSandboxExport
+) => {
+  if (!state.editor.currentSandbox) return;
+
+  // optimistic update
+  const oldValue = state.editor.currentSandbox.permissions.preventSandboxExport;
+  state.editor.currentSandbox.permissions.preventSandboxExport = preventSandboxExport;
+
+  effects.analytics.track(`Editor - Change sandbox permissions`, {
+    preventSandboxExport,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesExport({
+      sandboxIds: [state.editor.currentSandbox.id],
+      preventSandboxExport,
+    });
+  } catch (error) {
+    state.editor.currentSandbox.permissions.preventSandboxExport = oldValue;
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
   }
 };
