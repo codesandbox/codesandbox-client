@@ -3,7 +3,7 @@ export default {
     return new Promise((resolve, reject) => {
       // @ts-ignore
       chrome.webstore.install(
-        'https://chrome.google.com/webstore/detail/aandnjmckilnalnkmbmodifapcedaofn',
+        'https://chrome.google.com/webstore/detail/hdidglkcgdolpoijdckmafdnddjoglia',
         resolve,
         reject
       );
