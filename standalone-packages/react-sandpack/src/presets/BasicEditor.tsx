@@ -1,16 +1,14 @@
 import React from 'react';
 import { SandpackWrapper } from '../elements';
-import { IFile, SandboxEnvironment, SandboxTemplate } from '../types';
+import { IFile, SandboxTemplate } from '../types';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { CodeEditor } from '../components/CodeEditor';
 import { Preview } from '../components/Preview';
 import { SANDBOX_TEMPLATES } from '../utils/sandbox-templates';
+import { PresetProps } from './types';
 
-export interface BasicEditorProps {
+export interface BasicEditorProps extends PresetProps {
   code: string;
-  template?: SandboxEnvironment;
-  customSetup?: Partial<SandboxTemplate>;
-  showNavigator?: boolean;
 }
 
 export const BasicEditor: React.FC<BasicEditorProps> = ({
