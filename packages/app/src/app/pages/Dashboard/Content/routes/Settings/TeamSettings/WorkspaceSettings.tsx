@@ -244,9 +244,11 @@ export const WorkspaceSettings = () => {
               {team.users.length}{' '}
               {team.users.length === 1 ? 'member' : 'members'}
             </Text>
-            <Text size={3} variant="muted">
-              Created by {created.username}
-            </Text>
+            {created && (
+              <Text size={3} variant="muted">
+                Created by {created.username}
+              </Text>
+            )}
           </Stack>
           {activeWorkspaceAuthorization === TeamMemberAuthorization.Admin && (
             <Button
