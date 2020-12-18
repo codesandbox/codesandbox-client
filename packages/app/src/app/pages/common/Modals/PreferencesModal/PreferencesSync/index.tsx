@@ -63,8 +63,6 @@ export const PreferencesSync: FunctionComponent = () => {
     fileSelector.click();
   }, []);
 
-  if (!settingsSync.settings) return null;
-
   return (
     <>
       <Stack justify="space-between" align="baseline">
@@ -95,7 +93,7 @@ export const PreferencesSync: FunctionComponent = () => {
           </Tooltip>
         ) : null}
       </Stack>
-      {settingsSync.fetching ? (
+      {!settingsSync.settings || settingsSync.fetching ? (
         <Stack
           align="center"
           justify="center"

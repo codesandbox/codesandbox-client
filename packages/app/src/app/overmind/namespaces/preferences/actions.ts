@@ -343,7 +343,7 @@ export const deleteUserSetting: AsyncAction<string> = async (
         primary: {
           label: 'Undo',
           run: () => {
-            actions.preferences.createPreferencesProfile(removed.settings);
+            actions.preferences.updateServerSettings(removed.settings);
           },
         },
       },
