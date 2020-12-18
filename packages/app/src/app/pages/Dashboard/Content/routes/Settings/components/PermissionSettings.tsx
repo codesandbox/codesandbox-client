@@ -279,8 +279,8 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
               }}
               disabled={disabled}
             >
-              <option value={TeamMemberAuthorization.Write}>Write</option>
-              <option value={TeamMemberAuthorization.Read}>Read</option>
+              <option value={TeamMemberAuthorization.Write}>Editor</option>
+              <option value={TeamMemberAuthorization.Read}>Viewer</option>
               <option value={TeamMemberAuthorization.Admin}>Admin</option>
             </Select>
           </Stack>
