@@ -36,7 +36,6 @@ import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
 import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
-import { ApplyPrefrences } from './ApplyPreferences';
 import { DeleteWorkspace } from './DeleteWorkspace';
 import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
@@ -144,10 +143,6 @@ const modals = {
   },
   feedback: {
     Component: FeedbackModal,
-    width: 450,
-  },
-  applyPreferences: {
-    Component: ApplyPrefrences,
     width: 450,
   },
   userSurvey: {
