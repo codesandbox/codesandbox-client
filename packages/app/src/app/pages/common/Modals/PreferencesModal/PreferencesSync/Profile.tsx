@@ -12,6 +12,7 @@ import {
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import css from '@styled-system/css';
 import { format } from 'date-fns';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useOvermind } from 'app/overmind';
 import { SyncedIcon } from './Icons';
 
@@ -94,25 +95,35 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
           </Menu.Button>
           <Menu.List>
             <Menu.Item
-              onSelect={() =>
-                actions.preferences.applyPreferences(setting.settings)
-              }
+              onSelect={() => {
+                track('Preferences Profiles - Apply Profile');
+                actions.preferences.applyPreferences(setting.settings);
+              }}
             >
               Apply
             </Menu.Item>
-            <Menu.Item onSelect={actions.preferences.createPreferencesProfile}>
+            <Menu.Item
+              onSelect={() => {
+                track('Preferences Profiles - Update Profile');
+                actions.preferences.createPreferencesProfile();
+              }}
+            >
               Update profile
             </Menu.Item>
             <Menu.Divider />
             <Menu.Item onSelect={() => setRename(true)}>Rename</Menu.Item>
             <Menu.Item
-              onSelect={() => actions.preferences.downloadPreferences(setting)}
+              onSelect={() => {
+                track('Preferences Profiles - Download Profile');
+                actions.preferences.downloadPreferences(setting);
+              }}
             >
               Export Profile
             </Menu.Item>
             <Menu.Item
               css={css({ color: 'dangerButton.background' })}
               onSelect={() => {
+                track('Preferences Profiles - Delete Profile');
                 actions.preferences.deleteUserSetting(setting.id);
               }}
             >

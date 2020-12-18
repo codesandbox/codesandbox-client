@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, Element, Button, Link, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 const NewButton = ({ children, ...props }) => (
   <Button
@@ -37,8 +38,10 @@ export const CreateProfile = ({ importFile }) => {
     actions,
   } = useOvermind();
 
-  const createPreferencesProfile = () =>
+  const createPreferencesProfile = () => {
+    track('Preferences Profiles - Create New Profile');
     actions.preferences.createPreferencesProfile();
+  };
 
   return (
     <>

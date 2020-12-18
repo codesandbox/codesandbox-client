@@ -3,6 +3,7 @@ import css from '@styled-system/css';
 import { Text, Stack, Icon, Element } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { SpinnerWrapper } from '@codesandbox/common/lib/components/Preview/Navigator/elements';
+import track from '@codesandbox/common/lib/utils/analytics';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 
 import { SubContainer } from '../elements';
@@ -35,6 +36,7 @@ export const PreferencesSync: FunctionComponent = () => {
     });
 
   const importFile = React.useCallback(() => {
+    track('Preferences Profiles - Create Import');
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
     fileSelector.setAttribute('accept', 'application/json');
