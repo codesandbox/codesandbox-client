@@ -98,10 +98,10 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
                 actions.preferences.applyPreferences(setting.settings)
               }
             >
-              Pull
+              Apply
             </Menu.Item>
             <Menu.Item onSelect={actions.preferences.createPreferencesProfile}>
-              Push
+              Update saved state
             </Menu.Item>
             <Menu.Divider />
             <Menu.Item onSelect={() => setRename(true)}>Rename</Menu.Item>
