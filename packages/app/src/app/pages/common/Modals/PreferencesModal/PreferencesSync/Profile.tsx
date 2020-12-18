@@ -14,7 +14,7 @@ import css from '@styled-system/css';
 import { format } from 'date-fns';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useOvermind } from 'app/overmind';
-import { SyncedIcon } from './Icons';
+import { SyncedIcon, OutOfSyncIcon } from './Icons';
 
 export const Profile = ({ setting }: { setting: SettingSync }) => {
   const { actions } = useOvermind();
@@ -33,12 +33,16 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
     }
   };
 
-  useEffect(() => {
+  const checkIfSyncedPrefs = () => {
     const settingFromComputer = localStorage.getItem(`profile-${setting.id}`);
     if (settingFromComputer) {
       const synced = actions.preferences.checkifSynced(setting.settings);
       setIsSynced(synced);
     }
+  };
+
+  useEffect(() => {
+    checkIfSyncedPrefs();
   }, []);
 
   return (
@@ -81,36 +85,46 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
           css={css({
             width: 6,
             height: 6,
+            color: 'button.background',
           })}
         >
-          {isSynced && (
+          {isSynced ? (
             <Tooltip content="Your local preferences are in sync with the server">
               <SyncedIcon />
+            </Tooltip>
+          ) : (
+            <Tooltip content="Your local preferences are not in sync with the server">
+              <OutOfSyncIcon />
             </Tooltip>
           )}
         </Element>
         <Menu>
-          <Menu.Button css={{ color: 'white' }}>
+          <Menu.Button css={{ color: 'white', padding: 0 }}>
             <Icon css={css({ color: 'mutedForeground' })} name="more" />
           </Menu.Button>
           <Menu.List>
-            <Menu.Item
-              onSelect={() => {
-                track('Preferences Profiles - Apply Profile');
-                actions.preferences.applyPreferences(setting.settings);
-              }}
-            >
-              Apply
-            </Menu.Item>
-            <Menu.Item
-              onSelect={() => {
-                track('Preferences Profiles - Update Profile');
-                actions.preferences.createPreferencesProfile();
-              }}
-            >
-              Update profile
-            </Menu.Item>
-            <Menu.Divider />
+            {!isSynced ? (
+              <>
+                <Menu.Item
+                  onSelect={() => {
+                    track('Preferences Profiles - Apply Profile');
+                    actions.preferences.applyPreferences(setting.settings);
+                  }}
+                >
+                  Apply
+                </Menu.Item>
+                <Menu.Item
+                  onSelect={() => {
+                    track('Preferences Profiles - Update Profile');
+                    actions.preferences.createPreferencesProfile();
+                    setIsSynced(true);
+                  }}
+                >
+                  Update profile
+                </Menu.Item>
+                <Menu.Divider />
+              </>
+            ) : null}
             <Menu.Item onSelect={() => setRename(true)}>Rename</Menu.Item>
             <Menu.Item
               onSelect={() => {

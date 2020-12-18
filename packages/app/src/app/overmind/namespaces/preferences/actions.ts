@@ -292,7 +292,7 @@ export const updateServerSettings: AsyncAction<string> = async (
     settings,
     updatedAt,
   } = await effects.api.createUserSettings({
-    name: state.user.username,
+    name: 'My Profile',
     settings: settingsStringified,
   });
 
