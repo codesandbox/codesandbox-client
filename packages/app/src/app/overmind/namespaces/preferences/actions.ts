@@ -282,7 +282,7 @@ export const createPreferencesProfile: AsyncAction = async ({
 
 export const updateServerSettings: AsyncAction<string> = async (
   { state, effects },
-  settingsStringfied
+  settingsStringified
 ) => {
   if (!state.user) return;
   const {
@@ -293,7 +293,7 @@ export const updateServerSettings: AsyncAction<string> = async (
     updatedAt,
   } = await effects.api.createUserSettings({
     name: state.user.username,
-    settings: settingsStringfied,
+    settings: settingsStringified,
   });
 
   state.preferences.settingsSync.syncing = false;
@@ -336,14 +336,16 @@ export const deleteUserSetting: AsyncAction<string> = async (
     );
     effects.notificationToast.add({
       title: 'Your profile has been removed',
-      message: null,
+      message: '',
       status: convertTypeToStatus('success'),
       sticky: false,
       actions: {
         primary: {
           label: 'Undo',
           run: () => {
-            actions.preferences.updateServerSettings(removed.settings);
+            if (removed?.settings) {
+              actions.preferences.updateServerSettings(removed?.settings);
+            }
           },
         },
       },
