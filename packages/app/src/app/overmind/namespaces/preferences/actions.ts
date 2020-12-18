@@ -308,7 +308,7 @@ export const updateServerSettings: AsyncAction<string> = async (
   ];
   localStorage.setItem(`profile-${id}`, updatedAt);
   effects.notificationToast.success(
-    'Your preferences have been sucefully synced'
+    'Your preferences have been successfully synced'
   );
 };
 

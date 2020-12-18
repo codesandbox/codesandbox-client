@@ -120,7 +120,7 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
                     setIsSynced(true);
                   }}
                 >
-                  Update profile
+                  Update Profile
                 </Menu.Item>
                 <Menu.Divider />
               </>
