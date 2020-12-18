@@ -22,6 +22,7 @@ import {
   UploadedFilesInfo,
   UserQuery,
   UserSandbox,
+  SettingsSync,
 } from '@codesandbox/common/lib/types';
 import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 import { client } from 'app/graphql/client';
@@ -633,5 +634,26 @@ export default {
         featuredSandboxes: featuredSandboxIds,
       },
     });
+  },
+  createUserSettings({
+    name,
+    settings,
+  }: {
+    name: string;
+    settings: string;
+  }): Promise<SettingsSync> {
+    return api.post(`/users/current_user/editor_settings`, {
+      name,
+      settings,
+    });
+  },
+  getUserSettings(): Promise<SettingsSync[]> {
+    return api.get(`/users/current_user/editor_settings`);
+  },
+  editUserSettings(body: any, id: string): Promise<SettingsSync> {
+    return api.patch(`/users/current_user/editor_settings/${id}`, body);
+  },
+  removeUserSetting(id: string): Promise<SettingsSync> {
+    return api.delete(`/users/current_user/editor_settings`);
   },
 };
