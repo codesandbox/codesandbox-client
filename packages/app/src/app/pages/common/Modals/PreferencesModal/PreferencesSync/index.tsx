@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import css from '@styled-system/css';
-import { Text, Stack, Icon } from '@codesandbox/components';
+import { Text, Stack, Icon, Element } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { SpinnerWrapper } from '@codesandbox/common/lib/components/Preview/Navigator/elements';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
@@ -71,23 +71,25 @@ export const PreferencesSync: FunctionComponent = () => {
         </Text>
         {settingsSync.settings?.length ? (
           <Tooltip content="Import preferences as a JSON">
-            <button
+            <Element
+              as="button"
               type="button"
-              style={{
+              css={css({
                 padding: 0,
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
-              }}
+                color: 'sideBar.foreground',
+              })}
               onClick={importFile}
             >
               <svg width={16} height={14} fill="none" viewBox="0 0 16 14">
                 <path
-                  fill="#fff"
+                  fill="currentColor"
                   d="M12.432 2.811a2.334 2.334 0 012.094 2.137A2.667 2.667 0 0113.333 10H9.667V7.204l1.602 1.716 1.462-1.364L8.667 3.2 4.602 7.556 6.064 8.92l1.603-1.716V10H2v-.024a2.334 2.334 0 01-.506-4.487 2.333 2.333 0 012.979-2.59 4.202 4.202 0 017.959-.088zM8 10h1.333v4H8v-4z"
                 />
               </svg>
-            </button>
+            </Element>
           </Tooltip>
         ) : null}
       </Stack>

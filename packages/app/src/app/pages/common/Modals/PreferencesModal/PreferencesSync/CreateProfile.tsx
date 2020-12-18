@@ -44,9 +44,13 @@ export const CreateProfile = ({ importFile }) => {
     <>
       <Element marginBottom={5}>
         <Text variant="muted">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-          consectetur, nunc facilisis semper convallis, odio nibh egestas sem,
-          vitae pretium mi lacus venenatis <Link href="#">docs</Link>{' '}
+          Share your CodeSandbox and editor preferences across multiple devices.
+          Save a snapshot of your current preferences as a profile, which you
+          can then apply to re-use them when you’re on another device. More info
+          can be found in our{' '}
+          <Link href="#" css={css({ color: 'blues.500' })}>
+            docs
+          </Link>{' '}
         </Text>
       </Element>
       <Stack gap={5}>
@@ -54,9 +58,9 @@ export const CreateProfile = ({ importFile }) => {
           disabled={settingsSync.syncing}
           onClick={createPreferencesProfile}
         >
-          New Profile
+          Create new profile
         </NewButton>
-        <NewButton onClick={importFile}>Import Profile</NewButton>
+        <NewButton onClick={importFile}>Import existing profile</NewButton>
       </Stack>
     </>
   );
