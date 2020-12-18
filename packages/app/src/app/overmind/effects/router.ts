@@ -13,7 +13,7 @@ export default new (class RouterEffect {
     alias?: string | null;
     git?: GitInfo | null;
   }) {
-    window.history.replaceState({}, '', sandboxUrl({ id, alias, git }));
+    window.history.replaceState(window.history.state, '', sandboxUrl({ id, alias, git }));
   }
 
   updateSandboxUrl(
