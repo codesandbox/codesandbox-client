@@ -238,7 +238,6 @@ export const WorkspaceSettings = () => {
             </Stack>
           )}
         </Card>
-
         <Card>
           <Stack direction="vertical" gap={4}>
             <Text size={6} weight="bold">
@@ -265,25 +264,28 @@ export const WorkspaceSettings = () => {
             </Button>
           )}
         </Card>
-
-        <Card style={{ backgroundColor: 'white' }}>
-          <Stack direction="vertical" gap={4}>
-            <Text size={6} weight="bold" css={css({ color: 'grays.800' })}>
-              Team Pro
-            </Text>
-            <Text size={3} variant="muted" css={css({ color: 'grays.800' })}>
-              Get early access and product updates?
-            </Text>
-            <Button
-              as="a"
-              href="https://airtable.com/shrlgLSJWiX8rYqyG"
-              target="_blank"
-              marginTop={2}
-            >
-              Sign up
-            </Button>
-          </Stack>
-        </Card>
+        {team.joinedPilotAt ? (
+          <div />
+        ) : (
+          <Card style={{ backgroundColor: 'white' }}>
+            <Stack direction="vertical" gap={4}>
+              <Text size={6} weight="bold" css={css({ color: 'grays.800' })}>
+                Team Pro
+              </Text>
+              <Text size={3} variant="muted" css={css({ color: 'grays.800' })}>
+                Get early access and product updates?
+              </Text>
+              <Button
+                as="a"
+                href="https://airtable.com/shrlgLSJWiX8rYqyG"
+                target="_blank"
+                marginTop={2}
+              >
+                Sign up
+              </Button>
+            </Stack>
+          </Card>
+        )}
       </Grid>
       <Stack align="center" justify="space-between" gap={2}>
         <Text
