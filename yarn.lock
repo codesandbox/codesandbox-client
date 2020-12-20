@@ -12387,7 +12387,7 @@ es6-symbol@3.1.1:
     d "1"
     es5-ext "~0.10.14"
 
-es6-symbol@^3, es6-symbol@^3.1.1, es6-symbol@~3.1.1, es6-symbol@~3.1.3:
+es6-symbol@^3.1.1, es6-symbol@~3.1.1, es6-symbol@~3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/es6-symbol/-/es6-symbol-3.1.3.tgz#bad5d3c1bcdac28269f4cb331e431c78ac705d18"
   integrity sha512-NJ6Yn3FuDinBaBRWl/q5X/s4koRHBrgKAu+yGI6JCBeiu3qrcbJhwT2GeR/EXVfylRk8dpQVJoLEFhK+Mu31NA==
@@ -26226,12 +26226,10 @@ react-dev-utils@^9.0.0:
     strip-ansi "5.2.0"
     text-table "0.2.0"
 
-react-devtools-inline@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/react-devtools-inline/-/react-devtools-inline-4.4.0.tgz#e032a6eb17a9977b682306f84b46e683adf4bf68"
-  integrity sha512-ES0GolSrKO8wsKbsEkVeiR/ZAaHQTY4zDh1UW8DImVmm8oaGLl3ijJDvSGe+qDRKPZdPRnDtWWnSvvrgxXdThQ==
-  dependencies:
-    es6-symbol "^3"
+"react-devtools-inline@npm:@eps1lon/react-devtools-inline@0.0.0-a27fc21":
+  version "0.0.0-a27fc21"
+  resolved "https://registry.yarnpkg.com/@eps1lon/react-devtools-inline/-/react-devtools-inline-0.0.0-a27fc21.tgz#95fa2642b54041bc99731ce4b7fbf4f34621fd8c"
+  integrity sha512-N3+P5e9puO9iZKj4r2vjxEPkTP4klxhUgTBI7pamqLIkQHqF6AAOJOCIdFnvnsAxMWbghsZAkITL+XI1/bpB8A==
 
 react-dnd-html5-backend@^9.4.0:
   version "9.4.0"
