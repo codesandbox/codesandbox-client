@@ -5,10 +5,10 @@ import { ISandpackContext } from '../../types';
 import { styled } from '../../stitches.config';
 import { withSandpack } from '../../utils/sandpack-context';
 import { BackwardIcon, ForwardIcon, RefreshIcon } from './icons';
+import { getBaseUrl, getUrlState } from './utils';
 
 interface Props {
   sandpack: ISandpackContext;
-  className?: string;
 }
 
 interface State {
@@ -54,9 +54,10 @@ const NavigatorButton = styled('button', {
   alignItems: 'center',
   color: 'rgb(114, 114, 114)',
   verticalAlign: 'middle',
-  cursor: 'pointer',
 
-  ':hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+  ':disabled': { color: 'rgb(170, 170, 170)' },
+
+  ':hover:not(:disabled)': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
 });
 
 class NavigatorComponent extends Component<Props, State> {
@@ -82,12 +83,15 @@ class NavigatorComponent extends Component<Props, State> {
   handleMessage = (message: any) => {
     switch (message.type) {
       case 'initialized': {
-        this.setState(this.getUrlState(message.url));
+        if (message.url) {
+          // TODO: Cleanup?
+          this.setState(getUrlState(message.url));
+        }
         break;
       }
 
       case 'urlchange': {
-        this.setState(this.getUrlState(message.url));
+        this.setState(getUrlState(message.url));
         break;
       }
 
@@ -98,54 +102,23 @@ class NavigatorComponent extends Component<Props, State> {
     }
   };
 
-  getBaseUrl(url: string) {
-    const match = url.match(/(https?:\/\/.*?)\//);
-
-    if (match && match[1]) {
-      return match[1];
-    }
-
-    return url;
-  }
-
-  getUrlState = (url: string) => {
-    const baseUrl = this.getBaseUrl(url);
-    const browserPath = url.replace(baseUrl, '') || '/';
-
-    return {
-      baseUrl,
-      browserPath,
-      lastCommittedUrl: url,
-    };
-  };
-
   commitUrl = () => {
     const { sandpack } = this.props;
-    const { baseUrl, browserPath } = this.state;
+    const { baseUrl, browserPath, backwardNavigationStack } = this.state;
 
     if (sandpack.browserFrame) {
       const prevUrl = sandpack.browserFrame.src;
       sandpack.browserFrame.src = baseUrl + browserPath;
 
-      // update lastCommittedUrl url
       this.setState({
         lastCommittedUrl: baseUrl + browserPath,
+        backwardNavigationStack: [...backwardNavigationStack, prevUrl],
+        forwardNavigationStack: [],
       });
-
-      // update the navigation stacks
-      // when you enter a new URL the forwardNavigationStack is cleared
-      if (prevUrl != null) {
-        this.setState(prevState => ({
-          backwardNavigationStack: [
-            ...prevState.backwardNavigationStack,
-            prevUrl,
-          ],
-          forwardNavigationStack: [],
-        }));
-      }
     }
   };
 
+  // TODO: Remove behavior with leading slash?
   onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const browserPath = e.target.value.startsWith('/')
       ? e.target.value
@@ -181,7 +154,7 @@ class NavigatorComponent extends Component<Props, State> {
         const currUrl = sandpack.browserFrame.src;
         sandpack.browserFrame.src = newCurrUrl;
 
-        const baseUrl = this.getBaseUrl(newCurrUrl);
+        const baseUrl = getBaseUrl(newCurrUrl);
         const browserPath = newCurrUrl.replace(baseUrl, '') || '/';
 
         this.setState(prevState => ({
@@ -211,7 +184,7 @@ class NavigatorComponent extends Component<Props, State> {
         const currUrl = sandpack.browserFrame.src;
         sandpack.browserFrame.src = newCurrUrl;
 
-        const baseUrl = this.getBaseUrl(newCurrUrl);
+        const baseUrl = getBaseUrl(newCurrUrl);
         const browserPath = newCurrUrl.replace(baseUrl, '') || '/';
 
         this.setState(prevState => ({
@@ -228,15 +201,27 @@ class NavigatorComponent extends Component<Props, State> {
   };
 
   render() {
-    const { browserPath } = this.state;
-    const { sandpack, className, ...props } = this.props;
+    const {
+      browserPath,
+      backwardNavigationStack,
+      forwardNavigationStack,
+    } = this.state;
+
+    const backDisabled = backwardNavigationStack.length === 0;
+    const forwardDisabled = forwardNavigationStack.length === 0;
 
     return (
-      <NavigatorContainer className={className} {...props}>
-        <NavigatorButton onClick={this.onBackwardNavigation}>
+      <NavigatorContainer>
+        <NavigatorButton
+          onClick={this.onBackwardNavigation}
+          disabled={backDisabled}
+        >
           <BackwardIcon />
         </NavigatorButton>
-        <NavigatorButton onClick={this.onFowardNavigation}>
+        <NavigatorButton
+          onClick={this.onFowardNavigation}
+          disabled={forwardDisabled}
+        >
           <ForwardIcon />
         </NavigatorButton>
         <NavigatorButton onClick={this.onRefresh}>
