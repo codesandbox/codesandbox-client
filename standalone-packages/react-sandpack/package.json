@@ -1,12 +1,12 @@
 {
   "name": "react-smooshpack",
-  "version": "0.0.66",
+  "version": "0.0.67",
   "description": "",
   "keywords": [],
   "repository": {
     "type": "git",
     "url": "https://github.com/codesandbox/codesandbox-client",
-    "directory": "packages/react-sandpack"
+    "directory": "standalone-packages/react-sandpack"
   },
   "license": "SEE LICENSE.MD IN ROOT",
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
@@ -15,17 +15,14 @@
     "es"
   ],
   "sideEffects": "*.css",
-  "main": "dist/react-sandpack.js",
-  "module": "dist/react-sandpack.js",
-  "jsnext:main": "dist/react-sandpack.js",
-  "typings": "dist/react-sandpack.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "jsnext:main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "prebuild": "rimraf dist && rimraf es",
     "build": "tsc",
-    "build:min": "cross-env BUILD_MINIFY=1 rollup -c rollup.config.ts",
     "commit": "git-cz",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "docs": "typedoc --out docs --target es6 --theme minimal --mode file src",
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prepublish": "yarn build",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
@@ -34,7 +31,6 @@
     "start": "tsc --watch",
     "storybook": "CODESANDBOX_ENV=development start-storybook -p 6006 --no-dll",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
-    "watch:rollup": "rollup -c rollup.config.ts -w",
     "install-dependencies": "yarn",
     "build-storybook": "build-storybook --no-dll"
   },
@@ -73,16 +69,8 @@
   "dependencies": {
     "@codemirror/next": "^0.14.0",
     "@stitches/react": "^0.0.2",
-    "@types/fs-extra": "^5.0.4",
-    "@types/glob": "^5.0.35",
-    "@types/shelljs": "^0.8.0",
-    "classnames": "^2.2.5",
-    "codemirror": "^5.35.0",
     "codesandbox-api": "0.0.24",
     "codesandbox-import-utils": "^1.2.3",
-    "react-broadcast": "^0.6.2",
-    "react-codemirror2": "^4.0.1",
-    "rollup-plugin-scss": "^0.4.0",
     "smooshpack": "^0.0.66"
   },
   "devDependencies": {
@@ -98,6 +86,9 @@
     "@types/node": "^9.4.6",
     "@types/react": "^16.9.17",
     "@types/react-broadcast": "^0.6.1",
+    "@types/fs-extra": "^5.0.4",
+    "@types/glob": "^5.0.35",
+    "@types/shelljs": "^0.8.0",
     "awesome-typescript-loader": "^3.5.0",
     "babel-loader": "^7.1.5",
     "colors": "^1.1.2",
@@ -109,19 +100,10 @@
     "lodash.camelcase": "^4.3.0",
     "npm-run-all": "^4.1.2",
     "prompt": "^1.0.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-is": "^16.13.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "replace-in-file": "^3.0.0-beta.2",
     "rimraf": "^2.6.1",
-    "rollup": "^0.67.1",
-    "rollup-plugin-commonjs": "^8.0.2",
-    "rollup-plugin-json": "^2.3.0",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-sass": "^0.6.0",
-    "rollup-plugin-sourcemaps": "^0.4.2",
-    "rollup-plugin-typescript2": "^0.11.1",
-    "rollup-plugin-uglify": "^3.0.0",
     "semantic-release": "^12.4.1",
     "storybook-addon-jsx": "^7.3.4",
     "ts-jest": "^24.0.1",
@@ -129,12 +111,12 @@
     "tslint": "^5.8.0",
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",
-    "typedoc": "^0.10.0",
     "typescript": "4.0.3",
     "validate-commit-msg": "^2.12.2"
   },
   "peerDependencies": {
-    "react": "^16.5.2"
+    "react": "^16.8.0 || ^17",
+    "react-dom": "^16.8.0 || ^17"
   },
   "engines": {
     "node": ">=6.0.0"
