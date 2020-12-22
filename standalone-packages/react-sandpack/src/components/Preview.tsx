@@ -1,4 +1,3 @@
-import { listen } from 'codesandbox-api';
 import React, { useRef, useEffect } from 'react';
 
 import { useSandpack } from '../utils/sandpack-context';
@@ -11,7 +10,7 @@ export interface PreviewProps {
 
 export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const sandpack = useSandpack();
+  const { sandpack, listen } = useSandpack();
 
   // TODO: is this still needed?
   useEffect(() => {

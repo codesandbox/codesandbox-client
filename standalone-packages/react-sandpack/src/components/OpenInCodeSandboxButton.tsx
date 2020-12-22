@@ -27,7 +27,7 @@ const getFileParameters = (files: IFiles) => {
 export const OpenInCodeSandboxButton: React.FC<OpenInCodeSandboxButtonProps> = ({
   render,
 }) => {
-  const sandpack = useSandpack();
+  const { sandpack } = useSandpack();
 
   return (
     <form

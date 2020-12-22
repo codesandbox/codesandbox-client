@@ -50,7 +50,7 @@ const Container = styled('div', {
 export const CodeEditor = ({ style }: CodeEditorProps) => {
   const wrapper = useRef<HTMLDivElement | null>(null);
   const cmView = useRef<EditorView>();
-  const sandpack = useSandpack();
+  const { sandpack } = useSandpack();
 
   useEffect(() => {
     if (!wrapper.current || !sandpack) {

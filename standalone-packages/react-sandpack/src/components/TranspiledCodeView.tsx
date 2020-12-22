@@ -25,7 +25,7 @@ function getTranspiledCode(sandpack: ISandpackContext) {
 }
 
 export const TranspiledCodeView: React.FC<TranspiledCodeViewProps> = props => {
-  const sandpack = useSandpack();
+  const { sandpack } = useSandpack();
   const transpiledCode = getTranspiledCode(sandpack);
 
   return (

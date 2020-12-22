@@ -16,7 +16,7 @@ const Container = styled('div', {
 });
 
 export const FileExplorer: React.FC<FileExplorerProps> = props => {
-  const sandpack = useSandpack();
+  const { sandpack } = useSandpack();
 
   return (
     <Container style={props.style}>

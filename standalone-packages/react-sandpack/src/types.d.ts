@@ -55,26 +55,15 @@ export interface IManagerState {
 
 export interface ISandpackContext {
   browserFrame: HTMLIFrameElement | null;
-  managerStatus: ManagerStatus;
   managerState: IManagerState | undefined;
-  bundlerURL: string | undefined;
-  browserPath: string;
   openedPath: string;
   errors: Array<IModuleError>;
   files: IFiles;
   updateCurrentFile: (file: IFile) => void;
   openFile: (path: string) => void;
   updateFiles: (files: IFiles) => void;
-  getManagerTranspilerContext: () => Promise<{ [transpiler: string]: Object }>;
+  dispatch?: (message: any) => void;
 }
-
-export type ManagerStatus =
-  | 'initializing'
-  | 'installing-dependencies'
-  | 'transpiling'
-  | 'evaluating'
-  | 'running-tests'
-  | 'idle';
 
 export type SandboxTemplate = {
   files: IFiles;

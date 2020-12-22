@@ -12,7 +12,6 @@ import {
   IManagerState,
   ISandpackContext,
   IModuleError,
-  ManagerStatus,
   IFile,
   SandboxEnvironment,
 } from '../types';
@@ -21,11 +20,9 @@ const SandpackContext = createContext<ISandpackContext | null>(null);
 
 export interface State {
   files: IFiles;
-  browserPath: string;
   openedPath: string;
   managerState: IManagerState | undefined;
   errors: Array<IModuleError>;
-  status: ManagerStatus;
 }
 
 export interface Props {
@@ -48,8 +45,6 @@ export interface Props {
   };
 }
 
-// TODO: Provider API (props)
-// TODO: Get rid of the codesandbox-api dependency
 class SandpackProvider extends PureComponent<Props, State> {
   static defaultProps = {
     skipEval: false,
@@ -68,11 +63,9 @@ class SandpackProvider extends PureComponent<Props, State> {
         props.dependencies,
         props.entry
       ),
-      browserPath: props.initialPath || '/',
       openedPath: props.openedPath || props.entry || '/index.js',
       managerState: undefined,
       errors: [],
-      status: 'initializing',
     };
 
     this.iframeRef = createRef<HTMLIFrameElement>();
@@ -84,8 +77,6 @@ class SandpackProvider extends PureComponent<Props, State> {
       this.setState({ managerState: m.state });
     } else if (m.type === 'start') {
       this.setState({ errors: [] });
-    } else if (m.type === 'status') {
-      this.setState({ status: m.status });
     } else if (m.type === 'action' && m.action === 'show-error') {
       const { title, path, message, line, column } = m;
       this.setState(state => ({
@@ -210,49 +201,21 @@ class SandpackProvider extends PureComponent<Props, State> {
     this.setState({ openedPath: path });
   };
 
-  /**
-   * Get information about the transpilers that are currently registered to the
-   * preset
-   */
-  // TODO: Is this still needed?
-  getManagerTranspilerContext = (): Promise<{ [transpiler: string]: Object }> =>
-    new Promise(resolve => {
-      const listener = listen((message: any) => {
-        if (message.type === 'transpiler-context') {
-          resolve(message.data);
-
-          listener();
-        }
-      });
-
-      if (this.manager) {
-        this.manager.dispatch({ type: 'get-transpiler-context' });
-      }
-    });
+  dispatchMessage = (message: any) => this.manager?.dispatch(message);
 
   _getSandpackState = (): ISandpackContext => {
-    const {
-      files,
-      browserPath,
-      openedPath,
-      managerState,
-      errors,
-      status,
-    } = this.state;
+    const { files, openedPath, managerState, errors } = this.state;
 
     return {
       files,
       openedPath,
-      browserPath,
       errors,
       managerState,
-      managerStatus: status,
       openFile: this.openFile,
-      getManagerTranspilerContext: this.getManagerTranspilerContext,
       browserFrame: this.iframeRef.current,
       updateFiles: this.updateFiles,
       updateCurrentFile: this.updateCurrentFile,
-      bundlerURL: this.manager ? this.manager.bundlerURL : undefined,
+      dispatch: this.dispatchMessage,
     };
   };
 
@@ -304,7 +267,17 @@ function useSandpack() {
     );
   }
 
-  return sandpack;
+  const { dispatch, ...rest } = sandpack;
+
+  return {
+    sandpack: { ...rest },
+    dispatch:
+      dispatch ??
+      (() => {
+        throw new Error('dispatch was called before sandpack could initialize');
+      }),
+    listen,
+  };
 }
 
 function withSandpack(Component: React.ComponentClass<any> | React.FC<any>) {
