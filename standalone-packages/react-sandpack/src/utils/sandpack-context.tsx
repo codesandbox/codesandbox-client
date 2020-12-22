@@ -296,7 +296,15 @@ function getDisplayName(
 }
 
 function useSandpack() {
-  return useContext(SandpackContext) as ISandpackContext;
+  const sandpack = useContext(SandpackContext);
+
+  if (sandpack === null) {
+    throw new Error(
+      `useSandpack can only be used inside components wrapped by 'SandpackProvider'`
+    );
+  }
+
+  return sandpack;
 }
 
 function withSandpack(Component: React.ComponentClass<any> | React.FC<any>) {

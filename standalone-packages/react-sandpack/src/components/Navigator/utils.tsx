@@ -8,13 +8,7 @@ export const getBaseUrl = (url: string) => {
   return url;
 };
 
-export const getUrlState = (url: string) => {
+export const getRelativeUrl = (url: string) => {
   const baseUrl = getBaseUrl(url);
-  const browserPath = url.replace(baseUrl, '') || '/';
-
-  return {
-    baseUrl,
-    browserPath,
-    lastCommittedUrl: url,
-  };
+  return url.replace(baseUrl, '') || '/';
 };

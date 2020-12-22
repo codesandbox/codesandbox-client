@@ -1,23 +1,10 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { listen } from 'codesandbox-api';
 
-import { ISandpackContext } from '../../types';
 import { styled } from '../../stitches.config';
-import { withSandpack } from '../../utils/sandpack-context';
+import { useSandpack } from '../../utils/sandpack-context';
 import { BackwardIcon, ForwardIcon, RefreshIcon } from './icons';
-import { getBaseUrl, getUrlState } from './utils';
-
-interface Props {
-  sandpack: ISandpackContext;
-}
-
-interface State {
-  browserPath: string;
-  baseUrl: string;
-  lastCommittedUrl: string;
-  backwardNavigationStack: Array<string>;
-  forwardNavigationStack: Array<string>;
-}
+import { getBaseUrl, getRelativeUrl } from './utils';
 
 const NavigatorContainer = styled('div', {
   display: 'flex',
@@ -60,181 +47,130 @@ const NavigatorButton = styled('button', {
   ':hover:not(:disabled)': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
 });
 
-class NavigatorComponent extends Component<Props, State> {
-  listener: Function;
+export const Navigator = () => {
+  const [baseUrl, setBaseUrl] = useState<string>('');
+  const [relativeUrl, setRelativeUrl] = useState<string>('/');
+  const [lastCommitedUrl, setLastCommitedUrl] = useState<string>('/');
+  const [backwardNavigationStack, setBackwardNavigationStack] = useState<
+    string[]
+  >([]);
+  const [forwardNavigationStack, setForwardNavigationStack] = useState<
+    string[]
+  >([]);
 
-  constructor(props: Props) {
-    super(props);
-    this.listener = listen(this.handleMessage);
+  const sandpack = useSandpack();
 
-    this.state = {
-      browserPath: '/',
-      baseUrl: '',
-      lastCommittedUrl: '/',
-      backwardNavigationStack: [],
-      forwardNavigationStack: [],
-    };
-  }
+  useEffect(() => {
+    const unsubscribe = listen((message: any) => {
+      if (
+        message.type === 'urlchange' ||
+        (message.type === 'initialized' && message.url)
+      ) {
+        const newRelativeUrl = getRelativeUrl(message.url);
 
-  componentWillUnmount() {
-    this.listener();
-  }
-
-  handleMessage = (message: any) => {
-    switch (message.type) {
-      case 'initialized': {
-        if (message.url) {
-          // TODO: Cleanup?
-          this.setState(getUrlState(message.url));
-        }
-        break;
+        setBaseUrl(getBaseUrl(message.url));
+        setRelativeUrl(newRelativeUrl);
+        setLastCommitedUrl(message.url);
       }
+    });
 
-      case 'urlchange': {
-        this.setState(getUrlState(message.url));
-        break;
-      }
+    return unsubscribe;
+  }, []);
 
-      default: {
-        // nothing
-        break;
-      }
+  const commitUrl = () => {
+    if (!sandpack.browserFrame) {
+      return;
     }
-  };
 
-  commitUrl = () => {
-    const { sandpack } = this.props;
-    const { baseUrl, browserPath, backwardNavigationStack } = this.state;
+    const prevUrl = sandpack.browserFrame.src;
+    const newUrl = baseUrl + relativeUrl;
+    sandpack.browserFrame.src = newUrl;
 
-    if (sandpack.browserFrame) {
-      const prevUrl = sandpack.browserFrame.src;
-      sandpack.browserFrame.src = baseUrl + browserPath;
-
-      this.setState({
-        lastCommittedUrl: baseUrl + browserPath,
-        backwardNavigationStack: [...backwardNavigationStack, prevUrl],
-        forwardNavigationStack: [],
-      });
-    }
+    setLastCommitedUrl(newUrl);
+    setBackwardNavigationStack([...backwardNavigationStack, prevUrl]);
+    setForwardNavigationStack([]);
   };
 
   // TODO: Remove behavior with leading slash?
-  onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const browserPath = e.target.value.startsWith('/')
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const path = e.target.value.startsWith('/')
       ? e.target.value
       : `/${e.target.value}`;
 
-    this.setState({ browserPath });
+    setRelativeUrl(path);
   };
 
-  onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === 13) {
       //  Enter
       e.preventDefault();
       e.stopPropagation();
 
-      this.commitUrl();
+      commitUrl();
     }
   };
 
-  onRefresh = () => {
-    if (this.props.sandpack.browserFrame) {
-      this.props.sandpack.browserFrame.src = this.state.lastCommittedUrl;
+  const onRefresh = () => {
+    if (sandpack.browserFrame) {
+      sandpack.browserFrame.src = lastCommitedUrl;
     }
   };
 
-  onBackwardNavigation = () => {
-    const { backwardNavigationStack } = this.state;
-    const { sandpack } = this.props;
-
-    if (backwardNavigationStack.length > 0) {
-      const newCurrUrl =
-        backwardNavigationStack[backwardNavigationStack.length - 1];
-      if (sandpack.browserFrame) {
-        const currUrl = sandpack.browserFrame.src;
-        sandpack.browserFrame.src = newCurrUrl;
-
-        const baseUrl = getBaseUrl(newCurrUrl);
-        const browserPath = newCurrUrl.replace(baseUrl, '') || '/';
-
-        this.setState(prevState => ({
-          backwardNavigationStack: prevState.backwardNavigationStack.slice(
-            0,
-            -1
-          ),
-          forwardNavigationStack: [
-            ...prevState.forwardNavigationStack,
-            currUrl,
-          ],
-          lastCommittedUrl: newCurrUrl,
-          browserPath,
-        }));
-      }
+  const onBackwardNavigation = () => {
+    if (backwardNavigationStack.length === 0 || !sandpack.browserFrame) {
+      return;
     }
+
+    const newUrl = backwardNavigationStack[backwardNavigationStack.length - 1];
+    const newRelativePath = getRelativeUrl(newUrl);
+
+    const prevUrl = sandpack.browserFrame.src;
+    sandpack.browserFrame.src = newUrl;
+
+    setRelativeUrl(newRelativePath);
+    setLastCommitedUrl(newUrl);
+
+    setBackwardNavigationStack(backwardNavigationStack.slice(0, -1));
+    setForwardNavigationStack([...forwardNavigationStack, prevUrl]);
   };
 
-  onFowardNavigation = () => {
-    const { forwardNavigationStack } = this.state;
-    const { sandpack } = this.props;
-
-    if (forwardNavigationStack.length > 0) {
-      const newCurrUrl =
-        forwardNavigationStack[forwardNavigationStack.length - 1];
-      if (sandpack.browserFrame) {
-        const currUrl = sandpack.browserFrame.src;
-        sandpack.browserFrame.src = newCurrUrl;
-
-        const baseUrl = getBaseUrl(newCurrUrl);
-        const browserPath = newCurrUrl.replace(baseUrl, '') || '/';
-
-        this.setState(prevState => ({
-          backwardNavigationStack: [
-            ...prevState.backwardNavigationStack,
-            currUrl,
-          ],
-          forwardNavigationStack: prevState.forwardNavigationStack.slice(0, -1),
-          lastCommittedUrl: newCurrUrl,
-          browserPath,
-        }));
-      }
+  const onFowardNavigation = () => {
+    if (forwardNavigationStack.length === 0 || !sandpack.browserFrame) {
+      return;
     }
+
+    const newUrl = forwardNavigationStack[forwardNavigationStack.length - 1];
+    const newRelativePath = getRelativeUrl(newUrl);
+
+    const prevUrl = sandpack.browserFrame.src;
+    sandpack.browserFrame.src = newUrl;
+
+    setRelativeUrl(newRelativePath);
+    setLastCommitedUrl(newUrl);
+
+    setBackwardNavigationStack([...backwardNavigationStack, prevUrl]);
+    setForwardNavigationStack(forwardNavigationStack.slice(0, -1));
   };
 
-  render() {
-    const {
-      browserPath,
-      backwardNavigationStack,
-      forwardNavigationStack,
-    } = this.state;
+  const backDisabled = backwardNavigationStack.length === 0;
+  const forwardDisabled = forwardNavigationStack.length === 0;
 
-    const backDisabled = backwardNavigationStack.length === 0;
-    const forwardDisabled = forwardNavigationStack.length === 0;
-
-    return (
-      <NavigatorContainer>
-        <NavigatorButton
-          onClick={this.onBackwardNavigation}
-          disabled={backDisabled}
-        >
-          <BackwardIcon />
-        </NavigatorButton>
-        <NavigatorButton
-          onClick={this.onFowardNavigation}
-          disabled={forwardDisabled}
-        >
-          <ForwardIcon />
-        </NavigatorButton>
-        <NavigatorButton onClick={this.onRefresh}>
-          <RefreshIcon />
-        </NavigatorButton>
-        <NavigatorInput
-          onChange={this.onInputChange}
-          onKeyDown={this.onKeyDown}
-          value={browserPath}
-        />
-      </NavigatorContainer>
-    );
-  }
-}
-
-export const Navigator = withSandpack(NavigatorComponent);
+  return (
+    <NavigatorContainer>
+      <NavigatorButton onClick={onBackwardNavigation} disabled={backDisabled}>
+        <BackwardIcon />
+      </NavigatorButton>
+      <NavigatorButton onClick={onFowardNavigation} disabled={forwardDisabled}>
+        <ForwardIcon />
+      </NavigatorButton>
+      <NavigatorButton onClick={onRefresh}>
+        <RefreshIcon />
+      </NavigatorButton>
+      <NavigatorInput
+        onChange={onInputChange}
+        onKeyDown={onKeyDown}
+        value={relativeUrl}
+      />
+    </NavigatorContainer>
+  );
+};
