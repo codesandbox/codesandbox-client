@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Story } from '@storybook/react';
 import { CodeRunner, CodeRunnerProps } from './CodeRunner';
 
@@ -52,4 +52,27 @@ export const VueRunner: Story<CodeRunnerProps> = args => (
 
 VueRunner.args = {
   code: vueCode,
+};
+
+const reactAltCode = `import React from 'react';
+
+export default function App() {
+  return <p>Just a paragraph this time</p>
+}
+`;
+
+export const SwitchExperiment = () => {
+  const [codeToggle, setCodeToggle] = useState(false);
+
+  return (
+    <div>
+      <CodeRunner
+        template="create-react-app"
+        code={codeToggle ? reactAltCode : reactCode}
+      />
+      <button type="button" onClick={() => setCodeToggle(!codeToggle)}>
+        Switch
+      </button>
+    </div>
+  );
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { CodeViewer } from '../components/CodeViewer';
 import { Preview } from '../components/Preview';
 import { SandpackWrapper } from '../elements';
 import { IFile, SandboxTemplate } from '../types';
@@ -54,7 +55,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       showOpenInCodeSandbox={false}
     >
       <SandpackWrapper>
-        {showCode && <pre>{code}</pre>}
+        {showCode && <CodeViewer />}
 
         <Preview showNavigator={showNavigator} />
       </SandpackWrapper>
