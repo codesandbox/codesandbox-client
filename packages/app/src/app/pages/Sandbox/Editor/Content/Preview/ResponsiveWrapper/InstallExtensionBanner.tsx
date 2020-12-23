@@ -1,6 +1,9 @@
+import Modal from 'app/components/Modal';
+import { ThemeProvider } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+import { Alert } from 'app/pages/common/Modals/Common/Alert';
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { withTheme } from 'styled-components';
 
 const Wrapper = styled.div({
   position: 'absolute',
@@ -16,7 +19,7 @@ const Wrapper = styled.div({
 const ADDRESSBAR_HEIGHT = 35;
 const RESPONSIVE_BAR_HEIGHT = 42;
 
-export const InstallExtensionBanner = () => {
+export const InstallExtensionBanner = withTheme(({ theme }: { theme: any }) => {
   const [isShowing, setShowing] = React.useState(false);
   const { state, actions } = useOvermind();
 
@@ -29,6 +32,7 @@ export const InstallExtensionBanner = () => {
     state.preview.mode === 'responsive-add-comment';
 
   return (
+    <ThemeProvider theme={theme.vscodeTheme}>
     <Wrapper
       style={{
         top: isShowing
@@ -47,6 +51,27 @@ export const InstallExtensionBanner = () => {
       >
         install
       </button>
+      <Modal
+        isOpen={state.modals.extensionInstalledModal.isCurrent}
+        width={450}
+        onClose={() => actions.modals.extensionInstalledModal.close(false)}
+      >
+
+<Alert
+        title="CodeSandbox Extension"
+        description="If you installed the extension, the browser needs to refresh to activate it"
+        onCancel={() => {
+          actions.modals.extensionInstalledModal.close(false)
+        }}
+        cancelMessage="Cancel"
+        onPrimaryAction={() => {
+          actions.modals.extensionInstalledModal.close(true)
+        }}
+        confirmMessage="Ok"
+      />
+
+      </Modal>
     </Wrapper>
+    </ThemeProvider>
   );
-};
+});
