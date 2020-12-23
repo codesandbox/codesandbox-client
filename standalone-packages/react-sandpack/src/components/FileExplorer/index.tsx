@@ -24,7 +24,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = props => {
         selectFile={sandpack.openFile}
         files={sandpack.files}
         prefixedPath="/"
-        openedPath={sandpack.openedPath}
+        activePath={sandpack.activePath}
       />
     </Container>
   );

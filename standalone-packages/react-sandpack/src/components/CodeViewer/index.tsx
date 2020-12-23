@@ -1,25 +1,16 @@
-import React, { useEffect } from 'react';
-import Prism from 'prismjs';
+import React from 'react';
 import { useSandpack } from '../../utils/sandpack-context';
-import './prism.css';
+import { PrismHighlight } from './PrismHighlight';
 
 export interface CodeViewerProps {
   style?: React.CSSProperties;
   lang?: 'javascript' | 'html';
 }
 
-export const CodeViewer = ({ style, lang = 'javascript' }: CodeViewerProps) => {
+export const CodeViewer = (props: CodeViewerProps) => {
   const { sandpack } = useSandpack();
-  const openedPath = sandpack.openedPath;
-  const code = sandpack.files[openedPath].code;
+  const { activePath } = sandpack;
+  const code = sandpack.files[activePath].code;
 
-  useEffect(() => {
-    Prism.highlightAll();
-  }, []);
-
-  return (
-    <pre style={style}>
-      <code className={`language-${lang}`}>{code}</code>
-    </pre>
-  );
+  return <PrismHighlight {...props}>{code}</PrismHighlight>;
 };

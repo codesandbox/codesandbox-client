@@ -2,9 +2,8 @@ import React from 'react';
 
 import { FileExplorer } from '../components/FileExplorer';
 import { Preview } from '../components/Preview';
-import { TranspiledCodeView } from '../components/TranspiledCodeView';
 import { CodeEditor } from '../components/CodeEditor';
-import { SandpackConsumer, SandpackProvider } from '../utils/sandpack-context';
+import { SandpackProvider } from '../utils/sandpack-context';
 
 export default {
   title: 'presets/Custom Sandpack',
@@ -14,39 +13,37 @@ export const CustomEditor = () => (
   <SandpackProvider
     files={{
       '/index.js': {
-        code: `document.body.innerHTML = \`<div>$\{require('uuid').v4()}</div>\``,
+        code: `document.body.innerHTML = \`<div>This is a test</div>\``,
+      },
+      '/src/test.jsx': {
+        code: 'console.log("Hello")',
+      },
+      '/src/rest.js': {
+        code: 'console.log("Rest")',
       },
     }}
-    dependencies={{ uuid: 'latest', '@babel/runtime': 'latest' }}
+    dependencies={{}}
+    openPaths={['/index.js']}
     entry="/index.js"
   >
-    <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
+    <div style={{ display: 'flex' }}>
       <FileExplorer style={{ width: 300 }} />
-      <CodeEditor
-        style={{
-          width: '33%',
-          overflow: 'hidden',
-        }}
-      />
-      <Preview
-        style={{
-          width: '33%',
-          overflow: 'hidden',
-        }}
-      />
-      <TranspiledCodeView
-        style={{
-          width: '33%',
-          overflow: 'hidden',
-        }}
-      />
+      <div>
+        <CodeEditor
+          style={{
+            width: '100%',
+            minHeight: '100px',
+          }}
+          showTabs
+        />
 
-      <SandpackConsumer>
-        {sandpack => {
-          console.log(sandpack);
-          return <div />;
-        }}
-      </SandpackConsumer>
+        <Preview
+          style={{
+            width: '100%',
+            height: '100px',
+          }}
+        />
+      </div>
     </div>
   </SandpackProvider>
 );

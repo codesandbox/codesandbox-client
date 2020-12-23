@@ -51,7 +51,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       files={projectTemplate.files}
       dependencies={projectTemplate.dependencies}
       entry={projectTemplate.entry}
-      openedPath={projectTemplate.main}
+      openPaths={[projectTemplate.main]}
       showOpenInCodeSandbox={false}
     >
       <SandpackWrapper>

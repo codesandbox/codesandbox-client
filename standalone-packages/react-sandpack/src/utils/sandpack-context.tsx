@@ -20,7 +20,8 @@ const SandpackContext = createContext<ISandpackContext | null>(null);
 
 export interface State {
   files: IFiles;
-  openedPath: string;
+  activePath: string;
+  openPaths: string[];
   managerState: IManagerState | undefined;
   errors: Array<IModuleError>;
 }
@@ -30,9 +31,9 @@ export interface Props {
   className?: string;
   style?: Object;
   files: IFiles;
-  initialPath?: string;
-  entry?: string;
-  openedPath?: string;
+  activePath?: string;
+  entry: string;
+  openPaths?: string[];
   dependencies?: Record<string, string>;
   width?: number | string;
   height?: number | string;
@@ -63,7 +64,8 @@ class SandpackProvider extends PureComponent<Props, State> {
         props.dependencies,
         props.entry
       ),
-      openedPath: props.openedPath || props.entry || '/index.js',
+      openPaths: props.openPaths || [props.entry],
+      activePath: props.activePath || props.openPaths?.[0] || props.entry,
       managerState: undefined,
       errors: [],
     };
@@ -130,10 +132,10 @@ class SandpackProvider extends PureComponent<Props, State> {
   });
 
   updateCurrentFile = (file: IFile) => {
-    if (file.code !== this.state.files[this.state.openedPath]?.code) {
+    if (file.code !== this.state.files[this.state.activePath]?.code) {
       this.updateFiles({
         ...this.state.files,
-        [this.state.openedPath]: file,
+        [this.state.activePath]: file,
       });
     }
   };
@@ -197,20 +199,35 @@ class SandpackProvider extends PureComponent<Props, State> {
     this.unsubscribe();
   }
 
+  changeActiveFile = (path: string) => {
+    this.setState({ activePath: path });
+  };
+
   openFile = (path: string) => {
-    this.setState({ openedPath: path });
+    this.setState(({ openPaths }) => {
+      const newPaths = openPaths.includes(path)
+        ? openPaths
+        : [...openPaths, path];
+
+      return {
+        activePath: path,
+        openPaths: newPaths,
+      };
+    });
   };
 
   dispatchMessage = (message: any) => this.manager?.dispatch(message);
 
   _getSandpackState = (): ISandpackContext => {
-    const { files, openedPath, managerState, errors } = this.state;
+    const { files, activePath, openPaths, managerState, errors } = this.state;
 
     return {
       files,
-      openedPath,
+      openPaths,
+      activePath,
       errors,
       managerState,
+      changeActiveFile: this.changeActiveFile,
       openFile: this.openFile,
       browserFrame: this.iframeRef.current,
       updateFiles: this.updateFiles,

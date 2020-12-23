@@ -8,7 +8,7 @@ export interface Props {
   prefixedPath: string;
   files: IFiles;
   selectFile: (path: string) => void;
-  openedPath: string;
+  activePath: string;
   depth?: number;
 }
 
@@ -16,7 +16,7 @@ export class ModuleList extends PureComponent<Props> {
   render(): JSX.Element {
     const {
       depth = 0,
-      openedPath,
+      activePath,
       selectFile,
       prefixedPath,
       files,
@@ -44,7 +44,7 @@ export class ModuleList extends PureComponent<Props> {
             prefixedPath={dir}
             files={files}
             selectFile={selectFile}
-            openedPath={openedPath}
+            activePath={activePath}
             depth={depth + 1}
           />
         ))}
@@ -54,7 +54,7 @@ export class ModuleList extends PureComponent<Props> {
             key={file.path}
             selectFile={this.props.selectFile}
             path={file.path}
-            active={openedPath === file.path}
+            active={activePath === file.path}
           />
         ))}
       </div>

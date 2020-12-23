@@ -9,7 +9,7 @@ import {
   Command,
   KeyBinding,
 } from '@codemirror/next/view';
-import { EditorState, ReconfigurationSpec } from '@codemirror/next/state';
+import { EditorState } from '@codemirror/next/state';
 import { history, historyKeymap } from '@codemirror/next/history';
 import { foldKeymap } from '@codemirror/next/fold';
 import {
@@ -41,12 +41,12 @@ import { javascript } from '@codemirror/next/lang-javascript';
 import { html } from '@codemirror/next/lang-html';
 import { reactDocs } from './theme/react-docs';
 
-import { styled } from '../../stitches.config';
+import { styled } from '../../../stitches.config';
 
 export interface CodeMirrorProps {
   style?: React.CSSProperties;
   code: string;
-  openedPath: string;
+  activePath: string;
   onCodeUpdate: (newCode: string) => void;
   lang?: 'js' | 'html';
   commitOnSave?: boolean;
@@ -61,7 +61,7 @@ const Container = styled('div', {
 export const CodeMirror: React.FC<CodeMirrorProps> = ({
   style,
   code,
-  openedPath,
+  activePath,
   onCodeUpdate,
   lang = 'js',
   commitOnSave = false,
@@ -160,7 +160,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       ]);
     }
     // eslint-disable-next-line
-  }, [openedPath]);
+  }, [activePath]);
 
   const updateCode: Command = () => {
     const view = cmView.current;

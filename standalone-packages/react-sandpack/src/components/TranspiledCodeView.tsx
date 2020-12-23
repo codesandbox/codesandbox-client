@@ -3,6 +3,7 @@ import { ISandpackContext } from '../types';
 import { styled } from '../stitches.config';
 import { ErrorMessage } from '../elements';
 import { useSandpack } from '../utils/sandpack-context';
+import { PrismHighlight } from './CodeViewer/PrismHighlight';
 
 export interface TranspiledCodeViewProps {
   style?: Object;
@@ -11,16 +12,15 @@ export interface TranspiledCodeViewProps {
 const Wrapper = styled('div', {
   position: 'relative',
   height: '100%',
-  padding: '0.5rem',
 });
 
 function getTranspiledCode(sandpack: ISandpackContext) {
-  const { openedPath, managerState } = sandpack;
+  const { activePath, managerState } = sandpack;
   if (managerState == null) {
     return null;
   }
 
-  const tModule = managerState.transpiledModules[openedPath + ':'];
+  const tModule = managerState.transpiledModules[activePath + ':'];
   return tModule?.source?.compiledCode ?? null;
 }
 
@@ -30,7 +30,7 @@ export const TranspiledCodeView: React.FC<TranspiledCodeViewProps> = props => {
 
   return (
     <Wrapper style={props.style}>
-      <pre>{transpiledCode}</pre>
+      {transpiledCode && <PrismHighlight>{transpiledCode}</PrismHighlight>}
       {sandpack.errors.length > 0 && (
         <ErrorMessage>{sandpack.errors[0].message}</ErrorMessage>
       )}

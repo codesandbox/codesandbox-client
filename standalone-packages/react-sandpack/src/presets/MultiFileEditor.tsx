@@ -1,18 +1,18 @@
 import React from 'react';
 import { SandpackWrapper } from '../elements';
-import { IFile, SandboxTemplate } from '../types';
+import { IFiles, SandboxTemplate } from '../types';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { CodeEditor } from '../components/CodeEditor';
 import { Preview } from '../components/Preview';
 import { SANDBOX_TEMPLATES } from '../utils/sandbox-templates';
 import { PresetProps } from './types';
 
-export interface BasicEditorProps extends PresetProps {
-  code: string;
+export interface MultiFileEditorProps extends PresetProps {
+  editableFiles: IFiles;
 }
 
-export const BasicEditor: React.FC<BasicEditorProps> = ({
-  code,
+export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
+  editableFiles,
   template = 'create-react-app',
   customSetup,
   showNavigator = false,
@@ -32,23 +32,22 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
     };
   }
 
-  const mainFileName = projectTemplate.main;
-  const mainFile: IFile = {
-    code,
+  projectTemplate.files = {
+    ...projectTemplate.files,
+    ...editableFiles,
   };
 
   return (
     <SandpackProvider
-      files={{
-        ...projectTemplate.files,
-        [mainFileName]: mainFile,
-      }}
+      files={projectTemplate.files}
       dependencies={projectTemplate.dependencies}
       entry={projectTemplate.entry}
-      openPaths={[projectTemplate.main]}
+      openPaths={Object.keys(editableFiles)}
+      activePath={projectTemplate.main}
     >
       <SandpackWrapper>
         <CodeEditor
+          showTabs
           style={{
             width: 600,
             overflow: 'hidden',

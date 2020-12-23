@@ -52,7 +52,7 @@ export const ReactCode = () => (
     entry={reactTemplate.entry}
     template="create-react-app"
     files={reactTemplate.files}
-    openedPath={reactTemplate.main}
+    openPaths={[reactTemplate.main]}
     dependencies={reactTemplate.dependencies}
   >
     <SandpackWrapper>
@@ -68,7 +68,7 @@ export const VueCode = () => (
     entry={vueTemplate.entry}
     template="vue-cli"
     files={vueTemplate.files}
-    openedPath={vueTemplate.main}
+    openPaths={[vueTemplate.main]}
     dependencies={vueTemplate.dependencies}
   >
     <SandpackWrapper>

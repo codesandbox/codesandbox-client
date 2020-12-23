@@ -9,7 +9,7 @@ export interface Props {
   prefixedPath: string;
   files: IFiles;
   selectFile: (path: string) => void;
-  openedPath: string;
+  activePath: string;
   depth: number;
 }
 
@@ -27,7 +27,7 @@ export class Directory extends Component<Props, State> {
   };
 
   render() {
-    const { prefixedPath, files, selectFile, openedPath, depth } = this.props;
+    const { prefixedPath, files, selectFile, activePath, depth } = this.props;
 
     return (
       <div key={prefixedPath}>
@@ -37,7 +37,7 @@ export class Directory extends Component<Props, State> {
             prefixedPath={prefixedPath}
             files={files}
             selectFile={selectFile}
-            openedPath={openedPath}
+            activePath={activePath}
             depth={depth}
           />
         )}

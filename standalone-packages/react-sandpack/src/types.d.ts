@@ -56,11 +56,13 @@ export interface IManagerState {
 export interface ISandpackContext {
   browserFrame: HTMLIFrameElement | null;
   managerState: IManagerState | undefined;
-  openedPath: string;
+  openPaths: string[];
+  activePath: string;
   errors: Array<IModuleError>;
   files: IFiles;
   updateCurrentFile: (file: IFile) => void;
   openFile: (path: string) => void;
+  changeActiveFile: (path: string) => void;
   updateFiles: (files: IFiles) => void;
   dispatch?: (message: any) => void;
 }
