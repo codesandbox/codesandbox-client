@@ -87,7 +87,6 @@ export const Navigator = () => {
     sandpack.browserFrame.src = newUrl;
   };
 
-  // TODO: Remove behavior with leading slash?
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const path = e.target.value.startsWith('/')
       ? e.target.value
