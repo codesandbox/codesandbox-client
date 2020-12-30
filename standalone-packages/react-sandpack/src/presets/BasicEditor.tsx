@@ -1,10 +1,10 @@
 import React from 'react';
 import { SandpackWrapper } from '../elements';
-import { IFile, SandboxTemplate } from '../types';
+import { IFile } from '../types';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { CodeEditor } from '../components/CodeEditor';
 import { Preview } from '../components/Preview';
-import { SANDBOX_TEMPLATES } from '../utils/sandbox-templates';
+import { getSetup } from '../utils/sandbox-templates';
 import { PresetProps } from './types';
 
 export interface BasicEditorProps extends PresetProps {
@@ -17,22 +17,10 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   customSetup,
   showNavigator = false,
 }) => {
-  const baseTemplate = SANDBOX_TEMPLATES[template] as SandboxTemplate;
-  let projectTemplate = baseTemplate;
+  const projectSetup = getSetup(template, customSetup);
 
-  if (customSetup) {
-    projectTemplate = {
-      files: { ...baseTemplate.files, ...customSetup.files },
-      dependencies: {
-        ...baseTemplate.dependencies,
-        ...customSetup.dependencies,
-      },
-      entry: customSetup.entry || baseTemplate.entry,
-      main: customSetup.main || baseTemplate.main,
-    };
-  }
-
-  const mainFileName = projectTemplate.main;
+  // Replace the code in the main file
+  const mainFileName = projectSetup.main;
   const mainFile: IFile = {
     code,
   };
@@ -40,12 +28,12 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   return (
     <SandpackProvider
       files={{
-        ...projectTemplate.files,
+        ...projectSetup.files,
         [mainFileName]: mainFile,
       }}
-      dependencies={projectTemplate.dependencies}
-      entry={projectTemplate.entry}
-      openPaths={[projectTemplate.main]}
+      dependencies={projectSetup.dependencies}
+      entry={projectSetup.entry}
+      openPaths={[projectSetup.main]}
     >
       <SandpackWrapper>
         <CodeEditor

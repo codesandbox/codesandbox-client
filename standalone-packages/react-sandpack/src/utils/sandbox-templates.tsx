@@ -1,5 +1,26 @@
 import { SandboxEnvironment, SandboxTemplate } from '../types';
 
+export const getSetup = (
+  template: SandboxEnvironment,
+  customSetup?: Partial<SandboxTemplate>
+) => {
+  const baseTemplate = SANDBOX_TEMPLATES[template] as SandboxTemplate;
+
+  if (!customSetup) {
+    return baseTemplate;
+  }
+
+  return {
+    files: { ...baseTemplate.files, ...customSetup.files },
+    dependencies: {
+      ...baseTemplate.dependencies,
+      ...customSetup.dependencies,
+    },
+    entry: customSetup.entry || baseTemplate.entry,
+    main: customSetup.main || baseTemplate.main,
+  };
+};
+
 export const SANDBOX_TEMPLATES: Partial<Record<
   SandboxEnvironment,
   SandboxTemplate

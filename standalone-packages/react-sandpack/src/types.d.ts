@@ -74,10 +74,34 @@ export type SandboxTemplate = {
   main: string;
 };
 
+// TODO: Use from common
 export type SandboxEnvironment =
+  | 'adonis'
   | 'create-react-app'
-  | 'create-react-app-typescript'
-  | 'parcel'
   | 'vue-cli'
+  | 'preact-cli'
+  | 'svelte'
+  | 'create-react-app-typescript'
   | 'angular-cli'
-  | 'preact-cli';
+  | 'parcel'
+  | 'cxjs'
+  | '@dojo/cli-create-app'
+  | 'gatsby'
+  | 'marko'
+  | 'nuxt'
+  | 'next'
+  | 'reason'
+  | 'apollo'
+  | 'sapper'
+  | 'nest'
+  | 'static'
+  | 'styleguidist'
+  | 'gridsome'
+  | 'vuepress'
+  | 'mdx-deck'
+  | 'quasar-framework'
+  | 'unibit'
+  | 'node'
+  | 'ember'
+  | 'custom'
+  | 'babel-repl';

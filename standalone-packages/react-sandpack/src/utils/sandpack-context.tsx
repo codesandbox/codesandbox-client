@@ -28,15 +28,11 @@ export interface State {
 
 export interface Props {
   showOpenInCodeSandbox?: boolean;
-  className?: string;
-  style?: Object;
   files: IFiles;
   activePath?: string;
   entry: string;
   openPaths?: string[];
   dependencies?: Record<string, string>;
-  width?: number | string;
-  height?: number | string;
   bundlerURL?: string;
   skipEval?: boolean;
   template?: SandboxEnvironment;
@@ -59,11 +55,7 @@ class SandpackProvider extends PureComponent<Props, State> {
     super(props);
 
     this.state = {
-      files: this.createMissingPackageJSON(
-        props.files,
-        props.dependencies,
-        props.entry
-      ),
+      files: generatePackageJSON(props.files, props.dependencies, props.entry),
       openPaths: props.openPaths || [props.entry],
       activePath: props.activePath || props.openPaths?.[0] || props.entry,
       managerState: undefined,
@@ -86,44 +78,6 @@ class SandpackProvider extends PureComponent<Props, State> {
       }));
     }
   };
-
-  createMissingPackageJSON(
-    files: IFiles,
-    dependencies?: {
-      [depName: string]: string;
-    },
-    entry?: string
-  ) {
-    const newFiles = { ...files };
-
-    if (!newFiles['/package.json']) {
-      if (!dependencies) {
-        throw new Error(
-          'No dependencies specified, please specify either a package.json or dependencies.'
-        );
-      }
-
-      if (!entry) {
-        throw new Error(
-          "No entry specified, please specify either a package.json with 'main' field or dependencies."
-        );
-      }
-
-      newFiles['/package.json'] = {
-        code: JSON.stringify(
-          {
-            name: 'run',
-            main: entry,
-            dependencies,
-          },
-          null,
-          2
-        ),
-      };
-    }
-
-    return newFiles;
-  }
 
   getOptions = () => ({
     bundlerURL: this.props.bundlerURL,
@@ -181,7 +135,7 @@ class SandpackProvider extends PureComponent<Props, State> {
       props.entry !== this.props.entry ||
       props.template !== this.props.template
     ) {
-      const newFiles = this.createMissingPackageJSON(
+      const newFiles = generatePackageJSON(
         this.props.files,
         this.props.dependencies,
         this.props.entry
@@ -237,14 +191,12 @@ class SandpackProvider extends PureComponent<Props, State> {
   };
 
   render() {
-    const { children, className, style } = this.props;
+    const { children } = this.props;
 
+    // TODO: remove div after iframe is moved to Preview
     return (
       <SandpackContext.Provider value={this._getSandpackState()}>
-        <div style={style} className={`${className || ''} sandpack`}>
-          {/* We create a hidden iframe, the bundler will live in this.
-            We expose this iframe to the Consumer, so other components can show the full
-            iframe for preview. An implementation can be found in `Preview` component. */}
+        <div>
           <iframe
             ref={this.iframeRef}
             title="sandpack-sandbox"
