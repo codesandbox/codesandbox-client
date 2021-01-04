@@ -148,10 +148,16 @@ export default {
   parseUserAgent(ua: string): UserAgentDetails | null {
     try {
       const parser = new UAParser(ua);
-
       return {
-        // does not recognize brave and always returns chrome
-        browser: ua.includes('Brave Chrome') ? 'Brave' : parser.getBrowser(),
+        // @ts-ignore
+        // Only way to detect brave
+        // https://www.ctrl.blog/entry/brave-user-agent-detection.html
+        browser: navigator.brave
+          ? {
+              version: '',
+              name: 'Brave',
+            }
+          : parser.getBrowser(),
         device: parser.getDevice(),
         os: parser.getOS(),
       };

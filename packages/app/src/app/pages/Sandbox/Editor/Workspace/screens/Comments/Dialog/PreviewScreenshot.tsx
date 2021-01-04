@@ -1,6 +1,6 @@
 import React from 'react';
 import css from '@styled-system/css';
-import { Element, Stack } from '@codesandbox/components';
+import { Element, Stack, Tooltip } from '@codesandbox/components';
 import { Image } from 'app/components/Markdown/Image';
 import { UserAgentDetails } from 'app/overmind/effects/browser';
 import {
@@ -23,13 +23,15 @@ const Icon = ({ name }) => {
     Brave: BraveIcon,
   };
 
-  return iconToName[name]();
+  return iconToName[name] ? iconToName[name]() : null;
 };
 
 export const PreviewScreenshot: React.FC<{
+  width: number;
+  height: number;
   url: string;
   userAgentDetails: UserAgentDetails | null;
-}> = ({ url, userAgentDetails }) => (
+}> = ({ url, userAgentDetails, width, height }) => (
   <Element
     css={css({
       display: 'flex',
@@ -44,21 +46,39 @@ export const PreviewScreenshot: React.FC<{
   >
     <Image src={url} alt="Preview Screenshot" ignorePrivateSandboxRestriction />
     {userAgentDetails ? (
-      <Stack
-        align="center"
-        justify="center"
-        css={css({
-          width: 6,
-          height: 6,
-          top: 4,
-          right: 4,
-          borderRadius: 'medium',
-          position: 'absolute',
-          backgroundColor: 'sideBar.background',
-        })}
+      <Tooltip
+        label={
+          <Element
+            css={css({
+              textAlign: 'left',
+              fontSize: 12,
+              lineHeight: '16px',
+            })}
+          >
+            {userAgentDetails.browser.name} {userAgentDetails.browser.version}{' '}
+            <br />
+            {userAgentDetails.os.name} {userAgentDetails.os.version}
+            <br />
+            {width}x{height}
+          </Element>
+        }
       >
-        <Icon name={userAgentDetails.browser.name} />
-      </Stack>
+        <Stack
+          align="center"
+          justify="center"
+          css={css({
+            width: 6,
+            height: 6,
+            top: 4,
+            right: 4,
+            borderRadius: 'medium',
+            position: 'absolute',
+            backgroundColor: 'sideBar.background',
+          })}
+        >
+          <Icon name={userAgentDetails.browser.name} />
+        </Stack>
+      </Tooltip>
     ) : null}
   </Element>
 );
