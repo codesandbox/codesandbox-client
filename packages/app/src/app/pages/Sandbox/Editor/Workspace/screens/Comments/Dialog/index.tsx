@@ -29,12 +29,12 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { createGlobalStyle } from 'styled-components';
 
+import { UserAgentDetails } from 'app/overmind/effects/browser';
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
 import { useCodesandboxCommentEditor } from '../hooks/useCodesandboxCommentEditor';
 import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
-import { UserAgentDetails } from 'app/overmind/effects/browser';
 
 interface CommentDialogProps {
   comment: CommentWithRepliesFragment;
@@ -228,7 +228,7 @@ const PreviewScreenshot: React.FC<{ url: string, userAgentDetails: UserAgentDeta
     })}
   >
     <Image src={url} alt="Preview Screenshot" ignorePrivateSandboxRestriction />
-    {userAgentDetails ? <div>{}</div> : null }
+    {userAgentDetails ? <div>{JSON.stringify(userAgentDetails)}</div> : null }
   </Element>
 );
 
