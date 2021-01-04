@@ -19,7 +19,7 @@ import {
 import { CommentWithRepliesFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
-import { Image } from 'app/components/Markdown/Image';
+
 import {
   convertImageReferencesToMarkdownImages,
   convertUserReferencesToMentions,
@@ -29,12 +29,12 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { createGlobalStyle } from 'styled-components';
 
-import { UserAgentDetails } from 'app/overmind/effects/browser';
 import { AvatarBlock } from '../components/AvatarBlock';
 import { EditComment } from '../components/EditComment';
 import { useCodesandboxCommentEditor } from '../hooks/useCodesandboxCommentEditor';
 import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
+import { PreviewScreenshot } from './PreviewScreenshot';
 
 interface CommentDialogProps {
   comment: CommentWithRepliesFragment;
@@ -215,23 +215,6 @@ export const Dialog: React.FC<CommentDialogProps> = props => {
   );
 };
 
-const PreviewScreenshot: React.FC<{ url: string, userAgentDetails: UserAgentDetails | null }> = ({ url, userAgentDetails }) => (
-  <Element
-    css={css({
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingBottom: 4,
-      img: {
-        maxWidth: '100%',
-      },
-    })}
-  >
-    <Image src={url} alt="Preview Screenshot" ignorePrivateSandboxRestriction />
-    {userAgentDetails ? <div>{JSON.stringify(userAgentDetails)}</div> : null }
-  </Element>
-);
-
 const DialogAddComment: React.FC<{
   comment: CommentWithRepliesFragment;
   onSave: (value: string, mentions: { [username: string]: UserQuery }) => void;
@@ -291,7 +274,9 @@ const DialogAddComment: React.FC<{
       {comment.anchorReference && comment.anchorReference.type === 'preview' ? (
         <PreviewScreenshot
           url={(comment.anchorReference.metadata as any).screenshotUrl}
-          userAgentDetails={effects.browser.parseUserAgent((comment.anchorReference.metadata as any).userAgent)}
+          userAgentDetails={effects.browser.parseUserAgent(
+            (comment.anchorReference.metadata as any).userAgent
+          )}
         />
       ) : null}
       {elements}
@@ -438,7 +423,9 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
       {comment.anchorReference && comment.anchorReference.type === 'preview' ? (
         <PreviewScreenshot
           url={comment.anchorReference.metadata.screenshotUrl}
-          userAgentDetails={effects.browser.parseUserAgent(comment.anchorReference.metadata.userAgent)}
+          userAgentDetails={effects.browser.parseUserAgent(
+            comment.anchorReference.metadata.userAgent
+          )}
         />
       ) : null}
       <Element

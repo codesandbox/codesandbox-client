@@ -1,20 +1,20 @@
-import UAParser from 'ua-parser-js'
+import UAParser from 'ua-parser-js';
 
 export type UserAgentDetails = {
   browser: {
-    name: string
-    version: string
-  }
+    name: string;
+    version: string;
+  };
   device: {
-    model: string,
-    type: string,
-    vendor: string
-  }
+    model: string;
+    type: string;
+    vendor: string;
+  };
   os: {
-    name: string
-    version: string
-  }
-}
+    name: string;
+    version: string;
+  };
+};
 
 function getPopupOffset({ width, height }) {
   const wLeft = window.screenLeft ? window.screenLeft : window.screenX;
@@ -143,20 +143,20 @@ export default {
     return el.getBoundingClientRect();
   },
   onWindowMessage(cb: (event: MessageEvent) => void) {
-    window.addEventListener('message', cb)
+    window.addEventListener('message', cb);
   },
   parseUserAgent(ua: string): UserAgentDetails | null {
-
     try {
-      const parser = new UAParser(ua)
+      const parser = new UAParser(ua);
 
       return {
-        browser: parser.getBrowser(),
+        // does not recognize brave and always returns chrome
+        browser: ua.includes('Brave Chrome') ? 'Brave' : parser.getBrowser(),
         device: parser.getDevice(),
-        os: parser.getOS()
-      }
+        os: parser.getOS(),
+      };
     } catch {
-      return null
+      return null;
     }
-  }
+  },
 };
