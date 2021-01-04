@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { TranspiledCodeView } from '../components/TranspiledCodeView';
+import { SandpackWrapper } from '../elements';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { CodeViewer } from './CodeViewer';
 
@@ -20,15 +21,9 @@ const str = \`<div>\${text}</div>\`
     dependencies={{ '@babel/runtime': 'latest' }}
     entry="/index.js"
   >
-    <CodeViewer
-      style={{
-        width: '50%',
-      }}
-    />
-    <TranspiledCodeView
-      style={{
-        width: '50%',
-      }}
-    />
+    <SandpackWrapper>
+      <CodeViewer />
+      <TranspiledCodeView />
+    </SandpackWrapper>
   </SandpackProvider>
 );

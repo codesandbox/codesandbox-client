@@ -53,7 +53,11 @@ export interface CodeMirrorProps {
 }
 
 const Container = styled('div', {
-  '.ͼ1.cm-focused': {
+  paddingTop: '$1',
+  paddingBottom: '$1',
+  fontSize: '$2',
+
+  '.cm-focused': {
     outline: 'none',
   },
 });

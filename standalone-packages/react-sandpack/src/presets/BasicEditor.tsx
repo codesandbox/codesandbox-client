@@ -34,20 +34,15 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
       dependencies={projectSetup.dependencies}
       entry={projectSetup.entry}
       openPaths={[projectSetup.main]}
+      showOpenInCodeSandbox={false}
     >
-      <SandpackWrapper>
+      <SandpackWrapper style={{ display: 'flex', width: '100%' }}>
         <CodeEditor
           style={{
-            width: 600,
-            overflow: 'hidden',
-            fontSize: 14,
-            paddingTop: 12,
-            paddingBottom: 12,
-            backgroundColor: '#F8F9FB',
+            width: '50%',
           }}
         />
-
-        <Preview showNavigator={showNavigator} />
+        <Preview showNavigator={showNavigator} style={{ width: '50%' }} />
       </SandpackWrapper>
     </SandpackProvider>
   );

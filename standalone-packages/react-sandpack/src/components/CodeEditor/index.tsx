@@ -2,6 +2,7 @@ import React from 'react';
 import { CodeMirror } from './CodeMirror';
 import { useSandpack } from '../../utils/sandpack-context';
 import { FileTabs } from '../FileTabs';
+import { styled } from '../../stitches.config';
 
 export interface CodeEditorProps {
   style?: React.CSSProperties;
@@ -9,6 +10,11 @@ export interface CodeEditorProps {
   lang?: 'js' | 'html';
   showTabs?: boolean;
 }
+
+const CodeEditorWrapper = styled('div', {
+  backgroundColor: '$neutral900',
+  textAlign: 'left',
+});
 
 export const CodeEditor = ({
   style,
@@ -27,16 +33,15 @@ export const CodeEditor = ({
   };
 
   return (
-    <>
+    <CodeEditorWrapper style={style}>
       {showTabs && <FileTabs />}
       <CodeMirror
-        style={style}
         activePath={activePath}
         code={code}
         lang={lang}
         onCodeUpdate={handleCodeUpdate}
         commitOnSave={commitOnSave}
       />
-    </>
+    </CodeEditorWrapper>
   );
 };

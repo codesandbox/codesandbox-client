@@ -18,8 +18,14 @@ export const ErrorMessage = styled('pre', {
 });
 
 export const SandpackWrapper = styled('div', {
-  border: '1px solid #EBEDF0',
-  borderRadius: 4,
+  border: '1px solid $neutral800',
+  borderRadius: '$default',
+  fontSize: '$1',
+  fontFamily: '$body',
   overflow: 'hidden',
-  maxWidth: 600,
+  maxWidth: 800,
+
+  '*': {
+    boxSizing: 'border-box',
+  },
 });

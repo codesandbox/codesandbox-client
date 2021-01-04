@@ -1,5 +1,6 @@
 export * from './presets/BasicEditor';
 export * from './presets/CodeRunner';
+export * from './presets/MultiFileEditor';
 
 export * from './components/CodeEditor';
 export * from './components/FileExplorer';

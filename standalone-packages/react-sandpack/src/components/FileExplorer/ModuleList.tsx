@@ -37,7 +37,7 @@ export class ModuleList extends PureComponent<Props> {
       .map(file => ({ path: `${prefixedPath}${file}` }));
 
     return (
-      <div style={{ marginLeft: `${0.5 * depth}rem` }}>
+      <div>
         {Array.from(directoriesToShow).map(dir => (
           <Directory
             key={dir}
@@ -55,6 +55,7 @@ export class ModuleList extends PureComponent<Props> {
             selectFile={this.props.selectFile}
             path={file.path}
             active={activePath === file.path}
+            depth={depth + 1}
           />
         ))}
       </div>

@@ -32,20 +32,9 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
       openPaths={Object.keys(editableFiles)}
       activePath={projectSetup.main}
     >
-      <SandpackWrapper>
-        <CodeEditor
-          showTabs
-          style={{
-            width: 600,
-            overflow: 'hidden',
-            fontSize: 14,
-            paddingTop: 12,
-            paddingBottom: 12,
-            backgroundColor: '#F8F9FB',
-          }}
-        />
-
-        <Preview showNavigator={showNavigator} />
+      <SandpackWrapper style={{ display: 'flex', width: '100%' }}>
+        <CodeEditor showTabs style={{ width: '50%' }} />
+        <Preview showNavigator={showNavigator} style={{ width: '50%' }} />
       </SandpackWrapper>
     </SandpackProvider>
   );

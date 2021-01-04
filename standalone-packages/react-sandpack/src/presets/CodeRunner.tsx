@@ -41,10 +41,10 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       openPaths={[projectSetup.main]}
       showOpenInCodeSandbox={false}
     >
-      <SandpackWrapper>
-        {showCode && <CodeViewer />}
+      <SandpackWrapper style={{ display: 'flex', width: '100%' }}>
+        {showCode && <CodeViewer style={{ width: '50%' }} />}
 
-        <Preview showNavigator={showNavigator} />
+        <Preview style={{ flex: 1 }} showNavigator={showNavigator} />
       </SandpackWrapper>
     </SandpackProvider>
   );

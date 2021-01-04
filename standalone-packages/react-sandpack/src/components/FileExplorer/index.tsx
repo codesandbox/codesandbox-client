@@ -10,9 +10,9 @@ export interface FileExplorerProps {
 }
 
 const Container = styled('div', {
-  backgroundColor: '#24282a',
-  color: 'white',
-  paddingTop: '0.5em',
+  backgroundColor: '$neutral900',
+  paddingTop: '$1',
+  paddingBottom: '$1',
 });
 
 export const FileExplorer: React.FC<FileExplorerProps> = props => {

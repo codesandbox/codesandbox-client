@@ -9,25 +9,25 @@ export interface FileTabsProps {
 }
 
 const Container = styled('div', {
-  backgroundColor: 'rgb(248, 249, 251)',
-  borderBottom: '1px solid #eee',
-  marginBottom: -1,
+  backgroundColor: '$neutral900',
+  borderBottom: '1px solid $neutral800',
 });
 
 const TabButton = styled('button', {
-  background: '#efefef',
+  background: 'transparent',
   appearance: 'none',
-  padding: 4,
-  marginRight: 4,
+  fontSize: 'inherit',
+  padding: '$1',
+  marginLeft: '$1',
   border: 0,
-  borderRadius: '4px 4px 0 0',
+  borderBottom: '1px solid transparent',
 
-  '&:hover': {
-    background: '#dedede',
+  '&[data-active="false"]:hover': {
+    borderBottom: '1px solid $neutral700',
   },
 
   '&[data-active="true"]': {
-    background: 'rgb(248, 249, 251)',
+    borderBottom: '1px solid $accent500',
   },
 });
 

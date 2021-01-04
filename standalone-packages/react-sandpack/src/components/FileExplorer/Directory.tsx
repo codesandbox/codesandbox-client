@@ -31,7 +31,11 @@ export class Directory extends Component<Props, State> {
 
     return (
       <div key={prefixedPath}>
-        <File onClick={this.toggleOpen} path={prefixedPath + '/'} />
+        <File
+          onClick={this.toggleOpen}
+          path={prefixedPath + '/'}
+          depth={depth}
+        />
         {this.state.open && (
           <ModuleList
             prefixedPath={prefixedPath}

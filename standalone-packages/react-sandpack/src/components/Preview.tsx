@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { styled } from '../stitches.config';
 
 import { useSandpack } from '../utils/sandpack-context';
 import { Navigator } from './Navigator';
@@ -7,6 +8,17 @@ export interface PreviewProps {
   style?: React.CSSProperties;
   showNavigator?: boolean;
 }
+
+const Wrapper = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  backgroundColor: '$neutral1000',
+});
+
+const PreviewFrame = styled('div', {
+  width: '100%',
+  flex: 1,
+});
 
 export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -32,7 +44,7 @@ export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
 
     const { browserFrame } = sandpack;
     browserFrame.style.width = '100%';
-    browserFrame.style.height = '500px';
+    browserFrame.style.height = '100%';
     browserFrame.style.visibility = 'visible';
     browserFrame.style.position = 'relative';
 
@@ -40,9 +52,9 @@ export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
   }, [sandpack?.browserFrame]);
 
   return (
-    <>
+    <Wrapper style={style}>
       {showNavigator && <Navigator />}
-      <div style={style} ref={containerRef} />
-    </>
+      <PreviewFrame id="preview-frame" ref={containerRef} />
+    </Wrapper>
   );
 };

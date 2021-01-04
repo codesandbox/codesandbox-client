@@ -193,10 +193,10 @@ class SandpackProvider extends PureComponent<Props, State> {
   render() {
     const { children } = this.props;
 
-    // TODO: remove div after iframe is moved to Preview
     return (
       <SandpackContext.Provider value={this._getSandpackState()}>
-        <div>
+        {children}
+        <div id="loading-frame">
           <iframe
             ref={this.iframeRef}
             title="sandpack-sandbox"
@@ -212,7 +212,6 @@ class SandpackProvider extends PureComponent<Props, State> {
             sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
             src={this.props.bundlerURL}
           />
-          {children}
         </div>
       </SandpackContext.Provider>
     );

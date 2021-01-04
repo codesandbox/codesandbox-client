@@ -5,10 +5,6 @@ import { ErrorMessage } from '../elements';
 import { useSandpack } from '../utils/sandpack-context';
 import { PrismHighlight } from './CodeViewer/PrismHighlight';
 
-export interface TranspiledCodeViewProps {
-  style?: Object;
-}
-
 const Wrapper = styled('div', {
   position: 'relative',
   height: '100%',
@@ -24,12 +20,12 @@ function getTranspiledCode(sandpack: ISandpackContext) {
   return tModule?.source?.compiledCode ?? null;
 }
 
-export const TranspiledCodeView: React.FC<TranspiledCodeViewProps> = props => {
+export const TranspiledCodeView: React.FC = () => {
   const { sandpack } = useSandpack();
   const transpiledCode = getTranspiledCode(sandpack);
 
   return (
-    <Wrapper style={props.style}>
+    <Wrapper>
       {transpiledCode && <PrismHighlight>{transpiledCode}</PrismHighlight>}
       {sandpack.errors.length > 0 && (
         <ErrorMessage>{sandpack.errors[0].message}</ErrorMessage>

@@ -4,27 +4,25 @@ import { styled } from '../../stitches.config';
 const Container = styled('button', {
   display: 'block',
   border: 'none',
-  outline: 'none',
+  fontSize: 'inherit',
   backgroundColor: 'transparent',
   width: '100%',
   textAlign: 'left',
 
-  transition: '0.3s ease all',
-  fontFamily: 'sans-serif',
-  fontSize: '0.875em',
-  padding: '0.3em 0.5em',
-  paddingLeft: '1rem',
-  color: 'rgb(220, 220, 220)',
-  borderLeft: '2px solid transparent',
-  cursor: 'pointer',
+  paddingLeft: '$4',
+  paddingTop: '$1',
+  paddingBottom: '$1',
+  color: '$neutral100',
 
-  '&:hover': { color: 'rgb(255, 255, 255)' },
+  '&:hover': { backgroundColor: '$neutral800' },
 
   variants: {
     state: {
       active: {
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-        borderLeft: '2px solid #6caedd',
+        backgroundColor: '$accent500',
+        color: '$neutral1000',
+
+        '&:hover': { backgroundColor: '$accent500' },
       },
     },
   },
@@ -36,6 +34,7 @@ export interface Props {
   active?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
+  depth: number;
 }
 
 export class File extends PureComponent<Props> {
@@ -53,6 +52,7 @@ export class File extends PureComponent<Props> {
         onClick={this.props.selectFile ? this.selectFile : this.props.onClick}
         className={this.props.className}
         state={this.props.active ? 'active' : undefined}
+        css={{ paddingLeft: 8 * this.props.depth + 'px' }}
       >
         {fileName}
       </Container>

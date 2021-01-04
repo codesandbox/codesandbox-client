@@ -2,6 +2,7 @@ import React from 'react';
 import { FileExplorer } from './index';
 
 import { SandpackProvider } from '../../utils/sandpack-context';
+import { SandpackWrapper } from '../../elements';
 
 export default {
   title: 'components/File Explorer',
@@ -23,6 +24,8 @@ export const Component = () => (
     }}
     dependencies={{}}
   >
-    <FileExplorer />
+    <SandpackWrapper>
+      <FileExplorer />
+    </SandpackWrapper>
   </SandpackProvider>
 );

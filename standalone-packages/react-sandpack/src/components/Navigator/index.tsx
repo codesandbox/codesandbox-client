@@ -8,42 +8,36 @@ import { splitUrl } from './utils';
 const NavigatorContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
-  backgroundColor: 'rgb(245, 245, 245)',
-  width: '100%',
-  padding: '0.5rem',
-  borderRadius: '2px',
-  borderBottom: '1px solid #ddd',
-  '&:first-child': { marginLeft: '0' },
-  '&:last-child': { marginLeft: '0' },
+  backgroundColor: '$neutral800',
+  padding: '$2 $4',
+
+  '& > *:not(:first-child)': {
+    marginLeft: '$2',
+  },
 });
 
 const NavigatorInput = styled('input', {
-  backgroundColor: 'white',
-  width: '100%',
-  padding: '0.25rem 0.5rem',
-  borderRadius: '4px',
-  border: '1px solid #ddd',
-  fontSize: '0.875rem',
-  margin: '0 0.25rem',
+  backgroundColor: '$neutral1000',
+  padding: '$1 $2',
+  borderRadius: '$default',
+  border: '1px solid $neutral700',
   flex: 1,
+  height: '24px',
+  fontSize: 'inherit',
 });
 
 const NavigatorButton = styled('button', {
   transition: '0.3s ease background-color',
-  padding: '2px',
-  margin: '0 0.25rem',
-  fontSize: '1.25rem',
   backgroundColor: 'transparent',
+  padding: 0,
   border: '0',
-  outline: '0',
   display: 'flex',
   alignItems: 'center',
-  color: 'rgb(114, 114, 114)',
-  verticalAlign: 'middle',
+  color: '$neutral400',
 
-  ':disabled': { color: 'rgb(170, 170, 170)' },
+  ':disabled': { color: '$neutral500' },
 
-  ':hover:not(:disabled)': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+  ':hover:not(:disabled)': { backgroundColor: '$neutral700' },
 });
 
 type UrlChangeMessage = {
