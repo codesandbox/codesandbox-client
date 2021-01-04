@@ -273,7 +273,9 @@ const DialogAddComment: React.FC<{
       </DragHandle>
       {comment.anchorReference && comment.anchorReference.type === 'preview' ? (
         <PreviewScreenshot
+          // @ts-ignore
           width={comment.anchorReference.metadata.width}
+          // @ts-ignore
           height={comment.anchorReference.metadata.height}
           url={(comment.anchorReference.metadata as any).screenshotUrl}
           userAgentDetails={effects.browser.parseUserAgent(
