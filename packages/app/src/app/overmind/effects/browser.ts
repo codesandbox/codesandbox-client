@@ -1,3 +1,21 @@
+import UAParser from 'ua-parser-js'
+
+export type UserAgentDetails = {
+  browser: {
+    name: string
+    version: string
+  }
+  device: {
+    model: string,
+    type: string,
+    vendor: string
+  }
+  os: {
+    name: string
+    version: string
+  }
+}
+
 function getPopupOffset({ width, height }) {
   const wLeft = window.screenLeft ? window.screenLeft : window.screenX;
   const wTop = window.screenTop ? window.screenTop : window.screenY;
@@ -126,5 +144,19 @@ export default {
   },
   onWindowMessage(cb: (event: MessageEvent) => void) {
     window.addEventListener('message', cb)
+  },
+  parseUserAgent(ua: string): UserAgentDetails | null {
+
+    try {
+      const parser = new UAParser(ua)
+
+      return {
+        browser: parser.getBrowser(),
+        device: parser.getDevice(),
+        os: parser.getOS()
+      }
+    } catch {
+      return null
+    }
   }
 };

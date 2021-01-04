@@ -228,6 +228,7 @@
     "tern": "^0.21.0",
     "textarea-caret": "^3.1.0",
     "textextensions": "^3.3.0",
+    "ua-parser-js": "^0.7.23",
     "use-debounce": "^3.4.2",
     "use-interval": "^1.2.1",
     "util": "0.11.1",

@@ -34,6 +34,7 @@ import { EditComment } from '../components/EditComment';
 import { useCodesandboxCommentEditor } from '../hooks/useCodesandboxCommentEditor';
 import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
+import { UserAgentDetails } from 'app/overmind/effects/browser';
 
 interface CommentDialogProps {
   comment: CommentWithRepliesFragment;
@@ -214,7 +215,7 @@ export const Dialog: React.FC<CommentDialogProps> = props => {
   );
 };
 
-const PreviewScreenshot: React.FC<{ url: string }> = ({ url }) => (
+const PreviewScreenshot: React.FC<{ url: string, userAgentDetails: UserAgentDetails | null }> = ({ url, userAgentDetails }) => (
   <Element
     css={css({
       display: 'flex',
@@ -227,6 +228,7 @@ const PreviewScreenshot: React.FC<{ url: string }> = ({ url }) => (
     })}
   >
     <Image src={url} alt="Preview Screenshot" ignorePrivateSandboxRestriction />
+    {userAgentDetails ? <div>{}</div> : null }
   </Element>
 );
 
@@ -236,7 +238,7 @@ const DialogAddComment: React.FC<{
   onDragHandlerPan: (deltaX: number, deltaY: number) => void;
   onDragHandlerPanEnd: () => void;
 }> = ({ comment, onSave, onDragHandlerPan, onDragHandlerPanEnd }) => {
-  const { actions } = useOvermind();
+  const { actions, effects } = useOvermind();
   const [elements] = useCodesandboxCommentEditor({
     initialValue: '',
     initialMentions: {},
@@ -289,6 +291,7 @@ const DialogAddComment: React.FC<{
       {comment.anchorReference && comment.anchorReference.type === 'preview' ? (
         <PreviewScreenshot
           url={(comment.anchorReference.metadata as any).screenshotUrl}
+          userAgentDetails={effects.browser.parseUserAgent((comment.anchorReference.metadata as any).userAgent)}
         />
       ) : null}
       {elements}
@@ -388,6 +391,7 @@ const DialogHeader = ({ comment, hasShadow }) => {
 const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
   const {
     state,
+    effects,
     actions: { comments },
   } = useOvermind();
   const isCommenter = state.user.id === comment.user.id;
@@ -434,6 +438,7 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
       {comment.anchorReference && comment.anchorReference.type === 'preview' ? (
         <PreviewScreenshot
           url={comment.anchorReference.metadata.screenshotUrl}
+          userAgentDetails={effects.browser.parseUserAgent(comment.anchorReference.metadata.userAgent)}
         />
       ) : null}
       <Element

@@ -108,7 +108,7 @@ export const Preview: FunctionComponent<Props> = ({
 
   return (
     <>
-      {preview.showExtensionBanner ? <InstallExtensionBanner /> : null}
+      {/*preview.showExtensionBanner*/ true ? <InstallExtensionBanner /> : null}
       {content}
     </>
   );

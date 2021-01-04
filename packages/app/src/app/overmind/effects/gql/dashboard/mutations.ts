@@ -335,7 +335,7 @@ export const changeTeamMemberAuthorization: Query<
   ChangeTeamMemberAuthorizationMutationVariables
 > = gql`
   mutation ChangeTeamMemberAuthorization(
-    $teamId: ID!
+    $teamId: UUID4!
     $userId: ID!
     $authorization: TeamMemberAuthorization!
   ) {
@@ -488,7 +488,7 @@ export const setDefaultTeamMemberAuthorization: Query<
 > = gql`
   mutation setDefaultTeamMemberAuthorization(
     $teamId: UUID4!
-    $defaultAuthorization: String!
+    $defaultAuthorization: TeamMemberAuthorization!
   ) {
     setDefaultTeamMemberAuthorization(
       teamId: $teamId

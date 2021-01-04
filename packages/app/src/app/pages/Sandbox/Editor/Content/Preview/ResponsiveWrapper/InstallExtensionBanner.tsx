@@ -42,6 +42,14 @@ export const InstallExtensionBanner = withTheme(({ theme }: { theme: any }) => {
           : 0,
       }}
     >
+            <button
+        type="button"
+        onClick={() => {
+          actions.preview.closeExtensionBanner();
+        }}
+      >
+        close
+      </button>
       Get a better experience
       <button
         type="button"
