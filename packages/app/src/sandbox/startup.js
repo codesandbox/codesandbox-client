@@ -3,7 +3,7 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 /* eslint-enable import/default */
 import hookConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
-import setupScreenshotListener from 'sandbox-hooks/screenshot'
+import setupScreenshotListener from 'sandbox-hooks/screenshot';
 import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { isStandalone } from 'codesandbox-api';
 
@@ -28,5 +28,5 @@ if (!isStandalone) {
   setupHistoryListeners();
   hookConsole();
   listenForPreviewSecret();
-  setupScreenshotListener()
+  setupScreenshotListener();
 }

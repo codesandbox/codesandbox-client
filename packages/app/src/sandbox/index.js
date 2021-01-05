@@ -23,21 +23,15 @@ debug('Booting sandbox v2');
 
 endMeasure('boot', { lastTime: 0, displayName: 'Boot' });
 
-const ID = Math.floor(Math.random() * 1000000);
-
 requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js', {});
 
   function sendReady() {
-    dispatch({ type: 'initialized', url: document.location.href, id: ID });
+    dispatch({ type: 'initialized', url: document.location.href });
   }
 
   async function handleMessage(data, source) {
     if (source) {
-      if (data.id && data.id !== ID) {
-        return;
-      }
-
       if (data.type === 'compile') {
         compile(data);
       } else if (data.type === 'get-transpiler-context') {

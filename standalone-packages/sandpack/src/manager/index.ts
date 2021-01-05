@@ -86,7 +86,8 @@ export default class PreviewManager {
   element: Element;
   iframe: HTMLIFrameElement;
   options: IManagerOptions;
-  id: string | null = null;
+  readonly id: number = Math.floor(Math.random() * 1000000);
+
   listener?: Function;
   fileResolverProtocol?: Protocol;
   bundlerURL: string;
@@ -129,18 +130,21 @@ export default class PreviewManager {
     );
 
     this.iframe.src = this.bundlerURL;
-
     this.listener = listen((mes: any) => {
       if (mes.type !== 'initialized' && mes.id && mes.id !== this.id) {
         // This message was not meant for this instance of the manager.
         return;
       }
+
       switch (mes.type) {
         case 'initialized': {
           if (this.iframe) {
             if (this.iframe.contentWindow) {
-              registerFrame(this.iframe.contentWindow, this.bundlerURL);
-              this.id = mes.id || null;
+              registerFrame(
+                this.iframe.contentWindow,
+                this.bundlerURL,
+                this.id
+              );
 
               if (this.options.fileResolver) {
                 this.fileResolverProtocol = new Protocol(
@@ -255,9 +259,19 @@ export default class PreviewManager {
   }
 
   public dispatch(message: Object) {
-    // @ts-ignore We want to add the id, don't use Object.assign since that copies the whole message
-    message.id = this.id;
+    // @ts-ignore We want to add the id, don't use Object.assign since that copies the message.
+    message.$id = this.id;
     dispatch(message);
+  }
+
+  public listen(listener: (msg: any) => void): Function {
+    return listen((msg: any) => {
+      if (msg.$id !== this.id) {
+        return;
+      }
+
+      listener(msg);
+    });
   }
 
   /**

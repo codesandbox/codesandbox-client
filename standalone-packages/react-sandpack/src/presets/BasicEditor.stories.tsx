@@ -55,7 +55,20 @@ const vueCode = `<template>
 export const ReactEditor: Story<BasicEditorProps> = args => (
   <BasicEditor {...args} code={reactCode} template="create-react-app" />
 );
-
+export const MultipleEditor: Story<BasicEditorProps> = args => (
+  <div>
+    <BasicEditor
+      {...args}
+      code={reactCode.replace('World', 'world 1')}
+      template="create-react-app"
+    />
+    <BasicEditor
+      {...args}
+      code={reactCode.replace('World', 'world 2')}
+      template="create-react-app"
+    />
+  </div>
+);
 export const VueEditor: Story<BasicEditorProps> = args => (
   <BasicEditor {...args} code={vueCode} template="vue-cli" />
 );
