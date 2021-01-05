@@ -81,7 +81,7 @@ export const TooltipStyles = createGlobalStyle(
   animation
 );
 interface TooltipProps {
-  label: string | React.Element | null;
+  label: string | React.ReactElement | null;
   children: React.ReactElement;
 }
 
