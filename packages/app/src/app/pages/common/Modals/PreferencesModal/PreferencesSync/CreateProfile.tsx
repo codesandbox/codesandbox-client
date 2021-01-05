@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  Element,
-  Button,
-  // Link,
-  Stack,
-} from '@codesandbox/components';
+import { Text, Element, Button, Link, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -55,12 +49,11 @@ export const CreateProfile = ({ importFile }) => {
         <Text variant="muted">
           Share your CodeSandbox and editor preferences across multiple devices.
           Save a snapshot of your current preferences as a profile, which you
-          can then apply to re-use them when you’re on another device.
-          {/* More info
+          can then apply to re-use them when you’re on another device. More info
           can be found in our{' '}
           <Link href="/docs/preferences" css={css({ color: 'blues.500' })}>
             docs
-          </Link> */}
+          </Link>
         </Text>
       </Element>
       <Stack gap={5}>
