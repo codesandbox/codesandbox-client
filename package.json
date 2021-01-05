@@ -121,7 +121,7 @@
     ]
   },
   "engines": {
-    "node": "^10.13.0"
+    "node": "^10.17.0"
   },
   "collective": {
     "type": "opencollective",
