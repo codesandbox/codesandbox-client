@@ -7,41 +7,41 @@ description:
 
 ## Preferences Profiles
 
-Preferences Profiles allow you to save a snapshot of your current preferences as
-a profile, which you can then apply to re-use them when you’re on another
+Preferences Profiles allow you to save a snapshot of your current CodeSandbox and editor 
+preferences as a profile, which you can then apply to re-use them when you’re on another
 device.
 
 ## How to create a new Preference Profile?
 
-To save a snapshot of your CodeSandbox preferences you can open your
-`Preferences` located in the menu available in the upper most top right of your
+To save a snapshot of your current preferences you can open 
+`Preferences` located in the menu at the top right of your
 screen.
 
-In there navigate to `Preferences Profiles` and you can now see a button saying
+From there navigate to `Preferences Profiles` and you will see a button saying
 `Create new profile`:
 
 ![Create a Profile](./images/preferences-create.png)
 
-By clicking it we will save your preferences on the cloud so that they can be
-retrieved later and applied in another computer.
+By clicking it we will save your preferences to the cloud so that they can be
+retrieved later and applied when on another computer.
 
-## Applying your preferences in another device
+## Applying your preferences on another device
 
 After creating your first profile you will get an updated interface that will
 have a list of your profiles.
 
-In here you can apply all your preferences using the `Apply` button on the menu:
+From here you can apply all your preferences using the `Apply` button on the menu:
 
 ![Apply Profile](./images/preferences-apply.png)
 
-This will reload the page and apply all the preferences and ask you to reload
-the page to see your new workspace.
+This will apply all the preferences and ask you to reload
+the page to see them in action.
 
 ## Can I download a profile to my computer?
 
-Yes, if you do now wish to use our uploading service you can create a new
-Profile and then download it immediately, this will give you a JSON file you can
-then import in another computer using the `Import existing profile` button.
+Yes, you can create a new Profile and download it, this will give 
+you a JSON file you can then import on another computer using the 
+`Import existing profile` button.
 
 ![Import a Profile](./images/preferences-import.png)
 
@@ -52,5 +52,5 @@ You can use this to have several CodeSandbox profiles.
 
 ## Can I have more than one Profile?
 
-Right now we only have the possibility to create on profile on the cloud but
+Right now we only support one profile on the cloud but
 this will change in the future.
