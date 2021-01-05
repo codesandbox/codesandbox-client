@@ -129,7 +129,7 @@ function eventListener(e: MessageEvent) {
     data &&
     data.codesandbox &&
     (parentOrigin === null || e.origin === parentOrigin) &&
-    (data.$id === null || parentId === data.$id)
+    (data.$id == null || parentId === data.$id)
   ) {
     notifyListeners(data, e.source);
   }
