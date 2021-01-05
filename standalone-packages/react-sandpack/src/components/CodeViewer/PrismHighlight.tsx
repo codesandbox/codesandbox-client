@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Prism from 'prismjs';
-import './prism.css';
+// import './prism.css';
 import { styled } from '../../stitches.config';
 
 export interface PrismHighlightProps {
