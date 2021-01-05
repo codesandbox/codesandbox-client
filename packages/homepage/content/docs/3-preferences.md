@@ -11,7 +11,7 @@ Preferences Profiles allow you to save a snapshot of your current CodeSandbox an
 preferences as a profile, which you can then apply to re-use them when you’re on another
 device.
 
-## How to create a new Preference Profile?
+## How to create a new Preference Profile
 
 To save a snapshot of your current preferences you can open 
 `Preferences` located in the menu at the top right of your
