@@ -1,9 +1,9 @@
 export default {
   install() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const win = window.open('https://chrome.google.com/webstore/detail/hdidglkcgdolpoijdckmafdnddjoglia','CodeSandbox Extension','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1100,height=300');
       const interval = setInterval(() => {
-        if (win.closed) {
+        if (win && win.closed) {
           clearInterval(interval)
           resolve()
         }

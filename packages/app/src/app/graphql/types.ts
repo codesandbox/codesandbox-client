@@ -220,7 +220,7 @@ export type Invitation = {
 
 export type MemberAuthorization = {
   authorization: TeamMemberAuthorization;
-  userId: Scalars['ID'];
+  userId: Scalars['UUID4'];
 };
 
 export type Notification = {
@@ -913,7 +913,7 @@ export type User = {
 export type UserAuthorization = {
   __typename?: 'UserAuthorization';
   authorization: TeamMemberAuthorization;
-  userId: Scalars['ID'];
+  userId: Scalars['UUID4'];
 };
 
 export type UserReference = {
@@ -1866,7 +1866,7 @@ export type _SetTeamNameMutation = { __typename?: 'RootMutationType' } & {
 
 export type ChangeTeamMemberAuthorizationMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
-  userId: Scalars['ID'];
+  userId: Scalars['UUID4'];
   authorization: TeamMemberAuthorization;
 }>;
 
@@ -2156,22 +2156,7 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
       'personalWorkspaceId'
     > & {
         workspaces: Array<
-          { __typename?: 'Team' } & Pick<Team, 'id' | 'name' | 'avatarUrl'> & {
-              userAuthorizations: Array<
-                { __typename?: 'UserAuthorization' } & Pick<
-                  UserAuthorization,
-                  'userId' | 'authorization'
-                >
-              >;
-              settings: Maybe<
-                { __typename?: 'WorkspaceSandboxSettings' } & Pick<
-                  WorkspaceSandboxSettings,
-                  | 'minimumPrivacy'
-                  | 'preventSandboxExport'
-                  | 'preventSandboxLeaving'
-                >
-              >;
-            }
+          { __typename?: 'Team' } & TeamFragmentDashboardFragment
         >;
       }
   >;

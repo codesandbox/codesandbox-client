@@ -11,7 +11,7 @@ export const SignInButton: FunctionComponent<Props> = props => {
   return (
     <Button
       {...props}
-      onClick={() => actions.signInClicked(props.redirectTo)}
+      onClick={() => actions.signInWithRedirectClicked(props.redirectTo)}
       autoWidth
     >
       <Stack align="center" gap={2}>
