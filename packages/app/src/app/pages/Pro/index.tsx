@@ -11,6 +11,7 @@ import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
+import { useLocation } from 'react-router-dom';
 
 import { SubscribeForm } from './subscribe-form';
 import {
@@ -53,6 +54,8 @@ const ProPage: React.FC = () => {
     patronMounted();
   }, [patronMounted]);
 
+  const location = useLocation();
+
   const getContent = () => {
     /**
      * Proceed with caution
@@ -63,7 +66,7 @@ const ProPage: React.FC = () => {
 
     if (!isLoggedIn) return <SignInModalElement />;
 
-    return <Upgrade />;
+    if (location.search.includes('upgrade')) return <Upgrade />;
 
     if (!user.subscription) {
       return (
