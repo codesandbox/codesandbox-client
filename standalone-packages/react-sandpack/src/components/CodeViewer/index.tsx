@@ -1,10 +1,12 @@
 import React from 'react';
+import { Language } from 'prism-react-renderer';
+
 import { useSandpack } from '../../utils/sandpack-context';
 import { PrismHighlight } from './PrismHighlight';
 
 export interface CodeViewerProps {
   style?: React.CSSProperties;
-  lang?: 'javascript' | 'html';
+  lang?: Language;
 }
 
 export const CodeViewer = (props: CodeViewerProps) => {
@@ -12,5 +14,5 @@ export const CodeViewer = (props: CodeViewerProps) => {
   const { activePath } = sandpack;
   const code = sandpack.files[activePath].code;
 
-  return <PrismHighlight {...props}>{code}</PrismHighlight>;
+  return <PrismHighlight {...props} code={code} />;
 };

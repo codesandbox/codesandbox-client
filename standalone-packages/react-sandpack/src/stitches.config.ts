@@ -27,7 +27,7 @@ export const { styled, css } = createStyled({
     },
     fonts: {
       $body: 'Helvetica, sans-serif',
-      $editor: 'Menlo, Source Code Pro, monospace',
+      $mono: 'Menlo, Source Code Pro, monospace',
     },
     radii: {
       $default: '4px',

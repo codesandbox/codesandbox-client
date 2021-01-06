@@ -56,7 +56,7 @@ export const VueCode = () => (
     dependencies={vueTemplate.dependencies}
   >
     <SandpackWrapper>
-      <CodeViewer lang="html" />
+      <CodeViewer lang="markup" />
     </SandpackWrapper>
   </SandpackProvider>
 );
