@@ -26,7 +26,7 @@ export const TranspiledCodeView: React.FC = () => {
 
   return (
     <Wrapper>
-      {transpiledCode && <PrismHighlight>{transpiledCode}</PrismHighlight>}
+      {transpiledCode && <PrismHighlight code={transpiledCode} />}
       {sandpack.errors.length > 0 && (
         <ErrorMessage>{sandpack.errors[0].message}</ErrorMessage>
       )}
