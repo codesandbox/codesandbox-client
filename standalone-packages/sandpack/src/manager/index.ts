@@ -76,10 +76,11 @@ export interface ISandboxInfo {
   disableDependencyPreprocessing?: boolean;
 }
 
-console.log(process.env.CODESANDBOX_ENV);
-const BUNDLER_URL = true
-  ? 'http://localhost:3000'
-  : `https://sandpack-${version.replace(/\./g, '-')}.codesandbox.io`;
+const BUNDLER_URL =
+  // process.env.CODESANDBOX_ENV === 'development'
+  true
+    ? 'http://localhost:3000'
+    : `https://sandpack-${version.replace(/\./g, '-')}.codesandbox.io`;
 
 export default class PreviewManager {
   selector: string | undefined;
