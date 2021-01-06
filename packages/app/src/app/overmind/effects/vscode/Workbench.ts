@@ -202,12 +202,12 @@ export class Workbench {
     });
 
     if (
-      this.controller.getState().editor?.currentSandbox?.teamId ===
-        this.controller.getState().activeTeam &&
-      this.controller.getState().activeWorkspaceAuthorization === 'READ'
+      !(
+        this.controller.getState().editor?.currentSandbox?.teamId ===
+          this.controller.getState().activeTeam &&
+        this.controller.getState().activeWorkspaceAuthorization === 'READ'
+      )
     ) {
-      // don't add the option to fork
-    } else {
       this.appendMenuItem(MenuId.MenubarFileMenu, {
         // Z to be the last item after vscode group 4
         group: '4_zsandbox',
