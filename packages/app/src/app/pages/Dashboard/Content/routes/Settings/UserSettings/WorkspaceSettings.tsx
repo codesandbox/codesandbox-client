@@ -69,6 +69,21 @@ export const WorkspaceSettings = () => {
                   Account managed by GitHub
                 </Link>
               )}
+              <Button
+                variant="link"
+                css={css({
+                  width: 'fit-content',
+                  height: 'auto',
+                  fontSize: 3,
+                  color: 'button.background',
+                  padding: 0,
+                })}
+                onClick={() => {
+                  actions.dashboard.requestAccountClosing();
+                }}
+              >
+                Request Account Deletion
+              </Button>
             </Stack>
           </Stack>
         </Stack>

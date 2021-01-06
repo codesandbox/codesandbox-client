@@ -1,4 +1,4 @@
-import { compareDesc, parseISO } from 'date-fns';
+import { compareDesc, format, parseISO } from 'date-fns';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
@@ -1614,4 +1614,39 @@ export const setDefaultTeamMemberAuthorization: AsyncAction<{
       'There was a problem updating default member permissions'
     );
   }
+};
+
+export const requestAccountClosing: Action = ({ state }) => {
+  state.currentModal = 'accountClosing';
+};
+
+export const deleteAccount: AsyncAction = async ({ state, effects }) => {
+  const Airtable = await import(
+    /* webpackChunkName: 'airtable' */ '../../utils/setAirtable'
+  );
+
+  const base = Airtable.default.base('app2gXNW9K8G72HlD');
+  await new Promise((resolve, reject) => {
+    base('accounts').create(
+      {
+        username: state.user.username,
+        email: state.user.email,
+        date: format(new Date(), 'MMMM d, yyyy'),
+        deleted: false,
+      },
+      err => {
+        if (err) {
+          console.error(err);
+          effects.notificationToast.error(
+            'There was a problem requesting your account deletion. Please email us at hello@codesandbox.io'
+          );
+          reject();
+        }
+
+        resolve();
+      }
+    );
+  });
+
+  state.currentModal = 'deleteConfirmation';
 };
