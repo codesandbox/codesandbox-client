@@ -10,25 +10,31 @@ export interface FileTabsProps {
 
 const Container = styled('div', {
   backgroundColor: '$neutral900',
+  padding: '0 $4',
   borderBottom: '1px solid $neutral800',
+  height: 40,
 });
 
 const TabButton = styled('button', {
   background: 'transparent',
   appearance: 'none',
   fontSize: 'inherit',
-  padding: '$1',
-  marginLeft: '$1',
+  height: 40,
+  padding: '0 $2',
+  color: '$neutral500',
+
   border: 0,
   borderBottom: '1px solid transparent',
-
-  '&[data-active="false"]:hover': {
-    borderBottom: '1px solid $neutral700',
-  },
+  transition: 'border 0.15s ease-out',
 
   '&[data-active="true"]': {
-    borderBottom: '1px solid $accent500',
+    color: '$neutral100',
+    // borderBottom: '1px solid $accent500',
   },
+
+  // '&:hover': {
+  //   color: '$neutral100',
+  // },
 });
 
 export const FileTabs: React.FC<FileTabsProps> = props => {

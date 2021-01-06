@@ -12,7 +12,7 @@ export interface PreviewProps {
 const Wrapper = styled('div', {
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: '$neutral1000',
+  backgroundColor: 'white',
 });
 
 const PreviewFrame = styled('div', {

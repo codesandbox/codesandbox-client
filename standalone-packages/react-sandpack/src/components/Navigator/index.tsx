@@ -8,36 +8,39 @@ import { splitUrl } from './utils';
 const NavigatorContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
-  backgroundColor: '$neutral800',
+  backgroundColor: '$neutral900',
+  height: 40,
+  borderBottom: '1px solid $neutral800',
   padding: '$2 $4',
 
-  '& > *:not(:first-child)': {
+  '& > *:nth-child(n+3)': {
     marginLeft: '$2',
   },
 });
 
 const NavigatorInput = styled('input', {
   backgroundColor: '$neutral1000',
+  color: '$neutral100',
   padding: '$1 $2',
   borderRadius: '$default',
-  border: '1px solid $neutral700',
+  border: 0,
   flex: 1,
   height: '24px',
-  fontSize: 'inherit',
+  fontSize: '$2',
 });
 
 const NavigatorButton = styled('button', {
-  transition: '0.3s ease background-color',
-  backgroundColor: 'transparent',
   padding: 0,
   border: '0',
   display: 'flex',
   alignItems: 'center',
-  color: '$neutral400',
+  color: '$neutral100',
+  background: 'transparent',
+  transition: 'all 0.15s ease-out',
 
   ':disabled': { color: '$neutral500' },
 
-  ':hover:not(:disabled)': { backgroundColor: '$neutral700' },
+  ':hover': { color: '$neutral500' },
 });
 
 type UrlChangeMessage = {
@@ -119,14 +122,14 @@ export const Navigator = () => {
       <NavigatorButton onClick={handleForward} disabled={!forwardEnabled}>
         <ForwardIcon />
       </NavigatorButton>
-      <NavigatorButton onClick={handleRefresh}>
-        <RefreshIcon />
-      </NavigatorButton>
       <NavigatorInput
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         value={relativeUrl}
       />
+      <NavigatorButton onClick={handleRefresh}>
+        <RefreshIcon />
+      </NavigatorButton>
     </NavigatorContainer>
   );
 };

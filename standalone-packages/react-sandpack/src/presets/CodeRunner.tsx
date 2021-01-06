@@ -18,6 +18,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   template = 'create-react-app',
   customSetup,
   showNavigator = false,
+  showLineNumbers = false,
 }) => {
   const projectSetup = getSetup(template, customSetup);
 
@@ -41,10 +42,13 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       openPaths={[projectSetup.main]}
       showOpenInCodeSandbox={false}
     >
-      <SandpackWrapper
-        style={{ display: 'flex', width: '100%', height: '100%' }}
-      >
-        {showCode && <CodeViewer style={{ width: '50%' }} />}
+      <SandpackWrapper>
+        {showCode && (
+          <CodeViewer
+            style={{ width: '50%' }}
+            showLineNumbers={showLineNumbers}
+          />
+        )}
 
         <Preview style={{ flex: 1 }} showNavigator={showNavigator} />
       </SandpackWrapper>

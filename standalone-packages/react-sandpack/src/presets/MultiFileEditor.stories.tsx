@@ -9,12 +9,14 @@ export default {
 
 const reactCode = `import React from 'react';
 import Button from './button';
+import Link from './link';
 
 export default function App() {
   return (
     <div>
       <h1>Hello World</h1>
       <Button />
+      <Link />
     </div>
   )
 }
@@ -27,12 +29,19 @@ export default function Button() {
 }
 `;
 
+const linkCode = `import React from 'react';
+
+export default function Link() {
+  return <a href="https://www.example.com" target="_blank">Click Here</a>
+}`;
+
 export const ReactEditor: Story<MultiFileEditorProps> = args => (
   <MultiFileEditor
     {...args}
     editableFiles={{
       '/App.js': { code: reactCode },
       '/button.js': { code: buttonCode },
+      '/link.js': { code: linkCode },
     }}
     template="create-react-app"
   />

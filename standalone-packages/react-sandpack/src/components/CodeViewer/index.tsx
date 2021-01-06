@@ -7,6 +7,7 @@ import { PrismHighlight } from './PrismHighlight';
 export interface CodeViewerProps {
   style?: React.CSSProperties;
   lang?: Language;
+  showLineNumbers?: boolean;
 }
 
 export const CodeViewer = (props: CodeViewerProps) => {

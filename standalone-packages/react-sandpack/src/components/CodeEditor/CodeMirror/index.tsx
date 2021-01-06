@@ -50,15 +50,32 @@ export interface CodeMirrorProps {
   onCodeUpdate: (newCode: string) => void;
   lang?: 'js' | 'html';
   commitOnSave?: boolean;
+  showLineNumbers?: boolean;
 }
 
 const Container = styled('div', {
-  paddingTop: '$1',
-  paddingBottom: '$1',
+  padding: '$4 $2',
   fontSize: '$2',
+
+  '.cm-content': {
+    padding: 0,
+  },
 
   '.cm-focused': {
     outline: 'none',
+  },
+
+  '.cm-scroller': {
+    fontFamily: '$mono',
+  },
+
+  '.cm-gutter-lineNumber': {
+    paddingRight: '$2',
+    color: '$neutral500',
+  },
+
+  '.cm-gutterElement.cm-gutterElement-lineNumber': {
+    padding: 0,
   },
 });
 
@@ -69,6 +86,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
   onCodeUpdate,
   lang = 'js',
   commitOnSave = false,
+  showLineNumbers = false,
 }) => {
   const wrapper = useRef<HTMLDivElement>(null);
   const cmView = useRef<EditorView>();
@@ -94,37 +112,43 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       customCommandsKeymap.push({ key: 'Mod-s', run: updateCode });
     }
 
+    const extensions = [
+      highlightSpecialChars(),
+      history(),
+      drawSelection(),
+      EditorState.allowMultipleSelections.of(true),
+      indentOnInput(),
+      defaultHighlighter,
+      bracketMatching(),
+      closeBrackets(),
+      autocompletion(),
+      rectangularSelection(),
+      highlightActiveLine(),
+      highlightSelectionMatches(),
+
+      keymap([
+        ...closeBracketsKeymap,
+        ...defaultKeymap,
+        ...searchKeymap,
+        ...historyKeymap,
+        ...foldKeymap,
+        ...commentKeymap,
+        ...gotoLineKeymap,
+        ...completionKeymap,
+        ...lintKeymap,
+        ...customCommandsKeymap,
+      ]),
+      lang === 'js' ? javascript({ jsx: true }) : html(),
+      reactDocs,
+    ];
+
+    if (showLineNumbers) {
+      extensions.push(lineNumbers());
+    }
+
     const startState = EditorState.create({
       doc: code,
-      extensions: [
-        highlightSpecialChars(),
-        history(),
-        drawSelection(),
-        EditorState.allowMultipleSelections.of(true),
-        indentOnInput(),
-        defaultHighlighter,
-        bracketMatching(),
-        closeBrackets(),
-        autocompletion(),
-        rectangularSelection(),
-        highlightActiveLine(),
-        highlightSelectionMatches(),
-        lineNumbers(),
-        keymap([
-          ...closeBracketsKeymap,
-          ...defaultKeymap,
-          ...searchKeymap,
-          ...historyKeymap,
-          ...foldKeymap,
-          ...commentKeymap,
-          ...gotoLineKeymap,
-          ...completionKeymap,
-          ...lintKeymap,
-          ...customCommandsKeymap,
-        ]),
-        lang === 'js' ? javascript({ jsx: true }) : html(),
-        reactDocs,
-      ],
+      extensions,
     });
 
     const view = new EditorView({
@@ -148,7 +172,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     return () => {
       view.destroy();
     };
-  }, [lang, commitOnSave]);
+  }, [lang, commitOnSave, showLineNumbers]);
 
   useEffect(() => {
     const view = cmView.current;

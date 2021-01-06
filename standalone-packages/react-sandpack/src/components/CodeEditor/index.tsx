@@ -9,10 +9,12 @@ export interface CodeEditorProps {
   commitOnSave?: boolean;
   lang?: 'js' | 'html';
   showTabs?: boolean;
+  showLineNumbers?: boolean;
 }
 
 const CodeEditorWrapper = styled('div', {
   backgroundColor: '$neutral900',
+  borderRight: '1px solid $neutral800',
   textAlign: 'left',
 });
 
@@ -21,6 +23,7 @@ export const CodeEditor = ({
   commitOnSave = false,
   lang,
   showTabs = false,
+  showLineNumbers = false,
 }: CodeEditorProps) => {
   const { sandpack } = useSandpack();
   const { activePath } = sandpack;
@@ -41,6 +44,7 @@ export const CodeEditor = ({
         lang={lang}
         onCodeUpdate={handleCodeUpdate}
         commitOnSave={commitOnSave}
+        showLineNumbers={showLineNumbers}
       />
     </CodeEditorWrapper>
   );

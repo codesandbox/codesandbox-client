@@ -4,4 +4,6 @@ export interface PresetProps {
   template?: SandboxEnvironment;
   customSetup?: Partial<SandboxTemplate>;
   showNavigator?: boolean;
+  showLineNumbers?: boolean;
+  theme?: 'light' | 'dark';
 }

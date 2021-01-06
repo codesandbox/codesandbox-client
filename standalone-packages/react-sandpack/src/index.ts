@@ -9,4 +9,6 @@ export * from './components/OpenInCodeSandboxButton';
 export * from './components/Preview';
 export * from './components/TranspiledCodeView';
 
+export * from './elements';
+
 export * from './utils/sandpack-context';

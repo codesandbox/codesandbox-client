@@ -9,7 +9,7 @@ export const ErrorMessage = styled('pre', {
   overflow: 'auto',
   height: '100%',
 
-  fontFamily: 'Menlo, Source Code Pro, monospace',
+  fontFamily: '$mono',
   backgroundColor: 'rgba(186, 53, 55, 0.7)',
   color: 'white',
 
@@ -19,6 +19,9 @@ export const ErrorMessage = styled('pre', {
 
 export const SandpackWrapper = styled('div', {
   border: '1px solid $neutral800',
+  display: 'flex',
+  width: '100%',
+  height: '100%',
   borderRadius: '$default',
   fontSize: '$1',
   fontFamily: '$body',

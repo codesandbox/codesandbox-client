@@ -16,6 +16,7 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   template = 'create-react-app',
   customSetup,
   showNavigator = false,
+  showLineNumbers = false,
 }) => {
   const projectSetup = getSetup(template, customSetup);
 
@@ -36,8 +37,9 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
       openPaths={[projectSetup.main]}
       showOpenInCodeSandbox={false}
     >
-      <SandpackWrapper style={{ display: 'flex', width: '100%' }}>
+      <SandpackWrapper>
         <CodeEditor
+          showLineNumbers={showLineNumbers}
           style={{
             width: '50%',
           }}

@@ -16,6 +16,7 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
   template = 'create-react-app',
   customSetup,
   showNavigator = false,
+  showLineNumbers = false,
 }) => {
   const projectSetup = getSetup(template, customSetup);
 
@@ -32,8 +33,12 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
       openPaths={Object.keys(editableFiles)}
       activePath={projectSetup.main}
     >
-      <SandpackWrapper style={{ display: 'flex', width: '100%' }}>
-        <CodeEditor showTabs style={{ width: '50%' }} />
+      <SandpackWrapper>
+        <CodeEditor
+          showTabs
+          showLineNumbers={showLineNumbers}
+          style={{ width: '50%' }}
+        />
         <Preview showNavigator={showNavigator} style={{ width: '50%' }} />
       </SandpackWrapper>
     </SandpackProvider>

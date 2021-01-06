@@ -27,7 +27,7 @@ export const CustomEditor = () => (
     openPaths={['/index.js']}
     entry="/index.js"
   >
-    <SandpackWrapper style={{ display: 'flex' }}>
+    <SandpackWrapper>
       <FileExplorer style={{ width: 300 }} />
       <div style={{ flex: 1 }}>
         <CodeEditor

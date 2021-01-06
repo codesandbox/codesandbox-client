@@ -13,6 +13,7 @@ const Container = styled('div', {
   backgroundColor: '$neutral900',
   paddingTop: '$1',
   paddingBottom: '$1',
+  borderRight: '1px solid $neutral800',
 });
 
 export const FileExplorer: React.FC<FileExplorerProps> = props => {
