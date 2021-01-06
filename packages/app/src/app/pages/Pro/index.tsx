@@ -1,11 +1,13 @@
 import { format } from 'date-fns';
 import { Helmet } from 'react-helmet';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import { ThemeProvider, Switch } from '@codesandbox/components';
+import { ThemeProvider, Switch, Stack, Text } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
@@ -47,7 +49,7 @@ const ProPage: React.FC = () => {
   // silly hack to allow cached versions to keep working
   priceChanged({ price: 12 });
 
-  useEffect(() => {
+  React.useEffect(() => {
     patronMounted();
   }, [patronMounted]);
 
@@ -60,6 +62,8 @@ const ProPage: React.FC = () => {
     if (!hasLoadedApp) return null;
 
     if (!isLoggedIn) return <SignInModalElement />;
+
+    return <Upgrade />;
 
     if (!user.subscription) {
       return (
@@ -267,5 +271,134 @@ const Expiring = ({
     </Centered>
   </MaxWidth>
 );
+
+const Upgrade = () => {
+  const {
+    state: { personalWorkspaceId, user, activeTeam, activeTeamInfo, dashboard },
+    actions,
+  } = useOvermind();
+
+  const [activeAccount, setActiveAccount] = React.useState<{
+    id: string;
+    name: string;
+    avatarUrl: string;
+  } | null>(null);
+
+  React.useEffect(() => {
+    if (activeTeam) {
+      const team = dashboard.teams.find(({ id }) => id === activeTeam);
+
+      if (team)
+        setActiveAccount({
+          id: team.id,
+          name: team.name,
+          avatarUrl: team.avatarUrl,
+        });
+    }
+  }, [activeTeam, activeTeamInfo, dashboard.teams]);
+
+  if (!activeAccount) return null;
+
+  const isPersonalWorkspace = personalWorkspaceId === activeTeam;
+  const numberOfEditors = activeTeamInfo.userAuthorizations.filter(member =>
+    ['ADMIN', 'WRITE'].includes(member.authorization)
+  ).length;
+  const numberOfViewers = activeTeamInfo.userAuthorizations.filter(member =>
+    ['READ'].includes(member.authorization)
+  ).length;
+
+  const isPersonalPro = isPersonalWorkspace || user.subscription;
+  const isTeamPro = activeTeamInfo.joinedPilotAt;
+
+  let currentPlanName: string;
+  if (isTeamPro) currentPlanName = 'Team Pro';
+  else if (isPersonalPro) currentPlanName = 'Personal Pro';
+  else currentPlanName = 'Community workspace (Free)';
+
+  return (
+    <Stack justify="center" align="center" css={css({ fontSize: 3 })}>
+      <div css={{ width: 300 }}>
+        <Text
+          as="h1"
+          size={8}
+          block
+          align="center"
+          weight="bold"
+          marginBottom={6}
+        >
+          Upgrade to <br />
+          Pro workspace
+        </Text>
+
+        <Stack direction="vertical" gap={6} marginBottom={10}>
+          <Stack direction="vertical" gap={1}>
+            <Text>Workspace</Text>
+            <Stack
+              css={css({
+                button: {
+                  border: '1px solid',
+                  borderColor: 'grays.500',
+                  borderRadius: 'small',
+                  paddingY: 1,
+                  img: { size: 6 },
+                  span: { fontSize: 3, maxWidth: 'calc(100% - 16px)' },
+                },
+              })}
+            >
+              <WorkspaceSelect
+                onSelect={workspace => {
+                  actions.setActiveTeam({
+                    id: workspace.id,
+                  });
+                }}
+                activeAccount={activeAccount}
+              />
+            </Stack>
+          </Stack>
+
+          <Stack
+            direction="vertical"
+            gap={1}
+            css={css({
+              paddingX: 4,
+              paddingY: 2,
+              border: '1px solid',
+              borderColor: 'grays.500',
+              borderRadius: 'small',
+            })}
+          >
+            <Text weight="semibold">Current plan</Text>
+            <Text>{currentPlanName}</Text>
+          </Stack>
+
+          {isPersonalWorkspace ? null : (
+            <Stack
+              direction="vertical"
+              gap={1}
+              css={css({
+                paddingX: 4,
+                paddingY: 2,
+                border: '1px solid',
+                borderColor: 'grays.500',
+                borderRadius: 'small',
+              })}
+            >
+              <Text weight="semibold">
+                {numberOfEditors} {numberOfEditors === 1 ? 'Editor' : 'Editors'}{' '}
+                on your team
+              </Text>
+              <Text variant="muted">
+                ({numberOfViewers}{' '}
+                {numberOfViewers === 1 ? 'viewer' : 'viewers'} on your team)
+              </Text>
+            </Stack>
+          )}
+        </Stack>
+
+        <Button>Upgrade to Pro Workspace</Button>
+      </div>
+    </Stack>
+  );
+};
 
 export default ProPage;
