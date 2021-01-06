@@ -1,5 +1,5 @@
 import React from 'react';
-import { ISandpackContext } from '../types';
+import { ISandpackState } from '../types';
 import { styled } from '../stitches.config';
 import { ErrorMessage } from '../elements';
 import { useSandpack } from '../utils/sandpack-context';
@@ -10,7 +10,7 @@ const Wrapper = styled('div', {
   height: '100%',
 });
 
-function getTranspiledCode(sandpack: ISandpackContext) {
+function getTranspiledCode(sandpack: ISandpackState) {
   const { activePath, managerState } = sandpack;
   if (managerState == null) {
     return null;

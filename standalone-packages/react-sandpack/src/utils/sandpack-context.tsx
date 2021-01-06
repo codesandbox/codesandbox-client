@@ -5,7 +5,6 @@ import React, {
   PureComponent,
 } from 'react';
 import { Manager, generatePackageJSON } from 'smooshpack';
-import { listen } from 'codesandbox-api';
 
 import {
   IFiles,
@@ -14,6 +13,8 @@ import {
   IModuleError,
   IFile,
   SandboxEnvironment,
+  SandpackListener,
+  ISandpackState,
 } from '../types';
 
 const SandpackContext = createContext<ISandpackContext | null>(null);
@@ -49,7 +50,7 @@ class SandpackProvider extends PureComponent<Props, State> {
 
   manager?: Manager;
   iframeRef: React.RefObject<HTMLIFrameElement>;
-  unsubscribe: Function;
+  unsubscribe?: Function;
 
   constructor(props: Props) {
     super(props);
@@ -63,11 +64,12 @@ class SandpackProvider extends PureComponent<Props, State> {
     };
 
     this.iframeRef = createRef<HTMLIFrameElement>();
-    this.unsubscribe = listen(this.handleMessage);
   }
 
   handleMessage = (m: any) => {
-    if (m.type === 'state') {
+    if (m.type === 'compile') {
+      this.forceUpdate();
+    } else if (m.type === 'state') {
       this.setState({ managerState: m.state });
     } else if (m.type === 'start') {
       this.setState({ errors: [] });
@@ -126,6 +128,8 @@ class SandpackProvider extends PureComponent<Props, State> {
       },
       this.getOptions()
     );
+
+    this.unsubscribe = this.manager.listen(this.handleMessage);
   }
 
   componentDidUpdate(props: Props) {
@@ -150,7 +154,9 @@ class SandpackProvider extends PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    if (typeof this.unsubscribe === 'function') {
+      this.unsubscribe();
+    }
   }
 
   changeActiveFile = (path: string) => {
@@ -170,7 +176,21 @@ class SandpackProvider extends PureComponent<Props, State> {
     });
   };
 
-  dispatchMessage = (message: any) => this.manager?.dispatch(message);
+  dispatchMessage = (message: any) => {
+    if (!this.manager) {
+      throw new Error('dispatch was called before sandpack initialized');
+    }
+
+    return this.manager.dispatch(message);
+  };
+
+  addListener = (listener: SandpackListener) => {
+    if (!this.manager) {
+      throw new Error('listen was called before sandpack initialized');
+    }
+
+    return this.manager.listen(listener);
+  };
 
   _getSandpackState = (): ISandpackContext => {
     const { files, activePath, openPaths, managerState, errors } = this.state;
@@ -187,6 +207,7 @@ class SandpackProvider extends PureComponent<Props, State> {
       updateFiles: this.updateFiles,
       updateCurrentFile: this.updateCurrentFile,
       dispatch: this.dispatchMessage,
+      listen: this.addListener,
     };
   };
 
@@ -235,15 +256,11 @@ function useSandpack() {
     );
   }
 
-  const { dispatch, ...rest } = sandpack;
+  const { dispatch, listen, ...rest } = sandpack;
 
   return {
-    sandpack: { ...rest },
-    dispatch:
-      dispatch ??
-      (() => {
-        throw new Error('dispatch was called before sandpack could initialize');
-      }),
+    sandpack: { ...rest } as ISandpackState,
+    dispatch,
     listen,
   };
 }

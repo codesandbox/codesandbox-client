@@ -56,7 +56,7 @@ export const Navigator = () => {
   const { sandpack, dispatch, listen } = useSandpack();
 
   useEffect(() => {
-    const unsubscribe = listen((message: any) => {
+    const unsub = listen((message: any) => {
       if (message.type === 'urlchange') {
         const { url, back, forward } = message as UrlChangeMessage;
 
@@ -69,7 +69,7 @@ export const Navigator = () => {
       }
     });
 
-    return unsubscribe;
+    return () => unsub();
   }, []);
 
   const commitUrl = () => {

@@ -53,7 +53,12 @@ export interface IManagerState {
   };
 }
 
-export interface ISandpackContext {
+export type ISandpackContext = ISandpackState & {
+  dispatch: (message: any) => void;
+  listen: (listener: SandpackListener) => Function;
+};
+
+export interface ISandpackState {
   browserFrame: HTMLIFrameElement | null;
   managerState: IManagerState | undefined;
   openPaths: string[];
@@ -64,8 +69,9 @@ export interface ISandpackContext {
   openFile: (path: string) => void;
   changeActiveFile: (path: string) => void;
   updateFiles: (files: IFiles) => void;
-  dispatch?: (message: any) => void;
 }
+
+export type SandpackListener = (msg: any) => void;
 
 export type SandboxTemplate = {
   files: IFiles;

@@ -34,7 +34,7 @@ export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
       }
     });
 
-    return unsub;
+    return () => unsub();
   }, []);
 
   useEffect(() => {
