@@ -5390,7 +5390,7 @@ dotenv@^6.2.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
   integrity sha512-HygQCKUBSFl8wKQZBSemMywRWcEDNidvNbjGVyZu3nbZ8qq9ubiPoGLMdRDpfSrpkkm9BXYFkpKxxFX38o/76w==
 
-dotenv@^8.0.0:
+dotenv@^8.0.0, dotenv@^8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
@@ -11978,10 +11978,10 @@ slide@^1.1.3:
   resolved "https://registry.yarnpkg.com/slide/-/slide-1.1.6.tgz#56eb027d65b4d2dce6cb2e2d32c4d4afc9e1d707"
   integrity sha1-VusCfWW00tzmyy4tMsTUr8nh1wc=
 
-smooshpack@^1.0.0-alpha-3:
-  version "1.0.0-alpha-3"
-  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-1.0.0-alpha-3.tgz#4a29454fea0a4aa62c04cc1a2179abe0c80d6882"
-  integrity sha512-utAlQwnilekji5Iq51UhZDh/tgpFMHFc8UCSmTK+l7TYkN55sNOeJ3gJ4BQVCqnkeKR4V1N3HVfBiB3vQDMyEw==
+smooshpack@^1.0.0-alpha-5:
+  version "1.0.0-alpha-5"
+  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-1.0.0-alpha-5.tgz#f4f44a1bf341bcb1e93a9df21de92500a876117a"
+  integrity sha512-B7uj/IyZf1pMxjElrvwHdqE7iC8r9r/UMNtEqYW+YJMkvcLzQXbj1mE1wVosWTDGVPExK3JFbaiWhgS54YHIpw==
   dependencies:
     codesandbox-api "0.0.26"
     codesandbox-import-utils "^1.2.3"

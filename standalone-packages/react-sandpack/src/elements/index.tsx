@@ -21,6 +21,7 @@ export const SandpackWrapper = styled('div', {
   display: 'flex',
   flexWrap: 'wrap',
   alignItems: 'stretch',
+  width: '100%',
   maxWidth: 1000,
   minHeight: 350,
   maxHeight: 700,
