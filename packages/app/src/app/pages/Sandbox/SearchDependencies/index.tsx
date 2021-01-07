@@ -124,7 +124,8 @@ export const SearchDependencies = ({ onConfirm }) => {
 
   useEffect(() => {
     actions.workspace.clearSelectedDependencies();
-    actions.workspace.getDependencies();
+    // Why did we call this? The action just returns when undefined
+    // actions.workspace.getDependencies();
 
     return () => {
       actions.workspace.changeDependencySearch('');

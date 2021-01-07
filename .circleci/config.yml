@@ -126,11 +126,11 @@ aliases:
 executors:
   node:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:10.22.1
     working_directory: ~/codesandbox-client
   node-xlarge:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:10.22.1
     resource_class: xlarge
     working_directory: ~/codesandbox-client
   node-with-puppeteer:
