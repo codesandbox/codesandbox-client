@@ -11,6 +11,10 @@ const addButton = () => {
   // Get the toolbar
   const toolbar = document.querySelector('.file-navigation');
 
+  if (!toolbar) {
+    return
+  }
+
   // Get everything after https://github.com/
   const URL = window.location.pathname;
 
@@ -30,3 +34,49 @@ const addButton = () => {
   toolbar.querySelector('get-repo').parentElement.before(button);
 };
 addButton();
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  console.log(request)
+  if (request.type === "screenshot") {
+    screenshot();
+  } else if (request.type === "screenshot-taken") {
+    window.postMessage({
+      type: 'extension-screenshot-taken',
+      url: request.url
+    })
+  }
+
+  sendResponse({});
+});
+
+function send(request) {
+  chrome.runtime.sendMessage(request, function (response) { });
+}
+
+function screenshot() {
+  const preview = document.querySelector('#sandbox-preview')
+  const bounds = preview.getBoundingClientRect()
+
+  send({
+    type: "screenshot",
+    bounds: {
+      left: bounds.left * window.devicePixelRatio,
+      top: bounds.top * window.devicePixelRatio,
+      width: bounds.width * window.devicePixelRatio,
+      height: bounds.height * window.devicePixelRatio
+    }
+  })
+}
+
+window.addEventListener('message', (event) => {
+  if (event.source !== window)
+    return
+
+  if (event.data.type === 'extension-ping') {
+    window.postMessage({
+      type: 'extension-pong'
+    })
+  } else if (event.data.type === 'extension-screenshot') {
+    screenshot()
+  }
+})

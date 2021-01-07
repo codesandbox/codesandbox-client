@@ -32,6 +32,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
+import { isPrivateScope } from 'app/utils/private-registry';
 import { debounce } from 'lodash-es';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
@@ -114,13 +115,68 @@ export const addNpmDependency: AsyncAction<{
   isDev?: boolean;
 }> = withOwnedSandbox(
   async ({ actions, effects, state }, { name, version, isDev }) => {
-    effects.analytics.track('Add NPM Dependency');
+    const currentSandbox = state.editor.currentSandbox;
+    const isPrivatePackage =
+      currentSandbox && isPrivateScope(currentSandbox, name);
+
+    effects.analytics.track('Add NPM Dependency', {
+      private: isPrivatePackage,
+    });
     state.currentModal = null;
     let newVersion = version || 'latest';
 
     if (!isAbsoluteVersion(newVersion)) {
-      const dependency = await effects.api.getDependency(name, newVersion);
-      newVersion = dependency.version;
+      if (isPrivatePackage && currentSandbox) {
+        try {
+          const manifest = await effects.api.getDependencyManifest(
+            currentSandbox.id,
+            name
+          );
+          const absoluteVersion = manifest['dist-tags'][newVersion];
+
+          if (absoluteVersion) {
+            newVersion = absoluteVersion;
+          }
+        } catch (e) {
+          if (currentSandbox.privacy !== 2) {
+            effects.notificationToast.add({
+              status: NotificationStatus.ERROR,
+              title: 'There was a problem adding the private package',
+              message:
+                'Private packages can only be added to private sandboxes',
+              actions: {
+                primary: {
+                  label: 'Make Sandbox Private',
+                  run: async () => {
+                    await actions.workspace.sandboxPrivacyChanged({
+                      privacy: 2,
+                      source: 'Private Package Notification',
+                    });
+                    actions.editor.addNpmDependency({ name, version });
+                  },
+                },
+                secondary: {
+                  label: 'Learn More',
+                  run: () => {
+                    effects.browser.openWindow(
+                      'https://codesandbox.io/docs/custom-npm-registry'
+                    );
+                  },
+                },
+              },
+            });
+          } else {
+            actions.internal.handleError({
+              error: e,
+              message: 'There was a problem adding the private package',
+            });
+          }
+          return;
+        }
+      } else {
+        const dependency = await effects.api.getDependency(name, newVersion);
+        newVersion = dependency.version;
+      }
     }
 
     await actions.editor.internal.addNpmDependencyToPackageJson({
@@ -580,6 +636,14 @@ export const createZipClicked: Action = ({ state, effects }) => {
   if (!state.editor.currentSandbox) {
     return;
   }
+
+  if (state.editor.currentSandbox.permissions.preventSandboxExport) {
+    effects.notificationToast.error(
+      'You do not permission to export this sandbox'
+    );
+    return;
+  }
+
   effects.zip.download(state.editor.currentSandbox);
 };
 
@@ -1577,5 +1641,60 @@ export const changeInvitationAuthorization: AsyncAction<{
     if (existingInvitation && oldAuthorization) {
       existingInvitation.authorization = oldAuthorization;
     }
+  }
+};
+
+export const setPreventSandboxLeaving: AsyncAction<boolean> = async (
+  { effects, state },
+  preventSandboxLeaving
+) => {
+  if (!state.editor.currentSandbox) return;
+
+  // optimistic update
+  const oldValue =
+    state.editor.currentSandbox.permissions.preventSandboxLeaving;
+  state.editor.currentSandbox.permissions.preventSandboxLeaving = preventSandboxLeaving;
+
+  effects.analytics.track(`Editor - Change sandbox permissions`, {
+    preventSandboxLeaving,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesLeavingWorkspace({
+      sandboxIds: [state.editor.currentSandbox.id],
+      preventSandboxLeaving,
+    });
+  } catch (error) {
+    state.editor.currentSandbox.permissions.preventSandboxLeaving = oldValue;
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
+  }
+};
+
+export const setPreventSandboxExport: AsyncAction<boolean> = async (
+  { effects, state },
+  preventSandboxExport
+) => {
+  if (!state.editor.currentSandbox) return;
+
+  // optimistic update
+  const oldValue = state.editor.currentSandbox.permissions.preventSandboxExport;
+  state.editor.currentSandbox.permissions.preventSandboxExport = preventSandboxExport;
+
+  effects.analytics.track(`Editor - Change sandbox permissions`, {
+    preventSandboxExport,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesExport({
+      sandboxIds: [state.editor.currentSandbox.id],
+      preventSandboxExport,
+    });
+  } catch (error) {
+    state.editor.currentSandbox.permissions.preventSandboxExport = oldValue;
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
   }
 };

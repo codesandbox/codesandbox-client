@@ -4,6 +4,7 @@ import {
   COLUMN_MEDIA_THRESHOLD,
   CreateSandbox,
 } from 'app/components/CreateNewSandbox/CreateSandbox';
+import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
 import { useOvermind } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
@@ -37,6 +38,7 @@ import { TeamInviteModal } from './TeamInviteModal';
 import UploadModal from './UploadModal';
 import { DeleteWorkspace } from './DeleteWorkspace';
 import { MinimumPrivacyModal } from './MinimumPrivacyModal';
+import { GenericAlertModal } from './GenericAlertModal';
 
 const modals = {
   preferences: {
@@ -159,9 +161,12 @@ const modals = {
 };
 
 const Modals: FunctionComponent = () => {
+  const [themeProps, setThemeProps] = useState({});
+  const { pathname } = useLocation();
   const {
     actions,
     state: {
+      modals: stateModals,
       preferences: {
         settings: { customVSCodeTheme },
       },
@@ -191,10 +196,19 @@ const Modals: FunctionComponent = () => {
     }
   }, [localState.customVSCodeTheme, customVSCodeTheme]);
 
-  const modal = currentModal && modals[currentModal];
+  useEffect(() => {
+    setThemeProps(
+      pathname.includes('/s/')
+        ? {
+            theme: localState.theme.vscodeTheme,
+          }
+        : {}
+    );
+  }, [pathname, localState]);
 
+  const modal = currentModal && modals[currentModal];
   return (
-    <ThemeProvider theme={localState.theme.vscodeTheme}>
+    <ThemeProvider {...themeProps}>
       <Modal
         isOpen={Boolean(modal)}
         width={
@@ -210,6 +224,8 @@ const Modals: FunctionComponent = () => {
             })
           : null}
       </Modal>
+
+      {stateModals.alertModal.isCurrent && <GenericAlertModal />}
     </ThemeProvider>
   );
 };

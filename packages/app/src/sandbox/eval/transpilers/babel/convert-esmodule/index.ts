@@ -39,7 +39,7 @@ export function convertEsModule(
   const exportNames = new Set<string>();
 
   const getVarName = (name: string) => {
-    let usedName = name.replace(/(\.|-|@|\?|&|=|{|})/g, '');
+    let usedName = name.replace(/(\s|\.|-|@|\?|&|=|{|})/g, '');
     while (usedVarNames[usedName]) {
       usedName += '_';
     }

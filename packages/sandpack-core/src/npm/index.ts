@@ -28,8 +28,8 @@ const PRELOADED_PROTOCOLS = [
  * Depending on the dependency version we decide whether we can load a prebundled bundle (generated
  * in a lambda) or use a dynamic version of fetching the dependency.
  */
-function shouldFetchDynamically(depVersion: string) {
-  const fetchProtocol = getFetchProtocol(depVersion);
+function shouldFetchDynamically(depName: string, depVersion: string) {
+  const fetchProtocol = getFetchProtocol(depName, depVersion);
   return !PRELOADED_PROTOCOLS.includes(fetchProtocol);
 }
 
@@ -66,7 +66,7 @@ function splitDependencies(
 
   Object.keys(dependencies).forEach(depName => {
     const version = dependencies[depName];
-    if (shouldFetchDynamically(version)) {
+    if (shouldFetchDynamically(depName, version)) {
       dynamicDependencies[depName] = version;
     } else {
       prebundledDependencies[depName] = version;

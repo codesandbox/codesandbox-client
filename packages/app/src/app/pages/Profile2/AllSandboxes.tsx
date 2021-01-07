@@ -23,12 +23,14 @@ export const AllSandboxes = () => {
       profile: { fetchSandboxes, sortByChanged, sortDirectionChanged },
     },
     state: {
+      user: loggedInUser,
       profile: {
         current: { username, featuredSandboxes },
         currentSandboxesPage,
         isLoadingSandboxes,
         currentSortBy,
         currentSortDirection,
+        showcasedSandbox,
         sandboxes: fetchedSandboxes,
       },
     },
@@ -52,6 +54,10 @@ export const AllSandboxes = () => {
     .filter(sandbox => sandbox.privacy === 0);
 
   if (!sandboxes.length) {
+    // if there are pinned sandboxes but nothing else to show
+    // skip rendering this section alltogether
+    if (featuredSandboxes.length) return null;
+
     return (
       <Stack justify="center" align="center" css={css({ height: 320 })}>
         <Text variant="muted" size={4} weight="medium" align="center">
@@ -61,8 +67,20 @@ export const AllSandboxes = () => {
     );
   }
 
+  const myProfile = loggedInUser?.username === username;
+
+  // For new profiles which don't have any showcased or featured sandboxes
+  // we pull this section up to align with the profile card vertically
+  const isOnlySection =
+    !myProfile && !showcasedSandbox && !featuredSandboxes.length;
+
   return (
-    <Stack as="section" direction="vertical" gap={6}>
+    <Stack
+      as="section"
+      direction="vertical"
+      gap={6}
+      style={{ marginTop: isOnlySection ? -50 : 0 }}
+    >
       <UpgradeBanner />
 
       <Stack justify="space-between" align="center">

@@ -12,7 +12,7 @@ const SERVER_TEMPLATE_NAMES = [
   'next',
   'node',
   'nuxt',
-  'quasar-framework',
+  'quasar',
   'sapper',
   'styleguidist',
   'unibit',

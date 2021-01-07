@@ -58,11 +58,6 @@ const NotFound = Loadable(() =>
     })
   )
 );
-const Profile = Loadable(() =>
-  import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
-    default: module.Profile,
-  }))
-);
 const Profile2 = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile2').then(module => ({
     default: module.Profile,
@@ -119,7 +114,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
-    state: { modals },
+    state: { modals, activeTeamInfo },
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -170,7 +165,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
-            <Route path="/u/:username" component={Profile} />
+            <Route path="/u/:username" component={Profile2} />
             <Route path="/u2/:username" component={Profile2} />
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
@@ -188,7 +183,9 @@ const RoutesComponent: React.FC = () => {
         <Modals />
         <SignInModal />
         <CreateSandboxModal />
-        {modals.moveSandboxModal.isCurrent && <MoveSandboxFolderModal />}
+        {modals.moveSandboxModal.isCurrent && activeTeamInfo && (
+          <MoveSandboxFolderModal />
+        )}
       </Boundary>
     </Container>
   );

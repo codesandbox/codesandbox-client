@@ -64,6 +64,7 @@ export type Status = {
 
 export type DevToolProps = {
   hidden: boolean;
+  disableLogging: boolean;
   updateStatus: (type: StatusType, count?: number) => void;
   sandboxId: string;
   openDevTools: () => void;
@@ -104,6 +105,7 @@ type Props = {
   hideTabs?: boolean;
   currentDevToolIndex: number;
   currentTabPosition: number;
+  disableLogging?: boolean;
 };
 type State = {
   status: { [title: string]: Status | undefined };
@@ -494,6 +496,7 @@ export class DevTools extends React.PureComponent<Props, State> {
       primary,
       viewConfig,
       devToolIndex,
+      disableLogging,
     } = this.props;
     const { hidden, height } = this.state;
 
@@ -533,6 +536,7 @@ export class DevTools extends React.PureComponent<Props, State> {
               status={this.state.status}
               moveTab={this.props.moveTab}
               closeTab={this.props.closeTab}
+              disableLogging={disableLogging}
             />
 
             {!primary && (
@@ -559,6 +563,7 @@ export class DevTools extends React.PureComponent<Props, State> {
                 hidden={hidden || i !== this.state.currentTabIndex}
                 updateStatus={this.updateStatus(view.id)}
                 sandboxId={sandboxId}
+                disableLogging={disableLogging}
                 openDevTools={this.openDevTools}
                 hideDevTools={this.hideDevTools}
                 selectCurrentPane={() => {

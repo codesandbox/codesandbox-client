@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import React, { useState } from 'react';
 import { Link } from 'gatsby';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Logo from '../../assets/images/logo.svg';
@@ -13,6 +14,7 @@ import {
   Items,
   Pricing,
   LinkButton,
+  UserAvatar,
 } from './elements';
 import SupportIcon from '../../assets/icons/Support';
 import StatusIcon from '../../assets/icons/Status';
@@ -27,9 +29,10 @@ import TeamsIcon from '../../assets/icons/Teams';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
 import Button from '../Button';
-// import NewIcon from '../../assets/icons/New';
+import { useLogin } from '../../hooks/useLogin';
 
 export default () => {
+  const user = useLogin();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -39,9 +42,19 @@ export default () => {
           CodeSandbox
         </LogoWrapper>
         <div>
-          <LinkButton as="a" href={signInPageUrl()}>
-            Sign In
-          </LinkButton>
+          {!user ? (
+            <LinkButton as="a" href={signInPageUrl()}>
+              Sign In
+            </LinkButton>
+          ) : (
+            <a style={{ display: 'flex' }} href="/dashboard">
+              <UserAvatar
+                className="tablet-remove"
+                src={user.avatar_url}
+                alt={user.username}
+              />
+            </a>
+          )}
           {open ? (
             <svg
               onClick={() => setOpen(!open)}

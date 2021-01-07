@@ -14,6 +14,7 @@ export const sandboxFragmentDashboard = gql`
     screenshotUrl
     screenshotOutdated
     viewCount
+    alwaysOn
 
     source {
       template
@@ -35,6 +36,11 @@ export const sandboxFragmentDashboard = gql`
 
     authorId
     teamId
+
+    permissions {
+      preventSandboxLeaving
+      preventSandboxExport
+    }
   }
 `;
 
@@ -111,6 +117,10 @@ export const teamFragmentDashboard = gql`
     creatorId
     avatarUrl
 
+    settings {
+      minimumPrivacy
+    }
+
     userAuthorizations {
       userId
       authorization
@@ -161,6 +171,22 @@ export const currentTeamInfoFragment = gql`
 
     settings {
       minimumPrivacy
+      preventSandboxExport
+      preventSandboxLeaving
+      defaultAuthorization
     }
+  }
+`;
+
+export const npmRegistryFragment = gql`
+  fragment npmRegistry on PrivateRegistry {
+    id
+    enabledScopes
+    limitToScopes
+    proxyEnabled
+    registryAuthKey
+    registryType
+    registryUrl
+    teamId
   }
 `;
