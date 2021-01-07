@@ -18,6 +18,7 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   showNavigator = false,
   showLineNumbers = false,
   customStyle,
+  bundlerURL,
 }) => {
   const projectSetup = getSetup(template, customSetup);
 
@@ -37,6 +38,7 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
       entry={projectSetup.entry}
       openPaths={[projectSetup.main]}
       showOpenInCodeSandbox={false}
+      bundlerURL={bundlerURL}
     >
       <SandpackWrapper style={customStyle}>
         <CodeEditor showLineNumbers={showLineNumbers} />

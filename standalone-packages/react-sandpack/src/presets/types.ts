@@ -13,4 +13,5 @@ export interface PresetProps {
   showLineNumbers?: boolean;
   theme?: 'light' | 'dark';
   customStyle?: React.CSSProperties;
+  bundlerURL?: string;
 }

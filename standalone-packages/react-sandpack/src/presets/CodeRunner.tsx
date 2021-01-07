@@ -20,6 +20,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   showNavigator = false,
   showLineNumbers = false,
   customStyle,
+  bundlerURL,
 }) => {
   const projectSetup = getSetup(template, customSetup);
 
@@ -42,6 +43,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       entry={projectSetup.entry}
       openPaths={[projectSetup.main]}
       showOpenInCodeSandbox={false}
+      bundlerURL={bundlerURL}
     >
       <SandpackWrapper style={customStyle}>
         {showCode && <CodeViewer showLineNumbers={showLineNumbers} />}
