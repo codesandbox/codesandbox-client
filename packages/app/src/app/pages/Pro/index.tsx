@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { addMonths, format } from 'date-fns';
 import { Helmet } from 'react-helmet';
 import React, { useEffect } from 'react';
 
@@ -237,35 +237,45 @@ const Expiring = ({
   user,
   updateSubscriptionClicked,
   isUpdatingSubscription,
-}) => (
-  <MaxWidth width={500}>
-    <Centered horizontal>
-      <Avatar src={user.avatarUrl} />
-      <Badge type="pro" style={{ opacity: 0.8 }}>
-        Pro
-      </Badge>
-      <Heading>Your subscription is expiring</Heading>
+}) => {
+  // if user has yearly subscription show the date he created the subscription and since it's passed they know it's next year
+  // if Monthly show the day he created and the next month on the calendar
+  const since = new Date(user.subscription.since);
+  const expiringDate =
+    user.subscription.duration === 'yearly'
+      ? format(since, 'do MMM')
+      : `${format(since, 'do')} ${format(addMonths(new Date(), 1), 'MMM')}`;
 
-      <HelpText>
-        Your subscription will be automatically cancelled on your next billing
-        date ({format(new Date(user.subscription.since), 'do MMM')}). All your
-        private sandboxes will remain available and private.
-      </HelpText>
+  return (
+    <MaxWidth width={500}>
+      <Centered horizontal>
+        <Avatar src={user.avatarUrl} />
+        <Badge type="pro" style={{ opacity: 0.8 }}>
+          Pro
+        </Badge>
+        <Heading>Your subscription is expiring</Heading>
 
-      {isUpdatingSubscription ? (
-        <Button disabled style={{ marginTop: 30 }}>
-          Creating subscription...
-        </Button>
-      ) : (
-        <Button
-          onClick={() => updateSubscriptionClicked({ coupon: '' })}
-          style={{ marginTop: 30 }}
-        >
-          Reactivate subscription
-        </Button>
-      )}
-    </Centered>
-  </MaxWidth>
-);
+        <HelpText>
+          Your subscription will be automatically cancelled on your next billing
+          date ({expiringDate}). All your private sandboxes will remain
+          available and private.
+        </HelpText>
+
+        {isUpdatingSubscription ? (
+          <Button disabled style={{ marginTop: 30 }}>
+            Creating subscription...
+          </Button>
+        ) : (
+          <Button
+            onClick={() => updateSubscriptionClicked({ coupon: '' })}
+            style={{ marginTop: 30 }}
+          >
+            Reactivate subscription
+          </Button>
+        )}
+      </Centered>
+    </MaxWidth>
+  );
+};
 
 export default ProPage;
