@@ -26,6 +26,7 @@ import {
   BillText,
 } from './elements';
 import { SignInModalElement } from '../SignIn/Modal';
+import { getUserExpiringDate } from './getExpiringDate';
 
 const ProPage: React.FC = () => {
   const {
@@ -248,8 +249,8 @@ const Expiring = ({
 
       <HelpText>
         Your subscription will be automatically cancelled on your next billing
-        date ({format(new Date(user.subscription.since), 'do MMM')}). All your
-        private sandboxes will remain available and private.
+        date ({getUserExpiringDate(user.subscription)}). All your private
+        sandboxes will remain available and private.
       </HelpText>
 
       {isUpdatingSubscription ? (
