@@ -25,6 +25,7 @@ export interface State {
   openPaths: string[];
   managerState: IManagerState | undefined;
   errors: Array<IModuleError>;
+  initialized: boolean;
 }
 
 export interface Props {
@@ -61,15 +62,14 @@ class SandpackProvider extends PureComponent<Props, State> {
       activePath: props.activePath || props.openPaths?.[0] || props.entry,
       managerState: undefined,
       errors: [],
+      initialized: false,
     };
 
     this.iframeRef = createRef<HTMLIFrameElement>();
   }
 
   handleMessage = (m: any) => {
-    if (m.type === 'compile') {
-      this.forceUpdate();
-    } else if (m.type === 'state') {
+    if (m.type === 'state') {
       this.setState({ managerState: m.state });
     } else if (m.type === 'start') {
       this.setState({ errors: [] });
@@ -130,6 +130,7 @@ class SandpackProvider extends PureComponent<Props, State> {
     );
 
     this.unsubscribe = this.manager.listen(this.handleMessage);
+    this.setState({ initialized: true });
   }
 
   componentDidUpdate(props: Props) {
@@ -213,10 +214,10 @@ class SandpackProvider extends PureComponent<Props, State> {
 
   render() {
     const { children } = this.props;
+    const { initialized } = this.state;
 
     return (
       <SandpackContext.Provider value={this._getSandpackState()}>
-        {children}
         <div id="loading-frame">
           <iframe
             ref={this.iframeRef}
@@ -234,6 +235,8 @@ class SandpackProvider extends PureComponent<Props, State> {
             src={this.props.bundlerURL}
           />
         </div>
+        {/* children are rendered only after the iframe is mounted */}
+        {initialized && children}
       </SandpackContext.Provider>
     );
   }
