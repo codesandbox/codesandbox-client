@@ -12,17 +12,17 @@ const Container = styled('button', {
   paddingLeft: '$4',
   paddingTop: '$1',
   paddingBottom: '$1',
-  color: '$neutral100',
+  color: '$highlightText',
 
-  '&:hover': { backgroundColor: '$neutral800' },
+  '&:hover': { backgroundColor: '$inactive' },
 
   variants: {
     state: {
       active: {
-        backgroundColor: '$accent500',
-        color: '$neutral1000',
+        backgroundColor: '$accent',
+        color: '$mainBackground',
 
-        '&:hover': { backgroundColor: '$accent500' },
+        '&:hover': { backgroundColor: '$accent' },
       },
     },
   },

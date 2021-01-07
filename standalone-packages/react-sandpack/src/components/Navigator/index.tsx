@@ -8,25 +8,28 @@ import { splitUrl } from './utils';
 const NavigatorContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
-  backgroundColor: '$neutral900',
+  backgroundColor: '$mainBackground',
   height: 40,
-  borderBottom: '1px solid $neutral800',
+  border: '1px solid $inactive',
+  margin: -1,
   padding: '$2 $4',
+});
 
-  '& > *:nth-child(n+3)': {
-    marginLeft: '$2',
-  },
+const NavigatorButtons = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  marginRight: '$4',
 });
 
 const NavigatorInput = styled('input', {
-  backgroundColor: '$neutral1000',
-  color: '$neutral100',
+  backgroundColor: '$inputBackground',
+  color: '$highlightText',
   padding: '$1 $2',
   borderRadius: '$default',
   border: 0,
   flex: 1,
   height: '24px',
-  fontSize: '$2',
+  fontSize: '$default',
 });
 
 const NavigatorButton = styled('button', {
@@ -34,13 +37,12 @@ const NavigatorButton = styled('button', {
   border: '0',
   display: 'flex',
   alignItems: 'center',
-  color: '$neutral100',
+  color: '$defaultText',
   background: 'transparent',
-  transition: 'all 0.15s ease-out',
 
-  ':disabled': { color: '$neutral500' },
+  ':disabled': { color: '$inactive' },
 
-  ':hover': { color: '$neutral500' },
+  ':hover': { color: '$highlightText' },
 });
 
 type UrlChangeMessage = {
@@ -49,7 +51,11 @@ type UrlChangeMessage = {
   forward: boolean;
 };
 
-export const Navigator = () => {
+export interface NavigatorProps {
+  style?: React.CSSProperties;
+}
+
+export const Navigator: React.FC<NavigatorProps> = ({ style }) => {
   const [baseUrl, setBaseUrl] = useState<string>('');
   const [relativeUrl, setRelativeUrl] = useState<string>('/');
 
@@ -115,21 +121,23 @@ export const Navigator = () => {
   };
 
   return (
-    <NavigatorContainer>
-      <NavigatorButton onClick={handleBack} disabled={!backEnabled}>
-        <BackwardIcon />
-      </NavigatorButton>
-      <NavigatorButton onClick={handleForward} disabled={!forwardEnabled}>
-        <ForwardIcon />
-      </NavigatorButton>
+    <NavigatorContainer style={style}>
+      <NavigatorButtons>
+        <NavigatorButton onClick={handleBack} disabled={!backEnabled}>
+          <BackwardIcon />
+        </NavigatorButton>
+        <NavigatorButton onClick={handleForward} disabled={!forwardEnabled}>
+          <ForwardIcon />
+        </NavigatorButton>
+        <NavigatorButton onClick={handleRefresh}>
+          <RefreshIcon />
+        </NavigatorButton>
+      </NavigatorButtons>
       <NavigatorInput
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         value={relativeUrl}
       />
-      <NavigatorButton onClick={handleRefresh}>
-        <RefreshIcon />
-      </NavigatorButton>
     </NavigatorContainer>
   );
 };

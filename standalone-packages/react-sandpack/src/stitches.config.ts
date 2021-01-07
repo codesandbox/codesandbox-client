@@ -4,12 +4,12 @@ export const { styled, css } = createStyled({
   prefix: 'sandpack',
   tokens: {
     colors: {
-      $neutral100: '#5B6776', // primary text
-      $neutral500: '#999999', // secondary text
-      $neutral800: '#E5E7EB', // separators
-      $neutral900: '#f8f9fb', // panels
-      $neutral1000: '#ffffff', // background
-      $accent500: '#6caedd', // highlight
+      $highlightText: '#5B6776',
+      $defaultText: '#999999',
+      $inactive: '#E5E7EB',
+      $mainBackground: '#f8f9fb',
+      $inputBackground: '#ffffff',
+      $accent: '#6caedd',
     },
     space: {
       $1: '4px',
@@ -20,9 +20,7 @@ export const { styled, css } = createStyled({
       $6: '24px',
     },
     fontSizes: {
-      $1: '13px',
-      $2: '14px',
-      $3: '16px',
+      $default: '14px',
     },
     fonts: {
       $body:
@@ -40,23 +38,23 @@ export const { styled, css } = createStyled({
 
 export const csbLightTheme = css.theme({
   colors: {
-    $neutral100: '#5B6776',
-    $neutral500: '#999999',
-    $neutral800: '#E5E7EB',
-    $neutral900: '#f8f9fb',
-    $neutral1000: '#ffffff',
-    $accent500: '#6caedd',
+    $highlightText: '#5B6776',
+    $defaultText: '#999999',
+    $inactive: '#E5E7EB',
+    $mainBackground: '#f8f9fb',
+    $inputBackground: '#ffffff',
+    $accent: '#6caedd',
   },
 });
 
 export const csbDarkTheme = css.theme({
   colors: {
-    $neutral100: '#FFFFFF',
-    $neutral500: '#999999',
-    $neutral800: '#343434',
-    $neutral900: '#040404',
-    $neutral1000: '#242424',
-    $accent500: '#6caedd',
+    $highlightText: '#FFFFFF',
+    $defaultText: '#999999',
+    $inactive: '#343434',
+    $mainBackground: '#040404',
+    $inputBackground: '#242424',
+    $accent: '#6caedd',
   },
 });
 

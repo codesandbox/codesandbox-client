@@ -13,9 +13,12 @@ export interface CodeEditorProps {
 }
 
 const CodeEditorWrapper = styled('div', {
-  backgroundColor: '$neutral900',
-  borderRight: '1px solid $neutral800',
+  backgroundColor: '$mainBackground',
+  border: '1px solid $inactive',
+  margin: -1,
   textAlign: 'left',
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 export const CodeEditor = ({

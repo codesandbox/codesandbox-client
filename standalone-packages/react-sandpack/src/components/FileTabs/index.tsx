@@ -9,9 +9,10 @@ export interface FileTabsProps {
 }
 
 const Container = styled('div', {
-  backgroundColor: '$neutral900',
+  backgroundColor: '$mainBackground',
   padding: '0 $4',
-  borderBottom: '1px solid $neutral800',
+  border: '1px solid $inactive',
+  margin: -1,
   height: 40,
 });
 
@@ -19,22 +20,22 @@ const TabButton = styled('button', {
   background: 'transparent',
   appearance: 'none',
   fontSize: 'inherit',
-  height: 40,
+  height: 39,
   padding: '0 $2',
-  color: '$neutral500',
+  color: '$defaultText',
 
   border: 0,
   borderBottom: '1px solid transparent',
   transition: 'border 0.15s ease-out',
 
   '&[data-active="true"]': {
-    color: '$neutral100',
-    // borderBottom: '1px solid $accent500',
+    color: '$highlightText',
+    borderBottom: '1px solid $accent',
   },
 
-  // '&:hover': {
-  //   color: '$neutral100',
-  // },
+  '&:hover': {
+    color: '$highlightText',
+  },
 });
 
 export const FileTabs: React.FC<FileTabsProps> = props => {

@@ -6,14 +6,15 @@ import { styled } from '../../stitches.config';
 import { useSandpack } from '../../utils/sandpack-context';
 
 export interface FileExplorerProps {
-  style?: Object;
+  style?: React.CSSProperties;
 }
 
 const Container = styled('div', {
-  backgroundColor: '$neutral900',
+  backgroundColor: '$mainBackground',
   paddingTop: '$1',
   paddingBottom: '$1',
-  borderRight: '1px solid $neutral800',
+  border: '1px solid $inactive',
+  margin: -1,
 });
 
 export const FileExplorer: React.FC<FileExplorerProps> = props => {

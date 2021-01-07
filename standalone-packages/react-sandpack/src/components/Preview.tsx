@@ -13,6 +13,8 @@ const Wrapper = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   backgroundColor: 'white',
+  border: '1px solid $inactive',
+  margin: -1,
 });
 
 const PreviewFrame = styled('div', {

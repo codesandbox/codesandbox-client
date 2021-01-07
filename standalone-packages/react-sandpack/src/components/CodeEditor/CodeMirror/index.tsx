@@ -44,7 +44,6 @@ import { reactDocs } from './theme/react-docs';
 import { styled } from '../../../stitches.config';
 
 export interface CodeMirrorProps {
-  style?: React.CSSProperties;
   code: string;
   activePath: string;
   onCodeUpdate: (newCode: string) => void;
@@ -55,7 +54,13 @@ export interface CodeMirrorProps {
 
 const Container = styled('div', {
   padding: '$4 $2',
-  fontSize: '$2',
+  flex: 1,
+  width: '100%',
+  height: '100%',
+
+  '.cm-wrap': {
+    height: '100%',
+  },
 
   '.cm-content': {
     padding: 0,
@@ -71,7 +76,7 @@ const Container = styled('div', {
 
   '.cm-gutter-lineNumber': {
     paddingRight: '$2',
-    color: '$neutral500',
+    color: '$defaultText',
   },
 
   '.cm-gutterElement.cm-gutterElement-lineNumber': {
@@ -80,7 +85,6 @@ const Container = styled('div', {
 });
 
 export const CodeMirror: React.FC<CodeMirrorProps> = ({
-  style,
   code,
   activePath,
   onCodeUpdate,
@@ -203,7 +207,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
   };
 
   return (
-    <Container style={style} ref={wrapper}>
+    <Container ref={wrapper}>
       {uncommittedChanges && <span>Press Cmd/Ctrl+S to run the changes</span>}
     </Container>
   );

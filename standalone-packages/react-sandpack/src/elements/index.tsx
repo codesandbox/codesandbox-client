@@ -13,20 +13,30 @@ export const ErrorMessage = styled('pre', {
   backgroundColor: 'rgba(186, 53, 55, 0.7)',
   color: 'white',
 
-  padding: '0.5rem',
   zIndex: 3,
 });
 
 export const SandpackWrapper = styled('div', {
-  border: '1px solid $neutral800',
+  border: '1px solid $inactive',
   display: 'flex',
-  width: '100%',
-  height: '100%',
+  flexWrap: 'wrap',
+  alignItems: 'stretch',
+  maxWidth: 1000,
+  minHeight: 350,
+  maxHeight: 700,
   borderRadius: '$default',
-  fontSize: '$1',
+  fontSize: '$default',
   fontFamily: '$body',
   overflow: 'hidden',
-  maxWidth: 800,
+  boxSizing: 'border-box',
+
+  '& > *': {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    width: 0,
+    minWidth: 300,
+  },
 
   '*': {
     boxSizing: 'border-box',

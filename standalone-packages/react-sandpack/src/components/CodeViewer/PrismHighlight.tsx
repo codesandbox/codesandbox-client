@@ -6,15 +6,16 @@ import { styled } from '../../stitches.config';
 
 export interface PrismHighlightProps {
   lang?: Language;
-  style?: Object;
+  style?: React.CSSProperties;
   code: string;
   showLineNumbers?: boolean;
 }
 
 const StyledBlock = styled('div', {
-  fontSize: '$2',
-  backgroundColor: '$neutral900',
-  borderRight: '1px solid $neutral800',
+  fontSize: '$default',
+  backgroundColor: '$mainBackground',
+  border: '1px solid $inactive',
+  margin: -1,
   padding: '$4 $2',
   lineHeight: '1.4',
 
@@ -33,7 +34,7 @@ const LineNo = styled('span', {
   textAlign: 'right',
   paddingRight: '$2',
   userSelect: 'none',
-  color: '$neutral500',
+  color: '$defaultText',
   minWidth: '28px',
 });
 
