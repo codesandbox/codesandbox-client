@@ -51,8 +51,8 @@ import {
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
   SetTeamMinimumPrivacyMutationVariables,
-  ChangeSandboxAlwaysOnMutation,
-  ChangeSandboxAlwaysOnMutationVariables,
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables,
   SetWorkspaceSandboxSettingsMutation,
   SetWorkspaceSandboxSettingsMutationVariables,
   SetPreventSandboxesLeavingWorkspaceMutation,
@@ -335,8 +335,8 @@ export const changeTeamMemberAuthorization: Query<
   ChangeTeamMemberAuthorizationMutationVariables
 > = gql`
   mutation ChangeTeamMemberAuthorization(
-    $teamId: ID!
-    $userId: ID!
+    $teamId: UUID4!
+    $userId: UUID4!
     $authorization: TeamMemberAuthorization!
   ) {
     changeTeamMemberAuthorizations(
@@ -417,8 +417,8 @@ export const setTeamMinimumPrivacy: Query<
 `;
 
 export const changeSandboxAlwaysOn: Query<
-  ChangeSandboxAlwaysOnMutation,
-  ChangeSandboxAlwaysOnMutationVariables
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables
 > = gql`
   mutation setSandboxAlwaysOn($sandboxId: ID!, $alwaysOn: Boolean!) {
     setSandboxAlwaysOn(sandboxId: $sandboxId, alwaysOn: $alwaysOn) {
@@ -488,7 +488,7 @@ export const setDefaultTeamMemberAuthorization: Query<
 > = gql`
   mutation setDefaultTeamMemberAuthorization(
     $teamId: UUID4!
-    $defaultAuthorization: String!
+    $defaultAuthorization: TeamMemberAuthorization!
   ) {
     setDefaultTeamMemberAuthorization(
       teamId: $teamId

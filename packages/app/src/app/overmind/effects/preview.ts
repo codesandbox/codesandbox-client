@@ -2,7 +2,6 @@ import { dispatch, listen } from 'codesandbox-api';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { blocker } from 'app/utils/blocker';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { PREVIEW_COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
 import { Sandbox } from '@codesandbox/common/lib/types';
 
 let _preview = blocker<BasePreview>();
@@ -200,7 +199,6 @@ export default {
   },
   canAddComments(currentSandbox: Sandbox) {
     return Boolean(
-      localStorage.getItem(PREVIEW_COMMENTS_ON) &&
         currentSandbox.featureFlags.comments &&
         hasPermission(currentSandbox.authorization, 'comment')
     );

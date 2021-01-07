@@ -478,11 +478,10 @@ export const clearExplorerDependencies: Action = ({ state }) => {
   state.workspace.explorerDependencies = [];
 };
 
-export const getDependencies: AsyncAction<string | void> = async (
+export const getDependencies: AsyncAction<string> = async (
   { state, effects },
   value
 ) => {
-  if (value === undefined) return;
   state.workspace.loadingDependencySearch = true;
   const searchResults = await effects.algoliaSearch.searchDependencies(value);
 
