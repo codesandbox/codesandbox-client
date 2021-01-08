@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 
 import { styled } from '../../stitches.config';
 import { useSandpack } from '../../utils/sandpack-context';
@@ -57,15 +57,15 @@ export interface NavigatorProps {
 }
 
 export const Navigator: React.FC<NavigatorProps> = ({ style }) => {
-  const [baseUrl, setBaseUrl] = useState<string>('');
-  const [relativeUrl, setRelativeUrl] = useState<string>('/');
+  const [baseUrl, setBaseUrl] = React.useState<string>('');
+  const [relativeUrl, setRelativeUrl] = React.useState<string>('/');
 
-  const [backEnabled, setBackEnabled] = useState(false);
-  const [forwardEnabled, setForwardEnabled] = useState(false);
+  const [backEnabled, setBackEnabled] = React.useState(false);
+  const [forwardEnabled, setForwardEnabled] = React.useState(false);
 
   const { sandpack, dispatch, listen } = useSandpack();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const unsub = listen((message: any) => {
       if (message.type === 'urlchange') {
         const { url, back, forward } = message as UrlChangeMessage;

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import * as React from 'react';
 import { styled } from '../stitches.config';
 
 import { useSandpack } from '../utils/sandpack-context';
@@ -23,11 +23,11 @@ const PreviewFrame = styled('div', {
 });
 
 export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const { sandpack, listen } = useSandpack();
 
   // TODO: is this still needed?
-  useEffect(() => {
+  React.useEffect(() => {
     const unsub = listen((message: any) => {
       if (message.type === 'resize') {
         if (sandpack.browserFrame) {
@@ -39,7 +39,7 @@ export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
     return () => unsub();
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!sandpack.browserFrame || !containerRef.current) {
       return;
     }

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { ISandpackState } from '../types';
 import { styled } from '../stitches.config';
 import { ErrorMessage } from '../elements';

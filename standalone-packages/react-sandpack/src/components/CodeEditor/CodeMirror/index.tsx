@@ -1,43 +1,26 @@
-import React, { useRef, useEffect } from 'react';
+import * as React from 'react';
 
 import {
   highlightSpecialChars,
-  drawSelection,
-  indentOnInput,
+  highlightActiveLine,
   keymap,
   EditorView,
   KeyBinding,
-} from '@codemirror/next/view';
-import { EditorState } from '@codemirror/next/state';
-import { history, historyKeymap } from '@codemirror/next/history';
-import { foldKeymap } from '@codemirror/next/fold';
-import {
-  defaultKeymap,
-  indentLess,
-  indentMore,
-} from '@codemirror/next/commands';
-import { lineNumbers } from '@codemirror/next/gutter';
-import { bracketMatching } from '@codemirror/next/matchbrackets';
-import {
-  closeBrackets,
-  closeBracketsKeymap,
-} from '@codemirror/next/closebrackets';
-import { searchKeymap } from '@codemirror/next/search';
-import {
-  autocompletion,
-  completionKeymap,
-} from '@codemirror/next/autocomplete';
-import { commentKeymap } from '@codemirror/next/comment';
-import { rectangularSelection } from '@codemirror/next/rectangular-selection';
-import { gotoLineKeymap } from '@codemirror/next/goto-line';
-import {
-  highlightActiveLine,
-  highlightSelectionMatches,
-} from '@codemirror/next/highlight-selection';
-import { defaultHighlighter } from '@codemirror/next/highlight';
-import { lintKeymap } from '@codemirror/next/lint';
-import { javascript } from '@codemirror/next/lang-javascript';
-import { html } from '@codemirror/next/lang-html';
+} from '@codemirror/view';
+import { indentOnInput } from '@codemirror/language';
+import { EditorState } from '@codemirror/state';
+import { history, historyKeymap } from '@codemirror/history';
+import { defaultKeymap, indentLess, indentMore } from '@codemirror/commands';
+import { lineNumbers } from '@codemirror/gutter';
+import { bracketMatching } from '@codemirror/matchbrackets';
+import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets';
+
+import { commentKeymap } from '@codemirror/comment';
+import { defaultHighlightStyle } from '@codemirror/highlight';
+
+import { javascript } from '@codemirror/lang-javascript';
+import { html } from '@codemirror/lang-html';
+
 import { reactDocs } from './theme/react-docs';
 
 import { styled } from '../../../stitches.config';
@@ -88,10 +71,10 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
   lang = 'js',
   showLineNumbers = false,
 }) => {
-  const wrapper = useRef<HTMLDivElement>(null);
-  const cmView = useRef<EditorView>();
+  const wrapper = React.useRef<HTMLDivElement>(null);
+  const cmView = React.useRef<EditorView>();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!wrapper.current) {
       return () => {};
     }
@@ -110,27 +93,17 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     const extensions = [
       highlightSpecialChars(),
       history(),
-      drawSelection(),
-      EditorState.allowMultipleSelections.of(true),
       indentOnInput(),
-      defaultHighlighter,
+      defaultHighlightStyle,
       bracketMatching(),
       closeBrackets(),
-      autocompletion(),
-      rectangularSelection(),
       highlightActiveLine(),
-      highlightSelectionMatches(),
 
-      keymap([
+      keymap.of([
         ...closeBracketsKeymap,
         ...defaultKeymap,
-        ...searchKeymap,
         ...historyKeymap,
-        ...foldKeymap,
         ...commentKeymap,
-        ...gotoLineKeymap,
-        ...completionKeymap,
-        ...lintKeymap,
         ...customCommandsKeymap,
       ]),
       lang === 'js' ? javascript({ jsx: true }) : html(),
@@ -165,7 +138,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     };
   }, [lang, showLineNumbers]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const view = cmView.current;
     if (view && code !== view.state.sliceDoc(0, view.state.doc.length)) {
       view.update([

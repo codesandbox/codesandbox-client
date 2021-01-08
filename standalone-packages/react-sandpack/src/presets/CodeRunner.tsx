@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { CodeViewer } from '../components/CodeViewer';
 import { Preview } from '../components/Preview';
 import { SandpackWrapper } from '../elements';

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { SandpackWrapper } from '../elements';
 import { IFiles } from '../types';
 import { SandpackProvider } from '../utils/sandpack-context';

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { CodeMirror } from './CodeMirror';
 import { useSandpack } from '../../utils/sandpack-context';
 import { FileTabs } from '../FileTabs';

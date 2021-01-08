@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Language } from 'prism-react-renderer';
 
 import { useSandpack } from '../../utils/sandpack-context';

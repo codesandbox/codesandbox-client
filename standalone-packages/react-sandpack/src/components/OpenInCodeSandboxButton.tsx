@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { IFiles } from '../types';
 import { useSandpack } from '../utils/sandpack-context';

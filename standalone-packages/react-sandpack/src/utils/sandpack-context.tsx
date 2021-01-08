@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  createRef,
-  useContext,
-  PureComponent,
-} from 'react';
+import * as React from 'react';
 import { Manager, generatePackageJSON } from 'smooshpack';
 
 import {
@@ -17,7 +12,7 @@ import {
   ISandpackState,
 } from '../types';
 
-const SandpackContext = createContext<ISandpackContext | null>(null);
+const SandpackContext = React.createContext<ISandpackContext | null>(null);
 
 export interface State {
   files: IFiles;
@@ -46,7 +41,7 @@ export interface Props {
   };
 }
 
-class SandpackProvider extends PureComponent<Props, State> {
+class SandpackProvider extends React.PureComponent<Props, State> {
   static defaultProps = {
     skipEval: false,
     compileMode: 'delayed',
@@ -70,7 +65,7 @@ class SandpackProvider extends PureComponent<Props, State> {
       initialized: false,
     };
 
-    this.iframeRef = createRef<HTMLIFrameElement>();
+    this.iframeRef = React.createRef<HTMLIFrameElement>();
   }
 
   handleMessage = (m: any) => {
@@ -278,7 +273,7 @@ function getDisplayName(
 }
 
 function useSandpack() {
-  const sandpack = useContext(SandpackContext);
+  const sandpack = React.useContext(SandpackContext);
 
   if (sandpack === null) {
     throw new Error(
