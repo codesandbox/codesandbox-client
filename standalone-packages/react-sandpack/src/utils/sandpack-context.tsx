@@ -35,6 +35,8 @@ export interface Props {
   entry: string;
   openPaths?: string[];
   dependencies?: Record<string, string>;
+  compileMode?: 'immediate' | 'delayed'; // | 'onCommand'; TODO: implement run on command
+  compileDelay?: number;
   bundlerURL?: string;
   skipEval?: boolean;
   template?: SandboxEnvironment;
@@ -47,11 +49,14 @@ export interface Props {
 class SandpackProvider extends PureComponent<Props, State> {
   static defaultProps = {
     skipEval: false,
+    compileMode: 'delayed',
+    compileDelay: 200,
   };
 
   manager?: Manager;
   iframeRef: React.RefObject<HTMLIFrameElement>;
   unsubscribe?: Function;
+  debounceHook?: number;
 
   constructor(props: Props) {
     super(props);
@@ -88,23 +93,46 @@ class SandpackProvider extends PureComponent<Props, State> {
   });
 
   updateCurrentFile = (file: IFile) => {
-    if (file.code !== this.state.files[this.state.activePath]?.code) {
-      this.updateFiles({
-        ...this.state.files,
-        [this.state.activePath]: file,
-      });
+    if (file.code === this.state.files[this.state.activePath]?.code) {
+      return;
     }
+
+    this.commitFiles({
+      ...this.state.files,
+      [this.state.activePath]: file,
+    });
   };
 
-  updateFiles = (files: IFiles) => {
+  commitFiles = (files: IFiles) => {
+    const { compileMode, compileDelay } = this.props;
+
     this.setState({ files });
 
-    if (this.manager) {
+    if (compileMode === 'immediate') {
+      if (!this.manager) {
+        return;
+      }
+
       this.manager.updatePreview({
         showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
         files,
         template: this.props.template,
       });
+    }
+
+    if (compileMode === 'delayed') {
+      window.clearTimeout(this.debounceHook);
+      this.debounceHook = window.setTimeout(() => {
+        if (!this.manager) {
+          return;
+        }
+
+        this.manager.updatePreview({
+          showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
+          files: this.state.files,
+          template: this.props.template,
+        });
+      }, compileDelay);
     }
   };
 
@@ -146,7 +174,7 @@ class SandpackProvider extends PureComponent<Props, State> {
         this.props.entry
       );
 
-      this.updateFiles(newFiles);
+      this.commitFiles(newFiles);
     }
 
     if (this.manager && this.props.skipEval !== props.skipEval) {
@@ -205,7 +233,6 @@ class SandpackProvider extends PureComponent<Props, State> {
       changeActiveFile: this.changeActiveFile,
       openFile: this.openFile,
       browserFrame: this.iframeRef.current,
-      updateFiles: this.updateFiles,
       updateCurrentFile: this.updateCurrentFile,
       dispatch: this.dispatchMessage,
       listen: this.addListener,

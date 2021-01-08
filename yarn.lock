@@ -9542,6 +9542,11 @@ codemirror@^5.27.4:
   version "5.38.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.38.0.tgz#26a9551446e51dbdde36aabe60f72469724fd332"
 
+codesandbox-api@0.0.24, codesandbox-api@^0.0.24:
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.24.tgz#f0523c0a6f11a9be4bde3ef5f4657f74a992bbfa"
+  integrity sha512-apo40Pus8maNBOBJSjYMh2T5cnAZRGuZc0B12X6S8eNesaPJ2InWan71jlmgn2+d1m8e0a0zdP3cFBDY09c6iA==
+
 codesandbox-import-util-types@^2.1.9, codesandbox-import-util-types@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-2.2.1.tgz#fbd0babed213eed068ad8251f5cdb1a01e573171"

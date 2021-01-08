@@ -29,22 +29,6 @@ export const Component: Story<CodeEditorProps> = args => (
   </SandpackProvider>
 );
 
-export const CommitOnSave = () => (
-  <SandpackProvider
-    entry="/index.js"
-    files={{
-      '/index.js': {
-        code: 'const title = "This is a simple code editor"',
-      },
-    }}
-    dependencies={{}}
-  >
-    <SandpackWrapper>
-      <CodeEditor commitOnSave />
-    </SandpackWrapper>
-  </SandpackProvider>
-);
-
 const reactTemplate = SANDBOX_TEMPLATES['create-react-app'] as SandboxTemplate;
 
 export const ReactCode = () => (

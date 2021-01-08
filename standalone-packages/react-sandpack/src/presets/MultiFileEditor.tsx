@@ -35,6 +35,7 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
       openPaths={Object.keys(editableFiles)}
       activePath={projectSetup.main}
       bundlerURL={bundlerURL}
+      showOpenInCodeSandbox={false}
     >
       <SandpackWrapper style={customStyle}>
         <CodeEditor showTabs showLineNumbers={showLineNumbers} />

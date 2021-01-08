@@ -6,7 +6,6 @@ import { styled } from '../../stitches.config';
 
 export interface CodeEditorProps {
   style?: React.CSSProperties;
-  commitOnSave?: boolean;
   lang?: 'js' | 'html';
   showTabs?: boolean;
   showLineNumbers?: boolean;
@@ -23,7 +22,6 @@ const CodeEditorWrapper = styled('div', {
 
 export const CodeEditor = ({
   style,
-  commitOnSave = false,
   lang,
   showTabs = false,
   showLineNumbers = false,
@@ -46,7 +44,6 @@ export const CodeEditor = ({
         code={code}
         lang={lang}
         onCodeUpdate={handleCodeUpdate}
-        commitOnSave={commitOnSave}
         showLineNumbers={showLineNumbers}
       />
     </CodeEditorWrapper>

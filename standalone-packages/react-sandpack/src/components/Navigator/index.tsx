@@ -28,6 +28,7 @@ const NavigatorInput = styled('input', {
   borderRadius: '$default',
   border: 0,
   flex: 1,
+  width: 0,
   height: '24px',
   fontSize: '$default',
 });

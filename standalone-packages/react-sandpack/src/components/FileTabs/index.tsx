@@ -10,19 +10,29 @@ export interface FileTabsProps {
 
 const Container = styled('div', {
   backgroundColor: '$mainBackground',
-  padding: '0 $4',
   border: '1px solid $inactive',
   margin: -1,
+});
+
+const ScrollableContainer = styled('div', {
+  padding: '0 $4',
+  overflow: 'auto',
+  display: 'flex',
+  flexWrap: 'nowrap',
+  alignItems: 'stretch',
   height: 40,
+  marginBottom: -1,
+  marginTop: -1,
 });
 
 const TabButton = styled('button', {
+  display: 'block',
   background: 'transparent',
   appearance: 'none',
   fontSize: 'inherit',
-  height: 39,
   padding: '0 $2',
   color: '$defaultText',
+  outline: 'none',
 
   border: 0,
   borderBottom: '1px solid transparent',
@@ -36,6 +46,10 @@ const TabButton = styled('button', {
   '&:hover': {
     color: '$highlightText',
   },
+
+  '&:focus-visible': {
+    outline: 'auto',
+  },
 });
 
 export const FileTabs: React.FC<FileTabsProps> = props => {
@@ -45,16 +59,18 @@ export const FileTabs: React.FC<FileTabsProps> = props => {
 
   return (
     <Container style={props.style}>
-      {openPaths.map(filePath => (
-        <TabButton
-          type="button"
-          key={filePath}
-          data-active={filePath === activePath}
-          onClick={() => changeActiveFile(filePath)}
-        >
-          {getFileName(filePath)}
-        </TabButton>
-      ))}
+      <ScrollableContainer>
+        {openPaths.map(filePath => (
+          <TabButton
+            type="button"
+            key={filePath}
+            data-active={filePath === activePath}
+            onClick={() => changeActiveFile(filePath)}
+          >
+            {getFileName(filePath)}
+          </TabButton>
+        ))}
+      </ScrollableContainer>
     </Container>
   );
 };

@@ -68,7 +68,6 @@ export interface ISandpackState {
   updateCurrentFile: (file: IFile) => void;
   openFile: (path: string) => void;
   changeActiveFile: (path: string) => void;
-  updateFiles: (files: IFiles) => void;
 }
 
 export type SandpackListener = (msg: any) => void;

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import {
   highlightSpecialChars,
@@ -6,7 +6,6 @@ import {
   indentOnInput,
   keymap,
   EditorView,
-  Command,
   KeyBinding,
 } from '@codemirror/next/view';
 import { EditorState } from '@codemirror/next/state';
@@ -48,7 +47,6 @@ export interface CodeMirrorProps {
   activePath: string;
   onCodeUpdate: (newCode: string) => void;
   lang?: 'js' | 'html';
-  commitOnSave?: boolean;
   showLineNumbers?: boolean;
 }
 
@@ -56,7 +54,6 @@ const Container = styled('div', {
   padding: '$4 $2',
   flex: 1,
   width: '100%',
-  height: '100%',
 
   '.cm-wrap': {
     height: '100%',
@@ -89,12 +86,10 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
   activePath,
   onCodeUpdate,
   lang = 'js',
-  commitOnSave = false,
   showLineNumbers = false,
 }) => {
   const wrapper = useRef<HTMLDivElement>(null);
   const cmView = useRef<EditorView>();
-  const [uncommittedChanges, setUncommittedChanges] = useState(false);
 
   useEffect(() => {
     if (!wrapper.current) {
@@ -111,10 +106,6 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
         run: indentLess,
       },
     ];
-
-    if (commitOnSave) {
-      customCommandsKeymap.push({ key: 'Mod-s', run: updateCode });
-    }
 
     const extensions = [
       highlightSpecialChars(),
@@ -162,11 +153,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
         view.update([tr]);
 
         if (tr.docChanged) {
-          if (commitOnSave) {
-            setUncommittedChanges(true);
-          } else {
-            onCodeUpdate(tr.newDoc.sliceString(0, tr.newDoc.length));
-          }
+          onCodeUpdate(tr.newDoc.sliceString(0, tr.newDoc.length));
         }
       },
     });
@@ -176,7 +163,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     return () => {
       view.destroy();
     };
-  }, [lang, commitOnSave, showLineNumbers]);
+  }, [lang, showLineNumbers]);
 
   useEffect(() => {
     const view = cmView.current;
@@ -194,21 +181,5 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     // eslint-disable-next-line
   }, [activePath]);
 
-  const updateCode: Command = () => {
-    const view = cmView.current;
-    if (!view) {
-      return false;
-    }
-
-    onCodeUpdate(view.state.sliceDoc(0, view.state.doc.length));
-    setUncommittedChanges(false);
-
-    return true;
-  };
-
-  return (
-    <Container ref={wrapper}>
-      {uncommittedChanges && <span>Press Cmd/Ctrl+S to run the changes</span>}
-    </Container>
-  );
+  return <Container ref={wrapper} />;
 };
