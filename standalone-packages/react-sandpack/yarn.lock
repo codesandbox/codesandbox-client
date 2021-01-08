@@ -8658,9 +8658,9 @@ lezer-xml@^0.12.0:
     lezer "^0.12.0"
 
 lezer@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/lezer/-/lezer-0.12.0.tgz#43b3c1d915e6b7191f104aea233039c39f7f74a3"
-  integrity sha512-vkpuF9N+1uRAf67hVqE0h70/2xgawAoF+9mtJ8sq5v4GTNrulGdKPw/y38yrshp6wuUk/PeAkmUflyjk288q4w==
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/lezer/-/lezer-0.12.1.tgz#0bfab0f07b568bfb7701dfd97a81aac34daf7edf"
+  integrity sha512-CK/kfRFzRGAh5nZ8hOTi6/6o3XnL7TWoJBLHg/xOYBpzFs7E50qUEYNehMYHZSyGugpeq8d121lkmRgn7t397g==
   dependencies:
     lezer-tree "^0.12.0"
 
@@ -12487,9 +12487,9 @@ style-loader@^1.2.1:
     schema-utils "^2.7.0"
 
 style-mod@^3.0.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/style-mod/-/style-mod-3.1.0.tgz#70b50ee3b763517470669226a8a728269ab5c039"
-  integrity sha512-0N9E+FSiBMBgwek1njE4Vt2WMmWZReTrKfCY6xUCXuHLJcjXxJrPG504dH2oufQHhEZp0aZs3v/uVHRz5LepTA==
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/style-mod/-/style-mod-3.2.1.tgz#daaa4ad2a8b2880b4c07b29c061d49b5db6cab15"
+  integrity sha512-cQerrMLHjR/fxC4DWC2dRrXc11hvsM7lJ2vtuMOHWU5IG7Deu5RfTbttjbY4xiRAWs3gFIZZFf694jzNPW1Ehw==
 
 style-to-object@0.3.0, style-to-object@^0.3.0:
   version "0.3.0"
