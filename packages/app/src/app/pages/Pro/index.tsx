@@ -292,7 +292,7 @@ const prettyPermissions = {
 
 const Upgrade = () => {
   const {
-    state: { personalWorkspaceId, user, activeTeam, activeTeamInfo, dashboard },
+    state: { personalWorkspaceId, user, activeTeam, dashboard },
     actions: { setActiveTeam },
   } = useOvermind();
 
@@ -307,8 +307,10 @@ const Upgrade = () => {
         pathname: location.pathname,
         search: '?v=2&workspace=' + activeTeam,
       });
+    } else if (workspaceId !== activeTeam) {
+      setActiveTeam({ id: workspaceId });
     }
-  }, [workspaceId, activeTeam, history, location]);
+  }, [workspaceId, activeTeam, history, location, setActiveTeam]);
 
   if (!activeTeam || !dashboard.teams.length) return null;
 
@@ -331,16 +333,20 @@ const Upgrade = () => {
     ),
   ];
 
+  const activeWorkspace = workspaces.find(
+    workspace => workspace.id === activeTeam
+  );
+
   const isPersonalWorkspace = personalWorkspaceId === activeTeam;
-  const numberOfViewers = activeTeamInfo.userAuthorizations.filter(
+  const numberOfViewers = activeWorkspace.userAuthorizations.filter(
     ({ authorization }) => authorization === TeamMemberAuthorization.Read
   ).length;
-  const numberOfEditors = activeTeamInfo.userAuthorizations.filter(
+  const numberOfEditors = activeWorkspace.userAuthorizations.filter(
     ({ authorization }) => authorization !== TeamMemberAuthorization.Read
   ).length;
 
   const isPersonalPro = isPersonalWorkspace || user.subscription;
-  const isTeamPro = activeTeamInfo.joinedPilotAt;
+  const isTeamPro = activeWorkspace.joinedPilotAt;
 
   let currentPlanName: string;
   if (isTeamPro) currentPlanName = 'Team Pro';
@@ -356,10 +362,10 @@ const Upgrade = () => {
         direction="vertical"
         gap={10}
         css={css({
-          width: 320,
+          width: 360,
           backgroundColor: 'grays.700',
           borderRadius: 'medium',
-          padding: 6,
+          padding: 8,
         })}
       >
         <Stack direction="vertical" gap={6}>
@@ -395,12 +401,12 @@ const Upgrade = () => {
                   <Stack gap={2} as="span" align="center">
                     <Stack as="span" align="center" justify="center">
                       <TeamAvatar
-                        avatar={activeTeamInfo.avatarUrl}
-                        name={activeTeamInfo.name}
+                        avatar={activeWorkspace.avatarUrl}
+                        name={activeWorkspace.name}
                       />
                     </Stack>
                     <Text size={4} weight="normal" maxWidth={140}>
-                      {activeTeamInfo.name}
+                      {activeWorkspace.name}
                     </Text>
                   </Stack>
                   <Icon name="caret" size={8} />
@@ -441,10 +447,10 @@ const Upgrade = () => {
                         }
                         onSelect={() => {
                           if (
-                            userAuthorization !== TeamMemberAuthorization.Admin
-                          )
-                            return;
-                          setActiveTeam({ id: workspace.id });
+                            userAuthorization === TeamMemberAuthorization.Admin
+                          ) {
+                            setActiveTeam({ id: workspace.id });
+                          }
                         }}
                       >
                         <Stack gap={2} align="center" css={{ width: '100%' }}>
@@ -460,7 +466,7 @@ const Upgrade = () => {
                           </Text>
                         </Stack>
 
-                        {activeTeamInfo.id === workspace.id && (
+                        {activeWorkspace.id === workspace.id && (
                           <Icon name="simpleCheck" />
                         )}
 

@@ -2071,7 +2071,10 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
       'personalWorkspaceId'
     > & {
         workspaces: Array<
-          { __typename?: 'Team' } & Pick<Team, 'id' | 'name' | 'avatarUrl'> & {
+          { __typename?: 'Team' } & Pick<
+            Team,
+            'id' | 'name' | 'avatarUrl' | 'joinedPilotAt'
+          > & {
               userAuthorizations: Array<
                 { __typename?: 'UserAuthorization' } & Pick<
                   UserAuthorization,

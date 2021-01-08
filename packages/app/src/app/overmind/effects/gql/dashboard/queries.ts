@@ -211,6 +211,7 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
         id
         name
         avatarUrl
+        joinedPilotAt
         userAuthorizations {
           userId
           authorization
