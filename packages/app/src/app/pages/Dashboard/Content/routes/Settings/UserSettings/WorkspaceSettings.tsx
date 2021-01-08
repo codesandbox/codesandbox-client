@@ -161,7 +161,7 @@ export const WorkspaceSettings = () => {
             </Stack>
             <Button
               as="a"
-              href="https://codesandbox.io/pro"
+              href={`https://codesandbox.io/pro?workspaceId=${activeTeam}`}
               target="_blank"
               marginTop={2}
             >
