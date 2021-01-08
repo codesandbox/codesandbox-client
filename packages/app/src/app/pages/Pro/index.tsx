@@ -1,17 +1,26 @@
 import { format } from 'date-fns';
 import { Helmet } from 'react-helmet';
 import React from 'react';
+import { sortBy } from 'lodash-es';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useOvermind } from 'app/overmind';
+import { Navigation } from 'app/pages/common/Navigation';
 
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import { ThemeProvider, Switch, Stack, Text } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  ThemeProvider,
+  Switch,
+  Stack,
+  Text,
+  Menu,
+  Icon,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
-import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
-
-import { useOvermind } from 'app/overmind';
-import { Navigation } from 'app/pages/common/Navigation';
-import { useLocation } from 'react-router-dom';
+import { TeamAvatar } from 'app/components/TeamAvatar';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 
 import { SubscribeForm } from './subscribe-form';
 import {
@@ -66,7 +75,12 @@ const ProPage: React.FC = () => {
 
     if (!isLoggedIn) return <SignInModalElement />;
 
-    if (location.search.includes('upgrade')) return <Upgrade />;
+    if (
+      location.search.includes('workspaceId') &&
+      location.search.includes('v=2')
+    ) {
+      return <Upgrade />;
+    }
 
     if (!user.subscription) {
       return (
@@ -275,39 +289,46 @@ const Expiring = ({
   </MaxWidth>
 );
 
+const prettyPermissions = {
+  ADMIN: 'Admin',
+  WRITE: 'Editor',
+  READ: 'Viewer',
+};
+
 const Upgrade = () => {
   const {
     state: { personalWorkspaceId, user, activeTeam, activeTeamInfo, dashboard },
     actions,
   } = useOvermind();
+  const history = useHistory();
 
-  const [activeAccount, setActiveAccount] = React.useState<{
-    id: string;
-    name: string;
-    avatarUrl: string;
-  } | null>(null);
+  if (!activeTeam || !dashboard.teams.length) return null;
 
-  React.useEffect(() => {
-    if (activeTeam) {
-      const team = dashboard.teams.find(({ id }) => id === activeTeam);
+  const personalWorkspace = dashboard.teams.find(
+    t => t.id === personalWorkspaceId
+  )!;
 
-      if (team)
-        setActiveAccount({
-          id: team.id,
-          name: team.name,
-          avatarUrl: team.avatarUrl,
-        });
-    }
-  }, [activeTeam, activeTeamInfo, dashboard.teams]);
+  const getUserAuthorization = workspace => {
+    const userAuthorization = workspace.userAuthorizations.find(
+      authorization => authorization.userId === user.id
+    ).authorization;
+    return userAuthorization;
+  };
 
-  if (!activeAccount) return null;
+  const workspaces = [
+    personalWorkspace,
+    ...sortBy(
+      dashboard.teams.filter(t => t.id !== personalWorkspaceId),
+      [getUserAuthorization, 'name']
+    ),
+  ];
 
   const isPersonalWorkspace = personalWorkspaceId === activeTeam;
-  const numberOfEditors = activeTeamInfo.userAuthorizations.filter(member =>
-    ['ADMIN', 'WRITE'].includes(member.authorization)
+  const numberOfViewers = activeTeamInfo.userAuthorizations.filter(
+    ({ authorization }) => authorization === TeamMemberAuthorization.Read
   ).length;
-  const numberOfViewers = activeTeamInfo.userAuthorizations.filter(member =>
-    ['READ'].includes(member.authorization)
+  const numberOfEditors = activeTeamInfo.userAuthorizations.filter(
+    ({ authorization }) => authorization !== TeamMemberAuthorization.Read
   ).length;
 
   const isPersonalPro = isPersonalWorkspace || user.subscription;
@@ -315,12 +336,21 @@ const Upgrade = () => {
 
   let currentPlanName: string;
   if (isTeamPro) currentPlanName = 'Team Pro';
-  else if (isPersonalPro) currentPlanName = 'Personal Pro';
-  else currentPlanName = 'Community workspace (Free)';
+  else if (isPersonalWorkspace && isPersonalPro) {
+    currentPlanName = 'Personal Pro';
+  } else currentPlanName = 'Community workspace (Free)';
 
   return (
     <Stack justify="center" align="center" css={css({ fontSize: 3 })}>
-      <div css={{ width: 300 }}>
+      <div
+        css={css({
+          width: 320,
+          backgroundColor: 'grays.700',
+          borderRadius: 'medium',
+          paddingY: 6,
+          paddingX: '120px',
+        })}
+      >
         <Text
           as="h1"
           size={8}
@@ -329,7 +359,7 @@ const Upgrade = () => {
           weight="bold"
           marginBottom={6}
         >
-          Upgrade to <br />
+          Upgrade to {isPersonalWorkspace ? 'Personal' : ''} <br />
           Pro workspace
         </Text>
 
@@ -348,14 +378,127 @@ const Upgrade = () => {
                 },
               })}
             >
-              <WorkspaceSelect
-                onSelect={workspace => {
-                  actions.setActiveTeam({
-                    id: workspace.id,
-                  });
-                }}
-                activeAccount={activeAccount}
-              />
+              <Menu>
+                <Stack
+                  as={Menu.Button}
+                  justify="space-between"
+                  align="center"
+                  css={css({
+                    width: '100%',
+                    height: '100%',
+                    paddingLeft: 2,
+                    borderRadius: 0,
+                    '&:hover': {
+                      backgroundColor: 'grays.600',
+                    },
+                  })}
+                >
+                  <Stack gap={2} as="span" align="center">
+                    <Stack as="span" align="center" justify="center">
+                      <TeamAvatar
+                        avatar={activeTeamInfo.avatarUrl}
+                        name={activeTeamInfo.name}
+                      />
+                    </Stack>
+                    <Text size={4} weight="normal" maxWidth={140}>
+                      {activeTeamInfo.name}
+                    </Text>
+                  </Stack>
+                  <Icon name="caret" size={8} />
+                </Stack>
+                <Menu.List
+                  css={css({
+                    width: '100%',
+                    maxWidth: 320,
+                    marginTop: '-4px',
+                    backgroundColor: 'grays.600',
+                  })}
+                  style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
+                >
+                  {workspaces.map(workspace => {
+                    const userAuthorization = getUserAuthorization(workspace);
+
+                    return (
+                      <Stack
+                        as={Menu.Item}
+                        key={workspace.id}
+                        justify="space-between"
+                        align="center"
+                        css={css({
+                          height: 10,
+                          textAlign: 'left',
+                          backgroundColor: 'grays.600',
+                          borderBottom: '1px solid',
+                          borderColor: 'grays.500',
+                          '&[data-reach-menu-item][data-component=MenuItem][data-selected]': {
+                            backgroundColor: 'grays.500',
+                          },
+                        })}
+                        style={{ paddingLeft: 8 }}
+                        data-disabled={
+                          userAuthorization !== TeamMemberAuthorization.Admin
+                            ? true
+                            : null
+                        }
+                        onSelect={() => {
+                          if (
+                            userAuthorization !== TeamMemberAuthorization.Admin
+                          )
+                            return;
+                          actions.setActiveTeam({ id: workspace.id });
+                        }}
+                      >
+                        <Stack gap={2} align="center" css={{ width: '100%' }}>
+                          <TeamAvatar
+                            avatar={workspace.avatarUrl}
+                            name={workspace.name}
+                            size="small"
+                          />
+                          <Text size={3} maxWidth="100%">
+                            {workspace.name}
+                            {workspace.id === personalWorkspaceId &&
+                              ' (Personal)'}
+                          </Text>
+                        </Stack>
+
+                        {activeTeamInfo.id === workspace.id && (
+                          <Icon name="simpleCheck" />
+                        )}
+
+                        {userAuthorization !== TeamMemberAuthorization.Admin &&
+                          prettyPermissions[userAuthorization]}
+                      </Stack>
+                    );
+                  })}
+                  <Stack
+                    as={Menu.Item}
+                    align="center"
+                    gap={2}
+                    css={css({
+                      height: 10,
+                      textAlign: 'left',
+                    })}
+                    style={{ paddingLeft: 8 }}
+                    onSelect={() =>
+                      history.push(dashboardUrls.createWorkspace())
+                    }
+                  >
+                    <Stack
+                      justify="center"
+                      align="center"
+                      css={css({
+                        size: 6,
+                        borderRadius: 'small',
+                        border: '1px solid',
+                        borderColor: 'grays.500',
+                      })}
+                    >
+                      <Icon name="plus" size={10} />
+                    </Stack>
+                    <Text size={3}>Create a new workspace</Text>
+                  </Stack>
+                </Menu.List>
+              </Menu>
             </Stack>
           </Stack>
 
@@ -398,7 +541,9 @@ const Upgrade = () => {
           )}
         </Stack>
 
-        <Button>Upgrade to Pro Workspace</Button>
+        {(isPersonalWorkspace && isPersonalPro) || isTeamPro ? null : (
+          <Button>Upgrade to Pro Workspace</Button>
+        )}
       </div>
     </Stack>
   );
