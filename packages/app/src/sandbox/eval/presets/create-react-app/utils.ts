@@ -100,5 +100,5 @@ export const aliases = {
   'react-native/Libraries/Image/resolveAssetSource$':
     'expo-asset/build/resolveAssetSource',
   // Alias react-native-svg to svgs
-  'react-native-svg': 'svgs'
+  'react-native-svg$': 'svgs'
 };
