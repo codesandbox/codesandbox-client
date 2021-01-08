@@ -461,8 +461,8 @@ try {
 
   self.importScripts(
     process.env.NODE_ENV === 'development'
-      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.8.1.js`
-      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.8.1.min.js`
+      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.12.12.js`
+      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.12.12.min.js`
   );
 } catch (e) {
   console.error(e);
