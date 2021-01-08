@@ -29,10 +29,6 @@ const Careers = () => {
 
   const jobs = [
     {
-      title: 'Product Engineer (Front-end)',
-      url: 'https://codesandbox.recruitee.com/o/product-engineer-frontend',
-    },
-    {
       title: 'Product Growth Engineer',
       url:
         'https://codesandbox.recruitee.com/o/product-growth-engineer-amsterdam',
@@ -47,18 +43,9 @@ const Careers = () => {
       url: 'https://codesandbox.recruitee.com/o/head-of-engineering',
     },
     {
-      title: 'Product Designer',
-      url: 'https://codesandbox.recruitee.com/o/product-designer',
-    },
-    {
       title: 'Data Analyst',
       url: 'https://codesandbox.recruitee.com/o/data-analyst',
-    },
-    {
-      title: 'Developer Marketing Coordinator',
-      url:
-        'https://codesandbox.recruitee.com/o/developer-marketing-coordinator',
-    },
+    }
   ];
 
   return (
