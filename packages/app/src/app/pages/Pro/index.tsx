@@ -75,12 +75,7 @@ const ProPage: React.FC = () => {
 
     if (!isLoggedIn) return <SignInModalElement />;
 
-    if (
-      location.search.includes('workspaceId') &&
-      location.search.includes('v=2')
-    ) {
-      return <Upgrade />;
-    }
+    if (location.search.includes('v=2')) return <Upgrade />;
 
     if (!user.subscription) {
       return (
@@ -298,9 +293,22 @@ const prettyPermissions = {
 const Upgrade = () => {
   const {
     state: { personalWorkspaceId, user, activeTeam, activeTeamInfo, dashboard },
-    actions,
+    actions: { setActiveTeam },
   } = useOvermind();
+
+  const location = useLocation();
   const history = useHistory();
+  const workspaceId = new URLSearchParams(location.search).get('workspace');
+
+  React.useEffect(() => {
+    // set workspace in url when coming from places without workspace context
+    if (activeTeam && !workspaceId) {
+      history.replace({
+        pathname: location.pathname,
+        search: '?v=2&workspace=' + activeTeam,
+      });
+    }
+  }, [workspaceId, activeTeam, history, location]);
 
   if (!activeTeam || !dashboard.teams.length) return null;
 
@@ -340,30 +348,21 @@ const Upgrade = () => {
     currentPlanName = 'Personal Pro';
   } else currentPlanName = 'Community workspace (Free)';
 
+  const onPaidPlan = isTeamPro || (isPersonalWorkspace && isPersonalPro);
+
   return (
     <Stack justify="center" align="center" css={css({ fontSize: 3 })}>
-      <div
+      <Stack
+        direction="vertical"
+        gap={10}
         css={css({
           width: 320,
           backgroundColor: 'grays.700',
           borderRadius: 'medium',
-          paddingY: 6,
-          paddingX: '120px',
+          padding: 6,
         })}
       >
-        <Text
-          as="h1"
-          size={8}
-          block
-          align="center"
-          weight="bold"
-          marginBottom={6}
-        >
-          Upgrade to {isPersonalWorkspace ? 'Personal' : ''} <br />
-          Pro workspace
-        </Text>
-
-        <Stack direction="vertical" gap={6} marginBottom={10}>
+        <Stack direction="vertical" gap={6}>
           <Stack direction="vertical" gap={1}>
             <Text>Workspace</Text>
             <Stack
@@ -445,7 +444,7 @@ const Upgrade = () => {
                             userAuthorization !== TeamMemberAuthorization.Admin
                           )
                             return;
-                          actions.setActiveTeam({ id: workspace.id });
+                          setActiveTeam({ id: workspace.id });
                         }}
                       >
                         <Stack gap={2} align="center" css={{ width: '100%' }}>
@@ -541,10 +540,8 @@ const Upgrade = () => {
           )}
         </Stack>
 
-        {(isPersonalWorkspace && isPersonalPro) || isTeamPro ? null : (
-          <Button>Upgrade to Pro Workspace</Button>
-        )}
-      </div>
+        {onPaidPlan ? null : <Button>Upgrade to Pro Workspace</Button>}
+      </Stack>
     </Stack>
   );
 };
