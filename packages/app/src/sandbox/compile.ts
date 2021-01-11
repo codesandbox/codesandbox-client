@@ -678,9 +678,15 @@ async function compile({
         // preferred.
         const serverProvidedHTML =
           modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-        if (!serverProvidedHTML || !firstLoad || process.env.LOCAL_SERVER) {
+        if (
+          !serverProvidedHTML ||
+          !firstLoad ||
+          process.env.LOCAL_SERVER ||
+          process.env.SANDPACK
+        ) {
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-          // on the first run.
+          // on the first run. However, if there's no server to provide the static file (in the case of a local server
+          // or sandpack), then do it anyways.
           document.body.innerHTML = body;
         }
         lastBodyHTML = body;
