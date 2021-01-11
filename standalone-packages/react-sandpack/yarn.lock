@@ -1281,7 +1281,7 @@
     "@codemirror/state" "^0.17.0"
     "@codemirror/view" "^0.17.0"
 
-"@codemirror/lang-css@^0.17.0":
+"@codemirror/lang-css@^0.17.0", "@codemirror/lang-css@^0.17.1":
   version "0.17.1"
   resolved "https://registry.yarnpkg.com/@codemirror/lang-css/-/lang-css-0.17.1.tgz#b6090838e51846a63dbcf32dd143cd1890ab29d4"
   integrity sha512-IwH22Fu7oW3o9jtZsQV9aNZ4w2S4xktlVoJ08Z8VmnXe2Nlb7okQWPibtpryIfe4LGcmdN/n6YTpGjkveC8BEA==
@@ -12112,10 +12112,10 @@ slide@^1.1.3:
   resolved "https://registry.yarnpkg.com/slide/-/slide-1.1.6.tgz#56eb027d65b4d2dce6cb2e2d32c4d4afc9e1d707"
   integrity sha1-VusCfWW00tzmyy4tMsTUr8nh1wc=
 
-smooshpack@^1.0.0-alpha-6:
-  version "1.0.0-alpha-6"
-  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-1.0.0-alpha-6.tgz#1c3b5950e9660f2412d9e1ed2acd2f5b37cbcf92"
-  integrity sha512-jVCZ4sOyjh8zoX11kGwM5FEqwzOw9tRD2SKmpD1v4DE2g97g+HK/0Z5dUazM4+MUByS1S4m406xkZY9QJ7gDNw==
+smooshpack@^1.0.0-alpha-7:
+  version "1.0.0-alpha-7"
+  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-1.0.0-alpha-7.tgz#3512ce1e9f7b90d112b64ebba5ba28cfb08b2108"
+  integrity sha512-4vWVgrrDLmpycZbZGmVXrKpN/WBHBKXqoS47Czzoj750bHjiDkq3+qh7Y42wNmLmUXtjc9VBd1SZHxEOSBtmew==
   dependencies:
     codesandbox-api "0.0.26"
     codesandbox-import-utils "^1.2.3"

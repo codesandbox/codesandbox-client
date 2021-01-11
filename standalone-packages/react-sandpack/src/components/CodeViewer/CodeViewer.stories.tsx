@@ -18,7 +18,7 @@ export const Component: Story<CodeViewerProps> = args => (
     entry="/index.js"
     files={{
       '/index.js': {
-        code: 'const title = "This is a simple code editor"; const b = true;',
+        code: 'const title = "This is a simple code editor"',
       },
     }}
     dependencies={{}}
@@ -40,7 +40,7 @@ export const ReactCode = () => (
     dependencies={reactTemplate.dependencies}
   >
     <SandpackWrapper>
-      <CodeViewer lang="jsx" />
+      <CodeViewer />
     </SandpackWrapper>
   </SandpackProvider>
 );
@@ -56,7 +56,7 @@ export const VueCode = () => (
     dependencies={vueTemplate.dependencies}
   >
     <SandpackWrapper>
-      <CodeViewer lang="markup" />
+      <CodeViewer />
     </SandpackWrapper>
   </SandpackProvider>
 );

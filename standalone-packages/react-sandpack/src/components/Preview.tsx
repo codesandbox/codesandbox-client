@@ -20,6 +20,7 @@ const Wrapper = styled('div', {
 const PreviewFrame = styled('div', {
   width: '100%',
   flex: 1,
+  position: 'relative',
 });
 
 export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {

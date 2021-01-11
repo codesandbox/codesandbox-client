@@ -17,19 +17,19 @@ import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets';
 
 import { commentKeymap } from '@codemirror/comment';
 
-import { javascript } from '@codemirror/lang-javascript';
-import { html } from '@codemirror/lang-html';
+import {
+  getCodeMirrorLanguage,
+  getEditorTheme,
+  getSyntaxHighlight,
+} from './utils';
 
-import { getEditorTheme, getSyntaxHighlight } from './utils';
-
-import { styled } from '../../../stitches.config';
-import { ThemeContext } from '../../../utils/theme-context';
+import { styled } from '../../stitches.config';
+import { ThemeContext } from '../../utils/theme-context';
 
 export interface CodeMirrorProps {
   code: string;
   activePath: string;
   onCodeUpdate: (newCode: string) => void;
-  lang?: 'js' | 'html';
   showLineNumbers?: boolean;
 }
 
@@ -71,7 +71,6 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
   code,
   activePath,
   onCodeUpdate,
-  lang = 'js',
   showLineNumbers = false,
 }) => {
   const wrapper = React.useRef<HTMLDivElement>(null);
@@ -82,6 +81,8 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     if (!wrapper.current) {
       return () => {};
     }
+
+    const langSupport = getCodeMirrorLanguage(activePath);
 
     const customCommandsKeymap: KeyBinding[] = [
       {
@@ -109,7 +110,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
         ...commentKeymap,
         ...customCommandsKeymap,
       ]),
-      lang === 'js' ? javascript({ jsx: true }) : html(),
+      langSupport,
       getEditorTheme(theme),
       getSyntaxHighlight(theme),
     ];
@@ -140,23 +141,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     return () => {
       view.destroy();
     };
-  }, [lang, showLineNumbers]);
-
-  React.useEffect(() => {
-    const view = cmView.current;
-    if (view && code !== view.state.sliceDoc(0, view.state.doc.length)) {
-      view.update([
-        view.state.update({
-          changes: {
-            from: 0,
-            to: view?.state.doc.length,
-            insert: code,
-          },
-        }),
-      ]);
-    }
-    // eslint-disable-next-line
-  }, [activePath]);
+  }, [showLineNumbers, activePath]);
 
   return <Container ref={wrapper} />;
 };

@@ -6,7 +6,6 @@ import { styled } from '../../stitches.config';
 
 export interface CodeEditorProps {
   style?: React.CSSProperties;
-  lang?: 'js' | 'html';
   showTabs?: boolean;
   showLineNumbers?: boolean;
 }
@@ -22,7 +21,6 @@ const CodeEditorWrapper = styled('div', {
 
 export const CodeEditor = ({
   style,
-  lang,
   showTabs = false,
   showLineNumbers = false,
 }: CodeEditorProps) => {
@@ -43,7 +41,6 @@ export const CodeEditor = ({
       <CodeMirror
         activePath={activePath}
         code={code}
-        lang={lang}
         onCodeUpdate={handleCodeUpdate}
         showLineNumbers={showLineNumbers}
       />

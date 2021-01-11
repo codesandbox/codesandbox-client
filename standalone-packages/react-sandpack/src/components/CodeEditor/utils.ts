@@ -1,6 +1,9 @@
 import { EditorView } from '@codemirror/view';
 import { HighlightStyle, tags } from '@codemirror/highlight';
-import { SandpackTheme } from '../../../types';
+import { javascript } from '@codemirror/lang-javascript';
+import { html } from '@codemirror/lang-html';
+import { css } from '@codemirror/lang-css';
+import { SandpackTheme } from '../../types';
 
 export const getEditorTheme = (theme: SandpackTheme) =>
   EditorView.theme({
@@ -18,7 +21,7 @@ export const getEditorTheme = (theme: SandpackTheme) =>
 
     '$matchingBracket, $nonmatchingBracket': {
       color: 'inherit',
-      outline: `1px solid ${theme.palette.accent}`,
+      background: theme.palette.inactive,
     },
 
     $gutters: {
@@ -40,7 +43,10 @@ export const getSyntaxHighlight = (theme: SandpackTheme) =>
     { tag: tags.strong, fontWeight: 'bold' },
 
     { tag: tags.keyword, color: theme.syntax.keyword },
-    { tag: [tags.typeName, tags.namespace], color: theme.syntax.keyword }, // tags
+    {
+      tag: [tags.typeName, tags.namespace],
+      color: theme.syntax.tag,
+    },
     {
       tag: [
         tags.atom,
@@ -60,6 +66,28 @@ export const getSyntaxHighlight = (theme: SandpackTheme) =>
       tag: [tags.definition(tags.variableName), tags.local(tags.variableName)],
       color: theme.syntax.plain,
     },
-    { tag: tags.definition(tags.propertyName), color: theme.syntax.plain },
+    { tag: tags.definition(tags.propertyName), color: theme.syntax.property },
     { tag: tags.comment, color: theme.syntax.disabled, fontStyle: 'italic' }
   );
+
+export const getCodeMirrorLanguage = (filePath: string) => {
+  const extensionDotIndex = filePath.lastIndexOf('.');
+  const extension = filePath.slice(extensionDotIndex + 1);
+
+  switch (extension) {
+    case 'js':
+    case 'jsx':
+    case 'ts':
+    case 'tsx':
+      return javascript({ jsx: true });
+    case 'vue':
+    case 'html':
+      return html();
+    case 'css':
+    case 'scss':
+    case 'less':
+      return css();
+    default:
+      return javascript();
+  }
+};

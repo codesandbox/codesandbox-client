@@ -1,4 +1,4 @@
-import { PrismTheme } from 'prism-react-renderer';
+import { PrismTheme, Language } from 'prism-react-renderer';
 import { SandpackTheme } from '../../types';
 
 export const getPrismTheme = (theme: SandpackTheme): PrismTheme => ({
@@ -49,23 +49,45 @@ export const getPrismTheme = (theme: SandpackTheme): PrismTheme => ({
       },
     },
     {
-      types: ['atrule', 'keyword', 'attr-name', 'selector'],
+      types: ['atrule', 'attr-name', 'selector'],
       style: {
         color: theme.syntax.property,
       },
     },
     {
-      types: ['function', 'deleted', 'tag'],
+      types: ['function', 'deleted'],
       style: {
         color: theme.syntax.plain,
       },
     },
-
     {
-      types: ['tag', 'selector', 'keyword'],
+      types: ['tag'],
+      style: {
+        color: theme.syntax.tag,
+      },
+    },
+    {
+      types: ['keyword'],
       style: {
         color: theme.syntax.keyword,
       },
     },
   ],
 });
+
+export const getPrismLanguage = (filePath: string): Language => {
+  const extensionDotIndex = filePath.lastIndexOf('.');
+  const extension = filePath.slice(extensionDotIndex + 1);
+
+  switch (extension) {
+    case 'js':
+      return 'jsx';
+    case 'ts':
+      return 'typescript';
+    case 'vue':
+    case 'html':
+      return 'markup';
+    default:
+      return extension as Language;
+  }
+};

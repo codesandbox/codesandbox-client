@@ -42,7 +42,7 @@ export const ReactCode = () => (
     dependencies={reactTemplate.dependencies}
   >
     <SandpackWrapper>
-      <CodeEditor lang="js" />
+      <CodeEditor />
     </SandpackWrapper>
   </SandpackProvider>
 );
@@ -58,7 +58,7 @@ export const VueCode = () => (
     dependencies={vueTemplate.dependencies}
   >
     <SandpackWrapper>
-      <CodeEditor lang="html" />
+      <CodeEditor />
     </SandpackWrapper>
   </SandpackProvider>
 );
@@ -73,7 +73,7 @@ export const DarkTheme = () => (
       dependencies={vueTemplate.dependencies}
     >
       <SandpackWrapper className={compileStitchesTheme(SandpackDarkTheme)}>
-        <CodeEditor lang="html" />
+        <CodeEditor />
       </SandpackWrapper>
     </SandpackProvider>
   </ThemeProvider>

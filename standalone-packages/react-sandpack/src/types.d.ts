@@ -126,6 +126,7 @@ export type SandpackTheme = {
     keyword: string;
     definition: string;
     property: string;
+    tag: string;
     static: string;
   };
 };

@@ -33,6 +33,7 @@ const TabButton = styled('button', {
   padding: '0 $2',
   color: '$defaultText',
   outline: 'none',
+  height: 40, // safari fix
 
   border: 0,
   borderBottom: '1px solid transparent',
