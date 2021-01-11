@@ -47,7 +47,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ...props
 }) => {
   const { state, actions } = useOvermind();
-
   const [activeAccount, setActiveAccount] = useState<{
     id: string;
     name: string;
