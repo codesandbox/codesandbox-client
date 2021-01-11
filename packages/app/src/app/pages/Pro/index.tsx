@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import React from 'react';
 import { sortBy } from 'lodash-es';
 import { useHistory, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
@@ -17,6 +18,7 @@ import {
   Text,
   Menu,
   Icon,
+  Button as ComponentsButton,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
@@ -360,15 +362,17 @@ const Upgrade = () => {
     <Stack justify="center" align="center" css={css({ fontSize: 3 })}>
       <Stack
         direction="vertical"
-        gap={10}
+        as={motion.div}
+        initial={{ height: 'auto' }}
+        animate={{ height: 'auto' }}
         css={css({
           width: 360,
-          backgroundColor: 'grays.700',
+          backgroundColor: 'grays.600',
           borderRadius: 'medium',
           padding: 8,
         })}
       >
-        <Stack direction="vertical" gap={6}>
+        <Stack direction="vertical">
           <Stack direction="vertical" gap={1}>
             <Text>Workspace</Text>
             <Stack
@@ -413,8 +417,7 @@ const Upgrade = () => {
                 </Stack>
                 <Menu.List
                   css={css({
-                    width: '100%',
-                    maxWidth: 320,
+                    width: '296px',
                     marginTop: '-4px',
                     backgroundColor: 'grays.600',
                   })}
@@ -516,37 +519,59 @@ const Upgrade = () => {
               border: '1px solid',
               borderColor: 'grays.500',
               borderRadius: 'small',
+              marginTop: 6,
             })}
           >
             <Text weight="semibold">Current plan</Text>
             <Text>{currentPlanName}</Text>
           </Stack>
 
-          {isPersonalWorkspace ? null : (
-            <Stack
-              direction="vertical"
-              gap={1}
-              css={css({
-                paddingX: 4,
-                paddingY: 2,
-                border: '1px solid',
-                borderColor: 'grays.500',
-                borderRadius: 'small',
-              })}
-            >
-              <Text weight="semibold">
-                {numberOfEditors} {numberOfEditors === 1 ? 'Editor' : 'Editors'}{' '}
-                on your team
-              </Text>
-              <Text variant="muted">
-                ({numberOfViewers}{' '}
-                {numberOfViewers === 1 ? 'viewer' : 'viewers'} on your team)
-              </Text>
-            </Stack>
-          )}
+          <AnimatePresence>
+            {!isPersonalWorkspace && (
+              <motion.div
+                initial={{ height: 0, marginTop: 0 }}
+                animate={{ height: 'auto', marginTop: 24 }}
+                exit={{ height: 0, marginTop: 0 }}
+                style={{ overflow: 'hidden' }}
+              >
+                <Stack
+                  direction="vertical"
+                  gap={1}
+                  css={css({
+                    paddingX: 4,
+                    paddingY: 2,
+                    border: '1px solid',
+                    borderColor: 'grays.500',
+                    borderRadius: 'small',
+                    overflow: 'hidden',
+                  })}
+                >
+                  <Text weight="semibold">
+                    {numberOfEditors}{' '}
+                    {numberOfEditors === 1 ? 'Editor' : 'Editors'} on your team
+                  </Text>
+                  <Text variant="muted">
+                    ({numberOfViewers}{' '}
+                    {numberOfViewers === 1 ? 'viewer' : 'viewers'} on your team)
+                  </Text>
+                </Stack>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Stack>
 
-        {onPaidPlan ? null : <Button>Upgrade to Pro Workspace</Button>}
+        <AnimatePresence>
+          {!onPaidPlan && (
+            <motion.div
+              initial={{ height: 0, opacity: 0, marginTop: 0 }}
+              animate={{ height: 'auto', opacity: 1, marginTop: 40 }}
+              exit={{ height: 0, opacity: 0, marginTop: 0 }}
+              style={{ overflow: 'hidden' }}
+            >
+              <ComponentsButton>Upgrade to Pro Workspace</ComponentsButton>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Stack>
     </Stack>
   );
