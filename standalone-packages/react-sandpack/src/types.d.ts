@@ -110,3 +110,22 @@ export type SandboxEnvironment =
   | 'ember'
   | 'custom'
   | 'babel-repl';
+
+export type SandpackTheme = {
+  palette: {
+    highlightText: string;
+    defaultText: string;
+    inactive: string;
+    mainBackground: string;
+    inputBackground: string;
+    accent: string;
+  };
+  syntax: {
+    plain: string;
+    disabled: string;
+    keyword: string;
+    definition: string;
+    property: string;
+    static: string;
+  };
+};

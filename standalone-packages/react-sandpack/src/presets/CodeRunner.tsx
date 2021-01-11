@@ -6,6 +6,8 @@ import { IFile } from '../types';
 import { getSetup } from '../utils/sandbox-templates';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { PresetProps } from './types';
+import { SandpackLightTheme } from '../themes';
+import { compileStitchesTheme, ThemeProvider } from '../utils/theme-context';
 
 export interface CodeRunnerProps extends PresetProps {
   code?: string;
@@ -21,6 +23,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   showLineNumbers = false,
   customStyle,
   bundlerURL,
+  theme = SandpackLightTheme,
 }) => {
   const projectSetup = getSetup(template, customSetup);
 
@@ -36,6 +39,8 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
     };
   }
 
+  const className = compileStitchesTheme(theme);
+
   return (
     <SandpackProvider
       files={projectSetup.files}
@@ -45,11 +50,13 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       showOpenInCodeSandbox={false}
       bundlerURL={bundlerURL}
     >
-      <SandpackWrapper style={customStyle}>
-        {showCode && <CodeViewer showLineNumbers={showLineNumbers} />}
+      <ThemeProvider value={theme}>
+        <SandpackWrapper style={customStyle} className={className}>
+          {showCode && <CodeViewer showLineNumbers={showLineNumbers} />}
 
-        <Preview showNavigator={showNavigator} />
-      </SandpackWrapper>
+          <Preview showNavigator={showNavigator} />
+        </SandpackWrapper>
+      </ThemeProvider>
     </SandpackProvider>
   );
 };

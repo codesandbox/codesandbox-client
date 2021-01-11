@@ -27,6 +27,7 @@ export const CodeEditor = ({
   showLineNumbers = false,
 }: CodeEditorProps) => {
   const { sandpack } = useSandpack();
+
   const { activePath } = sandpack;
   const code = sandpack.files[activePath].code;
 

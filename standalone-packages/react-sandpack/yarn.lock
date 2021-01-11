@@ -1252,7 +1252,7 @@
     "@codemirror/text" "^0.17.0"
     "@codemirror/view" "^0.17.0"
 
-"@codemirror/gutter@^0.17.3":
+"@codemirror/gutter@^0.17.1":
   version "0.17.1"
   resolved "https://registry.yarnpkg.com/@codemirror/gutter/-/gutter-0.17.1.tgz#93fbefde25745d2e13b850718819ece0c7adc912"
   integrity sha512-lSOz2cWZlwKu6F4r1aqDe3c3UdF/XowemAYP6Hlf30TT1J+qw/wS1p99orVFQMDr0GeQb1Q2TnqBNuzJ15eIxA==

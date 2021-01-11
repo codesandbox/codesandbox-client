@@ -1,8 +1,9 @@
 import * as React from 'react';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer';
-import { ReactDocsTheme } from './ReactDocsTheme';
+import { getPrismTheme } from './utils';
 
 import { styled } from '../../stitches.config';
+import { ThemeContext } from '../../utils/theme-context';
 
 export interface PrismHighlightProps {
   lang?: Language;
@@ -48,34 +49,38 @@ export const PrismHighlight = ({
   style,
   code,
   showLineNumbers,
-}: PrismHighlightProps) => (
-  <StyledBlock style={style}>
-    <Highlight
-      {...defaultProps}
-      theme={ReactDocsTheme}
-      code={code}
-      language={lang}
-    >
-      {({
-        className,
-        style: preStyle,
-        tokens,
-        getLineProps,
-        getTokenProps,
-      }) => (
-        <pre className={className} style={preStyle}>
-          {tokens.map((line, i) => (
-            <Line {...getLineProps({ line, key: i })}>
-              {showLineNumbers && <LineNo>{i + 1}</LineNo>}
-              <LineContent>
-                {line.map((token, key) => (
-                  <span {...getTokenProps({ token, key })} />
-                ))}
-              </LineContent>
-            </Line>
-          ))}
-        </pre>
-      )}
-    </Highlight>
-  </StyledBlock>
-);
+}: PrismHighlightProps) => {
+  const theme = React.useContext(ThemeContext);
+
+  return (
+    <StyledBlock style={style}>
+      <Highlight
+        {...defaultProps}
+        theme={getPrismTheme(theme)}
+        code={code}
+        language={lang}
+      >
+        {({
+          className,
+          style: preStyle,
+          tokens,
+          getLineProps,
+          getTokenProps,
+        }) => (
+          <pre className={className} style={preStyle}>
+            {tokens.map((line, i) => (
+              <Line {...getLineProps({ line, key: i })}>
+                {showLineNumbers && <LineNo>{i + 1}</LineNo>}
+                <LineContent>
+                  {line.map((token, key) => (
+                    <span {...getTokenProps({ token, key })} />
+                  ))}
+                </LineContent>
+              </Line>
+            ))}
+          </pre>
+        )}
+      </Highlight>
+    </StyledBlock>
+  );
+};

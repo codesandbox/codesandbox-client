@@ -1,17 +1,11 @@
-import { SandboxEnvironment, SandboxTemplate } from '../types';
-
-export interface SandpackTheme {
-  // colors
-  // typography
-  // syntax
-}
+import { SandboxEnvironment, SandboxTemplate, SandpackTheme } from '../types';
 
 export interface PresetProps {
   template?: SandboxEnvironment;
   customSetup?: Partial<SandboxTemplate>;
   showNavigator?: boolean;
   showLineNumbers?: boolean;
-  theme?: 'light' | 'dark';
+  theme?: SandpackTheme;
   customStyle?: React.CSSProperties;
   bundlerURL?: string;
 }

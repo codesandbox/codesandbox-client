@@ -6,6 +6,8 @@ import { CodeEditor } from '../components/CodeEditor';
 import { Preview } from '../components/Preview';
 import { getSetup } from '../utils/sandbox-templates';
 import { PresetProps } from './types';
+import { SandpackLightTheme } from '../themes';
+import { compileStitchesTheme, ThemeProvider } from '../utils/theme-context';
 
 export interface BasicEditorProps extends PresetProps {
   code: string;
@@ -19,6 +21,7 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   showLineNumbers = false,
   customStyle,
   bundlerURL,
+  theme = SandpackLightTheme,
 }) => {
   const projectSetup = getSetup(template, customSetup);
 
@@ -27,6 +30,8 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   const mainFile: IFile = {
     code,
   };
+
+  const className = compileStitchesTheme(theme);
 
   return (
     <SandpackProvider
@@ -40,10 +45,12 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
       showOpenInCodeSandbox={false}
       bundlerURL={bundlerURL}
     >
-      <SandpackWrapper style={customStyle}>
-        <CodeEditor showLineNumbers={showLineNumbers} />
-        <Preview showNavigator={showNavigator} />
-      </SandpackWrapper>
+      <ThemeProvider value={theme}>
+        <SandpackWrapper style={customStyle} className={className}>
+          <CodeEditor showLineNumbers={showLineNumbers} />
+          <Preview showNavigator={showNavigator} />
+        </SandpackWrapper>
+      </ThemeProvider>
     </SandpackProvider>
   );
 };

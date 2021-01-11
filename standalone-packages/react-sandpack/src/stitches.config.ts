@@ -1,15 +1,16 @@
 import { createStyled } from '@stitches/react';
+import { SandpackLightTheme as defaultTheme } from './themes';
 
 export const { styled, css } = createStyled({
   prefix: 'sandpack',
   tokens: {
     colors: {
-      $highlightText: '#5B6776',
-      $defaultText: '#999999',
-      $inactive: '#E5E7EB',
-      $mainBackground: '#f8f9fb',
-      $inputBackground: '#ffffff',
-      $accent: '#6caedd',
+      $highlightText: defaultTheme.palette.highlightText,
+      $defaultText: defaultTheme.palette.defaultText,
+      $inactive: defaultTheme.palette.inactive,
+      $mainBackground: defaultTheme.palette.mainBackground,
+      $inputBackground: defaultTheme.palette.inputBackground,
+      $accent: defaultTheme.palette.accent,
     },
     space: {
       $1: '4px',
@@ -34,28 +35,6 @@ export const { styled, css } = createStyled({
   },
   breakpoints: {},
   utils: {},
-});
-
-export const csbLightTheme = css.theme({
-  colors: {
-    $highlightText: '#5B6776',
-    $defaultText: '#999999',
-    $inactive: '#E5E7EB',
-    $mainBackground: '#f8f9fb',
-    $inputBackground: '#ffffff',
-    $accent: '#6caedd',
-  },
-});
-
-export const csbDarkTheme = css.theme({
-  colors: {
-    $highlightText: '#FFFFFF',
-    $defaultText: '#999999',
-    $inactive: '#343434',
-    $mainBackground: '#040404',
-    $inputBackground: '#242424',
-    $accent: '#6caedd',
-  },
 });
 
 css.global({

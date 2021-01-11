@@ -1,12 +1,14 @@
 import React from 'react';
 import { Story } from '@storybook/react';
 
-import { CodeEditor, CodeEditorProps } from '.';
+import { CodeEditor, CodeEditorProps } from './index';
 import { SandpackWrapper } from '../../elements';
 
 import { SandpackProvider } from '../../utils/sandpack-context';
 import { SANDBOX_TEMPLATES } from '../../utils/sandbox-templates';
 import { SandboxTemplate } from '../../types';
+import { compileStitchesTheme, ThemeProvider } from '../../utils/theme-context';
+import { SandpackDarkTheme } from '../../themes';
 
 export default {
   title: 'components/Code Editor',
@@ -59,4 +61,20 @@ export const VueCode = () => (
       <CodeEditor lang="html" />
     </SandpackWrapper>
   </SandpackProvider>
+);
+
+export const DarkTheme = () => (
+  <ThemeProvider value={SandpackDarkTheme}>
+    <SandpackProvider
+      entry={vueTemplate.entry}
+      template="vue-cli"
+      files={vueTemplate.files}
+      openPaths={[vueTemplate.main]}
+      dependencies={vueTemplate.dependencies}
+    >
+      <SandpackWrapper className={compileStitchesTheme(SandpackDarkTheme)}>
+        <CodeEditor lang="html" />
+      </SandpackWrapper>
+    </SandpackProvider>
+  </ThemeProvider>
 );

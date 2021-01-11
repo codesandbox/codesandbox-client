@@ -16,14 +16,14 @@ import { bracketMatching } from '@codemirror/matchbrackets';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets';
 
 import { commentKeymap } from '@codemirror/comment';
-import { defaultHighlightStyle } from '@codemirror/highlight';
 
 import { javascript } from '@codemirror/lang-javascript';
 import { html } from '@codemirror/lang-html';
 
-import { reactDocs } from './theme/react-docs';
+import { getEditorTheme, getSyntaxHighlight } from './utils';
 
 import { styled } from '../../../stitches.config';
+import { ThemeContext } from '../../../utils/theme-context';
 
 export interface CodeMirrorProps {
   code: string;
@@ -46,6 +46,10 @@ const Container = styled('div', {
     padding: 0,
   },
 
+  '.cm-light .cm-content': {
+    caretColor: '$highlightText',
+  },
+
   '.cm-focused': {
     outline: 'none',
   },
@@ -56,7 +60,6 @@ const Container = styled('div', {
 
   '.cm-gutter-lineNumber': {
     paddingRight: '$2',
-    color: '$defaultText',
   },
 
   '.cm-gutterElement.cm-gutterElement-lineNumber': {
@@ -73,6 +76,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 }) => {
   const wrapper = React.useRef<HTMLDivElement>(null);
   const cmView = React.useRef<EditorView>();
+  const theme = React.useContext(ThemeContext);
 
   React.useEffect(() => {
     if (!wrapper.current) {
@@ -94,7 +98,6 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       highlightSpecialChars(),
       history(),
       indentOnInput(),
-      defaultHighlightStyle,
       bracketMatching(),
       closeBrackets(),
       highlightActiveLine(),
@@ -107,7 +110,8 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
         ...customCommandsKeymap,
       ]),
       lang === 'js' ? javascript({ jsx: true }) : html(),
-      reactDocs,
+      getEditorTheme(theme),
+      getSyntaxHighlight(theme),
     ];
 
     if (showLineNumbers) {

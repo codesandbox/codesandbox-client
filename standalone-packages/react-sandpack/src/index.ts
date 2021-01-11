@@ -11,4 +11,7 @@ export * from './components/TranspiledCodeView';
 
 export * from './elements';
 
+export * from './themes';
+
 export * from './utils/sandpack-context';
+export * from './utils/theme-context';

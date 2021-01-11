@@ -6,6 +6,8 @@ import { CodeEditor } from '../components/CodeEditor';
 import { Preview } from '../components/Preview';
 import { getSetup } from '../utils/sandbox-templates';
 import { PresetProps } from './types';
+import { SandpackLightTheme } from '../themes';
+import { ThemeProvider, compileStitchesTheme } from '../utils/theme-context';
 
 export interface MultiFileEditorProps extends PresetProps {
   editableFiles: IFiles;
@@ -19,6 +21,7 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
   showLineNumbers = false,
   customStyle,
   bundlerURL,
+  theme = SandpackLightTheme,
 }) => {
   const projectSetup = getSetup(template, customSetup);
 
@@ -26,6 +29,8 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
     ...projectSetup.files,
     ...editableFiles,
   };
+
+  const className = compileStitchesTheme(theme);
 
   return (
     <SandpackProvider
@@ -37,10 +42,12 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
       bundlerURL={bundlerURL}
       showOpenInCodeSandbox={false}
     >
-      <SandpackWrapper style={customStyle}>
-        <CodeEditor showTabs showLineNumbers={showLineNumbers} />
-        <Preview showNavigator={showNavigator} />
-      </SandpackWrapper>
+      <ThemeProvider value={theme}>
+        <SandpackWrapper style={customStyle} className={className}>
+          <CodeEditor showTabs showLineNumbers={showLineNumbers} />
+          <Preview showNavigator={showNavigator} />
+        </SandpackWrapper>
+      </ThemeProvider>
     </SandpackProvider>
   );
 };
