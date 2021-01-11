@@ -39,13 +39,13 @@ const Homepage = () => (
 
     <div style={WRAPPER_STYLING}>
       <LoadInView>
+        <Teams />
+      </LoadInView>
+      <LoadInView>
         <DevExperience />
       </LoadInView>
       <LoadInView>
         <Workspaces />
-      </LoadInView>
-      <LoadInView>
-        <Teams />
       </LoadInView>
 
       <LoadInView>
