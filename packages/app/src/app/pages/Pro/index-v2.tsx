@@ -133,7 +133,7 @@ const Upgrade = ({ loading, setPlan, nextStep }) => {
 
   const isPersonalWorkspace = personalWorkspaceId === activeTeam;
   React.useEffect(() => {
-    setPlan(isPersonalWorkspace ? 'Personal Pro' : 'Team Pro');
+    setPlan(isPersonalWorkspace ? 'Personal' : 'Team');
   });
 
   if (!activeTeam || !dashboard.teams.length) return null;
@@ -390,9 +390,9 @@ const Upgrade = ({ loading, setPlan, nextStep }) => {
 };
 
 const InlineCheckout = ({ plan, setCheckoutReady }) => {
-  // 7365 = Indiv Pro
-  // 7367 = 1 always on container
+  // constants, move them somewhere
   const VENDOR_ID = 729;
+  const planId = { personal: 7365, team: 7407 };
 
   const email = 'sid@codesandbox.io';
 
@@ -410,7 +410,7 @@ const InlineCheckout = ({ plan, setCheckoutReady }) => {
 
     Paddle.Checkout.open({
       method: 'inline',
-      product: 7407, // Replace with your Product or Plan ID
+      product: planId[plan], // Replace with your Product or Plan ID
       email,
       displayModeTheme: 'dark',
       allowQuantity: true,
