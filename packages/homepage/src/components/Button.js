@@ -23,6 +23,15 @@ const styles = css`
       padding: 8px 21px;
     `}
 
+  ${props =>
+    props.cta &&
+    css`
+      min-width: 250px;
+      font-size: 19px;
+      font-weight: 700;
+      padding: 8px 21px;
+    `}
+
   &:disabled {
     opacity: 0.4;
   }
