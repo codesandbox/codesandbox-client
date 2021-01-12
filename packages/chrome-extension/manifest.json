@@ -45,7 +45,8 @@
         "https://codesandbox.io/*",
         "https://codesandbox.test/*",
         "https://codesandbox.stream/*",
-        "https://*.build.csb.dev/*"
+        "https://*.build.csb.dev/*",
+        "https://*.csb.dev/*"
       ]
     }
   ]
