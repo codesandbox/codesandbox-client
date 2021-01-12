@@ -98,15 +98,22 @@ const initialState: MenuButtonState = {
  *
  * @see Docs https://reacttraining.com/reach-ui/menu-button#menu
  */
-export const Menu: React.FC<MenuProps> = ({ id, defaultOpen, children }) => {
+export const Menu: React.FC<MenuProps> = ({
+  id,
+  defaultOpen = false,
+  children,
+}) => {
   let buttonRef = useRef(null);
   let menuRef = useRef(null);
   let popoverRef = useRef(null);
   let [descendants, setDescendants] = useDescendantsInit<
     MenuButtonDescendant
   >();
-  if (defaultOpen) initialState.isExpanded = true;
-  let [state, dispatch] = useReducer(reducer, initialState);
+
+  let [state, dispatch] = useReducer(reducer, {
+    ...initialState,
+    isExpanded: defaultOpen,
+  });
   let _id = useId(id);
   let menuId = id || makeId('menu', _id);
 

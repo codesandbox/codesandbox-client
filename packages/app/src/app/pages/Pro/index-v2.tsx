@@ -19,35 +19,33 @@ import { TeamAvatar } from 'app/components/TeamAvatar';
 import { NewTeam } from 'app/pages/common/NewTeam';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 
-export const ProPage: React.FC = () => {
-  return (
-    <ThemeProvider>
-      <Helmet>
-        <title>Pro - CodeSandbox</title>
-      </Helmet>
-      <Stack
-        direction="vertical"
-        css={css({
-          backgroundColor: 'grays.900',
-          color: '#fff',
-          width: ' 100vw',
-          minHeight: '100vh',
-        })}
-      >
-        <Navigation title="CodeSandbox Pro" />
+export const ProPage: React.FC = () => (
+  <ThemeProvider>
+    <Helmet>
+      <title>Pro - CodeSandbox</title>
+    </Helmet>
+    <Stack
+      direction="vertical"
+      css={css({
+        backgroundColor: 'grays.900',
+        color: '#fff',
+        width: ' 100vw',
+        minHeight: '100vh',
+      })}
+    >
+      <Navigation title="CodeSandbox Pro" />
 
-        <Switch>
-          <Route path={`/pro/create-workspace`}>
-            <NewTeam redirectTo="/pro?v=2" />;
-          </Route>
-          <Route path={`/pro`}>
-            <Upgrade />
-          </Route>
-        </Switch>
-      </Stack>
-    </ThemeProvider>
-  );
-};
+      <Switch>
+        <Route path={`/pro/create-workspace`}>
+          <NewTeam redirectTo="/pro?v=2" />;
+        </Route>
+        <Route path={`/pro`}>
+          <Upgrade />
+        </Route>
+      </Switch>
+    </Stack>
+  </ThemeProvider>
+);
 
 const prettyPermissions = {
   ADMIN: 'Admin',
@@ -64,18 +62,19 @@ const Upgrade = () => {
   const location = useLocation();
   const history = useHistory();
   const workspaceId = new URLSearchParams(location.search).get('workspace');
+  const type = new URLSearchParams(location.search).get('type');
 
   React.useEffect(() => {
     // set workspace in url when coming from places without workspace context
     if (activeTeam && !workspaceId) {
       history.replace({
         pathname: location.pathname,
-        search: '?v=2&workspace=' + activeTeam,
+        search: `?v=2&workspace=${activeTeam}&type=${type}`,
       });
     } else if (workspaceId !== activeTeam) {
       setActiveTeam({ id: workspaceId });
     }
-  }, [workspaceId, activeTeam, history, location, setActiveTeam]);
+  }, [workspaceId, activeTeam, history, location, setActiveTeam, type]);
 
   if (!activeTeam || !dashboard.teams.length) return null;
 
@@ -121,6 +120,11 @@ const Upgrade = () => {
 
   const onPaidPlan = isTeamPro || (isPersonalWorkspace && isPersonalPro);
 
+  // if there is mismatch of intent, open the workspace switcher on load
+  const switcherDefaultOpen =
+    (type === 'team' && isPersonalWorkspace) ||
+    (type === 'personal' && !isPersonalWorkspace);
+
   return (
     <Stack
       justify="center"
@@ -154,7 +158,7 @@ const Upgrade = () => {
                 },
               })}
             >
-              <Menu>
+              <Menu defaultOpen={switcherDefaultOpen}>
                 <Stack
                   as={Menu.Button}
                   justify="space-between"
