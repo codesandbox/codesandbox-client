@@ -29,6 +29,7 @@ export const previewReferenceMetadataFragment = gql`
     x
     y
     screenshotUrl
+    userAgent
   }
 `;
 

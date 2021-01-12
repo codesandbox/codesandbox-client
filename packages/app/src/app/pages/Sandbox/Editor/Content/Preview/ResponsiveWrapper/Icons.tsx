@@ -57,3 +57,12 @@ export const ResizeIcon = props => (
     </g>
   </svg>
 );
+
+export const DismissIcon = props => (
+  <svg width={24} height={24} fill="none" viewBox="0 0 24 24" {...props}>
+    <path
+      fill="currentColor"
+      d="M17.508 7.301l-1.083-1.09-4.872 4.909-4.871-4.91-1.083 1.091 4.872 4.91-4.872 4.909 1.083 1.09 4.871-4.909 4.872 4.91 1.082-1.091-4.871-4.91 4.872-4.909z"
+    />
+  </svg>
+);
