@@ -6,21 +6,6 @@ import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-ge
 import css from '@styled-system/css';
 import history from 'app/utils/history';
 
-const Card = props => (
-  <Element
-    {...props}
-    css={css({
-      height: 200,
-      padding: 6,
-      backgroundColor: 'grays.800',
-      border: '1px solid',
-      borderColor: 'grays.600',
-      borderRadius: 'medium',
-      ...(props.css || {}),
-    })}
-  />
-);
-
 export const NewTeam: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
   const {
     actions: { dashboard },
