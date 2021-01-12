@@ -31,7 +31,7 @@ import workspaces from './images/workspaces.svg';
 
 export default () => (
   <Layout>
-    <TitleAndMetaTags title="Pro Plan - Codesandbox" />
+    <TitleAndMetaTags title="Team Plan - Codesandbox" />
     <Wrapper>
       <TitleWrapper>
         <Title>Keep development work flowing</Title>
