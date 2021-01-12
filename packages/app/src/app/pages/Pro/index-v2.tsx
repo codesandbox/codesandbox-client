@@ -19,35 +19,34 @@ import { TeamAvatar } from 'app/components/TeamAvatar';
 import { NewTeam } from 'app/pages/common/NewTeam';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 
-export const ProPage: React.FC = () => {
-  return (
-    <ThemeProvider>
-      <Helmet>
-        <title>Pro - CodeSandbox</title>
-      </Helmet>
-      <Stack
-        direction="vertical"
-        css={css({
-          backgroundColor: 'grays.900',
-          color: '#fff',
-          width: ' 100vw',
-          minHeight: '100vh',
-        })}
-      >
-        <Navigation title="CodeSandbox Pro" />
+export const ProPage: React.FC = () => (
+  <ThemeProvider>
+    <Helmet>
+      <title>Pro - CodeSandbox</title>
+    </Helmet>
+    <Stack
+      direction="vertical"
+      css={css({
+        backgroundColor: 'grays.900',
+        color: '#fff',
+        width: ' 100vw',
+        minHeight: '100vh',
+      })}
+    >
+      <Navigation title="CodeSandbox Pro" />
 
-        <Switch>
-          <Route path={`/pro/create-workspace`}>
-            <NewTeam redirectTo="/pro?v=2" />;
-          </Route>
-          <Route path={`/pro`}>
-            <Upgrade />
-          </Route>
-        </Switch>
-      </Stack>
-    </ThemeProvider>
-  );
-};
+      <Switch>
+        <Route path={`/pro/create-workspace`}>
+          <NewTeam redirectTo="/pro?v=2" />;
+        </Route>
+        <Route path={`/pro`}>
+          <Upgrade />
+        </Route>
+      </Switch>
+    </Stack>
+  </ThemeProvider>
+);
+
 
 const prettyPermissions = {
   ADMIN: 'Admin',
