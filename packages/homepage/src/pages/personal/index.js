@@ -11,7 +11,7 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
-} from './_elements';
+} from '../../components/LayoutComponents';
 
 import ide from './images/hero-ide-home.png';
 import npm from './images/npm.svg';

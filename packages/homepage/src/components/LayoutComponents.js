@@ -57,12 +57,6 @@ export const ContentBlock = styled.div`
   `};
 `;
 
-export const TitleWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
 export const ContentBlockImage = styled.div`
   display: flex;
   align-items: center;
@@ -87,4 +81,10 @@ export const FeaturedImage = styled.div`
   border: 1px solid #242424;
   background-size: cover;
   border-radius: 4px;
+`;
+
+export const TitleWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
