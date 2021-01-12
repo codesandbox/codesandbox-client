@@ -11,6 +11,7 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
+  Quote,
 } from '../../components/LayoutComponents';
 
 import ide from './images/ide.png';
@@ -123,39 +124,11 @@ export default () => (
             closer together.
           </div>
         </ContentBlock>
-        <div
-          css={`
-            min-height: 100vh;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-          `}
-        >
+        <Quote>
           <img src={brian} width="254px" alt="Brian Vaughn" />
-          <h3
-            css={`
-              margin: 30px auto;
-              font-weight: 900;
-              font-size: 48px;
-              line-height: 57px;
-              color: #ffffff;
-            `}
-          >
-            “It's dramatically improved my experience of sharing ideas.”
-          </h3>
-          <h4
-            css={`
-              font-weight: normal;
-              font-size: 23px;
-              line-height: 27px;
-              color: #ffffff;
-            `}
-          >
-            Brian Vaughn, Software Engineer, Facebook
-          </h4>
-        </div>
+          <h3>“It's dramatically improved my experience of sharing ideas.”</h3>
+          <h4>Brian Vaughn, Software Engineer, Facebook</h4>
+        </Quote>
 
         <div
           css={`

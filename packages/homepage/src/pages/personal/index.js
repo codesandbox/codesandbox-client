@@ -11,6 +11,7 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
+  Quote,
 } from '../../components/LayoutComponents';
 
 import ide from './images/hero-ide-home.png';
@@ -157,40 +158,14 @@ export default () => (
             On Stack Overflow or Twitter.
           </div>
         </ContentBlock>
-        <div
-          css={`
-            min-height: 100vh;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-          `}
-        >
+        <Quote>
           <img src={roy} width="254px" alt="Roy Derks" />
-          <h3
-            css={`
-              margin: 30px auto;
-              font-weight: 900;
-              font-size: 48px;
-              line-height: 57px;
-              color: #ffffff;
-            `}
-          >
+          <h3>
             “I often use CodeSandbox to create demos or try out new JavaScript
             features or packages.”{' '}
           </h3>
-          <h4
-            css={`
-              font-weight: normal;
-              font-size: 23px;
-              line-height: 27px;
-              color: #ffffff;
-            `}
-          >
-            Roy Derks, Engineering Manager, Vandebron
-          </h4>
-        </div>
+          <h4>Roy Derks, Engineering Manager, Vandebron</h4>
+        </Quote>
 
         <div
           css={`

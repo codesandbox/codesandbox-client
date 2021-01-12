@@ -103,6 +103,10 @@ export const H6 = styled.h6`
     text-align: left;
   
   `}
+
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 0.85rem;
+  }
 `;
 
 export const Description = styled.h3`
@@ -123,6 +127,6 @@ export const Description = styled.h3`
   `}
 
   ${props => props.theme.breakpoints.sm} {
-    font-size: 1.75rem;
+    font-size: 18px;
   }
 `;

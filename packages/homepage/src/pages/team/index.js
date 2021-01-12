@@ -8,6 +8,7 @@ import {
   ContentBlock,
   Title,
   TitleWrapper,
+  Quote,
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
@@ -175,39 +176,11 @@ export default () => (
             done.
           </div>
         </ContentBlock>
-        <div
-          css={`
-            min-height: 100vh;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-          `}
-        >
+        <Quote>
           <img src={rob} width="254px" alt="Rob Eisenberg" />
-          <h3
-            css={`
-              margin: 30px auto;
-              font-weight: 900;
-              font-size: 48px;
-              line-height: 57px;
-              color: #ffffff;
-            `}
-          >
-            “This is a great way to prototype and share ideas.”
-          </h3>
-          <h4
-            css={`
-              font-weight: normal;
-              font-size: 23px;
-              line-height: 27px;
-              color: #ffffff;
-            `}
-          >
-            Rob Eisenberg, Software Architect, Universal Audio
-          </h4>
-        </div>
+          <h3>“This is a great way to prototype and share ideas.”</h3>
+          <h4>Rob Eisenberg, Software Architect, Universal Audio</h4>
+        </Quote>
 
         <div
           css={`

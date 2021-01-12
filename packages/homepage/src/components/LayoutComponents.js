@@ -26,7 +26,6 @@ export const Title = styled.h1`
     ${props => props.theme.breakpoints.md} {
       font-size: 1.5rem;
       line-height: 1.2;
-      max-width: 80%;
     }
   `};
 `;
@@ -44,6 +43,10 @@ export const ContentBlock = styled.div`
       grid-template-columns: repeat(1, 1fr);
     }
 
+    ${props => props.theme.breakpoints.sm} {
+      font-size: ${small ? '16px' : '18px'};
+    }
+
     ${center && `text-align: center;`}
 
     h3 {
@@ -53,6 +56,10 @@ export const ContentBlock = styled.div`
       line-height: 32px;
       color: ${theme.homepage.white};
       margin-bottom: 16px;
+
+      ${props => props.theme.breakpoints.sm} {
+        font-size: ${small ? '16px' : '18px'};
+      }
     }
   `};
 `;
@@ -81,10 +88,45 @@ export const FeaturedImage = styled.div`
   border: 1px solid #242424;
   background-size: cover;
   border-radius: 4px;
+
+  ${props => props.theme.breakpoints.md} {
+    height: auto;
+  }
 `;
 
 export const TitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+export const Quote = styled.section`
+  min-height: 100vh;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  h3 {
+    margin: 30px auto;
+    font-weight: 900;
+    font-size: 48px;
+    line-height: 57px;
+    color: #ffffff;
+
+    ${props => props.theme.breakpoints.sm} {
+      font-size: 32px;
+    }
+  }
+
+  h4 {
+    font-weight: normal;
+    font-size: 23px;
+    line-height: 27px;
+    color: #ffffff;
+    ${props => props.theme.breakpoints.sm} {
+      font-size: 16px;
+    }
+  }
 `;
