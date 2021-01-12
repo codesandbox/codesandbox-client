@@ -1,9 +1,9 @@
 import {
   SandboxFragmentDashboardFragment as Sandbox,
   RepoFragmentDashboardFragment as Repo,
-  Team,
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
+  TeamFragmentDashboardFragment,
 } from 'app/graphql/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
@@ -39,12 +39,7 @@ export type DashboardSandboxStructure = {
 
 export type State = {
   sandboxes: DashboardSandboxStructure;
-  teams: Array<
-    { __typename?: 'Team' } & Pick<
-      Team,
-      'id' | 'name' | 'avatarUrl' | 'userAuthorizations' | 'settings'
-    >
-  >;
+  teams: Array<TeamFragmentDashboardFragment>;
   workspaceSettings: {
     npmRegistry: NpmRegistryFragment | null;
   };
