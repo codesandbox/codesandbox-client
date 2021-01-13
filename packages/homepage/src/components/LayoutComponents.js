@@ -68,11 +68,20 @@ export const ContentBlockImage = styled.div`
   align-items: center;
   justify-content: center;
   height: 200px;
-  background: #${props => props.bg};
   margin-bottom: 32px;
-  border: 1px solid #343434;
   box-sizing: border-box;
   border-radius: 8px;
+  ${props => {
+    if (props.bg) {
+      return `  background: #${props.bg};`;
+    }
+
+    if (!props.noBorder) {
+      return `  border: 1px solid #343434;`;
+    }
+
+    return null;
+  }}
 `;
 
 export const FeaturedImage = styled.div`
