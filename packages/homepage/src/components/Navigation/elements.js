@@ -250,10 +250,6 @@ export const Items = styled.ul`
     text-decoration: none;
   }
 
-  section {
-    width: 43px;
-  }
-
   span {
     font-style: normal;
     font-weight: 500;
@@ -281,4 +277,10 @@ export const Pricing = styled.li`
   section {
     width: 43px;
   }
+`;
+
+export const IconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 43px;
 `;
