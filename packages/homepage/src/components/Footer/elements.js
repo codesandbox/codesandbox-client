@@ -54,3 +54,11 @@ export const Social = styled.ul`
     }
   }
 `;
+
+export const Title = styled.h6`
+  font-style: normal;
+  font-weight: 900;
+  font-size: 19px;
+  line-height: 23px;
+  margin-bottom: 16px;
+`;
