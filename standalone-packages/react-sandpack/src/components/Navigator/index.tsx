@@ -53,10 +53,10 @@ type UrlChangeMessage = {
 };
 
 export interface NavigatorProps {
-  style?: React.CSSProperties;
+  customStyle?: React.CSSProperties;
 }
 
-export const Navigator: React.FC<NavigatorProps> = ({ style }) => {
+export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
   const [baseUrl, setBaseUrl] = React.useState<string>('');
   const [relativeUrl, setRelativeUrl] = React.useState<string>('/');
 
@@ -122,7 +122,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ style }) => {
   };
 
   return (
-    <NavigatorContainer style={style}>
+    <NavigatorContainer style={customStyle}>
       <NavigatorButtons>
         <NavigatorButton onClick={handleBack} disabled={!backEnabled}>
           <BackwardIcon />

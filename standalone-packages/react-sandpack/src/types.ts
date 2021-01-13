@@ -79,9 +79,24 @@ export type SandpackTheme = {
 export interface PresetProps {
   template?: SandboxPredefinedTemplate;
   customSetup?: Partial<SandboxTemplate>;
-  showNavigator?: boolean;
-  showLineNumbers?: boolean;
+  previewOptions?: {
+    showNavigator?: boolean;
+    showOpenInCodeSandbox?: boolean;
+  };
+  codeOptions?: {
+    showLineNumbers?: boolean;
+    showTabs?: boolean;
+  };
+  bundlerOptions?: {
+    bundlerURL?: string;
+    skipEval?: boolean;
+    fileResolver?: FileResolver;
+  };
   theme?: SandpackTheme;
   customStyle?: React.CSSProperties;
-  bundlerURL?: string;
+}
+
+export interface FileResolver {
+  isFile: (path: string) => Promise<boolean>;
+  readFile: (path: string) => Promise<string>;
 }

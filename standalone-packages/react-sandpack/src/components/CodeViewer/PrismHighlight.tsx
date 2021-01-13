@@ -7,7 +7,7 @@ import { ThemeContext } from '../../utils/theme-context';
 
 export interface PrismHighlightProps {
   lang?: Language;
-  style?: React.CSSProperties;
+  customStyle?: React.CSSProperties;
   code: string;
   showLineNumbers?: boolean;
 }
@@ -19,6 +19,7 @@ const StyledBlock = styled('div', {
   margin: -1,
   padding: '$4 $2',
   lineHeight: '1.4',
+  height: '100%',
 
   pre: {
     margin: 0,
@@ -46,14 +47,14 @@ const LineContent = styled('span', {
 
 export const PrismHighlight = ({
   lang = 'javascript',
-  style,
+  customStyle,
   code,
   showLineNumbers,
 }: PrismHighlightProps) => {
   const theme = React.useContext(ThemeContext);
 
   return (
-    <StyledBlock style={style}>
+    <StyledBlock style={customStyle}>
       <Highlight
         {...defaultProps}
         theme={getPrismTheme(theme)}

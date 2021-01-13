@@ -17,12 +17,22 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   code,
   template = 'create-react-app',
   customSetup,
-  showNavigator = false,
-  showLineNumbers = false,
+  previewOptions,
+  codeOptions,
+  bundlerOptions,
   customStyle,
-  bundlerURL,
   theme = SandpackLightTheme,
 }) => {
+  const presetPreviewOptions = {
+    ...{ showOpenInCodeSandbox: false },
+    ...previewOptions,
+  };
+
+  const presetCodeOptions = {
+    ...{ showTabs: false },
+    ...codeOptions,
+  };
+
   const projectSetup = getSetup(template, customSetup);
 
   // Replace the code in the main file
@@ -46,13 +56,13 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
       dependencies={projectSetup.dependencies}
       entry={projectSetup.entry}
       openPaths={[projectSetup.main]}
-      showOpenInCodeSandbox={false}
-      bundlerURL={bundlerURL}
+      showOpenInCodeSandbox={presetPreviewOptions.showOpenInCodeSandbox}
+      bundlerURL={bundlerOptions?.bundlerURL}
     >
       <ThemeProvider value={theme}>
         <SandpackWrapper style={customStyle} className={className}>
-          <CodeEditor showLineNumbers={showLineNumbers} />
-          <Preview showNavigator={showNavigator} />
+          <CodeEditor {...presetCodeOptions} />
+          <Preview {...presetPreviewOptions} />
         </SandpackWrapper>
       </ThemeProvider>
     </SandpackProvider>

@@ -5,7 +5,7 @@ import { useSandpack } from '../utils/sandpack-context';
 import { Navigator } from './Navigator';
 
 export interface PreviewProps {
-  style?: React.CSSProperties;
+  customStyle?: React.CSSProperties;
   showNavigator?: boolean;
 }
 
@@ -23,7 +23,10 @@ const PreviewFrame = styled('div', {
   position: 'relative',
 });
 
-export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
+export const Preview: React.FC<PreviewProps> = ({
+  customStyle,
+  showNavigator,
+}) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const { sandpack, listen } = useSandpack();
 
@@ -55,7 +58,7 @@ export const Preview: React.FC<PreviewProps> = ({ style, showNavigator }) => {
   }, [sandpack?.browserFrame]);
 
   return (
-    <Wrapper style={style}>
+    <Wrapper style={customStyle}>
       {showNavigator && <Navigator />}
       <PreviewFrame id="preview-frame" ref={containerRef} />
     </Wrapper>

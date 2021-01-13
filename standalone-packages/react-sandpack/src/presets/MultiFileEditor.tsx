@@ -17,12 +17,22 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
   editableFiles,
   template = 'create-react-app',
   customSetup,
-  showNavigator = false,
-  showLineNumbers = false,
+  previewOptions,
+  codeOptions,
+  bundlerOptions,
   customStyle,
-  bundlerURL,
   theme = SandpackLightTheme,
 }) => {
+  const presetPreviewOptions = {
+    ...{ showOpenInCodeSandbox: false },
+    ...previewOptions,
+  };
+
+  const presetCodeOptions = {
+    ...{ showTabs: true },
+    ...codeOptions,
+  };
+
   const projectSetup = getSetup(template, customSetup);
 
   projectSetup.files = {
@@ -39,13 +49,13 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
       entry={projectSetup.entry}
       openPaths={Object.keys(editableFiles)}
       activePath={projectSetup.main}
-      bundlerURL={bundlerURL}
-      showOpenInCodeSandbox={false}
+      bundlerURL={bundlerOptions?.bundlerURL}
+      showOpenInCodeSandbox={presetPreviewOptions.showOpenInCodeSandbox}
     >
       <ThemeProvider value={theme}>
         <SandpackWrapper style={customStyle} className={className}>
-          <CodeEditor showTabs showLineNumbers={showLineNumbers} />
-          <Preview showNavigator={showNavigator} />
+          <CodeEditor {...presetCodeOptions} />
+          <Preview {...presetPreviewOptions} />
         </SandpackWrapper>
       </ThemeProvider>
     </SandpackProvider>

@@ -12,20 +12,28 @@ import { compileStitchesTheme, ThemeProvider } from '../utils/theme-context';
 
 export interface CodeRunnerProps extends PresetProps {
   code?: string;
-  showCode?: boolean;
 }
 
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
   code,
-  showCode = false,
   template = 'create-react-app',
   customSetup,
-  showNavigator = false,
-  showLineNumbers = false,
+  previewOptions,
+  codeOptions,
+  bundlerOptions,
   customStyle,
-  bundlerURL,
   theme = SandpackLightTheme,
 }) => {
+  const presetPreviewOptions = {
+    ...{ showOpenInCodeSandbox: false },
+    ...previewOptions,
+  };
+
+  const presetCodeOptions = {
+    ...{ showCode: false },
+    ...codeOptions,
+  };
+
   const projectSetup = getSetup(template, customSetup);
 
   if (code) {
@@ -48,14 +56,14 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       dependencies={projectSetup.dependencies}
       entry={projectSetup.entry}
       openPaths={[projectSetup.main]}
-      showOpenInCodeSandbox={false}
-      bundlerURL={bundlerURL}
+      showOpenInCodeSandbox={presetPreviewOptions.showOpenInCodeSandbox}
+      bundlerURL={bundlerOptions?.bundlerURL}
     >
       <ThemeProvider value={theme}>
         <SandpackWrapper style={customStyle} className={className}>
-          {showCode && <CodeViewer showLineNumbers={showLineNumbers} />}
+          {presetCodeOptions.showCode && <CodeViewer {...presetCodeOptions} />}
 
-          <Preview showNavigator={showNavigator} />
+          <Preview {...presetPreviewOptions} />
         </SandpackWrapper>
       </ThemeProvider>
     </SandpackProvider>

@@ -6,7 +6,7 @@ import { styled } from '../../stitches.config';
 import { useSandpack } from '../../utils/sandpack-context';
 
 export interface FileExplorerProps {
-  style?: React.CSSProperties;
+  customStyle?: React.CSSProperties;
 }
 
 const Container = styled('div', {
@@ -21,7 +21,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = props => {
   const { sandpack } = useSandpack();
 
   return (
-    <Container style={props.style}>
+    <Container style={props.customStyle}>
       <ModuleList
         selectFile={sandpack.openFile}
         files={sandpack.files}

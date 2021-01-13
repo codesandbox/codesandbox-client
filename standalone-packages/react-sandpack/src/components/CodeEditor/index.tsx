@@ -5,7 +5,7 @@ import { FileTabs } from '../FileTabs';
 import { styled } from '../../stitches.config';
 
 export interface CodeEditorProps {
-  style?: React.CSSProperties;
+  customStyle?: React.CSSProperties;
   showTabs?: boolean;
   showLineNumbers?: boolean;
 }
@@ -20,7 +20,7 @@ const CodeEditorWrapper = styled('div', {
 });
 
 export const CodeEditor = ({
-  style,
+  customStyle,
   showTabs = false,
   showLineNumbers = false,
 }: CodeEditorProps) => {
@@ -36,7 +36,7 @@ export const CodeEditor = ({
   };
 
   return (
-    <CodeEditorWrapper style={style}>
+    <CodeEditorWrapper style={customStyle}>
       {showTabs && <FileTabs />}
       <CodeMirror
         activePath={activePath}

@@ -57,7 +57,7 @@ export const DarkTheme: Story<MultiFileEditorProps> = args => (
       '/link.js': { code: linkCode },
     }}
     template="create-react-app"
-    showNavigator
+    previewOptions={{ showNavigator: true }}
     theme={SandpackDarkTheme}
   />
 );

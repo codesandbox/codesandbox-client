@@ -5,7 +5,7 @@ import { useSandpack } from '../../utils/sandpack-context';
 import { getFileName } from './utils';
 
 export interface FileTabsProps {
-  style?: Object;
+  customStyle?: React.CSSProperties;
 }
 
 const Container = styled('div', {
@@ -59,7 +59,7 @@ export const FileTabs: React.FC<FileTabsProps> = props => {
   const { activePath, openPaths, changeActiveFile } = sandpack;
 
   return (
-    <Container style={props.style}>
+    <Container style={props.customStyle}>
       <ScrollableContainer>
         {openPaths.map(filePath => (
           <TabButton

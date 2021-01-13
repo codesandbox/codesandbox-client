@@ -13,6 +13,7 @@ import {
   SandboxPredefinedTemplate,
   SandpackListener,
   SandpackState,
+  FileResolver,
 } from '../types';
 
 const Sandpack = React.createContext<SandpackContext | null>(null);
@@ -27,21 +28,25 @@ export interface State {
 }
 
 export interface Props {
-  showOpenInCodeSandbox?: boolean;
+  // setup
   files: IFiles;
   activePath?: string;
   entry: string;
   openPaths?: string[];
   dependencies?: Record<string, string>;
+  template?: SandboxPredefinedTemplate;
+
+  // execution options
   compileMode?: 'immediate' | 'delayed'; // | 'onCommand'; TODO: implement run on command
   compileDelay?: number;
+
+  // legacy: will be moved to Preview
+  showOpenInCodeSandbox?: boolean;
+
+  // bundler options
   bundlerURL?: string;
   skipEval?: boolean;
-  template?: SandboxPredefinedTemplate;
-  fileResolver?: {
-    isFile: (path: string) => Promise<boolean>;
-    readFile: (path: string) => Promise<string>;
-  };
+  fileResolver?: FileResolver;
 }
 
 class SandpackProvider extends React.PureComponent<Props, State> {
