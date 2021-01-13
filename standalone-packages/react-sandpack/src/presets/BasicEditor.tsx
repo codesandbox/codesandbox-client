@@ -1,16 +1,16 @@
 import * as React from 'react';
+import { IFile } from 'smooshpack';
 import { SandpackWrapper } from '../elements';
-import { IFile } from '../types';
+import { PresetProps } from '../types';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { CodeEditor } from '../components/CodeEditor';
 import { Preview } from '../components/Preview';
-import { getSetup } from '../utils/sandbox-templates';
-import { PresetProps } from './types';
+import { getSetup } from '../templates';
 import { SandpackLightTheme } from '../themes';
 import { compileStitchesTheme, ThemeProvider } from '../utils/theme-context';
 
 export interface BasicEditorProps extends PresetProps {
-  code: string;
+  code?: string;
 }
 
 export const BasicEditor: React.FC<BasicEditorProps> = ({
@@ -26,19 +26,23 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   const projectSetup = getSetup(template, customSetup);
 
   // Replace the code in the main file
-  const mainFileName = projectSetup.main;
-  const mainFile: IFile = {
-    code,
-  };
+  if (code) {
+    const mainFileName = projectSetup.main;
+    const mainFile: IFile = {
+      code,
+    };
+
+    projectSetup.files = {
+      ...projectSetup.files,
+      [mainFileName]: mainFile,
+    };
+  }
 
   const className = compileStitchesTheme(theme);
 
   return (
     <SandpackProvider
-      files={{
-        ...projectSetup.files,
-        [mainFileName]: mainFile,
-      }}
+      files={projectSetup.files}
       dependencies={projectSetup.dependencies}
       entry={projectSetup.entry}
       openPaths={[projectSetup.main]}

@@ -1,18 +1,21 @@
 import * as React from 'react';
-import { Manager, generatePackageJSON } from 'smooshpack';
+import {
+  Manager,
+  generatePackageJSON,
+  IManagerState,
+  IModuleError,
+  IFiles,
+  IFile,
+} from 'smooshpack';
 
 import {
-  IFiles,
-  IManagerState,
-  ISandpackContext,
-  IModuleError,
-  IFile,
-  SandboxEnvironment,
+  SandpackContext,
+  SandboxPredefinedTemplate,
   SandpackListener,
-  ISandpackState,
+  SandpackState,
 } from '../types';
 
-const SandpackContext = React.createContext<ISandpackContext | null>(null);
+const Sandpack = React.createContext<SandpackContext | null>(null);
 
 export interface State {
   files: IFiles;
@@ -34,7 +37,7 @@ export interface Props {
   compileDelay?: number;
   bundlerURL?: string;
   skipEval?: boolean;
-  template?: SandboxEnvironment;
+  template?: SandboxPredefinedTemplate;
   fileResolver?: {
     isFile: (path: string) => Promise<boolean>;
     readFile: (path: string) => Promise<string>;
@@ -45,7 +48,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   static defaultProps = {
     skipEval: false,
     compileMode: 'delayed',
-    compileDelay: 200,
+    compileDelay: 500,
   };
 
   manager?: Manager;
@@ -80,12 +83,6 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       }));
     }
   };
-
-  getOptions = () => ({
-    bundlerURL: this.props.bundlerURL,
-    fileResolver: this.props.fileResolver,
-    skipEval: this.props.skipEval,
-  });
 
   updateCurrentFile = (file: IFile) => {
     if (file.code === this.state.files[this.state.activePath]?.code) {
@@ -149,7 +146,11 @@ class SandpackProvider extends React.PureComponent<Props, State> {
         template: this.props.template,
         showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
       },
-      this.getOptions()
+      {
+        bundlerURL: this.props.bundlerURL,
+        fileResolver: this.props.fileResolver,
+        skipEval: this.props.skipEval,
+      }
     );
 
     this.unsubscribe = this.manager.listen(this.handleMessage);
@@ -173,7 +174,9 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     }
 
     if (this.manager && this.props.skipEval !== props.skipEval) {
-      this.manager.updateOptions(this.getOptions());
+      this.manager.updateOptions({
+        skipEval: this.props.skipEval,
+      });
     }
   }
 
@@ -216,7 +219,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     return this.manager.listen(listener);
   };
 
-  _getSandpackState = (): ISandpackContext => {
+  _getSandpackState = (): SandpackContext => {
     const { files, activePath, openPaths, managerState, errors } = this.state;
 
     return {
@@ -239,7 +242,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     const { initialized } = this.state;
 
     return (
-      <SandpackContext.Provider value={this._getSandpackState()}>
+      <Sandpack.Provider value={this._getSandpackState()}>
         <div id="loading-frame">
           <iframe
             ref={this.iframeRef}
@@ -259,12 +262,12 @@ class SandpackProvider extends React.PureComponent<Props, State> {
         </div>
         {/* children are rendered only after the iframe is mounted */}
         {initialized && children}
-      </SandpackContext.Provider>
+      </Sandpack.Provider>
     );
   }
 }
 
-const SandpackConsumer = SandpackContext.Consumer;
+const SandpackConsumer = Sandpack.Consumer;
 
 function getDisplayName(
   WrappedComponent: React.ComponentClass<any> | React.FC<any>
@@ -273,7 +276,7 @@ function getDisplayName(
 }
 
 function useSandpack() {
-  const sandpack = React.useContext(SandpackContext);
+  const sandpack = React.useContext(Sandpack);
 
   if (sandpack === null) {
     throw new Error(
@@ -284,7 +287,7 @@ function useSandpack() {
   const { dispatch, listen, ...rest } = sandpack;
 
   return {
-    sandpack: { ...rest } as ISandpackState,
+    sandpack: { ...rest } as SandpackState,
     dispatch,
     listen,
   };
@@ -293,7 +296,24 @@ function useSandpack() {
 function withSandpack(Component: React.ComponentClass<any> | React.FC<any>) {
   const WrappedComponent = (props: any) => (
     <SandpackConsumer>
-      {sandpack => <Component {...props} sandpack={sandpack} />}
+      {sandpack => {
+        if (sandpack === null) {
+          throw new Error(
+            `withSandpack can only be used inside components wrapped by 'SandpackProvider'`
+          );
+        }
+
+        const { dispatch, listen, ...rest } = sandpack;
+
+        return (
+          <Component
+            {...props}
+            dispatch={dispatch}
+            listen={dispatch}
+            sandpack={rest}
+          />
+        );
+      }}
     </SandpackConsumer>
   );
 
@@ -302,10 +322,4 @@ function withSandpack(Component: React.ComponentClass<any> | React.FC<any>) {
   return WrappedComponent;
 }
 
-export {
-  SandpackProvider,
-  SandpackConsumer,
-  SandpackContext,
-  withSandpack,
-  useSandpack,
-};
+export { SandpackProvider, SandpackConsumer, withSandpack, useSandpack };

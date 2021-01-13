@@ -1,9 +1,8 @@
 import * as React from 'react';
+import { IFiles } from 'smooshpack';
 
 import { File } from './File';
 import { ModuleList } from './ModuleList';
-
-import { IFiles } from '../../types';
 
 export interface Props {
   prefixedPath: string;

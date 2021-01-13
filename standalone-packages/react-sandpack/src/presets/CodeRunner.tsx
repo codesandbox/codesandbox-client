@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { IFile } from 'smooshpack';
+
 import { CodeViewer } from '../components/CodeViewer';
 import { Preview } from '../components/Preview';
 import { SandpackWrapper } from '../elements';
-import { IFile } from '../types';
-import { getSetup } from '../utils/sandbox-templates';
+import { PresetProps } from '../types';
+import { getSetup } from '../templates';
 import { SandpackProvider } from '../utils/sandpack-context';
-import { PresetProps } from './types';
 import { SandpackLightTheme } from '../themes';
 import { compileStitchesTheme, ThemeProvider } from '../utils/theme-context';
 

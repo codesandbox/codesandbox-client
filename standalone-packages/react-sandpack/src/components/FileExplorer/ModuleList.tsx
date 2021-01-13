@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IFiles } from '../../types';
+import { IFiles } from 'smooshpack';
 
 import { File } from './File';
 import { Directory } from './Directory';

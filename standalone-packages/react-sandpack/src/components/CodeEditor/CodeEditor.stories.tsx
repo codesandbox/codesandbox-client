@@ -5,7 +5,7 @@ import { CodeEditor, CodeEditorProps } from './index';
 import { SandpackWrapper } from '../../elements';
 
 import { SandpackProvider } from '../../utils/sandpack-context';
-import { SANDBOX_TEMPLATES } from '../../utils/sandbox-templates';
+import { SANDBOX_TEMPLATES } from '../../templates';
 import { SandboxTemplate } from '../../types';
 import { compileStitchesTheme, ThemeProvider } from '../../utils/theme-context';
 import { SandpackDarkTheme } from '../../themes';

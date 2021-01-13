@@ -1,7 +1,7 @@
-import { SandboxEnvironment, SandboxTemplate } from '../types';
+import { SandboxPredefinedTemplate, SandboxTemplate } from '../types';
 
 export const getSetup = (
-  template: SandboxEnvironment,
+  template: SandboxPredefinedTemplate,
   customSetup?: Partial<SandboxTemplate>
 ) => {
   const baseTemplate = SANDBOX_TEMPLATES[template] as SandboxTemplate;
@@ -22,7 +22,7 @@ export const getSetup = (
 };
 
 export const SANDBOX_TEMPLATES: Partial<Record<
-  SandboxEnvironment,
+  SandboxPredefinedTemplate,
   SandboxTemplate
 >> = {
   'create-react-app': {

@@ -15,3 +15,5 @@ export * from './themes';
 
 export * from './utils/sandpack-context';
 export * from './utils/theme-context';
+
+export * from './types';

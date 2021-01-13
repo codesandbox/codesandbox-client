@@ -5,7 +5,7 @@ import { CodeViewer, CodeViewerProps } from '.';
 import { SandpackWrapper } from '../../elements';
 
 import { SandpackProvider } from '../../utils/sandpack-context';
-import { SANDBOX_TEMPLATES } from '../../utils/sandbox-templates';
+import { SANDBOX_TEMPLATES } from '../../templates';
 import { SandboxTemplate } from '../../types';
 
 export default {

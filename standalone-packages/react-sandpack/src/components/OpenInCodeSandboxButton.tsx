@@ -1,6 +1,6 @@
 import * as React from 'react';
+import { IFiles } from 'smooshpack';
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
-import { IFiles } from '../types';
 import { useSandpack } from '../utils/sandpack-context';
 import { styled } from '../stitches.config';
 

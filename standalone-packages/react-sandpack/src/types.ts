@@ -1,64 +1,11 @@
-export interface IFile {
-  code: string;
-}
+import { IManagerState, IModuleError, IFile, IFiles } from 'smooshpack';
 
-export interface IFiles {
-  [path: string]: IFile;
-}
-
-export interface IModule {
-  code: string;
-  path: string;
-}
-
-export interface IModuleSource {
-  fileName: string;
-  compiledCode: string;
-  sourceMap: Object | undefined;
-}
-
-export interface IModuleError {
-  title: string;
-  message: string;
-  path: string;
-  line: number;
-  column: number;
-}
-
-export interface ITranspiledModule {
-  module: IModule;
-  query: string;
-  source: IModuleSource | undefined;
-  assets: {
-    [name: string]: IModuleSource;
-  };
-  isEntry: boolean;
-  isTestFile: boolean;
-  childModules: Array<string>;
-  /**
-   * All extra modules emitted by the loader
-   */
-  emittedAssets: Array<IModuleSource>;
-  initiators: Array<string>;
-  dependencies: Array<string>;
-  asyncDependencies: Array<string>;
-  transpilationDependencies: Array<string>;
-  transpilationInitiators: Array<string>;
-}
-
-export interface IManagerState {
-  entry: string;
-  transpiledModules: {
-    [id: string]: ITranspiledModule;
-  };
-}
-
-export type ISandpackContext = ISandpackState & {
+export type SandpackContext = SandpackState & {
   dispatch: (message: any) => void;
   listen: (listener: SandpackListener) => Function;
 };
 
-export interface ISandpackState {
+export interface SandpackState {
   browserFrame: HTMLIFrameElement | null;
   managerState: IManagerState | undefined;
   openPaths: string[];
@@ -79,8 +26,8 @@ export type SandboxTemplate = {
   main: string;
 };
 
-export type SandboxEnvironment =
-  //| 'adonis'
+export type SandboxPredefinedTemplate =
+  // | 'adonis'
   'create-react-app' | 'vue-cli';
 // | 'preact-cli'
 // | 'svelte'
@@ -128,3 +75,13 @@ export type SandpackTheme = {
     static: string;
   };
 };
+
+export interface PresetProps {
+  template?: SandboxPredefinedTemplate;
+  customSetup?: Partial<SandboxTemplate>;
+  showNavigator?: boolean;
+  showLineNumbers?: boolean;
+  theme?: SandpackTheme;
+  customStyle?: React.CSSProperties;
+  bundlerURL?: string;
+}
