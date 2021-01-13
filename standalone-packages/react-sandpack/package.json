@@ -1,6 +1,6 @@
 {
   "name": "react-smooshpack",
-  "version": "1.0.0-alpha-8",
+  "version": "1.0.0-alpha-9",
   "description": "",
   "keywords": [],
   "repository": {
@@ -72,7 +72,7 @@
     "@stitches/react": "^0.0.2",
     "codesandbox-import-utils": "^1.2.3",
     "prism-react-renderer": "^1.1.1",
-    "smooshpack": "^1.0.0-alpha-8"
+    "smooshpack": "^1.0.0-alpha-9"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
