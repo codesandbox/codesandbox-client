@@ -50,7 +50,9 @@ export default () => (
           margin-bottom: 181px;
         `}
       >
-        <Button cta>Get Started</Button>
+        <Button cta href="https://codesandbox.io/s/">
+          Get Started
+        </Button>
       </div>
       <div
         css={`

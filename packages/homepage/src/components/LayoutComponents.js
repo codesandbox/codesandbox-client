@@ -36,7 +36,6 @@ export const ContentBlock = styled.div`
     grid-template-columns: repeat(${cols || '3'}, 1fr);
     grid-gap: 3rem 5rem;
     font-size: ${small ? '19px' : '23px'};
-    line-height: 1.5rem;
     color: ${theme.homepage.muted};
 
     ${props => props.theme.breakpoints.md} {
