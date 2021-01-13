@@ -60,7 +60,7 @@ you want to have open in your component instance:
 import { MultiFileEditor } from 'react-smooshpack';
 
 <MultiFileEditor
-  showNavigator
+  previewOptions={{ showNavigator: true }}
   editableFiles={{
     '/App.js': { code: reactButtonCode },
     '/button.js': { code: buttonCode },
@@ -73,13 +73,12 @@ Each preset extends a `PresetProps` interface through which you can pass:
 - template: string - a string of type `SandboxEnvironment`
 - customSetup: string - specify files, dependencies and different entries for
   the bundler
-- showNavigator: boolean - display the navigator bar on top of the bundled
-  result
-- showLineNumbers: boolean - display line numbers for the editor
+- previewOptions: visual options for the preview part
+- codeOptions: visual options for the code part
+- bundlerOptions - a set of values passed to the sandpack instance
 - theme: SandpackTheme - a theme object, predefined or custom
 - customStyle - a set of style rules that overwrite the styling of the main
   component wrapper
-- bundlerURL - a custom bundlerURL, if you have a self-hosted version }
 
 ### Theming
 
@@ -89,7 +88,7 @@ We offer some predefined themes for `react-sandpack`:
 import { MultiFileEditor, SandpackDarkTheme } from 'react-smooshpack';
 
 <MultiFileEditor
-  showNavigator
+  previewOptions={{ showNavigator: true }}
   theme={SandpackDarkTheme}
   editableFiles={{
     '/App.js': { code: reactButtonCode },
@@ -148,7 +147,7 @@ const customTheme = {
 }
 
 <MultiFileEditor
-  showNavigator
+  previewOptions={{ showNavigator: true }}
   theme={customTheme}
   editableFiles={{
     '/App.js': { code: reactButtonCode },
