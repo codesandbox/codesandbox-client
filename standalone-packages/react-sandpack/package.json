@@ -1,6 +1,6 @@
 {
   "name": "react-smooshpack",
-  "version": "1.0.0-alpha-7",
+  "version": "1.0.0-alpha-8",
   "description": "",
   "keywords": [],
   "repository": {
@@ -20,7 +20,7 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prepublish": "yarn build",
-    "start": "tsc -p tsconfig.cjs.json --watch",
+    "start": "tsc -p tsconfig.esm.json --watch",
     "storybook": "start-storybook -p 6006 --no-dll",
     "build-storybook": "build-storybook --no-dll"
   },
@@ -71,7 +71,7 @@
     "@stitches/react": "^0.0.2",
     "codesandbox-import-utils": "^1.2.3",
     "prism-react-renderer": "^1.1.1",
-    "smooshpack": "^1.0.0-alpha-7"
+    "smooshpack": "^1.0.0-alpha-8"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

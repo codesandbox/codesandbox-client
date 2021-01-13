@@ -158,7 +158,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
   componentDidUpdate(props: Props) {
     if (
-      props.files !== this.props.files ||
+      JSON.stringify(props.files) !== JSON.stringify(this.props.files) ||
       props.dependencies !== this.props.dependencies ||
       props.entry !== this.props.entry ||
       props.template !== this.props.template

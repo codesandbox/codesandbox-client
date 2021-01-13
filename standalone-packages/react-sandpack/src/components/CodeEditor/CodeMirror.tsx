@@ -141,7 +141,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     return () => {
       view.destroy();
     };
-  }, [showLineNumbers, activePath]);
+  }, [showLineNumbers, activePath, theme]);
 
   return <Container ref={wrapper} />;
 };
