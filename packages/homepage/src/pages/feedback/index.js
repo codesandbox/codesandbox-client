@@ -71,7 +71,7 @@ export default () => (
         <ContentBlock>
           <div>
             <h3>Unlimited viewers</h3>
-            Get all stakeholders involced. Invite unlimited viewers for free, to
+            Get all stakeholders involved. Invite unlimited viewers for free, to
             review and provide feedback.
           </div>
 
