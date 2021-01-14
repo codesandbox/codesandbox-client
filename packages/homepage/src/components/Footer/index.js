@@ -54,7 +54,7 @@ const footerNavElements = [
       },
       {
         text: 'Teams',
-        link: '/teams',
+        link: '/team',
       },
       {
         text: 'Enterprise',
