@@ -32,6 +32,7 @@ export const ProPage: React.FC = () => (
         color: '#fff',
         width: ' 100vw',
         minHeight: '100vh',
+        fontFamily: 'Inter, sans-serif',
       })}
     >
       <Navigation title="CodeSandbox Pro" />
@@ -54,6 +55,56 @@ const prettyPermissions = {
   READ: 'Viewer',
 };
 
+type Plan = {
+  id: string;
+  name: string;
+  type: 'personal' | 'team';
+  frequency: 'monthly' | 'annual';
+  unit: number;
+  multiplier: number;
+  currency: string;
+};
+
+const PADDLE_VENDOR_ID = 729;
+const plans: { [key: string]: Plan } = {
+  PERSONAL_PRO_MONTHLY: {
+    id: '7365',
+    name: 'Personal Pro Workspace',
+    type: 'personal',
+    frequency: 'monthly',
+    unit: 12,
+    multiplier: 1,
+    currency: '$',
+  },
+  PERSONAL_PRO_ANNUAL: {
+    id: '7399',
+    name: 'Personal Pro Workspace',
+    type: 'personal',
+    frequency: 'annual',
+    unit: 9,
+    multiplier: 12,
+    currency: '$',
+  },
+  TEAM_PRO_MONTHLY: {
+    id: '7407',
+    name: 'Team Pro Workspace',
+    type: 'team',
+    frequency: 'monthly',
+    unit: 30,
+    multiplier: 1,
+    currency: '$',
+  },
+  TEAM_PRO_ANNUAL: {
+    id: '7399',
+    name: 'Team Pro Workspace',
+    type: 'team',
+    frequency: 'annual',
+    unit: 24,
+    multiplier: 12,
+    currency: '$',
+  },
+};
+
 const UpgradeSteps = () => {
   // step 1 - choose workspace
   // step 2 - loading inline checkout in background
@@ -62,53 +113,58 @@ const UpgradeSteps = () => {
   const [step, setStep] = React.useState(1);
   const [plan, setPlan] = React.useState(null);
   const [checkoutReady, setCheckoutReady] = React.useState(false);
+  const [prices, updatePrices] = React.useState({
+    total: 10,
+    unit: null,
+    tax: null,
+    currency: 'USD',
+  });
 
   React.useEffect(() => {
     if (checkoutReady) setStep(3);
   }, [checkoutReady]);
 
+  React.useEffect(() => {
+    // if (plan) updatePrices(plans[plan]);
+  }, [plan]);
+
   return (
     <Stack
       justify="center"
       align="center"
-      css={css({ fontSize: 3, marginTop: 160 })}
+      css={css({ fontSize: 3, width: 560, marginTop: 120, marginX: 'auto' })}
     >
-      <Stack
-        direction="vertical"
-        as={motion.div}
-        initial={{ height: 'auto', width: 'auto' }}
-        animate={{ height: 'auto', width: 'auto' }}
-        css={css({
-          minWidth: 360,
-          backgroundColor: 'grays.600',
-          borderRadius: 'medium',
-          padding: 8,
-        })}
-      >
-        {step < 3 && (
-          <Upgrade
-            setPlan={setPlan}
-            loading={step === 2}
-            nextStep={() => setStep(2)}
+      {step < 3 && (
+        <Upgrade
+          plan={plan}
+          setPlan={setPlan}
+          loading={step === 2}
+          nextStep={() => setStep(2)}
+        />
+      )}
+      {step > 1 && (
+        <div
+          style={{
+            width: step === 2 ? 0 : 'auto',
+            height: step === 2 ? 0 : 'auto',
+            overflow: 'hidden',
+          }}
+        >
+          <h1>
+            {prices.currency} {prices.total}
+          </h1>
+          <InlineCheckout
+            plan={plan}
+            setCheckoutReady={setCheckoutReady}
+            updatePrices={updatePrices}
           />
-        )}
-        {step > 1 && (
-          <div
-            style={{
-              width: step === 2 ? 0 : 'auto',
-              height: step === 2 ? 0 : 'auto',
-              overflow: 'hidden',
-            }}
-          >
-            <InlineCheckout plan={plan} setCheckoutReady={setCheckoutReady} />
-          </div>
-        )}
-      </Stack>
+        </div>
+      )}
     </Stack>
   );
 };
 
-const Upgrade = ({ loading, setPlan, nextStep }) => {
+const Upgrade = ({ loading, plan, setPlan, nextStep }) => {
   const {
     state: { personalWorkspaceId, user, activeTeam, dashboard },
     actions: { setActiveTeam },
@@ -132,11 +188,23 @@ const Upgrade = ({ loading, setPlan, nextStep }) => {
   }, [workspaceId, activeTeam, history, location, setActiveTeam, type]);
 
   const isPersonalWorkspace = personalWorkspaceId === activeTeam;
-  React.useEffect(() => {
-    setPlan(isPersonalWorkspace ? 'Personal' : 'Team');
-  });
+  const [billingFrequency, setBillingFrequency] = React.useState<
+    Plan['frequency']
+  >('monthly');
 
-  if (!activeTeam || !dashboard.teams.length) return null;
+  React.useEffect(() => {
+    let newPlan: typeof plans[keyof typeof plans];
+    if (isPersonalWorkspace) {
+      if (billingFrequency === 'annual') newPlan = plans.PERSONAL_PRO_ANNUAL;
+      else newPlan = plans.PERSONAL_PRO_MONTHLY;
+    } else {
+      if (billingFrequency === 'annual') newPlan = plans.TEAM_PRO_ANNUAL;
+      else newPlan = plans.TEAM_PRO_MONTHLY;
+    }
+    setPlan(newPlan);
+  }, [isPersonalWorkspace, billingFrequency]);
+
+  if (!activeTeam || !dashboard.teams.length || !plan) return null;
 
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
@@ -186,8 +254,22 @@ const Upgrade = ({ loading, setPlan, nextStep }) => {
 
   return (
     <>
-      <Stack direction="vertical">
-        <Stack direction="vertical" gap={1}>
+      <div style={{ width: '100%' }}>
+        <Text size={7} as="h1" block align="center" marginBottom={4}>
+          Upgrade to Pro
+        </Text>
+        <Text
+          size={3}
+          variant="muted"
+          block
+          align="center"
+          marginBottom={8}
+          css={{ maxWidth: 560 }}
+        >
+          Join our community of creators from €24/year.
+          <br /> Cancel at any time, effective at the end of the payment period.
+        </Text>
+        <Stack direction="vertical" gap={1} marginBottom={6}>
           <Text>Workspace</Text>
           <Stack
             css={css({
@@ -231,7 +313,7 @@ const Upgrade = ({ loading, setPlan, nextStep }) => {
               </Stack>
               <Menu.List
                 css={css({
-                  width: '296px',
+                  width: '560px',
                   marginTop: '-4px',
                   backgroundColor: 'grays.600',
                 })}
@@ -321,23 +403,35 @@ const Upgrade = ({ loading, setPlan, nextStep }) => {
             </Menu>
           </Stack>
         </Stack>
-
-        <Stack
-          direction="vertical"
-          gap={1}
-          css={css({
-            paddingX: 4,
-            paddingY: 2,
-            border: '1px solid',
-            borderColor: 'grays.500',
-            borderRadius: 'small',
-            marginTop: 6,
-          })}
-        >
-          <Text weight="semibold">Current plan</Text>
-          <Text>{currentPlanName}</Text>
+        <Stack gap={7}>
+          {isPersonalWorkspace ? (
+            <>
+              <PlanCard
+                plan={plans.PERSONAL_PRO_MONTHLY}
+                billingFrequency={billingFrequency}
+                setBillingFrequency={setBillingFrequency}
+              />
+              <PlanCard
+                plan={plans.PERSONAL_PRO_ANNUAL}
+                billingFrequency={billingFrequency}
+                setBillingFrequency={setBillingFrequency}
+              />
+            </>
+          ) : (
+            <>
+              <PlanCard
+                plan={plans.TEAM_PRO_MONTHLY}
+                billingFrequency={billingFrequency}
+                setBillingFrequency={setBillingFrequency}
+              />
+              <PlanCard
+                plan={plans.TEAM_PRO_ANNUAL}
+                billingFrequency={billingFrequency}
+                setBillingFrequency={setBillingFrequency}
+              />
+            </>
+          )}
         </Stack>
-
         <AnimatePresence>
           {!isPersonalWorkspace && (
             <motion.div
@@ -350,68 +444,87 @@ const Upgrade = ({ loading, setPlan, nextStep }) => {
                 direction="vertical"
                 gap={1}
                 css={css({
-                  paddingX: 4,
-                  paddingY: 2,
+                  padding: 4,
                   border: '1px solid',
                   borderColor: 'grays.500',
                   borderRadius: 'small',
                   overflow: 'hidden',
                 })}
               >
-                <Text weight="semibold">
-                  {numberOfEditors}{' '}
-                  {numberOfEditors === 1 ? 'Editor' : 'Editors'} on your team
-                </Text>
-                <Text variant="muted">
-                  ({numberOfViewers}{' '}
-                  {numberOfViewers === 1 ? 'viewer' : 'viewers'} on your team)
-                </Text>
+                <Text size={3}>Workspace editors</Text>
+                <Stack justify="space-between">
+                  <Stack direction="vertical" gap={4}>
+                    <Text variant="muted" size={3}>
+                      {numberOfEditors}{' '}
+                      {numberOfEditors === 1 ? 'seat' : 'seats'}
+                      <Text size={2}> ✕ </Text> {plan.currency}
+                      {plan.unit}{' '}
+                      {plan.multiplier > 1 ? (
+                        <>
+                          <Text size={2}> ✕</Text> {plan.multiplier}
+                        </>
+                      ) : null}
+                    </Text>
+                    <Text variant="muted">
+                      Prices listed in USD. Taxes may apply.
+                    </Text>
+                  </Stack>
+                  <Text weight="semibold" size={4}>
+                    {plan.currency}
+                    {numberOfEditors * plan.unit * plan.multiplier} /{' '}
+                    {plan.frequency === 'monthly' ? 'month' : 'year'}
+                  </Text>
+                </Stack>
               </Stack>
             </motion.div>
           )}
         </AnimatePresence>
-      </Stack>
-      <AnimatePresence>
-        {!onPaidPlan && (
+        <AnimatePresence>
           <motion.div
             initial={{ height: 0, opacity: 0, marginTop: 0 }}
             animate={{ height: 'auto', opacity: 1, marginTop: 40 }}
             exit={{ height: 0, opacity: 0, marginTop: 0 }}
             style={{ overflow: 'hidden' }}
           >
-            <Button loading={loading} onClick={() => nextStep()}>
-              Upgrade to Pro Workspace
+            <Button
+              loading={loading}
+              onClick={() => nextStep()}
+              css={css({ fontSize: 3, height: 10 })}
+            >
+              Continue
             </Button>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>
+      </div>
     </>
   );
 };
 
-const InlineCheckout = ({ plan, setCheckoutReady }) => {
-  // constants, move them somewhere
-  const VENDOR_ID = 729;
-  const planId = { personal: 7365, team: 7407 };
-
-  const email = 'sid@codesandbox.io';
+const InlineCheckout = ({ plan, updatePrices, setCheckoutReady }) => {
+  const {
+    state: { user },
+  } = useOvermind();
 
   React.useEffect(() => {
     // @ts-ignore 3rd party integration with global
     const Paddle = window.Paddle;
 
     Paddle.Environment.set('sandbox');
-    Paddle.Setup({ vendor: VENDOR_ID });
+    Paddle.Setup({
+      vendor: PADDLE_VENDOR_ID,
+      eventCallback: event => {
+        console.log(event.eventData.checkout);
+        updatePrices(event.eventData.checkout.prices.customer);
+      },
+    });
 
     // @ts-ignore 3rd party integration with global
-    window.loadCallback = () => {
-      setCheckoutReady(true);
-    };
+    window.loadCallback = () => setCheckoutReady(true);
 
     Paddle.Checkout.open({
       method: 'inline',
-      product: planId[plan], // Replace with your Product or Plan ID
-      email,
+      product: plan.id, // Replace with your Product or Plan ID
+      email: user.email,
       displayModeTheme: 'dark',
       allowQuantity: true,
       disableLogout: true,
@@ -428,4 +541,66 @@ const InlineCheckout = ({ plan, setCheckoutReady }) => {
   }, [setCheckoutReady]);
 
   return <div className="checkout-container" />;
+};
+
+const PlanCard: React.FC<{
+  plan: Plan;
+  billingFrequency: Plan['frequency'];
+  setBillingFrequency: (frequency: Plan['frequency']) => void;
+}> = ({ plan, billingFrequency, setBillingFrequency }) => {
+  const isSelected = plan.frequency === billingFrequency;
+
+  return (
+    <Stack
+      direction="vertical"
+      css={css({
+        flexGrow: 1,
+        padding: 4,
+        border: '1px solid',
+        borderRadius: 'small',
+        borderColor: isSelected ? 'blues.600' : 'grays.600',
+        backgroundColor: isSelected ? 'blues.900' : 'transparent',
+        transition: 'borderColor, backgroundColor',
+        transitionDuration: theme => theme.speeds[3],
+      })}
+    >
+      <Stack as="label" justify="space-between" align="center">
+        <Stack direction="vertical" gap={1}>
+          <Text
+            size={4}
+            weight="semibold"
+            css={{ textTransform: 'capitalize' }}
+          >
+            {plan.frequency}
+          </Text>
+          <Text size={3}>{plan.name}</Text>
+          <Text size={3} variant="muted">
+            {plan.currency}
+            {plan.unit} {plan.type === 'team' ? 'per editor' : null} per month
+          </Text>
+        </Stack>
+        <div>
+          <input
+            type="radio"
+            hidden
+            checked={isSelected}
+            onChange={() => setBillingFrequency(plan.frequency)}
+          />
+          <Stack
+            justify="center"
+            align="center"
+            css={css({
+              size: 6,
+              border: '2px solid',
+              borderColor: 'grays.600',
+              borderRadius: '50%',
+              backgroundColor: isSelected ? 'blues.600' : 'transparent',
+            })}
+          >
+            {isSelected && <Icon size={13} name="simpleCheck" />}
+          </Stack>
+        </div>
+      </Stack>
+    </Stack>
+  );
 };
