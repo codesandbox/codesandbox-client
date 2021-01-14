@@ -11,6 +11,7 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
+  CTABottom,
   Quote,
 } from '../../components/LayoutComponents';
 
@@ -206,18 +207,7 @@ export default () => (
             Get more space, higher upload limits, and unlimited invites.
           </div>
         </ContentBlock>
-        <div
-          css={`
-            margin: auto;
-            display: flex;
-            justify-content: center;
-            margin: 96px auto;
-          `}
-        >
-          <Button cta href="https://codesandbox.io/s/">
-            Get Started
-          </Button>
-        </div>
+        <CTABottom />
       </div>
     </Wrapper>
   </Layout>

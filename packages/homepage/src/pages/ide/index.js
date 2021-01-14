@@ -10,6 +10,7 @@ import {
   TitleWrapper,
   Wrapper,
   ContentBlockImage,
+  CTABottom,
   FeaturedImage,
 } from '../../components/LayoutComponents';
 
@@ -301,6 +302,7 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
+        <CTABottom />
       </div>
     </Wrapper>
   </Layout>

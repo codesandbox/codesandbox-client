@@ -10,6 +10,7 @@ import {
   TitleWrapper,
   Wrapper,
   FeaturedImage,
+  CTABottom,
 } from '../../components/LayoutComponents';
 
 import team from './images/team-settings.png';
@@ -157,6 +158,7 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
+        <CTABottom />
       </div>
     </Wrapper>
   </Layout>

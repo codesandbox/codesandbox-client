@@ -11,6 +11,7 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
+  CTABottom,
 } from '../../components/LayoutComponents';
 
 import ide from './images/ide.png';
@@ -164,6 +165,7 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
+        <CTABottom />
       </div>
     </Wrapper>
   </Layout>

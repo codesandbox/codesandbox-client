@@ -5,6 +5,7 @@ import Button from '../../components/Button';
 import { Description, H6 } from '../../components/Typography';
 
 import {
+  CTABottom,
   ContentBlock,
   Title,
   TitleWrapper,
@@ -270,6 +271,7 @@ export default () => (
             Bring multiple teams together in a single account to collaborate.
           </div>
         </ContentBlock>
+        <CTABottom />
       </div>
     </Wrapper>
   </Layout>

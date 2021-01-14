@@ -12,6 +12,7 @@ import {
   ContentBlockImage,
   FeaturedImage,
   Quote,
+  CTABottom,
 } from '../../components/LayoutComponents';
 
 import ide from './images/ide.png';
@@ -176,18 +177,7 @@ export default () => (
             Dedicated support focused on delivering your success.
           </div>
         </ContentBlock>
-        <div
-          css={`
-            margin: auto;
-            display: flex;
-            justify-content: center;
-            margin: 96px auto;
-          `}
-        >
-          <Button cta href="https://codesandbox.io/s/">
-            Get Started
-          </Button>
-        </div>
+        <CTABottom />
       </div>
     </Wrapper>
   </Layout>

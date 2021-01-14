@@ -1,4 +1,6 @@
 import styled, { css } from 'styled-components';
+import React from 'react';
+import Button from './Button';
 
 export const Wrapper = styled.div`
   padding: 140px 0rem 1rem 0rem;
@@ -138,3 +140,18 @@ export const Quote = styled.section`
     }
   }
 `;
+
+export const CTABottom = () => (
+  <div
+    css={`
+      margin: auto;
+      display: flex;
+      justify-content: center;
+      margin: 96px auto;
+    `}
+  >
+    <Button cta href="https://codesandbox.io/s/">
+      Get Started
+    </Button>
+  </div>
+);
