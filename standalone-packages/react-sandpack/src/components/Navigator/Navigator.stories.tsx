@@ -27,7 +27,7 @@ export const Component = () => (
 export const WithRoutingExample = () => (
   <SandpackProvider
     entry="/index.js"
-    template="create-react-app"
+    environment="create-react-app"
     files={{
       '/index.html': {
         code: `<div id="root"></div>`,

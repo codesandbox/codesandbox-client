@@ -6,7 +6,7 @@ import { SandpackProvider } from '../utils/sandpack-context';
 import { CodeEditor } from '../components/CodeEditor';
 import { Preview } from '../components/Preview';
 import { getSetup } from '../templates';
-import { SandpackLightTheme } from '../themes';
+import { sandpackLightTheme } from '../themes';
 import { compileStitchesTheme, ThemeProvider } from '../utils/theme-context';
 
 export interface BasicEditorProps extends PresetProps {
@@ -15,13 +15,13 @@ export interface BasicEditorProps extends PresetProps {
 
 export const BasicEditor: React.FC<BasicEditorProps> = ({
   code,
-  template = 'create-react-app',
+  template,
   customSetup,
   previewOptions,
   codeOptions,
   bundlerOptions,
   customStyle,
-  theme = SandpackLightTheme,
+  theme = sandpackLightTheme,
 }) => {
   const presetPreviewOptions = {
     ...{ showOpenInCodeSandbox: false },
@@ -56,6 +56,7 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
       dependencies={projectSetup.dependencies}
       entry={projectSetup.entry}
       openPaths={[projectSetup.main]}
+      environment={projectSetup.environment}
       showOpenInCodeSandbox={presetPreviewOptions.showOpenInCodeSandbox}
       bundlerURL={bundlerOptions?.bundlerURL}
     >

@@ -1,6 +1,6 @@
 import { SandpackTheme } from '../types';
 
-export const SandpackLightTheme: SandpackTheme = {
+export const sandpackLightTheme: SandpackTheme = {
   palette: {
     highlightText: '#5B6776',
     defaultText: '#999999',
@@ -20,7 +20,7 @@ export const SandpackLightTheme: SandpackTheme = {
   },
 };
 
-export const SandpackDarkTheme: SandpackTheme = {
+export const sandpackDarkTheme: SandpackTheme = {
   palette: {
     highlightText: '#FFFFFF',
     defaultText: '#999999',
@@ -40,7 +40,7 @@ export const SandpackDarkTheme: SandpackTheme = {
   },
 };
 
-export const NightOwlTheme: SandpackTheme = {
+export const nightOwlTheme: SandpackTheme = {
   palette: {
     highlightText: 'rgb(197, 228, 253)',
     defaultText: 'rgb(95, 126, 151)',

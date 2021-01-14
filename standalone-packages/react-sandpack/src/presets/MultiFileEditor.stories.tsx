@@ -1,7 +1,7 @@
 import React from 'react';
 import { Story } from '@storybook/react';
 import { MultiFileEditor, MultiFileEditorProps } from './MultiFileEditor';
-import { SandpackDarkTheme } from '../themes';
+import { sandpackDarkTheme } from '../themes';
 
 export default {
   title: 'presets/Multi-File Editor',
@@ -44,7 +44,15 @@ export const ReactEditor: Story<MultiFileEditorProps> = args => (
       '/button.js': { code: buttonCode },
       '/link.js': { code: linkCode },
     }}
-    template="create-react-app"
+    template="react"
+  />
+);
+
+export const VanillaEditor: Story<MultiFileEditorProps> = args => (
+  <MultiFileEditor
+    {...args}
+    template="vanilla"
+    editableFiles={['/src/index.js', '/src/styles.css']}
   />
 );
 
@@ -56,8 +64,8 @@ export const DarkTheme: Story<MultiFileEditorProps> = args => (
       '/button.js': { code: buttonCode },
       '/link.js': { code: linkCode },
     }}
-    template="create-react-app"
+    template="react"
     previewOptions={{ showNavigator: true }}
-    theme={SandpackDarkTheme}
+    theme={sandpackDarkTheme}
   />
 );

@@ -1,5 +1,5 @@
 import { createStyled } from '@stitches/react';
-import { SandpackLightTheme as defaultTheme } from './themes';
+import { sandpackLightTheme as defaultTheme } from './themes';
 
 export const { styled, css } = createStyled({
   prefix: 'sandpack',
@@ -11,7 +11,7 @@ export const { styled, css } = createStyled({
       $mainBackground: defaultTheme.palette.mainBackground,
       $inputBackground: defaultTheme.palette.inputBackground,
       $accent: defaultTheme.palette.accent,
-      $error: '#AD4337',
+      $error: '#C02C24',
     },
     space: {
       $1: '4px',

@@ -1,15 +1,29 @@
-import { SandboxPredefinedTemplate, SandboxTemplate } from '../types';
+import { SandpackPredefinedTemplate, SandboxTemplate } from '../types';
+import { REACT_TEMPLATE } from './react';
+import { VANILLA_TEMPLATE } from './vanilla';
+import { VUE_TEMPLATE } from './vue';
 
 export const getSetup = (
-  template: SandboxPredefinedTemplate,
+  template?: SandpackPredefinedTemplate,
   customSetup?: Partial<SandboxTemplate>
-) => {
-  const baseTemplate = SANDBOX_TEMPLATES[template] as SandboxTemplate;
+): SandboxTemplate => {
+  if (!template) {
+    // If not input, default to vanilla
+    if (!customSetup) {
+      return SANDBOX_TEMPLATES.vanilla as SandboxTemplate;
+    }
 
-  if (!customSetup) {
-    return baseTemplate;
+    // If not template specified, use the customSetup entirely
+    return customSetup as SandboxTemplate;
   }
 
+  // If no custom setup, the template is used entirely
+  if (!customSetup) {
+    return SANDBOX_TEMPLATES[template] as SandboxTemplate;
+  }
+
+  // Merge the custom setup on top of the template
+  const baseTemplate = SANDBOX_TEMPLATES[template] as SandboxTemplate;
   return {
     files: { ...baseTemplate.files, ...customSetup.files },
     dependencies: {
@@ -18,139 +32,15 @@ export const getSetup = (
     },
     entry: customSetup.entry || baseTemplate.entry,
     main: customSetup.main || baseTemplate.main,
+    environment: customSetup.environment || baseTemplate.environment,
   };
 };
 
 export const SANDBOX_TEMPLATES: Partial<Record<
-  SandboxPredefinedTemplate,
+  SandpackPredefinedTemplate,
   SandboxTemplate
 >> = {
-  'create-react-app': {
-    files: {
-      '/App.js': {
-        code: `import React from 'react';
-  
-export default function App() {
-  return <h1>Hello World</h1>
-}
-`,
-      },
-      '/index.js': {
-        code: `import { render } from 'react-dom';
-import React from 'react';
-import App from './App.js';
-import './styles.css';
-
-render(<App />, document.getElementById('root'))`,
-      },
-      '/styles.css': {
-        code: `body {
-font-family: sans-serif;
--webkit-font-smoothing: auto;
--moz-font-smoothing: auto;
--moz-osx-font-smoothing: grayscale;
-font-smoothing: auto;
-text-rendering: optimizeLegibility;
-font-smooth: always;
--webkit-tap-highlight-color: transparent;
--webkit-touch-callout: none;
-}
-
-h1 {
-font-size: 1.5rem;
-}`,
-      },
-      '/public/index.html': {
-        code: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <div id="root"></div>
-</body>
-</html>`,
-      },
-    },
-    dependencies: {
-      react: 'latest',
-      'react-dom': 'latest',
-      'react-refresh': 'latest',
-      '@babel/runtime': 'latest',
-    },
-    entry: '/index.js',
-    main: '/App.js',
-  },
-
-  'vue-cli': {
-    files: {
-      '/src/main.js': {
-        code: `import Vue from "vue";
-import App from "./App.vue";
-
-Vue.config.productionTip = false;
-
-new Vue({
-  render: h => h(App)
-}).$mount("#app");
-`,
-      },
-      '/public/index.html': {
-        code: `<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-    <title>codesandbox</title>
-  </head>
-  <body>
-    <noscript>
-      <strong
-        >We're sorry but codesandbox doesn't work properly without JavaScript
-        enabled. Please enable it to continue.</strong
-      >
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
-</html>
-`,
-      },
-      '/src/App.vue': {
-        code: `<template>
-  <main id="app">
-    <h1>Hello world</h1>
-  </main>
-</template>
-
-<script>
-export default {
-  name: "App",
-};
-</script>
-
-<style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
-`,
-      },
-    },
-    dependencies: {
-      vue: '^2.6.11',
-      '@vue/cli-plugin-babel': '4.1.1',
-    },
-    entry: '/src/main.js',
-    main: '/src/App.vue',
-  },
+  react: REACT_TEMPLATE,
+  vue: VUE_TEMPLATE,
+  vanilla: VANILLA_TEMPLATE,
 };

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { css } from '../stitches.config';
-import { SandpackLightTheme } from '../themes';
+import { sandpackLightTheme } from '../themes';
 import { SandpackTheme } from '../types';
 
-const ThemeContext = React.createContext<SandpackTheme>(SandpackLightTheme);
+const ThemeContext = React.createContext<SandpackTheme>(sandpackLightTheme);
 
 const ThemeConsumer = ThemeContext.Consumer;
 const ThemeProvider = ThemeContext.Provider;

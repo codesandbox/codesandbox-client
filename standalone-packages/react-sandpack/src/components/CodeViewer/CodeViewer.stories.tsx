@@ -34,7 +34,7 @@ const reactTemplate = SANDBOX_TEMPLATES['create-react-app'] as SandboxTemplate;
 export const ReactCode = () => (
   <SandpackProvider
     entry={reactTemplate.entry}
-    template="create-react-app"
+    environment="create-react-app"
     files={reactTemplate.files}
     openPaths={[reactTemplate.main]}
     dependencies={reactTemplate.dependencies}
@@ -50,7 +50,7 @@ const vueTemplate = SANDBOX_TEMPLATES['vue-cli'] as SandboxTemplate;
 export const VueCode = () => (
   <SandpackProvider
     entry={vueTemplate.entry}
-    template="vue-cli"
+    environment="vue-cli"
     files={vueTemplate.files}
     openPaths={[vueTemplate.main]}
     dependencies={vueTemplate.dependencies}

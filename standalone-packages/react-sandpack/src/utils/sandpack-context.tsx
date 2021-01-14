@@ -10,7 +10,7 @@ import {
 
 import {
   SandpackContext,
-  SandboxPredefinedTemplate,
+  SandboxEnviornment,
   SandpackListener,
   SandpackState,
   FileResolver,
@@ -34,7 +34,7 @@ export interface Props {
   entry: string;
   openPaths?: string[];
   dependencies?: Record<string, string>;
-  template?: SandboxPredefinedTemplate;
+  environment?: SandboxEnviornment;
 
   // execution options
   compileMode?: 'immediate' | 'delayed'; // | 'onCommand'; TODO: implement run on command
@@ -113,7 +113,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       this.manager.updatePreview({
         showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
         files,
-        template: this.props.template,
+        template: this.props.environment,
       });
     }
 
@@ -127,7 +127,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
         this.manager.updatePreview({
           showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
           files: this.state.files,
-          template: this.props.template,
+          template: this.props.environment,
         });
       }, compileDelay);
     }
@@ -148,7 +148,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
           this.props.dependencies,
           this.props.entry
         ),
-        template: this.props.template,
+        template: this.props.environment,
         showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
       },
       {
@@ -167,7 +167,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       JSON.stringify(props.files) !== JSON.stringify(this.props.files) ||
       props.dependencies !== this.props.dependencies ||
       props.entry !== this.props.entry ||
-      props.template !== this.props.template
+      props.environment !== this.props.environment
     ) {
       const newFiles = generatePackageJSON(
         this.props.files,

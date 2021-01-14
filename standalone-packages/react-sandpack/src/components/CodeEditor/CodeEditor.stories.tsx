@@ -8,7 +8,7 @@ import { SandpackProvider } from '../../utils/sandpack-context';
 import { SANDBOX_TEMPLATES } from '../../templates';
 import { SandboxTemplate } from '../../types';
 import { compileStitchesTheme, ThemeProvider } from '../../utils/theme-context';
-import { SandpackDarkTheme } from '../../themes';
+import { sandpackDarkTheme } from '../../themes';
 
 export default {
   title: 'components/Code Editor',
@@ -36,7 +36,7 @@ const reactTemplate = SANDBOX_TEMPLATES['create-react-app'] as SandboxTemplate;
 export const ReactCode = () => (
   <SandpackProvider
     entry={reactTemplate.entry}
-    template="create-react-app"
+    environment="create-react-app"
     files={reactTemplate.files}
     openPaths={[reactTemplate.main]}
     dependencies={reactTemplate.dependencies}
@@ -52,7 +52,7 @@ const vueTemplate = SANDBOX_TEMPLATES['vue-cli'] as SandboxTemplate;
 export const VueCode = () => (
   <SandpackProvider
     entry={vueTemplate.entry}
-    template="vue-cli"
+    environment="vue-cli"
     files={vueTemplate.files}
     openPaths={[vueTemplate.main]}
     dependencies={vueTemplate.dependencies}
@@ -64,15 +64,15 @@ export const VueCode = () => (
 );
 
 export const DarkTheme = () => (
-  <ThemeProvider value={SandpackDarkTheme}>
+  <ThemeProvider value={sandpackDarkTheme}>
     <SandpackProvider
       entry={vueTemplate.entry}
-      template="vue-cli"
+      environment="vue-cli"
       files={vueTemplate.files}
       openPaths={[vueTemplate.main]}
       dependencies={vueTemplate.dependencies}
     >
-      <SandpackWrapper className={compileStitchesTheme(SandpackDarkTheme)}>
+      <SandpackWrapper className={compileStitchesTheme(sandpackDarkTheme)}>
         <CodeEditor />
       </SandpackWrapper>
     </SandpackProvider>

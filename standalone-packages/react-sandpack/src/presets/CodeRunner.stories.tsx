@@ -39,7 +39,7 @@ const vueCode = `<template>
 `;
 
 export const ReactRunner: Story<CodeRunnerProps> = args => (
-  <CodeRunner {...args} template="create-react-app" />
+  <CodeRunner {...args} template="react" />
 );
 
 ReactRunner.args = {
@@ -47,7 +47,7 @@ ReactRunner.args = {
 };
 
 export const VueRunner: Story<CodeRunnerProps> = args => (
-  <CodeRunner {...args} template="vue-cli" />
+  <CodeRunner {...args} template="vue" />
 );
 
 VueRunner.args = {
@@ -67,7 +67,7 @@ export const SwitchExperiment = () => {
   return (
     <div>
       <CodeRunner
-        template="create-react-app"
+        template="react"
         code={codeToggle ? reactAltCode : reactCode}
       />
       <button type="button" onClick={() => setCodeToggle(!codeToggle)}>

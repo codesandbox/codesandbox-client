@@ -7,7 +7,7 @@ import { SandpackWrapper } from '../elements';
 import { PresetProps } from '../types';
 import { getSetup } from '../templates';
 import { SandpackProvider } from '../utils/sandpack-context';
-import { SandpackLightTheme } from '../themes';
+import { sandpackLightTheme } from '../themes';
 import { compileStitchesTheme, ThemeProvider } from '../utils/theme-context';
 
 export interface CodeRunnerProps extends PresetProps {
@@ -16,13 +16,13 @@ export interface CodeRunnerProps extends PresetProps {
 
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
   code,
-  template = 'create-react-app',
+  template,
   customSetup,
   previewOptions,
   codeOptions,
   bundlerOptions,
   customStyle,
-  theme = SandpackLightTheme,
+  theme = sandpackLightTheme,
 }) => {
   const presetPreviewOptions = {
     ...{ showOpenInCodeSandbox: false },
@@ -56,6 +56,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       dependencies={projectSetup.dependencies}
       entry={projectSetup.entry}
       openPaths={[projectSetup.main]}
+      environment={projectSetup.environment}
       showOpenInCodeSandbox={presetPreviewOptions.showOpenInCodeSandbox}
       bundlerURL={bundlerOptions?.bundlerURL}
     >

@@ -53,24 +53,28 @@ const vueCode = `<template>
 `;
 
 export const ReactEditor: Story<BasicEditorProps> = args => (
-  <BasicEditor {...args} code={reactCode} template="create-react-app" />
+  <BasicEditor {...args} code={reactCode} template="react" />
 );
 export const MultipleEditor: Story<BasicEditorProps> = args => (
   <div>
     <BasicEditor
       {...args}
       code={reactCode.replace('World', 'world 1')}
-      template="create-react-app"
+      template="react"
     />
     <BasicEditor
       {...args}
       code={reactCode.replace('World', 'world 2')}
-      template="create-react-app"
+      template="react"
     />
   </div>
 );
 export const VueEditor: Story<BasicEditorProps> = args => (
-  <BasicEditor {...args} code={vueCode} template="vue-cli" />
+  <BasicEditor {...args} code={vueCode} template="vue" />
+);
+
+export const VanillaEditor: Story<BasicEditorProps> = args => (
+  <BasicEditor {...args} template="vanilla" />
 );
 
 export const CustomSetup: Story<BasicEditorProps> = args => (
@@ -142,7 +146,7 @@ export const WithCustomLibrary: Story<BasicEditorProps> = args => (
   <BasicEditor
     {...args}
     code={reactWithLibCode}
-    template="create-react-app"
+    template="react"
     customSetup={{
       dependencies: {
         'react-markdown': 'latest',

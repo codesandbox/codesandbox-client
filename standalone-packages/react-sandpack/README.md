@@ -19,7 +19,7 @@ If you want a single editable file, you can use the `BasicEditor` preset.
 ```jsx
 import { BasicEditor } from 'react-smooshpack';
 
-<BasicEditor code={`...`} template="create-react-app" />;
+<BasicEditor code={`...`} template="react" />;
 ```
 
 The `code` string should be pre-formatted:
@@ -36,7 +36,7 @@ export default function App() {
 }
 `;
 
-<BasicEditor code={code} template="create-react-app" />;
+<BasicEditor code={code} template="react" />;
 ```
 
 ### Code Runner
@@ -47,7 +47,7 @@ component, you can use a `CodeRunner` preset.
 ```jsx
 import { CodeRunner } from 'react-smooshpack';
 
-<CodeRunner code={`...`} template="vue-cli" />;
+<CodeRunner code={`...`} template="vue" />;
 ```
 
 ### Multi-File Editor
@@ -85,11 +85,11 @@ Each preset extends a `PresetProps` interface through which you can pass:
 We offer some predefined themes for `react-sandpack`:
 
 ```jsx
-import { MultiFileEditor, SandpackDarkTheme } from 'react-smooshpack';
+import { MultiFileEditor, sandpackDarkTheme } from 'react-smooshpack';
 
 <MultiFileEditor
   previewOptions={{ showNavigator: true }}
-  theme={SandpackDarkTheme}
+  theme={sandpackDarkTheme}
   editableFiles={{
     '/App.js': { code: reactButtonCode },
     '/button.js': { code: buttonCode },
@@ -100,30 +100,8 @@ import { MultiFileEditor, SandpackDarkTheme } from 'react-smooshpack';
 You can also customize the colors of the components and the code syntax with our
 `SandpackTheme` interface.
 
-```typescript
-type SandpackTheme = {
-  palette: {
-    highlightText: string;
-    defaultText: string;
-    inactive: string;
-    mainBackground: string;
-    inputBackground: string;
-    accent: string;
-  };
-  syntax: {
-    plain: string;
-    disabled: string;
-    keyword: string;
-    definition: string;
-    property: string;
-    tag: string;
-    static: string;
-  };
-};
-```
-
 ```jsx
-import { MultiFileEditor, SandpackDarkTheme } from 'react-smooshpack';
+import { MultiFileEditor } from 'react-smooshpack';
 
 // Emulate NightOwl
 const customTheme = {

@@ -24,37 +24,44 @@ export type SandboxTemplate = {
   dependencies: Record<string, string>;
   entry: string;
   main: string;
+  environment: SandboxEnviornment;
 };
 
-export type SandboxPredefinedTemplate =
-  // | 'adonis'
-  'create-react-app' | 'vue-cli';
-// | 'preact-cli'
-// | 'svelte'
-// | 'create-react-app-typescript'
+export type SandboxEnviornment =
+  | 'adonis'
+  | 'create-react-app'
+  | 'vue-cli'
+  | 'preact-cli'
+  | 'svelte'
+  | 'create-react-app-typescript'
+  | 'angular-cli'
+  | 'parcel'
+  | 'cxjs'
+  | '@dojo/cli-create-app'
+  | 'gatsby'
+  | 'marko'
+  | 'nuxt'
+  | 'next'
+  | 'reason'
+  | 'apollo'
+  | 'sapper'
+  | 'nest'
+  | 'static'
+  | 'styleguidist'
+  | 'gridsome'
+  | 'vuepress'
+  | 'mdx-deck'
+  | 'quasar-framework'
+  | 'unibit'
+  | 'node'
+  | 'ember'
+  | 'custom'
+  | 'babel-repl';
+
+export type SandpackPredefinedTemplate = 'react' | 'vue' | 'vanilla';
+// TODO
 // | 'angular-cli'
-// | 'parcel'
-// | 'cxjs'
-// | '@dojo/cli-create-app'
-// | 'gatsby'
-// | 'marko'
-// | 'nuxt'
-// | 'next'
-// | 'reason'
-// | 'apollo'
-// | 'sapper'
-// | 'nest'
-// | 'static'
-// | 'styleguidist'
-// | 'gridsome'
-// | 'vuepress'
-// | 'mdx-deck'
-// | 'quasar-framework'
-// | 'unibit'
-// | 'node'
-// | 'ember'
-// | 'custom'
-// | 'babel-repl';
+// | 'parcel';
 
 export type SandpackTheme = {
   palette: {
@@ -77,7 +84,7 @@ export type SandpackTheme = {
 };
 
 export interface PresetProps {
-  template?: SandboxPredefinedTemplate;
+  template?: SandpackPredefinedTemplate;
   customSetup?: Partial<SandboxTemplate>;
   previewOptions?: {
     showNavigator?: boolean;
