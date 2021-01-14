@@ -71,36 +71,36 @@ const plans: { [key: string]: Plan } = {
     id: '7365',
     name: 'Personal Pro Workspace',
     type: 'personal',
-    frequency: 'monthly',
     unit: 12,
     multiplier: 1,
+    frequency: 'monthly',
     currency: '$',
   },
   PERSONAL_PRO_ANNUAL: {
     id: '7399',
     name: 'Personal Pro Workspace',
     type: 'personal',
-    frequency: 'annual',
     unit: 9,
     multiplier: 12,
+    frequency: 'annual',
     currency: '$',
   },
   TEAM_PRO_MONTHLY: {
     id: '7407',
     name: 'Team Pro Workspace',
     type: 'team',
-    frequency: 'monthly',
     unit: 30,
     multiplier: 1,
+    frequency: 'monthly',
     currency: '$',
   },
   TEAM_PRO_ANNUAL: {
     id: '7399',
     name: 'Team Pro Workspace',
     type: 'team',
-    frequency: 'annual',
     unit: 24,
     multiplier: 12,
+    frequency: 'annual',
     currency: '$',
   },
 };
@@ -108,25 +108,16 @@ const plans: { [key: string]: Plan } = {
 const UpgradeSteps = () => {
   // step 1 - choose workspace
   // step 2 - loading inline checkout in background
-  // step 3 - switch to inline checkout
-
+  // step 3 - inline checkout
   const [step, setStep] = React.useState(1);
+
   const [plan, setPlan] = React.useState(null);
+  const [seats, setSeats] = React.useState(1);
   const [checkoutReady, setCheckoutReady] = React.useState(false);
-  const [prices, updatePrices] = React.useState({
-    total: 10,
-    unit: null,
-    tax: null,
-    currency: 'USD',
-  });
 
   React.useEffect(() => {
     if (checkoutReady) setStep(3);
   }, [checkoutReady]);
-
-  React.useEffect(() => {
-    // if (plan) updatePrices(plans[plan]);
-  }, [plan]);
 
   return (
     <Stack
@@ -138,6 +129,7 @@ const UpgradeSteps = () => {
         <Upgrade
           plan={plan}
           setPlan={setPlan}
+          setSeats={setSeats}
           loading={step === 2}
           nextStep={() => setStep(2)}
         />
@@ -150,13 +142,10 @@ const UpgradeSteps = () => {
             overflow: 'hidden',
           }}
         >
-          <h1>
-            {prices.currency} {prices.total}
-          </h1>
           <InlineCheckout
             plan={plan}
+            seats={seats}
             setCheckoutReady={setCheckoutReady}
-            updatePrices={updatePrices}
           />
         </div>
       )}
@@ -164,7 +153,7 @@ const UpgradeSteps = () => {
   );
 };
 
-const Upgrade = ({ loading, plan, setPlan, nextStep }) => {
+const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
   const {
     state: { personalWorkspaceId, user, activeTeam, dashboard },
     actions: { setActiveTeam },
@@ -235,17 +224,13 @@ const Upgrade = ({ loading, plan, setPlan, nextStep }) => {
   const numberOfEditors = activeWorkspace.userAuthorizations.filter(
     ({ authorization }) => authorization !== TeamMemberAuthorization.Read
   ).length;
+  setSeats(numberOfEditors);
 
   const isPersonalPro = isPersonalWorkspace || user.subscription;
   const isTeamPro = activeWorkspace.joinedPilotAt;
 
-  let currentPlanName: string;
-  if (isTeamPro) currentPlanName = 'Team Pro';
-  else if (isPersonalWorkspace && isPersonalPro) {
-    currentPlanName = 'Personal Pro';
-  } else currentPlanName = 'Community workspace (Free)';
-
-  const onPaidPlan = isTeamPro || (isPersonalWorkspace && isPersonalPro);
+  // TODO: use this
+  // const onPaidPlan = isTeamPro || (isPersonalWorkspace && isPersonalPro);
 
   // if there is mismatch of intent, open the workspace switcher on load
   const switcherDefaultOpen =
@@ -266,7 +251,8 @@ const Upgrade = ({ loading, plan, setPlan, nextStep }) => {
           marginBottom={8}
           css={{ maxWidth: 560 }}
         >
-          Join our community of creators from €24/year.
+          Join our community of creators from {plan.currency}
+          {plan.unit}/month.
           <br /> Cancel at any time, effective at the end of the payment period.
         </Text>
         <Stack direction="vertical" gap={1} marginBottom={6}>
@@ -500,49 +486,6 @@ const Upgrade = ({ loading, plan, setPlan, nextStep }) => {
   );
 };
 
-const InlineCheckout = ({ plan, updatePrices, setCheckoutReady }) => {
-  const {
-    state: { user },
-  } = useOvermind();
-
-  React.useEffect(() => {
-    // @ts-ignore 3rd party integration with global
-    const Paddle = window.Paddle;
-
-    Paddle.Environment.set('sandbox');
-    Paddle.Setup({
-      vendor: PADDLE_VENDOR_ID,
-      eventCallback: event => {
-        console.log(event.eventData.checkout);
-        updatePrices(event.eventData.checkout.prices.customer);
-      },
-    });
-
-    // @ts-ignore 3rd party integration with global
-    window.loadCallback = () => setCheckoutReady(true);
-
-    Paddle.Checkout.open({
-      method: 'inline',
-      product: plan.id, // Replace with your Product or Plan ID
-      email: user.email,
-      displayModeTheme: 'dark',
-      allowQuantity: true,
-      disableLogout: true,
-      frameTarget: 'checkout-container', // The className of your checkout <div>
-      frameInitialHeight: 416,
-      frameStyle: `
-        width: 500px;
-        min-width:500px;
-        background-color:
-        transparent; border: none;
-      `,
-      loadCallback: 'loadCallback',
-    });
-  }, [setCheckoutReady]);
-
-  return <div className="checkout-container" />;
-};
-
 const PlanCard: React.FC<{
   plan: Plan;
   billingFrequency: Plan['frequency'];
@@ -602,5 +545,117 @@ const PlanCard: React.FC<{
         </div>
       </Stack>
     </Stack>
+  );
+};
+
+const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
+  const {
+    state: { user },
+  } = useOvermind();
+
+  const [prices, updatePrices] = React.useState(null);
+
+  const unitPricePreTax = prices && (prices.unit - prices.unit_tax).toFixed(2);
+  const totalPricePreTax =
+    prices && (prices.total - prices.total_tax).toFixed(2);
+
+  React.useEffect(() => {
+    // @ts-ignore 3rd party integration with global
+    const Paddle = window.Paddle;
+
+    Paddle.Environment.set('sandbox');
+    Paddle.Setup({
+      vendor: PADDLE_VENDOR_ID,
+      eventCallback: event => {
+        if (event.event === 'Checkout.Location.Submit') {
+          updatePrices(event.eventData.checkout.prices.customer);
+        }
+      },
+    });
+
+    // @ts-ignore 3rd party integration with global
+    window.loadCallback = () => setCheckoutReady(true);
+
+    Paddle.Checkout.open({
+      method: 'inline',
+      product: plan.id, // Replace with your Product or Plan ID
+      quantity: seats,
+      email: user.email,
+      displayModeTheme: 'dark',
+      allowQuantity: true,
+      disableLogout: true,
+      frameTarget: 'checkout-container', // The className of your checkout <div>
+      frameInitialHeight: 416,
+      frameStyle: `
+        width: 500px;
+        min-width:500px;
+        background-color:
+        transparent; border: none;
+      `,
+      loadCallback: 'loadCallback',
+    });
+  }, [setCheckoutReady]);
+
+  return (
+    <div>
+      <Text size={7} as="h1" block align="center" marginBottom={12}>
+        Upgrade to Pro
+      </Text>
+      {prices && (
+        <Stack
+          direction="vertical"
+          gap={2}
+          css={css({
+            padding: 4,
+            marginBottom: 8,
+            border: '1px solid',
+            borderColor: 'grays.500',
+            borderRadius: 'small',
+            overflow: 'hidden',
+          })}
+        >
+          <Text size={3}>Workspace editors</Text>
+          <Stack justify="space-between">
+            <Text variant="muted" size={3}>
+              {seats} {seats === 1 ? 'seat' : 'seats'}
+              <Text size={2}> ✕ </Text>
+              {prices.currency} {unitPricePreTax} ({plan.currency} {plan.unit})
+              {plan.multiplier > 1 ? (
+                <>
+                  <Text size={2}> ✕</Text> {plan.multiplier}
+                </>
+              ) : null}
+            </Text>
+            <Text variant="muted" size={3}>
+              {prices.currency} {totalPricePreTax} /{' '}
+              {plan.frequency === 'monthly' ? 'month' : 'year'}
+            </Text>
+          </Stack>
+          <Stack justify="space-between">
+            <Text variant="muted" size={3}>
+              Tax
+            </Text>
+            <Text variant="muted" size={3}>
+              {prices.currency} {prices.total_tax}
+            </Text>
+          </Stack>
+          <Stack
+            justify="space-between"
+            css={css({
+              borderTop: '1px solid',
+              borderColor: 'grays.500',
+              paddingTop: 10,
+            })}
+          >
+            <Text size={3}>Total</Text>
+            <Text weight="semibold">
+              {prices.currency} {prices.total}
+            </Text>
+          </Stack>
+        </Stack>
+      )}
+
+      <div className="checkout-container" />
+    </div>
   );
 };
