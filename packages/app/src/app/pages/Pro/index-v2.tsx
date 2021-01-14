@@ -581,10 +581,12 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
       product: plan.id, // Replace with your Product or Plan ID
       quantity: seats,
       email: user.email,
+      frameTarget: 'checkout-container', // The className of your checkout <div>
+      loadCallback: 'loadCallback',
+      success: '/dashboard/settings',
       displayModeTheme: 'dark',
       allowQuantity: true,
       disableLogout: true,
-      frameTarget: 'checkout-container', // The className of your checkout <div>
       frameInitialHeight: 416,
       frameStyle: `
         width: 500px;
@@ -592,7 +594,6 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
         background-color:
         transparent; border: none;
       `,
-      loadCallback: 'loadCallback',
     });
   }, [setCheckoutReady]);
 
