@@ -40,9 +40,11 @@ const NavigatorButton = styled('button', {
   alignItems: 'center',
   color: '$defaultText',
   background: 'transparent',
+  outline: 'none',
 
   ':disabled': { color: '$inactive' },
 
+  ':focus-visible': { outline: 'auto' },
   ':hover': { color: '$highlightText' },
 });
 

@@ -11,6 +11,7 @@ export const { styled, css } = createStyled({
       $mainBackground: defaultTheme.palette.mainBackground,
       $inputBackground: defaultTheme.palette.inputBackground,
       $accent: defaultTheme.palette.accent,
+      $error: '#AD4337',
     },
     space: {
       $1: '4px',

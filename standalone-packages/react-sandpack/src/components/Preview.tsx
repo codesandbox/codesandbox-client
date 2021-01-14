@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ErrorMessage } from '../elements';
 import { styled } from '../stitches.config';
 
 import { useSandpack } from '../utils/sandpack-context';
@@ -60,7 +61,11 @@ export const Preview: React.FC<PreviewProps> = ({
   return (
     <Wrapper style={customStyle}>
       {showNavigator && <Navigator />}
-      <PreviewFrame id="preview-frame" ref={containerRef} />
+      <PreviewFrame id="preview-frame" ref={containerRef}>
+        {sandpack.errors.length > 0 && (
+          <ErrorMessage>{sandpack.errors[0].message}</ErrorMessage>
+        )}
+      </PreviewFrame>
     </Wrapper>
   );
 };

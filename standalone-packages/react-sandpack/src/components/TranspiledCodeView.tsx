@@ -7,7 +7,11 @@ import { PrismHighlight } from './CodeViewer/PrismHighlight';
 
 const Wrapper = styled('div', {
   position: 'relative',
-  height: '100%',
+  border: '1px solid $inactive',
+  margin: -1,
+  display: 'flex',
+  flexDirection: 'column',
+  backgroundColor: '$mainBackground',
 });
 
 function getTranspiledCode(sandpack: SandpackState) {

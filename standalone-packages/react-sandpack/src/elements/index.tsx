@@ -8,9 +8,10 @@ export const ErrorMessage = styled('pre', {
   margin: 0,
   overflow: 'auto',
   height: '100%',
+  padding: '$4',
 
   fontFamily: '$mono',
-  backgroundColor: 'rgba(186, 53, 55, 0.7)',
+  backgroundColor: '$error',
   color: 'white',
 
   zIndex: 3,
