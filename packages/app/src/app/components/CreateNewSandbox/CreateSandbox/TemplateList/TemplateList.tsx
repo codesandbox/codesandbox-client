@@ -11,7 +11,7 @@ import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import history from 'app/utils/history';
 import MdEditIcon from 'react-icons/lib/md/edit';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { Tooltip } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SandboxCard } from '../SandboxCard';
 import { SubHeader, Grid } from '../elements';
@@ -425,7 +425,7 @@ export const TemplateList = ({
                       DetailComponent={
                         isOwned
                           ? () => (
-                              <Tooltip content="Edit Template">
+                              <Tooltip label="Edit Template">
                                 <EditIcon
                                   onClick={evt => {
                                     evt.stopPropagation();

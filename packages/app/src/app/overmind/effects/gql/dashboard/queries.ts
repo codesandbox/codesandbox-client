@@ -49,6 +49,7 @@ import {
   repoFragmentDashboard,
   currentTeamInfoFragment,
   npmRegistryFragment,
+  teamFragmentDashboard,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -208,21 +209,11 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
     me {
       personalWorkspaceId
       workspaces {
-        id
-        name
-        avatarUrl
-        userAuthorizations {
-          userId
-          authorization
-        }
-        settings {
-          minimumPrivacy
-          preventSandboxExport
-          preventSandboxLeaving
-        }
+        ...teamFragmentDashboard
       }
     }
   }
+  ${teamFragmentDashboard}
 `;
 
 export const searchPersonalSandboxes: Query<

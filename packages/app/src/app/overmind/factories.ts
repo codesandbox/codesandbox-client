@@ -198,7 +198,7 @@ export const createModals = <
         });
       }
       if (resolver) {
-        resolver(payload || modal.result);
+        resolver(typeof payload === 'undefined' ? modal.result : payload);
       }
     };
 

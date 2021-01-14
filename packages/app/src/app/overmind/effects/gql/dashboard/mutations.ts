@@ -51,6 +51,8 @@ import {
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
   SetTeamMinimumPrivacyMutationVariables,
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables,
   SetWorkspaceSandboxSettingsMutation,
   SetWorkspaceSandboxSettingsMutationVariables,
   SetPreventSandboxesLeavingWorkspaceMutation,
@@ -61,8 +63,6 @@ import {
   SetDefaultTeamMemberAuthorizationMutationVariables,
   DeleteCurrentUserMutation,
   DeleteCurrentUserMutationVariables,
-  SetSandboxAlwaysOnMutation,
-  SetSandboxAlwaysOnMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 

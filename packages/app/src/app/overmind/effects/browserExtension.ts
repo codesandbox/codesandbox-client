@@ -1,12 +1,17 @@
 export default {
   install() {
-    return new Promise((resolve, reject) => {
-      // @ts-ignore
-      chrome.webstore.install(
+    return new Promise<void>(resolve => {
+      const win = window.open(
         'https://chrome.google.com/webstore/detail/hdidglkcgdolpoijdckmafdnddjoglia',
-        resolve,
-        reject
+        'CodeSandbox Extension',
+        'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=1100,height=300'
       );
+      const interval = setInterval(() => {
+        if (win && win.closed) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 500);
     });
   },
   setNotifiedImprovedScreenshots() {

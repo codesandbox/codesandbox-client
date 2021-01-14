@@ -1258,7 +1258,7 @@ export type PreviewReferenceMetadataFragment = {
   __typename?: 'PreviewReferenceMetadata';
 } & Pick<
   PreviewReferenceMetadata,
-  'width' | 'height' | 'x' | 'y' | 'screenshotUrl'
+  'width' | 'height' | 'x' | 'y' | 'screenshotUrl' | 'userAgent'
 >;
 
 export type CommentFragment = { __typename?: 'Comment' } & Pick<
@@ -2166,22 +2166,7 @@ export type AllTeamsQuery = { __typename?: 'RootQueryType' } & {
       'personalWorkspaceId'
     > & {
         workspaces: Array<
-          { __typename?: 'Team' } & Pick<Team, 'id' | 'name' | 'avatarUrl'> & {
-              userAuthorizations: Array<
-                { __typename?: 'UserAuthorization' } & Pick<
-                  UserAuthorization,
-                  'userId' | 'authorization'
-                >
-              >;
-              settings: Maybe<
-                { __typename?: 'WorkspaceSandboxSettings' } & Pick<
-                  WorkspaceSandboxSettings,
-                  | 'minimumPrivacy'
-                  | 'preventSandboxExport'
-                  | 'preventSandboxLeaving'
-                >
-              >;
-            }
+          { __typename?: 'Team' } & TeamFragmentDashboardFragment
         >;
       }
   >;
