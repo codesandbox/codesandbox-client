@@ -89,7 +89,10 @@ function Navigator({
                 : '#757575',
           }}
         >
-          <Tooltip delay={0} content="Add Preview Comment">
+          <Tooltip
+            delay={0}
+            content="Add Preview Comment (CTRL/CMD + SHIFT + S)"
+          >
             {isScreenshotLoading ? (
               <SpinnerWrapper>
                 <ComponentsIcon name="spinner" />

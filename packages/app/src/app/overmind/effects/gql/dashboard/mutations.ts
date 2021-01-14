@@ -51,6 +51,16 @@ import {
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
   SetTeamMinimumPrivacyMutationVariables,
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables,
+  SetWorkspaceSandboxSettingsMutation,
+  SetWorkspaceSandboxSettingsMutationVariables,
+  SetPreventSandboxesLeavingWorkspaceMutation,
+  SetPreventSandboxesLeavingWorkspaceMutationVariables,
+  SetPreventSandboxesExportMutation,
+  SetPreventSandboxesExportMutationVariables,
+  SetDefaultTeamMemberAuthorizationMutation,
+  SetDefaultTeamMemberAuthorizationMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -325,8 +335,8 @@ export const changeTeamMemberAuthorization: Query<
   ChangeTeamMemberAuthorizationMutationVariables
 > = gql`
   mutation ChangeTeamMemberAuthorization(
-    $teamId: ID!
-    $userId: ID!
+    $teamId: UUID4!
+    $userId: UUID4!
     $authorization: TeamMemberAuthorization!
   ) {
     changeTeamMemberAuthorizations(
@@ -402,6 +412,89 @@ export const setTeamMinimumPrivacy: Query<
       updateDrafts: $updateDrafts
     ) {
       minimumPrivacy
+    }
+  }
+`;
+
+export const changeSandboxAlwaysOn: Query<
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables
+> = gql`
+  mutation setSandboxAlwaysOn($sandboxId: ID!, $alwaysOn: Boolean!) {
+    setSandboxAlwaysOn(sandboxId: $sandboxId, alwaysOn: $alwaysOn) {
+      ...sandboxFragmentDashboard
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const setWorkspaceSandboxSettings: Query<
+  SetWorkspaceSandboxSettingsMutation,
+  SetWorkspaceSandboxSettingsMutationVariables
+> = gql`
+  mutation setWorkspaceSandboxSettings(
+    $teamId: UUID4!
+    $preventSandboxLeaving: Boolean!
+    $preventSandboxExport: Boolean!
+  ) {
+    setWorkspaceSandboxSettings(
+      teamId: $teamId
+      preventSandboxLeaving: $preventSandboxLeaving
+      preventSandboxExport: $preventSandboxExport
+    ) {
+      preventSandboxLeaving
+      preventSandboxExport
+    }
+  }
+`;
+
+export const setPreventSandboxesLeavingWorkspace: Query<
+  SetPreventSandboxesLeavingWorkspaceMutation,
+  SetPreventSandboxesLeavingWorkspaceMutationVariables
+> = gql`
+  mutation setPreventSandboxesLeavingWorkspace(
+    $sandboxIds: [ID!]!
+    $preventSandboxLeaving: Boolean!
+  ) {
+    setPreventSandboxesLeavingWorkspace(
+      sandboxIds: $sandboxIds
+      preventSandboxLeaving: $preventSandboxLeaving
+    ) {
+      id
+    }
+  }
+`;
+
+export const setPreventSandboxesExport: Query<
+  SetPreventSandboxesExportMutation,
+  SetPreventSandboxesExportMutationVariables
+> = gql`
+  mutation setPreventSandboxesExport(
+    $sandboxIds: [ID!]!
+    $preventSandboxExport: Boolean!
+  ) {
+    setPreventSandboxesExport(
+      sandboxIds: $sandboxIds
+      preventSandboxExport: $preventSandboxExport
+    ) {
+      id
+    }
+  }
+`;
+
+export const setDefaultTeamMemberAuthorization: Query<
+  SetDefaultTeamMemberAuthorizationMutation,
+  SetDefaultTeamMemberAuthorizationMutationVariables
+> = gql`
+  mutation setDefaultTeamMemberAuthorization(
+    $teamId: UUID4!
+    $defaultAuthorization: TeamMemberAuthorization!
+  ) {
+    setDefaultTeamMemberAuthorization(
+      teamId: $teamId
+      defaultAuthorization: $defaultAuthorization
+    ) {
+      defaultAuthorization
     }
   }
 `;

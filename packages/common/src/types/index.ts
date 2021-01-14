@@ -441,6 +441,7 @@ export type Sandbox = {
   tags: string[];
   isFrozen: boolean;
   isSse?: boolean;
+  alwaysOn: boolean;
   environmentVariables: {
     [key: string]: string;
   } | null;
@@ -469,6 +470,10 @@ export type Sandbox = {
   version: number;
   screenshotUrl: string | null;
   previewSecret: string | null;
+  permissions: {
+    preventSandboxLeaving: boolean;
+    preventSandboxExport: boolean;
+  };
 };
 
 export type PrettierConfig = {
@@ -859,3 +864,12 @@ export interface IModuleStateModule {
 export interface IModuleState {
   [moduleId: string]: IModuleStateModule;
 }
+
+export type SettingsSync = {
+  id: string;
+  insertedAt: string;
+  name: string;
+  settings: string;
+  updatedAt: string;
+  userId: string;
+};

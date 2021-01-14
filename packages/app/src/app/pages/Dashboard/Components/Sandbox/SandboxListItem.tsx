@@ -24,6 +24,7 @@ export const SandboxListItem = ({
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
+  alwaysOn,
   // interactions
   selected,
   onClick,
@@ -120,7 +121,14 @@ export const SandboxListItem = ({
           </Element>
         </Stack>
       </Column>
-      <Column span={[0, 4, 4]} as={Stack} align="center">
+      <Column span={[0, 2, 2]} as={Stack} align="center">
+        {alwaysOn && (
+          <Text size={3} css={css({ color: 'green' })} maxWidth="100%">
+            Always-On
+          </Text>
+        )}
+      </Column>
+      <Column span={[0, 3, 3]} as={Stack} align="center">
         {sandbox.removedAt ? (
           <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
@@ -140,7 +148,7 @@ export const SandboxListItem = ({
           </Text>
         )}
       </Column>
-      <Column span={[0, 3, 3]} as={Stack} align="center">
+      <Column span={[0, 2, 2]} as={Stack} align="center">
         <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
           {sandboxLocation}
         </Text>

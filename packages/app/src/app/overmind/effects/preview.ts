@@ -1,10 +1,10 @@
 import { dispatch, listen } from 'codesandbox-api';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { blocker } from 'app/utils/blocker';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { Sandbox } from '@codesandbox/common/lib/types';
 
 let _preview = blocker<BasePreview>();
-
-const PREVIEW_COMMENT_BUBBLE_OFFSET = 16;
 
 export default {
   initialize() {},
@@ -47,21 +47,23 @@ export default {
 
     return path.substr(path.indexOf('/'));
   },
-  takeScreenshot(
-    isPrivateSandbox: boolean,
-    noExtensionCallback: Function
-  ): Promise<string> {
+  takeExtensionScreenshot(): Promise<string> {
     return new Promise((resolve, reject) => {
       let waitForExtension;
       const extensionListener = event => {
-        if (event.data.type === 'extension-screenshot-started') {
+        if (event.data.type === 'extension-screenshot-taken') {
           clearTimeout(waitForExtension);
-        } else if (event.data.type === 'extension-screenshot-taken') {
           window.removeEventListener('message', extensionListener);
           resolve(event.data.url);
         }
       };
-
+      waitForExtension = setTimeout(() => {
+        reject(
+          new Error(
+            'Extension did not create screenshot, please try to refresh browser'
+          )
+        );
+      }, 3000);
       window.addEventListener('message', extensionListener);
       window.postMessage(
         {
@@ -69,39 +71,47 @@ export default {
         },
         '*'
       );
+    });
+  },
+  takeScreenshot(isPrivateSandbox: boolean): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let timeout;
+      const start = Date.now();
 
-      waitForExtension = setTimeout(() => {
-        window.removeEventListener('message', extensionListener);
-        noExtensionCallback();
+      const disposeListener = listen((data: any) => {
+        if (data.type === 'screenshot-generated') {
+          clearTimeout(timeout);
+          const waitAtLeastMs = 250;
+          const waitedMs = Date.now() - start;
 
-        let timeout;
-        const start = Date.now();
+          setTimeout(
+            () => resolve(data.screenshot),
+            waitedMs > waitAtLeastMs ? 0 : waitAtLeastMs - waitedMs
+          );
+        }
+      });
 
-        const disposeListener = listen((data: any) => {
-          if (data.type === 'screenshot-generated') {
-            clearTimeout(timeout);
-            const waitAtLeastMs = 250;
-            const waitedMs = Date.now() - start;
+      timeout = setTimeout(() => {
+        disposeListener();
+        reject(new Error('Creating screenshot timed out'));
+      }, 3000);
 
-            setTimeout(
-              () => resolve(data.screenshot),
-              waitedMs > waitAtLeastMs ? 0 : waitAtLeastMs - waitedMs
-            );
-          }
-        });
-
-        timeout = setTimeout(() => {
-          disposeListener();
-          reject(new Error('Creating screenshot timed out'));
-        }, 3000);
-
-        dispatch({
-          type: 'take-screenshot',
-          data: {
-            isPrivateSandbox,
-          },
-        });
-      }, 10);
+      dispatch({
+        type: 'take-screenshot',
+        data: {
+          isPrivateSandbox,
+        },
+      });
+    });
+  },
+  showCommentCursor() {
+    dispatch({
+      type: 'show-screenshot-cursor',
+    });
+  },
+  hideCommentCursor() {
+    dispatch({
+      type: 'hide-screenshot-cursor',
     });
   },
   createScreenshot({
@@ -173,78 +183,24 @@ export default {
         const sx = Math.min(scaledX - leftSideSpace, screenshot.width - width);
         const sy = Math.min(scaledY - topSideSpace, screenshot.height - height);
 
-        const bubbleX = PREVIEW_COMMENT_BUBBLE_OFFSET + scaledX - sx;
-        const bubbleY = PREVIEW_COMMENT_BUBBLE_OFFSET + scaledY - sy;
+        const bubbleX = scaledX - sx;
+        const bubbleY = scaledY - sy;
 
-        canvas.width = width + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
-        canvas.height = height + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
+        canvas.width = width;
+        canvas.height = height;
 
-        const radius = 5;
-
-        ctx.beginPath();
-        ctx.moveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width - radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height - radius
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width - radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height - radius
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET
-        );
-        ctx.closePath();
-        ctx.save();
-        ctx.clip();
-        ctx.drawImage(
-          screenshot,
-          sx,
-          sy,
-          width,
-          height,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          width,
-          height
-        );
+        ctx.drawImage(screenshot, sx, sy, width, height, 0, 0, width, height);
         ctx.restore();
         ctx.drawImage(bubble, bubbleX, bubbleY);
 
         return canvas.toDataURL();
       }
+    );
+  },
+  canAddComments(currentSandbox: Sandbox) {
+    return Boolean(
+        currentSandbox.featureFlags.comments &&
+        hasPermission(currentSandbox.authorization, 'comment')
     );
   },
 };

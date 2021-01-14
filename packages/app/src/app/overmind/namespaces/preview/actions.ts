@@ -160,24 +160,60 @@ export const editPresets: AsyncAction<Presets> = async (
   });
 };
 
+export const setExtension: Action<boolean> = ({ state }, hasExtension) => {
+  state.preview.hasExtension = hasExtension;
+};
+
+export const closeExtensionBanner: Action = ({ state }) => {
+  state.preview.showExtensionBanner = false;
+};
+
+export const installExtension: AsyncAction = async ({ actions, state, effects }) => {
+  await effects.browserExtension.install();
+
+  const doReload = await actions.modals.extensionInstalledModal.open()
+
+  if (doReload) {
+    effects.browser.reload()
+  }
+
+  state.preview.showExtensionBanner = false;
+};
+
 export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
+  const currentSandbox = state.editor.currentSandbox;
+
+  if (!currentSandbox || !effects.preview.canAddComments(currentSandbox)) {
+    return;
+  }
+
   const existingMode = state.preview.mode;
 
   state.preview.screenshot.source = null;
-  state.preview.screenshot.fromExtension = false;
 
   const takeScreenshot = async () => {
     try {
-      const screenshot = await effects.preview.takeScreenshot(
-        state.editor.currentSandbox!.privacy === 2,
-        () => {
-          state.preview.screenshot.isLoading = true;
+      if (state.preview.hasExtension) {
+        effects.preview.showCommentCursor();
+        const screenshot = await effects.preview.takeExtensionScreenshot();
+        state.preview.screenshot.source = screenshot;
+      } else {
+        state.preview.screenshot.isLoading = true;
+
+        const screenshot = await effects.preview.takeScreenshot(
+          state.editor.currentSandbox!.privacy === 2
+        );
+
+        if (!effects.browserExtension.hasNotifiedImprovedScreenshots()) {
+          state.preview.showExtensionBanner = true;
+          effects.browserExtension.setNotifiedImprovedScreenshots();
         }
-      );
-      state.preview.screenshot.isLoading = false;
-      state.preview.screenshot.source = screenshot;
-    } catch {
-      // Not experienced this process erroring yet
+        effects.preview.showCommentCursor();
+        state.preview.screenshot.isLoading = false;
+        state.preview.screenshot.source = screenshot;
+      }
+    } catch (error) {
+      effects.notificationToast.error(error.message);
     }
   };
 
@@ -187,9 +223,11 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
       await takeScreenshot();
       break;
     case 'add-comment':
+      effects.preview.hideCommentCursor();
       state.preview.mode = null;
       break;
     case 'responsive-add-comment':
+      effects.preview.hideCommentCursor();
       state.preview.mode = 'responsive';
       break;
     default:

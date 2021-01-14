@@ -4,7 +4,7 @@ import css from '@styled-system/css';
 
 import { useOvermind } from 'app/overmind';
 import { CreateTeamParams, RegistryForm } from './RegistryForm';
-import { Alert } from './Alert';
+import { Alert } from '../components/Alert';
 
 export const RegistrySettings = () => {
   const { actions, state } = useOvermind();
@@ -116,7 +116,7 @@ export const RegistrySettings = () => {
         )}
       </Stack>
 
-      {state.activeWorkspaceAuthorization === 'ADMIN' && (
+      {!alert && (
         <Stack justify="center" align="center">
           <Button
             variant="link"
