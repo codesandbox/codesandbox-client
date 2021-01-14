@@ -186,10 +186,12 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
     if (isPersonalWorkspace) {
       if (billingFrequency === 'annual') newPlan = plans.PERSONAL_PRO_ANNUAL;
       else newPlan = plans.PERSONAL_PRO_MONTHLY;
+    } else if (billingFrequency === 'annual') {
+      newPlan = plans.TEAM_PRO_ANNUAL;
     } else {
-      if (billingFrequency === 'annual') newPlan = plans.TEAM_PRO_ANNUAL;
-      else newPlan = plans.TEAM_PRO_MONTHLY;
+      newPlan = plans.TEAM_PRO_MONTHLY;
     }
+
     setPlan(newPlan);
   }, [isPersonalWorkspace, billingFrequency]);
 
@@ -218,18 +220,14 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
     workspace => workspace.id === activeTeam
   );
 
-  const numberOfViewers = activeWorkspace.userAuthorizations.filter(
-    ({ authorization }) => authorization === TeamMemberAuthorization.Read
-  ).length;
   const numberOfEditors = activeWorkspace.userAuthorizations.filter(
     ({ authorization }) => authorization !== TeamMemberAuthorization.Read
   ).length;
   setSeats(numberOfEditors);
 
-  const isPersonalPro = isPersonalWorkspace || user.subscription;
-  const isTeamPro = activeWorkspace.joinedPilotAt;
-
   // TODO: use this
+  // const isPersonalPro = isPersonalWorkspace || user.subscription;
+  // const isTeamPro = activeWorkspace.joinedPilotAt;
   // const onPaidPlan = isTeamPro || (isPersonalWorkspace && isPersonalPro);
 
   // if there is mismatch of intent, open the workspace switcher on load
@@ -238,251 +236,245 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
     (type === 'personal' && !isPersonalWorkspace);
 
   return (
-    <>
-      <div style={{ width: '100%' }}>
-        <Text size={7} as="h1" block align="center" marginBottom={4}>
-          Upgrade to Pro
-        </Text>
-        <Text
-          size={3}
-          variant="muted"
-          block
-          align="center"
-          marginBottom={8}
-          css={{ maxWidth: 560 }}
+    <div style={{ width: '100%' }}>
+      <Text size={7} as="h1" block align="center" marginBottom={4}>
+        Upgrade to Pro
+      </Text>
+      <Text
+        size={3}
+        variant="muted"
+        block
+        align="center"
+        marginBottom={8}
+        css={{ maxWidth: 560 }}
+      >
+        Join our community of creators from {plan.currency}
+        {plan.unit}/month.
+        <br /> Cancel at any time, effective at the end of the payment period.
+      </Text>
+      <Stack direction="vertical" gap={1} marginBottom={6}>
+        <Text>Workspace</Text>
+        <Stack
+          css={css({
+            button: {
+              border: '1px solid',
+              borderColor: 'grays.500',
+              borderRadius: 'small',
+              paddingY: 1,
+              img: { size: 6 },
+              span: { fontSize: 3, maxWidth: 'calc(100% - 16px)' },
+            },
+          })}
         >
-          Join our community of creators from {plan.currency}
-          {plan.unit}/month.
-          <br /> Cancel at any time, effective at the end of the payment period.
-        </Text>
-        <Stack direction="vertical" gap={1} marginBottom={6}>
-          <Text>Workspace</Text>
-          <Stack
-            css={css({
-              button: {
+          <Menu defaultOpen={switcherDefaultOpen}>
+            <Stack
+              as={Menu.Button}
+              justify="space-between"
+              align="center"
+              css={css({
+                width: '100%',
+                height: '100%',
+                paddingLeft: 2,
+                borderRadius: 0,
+                '&:hover': {
+                  backgroundColor: 'grays.600',
+                },
+              })}
+            >
+              <Stack gap={2} as="span" align="center">
+                <Stack as="span" align="center" justify="center">
+                  <TeamAvatar
+                    avatar={activeWorkspace.avatarUrl}
+                    name={activeWorkspace.name}
+                  />
+                </Stack>
+                <Text size={4} weight="normal" maxWidth={140}>
+                  {activeWorkspace.name}
+                </Text>
+              </Stack>
+              <Icon name="caret" size={8} />
+            </Stack>
+            <Menu.List
+              css={css({
+                width: '560px',
+                marginTop: '-4px',
+                backgroundColor: 'grays.600',
+              })}
+              style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
+            >
+              {workspaces.map(workspace => {
+                const userAuthorization = getUserAuthorization(workspace);
+
+                return (
+                  <Stack
+                    as={Menu.Item}
+                    key={workspace.id}
+                    justify="space-between"
+                    align="center"
+                    css={css({
+                      height: 10,
+                      textAlign: 'left',
+                      backgroundColor: 'grays.600',
+                      borderBottom: '1px solid',
+                      borderColor: 'grays.500',
+                      '&[data-reach-menu-item][data-component=MenuItem][data-selected]': {
+                        backgroundColor: 'grays.500',
+                      },
+                    })}
+                    style={{ paddingLeft: 8 }}
+                    data-disabled={
+                      userAuthorization !== TeamMemberAuthorization.Admin
+                        ? true
+                        : null
+                    }
+                    onSelect={() => {
+                      if (userAuthorization === TeamMemberAuthorization.Admin) {
+                        setActiveTeam({ id: workspace.id });
+                      }
+                    }}
+                  >
+                    <Stack gap={2} align="center" css={{ width: '100%' }}>
+                      <TeamAvatar
+                        avatar={workspace.avatarUrl}
+                        name={workspace.name}
+                        size="small"
+                      />
+                      <Text size={3} maxWidth="100%">
+                        {workspace.name}
+                        {workspace.id === personalWorkspaceId && ' (Personal)'}
+                      </Text>
+                    </Stack>
+
+                    {activeWorkspace.id === workspace.id && (
+                      <Icon name="simpleCheck" />
+                    )}
+
+                    {userAuthorization !== TeamMemberAuthorization.Admin &&
+                      prettyPermissions[userAuthorization]}
+                  </Stack>
+                );
+              })}
+              <Stack
+                as={Menu.Item}
+                align="center"
+                gap={2}
+                css={css({
+                  height: 10,
+                  textAlign: 'left',
+                })}
+                style={{ paddingLeft: 8 }}
+                onSelect={() => history.push('/pro/create-workspace?v=2')}
+              >
+                <Stack
+                  justify="center"
+                  align="center"
+                  css={css({
+                    size: 6,
+                    borderRadius: 'small',
+                    border: '1px solid',
+                    borderColor: 'grays.500',
+                  })}
+                >
+                  <Icon name="plus" size={10} />
+                </Stack>
+                <Text size={3}>Create a new workspace</Text>
+              </Stack>
+            </Menu.List>
+          </Menu>
+        </Stack>
+      </Stack>
+      <Stack gap={7}>
+        {isPersonalWorkspace ? (
+          <>
+            <PlanCard
+              plan={plans.PERSONAL_PRO_MONTHLY}
+              billingFrequency={billingFrequency}
+              setBillingFrequency={setBillingFrequency}
+            />
+            <PlanCard
+              plan={plans.PERSONAL_PRO_ANNUAL}
+              billingFrequency={billingFrequency}
+              setBillingFrequency={setBillingFrequency}
+            />
+          </>
+        ) : (
+          <>
+            <PlanCard
+              plan={plans.TEAM_PRO_MONTHLY}
+              billingFrequency={billingFrequency}
+              setBillingFrequency={setBillingFrequency}
+            />
+            <PlanCard
+              plan={plans.TEAM_PRO_ANNUAL}
+              billingFrequency={billingFrequency}
+              setBillingFrequency={setBillingFrequency}
+            />
+          </>
+        )}
+      </Stack>
+      <AnimatePresence>
+        {!isPersonalWorkspace && (
+          <motion.div
+            initial={{ height: 0, marginTop: 0 }}
+            animate={{ height: 'auto', marginTop: 24 }}
+            exit={{ height: 0, marginTop: 0 }}
+            style={{ overflow: 'hidden' }}
+          >
+            <Stack
+              direction="vertical"
+              gap={1}
+              css={css({
+                padding: 4,
                 border: '1px solid',
                 borderColor: 'grays.500',
                 borderRadius: 'small',
-                paddingY: 1,
-                img: { size: 6 },
-                span: { fontSize: 3, maxWidth: 'calc(100% - 16px)' },
-              },
-            })}
-          >
-            <Menu defaultOpen={switcherDefaultOpen}>
-              <Stack
-                as={Menu.Button}
-                justify="space-between"
-                align="center"
-                css={css({
-                  width: '100%',
-                  height: '100%',
-                  paddingLeft: 2,
-                  borderRadius: 0,
-                  '&:hover': {
-                    backgroundColor: 'grays.600',
-                  },
-                })}
-              >
-                <Stack gap={2} as="span" align="center">
-                  <Stack as="span" align="center" justify="center">
-                    <TeamAvatar
-                      avatar={activeWorkspace.avatarUrl}
-                      name={activeWorkspace.name}
-                    />
-                  </Stack>
-                  <Text size={4} weight="normal" maxWidth={140}>
-                    {activeWorkspace.name}
+                overflow: 'hidden',
+              })}
+            >
+              <Text size={3}>Workspace editors</Text>
+              <Stack justify="space-between">
+                <Stack direction="vertical" gap={4}>
+                  <Text variant="muted" size={3}>
+                    {numberOfEditors} {numberOfEditors === 1 ? 'seat' : 'seats'}
+                    <Text size={2}> ✕ </Text> {plan.currency}
+                    {plan.unit}{' '}
+                    {plan.multiplier > 1 ? (
+                      <>
+                        <Text size={2}> ✕</Text> {plan.multiplier}
+                      </>
+                    ) : null}
+                  </Text>
+                  <Text variant="muted">
+                    Prices listed in USD. Taxes may apply.
                   </Text>
                 </Stack>
-                <Icon name="caret" size={8} />
+                <Text weight="semibold" size={4}>
+                  {plan.currency}
+                  {numberOfEditors * plan.unit * plan.multiplier} /{' '}
+                  {plan.frequency === 'monthly' ? 'month' : 'year'}
+                </Text>
               </Stack>
-              <Menu.List
-                css={css({
-                  width: '560px',
-                  marginTop: '-4px',
-                  backgroundColor: 'grays.600',
-                })}
-                style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
-              >
-                {workspaces.map(workspace => {
-                  const userAuthorization = getUserAuthorization(workspace);
-
-                  return (
-                    <Stack
-                      as={Menu.Item}
-                      key={workspace.id}
-                      justify="space-between"
-                      align="center"
-                      css={css({
-                        height: 10,
-                        textAlign: 'left',
-                        backgroundColor: 'grays.600',
-                        borderBottom: '1px solid',
-                        borderColor: 'grays.500',
-                        '&[data-reach-menu-item][data-component=MenuItem][data-selected]': {
-                          backgroundColor: 'grays.500',
-                        },
-                      })}
-                      style={{ paddingLeft: 8 }}
-                      data-disabled={
-                        userAuthorization !== TeamMemberAuthorization.Admin
-                          ? true
-                          : null
-                      }
-                      onSelect={() => {
-                        if (
-                          userAuthorization === TeamMemberAuthorization.Admin
-                        ) {
-                          setActiveTeam({ id: workspace.id });
-                        }
-                      }}
-                    >
-                      <Stack gap={2} align="center" css={{ width: '100%' }}>
-                        <TeamAvatar
-                          avatar={workspace.avatarUrl}
-                          name={workspace.name}
-                          size="small"
-                        />
-                        <Text size={3} maxWidth="100%">
-                          {workspace.name}
-                          {workspace.id === personalWorkspaceId &&
-                            ' (Personal)'}
-                        </Text>
-                      </Stack>
-
-                      {activeWorkspace.id === workspace.id && (
-                        <Icon name="simpleCheck" />
-                      )}
-
-                      {userAuthorization !== TeamMemberAuthorization.Admin &&
-                        prettyPermissions[userAuthorization]}
-                    </Stack>
-                  );
-                })}
-                <Stack
-                  as={Menu.Item}
-                  align="center"
-                  gap={2}
-                  css={css({
-                    height: 10,
-                    textAlign: 'left',
-                  })}
-                  style={{ paddingLeft: 8 }}
-                  onSelect={() => history.push('/pro/create-workspace?v=2')}
-                >
-                  <Stack
-                    justify="center"
-                    align="center"
-                    css={css({
-                      size: 6,
-                      borderRadius: 'small',
-                      border: '1px solid',
-                      borderColor: 'grays.500',
-                    })}
-                  >
-                    <Icon name="plus" size={10} />
-                  </Stack>
-                  <Text size={3}>Create a new workspace</Text>
-                </Stack>
-              </Menu.List>
-            </Menu>
-          </Stack>
-        </Stack>
-        <Stack gap={7}>
-          {isPersonalWorkspace ? (
-            <>
-              <PlanCard
-                plan={plans.PERSONAL_PRO_MONTHLY}
-                billingFrequency={billingFrequency}
-                setBillingFrequency={setBillingFrequency}
-              />
-              <PlanCard
-                plan={plans.PERSONAL_PRO_ANNUAL}
-                billingFrequency={billingFrequency}
-                setBillingFrequency={setBillingFrequency}
-              />
-            </>
-          ) : (
-            <>
-              <PlanCard
-                plan={plans.TEAM_PRO_MONTHLY}
-                billingFrequency={billingFrequency}
-                setBillingFrequency={setBillingFrequency}
-              />
-              <PlanCard
-                plan={plans.TEAM_PRO_ANNUAL}
-                billingFrequency={billingFrequency}
-                setBillingFrequency={setBillingFrequency}
-              />
-            </>
-          )}
-        </Stack>
-        <AnimatePresence>
-          {!isPersonalWorkspace && (
-            <motion.div
-              initial={{ height: 0, marginTop: 0 }}
-              animate={{ height: 'auto', marginTop: 24 }}
-              exit={{ height: 0, marginTop: 0 }}
-              style={{ overflow: 'hidden' }}
-            >
-              <Stack
-                direction="vertical"
-                gap={1}
-                css={css({
-                  padding: 4,
-                  border: '1px solid',
-                  borderColor: 'grays.500',
-                  borderRadius: 'small',
-                  overflow: 'hidden',
-                })}
-              >
-                <Text size={3}>Workspace editors</Text>
-                <Stack justify="space-between">
-                  <Stack direction="vertical" gap={4}>
-                    <Text variant="muted" size={3}>
-                      {numberOfEditors}{' '}
-                      {numberOfEditors === 1 ? 'seat' : 'seats'}
-                      <Text size={2}> ✕ </Text> {plan.currency}
-                      {plan.unit}{' '}
-                      {plan.multiplier > 1 ? (
-                        <>
-                          <Text size={2}> ✕</Text> {plan.multiplier}
-                        </>
-                      ) : null}
-                    </Text>
-                    <Text variant="muted">
-                      Prices listed in USD. Taxes may apply.
-                    </Text>
-                  </Stack>
-                  <Text weight="semibold" size={4}>
-                    {plan.currency}
-                    {numberOfEditors * plan.unit * plan.multiplier} /{' '}
-                    {plan.frequency === 'monthly' ? 'month' : 'year'}
-                  </Text>
-                </Stack>
-              </Stack>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <AnimatePresence>
-          <motion.div
-            initial={{ height: 0, opacity: 0, marginTop: 0 }}
-            animate={{ height: 'auto', opacity: 1, marginTop: 40 }}
-            exit={{ height: 0, opacity: 0, marginTop: 0 }}
-            style={{ overflow: 'hidden' }}
-          >
-            <Button
-              loading={loading}
-              onClick={() => nextStep()}
-              css={css({ fontSize: 3, height: 10 })}
-            >
-              Continue
-            </Button>
+            </Stack>
           </motion.div>
-        </AnimatePresence>
-      </div>
-    </>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        <motion.div
+          initial={{ height: 0, opacity: 0, marginTop: 0 }}
+          animate={{ height: 'auto', opacity: 1, marginTop: 40 }}
+          exit={{ height: 0, opacity: 0, marginTop: 0 }}
+          style={{ overflow: 'hidden' }}
+        >
+          <Button
+            loading={loading}
+            onClick={() => nextStep()}
+            css={css({ fontSize: 3, height: 10 })}
+          >
+            Continue
+          </Button>
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 };
 
