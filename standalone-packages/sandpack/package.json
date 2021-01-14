@@ -1,6 +1,6 @@
 {
   "name": "smooshpack",
-  "version": "1.0.0-alpha-10",
+  "version": "1.0.0-alpha-11",
   "description": "",
   "keywords": [],
   "repository": {
@@ -65,7 +65,7 @@
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
   "dependencies": {
-    "codesandbox-api": "0.0.26",
+    "codesandbox-api": "0.0.27",
     "codesandbox-import-utils": "^1.2.3",
     "lodash.isequal": "^4.5.0"
   },

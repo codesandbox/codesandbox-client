@@ -6,7 +6,6 @@ import { SandpackWrapper } from '../../elements';
 
 import { SandpackProvider } from '../../utils/sandpack-context';
 import { SANDBOX_TEMPLATES } from '../../templates';
-import { SandboxTemplate } from '../../types';
 import { compileStitchesTheme, ThemeProvider } from '../../utils/theme-context';
 import { sandpackDarkTheme } from '../../themes';
 
@@ -31,7 +30,7 @@ export const Component: Story<CodeEditorProps> = args => (
   </SandpackProvider>
 );
 
-const reactTemplate = SANDBOX_TEMPLATES['create-react-app'] as SandboxTemplate;
+const reactTemplate = SANDBOX_TEMPLATES.react;
 
 export const ReactCode = () => (
   <SandpackProvider
@@ -47,7 +46,7 @@ export const ReactCode = () => (
   </SandpackProvider>
 );
 
-const vueTemplate = SANDBOX_TEMPLATES['vue-cli'] as SandboxTemplate;
+const vueTemplate = SANDBOX_TEMPLATES.vue;
 
 export const VueCode = () => (
   <SandpackProvider
