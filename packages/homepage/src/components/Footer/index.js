@@ -104,12 +104,12 @@ const Footer = () => (
   <FooterWrapper>
     <Nav>
       {footerNavElements.map(menu => (
-        <ul>
+        <ul key={menu.title}>
           <li>
             <Title>{menu.title}</Title>
           </li>
           {menu.elements.map(({ text, link, external }) => (
-            <li>
+            <li key={text}>
               <P small muted>
                 {external ? (
                   <a href={link}>{text}</a>

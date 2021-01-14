@@ -79,24 +79,26 @@ export const Button = styled.a`
   }
 `;
 
-export const FeaturesTableHeader = styled.div`
+export const FeaturesTableHeader = styled.button`
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  padding: 0 20px;
   display: grid;
-  grid-template-columns: 1fr 11.875rem 11.875rem;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 1.4rem;
+  grid-template-columns: 1fr 14rem 14rem;
+  font-weight: normal;
+  font-size: 19px;
+  line-height: 23px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+
+  outline: none;
 
   color: ${props => props.theme.homepage.white};
   padding-bottom: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid ${props => props.theme.homepage.grey};
-  margin-top: 5rem;
-
-  ${props =>
-    props.inside &&
-    `
-    margin-left: 2.5rem;
-  `}
+  height: 56px;
 
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr 5.625rem 3.75rem;
@@ -108,20 +110,29 @@ export const FeaturesTableHeader = styled.div`
 export const FeaturesTable = styled.ul`
   list-style: none;
   margin: 0;
-
-  ${props =>
-    props.inside &&
-    `
-    margin-left: 2.5rem;
-  `}
+  padding: 0 20px;
 
   ${props => props.theme.breakpoints.md} {
     margin-left: 0 !important;
   }
 
+  ${props =>
+    !props.open &&
+    `
+    overflow: hidden;
+    height: 0;
+  `}
+
+  span.text {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   li {
     display: grid;
-    grid-template-columns: 1fr 11.875rem 11.875rem;
+    grid-template-columns: 1fr 14rem 14rem;
     margin-bottom: 1rem;
 
     ${props => props.theme.breakpoints.md} {
@@ -132,8 +143,6 @@ export const FeaturesTable = styled.ul`
       width: 100%;
       display: block;
       text-align: center;
-      font-weight: 500;
-      font-size: 1.4rem;
 
       ${props => props.theme.breakpoints.md} {
         font-size: 1rem;
@@ -144,8 +153,7 @@ export const FeaturesTable = styled.ul`
 
 export const FeatureTitle = styled.span`
   font-style: normal;
-  font-weight: 500;
-  font-size: 1.4rem;
+  font-size: 19px;
 
   color: ${props => props.theme.homepage.white};
   text-align: left !important;
