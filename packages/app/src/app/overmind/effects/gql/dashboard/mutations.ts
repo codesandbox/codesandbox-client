@@ -51,8 +51,6 @@ import {
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
   SetTeamMinimumPrivacyMutationVariables,
-  ChangeSandboxAlwaysOnMutation,
-  ChangeSandboxAlwaysOnMutationVariables,
   SetWorkspaceSandboxSettingsMutation,
   SetWorkspaceSandboxSettingsMutationVariables,
   SetPreventSandboxesLeavingWorkspaceMutation,
@@ -61,6 +59,10 @@ import {
   SetPreventSandboxesExportMutationVariables,
   SetDefaultTeamMemberAuthorizationMutation,
   SetDefaultTeamMemberAuthorizationMutationVariables,
+  DeleteCurrentUserMutation,
+  DeleteCurrentUserMutationVariables,
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -335,8 +337,8 @@ export const changeTeamMemberAuthorization: Query<
   ChangeTeamMemberAuthorizationMutationVariables
 > = gql`
   mutation ChangeTeamMemberAuthorization(
-    $teamId: ID!
-    $userId: ID!
+    $teamId: UUID4!
+    $userId: UUID4!
     $authorization: TeamMemberAuthorization!
   ) {
     changeTeamMemberAuthorizations(
@@ -417,8 +419,8 @@ export const setTeamMinimumPrivacy: Query<
 `;
 
 export const changeSandboxAlwaysOn: Query<
-  ChangeSandboxAlwaysOnMutation,
-  ChangeSandboxAlwaysOnMutationVariables
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables
 > = gql`
   mutation setSandboxAlwaysOn($sandboxId: ID!, $alwaysOn: Boolean!) {
     setSandboxAlwaysOn(sandboxId: $sandboxId, alwaysOn: $alwaysOn) {
@@ -488,7 +490,7 @@ export const setDefaultTeamMemberAuthorization: Query<
 > = gql`
   mutation setDefaultTeamMemberAuthorization(
     $teamId: UUID4!
-    $defaultAuthorization: String!
+    $defaultAuthorization: TeamMemberAuthorization!
   ) {
     setDefaultTeamMemberAuthorization(
       teamId: $teamId
@@ -496,5 +498,14 @@ export const setDefaultTeamMemberAuthorization: Query<
     ) {
       defaultAuthorization
     }
+  }
+`;
+
+export const deleteAccount: Query<
+  DeleteCurrentUserMutation,
+  DeleteCurrentUserMutationVariables
+> = gql`
+  mutation deleteCurrentUser {
+    deleteCurrentUser
   }
 `;
