@@ -10,10 +10,10 @@ export const AccountDeletionConfirmationModal: FunctionComponent = () => {
   return (
     <Alert
       title="Request for account deletion sent"
-      description={`
+      description={<>
         Thanks for your request. Your account will be deleted within 3 working days. <br/>
         If you've changed your mind, please email us at <a href="mailto:hello@codesandbox.io">hello@codesandbox.io</a> with your username.
-      `}
+      </>}
       onPrimaryAction={async () => {
         await signOutClicked();
 
