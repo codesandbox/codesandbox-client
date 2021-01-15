@@ -275,3 +275,43 @@ export const TableWrapper = styled.section`
     border-radius: 0 0 4px 4px;
   }
 `;
+
+export const ProductChooser = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #343434;
+  width: fit-content;
+  margin: auto;
+
+  button {
+    font-weight: 900;
+    font-size: 19px;
+    line-height: 23px;
+    color: ${props => props.theme.homepage.muted};
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+
+    &:after {
+      content: '';
+      width: 100%;
+      display: block;
+      margin-top: 21px;
+    }
+
+    &:not(:last-child) {
+      margin-right: 70px;
+    }
+
+    &[aria-pressed='true'] {
+      color: ${props => props.theme.homepage.white};
+
+      &:after {
+        margin-top: 20px;
+        border-bottom: 1px solid #ffffff;
+        transform: rotate(-0.37deg);
+      }
+    }
+  }
+`;

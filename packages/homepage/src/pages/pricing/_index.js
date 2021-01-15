@@ -16,7 +16,6 @@ import {
   FeaturesTable,
   FeatureTitle,
   CardContainer,
-  TeamOrIndividualWrapper,
 } from './_elements';
 
 import { Title } from '../../components/LayoutComponents';
@@ -62,11 +61,11 @@ export default () => {
           Choose a plan that's right for you
         </Title>
       </PageContainer>
-      <TeamOrIndividualWrapper>
+      <div>
         <div>For individuals</div>
         <div />
         <div>For teams & businesses</div>
-      </TeamOrIndividualWrapper>
+      </div>
       <CardContainer>
         <Card dark>
           <div>

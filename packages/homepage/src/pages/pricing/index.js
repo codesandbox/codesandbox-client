@@ -6,47 +6,27 @@ import PageContainer from '../../components/PageContainer';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 import { P } from '../../components/Typography';
 import {
-  Card,
-  CardTitle,
-  Price,
-  PriceSubText,
   Plan,
   PlanName,
-  List,
-  Button,
   FeaturesTableHeader,
   FeaturesTable,
   FeatureTitle,
-  CardContainer,
   TableWrapper,
+  ProductChooser,
 } from './_elements';
 import { personal } from './data/_personal';
+import Cards from './_cards';
 
 import { Title } from '../../components/LayoutComponents';
 
 export default () => {
   const [open, setOpen] = useState({});
+  const [mode, setMode] = useState('monthly');
+  const [product, setProduct] = useState('team');
 
   const toggleTable = name => {
     setOpen(o => ({ ...o, [name]: !o[name] }));
   };
-
-  const OpenIcon = ({ open: openTable }) => (
-    <motion.svg
-      initial={{ transform: 'rotate(90deg)' }}
-      animate={{ transform: `rotate(${openTable ? 0 : 90}deg)` }}
-      width="13"
-      height="10"
-      viewBox="0 0 13 10"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M7.03394 9.16661C6.7723 9.5296 6.19871 9.51329 5.96082 9.13608L0.99817 1.26742C0.746349 0.868135 1.0519 0.362543 1.54503 0.362543L6.47188 0.362544L12.1793 0.362544C12.6897 0.362544 12.9922 0.900233 12.7055 1.29794L7.03394 9.16661Z"
-        fill="white"
-      />
-    </motion.svg>
-  );
 
   return (
     <Layout>
@@ -65,79 +45,24 @@ export default () => {
           Choose a plan that's right for you
         </Title>
       </PageContainer>
-      <CardContainer>
-        <Card dark>
-          <div>
-            <div
-              css={`
-                height: 155px;
-              `}
-            >
-              <CardTitle>Personal</CardTitle>
-              <Price
-                css={`
-                  min-height: 72px;
-                `}
-              >
-                $0
-              </Price>
-            </div>
-            <List>
-              <li
-                css={`
-                  font-weight: bold;
-                `}
-              >
-                For learning & experimenting
-              </li>
-              <li>Free for individuals</li>
-              <li> All Platform features</li> <li>Unlimited Public </li>
-              <li>Templates </li>
-              <li>Dashboard</li>
-              <li>Sandboxes</li>
-            </List>
-          </div>
-          <Button href="/s">Create Sandbox, it’s free </Button>
-        </Card>
-        <Card>
-          <div>
-            <div
-              css={`
-                height: 155px;
-              `}
-            >
-              <CardTitle>Personal Pro Workspace</CardTitle>
-              <Price>$9</Price>
-              <PriceSubText>
-                billed month <br />
-                or $7 per month billed annually
-              </PriceSubText>
-            </div>
-            <List>
-              <li
-                css={`
-                  font-weight: bold;
-                `}
-              >
-                For power-users & freelancers
-              </li>
-              <li>All in Personal, plus:</li>
-              <li>Private Sandboxes</li> <li>Private GitHub repos</li>
-              <li>Stricter sandbox permissions </li>
-            </List>
-          </div>
-          <Button
-            css={`
-              color: ${props => props.theme.homepage.blue};
-              background: ${props => props.theme.homepage.white};
-            `}
-            href="/pro"
-          >
-            Subscribe to Pro
-          </Button>
-        </Card>
-      </CardContainer>
+      <ProductChooser>
+        <button
+          type="button"
+          aria-pressed={product === 'personal'}
+          onClick={() => setProduct('personal')}
+        >
+          For Individuals
+        </button>
+        <button
+          type="button"
+          aria-pressed={product === 'team'}
+          onClick={() => setProduct('team')}
+        >
+          For Businesses
+        </button>
+      </ProductChooser>
 
+      <Cards team={product === 'team'} mode={mode} />
       <Title
         as="h2"
         css={`
@@ -201,3 +126,20 @@ export default () => {
     </Layout>
   );
 };
+
+const OpenIcon = ({ open: openTable }) => (
+  <motion.svg
+    initial={{ transform: 'rotate(90deg)' }}
+    animate={{ transform: `rotate(${openTable ? 0 : 90}deg)` }}
+    width="13"
+    height="10"
+    viewBox="0 0 13 10"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M7.03394 9.16661C6.7723 9.5296 6.19871 9.51329 5.96082 9.13608L0.99817 1.26742C0.746349 0.868135 1.0519 0.362543 1.54503 0.362543L6.47188 0.362544L12.1793 0.362544C12.6897 0.362544 12.9922 0.900233 12.7055 1.29794L7.03394 9.16661Z"
+      fill="white"
+    />
+  </motion.svg>
+);
