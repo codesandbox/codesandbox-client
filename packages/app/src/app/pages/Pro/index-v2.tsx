@@ -202,8 +202,6 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
     setPlan(newPlan);
   }, [isPersonalWorkspace, billingFrequency]);
 
-  if (!activeTeam || !dashboard.teams.length || !plan) return null;
-
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
   )!;
@@ -221,11 +219,35 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
       dashboard.teams.filter(t => t.id !== personalWorkspaceId),
       [getUserAuthorization, 'name']
     ),
-  ];
+  ].filter(exists => exists);
 
   const activeWorkspace = workspaces.find(
     workspace => workspace.id === activeTeam
   );
+  const activeUserAuthorization =
+    activeWorkspace && getUserAuthorization(activeWorkspace);
+
+  React.useEffect(
+    function switchToWorkspaceWithAdminRights() {
+      // if you land on a workspace where you are not the admin
+      // switch workspaces to one where you are an admin
+      // if none, switch to personal workspace
+      if (activeUserAuthorization !== 'ADMIN' && dashboard.teams.length) {
+        const workspaceWithAdminRights = dashboard.teams.find(
+          team => team.id !== personalWorkspaceId && getUserAuthorization(team)
+        );
+
+        if (workspaceWithAdminRights) {
+          setActiveTeam({ id: workspaceWithAdminRights.id });
+        } else {
+          setActiveTeam({ id: personalWorkspace.id });
+        }
+      }
+    },
+    [activeUserAuthorization]
+  );
+
+  if (!activeTeam || !dashboard.teams.length || !plan) return null;
 
   const numberOfEditors = activeWorkspace.userAuthorizations.filter(
     ({ authorization }) => authorization !== TeamMemberAuthorization.Read
@@ -234,10 +256,13 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
 
   const isLegacyPersonalPro = isPersonalWorkspace && user.subscription;
 
-  // if there is mismatch of intent, open the workspace switcher on load
+  // if there is mismatch of intent - team/personal
+  // or you don't have access to upgrade
+  // open the workspace switcher on load
   const switcherDefaultOpen =
     (type === 'team' && isPersonalWorkspace) ||
-    (type === 'personal' && !isPersonalWorkspace);
+    (type === 'personal' && !isPersonalWorkspace) ||
+    activeUserAuthorization !== 'ADMIN';
 
   return (
     <div style={{ width: '100%' }}>
@@ -331,10 +356,10 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
                         ? true
                         : null
                     }
-                    onSelect={() => {
+                    onSelect={event => {
                       if (userAuthorization === TeamMemberAuthorization.Admin) {
                         setActiveTeam({ id: workspace.id });
-                      }
+                      } else event.preventDefault();
                     }}
                   >
                     <Stack gap={2} align="center" css={{ width: '100%' }}>
@@ -528,6 +553,7 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
 
           <Button
             loading={loading}
+            disabled={activeUserAuthorization !== 'ADMIN'}
             onClick={() => nextStep()}
             css={css({ fontSize: 3, height: 10 })}
           >
