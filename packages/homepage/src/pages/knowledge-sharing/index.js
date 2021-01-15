@@ -7,6 +7,7 @@ import { Description } from '../../components/Typography';
 import {
   ContentBlock,
   Title,
+  Subtitle,
   TitleWrapper,
   Wrapper,
   FeaturedImage,
@@ -33,21 +34,16 @@ export default () => (
           margin: auto;
           display: flex;
           justify-content: center;
-          margin-top: 96px;
-          margin-bottom: 181px;
+          margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
           Get Started
         </Button>
       </div>
-      <div
-        css={`
-          padding-top: 164px;
-        `}
-      >
+      <div>
         <div>
-          <Title as="h2">Collaborative workspaces</Title>
+          <Subtitle as="h2">Collaborative workspaces</Subtitle>
         </div>
         <FeaturedImage bg={bg}>
           <img
@@ -78,24 +74,15 @@ export default () => (
           </div>
         </ContentBlock>
 
-        <div
-          css={`
-            padding-top: 164px;
-          `}
-        >
-          <div
-            css={`
-              margin-bottom: 61px;
-            `}
-          >
-            <Title as="h2">Embeds</Title>
+        <div>
+          <div>
+            <Subtitle>Embeds</Subtitle>
           </div>
           <iframe
             css={`
               border: 0;
               width: 100%;
               height: 385px;
-              margin-bottom: 64px;
             `}
             title="embed-example"
             src={`https://codesandbox.io/embed/static-2lqup?fontsize=14&hidenavigation=true&hidedevtools=true`}
@@ -120,14 +107,9 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
-        <div
-          css={`
-            padding-top: 164px;
-            padding-bottom: 216px;
-          `}
-        >
+        <div>
           <div>
-            <Title as="h2">Collaborative workspaces??</Title>
+            <Subtitle>Collaborative workspaces??</Subtitle>
           </div>
           <FeaturedImage bg={bg1}>
             {/* <img

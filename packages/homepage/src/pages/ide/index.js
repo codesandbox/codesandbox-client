@@ -7,6 +7,7 @@ import { Description } from '../../components/Typography';
 import {
   ContentBlock,
   Title,
+  Subtitle,
   TitleWrapper,
   Wrapper,
   ContentBlockImage,
@@ -42,21 +43,16 @@ export default () => (
           margin: auto;
           display: flex;
           justify-content: center;
-          margin-top: 96px;
-          margin-bottom: 181px;
+          margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
           Get Started
         </Button>
       </div>
-      <div
-        css={`
-          padding-top: 160px;
-        `}
-      >
+      <div>
         <div>
-          <Title as="h2">Fast development in the browser</Title>
+          <Subtitle as="h2">Fast development in the browser</Subtitle>
         </div>
         <FeaturedImage bg={bg}>
           <img
@@ -92,7 +88,7 @@ export default () => (
             margin-bottom: 56px;
           `}
         >
-          <Title as="h2">Use with Your Fave Dev Tools</Title>
+          <Subtitle as="h2">Use with Your Fave Dev Tools</Subtitle>
         </div>
 
         <ContentBlock>
@@ -122,13 +118,9 @@ export default () => (
             theme, and even enable Vim mode.
           </div>
         </ContentBlock>
-        <div
-          css={`
-            padding-top: 160px;
-          `}
-        >
+        <div>
           <div>
-            <Title as="h2">Code Together</Title>
+            <Subtitle as="h2">Code Together</Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -163,13 +155,9 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
-        <div
-          css={`
-            padding-top: 160px;
-          `}
-        >
+        <div>
           <div>
-            <Title as="h2">Work with Containers</Title>
+            <Subtitle as="h2">Work with Containers</Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -206,13 +194,9 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
-        <div
-          css={`
-            padding-top: 160px;
-          `}
-        >
+        <div>
           <div>
-            <Title as="h2">Debug Like a Pro</Title>
+            <Subtitle as="h2">Debug Like a Pro</Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -254,46 +238,59 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
-        <div
-          css={`
-            padding-top: 160px;
-            padding-bottom: 200px;
-          `}
-        >
-          <div
-            css={`
-              padding-bottom: 64px;
-            `}
-          >
-            <Title as="h2">Make It Yours</Title>
+        <div>
+          <div>
+            <Subtitle as="h2">Make It Yours</Subtitle>
           </div>
+
+          <FeaturedImage
+            css={`
+              height: 468px;
+              justify-content: flex-start;
+            `}
+            bg=""
+          >
+            <img
+              src=""
+              alt=""
+              css={`
+                width: 826px;
+              `}
+            />
+          </FeaturedImage>
+
           <ContentBlock>
             <div>
               <h3>Configuration UI</h3>
-              Edit config files for npm, Prettier, Netlify, Vercel, TypeScript, JavaScript, and your sandbox easily.
+              Edit config files for npm, Prettier, Netlify, Vercel, TypeScript,
+              JavaScript, and your sandbox easily.
             </div>
 
             <div>
               <h3>Automatic Type Acquisition</h3>
-              Typings are automatically downloaded for every dependency, so you always have autocompletions.
+              Typings are automatically downloaded for every dependency, so you
+              always have autocompletions.
             </div>
 
             <div>
               <h3>Prettier</h3>
-              Code automatically gets prettified on save according to your own Prettier preferences.
+              Code automatically gets prettified on save according to your own
+              Prettier preferences.
             </div>
             <div>
               <h3>Emmet</h3>
-              You can quickly expand abbreviations with Emmet.io in all JS, HTML, and CSS files
+              You can quickly expand abbreviations with Emmet.io in all JS,
+              HTML, and CSS files
             </div>
             <div>
               <h3>TypeScript</h3>
-              We show TypeScript autocompletions and diagnostics for TS sandboxes.
+              We show TypeScript autocompletions and diagnostics for TS
+              sandboxes.
             </div>
             <div>
               <h3>ESLint</h3>
-              All code is linted automatically using the latest version of ESLint.
-
+              All code is linted automatically using the latest version of
+              ESLint.
             </div>
           </ContentBlock>
         </div>

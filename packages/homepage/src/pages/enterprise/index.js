@@ -7,6 +7,7 @@ import { Description, H6 } from '../../components/Typography';
 import {
   ContentBlock,
   Title,
+  Subtitle,
   TitleWrapper,
   Wrapper,
   ContentBlockImage,
@@ -42,22 +43,19 @@ export default () => (
           margin: auto;
           display: flex;
           justify-content: center;
-          margin-top: 96px;
-          margin-bottom: 181px;
+          margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
           Get Started
         </Button>
       </div>
-      <div
-        css={`
-          padding-top: 128px;
-        `}
-      >
+      <div>
         <div>
-          <H6>Collaboration</H6>
-          <Title as="h2">Build in the open</Title>
+          <Subtitle>
+            <H6>Collaboration</H6>
+            Build in the open
+          </Subtitle>
         </div>
         <FeaturedImage bg={bg}>
           <img
@@ -88,16 +86,11 @@ export default () => (
           </div>
         </ContentBlock>
 
-        <div
-          css={`
-            margin-top: 120px;
-            margin-bottom: 56px;
-          `}
-        >
-          <H6 left>Prototyping</H6>
-          <Title left as="h2">
+        <div>
+          <Subtitle center>
+            <H6 center>Prototyping</H6>
             Share design system knowledge
-          </Title>
+          </Subtitle>
         </div>
 
         <ContentBlock>
@@ -129,20 +122,17 @@ export default () => (
         </ContentBlock>
         <Quote>
           <img src={brian} width="254px" alt="Brian Vaughn" />
-          <h3>“It's dramatically improved my experience of sharing ideas.”</h3>
+          <h3>
+            “It's dramatically improved my <br /> experience of sharing ideas.”
+          </h3>
           <h4>Brian Vaughn, Software Engineer, Facebook</h4>
         </Quote>
 
-        <div
-          css={`
-            margin-top: 120px;
-            margin-bottom: 56px;
-          `}
-        >
-          <H6 left>Contact Sales</H6>
-          <Title left as="h2">
+        <div>
+          <Subtitle center>
+            <H6 center>Contact Sales</H6>
             For Enterprise
-          </Title>
+          </Subtitle>
         </div>
 
         <ContentBlock>

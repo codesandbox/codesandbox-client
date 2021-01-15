@@ -3,7 +3,7 @@ import React from 'react';
 import Button from './Button';
 
 export const Wrapper = styled.div`
-  padding: 140px 0rem 1rem 0rem;
+  padding: 0rem;
 `;
 
 export const Title = styled.h1`
@@ -13,10 +13,9 @@ export const Title = styled.h1`
     font-size: 2.5rem;
     line-height: 3rem;
     color: ${theme.homepage.white};
-    margin: 0.5rem 0;
+    margin: 14rem auto 1rem auto;
     text-align: center;
     max-width: 100%;
-    margin: auto;
 
     ${props =>
       props.left &&
@@ -32,14 +31,28 @@ export const Title = styled.h1`
   `};
 `;
 
+export const Subtitle = styled.h2`
+  font-weight: 900;
+  font-size: 2.5rem;
+  line-height: 3rem;
+  margin: 14rem auto 4rem auto;
+  text-align: center;
+  max-width: 100%;
+
+  h6 {
+    margin: 1rem 0;
+  }
+`;
+
 export const ContentBlock = styled.div`
-  ${({ theme, cols, small, center }) => css`
+  ${({ theme, cols, center }) => css`
     display: grid;
     grid-template-columns: repeat(${cols || '3'}, 1fr);
     grid-gap: 3rem 5rem;
     font-size: 19px;
     line-height: 23px;
     color: ${theme.homepage.muted};
+    margin-top: 2rem;
 
     ${props => props.theme.breakpoints.lg} {
       font-size: 16px;
@@ -48,6 +61,7 @@ export const ContentBlock = styled.div`
 
     ${props => props.theme.breakpoints.sm} {
       font-size: 16px;
+      margin-bottom: 0rem;
     }
 
     ${center && `text-align: center;`}
@@ -55,13 +69,13 @@ export const ContentBlock = styled.div`
     h3 {
       font-style: normal;
       font-weight: 900;
-      font-size: ${small ? '19px' : '23px'};
-      line-height: 32px;
+      font-size: 19px;
+      line-height: 23px;
       color: ${theme.homepage.white};
-      margin-bottom: 16px;
+      margin-bottom: 1rem;
 
       ${props => props.theme.breakpoints.sm} {
-        font-size: ${small ? '16px' : '18px'};
+        font-size: 19px;
       }
     }
   `};
@@ -72,9 +86,10 @@ export const ContentBlockImage = styled.div`
   align-items: center;
   justify-content: center;
   height: 200px;
-  margin-bottom: 32px;
+  margin-bottom: 3.5rem;
   box-sizing: border-box;
   border-radius: 8px;
+
   ${props => {
     if (props.bg) {
       return `  background: #${props.bg};`;
@@ -92,8 +107,8 @@ export const FeaturedImage = styled.div`
   width: 100%;
   height: 440px;
   background: url(${props => props.bg});
-  margin-bottom: 56px;
-  margin-top: 32px;
+  margin-bottom: 3.5rem;
+
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -113,7 +128,8 @@ export const TitleWrapper = styled.div`
 `;
 
 export const Quote = styled.section`
-  min-height: 100vh;
+  min-height: 80vh;
+  padding-top: 10rem;
   text-align: center;
   display: flex;
   align-items: center;

@@ -113,12 +113,12 @@ export const Description = styled.h3`
   font-weight: normal;
   font-size: 23px;
   line-height: 27px;
-  margin: 0;
+
   text-align: center;
   color: ${props => props.theme.homepage.muted};
   max-width: 650px;
-  margin: auto;
-  margin-top: 32px;
+  margin: 0 auto;
+
   ${props =>
     props.left &&
     `

@@ -8,6 +8,7 @@ import {
   CTABottom,
   ContentBlock,
   Title,
+  Subtitle,
   TitleWrapper,
   Quote,
   Wrapper,
@@ -47,22 +48,19 @@ export default () => (
           margin: auto;
           display: flex;
           justify-content: center;
-          margin-top: 96px;
-          margin-bottom: 181px;
+          margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
           Get Started
         </Button>
       </div>
-      <div
-        css={`
-          padding-top: 128px;
-        `}
-      >
+      <div>
         <div>
-          <H6>Prototyping</H6>
-          <Title as="h2">Rapid Prototyping</Title>
+          <Subtitle>
+            <H6>Prototyping</H6>
+            Rapid Prototyping
+          </Subtitle>
         </div>
         <FeaturedImage bg={bg}>
           <img
@@ -94,14 +92,9 @@ export default () => (
           </div>
         </ContentBlock>
 
-        <div
-          css={`
-            margin-top: 120px;
-            margin-bottom: 56px;
-          `}
-        >
-          <H6 left>Learning</H6>
-          <Title left as="h2">
+        <div>
+          <Title center>
+            <H6 center>Learning</H6>
             Knowledge Sharing
           </Title>
         </div>
@@ -134,14 +127,11 @@ export default () => (
             your workflow, embedded in the tools you already use.
           </div>
         </ContentBlock>
-        <div
-          css={`
-            margin-top: 120px;
-            margin-bottom: 56px;
-          `}
-        >
-          <H6>Collaboration</H6>
-          <Title as="h2">Better Feedback</Title>
+        <div>
+          <Subtitle>
+            <H6>Collaboration</H6>
+            Better Feedback
+          </Subtitle>
         </div>
         <FeaturedImage
           bg={bg1}
@@ -181,20 +171,18 @@ export default () => (
         </ContentBlock>
         <Quote>
           <img src={rob} width="254px" alt="Rob Eisenberg" />
-          <h3>“This is a great way to prototype and share ideas.”</h3>
+          <h3>
+            “This is a great way to
+            <br /> prototype and share ideas.”
+          </h3>
           <h4>Rob Eisenberg, Software Architect, Universal Audio</h4>
         </Quote>
 
-        <div
-          css={`
-            margin-top: 120px;
-            margin-bottom: 56px;
-          `}
-        >
-          <H6 left>$24 per editor a month</H6>
-          <Title left as="h2">
+        <div>
+          <Subtitle>
+            <H6>$24 per editor a month</H6>
             For Teams
-          </Title>
+          </Subtitle>
         </div>
 
         <ContentBlock>
@@ -230,23 +218,14 @@ export default () => (
             Set default privacy and permission settings across your workspace.
           </div>
         </ContentBlock>
-        <div
-          css={`
-            margin-top: 240px;
-            margin-bottom: 56px;
-          `}
-        >
-          <H6 left>$45 per editor a month</H6>
-          <Title left as="h2">
+        <div>
+          <Subtitle>
+            <H6 center>$45 per editor a month</H6>
             For Organizations
-          </Title>
+          </Subtitle>
         </div>
 
-        <ContentBlock
-          css={`
-            margin-bottom: 200px;
-          `}
-        >
+        <ContentBlock>
           <div>
             <ContentBlockImage bg="151515">
               <img src={sso} alt="" />
