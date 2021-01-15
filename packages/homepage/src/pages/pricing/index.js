@@ -18,7 +18,6 @@ import {
   FeaturesTable,
   FeatureTitle,
   CardContainer,
-  TeamOrIndividualWrapper,
   TableWrapper,
 } from './_elements';
 import { personal } from './data/_personal';
@@ -66,114 +65,75 @@ export default () => {
           Choose a plan that's right for you
         </Title>
       </PageContainer>
-      <TeamOrIndividualWrapper>
-        <div>For individuals</div>
-        <div />
-        <div>For teams & businesses</div>
-      </TeamOrIndividualWrapper>
       <CardContainer>
         <Card dark>
           <div>
-            <CardTitle>Community</CardTitle>
-            <Price
+            <div
               css={`
-                min-height: 72px;
+                height: 155px;
               `}
             >
-              Free
-            </Price>
+              <CardTitle>Personal</CardTitle>
+              <Price
+                css={`
+                  min-height: 72px;
+                `}
+              >
+                $0
+              </Price>
+            </div>
             <List>
-              <li>
-                <span>✓</span> Development & Prototyping
-              </li>{' '}
-              <li>
-                <span>✓</span> Online IDE{' '}
+              <li
+                css={`
+                  font-weight: bold;
+                `}
+              >
+                For learning & experimenting
               </li>
-              <li>
-                <span>✓</span> Embeds{' '}
-              </li>
-              <li>
-                <span>✓</span> CodeSandbox CI{' '}
-              </li>
-              <li>
-                <span>✓</span> Teams
-              </li>
+              <li>Free for individuals</li>
+              <li> All Platform features</li> <li>Unlimited Public </li>
+              <li>Templates </li>
+              <li>Dashboard</li>
+              <li>Sandboxes</li>
             </List>
           </div>
           <Button href="/s">Create Sandbox, it’s free </Button>
         </Card>
         <Card>
           <div>
-            <CardTitle>Pro</CardTitle>
-            <div style={{ minHeight: 72 }}>
-              <Price style={{ marginBottom: '0.5rem' }}>$9/Month</Price>
-              <PriceSubText>billed annually or $12 month-to-month</PriceSubText>
-            </div>
-            <List
+            <div
               css={`
-                color: white;
+                height: 155px;
               `}
             >
+              <CardTitle>Personal Pro Workspace</CardTitle>
+              <Price>$9</Price>
+              <PriceSubText>
+                billed month <br />
+                or $7 per month billed annually
+              </PriceSubText>
+            </div>
+            <List>
               <li
                 css={`
-                  margin-bottom: 2rem;
+                  font-weight: bold;
                 `}
               >
-                Everything in Community, plus:
+                For power-users & freelancers
               </li>
-              <li>+ Unlimited Private Sandboxes </li>
-              <li>+ Private GitHub Repos</li>
-            </List>
-          </div>
-          <Button white href="/pro">
-            Subscribe to Pro
-          </Button>
-        </Card>
-        <Card
-          css={`
-            background: #5962df;
-          `}
-        >
-          <div>
-            <CardTitle>Pro Workspaces</CardTitle>
-            <Price
-              css={`
-                min-height: 72px;
-              `}
-            >
-              Join the waitlist
-            </Price>
-            <List
-              as="section"
-              css={`
-                color: white;
-                font-size: 16px;
-                margin: 0 auto;
-                ${props => props.theme.breakpoints.xl} {
-                  max-width: 298px;
-                  text-align: center;
-                }
-              `}
-            >
-              Prototype, interview, and collaborate on code with your entire
-              team.
-              <br />
-              <br />
-              Manage and work on sandboxes collectively — get feedback, or code
-              together.
-              <br />
-              <br />
-              Currently in closed beta.
+              <li>All in Personal, plus:</li>
+              <li>Private Sandboxes</li> <li>Private GitHub repos</li>
+              <li>Stricter sandbox permissions </li>
             </List>
           </div>
           <Button
-            white
-            href="https://airtable.com/shrlgLSJWiX8rYqyG"
-            css={{
-              color: '#5962df',
-            }}
+            css={`
+              color: ${props => props.theme.homepage.blue};
+              background: ${props => props.theme.homepage.white};
+            `}
+            href="/pro"
           >
-            Get early access
+            Subscribe to Pro
           </Button>
         </Card>
       </CardContainer>
@@ -189,49 +149,55 @@ export default () => {
       >
         Compare plans & features
       </Title>
-      {personal.items.map(item => (
-        <TableWrapper>
-          <FeaturesTableHeader
-            onClick={() => toggleTable(item.name)}
-            css={`
-              margin-top: 0;
-            `}
-          >
-            <span>{item.name}</span>
-            <OpenIcon open={open[item.name]} />
-          </FeaturesTableHeader>
-          <FeaturesTable
-            as={motion.div}
-            initial={{ height: 0 }}
-            animate={{ height: `${open[item.name] ? 'auto' : 0}` }}
-            open={open[item.name]}
-          >
-            <Plan as="div">
-              <span />
-              {personal.plans.map(plan => (
-                <PlanName paid={!plan.free}>{plan.name}</PlanName>
-              ))}
-            </Plan>
-            {item.features.map(feature => (
-              <li>
-                <div>
-                  <FeatureTitle>{feature.name}</FeatureTitle>
-                  <P muted small>
-                    {feature.desc}
-                  </P>
-                </div>
-                {feature.available.map(available => {
-                  if (typeof available === 'string') {
-                    return <span className="text">{available}</span>;
-                  }
+      <div
+        css={`
+          margin-bottom: 128px;
+        `}
+      >
+        {personal.items.map(item => (
+          <TableWrapper>
+            <FeaturesTableHeader
+              onClick={() => toggleTable(item.name)}
+              css={`
+                margin-top: 0;
+              `}
+            >
+              <span>{item.name}</span>
+              <OpenIcon open={open[item.name]} />
+            </FeaturesTableHeader>
+            <FeaturesTable
+              as={motion.div}
+              initial={{ height: 0 }}
+              animate={{ height: `${open[item.name] ? 'auto' : 0}` }}
+              open={open[item.name]}
+            >
+              <Plan as="div">
+                <span />
+                {personal.plans.map(plan => (
+                  <PlanName paid={!plan.free}>{plan.name}</PlanName>
+                ))}
+              </Plan>
+              {item.features.map(feature => (
+                <li>
+                  <div>
+                    <FeatureTitle>{feature.name}</FeatureTitle>
+                    <P muted small>
+                      {feature.desc}
+                    </P>
+                  </div>
+                  {feature.available.map(available => {
+                    if (typeof available === 'string') {
+                      return <span className="text">{available}</span>;
+                    }
 
-                  return <span>{available ? '✓' : ''}</span>;
-                })}
-              </li>
-            ))}
-          </FeaturesTable>
-        </TableWrapper>
-      ))}
+                    return <span>{available ? '✓' : ''}</span>;
+                  })}
+                </li>
+              ))}
+            </FeaturesTable>
+          </TableWrapper>
+        ))}
+      </div>
     </Layout>
   );
 };

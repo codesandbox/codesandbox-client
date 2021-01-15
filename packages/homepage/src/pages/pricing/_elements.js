@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Card = styled.div`
   width: 100%;
-  height: 30rem;
+  height: 735px;
 
   background: ${props => (props.dark ? '#151515' : props.theme.homepage.blue)};
   border-radius: 0.25rem;
@@ -23,8 +23,9 @@ export const CardTitle = styled.h3`
 
 export const Price = styled.h6`
   font-weight: 900;
-  font-size: 2rem;
+  font-size: 36px;
   text-align: center;
+  margin-bottom: 8px;
 
   color: ${props => props.theme.homepage.white};
 `;
@@ -32,6 +33,7 @@ export const Price = styled.h6`
 export const PriceSubText = styled.p`
   font-size: 13px;
   margin-bottom: 0;
+  text-align: center;
 `;
 
 export const List = styled.ul`
@@ -39,13 +41,11 @@ export const List = styled.ul`
   margin: 0;
   font-style: normal;
   text-align: left;
-  color: ${props => props.theme.homepage.muted};
-  margin-top: 30px;
-  margin-left: 1rem;
-
-  li span {
-    color: ${props => props.theme.homepage.white};
-  }
+  color: ${props => props.theme.homepage.white};
+  padding-top: 24px;
+  border-top: 1px solid #ffffff;
+  font-size: 19px;
+  line-height: 34px;
 `;
 
 export const Button = styled.a`
@@ -53,7 +53,7 @@ export const Button = styled.a`
   text-decoration: none;
   background: ${props => props.theme.homepage.grey};
   border-radius: 0.125rem;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 1rem;
   display: flex;
   align-items: center;
@@ -202,30 +202,34 @@ export const FeatureTitle = styled.span`
 `;
 
 export const CardContainer = styled.div`
-  max-width: 90%;
-  margin: auto;
-  width: 1324px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 33px;
-  justify-content: center;
-  margin-top: 30px;
+  ${({ teams, theme }) => css`
+    max-width: 90%;
+    margin: auto;
+    width: 1324px;
+    display: grid;
+    grid-template-columns: repeat(${teams ? 3 : 2}, 416px);
+    grid-gap: 33px;
+    justify-content: center;
+    margin-top: 30px;
 
-  ${props => props.theme.breakpoints.xl} {
-    grid-template-columns: 1fr 1fr;
+    ${teams &&
+    `
+    ${theme.breakpoints.xl} {
+      grid-template-columns: 1fr 1fr;
 
-    div:last-child {
-      grid-column: span 2;
+      div:last-child {
+        grid-column: span 2;
+      }
+    }`}
+
+    ${theme.breakpoints.md} {
+      grid-template-columns: 1fr;
+
+      div:last-child {
+        grid-column: 1;
+      }
     }
-  }
-
-  ${props => props.theme.breakpoints.md} {
-    grid-template-columns: 1fr;
-
-    div:last-child {
-      grid-column: 1;
-    }
-  }
+  `}
 `;
 
 export const FeaturesTitle = styled.h3`
@@ -235,22 +239,6 @@ export const FeaturesTitle = styled.h3`
   color: ${props => props.theme.homepage.white};
   margin-bottom: 3.75rem;
   margin-top: 6rem;
-`;
-
-export const TeamOrIndividualWrapper = styled.div`
-  max-width: 90%;
-  margin: auto;
-  display: grid;
-  grid-gap: 33px;
-  grid-template-columns: repeat(3, 1fr);
-  margin-top: 6rem;
-  width: 1324px;
-  font-weight: bold;
-  font-size: 19px;
-
-  ${props => props.theme.breakpoints.lg} {
-    display: none;
-  }
 `;
 
 export const Plan = styled(FeaturesTableHeader)`

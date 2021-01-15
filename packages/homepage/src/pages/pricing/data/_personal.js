@@ -44,11 +44,6 @@ export const personal = {
             'Import and sync repos which are private on GitHub to CodeSandbox',
           available: [false, true],
         },
-        {
-          name: 'Private NPM Packages',
-          desc: 'Use private npm packages from your own customer registry',
-          available: [false, true],
-        },
       ],
     },
     {
