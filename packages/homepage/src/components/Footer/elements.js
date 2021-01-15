@@ -2,13 +2,13 @@ import styled from 'styled-components';
 
 export const FooterWrapper = styled.footer`
   padding-bottom: 1rem;
-  margin-top: 10rem;
+
   margin-bottom: 3rem;
   border-top: 1px solid #343434;
 `;
 
 export const Nav = styled.section`
-  padding-top: 6rem;
+   padding-top: 6rem;
 
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));

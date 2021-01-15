@@ -31,7 +31,6 @@ const Experiment = () => (
       max-height: 100vh;
       position: relative;
       overflow: hidden;
-      border-bottom: 1px solid #343434;
     `}
   >
     <div
