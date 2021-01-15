@@ -165,7 +165,7 @@ export default () => (
             />
           </FeaturedImage>
         </div>
-        <CTABottom />
+  
       </div>
     </Wrapper>
   </Layout>

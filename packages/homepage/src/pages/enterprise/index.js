@@ -123,7 +123,7 @@ export default () => (
         </ContentBlock>
         <Quote>
           <img src={brian} width="254px" alt="Brian Vaughn" />
-          <h3>“It's dramatically improved my experience of sharing ideas.”</h3>
+          <h3>“It's dramatically improved my <br></br> experience  of sharing ideas.”</h3>
           <h4>Brian Vaughn, Software Engineer, Facebook</h4>
         </Quote>
 
