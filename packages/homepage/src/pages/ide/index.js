@@ -270,35 +270,30 @@ export default () => (
           <ContentBlock>
             <div>
               <h3>Configuration UI</h3>
-              Make It YoursEdit config files for npm, Prettier, Netlify, Now,
-              TypeScript, JavaScript, and your sandbox easily.
+              Edit config files for npm, Prettier, Netlify, Vercel, TypeScript, JavaScript, and your sandbox easily.
             </div>
 
             <div>
               <h3>Automatic Type Acquisition</h3>
-              Typings are automatically downloaded for every dependency, so you
-              always have autocompletion.
+              Typings are automatically downloaded for every dependency, so you always have autocompletions.
             </div>
 
             <div>
               <h3>Prettier</h3>
-              Typings are automatically downloaded for every dependency, so you
-              always have autocompletion.
+              Code automatically gets prettified on save according to your own Prettier preferences.
             </div>
             <div>
               <h3>Emmet</h3>
-              All code is linted automatically using the latest version of
-              ESLint.
+              You can quickly expand abbreviations with Emmet.io in all JS, HTML, and CSS files
             </div>
             <div>
               <h3>TypeScript</h3>
-              We show TypeScript autocompletions and diagnostics for TS
-              sandboxes.
+              We show TypeScript autocompletions and diagnostics for TS sandboxes.
             </div>
             <div>
               <h3>ESLint</h3>
-              All code is linted automatically using the latest version of
-              ESLint.
+              All code is linted automatically using the latest version of ESLint.
+
             </div>
           </ContentBlock>
         </div>

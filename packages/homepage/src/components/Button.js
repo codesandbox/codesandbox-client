@@ -26,10 +26,10 @@ const styles = css`
   ${props =>
     props.cta &&
     css`
-      min-width: 250px;
-      font-size: 19px;
-      font-weight: 700;
-      padding: 8px 21px;
+      min-width: 190px;
+      font-size: 16px;
+      font-weight: 400;
+      padding: 8px 24px;
     `}
 
   &:disabled {

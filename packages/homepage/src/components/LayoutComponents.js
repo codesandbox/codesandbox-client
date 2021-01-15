@@ -37,15 +37,17 @@ export const ContentBlock = styled.div`
     display: grid;
     grid-template-columns: repeat(${cols || '3'}, 1fr);
     grid-gap: 3rem 5rem;
-    font-size: ${small ? '19px' : '23px'};
+    font-size: 19px;
+    line-height:23px;
     color: ${theme.homepage.muted};
 
-    ${props => props.theme.breakpoints.md} {
+    ${props => props.theme.breakpoints.lg} {
+      font-size:16px;
       grid-template-columns: repeat(1, 1fr);
     }
 
     ${props => props.theme.breakpoints.sm} {
-      font-size: ${small ? '16px' : '18px'};
+      font-size:16px;
     }
 
     ${center && `text-align: center;`}

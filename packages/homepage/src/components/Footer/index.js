@@ -11,22 +11,22 @@ const footerNavElements = [
     title: 'Product',
     elements: [
       {
-        text: 'Online IDE',
-        link: '/ide',
+        text: 'Coding',
+        link: '/coding',
       },
       {
-        text: 'Embeds',
-        link: '/embeds',
+        text: 'Feedback',
+        link: '/feedback',
       },
       {
-        text: 'CI',
-        link: '/ci',
+        text: 'Prototyping',
+        link: '/prototyping',
       },
       {
-        text: 'Workspaces',
-        link: '/team',
+        text: 'Knowledge Sharing',
+        link: '/knowledge-sharing',
       },
-      {
+ {
         text: 'What’s New',
         link: '/changelog',
       },
