@@ -1123,7 +1123,7 @@ type ButtonRef = React.RefObject<null | HTMLElement>;
 type MenuRef = React.RefObject<null | HTMLElement>;
 type PopoverRef = React.RefObject<null | HTMLElement>;
 
-export interface InternalMenuContextValue {
+interface InternalMenuContextValue {
   buttonRef: ButtonRef;
   buttonClickedRef: React.MutableRefObject<boolean>;
   dispatch: React.Dispatch<MenuButtonAction>;
