@@ -705,16 +705,11 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
             <Text variant="muted" size={3}>
               {seats} {seats === 1 ? 'seat' : 'seats'}
               <Text size={2}> ✕ </Text>
-              {prices.currency} {unitPricePreTax} ({plan.currency} {plan.unit})
-              {plan.multiplier > 1 ? (
-                <>
-                  <Text size={2}> ✕</Text> {plan.multiplier}
-                </>
-              ) : null}
+              {prices.currency} {unitPricePreTax} ({plan.currency}{' '}
+              {plan.unit * plan.multiplier})
             </Text>
             <Text variant="muted" size={3}>
-              {prices.currency} {totalPricePreTax} /{' '}
-              {plan.frequency === 'monthly' ? 'month' : 'year'}
+              {prices.currency} {totalPricePreTax}
             </Text>
           </Stack>
           <Stack justify="space-between">
