@@ -194,6 +194,7 @@ const MenuButton = props => (
         width: 'auto',
         // disable scale feedback of buttons in menu
         // to make the menu feel less jumpy
+        transform: 'scale(1)',
         ':active:not(:disabled)': { transform: 'scale(1)' },
       },
       props.css || {}

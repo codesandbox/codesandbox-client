@@ -379,8 +379,8 @@ export const getPrivateNpmRegistry: Query<
 `;
 
 export const alwaysOnTeamSandboxes: Query<
-_AlwaysOnTeamSandboxesQuery,
-_AlwaysOnTeamSandboxesQueryVariables
+  _AlwaysOnTeamSandboxesQuery,
+  _AlwaysOnTeamSandboxesQueryVariables
 > = gql`
   query _AlwaysOnTeamSandboxes($teamId: UUID4!) {
     me {

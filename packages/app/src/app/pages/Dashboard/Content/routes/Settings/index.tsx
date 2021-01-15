@@ -4,9 +4,9 @@ import { useOvermind } from 'app/overmind';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 
+import { NewTeam } from 'app/pages/common/NewTeam';
 import { TeamSettings } from './TeamSettings';
 import { UserSettings } from './UserSettings';
-import { NewTeam } from './NewTeam';
 import { Invite } from './Invite';
 
 export const Settings = () => {
