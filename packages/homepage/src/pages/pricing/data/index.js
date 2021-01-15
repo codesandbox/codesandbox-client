@@ -1,1 +1,0 @@
-export { personal } from './personal';

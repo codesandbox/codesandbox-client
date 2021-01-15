@@ -21,7 +21,7 @@ import {
   TeamOrIndividualWrapper,
   TableWrapper,
 } from './_elements';
-import { personal } from './data';
+import { personal } from './data/_personal';
 
 import { Title } from '../../components/LayoutComponents';
 
