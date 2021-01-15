@@ -199,7 +199,7 @@ export default {
   },
   canAddComments(currentSandbox: Sandbox) {
     return Boolean(
-        currentSandbox.featureFlags.comments &&
+      currentSandbox.featureFlags.comments &&
         hasPermission(currentSandbox.authorization, 'comment')
     );
   },

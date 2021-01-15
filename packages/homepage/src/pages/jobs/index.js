@@ -45,7 +45,7 @@ const Careers = () => {
     {
       title: 'Data Analyst',
       url: 'https://codesandbox.recruitee.com/o/data-analyst',
-    }
+    },
   ];
 
   return (
