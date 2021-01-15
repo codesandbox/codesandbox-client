@@ -421,7 +421,7 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
           {user.subscription.plan === 'patron' ? (
             <Text variant="muted">
               Thank you for being an early supporter of CodeSandbox. As a
-              patron, you can access all Pro features. You can{' '}
+              patron, you can access all Personal Pro features. You can{' '}
               <Link variant="active" href="/patron">
                 modify your contribution
               </Link>{' '}
