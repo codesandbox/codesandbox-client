@@ -29,8 +29,8 @@ export const ProPage: React.FC = () => (
       direction="vertical"
       css={css({
         backgroundColor: 'grays.900',
-        color: '#fff',
-        width: ' 100vw',
+        color: 'white',
+        width: '100vw',
         minHeight: '100vh',
         fontFamily: 'Inter, sans-serif',
       })}
