@@ -2,8 +2,9 @@ import * as React from 'react';
 
 import { styled } from '../../stitches.config';
 import { useSandpack } from '../../utils/sandpack-context';
-import { BackwardIcon, ForwardIcon, RefreshIcon } from './icons';
+import { BackwardIcon, ForwardIcon, RefreshIcon } from '../../icons';
 import { splitUrl } from './utils';
+import { Button } from '../../elements';
 
 const NavigatorContainer = styled('div', {
   display: 'flex',
@@ -33,19 +34,8 @@ const NavigatorInput = styled('input', {
   fontSize: '$default',
 });
 
-const NavigatorButton = styled('button', {
+const NavigatorButton = styled(Button, {
   padding: 0,
-  border: '0',
-  display: 'flex',
-  alignItems: 'center',
-  color: '$defaultText',
-  background: 'transparent',
-  outline: 'none',
-
-  ':disabled': { color: '$inactive' },
-
-  ':focus-visible': { outline: 'auto' },
-  ':hover': { color: '$highlightText' },
 });
 
 type UrlChangeMessage = {
@@ -82,7 +72,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
     });
 
     return () => unsub();
-  }, []);
+  }, [sandpack.status]);
 
   const commitUrl = () => {
     if (!sandpack.browserFrame) {

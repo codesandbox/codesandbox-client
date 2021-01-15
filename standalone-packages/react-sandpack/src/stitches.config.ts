@@ -37,22 +37,3 @@ export const { styled, css } = createStyled({
   breakpoints: {},
   utils: {},
 });
-
-css.global({
-  '.sandpack': {
-    fontFamily: '$body',
-
-    WebkitFontSmoothing: 'auto',
-    MozFontSmoothing: 'auto',
-    MozOsxFontSmoothing: 'grayscale',
-    fontSmoothing: 'auto',
-    textRendering: 'optimizeLegibility',
-    fontSmooth: 'always',
-    WebkitTapHighlightColor: 'transparent',
-    WebkitTouchCallout: 'none',
-
-    '*': {
-      boxSizing: 'border-box',
-    },
-  },
-});

@@ -31,12 +31,12 @@ export const sandpackDarkTheme: SandpackTheme = {
   },
   syntax: {
     plain: '#FFFFFF',
-    disabled: '#999999',
-    keyword: '#76D0FB',
-    tag: '#76D0FB',
-    definition: '#A23DAD',
-    property: '#14919B',
-    static: '#C78DF0',
+    disabled: '#757575',
+    keyword: '#64D2FF',
+    tag: '#86D9CA',
+    definition: '#DFAB5C',
+    property: '86D9CA',
+    static: '#A8A5F3',
   },
 };
 

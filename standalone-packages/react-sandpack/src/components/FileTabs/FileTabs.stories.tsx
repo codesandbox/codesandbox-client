@@ -2,7 +2,7 @@ import React from 'react';
 import { FileTabs } from './index';
 
 import { SandpackProvider } from '../../utils/sandpack-context';
-import { SandpackWrapper } from '../../elements';
+import { SandpackLayout } from '../../components/SandpackLayout';
 
 export default {
   title: 'components/File Tabs',
@@ -25,9 +25,9 @@ export const Component = () => (
     }}
     dependencies={{}}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <FileTabs />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );
 
@@ -49,8 +49,8 @@ export const WithHiddenFiles = () => (
     }}
     dependencies={{}}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <FileTabs />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );

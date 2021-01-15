@@ -2,7 +2,7 @@ import React from 'react';
 import { Story } from '@storybook/react';
 
 import { CodeEditor, CodeEditorProps } from './index';
-import { SandpackWrapper } from '../../elements';
+import { SandpackLayout } from '../../components/SandpackLayout';
 
 import { SandpackProvider } from '../../utils/sandpack-context';
 import { SANDBOX_TEMPLATES } from '../../templates';
@@ -24,9 +24,9 @@ export const Component: Story<CodeEditorProps> = args => (
     }}
     dependencies={{}}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <CodeEditor {...args} />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );
 
@@ -40,9 +40,9 @@ export const ReactCode = () => (
     openPaths={[reactTemplate.main]}
     dependencies={reactTemplate.dependencies}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <CodeEditor />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );
 
@@ -56,9 +56,9 @@ export const VueCode = () => (
     openPaths={[vueTemplate.main]}
     dependencies={vueTemplate.dependencies}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <CodeEditor />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );
 
@@ -71,9 +71,9 @@ export const DarkTheme = () => (
       openPaths={[vueTemplate.main]}
       dependencies={vueTemplate.dependencies}
     >
-      <SandpackWrapper className={compileStitchesTheme(sandpackDarkTheme)}>
+      <SandpackLayout className={compileStitchesTheme(sandpackDarkTheme)}>
         <CodeEditor />
-      </SandpackWrapper>
+      </SandpackLayout>
     </SandpackProvider>
   </ThemeProvider>
 );

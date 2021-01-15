@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IFiles } from 'smooshpack';
-import { SandpackWrapper } from '../elements';
+import { SandpackLayout } from '../components/SandpackLayout';
 import { PresetProps } from '../types';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { CodeEditor } from '../components/CodeEditor';
@@ -20,17 +20,23 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
   previewOptions,
   codeOptions,
   bundlerOptions,
+  executionOptions,
   customStyle,
   theme = sandpackLightTheme,
 }) => {
   const presetPreviewOptions = {
-    ...{ showOpenInCodeSandbox: false },
+    ...{ showOpenInCodeSandbox: false, showNavigator: true },
     ...previewOptions,
   };
 
   const presetCodeOptions = {
     ...{ showTabs: true },
     ...codeOptions,
+  };
+
+  const presetExecutionOptions = {
+    ...{ autorun: true },
+    ...executionOptions,
   };
 
   const projectSetup = getSetup(template, customSetup);
@@ -64,14 +70,15 @@ export const MultiFileEditor: React.FC<MultiFileEditorProps> = ({
       openPaths={openPaths}
       activePath={projectSetup.main}
       environment={projectSetup.environment}
-      bundlerURL={bundlerOptions?.bundlerURL}
       showOpenInCodeSandbox={presetPreviewOptions.showOpenInCodeSandbox}
+      {...presetExecutionOptions}
+      {...bundlerOptions}
     >
       <ThemeProvider value={theme}>
-        <SandpackWrapper style={customStyle} className={className}>
+        <SandpackLayout style={customStyle} className={className}>
           <CodeEditor {...presetCodeOptions} />
           <Preview {...presetPreviewOptions} />
-        </SandpackWrapper>
+        </SandpackLayout>
       </ThemeProvider>
     </SandpackProvider>
   );

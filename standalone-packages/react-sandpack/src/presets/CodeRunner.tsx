@@ -3,7 +3,7 @@ import { IFile } from 'smooshpack';
 
 import { CodeViewer } from '../components/CodeViewer';
 import { Preview } from '../components/Preview';
-import { SandpackWrapper } from '../elements';
+import { SandpackLayout } from '../components/SandpackLayout';
 import { PresetProps } from '../types';
 import { getSetup } from '../templates';
 import { SandpackProvider } from '../utils/sandpack-context';
@@ -21,6 +21,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   previewOptions,
   codeOptions,
   bundlerOptions,
+  executionOptions,
   customStyle,
   theme = sandpackLightTheme,
 }) => {
@@ -32,6 +33,11 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
   const presetCodeOptions = {
     ...{ showCode: false },
     ...codeOptions,
+  };
+
+  const presetExecutionOptions = {
+    ...{ autorun: true },
+    ...executionOptions,
   };
 
   const projectSetup = getSetup(template, customSetup);
@@ -58,14 +64,15 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       openPaths={[projectSetup.main]}
       environment={projectSetup.environment}
       showOpenInCodeSandbox={presetPreviewOptions.showOpenInCodeSandbox}
-      bundlerURL={bundlerOptions?.bundlerURL}
+      {...presetExecutionOptions}
+      {...bundlerOptions}
     >
       <ThemeProvider value={theme}>
-        <SandpackWrapper style={customStyle} className={className}>
+        <SandpackLayout style={customStyle} className={className}>
           {presetCodeOptions.showCode && <CodeViewer {...presetCodeOptions} />}
 
           <Preview {...presetPreviewOptions} />
-        </SandpackWrapper>
+        </SandpackLayout>
       </ThemeProvider>
     </SandpackProvider>
   );

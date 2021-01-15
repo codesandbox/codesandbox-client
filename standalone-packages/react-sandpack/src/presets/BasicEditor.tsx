@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IFile } from 'smooshpack';
-import { SandpackWrapper } from '../elements';
+import { SandpackLayout } from '../components/SandpackLayout';
 import { PresetProps } from '../types';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { CodeEditor } from '../components/CodeEditor';
@@ -20,6 +20,7 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   previewOptions,
   codeOptions,
   bundlerOptions,
+  executionOptions,
   customStyle,
   theme = sandpackLightTheme,
 }) => {
@@ -31,6 +32,11 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   const presetCodeOptions = {
     ...{ showTabs: false },
     ...codeOptions,
+  };
+
+  const presetExecutionOptions = {
+    ...{ autorun: false },
+    ...executionOptions,
   };
 
   const projectSetup = getSetup(template, customSetup);
@@ -58,13 +64,14 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
       openPaths={[projectSetup.main]}
       environment={projectSetup.environment}
       showOpenInCodeSandbox={presetPreviewOptions.showOpenInCodeSandbox}
-      bundlerURL={bundlerOptions?.bundlerURL}
+      {...bundlerOptions}
+      {...presetExecutionOptions}
     >
       <ThemeProvider value={theme}>
-        <SandpackWrapper style={customStyle} className={className}>
+        <SandpackLayout style={customStyle} className={className}>
           <CodeEditor {...presetCodeOptions} />
           <Preview {...presetPreviewOptions} />
-        </SandpackWrapper>
+        </SandpackLayout>
       </ThemeProvider>
     </SandpackProvider>
   );

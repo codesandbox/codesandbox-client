@@ -4,7 +4,7 @@ import { FileExplorer } from '../components/FileExplorer';
 import { Preview } from '../components/Preview';
 import { CodeEditor } from '../components/CodeEditor';
 import { SandpackProvider } from '../utils/sandpack-context';
-import { SandpackWrapper } from '../elements';
+import { SandpackLayout } from '../components/SandpackLayout';
 
 export default {
   title: 'presets/Custom Sandpack',
@@ -27,12 +27,12 @@ export const CustomEditor = () => (
     openPaths={['/index.js']}
     entry="/index.js"
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <FileExplorer />
       <div>
         <CodeEditor showTabs />
         <Preview />
       </div>
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );

@@ -14,6 +14,7 @@ import {
   SandpackListener,
   SandpackState,
   FileResolver,
+  SandpackStatus,
 } from '../types';
 
 const Sandpack = React.createContext<SandpackContext | null>(null);
@@ -22,13 +23,13 @@ export interface State {
   files: IFiles;
   activePath: string;
   openPaths: string[];
-  managerState: IManagerState | undefined;
+  bundlerState: IManagerState | undefined;
   errors: Array<IModuleError>;
-  initialized: boolean;
+  sandpackStatus: SandpackStatus;
 }
 
 export interface Props {
-  // setup
+  // setup/input
   files: IFiles;
   activePath?: string;
   entry: string;
@@ -36,9 +37,10 @@ export interface Props {
   dependencies?: Record<string, string>;
   environment?: SandboxEnviornment;
 
-  // execution options
-  compileMode?: 'immediate' | 'delayed'; // | 'onCommand'; TODO: implement run on command
-  compileDelay?: number;
+  // execution and recompile
+  recompileMode?: 'immediate' | 'delayed'; // | 'onCommand'; TODO: implement run on command
+  recompileDelay?: number;
+  autorun?: boolean;
 
   // legacy: will be moved to Preview
   showOpenInCodeSandbox?: boolean;
@@ -52,8 +54,10 @@ export interface Props {
 class SandpackProvider extends React.PureComponent<Props, State> {
   static defaultProps = {
     skipEval: false,
-    compileMode: 'delayed',
-    compileDelay: 500,
+    recompileMode: 'delayed',
+    recompileDelay: 500,
+    autorun: true,
+    showOpenInCodeSandbox: false,
   };
 
   manager?: Manager;
@@ -68,9 +72,9 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       files: generatePackageJSON(props.files, props.dependencies, props.entry),
       openPaths: props.openPaths || [props.entry],
       activePath: props.activePath || props.openPaths?.[0] || props.entry,
-      managerState: undefined,
+      bundlerState: undefined,
       errors: [],
-      initialized: false,
+      sandpackStatus: 'idle',
     };
 
     this.iframeRef = React.createRef<HTMLIFrameElement>();
@@ -78,7 +82,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
   handleMessage = (m: any) => {
     if (m.type === 'state') {
-      this.setState({ managerState: m.state });
+      this.setState({ bundlerState: m.state });
     } else if (m.type === 'start') {
       this.setState({ errors: [] });
     } else if (m.type === 'action' && m.action === 'show-error') {
@@ -101,11 +105,11 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   };
 
   commitFiles = (files: IFiles) => {
-    const { compileMode, compileDelay } = this.props;
+    const { recompileMode, recompileDelay } = this.props;
 
     this.setState({ files });
 
-    if (compileMode === 'immediate') {
+    if (recompileMode === 'immediate') {
       if (!this.manager) {
         return;
       }
@@ -117,7 +121,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       });
     }
 
-    if (compileMode === 'delayed') {
+    if (recompileMode === 'delayed') {
       window.clearTimeout(this.debounceHook);
       this.debounceHook = window.setTimeout(() => {
         if (!this.manager) {
@@ -129,37 +133,16 @@ class SandpackProvider extends React.PureComponent<Props, State> {
           files: this.state.files,
           template: this.props.environment,
         });
-      }, compileDelay);
+      }, recompileDelay);
     }
   };
 
   componentDidMount() {
-    if (!this.iframeRef.current) {
-      throw new Error(
-        'Sandpack iframe was not initialized. Check the render function of <SandpackProvider>'
-      );
+    if (this.props.autorun) {
+      this.runSandpack();
+    } else {
+      this.setState({ sandpackStatus: 'idle' });
     }
-
-    this.manager = new Manager(
-      this.iframeRef.current,
-      {
-        files: generatePackageJSON(
-          this.props.files,
-          this.props.dependencies,
-          this.props.entry
-        ),
-        template: this.props.environment,
-        showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
-      },
-      {
-        bundlerURL: this.props.bundlerURL,
-        fileResolver: this.props.fileResolver,
-        skipEval: this.props.skipEval,
-      }
-    );
-
-    this.unsubscribe = this.manager.listen(this.handleMessage);
-    this.setState({ initialized: true });
   }
 
   componentDidUpdate(props: Props) {
@@ -191,6 +174,35 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     }
   }
 
+  runSandpack = () => {
+    if (!this.iframeRef.current) {
+      throw new Error(
+        'Sandpack iframe was not initialized. Check the render function of <SandpackProvider>'
+      );
+    }
+
+    this.manager = new Manager(
+      this.iframeRef.current,
+      {
+        files: generatePackageJSON(
+          this.props.files,
+          this.props.dependencies,
+          this.props.entry
+        ),
+        template: this.props.environment,
+        showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
+      },
+      {
+        bundlerURL: this.props.bundlerURL,
+        fileResolver: this.props.fileResolver,
+        skipEval: this.props.skipEval,
+      }
+    );
+
+    this.unsubscribe = this.manager.listen(this.handleMessage);
+    this.setState({ sandpackStatus: 'running' });
+  };
+
   changeActiveFile = (path: string) => {
     this.setState({ activePath: path });
   };
@@ -209,34 +221,45 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   };
 
   dispatchMessage = (message: any) => {
-    if (!this.manager) {
-      throw new Error('dispatch was called before sandpack initialized');
+    if (this.state.sandpackStatus !== 'running') {
+      console.warn('dispatch cannot be called while in idle mode');
+      return;
     }
 
-    return this.manager.dispatch(message);
+    this.manager!.dispatch(message);
   };
 
   addListener = (listener: SandpackListener) => {
-    if (!this.manager) {
-      throw new Error('listen was called before sandpack initialized');
+    if (this.state.sandpackStatus !== 'running') {
+      console.warn('sandpack listener cannot be attached while in idle mode');
+      return () => {};
     }
 
-    return this.manager.listen(listener);
+    return this.manager!.listen(listener);
   };
 
   _getSandpackState = (): SandpackContext => {
-    const { files, activePath, openPaths, managerState, errors } = this.state;
+    const {
+      files,
+      activePath,
+      openPaths,
+      bundlerState,
+      errors,
+      sandpackStatus,
+    } = this.state;
 
     return {
       files,
       openPaths,
       activePath,
       errors,
-      managerState,
+      bundlerState,
+      status: sandpackStatus,
       changeActiveFile: this.changeActiveFile,
       openFile: this.openFile,
       browserFrame: this.iframeRef.current,
       updateCurrentFile: this.updateCurrentFile,
+      runSandpack: this.runSandpack,
       dispatch: this.dispatchMessage,
       listen: this.addListener,
     };
@@ -244,7 +267,6 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
   render() {
     const { children } = this.props;
-    const { initialized } = this.state;
 
     return (
       <Sandpack.Provider value={this._getSandpackState()}>
@@ -265,8 +287,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
             src={this.props.bundlerURL}
           />
         </div>
-        {/* children are rendered only after the iframe is mounted */}
-        {initialized && children}
+        {children}
       </Sandpack.Provider>
     );
   }

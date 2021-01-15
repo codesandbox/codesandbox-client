@@ -15,17 +15,21 @@ const Wrapper = styled('div', {
 });
 
 function getTranspiledCode(sandpack: SandpackState) {
-  const { activePath, managerState } = sandpack;
-  if (managerState == null) {
+  const { activePath, bundlerState } = sandpack;
+  if (bundlerState == null) {
     return null;
   }
 
-  const tModule = managerState.transpiledModules[activePath + ':'];
+  const tModule = bundlerState.transpiledModules[activePath + ':'];
   return tModule?.source?.compiledCode ?? null;
 }
 
 export const TranspiledCodeView: React.FC = () => {
   const { sandpack } = useSandpack();
+  if (sandpack.status !== 'running') {
+    return null;
+  }
+
   const transpiledCode = getTranspiledCode(sandpack);
 
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { TranspiledCodeView } from '../components/TranspiledCodeView';
-import { SandpackWrapper } from '../elements';
+import { SandpackLayout } from '../components/SandpackLayout';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { CodeEditor } from './CodeEditor';
 
@@ -21,9 +21,9 @@ const str = \`<div>\${text}</div>\`
     dependencies={{ '@babel/runtime': 'latest' }}
     entry="/index.js"
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <CodeEditor />
       <TranspiledCodeView />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );

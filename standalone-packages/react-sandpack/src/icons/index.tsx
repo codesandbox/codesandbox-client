@@ -1,5 +1,17 @@
 import * as React from 'react';
 
+export const RunIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 17 16"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M11.0792 8.1078C11.2793 8.25007 11.27 8.55012 11.0616 8.67981L6.02535 11.8135C5.79638 11.956 5.5 11.7913 5.5 11.5216L5.5 8.40703L5.5 4.80661C5.5 4.52735 5.81537 4.36463 6.04296 4.52647L11.0792 8.1078Z" />
+  </svg>
+);
+
 export const BackwardIcon = () => (
   <svg
     width="24"

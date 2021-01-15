@@ -10,12 +10,19 @@ export interface PreviewProps {
   showNavigator?: boolean;
 }
 
+// const translate = css.keyframes({
+//   '0%': { maxWidth: 0 },
+//   '100%': { maxWidth: '100%' },
+// });
+
 const Wrapper = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   backgroundColor: 'white',
   border: '1px solid $inactive',
   margin: -1,
+  // animationName: translate,
+  // animationDuration: '0.5s',
 });
 
 const PreviewFrame = styled('div', {
@@ -42,10 +49,14 @@ export const Preview: React.FC<PreviewProps> = ({
     });
 
     return () => unsub();
-  }, []);
+  }, [sandpack.status]);
 
   React.useEffect(() => {
-    if (!sandpack.browserFrame || !containerRef.current) {
+    if (
+      !sandpack.browserFrame ||
+      !containerRef.current ||
+      sandpack.status !== 'running'
+    ) {
       return;
     }
 
@@ -56,7 +67,11 @@ export const Preview: React.FC<PreviewProps> = ({
     browserFrame.style.position = 'relative';
 
     containerRef.current.appendChild(browserFrame);
-  }, [sandpack?.browserFrame]);
+  }, [sandpack?.browserFrame, sandpack.status]);
+
+  if (sandpack.status !== 'running') {
+    return null;
+  }
 
   return (
     <Wrapper style={customStyle}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigator } from '.';
-import { SandpackWrapper } from '../../elements';
+import { SandpackLayout } from '../../components/SandpackLayout';
 import { SandpackProvider } from '../../utils/sandpack-context';
 import { Preview } from '../Preview';
 
@@ -18,9 +18,9 @@ export const Component = () => (
     }}
     dependencies={{}}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <Navigator />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );
 
@@ -117,8 +117,8 @@ function Dashboard() {
       'react-dom': 'latest',
     }}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <Preview showNavigator />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );

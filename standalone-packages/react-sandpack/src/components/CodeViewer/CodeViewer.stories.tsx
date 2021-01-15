@@ -2,7 +2,7 @@ import React from 'react';
 import { Story } from '@storybook/react';
 
 import { CodeViewer, CodeViewerProps } from '.';
-import { SandpackWrapper } from '../../elements';
+import { SandpackLayout } from '../../components/SandpackLayout';
 
 import { SandpackProvider } from '../../utils/sandpack-context';
 import { SANDBOX_TEMPLATES } from '../../templates';
@@ -22,9 +22,9 @@ export const Component: Story<CodeViewerProps> = args => (
     }}
     dependencies={{}}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <CodeViewer {...args} />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );
 
@@ -38,9 +38,9 @@ export const ReactCode = () => (
     openPaths={[reactTemplate.main]}
     dependencies={reactTemplate.dependencies}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <CodeViewer />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );
 
@@ -54,8 +54,8 @@ export const VueCode = () => (
     openPaths={[vueTemplate.main]}
     dependencies={vueTemplate.dependencies}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <CodeViewer />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );

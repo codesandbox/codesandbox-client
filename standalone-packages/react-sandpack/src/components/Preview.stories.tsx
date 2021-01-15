@@ -1,6 +1,6 @@
 import React from 'react';
 import { Preview } from './Preview';
-import { SandpackWrapper } from '../elements';
+import { SandpackLayout } from './SandpackLayout';
 
 import { SandpackProvider } from '../utils/sandpack-context';
 
@@ -18,8 +18,8 @@ export const Component = () => (
     }}
     dependencies={{}}
   >
-    <SandpackWrapper>
+    <SandpackLayout>
       <Preview />
-    </SandpackWrapper>
+    </SandpackLayout>
   </SandpackProvider>
 );

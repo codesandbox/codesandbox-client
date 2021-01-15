@@ -3,6 +3,8 @@ import { CodeMirror } from './CodeMirror';
 import { useSandpack } from '../../utils/sandpack-context';
 import { FileTabs } from '../FileTabs';
 import { styled } from '../../stitches.config';
+import { Button } from '../../elements';
+import { RunIcon } from '../../icons';
 
 export interface CodeEditorProps {
   customStyle?: React.CSSProperties;
@@ -17,6 +19,7 @@ const CodeEditorWrapper = styled('div', {
   textAlign: 'left',
   display: 'flex',
   flexDirection: 'column',
+  position: 'relative',
 });
 
 export const CodeEditor = ({
@@ -26,7 +29,7 @@ export const CodeEditor = ({
 }: CodeEditorProps) => {
   const { sandpack } = useSandpack();
 
-  const { activePath } = sandpack;
+  const { activePath, status, runSandpack } = sandpack;
   const code = sandpack.files[activePath].code;
 
   const handleCodeUpdate = (newCode: string) => {
@@ -44,6 +47,19 @@ export const CodeEditor = ({
         onCodeUpdate={handleCodeUpdate}
         showLineNumbers={showLineNumbers}
       />
+      {status === 'idle' && (
+        <Button
+          css={{
+            position: 'absolute',
+            bottom: '$2',
+            right: '$2',
+          }}
+          onClick={() => runSandpack()}
+        >
+          <RunIcon />
+          Run
+        </Button>
+      )}
     </CodeEditorWrapper>
   );
 };

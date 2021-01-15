@@ -1,5 +1,27 @@
 import { styled } from '../stitches.config';
 
+export const Button = styled('button', {
+  appearance: 'none',
+  border: '0',
+  padding: '$1 $3 $1 $2',
+  borderRadius: '$default',
+  display: 'flex',
+  alignItems: 'center',
+  color: '$defaultText',
+  backgroundColor: '$mainBackground',
+  outline: 'none',
+  fontSize: '$default',
+  fontFamily: '$body',
+  transition: 'all 0.15s ease-in-out',
+
+  ':hover:not(:disabled)': {
+    backgroundColor: '$inactive',
+    color: '$highlightText',
+  },
+  ':disabled': { color: '$inactive' },
+  ':focus-visible': { outline: 'auto' },
+});
+
 export const ErrorMessage = styled('pre', {
   position: 'absolute',
   bottom: 0,
@@ -15,32 +37,4 @@ export const ErrorMessage = styled('pre', {
   color: 'white',
 
   zIndex: 3,
-});
-
-export const SandpackWrapper = styled('div', {
-  border: '1px solid $inactive',
-  display: 'flex',
-  flexWrap: 'wrap',
-  alignItems: 'stretch',
-  width: '100%',
-  maxWidth: 1000,
-  minHeight: 350,
-  maxHeight: 700,
-  borderRadius: '$default',
-  fontSize: '$default',
-  fontFamily: '$body',
-  overflow: 'hidden',
-  boxSizing: 'border-box',
-
-  '& > *': {
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-    width: 0,
-    minWidth: 300,
-  },
-
-  '*': {
-    boxSizing: 'border-box',
-  },
 });

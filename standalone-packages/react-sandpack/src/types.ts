@@ -7,15 +7,19 @@ export type SandpackContext = SandpackState & {
 
 export interface SandpackState {
   browserFrame: HTMLIFrameElement | null;
-  managerState: IManagerState | undefined;
+  bundlerState: IManagerState | undefined;
   openPaths: string[];
   activePath: string;
   errors: Array<IModuleError>;
   files: IFiles;
+  status: SandpackStatus;
+  runSandpack: () => void;
   updateCurrentFile: (file: IFile) => void;
   openFile: (path: string) => void;
   changeActiveFile: (path: string) => void;
 }
+
+export type SandpackStatus = 'idle' | 'running';
 
 export type SandpackListener = (msg: any) => void;
 
@@ -98,6 +102,11 @@ export interface PresetProps {
     bundlerURL?: string;
     skipEval?: boolean;
     fileResolver?: FileResolver;
+  };
+  executionOptions?: {
+    autorun?: boolean;
+    recompileMode?: 'immediate' | 'delayed';
+    recompileDelay?: number;
   };
   theme?: SandpackTheme;
   customStyle?: React.CSSProperties;
