@@ -7,6 +7,7 @@ import { Description, H6 } from '../../components/Typography';
 import {
   ContentBlock,
   Title,
+  Subtitle,
   TitleWrapper,
   Wrapper,
   ContentBlockImage,
@@ -36,24 +37,19 @@ export default () => (
       </Description>
       <div
         css={`
-          margin: auto;
-          display: flex;
-          justify-content: center;
-          margin-top: 96px;
-          margin-bottom: 181px;
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
           Get Started
         </Button>
       </div>
-      <div
-        css={`
-          padding-top: 160px;
-        `}
-      >
+      <div >
         <div>
-          <Title as="h2">Keep everyone in the loop</Title>
+          <Subtitle>Keep everyone in the loop</Subtitle>
         </div>
         <FeaturedImage bg={bg}>
           <img
@@ -90,10 +86,11 @@ export default () => (
             margin-bottom: 56px;
           `}
         >
-          <H6 left>Collaboration</H6>
-          <Title left as="h2">
+         
+          <Subtitle left >
+          <H6 center>Collaboration</H6>
             Code in public, or private
-          </Title>
+          </Subtitle>
         </div>
 
         <ContentBlock>
@@ -132,9 +129,9 @@ export default () => (
           `}
         >
           <div>
-            <Title as="h2">
-              Create static sites, components, or full-stack web apps
-            </Title>
+            <Subtitle >
+              Create static sites, components, <br></br> or full-stack web apps
+            </Subtitle>
           </div>
           <FeaturedImage bg={bg1}>
             <img

@@ -7,6 +7,7 @@ import { Description } from '../../components/Typography';
 import {
   ContentBlock,
   Title,
+  Subtitle,
   TitleWrapper,
   Wrapper,
   ContentBlockImage,
@@ -42,21 +43,17 @@ export default () => (
           margin: auto;
           display: flex;
           justify-content: center;
-          margin-top: 96px;
-          margin-bottom: 181px;
+          margin: 2rem 0;
+
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
           Get Started
         </Button>
       </div>
-      <div
-        css={`
-          padding-top: 160px;
-        `}
-      >
+      <div>
         <div>
-          <Title as="h2">Fast development in the browser</Title>
+          <Subtitle as="h2">Fast development in the browser</Subtitle>
         </div>
         <FeaturedImage bg={bg}>
           <img
@@ -69,7 +66,7 @@ export default () => (
         </FeaturedImage>
         <ContentBlock>
           <div>
-            <h3>Cloud IDE</h3>
+            <h3 >Cloud IDE</h3>
             Code from anywhere, on any device with a web browser.
           </div>
 
@@ -92,7 +89,7 @@ export default () => (
             margin-bottom: 56px;
           `}
         >
-          <Title as="h2">Use with Your Fave Dev Tools</Title>
+          <Subtitle as="h2">Use with Your Fave Dev Tools</Subtitle>
         </div>
 
         <ContentBlock>
@@ -122,13 +119,9 @@ export default () => (
             theme, and even enable Vim mode.
           </div>
         </ContentBlock>
-        <div
-          css={`
-            padding-top: 160px;
-          `}
-        >
+        <div>
           <div>
-            <Title as="h2">Code Together</Title>
+            <Subtitle as="h2">Code Together</Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -163,13 +156,9 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
-        <div
-          css={`
-            padding-top: 160px;
-          `}
-        >
+        <div>
           <div>
-            <Title as="h2">Work with Containers</Title>
+            <Subtitle as="h2">Work with Containers</Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -206,13 +195,9 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
-        <div
-          css={`
-            padding-top: 160px;
-          `}
-        >
+        <div >
           <div>
-            <Title as="h2">Debug Like a Pro</Title>
+            <Subtitle as="h2">Debug Like a Pro</Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -254,19 +239,28 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
-        <div
-          css={`
-            padding-top: 160px;
-            padding-bottom: 200px;
-          `}
-        >
-          <div
-            css={`
-              padding-bottom: 64px;
-            `}
-          >
-            <Title as="h2">Make It Yours</Title>
+        <div>
+          <div>
+            <Subtitle as="h2">Make It Yours</Subtitle>
           </div>
+
+          <FeaturedImage
+            css={`
+              height: 468px;
+              justify-content: flex-start;
+            `}
+            bg=""
+          >
+            <img
+              src=""
+              alt=""
+              css={`
+                width: 826px;
+              `}
+            />
+          </FeaturedImage>
+
+
           <ContentBlock>
             <div>
               <h3>Configuration UI</h3>

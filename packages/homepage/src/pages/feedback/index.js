@@ -7,6 +7,7 @@ import { Description, H6 } from '../../components/Typography';
 import {
   ContentBlock,
   Title,
+  Subtitle,
   TitleWrapper,
   Wrapper,
   ContentBlockImage,
@@ -36,24 +37,19 @@ export default () => (
       </Description>
       <div
         css={`
-          margin: auto;
-          display: flex;
-          justify-content: center;
-          margin-top: 96px;
-          margin-bottom: 181px;
+        margin: auto;
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
           Get Started
         </Button>
       </div>
-      <div
-        css={`
-          padding-top: 128px;
-        `}
-      >
+      <div>
         <div>
-          <Title as="h2">Keep everyone in the loop</Title>
+          <Subtitle as="h2">Keep everyone in the loop</Subtitle>
         </div>
         <FeaturedImage
           bg={bg}
@@ -94,10 +90,11 @@ export default () => (
             margin-bottom: 56px;
           `}
         >
-          <H6 left>Collaboration</H6>
-          <Title left as="h2">
+         
+          <Subtitle left as="h2">
+          <H6 center>Collaboration</H6>
             Know the context
-          </Title>
+          </Subtitle>
         </div>
 
         <ContentBlock>
@@ -136,7 +133,7 @@ export default () => (
           `}
         >
           <div>
-            <Title as="h2">Stay up to date</Title>
+            <Subtitle as="h2">Stay up to date</Subtitle>
             <h6
               css={`
                 font-style: normal;
@@ -145,9 +142,8 @@ export default () => (
                 line-height: 27px;
                 text-align: center;
                 max-width: 600px;
-                margin: auto;
                 color: #999999;
-                margin-top: 24px;
+                margin:0 auto 4rem auto;
               `}
             >
               With email or in-app notifications about new comments and invites,
