@@ -232,9 +232,14 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
       // if you land on a workspace where you are not the admin
       // switch workspaces to one where you are an admin
       // if none, switch to personal workspace
-      if (activeUserAuthorization !== 'ADMIN' && dashboard.teams.length) {
+      if (
+        activeUserAuthorization !== TeamMemberAuthorization.Admin &&
+        dashboard.teams.length
+      ) {
         const workspaceWithAdminRights = dashboard.teams.find(
-          team => team.id !== personalWorkspaceId && getUserAuthorization(team)
+          team =>
+            team.id !== personalWorkspaceId &&
+            getUserAuthorization(team) === TeamMemberAuthorization.Admin
         );
 
         if (workspaceWithAdminRights) {
@@ -262,7 +267,7 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
   const switcherDefaultOpen =
     (type === 'team' && isPersonalWorkspace) ||
     (type === 'personal' && !isPersonalWorkspace) ||
-    activeUserAuthorization !== 'ADMIN';
+    activeUserAuthorization !== TeamMemberAuthorization.Admin;
 
   return (
     <div style={{ width: '100%' }}>
@@ -553,7 +558,7 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
 
           <Button
             loading={loading}
-            disabled={activeUserAuthorization !== 'ADMIN'}
+            disabled={activeUserAuthorization !== TeamMemberAuthorization.Admin}
             onClick={() => nextStep()}
             css={css({ fontSize: 3, height: 10 })}
           >
