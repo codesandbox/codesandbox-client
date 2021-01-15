@@ -111,9 +111,14 @@ export const FeaturesTable = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0 20px;
+  background: #242424;
 
   ${props => props.theme.breakpoints.md} {
     margin-left: 0 !important;
+  }
+
+  li:last-child {
+    padding-bottom: 80px;
   }
 
   ${props =>
@@ -121,6 +126,7 @@ export const FeaturesTable = styled.ul`
     `
     overflow: hidden;
     height: 0;
+
   `}
 
   span.text {
