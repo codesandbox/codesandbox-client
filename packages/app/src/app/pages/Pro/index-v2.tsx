@@ -1,9 +1,8 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { format } from 'date-fns';
 import { sortBy } from 'lodash-es';
+import { Helmet } from 'react-helmet';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-
 import {
   ThemeProvider,
   Stack,
@@ -11,6 +10,7 @@ import {
   Menu,
   Icon,
   Button,
+  Link,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
@@ -156,7 +156,11 @@ const UpgradeSteps = () => {
 const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
   const {
     state: { personalWorkspaceId, user, activeTeam, dashboard },
-    actions: { setActiveTeam },
+    actions: {
+      setActiveTeam,
+      modalOpened,
+      patron: { cancelSubscriptionClicked },
+    },
   } = useOvermind();
 
   const location = useLocation();
@@ -225,10 +229,7 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
   ).length;
   setSeats(numberOfEditors);
 
-  // TODO: use this
-  // const isPersonalPro = isPersonalWorkspace || user.subscription;
-  // const isTeamPro = activeWorkspace.joinedPilotAt;
-  // const onPaidPlan = isTeamPro || (isPersonalWorkspace && isPersonalPro);
+  const isLegacyPersonalPro = isPersonalWorkspace && user.subscription;
 
   // if there is mismatch of intent, open the workspace switcher on load
   const switcherDefaultOpen =
@@ -383,88 +384,145 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
           </Menu>
         </Stack>
       </Stack>
-      <Stack gap={7}>
-        {isPersonalWorkspace ? (
-          <>
-            <PlanCard
-              plan={plans.PERSONAL_PRO_MONTHLY}
-              billingFrequency={billingFrequency}
-              setBillingFrequency={setBillingFrequency}
-            />
-            <PlanCard
-              plan={plans.PERSONAL_PRO_ANNUAL}
-              billingFrequency={billingFrequency}
-              setBillingFrequency={setBillingFrequency}
-            />
-          </>
-        ) : (
-          <>
-            <PlanCard
-              plan={plans.TEAM_PRO_MONTHLY}
-              billingFrequency={billingFrequency}
-              setBillingFrequency={setBillingFrequency}
-            />
-            <PlanCard
-              plan={plans.TEAM_PRO_ANNUAL}
-              billingFrequency={billingFrequency}
-              setBillingFrequency={setBillingFrequency}
-            />
-          </>
-        )}
-      </Stack>
-      <AnimatePresence>
-        {!isPersonalWorkspace && (
-          <motion.div
-            initial={{ height: 0, marginTop: 0 }}
-            animate={{ height: 'auto', marginTop: 24 }}
-            exit={{ height: 0, marginTop: 0 }}
-            style={{ overflow: 'hidden' }}
+
+      {isLegacyPersonalPro ? (
+        <Stack direction="vertical" gap={4}>
+          <Stack
+            direction="vertical"
+            gap={1}
+            css={css({
+              padding: 4,
+              border: '1px solid',
+              borderColor: 'grays.500',
+              borderRadius: 'small',
+              overflow: 'hidden',
+            })}
           >
-            <Stack
-              direction="vertical"
-              gap={1}
-              css={css({
-                padding: 4,
-                border: '1px solid',
-                borderColor: 'grays.500',
-                borderRadius: 'small',
-                overflow: 'hidden',
-              })}
-            >
-              <Text size={3}>Workspace editors</Text>
-              <Stack justify="space-between">
-                <Stack direction="vertical" gap={4}>
-                  <Text variant="muted" size={3}>
-                    {numberOfEditors} {numberOfEditors === 1 ? 'seat' : 'seats'}
-                    <Text size={2}> ✕ </Text> {plan.currency}
-                    {plan.unit}{' '}
-                    {plan.multiplier > 1 ? (
-                      <>
-                        <Text size={2}> ✕</Text> {plan.multiplier}
-                      </>
-                    ) : null}
-                  </Text>
-                  <Text variant="muted">
-                    Prices listed in USD. Taxes may apply.
-                  </Text>
-                </Stack>
-                <Text weight="semibold" size={4}>
-                  {plan.currency}
-                  {numberOfEditors * plan.unit * plan.multiplier} /{' '}
-                  {plan.frequency === 'monthly' ? 'month' : 'year'}
+            <Text size={3}>Current plan</Text>
+            <Text variant="muted">
+              {user.subscription.plan === 'patron' ? 'Patron' : 'Personal Pro'}
+            </Text>
+            <Text variant="muted">
+              You will be billed{' '}
+              {user.subscription.duration === 'yearly' ? (
+                <>
+                  and charged annually on{' '}
+                  {format(new Date(user.subscription.since), 'MMM dd')}.
+                </>
+              ) : (
+                <>
+                  on the {format(new Date(user.subscription.since), 'do')} of
+                  each month.
+                </>
+              )}
+            </Text>
+          </Stack>
+
+          {user.subscription.plan === 'patron' ? (
+            <Text variant="muted">
+              Thank you for being an early supporter of CodeSandbox. As a
+              patron, you can access all Pro features. You can{' '}
+              <Link variant="active" href="/patron">
+                modify your contribution
+              </Link>{' '}
+              at any time.
+            </Text>
+          ) : (
+            <Text variant="muted">
+              You can{' '}
+              <Link
+                variant="active"
+                onClick={e => {
+                  e.preventDefault();
+                  modalOpened({
+                    modal: 'preferences',
+                    itemId: 'paymentInfo',
+                  });
+                }}
+              >
+                update your payment details
+              </Link>{' '}
+              or{' '}
+              <Link
+                variant="active"
+                onClick={e => {
+                  e.preventDefault();
+                  cancelSubscriptionClicked();
+                }}
+              >
+                cancel your subscription.
+              </Link>
+            </Text>
+          )}
+        </Stack>
+      ) : (
+        <Stack direction="vertical" gap={6}>
+          <Stack gap={7}>
+            {isPersonalWorkspace ? (
+              <>
+                <PlanCard
+                  plan={plans.PERSONAL_PRO_MONTHLY}
+                  billingFrequency={billingFrequency}
+                  setBillingFrequency={setBillingFrequency}
+                />
+                <PlanCard
+                  plan={plans.PERSONAL_PRO_ANNUAL}
+                  billingFrequency={billingFrequency}
+                  setBillingFrequency={setBillingFrequency}
+                />
+              </>
+            ) : (
+              <>
+                <PlanCard
+                  plan={plans.TEAM_PRO_MONTHLY}
+                  billingFrequency={billingFrequency}
+                  setBillingFrequency={setBillingFrequency}
+                />
+                <PlanCard
+                  plan={plans.TEAM_PRO_ANNUAL}
+                  billingFrequency={billingFrequency}
+                  setBillingFrequency={setBillingFrequency}
+                />
+              </>
+            )}
+          </Stack>
+
+          <Stack
+            direction="vertical"
+            gap={1}
+            css={css({
+              padding: 4,
+              border: '1px solid',
+              borderColor: 'grays.500',
+              borderRadius: 'small',
+              overflow: 'hidden',
+            })}
+          >
+            <Text size={3}>Workspace editors</Text>
+            <Stack justify="space-between">
+              <Stack direction="vertical" gap={4}>
+                <Text variant="muted" size={3}>
+                  {numberOfEditors} {numberOfEditors === 1 ? 'seat' : 'seats'}
+                  <Text size={2}> ✕ </Text> {plan.currency}
+                  {plan.unit}{' '}
+                  {plan.multiplier > 1 ? (
+                    <>
+                      <Text size={2}> ✕</Text> {plan.multiplier}
+                    </>
+                  ) : null}
+                </Text>
+                <Text variant="muted">
+                  Prices listed in USD. Taxes may apply.
                 </Text>
               </Stack>
+              <Text weight="semibold" size={4}>
+                {plan.currency}
+                {numberOfEditors * plan.unit * plan.multiplier} /{' '}
+                {plan.frequency === 'monthly' ? 'month' : 'year'}
+              </Text>
             </Stack>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        <motion.div
-          initial={{ height: 0, opacity: 0, marginTop: 0 }}
-          animate={{ height: 'auto', opacity: 1, marginTop: 40 }}
-          exit={{ height: 0, opacity: 0, marginTop: 0 }}
-          style={{ overflow: 'hidden' }}
-        >
+          </Stack>
+
           <Button
             loading={loading}
             onClick={() => nextStep()}
@@ -472,8 +530,8 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
           >
             Continue
           </Button>
-        </motion.div>
-      </AnimatePresence>
+        </Stack>
+      )}
     </div>
   );
 };
@@ -487,6 +545,7 @@ const PlanCard: React.FC<{
 
   return (
     <Stack
+      as="label"
       direction="vertical"
       css={css({
         flexGrow: 1,
@@ -499,7 +558,7 @@ const PlanCard: React.FC<{
         transitionDuration: theme => theme.speeds[3],
       })}
     >
-      <Stack as="label" justify="space-between" align="center">
+      <Stack justify="space-between" align="center">
         <Stack direction="vertical" gap={1}>
           <Text
             size={4}
@@ -527,8 +586,8 @@ const PlanCard: React.FC<{
             css={css({
               size: 6,
               border: '2px solid',
-              borderColor: 'grays.600',
               borderRadius: '50%',
+              borderColor: isSelected ? 'blues.600' : 'grays.600',
               backgroundColor: isSelected ? 'blues.600' : 'transparent',
             })}
           >
