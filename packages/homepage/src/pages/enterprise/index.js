@@ -40,22 +40,22 @@ export default () => (
       </Description>
       <div
         css={`
-        margin: auto;
-        display: flex;
-        justify-content: center;
-        margin: 2rem 0;
+          margin: auto;
+          display: flex;
+          justify-content: center;
+          margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
           Get Started
         </Button>
       </div>
-      <div >
+      <div>
         <div>
-      
-          <Subtitle >
-          <H6>Collaboration</H6>
-            Build in the open</Subtitle>
+          <Subtitle>
+            <H6>Collaboration</H6>
+            Build in the open
+          </Subtitle>
         </div>
         <FeaturedImage bg={bg}>
           <img
@@ -87,9 +87,8 @@ export default () => (
         </ContentBlock>
 
         <div>
-        
           <Subtitle center>
-          <H6 center>Prototyping</H6>
+            <H6 center>Prototyping</H6>
             Share design system knowledge
           </Subtitle>
         </div>
@@ -123,14 +122,15 @@ export default () => (
         </ContentBlock>
         <Quote>
           <img src={brian} width="254px" alt="Brian Vaughn" />
-          <h3>“It's dramatically improved my <br></br> experience  of sharing ideas.”</h3>
+          <h3>
+            “It's dramatically improved my <br /> experience of sharing ideas.”
+          </h3>
           <h4>Brian Vaughn, Software Engineer, Facebook</h4>
         </Quote>
 
-        <div >
-   
+        <div>
           <Subtitle center>
-          <H6 center>Contact Sales</H6>
+            <H6 center>Contact Sales</H6>
             For Enterprise
           </Subtitle>
         </div>

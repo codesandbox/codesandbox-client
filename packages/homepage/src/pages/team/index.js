@@ -45,22 +45,22 @@ export default () => (
       </Description>
       <div
         css={`
-        margin: auto;
-        display: flex;
-        justify-content: center;
-        margin: 2rem 0;
+          margin: auto;
+          display: flex;
+          justify-content: center;
+          margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
           Get Started
         </Button>
       </div>
-      <div >
+      <div>
         <div>
-   
           <Subtitle>
-          <H6>Prototyping</H6>
-          Rapid Prototyping</Subtitle>
+            <H6>Prototyping</H6>
+            Rapid Prototyping
+          </Subtitle>
         </div>
         <FeaturedImage bg={bg}>
           <img
@@ -93,9 +93,8 @@ export default () => (
         </ContentBlock>
 
         <div>
-      
           <Title center>
-          <H6 center>Learning</H6>
+            <H6 center>Learning</H6>
             Knowledge Sharing
           </Title>
         </div>
@@ -128,11 +127,11 @@ export default () => (
             your workflow, embedded in the tools you already use.
           </div>
         </ContentBlock>
-        <div >
-    
+        <div>
           <Subtitle>
-          <H6>Collaboration</H6>
-            Better Feedback</Subtitle>
+            <H6>Collaboration</H6>
+            Better Feedback
+          </Subtitle>
         </div>
         <FeaturedImage
           bg={bg1}
@@ -172,13 +171,16 @@ export default () => (
         </ContentBlock>
         <Quote>
           <img src={rob} width="254px" alt="Rob Eisenberg" />
-          <h3>“This is a great way to<br></br> prototype and share ideas.”</h3>
+          <h3>
+            “This is a great way to
+            <br /> prototype and share ideas.”
+          </h3>
           <h4>Rob Eisenberg, Software Architect, Universal Audio</h4>
         </Quote>
 
         <div>
           <Subtitle>
-          <H6>$24 per editor a month</H6>
+            <H6>$24 per editor a month</H6>
             For Teams
           </Subtitle>
         </div>
@@ -217,9 +219,8 @@ export default () => (
           </div>
         </ContentBlock>
         <div>
-          
           <Subtitle>
-          <H6 center>$45 per editor a month</H6>
+            <H6 center>$45 per editor a month</H6>
             For Organizations
           </Subtitle>
         </div>

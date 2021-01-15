@@ -31,10 +31,10 @@ export default () => (
       </Description>
       <div
         css={`
-        margin: auto;
-        display: flex;
-        justify-content: center;
-        margin: 2rem 0;
+          margin: auto;
+          display: flex;
+          justify-content: center;
+          margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
@@ -74,7 +74,7 @@ export default () => (
           </div>
         </ContentBlock>
 
-        <div >
+        <div>
           <div>
             <Subtitle>Embeds</Subtitle>
           </div>
@@ -83,7 +83,6 @@ export default () => (
               border: 0;
               width: 100%;
               height: 385px;
-
             `}
             title="embed-example"
             src={`https://codesandbox.io/embed/static-2lqup?fontsize=14&hidenavigation=true&hidedevtools=true`}
@@ -108,7 +107,7 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
-        <div >
+        <div>
           <div>
             <Subtitle>Collaborative workspaces??</Subtitle>
           </div>

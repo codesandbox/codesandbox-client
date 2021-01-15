@@ -3,11 +3,8 @@ import React from 'react';
 import Button from './Button';
 
 export const Wrapper = styled.div`
-  padding:0rem;
+  padding: 0rem;
 `;
-
-
-
 
 export const Title = styled.h1`
   ${({ theme }) => css`
@@ -16,7 +13,7 @@ export const Title = styled.h1`
     font-size: 2.5rem;
     line-height: 3rem;
     color: ${theme.homepage.white};
-    margin: 14rem auto 1rem auto ;
+    margin: 14rem auto 1rem auto;
     text-align: center;
     max-width: 100%;
 
@@ -30,7 +27,6 @@ export const Title = styled.h1`
     ${props => props.theme.breakpoints.md} {
       font-size: 1.5rem;
       line-height: 1.2;
-      
     }
   `};
 `;
@@ -39,38 +35,33 @@ export const Subtitle = styled.h2`
   font-weight: 900;
   font-size: 2.5rem;
   line-height: 3rem;
-  margin: 14rem auto 4rem auto ;
+  margin: 14rem auto 4rem auto;
   text-align: center;
   max-width: 100%;
 
-  h6{
-    margin:1rem 0;
-
+  h6 {
+    margin: 1rem 0;
   }
 `;
 
-
-
 export const ContentBlock = styled.div`
-  ${({ theme, cols, small, center }) => css`
+  ${({ theme, cols, center }) => css`
     display: grid;
     grid-template-columns: repeat(${cols || '3'}, 1fr);
     grid-gap: 3rem 5rem;
     font-size: 19px;
-    line-height:23px;
+    line-height: 23px;
     color: ${theme.homepage.muted};
-    margin-top:2rem;
-
-
+    margin-top: 2rem;
 
     ${props => props.theme.breakpoints.lg} {
-      font-size:16px;
+      font-size: 16px;
       grid-template-columns: repeat(1, 1fr);
     }
 
     ${props => props.theme.breakpoints.sm} {
-      font-size:16px;
-      margin-bottom:0rem;
+      font-size: 16px;
+      margin-bottom: 0rem;
     }
 
     ${center && `text-align: center;`}
@@ -83,9 +74,8 @@ export const ContentBlock = styled.div`
       color: ${theme.homepage.white};
       margin-bottom: 1rem;
 
-
       ${props => props.theme.breakpoints.sm} {
-        font-size:19px;
+        font-size: 19px;
       }
     }
   `};
@@ -139,7 +129,7 @@ export const TitleWrapper = styled.div`
 
 export const Quote = styled.section`
   min-height: 80vh;
-  padding-top:10rem;
+  padding-top: 10rem;
   text-align: center;
   display: flex;
   align-items: center;

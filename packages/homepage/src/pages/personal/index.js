@@ -12,7 +12,6 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
-  CTABottom,
   Quote,
 } from '../../components/LayoutComponents';
 
@@ -41,10 +40,10 @@ export default () => (
       </Description>
       <div
         css={`
-        margin: auto;
-        display: flex;
-        justify-content: center;
-        margin: 2rem 0;
+          margin: auto;
+          display: flex;
+          justify-content: center;
+          margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
@@ -53,10 +52,10 @@ export default () => (
       </div>
       <div>
         <div>
-         
           <Subtitle as="h2">
-          <H6>Prototyping</H6>
-            Prototype Quickly</Subtitle>
+            <H6>Prototyping</H6>
+            Prototype Quickly
+          </Subtitle>
         </div>
         <FeaturedImage bg={bg}>
           <img
@@ -84,10 +83,9 @@ export default () => (
           </div>
         </ContentBlock>
 
-        <div >
-         
+        <div>
           <Subtitle>
-          <H6 center>Learning</H6>
+            <H6 center>Learning</H6>
             Experiment Easily
           </Subtitle>
         </div>
@@ -123,10 +121,10 @@ export default () => (
             margin-bottom: 56px;
           `}
         >
-     
           <Subtitle>
-          <H6>Collaboration</H6>
-            Share With a Click</Subtitle>
+            <H6>Collaboration</H6>
+            Share With a Click
+          </Subtitle>
         </div>
         <FeaturedImage bg={bg1}>
           <img
@@ -159,17 +157,20 @@ export default () => (
         </ContentBlock>
         <Quote>
           <img src={roy} width="254px" alt="Roy Derks" />
-          <h3     css={`max-width:60rem;`}>
+          <h3
+            css={`
+              max-width: 60rem;
+            `}
+          >
             “I often use CodeSandbox to create demos or try out new JavaScript
             features or packages.”{' '}
           </h3>
           <h4>Roy Derks, Engineering Manager, Vandebron</h4>
         </Quote>
 
-        <div >
- 
-          <Subtitle >
-          <H6 center>From $9 per month</H6>
+        <div>
+          <Subtitle>
+            <H6 center>From $9 per month</H6>
             Go Pro
           </Subtitle>
         </div>
@@ -199,20 +200,19 @@ export default () => (
             Get more space, higher upload limits, and unlimited invites.
           </div>
         </ContentBlock>
-        
+
         <div
-    css={`
-      margin: auto;
-      display: flex;
-      justify-content: center;
-      margin: 96px auto;
-    `}
-  >
-    <Button cta href="https://codesandbox.io/pricing/">
-      Go Pro
-    </Button>
-  </div>
-      
+          css={`
+            margin: auto;
+            display: flex;
+            justify-content: center;
+            margin: 96px auto;
+          `}
+        >
+          <Button cta href="https://codesandbox.io/pricing/">
+            Go Pro
+          </Button>
+        </div>
       </div>
     </Wrapper>
   </Layout>

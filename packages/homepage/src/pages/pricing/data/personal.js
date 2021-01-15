@@ -1,5 +1,12 @@
 export const personal = {
-  plans: ['Personal', ' Personal Pro Workspace'],
+  plans: [
+    {
+      name: 'Personal',
+      color: 'white',
+      free: true,
+    },
+    { name: 'Personal Pro Workspace', color: '#0971F1' },
+  ],
   items: [
     {
       name: 'Prototyping',

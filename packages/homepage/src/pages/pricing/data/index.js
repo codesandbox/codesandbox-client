@@ -1,0 +1,1 @@
+export { personal } from './personal';

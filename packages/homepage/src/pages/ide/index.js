@@ -44,7 +44,6 @@ export default () => (
           display: flex;
           justify-content: center;
           margin: 2rem 0;
-
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
@@ -66,7 +65,7 @@ export default () => (
         </FeaturedImage>
         <ContentBlock>
           <div>
-            <h3 >Cloud IDE</h3>
+            <h3>Cloud IDE</h3>
             Code from anywhere, on any device with a web browser.
           </div>
 
@@ -195,7 +194,7 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
-        <div >
+        <div>
           <div>
             <Subtitle as="h2">Debug Like a Pro</Subtitle>
           </div>
@@ -260,34 +259,38 @@ export default () => (
             />
           </FeaturedImage>
 
-
           <ContentBlock>
             <div>
               <h3>Configuration UI</h3>
-              Edit config files for npm, Prettier, Netlify, Vercel, TypeScript, JavaScript, and your sandbox easily.
+              Edit config files for npm, Prettier, Netlify, Vercel, TypeScript,
+              JavaScript, and your sandbox easily.
             </div>
 
             <div>
               <h3>Automatic Type Acquisition</h3>
-              Typings are automatically downloaded for every dependency, so you always have autocompletions.
+              Typings are automatically downloaded for every dependency, so you
+              always have autocompletions.
             </div>
 
             <div>
               <h3>Prettier</h3>
-              Code automatically gets prettified on save according to your own Prettier preferences.
+              Code automatically gets prettified on save according to your own
+              Prettier preferences.
             </div>
             <div>
               <h3>Emmet</h3>
-              You can quickly expand abbreviations with Emmet.io in all JS, HTML, and CSS files
+              You can quickly expand abbreviations with Emmet.io in all JS,
+              HTML, and CSS files
             </div>
             <div>
               <h3>TypeScript</h3>
-              We show TypeScript autocompletions and diagnostics for TS sandboxes.
+              We show TypeScript autocompletions and diagnostics for TS
+              sandboxes.
             </div>
             <div>
               <h3>ESLint</h3>
-              All code is linted automatically using the latest version of ESLint.
-
+              All code is linted automatically using the latest version of
+              ESLint.
             </div>
           </ContentBlock>
         </div>

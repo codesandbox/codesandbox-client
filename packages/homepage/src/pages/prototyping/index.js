@@ -37,17 +37,17 @@ export default () => (
       </Description>
       <div
         css={`
-        margin: auto;
-        display: flex;
-        justify-content: center;
-        margin: 2rem 0;
+          margin: auto;
+          display: flex;
+          justify-content: center;
+          margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
           Get Started
         </Button>
       </div>
-      <div >
+      <div>
         <div>
           <Subtitle>Keep everyone in the loop</Subtitle>
         </div>
@@ -86,9 +86,8 @@ export default () => (
             margin-bottom: 56px;
           `}
         >
-         
-          <Subtitle left >
-          <H6 center>Collaboration</H6>
+          <Subtitle left>
+            <H6 center>Collaboration</H6>
             Code in public, or private
           </Subtitle>
         </div>
@@ -129,8 +128,8 @@ export default () => (
           `}
         >
           <div>
-            <Subtitle >
-              Create static sites, components, <br></br> or full-stack web apps
+            <Subtitle>
+              Create static sites, components, <br /> or full-stack web apps
             </Subtitle>
           </div>
           <FeaturedImage bg={bg1}>

@@ -12,7 +12,6 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
-  CTABottom,
 } from '../../components/LayoutComponents';
 
 import ide from './images/ide.png';
@@ -37,10 +36,10 @@ export default () => (
       </Description>
       <div
         css={`
-        margin: auto;
-        display: flex;
-        justify-content: center;
-        margin: 2rem 0;
+          margin: auto;
+          display: flex;
+          justify-content: center;
+          margin: 2rem 0;
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
@@ -90,9 +89,8 @@ export default () => (
             margin-bottom: 56px;
           `}
         >
-         
           <Subtitle left as="h2">
-          <H6 center>Collaboration</H6>
+            <H6 center>Collaboration</H6>
             Know the context
           </Subtitle>
         </div>
@@ -143,7 +141,7 @@ export default () => (
                 text-align: center;
                 max-width: 600px;
                 color: #999999;
-                margin:0 auto 4rem auto;
+                margin: 0 auto 4rem auto;
               `}
             >
               With email or in-app notifications about new comments and invites,
@@ -165,7 +163,6 @@ export default () => (
             />
           </FeaturedImage>
         </div>
-  
       </div>
     </Wrapper>
   </Layout>

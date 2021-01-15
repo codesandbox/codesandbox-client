@@ -93,11 +93,10 @@ export const FeaturesTableHeader = styled.button`
   align-items: center;
   width: 100%;
   justify-content: space-between;
-
+  background: #151515;
+  border-bottom: 1px #242424;
   outline: none;
-
   color: ${props => props.theme.homepage.white};
-  padding-bottom: 1rem;
   height: 56px;
 
   ${props => props.theme.breakpoints.md} {
@@ -115,10 +114,6 @@ export const FeaturesTable = styled.ul`
 
   ${props => props.theme.breakpoints.md} {
     margin-left: 0 !important;
-  }
-
-  li:last-child {
-    padding-bottom: 80px;
   }
 
   ${props =>
@@ -139,7 +134,39 @@ export const FeaturesTable = styled.ul`
   li {
     display: grid;
     grid-template-columns: 1fr 14rem 14rem;
-    margin-bottom: 1rem;
+    align-items: center;
+    margin: 0;
+    position: relative;
+
+    > * {
+      padding: 13px 0;
+    }
+
+    :last-child {
+      padding-bottom: 80px;
+
+      :after {
+        height: 1px;
+        width: 100%;
+        content: '';
+        background: #151515;
+        height: 1px;
+        width: 100%;
+        content: '';
+        background: #151515;
+        display: block;
+        position: absolute;
+        bottom: 80px;
+      }
+    }
+
+    :not(:last-child) {
+      border-bottom: 1px solid #151515;
+    }
+
+    > *:not(:last-child) {
+      border-right: 1px solid #151515;
+    }
 
     ${props => props.theme.breakpoints.md} {
       grid-template-columns: 1fr 3.75rem 3.75rem;
@@ -150,6 +177,14 @@ export const FeaturesTable = styled.ul`
       display: block;
       text-align: center;
 
+      &:not(:first-child) {
+        text-align: center;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
       ${props => props.theme.breakpoints.md} {
         font-size: 1rem;
       }
@@ -215,5 +250,40 @@ export const TeamOrIndividualWrapper = styled.div`
 
   ${props => props.theme.breakpoints.lg} {
     display: none;
+  }
+`;
+
+export const Plan = styled(FeaturesTableHeader)`
+  margin-top: 0;
+  padding: 0;
+  display: grid;
+  padding: 0 20px;
+  border-bottom: 1px solid #151515;
+  cursor: initial;
+  padding-bottom: 1rem;
+  width: calc(100% + 40px);
+  margin-left: -20px;
+`;
+
+export const PlanName = styled.span`
+  text-align: center;
+  ${props =>
+    props.paid &&
+    `
+      font-weight: bold;
+      font-size: 19px;
+      line-height: 23px;
+      color: #0971f1;
+  `};
+`;
+
+export const TableWrapper = styled.section`
+  border: 1px solid #242424;
+  &:first-of-type {
+    border-radius: 4px 4px 0 0;
+  }
+
+  &:last-of-type {
+    border-radius: 0 0 4px 4px;
   }
 `;

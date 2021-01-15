@@ -10,6 +10,8 @@ import {
   CardTitle,
   Price,
   PriceSubText,
+  Plan,
+  PlanName,
   List,
   Button,
   FeaturesTableHeader,
@@ -17,8 +19,9 @@ import {
   FeatureTitle,
   CardContainer,
   TeamOrIndividualWrapper,
+  TableWrapper,
 } from './_elements';
-import { personal } from './features';
+import { personal } from './data';
 
 import { Title } from '../../components/LayoutComponents';
 
@@ -187,7 +190,7 @@ export default () => {
         Compare plans & features
       </Title>
       {personal.items.map(item => (
-        <>
+        <TableWrapper>
           <FeaturesTableHeader
             onClick={() => toggleTable(item.name)}
             css={`
@@ -203,34 +206,12 @@ export default () => {
             animate={{ height: `${open[item.name] ? 'auto' : 0}` }}
             open={open[item.name]}
           >
-            <FeaturesTableHeader
-              as="div"
-              css={`
-                margin-top: 0;
-                display: grid;
-              `}
-            >
+            <Plan as="div">
               <span />
-              <span
-                css={`
-                  text-align: center;
-                  padding-left: 20px;
-                `}
-              >
-                Personal
-              </span>
-              <span
-                css={`
-                  text-align: center;
-                  font-weight: bold;
-                  font-size: 19px;
-                  line-height: 23px;
-                  color: #0971f1;
-                `}
-              >
-                Personal Pro Workspace
-              </span>
-            </FeaturesTableHeader>
+              {personal.plans.map(plan => (
+                <PlanName paid={!plan.free}>{plan.name}</PlanName>
+              ))}
+            </Plan>
             {item.features.map(feature => (
               <li>
                 <div>
@@ -249,7 +230,7 @@ export default () => {
               </li>
             ))}
           </FeaturesTable>
-        </>
+        </TableWrapper>
       ))}
     </Layout>
   );
