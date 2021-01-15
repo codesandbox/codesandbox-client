@@ -283,6 +283,7 @@ export const ProductChooser = styled.div`
   border-bottom: 1px solid #343434;
   width: fit-content;
   margin: auto;
+  margin-bottom: 56px;
 
   button {
     font-weight: 900;

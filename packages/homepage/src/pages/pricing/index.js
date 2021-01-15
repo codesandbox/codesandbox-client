@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Layout from '../../components/layout';
 import PageContainer from '../../components/PageContainer';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import Switch from '../../components/Switch';
 import { P } from '../../components/Typography';
 import {
   Plan,
@@ -16,6 +17,7 @@ import {
 } from './_elements';
 import { personal } from './data/_personal';
 import Cards from './_cards';
+import { OpenIcon, Save } from './_icons';
 
 import { Title } from '../../components/LayoutComponents';
 
@@ -61,7 +63,27 @@ export default () => {
           For Businesses
         </button>
       </ProductChooser>
-
+      <div
+        css={`
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          font-weight: bold;
+          font-size: 12px;
+          margin-bottom: 75px;
+        `}
+      >
+        <span>Bill monthly</span>
+        <Switch
+          on={mode === 'annually'}
+          onClick={() =>
+            setMode(m => (m === 'annually' ? 'monthly' : 'annually'))
+          }
+        />
+        <span>Bill annually</span>
+        <Save />
+      </div>
       <Cards team={product === 'team'} mode={mode} />
       <Title
         as="h2"
@@ -126,20 +148,3 @@ export default () => {
     </Layout>
   );
 };
-
-const OpenIcon = ({ open: openTable }) => (
-  <motion.svg
-    initial={{ transform: 'rotate(90deg)' }}
-    animate={{ transform: `rotate(${openTable ? 0 : 90}deg)` }}
-    width="13"
-    height="10"
-    viewBox="0 0 13 10"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M7.03394 9.16661C6.7723 9.5296 6.19871 9.51329 5.96082 9.13608L0.99817 1.26742C0.746349 0.868135 1.0519 0.362543 1.54503 0.362543L6.47188 0.362544L12.1793 0.362544C12.6897 0.362544 12.9922 0.900233 12.7055 1.29794L7.03394 9.16661Z"
-      fill="white"
-    />
-  </motion.svg>
-);
