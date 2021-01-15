@@ -41,6 +41,9 @@ export const ProPage: React.FC = () => (
         <Route path={`/pro/create-workspace`}>
           <NewTeam redirectTo="/pro?v=2" />;
         </Route>
+        <Route path={'/pro/success'}>
+          <Success />
+        </Route>
         <Route path={`/pro`}>
           <UpgradeSteps />
         </Route>
@@ -634,7 +637,7 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
       email: user.email,
       frameTarget: 'checkout-container', // The className of your checkout <div>
       loadCallback: 'loadCallback',
-      success: '/dashboard/settings',
+      success: '/pro/success?v=2',
       displayModeTheme: 'dark',
       allowQuantity: true,
       disableLogout: true,
@@ -711,3 +714,35 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
     </div>
   );
 };
+
+const Success = () => (
+  <Stack
+    direction="vertical"
+    justify="center"
+    align="center"
+    css={css({
+      fontSize: 3,
+      width: 560,
+      marginTop: 120,
+      marginX: 'auto',
+      textAlign: 'center',
+    })}
+  >
+    <Icon name="simpleCheck" color="#5DCC67" size={64} />
+    <Text as="h1" size={8}>
+      You Payment is Successful
+    </Text>
+    <Stack direction="vertical" align="center" gap={10}>
+      <Text variant="muted" size={4}>
+        We have emailed you the details of your order.
+      </Text>
+      <Button
+        as="a"
+        href="/dashboard/settings"
+        style={{ fontSize: 13, height: 40 }}
+      >
+        Go to Dashboard
+      </Button>
+    </Stack>
+  </Stack>
+);
