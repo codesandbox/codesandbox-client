@@ -20,6 +20,7 @@ import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 import { downloadFromError, downloadPath } from './dynamic-download';
 import { getModulesFromMainThread } from '../../utils/fs';
+import { remapBabelHack } from './utils/remap-babel-hack';
 
 import { evaluateFromPath, resetCache } from './evaluate';
 import {
@@ -45,6 +46,10 @@ self.process = {
   argv: [],
   stderr: {},
 };
+// Trick Babel that we're in a commonjs env
+self.exports = {};
+self.module = {};
+
 // This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {
   if (path === 'resolve') {
@@ -83,6 +88,13 @@ self.require = path => {
   }
 
   const fs = BrowserFS.BFSRequire('fs');
+
+  // This code can be called while Babel is initializing.
+  // When babel is initializing we can't resolve plugins yet.
+  if (!('Babel' in self)) {
+    return undefined;
+  }
+
   return evaluateFromPath(
     fs,
     BrowserFS.BFSRequire,
@@ -464,6 +476,8 @@ try {
       ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.12.12.js`
       : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.12.12.min.js`
   );
+
+  remapBabelHack();
 } catch (e) {
   console.error(e);
 }
@@ -523,6 +537,7 @@ function loadCustomTranspiler(babelUrl, babelEnvUrl) {
     self.importScripts(babelEnvUrl);
     loadedEnvURL = babelEnvUrl;
   }
+  remapBabelHack();
 }
 
 registerCodeSandboxPlugins();
