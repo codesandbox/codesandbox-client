@@ -8,6 +8,7 @@ import * as envPreset from '@babel/preset-env';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
+import * as resolve from 'resolve';
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
 import patchedMacrosPlugin from './utils/macrosPatch';
@@ -45,6 +46,9 @@ self.process = {
   platform: 'linux',
   argv: [],
   stderr: {},
+  versions: {
+    node: 10,
+  },
 };
 // Trick Babel that we're in a commonjs env
 self.exports = {};
@@ -104,6 +108,8 @@ self.require = path => {
     Babel.availablePresets
   );
 };
+
+self.require.resolve = p => resolve.sync(p);
 
 async function initializeBrowserFS() {
   fsLoading = true;

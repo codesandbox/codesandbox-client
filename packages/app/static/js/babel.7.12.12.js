@@ -75227,7 +75227,36 @@
 
   function getRuntimePath (moduleName, dirname, absoluteRuntime) {
     if (absoluteRuntime === false) return moduleName;
-    throw new Error("The 'absoluteRuntime' option is not supported when using @babel/standalone.");
+    return resolveAbsoluteRuntime(moduleName, path__default['default'].resolve(dirname, absoluteRuntime === true ? "." : absoluteRuntime));
+  }
+
+  function resolveAbsoluteRuntime(moduleName, dirname) {
+    try {
+      return path__default['default'].dirname((parseFloat(process.versions.node) >= 8.9 ? require.resolve : function (r, _ref, M) {
+        var _ref$paths = _ref.paths,
+            b = _ref$paths[0];
+
+        if (M === void 0) {
+          M = require("module");
+        }
+
+        var f = M._findPath(r, M._nodeModulePaths(b).concat(b));
+
+        if (f) return f;
+        f = new Error("Cannot resolve module '" + r + "'");
+        f.code = "MODULE_NOT_FOUND";
+        throw f;
+      })(moduleName + "/package.json", {
+        paths: [dirname]
+      })).replace(/\\/g, "/");
+    } catch (err) {
+      if (err.code !== "MODULE_NOT_FOUND") throw err;
+      throw Object.assign(new Error("Failed to resolve \"" + moduleName + "\" relative to \"" + dirname + "\""), {
+        code: "BABEL_RUNTIME_NOT_FOUND",
+        runtime: moduleName,
+        dirname: dirname
+      });
+    }
   }
 
   function supportsStaticESM(caller) {
