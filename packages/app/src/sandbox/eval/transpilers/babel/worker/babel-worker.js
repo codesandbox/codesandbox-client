@@ -498,6 +498,18 @@ function registerCodeSandboxPlugins() {
     'babel-plugin-transform-prevent-infinite-loops',
     infiniteLoops
   );
+
+  // Between Babel 7.8 and Babel 7.12 the internal name of some plugins has changed. We need to
+  // remap the plugin to make existing sandboxes that rely on Babel v7 work.
+  if (
+    !Babel.availablePlugins['syntax-dynamic-import'] &&
+    Babel.availablePlugins['proposal-dynamic-import']
+  ) {
+    Babel.registerPlugin(
+      'syntax-dynamic-import',
+      Babel.availablePlugins['proposal-dynamic-import']
+    );
+  }
 }
 
 function loadCustomTranspiler(babelUrl, babelEnvUrl) {
