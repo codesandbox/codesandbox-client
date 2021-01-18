@@ -227,8 +227,8 @@ export const WorkspaceSettings = () => {
                   )}
                 </Stack>
                 <Text size={3}>
-                  {team.subscription.type === 'team_pro'
-                    ? 'Team Pro Pilot'
+                  {team?.subscription?.type === 'team_pro'
+                    ? 'Team Pro'
                     : 'Community Plan (Free)'}
                 </Text>
                 <Text size={3} variant="muted">
@@ -266,7 +266,7 @@ export const WorkspaceSettings = () => {
             </Button>
           )}
         </Card>
-        {team?.subscription.type === 'team_pro' ? (
+        {team?.subscription?.type === 'team_pro' ? (
           <div />
         ) : (
           <Card style={{ backgroundColor: 'white' }}>

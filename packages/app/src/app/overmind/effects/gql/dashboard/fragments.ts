@@ -176,8 +176,12 @@ export const currentTeamInfoFragment = gql`
       defaultAuthorization
     }
 
-    ${
-      '' // subscription {type, status, details}
+    subscription {
+      type
+      status
+      details {
+        recurringPrice
+      }
     }
   }
 `;

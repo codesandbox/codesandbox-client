@@ -216,7 +216,7 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
       ).authorization;
       return userAuthorization;
     },
-    [user.id]
+    [user]
   );
 
   const workspaces = [
