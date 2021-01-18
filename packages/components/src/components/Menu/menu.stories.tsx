@@ -144,3 +144,17 @@ export const MenuWithLinks = () => (
     </Menu>
   </>
 );
+
+export const DefaultOpen = () => (
+  <>
+    <MenuStyles />
+    <Menu defaultOpen>
+      <Menu.Button variant="primary">Open Menu</Menu.Button>
+      <Menu.List>
+        <Menu.Item>Menu Item</Menu.Item>
+        <Menu.Item>Menu Item</Menu.Item>
+        <Menu.Item>Menu Item</Menu.Item>
+      </Menu.List>
+    </Menu>
+  </>
+);
