@@ -19,7 +19,12 @@ import { useScript } from 'app/hooks';
 import { Navigation } from 'app/pages/common/Navigation';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { NewTeam } from 'app/pages/common/NewTeam';
-import { TeamMemberAuthorization } from 'app/graphql/types';
+import {
+  TeamMemberAuthorization,
+  WorkspaceSubscription,
+  WorkspaceSubscriptionTypes,
+  SubscriptionBillingInterval,
+} from 'app/graphql/types';
 
 export const ProPage: React.FC = () => (
   <ThemeProvider>
@@ -66,8 +71,8 @@ const prettyPermissions = {
 type Plan = {
   id: string;
   name: string;
-  type: 'personal' | 'team';
-  frequency: 'monthly' | 'annual';
+  type: WorkspaceSubscriptionTypes;
+  billingInterval: SubscriptionBillingInterval;
   unit: number;
   multiplier: number;
   currency: string;
@@ -78,37 +83,37 @@ const plans: { [key: string]: Plan } = {
   PERSONAL_PRO_MONTHLY: {
     id: '7365',
     name: 'Personal Pro Workspace',
-    type: 'personal',
+    type: WorkspaceSubscriptionTypes.Personal,
     unit: 12,
     multiplier: 1,
-    frequency: 'monthly',
+    billingInterval: SubscriptionBillingInterval.Monthly,
     currency: '$',
   },
   PERSONAL_PRO_ANNUAL: {
     id: '7399',
     name: 'Personal Pro Workspace',
-    type: 'personal',
+    type: WorkspaceSubscriptionTypes.Personal,
     unit: 9,
     multiplier: 12,
-    frequency: 'annual',
+    billingInterval: SubscriptionBillingInterval.Yearly,
     currency: '$',
   },
   TEAM_PRO_MONTHLY: {
     id: '7407',
     name: 'Team Pro Workspace',
-    type: 'team',
+    type: WorkspaceSubscriptionTypes.Team,
     unit: 30,
     multiplier: 1,
-    frequency: 'monthly',
+    billingInterval: SubscriptionBillingInterval.Monthly,
     currency: '$',
   },
   TEAM_PRO_ANNUAL: {
     id: '7399',
     name: 'Team Pro Workspace',
-    type: 'team',
+    type: WorkspaceSubscriptionTypes.Team,
     unit: 24,
     multiplier: 12,
-    frequency: 'annual',
+    billingInterval: SubscriptionBillingInterval.Yearly,
     currency: '$',
   },
 };
@@ -165,7 +170,7 @@ const UpgradeSteps = () => {
 
 const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
   const {
-    state: { personalWorkspaceId, user, activeTeam, dashboard },
+    state: { personalWorkspaceId, user, activeTeam, activeTeamInfo, dashboard },
     actions: {
       setActiveTeam,
       modalOpened,
@@ -191,23 +196,26 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
   }, [workspaceId, activeTeam, history, location, setActiveTeam, type]);
 
   const isPersonalWorkspace = personalWorkspaceId === activeTeam;
-  const [billingFrequency, setBillingFrequency] = React.useState<
-    Plan['frequency']
-  >('monthly');
+  const [billingInterval, setBillingInterval] = React.useState<
+    Plan['billingInterval']
+  >(SubscriptionBillingInterval.Monthly);
 
   React.useEffect(() => {
     let newPlan: typeof plans[keyof typeof plans];
     if (isPersonalWorkspace) {
-      if (billingFrequency === 'annual') newPlan = plans.PERSONAL_PRO_ANNUAL;
-      else newPlan = plans.PERSONAL_PRO_MONTHLY;
-    } else if (billingFrequency === 'annual') {
+      if (billingInterval === SubscriptionBillingInterval.Yearly) {
+        newPlan = plans.PERSONAL_PRO_ANNUAL;
+      } else {
+        newPlan = plans.PERSONAL_PRO_MONTHLY;
+      }
+    } else if (billingInterval === SubscriptionBillingInterval.Yearly) {
       newPlan = plans.TEAM_PRO_ANNUAL;
     } else {
       newPlan = plans.TEAM_PRO_MONTHLY;
     }
 
     setPlan(newPlan);
-  }, [isPersonalWorkspace, billingFrequency, setPlan]);
+  }, [isPersonalWorkspace, billingInterval, setPlan]);
 
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
@@ -276,6 +284,7 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
   setSeats(numberOfEditors);
 
   const isLegacyPersonalPro = isPersonalWorkspace && user.subscription;
+  const currentSubscription = activeTeamInfo.subscription;
 
   // if there is mismatch of intent - team/personal
   // or you don't have access to upgrade
@@ -290,8 +299,8 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
       <Text
         size={7}
         as="h1"
-        weight="bold"
         block
+        weight="bold"
         align="center"
         marginBottom={4}
       >
@@ -518,26 +527,30 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
               <>
                 <PlanCard
                   plan={plans.PERSONAL_PRO_MONTHLY}
-                  billingFrequency={billingFrequency}
-                  setBillingFrequency={setBillingFrequency}
+                  billingInterval={billingInterval}
+                  setBillingInterval={setBillingInterval}
+                  currentSubscription={currentSubscription}
                 />
                 <PlanCard
                   plan={plans.PERSONAL_PRO_ANNUAL}
-                  billingFrequency={billingFrequency}
-                  setBillingFrequency={setBillingFrequency}
+                  billingInterval={billingInterval}
+                  setBillingInterval={setBillingInterval}
+                  currentSubscription={currentSubscription}
                 />
               </>
             ) : (
               <>
                 <PlanCard
                   plan={plans.TEAM_PRO_MONTHLY}
-                  billingFrequency={billingFrequency}
-                  setBillingFrequency={setBillingFrequency}
+                  billingInterval={billingInterval}
+                  setBillingInterval={setBillingInterval}
+                  currentSubscription={currentSubscription}
                 />
                 <PlanCard
                   plan={plans.TEAM_PRO_ANNUAL}
-                  billingFrequency={billingFrequency}
-                  setBillingFrequency={setBillingFrequency}
+                  billingInterval={billingInterval}
+                  setBillingInterval={setBillingInterval}
+                  currentSubscription={currentSubscription}
                 />
               </>
             )}
@@ -574,7 +587,9 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
               <Text weight="bold" size={4}>
                 {plan.currency}
                 {numberOfEditors * plan.unit * plan.multiplier} /{' '}
-                {plan.frequency === 'monthly' ? 'month' : 'year'}
+                {plan.billingInterval === SubscriptionBillingInterval.Monthly
+                  ? 'month'
+                  : 'year'}
               </Text>
             </Stack>
           </Stack>
@@ -600,10 +615,14 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
 
 const PlanCard: React.FC<{
   plan: Plan;
-  billingFrequency: Plan['frequency'];
-  setBillingFrequency: (frequency: Plan['frequency']) => void;
-}> = ({ plan, billingFrequency, setBillingFrequency }) => {
-  const isSelected = plan.frequency === billingFrequency;
+  billingInterval: Plan['billingInterval'];
+  setBillingInterval: (billingInterval: Plan['billingInterval']) => void;
+  currentSubscription: WorkspaceSubscription;
+}> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
+  const isSelected = plan.billingInterval === billingInterval;
+  const isCurrent =
+    plan.type === currentSubscription?.type &&
+    plan.billingInterval === currentSubscription?.details.billingInterval;
 
   return (
     <Stack
@@ -622,13 +641,20 @@ const PlanCard: React.FC<{
     >
       <Stack justify="space-between" align="center">
         <Stack direction="vertical" gap={1}>
-          <Text size={4} weight="bold" css={{ textTransform: 'capitalize' }}>
-            {plan.frequency}
+          <Text size={4} weight="bold">
+            {plan.billingInterval === SubscriptionBillingInterval.Yearly
+              ? 'Annual'
+              : 'Monthly'}
+            {isCurrent ? '(Current)' : ''}
           </Text>
           <Text size={3}>{plan.name}</Text>
           <Text size={3} variant="muted">
             {plan.currency}
-            {plan.unit} {plan.type === 'team' ? 'per editor' : null} per month
+            {plan.unit}{' '}
+            {plan.type === WorkspaceSubscriptionTypes.Team
+              ? 'per editor'
+              : null}{' '}
+            per month
           </Text>
         </Stack>
         <div>
@@ -636,7 +662,7 @@ const PlanCard: React.FC<{
             type="radio"
             hidden
             checked={isSelected}
-            onChange={() => setBillingFrequency(plan.frequency)}
+            onChange={() => setBillingInterval(plan.billingInterval)}
           />
           <Stack
             justify="center"

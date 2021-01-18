@@ -938,11 +938,22 @@ export type WorkspaceSandboxSettings = {
   preventSandboxLeaving: Scalars['Boolean'];
 };
 
+export enum WorkspaceSubscriptionTypes {
+  Team = 'TEAM_PRO',
+  Personal = 'PERSONAL_PRO',
+}
+
+export enum SubscriptionBillingInterval {
+  Monthly = 'MONTHLY',
+  Yearly = 'YEARLY',
+}
+
 export type WorkspaceSubscription = {
-  type: 'team_pro' | 'personal_pro';
-  status: 'active' | 'paused' | 'cancelled';
+  type: WorkspaceSubscriptionTypes;
+  status: 'ACTIVE' | 'PAUSED' | 'CANCELLED';
   details: {
     recurring_price: Scalars['Int'];
+    billingInterval: SubscriptionBillingInterval;
   };
 };
 
