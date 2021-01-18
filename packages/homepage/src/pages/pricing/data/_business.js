@@ -32,19 +32,34 @@ export const business = {
         {
           name: 'Static File Hosting',
           desc: 'All static files served via CDN',
-          available: ['20Mb total, 7Mb upload', '500Mb total, 30Mb upload'],
+          available: ['10Gb, 30Mb upload', '20Gb, 30Mb upload', 'Unlimited'],
         },
         {
           name: 'Unlimited Private Sandboxes',
           desc:
             "Set a sandbox as private or unlisted so others can't see the code",
-          available: [false, true],
+          available: true,
         },
         {
           name: 'Private GitHub Repos',
           desc:
             'Import and sync repos which are private on GitHub to CodeSandbox',
-          available: [false, true],
+          available: true,
+        },
+        {
+          name: 'Always-on Containers',
+          desc: 'Always-on Containers',
+          available: ['3/user', '5/user', 'Unlimited'],
+        },
+        {
+          name: 'Postman',
+          desc: 'Postman',
+          available: true,
+        },
+        {
+          name: 'Private NPM',
+          desc: 'Private NPM',
+          available: true,
         },
       ],
     },
@@ -69,6 +84,16 @@ export const business = {
         {
           name: 'Public Profile',
           desc: 'A personal portfolio page highlighting your best sandboxes.',
+          available: true,
+        },
+        {
+          name: 'Folder Subscriptions',
+          desc: 'Folder Subscriptions',
+          available: true,
+        },
+        {
+          name: 'Slack integration',
+          desc: 'Slack integration',
           available: true,
         },
       ],
@@ -111,12 +136,32 @@ export const business = {
           name: 'Sandbox-level Permissions',
           desc:
             'Organize sandboxes and templates. Search, sort, or modify sandboxes at once.',
-          available: [false, true],
+          available: true,
         },
         {
           name: 'Analytics',
           desc: 'Analytics',
-          available: ['Overview', 'Overview'],
+          available: ['Sandbox', 'Sandbox and Usage', 'Sandbox and Usage'],
+        },
+        {
+          name: 'Workspace-level Permissions',
+          desc: 'Workspace-level Permissions',
+          available: true,
+        },
+        {
+          name: 'SSO',
+          desc: 'SSO',
+          available: [false, true, true],
+        },
+        {
+          name: 'Multiple Workspaces',
+          desc: 'Multiple Workspaces',
+          available: [false, true, true],
+        },
+        {
+          name: 'Priority Customer Support',
+          desc: 'Priority Customer Support',
+          available: [false, true, true],
         },
       ],
     },

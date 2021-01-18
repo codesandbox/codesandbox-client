@@ -44,6 +44,21 @@ export const personal = {
             'Import and sync repos which are private on GitHub to CodeSandbox',
           available: [false, true],
         },
+        {
+          name: 'Always-on Containers',
+          desc: 'Always-on Containers',
+          available: ['✓', '1'],
+        },
+        {
+          name: 'Postman',
+          desc: 'Postman',
+          available: [false, true],
+        },
+        {
+          name: 'Private NPM',
+          desc: 'Private NPM',
+          available: [false, false],
+        },
       ],
     },
     {
@@ -68,6 +83,11 @@ export const personal = {
           name: 'Public Profile',
           desc: 'A personal portfolio page highlighting your best sandboxes.',
           available: true,
+        },
+        {
+          name: 'Folder Subscriptions',
+          desc: 'Folder Subscriptions',
+          available: [false, true],
         },
       ],
     },
@@ -94,6 +114,11 @@ export const personal = {
           desc: 'A personal portfolio page highlighting your best sandboxes.',
           available: true,
         },
+        {
+          name: 'Slack integration',
+          desc: 'Slack integration',
+          available: true,
+        },
       ],
     },
     {
@@ -111,10 +136,31 @@ export const personal = {
             'Organize sandboxes and templates. Search, sort, or modify sandboxes at once.',
           available: [false, true],
         },
+
         {
           name: 'Analytics',
           desc: 'Analytics',
           available: ['Overview', 'Overview'],
+        },
+        {
+          name: 'Workspace-level Permissions',
+          desc: 'Workspace-level Permissions',
+          available: false,
+        },
+        {
+          name: 'SSO',
+          desc: 'SSO',
+          available: false,
+        },
+        {
+          name: 'Multiple Workspaces',
+          desc: 'Multiple Workspaces',
+          available: false,
+        },
+        {
+          name: 'Priority Customer Support',
+          desc: 'Priority Customer Support',
+          available: false,
         },
       ],
     },
