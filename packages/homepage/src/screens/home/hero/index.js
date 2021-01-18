@@ -27,14 +27,14 @@ export default () => (
         zIndex: 20,
       }}
     >
-      <Title>Quickly prototype ideas&nbsp;with&nbsp;code</Title>
+      <Title>Where teams build faster, together</Title>
       <SubTitle
         css={`
           margin-bottom: 2rem;
         `}
       >
-        Free, instant, collaborative sandboxes for
-        rapid&nbsp;web&nbsp;development.
+        Create, share, and get feedback with 
+        collaborative sandboxes for rapid web development.
       </SubTitle>
 
       <SandboxButtons>
@@ -89,7 +89,7 @@ export default () => (
           }}
           href="/s"
         >
-          Create a Sandbox, it’s free
+          Create Sandbox
         </Button>
       </motion.div>
     </motion.div>

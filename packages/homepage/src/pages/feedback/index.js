@@ -79,8 +79,8 @@ export default () => (
 
           <div>
             <h3>Role-based permissions</h3>
-            So you can control who can view and add comments, or edit a sandbox.
-            As well as administrate your workspace.
+            So you can control who can view and add comments, edit a sandbox, 
+            or administrate your workspace.
           </div>
 
           <div>
@@ -117,7 +117,7 @@ export default () => (
             </ContentBlockImage>
             <h3>Preview comments</h3>
             Add comments about visuals right on the preview. We capture browser
-            and resolution details too, for quick repros.
+            and resolution details too for quick repros.
           </div>
 
           <div>

@@ -63,7 +63,7 @@ export default () => (
         <ContentBlock>
           <div>
             <h3>Setup-free</h3>
-            We've templates optimized for frameworks, including React, Vue,
+            We've templates optimized for frameworks including React, Vue,
             Angular, and others, to kickstart new projects.
           </div>
 
@@ -76,7 +76,7 @@ export default () => (
           <div>
             <h3>Shareable</h3>
             Sandboxes are shareable by default. Share a secure URL, or invite
-            folks to join and collaborate on code, or provide feedback.
+            folks to join and collaborate on code or provide feedback.
           </div>
         </ContentBlock>
 
@@ -116,7 +116,7 @@ export default () => (
               <img src={privateImg} alt="" />
             </ContentBlockImage>
             <h3>Private sandboxes</h3>
-            Make sandboxes public, private, or unlisted. Per sandbox, or across
+            Make sandboxes public, private, or unlisted. Per sandbox or across
             a whole workspace.
           </div>
         </ContentBlock>
@@ -150,7 +150,7 @@ export default () => (
 
             <div>
               <h3>Instant Preview</h3>
-              See changes as you make them, with no waiting on builds or
+              See changes as you make them with no waiting on builds or
               deploys.
             </div>
 

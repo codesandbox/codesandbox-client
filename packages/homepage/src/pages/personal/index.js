@@ -156,16 +156,16 @@ export default () => (
 
           <div>
             <h3>Provide reproducible bug reports.</h3>
-            With friends, colleagues, or the world.
+            When creating GitHub issues.
           </div>
 
           <div>
             <h3>Ask and answer questions with code.</h3>
-            When creating GitHub issues.
+            On Stack Overflow or Twitter.
           </div>
           <div>
-            <h3>Ask and answer questions with code.</h3>
-            On Stack Overflow or Twitter.
+            <h3>Embed code examples.</h3>
+            In blog posts on Medium, DEV, or elsewhere.
           </div>
         </ContentBlock>
         <Quote>
@@ -180,7 +180,7 @@ export default () => (
         <div >
  
           <Subtitle >
-          <H6 center>From $9 per month</H6>
+          <H6 center>From $7 per month</H6>
             Go Pro
           </Subtitle>
         </div>
