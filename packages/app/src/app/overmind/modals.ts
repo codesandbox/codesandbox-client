@@ -48,7 +48,6 @@ export const alertModal: {
   result: false,
 };
 
-
 export const extensionInstalledModal = {
-  result: true
-}
+  result: true,
+};

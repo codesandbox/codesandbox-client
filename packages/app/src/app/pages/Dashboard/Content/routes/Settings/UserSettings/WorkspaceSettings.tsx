@@ -2,10 +2,14 @@ import {
   Avatar,
   Button,
   Grid,
-  Link,
   Stack,
   Text,
+  Tooltip,
 } from '@codesandbox/components';
+import {
+  github as GitHubIcon,
+  GoogleIcon,
+} from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import React, { useEffect } from 'react';
@@ -41,7 +45,41 @@ export const WorkspaceSettings = () => {
       <Card>
         <Stack direction="vertical" gap={2}>
           <Stack gap={4}>
-            <Avatar user={user} css={css({ size: 14 })} />
+            <div style={{ position: 'relative', height: 56 }}>
+              <Tooltip
+                label={`
+              Account managed by ${
+                user.provider === 'google' ? 'Google' : 'GitHub'
+              }
+              `}
+              >
+                <Stack
+                  align="center"
+                  justify="center"
+                  css={css({
+                    position: 'absolute',
+                    bottom: 0,
+                    transform: 'translateY(50%) translateX(50%)',
+                    right: 0,
+                    zIndex: 10,
+                    backgroundColor: 'sideBar.background',
+                    borderRadius: '50%',
+                    width: 18,
+                    height: 18,
+                    border: '1px solid',
+                    borderColor: 'sideBar.border',
+                  })}
+                >
+                  {user.provider === 'google' ? (
+                    <GoogleIcon width="12" height="12" />
+                  ) : (
+                    <GitHubIcon width="12" height="12" />
+                  )}
+                </Stack>
+              </Tooltip>
+              <Avatar user={user} css={css({ size: 14 })} />
+            </div>
+
             <Stack
               direction="vertical"
               gap={2}
@@ -56,19 +94,21 @@ export const WorkspaceSettings = () => {
               <Text size={3} maxWidth="100%">
                 {user.email}
               </Text>
-              {user.provider === 'google' ? (
-                <Text size={3} maxWidth="100%">
-                  Account managed by Google
-                </Text>
-              ) : (
-                <Link
-                  size={3}
-                  href={`https://github.com/${user.username}`}
-                  target="_blank"
-                >
-                  Account managed by GitHub
-                </Link>
-              )}
+              <Button
+                variant="link"
+                css={css({
+                  width: 'fit-content',
+                  height: 'auto',
+                  fontSize: 3,
+                  color: 'button.background',
+                  padding: 0,
+                })}
+                onClick={() => {
+                  actions.dashboard.requestAccountClosing();
+                }}
+              >
+                Request Account Deletion
+              </Button>
             </Stack>
           </Stack>
         </Stack>

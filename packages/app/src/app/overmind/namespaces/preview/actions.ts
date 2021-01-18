@@ -168,13 +168,17 @@ export const closeExtensionBanner: Action = ({ state }) => {
   state.preview.showExtensionBanner = false;
 };
 
-export const installExtension: AsyncAction = async ({ actions, state, effects }) => {
+export const installExtension: AsyncAction = async ({
+  actions,
+  state,
+  effects,
+}) => {
   await effects.browserExtension.install();
 
-  const doReload = await actions.modals.extensionInstalledModal.open()
+  const doReload = await actions.modals.extensionInstalledModal.open();
 
   if (doReload) {
-    effects.browser.reload()
+    effects.browser.reload();
   }
 
   state.preview.showExtensionBanner = false;

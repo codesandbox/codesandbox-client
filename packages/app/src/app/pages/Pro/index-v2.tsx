@@ -14,6 +14,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { useScript } from 'app/hooks';
 import { Navigation } from 'app/pages/common/Navigation';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { NewTeam } from 'app/pages/common/NewTeam';
@@ -118,9 +119,11 @@ const UpgradeSteps = () => {
   const [seats, setSeats] = React.useState(1);
   const [checkoutReady, setCheckoutReady] = React.useState(false);
 
+  const [scriptLoaded] = useScript('https://cdn.paddle.com/paddle/paddle.js');
+
   React.useEffect(() => {
-    if (checkoutReady) setStep(3);
-  }, [checkoutReady]);
+    if (scriptLoaded && checkoutReady) setStep(3);
+  }, [scriptLoaded, checkoutReady]);
 
   return (
     <Stack
@@ -200,18 +203,21 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
     }
 
     setPlan(newPlan);
-  }, [isPersonalWorkspace, billingFrequency]);
+  }, [isPersonalWorkspace, billingFrequency, setPlan]);
 
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
   )!;
 
-  const getUserAuthorization = workspace => {
-    const userAuthorization = workspace.userAuthorizations.find(
-      authorization => authorization.userId === user.id
-    ).authorization;
-    return userAuthorization;
-  };
+  const getUserAuthorization = React.useCallback(
+    workspace => {
+      const userAuthorization = workspace.userAuthorizations.find(
+        authorization => authorization.userId === user.id
+      ).authorization;
+      return userAuthorization;
+    },
+    [user.id]
+  );
 
   const workspaces = [
     personalWorkspace,
@@ -245,11 +251,17 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
         if (workspaceWithAdminRights) {
           setActiveTeam({ id: workspaceWithAdminRights.id });
         } else {
-          setActiveTeam({ id: personalWorkspace.id });
+          setActiveTeam({ id: personalWorkspaceId });
         }
       }
     },
-    [activeUserAuthorization]
+    [
+      activeUserAuthorization,
+      dashboard.teams,
+      setActiveTeam,
+      personalWorkspaceId,
+      getUserAuthorization,
+    ]
   );
 
   if (!activeTeam || !dashboard.teams.length || !plan) return null;
@@ -680,7 +692,7 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
         transparent; border: none;
       `,
     });
-  }, [setCheckoutReady]);
+  }, [setCheckoutReady, seats, user.email, plan.id]);
 
   return (
     <div>

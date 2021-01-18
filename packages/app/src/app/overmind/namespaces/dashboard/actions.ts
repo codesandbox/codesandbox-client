@@ -1615,3 +1615,18 @@ export const setDefaultTeamMemberAuthorization: AsyncAction<{
     );
   }
 };
+
+export const requestAccountClosing: Action = ({ state }) => {
+  state.currentModal = 'accountClosing';
+};
+
+export const deleteAccount: AsyncAction = async ({ state, effects }) => {
+  try {
+    await effects.gql.mutations.deleteAccount({});
+    state.currentModal = 'deleteConfirmation';
+  } catch {
+    effects.notificationToast.error(
+      'There was a problem requesting your account deletion. Please email us at hello@codesandbox.io'
+    );
+  }
+};
