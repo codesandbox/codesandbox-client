@@ -41,7 +41,7 @@ export const ReactCode = () => (
     dependencies={reactTemplate.dependencies}
   >
     <SandpackLayout>
-      <CodeEditor />
+      <CodeEditor showLineNumbers />
     </SandpackLayout>
   </SandpackProvider>
 );

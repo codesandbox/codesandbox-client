@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { styled } from '../../stitches.config';
 import { useSandpack } from '../../utils/sandpack-context';
-import { getFileName } from './utils';
+import { getFileName } from '../../utils/string-utils';
 
 export interface FileTabsProps {
   customStyle?: React.CSSProperties;
@@ -32,9 +32,8 @@ const TabButton = styled('button', {
   fontSize: 'inherit',
   padding: '0 $2',
   color: '$defaultText',
-  outline: 'none',
   height: 40, // safari fix
-
+  outline: 'none',
   border: 0,
   borderBottom: '1px solid transparent',
   transition: 'border 0.15s ease-out',
@@ -44,12 +43,20 @@ const TabButton = styled('button', {
     borderBottom: '1px solid $accent',
   },
 
-  '&:hover': {
+  ':hover': {
     color: '$highlightText',
   },
 
-  '&:focus-visible': {
-    outline: 'auto',
+  ':focus': {
+    backgroundColor: '$inactive',
+  },
+
+  ':focus:not(:focus-visible)': {
+    backgroundColor: 'transparent',
+  },
+
+  ':focus-visible': {
+    backgroundColor: '$inactive',
   },
 });
 
@@ -60,11 +67,13 @@ export const FileTabs: React.FC<FileTabsProps> = props => {
 
   return (
     <Container style={props.customStyle}>
-      <ScrollableContainer>
+      <ScrollableContainer role="tablist" aria-label="Select active file">
         {openPaths.map(filePath => (
           <TabButton
             type="button"
+            role="tab"
             key={filePath}
+            aria-selected={filePath === activePath}
             data-active={filePath === activePath}
             onClick={() => changeActiveFile(filePath)}
           >

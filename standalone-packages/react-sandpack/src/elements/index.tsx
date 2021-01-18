@@ -8,8 +8,8 @@ export const Button = styled('button', {
   display: 'flex',
   alignItems: 'center',
   color: '$defaultText',
-  backgroundColor: '$mainBackground',
-  outline: 'none',
+  backgroundColor: 'transparent',
+  outline: '2px solid $accent',
   fontSize: '$default',
   fontFamily: '$body',
   transition: 'all 0.15s ease-in-out',
@@ -19,7 +19,10 @@ export const Button = styled('button', {
     color: '$highlightText',
   },
   ':disabled': { color: '$inactive' },
-  ':focus-visible': { outline: 'auto' },
+
+  ':focus:not(:focus-visible)': { outline: 'none' },
+
+  ':focus-visible': { outline: '2px solid $accent' },
 });
 
 export const ErrorMessage = styled('pre', {
@@ -31,6 +34,7 @@ export const ErrorMessage = styled('pre', {
   overflow: 'auto',
   height: '100%',
   padding: '$4',
+  whiteSpace: 'pre-wrap',
 
   fontFamily: '$mono',
   backgroundColor: '$error',

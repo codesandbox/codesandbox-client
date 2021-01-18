@@ -15,8 +15,6 @@ export interface PrismHighlightProps {
 const StyledBlock = styled('div', {
   fontSize: '$default',
   backgroundColor: '$mainBackground',
-  border: '1px solid $inactive',
-  margin: -1,
   padding: '$4 $2',
   lineHeight: '1.4',
   height: '100%',

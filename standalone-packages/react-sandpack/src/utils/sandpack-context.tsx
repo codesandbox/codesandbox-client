@@ -109,6 +109,10 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
     this.setState({ files });
 
+    if (this.state.sandpackStatus !== 'running') {
+      return;
+    }
+
     if (recompileMode === 'immediate') {
       if (!this.manager) {
         return;
@@ -184,11 +188,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     this.manager = new Manager(
       this.iframeRef.current,
       {
-        files: generatePackageJSON(
-          this.props.files,
-          this.props.dependencies,
-          this.props.entry
-        ),
+        files: this.state.files,
         template: this.props.environment,
         showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
       },
@@ -273,7 +273,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
         <div id="loading-frame">
           <iframe
             ref={this.iframeRef}
-            title="sandpack-sandbox"
+            title="Sandpack Preview"
             style={{
               width: 0,
               height: 0,

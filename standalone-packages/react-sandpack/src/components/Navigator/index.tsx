@@ -6,7 +6,7 @@ import { BackwardIcon, ForwardIcon, RefreshIcon } from '../../icons';
 import { splitUrl } from './utils';
 import { Button } from '../../elements';
 
-const NavigatorContainer = styled('div', {
+const NavigatorContainer = styled('nav', {
   display: 'flex',
   alignItems: 'center',
   backgroundColor: '$mainBackground',
@@ -116,17 +116,26 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
   return (
     <NavigatorContainer style={customStyle}>
       <NavigatorButtons>
-        <NavigatorButton onClick={handleBack} disabled={!backEnabled}>
+        <NavigatorButton
+          onClick={handleBack}
+          disabled={!backEnabled}
+          aria-label="Go back one page"
+        >
           <BackwardIcon />
         </NavigatorButton>
-        <NavigatorButton onClick={handleForward} disabled={!forwardEnabled}>
+        <NavigatorButton
+          onClick={handleForward}
+          disabled={!forwardEnabled}
+          aria-label="Go forward one page"
+        >
           <ForwardIcon />
         </NavigatorButton>
-        <NavigatorButton onClick={handleRefresh}>
+        <NavigatorButton onClick={handleRefresh} aria-label="Refresh page">
           <RefreshIcon />
         </NavigatorButton>
       </NavigatorButtons>
       <NavigatorInput
+        aria-label="Current Sandpack URL"
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         value={relativeUrl}
