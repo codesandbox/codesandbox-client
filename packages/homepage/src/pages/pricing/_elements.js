@@ -108,6 +108,12 @@ export const FeaturesTableHeader = styled.button`
   color: ${props => props.theme.homepage.white};
   height: 56px;
 
+  ${props =>
+    props.team &&
+    css`
+      grid-template-columns: 1fr 12rem 12rem 12rem;
+    `}
+
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr 5.625rem 3.75rem;
     font-size: 1rem;
@@ -143,6 +149,12 @@ export const FeaturesTable = styled.ul`
   li {
     display: grid;
     grid-template-columns: 1fr 14rem 14rem;
+
+    ${props =>
+      props.team &&
+      css`
+        grid-template-columns: 1fr 12rem 12rem 12rem;
+      `}
     align-items: center;
     margin: 0;
     position: relative;
@@ -262,6 +274,12 @@ export const Plan = styled(FeaturesTableHeader)`
   padding-bottom: 1rem;
   width: calc(100% + 40px);
   margin-left: -20px;
+
+  ${props =>
+    props.team &&
+    css`
+      grid-template-columns: 1fr 12rem 12rem 12rem;
+    `}
 `;
 
 export const PlanName = styled.span`

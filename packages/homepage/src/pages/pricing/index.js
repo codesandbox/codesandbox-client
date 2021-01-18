@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
 
 import { motion } from 'framer-motion';
@@ -18,6 +19,7 @@ import {
   ProductChooser,
 } from './_elements';
 import { personal } from './data/_personal';
+import { business } from './data/_business';
 import Cards from './_cards';
 import { OpenIcon, Save } from './_icons';
 
@@ -32,6 +34,8 @@ export default () => {
   const toggleTable = name => {
     setOpen(o => ({ ...o, [name]: !o[name] }));
   };
+
+  const array = product === 'personal' ? personal : business;
 
   return (
     <Layout>
@@ -94,9 +98,10 @@ export default () => {
           margin-bottom: 128px;
         `}
       >
-        {personal.items.map(item => (
+        {array.items.map(item => (
           <TableWrapper>
             <FeaturesTableHeader
+              team={product === 'team'}
               onClick={() => toggleTable(item.name)}
               css={`
                 margin-top: 0;
@@ -106,15 +111,18 @@ export default () => {
               <OpenIcon open={open[item.name]} />
             </FeaturesTableHeader>
             <FeaturesTable
+              team={product === 'team'}
               as={motion.div}
               initial={{ height: 0 }}
               animate={{ height: `${open[item.name] ? 'auto' : 0}` }}
               open={open[item.name]}
             >
-              <Plan as="div">
+              <Plan as="div" team={product === 'team'}>
                 <span />
-                {personal.plans.map(plan => (
-                  <PlanName paid={!plan.free}>{plan.name}</PlanName>
+                {array.plans.map(plan => (
+                  <PlanName style={{ color: plan.color }} paid={!plan.free}>
+                    {plan.name}
+                  </PlanName>
                 ))}
               </Plan>
               {item.features.map(feature => {
@@ -136,14 +144,8 @@ export default () => {
                             <P muted small>
                               {fea.desc}
                             </P>
+                            <Checks feature={fea} product={product} />
                           </div>
-                          {fea.available.map(available => {
-                            if (typeof available === 'string') {
-                              return <span className="text">{available}</span>;
-                            }
-
-                            return <span>{available ? '✓' : ''}</span>;
-                          })}
                         </li>
                       ))}
                     </>
@@ -157,13 +159,7 @@ export default () => {
                         {feature.desc}
                       </P>
                     </div>
-                    {feature.available.map(available => {
-                      if (typeof available === 'string') {
-                        return <span className="text">{available}</span>;
-                      }
-
-                      return <span>{available ? '✓' : ''}</span>;
-                    })}
+                    <Checks feature={feature} product={product} />
                   </li>
                 );
               })}
@@ -173,4 +169,29 @@ export default () => {
       </div>
     </Layout>
   );
+};
+
+const Checks = ({ feature, product }) => {
+  if (typeof feature.available === 'boolean') {
+    return product === 'team' ? (
+      <>
+        <span>✓</span>
+        <span>✓</span>
+        <span>✓</span>
+      </>
+    ) : (
+      <>
+        <span>✓</span>
+        <span>✓</span>
+      </>
+    );
+  }
+
+  return feature.available.map(available => {
+    if (typeof available === 'string') {
+      return <span className="text">{available}</span>;
+    }
+
+    return <span>{available ? '✓' : ''}</span>;
+  });
 };
