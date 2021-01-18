@@ -137,7 +137,7 @@ export default () => (
               src={deps}
               alt=""
               css={`
-                width: 962px;
+                width: 550px;
               `}
             />
           </FeaturedImage>

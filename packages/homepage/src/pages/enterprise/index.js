@@ -22,7 +22,7 @@ import settings from './images/settings.svg';
 import bg from './images/bg.png';
 
 import toggle from './images/toggle.svg';
-import patterns from './images/patterns.svg';
+import patterns from './images/patterns.svg?v1';
 import people from './images/people.svg';
 import brian from './images/brian.png';
 import briefcase from './images/briefcase.svg';

@@ -143,7 +143,7 @@ export default () => (
             src={comments}
             alt="comment on code"
             css={`
-              width: 1114px;
+              width: 900px;
             `}
           />
         </FeaturedImage>

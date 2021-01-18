@@ -20,7 +20,9 @@ import bg from './images/bg.png';
 import bg1 from './images/bg1.png';
 import bg2 from './images/bg2.png';
 import bg3 from './images/bg3.png';
+import bg4 from './images/bg4.png';
 import templates from './images/templates.png';
+import makeityours from './images/makeityours.png';
 import server from './images/server.png';
 import tests from './images/tests.png';
 
@@ -246,13 +248,13 @@ export default () => (
           <FeaturedImage
             css={`
               height: 468px;
-              justify-content: flex-start;
+              justify-content: center;
             `}
-            bg=""
+            bg={bg4}
           >
             <img
-              src=""
-              alt=""
+              src={makeityours}
+              alt="make it yours"
               css={`
                 width: 826px;
               `}
