@@ -105,15 +105,15 @@ export default () => (
             </ContentBlockImage>
             <h3> Socialize your design system.</h3>
             Go beyond static docs and share real, 
-            working demos and live code examples.
+            working demos, and live code examples.
           </div>
 
           <div>
             <ContentBlockImage bg="151515">
               <img src={patterns} alt="" />
             </ContentBlockImage>
-            <h3>Share patterns not snippets.</h3>
-            Combine components in sandboxes that exemplify best practice.
+            <h3>Share patterns, not snippets.</h3>
+            Combine components in sandboxes that exemplify best practices.
           </div>
 
           <div>
