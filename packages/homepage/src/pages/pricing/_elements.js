@@ -117,7 +117,6 @@ export const FeaturesTableHeader = styled.button`
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr 5.625rem 3.75rem;
     font-size: 1rem;
-    margin-left: 0 !important;
   }
 `;
 
@@ -129,6 +128,10 @@ export const FeaturesTable = styled.ul`
 
   ${props => props.theme.breakpoints.md} {
     margin-left: 0 !important;
+  }
+
+  ${props => props.theme.breakpoints.xl} {
+    overflow: scroll;
   }
 
   ${props =>
@@ -158,6 +161,10 @@ export const FeaturesTable = styled.ul`
     align-items: center;
     margin: 0;
     position: relative;
+
+    ${props => props.theme.breakpoints.xl} {
+      width: 850px;
+    }
 
     > * {
       padding: 13px 0;
@@ -189,9 +196,13 @@ export const FeaturesTable = styled.ul`
       border-right: 1px solid #151515;
     }
 
-    ${props => props.theme.breakpoints.md} {
-      grid-template-columns: 1fr 3.75rem 3.75rem;
-    }
+    ${props =>
+      !props.team &&
+      css`
+        ${props.theme.breakpoints.md} {
+          grid-template-columns: 1fr 3.75rem 3.75rem;
+        }
+      `}
 
     span {
       width: 100%;
@@ -280,6 +291,10 @@ export const Plan = styled(FeaturesTableHeader)`
     css`
       grid-template-columns: 1fr 12rem 12rem 12rem;
     `}
+
+  ${props => props.theme.breakpoints.xl} {
+    width: 890px;
+  }
 `;
 
 export const PlanName = styled.span`
