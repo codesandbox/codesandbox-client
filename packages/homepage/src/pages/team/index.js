@@ -280,7 +280,7 @@ export default () => (
          title="For large or multiple teams"
          subtitle="Use code, apps, and templates collectively. Learn from each other and bake in best practice."
          cta="Get early access"       
-         link="/pricing"
+         link="/pricing" 
     />
 
 
