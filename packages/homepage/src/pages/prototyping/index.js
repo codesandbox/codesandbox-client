@@ -33,7 +33,7 @@ export default () => (
         <Title>Quickly prototype ideas with code</Title>
       </TitleWrapper>
       <Description>
-        Create real, working prototypes. Test ideas earlier, iterate more, and
+        Create real, working prototypes. Test ideas earlier, iterate more and
         create better products.
       </Description>
       <div
@@ -64,14 +64,14 @@ export default () => (
         <ContentBlock>
           <div>
             <h3>Setup-free</h3>
-            We've templates optimized for frameworks including React, Vue,
+            We’ve templates optimized for frameworks including React, Vue,
             Angular, and others, to kickstart new projects.
           </div>
 
           <div>
             <h3>Superfast</h3>
             Our custom bundler gets code running as quickly as possible, perfect
-            for blazing fast development in the browser.
+            for blazing-fast development in the browser.
           </div>
 
           <div>
@@ -88,7 +88,6 @@ export default () => (
           `}
         >
           <Subtitle left>
-            <H6 center>Collaboration</H6>
             Code in public, or private
           </Subtitle>
         </div>
@@ -145,7 +144,7 @@ export default () => (
           <ContentBlock>
             <div>
               <h3>NPM Support</h3>
-              Add any of the 1M+ dependencies on npm, or your own private
+              Add any of the 1M+ dependencies on npm or your own private
               packages.
             </div>
 

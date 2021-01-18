@@ -37,7 +37,7 @@ export default () => (
       </TitleWrapper>
       <Description>
         Move faster and innovate more with better code collaboration. Combined with 
-        infrastructure and support options your organization demands.
+        the infrastructure and support options your organization demands.
       </Description>
       <div
         css={`

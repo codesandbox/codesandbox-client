@@ -12,6 +12,10 @@ export const Card = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  ${props => props.theme.breakpoints.md} {
+    height: auto;
+  }
 `;
 
 export const CardTitle = styled.h3`
@@ -46,6 +50,11 @@ export const List = styled.ul`
   border-top: 1px solid #ffffff;
   font-size: 19px;
   line-height: 34px;
+
+  ${props => props.theme.breakpoints.md} {
+    font-size: 16px;
+    line-height: 24px;
+  }
 `;
 
 export const Button = styled.a`
@@ -224,6 +233,7 @@ export const CardContainer = styled.div`
 
     ${theme.breakpoints.md} {
       grid-template-columns: 1fr;
+      max-width: 100%;
 
       div:last-child {
         grid-column: 1;
@@ -310,8 +320,9 @@ export const ProductChooser = styled.div`
 
       &:after {
         margin-top: 20px;
+        top: 2px;
+        position: relative;
         border-bottom: 1px solid #ffffff;
-        transform: rotate(-0.37deg);
       }
     }
   }
