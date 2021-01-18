@@ -29,7 +29,7 @@ const Teams = () => (
       `}
       muted
     >
-      Accelerating the most creative developers and product teams
+      Accelerating developers and product teams
     </P>
     <List>
       <li>
