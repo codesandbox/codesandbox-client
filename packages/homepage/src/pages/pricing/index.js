@@ -6,6 +6,7 @@ import PageContainer from '../../components/PageContainer';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 import Switch from '../../components/Switch';
 import { P } from '../../components/Typography';
+import { Title } from '../../components/LayoutComponents';
 import {
   Plan,
   PlanName,
@@ -13,13 +14,12 @@ import {
   FeaturesTable,
   FeatureTitle,
   TableWrapper,
+  ModeChooser,
   ProductChooser,
 } from './_elements';
 import { personal } from './data/_personal';
 import Cards from './_cards';
 import { OpenIcon, Save } from './_icons';
-
-import { Title } from '../../components/LayoutComponents';
 
 export default () => {
   const [open, setOpen] = useState({});
@@ -63,17 +63,7 @@ export default () => {
           For Businesses
         </button>
       </ProductChooser>
-      <div
-        css={`
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-          font-weight: bold;
-          font-size: 12px;
-          margin-bottom: 75px;
-        `}
-      >
+      <ModeChooser>
         <span>Bill monthly</span>
         <Switch
           on={mode === 'annually'}
@@ -83,7 +73,7 @@ export default () => {
         />
         <span>Bill annually</span>
         <Save />
-      </div>
+      </ModeChooser>
       <Cards team={product === 'team'} mode={mode} />
       <Title
         as="h2"
