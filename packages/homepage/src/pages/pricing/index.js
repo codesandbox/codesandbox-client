@@ -114,23 +114,56 @@ export default () => {
                   <PlanName paid={!plan.free}>{plan.name}</PlanName>
                 ))}
               </Plan>
-              {item.features.map(feature => (
-                <li>
-                  <div>
-                    <FeatureTitle>{feature.name}</FeatureTitle>
-                    <P muted small>
-                      {feature.desc}
-                    </P>
-                  </div>
-                  {feature.available.map(available => {
-                    if (typeof available === 'string') {
-                      return <span className="text">{available}</span>;
-                    }
+              {item.features.map(feature => {
+                if (feature.subheading) {
+                  return (
+                    <>
+                      <li
+                        css={`
+                          grid-template-columns: 1fr;
+                        `}
+                      >
+                        {' '}
+                        <FeatureTitle>{feature.subheading}</FeatureTitle>
+                      </li>
+                      {feature.features.map(fea => (
+                        <li>
+                          <div>
+                            <FeatureTitle>{fea.name}</FeatureTitle>
+                            <P muted small>
+                              {fea.desc}
+                            </P>
+                          </div>
+                          {fea.available.map(available => {
+                            if (typeof available === 'string') {
+                              return <span className="text">{available}</span>;
+                            }
 
-                    return <span>{available ? '✓' : ''}</span>;
-                  })}
-                </li>
-              ))}
+                            return <span>{available ? '✓' : ''}</span>;
+                          })}
+                        </li>
+                      ))}
+                    </>
+                  );
+                }
+                return (
+                  <li>
+                    <div>
+                      <FeatureTitle>{feature.name}</FeatureTitle>
+                      <P muted small>
+                        {feature.desc}
+                      </P>
+                    </div>
+                    {feature.available.map(available => {
+                      if (typeof available === 'string') {
+                        return <span className="text">{available}</span>;
+                      }
+
+                      return <span>{available ? '✓' : ''}</span>;
+                    })}
+                  </li>
+                );
+              })}
             </FeaturesTable>
           </TableWrapper>
         ))}

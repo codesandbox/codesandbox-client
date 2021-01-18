@@ -112,14 +112,209 @@ export const personal = {
           available: [false, true],
         },
         {
-          name: 'Workspace-level Permissions ',
-          desc: 'Embed sandboxes in docs, blog posts, and websites',
-          available: [false, true],
+          name: 'Analytics',
+          desc: 'Analytics',
+          available: ['Overview', 'Overview'],
+        },
+        // {
+        //   name: 'Workspace-level Permissions ',
+        //   desc: 'Embed sandboxes in docs, blog posts, and websites',
+        //   available: [false, false],
+        // },
+        // {
+        //   name: 'Centralized Billing ',
+        //   desc: 'A personal portfolio page highlighting your best sandboxes.',
+        //   available: [false, false],
+        // },
+      ],
+    },
+    {
+      name: 'Platform',
+      features: [
+        {
+          subheading: 'IDE ',
+          features: [
+            {
+              name: 'VS Code powered Editor',
+              desc: 'Leverage the power and familiarity of VS Code.',
+              available: [true, true],
+            },
+            {
+              name: 'Hot Module Reloading',
+              desc: ' See changes as you make them.',
+              available: [true, true],
+            },
+            {
+              name: 'Keybindings & Quick Actions',
+              desc: 'Perform common tasks speedily.',
+              available: [true, true],
+            },
+            {
+              name: 'Console',
+              desc: 'Console',
+              available: [true, true],
+            },
+            {
+              name: 'Zen Mode',
+              desc: 'Zen Mode',
+              available: [true, true],
+            },
+            {
+              name: 'Custom Themes',
+              desc: 'Custom Themes',
+              available: [true, true],
+            },
+            {
+              name: 'Type Acquisition',
+              desc: 'Type Acquisition',
+              available: [true, true],
+            },
+            {
+              name: 'Vim Mode',
+              desc: 'Vim Mode',
+              available: [true, true],
+            },
+            {
+              name: 'External Resources',
+              desc: 'External Resources',
+              available: [true, true],
+            },
+            {
+              name: 'Session Restore',
+              desc: 'Session Restore',
+              available: [true, true],
+            },
+            {
+              name: 'Prettier',
+              desc: 'Prettier',
+              available: [true, true],
+            },
+            {
+              name: 'Eslint',
+              desc: 'Eslint',
+              available: [true, true],
+            },
+            {
+              name: 'Emmet',
+              desc: 'Emmet',
+              available: [true, true],
+            },
+            {
+              name: 'Configuration UI',
+              desc: 'Configuration UI',
+              available: [true, true],
+            },
+            {
+              name: 'Export Zip',
+              desc: 'Export Zip',
+              available: [true, true],
+            },
+          ],
         },
         {
-          name: 'Centralized Billing ',
-          desc: 'A personal portfolio page highlighting your best sandboxes.',
-          available: [false, true],
+          subheading: 'Development',
+          features: [
+            {
+              name: 'Server Control Panel',
+              desc: 'Server Control Panel',
+              available: [true, true],
+            },
+            {
+              name: 'Multiple Ports',
+              desc: 'Multiple Ports',
+              available: [true, true],
+            },
+            {
+              name: 'Secrets',
+              desc: 'Secrets',
+              available: [true, true],
+            },
+            {
+              name: 'Test Viewer',
+              desc: 'Test Viewer',
+              available: [true, true],
+            },
+            {
+              name: 'Problem Viewer',
+              desc: 'Problem Viewer',
+              available: [true, true],
+            },
+            {
+              name: 'React DevTools',
+              desc: 'React DevTools',
+              available: [true, true],
+            },
+            {
+              name: 'Terminal',
+              desc: 'Terminal',
+              available: [true, true],
+            },
+          ],
+        },
+        {
+          subheading: 'Live',
+          features: [
+            {
+              name: 'Collaborating editing',
+              desc: 'Collaborating editing',
+              available: ['5 invites/month', 'Unlimited'],
+            },
+            {
+              name: 'In-editor Chat',
+              desc: 'In-editor Chat',
+              available: [true, true],
+            },
+            {
+              name: 'Classroom Mode',
+              desc: 'Classroom Mode',
+              available: [true, true],
+            },
+          ],
+        },
+        {
+          subheading: 'Standard Integrations',
+          features: [
+            {
+              name: 'GitHub import/export',
+              desc: 'GitHub import/export',
+              available: [true, true],
+            },
+            {
+              name: 'Vercel Deploy',
+              desc: 'Vercel Deploy',
+              available: [true, true],
+            },
+            {
+              name: 'Stackbit',
+              desc: 'Stackbit',
+              available: [true, true],
+            },
+            {
+              name: 'VS Code Plugin',
+              desc: 'VS Code Plugin',
+              available: [true, true],
+            },
+          ],
+        },
+        {
+          subheading: 'API',
+          features: [
+            {
+              name: 'Define API',
+              desc: 'Define API',
+              available: [true, true],
+            },
+            {
+              name: 'Import CLI',
+              desc: 'Import CLI',
+              available: [true, true],
+            },
+            {
+              name: 'CodeSandbox CI',
+              desc: 'CodeSandbox CI',
+              available: [true, true],
+            },
+          ],
         },
       ],
     },
