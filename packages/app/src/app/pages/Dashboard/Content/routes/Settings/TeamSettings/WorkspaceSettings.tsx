@@ -18,6 +18,7 @@ import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
+  WorkspaceSubscriptionTypes,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
 import { Card } from '../components';
@@ -227,7 +228,7 @@ export const WorkspaceSettings = () => {
                   )}
                 </Stack>
                 <Text size={3}>
-                  {team?.subscription?.type === 'team_pro'
+                  {team?.subscription?.type === WorkspaceSubscriptionTypes.Team
                     ? 'Team Pro'
                     : 'Community Plan (Free)'}
                 </Text>
@@ -266,7 +267,7 @@ export const WorkspaceSettings = () => {
             </Button>
           )}
         </Card>
-        {team?.subscription?.type === 'team_pro' ? (
+        {team?.subscription?.type === WorkspaceSubscriptionTypes.Team ? (
           <div />
         ) : (
           <Card style={{ backgroundColor: 'white' }}>

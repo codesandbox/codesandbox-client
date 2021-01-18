@@ -11,7 +11,10 @@ import {
   Switch,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { TeamMemberAuthorization } from 'app/graphql/types';
+import {
+  TeamMemberAuthorization,
+  WorkspaceSubscriptionTypes,
+} from 'app/graphql/types';
 import { Alert } from './Alert';
 
 export const PermissionSettings = () => {
@@ -25,8 +28,10 @@ export const PermissionSettings = () => {
 
   // different scenarios
   const isPersonalWorkspace = activeTeamInfo.id === personalWorkspaceId;
-  const isTeamPro = activeTeamInfo?.subscription?.type === 'team_pro';
-  const isPersonalPro = activeTeamInfo?.subscription?.type === 'personal_pro';
+  const isTeamPro =
+    activeTeamInfo?.subscription?.type === WorkspaceSubscriptionTypes.Team;
+  const isPersonalPro =
+    activeTeamInfo?.subscription?.type === WorkspaceSubscriptionTypes.Personal;
   const isAdmin =
     activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
 

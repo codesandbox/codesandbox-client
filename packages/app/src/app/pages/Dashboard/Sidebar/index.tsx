@@ -25,6 +25,7 @@ import {
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
+import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder, PageTypes } from '../types';
 import { Position } from '../Components/Selection';
@@ -196,7 +197,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.repos(activeTeam)}
             icon="fork"
           />
-          {activeTeamInfo?.subscription?.type === 'team_pro' && (
+          {activeTeamInfo?.subscription?.type ===
+            WorkspaceSubscriptionTypes.Team && (
             <RowItem
               name="Always-On"
               page="always-on"

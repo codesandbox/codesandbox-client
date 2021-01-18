@@ -3,6 +3,7 @@ import { Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 import { useOvermind } from 'app/overmind';
+import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 import { CreateTeamParams, RegistryForm } from './RegistryForm';
 import { Alert } from '../components/Alert';
 
@@ -55,7 +56,9 @@ export const RegistrySettings = () => {
     };
   } | null = null;
 
-  if (state.activeTeamInfo?.subscription?.type !== 'team_pro') {
+  if (
+    state.activeTeamInfo?.subscription?.type !== WorkspaceSubscriptionTypes.Team
+  ) {
     alert = {
       message:
         'Your workspace needs to be in the pro pilot to use a custom npm registry.',

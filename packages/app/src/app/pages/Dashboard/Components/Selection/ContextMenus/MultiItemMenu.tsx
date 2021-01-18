@@ -1,6 +1,7 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
+import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 import { Context, MenuItem } from '../ContextMenu';
 import {
   DashboardSandbox,
@@ -164,7 +165,9 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     },
   ].filter(Boolean);
 
-  const isTeamPro = state.activeTeamInfo?.subscription?.type === 'team_pro';
+  const isTeamPro =
+    state.activeTeamInfo?.subscription?.type ===
+    WorkspaceSubscriptionTypes.Team;
 
   const PROTECTED_SANDBOXES_ITEMS =
     isTeamPro && state.activeWorkspaceAuthorization === 'ADMIN'

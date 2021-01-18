@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 import { ListAction, Switch, Label } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 
 export const AlwaysOn: FunctionComponent = () => {
   const {
@@ -18,7 +19,7 @@ export const AlwaysOn: FunctionComponent = () => {
   } = useOvermind();
 
   if (
-    activeTeamInfo?.subscription?.type !== 'team_pro' ||
+    activeTeamInfo?.subscription?.type !== WorkspaceSubscriptionTypes.Team ||
     activeWorkspaceAuthorization === 'READ'
   ) {
     return null;
