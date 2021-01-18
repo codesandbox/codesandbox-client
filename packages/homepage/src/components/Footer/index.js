@@ -15,10 +15,6 @@ const footerNavElements = [
         link: '/coding',
       },
       {
-        text: 'Feedback',
-        link: '/feedback',
-      },
-      {
         text: 'Prototyping',
         link: '/prototyping',
       },
@@ -26,7 +22,11 @@ const footerNavElements = [
         text: 'Knowledge Sharing',
         link: '/knowledge-sharing',
       },
- {
+      {
+        text: 'Feedback',
+        link: '/feedback',
+      },      
+      {
         text: 'What’s New',
         link: '/changelog',
       },
