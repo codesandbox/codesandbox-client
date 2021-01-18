@@ -857,6 +857,7 @@ export type Team = {
   templates: Array<Template>;
   userAuthorizations: Array<UserAuthorization>;
   users: Array<User>;
+  subscription: Maybe<WorkspaceSubscription>;
 };
 
 export type TeamDraftsArgs = {
@@ -933,6 +934,10 @@ export type WorkspaceSandboxSettings = {
   minimumPrivacy: Scalars['Int'];
   preventSandboxExport: Scalars['Boolean'];
   preventSandboxLeaving: Scalars['Boolean'];
+};
+
+export type WorkspaceSubscription = {
+  type: Maybe<Scalars['String']>;
 };
 
 export type TemplateFragment = { __typename?: 'Template' } & Pick<
@@ -1628,6 +1633,12 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'preventSandboxExport'
         | 'preventSandboxLeaving'
         | 'defaultAuthorization'
+      >
+    >;
+    subscription: Maybe<
+      { __typename?: 'WorkspaceSubscription' } & Pick<
+        WorkspaceSubscription,
+        'type'
       >
     >;
   };

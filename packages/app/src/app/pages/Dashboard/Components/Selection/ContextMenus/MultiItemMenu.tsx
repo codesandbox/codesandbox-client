@@ -164,7 +164,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     },
   ].filter(Boolean);
 
-  const isTeamPro = state.activeTeamInfo.joinedPilotAt;
+  const isTeamPro = state.activeTeamInfo?.subscription.type === 'team_pro';
 
   const PROTECTED_SANDBOXES_ITEMS =
     isTeamPro && state.activeWorkspaceAuthorization === 'ADMIN'

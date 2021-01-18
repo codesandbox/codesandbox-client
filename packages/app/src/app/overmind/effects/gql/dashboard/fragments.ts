@@ -175,6 +175,10 @@ export const currentTeamInfoFragment = gql`
       preventSandboxLeaving
       defaultAuthorization
     }
+
+    ${
+      '' // subscription {type}
+    }
   }
 `;
 

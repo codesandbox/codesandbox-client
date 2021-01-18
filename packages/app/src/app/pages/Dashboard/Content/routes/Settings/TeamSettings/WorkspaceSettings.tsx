@@ -227,7 +227,7 @@ export const WorkspaceSettings = () => {
                   )}
                 </Stack>
                 <Text size={3}>
-                  {team.joinedPilotAt
+                  {team.subscription.type === 'team_pro'
                     ? 'Team Pro Pilot'
                     : 'Community Plan (Free)'}
                 </Text>
@@ -266,7 +266,7 @@ export const WorkspaceSettings = () => {
             </Button>
           )}
         </Card>
-        {team.joinedPilotAt ? (
+        {team?.subscription.type === 'team_pro' ? (
           <div />
         ) : (
           <Card style={{ backgroundColor: 'white' }}>
