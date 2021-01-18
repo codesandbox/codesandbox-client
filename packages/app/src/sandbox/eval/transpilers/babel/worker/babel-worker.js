@@ -51,8 +51,9 @@ self.process = {
   },
 };
 // Trick Babel that we're in a commonjs env
-self.exports = {};
-self.module = {};
+self.module = { exports: {} };
+const { exports } = self.module;
+self.exports = exports;
 
 // This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {
@@ -484,6 +485,7 @@ try {
   );
 
   remapBabelHack();
+  registerCodeSandboxPlugins();
 } catch (e) {
   console.error(e);
 }
@@ -511,13 +513,23 @@ let loadedTranspilerURL = null;
 let loadedEnvURL = null;
 
 function registerCodeSandboxPlugins() {
-  Babel.registerPlugin('babel-plugin-detective', detective);
-  Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
-  Babel.registerPlugin('babel-plugin-csb-rename-import', renameImport);
-  Babel.registerPlugin(
-    'babel-plugin-transform-prevent-infinite-loops',
-    infiniteLoops
-  );
+  if (!Babel.availablePlugins['babel-plugin-detective']) {
+    Babel.registerPlugin('babel-plugin-detective', detective);
+  }
+  if (!Babel.availablePlugins['dynamic-css-modules']) {
+    Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
+  }
+  if (!Babel.availablePlugins['babel-plugin-csb-rename-import']) {
+    Babel.registerPlugin('babel-plugin-csb-rename-import', renameImport);
+  }
+  if (
+    !Babel.availablePlugins['babel-plugin-transform-prevent-infinite-loops']
+  ) {
+    Babel.registerPlugin(
+      'babel-plugin-transform-prevent-infinite-loops',
+      infiniteLoops
+    );
+  }
 
   // Between Babel 7.8 and Babel 7.12 the internal name of some plugins has changed. We need to
   // remap the plugin to make existing sandboxes that rely on Babel v7 work.
@@ -535,7 +547,6 @@ function registerCodeSandboxPlugins() {
 function loadCustomTranspiler(babelUrl, babelEnvUrl) {
   if (babelUrl && babelUrl !== loadedTranspilerURL) {
     self.importScripts(babelUrl);
-    registerCodeSandboxPlugins();
     loadedTranspilerURL = babelUrl;
   }
 
@@ -544,9 +555,8 @@ function loadCustomTranspiler(babelUrl, babelEnvUrl) {
     loadedEnvURL = babelEnvUrl;
   }
   remapBabelHack();
+  registerCodeSandboxPlugins();
 }
-
-registerCodeSandboxPlugins();
 
 self.addEventListener('message', async event => {
   if (!event.data.codesandbox) {
