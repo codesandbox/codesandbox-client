@@ -110,7 +110,7 @@ export default () => (
         </div>
         <div>
           <div>
-            <Subtitle>Made to share</Subtitle>
+            <Subtitle>Made for sharing</Subtitle>
           </div>
           <FeaturedImage bg={bg1}>
             <img
@@ -127,14 +127,14 @@ export default () => (
           <ContentBlock>
             <div>
               <h3>Secure, shareable links</h3>
-              Share code, work together, or get feedback
+              Share code, work together or get feedback
               with a secure link that’s ready to share.
             </div>
 
             <div>
               <h3>Team member invites</h3>
               Invite members via email or username. Get
-              your entire team onboard with an invite link.
+              your entire team on board with an invite link.
             </div>
 
             <div>
