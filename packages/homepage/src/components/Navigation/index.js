@@ -277,14 +277,6 @@ const Navigation = () => {
                     },
                     {
                       Icon: () => (
-                        <Link to="/feedback">
-                          <FeedbackIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/feedback">Feedback</Link>,
-                    },
-                    {
-                      Icon: () => (
                         <Link to="/prototyping">
                           <PrototypeIcon />
                         </Link>
@@ -301,6 +293,14 @@ const Navigation = () => {
                         <Link to="/knowledge-sharing/">Knowledge Sharing</Link>
                       ),
                     },
+                    {
+                      Icon: () => (
+                        <Link to="/feedback">
+                          <FeedbackIcon />
+                        </Link>
+                      ),
+                      Label: () => <Link to="/feedback">Feedback</Link>,
+                    },                              
                     {
                       Icon: () => (
                         <Link to="/changelog">
