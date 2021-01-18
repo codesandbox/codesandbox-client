@@ -316,3 +316,13 @@ export const ProductChooser = styled.div`
     }
   }
 `;
+
+export const ModeChooser = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 75px;
+`;
