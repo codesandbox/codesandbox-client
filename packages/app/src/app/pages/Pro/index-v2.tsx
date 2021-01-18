@@ -15,6 +15,7 @@ import {
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { useScript } from 'app/hooks';
+
 import { Navigation } from 'app/pages/common/Navigation';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { NewTeam } from 'app/pages/common/NewTeam';
@@ -24,7 +25,10 @@ export const ProPage: React.FC = () => (
   <ThemeProvider>
     <Helmet>
       <title>Pro - CodeSandbox</title>
-      <script src="https://cdn.paddle.com/paddle/paddle.js" />
+      <link
+        href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap"
+        rel="stylesheet"
+      />
     </Helmet>
     <Stack
       direction="vertical"
@@ -33,7 +37,7 @@ export const ProPage: React.FC = () => (
         color: 'white',
         width: '100vw',
         minHeight: '100vh',
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: 'Lato, sans-serif',
       })}
     >
       <Navigation title="CodeSandbox Pro" />
@@ -283,7 +287,14 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
 
   return (
     <div style={{ width: '100%' }}>
-      <Text size={7} as="h1" block align="center" marginBottom={4}>
+      <Text
+        size={7}
+        as="h1"
+        weight="bold"
+        block
+        align="center"
+        marginBottom={4}
+      >
         Upgrade to Pro
       </Text>
       <Text
@@ -560,7 +571,7 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
                   Prices listed in USD. Taxes may apply.
                 </Text>
               </Stack>
-              <Text weight="semibold" size={4}>
+              <Text weight="bold" size={4}>
                 {plan.currency}
                 {numberOfEditors * plan.unit * plan.multiplier} /{' '}
                 {plan.frequency === 'monthly' ? 'month' : 'year'}
@@ -572,7 +583,12 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
             loading={loading}
             disabled={activeUserAuthorization !== TeamMemberAuthorization.Admin}
             onClick={() => nextStep()}
-            css={css({ fontSize: 3, height: 10 })}
+            css={css({
+              fontSize: 3,
+              height: 10,
+              fontFamily: 'Lato, sans-serif',
+              fontWeight: 700,
+            })}
           >
             Continue
           </Button>
@@ -606,11 +622,7 @@ const PlanCard: React.FC<{
     >
       <Stack justify="space-between" align="center">
         <Stack direction="vertical" gap={1}>
-          <Text
-            size={4}
-            weight="semibold"
-            css={{ textTransform: 'capitalize' }}
-          >
+          <Text size={4} weight="bold" css={{ textTransform: 'capitalize' }}>
             {plan.frequency}
           </Text>
           <Text size={3}>{plan.name}</Text>
@@ -681,13 +693,12 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
       frameTarget: 'checkout-container', // The className of your checkout <div>
       loadCallback: 'loadCallback',
       success: '/pro/success?v=2',
-      displayModeTheme: 'dark',
       allowQuantity: true,
       disableLogout: true,
       frameInitialHeight: 416,
       frameStyle: `
         width: 500px;
-        min-width:500px;
+        min-width: 500px;
         background-color:
         transparent; border: none;
       `,
@@ -695,7 +706,7 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
   }, [setCheckoutReady, seats, user.email, plan.id]);
 
   return (
-    <div>
+    <div style={{ paddingBottom: 64 }}>
       <Text size={7} as="h1" block align="center" marginBottom={12}>
         Upgrade to Pro
       </Text>
@@ -706,6 +717,7 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
           css={css({
             padding: 4,
             marginBottom: 8,
+            marginX: 3,
             border: '1px solid',
             borderColor: 'grays.500',
             borderRadius: 'small',
@@ -741,7 +753,7 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
             })}
           >
             <Text size={3}>Total</Text>
-            <Text weight="semibold">
+            <Text weight="bold">
               {prices.currency} {prices.total}
             </Text>
           </Stack>
