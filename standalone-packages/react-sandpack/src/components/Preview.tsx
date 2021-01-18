@@ -26,8 +26,8 @@ const Wrapper = styled('div', {
 });
 
 const PreviewFrame = styled('div', {
-  width: '100%',
   flex: 1,
+  display: 'flex',
   position: 'relative',
 });
 
@@ -36,20 +36,22 @@ export const Preview: React.FC<PreviewProps> = ({
   showNavigator,
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const { sandpack, listen } = useSandpack();
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const { sandpack } = useSandpack();
 
-  // TODO: is this still needed?
-  React.useEffect(() => {
-    const unsub = listen((message: any) => {
-      if (message.type === 'resize') {
-        if (sandpack.browserFrame) {
-          sandpack.browserFrame.style.height = message.height;
-        }
-      }
-    });
+  // TODO: does resize from sandpack work?
+  // React.useEffect(() => {
+  //   const unsub = listen((message: any) => {
+  //     if (message.type === 'resize') {
+  //       if (wrapperRef.current) {
+  //         wrapperRef.current.style.height =
+  //           message.height + (showNavigator ? 40 : 0) + 'px';
+  //       }
+  //     }
+  //   });
 
-    return () => unsub();
-  }, [sandpack.status]);
+  //   return () => unsub();
+  // }, [sandpack.status]);
 
   React.useEffect(() => {
     if (
@@ -61,8 +63,9 @@ export const Preview: React.FC<PreviewProps> = ({
     }
 
     const { browserFrame } = sandpack;
-    browserFrame.style.width = '100%';
-    browserFrame.style.height = '100%';
+    browserFrame.style.width = 'auto';
+    browserFrame.style.height = 'auto';
+    browserFrame.style.flex = '1';
     browserFrame.style.visibility = 'visible';
     browserFrame.style.position = 'relative';
 
@@ -74,7 +77,7 @@ export const Preview: React.FC<PreviewProps> = ({
   }
 
   return (
-    <Wrapper style={customStyle}>
+    <Wrapper style={customStyle} ref={wrapperRef}>
       {showNavigator && <Navigator />}
       <PreviewFrame id="preview-frame" ref={containerRef}>
         {sandpack.errors.length > 0 && (

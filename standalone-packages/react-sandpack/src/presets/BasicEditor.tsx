@@ -55,6 +55,7 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
   }
 
   const className = compileStitchesTheme(theme);
+  const { height, ...otherStyles } = customStyle || {};
 
   return (
     <SandpackProvider
@@ -68,7 +69,15 @@ export const BasicEditor: React.FC<BasicEditorProps> = ({
       {...presetExecutionOptions}
     >
       <ThemeProvider value={theme}>
-        <SandpackLayout style={customStyle} className={className}>
+        <SandpackLayout
+          style={otherStyles}
+          css={{
+            '& > *': {
+              height,
+            },
+          }}
+          className={className}
+        >
           <CodeEditor {...presetCodeOptions} />
           <Preview {...presetPreviewOptions} />
         </SandpackLayout>

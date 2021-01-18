@@ -2,7 +2,7 @@ import { createStyled } from '@stitches/react';
 import { sandpackLightTheme as defaultTheme } from './themes';
 
 export const { styled, css } = createStyled({
-  prefix: 'sandpack',
+  prefix: 'sp',
   tokens: {
     colors: {
       $highlightText: defaultTheme.palette.highlightText,

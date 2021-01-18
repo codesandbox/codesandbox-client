@@ -37,9 +37,9 @@ export interface CodeMirrorProps {
 const Container = styled('div', {
   padding: '$4 $0',
   flex: 1,
-  width: '100%',
   position: 'relative',
   outline: 'none',
+  overflow: 'auto',
 
   ':focus': {
     boxShadow: 'inset 0 0 0 4px $accent',
@@ -175,6 +175,10 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 
     // force focus inside the editor when tabs change
     view.contentDOM.setAttribute('tabIndex', '-1');
+    view.contentDOM.setAttribute(
+      'aria-description',
+      'You are editing the code. To exit the edit mode, press Escape.'
+    );
     view.contentDOM.focus();
 
     return () => {

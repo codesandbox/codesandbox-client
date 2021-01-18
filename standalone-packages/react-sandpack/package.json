@@ -21,7 +21,7 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prepublish": "yarn build",
-    "start": "tsc -p tsconfig.esm.json --watch",
+    "start": "tsc -p tsconfig.cjs.json --watch",
     "storybook": "start-storybook -p 6006 --no-dll",
     "build-storybook": "build-storybook --no-dll"
   },

@@ -5,10 +5,6 @@ export const SandpackLayout = styled('div', {
   display: 'flex',
   flexWrap: 'wrap',
   alignItems: 'stretch',
-  width: '100%',
-  maxWidth: 1000,
-  minHeight: 350,
-  maxHeight: 700,
   borderRadius: '$default',
   fontSize: '$default',
   fontFamily: '$body',
@@ -30,7 +26,8 @@ export const SandpackLayout = styled('div', {
     flexShrink: 1,
     flexBasis: 0,
     width: 0,
-    minWidth: 300,
+    minWidth: 350,
+    height: 300,
   },
 
   '*': {

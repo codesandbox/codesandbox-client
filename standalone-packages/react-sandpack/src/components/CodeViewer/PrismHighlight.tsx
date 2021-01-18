@@ -17,7 +17,8 @@ const StyledBlock = styled('div', {
   backgroundColor: '$mainBackground',
   padding: '$4 $2',
   lineHeight: '1.4',
-  height: '100%',
+  overflow: 'auto',
+  flex: 1,
 
   pre: {
     margin: 0,
