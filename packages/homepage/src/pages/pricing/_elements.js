@@ -228,6 +228,7 @@ export const CardContainer = styled.div`
 
       div:last-child {
         grid-column: span 2;
+        height: auto;
       }
     }`}
 

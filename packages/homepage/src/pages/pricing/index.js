@@ -22,9 +22,12 @@ import Cards from './_cards';
 import { OpenIcon, Save } from './_icons';
 
 export default () => {
+  const urlParams = new URLSearchParams(window.location.search);
   const [open, setOpen] = useState({});
   const [mode, setMode] = useState('monthly');
-  const [product, setProduct] = useState('team');
+  const [product, setProduct] = useState(
+    urlParams.get('for') === 'individual' ? 'personal' : 'team'
+  );
 
   const toggleTable = name => {
     setOpen(o => ({ ...o, [name]: !o[name] }));
