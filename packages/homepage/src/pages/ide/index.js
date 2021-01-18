@@ -38,7 +38,7 @@ export default () => (
         <Title>Code from anywhere</Title>
       </TitleWrapper>
       <Description>
-        Code online with no setup in a powerful IDE that feels like local.
+        Code online with no setup in a powerful IDE that feels like it’s local.
       </Description>
       <div
         css={`
@@ -73,7 +73,7 @@ export default () => (
 
           <div>
             <h3>Hot Module Reloading</h3>
-            With Hot Module Reloading built-in, you can see changes as you make
+            With Hot Module Reloading built-in you can see changes as you make
             them.
           </div>
 
@@ -99,7 +99,7 @@ export default () => (
               <img src={gh} alt="" />
             </ContentBlockImage>
             <h3> Integrated with GitHub</h3>
-            Import a repo and changes are synced automatically. Or export your
+            Import a repo, and changes are synced automatically. Or export your
             sandbox, create commits, and open PRs.
           </div>
 
@@ -116,7 +116,7 @@ export default () => (
               <img src={vscode} alt="" />
             </ContentBlockImage>
             <h3>Powered by VS Code</h3>
-            Use "Go to Definition," "Replace Occurrences," set a custom VS Code
+            Use “Go to Definition,” “Replace Occurrences,” set a custom VS Code
             theme, and even enable Vim mode.
           </div>
         </ContentBlock>
@@ -145,8 +145,8 @@ export default () => (
           <ContentBlock>
             <div>
               <h3>Pair-up on Code</h3>
-              Work on code and edit sandboxes together, in real-time. Just like
-              in Google Docs.
+              Work on code and edit sandboxes together in real-time, like
+              in a Google Doc.
             </div>
 
             <div>
@@ -294,7 +294,7 @@ export default () => (
             <div>
               <h3>Emmet</h3>
               You can quickly expand abbreviations with Emmet.io in all JS,
-              HTML, and CSS files
+              HTML, and CSS files.
             </div>
             <div>
               <h3>TypeScript</h3>
