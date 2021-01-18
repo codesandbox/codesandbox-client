@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../../components/layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import CTA from '../../components/CTA';
 import Button from '../../components/Button';
 import { Description, H6 } from '../../components/Typography';
 
@@ -104,15 +105,15 @@ export default () => (
             </ContentBlockImage>
             <h3> Socialize your design system.</h3>
             Go beyond static docs and share real, 
-            working demos and live code examples.
+            working demos, and live code examples.
           </div>
 
           <div>
             <ContentBlockImage bg="151515">
               <img src={patterns} alt="" />
             </ContentBlockImage>
-            <h3>Share patterns not snippets.</h3>
-            Combine components in sandboxes that exemplify best practice.
+            <h3>Share patterns, not snippets.</h3>
+            Combine components in sandboxes that exemplify best practices.
           </div>
 
           <div>
@@ -171,8 +172,18 @@ export default () => (
             Dedicated support focused on delivering your success.
           </div>
         </ContentBlock>
-        <CTABottom />
+      
       </div>
+
+
+      <CTA
+         title="Accelerate innovation"
+         subtitle="Move faster and innovate more with better code collaboration. Combined with infrastructure and support options your organization demands. "
+         cta="Contact us"       
+         link="https://airtable.com/shrlgLSJWiX8rYqyG"
+      />
+
+
     </Wrapper>
   </Layout>
 );

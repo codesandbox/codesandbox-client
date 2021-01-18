@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../../components/layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import CTA from '../../components/CTA';
 import Button from '../../components/Button';
 import { Description } from '../../components/Typography';
 
@@ -110,7 +111,7 @@ export default () => (
         </div>
         <div>
           <div>
-            <Subtitle>Made to share</Subtitle>
+            <Subtitle>Made for sharing</Subtitle>
           </div>
           <FeaturedImage bg={bg1}>
             <img
@@ -127,14 +128,14 @@ export default () => (
           <ContentBlock>
             <div>
               <h3>Secure, shareable links</h3>
-              Share code, work together, or get feedback
+              Share code, work together or get feedback
               with a secure link that’s ready to share.
             </div>
 
             <div>
               <h3>Team member invites</h3>
               Invite members via email or username. Get
-              your entire team onboard with an invite link.
+              your entire team on board with an invite link.
             </div>
 
             <div>
@@ -144,8 +145,17 @@ export default () => (
             </div>
           </ContentBlock>
         </div>
-        <CTABottom />
+
       </div>
+
+
+      <CTA
+         title="Code from anywhere"
+         subtitle="Code online with no setup in a powerful IDE that feels like local."
+         cta="Get Started"       
+         link="/s"
+    />
+
     </Wrapper>
   </Layout>
 );

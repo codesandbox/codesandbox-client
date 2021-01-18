@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../../components/layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import CTA from '../../components/CTA';
 import Button from '../../components/Button';
 import { Description, H6 } from '../../components/Typography';
 
@@ -219,12 +220,21 @@ export default () => (
       margin: 96px auto;
     `}
   >
-    <Button cta href="https://codesandbox.io//">
-      Go Pro
-    </Button>
+
   </div>
       
       </div>
+
+
+      <CTA
+          title="Experiment and learn without setup hassle
+          "
+          subtitle="Make sandboxes private and use private GitHub repos. Get more space, higher upload limits, and unlimited invites.
+          "
+          cta="Go Pro"       
+          link="/pricing"
+      />
+
     </Wrapper>
   </Layout>
 );

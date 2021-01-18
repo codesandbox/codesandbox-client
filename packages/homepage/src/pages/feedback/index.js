@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../../components/layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import CTA from '../../components/CTA';
 import Button from '../../components/Button';
 import { Description, H6 } from '../../components/Typography';
 
@@ -73,7 +74,7 @@ export default () => (
         <ContentBlock>
           <div>
             <h3>Unlimited viewers</h3>
-            Get all stakeholders involved. Invite unlimited viewers for free, to
+            Get all stakeholders involved. Invite unlimited viewers for free to
             review and provide feedback.
           </div>
 
@@ -96,7 +97,6 @@ export default () => (
           `}
         >
           <Subtitle left as="h2">
-            <H6 center>Collaboration</H6>
             Know the context
           </Subtitle>
         </div>
@@ -126,7 +126,7 @@ export default () => (
             </ContentBlockImage>
             <h3>In-editor feedback</h3>
             Comments are shown right where you need it, alongside your code in
-            the tool where you're working.
+            the tool where you’re working.
           </div>
         </ContentBlock>
 
@@ -174,6 +174,16 @@ export default () => (
           </FeaturedImage>
         </div>
       </div>
+
+
+
+      <CTA
+         title="Code from anywhere"
+         subtitle="Code online with no setup in a powerful IDE that feels like local."
+         cta="Get Started"       
+         link="/s"
+    />
+
     </Wrapper>
   </Layout>
 );
