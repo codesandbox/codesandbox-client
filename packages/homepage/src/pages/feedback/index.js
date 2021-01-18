@@ -54,6 +54,9 @@ export default () => (
           bg={bg}
           css={`
             justify-content: flex-start;
+            ${props => props.theme.breakpoints.md} {
+              margin-top:4rem;
+            }
           `}
         >
           <img
@@ -61,6 +64,9 @@ export default () => (
             alt=""
             css={`
               width: 971px;
+                     ${props => props.theme.breakpoints.md} {
+                  margin-top:4rem;
+                }
             `}
           />
         </FeaturedImage>
@@ -128,6 +134,7 @@ export default () => (
           css={`
             margin-top: 120px;
             margin-bottom: 200px;
+            
           `}
         >
           <div>
@@ -159,6 +166,9 @@ export default () => (
               alt="Notifications"
               css={`
                 width: 996px;
+                ${props => props.theme.breakpoints.md} {
+                  margin-top:4rem;
+                }
               `}
             />
           </FeaturedImage>

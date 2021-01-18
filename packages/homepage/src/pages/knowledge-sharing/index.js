@@ -16,6 +16,7 @@ import {
 
 import team from './images/team-settings.png';
 import bg from './images/bg.png';
+import madetoshare from './images/madetoshare.png';
 import bg1 from './images/bg1.png';
 
 export default () => (
@@ -112,13 +113,16 @@ export default () => (
             <Subtitle>Made to share</Subtitle>
           </div>
           <FeaturedImage bg={bg1}>
-            {/* <img
-              src={team}
+            <img
+              src={madetoshare}
               alt=""
               css={`
-                width: 1022px;
+                width: 60rem;
+                ${props => props.theme.breakpoints.md} {
+                  margin-top:4rem;
+                }
               `}
-            /> */}
+            />
           </FeaturedImage>
           <ContentBlock>
             <div>

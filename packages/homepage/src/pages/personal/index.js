@@ -45,6 +45,8 @@ export default () => (
         display: flex;
         justify-content: center;
         margin: 2rem 0;
+
+
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
@@ -64,6 +66,10 @@ export default () => (
             alt="IDE"
             css={`
               width: 960px;
+
+              ${props => props.theme.breakpoints.md} {
+                margin-top:4rem;
+              }
             `}
           />
         </FeaturedImage>
@@ -133,7 +139,12 @@ export default () => (
             src={share}
             alt="Share fast"
             css={`
-              width: 900px;
+              width: 60rem;
+
+
+              ${props => props.theme.breakpoints.md} {
+                margin-top:4rem;
+              }
             `}
           />
         </FeaturedImage>

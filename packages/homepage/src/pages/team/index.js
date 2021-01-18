@@ -67,7 +67,11 @@ export default () => (
             src={teamStart}
             alt="Team Dahsboard"
             css={`
-              width: 1063.36px;
+              width: 90rem;
+
+              ${props => props.theme.breakpoints.md} {
+                margin-top:4rem;
+              }
             `}
           />
         </FeaturedImage>
@@ -144,6 +148,10 @@ export default () => (
             alt="comment on code"
             css={`
               width: 900px;
+
+              ${props => props.theme.breakpoints.md} {
+                margin-top:4rem;
+              }
             `}
           />
         </FeaturedImage>

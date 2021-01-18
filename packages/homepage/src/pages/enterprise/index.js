@@ -62,7 +62,11 @@ export default () => (
             src={ide}
             alt=""
             css={`
-              width: 961px;
+              width: 60rem;
+
+              ${props => props.theme.breakpoints.md} {
+                margin-top:4rem;
+              }
             `}
           />
         </FeaturedImage>

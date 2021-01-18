@@ -136,6 +136,9 @@ export default () => (
               alt=""
               css={`
                 width: 820px;
+                ${props => props.theme.breakpoints.md} {
+                  margin-top:4rem;
+                }
               `}
             />
           </FeaturedImage>
@@ -174,6 +177,9 @@ export default () => (
               alt=""
               css={`
                 width: 880px;
+                ${props => props.theme.breakpoints.md} {
+                  margin-top:4rem;
+                }
               `}
             />
           </FeaturedImage>
@@ -212,6 +218,9 @@ export default () => (
               alt=""
               css={`
                 width: 826px;
+                ${props => props.theme.breakpoints.md} {
+                  margin-top:4rem;
+                }
               `}
             />
           </FeaturedImage>
@@ -257,6 +266,9 @@ export default () => (
               alt="make it yours"
               css={`
                 width: 826px;
+                ${props => props.theme.breakpoints.md} {
+                  margin-top:4rem;
+                }
               `}
             />
           </FeaturedImage>
