@@ -128,7 +128,7 @@ async function initializeBrowserFS() {
     updateModule: () => {},
   };
 
-  return new Promise(resolve => {
+  return new Promise(resolvePromise => {
     BrowserFS.configure(
       {
         fs: 'OverlayFS',
@@ -149,7 +149,7 @@ async function initializeBrowserFS() {
         }
         fsLoading = false;
         fsInitialized = true;
-        resolve();
+        resolvePromise();
         // BrowserFS is initialized and ready-to-use!
       }
     );
