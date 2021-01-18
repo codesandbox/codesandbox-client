@@ -109,7 +109,7 @@ export default () => (
         </div>
         <div>
           <div>
-            <Subtitle>Collaborative workspaces??</Subtitle>
+            <Subtitle>Made to share</Subtitle>
           </div>
           <FeaturedImage bg={bg1}>
             {/* <img
@@ -122,20 +122,20 @@ export default () => (
           </FeaturedImage>
           <ContentBlock>
             <div>
-              <h3>1</h3>
-              Secure, shareable links Share code, work together, or get feedback
+              <h3>Secure, shareable links</h3>
+              Share code, work together, or get feedback
               with a secure link, that’s ready to share.
             </div>
 
             <div>
-              <h3>2</h3>
-              Team member invites Invite members via email, or username. Get
+              <h3>Team member invites</h3>
+              Invite members via email, or username. Get
               your entire team onboard with an invite link.
             </div>
 
             <div>
-              <h3>3</h3>
-              No install or downloads With nothing to install or download, folks
+              <h3>No install or downloads</h3>
+              With nothing to install or download, folks
               just need a web browser to get involved.
             </div>
           </ContentBlock>
