@@ -33,7 +33,7 @@ export default () => (
       </TitleWrapper>
       <Description>
         Create real, working prototypes. Test ideas earlier, iterate more, and
-        create better products
+        create better products.
       </Description>
       <div
         css={`
