@@ -200,7 +200,7 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
     }
 
     setPlan(newPlan);
-  }, [isPersonalWorkspace, billingFrequency]);
+  }, [isPersonalWorkspace, billingFrequency, setPlan]);
 
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
@@ -245,11 +245,17 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
         if (workspaceWithAdminRights) {
           setActiveTeam({ id: workspaceWithAdminRights.id });
         } else {
-          setActiveTeam({ id: personalWorkspace.id });
+          setActiveTeam({ id: personalWorkspaceId });
         }
       }
     },
-    [activeUserAuthorization]
+    [
+      activeUserAuthorization,
+      dashboard.teams,
+      getUserAuthorization,
+      setActiveTeam,
+      personalWorkspaceId,
+    ]
   );
 
   if (!activeTeam || !dashboard.teams.length || !plan) return null;
