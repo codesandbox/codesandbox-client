@@ -66,7 +66,7 @@ export default () => (
         <FeaturedImage bg={bg}>
           <img
             src={teamStart}
-            alt="Team Dahsboard"
+            alt="Team Dashboard"
             css={`
               width: 90rem;
 
@@ -85,13 +85,13 @@ export default () => (
 
           <div>
             <h3>Create together.</h3>
-            Come together with a link—no environment switching, or slow
-            screenshares. Team up in real-time or asynchronously.
+            Come together with a link—no environment switching or slow
+            screenshares—team up in real-time or asynchronously.
           </div>
 
           <div>
             <h3>Know if ideas work in reality.</h3>
-            Bring ideas to life with code prototypes that don’t just look real,
+            Bring ideas to life with code prototypes that don’t just look real
             but are real.
           </div>
         </ContentBlock>
@@ -127,7 +127,7 @@ export default () => (
               <img src={embed} alt="Embeds" />
             </ContentBlockImage>
             <h3>Embed in tools & docs.</h3>
-            Show, don’t just tell. Bring live code examples and prototypes in to
+            Show, don’t just tell. Bring live code examples and prototypes into
             your workflow, embedded in the tools you already use.
           </div>
         </ContentBlock>
@@ -159,7 +159,7 @@ export default () => (
           <div>
             <h3>Involve the entire team.</h3>
             Designers, Marketers, PMs, whoever. Invite unlimited viewers for
-            free, and review or comment on prototypes for greater transparency,
+            free, and review or comment on prototypes for greater transparency
             and fewer surprises.
           </div>
 
@@ -173,7 +173,7 @@ export default () => (
           <div>
             <h3>Make it a conversation.</h3>
             Reply to create a thread, include screenshots, @mention those you
-            need to keep in the loop, and resolve to archive it when you’re
+            need to keep in the loop, and archive it when you’re
             done.
           </div>
         </ContentBlock>
@@ -214,7 +214,7 @@ export default () => (
               <img src={money} alt="" />
             </ContentBlockImage>
             <h3>Centralized billing</h3>
-            Get everyone in a single account, for easier team management &
+            Get everyone in a single account for easier team management &
             billing.
           </div>
 
