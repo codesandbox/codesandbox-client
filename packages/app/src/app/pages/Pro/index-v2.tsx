@@ -596,7 +596,11 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
 
           <Button
             loading={loading}
-            disabled={activeUserAuthorization !== TeamMemberAuthorization.Admin}
+            disabled={
+              activeUserAuthorization !== TeamMemberAuthorization.Admin ||
+              plan.billingInterval ===
+                currentSubscription.details.billingInterval
+            }
             onClick={() => nextStep()}
             css={css({
               fontSize: 3,
@@ -621,7 +625,6 @@ const PlanCard: React.FC<{
 }> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
   const isSelected = plan.billingInterval === billingInterval;
   const isCurrent =
-    plan.type === currentSubscription?.type &&
     plan.billingInterval === currentSubscription?.details.billingInterval;
 
   return (
@@ -645,7 +648,7 @@ const PlanCard: React.FC<{
             {plan.billingInterval === SubscriptionBillingInterval.Yearly
               ? 'Annual'
               : 'Monthly'}
-            {isCurrent ? '(Current)' : ''}
+            {isCurrent ? ' (Current)' : null}
           </Text>
           <Text size={3}>{plan.name}</Text>
           <Text size={3} variant="muted">
