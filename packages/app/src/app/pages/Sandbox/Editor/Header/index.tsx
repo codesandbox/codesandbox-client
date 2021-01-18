@@ -59,7 +59,13 @@ export const Header = () => {
               </Link>
             )
           ) : (
-            <Link href="/" css={{ padding: '2px' /* micro adjustment */ }}>
+            <Link
+              as="a"
+              target="_blank"
+              rel="noreferrer noopener"
+              href="/"
+              css={{ padding: '2px' /* micro adjustment */ }}
+            >
               <LogoIcon height={24} />
             </Link>
           )}
