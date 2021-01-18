@@ -17,7 +17,7 @@ export const PrivacyTooltip: FunctionComponent = () => {
       editor: {
         currentSandbox: { owned, privacy },
       },
-      user,
+      activeTeamInfo,
     },
   } = useOvermind();
 
@@ -54,7 +54,7 @@ export const PrivacyTooltip: FunctionComponent = () => {
             <>
               <Text size="3" marginBottom={4}>
                 {owned ? (
-                  user?.subscription ? (
+                  activeTeamInfo?.subscription ? (
                     'Adjust privacy settings.'
                   ) : (
                     <>
@@ -69,7 +69,7 @@ export const PrivacyTooltip: FunctionComponent = () => {
               </Text>
 
               <Select
-                disabled={!user?.subscription || !owned}
+                disabled={!activeTeamInfo?.subscription || !owned}
                 marginBottom={2}
                 onChange={onChange}
                 value={privacy}

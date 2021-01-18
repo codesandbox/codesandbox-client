@@ -40,7 +40,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'Template' : 'Sandbox';
-  const isPro = user && Boolean(user.subscription);
+
+  const isPro = activeTeamInfo?.subscription;
   const isTeamPro = activeTeamInfo?.subscription?.type === 'team_pro';
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not

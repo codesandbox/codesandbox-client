@@ -139,7 +139,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     label: 'Make Items Private',
     fn: changeItemPrivacy(2),
   };
-  const PRIVACY_ITEMS = state.user.subscription
+  const PRIVACY_ITEMS = state.activeTeamInfo?.subscription
     ? [MAKE_PUBLIC, MAKE_UNLISTED, MAKE_PRIVATE, DIVIDER]
     : [];
 

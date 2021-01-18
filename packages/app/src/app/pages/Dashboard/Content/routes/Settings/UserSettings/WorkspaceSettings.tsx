@@ -15,7 +15,7 @@ import { Card } from '../components';
 
 export const WorkspaceSettings = () => {
   const {
-    state: { user, activeTeam },
+    state: { user, activeTeam, activeTeamInfo },
     actions,
   } = useOvermind();
 
@@ -28,8 +28,8 @@ export const WorkspaceSettings = () => {
   }
 
   // @ts-ignore
-  const isPro = user.subscription_plan || user.subscription;
-  const value = (user.subscription && user.subscription.amount) || 9;
+  const isPro = activeTeamInfo?.subscription;
+  const value = activeTeamInfo?.subscription?.details.recurring_price;
 
   return (
     <Grid

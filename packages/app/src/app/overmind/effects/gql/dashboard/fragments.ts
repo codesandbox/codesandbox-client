@@ -177,7 +177,7 @@ export const currentTeamInfoFragment = gql`
     }
 
     ${
-      '' // subscription {type}
+      '' // subscription {type, status, details}
     }
   }
 `;

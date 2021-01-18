@@ -18,7 +18,6 @@ export const PermissionSettings = () => {
   const {
     state: {
       activeTeamInfo,
-      user,
       personalWorkspaceId,
       activeWorkspaceAuthorization,
     },
@@ -27,8 +26,7 @@ export const PermissionSettings = () => {
   // different scenarios
   const isPersonalWorkspace = activeTeamInfo.id === personalWorkspaceId;
   const isTeamPro = activeTeamInfo?.subscription?.type === 'team_pro';
-  const isPersonalPro =
-    isPersonalWorkspace && user && Boolean(user.subscription);
+  const isPersonalPro = activeTeamInfo?.subscription?.type === 'personal_pro';
   const isAdmin =
     activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
 

@@ -937,7 +937,11 @@ export type WorkspaceSandboxSettings = {
 };
 
 export type WorkspaceSubscription = {
-  type: Maybe<Scalars['String']>;
+  type: 'team_pro' | 'personal_pro';
+  status: 'active' | 'paused' | 'cancelled';
+  details: {
+    recurring_price: Scalars['Int'];
+  };
 };
 
 export type TemplateFragment = { __typename?: 'Template' } & Pick<
@@ -1638,7 +1642,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'WorkspaceSubscription' } & Pick<
         WorkspaceSubscription,
-        'type'
+        'type' | 'status' | 'details'
       >
     >;
   };

@@ -27,14 +27,13 @@ export const Permissions: FunctionComponent = () => {
     },
     state: {
       editor: { currentSandbox },
-      user,
       activeTeam,
       activeTeamInfo,
       activeWorkspaceAuthorization,
     },
   } = useOvermind();
 
-  const isPaidUser = user?.subscription;
+  const isPaidUser = activeTeamInfo?.subscription;
 
   // if this user is not part of this workspace,
   // they should not see permissions at all
