@@ -35,7 +35,7 @@ export default () => (
         <Title>Accelerate innovation</Title>
       </TitleWrapper>
       <Description>
-        Move faster and innovate more with better code collaboration and the
+        Move faster and innovate more with better code collaboration. Combined with 
         infrastructure and support options your organization demands.
       </Description>
       <div
@@ -99,8 +99,8 @@ export default () => (
               <img src={toggle} alt="" />
             </ContentBlockImage>
             <h3> Socialize your design system.</h3>
-            Work without bottlenecks—view and edit code or review apps without
-            friction, all in the browser.
+            Go beyond static docs and share real, 
+            working demos and live code examples.
           </div>
 
           <div>
@@ -123,7 +123,7 @@ export default () => (
         <Quote>
           <img src={brian} width="254px" alt="Brian Vaughn" />
           <h3>
-            “It's dramatically improved my <br /> experience of sharing ideas.”
+            “It’s dramatically improved my <br /> experience of sharing ideas.”
           </h3>
           <h4>Brian Vaughn, Software Engineer, Facebook</h4>
         </Quote>
