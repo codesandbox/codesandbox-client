@@ -73,7 +73,7 @@ export default () => (
         <ContentBlock>
           <div>
             <h3>Unlimited viewers</h3>
-            Get all stakeholders involved. Invite unlimited viewers for free, to
+            Get all stakeholders involved. Invite unlimited viewers for free to
             review and provide feedback.
           </div>
 
@@ -96,7 +96,6 @@ export default () => (
           `}
         >
           <Subtitle left as="h2">
-            <H6 center>Collaboration</H6>
             Know the context
           </Subtitle>
         </div>
@@ -126,7 +125,7 @@ export default () => (
             </ContentBlockImage>
             <h3>In-editor feedback</h3>
             Comments are shown right where you need it, alongside your code in
-            the tool where you're working.
+            the tool where you’re working.
           </div>
         </ContentBlock>
 
