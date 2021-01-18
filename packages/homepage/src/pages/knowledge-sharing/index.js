@@ -27,7 +27,7 @@ export default () => (
       </TitleWrapper>
       <Description>
         Use code, apps, and templates collectively. Learn from each other and
-        bake-in best practice.
+        bake in best practice.
       </Description>
       <div
         css={`
@@ -63,7 +63,7 @@ export default () => (
 
           <div>
             <h3>Folders</h3>
-            Subdivide your workspace, organizing apps, hiring challenges,
+            Subdivide your workspace by organizing apps, hiring challenges,
             prototypes, and bug repros into folders.
           </div>
 
@@ -91,12 +91,12 @@ export default () => (
             <div>
               <h3> Show code and previews</h3>
               Show code, the running app, or both at the same time to share an
-              idea, or communicate progress.
+              idea or communicate progress.
             </div>
 
             <div>
               <h3>Lightweight</h3>
-              Designed to be lightweight yet powerful, our embeda don’t slow you
+              Designed to be lightweight yet powerful, our embeds won’t slow you
               down.
             </div>
 
@@ -124,12 +124,12 @@ export default () => (
             <div>
               <h3>Secure, shareable links</h3>
               Share code, work together, or get feedback
-              with a secure link, that’s ready to share.
+              with a secure link that’s ready to share.
             </div>
 
             <div>
               <h3>Team member invites</h3>
-              Invite members via email, or username. Get
+              Invite members via email or username. Get
               your entire team onboard with an invite link.
             </div>
 
