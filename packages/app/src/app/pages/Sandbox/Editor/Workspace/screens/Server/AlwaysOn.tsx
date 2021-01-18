@@ -18,7 +18,7 @@ export const AlwaysOn: FunctionComponent = () => {
   } = useOvermind();
 
   if (
-    activeTeamInfo?.subscription.type !== 'team_pro' ||
+    activeTeamInfo?.subscription?.type !== 'team_pro' ||
     activeWorkspaceAuthorization === 'READ'
   ) {
     return null;

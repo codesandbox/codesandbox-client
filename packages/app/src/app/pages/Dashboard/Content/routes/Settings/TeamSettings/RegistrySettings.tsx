@@ -55,7 +55,7 @@ export const RegistrySettings = () => {
     };
   } | null = null;
 
-  if (state.activeTeamInfo?.subscription.type !== 'team_pro') {
+  if (state.activeTeamInfo?.subscription?.type !== 'team_pro') {
     alert = {
       message:
         'Your workspace needs to be in the pro pilot to use a custom npm registry.',

@@ -26,7 +26,7 @@ export const PermissionSettings = () => {
 
   // different scenarios
   const isPersonalWorkspace = activeTeamInfo.id === personalWorkspaceId;
-  const isTeamPro = activeTeamInfo?.subscription.type === 'team_pro';
+  const isTeamPro = activeTeamInfo?.subscription?.type === 'team_pro';
   const isPersonalPro =
     isPersonalWorkspace && user && Boolean(user.subscription);
   const isAdmin =

@@ -196,7 +196,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.repos(activeTeam)}
             icon="fork"
           />
-          {activeTeamInfo?.subscription.type === 'team_pro' && (
+          {activeTeamInfo?.subscription?.type === 'team_pro' && (
             <RowItem
               name="Always-On"
               page="always-on"

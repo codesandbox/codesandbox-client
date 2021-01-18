@@ -41,7 +41,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   const label = isTemplate ? 'Template' : 'Sandbox';
   const isPro = user && Boolean(user.subscription);
-  const isTeamPro = activeTeamInfo?.subscription.type === 'team_pro';
+  const isTeamPro = activeTeamInfo?.subscription?.type === 'team_pro';
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
@@ -272,7 +272,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           </MenuItem>
         ))}
       {hasAccess &&
-        activeTeamInfo?.subscription.type === 'team_pro' &&
+        activeTeamInfo?.subscription?.type === 'team_pro' &&
         activeWorkspaceAuthorization !== 'READ' &&
         getTemplate(sandbox.source.template as TemplateType).isServer &&
         (sandbox.alwaysOn ? (
