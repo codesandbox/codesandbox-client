@@ -116,14 +116,6 @@ export default () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/feedback">
-                    <IconWrapper>
-                      <FeedbackIcon />
-                    </IconWrapper>
-                    <span>Feedback</span>
-                  </Link>
-                </li>
-                <li>
                   <Link to="/prototyping">
                     <IconWrapper>
                       <PrototypeIcon />
@@ -137,6 +129,14 @@ export default () => {
                       <TeamsIcon />
                     </IconWrapper>
                     <span>Knowledge Sharing</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/feedback">
+                    <IconWrapper>
+                      <FeedbackIcon />
+                    </IconWrapper>
+                    <span>Feedback</span>
                   </Link>
                 </li>
               </Items>
