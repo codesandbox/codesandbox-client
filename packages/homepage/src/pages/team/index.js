@@ -81,14 +81,13 @@ export default () => (
           <div>
             <h3>Create together.</h3>
             Come together with a link—no environment switching, or slow
-            screenshares. Team up in real-time or asynchronously and go from
-            idea to done faster.
+            screenshares. Team up in real-time or asynchronously.
           </div>
 
           <div>
             <h3>Know if ideas work in reality.</h3>
             Bring ideas to life with code prototypes that don’t just look real,
-            but are real. Discover whether the theory works in practice.
+            but are real.
           </div>
         </ContentBlock>
 
