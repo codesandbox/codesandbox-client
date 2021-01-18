@@ -77,7 +77,7 @@ export default () => (
         </FeaturedImage>
         <ContentBlock>
           <div>
-            <h3> Don’t wait on builds </h3>
+            <h3>Don’t wait on builds.</h3>
             Get started on new projects with no setup, and see changes live as
             you make them and build without bottlenecks.
           </div>
@@ -156,7 +156,7 @@ export default () => (
         </FeaturedImage>
         <ContentBlock>
           <div>
-            <h3>Involve the entire team</h3>
+            <h3>Involve the entire team.</h3>
             Designers, Marketers, PMs, whoever. Invite unlimited viewers for
             free, and review or comment on prototypes for greater transparency,
             and fewer surprises.
