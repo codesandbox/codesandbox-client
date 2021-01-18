@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '../../components/layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 import Button from '../../components/Button';
+import CTA from '../../components/CTA';
 import { Description, H6 } from '../../components/Typography';
 
 import {
@@ -225,6 +226,20 @@ export default () => (
             Set default privacy and permission settings across your workspace.
           </div>
         </ContentBlock>
+
+
+
+
+        <CTA
+         title="For power-users & freelancers"
+         subtitle="Build better things faster with a workspace that makes code collaboration effortless for your entire team. "
+         cta="Go Pro"       
+         link="/pricing"
+    />
+
+
+
+
         <div>
           <Subtitle>
             <H6 center>$45 per editor a month</H6>
@@ -257,8 +272,18 @@ export default () => (
             Bring multiple teams together in a single account to collaborate.
           </div>
         </ContentBlock>
-        <CTABottom />
+
       </div>
+
+
+      <CTA
+         title="For large or multiple teams"
+         subtitle="Use code, apps, and templates collectively. Learn from each other and bake in best practice."
+         cta="Get early access"       
+         link="/pricing"
+    />
+
+
     </Wrapper>
   </Layout>
 );

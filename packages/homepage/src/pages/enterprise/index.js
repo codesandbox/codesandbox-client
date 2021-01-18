@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../../components/layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import CTA from '../../components/CTA';
 import Button from '../../components/Button';
 import { Description, H6 } from '../../components/Typography';
 
@@ -171,8 +172,18 @@ export default () => (
             Dedicated support focused on delivering your success.
           </div>
         </ContentBlock>
-        <CTABottom />
+      
       </div>
+
+
+      <CTA
+         title="Accelerate innovation"
+         subtitle="Move faster and innovate more with better code collaboration. Combined with infrastructure and support options your organization demands. "
+         cta="Contact us"       
+         link="https://airtable.com/shrlgLSJWiX8rYqyG"
+      />
+
+
     </Wrapper>
   </Layout>
 );

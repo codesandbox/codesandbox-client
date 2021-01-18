@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../../components/layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import CTA from '../../components/CTA';
 import Button from '../../components/Button';
 import { Description, H6 } from '../../components/Typography';
 
@@ -174,6 +175,16 @@ export default () => (
           </FeaturedImage>
         </div>
       </div>
+
+
+
+      <CTA
+         title="Code from anywhere"
+         subtitle="Code online with no setup in a powerful IDE that feels like local."
+         cta="Get Started"       
+         link="/s"
+    />
+
     </Wrapper>
   </Layout>
 );

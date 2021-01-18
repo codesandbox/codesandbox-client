@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '../../components/layout';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 import Button from '../../components/Button';
+import CTA from '../../components/CTA';
 import { Description } from '../../components/Typography';
 
 import {
@@ -307,9 +308,27 @@ export default () => (
               ESLint.
             </div>
           </ContentBlock>
+          
         </div>
-        <CTABottom />
+
       </div>
+
+
+
+
     </Wrapper>
+
+
+
+    <CTA
+         title="Code from anywhere"
+         subtitle="Code online with no setup in a powerful IDE that feels like local."
+         cta="Get Started"       
+         link="/s"
+    />
+
+
   </Layout>
+
+  
 );
