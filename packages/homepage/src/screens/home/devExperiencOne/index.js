@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
+
 import { H2, P, H3 } from '../../../components/Typography';
 import { PrototypingIcon, KnowledgeIcon, FeedbackIcon, BGIcon, GHIcon, NPMIcon, OptimizedIcon } from './icons';
+
 
 const container = {
   hidden: { opacity: 0 },
@@ -25,7 +27,6 @@ const Grid = styled(motion.div)`
   grid-gap: 38px;
   margin: 2rem 0;
 
-
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -44,7 +45,6 @@ const Feature = styled(motion.div)`
   border-radius: 4px;
   text-align: center;
   background: #151515;
-
 
   ${props => props.theme.breakpoints.md} {
     padding: 1rem;
@@ -70,29 +70,33 @@ const DevExperienceOne = () => (
       }
     `}
   >
-
-
     <Grid variants={container} initial="hidden" animate="show">
-
       <Feature variants={item}>
       <PrototypingIcon/>
         <H3>Rapid Prototyping</H3>
         <P muted>
-        Quickly create real, working prototypes. Test ideas earlier and iterate more.
+          Quickly create real, working prototypes. Test ideas earlier and
+          iterate more.
         </P>
       </Feature>
       <Feature variants={item}>
+
         <KnowledgeIcon/>
+
         <H3>Knowledge Sharing</H3>
         <P muted>
-        Use code, apps, and templates collectively. Learn from each other and bake-in best practice.
+          Use code, apps, and templates collectively. Learn from each other and
+          bake-in best practice.
         </P>
       </Feature>
       <Feature variants={item}>
+
         <FeedbackIcon/>
         <H3>Better Feedback</H3>
         <P muted>
 Give and get feedback, on code or visuals, right in the editor. Take action and move forward faster.
+
+        
         </P>
       </Feature>
     </Grid>

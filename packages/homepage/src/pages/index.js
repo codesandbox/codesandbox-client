@@ -42,7 +42,7 @@ const Homepage = () => (
       <LoadInView>
         <Teams />
       </LoadInView>
-      
+
       <LoadInView>
         <DevExperiencOne />
       </LoadInView>
@@ -55,11 +55,9 @@ const Homepage = () => (
         <Quotes />
       </LoadInView>
 
-
       <LoadInView>
         <DevExperience />
       </LoadInView>
-
     </div>
     <LoadInView>
       <Explore />

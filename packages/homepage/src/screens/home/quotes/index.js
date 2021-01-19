@@ -54,10 +54,9 @@ const Feature = styled(motion.div)`
   text-align: center;
   background: #151515;
 
-
   svg,
   h3 {
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
   }
 `;
 
@@ -93,7 +92,6 @@ const Quotes = () => (
             ${props => props.theme.breakpoints.md} {
               min-height: 104px;
             }
-
           `}
         >
           “It's dramatically improved my experience of sharing ideas”

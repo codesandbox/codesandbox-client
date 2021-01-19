@@ -143,9 +143,9 @@ export default () => {
                             <FeatureTitle>{fea.name}</FeatureTitle>
                             <P muted small>
                               {fea.desc}
-                            </P>
-                            <Checks feature={fea} product={product} />
+                            </P>{' '}
                           </div>
+                          <Checks feature={fea} product={product} />
                         </li>
                       ))}
                     </>
