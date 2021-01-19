@@ -258,7 +258,11 @@ export const WorkspaceSettings = () => {
                   autoWidth
                   variant="link"
                   disabled={loading}
-                  css={css({ padding: 0, textDecoration: 'underline' })}
+                  css={css({
+                    padding: 0,
+                    textDecoration: 'underline',
+                    fontSize: 3,
+                  })}
                   onClick={() =>
                     actions.modalOpened({ modal: 'deleteWorkspace' })
                   }
@@ -269,61 +273,74 @@ export const WorkspaceSettings = () => {
             </Stack>
           </Stack>
         </Card>
-        {team?.subscription?.type === WorkspaceSubscriptionTypes.Team ? (
-          <Card>
-            <Stack direction="vertical" gap={2}>
-              <Stack direction="vertical" gap={4}>
-                <Text size={6} weight="bold" maxWidth="100%">
-                  Invoice details
-                </Text>
+        {activeWorkspaceAuthorization === TeamMemberAuthorization.Admin ? (
+          <>
+            {team?.subscription?.type === WorkspaceSubscriptionTypes.Team ? (
+              <Card>
                 <Stack direction="vertical" gap={2}>
-                  <Text size={3} variant="muted">
-                    {team.subscription.details.currency}{' '}
-                    {(
-                      (team.subscription.quantity *
-                        team.subscription.details.unitPrice) /
-                      100
-                    ).toFixed(2)}{' '}
-                    <Text css={{ textTransform: 'capitalize' }}>
-                      {team.subscription.details.billingInterval.toLowerCase()}
+                  <Stack direction="vertical" gap={4}>
+                    <Text size={6} weight="bold" maxWidth="100%">
+                      Invoice details
                     </Text>
-                  </Text>
-                  <Link
-                    size={3}
-                    variant="muted"
-                    href={team.subscription.details.updateBillingUrl}
-                    target="_blank"
-                    css={{ textDecoration: 'underline' }}
-                  >
-                    Update payment information
-                  </Link>
+                    <Stack direction="vertical" gap={2}>
+                      <Text size={3} variant="muted">
+                        {team.subscription.details.currency}{' '}
+                        {(
+                          (team.subscription.quantity *
+                            team.subscription.details.unitPrice) /
+                          100
+                        ).toFixed(2)}{' '}
+                        <Text css={{ textTransform: 'capitalize' }}>
+                          {team.subscription.details.billingInterval.toLowerCase()}
+                        </Text>
+                      </Text>
+                      <Link
+                        size={3}
+                        variant="muted"
+                        href={team.subscription.details.updateBillingUrl}
+                        target="_blank"
+                        css={{ textDecoration: 'underline' }}
+                      >
+                        Update payment information
+                      </Link>
+                      <Link
+                        size={3}
+                        variant="muted"
+                        href="/pro?v=2"
+                        target="_blank"
+                        css={{ textDecoration: 'underline' }}
+                      >
+                        Change billing frequency
+                      </Link>
+                    </Stack>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </Stack>
-          </Card>
-        ) : (
-          <Card style={{ backgroundColor: 'white' }}>
-            <Stack
-              direction="vertical"
-              gap={4}
-              css={css({ color: 'grays.800' })}
-            >
-              <Text size={6} weight="bold">
-                Go Pro
-              </Text>
-              <Stack direction="vertical" gap={1}>
-                <Text size={3}>Community, plus:</Text>
-                <Text size={3}>+ Work in private</Text>
-                <Text size={3}>+ Private NPM packages</Text>
-                <Text size={3}>+ Flexible permissions</Text>
-                <Text size={3}>+ Centralized billing</Text>
-              </Stack>
-              <Button as="a" href="/pro?v=2" target="_blank" marginTop={2}>
-                Upgrade to Pro
-              </Button>
-            </Stack>
-          </Card>
-        )}
+              </Card>
+            ) : (
+              <Card style={{ backgroundColor: 'white' }}>
+                <Stack
+                  direction="vertical"
+                  gap={4}
+                  css={css({ color: 'grays.800' })}
+                >
+                  <Text size={6} weight="bold">
+                    Go Pro
+                  </Text>
+                  <Stack direction="vertical" gap={1}>
+                    <Text size={3}>Community, plus:</Text>
+                    <Text size={3}>+ Work in private</Text>
+                    <Text size={3}>+ Private NPM packages</Text>
+                    <Text size={3}>+ Flexible permissions</Text>
+                    <Text size={3}>+ Centralized billing</Text>
+                  </Stack>
+                  <Button as="a" href="/pro?v=2" target="_blank" marginTop={2}>
+                    Upgrade to Pro
+                  </Button>
+                </Stack>
+              </Card>
+            )}
+          </>
+        ) : null}
       </Grid>
       <Stack align="center" justify="space-between" gap={2}>
         <Text

@@ -134,6 +134,11 @@ const UpgradeSteps = () => {
     if (scriptLoaded && checkoutReady) setStep(3);
   }, [scriptLoaded, checkoutReady]);
 
+  // this is a complete tangent from the inline checkout flow.
+  // only used when the user already has a subscription
+  // and is trying to change the billing interval for the next cycle
+  const changeNextBillingInterval = () => {};
+
   return (
     <Stack
       justify="center"
@@ -147,6 +152,7 @@ const UpgradeSteps = () => {
           setSeats={setSeats}
           loading={step === 2}
           nextStep={() => setStep(2)}
+          changeNextBillingInterval={changeNextBillingInterval}
         />
       )}
       {step > 1 && (
@@ -168,7 +174,14 @@ const UpgradeSteps = () => {
   );
 };
 
-const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
+const Upgrade = ({
+  loading,
+  plan,
+  setPlan,
+  setSeats,
+  nextStep,
+  changeNextBillingInterval,
+}) => {
   const {
     state: { personalWorkspaceId, user, activeTeam, activeTeamInfo, dashboard },
     actions: {
@@ -599,9 +612,12 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
             disabled={
               activeUserAuthorization !== TeamMemberAuthorization.Admin ||
               plan.billingInterval ===
-                currentSubscription.details.billingInterval
+                currentSubscription?.details.billingInterval
             }
-            onClick={() => nextStep()}
+            onClick={() => {
+              if (currentSubscription) changeNextBillingInterval();
+              else nextStep();
+            }}
             css={css({
               fontSize: 3,
               height: 10,
@@ -621,7 +637,7 @@ const PlanCard: React.FC<{
   plan: Plan;
   billingInterval: Plan['billingInterval'];
   setBillingInterval: (billingInterval: Plan['billingInterval']) => void;
-  currentSubscription: WorkspaceSubscription;
+  currentSubscription: WorkspaceSubscription | null;
 }> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
   const isSelected = plan.billingInterval === billingInterval;
   const isCurrent =
@@ -688,7 +704,7 @@ const PlanCard: React.FC<{
 
 const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
   const {
-    state: { user },
+    state: { user, activeTeam },
   } = useOvermind();
 
   const [prices, updatePrices] = React.useState(null);
@@ -722,6 +738,7 @@ const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
       frameTarget: 'checkout-container', // The className of your checkout <div>
       loadCallback: 'loadCallback',
       success: '/pro/success?v=2',
+      passthrough: JSON.stringify({ team_id: activeTeam, user_id: user.id }),
       allowQuantity: true,
       disableLogout: true,
       frameInitialHeight: 416,
