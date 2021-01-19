@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import Layout from '../../components/layout';
 import { applyParallax } from '../../utils/parallax';
+import usePrefersReducedMotion from '../../utils/isReducedMOtion';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 import Button from '../../components/Button';
-import usePrefersReducedMotion from '../../utils/isReducedMOtion';
 import CTA from '../../components/CTA';
 import { Description } from '../../components/Typography';
 
