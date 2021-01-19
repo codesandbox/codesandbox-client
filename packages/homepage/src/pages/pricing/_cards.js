@@ -9,6 +9,30 @@ import {
   CardContainer,
 } from './_elements';
 
+// you're going to need this for the link on homepage, there are 3 flags
+// v=2
+// type=PERSONAL_PRO | TEAM_PRO
+// interval=MONTHLY | YEARLY
+// /pro?v=2&type=PERSONAL_PRO&interval=MONTHLY
+// /pro?v=2&type=TEAM_PRO&interval=YEARLY (edited)
+
+const makeLink = (product, mode) => {
+  let link = 'pro?v=2';
+  if (product === 'personal') {
+    link += '&type=PERSONAL_PRO';
+  } else {
+    link += '&type=TEAM_PRO';
+  }
+
+  if (mode === 'monthly') {
+    link += '&interval=MONTHLY';
+  } else {
+    link += '&interval=YEARLY';
+  }
+
+  return link;
+};
+
 export const TeamCards = ({ mode }) => (
   <CardContainer teams>
     <Card
@@ -25,8 +49,8 @@ export const TeamCards = ({ mode }) => (
           <CardTitle>Team Pro Workspace</CardTitle>
           <Price>${mode === 'monthly' ? 30 : 24}</Price>
           <PriceSubText>
-            per editor/workspace/billed {mode === 'monthly' ? 'monthly' : 'annually'}{' '}
-            <br />
+            per editor/workspace/billed{' '}
+            {mode === 'monthly' ? 'monthly' : 'annually'} <br />
             or ${mode === 'annually' ? 30 : 24} per month billed{' '}
             {mode === 'annually' ? 'monthly' : 'annually'}
           </PriceSubText>
@@ -52,7 +76,7 @@ export const TeamCards = ({ mode }) => (
           color: #5962df;
           background: ${props => props.theme.homepage.white};
         `}
-        href="/pro"
+        href={makeLink('team', mode)}
       >
         Subscribe to Pro
       </Button>
@@ -92,7 +116,7 @@ export const TeamCards = ({ mode }) => (
           color: #f7a239;
           background: ${props => props.theme.homepage.white};
         `}
-        href="/pro"
+        href="mailto:hello@codesandbox.io"
       >
         Get early access
       </Button>
@@ -196,7 +220,7 @@ export const PersonalCards = ({ mode }) => (
           <li>Private sandboxes</li>
           <li>Private GitHub repos</li>
           <li>More storage space</li>
-          <li>Higher upload limits</li>  
+          <li>Higher upload limits</li>
           <li>Stricter sandbox permissions</li>
         </List>
       </div>
@@ -205,7 +229,7 @@ export const PersonalCards = ({ mode }) => (
           color: ${props => props.theme.homepage.blue};
           background: ${props => props.theme.homepage.white};
         `}
-        href="/pro"
+        href={makeLink('team', mode)}
       >
         Subscribe to Pro
       </Button>
