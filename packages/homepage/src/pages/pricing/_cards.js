@@ -37,10 +37,11 @@ export const TeamCards = ({ mode }) => (
               font-weight: bold;
             `}
           >
-            For power-users & freelancers
+            Collaborate with your team
           </li>
-          <li>Private Sandboxes</li>
-          <li>Private GitHub repos</li> <li>Private NPM packages</li>
+          <li>Private sandboxes</li>
+          <li>Private GitHub repos</li>
+          <li>Private NPM packages</li>
           <li>Advanced permissions </li>
           <li>Unlimited viewers</li>
           <li>Centralized billing</li>
@@ -81,7 +82,7 @@ export const TeamCards = ({ mode }) => (
           <li>All in Team Pro Workspace, plus:</li>
           <li>SSO</li>
           <li>Multiple workspaces</li>
-          <li> Workspace secrets </li>
+          <li>Workspace secrets</li>
           <li>Analytics</li>
           <li>Priority support</li>
         </List>
@@ -112,7 +113,7 @@ export const TeamCards = ({ mode }) => (
               font-weight: bold;
             `}
           >
-            Collaborate with your team
+            Custom deploy options & support
           </li>
           <li>All in Organization, plus:</li>
           <li>On-premise or private cloud</li>
@@ -160,13 +161,13 @@ export const PersonalCards = ({ mode }) => (
             For learning & experimenting
           </li>
           <li>Free for individuals</li>
-          <li> All Platform features</li> <li>Unlimited Public </li>
+          <li>All Platform features</li>
+          <li>Public sandboxes</li>
           <li>Templates </li>
           <li>Dashboard</li>
-          <li>Sandboxes</li>
         </List>
       </div>
-      <Button href="/s">Create Sandbox, it’s free </Button>
+      <Button href="/s">Get started, it’s free </Button>
     </Card>
     <Card>
       <div>
@@ -192,7 +193,8 @@ export const PersonalCards = ({ mode }) => (
             For power-users & freelancers
           </li>
           <li>All in Personal, plus:</li>
-          <li>Private Sandboxes</li> <li>Private GitHub repos</li>
+          <li>Private sandboxes</li>
+          <li>Private GitHub repos</li>
           <li>Stricter sandbox permissions </li>
         </List>
       </div>

@@ -27,6 +27,9 @@ import makeityours from './images/makeityours.png';
 import server from './images/server.png';
 import tests from './images/tests.png';
 
+import IDEIcon from '../../assets/icons/Ide';
+
+
 import gh from './images/gh.svg';
 import deploy from './images/deploy.svg';
 import vscode from './images/vscode.svg';
@@ -36,6 +39,9 @@ export default () => (
     <TitleAndMetaTags title="IDE - Codesandbox" />
     <Wrapper>
       <TitleWrapper>
+          
+    
+
         <Title>Code from anywhere</Title>
       </TitleWrapper>
       <Description>
@@ -57,12 +63,21 @@ export default () => (
         <div>
           <Subtitle as="h2">Fast development in the browser</Subtitle>
         </div>
-        <FeaturedImage bg={bg}>
+        <FeaturedImage
+        css={`
+        height: 468px;
+ 
+        ${props => props.theme.breakpoints.md} {
+          height: 200px;
+        }
+      `}
+        bg={bg}>
           <img
             src={templates}
-            alt=""
+            alt="Template Universe"
             css={`
               width: 864px;
+              margin-top:4rem;
             `}
           />
         </FeaturedImage>
@@ -97,7 +112,7 @@ export default () => (
         <ContentBlock>
           <div>
             <ContentBlockImage bg="151515">
-              <img src={gh} alt="" />
+              <img src={gh} alt="Integrated with GitHub" />
             </ContentBlockImage>
             <h3> Integrated with GitHub</h3>
             Import a repo, and changes are synced automatically. Or export your
@@ -106,7 +121,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={deploy} alt="" />
+              <img src={deploy} alt="Deploy to Vercel or Netlify" />
             </ContentBlockImage>
             <h3>Deploy to Vercel or Netlify</h3>
             Deploy a production version of your sandbox with Vercel or Netlify.
@@ -114,7 +129,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="5962DF">
-              <img src={vscode} alt="" />
+              <img src={vscode} alt="Powered by VS Code" />
             </ContentBlockImage>
             <h3>Powered by VS Code</h3>
             Use “Go to Definition,” “Replace Occurrences,” set a custom VS Code
@@ -129,12 +144,15 @@ export default () => (
             css={`
               height: 468px;
               justify-content: flex-end;
+              ${props => props.theme.breakpoints.md} {
+                height: auto;
+              }
             `}
             bg={bg1}
           >
             <img
               src={ide}
-              alt=""
+              alt="Pair-up on Code"
               css={`
                 width: 820px;
                 ${props => props.theme.breakpoints.md} {
@@ -170,12 +188,15 @@ export default () => (
               height: 468px;
               justify-content: flex-start;
               background-position: bottom;
+              ${props => props.theme.breakpoints.md} {
+                height: auto;
+              }
             `}
             bg={bg2}
           >
             <img
               src={server}
-              alt=""
+              alt="Terminal Access"
               css={`
                 width: 880px;
                 ${props => props.theme.breakpoints.md} {
@@ -211,12 +232,17 @@ export default () => (
             css={`
               height: 468px;
               justify-content: flex-start;
+
+              ${props => props.theme.breakpoints.md} {
+                height: auto;
+              }
+
             `}
             bg={bg3}
           >
             <img
               src={tests}
-              alt=""
+              alt="Jest tests"
               css={`
                 width: 826px;
                 ${props => props.theme.breakpoints.md} {
@@ -259,6 +285,12 @@ export default () => (
             css={`
               height: 468px;
               justify-content: center;
+
+              ${props => props.theme.breakpoints.md} {
+                height: auto;
+              }
+
+
             `}
             bg={bg4}
           >
@@ -266,7 +298,7 @@ export default () => (
               src={makeityours}
               alt="make it yours"
               css={`
-                width: 826px;
+                width: 55rem;
                 ${props => props.theme.breakpoints.md} {
                   margin-top:4rem;
                 }

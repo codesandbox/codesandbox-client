@@ -3,6 +3,7 @@ import { useTheme } from '../../components/layout';
 
 const IDE = props => {
   const white = useTheme().homepage.white;
+
   return (
     <svg width={32} height={32} fill="none" viewBox="0 0 24 24" {...props}>
       <path
@@ -12,4 +13,4 @@ const IDE = props => {
     </svg>
   );
 };
-export default IDE;
+export default  IDE;

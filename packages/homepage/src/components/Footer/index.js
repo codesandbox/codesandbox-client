@@ -49,7 +49,7 @@ const footerNavElements = [
     title: 'For',
     elements: [
       {
-        text: 'Personal',
+        text: 'Individuals',
         link: '/personal',
       },
       {
@@ -66,6 +66,10 @@ const footerNavElements = [
     title: 'About',
     elements: [
       {
+        text: 'Pricing',
+        link: '/pricing',
+      },      
+      {
         text: 'Company',
         link: '/company',
       },
@@ -77,6 +81,10 @@ const footerNavElements = [
         text: 'Careers',
         link: '/jobs',
       },
+      {
+        text: 'Legal',
+        link: '/legal',
+      }      
     ],
   },
   {

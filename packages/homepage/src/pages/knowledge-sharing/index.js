@@ -47,10 +47,20 @@ export default () => (
         <div>
           <Subtitle as="h2">Collaborative workspaces</Subtitle>
         </div>
-        <FeaturedImage bg={bg}>
+        <FeaturedImage
+        css={`
+        height: 468px;
+        padding:0 1rem;
+
+        ${props => props.theme.breakpoints.md} {
+          height: 200px;
+        }
+      `}
+        
+        bg={bg}>
           <img
             src={team}
-            alt=""
+            alt="Collaborative workspaces"
             css={`
               width: 1022px;
             `}
@@ -116,7 +126,7 @@ export default () => (
           <FeaturedImage bg={bg1}>
             <img
               src={madetoshare}
-              alt=""
+              alt="made to share"
               css={`
                 width: 60rem;
                 ${props => props.theme.breakpoints.md} {

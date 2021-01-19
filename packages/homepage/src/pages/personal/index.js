@@ -46,8 +46,6 @@ export default () => (
         display: flex;
         justify-content: center;
         margin: 2rem 0;
-
-
         `}
       >
         <Button cta href="https://codesandbox.io/s/">
@@ -64,7 +62,7 @@ export default () => (
         <FeaturedImage bg={bg}>
           <img
             src={ide}
-            alt="IDE"
+            alt="CodeSanddbox IDE"
             css={`
               width: 960px;
 
@@ -102,7 +100,7 @@ export default () => (
         <ContentBlock>
           <div>
             <ContentBlockImage bg="151515">
-              <img src={fast} alt="fast" />
+              <img src={fast} alt="Try things out" />
             </ContentBlockImage>
             <h3> Try things out.</h3>
             See how they work in reality.
@@ -110,7 +108,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="5962DF">
-              <img src={npm} alt="npm" />
+              <img src={npm} alt="Evaluate npm modules" />
             </ContentBlockImage>
             <h3>Evaluate npm modules.</h3>
             See what works for your project.
@@ -141,7 +139,6 @@ export default () => (
             alt="Share fast"
             css={`
               width: 60rem;
-
 
               ${props => props.theme.breakpoints.md} {
                 margin-top:4rem;
@@ -181,7 +178,7 @@ export default () => (
         <div >
  
           <Subtitle >
-          <H6 center>From $7 per month</H6>
+          <H6 center>from $7 per month</H6>
             Go Pro
           </Subtitle>
         </div>
@@ -189,7 +186,7 @@ export default () => (
         <ContentBlock>
           <div>
             <ContentBlockImage bg="5962DF">
-              <img src={lock} alt="Lock" />
+              <img src={lock} alt="Build in private" />
             </ContentBlockImage>
             <h3>Build in private</h3>
             Make sandboxes private and use private GitHub repos.
@@ -197,7 +194,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={people} alt="People" />
+              <img src={people} alt="Share with a team or clients" />
             </ContentBlockImage>
             <h3>Share with a team or clients</h3>
             Set sandbox permissions to restrict forking or downloading code.
@@ -205,7 +202,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={code} alt="code" />
+              <img src={code} alt="Create without limits" />
             </ContentBlockImage>
             <h3>Create without limits</h3>
             Get more space, higher upload limits, and unlimited invites.
@@ -227,9 +224,9 @@ export default () => (
 
 
       <CTA
-          title="Experiment and learn without setup hassle
+          title="For power-users & freelancers
           "
-          subtitle="Make sandboxes private and use private GitHub repos. Get more space, higher upload limits, and unlimited invites.
+          subtitle="Keep work private, get more space and higher upload limits.
           "
           cta="Go Pro"       
           link="/pricing"
