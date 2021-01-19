@@ -186,20 +186,17 @@ export const WorkspaceSettings = () => {
         <Card style={{ backgroundColor: 'white' }}>
           <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
             <Text size={6} weight="bold">
-              Pro
+              Go Pro
             </Text>
             <Stack direction="vertical" gap={1}>
-              <Text size={3}>Everything in Community, plus:</Text>
-              <Text size={3}>+ Unlimited Private Sandboxes</Text>
-              <Text size={3}>+ Private GitHub Repos</Text>
+              <Text size={3}>Community, plus:</Text>
+              <Text size={3}>+ Work in private</Text>
+              <Text size={3}>+ More file storage</Text>
+              <Text size={3}>+ Higher upload limits</Text>
+              <Text size={3}>+ Flexible permissions</Text>
             </Stack>
-            <Button
-              as="a"
-              href="https://codesandbox.io/pro"
-              target="_blank"
-              marginTop={2}
-            >
-              Subscribe to Pro
+            <Button as="a" href="/pro?v=2" target="_blank" marginTop={2}>
+              Upgrade to Pro
             </Button>
           </Stack>
         </Card>

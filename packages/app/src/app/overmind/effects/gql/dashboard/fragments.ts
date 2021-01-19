@@ -179,8 +179,10 @@ export const currentTeamInfoFragment = gql`
     subscription {
       type
       status
+      quantity
       details {
-        recurringPrice
+        unitPrice
+        currency
         billingInterval
         updateBillingUrl
       }

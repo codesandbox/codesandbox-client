@@ -246,47 +246,58 @@ export const WorkspaceSettings = () => {
               {team.users.length}{' '}
               {team.users.length === 1 ? 'member' : 'members'}
             </Text>
-            {created && (
-              <Text size={3} variant="muted">
-                Created by {created.username}
-              </Text>
-            )}
+            <Stack direction="vertical" gap={2}>
+              {created && (
+                <Text size={3} variant="muted">
+                  Created by {created.username}
+                </Text>
+              )}
+              {activeWorkspaceAuthorization ===
+                TeamMemberAuthorization.Admin && (
+                <Button
+                  autoWidth
+                  variant="link"
+                  disabled={loading}
+                  css={css({ padding: 0, textDecoration: 'underline' })}
+                  onClick={() =>
+                    actions.modalOpened({ modal: 'deleteWorkspace' })
+                  }
+                >
+                  Delete Workspace
+                </Button>
+              )}
+            </Stack>
           </Stack>
-          {activeWorkspaceAuthorization === TeamMemberAuthorization.Admin && (
-            <Button
-              marginTop={2}
-              css={css({
-                padding: 0,
-                textDecoration: 'underline',
-                width: 'auto',
-              })}
-              variant="link"
-              disabled={loading}
-              onClick={() => actions.modalOpened({ modal: 'deleteWorkspace' })}
-            >
-              Delete Workspace
-            </Button>
-          )}
         </Card>
         {team?.subscription?.type === WorkspaceSubscriptionTypes.Team ? (
           <Card>
             <Stack direction="vertical" gap={2}>
-              <Stack direction="vertical" gap={2}>
+              <Stack direction="vertical" gap={4}>
                 <Text size={6} weight="bold" maxWidth="100%">
                   Invoice details
                 </Text>
-                <Text size={3} maxWidth="100%">
-                  {team.subscription.details.recurring_price}
-                </Text>
-                <Link
-                  size={3}
-                  variant="muted"
-                  href={team.subscription.details.updateBillingUrl}
-                  target="_blank"
-                  css={{ textDecoration: 'underline' }}
-                >
-                  Update payment information
-                </Link>
+                <Stack direction="vertical" gap={2}>
+                  <Text size={3} variant="muted">
+                    {team.subscription.details.currency}{' '}
+                    {(
+                      (team.subscription.quantity *
+                        team.subscription.details.unitPrice) /
+                      100
+                    ).toFixed(2)}{' '}
+                    <Text css={{ textTransform: 'capitalize' }}>
+                      {team.subscription.details.billingInterval.toLowerCase()}
+                    </Text>
+                  </Text>
+                  <Link
+                    size={3}
+                    variant="muted"
+                    href={team.subscription.details.updateBillingUrl}
+                    target="_blank"
+                    css={{ textDecoration: 'underline' }}
+                  >
+                    Update payment information
+                  </Link>
+                </Stack>
               </Stack>
             </Stack>
           </Card>
@@ -298,20 +309,17 @@ export const WorkspaceSettings = () => {
               css={css({ color: 'grays.800' })}
             >
               <Text size={6} weight="bold">
-                Team Pro
+                Go Pro
               </Text>
               <Stack direction="vertical" gap={1}>
-                <Text size={3}>Everything in Community, plus:</Text>
-                <Text size={3}>+ Unlimited Private Sandboxes</Text>
-                <Text size={3}>+ Private GitHub Repos</Text>
+                <Text size={3}>Community, plus:</Text>
+                <Text size={3}>+ Work in private</Text>
+                <Text size={3}>+ Private NPM packages</Text>
+                <Text size={3}>+ Flexible permissions</Text>
+                <Text size={3}>+ Centralized billing</Text>
               </Stack>
-              <Button
-                as="a"
-                href="https://airtable.com/shrlgLSJWiX8rYqyG"
-                target="_blank"
-                marginTop={2}
-              >
-                Sign up
+              <Button as="a" href="/pro?v=2" target="_blank" marginTop={2}>
+                Upgrade to Pro
               </Button>
             </Stack>
           </Card>

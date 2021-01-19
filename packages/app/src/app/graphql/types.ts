@@ -951,8 +951,10 @@ export enum SubscriptionBillingInterval {
 export type WorkspaceSubscription = {
   type: WorkspaceSubscriptionTypes;
   status: 'ACTIVE' | 'PAUSED' | 'CANCELLED';
+  quantity: Scalars['Int'];
   details: {
-    recurring_price: Scalars['Int'];
+    unitPrice: Scalars['Int'];
+    currency: Scalars['String'];
     billingInterval: SubscriptionBillingInterval;
     updateBillingUrl: Scalars['String'];
   };
@@ -1656,7 +1658,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'WorkspaceSubscription' } & Pick<
         WorkspaceSubscription,
-        'type' | 'status' | 'details'
+        'type' | 'status' | 'quantity' | 'details'
       >
     >;
   };
