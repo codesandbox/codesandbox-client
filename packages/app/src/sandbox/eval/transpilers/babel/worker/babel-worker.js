@@ -22,6 +22,7 @@ import getDependencies from './get-require-statements';
 import { downloadFromError, downloadPath } from './dynamic-download';
 import { getModulesFromMainThread } from '../../utils/fs';
 import { remapBabelHack } from './utils/remap-babel-hack';
+import { installErrorMock } from './utils/error-mock';
 
 import { evaluateFromPath, resetCache } from './evaluate';
 import {
@@ -557,6 +558,7 @@ function loadCustomTranspiler(babelUrl, babelEnvUrl) {
   remapBabelHack();
   registerCodeSandboxPlugins();
 }
+installErrorMock();
 
 self.addEventListener('message', async event => {
   if (!event.data.codesandbox) {
