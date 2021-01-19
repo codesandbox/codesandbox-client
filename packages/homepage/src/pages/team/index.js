@@ -188,7 +188,7 @@ export default () => (
 
         <div>
           <Subtitle>
-            <H6>$24 per editor a month</H6>
+            <H6>from $24 per editor a month</H6>
             For Teams
           </Subtitle>
         </div>
@@ -231,8 +231,8 @@ export default () => (
 
 
         <CTA
-         title="For power-users & freelancers"
-         subtitle="Build better things faster with a workspace that makes code collaboration effortless for your entire team. "
+         title="Collaborate with your team"
+         subtitle="Test ideas earlier, iterate more and create better products with a shared workspace."
          cta="Go Pro"       
          link="/pricing"
     />
@@ -242,7 +242,7 @@ export default () => (
 
         <div>
           <Subtitle>
-            <H6 center>$45 per editor a month</H6>
+            <H6 center>from $45 per editor a month</H6>
             For Organizations
           </Subtitle>
         </div>
@@ -278,7 +278,7 @@ export default () => (
 
       <CTA
          title="For large or multiple teams"
-         subtitle="Use code, apps, and templates collectively. Learn from each other and bake in best practice."
+         subtitle="Share code, apps, and templates. Learn from each other and bake in best practice."
          cta="Get early access"       
          link="/pricing" 
     />
