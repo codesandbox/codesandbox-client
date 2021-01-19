@@ -56,7 +56,7 @@ const Feature = styled(motion.div)`
 
   svg,
   h3 {
-    margin-bottom: 16px;
+    margin-bottom: 0.5rem;
   }
 `;
 
@@ -87,7 +87,11 @@ const Quotes = () => (
         <P
           css={`
             font-weight: 400;
-            min-height: 104px;
+            min-height: 80px;
+
+            ${props => props.theme.breakpoints.md} {
+              min-height: 104px;
+            }
           `}
         >
           “It's dramatically improved my experience of sharing ideas”

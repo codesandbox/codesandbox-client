@@ -14,7 +14,6 @@ import {
   ContentBlockImage,
   FeaturedImage,
   Quote,
-  CTABottom,
 } from '../../components/LayoutComponents';
 
 import ide from './images/ide.png';
@@ -23,7 +22,7 @@ import settings from './images/settings.svg';
 import bg from './images/bg.png';
 
 import toggle from './images/toggle.svg';
-import patterns from './images/patterns.svg?v1';
+import patterns from './images/patterns.svg';
 import people from './images/people.svg';
 import brian from './images/brian.png';
 import briefcase from './images/briefcase.svg';
@@ -36,8 +35,8 @@ export default () => (
         <Title>Accelerate innovation</Title>
       </TitleWrapper>
       <Description>
-        Move faster and innovate more with better code collaboration. Combined with 
-        the infrastructure and support options your organization demands.
+        Move faster and innovate more with better code collaboration. Combined
+        with the infrastructure and support options your organization demands.
       </Description>
       <div
         css={`
@@ -66,7 +65,7 @@ export default () => (
               width: 60rem;
 
               ${props => props.theme.breakpoints.md} {
-                margin-top:4rem;
+                margin-top: 4rem;
               }
             `}
           />
@@ -104,8 +103,8 @@ export default () => (
               <img src={toggle} alt="Socialize your design system" />
             </ContentBlockImage>
             <h3> Socialize your design system.</h3>
-            Go beyond static docs and share real, 
-            working demos, and live code examples.
+            Go beyond static docs and share real, working demos, and live code
+            examples.
           </div>
 
           <div>
@@ -166,26 +165,25 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="5962DF">
-              <img src={briefcase} alt="Support for enterprise needs
+              <img
+                src={briefcase}
+                alt="Support for enterprise needs
 
-" />
+"
+              />
             </ContentBlockImage>
             <h3>Support for enterprise needs</h3>
             Dedicated support focused on delivering your success.
           </div>
         </ContentBlock>
-      
       </div>
 
-
       <CTA
-         title="Custom deploy options & support"
-         subtitle="Get the infrastructure and support options your organization demands."
-         cta="Contact us"       
-         link="https://airtable.com/shrlgLSJWiX8rYqyG"
+        title="Custom deploy options & support"
+        subtitle="Get the infrastructure and support options your organization demands."
+        cta="Contact us"
+        link="mailto:hello@codesandbox.io"
       />
-
-
     </Wrapper>
   </Layout>
 );

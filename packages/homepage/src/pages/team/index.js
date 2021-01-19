@@ -6,7 +6,6 @@ import CTA from '../../components/CTA';
 import { Description, H6 } from '../../components/Typography';
 
 import {
-  CTABottom,
   ContentBlock,
   Title,
   Subtitle,
@@ -71,7 +70,7 @@ export default () => (
               width: 90rem;
 
               ${props => props.theme.breakpoints.md} {
-                margin-top:4rem;
+                margin-top: 4rem;
               }
             `}
           />
@@ -150,7 +149,7 @@ export default () => (
               width: 900px;
 
               ${props => props.theme.breakpoints.md} {
-                margin-top:4rem;
+                margin-top: 4rem;
               }
             `}
           />
@@ -173,8 +172,7 @@ export default () => (
           <div>
             <h3>Make it a conversation.</h3>
             Reply to create a thread, include screenshots, @mention those you
-            need to keep in the loop, and archive it when you’re
-            done.
+            need to keep in the loop, and archive it when you’re done.
           </div>
         </ContentBlock>
         <Quote>
@@ -227,18 +225,12 @@ export default () => (
           </div>
         </ContentBlock>
 
-
-
-
         <CTA
-         title="Collaborate with your team"
-         subtitle="Test ideas earlier, iterate more and create better products with a shared workspace."
-         cta="Go Pro"       
-         link="/pricing"
-    />
-
-
-
+          title="Collaborate with your team"
+          subtitle="Test ideas earlier, iterate more and create better products with a shared workspace."
+          cta="Go Pro"
+          link="/pricing"
+        />
 
         <div>
           <Subtitle>
@@ -272,18 +264,14 @@ export default () => (
             Bring multiple teams together in a single account to collaborate.
           </div>
         </ContentBlock>
-
       </div>
 
-
       <CTA
-         title="For large or multiple teams"
-         subtitle="Share code, apps, and templates. Learn from each other and bake in best practice."
-         cta="Get early access"       
-         link="/pricing" 
-    />
-
-
+        title="For large or multiple teams"
+        subtitle="Share code, apps, and templates. Learn from each other and bake in best practice."
+        cta="Get early access"
+        link="https://airtable.com/shrlgLSJWiX8rYqyG"
+      />
     </Wrapper>
   </Layout>
 );
