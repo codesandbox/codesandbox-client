@@ -104,6 +104,7 @@ export const ContentBlockImage = styled.div`
 `;
 
 export const FeaturedImage = styled.div`
+  overflow: hidden;
   width: 100%;
   height: 440px;
   background: url(${props => props.bg});
