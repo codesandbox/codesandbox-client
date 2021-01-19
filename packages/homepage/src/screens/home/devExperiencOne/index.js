@@ -1,7 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
-import { P, H3 } from '../../../components/Typography';
+
+import { H2, P, H3 } from '../../../components/Typography';
+import { PrototypingIcon, KnowledgeIcon, FeedbackIcon, BGIcon, GHIcon, NPMIcon, OptimizedIcon } from './icons';
+
 
 const container = {
   hidden: { opacity: 0 },
@@ -69,6 +72,7 @@ const DevExperienceOne = () => (
   >
     <Grid variants={container} initial="hidden" animate="show">
       <Feature variants={item}>
+      <PrototypingIcon/>
         <H3>Rapid Prototyping</H3>
         <P muted>
           Quickly create real, working prototypes. Test ideas earlier and
@@ -76,6 +80,9 @@ const DevExperienceOne = () => (
         </P>
       </Feature>
       <Feature variants={item}>
+
+        <KnowledgeIcon/>
+
         <H3>Knowledge Sharing</H3>
         <P muted>
           Use code, apps, and templates collectively. Learn from each other and
@@ -83,10 +90,13 @@ const DevExperienceOne = () => (
         </P>
       </Feature>
       <Feature variants={item}>
+
+        <FeedbackIcon/>
         <H3>Better Feedback</H3>
         <P muted>
-          Give and get feedback, on code or visuals, right in the editor. Take
-          action and move forward faster.
+Give and get feedback, on code or visuals, right in the editor. Take action and move forward faster.
+
+        
         </P>
       </Feature>
     </Grid>
