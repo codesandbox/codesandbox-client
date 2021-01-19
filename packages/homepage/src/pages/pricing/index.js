@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
 
 import { motion } from 'framer-motion';
@@ -18,17 +19,23 @@ import {
   ProductChooser,
 } from './_elements';
 import { personal } from './data/_personal';
+import { business } from './data/_business';
 import Cards from './_cards';
 import { OpenIcon, Save } from './_icons';
 
 export default () => {
+  const urlParams = new URLSearchParams(window.location.search);
   const [open, setOpen] = useState({});
   const [mode, setMode] = useState('monthly');
-  const [product, setProduct] = useState('team');
+  const [product, setProduct] = useState(
+    urlParams.get('for') === 'individual' ? 'personal' : 'team'
+  );
 
   const toggleTable = name => {
     setOpen(o => ({ ...o, [name]: !o[name] }));
   };
+
+  const array = product === 'personal' ? personal : business;
 
   return (
     <Layout>
@@ -91,9 +98,10 @@ export default () => {
           margin-bottom: 128px;
         `}
       >
-        {personal.items.map(item => (
+        {array.items.map(item => (
           <TableWrapper>
             <FeaturesTableHeader
+              team={product === 'team'}
               onClick={() => toggleTable(item.name)}
               css={`
                 margin-top: 0;
@@ -103,38 +111,87 @@ export default () => {
               <OpenIcon open={open[item.name]} />
             </FeaturesTableHeader>
             <FeaturesTable
+              team={product === 'team'}
               as={motion.div}
               initial={{ height: 0 }}
               animate={{ height: `${open[item.name] ? 'auto' : 0}` }}
               open={open[item.name]}
             >
-              <Plan as="div">
+              <Plan as="div" team={product === 'team'}>
                 <span />
-                {personal.plans.map(plan => (
-                  <PlanName paid={!plan.free}>{plan.name}</PlanName>
+                {array.plans.map(plan => (
+                  <PlanName style={{ color: plan.color }} paid={!plan.free}>
+                    {plan.name}
+                  </PlanName>
                 ))}
               </Plan>
-              {item.features.map(feature => (
-                <li>
-                  <div>
-                    <FeatureTitle>{feature.name}</FeatureTitle>
-                    <P muted small>
-                      {feature.desc}
-                    </P>
-                  </div>
-                  {feature.available.map(available => {
-                    if (typeof available === 'string') {
-                      return <span className="text">{available}</span>;
-                    }
-
-                    return <span>{available ? '✓' : ''}</span>;
-                  })}
-                </li>
-              ))}
+              {item.features.map(feature => {
+                if (feature.subheading) {
+                  return (
+                    <>
+                      <li
+                        css={`
+                          grid-template-columns: 1fr;
+                        `}
+                      >
+                        {' '}
+                        <FeatureTitle>{feature.subheading}</FeatureTitle>
+                      </li>
+                      {feature.features.map(fea => (
+                        <li>
+                          <div>
+                            <FeatureTitle>{fea.name}</FeatureTitle>
+                            <P muted small>
+                              {fea.desc}
+                            </P>
+                            <Checks feature={fea} product={product} />
+                          </div>
+                        </li>
+                      ))}
+                    </>
+                  );
+                }
+                return (
+                  <li>
+                    <div>
+                      <FeatureTitle>{feature.name}</FeatureTitle>
+                      <P muted small>
+                        {feature.desc}
+                      </P>
+                    </div>
+                    <Checks feature={feature} product={product} />
+                  </li>
+                );
+              })}
             </FeaturesTable>
           </TableWrapper>
         ))}
       </div>
     </Layout>
   );
+};
+
+const Checks = ({ feature, product }) => {
+  if (typeof feature.available === 'boolean') {
+    return product === 'team' ? (
+      <>
+        <span>✓</span>
+        <span>✓</span>
+        <span>✓</span>
+      </>
+    ) : (
+      <>
+        <span>✓</span>
+        <span>✓</span>
+      </>
+    );
+  }
+
+  return feature.available.map(available => {
+    if (typeof available === 'string') {
+      return <span className="text">{available}</span>;
+    }
+
+    return <span>{available ? '✓' : ''}</span>;
+  });
 };

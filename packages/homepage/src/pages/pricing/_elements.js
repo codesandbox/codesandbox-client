@@ -108,10 +108,15 @@ export const FeaturesTableHeader = styled.button`
   color: ${props => props.theme.homepage.white};
   height: 56px;
 
+  ${props =>
+    props.team &&
+    css`
+      grid-template-columns: 1fr 12rem 12rem 12rem;
+    `}
+
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: 1fr 5.625rem 3.75rem;
     font-size: 1rem;
-    margin-left: 0 !important;
   }
 `;
 
@@ -123,6 +128,10 @@ export const FeaturesTable = styled.ul`
 
   ${props => props.theme.breakpoints.md} {
     margin-left: 0 !important;
+  }
+
+  ${props => props.theme.breakpoints.xl} {
+    overflow: scroll;
   }
 
   ${props =>
@@ -143,9 +152,19 @@ export const FeaturesTable = styled.ul`
   li {
     display: grid;
     grid-template-columns: 1fr 14rem 14rem;
+
+    ${props =>
+      props.team &&
+      css`
+        grid-template-columns: 1fr 12rem 12rem 12rem;
+      `}
     align-items: center;
     margin: 0;
     position: relative;
+
+    ${props => props.theme.breakpoints.xl} {
+      width: 850px;
+    }
 
     > * {
       padding: 13px 0;
@@ -177,9 +196,13 @@ export const FeaturesTable = styled.ul`
       border-right: 1px solid #151515;
     }
 
-    ${props => props.theme.breakpoints.md} {
-      grid-template-columns: 1fr 3.75rem 3.75rem;
-    }
+    ${props =>
+      !props.team &&
+      css`
+        ${props.theme.breakpoints.md} {
+          grid-template-columns: 1fr 3.75rem 3.75rem;
+        }
+      `}
 
     span {
       width: 100%;
@@ -228,6 +251,7 @@ export const CardContainer = styled.div`
 
       div:last-child {
         grid-column: span 2;
+        height: auto;
       }
     }`}
 
@@ -261,6 +285,16 @@ export const Plan = styled(FeaturesTableHeader)`
   padding-bottom: 1rem;
   width: calc(100% + 40px);
   margin-left: -20px;
+
+  ${props =>
+    props.team &&
+    css`
+      grid-template-columns: 1fr 12rem 12rem 12rem;
+    `}
+
+  ${props => props.theme.breakpoints.xl} {
+    width: 890px;
+  }
 `;
 
 export const PlanName = styled.span`
