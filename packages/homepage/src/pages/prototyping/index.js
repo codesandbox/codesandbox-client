@@ -186,8 +186,8 @@ export default () => (
 
 
     <CTA
-         title="Code from anywhere"
-         subtitle="Code online with no setup in a powerful IDE that feels like local."
+         title="For rapid prototyping"
+         subtitle="Instant sandboxes to get you coding in seconds."
          cta="Get Started"       
          link="/s"
     />
