@@ -121,10 +121,11 @@ export const FeaturedImage = styled.div`
   ${props => props.theme.breakpoints.md} {
     height: auto;
   }
-
-  img {
-    top: 4rem;
-    position: relative;
+  @media screen and (prefers-reduced-motion: no-preference) {
+    img {
+      top: 4rem;
+      position: relative;
+    }
   }
 `;
 
