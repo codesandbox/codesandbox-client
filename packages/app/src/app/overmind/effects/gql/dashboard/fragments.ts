@@ -177,6 +177,7 @@ export const currentTeamInfoFragment = gql`
     }
 
     subscription {
+      id
       type
       status
       quantity

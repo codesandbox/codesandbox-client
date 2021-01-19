@@ -130,6 +130,8 @@ const UpgradeSteps = () => {
 
   const [scriptLoaded] = useScript('https://cdn.paddle.com/paddle/paddle.js');
 
+  const { actions } = useOvermind();
+
   React.useEffect(() => {
     if (scriptLoaded && checkoutReady) setStep(3);
   }, [scriptLoaded, checkoutReady]);
@@ -137,7 +139,11 @@ const UpgradeSteps = () => {
   // this is a complete tangent from the inline checkout flow.
   // only used when the user already has a subscription
   // and is trying to change the billing interval for the next cycle
-  const changeNextBillingInterval = () => {};
+  const changeNextBillingInterval = async () => {
+    await actions.dashboard.changeSubscriptionBillingInterval();
+    // TODO: Add check for success here, not sure how
+    location.href = '/pro/success?v=2';
+  };
 
   return (
     <Stack
@@ -610,7 +616,11 @@ const Upgrade = ({
           <Button
             loading={loading}
             disabled={
+              // non-admins can't upgrade
               activeUserAuthorization !== TeamMemberAuthorization.Admin ||
+              // you are not allowed to change from yearly to monthly
+              currentSubscription.details.billingInterval === 'YEARLY' ||
+              // if it's already the same, then nothing to do here
               plan.billingInterval ===
                 currentSubscription?.details.billingInterval
             }

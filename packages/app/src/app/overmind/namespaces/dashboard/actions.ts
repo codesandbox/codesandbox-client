@@ -1630,3 +1630,19 @@ export const deleteAccount: AsyncAction = async ({ state, effects }) => {
     );
   }
 };
+
+export const changeSubscriptionBillingInterval: AsyncAction = async ({
+  state,
+  effects,
+}) => {
+  try {
+    await effects.gql.mutations.updateSubscriptionBillingInterval({
+      teamId: state.activeTeam,
+      subscriptionId: state.activeTeamInfo.subscription.id,
+    });
+  } catch {
+    effects.notificationToast.error(
+      'There was a problem updating your billing interval. Please email us at hello@codesandbox.io'
+    );
+  }
+};

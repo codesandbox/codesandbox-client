@@ -949,6 +949,7 @@ export enum SubscriptionBillingInterval {
 }
 
 export type WorkspaceSubscription = {
+  id: Scalars['UUID4'];
   type: WorkspaceSubscriptionTypes;
   status: 'ACTIVE' | 'PAUSED' | 'CANCELLED';
   quantity: Scalars['Int'];
@@ -1658,7 +1659,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'WorkspaceSubscription' } & Pick<
         WorkspaceSubscription,
-        'type' | 'status' | 'quantity' | 'details'
+        'id' | 'type' | 'status' | 'quantity' | 'details'
       >
     >;
   };
@@ -2869,4 +2870,17 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
     Team,
     'id' | 'name' | 'joinedPilotAt'
   >;
+};
+
+export type UpdateSubscriptionBillingIntervalMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  subscriptionId: Scalars['UUID4'];
+}>;
+
+export type UpdateSubscriptionBillingIntervalMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  updateSubscriptionBillingInterval: {
+    teamId: Scalars['UUID4'];
+  };
 };

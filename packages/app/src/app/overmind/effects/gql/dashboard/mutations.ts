@@ -63,6 +63,8 @@ import {
   SetDefaultTeamMemberAuthorizationMutationVariables,
   DeleteCurrentUserMutation,
   DeleteCurrentUserMutationVariables,
+  UpdateSubscriptionBillingIntervalMutation,
+  UpdateSubscriptionBillingIntervalMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -507,5 +509,22 @@ export const deleteAccount: Query<
 > = gql`
   mutation deleteCurrentUser {
     deleteCurrentUser
+  }
+`;
+
+export const updateSubscriptionBillingInterval: Query<
+  UpdateSubscriptionBillingIntervalMutation,
+  UpdateSubscriptionBillingIntervalMutationVariables
+> = gql`
+  mutation updateSubscriptionBillingInterval(
+    $teamId: UUID4!
+    $subscriptionId: UUID4!
+  ) {
+    updateSubscriptionBillingInterval(
+      teamId: $teamId
+      subscriptionId: $subscriptionId
+    ) {
+      teamId
+    }
   }
 `;

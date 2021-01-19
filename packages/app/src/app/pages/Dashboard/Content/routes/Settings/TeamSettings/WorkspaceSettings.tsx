@@ -310,7 +310,7 @@ export const WorkspaceSettings = () => {
                         target="_blank"
                         css={{ textDecoration: 'underline' }}
                       >
-                        Change billing frequency
+                        Change billing interval
                       </Link>
                     </Stack>
                   </Stack>
