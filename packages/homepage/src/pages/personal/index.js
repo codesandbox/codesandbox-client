@@ -224,9 +224,9 @@ export default () => (
 
 
       <CTA
-          title="Experiment and learn without setup hassle
+          title="For power-users & freelancers
           "
-          subtitle="Make sandboxes private and use private GitHub repos. Get more space, higher upload limits, and unlimited invites.
+          subtitle="Keep work private, get more space and higher upload limits.
           "
           cta="Go Pro"       
           link="/pricing"
