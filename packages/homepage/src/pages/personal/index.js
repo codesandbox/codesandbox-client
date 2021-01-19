@@ -146,7 +146,7 @@ export default () => (
             `}
           />
         </FeaturedImage>
-        <ContentBlock cols="4" small center>
+        <ContentBlock cols="4" small >
           <div>
             <h3>Share code and creations.</h3>
             With friends, colleagues, or the world.

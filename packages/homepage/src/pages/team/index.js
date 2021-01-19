@@ -280,7 +280,7 @@ export default () => (
          title="For large or multiple teams"
          subtitle="Share code, apps, and templates. Learn from each other and bake in best practice."
          cta="Get early access"       
-         link="/pricing" 
+         link="https://airtable.com/shrlgLSJWiX8rYqyG" 
     />
 
 

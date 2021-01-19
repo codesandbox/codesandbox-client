@@ -182,7 +182,7 @@ export default () => (
          title="Custom deploy options & support"
          subtitle="Get the infrastructure and support options your organization demands."
          cta="Contact us"       
-         link="https://airtable.com/shrlgLSJWiX8rYqyG"
+         link="mailto:hello@codesandbox.io"
       />
 
 
