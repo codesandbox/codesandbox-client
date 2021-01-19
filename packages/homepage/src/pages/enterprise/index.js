@@ -179,8 +179,8 @@ export default () => (
 
 
       <CTA
-         title="Accelerate innovation"
-         subtitle="Move faster and innovate more with better code collaboration. Combined with infrastructure and support options your organization demands. "
+         title="Custom deploy options & support"
+         subtitle="Get the infrastructure and support options your organization demands."
          cta="Contact us"       
          link="https://airtable.com/shrlgLSJWiX8rYqyG"
       />
