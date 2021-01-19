@@ -52,7 +52,16 @@ export default () => (
         <div>
           <Subtitle>Keep everyone in the loop</Subtitle>
         </div>
-        <FeaturedImage bg={bg}>
+        <FeaturedImage
+        css={`
+        height: 468px;
+ 
+        ${props => props.theme.breakpoints.md} {
+          height: 200px;
+        }
+      `}
+        
+        bg={bg}>
           <img
             src={ide}
             alt="Keep everyone in the loop"
@@ -132,7 +141,17 @@ export default () => (
               Create static sites, components, <br /> or full-stack web apps
             </Subtitle>
           </div>
-          <FeaturedImage bg={bg1}>
+          <FeaturedImage
+          css={`
+          height: 468px;
+   
+          ${props => props.theme.breakpoints.md} {
+            height: auto;
+            padding:2rem 0;
+          }
+        `}
+          
+          bg={bg1}>
             <img
               src={deps}
               alt="dd any of the 1M+ dependencies"

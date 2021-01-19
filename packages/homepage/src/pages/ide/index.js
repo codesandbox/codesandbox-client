@@ -63,12 +63,21 @@ export default () => (
         <div>
           <Subtitle as="h2">Fast development in the browser</Subtitle>
         </div>
-        <FeaturedImage bg={bg}>
+        <FeaturedImage
+        css={`
+        height: 468px;
+ 
+        ${props => props.theme.breakpoints.md} {
+          height: 200px;
+        }
+      `}
+        bg={bg}>
           <img
             src={templates}
             alt="Template Universe"
             css={`
               width: 864px;
+              margin-top:4rem;
             `}
           />
         </FeaturedImage>
@@ -135,6 +144,9 @@ export default () => (
             css={`
               height: 468px;
               justify-content: flex-end;
+              ${props => props.theme.breakpoints.md} {
+                height: auto;
+              }
             `}
             bg={bg1}
           >
@@ -176,6 +188,9 @@ export default () => (
               height: 468px;
               justify-content: flex-start;
               background-position: bottom;
+              ${props => props.theme.breakpoints.md} {
+                height: auto;
+              }
             `}
             bg={bg2}
           >
@@ -217,6 +232,11 @@ export default () => (
             css={`
               height: 468px;
               justify-content: flex-start;
+
+              ${props => props.theme.breakpoints.md} {
+                height: auto;
+              }
+
             `}
             bg={bg3}
           >
@@ -265,6 +285,12 @@ export default () => (
             css={`
               height: 468px;
               justify-content: center;
+
+              ${props => props.theme.breakpoints.md} {
+                height: auto;
+              }
+
+
             `}
             bg={bg4}
           >

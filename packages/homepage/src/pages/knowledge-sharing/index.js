@@ -47,7 +47,17 @@ export default () => (
         <div>
           <Subtitle as="h2">Collaborative workspaces</Subtitle>
         </div>
-        <FeaturedImage bg={bg}>
+        <FeaturedImage
+        css={`
+        height: 468px;
+        padding:0 1rem;
+
+        ${props => props.theme.breakpoints.md} {
+          height: 200px;
+        }
+      `}
+        
+        bg={bg}>
           <img
             src={team}
             alt="Collaborative workspaces"
