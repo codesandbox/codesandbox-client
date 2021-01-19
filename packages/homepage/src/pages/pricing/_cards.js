@@ -195,7 +195,9 @@ export const PersonalCards = ({ mode }) => (
           <li>All in Personal, plus:</li>
           <li>Private sandboxes</li>
           <li>Private GitHub repos</li>
-          <li>Stricter sandbox permissions </li>
+          <li>More storage space</li>
+          <li>Higher upload limits</li>  
+          <li>Stricter sandbox permissions</li>
         </List>
       </div>
       <Button
