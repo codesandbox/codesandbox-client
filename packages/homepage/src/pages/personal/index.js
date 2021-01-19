@@ -229,7 +229,7 @@ export default () => (
           subtitle="Keep work private, get more space and higher upload limits.
           "
           cta="Go Pro"       
-          link="/pricing"
+          link="/pricing/?for=individual"
       />
 
     </Wrapper>
