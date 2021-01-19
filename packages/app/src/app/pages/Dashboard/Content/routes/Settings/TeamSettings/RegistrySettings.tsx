@@ -60,17 +60,12 @@ export const RegistrySettings = () => {
     state.activeTeamInfo?.subscription?.type !== WorkspaceSubscriptionTypes.Team
   ) {
     alert = {
-      message:
-        'Your workspace needs to be in the pro pilot to use a custom npm registry.',
-
-      cta: {
-        label: 'Apply for Pilot',
-        href: 'https://airtable.com/shrlgLSJWiX8rYqyG',
-      },
+      message: 'You need a Team Pro workspace to set a custom npm registry.',
+      cta: { label: 'Upgrade to Pro', href: '/pro?v=2' },
     };
   } else if (state.activeWorkspaceAuthorization !== 'ADMIN') {
     alert = {
-      message: 'Only the admin can change or add a custom npm registry.',
+      message: 'Please contact your admin to set a custom npm registry.',
     };
   }
 

@@ -44,17 +44,13 @@ export const PermissionSettings = () => {
     if (!isPersonalPro) {
       alert = {
         message: 'Upgrade to Pro to change sandbox permissions.',
-        cta: { label: 'Upgrade to Pro', href: 'https://codesandbox.io/pro' },
+        cta: { label: 'Upgrade to Pro', href: '/pro' },
       };
     }
   } else if (!isTeamPro) {
     alert = {
-      message:
-        'Your workspace needs to be in the Pro workspaces pilot to change sandbox permissions.',
-      cta: {
-        label: 'Apply for Pilot',
-        href: 'https://airtable.com/shrlgLSJWiX8rYqyG',
-      },
+      message: 'You need a Team Pro workspace to change sandbox permissions.',
+      cta: { label: 'Upgrade to Pro', href: '/pro?v=2' },
     };
   } else if (!isAdmin) {
     alert = {

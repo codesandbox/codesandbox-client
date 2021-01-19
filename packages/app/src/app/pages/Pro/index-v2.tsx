@@ -606,7 +606,7 @@ const Upgrade = ({
               {currentSubscription.details.billingInterval ===
                 SubscriptionBillingInterval.Yearly &&
               plan.billingInterval === SubscriptionBillingInterval.Monthly ? (
-                <Text variant="muted">
+                <Text align="center">
                   Changing billing interval from Yearly to Monthly is not
                   supported yet. Please email us at hello@codesandbox.io
                 </Text>
