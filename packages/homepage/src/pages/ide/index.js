@@ -106,7 +106,7 @@ export default () => (
             margin-bottom: 56px;
           `}
         >
-          <Subtitle as="h2">Use with Your Fave Dev Tools</Subtitle>
+          <Subtitle as="h2">Use with your fave dev tools</Subtitle>
         </div>
 
         <ContentBlock>
@@ -138,7 +138,7 @@ export default () => (
         </ContentBlock>
         <div>
           <div>
-            <Subtitle as="h2">Code Together</Subtitle>
+            <Subtitle as="h2">Code together</Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -181,7 +181,7 @@ export default () => (
         </div>
         <div>
           <div>
-            <Subtitle as="h2">Work with Containers</Subtitle>
+            <Subtitle as="h2">Work with containers</Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -226,7 +226,7 @@ export default () => (
         </div>
         <div>
           <div>
-            <Subtitle as="h2">Debug Like a Pro</Subtitle>
+            <Subtitle as="h2">Debug like a pro</Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -278,7 +278,7 @@ export default () => (
         </div>
         <div>
           <div>
-            <Subtitle as="h2">Make It Yours</Subtitle>
+            <Subtitle as="h2">Make it yours</Subtitle>
           </div>
 
           <FeaturedImage
@@ -353,8 +353,8 @@ export default () => (
 
 
     <CTA
-         title="Code from anywhere"
-         subtitle="Code online with no setup in a powerful IDE that feels like local."
+         title="Start coding in seconds"
+         subtitle="Code from anywhere with no project setup."
          cta="Get Started"       
          link="/s"
     />
