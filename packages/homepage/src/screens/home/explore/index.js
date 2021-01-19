@@ -55,9 +55,8 @@ const Experiment = () => (
           text-align: center;
         `}
       >
-        Experiment and learn without setup hassle. Create static sites, 
-        components, or full-stack web apps with a community who’ve crafted&nbsp;
-        <SandboxCount /> public sandboxes and counting.
+        Create static sites, components, or full-stack web apps with a community 
+        who’ve crafted&nbsp;<SandboxCount /> public sandboxes and counting.
       </P>
       <Button
         style={{
