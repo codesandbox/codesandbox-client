@@ -105,6 +105,7 @@ export const ContentBlockImage = styled.div`
 
 export const FeaturedImage = styled.div`
   overflow: hidden;
+
   width: 100%;
   height: 440px;
   background: url(${props => props.bg});
@@ -119,6 +120,11 @@ export const FeaturedImage = styled.div`
 
   ${props => props.theme.breakpoints.md} {
     height: auto;
+  }
+
+  img {
+    top: 4rem;
+    position: relative;
   }
 `;
 

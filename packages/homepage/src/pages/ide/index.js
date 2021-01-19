@@ -42,7 +42,7 @@ export default () => {
 
   useEffect(() => {
     const settings = {
-      speed: 1.1,
+      speed: 1.2,
       center: true,
     };
     if (!prefersReducedMotion) {
@@ -97,7 +97,6 @@ export default () => {
               alt="Template Universe"
               css={`
                 width: 864px;
-                margin-top: 4rem;
               `}
             />
           </FeaturedImage>
