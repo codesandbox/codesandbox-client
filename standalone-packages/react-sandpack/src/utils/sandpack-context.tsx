@@ -162,12 +162,17 @@ class SandpackProvider extends React.PureComponent<Props, State> {
         this.props.entry
       );
 
-      this.commitFiles(newFiles);
-    }
+      /* eslint-disable react/no-did-update-set-state */
+      this.setState({ files: newFiles });
 
-    if (this.manager && this.props.skipEval !== props.skipEval) {
-      this.manager.updateOptions({
-        skipEval: this.props.skipEval,
+      if (this.state.sandpackStatus !== 'running' || !this.manager) {
+        return;
+      }
+
+      this.manager.updatePreview({
+        showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
+        files: newFiles,
+        template: this.props.environment,
       });
     }
   }
