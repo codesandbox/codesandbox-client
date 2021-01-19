@@ -624,7 +624,7 @@ const Upgrade = ({
               // non-admins can't upgrade
               activeUserAuthorization !== TeamMemberAuthorization.Admin ||
               // you are not allowed to change from yearly to monthly
-              // currentSubscription.details.billingInterval === 'YEARLY' ||
+              currentSubscription.details.billingInterval === 'YEARLY' ||
               // if it's already the same, then nothing to do here
               plan.billingInterval ===
                 currentSubscription?.details.billingInterval
