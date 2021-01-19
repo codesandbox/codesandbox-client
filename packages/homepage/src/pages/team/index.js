@@ -106,7 +106,7 @@ export default () => (
         <ContentBlock>
           <div>
             <ContentBlockImage bg="151515">
-              <img src={shareDesign} alt="fast" />
+              <img src={shareDesign} alt="Socialize your design system" />
             </ContentBlockImage>
             <h3> Socialize your design system.</h3>
             Remove barriers to collaboration with a shared workspace. Organize
@@ -115,7 +115,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="5962DF">
-              <img src={planets} alt="planets" />
+              <img src={planets} alt="Bake in best practice" />
             </ContentBlockImage>
             <h3>Bake in best practice. </h3>
             Custom workspace templates provide starting points for your team,
@@ -124,7 +124,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={embed} alt="Embeds" />
+              <img src={embed} alt="Embed in tools & docs." />
             </ContentBlockImage>
             <h3>Embed in tools & docs.</h3>
             Show, don’t just tell. Bring live code examples and prototypes into
@@ -211,7 +211,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={money} alt="" />
+              <img src={money} alt="Centralized billing" />
             </ContentBlockImage>
             <h3>Centralized billing</h3>
             Get everyone in a single account for easier team management &
@@ -220,7 +220,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={settings} alt="" />
+              <img src={settings} alt="Workspace settings" />
             </ContentBlockImage>
             <h3>Workspace settings</h3>
             Set default privacy and permission settings across your workspace.
@@ -250,7 +250,7 @@ export default () => (
         <ContentBlock>
           <div>
             <ContentBlockImage bg="151515">
-              <img src={sso} alt="" />
+              <img src={sso} alt="Single sign-on (SSO)" />
             </ContentBlockImage>
             <h3>Single sign-on (SSO)</h3>
             Integrate your identity management system and enforce SSO.
@@ -258,7 +258,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={analytics} alt="" />
+              <img src={analytics} alt="Analytics" />
             </ContentBlockImage>
             <h3>Analytics</h3>
             Measure impact and refine creations with sandbox analytics.
@@ -266,7 +266,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="5962DF">
-              <img src={workspaces} alt="" />
+              <img src={workspaces} alt="Multiple workspaces" />
             </ContentBlockImage>
             <h3>Multiple workspaces</h3>
             Bring multiple teams together in a single account to collaborate.

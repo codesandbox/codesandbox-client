@@ -55,7 +55,7 @@ export default () => (
         <FeaturedImage bg={bg}>
           <img
             src={ide}
-            alt=""
+            alt="Keep everyone in the loop"
             css={`
               width: 961px;
             `}
@@ -95,7 +95,7 @@ export default () => (
         <ContentBlock>
           <div>
             <ContentBlockImage bg="5962DF">
-              <img src={repo} alt="" />
+              <img src={repo} alt=" Import existing projects from private repos" />
             </ContentBlockImage>
             <h3>Private repos</h3>
             Import existing projects from private repos, or commit from
@@ -104,7 +104,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={registry} alt="" />
+              <img src={registry} alt="Custom registry support" />
             </ContentBlockImage>
             <h3>Custom registry support</h3>
             Leverage your own internal packages, and build with your design
@@ -113,7 +113,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={privateImg} alt="" />
+              <img src={privateImg} alt="Private sandboxes" />
             </ContentBlockImage>
             <h3>Private sandboxes</h3>
             Make sandboxes public, private, or unlisted. Per sandbox or across
@@ -135,7 +135,7 @@ export default () => (
           <FeaturedImage bg={bg1}>
             <img
               src={deps}
-              alt=""
+              alt="dd any of the 1M+ dependencies"
               css={`
                 width: 550px;
               `}

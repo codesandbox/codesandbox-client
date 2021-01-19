@@ -62,7 +62,7 @@ export default () => (
         >
           <img
             src={ide}
-            alt=""
+            alt="Keep everyone in the loop"
             css={`
               width: 971px;
                      ${props => props.theme.breakpoints.md} {
@@ -104,7 +104,7 @@ export default () => (
         <ContentBlock>
           <div>
             <ContentBlockImage bg="5962DF">
-              <img src={comments} alt="" />
+              <img src={comments} alt="Code comments" />
             </ContentBlockImage>
             <h3> Code comments</h3>
             Add feedback about a sandbox as a whole or on specific code lines.
@@ -113,7 +113,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={comments1} alt="" />
+              <img src={comments1} alt="Preview comments" />
             </ContentBlockImage>
             <h3>Preview comments</h3>
             Add comments about visuals right on the preview. We capture browser
@@ -122,7 +122,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={comments2} alt="" />
+              <img src={comments2} alt="In-editor" />
             </ContentBlockImage>
             <h3>In-editor feedback</h3>
             Comments are shown right where you need it, alongside your code in

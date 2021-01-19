@@ -61,7 +61,7 @@ export default () => (
         <FeaturedImage bg={bg}>
           <img
             src={ide}
-            alt=""
+            alt="  Build in the open"
             css={`
               width: 60rem;
 
@@ -101,7 +101,7 @@ export default () => (
         <ContentBlock>
           <div>
             <ContentBlockImage bg="5962DF">
-              <img src={toggle} alt="" />
+              <img src={toggle} alt="Socialize your design system" />
             </ContentBlockImage>
             <h3> Socialize your design system.</h3>
             Go beyond static docs and share real, 
@@ -110,7 +110,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={patterns} alt="" />
+              <img src={patterns} alt="Share patterns, not snippets." />
             </ContentBlockImage>
             <h3>Share patterns, not snippets.</h3>
             Combine components in sandboxes that exemplify best practices.
@@ -118,7 +118,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={people} alt="" />
+              <img src={people} alt="Get teams together." />
             </ContentBlockImage>
             <h3>Get teams together.</h3>
             Enable design, QA, and development to learn from each other and work
@@ -145,7 +145,7 @@ export default () => (
             <ContentBlockImage bg="151515">
               <img
                 src={cloud}
-                alt=""
+                alt="cloud"
                 css={`
                   display: block;
                   transform: translateX(7%);
@@ -158,7 +158,7 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="151515">
-              <img src={settings} alt="" />
+              <img src={settings} alt="settings" />
             </ContentBlockImage>
             <h3>Custom controls</h3>
             Enable effortless collaboration without compromising on security.
@@ -166,7 +166,9 @@ export default () => (
 
           <div>
             <ContentBlockImage bg="5962DF">
-              <img src={briefcase} alt="" />
+              <img src={briefcase} alt="Support for enterprise needs
+
+" />
             </ContentBlockImage>
             <h3>Support for enterprise needs</h3>
             Dedicated support focused on delivering your success.
