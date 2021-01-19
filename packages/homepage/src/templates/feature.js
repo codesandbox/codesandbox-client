@@ -31,7 +31,7 @@ export default ({
         tweetText,
         tweetJob,
         tweetName,
-        tweetHandle,
+        photo,
         coverReversed,
         coverSmaller,
         ctaLink,
@@ -63,10 +63,7 @@ export default ({
       <Tweet reverse={coverReversed}>
         "{tweetText}"
         <User>
-          <Avatar
-            src={`https://twitter-avatar-csb.vercel.app/${tweetHandle}`}
-            alt={tweetName}
-          />
+          <Avatar src={photo} alt={tweetName} />
           <div>
             <p>{tweetName}</p>
             <p>{tweetJob}</p>
@@ -148,6 +145,7 @@ export const pageQuery = graphql`
         ctaLink
         tweetName
         tweetHandle
+        photo
         coverReversed
         coverSmaller
         coverImage {

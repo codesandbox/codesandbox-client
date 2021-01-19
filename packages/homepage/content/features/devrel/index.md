@@ -11,6 +11,7 @@ tweetText: CodeSandbox continues to amaze me every day.
 tweetJob: Developer Experience, Apollo
 tweetName: Peggy Rayzis
 tweetHandle: peggyrayzis
+photo: https://pbs.twimg.com/profile_images/783341508820893696/JphRM0xk_200x200.jpg
 bgColor: 0971F1
 bgImage: ./blue.jpg
 coverImage: ./hiring.svg
