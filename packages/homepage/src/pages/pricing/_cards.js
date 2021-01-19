@@ -25,10 +25,10 @@ export const TeamCards = ({ mode }) => (
           <CardTitle>Team Pro Workspace</CardTitle>
           <Price>${mode === 'monthly' ? 30 : 24}</Price>
           <PriceSubText>
-            per editor/workspace/billed {mode === 'monthly' ? 'month' : 'year'}{' '}
+            per editor/workspace/billed {mode === 'monthly' ? 'monthly' : 'annually'}{' '}
             <br />
             or ${mode === 'annually' ? 30 : 24} per month billed{' '}
-            {mode === 'annually' ? 'month-to-month' : 'annually'}
+            {mode === 'annually' ? 'monthly' : 'annually'}
           </PriceSubText>
         </div>
         <List>
@@ -42,7 +42,7 @@ export const TeamCards = ({ mode }) => (
           <li>Private sandboxes</li>
           <li>Private GitHub repos</li>
           <li>Private NPM packages</li>
-          <li>Advanced permissions </li>
+          <li>Advanced permissions</li>
           <li>Unlimited viewers</li>
           <li>Centralized billing</li>
         </List>
