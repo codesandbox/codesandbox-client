@@ -1,3 +1,4 @@
+// eslint-disable-next-line spaced-comment
 /// <reference lib="webworker" />
 /* eslint-disable no-continue */
 /* eslint-disable no-inner-declarations */

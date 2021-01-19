@@ -1,3 +1,4 @@
+// eslint-disable-next-line spaced-comment
 /// <reference lib="webworker" />
 
 type StencilOpts = { file: string; module: string };
