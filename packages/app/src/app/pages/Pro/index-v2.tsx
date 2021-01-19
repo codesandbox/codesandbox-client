@@ -25,6 +25,7 @@ import {
   WorkspaceSubscriptionTypes,
   SubscriptionBillingInterval,
 } from 'app/graphql/types';
+import { Plan, plans, PADDLE_VENDOR_ID } from './plans';
 
 export const ProPage: React.FC = () => (
   <ThemeProvider>
@@ -68,63 +69,18 @@ const prettyPermissions = {
   READ: 'Viewer',
 };
 
-type Plan = {
-  id: string;
-  name: string;
-  type: WorkspaceSubscriptionTypes;
-  billingInterval: SubscriptionBillingInterval;
-  unit: number;
-  multiplier: number;
-  currency: string;
-};
-
-const PADDLE_VENDOR_ID = 729;
-const plans: { [key: string]: Plan } = {
-  PERSONAL_PRO_MONTHLY: {
-    id: '7365',
-    name: 'Personal Pro Workspace',
-    type: WorkspaceSubscriptionTypes.Personal,
-    unit: 12,
-    multiplier: 1,
-    billingInterval: SubscriptionBillingInterval.Monthly,
-    currency: '$',
-  },
-  PERSONAL_PRO_ANNUAL: {
-    id: '7399',
-    name: 'Personal Pro Workspace',
-    type: WorkspaceSubscriptionTypes.Personal,
-    unit: 9,
-    multiplier: 12,
-    billingInterval: SubscriptionBillingInterval.Yearly,
-    currency: '$',
-  },
-  TEAM_PRO_MONTHLY: {
-    id: '7407',
-    name: 'Team Pro Workspace',
-    type: WorkspaceSubscriptionTypes.Team,
-    unit: 30,
-    multiplier: 1,
-    billingInterval: SubscriptionBillingInterval.Monthly,
-    currency: '$',
-  },
-  TEAM_PRO_ANNUAL: {
-    id: '7399',
-    name: 'Team Pro Workspace',
-    type: WorkspaceSubscriptionTypes.Team,
-    unit: 24,
-    multiplier: 12,
-    billingInterval: SubscriptionBillingInterval.Yearly,
-    currency: '$',
-  },
-};
-
 const UpgradeSteps = () => {
   // step 1 - choose workspace
   // step 2 - loading inline checkout in background
   // step 3 - inline checkout
   const [step, setStep] = React.useState(1);
+  const {
+    state: { activeTeamInfo },
+  } = useOvermind();
 
-  const [plan, setPlan] = React.useState(null);
+  const currentSubscription = activeTeamInfo?.subscription;
+
+  const [plan, setPlan] = React.useState<Plan>(null);
   const [seats, setSeats] = React.useState(1);
   const [checkoutReady, setCheckoutReady] = React.useState(false);
 
@@ -139,7 +95,7 @@ const UpgradeSteps = () => {
   // and is trying to change the billing interval for the next cycle
   const { actions, effects } = useOvermind();
 
-  const changeNextBillingInterval = async () => {
+  const changeBillingInterval = async () => {
     try {
       await actions.dashboard.changeSubscriptionBillingInterval();
       location.href = '/pro/success?v=2';
@@ -163,7 +119,7 @@ const UpgradeSteps = () => {
           setSeats={setSeats}
           loading={step === 2}
           nextStep={() => setStep(2)}
-          changeNextBillingInterval={changeNextBillingInterval}
+          changeBillingInterval={changeBillingInterval}
         />
       )}
       {step > 1 && (
@@ -191,7 +147,7 @@ const Upgrade = ({
   setPlan,
   setSeats,
   nextStep,
-  changeNextBillingInterval,
+  changeBillingInterval,
 }) => {
   const {
     state: { personalWorkspaceId, user, activeTeam, activeTeamInfo, dashboard },
@@ -589,6 +545,12 @@ const Upgrade = ({
               borderColor: 'grays.500',
               borderRadius: 'small',
               overflow: 'hidden',
+              button: {
+                fontSize: 3,
+                height: 10,
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 700,
+              },
             })}
           >
             <Text size={3}>Workspace editors</Text>
@@ -618,30 +580,56 @@ const Upgrade = ({
             </Stack>
           </Stack>
 
-          <Button
-            loading={loading}
-            disabled={
-              // non-admins can't upgrade
-              activeUserAuthorization !== TeamMemberAuthorization.Admin ||
-              // you are not allowed to change from yearly to monthly
-              currentSubscription.details.billingInterval === 'YEARLY' ||
-              // if it's already the same, then nothing to do here
-              plan.billingInterval ===
-                currentSubscription?.details.billingInterval
-            }
-            onClick={() => {
-              if (currentSubscription) changeNextBillingInterval();
-              else nextStep();
-            }}
-            css={css({
-              fontSize: 3,
-              height: 10,
-              fontFamily: 'Lato, sans-serif',
-              fontWeight: 700,
-            })}
-          >
-            Continue
-          </Button>
+          {currentSubscription ? (
+            <>
+              <Button
+                disabled={
+                  // non-admins can't upgrade
+                  activeUserAuthorization !== TeamMemberAuthorization.Admin ||
+                  // you are not allowed to change from yearly to monthly
+                  currentSubscription.details.billingInterval ===
+                    SubscriptionBillingInterval.Yearly ||
+                  // if it's already the same, then nothing to do here
+                  plan.billingInterval ===
+                    currentSubscription?.details.billingInterval
+                }
+                onClick={() => changeBillingInterval()}
+                css={css({
+                  fontSize: 3,
+                  height: 10,
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 700,
+                })}
+              >
+                Update billing interval
+              </Button>
+              {currentSubscription.details.billingInterval ===
+                SubscriptionBillingInterval.Yearly &&
+              plan.billingInterval === SubscriptionBillingInterval.Monthly ? (
+                <Text variant="muted">
+                  Changing billing interval from Yearly to Monthly is not
+                  supported yet. Please email us at hello@codesandbox.io
+                </Text>
+              ) : null}
+            </>
+          ) : (
+            <Button
+              loading={loading}
+              disabled={
+                // non-admins can't upgrade
+                activeUserAuthorization !== TeamMemberAuthorization.Admin
+              }
+              onClick={() => nextStep()}
+              css={css({
+                fontSize: 3,
+                height: 10,
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 700,
+              })}
+            >
+              Continue
+            </Button>
+          )}
         </Stack>
       )}
     </div>
