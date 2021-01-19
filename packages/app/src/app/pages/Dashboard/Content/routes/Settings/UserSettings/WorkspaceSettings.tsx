@@ -184,20 +184,14 @@ export const WorkspaceSettings = () => {
         </Card>
       ) : (
         <Card style={{ backgroundColor: 'white' }}>
-          <Stack direction="vertical" gap={4}>
-            <Text size={6} weight="bold" css={css({ color: 'grays.800' })}>
+          <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
+            <Text size={6} weight="bold">
               Pro
             </Text>
             <Stack direction="vertical" gap={1}>
-              <Text size={3} variant="muted" css={css({ color: 'grays.800' })}>
-                Everything in Community, plus:
-              </Text>
-              <Text size={3} variant="muted" css={css({ color: 'grays.800' })}>
-                + Unlimited Private Sandboxes
-              </Text>
-              <Text size={3} variant="muted" css={css({ color: 'grays.800' })}>
-                + Private GitHub Repos
-              </Text>
+              <Text size={3}>Everything in Community, plus:</Text>
+              <Text size={3}>+ Unlimited Private Sandboxes</Text>
+              <Text size={3}>+ Private GitHub Repos</Text>
             </Stack>
             <Button
               as="a"

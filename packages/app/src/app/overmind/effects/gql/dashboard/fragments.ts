@@ -182,6 +182,7 @@ export const currentTeamInfoFragment = gql`
       details {
         recurringPrice
         billingInterval
+        updateBillingUrl
       }
     }
   }

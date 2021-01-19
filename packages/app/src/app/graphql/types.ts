@@ -954,6 +954,7 @@ export type WorkspaceSubscription = {
   details: {
     recurring_price: Scalars['Int'];
     billingInterval: SubscriptionBillingInterval;
+    updateBillingUrl: Scalars['String'];
   };
 };
 
