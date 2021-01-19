@@ -205,7 +205,7 @@ export default () => (
               <img src={code} alt="Create without limits" />
             </ContentBlockImage>
             <h3>Create without limits</h3>
-            Get more space, higher upload limits, and unlimited invites.
+            Get more file storage space and higher upload limits.
           </div>
         </ContentBlock>
         
