@@ -178,7 +178,7 @@ export default () => (
         <div >
  
           <Subtitle >
-          <H6 center>From $7 per month</H6>
+          <H6 center>from $7 per month</H6>
             Go Pro
           </Subtitle>
         </div>
