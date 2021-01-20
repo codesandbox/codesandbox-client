@@ -205,7 +205,7 @@ export const PersonalCards = ({ mode }) => (
           <PriceSubText>
             billed {mode === 'monthly' ? 'monthly' : 'annually'} <br />
             or ${mode === 'annually' ? 9 : 7} per month billed{' '}
-            {mode === 'annually' ? 'month-to-month' : 'annually'}
+            {mode === 'annually' ? 'monthly' : 'annually'}
           </PriceSubText>
         </div>
         <List>
