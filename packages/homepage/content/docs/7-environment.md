@@ -17,9 +17,11 @@ bundle your code even when you lose your connection to our servers. Containers
 on the other hand are executed server-side inside of a Docker container
 instance.
 
-While Client Sandboxes have faster previews and offline availability, they don't offer many configuration capabilities. Container Sandboxes take longer to start up, but effectively
-behave much like a local development environment, allowing you to customize your
-build tools, set up servers to listen to incoming requests, etc.
+While Client Sandboxes have faster previews and offline availability, they don't
+offer many configuration capabilities. Container Sandboxes take longer to start
+up, but effectively behave much like a local development environment, allowing
+you to customize your build tools, set up servers to listen to incoming
+requests, etc.
 
 ## Client Environments
 
