@@ -81,9 +81,19 @@ export const WorkspaceSettings = () => {
   const onInviteSubmit = async event => {
     event.preventDefault();
     setInviteLoading(true);
-    setInviteValue('');
-    await actions.dashboard.inviteToTeam(inviteValue);
-    setInviteLoading(false);
+
+    // if the user is going to be charged for adding a member
+    // throw them a confirmation modal
+    if (team?.subscription) {
+      actions.modalOpened({
+        modal: 'addMemberToWorkspace',
+        message: inviteValue,
+      });
+      setInviteLoading(false);
+    } else {
+      await actions.dashboard.inviteToTeam(inviteValue);
+      setInviteLoading(false);
+    }
   };
 
   if (!team || !stateUser) {

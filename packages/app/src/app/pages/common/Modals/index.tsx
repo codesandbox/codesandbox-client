@@ -41,6 +41,7 @@ import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
 import { AccountDeletionModal } from './AccountDeletion';
 import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfirmation';
+import { AddMemberToWorkspace } from './AddMemberToWorkspace';
 
 const modals = {
   preferences: {
@@ -166,6 +167,10 @@ const modals = {
   },
   deleteConfirmation: {
     Component: AccountDeletionConfirmationModal,
+    width: 450,
+  },
+  addMemberToWorkspace: {
+    Component: AddMemberToWorkspace,
     width: 450,
   },
 };
