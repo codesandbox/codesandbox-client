@@ -121,77 +121,77 @@ export const personal = {
           features: [
             {
               name: 'VS Code powered Editor',
-              desc: 'Leverage the power and familiarity of VS Code.',
+              desc: 'Leverage the power and familiarity of VS Code',
               available: true,
             },
             {
               name: 'Hot Module Reloading',
-              desc: ' See changes as you make them.',
+              desc: 'See changes as you make them',
               available: true,
             },
             {
               name: 'Keybindings & Quick Actions',
-              desc: 'Perform common tasks speedily.',
+              desc: 'Perform common tasks speedily',
               available: true,
             },
             {
               name: 'Console',
-              desc: 'Console',
+              desc: 'View logging and console output to see loading progress and debug issues',
               available: true,
             },
             {
               name: 'Zen Mode',
-              desc: 'Zen Mode',
+              desc: 'Zen mode hides distracting editor elements for demos and screenshots',
               available: true,
             },
             {
               name: 'Custom Themes',
-              desc: 'Custom Themes',
+              desc: 'Tweak theme styles with support for all VS Code themes',
               available: true,
             },
             {
               name: 'Type Acquisition',
-              desc: 'Type Acquisition',
+              desc: 'Typings automatically downloaded for every dependency',
               available: true,
             },
             {
               name: 'Vim Mode',
-              desc: 'Vim Mode',
+              desc: 'Vim emulation in the editor, powered by the VSCodeVim extension',
               available: true,
             },
             {
               name: 'External Resources',
-              desc: 'External Resources',
+              desc: 'Automatically include external resources, like CSS or JS files',
               available: true,
             },
             {
               name: 'Session Restore',
-              desc: 'Session Restore',
+              desc: 'Recover un-saved changes between sessions',
               available: true,
             },
             {
               name: 'Prettier',
-              desc: 'Prettier',
+              desc: 'Code gets prettified on save according to preferences',
               available: true,
             },
             {
-              name: 'Eslint',
-              desc: 'Eslint',
+              name: 'ESLint',
+              desc: 'Code is linted automatically',
               available: true,
             },
             {
               name: 'Emmet',
-              desc: 'Emmet',
+              desc: 'Expand abbreviations with Emmet.io in all JS, HTML, and CSS files',
               available: true,
             },
             {
               name: 'Configuration UI',
-              desc: 'Configuration UI',
+              desc: 'Edit config files for npm, Prettier, Netlify, Vercel, TypeScript, JavaScript, and your sandbox',
               available: true,
             },
             {
               name: 'Export Zip',
-              desc: 'Export Zip',
+              desc: 'Download your sandbox as a zip',
               available: true,
             },
           ],
@@ -201,37 +201,37 @@ export const personal = {
           features: [
             {
               name: 'Server Control Panel',
-              desc: 'Server Control Panel',
+              desc: 'Restart the sandbox or server',
               available: true,
             },
             {
               name: 'Multiple Ports',
-              desc: 'Multiple Ports',
+              desc: 'Container apps can listen on one or more ports simultaneously',
               available: true,
             },
             {
               name: 'Secrets',
-              desc: 'Secrets',
+              desc: 'Hide sensitive information in your app and access them via environment variables',
               available: true,
             },
             {
               name: 'Test Viewer',
-              desc: 'Test Viewer',
+              desc: 'Showing test results alongside your code',
               available: true,
             },
             {
               name: 'Problem Viewer',
-              desc: 'Problem Viewer',
+              desc: 'See errors clearly with our user-friendly overlay',
               available: true,
             },
             {
               name: 'React DevTools',
-              desc: 'React DevTools',
+              desc: 'Integration of React’s own DevTools into the editor',
               available: true,
             },
             {
               name: 'Terminal',
-              desc: 'Terminal',
+              desc: 'Run scripts and commands from a terminal',
               available: true,
             },
           ],
@@ -240,45 +240,45 @@ export const personal = {
           subheading: 'Live',
           features: [
             {
-              name: 'Collaborating editing',
-              desc: 'Collaborating editing',
+              name: 'Collaborative editing',
+              desc: 'Work on code and edit sandboxes with multiple people',
               available: ['5 invites/month', 'Unlimited'],
             },
             {
               name: 'In-editor Chat',
-              desc: 'In-editor Chat',
+              desc: 'Chat with collaborators about the code you’re all working on',
               available: true,
             },
             {
               name: 'Classroom Mode',
-              desc: 'Classroom Mode',
+              desc: 'Use Classroom Mode to control who can make edits or watch',
               available: true,
             },
           ],
         },
         {
-          subheading: 'Standard Integrations',
+          subheading: 'Integrations',
           features: [
             {
-              name: 'GitHub import/export',
-              desc: 'GitHub import/export',
+              name: 'GitHub Import & Export',
+              desc: 'mport and sync public repos, export a sandbox to a repo, or create commits and open PRs.',
               available: true,
             },
             {
               name: 'Vercel Deploy',
-              desc: 'Vercel Deploy',
+              desc: 'Deploy a production version of your sandbox to Vercel',
+              available: true,
+            },
+            {
+              name: 'Netlify Deploy',
+              desc: 'Deploy a production version of your sandbox to Netlify',
               available: true,
             },
             {
               name: 'Stackbit',
-              desc: 'Stackbit',
+              desc: 'Import projects generated by Stackbit',
               available: true,
-            },
-            {
-              name: 'VS Code Plugin',
-              desc: 'VS Code Plugin',
-              available: true,
-            },
+            }
           ],
         },
         {
@@ -286,17 +286,17 @@ export const personal = {
           features: [
             {
               name: 'Define API',
-              desc: 'Define API',
+              desc: 'Programmatically create sandboxes via an API',
               available: true,
             },
             {
               name: 'Import CLI',
-              desc: 'Import CLI',
+              desc: 'Import a local project to CodeSandbox easily',
               available: true,
             },
             {
               name: 'CodeSandbox CI',
-              desc: 'CodeSandbox CI',
+              desc: 'A GitHub integration that auto-builds from pull requests',
               available: true,
             },
           ],
