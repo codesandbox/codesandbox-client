@@ -43,22 +43,7 @@ export const personal = {
           desc:
             'Import and sync repos which are private on GitHub to CodeSandbox',
           available: [false, true],
-        },
-        {
-          name: 'Always-on Containers',
-          desc: 'Always-on Containers',
-          available: ['✓', '1'],
-        },
-        {
-          name: 'Postman',
-          desc: 'Postman',
-          available: [false, true],
-        },
-        {
-          name: 'Private NPM',
-          desc: 'Private NPM',
-          available: [false, false],
-        },
+        }
       ],
     },
     {
@@ -76,49 +61,39 @@ export const personal = {
         },
         {
           name: 'Embeds',
-          desc: 'Embed sandboxes in docs, blog posts, and websites',
+          desc: 'Embed sandboxes in docs, blog posts, websites, or tools',
           available: true,
         },
         {
           name: 'Public Profile',
-          desc: 'A personal portfolio page highlighting your best sandboxes.',
+          desc: 'A personal portfolio page highlighting your best sandboxes',
           available: true,
-        },
-        {
-          name: 'Folder Subscriptions',
-          desc: 'Folder Subscriptions',
-          available: [false, true],
-        },
+        }
       ],
     },
     {
       name: 'Feedback',
       features: [
         {
-          name: 'Unlimited Viewers ',
-          desc: 'View, edit, and manage sandboxes with a team.',
+          name: 'Unlimited Workspace Viewers ',
+          desc: 'Add collaborators to view and comment on sandboxes for free',
           available: true,
         },
         {
           name: 'Code Comments',
-          desc: 'Start from an official template, or create your own',
+          desc: 'Add comments about a sandbox or specific code lines',
           available: true,
         },
         {
           name: 'Preview Comments ',
-          desc: 'Embed sandboxes in docs, blog posts, and websites',
+          desc: 'Add comment on the preview in the sandbox',
           available: true,
         },
         {
           name: 'Shareable Links ',
-          desc: 'A personal portfolio page highlighting your best sandboxes.',
+          desc: 'Per sandbox URL with HTTPS support for secure project sharing',
           available: true,
-        },
-        {
-          name: 'Slack integration',
-          desc: 'Slack integration',
-          available: true,
-        },
+        }
       ],
     },
     {
@@ -127,41 +102,15 @@ export const personal = {
         {
           name: 'Dashboard ',
           desc:
-            'Organize sandboxes and templates. Search, sort, or modify sandboxes at once.',
+            'Organize sandboxes and templates. Search, sort, or modify sandboxes at once',
           available: true,
         },
         {
           name: 'Sandbox-level Permissions',
           desc:
-            'Organize sandboxes and templates. Search, sort, or modify sandboxes at once.',
+            'Set advanced sharing permissions per sandbox',
           available: [false, true],
-        },
-
-        {
-          name: 'Analytics',
-          desc: 'Analytics',
-          available: ['Overview', 'Overview'],
-        },
-        {
-          name: 'Workspace-level Permissions',
-          desc: 'Workspace-level Permissions',
-          available: false,
-        },
-        {
-          name: 'SSO',
-          desc: 'SSO',
-          available: false,
-        },
-        {
-          name: 'Multiple Workspaces',
-          desc: 'Multiple Workspaces',
-          available: false,
-        },
-        {
-          name: 'Priority Customer Support',
-          desc: 'Priority Customer Support',
-          available: false,
-        },
+        }
       ],
     },
     {
