@@ -42,21 +42,17 @@ const Homepage = () => (
       <LoadInView>
         <Teams />
       </LoadInView>
-
-      <LoadInView>
-        <DevExperiencOne />
-      </LoadInView>
-
       <LoadInView>
         <Workspaces />
       </LoadInView>
-
       <LoadInView>
-        <Quotes />
+        <DevExperiencOne />
       </LoadInView>
-
       <LoadInView>
         <DevExperience />
+      </LoadInView>
+      <LoadInView>
+        <Quotes />
       </LoadInView>
     </div>
     <LoadInView>
