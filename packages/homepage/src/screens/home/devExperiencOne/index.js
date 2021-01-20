@@ -25,7 +25,8 @@ const Grid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 38px;
-  margin: 2rem 0;
+  padding: 0 0 10rem 0;
+
 
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: repeat(3, 1fr);

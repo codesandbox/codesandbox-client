@@ -53,7 +53,8 @@ const Workspaces = () => {
   return (
     <div
       css={`
-        padding: 20rem 0 5rem 0;
+        padding: 0rem 0 0 0;
+
 
         @media screen and (max-width: 1023px) {
           padding-top: 0px;
