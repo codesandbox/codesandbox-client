@@ -186,7 +186,7 @@ export const personal = {
             },
             {
               name: 'Configuration UI',
-              desc: 'Edit config files for npm, Prettier, Netlify, Vercel, TypeScript, JavaScript, and your sandbox',
+              desc: 'Edit config files for npm, Prettier, Netlify, Vercel, TypeScript, and JavaScript',
               available: true,
             },
             {
@@ -261,7 +261,7 @@ export const personal = {
           features: [
             {
               name: 'GitHub Import & Export',
-              desc: 'mport and sync public repos, export a sandbox to a repo, or create commits and open PRs.',
+              desc: 'Import and sync public repos, export, create commits and open PRs',
               available: true,
             },
             {
