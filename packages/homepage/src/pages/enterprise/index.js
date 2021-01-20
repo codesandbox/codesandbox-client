@@ -197,7 +197,7 @@ export default () => {
 
         <CTA
           title="Custom deploy options & support"
-          subtitle="Get the infrastructure and support options your organization demands."
+          subtitle="Get the security and support your organization needs."
           cta="Contact us"
           link="mailto:hello@codesandbox.io"
         />
