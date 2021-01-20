@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { motion } from 'framer-motion';
 import Layout from '../../components/layout';
@@ -24,12 +24,14 @@ import Cards from './_cards';
 import { OpenIcon, Save } from './_icons';
 
 export default () => {
-  const urlParams = new URLSearchParams(window.location.search);
   const [open, setOpen] = useState({});
   const [mode, setMode] = useState('monthly');
-  const [product, setProduct] = useState(
-    urlParams.get('for') === 'individual' ? 'personal' : 'team'
-  );
+  const [product, setProduct] = useState();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    setProduct(urlParams.get('for') === 'individual' ? 'personal' : 'team');
+  }, []);
 
   const toggleTable = name => {
     setOpen(o => ({ ...o, [name]: !o[name] }));
