@@ -206,8 +206,8 @@ export default () => {
       </Wrapper>
 
       <CTA
-        title="For rapid prototyping"
-        subtitle="Instant sandboxes to get you coding in seconds."
+        title="Start rapid prototyping"
+        subtitle="With instant sandboxes that get you coding in seconds."
         cta="Get Started"
         link="/s"
       />
