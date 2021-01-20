@@ -235,19 +235,19 @@ the `recompileMode` to `immediate`.
 
 Coming soon
 
-### Code Runner
+### Sandpack Runner
 
 In all the examples above we used `Sandpack`, which, in our internal kitchen, we
 call a preset. In other words, it is a fixed configuration of sandpack
 components and default settings that make up an instance of sandpack.
 
 In case you want to have the bundler running and you don't want the code editing
-component, you can use a `CodeRunner` preset.
+component, you can use a `SandpackRunner` preset.
 
 ```jsx
-import { CodeRunner } from 'react-smooshpack';
+import { SandpackRunner } from 'react-smooshpack';
 
-<CodeRunner code={`...`} template="vue" />;
+<SandpackRunner code={`...`} template="vue" />;
 ```
 
 ## Getting deeper

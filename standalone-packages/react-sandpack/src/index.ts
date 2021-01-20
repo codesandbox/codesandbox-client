@@ -1,5 +1,5 @@
 export * from './presets/Sandpack';
-export * from './presets/CodeRunner';
+export * from './presets/SandpackRunner';
 
 export * from './components/CodeEditor';
 export * from './components/FileExplorer';

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Story } from '@storybook/react';
-import { CodeRunner, CodeRunnerProps } from './CodeRunner';
+import { SandpackRunner, SandpackRunnerProps } from './SandpackRunner';
 
 export default {
-  title: 'presets/Code Runner',
-  component: CodeRunner,
+  title: 'presets/Sandpack Runner',
+  component: SandpackRunner,
 };
 
 const reactCode = `import React from 'react';
@@ -38,16 +38,16 @@ const vueCode = `<template>
 </style>
 `;
 
-export const ReactRunner: Story<CodeRunnerProps> = args => (
-  <CodeRunner {...args} template="react" />
+export const ReactRunner: Story<SandpackRunnerProps> = args => (
+  <SandpackRunner {...args} template="react" />
 );
 
 ReactRunner.args = {
   code: reactCode,
 };
 
-export const VueRunner: Story<CodeRunnerProps> = args => (
-  <CodeRunner {...args} template="vue" />
+export const VueRunner: Story<SandpackRunnerProps> = args => (
+  <SandpackRunner {...args} template="vue" />
 );
 
 VueRunner.args = {
@@ -66,7 +66,7 @@ export const SwitchExperiment = () => {
 
   return (
     <div>
-      <CodeRunner
+      <SandpackRunner
         template="react"
         code={codeToggle ? reactAltCode : reactCode}
       />

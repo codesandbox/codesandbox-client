@@ -45,18 +45,24 @@ const Container = styled('div', {
     boxShadow: 'inset 0 0 0 4px $accent',
     paddingLeft: '$1',
     paddingRight: '$1',
+
+    '.cm-line': {
+      padding: '0 $2',
+    },
   },
 
   ':focus:not(:focus-visible)': {
     boxShadow: 'none',
+    paddingLeft: 0,
+    paddingRight: 0,
+
+    '.cm-line': {
+      padding: '0 $3',
+    },
   },
 
   ':focus-visible': {
     boxShadow: 'inset 0 0 0 4px $accent',
-  },
-
-  ':focus .cm-line': {
-    padding: '0 $2',
   },
 
   '.cm-wrap': {

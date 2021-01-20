@@ -13,7 +13,7 @@ import {
   SandpackTheme,
 } from '../types';
 
-export interface CodeRunnerProps {
+export interface SandpackRunnerProps {
   code?: string;
   template?: SandpackPredefinedTemplate;
   setup?: Partial<SandboxTemplate>;
@@ -23,7 +23,7 @@ export interface CodeRunnerProps {
   customStyle?: React.CSSProperties;
 }
 
-export const CodeRunner: React.FC<CodeRunnerProps> = ({
+export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
   code,
   template,
   setup,
