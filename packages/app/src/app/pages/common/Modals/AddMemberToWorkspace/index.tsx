@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { Checkbox, Text, Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { SubscriptionBillingInterval } from 'app/graphql/types';
 import { Alert } from '../Common/Alert';
 
 export const AddMemberToWorkspace: FunctionComponent = () => {
@@ -33,13 +34,22 @@ export const AddMemberToWorkspace: FunctionComponent = () => {
 
   return (
     <Alert title="Add New Member">
-      <Text size={3} block marginTop={4} marginBottom={10}>
-        <Checkbox
-          checked={confirmed}
-          onChange={e => setConfirmed(e.target.checked)}
-          label={`By adding an extra editor, I confirm ${value} will be added to my invoice.`}
-        />
-      </Text>
+      <Stack direction="vertical" gap={4} marginTop={4} marginBottom={10}>
+        <Text size={3}>
+          <Checkbox
+            checked={confirmed}
+            onChange={e => setConfirmed(e.target.checked)}
+            label={`By adding an extra editor, I confirm ${value} will be added to my invoice.`}
+          />
+        </Text>
+        {subscription.details.billingInterval ===
+        SubscriptionBillingInterval.Yearly ? (
+          <Text size={3} variant="muted" css={css({ marginLeft: 6 })}>
+            The amount will be prorated based on the days remaining in the
+            billing cycle.
+          </Text>
+        ) : null}
+      </Stack>
       <Stack gap={2} justify="flex-end">
         <Button autoWidth variant="secondary" onClick={modalClosed}>
           Cancel
