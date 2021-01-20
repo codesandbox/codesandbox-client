@@ -953,12 +953,12 @@ export type WorkspaceSubscription = {
   type: WorkspaceSubscriptionTypes;
   status: 'ACTIVE' | 'PAUSED' | 'CANCELLED';
   quantity: Scalars['Int'];
-  details: {
+  details: Maybe<{
     unitPrice: Scalars['Int'];
     currency: Scalars['String'];
     billingInterval: SubscriptionBillingInterval;
     updateBillingUrl: Scalars['String'];
-  };
+  }>;
 };
 
 export type TemplateFragment = { __typename?: 'Template' } & Pick<

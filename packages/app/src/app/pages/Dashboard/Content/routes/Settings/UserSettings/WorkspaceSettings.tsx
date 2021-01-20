@@ -169,17 +169,19 @@ export const WorkspaceSettings = () => {
               <Text size={6} weight="bold" maxWidth="100%">
                 Invoice details
               </Text>
-              <Text size={3} variant="muted">
-                {activeTeamInfo.subscription.details.currency}{' '}
-                {(
-                  (activeTeamInfo.subscription.quantity *
-                    activeTeamInfo.subscription.details.unitPrice) /
-                  100
-                ).toFixed(2)}{' '}
-                <Text css={{ textTransform: 'capitalize' }}>
-                  {activeTeamInfo.subscription.details.billingInterval.toLowerCase()}
+              {activeTeamInfo?.subscription.details && (
+                <Text size={3} variant="muted">
+                  {activeTeamInfo?.subscription.details.currency}{' '}
+                  {(
+                    (activeTeamInfo.subscription.quantity *
+                      activeTeamInfo.subscription.details.unitPrice) /
+                    100
+                  ).toFixed(2)}{' '}
+                  <Text css={{ textTransform: 'capitalize' }}>
+                    {activeTeamInfo.subscription.details.billingInterval.toLowerCase()}
+                  </Text>
                 </Text>
-              </Text>
+              )}
               <Text size={3} maxWidth="100%">
                 Invoices are sent to
               </Text>
