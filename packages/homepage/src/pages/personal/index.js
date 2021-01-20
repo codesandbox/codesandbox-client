@@ -168,18 +168,16 @@ export default () => {
           </FeaturedImage>
           <ContentBlock cols="4" small>
             <div>
-              <h3>Share code and creations.</h3>
+              <h3>Share code & creations.</h3>
               With friends, colleagues, or the world.
             </div>
-
-            <div>
-              <h3>Provide reproducible bug reports.</h3>
+           <div>
+              <h3>Provide reproducibles.</h3>
               When creating GitHub issues.
             </div>
-
             <div>
-              <h3>Ask and answer questions with code.</h3>
-              On Stack Overflow or Twitter.
+              <h3>Explain with code.</h3>
+              When asking or answering on Stack Overflow or Twitter.
             </div>
             <div>
               <h3>Embed code examples.</h3>
