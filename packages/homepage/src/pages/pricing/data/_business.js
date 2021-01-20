@@ -2,10 +2,7 @@ import { personal } from './_personal';
 
 export const business = {
   plans: [
-    {
-      name: 'Team Pro Workspace',
-      color: '#5962DF',
-    },
+    { name: 'Team Pro Workspace', color: '#5962DF' },
     { name: 'Organization', color: '#F7A239' },
     { name: 'Enterprise', color: '#0971F1' },
   ],
@@ -37,7 +34,7 @@ export const business = {
         {
           name: 'Unlimited Private Sandboxes',
           desc:
-            "Set a sandbox as private or unlisted so others can't see the code",
+            "Set a sandbox as private or unlisted so others can’t see the code",
           available: true,
         },
         {
@@ -47,18 +44,8 @@ export const business = {
           available: true,
         },
         {
-          name: 'Always-on Containers',
-          desc: 'Always-on Containers',
-          available: ['3/user', '5/user', 'Unlimited'],
-        },
-        {
-          name: 'Postman',
-          desc: 'Postman',
-          available: true,
-        },
-        {
-          name: 'Private NPM',
-          desc: 'Private NPM',
+          name: 'Private NPM Packages',
+          desc: 'Use private npm packages from your own custom registry',
           available: true,
         },
       ],
@@ -68,34 +55,19 @@ export const business = {
       features: [
         {
           name: 'Workspaces',
-          desc: 'View, edit, and manage sandboxes with a team.',
+          desc: 'View, edit, and manage sandboxes with a team',
           available: true,
         },
         {
           name: 'Workspace Templates',
-          desc: 'Start from an official template, or create your own',
+          desc: 'Start from an official template, or share your own',
           available: true,
         },
         {
           name: 'Embeds',
-          desc: 'Embed sandboxes in docs, blog posts, and websites',
+          desc: 'Embed sandboxes in docs, blog posts, websites, or tools',
           available: true,
-        },
-        {
-          name: 'Public Profile',
-          desc: 'A personal portfolio page highlighting your best sandboxes.',
-          available: true,
-        },
-        {
-          name: 'Folder Subscriptions',
-          desc: 'Folder Subscriptions',
-          available: true,
-        },
-        {
-          name: 'Slack integration',
-          desc: 'Slack integration',
-          available: true,
-        },
+        }
       ],
     },
     {
@@ -103,22 +75,22 @@ export const business = {
       features: [
         {
           name: 'Unlimited Viewers ',
-          desc: 'View, edit, and manage sandboxes with a team.',
+          desc: 'Add collaborators to view and comment on sandboxes for free',
           available: true,
         },
         {
           name: 'Code Comments',
-          desc: 'Start from an official template, or create your own',
+          desc: 'Add comments about a sandbox or specific code lines',
           available: true,
         },
         {
           name: 'Preview Comments ',
-          desc: 'Embed sandboxes in docs, blog posts, and websites',
+          desc: 'Add comment on the preview in the sandbox',
           available: true,
         },
         {
           name: 'Shareable Links ',
-          desc: 'A personal portfolio page highlighting your best sandboxes.',
+          desc: 'Per sandbox URL with HTTPS support for secure project sharing',
           available: true,
         },
       ],
@@ -129,40 +101,59 @@ export const business = {
         {
           name: 'Dashboard ',
           desc:
-            'Organize sandboxes and templates. Search, sort, or modify sandboxes at once.',
+            'Organize sandboxes and templates. Search, sort, or modify sandboxes at once',
           available: true,
         },
         {
+          name: 'Centralized Billing ',
+          desc: 'Everyone in a single account for easier team management & billing',
+          available: true,
+        },        
+        {
           name: 'Sandbox-level Permissions',
-          desc:
-            'Organize sandboxes and templates. Search, sort, or modify sandboxes at once.',
+          desc: 'Set advanced sharing permissions per sandbox',
+          available: true,
+        },
+        {
+          name: 'Workspace-level Permissions',
+          desc: 'Set advanced sharing permissions for all sandboxes in a workspace',
           available: true,
         },
         {
           name: 'Analytics',
-          desc: 'Analytics',
-          available: ['Sandbox', 'Sandbox and Usage', 'Sandbox and Usage'],
-        },
+          desc: 'Measure impact and refine creations with sandbox analytics',
+          available: [false, true, true],
+        },        
         {
-          name: 'Workspace-level Permissions',
-          desc: 'Workspace-level Permissions',
-          available: true,
-        },
-        {
-          name: 'SSO',
-          desc: 'SSO',
+          name: 'Single Sign-On (SSO)',
+          desc: 'Integrate your identity management system and enforce SSO',
           available: [false, true, true],
         },
         {
           name: 'Multiple Workspaces',
-          desc: 'Multiple Workspaces',
+          desc: 'Bring multiple teams together in a single account to collaborate',
           available: [false, true, true],
         },
         {
           name: 'Priority Customer Support',
-          desc: 'Priority Customer Support',
+          desc: 'Prioritized, fast and helpful support via email',
           available: [false, true, true],
         },
+        {
+          name: 'Dedicated Account Manager',
+          desc: 'A single point of contact for your support needs',
+          available: [false, false, true],
+        },
+        {
+          name: 'On Premises',
+          desc: 'On Premises',
+          available: [false, false, true],
+        },
+        {
+          name: 'Private Cloud',
+          desc: 'Private Cloud',
+          available: [false, false, true],
+        },        
       ],
     },
     personal.items.find(item => item.name === 'Platform'),
@@ -176,6 +167,6 @@ export const business = {
 // },
 // {
 //   name: 'Centralized Billing ',
-//   desc: 'A personal portfolio page highlighting your best sandboxes.',
+//   desc: 'A personal portfolio page highlighting your best sandboxes',
 //   available: [false, false],
 // },
