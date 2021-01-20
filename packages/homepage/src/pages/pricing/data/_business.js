@@ -111,12 +111,12 @@ export const business = {
         },        
         {
           name: 'Sandbox-level Permissions',
-          desc: 'Set advanced sharing permissions per sandbox',
+          desc: 'Disable the ability to fork or download a shared sandbox',
           available: true,
         },
         {
           name: 'Workspace-level Permissions',
-          desc: 'Set advanced sharing permissions for all sandboxes in a workspace',
+          desc: 'Disable the ability to fork or download all shared sandboxes in a workspace',
           available: true,
         },
         {
