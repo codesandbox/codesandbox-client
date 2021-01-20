@@ -108,7 +108,7 @@ export const personal = {
         {
           name: 'Sandbox-level Permissions',
           desc:
-            'Set advanced sharing permissions per sandbox',
+            'Disable the ability to fork or download a shared sandbox',
           available: [false, true],
         }
       ],
@@ -242,7 +242,7 @@ export const personal = {
             {
               name: 'Collaborative editing',
               desc: 'Work on code and edit sandboxes with multiple people',
-              available: ['5 invites/month', 'Unlimited'],
+              available: true,
             },
             {
               name: 'In-editor Chat',
