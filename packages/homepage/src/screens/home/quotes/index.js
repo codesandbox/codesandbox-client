@@ -136,7 +136,7 @@ const Quotes = () => (
       <Feature variants={item}>
         <P
           css={`
-            min-height: 104px;
+            min-height: 80px;
             font-weight: 400;
           `}
         >
@@ -182,7 +182,7 @@ const Quotes = () => (
       <Feature variants={item}>
         <P
           css={`
-            min-height: 104px;
+            min-height: 80px;
             font-weight: 400;
           `}
         >
