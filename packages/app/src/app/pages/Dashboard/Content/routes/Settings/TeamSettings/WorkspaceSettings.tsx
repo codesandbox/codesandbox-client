@@ -274,7 +274,7 @@ export const WorkspaceSettings = () => {
           </Stack>
         </Card>
         {activeWorkspaceAuthorization === TeamMemberAuthorization.Admin ? (
-          <>
+          <div>
             {team?.subscription?.type === WorkspaceSubscriptionTypes.Team ? (
               <Card>
                 <Stack direction="vertical" gap={2}>
@@ -339,7 +339,7 @@ export const WorkspaceSettings = () => {
                 </Stack>
               </Card>
             )}
-          </>
+          </div>
         ) : null}
       </Grid>
       <Stack align="center" justify="space-between" gap={2}>
