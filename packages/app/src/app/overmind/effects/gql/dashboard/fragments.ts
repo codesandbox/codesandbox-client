@@ -181,12 +181,10 @@ export const currentTeamInfoFragment = gql`
       type
       status
       quantity
-      details {
-        unitPrice
-        currency
-        billingInterval
-        updateBillingUrl
-      }
+      unitPrice
+      currency
+      billingInterval
+      updateBillingUrl
     }
   }
 `;

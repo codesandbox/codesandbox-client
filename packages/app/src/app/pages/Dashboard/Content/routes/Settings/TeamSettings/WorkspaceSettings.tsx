@@ -294,20 +294,20 @@ export const WorkspaceSettings = () => {
                     </Text>
                     <Stack direction="vertical" gap={2}>
                       <Text size={3} variant="muted">
-                        {team.subscription.details.currency}{' '}
+                        {team.subscription.currency}{' '}
                         {(
                           (team.subscription.quantity *
-                            team.subscription.details.unitPrice) /
+                            team.subscription.unitPrice) /
                           100
                         ).toFixed(2)}{' '}
                         <Text css={{ textTransform: 'capitalize' }}>
-                          {team.subscription.details.billingInterval.toLowerCase()}
+                          {team.subscription.billingInterval.toLowerCase()}
                         </Text>
                       </Text>
                       <Link
                         size={3}
                         variant="muted"
-                        href={team.subscription.details.updateBillingUrl}
+                        href={team.subscription.updateBillingUrl}
                         target="_blank"
                         css={{ textDecoration: 'underline' }}
                       >

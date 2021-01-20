@@ -953,12 +953,10 @@ export type WorkspaceSubscription = {
   type: WorkspaceSubscriptionTypes;
   status: 'ACTIVE' | 'PAUSED' | 'CANCELLED';
   quantity: Scalars['Int'];
-  details: Maybe<{
-    unitPrice: Scalars['Int'];
-    currency: Scalars['String'];
-    billingInterval: SubscriptionBillingInterval;
-    updateBillingUrl: Scalars['String'];
-  }>;
+  unitPrice: Scalars['Int'];
+  currency: Scalars['String'];
+  billingInterval: SubscriptionBillingInterval;
+  updateBillingUrl: Scalars['String'];
 };
 
 export type TemplateFragment = { __typename?: 'Template' } & Pick<
@@ -1657,10 +1655,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
       >
     >;
     subscription: Maybe<
-      { __typename?: 'WorkspaceSubscription' } & Pick<
-        WorkspaceSubscription,
-        'id' | 'type' | 'status' | 'quantity' | 'details'
-      >
+      { __typename?: 'WorkspaceSubscription' } & WorkspaceSubscription
     >;
   };
 

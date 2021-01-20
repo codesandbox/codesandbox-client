@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Checkbox, Text, Button, Stack } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { SubscriptionBillingInterval } from 'app/graphql/types';
 import { Alert } from '../Common/Alert';
@@ -8,7 +7,11 @@ import { Alert } from '../Common/Alert';
 export const AddMemberToWorkspace: FunctionComponent = () => {
   const {
     actions: { dashboard, modalClosed },
-    state: { activeTeamInfo, currentModalMessage },
+    state: {
+      activeTeamInfo,
+      currentModalMessage,
+      activeWorkspaceAuthorization,
+    },
   } = useOvermind();
 
   const [confirmed, setConfirmed] = React.useState(false);
@@ -26,30 +29,27 @@ export const AddMemberToWorkspace: FunctionComponent = () => {
   const subscription = activeTeamInfo.subscription;
 
   const value =
-    subscription.details.currency +
+    subscription.currency +
     ' ' +
-    (subscription.details.unitPrice / 100).toFixed(2) +
+    (subscription.unitPrice / 100).toFixed(2) +
     '/' +
-    subscription.details.billingInterval.toLowerCase();
+    subscription.billingInterval.toLowerCase() +
+    ' (excl. tax)';
+
+  let message = `By adding an extra editor, I confirm an additional ${value} for 1 seat will be added to the invoice`;
+  if (subscription.billingInterval === SubscriptionBillingInterval.Yearly) {
+    message += ' (prorated for the days remaining in the billing cycle)';
+  }
 
   return (
     <Alert title="Add New Member">
-      <Stack direction="vertical" gap={4} marginTop={4} marginBottom={10}>
-        <Text size={3}>
-          <Checkbox
-            checked={confirmed}
-            onChange={e => setConfirmed(e.target.checked)}
-            label={`By adding an extra editor, I confirm ${value} will be added to my invoice.`}
-          />
-        </Text>
-        {subscription.details.billingInterval ===
-        SubscriptionBillingInterval.Yearly ? (
-          <Text size={3} variant="muted" css={css({ marginLeft: 6 })}>
-            The amount will be prorated based on the days remaining in the
-            billing cycle.
-          </Text>
-        ) : null}
-      </Stack>
+      <Text size={3} block marginTop={4} marginBottom={10}>
+        <Checkbox
+          checked={confirmed}
+          onChange={e => setConfirmed(e.target.checked)}
+          label={message}
+        />
+      </Text>
       <Stack gap={2} justify="flex-end">
         <Button autoWidth variant="secondary" onClick={modalClosed}>
           Cancel

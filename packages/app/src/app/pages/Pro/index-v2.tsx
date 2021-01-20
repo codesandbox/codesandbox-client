@@ -587,11 +587,10 @@ const Upgrade = ({
                   // non-admins can't upgrade
                   activeUserAuthorization !== TeamMemberAuthorization.Admin ||
                   // you are not allowed to change from yearly to monthly
-                  currentSubscription.details.billingInterval ===
+                  currentSubscription.billingInterval ===
                     SubscriptionBillingInterval.Yearly ||
                   // if it's already the same, then nothing to do here
-                  plan.billingInterval ===
-                    currentSubscription?.details.billingInterval
+                  plan.billingInterval === currentSubscription.billingInterval
                 }
                 onClick={() => changeBillingInterval()}
                 css={css({
@@ -603,7 +602,7 @@ const Upgrade = ({
               >
                 Update billing interval
               </Button>
-              {currentSubscription.details.billingInterval ===
+              {currentSubscription.billingInterval ===
                 SubscriptionBillingInterval.Yearly &&
               plan.billingInterval === SubscriptionBillingInterval.Monthly ? (
                 <Text align="center">
@@ -644,7 +643,7 @@ const PlanCard: React.FC<{
 }> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
   const isSelected = plan.billingInterval === billingInterval;
   const isCurrent =
-    plan.billingInterval === currentSubscription?.details.billingInterval;
+    plan.billingInterval === currentSubscription?.billingInterval;
 
   return (
     <Stack
