@@ -28,11 +28,11 @@ export const CustomEditor = () => (
     entry="/index.js"
   >
     <SandpackLayout>
-      <FileExplorer />
-      <div>
-        <CodeEditor showTabs />
-        <Preview />
-      </div>
+      <FileExplorer
+        customStyle={{ maxWidth: '150px', flex: 'auto', minWidth: 'auto' }}
+      />
+      <CodeEditor showTabs />
+      <Preview />
     </SandpackLayout>
   </SandpackProvider>
 );

@@ -31,6 +31,16 @@ export type SandboxTemplate = {
   environment: SandboxEnviornment;
 };
 
+// All fields are optional in the setup prop
+// Also, files can be passed easier as Record<string, string>
+export type SandpackSetup = {
+  files?: Record<string, string | IFile>;
+  dependencies?: Record<string, string>;
+  entry?: string;
+  main?: string;
+  environment?: SandboxEnviornment;
+};
+
 export type SandboxEnviornment =
   | 'adonis'
   | 'create-react-app'
@@ -86,31 +96,6 @@ export type SandpackTheme = {
     static: string;
   };
 };
-
-export interface PresetProps {
-  template?: SandpackPredefinedTemplate;
-  customSetup?: Partial<SandboxTemplate>;
-  previewOptions?: {
-    showNavigator?: boolean;
-    showOpenInCodeSandbox?: boolean;
-  };
-  codeOptions?: {
-    showLineNumbers?: boolean;
-    showTabs?: boolean;
-  };
-  bundlerOptions?: {
-    bundlerURL?: string;
-    skipEval?: boolean;
-    fileResolver?: FileResolver;
-  };
-  executionOptions?: {
-    autorun?: boolean;
-    recompileMode?: 'immediate' | 'delayed';
-    recompileDelay?: number;
-  };
-  theme?: SandpackTheme;
-  customStyle?: React.CSSProperties;
-}
 
 export interface FileResolver {
   isFile: (path: string) => Promise<boolean>;

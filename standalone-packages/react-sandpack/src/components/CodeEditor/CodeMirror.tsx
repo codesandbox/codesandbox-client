@@ -184,7 +184,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     return () => {
       view.destroy();
     };
-  }, [showLineNumbers, activePath, theme, code]);
+  }, [showLineNumbers, activePath, theme]);
 
   const handleContainerKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key === 'Enter' && cmView.current) {

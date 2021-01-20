@@ -1,46 +1,38 @@
 import * as React from 'react';
 import { IFile } from 'smooshpack';
 
-import { CodeViewer } from '../components/CodeViewer';
 import { Preview } from '../components/Preview';
 import { SandpackLayout } from '../components/SandpackLayout';
-import { PresetProps } from '../types';
 import { getSetup } from '../templates';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { sandpackLightTheme } from '../themes';
 import { compileStitchesTheme, ThemeProvider } from '../utils/theme-context';
+import {
+  SandboxTemplate,
+  SandpackPredefinedTemplate,
+  SandpackTheme,
+} from '../types';
 
-export interface CodeRunnerProps extends PresetProps {
+export interface CodeRunnerProps {
   code?: string;
+  template?: SandpackPredefinedTemplate;
+  setup?: Partial<SandboxTemplate>;
+  showNavigator?: boolean;
+  showOpenInCodeSandbox?: boolean;
+  theme?: SandpackTheme;
+  customStyle?: React.CSSProperties;
 }
 
 export const CodeRunner: React.FC<CodeRunnerProps> = ({
   code,
   template,
-  customSetup,
-  previewOptions,
-  codeOptions,
-  bundlerOptions,
-  executionOptions,
-  customStyle,
+  setup,
+  showNavigator = false,
+  showOpenInCodeSandbox = false,
   theme = sandpackLightTheme,
+  customStyle,
 }) => {
-  const presetPreviewOptions = {
-    ...{ showOpenInCodeSandbox: false },
-    ...previewOptions,
-  };
-
-  const presetCodeOptions = {
-    ...{ showCode: false },
-    ...codeOptions,
-  };
-
-  const presetExecutionOptions = {
-    ...{ autorun: true },
-    ...executionOptions,
-  };
-
-  const projectSetup = getSetup(template, customSetup);
+  const projectSetup = getSetup(template, setup);
 
   if (code) {
     const mainFileName = projectSetup.main;
@@ -61,17 +53,12 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({
       files={projectSetup.files}
       dependencies={projectSetup.dependencies}
       entry={projectSetup.entry}
-      openPaths={[projectSetup.main]}
       environment={projectSetup.environment}
-      showOpenInCodeSandbox={presetPreviewOptions.showOpenInCodeSandbox}
-      {...presetExecutionOptions}
-      {...bundlerOptions}
+      showOpenInCodeSandbox={showOpenInCodeSandbox}
     >
       <ThemeProvider value={theme}>
         <SandpackLayout style={customStyle} className={className}>
-          {presetCodeOptions.showCode && <CodeViewer {...presetCodeOptions} />}
-
-          <Preview {...presetPreviewOptions} />
+          <Preview showNavigator={showNavigator} />
         </SandpackLayout>
       </ThemeProvider>
     </SandpackProvider>
