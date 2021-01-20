@@ -68,6 +68,7 @@
     "@babel/plugin-transform-flow-strip-types" "^7.0.0"
     "@babel/polyfill" "^7.4.4"
     "@codesandbox/notifications" "^1.0.6"
+    "@codesandbox/template-icons" "^0.7.1"
     "@sentry/browser" "^5.6.2"
     "@tippy.js/react" "^2.1.1"
     babel-plugin-preval "^3.0.1"
@@ -2617,10 +2618,10 @@ grapheme-breaker@^0.3.2:
     brfs "^1.2.0"
     unicode-trie "^0.3.1"
 
-gsap@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/gsap/-/gsap-2.0.2.tgz#c82bde9a078f7922869fc2eb5aaecfa7592d1c2b"
-  integrity sha512-WyT0uuDNb+5xMccx4SsVcI1CwvIL0BPgP8TyJJmMWT/btGXUNtKesnkXFMMshYs37renFhDo1P5NEoizeonviQ==
+gsap@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.6.0.tgz#925f25370c698ce0f6ea563522da8f6b5ed21b0a"
+  integrity sha512-0P3syv1TmYr+A/VZ8UMFzw+s0XoaKSzzDFs8NqkXiJTXI4E/VTi0zRjPgxaPBpiUPPycgRnFjLDe0Tb4dRRf+w==
 
 has-ansi@^2.0.0:
   version "2.0.0"
