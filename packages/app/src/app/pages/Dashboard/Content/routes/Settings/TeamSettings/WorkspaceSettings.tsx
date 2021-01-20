@@ -20,6 +20,7 @@ import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
   WorkspaceSubscriptionTypes,
+  SubscriptionBillingInterval,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
 import { Card } from '../components';
@@ -78,13 +79,30 @@ export const WorkspaceSettings = () => {
   const [inviteValue, setInviteValue] = useState('');
   const [inviteLoading, setInviteLoading] = useState(false);
 
+  const numberOfEditors = team.userAuthorizations.filter(
+    member => member.authorization !== TeamMemberAuthorization.Read
+  ).length;
+
+  // A workspace can have unused seats in their subscription
+  // if they have already paid for X editors for the YEARLY plan
+  // then removed some members from the team
+  const numberOfUnusedSeats =
+    team.subscription &&
+    team.subscription.billingInterval === SubscriptionBillingInterval.Yearly
+      ? team.subscription.quantity - numberOfEditors
+      : 0;
+
   const onInviteSubmit = async event => {
     event.preventDefault();
     setInviteLoading(true);
 
     // if the user is going to be charged for adding a member
     // throw them a confirmation modal
-    if (team?.subscription) {
+    if (
+      team?.subscription &&
+      team.settings.defaultAuthorization !== TeamMemberAuthorization.Read &&
+      numberOfUnusedSeats === 0
+    ) {
       actions.modalOpened({
         modal: 'addMemberToWorkspace',
         message: inviteValue,
@@ -257,6 +275,21 @@ export const WorkspaceSettings = () => {
               {team.users.length === 1 ? 'member' : 'members'}
             </Text>
             <Stack direction="vertical" gap={2}>
+              {activeWorkspaceAuthorization ===
+                TeamMemberAuthorization.Admin && (
+                <>
+                  <Text size={3} variant="muted">
+                    {numberOfEditors}{' '}
+                    {numberOfEditors > 1 ? 'Editors' : 'Editor'} on your plan
+                  </Text>
+                  {numberOfUnusedSeats ? (
+                    <Text size={3} variant="muted">
+                      + {numberOfUnusedSeats} unused editor{' '}
+                      {numberOfUnusedSeats > 1 ? 'seats' : 'seat'}
+                    </Text>
+                  ) : null}
+                </>
+              )}
               {created && (
                 <Text size={3} variant="muted">
                   Created by {created.username}

@@ -36,19 +36,31 @@ export const AddMemberToWorkspace: FunctionComponent = () => {
     subscription.billingInterval.toLowerCase() +
     ' (excl. tax)';
 
-  let message = `By adding an extra editor, I confirm an additional ${value} for 1 seat will be added to the invoice`;
-  if (subscription.billingInterval === SubscriptionBillingInterval.Yearly) {
-    message += ' (prorated for the days remaining in the billing cycle)';
-  }
-
   return (
     <Alert title="Add New Member">
       <Text size={3} block marginTop={4} marginBottom={10}>
-        <Checkbox
-          checked={confirmed}
-          onChange={e => setConfirmed(e.target.checked)}
-          label={message}
-        />
+        <Stack as="label">
+          <Checkbox
+            checked={confirmed}
+            onChange={e => setConfirmed(e.target.checked)}
+          />
+          <span>
+            <Text>
+              By adding an extra editor, I confirm an additional{' '}
+              <Text weight="semibold" css={{ whiteSpace: 'nowrap' }}>
+                {value}
+              </Text>{' '}
+              for 1 seat will be added to the invoice
+            </Text>
+            {subscription.billingInterval ===
+              SubscriptionBillingInterval.Yearly && (
+              <Text variant="muted">
+                {' '}
+                (prorated for the days remaining in the billing cycle)
+              </Text>
+            )}
+          </span>
+        </Stack>
       </Text>
       <Stack gap={2} justify="flex-end">
         <Button autoWidth variant="secondary" onClick={modalClosed}>
