@@ -89,7 +89,7 @@ the sandbox and link to it from the `package.json` by referring to it as
 ### Our npm registry is behind a VPN, what can I do?
 
 Since we use a proxy to access the npm registry, we don't support registries
-behind a VPN out of the box. However, we do have two workarounds:
+behind a VPN out of the box. However, we do have three workarounds:
 
 **Workaround 1: bypass the proxy** We can bypass the proxy on our service to let
 the browser fetch from the registry directly. We have a working version of this

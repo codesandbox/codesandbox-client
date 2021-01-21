@@ -115,7 +115,10 @@ export const signInClicked: Action = ({ state }) => {
   state.signInModalOpen = true;
 };
 
-export const signInWithRedirectClicked: Action<string> = ({ state }, redirectTo) => {
+export const signInWithRedirectClicked: Action<string> = (
+  { state },
+  redirectTo
+) => {
   state.signInModalOpen = true;
   state.redirectOnLogin = redirectTo;
 };

@@ -68,6 +68,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
       >
         <Link
           href="/?from-app=1"
+          as="a"
           css={css({ display: ['none', 'none', 'block'] })}
         >
           <LogoIcon

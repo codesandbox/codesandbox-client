@@ -61,6 +61,8 @@ import {
   SetPreventSandboxesExportMutationVariables,
   SetDefaultTeamMemberAuthorizationMutation,
   SetDefaultTeamMemberAuthorizationMutationVariables,
+  DeleteCurrentUserMutation,
+  DeleteCurrentUserMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -496,5 +498,14 @@ export const setDefaultTeamMemberAuthorization: Query<
     ) {
       defaultAuthorization
     }
+  }
+`;
+
+export const deleteAccount: Query<
+  DeleteCurrentUserMutation,
+  DeleteCurrentUserMutationVariables
+> = gql`
+  mutation deleteCurrentUser {
+    deleteCurrentUser
   }
 `;

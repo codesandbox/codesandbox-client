@@ -43,7 +43,12 @@ const BABEL7_CONFIG = {
           modules: false,
         },
       ],
-      'react',
+      [
+        'react',
+        {
+          runtime: 'automatic',
+        },
+      ],
       'typescript',
     ],
   },

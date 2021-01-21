@@ -17,6 +17,7 @@ const SERVER_TEMPLATE_NAMES = [
   'styleguidist',
   'unibit',
   'vuepress',
+  'docusaurus',
 ];
 
 export const isServer = (template: TemplateType) =>

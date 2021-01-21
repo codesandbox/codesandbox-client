@@ -1,5 +1,5 @@
 export const SANDBOXES_PER_PAGE = 15;
-export { ProfileCollection as ProfileCollectionType } from 'app/overmind/namespaces/profile/state';
+export type { ProfileCollection as ProfileCollectionType } from 'app/overmind/namespaces/profile/state';
 
 export enum SandboxType {
   ALL_SANDBOX = 'ALL_SANDBOX',

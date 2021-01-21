@@ -15,9 +15,14 @@ import {
 } from '@codesandbox/common/lib/templates';
 
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
+import { supportsNewReactTransform } from '@codesandbox/common/lib/utils/supports-new-react-transform';
 import { isPreact10 } from '@codesandbox/common/lib/utils/is-preact-10';
 import { PackageJSON } from '@codesandbox/common/lib/types';
-import { reactPresetV1, reactPresetV3 } from './presets/create-react-app';
+import {
+  reactPresetV1,
+  reactPresetV3,
+  reactPresetV4,
+} from './presets/create-react-app';
 import reactTsPreset from './presets/create-react-app-typescript';
 import vuePreset from './presets/vue-cli';
 import { preactPreset, preactPresetV8 } from './presets/preact-cli';
@@ -33,6 +38,10 @@ import customPreset from './presets/custom';
 export default function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
     case react.name:
+      if (supportsNewReactTransform(pkg.dependencies, pkg.devDependencies)) {
+        return reactPresetV4();
+      }
+
       if (isBabel7(pkg.dependencies, pkg.devDependencies)) {
         return reactPresetV3();
       }
