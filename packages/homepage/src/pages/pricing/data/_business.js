@@ -2,11 +2,72 @@ import { personal } from './_personal';
 
 export const business = {
   plans: [
-    { name: 'Team Pro Workspace', color: '#5962DF' },
+    { name: 'Team Pro', color: '#5962DF' },
     { name: 'Organization', color: '#F7A239' },
     { name: 'Enterprise', color: '#0971F1' },
   ],
   items: [
+    {
+      name: 'Admin & Security',
+      features: [
+        {
+          name: 'Dashboard ',
+          desc:
+            'Organize sandboxes and templates. Search, sort, or modify sandboxes at once',
+          available: true,
+        },
+        {
+          name: 'Centralized Billing ',
+          desc: 'Everyone in a single account for easier team management & billing',
+          available: true,
+        },        
+        {
+          name: 'Sandbox-level Permissions',
+          desc: 'Disable the ability to fork or download a shared sandbox',
+          available: true,
+        },
+        {
+          name: 'Workspace-level Permissions',
+          desc: 'Disable the ability to fork or download all shared sandboxes in a workspace',
+          available: true,
+        },
+        {
+          name: 'Analytics',
+          desc: 'Measure impact and refine creations with sandbox analytics',
+          available: [false, true, true],
+        },        
+        {
+          name: 'Single Sign-On (SSO)',
+          desc: 'Integrate your identity management system and enforce SSO',
+          available: [false, true, true],
+        },
+        {
+          name: 'Multiple Workspaces',
+          desc: 'Bring multiple teams together in a single account to collaborate',
+          available: [false, true, true],
+        },
+        {
+          name: 'Priority Customer Support',
+          desc: 'Prioritized, fast and helpful support via email',
+          available: [false, true, true],
+        },
+        {
+          name: 'Dedicated Account Manager',
+          desc: 'A single point of contact for your support needs',
+          available: [false, false, true],
+        },
+        {
+          name: 'On Premises',
+          desc: 'On Premises',
+          available: [false, false, true],
+        },
+        {
+          name: 'Private Cloud',
+          desc: 'Private Cloud',
+          available: [false, false, true],
+        },        
+      ],
+    },    
     {
       name: 'Prototyping',
       features: [
@@ -93,67 +154,6 @@ export const business = {
           desc: 'Per sandbox URL with HTTPS support for secure project sharing',
           available: true,
         },
-      ],
-    },
-    {
-      name: 'Admin & Security',
-      features: [
-        {
-          name: 'Dashboard ',
-          desc:
-            'Organize sandboxes and templates. Search, sort, or modify sandboxes at once',
-          available: true,
-        },
-        {
-          name: 'Centralized Billing ',
-          desc: 'Everyone in a single account for easier team management & billing',
-          available: true,
-        },        
-        {
-          name: 'Sandbox-level Permissions',
-          desc: 'Disable the ability to fork or download a shared sandbox',
-          available: true,
-        },
-        {
-          name: 'Workspace-level Permissions',
-          desc: 'Disable the ability to fork or download all shared sandboxes in a workspace',
-          available: true,
-        },
-        {
-          name: 'Analytics',
-          desc: 'Measure impact and refine creations with sandbox analytics',
-          available: [false, true, true],
-        },        
-        {
-          name: 'Single Sign-On (SSO)',
-          desc: 'Integrate your identity management system and enforce SSO',
-          available: [false, true, true],
-        },
-        {
-          name: 'Multiple Workspaces',
-          desc: 'Bring multiple teams together in a single account to collaborate',
-          available: [false, true, true],
-        },
-        {
-          name: 'Priority Customer Support',
-          desc: 'Prioritized, fast and helpful support via email',
-          available: [false, true, true],
-        },
-        {
-          name: 'Dedicated Account Manager',
-          desc: 'A single point of contact for your support needs',
-          available: [false, false, true],
-        },
-        {
-          name: 'On Premises',
-          desc: 'On Premises',
-          available: [false, false, true],
-        },
-        {
-          name: 'Private Cloud',
-          desc: 'Private Cloud',
-          available: [false, false, true],
-        },        
       ],
     },
     personal.items.find(item => item.name === 'Platform'),
