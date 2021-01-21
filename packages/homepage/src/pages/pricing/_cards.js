@@ -112,7 +112,7 @@ export const TeamCards = ({ mode }) => (
           color: #f7a239;
           background: ${props => props.theme.homepage.white};
         `}
-        href="mailto:hello@codesandbox.io"
+        href="https://airtable.com/shrlgLSJWiX8rYqyG"
       >
         Join the waitlist
       </Button>
