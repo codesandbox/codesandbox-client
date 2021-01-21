@@ -5,9 +5,26 @@ export const personal = {
       color: 'white',
       free: true,
     },
-    { name: 'Personal Pro Workspace', color: '#0971F1' },
+    { name: 'Personal Pro', color: '#0971F1' },
   ],
   items: [
+    {
+      name: 'Admin & Security',
+      features: [
+        {
+          name: 'Dashboard ',
+          desc:
+            'Organize sandboxes and templates. Search, sort, or modify sandboxes at once',
+          available: true,
+        },
+        {
+          name: 'Sandbox-level Permissions',
+          desc:
+            'Disable the ability to fork or download a shared sandbox',
+          available: [false, true],
+        }
+      ],
+    },    
     {
       name: 'Prototyping',
       features: [
@@ -93,23 +110,6 @@ export const personal = {
           name: 'Shareable Links ',
           desc: 'Per sandbox URL with HTTPS support for secure project sharing',
           available: true,
-        }
-      ],
-    },
-    {
-      name: 'Admin & Security',
-      features: [
-        {
-          name: 'Dashboard ',
-          desc:
-            'Organize sandboxes and templates. Search, sort, or modify sandboxes at once',
-          available: true,
-        },
-        {
-          name: 'Sandbox-level Permissions',
-          desc:
-            'Disable the ability to fork or download a shared sandbox',
-          available: [false, true],
         }
       ],
     },
