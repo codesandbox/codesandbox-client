@@ -25,14 +25,13 @@ export const WorkspacePlanSelection: React.FC<{
   loading: boolean;
   plan: Plan;
   setPlan: (plan: Plan) => void;
-  setSeats: (seats: number) => void;
-}> = ({ loading, plan, setPlan, setSeats }) => {
+}> = ({ loading, plan, setPlan }) => {
   const {
     state: { personalWorkspaceId, user, activeTeam, activeTeamInfo, dashboard },
     actions: {
       setActiveTeam,
       modalOpened,
-      pro: { setStep },
+      pro: { setStep, updateSeats },
       patron: { cancelSubscriptionClicked },
     },
   } = useOvermind();
@@ -140,7 +139,7 @@ export const WorkspacePlanSelection: React.FC<{
   const numberOfEditors = activeWorkspace.userAuthorizations.filter(
     ({ authorization }) => authorization !== TeamMemberAuthorization.Read
   ).length;
-  setSeats(numberOfEditors);
+  updateSeats(numberOfEditors);
 
   const isLegacyPersonalPro = isPersonalWorkspace && user.subscription;
   const currentSubscription = activeTeamInfo.subscription;

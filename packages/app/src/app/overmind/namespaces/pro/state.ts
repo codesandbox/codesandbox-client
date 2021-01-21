@@ -6,8 +6,14 @@ export enum Step {
 
 type State = {
   step: Step;
+  seats: number;
+  isPaddleInitialised: boolean;
+  isBillingAmountLoaded: boolean;
 };
 
 export const state: State = {
   step: Step.WorkspacePlanSelection,
+  seats: 1,
+  isPaddleInitialised: false,
+  isBillingAmountLoaded: false,
 };

@@ -7,11 +7,14 @@ import { Plan, PADDLE_VENDOR_ID } from '../plans';
 
 export const InlineCheckout: React.FC<{
   plan: Plan;
-  seats: number;
-  setPaddleInitialised: (value: boolean) => void;
-}> = ({ plan, seats = 1, setPaddleInitialised }) => {
+}> = ({ plan }) => {
   const {
-    state: { user, activeTeam },
+    state: {
+      user,
+      activeTeam,
+      pro: { seats },
+    },
+    actions,
   } = useOvermind();
 
   const [scriptLoaded] = useScript('https://cdn.paddle.com/paddle/paddle.js');
@@ -38,7 +41,7 @@ export const InlineCheckout: React.FC<{
     });
 
     // @ts-ignore 3rd party integration with global
-    window.loadCallback = () => setPaddleInitialised(true);
+    window.loadCallback = () => actions.pro.paddleInitialised();
 
     Paddle.Checkout.open({
       method: 'inline',
@@ -59,7 +62,7 @@ export const InlineCheckout: React.FC<{
         transparent; border: none;
       `,
     });
-  }, [scriptLoaded, setPaddleInitialised, seats, user.email, plan.id]);
+  }, [scriptLoaded, paddleInitialised, seats, user.email, plan.id]);
 
   return (
     <div style={{ paddingBottom: 64 }}>

@@ -6,16 +6,20 @@ import { Plan } from '../plans';
 
 export const ConfirmBillingInterval: React.FC<{
   plan: Plan;
-  seats: number;
-  setBillingAmountLoaded: (loaded: boolean) => void;
-}> = ({ plan, seats = 1, setBillingAmountLoaded }) => {
-  const { actions, effects } = useOvermind();
+}> = ({ plan }) => {
+  const {
+    state: {
+      pro: { seats },
+    },
+    actions,
+    effects,
+  } = useOvermind();
   const [prices, setPrices] = React.useState(null);
 
   React.useEffect(() => {
     // actions.fetchPrices();
     // setPrices(null);
-    // setBillingAmountLoaded()
+    // actions.pro.billingAmountLoaded()
   }, []);
 
   if (!prices) return null;

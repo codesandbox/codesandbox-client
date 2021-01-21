@@ -10,7 +10,6 @@ import { WorkspacePlanSelection } from './pages/WorkspacePlanSelection';
 import { InlineCheckout } from './pages/InlineCheckout';
 import { ConfirmBillingInterval } from './pages/ConfirmBillingInterval';
 import { PaymentSuccess } from './pages/PaymentSuccess';
-import { Steps } from './pages/steps';
 import { Plan } from './plans';
 
 export const ProPage: React.FC = () => (
@@ -65,14 +64,11 @@ const StartOrModifySubscription = () => {
 
   const {
     state: {
-      pro: { step },
+      pro: { step, seats, isPaddleInitialised, isBillingAmountLoaded },
     },
   } = useOvermind();
 
   const [selectedPlan, setPlan] = React.useState<Plan>(null);
-  const [seats, setSeats] = React.useState(1);
-  const [paddleInitialised, setPaddleInitialised] = React.useState(false);
-  const [billingAmountLoaded, setBillingAmountLoaded] = React.useState(false);
 
   return (
     <Stack
@@ -81,39 +77,30 @@ const StartOrModifySubscription = () => {
       css={css({ fontSize: 3, width: 560, marginTop: 120, marginX: 'auto' })}
     >
       {step === 'WorkspacePlanSelection' ||
-      (step === 'InlineCheckout' && !paddleInitialised) ||
-      (step === 'ConfirmBillingInterval' && !billingAmountLoaded) ? (
+      (step === 'InlineCheckout' && !isPaddleInitialised) ||
+      (step === 'ConfirmBillingInterval' && !isBillingAmountLoaded) ? (
         <WorkspacePlanSelection
           plan={selectedPlan}
           setPlan={setPlan}
-          setSeats={setSeats}
           loading={
-            (step === 'InlineCheckout' && !paddleInitialised) ||
-            (step === 'ConfirmBillingInterval' && !billingAmountLoaded)
+            (step === 'InlineCheckout' && !isPaddleInitialised) ||
+            (step === 'ConfirmBillingInterval' && !isBillingAmountLoaded)
           }
         />
       ) : null}
       {step === 'InlineCheckout' && (
         <div
           style={{
-            width: paddleInitialised ? 'auto' : 0,
-            height: paddleInitialised ? 'auto' : 0,
+            width: isPaddleInitialised ? 'auto' : 0,
+            height: isPaddleInitialised ? 'auto' : 0,
             overflow: 'hidden',
           }}
         >
-          <InlineCheckout
-            plan={selectedPlan}
-            seats={seats}
-            setPaddleInitialised={setPaddleInitialised}
-          />
+          <InlineCheckout plan={selectedPlan} />
         </div>
       )}
       {step === 'ConfirmBillingInterval' && (
-        <ConfirmBillingInterval
-          plan={selectedPlan}
-          seats={seats}
-          setBillingAmountLoaded={setBillingAmountLoaded}
-        />
+        <ConfirmBillingInterval plan={selectedPlan} />
       )}
     </Stack>
   );
