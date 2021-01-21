@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { Stack, Text, Menu, Icon, Button, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { Step } from 'app/overmind/namespaces/pro/state';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
@@ -13,7 +14,6 @@ import {
   SubscriptionBillingInterval,
 } from 'app/graphql/types';
 import { Plan, plans } from '../plans';
-import { Steps } from './steps';
 
 const prettyPermissions = {
   ADMIN: 'Admin',
@@ -26,13 +26,13 @@ export const WorkspacePlanSelection: React.FC<{
   plan: Plan;
   setPlan: (plan: Plan) => void;
   setSeats: (seats: number) => void;
-  setStep: (step: Steps) => void;
-}> = ({ loading, plan, setPlan, setSeats, setStep }) => {
+}> = ({ loading, plan, setPlan, setSeats }) => {
   const {
     state: { personalWorkspaceId, user, activeTeam, activeTeamInfo, dashboard },
     actions: {
       setActiveTeam,
       modalOpened,
+      pro: { setStep },
       patron: { cancelSubscriptionClicked },
     },
   } = useOvermind();
@@ -472,7 +472,7 @@ export const WorkspacePlanSelection: React.FC<{
                   // if it's already the same, then nothing to do here
                   plan.billingInterval === currentSubscription.billingInterval
                 }
-                onClick={() => setStep(Steps.ConfirmBillingInterval)}
+                onClick={() => setStep(Step.ConfirmBillingInterval)}
                 css={css({
                   fontSize: 3,
                   height: 10,
@@ -498,7 +498,7 @@ export const WorkspacePlanSelection: React.FC<{
                 // non-admins can't upgrade
                 activeUserAuthorization !== TeamMemberAuthorization.Admin
               }
-              onClick={() => setStep(Steps.InlineCheckout)}
+              onClick={() => setStep(Step.InlineCheckout)}
               css={css({
                 fontSize: 3,
                 height: 10,

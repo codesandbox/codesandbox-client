@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Switch, Route } from 'react-router-dom';
 import { ThemeProvider, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 import { NewTeam } from 'app/pages/common/NewTeam';
 import { WorkspacePlanSelection } from './pages/WorkspacePlanSelection';
@@ -61,7 +62,12 @@ const StartOrModifySubscription = () => {
    * We don't treat these as seperate pages because steps transition into
    * each other with data from the previous step
    */
-  const [step, setStep] = React.useState<Steps>(Steps.WorkspacePlanSelection);
+
+  const {
+    state: {
+      pro: { step },
+    },
+  } = useOvermind();
 
   const [selectedPlan, setPlan] = React.useState<Plan>(null);
   const [seats, setSeats] = React.useState(1);
@@ -85,7 +91,6 @@ const StartOrModifySubscription = () => {
             (step === 'InlineCheckout' && !paddleInitialised) ||
             (step === 'ConfirmBillingInterval' && !billingAmountLoaded)
           }
-          setStep={setStep}
         />
       ) : null}
       {step === 'InlineCheckout' && (
