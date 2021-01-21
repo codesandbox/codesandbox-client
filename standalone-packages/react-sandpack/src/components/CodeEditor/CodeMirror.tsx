@@ -98,6 +98,10 @@ const Container = styled('div', {
   },
 });
 
+const VisuallyHidden = styled('p', {
+  display: 'none',
+});
+
 export const CodeMirror: React.FC<CodeMirrorProps> = ({
   code,
   activePath,
@@ -181,10 +185,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 
     // force focus inside the editor when tabs change
     view.contentDOM.setAttribute('tabIndex', '-1');
-    view.contentDOM.setAttribute(
-      'aria-description',
-      'You are editing the code. To exit the edit mode, press Escape.'
-    );
+    view.contentDOM.setAttribute('aria-describedby', 'exit-instructions');
     view.contentDOM.focus();
 
     return () => {
@@ -205,9 +206,16 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       tabIndex={0}
       role="group"
       aria-label={`Code Editor for ${getFileName(activePath)}`}
-      /* eslint-disable jsx-a11y/aria-props */
-      aria-description="To enter the code editing mode, press Enter. To exit the edit mode, press Escape"
+      aria-describedby="enter-instructions"
       ref={wrapper}
-    />
+    >
+      <VisuallyHidden id="enter-instructions">
+        To enter the code editing mode, press Enter. To exit the edit mode,
+        press Escape
+      </VisuallyHidden>
+      <VisuallyHidden id="exit-instructions">
+        You are editing the code. To exit the edit mode, press Escape
+      </VisuallyHidden>
+    </Container>
   );
 };

@@ -135,6 +135,8 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
         </NavigatorButton>
       </NavigatorButtons>
       <NavigatorInput
+        type="text"
+        name="Current Sandpack URL"
         aria-label="Current Sandpack URL"
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
