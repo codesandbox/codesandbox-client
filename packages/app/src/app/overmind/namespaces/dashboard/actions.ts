@@ -217,7 +217,6 @@ export const inviteToTeam: AsyncAction<{
     effects.analytics.track('Team - Add Member', {
       dashboardVersion: 2,
       isEmail,
-      confirm: JSON.stringify(confirm),
     });
     let data: any | null = null;
     if (isEmail) {
