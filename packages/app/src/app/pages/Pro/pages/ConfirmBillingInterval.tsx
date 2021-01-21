@@ -2,14 +2,11 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { Plan } from '../plans';
 
-export const ConfirmBillingInterval: React.FC<{
-  plan: Plan;
-}> = ({ plan }) => {
+export const ConfirmBillingInterval: React.FC = () => {
   const {
     state: {
-      pro: { seats },
+      pro: { seats, selectedPlan },
     },
     actions,
     effects,
@@ -60,8 +57,8 @@ export const ConfirmBillingInterval: React.FC<{
             <Text variant="muted" size={3}>
               {seats} {seats === 1 ? 'seat' : 'seats'}
               <Text size={2}> ✕ </Text>
-              {prices.currency} {prices.unitPrice} ({plan.currency}{' '}
-              {plan.unit * plan.multiplier})
+              {prices.currency} {prices.unitPrice} ({selectedPlan.currency}{' '}
+              {selectedPlan.unit * selectedPlan.multiplier})
             </Text>
             <Text variant="muted" size={3}>
               {prices.currency} {prices.total}

@@ -2,16 +2,7 @@ import {
   WorkspaceSubscriptionTypes,
   SubscriptionBillingInterval,
 } from 'app/graphql/types';
-
-export type Plan = {
-  id: string;
-  name: string;
-  type: WorkspaceSubscriptionTypes;
-  billingInterval: SubscriptionBillingInterval;
-  unit: number;
-  multiplier: number;
-  currency: string;
-};
+import { Plan } from 'app/overmind/namespaces/pro/types';
 
 export const PADDLE_VENDOR_ID = 729;
 

@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { Stack, Text, Menu, Icon, Button, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { Step } from 'app/overmind/namespaces/pro/state';
+import { Step, Plan } from 'app/overmind/namespaces/pro/types';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
@@ -13,7 +13,7 @@ import {
   WorkspaceSubscriptionTypes,
   SubscriptionBillingInterval,
 } from 'app/graphql/types';
-import { Plan, plans } from '../plans';
+import { plans } from '../plans';
 
 const prettyPermissions = {
   ADMIN: 'Admin',
@@ -23,15 +23,20 @@ const prettyPermissions = {
 
 export const WorkspacePlanSelection: React.FC<{
   loading: boolean;
-  plan: Plan;
-  setPlan: (plan: Plan) => void;
-}> = ({ loading, plan, setPlan }) => {
+}> = ({ loading }) => {
   const {
-    state: { personalWorkspaceId, user, activeTeam, activeTeamInfo, dashboard },
+    state: {
+      personalWorkspaceId,
+      user,
+      activeTeam,
+      activeTeamInfo,
+      dashboard,
+      pro: { selectedPlan },
+    },
     actions: {
       setActiveTeam,
       modalOpened,
-      pro: { setStep, updateSeats },
+      pro: { setStep, updateSelectedPlan, updateSeats },
       patron: { cancelSubscriptionClicked },
     },
   } = useOvermind();
@@ -72,8 +77,8 @@ export const WorkspacePlanSelection: React.FC<{
       newPlan = plans.TEAM_PRO_MONTHLY;
     }
 
-    setPlan(newPlan);
-  }, [isPersonalWorkspace, billingInterval, setPlan]);
+    updateSelectedPlan(newPlan);
+  }, [isPersonalWorkspace, billingInterval]);
 
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
@@ -134,7 +139,7 @@ export const WorkspacePlanSelection: React.FC<{
     ]
   );
 
-  if (!activeTeam || !dashboard.teams.length || !plan) return null;
+  if (!activeTeam || !dashboard.teams.length || !selectedPlan) return null;
 
   const numberOfEditors = activeWorkspace.userAuthorizations.filter(
     ({ authorization }) => authorization !== TeamMemberAuthorization.Read
@@ -172,8 +177,8 @@ export const WorkspacePlanSelection: React.FC<{
         marginBottom={8}
         css={{ maxWidth: 560 }}
       >
-        Join our community of creators from {plan.currency}
-        {plan.unit}/month.
+        Join our community of creators from {selectedPlan.currency}
+        {selectedPlan.unit}/month.
         <br /> Cancel at any time, effective at the end of the payment period.
       </Text>
       <Stack direction="vertical" gap={1} marginBottom={6}>
@@ -436,11 +441,11 @@ export const WorkspacePlanSelection: React.FC<{
               <Stack direction="vertical" gap={4}>
                 <Text variant="muted" size={3}>
                   {numberOfEditors} {numberOfEditors === 1 ? 'seat' : 'seats'}
-                  <Text size={2}> ✕ </Text> {plan.currency}
-                  {plan.unit}{' '}
-                  {plan.multiplier > 1 ? (
+                  <Text size={2}> ✕ </Text> {selectedPlan.currency}
+                  {selectedPlan.unit}{' '}
+                  {selectedPlan.multiplier > 1 ? (
                     <>
-                      <Text size={2}> ✕</Text> {plan.multiplier}
+                      <Text size={2}> ✕</Text> {selectedPlan.multiplier}
                     </>
                   ) : null}
                 </Text>
@@ -449,9 +454,13 @@ export const WorkspacePlanSelection: React.FC<{
                 </Text>
               </Stack>
               <Text weight="bold" size={4}>
-                {plan.currency}
-                {numberOfEditors * plan.unit * plan.multiplier} /{' '}
-                {plan.billingInterval === SubscriptionBillingInterval.Monthly
+                {selectedPlan.currency}
+                {numberOfEditors *
+                  selectedPlan.unit *
+                  selectedPlan.multiplier}{' '}
+                /{' '}
+                {selectedPlan.billingInterval ===
+                SubscriptionBillingInterval.Monthly
                   ? 'month'
                   : 'year'}
               </Text>
@@ -469,7 +478,8 @@ export const WorkspacePlanSelection: React.FC<{
                   currentSubscription.billingInterval ===
                     SubscriptionBillingInterval.Yearly ||
                   // if it's already the same, then nothing to do here
-                  plan.billingInterval === currentSubscription.billingInterval
+                  selectedPlan.billingInterval ===
+                    currentSubscription.billingInterval
                 }
                 onClick={() => setStep(Step.ConfirmBillingInterval)}
                 css={css({
@@ -483,7 +493,8 @@ export const WorkspacePlanSelection: React.FC<{
               </Button>
               {currentSubscription.billingInterval ===
                 SubscriptionBillingInterval.Yearly &&
-              plan.billingInterval === SubscriptionBillingInterval.Monthly ? (
+              selectedPlan.billingInterval ===
+                SubscriptionBillingInterval.Monthly ? (
                 <Text align="center">
                   Changing billing interval from Yearly to Monthly is not
                   supported yet. Please email us at hello@codesandbox.io

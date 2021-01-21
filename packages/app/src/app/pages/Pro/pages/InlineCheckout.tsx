@@ -3,16 +3,14 @@ import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { useScript } from 'app/hooks';
-import { Plan, PADDLE_VENDOR_ID } from '../plans';
+import { PADDLE_VENDOR_ID } from '../plans';
 
-export const InlineCheckout: React.FC<{
-  plan: Plan;
-}> = ({ plan }) => {
+export const InlineCheckout: React.FC = () => {
   const {
     state: {
       user,
       activeTeam,
-      pro: { seats },
+      pro: { seats, selectedPlan },
     },
     actions,
   } = useOvermind();
@@ -45,7 +43,7 @@ export const InlineCheckout: React.FC<{
 
     Paddle.Checkout.open({
       method: 'inline',
-      product: plan.id, // Replace with your Product or Plan ID
+      product: selectedPlan.id, // Replace with your Product or Plan ID
       quantity: seats,
       email: user.email,
       frameTarget: 'checkout-container', // The className of your checkout <div>
@@ -62,7 +60,7 @@ export const InlineCheckout: React.FC<{
         transparent; border: none;
       `,
     });
-  }, [scriptLoaded, paddleInitialised, seats, user.email, plan.id]);
+  }, [scriptLoaded, seats, user.email, selectedPlan]);
 
   return (
     <div style={{ paddingBottom: 64 }}>
@@ -88,8 +86,8 @@ export const InlineCheckout: React.FC<{
             <Text variant="muted" size={3}>
               {seats} {seats === 1 ? 'seat' : 'seats'}
               <Text size={2}> ✕ </Text>
-              {prices.currency} {unitPricePreTax} ({plan.currency}{' '}
-              {plan.unit * plan.multiplier})
+              {prices.currency} {unitPricePreTax} ({selectedPlan.currency}{' '}
+              {selectedPlan.unit * selectedPlan.multiplier})
             </Text>
             <Text variant="muted" size={3}>
               {prices.currency} {totalPricePreTax}

@@ -4,13 +4,13 @@ import { Switch, Route } from 'react-router-dom';
 import { ThemeProvider, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
+import { Step } from 'app/overmind/namespaces/pro/types';
 import { Navigation } from 'app/pages/common/Navigation';
 import { NewTeam } from 'app/pages/common/NewTeam';
 import { WorkspacePlanSelection } from './pages/WorkspacePlanSelection';
 import { InlineCheckout } from './pages/InlineCheckout';
 import { ConfirmBillingInterval } from './pages/ConfirmBillingInterval';
 import { PaymentSuccess } from './pages/PaymentSuccess';
-import { Plan } from './plans';
 
 export const ProPage: React.FC = () => (
   <ThemeProvider>
@@ -64,11 +64,9 @@ const StartOrModifySubscription = () => {
 
   const {
     state: {
-      pro: { step, seats, isPaddleInitialised, isBillingAmountLoaded },
+      pro: { step, isPaddleInitialised, isBillingAmountLoaded },
     },
   } = useOvermind();
-
-  const [selectedPlan, setPlan] = React.useState<Plan>(null);
 
   return (
     <Stack
@@ -76,19 +74,17 @@ const StartOrModifySubscription = () => {
       align="center"
       css={css({ fontSize: 3, width: 560, marginTop: 120, marginX: 'auto' })}
     >
-      {step === 'WorkspacePlanSelection' ||
-      (step === 'InlineCheckout' && !isPaddleInitialised) ||
-      (step === 'ConfirmBillingInterval' && !isBillingAmountLoaded) ? (
+      {step === Step.WorkspacePlanSelection ||
+      (step === Step.InlineCheckout && !isPaddleInitialised) ||
+      (step === Step.ConfirmBillingInterval && !isBillingAmountLoaded) ? (
         <WorkspacePlanSelection
-          plan={selectedPlan}
-          setPlan={setPlan}
           loading={
-            (step === 'InlineCheckout' && !isPaddleInitialised) ||
-            (step === 'ConfirmBillingInterval' && !isBillingAmountLoaded)
+            (step === Step.InlineCheckout && !isPaddleInitialised) ||
+            (step === Step.ConfirmBillingInterval && !isBillingAmountLoaded)
           }
         />
       ) : null}
-      {step === 'InlineCheckout' && (
+      {step === Step.InlineCheckout && (
         <div
           style={{
             width: isPaddleInitialised ? 'auto' : 0,
@@ -96,12 +92,10 @@ const StartOrModifySubscription = () => {
             overflow: 'hidden',
           }}
         >
-          <InlineCheckout plan={selectedPlan} />
+          <InlineCheckout />
         </div>
       )}
-      {step === 'ConfirmBillingInterval' && (
-        <ConfirmBillingInterval plan={selectedPlan} />
-      )}
+      {step === Step.ConfirmBillingInterval && <ConfirmBillingInterval />}
     </Stack>
   );
 };
