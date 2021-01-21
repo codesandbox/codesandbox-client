@@ -86,7 +86,10 @@ export const TeamCards = ({ mode }) => (
           `}
         >
           <CardTitle>Organization</CardTitle>
-          <Price>Join the waitlist</Price>
+          <Price>${mode === 'monthly' ? 54 : 45}</Price></Price>
+          <PriceSubText>
+            Currently in private beta
+          </PriceSubText>
         </div>
         <List>
           <li
@@ -111,7 +114,7 @@ export const TeamCards = ({ mode }) => (
         `}
         href="mailto:hello@codesandbox.io"
       >
-        Get early access
+        Join the waitlist
       </Button>
     </Card>
     <Card>
@@ -122,7 +125,10 @@ export const TeamCards = ({ mode }) => (
           `}
         >
           <CardTitle>Enterprise</CardTitle>
-          <Price>Contact us</Price>
+          <Price>$Custom</Price>
+          <PriceSubText>
+            A plan that's tailored to you
+          </PriceSubText>
         </div>
         <List>
           <li
