@@ -86,7 +86,7 @@ export const TeamCards = ({ mode }) => (
           `}
         >
           <CardTitle>Organization</CardTitle>
-          <Price>${mode === 'monthly' ? 54 : 45}</Price></Price>
+          <Price>${mode === 'monthly' ? 54 : 45}</Price>
           <PriceSubText>
             Currently in private beta
           </PriceSubText>
