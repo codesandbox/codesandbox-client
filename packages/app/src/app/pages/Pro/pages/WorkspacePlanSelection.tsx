@@ -51,7 +51,7 @@ export const WorkspacePlanSelection: React.FC<{
     if (activeTeam && !workspaceId) {
       history.replace({
         pathname: location.pathname,
-        search: `?v=2&workspace=${activeTeam}&type=${type}`,
+        search: `?workspace=${activeTeam}&type=${type}`,
       });
     } else if (workspaceId !== activeTeam) {
       setActiveTeam({ id: workspaceId });
@@ -292,7 +292,7 @@ export const WorkspacePlanSelection: React.FC<{
                   textAlign: 'left',
                 })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() => history.push('/pro/create-workspace?v=2')}
+                onSelect={() => history.push('/pro/create-workspace')}
               >
                 <Stack
                   justify="center"

@@ -353,7 +353,7 @@ export const WorkspaceSettings = () => {
                       <Link
                         size={3}
                         variant="muted"
-                        href="/pro?v=2"
+                        href="/pro"
                         target="_blank"
                         css={{ textDecoration: 'underline' }}
                       >
@@ -380,7 +380,7 @@ export const WorkspaceSettings = () => {
                     <Text size={3}>+ Flexible permissions</Text>
                     <Text size={3}>+ Centralized billing</Text>
                   </Stack>
-                  <Button as="a" href="/pro?v=2" target="_blank" marginTop={2}>
+                  <Button as="a" href="/pro" target="_blank" marginTop={2}>
                     Upgrade to Pro
                   </Button>
                 </Stack>

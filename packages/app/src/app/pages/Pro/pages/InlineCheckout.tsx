@@ -48,7 +48,7 @@ export const InlineCheckout: React.FC = () => {
       email: user.email,
       frameTarget: 'checkout-container', // The className of your checkout <div>
       loadCallback: 'loadCallback',
-      success: '/pro/success?v=2',
+      success: '/pro/success',
       passthrough: JSON.stringify({ team_id: activeTeam, user_id: user.id }),
       allowQuantity: true,
       disableLogout: true,

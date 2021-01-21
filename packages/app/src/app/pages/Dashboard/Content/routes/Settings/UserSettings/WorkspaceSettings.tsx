@@ -204,7 +204,7 @@ export const WorkspaceSettings = () => {
               <Text size={3}>+ Higher upload limits</Text>
               <Text size={3}>+ Flexible permissions</Text>
             </Stack>
-            <Button as="a" href="/pro?v=2" target="_blank" marginTop={2}>
+            <Button as="a" href="/pro" target="_blank" marginTop={2}>
               Upgrade to Pro
             </Button>
           </Stack>

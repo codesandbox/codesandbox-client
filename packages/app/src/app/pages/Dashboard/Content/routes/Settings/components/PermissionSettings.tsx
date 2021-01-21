@@ -50,7 +50,7 @@ export const PermissionSettings = () => {
   } else if (!isTeamPro) {
     alert = {
       message: 'You need a Team Pro workspace to change sandbox permissions.',
-      cta: { label: 'Upgrade to Pro', href: '/pro?v=2' },
+      cta: { label: 'Upgrade to Pro', href: '/pro' },
     };
   } else if (!isAdmin) {
     alert = {

@@ -1,5 +1,8 @@
 import { Action, AsyncAction } from 'app/overmind';
+import { withLoadApp } from 'app/overmind/factories';
 import { Step, Plan } from './types';
+
+export const pageMounted: AsyncAction = withLoadApp();
 
 export const setStep: Action<Step> = ({ state }, step) => {
   state.pro.step = step;

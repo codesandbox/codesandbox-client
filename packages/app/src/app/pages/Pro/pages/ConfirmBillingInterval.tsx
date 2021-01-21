@@ -24,7 +24,7 @@ export const ConfirmBillingInterval: React.FC = () => {
   const changeBillingInterval = async () => {
     try {
       await actions.dashboard.changeSubscriptionBillingInterval();
-      location.href = '/pro/success?v=2';
+      location.href = '/pro/success';
     } catch {
       effects.notificationToast.error(
         'There was a problem updating your billing interval. Please email us at hello@codesandbox.io'

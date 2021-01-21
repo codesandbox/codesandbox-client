@@ -61,7 +61,7 @@ export const RegistrySettings = () => {
   ) {
     alert = {
       message: 'You need a Team Pro workspace to set a custom npm registry.',
-      cta: { label: 'Upgrade to Pro', href: '/pro?v=2' },
+      cta: { label: 'Upgrade to Pro', href: '/pro' },
     };
   } else if (state.activeWorkspaceAuthorization !== 'ADMIN') {
     alert = {
