@@ -17,11 +17,12 @@ import {
   TableWrapper,
   ModeChooser,
   ProductChooser,
+  TableSection,
 } from './_elements';
 import { personal } from './data/_personal';
 import { business } from './data/_business';
 import Cards from './_cards';
-import { OpenIcon, Save } from './_icons';
+import { OpenIcon, SavePersonal, SaveTeam } from './_icons';
 
 export default () => {
   const [open, setOpen] = useState({});
@@ -81,7 +82,7 @@ export default () => {
           }
         />
         <span>Bill annually</span>
-        <Save />
+        {product === 'team' ? <SaveTeam /> : <SavePersonal />}
       </ModeChooser>
       <Cards team={product === 'team'} mode={mode} />
       <Title
@@ -95,11 +96,7 @@ export default () => {
       >
         Compare plans & features
       </Title>
-      <div
-        css={`
-          margin-bottom: 128px;
-        `}
-      >
+      <TableSection>
         {array.items.map(item => (
           <TableWrapper>
             <FeaturesTableHeader
@@ -168,7 +165,7 @@ export default () => {
             </FeaturesTable>
           </TableWrapper>
         ))}
-      </div>
+      </TableSection>
     </Layout>
   );
 };

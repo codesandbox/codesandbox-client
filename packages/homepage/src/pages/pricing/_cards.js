@@ -9,13 +9,6 @@ import {
   CardContainer,
 } from './_elements';
 
-// you're going to need this for the link on homepage, there are 3 flags
-// v=2
-// type=PERSONAL_PRO | TEAM_PRO
-// interval=MONTHLY | YEARLY
-// /pro?v=2&type=PERSONAL_PRO&interval=MONTHLY
-// /pro?v=2&type=TEAM_PRO&interval=YEARLY (edited)
-
 const makeLink = (product, mode) => {
   let link = 'pro?v=2';
   if (product === 'personal') {

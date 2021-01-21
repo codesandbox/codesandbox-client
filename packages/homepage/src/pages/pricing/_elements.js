@@ -47,7 +47,7 @@ export const List = styled.ul`
   text-align: left;
   color: ${props => props.theme.homepage.white};
   padding-top: 24px;
-  border-top: 1px solid #ffffff;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
   font-size: 19px;
   line-height: 34px;
 
@@ -252,6 +252,10 @@ export const CardContainer = styled.div`
       div:last-child {
         grid-column: span 2;
         height: auto;
+
+        a[class*="Button"]{
+          margin-top: 40px;
+        }
       }
     }`}
 
@@ -282,7 +286,8 @@ export const Plan = styled(FeaturesTableHeader)`
   padding: 0 20px;
   border-bottom: 1px solid #151515;
   cursor: initial;
-  padding-bottom: 1rem;
+  padding: 0.5 0rem;
+  background: transparent;
   width: calc(100% + 40px);
   margin-left: -20px;
 
@@ -291,9 +296,17 @@ export const Plan = styled(FeaturesTableHeader)`
     css`
       grid-template-columns: 1fr 12rem 12rem 12rem;
     `}
-
   ${props => props.theme.breakpoints.xl} {
     width: 890px;
+  }
+`;
+
+export const TableSection = styled.div`
+  margin-bottom: 128px;
+  ${props => props.theme.breakpoints.md} {
+    position: relative;
+    width: 120%;
+    margin-left: -10%;
   }
 `;
 
