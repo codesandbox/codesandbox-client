@@ -190,16 +190,34 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
   }
 };
 
-export const inviteToTeam: AsyncAction<string> = async (
-  { state, effects },
-  value
-) => {
+export const inviteToTeam: AsyncAction<{
+  value: string;
+  confirm: boolean;
+}> = async ({ state, actions, effects }, { value, confirm }) => {
   if (!state.activeTeam) return;
   const isEmail = value.includes('@');
+
+  if (confirm) {
+    const confirmed = await actions.modals.alertModal.open({
+      title: 'Add New Member',
+      customComponent: 'MemberPaymentConfirmation',
+    });
+
+    // if the user cancels the function, bail
+    if (!confirmed) {
+      effects.analytics.track('Team - Cancel Add Member', {
+        dashboardVersion: 2,
+        isEmail,
+      });
+      return;
+    }
+  }
+
   try {
     effects.analytics.track('Team - Add Member', {
       dashboardVersion: 2,
       isEmail,
+      confirm: JSON.stringify(confirm),
     });
     let data: any | null = null;
     if (isEmail) {
@@ -1236,7 +1254,21 @@ export const changeAuthorizationInState: Action<{
 export const changeAuthorization: AsyncAction<{
   userId: string;
   authorization: TeamMemberAuthorization;
-}> = async ({ state, effects, actions }, { userId, authorization }) => {
+  confirm?: Boolean;
+}> = async (
+  { state, effects, actions },
+  { userId, authorization, confirm }
+) => {
+  if (confirm) {
+    const confirmed = await actions.modals.alertModal.open({
+      title: 'Change Authorization',
+      customComponent: 'MemberPaymentConfirmation',
+    });
+
+    // if the user cancels the function, bail
+    if (!confirmed) return;
+  }
+
   // optimistic update
   const oldAuthorization = state.activeTeamInfo!.userAuthorizations.find(
     user => user.userId === userId

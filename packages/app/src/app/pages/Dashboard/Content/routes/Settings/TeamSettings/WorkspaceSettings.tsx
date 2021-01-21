@@ -92,26 +92,22 @@ export const WorkspaceSettings = () => {
       ? team.subscription.quantity - numberOfEditors
       : 0;
 
+  // if the user is going to be charged for adding a member
+  // throw them a confirmation modal
+  const confirmNewMemberAddition =
+    team?.subscription &&
+    team.settings.defaultAuthorization !== TeamMemberAuthorization.Read &&
+    numberOfUnusedSeats === 0;
+
   const onInviteSubmit = async event => {
     event.preventDefault();
     setInviteLoading(true);
 
-    // if the user is going to be charged for adding a member
-    // throw them a confirmation modal
-    if (
-      team?.subscription &&
-      team.settings.defaultAuthorization !== TeamMemberAuthorization.Read &&
-      numberOfUnusedSeats === 0
-    ) {
-      actions.modalOpened({
-        modal: 'addMemberToWorkspace',
-        message: inviteValue,
-      });
-      setInviteLoading(false);
-    } else {
-      await actions.dashboard.inviteToTeam(inviteValue);
-      setInviteLoading(false);
-    }
+    await actions.dashboard.inviteToTeam({
+      value: inviteValue,
+      confirm: confirmNewMemberAddition,
+    });
+    setInviteLoading(false);
   };
 
   if (!team || !stateUser) {
@@ -120,6 +116,14 @@ export const WorkspaceSettings = () => {
 
   const onCopyInviteUrl = async event => {
     event.preventDefault();
+
+    if (confirmNewMemberAddition) {
+      const confirmed = await actions.modals.alertModal.open({
+        title: 'Invite New Member',
+        customComponent: 'MemberPaymentConfirmation',
+      });
+      if (!confirmed) return;
+    }
 
     effects.browser.copyToClipboard(teamInviteLink(team.inviteToken));
     effects.notificationToast.success('Copied Team Invite URL!');
@@ -432,6 +436,12 @@ export const WorkspaceSettings = () => {
           getPermissionOptions={user => {
             const yourAuthorization = activeWorkspaceAuthorization;
 
+            // if changing the role will lead to extra seats, we want to
+            // confirm any payment changes if required
+            const confirmChange =
+              confirmNewMemberAddition &&
+              getAuthorization(user, team) === TeamMemberAuthorization.Read;
+
             return yourAuthorization === TeamMemberAuthorization.Admin &&
               user.id !== stateUser.id
               ? [
@@ -441,6 +451,7 @@ export const WorkspaceSettings = () => {
                       actions.dashboard.changeAuthorization({
                         userId: user.id,
                         authorization: TeamMemberAuthorization.Admin,
+                        confirm: confirmChange,
                       });
                     },
                   },
@@ -450,6 +461,7 @@ export const WorkspaceSettings = () => {
                       actions.dashboard.changeAuthorization({
                         userId: user.id,
                         authorization: TeamMemberAuthorization.Write,
+                        confirm: confirmChange,
                       });
                     },
                   },

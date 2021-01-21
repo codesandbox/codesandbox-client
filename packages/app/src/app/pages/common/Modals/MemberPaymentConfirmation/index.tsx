@@ -1,30 +1,19 @@
-import React, { FunctionComponent, useState } from 'react';
+import React from 'react';
 import { Checkbox, Text, Button, Stack } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import { SubscriptionBillingInterval } from 'app/graphql/types';
 import { Alert } from '../Common/Alert';
 
-export const AddMemberToWorkspace: FunctionComponent = () => {
+export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
+  title,
+}) => {
   const {
-    actions: { dashboard, modalClosed },
-    state: {
-      activeTeamInfo,
-      currentModalMessage,
-      activeWorkspaceAuthorization,
-    },
+    actions,
+    state: { activeTeamInfo, currentModalMessage },
   } = useOvermind();
 
   const [confirmed, setConfirmed] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-
-  const inviteValue = currentModalMessage;
-
-  const onSubmit = async () => {
-    setLoading(true);
-    await dashboard.inviteToTeam(inviteValue);
-    setLoading(false);
-    modalClosed();
-  };
 
   const subscription = activeTeamInfo.subscription;
 
@@ -37,7 +26,7 @@ export const AddMemberToWorkspace: FunctionComponent = () => {
     ' (excl. tax)';
 
   return (
-    <Alert title="Add New Member">
+    <Alert title={title}>
       <Text size={3} block marginTop={4} marginBottom={10}>
         <Stack as="label">
           <Checkbox
@@ -63,16 +52,20 @@ export const AddMemberToWorkspace: FunctionComponent = () => {
         </Stack>
       </Text>
       <Stack gap={2} justify="flex-end">
-        <Button autoWidth variant="secondary" onClick={modalClosed}>
+        <Button
+          autoWidth
+          variant="secondary"
+          onClick={() => actions.modals.alertModal.close(false)}
+        >
           Cancel
         </Button>
         <Button
           loading={loading}
           autoWidth
           disabled={!confirmed}
-          onClick={onSubmit}
+          onClick={() => actions.modals.alertModal.close(true)}
         >
-          Add Member
+          Confirm
         </Button>
       </Stack>
     </Alert>
