@@ -74,7 +74,7 @@ URL to the file hosted externally. For example:
 
 #### Folders
 
-You can create folders by naming the file with a `/` in it's name, allowing to
+You can create folders by naming the file with a `/` in the name, allowing you to
 structure your application how you want:
 
 ```json
