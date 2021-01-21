@@ -60,6 +60,8 @@ will be in the sandbox, an example body would be:
 }
 ```
 
+#### Binary Files
+
 You can import binary files by setting `isBinary` to `true` and `content` as a
 URL to the file hosted externally. For example:
 
@@ -70,9 +72,36 @@ URL to the file hosted externally. For example:
 }
 ```
 
+#### Folders
+
+You can create folders by naming the file with a `/` in the name, allowing you to
+structure your application how you want:
+
+```json
+{
+  "files": {
+    "src/index.js": {
+      "content": "console.log('hello!')",
+      "isBinary": false
+    },
+    "package.json": {
+      "content": {
+        "dependencies": {}
+      }
+    }
+  }
+}
+```
+
+This will create a file called `index.js` in your `src` folder.
+
+#### Package.json
+
 Every request **requires** a `package.json`. This file can either be a string or
 an object. We determine all information of the sandbox from the files, like we
 do with the GitHub import.
+
+<br>
 
 ### GET Request
 
