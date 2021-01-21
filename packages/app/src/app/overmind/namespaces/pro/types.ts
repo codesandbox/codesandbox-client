@@ -18,3 +18,12 @@ export type Plan = {
   multiplier: number;
   currency: string;
 };
+
+export type PaymentSummary = {
+  unitPrice: string;
+  unit: number;
+  unitTax: number;
+  totalTax: number;
+  currency: number;
+  total: number;
+};

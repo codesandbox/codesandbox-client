@@ -6,20 +6,17 @@ import css from '@styled-system/css';
 export const ConfirmBillingInterval: React.FC = () => {
   const {
     state: {
-      pro: { seats, selectedPlan },
+      pro: { seats, selectedPlan, summary },
     },
     actions,
     effects,
   } = useOvermind();
-  const [prices, setPrices] = React.useState(null);
 
   React.useEffect(() => {
-    // actions.fetchPrices();
-    // setPrices(null);
-    // actions.pro.billingAmountLoaded()
+    actions.pro.getPriceSummary();
   }, []);
 
-  if (!prices) return null;
+  if (!summary) return null;
 
   const changeBillingInterval = async () => {
     try {
@@ -57,11 +54,11 @@ export const ConfirmBillingInterval: React.FC = () => {
             <Text variant="muted" size={3}>
               {seats} {seats === 1 ? 'seat' : 'seats'}
               <Text size={2}> ✕ </Text>
-              {prices.currency} {prices.unitPrice} ({selectedPlan.currency}{' '}
+              {summary.currency} {summary.unitPrice} ({selectedPlan.currency}{' '}
               {selectedPlan.unit * selectedPlan.multiplier})
             </Text>
             <Text variant="muted" size={3}>
-              {prices.currency} {prices.total}
+              {summary.currency} {summary.total}
             </Text>
           </Stack>
           <Stack justify="space-between">
@@ -69,7 +66,7 @@ export const ConfirmBillingInterval: React.FC = () => {
               Tax
             </Text>
             <Text variant="muted" size={3}>
-              {prices.currency} {prices.total_tax}
+              {summary.currency} {summary.totalTax}
             </Text>
           </Stack>
           <Stack
@@ -82,7 +79,7 @@ export const ConfirmBillingInterval: React.FC = () => {
           >
             <Text size={3}>Total</Text>
             <Text weight="bold">
-              {prices.currency} {prices.total}
+              {summary.currency} {summary.total}
             </Text>
           </Stack>
         </Stack>

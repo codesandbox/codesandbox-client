@@ -287,10 +287,7 @@ export const WorkspacePlanSelection: React.FC<{
                 as={Menu.Item}
                 align="center"
                 gap={2}
-                css={css({
-                  height: 10,
-                  textAlign: 'left',
-                })}
+                css={css({ height: 10, textAlign: 'left' })}
                 style={{ paddingLeft: 8 }}
                 onSelect={() => history.push('/pro/create-workspace')}
               >

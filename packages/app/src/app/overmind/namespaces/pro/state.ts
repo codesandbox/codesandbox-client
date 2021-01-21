@@ -1,4 +1,4 @@
-import { Step, Plan } from './types';
+import { Step, Plan, PaymentSummary } from './types';
 
 type State = {
   selectedPlan: Plan | null;
@@ -6,6 +6,7 @@ type State = {
   seats: number;
   isPaddleInitialised: boolean;
   isBillingAmountLoaded: boolean;
+  summary: PaymentSummary | null;
 };
 
 export const state: State = {
@@ -14,4 +15,5 @@ export const state: State = {
   seats: 1,
   isPaddleInitialised: false,
   isBillingAmountLoaded: false,
+  summary: null,
 };

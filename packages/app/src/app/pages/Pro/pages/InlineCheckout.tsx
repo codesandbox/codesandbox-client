@@ -10,17 +10,12 @@ export const InlineCheckout: React.FC = () => {
     state: {
       user,
       activeTeam,
-      pro: { seats, selectedPlan },
+      pro: { seats, selectedPlan, summary },
     },
     actions,
   } = useOvermind();
 
   const [scriptLoaded] = useScript('https://cdn.paddle.com/paddle/paddle.js');
-  const [prices, updatePrices] = React.useState(null);
-
-  const unitPricePreTax = prices && (prices.unit - prices.unit_tax).toFixed(2);
-  const totalPricePreTax =
-    prices && (prices.total - prices.total_tax).toFixed(2);
 
   React.useEffect(() => {
     if (!scriptLoaded) return;
@@ -33,7 +28,15 @@ export const InlineCheckout: React.FC = () => {
       vendor: PADDLE_VENDOR_ID,
       eventCallback: event => {
         if (event.event === 'Checkout.Location.Submit') {
-          updatePrices(event.eventData.checkout.prices.customer);
+          const customSummary = event.eventData.checkout.prices.customer;
+          actions.pro.updateSummary({
+            unitPrice: customSummary.unit_price,
+            unit: customSummary.unit,
+            unitTax: customSummary.unit_tax,
+            totalTax: customSummary.total_tax,
+            currency: customSummary.currency,
+            total: customSummary.total,
+          });
         }
       },
     });
@@ -62,12 +65,17 @@ export const InlineCheckout: React.FC = () => {
     });
   }, [scriptLoaded, seats, user.email, selectedPlan]);
 
+  const unitPricePreTax =
+    summary && (summary.unit - summary.unitTax).toFixed(2);
+  const totalPricePreTax =
+    summary && (summary.total - summary.totalTax).toFixed(2);
+
   return (
     <div style={{ paddingBottom: 64 }}>
       <Text size={7} as="h1" block align="center" marginBottom={12}>
         Upgrade to Pro
       </Text>
-      {prices && (
+      {summary && (
         <Stack
           direction="vertical"
           gap={2}
@@ -86,11 +94,11 @@ export const InlineCheckout: React.FC = () => {
             <Text variant="muted" size={3}>
               {seats} {seats === 1 ? 'seat' : 'seats'}
               <Text size={2}> ✕ </Text>
-              {prices.currency} {unitPricePreTax} ({selectedPlan.currency}{' '}
+              {summary.currency} {unitPricePreTax} ({selectedPlan.currency}{' '}
               {selectedPlan.unit * selectedPlan.multiplier})
             </Text>
             <Text variant="muted" size={3}>
-              {prices.currency} {totalPricePreTax}
+              {summary.currency} {totalPricePreTax}
             </Text>
           </Stack>
           <Stack justify="space-between">
@@ -98,7 +106,7 @@ export const InlineCheckout: React.FC = () => {
               Tax
             </Text>
             <Text variant="muted" size={3}>
-              {prices.currency} {prices.total_tax}
+              {summary.currency} {summary.totalTax}
             </Text>
           </Stack>
           <Stack
@@ -111,7 +119,7 @@ export const InlineCheckout: React.FC = () => {
           >
             <Text size={3}>Total</Text>
             <Text weight="bold">
-              {prices.currency} {prices.total}
+              {summary.currency} {summary.total}
             </Text>
           </Stack>
         </Stack>
