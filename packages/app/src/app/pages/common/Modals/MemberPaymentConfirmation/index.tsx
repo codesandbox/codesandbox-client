@@ -9,11 +9,10 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
 }) => {
   const {
     actions,
-    state: { activeTeamInfo, currentModalMessage },
+    state: { activeTeamInfo },
   } = useOvermind();
 
   const [confirmed, setConfirmed] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
 
   const subscription = activeTeamInfo.subscription;
 
@@ -60,7 +59,6 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
           Cancel
         </Button>
         <Button
-          loading={loading}
           autoWidth
           disabled={!confirmed}
           onClick={() => actions.modals.alertModal.close(true)}
