@@ -246,7 +246,8 @@ export const CardContainer = styled.div`
 
     ${teams &&
     `
-    ${theme.breakpoints.xl} {
+
+    @media screen and (max-width: 1400px) {
       grid-template-columns: 1fr 1fr;
 
       div:last-child {
@@ -257,7 +258,8 @@ export const CardContainer = styled.div`
           margin-top: 40px;
         }
       }
-    }`}
+    }
+  `}
 
     ${theme.breakpoints.md} {
       grid-template-columns: 1fr;
