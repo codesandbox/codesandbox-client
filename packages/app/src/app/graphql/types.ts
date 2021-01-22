@@ -952,6 +952,7 @@ export type WorkspaceSubscription = {
   id: Scalars['UUID4'];
   type: WorkspaceSubscriptionTypes;
   status: 'ACTIVE' | 'PAUSED' | 'CANCELLED';
+  origin: 'LEGACY' | 'PATRON' | 'PILOT';
   quantity: Scalars['Int'];
   unitPrice: Scalars['Int'];
   currency: Scalars['String'];

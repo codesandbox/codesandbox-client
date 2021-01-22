@@ -32,7 +32,7 @@ export const WorkspaceSettings = () => {
   }
 
   // @ts-ignore
-  const isPro = activeTeamInfo?.subscription;
+  const activeSubscription = activeTeamInfo?.subscription;
 
   return (
     <Grid
@@ -120,9 +120,9 @@ export const WorkspaceSettings = () => {
               Plan
             </Text>
             <Text size={3} maxWidth="100%">
-              {isPro ? 'Pro Plan' : 'Community Plan'}
+              {activeSubscription ? 'Personal Pro' : 'Community Plan'}
             </Text>
-            {isPro ? (
+            {activeSubscription ? (
               <>
                 <Button
                   variant="link"
@@ -162,7 +162,7 @@ export const WorkspaceSettings = () => {
           </Stack>
         </Stack>
       </Card>
-      {isPro ? (
+      {activeSubscription ? (
         <Card>
           <Stack direction="vertical" gap={2}>
             <Stack direction="vertical" gap={2}>
@@ -170,18 +170,27 @@ export const WorkspaceSettings = () => {
                 Invoice details
               </Text>
               {activeTeamInfo?.subscription && (
-                <Text size={3} variant="muted">
-                  {activeTeamInfo?.subscription.currency}{' '}
-                  {(
-                    (activeTeamInfo.subscription.quantity *
-                      activeTeamInfo.subscription.unitPrice) /
-                    100
-                  ).toFixed(2)}{' '}
-                  <Text css={{ textTransform: 'capitalize' }}>
-                    {activeTeamInfo.subscription.billingInterval.toLowerCase()}
-                  </Text>
-                </Text>
+                <div>
+                  {activeTeamInfo?.subscription.origin === 'PATRON' ? (
+                    <Text size={3} variant="muted">
+                      USD {user?.subscription.amount}{' '}
+                    </Text>
+                  ) : (
+                    <Text size={3} variant="muted">
+                      {activeTeamInfo?.subscription.currency}{' '}
+                      {(
+                        (activeTeamInfo.subscription.quantity *
+                          activeTeamInfo.subscription.unitPrice) /
+                        100
+                      ).toFixed(2)}{' '}
+                      <Text css={{ textTransform: 'capitalize' }}>
+                        {activeTeamInfo.subscription.billingInterval.toLowerCase()}
+                      </Text>
+                    </Text>
+                  )}
+                </div>
               )}
+
               <Text size={3} maxWidth="100%">
                 Invoices are sent to
               </Text>

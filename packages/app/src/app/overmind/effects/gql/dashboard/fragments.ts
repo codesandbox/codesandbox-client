@@ -180,6 +180,7 @@ export const currentTeamInfoFragment = gql`
       id
       type
       status
+      origin
       quantity
       unitPrice
       currency

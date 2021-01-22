@@ -331,37 +331,55 @@ export const WorkspaceSettings = () => {
                     <Text size={6} weight="bold" maxWidth="100%">
                       Invoice details
                     </Text>
-                    <Stack direction="vertical" gap={2}>
-                      <Text size={3} variant="muted">
-                        {team.subscription.currency}{' '}
-                        {(
-                          (team.subscription.quantity *
-                            team.subscription.unitPrice) /
-                          100
-                        ).toFixed(2)}{' '}
-                        <Text css={{ textTransform: 'capitalize' }}>
-                          {team.subscription.billingInterval.toLowerCase()}
+                    {team.subscription.origin === 'PILOT' ? (
+                      <Stack direction="vertical" gap={2}>
+                        <Text size={3} variant="muted">
+                          Pilot
                         </Text>
-                      </Text>
-                      <Link
-                        size={3}
-                        variant="muted"
-                        href={team.subscription.updateBillingUrl}
-                        target="_blank"
-                        css={{ textDecoration: 'underline' }}
-                      >
-                        Update payment information
-                      </Link>
-                      <Link
-                        size={3}
-                        variant="muted"
-                        href="/pro"
-                        target="_blank"
-                        css={{ textDecoration: 'underline' }}
-                      >
-                        Change billing interval
-                      </Link>
-                    </Stack>
+                        <Link
+                          size={3}
+                          variant="muted"
+                          href="/pro"
+                          target="_blank"
+                          css={{ textDecoration: 'underline' }}
+                        >
+                          Upgrade to Team Pro
+                        </Link>
+                      </Stack>
+                    ) : (
+                      <Stack direction="vertical" gap={2}>
+                        <Text size={3} variant="muted">
+                          {team.subscription.currency}{' '}
+                          {(
+                            (team.subscription.quantity *
+                              team.subscription.unitPrice) /
+                            100
+                          ).toFixed(2)}{' '}
+                          <Text css={{ textTransform: 'capitalize' }}>
+                            {team.subscription.billingInterval.toLowerCase()}
+                          </Text>
+                        </Text>
+
+                        <Link
+                          size={3}
+                          variant="muted"
+                          href={team.subscription.updateBillingUrl}
+                          target="_blank"
+                          css={{ textDecoration: 'underline' }}
+                        >
+                          Update payment information
+                        </Link>
+                        <Link
+                          size={3}
+                          variant="muted"
+                          href="/pro"
+                          target="_blank"
+                          css={{ textDecoration: 'underline' }}
+                        >
+                          Change billing interval
+                        </Link>
+                      </Stack>
+                    )}
                   </Stack>
                 </Stack>
               </Card>
