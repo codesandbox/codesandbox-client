@@ -96,8 +96,10 @@ export const WorkspaceSettings = () => {
   // throw them a confirmation modal
   const confirmNewMemberAddition =
     team?.subscription &&
-    team.settings.defaultAuthorization !== TeamMemberAuthorization.Read &&
-    numberOfUnusedSeats === 0;
+    numberOfUnusedSeats === 0 &&
+    team.settings.defaultAuthorization !== TeamMemberAuthorization.Read;
+  const confirmMemberRoleChange =
+    team?.subscription && numberOfUnusedSeats === 0;
 
   const onInviteSubmit = async event => {
     event.preventDefault();
@@ -286,7 +288,7 @@ export const WorkspaceSettings = () => {
                     {numberOfEditors}{' '}
                     {numberOfEditors > 1 ? 'Editors' : 'Editor'} on your plan
                   </Text>
-                  {numberOfUnusedSeats ? (
+                  {numberOfUnusedSeats > 0 ? (
                     <Text size={3} variant="muted">
                       + {numberOfUnusedSeats} unused editor{' '}
                       {numberOfUnusedSeats > 1 ? 'seats' : 'seat'}
@@ -439,7 +441,7 @@ export const WorkspaceSettings = () => {
             // if changing the role will lead to extra seats, we want to
             // confirm any payment changes if required
             const confirmChange =
-              confirmNewMemberAddition &&
+              confirmMemberRoleChange &&
               getAuthorization(user, team) === TeamMemberAuthorization.Read;
 
             return yourAuthorization === TeamMemberAuthorization.Admin &&
