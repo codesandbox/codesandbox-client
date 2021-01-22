@@ -39,7 +39,7 @@ export const TeamCards = ({ mode }) => (
             height: 155px;
           `}
         >
-          <CardTitle>Team Pro Workspace</CardTitle>
+          <CardTitle>Team Pro</CardTitle>
           <Price>${mode === 'monthly' ? 30 : 24}</Price>
           <PriceSubText>
             per editor/workspace/billed{' '}
@@ -86,8 +86,10 @@ export const TeamCards = ({ mode }) => (
           `}
         >
           <CardTitle>Organization</CardTitle>
-          <Price>${mode === 'monthly' ? 54 : 45}</Price>
+          <Price>${mode === 'monthly' ? 56 : 45}</Price>
           <PriceSubText>
+            per editor/billed{' '}
+            {mode === 'monthly' ? 'monthly' : 'annually'} <br />
             Currently in private beta
           </PriceSubText>
         </div>
@@ -99,7 +101,7 @@ export const TeamCards = ({ mode }) => (
           >
             For large or multiple teams
           </li>
-          <li>All in Team Pro Workspace, plus:</li>
+          <li>All in Team Pro, plus:</li>
           <li>SSO</li>
           <li>Multiple workspaces</li>
           <li>Workspace secrets</li>
@@ -127,7 +129,7 @@ export const TeamCards = ({ mode }) => (
           <CardTitle>Enterprise</CardTitle>
           <Price>$Custom</Price>
           <PriceSubText>
-            A plan that's tailored to you
+            Tailored to your needs
           </PriceSubText>
         </div>
         <List>
@@ -199,7 +201,7 @@ export const PersonalCards = ({ mode }) => (
             height: 155px;
           `}
         >
-          <CardTitle>Personal Pro Workspace</CardTitle>
+          <CardTitle>Personal Pro</CardTitle>
           <Price>${mode === 'monthly' ? 9 : 7}</Price>
           <PriceSubText>
             billed {mode === 'monthly' ? 'monthly' : 'annually'} <br />
