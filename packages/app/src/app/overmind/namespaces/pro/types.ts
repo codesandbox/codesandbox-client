@@ -20,10 +20,21 @@ export type Plan = {
 };
 
 export type PaymentSummary = {
-  unitPrice: string;
+  unitPrice: number;
   unit: number;
   unitTax: number;
   totalTax: number;
-  currency: number;
   total: number;
+  currency: string;
+};
+
+export type PaymentPreview = {
+  immediatePayment: {
+    amount: number;
+    currency: string;
+  };
+  nextPayment: {
+    amount: number;
+    currency: string;
+  };
 };

@@ -1661,13 +1661,3 @@ export const deleteAccount: AsyncAction = async ({ state, effects }) => {
     );
   }
 };
-
-export const changeSubscriptionBillingInterval: AsyncAction = async ({
-  state,
-  effects,
-}) => {
-  await effects.gql.mutations.updateSubscriptionBillingInterval({
-    teamId: state.activeTeam,
-    subscriptionId: state.activeTeamInfo.subscription.id,
-  });
-};

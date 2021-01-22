@@ -2870,12 +2870,34 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
 export type UpdateSubscriptionBillingIntervalMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   subscriptionId: Scalars['UUID4'];
+  billingInterval: SubscriptionBillingInterval;
 }>;
 
 export type UpdateSubscriptionBillingIntervalMutation = {
   __typename?: 'RootMutationType';
 } & {
   updateSubscriptionBillingInterval: {
-    teamId: Scalars['UUID4'];
+    id: Scalars['UUID4'];
+  };
+};
+
+export type PreviewUpdateSubscriptionBillingIntervalMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  subscriptionId: Scalars['UUID4'];
+  billingInterval: SubscriptionBillingInterval;
+}>;
+
+export type PreviewUpdateSubscriptionBillingIntervalMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  previewUpdateSubscriptionBillingInterval: {
+    immediatePayment: {
+      amount: Scalars['Int'];
+      currency: Scalars['String'];
+    };
+    nextPayment: {
+      amount: Scalars['Int'];
+      currency: Scalars['String'];
+    };
   };
 };

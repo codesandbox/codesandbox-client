@@ -65,6 +65,8 @@ import {
   DeleteCurrentUserMutationVariables,
   UpdateSubscriptionBillingIntervalMutation,
   UpdateSubscriptionBillingIntervalMutationVariables,
+  PreviewUpdateSubscriptionBillingIntervalMutation,
+  PreviewUpdateSubscriptionBillingIntervalMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -519,12 +521,40 @@ export const updateSubscriptionBillingInterval: Query<
   mutation updateSubscriptionBillingInterval(
     $teamId: UUID4!
     $subscriptionId: UUID4!
+    $billingInterval: SubscriptionInterval!
   ) {
     updateSubscriptionBillingInterval(
       teamId: $teamId
       subscriptionId: $subscriptionId
+      billingInterval: $billingInterval
     ) {
-      teamId
+      id
+    }
+  }
+`;
+
+export const previewUpdateSubscriptionBillingInterval: Query<
+  PreviewUpdateSubscriptionBillingIntervalMutation,
+  PreviewUpdateSubscriptionBillingIntervalMutationVariables
+> = gql`
+  mutation previewUpdateSubscriptionBillingInterval(
+    $teamId: UUID4!
+    $subscriptionId: UUID4!
+    $billingInterval: SubscriptionInterval!
+  ) {
+    previewUpdateSubscriptionBillingInterval(
+      teamId: $teamId
+      subscriptionId: $subscriptionId
+      billingInterval: $billingInterval
+    ) {
+      immediatePayment {
+        amount
+        currency
+      }
+      nextPayment {
+        amount
+        currency
+      }
     }
   }
 `;

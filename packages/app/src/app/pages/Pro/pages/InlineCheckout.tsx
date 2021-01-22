@@ -94,8 +94,16 @@ export const InlineCheckout: React.FC = () => {
             <Text variant="muted" size={3}>
               {seats} {seats === 1 ? 'seat' : 'seats'}
               <Text size={2}> ✕ </Text>
-              {summary.currency} {unitPricePreTax} ({selectedPlan.currency}{' '}
-              {selectedPlan.unit * selectedPlan.multiplier})
+              <span>
+                {summary.currency} {unitPricePreTax}
+              </span>
+              {summary.currency !== 'USD' ? (
+                <span>
+                  {' '}
+                  ({selectedPlan.currency}{' '}
+                  {selectedPlan.unit * selectedPlan.multiplier})
+                </span>
+              ) : null}
             </Text>
             <Text variant="muted" size={3}>
               {summary.currency} {totalPricePreTax}
