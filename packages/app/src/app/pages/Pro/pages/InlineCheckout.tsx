@@ -71,7 +71,7 @@ export const InlineCheckout: React.FC = () => {
     summary && (summary.total - summary.totalTax).toFixed(2);
 
   return (
-    <div style={{ paddingBottom: 64 }}>
+    <div style={{ paddingBottom: 64, width: 500 }}>
       <Text size={7} as="h1" block align="center" marginBottom={12}>
         Upgrade to Pro
       </Text>
