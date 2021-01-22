@@ -57,13 +57,13 @@ export const business = {
           available: [false, false, true],
         },
         {
-          name: 'On Premises',
-          desc: 'On Premises',
+          name: 'On-Premise',
+          desc: 'Your own instance running on bare-metal or your own cloud',
           available: [false, false, true],
         },
         {
           name: 'Private Cloud',
-          desc: 'Private Cloud',
+          desc: 'Your own instance running in a virtual private cloud',
           available: [false, false, true],
         },        
       ],
