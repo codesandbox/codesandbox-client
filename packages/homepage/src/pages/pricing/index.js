@@ -34,6 +34,17 @@ export default () => {
     setProduct(urlParams.get('for') === 'individual' ? 'personal' : 'team');
   }, []);
 
+  useEffect(() => {
+    const array = product === 'personal' ? personal : business;
+    const opened = {};
+
+    array.defaultOpen.forEach(item => {
+      opened[item] = true;
+    });
+
+    setOpen(opened);
+  }, [product]);
+
   const toggleTable = name => {
     if (!open[name]) {
       track('Explore Sandbox Open', {

@@ -6,6 +6,7 @@ export const business = {
     { name: 'Organization', color: '#F7A239' },
     { name: 'Enterprise', color: '#0971F1' },
   ],
+  defaultOpen: ['Admin & Security'],
   items: [
     {
       name: 'Admin & Security',
@@ -18,9 +19,10 @@ export const business = {
         },
         {
           name: 'Centralized Billing ',
-          desc: 'Everyone in a single account for easier team management & billing',
+          desc:
+            'Everyone in a single account for easier team management & billing',
           available: true,
-        },        
+        },
         {
           name: 'Sandbox-level Permissions',
           desc: 'Disable the ability to fork or download a shared sandbox',
@@ -28,14 +30,15 @@ export const business = {
         },
         {
           name: 'Workspace-level Permissions',
-          desc: 'Disable the ability to fork or download all shared sandboxes in a workspace',
+          desc:
+            'Disable the ability to fork or download all shared sandboxes in a workspace',
           available: true,
         },
         {
           name: 'Analytics',
           desc: 'Measure impact and refine creations with sandbox analytics',
           available: [false, true, true],
-        },        
+        },
         {
           name: 'Single Sign-On (SSO)',
           desc: 'Integrate your identity management system and enforce SSO',
@@ -43,7 +46,8 @@ export const business = {
         },
         {
           name: 'Multiple Workspaces',
-          desc: 'Bring multiple teams together in a single account to collaborate',
+          desc:
+            'Bring multiple teams together in a single account to collaborate',
           available: [false, true, true],
         },
         {
@@ -65,9 +69,9 @@ export const business = {
           name: 'Private Cloud',
           desc: 'Your own instance running in a virtual private cloud',
           available: [false, false, true],
-        },        
+        },
       ],
-    },    
+    },
     {
       name: 'Prototyping',
       features: [
@@ -95,7 +99,7 @@ export const business = {
         {
           name: 'Unlimited Private Sandboxes',
           desc:
-            "Set a sandbox as private or unlisted so others can’t see the code",
+            'Set a sandbox as private or unlisted so others can’t see the code',
           available: true,
         },
         {
@@ -128,7 +132,7 @@ export const business = {
           name: 'Embeds',
           desc: 'Embed sandboxes in docs, blog posts, websites, or tools',
           available: true,
-        }
+        },
       ],
     },
     {
