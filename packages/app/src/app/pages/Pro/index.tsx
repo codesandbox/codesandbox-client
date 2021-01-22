@@ -26,8 +26,30 @@ const ProPage: React.FC = () => {
     pageMounted();
   }, [pageMounted]);
 
-  if (!hasLoadedApp) return null;
-  if (!isLoggedIn) return <SignInModalElement />;
+  const getContent = () => {
+    if (!hasLoadedApp) return null;
+    if (!isLoggedIn) {
+      return (
+        <div style={{ marginTop: 120 }}>
+          <SignInModalElement />
+        </div>
+      );
+    }
+
+    return (
+      <Switch>
+        <Route path={`/pro/create-workspace`}>
+          <NewTeam redirectTo="/pro" />;
+        </Route>
+        <Route path={'/pro/success'}>
+          <PaymentSuccess />
+        </Route>
+        <Route path={`/pro`}>
+          <StartOrModifySubscription />
+        </Route>
+      </Switch>
+    );
+  };
 
   return (
     <ThemeProvider>
@@ -49,18 +71,7 @@ const ProPage: React.FC = () => {
         })}
       >
         <Navigation title="CodeSandbox Pro" />
-
-        <Switch>
-          <Route path={`/pro/create-workspace`}>
-            <NewTeam redirectTo="/pro" />;
-          </Route>
-          <Route path={'/pro/success'}>
-            <PaymentSuccess />
-          </Route>
-          <Route path={`/pro`}>
-            <StartOrModifySubscription />
-          </Route>
-        </Switch>
+        {getContent()}
       </Stack>
     </ThemeProvider>
   );

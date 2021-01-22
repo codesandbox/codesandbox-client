@@ -147,7 +147,7 @@ export const WorkspacePlanSelection: React.FC<{
   updateSeats(numberOfEditors);
 
   const isLegacyPersonalPro = isPersonalWorkspace && user.subscription;
-  const currentSubscription = activeTeamInfo.subscription;
+  const currentSubscription = activeTeamInfo?.subscription;
 
   // if there is mismatch of intent - team/personal
   // or you don't have access to upgrade
