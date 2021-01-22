@@ -96,6 +96,7 @@ export const ConfirmBillingInterval: React.FC = () => {
         <Button
           onClick={changeBillingInterval}
           loading={updatingSubscription}
+          disabled={updatingSubscription}
           css={css({
             fontSize: 3,
             height: 10,
