@@ -10,6 +10,8 @@ import {
   Input,
   Textarea,
   IconButton,
+  Menu,
+  Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
@@ -21,6 +23,7 @@ import {
   TeamMemberAuthorization,
   WorkspaceSubscriptionTypes,
   SubscriptionBillingInterval,
+  WorkspaceSubscriptionOrigin,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
 import { Card } from '../components';
@@ -96,10 +99,13 @@ export const WorkspaceSettings = () => {
   // throw them a confirmation modal
   const confirmNewMemberAddition =
     team?.subscription &&
+    team?.subscription.origin !== WorkspaceSubscriptionOrigin.Pilot &&
     numberOfUnusedSeats === 0 &&
     team.settings.defaultAuthorization !== TeamMemberAuthorization.Read;
   const confirmMemberRoleChange =
-    team?.subscription && numberOfUnusedSeats === 0;
+    team?.subscription &&
+    team?.subscription.origin !== WorkspaceSubscriptionOrigin.Pilot &&
+    numberOfUnusedSeats === 0;
 
   const onInviteSubmit = async event => {
     event.preventDefault();
@@ -107,6 +113,7 @@ export const WorkspaceSettings = () => {
 
     await actions.dashboard.inviteToTeam({
       value: inviteValue,
+      authorization: newMemberAuthorization,
       confirm: confirmNewMemberAddition,
     });
     setInviteLoading(false);
@@ -132,6 +139,22 @@ export const WorkspaceSettings = () => {
   };
 
   const created = team.users.find(user => user.id === team.creatorId);
+
+  const permissionMap = {
+    Admin: 'Admin',
+    Write: 'Editor',
+    Read: 'Viewer',
+  };
+
+  const [newMemberAuthorization, setNewMemberAuthorization] = React.useState<
+    TeamMemberAuthorization
+  >(
+    // get TeamMemberAuthorization key by value
+    Object.keys(TeamMemberAuthorization).find(key => {
+      const value = TeamMemberAuthorization[key];
+      return value === team.settings.defaultAuthorization;
+    }) as TeamMemberAuthorization
+  );
 
   return (
     <>
@@ -425,13 +448,59 @@ export const WorkspaceSettings = () => {
           onSubmit={inviteLoading ? undefined : onInviteSubmit}
           css={{ display: 'flex', flexGrow: 1, maxWidth: 480 }}
         >
-          <UserSearchInput
-            inputValue={inviteValue}
-            allowSelf={false}
-            onInputValueChange={val => {
-              setInviteValue(val);
-            }}
-          />
+          <div style={{ position: 'relative', width: '100%' }}>
+            <UserSearchInput
+              inputValue={inviteValue}
+              allowSelf={false}
+              onInputValueChange={val => setInviteValue(val)}
+              style={{ paddingRight: 80 }}
+            />
+            {false /** TODO: UNCOMMENT WHEN BACKEND IS READY */ && (
+              <Menu>
+                <Menu.Button
+                  css={css({
+                    fontSize: 3,
+                    fontWeight: 'normal',
+                    paddingX: 0,
+                    position: 'absolute',
+                    top: 0,
+                    right: 2,
+                  })}
+                >
+                  <Text variant="muted">
+                    {permissionMap[newMemberAuthorization]}
+                  </Text>
+                  <Icon name="caret" size={8} marginLeft={1} />
+                </Menu.Button>
+                <Menu.List>
+                  {Object.keys(permissionMap).map(authorization => (
+                    <Menu.Item
+                      key={authorization}
+                      onSelect={() =>
+                        setNewMemberAuthorization(
+                          authorization as TeamMemberAuthorization
+                        )
+                      }
+                      style={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      <Text style={{ width: '100%' }}>
+                        {permissionMap[authorization]}
+                      </Text>
+                      {newMemberAuthorization === authorization && (
+                        <Icon
+                          style={{}}
+                          name="simpleCheck"
+                          size={12}
+                          marginLeft={1}
+                        />
+                      )}
+                    </Menu.Item>
+                  ))}
+                </Menu.List>
+              </Menu>
+            )}
+          </div>
+
           <Button
             type="submit"
             loading={inviteLoading}

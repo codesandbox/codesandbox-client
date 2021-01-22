@@ -192,8 +192,12 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
 
 export const inviteToTeam: AsyncAction<{
   value: string;
+  authorization?: TeamMemberAuthorization;
   confirm?: boolean;
-}> = async ({ state, actions, effects }, { value, confirm = false }) => {
+}> = async (
+  { state, actions, effects },
+  { value, authorization, confirm = false }
+) => {
   if (!state.activeTeam) return;
   const isEmail = value.includes('@');
 
@@ -223,6 +227,8 @@ export const inviteToTeam: AsyncAction<{
       const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
         teamId: state.activeTeam,
         email: value,
+        // TODO: UNCOMMENT WHEN BACKEND IS READY + ADD TO MUTATION
+        // authorization,
       });
 
       data = emailInvited.inviteToTeamViaEmail;
@@ -230,6 +236,8 @@ export const inviteToTeam: AsyncAction<{
       const result = await effects.gql.mutations.inviteToTeam({
         teamId: state.activeTeam,
         username: value,
+        // TODO: UNCOMMENT WHEN BACKEND IS READY + ADD TO MUTATION
+        // authorization,
       });
 
       state.activeTeamInfo = result.inviteToTeam;
