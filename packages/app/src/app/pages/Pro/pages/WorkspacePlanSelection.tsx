@@ -12,6 +12,7 @@ import {
   WorkspaceSubscription,
   WorkspaceSubscriptionTypes,
   SubscriptionBillingInterval,
+  WorkspaceSubscriptionOrigin,
 } from 'app/graphql/types';
 import { plans } from '../plans';
 
@@ -148,6 +149,9 @@ export const WorkspacePlanSelection: React.FC<{
 
   const isLegacyPersonalPro = isPersonalWorkspace && user.subscription;
   const currentSubscription = activeTeamInfo?.subscription;
+  const isTeamProPilot =
+    currentSubscription &&
+    currentSubscription.origin === WorkspaceSubscriptionOrigin.Pilot;
 
   // if there is mismatch of intent - team/personal
   // or you don't have access to upgrade
@@ -464,7 +468,7 @@ export const WorkspacePlanSelection: React.FC<{
             </Stack>
           </Stack>
 
-          {currentSubscription ? (
+          {currentSubscription && !isTeamProPilot ? (
             <>
               <Button
                 loading={loading}
@@ -530,7 +534,8 @@ const PlanCard: React.FC<{
 }> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
   const isSelected = plan.billingInterval === billingInterval;
   const isCurrent =
-    plan.billingInterval === currentSubscription?.billingInterval;
+    plan.billingInterval === currentSubscription?.billingInterval &&
+    currentSubscription?.origin !== WorkspaceSubscriptionOrigin.Pilot;
 
   return (
     <Stack

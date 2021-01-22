@@ -948,11 +948,17 @@ export enum SubscriptionBillingInterval {
   Yearly = 'YEARLY',
 }
 
+export enum WorkspaceSubscriptionOrigin {
+  Legacy = 'LEGACY',
+  Patron = 'PATRON',
+  Pilot = 'PILOT',
+}
+
 export type WorkspaceSubscription = {
   id: Scalars['UUID4'];
   type: WorkspaceSubscriptionTypes;
   status: 'ACTIVE' | 'PAUSED' | 'CANCELLED';
-  origin: 'LEGACY' | 'PATRON' | 'PILOT';
+  origin: WorkspaceSubscriptionOrigin;
   quantity: Scalars['Int'];
   unitPrice: Scalars['Int'];
   currency: Scalars['String'];

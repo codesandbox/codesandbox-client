@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import {
   Avatar,
   Button,
@@ -12,7 +13,7 @@ import {
 } from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import React, { useEffect } from 'react';
+import { WorkspaceSubscriptionOrigin } from 'app/graphql/types';
 
 import { Header } from '../../../../Components/Header';
 import { Card } from '../components';
@@ -171,7 +172,8 @@ export const WorkspaceSettings = () => {
               </Text>
               {activeTeamInfo?.subscription && (
                 <div>
-                  {activeTeamInfo?.subscription.origin === 'PATRON' ? (
+                  {activeTeamInfo?.subscription.origin ===
+                  WorkspaceSubscriptionOrigin.Patron ? (
                     <Text size={3} variant="muted">
                       USD {user?.subscription.amount}{' '}
                     </Text>
