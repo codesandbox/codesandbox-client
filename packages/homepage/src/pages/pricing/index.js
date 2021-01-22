@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
-
+import track from '@codesandbox/common/lib/utils/analytics';
 import { motion } from 'framer-motion';
 import Layout from '../../components/layout';
 import PageContainer from '../../components/PageContainer';
@@ -35,6 +35,12 @@ export default () => {
   }, []);
 
   const toggleTable = name => {
+    if (!open[name]) {
+      track('Explore Sandbox Open', {
+        category: name,
+        tab: product === 'individual' ? 'Individual' : 'Business',
+      });
+    }
     setOpen(o => ({ ...o, [name]: !o[name] }));
   };
 

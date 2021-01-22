@@ -1,4 +1,6 @@
 import React from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
+
 import {
   Card,
   CardTitle,
@@ -69,6 +71,7 @@ export const TeamCards = ({ mode }) => (
           color: #5962df;
           background: ${props => props.theme.homepage.white};
         `}
+        onClick={() => track(`Subscribe to Pro Clicked`, { tab: 'Business' })}
         href={makeLink('team', mode)}
       >
         Subscribe to Pro
@@ -88,8 +91,8 @@ export const TeamCards = ({ mode }) => (
           <CardTitle>Organization</CardTitle>
           <Price>${mode === 'monthly' ? 56 : 45}</Price>
           <PriceSubText>
-            per editor/billed{' '}
-            {mode === 'monthly' ? 'monthly' : 'annually'} <br />
+            per editor/billed {mode === 'monthly' ? 'monthly' : 'annually'}{' '}
+            <br />
             Currently in private beta
           </PriceSubText>
         </div>
@@ -114,6 +117,9 @@ export const TeamCards = ({ mode }) => (
           color: #f7a239;
           background: ${props => props.theme.homepage.white};
         `}
+        onClick={() =>
+          track(`Subscribe to Organization Clicked`, { tab: 'Business' })
+        }
         href="https://airtable.com/shrlgLSJWiX8rYqyG"
       >
         Join the waitlist
@@ -127,10 +133,8 @@ export const TeamCards = ({ mode }) => (
           `}
         >
           <CardTitle>Enterprise</CardTitle>
-          <Price>$Custom</Price>
-          <PriceSubText>
-            Tailored to your needs
-          </PriceSubText>
+          <Price>Custom</Price>
+          <PriceSubText>Tailored to your needs</PriceSubText>
         </div>
         <List>
           <li
@@ -147,6 +151,9 @@ export const TeamCards = ({ mode }) => (
         </List>
       </div>
       <Button
+        onClick={() =>
+          track(`Subscribe to Enterprise Clicked`, { tab: 'Business' })
+        }
         css={`
           color: ${props => props.theme.homepage.blue};
           background: ${props => props.theme.homepage.white};
@@ -192,7 +199,14 @@ export const PersonalCards = ({ mode }) => (
           <li>Dashboard</li>
         </List>
       </div>
-      <Button href="/s">Get started, it’s free </Button>
+      <Button
+        onClick={() =>
+          track(`Subscribe to Personal Free Clicked`, { tab: 'Individual' })
+        }
+        href="/s"
+      >
+        Get started, it’s free{' '}
+      </Button>
     </Card>
     <Card>
       <div>
@@ -230,7 +244,10 @@ export const PersonalCards = ({ mode }) => (
           color: ${props => props.theme.homepage.blue};
           background: ${props => props.theme.homepage.white};
         `}
-        href={makeLink('team', mode)}
+        onClick={() =>
+          track(`Subscribe to Personal Pro Clicked`, { tab: 'Individual' })
+        }
+        href={makeLink('personal', mode)}
       >
         Subscribe to Pro
       </Button>
