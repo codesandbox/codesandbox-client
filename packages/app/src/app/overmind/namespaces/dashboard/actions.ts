@@ -192,8 +192,8 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
 
 export const inviteToTeam: AsyncAction<{
   value: string;
-  confirm: boolean;
-}> = async ({ state, actions, effects }, { value, confirm }) => {
+  confirm?: boolean;
+}> = async ({ state, actions, effects }, { value, confirm = false }) => {
   if (!state.activeTeam) return;
   const isEmail = value.includes('@');
 
