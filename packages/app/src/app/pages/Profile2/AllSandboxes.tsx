@@ -242,7 +242,7 @@ const UpgradeBanner = () => {
   const dontShowUpgradeMessage = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    event.stopPropagation();
+    event.preventDefault();
     browser.storage.set('PROFILE_SHOW_UPGRADE', false);
     setShowUpgradeMessage(false);
   };
