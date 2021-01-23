@@ -33,7 +33,7 @@ export const LikedSandboxes = () => {
     // only show public sandboxes on profile
     .filter(sandbox => sandbox.privacy === 0);
 
-  if (!sandboxes.length) {
+  if (!isLoadingSandboxes && sandboxes.length === 0) {
     return (
       <Stack justify="center" align="center">
         <Text variant="muted" size={4} weight="medium" align="center">
