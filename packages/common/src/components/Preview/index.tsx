@@ -313,7 +313,7 @@ class BasePreview extends React.PureComponent<Props, State> {
   handleMessage = (data: any, source: any) => {
     if (data && data.codesandbox) {
       if (data.type === 'initialized' && source) {
-        registerFrame(source, this.currentUrl(), data.$id);
+        registerFrame(source, this.currentUrl());
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);

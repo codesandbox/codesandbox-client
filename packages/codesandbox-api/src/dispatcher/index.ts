@@ -33,7 +33,7 @@ let parentId: number | null = null;
 const parentOriginListener = (e: MessageEvent) => {
   if (e.data.type === 'register-frame' && !parentId) {
     parentOrigin = e.data.origin;
-    parentId = e.data.id;
+    parentId = e.data.id ?? null;
 
     if (initializeResolved) {
       initializeResolved();
@@ -62,7 +62,7 @@ export function dispatch(message: any) {
   if (!message) return;
 
   const newMessage = { ...message, codesandbox: true };
-  if (parentId) {
+  if (parentId !== null) {
     newMessage.$id = parentId;
   }
 
@@ -140,7 +140,7 @@ function eventListener(e: MessageEvent) {
  *
  * @param frame
  */
-export function registerFrame(frame: Window, origin: string, bundlerId: number) {
+export function registerFrame(frame: Window, origin: string, bundlerId?: number) {
   bundlers.set(frame, origin);
   frame.postMessage(
     {
