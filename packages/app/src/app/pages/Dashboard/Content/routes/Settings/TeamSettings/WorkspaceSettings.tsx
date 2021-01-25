@@ -82,6 +82,16 @@ export const WorkspaceSettings = () => {
   const [inviteValue, setInviteValue] = useState('');
   const [inviteLoading, setInviteLoading] = useState(false);
 
+  const [newMemberAuthorization, setNewMemberAuthorization] = React.useState<
+    TeamMemberAuthorization
+  >(
+    // get TeamMemberAuthorization key by value
+    Object.keys(TeamMemberAuthorization).find(key => {
+      const value = TeamMemberAuthorization[key];
+      return value === team?.settings.defaultAuthorization;
+    }) as TeamMemberAuthorization
+  );
+
   const numberOfEditors = team.userAuthorizations.filter(
     member => member.authorization !== TeamMemberAuthorization.Read
   ).length;
@@ -145,16 +155,6 @@ export const WorkspaceSettings = () => {
     Write: 'Editor',
     Read: 'Viewer',
   };
-
-  const [newMemberAuthorization, setNewMemberAuthorization] = React.useState<
-    TeamMemberAuthorization
-  >(
-    // get TeamMemberAuthorization key by value
-    Object.keys(TeamMemberAuthorization).find(key => {
-      const value = TeamMemberAuthorization[key];
-      return value === team.settings.defaultAuthorization;
-    }) as TeamMemberAuthorization
-  );
 
   return (
     <>

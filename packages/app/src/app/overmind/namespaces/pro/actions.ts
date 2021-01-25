@@ -1,6 +1,6 @@
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-import { Step, Plan, PaymentSummary, PaymentPreview } from './types';
+import { Step, Plan, PaymentSummary } from './types';
 
 export const pageMounted: AsyncAction = withLoadApp();
 
@@ -26,13 +26,13 @@ export const updateSelectedPlan: Action<Plan> = ({ state }, plan) => {
 
 export const previewUpdateSubscriptionBillingInterval: AsyncAction<{
   billingInterval: Plan['billingInterval'];
-}> = async ({ state, actions, effects }, { billingInterval }) => {
+}> = async ({ state, effects }, { billingInterval }) => {
   try {
     const previewSummary = await effects.gql.mutations.previewUpdateSubscriptionBillingInterval(
       {
         teamId: state.activeTeam,
         subscriptionId: state.activeTeamInfo.subscription.id,
-        billingInterval: billingInterval,
+        billingInterval,
       }
     );
 
@@ -58,7 +58,7 @@ export const updateSubscriptionBillingInterval: AsyncAction<{
     await effects.gql.mutations.updateSubscriptionBillingInterval({
       teamId: state.activeTeam,
       subscriptionId: state.activeTeamInfo.subscription.id,
-      billingInterval: billingInterval,
+      billingInterval,
     });
     state.pro.updatingSubscription = false;
     location.href = '/pro/success';
