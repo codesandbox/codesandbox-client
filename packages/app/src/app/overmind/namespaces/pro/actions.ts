@@ -31,7 +31,7 @@ export const previewUpdateSubscriptionBillingInterval: AsyncAction<{
     const previewSummary = await effects.gql.mutations.previewUpdateSubscriptionBillingInterval(
       {
         teamId: state.activeTeam,
-        subscriptionId: state.activeTeamInfo.subscription.id,
+        subscriptionId: state.activeTeamInfo!.subscription!.id,
         billingInterval,
       }
     );
@@ -52,12 +52,13 @@ export const updateSummary: Action<PaymentSummary> = ({ state }, summary) => {
 
 export const updateSubscriptionBillingInterval: AsyncAction<{
   billingInterval: Plan['billingInterval'];
-}> = async ({ state, actions, effects }, { billingInterval }) => {
+}> = async ({ state, effects }, { billingInterval }) => {
   state.pro.updatingSubscription = true;
+
   try {
     await effects.gql.mutations.updateSubscriptionBillingInterval({
       teamId: state.activeTeam,
-      subscriptionId: state.activeTeamInfo.subscription.id,
+      subscriptionId: state.activeTeamInfo!.subscription!.id,
       billingInterval,
     });
     state.pro.updatingSubscription = false;
