@@ -60,7 +60,7 @@ export const RegistrySettings = () => {
     state.activeTeamInfo?.subscription?.type !== WorkspaceSubscriptionTypes.Team
   ) {
     alert = {
-      message: 'You need a Team Pro workspace to set a custom npm registry.',
+      message: 'You need a Team Pro subscription to set a custom npm registry.',
       cta: { label: 'Upgrade to Pro', href: '/pro' },
     };
   } else if (state.activeWorkspaceAuthorization !== 'ADMIN') {
