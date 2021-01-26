@@ -58,6 +58,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
   manager?: Manager;
   iframeRef: React.RefObject<HTMLIFrameElement>;
+  loadingDivRef: React.RefObject<HTMLDivElement>;
   unsubscribe?: Function;
   debounceHook?: number;
 
@@ -74,6 +75,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     };
 
     this.iframeRef = React.createRef<HTMLIFrameElement>();
+    this.loadingDivRef = React.createRef<HTMLDivElement>();
   }
 
   handleMessage = (m: any) => {
@@ -136,7 +138,20 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     if (this.props.autorun) {
-      this.runSandpack();
+      const options = {
+        rootMargin: '300px',
+        threshold: 1.0,
+      };
+
+      const observer = new IntersectionObserver(entries => {
+        if (
+          entries[0]?.intersectionRatio === 1 &&
+          this.state.sandpackStatus === 'idle'
+        ) {
+          this.runSandpack();
+        }
+      }, options);
+      observer.observe(this.loadingDivRef.current!);
     } else {
       this.setState({ sandpackStatus: 'idle' });
     }
@@ -268,7 +283,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
     return (
       <Sandpack.Provider value={this._getSandpackState()}>
-        <div id="loading-frame">
+        <div id="loading-frame" ref={this.loadingDivRef}>
           <iframe
             ref={this.iframeRef}
             title="Sandpack Preview"

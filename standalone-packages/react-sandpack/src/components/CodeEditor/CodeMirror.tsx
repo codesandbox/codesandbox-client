@@ -110,6 +110,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 }) => {
   const wrapper = React.useRef<HTMLDivElement>(null);
   const cmView = React.useRef<EditorView>();
+  const mounted = React.useRef<boolean>(false);
   const theme = React.useContext(ThemeContext);
   const [internalCode, setInternalCode] = React.useState<string>(code);
 
@@ -186,15 +187,25 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 
     cmView.current = view;
 
-    // force focus inside the editor when tabs change
-    view.contentDOM.setAttribute('tabIndex', '-1');
-    view.contentDOM.setAttribute('aria-describedby', 'exit-instructions');
-    view.contentDOM.focus();
-
     return () => {
       view.destroy();
     };
   }, [showLineNumbers, activePath, theme]);
+
+  React.useEffect(() => {
+    const view = cmView.current;
+
+    if (!view || !mounted.current) {
+      mounted.current = true;
+      return;
+    }
+
+    // force focus inside the editor when tabs change
+    // but ignore the first time the hook is called (when the component mounts)
+    view.contentDOM.setAttribute('tabIndex', '-1');
+    view.contentDOM.setAttribute('aria-describedby', 'exit-instructions');
+    view.contentDOM.focus();
+  }, [activePath]);
 
   React.useEffect(() => {
     if (!cmView.current || code === internalCode) {
