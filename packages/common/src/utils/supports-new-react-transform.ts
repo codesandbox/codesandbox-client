@@ -12,9 +12,7 @@ export function supportsNewReactTransform(
   if (reactScriptsVersion && reactVersion && reactDomVersion) {
     return (
       /^[a-z]/.test(reactScriptsVersion) ||
-      (semver.intersects(reactScriptsVersion, '^4.0.0') &&
-        semver.intersects(reactVersion, '^17.0.0') &&
-        semver.intersects(reactDomVersion, '^17.0.0'))
+      semver.intersects(reactScriptsVersion, '^4.0.0')
     );
   }
 
