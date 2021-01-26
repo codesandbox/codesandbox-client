@@ -964,6 +964,7 @@ export type WorkspaceSubscription = {
   currency: Scalars['String'];
   billingInterval: SubscriptionBillingInterval;
   updateBillingUrl: Scalars['String'];
+  cancelAt: Maybe<Scalars['DateTime']>;
 };
 
 export type TemplateFragment = { __typename?: 'Template' } & Pick<
@@ -2906,5 +2907,18 @@ export type PreviewUpdateSubscriptionBillingIntervalMutation = {
       amount: Scalars['Int'];
       currency: Scalars['String'];
     };
+  };
+};
+
+export type SoftCancelSubscriptionMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  subscriptionId: Scalars['UUID4'];
+}>;
+
+export type SoftCancelSubscriptionMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  softCancelSubscriptionMutation: {
+    id: Scalars['UUID4'];
   };
 };

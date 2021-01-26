@@ -70,3 +70,28 @@ export const updateSubscriptionBillingInterval: AsyncAction<{
     );
   }
 };
+
+export const cancelWorkspaceSubscription: AsyncAction = async ({
+  state,
+  actions,
+  effects,
+}) => {
+  const confirmed = await actions.modals.alertModal.open({
+    title: 'Are you sure?',
+    message: 'Your subscription will stop after the current billing cycle',
+    type: 'danger',
+  });
+
+  if (!confirmed) return;
+
+  try {
+    await effects.gql.mutations.softCancelSubscription({
+      teamId: state.activeTeam,
+      subscriptionId: state.activeTeamInfo!.subscription!.id,
+    });
+  } catch {
+    effects.notificationToast.error(
+      'There was a problem cancelling your subscription. Please email us at hello@codesandbox.io'
+    );
+  }
+};

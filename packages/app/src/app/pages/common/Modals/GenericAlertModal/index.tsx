@@ -11,6 +11,7 @@ export const GenericAlertModal = () => {
   const {
     title,
     message,
+    type,
     isCurrent,
     customComponent,
   } = state.modals.alertModal;
@@ -38,6 +39,7 @@ export const GenericAlertModal = () => {
         title={title}
         description={message}
         confirmMessage="Confirm"
+        type={type}
         cancelMessage="Cancel"
         onPrimaryAction={() => {
           actions.modals.alertModal.close(true);

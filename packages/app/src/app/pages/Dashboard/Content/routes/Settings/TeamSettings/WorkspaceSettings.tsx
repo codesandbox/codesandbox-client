@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useOvermind } from 'app/overmind';
+import { sortBy } from 'lodash-es';
+import { format } from 'date-fns';
 import {
   Button,
   Element,
@@ -17,7 +19,6 @@ import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
-import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
@@ -334,6 +335,7 @@ export const WorkspaceSettings = () => {
                     padding: 0,
                     textDecoration: 'underline',
                     fontSize: 3,
+                    ':hover:not(:disabled)': { color: 'errorForeground' },
                   })}
                   onClick={() =>
                     actions.modalOpened({ modal: 'deleteWorkspace' })
@@ -401,6 +403,31 @@ export const WorkspaceSettings = () => {
                         >
                           Change billing interval
                         </Link>
+                        {team.subscription.cancelAt ? (
+                          <Text size={3} css={css({ color: 'orange' })}>
+                            Your subscription expires on{' '}
+                            {format(new Date(team.subscription.cancelAt), 'PP')}
+                          </Text>
+                        ) : (
+                          <Button
+                            autoWidth
+                            variant="link"
+                            disabled={loading}
+                            css={css({
+                              padding: 0,
+                              textDecoration: 'underline',
+                              fontSize: 3,
+                              ':hover:not(:disabled)': {
+                                color: 'errorForeground',
+                              },
+                            })}
+                            onClick={() =>
+                              actions.pro.cancelWorkspaceSubscription()
+                            }
+                          >
+                            Cancel subscription
+                          </Button>
+                        )}
                       </Stack>
                     )}
                   </Stack>

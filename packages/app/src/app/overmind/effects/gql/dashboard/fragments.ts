@@ -186,6 +186,7 @@ export const currentTeamInfoFragment = gql`
       currency
       billingInterval
       updateBillingUrl
+      cancelAt
     }
   }
 `;

@@ -67,6 +67,8 @@ import {
   UpdateSubscriptionBillingIntervalMutationVariables,
   PreviewUpdateSubscriptionBillingIntervalMutation,
   PreviewUpdateSubscriptionBillingIntervalMutationVariables,
+  SoftCancelSubscriptionMutation,
+  SoftCancelSubscriptionMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -555,6 +557,17 @@ export const previewUpdateSubscriptionBillingInterval: Query<
         amount
         currency
       }
+    }
+  }
+`;
+
+export const softCancelSubscription: Query<
+  SoftCancelSubscriptionMutation,
+  SoftCancelSubscriptionMutationVariables
+> = gql`
+  mutation softCancelSubscription($teamId: UUID4!, $subscriptionId: UUID4!) {
+    softCancelSubscription(teamId: $teamId, subscriptionId: $subscriptionId) {
+      id
     }
   }
 `;

@@ -41,6 +41,7 @@ export const alertModal: {
   state: {
     title: string;
     message?: string;
+    type?: 'link' | 'primary' | 'danger' | 'secondary';
     customComponent?: 'MemberPaymentConfirmation';
   };
   result: boolean;
