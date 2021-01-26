@@ -1,5 +1,6 @@
 import { join, absolute } from '@codesandbox/common/lib/utils/path';
 import { Preset } from 'sandpack-core';
+import csbDynamicImportTranspiler from 'sandpack-core/lib/transpiler/transpilers/csb-dynamic-import';
 
 import typescriptTranspiler from '../../transpilers/typescript';
 import rawTranspiler from '../../transpilers/raw';
@@ -38,6 +39,7 @@ export default function initialize() {
 
   preset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },
+    { transpiler: csbDynamicImportTranspiler }
   ]);
 
   preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [

@@ -1,4 +1,5 @@
 import { Preset } from 'sandpack-core';
+import csbDynamicImportTranspiler from 'sandpack-core/lib/transpiler/transpilers/csb-dynamic-import';
 
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
@@ -55,6 +56,7 @@ export default function initialize() {
 
   cxjsPreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: tsTranspiler },
+    { transpiler: csbDynamicImportTranspiler },
   ]);
 
   cxjsPreset.registerTranspiler(module => /\.css$/.test(module.path), [
