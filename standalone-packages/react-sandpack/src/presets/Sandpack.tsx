@@ -87,7 +87,6 @@ export const Sandpack: React.FC<SandpackProps> = props => {
       environment={projectSetup.environment}
       openPaths={openPaths}
       activePath={activePath}
-      showOpenInCodeSandbox={presetPreviewOptions.showOpenInCodeSandbox}
       {...presetExecutionOptions}
       {...props.bundlerOptions}
     >

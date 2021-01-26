@@ -33,7 +33,6 @@ const TabButton = styled('button', {
   padding: '0 $2',
   color: '$defaultText',
   height: 40, // safari fix
-  outline: 'none',
   border: 0,
   borderBottom: '1px solid transparent',
   transition: 'border 0.15s ease-out',
@@ -49,6 +48,7 @@ const TabButton = styled('button', {
 
   ':focus': {
     backgroundColor: '$inactive',
+    outline: 'none',
   },
 
   ':focus:not(:focus-visible)': {
@@ -57,6 +57,7 @@ const TabButton = styled('button', {
 
   ':focus-visible': {
     backgroundColor: '$inactive',
+    outline: 'none',
   },
 });
 

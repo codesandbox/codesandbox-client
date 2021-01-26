@@ -35,6 +35,7 @@ export const ErrorMessage = styled('pre', {
   height: '100%',
   padding: '$4',
   whiteSpace: 'pre-wrap',
+  textAlign: 'left',
 
   fontFamily: '$mono',
   backgroundColor: '$error',

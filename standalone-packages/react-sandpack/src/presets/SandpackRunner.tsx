@@ -28,7 +28,6 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
   template,
   setup,
   showNavigator = false,
-  showOpenInCodeSandbox = false,
   theme = sandpackLightTheme,
   customStyle,
 }) => {
@@ -54,7 +53,6 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
       dependencies={projectSetup.dependencies}
       entry={projectSetup.entry}
       environment={projectSetup.environment}
-      showOpenInCodeSandbox={showOpenInCodeSandbox}
     >
       <ThemeProvider value={theme}>
         <SandpackLayout style={customStyle} className={className}>

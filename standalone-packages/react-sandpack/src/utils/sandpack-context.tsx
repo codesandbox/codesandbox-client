@@ -42,9 +42,6 @@ export interface Props {
   recompileDelay?: number;
   autorun?: boolean;
 
-  // legacy: will be moved to Preview
-  showOpenInCodeSandbox?: boolean;
-
   // bundler options
   bundlerURL?: string;
   skipEval?: boolean;
@@ -57,7 +54,6 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     recompileMode: 'delayed',
     recompileDelay: 500,
     autorun: true,
-    showOpenInCodeSandbox: false,
   };
 
   manager?: Manager;
@@ -98,18 +94,17 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       return;
     }
 
-    this.commitFiles({
-      ...this.state.files,
-      [this.state.activePath]: file,
-    });
-  };
-
-  commitFiles = (files: IFiles) => {
+    const { files, activePath, sandpackStatus } = this.state;
     const { recompileMode, recompileDelay } = this.props;
 
-    this.setState({ files });
+    const newFiles = {
+      ...files,
+      [activePath]: file,
+    };
 
-    if (this.state.sandpackStatus !== 'running') {
+    this.setState({ files: newFiles });
+
+    if (sandpackStatus !== 'running') {
       return;
     }
 
@@ -119,9 +114,8 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       }
 
       this.manager.updatePreview({
-        showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
-        files,
-        template: this.props.environment,
+        files: newFiles,
+        showOpenInCodeSandbox: false,
       });
     }
 
@@ -133,9 +127,8 @@ class SandpackProvider extends React.PureComponent<Props, State> {
         }
 
         this.manager.updatePreview({
-          showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
           files: this.state.files,
-          template: this.props.environment,
+          showOpenInCodeSandbox: false,
         });
       }, recompileDelay);
     }
@@ -149,12 +142,12 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidUpdate(props: Props) {
+  componentDidUpdate(prevProps: Props) {
     if (
-      JSON.stringify(props.files) !== JSON.stringify(this.props.files) ||
-      props.dependencies !== this.props.dependencies ||
-      props.entry !== this.props.entry ||
-      props.environment !== this.props.environment
+      JSON.stringify(prevProps.files) !== JSON.stringify(this.props.files) ||
+      prevProps.dependencies !== this.props.dependencies ||
+      prevProps.entry !== this.props.entry ||
+      prevProps.environment !== this.props.environment
     ) {
       const newFiles = generatePackageJSON(
         this.props.files,
@@ -170,9 +163,9 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       }
 
       this.manager.updatePreview({
-        showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
         files: newFiles,
         template: this.props.environment,
+        showOpenInCodeSandbox: false,
       });
     }
   }
@@ -195,7 +188,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       {
         files: this.state.files,
         template: this.props.environment,
-        showOpenInCodeSandbox: this.props.showOpenInCodeSandbox,
+        showOpenInCodeSandbox: false,
       },
       {
         bundlerURL: this.props.bundlerURL,

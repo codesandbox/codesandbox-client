@@ -111,6 +111,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
   const wrapper = React.useRef<HTMLDivElement>(null);
   const cmView = React.useRef<EditorView>();
   const theme = React.useContext(ThemeContext);
+  const [internalCode, setInternalCode] = React.useState<string>(code);
 
   React.useEffect(() => {
     if (!wrapper.current) {
@@ -176,7 +177,9 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
         view.update([tr]);
 
         if (tr.docChanged) {
-          onCodeUpdate(tr.newDoc.sliceString(0, tr.newDoc.length));
+          const newCode = tr.newDoc.sliceString(0, tr.newDoc.length);
+          setInternalCode(newCode);
+          onCodeUpdate(newCode);
         }
       },
     });
@@ -192,6 +195,26 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       view.destroy();
     };
   }, [showLineNumbers, activePath, theme]);
+
+  React.useEffect(() => {
+    if (!cmView.current || code === internalCode) {
+      return;
+    }
+
+    const view = cmView.current;
+
+    view.update([
+      view.state.update({
+        changes: {
+          from: 0,
+          to: view?.state.doc.length,
+          insert: code,
+        },
+      }),
+    ]);
+
+    setInternalCode(code);
+  }, [code]);
 
   const handleContainerKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key === 'Enter' && cmView.current) {

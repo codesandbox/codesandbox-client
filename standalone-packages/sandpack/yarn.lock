@@ -1158,10 +1158,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codesandbox-api@0.0.27:
-  version "0.0.27"
-  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.27.tgz#16f5dec562aefdc8ae54e378051fe72ac2b8a3cd"
-  integrity sha512-cpRRwLCUpbnulIPERlAA6H4OcyoB/WwdnPViHlDWPrfG4dlrK7HoIp7sBqTdePE5QwTcEM/Dfqdww6zJdCoJkA==
+codesandbox-api@^0.0.28:
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.28.tgz#3d8d6cf40b3fbb241f613b50e1e648b86312a5df"
+  integrity sha512-dZRmgy/8LXPDfFOO/q4w0b30QhqECx5Ep8HB32wVHutE5aOEQ0tJHBF2yvE4ADxXpVlkJRvCAhOlBrYaAEwj0A==
 
 codesandbox-import-util-types@^1.3.7:
   version "1.3.7"
