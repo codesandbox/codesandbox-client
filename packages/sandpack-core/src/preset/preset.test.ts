@@ -69,7 +69,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator)).toEqual(
-        '!codesandbox-dynamic-imports-loader!babel-loader'
+        '!babel-loader'
       );
     });
 
@@ -80,7 +80,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator)).toEqual(
-        '!codesandbox-dynamic-imports-loader!modules-loader!style-loader'
+        '!modules-loader!style-loader'
       );
     });
 
@@ -91,7 +91,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator, '!babel-loader')).toEqual(
-        '!codesandbox-dynamic-imports-loader!babel-loader'
+        '!babel-loader'
       );
     });
 
@@ -102,7 +102,7 @@ describe('preset', () => {
       };
 
       expect(preset.getQuery(module, evaluator, 'babel-loader')).toEqual(
-        '!codesandbox-dynamic-imports-loader!babel-loader!modules-loader!style-loader'
+        '!babel-loader!modules-loader!style-loader'
       );
     });
   });
