@@ -1,9 +1,9 @@
 export const media = {
   between(lowerBound, upperBound, excludeLarge = false) {
     if (excludeLarge)
-      return `@media (min-width: ${
-        lowerBound.min
-      }px) and (max-width: ${upperBound.min - 1}px)`;
+      return `@media (min-width: ${lowerBound.min}px) and (max-width: ${
+        upperBound.min - 1
+      }px)`;
     if (upperBound.max === Infinity)
       return `@media (min-width: lowerBound.min}px)`;
     return `@media (min-width: lowerBound.min}px) and (max-width: ${upperBound.max}px)`;
@@ -26,8 +26,8 @@ export const media = {
 
 export const sizes = {
   xsmall: { min: 0, max: 599 },
-  small: { min: 600, max: 779 },
-  medium: { min: 780, max: 979 },
+  small: { min: 600, max: 767 },
+  medium: { min: 768, max: 979 },
   large: { min: 980, max: 1279 },
   xlarge: { min: 1280, max: 1339 },
   xxlarge: { min: 1340, max: Infinity },
