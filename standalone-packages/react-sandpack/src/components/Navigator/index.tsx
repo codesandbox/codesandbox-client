@@ -1,42 +1,8 @@
 import * as React from 'react';
 
-import { styled } from '../../stitches.config';
 import { useSandpack } from '../../utils/sandpack-context';
 import { BackwardIcon, ForwardIcon, RefreshIcon } from '../../icons';
 import { splitUrl } from './utils';
-import { Button } from '../../elements';
-
-const NavigatorContainer = styled('nav', {
-  display: 'flex',
-  alignItems: 'center',
-  backgroundColor: '$mainBackground',
-  height: 40,
-  border: '1px solid $inactive',
-  margin: -1,
-  padding: '$2 $4',
-});
-
-const NavigatorButtons = styled('div', {
-  display: 'flex',
-  alignItems: 'center',
-  marginRight: '$4',
-});
-
-const NavigatorInput = styled('input', {
-  backgroundColor: '$inputBackground',
-  color: '$highlightText',
-  padding: '$1 $2',
-  borderRadius: '$default',
-  border: 0,
-  flex: 1,
-  width: 0,
-  height: '24px',
-  fontSize: '$default',
-});
-
-const NavigatorButton = styled(Button, {
-  padding: 0,
-});
 
 type UrlChangeMessage = {
   url: string;
@@ -114,27 +80,37 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
   };
 
   return (
-    <NavigatorContainer style={customStyle}>
-      <NavigatorButtons>
-        <NavigatorButton
-          onClick={handleBack}
-          disabled={!backEnabled}
-          aria-label="Go back one page"
-        >
-          <BackwardIcon />
-        </NavigatorButton>
-        <NavigatorButton
-          onClick={handleForward}
-          disabled={!forwardEnabled}
-          aria-label="Go forward one page"
-        >
-          <ForwardIcon />
-        </NavigatorButton>
-        <NavigatorButton onClick={handleRefresh} aria-label="Refresh page">
-          <RefreshIcon />
-        </NavigatorButton>
-      </NavigatorButtons>
-      <NavigatorInput
+    <div className="sp-navigator" style={customStyle}>
+      <button
+        className="sp-button icon"
+        type="button"
+        onClick={handleBack}
+        disabled={!backEnabled}
+        aria-label="Go back one page"
+      >
+        <BackwardIcon />
+      </button>
+      <button
+        className="sp-button icon"
+        type="button"
+        onClick={handleForward}
+        disabled={!forwardEnabled}
+        aria-label="Go forward one page"
+      >
+        <ForwardIcon />
+      </button>
+      <button
+        className="sp-button icon"
+        type="button"
+        onClick={handleRefresh}
+        aria-label="Refresh page"
+      >
+        <RefreshIcon />
+      </button>
+
+      <input
+        className="sp-input"
+        style={{ flex: 1, width: 0, marginLeft: 'var(--space-4)' }}
         type="text"
         name="Current Sandpack URL"
         aria-label="Current Sandpack URL"
@@ -142,6 +118,6 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
         onKeyDown={handleKeyDown}
         value={relativeUrl}
       />
-    </NavigatorContainer>
+    </div>
   );
 };

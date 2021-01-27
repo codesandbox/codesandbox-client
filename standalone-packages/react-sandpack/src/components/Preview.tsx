@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { ErrorMessage } from '../elements';
-import { styled } from '../stitches.config';
 
 import { useSandpack } from '../utils/sandpack-context';
 import { Navigator } from './Navigator';
@@ -9,27 +7,6 @@ export interface PreviewProps {
   customStyle?: React.CSSProperties;
   showNavigator?: boolean;
 }
-
-// const translate = css.keyframes({
-//   '0%': { maxWidth: 0 },
-//   '100%': { maxWidth: '100%' },
-// });
-
-const Wrapper = styled('div', {
-  display: 'flex',
-  flexDirection: 'column',
-  backgroundColor: 'white',
-  border: '1px solid $inactive',
-  margin: -1,
-  // animationName: translate,
-  // animationDuration: '0.5s',
-});
-
-const PreviewFrame = styled('div', {
-  flex: 1,
-  display: 'flex',
-  position: 'relative',
-});
 
 export const Preview: React.FC<PreviewProps> = ({
   customStyle,
@@ -77,13 +54,13 @@ export const Preview: React.FC<PreviewProps> = ({
   }
 
   return (
-    <Wrapper style={customStyle} ref={wrapperRef}>
+    <div style={customStyle} ref={wrapperRef}>
       {showNavigator && <Navigator />}
-      <PreviewFrame id="preview-frame" ref={containerRef}>
+      <div className="sp-preview-frame" id="preview-frame" ref={containerRef}>
         {sandpack.errors.length > 0 && (
-          <ErrorMessage>{sandpack.errors[0].message}</ErrorMessage>
+          <div className="sp-error">{sandpack.errors[0].message}</div>
         )}
-      </PreviewFrame>
-    </Wrapper>
+      </div>
+    </div>
   );
 };

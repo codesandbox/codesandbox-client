@@ -69,7 +69,6 @@
     "@codemirror/lang-javascript": "^0.17.1",
     "@codemirror/language": "^0.17.2",
     "@codemirror/view": "^0.17.3",
-    "@stitches/react": "^0.0.2",
     "codesandbox-import-utils": "^1.2.3",
     "prism-react-renderer": "^1.1.1",
     "smooshpack": "^1.0.0-alpha-14"

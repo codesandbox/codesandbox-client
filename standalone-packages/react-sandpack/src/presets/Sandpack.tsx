@@ -11,7 +11,11 @@ import { CodeEditor } from '../components/CodeEditor';
 import { Preview } from '../components/Preview';
 import { getSetup } from '../templates';
 import { sandpackLightTheme } from '../themes';
-import { ThemeProvider, compileStitchesTheme } from '../utils/theme-context';
+import { ThemeProvider } from '../utils/theme-context';
+import { getStyleSheet } from '../styles';
+// import '../styles/index.css';
+
+let styleInjected = false;
 
 export interface SandpackProps {
   template?: SandpackPredefinedTemplate;
@@ -75,9 +79,15 @@ export const Sandpack: React.FC<SandpackProps> = props => {
     );
   }
 
-  const className = compileStitchesTheme(theme);
-
   const { height, ...otherStyles } = props.customStyle || {};
+
+  if (typeof document !== 'undefined' && !styleInjected) {
+    const styleTag = document.createElement('style');
+    styleTag.textContent = getStyleSheet();
+    document.head.appendChild(styleTag);
+
+    styleInjected = true;
+  }
 
   return (
     <SandpackProvider
@@ -91,17 +101,9 @@ export const Sandpack: React.FC<SandpackProps> = props => {
       {...props.bundlerOptions}
     >
       <ThemeProvider value={theme}>
-        <SandpackLayout
-          style={otherStyles}
-          css={{
-            '& > *': {
-              height,
-            },
-          }}
-          className={className}
-        >
-          <CodeEditor {...presetCodeOptions} />
-          <Preview {...presetPreviewOptions} />
+        <SandpackLayout style={otherStyles}>
+          <CodeEditor {...presetCodeOptions} customStyle={{ height }} />
+          <Preview {...presetPreviewOptions} customStyle={{ height }} />
         </SandpackLayout>
       </ThemeProvider>
     </SandpackProvider>

@@ -23,7 +23,6 @@ import {
   getSyntaxHighlight,
 } from './utils';
 
-import { styled } from '../../stitches.config';
 import { ThemeContext } from '../../utils/theme-context';
 import { getFileName } from '../../utils/string-utils';
 
@@ -33,74 +32,6 @@ export interface CodeMirrorProps {
   onCodeUpdate: (newCode: string) => void;
   showLineNumbers?: boolean;
 }
-
-const Container = styled('div', {
-  padding: '$4 $0',
-  flex: 1,
-  position: 'relative',
-  outline: 'none',
-  overflow: 'auto',
-
-  ':focus': {
-    boxShadow: 'inset 0 0 0 4px $accent',
-    paddingLeft: '$1',
-    paddingRight: '$1',
-
-    '.cm-line': {
-      padding: '0 $2',
-    },
-  },
-
-  ':focus:not(:focus-visible)': {
-    boxShadow: 'none',
-    paddingLeft: 0,
-    paddingRight: 0,
-
-    '.cm-line': {
-      padding: '0 $3',
-    },
-  },
-
-  ':focus-visible': {
-    boxShadow: 'inset 0 0 0 4px $accent',
-  },
-
-  '.cm-wrap': {
-    height: '100%',
-  },
-
-  '.cm-content': {
-    padding: 0,
-  },
-
-  '.cm-line': {
-    padding: '0 $3',
-  },
-
-  '.cm-light .cm-content': {
-    caretColor: '$highlightText',
-  },
-
-  '.cm-focused': {
-    outline: 'none',
-  },
-
-  '.cm-scroller': {
-    fontFamily: '$mono',
-  },
-
-  '.cm-gutter-lineNumber': {
-    paddingRight: '$2',
-  },
-
-  '.cm-gutterElement.cm-gutterElement-lineNumber': {
-    padding: 0,
-  },
-});
-
-const VisuallyHidden = styled('p', {
-  display: 'none',
-});
 
 export const CodeMirror: React.FC<CodeMirrorProps> = ({
   code,
@@ -235,7 +166,10 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
   };
 
   return (
-    <Container
+    /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+    /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+    <div
+      className="sp-cm"
       onKeyDown={handleContainerKeyDown}
       tabIndex={0}
       role="group"
@@ -243,13 +177,13 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       aria-describedby="enter-instructions"
       ref={wrapper}
     >
-      <VisuallyHidden id="enter-instructions">
+      <p id="enter-instructions" style={{ display: 'none' }}>
         To enter the code editing mode, press Enter. To exit the edit mode,
         press Escape
-      </VisuallyHidden>
-      <VisuallyHidden id="exit-instructions">
+      </p>
+      <p id="exit-instructions" style={{ display: 'none' }}>
         You are editing the code. To exit the edit mode, press Escape
-      </VisuallyHidden>
-    </Container>
+      </p>
+    </div>
   );
 };

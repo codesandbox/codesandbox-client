@@ -6,7 +6,7 @@ import { SandpackLayout } from '../../components/SandpackLayout';
 
 import { SandpackProvider } from '../../utils/sandpack-context';
 import { SANDBOX_TEMPLATES } from '../../templates';
-import { compileStitchesTheme, ThemeProvider } from '../../utils/theme-context';
+import { ThemeProvider } from '../../utils/theme-context';
 import { sandpackDarkTheme } from '../../themes';
 
 export default {
@@ -71,7 +71,7 @@ export const DarkTheme = () => (
       openPaths={[vueTemplate.main]}
       dependencies={vueTemplate.dependencies}
     >
-      <SandpackLayout className={compileStitchesTheme(sandpackDarkTheme)}>
+      <SandpackLayout>
         <CodeEditor />
       </SandpackLayout>
     </SandpackProvider>

@@ -6,7 +6,7 @@ import { SandpackLayout } from '../components/SandpackLayout';
 import { getSetup } from '../templates';
 import { SandpackProvider } from '../utils/sandpack-context';
 import { sandpackLightTheme } from '../themes';
-import { compileStitchesTheme, ThemeProvider } from '../utils/theme-context';
+import { ThemeProvider } from '../utils/theme-context';
 import {
   SandboxTemplate,
   SandpackPredefinedTemplate,
@@ -45,8 +45,6 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
     };
   }
 
-  const className = compileStitchesTheme(theme);
-
   return (
     <SandpackProvider
       files={projectSetup.files}
@@ -55,7 +53,7 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
       environment={projectSetup.environment}
     >
       <ThemeProvider value={theme}>
-        <SandpackLayout style={customStyle} className={className}>
+        <SandpackLayout style={customStyle}>
           <Preview showNavigator={showNavigator} />
         </SandpackLayout>
       </ThemeProvider>

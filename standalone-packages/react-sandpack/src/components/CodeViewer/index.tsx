@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { Button } from '../../elements';
 import { RunIcon } from '../../icons';
-import { styled } from '../../stitches.config';
 
 import { useSandpack } from '../../utils/sandpack-context';
 import { FileTabs } from '../FileTabs';
@@ -14,16 +12,6 @@ export interface CodeViewerProps {
   showLineNumbers?: boolean;
 }
 
-const CodeViewerWrapper = styled('div', {
-  backgroundColor: '$mainBackground',
-  border: '1px solid $inactive',
-  margin: -1,
-  textAlign: 'left',
-  display: 'flex',
-  flexDirection: 'column',
-  position: 'relative',
-});
-
 export const CodeViewer: React.FC<CodeViewerProps> = ({
   showTabs,
   ...rest
@@ -34,22 +22,24 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   const lang = getPrismLanguage(activePath);
 
   return (
-    <CodeViewerWrapper>
+    <div>
       {showTabs && <FileTabs />}
       <PrismHighlight {...rest} code={code} lang={lang} />
       {status === 'idle' && (
-        <Button
-          css={{
+        <button
+          type="button"
+          className="sp-button"
+          style={{
             position: 'absolute',
-            bottom: '$2',
-            right: '$2',
+            bottom: 'var(--space-2)',
+            right: 'var(--space-2)',
           }}
           onClick={() => runSandpack()}
         >
           <RunIcon />
           Run
-        </Button>
+        </button>
       )}
-    </CodeViewerWrapper>
+    </div>
   );
 };

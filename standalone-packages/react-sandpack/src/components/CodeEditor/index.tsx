@@ -2,8 +2,6 @@ import * as React from 'react';
 import { CodeMirror } from './CodeMirror';
 import { useSandpack } from '../../utils/sandpack-context';
 import { FileTabs } from '../FileTabs';
-import { styled } from '../../stitches.config';
-import { Button } from '../../elements';
 import { RunIcon } from '../../icons';
 
 export interface CodeEditorProps {
@@ -11,16 +9,6 @@ export interface CodeEditorProps {
   showTabs?: boolean;
   showLineNumbers?: boolean;
 }
-
-const CodeEditorWrapper = styled('div', {
-  backgroundColor: '$mainBackground',
-  border: '1px solid $inactive',
-  margin: -1,
-  textAlign: 'left',
-  display: 'flex',
-  flexDirection: 'column',
-  position: 'relative',
-});
 
 export const CodeEditor = ({
   customStyle,
@@ -39,7 +27,7 @@ export const CodeEditor = ({
   };
 
   return (
-    <CodeEditorWrapper style={customStyle}>
+    <div style={customStyle}>
       {showTabs && <FileTabs />}
       <CodeMirror
         activePath={activePath}
@@ -48,18 +36,20 @@ export const CodeEditor = ({
         showLineNumbers={showLineNumbers}
       />
       {status === 'idle' && (
-        <Button
-          css={{
+        <button
+          type="button"
+          className="sp-button"
+          style={{
             position: 'absolute',
-            bottom: '$2',
-            right: '$2',
+            bottom: 'var(--space-2)',
+            right: 'var(--space-2)',
           }}
           onClick={() => runSandpack()}
         >
           <RunIcon />
           Run
-        </Button>
+        </button>
       )}
-    </CodeEditorWrapper>
+    </div>
   );
 };
