@@ -12,11 +12,11 @@ import {
 } from './_elements';
 
 const makeLink = (product, mode) => {
-  let link = 'pro?v=2';
+  let link = 'pro?';
   if (product === 'personal') {
-    link += '&type=PERSONAL_PRO';
+    link += 'type=PERSONAL_PRO';
   } else {
-    link += '&type=TEAM_PRO';
+    link += 'type=TEAM_PRO';
   }
 
   if (mode === 'monthly') {
