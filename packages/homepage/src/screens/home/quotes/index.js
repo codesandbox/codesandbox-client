@@ -56,7 +56,7 @@ const Feature = styled(motion.div)`
 
   svg,
   h3 {
-    margin-bottom: 16px;
+    margin-bottom: 0.5rem;
   }
 `;
 
@@ -64,6 +64,8 @@ const Quotes = () => (
   <div
     css={`
       margin-bottom: 320px;
+      padding:10rem 0 0 0;
+
 
       @media screen and (max-width: 1023px) {
         margin-bottom: 130px;
@@ -77,7 +79,8 @@ const Quotes = () => (
     <H2
       css={`
         text-align: center;
-        margin-bottom: 80px;
+        margin: 0 0 5rem 0;
+ 
       `}
     >
       What others are saying
@@ -87,7 +90,11 @@ const Quotes = () => (
         <P
           css={`
             font-weight: 400;
-            min-height: 104px;
+            min-height: 80px;
+
+            ${props => props.theme.breakpoints.md} {
+              min-height: 104px;
+            }
           `}
         >
           “It's dramatically improved my experience of sharing ideas”
@@ -132,7 +139,7 @@ const Quotes = () => (
       <Feature variants={item}>
         <P
           css={`
-            min-height: 104px;
+            min-height: 80px;
             font-weight: 400;
           `}
         >
@@ -178,7 +185,7 @@ const Quotes = () => (
       <Feature variants={item}>
         <P
           css={`
-            min-height: 104px;
+            min-height: 80px;
             font-weight: 400;
           `}
         >
