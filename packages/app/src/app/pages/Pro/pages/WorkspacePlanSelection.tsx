@@ -44,42 +44,35 @@ export const WorkspacePlanSelection: React.FC<{
 
   const location = useLocation();
   const history = useHistory();
-  const workspaceId = new URLSearchParams(location.search).get('workspace');
-  const type = new URLSearchParams(location.search).get('type');
+  const searchParams = new URLSearchParams(location.search);
+  const type = searchParams.get('type') as WorkspaceSubscriptionTypes;
+  const interval = searchParams.get('interval') as SubscriptionBillingInterval;
 
-  React.useEffect(() => {
-    // set workspace in url when coming from places without workspace context
-    if (activeTeam && !workspaceId) {
-      history.replace({
-        pathname: location.pathname,
-        search: `?workspace=${activeTeam}&type=${type}`,
-      });
-    } else if (workspaceId !== activeTeam) {
-      setActiveTeam({ id: workspaceId });
-    }
-  }, [workspaceId, activeTeam, history, location, setActiveTeam, type]);
-
-  const isPersonalWorkspace = personalWorkspaceId === activeTeam;
   const [billingInterval, setBillingInterval] = React.useState<
     Plan['billingInterval']
-  >(SubscriptionBillingInterval.Monthly);
+  >(interval || SubscriptionBillingInterval.Monthly);
 
-  React.useEffect(() => {
-    let newPlan: typeof plans[keyof typeof plans];
-    if (isPersonalWorkspace) {
-      if (billingInterval === SubscriptionBillingInterval.Yearly) {
-        newPlan = plans.PERSONAL_PRO_ANNUAL;
+  const isPersonalWorkspace = personalWorkspaceId === activeTeam;
+
+  React.useEffect(
+    function setPlan() {
+      let newPlan: typeof plans[keyof typeof plans];
+      if (isPersonalWorkspace) {
+        if (billingInterval === SubscriptionBillingInterval.Yearly) {
+          newPlan = plans.PERSONAL_PRO_ANNUAL;
+        } else {
+          newPlan = plans.PERSONAL_PRO_MONTHLY;
+        }
+      } else if (billingInterval === SubscriptionBillingInterval.Yearly) {
+        newPlan = plans.TEAM_PRO_ANNUAL;
       } else {
-        newPlan = plans.PERSONAL_PRO_MONTHLY;
+        newPlan = plans.TEAM_PRO_MONTHLY;
       }
-    } else if (billingInterval === SubscriptionBillingInterval.Yearly) {
-      newPlan = plans.TEAM_PRO_ANNUAL;
-    } else {
-      newPlan = plans.TEAM_PRO_MONTHLY;
-    }
 
-    updateSelectedPlan(newPlan);
-  }, [isPersonalWorkspace, billingInterval]);
+      updateSelectedPlan(newPlan);
+    },
+    [isPersonalWorkspace, billingInterval, updateSelectedPlan]
+  );
 
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
@@ -111,6 +104,12 @@ export const WorkspacePlanSelection: React.FC<{
 
   React.useEffect(
     function switchToWorkspaceWithAdminRights() {
+      // if type is PERSONAL_PRO, switch to personal workspace
+      if (type === WorkspaceSubscriptionTypes.Personal) {
+        setActiveTeam({ id: personalWorkspaceId });
+        return;
+      }
+
       // if you land on a workspace where you are not the admin
       // switch workspaces to one where you are an admin
       // if none, switch to personal workspace
@@ -132,6 +131,7 @@ export const WorkspacePlanSelection: React.FC<{
       }
     },
     [
+      type,
       activeUserAuthorization,
       dashboard.teams,
       setActiveTeam,
@@ -157,8 +157,7 @@ export const WorkspacePlanSelection: React.FC<{
   // or you don't have access to upgrade
   // open the workspace switcher on load
   const switcherDefaultOpen =
-    (type === 'team' && isPersonalWorkspace) ||
-    (type === 'personal' && !isPersonalWorkspace) ||
+    (type === WorkspaceSubscriptionTypes.Team && isPersonalWorkspace) ||
     activeUserAuthorization !== TeamMemberAuthorization.Admin;
 
   return (
