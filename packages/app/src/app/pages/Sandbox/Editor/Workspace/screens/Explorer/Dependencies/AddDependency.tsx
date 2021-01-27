@@ -223,6 +223,26 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
     getExplorerDependencies(value);
   };
 
+  const onDependencySelect = dependency => {
+    if (dependency === 'OPEN_MODAL') {
+      modalOpened({ modal: 'searchDependencies' });
+      clearExplorerDependencies();
+    } else if (dependency?.name) {
+      if (dependency.tags) {
+        addNpmDependency({
+          name: dependency.name,
+          version: dependency.tags?.latest,
+        });
+      } else {
+        effects.notificationToast.error(
+          `There has been a problem installing ${dependency.name}. No installable version found`
+        );
+      }
+      clearExplorerDependencies();
+      changeDependencySearch('');
+    }
+  };
+
   const usedExplorerDependencies = [
     ...explorerDependencies,
     'OPEN_MODAL' as const,
@@ -230,25 +250,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
 
   return (
     <Downshift
-      onSelect={dependency => {
-        if (dependency === 'OPEN_MODAL') {
-          modalOpened({ modal: 'searchDependencies' });
-          clearExplorerDependencies();
-        } else if (dependency?.name) {
-          if (dependency.tags) {
-            addNpmDependency({
-              name: dependency.name,
-              version: dependency.tags?.latest,
-            });
-          } else {
-            effects.notificationToast.error(
-              `There has been a problem installing ${dependency.name}. No installable version found`
-            );
-          }
-          clearExplorerDependencies();
-          changeDependencySearch('');
-        }
-      }}
+      onSelect={onDependencySelect}
       itemToString={dependency => {
         if (dependency === 'OPEN_MODAL') {
           return 'OPEN_MODAL';
