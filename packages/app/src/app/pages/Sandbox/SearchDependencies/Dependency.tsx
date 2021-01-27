@@ -98,7 +98,7 @@ export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
   } = useOvermind();
 
   const selectedVersion =
-    hitToVersionMap[dependency.objectID] || dependency.tags.latest;
+    hitToVersionMap[dependency.objectID] || dependency.tags?.latest;
 
   const versionInstalled = (installedDependencies || {})[dependency.name];
 

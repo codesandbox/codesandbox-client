@@ -147,12 +147,12 @@ const AddDependencyResultList = ({
               css={buttonStyles}
               variant="link"
               type="button"
-              onClick={() =>
+              onClick={() => {
                 addNpmDependency({
                   name: dependency.name,
-                  version: dependency.tags.latest,
-                })
-              }
+                  version: dependency.tags?.latest,
+                });
+              }}
             >
               <Text maxWidth="80%" weight="400">
                 {dependency._highlightResult ? (
@@ -199,6 +199,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
         dependencySearch,
       },
     },
+    effects,
   } = useOvermind();
   const modalOpen = currentModal === 'searchDependencies';
   const searchInput = useRef();
@@ -234,10 +235,16 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
           modalOpened({ modal: 'searchDependencies' });
           clearExplorerDependencies();
         } else if (dependency?.name) {
-          addNpmDependency({
-            name: dependency.name,
-            version: dependency.tags.latest,
-          });
+          if (dependency.tags) {
+            addNpmDependency({
+              name: dependency.name,
+              version: dependency.tags?.latest,
+            });
+          } else {
+            effects.notificationToast.error(
+              `There has been a problem installing ${dependency.name}. No installable version found`
+            );
+          }
           clearExplorerDependencies();
           changeDependencySearch('');
         }
