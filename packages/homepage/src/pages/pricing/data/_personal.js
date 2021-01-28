@@ -47,7 +47,7 @@ export const personal = {
         {
           name: 'Static File Hosting',
           desc: 'All static files served via CDN',
-          available: ['20Mb total, 7Mb upload', '500Mb total, 30Mb upload'],
+          available: ['20MB total, 7MB upload', '500MB total, 30MB upload'],
         },
         {
           name: 'Unlimited Private Sandboxes',
