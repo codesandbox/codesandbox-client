@@ -1,3 +1,4 @@
+import { format, subDays } from 'date-fns';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { Step, Plan, PaymentSummary } from './types';
@@ -76,22 +77,48 @@ export const cancelWorkspaceSubscription: AsyncAction = async ({
   actions,
   effects,
 }) => {
+  const nextBillDate = state.activeTeamInfo!.subscription.nextBillDate;
+  const expirationDate = format(subDays(new Date(nextBillDate), 1), 'PP');
+
   const confirmed = await actions.modals.alertModal.open({
     title: 'Are you sure?',
-    message: 'Your subscription will stop after the current billing cycle',
+    message: `Your subscription will expire on the next billing date - ${expirationDate}.`,
     type: 'danger',
   });
 
   if (!confirmed) return;
 
   try {
-    await effects.gql.mutations.softCancelSubscription({
+    const response = await effects.gql.mutations.softCancelSubscription({
       teamId: state.activeTeam,
       subscriptionId: state.activeTeamInfo!.subscription!.id,
     });
-  } catch {
+
+    // update state pessimistically
+    state.activeTeamInfo!.subscription!.cancelAt =
+      response.softCancelSubscription.cancelAt;
+  } catch (error) {
     effects.notificationToast.error(
       'There was a problem cancelling your subscription. Please email us at hello@codesandbox.io'
+    );
+  }
+};
+
+export const reactivateWorkspaceSubscription: AsyncAction = async ({
+  state,
+  effects,
+}) => {
+  try {
+    await effects.gql.mutations.reactivateSubscription({
+      teamId: state.activeTeam,
+      subscriptionId: state.activeTeamInfo!.subscription!.id,
+    });
+
+    // update state pessimistically
+    state.activeTeamInfo!.subscription!.cancelAt = null;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem reactivating your subscription. Please email us at hello@codesandbox.io'
     );
   }
 };

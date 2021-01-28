@@ -292,7 +292,11 @@ export const WorkspacePlanSelection: React.FC<{
                 gap={2}
                 css={css({ height: 10, textAlign: 'left' })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() => history.push('/pro/create-workspace')}
+                onSelect={() =>
+                  history.push(
+                    `/pro/create-workspace?interval=${billingInterval}`
+                  )
+                }
               >
                 <Stack
                   justify="center"

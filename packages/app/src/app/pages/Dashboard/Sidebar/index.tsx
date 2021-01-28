@@ -197,8 +197,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.repos(activeTeam)}
             icon="fork"
           />
-          {activeTeamInfo?.subscription?.type ===
-            WorkspaceSubscriptionTypes.Team && (
+          {activeTeamInfo?.joinedPilotAt && (
             <RowItem
               name="Always-On"
               page="always-on"
