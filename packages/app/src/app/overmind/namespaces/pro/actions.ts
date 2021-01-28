@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { Step, Plan, PaymentSummary } from './types';
@@ -77,13 +77,12 @@ export const cancelWorkspaceSubscription: AsyncAction = async ({
   actions,
   effects,
 }) => {
-  const nextBillDate = format(
-    new Date(state.activeTeamInfo!.subscription.nextBillDate),
-    'PP'
-  );
+  const nextBillDate = state.activeTeamInfo!.subscription.nextBillDate;
+  const expirationDate = format(subDays(new Date(nextBillDate), 1), 'PP');
+
   const confirmed = await actions.modals.alertModal.open({
     title: 'Are you sure?',
-    message: `Your subscription will expire on the next billing date - ${nextBillDate}.`,
+    message: `Your subscription will expire on the next billing date - ${expirationDate}.`,
     type: 'danger',
   });
 
@@ -94,8 +93,8 @@ export const cancelWorkspaceSubscription: AsyncAction = async ({
       teamId: state.activeTeam,
       subscriptionId: state.activeTeamInfo!.subscription!.id,
     });
-    // update state pessimistically
 
+    // update state pessimistically
     state.activeTeamInfo!.subscription!.cancelAt =
       response.softCancelSubscription.cancelAt;
   } catch (error) {
