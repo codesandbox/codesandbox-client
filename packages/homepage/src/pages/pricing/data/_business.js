@@ -94,7 +94,7 @@ export const business = {
         {
           name: 'Static File Hosting',
           desc: 'All static files served via CDN',
-          available: ['500Mb/user, 30Mb upload', '500Mb/user, 30Mb upload', 'Unlimited'],
+          available: ['500MB/user, 30MB upload', '500MB/user, 30MB upload', 'Unlimited'],
         },
         {
           name: 'Unlimited Private Sandboxes',
