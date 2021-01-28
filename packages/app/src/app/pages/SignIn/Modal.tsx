@@ -45,7 +45,6 @@ export const SignInModalElement = ({
       return history.push(redirectTo.replace(location.origin, ''));
     }
     setLoadingAuth('github');
-    window.close();
 
     return null;
   };
@@ -62,7 +61,6 @@ export const SignInModalElement = ({
       return history.push(redirectTo.replace(location.origin, ''));
     }
     setLoadingAuth('google');
-    window.close();
 
     return null;
   };

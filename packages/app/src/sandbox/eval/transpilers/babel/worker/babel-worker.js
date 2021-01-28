@@ -8,6 +8,7 @@ import * as envPreset from '@babel/preset-env';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
+import * as resolve from 'resolve';
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
 import patchedMacrosPlugin from './utils/macrosPatch';
@@ -20,6 +21,8 @@ import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 import { downloadFromError, downloadPath } from './dynamic-download';
 import { getModulesFromMainThread } from '../../utils/fs';
+import { remapBabelHack } from './utils/remap-babel-hack';
+import { installErrorMock } from './utils/error-mock';
 
 import { evaluateFromPath, resetCache } from './evaluate';
 import {
@@ -44,7 +47,15 @@ self.process = {
   platform: 'linux',
   argv: [],
   stderr: {},
+  versions: {
+    node: 10,
+  },
 };
+// Trick Babel that we're in a commonjs env
+self.module = { exports: {} };
+const { exports } = self.module;
+self.exports = exports;
+
 // This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {
   if (path === 'resolve') {
@@ -83,6 +94,13 @@ self.require = path => {
   }
 
   const fs = BrowserFS.BFSRequire('fs');
+
+  // This code can be called while Babel is initializing.
+  // When babel is initializing we can't resolve plugins yet.
+  if (!('Babel' in self)) {
+    return undefined;
+  }
+
   return evaluateFromPath(
     fs,
     BrowserFS.BFSRequire,
@@ -92,6 +110,8 @@ self.require = path => {
     Babel.availablePresets
   );
 };
+
+self.require.resolve = p => resolve.sync(p);
 
 async function initializeBrowserFS() {
   fsLoading = true;
@@ -110,7 +130,7 @@ async function initializeBrowserFS() {
     updateModule: () => {},
   };
 
-  return new Promise(resolve => {
+  return new Promise(resolvePromise => {
     BrowserFS.configure(
       {
         fs: 'OverlayFS',
@@ -131,7 +151,7 @@ async function initializeBrowserFS() {
         }
         fsLoading = false;
         fsInitialized = true;
-        resolve();
+        resolvePromise();
         // BrowserFS is initialized and ready-to-use!
       }
     );
@@ -461,9 +481,12 @@ try {
 
   self.importScripts(
     process.env.NODE_ENV === 'development'
-      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.8.1.js`
-      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.8.1.min.js`
+      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.12.12.js`
+      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.12.12.min.js`
   );
+
+  remapBabelHack();
+  registerCodeSandboxPlugins();
 } catch (e) {
   console.error(e);
 }
@@ -491,19 +514,40 @@ let loadedTranspilerURL = null;
 let loadedEnvURL = null;
 
 function registerCodeSandboxPlugins() {
-  Babel.registerPlugin('babel-plugin-detective', detective);
-  Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
-  Babel.registerPlugin('babel-plugin-csb-rename-import', renameImport);
-  Babel.registerPlugin(
-    'babel-plugin-transform-prevent-infinite-loops',
-    infiniteLoops
-  );
+  if (!Babel.availablePlugins['babel-plugin-detective']) {
+    Babel.registerPlugin('babel-plugin-detective', detective);
+  }
+  if (!Babel.availablePlugins['dynamic-css-modules']) {
+    Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
+  }
+  if (!Babel.availablePlugins['babel-plugin-csb-rename-import']) {
+    Babel.registerPlugin('babel-plugin-csb-rename-import', renameImport);
+  }
+  if (
+    !Babel.availablePlugins['babel-plugin-transform-prevent-infinite-loops']
+  ) {
+    Babel.registerPlugin(
+      'babel-plugin-transform-prevent-infinite-loops',
+      infiniteLoops
+    );
+  }
+
+  // Between Babel 7.8 and Babel 7.12 the internal name of some plugins has changed. We need to
+  // remap the plugin to make existing sandboxes that rely on Babel v7 work.
+  if (
+    !Babel.availablePlugins['syntax-dynamic-import'] &&
+    Babel.availablePlugins['proposal-dynamic-import']
+  ) {
+    Babel.registerPlugin(
+      'syntax-dynamic-import',
+      Babel.availablePlugins['proposal-dynamic-import']
+    );
+  }
 }
 
 function loadCustomTranspiler(babelUrl, babelEnvUrl) {
   if (babelUrl && babelUrl !== loadedTranspilerURL) {
     self.importScripts(babelUrl);
-    registerCodeSandboxPlugins();
     loadedTranspilerURL = babelUrl;
   }
 
@@ -511,9 +555,10 @@ function loadCustomTranspiler(babelUrl, babelEnvUrl) {
     self.importScripts(babelEnvUrl);
     loadedEnvURL = babelEnvUrl;
   }
+  remapBabelHack();
+  registerCodeSandboxPlugins();
 }
-
-registerCodeSandboxPlugins();
+installErrorMock();
 
 self.addEventListener('message', async event => {
   if (!event.data.codesandbox) {

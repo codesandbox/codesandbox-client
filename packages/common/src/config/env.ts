@@ -24,5 +24,6 @@ export default Object.keys(process.env)
       'process.env.SANDPACK': Boolean(
         JSON.parse(process.env.SANDPACK || 'false')
       ),
+      'process.env.DEV_DOMAIN': JSON.stringify(process.env.DEV_DOMAIN || 'codesandbox.test'),
     }
   );

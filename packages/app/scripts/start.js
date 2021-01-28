@@ -127,7 +127,9 @@ function setupCompiler(port, protocol) {
     //   in ./packages/app/src/app/components/CodeEditor/CodeMirror/index.js
     const warnings = stats.compilation.warnings
       .concat(...stats.compilation.children.map(child => child.warnings))
-      .filter(warning => warning.error.name !== 'CriticalDependencyWarning');
+      .filter(warning => warning.error.name !== 'CriticalDependencyWarning')
+      // ignore "Error: Can't resolve 'sugarss' in '/client/node_modules/postcss-import/lib'" warning
+      .filter(warning => !warning.module.resource.endsWith('node_modules/postcss-import/lib/process-content.js'));
     const hasWarnings = warnings.length > 0;
     if (hasWarnings) {
       console.log(chalk.yellow(`Compiled with warnings in ${took / 1000}s.\n`));
@@ -264,7 +266,7 @@ function addMiddleware(devServer, index) {
 }
 
 function runDevServer(port, protocol, index) {
-  var devServer = new WebpackDevServer(compiler, {
+  var devServerConfig = {
     // It is important to tell WebpackDevServer to use the same "root" path
     // as we specified in the config. In development, we always serve from /.
     publicPath: config.output.publicPath,
@@ -279,8 +281,8 @@ function runDevServer(port, protocol, index) {
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
-    public: 'localhost:3000',
-    host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.test',
+    // public: 'localhost:3000',
+    host: process.env.LOCAL_SERVER ? 'localhost' : (process.env.DEV_DOMAIN || 'codesandbox.test'),
     disableHostCheck: !process.env.LOCAL_SERVER,
     contentBase: false,
     clientLogLevel: 'warning',
@@ -288,7 +290,9 @@ function runDevServer(port, protocol, index) {
     inline: true,
     hot: true,
     liveReload: process.env['DISABLE_REFRESH'] ? false : true,
-  });
+  };
+  // console.log(JSON.stringify(devServerConfig, null, 2));
+  var devServer = new WebpackDevServer(compiler, devServerConfig);
 
   // Our custom middleware proxies requests to /index.html or a remote API.
   const { wsProxy } = addMiddleware(devServer, index);
