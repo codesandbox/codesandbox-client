@@ -26,7 +26,7 @@ import { OpenIcon, SavePersonal, SaveTeam } from './_icons';
 
 export default () => {
   const [open, setOpen] = useState({});
-  const [mode, setMode] = useState('monthly');
+  const [mode, setMode] = useState('annually');
   const [product, setProduct] = useState();
 
   useEffect(() => {
