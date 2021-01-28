@@ -407,6 +407,23 @@ export const WorkspaceSettings = () => {
                           <Text size={3} css={css({ color: 'orange' })}>
                             Your subscription expires on{' '}
                             {format(new Date(team.subscription.cancelAt), 'PP')}
+                            .{' '}
+                            <Button
+                              autoWidth
+                              variant="link"
+                              disabled={loading}
+                              css={css({
+                                color: 'inherit',
+                                padding: 0,
+                                textDecoration: 'underline',
+                                fontSize: 3,
+                              })}
+                              onClick={() =>
+                                actions.pro.reactivateWorkspaceSubscription()
+                              }
+                            >
+                              Reactivate
+                            </Button>
                           </Text>
                         ) : (
                           <Button

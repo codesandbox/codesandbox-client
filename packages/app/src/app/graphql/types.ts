@@ -2924,3 +2924,16 @@ export type SoftCancelSubscriptionMutation = {
     cancelAt: WorkspaceSubscription['cancelAt'];
   };
 };
+
+export type ReactivateSubscriptionMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  subscriptionId: Scalars['UUID4'];
+}>;
+
+export type ReactivateSubscriptionMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  softCancelSubscription: {
+    id: WorkspaceSubscription['id'];
+  };
+};

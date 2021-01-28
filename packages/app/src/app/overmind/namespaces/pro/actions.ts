@@ -103,3 +103,22 @@ export const cancelWorkspaceSubscription: AsyncAction = async ({
     );
   }
 };
+
+export const reactivateWorkspaceSubscription: AsyncAction = async ({
+  state,
+  effects,
+}) => {
+  try {
+    await effects.gql.mutations.reactivateSubscription({
+      teamId: state.activeTeam,
+      subscriptionId: state.activeTeamInfo!.subscription!.id,
+    });
+
+    // update state pessimistically
+    state.activeTeamInfo!.subscription!.cancelAt = null;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem reactivating your subscription. Please email us at hello@codesandbox.io'
+    );
+  }
+};
