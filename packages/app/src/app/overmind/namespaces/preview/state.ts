@@ -1,4 +1,4 @@
-import { RootState } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { derived } from 'overmind';
 
 export type Presets = { [name: string]: [number, number] };
@@ -29,7 +29,7 @@ export const defaultPresets: Presets = {
 
 export const state: State = {
   responsive: {
-    presets: derived((_, rootState: RootState) =>
+    presets: derived((_, rootState: Context['state']) =>
       rootState.editor.workspaceConfig &&
       rootState.editor.workspaceConfig['responsive-preview']
         ? rootState.editor.workspaceConfig['responsive-preview']

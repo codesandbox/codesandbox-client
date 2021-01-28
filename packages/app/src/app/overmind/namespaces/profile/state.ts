@@ -3,7 +3,7 @@ import {
   Collection,
   SandboxFragmentDashboardFragment as CollectionSandbox,
 } from 'app/graphql/types';
-import { RootState } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { derived } from 'overmind';
 import { SandboxType } from 'app/pages/Profile2/constants';
 
@@ -72,20 +72,24 @@ export const state: State = {
   currentSortDirection: 'desc',
   contextMenu: { sandboxId: null, sandboxType: null, position: null },
   collections: [],
-  isProfileCurrentUser: derived((currentState: State, rootState: RootState) =>
-    Boolean(
-      rootState.user && rootState.user.id === currentState.currentProfileId
-    )
+  isProfileCurrentUser: derived(
+    (currentState: State, rootState: Context['state']) =>
+      Boolean(
+        rootState.user && rootState.user.id === currentState.currentProfileId
+      )
   ),
   current: derived((currentState: State) =>
     currentState.currentProfileId
       ? currentState.profiles[currentState.currentProfileId]
       : null
   ),
-  showcasedSandbox: derived((currentState: State, rootState: RootState) =>
-    currentState.current && currentState.current.showcasedSandboxShortid
-      ? rootState.editor.sandboxes[currentState.current.showcasedSandboxShortid]
-      : null
+  showcasedSandbox: derived(
+    (currentState: State, rootState: Context['state']) =>
+      currentState.current && currentState.current.showcasedSandboxShortid
+        ? rootState.editor.sandboxes[
+            currentState.current.showcasedSandboxShortid
+          ]
+        : null
   ),
   currentLikedSandboxes: derived((currentState: State) =>
     currentState.current

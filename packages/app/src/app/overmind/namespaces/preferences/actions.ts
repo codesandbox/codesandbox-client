@@ -2,28 +2,34 @@ import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications
 import { Badge } from '@codesandbox/common/lib/types';
 import { isEqual } from 'lodash-es';
 import { saveAs } from 'file-saver';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { SettingSync } from './state';
 
-export const viewModeChanged: Action<{
-  showEditor: boolean;
-  showPreview: boolean;
-}> = ({ state }, { showEditor, showPreview }) => {
+export const viewModeChanged = (
+  { state }: Context,
+  {
+    showEditor,
+    showPreview,
+  }: {
+    showEditor: boolean;
+    showPreview: boolean;
+  }
+) => {
   state.preferences.showEditor = showEditor;
   state.preferences.showPreview = showPreview;
 };
 
-export const devtoolsToggled: Action = ({ state }) => {
+export const devtoolsToggled = ({ state }: Context) => {
   state.preferences.showDevtools = !state.preferences.showDevtools;
 };
 
-export const setDevtoolsOpen: Action<boolean> = ({ state }, isOpen) => {
+export const setDevtoolsOpen = ({ state }: Context, isOpen: boolean) => {
   state.preferences.showDevtools = isOpen;
 };
 
-export const itemIdChanged: AsyncAction<string> = async (
-  { actions, state },
-  itemId
+export const itemIdChanged = async (
+  { actions, state }: Context,
+  itemId: string
 ) => {
   state.preferences.itemId = itemId;
 
@@ -32,10 +38,16 @@ export const itemIdChanged: AsyncAction<string> = async (
   }
 };
 
-export const settingChanged: Action<{
-  value: any;
-  name: string;
-}> = ({ state, effects }, { name, value }) => {
+export const settingChanged = (
+  { state, effects }: Context,
+  {
+    name,
+    value,
+  }: {
+    value: any;
+    name: string;
+  }
+) => {
   const path = name.split('.');
   const firstKey = path[0];
   const lastKey = path.pop();
@@ -57,10 +69,10 @@ export const settingChanged: Action<{
   });
 };
 
-export const setBadgeVisibility: AsyncAction<Pick<
-  Badge,
-  'id' | 'visible'
->> = async ({ effects, state }, { id, visible }) => {
+export const setBadgeVisibility = async (
+  { effects, state }: Context,
+  { id, visible }: Pick<Badge, 'id' | 'visible'>
+) => {
   const user = state.user;
   if (!user) {
     return;
@@ -74,10 +86,7 @@ export const setBadgeVisibility: AsyncAction<Pick<
   await effects.api.updateBadge(id, visible);
 };
 
-export const paymentDetailsRequested: AsyncAction = async ({
-  state,
-  effects,
-}) => {
+export const paymentDetailsRequested = async ({ state, effects }: Context) => {
   state.preferences.isLoadingPaymentDetails = true;
   try {
     state.preferences.paymentDetails = await effects.api.getPaymentDetails();
@@ -87,9 +96,9 @@ export const paymentDetailsRequested: AsyncAction = async ({
   state.preferences.isLoadingPaymentDetails = false;
 };
 
-export const paymentDetailsUpdated: AsyncAction<string> = async (
-  { effects, state },
-  token
+export const paymentDetailsUpdated = async (
+  { effects, state }: Context,
+  token: string
 ) => {
   state.preferences.isLoadingPaymentDetails = true;
   state.preferences.paymentDetails = await effects.api.updatePaymentDetails(
@@ -100,10 +109,16 @@ export const paymentDetailsUpdated: AsyncAction<string> = async (
   effects.notificationToast.success('Successfully updated payment details');
 };
 
-export const keybindingChanged: Action<{
-  name: string;
-  value: any;
-}> = ({ state, effects }, { name, value }) => {
+export const keybindingChanged = (
+  { state, effects }: Context,
+  {
+    name,
+    value,
+  }: {
+    name: string;
+    value: any;
+  }
+) => {
   const { keybindings } = state.preferences.settings;
   const currentIndex = keybindings.findIndex(binding => binding.key === name);
   const newBinding = {
@@ -128,18 +143,18 @@ export const keybindingChanged: Action<{
   effects.settingsStore.set('keybindings', keybindingsValue);
 };
 
-export const zenModeToggled: Action = ({ state }) => {
+export const zenModeToggled = ({ state }: Context) => {
   state.preferences.settings.zenMode = !state.preferences.settings.zenMode;
 };
 
-export const codeMirrorForced: Action = ({ state }) => {
+export const codeMirrorForced = ({ state }: Context) => {
   state.preferences.settings.codeMirror = true;
 };
 
-export const toggleContainerLspExperiment: AsyncAction = async ({
+export const toggleContainerLspExperiment = async ({
   effects,
   state,
-}) => {
+}: Context) => {
   if (!state.user) {
     return;
   }
@@ -163,10 +178,7 @@ export const toggleContainerLspExperiment: AsyncAction = async ({
   }
 };
 
-export const getUserLocalSettings: Action<
-  void,
-  { themeData: any; vscode: any }
-> = () => {
+export const getUserLocalSettings = () => {
   const fs = window.BrowserFS.BFSRequire('fs');
   const all = fs.readdirSync('/vscode');
   const files = {};
@@ -215,10 +227,16 @@ export const getUserLocalSettings: Action<
   };
 };
 
-export const renameUserSettings: AsyncAction<{
-  name: string;
-  id: string;
-}> = async ({ state, effects }, { name, id }) => {
+export const renameUserSettings = async (
+  { state, effects }: Context,
+  {
+    name,
+    id,
+  }: {
+    name: string;
+    id: string;
+  }
+) => {
   const { settingsSync } = state.preferences;
   if (!name || !settingsSync.settings) return;
 
@@ -248,7 +266,7 @@ export const renameUserSettings: AsyncAction<{
   }
 };
 
-export const getUserSettings: AsyncAction = async ({ state, effects }) => {
+export const getUserSettings = async ({ state, effects }: Context) => {
   const { settingsSync } = state.preferences;
   settingsSync.fetching = true;
 
@@ -258,11 +276,11 @@ export const getUserSettings: AsyncAction = async ({ state, effects }) => {
   settingsSync.fetching = false;
 };
 
-export const createPreferencesProfile: AsyncAction = async ({
+export const createPreferencesProfile = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   state.preferences.settingsSync.syncing = true;
   try {
     const { vscode, themeData } = actions.preferences.getUserLocalSettings();
@@ -280,9 +298,9 @@ export const createPreferencesProfile: AsyncAction = async ({
   }
 };
 
-export const updateServerSettings: AsyncAction<string> = async (
-  { state, effects },
-  settingsStringified
+export const updateServerSettings = async (
+  { state, effects }: Context,
+  settingsStringified: string
 ) => {
   if (!state.user) return;
   const {
@@ -312,17 +330,14 @@ export const updateServerSettings: AsyncAction<string> = async (
   );
 };
 
-export const checkifSynced: Action<string, boolean> = (
-  { actions },
-  savedSetting
-) => {
+export const checkifSynced = ({ actions }: Context, savedSetting: string) => {
   const currentSettings = actions.preferences.getUserLocalSettings();
   return isEqual(currentSettings, JSON.parse(savedSetting));
 };
 
-export const deleteUserSetting: AsyncAction<string> = async (
-  { state, effects, actions },
-  id
+export const deleteUserSetting = async (
+  { state, effects, actions }: Context,
+  id: string
 ) => {
   if (!state.preferences.settingsSync.settings) return;
   try {
@@ -357,17 +372,17 @@ export const deleteUserSetting: AsyncAction<string> = async (
   }
 };
 
-export const downloadPreferences: AsyncAction<SettingSync> = async (
-  _,
-  settings
+export const downloadPreferences = async (
+  _: Context,
+  settings: SettingSync
 ) => {
   const blob = new Blob([settings.settings], { type: 'application/json' });
   saveAs(blob, `CodeSandboxSettings-${settings.name}.json`);
 };
 
-export const applyPreferences: AsyncAction<string> = async (
-  { state, effects },
-  settings
+export const applyPreferences = async (
+  { state, effects }: Context,
+  settings: string
 ) => {
   if (!state.preferences.settingsSync.settings) return;
   const fs = window.BrowserFS.BFSRequire('fs');

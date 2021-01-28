@@ -6,33 +6,39 @@ import {
   ServerStatus,
 } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { getDevToolsTabPosition } from 'app/overmind/utils/server';
 
-export const restartSandbox: Action = ({ effects }) => {
+export const restartSandbox = ({ effects }: Context) => {
   effects.executor.emit('sandbox:restart');
 };
 
-export const restartContainer: Action = ({ effects, state }) => {
+export const restartContainer = ({ effects, state }: Context) => {
   state.server.containerStatus = ServerContainerStatus.INITIALIZING;
   effects.executor.emit('sandbox:restart-container');
 };
 
-export const statusChanged: Action<ServerStatus> = ({ state }, status) => {
+export const statusChanged = ({ state }: Context, status: ServerStatus) => {
   state.server.status = status;
 };
 
-export const containerStatusChanged: Action<ServerContainerStatus> = (
-  { state },
-  status
+export const containerStatusChanged = (
+  { state }: Context,
+  status: ServerContainerStatus
 ) => {
   state.server.containerStatus = status;
 };
 
-export const onSSEMessage: Action<{
-  event: string;
-  data: any;
-}> = ({ state: { server, editor }, effects, actions }, { event, data }) => {
+export const onSSEMessage = (
+  { state: { server, editor }, effects, actions }: Context,
+  {
+    event,
+    data,
+  }: {
+    event: string;
+    data: any;
+  }
+) => {
   switch (event) {
     case 'connect':
       server.error = null;
@@ -160,9 +166,14 @@ export const onSSEMessage: Action<{
   }
 };
 
-export const onCodeSandboxAPIMessage: Action<{
-  data: any;
-}> = ({ effects }, { data }) => {
+export const onCodeSandboxAPIMessage = (
+  { effects }: Context,
+  {
+    data,
+  }: {
+    data: any;
+  }
+) => {
   if (data.type === 'socket:message') {
     const { channel, type: _t, codesandbox: _c, ...message } = data;
     effects.executor.emit(channel, message);
@@ -173,10 +184,16 @@ type BrowserOptions = { title?: string; url?: string } & (
   | { port: number }
   | { url: string }
 );
-export const onBrowserTabOpened: Action<{
-  closeable?: boolean;
-  options?: BrowserOptions;
-}> = ({ actions, state }, { closeable, options }) => {
+export const onBrowserTabOpened = (
+  { actions, state }: Context,
+  {
+    closeable,
+    options,
+  }: {
+    closeable?: boolean;
+    options?: BrowserOptions;
+  }
+) => {
   const tab: ViewTab = {
     id: 'codesandbox.browser',
   };
@@ -201,9 +218,9 @@ export const onBrowserTabOpened: Action<{
   }
 };
 
-export const onBrowserFromPortOpened: Action<ServerPort> = (
-  { actions },
-  { hostname, main, port }
+export const onBrowserFromPortOpened = (
+  { actions }: Context,
+  { hostname, main, port }: ServerPort
 ) => {
   if (main) {
     actions.server.onBrowserTabOpened({});
@@ -218,9 +235,9 @@ export const onBrowserFromPortOpened: Action<ServerPort> = (
   }
 };
 
-export const startContainer: AsyncAction<Sandbox> = async (
-  { effects, actions },
-  sandbox
+export const startContainer = async (
+  { effects, actions }: Context,
+  sandbox: Sandbox
 ) => {
   await effects.executor.initializeExecutor(sandbox);
 

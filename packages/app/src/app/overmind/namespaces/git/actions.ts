@@ -167,9 +167,9 @@ export const createRepoClicked = async ({
     state.currentModal = null;
 
     actions.editor.internal.forkSandbox({
-      sandboxId: `github/${git.username}/${git.repo}/tree/${
-        git.branch
-      }/${git.path || ''}`,
+      sandboxId: `github/${git.username}/${git.repo}/tree/${git.branch}/${
+        git.path || ''
+      }`,
     });
   } catch (error) {
     actions.internal.handleError({
@@ -419,9 +419,9 @@ export const createPrClicked = async ({ state, effects, actions }: Context) => {
   }
 };
 
-export const updateGitChanges = pipe(debounce(500), ({ actions }: Context) =>
-  actions.git._setGitChanges()
-);
+export const updateGitChanges = pipe(debounce(500), ({ actions }: Context) => {
+  actions.git._setGitChanges();
+});
 
 export const resolveConflicts = async (
   { state, actions, effects }: Context,

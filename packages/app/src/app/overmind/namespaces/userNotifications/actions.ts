@@ -1,5 +1,5 @@
 import { client } from 'app/graphql/client';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 
 import gql from 'graphql-tag';
 
@@ -8,7 +8,7 @@ import { preferenceTypes } from './state';
 
 export const internal = internalActions;
 
-export const notificationsOpenedOld: AsyncAction = async ({ state }) => {
+export const notificationsOpenedOld = async ({ state }: Context) => {
   state.userNotifications.notificationsOpened = true;
   state.userNotifications.unreadCount = 0;
 
@@ -35,15 +35,15 @@ export const notificationsOpenedOld: AsyncAction = async ({ state }) => {
   }, 500);
 };
 
-export const notificationsOpened: AsyncAction = async ({ state, effects }) => {
+export const notificationsOpened = async ({ state, effects }: Context) => {
   state.userNotifications.notificationsOpened = true;
   await effects.gql.mutations.clearNotificationCount({});
   state.userNotifications.unreadCount = 0;
 };
 
-export const filterNotifications: AsyncAction<string> = async (
-  { state, effects },
-  filter
+export const filterNotifications = async (
+  { state, effects }: Context,
+  filter: string
 ) => {
   const filters = state.userNotifications.activeFilters;
   if (filters.includes(filter)) {
@@ -63,23 +63,23 @@ export const filterNotifications: AsyncAction<string> = async (
   }
 };
 
-export const messageReceived: Action<{ event: string }> = (
-  { state },
-  { event }
+export const messageReceived = (
+  { state }: Context,
+  { event }: { event: string }
 ) => {
   if (event === 'new-notification') {
     state.userNotifications.unreadCount++;
   }
 };
 
-export const notificationsClosed: Action = ({ state }) => {
+export const notificationsClosed = ({ state }: Context) => {
   state.userNotifications.notificationsOpened = false;
 };
 
-export const markAllNotificationsAsRead: AsyncAction = async ({
+export const markAllNotificationsAsRead = async ({
   state,
   effects,
-}) => {
+}: Context) => {
   if (!state.userNotifications.notifications) return;
   const oldNotifications = state.userNotifications.notifications;
   const count = state.userNotifications.unreadCount;
@@ -102,9 +102,9 @@ export const markAllNotificationsAsRead: AsyncAction = async ({
   }
 };
 
-export const archiveNotification: AsyncAction<string> = async (
-  { state, effects },
-  id
+export const archiveNotification = async (
+  { state, effects }: Context,
+  id: string
 ) => {
   if (!state.userNotifications.notifications) return;
   const oldNots = state.userNotifications.notifications;
@@ -120,10 +120,7 @@ export const archiveNotification: AsyncAction<string> = async (
   }
 };
 
-export const archiveAllNotifications: AsyncAction = async ({
-  state,
-  effects,
-}) => {
+export const archiveAllNotifications = async ({ state, effects }: Context) => {
   if (!state.userNotifications.notifications) return;
   const oldNots = state.userNotifications.notifications;
   try {
@@ -134,9 +131,9 @@ export const archiveAllNotifications: AsyncAction = async ({
   }
 };
 
-export const updateReadStatus: AsyncAction<string> = async (
-  { state, effects },
-  id
+export const updateReadStatus = async (
+  { state, effects }: Context,
+  id: string
 ) => {
   if (!state.userNotifications.notifications) return;
   const oldNots = state.userNotifications.notifications;
@@ -165,7 +162,7 @@ export const updateReadStatus: AsyncAction<string> = async (
   }
 };
 
-export const getNotifications: AsyncAction = async ({ state, effects }) => {
+export const getNotifications = async ({ state, effects }: Context) => {
   try {
     const { me } = await effects.gql.queries.getRecentNotifications({
       type: [],
@@ -180,19 +177,22 @@ export const getNotifications: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const openTeamAcceptModal: Action<{
-  teamName: string;
-  teamId: string;
-  userAvatar: string;
-}> = ({ state }, activeInvitation) => {
+export const openTeamAcceptModal = (
+  { state }: Context,
+  activeInvitation: {
+    teamName: string;
+    teamId: string;
+    userAvatar: string;
+  }
+) => {
   state.userNotifications.activeInvitation = activeInvitation;
   state.currentModal = 'teamInvite';
 };
 
-export const getNotificationPreferences: AsyncAction = async ({
+export const getNotificationPreferences = async ({
   state,
   effects,
-}) => {
+}: Context) => {
   if (!state.user) return;
   try {
     const data = await effects.gql.queries.getEmailPreferences({});
@@ -211,9 +211,10 @@ type PreferenceTypes = {
   [key in keyof preferenceTypes]: boolean;
 };
 
-export const updateNotificationPreferences: AsyncAction<Partial<
-  PreferenceTypes
->> = async ({ state, effects }, preference) => {
+export const updateNotificationPreferences = async (
+  { state, effects }: Context,
+  preference: Partial<PreferenceTypes>
+) => {
   if (!state.user) return;
   const oldPreferences = state.userNotifications.preferences;
   const newPreferences = {

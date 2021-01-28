@@ -973,10 +973,9 @@ export const getAlwaysOnSandboxes = async ({ state, effects }: Context) => {
   }
 };
 
-export const getPage = async (
-  { actions: { dashboard } }: Context,
-  page: sandboxesTypes
-) => {
+export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
+  const { dashboard } = actions;
+
   switch (page) {
     case sandboxesTypes.RECENT:
       dashboard.getRecentSandboxes();
@@ -1381,7 +1380,7 @@ export const deleteCurrentNpmRegistry = async (
         teamId: state.activeTeam,
       });
 
-      await actions.dashboard.fetchCurrentNpmRegistry({});
+      await actions.dashboard.fetchCurrentNpmRegistry();
 
       effects.notificationToast.success('Successfully reset the registry!');
     } catch (e) {
@@ -1403,7 +1402,7 @@ export const createOrUpdateCurrentNpmRegistry = async (
       teamId: state.activeTeam,
     });
 
-    await actions.dashboard.fetchCurrentNpmRegistry({});
+    await actions.dashboard.fetchCurrentNpmRegistry();
 
     effects.notificationToast.success(
       'Successfully saved new registry settings!'

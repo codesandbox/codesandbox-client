@@ -12,18 +12,22 @@ import {
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { camelizeKeys } from 'humps';
-import { mutate } from 'overmind';
 
-import { Operator } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
 
-export const onSave: Operator<LiveMessage<{
-  saved_code: string;
-  updated_at: string;
-  inserted_at: string;
-  version: number;
-  path: string;
-}>> = mutate(({ state, effects }, { data }) => {
+export const onSave = (
+  { state, effects }: Context,
+  {
+    data,
+  }: LiveMessage<{
+    saved_code: string;
+    updated_at: string;
+    inserted_at: string;
+    version: number;
+    path: string;
+  }>
+) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -46,12 +50,17 @@ export const onSave: Operator<LiveMessage<{
   if (module.savedCode === null) {
     effects.vscode.syncModule(module);
   }
-});
+};
 
-export const onJoin: Operator<LiveMessage<{
-  status: 'connected';
-  live_user_id: string;
-}>> = mutate(({ effects, actions, state }, { data }) => {
+export const onJoin = (
+  { effects, actions, state }: Context,
+  {
+    data,
+  }: LiveMessage<{
+    status: 'connected';
+    live_user_id: string;
+  }>
+) => {
   state.live.liveUserId = data.live_user_id;
 
   if (state.live.reconnecting) {
@@ -67,29 +76,44 @@ export const onJoin: Operator<LiveMessage<{
   }
 
   state.live.reconnecting = false;
-});
+};
 
-export const onModuleState: Operator<LiveMessage<{
-  module_state: any;
-}>> = mutate(({ state, actions }, { data }) => {
+export const onModuleState = (
+  { actions }: Context,
+  {
+    data,
+  }: LiveMessage<{
+    module_state: any;
+  }>
+) => {
   actions.live.internal.initializeModuleState(data.module_state);
-});
+};
 
-export const onExternalResources: Operator<LiveMessage<{
-  externalResources: string[];
-}>> = mutate(({ state, actions }, { data }) => {
+export const onExternalResources = (
+  { state, actions }: Context,
+  {
+    data,
+  }: LiveMessage<{
+    externalResources: string[];
+  }>
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
   state.editor.currentSandbox.externalResources = data.externalResources;
   actions.editor.internal.updatePreviewCode();
-});
+};
 
-export const onUsersChanged: Operator<LiveMessage<{
-  users: LiveUser[];
-  editor_ids: string[];
-  owner_ids: string[];
-}>> = mutate(({ state, actions }, { data }) => {
+export const onUsersChanged = (
+  { state, actions }: Context,
+  {
+    data,
+  }: LiveMessage<{
+    users: LiveUser[];
+    editor_ids: string[];
+    owner_ids: string[];
+  }>
+) => {
   if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
     return;
   }
@@ -105,14 +129,19 @@ export const onUsersChanged: Operator<LiveMessage<{
       module: state.editor.currentModule,
     });
   }
-});
+};
 
-export const onUserEntered: Operator<LiveMessage<{
-  users: LiveUser[];
-  editor_ids: string[];
-  owner_ids: string[];
-  joined_user_id: string;
-}>> = mutate(({ state, effects, actions }, { data }) => {
+export const onUserEntered = (
+  { state, effects, actions }: Context,
+  {
+    data,
+  }: LiveMessage<{
+    users: LiveUser[];
+    editor_ids: string[];
+    owner_ids: string[];
+    joined_user_id: string;
+  }>
+) => {
   if (state.live.isLoading || !state.live.roomInfo || !state.live.isLive) {
     return;
   }
@@ -150,14 +179,19 @@ export const onUserEntered: Operator<LiveMessage<{
       status: NotificationStatus.NOTICE,
     });
   }
-});
+};
 
-export const onUserLeft: Operator<LiveMessage<{
-  users: LiveUser[];
-  left_user_id: string;
-  editor_ids: string[];
-  owner_ids: string[];
-}>> = mutate(({ state, actions, effects }, { data }) => {
+export const onUserLeft = (
+  { state, actions, effects }: Context,
+  {
+    data,
+  }: LiveMessage<{
+    users: LiveUser[];
+    left_user_id: string;
+    editor_ids: string[];
+    owner_ids: string[];
+  }>
+) => {
   if (!state.live.roomInfo) {
     return;
   }
@@ -185,12 +219,18 @@ export const onUserLeft: Operator<LiveMessage<{
   state.live.roomInfo.users = users;
   state.live.roomInfo.ownerIds = data.owner_ids;
   state.live.roomInfo.editorIds = data.editor_ids;
-});
+};
 
-export const onModuleSaved: Operator<LiveMessage<{
-  moduleShortid: string;
-  module: Module;
-}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
+export const onModuleSaved = (
+  { state, effects, actions }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    moduleShortid: string;
+    module: Module;
+  }>
+) => {
   if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
@@ -215,11 +255,17 @@ export const onModuleSaved: Operator<LiveMessage<{
     }
     actions.editor.internal.updatePreviewCode();
   }
-});
+};
 
-export const onModuleCreated: Operator<LiveMessage<{
-  module: Module;
-}>> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
+export const onModuleCreated = (
+  { state, actions, effects }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    module: Module;
+  }>
+) => {
   if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
@@ -231,12 +277,18 @@ export const onModuleCreated: Operator<LiveMessage<{
   if (state.editor.currentSandbox.originalGit) {
     actions.git.updateGitChanges();
   }
-});
+};
 
-export const onModuleMassCreated: Operator<LiveMessage<{
-  modules: Module[];
-  directories: Directory[];
-}>> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
+export const onModuleMassCreated = (
+  { state, actions, effects }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    modules: Module[];
+    directories: Directory[];
+  }>
+) => {
   if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
@@ -255,12 +307,18 @@ export const onModuleMassCreated: Operator<LiveMessage<{
   if (state.editor.currentSandbox.originalGit) {
     actions.git.updateGitChanges();
   }
-});
+};
 
-export const onModuleUpdated: Operator<LiveMessage<{
-  moduleShortid: string;
-  module: Module;
-}>> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
+export const onModuleUpdated = (
+  { state, actions, effects }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    moduleShortid: string;
+    module: Module;
+  }>
+) => {
   const sandbox = state.editor.currentSandbox;
 
   if (_isOwnMessage || !sandbox) {
@@ -296,11 +354,17 @@ export const onModuleUpdated: Operator<LiveMessage<{
   if (state.editor.currentSandbox!.originalGit) {
     actions.git.updateGitChanges();
   }
-});
+};
 
-export const onModuleDeleted: Operator<LiveMessage<{
-  moduleShortid: string;
-}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
+export const onModuleDeleted = (
+  { state, effects, actions }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    moduleShortid: string;
+  }>
+) => {
   if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
@@ -330,23 +394,35 @@ export const onModuleDeleted: Operator<LiveMessage<{
   if (state.editor.currentSandbox.originalGit) {
     actions.git.updateGitChanges();
   }
-});
+};
 
-export const onDirectoryCreated: Operator<LiveMessage<{
-  module: Directory; // This is very weird?
-}>> = mutate(({ state, effects }, { _isOwnMessage, data }) => {
+export const onDirectoryCreated = (
+  { state, effects }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    module: Directory; // This is very weird?
+  }>
+) => {
   if (_isOwnMessage || !state.editor.currentSandbox) {
     return;
   }
   // Should this not be a directory?
   state.editor.currentSandbox.directories.push(data.module);
   effects.vscode.sandboxFsSync.mkdir(state.editor.modulesByPath, data.module);
-});
+};
 
-export const onDirectoryUpdated: Operator<LiveMessage<{
-  directoryShortid: string;
-  module: Directory; // Still very weird
-}>> = mutate(({ state, actions, effects }, { _isOwnMessage, data }) => {
+export const onDirectoryUpdated = (
+  { state, actions }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    directoryShortid: string;
+    module: Directory; // Still very weird
+  }>
+) => {
   const sandbox = state.editor.currentSandbox;
   if (_isOwnMessage || !sandbox) {
     return;
@@ -376,11 +452,17 @@ export const onDirectoryUpdated: Operator<LiveMessage<{
       actions.editor.internal.setCurrentModule(state.editor.currentModule);
     }
   }
-});
+};
 
-export const onDirectoryDeleted: Operator<LiveMessage<{
-  directoryShortid: string;
-}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
+export const onDirectoryDeleted = (
+  { state, effects, actions }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    directoryShortid: string;
+  }>
+) => {
   const sandbox = state.editor.currentSandbox;
   if (_isOwnMessage || !sandbox) {
     return;
@@ -432,13 +514,19 @@ export const onDirectoryDeleted: Operator<LiveMessage<{
   if (state.editor.currentSandbox!.originalGit) {
     actions.git.updateGitChanges();
   }
-});
+};
 
-export const onUserSelection: Operator<LiveMessage<{
-  liveUserId: string;
-  moduleShortid: string;
-  selection: UserSelection;
-}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
+export const onUserSelection = (
+  { state, effects, actions }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    liveUserId: string;
+    moduleShortid: string;
+    selection: UserSelection;
+  }>
+) => {
   if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
     return;
   }
@@ -482,12 +570,18 @@ export const onUserSelection: Operator<LiveMessage<{
       }
     }
   }
-});
+};
 
-export const onUserCurrentModule: Operator<LiveMessage<{
-  live_user_id: string;
-  moduleShortid: string;
-}>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
+export const onUserCurrentModule = (
+  { state, actions }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    live_user_id: string;
+    moduleShortid: string;
+  }>
+) => {
   if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
     return;
   }
@@ -518,13 +612,19 @@ export const onUserCurrentModule: Operator<LiveMessage<{
       id: module.id,
     });
   }
-});
+};
 
-export const onUserViewRange: Operator<LiveMessage<{
-  liveUserId: string;
-  moduleShortid: string;
-  viewRange: UserViewRange;
-}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
+export const onUserViewRange = (
+  { state, effects }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    liveUserId: string;
+    moduleShortid: string;
+    viewRange: UserViewRange;
+  }>
+) => {
   if (_isOwnMessage || !state.live.roomInfo || !state.editor.currentSandbox) {
     return;
   }
@@ -553,11 +653,17 @@ export const onUserViewRange: Operator<LiveMessage<{
       effects.vscode.revealRange(viewRange);
     }
   }
-});
+};
 
-export const onLiveMode: Operator<LiveMessage<{
-  mode: RoomInfo['mode'];
-}>> = mutate(({ actions, state }, { _isOwnMessage, data }) => {
+export const onLiveMode = (
+  { actions, state }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    mode: RoomInfo['mode'];
+  }>
+) => {
   if (!state.live.roomInfo) {
     return;
   }
@@ -566,11 +672,17 @@ export const onLiveMode: Operator<LiveMessage<{
     state.live.roomInfo.mode = data.mode;
   }
   actions.live.internal.clearUserSelections(null);
-});
+};
 
-export const onLiveChatEnabled: Operator<LiveMessage<{
-  enabled: boolean;
-}>> = mutate(({ state }, { _isOwnMessage, data }) => {
+export const onLiveChatEnabled = (
+  { state }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    enabled: boolean;
+  }>
+) => {
   if (!state.live.roomInfo) {
     return;
   }
@@ -579,11 +691,17 @@ export const onLiveChatEnabled: Operator<LiveMessage<{
     return;
   }
   state.live.roomInfo.chatEnabled = data.enabled;
-});
+};
 
-export const onLiveAddEditor: Operator<LiveMessage<{
-  editor_user_id: string;
-}>> = mutate(({ state }, { _isOwnMessage, data }) => {
+export const onLiveAddEditor = (
+  { state }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    editor_user_id: string;
+  }>
+) => {
   if (!state.live.roomInfo) {
     return;
   }
@@ -591,11 +709,17 @@ export const onLiveAddEditor: Operator<LiveMessage<{
   if (!_isOwnMessage) {
     state.live.roomInfo.editorIds.push(data.editor_user_id);
   }
-});
+};
 
-export const onLiveRemoveEditor: Operator<LiveMessage<{
-  editor_user_id: string;
-}>> = mutate(({ state, actions }, { _isOwnMessage, data }) => {
+export const onLiveRemoveEditor = (
+  { state, actions }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    editor_user_id: string;
+  }>
+) => {
   if (!state.live.roomInfo) {
     return;
   }
@@ -609,12 +733,18 @@ export const onLiveRemoveEditor: Operator<LiveMessage<{
 
     state.live.roomInfo.editorIds = newEditors;
   }
-});
+};
 
-export const onOperation: Operator<LiveMessage<{
-  module_shortid: string;
-  operation: any;
-}>> = mutate(({ state, effects, actions }, { _isOwnMessage, data }) => {
+export const onOperation = (
+  { state, effects }: Context,
+  {
+    _isOwnMessage,
+    data,
+  }: LiveMessage<{
+    module_shortid: string;
+    operation: any;
+  }>
+) => {
   if (state.live.isLoading) {
     return;
   }
@@ -637,35 +767,38 @@ export const onOperation: Operator<LiveMessage<{
       effects.live.sendModuleStateSyncRequest();
     }
   }
-});
+};
 
-export const onConnectionLoss: Operator<LiveMessage> = mutate(
-  async ({ state, effects }) => {
-    if (!state.live.reconnecting) {
-      let notificationId: string | null = null;
-      const timeout = setTimeout(() => {
-        notificationId = effects.notificationToast.add({
-          message: 'We lost connection with the live server, reconnecting...',
-          status: NotificationStatus.ERROR,
-        });
-      }, 30000);
+export const onConnectionLoss = async ({ state, effects }: Context) => {
+  if (!state.live.reconnecting) {
+    let notificationId: string | null = null;
+    const timeout = setTimeout(() => {
+      notificationId = effects.notificationToast.add({
+        message: 'We lost connection with the live server, reconnecting...',
+        status: NotificationStatus.ERROR,
+      });
+    }, 30000);
 
-      state.live.reconnecting = true;
+    state.live.reconnecting = true;
 
-      await effects.flows.waitUntil(s => s.live.reconnecting === false);
-      if (notificationId) {
-        effects.notificationToast.remove(notificationId);
-      }
-      if (timeout) {
-        clearTimeout(timeout);
-      }
+    await effects.flows.waitUntil(s => s.live.reconnecting === false);
+    if (notificationId) {
+      effects.notificationToast.remove(notificationId);
+    }
+    if (timeout) {
+      clearTimeout(timeout);
     }
   }
-);
+};
 
-export const onDisconnect: Operator<LiveMessage<{
-  reason: LiveDisconnectReason;
-}>> = mutate(({ state, actions }, { data }) => {
+export const onDisconnect = (
+  { state, actions }: Context,
+  {
+    data,
+  }: LiveMessage<{
+    reason: LiveDisconnectReason;
+  }>
+) => {
   actions.live.internal.disconnect();
 
   if (state.editor.currentSandbox)
@@ -680,20 +813,25 @@ export const onDisconnect: Operator<LiveMessage<{
   });
 
   actions.live.internal.reset();
-});
+};
 
-export const onOwnerLeft: Operator<LiveMessage> = mutate(({ actions }) => {
+export const onOwnerLeft = ({ actions }: Context) => {
   actions.modalOpened({
     modal: 'liveSessionEnded',
     message: 'The owner left the session',
   });
-});
+};
 
-export const onChat: Operator<LiveMessage<{
-  live_user_id: string;
-  message: string;
-  date: number;
-}>> = mutate(({ state }, { data }) => {
+export const onChat = (
+  { state }: Context,
+  {
+    data,
+  }: LiveMessage<{
+    live_user_id: string;
+    message: string;
+    date: number;
+  }>
+) => {
   if (!state.live.roomInfo) {
     return;
   }
@@ -718,14 +856,19 @@ export const onChat: Operator<LiveMessage<{
     message: data.message,
     date: data.date,
   });
-});
+};
 
-export const onNotification: Operator<LiveMessage<{
-  message: string;
-  type: NotificationStatus;
-}>> = mutate(({ effects }, { data }) => {
+export const onNotification = (
+  { effects }: Context,
+  {
+    data,
+  }: LiveMessage<{
+    message: string;
+    type: NotificationStatus;
+  }>
+) => {
   effects.notificationToast.add({
     message: data.message,
     status: data.type,
   });
-});
+};
