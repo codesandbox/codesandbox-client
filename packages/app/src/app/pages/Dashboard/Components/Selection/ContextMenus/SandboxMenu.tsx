@@ -275,8 +275,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           </MenuItem>
         ))}
       {hasAccess &&
-        activeTeamInfo?.subscription?.type ===
-          WorkspaceSubscriptionTypes.Team &&
+        activeTeamInfo?.joinedPilotAt &&
         activeWorkspaceAuthorization !== 'READ' &&
         getTemplate(sandbox.source.template as TemplateType).isServer &&
         (sandbox.alwaysOn ? (
