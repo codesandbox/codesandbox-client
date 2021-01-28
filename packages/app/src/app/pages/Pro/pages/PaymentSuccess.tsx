@@ -17,7 +17,7 @@ export const PaymentSuccess = () => (
   >
     <Icon name="simpleCheck" color="#5DCC67" size={64} />
     <Text as="h1" size={8}>
-      You Payment is Successful
+      Your Payment was Successful
     </Text>
     <Stack direction="vertical" align="center" gap={10}>
       <Text variant="muted" size={4}>
