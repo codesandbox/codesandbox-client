@@ -16,7 +16,7 @@ Reason, as well as vanilla JavaScript that uses Parcel, and one for static
 
 We also have container templates for: Node.js, Angular, Adonis, Gatsby, Marko,
 Nuxt, Next, Sapper, Apollo, Ember, Nest, Styleguidist, MDX Deck, Gridsome,
-Quasar, and Vuepress.
+Quasar, Docusaurus and Vuepress.
 
 [Create a sandbox from a template](https://codesandbox.io/s/), or read more
 about the
@@ -50,13 +50,9 @@ recommend using a container sandbox.
 
 ## Can I change the Node version used in a container sandbox?
 
-Container sandboxes run Node v10.20.1 (LTS) by default. While this system
-version can't be changed, you can instead make use of the
-[node](https://www.npmjs.com/package/node) package. Add the version of the node
-package you would like to use to your sandbox in the same way you would any
-other package. Then update the path to node you use to make use of this local
-version of node instead of the system version. Here's a
-[working example](https://codesandbox.io/s/node-custom-version-j7xvv).
+Yes. Container sandboxes run Node v10.20.1 (LTS) by default. However, you can
+specify a `node` value to alter the version in `sandbox.config.json`, which will
+be used instead. For further details, see [configuration](/docs/configuration).
 
 ## Can I open the terminal or console or test panel instead of the browser in a sandbox?
 

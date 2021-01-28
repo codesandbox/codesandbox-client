@@ -18,7 +18,6 @@ import base64Transpiler from '../../transpilers/base64';
 import pugTranspiler from '../../transpilers/pug';
 import coffeeTranspiler from '../../transpilers/coffee';
 
-
 export default function initialize(vuePreset: Preset) {
   const sassWithConfig: TranspilerDefinition = {
     transpiler: sassTranspiler,
@@ -72,6 +71,7 @@ export default function initialize(vuePreset: Preset) {
   ]);
   vuePreset.registerTranspiler(module => /\.m?tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },
+    { transpiler: babelTranspiler },
   ]);
   vuePreset.registerTranspiler(module => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },

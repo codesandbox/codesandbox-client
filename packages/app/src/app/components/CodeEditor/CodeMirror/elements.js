@@ -9,7 +9,6 @@ const fadeInAnimation = keyframes`
 const fontFamilies = (...families) =>
   families
     .filter(Boolean)
-    .map(family => (family === 'Dank Mono' ? 'dm' : family))
     .map(family => (family.includes(' ') ? JSON.stringify(family) : family))
     .join(', ');
 
@@ -35,11 +34,11 @@ const getTokenColor = (scope, defaultStyles) => ({ theme: givenTheme }) => {
   if (foundScope && foundScope.settings) {
     return css`
       ${foundScope.settings.foreground &&
-        `color: ${foundScope.settings.foreground};`}
+      `color: ${foundScope.settings.foreground};`}
       ${foundScope.settings.background &&
-        `background: ${foundScope.settings.background};`}
-      ${foundScope.settings.fontStyle &&
-        `font-style: ${foundScope.settings.fontStyle};`}
+      `background: ${foundScope.settings.background};`}
+      ${foundScope
+        .settings.fontStyle && `font-style: ${foundScope.settings.fontStyle};`}
     `;
   }
 

@@ -15,9 +15,9 @@ type State = {
     source: string | null;
     isLoading: boolean;
   };
-  previousMode: Mode;
   mode: Mode;
   hasExtension: boolean;
+  showExtensionBanner: boolean;
 };
 
 export const defaultPresets: Presets = {
@@ -42,7 +42,7 @@ export const state: State = {
     source: null,
     isLoading: false,
   },
-  previousMode: null,
   mode: null,
   hasExtension: false,
+  showExtensionBanner: false,
 };

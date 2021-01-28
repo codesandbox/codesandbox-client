@@ -27,6 +27,7 @@ import svelte from './svelte';
 import unibit from './unibit';
 import vue from './vue';
 import vuepress from './vuepress';
+import docusaurus from './docusaurus';
 
 export {
   adonis,
@@ -55,6 +56,7 @@ export {
   styleguidist,
   gridsome,
   vuepress,
+  docusaurus,
   mdxDeck,
   quasar,
   unibit,
@@ -84,11 +86,12 @@ export type TemplateType =
   | 'gridsome'
   | 'vuepress'
   | 'mdx-deck'
-  | 'quasar-framework'
+  | 'quasar'
   | 'unibit'
   | 'node'
   | 'ember'
   | 'custom'
+  | 'docusaurus'
   | 'babel-repl';
 
 export default function getDefinition(theme?: TemplateType | null) {
@@ -147,6 +150,8 @@ export default function getDefinition(theme?: TemplateType | null) {
       return ember;
     case vuepress.name:
       return vuepress;
+    case docusaurus.name:
+      return docusaurus;
     case quasar.name:
       return quasar;
     case unibit.name:

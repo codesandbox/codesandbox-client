@@ -36,9 +36,9 @@ const NavigationLink = (props: NavigationLinkProps) => (
 
 type SettingsNavigationProps = {
   teamId: string;
+  isPersonal: boolean;
   css?: any;
   style?: React.CSSProperties;
-  isAdmin?: boolean;
 };
 
 export const SettingNavigation = (props: SettingsNavigationProps) => (
@@ -57,16 +57,16 @@ export const SettingNavigation = (props: SettingsNavigationProps) => (
         url={dashboardUrls.settings(props.teamId)}
         label="Workspace"
       />
-      <NavigationLink
-        url={dashboardUrls.registrySettings(props.teamId)}
-        label="Npm Registry"
-      />
-      {props.isAdmin && (
+      {!props.isPersonal && (
         <NavigationLink
-          url={dashboardUrls.permissionSettings(props.teamId)}
-          label="Permissions"
+          url={dashboardUrls.registrySettings(props.teamId)}
+          label="NPM Registry"
         />
       )}
+      <NavigationLink
+        url={dashboardUrls.permissionSettings(props.teamId)}
+        label="Permissions"
+      />
     </Stack>
   </Stack>
 );

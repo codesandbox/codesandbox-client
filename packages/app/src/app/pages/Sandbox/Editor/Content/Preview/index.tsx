@@ -6,6 +6,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { useOvermind } from 'app/overmind';
 
 import { ResponsiveWrapper } from './ResponsiveWrapper';
+import { InstallExtensionBanner } from './ResponsiveWrapper/InstallExtensionBanner';
 
 type Props = {
   hidden?: boolean;
@@ -67,7 +68,7 @@ export const Preview: FunctionComponent<Props> = ({
 
   const canAddComments = effects.preview.canAddComments(currentSandbox);
 
-  return running ? (
+  const content = running ? (
     <BasePreview
       currentModule={currentModule}
       hide={hidden}
@@ -103,5 +104,12 @@ export const Preview: FunctionComponent<Props> = ({
     />
   ) : (
     <RunOnClick onClick={() => setRunning(true)} />
+  );
+
+  return (
+    <>
+      {preview.showExtensionBanner ? <InstallExtensionBanner /> : null}
+      {content}
+    </>
   );
 };

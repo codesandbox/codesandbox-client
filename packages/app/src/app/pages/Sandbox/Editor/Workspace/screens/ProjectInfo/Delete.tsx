@@ -4,7 +4,7 @@ import React, { FunctionComponent, MouseEvent } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { DiscordIcon, GithubIcon, TwitterIcon } from './icons';
+import { DiscordIcon, GithubIcon, TwitterIcon } from './social-icons';
 
 const links = [
   { href: 'https://twitter.com/codesandbox', Icon: TwitterIcon },

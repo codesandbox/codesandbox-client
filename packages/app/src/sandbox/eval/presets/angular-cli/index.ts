@@ -1,6 +1,7 @@
 // @flow
 import { join, absolute } from '@codesandbox/common/lib/utils/path';
 import { Manager, TranspiledModule, Preset } from 'sandpack-core';
+import csbDynamicImportTranspiler from 'sandpack-core/lib/transpiler/transpilers/csb-dynamic-import';
 
 import angular2Transpiler from '../../transpilers/angular2-template';
 import typescriptTranspiler from '../../transpilers/typescript';
@@ -20,7 +21,7 @@ async function addAngularJSONPolyfills(manager) {
   const { defaultProject } = parsed;
   const project = parsed.projects[defaultProject];
 
-  if (project) {
+  if (project && project.architect) {
     const { build } = project.architect;
     if (build.options) {
       if (project.root && build.options.polyfill) {
@@ -57,7 +58,7 @@ async function addAngularJSONResources(manager) {
   const { defaultProject } = parsed;
   const project = parsed.projects[defaultProject];
 
-  if (project) {
+  if (project && project.architect) {
     const { build } = project.architect;
     if (build.options) {
       const { styles = [], scripts = [] } = build.options;
@@ -225,6 +226,7 @@ export default function initialize() {
   preset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: angular2Transpiler, options: { preTranspilers: styles } },
     { transpiler: typescriptTranspiler },
+    { transpiler: csbDynamicImportTranspiler },
   ]);
 
   preset.registerTranspiler(module => /\.m?js$/.test(module.path), [

@@ -2,12 +2,9 @@ import { dispatch, listen } from 'codesandbox-api';
 import BasePreview from '@codesandbox/common/lib/components/Preview';
 import { blocker } from 'app/utils/blocker';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { PREVIEW_COMMENTS_ON } from '@codesandbox/common/lib/utils/feature-flags';
 import { Sandbox } from '@codesandbox/common/lib/types';
 
 let _preview = blocker<BasePreview>();
-
-const PREVIEW_COMMENT_BUBBLE_OFFSET = 16;
 
 export default {
   initialize() {},
@@ -107,6 +104,16 @@ export default {
       });
     });
   },
+  showCommentCursor() {
+    dispatch({
+      type: 'show-screenshot-cursor',
+    });
+  },
+  hideCommentCursor() {
+    dispatch({
+      type: 'hide-screenshot-cursor',
+    });
+  },
   createScreenshot({
     screenshotSource,
     bubbleSource,
@@ -176,73 +183,13 @@ export default {
         const sx = Math.min(scaledX - leftSideSpace, screenshot.width - width);
         const sy = Math.min(scaledY - topSideSpace, screenshot.height - height);
 
-        const bubbleX = PREVIEW_COMMENT_BUBBLE_OFFSET + scaledX - sx;
-        const bubbleY = PREVIEW_COMMENT_BUBBLE_OFFSET + scaledY - sy;
+        const bubbleX = scaledX - sx;
+        const bubbleY = scaledY - sy;
 
-        canvas.width = width + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
-        canvas.height = height + PREVIEW_COMMENT_BUBBLE_OFFSET * 2;
+        canvas.width = width;
+        canvas.height = height;
 
-        const radius = 5;
-
-        ctx.beginPath();
-        ctx.moveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width - radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height - radius
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + width - radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + height - radius
-        );
-        ctx.lineTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius
-        );
-        ctx.quadraticCurveTo(
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET + radius,
-          PREVIEW_COMMENT_BUBBLE_OFFSET
-        );
-        ctx.closePath();
-        ctx.save();
-        ctx.clip();
-        ctx.drawImage(
-          screenshot,
-          sx,
-          sy,
-          width,
-          height,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          PREVIEW_COMMENT_BUBBLE_OFFSET,
-          width,
-          height
-        );
+        ctx.drawImage(screenshot, sx, sy, width, height, 0, 0, width, height);
         ctx.restore();
         ctx.drawImage(bubble, bubbleX, bubbleY);
 
@@ -252,8 +199,7 @@ export default {
   },
   canAddComments(currentSandbox: Sandbox) {
     return Boolean(
-      localStorage.getItem(PREVIEW_COMMENTS_ON) &&
-        currentSandbox.featureFlags.comments &&
+      currentSandbox.featureFlags.comments &&
         hasPermission(currentSandbox.authorization, 'comment')
     );
   },

@@ -24,16 +24,19 @@ import { CodeFormatting } from './CodeFormatting';
 import { EditorSettings } from './EditorPageSettings/EditorSettings';
 import { PreviewSettings } from './EditorPageSettings/PreviewSettings';
 import { Experiments } from './Experiments';
+import { PreferencesSync } from './PreferencesSync';
 import { Integrations } from './Integrations';
 import { KeyMapping } from './KeyMapping';
 import { PaymentInfo } from './PaymentInfo';
 import { MailPreferences } from './MailPreferences';
 
 import { SideNavigation } from './SideNavigation';
+import { ProfileIcon } from './PreferencesSync/Icons';
 
 type MenuItem = ComponentProps<typeof SideNavigation>['menuItems'][0] & {
   Content: ComponentType;
 };
+
 const getItems = (
   isLoggedIn: boolean,
   isPatron: boolean,
@@ -100,6 +103,12 @@ const getItems = (
       Icon: FlaskIcon,
       id: 'experiments',
       title: 'Experiments',
+    },
+    user && {
+      Content: PreferencesSync,
+      Icon: ProfileIcon,
+      id: 'preferencesSync',
+      title: 'Preferences Profiles',
     },
   ].filter(Boolean);
 

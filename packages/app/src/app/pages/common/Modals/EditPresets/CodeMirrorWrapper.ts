@@ -18,7 +18,7 @@ export const CodeMirrorWrapper = styled(Element)<{ error?: boolean }>`
 
     return css`
       .CodeMirror {
-        font-family: 'dm', monospace;
+        font-family: 'MonoLisa', monospace;
         font-weight: normal;
         font-size: 15px;
         line-height: 23px;

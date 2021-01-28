@@ -1,9 +1,9 @@
 import {
   SandboxFragmentDashboardFragment as Sandbox,
   RepoFragmentDashboardFragment as Repo,
-  Team,
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
+  TeamFragmentDashboardFragment,
 } from 'app/graphql/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
@@ -34,16 +34,12 @@ export type DashboardSandboxStructure = {
       sandboxes: Repo[];
     };
   } | null;
+  ALWAYS_ON: Sandbox[] | null;
 };
 
 export type State = {
   sandboxes: DashboardSandboxStructure;
-  teams: Array<
-    { __typename?: 'Team' } & Pick<
-      Team,
-      'id' | 'name' | 'avatarUrl' | 'userAuthorizations' | 'settings'
-    >
-  >;
+  teams: Array<TeamFragmentDashboardFragment>;
   workspaceSettings: {
     npmRegistry: NpmRegistryFragment | null;
   };
@@ -83,6 +79,7 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   RECENT_HOME: null,
   ALL: null,
   REPOS: null,
+  ALWAYS_ON: null,
 };
 
 export const state: State = {

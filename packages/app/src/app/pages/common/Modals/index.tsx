@@ -39,6 +39,8 @@ import UploadModal from './UploadModal';
 import { DeleteWorkspace } from './DeleteWorkspace';
 import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
+import { AccountDeletionModal } from './AccountDeletion';
+import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfirmation';
 
 const modals = {
   preferences: {
@@ -156,6 +158,14 @@ const modals = {
   },
   minimumPrivacy: {
     Component: MinimumPrivacyModal,
+    width: 450,
+  },
+  accountClosing: {
+    Component: AccountDeletionModal,
+    width: 450,
+  },
+  deleteConfirmation: {
+    Component: AccountDeletionConfirmationModal,
     width: 450,
   },
 };

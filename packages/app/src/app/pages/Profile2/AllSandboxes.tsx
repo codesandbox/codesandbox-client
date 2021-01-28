@@ -54,6 +54,10 @@ export const AllSandboxes = () => {
     .filter(sandbox => sandbox.privacy === 0);
 
   if (!sandboxes.length) {
+    // if there are pinned sandboxes but nothing else to show
+    // skip rendering this section alltogether
+    if (featuredSandboxes.length) return null;
+
     return (
       <Stack justify="center" align="center" css={css({ height: 320 })}>
         <Text variant="muted" size={4} weight="medium" align="center">
@@ -238,7 +242,7 @@ const UpgradeBanner = () => {
   const dontShowUpgradeMessage = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    event.stopPropagation();
+    event.preventDefault();
     browser.storage.set('PROFILE_SHOW_UPGRADE', false);
     setShowUpgradeMessage(false);
   };

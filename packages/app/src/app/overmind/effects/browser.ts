@@ -1,3 +1,21 @@
+import UAParser from 'ua-parser-js';
+
+export type UserAgentDetails = {
+  browser: {
+    name: string;
+    version: string;
+  };
+  device: {
+    model: string;
+    type: string;
+    vendor: string;
+  };
+  os: {
+    name: string;
+    version: string;
+  };
+};
+
 function getPopupOffset({ width, height }) {
   const wLeft = window.screenLeft ? window.screenLeft : window.screenX;
   const wTop = window.screenTop ? window.screenTop : window.screenY;
@@ -125,6 +143,26 @@ export default {
     return el.getBoundingClientRect();
   },
   onWindowMessage(cb: (event: MessageEvent) => void) {
-    window.addEventListener('message', cb)
-  }
+    window.addEventListener('message', cb);
+  },
+  parseUserAgent(ua: string): UserAgentDetails | null {
+    try {
+      const parser = new UAParser(ua);
+      return {
+        // @ts-ignore
+        // Only way to detect brave
+        // https://www.ctrl.blog/entry/brave-user-agent-detection.html
+        browser: navigator.brave
+          ? {
+              version: '',
+              name: 'Brave',
+            }
+          : parser.getBrowser(),
+        device: parser.getDevice(),
+        os: parser.getOS(),
+      };
+    } catch {
+      return null;
+    }
+  },
 };

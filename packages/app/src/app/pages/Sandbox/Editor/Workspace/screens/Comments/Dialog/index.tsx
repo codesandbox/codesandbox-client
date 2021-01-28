@@ -19,7 +19,7 @@ import {
 import { CommentWithRepliesFragment } from 'app/graphql/types';
 import { useOvermind } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
-import { Image } from 'app/components/Markdown/Image'
+
 import {
   convertImageReferencesToMarkdownImages,
   convertUserReferencesToMentions,
@@ -34,11 +34,11 @@ import { EditComment } from '../components/EditComment';
 import { useCodesandboxCommentEditor } from '../hooks/useCodesandboxCommentEditor';
 import { Reply, SkeletonReply } from './Reply';
 import { useScrollTop } from './use-scroll-top';
+import { PreviewScreenshot } from './PreviewScreenshot';
 
 interface CommentDialogProps {
   comment: CommentWithRepliesFragment;
 }
-
 
 export const CommentDialog: React.FC<CommentDialogProps> = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
@@ -215,25 +215,13 @@ export const Dialog: React.FC<CommentDialogProps> = props => {
   );
 };
 
-const PreviewScreenshot: React.FC<{url: string}> = ({ url }) => (
-    <Element css={css({
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingBottom: 4,
-      'img': {
-        maxWidth: '100%'
-      }
-    })}><Image src={url} alt="Preview Screenshot" ignorePrivateSandboxRestriction /></Element>
-  )
-
 const DialogAddComment: React.FC<{
   comment: CommentWithRepliesFragment;
   onSave: (value: string, mentions: { [username: string]: UserQuery }) => void;
   onDragHandlerPan: (deltaX: number, deltaY: number) => void;
   onDragHandlerPanEnd: () => void;
 }> = ({ comment, onSave, onDragHandlerPan, onDragHandlerPanEnd }) => {
-  const { actions } = useOvermind();
+  const { actions, effects } = useOvermind();
   const [elements] = useCodesandboxCommentEditor({
     initialValue: '',
     initialMentions: {},
@@ -283,7 +271,18 @@ const DialogAddComment: React.FC<{
           />
         </Stack>
       </DragHandle>
-      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={(comment.anchorReference.metadata as any).screenshotUrl} /> : null}
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? (
+        <PreviewScreenshot
+          // @ts-ignore
+          width={comment.anchorReference.metadata.width}
+          // @ts-ignore
+          height={comment.anchorReference.metadata.height}
+          url={(comment.anchorReference.metadata as any).screenshotUrl}
+          userAgentDetails={effects.browser.parseUserAgent(
+            (comment.anchorReference.metadata as any).userAgent
+          )}
+        />
+      ) : null}
       {elements}
     </Stack>
   );
@@ -381,6 +380,7 @@ const DialogHeader = ({ comment, hasShadow }) => {
 const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
   const {
     state,
+    effects,
     actions: { comments },
   } = useOvermind();
   const isCommenter = state.user.id === comment.user.id;
@@ -424,7 +424,16 @@ const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
           </Menu>
         </Stack>
       </Stack>
-      {comment.anchorReference && comment.anchorReference.type === 'preview' ? <PreviewScreenshot url={comment.anchorReference.metadata.screenshotUrl} /> : null}
+      {comment.anchorReference && comment.anchorReference.type === 'preview' ? (
+        <PreviewScreenshot
+          url={comment.anchorReference.metadata.screenshotUrl}
+          userAgentDetails={effects.browser.parseUserAgent(
+            comment.anchorReference.metadata.userAgent
+          )}
+          width={comment.anchorReference.metadata.width}
+          height={comment.anchorReference.metadata.height}
+        />
+      ) : null}
       <Element
         marginY={0}
         marginX={4}

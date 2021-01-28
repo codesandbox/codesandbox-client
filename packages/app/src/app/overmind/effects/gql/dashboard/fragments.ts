@@ -14,6 +14,7 @@ export const sandboxFragmentDashboard = gql`
     screenshotUrl
     screenshotOutdated
     viewCount
+    alwaysOn
 
     source {
       template
@@ -35,6 +36,11 @@ export const sandboxFragmentDashboard = gql`
 
     authorId
     teamId
+
+    permissions {
+      preventSandboxLeaving
+      preventSandboxExport
+    }
   }
 `;
 
@@ -110,7 +116,7 @@ export const teamFragmentDashboard = gql`
     description
     creatorId
     avatarUrl
-
+    joinedPilotAt
     settings {
       minimumPrivacy
     }
@@ -165,6 +171,9 @@ export const currentTeamInfoFragment = gql`
 
     settings {
       minimumPrivacy
+      preventSandboxExport
+      preventSandboxLeaving
+      defaultAuthorization
     }
   }
 `;

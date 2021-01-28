@@ -1,14 +1,15 @@
 import { format } from 'date-fns';
 import { Helmet } from 'react-helmet';
-import React, { useEffect } from 'react';
-
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import { ThemeProvider, Switch } from '@codesandbox/components';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
+import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
+import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import Centered from '@codesandbox/common/lib/components/flex/Centered';
+
+import { ThemeProvider, Switch } from '@codesandbox/components';
 
 import { SubscribeForm } from './subscribe-form';
 import {
@@ -26,6 +27,8 @@ import {
   BillText,
 } from './elements';
 import { SignInModalElement } from '../SignIn/Modal';
+import { getUserExpiringDate } from './getExpiringDate';
+import { ProPage as ProPageV2 } from './index-v2';
 
 const ProPage: React.FC = () => {
   const {
@@ -47,9 +50,11 @@ const ProPage: React.FC = () => {
   // silly hack to allow cached versions to keep working
   priceChanged({ price: 12 });
 
-  useEffect(() => {
+  React.useEffect(() => {
     patronMounted();
   }, [patronMounted]);
+
+  const location = useLocation();
 
   const getContent = () => {
     /**
@@ -98,6 +103,8 @@ const ProPage: React.FC = () => {
 
     return null;
   };
+
+  if (location.search.includes('v=2')) return <ProPageV2 />;
 
   return (
     <ThemeProvider>
@@ -248,8 +255,8 @@ const Expiring = ({
 
       <HelpText>
         Your subscription will be automatically cancelled on your next billing
-        date ({format(new Date(user.subscription.since), 'do MMM')}). All your
-        private sandboxes will remain available and private.
+        date ({getUserExpiringDate(user.subscription)}). All your private
+        sandboxes will remain available and private.
       </HelpText>
 
       {isUpdatingSubscription ? (
