@@ -1,33 +1,162 @@
+import { Overmind } from 'overmind';
 import { identify } from '@codesandbox/common/lib/utils/analytics';
 import {
   NotificationType,
   convertTypeToStatus,
 } from '@codesandbox/common/lib/utils/notifications';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-import { CurrentTeamInfoFragmentFragment } from 'app/graphql/types';
 
 import { NotificationStatus } from '@codesandbox/notifications';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
-import { Action, AsyncAction } from '.';
+import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
 
 export const internal = internalActions;
 
-export const appUnmounted: AsyncAction = async ({ effects, actions }) => {
+export const onInitializeOvermind = async (
+  { state, effects, actions }: Context,
+  overmindInstance: Overmind<Context>
+) => {
+  const provideJwtToken = () => effects.api.getJWTToken();
+  state.isFirstVisit = Boolean(
+    !state.hasLogIn && !effects.browser.storage.get('hasVisited')
+  );
+
+  effects.browser.storage.set('hasVisited', true);
+
+  effects.live.initialize({
+    provideJwtToken,
+    onApplyOperation: actions.live.applyTransformation,
+    onOperationError: actions.live.onOperationError,
+  });
+
+  effects.flows.initialize(overmindInstance.reaction);
+
+  // We consider recover mode something to be done when browser actually crashes, meaning there is no unmount
+  effects.browser.onUnload(() => {
+    if (state.editor.currentSandbox && state.connected) {
+      effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+    }
+  });
+
+  effects.api.initialize({
+    getParsedConfigurations() {
+      return state.editor.parsedConfigurations;
+    },
+    provideJwtToken() {
+      if (process.env.LOCAL_SERVER || process.env.STAGING) {
+        return localStorage.getItem('devJwt');
+      }
+
+      return null;
+    },
+  });
+
+  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+  const gqlOptions: Parameters<typeof effects.gql.initialize>[0] = {
+    endpoint: `${location.origin}/api/graphql`,
+  };
+
+  if (hasDevAuth) {
+    gqlOptions.headers = () => ({
+      Authorization: `Bearer ${localStorage.getItem('devJwt')}`,
+    });
+  }
+
+  effects.gql.initialize(gqlOptions, () => effects.live.socket);
+
+  if (state.hasLogIn) {
+    await actions.internal.setActiveTeamFromUrlOrStore();
+  }
+
+  effects.notifications.initialize({
+    provideSocket() {
+      return effects.live.getSocket();
+    },
+  });
+
+  effects.vercel.initialize({
+    getToken() {
+      return state.user?.integrations.zeit?.token ?? null;
+    },
+  });
+
+  effects.netlify.initialize({
+    getUserId() {
+      return state.user?.id ?? null;
+    },
+  });
+
+  effects.prettyfier.initialize({
+    getCurrentModule() {
+      return state.editor.currentModule;
+    },
+    getPrettierConfig() {
+      let config = state.preferences.settings.prettierConfig;
+      const configFromSandbox = state.editor.currentSandbox?.modules.find(
+        module =>
+          module.directoryShortid == null && module.title === '.prettierrc'
+      );
+
+      if (configFromSandbox) {
+        config = JSON.parse(configFromSandbox.code);
+      }
+
+      return config;
+    },
+  });
+
+  effects.vscode.initialize({
+    getCurrentSandbox: () => state.editor.currentSandbox,
+    getCurrentModule: () => state.editor.currentModule,
+    getSandboxFs: () => state.editor.modulesByPath,
+    getCurrentUser: () => state.user,
+    onOperationApplied: actions.editor.onOperationApplied,
+    onCodeChange: actions.editor.codeChanged,
+    onSelectionChanged: selection => {
+      actions.editor.onSelectionChanged(selection);
+      actions.live.onSelectionChanged(selection);
+    },
+    onViewRangeChanged: actions.live.onViewRangeChanged,
+    onCommentClick: actions.comments.onCommentClick,
+    reaction: overmindInstance.reaction,
+    getState: (path: string) =>
+      path ? path.split('.').reduce((aggr, key) => aggr[key], state) : state,
+    getSignal: (path: string) =>
+      path.split('.').reduce((aggr, key) => aggr[key], actions),
+  });
+
+  effects.preview.initialize();
+
+  actions.internal.showPrivacyPolicyNotification();
+  actions.internal.setViewModeForDashboard();
+
+  effects.browser.onWindowMessage(event => {
+    if (event.data.type === 'screenshot-requested-from-preview') {
+      actions.preview.createPreviewComment();
+    }
+  });
+
+  effects.browserExtension.hasExtension().then(hasExtension => {
+    actions.preview.setExtension(hasExtension);
+  });
+};
+
+export const appUnmounted = async ({ effects, actions }: Context) => {
   effects.connection.removeListener(actions.connectionChanged);
 };
 
-export const sandboxPageMounted: AsyncAction = withLoadApp();
+export const sandboxPageMounted = withLoadApp();
 
-export const searchMounted: AsyncAction = withLoadApp();
+export const searchMounted = withLoadApp();
 
-export const codesadboxMounted: AsyncAction = withLoadApp();
+export const codesadboxMounted = withLoadApp();
 
-export const genericPageMounted: AsyncAction = withLoadApp();
+export const genericPageMounted = withLoadApp();
 
-export const getPendingUser: AsyncAction = async ({ state, effects }) => {
+export const getPendingUser = async ({ state, effects }: Context) => {
   if (!state.pendingUserId) return;
   const pendingUser = await effects.api.getPendingUser(state.pendingUserId);
   if (!pendingUser) return;
@@ -37,19 +166,24 @@ export const getPendingUser: AsyncAction = async ({ state, effects }) => {
   };
 };
 
-export const cliMounted: AsyncAction = withLoadApp(
-  async ({ state, actions }) => {
-    if (state.user) {
-      await actions.internal.authorize();
-    }
+export const cliMounted = withLoadApp(async ({ state, actions }: Context) => {
+  if (state.user) {
+    await actions.internal.authorize();
   }
-);
+});
 
-export const notificationAdded: Action<{
-  title: string;
-  notificationType: NotificationType;
-  timeAlive?: number;
-}> = ({ effects }, { title, notificationType, timeAlive }) => {
+export const notificationAdded = (
+  { effects }: Context,
+  {
+    title,
+    notificationType,
+    timeAlive,
+  }: {
+    title: string;
+    notificationType: NotificationType;
+    timeAlive?: number;
+  }
+) => {
   effects.notificationToast.add({
     message: title,
     status: convertTypeToStatus(notificationType),
@@ -57,9 +191,14 @@ export const notificationAdded: Action<{
   });
 };
 
-export const notificationRemoved: Action<{
-  id: number;
-}> = ({ state }, { id }) => {
+export const notificationRemoved = (
+  { state }: Context,
+  {
+    id,
+  }: {
+    id: number;
+  }
+) => {
   const { notifications } = state;
   const notificationToRemoveIndex = notifications.findIndex(
     notification => notification.id === id
@@ -68,11 +207,11 @@ export const notificationRemoved: Action<{
   state.notifications.splice(notificationToRemoveIndex, 1);
 };
 
-export const cliInstructionsMounted: AsyncAction = withLoadApp();
+export const cliInstructionsMounted = withLoadApp();
 
-export const githubPageMounted: AsyncAction = withLoadApp();
+export const githubPageMounted = withLoadApp();
 
-export const connectionChanged: Action<boolean> = ({ state }, connected) => {
+export const connectionChanged = ({ state }: Context, connected: boolean) => {
   state.connected = connected;
 };
 
@@ -93,11 +232,14 @@ type ModalName =
   | 'sandboxPicker'
   | 'minimumPrivacy';
 
-export const modalOpened: Action<{
-  modal: ModalName;
-  message?: string;
-  itemId?: string;
-}> = ({ state, effects }, props) => {
+export const modalOpened = (
+  { state, effects }: Context,
+  props: {
+    modal: ModalName;
+    message?: string;
+    itemId?: string;
+  }
+) => {
   effects.analytics.track('Open Modal', { modal: props.modal });
   state.currentModal = props.modal;
   if (props.modal === 'preferences' && props.itemId) {
@@ -107,30 +249,33 @@ export const modalOpened: Action<{
   }
 };
 
-export const modalClosed: Action = ({ state }) => {
+export const modalClosed = ({ state }: Context) => {
   state.currentModal = null;
 };
 
-export const signInClicked: Action = ({ state }) => {
+export const signInClicked = ({ state }: Context) => {
   state.signInModalOpen = true;
 };
 
-export const signInWithRedirectClicked: Action<string> = (
-  { state },
-  redirectTo
+export const signInWithRedirectClicked = (
+  { state }: Context,
+  redirectTo: string
 ) => {
   state.signInModalOpen = true;
   state.redirectOnLogin = redirectTo;
 };
 
-export const toggleSignInModal: Action = ({ state }) => {
+export const toggleSignInModal = ({ state }: Context) => {
   state.signInModalOpen = !state.signInModalOpen;
 };
 
-export const signInButtonClicked: AsyncAction<{
-  useExtraScopes?: boolean;
-  provider: 'google' | 'github';
-}> = async ({ actions, state }, options) => {
+export const signInButtonClicked = async (
+  { actions, state }: Context,
+  options: {
+    useExtraScopes?: boolean;
+    provider: 'google' | 'github';
+  }
+) => {
   const { useExtraScopes, provider } = options || {};
   if (!useExtraScopes) {
     await actions.internal.signIn({
@@ -147,11 +292,18 @@ export const signInButtonClicked: AsyncAction<{
   state.signInModalOpen = false;
 };
 
-export const addNotification: Action<{
-  message: string;
-  type: NotificationType;
-  timeAlive: number;
-}> = ({ effects }, { message, type, timeAlive }) => {
+export const addNotification = (
+  { effects }: Context,
+  {
+    message,
+    type,
+    timeAlive,
+  }: {
+    message: string;
+    type: NotificationType;
+    timeAlive: number;
+  }
+) => {
   effects.notificationToast.add({
     message,
     status: effects.notificationToast.convertTypeToStatus(type),
@@ -159,7 +311,7 @@ export const addNotification: Action<{
   });
 };
 
-export const removeNotification: Action<number> = ({ state }, id) => {
+export const removeNotification = ({ state }: Context, id: number) => {
   const notificationToRemoveIndex = state.notifications.findIndex(
     notification => notification.id === id
   );
@@ -167,13 +319,12 @@ export const removeNotification: Action<number> = ({ state }, id) => {
   state.notifications.splice(notificationToRemoveIndex, 1);
 };
 
-export const signInVercelClicked: AsyncAction = async ({
+export const signInVercelClicked = async ({
   state,
   effects: { browser, api, notificationToast },
   actions,
-}) => {
+}: Context) => {
   state.isLoadingVercel = true;
-
   const popup = browser.openPopup('/auth/zeit', 'sign in');
   const data: { code: string } = await browser.waitForMessage('signin');
 
@@ -196,26 +347,26 @@ export const signInVercelClicked: AsyncAction = async ({
   state.isLoadingVercel = false;
 };
 
-export const signOutVercelClicked: AsyncAction = async ({ state, effects }) => {
+export const signOutVercelClicked = async ({ state, effects }: Context) => {
   if (state.user?.integrations?.zeit) {
     await effects.api.signoutVercel();
     state.user.integrations.zeit = null;
   }
 };
 
-export const authTokenRequested: AsyncAction = async ({ actions }) => {
+export const authTokenRequested = async ({ actions }: Context) => {
   await actions.internal.authorize();
 };
 
-export const requestAuthorisation: AsyncAction = async ({ actions }) => {
+export const requestAuthorisation = async ({ actions }: Context) => {
   await actions.internal.authorize();
 };
 
-export const setPendingUserId: Action<string> = ({ state }, id) => {
+export const setPendingUserId = ({ state }: Context, id: string) => {
   state.pendingUserId = id;
 };
 
-export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
+export const signInGithubClicked = async ({ state, actions }: Context) => {
   state.isLoadingGithub = true;
   await actions.internal.signIn({ useExtraScopes: true, provider: 'github' });
   state.isLoadingGithub = false;
@@ -224,15 +375,11 @@ export const signInGithubClicked: AsyncAction = async ({ state, actions }) => {
   }
 };
 
-export const signInGoogleClicked: AsyncAction = async ({ actions }) => {
+export const signInGoogleClicked = async ({ actions }: Context) => {
   await actions.internal.signIn({ provider: 'google' });
 };
 
-export const signOutClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const signOutClicked = async ({ state, effects, actions }: Context) => {
   effects.analytics.track('Sign Out', {});
   state.workspace.openedWorkspaceItem = 'files';
   if (state.live.isLive) {
@@ -248,35 +395,32 @@ export const signOutClicked: AsyncAction = async ({
   effects.browser.reload();
 };
 
-export const signOutGithubIntegration: AsyncAction = async ({
-  state,
-  effects,
-}) => {
+export const signOutGithubIntegration = async ({ state, effects }: Context) => {
   if (state.user?.integrations?.github) {
     await effects.api.signoutGithubIntegration();
     state.user.integrations.github = null;
   }
 };
 
-export const setUpdateStatus: Action<{ status: string }> = (
-  { state },
-  { status }
+export const setUpdateStatus = (
+  { state }: Context,
+  { status }: { status: string }
 ) => {
   state.updateStatus = status;
 };
 
-export const track: Action<{ name: string; data: any }> = (
-  { effects },
-  { name, data }
+export const track = (
+  { effects }: Context,
+  { name, data }: { name: string; data: any }
 ) => {
   effects.analytics.track(name, data);
 };
 
-export const refetchSandboxInfo: AsyncAction = async ({
+export const refetchSandboxInfo = async ({
   actions,
   effects,
   state,
-}) => {
+}: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox?.id) {
@@ -300,10 +444,15 @@ export const refetchSandboxInfo: AsyncAction = async ({
   await actions.editor.internal.initializeSandbox(sandbox);
 };
 
-export const acceptTeamInvitation: Action<{
-  teamName: string;
-  teamId: string;
-}> = ({ effects, actions }, { teamName }) => {
+export const acceptTeamInvitation = (
+  { effects, actions }: Context,
+  {
+    teamName,
+  }: {
+    teamName: string;
+    teamId: string;
+  }
+) => {
   effects.analytics.track('Team - Join Team', { source: 'invitation' });
   effects.analytics.track('Team - Invitation Accepted', {});
 
@@ -312,18 +461,23 @@ export const acceptTeamInvitation: Action<{
   effects.notificationToast.success(`Accepted invitation to ${teamName}`);
 };
 
-export const rejectTeamInvitation: Action<{ teamName: string }> = (
-  { effects },
-  { teamName }
+export const rejectTeamInvitation = (
+  { effects }: Context,
+  { teamName }: { teamName: string }
 ) => {
   effects.analytics.track('Team - Invitation Rejected', {});
 
   effects.notificationToast.success(`Rejected invitation to ${teamName}`);
 };
 
-export const setActiveTeam: AsyncAction<{
-  id: string;
-}> = async ({ state, actions, effects }, { id }) => {
+export const setActiveTeam = async (
+  { state, actions, effects }: Context,
+  {
+    id,
+  }: {
+    id: string;
+  }
+) => {
   // ignore if its already selected
   if (id === state.activeTeam) return;
 
@@ -363,10 +517,7 @@ export const setActiveTeam: AsyncAction<{
   actions.internal.trackCurrentTeams();
 };
 
-export const getActiveTeamInfo: AsyncAction<
-  void,
-  CurrentTeamInfoFragmentFragment | null
-> = async ({ state, effects }) => {
+export const getActiveTeamInfo = async ({ state, effects }: Context) => {
   if (!state.activeTeam) return null;
 
   const team = await effects.gql.queries.getTeam({
@@ -374,6 +525,7 @@ export const getActiveTeamInfo: AsyncAction<
   });
 
   const currentTeam = team?.me?.team;
+
   if (!currentTeam) {
     return null;
   }
@@ -383,16 +535,19 @@ export const getActiveTeamInfo: AsyncAction<
   return currentTeam;
 };
 
-export const openCreateSandboxModal: Action<{
-  collectionId?: string;
-  initialTab?: 'Import';
-}> = ({ actions }, props) => {
+export const openCreateSandboxModal = (
+  { actions }: Context,
+  props: {
+    collectionId?: string;
+    initialTab?: 'Import';
+  }
+) => {
   actions.modals.newSandboxModal.open(props);
 };
 
-export const validateUsername: AsyncAction<string> = async (
-  { effects, state },
-  userName
+export const validateUsername = async (
+  { effects, state }: Context,
+  userName: string
 ) => {
   if (!state.pendingUser) return;
   const validity = await effects.api.validateUsername(userName);
@@ -400,9 +555,9 @@ export const validateUsername: AsyncAction<string> = async (
   state.pendingUser.valid = validity.available;
 };
 
-export const finalizeSignUp: AsyncAction<string> = async (
-  { effects, actions, state },
-  username
+export const finalizeSignUp = async (
+  { effects, actions, state }: Context,
+  username: string
 ) => {
   if (!state.pendingUser) return;
   try {
@@ -424,9 +579,9 @@ export const finalizeSignUp: AsyncAction<string> = async (
   }
 };
 
-export const setLoadingAuth: AsyncAction<'google' | 'github'> = async (
-  { state },
-  provider
+export const setLoadingAuth = async (
+  { state }: Context,
+  provider: 'google' | 'github'
 ) => {
   state.loadingAuth[provider] = !state.loadingAuth[provider];
 };

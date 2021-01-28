@@ -1,5 +1,5 @@
 import { compareDesc, parseISO } from 'date-fns';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { uniq } from 'lodash-es';
@@ -18,28 +18,38 @@ import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
-export const dashboardMounted: AsyncAction = withLoadApp();
+export const dashboardMounted = withLoadApp();
 
-export const sandboxesSelected: Action<{
-  sandboxIds: string[];
-}> = ({ state }, { sandboxIds }) => {
+export const sandboxesSelected = (
+  { state }: Context,
+  {
+    sandboxIds,
+  }: {
+    sandboxIds: string[];
+  }
+) => {
   state.dashboard.selectedSandboxes = sandboxIds;
 };
 
-export const setTrashSandboxes: Action<{
-  sandboxIds: string[];
-}> = ({ state }, { sandboxIds }) => {
+export const setTrashSandboxes = (
+  { state }: Context,
+  {
+    sandboxIds,
+  }: {
+    sandboxIds: string[];
+  }
+) => {
   state.dashboard.trashSandboxIds = sandboxIds;
 };
 
-export const dragChanged: Action<{ isDragging: boolean }> = (
-  { state },
-  { isDragging }
+export const dragChanged = (
+  { state }: Context,
+  { isDragging }: { isDragging: boolean }
 ) => {
   state.dashboard.isDragging = isDragging;
 };
 
-export const orderByReset: Action = ({ state }, orderBy) => {
+export const orderByReset = ({ state }: Context) => {
   if (
     state.dashboard.orderBy.field !== 'updatedAt' ||
     state.dashboard.orderBy.order !== 'desc'
@@ -51,66 +61,77 @@ export const orderByReset: Action = ({ state }, orderBy) => {
   }
 };
 
-export const orderByChanged: Action<OrderBy> = ({ state }, orderBy) => {
+export const orderByChanged = ({ state }: Context, orderBy: OrderBy) => {
   state.dashboard.orderBy = orderBy;
 };
 
-export const blacklistedTemplateAdded: Action<string> = (
-  { state },
-  template
+export const blacklistedTemplateAdded = (
+  { state }: Context,
+  template: string
 ) => {
   state.dashboard.filters.blacklistedTemplates = state.dashboard.filters.blacklistedTemplates.concat(
     template
   );
 };
 
-export const blacklistedTemplateRemoved: Action<string> = (
-  { state },
-  template
+export const blacklistedTemplateRemoved = (
+  { state }: Context,
+  template: string
 ) => {
   state.dashboard.filters.blacklistedTemplates = state.dashboard.filters.blacklistedTemplates.filter(
     currentTemplate => currentTemplate !== template
   );
 };
 
-export const blacklistedTemplatesCleared: Action = ({ state }) => {
+export const blacklistedTemplatesCleared = ({ state }: Context) => {
   if (state.dashboard.filters.blacklistedTemplates.length) {
     state.dashboard.filters.blacklistedTemplates = [];
   }
 };
 
-export const blacklistedTemplatesChanged: Action<string[]> = (
-  { state },
-  templates
+export const blacklistedTemplatesChanged = (
+  { state }: Context,
+  templates: string[]
 ) => {
   state.dashboard.filters.blacklistedTemplates = templates;
 };
 
-export const searchChanged: Action<{ search: string }> = (
-  { state },
-  { search }
+export const searchChanged = (
+  { state }: Context,
+  { search }: { search: string }
 ) => {
   state.dashboard.filters.search = search;
 };
 
-export const viewModeChanged: Action<{ mode: 'grid' | 'list' }> = (
-  { state, effects },
-  { mode }
+export const viewModeChanged = (
+  { state, effects }: Context,
+  { mode }: { mode: 'grid' | 'list' }
 ) => {
   state.dashboard.viewMode = mode;
   effects.browser.storage.set('VIEW_MODE_DASHBOARD', mode);
 };
 
-export const createSandboxClicked: AsyncAction<{
-  body: { collectionId: string };
-  sandboxId: string;
-}> = ({ actions }, { body, sandboxId }) =>
-  actions.editor.forkExternalSandbox({ body, sandboxId });
+export const createSandboxClicked = (
+  { actions }: Context,
+  {
+    body,
+    sandboxId,
+  }: {
+    body: { collectionId: string };
+    sandboxId: string;
+  }
+) => actions.editor.forkExternalSandbox({ body, sandboxId });
 
-export const deleteTemplate: AsyncAction<{
-  sandboxId: string;
-  templateId: string;
-}> = async ({ actions, effects, state }, { sandboxId, templateId }) => {
+export const deleteTemplate = async (
+  { actions, effects, state }: Context,
+  {
+    sandboxId,
+    templateId,
+  }: {
+    sandboxId: string;
+    templateId: string;
+  }
+) => {
   const oldTemplates = {
     TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
     TEMPLATES: state.dashboard.sandboxes.TEMPLATES,
@@ -133,7 +154,7 @@ export const deleteTemplate: AsyncAction<{
   }
 };
 
-export const getTeams: AsyncAction = async ({ state, effects }) => {
+export const getTeams = async ({ state, effects }: Context) => {
   if (!state.user) return;
   const teams = await effects.gql.queries.getTeams({});
 
@@ -145,9 +166,9 @@ export const getTeams: AsyncAction = async ({ state, effects }) => {
   state.personalWorkspaceId = teams.me.personalWorkspaceId;
 };
 
-export const removeFromTeam: AsyncAction<string> = async (
-  { state, effects },
-  id
+export const removeFromTeam = async (
+  { state, effects }: Context,
+  id: string
 ) => {
   if (!state.activeTeam || !state.activeTeamInfo) return;
   try {
@@ -167,7 +188,7 @@ export const removeFromTeam: AsyncAction<string> = async (
   }
 };
 
-export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
+export const leaveTeam = async ({ state, effects, actions }: Context) => {
   if (!state.activeTeam || !state.activeTeamInfo) return;
   try {
     effects.analytics.track('Team - Leave Team', {
@@ -190,9 +211,9 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
   }
 };
 
-export const inviteToTeam: AsyncAction<string> = async (
-  { state, effects },
-  value
+export const inviteToTeam = async (
+  { state, effects }: Context,
+  value: string
 ) => {
   if (!state.activeTeam) return;
   const isEmail = value.includes('@');
@@ -237,7 +258,7 @@ export const inviteToTeam: AsyncAction<string> = async (
   }
 };
 
-export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
+export const getRecentSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
     let sandboxes;
@@ -277,7 +298,7 @@ export const getRecentSandboxes: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const getAllFolders: AsyncAction = async ({ state, effects }) => {
+export const getAllFolders = async ({ state, effects }: Context) => {
   try {
     const data = await effects.gql.queries.getCollections({
       teamId: state.activeTeam,
@@ -299,9 +320,9 @@ export const getAllFolders: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const createFolder: AsyncAction<string> = async (
-  { effects, state },
-  path
+export const createFolder = async (
+  { effects, state }: Context,
+  path: string
 ) => {
   if (!state.dashboard.allCollections) return;
   const oldFolders = state.dashboard.allCollections;
@@ -336,7 +357,7 @@ export const createFolder: AsyncAction<string> = async (
   }
 };
 
-export const getDrafts: AsyncAction = async ({ state, effects }) => {
+export const getDrafts = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
     let sandboxes: SandboxFragmentDashboardFragment[];
@@ -371,9 +392,9 @@ export const getDrafts: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const getSandboxesByPath: AsyncAction<string> = async (
-  { state, effects },
-  path
+export const getSandboxesByPath = async (
+  { state, effects }: Context,
+  path: string
 ) => {
   const { dashboard } = state;
 
@@ -411,9 +432,9 @@ export const getSandboxesByPath: AsyncAction<string> = async (
   }
 };
 
-export const getReposByPath: AsyncAction<string> = async (
-  { state, effects },
-  path
+export const getReposByPath = async (
+  { state, effects }: Context,
+  path: string
   // eslint-disable-next-line consistent-return
 ) => {
   const { dashboard } = state;
@@ -483,7 +504,7 @@ export const getReposByPath: AsyncAction<string> = async (
   }
 };
 
-export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
+export const getDeletedSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
     let sandboxes;
@@ -512,7 +533,7 @@ export const getDeletedSandboxes: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const getTemplateSandboxes: AsyncAction = async ({ state, effects }) => {
+export const getTemplateSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
     if (state.activeTeam) {
@@ -544,10 +565,7 @@ export const getTemplateSandboxes: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const getStartPageSandboxes: AsyncAction = async ({
-  state,
-  effects,
-}) => {
+export const getStartPageSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
     const usedTemplates = await effects.gql.queries.listPersonalTemplates({
@@ -580,9 +598,9 @@ export const getStartPageSandboxes: AsyncAction = async ({
   }
 };
 
-export const deleteTemplateFromState: Action<string[]> = (
-  { state: { dashboard } },
-  ids
+export const deleteTemplateFromState = (
+  { state: { dashboard } }: Context,
+  ids: string[]
 ) => {
   const { sandboxes } = dashboard;
   ids.map(id => {
@@ -608,9 +626,14 @@ export const deleteTemplateFromState: Action<string[]> = (
   });
 };
 
-export const deleteSandbox: AsyncAction<{
-  ids: string[];
-}> = async ({ state, effects, actions }, { ids }) => {
+export const deleteSandbox = async (
+  { state, effects, actions }: Context,
+  {
+    ids,
+  }: {
+    ids: string[];
+  }
+) => {
   const { user } = state;
   if (!user) return;
 
@@ -633,9 +656,9 @@ export const deleteSandbox: AsyncAction<{
   }
 };
 
-export const unmakeTemplates: AsyncAction<{ templateIds: string[] }> = async (
-  { effects, actions, state },
-  { templateIds }
+export const unmakeTemplates = async (
+  { effects, actions, state }: Context,
+  { templateIds }: { templateIds: string[] }
 ) => {
   const oldTemplates = {
     TEMPLATE_HOME: state.dashboard.sandboxes.TEMPLATE_HOME,
@@ -659,9 +682,9 @@ export const unmakeTemplates: AsyncAction<{ templateIds: string[] }> = async (
   }
 };
 
-export const renameFolderInState: Action<{ path: string; newPath: string }> = (
-  { state: { dashboard } },
-  { path, newPath }
+export const renameFolderInState = (
+  { state: { dashboard } }: Context,
+  { path, newPath }: { path: string; newPath: string }
 ) => {
   if (!dashboard.allCollections) return;
   const newFolders = dashboard.allCollections.map(folder => {
@@ -674,10 +697,16 @@ export const renameFolderInState: Action<{ path: string; newPath: string }> = (
   dashboard.allCollections = newFolders;
 };
 
-export const renameSandbox: AsyncAction<{
-  id: string;
-  title: string;
-}> = async ({ effects, actions }, { id, title }) => {
+export const renameSandbox = async (
+  { effects, actions }: Context,
+  {
+    id,
+    title,
+  }: {
+    id: string;
+    title: string;
+  }
+) => {
   const {
     changedSandboxes,
   } = actions.dashboard.internal.changeSandboxesInState({
@@ -704,14 +733,19 @@ export const renameSandbox: AsyncAction<{
   }
 };
 
-export const moveFolder: AsyncAction<{
-  path: string;
-  newPath: string;
-  newTeamId: string | null;
-  teamId: string | null;
-}> = async (
-  { state: { dashboard }, actions, effects },
-  { path, newPath, teamId, newTeamId }
+export const moveFolder = async (
+  { state: { dashboard }, actions, effects }: Context,
+  {
+    path,
+    newPath,
+    teamId,
+    newTeamId,
+  }: {
+    path: string;
+    newPath: string;
+    newTeamId: string | null;
+    teamId: string | null;
+  }
 ) => {
   if (!dashboard.allCollections) return;
 
@@ -721,14 +755,19 @@ export const moveFolder: AsyncAction<{
   actions.dashboard.renameFolder({ path, newPath, teamId, newTeamId });
 };
 
-export const renameFolder: AsyncAction<{
-  path: string;
-  newPath: string;
-  newTeamId: string | null;
-  teamId: string | null;
-}> = async (
-  { state: { dashboard }, effects, actions },
-  { path, newPath, teamId, newTeamId }
+export const renameFolder = async (
+  { state: { dashboard }, effects, actions }: Context,
+  {
+    path,
+    newPath,
+    teamId,
+    newTeamId,
+  }: {
+    path: string;
+    newPath: string;
+    newTeamId: string | null;
+    teamId: string | null;
+  }
 ) => {
   if (!dashboard.allCollections) return;
   actions.dashboard.renameFolderInState({
@@ -752,9 +791,14 @@ export const renameFolder: AsyncAction<{
   }
 };
 
-export const deleteFolder: AsyncAction<{
-  path: string;
-}> = async ({ state: { dashboard, activeTeam }, effects }, { path }) => {
+export const deleteFolder = async (
+  { state: { dashboard, activeTeam }, effects }: Context,
+  {
+    path,
+  }: {
+    path: string;
+  }
+) => {
   if (!dashboard.allCollections) return;
   const oldCollections = dashboard.allCollections;
   dashboard.allCollections = dashboard.allCollections.filter(
@@ -773,9 +817,14 @@ export const deleteFolder: AsyncAction<{
   }
 };
 
-export const makeTemplates: AsyncAction<{
-  sandboxIds: string[];
-}> = async ({ effects, state, actions }, { sandboxIds: ids }) => {
+export const makeTemplates = async (
+  { effects, state, actions }: Context,
+  {
+    sandboxIds: ids,
+  }: {
+    sandboxIds: string[];
+  }
+) => {
   effects.analytics.track('Dashboard - Make Template', {
     dashboardVersion: 2,
   });
@@ -793,9 +842,9 @@ export const makeTemplates: AsyncAction<{
   }
 };
 
-export const permanentlyDeleteSandboxes: AsyncAction<string[]> = async (
-  { effects, state },
-  ids
+export const permanentlyDeleteSandboxes = async (
+  { effects, state }: Context,
+  ids: string[]
 ) => {
   if (!state.dashboard.sandboxes.DELETED) return;
 
@@ -817,9 +866,9 @@ export const permanentlyDeleteSandboxes: AsyncAction<string[]> = async (
   }
 };
 
-export const recoverSandboxes: AsyncAction<string[]> = async (
-  { effects, state },
-  ids
+export const recoverSandboxes = async (
+  { effects, state }: Context,
+  ids: string[]
 ) => {
   effects.analytics.track('Dashboard - Recover Sandboxes', {
     dashboardVersion: 2,
@@ -846,9 +895,9 @@ export const recoverSandboxes: AsyncAction<string[]> = async (
   }
 };
 
-export const downloadSandboxes: AsyncAction<string[]> = async (
-  { effects },
-  ids
+export const downloadSandboxes = async (
+  { effects }: Context,
+  ids: string[]
 ) => {
   effects.analytics.track('Dashboard - Download Sandboxes', {
     dashboardVersion: 2,
@@ -867,7 +916,7 @@ export const downloadSandboxes: AsyncAction<string[]> = async (
   }
 };
 
-export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
+export const getSearchSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
     const activeTeam = state.activeTeam;
@@ -904,7 +953,7 @@ export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const getAlwaysOnSandboxes: AsyncAction = async ({ state, effects }) => {
+export const getAlwaysOnSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
     const activeTeam = state.activeTeam;
@@ -924,9 +973,9 @@ export const getAlwaysOnSandboxes: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const getPage: AsyncAction<sandboxesTypes> = async (
-  { actions: { dashboard } },
-  page
+export const getPage = async (
+  { actions: { dashboard } }: Context,
+  page: sandboxesTypes
 ) => {
   switch (page) {
     case sandboxesTypes.RECENT:
@@ -956,18 +1005,18 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
   }
 };
 
-export const addSandboxesToFolder: AsyncAction<{
-  sandboxIds: string[];
-  collectionPath: string | null;
-  teamId?: string | null;
-  deleteFromCurrentPath?: boolean;
-}> = async (
-  { state, effects, actions },
+export const addSandboxesToFolder = async (
+  { state, effects, actions }: Context,
   {
     sandboxIds,
     collectionPath,
     teamId = state.activeTeam,
     deleteFromCurrentPath = true,
+  }: {
+    sandboxIds: string[];
+    collectionPath: string | null;
+    teamId?: string | null;
+    deleteFromCurrentPath?: boolean;
   }
 ) => {
   effects.analytics.track('Dashboard - Moved Sandboxes', {
@@ -1005,10 +1054,16 @@ export const addSandboxesToFolder: AsyncAction<{
   }
 };
 
-export const createTeam: AsyncAction<{
-  teamName: string;
-  pilot?: boolean;
-}> = async ({ effects, actions, state }, { teamName, pilot = false }) => {
+export const createTeam = async (
+  { effects, actions, state }: Context,
+  {
+    teamName,
+    pilot = false,
+  }: {
+    teamName: string;
+    pilot?: boolean;
+  }
+) => {
   try {
     effects.analytics.track('Team - Create Team', { dashboardVersion: 2 });
     const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
@@ -1022,10 +1077,16 @@ export const createTeam: AsyncAction<{
   }
 };
 
-export const revokeTeamInvitation: AsyncAction<{
-  teamId: string;
-  userId: string;
-}> = async ({ effects, state }, { teamId, userId }) => {
+export const revokeTeamInvitation = async (
+  { effects, state }: Context,
+  {
+    teamId,
+    userId,
+  }: {
+    teamId: string;
+    userId: string;
+  }
+) => {
   const oldInvitees = state.activeTeamInfo!.invitees;
   const user = state.activeTeamInfo!.invitees.find(f => f.id === userId);
   state.activeTeamInfo!.invitees = state.activeTeamInfo!.invitees.filter(
@@ -1050,11 +1111,18 @@ export const revokeTeamInvitation: AsyncAction<{
   }
 };
 
-export const setTeamInfo: AsyncAction<{
-  name: string;
-  description: string | null;
-  file: { name: string; url: string } | null;
-}> = async ({ effects, state, actions }, { name, description, file }) => {
+export const setTeamInfo = async (
+  { effects, state, actions }: Context,
+  {
+    name,
+    description,
+    file,
+  }: {
+    name: string;
+    description: string | null;
+    file: { name: string; url: string } | null;
+  }
+) => {
   if (!state.activeTeam) return;
 
   effects.analytics.track('Team - Update Info', {
@@ -1123,10 +1191,16 @@ export const setTeamInfo: AsyncAction<{
   }
 };
 
-export const changeSandboxesFrozen: AsyncAction<{
-  sandboxIds: string[];
-  isFrozen: boolean;
-}> = async ({ actions, effects }, { sandboxIds, isFrozen }) => {
+export const changeSandboxesFrozen = async (
+  { actions, effects }: Context,
+  {
+    sandboxIds,
+    isFrozen,
+  }: {
+    sandboxIds: string[];
+    isFrozen: boolean;
+  }
+) => {
   effects.analytics.track('Sandbox - Update Frozen', {
     isFrozen,
     source: 'dashboard',
@@ -1161,10 +1235,16 @@ export const changeSandboxesFrozen: AsyncAction<{
   }
 };
 
-export const changeSandboxesPrivacy: AsyncAction<{
-  sandboxIds: string[];
-  privacy: 0 | 1 | 2;
-}> = async ({ actions, effects }, { sandboxIds, privacy }) => {
+export const changeSandboxesPrivacy = async (
+  { actions, effects }: Context,
+  {
+    sandboxIds,
+    privacy,
+  }: {
+    sandboxIds: string[];
+    privacy: 0 | 1 | 2;
+  }
+) => {
   effects.analytics.track('Sandbox - Update Privacy', {
     privacy,
     source: 'dashboard',
@@ -1196,11 +1276,18 @@ export const changeSandboxesPrivacy: AsyncAction<{
   }
 };
 
-export const updateTeamAvatar: AsyncAction<{
-  name: string;
-  url: string;
-  teamId: string;
-}> = async ({ actions, effects, state }, { name, url, teamId }) => {
+export const updateTeamAvatar = async (
+  { actions, effects, state }: Context,
+  {
+    name,
+    url,
+    teamId,
+  }: {
+    name: string;
+    url: string;
+    teamId: string;
+  }
+) => {
   if (!state.activeTeamInfo) return;
   const oldAvatar = state.activeTeamInfo.avatarUrl;
   state.activeTeamInfo.avatarUrl = url;
@@ -1219,10 +1306,16 @@ export const updateTeamAvatar: AsyncAction<{
   }
 };
 
-export const changeAuthorizationInState: Action<{
-  userId: string;
-  authorization: TeamMemberAuthorization;
-}> = ({ state }, { userId, authorization }) => {
+export const changeAuthorizationInState = (
+  { state }: Context,
+  {
+    userId,
+    authorization,
+  }: {
+    userId: string;
+    authorization: TeamMemberAuthorization;
+  }
+) => {
   const userAuthorizations = state.activeTeamInfo!.userAuthorizations.map(
     user => {
       if (user.userId === userId) return { ...user, authorization };
@@ -1233,10 +1326,16 @@ export const changeAuthorizationInState: Action<{
   state.activeTeamInfo!.userAuthorizations = userAuthorizations;
 };
 
-export const changeAuthorization: AsyncAction<{
-  userId: string;
-  authorization: TeamMemberAuthorization;
-}> = async ({ state, effects, actions }, { userId, authorization }) => {
+export const changeAuthorization = async (
+  { state, effects, actions }: Context,
+  {
+    userId,
+    authorization,
+  }: {
+    userId: string;
+    authorization: TeamMemberAuthorization;
+  }
+) => {
   // optimistic update
   const oldAuthorization = state.activeTeamInfo!.userAuthorizations.find(
     user => user.userId === userId
@@ -1267,10 +1366,10 @@ export const changeAuthorization: AsyncAction<{
   }
 };
 
-export const deleteCurrentNpmRegistry: AsyncAction<Omit<
-  DeleteNpmRegistryMutationVariables,
-  'teamId'
->> = async ({ state, actions, effects }, params) => {
+export const deleteCurrentNpmRegistry = async (
+  { state, actions, effects }: Context,
+  params: Omit<DeleteNpmRegistryMutationVariables, 'teamId'>
+) => {
   const confirmed = await actions.modals.alertModal.open({
     title: 'Are you sure?',
     message: 'This will reset the current private npm registry information.',
@@ -1294,10 +1393,10 @@ export const deleteCurrentNpmRegistry: AsyncAction<Omit<
   }
 };
 
-export const createOrUpdateCurrentNpmRegistry: AsyncAction<Omit<
-  CreateOrUpdateNpmRegistryMutationVariables,
-  'teamId'
->> = async ({ state, actions, effects }, params) => {
+export const createOrUpdateCurrentNpmRegistry = async (
+  { state, actions, effects }: Context,
+  params: Omit<CreateOrUpdateNpmRegistryMutationVariables, 'teamId'>
+) => {
   try {
     await effects.gql.mutations.createOrUpdateNpmRegistry({
       ...params,
@@ -1317,11 +1416,7 @@ export const createOrUpdateCurrentNpmRegistry: AsyncAction<Omit<
   }
 };
 
-export const deleteWorkspace: AsyncAction = async ({
-  actions,
-  effects,
-  state,
-}) => {
+export const deleteWorkspace = async ({ actions, effects, state }: Context) => {
   if (!state.activeTeamInfo) return;
 
   try {
@@ -1341,11 +1436,11 @@ export const deleteWorkspace: AsyncAction = async ({
   }
 };
 
-export const fetchCurrentNpmRegistry: AsyncAction<{}> = async ({
+export const fetchCurrentNpmRegistry = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   const activeTeam = state.activeTeam;
   if (!activeTeam) {
     return;
@@ -1369,14 +1464,19 @@ export const fetchCurrentNpmRegistry: AsyncAction<{}> = async ({
   }
 };
 
-export const setTeamMinimumPrivacy: AsyncAction<{
-  teamId: string;
-  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
-  updateDrafts?: boolean;
-  source: 'Dashboard' | 'Profiles';
-}> = async (
-  { state, effects },
-  { teamId, minimumPrivacy, updateDrafts = false, source }
+export const setTeamMinimumPrivacy = async (
+  { state, effects }: Context,
+  {
+    teamId,
+    minimumPrivacy,
+    updateDrafts = false,
+    source,
+  }: {
+    teamId: string;
+    minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
+    updateDrafts?: boolean;
+    source: 'Dashboard' | 'Profiles';
+  }
 ) => {
   effects.analytics.track('Team - Change minimum privacy', {
     minimumPrivacy,
@@ -1408,10 +1508,16 @@ export const setTeamMinimumPrivacy: AsyncAction<{
   }
 };
 
-export const changeSandboxAlwaysOn: AsyncAction<{
-  sandboxId: string;
-  alwaysOn: boolean;
-}> = async ({ state, actions, effects }, { sandboxId, alwaysOn }) => {
+export const changeSandboxAlwaysOn = async (
+  { state, actions, effects }: Context,
+  {
+    sandboxId,
+    alwaysOn,
+  }: {
+    sandboxId: string;
+    alwaysOn: boolean;
+  }
+) => {
   effects.analytics.track('Sandbox - Always On', {
     alwaysOn,
     source: 'dashboard',
@@ -1457,12 +1563,15 @@ export const changeSandboxAlwaysOn: AsyncAction<{
   }
 };
 
-export const setWorkspaceSandboxSettings: AsyncAction<{
-  preventSandboxLeaving: boolean;
-  preventSandboxExport: boolean;
-}> = async (
-  { state, effects },
-  { preventSandboxLeaving, preventSandboxExport }
+export const setWorkspaceSandboxSettings = async (
+  { state, effects }: Context,
+  {
+    preventSandboxLeaving,
+    preventSandboxExport,
+  }: {
+    preventSandboxLeaving: boolean;
+    preventSandboxExport: boolean;
+  }
 ) => {
   if (!state.activeTeamInfo || !state.activeTeamInfo.settings) return;
 
@@ -1496,12 +1605,15 @@ export const setWorkspaceSandboxSettings: AsyncAction<{
   }
 };
 
-export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
-  sandboxIds: string[];
-  preventSandboxLeaving: boolean;
-}> = async (
-  { state, actions, effects },
-  { sandboxIds, preventSandboxLeaving }
+export const setPreventSandboxesLeavingWorkspace = async (
+  { state, actions, effects }: Context,
+  {
+    sandboxIds,
+    preventSandboxLeaving,
+  }: {
+    sandboxIds: string[];
+    preventSandboxLeaving: boolean;
+  }
 ) => {
   const {
     changedSandboxes,
@@ -1540,12 +1652,15 @@ export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
   }
 };
 
-export const setPreventSandboxesExport: AsyncAction<{
-  sandboxIds: string[];
-  preventSandboxExport: boolean;
-}> = async (
-  { state, actions, effects },
-  { sandboxIds, preventSandboxExport }
+export const setPreventSandboxesExport = async (
+  { state, actions, effects }: Context,
+  {
+    sandboxIds,
+    preventSandboxExport,
+  }: {
+    sandboxIds: string[];
+    preventSandboxExport: boolean;
+  }
 ) => {
   // optimistic update
   const {
@@ -1585,9 +1700,14 @@ export const setPreventSandboxesExport: AsyncAction<{
   }
 };
 
-export const setDefaultTeamMemberAuthorization: AsyncAction<{
-  defaultAuthorization: TeamMemberAuthorization;
-}> = async ({ state, effects }, { defaultAuthorization }) => {
+export const setDefaultTeamMemberAuthorization = async (
+  { state, effects }: Context,
+  {
+    defaultAuthorization,
+  }: {
+    defaultAuthorization: TeamMemberAuthorization;
+  }
+) => {
   if (!state.activeTeamInfo || !state.activeTeamInfo.settings) return;
 
   const teamId = state.activeTeam;
@@ -1616,11 +1736,11 @@ export const setDefaultTeamMemberAuthorization: AsyncAction<{
   }
 };
 
-export const requestAccountClosing: Action = ({ state }) => {
+export const requestAccountClosing = ({ state }: Context) => {
   state.currentModal = 'accountClosing';
 };
 
-export const deleteAccount: AsyncAction = async ({ state, effects }) => {
+export const deleteAccount = async ({ state, effects }: Context) => {
   try {
     await effects.gql.mutations.deleteAccount({});
     state.currentModal = 'deleteConfirmation';

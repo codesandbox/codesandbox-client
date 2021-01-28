@@ -1,4 +1,4 @@
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { AxiosError } from 'axios';
 import { get } from 'lodash-es';
 
@@ -13,11 +13,11 @@ const getVercelErrorMessage = (error: AxiosError) =>
     'An unknown error occurred when connecting to Vercel'
   );
 
-export const deployWithNetlify: AsyncAction = async ({
+export const deployWithNetlify = async ({
   effects,
   actions,
   state,
-}) => {
+}: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -53,7 +53,7 @@ export const deployWithNetlify: AsyncAction = async ({
   state.deployment.building = false;
 };
 
-export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
+export const getNetlifyDeploys = async ({ state, effects }: Context) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;
@@ -71,7 +71,7 @@ export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
+export const getDeploys = async ({ state, actions, effects }: Context) => {
   if (
     !state.user ||
     !state.user.integrations.zeit ||
@@ -101,11 +101,7 @@ export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
   state.deployment.gettingDeploys = false;
 };
 
-export const deployClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const deployClicked = async ({ state, effects, actions }: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -139,11 +135,11 @@ export const deployClicked: AsyncAction = async ({
   actions.deployment.getDeploys();
 };
 
-export const deploySandboxClicked: AsyncAction = async ({
+export const deploySandboxClicked = async ({
   actions,
   effects,
   state,
-}) => {
+}: Context) => {
   state.currentModal = 'deployment';
 
   const vercelIntegration = state.user && state.user.integrations.zeit;
@@ -173,15 +169,15 @@ export const deploySandboxClicked: AsyncAction = async ({
   state.deployment.url = null;
 };
 
-export const setDeploymentToDelete: Action<string> = ({ state }, id) => {
+export const setDeploymentToDelete = ({ state }: Context, id: string) => {
   state.deployment.deployToDelete = id;
 };
 
-export const deleteDeployment: AsyncAction = async ({
+export const deleteDeployment = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   const id = state.deployment.deployToDelete;
 
   if (!id) {
@@ -209,9 +205,9 @@ export const deleteDeployment: AsyncAction = async ({
   );
 };
 
-export const aliasDeployment: AsyncAction<string> = async (
-  { state, effects, actions },
-  id
+export const aliasDeployment = async (
+  { state, effects, actions }: Context,
+  id: string
 ) => {
   if (!state.editor.currentSandbox) {
     return;

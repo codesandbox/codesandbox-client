@@ -3,17 +3,16 @@ import { identify } from '@codesandbox/common/lib/utils/analytics';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { NotificationStatus } from '@codesandbox/notifications';
-import { IState, derived } from 'overmind';
-
-import { AsyncAction, RootState } from '.';
+import { IState, derived, ContextFunction } from 'overmind';
+import { Context } from '.';
 
 /*
   Ensures that we have loaded the app with the initial user
   and settings
 */
-export const withLoadApp = <T>(
-  continueAction?: AsyncAction<T>
-): AsyncAction<T> => async (context, value) => {
+export const withLoadApp = <I>(
+  continueAction?: ContextFunction<I, void>
+) => async (context: Context, value: I) => {
   const { effects, state, actions } = context;
 
   if (state.hasLoadedApp && continueAction) {
@@ -105,11 +104,11 @@ export const withLoadApp = <T>(
   }
 };
 
-export const withOwnedSandbox = <T>(
-  continueAction: AsyncAction<T>,
-  cancelAction: AsyncAction<T> = () => Promise.resolve(),
+export const withOwnedSandbox = <I>(
+  continueAction: ContextFunction<I, void>,
+  cancelAction: ContextFunction<I, void> = () => Promise.resolve(),
   requiredPermission?: PermissionType
-): AsyncAction<T> => async (context, payload) => {
+): ContextFunction<I, void> => async (context: Context, payload: I) => {
   const { state, actions } = context;
 
   const sandbox = state.editor.currentSandbox;
@@ -169,18 +168,18 @@ export const createModals = <
   };
   actions: {
     [K in keyof T]: {
-      open: AsyncAction<
+      open: ContextFunction<
         T[K]['state'] extends IState ? T[K]['state'] : void,
         T[K]['result']
       >;
-      close: AsyncAction<T[K]['result']>;
+      close: ContextFunction<T[K]['result'], void>;
     };
   };
 } => {
   function createModal(name, modal) {
     let resolver: ((res: T) => void) | null;
 
-    const open: AsyncAction<any, any> = async ({ state }, newState = {}) => {
+    const open = async ({ state }: Context, newState = {}) => {
       state.modals.current = name;
 
       Object.assign(state.modals[name], newState);
@@ -190,7 +189,7 @@ export const createModals = <
       });
     };
 
-    const close: AsyncAction<T> = async ({ state }, payload) => {
+    const close = async ({ state }: Context, payload) => {
       state.modals.current = null;
       if (modal.state) {
         Object.keys(modal.state).forEach(stateKey => {
@@ -206,7 +205,7 @@ export const createModals = <
       state: {
         ...modal.state,
         isCurrent: derived(
-          (_, root: RootState) => root.modals.current === name
+          (_, root: Context['state']) => root.modals.current === name
         ),
       },
       actions: {
