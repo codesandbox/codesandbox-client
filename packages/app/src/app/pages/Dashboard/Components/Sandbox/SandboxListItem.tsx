@@ -66,7 +66,15 @@ export const SandboxListItem = ({
     })}
   >
     <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={2}>
-      <Column span={[12, 7, 7]} css={{ display: 'block', overflow: 'hidden' }}>
+      <Column
+        span={[12, 7, 7]}
+        css={{
+          display: 'block',
+          overflow: 'hidden',
+          paddingBottom: 4,
+          paddingTop: 4,
+        }}
+      >
         <Stack gap={4} align="center" marginLeft={2}>
           <Stack
             as="div"
@@ -101,10 +109,10 @@ export const SandboxListItem = ({
                 <span
                   css={css({
                     backgroundColor: 'green',
-                    width: 4,
-                    height: 4,
+                    width: 3,
+                    height: 3,
                     position: 'absolute',
-                    right: '-8px',
+                    right: '-6px',
                     bottom: '-4px',
                     borderRadius: '50%',
                   })}
