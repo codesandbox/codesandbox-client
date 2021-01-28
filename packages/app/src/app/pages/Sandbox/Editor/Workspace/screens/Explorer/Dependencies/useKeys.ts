@@ -12,6 +12,7 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
     state: {
       workspace: { explorerDependencies },
     },
+    effects,
   } = useOvermind();
   const [one] = useKeys('ctrl + one');
   const [two] = useKeys('ctrl + two');
@@ -21,10 +22,16 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
   const [enter] = useKeys('enter');
 
   const addDependency = (dependency: Dependency) => {
-    addNpmDependency({
-      name: dependency.name,
-      version: dependency.tags.latest,
-    });
+    if (dependency.tags) {
+      addNpmDependency({
+        name: dependency.name,
+        version: dependency.tags?.latest,
+      });
+    } else {
+      effects.notificationToast.error(
+        `There has been a problem installing ${dependency.name}. No installable version found`
+      );
+    }
   };
 
   useEffect(() => {
