@@ -36,10 +36,13 @@ const ProPage: React.FC = () => {
       );
     }
 
+    const searchParams = new URLSearchParams(window.location.search);
+    const interval = searchParams.get('interval');
+
     return (
       <Switch>
         <Route path={`/pro/create-workspace`}>
-          <NewTeam redirectTo="/pro" />;
+          <NewTeam redirectTo={`/pro?interval=${interval}`} />
         </Route>
         <Route path={'/pro/success'}>
           <PaymentSuccess />
