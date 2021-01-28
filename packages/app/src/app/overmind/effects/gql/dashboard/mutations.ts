@@ -568,6 +568,7 @@ export const softCancelSubscription: Query<
   mutation softCancelSubscription($teamId: UUID4!, $subscriptionId: UUID4!) {
     softCancelSubscription(teamId: $teamId, subscriptionId: $subscriptionId) {
       id
+      cancelAt
     }
   }
 `;
