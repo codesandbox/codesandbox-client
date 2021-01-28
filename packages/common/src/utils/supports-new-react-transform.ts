@@ -14,7 +14,7 @@ export function supportsNewReactTransform(
       // tests if react scripts has a version above 4
       // and react/react-dom are 17 or they are something like 0.0.0-testname since the react team uses that to test
 
-      const isPrerelease = semver.prerelease(reactVersion).length > 0;
+      const isPrerelease = semver.prerelease(reactVersion)?.length > 0;
 
       return (
         /^[a-z]/.test(reactScriptsVersion) ||
