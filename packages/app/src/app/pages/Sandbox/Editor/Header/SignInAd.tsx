@@ -32,7 +32,7 @@ export const SignInBanner = () => {
               position: 'absolute',
               backgroundColor: 'button.background',
               width: '100vw',
-              height: 31,
+              height: 49,
               alignItems: 'center',
               color: 'sideBar.foreground',
               zIndex: 9999,
