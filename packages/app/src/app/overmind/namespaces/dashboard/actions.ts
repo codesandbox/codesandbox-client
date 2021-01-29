@@ -227,8 +227,7 @@ export const inviteToTeam: AsyncAction<{
       const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
         teamId: state.activeTeam,
         email: value,
-        // TODO: UNCOMMENT WHEN BACKEND IS READY + ADD TO MUTATION
-        // authorization,
+        authorization,
       });
 
       data = emailInvited.inviteToTeamViaEmail;
@@ -236,8 +235,7 @@ export const inviteToTeam: AsyncAction<{
       const result = await effects.gql.mutations.inviteToTeam({
         teamId: state.activeTeam,
         username: value,
-        // TODO: UNCOMMENT WHEN BACKEND IS READY + ADD TO MUTATION
-        // authorization,
+        authorization,
       });
 
       state.activeTeamInfo = result.inviteToTeam;

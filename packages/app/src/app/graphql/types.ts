@@ -1810,6 +1810,7 @@ export type _RemoveFromTeamMutation = { __typename?: 'RootMutationType' } & {
 export type _InviteToTeamMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   username: Scalars['String'];
+  authorization?: TeamMemberAuthorization;
 }>;
 
 export type _InviteToTeamMutation = { __typename?: 'RootMutationType' } & {
@@ -1819,6 +1820,7 @@ export type _InviteToTeamMutation = { __typename?: 'RootMutationType' } & {
 export type _InviteToTeamViaEmailMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   email: Scalars['String'];
+  authorization?: TeamMemberAuthorization;
 }>;
 
 export type _InviteToTeamViaEmailMutation = {

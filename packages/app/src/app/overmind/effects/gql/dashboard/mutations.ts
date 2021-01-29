@@ -244,8 +244,16 @@ export const inviteToTeam: Query<
   _InviteToTeamMutation,
   _InviteToTeamMutationVariables
 > = gql`
-  mutation _InviteToTeam($teamId: UUID4!, $username: String!) {
-    inviteToTeam(teamId: $teamId, username: $username) {
+  mutation _InviteToTeam(
+    $teamId: UUID4!
+    $username: String!
+    $authorization: TeamMemberAuthorization!
+  ) {
+    inviteToTeam(
+      teamId: $teamId
+      username: $username
+      authorization: $authorization
+    ) {
       ...currentTeamInfoFragment
     }
   }
@@ -256,8 +264,16 @@ export const inviteToTeamVieEmail: Query<
   _InviteToTeamViaEmailMutation,
   _InviteToTeamViaEmailMutationVariables
 > = gql`
-  mutation _InviteToTeamViaEmail($teamId: UUID4!, $email: String!) {
-    inviteToTeamViaEmail(teamId: $teamId, email: $email)
+  mutation _InviteToTeamViaEmail(
+    $teamId: UUID4!
+    $email: String!
+    $authorization: TeamMemberAuthorization!
+  ) {
+    inviteToTeamViaEmail(
+      teamId: $teamId
+      email: $email
+      authorization: $authorization
+    )
   }
 `;
 

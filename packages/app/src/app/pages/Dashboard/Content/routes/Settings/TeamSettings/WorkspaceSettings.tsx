@@ -85,13 +85,7 @@ export const WorkspaceSettings = () => {
 
   const [newMemberAuthorization, setNewMemberAuthorization] = React.useState<
     TeamMemberAuthorization
-  >(
-    // get TeamMemberAuthorization key by value
-    Object.keys(TeamMemberAuthorization).find(key => {
-      const value = TeamMemberAuthorization[key];
-      return value === team?.settings.defaultAuthorization;
-    }) as TeamMemberAuthorization
-  );
+  >(team?.settings.defaultAuthorization);
 
   const numberOfEditors = team.userAuthorizations.filter(
     member => member.authorization !== TeamMemberAuthorization.Read
@@ -112,7 +106,7 @@ export const WorkspaceSettings = () => {
     team?.subscription &&
     team?.subscription.origin !== WorkspaceSubscriptionOrigin.Pilot &&
     numberOfUnusedSeats === 0 &&
-    team.settings.defaultAuthorization !== TeamMemberAuthorization.Read;
+    newMemberAuthorization !== TeamMemberAuthorization.Read;
   const confirmMemberRoleChange =
     team?.subscription &&
     team?.subscription.origin !== WorkspaceSubscriptionOrigin.Pilot &&
@@ -152,9 +146,9 @@ export const WorkspaceSettings = () => {
   const created = team.users.find(user => user.id === team.creatorId);
 
   const permissionMap = {
-    Admin: 'Admin',
-    Write: 'Editor',
-    Read: 'Viewer',
+    [TeamMemberAuthorization.Admin]: 'Admin',
+    [TeamMemberAuthorization.Write]: 'Editor',
+    [TeamMemberAuthorization.Read]: 'Viewer',
   };
 
   return (
@@ -499,7 +493,7 @@ export const WorkspaceSettings = () => {
               onInputValueChange={val => setInviteValue(val)}
               style={{ paddingRight: 80 }}
             />
-            {false /** TODO: UNCOMMENT WHEN BACKEND IS READY */ && (
+            {team?.subscription?.type === WorkspaceSubscriptionTypes.Team ? (
               <Menu>
                 <Menu.Button
                   css={css({
@@ -517,14 +511,10 @@ export const WorkspaceSettings = () => {
                   <Icon name="caret" size={8} marginLeft={1} />
                 </Menu.Button>
                 <Menu.List>
-                  {Object.keys(permissionMap).map(authorization => (
+                  {Object.values(TeamMemberAuthorization).map(authorization => (
                     <Menu.Item
                       key={authorization}
-                      onSelect={() =>
-                        setNewMemberAuthorization(
-                          authorization as TeamMemberAuthorization
-                        )
-                      }
+                      onSelect={() => setNewMemberAuthorization(authorization)}
                       style={{ display: 'flex', alignItems: 'center' }}
                     >
                       <Text style={{ width: '100%' }}>
@@ -542,7 +532,7 @@ export const WorkspaceSettings = () => {
                   ))}
                 </Menu.List>
               </Menu>
-            )}
+            ) : null}
           </div>
 
           <Button
