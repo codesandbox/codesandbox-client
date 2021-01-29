@@ -65,8 +65,16 @@ export const SandboxListItem = ({
       },
     })}
   >
-    <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
-      <Column span={[12, 5, 5]}>
+    <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={2}>
+      <Column
+        span={[12, 7, 7]}
+        css={{
+          display: 'block',
+          overflow: 'hidden',
+          paddingBottom: 4,
+          paddingTop: 4,
+        }}
+      >
         <Stack gap={4} align="center" marginLeft={2}>
           <Stack
             as="div"
@@ -84,6 +92,7 @@ export const SandboxListItem = ({
               borderColor: 'grays.500',
               backgroundColor: 'grays.700',
               flexShrink: 0,
+              position: 'relative',
               svg: {
                 filter: 'grayscale(1)',
                 opacity: 0.1,
@@ -95,9 +104,24 @@ export const SandboxListItem = ({
                 : null]: `url(${screenshotUrl})`,
             }}
           >
+            {alwaysOn && (
+              <Tooltip label="Always-On">
+                <span
+                  css={css({
+                    backgroundColor: 'green',
+                    width: 3,
+                    height: 3,
+                    position: 'absolute',
+                    right: '-6px',
+                    bottom: '-4px',
+                    borderRadius: '50%',
+                  })}
+                />
+              </Tooltip>
+            )}
             {screenshotUrl ? null : <TemplateIcon width="16" height="16" />}
           </Stack>
-          <Element style={{ width: 150 }}>
+          <Element css={{ overflow: 'hidden' }}>
             {editing ? (
               <form onSubmit={onSubmit}>
                 <Input
@@ -120,13 +144,6 @@ export const SandboxListItem = ({
             )}
           </Element>
         </Stack>
-      </Column>
-      <Column span={[0, 2, 2]} as={Stack} align="center">
-        {alwaysOn && (
-          <Text size={3} css={css({ color: 'green' })} maxWidth="100%">
-            Always-On
-          </Text>
-        )}
       </Column>
       <Column span={[0, 3, 3]} as={Stack} align="center">
         {sandbox.removedAt ? (
