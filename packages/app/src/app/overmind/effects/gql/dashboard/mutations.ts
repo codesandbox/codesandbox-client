@@ -247,7 +247,7 @@ export const inviteToTeam: Query<
   mutation _InviteToTeam(
     $teamId: UUID4!
     $username: String!
-    $authorization: TeamMemberAuthorization!
+    $authorization: TeamMemberAuthorization
   ) {
     inviteToTeam(
       teamId: $teamId
@@ -267,7 +267,7 @@ export const inviteToTeamVieEmail: Query<
   mutation _InviteToTeamViaEmail(
     $teamId: UUID4!
     $email: String!
-    $authorization: TeamMemberAuthorization!
+    $authorization: TeamMemberAuthorization
   ) {
     inviteToTeamViaEmail(
       teamId: $teamId
