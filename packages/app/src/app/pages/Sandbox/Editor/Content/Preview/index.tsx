@@ -68,6 +68,11 @@ export const Preview: FunctionComponent<Props> = ({
 
   const canAddComments = effects.preview.canAddComments(currentSandbox);
 
+  // Only show in chromium browsers
+  const showBanner =
+    preview.showExtensionBanner &&
+    effects.browser.isChromium(navigator.userAgent);
+
   const content = running ? (
     <BasePreview
       currentModule={currentModule}
@@ -108,7 +113,7 @@ export const Preview: FunctionComponent<Props> = ({
 
   return (
     <>
-      {preview.showExtensionBanner ? <InstallExtensionBanner /> : null}
+      {showBanner ? <InstallExtensionBanner /> : null}
       {content}
     </>
   );
