@@ -1371,9 +1371,13 @@ export const deleteWorkspace: AsyncAction = async ({
 
     effects.notificationToast.success(`Your workspace was deleted`);
   } catch (error) {
+    // this is odd to handle it in the action
+    // TODO: we need a cleaner way to read graphql errors
+    const message = error.response?.errors[0]?.message;
+
     actions.internal.handleError({
       message: 'There was a problem deleting your workspace',
-      error,
+      error: { name: 'Delete workspace', message },
     });
   }
 };
