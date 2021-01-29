@@ -3,20 +3,24 @@ import { SandboxTemplate } from '../types';
 export const REACT_TEMPLATE: SandboxTemplate = {
   files: {
     '/App.js': {
-      code: `import React from 'react';
-
-export default function App() {
+      code: `export default function App() {
   return <h1>Hello World</h1>
 }
 `,
     },
     '/index.js': {
-      code: `import { render } from 'react-dom';
-import React from 'react';
-import App from './App.js';
-import './styles.css';
+      code: `import React, { StrictMode } from "react";
+import ReactDOM from "react-dom";
 
-render(<App />, document.getElementById('root'))`,
+import App from "./App";
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+  rootElement
+);`,
     },
     '/styles.css': {
       code: `body {
@@ -52,8 +56,7 @@ font-size: 1.5rem;
   dependencies: {
     react: 'latest',
     'react-dom': 'latest',
-    'react-refresh': 'latest',
-    '@babel/runtime': 'latest',
+    'react-scripts': 'latest',
   },
   entry: '/index.js',
   main: '/App.js',

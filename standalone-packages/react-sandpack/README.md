@@ -50,13 +50,9 @@ priority.
 The `code` you pass should be pre-formatted:
 
 ```tsx
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { Sandpack } from 'react-smooshpack';
 
-const code = `import React from 'react';
-
-export default function App() {
+const code = `export default function App() {
   return <h1>Hello World</h1>
 }
 `;
@@ -77,8 +73,7 @@ the project being the file key. With the `setup` prop, you can also pass custom
 entry point and the `main` file, that is the default active file tab.
 
 ```tsx
-const reactWithLibCode = `import React from 'react';
-import ReactMarkdown from 'react-markdown' 
+const reactWithLibCode = `import ReactMarkdown from 'react-markdown' 
 
 export default function App() {
   return <ReactMarkdown># Hello, *world*!</ReactMarkdown>

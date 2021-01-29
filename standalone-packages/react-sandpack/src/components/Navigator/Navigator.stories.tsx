@@ -1,5 +1,4 @@
 import React from 'react';
-import { Navigator } from '.';
 import { SandpackLayout } from '../../components/SandpackLayout';
 import { SandpackProvider } from '../../utils/sandpack-context';
 import { Preview } from '../Preview';
@@ -19,7 +18,7 @@ export const Component = () => (
     dependencies={{}}
   >
     <SandpackLayout>
-      <Navigator />
+      <Preview showNavigator />
     </SandpackLayout>
   </SandpackProvider>
 );
@@ -33,16 +32,14 @@ export const WithRoutingExample = () => (
         code: `<div id="root"></div>`,
       },
       '/index.js': {
-        code: `import React from "react";
-import ReactDOM from "react-dom";
+        code: `import ReactDOM from "react-dom";
 import App from "./example";
 
 ReactDOM.render(<App />, document.getElementById("root"));
         `,
       },
       '/example.js': {
-        code: `import React from "react";
-import {
+        code: `import {
   BrowserRouter as Router,
   Switch,
   Route,
@@ -112,7 +109,7 @@ function Dashboard() {
     }}
     dependencies={{
       'react-router-dom': 'latest',
-      'react-scripts': '2.0.0',
+      'react-scripts': 'latest',
       react: 'latest',
       'react-dom': 'latest',
     }}

@@ -10,8 +10,7 @@ export default {
   component: Sandpack,
 };
 
-const reactCode = `import React from 'react';
-import Button from './button';
+const reactCode = `import Button from './button';
 import Link from './link';
 
 export default function App() {
@@ -25,16 +24,12 @@ export default function App() {
 }
 `;
 
-const buttonCode = `import React from 'react';
-
-export default function Button() {
+const buttonCode = `export default function Button() {
   return <button>Click me</button>
 }
 `;
 
-const linkCode = `import React from 'react';
-
-export default function Link() {
+const linkCode = `export default function Link() {
   return <a href="https://www.example.com" target="_blank">Click Here</a>
 }`;
 
@@ -49,6 +44,7 @@ export const ReactEditor: Story<SandpackProps> = args => (
       },
     }}
     template="react"
+    openPaths={['/App.js', '/button.js', '/package.json']}
   />
 );
 
@@ -145,8 +141,7 @@ export const Main: React.FC<{test: string}> = ({test}) => {
   />
 );
 
-const reactWithLibCode = `import React from 'react';
-import ReactMarkdown from 'react-markdown' 
+const reactWithLibCode = `import ReactMarkdown from 'react-markdown' 
 
 export default function App() {
   return <ReactMarkdown># Hello, *world*!</ReactMarkdown>
@@ -167,9 +162,7 @@ export const WithCustomLibrary: Story<SandpackProps> = args => (
   />
 );
 
-const helloWorld = `import React from 'react';
-
-export default function App() {
+const helloWorld = `export default function App() {
   return (
     <h1>Hello World</h1>
   )
@@ -199,9 +192,7 @@ export const MultipleInstances: Story<SandpackProps> = args => (
   </div>
 );
 
-const code = `import React from "react"
-
-export default function Kitten() {
+const code = `export default function Kitten() {
   return (
     <img src="https://placekitten.com/200/250" alt="Kitten" />
   );

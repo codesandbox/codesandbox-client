@@ -7,9 +7,7 @@ export default {
   component: SandpackRunner,
 };
 
-const reactCode = `import React from 'react';
-
-export default function App() {
+const reactCode = `export default function App() {
   return <h1>Hello World</h1>
 }
 `;
@@ -54,9 +52,7 @@ VueRunner.args = {
   code: vueCode,
 };
 
-const reactAltCode = `import React from 'react';
-
-export default function App() {
+const reactAltCode = `export default function App() {
   return <p>Just a paragraph this time</p>
 }
 `;
