@@ -12,7 +12,7 @@ import {
   hasRefresh,
   aliases,
   cleanUsingUnmount,
-  isMinimalReactVersion,
+  isMinimalReactDomVersion,
 } from '../utils';
 import { initializeReactDevTools } from './initDevTools';
 import { createRefreshEntry } from './createRefreshEntry';
@@ -43,7 +43,7 @@ export const reactPreset = babelConfig => {
       processDependencies: async dependencies => {
         if (
           dependencies['react-dom'] &&
-          isMinimalReactVersion(dependencies['react-dom'], '16.9.0')
+          isMinimalReactDomVersion(dependencies['react-dom'], '16.9.0')
         ) {
           return { ...dependencies, 'react-refresh': '0.8.1' };
         }
@@ -163,7 +163,7 @@ export const reactPreset = babelConfig => {
         if (
           reactDom &&
           !manager.webpackHMR &&
-          !(await isMinimalReactVersion(reactDom.version, '16.8.0'))
+          !(await isMinimalReactDomVersion(reactDom.version, '16.8.0'))
         ) {
           cleanUsingUnmount(manager);
         }

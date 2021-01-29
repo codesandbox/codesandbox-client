@@ -15,7 +15,6 @@ import {
 } from '@codesandbox/common/lib/templates';
 
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-import { supportsNewReactTransform } from '@codesandbox/common/lib/utils/supports-new-react-transform';
 import { isPreact10 } from '@codesandbox/common/lib/utils/is-preact-10';
 import { PackageJSON } from '@codesandbox/common/lib/types';
 import {
@@ -34,6 +33,7 @@ import cxjsPreset from './presets/cxjs';
 import reasonPreset from './presets/reason';
 import dojoPreset from './presets/dojo';
 import customPreset from './presets/custom';
+import { supportsNewReactTransform } from './presets/create-react-app/utils';
 
 export default function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
@@ -54,7 +54,6 @@ export default function getPreset(template: string, pkg: PackageJSON) {
       }
 
       return preactPresetV8();
-
     case reactTs.name:
       return reactTsPreset();
     case reason.name:

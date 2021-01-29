@@ -1,6 +1,7 @@
 import semver from 'semver';
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
 import { Manager } from 'sandpack-core';
+import { Dependencies } from '@codesandbox/common/lib/templates/template';
 
 function isMinimalSemverVersion(version: string, minimalVersion: string) {
   try {
@@ -11,7 +12,7 @@ function isMinimalSemverVersion(version: string, minimalVersion: string) {
   }
 }
 
-export async function isMinimalReactVersion(
+export async function isMinimalReactDomVersion(
   version: string,
   minimalVersion: string
 ): Promise<boolean> {
@@ -29,6 +30,24 @@ export async function isMinimalReactVersion(
   return false;
 }
 
+export async function isMinimalReactVersion(
+  version: string,
+  minimalVersion: string
+): Promise<boolean> {
+  if (version) {
+    const absoluteDependencies = await getAbsoluteDependencies({
+      react: version,
+    });
+
+    return (
+      absoluteDependencies.react.startsWith('0.0.0') ||
+      isMinimalSemverVersion(absoluteDependencies.react, minimalVersion)
+    );
+  }
+
+  return false;
+}
+
 /**
  * Decide whether React Refresh hot module reloading strategy is supported by React
  */
@@ -40,8 +59,23 @@ export async function hasRefresh(
     const reactDom = dependencies.find(dep => dep.name === 'react-dom');
 
     if (reactDom) {
-      return isMinimalReactVersion(reactDom.version, '16.9.0');
+      return isMinimalReactDomVersion(reactDom.version, '16.9.0');
     }
+  }
+
+  return false;
+}
+
+export function supportsNewReactTransform(
+  dependencies: Dependencies = {},
+  devDependencies: Dependencies = {}
+) {
+  const reactScripts =
+    dependencies['react-scripts'] || devDependencies['react-scripts'];
+  const react = dependencies.react || devDependencies.react;
+
+  if (reactScripts && react) {
+    return isMinimalReactVersion(react, '17.0.0');
   }
 
   return false;

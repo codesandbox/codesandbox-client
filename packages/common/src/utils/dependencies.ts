@@ -65,7 +65,9 @@ export async function getAbsoluteDependency(
   return { name: depName, version: data.version };
 }
 
-export async function getAbsoluteDependencies(dependencies: Object) {
+export async function getAbsoluteDependencies(dependencies: {
+  [dep: string]: string;
+}) {
   const nonAbsoluteDependencies = Object.keys(dependencies).filter(
     dep => !isAbsoluteVersion(dependencies[dep])
   );
