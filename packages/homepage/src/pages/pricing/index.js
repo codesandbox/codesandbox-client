@@ -47,7 +47,7 @@ export default () => {
 
   const toggleTable = name => {
     if (!open[name]) {
-      track('Explore Sandbox Open', {
+      track('Plan detail opened', {
         category: name,
         tab: product === 'individual' ? 'Individual' : 'Business',
       });
