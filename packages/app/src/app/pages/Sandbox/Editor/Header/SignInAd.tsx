@@ -13,8 +13,7 @@ export const SignInBanner = () => {
     window.setTimeout(() => {
       setShow(true);
       // 3 minutes
-      // 180000
-    }, 0);
+    }, 180000);
   }, []);
 
   return (
