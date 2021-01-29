@@ -145,6 +145,17 @@ export default {
   onWindowMessage(cb: (event: MessageEvent) => void) {
     window.addEventListener('message', cb);
   },
+  isChromium(ua: string): boolean {
+    try {
+      const parser = new UAParser(ua);
+      const name = parser.getBrowser().name;
+
+      // by default brave returns chrome
+      return name === 'Chrome' || name === 'Opera' || name === 'Edge';
+    } catch {
+      return false;
+    }
+  },
   parseUserAgent(ua: string): UserAgentDetails | null {
     try {
       const parser = new UAParser(ua);

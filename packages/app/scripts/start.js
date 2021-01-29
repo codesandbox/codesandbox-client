@@ -80,7 +80,7 @@ function setupCompiler(port, protocol) {
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
   // bundle, so if you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.hooks.invalid.tap('invalid', function(module) {
+  compiler.hooks.invalid.tap('invalid', function (module) {
     clearConsole();
     compileStart = Date.now();
     console.log(`Module ${chalk.yellow(module)} updated, re-compiling...`);
@@ -129,7 +129,12 @@ function setupCompiler(port, protocol) {
       .concat(...stats.compilation.children.map(child => child.warnings))
       .filter(warning => warning.error.name !== 'CriticalDependencyWarning')
       // ignore "Error: Can't resolve 'sugarss' in '/client/node_modules/postcss-import/lib'" warning
-      .filter(warning => !warning.module.resource.endsWith('node_modules/postcss-import/lib/process-content.js'));
+      .filter(
+        warning =>
+          !warning.module.resource.endsWith(
+            'node_modules/postcss-import/lib/process-content.js'
+          )
+      );
     const hasWarnings = warnings.length > 0;
     if (hasWarnings) {
       console.log(chalk.yellow(`Compiled with warnings in ${took / 1000}s.\n`));
@@ -187,7 +192,7 @@ function openBrowser(port, protocol) {
 }
 
 function addMiddleware(devServer, index) {
-  devServer.use(function(req, res, next) {
+  devServer.use(function (req, res, next) {
     if (req.url === '/') {
       req.url = '/homepage';
     }
@@ -235,6 +240,7 @@ function addMiddleware(devServer, index) {
       changeOrigin: true,
       ws: true,
       autoRewrite: true,
+      headers: { Connection: 'keep-alive' },
       protocolRewrite: true,
       onProxyReqWs(proxyReq, req, socket, options, head) {
         proxyReq.setHeader('Origin', PROXY_DOMAIN);
@@ -282,7 +288,9 @@ function runDevServer(port, protocol, index) {
     https: protocol === 'https',
     // contentBase: paths.staticPath,
     // public: 'localhost:3000',
-    host: process.env.LOCAL_SERVER ? 'localhost' : (process.env.DEV_DOMAIN || 'codesandbox.test'),
+    host: process.env.LOCAL_SERVER
+      ? 'localhost'
+      : process.env.DEV_DOMAIN || 'codesandbox.test',
     disableHostCheck: !process.env.LOCAL_SERVER,
     contentBase: false,
     clientLogLevel: 'warning',
@@ -321,12 +329,14 @@ function run(port) {
 
   if (process.env.LOCAL_SERVER) {
     // Sandbox server
-    const proxy = httpProxy.createProxyServer({});
+    const proxy = httpProxy.createProxyServer({
+      headers: { Connection: 'keep-alive' },
+    });
     proxy.on('error', error => {
       console.error('Got an error', error);
     });
     http
-      .createServer(function(req, res) {
+      .createServer(function (req, res) {
         if (req.url.includes('.js')) {
           proxy.web(req, res, { target: 'http://localhost:3000' });
         } else {
