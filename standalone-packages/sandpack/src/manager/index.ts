@@ -124,10 +124,18 @@ export default class PreviewManager {
       this.element = selector;
       this.iframe = selector;
     }
-    this.iframe.setAttribute(
-      'sandbox',
-      'allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts'
-    );
+    if (!this.iframe.getAttribute('sandbox')) {
+      this.iframe.setAttribute(
+        'sandbox',
+        'allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts'
+      );
+    }
+    if (!this.iframe.getAttribute('allow')) {
+      this.iframe.setAttribute(
+        'allow',
+        'accelerometer; ambient-light-sensor; autoplay; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking'
+      );
+    }
 
     this.iframe.src = this.bundlerURL;
     this.listener = listen((mes: any) => {

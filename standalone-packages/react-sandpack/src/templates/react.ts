@@ -54,9 +54,9 @@ font-size: 1.5rem;
     },
   },
   dependencies: {
-    react: 'latest',
-    'react-dom': 'latest',
-    'react-scripts': 'latest',
+    react: '^17.0.0',
+    'react-dom': '^17.0.0',
+    'react-scripts': '^4.0.0',
   },
   entry: '/index.js',
   main: '/App.js',

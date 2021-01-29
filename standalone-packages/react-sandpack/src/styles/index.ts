@@ -265,12 +265,16 @@ export const getStyleSheet = () => `
 
 .sp-input {
   background-color: var(--colors-inputBackground);
-  color: var(--colors-highlightText);
+  color: var(--colors-defaultText);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radii-default);
   border: 0;
   height: 24px;
   font-size: inherit;
+}
+
+.sp-input:focus {
+  color: var(--colors-highlightText);
 }
 
 .sp-error {

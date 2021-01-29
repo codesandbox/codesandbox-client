@@ -139,7 +139,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   componentDidMount() {
     if (this.props.autorun) {
       const options = {
-        rootMargin: '300px',
+        rootMargin: '600px 0px',
         threshold: 1.0,
       };
 
@@ -295,9 +295,6 @@ class SandpackProvider extends React.PureComponent<Props, State> {
               position: 'absolute',
               visibility: 'hidden',
             }}
-            allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-            sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-            src={this.props.bundlerURL}
           />
         </div>
         {children}

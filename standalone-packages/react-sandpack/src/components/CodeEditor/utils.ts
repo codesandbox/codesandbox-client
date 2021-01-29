@@ -4,6 +4,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
 import { SandpackTheme } from '../../types';
+import { hexToCSSRGBa } from '../../utils/string-utils';
 
 export const getEditorTheme = (theme: SandpackTheme) =>
   EditorView.theme({
@@ -17,7 +18,7 @@ export const getEditorTheme = (theme: SandpackTheme) =>
       backgroundColor: theme.palette.inactive,
     },
 
-    $activeLine: { backgroundColor: theme.palette.inactive },
+    $activeLine: { backgroundColor: hexToCSSRGBa(theme.palette.inactive, 0.5) },
 
     '$matchingBracket, $nonmatchingBracket': {
       color: 'inherit',

@@ -2,9 +2,9 @@ import { SandpackTheme } from '../types';
 
 export const sandpackLightTheme: SandpackTheme = {
   palette: {
-    highlightText: '#5B6776',
+    highlightText: '#1f2933',
     defaultText: '#999999',
-    inactive: '#E5E7EB',
+    inactive: '#e4e7eb',
     mainBackground: '#f8f9fb',
     inputBackground: '#ffffff',
     accent: '#6caedd',

@@ -7,10 +7,14 @@ import {
   EditorView,
   KeyBinding,
 } from '@codemirror/view';
-import { indentOnInput } from '@codemirror/language';
 import { EditorState } from '@codemirror/state';
 import { history, historyKeymap } from '@codemirror/history';
-import { defaultKeymap, indentLess, indentMore } from '@codemirror/commands';
+import {
+  defaultKeymap,
+  indentLess,
+  indentMore,
+  deleteLine,
+} from '@codemirror/commands';
 import { lineNumbers } from '@codemirror/gutter';
 import { bracketMatching } from '@codemirror/matchbrackets';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets';
@@ -71,12 +75,15 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
           return true;
         },
       },
+      {
+        key: 'mod-Backspace',
+        run: deleteLine,
+      },
     ];
 
     const extensions = [
       highlightSpecialChars(),
       history(),
-      indentOnInput(),
       bracketMatching(),
       closeBrackets(),
       highlightActiveLine(),
