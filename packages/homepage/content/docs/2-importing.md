@@ -102,11 +102,11 @@ code examples. You can call the endpoint
 We currently support three extra parameters. The query accepts the same options
 as the [embed options](https://codesandbox.io/docs/embedding/#embed-options).
 
-| Query Parameter | Description                                                                          | Example Input               |
-| --------------- | ------------------------------------------------------------------------------------ | --------------------------- |
-| `parameters`    | Parameters used to define how the sandbox should be created.                         | Example below               |
-| `query`         | The query that will be used in the redirect url.                                     | `view=preview&runonclick=1` |
-| `embed`         | Whether we should redirect to the embed instead of the editor.                       | `1`                         |
+| Query Parameter | Description                                                                           | Example Input               |
+| --------------- | ------------------------------------------------------------------------------------- | --------------------------- |
+| `parameters`    | Parameters used to define how the sandbox should be created.                          | Example below               |
+| `query`         | The query that will be used in the redirect url.                                      | `view=preview&runonclick=1` |
+| `embed`         | Whether we should redirect to the embed instead of the editor.                        | `1`                         |
 | `json`          | Instead of redirecting we will send a JSON response with `{"sandbox_id": sandboxId}`. | `1`                         |
 
 ### How it works
@@ -130,6 +130,8 @@ will be in the sandbox, an example body would be:
 }
 ```
 
+#### Binary Files
+
 You can import binary files by setting `isBinary` to `true` and `content` as a
 URL to the file hosted externally. For example:
 
@@ -139,6 +141,31 @@ URL to the file hosted externally. For example:
   "content": "https://..."
 }
 ```
+
+#### Folders
+
+You can create folders by naming the file with a `/` in it's name, allowing to
+structure your application how you want:
+
+```json
+{
+  "files": {
+    "src/index.js": {
+      "content": "console.log('hello!')",
+      "isBinary": false
+    },
+    "package.json": {
+      "content": {
+        "dependencies": {}
+      }
+    }
+  }
+}
+```
+
+This will create a file called `index.js` in your `src` folder.
+
+#### Package.json
 
 Every request **requires** a `package.json`. This file can either be a string or
 an object. We determine all information of the sandbox from the files, like we

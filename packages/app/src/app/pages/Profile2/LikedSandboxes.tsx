@@ -33,6 +33,16 @@ export const LikedSandboxes = () => {
     // only show public sandboxes on profile
     .filter(sandbox => sandbox.privacy === 0);
 
+  if (!isLoadingSandboxes && sandboxes.length === 0) {
+    return (
+      <Stack justify="center" align="center">
+        <Text variant="muted" size={4} weight="medium" align="center">
+          This user does not have any liked sandboxes yet
+        </Text>
+      </Stack>
+    );
+  }
+
   return (
     <Stack as="section" direction="vertical" gap={6}>
       <Stack justify="space-between" align="center">
@@ -84,6 +94,8 @@ const Pagination = () => {
   } = useOvermind();
 
   const numberOfPages = Math.ceil(givenLikeCount / SANDBOXES_PER_PAGE);
+
+  if (numberOfPages < 2) return null;
 
   return (
     <nav role="navigation" aria-label="Pagination Navigation">
