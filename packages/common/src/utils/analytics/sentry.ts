@@ -58,6 +58,13 @@ export async function initialize(dsn: string) {
 
         "undefined is not an object (evaluating 'window.__pad.performLoop')", // Only happens on Safari, but spams our servers. Doesn't break anything
       ],
+      integrations: [
+        new _Sentry.Integrations.TryCatch({
+          setTimeout: false,
+          setInterval: false,
+          requestAnimationFrame: false,
+        }),
+      ],
       allowUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
       maxBreadcrumbs: 100,
       /**
