@@ -77,7 +77,7 @@ export const cancelWorkspaceSubscription: AsyncAction = async ({
   actions,
   effects,
 }) => {
-  const nextBillDate = state.activeTeamInfo!.subscription.nextBillDate;
+  const nextBillDate = state.activeTeamInfo!.subscription!.nextBillDate;
   const expirationDate = format(subDays(new Date(nextBillDate), 1), 'PP');
 
   const confirmed = await actions.modals.alertModal.open({
