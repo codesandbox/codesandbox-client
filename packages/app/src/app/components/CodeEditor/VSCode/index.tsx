@@ -4,7 +4,7 @@ import './workbench-theme.css';
 import getTemplate from '@codesandbox/common/lib/templates';
 import getUI from '@codesandbox/common/lib/templates/configuration/ui';
 import theme from '@codesandbox/common/lib/theme';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { json } from 'overmind';
 import React, { useEffect, useRef } from 'react';
 import { render } from 'react-dom';
@@ -14,7 +14,9 @@ import { Configuration } from './Configuration';
 import { Container, GlobalStyles } from './elements';
 
 export const VSCode: React.FunctionComponent = () => {
-  const { state, actions, effects } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
+  const effects = useEffects();
   const containerEl = useRef(null);
 
   const getCurrentModule = React.useCallback(
