@@ -66,10 +66,10 @@ export async function hasRefresh(
   return false;
 }
 
-export function supportsNewReactTransform(
+export async function supportsNewReactTransform(
   dependencies: Dependencies = {},
   devDependencies: Dependencies = {}
-) {
+): Promise<boolean> {
   const reactScripts =
     dependencies['react-scripts'] || devDependencies['react-scripts'];
   const react = dependencies.react || devDependencies.react;

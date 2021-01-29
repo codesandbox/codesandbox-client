@@ -35,10 +35,12 @@ import dojoPreset from './presets/dojo';
 import customPreset from './presets/custom';
 import { supportsNewReactTransform } from './presets/create-react-app/utils';
 
-export default function getPreset(template: string, pkg: PackageJSON) {
+export default async function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
     case react.name:
-      if (supportsNewReactTransform(pkg.dependencies, pkg.devDependencies)) {
+      if (
+        await supportsNewReactTransform(pkg.dependencies, pkg.devDependencies)
+      ) {
         return reactPresetV4();
       }
 
