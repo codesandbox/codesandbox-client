@@ -4,7 +4,7 @@ import Modal from 'app/components/Modal';
 import { Alert } from '../Common/Alert';
 import { MemberPaymentConfirmation } from '../MemberPaymentConfirmation';
 
-const customComponentMap = { MemberPaymentConfirmation };
+export const AlertModalComponents = { MemberPaymentConfirmation };
 
 export const GenericAlertModal = () => {
   const { state, actions } = useOvermind();
@@ -17,7 +17,7 @@ export const GenericAlertModal = () => {
   } = state.modals.alertModal;
 
   if (customComponent) {
-    const Component = customComponentMap[customComponent];
+    const Component = AlertModalComponents[customComponent];
     return (
       <Modal
         isOpen={isCurrent}
