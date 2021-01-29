@@ -146,7 +146,7 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
   if (!visible) return null;
 
   const numberOfItems = React.Children.count(props.children);
-  const SUGGESTED_ITEM_HEIGHT = 36;
+  const SUGGESTED_ITEM_HEIGHT = 31;
   const suggestedHeight = numberOfItems * SUGGESTED_ITEM_HEIGHT;
   const suggestedWidth = 180;
 
@@ -171,7 +171,7 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
                   position.y,
                   window.innerHeight -
                     (popoverRect.height || suggestedHeight) -
-                    16
+                    8
                 ),
               })}
             >
