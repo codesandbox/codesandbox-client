@@ -78,7 +78,7 @@
     "rellax": "^1.10.0",
     "styled-breakpoints": "^6.9.1",
     "styled-components": "^5.2.0",
-    "three": "^0.111.0",
+    "three": "^0.125.0",
     "typography": "^0.16.17"
   },
   "devDependencies": {
