@@ -452,7 +452,6 @@ export const WorkspaceSettings = () => {
                     Go Pro
                   </Text>
                   <Stack direction="vertical" gap={1}>
-                    <Text size={3}>Team, plus:</Text>
                     <Text size={3}>+ Work in private</Text>
                     <Text size={3}>+ Private NPM packages</Text>
                     <Text size={3}>+ Flexible permissions</Text>
