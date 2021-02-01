@@ -139,6 +139,10 @@ export const teamFragmentDashboard = gql`
       username
       avatarUrl
     }
+
+    subscription {
+      origin
+    }
   }
 `;
 
