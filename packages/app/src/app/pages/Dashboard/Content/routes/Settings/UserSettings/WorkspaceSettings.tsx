@@ -271,7 +271,6 @@ export const WorkspaceSettings = () => {
               Go Pro
             </Text>
             <Stack direction="vertical" gap={1}>
-              <Text size={3}>Personal, plus:</Text>
               <Text size={3}>+ Work in private</Text>
               <Text size={3}>+ More file storage</Text>
               <Text size={3}>+ Higher upload limits</Text>

@@ -283,7 +283,7 @@ export const WorkspaceSettings = () => {
                 <Text size={3}>
                   {team?.subscription?.type === WorkspaceSubscriptionTypes.Team
                     ? 'Team Pro'
-                    : 'Community Plan (Free)'}
+                    : 'Team (Free)'}
                 </Text>
                 <Text size={3} variant="muted">
                   {team.description}
@@ -452,7 +452,6 @@ export const WorkspaceSettings = () => {
                     Go Pro
                   </Text>
                   <Stack direction="vertical" gap={1}>
-                    <Text size={3}>Community, plus:</Text>
                     <Text size={3}>+ Work in private</Text>
                     <Text size={3}>+ Private NPM packages</Text>
                     <Text size={3}>+ Flexible permissions</Text>
