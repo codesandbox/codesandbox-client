@@ -4,6 +4,13 @@ import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 import axios from 'axios';
 
 const NetlifyBaseURL = 'https://netlify.deploy.codesandbox.io/site';
+const createBuildUrl = (
+  sandboxId: string,
+  id: string,
+  dist: string,
+  command: string
+) =>
+  `https://builder.csbops.io/site/${sandboxId}/deploys?siteId=${id}&dist=${dist}&buildCommand=${command}`;
 
 type Options = {
   getUserId(): string | null;
@@ -75,18 +82,13 @@ export default (() => {
         id = data.site_id;
       }
 
-      await axios.post(
-        `${NetlifyBaseURL}/${
-          sandbox.id
-        }/deploys?siteId=${id}&dist=${buildConfig.publish ||
-          template.distDir}&buildCommand=${buildCommandFromConfig ||
-          buildCommand(template.name)}`,
-        file,
-        {
-          headers: {
-            'Content-Type': 'application/zip',
-          },
-        }
+      await axios.get(
+        createBuildUrl(
+          sandbox.id,
+          id,
+          buildConfig.publish || template.distDir,
+          buildCommandFromConfig || buildCommand(template.name)
+        )
       );
 
       return id;
