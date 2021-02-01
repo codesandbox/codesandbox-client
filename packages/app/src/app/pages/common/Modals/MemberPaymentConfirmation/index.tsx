@@ -14,7 +14,7 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
 
   const [confirmed, setConfirmed] = React.useState(false);
 
-  const subscription = activeTeamInfo.subscription;
+  const subscription = activeTeamInfo!.subscription;
 
   const value =
     subscription.currency +
