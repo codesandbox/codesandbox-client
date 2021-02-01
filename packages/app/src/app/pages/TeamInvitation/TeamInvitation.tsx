@@ -26,7 +26,7 @@ const InfoDialog = ({
   action,
 }: {
   title: React.ReactNode | string;
-  description?: string;
+  description?: string | React.ReactNode;
   action: React.ReactNode;
 }) => (
   <Element
@@ -59,7 +59,12 @@ const InfoDialog = ({
 const ErrorDialog = ({ error }: { error: Error }) => (
   <InfoDialog
     title="Something went wrong while fetching the invitation"
-    description="We could not find this invitation."
+    description={
+      <>
+        Sorry, we could not find this invitation. Try reloading the page. <br />
+        If problems persist then check the invite token is correct.
+      </>
+    }
     action={
       <Stack style={{ width: '100%' }} gap={2}>
         <Button
