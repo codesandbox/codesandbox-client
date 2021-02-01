@@ -167,7 +167,6 @@ export const WorkspaceSettings = () => {
                       size={3}
                       variant="active"
                       href={activeSubscription.updateBillingUrl}
-                      target="_blank"
                       css={css({ fontWeight: 'medium' })}
                     >
                       Update payment information
@@ -176,7 +175,6 @@ export const WorkspaceSettings = () => {
                       size={3}
                       variant="active"
                       href="/pro"
-                      target="_blank"
                       css={css({ fontWeight: 'medium' })}
                     >
                       Change billing interval
@@ -276,7 +274,7 @@ export const WorkspaceSettings = () => {
               <Text size={3}>+ Higher upload limits</Text>
               <Text size={3}>+ Flexible permissions</Text>
             </Stack>
-            <Button as="a" href="/pro" target="_blank" marginTop={2}>
+            <Button as="a" href="/pro" marginTop={2}>
               Upgrade to Pro
             </Button>
           </Stack>
