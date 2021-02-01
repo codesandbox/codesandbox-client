@@ -40,7 +40,7 @@ Sharing sandboxes like this provides new ways to learn from each other, as it’
 In some scenarios, though, you might not want such open access. Say you’re hiring and sending out coding challenges, or you’re a freelancer sharing in-progress client work, you can now restrict collaborators from forking or downloading code. And bigger teams will like our role-based permissions, which you can set on a per sandbox or workspace basis.
 
 
-_"With Team Pro, our customer engineers have new superpowers. The ability for our team to collaborate on code demos and debug issues live with customers has changed the way we do business. The team loves it."_ - Flatfile CEO and pilot participant, David Boskovic.
+_"With Team Pro, our customer engineers have new superpowers. The ability for our team to collaborate on code demos and debug issues live with customers has changed the way we do business. The team loves it."_ - Flatfile CEO and pilot participant David Boskovic.
 
 
 ## Get Better, More Actionable Feedback
@@ -59,6 +59,6 @@ Teammates and clients can add comments right on the preview in the sandbox, too.
 Waiting on builds and deploys and using different environments has forced teams to work in a particular way. Team Pro enables you to skip the meetings and issue juggling by working directly with teammates to iterate and make changes, seeing results immediately. Or, if you can’t get together, then you can use comments to work async, but they’re right there in the editor, where you need them. Putting all this together, and the result is your product team can focus more on creating by working together more effectively—a link is all you need to hop into a sandbox and keep development work flowing.
 
 ## Thanks
-Shipping Team Pro has been a long project, involving nearly all members of our team. We’d like to thank [Sanne Kalkman](https://twitter.com/sannekalkman), [Siddharth Kshetrapal](https://twitter.com/siddharthkp), [Danny Ruchtie](https://twitter.com/druchtie), [Sara Viera](https://twitter.com/NikkitaFTW), and [Christian Alfoni](https://twitter.com/christianalfoni) in particular for their hard work. Thanks also go to all pilot participants for their thoughtful feedback, which has helped shape this release along the way.
+Shipping Team Pro has been a long project, involving nearly all members of our team. We want to thank [Sanne Kalkman](https://twitter.com/sannekalkman), [Siddharth Kshetrapal](https://twitter.com/siddharthkp), [Danny Ruchtie](https://twitter.com/druchtie), [Sara Viera](https://twitter.com/NikkitaFTW), and [Christian Alfoni](https://twitter.com/christianalfoni), in particular, for their hard work. Thanks also go to all pilot participants for their thoughtful feedback, which has helped shape this release along the way.
 
 We’re excited to see what you can accomplish now you can use CodeSandbox as a team to build faster together.
