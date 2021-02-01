@@ -345,7 +345,7 @@ function withSandpack(Component: React.ComponentClass<any> | React.FC<any>) {
           <Component
             {...props}
             dispatch={dispatch}
-            listen={dispatch}
+            listen={listen}
             sandpack={rest}
           />
         );

@@ -19,6 +19,7 @@ export interface SandpackRunnerProps {
   setup?: Partial<SandboxTemplate>;
   showNavigator?: boolean;
   showOpenInCodeSandbox?: boolean;
+  bundlerUrl?: string;
   theme?: SandpackTheme;
   customStyle?: React.CSSProperties;
 }
@@ -27,6 +28,7 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
   code,
   template,
   setup,
+  bundlerUrl,
   showNavigator = false,
   theme = sandpackLightTheme,
   customStyle,
@@ -51,6 +53,7 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
       dependencies={projectSetup.dependencies}
       entry={projectSetup.entry}
       environment={projectSetup.environment}
+      bundlerURL={bundlerUrl}
     >
       <ThemeProvider value={theme}>
         <SandpackLayout style={customStyle}>

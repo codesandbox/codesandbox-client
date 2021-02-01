@@ -139,7 +139,7 @@ export default class PreviewManager {
 
     this.iframe.src = this.bundlerURL;
     this.listener = listen((mes: any) => {
-      if (mes.type !== 'initialized' && mes.id && mes.id !== this.id) {
+      if (mes.type !== 'initialized' && mes.$id && mes.$id !== this.id) {
         // This message was not meant for this instance of the manager.
         return;
       }
@@ -169,7 +169,7 @@ export default class PreviewManager {
               }
             }
 
-            this.updatePreview();
+            this.updatePreview(this.sandboxInfo, true);
           }
           break;
         }
@@ -209,7 +209,7 @@ export default class PreviewManager {
     }
   }
 
-  updatePreview(sandboxInfo = this.sandboxInfo) {
+  updatePreview(sandboxInfo = this.sandboxInfo, isFirstCompile?: boolean) {
     this.sandboxInfo = sandboxInfo;
 
     const files = this.getFiles();
@@ -250,6 +250,7 @@ export default class PreviewManager {
       type: 'compile',
       codesandbox: true,
       version: 3,
+      isFirstCompile,
       modules,
       externalResources: [],
       hasFileResolver: Boolean(this.options.fileResolver),
@@ -319,7 +320,7 @@ export default class PreviewManager {
     [transpiler: string]: Object;
   }> =>
     new Promise(resolve => {
-      const listener = listen((message: any) => {
+      const listener = this.listen((message: any) => {
         if (message.type === 'transpiler-context') {
           resolve(message.data);
 

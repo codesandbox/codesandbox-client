@@ -153,10 +153,14 @@ export function registerFrame(frame: Window, origin: string, bundlerId?: number)
 }
 
 if (typeof window !== 'undefined') {
-  // We now start listening so we can let our listeners know
-  window.addEventListener('message', eventListener);
+  intializedPromise.then(() => {
+    // We now start listening so we can let our listeners know
+    window.addEventListener('message', eventListener);
+  });
 }
 
 export function reattach() {
-  window.addEventListener('message', eventListener);
+  intializedPromise.then(() => {
+    window.addEventListener('message', eventListener);
+  });
 }

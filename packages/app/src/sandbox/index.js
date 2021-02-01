@@ -33,10 +33,24 @@ requirePolyfills().then(() => {
     dispatch({ type: 'initialized', url: document.location.href });
   }
 
+  let isFirstCompile = true;
   async function handleMessage(data, source) {
     if (source) {
       if (data.type === 'compile') {
+        // In sandpack we always broadcast a compile message from every manager whenever 1 frame reconnects. To prevent
+        // every mounted frame from recompiling, we explicitly flag that this compilation is meant to be the
+        // first compilation done by the frame. This way we can ensure that only the new frame, that
+        // hasn't compiled yet, will respond to the compile call. This currently is Sandpack specific.
+        if (
+          data.isFirstCompile !== undefined &&
+          data.isFirstCompile === true &&
+          !isFirstCompile
+        ) {
+          return;
+        }
+
         compile(data);
+        isFirstCompile = false;
       } else if (data.type === 'get-transpiler-context') {
         const manager = getCurrentManager();
 
