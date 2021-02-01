@@ -391,7 +391,7 @@ export default {
     baseCommitSha: string;
     headCommitSha: string;
     files: GitFileCompare[];
-  }> {
+  } | null> {
     try {
       const response: any = await api.post(
         `/sandboxes/${sandboxId}/git/compare`,
