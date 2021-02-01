@@ -29,11 +29,11 @@ export const SignInBanner = () => {
             padding={4}
             css={css({
               position: 'absolute',
-              backgroundColor: 'white',
+              backgroundColor: 'button.background',
               width: '100vw',
               height: 49,
               alignItems: 'center',
-              color: 'grays.400',
+              color: 'sideBar.foreground',
               zIndex: 9999,
             })}
           >
@@ -42,13 +42,18 @@ export const SignInBanner = () => {
               justify="space-between"
               css={css({ width: '100%' })}
             >
-              <Stack gap={4} align="center">
+              <Stack
+                gap={4}
+                align="center"
+                css={css({ margin: 'auto !important' })}
+              >
                 <Stack
                   paddingY={1}
                   paddingX={2}
                   css={css({
-                    color: 'white',
-                    backgroundColor: 'blues.500',
+                    backgroundColor: 'sideBar.foreground',
+                    color: 'button.background',
+                    fontWeight: 'bold',
                     textAlign: 'center',
                     fontSize: '1',
                     borderRadius: 'small',
@@ -65,9 +70,9 @@ export const SignInBanner = () => {
                 <Button
                   autoWidth
                   css={css({
-                    color: 'blues.500',
+                    color: 'sideBar.foreground',
                     ':hover:not(:disabled), :focus:not(:disabled)': {
-                      color: 'blues.500',
+                      color: 'sideBar.foreground',
                     },
                   })}
                   onClick={() => {
@@ -83,6 +88,7 @@ export const SignInBanner = () => {
                     width: 6,
                     padding: 0,
                     display: 'block',
+                    color: 'sideBar.foreground',
                   })}
                   variant="link"
                   padding={0}
@@ -90,7 +96,7 @@ export const SignInBanner = () => {
                 >
                   <svg width={24} height={24} fill="none" viewBox="0 0 24 24">
                     <path
-                      fill="#999"
+                      fill="currentColor"
                       d="M17.508 7.301l-1.083-1.09-4.872 4.909-4.871-4.91-1.083 1.091 4.872 4.91-4.872 4.909 1.083 1.09 4.871-4.909 4.872 4.91 1.082-1.091-4.871-4.91 4.872-4.909z"
                     />
                   </svg>

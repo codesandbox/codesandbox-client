@@ -11,6 +11,7 @@ export const Container = styled.button<{ focused?: boolean }>`
   cursor: pointer;
   text-decoration: none;
   border-radius: 2px;
+  overflow: hidden;
 
   &:focus {
     background-color: #242424;
@@ -43,6 +44,7 @@ export const Details = styled.div`
   flex: 1 1 auto;
   flex-direction: column;
   margin-left: 1rem;
+  overflow: hidden;
 `;
 
 export const Row = styled.div`
@@ -59,7 +61,6 @@ export const Title = styled.span`
   margin-bottom: 0.125rem;
   font-size: 13px;
   line-height: 1rem;
-  max-width: 200px;
   text-align: left;
   max-height: 16px;
   white-space: nowrap;

@@ -240,6 +240,7 @@ function addMiddleware(devServer, index) {
       changeOrigin: true,
       ws: true,
       autoRewrite: true,
+      headers: { Connection: 'keep-alive' },
       protocolRewrite: true,
       onProxyReqWs(proxyReq, req, socket, options, head) {
         proxyReq.setHeader('Origin', PROXY_DOMAIN);
@@ -328,7 +329,9 @@ function run(port) {
 
   if (process.env.LOCAL_SERVER) {
     // Sandbox server
-    const proxy = httpProxy.createProxyServer({});
+    const proxy = httpProxy.createProxyServer({
+      headers: { Connection: 'keep-alive' },
+    });
     proxy.on('error', error => {
       console.error('Got an error', error);
     });
