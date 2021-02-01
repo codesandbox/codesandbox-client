@@ -81,8 +81,8 @@ export const cancelWorkspaceSubscription: AsyncAction = async ({
   const expirationDate = format(subDays(new Date(nextBillDate), 1), 'PP');
 
   const confirmed = await actions.modals.alertModal.open({
-    title: 'Are you sure?',
-    message: `Your subscription will expire on the next billing date - ${expirationDate}.`,
+    title: 'Cancel Subscription',
+    message: `Are you sure? Your subscription will expire on the next billing date - ${expirationDate}.`,
     type: 'danger',
   });
 
