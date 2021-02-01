@@ -27,7 +27,7 @@ export const InlineCheckout: React.FC = () => {
     Paddle.Setup({
       vendor: PADDLE_VENDOR_ID,
       eventCallback: event => {
-        if (event.event === 'Checkout.Location.Submit') {
+        if (event?.eventData?.checkout) {
           const customSummary = event.eventData.checkout.prices.customer;
           actions.pro.updateSummary({
             unitPrice: customSummary.unit_price,
