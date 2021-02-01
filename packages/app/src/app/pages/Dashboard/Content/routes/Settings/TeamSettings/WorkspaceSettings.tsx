@@ -326,10 +326,10 @@ export const WorkspaceSettings = () => {
                   variant="link"
                   disabled={loading}
                   css={css({
-                    padding: 0,
-                    textDecoration: 'underline',
+                    height: 'auto',
                     fontSize: 3,
-                    ':hover:not(:disabled)': { color: 'errorForeground' },
+                    color: 'errorForeground',
+                    padding: 0,
                   })}
                   onClick={() =>
                     actions.modalOpened({ modal: 'deleteWorkspace' })
@@ -357,10 +357,10 @@ export const WorkspaceSettings = () => {
                         </Text>
                         <Link
                           size={3}
-                          variant="muted"
+                          variant="active"
                           href="/pro"
                           target="_blank"
-                          css={{ textDecoration: 'underline' }}
+                          css={css({ fontWeight: 'medium' })}
                         >
                           Upgrade to Team Pro
                         </Link>
@@ -381,19 +381,19 @@ export const WorkspaceSettings = () => {
 
                         <Link
                           size={3}
-                          variant="muted"
+                          variant="active"
                           href={team.subscription.updateBillingUrl}
                           target="_blank"
-                          css={{ textDecoration: 'underline' }}
+                          css={css({ fontWeight: 'medium' })}
                         >
                           Update payment information
                         </Link>
                         <Link
                           size={3}
-                          variant="muted"
+                          variant="active"
                           href="/pro"
                           target="_blank"
-                          css={{ textDecoration: 'underline' }}
+                          css={css({ fontWeight: 'medium' })}
                         >
                           Change billing interval
                         </Link>
@@ -423,14 +423,11 @@ export const WorkspaceSettings = () => {
                           <Button
                             autoWidth
                             variant="link"
-                            disabled={loading}
                             css={css({
-                              padding: 0,
-                              textDecoration: 'underline',
+                              height: 'auto',
                               fontSize: 3,
-                              ':hover:not(:disabled)': {
-                                color: 'errorForeground',
-                              },
+                              color: 'errorForeground',
+                              padding: 0,
                             })}
                             onClick={() =>
                               actions.pro.cancelWorkspaceSubscription()

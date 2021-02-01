@@ -87,19 +87,19 @@ export const WorkspaceSettings = () => {
               gap={2}
               css={{ width: 'calc(100% - 64px)' }}
             >
-              <Text size={6} weight="bold" maxWidth="100%">
+              <Text size={6} weight="bold" maxWidth="100%" variant="muted">
                 {user.username}
               </Text>
               <Text size={3} maxWidth="100%">
                 {user.name}
               </Text>
-              <Text size={3} maxWidth="100%">
+              <Text size={3} maxWidth="100%" variant="muted">
                 {user.email}
               </Text>
               <Button
                 variant="link"
+                autoWidth
                 css={css({
-                  width: 'fit-content',
                   height: 'auto',
                   fontSize: 3,
                   color: 'button.background',
@@ -122,7 +122,7 @@ export const WorkspaceSettings = () => {
             <Text size={6} weight="bold" maxWidth="100%">
               Plan
             </Text>
-            <Text size={3} maxWidth="100%">
+            <Text size={3} maxWidth="100%" variant="muted">
               {activeSubscription ? 'Personal Pro' : 'Personal (free)'}
             </Text>
             {activeSubscription ? (
@@ -130,9 +130,9 @@ export const WorkspaceSettings = () => {
                 {['LEGACY', 'PATRON'].includes(activeSubscription.origin) ? (
                   <Stack direction="vertical" gap={2}>
                     <Button
+                      autoWidth
                       variant="link"
                       css={css({
-                        width: 'fit-content',
                         height: 'auto',
                         fontSize: 3,
                         color: 'button.background',
@@ -148,12 +148,12 @@ export const WorkspaceSettings = () => {
                       Update payment information
                     </Button>
                     <Button
+                      autoWidth
                       variant="link"
                       css={css({
-                        width: 'fit-content',
                         height: 'auto',
                         fontSize: 3,
-                        color: 'button.background',
+                        color: 'errorForeground',
                         padding: 0,
                       })}
                       onClick={() => actions.patron.cancelSubscriptionClicked()}
@@ -176,6 +176,7 @@ export const WorkspaceSettings = () => {
                       size={3}
                       variant="active"
                       href="/pro"
+                      target="_blank"
                       css={css({ fontWeight: 'medium' })}
                     >
                       Change billing interval
@@ -205,7 +206,6 @@ export const WorkspaceSettings = () => {
                         autoWidth
                         variant="link"
                         css={css({
-                          width: 'fit-content',
                           height: 'auto',
                           fontSize: 3,
                           color: 'errorForeground',
@@ -255,10 +255,10 @@ export const WorkspaceSettings = () => {
                 </div>
               )}
 
-              <Text size={3} maxWidth="100%">
+              <Text size={3} maxWidth="100%" variant="muted">
                 Invoices are sent to
               </Text>
-              <Text size={3} maxWidth="100%">
+              <Text size={3} maxWidth="100%" variant="muted">
                 {user.email}
               </Text>
             </Stack>
