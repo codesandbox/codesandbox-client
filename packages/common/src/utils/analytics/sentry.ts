@@ -43,10 +43,6 @@ export async function initialize(dsn: string) {
         'TypeScript Server Error', // Called from the TSC server
         /^Canceled$/, // Used by VSCode to stop currently running actions
 
-        // Chrome extensions
-        /extensions\//i,
-        /^chrome:\/\//i,
-
         // react devtools Outside of our scope for now, but we definitely want to check this out.
         // TODO: check what's happening here: https://sentry.io/organizations/codesandbox/issues/1239466583/?project=155188&query=is%3Aunresolved+release%3APROD-1573653062-4134efc0a
         /because a node with that id is already in the Store/,
@@ -57,6 +53,13 @@ export async function initialize(dsn: string) {
         /Cannot reorder children for node/,
 
         "undefined is not an object (evaluating 'window.__pad.performLoop')", // Only happens on Safari, but spams our servers. Doesn't break anything
+      ],
+      integrations: [
+        new _Sentry.Integrations.TryCatch({
+          setTimeout: false,
+          setInterval: false,
+          requestAnimationFrame: false,
+        }),
       ],
       allowUrls: [/https?:\/\/((uploads|www)\.)?codesandbox\.io/],
       maxBreadcrumbs: 100,
