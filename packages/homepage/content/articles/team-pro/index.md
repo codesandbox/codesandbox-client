@@ -50,7 +50,7 @@ _"With Team Pro, our customer engineers have new superpowers. The ability for ou
 You can add an unlimited number of contributors to a workspace, so whole product teams can join, with some folks creating and others providing feedback, sharing sandboxes with just a link or invite. This means a designer can provide quick UI feedback, a product manager can see how their spec is being built, QA can try things sooner, and marketing can review the copy.
 
 ### Code Comments
-Code comments enable you to comment on a sandbox as whole or specific code lines. So you can ask questions, get answers, undertake quick code reviews, or request feedback on code directly within the sandbox itself.
+Code comments enable you to comment on a whole sandbox or specific code lines. So you can ask questions, get answers, undertake quick code reviews, or request feedback on code directly within the sandbox itself.
 
 ### Preview Comments
 Teammates and clients can add comments right on the preview in the sandbox, too. We generate a snapshot, mark the point you’re commenting on, and automatically note useful information, like the browser version and screen size details too.
