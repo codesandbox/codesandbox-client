@@ -3,7 +3,7 @@ banner: ./images/banner.jpg
 slug: team-pro
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
-title: Announcing Team Pro - Build faster and use CodeSandbox with your team
+title: Announcing Team Pro - Build Faster and Use Codesandbox With Your Team
 description: Purpose-built for product teams of all sizes to prototype rapidly, share knowledge, and get better feedback so you can all build faster, together.
 date: 2021-02-03
 ---
