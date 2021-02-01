@@ -812,6 +812,11 @@ export const _compareWithSource: AsyncAction = async ({
     true
   );
 
+  if (!originalChanges) {
+    state.currentModal = 'notFoundBranchModal';
+    return null;
+  }
+
   const updates = await actions.git._evaluateGitChanges(originalChanges.files);
 
   state.git.sourceCommitSha = originalChanges.headCommitSha;
@@ -853,6 +858,7 @@ export const _compareWithSource: AsyncAction = async ({
   } else {
     state.git.gitState = SandboxGitState.SYNCED;
   }
+  return null;
 };
 
 export const _compareWithBase: AsyncAction = async ({
