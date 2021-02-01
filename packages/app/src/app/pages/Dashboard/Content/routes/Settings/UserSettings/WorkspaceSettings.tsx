@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { format } from 'date-fns';
 import {
   Avatar,
   Button,
@@ -6,6 +7,7 @@ import {
   Stack,
   Text,
   Tooltip,
+  Link,
 } from '@codesandbox/components';
 import {
   github as GitHubIcon,
@@ -121,44 +123,104 @@ export const WorkspaceSettings = () => {
               Plan
             </Text>
             <Text size={3} maxWidth="100%">
-              {activeSubscription ? 'Personal Pro' : 'Community Plan'}
+              {activeSubscription ? 'Personal Pro' : 'Personal (free)'}
             </Text>
             {activeSubscription ? (
-              <>
-                <Button
-                  variant="link"
-                  css={css({
-                    width: 'fit-content',
-                    height: 'auto',
-                    fontSize: 3,
-                    color: 'button.background',
-                    padding: 0,
-                  })}
-                  onClick={() => {
-                    actions.modalOpened({
-                      modal: 'preferences',
-                      itemId: 'paymentInfo',
-                    });
-                  }}
-                >
-                  Change payment info
-                </Button>
-                <Button
-                  variant="link"
-                  css={css({
-                    width: 'fit-content',
-                    height: 'auto',
-                    fontSize: 3,
-                    color: 'button.background',
-                    padding: 0,
-                  })}
-                  onClick={() => {
-                    actions.patron.cancelSubscriptionClicked();
-                  }}
-                >
-                  Downgrade plan
-                </Button>
-              </>
+              <div>
+                {['LEGACY', 'PATRON'].includes(activeSubscription.origin) ? (
+                  <Stack direction="vertical" gap={2}>
+                    <Button
+                      variant="link"
+                      css={css({
+                        width: 'fit-content',
+                        height: 'auto',
+                        fontSize: 3,
+                        color: 'button.background',
+                        padding: 0,
+                      })}
+                      onClick={() => {
+                        actions.modalOpened({
+                          modal: 'preferences',
+                          itemId: 'paymentInfo',
+                        });
+                      }}
+                    >
+                      Update payment information
+                    </Button>
+                    <Button
+                      variant="link"
+                      css={css({
+                        width: 'fit-content',
+                        height: 'auto',
+                        fontSize: 3,
+                        color: 'button.background',
+                        padding: 0,
+                      })}
+                      onClick={() => actions.patron.cancelSubscriptionClicked()}
+                    >
+                      Downgrade plan
+                    </Button>
+                  </Stack>
+                ) : (
+                  <Stack direction="vertical" gap={2}>
+                    <Link
+                      size={3}
+                      variant="active"
+                      href={activeSubscription.updateBillingUrl}
+                      target="_blank"
+                      css={css({ fontWeight: 'medium' })}
+                    >
+                      Update payment information
+                    </Link>
+                    <Link
+                      size={3}
+                      variant="active"
+                      href="/pro"
+                      css={css({ fontWeight: 'medium' })}
+                    >
+                      Change billing interval
+                    </Link>
+                    {activeSubscription.cancelAt ? (
+                      <Text size={3} css={css({ color: 'orange' })}>
+                        Your subscription expires on{' '}
+                        {format(new Date(activeSubscription.cancelAt), 'PP')}.{' '}
+                        <Button
+                          autoWidth
+                          variant="link"
+                          css={css({
+                            color: 'inherit',
+                            padding: 0,
+                            textDecoration: 'underline',
+                            fontSize: 3,
+                          })}
+                          onClick={() =>
+                            actions.pro.reactivateWorkspaceSubscription()
+                          }
+                        >
+                          Reactivate
+                        </Button>
+                      </Text>
+                    ) : (
+                      <Button
+                        autoWidth
+                        variant="link"
+                        css={css({
+                          width: 'fit-content',
+                          height: 'auto',
+                          fontSize: 3,
+                          color: 'errorForeground',
+                          padding: 0,
+                        })}
+                        onClick={() =>
+                          actions.pro.cancelWorkspaceSubscription()
+                        }
+                      >
+                        Cancel subscription
+                      </Button>
+                    )}
+                  </Stack>
+                )}
+              </div>
             ) : null}
           </Stack>
         </Stack>
@@ -209,7 +271,7 @@ export const WorkspaceSettings = () => {
               Go Pro
             </Text>
             <Stack direction="vertical" gap={1}>
-              <Text size={3}>Community, plus:</Text>
+              <Text size={3}>Personal, plus:</Text>
               <Text size={3}>+ Work in private</Text>
               <Text size={3}>+ More file storage</Text>
               <Text size={3}>+ Higher upload limits</Text>
