@@ -1604,7 +1604,13 @@ export type TemplateFragmentDashboardFragment = {
 
 export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl' | 'joinedPilotAt'
+  | 'id'
+  | 'name'
+  | 'description'
+  | 'creatorId'
+  | 'avatarUrl'
+  | 'joinedPilotAt'
+  | 'subscription'
 > & {
     settings: Maybe<
       { __typename?: 'WorkspaceSandboxSettings' } & Pick<
