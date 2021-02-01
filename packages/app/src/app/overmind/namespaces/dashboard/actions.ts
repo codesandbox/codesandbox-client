@@ -146,7 +146,7 @@ export const getTeams: AsyncAction = async ({ state, effects }) => {
 };
 
 export const removeFromTeam: AsyncAction<string> = async (
-  { state, effects },
+  { state, actions, effects },
   id
 ) => {
   if (!state.activeTeam || !state.activeTeamInfo) return;
@@ -160,6 +160,8 @@ export const removeFromTeam: AsyncAction<string> = async (
       ...state.activeTeamInfo,
       users: (state.activeTeamInfo.users || []).filter(user => user.id !== id),
     };
+    // update all other fields related to team
+    actions.getActiveTeamInfo();
   } catch {
     effects.notificationToast.error(
       'There has been a problem removing them from your workspace'
