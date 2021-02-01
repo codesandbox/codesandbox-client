@@ -68,7 +68,7 @@ export const personal = {
       features: [
         {
           name: 'Workspaces',
-          desc: 'View, edit, and manage sandboxes with a team.',
+          desc: 'View, edit, and manage sandboxes with a team',
           available: true,
         },
         {
