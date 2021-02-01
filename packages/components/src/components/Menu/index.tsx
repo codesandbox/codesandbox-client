@@ -234,7 +234,7 @@ const MenuIconButton = props => (
 
 interface MenuListProps {
   children: any;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
 }
 
 const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
