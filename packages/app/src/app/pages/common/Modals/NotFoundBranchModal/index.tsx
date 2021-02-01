@@ -32,13 +32,12 @@ export const NotFoundBranchModal: FunctionComponent = () => {
       description={
         <>
           Seems the branch this sandbox was connected to does not exist anymore.
-          You will be redirected in 5 seconds, lease click the button to go back
-          to the <b>{currentSandbox.baseGit.branch}</b> branch if nothing
-          happens
+          You will be redirected in 5 seconds to the{' '}
+          <b>{currentSandbox.baseGit.branch}</b> branch.
         </>
       }
       onPrimaryAction={redirectUser}
-      confirmMessage="Redirect"
+      confirmMessage={`Send me to the ${currentSandbox.baseGit.branch} branch`}
     />
   );
 };
