@@ -878,9 +878,8 @@ export const _compareWithBase: AsyncAction = async ({
     sandbox.baseGit!.branch,
     true
   );
-  if (!baseChanges) return;
 
-  const updates = await actions.git._evaluateGitChanges(baseChanges?.files);
+  const updates = await actions.git._evaluateGitChanges(baseChanges.files);
 
   state.git.baseCommitSha = baseChanges?.headCommitSha;
   state.git.conflicts = updates.conflicts;
