@@ -248,7 +248,7 @@ export const WorkspaceSettings = () => {
                             (activeTeamInfo?.subscription.quantity *
                               activeTeamInfo?.subscription.unitPrice) /
                             100
-                          ).toFixed(2)} scheduled for ${format(
+                          ).toFixed(2)} (excl. tax) scheduled for ${format(
                             new Date(activeTeamInfo?.subscription.nextBillDate),
                             'PP'
                           )}`}
