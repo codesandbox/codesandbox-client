@@ -119,8 +119,8 @@ export const business = {
       name: 'Knowledge Sharing',
       features: [
         {
-          name: 'Workspaces',
-          desc: 'View, edit, and manage sandboxes with a team',
+          name: 'Team Workspaces',
+          desc: 'View, edit, and manage public and private sandboxes with a team',
           available: true,
         },
         {
