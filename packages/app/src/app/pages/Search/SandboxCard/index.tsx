@@ -3,10 +3,11 @@ import ForkIcon from 'react-icons/lib/go/repo-forked';
 import EyeIcon from 'react-icons/lib/go/eye';
 import LikeIcon from 'react-icons/lib/go/heart';
 
-import getIcon from '../../templates/icons';
-import getTemplate, { TemplateType } from '../../templates';
-import { profileUrl } from '../../utils/url-generator';
-import { ENTER } from '../../utils/keycodes';
+import getIcon from '@codesandbox/common/lib/templates/icons';
+import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
+import { profileUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import Tags from '@codesandbox/common/lib/components/Tags';
 
 import {
   Container,
@@ -21,7 +22,6 @@ import {
   SandboxInfo,
   TemplateIcon,
 } from './elements';
-import Tags from '../Tags';
 
 const getScreenshot = (id: string) =>
   `https://codesandbox.io/api/v1/sandboxes/${id}/screenshot.png`;

@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
+
 import { useOvermind } from 'app/overmind';
 import { LinkButton } from 'app/components/LinkButton';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from '../elements';
 import { CenteredMessage, SearchWrapper } from './elements';
 
+import { Scrollable } from '../Scrollable';
 import { PersonalTemplates } from './PersonalTemplates';
 import { SearchBox } from '../SearchBox';
 import { getTemplateInfosFromAPI } from '../utils/api';

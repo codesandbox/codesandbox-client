@@ -1,11 +1,10 @@
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import SandboxCard from '@codesandbox/common/lib/components/SandboxCard';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import React from 'react';
 import { Hits, Pagination } from 'react-instantsearch/dom';
-
+import SandboxCard from '../SandboxCard';
 import ResultInfo from '../ResultInfo';
 import { Container } from './elements';
 

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
+
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from '../elements';
 import { SearchBox } from '../SearchBox';
 import { SearchResults } from './SearchResults';
+import { Scrollable } from '../Scrollable';
 import { Loader } from '../Loader';
 import { ITemplateInfo } from '../TemplateList';
 import { DynamicWidthTemplateList } from '../TemplateList/DynamicWidthTemplateList';
