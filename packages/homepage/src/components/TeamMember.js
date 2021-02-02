@@ -14,6 +14,7 @@ import sanne from '../assets/images/people/sanne.png';
 import andras from '../assets/images/people/andras.png';
 import alex from '../assets/images/people/alex.jpg';
 import maurice from '../assets/images/people/maurice.jpg';
+import zeh from '../assets/images/people/zeh.png';
 
 const people = [
   {
@@ -93,6 +94,12 @@ const people = [
     pic: maurice,
     color: '#F7A239',
     team: 'Growth',
+  },
+  {
+    name: 'Zeh Fernandes',
+    pic: zeh,
+    color: '#B567EB',
+    team: 'Design',
   },
 ];
 
