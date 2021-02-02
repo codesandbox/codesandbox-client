@@ -23,7 +23,6 @@ export const InlineCheckout: React.FC = () => {
     // @ts-ignore 3rd party integration with global
     const Paddle = window.Paddle;
 
-    Paddle.Environment.set('sandbox');
     Paddle.Setup({
       vendor: PADDLE_VENDOR_ID,
       eventCallback: event => {
@@ -46,7 +45,7 @@ export const InlineCheckout: React.FC = () => {
 
     Paddle.Checkout.open({
       method: 'inline',
-      product: selectedPlan.id, // Replace with your Product or Plan ID
+      product: selectedPlan.id,
       quantity: seats,
       email: user.email,
       frameTarget: 'checkout-container', // The className of your checkout <div>
