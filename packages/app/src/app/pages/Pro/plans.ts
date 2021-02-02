@@ -4,11 +4,11 @@ import {
 } from 'app/graphql/types';
 import { Plan } from 'app/overmind/namespaces/pro/types';
 
-export const PADDLE_VENDOR_ID = 729;
+export const PADDLE_VENDOR_ID = 35719;
 
 export const plans: { [key: string]: Plan } = {
   PERSONAL_PRO_MONTHLY: {
-    id: '7365',
+    id: '643994',
     name: 'Personal Pro',
     type: WorkspaceSubscriptionTypes.Personal,
     unit: 12,
@@ -17,7 +17,7 @@ export const plans: { [key: string]: Plan } = {
     currency: '$',
   },
   PERSONAL_PRO_ANNUAL: {
-    id: '7399',
+    id: '643996',
     name: 'Personal Pro',
     type: WorkspaceSubscriptionTypes.Personal,
     unit: 9,
@@ -26,7 +26,7 @@ export const plans: { [key: string]: Plan } = {
     currency: '$',
   },
   TEAM_PRO_MONTHLY: {
-    id: '7407',
+    id: '544191',
     name: 'Team Pro',
     type: WorkspaceSubscriptionTypes.Team,
     unit: 30,
@@ -35,7 +35,7 @@ export const plans: { [key: string]: Plan } = {
     currency: '$',
   },
   TEAM_PRO_ANNUAL: {
-    id: '7399',
+    id: '544190',
     name: 'Team Pro',
     type: WorkspaceSubscriptionTypes.Team,
     unit: 24,
