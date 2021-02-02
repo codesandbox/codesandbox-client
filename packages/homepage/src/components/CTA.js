@@ -1,30 +1,27 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
+const CTA = styled.div`
+  text-align: center;
+  margin: 16rem auto;
 
-const  CTA = styled.div`
-
-
-text-align:center;
-margin: 16rem auto  ;
-
-
-h3{
+  h3 {
     font-weight: normal;
     font-size: 23px;
     line-height: 27px;
     text-align: center;
     color: #999;
     margin: 1rem auto;
-    max-width:40rem;
-}
+    max-width: 40rem;
+  }
 
-a{
+  a {
     background: #5962df;
     text-decoration: none;
     border-radius: 0.125rem;
     border: none;
-    font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue';
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue';
     font-size: 16px;
     font-weight: 400;
     line-height: 19px;
@@ -35,26 +32,20 @@ a{
     -webkit-transition: all 200ms ease;
     -webkit-text-decoration: none;
     transition: all 200ms ease;
-    box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     display: inline-block;
     min-width: 190px;
     margin: 1rem auto;
-    padding: 8px 24px;    
-}
-
-
-
-
+    padding: 8px 24px;
+  }
 `;
 
-
-export default ({link, title, subtitle, cta  }) =>
-
-    <CTA>
-
-<h1>{title}</h1>
-<h3>{subtitle}</h3>
-<a title={cta} href={link}>{cta} </a>
-
-    </CTA>
-  ;
+export default ({ link, title, subtitle, cta }) => (
+  <CTA>
+    <h1>{title}</h1>
+    <h3>{subtitle}</h3>
+    <a title={cta} href={link}>
+      {cta}{' '}
+    </a>
+  </CTA>
+);

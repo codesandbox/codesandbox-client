@@ -2,9 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { H2, P, H3 } from '../../../components/Typography';
-import { PrototypingIcon, KnowledgeIcon, FeedbackIcon, BGIcon, GHIcon, NPMIcon, OptimizedIcon } from './icons';
-
+import { P, H3 } from '../../../components/Typography';
+import { PrototypingIcon, KnowledgeIcon, FeedbackIcon } from './icons';
 
 const container = {
   hidden: { opacity: 0 },
@@ -26,7 +25,6 @@ const Grid = styled(motion.div)`
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 38px;
   padding: 0 0 10rem 0;
-
 
   ${props => props.theme.breakpoints.md} {
     grid-template-columns: repeat(3, 1fr);
@@ -73,7 +71,7 @@ const DevExperienceOne = () => (
   >
     <Grid variants={container} initial="hidden" animate="show">
       <Feature variants={item}>
-      <PrototypingIcon/>
+        <PrototypingIcon />
         <H3>Rapid Prototyping</H3>
         <P muted>
           Quickly create real, working prototypes. Test ideas earlier and
@@ -81,8 +79,7 @@ const DevExperienceOne = () => (
         </P>
       </Feature>
       <Feature variants={item}>
-
-        <KnowledgeIcon/>
+        <KnowledgeIcon />
 
         <H3>Knowledge Sharing</H3>
         <P muted>
@@ -91,13 +88,11 @@ const DevExperienceOne = () => (
         </P>
       </Feature>
       <Feature variants={item}>
-
-        <FeedbackIcon/>
+        <FeedbackIcon />
         <H3>Better Feedback</H3>
         <P muted>
-Give and get feedback, on code or visuals, right in the editor. Take action and move forward faster.
-
-        
+          Give and get feedback, on code or visuals, right in the editor. Take
+          action and move forward faster.
         </P>
       </Feature>
     </Grid>
