@@ -67,8 +67,8 @@ export const personal = {
       name: 'Knowledge Sharing',
       features: [
         {
-          name: 'Workspaces',
-          desc: 'View, edit, and manage sandboxes with a team',
+          name: 'Team Workspaces',
+          desc: 'View, edit, and manage public sandboxes with a team',
           available: true,
         },
         {
