@@ -805,58 +805,59 @@ export const _compareWithSource: AsyncAction = async ({
 }) => {
   const sandbox = state.editor.currentSandbox!;
   const originalGitCommitSha = sandbox.originalGitCommitSha;
-  const originalChanges = await effects.api.compareGit(
-    sandbox.id,
-    sandbox.originalGitCommitSha!,
-    sandbox.originalGit!.branch,
-    true
-  );
 
-  if (!originalChanges) {
+  try {
+    const originalChanges = await effects.api.compareGit(
+      sandbox.id,
+      sandbox.originalGitCommitSha!,
+      sandbox.originalGit!.branch,
+      true
+    );
+    const updates = await actions.git._evaluateGitChanges(
+      originalChanges.files
+    );
+
+    state.git.sourceCommitSha = originalChanges.headCommitSha;
+    state.git.conflicts = updates.conflicts;
+
+    if (updates.changesCount || updates.conflicts.length) {
+      effects.notificationToast.add({
+        message: `The sandbox is out of sync with "${
+          sandbox.originalGit!.branch
+        }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
+        title: 'Out of sync',
+        status: convertTypeToStatus('notice'),
+        sticky: false,
+        actions: {
+          primary: {
+            label: 'Resolve',
+            run: () => {
+              actions.workspace.setWorkspaceItem({ item: 'github' });
+            },
+          },
+          secondary: {
+            label: 'See changes',
+            run: () => {
+              effects.browser.openWindow(
+                `https://github.com/${sandbox.originalGit!.username}/${
+                  sandbox.originalGit!.repo
+                }/compare/${originalGitCommitSha}...${
+                  sandbox.originalGit!.branch
+                }`
+              );
+            },
+          },
+        },
+      });
+      effects.preview.refresh();
+      state.git.gitState = updates.conflicts.length
+        ? SandboxGitState.CONFLICT_SOURCE
+        : SandboxGitState.OUT_OF_SYNC_SOURCE;
+    } else {
+      state.git.gitState = SandboxGitState.SYNCED;
+    }
+  } catch {
     state.currentModal = 'notFoundBranchModal';
-    return;
-  }
-
-  const updates = await actions.git._evaluateGitChanges(originalChanges.files);
-
-  state.git.sourceCommitSha = originalChanges.headCommitSha;
-  state.git.conflicts = updates.conflicts;
-
-  if (updates.changesCount || updates.conflicts.length) {
-    effects.notificationToast.add({
-      message: `The sandbox is out of sync with "${
-        sandbox.originalGit!.branch
-      }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
-      title: 'Out of sync',
-      status: convertTypeToStatus('notice'),
-      sticky: false,
-      actions: {
-        primary: {
-          label: 'Resolve',
-          run: () => {
-            actions.workspace.setWorkspaceItem({ item: 'github' });
-          },
-        },
-        secondary: {
-          label: 'See changes',
-          run: () => {
-            effects.browser.openWindow(
-              `https://github.com/${sandbox.originalGit!.username}/${
-                sandbox.originalGit!.repo
-              }/compare/${originalGitCommitSha}...${
-                sandbox.originalGit!.branch
-              }`
-            );
-          },
-        },
-      },
-    });
-    effects.preview.refresh();
-    state.git.gitState = updates.conflicts.length
-      ? SandboxGitState.CONFLICT_SOURCE
-      : SandboxGitState.OUT_OF_SYNC_SOURCE;
-  } else {
-    state.git.gitState = SandboxGitState.SYNCED;
   }
 };
 

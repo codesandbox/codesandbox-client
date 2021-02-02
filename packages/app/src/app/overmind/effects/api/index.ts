@@ -391,22 +391,17 @@ export default {
     baseCommitSha: string;
     headCommitSha: string;
     files: GitFileCompare[];
-  } | null> {
-    try {
-      const response: any = await api.post(
-        `/sandboxes/${sandboxId}/git/compare`,
-        {
-          baseRef,
-          headRef,
-          includeContents,
-        }
-      );
+  }> {
+    const response: any = await api.post(
+      `/sandboxes/${sandboxId}/git/compare`,
+      {
+        baseRef,
+        headRef,
+        includeContents,
+      }
+    );
 
-      return response;
-    } catch {
-      // handled by the modal
-      return null;
-    }
+    return response;
   },
   getGitPr(sandboxId: string, prNumber: number): Promise<GitPr> {
     return api.get(`/sandboxes/${sandboxId}/git/prs/${prNumber}`);
