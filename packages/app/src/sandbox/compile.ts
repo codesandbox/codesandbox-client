@@ -639,7 +639,8 @@ async function compile({
         if (
           firstLoad &&
           localStorage.getItem('running') &&
-          Date.now() - +localStorage.getItem('running') > 8000
+          Date.now() - +localStorage.getItem('running') > 8000 &&
+          !process.env.SANDPACK
         ) {
           localStorage.removeItem('running');
           showRunOnClick();
