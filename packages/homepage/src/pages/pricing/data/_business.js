@@ -45,7 +45,7 @@ export const business = {
           available: [false, true, true],
         },
         {
-          name: 'Multiple Workspaces',
+          name: 'Multiple Team Workspaces',
           desc:
             'Bring multiple teams together in a single account to collaborate',
           available: [false, true, true],
