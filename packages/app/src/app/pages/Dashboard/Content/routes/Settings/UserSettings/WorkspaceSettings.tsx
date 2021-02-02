@@ -239,32 +239,37 @@ export const WorkspaceSettings = () => {
                       USD {user?.subscription.amount}{' '}
                     </Text>
                   ) : (
-                    <Tooltip
-                      label={`Next invoice of ${
-                        activeTeamInfo?.subscription.currency
-                      } ${(
-                        (activeTeamInfo?.subscription.quantity *
-                          activeTeamInfo?.subscription.unitPrice) /
-                        100
-                      ).toFixed(2)} scheduled for ${format(
-                        new Date(activeTeamInfo?.subscription.nextBillDate),
-                        'PP'
-                      )}`}
-                    >
-                      <Stack align="center" gap={1}>
-                        <Text size={3} variant="muted">
-                          Next invoice: {activeTeamInfo?.subscription.currency}{' '}
-                          {(
+                    <div>
+                      {!activeTeamInfo?.subscription.cancelAt ? (
+                        <Tooltip
+                          label={`Next invoice of ${
+                            activeTeamInfo?.subscription.currency
+                          } ${(
                             (activeTeamInfo?.subscription.quantity *
                               activeTeamInfo?.subscription.unitPrice) /
                             100
-                          ).toFixed(2)}{' '}
-                        </Text>
-                        <Text variant="muted">
-                          <Icon name="info" size={12} />
-                        </Text>
-                      </Stack>
-                    </Tooltip>
+                          ).toFixed(2)} scheduled for ${format(
+                            new Date(activeTeamInfo?.subscription.nextBillDate),
+                            'PP'
+                          )}`}
+                        >
+                          <Stack align="center" gap={1}>
+                            <Text size={3} variant="muted">
+                              Next invoice:{' '}
+                              {activeTeamInfo?.subscription.currency}{' '}
+                              {(
+                                (activeTeamInfo?.subscription.quantity *
+                                  activeTeamInfo?.subscription.unitPrice) /
+                                100
+                              ).toFixed(2)}{' '}
+                            </Text>
+                            <Text variant="muted">
+                              <Icon name="info" size={12} />
+                            </Text>
+                          </Stack>
+                        </Tooltip>
+                      ) : null}
+                    </div>
                   )}
                 </div>
               )}

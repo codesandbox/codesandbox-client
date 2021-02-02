@@ -368,32 +368,34 @@ export const WorkspaceSettings = () => {
                       </Stack>
                     ) : (
                       <Stack direction="vertical" gap={2}>
-                        <Tooltip
-                          label={`Next invoice of ${
-                            team.subscription.currency
-                          } ${(
-                            (team.subscription.quantity *
-                              team.subscription.unitPrice) /
-                            100
-                          ).toFixed(2)} scheduled for ${format(
-                            new Date(team.subscription.nextBillDate),
-                            'PP'
-                          )}`}
-                        >
-                          <Stack align="center" gap={1}>
-                            <Text size={3} variant="muted">
-                              Next invoice: {team.subscription.currency}{' '}
-                              {(
-                                (team.subscription.quantity *
-                                  team.subscription.unitPrice) /
-                                100
-                              ).toFixed(2)}{' '}
-                            </Text>
-                            <Text variant="muted">
-                              <Icon name="info" size={12} />
-                            </Text>
-                          </Stack>
-                        </Tooltip>
+                        {!team.subscription.cancelAt ? (
+                          <Tooltip
+                            label={`Next invoice of ${
+                              team.subscription.currency
+                            } ${(
+                              (team.subscription.quantity *
+                                team.subscription.unitPrice) /
+                              100
+                            ).toFixed(2)} scheduled for ${format(
+                              new Date(team.subscription.nextBillDate),
+                              'PP'
+                            )}`}
+                          >
+                            <Stack align="center" gap={1}>
+                              <Text size={3} variant="muted">
+                                Next invoice: {team.subscription.currency}{' '}
+                                {(
+                                  (team.subscription.quantity *
+                                    team.subscription.unitPrice) /
+                                  100
+                                ).toFixed(2)}{' '}
+                              </Text>
+                              <Text variant="muted">
+                                <Icon name="info" size={12} />
+                              </Text>
+                            </Stack>
+                          </Tooltip>
+                        ) : null}
 
                         <Link
                           size={3}
