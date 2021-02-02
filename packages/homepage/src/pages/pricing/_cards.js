@@ -1,5 +1,6 @@
 import React from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { Link } from 'gatsby';
 
 import {
   Card,
@@ -266,7 +267,8 @@ const Cards = ({ team, mode }) => (
       `}
     >
       Prices listed in USD. Taxes may apply. By using CodeSandbox you agree to
-      our terms and policies.
+      our <Link to="legal/terms">terms</Link> and{' '}
+      <Link to="legal/privacy">policies</Link>.
     </p>
   </>
 );
