@@ -12082,10 +12082,10 @@ slide@^1.1.3:
   resolved "https://registry.yarnpkg.com/slide/-/slide-1.1.6.tgz#56eb027d65b4d2dce6cb2e2d32c4d4afc9e1d707"
   integrity sha1-VusCfWW00tzmyy4tMsTUr8nh1wc=
 
-smooshpack@^1.0.0-alpha-17:
-  version "1.0.0-alpha-17"
-  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-1.0.0-alpha-17.tgz#aaec67f60dc77d6272b3f7cad1bb0c18566847e1"
-  integrity sha512-9cWzC1wehE2ob2g3nOFg+jzmpfrgtMX7V+bcTFn+nmIj1CcGnQ29OLWkpYWuSqiVNx2SPOyd2kTzI/rqzfKGEg==
+smooshpack@^1.0.0-alpha-18:
+  version "1.0.0-alpha-18"
+  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-1.0.0-alpha-18.tgz#8a98626e0a7db465e50941619ed51fef4585d715"
+  integrity sha512-VhHuGfvnR7P7D7YacEQ/kWdjN4wkJI4H619QtseG00ZJpELGJYGti7Af75I7Db78+gy5Oei1cC3xTOH9Bhygkg==
   dependencies:
     codesandbox-api "^0.0.28"
     codesandbox-import-utils "^1.2.3"
