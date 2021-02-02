@@ -856,8 +856,13 @@ export const _compareWithSource: AsyncAction = async ({
     } else {
       state.git.gitState = SandboxGitState.SYNCED;
     }
-  } catch {
-    state.currentModal = 'notFoundBranchModal';
+  } catch (e) {
+    // if there is a base git the issue is that the new branch does not exist, if not carry on
+    if (sandbox.baseGit) {
+      state.currentModal = 'notFoundBranchModal';
+    } else {
+      throw new Error();
+    }
   }
 };
 
