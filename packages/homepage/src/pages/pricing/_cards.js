@@ -106,7 +106,7 @@ export const TeamCards = ({ mode }) => (
           </li>
           <li>All in Team Pro, plus:</li>
           <li>SSO</li>
-          <li>Multiple workspaces</li>
+          <li>Multiple team workspaces</li>
           <li>Workspace secrets</li>
           <li>Analytics</li>
           <li>Priority support</li>
@@ -195,8 +195,7 @@ export const PersonalCards = ({ mode }) => (
           <li>Free for individuals</li>
           <li>All Platform features</li>
           <li>Public sandboxes</li>
-          <li>Templates </li>
-          <li>Dashboard</li>
+          <li>Personal workspace</li>
         </List>
       </div>
       <Button
