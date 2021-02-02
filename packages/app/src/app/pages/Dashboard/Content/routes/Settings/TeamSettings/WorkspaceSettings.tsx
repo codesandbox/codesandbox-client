@@ -14,6 +14,7 @@ import {
   IconButton,
   Menu,
   Icon,
+  Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
@@ -367,17 +368,32 @@ export const WorkspaceSettings = () => {
                       </Stack>
                     ) : (
                       <Stack direction="vertical" gap={2}>
-                        <Text size={3} variant="muted">
-                          {team.subscription.currency}{' '}
-                          {(
+                        <Tooltip
+                          label={`Next invoice of ${
+                            team.subscription.currency
+                          } ${(
                             (team.subscription.quantity *
                               team.subscription.unitPrice) /
                             100
-                          ).toFixed(2)}{' '}
-                          <Text css={{ textTransform: 'capitalize' }}>
-                            {team.subscription.billingInterval.toLowerCase()}
-                          </Text>
-                        </Text>
+                          ).toFixed(2)} scheduled for ${format(
+                            new Date(team.subscription.nextBillDate),
+                            'PP'
+                          )}`}
+                        >
+                          <Stack align="center" gap={1}>
+                            <Text size={3} variant="muted">
+                              Next invoice: {team.subscription.currency}{' '}
+                              {(
+                                (team.subscription.quantity *
+                                  team.subscription.unitPrice) /
+                                100
+                              ).toFixed(2)}{' '}
+                            </Text>
+                            <Text variant="muted">
+                              <Icon name="info" size={12} />
+                            </Text>
+                          </Stack>
+                        </Tooltip>
 
                         <Link
                           size={3}
