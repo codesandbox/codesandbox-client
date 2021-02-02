@@ -9,6 +9,7 @@ import hashsum from 'hash-sum';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 
+import { measure, endMeasure } from '@codesandbox/common/lib/utils/metrics';
 import { Module } from '../types/module';
 import { SourceMap } from '../transpiler/utils/get-source-map';
 import ModuleError from './errors/module-error';
@@ -23,7 +24,6 @@ import Manager, { HMRStatus } from '../manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 import delay from '../utils/delay';
-import { measure, endMeasure } from '@codesandbox/common/lib/utils/metrics';
 
 declare const BrowserFS: any;
 
@@ -144,7 +144,8 @@ export type Compilation = {
     accept: (() => void) | ((arg: string | string[], cb: () => void) => void);
     decline: (path: string | Array<string>) => void;
     dispose: (cb: () => void) => void;
-    data: Object;
+    invalidate: () => void;
+    data: Object | undefined;
     status: () => HMRStatus;
     addStatusHandler: (cb: (status: HMRStatus) => void) => void;
     removeStatusHandler: (cb: (status: HMRStatus) => void) => void;
@@ -932,6 +933,19 @@ export class TranspiledModule {
 
             this.hmrConfig.setDisposeHandler(cb);
           },
+          invalidate: () => {
+            this.hmrConfig = this.hmrConfig || new HMR();
+
+            // We have to bubble up, so reset compilation of parents
+            Array.from(this.initiators)
+              .filter(t => t.compilation)
+              .forEach(dep => {
+                dep.resetCompilation();
+              });
+
+            this.hmrConfig.setInvalidated(true);
+          },
+
           data: hotData,
           status: () => manager.hmrStatus,
           addStatusHandler: manager.addStatusHandler,

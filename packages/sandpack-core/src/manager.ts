@@ -395,6 +395,26 @@ export default class Manager implements IEvaluator {
         { force, globals }
       );
 
+      if (this.webpackHMR) {
+        // Check if any module has been invalidated, because in that case we need to
+        // restart evaluation.
+
+        const invalidatedModules = this.getTranspiledModules().filter(t => {
+          if (t.hmrConfig?.invalidated) {
+            t.compilation = null;
+            t.hmrConfig = null;
+
+            return true;
+          }
+
+          return false;
+        });
+
+        if (invalidatedModules.length > 0) {
+          return this.evaluateModule(module, { force, globals });
+        }
+      }
+
       this.setHmrStatus('idle');
 
       return exports;

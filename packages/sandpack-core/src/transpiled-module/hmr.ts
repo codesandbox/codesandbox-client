@@ -5,6 +5,7 @@ export default class HMR {
   type?: 'accept' | 'decline';
   dirty: boolean = false;
   selfAccepted: boolean = false;
+  invalidated = false;
 
   callDisposeHandler() {
     if (this.disposeHandler) {
@@ -36,7 +37,7 @@ export default class HMR {
     }
   }
 
-  setType(type: 'accept' | 'decline') {
+  setType(type: 'accept' | 'decline' | undefined) {
     this.type = type;
   }
 
@@ -61,5 +62,14 @@ export default class HMR {
     }
 
     return !this.isHot() && isEntry;
+  }
+
+  /**
+   * Setting the module to invalidated means that we MUST evaluate it again, which means
+   * that we throw away its compilation and hmrConfig, and we're going to force a second evaluation
+   * once this has been run.
+   */
+  setInvalidated(invalidated: boolean) {
+    this.invalidated = invalidated;
   }
 }
