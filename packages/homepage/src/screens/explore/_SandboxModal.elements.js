@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components';
-import { UserWithAvatar } from '@codesandbox/common/lib/components/UserWithAvatar';
 
 import RightArrow from 'react-icons/lib/md/keyboard-arrow-right';
 import LeftArrow from 'react-icons/lib/md/keyboard-arrow-left';
 import Stats from '@codesandbox/common/lib/components/Stats';
+import { UserWithAvatar } from './UserWithAvatar';
 
 export const Container = styled.div`
   position: relative;

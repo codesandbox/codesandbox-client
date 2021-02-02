@@ -8,7 +8,6 @@ import {
   protocolAndHost,
 } from '@codesandbox/common/lib/utils/url-generator';
 import getTemplate from '@codesandbox/common/lib/templates';
-import GithubBadge from '@codesandbox/common/lib/components/GithubBadge';
 
 import Tags from '@codesandbox/common/lib/components/Tags';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -16,7 +15,7 @@ import {
   ARROW_LEFT,
   ARROW_RIGHT,
 } from '@codesandbox/common/lib/utils/keycodes';
-
+import GithubBadge from './GithubBadge';
 import Modal from './Modal';
 import EmbedSkeleton from './EmbedSkeleton';
 import {

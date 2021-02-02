@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const BorderRadius = styled.div<{ hasUrl?: boolean }>`
+export const BorderRadius = styled.div`
   display: flex;
   transition: 0.3s ease all;
   border-radius: 4px;
