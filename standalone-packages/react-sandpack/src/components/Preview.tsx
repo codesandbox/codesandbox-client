@@ -14,21 +14,33 @@ export const Preview: React.FC<PreviewProps> = ({
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const wrapperRef = React.useRef<HTMLDivElement>(null);
-  const { sandpack } = useSandpack();
+  const { sandpack, listen } = useSandpack();
+  const [loadingOverlay, setLoadingOverlay] = React.useState<
+    'visible' | 'fading' | 'hidden'
+  >('visible');
 
-  // TODO: does resize from sandpack work?
-  // React.useEffect(() => {
-  //   const unsub = listen((message: any) => {
-  //     if (message.type === 'resize') {
-  //       if (wrapperRef.current) {
-  //         wrapperRef.current.style.height =
-  //           message.height + (showNavigator ? 40 : 0) + 'px';
-  //       }
-  //     }
-  //   });
+  React.useEffect(() => {
+    const unsub = listen((message: any) => {
+      if (message.type === 'compile' && message.isFirstCompile === true) {
+        setLoadingOverlay('visible');
+      }
 
-  //   return () => unsub();
-  // }, [sandpack.status]);
+      if (message.type === 'done') {
+        setLoadingOverlay('fading');
+        setTimeout(() => setLoadingOverlay('hidden'), 300); // 300 ms animation
+      }
+
+      // TODO: does resize from sandpack work?
+      // if (message.type === 'resize') {
+      //   if (wrapperRef.current) {
+      //     wrapperRef.current.style.height =
+      //       message.height + (showNavigator ? 40 : 0) + 'px';
+      //   }
+      // }
+    });
+
+    return () => unsub();
+  }, [sandpack?.browserFrame]);
 
   React.useEffect(() => {
     if (
@@ -56,9 +68,27 @@ export const Preview: React.FC<PreviewProps> = ({
   return (
     <div style={customStyle} ref={wrapperRef}>
       {showNavigator && <Navigator />}
+
       <div className="sp-preview-frame" id="preview-frame" ref={containerRef}>
-        {sandpack.errors.length > 0 && (
-          <div className="sp-error">{sandpack.errors[0].message}</div>
+        {loadingOverlay !== 'hidden' && (
+          <div
+            className="sp-overlay sp-loading"
+            style={{
+              opacity: loadingOverlay === 'visible' ? 1 : 0,
+              transition: 'opacity 0.3s ease-out',
+            }}
+          >
+            <div className="sp-cubes">
+              <div />
+              <div />
+              <div />
+              <div />
+            </div>
+          </div>
+        )}
+
+        {sandpack.error && (
+          <div className="sp-overlay sp-error">{sandpack.error.message}</div>
         )}
       </div>
     </div>

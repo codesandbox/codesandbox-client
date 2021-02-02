@@ -10,7 +10,7 @@ export interface SandpackState {
   bundlerState: IManagerState | undefined;
   openPaths: string[];
   activePath: string;
-  errors: Array<IModuleError>;
+  error: IModuleError | null;
   files: IFiles;
   status: SandpackStatus;
   runSandpack: () => void;

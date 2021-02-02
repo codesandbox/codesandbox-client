@@ -60,6 +60,10 @@ export const getStyleSheet = () => `
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: subpixel-antialiased;
   -webkit-touch-callout: none;
+  -webkit-mask-image: -webkit-radial-gradient(
+    var(--colors-inputBackground),
+    var(--colors-mainBackground)
+  );
 }
 
 @media screen and (min-resolution: 2dppx) {
@@ -153,8 +157,7 @@ export const getStyleSheet = () => `
 }
 
 .sp-tabs {
-  border: 1px solid var(--colors-inactive);
-  margin: -1px;
+  border-bottom: 1px solid var(--colors-inactive);
 }
 
 .sp-tabs-scrollable-container {
@@ -165,24 +168,20 @@ export const getStyleSheet = () => `
   align-items: stretch;
   height: 40px;
   margin-bottom: -1px;
-  margin-top: -1px;
 }
 
 .sp-preview-frame {
   flex: 1;
-  margin-top: 1px;
   display: flex;
   position: relative;
   background: white;
 }
 
 .sp-navigator {
-  background: var(--colors-mainBackground);
   display: flex;
   align-items: center;
   height: 40px;
-  border: 1px solid var(--colors-inactive);
-  margin: -1px;
+  border-bottom: 1px solid var(--colors-inactive);
   padding: var(--space-2) var(--space-4);
 }
 
@@ -277,7 +276,7 @@ export const getStyleSheet = () => `
   color: var(--colors-highlightText);
 }
 
-.sp-error {
+.sp-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -286,11 +285,76 @@ export const getStyleSheet = () => `
   margin: 0;
   overflow: auto;
   height: 100%;
+  z-index: 3;
+}
+
+.sp-loading {
+  background-color: var(--colors-mainBackground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sp-cubes {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.sp-cubes div {
+  position: absolute;
+  top: 32px;
+  width: 12px;
+  height: 12px;
+  background: var(--colors-defaultText);
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.sp-cubes div:nth-child(1) {
+  left: 8px;
+  animation: grow 0.6s infinite;
+}
+.sp-cubes div:nth-child(2) {
+  left: 8px;
+  animation: move 0.6s infinite;
+}
+.sp-cubes div:nth-child(3) {
+  left: 32px;
+  animation: move 0.6s infinite;
+}
+.sp-cubes div:nth-child(4) {
+  left: 56px;
+  animation: shrink 0.6s infinite;
+}
+@keyframes grow {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes shrink {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes move {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
+.sp-error {
   padding: var(--space-4);
   white-space: pre-wrap;
   font-family: var(--fonts-mono);
   background-color: var(--colors-error);
   color: white;
-  z-index: 3;
 }
 `;

@@ -7,6 +7,7 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
     "typeRoots": ["node_modules/@types"],
     "jsx": "react"
   },

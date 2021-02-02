@@ -24,7 +24,7 @@ export interface State {
   activePath: string;
   openPaths: string[];
   bundlerState: IManagerState | undefined;
-  errors: Array<IModuleError>;
+  error: IModuleError | null;
   sandpackStatus: SandpackStatus;
 }
 
@@ -70,7 +70,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       openPaths: props.openPaths || [props.entry],
       activePath: props.activePath || props.openPaths?.[0] || props.entry,
       bundlerState: undefined,
-      errors: [],
+      error: null,
       sandpackStatus: 'idle',
     };
 
@@ -81,13 +81,13 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   handleMessage = (m: any) => {
     if (m.type === 'state') {
       this.setState({ bundlerState: m.state });
-    } else if (m.type === 'start') {
-      this.setState({ errors: [] });
+    } else if (m.type === 'done' && !m.compilatorError) {
+      this.setState({ error: null });
     } else if (m.type === 'action' && m.action === 'show-error') {
       const { title, path, message, line, column } = m;
-      this.setState(state => ({
-        errors: [...state.errors, { title, path, message, line, column }],
-      }));
+      this.setState({
+        error: { title, path, message, line, column },
+      });
     }
   };
 
@@ -257,7 +257,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       activePath,
       openPaths,
       bundlerState,
-      errors,
+      error,
       sandpackStatus,
     } = this.state;
 
@@ -265,7 +265,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       files,
       openPaths,
       activePath,
-      errors,
+      error,
       bundlerState,
       status: sandpackStatus,
       changeActiveFile: this.changeActiveFile,

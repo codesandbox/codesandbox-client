@@ -24,8 +24,8 @@ export const TranspiledCodeView: React.FC = () => {
   return (
     <div>
       {transpiledCode && <PrismHighlight code={transpiledCode} />}
-      {sandpack.errors.length > 0 && (
-        <div className="sp-error">{sandpack.errors[0].message}</div>
+      {sandpack.error && (
+        <div className="sp-overlay sp-error">{sandpack.error.message}</div>
       )}
     </div>
   );
