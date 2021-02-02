@@ -22,9 +22,9 @@ export const NavigationLink = styled(NavLink).attrs({
     text-decoration: none;
 
     ${!isLast &&
-      css`
-        border-right: 1px solid rgba(255, 255, 255, 0.2);
-      `};
+    css`
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+    `};
 
     ${delayEffect(0.2)};
     &:hover {
