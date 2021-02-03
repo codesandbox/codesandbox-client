@@ -12,6 +12,7 @@ tweetText: CodeSandbox is my life now.
 tweetJob: Software Engineer Educator
 tweetName: Kent C. Dodds
 tweetHandle: kentcdodds
+photo: https://pbs.twimg.com/profile_images/759557613445001216/6M2E1l4q_200x200.jpg
 bgColor: 52579F
 bgImage: ./purple.jpg
 coverImage: ./learning.svg

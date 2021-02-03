@@ -11,6 +11,7 @@ tweetText: CodeSandbox is the best thing that has happened to OSS maintainers.
 tweetJob: Software Engineer, Preact Core Team
 tweetName: Marvin Hagemeister
 tweetHandle: marvinhagemeist
+photo: https://pbs.twimg.com/profile_images/1147600869082447873/xfK8TXZN_200x200.jpg
 bgColor: 0971F1
 bgImage: ./blue.jpg
 coverImage: ./hiring.svg

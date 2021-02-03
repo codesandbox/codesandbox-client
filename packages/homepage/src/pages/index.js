@@ -6,6 +6,7 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
 
 import Hero from '../screens/home/hero';
+import DevExperiencOne from '../screens/home/devExperiencOne';
 import DevExperience from '../screens/home/devExperience';
 import LoadInView from '../components/LoadInView';
 import Quotes from '../screens/home/quotes';
@@ -39,15 +40,17 @@ const Homepage = () => (
 
     <div style={WRAPPER_STYLING}>
       <LoadInView>
-        <DevExperience />
+        <Teams />
       </LoadInView>
       <LoadInView>
         <Workspaces />
       </LoadInView>
       <LoadInView>
-        <Teams />
+        <DevExperiencOne />
       </LoadInView>
-
+      <LoadInView>
+        <DevExperience />
+      </LoadInView>
       <LoadInView>
         <Quotes />
       </LoadInView>
