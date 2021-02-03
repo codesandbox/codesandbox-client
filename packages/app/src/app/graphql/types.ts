@@ -859,6 +859,7 @@ export type Team = {
   templates: Array<Template>;
   userAuthorizations: Array<UserAuthorization>;
   users: Array<User>;
+  subscription: Maybe<WorkspaceSubscription>;
 };
 
 export type TeamDraftsArgs = {
@@ -935,6 +936,36 @@ export type WorkspaceSandboxSettings = {
   minimumPrivacy: Scalars['Int'];
   preventSandboxExport: Scalars['Boolean'];
   preventSandboxLeaving: Scalars['Boolean'];
+};
+
+export enum WorkspaceSubscriptionTypes {
+  Team = 'TEAM_PRO',
+  Personal = 'PERSONAL_PRO',
+}
+
+export enum SubscriptionBillingInterval {
+  Monthly = 'MONTHLY',
+  Yearly = 'YEARLY',
+}
+
+export enum WorkspaceSubscriptionOrigin {
+  Legacy = 'LEGACY',
+  Patron = 'PATRON',
+  Pilot = 'PILOT',
+}
+
+export type WorkspaceSubscription = {
+  id: Scalars['UUID4'];
+  type: WorkspaceSubscriptionTypes;
+  status: 'ACTIVE' | 'PAUSED' | 'CANCELLED';
+  origin: WorkspaceSubscriptionOrigin;
+  quantity: Scalars['Int'];
+  unitPrice: Scalars['Int'];
+  currency: Scalars['String'];
+  billingInterval: SubscriptionBillingInterval;
+  updateBillingUrl: Scalars['String'];
+  nextBillDate: Maybe<Scalars['DateTime']>;
+  cancelAt: Maybe<Scalars['DateTime']>;
 };
 
 export type TemplateFragment = { __typename?: 'Template' } & Pick<
@@ -1573,7 +1604,13 @@ export type TemplateFragmentDashboardFragment = {
 
 export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl' | 'joinedPilotAt'
+  | 'id'
+  | 'name'
+  | 'description'
+  | 'creatorId'
+  | 'avatarUrl'
+  | 'joinedPilotAt'
+  | 'subscription'
 > & {
     settings: Maybe<
       { __typename?: 'WorkspaceSandboxSettings' } & Pick<
@@ -1631,6 +1668,9 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'preventSandboxLeaving'
         | 'defaultAuthorization'
       >
+    >;
+    subscription: Maybe<
+      { __typename?: 'WorkspaceSubscription' } & WorkspaceSubscription
     >;
   };
 
@@ -1776,6 +1816,7 @@ export type _RemoveFromTeamMutation = { __typename?: 'RootMutationType' } & {
 export type _InviteToTeamMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   username: Scalars['String'];
+  authorization?: TeamMemberAuthorization;
 }>;
 
 export type _InviteToTeamMutation = { __typename?: 'RootMutationType' } & {
@@ -1785,6 +1826,7 @@ export type _InviteToTeamMutation = { __typename?: 'RootMutationType' } & {
 export type _InviteToTeamViaEmailMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   email: Scalars['String'];
+  authorization?: TeamMemberAuthorization;
 }>;
 
 export type _InviteToTeamViaEmailMutation = {
@@ -2840,4 +2882,66 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
     Team,
     'id' | 'name' | 'joinedPilotAt'
   >;
+};
+
+export type UpdateSubscriptionBillingIntervalMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  subscriptionId: Scalars['UUID4'];
+  billingInterval: SubscriptionBillingInterval;
+}>;
+
+export type UpdateSubscriptionBillingIntervalMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  updateSubscriptionBillingInterval: {
+    id: Scalars['UUID4'];
+  };
+};
+
+export type PreviewUpdateSubscriptionBillingIntervalMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  subscriptionId: Scalars['UUID4'];
+  billingInterval: SubscriptionBillingInterval;
+}>;
+
+export type PreviewUpdateSubscriptionBillingIntervalMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  previewUpdateSubscriptionBillingInterval: {
+    immediatePayment: {
+      amount: Scalars['Int'];
+      currency: Scalars['String'];
+    };
+    nextPayment: {
+      amount: Scalars['Int'];
+      currency: Scalars['String'];
+    };
+  };
+};
+
+export type SoftCancelSubscriptionMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  subscriptionId: Scalars['UUID4'];
+}>;
+
+export type SoftCancelSubscriptionMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  softCancelSubscription: {
+    id: WorkspaceSubscription['id'];
+    cancelAt: WorkspaceSubscription['cancelAt'];
+  };
+};
+
+export type ReactivateSubscriptionMutationVariables = Exact<{
+  teamId: Scalars['UUID4'];
+  subscriptionId: Scalars['UUID4'];
+}>;
+
+export type ReactivateSubscriptionMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  softCancelSubscription: {
+    id: WorkspaceSubscription['id'];
+  };
 };

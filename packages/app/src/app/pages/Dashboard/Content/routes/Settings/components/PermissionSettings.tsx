@@ -11,14 +11,16 @@ import {
   Switch,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { TeamMemberAuthorization } from 'app/graphql/types';
+import {
+  TeamMemberAuthorization,
+  WorkspaceSubscriptionTypes,
+} from 'app/graphql/types';
 import { Alert } from './Alert';
 
 export const PermissionSettings = () => {
   const {
     state: {
       activeTeamInfo,
-      user,
       personalWorkspaceId,
       activeWorkspaceAuthorization,
     },
@@ -26,9 +28,10 @@ export const PermissionSettings = () => {
 
   // different scenarios
   const isPersonalWorkspace = activeTeamInfo.id === personalWorkspaceId;
-  const isTeamPro = activeTeamInfo?.joinedPilotAt;
+  const isTeamPro =
+    activeTeamInfo?.subscription?.type === WorkspaceSubscriptionTypes.Team;
   const isPersonalPro =
-    isPersonalWorkspace && user && Boolean(user.subscription);
+    activeTeamInfo?.subscription?.type === WorkspaceSubscriptionTypes.Personal;
   const isAdmin =
     activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
 
@@ -41,17 +44,14 @@ export const PermissionSettings = () => {
     if (!isPersonalPro) {
       alert = {
         message: 'Upgrade to Pro to change sandbox permissions.',
-        cta: { label: 'Upgrade to Pro', href: 'https://codesandbox.io/pro' },
+        cta: { label: 'Upgrade to Pro', href: '/pro' },
       };
     }
   } else if (!isTeamPro) {
     alert = {
       message:
-        'Your workspace needs to be in the Pro workspaces pilot to change sandbox permissions.',
-      cta: {
-        label: 'Apply for Pilot',
-        href: 'https://airtable.com/shrlgLSJWiX8rYqyG',
-      },
+        'You need a Team Pro subscription to change sandbox permissions.',
+      cta: { label: 'Upgrade to Pro', href: '/pro' },
     };
   } else if (!isAdmin) {
     alert = {

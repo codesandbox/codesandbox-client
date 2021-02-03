@@ -13,6 +13,7 @@ export const ShowcaseSandbox = () => {
       profile: { showcasedSandbox },
       user: loggedInUser,
       profile: { current: user },
+      activeTeamInfo,
     },
     actions: {
       modalOpened,
@@ -21,7 +22,7 @@ export const ShowcaseSandbox = () => {
   } = useOvermind();
 
   const myProfile = loggedInUser?.username === user.username;
-  const isPro = user && Boolean(user.subscriptionSince);
+  const isPro = user && activeTeamInfo?.subscription;
 
   const [{ isOver, canDrop, isDragging }, drop] = useDrop({
     accept: [SandboxType.ALL_SANDBOX, SandboxType.PINNED_SANDBOX],

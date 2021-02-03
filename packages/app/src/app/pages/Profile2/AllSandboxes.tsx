@@ -227,13 +227,14 @@ const UpgradeBanner = () => {
       profile: { current },
       dashboard: { teams },
       personalWorkspaceId,
+      activeTeamInfo,
     },
     actions: { modalOpened },
     effects: { browser },
   } = useOvermind();
 
   const myProfile = user?.username === current.username;
-  const isPro = user && Boolean(user.subscription);
+  const isPro = activeTeamInfo?.subscription;
 
   const [showUpgradeMessage, setShowUpgradeMessage] = React.useState(
     myProfile && browser.storage.get('PROFILE_SHOW_UPGRADE') !== false

@@ -44,7 +44,7 @@ export const Invite = () => {
     event.preventDefault();
     setLoading(true);
     setInviteValue('');
-    await actions.dashboard.inviteToTeam(inviteValue);
+    await actions.dashboard.inviteToTeam({ value: inviteValue });
     setLoading(false);
   };
 

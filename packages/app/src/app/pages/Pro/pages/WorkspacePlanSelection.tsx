@@ -1,56 +1,20 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { sortBy } from 'lodash-es';
-import { Helmet } from 'react-helmet';
-import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
-import {
-  ThemeProvider,
-  Stack,
-  Text,
-  Menu,
-  Icon,
-  Button,
-  Link,
-} from '@codesandbox/components';
+import { useHistory, useLocation } from 'react-router-dom';
+import { Stack, Text, Menu, Icon, Button, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { useScript } from 'app/hooks';
-import { Navigation } from 'app/pages/common/Navigation';
+import { Step, Plan } from 'app/overmind/namespaces/pro/types';
 import { TeamAvatar } from 'app/components/TeamAvatar';
-import { NewTeam } from 'app/pages/common/NewTeam';
-import { TeamMemberAuthorization } from 'app/graphql/types';
-
-export const ProPage: React.FC = () => (
-  <ThemeProvider>
-    <Helmet>
-      <title>Pro - CodeSandbox</title>
-    </Helmet>
-    <Stack
-      direction="vertical"
-      css={css({
-        backgroundColor: 'grays.900',
-        color: 'white',
-        width: '100vw',
-        minHeight: '100vh',
-        fontFamily: 'Inter, sans-serif',
-      })}
-    >
-      <Navigation title="CodeSandbox Pro" />
-
-      <Switch>
-        <Route path={`/pro/create-workspace`}>
-          <NewTeam redirectTo="/pro?v=2" />;
-        </Route>
-        <Route path={'/pro/success'}>
-          <Success />
-        </Route>
-        <Route path={`/pro`}>
-          <UpgradeSteps />
-        </Route>
-      </Switch>
-    </Stack>
-  </ThemeProvider>
-);
+import {
+  TeamMemberAuthorization,
+  WorkspaceSubscription,
+  WorkspaceSubscriptionTypes,
+  SubscriptionBillingInterval,
+  WorkspaceSubscriptionOrigin,
+} from 'app/graphql/types';
+import { plans } from '../plans';
 
 const prettyPermissions = {
   ADMIN: 'Admin',
@@ -58,162 +22,71 @@ const prettyPermissions = {
   READ: 'Viewer',
 };
 
-type Plan = {
-  id: string;
-  name: string;
-  type: 'personal' | 'team';
-  frequency: 'monthly' | 'annual';
-  unit: number;
-  multiplier: number;
-  currency: string;
-};
-
-const PADDLE_VENDOR_ID = 729;
-const plans: { [key: string]: Plan } = {
-  PERSONAL_PRO_MONTHLY: {
-    id: '7365',
-    name: 'Personal Pro Workspace',
-    type: 'personal',
-    unit: 12,
-    multiplier: 1,
-    frequency: 'monthly',
-    currency: '$',
-  },
-  PERSONAL_PRO_ANNUAL: {
-    id: '7399',
-    name: 'Personal Pro Workspace',
-    type: 'personal',
-    unit: 9,
-    multiplier: 12,
-    frequency: 'annual',
-    currency: '$',
-  },
-  TEAM_PRO_MONTHLY: {
-    id: '7407',
-    name: 'Team Pro Workspace',
-    type: 'team',
-    unit: 30,
-    multiplier: 1,
-    frequency: 'monthly',
-    currency: '$',
-  },
-  TEAM_PRO_ANNUAL: {
-    id: '7399',
-    name: 'Team Pro Workspace',
-    type: 'team',
-    unit: 24,
-    multiplier: 12,
-    frequency: 'annual',
-    currency: '$',
-  },
-};
-
-const UpgradeSteps = () => {
-  // step 1 - choose workspace
-  // step 2 - loading inline checkout in background
-  // step 3 - inline checkout
-  const [step, setStep] = React.useState(1);
-
-  const [plan, setPlan] = React.useState(null);
-  const [seats, setSeats] = React.useState(1);
-  const [checkoutReady, setCheckoutReady] = React.useState(false);
-
-  const [scriptLoaded] = useScript('https://cdn.paddle.com/paddle/paddle.js');
-
-  React.useEffect(() => {
-    if (scriptLoaded && checkoutReady) setStep(3);
-  }, [scriptLoaded, checkoutReady]);
-
-  return (
-    <Stack
-      justify="center"
-      align="center"
-      css={css({ fontSize: 3, width: 560, marginTop: 120, marginX: 'auto' })}
-    >
-      {step < 3 && (
-        <Upgrade
-          plan={plan}
-          setPlan={setPlan}
-          setSeats={setSeats}
-          loading={step === 2}
-          nextStep={() => setStep(2)}
-        />
-      )}
-      {step > 1 && (
-        <div
-          style={{
-            width: step === 2 ? 0 : 'auto',
-            height: step === 2 ? 0 : 'auto',
-            overflow: 'hidden',
-          }}
-        >
-          <InlineCheckout
-            plan={plan}
-            seats={seats}
-            setCheckoutReady={setCheckoutReady}
-          />
-        </div>
-      )}
-    </Stack>
-  );
-};
-
-const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
+export const WorkspacePlanSelection: React.FC<{
+  loading: boolean;
+}> = ({ loading }) => {
   const {
-    state: { personalWorkspaceId, user, activeTeam, dashboard },
+    state: {
+      personalWorkspaceId,
+      user,
+      activeTeam,
+      activeTeamInfo,
+      dashboard,
+      pro: { selectedPlan },
+    },
     actions: {
       setActiveTeam,
       modalOpened,
+      pro: { setStep, updateSelectedPlan, updateSeats },
       patron: { cancelSubscriptionClicked },
     },
   } = useOvermind();
 
   const location = useLocation();
   const history = useHistory();
-  const workspaceId = new URLSearchParams(location.search).get('workspace');
-  const type = new URLSearchParams(location.search).get('type');
+  const searchParams = new URLSearchParams(location.search);
+  const type = searchParams.get('type') as WorkspaceSubscriptionTypes;
+  const interval = searchParams.get('interval') as SubscriptionBillingInterval;
 
-  React.useEffect(() => {
-    // set workspace in url when coming from places without workspace context
-    if (activeTeam && !workspaceId) {
-      history.replace({
-        pathname: location.pathname,
-        search: `?v=2&workspace=${activeTeam}&type=${type}`,
-      });
-    } else if (workspaceId !== activeTeam) {
-      setActiveTeam({ id: workspaceId });
-    }
-  }, [workspaceId, activeTeam, history, location, setActiveTeam, type]);
+  const [billingInterval, setBillingInterval] = React.useState<
+    Plan['billingInterval']
+  >(interval || SubscriptionBillingInterval.Monthly);
 
   const isPersonalWorkspace = personalWorkspaceId === activeTeam;
-  const [billingFrequency, setBillingFrequency] = React.useState<
-    Plan['frequency']
-  >('monthly');
 
-  React.useEffect(() => {
-    let newPlan: typeof plans[keyof typeof plans];
-    if (isPersonalWorkspace) {
-      if (billingFrequency === 'annual') newPlan = plans.PERSONAL_PRO_ANNUAL;
-      else newPlan = plans.PERSONAL_PRO_MONTHLY;
-    } else if (billingFrequency === 'annual') {
-      newPlan = plans.TEAM_PRO_ANNUAL;
-    } else {
-      newPlan = plans.TEAM_PRO_MONTHLY;
-    }
+  React.useEffect(
+    function setPlan() {
+      let newPlan: typeof plans[keyof typeof plans];
+      if (isPersonalWorkspace) {
+        if (billingInterval === SubscriptionBillingInterval.Yearly) {
+          newPlan = plans.PERSONAL_PRO_ANNUAL;
+        } else {
+          newPlan = plans.PERSONAL_PRO_MONTHLY;
+        }
+      } else if (billingInterval === SubscriptionBillingInterval.Yearly) {
+        newPlan = plans.TEAM_PRO_ANNUAL;
+      } else {
+        newPlan = plans.TEAM_PRO_MONTHLY;
+      }
 
-    setPlan(newPlan);
-  }, [isPersonalWorkspace, billingFrequency, setPlan]);
+      updateSelectedPlan(newPlan);
+    },
+    [isPersonalWorkspace, billingInterval, updateSelectedPlan]
+  );
 
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
   )!;
 
-  const getUserAuthorization = workspace => {
-    const userAuthorization = workspace.userAuthorizations.find(
-      authorization => authorization.userId === user.id
-    ).authorization;
-    return userAuthorization;
-  };
+  const getUserAuthorization = React.useCallback(
+    workspace => {
+      const userAuthorization = workspace.userAuthorizations.find(
+        authorization => authorization.userId === user.id
+      ).authorization;
+      return userAuthorization;
+    },
+    [user]
+  );
 
   const workspaces = [
     personalWorkspace,
@@ -231,6 +104,12 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
 
   React.useEffect(
     function switchToWorkspaceWithAdminRights() {
+      // if type is PERSONAL_PRO, switch to personal workspace
+      if (type === WorkspaceSubscriptionTypes.Personal) {
+        setActiveTeam({ id: personalWorkspaceId });
+        return;
+      }
+
       // if you land on a workspace where you are not the admin
       // switch workspaces to one where you are an admin
       // if none, switch to personal workspace
@@ -252,34 +131,45 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
       }
     },
     [
+      type,
       activeUserAuthorization,
       dashboard.teams,
-      getUserAuthorization,
       setActiveTeam,
       personalWorkspaceId,
+      getUserAuthorization,
     ]
   );
 
-  if (!activeTeam || !dashboard.teams.length || !plan) return null;
+  if (!activeTeam || !dashboard.teams.length || !selectedPlan) return null;
 
   const numberOfEditors = activeWorkspace.userAuthorizations.filter(
     ({ authorization }) => authorization !== TeamMemberAuthorization.Read
   ).length;
-  setSeats(numberOfEditors);
+  updateSeats(numberOfEditors);
 
   const isLegacyPersonalPro = isPersonalWorkspace && user.subscription;
+  const currentSubscription = activeTeamInfo?.subscription;
+  const isTeamProPilot =
+    currentSubscription &&
+    currentSubscription.origin === WorkspaceSubscriptionOrigin.Pilot;
 
   // if there is mismatch of intent - team/personal
   // or you don't have access to upgrade
   // open the workspace switcher on load
   const switcherDefaultOpen =
-    (type === 'team' && isPersonalWorkspace) ||
-    (type === 'personal' && !isPersonalWorkspace) ||
+    (type === WorkspaceSubscriptionTypes.Team && isPersonalWorkspace) ||
     activeUserAuthorization !== TeamMemberAuthorization.Admin;
 
   return (
     <div style={{ width: '100%' }}>
-      <Text size={7} as="h1" block align="center" marginBottom={4}>
+      <Text
+        size={7}
+        as="h1"
+        block
+        weight="bold"
+        align="center"
+        marginBottom={4}
+      >
         Upgrade to Pro
       </Text>
       <Text
@@ -290,8 +180,8 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
         marginBottom={8}
         css={{ maxWidth: 560 }}
       >
-        Join our community of creators from {plan.currency}
-        {plan.unit}/month.
+        Join our community of creators from {selectedPlan.currency}
+        {selectedPlan.unit}/month.
         <br /> Cancel at any time, effective at the end of the payment period.
       </Text>
       <Stack direction="vertical" gap={1} marginBottom={6}>
@@ -400,12 +290,13 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
                 as={Menu.Item}
                 align="center"
                 gap={2}
-                css={css({
-                  height: 10,
-                  textAlign: 'left',
-                })}
+                css={css({ height: 10, textAlign: 'left' })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() => history.push('/pro/create-workspace?v=2')}
+                onSelect={() =>
+                  history.push(
+                    `/pro/create-workspace?interval=${billingInterval}`
+                  )
+                }
               >
                 <Stack
                   justify="center"
@@ -503,26 +394,30 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
               <>
                 <PlanCard
                   plan={plans.PERSONAL_PRO_MONTHLY}
-                  billingFrequency={billingFrequency}
-                  setBillingFrequency={setBillingFrequency}
+                  billingInterval={billingInterval}
+                  setBillingInterval={setBillingInterval}
+                  currentSubscription={currentSubscription}
                 />
                 <PlanCard
                   plan={plans.PERSONAL_PRO_ANNUAL}
-                  billingFrequency={billingFrequency}
-                  setBillingFrequency={setBillingFrequency}
+                  billingInterval={billingInterval}
+                  setBillingInterval={setBillingInterval}
+                  currentSubscription={currentSubscription}
                 />
               </>
             ) : (
               <>
                 <PlanCard
                   plan={plans.TEAM_PRO_MONTHLY}
-                  billingFrequency={billingFrequency}
-                  setBillingFrequency={setBillingFrequency}
+                  billingInterval={billingInterval}
+                  setBillingInterval={setBillingInterval}
+                  currentSubscription={currentSubscription}
                 />
                 <PlanCard
                   plan={plans.TEAM_PRO_ANNUAL}
-                  billingFrequency={billingFrequency}
-                  setBillingFrequency={setBillingFrequency}
+                  billingInterval={billingInterval}
+                  setBillingInterval={setBillingInterval}
+                  currentSubscription={currentSubscription}
                 />
               </>
             )}
@@ -537,6 +432,12 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
               borderColor: 'grays.500',
               borderRadius: 'small',
               overflow: 'hidden',
+              button: {
+                fontSize: 3,
+                height: 10,
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 700,
+              },
             })}
           >
             <Text size={3}>Workspace editors</Text>
@@ -544,11 +445,11 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
               <Stack direction="vertical" gap={4}>
                 <Text variant="muted" size={3}>
                   {numberOfEditors} {numberOfEditors === 1 ? 'seat' : 'seats'}
-                  <Text size={2}> ✕ </Text> {plan.currency}
-                  {plan.unit}{' '}
-                  {plan.multiplier > 1 ? (
+                  <Text size={2}> ✕ </Text> {selectedPlan.currency}
+                  {selectedPlan.unit}{' '}
+                  {selectedPlan.multiplier > 1 ? (
                     <>
-                      <Text size={2}> ✕</Text> {plan.multiplier}
+                      <Text size={2}> ✕</Text> {selectedPlan.multiplier}
                     </>
                   ) : null}
                 </Text>
@@ -556,22 +457,72 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
                   Prices listed in USD. Taxes may apply.
                 </Text>
               </Stack>
-              <Text weight="semibold" size={4}>
-                {plan.currency}
-                {numberOfEditors * plan.unit * plan.multiplier} /{' '}
-                {plan.frequency === 'monthly' ? 'month' : 'year'}
+              <Text weight="bold" size={4}>
+                {selectedPlan.currency}
+                {numberOfEditors *
+                  selectedPlan.unit *
+                  selectedPlan.multiplier}{' '}
+                /{' '}
+                {selectedPlan.billingInterval ===
+                SubscriptionBillingInterval.Monthly
+                  ? 'month'
+                  : 'year'}
               </Text>
             </Stack>
           </Stack>
 
-          <Button
-            loading={loading}
-            disabled={activeUserAuthorization !== TeamMemberAuthorization.Admin}
-            onClick={() => nextStep()}
-            css={css({ fontSize: 3, height: 10 })}
-          >
-            Continue
-          </Button>
+          {currentSubscription && !isTeamProPilot ? (
+            <>
+              <Button
+                loading={loading}
+                disabled={
+                  // non-admins can't upgrade
+                  activeUserAuthorization !== TeamMemberAuthorization.Admin ||
+                  // you are not allowed to change from yearly to monthly
+                  currentSubscription.billingInterval ===
+                    SubscriptionBillingInterval.Yearly ||
+                  // if it's already the same, then nothing to do here
+                  selectedPlan.billingInterval ===
+                    currentSubscription.billingInterval
+                }
+                onClick={() => setStep(Step.ConfirmBillingInterval)}
+                css={css({
+                  fontSize: 3,
+                  height: 10,
+                  fontFamily: 'Lato, sans-serif',
+                  fontWeight: 700,
+                })}
+              >
+                Update billing interval
+              </Button>
+              {currentSubscription.billingInterval ===
+                SubscriptionBillingInterval.Yearly &&
+              selectedPlan.billingInterval ===
+                SubscriptionBillingInterval.Monthly ? (
+                <Text align="center">
+                  Changing billing interval from Yearly to Monthly is not
+                  supported yet. Please email us at hello@codesandbox.io
+                </Text>
+              ) : null}
+            </>
+          ) : (
+            <Button
+              loading={loading}
+              disabled={
+                // non-admins can't upgrade
+                activeUserAuthorization !== TeamMemberAuthorization.Admin
+              }
+              onClick={() => setStep(Step.InlineCheckout)}
+              css={css({
+                fontSize: 3,
+                height: 10,
+                fontFamily: 'Lato, sans-serif',
+                fontWeight: 700,
+              })}
+            >
+              Continue
+            </Button>
+          )}
         </Stack>
       )}
     </div>
@@ -580,10 +531,14 @@ const Upgrade = ({ loading, plan, setPlan, setSeats, nextStep }) => {
 
 const PlanCard: React.FC<{
   plan: Plan;
-  billingFrequency: Plan['frequency'];
-  setBillingFrequency: (frequency: Plan['frequency']) => void;
-}> = ({ plan, billingFrequency, setBillingFrequency }) => {
-  const isSelected = plan.frequency === billingFrequency;
+  billingInterval: Plan['billingInterval'];
+  setBillingInterval: (billingInterval: Plan['billingInterval']) => void;
+  currentSubscription: WorkspaceSubscription | null;
+}> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
+  const isSelected = plan.billingInterval === billingInterval;
+  const isCurrent =
+    plan.billingInterval === currentSubscription?.billingInterval &&
+    currentSubscription?.origin !== WorkspaceSubscriptionOrigin.Pilot;
 
   return (
     <Stack
@@ -602,17 +557,20 @@ const PlanCard: React.FC<{
     >
       <Stack justify="space-between" align="center">
         <Stack direction="vertical" gap={1}>
-          <Text
-            size={4}
-            weight="semibold"
-            css={{ textTransform: 'capitalize' }}
-          >
-            {plan.frequency}
+          <Text size={4} weight="bold">
+            {plan.billingInterval === SubscriptionBillingInterval.Yearly
+              ? 'Annual'
+              : 'Monthly'}
+            {isCurrent ? ' (Current)' : null}
           </Text>
           <Text size={3}>{plan.name}</Text>
           <Text size={3} variant="muted">
             {plan.currency}
-            {plan.unit} {plan.type === 'team' ? 'per editor' : null} per month
+            {plan.unit}{' '}
+            {plan.type === WorkspaceSubscriptionTypes.Team
+              ? 'per editor'
+              : null}{' '}
+            per month
           </Text>
         </Stack>
         <div>
@@ -620,7 +578,7 @@ const PlanCard: React.FC<{
             type="radio"
             hidden
             checked={isSelected}
-            onChange={() => setBillingFrequency(plan.frequency)}
+            onChange={() => setBillingInterval(plan.billingInterval)}
           />
           <Stack
             justify="center"
@@ -640,143 +598,3 @@ const PlanCard: React.FC<{
     </Stack>
   );
 };
-
-const InlineCheckout = ({ plan, seats = 1, setCheckoutReady }) => {
-  const {
-    state: { user },
-  } = useOvermind();
-
-  const [prices, updatePrices] = React.useState(null);
-
-  const unitPricePreTax = prices && (prices.unit - prices.unit_tax).toFixed(2);
-  const totalPricePreTax =
-    prices && (prices.total - prices.total_tax).toFixed(2);
-
-  React.useEffect(() => {
-    // @ts-ignore 3rd party integration with global
-    const Paddle = window.Paddle;
-
-    Paddle.Environment.set('sandbox');
-    Paddle.Setup({
-      vendor: PADDLE_VENDOR_ID,
-      eventCallback: event => {
-        if (event.event === 'Checkout.Location.Submit') {
-          updatePrices(event.eventData.checkout.prices.customer);
-        }
-      },
-    });
-
-    // @ts-ignore 3rd party integration with global
-    window.loadCallback = () => setCheckoutReady(true);
-
-    Paddle.Checkout.open({
-      method: 'inline',
-      product: plan.id, // Replace with your Product or Plan ID
-      quantity: seats,
-      email: user.email,
-      frameTarget: 'checkout-container', // The className of your checkout <div>
-      loadCallback: 'loadCallback',
-      success: '/pro/success?v=2',
-      displayModeTheme: 'dark',
-      allowQuantity: true,
-      disableLogout: true,
-      frameInitialHeight: 416,
-      frameStyle: `
-        width: 500px;
-        min-width:500px;
-        background-color:
-        transparent; border: none;
-      `,
-    });
-  }, [setCheckoutReady]);
-
-  return (
-    <div>
-      <Text size={7} as="h1" block align="center" marginBottom={12}>
-        Upgrade to Pro
-      </Text>
-      {prices && (
-        <Stack
-          direction="vertical"
-          gap={2}
-          css={css({
-            padding: 4,
-            marginBottom: 8,
-            border: '1px solid',
-            borderColor: 'grays.500',
-            borderRadius: 'small',
-            overflow: 'hidden',
-          })}
-        >
-          <Text size={3}>Workspace editors</Text>
-          <Stack justify="space-between">
-            <Text variant="muted" size={3}>
-              {seats} {seats === 1 ? 'seat' : 'seats'}
-              <Text size={2}> ✕ </Text>
-              {prices.currency} {unitPricePreTax} ({plan.currency}{' '}
-              {plan.unit * plan.multiplier})
-            </Text>
-            <Text variant="muted" size={3}>
-              {prices.currency} {totalPricePreTax}
-            </Text>
-          </Stack>
-          <Stack justify="space-between">
-            <Text variant="muted" size={3}>
-              Tax
-            </Text>
-            <Text variant="muted" size={3}>
-              {prices.currency} {prices.total_tax}
-            </Text>
-          </Stack>
-          <Stack
-            justify="space-between"
-            css={css({
-              borderTop: '1px solid',
-              borderColor: 'grays.500',
-              paddingTop: 10,
-            })}
-          >
-            <Text size={3}>Total</Text>
-            <Text weight="semibold">
-              {prices.currency} {prices.total}
-            </Text>
-          </Stack>
-        </Stack>
-      )}
-
-      <div className="checkout-container" />
-    </div>
-  );
-};
-
-const Success = () => (
-  <Stack
-    direction="vertical"
-    justify="center"
-    align="center"
-    css={css({
-      fontSize: 3,
-      width: 560,
-      marginTop: 120,
-      marginX: 'auto',
-      textAlign: 'center',
-    })}
-  >
-    <Icon name="simpleCheck" color="#5DCC67" size={64} />
-    <Text as="h1" size={8}>
-      You Payment is Successful
-    </Text>
-    <Stack direction="vertical" align="center" gap={10}>
-      <Text variant="muted" size={4}>
-        We have emailed you the details of your order.
-      </Text>
-      <Button
-        as="a"
-        href="/dashboard/settings"
-        style={{ fontSize: 13, height: 40 }}
-      >
-        Go to Dashboard
-      </Button>
-    </Stack>
-  </Stack>
-);
