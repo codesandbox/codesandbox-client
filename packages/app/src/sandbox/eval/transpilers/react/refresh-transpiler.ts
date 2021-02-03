@@ -151,23 +151,27 @@ module.exports = {
 
 // const _csbRefreshUtils = require('${HELPER_PATH}');
 
-// if (_csbRefreshUtils.isReactRefreshBoundary && _csbRefreshUtils.isReactRefreshBoundary(module.exports)) {
-//   _csbRefreshUtils.registerExportsForReactRefresh(module.exports, module.id)
-//   const currentExports = { ...module.exports };
-//   const isHotUpdate = !!module.hot.data;
-//   const prevExports = isHotUpdate ? module.hot.data.prevExports : null;
+// const isHotUpdate = !!module.hot.data;
+// const prevExports = isHotUpdate ? module.hot.data.prevExports : null;
+// if (_csbRefreshUtils.isReactRefreshBoundary) {
+//   if (_csbRefreshUtils.isReactRefreshBoundary(module.exports)) {
+//     _csbRefreshUtils.registerExportsForReactRefresh(module.exports, module.id)
+//     const currentExports = { ...module.exports };
 
-//   module.hot.dispose(function hotDisposeCallback(data) {
-//     data.prevExports = currentExports;
-//   });
+//     module.hot.dispose(function hotDisposeCallback(data) {
+//       data.prevExports = currentExports;
+//     });
 
-//   if (isHotUpdate && _csbRefreshUtils.shouldInvalidateReactRefreshBoundary(currentExports, prevExports)) {
+//     if (isHotUpdate && _csbRefreshUtils.shouldInvalidateReactRefreshBoundary(prevExports, currentExports)) {
+//       module.hot.invalidate();
+//     } else {
+//       module.hot.accept();
+//     }
+
+//     _csbRefreshUtils.enqueueUpdate();
+//   } else if (isHotUpdate && _csbRefreshUtils.isReactRefreshBoundary(prevExports)) {
 //     module.hot.invalidate();
-//   } else {
-//     module.hot.accept();
 //   }
-
-//   _csbRefreshUtils.enqueueUpdate();
 // }
 // `;
 
@@ -176,8 +180,8 @@ module.exports = {
  * to a single line so we don't mess with the source mapping when showing errors.
  */
 const getWrapperCode = (sourceCode: string) =>
-  `var prevRefreshReg=window.$RefreshReg$;var prevRefreshSig=window.$RefreshSig$;var RefreshRuntime=require("react-refresh/runtime");window.$RefreshReg$=(type,id)=>{const fullId=module.id+" "+id;RefreshRuntime.register(type,fullId)};window.$RefreshSig$=RefreshRuntime.createSignatureFunctionForTransform;try{${sourceCode}
-}finally{window.$RefreshReg$=prevRefreshReg;window.$RefreshSig$=prevRefreshSig}const _csbRefreshUtils=require("${HELPER_PATH}");if(_csbRefreshUtils.isReactRefreshBoundary&&_csbRefreshUtils.isReactRefreshBoundary(module.exports)){_csbRefreshUtils.registerExportsForReactRefresh(module.exports,module.id);const currentExports={...module.exports};const isHotUpdate=!!module.hot.data;const prevExports=isHotUpdate?module.hot.data.prevExports:null;module.hot.dispose((function hotDisposeCallback(data){data.prevExports=currentExports}));if(isHotUpdate&&_csbRefreshUtils.shouldInvalidateReactRefreshBoundary(currentExports,prevExports)){module.hot.invalidate()}else{module.hot.accept()}_csbRefreshUtils.enqueueUpdate()}`.trim();
+  `var prevRefreshReg=window.$RefreshReg$,prevRefreshSig=window.$RefreshSig$,RefreshRuntime=require("react-refresh/runtime");window.$RefreshReg$=(e,r)=>{const s=module.id+" "+r;RefreshRuntime.register(e,s)},window.$RefreshSig$=RefreshRuntime.createSignatureFunctionForTransform;try{${sourceCode}
+}finally{window.$RefreshReg$=prevRefreshReg,window.$RefreshSig$=prevRefreshSig}const _csbRefreshUtils=require("${HELPER_PATH}"),isHotUpdate=!!module.hot.data,prevExports=isHotUpdate?module.hot.data.prevExports:null;if(_csbRefreshUtils.isReactRefreshBoundary)if(_csbRefreshUtils.isReactRefreshBoundary(module.exports)){_csbRefreshUtils.registerExportsForReactRefresh(module.exports,module.id);const e={...module.exports};module.hot.dispose((function(r){r.prevExports=e})),isHotUpdate&&_csbRefreshUtils.shouldInvalidateReactRefreshBoundary(prevExports,e)?module.hot.invalidate():module.hot.accept(),_csbRefreshUtils.enqueueUpdate()}else isHotUpdate&&_csbRefreshUtils.isReactRefreshBoundary(prevExports)&&module.hot.invalidate();`;
 
 class RefreshTranspiler extends Transpiler {
   constructor() {

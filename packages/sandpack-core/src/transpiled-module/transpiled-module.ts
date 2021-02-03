@@ -274,13 +274,13 @@ export class TranspiledModule {
   }
 
   resetCompilation() {
+    if (this.compilation) {
+      this.compilation = null;
+    }
+
     if (this.hmrConfig && this.hmrConfig.isHot()) {
       this.hmrConfig.setDirty(true);
     } else {
-      if (this.compilation) {
-        this.compilation = null;
-      }
-
       Array.from(this.initiators)
         .filter(t => t.compilation)
         .forEach(dep => {
