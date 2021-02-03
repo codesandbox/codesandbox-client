@@ -575,7 +575,7 @@ async function compile({
       // Just reset the whole manager if it's a new combination
       manager.dispose();
 
-      manager = initializeManager(
+      manager = await initializeManager(
         sandboxId,
         template,
         modules,
