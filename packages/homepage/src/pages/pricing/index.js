@@ -49,7 +49,7 @@ export default () => {
     if (!open[name]) {
       track('Plan detail opened', {
         category: name,
-        tab: product === 'individual' ? 'Individual' : 'Business',
+        tab: product === 'personal' ? 'Individual' : 'Business',
       });
     }
     setOpen(o => ({ ...o, [name]: !o[name] }));
