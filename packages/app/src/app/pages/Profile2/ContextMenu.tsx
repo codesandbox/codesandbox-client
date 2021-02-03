@@ -9,6 +9,7 @@ export const ContextMenu = () => {
   const {
     state: {
       user: loggedInUser,
+      activeTeamInfo,
       profile: {
         current: user,
         contextMenu: { sandboxId, sandboxType, position },
@@ -32,7 +33,7 @@ export const ContextMenu = () => {
   if (!sandboxId) return null;
 
   const myProfile = loggedInUser?.username === user.username;
-  const isPro = loggedInUser && Boolean(loggedInUser.subscription);
+  const isPro = loggedInUser && activeTeamInfo?.subscription;
   const likesPage = location.pathname === '/likes';
 
   const isFeatured = user.featuredSandboxes

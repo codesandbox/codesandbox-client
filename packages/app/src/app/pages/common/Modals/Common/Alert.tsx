@@ -59,7 +59,9 @@ export const Alert: FunctionComponent<Props> = ({
         {onPrimaryAction && (
           <Button
             variant={type}
-            title={typeof confirmMessage === 'string' ? confirmMessage : null}
+            title={
+              typeof confirmMessage === 'string' ? confirmMessage : undefined
+            }
             css={css({
               width: 'auto',
             })}

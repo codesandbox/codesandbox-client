@@ -8,6 +8,7 @@ import {
   sandboxUrl,
   dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
@@ -40,8 +41,10 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'Template' : 'Sandbox';
-  const isPro = user && Boolean(user.subscription);
-  const isTeamPro = activeTeamInfo?.joinedPilotAt;
+
+  const isPro = activeTeamInfo?.subscription;
+  const isTeamPro =
+    activeTeamInfo?.subscription?.type === WorkspaceSubscriptionTypes.Team;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.

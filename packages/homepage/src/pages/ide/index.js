@@ -1,401 +1,376 @@
-import React from 'react';
-
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
 import Layout from '../../components/layout';
-import PageContainer from '../../components/PageContainer';
+import { applyParallax } from '../../utils/parallax';
+import usePrefersReducedMotion from '../../utils/isReducedMOtion';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
-import hero from '../../assets/images/hero.png';
-import { P } from '../../components/Typography';
-import tweets from './_tweets';
+import Button from '../../components/Button';
+import CTA from '../../components/CTA';
+import { Description } from '../../components/Typography';
 
 import {
-  Titles,
-  Description,
-  ArtWorkWrapper,
-  MacBookWrapper,
-  CreateSandbox,
+  ContentBlock,
   Title,
-  Grid,
-  Join,
-  IconWrapper,
-  H6,
-  BigTitles,
-  JoinTitle,
+  Subtitle,
+  TitleWrapper,
   Wrapper,
-  TweetsWrapper,
-  Quote,
-  TweetAuthor,
-  TerminalIcon,
-  DebugIcon,
-  CollaborateIcon,
-  ManageIcon,
-  HeartIcon,
-  Border,
-  ImageWrapper,
-} from './_elements';
+  ContentBlockImage,
+  FeaturedImage,
+} from '../../components/LayoutComponents';
 
-import red from '../../assets/images/bg/red.jpg';
-import purple from '../../assets/images/bg/purple.jpg';
-import blue from '../../assets/images/bg/blue.jpg';
+import ide from './images/ide.png';
+import bg from './images/bg.png';
+import bg1 from './images/bg1.png';
+import bg2 from './images/bg2.png';
+import bg3 from './images/bg3.png';
+import bg4 from './images/bg4.png';
+import templates from './images/templates.png';
+import makeityours from './images/makeityours.png';
+import server from './images/server.png';
+import tests from './images/tests.png';
 
-import TemplateUniverse from '../../assets/images/TemplateUniverse.png';
-import containers from '../../assets/images/containers.png';
-import prototype from '../../assets/images/prototype-rapid.png';
-import collaborate from '../../assets/images/collaborate.png';
-import debug from '../../assets/images/debug.png';
-import Github from '../../assets/icons/GithubLarge';
-import VSCode from '../../assets/icons/VSCode';
-import Deploy from '../../assets/icons/Deploy';
+import gh from './images/gh.svg';
+import deploy from './images/deploy.svg';
+import vscode from './images/vscode.svg';
 
-export default () => (
-  <Layout>
-    <TitleAndMetaTags title="IDE - CodeSandbox" />
-    <PageContainer width={1086}>
-      <MacBookWrapper>
-        <ImageWrapper>
-          <motion.div
-            initial={{ opacity: 0, y: 140 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: 0.6,
-              duration: 1,
-              ease: 'easeOut',
-            }}
+export default () => {
+  const parallaxRef = useRef(null);
+  const parallaxRef1 = useRef(null);
+  const parallaxRef2 = useRef(null);
+  const parallaxRef3 = useRef(null);
+  const parallaxRef4 = useRef(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    const settings = {
+      speed: 1.2,
+      center: true,
+    };
+    if (!prefersReducedMotion) {
+      applyParallax(parallaxRef.current, settings);
+      applyParallax(parallaxRef1.current, settings);
+      applyParallax(parallaxRef2.current, settings);
+      applyParallax(parallaxRef3.current, settings);
+      applyParallax(parallaxRef4.current, settings);
+    }
+  }, []);
+
+  return (
+    <Layout>
+      <TitleAndMetaTags title="IDE - Codesandbox" />
+      <Wrapper>
+        <TitleWrapper>
+          <Title>Code from anywhere</Title>
+        </TitleWrapper>
+        <Description>
+          Code online with no setup in a powerful IDE that feels like it’s
+          local.
+        </Description>
+        <div
+          css={`
+            margin: auto;
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+          `}
+        >
+          <Button cta href="https://codesandbox.io/s/">
+            Get Started
+          </Button>
+        </div>
+        <div>
+          <div>
+            <Subtitle as="h2">Fast development in the browser</Subtitle>
+          </div>
+          <FeaturedImage
             css={`
-              height: 0;
-              position: relative;
-              z-index: 2;
+              height: 468px;
+
               ${props => props.theme.breakpoints.md} {
-                height: auto;
+                height: 200px;
               }
+            `}
+            bg={bg}
+          >
+            <img
+              ref={parallaxRef}
+              src={templates}
+              alt="Template Universe"
+              css={`
+                width: 864px;
+              `}
+            />
+          </FeaturedImage>
+          <ContentBlock>
+            <div>
+              <h3>Cloud IDE</h3>
+              Code from anywhere, on any device with a web browser.
+            </div>
+
+            <div>
+              <h3>Hot Module Reloading</h3>
+              With Hot Module Reloading built-in you can see changes as you make
+              them.
+            </div>
+
+            <div>
+              <h3>Keybindings and Quick Actions</h3>
+              Use Keybindings and Quick Actions to perform everyday tasks
+              speedily.
+            </div>
+          </ContentBlock>
+
+          <div
+            css={`
+              margin-top: 160px;
+              margin-bottom: 56px;
             `}
           >
-            <Title as="h1">An Online IDE for Rapid Web Development</Title>
-            <CreateSandbox href="/s">Create a Sandbox, it’s free</CreateSandbox>
-          </motion.div>
-          <motion.img
-            initial={{ opacity: 1, y: 120, boxShadow: '0 0 0 #040404' }}
-            animate={{ opacity: 0.5, y: 0, boxShadow: '0 -4px 20px #040404' }}
-            transition={{
-              duration: 1,
-              ease: 'easeOut',
-            }}
-            css={`
-              ${props => props.theme.breakpoints.md} {
-                display: none !important;
-              }
-              z-index: 0;
-              position: relative;
-            `}
-            src={hero}
-            alt="browser showing codesandbox running"
-          />
-        </ImageWrapper>
-      </MacBookWrapper>
-      <Border />
-      <Titles
-        css={`
-          padding-top: 6.875rem;
-        `}
-      >
-        Get Started Quickly
-      </Titles>
-      <Description>
-        Use templates to kickstart new projects with no setup.
-      </Description>
-    </PageContainer>
-    <ArtWorkWrapper bg={purple}>
-      <img src={TemplateUniverse} alt="Template Universe" />
-    </ArtWorkWrapper>
-    <Grid>
-      <div>
-        <H6>Start From an Official Template</H6>
-        We've templates for all popular frameworks, from React, Vue, and
-        Angular, to Apollo, Gatsby, Next, and others.
-      </div>
-      <div>
-        <H6>Community-made Starting Points</H6>
-        Use templates made by the community. Bookmark those you find useful to
-        get started with one click.
-      </div>
-      <div>
-        <H6>Make Your Own Templates</H6>
-        Create templates for your specific use-case with the configuration, file
-        structure, and dependencies you need.
-      </div>
-    </Grid>
-    <Border />
-    <Wrapper>
-      <Titles>Use With Your Fave Dev Tools</Titles>
-      <Description>
-        We integrate with the tools you already use for a seamless development
-        experience.
-      </Description>
-      <Grid>
-        <div>
-          <IconWrapper>
-            <Github />
-          </IconWrapper>
-          <BigTitles>Integrated with GitHub</BigTitles>
-          <P muted center>
-            Paste your GitHub URL and get a sandbox that syncs. Or export your
-            sandbox to a GitHub repo, create commits, or open PRs.
-          </P>
-        </div>
-        <div>
-          <IconWrapper>
-            <Deploy />
-          </IconWrapper>
-          <BigTitles>Deploy to Vercel or Netlify</BigTitles>
-          <P muted center>
-            Deploy a production version of your sandbox with Vercel or Netlify.
-          </P>
-        </div>
-        <div>
-          <IconWrapper>
-            <VSCode />
-          </IconWrapper>
-          <BigTitles>Powered by VS Code</BigTitles>
-          <P muted center>
-            Leverage the power and familiarity of VS Code. Use "Go to
-            Definition," "Replace Occurrences," and set a custom theme.
-          </P>
-        </div>
-      </Grid>
-    </Wrapper>
-    <Border />
-    <Wrapper>
-      <Titles>Prototype Rapidly</Titles>
-      <ArtWorkWrapper bg={blue}>
-        <img src={prototype} alt="Prototype Rapidly" />
-      </ArtWorkWrapper>
-      <Grid>
-        <div>
-          <H6>NPM Support</H6>
-          Add any of the 1M+ dependencies on npm directly from the editor.
-        </div>
-        <div>
-          <H6>Hot Module Reloading</H6>
-          With Hot Module Reloading built-in, you can see changes as you make
-          them.
-        </div>
-        <div>
-          <H6>Keybindings and Quick Actions</H6>
-          Use Keybindings and Quick Actions to perform common tasks speedily.
-        </div>
-        <div>
-          <H6>Shareable Links</H6>
-          Every sandbox has a secure URL with HTTPS support for sharing and
-          feedback.
-        </div>
-      </Grid>
-    </Wrapper>
-    <Border />
-    <TweetsWrapper>
-      <ul>
-        {tweets.map(tweet => (
-          <li>
-            <Quote> "{tweet.quote}"</Quote>
+            <Subtitle as="h2">Use with your fave dev tools</Subtitle>
+          </div>
+
+          <ContentBlock>
             <div>
-              <img
-                src={`https://twitter-avatar-csb.vercel.app/${tweet.username}`}
-                alt={tweet.quote}
-                onError={e => {
-                  e.target.src = `https://twitter-avatar-csb.vercel.app/codesandbox`;
-                }}
-              />
-              <TweetAuthor>{tweet.name}</TweetAuthor>
+              <ContentBlockImage bg="151515">
+                <img src={gh} alt="Integrated with GitHub" />
+              </ContentBlockImage>
+              <h3> Integrated with GitHub</h3>
+              Import a repo, and changes are synced automatically. Or export
+              your sandbox, create commits, and open PRs.
             </div>
-          </li>
-        ))}
-      </ul>
-    </TweetsWrapper>
-    <Border
-      css={`
-        margin-top: 23rem;
-      `}
-    />
-    <div
-      css={`
-        margin-top: calc(6.875rem * 6);
-      `}
-    >
-      <CollaborateIcon />
-      <Titles>Collaborate on Code</Titles>
-      <ArtWorkWrapper
-        bg={red}
-        css={`
-          justify-content: flex-end;
-        `}
-      >
-        <img src={collaborate} alt="Collaborate on Code" />
-      </ArtWorkWrapper>
-      <Grid>
-        <div>
-          <H6>Go Live</H6>
-          With Live, you can work on code and edit sandboxes together in
-          real-time.
+
+            <div>
+              <ContentBlockImage bg="151515">
+                <img src={deploy} alt="Deploy to Vercel or Netlify" />
+              </ContentBlockImage>
+              <h3>Deploy to Vercel or Netlify</h3>
+              Deploy a production version of your sandbox with Vercel or
+              Netlify.
+            </div>
+
+            <div>
+              <ContentBlockImage bg="5962DF">
+                <img src={vscode} alt="Powered by VS Code" />
+              </ContentBlockImage>
+              <h3>Powered by VS Code</h3>
+              Use “Go to Definition,” “Replace Occurrences,” set a custom VS
+              Code theme, and even enable Vim mode.
+            </div>
+          </ContentBlock>
+          <div>
+            <div>
+              <Subtitle as="h2">Code together</Subtitle>
+            </div>
+            <FeaturedImage
+              css={`
+                height: 468px;
+                justify-content: flex-end;
+                ${props => props.theme.breakpoints.md} {
+                  height: auto;
+                }
+              `}
+              bg={bg1}
+            >
+              <img
+                ref={parallaxRef1}
+                src={ide}
+                alt="Pair-up on Code"
+                css={`
+                  width: 820px;
+                  ${props => props.theme.breakpoints.md} {
+                    margin-top: 4rem;
+                  }
+                `}
+              />
+            </FeaturedImage>
+            <ContentBlock>
+              <div>
+                <h3>Pair-up on Code</h3>
+                Work on code and edit sandboxes together in real-time, like in a
+                Google Doc.
+              </div>
+
+              <div>
+                <h3>Inline Chat</h3>
+                Chat with collaborators about the code you're all working on.
+              </div>
+
+              <div>
+                <h3>Classroom Mode</h3>
+                Use Classroom Mode to control who can make edits or watch.
+              </div>
+            </ContentBlock>
+          </div>
+          <div>
+            <div>
+              <Subtitle as="h2">Work with containers</Subtitle>
+            </div>
+            <FeaturedImage
+              css={`
+                height: 468px;
+                justify-content: flex-start;
+                background-position: bottom;
+                ${props => props.theme.breakpoints.md} {
+                  height: auto;
+                }
+              `}
+              bg={bg2}
+            >
+              <img
+                ref={parallaxRef2}
+                src={server}
+                alt="Terminal Access"
+                css={`
+                  width: 880px;
+                  ${props => props.theme.breakpoints.md} {
+                    margin-top: 4rem;
+                  }
+                `}
+              />
+            </FeaturedImage>
+            <ContentBlock>
+              <div>
+                <h3>Create Full-stack Web Apps</h3>
+                Create back-end as well as front-end applications using Node.js.
+              </div>
+
+              <div>
+                <h3>A Secure Server Control Panel</h3>
+                Restart the sandbox or server, use multiple ports, and add
+                secrets securely.
+              </div>
+
+              <div>
+                <h3>Terminal Access</h3>
+                Run scripts and commands from a terminal built directly into the
+                editor.
+              </div>
+            </ContentBlock>
+          </div>
+          <div>
+            <div>
+              <Subtitle as="h2">Debug like a pro</Subtitle>
+            </div>
+            <FeaturedImage
+              css={`
+                height: 468px;
+                justify-content: flex-start;
+
+                ${props => props.theme.breakpoints.md} {
+                  height: auto;
+                }
+              `}
+              bg={bg3}
+            >
+              <img
+                ref={parallaxRef3}
+                src={tests}
+                alt="Jest tests"
+                css={`
+                  width: 826px;
+                  ${props => props.theme.breakpoints.md} {
+                    margin-top: 4rem;
+                  }
+                `}
+              />
+            </FeaturedImage>
+            <ContentBlock cols="4">
+              <div>
+                <h3>DevTools</h3>
+                Developer tools, like a console, test view, and a problem viewer
+                are in the preview. We support React's own DevTools too.
+              </div>
+
+              <div>
+                <h3>Jest Integration</h3>
+                We auto-detect and run Jest tests, showing results alongside
+                your code.
+              </div>
+
+              <div>
+                <h3>Error Overlay</h3>
+                See errors clearly with our user-friendly overlay. We even give
+                you suggestions on how to solve them when possible.
+              </div>
+              <div>
+                <h3>External Previews</h3>
+                Open your sandbox preview with a separate URL, but keep Hot
+                Module Reloading.
+              </div>
+            </ContentBlock>
+          </div>
+          <div>
+            <div>
+              <Subtitle as="h2">Make it yours</Subtitle>
+            </div>
+
+            <FeaturedImage
+              css={`
+                height: 468px;
+                justify-content: center;
+
+                ${props => props.theme.breakpoints.md} {
+                  height: auto;
+                }
+              `}
+              bg={bg4}
+            >
+              <img
+                ref={parallaxRef4}
+                src={makeityours}
+                alt="make it yours"
+                css={`
+                  width: 55rem;
+                  ${props => props.theme.breakpoints.md} {
+                    margin-top: 4rem;
+                  }
+                `}
+              />
+            </FeaturedImage>
+
+            <ContentBlock>
+              <div>
+                <h3>Configuration UI</h3>
+                Edit config files for npm, Prettier, Netlify, Vercel,
+                TypeScript, JavaScript, and your sandbox easily.
+              </div>
+
+              <div>
+                <h3>Automatic Type Acquisition</h3>
+                Typings are automatically downloaded for every dependency, so
+                you always have autocompletions.
+              </div>
+
+              <div>
+                <h3>Prettier</h3>
+                Code automatically gets prettified on save according to your own
+                Prettier preferences.
+              </div>
+              <div>
+                <h3>Emmet</h3>
+                You can quickly expand abbreviations with Emmet.io in all JS,
+                HTML, and CSS files.
+              </div>
+              <div>
+                <h3>TypeScript</h3>
+                We show TypeScript autocompletions and diagnostics for TS
+                sandboxes.
+              </div>
+              <div>
+                <h3>ESLint</h3>
+                All code is linted automatically using the latest version of
+                ESLint.
+              </div>
+            </ContentBlock>
+          </div>
         </div>
-        <div>
-          <H6>Inline Chat</H6>
-          Chat with collaborators about the code you're all working on.
-        </div>
-        <div>
-          <H6>Classroom Mode</H6>
-          Use Classroom Mode to control who can make edits or watch.
-        </div>
-      </Grid>
-    </div>
-    <Border />
-    <Wrapper>
-      <TerminalIcon />
-      <Titles>Work with Containers</Titles>
-      <ArtWorkWrapper
-        bg={purple}
-        css={`
-          justify-content: flex-start;
-        `}
-      >
-        <img src={containers} alt="Containers" />
-      </ArtWorkWrapper>
-      <Grid>
-        <div>
-          <H6>Create Full-stack Web Apps</H6>
-          Create back-end as well as front-end applications using Node.js.
-        </div>
-        <div>
-          <H6>A Secure Server Control Panel</H6>
-          Restart the sandbox or server, use multiple ports, and add secrets
-          securely.
-        </div>
-        <div>
-          <H6>Terminal Access</H6>
-          Run scripts and commands from a terminal built directly into the
-          editor.
-        </div>
-      </Grid>
-    </Wrapper>
-    <Border />
-    <Wrapper>
-      <DebugIcon />
-      <Titles>Debug Like a Pro</Titles>
-      <ArtWorkWrapper
-        bg={blue}
-        css={`
-          justify-content: flex-start;
-        `}
-      >
-        <img src={debug} alt="Debug Like a Pro" />
-      </ArtWorkWrapper>
-      <Grid>
-        <div>
-          <H6>DevTools</H6>
-          Tools like a console, test view, and a problem viewer are in the
-          preview, alongside React's own DevTools.
-        </div>
-        <div>
-          <H6>Jest Integration</H6>
-          We auto-detect and run Jest tests, showing results next to your code.
-        </div>
-        <div>
-          <H6>Error Overlay</H6>
-          See errors clearly with our user-friendly overlay and suggestions on
-          how to solve them.
-        </div>
-        <div>
-          <H6>External Previews</H6>
-          Open your sandbox preview with a separate URL but keep Hot Module
-          Reloading.
-        </div>
-      </Grid>
-    </Wrapper>
-    <Border />
-    <Wrapper>
-      <ManageIcon />
-      <Titles
-        css={`
-          margin-bottom: 6rem;
-        `}
-      >
-        Manage Sandboxes with Ease
-      </Titles>
-      <Grid>
-        <div>
-          <H6>Dashboard</H6>
-          Organize sandboxes and templates. Search, sort, and filter them. Add
-          them to folders or modify multiple sandboxes at once.
-        </div>
-        <div>
-          <H6>Static File Hosting</H6>
-          Serve all files statically from the public folder, depending on the
-          template.
-        </div>
-        <div>
-          <H6>Public, Private, or Unlisted</H6>
-          Share sandboxes with the world, or set a sandbox to be private or
-          unlisted to hide it from others.
-        </div>
-        <div>
-          <H6>Export to Zip</H6>
-          You can always download your sandbox as a zip if you want to continue
-          locally.
-        </div>
-      </Grid>
-    </Wrapper>
-    <Border />
-    <Wrapper>
-      <HeartIcon />
-      <Titles
-        css={`
-          margin-bottom: 6rem;
-        `}
-      >
-        Make It Yours
-      </Titles>
-      <Grid>
-        <div>
-          <H6>Configuration UI</H6>
-          Edit config files for npm, Prettier, Netlify, Vercel, TypeScript,
-          JavaScript, and your sandbox easily.
-        </div>
-        <div>
-          <H6>Automatic Type Acquisition</H6>
-          Typings are automatically downloaded for every dependency, so you
-          always have autocompletions.
-        </div>
-        <div>
-          <H6>Prettier</H6>
-          Code automatically gets prettified on save according to your own
-          Prettier preferences.
-        </div>
-        <div>
-          <H6>Emmet.io</H6>
-          You can quickly expand abbreviations with Emmet.io in all JS, HTML,
-          and CSS files.
-        </div>
-        <div>
-          <H6>TypeScript</H6>
-          We show TypeScript autocompletions and diagnostics for TS sandboxes.
-        </div>
-        <div>
-          <H6>ESLint</H6>
-          All code is linted automatically using the latest version of ESLint.
-        </div>
-      </Grid>
-    </Wrapper>
-    <Border />
-    <Join>
-      <JoinTitle>Join millions of people prototyping what’s next</JoinTitle>
-      <CreateSandbox
-        css={`
-          top: 0;
-          margin-bottom: 12rem;
-        `}
-        big
-        href="/s"
-      >
-        Create a Sandbox, it’s free
-      </CreateSandbox>
-    </Join>
-  </Layout>
-);
+      </Wrapper>
+
+      <CTA
+        title="Start coding in seconds"
+        subtitle="Code from anywhere with no project setup."
+        cta="Get Started"
+        link="/s"
+      />
+    </Layout>
+  );
+};

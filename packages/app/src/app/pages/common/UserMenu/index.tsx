@@ -20,17 +20,25 @@ export const UserMenu: FunctionComponent & {
       signOutClicked,
       files: { gotUploadedFiles },
     },
-    state: { user },
+    state: {
+      user,
+      personalWorkspaceId,
+      dashboard: { teams },
+    },
   } = useOvermind();
 
   if (!user) {
     return null;
   }
 
-  const showPatron = user.subscription?.plan === 'patron';
   const showCurator = user.curatorAt;
-  const showBecomePro = !user.subscription;
-  const showManageSubscription = user.subscription?.plan === 'pro';
+
+  const personalWorkspace = teams.find(
+    workspace => workspace.id === personalWorkspaceId
+  )!;
+  const showPatron = personalWorkspace?.subscription?.origin === 'PATRON';
+  const showBecomePro = !personalWorkspace?.subscription;
+  const showManageSubscription = personalWorkspace?.subscription;
 
   return (
     <Element>
@@ -106,7 +114,9 @@ export const UserMenu: FunctionComponent & {
           <Menu.Divider />
 
           {showManageSubscription && (
-            <Menu.Link href="/pro">
+            <Menu.Link
+              href={`/dashboard/settings?workspace=${personalWorkspaceId}`}
+            >
               <Stack align="center" gap={1}>
                 <Icon name="proBadge" size={24} />
                 <Text>Manage Subscription</Text>
