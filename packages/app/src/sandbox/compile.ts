@@ -461,7 +461,7 @@ async function compile({
     }
   }
 
-  dispatch({ type: 'start' });
+  dispatch({ type: 'start', firstLoad });
   metrics.measure('compilation');
 
   const startTime = Date.now();
@@ -639,7 +639,8 @@ async function compile({
         if (
           firstLoad &&
           localStorage.getItem('running') &&
-          Date.now() - +localStorage.getItem('running') > 8000
+          Date.now() - +localStorage.getItem('running') > 8000 &&
+          !process.env.SANDPACK
         ) {
           localStorage.removeItem('running');
           showRunOnClick();
