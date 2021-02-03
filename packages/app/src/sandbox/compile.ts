@@ -461,7 +461,7 @@ async function compile({
     }
   }
 
-  dispatch({ type: 'start' });
+  dispatch({ type: 'start', firstLoad });
   metrics.measure('compilation');
 
   const startTime = Date.now();
