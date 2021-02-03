@@ -126,9 +126,9 @@ export default () => {
           <ContentBlock>
             <div>
               <ContentBlockImage bg="151515">
-                <img src={shareDesign} alt="Socialize your design system" />
+                <img src={shareDesign} alt="Share with your team by default" />
               </ContentBlockImage>
-              <h3> Socialize your design system.</h3>
+              <h3>Share with your team by default.</h3>
               Remove barriers to collaboration with a shared workspace. Organize
               apps, hiring tests, prototypes, and bug repros in folders.
             </div>
