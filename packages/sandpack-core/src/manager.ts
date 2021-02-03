@@ -370,7 +370,7 @@ export default class Manager implements IEvaluator {
   evaluateModule(
     module: Module,
     { force = false, globals }: { force?: boolean; globals?: object } = {}
-  ) {
+  ): any {
     if (this.hardReload && !this.isFirstLoad) {
       // Do a hard reload
       document.location.reload();
