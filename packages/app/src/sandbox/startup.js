@@ -7,8 +7,8 @@ import setupScreenshotListener from 'sandbox-hooks/screenshot';
 import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { isStandalone } from 'codesandbox-api';
 
+window.babelworkers = [];
 if (!process.env.SANDPACK) {
-  window.babelworkers = [];
   for (let i = 0; i < 3; i++) {
     const worker = new BabelWorker();
     window.babelworkers.push(worker);
