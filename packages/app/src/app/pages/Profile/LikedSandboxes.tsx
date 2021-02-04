@@ -1,24 +1,18 @@
 import React from 'react';
 import { Grid, Column, Stack, Text, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SANDBOXES_PER_PAGE } from './constants';
 
 export const LikedSandboxes = () => {
+  const { likedSandboxesPageChanged } = useActions().profile;
   const {
-    actions: {
-      profile: { likedSandboxesPageChanged },
-    },
-    state: {
-      profile: {
-        current: { username },
-        isLoadingSandboxes,
-        currentLikedSandboxesPage,
-        likedSandboxes,
-      },
-    },
-  } = useOvermind();
+    current: { username },
+    isLoadingSandboxes,
+    currentLikedSandboxesPage,
+    likedSandboxes,
+  } = useAppState().profile;
 
   // explicitly call it on first page render
   React.useEffect(() => {
@@ -81,17 +75,11 @@ export const LikedSandboxes = () => {
 };
 
 const Pagination = () => {
+  const { likedSandboxesPageChanged } = useActions().profile;
   const {
-    actions: {
-      profile: { likedSandboxesPageChanged },
-    },
-    state: {
-      profile: {
-        currentLikedSandboxesPage,
-        current: { givenLikeCount },
-      },
-    },
-  } = useOvermind();
+    currentLikedSandboxesPage,
+    current: { givenLikeCount },
+  } = useAppState().profile;
 
   const numberOfPages = Math.ceil(givenLikeCount / SANDBOXES_PER_PAGE);
 

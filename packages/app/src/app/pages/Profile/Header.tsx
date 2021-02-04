@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
@@ -10,16 +10,13 @@ import { Notifications } from 'app/components/Notifications';
 
 export const Header: React.FC = () => {
   const {
-    actions: {
-      openCreateSandboxModal,
-      profile: { searchQueryChanged },
-    },
-    state: {
-      user,
-      profile: { searchQuery },
-    },
-  } = useOvermind();
-
+    openCreateSandboxModal,
+    profile: { searchQueryChanged },
+  } = useActions();
+  const {
+    user,
+    profile: { searchQuery },
+  } = useAppState();
   const history = useHistory();
   const location = useLocation();
   if (!location.search) searchQueryChanged('');
