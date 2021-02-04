@@ -20,7 +20,7 @@ const Teams = () => (
     }}
     css={`
       margin: 0 auto;
-      padding: 1.5rem 0;
+      padding: 4rem 0 16rem 0;
     `}
   >
     <P
@@ -29,7 +29,7 @@ const Teams = () => (
       `}
       muted
     >
-      Accelerating the most creative developers and product teams
+      Accelerating developers and product teams
     </P>
     <List>
       <li>

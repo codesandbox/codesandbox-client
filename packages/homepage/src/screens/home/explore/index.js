@@ -31,7 +31,6 @@ const Experiment = () => (
       max-height: 100vh;
       position: relative;
       overflow: hidden;
-      border-bottom: 1px solid #343434;
     `}
   >
     <div
@@ -44,8 +43,7 @@ const Experiment = () => (
       }}
     >
       <H2 css={'white-space: pre-line;'}>
-        Create static sites, components, <nobr>full-stack</nobr>
-        &nbsp;web&nbsp;apps
+        Free for personal use
       </H2>
       <P
         big
@@ -57,8 +55,8 @@ const Experiment = () => (
           text-align: center;
         `}
       >
-        Join a community of creators who’ve crafted <SandboxCount /> public
-        sandboxes and counting.
+        Create static sites, components, or full-stack web apps with a community 
+        who’ve crafted&nbsp;<SandboxCount /> public sandboxes and counting.
       </P>
       <Button
         style={{

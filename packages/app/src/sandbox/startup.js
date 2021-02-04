@@ -8,19 +8,21 @@ import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { isStandalone } from 'codesandbox-api';
 
 window.babelworkers = [];
-for (let i = 0; i < 3; i++) {
-  const worker = new BabelWorker();
-  window.babelworkers.push(worker);
+if (!process.env.SANDPACK) {
+  for (let i = 0; i < 3; i++) {
+    const worker = new BabelWorker();
+    window.babelworkers.push(worker);
 
-  // Warm up the babel worker
-  worker.postMessage({
-    type: 'warmup',
-    path: 'test.js',
-    code: 'const a = "b"',
-    config: { presets: ['env'] },
-    version: 7,
-    loaderOptions: {},
-  });
+    // Warm up the babel worker
+    worker.postMessage({
+      type: 'warmup',
+      path: 'test.js',
+      code: 'const a = "b"',
+      config: { presets: ['env'] },
+      version: 7,
+      loaderOptions: {},
+    });
+  }
 }
 
 if (!isStandalone) {

@@ -68,7 +68,7 @@ const Info = () => {
     >
       <Icon name="info" size={16} css={{ flexShrink: 0 }} />
       <Text variant="muted">
-        Pilot users can make up to 3 server sandboxes Always-On.{' '}
+        You can make up to 3 server sandboxes Always-On.{' '}
         <Button
           as={Text}
           variant="link"

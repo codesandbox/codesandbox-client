@@ -63,6 +63,14 @@ import {
   SetDefaultTeamMemberAuthorizationMutationVariables,
   DeleteCurrentUserMutation,
   DeleteCurrentUserMutationVariables,
+  UpdateSubscriptionBillingIntervalMutation,
+  UpdateSubscriptionBillingIntervalMutationVariables,
+  PreviewUpdateSubscriptionBillingIntervalMutation,
+  PreviewUpdateSubscriptionBillingIntervalMutationVariables,
+  SoftCancelSubscriptionMutation,
+  SoftCancelSubscriptionMutationVariables,
+  ReactivateSubscriptionMutation,
+  ReactivateSubscriptionMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -236,8 +244,16 @@ export const inviteToTeam: Query<
   _InviteToTeamMutation,
   _InviteToTeamMutationVariables
 > = gql`
-  mutation _InviteToTeam($teamId: UUID4!, $username: String!) {
-    inviteToTeam(teamId: $teamId, username: $username) {
+  mutation _InviteToTeam(
+    $teamId: UUID4!
+    $username: String!
+    $authorization: TeamMemberAuthorization
+  ) {
+    inviteToTeam(
+      teamId: $teamId
+      username: $username
+      authorization: $authorization
+    ) {
       ...currentTeamInfoFragment
     }
   }
@@ -248,8 +264,16 @@ export const inviteToTeamVieEmail: Query<
   _InviteToTeamViaEmailMutation,
   _InviteToTeamViaEmailMutationVariables
 > = gql`
-  mutation _InviteToTeamViaEmail($teamId: UUID4!, $email: String!) {
-    inviteToTeamViaEmail(teamId: $teamId, email: $email)
+  mutation _InviteToTeamViaEmail(
+    $teamId: UUID4!
+    $email: String!
+    $authorization: TeamMemberAuthorization
+  ) {
+    inviteToTeamViaEmail(
+      teamId: $teamId
+      email: $email
+      authorization: $authorization
+    )
   }
 `;
 
@@ -507,5 +531,73 @@ export const deleteAccount: Query<
 > = gql`
   mutation deleteCurrentUser {
     deleteCurrentUser
+  }
+`;
+
+export const updateSubscriptionBillingInterval: Query<
+  UpdateSubscriptionBillingIntervalMutation,
+  UpdateSubscriptionBillingIntervalMutationVariables
+> = gql`
+  mutation updateSubscriptionBillingInterval(
+    $teamId: UUID4!
+    $subscriptionId: UUID4!
+    $billingInterval: SubscriptionInterval!
+  ) {
+    updateSubscriptionBillingInterval(
+      teamId: $teamId
+      subscriptionId: $subscriptionId
+      billingInterval: $billingInterval
+    ) {
+      id
+    }
+  }
+`;
+
+export const previewUpdateSubscriptionBillingInterval: Query<
+  PreviewUpdateSubscriptionBillingIntervalMutation,
+  PreviewUpdateSubscriptionBillingIntervalMutationVariables
+> = gql`
+  mutation previewUpdateSubscriptionBillingInterval(
+    $teamId: UUID4!
+    $subscriptionId: UUID4!
+    $billingInterval: SubscriptionInterval!
+  ) {
+    previewUpdateSubscriptionBillingInterval(
+      teamId: $teamId
+      subscriptionId: $subscriptionId
+      billingInterval: $billingInterval
+    ) {
+      immediatePayment {
+        amount
+        currency
+      }
+      nextPayment {
+        amount
+        currency
+      }
+    }
+  }
+`;
+
+export const softCancelSubscription: Query<
+  SoftCancelSubscriptionMutation,
+  SoftCancelSubscriptionMutationVariables
+> = gql`
+  mutation softCancelSubscription($teamId: UUID4!, $subscriptionId: UUID4!) {
+    softCancelSubscription(teamId: $teamId, subscriptionId: $subscriptionId) {
+      id
+      cancelAt
+    }
+  }
+`;
+
+export const reactivateSubscription: Query<
+  ReactivateSubscriptionMutation,
+  ReactivateSubscriptionMutationVariables
+> = gql`
+  mutation reactivateSubscription($teamId: UUID4!, $subscriptionId: UUID4!) {
+    reactivateSubscription(teamId: $teamId, subscriptionId: $subscriptionId) {
+      id
+    }
   }
 `;

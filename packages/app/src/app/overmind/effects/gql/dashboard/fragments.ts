@@ -139,6 +139,10 @@ export const teamFragmentDashboard = gql`
       username
       avatarUrl
     }
+
+    subscription {
+      origin
+    }
   }
 `;
 
@@ -174,6 +178,20 @@ export const currentTeamInfoFragment = gql`
       preventSandboxExport
       preventSandboxLeaving
       defaultAuthorization
+    }
+
+    subscription {
+      id
+      type
+      status
+      origin
+      quantity
+      unitPrice
+      currency
+      billingInterval
+      updateBillingUrl
+      nextBillDate
+      cancelAt
     }
   }
 `;
