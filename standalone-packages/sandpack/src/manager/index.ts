@@ -209,7 +209,10 @@ export default class PreviewManager {
     }
   }
 
-  updatePreview(sandboxInfo = this.sandboxInfo, isFirstCompile?: boolean) {
+  updatePreview(
+    sandboxInfo = this.sandboxInfo,
+    isInitializationCompile?: boolean
+  ) {
     this.sandboxInfo = sandboxInfo;
 
     const files = this.getFiles();
@@ -250,7 +253,7 @@ export default class PreviewManager {
       type: 'compile',
       codesandbox: true,
       version: 3,
-      isFirstCompile,
+      isInitializationCompile,
       modules,
       externalResources: [],
       hasFileResolver: Boolean(this.options.fileResolver),

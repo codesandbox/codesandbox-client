@@ -33,24 +33,25 @@ requirePolyfills().then(() => {
     dispatch({ type: 'initialized', url: document.location.href });
   }
 
-  let isFirstCompile = true;
+  let isInitializationCompile = true;
   async function handleMessage(data, source) {
     if (source) {
       if (data.type === 'compile') {
-        // In sandpack we always broadcast a compile message from every manager whenever 1 frame reconnects. To prevent
-        // every mounted frame from recompiling, we explicitly flag that this compilation is meant to be the
+        // In sandpack we always broadcast a compile message from every manager whenever 1 frame reconnects.
+        // We do this because the initialized message does comes before the handshake is done, so there's no channel id.
+        // To prevent every mounted frame from recompiling, we explicitly flag that this compilation is meant to be the
         // first compilation done by the frame. This way we can ensure that only the new frame, that
         // hasn't compiled yet, will respond to the compile call. This currently is Sandpack specific.
         if (
-          data.isFirstCompile !== undefined &&
-          data.isFirstCompile === true &&
-          !isFirstCompile
+          data.isInitializationCompile !== undefined &&
+          data.isInitializationCompile === true &&
+          !isInitializationCompile
         ) {
           return;
         }
 
         compile(data);
-        isFirstCompile = false;
+        isInitializationCompile = false;
       } else if (data.type === 'get-transpiler-context') {
         const manager = getCurrentManager();
 

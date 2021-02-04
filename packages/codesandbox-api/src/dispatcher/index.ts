@@ -18,12 +18,12 @@ function checkIsStandalone() {
 // Whether the tab has a connection with the editor
 export const isStandalone = checkIsStandalone();
 
-let initializeResolved: () => void;
+let iframeHandshakeDone: () => void;
 /**
  * Resolves when the handshake between the frame and the editor has succeeded
  */
-export const intializedPromise = new Promise(resolve => {
-  initializeResolved = resolve;
+export const iframeHandshake = new Promise(resolve => {
+  iframeHandshakeDone = resolve;
 });
 
 // Field used by a "child" frame to determine its parent origin
@@ -35,8 +35,8 @@ const parentOriginListener = (e: MessageEvent) => {
     parentOrigin = e.data.origin;
     parentId = e.data.id ?? null;
 
-    if (initializeResolved) {
-      initializeResolved();
+    if (iframeHandshakeDone) {
+      iframeHandshakeDone();
     }
     self.removeEventListener('message', parentOriginListener);
   }
@@ -153,14 +153,22 @@ export function registerFrame(frame: Window, origin: string, bundlerId?: number)
 }
 
 if (typeof window !== 'undefined') {
-  intializedPromise.then(() => {
-    // We now start listening so we can let our listeners know
+  if (isStandalone) {
     window.addEventListener('message', eventListener);
-  });
+  } else {
+    iframeHandshake.then(() => {
+      // We now start listening so we can let our listeners know
+      window.addEventListener('message', eventListener);
+    });
+  }
 }
 
 export function reattach() {
-  intializedPromise.then(() => {
+  if (isStandalone) {
     window.addEventListener('message', eventListener);
-  });
+  } else {
+    iframeHandshake.then(() => {
+      window.addEventListener('message', eventListener);
+    });
+  }
 }
