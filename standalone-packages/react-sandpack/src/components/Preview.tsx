@@ -21,7 +21,7 @@ export const Preview: React.FC<PreviewProps> = ({
 
   React.useEffect(() => {
     const unsub = listen((message: any) => {
-      if (message.type === 'compile' && message.isFirstCompile === true) {
+      if (message.type === 'start' && message.firstLoad === true) {
         setLoadingOverlay('visible');
       }
 

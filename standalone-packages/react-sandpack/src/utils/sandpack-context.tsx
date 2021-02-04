@@ -56,7 +56,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     autorun: true,
   };
 
-  manager?: Manager;
+  manager: Manager | null;
   iframeRef: React.RefObject<HTMLIFrameElement>;
   loadingDivRef: React.RefObject<HTMLDivElement>;
   unsubscribe?: Function;
@@ -74,6 +74,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       sandpackStatus: 'idle',
     };
 
+    this.manager = null;
     this.iframeRef = React.createRef<HTMLIFrameElement>();
     this.loadingDivRef = React.createRef<HTMLDivElement>();
   }
@@ -234,21 +235,21 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   };
 
   dispatchMessage = (message: any) => {
-    if (this.state.sandpackStatus !== 'running') {
+    if (this.manager === null) {
       console.warn('dispatch cannot be called while in idle mode');
       return;
     }
 
-    this.manager!.dispatch(message);
+    this.manager.dispatch(message);
   };
 
   addListener = (listener: SandpackListener) => {
-    if (this.state.sandpackStatus !== 'running') {
+    if (this.manager === null) {
       console.warn('sandpack listener cannot be attached while in idle mode');
       return () => {};
     }
 
-    return this.manager!.listen(listener);
+    return this.manager.listen(listener);
   };
 
   _getSandpackState = (): SandpackContext => {
