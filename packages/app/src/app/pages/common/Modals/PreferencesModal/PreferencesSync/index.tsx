@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import css from '@styled-system/css';
 import { Text, Stack, Icon, Element } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { SpinnerWrapper } from '@codesandbox/common/lib/components/Preview/Navigator/elements';
 import track from '@codesandbox/common/lib/utils/analytics';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
@@ -11,17 +11,13 @@ import { CreateProfile } from './CreateProfile';
 import { Profiles } from './Profiles';
 
 export const PreferencesSync: FunctionComponent = () => {
-  const {
-    state: {
-      preferences: { settingsSync },
-    },
-    actions,
-    effects,
-  } = useOvermind();
+  const { settingsSync } = useAppState().preferences;
+  const { getUserSettings, updateServerSettings } = useActions().preferences;
+  const { notificationToast } = useEffects();
 
   useEffect(() => {
     if (!settingsSync.settings) {
-      actions.preferences.getUserSettings();
+      getUserSettings();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -48,16 +44,16 @@ export const PreferencesSync: FunctionComponent = () => {
       try {
         contents = JSON.parse(file);
       } catch {
-        effects.notificationToast.error('JSON file not formatted correctly');
+        notificationToast.error('JSON file not formatted correctly');
       }
 
       if (!contents || !contents.themeData || !contents.vscode) {
-        effects.notificationToast.error('JSON file not formatted correctly');
+        notificationToast.error('JSON file not formatted correctly');
 
         return;
       }
 
-      actions.preferences.updateServerSettings(file);
+      updateServerSettings(file);
     };
 
     fileSelector.click();

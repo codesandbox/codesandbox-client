@@ -6,7 +6,7 @@ import {
   searchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 
 import { ProfileImage } from './elements';
@@ -15,13 +15,11 @@ export const UserMenu: FunctionComponent & {
   Button: (props: any) => JSX.Element;
 } = props => {
   const {
-    actions: {
-      modalOpened,
-      signOutClicked,
-      files: { gotUploadedFiles },
-    },
-    state: { user },
-  } = useOvermind();
+    modalOpened,
+    signOutClicked,
+    files: { gotUploadedFiles },
+  } = useActions();
+  const { user } = useAppState();
 
   if (!user) {
     return null;

@@ -3,7 +3,7 @@ import { Text, Element } from '@codesandbox/components';
 import React, { FunctionComponent, useState } from 'react';
 
 import Modal from 'app/components/Modal';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { Alert } from '../../Common/Alert';
 
@@ -14,14 +14,8 @@ import { PreferenceContainer } from '../elements';
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 export const EditorSettings: FunctionComponent = () => {
-  const {
-    actions: {
-      preferences: { settingChanged },
-    },
-    state: {
-      preferences: { settings },
-    },
-  } = useOvermind();
+  const { settingChanged } = useActions().preferences;
+  const { settings } = useAppState().preferences;
   const [showModal, setShowModal] = useState(false);
 
   const bindValue = (name: string) => ({
