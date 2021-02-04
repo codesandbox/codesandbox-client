@@ -1,17 +1,18 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import Modal from 'app/components/Modal';
 import { Alert } from '../Common/Alert';
 
 export const GenericAlertModal = () => {
-  const { state, actions } = useOvermind();
-  const { title, message, isCurrent } = state.modals.alertModal;
+  const { alertModal } = useActions().modals;
+  const { modals } = useAppState();
+  const { title, message, isCurrent } = modals.alertModal;
 
   return (
     <Modal
       isOpen={isCurrent}
       width={450}
-      onClose={() => actions.modals.alertModal.close(false)}
+      onClose={() => alertModal.close(false)}
     >
       <Alert
         title={title}
@@ -19,10 +20,10 @@ export const GenericAlertModal = () => {
         confirmMessage="Confirm"
         cancelMessage="Cancel"
         onPrimaryAction={() => {
-          actions.modals.alertModal.close(true);
+          alertModal.close(true);
         }}
         onCancel={() => {
-          actions.modals.alertModal.close(false);
+          alertModal.close(false);
         }}
       />
     </Modal>

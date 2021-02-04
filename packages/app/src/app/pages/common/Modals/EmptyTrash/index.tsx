@@ -1,16 +1,12 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
 import { permanentlyDeleteSandboxes } from '../../../Dashboard/queries';
 
 export const EmptyTrash: FunctionComponent = () => {
-  const {
-    actions: { modalClosed },
-    state: {
-      dashboard: { trashSandboxIds },
-    },
-  } = useOvermind();
+  const { trashSandboxIds } = useAppState().dashboard;
+  const { modalClosed } = useActions();
 
   return (
     <Alert

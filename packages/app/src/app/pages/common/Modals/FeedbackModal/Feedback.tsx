@@ -2,7 +2,7 @@ import css from '@styled-system/css';
 import VERSION from '@codesandbox/common/lib/version';
 import { CurrentUser } from '@codesandbox/common/lib/types';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import pushToAirtable from 'app/overmind/utils/pushToAirtable';
 import pushToFront from 'app/overmind/utils/pushToFront';
 import {
@@ -29,10 +29,8 @@ type Props = {
 };
 
 export const Feedback: FunctionComponent<Props> = ({ id, user }) => {
-  const {
-    state: { currentModalMessage },
-    actions: { notificationAdded, modalClosed },
-  } = useOvermind();
+  const { notificationAdded, modalClosed } = useActions();
+  const { currentModalMessage } = useAppState();
   const [email, setEmail] = useState((user || {}).email);
   const [emoji, setEmoji] = useState(null);
   const [feedback, setFeedback] = useState(currentModalMessage || '');
