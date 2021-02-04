@@ -1,7 +1,7 @@
 import Modal from 'app/components/Modal';
 import css from '@styled-system/css';
 import { ThemeProvider, Stack, Text } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Alert } from 'app/pages/common/Modals/Common/Alert';
 import * as React from 'react';
 import { withTheme } from 'styled-components';
@@ -20,15 +20,21 @@ const clearButtonStyles = {
 
 export const InstallExtensionBanner = withTheme(({ theme }: { theme: any }) => {
   const [isShowing, setShowing] = React.useState(false);
-  const { state, actions } = useOvermind();
+  const {
+    preview: { mode },
+    modals,
+  } = useAppState();
+  const actions = useActions();
 
   React.useEffect(() => {
     setShowing(true);
   }, []);
 
   const isResponsive =
-    state.preview.mode === 'responsive' ||
-    state.preview.mode === 'responsive-add-comment';
+    mode === 'responsive' || mode === 'responsive-add-comment';
+  const topValue = isShowing
+    ? ADDRESSBAR_HEIGHT + RESPONSIVE_BAR_HEIGHT
+    : ADDRESSBAR_HEIGHT;
 
   return (
     <ThemeProvider theme={theme.vscodeTheme}>
@@ -36,11 +42,7 @@ export const InstallExtensionBanner = withTheme(({ theme }: { theme: any }) => {
         align="center"
         justify="space-between"
         style={{
-          top: isShowing
-            ? isResponsive
-              ? ADDRESSBAR_HEIGHT + RESPONSIVE_BAR_HEIGHT
-              : ADDRESSBAR_HEIGHT
-            : 0,
+          top: isResponsive ? topValue : 0,
         }}
         padding={2}
         css={css({
@@ -98,7 +100,7 @@ export const InstallExtensionBanner = withTheme(({ theme }: { theme: any }) => {
           Install Extension
         </button>
         <Modal
-          isOpen={state.modals.extensionInstalledModal.isCurrent}
+          isOpen={modals.extensionInstalledModal.isCurrent}
           width={450}
           onClose={() => actions.modals.extensionInstalledModal.close(false)}
         >

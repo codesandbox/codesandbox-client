@@ -1,6 +1,6 @@
 import css from '@styled-system/css';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { ThemeProvider, Element, Stack } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
@@ -20,7 +20,8 @@ interface Props {
 
 export const Sandbox = React.memo<Props>(
   ({ match, showNewSandboxModal }) => {
-    const { state, actions } = useOvermind();
+    const state = useAppState();
+    const actions = useActions();
 
     useEffect(() => {
       if (!showNewSandboxModal) {

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import TabContainer from './TabContainer';
 import PreviewIcon from './PreviewIcon';
@@ -19,18 +19,11 @@ interface IEditorTabsProps {
   currentModuleId: string | number;
 }
 
-interface IOvermindProp {
-  state: any;
-  actions: any;
-}
-
 const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   currentModuleId,
 }) => {
-  const {
-    state: { editor: editorState },
-    actions: { editor: editorAction },
-  }: IOvermindProp = useOvermind();
+  const editorState = useAppState().editor;
+  const editorAction = useActions().editor;
 
   let container = null;
   const tabEls = {};

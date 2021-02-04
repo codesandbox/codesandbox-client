@@ -3,7 +3,7 @@ import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import React from 'react';
 
 import { Actions } from './Actions';
@@ -14,9 +14,7 @@ import { WorkspaceDashboardIcon } from './WorkspaceDashboardIcon';
 import { SignInBanner } from './SignInAd';
 
 export const Header = () => {
-  const {
-    state: { hasLogIn, editor, isAuthenticating, user },
-  } = useOvermind();
+  const { hasLogIn, editor, isAuthenticating, user } = useAppState();
 
   return (
     <>
