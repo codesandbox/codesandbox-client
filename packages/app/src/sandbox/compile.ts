@@ -313,7 +313,7 @@ function getDependencies(
   return returnedDependencies;
 }
 
-function initializeManager(
+async function initializeManager(
   sandboxId: string,
   template: TemplateType,
   modules: { [path: string]: Module },
@@ -325,7 +325,7 @@ function initializeManager(
 ) {
   const newManager = new Manager(
     sandboxId,
-    getPreset(template, configurations.package.parsed),
+    await getPreset(template, configurations.package.parsed),
     modules,
     {
       hasFileResolver,
@@ -514,10 +514,10 @@ async function compile({
 
     manager =
       manager ||
-      initializeManager(sandboxId, template, modules, configurations, {
+      (await initializeManager(sandboxId, template, modules, configurations, {
         hasFileResolver,
         customNpmRegistries,
-      });
+      }));
 
     let dependencies: NPMDependencies = getDependencies(
       parsedPackageJSON,
@@ -575,7 +575,7 @@ async function compile({
       // Just reset the whole manager if it's a new combination
       manager.dispose();
 
-      manager = initializeManager(
+      manager = await initializeManager(
         sandboxId,
         template,
         modules,
