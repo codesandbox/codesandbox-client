@@ -11,17 +11,15 @@ import {
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React, { useEffect } from 'react';
 
 import { Header } from '../../../../Components/Header';
 import { Card } from '../components';
 
 export const WorkspaceSettings = () => {
-  const {
-    state: { user, activeTeam },
-    actions,
-  } = useOvermind();
+  const { user, activeTeam } = useAppState();
+  const actions = useActions();
 
   useEffect(() => {
     actions.dashboard.dashboardMounted();

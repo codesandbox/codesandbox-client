@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
@@ -10,17 +10,17 @@ import { getPossibleTemplates } from '../../utils';
 
 export const Drafts = () => {
   const {
-    actions,
-    state: {
-      activeTeam,
-      user,
-      dashboard: { sandboxes, getFilteredSandboxes },
-    },
-  } = useOvermind();
+    activeTeam,
+    user,
+    dashboard: { sandboxes, getFilteredSandboxes },
+  } = useAppState();
+  const {
+    dashboard: { getPage },
+  } = useActions();
 
   React.useEffect(() => {
-    actions.dashboard.getPage(sandboxesTypes.DRAFTS);
-  }, [actions.dashboard, activeTeam]);
+    getPage(sandboxesTypes.DRAFTS);
+  }, [activeTeam]);
 
   const items: DashboardGridItem[] = sandboxes.DRAFTS
     ? getFilteredSandboxes(sandboxes.DRAFTS)

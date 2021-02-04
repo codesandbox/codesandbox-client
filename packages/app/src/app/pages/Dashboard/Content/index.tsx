@@ -3,7 +3,7 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { Element } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Home } from './routes/Home';
 import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
@@ -17,22 +17,23 @@ import { Settings } from './routes/Settings';
 import { NewTeam } from './routes/Settings/NewTeam';
 
 export const Content = withRouter(({ history }) => {
-  const { actions, state } = useOvermind();
+  const { dashboard } = useActions();
+  const { activeTeam } = useAppState();
 
   useEffect(() => {
-    actions.dashboard.dashboardMounted();
-  }, [actions.dashboard]);
+    dashboard.dashboardMounted();
+  }, [dashboard]);
 
   useEffect(() => {
     const removeListener = history.listen(() => {
-      actions.dashboard.blacklistedTemplatesCleared();
-      actions.dashboard.orderByReset();
+      dashboard.blacklistedTemplatesCleared();
+      dashboard.orderByReset();
     });
 
     return () => {
       removeListener();
     };
-  }, [history, history.listen, actions.dashboard]);
+  }, [history, history.listen, dashboard]);
 
   return (
     <Element
@@ -59,7 +60,7 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/trash" component={Deleted} />
         <Route path="/dashboard/sandboxes/:path*" component={All} />
         <Route path="/dashboard/teams/new" component={NewTeam} />
-        <Redirect to={dashboardUrls.home(state.activeTeam)} />
+        <Redirect to={dashboardUrls.home(activeTeam)} />
       </Switch>
     </Element>
   );

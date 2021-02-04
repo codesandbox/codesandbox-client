@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import {
   Button,
   Element,
@@ -25,14 +25,15 @@ import { MemberList, User } from '../components/MemberList';
 
 export const WorkspaceSettings = () => {
   const {
-    state: {
-      user: stateUser,
-      activeTeamInfo: team,
-      activeWorkspaceAuthorization,
-    },
-    actions,
-    effects,
-  } = useOvermind();
+    user: stateUser,
+    activeTeamInfo: team,
+    activeWorkspaceAuthorization,
+  } = useAppState();
+  const actions = useActions();
+  const {
+    browser: { copyToClipboard },
+    notificationToast,
+  } = useEffects();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -91,8 +92,8 @@ export const WorkspaceSettings = () => {
   const onCopyInviteUrl = async event => {
     event.preventDefault();
 
-    effects.browser.copyToClipboard(teamInviteLink(team.inviteToken));
-    effects.notificationToast.success('Copied Team Invite URL!');
+    copyToClipboard(teamInviteLink(team.inviteToken));
+    notificationToast.success('Copied Team Invite URL!');
   };
 
   const created = team.users.find(user => user.id === team.creatorId);

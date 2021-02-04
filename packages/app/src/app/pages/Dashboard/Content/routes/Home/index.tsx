@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
@@ -14,16 +14,16 @@ import {
 
 export const Home = () => {
   const {
-    actions,
-    state: {
-      activeTeam,
-      dashboard: { viewMode, sandboxes },
-    },
-  } = useOvermind();
+    activeTeam,
+    dashboard: { viewMode, sandboxes },
+  } = useAppState();
+  const {
+    dashboard: { getPage },
+  } = useActions();
 
   useEffect(() => {
-    actions.dashboard.getPage(sandboxesTypes.HOME);
-  }, [actions.dashboard, activeTeam]);
+    getPage(sandboxesTypes.HOME);
+  }, [activeTeam]);
 
   const templates: DashboardGridItem[] = (sandboxes.TEMPLATE_HOME || []).map(
     (template, i) => {

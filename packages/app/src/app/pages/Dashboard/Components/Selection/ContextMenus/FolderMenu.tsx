@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Menu, Stack, Icon, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Context, MenuItem } from '../ContextMenu';
@@ -12,9 +12,9 @@ type FolderMenuProps = {
 
 export const FolderMenu = ({ folder, setRenaming }: FolderMenuProps) => {
   const {
-    actions,
-    state: { activeWorkspaceAuthorization },
-  } = useOvermind();
+    dashboard: { deleteFolder },
+  } = useActions();
+  const { activeWorkspaceAuthorization } = useAppState();
   const { visible, setVisibility, position } = React.useContext(Context);
 
   const isDrafts = folder.path === '/drafts';
@@ -46,7 +46,7 @@ export const FolderMenu = ({ folder, setRenaming }: FolderMenuProps) => {
       <MenuItem onSelect={() => setRenaming(true)}>Rename folder</MenuItem>
       <MenuItem
         onSelect={() => {
-          actions.dashboard.deleteFolder({ path: folder.path });
+          deleteFolder({ path: folder.path });
           setVisibility(false);
           track('Dashboard - Delete folder', {
             source: 'Grid',

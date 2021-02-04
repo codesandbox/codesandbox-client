@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useEffects, useActions } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Menu, Tooltip } from '@codesandbox/components';
 import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
@@ -19,11 +19,16 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   item,
   setRenaming,
 }) => {
+  const actions = useActions();
   const {
-    state: { user, activeTeam, activeTeamInfo, activeWorkspaceAuthorization },
-    effects,
-    actions,
-  } = useOvermind();
+    user,
+    activeTeam,
+    activeTeamInfo,
+    activeWorkspaceAuthorization,
+  } = useAppState();
+  const {
+    browser: { copyToClipboard },
+  } = useEffects();
   const { sandbox, type } = item;
   const isTemplate = type === 'template';
 
@@ -135,7 +140,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       </MenuItem>
       <MenuItem
         onSelect={() => {
-          effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
+          copyToClipboard(`https://codesandbox.io${url}`);
         }}
       >
         Copy {label} Link

@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Stack, Button, Text, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import {
@@ -15,16 +15,17 @@ import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 
 export const AlwaysOn = () => {
   const {
-    actions,
-    state: {
-      activeTeam,
-      dashboard: { sandboxes },
-    },
-  } = useOvermind();
+    activeTeam,
+    dashboard: { sandboxes },
+  } = useAppState();
+  const {
+    dashboard: { getPage },
+  } = useActions();
 
   React.useEffect(() => {
-    actions.dashboard.getPage(sandboxesTypes.ALWAYS_ON);
-  }, [actions.dashboard, activeTeam]);
+    getPage(sandboxesTypes.ALWAYS_ON);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTeam]);
 
   const items: DashboardGridItem[] = sandboxes.ALWAYS_ON
     ? sandboxes.ALWAYS_ON.map(sandbox => ({
@@ -49,7 +50,7 @@ export const AlwaysOn = () => {
 };
 
 const Info = () => {
-  const { actions } = useOvermind();
+  const { modalOpened } = useActions();
 
   return (
     <Stack
@@ -74,7 +75,7 @@ const Info = () => {
           variant="link"
           style={{ color: 'white', padding: 0 }}
           onClick={() =>
-            actions.modalOpened({
+            modalOpened({
               modal: 'feedback',
               message: "I'd like more Always-On sandboxes",
             })

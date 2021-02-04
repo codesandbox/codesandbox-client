@@ -1,6 +1,6 @@
 import { Element, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, BrowserRouter, Switch, useLocation } from 'react-router-dom';
@@ -12,14 +12,14 @@ import { WorkspaceSettings } from './WorkspaceSettings';
 import { PermissionSettings } from '../components/PermissionSettings';
 
 export const UserSettings = () => {
+  const { user, activeTeam } = useAppState();
   const {
-    state: { user, activeTeam },
-    actions,
-  } = useOvermind();
+    dashboard: { dashboardMounted },
+  } = useActions();
 
   useEffect(() => {
-    actions.dashboard.dashboardMounted();
-  }, [actions.dashboard]);
+    dashboardMounted();
+  }, [dashboardMounted]);
 
   const location = useLocation();
 

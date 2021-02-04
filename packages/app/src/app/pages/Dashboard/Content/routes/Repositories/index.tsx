@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import {
@@ -18,13 +18,11 @@ export const RepositoriesPage = () => {
   const items = useFilteredItems(params);
   const param = params.path || '';
   const home = !param || param === '/';
+  const actions = useActions();
   const {
-    actions,
-    state: {
-      activeTeam,
-      dashboard: { sandboxes, viewMode },
-    },
-  } = useOvermind();
+    activeTeam,
+    dashboard: { sandboxes, viewMode },
+  } = useAppState();
 
   React.useEffect(() => {
     const p = home ? null : param;
