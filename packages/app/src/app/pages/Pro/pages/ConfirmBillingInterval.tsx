@@ -1,19 +1,23 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const ConfirmBillingInterval: React.FC = () => {
   const {
-    state: {
-      pro: { seats, selectedPlan, paymentPreview, updatingSubscription },
-    },
-    actions,
-    effects,
-  } = useOvermind();
+    seats,
+    selectedPlan,
+    paymentPreview,
+    updatingSubscription,
+  } = useAppState().pro;
+  const { notificationToast } = useEffects();
+  const {
+    previewUpdateSubscriptionBillingInterval,
+    updateSubscriptionBillingInterval,
+  } = useActions().pro;
 
   React.useEffect(() => {
-    actions.pro.previewUpdateSubscriptionBillingInterval({
+    previewUpdateSubscriptionBillingInterval({
       billingInterval: selectedPlan.billingInterval,
     });
   }, []);
@@ -22,11 +26,11 @@ export const ConfirmBillingInterval: React.FC = () => {
 
   const changeBillingInterval = async () => {
     try {
-      await actions.pro.updateSubscriptionBillingInterval({
+      await updateSubscriptionBillingInterval({
         billingInterval: selectedPlan.billingInterval,
       });
     } catch {
-      effects.notificationToast.error(
+      notificationToast.error(
         'There was a problem updating your billing interval. Please email us at hello@codesandbox.io'
       );
     }
