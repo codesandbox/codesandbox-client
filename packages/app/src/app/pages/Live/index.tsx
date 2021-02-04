@@ -6,7 +6,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
 import Editor from '../Sandbox/Editor';
@@ -15,17 +15,13 @@ import { Error } from './Error';
 import { NotAuthenticated } from './NotAuthenticated';
 
 export const Live: FunctionComponent = () => {
+  const { onNavigateAway, roomJoined } = useActions().live;
   const {
-    actions: {
-      live: { onNavigateAway, roomJoined },
-    },
-    state: {
-      editor: { currentSandbox },
-      isAuthenticating,
-      live: { error },
-      user,
-    },
-  } = useOvermind();
+    editor: { currentSandbox },
+    isAuthenticating,
+    live: { error },
+    user,
+  } = useAppState();
   const { roomId } = useParams<{ roomId: string }>();
 
   useEffect(() => {
