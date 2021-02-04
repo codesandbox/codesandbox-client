@@ -444,10 +444,10 @@ Object {
     },
     "medium": Object {
       "max": 979,
-      "min": 780,
+      "min": 768,
     },
     "small": Object {
-      "max": 779,
+      "max": 767,
       "min": 600,
     },
     "xlarge": Object {

@@ -5,7 +5,7 @@ import {
 } from 'app/graphql/types';
 import { Context } from 'app/overmind';
 import { derived } from 'overmind';
-import { SandboxType } from 'app/pages/Profile2/constants';
+import { SandboxType } from 'app/pages/Profile/constants';
 
 export type ProfileCollection = Pick<
   Collection,

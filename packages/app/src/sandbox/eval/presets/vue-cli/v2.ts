@@ -1,4 +1,5 @@
 import { Preset } from 'sandpack-core';
+
 import babelTranspiler from '../../transpilers/babel';
 import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';
@@ -18,7 +19,6 @@ import cssLoader from '../../transpilers/vue/v2/css-loader';
 import base64Transpiler from '../../transpilers/base64';
 import pugTranspiler from '../../transpilers/pug';
 import coffeeTranspiler from '../../transpilers/coffee';
-
 
 export default function initialize(vuePreset: Preset) {
   vuePreset.setAdditionalAliases({
@@ -67,6 +67,7 @@ export default function initialize(vuePreset: Preset) {
   ]);
   vuePreset.registerTranspiler(module => /\.m?tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },
+    { transpiler: babelTranspiler },
   ]);
   vuePreset.registerTranspiler(module => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },

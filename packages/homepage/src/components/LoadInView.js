@@ -24,9 +24,6 @@ const LoadInView = ({ children }) => {
             duration: 0.4,
             ease: 'easeInOut',
           }}
-          css={`
-            margin-bottom: 8rem;
-          `}
         >
           {children}
         </motion.section>

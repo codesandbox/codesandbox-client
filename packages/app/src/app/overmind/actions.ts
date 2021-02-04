@@ -230,7 +230,8 @@ type ModalName =
   | 'userSurvey'
   | 'liveSessionEnded'
   | 'sandboxPicker'
-  | 'minimumPrivacy';
+  | 'minimumPrivacy'
+  | 'addMemberToWorkspace';
 
 export const modalOpened = (
   { state, effects }: Context,

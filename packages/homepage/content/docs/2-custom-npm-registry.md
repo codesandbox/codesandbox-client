@@ -2,17 +2,16 @@
 title: Using a Custom NPM Registry
 authors: ['CompuIves']
 slug: /custom-npm-registry
-description:
-  You can use your own private npm registry if you have Workspace Pro.
+description: You can use your own private npm registry if you have Team Pro.
 ---
 
-**Note: Custom NPM Registry support is currently only available to Pro Workspace
+**Note: Custom NPM Registry support is currently only available to Team Pro
 pilot members.
 [Sign up to join the waitlist](https://airtable.com/shrlgLSJWiX8rYqyG).**
 
 The custom private npm registry setting makes it possible for sandboxes in your
 workspace to retrieve npm packages from your own npm registry. This setting is
-available for all Pro Workspaces, you can access the settings
+available for all Team Pro workspaces, you can access the settings
 [here](https://codesandbox.io/dashboard/settings/npm-registry).
 
 ## Configuration
@@ -89,29 +88,24 @@ the sandbox and link to it from the `package.json` by referring to it as
 ### Our npm registry is behind a VPN, what can I do?
 
 Since we use a proxy to access the npm registry, we don't support registries
-behind a VPN out of the box. However, we do have three workarounds:
+behind a VPN out of the box. However, we do have three solutions:
 
-**Workaround 1: bypass the proxy** We can bypass the proxy on our service to let
-the browser fetch from the registry directly. We have a working version of this
-which is not enabled for everyone yet. The disadvantage of this approach is that
-you have to share your registry auth token with everyone who has access to the
-sandbox. Also, to make this work, you need to add CORS headers to your registry
-so the browser can fetch the packages directly from our origin.
+**Solution 1: bypass the proxy** We can bypass the proxy on our service to let
+the browser fetch from the registry directly. This is not enabled by default for
+everyone - please [request this be turned on](mailto:hello@codesandbox.io). The
+disadvantage of this approach is that you have to share your registry auth token
+with everyone who has access to the sandbox. Also, to make this work, you need
+to add CORS headers to your registry so the browser can fetch the packages
+directly from our origin.
 
-**Workaround 2: whitelist the proxy** Another option is to whitelist the IP
-range of our proxy. We make sure that we keep the same IP for our proxy.
+**Solution 2: whitelist the proxy** Another solution is to whitelist the IP
+range of our proxy. We make sure that we keep the same IP for our proxy. Please
+[request these details](mailto:hello@codesandbox.io).
 
-**Workaround 3: self-host the proxy** A third option is to self-host the proxy
-in your network, and letting the proxy communicate with our API server to
-validate the tokens that are sent in.
-
-We're still exploring the different options. If you're interested in working
-together with us on building and testing this, we'd love to hear from you at
-[hello@codesandbox.io](mailto:hello@codesandbox.io).
-
-<!--
-Commented because we don't support this yet, and still unsure whether we actually should
-support this.
+**Solution 3: self-host the proxy** A third option is to self-host the proxy in
+your network, and letting the proxy communicate with our API server to validate
+the tokens that are sent in. We can
+[help get you setup with this](mailto:hello@codesandbox.io).
 
 ### Can I use a .npmrc file?
 

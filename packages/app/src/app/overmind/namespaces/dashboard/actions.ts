@@ -167,7 +167,7 @@ export const getTeams = async ({ state, effects }: Context) => {
 };
 
 export const removeFromTeam = async (
-  { state, effects }: Context,
+  { state, actions, effects }: Context,
   id: string
 ) => {
   if (!state.activeTeam || !state.activeTeamInfo) return;
@@ -181,6 +181,8 @@ export const removeFromTeam = async (
       ...state.activeTeamInfo,
       users: (state.activeTeamInfo.users || []).filter(user => user.id !== id),
     };
+    // update all other fields related to team
+    actions.getActiveTeamInfo();
   } catch {
     effects.notificationToast.error(
       'There has been a problem removing them from your workspace'
@@ -212,11 +214,36 @@ export const leaveTeam = async ({ state, effects, actions }: Context) => {
 };
 
 export const inviteToTeam = async (
-  { state, effects }: Context,
-  value: string
+  { state, actions, effects }: Context,
+  {
+    value,
+    authorization,
+    confirm = false,
+  }: {
+    value: string;
+    authorization?: TeamMemberAuthorization;
+    confirm?: boolean;
+  }
 ) => {
   if (!state.activeTeam) return;
   const isEmail = value.includes('@');
+
+  if (confirm) {
+    const confirmed = await actions.modals.alertModal.open({
+      title: 'Add New Member',
+      customComponent: 'MemberPaymentConfirmation',
+    });
+
+    // if the user cancels the function, bail
+    if (!confirmed) {
+      effects.analytics.track('Team - Cancel Add Member', {
+        dashboardVersion: 2,
+        isEmail,
+      });
+      return;
+    }
+  }
+
   try {
     effects.analytics.track('Team - Add Member', {
       dashboardVersion: 2,
@@ -227,6 +254,7 @@ export const inviteToTeam = async (
       const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
         teamId: state.activeTeam,
         email: value,
+        authorization,
       });
 
       data = emailInvited.inviteToTeamViaEmail;
@@ -234,6 +262,7 @@ export const inviteToTeam = async (
       const result = await effects.gql.mutations.inviteToTeam({
         teamId: state.activeTeam,
         username: value,
+        authorization,
       });
 
       state.activeTeamInfo = result.inviteToTeam;
@@ -1330,11 +1359,23 @@ export const changeAuthorization = async (
   {
     userId,
     authorization,
+    confirm,
   }: {
     userId: string;
     authorization: TeamMemberAuthorization;
+    confirm?: Boolean;
   }
 ) => {
+  if (confirm) {
+    const confirmed = await actions.modals.alertModal.open({
+      title: 'Change Authorization',
+      customComponent: 'MemberPaymentConfirmation',
+    });
+
+    // if the user cancels the function, bail
+    if (!confirmed) return;
+  }
+
   // optimistic update
   const oldAuthorization = state.activeTeamInfo!.userAuthorizations.find(
     user => user.userId === userId
@@ -1428,9 +1469,13 @@ export const deleteWorkspace = async ({ actions, effects, state }: Context) => {
 
     effects.notificationToast.success(`Your workspace was deleted`);
   } catch (error) {
+    // this is odd to handle it in the action
+    // TODO: we need a cleaner way to read graphql errors
+    const message = error.response?.errors[0]?.message;
+
     actions.internal.handleError({
       message: 'There was a problem deleting your workspace',
-      error,
+      error: { name: 'Delete workspace', message },
     });
   }
 };

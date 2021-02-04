@@ -63,6 +63,7 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
       onKeyPress={onKeyPress}
       tabIndex={focused ? 0 : -1}
       focused={focused}
+      title={title}
     >
       <Icon color={color}>
         {official && OfficialIcon ? <OfficialIcon /> : <UserIcon />}

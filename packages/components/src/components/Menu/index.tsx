@@ -8,7 +8,7 @@ import {
 } from 'styled-components';
 import { Link } from 'react-router-dom';
 import * as ReachMenu from './reach-menu.fork';
-import { Element, Button, IconButton, List } from '../..';
+import { Element, Button, IconButton } from '../..';
 
 const transitions = {
   slide: keyframes({
@@ -143,12 +143,29 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
     };
   });
 
-  if (!visible) return null;
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  const [computedMenuHeight, setComputedMenuHeight] = React.useState<number>(0);
+  const [computedMenuWidth, setComputedMenuWidth] = React.useState<number>(0);
+  const [menuIsReadyToShow, setMenuIsReadyToShow] = React.useState(false);
 
-  const numberOfItems = React.Children.count(props.children);
-  const SUGGESTED_ITEM_HEIGHT = 36;
-  const suggestedHeight = numberOfItems * SUGGESTED_ITEM_HEIGHT;
-  const suggestedWidth = 180;
+  React.useEffect(() => {
+    // for the initial render, the menu is not ready to be shown
+    // because the element height cannot be computed
+    setMenuIsReadyToShow(false);
+    setTimeout(() => {
+      // once the ref is set and the menu is rendered in the dom
+      // use its height to adjust the position of the popover
+      if (menuRef.current) {
+        const boundingRect = menuRef.current.getBoundingClientRect();
+
+        setComputedMenuHeight(boundingRect.height);
+        setComputedMenuWidth(boundingRect.width);
+        setMenuIsReadyToShow(true);
+      }
+    });
+  }, [position.x, position.y]);
+
+  if (!visible) return null;
 
   return (
     <Element as={ReachMenu.Menu} {...props}>
@@ -165,17 +182,24 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
                 position: 'fixed',
                 left: Math.min(
                   position.x,
-                  window.innerWidth - (popoverRect.width || suggestedWidth) - 16
+                  window.innerWidth -
+                    (popoverRect.width || computedMenuWidth) -
+                    16
                 ),
                 top: Math.min(
                   position.y,
                   window.innerHeight -
-                    (popoverRect.height || suggestedHeight) -
+                    (popoverRect.height || computedMenuHeight) -
                     16
                 ),
               })}
             >
-              <Menu.List>{props.children}</Menu.List>
+              <Menu.List
+                style={{ visibility: menuIsReadyToShow ? 'visible' : 'hidden' }}
+                ref={menuRef}
+              >
+                {props.children}
+              </Menu.List>
             </ReachMenu.MenuPopover>
           </MenuContext.Provider>
         );
@@ -208,20 +232,27 @@ const MenuIconButton = props => (
   <IconButton as={ReachMenu.MenuButton} {...props} />
 );
 
-const MenuList = props => {
-  const { trigger, portal } = React.useContext(MenuContext);
-  return (
-    <List
-      as={ReachMenu.MenuList}
-      data-component="MenuList"
-      data-trigger={trigger}
-      portal={portal}
-      {...props}
-    >
-      {props.children}
-    </List>
-  );
-};
+interface MenuListProps {
+  children: any;
+  style?: React.CSSProperties;
+}
+
+const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
+  (props, ref) => {
+    const { trigger, portal } = React.useContext(MenuContext);
+    return (
+      <ReachMenu.MenuList
+        style={props.style}
+        ref={ref}
+        data-component="MenuList"
+        data-trigger={trigger}
+        portal={portal}
+      >
+        {props.children}
+      </ReachMenu.MenuList>
+    );
+  }
+);
 
 const MenuItem = props => (
   <Element as={ReachMenu.MenuItem} data-component="MenuItem" {...props} />

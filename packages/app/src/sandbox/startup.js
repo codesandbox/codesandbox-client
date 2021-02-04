@@ -3,24 +3,26 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 /* eslint-enable import/default */
 import hookConsole from 'sandbox-hooks/console';
 import setupHistoryListeners from 'sandbox-hooks/url-listeners';
-import setupScreenshotListener from 'sandbox-hooks/screenshot'
+import setupScreenshotListener from 'sandbox-hooks/screenshot';
 import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { isStandalone } from 'codesandbox-api';
 
 window.babelworkers = [];
-for (let i = 0; i < 3; i++) {
-  const worker = new BabelWorker();
-  window.babelworkers.push(worker);
+if (!process.env.SANDPACK) {
+  for (let i = 0; i < 3; i++) {
+    const worker = new BabelWorker();
+    window.babelworkers.push(worker);
 
-  // Warm up the babel worker
-  worker.postMessage({
-    type: 'warmup',
-    path: 'test.js',
-    code: 'const a = "b"',
-    config: { presets: ['env'] },
-    version: 7,
-    loaderOptions: {},
-  });
+    // Warm up the babel worker
+    worker.postMessage({
+      type: 'warmup',
+      path: 'test.js',
+      code: 'const a = "b"',
+      config: { presets: ['env'] },
+      version: 7,
+      loaderOptions: {},
+    });
+  }
 }
 
 if (!isStandalone) {
@@ -28,5 +30,5 @@ if (!isStandalone) {
   setupHistoryListeners();
   hookConsole();
   listenForPreviewSecret();
-  setupScreenshotListener()
+  setupScreenshotListener();
 }

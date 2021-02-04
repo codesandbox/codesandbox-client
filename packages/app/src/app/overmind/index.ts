@@ -1,4 +1,4 @@
-import { IContext, Overmind } from 'overmind';
+import { IContext } from 'overmind';
 import {
   createActionsHook,
   createEffectsHook,
@@ -26,6 +26,7 @@ import * as server from './namespaces/server';
 import * as userNotifications from './namespaces/userNotifications';
 import * as workspace from './namespaces/workspace';
 import * as preview from './namespaces/preview';
+import * as pro from './namespaces/pro';
 import { state } from './state';
 
 export const config = merge(
@@ -50,6 +51,7 @@ export const config = merge(
     server,
     comments,
     preview,
+    pro,
     modals: createModals(modals),
   })
 );
@@ -71,8 +73,8 @@ export const Observer: React.FC<{
     actions: Context['actions'];
   }) => T;
 }> = ({ children }) => {
-  const state = useAppState();
-  const actions = useActions();
+  const appState = useAppState();
+  const appActions = useActions();
 
-  return children({ state, actions });
+  return children({ state: appState, actions: appActions });
 };

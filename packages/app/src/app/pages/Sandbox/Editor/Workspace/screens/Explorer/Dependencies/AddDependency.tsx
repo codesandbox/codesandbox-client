@@ -147,12 +147,12 @@ const AddDependencyResultList = ({
               css={buttonStyles}
               variant="link"
               type="button"
-              onClick={() =>
+              onClick={() => {
                 addNpmDependency({
                   name: dependency.name,
-                  version: dependency.tags.latest,
-                })
-              }
+                  version: dependency.tags?.latest,
+                });
+              }}
             >
               <Text maxWidth="80%" weight="400">
                 {dependency._highlightResult ? (
@@ -199,6 +199,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
         dependencySearch,
       },
     },
+    effects,
   } = useOvermind();
   const modalOpen = currentModal === 'searchDependencies';
   const searchInput = useRef();
@@ -222,6 +223,26 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
     getExplorerDependencies(value);
   };
 
+  const onDependencySelect = dependency => {
+    if (dependency === 'OPEN_MODAL') {
+      modalOpened({ modal: 'searchDependencies' });
+      clearExplorerDependencies();
+    } else if (dependency?.name) {
+      if (dependency.tags) {
+        addNpmDependency({
+          name: dependency.name,
+          version: dependency.tags?.latest,
+        });
+      } else {
+        effects.notificationToast.error(
+          `There has been a problem installing ${dependency.name}. No installable version found`
+        );
+      }
+      clearExplorerDependencies();
+      changeDependencySearch('');
+    }
+  };
+
   const usedExplorerDependencies = [
     ...explorerDependencies,
     'OPEN_MODAL' as const,
@@ -229,19 +250,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
 
   return (
     <Downshift
-      onSelect={dependency => {
-        if (dependency === 'OPEN_MODAL') {
-          modalOpened({ modal: 'searchDependencies' });
-          clearExplorerDependencies();
-        } else if (dependency?.name) {
-          addNpmDependency({
-            name: dependency.name,
-            version: dependency.tags.latest,
-          });
-          clearExplorerDependencies();
-          changeDependencySearch('');
-        }
-      }}
+      onSelect={onDependencySelect}
       itemToString={dependency => {
         if (dependency === 'OPEN_MODAL') {
           return 'OPEN_MODAL';
