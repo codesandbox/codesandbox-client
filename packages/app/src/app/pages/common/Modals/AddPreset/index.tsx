@@ -1,7 +1,7 @@
 import css from '@styled-system/css';
 import { CurrentUser } from '@codesandbox/common/lib/types';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Element, Input, Stack, Button } from '@codesandbox/components';
 import React, {
   FormEvent,
@@ -17,12 +17,8 @@ type Props = {
 };
 
 export const AddPreset: FunctionComponent<Props> = ({ id, user }) => {
-  const {
-    actions: { preview, modalClosed },
-    state: {
-      preview: { responsive },
-    },
-  } = useOvermind();
+  const { responsive } = useAppState().preview;
+  const { preview, modalClosed } = useActions();
   const [name, setName] = useState('');
   const [width, setWidth] = useState(responsive.resolution[0]);
   const [height, setHeight] = useState(responsive.resolution[1]);

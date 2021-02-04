@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import GitHubLogo from 'react-icons/lib/go/mark-github';
 
 import { Integration } from 'app/components/Integration';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 type Props = {
   small?: boolean;
@@ -10,15 +10,13 @@ type Props = {
 export const GithubIntegration: FunctionComponent<Props> = ({
   small = false,
 }) => {
+  const { signInGithubClicked, signOutGithubIntegration } = useActions();
   const {
-    actions: { signInGithubClicked, signOutGithubIntegration },
-    state: {
-      isLoadingGithub,
-      user: {
-        integrations: { github },
-      },
+    isLoadingGithub,
+    user: {
+      integrations: { github },
     },
-  } = useOvermind();
+  } = useAppState();
 
   return (
     <Integration

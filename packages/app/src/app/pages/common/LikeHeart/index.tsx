@@ -2,7 +2,7 @@ import { Sandbox } from '@codesandbox/common/lib/types';
 import React, { FunctionComponent, ComponentProps } from 'react';
 import { StyledComponentInnerOtherProps } from 'styled-components';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 // @ts-ignore
 import HeartIcon from '-!svg-react-loader!@codesandbox/common/lib/icons/heart-open.svg'; // eslint-disable-line import/no-webpack-loader-syntax
@@ -32,12 +32,8 @@ export const LikeHeart: FunctionComponent<Props> = ({
   style,
   text,
 }) => {
-  const {
-    actions: {
-      editor: { likeSandboxToggled },
-    },
-    state: { isLoggedIn },
-  } = useOvermind();
+  const { likeSandboxToggled } = useActions().editor;
+  const { isLoggedIn } = useAppState();
 
   return (
     <Container

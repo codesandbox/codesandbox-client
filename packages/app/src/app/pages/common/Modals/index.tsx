@@ -6,7 +6,7 @@ import {
 } from 'app/components/CreateNewSandbox/CreateSandbox';
 import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
@@ -173,16 +173,14 @@ const modals = {
 const Modals: FunctionComponent = () => {
   const [themeProps, setThemeProps] = useState({});
   const { pathname } = useLocation();
+  const { modalClosed } = useActions();
   const {
-    actions,
-    state: {
-      modals: stateModals,
-      preferences: {
-        settings: { customVSCodeTheme },
-      },
-      currentModal,
+    modals: stateModals,
+    preferences: {
+      settings: { customVSCodeTheme },
     },
-  } = useOvermind();
+    currentModal,
+  } = useAppState();
 
   const [localState, setLocalState] = useState({
     theme: {
@@ -226,11 +224,11 @@ const Modals: FunctionComponent = () => {
           (typeof modal.width === 'function' ? modal.width() : modal.width)
         }
         top={modal && modal.top}
-        onClose={isKeyDown => actions.modalClosed()}
+        onClose={() => modalClosed()}
       >
         {modal
           ? React.createElement(modal.Component, {
-              closeModal: () => actions.modalClosed(),
+              closeModal: () => modalClosed(),
             })
           : null}
       </Modal>

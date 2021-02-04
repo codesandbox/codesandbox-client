@@ -4,16 +4,14 @@ import React, { FunctionComponent, useEffect } from 'react';
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 import { Element } from '@codesandbox/components';
 
 import { Code, Container, Content } from './elements';
 
 export const CLIInstructions: FunctionComponent = () => {
-  const {
-    actions: { cliInstructionsMounted },
-  } = useOvermind();
+  const { cliInstructionsMounted } = useActions();
 
   useEffect(() => {
     cliInstructionsMounted();
