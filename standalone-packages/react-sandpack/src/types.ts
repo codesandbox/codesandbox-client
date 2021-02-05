@@ -10,6 +10,7 @@ export interface SandpackState {
   bundlerState: IManagerState | undefined;
   openPaths: string[];
   activePath: string;
+  editorState: EditorState;
   error: IModuleError | null;
   files: IFiles;
   status: SandpackStatus;
@@ -20,6 +21,7 @@ export interface SandpackState {
 }
 
 export type SandpackStatus = 'idle' | 'running';
+export type EditorState = 'pristine' | 'dirty';
 
 export type SandpackListener = (msg: any) => void;
 
@@ -91,6 +93,7 @@ export type SandpackTheme = {
     disabled: string;
     keyword: string;
     definition: string;
+    punctuation: string;
     property: string;
     tag: string;
     static: string;

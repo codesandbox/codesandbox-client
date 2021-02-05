@@ -20,6 +20,10 @@ export const Preview: React.FC<PreviewProps> = ({
   >('visible');
 
   React.useEffect(() => {
+    if (sandpack.status === 'idle') {
+      return () => {}; // No listener attached while sandpack is not instantiated
+    }
+
     const unsub = listen((message: any) => {
       if (message.type === 'start' && message.firstLoad === true) {
         setLoadingOverlay('visible');
@@ -70,6 +74,10 @@ export const Preview: React.FC<PreviewProps> = ({
       {showNavigator && <Navigator />}
 
       <div className="sp-preview-frame" id="preview-frame" ref={containerRef}>
+        {sandpack.error && (
+          <div className="sp-overlay sp-error">{sandpack.error.message}</div>
+        )}
+
         {loadingOverlay !== 'hidden' && (
           <div
             className="sp-overlay sp-loading"
@@ -85,10 +93,6 @@ export const Preview: React.FC<PreviewProps> = ({
               <div />
             </div>
           </div>
-        )}
-
-        {sandpack.error && (
-          <div className="sp-overlay sp-error">{sandpack.error.message}</div>
         )}
       </div>
     </div>

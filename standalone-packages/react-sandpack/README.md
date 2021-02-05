@@ -123,6 +123,7 @@ const customTheme = {
     disabled: '#999999',
     keyword: '#c792ea',
     tag: '#7fdbca',
+    punctuation: '#d6deeb',
     definition: '#A23DAD',
     property: '#addb67',
     static: '#ecc48d',

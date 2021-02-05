@@ -15,6 +15,7 @@ import {
   SandpackState,
   FileResolver,
   SandpackStatus,
+  EditorState,
 } from '../types';
 
 const Sandpack = React.createContext<SandpackContext | null>(null);
@@ -26,6 +27,7 @@ export interface State {
   bundlerState: IManagerState | undefined;
   error: IModuleError | null;
   sandpackStatus: SandpackStatus;
+  editorState: EditorState;
 }
 
 export interface Props {
@@ -72,6 +74,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       bundlerState: undefined,
       error: null,
       sandpackStatus: 'idle',
+      editorState: 'pristine',
     };
 
     this.manager = null;
@@ -82,7 +85,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   handleMessage = (m: any) => {
     if (m.type === 'state') {
       this.setState({ bundlerState: m.state });
-    } else if (m.type === 'done' && !m.compilatorError) {
+    } else if (m.type === 'done' && !m.compilatonError) {
       this.setState({ error: null });
     } else if (m.type === 'action' && m.action === 'show-error') {
       const { title, path, message, line, column } = m;
@@ -218,7 +221,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   };
 
   changeActiveFile = (path: string) => {
-    this.setState({ activePath: path });
+    this.setState({ activePath: path, editorState: 'dirty' });
   };
 
   openFile = (path: string) => {
@@ -230,6 +233,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       return {
         activePath: path,
         openPaths: newPaths,
+        editorState: 'dirty',
       };
     });
   };
@@ -258,6 +262,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       activePath,
       openPaths,
       bundlerState,
+      editorState,
       error,
       sandpackStatus,
     } = this.state;
@@ -269,6 +274,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       error,
       bundlerState,
       status: sandpackStatus,
+      editorState,
       changeActiveFile: this.changeActiveFile,
       openFile: this.openFile,
       browserFrame: this.iframeRef.current,

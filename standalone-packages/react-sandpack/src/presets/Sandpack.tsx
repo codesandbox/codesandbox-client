@@ -42,6 +42,7 @@ export interface SandpackProps {
   };
   theme?: SandpackTheme;
   customStyle?: React.CSSProperties;
+  injectStylesAtRuntime?: boolean; // Temporary solution for conditional style injection
 }
 
 export const Sandpack: React.FC<SandpackProps> = props => {
@@ -81,7 +82,12 @@ export const Sandpack: React.FC<SandpackProps> = props => {
 
   const { height, ...otherStyles } = props.customStyle || {};
 
-  if (typeof document !== 'undefined' && !styleInjected) {
+  const injectStylesAtRuntime = props.injectStylesAtRuntime ?? true;
+  if (
+    injectStylesAtRuntime &&
+    typeof document !== 'undefined' &&
+    !styleInjected
+  ) {
     const styleTag = document.createElement('style');
     styleTag.textContent = getStyleSheet();
     document.head.appendChild(styleTag);
