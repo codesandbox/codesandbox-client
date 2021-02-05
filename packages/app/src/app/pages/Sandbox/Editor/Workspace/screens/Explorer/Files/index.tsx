@@ -3,7 +3,7 @@ import { Collapsible, SidebarRow } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React, { FunctionComponent, useCallback, useState } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
 import DirectoryEntry from './DirectoryEntry/index';
@@ -14,16 +14,14 @@ type Props = {
   readonly: boolean;
 };
 export const Files: FunctionComponent<Props> = ({ readonly }) => {
+  const { editor, files } = useActions();
   const {
-    state: {
-      editor: editorState,
-      editor: {
-        currentSandbox: { directories, modules, privacy, title },
-      },
-      isLoggedIn,
+    editor: editorState,
+    editor: {
+      currentSandbox: { directories, modules, privacy, title },
     },
-    actions: { editor, files },
-  } = useOvermind();
+    isLoggedIn,
+  } = useAppState();
   const [editActions, setEditActions] = useState(null);
 
   const _getModulePath = useCallback(

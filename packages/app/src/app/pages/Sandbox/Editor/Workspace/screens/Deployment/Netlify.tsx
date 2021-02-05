@@ -12,27 +12,25 @@ import {
 } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { FileIcon, FlagIcon, NetlifyIcon, VisitIcon } from './icons';
 
 export const Netlify: FunctionComponent = () => {
   const {
-    actions: {
-      deployment: { deployWithNetlify, getNetlifyDeploys },
-      modalOpened,
+    deployment: { deployWithNetlify, getNetlifyDeploys },
+    modalOpened,
+  } = useActions();
+  const {
+    deployment: {
+      building,
+      deploying,
+      netlifyClaimUrl,
+      netlifyLogs,
+      netlifySite,
     },
-    state: {
-      deployment: {
-        building,
-        deploying,
-        netlifyClaimUrl,
-        netlifyLogs,
-        netlifySite,
-      },
-      editor: { currentSandbox },
-    },
-  } = useOvermind();
+    editor: { currentSandbox },
+  } = useAppState();
 
   useEffect(() => {
     getNetlifyDeploys();
@@ -43,73 +41,71 @@ export const Netlify: FunctionComponent = () => {
   return (
     template.netlify !== false && (
       <Integration icon={NetlifyIcon} title="Netlify">
-          <Element marginBottom={netlifySite ? 6 : 0} marginX={2}>
-            <Text block marginBottom={4} variant="muted">
-              Deploy your sandbox site to{' '}
-              <Link href="https://www.netlify.com/" target="_blank">
-                Netlify
-              </Link>
-            </Text>
+        <Element marginBottom={netlifySite ? 6 : 0} marginX={2}>
+          <Text block marginBottom={4} variant="muted">
+            Deploy your sandbox site to{' '}
+            <Link href="https://www.netlify.com/" target="_blank">
+              Netlify
+            </Link>
+          </Text>
 
-            <Button
-              disabled={deploying || building}
-              onClick={() => {
-                track('Deploy Clicked', { provider: 'netlify' });
+          <Button
+            disabled={deploying || building}
+            onClick={() => {
+              track('Deploy Clicked', { provider: 'netlify' });
 
-                deployWithNetlify();
-              }}
-            >
-              Deploy to Netlify
-            </Button>
-          </Element>
+              deployWithNetlify();
+            }}
+          >
+            Deploy to Netlify
+          </Button>
+        </Element>
 
-          {netlifySite && (
-            <List>
+        {netlifySite && (
+          <List>
+            <ListItem>
+              <Text weight="bold">{netlifySite.name}</Text>
+            </ListItem>
+
+            {building && !netlifyLogs ? (
               <ListItem>
-                <Text weight="bold">{netlifySite.name}</Text>
+                <Text variant="muted">Building</Text>
               </ListItem>
+            ) : null}
 
-              {building && !netlifyLogs ? (
-                <ListItem>
-                  <Text variant="muted">Building</Text>
-                </ListItem>
-              ) : null}
+            {netlifySite.url ? (
+              <ListAction
+                onClick={() => window.open(netlifySite.url, '_blank')}
+              >
+                <Element marginRight={2}>
+                  <VisitIcon />
+                </Element>{' '}
+                Visit Site
+              </ListAction>
+            ) : null}
 
-              {netlifySite.url ? (
-                <ListAction
-                  onClick={() => window.open(netlifySite.url, '_blank')}
-                >
-                  <Element marginRight={2}>
-                    <VisitIcon />
-                  </Element>{' '}
-                  Visit Site
-                </ListAction>
-              ) : null}
+            {netlifySite.url ? (
+              <ListAction
+                onClick={() => window.open(netlifyClaimUrl, '_blank')}
+              >
+                <Element marginRight={2}>
+                  <FlagIcon />
+                </Element>{' '}
+                Claim Site
+              </ListAction>
+            ) : null}
 
-              {netlifySite.url ? (
-                <ListAction
-                  onClick={() => window.open(netlifyClaimUrl, '_blank')}
-                >
-                  <Element marginRight={2}>
-                    <FlagIcon />
-                  </Element>{' '}
-                  Claim Site
-                </ListAction>
-              ) : null}
-
-              {netlifyLogs ? (
-                <ListAction
-                  onClick={() => modalOpened({ modal: 'netlifyLogs' })}
-                >
-                  <Element marginRight={2}>
-                    <FileIcon />
-                  </Element>{' '}
-                  View Logs
-                </ListAction>
-              ) : null}
-            </List>
-          )}
-        </Integration>
+            {netlifyLogs ? (
+              <ListAction onClick={() => modalOpened({ modal: 'netlifyLogs' })}>
+                <Element marginRight={2}>
+                  <FileIcon />
+                </Element>{' '}
+                View Logs
+              </ListAction>
+            ) : null}
+          </List>
+        )}
+      </Integration>
     )
   );
 };

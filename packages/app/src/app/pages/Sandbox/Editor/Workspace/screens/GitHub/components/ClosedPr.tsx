@@ -5,11 +5,11 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import React from 'react';
 
 export const ClosedPr: React.FC = () => {
-  const { actions } = useOvermind();
+  const { openSourceSandbox } = useActions().git;
   return (
     <Collapsible title="GitHub" defaultOpen>
       <Element paddingX={2}>
@@ -22,9 +22,7 @@ export const ClosedPr: React.FC = () => {
               sandbox and create a new fork.{' '}
             </Text>
           </Text>
-          <Button onClick={() => actions.git.openSourceSandbox()}>
-            Open GitHub Sandbox
-          </Button>
+          <Button onClick={openSourceSandbox}>Open GitHub Sandbox</Button>
         </Stack>
       </Element>
     </Collapsible>

@@ -1,6 +1,6 @@
 import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
 import { Directory, Module } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import * as React from 'react';
 
@@ -36,10 +36,9 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   getModulePath,
   renameValidator,
 }) => {
-  const {
-    state: { isLoggedIn, editor: editorState },
-    actions: { files, editor },
-  } = useOvermind();
+  const { isLoggedIn, editor: editorState } = useAppState();
+
+  const { files, editor } = useActions();
   const { currentSandbox, mainModule, currentModuleShortid } = editorState;
 
   const {

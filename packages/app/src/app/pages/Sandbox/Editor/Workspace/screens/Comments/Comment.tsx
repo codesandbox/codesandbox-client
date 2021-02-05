@@ -12,7 +12,7 @@ import VisuallyHidden from '@reach/visually-hidden';
 import { css } from '@styled-system/css';
 import { Markdown } from 'app/components/Markdown';
 import { CodeReferenceMetadata, CommentFragment } from 'app/graphql/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { convertImageReferencesToMarkdownImages } from 'app/overmind/utils/comments';
 import React from 'react';
 
@@ -21,7 +21,8 @@ import { AvatarBlock } from './components/AvatarBlock';
 export const Comment = React.memo<{
   comment: CommentFragment;
 }>(({ comment }) => {
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
 
   const truncateText = {
     maxHeight: 52,

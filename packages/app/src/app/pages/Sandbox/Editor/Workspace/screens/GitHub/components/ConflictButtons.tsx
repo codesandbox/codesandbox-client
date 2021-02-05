@@ -1,17 +1,11 @@
 import React from 'react';
 import { Button } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 export const SandboxDeletedConflict = ({ conflict }) => {
-  const {
-    state: {
-      git: { conflictsResolving },
-    },
-    actions: {
-      git: { addConflictedFile, deleteConflictedFile },
-    },
-  } = useOvermind();
+  const { addConflictedFile, deleteConflictedFile } = useActions().git;
+  const { conflictsResolving } = useAppState().git;
   return (
     <>
       <Button
@@ -39,32 +33,22 @@ export const SandboxDeletedConflict = ({ conflict }) => {
 };
 
 export const SandboxModifiedConflict = ({ conflict }) => {
-  const {
-    actions: {
-      git: { diffConflictedFile },
-    },
-  } = useOvermind();
+  const { diffConflictedFile } = useActions().git;
   return (
     <Button
-        css={css({ width: 'auto' })}
-        type="button"
-        variant="secondary"
-        onClick={() => diffConflictedFile(conflict)}
-      >
-        Resolve by diff
-      </Button>
+      css={css({ width: 'auto' })}
+      type="button"
+      variant="secondary"
+      onClick={() => diffConflictedFile(conflict)}
+    >
+      Resolve by diff
+    </Button>
   );
 };
 
 export const SandboxDeletedSourceModifiedConflict = ({ conflict }) => {
-  const {
-    state: {
-      git: { conflictsResolving },
-    },
-    actions: {
-      git: { ignoreConflict, addConflictedFile },
-    },
-  } = useOvermind();
+  const { ignoreConflict, addConflictedFile } = useActions().git;
+  const { conflictsResolving } = useAppState().git;
 
   return (
     <>
@@ -91,32 +75,22 @@ export const SandboxDeletedSourceModifiedConflict = ({ conflict }) => {
 };
 
 export const BothModifiedConflict = ({ conflict }) => {
-  const {
-    actions: {
-      git: { diffConflictedFile },
-    },
-  } = useOvermind();
+  const { diffConflictedFile } = useActions().git;
   return (
     <Button
-        css={css({ width: 'auto' })}
-        type="button"
-        variant="secondary"
-        onClick={() => diffConflictedFile(conflict)}
-      >
-        Resolve by diff
-      </Button>
+      css={css({ width: 'auto' })}
+      type="button"
+      variant="secondary"
+      onClick={() => diffConflictedFile(conflict)}
+    >
+      Resolve by diff
+    </Button>
   );
 };
 
 export const SourceDeletedConflict = ({ conflict }) => {
-  const {
-    state: {
-      git: { conflictsResolving },
-    },
-    actions: {
-      git: { ignoreConflict, deleteConflictedFile },
-    },
-  } = useOvermind();
+  const { conflictsResolving } = useAppState().git;
+  const { ignoreConflict, deleteConflictedFile } = useActions().git;
   return (
     <>
       <Button

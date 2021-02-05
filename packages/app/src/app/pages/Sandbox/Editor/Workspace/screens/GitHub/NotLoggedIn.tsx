@@ -7,12 +7,10 @@ import {
   Text,
   Button,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 
 export const NotLoggedIn = () => {
-  const {
-    actions: { toggleSignInModal },
-  } = useOvermind();
+  const { toggleSignInModal } = useActions();
 
   return (
     <Collapsible title="GitHub" defaultOpen>

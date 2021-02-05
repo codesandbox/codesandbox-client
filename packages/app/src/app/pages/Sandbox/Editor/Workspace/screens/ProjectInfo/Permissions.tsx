@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   Collapsible,
   Link,
@@ -22,17 +22,15 @@ const icons = {
 
 export const Permissions: FunctionComponent = () => {
   const {
-    actions: {
-      workspace: { sandboxPrivacyChanged },
-      editor: { setPreventSandboxLeaving, setPreventSandboxExport },
-    },
-    state: {
-      editor: { currentSandbox },
-      activeTeam,
-      activeTeamInfo,
-      activeWorkspaceAuthorization,
-    },
-  } = useOvermind();
+    workspace: { sandboxPrivacyChanged },
+    editor: { setPreventSandboxLeaving, setPreventSandboxExport },
+  } = useActions();
+  const {
+    editor: { currentSandbox },
+    activeTeam,
+    activeTeamInfo,
+    activeWorkspaceAuthorization,
+  } = useAppState();
 
   const isPaidUser = activeTeamInfo?.subscription;
 

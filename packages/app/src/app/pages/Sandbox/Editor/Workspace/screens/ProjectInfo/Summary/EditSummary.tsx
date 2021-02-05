@@ -16,25 +16,25 @@ import React, {
   useState,
 } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 type Props = {
   setEditing: (editing: boolean) => void;
 };
 export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
   const {
-    actions: {
-      workspace: { sandboxInfoUpdated, valueChanged, tagsChanged2 },
+    editor: {
+      currentSandbox: { tags },
     },
-    state: {
-      editor: {
-        currentSandbox: { tags },
-      },
-      workspace: {
-        project: { title, description },
-      },
+    workspace: {
+      project: { title, description },
     },
-  } = useOvermind();
+  } = useAppState();
+  const {
+    sandboxInfoUpdated,
+    valueChanged,
+    tagsChanged2,
+  } = useActions().workspace;
   const [newTags, setNewTags] = useState(tags || []);
 
   const onTitleChange = ({ target }: ChangeEvent<HTMLInputElement>) =>

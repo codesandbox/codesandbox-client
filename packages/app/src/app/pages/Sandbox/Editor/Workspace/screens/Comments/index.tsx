@@ -8,7 +8,7 @@ import {
   Text,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React from 'react';
 
 import { AddComment } from './AddComment';
@@ -16,15 +16,11 @@ import { Comment } from './Comment';
 
 export const Comments: React.FC = () => {
   const {
-    state: {
-      comments: {
-        selectedCommentsFilter,
-        currentComments,
-        currentCommentsByDate,
-      },
-    },
-    actions: { comments: commentsActions },
-  } = useOvermind();
+    selectedCommentsFilter,
+    currentComments,
+    currentCommentsByDate,
+  } = useAppState().comments;
+  const { comments: commentsActions } = useActions();
   const scrollRef = React.useRef(null);
   const options = Object.values(CommentsFilterOption);
 

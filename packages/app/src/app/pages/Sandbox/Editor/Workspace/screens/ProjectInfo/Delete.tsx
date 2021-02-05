@@ -2,7 +2,7 @@ import { Button, Stack, Element, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React, { FunctionComponent, MouseEvent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { DiscordIcon, GithubIcon, TwitterIcon } from './social-icons';
 
@@ -20,16 +20,12 @@ const links = [
 
 export const Delete: FunctionComponent = () => {
   const {
-    actions: {
-      modalOpened,
-      workspace: { deleteTemplate },
-    },
-    state: {
-      editor: {
-        currentSandbox: { customTemplate },
-      },
-    },
-  } = useOvermind();
+    modalOpened,
+    workspace: { deleteTemplate },
+  } = useActions();
+  const {
+    currentSandbox: { customTemplate },
+  } = useAppState().editor;
 
   const onDelete = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();

@@ -1,5 +1,5 @@
 import { Button, Stack, Text } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useEffects } from 'app/overmind';
 import React from 'react';
 
 export const ConflictsSource = ({
@@ -8,7 +8,7 @@ export const ConflictsSource = ({
   prNumber,
   originalGitCommitSha,
 }) => {
-  const { effects } = useOvermind();
+  const { openWindow } = useEffects().browser;
   return (
     <Stack direction="vertical">
       <Text size={3} paddingBottom={4} style={{ lineHeight: '19px' }}>
@@ -21,7 +21,7 @@ export const ConflictsSource = ({
       <Button
         variant="secondary"
         onClick={() => {
-          effects.browser.openWindow(
+          openWindow(
             `https://github.com/${originalGit.username}/${originalGit.repo}/compare/${originalGitCommitSha}...${originalGit.branch}`
           );
         }}
