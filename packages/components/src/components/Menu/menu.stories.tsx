@@ -11,6 +11,8 @@ export default {
   component: Menu,
 };
 
+const noop = () => {};
+
 export const Access = () => {
   const permissions = ['Can View', 'Can Edit', 'Can Comment'];
   const [selected, select] = React.useState(permissions[0]);
@@ -23,21 +25,7 @@ export const Access = () => {
       </Text>{' '}
       <Menu>
         <Menu.Button css={{ color: 'white' }}>
-          {selected}{' '}
-          <Element
-            as="svg"
-            marginLeft={2}
-            width="7"
-            height="4"
-            viewBox="0 0 7 4"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M3.95023 4L0.90033 1.23979e-06L7 7.15256e-07L3.95023 4Z"
-              fill="currentColor"
-            />
-          </Element>
+          {selected} <Icon name="caret" size={8} marginLeft={1} />
         </Menu.Button>
         <Menu.List>
           {permissions.map(permission => (
@@ -137,7 +125,7 @@ export const MenuWithLinks = () => (
             Menu Link with Icon
           </Stack>
         </Menu.Link>
-        <Menu.Item>Menu Item</Menu.Item>
+        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
         <Menu.Link href="/internal">
           <Stack align="center">Menu Link</Stack>
         </Menu.Link>
@@ -152,9 +140,9 @@ export const DefaultOpen = () => (
     <Menu defaultOpen>
       <Menu.Button variant="primary">Open Menu</Menu.Button>
       <Menu.List>
-        <Menu.Item>Menu Item</Menu.Item>
-        <Menu.Item>Menu Item</Menu.Item>
-        <Menu.Item>Menu Item</Menu.Item>
+        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
+        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
+        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
       </Menu.List>
     </Menu>
   </>
@@ -189,6 +177,56 @@ export const DisabledItem = () => (
         >
           Not disabled option
         </Menu.Item>
+      </Menu.List>
+    </Menu>
+  </>
+);
+
+export const StackItem = () => {
+  const permissions = ['Can View', 'Can Edit', 'Can Comment'];
+  const [selected, select] = React.useState(permissions[0]);
+
+  return (
+    <Stack justify="flex-end" align="center" css={{ '> *': { lineHeight: 1 } }}>
+      <MenuStyles />
+      <Text size={2} variant="muted">
+        Everyone with link
+      </Text>{' '}
+      <Menu>
+        <Menu.Button css={{ color: 'white' }}>
+          {selected} <Icon name="caret" size={8} marginLeft={1} />
+        </Menu.Button>
+        <Menu.List>
+          {permissions.map(permission => (
+            <Stack
+              as={Menu.Item}
+              justify="space-between"
+              align="center"
+              onSelect={() => select(permission)}
+            >
+              {permission}
+              {selected === permission ? (
+                <Icon name="simpleCheck" size={12} />
+              ) : null}
+            </Stack>
+          ))}
+        </Menu.List>
+      </Menu>
+    </Stack>
+  );
+};
+
+export const Customisable = () => (
+  <>
+    <MenuStyles />
+    <Menu defaultOpen>
+      <Menu.Button variant="primary">Open Menu</Menu.Button>
+      <Menu.List>
+        <Menu.Item style={{ color: 'red' }} onSelect={noop}>
+          Menu Item
+        </Menu.Item>
+        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
+        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
       </Menu.List>
     </Menu>
   </>

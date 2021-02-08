@@ -100,7 +100,7 @@ const commonStyles = {
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    IElementProps {
+    Omit<IElementProps, 'style'> {
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
   loading?: boolean;
   href?: string;
