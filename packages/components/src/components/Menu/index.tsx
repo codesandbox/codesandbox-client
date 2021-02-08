@@ -8,7 +8,7 @@ import {
 } from 'styled-components';
 import { Link } from 'react-router-dom';
 import * as ReachMenu from './reach-menu.fork';
-import { Element, Button, IconButton } from '../..';
+import { Element, Button, IconButton, Tooltip } from '../..';
 
 const transitions = {
   slide: keyframes({
@@ -254,9 +254,32 @@ const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
   }
 );
 
-const MenuItem = props => (
-  <Element as={ReachMenu.MenuItem} data-component="MenuItem" {...props} />
-);
+type MenuItemProps = ReachMenu.MenuItemImplProps & {
+  disabled?: boolean;
+  tooltip?: string;
+};
+
+const noop = () => {};
+const MenuItem: React.FC<MenuItemProps> = ({
+  disabled,
+  onSelect,
+  tooltip,
+  ...props
+}) => {
+  const conditionalOnSelect = disabled ? noop : onSelect;
+
+  const Item = (
+    <ReachMenu.MenuItem
+      data-component="MenuItem"
+      data-disabled={disabled ? true : null}
+      onSelect={conditionalOnSelect}
+      {...props}
+    />
+  );
+
+  if (tooltip) return <Tooltip label={tooltip}>{Item}</Tooltip>;
+  return Item;
+};
 
 type MenuLinkProps = {
   to?: string;
@@ -265,12 +288,7 @@ type MenuLinkProps = {
   children: any;
 };
 
-const MenuLink: React.FunctionComponent<MenuLinkProps> = ({
-  children,
-  to,
-  title,
-  href,
-}) => {
+const MenuLink: React.FC<MenuLinkProps> = ({ children, to, title, href }) => {
   if (to) {
     return (
       <ReachMenu.MenuLink

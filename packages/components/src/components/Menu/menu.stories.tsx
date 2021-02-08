@@ -167,19 +167,23 @@ export const DisabledItem = () => (
     <Menu>
       <Menu.Button variant="primary">Open Menu</Menu.Button>
       <Menu.List>
-        <Menu.Item onSelect={() => {}}>Active option</Menu.Item>
+        <Menu.Item onSelect={() => alert(1)}>Active option</Menu.Item>
         <Tooltip label="You do not have permission to export this sandbox">
           <div>
-            <Menu.Item data-disabled onSelect={() => {}}>
-              Disabled Option
+            <Menu.Item data-disabled onSelect={() => alert(1)}>
+              Backward compatible disabled
             </Menu.Item>
           </div>
         </Tooltip>
         <Menu.Item
           disabled
           tooltip="You do not have permission to export this sandbox"
+          onSelect={() => alert(1)}
         >
           Disabled Option
+        </Menu.Item>
+        <Menu.Item disabled={false} onSelect={() => alert(1)}>
+          Not disabled option
         </Menu.Item>
       </Menu.List>
     </Menu>
