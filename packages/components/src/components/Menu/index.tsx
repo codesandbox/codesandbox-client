@@ -256,14 +256,14 @@ const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
 
 type MenuItemProps = ReachMenu.MenuItemImplProps & {
   disabled?: boolean;
-  tooltip?: string;
+  disabledTooltip?: string;
 };
 
 const noop = () => {};
 const MenuItem: React.FC<MenuItemProps> = ({
   disabled,
   onSelect,
-  tooltip,
+  disabledTooltip,
   ...props
 }) => {
   const conditionalOnSelect = disabled ? noop : onSelect;
@@ -277,7 +277,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
     />
   );
 
-  if (tooltip) return <Tooltip label={tooltip}>{Item}</Tooltip>;
+  if (disabledTooltip) return <Tooltip label={disabledTooltip}>{Item}</Tooltip>;
   return Item;
 };
 
