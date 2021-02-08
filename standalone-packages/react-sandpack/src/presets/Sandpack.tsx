@@ -29,6 +29,7 @@ export interface SandpackProps {
   codeOptions?: {
     showLineNumbers?: boolean;
     showTabs?: boolean;
+    wrapContent?: boolean;
   };
   bundlerOptions?: {
     bundlerURL?: string;
@@ -82,7 +83,7 @@ export const Sandpack: React.FC<SandpackProps> = props => {
 
   const { height, ...otherStyles } = props.customStyle || {};
 
-  const injectStylesAtRuntime = props.injectStylesAtRuntime ?? true;
+  const injectStylesAtRuntime = props.injectStylesAtRuntime ?? false;
   if (
     injectStylesAtRuntime &&
     typeof document !== 'undefined' &&

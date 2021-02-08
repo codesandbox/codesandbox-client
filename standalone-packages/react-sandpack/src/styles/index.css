@@ -76,31 +76,20 @@
   overflow: auto;
 }
 
-/* TODO: fix
-.sp-cm:focus {
+.sp-cm:focus-visible {
   box-shadow: inset 0 0 0 4px var(--colors-accent);
   padding-left: var(--space-1);
   padding-right: var(--space-1);
 }
 
-.sp-cm:focus .cm-line {
+.sp-cm:focus-visible .cm-line {
   padding: 0 var(--space-2);
 }
 
-.sp-cm:focus:not(:focus-visible) {
-  box-shadow: none;
+.sp-cm:focus-visible .cm-gutter-lineNumber {
   padding-left: 0;
-  padding-right: 0;
+  padding-right: var(--space-2);
 }
-
-.sp-cm:focus:not(:focus-visible).cm-line {
-  padding: 0 var(--space-3);
-}
-
-.sp-cm:focus-visible {
-  box-shadow: inset 0 0 0 4px var(--colors-accent);
-}
-*/
 
 .sp-cm .cm-wrap {
   height: 100%;
@@ -127,7 +116,8 @@
 }
 
 .sp-cm .cm-gutter-lineNumber {
-  padding-right: var(--space-2);
+  padding-left: var(--space-1);
+  padding-right: var(--space-1);
 }
 
 .sp-cm .cm-gutterElement.cm-gutterElement-lineNumber {
@@ -161,6 +151,7 @@
   height: 40px;
   border-bottom: 1px solid var(--colors-inactive);
   padding: var(--space-2) var(--space-4);
+  background: var(--colors-mainBackground);
 }
 
 /* Elements */
@@ -174,6 +165,7 @@
   color: var(--colors-defaultText);
   height: 40px;
   border: 0;
+  outline: none;
   border-bottom: 1px solid transparent;
   transition: border 0.15s ease-out;
 }
@@ -185,15 +177,6 @@
 
 .sp-tab-button:hover {
   color: var(--colors-highlightText);
-}
-
-.sp-tab-button:focus {
-  background-color: var(--colors-inactive);
-  outline: none;
-}
-
-.sp-tab-button:focus:not(:focus-visible) {
-  background-color: transparent;
 }
 
 .sp-tab-button:focus-visible {
@@ -226,14 +209,6 @@
 
 .sp-button:disabled {
   color: var(--colors-inactive);
-}
-
-.sp-button:focus {
-  outline: 2px solid var(--colors-accent);
-}
-
-.sp-button:focus:not(:focus-visible) {
-  outline: none;
 }
 
 .sp-button:focus-visible {

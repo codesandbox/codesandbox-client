@@ -7,7 +7,6 @@ import {
   EditorView,
   KeyBinding,
 } from '@codemirror/view';
-import { EditorState } from '@codemirror/state';
 import { history, historyKeymap } from '@codemirror/history';
 import {
   defaultKeymap,
@@ -18,7 +17,7 @@ import {
 import { lineNumbers } from '@codemirror/gutter';
 import { bracketMatching } from '@codemirror/matchbrackets';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets';
-
+import { EditorState } from '@codemirror/state';
 import { commentKeymap } from '@codemirror/comment';
 
 import {
@@ -29,12 +28,15 @@ import {
 
 import { ThemeContext } from '../../utils/theme-context';
 import { getFileName } from '../../utils/string-utils';
+import { EditorState as SandpackEditorState } from '../../types';
 
 export interface CodeMirrorProps {
   code: string;
   activePath: string;
   onCodeUpdate: (newCode: string) => void;
   showLineNumbers?: boolean;
+  wrapContent?: boolean;
+  editorState: SandpackEditorState;
 }
 
 export const CodeMirror: React.FC<CodeMirrorProps> = ({
@@ -42,12 +44,12 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
   activePath,
   onCodeUpdate,
   showLineNumbers = false,
+  wrapContent = false,
+  editorState,
 }) => {
   const wrapper = React.useRef<HTMLDivElement>(null);
   const cmView = React.useRef<EditorView>();
-  const mounted = React.useRef<boolean>(false);
   const theme = React.useContext(ThemeContext);
-  const [internalCode, setInternalCode] = React.useState<string>(code);
 
   React.useEffect(() => {
     if (!wrapper.current) {
@@ -96,9 +98,14 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
         ...customCommandsKeymap,
       ]),
       langSupport,
+
       getEditorTheme(theme),
       getSyntaxHighlight(theme),
     ];
+
+    if (wrapContent) {
+      extensions.push(EditorView.lineWrapping);
+    }
 
     if (showLineNumbers) {
       extensions.push(lineNumbers());
@@ -117,53 +124,23 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 
         if (tr.docChanged) {
           const newCode = tr.newDoc.sliceString(0, tr.newDoc.length);
-          setInternalCode(newCode);
           onCodeUpdate(newCode);
         }
       },
     });
+
+    view.contentDOM.setAttribute('tabIndex', '-1');
+    view.contentDOM.setAttribute('aria-describedby', 'exit-instructions');
+    if (editorState === 'dirty') {
+      view.contentDOM.focus();
+    }
 
     cmView.current = view;
 
     return () => {
       view.destroy();
     };
-  }, [showLineNumbers, activePath, theme]);
-
-  React.useEffect(() => {
-    const view = cmView.current;
-
-    if (!view || !mounted.current) {
-      mounted.current = true;
-      return;
-    }
-
-    // force focus inside the editor when tabs change
-    // but ignore the first time the hook is called (when the component mounts)
-    view.contentDOM.setAttribute('tabIndex', '-1');
-    view.contentDOM.setAttribute('aria-describedby', 'exit-instructions');
-    view.contentDOM.focus();
-  }, [activePath]);
-
-  React.useEffect(() => {
-    if (!cmView.current || code === internalCode) {
-      return;
-    }
-
-    const view = cmView.current;
-
-    view.update([
-      view.state.update({
-        changes: {
-          from: 0,
-          to: view?.state.doc.length,
-          insert: code,
-        },
-      }),
-    ]);
-
-    setInternalCode(code);
-  }, [code]);
+  }, [showLineNumbers, wrapContent, theme]);
 
   const handleContainerKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key === 'Enter' && cmView.current) {

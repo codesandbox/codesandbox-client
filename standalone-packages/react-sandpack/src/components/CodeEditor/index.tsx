@@ -8,16 +8,18 @@ export interface CodeEditorProps {
   customStyle?: React.CSSProperties;
   showTabs?: boolean;
   showLineNumbers?: boolean;
+  wrapContent?: boolean;
 }
 
 export const CodeEditor = ({
   customStyle,
   showTabs = false,
   showLineNumbers = false,
+  wrapContent = false,
 }: CodeEditorProps) => {
   const { sandpack } = useSandpack();
 
-  const { activePath, status, runSandpack } = sandpack;
+  const { activePath, status, editorState, runSandpack } = sandpack;
   const code = sandpack.files[activePath].code;
 
   const handleCodeUpdate = (newCode: string) => {
@@ -32,8 +34,11 @@ export const CodeEditor = ({
       <CodeMirror
         activePath={activePath}
         code={code}
+        key={activePath}
+        editorState={editorState}
         onCodeUpdate={handleCodeUpdate}
         showLineNumbers={showLineNumbers}
+        wrapContent={wrapContent}
       />
       {status === 'idle' && (
         <button
