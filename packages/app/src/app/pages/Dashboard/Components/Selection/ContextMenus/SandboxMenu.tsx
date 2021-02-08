@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Menu, Tooltip } from '@codesandbox/components';
+import { Menu } from '@codesandbox/components';
 import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
 
 import {
@@ -181,25 +181,15 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </MenuItem>
       ) : null}
 
-      <Tooltip
-        label={
-          preventSandboxExport
-            ? 'You do not have permission to export this sandbox'
-            : null
-        }
+      <MenuItem
+        disabled={preventSandboxExport}
+        disabledTooltip="You do not have permission to export this sandbox"
+        onSelect={() => {
+          actions.dashboard.downloadSandboxes([sandbox.id]);
+        }}
       >
-        <div>
-          <MenuItem
-            data-disabled={preventSandboxExport ? true : null}
-            onSelect={() => {
-              if (preventSandboxExport) return;
-              actions.dashboard.downloadSandboxes([sandbox.id]);
-            }}
-          >
-            Export {label}
-          </MenuItem>
-        </div>
-      </Tooltip>
+        Export {label}
+      </MenuItem>
 
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && isPro ? (
         <>

@@ -78,12 +78,8 @@ export const ContextMenu = () => {
         setVisibility={setVisibility}
         position={position}
       >
-        <Menu.Item data-disabled onSelect={() => {}}>
-          Pin sandbox
-        </Menu.Item>
-        <Menu.Item data-disabled onSelect={() => {}}>
-          Set as header
-        </Menu.Item>
+        <Menu.Item disabled>Pin sandbox</Menu.Item>
+        <Menu.Item disabled>Set as header</Menu.Item>
         <Menu.Divider />
         <Menu.Item
           onSelect={() => {
@@ -150,18 +146,16 @@ export const ContextMenu = () => {
           <Menu.Divider />
 
           <Menu.Item
-            data-disabled={isPro ? null : true}
+            disabled={!isPro}
             onSelect={() => {
-              if (!isPro) return;
               changeSandboxPrivacy({ id: sandboxId, privacy: 1 });
             }}
           >
             Make sandbox unlisted
           </Menu.Item>
           <Menu.Item
-            data-disabled={isPro ? null : true}
+            disabled={!isPro}
             onSelect={() => {
-              if (!isPro) return;
               changeSandboxPrivacy({ id: sandboxId, privacy: 2 });
             }}
           >
