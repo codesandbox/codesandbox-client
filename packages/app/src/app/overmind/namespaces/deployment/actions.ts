@@ -27,10 +27,8 @@ export const deployWithNetlify: AsyncAction = async ({
   state.deployment.deploying = true;
   state.deployment.netlifyLogs = null;
 
-  const zip = await effects.zip.create(sandbox);
-
   try {
-    const id = await effects.netlify.deploy(zip.file, sandbox);
+    const id = await effects.netlify.deploy(sandbox);
     state.deployment.deploying = false;
 
     await actions.deployment.getNetlifyDeploys();

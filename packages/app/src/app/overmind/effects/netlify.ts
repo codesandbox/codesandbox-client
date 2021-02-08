@@ -3,14 +3,7 @@ import { NetlifySite, Sandbox } from '@codesandbox/common/lib/types';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 import axios from 'axios';
 
-const NetlifyBaseURL = 'hhttps://builder.csbops.io/site';
-const createBuildUrl = (
-  sandboxId: string,
-  id: string,
-  dist: string,
-  command: string
-) =>
-  `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}&dist=${dist}&buildCommand=${command}`;
+const NetlifyBaseURL = 'https://builder.csbops.io/netlify/site';
 
 type Options = {
   getUserId(): string | null;
@@ -36,8 +29,9 @@ export default (() => {
       const userId = _options.getUserId();
       const sessionId = `${userId}-${sandboxId}`;
 
-      const { data } = await axios.get(
-        `${NetlifyBaseURL}-claim?sessionId=${sessionId}`
+      const { data } = await axios.post(
+        `${NetlifyBaseURL}/${sandboxId}/claim`,
+        { sessionId }
       );
 
       return data.claim;
@@ -49,7 +43,7 @@ export default (() => {
 
       return response.data;
     },
-    async deploy(file: string, sandbox: Sandbox): Promise<string> {
+    async deploy(sandbox: Sandbox): Promise<string> {
       const userId = _options.getUserId();
       const template = getTemplate(sandbox.template);
       const buildCommand = (name: string) => {
@@ -82,14 +76,11 @@ export default (() => {
         id = data.site_id;
       }
 
-      await axios.get(
-        createBuildUrl(
-          sandbox.id,
-          id,
-          buildConfig.publish || template.distDir,
-          buildCommandFromConfig || buildCommand(template.name)
-        )
-      );
+      await axios.post(`${NetlifyBaseURL}/${sandbox.id}/deploy`, {
+        siteId: id,
+        dist: buildConfig.publish || template.distDir,
+        buildCommand: buildCommandFromConfig || buildCommand(template.name),
+      });
 
       return id;
     },
