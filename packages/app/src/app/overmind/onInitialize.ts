@@ -52,7 +52,9 @@ export const onInitialize: OnInitialize = async (
 
   effects.gql.initialize(gqlOptions, () => effects.live.socket);
 
-  actions.internal.setActiveTeamFromUrlOrStore();
+  if (state.hasLogIn) {
+    await actions.internal.setActiveTeamFromUrlOrStore();
+  }
 
   effects.notifications.initialize({
     provideSocket() {
@@ -115,4 +117,14 @@ export const onInitialize: OnInitialize = async (
 
   actions.internal.showPrivacyPolicyNotification();
   actions.internal.setViewModeForDashboard();
+
+  effects.browser.onWindowMessage(event => {
+    if (event.data.type === 'screenshot-requested-from-preview') {
+      actions.preview.createPreviewComment();
+    }
+  });
+
+  effects.browserExtension.hasExtension().then(hasExtension => {
+    actions.preview.setExtension(hasExtension);
+  });
 };

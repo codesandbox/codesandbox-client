@@ -12,7 +12,6 @@ import { VSCodePlaceholder } from '../VSCodePlaceholder';
 import { PreferenceContainer } from '../elements';
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-const isFF = navigator.userAgent.toLowerCase().includes('firefox');
 
 export const EditorSettings: FunctionComponent = () => {
   const {
@@ -36,7 +35,7 @@ export const EditorSettings: FunctionComponent = () => {
 
   return (
     <>
-      <Text block marginBottom={6} size={4} variant="muted" weight="bold">
+      <Text block marginBottom={6} size={4} weight="bold">
         Appearance
       </Text>
 
@@ -45,7 +44,7 @@ export const EditorSettings: FunctionComponent = () => {
 
         {/* {Vim mode does not work on FF or Safari */}
         <Element marginTop={4}>
-          <PreferenceContainer disabled={isSafari || isFF}>
+          <PreferenceContainer disabled={isSafari}>
             <Preference
               title="Enable VIM extension"
               type="boolean"
@@ -65,9 +64,9 @@ export const EditorSettings: FunctionComponent = () => {
           </PreferenceContainer>
         </Element>
 
-        {isSafari || isFF ? (
+        {isSafari ? (
           <Text block marginBottom={2} marginTop={2} size={2} variant="muted">
-            The VIM extension currently only works on Chrome and Microsoft Edge.
+            The VIM extension currently does not work on Safari
           </Text>
         ) : null}
 

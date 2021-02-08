@@ -28,6 +28,8 @@ import * as profile from './namespaces/profile';
 import * as server from './namespaces/server';
 import * as userNotifications from './namespaces/userNotifications';
 import * as workspace from './namespaces/workspace';
+import * as preview from './namespaces/preview';
+import * as pro from './namespaces/pro';
 import { onInitialize } from './onInitialize';
 import { state } from './state';
 
@@ -53,6 +55,8 @@ export const config = merge(
     profile,
     server,
     comments,
+    preview,
+    pro,
     modals: createModals(modals),
   })
 );

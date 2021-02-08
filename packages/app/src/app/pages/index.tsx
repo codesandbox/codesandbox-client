@@ -11,30 +11,45 @@ import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbo
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
-import { Dashboard } from './Dashboard';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
-import { Dashboard as NewDashboard } from './NewDashboard';
+import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
+
+const MoveSandboxFolderModal = Loadable(() =>
+  import(
+    /* webpackChunkName: 'move-sandbox-modal' */ './common/Modals/MoveSandboxFolderModal'
+  ).then(module => ({
+    default: module.MoveSandboxFolderModal,
+  }))
+);
+
+const DuplicateAccount = Loadable(() =>
+  import(
+    /* webpackChunkName: 'move-sandbox-modal' */ './DuplicateAccount'
+  ).then(module => ({
+    default: module.DuplicateAccount,
+  }))
+);
 
 const routeDebugger = _debug('cs:app:router');
 
-const SignInAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
+const SignInAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
 );
-const SignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
+const SignIn = Loadable(
+  () => import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
 );
 const Live = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
-    default: module.LivePage,
+    default: module.Live,
   }))
 );
-const VercelSignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
+const VercelSignIn = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
 );
-const PreviewAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
+const PreviewAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
@@ -77,8 +92,13 @@ const CliInstructions = Loadable(() =>
     /* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'
   ).then(module => ({ default: module.CLIInstructions }))
 );
-const Patron = Loadable(() =>
-  import(/* webpackChunkName: 'page-patron' */ './Patron')
+const Patron = Loadable(
+  () => import(/* webpackChunkName: 'page-patron' */ './Patron')
+);
+const SignUp = Loadable(() =>
+  import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
+    default: module.SignUp,
+  }))
 );
 const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
 const Curator = Loadable(() =>
@@ -86,6 +106,7 @@ const Curator = Loadable(() =>
     default: module.Curator,
   }))
 );
+// @ts-ignore
 const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
@@ -93,7 +114,7 @@ const Boundary = withRouter(ErrorBoundary);
 const RoutesComponent: React.FC = () => {
   const {
     actions: { appUnmounted },
-    state: { signInModalOpen, user },
+    state: { modals, activeTeamInfo },
   } = useOvermind();
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
@@ -134,14 +155,18 @@ const RoutesComponent: React.FC = () => {
               component={() => <Sandbox showNewSandboxModal />}
             />
             <Route path="/invite/:token" component={TeamInvitation} />
+
             <Route path="/dashboard" component={Dashboard} />
-            <Route path="/new-dashboard" component={NewDashboard} />
+            <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
-            <Route path="/live/:id" component={Live} />
+            <Route path="/live/:roomId" component={Live} />
             <Route path="/signin" exact component={SignIn} />
+            <Route path="/signin/duplicate" component={DuplicateAccount} />
+            <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
             <Route path="/u/:username" component={Profile} />
+            <Route path="/u2/:username" component={Profile} />
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
@@ -156,8 +181,11 @@ const RoutesComponent: React.FC = () => {
           </Switch>
         </Content>
         <Modals />
-        {signInModalOpen && !user ? <SignInModal /> : null}
+        <SignInModal />
         <CreateSandboxModal />
+        {modals.moveSandboxModal.isCurrent && activeTeamInfo && (
+          <MoveSandboxFolderModal />
+        )}
       </Boundary>
     </Container>
   );

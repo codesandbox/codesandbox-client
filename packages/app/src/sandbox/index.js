@@ -5,15 +5,16 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import registerServiceWorker from '@codesandbox/common/lib/registerServiceWorker';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
+import { endMeasure } from '@codesandbox/common/lib/utils/metrics';
 import { generateFileFromSandbox } from '@codesandbox/common/lib/templates/configuration/package-json';
 import { getSandboxId } from '@codesandbox/common/lib/utils/url-generator';
 import { getPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { show404 } from 'sandbox-hooks/not-found-screen';
 
 import compile, { getCurrentManager } from './compile';
-import { endMeasure } from './utils/metrics';
 
 const host = process.env.CODESANDBOX_HOST;
+const withServiceWorker = !process.env.SANDPACK;
 const debug = _debug('cs:sandbox');
 
 export const SCRIPT_VERSION =
@@ -23,15 +24,23 @@ debug('Booting sandbox v2');
 
 endMeasure('boot', { lastTime: 0, displayName: 'Boot' });
 
+const ID = Math.floor(Math.random() * 1000000);
+
 requirePolyfills().then(() => {
-  registerServiceWorker('/sandbox-service-worker.js', {});
+  if (withServiceWorker) {
+    registerServiceWorker('/sandbox-service-worker.js', {});
+  }
 
   function sendReady() {
-    dispatch({ type: 'initialized' });
+    dispatch({ type: 'initialized', id: ID });
   }
 
   async function handleMessage(data, source) {
     if (source) {
+      if (data.id && data.id !== ID) {
+        return;
+      }
+
       if (data.type === 'compile') {
         compile(data);
       } else if (data.type === 'get-transpiler-context') {
@@ -108,6 +117,7 @@ requirePolyfills().then(() => {
           entry: '/' + x.data.entry,
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,
+          customNpmRegistries: x.data.npmRegistries,
           hasActions: false,
           template: x.data.template,
           version: 3,

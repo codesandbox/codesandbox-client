@@ -1,6 +1,7 @@
 import { GitFileCompare, SandboxGitState } from '@codesandbox/common/lib/types';
 import { githubRepoUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
+  Button,
   Collapsible,
   Element,
   Link,
@@ -8,7 +9,6 @@ import {
   ListItem,
   Stack,
   Text,
-  Button,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
@@ -162,6 +162,7 @@ export const GitHub = () => {
                   <ListItem
                     gap={2}
                     key={conflict.filename}
+                    marginBottom={4}
                     css={{ display: 'block' }}
                   >
                     <Stack gap={3} align="center" marginBottom={4}>
@@ -187,12 +188,27 @@ export const GitHub = () => {
       );
     }
 
+    if (
+      conflictPaths.length ||
+      gitChanges.added.length ||
+      gitChanges.deleted.length ||
+      gitChanges.modified.length
+    ) {
+      return (
+        <Collapsible title={`Changes (${changeCount})`} defaultOpen>
+          <Element>
+            <Changes conflicts={conflictPaths} {...gitChanges} />
+            <CommitForm />
+          </Element>
+        </Collapsible>
+      );
+    }
+
     return (
       <Collapsible title={`Changes (${changeCount})`} defaultOpen>
-        <Element>
-          <Changes conflicts={conflictPaths} {...gitChanges} />
-          <CommitForm />
-        </Element>
+        <Stack align="center" justify="center" padding={3}>
+          <Text size={4}>No changes</Text>
+        </Stack>
       </Collapsible>
     );
   }
@@ -202,14 +218,14 @@ export const GitHub = () => {
   if (!originalGit && upstreamSandbox?.git) {
     return (
       <>
-        <Collapsible title="GitHub Repository" defaultOpen>
+        <Collapsible title="Link to GitHub repository" defaultOpen>
           <Element paddingX={2}>
+            <Text variant="muted">If you wish to contribute back to</Text>{' '}
+            {upstreamSandbox.git.username}/{upstreamSandbox.git.repo}
             <Text variant="muted">
-              If you wish to contribute back to{' '}
-              {forkedTemplateSandbox.git.username}/
-              {forkedTemplateSandbox.git.repo}, you can link this sandbox to the
-              git repository. This will allow you to create commits and open
-              pull requests with this sandbox.
+              , you can link this sandbox to the GitHub repository. This will
+              allow you to create commits and open pull requests with this
+              sandbox.
             </Text>
             <Button
               marginTop={4}
@@ -225,33 +241,29 @@ export const GitHub = () => {
     );
   }
 
-  return (
+  return originalGit ? (
     <>
-      {originalGit ? (
-        <>
-          <Collapsible title="GitHub Repository" defaultOpen>
-            <Element paddingX={2}>
-              <Link
-                target="_blank"
-                rel="noopener noreferrer"
-                href={githubRepoUrl(originalGit)}
-              >
-                <Stack gap={2} marginBottom={6} align="center">
-                  <GitHubIcon width={20} />
-                  <Text size={2}>
-                    {originalGit.username}/{originalGit.repo}
-                  </Text>
-                </Stack>
-              </Link>
-              {getText()}
-            </Element>
-          </Collapsible>
-          {getContent()}
-          <CreateRepo />
-        </>
-      ) : (
-        <CreateRepo />
-      )}
+      <Collapsible title="GitHub repository" defaultOpen>
+        <Element paddingX={2}>
+          <Link
+            target="_blank"
+            rel="noopener noreferrer"
+            href={githubRepoUrl(originalGit)}
+          >
+            <Stack gap={2} marginBottom={6} align="center">
+              <GitHubIcon width={20} />
+              <Text size={2}>
+                {originalGit.username}/{originalGit.repo}
+              </Text>
+            </Stack>
+          </Link>
+          {getText()}
+        </Element>
+      </Collapsible>
+      {getContent()}
+      <CreateRepo />
     </>
+  ) : (
+    <CreateRepo />
   );
 };

@@ -165,7 +165,7 @@ const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               }}
             >
               {state.workspace.workspaceHidden ? <div /> : <Workspace />}
-              {<Content theme={localState.theme} />}
+              <Content theme={localState.theme} />
             </SplitPane>
             {showSkeleton || showNewSandboxModal ? (
               <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
@@ -210,6 +210,13 @@ const Editor = ({ showNewSandboxModal }: EditorTypes) => {
                               width: 1200,
                               position: 'relative',
                               zIndex: 100,
+
+                              '@media screen and (max-width: 800px)': {
+                                position: 'absolute',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                margin: 0,
+                              },
                             })}
                             marginTop={8}
                           >

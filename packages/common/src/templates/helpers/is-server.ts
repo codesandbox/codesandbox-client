@@ -12,11 +12,12 @@ const SERVER_TEMPLATE_NAMES = [
   'next',
   'node',
   'nuxt',
-  'quasar-framework',
+  'quasar',
   'sapper',
   'styleguidist',
   'unibit',
   'vuepress',
+  'docusaurus',
 ];
 
 export const isServer = (template: TemplateType) =>

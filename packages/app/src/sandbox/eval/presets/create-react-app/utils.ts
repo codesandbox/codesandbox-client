@@ -1,6 +1,7 @@
 import semver from 'semver';
 import { getAbsoluteDependencies } from '@codesandbox/common/lib/utils/dependencies';
-import Manager from 'sandbox/eval/manager';
+import { Manager } from 'sandpack-core';
+import { Dependencies } from '@codesandbox/common/lib/templates/template';
 
 function isMinimalSemverVersion(version: string, minimalVersion: string) {
   try {
@@ -11,18 +12,33 @@ function isMinimalSemverVersion(version: string, minimalVersion: string) {
   }
 }
 
+export async function isMinimalReactDomVersion(
+  version: string,
+  minimalVersion: string
+): Promise<boolean> {
+  return isMinimalAbsoluteVersion('react-dom', version, minimalVersion);
+}
+
 export async function isMinimalReactVersion(
+  version: string,
+  minimalVersion: string
+): Promise<boolean> {
+  return isMinimalAbsoluteVersion('react', version, minimalVersion);
+}
+
+export async function isMinimalAbsoluteVersion(
+  name: string,
   version: string,
   minimalVersion: string
 ): Promise<boolean> {
   if (version) {
     const absoluteDependencies = await getAbsoluteDependencies({
-      'react-dom': version,
+      [name]: version,
     });
 
     return (
-      absoluteDependencies['react-dom'].startsWith('0.0.0') ||
-      isMinimalSemverVersion(absoluteDependencies['react-dom'], minimalVersion)
+      absoluteDependencies[name].startsWith('0.0.0') ||
+      isMinimalSemverVersion(absoluteDependencies[name], minimalVersion)
     );
   }
 
@@ -40,8 +56,27 @@ export async function hasRefresh(
     const reactDom = dependencies.find(dep => dep.name === 'react-dom');
 
     if (reactDom) {
-      return isMinimalReactVersion(reactDom.version, '16.9.0');
+      return isMinimalReactDomVersion(reactDom.version, '16.9.0');
     }
+  }
+
+  return false;
+}
+
+export async function supportsNewReactTransform(
+  dependencies: Dependencies = {},
+  devDependencies: Dependencies = {}
+): Promise<boolean> {
+  const reactScripts =
+    dependencies['react-scripts'] || devDependencies['react-scripts'];
+  const react = dependencies.react || devDependencies.react;
+
+  if (reactScripts && react) {
+    const [isReact, isReactScripts] = await Promise.all([
+      isMinimalReactVersion(react, '17.0.0'),
+      isMinimalAbsoluteVersion('react-scripts', reactScripts, '4.0.0'),
+    ]);
+    return isReact && isReactScripts;
   }
 
   return false;

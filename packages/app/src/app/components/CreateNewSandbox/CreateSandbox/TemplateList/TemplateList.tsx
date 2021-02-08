@@ -11,7 +11,7 @@ import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
 import history from 'app/utils/history';
 import MdEditIcon from 'react-icons/lib/md/edit';
 
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import { Tooltip } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SandboxCard } from '../SandboxCard';
 import { SubHeader, Grid } from '../elements';
@@ -360,7 +360,9 @@ export const TemplateList = ({
           return (
             <TemplateInfoContainer key={key}>
               {title !== undefined && <SubHeader>{title}</SubHeader>}
-              <Grid columnCount={columnCount}>
+              <Grid
+                columnCount={window.screen.availWidth < 600 ? 1 : columnCount}
+              >
                 {templates.map((template: TemplateFragment, i) => {
                   const index = offset + i;
                   const focused = focusedTemplateIndex === offset + i;
@@ -423,7 +425,7 @@ export const TemplateList = ({
                       DetailComponent={
                         isOwned
                           ? () => (
-                              <Tooltip content="Edit Template">
+                              <Tooltip label="Edit Template">
                                 <EditIcon
                                   onClick={evt => {
                                     evt.stopPropagation();

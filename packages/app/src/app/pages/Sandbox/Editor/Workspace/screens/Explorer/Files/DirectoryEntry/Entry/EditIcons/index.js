@@ -13,6 +13,7 @@ import {
   UndoIcon,
   // eslint-disable-next-line import/extensions
 } from '../../../icons.tsx';
+import { ErrorBoundary } from './ErrorBoundary';
 
 import { Container, Icon } from './elements';
 
@@ -43,11 +44,11 @@ function EditIcons({
 
   return (
     <div className={className}>
-      {(hovering || (window.__isTouch && active) || forceShow) && (
-        <Container>
+      <ErrorBoundary>
+        {hovering || (window.__isTouch && active) || forceShow ? (
           <SingletonTooltip>
             {singleton => (
-              <>
+              <Container>
                 {onDownload && (
                   <Tooltip content="Export to ZIP" singleton={singleton}>
                     <Icon onClick={handleClick(onDownload)}>
@@ -97,11 +98,11 @@ function EditIcons({
                     </Icon>
                   </Tooltip>
                 )}
-              </>
+              </Container>
             )}
           </SingletonTooltip>
-        </Container>
-      )}
+        ) : null}
+      </ErrorBoundary>
     </div>
   );
 }

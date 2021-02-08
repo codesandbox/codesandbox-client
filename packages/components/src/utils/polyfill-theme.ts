@@ -49,7 +49,7 @@ const polyfillTheme = vsCodeTheme => {
 
   // Step 2: Fill missing values from existing values or codesandbox dark/light
 
-  const codesandboxColors = ['dark', 'lc'].includes(type)
+  const codesandboxColors: any = ['dark', 'lc'].includes(type)
     ? object(codesandboxBlack.colors)
     : object(codesandboxLight.colors);
 
@@ -204,7 +204,7 @@ const polyfillTheme = vsCodeTheme => {
       foreground: uiColors.mutedForeground,
       border: uiColors.sideBar.border,
       hoverBackground: uiColors.sideBar.border,
-      hoverForeground: uiColors.sideBar.foreground,
+      hoverForeground: designLanguage.colors.white,
     },
   };
 
@@ -237,15 +237,9 @@ const guessType = theme => {
   return 'dark';
 };
 
-const lighten = (color, value) =>
-  Color(color)
-    .lighten(value)
-    .hex();
+const lighten = (color, value) => Color(color).lighten(value).hex();
 
-const darken = (color, value) =>
-  Color(color)
-    .darken(value)
-    .hex();
+const darken = (color, value) => Color(color).darken(value).hex();
 
 const withContrast = (color, background, type, contrastType = 'text') => {
   const contrastRatio = { text: 4.5, icon: 1.6 };

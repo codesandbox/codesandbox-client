@@ -12,6 +12,7 @@ import {
   GitPathChanges,
   GitPr,
   Module,
+  NpmManifest,
   PaymentDetails,
   PickedSandboxes,
   PopularSandboxes,
@@ -21,9 +22,11 @@ import {
   UploadedFilesInfo,
   UserQuery,
   UserSandbox,
+  SettingsSync,
 } from '@codesandbox/common/lib/types';
 import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 import { client } from 'app/graphql/client';
+import { PendingUserType } from 'app/overmind/state';
 
 import {
   transformDirectory,
@@ -92,6 +95,11 @@ export default {
   getDependency(name: string, tag: string): Promise<Dependency> {
     return api.get(`/dependencies/${name}@${tag}`);
   },
+  getDependencyManifest(sandboxId: string, name: string): Promise<NpmManifest> {
+    return api.get(
+      `/sandboxes/${sandboxId}/npm_registry/${name.replace('/', '%2f')}`
+    );
+  },
   async getSandbox(id: string): Promise<Sandbox> {
     const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
 
@@ -134,6 +142,24 @@ export default {
         `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
         {
           module: { code },
+        }
+      )
+      .then(transformModule);
+  },
+  saveModulePrivateUpload(
+    sandboxId: string,
+    moduleShortid: string,
+    data: {
+      code: string;
+      uploadId: string;
+      sha: string;
+    }
+  ): Promise<Module> {
+    return api
+      .put<IModuleAPIResponse>(
+        `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
+        {
+          module: data,
         }
       )
       .then(transformModule);
@@ -431,11 +457,16 @@ export default {
   },
   getUserSandboxes(
     username: string,
-    page: number
+    page: number | 'all' = 1,
+    sortBy: string = 'view_count',
+    direction: string = 'desc'
   ): Promise<{ [page: string]: Sandbox[] }> {
-    return api.get(`/users/${username}/sandboxes`, {
-      page: String(page),
-    });
+    return api.get(
+      `/users/${username}/sandboxes?sort_by=${sortBy}&direction=${direction}`,
+      {
+        page: String(page),
+      }
+    );
   },
   getUserLikedSandboxes(
     username: string,
@@ -447,6 +478,24 @@ export default {
   },
   getSandboxes(): Promise<UserSandbox[]> {
     return api.get('/sandboxes');
+  },
+  getPendingUser(id: string): Promise<PendingUserType> {
+    return api.get('/users/pending/' + id);
+  },
+  validateUsername(username: string): Promise<{ available: boolean }> {
+    return api.get('/users/available/' + username);
+  },
+  finalizeSignUp({
+    username,
+    id,
+  }: {
+    username: string;
+    id: string;
+  }): Promise<void> {
+    return api.post('/users/finalize', {
+      username,
+      id,
+    });
   },
   updateShowcasedSandbox(username: string, sandboxId: string) {
     return api.patch(`/users/${username}`, {
@@ -567,5 +616,44 @@ export default {
   },
   makeGitSandbox(sandboxId: string): Promise<Sandbox> {
     return api.post<Sandbox>(`/sandboxes/${sandboxId}/make_git_sandbox`, null);
+  },
+  updateUserProfile(username: string, bio: string, socialLinks: string[]) {
+    return api.patch(`/users/${username}`, {
+      user: {
+        bio,
+        socialLinks,
+      },
+    });
+  },
+  updateUserFeaturedSandboxes(
+    username: string,
+    featuredSandboxIds: string[]
+  ): Promise<Profile> {
+    return api.patch(`/users/${username}`, {
+      user: {
+        featuredSandboxes: featuredSandboxIds,
+      },
+    });
+  },
+  createUserSettings({
+    name,
+    settings,
+  }: {
+    name: string;
+    settings: string;
+  }): Promise<SettingsSync> {
+    return api.post(`/users/current_user/editor_settings`, {
+      name,
+      settings,
+    });
+  },
+  getUserSettings(): Promise<SettingsSync[]> {
+    return api.get(`/users/current_user/editor_settings`);
+  },
+  editUserSettings(body: any, id: string): Promise<SettingsSync> {
+    return api.patch(`/users/current_user/editor_settings/${id}`, body);
+  },
+  removeUserSetting(id: string): Promise<SettingsSync> {
+    return api.delete(`/users/current_user/editor_settings`);
   },
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text } from '../Text';
 import { Stack } from '../Stack';
+import { Icon } from '../Icon';
 
 export const HeartIcon = props => (
   <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
@@ -42,23 +43,35 @@ export const formatNumber = (count: number): string | number => {
 
 export const Stats = ({ sandbox, ...props }) => (
   <Stack gap={4} {...props}>
-    <Stack gap={1} align="center">
-      <Text variant="muted" style={{ display: 'flex', alignItems: 'center' }}>
-        <HeartIcon />
-      </Text>
-      <Text variant="muted">{formatNumber(sandbox.likeCount)}</Text>
-    </Stack>
-    <Stack gap={1} align="center">
-      <Text variant="muted" style={{ display: 'flex', alignItems: 'center' }}>
-        <ViewIcon />
-      </Text>
-      <Text variant="muted">{formatNumber(sandbox.viewCount)}</Text>
-    </Stack>
-    <Stack gap={1} align="center">
-      <Text variant="muted" style={{ display: 'flex', alignItems: 'center' }}>
-        <ForkIcon />
-      </Text>
-      <Text variant="muted">{formatNumber(sandbox.forkCount)}</Text>
-    </Stack>
+    {typeof sandbox.likeCount !== 'undefined' && (
+      <Stack gap={2} align="center">
+        <Text variant="muted" style={{ display: 'flex', alignItems: 'center' }}>
+          <Icon name="heart" size={13} />
+        </Text>
+        <Text size={3} variant="muted">
+          {formatNumber(sandbox.likeCount)}
+        </Text>
+      </Stack>
+    )}
+    {typeof sandbox.viewCount !== 'undefined' && (
+      <Stack gap={2} align="center">
+        <Text variant="muted" style={{ display: 'flex', alignItems: 'center' }}>
+          <Icon name="eye" size={16} />
+        </Text>
+        <Text size={3} variant="muted">
+          {formatNumber(sandbox.viewCount)}
+        </Text>
+      </Stack>
+    )}
+    {typeof sandbox.forkCount !== 'undefined' && (
+      <Stack gap={2} align="center">
+        <Text variant="muted" style={{ display: 'flex', alignItems: 'center' }}>
+          <Icon name="forkFilled" size={14} />
+        </Text>
+        <Text size={3} variant="muted">
+          {formatNumber(sandbox.forkCount)}
+        </Text>
+      </Stack>
+    )}
   </Stack>
 );

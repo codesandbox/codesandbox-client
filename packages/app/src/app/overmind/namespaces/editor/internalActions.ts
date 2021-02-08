@@ -1,6 +1,7 @@
 import getTemplateDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import {
   Module,
   ModuleTab,
@@ -18,7 +19,6 @@ import { Action, AsyncAction } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
-import { NEW_DASHBOARD } from '@codesandbox/common/lib/utils/feature-flags';
 
 export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   if (state.editor.sandboxes[id]) {
@@ -35,13 +35,14 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
 };
 
 export const initializeSandbox: AsyncAction<Sandbox> = async (
-  { actions, effects },
+  { actions },
   sandbox
 ) => {
   await Promise.all([
     actions.editor.internal.initializeLiveSandbox(sandbox),
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
+    actions.internal.switchCurrentWorkspaceBySandbox({ sandbox }),
   ]);
 };
 
@@ -418,7 +419,7 @@ export const forkSandbox: AsyncAction<{
       teamId?: string;
     } = body || {};
 
-    if (state.user && NEW_DASHBOARD) {
+    if (state.user) {
       if (teamId === undefined && state.activeTeam) {
         usedBody.teamId = state.activeTeam;
       } else if (teamId !== null) {
@@ -569,40 +570,17 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   });
 };
 
-export const updateDevtools: AsyncAction<{
-  code: string;
-}> = async ({ state, actions }, { code }) => {
+export const updateDevtools: AsyncAction<ViewConfig[]> = async (
+  { state, actions },
+  viewConfig
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
-  if (state.editor.currentSandbox.owned) {
-    const devtoolsModule =
-      state.editor.modulesByPath['/.codesandbox/workspace.json'];
-
-    if (devtoolsModule) {
-      actions.editor.codeChanged({
-        moduleShortid: devtoolsModule.shortid,
-        code,
-      });
-      await actions.editor.codeSaved({
-        code,
-        moduleShortid: devtoolsModule.shortid,
-        cbID: null,
-      });
-    } else {
-      await actions.files.createModulesByPath({
-        files: {
-          '/.codesandbox/workspace.json': {
-            content: code,
-            isBinary: false,
-          },
-        },
-      });
-    }
-  } else {
-    state.editor.workspaceConfigCode = code;
-  }
+  await actions.files.updateWorkspaceConfig({
+    preview: viewConfig,
+  });
 };
 
 export const updatePreviewCode: Action = ({ state, effects }) => {

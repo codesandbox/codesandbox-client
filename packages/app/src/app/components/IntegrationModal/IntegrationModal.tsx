@@ -1,7 +1,6 @@
 import React from 'react';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import Relative from '@codesandbox/common/lib/components/Relative';
 import {
   Container,
   Title,
@@ -39,12 +38,16 @@ export const IntegrationModal: React.FC<IIntegrationModalProps> = ({
         </Margin>
       </Centered>
       <Division />
-      <Relative>
+      <div
+        css={`
+          position: relative;
+        `}
+      >
         {!signedIn && (
           <DisabledOverlay>Sign in to {name} to continue</DisabledOverlay>
         )}
         {children}
-      </Relative>
+      </div>
     </div>
   </Container>
 );

@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
-import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
+import {
+  github as GitHubIcon,
+  GoogleIcon,
+} from '@codesandbox/components/lib/components/Icon/icons';
 import { Element, Text } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import history from 'app/utils/history';
 import { LeftSide } from './components/LeftSide';
 import { Wrapper } from './components/Wrapper';
 import { Button } from './components/Button';
+import { UserNameSelection } from './components/UserNameSelection';
+import { DuplicateAccount } from './components/DuplicateAccount';
 
 type SignInModalElementProps = {
   redirectTo?: string;
@@ -18,13 +23,19 @@ export const SignInModalElement = ({
   onSignIn,
 }: SignInModalElementProps) => {
   const {
-    actions: { signInButtonClicked },
+    state: { duplicateAccountStatus, pendingUser, pendingUserId, loadingAuth },
+    actions: { signInButtonClicked, getPendingUser, setLoadingAuth },
   } = useOvermind();
-  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (pendingUserId) {
+      getPendingUser();
+    }
+  }, [getPendingUser, pendingUserId]);
 
   const handleSignIn = async () => {
-    setLoading(true);
-    await signInButtonClicked({ useExtraScopes: false });
+    setLoadingAuth('github');
+    await signInButtonClicked({ provider: 'github', useExtraScopes: false });
 
     if (onSignIn) {
       return onSignIn();
@@ -33,10 +44,42 @@ export const SignInModalElement = ({
     if (redirectTo) {
       return history.push(redirectTo.replace(location.origin, ''));
     }
-    setLoading(false);
+    setLoadingAuth('github');
 
     return null;
   };
+
+  const handleGoogleSignIn = async () => {
+    setLoadingAuth('google');
+    await signInButtonClicked({ provider: 'google' });
+
+    if (onSignIn) {
+      return onSignIn();
+    }
+
+    if (redirectTo) {
+      return history.push(redirectTo.replace(location.origin, ''));
+    }
+    setLoadingAuth('google');
+
+    return null;
+  };
+
+  if (duplicateAccountStatus) {
+    return (
+      <Wrapper oneCol>
+        <DuplicateAccount provider={duplicateAccountStatus.provider} />
+      </Wrapper>
+    );
+  }
+
+  if (pendingUser) {
+    return (
+      <Wrapper oneCol>
+        <UserNameSelection />
+      </Wrapper>
+    );
+  }
 
   return (
     <Wrapper>
@@ -49,9 +92,13 @@ export const SignInModalElement = ({
           Get a free account, no credit card required
         </Text>
 
-        <Button loading={loading} onClick={handleSignIn}>
+        <Button loading={loadingAuth.github} onClick={handleSignIn}>
           <GitHubIcon width="20" height="20" />
           <Element css={css({ width: '100%' })}>Sign in with GitHub</Element>
+        </Button>
+        <Button loading={loadingAuth.google} onClick={handleGoogleSignIn}>
+          <GoogleIcon width="20" height="20" />
+          <Element css={css({ width: '100%' })}>Sign in with Google</Element>
         </Button>
         <Text
           variant="muted"

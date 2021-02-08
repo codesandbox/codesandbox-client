@@ -42,5 +42,7 @@ assets.forEach(({ from, to }) => {
   const srcPath = path.resolve(rootPath, from);
   const dstPath = path.resolve(buildPath, to);
   console.log(`${srcPath} => ${dstPath}`);
-  fs.copySync(srcPath, dstPath);
+
+  // We need to deference symlinks to prevent recursion
+  fs.copySync(srcPath, dstPath, { dereference: true });
 });

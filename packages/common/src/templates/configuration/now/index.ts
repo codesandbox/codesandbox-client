@@ -1,7 +1,7 @@
 import { ConfigurationFile } from '../types';
 
 const config: ConfigurationFile = {
-  title: 'now.json',
+  title: 'vercel.json',
   type: 'now',
   description: 'Configuration for your deployments on Vercel.',
   moreInfoUrl:

@@ -1,0 +1,10 @@
+import * as ts from 'typescript';
+import { VueFileInfo } from '../../services/vueInfoService';
+import { T_TypeScript } from '../../services/dependencyService';
+export declare function getComponentInfo(tsModule: T_TypeScript, service: ts.LanguageService, fileFsPath: string, config: any): VueFileInfo | undefined;
+export declare function analyzeDefaultExportExpr(tsModule: T_TypeScript, defaultExportNode: ts.Node, checker: ts.TypeChecker): VueFileInfo;
+export declare function getDefaultExportNode(tsModule: T_TypeScript, sourceFile: ts.SourceFile): ts.Node | undefined;
+export declare function getLastChild(d: ts.Declaration): ts.Node | undefined;
+export declare function isClassType(tsModule: T_TypeScript, type: ts.Type): boolean;
+export declare function getClassDecoratorArgumentType(tsModule: T_TypeScript, defaultExportNode: ts.Type, checker: ts.TypeChecker): ts.Type | undefined;
+export declare function buildDocumentation(tsModule: T_TypeScript, s: ts.Symbol, checker: ts.TypeChecker): string;

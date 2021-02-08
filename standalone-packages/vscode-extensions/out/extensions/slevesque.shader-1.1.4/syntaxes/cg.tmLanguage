@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>fileTypes</key>
+    <array>
+        <string>cg</string>
+    </array>
+    <key>foldingStartMarker</key>
+    <string>(?x)
+         /\*\*(?!\*)
+        |^(?![^{]*?//|[^{]*?/\*(?!.*?\*/.*?\{)).*?\{\s*($|//|/\*(?!.*?\*/.*\S))
+    </string>
+    <key>foldingStopMarker</key>
+    <string>(?&lt;!\*)\*\*/|^\s*\}</string>
+    <key>name</key>
+    <string>Cg</string>
+    <key>patterns</key>
+    <array>
+        <dict>
+            <key>begin</key>
+            <string>//</string>
+            <key>end</key>
+            <string>$</string>
+            <key>name</key>
+            <string>comment.line.double-slash.cg</string>
+        </dict>
+        <dict>
+          <key>begin</key>
+          <string>/\*</string>
+          <key>end</key>
+          <string>\*/</string>
+            <key>name</key>
+            <string>comment.block.cg</string>
+        </dict>
+        <dict>
+            <key>comment</key>
+            <string>Numeric constants</string>
+            <key>match</key>
+            <string>\b([0-9]+\.?[0-9]*)|(\.[0-9]+)\b</string>
+            <key>name</key>
+            <string>constant.numeric.cg</string>
+        </dict>
+        <dict>
+            <key>comment</key>
+            <string>Language constants</string>
+            <key>match</key>
+            <string>\b(false|FALSE|NULL|true|TRUE)\b</string>
+            <key>name</key>
+            <string>constant.language.cg</string>
+        </dict>
+        <dict>
+            <key>comment</key>
+            <string>Basic control keywords</string>
+            <key>match</key>
+            <string>\b(break|continue|discard|do|for|if|return|switch|while)\b</string>
+            <key>name</key>
+            <string>keyword.control.cg</string>
+        </dict>
+        <dict>
+            <key>comment</key>
+            <string>Declaration specifiers</string>
+            <key>match</key>
+            <string>\b(const|extern|in|inline|inout|static|out|uniform|varying)\b</string>
+            <key>name</key>
+            <string>storage.declaration.specifier.cg</string>
+        </dict>
+        <dict>
+            <key>comment</key>
+            <string>Basic types</string>
+            <key>match</key>
+            <string>\b(void|bool|struct|float|half|fixed|char|short|long|int|unsigned)\b</string>
+            <key>name</key>
+            <string>storage.type.scalar.cg</string>
+        </dict>
+        <dict>
+            <key>comment</key>
+            <string>Vector forms of scalar types</string>
+            <key>match</key>
+            <string>\b(float1|float2|float3|float4|half1|half2|half3|half4|fixed1|fixed2|fixed3|fixed4|int1|int2|int3|int4)\b</string>
+            <key>name</key>
+            <string>storage.type.vector.cg</string>
+        </dict>
+        <dict>
+            <key>comment</key>
+            <string>Matrix forms of scalar types</string>
+            <key>match</key>
+            <string>\b(float1x1|float1x2|float1x3|float1x4|float2x1|float2x2|float2x3|float2x4|float3x1|float3x2|float3x3|float3x4|float4x1|float4x2|float4x3|float4x4|half1x1|half1x2|half1x3|half1x4|half2x1|half2x2|half2x3|half2x4|half3x1|half3x2|half3x3|half3x4|half4x1|half4x2|half4x3|half4x4|fixed1x1|fixed1x2|fixed1x3|fixed1x4|fixed2x1|fixed2x2|fixed2x3|fixed2x4|fixed3x1|fixed3x2|fixed3x3|fixed3x4|fixed4x1|fixed4x2|fixed4x3|fixed4x4|int1x1|int1x2|int1x3|int1x4|int2x1|int2x2|int2x3|int2x4|int3x1|int3x2|int3x3|int3x4|int4x1|int4x2|int4x3|int4x4)\b</string>
+            <key>name</key>
+            <string>storage.type.matrix.cg</string>
+        </dict>
+        <dict>
+            <key>comment</key>
+            <string>Sampler types</string>
+            <key>match</key>
+            <string>\b(sampler|sampler1D|sampler2D|sampler3D|samplerCUBE|samplerRECT)\b</string>
+            <key>name</key>
+            <string>storage.type.sampler.cg</string>
+        </dict>
+        <dict>
+            <key>comment</key>
+            <string>Intrinsic functions</string>
+            <key>match</key>
+            <string>\b(abs|acos|all|any|asin|atan|atan2|bitCount|bitfieldExtract|bitfieldInsert|bitfieldReverse|ceil|clamp|clip|cos|cosh|cross|ddx|ddy|degrees|determinant|distance|dot|exp|exp2|faceforward|findLSB|findMSB|floatToIntBits|floatToRawIntBits|floor|fmod|frac|frexp|fwidth|intBitsToFloat|inverse|isfinite|isinf|isnan|ldexp|length|lerp|lit|log|log10|log2|max|min|modf|mul|normalize|pow|radians|reflect|refract|round|rsqrt|saturate|sign|sin|sincos|sinh|smoothstep|sqrt|step|tan|tanh|tex1D|tex1Dbias|tex1Dcmpbias|tex1Dcmplod|tex1Dfetch|tex1Dlod|tex1Dproj|tex1Dsize|tex1DARRAY|tex1DARRAYbias|tex1DARRAYcmpbias|tex1DARRAYcmplod|tex1DARRAYfetch|tex1DARRAYlod|tex1DARRAYproj|tex1DARRAYsize|tex1DARRAYbias|tex2D|tex2Dbias|tex2Dcmpbias|tex2Dcmplod|tex2Dfetch|tex2Dlod|tex2Dproj|tex2Dsize|tex2DARRAY|tex2DARRAYbias|tex2DARRAYcmpbias|tex2DARRAYcmplod|tex2DARRAYfetch|tex2DARRAYlod|tex2DARRAYproj|tex2DARRAYsize|tex2DARRAYbias|tex2DMSfetch|tex2DMSARRAYfetch|tex2DMSARRAYsize|tex3D|tex3Dbias|tex3Dcmpbias|tex3Dcmplod|tex3Dfetch|tex3Dlod|tex3Dproj|tex3Dsize|texBUF|texBUFsize|texCUBE|texCUBEARRAY|texCUBEARRAYbias|texCUBEARRAYlod|texCUBEARRAYsize|texCUBEbias|texCUBElod|texCUBEproj|texCUBEsize|texRBUF|texRBUFsize|texRECT|texRECTbias|texRECTfetch|texRECTlod|texRECTproj|texRECTsize|transpose|trunc)\b</string>
+            <key>name</key>
+            <string>keyword.function.intrinsic.cg</string>
+        </dict>
+    </array>
+    <key>scopeName</key>
+    <string>source.cg</string>
+    <key>uuid</key>
+    <string>1cd9b3de-8096-11e1-ad2e-5fe8cad0a628</string>
+</dict>
+</plist>

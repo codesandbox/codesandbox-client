@@ -1,51 +1,45 @@
 import styled, { css } from 'styled-components';
-import { Link } from 'gatsby';
 
 export const Title = styled.h1`
-  ${({ theme }) => css`
-    font-family: ${theme.homepage.appleFont};
-    font-weight: 500;
-    font-size: 2.5rem;
-    line-height: 3rem;
-    color: ${theme.homepage.white};
-    margin: 0.5rem 0;
-
-    ${theme.breakpoints.md} {
-      font-size: 1.5rem;
-      line-height: 1.2;
-      max-width: 80%;
-    }
-  `};
+  font-weight: 900;
+  font-size: 48px;
+  line-height: 57px;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 40px;
 `;
 
-export const SeoText = styled.p`
+export const Text = styled.p`
   color: ${props => props.theme.homepage.muted};
-  font-style: normal;
-  font-weight: 500;
-  font-size: 1.4375rem;
-  line-height: 2rem;
-`;
+  font-size: 28px;
+  line-height: 33px;
+  text-align: center;
+  width: 862px;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 70px;
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
 
-export const Border = styled.div`
-  height: 1px;
-  width: 100%;
-  background: ${props => props.theme.homepage.grey};
-  margin: 5rem 0;
+  @media screen and (max-width: 768px) {
+    font-size: 18px;
+    line-height: 1.5;
+  }
 `;
 
 export const Investors = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-gap: 1.5rem;
   justify-content: center;
   margin-top: 4rem;
 
-  ${props => props.theme.breakpoints.md} {
+  ${props => props.theme.breakpoints.lg} {
     grid-template-columns: 1fr;
   }
 
   > div {
-    background: #151515;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -53,11 +47,12 @@ export const Investors = styled.div`
 
     img {
       max-width: 100%;
+      width: 297px;
     }
   }
 `;
 
-export const AngelInvestors = styled.div`
+const angelCSS = css`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 1.5rem;
@@ -68,8 +63,11 @@ export const AngelInvestors = styled.div`
     grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
   }
 
+  ${props => props.theme.breakpoints.sm} {
+    grid-template-columns: repeat(1, minmax(255px, 1fr));
+  }
+
   > div {
-    background: #151515;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -89,15 +87,12 @@ export const AngelInvestors = styled.div`
   }
 `;
 
-export const HiringLink = styled(Link)`
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 37px;
-  text-decoration: none;
-  text-align: center;
-  width: 100%;
-  display: block;
-  margin-top: 2.5rem;
+export const AngelInvestors = styled.div`
+  ${angelCSS}
 
-  color: ${props => props.theme.homepage.white};
+  section {
+    ${angelCSS}
+    grid-template-columns: repeat(3, 1fr);
+    grid-column: 1/-1;
+  }
 `;

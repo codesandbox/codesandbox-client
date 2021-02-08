@@ -1,0 +1,38 @@
+name: 'Close stale issues and PRs'
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-message:
+            'This issue has automatically been marked stale because there has
+            been no activity in a while. Please leave a comment if the issue has
+            not been resolved, or if it is not stale for any other reason. After
+            2 weeks, this issue will automatically be closed, unless a comment
+            is made or the stale label is removed.'
+          stale-issue-label: 'stale'
+          exempt-issue-label: '💥 Crash Report, To Be Fixed'
+          close-issue-message:
+            "This issue has been automatically closed because there wasn't any
+            activity after the previous notice or the stale label wasn't
+            removed."
+          stale-pr-message:
+            'This PR has automatically been marked stale because there has been
+            no activity in a while. Please leave a comment if the issue has not
+            been resolved, or if it is not stale for any other reason. After 2
+            weeks, this issue will automatically be closed, unless a comment is
+            made or the stale label is removed.'
+          stale-pr-label: 'stale'
+          close-pr-message:
+            "This PR has been automatically closed because there wasn't any
+            activity after the previous notice or the stale label wasn't
+            removed."
+          days-before-stale: 90
+          days-before-close: 15

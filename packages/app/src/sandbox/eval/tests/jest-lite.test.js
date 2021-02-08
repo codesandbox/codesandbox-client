@@ -39,7 +39,7 @@ describe('TestRunner class', () => {
     });
   });
 
-  describe('testGlobals', () => {
+  describe('getRuntimeGlobals', () => {
     it('returns an object', async () => {
       const testRunner = new TestRunner();
 
@@ -53,18 +53,12 @@ describe('TestRunner class', () => {
         test: _test,
         expect: _expect,
         jest: _jest,
-        document: _document,
-        window: _window,
-        global: _global,
-      } = testRunner.testGlobals();
+      } = testRunner.getRuntimeGlobals();
 
       expect(_it).toBeInstanceOf(Function);
       expect(_test).toBeInstanceOf(Function);
       expect(_expect).toBeInstanceOf(Function);
       expect(_jest).toBeInstanceOf(Object);
-      expect(_document).toBeInstanceOf(Object);
-      expect(_window).toBeInstanceOf(Object);
-      expect(_global).toBeInstanceOf(Object);
     });
 
     xdescribe('test', () => {
@@ -75,7 +69,7 @@ describe('TestRunner class', () => {
       beforeEach(async () => {
         testRunner = new TestRunner();
         await testRunner.initJSDOM();
-        _test = testRunner.testGlobals().test;
+        _test = testRunner.getRuntimeGlobals().test;
         fnSpy = jest.fn();
       });
 

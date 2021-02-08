@@ -1,10 +1,12 @@
 import getTemplate from '@codesandbox/common/lib/templates';
+import { Dependency } from '@codesandbox/common/lib/types/algolia';
 import { CustomTemplate } from '@codesandbox/common/lib/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
+import { json } from 'overmind';
 
 export const valueChanged: Action<{
   field: string;
@@ -443,4 +445,124 @@ export const openDefaultItem: Action = ({ state }) => {
   const defaultItem = items.find(i => i.defaultOpen) || items[0];
 
   state.workspace.openedWorkspaceItem = defaultItem.id;
+};
+
+export const changeDependencySearch: Action<string> = ({ state }, value) => {
+  state.workspace.dependencySearch = value;
+};
+
+export const getExplorerDependencies: AsyncAction<string> = async (
+  { state, effects },
+  value
+) => {
+  state.workspace.explorerDependenciesEmpty = false;
+  if (!value) {
+    state.workspace.explorerDependencies = [];
+    return;
+  }
+  state.workspace.loadingDependencySearch = true;
+  const searchResults = await effects.algoliaSearch.searchDependencies(
+    value,
+    4
+  );
+
+  state.workspace.loadingDependencySearch = false;
+  if (searchResults.length) {
+    state.workspace.explorerDependencies = searchResults;
+  } else {
+    state.workspace.explorerDependenciesEmpty = true;
+  }
+};
+
+export const clearExplorerDependencies: Action = ({ state }) => {
+  state.workspace.explorerDependencies = [];
+};
+
+export const getDependencies: AsyncAction<string> = async (
+  { state, effects },
+  value
+) => {
+  state.workspace.loadingDependencySearch = true;
+  const searchResults = await effects.algoliaSearch.searchDependencies(value);
+
+  state.workspace.loadingDependencySearch = false;
+  state.workspace.dependencies = searchResults;
+};
+
+export const setSelectedDependencies: Action<Dependency> = (
+  { state },
+  dependency
+) => {
+  const selectedDependencies = state.workspace.selectedDependencies;
+  const versionMap = state.workspace.hitToVersionMap;
+  const dep = json(dependency);
+
+  if (selectedDependencies[dep.objectID]) {
+    delete selectedDependencies[dep.objectID];
+    delete versionMap[dep.objectID];
+  } else {
+    selectedDependencies[dep.objectID] = dep;
+  }
+};
+
+export const handleVersionChange: Action<{
+  dependency: Dependency;
+  version: string;
+}> = ({ state }, { dependency, version }) => {
+  if (state.editor.parsedConfigurations?.package?.parsed?.dependencies) {
+    const installedVersion =
+      state.editor.parsedConfigurations.package.parsed.dependencies[
+        dependency.objectID
+      ];
+
+    /* Remove the dependency as the same version is already installed */
+    if (installedVersion === version) {
+      const selectedDependencies = state.workspace.selectedDependencies;
+      const versionMap = state.workspace.hitToVersionMap;
+      delete selectedDependencies[dependency.objectID];
+      delete versionMap[dependency.objectID];
+      return;
+    }
+  }
+  state.workspace.hitToVersionMap[dependency.objectID] = version;
+};
+
+export const clearSelectedDependencies: Action = ({ state }) => {
+  state.workspace.selectedDependencies = {};
+};
+
+export const toggleShowingSelectedDependencies: Action = ({ state }) => {
+  state.workspace.showingSelectedDependencies = !state.workspace
+    .showingSelectedDependencies;
+};
+
+export const sandboxAlwaysOnChanged: AsyncAction<{
+  alwaysOn: boolean;
+}> = async ({ actions, effects, state }, { alwaysOn }) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  track('Sandbox - Always On', { alwaysOn });
+
+  const oldAlwaysOn = state.editor.currentSandbox.alwaysOn;
+  state.editor.currentSandbox.alwaysOn = alwaysOn;
+
+  try {
+    await effects.gql.mutations.changeSandboxAlwaysOn({
+      sandboxId: state.editor.currentSandbox.id,
+      alwaysOn,
+    });
+  } catch (error) {
+    state.editor.currentSandbox.alwaysOn = oldAlwaysOn;
+
+    // this is odd to handle it in the action
+    // TODO: we need a cleaner way to read graphql errors
+    const message = error.response?.errors[0]?.message;
+
+    actions.internal.handleError({
+      message: "We weren't able to update always on status",
+      error: { name: 'Always on', message },
+    });
+  }
 };

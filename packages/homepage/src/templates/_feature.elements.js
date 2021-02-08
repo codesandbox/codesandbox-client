@@ -2,19 +2,19 @@ import styled, { css } from 'styled-components';
 
 export const Title = styled.h1`
   ${({ theme, textCenter }) => css`
+    font-weight: 900;
     font-family: ${theme.homepage.appleFont};
-    font-weight: 500;
     font-size: 2.5rem;
     line-height: 3rem;
     color: ${theme.homepage.white};
     margin: 0.5rem 0;
 
     ${textCenter &&
-      css`
-        text-align: center;
-        max-width: 50%;
-        margin: auto;
-      `}
+    css`
+      text-align: center;
+      max-width: 50%;
+      margin: auto;
+    `}
   `};
   ${props => props.theme.breakpoints.md} {
     max-width: 80%;
@@ -74,9 +74,9 @@ export const Banner = styled.div`
       ${props => props.theme.breakpoints.lg} {
         width: 230%;
         ${reverse &&
-          css`
-            transform: translateX(-56%);
-          `};
+        css`
+          transform: translateX(-56%);
+        `};
 
         max-width: initial;
       }

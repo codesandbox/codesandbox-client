@@ -94,7 +94,7 @@ export const revokeInvitation: Query<
   RevokeSandboxInvitationMutation,
   RevokeSandboxInvitationMutationVariables
 > = gql`
-  mutation RevokeSandboxInvitation($sandboxId: ID!, $invitationId: ID!) {
+  mutation RevokeSandboxInvitation($sandboxId: ID!, $invitationId: UUID4!) {
     revokeSandboxInvitation(
       sandboxId: $sandboxId
       invitationId: $invitationId
@@ -111,7 +111,7 @@ export const changeSandboxInvitationAuthorization: Query<
 > = gql`
   mutation ChangeSandboxInvitationAuthorization(
     $sandboxId: ID!
-    $invitationId: ID!
+    $invitationId: UUID4!
     $authorization: Authorization!
   ) {
     changeSandboxInvitationAuthorization(

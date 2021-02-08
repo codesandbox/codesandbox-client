@@ -1,4 +1,19 @@
-const ctx = self as any;
+// eslint-disable-next-line spaced-comment
+/// <reference lib="webworker" />
+
+type StencilOpts = { file: string; module: string };
+type StencilResult = {
+  imports: Array<{
+    path: string;
+  }>;
+  code: string;
+};
+
+const ctx = self as typeof self & {
+  stencil: {
+    compile(code: string, opts: StencilOpts): Promise<StencilResult>;
+  };
+};
 
 let loadedStencilVersion: string;
 const loadStencilVersion = (version: string) => {

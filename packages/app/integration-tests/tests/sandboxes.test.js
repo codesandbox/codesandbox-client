@@ -18,7 +18,7 @@ const SANDBOXES = [
   'lp5rjr0z4z',
   'nOymMxyY',
   'y26rj99yov', // react transition
-  '6w66jzw3mn', // material-design & preact
+  // '6w66jzw3mn', // material-design & preact
   '4j7m47vlm4', // material-ui
   'cssinjs-egghead-templates-and-variables', // postcss egghead
   'xp5qy8r93q', // babel example
@@ -38,7 +38,7 @@ const SANDBOXES = [
   '31kn7voz4q', // cxjs
   'zw9zjy0683', // aurelia
   'zx22owojr3', // vue v-slot test
-  '4888omqqz7', // material-ui https://github.com/codesandbox/codesandbox-client/issues/1741,
+  // '4888omqqz7', // material-ui https://github.com/codesandbox/codesandbox-client/issues/1741,
   'sebn6', // babel plugin dynamically downloaded
   'utmms', // babel plugin pragmatic-jsx which requires other babel plugin
 ];

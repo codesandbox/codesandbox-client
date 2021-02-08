@@ -109,6 +109,7 @@ export default (() => {
       const nowConfigs = sandbox.modules
         .filter(
           m =>
+            m.title === 'vercel.json' ||
             m.title === 'now.json' ||
             (m.title === 'package.json' && JSON.parse(m.code).now)
         )
@@ -203,7 +204,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   let nowJSON: any = {};
 
   const projectPackage = contents.files['package.json'];
-  const nowFile = contents.files['now.json'];
+  const nowFile = contents.files['vercel.json'] || contents.files['now.json'];
 
   if (projectPackage) {
     const data = await projectPackage.async('text'); // eslint-disable-line no-await-in-loop
@@ -231,6 +232,10 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   // We'll omit the homepage-value from package.json as it creates wrong assumptions over the now deployment environment.
   packageJSON = omit(packageJSON, 'homepage');
 
+  // if the template is static we should not have a build command
+  if (template.name === 'static') {
+    packageJSON = omit(packageJSON, 'scripts.build');
+  }
   // We force the sandbox id, so Vercel will always group the deployments to a
   // single sandbox
   packageJSON.name = nowJSON.name || nowDefaults.name;
@@ -241,25 +246,14 @@ async function getApiData(contents: any, sandbox: Sandbox) {
     apiData.public = nowJSON.public;
   }
 
-  // if now v2 we need to tell now the version, builds and routes
-  if (nowJSON.version === 1) {
-    apiData.config = omit(nowJSON, [
-      'public',
-      'type',
-      'name',
-      'files',
-      'version',
-    ]);
-    apiData.forceNew = true;
-  } else {
-    apiData.version = 2;
-    apiData.builds = nowJSON.builds;
-    apiData.routes = nowJSON.routes;
-    apiData.env = nowJSON.env;
-    apiData.scope = nowJSON.scope;
-    apiData['build.env'] = nowJSON['build.env'];
-    apiData.regions = nowJSON.regions;
-  }
+  // We need to tell now the version, builds and routes
+  apiData.version = 2;
+  apiData.builds = nowJSON.builds;
+  apiData.routes = nowJSON.routes;
+  apiData.env = nowJSON.env;
+  apiData.scope = nowJSON.scope;
+  apiData['build.env'] = nowJSON['build.env'];
+  apiData.regions = nowJSON.regions;
 
   if (!nowJSON.files && apiData?.files) {
     apiData.files.push({

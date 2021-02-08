@@ -2,20 +2,21 @@ import styled from 'styled-components';
 
 export const FooterWrapper = styled.footer`
   padding-bottom: 1rem;
-  margin-top: 6rem;
+
   margin-bottom: 3rem;
+  border-top: 1px solid #343434;
 `;
 
 export const Nav = styled.section`
-  padding-top: 2.5rem;
-  border-top: 1px solid ${props => props.theme.homepage.grey};
+   padding-top: 6rem;
+
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   grid-gap: 3rem;
   max-width: 80%;
   width: 1200px;
   margin: auto;
-  margin-bottom: 4.5rem;
+  margin-bottom: 8rem;
 
   a {
     color: inherit;
@@ -38,10 +39,9 @@ export const Nav = styled.section`
 `;
 
 export const Social = styled.ul`
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(2, 1rem);
+  display: flex;
   justify-content: center;
+  align-items: center;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -55,4 +55,12 @@ export const Social = styled.ul`
       fill: ${props => props.theme.homepage.white};
     }
   }
+`;
+
+export const Title = styled.h6`
+  font-style: normal;
+  font-weight: 900;
+  font-size: 19px;
+  line-height: 23px;
+  margin-bottom: 16px;
 `;

@@ -63,13 +63,13 @@ export const SandboxInvitation = ({
         if (isMenuClicked(event)) return;
         if (!read) {
           await updateReadStatus(id);
-          history.push(
-            sandboxUrl({
-              id: sandboxId,
-              alias: sandboxAlias,
-            })
-          );
         }
+        history.push(
+          sandboxUrl({
+            id: sandboxId,
+            alias: sandboxAlias,
+          })
+        );
       }}
       key={sandboxId}
       css={css({ padding: 0 })}

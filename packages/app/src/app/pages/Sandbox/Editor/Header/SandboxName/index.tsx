@@ -29,9 +29,8 @@ const getFolderName = (sandbox: Sandbox) => {
 
   if (sandbox.collection) {
     const base = basename(sandbox.collection.path);
-    if (base) {
-      return base;
-    }
+
+    return base || 'All Sandboxes';
   }
 
   return 'Drafts';
@@ -40,7 +39,7 @@ const getFolderName = (sandbox: Sandbox) => {
 export const SandboxName: FunctionComponent = () => {
   const {
     actions: {
-      modalOpened,
+      modals,
       workspace: { sandboxInfoUpdated, valueChanged },
     },
     state: {
@@ -129,7 +128,13 @@ export const SandboxName: FunctionComponent = () => {
               <Button
                 variant="link"
                 css={css({ fontSize: 3, width: 'auto' })}
-                onClick={() => modalOpened({ modal: 'moveSandbox' })}
+                onClick={() =>
+                  modals.moveSandboxModal.open({
+                    sandboxIds: [currentSandbox.id],
+                    preventSandboxLeaving:
+                      currentSandbox.permissions.preventSandboxLeaving,
+                  })
+                }
                 arial-label="Change sandbox folder"
               >
                 {folderName}
@@ -144,42 +149,36 @@ export const SandboxName: FunctionComponent = () => {
         )}
 
         {updatingName && !git ? (
-          <>
-            <Form onSubmit={submitNameChange}>
-              <NameInput
-                autoFocus
-                ref={(el: HTMLInputElement) => {
-                  if (el) {
-                    el.focus();
-                  }
-                }}
-                onBlur={handleBlur}
-                onChange={handleInputUpdate}
-                onKeyUp={handleKeyUp}
-                placeholder={name}
-                value={value}
-                arial-label="sandbox name"
-              />
-            </Form>
-          </>
-        ) : (
-          <>
-            {!git ? (
-              owned ? (
-                <Button
-                  variant="link"
-                  css={css({ fontSize: 3, width: 'auto', color: 'foreground' })}
-                  arial-label="Change sandbox name"
-                  onClick={handleNameClick}
-                >
-                  {sandboxName}
-                </Button>
-              ) : (
-                <Text>{sandboxName}</Text>
-              )
-            ) : null}
-          </>
-        )}
+          <Form onSubmit={submitNameChange}>
+            <NameInput
+              autoFocus
+              ref={(el: HTMLInputElement) => {
+                if (el) {
+                  el.focus();
+                }
+              }}
+              onBlur={handleBlur}
+              onChange={handleInputUpdate}
+              onKeyUp={handleKeyUp}
+              placeholder={name}
+              value={value}
+              arial-label="sandbox name"
+            />
+          </Form>
+        ) : !git ? (
+          owned ? (
+            <Button
+              variant="link"
+              css={css({ fontSize: 3, width: 'auto', color: 'foreground' })}
+              arial-label="Change sandbox name"
+              onClick={handleNameClick}
+            >
+              {sandboxName}
+            </Button>
+          ) : (
+            <Text>{sandboxName}</Text>
+          )
+        ) : null}
 
         {!updatingName && !git ? (
           <Element as="span" marginLeft={owned ? 0 : 2}>

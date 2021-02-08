@@ -1,4 +1,4 @@
-import Transpiler, { TranspilerResult } from '..';
+import { TranspilerResult, Transpiler } from 'sandpack-core';
 
 class Base64Transpiler extends Transpiler {
   constructor() {
@@ -11,7 +11,7 @@ class Base64Transpiler extends Transpiler {
       // @ts-ignore
       reader.readAsDataURL(code);
 
-      reader.onloadend = function() {
+      reader.onloadend = () => {
         const base64data = reader.result;
         resolve({
           transpiledCode: `module.exports = "${base64data.toString()}"`,

@@ -39,25 +39,24 @@ export const TeamAvatar = ({
   // consistent color
   const index = name.length % (backgrounds.length - 1);
   const backgroundColor = backgrounds[index];
-  const avatarSize = size === 'bigger' ? 55 : 6;
+  const avatarSize = size === 'bigger' ? '55px' : '26px';
 
   return avatar ? (
-    <>
-      <img
-        css={css({
-          maxWidth: avatarSize,
-          maxHeight: avatarSize,
-          borderRadius: 'small',
-          borderColor: 'sideBar.border',
-          borderStyle: 'solid',
-          borderWidth: 1,
-          boxSizing: 'border-box',
-        })}
-        style={style}
-        src={avatar}
-        alt={name}
-      />
-    </>
+    <img
+      css={css({
+        width: avatarSize,
+        height: avatarSize,
+        objectFit: 'cover',
+        borderRadius: 'small',
+        borderColor: 'sideBar.border',
+        borderStyle: 'solid',
+        borderWidth: 1,
+        boxSizing: 'border-box',
+      })}
+      style={style}
+      src={avatar}
+      alt={name}
+    />
   ) : (
     <Stack
       style={style}

@@ -41,6 +41,32 @@ export const User: FunctionComponent<Props> = ({ liveRole, user }) => {
   // and you can't follow yourself
   const canFollowUser = !(liveRole === 'spectator' || loggedInUser);
 
+  const Tooltips = () => {
+    if (liveRole === 'spectator') {
+      return (
+        <Tooltip content="Make editor">
+          <AddIcon
+            css={{ cursor: 'pointer' }}
+            onClick={() => onAddEditorClicked(user.id)}
+          />
+        </Tooltip>
+      );
+    }
+
+    if (liveRole === 'editor') {
+      return (
+        <Tooltip content="Make spectator">
+          <RemoveIcon
+            css={{ cursor: 'pointer' }}
+            onClick={() => onRemoveEditorClicked(user.id)}
+          />
+        </Tooltip>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <Stack
       align="center"
@@ -70,47 +96,24 @@ export const User: FunctionComponent<Props> = ({ liveRole, user }) => {
       </Stack>
 
       <Stack align="center" className="live-actions" gap={2}>
-        {canChangeEditors ? (
-          <>
-            {liveRole === 'spectator' ? (
-              <Tooltip content="Make editor">
-                <AddIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onAddEditorClicked(user.id)}
-                />
-              </Tooltip>
-            ) : null}
+        {canChangeEditors ? <Tooltips /> : null}
 
-            {liveRole === 'editor' ? (
-              <Tooltip content="Make spectator">
-                <RemoveIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onRemoveEditorClicked(user.id)}
-                />
-              </Tooltip>
-            ) : null}
-          </>
-        ) : null}
-
-        {canFollowUser ? (
-          <>
-            {followingUserId === user.id ? (
-              <Tooltip content="Stop following">
-                <UnfollowIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onStopFollow()}
-                />
-              </Tooltip>
-            ) : (
-              <Tooltip content="Follow along">
-                <FollowIcon
-                  css={{ cursor: 'pointer' }}
-                  onClick={() => onFollow({ liveUserId: user.id })}
-                />
-              </Tooltip>
-            )}
-          </>
-        ) : null}
+        {canFollowUser &&
+          (followingUserId === user.id ? (
+            <Tooltip content="Stop following">
+              <UnfollowIcon
+                css={{ cursor: 'pointer' }}
+                onClick={() => onStopFollow()}
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip content="Follow along">
+              <FollowIcon
+                css={{ cursor: 'pointer' }}
+                onClick={() => onFollow({ liveUserId: user.id })}
+              />
+            </Tooltip>
+          ))}
       </Stack>
     </Stack>
   );

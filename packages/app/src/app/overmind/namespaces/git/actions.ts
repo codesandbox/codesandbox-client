@@ -7,6 +7,8 @@ import {
   SandboxGitState,
 } from '@codesandbox/common/lib/types';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Action, AsyncAction, Operator } from 'app/overmind';
 import { debounce, mutate, pipe } from 'overmind';
 
@@ -45,13 +47,20 @@ export const loadGitSource: AsyncAction = async ({
   effects,
 }) => {
   const sandbox = state.editor.currentSandbox!;
-  state.git.isFetching = true;
   state.git.isExported = false;
   state.git.pr = null;
+  state.git.repoTitle = '';
 
-  if (!state.user || !state.user.integrations.github) {
+  if (
+    !state.user ||
+    !state.user.integrations.github ||
+    !sandbox.originalGit ||
+    !hasPermission(sandbox.authorization, 'write_code')
+  ) {
     return;
   }
+
+  state.git.isFetching = true;
 
   // We go grab the current version of the source
   try {
@@ -157,9 +166,9 @@ export const createRepoClicked: AsyncAction = async ({
     state.currentModal = null;
 
     actions.editor.internal.forkSandbox({
-      sandboxId: `github/${git.username}/${git.repo}/tree/${
-        git.branch
-      }/${git.path || ''}`,
+      sandboxId: `github/${git.username}/${git.repo}/tree/${git.branch}/${
+        git.path || ''
+      }`,
     });
   } catch (error) {
     actions.internal.handleError({
@@ -176,10 +185,30 @@ export const importFromGithub: AsyncAction<string> = async (
 ) => {
   actions.modalClosed();
   state.currentModal = 'exportGithub';
-  await actions.editor.internal.forkSandbox({
-    sandboxId: sandboxUrl.replace('/s/', ''),
-  });
-  state.currentModal = null;
+  try {
+    await actions.editor.forkExternalSandbox({
+      sandboxId: sandboxUrl.replace('/s/', ''),
+    });
+    state.currentModal = null;
+  } catch (e) {
+    if (!state.user || !state.user.integrations?.github) {
+      state.currentModal = null;
+      effects.notificationToast.add({
+        title: 'Can not import repo',
+        message: 'This seems to be a private repo, you have to sign in first',
+        status: NotificationStatus.ERROR,
+        actions: {
+          primary: {
+            label: 'Sign in',
+            run: () => {
+              actions.signInGithubClicked();
+            },
+          },
+        },
+      });
+    }
+    throw e;
+  }
 };
 
 export const openSourceSandbox: Action = ({ state, effects }) => {
@@ -189,6 +218,36 @@ export const openSourceSandbox: Action = ({ state, effects }) => {
     : state.editor.currentSandbox!.originalGit;
 
   effects.router.updateSandboxUrl({ git });
+};
+
+/*
+  Due to us creating new urls when syncing source, we have to move these updates
+  from the source back to the sandbox
+*/
+export const _updateBinaryUploads: AsyncAction<GitChanges> = async (
+  { state, actions },
+  changes
+) => {
+  const binariesToUpdate = changes.added
+    .filter(change => change.encoding === 'base64')
+    .concat(changes.modified.filter(change => change.encoding === 'base64'));
+
+  await Promise.all(
+    binariesToUpdate.map(change => {
+      const module = state.editor.modulesByPath[change.path] as Module;
+      const sourceModule = state.git.sourceModulesByPath[change.path];
+
+      actions.editor.codeChanged({
+        moduleShortid: module.shortid,
+        code: sourceModule.code,
+      });
+      return actions.editor.codeSaved({
+        moduleShortid: module.shortid,
+        code: sourceModule.code,
+        cbID: null,
+      });
+    })
+  );
 };
 
 export const createCommitClicked: AsyncAction = async ({
@@ -216,7 +275,7 @@ export const createCommitClicked: AsyncAction = async ({
       }
     }
 
-    const changes = actions.git._getGitChanges();
+    const changes = await actions.git._getGitChanges();
     const commit = await effects.api.createGitCommit(
       sandbox.id,
       `${git.title}\n${git.description}`,
@@ -227,18 +286,14 @@ export const createCommitClicked: AsyncAction = async ({
         ? [git.sourceCommitSha!, git.baseCommitSha]
         : [git.sourceCommitSha!]
     );
-    changes.added.forEach(change => {
-      git.sourceModulesByPath[change.path] = change.content;
-    });
-    changes.modified.forEach(change => {
-      git.sourceModulesByPath[change.path] = change.content;
-    });
-    changes.deleted.forEach(path => {
-      delete git.sourceModulesByPath[path];
-    });
-    actions.git._setGitChanges();
+
+    // We need to load the source again as it has now changed. We can not optimistically deal with
+    // this, cause you might have added a binary
     sandbox.originalGit!.commitSha = commit.sha;
     sandbox.originalGitCommitSha = commit.sha;
+    await actions.git._loadSourceSandbox();
+    await actions.git._updateBinaryUploads(changes);
+    actions.git._setGitChanges();
     state.git.isCommitting = false;
     state.git.title = '';
     state.git.description = '';
@@ -248,11 +303,31 @@ export const createCommitClicked: AsyncAction = async ({
     effects.notificationToast.success('Successfully created your commit');
   } catch (error) {
     state.git.isCommitting = false;
-    actions.internal.handleError({
-      error,
-      message:
-        'We were unable to create your commit. Please try again or report the issue.',
-    });
+
+    if (error.message.includes('code 422')) {
+      if (!sandbox.originalGit) return;
+      effects.notificationToast.add({
+        message: `You do not seem to have access to commit to ${sandbox.originalGit.username}/${sandbox.originalGit.repo}. Please read the documentation to grant access.`,
+        title: 'Error creating commit',
+        status: NotificationStatus.ERROR,
+        actions: {
+          primary: {
+            label: 'Open documentation',
+            run: () => {
+              effects.browser.openWindow(
+                'docs/git#committing-to-organizations'
+              );
+            },
+          },
+        },
+      });
+    } else {
+      actions.internal.handleError({
+        error,
+        message:
+          'We were unable to create your commit. Please try again or report the issue.',
+      });
+    }
   }
 };
 
@@ -286,24 +361,13 @@ export const createPrClicked: AsyncAction = async ({
       }
     }
 
-    const changes = actions.git._getGitChanges();
+    const changes = await actions.git._getGitChanges();
     const pr = await effects.api.createGitPr(
       id,
       state.git.title,
       state.git.description,
       changes
     );
-
-    changes.added.forEach(change => {
-      git.sourceModulesByPath[change.path] = change.content;
-    });
-    changes.modified.forEach(change => {
-      git.sourceModulesByPath[change.path] = change.content;
-    });
-    changes.deleted.forEach(path => {
-      delete git.sourceModulesByPath[path];
-    });
-    actions.git._setGitChanges();
 
     sandbox.baseGit = {
       ...sandbox.originalGit,
@@ -319,11 +383,17 @@ export const createPrClicked: AsyncAction = async ({
     sandbox.originalGitCommitSha = pr.commitSha;
     sandbox.prNumber = pr.number;
     git.pr = pr;
-    git.isCreatingPr = false;
+
+    await actions.git._loadSourceSandbox();
+    await actions.git._updateBinaryUploads(changes);
+    actions.git._setGitChanges();
+
     git.title = '';
     git.description = '';
     state.git.conflicts = [];
     state.git.gitState = SandboxGitState.SYNCED;
+
+    git.isCreatingPr = false;
 
     effects.notificationToast.add({
       title: 'Successfully created your PR',
@@ -361,7 +431,6 @@ export const resolveConflicts: AsyncAction<Module> = async (
   { state, actions, effects },
   module
 ) => {
-  effects.analytics.track('GitHub - Resolve Conflicts');
   const conflict = state.git.conflicts.find(
     conflictItem => module.path === '/' + conflictItem.filename
   );
@@ -375,6 +444,7 @@ export const resolveConflicts: AsyncAction<Module> = async (
       cbID: null,
     });
 
+    effects.analytics.track('GitHub - Resolve Conflicts');
     actions.git._tryResolveConflict();
   }
 };
@@ -389,7 +459,9 @@ export const addConflictedFile: AsyncAction<GitFileCompare> = async (
       [conflict.filename]: { content: conflict.content!, isBinary: false },
     },
   });
-  state.git.sourceModulesByPath['/' + conflict.filename] = conflict.content!;
+  state.git.sourceModulesByPath[
+    '/' + conflict.filename
+  ].code = conflict.content!;
 
   state.git.conflictsResolving.splice(
     state.git.conflictsResolving.indexOf(conflict.filename),
@@ -428,11 +500,13 @@ export const deleteConflictedFile: AsyncAction<GitFileCompare> = async (
   actions.git._tryResolveConflict();
 };
 
-export const diffConflictedFile: Action<GitFileCompare> = (
+export const diffConflictedFile: AsyncAction<GitFileCompare> = async (
   { state, actions },
   conflict
 ) => {
   const module = state.editor.modulesByPath['/' + conflict.filename] as Module;
+
+  await actions.editor.moduleSelected({ id: module.id });
 
   actions.editor.setCode({
     moduleShortid: module.shortid,
@@ -448,71 +522,25 @@ export const resolveOutOfSync: AsyncAction = async ({
   effects.analytics.track('GitHub - Resolve out of sync');
   const git = state.git;
   const { added, deleted, modified } = git.outOfSyncUpdates;
+
   git.isResolving = true;
-  if (added.length) {
-    await actions.files.createModulesByPath({
-      files: added.reduce((aggr, change) => {
-        aggr[change.filename] = { content: change.content };
-
-        return aggr;
-      }, {}),
-    });
-    // We optimistically keep source in sync
-    added.forEach(change => {
-      git.sourceModulesByPath['/' + change.filename] = change.content!;
-    });
-  }
-
-  if (deleted.length) {
-    await Promise.all(
-      deleted.map(change => {
-        const module = state.editor.modulesByPath['/' + change.filename];
-
-        return actions.files.moduleDeleted({ moduleShortid: module.shortid });
-      })
-    );
-    // We optimistically keep source in sync
-    deleted.forEach(change => {
-      delete git.sourceModulesByPath['/' + change.filename];
-    });
-  }
-  if (modified.length) {
-    await Promise.all(
-      modified.map(change => {
-        const module = state.editor.modulesByPath['/' + change.filename];
-
-        actions.editor.setCode({
-          moduleShortid: module.shortid,
-          code: change.content!,
-        });
-        return actions.editor.codeSaved({
-          moduleShortid: module.shortid,
-          code: change.content!,
-          cbID: null,
-        });
-      })
-    );
-    // We optimistically keep source in sync
-    modified.forEach(change => {
-      git.sourceModulesByPath['/' + change.filename] = change.content!;
-    });
-  }
 
   const sandbox = state.editor.currentSandbox!;
 
-  // When we have a PR and the source is out of sync with base, we need to create a commit to update it
+  // When we have a PR and the source is out of sync with base, we need to create a commit to update it. We do this
+  // first, because we need the new source to deal with binary files
   if (git.gitState === SandboxGitState.OUT_OF_SYNC_PR_BASE) {
     const changes: GitChanges = {
       added: added.map(change => ({
-        path: change.filename,
+        path: '/' + change.filename,
         content: change.content!,
-        encoding: 'utf-8',
+        encoding: change.isBinary ? 'base64' : 'utf-8',
       })),
-      deleted: deleted.map(change => change.filename),
+      deleted: deleted.map(change => '/' + change.filename),
       modified: modified.map(change => ({
-        path: change.filename,
+        path: '/' + change.filename,
         content: change.content!,
-        encoding: 'utf-8',
+        encoding: change.isBinary ? 'base64' : 'utf-8',
       })),
     };
     const commit = await effects.api.createGitCommit(
@@ -521,7 +549,6 @@ export const resolveOutOfSync: AsyncAction = async ({
       changes,
       [git.sourceCommitSha!]
     );
-    actions.git._setGitChanges();
     sandbox.originalGit!.commitSha = commit.sha;
     sandbox.originalGitCommitSha = commit.sha;
 
@@ -536,6 +563,80 @@ export const resolveOutOfSync: AsyncAction = async ({
     sandbox.originalGitCommitSha = git.sourceCommitSha;
   }
 
+  await actions.git._loadSourceSandbox();
+
+  if (added.length) {
+    await actions.files.createModulesByPath({
+      files: added.reduce((aggr, change) => {
+        aggr[change.filename] = change.isBinary
+          ? {
+              content: git.sourceModulesByPath['/' + change.filename].code,
+              isBinary: true,
+              uploadId: git.sourceModulesByPath['/' + change.filename].uploadId,
+              sha: git.sourceModulesByPath['/' + change.filename].sha,
+            }
+          : { content: change.content };
+
+        return aggr;
+      }, {}),
+    });
+  }
+
+  if (deleted.length) {
+    await Promise.all(
+      deleted.map(change => {
+        const module = state.editor.modulesByPath['/' + change.filename];
+
+        return actions.files.moduleDeleted({ moduleShortid: module.shortid });
+      })
+    );
+  }
+  if (modified.length) {
+    await Promise.all(
+      modified.map(change => {
+        const module = state.editor.modulesByPath['/' + change.filename];
+
+        // If we are dealing with a private binary change, we need to bluntly update
+        // the module
+        if (git.sourceModulesByPath['/' + change.filename].sha) {
+          const code = git.sourceModulesByPath['/' + change.filename].code;
+          const uploadId = git.sourceModulesByPath['/' + change.filename]
+            .uploadId!;
+          const sha = git.sourceModulesByPath['/' + change.filename].sha!;
+
+          const sandboxModule = sandbox.modules.find(
+            moduleItem => moduleItem.shortid === module.shortid
+          )!;
+          sandboxModule.code = code;
+          sandboxModule.uploadId = uploadId;
+          sandboxModule.sha = sha;
+
+          return effects.api
+            .saveModulePrivateUpload(sandbox.id, module.shortid, {
+              code,
+              uploadId,
+              sha,
+            })
+            .then(() => {});
+        }
+        actions.editor.setCode({
+          moduleShortid: module.shortid,
+          code: change.isBinary
+            ? git.sourceModulesByPath['/' + change.filename].code
+            : change.content!,
+        });
+        return actions.editor.codeSaved({
+          moduleShortid: module.shortid,
+          code: change.isBinary
+            ? git.sourceModulesByPath['/' + change.filename].code
+            : change.content!,
+          cbID: null,
+        });
+      })
+    );
+  }
+
+  actions.git._setGitChanges();
   git.outOfSyncUpdates.added = [];
   git.outOfSyncUpdates.deleted = [];
   git.outOfSyncUpdates.modified = [];
@@ -558,8 +659,10 @@ export const _setGitChanges: Action = ({ state }) => {
     if (!(module.path in state.git.sourceModulesByPath)) {
       changes.added.push(module.path);
     } else if (
-      !module.isBinary &&
-      state.git.sourceModulesByPath[module.path] !== module.code
+      (module.sha &&
+        state.git.sourceModulesByPath[module.path].sha !== module.sha) ||
+      (!module.sha &&
+        state.git.sourceModulesByPath[module.path].code !== module.code)
     ) {
       changes.modified.push(module.path);
     }
@@ -582,28 +685,30 @@ export const _evaluateGitChanges: AsyncAction<
   const conflicts = changes.reduce<GitFileCompare[]>((aggr, change) => {
     const path = '/' + change.filename;
 
-    // We are in conflict if a file has been removed and it is still present
-    // in the sandbox
-    if (change.status === 'removed' && state.editor.modulesByPath[path]) {
-      return aggr.concat(change);
-    }
-
-    // We are in conflict if a file has been deleted in the sandbox, but
-    // is still present in the source
+    // We are in conflict if a file has been removed in the source and the
+    // sandbox has made changes to it
     if (
-      (change.status === 'modified' || change.status === 'added') &&
-      !state.editor.modulesByPath[path]
+      change.status === 'removed' &&
+      state.editor.modulesByPath[path] &&
+      !(state.editor.modulesByPath[path] as Module).isBinary &&
+      (state.editor.modulesByPath[path] as Module).code !== change.content
     ) {
       return aggr.concat(change);
     }
 
-    // We are in conflict if the file exists in the sandbox, but
-    // the contents is different than both the change and the
+    // We are in conflict if a file has been modified in the source, but removed
+    // from the sandbox
+    if (change.status === 'modified' && !state.editor.modulesByPath[path]) {
+      return aggr.concat(change);
+    }
+
+    // We are in conflict if the source changed the file and sandbox also changed the file
     if (
-      (change.status === 'added' || change.status === 'modified') &&
+      change.status === 'modified' &&
+      !(state.editor.modulesByPath[path] as Module).isBinary &&
       (state.editor.modulesByPath[path] as Module).code !== change.content &&
       (state.editor.modulesByPath[path] as Module).code !==
-        state.git.sourceModulesByPath[path]
+        state.git.sourceModulesByPath[path].code
     ) {
       return aggr.concat(change);
     }
@@ -635,7 +740,9 @@ export const _evaluateGitChanges: AsyncAction<
           (state.editor.modulesByPath['/' + change.filename] as Module).code !==
             change.content)
       ) {
-        aggr[change.status].push(change);
+        aggr[change.status === 'removed' ? 'deleted' : change.status].push(
+          change
+        );
       }
 
       return aggr;
@@ -677,7 +784,12 @@ export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
       );
       module.path = path;
       if (path) {
-        aggr[path] = module.code;
+        aggr[path] = {
+          code: module.code,
+          isBinary: module.isBinary,
+          uploadId: module.uploadId,
+          sha: module.sha,
+        };
       }
 
       return aggr;
@@ -693,53 +805,64 @@ export const _compareWithSource: AsyncAction = async ({
 }) => {
   const sandbox = state.editor.currentSandbox!;
   const originalGitCommitSha = sandbox.originalGitCommitSha;
-  const originalChanges = await effects.api.compareGit(
-    sandbox.id,
-    sandbox.originalGitCommitSha!,
-    sandbox.originalGit!.branch,
-    true
-  );
 
-  const updates = await actions.git._evaluateGitChanges(originalChanges.files);
+  try {
+    const originalChanges = await effects.api.compareGit(
+      sandbox.id,
+      sandbox.originalGitCommitSha!,
+      sandbox.originalGit!.branch,
+      true
+    );
+    const updates = await actions.git._evaluateGitChanges(
+      originalChanges.files
+    );
 
-  state.git.sourceCommitSha = originalChanges.headCommitSha;
-  state.git.conflicts = updates.conflicts;
+    state.git.sourceCommitSha = originalChanges.headCommitSha;
+    state.git.conflicts = updates.conflicts;
 
-  if (updates.changesCount || updates.conflicts.length) {
-    effects.notificationToast.add({
-      message: `The sandbox is out of sync with "${
-        sandbox.originalGit!.branch
-      }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
-      title: 'Out of sync',
-      status: convertTypeToStatus('notice'),
-      sticky: false,
-      actions: {
-        primary: {
-          label: 'Resolve',
-          run: () => {
-            actions.workspace.setWorkspaceItem({ item: 'github' });
+    if (updates.changesCount || updates.conflicts.length) {
+      effects.notificationToast.add({
+        message: `The sandbox is out of sync with "${
+          sandbox.originalGit!.branch
+        }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
+        title: 'Out of sync',
+        status: convertTypeToStatus('notice'),
+        sticky: false,
+        actions: {
+          primary: {
+            label: 'Resolve',
+            run: () => {
+              actions.workspace.setWorkspaceItem({ item: 'github' });
+            },
+          },
+          secondary: {
+            label: 'See changes',
+            run: () => {
+              effects.browser.openWindow(
+                `https://github.com/${sandbox.originalGit!.username}/${
+                  sandbox.originalGit!.repo
+                }/compare/${originalGitCommitSha}...${
+                  sandbox.originalGit!.branch
+                }`
+              );
+            },
           },
         },
-        secondary: {
-          label: 'See changes',
-          run: () => {
-            effects.browser.openWindow(
-              `https://github.com/${sandbox.originalGit!.username}/${
-                sandbox.originalGit!.repo
-              }/compare/${originalGitCommitSha}...${
-                sandbox.originalGit!.branch
-              }`
-            );
-          },
-        },
-      },
-    });
-    effects.preview.refresh();
-    state.git.gitState = updates.conflicts.length
-      ? SandboxGitState.CONFLICT_SOURCE
-      : SandboxGitState.OUT_OF_SYNC_SOURCE;
-  } else {
-    state.git.gitState = SandboxGitState.SYNCED;
+      });
+      effects.preview.refresh();
+      state.git.gitState = updates.conflicts.length
+        ? SandboxGitState.CONFLICT_SOURCE
+        : SandboxGitState.OUT_OF_SYNC_SOURCE;
+    } else {
+      state.git.gitState = SandboxGitState.SYNCED;
+    }
+  } catch (e) {
+    // if there is a base git the issue is that the new branch does not exist, if not carry on
+    if (sandbox.baseGit) {
+      state.currentModal = 'notFoundBranchModal';
+    } else {
+      throw new Error();
+    }
   }
 };
 
@@ -763,7 +886,7 @@ export const _compareWithBase: AsyncAction = async ({
 
   const updates = await actions.git._evaluateGitChanges(baseChanges.files);
 
-  state.git.baseCommitSha = baseChanges.headCommitSha;
+  state.git.baseCommitSha = baseChanges?.headCommitSha;
   state.git.conflicts = updates.conflicts;
 
   if (updates.changesCount || updates.conflicts.length) {
@@ -804,28 +927,43 @@ export const _compareWithBase: AsyncAction = async ({
   }
 };
 
-export const _getGitChanges: Action<void, GitChanges> = ({ state }) => {
+export const _getGitChanges: AsyncAction<void, GitChanges> = async ({
+  state,
+  effects,
+}) => {
   const git = state.git;
   const sandbox = state.editor.currentSandbox!;
 
   return {
-    added: git.gitChanges.added.map(path => {
-      const module = sandbox.modules.find(
-        moduleItem => moduleItem.path === path
-      );
+    added: await Promise.all(
+      git.gitChanges.added.map(async path => {
+        const module = sandbox.modules.find(
+          moduleItem => moduleItem.path === path
+        );
 
-      return {
-        path,
-        content: module!.code,
-        encoding: 'utf-8',
-      };
-    }),
+        if (module!.isBinary) {
+          return {
+            path,
+            content: await effects.http.blobToBase64(module!.code),
+            encoding: 'base64' as 'base64',
+          };
+        }
+
+        return {
+          path,
+          content: module!.code,
+          encoding: 'utf-8' as 'utf-8',
+        };
+      })
+    ),
     deleted: git.gitChanges.deleted,
     modified: git.gitChanges.modified.map(path => {
       const module = sandbox.modules.find(
         moduleItem => moduleItem.path === path
       );
 
+      // A binary can not be modified, because we have no mechanism for comparing
+      // private binary files, as their urls are based on moduleId (which is different across sandboxes)
       return {
         path,
         content: module!.code,
@@ -859,7 +997,7 @@ export const _tryResolveConflict: AsyncAction = async ({
   ) {
     state.git.isCommitting = true;
     const sandbox = state.editor.currentSandbox!;
-    const changes = actions.git._getGitChanges();
+    const changes = await actions.git._getGitChanges();
     state.git.title = 'Resolve conflict';
     const commit = await effects.api.createGitCommit(
       sandbox.id,

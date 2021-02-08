@@ -33,6 +33,12 @@ import {
   TeamDraftsQueryVariables,
   GetTeamReposQueryVariables,
   GetTeamReposQuery,
+  GetPersonalWorkspaceIdQuery,
+  GetPersonalWorkspaceIdQueryVariables,
+  GetPrivateNpmRegistryQuery,
+  GetPrivateNpmRegistryQueryVariables,
+  _AlwaysOnTeamSandboxesQuery,
+  _AlwaysOnTeamSandboxesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -42,6 +48,8 @@ import {
   templateFragmentDashboard,
   repoFragmentDashboard,
   currentTeamInfoFragment,
+  npmRegistryFragment,
+  teamFragmentDashboard,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -65,7 +73,7 @@ export const deletedTeamSandboxes: Query<
   RecentlyDeletedTeamSandboxesQuery,
   RecentlyDeletedTeamSandboxesQueryVariables
 > = gql`
-  query recentlyDeletedTeamSandboxes($teamId: ID!) {
+  query recentlyDeletedTeamSandboxes($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         sandboxes(
@@ -106,7 +114,7 @@ export const getTeamDrafts: Query<
   TeamDraftsQuery,
   TeamDraftsQueryVariables
 > = gql`
-  query TeamDrafts($teamId: ID!, $authorId: ID) {
+  query TeamDrafts($teamId: UUID4!, $authorId: UUID4) {
     me {
       team(id: $teamId) {
         drafts(authorId: $authorId) {
@@ -138,7 +146,7 @@ export const getPersonalRepos: Query<
 > = gql`
   query getPersonalRepos {
     me {
-      sandboxes {
+      sandboxes(hasOriginalGit: true) {
         ...repoFragmentDashboard
       }
     }
@@ -150,10 +158,10 @@ export const getTeamRepos: Query<
   GetTeamReposQuery,
   GetTeamReposQueryVariables
 > = gql`
-  query getTeamRepos($id: ID!) {
+  query getTeamRepos($id: UUID4!) {
     me {
       team(id: $id) {
-        sandboxes {
+        sandboxes(hasOriginalGit: true) {
           ...repoFragmentDashboard
         }
       }
@@ -166,7 +174,7 @@ export const teamTemplates: Query<
   TeamTemplatesQuery,
   TeamTemplatesQueryVariables
 > = gql`
-  query TeamTemplates($id: ID!) {
+  query TeamTemplates($id: UUID4!) {
     me {
       team(id: $id) {
         id
@@ -199,13 +207,13 @@ export const ownedTemplates: Query<
 export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
   query AllTeams {
     me {
-      teams {
-        id
-        name
-        avatarUrl
+      personalWorkspaceId
+      workspaces {
+        ...teamFragmentDashboard
       }
     }
   }
+  ${teamFragmentDashboard}
 `;
 
 export const searchPersonalSandboxes: Query<
@@ -226,7 +234,7 @@ export const searchTeamSandboxes: Query<
   _SearchTeamSandboxesQuery,
   _SearchTeamSandboxesQueryVariables
 > = gql`
-  query _SearchTeamSandboxes($teamId: ID!) {
+  query _SearchTeamSandboxes($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
@@ -242,7 +250,7 @@ export const listPersonalTemplates: Query<
   ListUserTemplatesQuery,
   ListUserTemplatesQueryVariables
 > = gql`
-  query ListUserTemplates($teamId: ID) {
+  query ListUserTemplates($teamId: UUID4) {
     me {
       id
       templates {
@@ -298,7 +306,7 @@ export const recentlyAccessedSandboxes: Query<
   RecentlyAccessedSandboxesQuery,
   RecentlyAccessedSandboxesQueryVariables
 > = gql`
-  query RecentlyAccessedSandboxes($limit: Int!, $teamId: ID) {
+  query RecentlyAccessedSandboxes($limit: Int!, $teamId: UUID4) {
     me {
       recentlyAccessedSandboxes(limit: $limit, teamId: $teamId) {
         ...sandboxFragmentDashboard
@@ -316,7 +324,7 @@ export const recentTeamSandboxes: Query<
     $limit: Int!
     $orderField: String!
     $orderDirection: Direction!
-    $teamId: ID!
+    $teamId: UUID4!
   ) {
     me {
       team(id: $teamId) {
@@ -333,7 +341,7 @@ export const recentTeamSandboxes: Query<
 `;
 
 export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
-  query getTeam($teamId: ID!) {
+  query getTeam($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         ...currentTeamInfoFragment
@@ -341,4 +349,47 @@ export const getTeam: Query<GetTeamQuery, GetTeamQueryVariables> = gql`
     }
   }
   ${currentTeamInfoFragment}
+`;
+
+export const getPersonalWorkspaceId: Query<
+  GetPersonalWorkspaceIdQuery,
+  GetPersonalWorkspaceIdQueryVariables
+> = gql`
+  query getPersonalWorkspaceId {
+    me {
+      personalWorkspaceId
+    }
+  }
+`;
+
+export const getPrivateNpmRegistry: Query<
+  GetPrivateNpmRegistryQuery,
+  GetPrivateNpmRegistryQueryVariables
+> = gql`
+  query getPrivateNpmRegistry($teamId: UUID4!) {
+    me {
+      team(id: $teamId) {
+        privateRegistry {
+          ...npmRegistry
+        }
+      }
+    }
+  }
+  ${npmRegistryFragment}
+`;
+
+export const alwaysOnTeamSandboxes: Query<
+  _AlwaysOnTeamSandboxesQuery,
+  _AlwaysOnTeamSandboxesQueryVariables
+> = gql`
+  query _AlwaysOnTeamSandboxes($teamId: UUID4!) {
+    me {
+      team(id: $teamId) {
+        sandboxes(alwaysOn: true) {
+          ...sandboxFragmentDashboard
+        }
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
 `;

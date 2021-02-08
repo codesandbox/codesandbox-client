@@ -12,17 +12,14 @@ type IconProps = React.SVGAttributes<SVGElement> &
     title?: string;
     /** Size of the icon, the button is set to 26x26 */
     size?: number;
-    /** icon color */
-    color?: string;
   };
 
 export const Icon: React.FC<IconProps> = ({
   name = 'notFound',
   size = 16,
-  color = 'inherit',
   ...props
 }) => {
   const SVG = icons[name];
 
-  return <SVG width={size} height={size} color={color} {...props} />;
+  return <SVG width={size} height={size} {...props} />;
 };

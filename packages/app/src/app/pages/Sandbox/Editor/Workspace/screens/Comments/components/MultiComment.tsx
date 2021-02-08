@@ -89,28 +89,30 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
       }
     );
 
+  const sortedComments = ids
+    .map((id: string) => comments.comments[editor.currentSandbox.id][id])
+    .sort((commentA, commentB) => {
+      const dateA = new Date(commentA.insertedAt);
+      const dateB = new Date(commentB.insertedAt);
+      if (dateA < dateB) {
+        return 1;
+      }
+
+      if (dateA > dateB) {
+        return -1;
+      }
+
+      return 0;
+    });
+
   return (
     <Element css={css({ position: 'absolute' })}>
       <OutsideClickHandler
         onOutsideClick={() => actions.comments.closeMultiCommentsSelector()}
       >
         <Element as="ul" css={list}>
-          {ids
-            .map(id => comments.comments[editor.currentSandbox.id][id])
-            .sort((commentA, commentB) => {
-              const dateA = new Date(commentA.insertedAt);
-              const dateB = new Date(commentB.insertedAt);
-              if (dateA < dateB) {
-                return 1;
-              }
-
-              if (dateA > dateB) {
-                return -1;
-              }
-
-              return 0;
-            })
-            .map(comment => (
+          {sortedComments.map(comment =>
+            comment ? (
               <Element as="li" key={comment.id}>
                 <Element
                   as="button"
@@ -145,7 +147,8 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
                   </Text>
                 </Element>
               </Element>
-            ))}
+            ) : null
+          )}
         </Element>
       </OutsideClickHandler>
     </Element>

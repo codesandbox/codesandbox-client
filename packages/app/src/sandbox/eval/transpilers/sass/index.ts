@@ -1,9 +1,8 @@
 // @ts-ignore
 import SassWorker from 'worker-loader?publicPath=/&name=sass-transpiler.[hash:8].worker.js!./worker';
 
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler';
-import { LoaderContext } from '../../transpiled-module';
-import { TranspilerResult } from '..';
 
 class SassTranspiler extends WorkerTranspiler {
   worker: Worker;
@@ -18,6 +17,10 @@ class SassTranspiler extends WorkerTranspiler {
     code: string,
     loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
+    if (!code) {
+      return Promise.resolve({ transpiledCode: '' });
+    }
+
     const indentedSyntax =
       loaderContext.options.indentedSyntax == null
         ? loaderContext.path.endsWith('.sass')

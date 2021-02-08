@@ -3,7 +3,7 @@ import * as Reach from '@reach/skip-nav';
 import { createGlobalStyle } from 'styled-components';
 import css from '@styled-system/css';
 
-const SkipNavStyles = createGlobalStyle(
+export const SkipNavStyles = createGlobalStyle(
   css({
     '[data-reach-skip-nav-link]': {
       border: 0,
@@ -32,12 +32,7 @@ const SkipNavStyles = createGlobalStyle(
   })
 );
 
-const SkipNavLink = () => (
-  <>
-    <SkipNavStyles />
-    <Reach.SkipNavLink />
-  </>
-);
+const SkipNavLink = () => <Reach.SkipNavLink />;
 
 const SkipNav = {
   Link: SkipNavLink,

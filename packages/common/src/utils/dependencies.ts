@@ -1,3 +1,5 @@
+import { valid } from 'semver';
+
 async function fetchWithRetries(url: string) {
   let err: Error;
   for (let i = 0; i < 5; i++) {
@@ -38,7 +40,34 @@ export function isAbsoluteVersion(version: string) {
   return isAbsolute || /\//.test(version);
 }
 
-export async function getAbsoluteDependencies(dependencies: Object) {
+export function isValidSemver(version: string) {
+  return Boolean(valid(version));
+}
+
+export async function getAbsoluteDependency(
+  depName: string,
+  depVersion: string
+): Promise<{ name: string; version: string }> {
+  if (isAbsoluteVersion(depVersion)) {
+    return { name: depName, version: depVersion };
+  }
+
+  let data;
+  if (depName === 'cerebral' && depVersion === 'latest') {
+    // Bug in JSDelivr, this returns the wrong package.json (of a beta version). So use Unpkg
+    data = await fetchWithRetries(
+      `https://unpkg.com/cerebral@${encodeURIComponent('latest')}/package.json`
+    );
+  } else {
+    data = await fetchPackageJSON(depName, depVersion);
+  }
+
+  return { name: depName, version: data.version };
+}
+
+export async function getAbsoluteDependencies(dependencies: {
+  [dep: string]: string;
+}) {
   const nonAbsoluteDependencies = Object.keys(dependencies).filter(
     dep => !isAbsoluteVersion(dependencies[dep])
   );
@@ -48,9 +77,12 @@ export async function getAbsoluteDependencies(dependencies: Object) {
   await Promise.all(
     nonAbsoluteDependencies.map(async dep => {
       try {
-        const data = await fetchPackageJSON(dep, dependencies[dep]);
+        const { version } = await getAbsoluteDependency(
+          dep,
+          newDependencies[dep]
+        );
 
-        newDependencies[dep] = data.version;
+        newDependencies[dep] = version;
       } catch (e) {
         /* ignore */
       }

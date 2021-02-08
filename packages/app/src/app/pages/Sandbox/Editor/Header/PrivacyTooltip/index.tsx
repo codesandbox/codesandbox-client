@@ -17,7 +17,7 @@ export const PrivacyTooltip: FunctionComponent = () => {
       editor: {
         currentSandbox: { owned, privacy },
       },
-      user,
+      activeTeamInfo,
     },
   } = useOvermind();
 
@@ -54,24 +54,22 @@ export const PrivacyTooltip: FunctionComponent = () => {
             <>
               <Text size="3" marginBottom={4}>
                 {owned ? (
-                  <>
-                    {user?.subscription ? (
-                      'Adjust privacy settings.'
-                    ) : (
-                      <>
-                        You can change privacy of a sandbox as a Pro.
-                        <br />
-                        <Link href="/pricing">Upgrade to Pro</Link>
-                      </>
-                    )}
-                  </>
+                  activeTeamInfo?.subscription ? (
+                    'Adjust privacy settings.'
+                  ) : (
+                    <>
+                      You can change privacy of a sandbox as a Pro.
+                      <br />
+                      <Link href="/pricing">Upgrade to Pro</Link>
+                    </>
+                  )
                 ) : (
                   'The author has set privacy to'
                 )}
               </Text>
 
               <Select
-                disabled={!user?.subscription || !owned}
+                disabled={!activeTeamInfo?.subscription || !owned}
                 marginBottom={2}
                 onChange={onChange}
                 value={privacy}

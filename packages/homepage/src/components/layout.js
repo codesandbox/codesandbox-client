@@ -1,6 +1,5 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import { motion } from 'framer-motion';
 
 import theme from '@codesandbox/common/lib/theme';
 import { VisuallyHidden } from './style';
@@ -12,6 +11,7 @@ import Footer from './Footer';
 
 const text = number => `@media only screen and (max-width: ${number}px)`;
 
+export const TINY_BREAKPOINT = 320;
 export const SMALL_BREAKPOINT = 576;
 export const MEDIUM_BREAKPOINT = 768;
 export const LARGE_BREAKPOINT = 1024;
@@ -20,6 +20,7 @@ export const EXTRA_LARGE_BREAKPOINT = 1200;
 const homepageTheme = {
   ...theme,
   breakpoints: {
+    xs: text(TINY_BREAKPOINT),
     sm: text(SMALL_BREAKPOINT),
     md: text(MEDIUM_BREAKPOINT),
     lg: text(LARGE_BREAKPOINT),
@@ -57,60 +58,6 @@ const TemplateWrapper = ({ children, noWrapperStyling }) => (
         </VisuallyHidden>
       </div>
       <Navigation />
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        css={`
-          border-bottom: 1px solid #242424;
-        `}
-        transition={{
-          duration: 1,
-          ease: 'easeIn',
-        }}
-      >
-        <div
-          css={`
-            padding: 0.5rem 0;
-            text-align: center;
-            font-weight: bold;
-            line-height: 3rem;
-            font-size: 13px;
-            /* border-bottom:1px solid #242424;   */
-
-            @media screen and (max-width: 768px) {
-              padding: 0.5rem 0;
-            }
-          `}
-        >
-          <div>
-            <span>Black Lives Matter.</span>
-            <a
-              css={`
-                font-weight: bold;
-                color: #0971f1;
-                display: inline-flex;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
-                line-height: 24px;
-                width: 100%;
-                line-height: 1;
-                border-bottom: none;
-                text-decoration: none;
-                width: auto;
-                margin-left: 0.5rem;
-              `}
-              href="https://www.theokraproject.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Support the Okra Project
-            </a>
-          </div>
-        </div>
-      </motion.div>
 
       <main
         style={noWrapperStyling ? {} : WRAPPER_STYLING}

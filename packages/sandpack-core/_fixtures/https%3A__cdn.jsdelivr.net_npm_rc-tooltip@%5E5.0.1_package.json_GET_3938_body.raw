@@ -1,0 +1,63 @@
+{
+  "name": "rc-tooltip",
+  "version": "5.0.1",
+  "description": "React Tooltip",
+  "keywords": [
+    "react",
+    "react-component",
+    "react-tooltip",
+    "tooltip"
+  ],
+  "homepage": "http://github.com/react-component/tooltip",
+  "bugs": {
+    "url": "http://github.com/react-component/tooltip/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/tooltip.git"
+  },
+  "license": "MIT",
+  "files": [
+    "dist",
+    "lib",
+    "es",
+    "assets/*.css",
+    "assets/*.less"
+  ],
+  "main": "lib/index",
+  "module": "es/index",
+  "scripts": {
+    "build": "father doc build --storybook",
+    "compile": "father build && lessc assets/bootstrap.less assets/bootstrap.css && lessc assets/bootstrap_white.less assets/bootstrap_white.css",
+    "coverage": "father test --coverage",
+    "lint": "eslint src/ examples/ --ext .tsx,.ts,.jsx,.js",
+    "now-build": "npm run build",
+    "prepublishOnly": "npm run compile && np --no-cleanup --yolo --no-publish",
+    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "test": "father test"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "rc-trigger": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.0",
+    "@types/react": "^16.9.9",
+    "@types/react-dom": "^16.9.2",
+    "@types/warning": "^3.0.0",
+    "cross-env": "^7.0.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
+    "enzyme-to-json": "^3.4.3",
+    "eslint": "^7.1.0",
+    "father": "^2.23.1",
+    "less": "^3.11.1",
+    "np": "^6.0.0",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "typescript": "^3.6.4"
+  },
+  "maintainers": [
+    "yiminghe@gmail.com"
+  ]
+}

@@ -65,6 +65,8 @@ export type Module = {
   insertedAt: string;
   updatedAt: string;
   path: string;
+  uploadId?: string;
+  sha?: string;
   type: 'file';
 };
 
@@ -128,6 +130,7 @@ export type CurrentUser = {
   };
   curatorAt: string;
   badges: Badge[];
+  provider: 'github' | 'google';
   integrations: {
     zeit: {
       token: string;
@@ -300,6 +303,7 @@ export type GitFileCompare = {
   deletions: number;
   filename: string;
   status: 'added' | 'modified' | 'removed';
+  isBinary: boolean;
   content?: string;
 };
 
@@ -344,6 +348,14 @@ export type SandboxAuthor = {
   avatarUrl: string;
   badges: Badge[];
   subscriptionSince: string | null;
+  subscriptionPlan: 'pro' | 'patron';
+  personalWorkspaceId: string;
+};
+
+export type NpmRegistry = {
+  enabledScopes: string[];
+  limitToScopes: boolean;
+  registryUrl: string;
 };
 
 export enum CommentsFilterOption {
@@ -351,6 +363,37 @@ export enum CommentsFilterOption {
   OPEN = 'Open',
   RESOLVED = 'Resolved',
 }
+
+type PackageVersionInfo = {
+  name: string;
+  description: string;
+  version: string;
+  author: string;
+  bugs: unknown | null;
+  dependencies: unknown | null;
+  devDependencies: unknown | null;
+  peerDependencies: unknown | null;
+  main: string;
+  scripts: {
+    [script: string]: string;
+  };
+  dist: {
+    integrity: string;
+    shasum: string;
+    tarball: string;
+  };
+};
+
+export type NpmManifest = {
+  name: string;
+  description: string;
+  'dist-tags': {
+    [tag: string]: string;
+  };
+  versions: {
+    [version: string]: PackageVersionInfo;
+  };
+};
 
 export type Sandbox = {
   id: string;
@@ -363,6 +406,7 @@ export type Sandbox = {
   userLiked: boolean;
   modules: Module[];
   directories: Directory[];
+  npmRegistries: NpmRegistry[];
   featureFlags: {
     [key: string]: boolean;
   };
@@ -387,6 +431,7 @@ export type Sandbox = {
   team: {
     id: string;
     name: string;
+    avatarUrl: string | undefined;
   } | null;
   roomId: string | null;
   privacy: 0 | 1 | 2;
@@ -396,6 +441,7 @@ export type Sandbox = {
   tags: string[];
   isFrozen: boolean;
   isSse?: boolean;
+  alwaysOn: boolean;
   environmentVariables: {
     [key: string]: string;
   } | null;
@@ -424,6 +470,10 @@ export type Sandbox = {
   version: number;
   screenshotUrl: string | null;
   previewSecret: string | null;
+  permissions: {
+    preventSandboxLeaving: boolean;
+    preventSandboxExport: boolean;
+  };
 };
 
 export type PrettierConfig = {
@@ -493,6 +543,7 @@ export type PackageJSON = {
   name: string;
   version: string;
   description?: string;
+  alias?: { [key: string]: string };
   keywords?: string[];
   main?: string;
   module?: string;
@@ -543,10 +594,12 @@ export enum WindowOrientation {
 
 export type Profile = {
   viewCount: number;
+  githubUsername: string | null;
   username: string;
   subscriptionSince: string;
   showcasedSandboxShortid: string;
   sandboxCount: number;
+  templateCount: number;
   receivedLikeCount: number;
   name: string;
   id: string;
@@ -554,6 +607,15 @@ export type Profile = {
   forkedCount: number;
   badges: Badge[];
   avatarUrl: string;
+  bio?: string;
+  socialLinks?: string[];
+  featuredSandboxes: Sandbox[];
+  personalWorkspaceId: string;
+  teams: Array<{
+    id: string;
+    name: string;
+    avatarUrl?: string;
+  }>;
 };
 
 export type UserSandbox = {
@@ -705,12 +767,12 @@ export type GitPathChanges = {
 };
 
 export type GitChanges = {
-  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'binary' }>;
+  added: Array<{ path: string; content: string; encoding: 'utf-8' | 'base64' }>;
   deleted: string[];
   modified: Array<{
     path: string;
     content: string;
-    encoding: 'utf-8' | 'binary';
+    encoding: 'utf-8' | 'base64';
   }>;
 };
 
@@ -802,3 +864,12 @@ export interface IModuleStateModule {
 export interface IModuleState {
   [moduleId: string]: IModuleStateModule;
 }
+
+export type SettingsSync = {
+  id: string;
+  insertedAt: string;
+  name: string;
+  settings: string;
+  updatedAt: string;
+  userId: string;
+};

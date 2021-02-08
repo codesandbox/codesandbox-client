@@ -4,13 +4,17 @@ import React, { FunctionComponent, MouseEvent } from 'react';
 
 import { useOvermind } from 'app/overmind';
 
-import { GithubIcon, TwitterIcon } from './icons';
+import { DiscordIcon, GithubIcon, TwitterIcon } from './social-icons';
 
 const links = [
   { href: 'https://twitter.com/codesandbox', Icon: TwitterIcon },
   {
     href: 'https://github.com/codesandbox/codesandbox-client',
     Icon: GithubIcon,
+  },
+  {
+    href: 'https://discord.gg/5BpufEP7MH',
+    Icon: DiscordIcon,
   },
 ];
 
@@ -41,7 +45,11 @@ export const Delete: FunctionComponent = () => {
     <Element>
       <Stack justify="center" marginBottom={6}>
         <Button
-          css={css({ ':hover,:focus': { color: 'errorForeground' } })}
+          css={css({
+            ':hover:not(:disabled),:focus:not(:disabled)': {
+              color: 'errorForeground',
+            },
+          })}
           // @ts-ignore
           onClick={onDelete}
           variant="link"
@@ -51,7 +59,7 @@ export const Delete: FunctionComponent = () => {
       </Stack>
 
       <Element marginBottom={3} paddingX={2}>
-        <Stack gap={2}>
+        <Stack>
           {links.map(({ href, Icon }) => (
             <Link
               css={css({ color: 'sideBar.border' })}
