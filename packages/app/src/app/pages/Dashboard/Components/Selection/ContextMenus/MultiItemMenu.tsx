@@ -1,6 +1,7 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
+import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 import { Context, MenuItem } from '../ContextMenu';
 import {
   DashboardSandbox,
@@ -139,7 +140,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     label: 'Make Items Private',
     fn: changeItemPrivacy(2),
   };
-  const PRIVACY_ITEMS = state.user.subscription
+  const PRIVACY_ITEMS = state.activeTeamInfo?.subscription
     ? [MAKE_PUBLIC, MAKE_UNLISTED, MAKE_PRIVATE, DIVIDER]
     : [];
 
@@ -164,7 +165,9 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     },
   ].filter(Boolean);
 
-  const isTeamPro = state.activeTeamInfo.joinedPilotAt;
+  const isTeamPro =
+    state.activeTeamInfo?.subscription?.type ===
+    WorkspaceSubscriptionTypes.Team;
 
   const PROTECTED_SANDBOXES_ITEMS =
     isTeamPro && state.activeWorkspaceAuthorization === 'ADMIN'

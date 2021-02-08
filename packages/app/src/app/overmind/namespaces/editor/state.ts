@@ -145,12 +145,19 @@ export const state: State = {
       if (!currentSandbox) {
         return null;
       }
+      let workspaceConfig;
+
+      try {
+        workspaceConfig = JSON.parse(
+          (modulesByPath['/.codesandbox/workspace.json'] as Module).code
+        );
+      } catch {
+        // nothing
+      }
 
       if (currentSandbox.owned) {
         return modulesByPath['/.codesandbox/workspace.json']
-          ? JSON.parse(
-              (modulesByPath['/.codesandbox/workspace.json'] as Module).code
-            )
+          ? workspaceConfig
           : null;
       }
 

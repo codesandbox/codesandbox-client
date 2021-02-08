@@ -9,7 +9,7 @@ const styles = css`
   font-size: 0.8125em;
   line-height: 19px;
   text-align: center;
-  padding: 2px 21px;
+  padding: 4px 24px;
   font-weight: 500;
   text-decoration: none;
   color: ${props => props.theme.homepage.white} !important;
@@ -21,6 +21,15 @@ const styles = css`
     props.big &&
     css`
       padding: 8px 21px;
+    `}
+
+  ${props =>
+    props.cta &&
+    css`
+      min-width: 190px;
+      font-size: 16px;
+      font-weight: 400;
+      padding: 8px 24px;
     `}
 
   &:disabled {

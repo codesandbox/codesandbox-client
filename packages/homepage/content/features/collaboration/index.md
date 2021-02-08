@@ -12,6 +12,7 @@ tweetText: CodeSandbox is one of the best things to ever happen to the internet.
 tweetJob: Co-founder, Egghead
 tweetName: John Lindquist
 tweetHandle: johnlindquist
+photo: https://pbs.twimg.com/profile_images/930100383191461893/AAUl7IJ3_200x200.jpg
 bgColor: FBCC43
 bgImage: ./yellow.jpg
 coverImage: ./collaboration.svg
