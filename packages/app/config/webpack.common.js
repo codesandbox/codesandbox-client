@@ -1,7 +1,6 @@
 /* eslint-disable global-require */
 const webpack = require('webpack');
 const path = require('path');
-const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -204,6 +203,19 @@ module.exports = {
         test: /\.wasm$/,
         loader: 'file-loader',
         type: 'javascript/auto',
+      },
+      {
+        test: /\.worker\.(js|ts)$/i,
+        use: [
+          {
+            loader: 'comlink-loader',
+            options: {
+              singleton: true,
+              multi: true,
+              multiple: true,
+            },
+          },
+        ],
       },
       {
         test: /\.scss$/,
