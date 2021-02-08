@@ -254,16 +254,17 @@ const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
   }
 );
 
-type MenuItemProps = ReachMenu.MenuItemImplProps &
-  IElementProps & {
-    disabled?: boolean;
-    disabledTooltip?: string;
-  };
+type MenuItemProps = IElementProps & {
+  disabled?: boolean;
+  disabledTooltip?: string;
+  onSelect?: ReachMenu.MenuItemImplProps['onSelect'];
+  children: React.ReactNode;
+};
 
 const noop = () => {};
 const MenuItem: React.FC<MenuItemProps> = ({
   disabled,
-  onSelect,
+  onSelect = noop,
   disabledTooltip,
   ...props
 }) => {

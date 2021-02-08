@@ -11,8 +11,6 @@ export default {
   component: Menu,
 };
 
-const noop = () => {};
-
 export const Access = () => {
   const permissions = ['Can View', 'Can Edit', 'Can Comment'];
   const [selected, select] = React.useState(permissions[0]);
@@ -125,7 +123,7 @@ export const MenuWithLinks = () => (
             Menu Link with Icon
           </Stack>
         </Menu.Link>
-        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
+        <Menu.Item>Menu Item</Menu.Item>
         <Menu.Link href="/internal">
           <Stack align="center">Menu Link</Stack>
         </Menu.Link>
@@ -140,9 +138,9 @@ export const DefaultOpen = () => (
     <Menu defaultOpen>
       <Menu.Button variant="primary">Open Menu</Menu.Button>
       <Menu.List>
-        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
-        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
-        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
+        <Menu.Item>Menu Item</Menu.Item>
+        <Menu.Item>Menu Item</Menu.Item>
+        <Menu.Item>Menu Item</Menu.Item>
       </Menu.List>
     </Menu>
   </>
@@ -222,11 +220,9 @@ export const Customisable = () => (
     <Menu defaultOpen>
       <Menu.Button variant="primary">Open Menu</Menu.Button>
       <Menu.List>
-        <Menu.Item style={{ color: 'red' }} onSelect={noop}>
-          Menu Item
-        </Menu.Item>
-        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
-        <Menu.Item onSelect={noop}>Menu Item</Menu.Item>
+        <Menu.Item style={{ color: 'red' }}>Menu Item</Menu.Item>
+        <Menu.Item>Menu Item</Menu.Item>
+        <Menu.Item>Menu Item</Menu.Item>
       </Menu.List>
     </Menu>
   </>
