@@ -33,14 +33,16 @@ export const Menu = ({ read, id }) => {
       </Element>
       <BaseMenu.List>
         <BaseMenu.Item
-          className="no-click"
-          onSelect={() => archiveNotification(id)}
+          onSelect={() => {
+            archiveNotification(id);
+          }}
         >
           Clear notification
         </BaseMenu.Item>
         <BaseMenu.Item
-          className="no-click"
-          onSelect={() => updateReadStatus(id)}
+          onSelect={() => {
+            updateReadStatus(id);
+          }}
         >
           Mark as {read ? 'Unread' : 'Read'}
         </BaseMenu.Item>

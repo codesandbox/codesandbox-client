@@ -43,72 +43,71 @@ export const FilterOptions: FunctionComponent<Props> = React.memo(
 
     return (
       <Menu>
-          <Menu.Button>
-            <Text
-              variant={blacklistedTemplates.length ? 'active' : 'muted'}
-              paddingRight={2}
-            >
-              Filters
-            </Text>
-          </Menu.Button>
-          <Menu.List>
-            {templates ? (
-              orderBy(possibleTemplates, 'niceName').map(
-                ({ id, name, niceName }) => {
-                  const selected = isTemplateSelected(id);
-                  return (
-                    <Menu.Item
-                      field="title"
-                      key={id || name}
-                      onSelect={() => {
-                        toggleTemplate(id, !selected);
-                        return { CLOSE_MENU: false };
-                      }}
-                      css={css({
-                        label: {
-                          color: selected ? 'inherit' : 'mutedForeground',
-                        },
-                      })}
-                    >
-                      <Checkbox
-                        onChange={noop}
-                        checked={selected}
-                        label={niceName || name}
-                      />
-                    </Menu.Item>
+        <Menu.Button>
+          <Text
+            variant={blacklistedTemplates.length ? 'active' : 'muted'}
+            paddingRight={2}
+          >
+            Filters
+          </Text>
+        </Menu.Button>
+        <Menu.List>
+          {templates ? (
+            orderBy(possibleTemplates, 'niceName').map(
+              ({ id, name, niceName }) => {
+                const selected = isTemplateSelected(id);
+                return (
+                  <Menu.Item
+                    key={id || name}
+                    onSelect={() => {
+                      toggleTemplate(id, !selected);
+                      return { CLOSE_MENU: false };
+                    }}
+                    css={css({
+                      label: {
+                        color: selected ? 'inherit' : 'mutedForeground',
+                      },
+                    })}
+                  >
+                    <Checkbox
+                      onChange={noop}
+                      checked={selected}
+                      label={niceName || name}
+                    />
+                  </Menu.Item>
+                );
+              }
+            )
+          ) : (
+            <Menu.Item onSelect={() => {}}>No environments found</Menu.Item>
+          )}
+          {templates && (
+            <Menu.Item
+              key="all"
+              onSelect={() => {
+                if (allSelected) {
+                  blacklistedTemplatesChanged(
+                    possibleTemplates.map(({ id }) => id)
                   );
+                } else {
+                  blacklistedTemplatesCleared();
                 }
-              )
-            ) : (
-              <Menu.Item>No environments found</Menu.Item>
-            )}
-            {templates && (
-              <Menu.Item
-                key="all"
-                onSelect={() => {
-                  if (allSelected) {
-                    blacklistedTemplatesChanged(
-                      possibleTemplates.map(({ id }) => id)
-                    );
-                  } else {
-                    blacklistedTemplatesCleared();
-                  }
 
-                  return { CLOSE_MENU: false };
-                }}
-                css={css({
-                  color: allSelected ? 'body' : 'muted',
-                })}
-              >
-                <Checkbox
-                  onChange={noop}
-                  checked={allSelected}
-                  label="Select All"
-                />
-              </Menu.Item>
-            )}
-          </Menu.List>
-        </Menu>
+                return { CLOSE_MENU: false };
+              }}
+              css={css({
+                color: allSelected ? 'body' : 'muted',
+              })}
+            >
+              <Checkbox
+                onChange={noop}
+                checked={allSelected}
+                label="Select All"
+              />
+            </Menu.Item>
+          )}
+        </Menu.List>
+      </Menu>
     );
   }
 );

@@ -118,7 +118,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   );
 };
 
-export const MenuItem = ({ onSelect, ...props }) => {
+export const MenuItem = ({ onSelect, children, ...props }) => {
   const { setVisibility } = React.useContext(Context);
   return (
     <Menu.Item
@@ -127,6 +127,8 @@ export const MenuItem = ({ onSelect, ...props }) => {
         setVisibility(false);
       }}
       {...props}
-    />
+    >
+      {children}
+    </Menu.Item>
   );
 };

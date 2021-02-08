@@ -117,7 +117,6 @@ export const AllSandboxes = () => {
           </Stack>
           <Menu.List>
             <Menu.Item
-              field="title"
               onSelect={() => {
                 sortByChanged('view_count');
               }}
@@ -125,7 +124,6 @@ export const AllSandboxes = () => {
               <Text variant="body">Sort by views</Text>
             </Menu.Item>
             <Menu.Item
-              field="title"
               onSelect={() => {
                 sortByChanged('inserted_at');
               }}

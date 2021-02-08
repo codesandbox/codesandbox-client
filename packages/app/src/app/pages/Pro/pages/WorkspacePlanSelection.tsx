@@ -254,15 +254,11 @@ export const WorkspacePlanSelection: React.FC<{
                       },
                     })}
                     style={{ paddingLeft: 8 }}
-                    data-disabled={
+                    disabled={
                       userAuthorization !== TeamMemberAuthorization.Admin
-                        ? true
-                        : null
                     }
-                    onSelect={event => {
-                      if (userAuthorization === TeamMemberAuthorization.Admin) {
-                        setActiveTeam({ id: workspace.id });
-                      } else event.preventDefault();
+                    onSelect={() => {
+                      setActiveTeam({ id: workspace.id });
                     }}
                   >
                     <Stack gap={2} align="center" css={{ width: '100%' }}>

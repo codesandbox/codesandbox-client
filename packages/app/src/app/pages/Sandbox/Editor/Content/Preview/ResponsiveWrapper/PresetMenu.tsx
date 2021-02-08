@@ -45,20 +45,12 @@ export const PresetMenu = ({
       </Menu.Button>
       <Menu.List>
         {sortedPresetsByWidth.map(preset => (
-          <Menu.Item
-            key={preset}
-            field={preset}
-            onSelect={() => onSelect(presets[preset])}
-          >
+          <Menu.Item key={preset} onSelect={() => onSelect(presets[preset])}>
             {preset}
           </Menu.Item>
         ))}
         {canChangePresets ? (
-          <Menu.Item
-            key="edit-presets"
-            field="edit-presets"
-            onSelect={openEditPresets}
-          >
+          <Menu.Item key="edit-presets" onSelect={openEditPresets}>
             Edit Presets
           </Menu.Item>
         ) : null}

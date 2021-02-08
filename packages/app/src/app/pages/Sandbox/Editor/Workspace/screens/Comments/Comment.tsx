@@ -84,12 +84,12 @@ export const Comment = React.memo<{
               <Menu.IconButton name="more" title="Comment actions" size={12} />
               <Menu.List>
                 <Menu.Item
-                  onSelect={() =>
+                  onSelect={() => {
                     actions.comments.resolveComment({
                       commentId: comment.id,
                       isResolved: !comment.isResolved,
-                    })
-                  }
+                    });
+                  }}
                 >
                   Mark as {comment.isResolved ? 'unresolved' : 'resolved'}
                 </Menu.Item>
@@ -102,11 +102,11 @@ export const Comment = React.memo<{
                 </Menu.Item>
                 {state.user.id === comment.user.id && (
                   <Menu.Item
-                    onSelect={() =>
+                    onSelect={() => {
                       actions.comments.deleteComment({
                         commentId: comment.id,
-                      })
-                    }
+                      });
+                    }}
                   >
                     Delete
                   </Menu.Item>

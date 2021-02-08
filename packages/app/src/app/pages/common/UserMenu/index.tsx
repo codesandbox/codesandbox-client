@@ -124,14 +124,22 @@ export const UserMenu: FunctionComponent & {
             </Menu.Link>
           )}
 
-          <Menu.Item onClick={() => gotUploadedFiles(null)}>
+          <Menu.Item
+            onSelect={() => {
+              gotUploadedFiles(null);
+            }}
+          >
             <Stack align="center" gap={1}>
               <Icon name="folder" size={24} />
               <Text>Storage Management</Text>
             </Stack>
           </Menu.Item>
 
-          <Menu.Item onClick={() => modalOpened({ modal: 'preferences' })}>
+          <Menu.Item
+            onSelect={() => {
+              modalOpened({ modal: 'preferences' });
+            }}
+          >
             <Stack align="center" gap={2} paddingLeft={1}>
               <Icon name="gear" size={16} />
               <Text>Preferences</Text>
@@ -140,7 +148,11 @@ export const UserMenu: FunctionComponent & {
 
           <Menu.Divider />
 
-          <Menu.Item onClick={() => modalOpened({ modal: 'feedback' })}>
+          <Menu.Item
+            onSelect={() => {
+              modalOpened({ modal: 'feedback' });
+            }}
+          >
             <Stack align="center" gap={1}>
               <Icon name="feedback" size={24} />
               <Text>Submit Feedback</Text>
@@ -149,7 +161,11 @@ export const UserMenu: FunctionComponent & {
 
           <Menu.Divider />
 
-          <Menu.Item onClick={() => signOutClicked()}>
+          <Menu.Item
+            onSelect={() => {
+              signOutClicked();
+            }}
+          >
             <Stack align="center" gap={1}>
               <Icon name="signout" size={24} />
               <Text>Sign out</Text>

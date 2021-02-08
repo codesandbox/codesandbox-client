@@ -125,7 +125,13 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
                 <Menu.Divider />
               </>
             ) : null}
-            <Menu.Item onSelect={() => setRename(true)}>Rename</Menu.Item>
+            <Menu.Item
+              onSelect={() => {
+                setRename(true);
+              }}
+            >
+              Rename
+            </Menu.Item>
             <Menu.Item
               onSelect={() => {
                 track('Preferences Profiles - Download Profile');

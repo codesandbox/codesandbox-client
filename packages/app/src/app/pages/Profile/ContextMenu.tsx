@@ -78,11 +78,17 @@ export const ContextMenu = () => {
         setVisibility={setVisibility}
         position={position}
       >
-        <Menu.Item data-disabled>Pin sandbox</Menu.Item>
-        <Menu.Item data-disabled>Set as header</Menu.Item>
+        <Menu.Item data-disabled onSelect={() => {}}>
+          Pin sandbox
+        </Menu.Item>
+        <Menu.Item data-disabled onSelect={() => {}}>
+          Set as header
+        </Menu.Item>
         <Menu.Divider />
         <Menu.Item
-          onSelect={() => changeSandboxPrivacy({ id: sandboxId, privacy: 0 })}
+          onSelect={() => {
+            changeSandboxPrivacy({ id: sandboxId, privacy: 0 });
+          }}
         >
           Make sandbox public
         </Menu.Item>
@@ -95,11 +101,19 @@ export const ContextMenu = () => {
       {myProfile && !likesPage && (
         <span>
           {isFeatured ? (
-            <Menu.Item onSelect={() => removeFeaturedSandboxes({ sandboxId })}>
+            <Menu.Item
+              onSelect={() => {
+                removeFeaturedSandboxes({ sandboxId });
+              }}
+            >
               Unpin sandbox
             </Menu.Item>
           ) : (
-            <Menu.Item onSelect={() => addFeaturedSandboxes({ sandboxId })}>
+            <Menu.Item
+              onSelect={() => {
+                addFeaturedSandboxes({ sandboxId });
+              }}
+            >
               Pin sandbox
             </Menu.Item>
           )}
@@ -107,7 +121,11 @@ export const ContextMenu = () => {
       )}
       {myProfile && !likesPage && (
         <>
-          <Menu.Item onSelect={() => newSandboxShowcaseSelected(sandboxId)}>
+          <Menu.Item
+            onSelect={() => {
+              newSandboxShowcaseSelected(sandboxId);
+            }}
+          >
             Set as header
           </Menu.Item>
           <Menu.Divider />

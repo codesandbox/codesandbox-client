@@ -28,28 +28,27 @@ export const ViewOptions: FunctionComponent = React.memo(() => {
 
   return (
     <Menu>
-        <Menu.Button>
-          {viewMode === 'grid' ? <GridIcon /> : <ListIcon />}
-        </Menu.Button>
-        <Menu.List>
-          {STATES.map(viewState => (
-            <Menu.Item
-              key={viewState.key}
-              field={viewState.key}
-              onSelect={() => viewModeChanged({ mode: viewState.key })}
-            >
-              <Stack gap={4} align="center" justify="space-between">
-                <Text variant={viewMode === viewState.key ? 'body' : 'muted'}>
-                  {viewState.name}
-                </Text>
-                {viewState.icon({
-                  width: 10,
-                  active: viewMode === viewState.key,
-                })}
-              </Stack>
-            </Menu.Item>
-          ))}
-        </Menu.List>
-      </Menu>
+      <Menu.Button>
+        {viewMode === 'grid' ? <GridIcon /> : <ListIcon />}
+      </Menu.Button>
+      <Menu.List>
+        {STATES.map(viewState => (
+          <Menu.Item
+            key={viewState.key}
+            onSelect={() => viewModeChanged({ mode: viewState.key })}
+          >
+            <Stack gap={4} align="center" justify="space-between">
+              <Text variant={viewMode === viewState.key ? 'body' : 'muted'}>
+                {viewState.name}
+              </Text>
+              {viewState.icon({
+                width: 10,
+                active: viewMode === viewState.key,
+              })}
+            </Stack>
+          </Menu.Item>
+        ))}
+      </Menu.List>
+    </Menu>
   );
 });

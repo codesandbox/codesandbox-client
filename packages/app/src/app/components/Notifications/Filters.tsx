@@ -47,7 +47,12 @@ export const Filters = () => {
         />
         <Menu.List>
           {Object.entries(options).map(([key, label]) => (
-            <Menu.Item key={key} onSelect={() => filterNotifications(key)}>
+            <Menu.Item
+              key={key}
+              onSelect={() => {
+                filterNotifications(key);
+              }}
+            >
               <Checkbox
                 checked={userNotifications.activeFilters.includes(key)}
                 label={label}
@@ -65,7 +70,11 @@ export const Filters = () => {
           size={12}
         />
         <Menu.List>
-          <Menu.Item onSelect={() => archiveAllNotifications()}>
+          <Menu.Item
+            onSelect={() => {
+              archiveAllNotifications();
+            }}
+          >
             Clear all notifications
           </Menu.Item>
           {!userNotifications.notifications.every(

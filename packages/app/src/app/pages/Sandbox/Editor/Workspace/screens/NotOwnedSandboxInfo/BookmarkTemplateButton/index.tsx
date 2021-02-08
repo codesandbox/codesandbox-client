@@ -123,7 +123,12 @@ export const BookmarkTemplateButton = () => {
         </Menu.Button>
         <Menu.List>
           {bookmarkInfos.map(({ entity: { name } }, index: number) => (
-            <Menu.Item key={name} onSelect={() => handleToggleFollow(index)}>
+            <Menu.Item
+              key={name}
+              onSelect={() => {
+                handleToggleFollow(index);
+              }}
+            >
               {bookmarkInfos[index].isBookmarked ? 'Remove from ' : 'Add to '}
               {index === 0 ? 'My Bookmarks' : name}
             </Menu.Item>
