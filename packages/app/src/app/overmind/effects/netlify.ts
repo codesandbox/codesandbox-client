@@ -3,14 +3,14 @@ import { NetlifySite, Sandbox } from '@codesandbox/common/lib/types';
 import getNetlifyConfig from 'app/utils/getNetlifyConfig';
 import axios from 'axios';
 
-const NetlifyBaseURL = 'https://netlify.deploy.codesandbox.io/site';
+const NetlifyBaseURL = 'hhttps://builder.csbops.io/site';
 const createBuildUrl = (
   sandboxId: string,
   id: string,
   dist: string,
   command: string
 ) =>
-  `https://builder.csbops.io/site/${sandboxId}/deploys?siteId=${id}&dist=${dist}&buildCommand=${command}`;
+  `${NetlifyBaseURL}/${sandboxId}/deploys?siteId=${id}&dist=${dist}&buildCommand=${command}`;
 
 type Options = {
   getUserId(): string | null;
