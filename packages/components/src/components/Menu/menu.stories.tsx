@@ -4,6 +4,7 @@ import { Element } from '../Element';
 import { Icon } from '../Icon';
 import { Stack } from '../Stack';
 import { Text } from '../Text';
+import { Tooltip, TooltipStyles } from '../Tooltip';
 
 export default {
   title: 'components/Menu',
@@ -154,6 +155,32 @@ export const DefaultOpen = () => (
         <Menu.Item>Menu Item</Menu.Item>
         <Menu.Item>Menu Item</Menu.Item>
         <Menu.Item>Menu Item</Menu.Item>
+      </Menu.List>
+    </Menu>
+  </>
+);
+
+export const DisabledItem = () => (
+  <>
+    <MenuStyles />
+    <TooltipStyles />
+    <Menu>
+      <Menu.Button variant="primary">Open Menu</Menu.Button>
+      <Menu.List>
+        <Menu.Item onSelect={() => {}}>Active option</Menu.Item>
+        <Tooltip label="You do not have permission to export this sandbox">
+          <div>
+            <Menu.Item data-disabled onSelect={() => {}}>
+              Disabled Option
+            </Menu.Item>
+          </div>
+        </Tooltip>
+        <Menu.Item
+          disabled
+          tooltip="You do not have permission to export this sandbox"
+        >
+          Disabled Option
+        </Menu.Item>
       </Menu.List>
     </Menu>
   </>
