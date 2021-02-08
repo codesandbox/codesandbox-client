@@ -114,7 +114,7 @@ export default class TestRunner {
     this.sendMessage(messages.INITIALIZE);
   }
 
-  testGlobals(module: Module) {
+  public getRuntimeGlobals(module: Module) {
     const test = (testName: TestName, fn?: TestFn) =>
       dispatchJest({
         fn,
@@ -144,6 +144,48 @@ export default class TestRunner {
     test.skip = skip;
 
     const it = test;
+    return {
+      ...jestTestHooks,
+      test,
+      jest: jestMock,
+      it,
+      expect,
+    };
+  }
+
+  /**
+   * In this function we actually set some globals on the global window. This is because there are modules out
+   * there that try to overwrite some globals that we try to set. For example, this code won't work:
+   *
+   * ```js
+   * const test = 5;
+   * ```
+   *
+   * if we add test to the scope in the function:
+   *
+   * ```ts
+   * function evaluate(test) {
+   *   const test = 5; // <- Error!
+   * }
+   * ```
+   *
+   * Because of this, we have to put these globals on the global window. The big disadvantage of this is that
+   * we cannot run these tests in parallel. If we would want to do that we could introduce the globals in separate
+   * scope (separate function) that wraps the inner function, like this:
+   *
+   * ```ts
+   * (function jestGlobals(test) {
+   *   (function evaluate() {
+   *     const test = 5; // <- No Error!
+   *   })()
+   * })
+   * ```
+   *
+   * Right now we're making sure to clean the globals up in teardown
+   *
+   * Related issue: https://github.com/codesandbox/codesandbox-client/issues/4922
+   */
+  setTestGlobals(module: Module) {
     const jsdomWindow = this.dom.window.document.defaultView;
     const { document: jsdomDocument } = jsdomWindow;
 
@@ -151,16 +193,19 @@ export default class TestRunner {
     jsdomWindow.Date = Date;
     jsdomWindow.fetch = fetch;
 
-    return {
-      ...jestTestHooks,
-      expect,
-      jest: jestMock,
-      test,
-      it,
+    const jestRuntimeGlobals = this.getRuntimeGlobals(module);
+
+    const globals = {
       document: jsdomDocument,
       window: jsdomWindow,
       global: jsdomWindow,
     };
+
+    Object.keys(jestRuntimeGlobals).forEach(globalKey => {
+      window[globalKey] = jestRuntimeGlobals[globalKey];
+    });
+
+    return globals;
   }
 
   static isTest(testPath: string) {
@@ -270,6 +315,12 @@ export default class TestRunner {
     Object.defineProperty(global, 'document', { value: null });
     this.dom = null;
     this.manager.envVariables = this.oldEnvVars;
+
+    // @ts-expect-error We don't have the module, but the module is only used in a lazy context
+    const jestRuntimeGlobals = this.getRuntimeGlobals();
+    Object.keys(jestRuntimeGlobals).forEach(globalKey => {
+      delete window[globalKey];
+    });
   }
 
   /* istanbul ignore next */
@@ -338,14 +389,14 @@ export default class TestRunner {
             testModules.forEach(module => {
               this.manager.evaluateModule(module, {
                 force: true,
-                globals: this.testGlobals(module),
+                globals: this.setTestGlobals(module),
               });
             });
           }
 
           this.manager.evaluateModule(t, {
             force: true,
-            globals: this.testGlobals(t),
+            globals: this.setTestGlobals(t),
           });
           this.ranTests.add(t.path);
         } catch (e) {

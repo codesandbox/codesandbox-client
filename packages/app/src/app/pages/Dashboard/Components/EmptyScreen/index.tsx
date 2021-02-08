@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Text, Button } from '@codesandbox/components';
+import { Stack, Text, Button, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
 import { NewSandbox } from '../Sandbox/NewSandbox';
@@ -58,6 +58,56 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
               Uh oh, you haven’t imported any repositories.
             </Text>
           </Stack>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  if (page === 'always-on') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Stack
+          direction="vertical"
+          justify="space-between"
+          align="center"
+          css={{
+            width: 500,
+            height: 'calc(100vh - 280px)',
+            userSelect: 'none',
+          }}
+        >
+          <Stack direction="vertical" align="center" gap={9}>
+            <Icon name="server" size={60} />
+            <Stack direction="vertical" align="center" gap={4}>
+              <Text size={9} weight="bold">
+                Always-On
+              </Text>
+              <Text variant="muted" align="center">
+                Server sandboxes sleep after inactivity, but Always-On sandboxes
+                don&apos;t — they are constantly running and ready to go.
+                Perfect for APIs and scheduled tasks.
+              </Text>
+              <Text variant="muted" align="center">
+                Right-click on any server sandbox and enable “Always-On”
+              </Text>
+            </Stack>
+          </Stack>
+          <Text variant="muted">
+            You can make up to 3 server sandboxes Always-On. <br />
+            <Button
+              as={Text}
+              variant="link"
+              onClick={() =>
+                actions.modalOpened({
+                  modal: 'feedback',
+                  message: "I'd like more Always-On sandboxes",
+                })
+              }
+            >
+              Contact us
+            </Button>
+            if you need more Always on Sandboxes
+          </Text>
         </Stack>
       </Stack>
     );

@@ -9,6 +9,7 @@ import { getFetchProtocol } from './fetch-protocols';
 import { getDependencyName } from '../../utils/get-dependency-name';
 import { packageFilter } from '../../utils/resolve-utils';
 import { TranspiledModule } from '../../transpiled-module';
+import { DEFAULT_EXTENSIONS } from '../../utils/extensions';
 
 export type Meta = {
   [path: string]: true;
@@ -75,7 +76,7 @@ async function getMeta(
     return metas[id];
   }
 
-  const protocol = getFetchProtocol(depVersion, useFallback);
+  const protocol = getFetchProtocol(depName, depVersion, useFallback);
 
   metas[id] = protocol.meta(nameWithoutAlias, depVersion).catch(e => {
     delete metas[id];
@@ -107,12 +108,16 @@ export async function downloadDependency(
     .replace(/#/g, '%23');
 
   const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
-  const protocol = getFetchProtocol(depVersion);
+  const protocol = getFetchProtocol(depName, depVersion);
 
   packages[id] = protocol
     .file(nameWithoutAlias, depVersion, relativePath)
     .catch(async () => {
-      const fallbackProtocol = getFetchProtocol(depVersion, true);
+      const fallbackProtocol = getFetchProtocol(
+        nameWithoutAlias,
+        depVersion,
+        true
+      );
       return fallbackProtocol.file(nameWithoutAlias, depVersion, relativePath);
     })
     .then(code => ({
@@ -128,7 +133,7 @@ function resolvePath(
   path: string,
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs'],
+  defaultExtensions: Array<string> = DEFAULT_EXTENSIONS,
   meta: Meta = {}
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
@@ -247,7 +252,7 @@ type DependencyVersionResult =
 async function getDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: string[] = ['js', 'jsx', 'json', 'mjs'],
+  defaultExtensions: string[] = DEFAULT_EXTENSIONS,
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
@@ -337,7 +342,7 @@ export default async function fetchModule(
   path: string,
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs']
+  defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
 ): Promise<Module> {
   const currentPath = currentTModule.module.path;
   // Get the last part of the path as dependency name for paths like

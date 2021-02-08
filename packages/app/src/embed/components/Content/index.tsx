@@ -70,6 +70,7 @@ type Props = {
   toggleSidebar: () => void;
   toggleLike: () => void;
   editorSize: number;
+  disableLogging?: boolean;
 };
 
 type State = {
@@ -464,6 +465,8 @@ export default class Content extends React.PureComponent<Props, State> {
       views[1].open = expandDevTools;
     }
 
+    const preferences = this.getPreferences();
+
     const browserConfig: IViewType = {
       id: 'codesandbox.browser',
       title: options =>
@@ -471,11 +474,12 @@ export default class Content extends React.PureComponent<Props, State> {
       Content: ({ hidden, options }: DevToolProps) => (
         <BasePreview
           onInitialized={this.onPreviewInitialized}
+          customNpmRegistries={sandbox.npmRegistries}
           sandbox={sandbox}
           hide={hidden}
           url={options.url ? options.url : undefined}
           currentModule={mainModule}
-          settings={this.getPreferences()}
+          settings={preferences}
           initialPath={initialPath}
           isInProjectView={isInProjectView}
           onClearErrors={this.clearErrors}
@@ -584,44 +588,43 @@ export default class Content extends React.PureComponent<Props, State> {
               />
             </div>
           </>
-          <>
-            {!this.state.running ? (
-              <RunOnClick onClick={() => this.setState({ running: true })} />
-            ) : (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '100%',
-                }}
-              >
-                {views.map((devView, i) => (
-                  /* eslint-disable react/no-array-index-key */
-                  <DevTools
-                    key={i}
-                    devToolIndex={i}
-                    addedViews={{
-                      'codesandbox.browser': browserConfig,
-                    }}
-                    setDragging={this.setDragging}
-                    sandboxId={sandbox.id}
-                    template={sandbox.template}
-                    owned={false}
-                    primary={i === 0}
-                    hideTabs={i === 0}
-                    viewConfig={devView}
-                    setPane={this.setPane}
-                    currentDevToolIndex={
-                      this.state.currentDevToolPosition.devToolIndex
-                    }
-                    currentTabPosition={
-                      this.state.currentDevToolPosition.tabPosition
-                    }
-                  />
-                ))}
-              </div>
-            )}
-          </>
+
+          {!this.state.running ? (
+            <RunOnClick onClick={() => this.setState({ running: true })} />
+          ) : (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+              }}
+            >
+              {views.map((devView, i) => (
+                /* eslint-disable react/no-array-index-key */
+                <DevTools
+                  key={i}
+                  devToolIndex={i}
+                  addedViews={{
+                    'codesandbox.browser': browserConfig,
+                  }}
+                  setDragging={this.setDragging}
+                  sandboxId={sandbox.id}
+                  template={sandbox.template}
+                  owned={false}
+                  primary={i === 0}
+                  hideTabs={i === 0}
+                  viewConfig={devView}
+                  setPane={this.setPane}
+                  currentDevToolIndex={
+                    this.state.currentDevToolPosition.devToolIndex
+                  }
+                  currentTabPosition={
+                    this.state.currentDevToolPosition.tabPosition
+                  }
+                />
+              ))}
+            </div>
+          )}
         </SplitPane>
       </Container>
     );

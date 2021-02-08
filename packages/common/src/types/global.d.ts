@@ -8,6 +8,7 @@ declare namespace NodeJS {
     STAGING_BRANCH?: string;
     ROOT_URL?: string;
     VSCODE?: string;
+    SANDPACK?: string;
   }
 }
 

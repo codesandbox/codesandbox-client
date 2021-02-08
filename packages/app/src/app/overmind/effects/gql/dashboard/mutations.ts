@@ -43,6 +43,34 @@ import {
   SetTeamNameMutationVariables,
   ChangeTeamMemberAuthorizationMutation,
   ChangeTeamMemberAuthorizationMutationVariables,
+  CreateOrUpdateNpmRegistryMutation,
+  CreateOrUpdateNpmRegistryMutationVariables,
+  DeleteNpmRegistryMutation,
+  DeleteNpmRegistryMutationVariables,
+  DeleteWorkspaceMutation,
+  DeleteWorkspaceMutationVariables,
+  SetTeamMinimumPrivacyMutation,
+  SetTeamMinimumPrivacyMutationVariables,
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables,
+  SetWorkspaceSandboxSettingsMutation,
+  SetWorkspaceSandboxSettingsMutationVariables,
+  SetPreventSandboxesLeavingWorkspaceMutation,
+  SetPreventSandboxesLeavingWorkspaceMutationVariables,
+  SetPreventSandboxesExportMutation,
+  SetPreventSandboxesExportMutationVariables,
+  SetDefaultTeamMemberAuthorizationMutation,
+  SetDefaultTeamMemberAuthorizationMutationVariables,
+  DeleteCurrentUserMutation,
+  DeleteCurrentUserMutationVariables,
+  UpdateSubscriptionBillingIntervalMutation,
+  UpdateSubscriptionBillingIntervalMutationVariables,
+  PreviewUpdateSubscriptionBillingIntervalMutation,
+  PreviewUpdateSubscriptionBillingIntervalMutationVariables,
+  SoftCancelSubscriptionMutation,
+  SoftCancelSubscriptionMutationVariables,
+  ReactivateSubscriptionMutation,
+  ReactivateSubscriptionMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -51,6 +79,7 @@ import {
   sidebarCollectionDashboard,
   sandboxFragmentDashboard,
   currentTeamInfoFragment,
+  npmRegistryFragment,
 } from './fragments';
 
 export const createTeam: Query<
@@ -215,8 +244,16 @@ export const inviteToTeam: Query<
   _InviteToTeamMutation,
   _InviteToTeamMutationVariables
 > = gql`
-  mutation _InviteToTeam($teamId: UUID4!, $username: String!) {
-    inviteToTeam(teamId: $teamId, username: $username) {
+  mutation _InviteToTeam(
+    $teamId: UUID4!
+    $username: String!
+    $authorization: TeamMemberAuthorization
+  ) {
+    inviteToTeam(
+      teamId: $teamId
+      username: $username
+      authorization: $authorization
+    ) {
       ...currentTeamInfoFragment
     }
   }
@@ -227,8 +264,16 @@ export const inviteToTeamVieEmail: Query<
   _InviteToTeamViaEmailMutation,
   _InviteToTeamViaEmailMutationVariables
 > = gql`
-  mutation _InviteToTeamViaEmail($teamId: UUID4!, $email: String!) {
-    inviteToTeamViaEmail(teamId: $teamId, email: $email)
+  mutation _InviteToTeamViaEmail(
+    $teamId: UUID4!
+    $email: String!
+    $authorization: TeamMemberAuthorization
+  ) {
+    inviteToTeamViaEmail(
+      teamId: $teamId
+      email: $email
+      authorization: $authorization
+    )
   }
 `;
 
@@ -316,14 +361,242 @@ export const changeTeamMemberAuthorization: Query<
   ChangeTeamMemberAuthorizationMutationVariables
 > = gql`
   mutation ChangeTeamMemberAuthorization(
-    $teamId: ID!
-    $userId: ID!
+    $teamId: UUID4!
+    $userId: UUID4!
     $authorization: TeamMemberAuthorization!
   ) {
     changeTeamMemberAuthorizations(
       teamId: $teamId
       memberAuthorizations: { userId: $userId, authorization: $authorization }
     ) {
+      id
+    }
+  }
+`;
+
+export const createOrUpdateNpmRegistry: Query<
+  CreateOrUpdateNpmRegistryMutation,
+  CreateOrUpdateNpmRegistryMutationVariables
+> = gql`
+  mutation CreateOrUpdateNpmRegistry(
+    $teamId: UUID4!
+    $registryType: RegistryType!
+    $registryUrl: String
+    $registryAuthKey: String!
+    $proxyEnabled: Boolean!
+    $limitToScopes: Boolean!
+    $enabledScopes: [String!]!
+  ) {
+    createOrUpdatePrivateNpmRegistry(
+      teamId: $teamId
+      registryType: $registryType
+      registryUrl: $registryUrl
+      registryAuthKey: $registryAuthKey
+      proxyEnabled: $proxyEnabled
+      limitToScopes: $limitToScopes
+      enabledScopes: $enabledScopes
+    ) {
+      ...npmRegistry
+    }
+  }
+  ${npmRegistryFragment}
+`;
+
+export const deleteNpmRegistry: Query<
+  DeleteNpmRegistryMutation,
+  DeleteNpmRegistryMutationVariables
+> = gql`
+  mutation DeleteNpmRegistry($teamId: UUID4!) {
+    deletePrivateNpmRegistry(teamId: $teamId) {
+      ...npmRegistry
+    }
+  }
+  ${npmRegistryFragment}
+`;
+
+export const deleteWorkspace: Query<
+  DeleteWorkspaceMutation,
+  DeleteWorkspaceMutationVariables
+> = gql`
+  mutation DeleteWorkspace($teamId: UUID4!) {
+    deleteWorkspace(teamId: $teamId)
+  }
+`;
+
+export const setTeamMinimumPrivacy: Query<
+  SetTeamMinimumPrivacyMutation,
+  SetTeamMinimumPrivacyMutationVariables
+> = gql`
+  mutation SetTeamMinimumPrivacy(
+    $teamId: UUID4!
+    $minimumPrivacy: Int!
+    $updateDrafts: Boolean!
+  ) {
+    setTeamMinimumPrivacy(
+      teamId: $teamId
+      minimumPrivacy: $minimumPrivacy
+      updateDrafts: $updateDrafts
+    ) {
+      minimumPrivacy
+    }
+  }
+`;
+
+export const changeSandboxAlwaysOn: Query<
+  SetSandboxAlwaysOnMutation,
+  SetSandboxAlwaysOnMutationVariables
+> = gql`
+  mutation setSandboxAlwaysOn($sandboxId: ID!, $alwaysOn: Boolean!) {
+    setSandboxAlwaysOn(sandboxId: $sandboxId, alwaysOn: $alwaysOn) {
+      ...sandboxFragmentDashboard
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const setWorkspaceSandboxSettings: Query<
+  SetWorkspaceSandboxSettingsMutation,
+  SetWorkspaceSandboxSettingsMutationVariables
+> = gql`
+  mutation setWorkspaceSandboxSettings(
+    $teamId: UUID4!
+    $preventSandboxLeaving: Boolean!
+    $preventSandboxExport: Boolean!
+  ) {
+    setWorkspaceSandboxSettings(
+      teamId: $teamId
+      preventSandboxLeaving: $preventSandboxLeaving
+      preventSandboxExport: $preventSandboxExport
+    ) {
+      preventSandboxLeaving
+      preventSandboxExport
+    }
+  }
+`;
+
+export const setPreventSandboxesLeavingWorkspace: Query<
+  SetPreventSandboxesLeavingWorkspaceMutation,
+  SetPreventSandboxesLeavingWorkspaceMutationVariables
+> = gql`
+  mutation setPreventSandboxesLeavingWorkspace(
+    $sandboxIds: [ID!]!
+    $preventSandboxLeaving: Boolean!
+  ) {
+    setPreventSandboxesLeavingWorkspace(
+      sandboxIds: $sandboxIds
+      preventSandboxLeaving: $preventSandboxLeaving
+    ) {
+      id
+    }
+  }
+`;
+
+export const setPreventSandboxesExport: Query<
+  SetPreventSandboxesExportMutation,
+  SetPreventSandboxesExportMutationVariables
+> = gql`
+  mutation setPreventSandboxesExport(
+    $sandboxIds: [ID!]!
+    $preventSandboxExport: Boolean!
+  ) {
+    setPreventSandboxesExport(
+      sandboxIds: $sandboxIds
+      preventSandboxExport: $preventSandboxExport
+    ) {
+      id
+    }
+  }
+`;
+
+export const setDefaultTeamMemberAuthorization: Query<
+  SetDefaultTeamMemberAuthorizationMutation,
+  SetDefaultTeamMemberAuthorizationMutationVariables
+> = gql`
+  mutation setDefaultTeamMemberAuthorization(
+    $teamId: UUID4!
+    $defaultAuthorization: TeamMemberAuthorization!
+  ) {
+    setDefaultTeamMemberAuthorization(
+      teamId: $teamId
+      defaultAuthorization: $defaultAuthorization
+    ) {
+      defaultAuthorization
+    }
+  }
+`;
+
+export const deleteAccount: Query<
+  DeleteCurrentUserMutation,
+  DeleteCurrentUserMutationVariables
+> = gql`
+  mutation deleteCurrentUser {
+    deleteCurrentUser
+  }
+`;
+
+export const updateSubscriptionBillingInterval: Query<
+  UpdateSubscriptionBillingIntervalMutation,
+  UpdateSubscriptionBillingIntervalMutationVariables
+> = gql`
+  mutation updateSubscriptionBillingInterval(
+    $teamId: UUID4!
+    $subscriptionId: UUID4!
+    $billingInterval: SubscriptionInterval!
+  ) {
+    updateSubscriptionBillingInterval(
+      teamId: $teamId
+      subscriptionId: $subscriptionId
+      billingInterval: $billingInterval
+    ) {
+      id
+    }
+  }
+`;
+
+export const previewUpdateSubscriptionBillingInterval: Query<
+  PreviewUpdateSubscriptionBillingIntervalMutation,
+  PreviewUpdateSubscriptionBillingIntervalMutationVariables
+> = gql`
+  mutation previewUpdateSubscriptionBillingInterval(
+    $teamId: UUID4!
+    $subscriptionId: UUID4!
+    $billingInterval: SubscriptionInterval!
+  ) {
+    previewUpdateSubscriptionBillingInterval(
+      teamId: $teamId
+      subscriptionId: $subscriptionId
+      billingInterval: $billingInterval
+    ) {
+      immediatePayment {
+        amount
+        currency
+      }
+      nextPayment {
+        amount
+        currency
+      }
+    }
+  }
+`;
+
+export const softCancelSubscription: Query<
+  SoftCancelSubscriptionMutation,
+  SoftCancelSubscriptionMutationVariables
+> = gql`
+  mutation softCancelSubscription($teamId: UUID4!, $subscriptionId: UUID4!) {
+    softCancelSubscription(teamId: $teamId, subscriptionId: $subscriptionId) {
+      id
+      cancelAt
+    }
+  }
+`;
+
+export const reactivateSubscription: Query<
+  ReactivateSubscriptionMutation,
+  ReactivateSubscriptionMutationVariables
+> = gql`
+  mutation reactivateSubscription($teamId: UUID4!, $subscriptionId: UUID4!) {
+    reactivateSubscription(teamId: $teamId, subscriptionId: $subscriptionId) {
       id
     }
   }

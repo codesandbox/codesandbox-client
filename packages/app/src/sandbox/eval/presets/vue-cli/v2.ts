@@ -1,4 +1,5 @@
 import { Preset } from 'sandpack-core';
+
 import babelTranspiler from '../../transpilers/babel';
 import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';
@@ -67,6 +68,7 @@ export default function initialize(vuePreset: Preset) {
   ]);
   vuePreset.registerTranspiler(module => /\.m?tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },
+    { transpiler: babelTranspiler },
   ]);
   vuePreset.registerTranspiler(module => /\.json$/.test(module.path), [
     { transpiler: jsonTranspiler },

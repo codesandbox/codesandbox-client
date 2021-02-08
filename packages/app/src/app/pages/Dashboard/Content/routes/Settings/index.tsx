@@ -2,9 +2,11 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Element } from '@codesandbox/components';
+import css from '@styled-system/css';
+
+import { NewTeam } from 'app/pages/common/NewTeam';
 import { TeamSettings } from './TeamSettings';
 import { UserSettings } from './UserSettings';
-import { NewTeam } from './NewTeam';
 import { Invite } from './Invite';
 
 export const Settings = () => {
@@ -28,7 +30,7 @@ export const Settings = () => {
   const Component = getComponent();
 
   return (
-    <Element marginY={10}>
+    <Element css={css({ width: '100%', maxWidth: 1280 })} marginY={10}>
       <Component />
     </Element>
   );

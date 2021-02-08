@@ -241,35 +241,29 @@ export const GitHub = () => {
     );
   }
 
-  return (
+  return originalGit ? (
     <>
-      {originalGit ? (
-        <>
-          <Collapsible title="GitHub repository" defaultOpen>
-            <Element paddingX={2}>
-              <Link
-                target="_blank"
-                rel="noopener noreferrer"
-                href={githubRepoUrl(originalGit)}
-              >
-                <Stack gap={2} marginBottom={6} align="center">
-                  <GitHubIcon width={20} />
-                  <Text size={2}>
-                    {originalGit.username}/{originalGit.repo}
-                  </Text>
-                </Stack>
-              </Link>
-              {getText()}
-            </Element>
-          </Collapsible>
-          {getContent()}
-          <CreateRepo />
-        </>
-      ) : (
-        <>
-          <CreateRepo />
-        </>
-      )}
+      <Collapsible title="GitHub repository" defaultOpen>
+        <Element paddingX={2}>
+          <Link
+            target="_blank"
+            rel="noopener noreferrer"
+            href={githubRepoUrl(originalGit)}
+          >
+            <Stack gap={2} marginBottom={6} align="center">
+              <GitHubIcon width={20} />
+              <Text size={2}>
+                {originalGit.username}/{originalGit.repo}
+              </Text>
+            </Stack>
+          </Link>
+          {getText()}
+        </Element>
+      </Collapsible>
+      {getContent()}
+      <CreateRepo />
     </>
+  ) : (
+    <CreateRepo />
   );
 };

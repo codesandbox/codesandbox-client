@@ -9,6 +9,7 @@ import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
 import { Recent } from './routes/Recent';
+import { AlwaysOn } from './routes/AlwaysOn';
 import { All } from './routes/All';
 import { Repositories } from './routes/Repositories';
 import { Search } from './routes/Search';
@@ -39,23 +40,24 @@ export const Content = withRouter(({ history }) => {
         width: '100%',
         height: '100%',
         margin: '0 auto',
+        display: 'flex',
+        justifyContent: 'center',
       })}
     >
       <Switch>
         <Route path="/dashboard/home" component={Home} />
-        <Route path="/dashboard/templates" component={Templates} />
-        // old dashboard redirect
-        <Route path="/dashboard/trash" component={Deleted} />
-        <Route path="/dashboard/deleted" component={Deleted} />
         <Route path="/dashboard/drafts" component={Drafts} />
-        <Route path="/dashboard/recent" component={Recent} />
-        <Route path="/dashboard/search" component={Search} />
-        <Route path="/dashboard/repositories/:path*" component={Repositories} />
-        // old dashboard redirect
-        <Route path="/dashboard/sandboxes/:path*" component={All} />
         <Route path="/dashboard/all/:path*" component={All} />
+        <Route path="/dashboard/templates" component={Templates} />
+        <Route path="/dashboard/repositories/:path*" component={Repositories} />
+        <Route path="/dashboard/always-on" component={AlwaysOn} />
+        <Route path="/dashboard/recent" component={Recent} />
+        <Route path="/dashboard/deleted" component={Deleted} />
+        <Route path="/dashboard/search" component={Search} />
         <Route path="/dashboard/settings" component={Settings} />
-        // old dashboard redirect
+        {/* old dashboard - redirects: */}
+        <Route path="/dashboard/trash" component={Deleted} />
+        <Route path="/dashboard/sandboxes/:path*" component={All} />
         <Route path="/dashboard/teams/new" component={NewTeam} />
         <Redirect to={dashboardUrls.home(state.activeTeam)} />
       </Switch>

@@ -88,7 +88,6 @@ export const Dashboard: FunctionComponent = () => {
                   />
                 ) : (
                   <Element
-                    as="aside"
                     id="desktop-sidebar"
                     css={css({ display: ['none', 'none', 'block'] })}
                   >

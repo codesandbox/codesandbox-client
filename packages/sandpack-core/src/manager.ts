@@ -36,8 +36,12 @@ import {
 } from './cache';
 import { splitQueryFromPath } from './transpiled-module/utils/query-path';
 import { IEvaluator } from './evaluator';
-import { setContributedProtocols } from './npm/dynamic/fetch-protocols';
+import {
+  prependToContributedProtocols,
+  ProtocolDefinition,
+} from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
+import { DEFAULT_EXTENSIONS } from './utils/extensions';
 
 declare const BrowserFS: any;
 
@@ -139,6 +143,7 @@ export default class Manager implements IEvaluator {
     dependencyDependencies: {},
     dependencyAliases: {},
   };
+
   webpackHMR: boolean;
   hardReload: boolean;
   hmrStatus: HMRStatus = 'idle';
@@ -189,9 +194,10 @@ export default class Manager implements IEvaluator {
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
      */
-    setContributedProtocols([
+    prependToContributedProtocols([
       {
-        condition: version => version.startsWith('file:'),
+        condition: (name: string, version: string) =>
+          version.startsWith('file:'),
         protocol: new FileFetcher(this),
       },
     ]);
@@ -225,6 +231,10 @@ export default class Manager implements IEvaluator {
     if (options.hasFileResolver) {
       this.setupFileResolver();
     }
+  }
+
+  prependNpmProtocolDefinition(protocol: ProtocolDefinition) {
+    prependToContributedProtocols([protocol]);
   }
 
   async evaluate(path: string, baseTModule?: TranspiledModule): Promise<any> {
@@ -360,7 +370,7 @@ export default class Manager implements IEvaluator {
   evaluateModule(
     module: Module,
     { force = false, globals }: { force?: boolean; globals?: object } = {}
-  ) {
+  ): any {
     if (this.hardReload && !this.isFirstLoad) {
       // Do a hard reload
       document.location.reload();
@@ -384,6 +394,26 @@ export default class Manager implements IEvaluator {
         undefined,
         { force, globals }
       );
+
+      if (this.webpackHMR) {
+        // Check if any module has been invalidated, because in that case we need to
+        // restart evaluation.
+
+        const invalidatedModules = this.getTranspiledModules().filter(t => {
+          if (t.hmrConfig?.invalidated) {
+            t.compilation = null;
+            t.hmrConfig = null;
+
+            return true;
+          }
+
+          return false;
+        });
+
+        if (invalidatedModules.length > 0) {
+          return this.evaluateModule(module, { force, globals });
+        }
+      }
 
       this.setHmrStatus('idle');
 
@@ -769,7 +799,7 @@ export default class Manager implements IEvaluator {
   resolveModule(
     path: string,
     currentPath: string,
-    defaultExtensions: Array<string> = ['js', 'jsx', 'json', 'mjs']
+    defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
   ): Module {
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
@@ -1244,11 +1274,13 @@ export default class Manager implements IEvaluator {
             tModules[id] = tModule;
           });
 
-          Object.keys(tModules).forEach(id => {
-            const tModule = tModules[id];
+          await Promise.all(
+            Object.keys(tModules).map(id => {
+              const tModule = tModules[id];
 
-            tModule.load(serializedTModules[id], tModules, this);
-          });
+              return tModule.load(serializedTModules[id], tModules, this);
+            })
+          );
           debug(`Loaded cache.`);
         }
       }

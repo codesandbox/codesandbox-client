@@ -48,11 +48,9 @@ export const SearchIcon = styled(SearchIconBase)(
 
 export const SearchInput = React.forwardRef(
   (props: ISearchInputProps, ref: any) => (
-    <>
-      <Element css={{ position: 'relative' }}>
-        <SearchIcon />
-        <SearchInputComponent type="search" ref={ref} {...props} />
-      </Element>
-    </>
+    <Element css={{ position: 'relative' }}>
+      <SearchIcon />
+      <SearchInputComponent type="search" ref={ref} {...props} />
+    </Element>
   )
 );

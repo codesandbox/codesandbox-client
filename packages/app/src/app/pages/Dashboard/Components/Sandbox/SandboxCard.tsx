@@ -18,15 +18,22 @@ const useImageLoaded = (url: string) => {
   const [loaded, setLoaded] = React.useState(false);
   React.useEffect(() => {
     const img = new Image();
-    img.onload = () => {
-      setLoaded(true);
-    };
 
-    img.src = url;
+    if (url) {
+      img.onload = () => {
+        setLoaded(true);
+      };
 
-    if (img.complete) {
-      setLoaded(true);
+      img.src = url;
+
+      if (img.complete) {
+        setLoaded(true);
+      }
     }
+
+    return function cleanup() {
+      img.src = '';
+    };
   }, [url]);
 
   return loaded;
@@ -139,39 +146,57 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type SandboxStatsProps = Pick<
   SandboxItemComponentProps,
-  'noDrag' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
+  'noDrag' | 'viewCount' | 'sandboxLocation' | 'lastUpdated' | 'alwaysOn'
 >;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ noDrag, viewCount, sandboxLocation, lastUpdated }) => {
-    let finalText = viewCount;
+  ({ noDrag, viewCount, sandboxLocation, lastUpdated, alwaysOn }) => {
+    const views = (
+      <Stack align="center" key="views">
+        <Icon style={{ marginRight: 4, minWidth: 14 }} name="eye" size={14} />{' '}
+        {viewCount}
+      </Stack>
+    );
 
-    if (!noDrag) {
-      finalText += ` • ${shortDistance(lastUpdated)}`;
-    }
+    const lastUpdatedText = (
+      <Text key="last-updated" css={{ whiteSpace: 'nowrap' }}>
+        {shortDistance(lastUpdated)}
+      </Text>
+    );
 
-    if (sandboxLocation) {
-      finalText += ` • ${sandboxLocation}`;
+    const sandboxLocationText = sandboxLocation && (
+      <Text key="location" maxWidth="100%">
+        {sandboxLocation}
+      </Text>
+    );
+
+    const alwaysOnText = (
+      <Text key="always-on" css={css({ color: 'green' })}>
+        Always-On
+      </Text>
+    );
+
+    let footer = [];
+
+    if (alwaysOn) {
+      footer = [sandboxLocationText, alwaysOnText];
+    } else {
+      footer = [views, noDrag ? null : lastUpdatedText, sandboxLocationText];
     }
 
     return (
       <div style={{ margin: '0 16px' }}>
-        <Text
-          style={{ display: 'flex', alignItems: 'center' }}
+        <Stack
+          as={Text}
+          align="center"
+          gap={1}
           size={3}
           variant="muted"
+          css={css({
+            '> *:not(:last-child):after': { content: `'•'`, marginLeft: 1 },
+          })}
         >
-          <Icon style={{ marginRight: 4, minWidth: 14 }} name="eye" size={14} />{' '}
-          <span
-            style={{
-              maxWidth: '100%',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {finalText}
-          </span>
-        </Text>
+          {footer.map(item => item)}
+        </Stack>
       </div>
     );
   }
@@ -188,6 +213,7 @@ export const SandboxCard = ({
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
+  alwaysOn,
   // interactions
   isScrolling,
   selected,
@@ -208,39 +234,12 @@ export const SandboxCard = ({
   ...props
 }: SandboxItemComponentProps) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
-  const [guaranteedScreenshotUrl, setGuaranteedScreenshotUrl] = React.useState<
-    string
-  >(screenshotUrl);
-
-  const lastSandboxId = React.useRef(sandbox.id);
-  const imageLoaded = useImageLoaded(guaranteedScreenshotUrl);
-
   React.useEffect(() => {
     // We only want to render the screenshot once the user has stopped scrolling
     if (!isScrolling && !stoppedScrolling) {
       setStoppedScrolling(true);
     }
   }, [isScrolling, stoppedScrolling]);
-
-  React.useEffect(() => {
-    // We always try to show the cached screenshot first, if someone looks at a sandbox we will try to
-    // generate a new one based on the latest contents.
-    const generateScreenshotUrl = `/api/v1/sandboxes/${sandbox.id}/screenshot.png`;
-    if (
-      stoppedScrolling &&
-      (lastSandboxId.current !== sandbox.id || !guaranteedScreenshotUrl)
-    ) {
-      setGuaranteedScreenshotUrl(
-        sandbox.screenshotUrl || generateScreenshotUrl
-      );
-      lastSandboxId.current = sandbox.id;
-    }
-  }, [
-    stoppedScrolling,
-    guaranteedScreenshotUrl,
-    sandbox.id,
-    sandbox.screenshotUrl,
-  ]);
 
   return (
     <Stack
@@ -268,32 +267,13 @@ export const SandboxCard = ({
         },
       })}
     >
-      <div
-        ref={thumbnailRef}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '160px',
-          backgroundColor: '#242424',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
-          borderBottom: '1px solid',
-          borderColor: '#242424',
-          [imageLoaded
-            ? 'backgroundImage'
-            : null]: `url(${guaranteedScreenshotUrl})`,
-        }}
-      >
-        {imageLoaded ? null : (
-          <TemplateIcon
-            style={{ filter: 'grayscale(1)', opacity: 0.1 }}
-            width="60"
-            height="60"
-          />
-        )}
-      </div>
+      <Thumbnail
+        sandboxId={sandbox.id}
+        thumbnailRef={thumbnailRef}
+        TemplateIcon={TemplateIcon}
+        screenshotUrl={screenshotUrl}
+        screenshotOutdated={sandbox.screenshotOutdated}
+      />
       <div
         style={{
           position: 'absolute',
@@ -309,7 +289,6 @@ export const SandboxCard = ({
       >
         <TemplateIcon width="16" height="16" />
       </div>
-
       <SandboxTitle
         originalGit={sandbox.originalGit}
         prNumber={sandbox.prNumber}
@@ -325,14 +304,76 @@ export const SandboxCard = ({
         newTitle={newTitle}
         sandboxTitle={sandboxTitle}
       />
-
       <SandboxStats
         noDrag={noDrag}
         lastUpdated={lastUpdated}
         viewCount={viewCount}
         sandboxLocation={sandboxLocation}
+        alwaysOn={alwaysOn}
       />
     </Stack>
+  );
+};
+
+const Thumbnail = ({
+  sandboxId,
+  thumbnailRef,
+  TemplateIcon,
+  screenshotUrl,
+  screenshotOutdated,
+}) => {
+  // 0. Use template icon as starting point and fallback
+  // 1. se sandbox.screenshotUrl if it can be successfully loaded (might not exist)
+  // 2. If screenshot is outdated, lazily load a newer screenshot. Switch when image loaded.
+  const SCREENSHOT_TIMEOUT = 5000;
+
+  const [latestScreenshotUrl, setLatestScreenshotUrl] = React.useState(null);
+
+  const screenshotUrlLoaded = useImageLoaded(screenshotUrl);
+  const latestScreenshotUrlLoaded = useImageLoaded(latestScreenshotUrl);
+
+  let screenshotToUse: string;
+  if (latestScreenshotUrlLoaded) screenshotToUse = latestScreenshotUrl;
+  else if (screenshotUrlLoaded) screenshotToUse = screenshotUrl;
+
+  React.useEffect(
+    function lazyLoadLatestScreenshot() {
+      const timer = window.setTimeout(() => {
+        if (!screenshotOutdated) return;
+        const url = `https://codesandbox.io/api/v1/sandboxes/${sandboxId}/screenshot.png`;
+        setLatestScreenshotUrl(url);
+      }, SCREENSHOT_TIMEOUT);
+
+      return () => window.clearTimeout(timer);
+    },
+    [sandboxId, screenshotOutdated, setLatestScreenshotUrl]
+  );
+
+  return (
+    <div
+      ref={thumbnailRef}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '160px',
+        backgroundColor: '#242424',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+        borderBottom: '1px solid',
+        borderColor: '#242424',
+        [screenshotToUse ? 'backgroundImage' : null]: `url(${screenshotToUse})`,
+      }}
+    >
+      {!screenshotUrlLoaded && (
+        <TemplateIcon
+          style={{ filter: 'grayscale(1)', opacity: 0.1 }}
+          width="60"
+          height="60"
+        />
+      )}
+    </div>
   );
 };
 

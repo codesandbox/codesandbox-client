@@ -7,7 +7,7 @@ const specialCasesMap = {
   'yarn.lock': 'yarn',
   'package.json': 'npm',
   'sandbox.config.json': 'codesandbox',
-  'now.json': 'now',
+  'vercel.json': 'now',
   prisma: 'prisma',
   'netlify.toml': 'netlify',
   'readme.md': 'readme',

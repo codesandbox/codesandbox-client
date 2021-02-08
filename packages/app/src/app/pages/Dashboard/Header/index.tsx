@@ -68,6 +68,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
       >
         <Link
           href="/?from-app=1"
+          as="a"
           css={css({ display: ['none', 'none', 'block'] })}
         >
           <LogoIcon
@@ -106,7 +107,11 @@ export const Header: React.FC<HeaderProps> = React.memo(
           {user && <Notifications />}
 
           <UserMenu>
-            <Button variant="secondary" css={css({ size: 26 })}>
+            <Button
+              as={UserMenu.Button}
+              variant="secondary"
+              css={css({ size: 26 })}
+            >
               <Icon name="more" size={12} title="User actions" />
             </Button>
           </UserMenu>

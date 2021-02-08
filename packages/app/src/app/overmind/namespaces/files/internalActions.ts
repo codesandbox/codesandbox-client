@@ -5,6 +5,17 @@ import { chunk } from 'lodash-es';
 import { Directory, Sandbox } from '@codesandbox/common/lib/types';
 import { getDirectoryPath } from '@codesandbox/common/lib/sandbox/modules';
 
+function b64DecodeUnicode(file: string) {
+  // Adding this fixes uploading JSON files with non UTF8-characters
+  // https://stackoverflow.com/a/30106551
+  return decodeURIComponent(
+    atob(file)
+      .split('')
+      .map(char => '%' + ('00' + char.charCodeAt(0).toString(16)).slice(-2))
+      .join('')
+  );
+}
+
 export const recoverFiles: Action = ({ effects, actions, state }) => {
   const sandbox = state.editor.currentSandbox;
 
@@ -75,7 +86,9 @@ export const uploadFiles: AsyncAction<
           dataURI.length < MAX_FILE_SIZE
         ) {
           const text =
-            dataURI !== 'data:' ? atob(dataURI.replace(/^.*base64,/, '')) : '';
+            dataURI !== 'data:'
+              ? b64DecodeUnicode(dataURI.replace(/^.*base64,/, ''))
+              : '';
           parsedFiles[filePath] = {
             content: text,
             isBinary: false,

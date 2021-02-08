@@ -35,6 +35,10 @@ import {
   GetTeamReposQuery,
   GetPersonalWorkspaceIdQuery,
   GetPersonalWorkspaceIdQueryVariables,
+  GetPrivateNpmRegistryQuery,
+  GetPrivateNpmRegistryQueryVariables,
+  _AlwaysOnTeamSandboxesQuery,
+  _AlwaysOnTeamSandboxesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -44,6 +48,8 @@ import {
   templateFragmentDashboard,
   repoFragmentDashboard,
   currentTeamInfoFragment,
+  npmRegistryFragment,
+  teamFragmentDashboard,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -203,16 +209,11 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
     me {
       personalWorkspaceId
       workspaces {
-        id
-        name
-        avatarUrl
-        userAuthorizations {
-          userId
-          authorization
-        }
+        ...teamFragmentDashboard
       }
     }
   }
+  ${teamFragmentDashboard}
 `;
 
 export const searchPersonalSandboxes: Query<
@@ -359,4 +360,36 @@ export const getPersonalWorkspaceId: Query<
       personalWorkspaceId
     }
   }
+`;
+
+export const getPrivateNpmRegistry: Query<
+  GetPrivateNpmRegistryQuery,
+  GetPrivateNpmRegistryQueryVariables
+> = gql`
+  query getPrivateNpmRegistry($teamId: UUID4!) {
+    me {
+      team(id: $teamId) {
+        privateRegistry {
+          ...npmRegistry
+        }
+      }
+    }
+  }
+  ${npmRegistryFragment}
+`;
+
+export const alwaysOnTeamSandboxes: Query<
+  _AlwaysOnTeamSandboxesQuery,
+  _AlwaysOnTeamSandboxesQueryVariables
+> = gql`
+  query _AlwaysOnTeamSandboxes($teamId: UUID4!) {
+    me {
+      team(id: $teamId) {
+        sandboxes(alwaysOn: true) {
+          ...sandboxFragmentDashboard
+        }
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
 `;

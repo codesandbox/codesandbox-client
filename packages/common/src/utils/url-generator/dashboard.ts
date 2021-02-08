@@ -12,12 +12,7 @@ function appendTeamIdQueryParam(url: string, teamId?: string | null) {
 function sanitizePath(path: string) {
   return path
     .split('/')
-    .map(p =>
-      p
-        .split(' ')
-        .map(encodeURIComponent)
-        .join(' ')
-    )
+    .map(p => p.split(' ').map(encodeURIComponent).join(' '))
     .join('/');
 }
 
@@ -33,6 +28,9 @@ export const drafts = (teamId?: string | null) =>
 export const repos = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories`, teamId);
 
+export const alwaysOn = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/always-on`, teamId);
+
 export const templates = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/templates`, teamId);
 
@@ -47,6 +45,18 @@ export const home = (teamId?: string | null) =>
 
 export const settings = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings`, teamId);
+
+export const registrySettings = (teamId?: string | null) =>
+  appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/settings/npm-registry`,
+    teamId
+  );
+
+export const permissionSettings = (teamId?: string | null) =>
+  appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/settings/permissions`,
+    teamId
+  );
 
 export const teamInvite = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/invite`, teamId);

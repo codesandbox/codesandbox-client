@@ -1,3 +1,21 @@
+import UAParser from 'ua-parser-js';
+
+export type UserAgentDetails = {
+  browser: {
+    name: string;
+    version: string;
+  };
+  device: {
+    model: string;
+    type: string;
+    vendor: string;
+  };
+  os: {
+    name: string;
+    version: string;
+  };
+};
+
 function getPopupOffset({ width, height }) {
   const wLeft = window.screenLeft ? window.screenLeft : window.screenX;
   const wTop = window.screenTop ? window.screenTop : window.screenY;
@@ -111,5 +129,51 @@ export default {
         })
         .catch(reject);
     });
+  },
+  getUserAgent() {
+    return navigator.userAgent;
+  },
+  getElementBoundingRect(elementId: string): DOMRect | null {
+    const el = document.querySelector(elementId);
+
+    if (!el) {
+      return null;
+    }
+
+    return el.getBoundingClientRect();
+  },
+  onWindowMessage(cb: (event: MessageEvent) => void) {
+    window.addEventListener('message', cb);
+  },
+  isChromium(ua: string): boolean {
+    try {
+      const parser = new UAParser(ua);
+      const name = parser.getBrowser().name;
+
+      // by default brave returns chrome
+      return name === 'Chrome' || name === 'Opera' || name === 'Edge';
+    } catch {
+      return false;
+    }
+  },
+  parseUserAgent(ua: string): UserAgentDetails | null {
+    try {
+      const parser = new UAParser(ua);
+      return {
+        // @ts-ignore
+        // Only way to detect brave
+        // https://www.ctrl.blog/entry/brave-user-agent-detection.html
+        browser: navigator.brave
+          ? {
+              version: '',
+              name: 'Brave',
+            }
+          : parser.getBrowser(),
+        device: parser.getDevice(),
+        os: parser.getOS(),
+      };
+    } catch {
+      return null;
+    }
   },
 };

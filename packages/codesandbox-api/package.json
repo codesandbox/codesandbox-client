@@ -71,6 +71,7 @@
     "@types/debug": "^0.0.30",
     "@types/glob": "^7.1.1",
     "@types/uuid": "^3.4.3",
+    "@types/node": "^10.0.0",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
     "coveralls": "^2.13.1",

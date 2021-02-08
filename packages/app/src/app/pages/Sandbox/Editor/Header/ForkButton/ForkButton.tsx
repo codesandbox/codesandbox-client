@@ -15,7 +15,6 @@ import { MemberAuthorization } from 'app/graphql/types';
 import { ForkIcon } from '../icons';
 
 interface TeamItemProps {
-  id: string;
   name: string;
   avatar: string | null;
   onSelect: () => void;
@@ -64,7 +63,7 @@ interface ITeamItem {
   teamName: string;
   teamAvatar: string | null;
   userAuthorizations: MemberAuthorization[];
-};
+}
 
 interface TeamOrUserItemProps {
   item: ITeamItem;
@@ -76,7 +75,6 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
   if (props.disabled) {
     return (
       <DisabledTeamItem
-        id={props.item.teamId}
         name={props.item.teamName}
         avatar={props.item.teamAvatar}
         onSelect={() => {}}
@@ -86,7 +84,6 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
 
   return (
     <TeamItem
-      id={props.item.teamId}
       onSelect={() => {
         const item = props.item as ITeamItem;
         props.forkClicked(item.teamId);
@@ -135,9 +132,22 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
     otherWorkspaces = teams.filter(t => t !== currentSpace)!;
   }
 
+  // if this user is not part of this workspace,
+  // they should not be able to fork inside the workspace
+  const inActiveWorkspace =
+    state.editor.currentSandbox.team?.id === state.activeTeam;
+  const preventForkInsideWorkspace =
+    state.activeWorkspaceAuthorization === 'READ' || !inActiveWorkspace;
+
+  const preventForksOutsideWorkspace =
+    state.editor.currentSandbox.permissions?.preventSandboxLeaving;
+
+  // If you can't fork at all, hide the button completely
+  if (preventForkInsideWorkspace && preventForksOutsideWorkspace) return null;
+
   return (
     <Stack>
-      {state.activeWorkspaceAuthorization === 'READ' ? null : (
+      {preventForkInsideWorkspace ? null : (
         <Button
           onClick={() => props.forkClicked()}
           loading={state.editor.isForkingSandbox}
@@ -156,64 +166,79 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
         </Button>
       )}
       {otherWorkspaces.length ? (
-        <Menu>
-          <Menu.Button
-            variant={props.variant}
-            css={
-              state.activeWorkspaceAuthorization === 'READ'
-                ? {}
-                : {
-                    width: '26px',
-                    borderTopLeftRadius: 0,
-                    borderBottomLeftRadius: 0,
-                  }
-            }
-          >
-            {state.activeWorkspaceAuthorization === 'READ' ? (
-              <>
-                <ForkIcon css={css({ height: 3, marginRight: 1 })} />{' '}
-                <Text css={css({ marginRight: 2 })}>Fork</Text>
-              </>
-            ) : null}
-            <Icon size={8} name="caret" />
-          </Menu.Button>
-          <Menu.List
-            css={css({
-              fontSize: 2,
-              lineHeight: 1,
-            })}
-            style={{
-              paddingTop: 4,
-              paddingBottom: 4,
-              marginLeft: '-4rem',
-              marginTop: -4,
-            }}
-          >
-            {currentSpace && (
-              <TeamOrUserItem
-                forkClicked={props.forkClicked}
-                item={currentSpace}
-                disabled={state.activeWorkspaceAuthorization === 'READ'}
-                isPersonal={currentSpace.teamId === state.personalWorkspaceId}
-              />
-            )}
-
-            <Menu.Divider />
-            {otherWorkspaces.map((space, i) => (
-              <TeamOrUserItem
-                isPersonal={space.teamId === state.personalWorkspaceId}
-                key={space.teamId}
-                forkClicked={props.forkClicked}
-                item={space}
-                disabled={
-                  space.userAuthorizations.find(
-                    authorization => authorization.userId === user.id
-                  )?.authorization === 'READ'
+        <Tooltip
+          label={
+            preventForksOutsideWorkspace
+              ? 'You don not have permission to fork this sandbox outside of the workspace'
+              : null
+          }
+        >
+          <div>
+            <Menu>
+              <Menu.Button
+                variant={props.variant}
+                disabled={preventForksOutsideWorkspace}
+                css={
+                  preventForkInsideWorkspace
+                    ? {}
+                    : {
+                        width: '26px',
+                        borderTopLeftRadius: 0,
+                        borderBottomLeftRadius: 0,
+                      }
                 }
-              />
-            ))}
-          </Menu.List>
-        </Menu>
+              >
+                {preventForkInsideWorkspace ? (
+                  <>
+                    <ForkIcon css={css({ height: 3, marginRight: 1 })} />{' '}
+                    <Text css={css({ marginRight: 2 })}>Fork</Text>
+                  </>
+                ) : null}
+
+                <Icon size={8} name="caret" />
+              </Menu.Button>
+
+              <Menu.List
+                css={css({
+                  fontSize: 2,
+                  lineHeight: 1,
+                })}
+                style={{
+                  paddingTop: 4,
+                  paddingBottom: 4,
+                  marginLeft: '-4rem',
+                  marginTop: -4,
+                }}
+              >
+                {currentSpace && (
+                  <TeamOrUserItem
+                    forkClicked={props.forkClicked}
+                    item={currentSpace}
+                    disabled={state.activeWorkspaceAuthorization === 'READ'}
+                    isPersonal={
+                      currentSpace.teamId === state.personalWorkspaceId
+                    }
+                  />
+                )}
+
+                <Menu.Divider />
+                {otherWorkspaces.map((space, i) => (
+                  <TeamOrUserItem
+                    isPersonal={space.teamId === state.personalWorkspaceId}
+                    key={space.teamId}
+                    forkClicked={props.forkClicked}
+                    item={space}
+                    disabled={
+                      space.userAuthorizations.find(
+                        authorization => authorization.userId === user.id
+                      )?.authorization === 'READ'
+                    }
+                  />
+                ))}
+              </Menu.List>
+            </Menu>
+          </div>
+        </Tooltip>
       ) : null}
     </Stack>
   );

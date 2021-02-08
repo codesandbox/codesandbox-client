@@ -26,7 +26,7 @@ const InfoDialog = ({
   action,
 }: {
   title: React.ReactNode | string;
-  description?: string;
+  description?: string | React.ReactNode;
   action: React.ReactNode;
 }) => (
   <Element
@@ -59,7 +59,12 @@ const InfoDialog = ({
 const ErrorDialog = ({ error }: { error: Error }) => (
   <InfoDialog
     title="Something went wrong while fetching the invitation"
-    description={error.message.replace('GraphQL error: ', '')}
+    description={
+      <>
+        Sorry, we could not find this invitation. Try reloading the page. <br />
+        If problems persist then check the invite token is correct.
+      </>
+    }
     action={
       <Stack style={{ width: '100%' }} gap={2}>
         <Button
@@ -86,22 +91,24 @@ const ErrorDialog = ({ error }: { error: Error }) => (
 
 const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
   const { actions } = useOvermind();
-  const queryRes = useQuery(teamByToken, { variables: { inviteToken } });
+  const { loading, error, data } = useQuery(teamByToken, {
+    variables: { inviteToken },
+  });
 
-  if (queryRes.loading) {
+  if (loading) {
     return <Text size={6}>Loading Invitation...</Text>;
   }
 
-  if (queryRes.error) {
-    return <ErrorDialog error={queryRes.error} />;
+  if (error) {
+    return <ErrorDialog error={error} />;
   }
 
   return (
     <>
       <Helmet>
         <title>
-          {queryRes.data
-            ? `Join ${queryRes.data.teamByToken.name} on CodeSandbox`
+          {data
+            ? `Join ${data.teamByToken.name} on CodeSandbox`
             : 'Join team on CodeSandbox'}
         </title>
       </Helmet>
@@ -109,7 +116,7 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
       <InfoDialog
         title={
           <>
-            Join <b>{queryRes.data.teamByToken.name}</b> on CodeSandbox
+            Join <b>{data.teamByToken.name}</b> on CodeSandbox
           </>
         }
         description="Please sign in to GitHub to continue"
@@ -173,18 +180,16 @@ export const TeamInvitation: React.FC<{
   const { state } = useOvermind();
   const inviteToken = match?.params?.token;
 
-  const content = (() => {
-    if (!state.hasLogIn) {
-      return <TeamSignIn inviteToken={inviteToken} />;
-    }
-
-    return <JoinTeam inviteToken={inviteToken} />;
-  })();
-
   return (
     <ThemeProvider>
       <PageContainer>
-        <ContentContainer>{content}</ContentContainer>
+        <ContentContainer>
+          {state.hasLogIn ? (
+            <JoinTeam inviteToken={inviteToken} />
+          ) : (
+            <TeamSignIn inviteToken={inviteToken} />
+          )}
+        </ContentContainer>
       </PageContainer>
     </ThemeProvider>
   );

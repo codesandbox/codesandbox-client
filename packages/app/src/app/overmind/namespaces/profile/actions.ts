@@ -1,13 +1,22 @@
 import { Sandbox, Profile } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
+import { SandboxType } from 'app/pages/Profile/constants';
 
 export const profileMounted: AsyncAction<string> = withLoadApp(
   async ({ effects, state }, username) => {
     state.profile.isLoadingProfile = true;
     state.profile.notFound = false;
 
-    const profile = await effects.api.getProfile(username);
+    let profile: Profile;
+
+    try {
+      profile = await effects.api.getProfile(username);
+    } catch (error) {
+      state.profile.isLoadingProfile = false;
+      state.profile.notFound = true;
+      return;
+    }
 
     state.profile.profiles[profile.id] = profile;
     state.profile.currentProfileId = profile.id;
@@ -16,9 +25,13 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
       profile.showcasedSandboxShortid &&
       !state.editor.sandboxes[profile.showcasedSandboxShortid]
     ) {
-      state.editor.sandboxes[
-        profile.showcasedSandboxShortid
-      ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+      try {
+        state.editor.sandboxes[
+          profile.showcasedSandboxShortid
+        ] = await effects.api.getSandbox(profile.showcasedSandboxShortid);
+      } catch (e) {
+        // Ignore it
+      }
     }
 
     state.profile.isLoadingProfile = false;
@@ -147,6 +160,8 @@ export const newSandboxShowcaseSelected: AsyncAction<string> = async (
   }
 
   state.profile.isLoadingProfile = false;
+
+  effects.analytics.track('Profile - Showcase Sandbox selected');
 };
 
 export const deleteSandboxClicked: Action<string> = ({ state }, id) => {
@@ -195,6 +210,8 @@ export const updateUserProfile: AsyncAction<Pick<
       bio,
       socialLinks
     );
+
+    effects.analytics.track('Profile - User profile updated');
   } catch (error) {
     // revert optimistic update
     state.profile.current.bio = oldBio;
@@ -218,9 +235,12 @@ export const addFeaturedSandboxesInState: Action<{
 
   const sandbox = sandboxesOnPage.find(s => s.id === sandboxId);
 
+  // if it is added from sandbox picker, it's not on page
+  if (!sandbox) return;
+
   state.profile.current.featuredSandboxes = [
     ...state.profile.current.featuredSandboxes,
-    sandbox!,
+    sandbox,
   ];
 };
 
@@ -256,6 +276,8 @@ export const addFeaturedSandboxes: AsyncAction<{
     );
 
     state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+
+    effects.analytics.track('Profile - Sandbox pinned');
   } catch (error) {
     // rollback optimisic update
     actions.profile.removeFeaturedSandboxesInState({ sandboxId });
@@ -331,6 +353,7 @@ export const saveFeaturedSandboxesOrder: AsyncAction = async ({
       featuredSandboxIds
     );
     state.profile.current.featuredSandboxes = profile.featuredSandboxes;
+    effects.analytics.track('Profile - Pinnned sandboxes reorderd');
   } catch (error) {
     // TODO: rollback optimisic update
 
@@ -357,6 +380,13 @@ export const changeSandboxPrivacyInState: Action<Pick<
     if (sandbox.id === id) sandbox.privacy = privacy;
     return sandbox;
   });
+
+  // for picker
+  state.profile.collections.forEach(collection => {
+    collection.sandboxes.forEach(sandbox => {
+      if (sandbox.id === id) sandbox.privacy = privacy;
+    });
+  });
 };
 
 export const changeSandboxPrivacy: AsyncAction<Pick<
@@ -368,6 +398,7 @@ export const changeSandboxPrivacy: AsyncAction<Pick<
 
   try {
     await effects.api.updatePrivacy(id, privacy);
+    effects.analytics.track('Profile - Sandbox privacy changed');
   } catch (error) {
     // rollback optimistic update
     // it is safe to assume that the sandbox was public (privacy:0)
@@ -417,11 +448,64 @@ export const searchQueryChanged: AsyncAction<string> = async (
 
 export const openContextMenu: Action<{
   sandboxId: Sandbox['id'];
+  sandboxType: SandboxType;
   position: { x: number; y: number };
-}> = ({ state }, { sandboxId, position }) => {
-  state.profile.contextMenu = { sandboxId, position };
+}> = ({ state }, { sandboxId, sandboxType, position }) => {
+  state.profile.contextMenu = { sandboxId, sandboxType, position };
 };
 
 export const closeContextMenu: Action = ({ state }) => {
-  state.profile.contextMenu = { sandboxId: null, position: null };
+  state.profile.contextMenu = {
+    sandboxId: null,
+    sandboxType: null,
+    position: null,
+  };
+};
+
+export const fetchCollections: AsyncAction = async ({ state, effects }) => {
+  if (!state.profile.current) return;
+
+  try {
+    const data = await effects.gql.queries.getCollections({
+      teamId: state.profile.current.personalWorkspaceId,
+    });
+    if (!data || !data.me || !data.me.collections) {
+      return;
+    }
+
+    state.profile.collections = data.me.collections.map(collection => ({
+      ...collection,
+      sandboxes: [],
+    }));
+  } catch {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
+  }
+};
+
+export const getSandboxesByPath: AsyncAction<{ path: string }> = async (
+  { state, effects },
+  { path }
+) => {
+  if (!state.profile.current) return;
+
+  try {
+    const data = await effects.gql.queries.sandboxesByPath({
+      path,
+      teamId: state.profile.current.personalWorkspaceId,
+    });
+    if (typeof data?.me?.collection?.sandboxes === 'undefined') {
+      return;
+    }
+
+    const collection = state.profile.collections.find(c => c.path === path);
+    if (!collection) return;
+
+    collection.sandboxes = data.me.collection.sandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
+  }
 };

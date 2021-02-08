@@ -6,11 +6,7 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import { DocumentationContent } from './_docs.elements';
 
-const normalize = value =>
-  value
-    .split(' ')
-    .join('-')
-    .toLowerCase();
+const normalize = value => value.split(' ').join('-').toLowerCase();
 
 const Docs = ({
   location,
@@ -196,6 +192,7 @@ const Docs = ({
                     {location.pathname.split('/docs')[1] === node.fields.slug &&
                       node.headings.map(heading => (
                         <li
+                          key={normalize(heading.value)}
                           css={`
                             padding: 0 2rem;
                             margin: 0;

@@ -12,6 +12,7 @@ import {
   GitPathChanges,
   GitPr,
   Module,
+  NpmManifest,
   PaymentDetails,
   PickedSandboxes,
   PopularSandboxes,
@@ -21,6 +22,7 @@ import {
   UploadedFilesInfo,
   UserQuery,
   UserSandbox,
+  SettingsSync,
 } from '@codesandbox/common/lib/types';
 import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
 import { client } from 'app/graphql/client';
@@ -93,6 +95,11 @@ export default {
   getDependency(name: string, tag: string): Promise<Dependency> {
     return api.get(`/dependencies/${name}@${tag}`);
   },
+  getDependencyManifest(sandboxId: string, name: string): Promise<NpmManifest> {
+    return api.get(
+      `/sandboxes/${sandboxId}/npm_registry/${name.replace('/', '%2f')}`
+    );
+  },
   async getSandbox(id: string): Promise<Sandbox> {
     const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
 
@@ -135,6 +142,24 @@ export default {
         `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
         {
           module: { code },
+        }
+      )
+      .then(transformModule);
+  },
+  saveModulePrivateUpload(
+    sandboxId: string,
+    moduleShortid: string,
+    data: {
+      code: string;
+      uploadId: string;
+      sha: string;
+    }
+  ): Promise<Module> {
+    return api
+      .put<IModuleAPIResponse>(
+        `/sandboxes/${sandboxId}/modules/${moduleShortid}`,
+        {
+          module: data,
         }
       )
       .then(transformModule);
@@ -609,5 +634,26 @@ export default {
         featuredSandboxes: featuredSandboxIds,
       },
     });
+  },
+  createUserSettings({
+    name,
+    settings,
+  }: {
+    name: string;
+    settings: string;
+  }): Promise<SettingsSync> {
+    return api.post(`/users/current_user/editor_settings`, {
+      name,
+      settings,
+    });
+  },
+  getUserSettings(): Promise<SettingsSync[]> {
+    return api.get(`/users/current_user/editor_settings`);
+  },
+  editUserSettings(body: any, id: string): Promise<SettingsSync> {
+    return api.patch(`/users/current_user/editor_settings/${id}`, body);
+  },
+  removeUserSetting(id: string): Promise<SettingsSync> {
+    return api.delete(`/users/current_user/editor_settings`);
   },
 };

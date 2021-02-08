@@ -198,22 +198,20 @@ export const Folder = (folderItem: DashboardFolder) => {
   };
 
   return (
-    <>
-      <div {...dragProps}>
-        <motion.div
-          initial={{ scale: 1 }}
-          animate={{ scale: isOver && canDrop ? 1.02 : 1 }}
-          {...dropProps}
-        >
-          <Component
-            {...folderProps}
-            {...interactionProps}
-            showDropStyles={isOver && canDrop}
-            {...props}
-          />
-        </motion.div>
-      </div>
-    </>
+    <div {...dragProps}>
+      <motion.div
+        initial={{ scale: 1 }}
+        animate={{ scale: isOver && canDrop ? 1.02 : 1 }}
+        {...dropProps}
+      >
+        <Component
+          {...folderProps}
+          {...interactionProps}
+          showDropStyles={isOver && canDrop}
+          {...props}
+        />
+      </motion.div>
+    </div>
   );
 };
 

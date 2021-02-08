@@ -60,7 +60,7 @@ export default function (
   try {
     const newCode = `(function evaluate(` + globalsCode + `) {` + code + `\n})`;
     // @ts-ignore
-    (0, eval)(newCode).apply(this, globalsValues);
+    (0, eval)(newCode).apply(allGlobals.window || this, globalsValues);
 
     return module.exports;
   } catch (e) {

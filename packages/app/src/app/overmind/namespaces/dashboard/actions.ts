@@ -9,6 +9,8 @@ import {
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
   TeamMemberAuthorization,
+  CreateOrUpdateNpmRegistryMutationVariables,
+  DeleteNpmRegistryMutationVariables,
 } from 'app/graphql/types';
 import { getDecoratedCollection } from './utils';
 import { OrderBy, sandboxesTypes } from './types';
@@ -144,7 +146,7 @@ export const getTeams: AsyncAction = async ({ state, effects }) => {
 };
 
 export const removeFromTeam: AsyncAction<string> = async (
-  { state, effects },
+  { state, actions, effects },
   id
 ) => {
   if (!state.activeTeam || !state.activeTeamInfo) return;
@@ -158,6 +160,8 @@ export const removeFromTeam: AsyncAction<string> = async (
       ...state.activeTeamInfo,
       users: (state.activeTeamInfo.users || []).filter(user => user.id !== id),
     };
+    // update all other fields related to team
+    actions.getActiveTeamInfo();
   } catch {
     effects.notificationToast.error(
       'There has been a problem removing them from your workspace'
@@ -188,12 +192,33 @@ export const leaveTeam: AsyncAction = async ({ state, effects, actions }) => {
   }
 };
 
-export const inviteToTeam: AsyncAction<string> = async (
-  { state, effects },
-  value
+export const inviteToTeam: AsyncAction<{
+  value: string;
+  authorization?: TeamMemberAuthorization;
+  confirm?: boolean;
+}> = async (
+  { state, actions, effects },
+  { value, authorization, confirm = false }
 ) => {
   if (!state.activeTeam) return;
   const isEmail = value.includes('@');
+
+  if (confirm) {
+    const confirmed = await actions.modals.alertModal.open({
+      title: 'Add New Member',
+      customComponent: 'MemberPaymentConfirmation',
+    });
+
+    // if the user cancels the function, bail
+    if (!confirmed) {
+      effects.analytics.track('Team - Cancel Add Member', {
+        dashboardVersion: 2,
+        isEmail,
+      });
+      return;
+    }
+  }
+
   try {
     effects.analytics.track('Team - Add Member', {
       dashboardVersion: 2,
@@ -204,6 +229,7 @@ export const inviteToTeam: AsyncAction<string> = async (
       const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
         teamId: state.activeTeam,
         email: value,
+        authorization,
       });
 
       data = emailInvited.inviteToTeamViaEmail;
@@ -211,6 +237,7 @@ export const inviteToTeam: AsyncAction<string> = async (
       const result = await effects.gql.mutations.inviteToTeam({
         teamId: state.activeTeam,
         username: value,
+        authorization,
       });
 
       state.activeTeamInfo = result.inviteToTeam;
@@ -902,6 +929,26 @@ export const getSearchSandboxes: AsyncAction = async ({ state, effects }) => {
   }
 };
 
+export const getAlwaysOnSandboxes: AsyncAction = async ({ state, effects }) => {
+  const { dashboard } = state;
+  try {
+    const activeTeam = state.activeTeam;
+    if (!activeTeam) return;
+
+    const data = await effects.gql.queries.alwaysOnTeamSandboxes({
+      teamId: activeTeam,
+    });
+
+    if (data?.me?.team?.sandboxes == null) return;
+
+    dashboard.sandboxes[sandboxesTypes.ALWAYS_ON] = data.me.team.sandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your sandboxes'
+    );
+  }
+};
+
 export const getPage: AsyncAction<sandboxesTypes> = async (
   { actions: { dashboard } },
   page
@@ -924,6 +971,9 @@ export const getPage: AsyncAction<sandboxesTypes> = async (
       break;
     case sandboxesTypes.SEARCH:
       dashboard.getSearchSandboxes();
+      break;
+    case sandboxesTypes.ALWAYS_ON:
+      dashboard.getAlwaysOnSandboxes();
       break;
 
     default:
@@ -1211,7 +1261,21 @@ export const changeAuthorizationInState: Action<{
 export const changeAuthorization: AsyncAction<{
   userId: string;
   authorization: TeamMemberAuthorization;
-}> = async ({ state, effects, actions }, { userId, authorization }) => {
+  confirm?: Boolean;
+}> = async (
+  { state, effects, actions },
+  { userId, authorization, confirm }
+) => {
+  if (confirm) {
+    const confirmed = await actions.modals.alertModal.open({
+      title: 'Change Authorization',
+      customComponent: 'MemberPaymentConfirmation',
+    });
+
+    // if the user cancels the function, bail
+    if (!confirmed) return;
+  }
+
   // optimistic update
   const oldAuthorization = state.activeTeamInfo!.userAuthorizations.find(
     user => user.userId === userId
@@ -1239,5 +1303,373 @@ export const changeAuthorization: AsyncAction<{
       userId,
       authorization: oldAuthorization,
     });
+  }
+};
+
+export const deleteCurrentNpmRegistry: AsyncAction<Omit<
+  DeleteNpmRegistryMutationVariables,
+  'teamId'
+>> = async ({ state, actions, effects }, params) => {
+  const confirmed = await actions.modals.alertModal.open({
+    title: 'Are you sure?',
+    message: 'This will reset the current private npm registry information.',
+  });
+  if (confirmed) {
+    try {
+      await effects.gql.mutations.deleteNpmRegistry({
+        ...params,
+        teamId: state.activeTeam,
+      });
+
+      await actions.dashboard.fetchCurrentNpmRegistry({});
+
+      effects.notificationToast.success('Successfully reset the registry!');
+    } catch (e) {
+      actions.internal.handleError({
+        message: 'There was a problem resetting the registry settings',
+        error: e,
+      });
+    }
+  }
+};
+
+export const createOrUpdateCurrentNpmRegistry: AsyncAction<Omit<
+  CreateOrUpdateNpmRegistryMutationVariables,
+  'teamId'
+>> = async ({ state, actions, effects }, params) => {
+  try {
+    await effects.gql.mutations.createOrUpdateNpmRegistry({
+      ...params,
+      teamId: state.activeTeam,
+    });
+
+    await actions.dashboard.fetchCurrentNpmRegistry({});
+
+    effects.notificationToast.success(
+      'Successfully saved new registry settings!'
+    );
+  } catch (e) {
+    actions.internal.handleError({
+      message: 'There was a problem saving the registry settings',
+      error: e,
+    });
+  }
+};
+
+export const deleteWorkspace: AsyncAction = async ({
+  actions,
+  effects,
+  state,
+}) => {
+  if (!state.activeTeamInfo) return;
+
+  try {
+    await effects.gql.mutations.deleteWorkspace({ teamId: state.activeTeam });
+
+    actions.modalClosed();
+    actions.setActiveTeam({ id: state.personalWorkspaceId! });
+    effects.router.redirectToDashboard();
+    actions.dashboard.getTeams();
+
+    effects.notificationToast.success(`Your workspace was deleted`);
+  } catch (error) {
+    // this is odd to handle it in the action
+    // TODO: we need a cleaner way to read graphql errors
+    const message = error.response?.errors[0]?.message;
+
+    actions.internal.handleError({
+      message: 'There was a problem deleting your workspace',
+      error: { name: 'Delete workspace', message },
+    });
+  }
+};
+
+export const fetchCurrentNpmRegistry: AsyncAction<{}> = async ({
+  state,
+  effects,
+  actions,
+}) => {
+  const activeTeam = state.activeTeam;
+  if (!activeTeam) {
+    return;
+  }
+
+  try {
+    const data = await effects.gql.queries.getPrivateNpmRegistry({
+      teamId: activeTeam,
+    });
+
+    // Check if active team is still the same
+    if (activeTeam === state.activeTeam) {
+      state.dashboard.workspaceSettings.npmRegistry =
+        data.me?.team?.privateRegistry || null;
+    }
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'There was a problem fetcing the registry',
+      error,
+    });
+  }
+};
+
+export const setTeamMinimumPrivacy: AsyncAction<{
+  teamId: string;
+  minimumPrivacy: SandboxFragmentDashboardFragment['privacy'];
+  updateDrafts?: boolean;
+  source: 'Dashboard' | 'Profiles';
+}> = async (
+  { state, effects },
+  { teamId, minimumPrivacy, updateDrafts = false, source }
+) => {
+  effects.analytics.track('Team - Change minimum privacy', {
+    minimumPrivacy,
+    source,
+  });
+
+  try {
+    await effects.gql.mutations.setTeamMinimumPrivacy({
+      teamId,
+      minimumPrivacy,
+      updateDrafts,
+    });
+
+    const selectedTeam = state.dashboard.teams.find(
+      team => team.id === state.personalWorkspaceId
+    );
+
+    if (selectedTeam && selectedTeam.settings) {
+      selectedTeam.settings.minimumPrivacy = minimumPrivacy;
+    }
+
+    if (source === 'Dashboard') {
+      effects.notificationToast.success('Minimum privacy updated.');
+    }
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem updating your settings'
+    );
+  }
+};
+
+export const changeSandboxAlwaysOn: AsyncAction<{
+  sandboxId: string;
+  alwaysOn: boolean;
+}> = async ({ state, actions, effects }, { sandboxId, alwaysOn }) => {
+  effects.analytics.track('Sandbox - Always On', {
+    alwaysOn,
+    source: 'dashboard',
+    dashboardVersion: 2,
+  });
+
+  // optimistic update
+  const {
+    changedSandboxes,
+  } = actions.dashboard.internal.changeSandboxesInState({
+    sandboxIds: [sandboxId],
+    sandboxMutation: sandbox => ({ ...sandbox, alwaysOn }),
+  });
+
+  // optimisically remove from always on
+  if (!alwaysOn && state.dashboard.sandboxes.ALWAYS_ON) {
+    state.dashboard.sandboxes.ALWAYS_ON = state.dashboard.sandboxes.ALWAYS_ON.filter(
+      sandbox => sandbox.id !== sandboxId
+    );
+  }
+
+  try {
+    await effects.gql.mutations.changeSandboxAlwaysOn({ sandboxId, alwaysOn });
+  } catch (error) {
+    changedSandboxes.forEach(oldSandbox =>
+      actions.dashboard.internal.changeSandboxesInState({
+        sandboxIds: [oldSandbox.id],
+        sandboxMutation: sandbox => ({
+          ...sandbox,
+          alwaysOn: oldSandbox.alwaysOn,
+        }),
+      })
+    );
+
+    // this is odd to handle it in the action
+    // TODO: we need a cleaner way to read graphql errors
+    const message = error.response?.errors[0]?.message;
+
+    actions.internal.handleError({
+      message: 'We were not able to update Always-On for this sandbox',
+      error: { name: 'Always on', message },
+    });
+  }
+};
+
+export const setWorkspaceSandboxSettings: AsyncAction<{
+  preventSandboxLeaving: boolean;
+  preventSandboxExport: boolean;
+}> = async (
+  { state, effects },
+  { preventSandboxLeaving, preventSandboxExport }
+) => {
+  if (!state.activeTeamInfo || !state.activeTeamInfo.settings) return;
+
+  const teamId = state.activeTeam;
+  // optimistic update
+  const oldLeavingValue = state.activeTeamInfo.settings.preventSandboxLeaving;
+  const oldExportValue = state.activeTeamInfo.settings.preventSandboxExport;
+  state.activeTeamInfo.settings.preventSandboxLeaving = preventSandboxLeaving;
+  state.activeTeamInfo.settings.preventSandboxExport = preventSandboxExport;
+
+  effects.analytics.track('Team - Change workspace sandbox permissions', {
+    preventSandboxLeaving,
+    preventSandboxExport,
+  });
+
+  try {
+    await effects.gql.mutations.setWorkspaceSandboxSettings({
+      teamId,
+      preventSandboxLeaving,
+      preventSandboxExport,
+    });
+
+    effects.notificationToast.success('Workspace sandbox permissions updated.');
+  } catch (error) {
+    state.activeTeamInfo.settings.preventSandboxLeaving = oldLeavingValue;
+    state.activeTeamInfo.settings.preventSandboxExport = oldExportValue;
+
+    effects.notificationToast.error(
+      'There was a problem updating your workspace settings'
+    );
+  }
+};
+
+export const setPreventSandboxesLeavingWorkspace: AsyncAction<{
+  sandboxIds: string[];
+  preventSandboxLeaving: boolean;
+}> = async (
+  { state, actions, effects },
+  { sandboxIds, preventSandboxLeaving }
+) => {
+  const {
+    changedSandboxes,
+  } = actions.dashboard.internal.changeSandboxesInState({
+    sandboxIds,
+    sandboxMutation: sandbox => ({
+      ...sandbox,
+      permissions: { ...sandbox.permissions, preventSandboxLeaving },
+    }),
+  });
+
+  effects.analytics.track(`Dashboard - Change sandbox permissions`, {
+    preventSandboxLeaving,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesLeavingWorkspace({
+      sandboxIds,
+      preventSandboxLeaving,
+    });
+
+    effects.notificationToast.success('Sandbox permissions updated.');
+  } catch (error) {
+    changedSandboxes.forEach(oldSandbox =>
+      actions.dashboard.internal.changeSandboxesInState({
+        sandboxIds: [oldSandbox.id],
+        sandboxMutation: sandbox => ({
+          ...sandbox,
+          permissions: { ...oldSandbox.permissions },
+        }),
+      })
+    );
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
+  }
+};
+
+export const setPreventSandboxesExport: AsyncAction<{
+  sandboxIds: string[];
+  preventSandboxExport: boolean;
+}> = async (
+  { state, actions, effects },
+  { sandboxIds, preventSandboxExport }
+) => {
+  // optimistic update
+  const {
+    changedSandboxes,
+  } = actions.dashboard.internal.changeSandboxesInState({
+    sandboxIds,
+    sandboxMutation: sandbox => ({
+      ...sandbox,
+      permissions: { ...sandbox.permissions, preventSandboxExport },
+    }),
+  });
+
+  effects.analytics.track(`Dashboard - Change sandbox permissions`, {
+    preventSandboxExport,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesExport({
+      sandboxIds,
+      preventSandboxExport,
+    });
+
+    effects.notificationToast.success('Sandbox permissions updated.');
+  } catch (error) {
+    changedSandboxes.forEach(oldSandbox =>
+      actions.dashboard.internal.changeSandboxesInState({
+        sandboxIds: [oldSandbox.id],
+        sandboxMutation: sandbox => ({
+          ...sandbox,
+          permissions: { ...oldSandbox.permissions },
+        }),
+      })
+    );
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
+  }
+};
+
+export const setDefaultTeamMemberAuthorization: AsyncAction<{
+  defaultAuthorization: TeamMemberAuthorization;
+}> = async ({ state, effects }, { defaultAuthorization }) => {
+  if (!state.activeTeamInfo || !state.activeTeamInfo.settings) return;
+
+  const teamId = state.activeTeam;
+
+  // optimistic update
+  const oldValue = state.activeTeamInfo.settings.defaultAuthorization;
+  state.activeTeamInfo.settings.defaultAuthorization = defaultAuthorization;
+
+  effects.analytics.track('Team - Change default authorization', {
+    defaultAuthorization,
+  });
+
+  try {
+    await effects.gql.mutations.setDefaultTeamMemberAuthorization({
+      teamId,
+      defaultAuthorization,
+    });
+
+    effects.notificationToast.success('Default member permissions updated.');
+  } catch (error) {
+    state.activeTeamInfo.settings.defaultAuthorization = oldValue;
+
+    effects.notificationToast.error(
+      'There was a problem updating default member permissions'
+    );
+  }
+};
+
+export const requestAccountClosing: Action = ({ state }) => {
+  state.currentModal = 'accountClosing';
+};
+
+export const deleteAccount: AsyncAction = async ({ state, effects }) => {
+  try {
+    await effects.gql.mutations.deleteAccount({});
+    state.currentModal = 'deleteConfirmation';
+  } catch {
+    effects.notificationToast.error(
+      'There was a problem requesting your account deletion. Please email us at hello@codesandbox.io'
+    );
   }
 };

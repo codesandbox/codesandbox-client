@@ -98,14 +98,22 @@ const initialState: MenuButtonState = {
  *
  * @see Docs https://reacttraining.com/reach-ui/menu-button#menu
  */
-export const Menu: React.FC<MenuProps> = ({ id, children }) => {
+export const Menu: React.FC<MenuProps> = ({
+  id,
+  defaultOpen = false,
+  children,
+}) => {
   let buttonRef = useRef(null);
   let menuRef = useRef(null);
   let popoverRef = useRef(null);
   let [descendants, setDescendants] = useDescendantsInit<
     MenuButtonDescendant
   >();
-  let [state, dispatch] = useReducer(reducer, initialState);
+
+  let [state, dispatch] = useReducer(reducer, {
+    ...initialState,
+    isExpanded: defaultOpen,
+  });
   let _id = useId(id);
   let menuId = id || makeId('menu', _id);
 
@@ -199,6 +207,7 @@ export interface MenuProps {
         }
       ) => React.ReactNode);
   id?: string;
+  defaultOpen?: boolean;
 }
 
 if (__DEV__) {
@@ -935,9 +944,7 @@ export const MenuPopover = forwardRef<any, MenuPopoverProps>(
         position={position}
       />
     ) : (
-      <>
-        <div {...commonProps} />
-      </>
+      <div {...commonProps} />
     );
   }
 );

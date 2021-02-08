@@ -1,4 +1,3 @@
-import { identify } from '@codesandbox/common/lib/utils/analytics';
 import {
   ModuleTab,
   NotificationButton,
@@ -125,6 +124,9 @@ export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
   }
 };
 
+/**
+ * @deprecated
+ */
 export const addNotification: Action<{
   title: string;
   type: 'notice' | 'success' | 'warning' | 'error';
@@ -380,6 +382,7 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
     if ('errors' in result) {
       const errors = values(result.errors)[0];
       const fields = Object.keys(result.errors);
+
       if (Array.isArray(errors)) {
         if (errors[0]) {
           if (fields[0] === 'detail') {
@@ -436,28 +439,6 @@ export const handleError: Action<{
       title: message,
       message: error.message,
       status: NotificationStatus.ERROR,
-    });
-
-    return;
-  }
-
-  const { response } = error as ApiError;
-
-  if (response?.status === 401) {
-    // Reset existing sign in info
-    identify('signed_in', false);
-    effects.analytics.setAnonymousId();
-
-    // Allow user to sign in again in notification
-    effects.notificationToast.add({
-      message: 'Your session seems to be expired, please log in again...',
-      status: NotificationStatus.ERROR,
-      actions: {
-        primary: {
-          label: 'Sign in',
-          run: () => actions.signInClicked(),
-        },
-      },
     });
 
     return;

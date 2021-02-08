@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, Location } from '@reach/router';
@@ -11,8 +12,8 @@ import StatusIcon from '../../assets/icons/Status';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
 import IDEIcon from '../../assets/icons/Ide';
-import EmbedIcon from '../../assets/icons/Embed';
-import CIIcon from '../../assets/icons/Ci';
+import FeedbackIcon from '../../assets/icons/Feedback';
+import PrototypeIcon from '../../assets/icons/Prototype';
 import TeamsIcon from '../../assets/icons/Teams';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
@@ -33,7 +34,7 @@ import MobileNav from './MobileNav';
 
 const Navigation = () => {
   const user = useLogin();
-  const [openedNav, setOpenedNav] = useState();
+  const [openedNav, setOpenedNav] = useState('');
   const [hasOpened, setHasOpened] = useState(false);
   const muted = useTheme().homepage.muted;
 
@@ -67,7 +68,11 @@ const Navigation = () => {
   return (
     <Location>
       {({ location: { pathname } }) => (
-        <div onMouseLeave={() => setOpenedNav(null)}>
+        <div
+          onMouseLeave={() => {
+            setOpenedNav(null);
+          }}
+        >
           <motion.div
             initial={{
               opacity: pathname === '/' ? 0 : 1,
@@ -89,10 +94,10 @@ const Navigation = () => {
                   <List>
                     <li>
                       <button
-                        onMouseEnter={() => setOpenedNav('features')}
+                        onMouseEnter={() => setOpenedNav('product')}
                         type="button"
                       >
-                        Features
+                        Product
                         <DownButton />
                       </button>
                     </li>
@@ -145,7 +150,13 @@ const Navigation = () => {
                       </li>
                     )}
                     <LogIn onMouseEnter={() => setOpenedNav(null)}>
-                      <Button className="button" href="/s">
+                      <Button
+                        css={`
+                          background: #5962df;
+                        `}
+                        className="button"
+                        href="/s"
+                      >
                         Create Sandbox
                       </Button>
                       {user && (
@@ -254,7 +265,7 @@ const Navigation = () => {
                 <SubNav
                   openedNav={openedNav}
                   hasOpened={hasOpened}
-                  name="features"
+                  name="product"
                   components={[
                     {
                       Icon: () => (
@@ -262,32 +273,34 @@ const Navigation = () => {
                           <IDEIcon />
                         </Link>
                       ),
-                      Label: () => <Link to="/ide">IDE</Link>,
+                      Label: () => <Link to="/ide">Coding</Link>,
                     },
                     {
                       Icon: () => (
-                        <Link to="/embeds">
-                          <EmbedIcon />
+                        <Link to="/prototyping">
+                          <PrototypeIcon />
                         </Link>
                       ),
-                      Label: () => <Link to="/embeds">Embed</Link>,
+                      Label: () => <Link to="/prototyping">Prototyping</Link>,
                     },
                     {
                       Icon: () => (
-                        <Link to="/ci">
-                          <CIIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/ci">CI</Link>,
-                    },
-                    {
-                      Icon: () => (
-                        <Link to="/team">
+                        <Link to="/knowledge-sharing/">
                           <TeamsIcon />
                         </Link>
                       ),
-                      Label: () => <Link to="/team">Teams</Link>,
+                      Label: () => (
+                        <Link to="/knowledge-sharing/">Knowledge Sharing</Link>
+                      ),
                     },
+                    {
+                      Icon: () => (
+                        <Link to="/feedback">
+                          <FeedbackIcon />
+                        </Link>
+                      ),
+                      Label: () => <Link to="/feedback">Feedback</Link>,
+                    },                              
                     {
                       Icon: () => (
                         <Link to="/changelog">

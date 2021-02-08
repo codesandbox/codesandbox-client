@@ -24,11 +24,11 @@ import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
 import { listen } from 'codesandbox-api';
-import FontFaceObserver from 'fontfaceobserver';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
+import FontFaceObserver from 'fontfaceobserver';
 import io from 'socket.io-client';
 
 import { EXTENSIONS_LOCATION, VIM_EXTENSION_ID } from './constants';
@@ -165,6 +165,7 @@ export class VSCodeEffect {
     // correctly
     this.sandboxFsSync = new SandboxFsSync({
       getSandboxFs: () => ({}),
+      getCurrentSandbox: () => null,
     });
 
     import(
@@ -196,7 +197,7 @@ export class VSCodeEffect {
         localStorage.getItem('settings.vimmode') === 'true'
       );
 
-      return new FontFaceObserver('dm').load();
+      return new FontFaceObserver('MonoLisa').load();
     });
 
     // Only set the read only state when the editor is initialized.

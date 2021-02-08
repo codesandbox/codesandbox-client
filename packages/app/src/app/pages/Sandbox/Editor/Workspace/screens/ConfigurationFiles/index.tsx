@@ -27,7 +27,7 @@ const getIcon = name => {
   const icons = {
     'netlify.toml': NetlifyIcon,
     'package.json': NPMIcon,
-    'now.json': VercelIcon,
+    'vercel.json': VercelIcon,
     '.prettierrc': PrettierIcon,
     'jsconfig.json': JSIcon,
     'tsconfig.json': TypescriptIcon,

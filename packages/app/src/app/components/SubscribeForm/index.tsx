@@ -37,8 +37,7 @@ export const SubscribeForm: React.FC<ISubscribeFormProps> = ({
   }, [loaded]);
 
   return (
-    <>
-      <Element
+    <Element
         css={css({
           width: 300,
           borderRadius: 3,
@@ -58,6 +57,5 @@ export const SubscribeForm: React.FC<ISubscribeFormProps> = ({
           </Elements>
         </StripeProvider>
       </Element>
-    </>
   );
 };

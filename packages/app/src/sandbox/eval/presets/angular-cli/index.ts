@@ -1,6 +1,7 @@
 // @flow
 import { join, absolute } from '@codesandbox/common/lib/utils/path';
 import { Manager, TranspiledModule, Preset } from 'sandpack-core';
+import csbDynamicImportTranspiler from 'sandpack-core/lib/transpiler/transpilers/csb-dynamic-import';
 
 import angular2Transpiler from '../../transpilers/angular2-template';
 import typescriptTranspiler from '../../transpilers/typescript';
@@ -19,17 +20,19 @@ async function addAngularJSONPolyfills(manager) {
 
   const { defaultProject } = parsed;
   const project = parsed.projects[defaultProject];
-  const { build } = project.architect;
 
-  if (build.options) {
-    if (project.root && build.options.polyfill) {
-      const polyfillLocation = absolute(
-        join(project.root, build.options.polyfill)
-      );
-      const polyfills = manager.resolveModule(polyfillLocation, '/');
+  if (project && project.architect) {
+    const { build } = project.architect;
+    if (build.options) {
+      if (project.root && build.options.polyfill) {
+        const polyfillLocation = absolute(
+          join(project.root, build.options.polyfill)
+        );
+        const polyfills = manager.resolveModule(polyfillLocation, '/');
 
-      await manager.transpileModules(polyfills);
-      manager.evaluateModule(polyfills);
+        await manager.transpileModules(polyfills);
+        manager.evaluateModule(polyfills);
+      }
     }
   }
 }
@@ -54,42 +57,44 @@ async function addAngularJSONResources(manager) {
 
   const { defaultProject } = parsed;
   const project = parsed.projects[defaultProject];
-  const { build } = project.architect;
 
-  if (build.options) {
-    const { styles = [], scripts = [] } = build.options;
+  if (project && project.architect) {
+    const { build } = project.architect;
+    if (build.options) {
+      const { styles = [], scripts = [] } = build.options;
 
-    /* eslint-disable no-await-in-loop */
-    for (let i = 0; i < styles.length; i++) {
-      const p = styles[i];
+      /* eslint-disable no-await-in-loop */
+      for (let i = 0; i < styles.length; i++) {
+        const p = styles[i];
 
-      const finalPath = absolute(join(project.root, p.input || p));
+        const finalPath = absolute(join(project.root, p.input || p));
 
-      const tModule = await manager.resolveTranspiledModuleAsync(
-        finalPath,
-        null
-      );
-
-      await tModule.transpile(manager);
-      tModule.setIsEntry(true);
-      tModule.evaluate(manager);
-    }
-
-    const scriptTModules: TranspiledModule[] = await Promise.all(
-      scripts.map(async p => {
-        const finalPath = absolute(join(project.root, p));
         const tModule = await manager.resolveTranspiledModuleAsync(
           finalPath,
           null
         );
-        tModule.setIsEntry(true);
-        return tModule.transpile(manager);
-      })
-    );
 
-    scriptTModules.forEach(t => {
-      t.evaluate(manager, { asUMD: true });
-    });
+        await tModule.transpile(manager);
+        tModule.setIsEntry(true);
+        tModule.evaluate(manager);
+      }
+
+      const scriptTModules: TranspiledModule[] = await Promise.all(
+        scripts.map(async p => {
+          const finalPath = absolute(join(project.root, p));
+          const tModule = await manager.resolveTranspiledModuleAsync(
+            finalPath,
+            null
+          );
+          tModule.setIsEntry(true);
+          return tModule.transpile(manager);
+        })
+      );
+
+      scriptTModules.forEach(t => {
+        t.evaluate(manager, { asUMD: true });
+      });
+    }
   }
 }
 
@@ -221,6 +226,7 @@ export default function initialize() {
   preset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: angular2Transpiler, options: { preTranspilers: styles } },
     { transpiler: typescriptTranspiler },
+    { transpiler: csbDynamicImportTranspiler },
   ]);
 
   preset.registerTranspiler(module => /\.m?js$/.test(module.path), [

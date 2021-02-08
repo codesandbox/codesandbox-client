@@ -21,6 +21,7 @@
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib --watch)",
     "start:storybook": "start-storybook",
     "test": "cross-env NODE_ENV=test jest --maxWorkers 2",
+    "test:update": "cross-env NODE_ENV=test jest --updateSnapshot",
     "typecheck": "tsc --noEmit"
   },
   "jest": {
@@ -98,7 +99,7 @@
     "@types/react": "^16.9.17",
     "@types/react-icons": "^2.2.7",
     "@types/storybook__addon-actions": "^3.4.3",
-    "@types/styled-components": "^5.1.0",
+    "@types/styled-components": "^5.1.4",
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-lodash": "^3.3.4",
