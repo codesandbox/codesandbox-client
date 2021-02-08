@@ -1,7 +1,9 @@
+import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 
 export interface IElementProps {
+  as?: string | React.ComponentType<any>;
   margin?: number;
   marginX?: number;
   marginY?: number;

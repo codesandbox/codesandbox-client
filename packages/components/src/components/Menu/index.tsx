@@ -8,7 +8,7 @@ import {
 } from 'styled-components';
 import { Link } from 'react-router-dom';
 import * as ReachMenu from './reach-menu.fork';
-import { Element, Button, IconButton, Tooltip } from '../..';
+import { Element, IElementProps, Button, IconButton, Tooltip } from '../..';
 
 const transitions = {
   slide: keyframes({
@@ -254,10 +254,11 @@ const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
   }
 );
 
-type MenuItemProps = ReachMenu.MenuItemImplProps & {
-  disabled?: boolean;
-  disabledTooltip?: string;
-};
+type MenuItemProps = ReachMenu.MenuItemImplProps &
+  IElementProps & {
+    disabled?: boolean;
+    disabledTooltip?: string;
+  };
 
 const noop = () => {};
 const MenuItem: React.FC<MenuItemProps> = ({
@@ -269,7 +270,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
   const conditionalOnSelect = disabled ? noop : onSelect;
 
   const Item = (
-    <ReachMenu.MenuItem
+    <Element
+      as={ReachMenu.MenuItem}
       data-component="MenuItem"
       data-disabled={disabled ? true : null}
       onSelect={conditionalOnSelect}
