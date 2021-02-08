@@ -1,8 +1,8 @@
 import React from 'react';
-import { Preview } from './Preview';
-import { SandpackLayout } from './SandpackLayout';
+import { Preview } from './index';
+import { SandpackLayout } from '../SandpackLayout';
 
-import { SandpackProvider } from '../utils/sandpack-context';
+import { SandpackProvider } from '../../utils/sandpack-context';
 
 export default {
   title: 'components/Preview',

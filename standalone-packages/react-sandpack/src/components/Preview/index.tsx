@@ -1,7 +1,10 @@
 import * as React from 'react';
 
-import { useSandpack } from '../utils/sandpack-context';
-import { Navigator } from './Navigator';
+import { useSandpack } from '../../utils/sandpack-context';
+import { Navigator } from '../Navigator';
+import { LoadingAnimation } from './LoadingAnimation';
+import { OpenInCodeSandboxButton } from './OpenInCodeSandboxButton';
+import { RefreshButton } from './RefreshButton';
 
 export interface PreviewProps {
   customStyle?: React.CSSProperties;
@@ -15,7 +18,7 @@ export const Preview: React.FC<PreviewProps> = ({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const { sandpack, listen } = useSandpack();
-  const [loadingOverlay, setLoadingOverlay] = React.useState<
+  const [loadingOverlayState, setLoadingOverlayState] = React.useState<
     'visible' | 'fading' | 'hidden'
   >('visible');
 
@@ -26,21 +29,13 @@ export const Preview: React.FC<PreviewProps> = ({
 
     const unsub = listen((message: any) => {
       if (message.type === 'start' && message.firstLoad === true) {
-        setLoadingOverlay('visible');
+        setLoadingOverlayState('visible');
       }
 
       if (message.type === 'done') {
-        setLoadingOverlay('fading');
-        setTimeout(() => setLoadingOverlay('hidden'), 300); // 300 ms animation
+        setLoadingOverlayState('fading');
+        setTimeout(() => setLoadingOverlayState('hidden'), 300); // 300 ms animation
       }
-
-      // TODO: does resize from sandpack work?
-      // if (message.type === 'resize') {
-      //   if (wrapperRef.current) {
-      //     wrapperRef.current.style.height =
-      //       message.height + (showNavigator ? 40 : 0) + 'px';
-      //   }
-      // }
     });
 
     return () => unsub();
@@ -78,22 +73,11 @@ export const Preview: React.FC<PreviewProps> = ({
           <div className="sp-overlay sp-error">{sandpack.error.message}</div>
         )}
 
-        {loadingOverlay !== 'hidden' && (
-          <div
-            className="sp-overlay sp-loading"
-            style={{
-              opacity: loadingOverlay === 'visible' ? 1 : 0,
-              transition: 'opacity 0.3s ease-out',
-            }}
-          >
-            <div className="sp-cubes">
-              <div />
-              <div />
-              <div />
-              <div />
-            </div>
-          </div>
-        )}
+        {!showNavigator && <RefreshButton />}
+
+        <OpenInCodeSandboxButton />
+
+        <LoadingAnimation loadingOverlayState={loadingOverlayState} />
       </div>
     </div>
   );

@@ -198,6 +198,10 @@
   transition: all 0.15s ease-in-out;
 }
 
+.sp-button.icon-standalone {
+  padding: var(--space-1);
+}
+
 .sp-button.icon {
   padding: 0;
 }

@@ -13,7 +13,6 @@ import { getSetup } from '../templates';
 import { sandpackLightTheme } from '../themes';
 import { ThemeProvider } from '../utils/theme-context';
 import { getStyleSheet } from '../styles';
-// import '../styles/index.css';
 
 let styleInjected = false;
 
