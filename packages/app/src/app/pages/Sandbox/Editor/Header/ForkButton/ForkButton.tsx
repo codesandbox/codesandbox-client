@@ -25,7 +25,6 @@ const TeamItem = (props: TeamItemProps) => (
     style={{
       paddingTop: 8,
       paddingBottom: 8,
-      fontWeight: 500,
       opacity: 1,
       cursor: 'pointer',
     }}
@@ -38,24 +37,23 @@ const TeamItem = (props: TeamItemProps) => (
   </Menu.Item>
 );
 
-const DisabledTeamItem = (props: TeamItemProps) => (
-  <Menu.Item
+const DisabledTeamItem = (props: Omit<TeamItemProps, 'onSelect'>) => (
+  <Stack
+    as={Menu.Item}
+    align="center"
+    gap={2}
+    disabled
+    disabledTooltip="You don't have access to fork sandboxes in this workspace"
     style={{
       paddingTop: 8,
       paddingBottom: 8,
-      fontWeight: 500,
       opacity: 0.4,
       cursor: 'not-allowed',
     }}
-    onSelect={props.onSelect}
   >
-    <Tooltip label="You don't have access to fork sandboxes in this workspace.">
-      <Stack gap={2} align="center">
-        <TeamAvatar size="small" avatar={props.avatar} name={props.name} />
-        <Text>{props.name}</Text>
-      </Stack>
-    </Tooltip>
-  </Menu.Item>
+    <TeamAvatar size="small" avatar={props.avatar} name={props.name} />
+    <Text>{props.name}</Text>
+  </Stack>
 );
 
 interface ITeamItem {
@@ -77,7 +75,6 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
       <DisabledTeamItem
         name={props.item.teamName}
         avatar={props.item.teamAvatar}
-        onSelect={() => {}}
       />
     );
   }
