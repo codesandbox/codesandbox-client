@@ -13,7 +13,7 @@ import {
   defaultKeymap,
   indentLess,
   indentMore,
-  deleteLine,
+  deleteGroupBackward,
 } from '@codemirror/commands';
 import { lineNumbers } from '@codemirror/gutter';
 import { bracketMatching } from '@codemirror/matchbrackets';
@@ -77,7 +77,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       },
       {
         key: 'mod-Backspace',
-        run: deleteLine,
+        run: deleteGroupBackward,
       },
     ];
 

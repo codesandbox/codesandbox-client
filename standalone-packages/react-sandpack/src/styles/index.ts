@@ -100,6 +100,7 @@ export const getStyleSheet = () => `
   overflow: auto;
 }
 
+/* TODO: fix
 .sp-cm:focus {
   box-shadow: inset 0 0 0 4px var(--colors-accent);
   padding-left: var(--space-1);
@@ -123,6 +124,7 @@ export const getStyleSheet = () => `
 .sp-cm:focus-visible {
   box-shadow: inset 0 0 0 4px var(--colors-accent);
 }
+*/
 
 .sp-cm .cm-wrap {
   height: 100%;
