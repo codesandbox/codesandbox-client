@@ -24,14 +24,14 @@ export default (() => {
       _options = options;
     },
 
-    async waitForDeploy(id: string, onLogUrlUpdate: (logUrl: string) => void) {
+    async getLogs(id: string) {
       const url = `${NetlifyBaseURL}/${id}/status`;
 
-      const { data } = await axios.get(url);
+      const { data } = await axios.get(url, {
+        headers: createHeaders(_options.provideJwtToken),
+      });
 
-      if (data.status.status === 'IN_PROGRESS') {
-        await pollUntilDone(axios, url, 10000, 60 * 2000, onLogUrlUpdate);
-      }
+      return data;
     },
     async claimSite(sandboxId: string) {
       const userId = _options.getUserId();
@@ -49,6 +49,7 @@ export default (() => {
       const response = await axios.get(`${NetlifyBaseURL}/${sandboxId}`, {
         headers: createHeaders(_options.provideJwtToken),
       });
+
       return response.data;
     },
     async deploy(sandbox: Sandbox): Promise<string> {
@@ -102,34 +103,3 @@ export default (() => {
     },
   };
 })();
-
-function delay(t) {
-  return new Promise(resolve => {
-    setTimeout(resolve, t);
-  });
-}
-
-function pollUntilDone(http, url, interval, timeout, onLogUrlUpdate) {
-  const start = Date.now();
-  function run() {
-    return http
-      .request({ url })
-      .then(({ data }) => {
-        if (data.status.status !== 'IN_PROGRESS') {
-          // DOOOONE
-          return data;
-        }
-        if (timeout !== 0 && Date.now() - start > timeout) {
-          return data;
-        }
-
-        if (data.status.logUrl) {
-          onLogUrlUpdate(data.status.logUrl);
-        }
-        // run again with a short delay
-        return delay(interval).then(run);
-      })
-      .catch(e => e);
-  }
-  return run();
-}

@@ -25,7 +25,6 @@ export const deployWithNetlify: AsyncAction = async ({
   }
 
   state.deployment.deploying = true;
-  state.deployment.netlifyLogs = null;
 
   try {
     const id = await effects.netlify.deploy(sandbox);
@@ -34,15 +33,11 @@ export const deployWithNetlify: AsyncAction = async ({
     await actions.deployment.getNetlifyDeploys();
 
     state.deployment.building = true;
-    await effects.netlify.waitForDeploy(id, logUrl => {
-      if (!state.deployment.netlifyLogs) {
-        state.deployment.netlifyLogs = logUrl;
-      }
-    });
-    effects.notificationToast.success('Sandbox Deployed');
+    await effects.netlify.getLogs(id);
+    effects.notificationToast.success('Sandbox Deploying');
   } catch (error) {
     actions.internal.handleError({
-      message: 'An unknown error occurred when deploying your Netlify site',
+      message: 'An error occurred when deploying your Netlify site',
       error,
     });
   }
