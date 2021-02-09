@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const fs = require('fs-extra');
 const path = require('path');
+const rimrafSync = require('rimraf').sync;
 const { staticAssets } = require('../config/build');
 
 const { SANDBOX_ONLY } = process.env;
@@ -35,6 +36,8 @@ const assets = [
 
 const rootPath = path.resolve(__dirname, '../../..');
 const buildPath = path.resolve(rootPath, 'www');
+
+rimrafSync(buildPath);
 
 console.log('Copying assets...');
 
