@@ -137,7 +137,14 @@ const createIframe = () => {
 };
 
 try {
-  setTimeout(() => createIframe(), 250);
+  const sandboxId = document.location.host.split('.')[0];
+  fetch(`https://codesandbox.io/api/v1/sandboxes/${sandboxId}/phishing`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.flagged) {
+        setTimeout(() => createIframe(), 250);
+      }
+    });
 } catch (e) {
   console.error(e);
   /* catch */
