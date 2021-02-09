@@ -7,15 +7,23 @@ const NetlifyBaseURL = 'https://builder.csbops.io/netlify/site';
 
 type Options = {
   getUserId(): string | null;
+  provideJwtToken: () => string | null;
 };
 
 export default (() => {
   let _options: Options;
+  const createHeaders = (provideJwt: () => string | null) =>
+    provideJwt()
+      ? {
+          Authorization: `Bearer ${provideJwt()}`,
+        }
+      : {};
 
   return {
     initialize(options: Options) {
       _options = options;
     },
+
     async waitForDeploy(id: string, onLogUrlUpdate: (logUrl: string) => void) {
       const url = `${NetlifyBaseURL}/${id}/status`;
 
@@ -31,16 +39,16 @@ export default (() => {
 
       const { data } = await axios.post(
         `${NetlifyBaseURL}/${sandboxId}/claim`,
-        { sessionId }
+        { sessionId },
+        { headers: createHeaders(_options.provideJwtToken) }
       );
 
       return data.claim;
     },
     async getDeployments(sandboxId: string): Promise<NetlifySite> {
-      const response = await axios.request({
-        url: `${NetlifyBaseURL}/${sandboxId}`,
+      const response = await axios.get(`${NetlifyBaseURL}/${sandboxId}`, {
+        headers: createHeaders(_options.provideJwtToken),
       });
-
       return response.data;
     },
     async deploy(sandbox: Sandbox): Promise<string> {
@@ -65,22 +73,30 @@ export default (() => {
       try {
         const { data } = await axios.request({
           url: `${NetlifyBaseURL}/${sandbox.id}`,
+          headers: createHeaders(_options.provideJwtToken),
         });
 
         id = data.site_id;
       } catch (e) {
-        const { data } = await axios.post(NetlifyBaseURL, {
-          name: `csb-${sandbox.id}`,
-          session_id: `${userId}-${sandbox.id}`,
-        });
+        const { data } = await axios.post(
+          NetlifyBaseURL,
+          {
+            name: `csb-${sandbox.id}`,
+            sessionId: `${userId}-${sandbox.id}`,
+          },
+          { headers: createHeaders(_options.provideJwtToken) }
+        );
         id = data.site_id;
       }
-
-      await axios.post(`${NetlifyBaseURL}/${sandbox.id}/deploy`, {
-        siteId: id,
-        dist: buildConfig.publish || template.distDir,
-        buildCommand: buildCommandFromConfig || buildCommand(template.name),
-      });
+      await axios.post(
+        `${NetlifyBaseURL}/${sandbox.id}/deploy`,
+        {
+          siteId: id,
+          dist: buildConfig.publish || template.distDir,
+          buildCommand: buildCommandFromConfig || buildCommand(template.name),
+        },
+        { headers: createHeaders(_options.provideJwtToken) }
+      );
 
       return id;
     },

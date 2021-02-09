@@ -32,8 +32,7 @@ export const deployWithNetlify: AsyncAction = async ({
     state.deployment.deploying = false;
 
     await actions.deployment.getNetlifyDeploys();
-    // Does not seem that we use this thing? Not in other code either
-    // const deploys = await actions.deployment.internal.getNetlifyDeploys();
+
     state.deployment.building = true;
     await effects.netlify.waitForDeploy(id, logUrl => {
       if (!state.deployment.netlifyLogs) {
