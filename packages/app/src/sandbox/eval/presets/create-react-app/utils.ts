@@ -16,32 +16,29 @@ export async function isMinimalReactDomVersion(
   version: string,
   minimalVersion: string
 ): Promise<boolean> {
-  if (version) {
-    const absoluteDependencies = await getAbsoluteDependencies({
-      'react-dom': version,
-    });
-
-    return (
-      absoluteDependencies['react-dom'].startsWith('0.0.0') ||
-      isMinimalSemverVersion(absoluteDependencies['react-dom'], minimalVersion)
-    );
-  }
-
-  return false;
+  return isMinimalAbsoluteVersion('react-dom', version, minimalVersion);
 }
 
 export async function isMinimalReactVersion(
   version: string,
   minimalVersion: string
 ): Promise<boolean> {
+  return isMinimalAbsoluteVersion('react', version, minimalVersion);
+}
+
+export async function isMinimalAbsoluteVersion(
+  name: string,
+  version: string,
+  minimalVersion: string
+): Promise<boolean> {
   if (version) {
     const absoluteDependencies = await getAbsoluteDependencies({
-      react: version,
+      [name]: version,
     });
 
     return (
-      absoluteDependencies.react.startsWith('0.0.0') ||
-      isMinimalSemverVersion(absoluteDependencies.react, minimalVersion)
+      absoluteDependencies[name].startsWith('0.0.0') ||
+      isMinimalSemverVersion(absoluteDependencies[name], minimalVersion)
     );
   }
 
@@ -75,7 +72,11 @@ export async function supportsNewReactTransform(
   const react = dependencies.react || devDependencies.react;
 
   if (reactScripts && react) {
-    return isMinimalReactVersion(react, '17.0.0');
+    const [isReact, isReactScripts] = await Promise.all([
+      isMinimalReactVersion(react, '17.0.0'),
+      isMinimalAbsoluteVersion('react-scripts', reactScripts, '4.0.0'),
+    ]);
+    return isReact && isReactScripts;
   }
 
   return false;
