@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useSandpack } from '../../utils/sandpack-context';
+import { useSandpack } from '../../contexts/sandpack-context';
 import { BackwardIcon, ForwardIcon, RefreshIcon } from '../../icons';
 import { splitUrl } from './utils';
 

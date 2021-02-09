@@ -5,7 +5,6 @@ import {
   IManagerState,
   IModuleError,
   IFiles,
-  IFile,
 } from 'smooshpack';
 
 import {
@@ -95,8 +94,8 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     }
   };
 
-  updateCurrentFile = (file: IFile) => {
-    if (file.code === this.state.files[this.state.activePath]?.code) {
+  updateCurrentFile = (newCode: string) => {
+    if (newCode === this.state.files[this.state.activePath]?.code) {
       return;
     }
 
@@ -105,7 +104,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
     const newFiles = {
       ...files,
-      [activePath]: file,
+      [activePath]: { code: newCode },
     };
 
     this.setState({ files: newFiles });

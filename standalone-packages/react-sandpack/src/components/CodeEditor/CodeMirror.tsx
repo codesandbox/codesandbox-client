@@ -26,7 +26,7 @@ import {
   getSyntaxHighlight,
 } from './utils';
 
-import { ThemeContext } from '../../utils/theme-context';
+import { ThemeContext } from '../../contexts/theme-context';
 import { getFileName } from '../../utils/string-utils';
 import { EditorState as SandpackEditorState } from '../../types';
 

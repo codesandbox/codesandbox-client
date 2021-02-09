@@ -4,7 +4,7 @@ import { Story } from '@storybook/react';
 import { CodeViewer, CodeViewerProps } from '.';
 import { SandpackLayout } from '../../components/SandpackLayout';
 
-import { SandpackProvider } from '../../utils/sandpack-context';
+import { SandpackProvider } from '../../contexts/sandpack-context';
 import { SANDBOX_TEMPLATES } from '../../templates';
 
 export default {

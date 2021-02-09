@@ -2,7 +2,7 @@ import * as React from 'react';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer';
 import { getPrismTheme } from './utils';
 
-import { ThemeContext } from '../../utils/theme-context';
+import { ThemeContext } from '../../contexts/theme-context';
 
 export interface PrismHighlightProps {
   lang?: Language;

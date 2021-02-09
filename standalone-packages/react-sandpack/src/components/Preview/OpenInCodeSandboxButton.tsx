@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IFiles } from 'smooshpack';
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
-import { useSandpack } from '../../utils/sandpack-context';
+import { useSandpack } from '../../contexts/sandpack-context';
 import { CodeSandboxIcon } from '../../icons';
 
 const getFileParameters = (files: IFiles) => {

@@ -12,7 +12,7 @@ export * from './components/TranspiledCodeView';
 
 export * from './themes';
 
-export * from './utils/sandpack-context';
-export * from './utils/theme-context';
+export * from './contexts/sandpack-context';
+export * from './contexts/theme-context';
 
 export * from './types';

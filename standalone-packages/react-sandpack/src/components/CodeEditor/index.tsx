@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { CodeMirror } from './CodeMirror';
-import { useSandpack } from '../../utils/sandpack-context';
+import { useSandpack } from '../../contexts/sandpack-context';
 import { FileTabs } from '../FileTabs';
 import { RunIcon } from '../../icons';
 
@@ -23,9 +23,7 @@ export const CodeEditor = ({
   const code = sandpack.files[activePath].code;
 
   const handleCodeUpdate = (newCode: string) => {
-    sandpack.updateCurrentFile({
-      code: newCode,
-    });
+    sandpack.updateCurrentFile(newCode);
   };
 
   return (

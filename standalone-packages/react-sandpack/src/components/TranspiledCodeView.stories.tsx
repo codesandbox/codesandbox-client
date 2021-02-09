@@ -2,7 +2,7 @@ import React from 'react';
 
 import { TranspiledCodeView } from '../components/TranspiledCodeView';
 import { SandpackLayout } from '../components/SandpackLayout';
-import { SandpackProvider } from '../utils/sandpack-context';
+import { SandpackProvider } from '../contexts/sandpack-context';
 import { CodeEditor } from './CodeEditor';
 
 export default {

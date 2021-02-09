@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RunIcon } from '../../icons';
 
-import { useSandpack } from '../../utils/sandpack-context';
+import { useSandpack } from '../../contexts/sandpack-context';
 import { FileTabs } from '../FileTabs';
 import { PrismHighlight } from './PrismHighlight';
 import { getPrismLanguage } from './utils';

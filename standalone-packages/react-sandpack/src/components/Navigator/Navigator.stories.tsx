@@ -1,6 +1,6 @@
 import React from 'react';
 import { SandpackLayout } from '../../components/SandpackLayout';
-import { SandpackProvider } from '../../utils/sandpack-context';
+import { SandpackProvider } from '../../contexts/sandpack-context';
 import { Preview } from '../Preview';
 
 export default {

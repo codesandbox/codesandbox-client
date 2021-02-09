@@ -4,9 +4,9 @@ import { Story } from '@storybook/react';
 import { CodeEditor, CodeEditorProps } from './index';
 import { SandpackLayout } from '../../components/SandpackLayout';
 
-import { SandpackProvider } from '../../utils/sandpack-context';
+import { SandpackProvider } from '../../contexts/sandpack-context';
 import { SANDBOX_TEMPLATES } from '../../templates';
-import { ThemeProvider } from '../../utils/theme-context';
+import { ThemeProvider } from '../../contexts/theme-context';
 import { sandpackDarkTheme } from '../../themes';
 
 export default {

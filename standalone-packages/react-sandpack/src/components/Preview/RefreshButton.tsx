@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RefreshIcon } from '../../icons';
-import { useSandpack } from '../../utils/sandpack-context';
+import { useSandpack } from '../../contexts/sandpack-context';
 
 export const RefreshButton = () => {
   const { dispatch } = useSandpack();

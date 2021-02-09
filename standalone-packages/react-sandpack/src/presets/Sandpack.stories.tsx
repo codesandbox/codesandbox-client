@@ -44,7 +44,6 @@ export const ReactEditor: Story<SandpackProps> = args => (
       },
     }}
     template="react"
-    openPaths={['/App.js', '/button.js', '/package.json']}
   />
 );
 
@@ -76,7 +75,6 @@ export const DarkTheme: Story<SandpackProps> = args => (
 export const CustomSetup: Story<SandpackProps> = args => (
   <Sandpack
     {...args}
-    openPaths={['/src/main.tsx']}
     setup={{
       entry: '/src/index.tsx',
       main: '/src/main.tsx',

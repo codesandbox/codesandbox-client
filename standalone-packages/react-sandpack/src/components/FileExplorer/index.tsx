@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { ModuleList } from './ModuleList';
 
-import { useSandpack } from '../../utils/sandpack-context';
+import { useSandpack } from '../../contexts/sandpack-context';
 
 export interface FileExplorerProps {
   customStyle?: React.CSSProperties;

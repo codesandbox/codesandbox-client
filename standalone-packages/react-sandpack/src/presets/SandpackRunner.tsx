@@ -4,9 +4,9 @@ import { IFile } from 'smooshpack';
 import { Preview } from '../components/Preview';
 import { SandpackLayout } from '../components/SandpackLayout';
 import { getSetup } from '../templates';
-import { SandpackProvider } from '../utils/sandpack-context';
+import { SandpackProvider } from '../contexts/sandpack-context';
 import { sandpackLightTheme } from '../themes';
-import { ThemeProvider } from '../utils/theme-context';
+import { ThemeProvider } from '../contexts/theme-context';
 import {
   SandboxTemplate,
   SandpackPredefinedTemplate,

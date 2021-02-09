@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SandpackState } from '../types';
-import { useSandpack } from '../utils/sandpack-context';
+import { useSandpack } from '../contexts/sandpack-context';
 import { PrismHighlight } from './CodeViewer/PrismHighlight';
 
 function getTranspiledCode(sandpack: SandpackState) {
