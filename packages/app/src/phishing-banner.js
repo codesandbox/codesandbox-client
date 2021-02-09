@@ -10,7 +10,7 @@ const content = `
       body {
         margin: 0;
       }
-      .banner {
+      #banner {
         background: red;
         color: white;
         display: flex;
@@ -21,22 +21,27 @@ const content = `
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: antialiased;
       }
-      .banner svg {
+      #banner svg {
         flex-shrink: 0;
         margin-right: 12px;
       }
-      .banner p {
+      #banner p {
         margin: 0;
       }
-      .banner a {
+      #banner a {
         color: white;
       }
     </style>
+    <script>
+      function hideBanner() {
+        localStorage.HIDE_PHISHING_BANNER = true;
+        document.querySelector('#banner').style.display = 'none'
+      }
+    </script>
   </head>
 
   <body>
-    <div id="app"></div>
-    <div class="banner">
+    <div id="banner">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -56,7 +61,8 @@ const content = `
         This sandbox has been marked as a potential phishing page.
         <br /><br />Please do not enter username, password or other sensitive
         information on this page.
-        <a href="https://codesandbox.io/docs" target="_blank" rel="noopener noreferrer">Learn more here.</a>
+        <br /><br />
+        <button onclick="hideBanner()">Don't show me this message</button>
       </p>
     </div>
   </body>
@@ -90,6 +96,8 @@ const createIframe = () => {
   if (!isStandalone()) {
     return;
   }
+
+  if (localStorage.HIDE_PHISHING_BANNER) return;
 
   const iframe = document.createElement('iframe');
 
