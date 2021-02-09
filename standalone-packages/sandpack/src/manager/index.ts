@@ -79,7 +79,7 @@ export interface ISandboxInfo {
 const BUNDLER_URL =
   process.env.CODESANDBOX_ENV === 'development'
     ? 'http://localhost:3000'
-    : `https://sandpack-${version.replace(/\./g, '-')}.codesandbox.io`;
+    : `https://${version.replace(/\./g, '-')}-sandpack.codesandbox.io`;
 
 export default class PreviewManager {
   selector: string | undefined;
