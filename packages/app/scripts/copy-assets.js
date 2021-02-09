@@ -20,10 +20,6 @@ const assets = [
     from: 'standalone-packages/monaco-editor/release/min/vs',
     to: 'public/14/vs',
   },
-  {
-    from: 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs2',
-  },
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-editor/release/min/vs',
     to: 'public/vscode27/vs',

@@ -48,31 +48,24 @@ const staticAssets = [
     to: 'static/browserfs11',
   },
   // For caching purposes
-  {
+  !SANDBOX_ONLY && {
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs10',
   },
   // For caching purposes
-  {
+  !SANDBOX_ONLY && {
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs9',
   },
-  {
+  !SANDBOX_ONLY && {
     from: isDev
       ? 'standalone-packages/codesandbox-browserfs/build'
       : 'standalone-packages/codesandbox-browserfs/dist',
     to: 'static/browserfs8',
-  },
-  // For Monaco
-  {
-    from: isDev
-      ? 'standalone-packages/codesandbox-browserfs/build'
-      : 'standalone-packages/codesandbox-browserfs/dist',
-    to: 'static/browserfs3',
   },
 ].filter(Boolean);
 
