@@ -28,7 +28,7 @@ export const OpenInCodeSandboxButton: React.FC = () => {
   return (
     <a
       title="Open in CodeSandbox"
-      href={`https://codesandbox.io/api/v1/sandboxes/define?parameters=${params}`}
+      href={`https://codesandbox.io/api/v1/sandboxes/define?parameters=${params}&query=file=${sandpack.activePath}`}
       target="_blank"
       rel="noreferrer noopener"
       className="sp-button icon-standalone"
@@ -36,7 +36,7 @@ export const OpenInCodeSandboxButton: React.FC = () => {
         position: 'absolute',
         bottom: 'var(--space-2)',
         right: 'var(--space-2)',
-        zIndex: 2,
+        zIndex: 4,
       }}
     >
       <FullScreenIcon />

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { SandpackLayout } from '../components/SandpackLayout';
 import {
   FileResolver,
+  SandboxTemplate,
   SandpackPredefinedTemplate,
   SandpackSetup,
   SandpackTheme,
@@ -46,13 +47,16 @@ export interface SandpackProps {
 }
 
 export const Sandpack: React.FC<SandpackProps> = props => {
+  const projectSetup = getSetup(props.template, props.setup);
+  const { activePath, openPaths } = getInitialEditorState(props, projectSetup);
+
   const presetPreviewOptions = {
     ...{ showOpenInCodeSandbox: false, showNavigator: true },
     ...props.previewOptions,
   };
 
   const presetCodeOptions = {
-    ...{ showTabs: true },
+    ...{ showTabs: openPaths.length > 1 },
     ...props.codeOptions,
   };
 
@@ -63,8 +67,46 @@ export const Sandpack: React.FC<SandpackProps> = props => {
 
   const theme = props.theme || sandpackLightTheme;
 
-  const projectSetup = getSetup(props.template, props.setup);
+  const { height, ...otherStyles } = props.customStyle || {};
 
+  const injectStylesAtRuntime = props.injectStylesAtRuntime ?? false;
+  if (
+    injectStylesAtRuntime &&
+    typeof document !== 'undefined' &&
+    !styleInjected
+  ) {
+    const styleTag = document.createElement('style');
+    styleTag.textContent = getStyleSheet();
+    document.head.appendChild(styleTag);
+
+    styleInjected = true;
+  }
+
+  return (
+    <SandpackProvider
+      files={projectSetup.files}
+      dependencies={projectSetup.dependencies}
+      entry={projectSetup.entry}
+      environment={projectSetup.environment}
+      openPaths={openPaths}
+      activePath={activePath}
+      {...presetExecutionOptions}
+      {...props.bundlerOptions}
+    >
+      <ThemeProvider value={theme}>
+        <SandpackLayout style={otherStyles}>
+          <CodeEditor {...presetCodeOptions} customStyle={{ height }} />
+          <Preview {...presetPreviewOptions} customStyle={{ height }} />
+        </SandpackLayout>
+      </ThemeProvider>
+    </SandpackProvider>
+  );
+};
+
+const getInitialEditorState = (
+  props: SandpackProps,
+  projectSetup: SandboxTemplate
+) => {
   // openPaths and activePath override the setup flags
   let openPaths = props.openPaths || [];
   let activePath = props.activePath;
@@ -118,38 +160,5 @@ export const Sandpack: React.FC<SandpackProps> = props => {
     );
   }
 
-  const { height, ...otherStyles } = props.customStyle || {};
-
-  const injectStylesAtRuntime = props.injectStylesAtRuntime ?? false;
-  if (
-    injectStylesAtRuntime &&
-    typeof document !== 'undefined' &&
-    !styleInjected
-  ) {
-    const styleTag = document.createElement('style');
-    styleTag.textContent = getStyleSheet();
-    document.head.appendChild(styleTag);
-
-    styleInjected = true;
-  }
-
-  return (
-    <SandpackProvider
-      files={projectSetup.files}
-      dependencies={projectSetup.dependencies}
-      entry={projectSetup.entry}
-      environment={projectSetup.environment}
-      openPaths={openPaths}
-      activePath={activePath}
-      {...presetExecutionOptions}
-      {...props.bundlerOptions}
-    >
-      <ThemeProvider value={theme}>
-        <SandpackLayout style={otherStyles}>
-          <CodeEditor {...presetCodeOptions} customStyle={{ height }} />
-          <Preview {...presetPreviewOptions} customStyle={{ height }} />
-        </SandpackLayout>
-      </ThemeProvider>
-    </SandpackProvider>
-  );
+  return { openPaths, activePath };
 };

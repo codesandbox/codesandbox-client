@@ -14,7 +14,7 @@ export const RefreshButton = () => {
         position: 'absolute',
         bottom: 'var(--space-2)',
         left: 'var(--space-2)',
-        zIndex: 2,
+        zIndex: 4,
       }}
       onClick={() => dispatch({ type: 'refresh' })}
     >

@@ -6,7 +6,8 @@
   --colors-mainBackground80: #f8f9fbcf;
   --colors-inputBackground: #ffffff;
   --colors-accent: #6caedd;
-  --colors-error: #c02c24;
+  --colors-bg-error: #ffcdca;
+  --colors-fg-error: #811e18;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -188,6 +189,7 @@
 .sp-button {
   appearance: none;
   border: 0;
+  outline: none;
   padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
   border-radius: var(--radii-default);
   display: flex;
@@ -253,6 +255,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 5;
 }
 
 .sp-cubes {
@@ -310,10 +313,25 @@
   }
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .sp-error {
   padding: var(--space-4);
   white-space: pre-wrap;
   font-family: var(--fonts-mono);
-  background-color: var(--colors-error);
-  color: white;
+  background-color: var(--colors-bg-error);
+}
+
+.sp-error-message {
+  animation: fadeIn 0.15s ease-in;
+  color: var(--colors-fg-error);
 }

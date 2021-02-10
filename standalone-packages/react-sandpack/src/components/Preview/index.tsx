@@ -70,7 +70,9 @@ export const Preview: React.FC<PreviewProps> = ({
 
       <div className="sp-preview-frame" id="preview-frame" ref={containerRef}>
         {sandpack.error && (
-          <div className="sp-overlay sp-error">{sandpack.error.message}</div>
+          <div className="sp-overlay sp-error">
+            <div className="sp-error-message">{sandpack.error.message}</div>
+          </div>
         )}
 
         {!showNavigator && <RefreshButton />}
