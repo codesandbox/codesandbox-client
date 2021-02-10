@@ -1,8 +1,9 @@
 .sp-wrapper {
   --colors-highlightText: #5b6776;
-  --colors-defaultText: #999999;
+  --colors-defaultText: #757575;
   --colors-inactive: #e5e7eb;
   --colors-mainBackground: #f8f9fb;
+  --colors-mainBackground80: #f8f9fbcf;
   --colors-inputBackground: #ffffff;
   --colors-accent: #6caedd;
   --colors-error: #c02c24;
@@ -200,6 +201,8 @@
 
 .sp-button.icon-standalone {
   padding: var(--space-1);
+  background: var(--colors-mainBackground80);
+  backdrop-filter: blur(4px);
 }
 
 .sp-button.icon {

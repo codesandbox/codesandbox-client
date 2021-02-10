@@ -8,11 +8,12 @@ export const RefreshButton = () => {
   return (
     <button
       type="button"
+      title="Refresh Sandpack"
       className="sp-button icon-standalone"
       style={{
         position: 'absolute',
-        top: 'var(--space-2)',
-        right: 'var(--space-2)',
+        bottom: 'var(--space-2)',
+        left: 'var(--space-2)',
         zIndex: 2,
       }}
       onClick={() => dispatch({ type: 'refresh' })}

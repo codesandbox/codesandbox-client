@@ -2,7 +2,7 @@ import * as React from 'react';
 import { IFiles } from 'smooshpack';
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { useSandpack } from '../../contexts/sandpack-context';
-import { CodeSandboxIcon } from '../../icons';
+import { FullScreenIcon } from '../../icons';
 
 const getFileParameters = (files: IFiles) => {
   const normalized: {
@@ -39,7 +39,7 @@ export const OpenInCodeSandboxButton: React.FC = () => {
         zIndex: 2,
       }}
     >
-      <CodeSandboxIcon />
+      <FullScreenIcon />
     </a>
   );
 };

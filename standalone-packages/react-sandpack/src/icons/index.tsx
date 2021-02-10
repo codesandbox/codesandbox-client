@@ -52,7 +52,7 @@ export const RefreshIcon = () => (
   </svg>
 );
 
-export const CodeSandboxIcon = () => (
+export const FullScreenIcon = () => (
   <svg
     width="24"
     height="24"
@@ -60,6 +60,10 @@ export const CodeSandboxIcon = () => (
     fill="currentColor"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M13.5087 12.2105L8.45455 17.4392L9.2002 18.2106L15 12.2106L9.2002 6.21057L8.45455 7.02875L13.5087 12.2105Z" />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M11 5H6H5.70715H5V6V11H6L6 6.70706L10.2238 10.9309L10.9309 10.2238L6.70715 6H11V5ZM12.9957 18.9956L17.9957 18.9956H18.2886H18.9957V17.9956L18.9957 12.9956H17.9957V17.2885L13.8252 13.118L13.1181 13.8251L17.2886 17.9956L12.9957 17.9956V18.9956Z"
+    />
   </svg>
 );
