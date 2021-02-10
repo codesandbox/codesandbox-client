@@ -87,7 +87,7 @@ export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
   if (!currentSandbox) {
-    return [PROJECT_SUMMARY, CONFIGURATION, GITHUB, DEPLOYMENT, SERVER, LIVE];
+    return [PROJECT_SUMMARY, CONFIGURATION, SEARCH, GITHUB, DEPLOYMENT, LIVE];
   }
 
   if (currentSandbox.git) {
@@ -147,7 +147,7 @@ export default function getItems(
   }
 
   if (!currentSandbox || !currentSandbox.owned) {
-    return [PROJECT_SUMMARY, CONFIGURATION];
+    return [PROJECT_SUMMARY, CONFIGURATION, SEARCH];
   }
 
   const isCustomTemplate = !!currentSandbox.customTemplate;

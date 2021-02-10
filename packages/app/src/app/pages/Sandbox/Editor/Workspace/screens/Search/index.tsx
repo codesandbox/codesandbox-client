@@ -112,7 +112,7 @@ export const Search = () => {
     }
   };
 
-  const getHeight = (i: string) => 32 + results[i].matches.length * 26;
+  const getHeight = (i: string) => 32 + results[i].matches.length * 28;
 
   const Row = ({ index, style }) => (
     <Element style={style}>
@@ -245,7 +245,7 @@ export const Search = () => {
           css={{ height: 'calc(100% - 16px)' }}
         >
           <List
-            height={wrapper.current ? wrapper.current.clientHeight : 0}
+            height={wrapper.current ? wrapper.current.clientHeight - 50 : 0}
             itemCount={results.length}
             itemSize={getHeight}
             width={wrapper.current ? wrapper.current.clientWidth : 0}

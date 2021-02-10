@@ -46,7 +46,10 @@ export const Result = ({ id, title, matches, code }) => {
             >
               <Stack gap={2} align="center">
                 <Text block variant="muted" size={3}>
-                  {code.substring(match[0] - 5, match[0])}
+                  {code
+                    .substring(match[0] - 10, match[0])
+                    .split('\n')
+                    .join(' ')}
                   <span
                     css={css({
                       background: 'rgba(251, 204, 67, 0.2)',
@@ -54,7 +57,10 @@ export const Result = ({ id, title, matches, code }) => {
                   >
                     {code.substring(match[0], match[1])}
                   </span>
-                  {code.substring(match[1], match[1] + 5)}
+                  {code
+                    .substring(match[1], match[1] + 15)
+                    .split('\n')
+                    .join(' ')}
                 </Text>
               </Stack>
             </button>
