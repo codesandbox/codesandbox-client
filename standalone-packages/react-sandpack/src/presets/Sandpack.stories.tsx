@@ -133,6 +133,7 @@ export const Main: React.FC<{test: string}> = ({test}) => {
     <h1>Hello {test}</h1>
   )
 }`,
+          open: true,
         },
       },
     }}

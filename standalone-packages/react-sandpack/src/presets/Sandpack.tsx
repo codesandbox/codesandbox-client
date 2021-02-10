@@ -19,11 +19,11 @@ let styleInjected = false;
 export interface SandpackProps {
   template?: SandpackPredefinedTemplate;
   setup?: SandpackSetup;
-  openPaths?: string[];
-  activePath?: string;
+  openPaths?: string[]; // Move to options
+  activePath?: string; // Move to options
   previewOptions?: {
     showNavigator?: boolean;
-    showOpenInCodeSandbox?: boolean;
+    showOpenInCodeSandbox?: boolean; // Map to button or remove?
   };
   codeOptions?: {
     showLineNumbers?: boolean;
@@ -95,7 +95,9 @@ export const Sandpack: React.FC<SandpackProps> = props => {
     if (openPaths.length === 0) {
       openPaths = Object.keys(props.setup.files);
     }
-  } else {
+  }
+
+  if (openPaths.length === 0) {
     // If no files are received, use the project setup / template
     openPaths = Object.keys(projectSetup.files);
   }
