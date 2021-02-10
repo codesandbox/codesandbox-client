@@ -63,7 +63,6 @@ export const Search = () => {
       const openFiles = (
         window.CSEditor?.editor?.editorService?.editors || []
       ).map(file => file.name);
-
       setModules(
         allModules.filter((file: Module) => openFiles.includes(file.title))
       );
@@ -87,7 +86,7 @@ export const Search = () => {
       searchFiles(searchValue);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options, filesToSearch, filesToExclude]);
+  }, [options, filesToSearch, filesToExclude, openFilesSearch]);
 
   const searchCall = async ({ value, files }) => {
     if (searchWorker.current) {
