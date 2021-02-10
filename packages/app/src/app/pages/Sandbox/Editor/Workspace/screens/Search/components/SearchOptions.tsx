@@ -8,20 +8,17 @@ const OptionButton = ({ title, active, onClick, children }) => (
   <Tooltip label={title}>
     <Button
       variant="link"
-      css={{
+      css={css({
         paddingLeft: 0,
         paddingRight: 0,
         width: '16px',
-        color: active ? 'sideBar.foreground' : 'inherit',
+        color: active ? 'sideBar.foreground' : 'tab.inactiveForeground',
         borderRadius: '1px',
         '.frame': {
           display: active ? 'block' : 'none',
         },
         '.overlay': {
           display: 'none',
-        },
-        ':hover:not(:disabled)': {
-          backgroundColor: 'secondaryButton.background',
         },
         ':hover .inner': {
           color: 'black',
@@ -31,9 +28,8 @@ const OptionButton = ({ title, active, onClick, children }) => (
         },
         ':focus:not(:disabled)': {
           outline: 'none',
-          backgroundColor: 'secondaryButton.background',
         },
-      }}
+      })}
       onClick={onClick}
     >
       {children}
@@ -53,7 +49,7 @@ export const SearchOptions = ({ options, setOptions }) => {
     <Stack
       css={css({
         position: 'absolute',
-        right: 0,
+        right: 2,
         top: 0,
       })}
       gap={1}

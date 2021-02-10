@@ -5,6 +5,7 @@ import {
   Text,
   Element,
   Input,
+  Button,
   Stack,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
@@ -15,6 +16,7 @@ import { Result } from './components/Result';
 import SearchWorker from './search.worker';
 import { TabButton } from './components/TabButton';
 import { SearchOptions } from './components/SearchOptions';
+import { MoreIcon, SearchIcon } from './icons';
 
 import { FileFilters } from './components/FileFilters';
 
@@ -47,6 +49,7 @@ export const Search = () => {
   const [results, setResults] = useState([]);
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
   const [modules, setModules] = useState<Module[]>(allModules);
+  const [showFileFilters, setShowFileFilters] = useState(false);
   const [options, setOptions] = useState({
     [OptionTypes.CaseSensitive]: false,
     [OptionTypes.Regex]: false,
@@ -135,29 +138,66 @@ export const Search = () => {
       <Element
         padding={2}
         marginBottom={5}
-        css={{ height: 'calc(100% - 16px)', overflow: 'hidden' }}
+        css={{
+          height: 'calc(100% - 16px)',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
       >
         <Element
-          css={css({
+          css={{
             position: 'relative',
-          })}
+            display: 'grid',
+            gridTemplateColumns: '1fr 26px',
+            gridGap: 2,
+          }}
         >
-          <Input
-            marginBottom={4}
+          <Element
             css={css({
-              paddingRight: '50px',
+              position: 'relative',
             })}
-            placeholder="Search"
-            onChange={e => {
-              setSearchValue(e.target.value);
-              searchFiles(e.target.value);
-            }}
-          />
-          <SearchOptions options={options} setOptions={setOptions} />
+          >
+            <SearchIcon />
+            <Input
+              marginBottom={4}
+              css={css({
+                paddingRight: '50px',
+                paddingLeft: '30px',
+              })}
+              placeholder="Search"
+              onChange={e => {
+                setSearchValue(e.target.value);
+                searchFiles(e.target.value);
+              }}
+            />
+            <SearchOptions options={options} setOptions={setOptions} />
+          </Element>
+          <Button
+            variant="secondary"
+            autoWidth
+            onClick={() => setShowFileFilters(exclude => !exclude)}
+            css={css({
+              color: showFileFilters
+                ? 'sideBar.foreground'
+                : 'tab.inactiveForeground',
+
+              ':hover:not(:disabled)': {
+                color: 'sideBar.foreground',
+              },
+
+              ':focus:not(:disabled)': {
+                outline: 'none',
+              },
+            })}
+          >
+            <MoreIcon />
+          </Button>
         </Element>
+
         <FileFilters
           setFilesToExclude={setFilesToExclude}
           setFilesToSearch={setFilesToSearch}
+          showFileFilters={showFileFilters}
         />
         <Stack
           gap={2}

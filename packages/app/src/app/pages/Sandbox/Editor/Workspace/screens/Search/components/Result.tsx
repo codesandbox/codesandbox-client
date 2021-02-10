@@ -3,7 +3,6 @@ import getType from 'app/utils/get-type';
 import { Text, Element, ListAction, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';
-import { FileIcon } from '../icons';
 import EntryIcon from '../../../Files/DirectoryEntry/Entry/EntryIcons';
 
 export const Result = ({ id, title, matches, code }) => {
@@ -21,8 +20,8 @@ export const Result = ({ id, title, matches, code }) => {
   };
 
   return (
-    <ListAction key={id} paddingY={2} css={css({ display: 'block' })}>
-      <Stack gap={2}>
+    <Element key={id} paddingY={2} css={css({ display: 'block' })}>
+      <Stack gap={2} paddingBottom={2} paddingTop={4}>
         <EntryIcon type={getType(title)} />
 
         <Text block variant="muted" size={3}>
@@ -31,37 +30,37 @@ export const Result = ({ id, title, matches, code }) => {
       </Stack>
       <Element>
         {matches.map(match => (
-          <button
-            type="button"
-            css={css({
-              '-webkit-appearance': 'none',
-              border: 'none',
-              background: 'transparent',
-              display: 'block',
-              width: '100%',
-              cursor: 'pointer',
-            })}
-            key={`${match[0]}-${match[1]}`}
-            onClick={() => open(id, match)}
-          >
-            <Stack gap={2} paddingLeft={4} paddingTop={2} align="center">
-              <FileIcon />
-
-              <Text block variant="muted" size={3}>
-                {code.substring(match[0] - 5, match[0])}
-                <span
-                  css={css({
-                    background: 'rgba(251, 204, 67, 0.2)',
-                  })}
-                >
-                  {code.substring(match[0], match[1])}
-                </span>
-                {code.substring(match[1], match[1] + 5)}
-              </Text>
-            </Stack>
-          </button>
+          <ListAction css={css({ minHeight: '28px' })}>
+            <button
+              type="button"
+              css={css({
+                '-webkit-appearance': 'none',
+                border: 'none',
+                background: 'transparent',
+                display: 'block',
+                width: '100%',
+                cursor: 'pointer',
+              })}
+              key={`${match[0]}-${match[1]}`}
+              onClick={() => open(id, match)}
+            >
+              <Stack gap={2} align="center">
+                <Text block variant="muted" size={3}>
+                  {code.substring(match[0] - 5, match[0])}
+                  <span
+                    css={css({
+                      background: 'rgba(251, 204, 67, 0.2)',
+                    })}
+                  >
+                    {code.substring(match[0], match[1])}
+                  </span>
+                  {code.substring(match[1], match[1] + 5)}
+                </Text>
+              </Stack>
+            </button>
+          </ListAction>
         ))}
       </Element>
-    </ListAction>
+    </Element>
   );
 };

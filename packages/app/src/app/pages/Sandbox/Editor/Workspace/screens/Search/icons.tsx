@@ -1,11 +1,26 @@
 import React from 'react';
+import css from '@styled-system/css';
 
-export const FileIcon = props => (
-  <svg width={16} height={16} fill="none" viewBox="0 0 16 16" {...props}>
-    <rect width={12} height={12} x={2} y={2} fill="#fff" rx={1} />
-    <path fill="#757575" d="M3 5H13V6H3z" />
-    <path fill="#0971F1" d="M3 7H13V8H3z" />
-    <path fill="#757575" d="M3 9H13V10H3z" />
+export const SearchIcon = props => (
+  <svg
+    width={12}
+    css={css({
+      position: 'absolute',
+      left: '6px',
+      color: 'secondaryButton.foreground',
+      top: '7px',
+    })}
+    height={13}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M6.966 7.932a4.15 4.15 0 01-2.69.993C1.916 8.925 0 6.927 0 4.463 0 1.998 1.915 0 4.277 0s4.276 1.998 4.276 4.463c0 1.063-.356 2.04-.951 2.806L12 11.86l-.635.663-4.399-4.59zm.689-3.47c0 1.947-1.513 3.525-3.378 3.525C2.41 7.987.899 6.41.899 4.463.899 2.516 2.41.938 4.277.938c1.865 0 3.378 1.578 3.378 3.525z"
+      css={css({ fill: 'tab.inactiveForeground' })}
+    />
   </svg>
 );
 
