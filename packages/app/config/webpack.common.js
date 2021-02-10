@@ -1,7 +1,6 @@
 /* eslint-disable global-require */
 const webpack = require('webpack');
 const path = require('path');
-const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -121,6 +120,7 @@ module.exports = {
         ],
         'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
         'watermark-button': path.join(paths.src, 'watermark-button.js'),
+        'phishing-banner': path.join(paths.src, 'phishing-banner.js'),
         embed: [
           require.resolve('./polyfills'),
           path.join(paths.embedSrc, 'index.js'),
