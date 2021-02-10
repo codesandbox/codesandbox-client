@@ -12,8 +12,8 @@ const OptionButton = ({ title, active, onClick, children }) => (
         paddingLeft: 0,
         paddingRight: 0,
         width: '16px',
-        color: active ? 'white' : 'inherit',
-        borderRadius: '50%',
+        color: active ? 'sideBar.foreground' : 'inherit',
+        borderRadius: '1px',
         '.frame': {
           display: active ? 'block' : 'none',
         },

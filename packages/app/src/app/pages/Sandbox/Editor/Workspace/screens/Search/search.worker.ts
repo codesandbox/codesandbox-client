@@ -1,15 +1,51 @@
 import { Module } from '@codesandbox/common/lib/types';
+import minimatch from 'minimatch';
 import { Options } from '.';
 
 export default class SearchWorker {
   async search(term: string, modules: Module[], options: Options) {
-    const searchable = modules.map(m => ({
+    const { filesToExclude, filesToSearch, regex, caseSensitive } = options;
+
+    let searchable: Module[] = modules.map(m => ({
       ...m,
       matches: [],
     }));
 
+    if (filesToSearch) {
+      const matchesFiles = createIncludedFiles(filesToSearch, {
+        nonegate: true,
+      });
+
+      searchable = searchable.filter(file => matchesFiles.includes(file.path));
+    }
+
+    if (filesToExclude) {
+      const negateVersion = filesToExclude.startsWith('!')
+        ? filesToExclude
+        : '!' + filesToExclude;
+
+      const matchesFiles = createIncludedFiles(negateVersion);
+
+      searchable = searchable.filter(file => matchesFiles.includes(file.path));
+    }
+
+    function createIncludedFiles(glob: string, miniMatchOptions?: Object) {
+      return searchable
+        .map(file =>
+          file.path.startsWith('/') ? file.path.substring(1) : file.path
+        )
+        .filter(
+          minimatch.filter(glob, {
+            matchBase: true,
+            nocase: true,
+            ...miniMatchOptions,
+          })
+        )
+        .map(path => `/${path}`);
+    }
+
     function searchString(s: string, termString: string) {
-      if (options.regex) {
+      if (regex) {
         try {
           return s.search(termString);
         } catch (e) {
@@ -40,8 +76,8 @@ export default class SearchWorker {
     if (term && modules) {
       return searchable
         .map(file => {
-          let s;
-          if (options.caseSensitive) {
+          let s: number;
+          if (caseSensitive) {
             s = searchString(file.code, term);
           } else {
             s = searchString(
@@ -51,9 +87,9 @@ export default class SearchWorker {
           }
 
           if (s !== -1) {
-            let str;
-            let searchTerm;
-            if (options.caseSensitive) {
+            let str: string;
+            let searchTerm: string;
+            if (caseSensitive) {
               str = file.code;
               searchTerm = term;
             } else {

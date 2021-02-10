@@ -8,12 +8,15 @@ import {
   Stack,
 } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
+
 import css from '@styled-system/css';
 import { Module } from '@codesandbox/common/lib/types';
 import { Result } from './components/Result';
 import SearchWorker from './search.worker';
 import { TabButton } from './components/TabButton';
 import { SearchOptions } from './components/SearchOptions';
+
+import { FileFilters } from './components/FileFilters';
 
 export enum OptionTypes {
   CaseSensitive = 'caseSensitive',
@@ -22,7 +25,11 @@ export enum OptionTypes {
 }
 
 export type Options = {
-  [key in OptionTypes]: boolean;
+  caseSensitive: boolean;
+  regex: boolean;
+  matchFullWord: boolean;
+  filesToSearch: string;
+  filesToExclude: string;
 };
 
 export const Search = () => {
@@ -35,6 +42,8 @@ export const Search = () => {
   const wrapper = useRef<any>();
   const [openFilesSearch, setOpenFilesSearch] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [filesToSearch, setFilesToSearch] = useState('');
+  const [filesToExclude, setFilesToExclude] = useState('');
   const [results, setResults] = useState([]);
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
   const [modules, setModules] = useState<Module[]>(allModules);
@@ -75,11 +84,15 @@ export const Search = () => {
       searchFiles(searchValue);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options]);
+  }, [options, filesToSearch, filesToExclude]);
 
   const searchCall = async ({ value, files }) => {
     if (searchWorker.current) {
-      const val = await searchWorker.current.search(value, files, options);
+      const val = await searchWorker.current.search(value, files, {
+        ...options,
+        filesToSearch,
+        filesToExclude,
+      });
       setResults(val);
       if (list.current) {
         list.current.resetAfterIndex(0);
@@ -90,6 +103,10 @@ export const Search = () => {
   const searchFiles = (value: string) => {
     if (value.length > 1) {
       searchCall({ value, files: modules });
+    }
+
+    if (!value) {
+      setResults([]);
     }
   };
 
@@ -138,6 +155,10 @@ export const Search = () => {
           />
           <SearchOptions options={options} setOptions={setOptions} />
         </Element>
+        <FileFilters
+          setFilesToExclude={setFilesToExclude}
+          setFilesToSearch={setFilesToSearch}
+        />
         <Stack
           gap={2}
           paddingY={2}
