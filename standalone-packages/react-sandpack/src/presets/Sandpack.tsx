@@ -3,13 +3,14 @@ import { SandpackLayout } from '../components/SandpackLayout';
 import {
   FileResolver,
   SandboxTemplate,
+  SandpackFiles,
   SandpackPredefinedTemplate,
   SandpackSetup,
   SandpackTheme,
 } from '../types';
 import { SandpackProvider } from '../contexts/sandpack-context';
-import { CodeEditor } from '../components/CodeEditor';
-import { Preview } from '../components/Preview';
+import { CodeEditor, CodeEditorOptions } from '../components/CodeEditor';
+import { Preview, PreviewOptions } from '../components/Preview';
 import { getSetup } from '../templates';
 import { sandpackLightTheme } from '../themes';
 import { ThemeProvider } from '../contexts/theme-context';
@@ -18,51 +19,62 @@ import { getStyleSheet } from '../styles';
 let styleInjected = false;
 
 export interface SandpackProps {
+  files?: SandpackFiles;
   template?: SandpackPredefinedTemplate;
-  setup?: SandpackSetup;
-  openPaths?: string[]; // Move to options
-  activePath?: string; // Move to options
-  previewOptions?: {
+  customSetup?: SandpackSetup;
+
+  theme?: SandpackTheme;
+  customStyle?: React.CSSProperties;
+  injectStylesAtRuntime?: boolean; // Temporary solution for conditional style injection
+
+  options?: {
+    openPaths?: string[];
+    activePath?: string;
+
     showNavigator?: boolean;
-    showOpenInCodeSandbox?: boolean; // Map to button or remove?
-  };
-  codeOptions?: {
+
     showLineNumbers?: boolean;
     showTabs?: boolean;
     wrapContent?: boolean;
-  };
-  bundlerOptions?: {
+
     bundlerURL?: string;
     skipEval?: boolean;
     fileResolver?: FileResolver;
-  };
-  executionOptions?: {
+
     autorun?: boolean;
     recompileMode?: 'immediate' | 'delayed';
     recompileDelay?: number;
   };
-  theme?: SandpackTheme;
-  customStyle?: React.CSSProperties;
-  injectStylesAtRuntime?: boolean; // Temporary solution for conditional style injection
 }
 
 export const Sandpack: React.FC<SandpackProps> = props => {
-  const projectSetup = getSetup(props.template, props.setup);
+  const userInputSetup: SandpackSetup = {
+    ...props.customSetup,
+    files: {
+      ...props.customSetup?.files,
+      ...props.files,
+    },
+  };
+  const projectSetup = getSetup(props.template, userInputSetup);
   const { activePath, openPaths } = getInitialEditorState(props, projectSetup);
 
-  const presetPreviewOptions = {
-    ...{ showOpenInCodeSandbox: false, showNavigator: true },
-    ...props.previewOptions,
+  const previewOptions: PreviewOptions = {
+    showNavigator: props.options?.showNavigator,
   };
 
-  const presetCodeOptions = {
-    ...{ showTabs: openPaths.length > 1 },
-    ...props.codeOptions,
+  const codeEditorOptions: CodeEditorOptions = {
+    showTabs: props.options?.showTabs ?? openPaths.length > 1,
+    showLineNumbers: props.options?.showLineNumbers,
+    wrapContent: props.options?.wrapContent,
   };
 
-  const presetExecutionOptions = {
-    ...{ autorun: true },
-    ...props.executionOptions,
+  const providerOptions = {
+    autorun: props.options?.autorun ?? true,
+    recompileMode: props.options?.recompileMode,
+    recompileDelay: props.options?.recompileDelay,
+    bundlerURL: props.options?.bundlerURL,
+    skipEval: props.options?.skipEval,
+    fileResolver: props.options?.fileResolver,
   };
 
   const theme = props.theme || sandpackLightTheme;
@@ -90,13 +102,12 @@ export const Sandpack: React.FC<SandpackProps> = props => {
       environment={projectSetup.environment}
       openPaths={openPaths}
       activePath={activePath}
-      {...presetExecutionOptions}
-      {...props.bundlerOptions}
+      {...providerOptions}
     >
       <ThemeProvider value={theme}>
         <SandpackLayout style={otherStyles}>
-          <CodeEditor {...presetCodeOptions} customStyle={{ height }} />
-          <Preview {...presetPreviewOptions} customStyle={{ height }} />
+          <CodeEditor {...codeEditorOptions} customStyle={{ height }} />
+          <Preview {...previewOptions} customStyle={{ height }} />
         </SandpackLayout>
       </ThemeProvider>
     </SandpackProvider>
@@ -108,11 +119,11 @@ const getInitialEditorState = (
   projectSetup: SandboxTemplate
 ) => {
   // openPaths and activePath override the setup flags
-  let openPaths = props.openPaths || [];
-  let activePath = props.activePath;
+  let openPaths = props.options?.openPaths || [];
+  let activePath = props.options?.activePath;
 
-  if (openPaths.length === 0 && props.setup?.files) {
-    const inputFiles = props.setup.files;
+  if (openPaths.length === 0 && props.files) {
+    const inputFiles = props.files;
 
     // extract open and active files from the custom input files
     Object.keys(inputFiles).forEach(filePath => {
@@ -135,7 +146,7 @@ const getInitialEditorState = (
 
     // If no open flag was specified, all files from the user input are open
     if (openPaths.length === 0) {
-      openPaths = Object.keys(props.setup.files);
+      openPaths = Object.keys(props.files);
     }
   }
 

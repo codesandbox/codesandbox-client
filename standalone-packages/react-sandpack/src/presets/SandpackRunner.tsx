@@ -8,32 +8,32 @@ import { SandpackProvider } from '../contexts/sandpack-context';
 import { sandpackLightTheme } from '../themes';
 import { ThemeProvider } from '../contexts/theme-context';
 import {
-  SandboxTemplate,
   SandpackPredefinedTemplate,
+  SandpackSetup,
   SandpackTheme,
 } from '../types';
 
 export interface SandpackRunnerProps {
   code?: string;
   template?: SandpackPredefinedTemplate;
-  setup?: Partial<SandboxTemplate>;
-  showNavigator?: boolean;
-  showOpenInCodeSandbox?: boolean;
-  bundlerUrl?: string;
+  customSetup?: SandpackSetup;
   theme?: SandpackTheme;
   customStyle?: React.CSSProperties;
+  options?: {
+    showNavigator?: boolean;
+    bundlerUrl?: string;
+  };
 }
 
 export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
   code,
   template,
-  setup,
-  bundlerUrl,
-  showNavigator = false,
+  customSetup,
+  options,
   theme = sandpackLightTheme,
   customStyle,
 }) => {
-  const projectSetup = getSetup(template, setup);
+  const projectSetup = getSetup(template, customSetup);
 
   if (code) {
     const mainFileName = projectSetup.main;
@@ -53,11 +53,11 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
       dependencies={projectSetup.dependencies}
       entry={projectSetup.entry}
       environment={projectSetup.environment}
-      bundlerURL={bundlerUrl}
+      bundlerURL={options?.bundlerUrl}
     >
       <ThemeProvider value={theme}>
         <SandpackLayout style={customStyle}>
-          <Preview showNavigator={showNavigator} />
+          <Preview showNavigator={options?.showNavigator} />
         </SandpackLayout>
       </ThemeProvider>
     </SandpackProvider>

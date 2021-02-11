@@ -4,12 +4,14 @@ import { useSandpack } from '../../contexts/sandpack-context';
 import { FileTabs } from '../FileTabs';
 import { RunIcon } from '../../icons';
 
-export interface CodeEditorProps {
-  customStyle?: React.CSSProperties;
+export type CodeEditorOptions = {
   showTabs?: boolean;
   showLineNumbers?: boolean;
   wrapContent?: boolean;
-}
+};
+export type CodeEditorProps = CodeEditorOptions & {
+  customStyle?: React.CSSProperties;
+};
 
 export const CodeEditor = ({
   customStyle,

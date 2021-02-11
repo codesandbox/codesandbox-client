@@ -6,10 +6,13 @@ import { LoadingAnimation } from './LoadingAnimation';
 import { OpenInCodeSandboxButton } from './OpenInCodeSandboxButton';
 import { RefreshButton } from './RefreshButton';
 
-export interface PreviewProps {
-  customStyle?: React.CSSProperties;
+export type PreviewOptions = {
   showNavigator?: boolean;
-}
+};
+
+export type PreviewProps = PreviewOptions & {
+  customStyle?: React.CSSProperties;
+};
 
 export const Preview: React.FC<PreviewProps> = ({
   customStyle,

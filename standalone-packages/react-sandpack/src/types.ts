@@ -1,4 +1,4 @@
-import { IManagerState, IModuleError, IFiles } from 'smooshpack';
+import { IManagerState, IModuleError, IFiles, IFile } from 'smooshpack';
 
 export type SandpackContext = SandpackState & {
   dispatch: (message: any) => void;
@@ -11,7 +11,7 @@ export interface SandpackState {
   openPaths: string[];
   activePath: string;
   editorState: EditorState;
-  error: IModuleError | null;
+  error: Partial<IModuleError> | null;
   files: IFiles;
   status: SandpackStatus;
   runSandpack: () => void;
@@ -39,13 +39,13 @@ export type SandpackFile = {
   active?: boolean;
 };
 
-// All fields are optional in the setup prop
-// Also, files can be passed easier as Record<string, string>
+export type SandpackFiles = Record<string, string | SandpackFile>;
+
 export type SandpackSetup = {
-  files?: Record<string, string | SandpackFile>;
   dependencies?: Record<string, string>;
   entry?: string;
   main?: string;
+  files?: Record<string, string | IFile>;
   environment?: SandboxEnviornment;
 };
 

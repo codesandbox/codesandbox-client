@@ -24,7 +24,7 @@ export interface State {
   activePath: string;
   openPaths: string[];
   bundlerState: IManagerState | undefined;
-  error: IModuleError | null;
+  error: Partial<IModuleError> | null;
   sandpackStatus: SandpackStatus;
   editorState: EditorState;
 }
@@ -90,6 +90,14 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       const { title, path, message, line, column } = m;
       this.setState({
         error: { title, path, message, line, column },
+      });
+    } else if (
+      m.type === 'action' &&
+      m.action === 'notification' &&
+      m.notificationType === 'error'
+    ) {
+      this.setState({
+        error: { message: m.title },
       });
     }
   };

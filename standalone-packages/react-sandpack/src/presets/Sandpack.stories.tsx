@@ -36,12 +36,10 @@ const linkCode = `export default function Link() {
 export const ReactEditor: Story<SandpackProps> = args => (
   <Sandpack
     {...args}
-    setup={{
-      files: {
-        '/App.js': reactCode,
-        '/button.js': buttonCode,
-        '/link.js': linkCode,
-      },
+    files={{
+      '/App.js': reactCode,
+      '/button.js': buttonCode,
+      '/link.js': linkCode,
     }}
     template="react"
   />
@@ -51,90 +49,93 @@ export const VanillaEditor: Story<SandpackProps> = args => (
   <Sandpack
     {...args}
     template="vanilla"
-    openPaths={['/src/index.js', '/src/styles.css']}
-    previewOptions={{ showNavigator: false }}
+    options={{
+      openPaths: ['/src/index.js', '/src/styles.css'],
+      showNavigator: true,
+    }}
   />
 );
 
 export const DarkTheme: Story<SandpackProps> = args => (
   <Sandpack
     {...args}
-    setup={{
-      files: {
-        '/App.js': reactCode,
-        '/button.js': buttonCode,
-        '/link.js': linkCode,
+    files={{
+      '/App.js': reactCode,
+      '/button.js': {
+        code: buttonCode,
+        active: true,
       },
+      '/link.js': linkCode,
     }}
     template="react"
     theme={sandpackDarkTheme}
-    activePath="/button.js"
   />
 );
 
 export const CustomSetup: Story<SandpackProps> = args => (
   <Sandpack
     {...args}
-    setup={{
-      entry: '/src/index.tsx',
-      main: '/src/main.tsx',
-      dependencies: {
-        react: 'latest',
-        'react-dom': 'latest',
-        'react-scripts': '3.3.0',
-      },
-      files: {
-        './tsconfig.json': {
-          code: `{
-  "include": [
-    "./src/**/*"
+    options={{ wrapContent: true }}
+    files={{
+      './tsconfig.json': {
+        code: `{
+"include": [
+  "./src/**/*"
+],
+"compilerOptions": {
+  "strict": true,
+  "esModuleInterop": true,
+  "lib": [
+    "dom",
+    "es2015"
   ],
-  "compilerOptions": {
-    "strict": true,
-    "esModuleInterop": true,
-    "lib": [
-      "dom",
-      "es2015"
-    ],
-    "jsx": "react"
-  }
-  }`,
-        },
-        '/public/index.html': {
-          code: `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  </head>
-  <body>
-  <div id="root"></div>
-  </body>
-  </html>`,
-        },
+  "jsx": "react"
+}
+}`,
+      },
+      '/public/index.html': {
+        code: `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+</head>
+<body>
+<div id="root"></div>
+</body>
+</html>`,
+      },
 
-        '/src/index.tsx': {
-          code: `import * as React from "react";
-  import { render } from "react-dom";
-  
-  import { Main } from "./main";
-  
-  const rootElement = document.getElementById("root");
-  render(<Main test="World"/>, rootElement);
-          `,
-        },
+      '/src/index.tsx': {
+        code: `import * as React from "react";
+import { render } from "react-dom";
 
-        '/src/main.tsx': {
-          code: `import * as React from "react";
+import { Main } from "./main";
+
+const rootElement = document.getElementById("root");
+render(<Main test="World"/>, rootElement);
+        `,
+      },
+
+      '/src/main.tsx': {
+        code: `import * as React from "react";
 
 export const Main: React.FC<{test: string}> = ({test}) => {
   return (
     <h1>Hello {test}</h1>
   )
 }`,
-          open: true,
-        },
+        open: true,
+      },
+    }}
+    customSetup={{
+      entry: '/src/index.tsx',
+      main: '/src/main.tsx',
+      dependencies: {
+        react: 'latest',
+        'react-dom': 'latest',
+        'react-scripts': '4.0.0',
       },
     }}
   />
@@ -150,7 +151,7 @@ export const WithCustomLibrary: Story<SandpackProps> = args => (
   <Sandpack
     {...args}
     template="react"
-    setup={{
+    customSetup={{
       files: {
         '/App.js': reactWithLibCode,
       },
@@ -172,19 +173,15 @@ export const MultipleInstances: Story<SandpackProps> = args => (
   <div>
     <Sandpack
       {...args}
-      setup={{
-        files: {
-          '/App.js': helloWorld.replace('World', 'world 1'),
-        },
+      files={{
+        '/App.js': helloWorld.replace('World', 'world 1'),
       }}
       template="react"
     />
     <Sandpack
       {...args}
-      setup={{
-        files: {
-          '/App.js': helloWorld.replace('World', 'world 2'),
-        },
+      files={{
+        '/App.js': helloWorld.replace('World', 'world 2'),
       }}
       template="react"
     />
@@ -215,10 +212,13 @@ export const RunnableComponent = () => {
 
   return (
     <Sandpack
-      setup={projectSetup}
-      executionOptions={{ autorun: false }}
-      codeOptions={{ showTabs: false, showLineNumbers: false }}
-      previewOptions={{ showNavigator: false, showOpenInCodeSandbox: false }}
+      customSetup={projectSetup}
+      options={{
+        autorun: false,
+        showTabs: true,
+        showLineNumbers: true,
+        showNavigator: true,
+      }}
     />
   );
 };

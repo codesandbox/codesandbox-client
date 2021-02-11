@@ -16,9 +16,8 @@ export const getSetup = (
 ): SandboxTemplate => {
   // The input setup might have files in the simple form Record<string, string>
   // so we convert them to the sandbox template format
-  const setup = inputSetup
-    ? convertFilesToSandboxTemplate(inputSetup)
-    : undefined;
+
+  const setup = createSetupFromUserInput(inputSetup);
 
   if (!template) {
     // If not input, default to vanilla
@@ -58,10 +57,14 @@ export const SANDBOX_TEMPLATES: Partial<Record<
   vanilla: VANILLA_TEMPLATE,
 };
 
-const convertFilesToSandboxTemplate = (
-  setup: SandpackSetup
-): Partial<SandboxTemplate> => {
-  if (!setup || !setup.files) {
+const createSetupFromUserInput = (
+  setup?: SandpackSetup
+): Partial<SandboxTemplate> | null => {
+  if (!setup) {
+    return null;
+  }
+
+  if (!setup.files) {
     return setup as Partial<SandboxTemplate>;
   }
 

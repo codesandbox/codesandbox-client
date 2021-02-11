@@ -33,7 +33,7 @@ This will render a code editor and a preview component with some predefined
 settings. By default, this loads up a vanilla js sandbox, with no other
 framework dependency.
 
-### Templates, files and dependencies
+### Templates, files and custom setup
 
 Your `Sandpack` can start with a predefined `template`. A template is a
 collection of files and dependencies, a basic starter for a project if you want.
@@ -43,9 +43,7 @@ collection of files and dependencies, a basic starter for a project if you want.
 ```
 
 In most of the cases, you will want to pass custom code/files to the sandpack
-instance. For this, you can use the `setup` prop. If both `template` and `setup`
-are provided, the two are merged, with the `setup` values having higher
-priority.
+instance. For this, you can use the `files` prop.
 
 The `code` you pass should be pre-formatted:
 
@@ -59,18 +57,21 @@ const code = `export default function App() {
 
 <Sandpack
   template="react"
-  setup={{
-    files: {
-      '/App.js': code,
-    },
+  files={{
+    '/App.js': code,
   }}
 />;
 ```
 
-Code files are passed as raw strings, with the file path relative to the root of
-the project being the file key. With the `setup` prop, you can also pass custom
-`dependencies` and specify the project `entry` file, used by the bundler as an
-entry point and the `main` file, that is the default active file tab.
+The `key` of each file is the _relative path_ of the file in the project folder
+structure. With this in mind, you can overwrite any of the template/sandbox
+files (eg: `/index.js`, `/index.css`, etc.)
+
+With the `customSetup` prop, you can also pass instance specific `files`,
+`dependencies` or specify the project `entry` file. If both `template` and
+`customSetup` are provided, the two are merged, with the `customSetup` values
+having higher priority. If you don't want to start from a template, you can
+specify your entire sandbox structure with the `customSetup`.
 
 ```tsx
 const reactWithLibCode = `import ReactMarkdown from 'react-markdown' 
@@ -81,10 +82,10 @@ export default function App() {
 
 <Sandpack
   template="react"
-  setup={{
-    files: {
-      '/App.js': reactWithLibCode,
-    },
+  files={{
+    '/App.js': reactWithLibCode,
+  }}
+  customSetup={{
     dependencies: {
       'react-markdown': 'latest',
     },
