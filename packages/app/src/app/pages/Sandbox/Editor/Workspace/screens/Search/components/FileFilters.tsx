@@ -1,13 +1,15 @@
 import React from 'react';
 import css from '@styled-system/css';
 import { Element, Input } from '@codesandbox/components';
+import { useOvermind } from 'app/overmind';
 
-export const FileFilters = ({
-  setFilesToSearch,
-  setFilesToExclude,
-  showFileFilters,
-}) =>
-  showFileFilters ? (
+export const FileFilters = () => {
+  const {
+    state,
+    actions: { workspace },
+  } = useOvermind();
+
+  return (
     <>
       <Element
         css={css({
@@ -21,7 +23,8 @@ export const FileFilters = ({
         <Input
           marginBottom={4}
           placeholder="Files to Include"
-          onChange={e => setFilesToSearch(e.target.value)}
+          value={state.workspace.searchOptions.filesToInclude}
+          onChange={e => workspace.filesToIncludeChanged(e.target.value)}
         />
       </Element>
 
@@ -29,8 +32,10 @@ export const FileFilters = ({
         <Input
           marginBottom={4}
           placeholder="Files to Exclude"
-          onChange={e => setFilesToExclude(e.target.value)}
+          value={state.workspace.searchOptions.filesToExclude}
+          onChange={e => workspace.filesToExcludeChanged(e.target.value)}
         />
       </Element>
     </>
-  ) : null;
+  );
+};

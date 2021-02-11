@@ -571,6 +571,20 @@ export const searchValueChanged: Action<string> = ({ state }, value) => {
   state.workspace.searchValue = value;
 };
 
+export const filesToIncludeChanged: Action<string> = ({ state }, value) => {
+  state.workspace.searchOptions.filesToInclude = value;
+};
+
+export const filesToExcludeChanged: Action<string> = ({ state }, value) => {
+  state.workspace.searchOptions.filesToExclude = value;
+};
+
 export const searchResultsChanged: Action<any[]> = ({ state }, results) => {
   state.workspace.searchResults = results;
+};
+
+export const searchOptionsToggled: Action<string> = ({ state }, option) => {
+  state.workspace.searchOptions[option] = !state.workspace.searchOptions[
+    option
+  ];
 };

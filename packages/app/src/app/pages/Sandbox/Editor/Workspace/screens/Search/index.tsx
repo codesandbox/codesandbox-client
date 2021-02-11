@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { VariableSizeList as List } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import {
   Collapsible,
   Text,
@@ -20,48 +21,28 @@ import { MoreIcon, SearchIcon } from './icons';
 
 import { FileFilters } from './components/FileFilters';
 
-export enum OptionTypes {
-  CaseSensitive = 'caseSensitive',
-  Regex = 'regex',
-  MatchFullWord = 'matchFullWord',
-}
-
-export type Options = {
-  caseSensitive: boolean;
-  regex: boolean;
-  matchFullWord: boolean;
-  filesToSearch: string;
-  filesToExclude: string;
-};
-
 export const Search = () => {
   const {
     state: {
       editor: { currentSandbox },
-      workspace: { searchValue, searchResults },
+      workspace: { searchValue, searchResults, searchOptions },
     },
     actions: {
-      workspace: { searchValueChanged, searchResultsChanged },
+      workspace: {
+        searchValueChanged,
+        searchResultsChanged,
+        searchOptionsToggled,
+      },
     },
   } = useOvermind();
   const list = useRef<any>();
-  const wrapper = useRef<any>();
-  const [openFilesSearch, setOpenFilesSearch] = useState(false);
-  const [filesToSearch, setFilesToSearch] = useState('');
-  const [filesToExclude, setFilesToExclude] = useState('');
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
   const [modules, setModules] = useState<Module[]>(allModules);
-  const [showFileFilters, setShowFileFilters] = useState(false);
-  const [options, setOptions] = useState({
-    [OptionTypes.CaseSensitive]: false,
-    [OptionTypes.Regex]: false,
-    [OptionTypes.MatchFullWord]: false,
-  });
 
-  const toggleSearch = (searchIsOpen: boolean) => {
-    setOpenFilesSearch(searchIsOpen);
+  const toggleSearch = () => {
+    searchOptionsToggled('openFilesSearch');
 
-    if (searchIsOpen) {
+    if (searchOptions.openFilesSearch) {
       const openFiles = (
         window.CSEditor?.editor?.editorService?.editors || []
       ).map(file => file.name);
@@ -83,30 +64,17 @@ export const Search = () => {
     createWorker();
   }, []);
 
-  useEffect(() => {
-    if (searchValue) {
-      searchFiles(searchValue);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options, filesToSearch, filesToExclude, openFilesSearch]);
-
-  const searchCall = async ({ value, files }) => {
-    if (searchWorker.current) {
-      const val = await searchWorker.current.search(value, files, {
-        ...options,
-        filesToSearch,
-        filesToExclude,
-      });
-      searchResultsChanged(val);
-      if (list.current) {
-        list.current.resetAfterIndex(0);
-      }
-    }
-  };
-
-  const searchFiles = (value: string) => {
+  const searchFiles = async (value: string) => {
     if (value.length > 1) {
-      searchCall({ value, files: modules });
+      if (searchWorker.current) {
+        const val = await searchWorker.current.search(value, modules, {
+          ...searchOptions,
+        });
+        searchResultsChanged(val);
+        if (list.current) {
+          list.current.resetAfterIndex(0);
+        }
+      }
     }
 
     if (!value) {
@@ -114,7 +82,10 @@ export const Search = () => {
     }
   };
 
-  const getHeight = (i: string) => 32 + searchResults[i].matches.length * 28;
+  useEffect(() => {
+    searchFiles(searchValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [...Object.values(searchOptions), searchValue]);
 
   const Row = ({ index, style }) => (
     <Element style={style}>
@@ -167,19 +138,16 @@ export const Search = () => {
               })}
               value={searchValue}
               placeholder="Search"
-              onChange={e => {
-                searchValueChanged(e.target.value);
-                searchFiles(e.target.value);
-              }}
+              onChange={e => searchValueChanged(e.target.value)}
             />
-            <SearchOptions options={options} setOptions={setOptions} />
+            <SearchOptions />
           </Element>
           <Button
             variant="secondary"
             autoWidth
-            onClick={() => setShowFileFilters(exclude => !exclude)}
+            onClick={() => searchOptionsToggled('showFileFilters')}
             css={css({
-              color: showFileFilters
+              color: searchOptions.showFileFilters
                 ? 'sideBar.foreground'
                 : 'tab.inactiveForeground',
 
@@ -195,12 +163,7 @@ export const Search = () => {
             <MoreIcon />
           </Button>
         </Element>
-
-        <FileFilters
-          setFilesToExclude={setFilesToExclude}
-          setFilesToSearch={setFilesToSearch}
-          showFileFilters={showFileFilters}
-        />
+        {searchOptions.showFileFilters ? <FileFilters /> : null}
         <Stack
           gap={2}
           paddingY={2}
@@ -213,14 +176,14 @@ export const Search = () => {
           })}
         >
           <TabButton
-            active={!openFilesSearch}
-            onClick={() => toggleSearch(false)}
+            active={!searchOptions.openFilesSearch}
+            onClick={toggleSearch}
           >
             Sandbox
           </TabButton>
           <TabButton
-            active={openFilesSearch}
-            onClick={() => toggleSearch(true)}
+            active={searchOptions.openFilesSearch}
+            onClick={toggleSearch}
           >
             Open Files
           </TabButton>
@@ -245,20 +208,20 @@ export const Search = () => {
             </Text>
           </Element>
         ) : null}
-        <Element
-          ref={wrapper}
-          marginTop={4}
-          css={{ height: 'calc(100% - 16px)' }}
-        >
-          <List
-            height={wrapper.current ? wrapper.current.clientHeight - 50 : 0}
-            itemCount={searchResults.length}
-            itemSize={getHeight}
-            width={wrapper.current ? wrapper.current.clientWidth : 0}
-            ref={list}
-          >
-            {Row}
-          </List>
+        <Element marginTop={4} css={{ height: 'calc(100% - 16px)' }}>
+          <AutoSizer>
+            {({ height, width }) => (
+              <List
+                height={height}
+                width={width}
+                itemCount={searchResults.length}
+                itemSize={i => 32 + searchResults[i].matches.length * 28}
+                ref={list}
+              >
+                {Row}
+              </List>
+            )}
+          </AutoSizer>
         </Element>
       </Element>
     </Collapsible>

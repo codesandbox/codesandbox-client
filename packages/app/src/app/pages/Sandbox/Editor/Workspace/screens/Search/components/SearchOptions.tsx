@@ -1,8 +1,9 @@
 import React from 'react';
 import { Button, Stack, Tooltip } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useOvermind } from 'app/overmind';
+import { OptionTypes } from 'app/overmind/namespaces/workspace/state';
 import { CaseSensitiveIcon, RegexIcon } from '../icons';
-import { OptionTypes } from '../index';
 
 const OptionButton = ({ title, active, onClick, children }) => (
   <Tooltip label={title}>
@@ -37,13 +38,15 @@ const OptionButton = ({ title, active, onClick, children }) => (
   </Tooltip>
 );
 
-export const SearchOptions = ({ options, setOptions }) => {
-  const toggleOptions = (key: OptionTypes) => {
-    setOptions(prevOptions => ({
-      ...prevOptions,
-      [key]: !prevOptions[key],
-    }));
-  };
+export const SearchOptions = () => {
+  const {
+    state: {
+      workspace: { searchOptions },
+    },
+    actions: {
+      workspace: { searchOptionsToggled },
+    },
+  } = useOvermind();
 
   return (
     <Stack
@@ -55,15 +58,15 @@ export const SearchOptions = ({ options, setOptions }) => {
       gap={1}
     >
       <OptionButton
-        onClick={() => toggleOptions(OptionTypes.CaseSensitive)}
-        active={options[OptionTypes.CaseSensitive]}
+        onClick={() => searchOptionsToggled(OptionTypes.CaseSensitive)}
+        active={searchOptions[OptionTypes.CaseSensitive]}
         title="Case Sensitive"
       >
         <CaseSensitiveIcon />
       </OptionButton>
       <OptionButton
-        onClick={() => toggleOptions(OptionTypes.Regex)}
-        active={options[OptionTypes.Regex]}
+        onClick={() => searchOptionsToggled(OptionTypes.Regex)}
+        active={searchOptions[OptionTypes.Regex]}
         title="Allow Regex"
       >
         <RegexIcon />

@@ -1,18 +1,26 @@
 import { Module } from '@codesandbox/common/lib/types';
 import minimatch from 'minimatch';
-import { Options } from '.';
+import { OptionTypes } from 'app/overmind/namespaces/workspace/state';
+
+type Options = {
+  [OptionTypes.CaseSensitive]: boolean;
+  [OptionTypes.Regex]: boolean;
+  [OptionTypes.MatchFullWord]: boolean;
+  filesToExclude: string;
+  filesToInclude: string;
+};
 
 export default class SearchWorker {
   async search(term: string, modules: Module[], options: Options) {
-    const { filesToExclude, filesToSearch, regex, caseSensitive } = options;
+    const { filesToExclude, filesToInclude, regex, caseSensitive } = options;
 
     let searchable: Module[] = modules.map(m => ({
       ...m,
       matches: [],
     }));
 
-    if (filesToSearch) {
-      const matchesFiles = createIncludedFiles(filesToSearch, {
+    if (filesToInclude) {
+      const matchesFiles = createIncludedFiles(filesToInclude, {
         nonegate: true,
       });
 

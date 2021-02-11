@@ -1,5 +1,11 @@
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
 
+export enum OptionTypes {
+  CaseSensitive = 'caseSensitive',
+  Regex = 'regex',
+  MatchFullWord = 'matchFullWord',
+}
+
 type State = {
   project: {
     title: string;
@@ -28,6 +34,15 @@ type State = {
   dependencySearch: string;
   searchValue: string;
   searchResults: any[];
+  searchOptions: {
+    [OptionTypes.CaseSensitive]: boolean;
+    [OptionTypes.Regex]: boolean;
+    [OptionTypes.MatchFullWord]: boolean;
+    showFileFilters: boolean;
+    openFilesSearch: boolean;
+    filesToInclude: string;
+    filesToExclude: string;
+  };
 };
 
 export const state: State = {
@@ -52,4 +67,13 @@ export const state: State = {
   dependencySearch: '',
   searchValue: '',
   searchResults: [],
+  searchOptions: {
+    [OptionTypes.CaseSensitive]: false,
+    [OptionTypes.Regex]: false,
+    [OptionTypes.MatchFullWord]: false,
+    showFileFilters: false,
+    openFilesSearch: false,
+    filesToInclude: '',
+    filesToExclude: '',
+  },
 };
