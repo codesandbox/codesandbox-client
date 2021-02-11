@@ -41,12 +41,26 @@ export default () => (
 
         return (
           <>
+            <h1>Terms of Use</h1>
+            Version {latestVersion.node.frontmatter.version} (
+            {format(latestVersion.node.frontmatter.lastEdited, 'MM/DD/YYYY')}).
+            <a
+              css={`
+                display: block;
+                margin-top: 8px;
+              `}
+              href="#previous-versions"
+            >
+              Click here for previous versions of our Terms of Use.
+            </a>
             <Content
               dangerouslySetInnerHTML={{ __html: latestVersion.node.html }}
             />
             {olderVersions.length ? (
               <>
-                <H3>Previous versions of our Terms of Use</H3>
+                <H3 id="previous-versions">
+                  Previous versions of our Terms of Use
+                </H3>
                 <ul
                   css={`
                     margin-top: 16px;
@@ -59,7 +73,7 @@ export default () => (
                         version.node.frontmatter.lastEdited,
                         'MM/DD/YYYY'
                       )}
-                      )
+                      ){' '}
                       <Link
                         to={`legal/terms/version/${version.node.frontmatter.version}`}
                       >

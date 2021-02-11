@@ -171,6 +171,7 @@ exports.createPages = async ({ graphql, actions }) => {
   const docsTemplate = resolve(__dirname, './src/templates/docs.js');
   const blogTemplate = resolve(__dirname, './src/templates/post.js');
   const oldTermsTemplate = resolve(__dirname, './src/templates/terms.js');
+  const oldPrivacyTemplate = resolve(__dirname, './src/templates/privacy.js');
 
   const featureTemplate = resolve(__dirname, './src/templates/feature.js');
   // Redirect /index.html to root.
@@ -305,6 +306,40 @@ exports.createPages = async ({ graphql, actions }) => {
       createPage({
         path: `/legal/terms/version/` + edge.node.frontmatter.version,
         component: oldTermsTemplate,
+        context: { id: edge.node.id },
+      });
+    });
+  }
+
+  const oldPrivacy = await graphql(`
+    {
+      allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/legal/privacy/" } }
+      ) {
+        edges {
+          node {
+            id
+            html
+            frontmatter {
+              version
+              lastEdited
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (oldPrivacy.data) {
+    const edges = oldPrivacy.data.allMarkdownRemark.edges;
+    const versions = edges.map(edge => edge.node.frontmatter.version);
+    const all = versions.sort(semver.rcompare);
+    const olderVersions = edges.filter(
+      edge => edge.node.frontmatter.version !== all[0]
+    );
+    olderVersions.forEach(edge => {
+      createPage({
+        path: `/legal/privacy/version/` + edge.node.frontmatter.version,
+        component: oldPrivacyTemplate,
         context: { id: edge.node.id },
       });
     });

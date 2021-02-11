@@ -4,8 +4,6 @@ lastEdited: 2017-07-20
 version: 1.0.0
 ---
 
-# Terms of Use
-
 _Last Edited on 2017-07-20_
 
 These Terms and Conditions ("Terms", "Terms and Conditions") govern your
