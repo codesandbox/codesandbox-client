@@ -309,4 +309,3 @@ const UpgradeBanner = () => {
     </Stack>
   );
 };
-

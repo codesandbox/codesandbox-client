@@ -1,7 +1,7 @@
 import { Sandbox, Profile } from '@codesandbox/common/lib/types';
 import { Action, AsyncAction } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-import { SandboxType } from 'app/pages/Profile2/constants';
+import { SandboxType } from 'app/pages/Profile/constants';
 
 export const profileMounted: AsyncAction<string> = withLoadApp(
   async ({ effects, state }, username) => {
