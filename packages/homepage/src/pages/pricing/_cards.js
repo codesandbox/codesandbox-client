@@ -59,12 +59,12 @@ export const TeamCards = ({ mode }) => (
           >
             Collaborate with your team
           </li>
-          <li>Private sandboxes</li>
-          <li>Private GitHub repos</li>
-          <li>Private NPM packages</li>
-          <li>Advanced permissions</li>
-          <li>Unlimited viewers</li>
-          <li>Centralized billing</li>
+          <li>✓ Private sandboxes</li>
+          <li>✓ Private GitHub repos</li>
+          <li>✓ Private NPM packages</li>
+          <li>✓ Advanced permissions</li>
+          <li>✓ Unlimited viewers</li>
+          <li>✓ Centralized billing</li>
         </List>
       </div>
       <Button
@@ -106,11 +106,11 @@ export const TeamCards = ({ mode }) => (
             For large or multiple teams
           </li>
           <li>All in Team Pro, plus:</li>
-          <li>SSO</li>
-          <li>Multiple team workspaces</li>
-          <li>Workspace secrets</li>
-          <li>Analytics</li>
-          <li>Priority support</li>
+          <li>+ SSO</li>
+          <li>+ Multiple team workspaces</li>
+          <li>+ Workspace secrets</li>
+          <li>+ Analytics</li>
+          <li>+ Priority support</li>
         </List>
       </div>
       <Button
@@ -146,9 +146,9 @@ export const TeamCards = ({ mode }) => (
             Custom deploy options & support
           </li>
           <li>All in Organization, plus:</li>
-          <li>On-premise or private cloud</li>
-          <li>Custom contract</li>
-          <li>Dedicated account manager</li>
+          <li>+ On-premise or private cloud</li>
+          <li>+ Custom contract</li>
+          <li>+ Dedicated account manager</li>
         </List>
       </div>
       <Button
@@ -194,9 +194,9 @@ export const PersonalCards = ({ mode }) => (
             For learning & experimenting
           </li>
           <li>Free for individuals</li>
-          <li>All Platform features</li>
-          <li>Public sandboxes</li>
-          <li>Personal workspace</li>
+          <li>✓ All Platform features</li>
+          <li>✓ Public sandboxes</li>
+          <li>✓ Personal workspace</li>
         </List>
       </div>
       <Button
@@ -232,11 +232,11 @@ export const PersonalCards = ({ mode }) => (
             For power-users & freelancers
           </li>
           <li>All in Personal, plus:</li>
-          <li>Private sandboxes</li>
-          <li>Private GitHub repos</li>
-          <li>More storage space</li>
-          <li>Higher upload limits</li>
-          <li>Stricter sandbox permissions</li>
+          <li>+ Private sandboxes</li>
+          <li>+ Private GitHub repos</li>
+          <li>+ More storage space</li>
+          <li>+ Higher upload limits</li>
+          <li>+ Stricter sandbox permissions</li>
         </List>
       </div>
       <Button
