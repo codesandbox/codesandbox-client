@@ -10,23 +10,25 @@ export const getEditorTheme = (theme: SandpackTheme) =>
   EditorView.theme({
     $: {
       color: theme.syntax.plain,
-      backgroundColor: theme.palette.mainBackground,
-      '& ::selection': { backgroundColor: theme.palette.inactive },
+      backgroundColor: theme.palette.defaultBackground,
+      '& ::selection': { backgroundColor: theme.palette.activeBackground },
     },
 
     '$$focused $selectionBackground': {
-      backgroundColor: theme.palette.inactive,
+      backgroundColor: theme.palette.activeBackground,
     },
 
-    $activeLine: { backgroundColor: hexToCSSRGBa(theme.palette.inactive, 0.5) },
+    $activeLine: {
+      backgroundColor: hexToCSSRGBa(theme.palette.activeBackground, 0.5),
+    },
 
     '$matchingBracket, $nonmatchingBracket': {
       color: 'inherit',
-      background: theme.palette.inactive,
+      background: theme.palette.activeBackground,
     },
 
     $gutters: {
-      backgroundColor: theme.palette.mainBackground,
+      backgroundColor: theme.palette.defaultBackground,
       color: theme.palette.defaultText,
       border: 'none',
     },

@@ -89,10 +89,11 @@ export type SandpackPredefinedTheme = 'sp-light' | 'sp-dark' | 'night-owl';
 
 export type SandpackTheme = {
   palette: {
-    highlightText: string;
+    activeText: string;
     defaultText: string;
-    inactive: string;
-    mainBackground: string;
+    inactiveText: string;
+    activeBackground: string;
+    defaultBackground: string;
     inputBackground: string;
     accent: string;
     errorBackground: string;

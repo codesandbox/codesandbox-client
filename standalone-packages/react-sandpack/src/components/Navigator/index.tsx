@@ -110,7 +110,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
 
       <input
         className="sp-input"
-        style={{ flex: 1, width: 0, marginLeft: 'var(--space-4)' }}
+        style={{ flex: 1, width: 0, marginLeft: 'var(--sp-space-4)' }}
         type="text"
         name="Current Sandpack URL"
         aria-label="Current Sandpack URL"

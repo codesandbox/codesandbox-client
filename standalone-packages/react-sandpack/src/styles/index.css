@@ -1,36 +1,38 @@
 .sp-wrapper {
-  --colors-highlightText: #5b6776;
-  --colors-defaultText: #757575;
-  --colors-inactive: #e5e7eb;
-  --colors-mainBackground: #f8f9fb;
-  --colors-mainBackgroundOverlay: #f8f9fbcf;
-  --colors-inputBackground: #ffffff;
-  --colors-accent: #6caedd;
-  --colors-bg-error: #ffcdca;
-  --colors-fg-error: #811e18;
-  --fontSizes-default: 14px;
-  --fonts-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  --fonts-mono: 'Fira Mono', 'DejaVu Sans Mono', Menlo, Consolas,
+  --sp-colors-fg-active: #5b6776;
+  --sp-colors-fg-default: #757575;
+  --sp-colors-fg-inactive: #e5e7eb;
+  --sp-colors-bg-active: #e5e7eb;
+  --sp-colors-bg-default: #f8f9fb;
+  --sp-colors-bg-default-overlay: #f8f9fbcf;
+  --sp-colors-bg-input: #ffffff;
+  --sp-colors-accent: #6caedd;
+  --sp-colors-bg-error: #ffcdca;
+  --sp-colors-fg-error: #811e18;
+  --sp-font-size: 14px;
+  --sp-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
+  --sp-font-mono: 'Fira Mono', 'DejaVu Sans Mono', Menlo, Consolas,
     'Liberation Mono', Monaco, 'Lucida Console', monospace;
 
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --radii-default: 4px;
+  --sp-space-1: 4px;
+  --sp-space-2: 8px;
+  --sp-space-3: 12px;
+  --sp-space-4: 16px;
+  --sp-space-5: 20px;
+  --sp-space-6: 24px;
+  --sp-border-radius: 4px;
 
   all: initial;
-  border: 1px solid var(--colors-inactive);
+  border: 1px solid var(--sp-colors-fg-inactive);
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  background: var(--colors-mainBackground);
-  border-radius: var(--radii-default);
-  font-size: var(--fontSizes-default);
-  font-family: var(--fonts-body);
+  background: var(--sp-colors-bg-default);
+  border-radius: var(--sp-border-radius);
+  font-size: var(--sp-font-size);
+  font-family: var(--sp-font-body);
   overflow: hidden;
   box-sizing: border-box;
 
@@ -39,8 +41,8 @@
   -webkit-font-smoothing: subpixel-antialiased;
   -webkit-touch-callout: none;
   -webkit-mask-image: -webkit-radial-gradient(
-    var(--colors-inputBackground),
-    var(--colors-mainBackground)
+    var(--sp-colors-bg-input),
+    var(--sp-colors-bg-default)
   );
 }
 
@@ -59,7 +61,7 @@
   min-width: 350px;
   height: 300px;
 
-  border: 1px solid var(--colors-inactive);
+  border: 1px solid var(--sp-colors-fg-inactive);
   margin: -1px;
   display: flex;
   flex-direction: column;
@@ -72,15 +74,15 @@
 
 .sp-pre-placeholder {
   margin: 0;
-  padding: 0 var(--space-3);
-  font-family: var(--fonts-mono);
-  font-size: var(--fontSizes-default);
-  color: var(--colors-highlightText);
+  padding: 0 var(--sp-space-3);
+  font-family: var(--sp-font-mono);
+  font-size: var(--sp-font-size);
+  color: var(--sp-colors-fg-active);
   line-height: 1.4;
 }
 
 .sp-cm {
-  padding: var(--space-4) 0;
+  padding: var(--sp-space-4) 0;
   flex: 1;
   position: relative;
   outline: none;
@@ -88,18 +90,18 @@
 }
 
 .sp-cm:focus-visible {
-  box-shadow: inset 0 0 0 4px var(--colors-accent);
-  padding-left: var(--space-1);
-  padding-right: var(--space-1);
+  box-shadow: inset 0 0 0 4px var(--sp-colors-accent);
+  padding-left: var(--sp-space-1);
+  padding-right: var(--sp-space-1);
 }
 
 .sp-cm:focus-visible .cm-line {
-  padding: 0 var(--space-2);
+  padding: 0 var(--sp-space-2);
 }
 
 .sp-cm:focus-visible .cm-gutter-lineNumber {
   padding-left: 0;
-  padding-right: var(--space-2);
+  padding-right: var(--sp-space-2);
 }
 
 .sp-cm .cm-wrap {
@@ -111,11 +113,11 @@
 }
 
 .sp-cm .cm-line {
-  padding: 0 var(--space-3);
+  padding: 0 var(--sp-space-3);
 }
 
 .sp-cm .cm-light .cm-content {
-  caret-color: var(--colors-highlightText);
+  caret-color: var(--sp-colors-fg-active);
 }
 
 .sp-cm .cm-focused {
@@ -123,12 +125,12 @@
 }
 
 .sp-cm .cm-scroller {
-  font-family: var(--fonts-mono);
+  font-family: var(--sp-font-mono);
 }
 
 .sp-cm .cm-gutter-lineNumber {
-  padding-left: var(--space-1);
-  padding-right: var(--space-1);
+  padding-left: var(--sp-space-1);
+  padding-right: var(--sp-space-1);
 }
 
 .sp-cm .cm-gutterElement.cm-gutterElement-lineNumber {
@@ -136,11 +138,11 @@
 }
 
 .sp-tabs {
-  border-bottom: 1px solid var(--colors-inactive);
+  border-bottom: 1px solid var(--sp-colors-fg-inactive);
 }
 
 .sp-tabs-scrollable-container {
-  padding: 0 var(--space-4);
+  padding: 0 var(--sp-space-4);
   overflow: auto;
   display: flex;
   flex-wrap: nowrap;
@@ -160,9 +162,9 @@
   display: flex;
   align-items: center;
   height: 40px;
-  border-bottom: 1px solid var(--colors-inactive);
-  padding: var(--space-2) var(--space-4);
-  background: var(--colors-mainBackground);
+  border-bottom: 1px solid var(--sp-colors-fg-inactive);
+  padding: var(--sp-space-2) var(--sp-space-4);
+  background: var(--sp-colors-bg-default);
 }
 
 /* Elements */
@@ -172,8 +174,8 @@
   background: transparent;
   appearance: none;
   font-size: inherit;
-  padding: 0 var(--space-2);
-  color: var(--colors-defaultText);
+  padding: 0 var(--sp-space-2);
+  color: var(--sp-colors-fg-default);
   height: 40px;
   border: 0;
   outline: none;
@@ -182,16 +184,16 @@
 }
 
 .sp-tab-button[data-active='true'] {
-  color: var(--colors-highlightText);
-  border-bottom: 1px solid var(--colors-accent);
+  color: var(--sp-colors-fg-active);
+  border-bottom: 1px solid var(--sp-colors-accent);
 }
 
 .sp-tab-button:hover {
-  color: var(--colors-highlightText);
+  color: var(--sp-colors-fg-active);
 }
 
 .sp-tab-button:focus-visible {
-  background-color: var(--colors-inactive);
+  background-color: var(--sp-colors-bg-active);
   outline: none;
 }
 
@@ -199,20 +201,21 @@
   appearance: none;
   border: 0;
   outline: none;
-  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
-  border-radius: var(--radii-default);
+  padding: var(--sp-space-1) var(--sp-space-3) var(--sp-space-1)
+    var(--sp-space-2);
+  border-radius: var(--sp-border-radius);
   display: flex;
   align-items: center;
-  color: var(--colors-defaultText);
-  background-color: var(--colors-mainBackground);
+  color: var(--sp-colors-fg-default);
+  background-color: var(--sp-colors-bg-default);
   font-size: inherit;
   font-family: inherit;
   transition: all 0.15s ease-in-out;
 }
 
 .sp-button.icon-standalone {
-  padding: var(--space-1);
-  background: var(--colors-mainBackgroundOverlay);
+  padding: var(--sp-space-1);
+  background: var(--sp-colors-bg-default-overlay);
   backdrop-filter: blur(4px);
 }
 
@@ -221,30 +224,30 @@
 }
 
 .sp-button:hover:not(:disabled) {
-  background-color: var(--colors-inactive);
-  color: var(--colors-highlightText);
+  background-color: var(--sp-colors-bg-active);
+  color: var(--sp-colors-fg-active);
 }
 
 .sp-button:disabled {
-  color: var(--colors-inactive);
+  color: var(--sp-colors-fg-inactive);
 }
 
 .sp-button:focus-visible {
-  outline: 2px solid var(--colors-accent);
+  outline: 2px solid var(--sp-colors-accent);
 }
 
 .sp-input {
-  background-color: var(--colors-inputBackground);
-  color: var(--colors-defaultText);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radii-default);
+  background-color: var(--sp-colors-bg-input);
+  color: var(--sp-colors-fg-default);
+  padding: var(--sp-space-1) var(--sp-space-2);
+  border-radius: var(--sp-border-radius);
   border: 0;
   height: 24px;
   font-size: inherit;
 }
 
 .sp-input:focus {
-  color: var(--colors-highlightText);
+  color: var(--sp-colors-fg-active);
 }
 
 .sp-overlay {
@@ -260,7 +263,7 @@
 }
 
 .sp-loading {
-  background-color: var(--colors-mainBackground);
+  background-color: var(--sp-colors-bg-default);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -279,7 +282,7 @@
   top: 32px;
   width: 12px;
   height: 12px;
-  background: var(--colors-defaultText);
+  background: var(--sp-colors-fg-default);
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 
@@ -342,13 +345,13 @@
 }
 
 .sp-error {
-  padding: var(--space-4);
+  padding: var(--sp-space-4);
   white-space: pre-wrap;
-  font-family: var(--fonts-mono);
-  background-color: var(--colors-bg-error);
+  font-family: var(--sp-font-mono);
+  background-color: var(--sp-colors-bg-error);
 }
 
 .sp-error-message {
   animation: sp-fade-in 0.15s ease-in;
-  color: var(--colors-fg-error);
+  color: var(--sp-colors-fg-error);
 }

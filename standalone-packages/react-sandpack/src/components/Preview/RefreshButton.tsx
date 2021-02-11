@@ -12,8 +12,8 @@ export const RefreshButton = () => {
       className="sp-button icon-standalone"
       style={{
         position: 'absolute',
-        bottom: 'var(--space-2)',
-        left: 'var(--space-2)',
+        bottom: 'var(--sp-space-2)',
+        left: 'var(--sp-space-2)',
         zIndex: 4,
       }}
       onClick={() => dispatch({ type: 'refresh' })}

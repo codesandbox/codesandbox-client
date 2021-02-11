@@ -224,7 +224,7 @@ export const MultipleInstances: Story<SandpackProps> = args => (
       theme={{
         palette: {
           accent: '#fc0e34',
-          inactive: '#aaa',
+          inactiveText: '#aaa',
         },
         syntax: {
           keyword: '#6700ff',

@@ -31,8 +31,8 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
           className="sp-button"
           style={{
             position: 'absolute',
-            bottom: 'var(--space-2)',
-            right: 'var(--space-2)',
+            bottom: 'var(--sp-space-2)',
+            right: 'var(--sp-space-2)',
           }}
           onClick={() => runSandpack()}
         >

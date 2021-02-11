@@ -22,8 +22,8 @@ export const PrismHighlight = ({
   return (
     <div
       style={{
-        backgroundColor: 'var(--colors-backgroundMain)',
-        padding: 'var(--space-4) var(--space-2)',
+        backgroundColor: 'var(--sp-colors-bg-default)',
+        padding: 'var(--space-4) var(--sp-space-2)',
         lineHeight: '1.4',
         overflow: 'auto',
         flex: 1,
@@ -45,7 +45,11 @@ export const PrismHighlight = ({
         }) => (
           <pre
             className={className}
-            style={{ ...preStyle, margin: 0, fontFamily: 'var(--fonts-mono)' }}
+            style={{
+              ...preStyle,
+              margin: 0,
+              fontFamily: 'var(--sp-font-mono)',
+            }}
           >
             {tokens.map((line, i) => (
               <div
@@ -57,9 +61,9 @@ export const PrismHighlight = ({
                     style={{
                       display: 'table-cell',
                       textAlign: 'right',
-                      paddingRight: 'var(--space-2)',
+                      paddingRight: 'var(--sp-space-2)',
                       userSelect: 'none',
-                      color: 'var(--colors-defaultText)',
+                      color: 'var(--sp-colors-fg-default)',
                       minWidth: '28px',
                     }}
                   >
@@ -69,7 +73,7 @@ export const PrismHighlight = ({
                 <span
                   style={{
                     display: 'table-cell',
-                    paddingLeft: 'var(--space-1)',
+                    paddingLeft: 'var(--sp-space-1)',
                   }}
                 >
                   {line.map((token, key) => (

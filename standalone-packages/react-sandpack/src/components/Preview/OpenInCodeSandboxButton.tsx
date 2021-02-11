@@ -34,8 +34,8 @@ export const OpenInCodeSandboxButton: React.FC = () => {
       className="sp-button icon-standalone"
       style={{
         position: 'absolute',
-        bottom: 'var(--space-2)',
-        right: 'var(--space-2)',
+        bottom: 'var(--sp-space-2)',
+        right: 'var(--sp-space-2)',
         zIndex: 4,
       }}
     >

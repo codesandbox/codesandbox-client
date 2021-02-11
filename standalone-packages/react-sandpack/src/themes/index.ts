@@ -7,10 +7,11 @@ import { hexToCSSRGBa } from '../utils/string-utils';
 
 export const sandpackLightTheme: SandpackTheme = {
   palette: {
-    highlightText: '#1f2933',
+    activeText: '#1f2933',
     defaultText: '#999999',
-    inactive: '#e4e7eb',
-    mainBackground: '#f8f9fb',
+    inactiveText: '#e4e7eb',
+    activeBackground: '#e4e7eb',
+    defaultBackground: '#f8f9fb',
     inputBackground: '#ffffff',
     accent: '#6caedd',
     errorBackground: '#ffcdca',
@@ -38,10 +39,11 @@ export const sandpackLightTheme: SandpackTheme = {
 
 export const sandpackDarkTheme: SandpackTheme = {
   palette: {
-    highlightText: '#FFFFFF',
+    activeText: '#FFFFFF',
     defaultText: '#999999',
-    inactive: '#343434',
-    mainBackground: '#040404',
+    inactiveText: '#343434',
+    activeBackground: '#343434',
+    defaultBackground: '#040404',
     inputBackground: '#242424',
     accent: '#6caedd',
     errorBackground: '#ffcdca',
@@ -68,10 +70,11 @@ export const sandpackDarkTheme: SandpackTheme = {
 
 export const nightOwlTheme: SandpackTheme = {
   palette: {
-    highlightText: 'rgb(197, 228, 253)',
+    activeText: 'rgb(197, 228, 253)',
     defaultText: 'rgb(95, 126, 151)',
-    inactive: 'rgb(58, 62, 77)',
-    mainBackground: 'rgb(1, 22, 39)',
+    inactiveText: 'rgb(58, 62, 77)',
+    activeBackground: 'rgb(58, 62, 77)',
+    defaultBackground: 'rgb(1, 22, 39)',
     inputBackground: 'rgb(11, 41, 66)',
     accent: '#7fdbca',
     errorBackground: '#ffcdca',
@@ -147,21 +150,28 @@ const simpleHashFunction = (str: string) => {
   return Math.abs(hash);
 };
 
+// inactive fg and active bg are interchangable to limit the number of colors in the theme
+// bg-default-overlay is determined by adjusting the alpha channel on the default bg to 80%
 export const getThemeStyleSheet = (theme: SandpackTheme, themeId: string) => `
 .sp-wrapper.${themeId} {
-  --colors-highlightText: ${theme.palette.highlightText};
-  --colors-defaultText: ${theme.palette.defaultText};
-  --colors-inactive: ${theme.palette.inactive};
-  --colors-mainBackground: ${theme.palette.mainBackground};
-  --colors-mainBackgroundOverlay: ${hexToCSSRGBa(
-    theme.palette.mainBackground,
+  --sp-colors-fg-active: ${theme.palette.activeText};
+  --sp-colors-fg-default: ${theme.palette.defaultText};
+  --sp-colors-fg-inactive: ${
+    theme.palette.inactiveText || theme.palette.activeBackground
+  };
+  --sp-colors-bg-active: ${
+    theme.palette.activeBackground || theme.palette.inactiveText
+  };
+  --sp-colors-bg-default: ${theme.palette.defaultBackground};
+  --sp-colors-bg-default-overlay: ${hexToCSSRGBa(
+    theme.palette.defaultBackground,
     80
   )};
-  --colors-inputBackground: ${theme.palette.inputBackground};
-  --colors-accent: ${theme.palette.accent};
-  --colors-bg-error: ${theme.palette.errorBackground};
-  --colors-fg-error: ${theme.palette.errorForeground};
-  --fontSizes-default: ${theme.typography.fontSize};
-  --fonts-body: ${theme.typography.bodyFont};
-  --fonts-mono: ${theme.typography.monoFont};
+  --sp-colors-bg-input: ${theme.palette.inputBackground};
+  --sp-colors-accent: ${theme.palette.accent};
+  --sp-colors-bg-error: ${theme.palette.errorBackground};
+  --sp-colors-fg-error: ${theme.palette.errorForeground};
+  --sp-font-size: ${theme.typography.fontSize};
+  --sp-font-body: ${theme.typography.bodyFont};
+  --sp-font-mono: ${theme.typography.monoFont};
 `;
