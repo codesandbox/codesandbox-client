@@ -1,9 +1,10 @@
 ---
-title: Terms and Conditions
+title: Terms of Use
 lastEdited: 2017-07-20
+version: 1.0.0
 ---
 
-# Terms and Conditions
+# Terms of Use
 
 _Last Edited on 2017-07-20_
 
