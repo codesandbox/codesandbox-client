@@ -8,19 +8,21 @@
   --colors-accent: #6caedd;
   --colors-bg-error: #ffcdca;
   --colors-fg-error: #811e18;
+  --fontSizes-default: 14px;
+  --fonts-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --fonts-mono: 'Fira Mono', 'DejaVu Sans Mono', Menlo, Consolas,
+    'Liberation Mono', Monaco, 'Lucida Console', monospace;
+
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
   --space-5: 20px;
   --space-6: 24px;
-  --fontSizes-default: 14px;
-  --fonts-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  --fonts-mono: 'Fira Mono', 'DejaVu Sans Mono', Menlo, Consolas,
-    'Liberation Mono', Monaco, 'Lucida Console', monospace;
   --radii-default: 4px;
 
+  all: initial;
   border: 1px solid var(--colors-inactive);
   display: flex;
   flex-wrap: wrap;
@@ -31,8 +33,6 @@
   font-family: var(--fonts-body);
   overflow: hidden;
   box-sizing: border-box;
-  text-align: left;
-  text-decoration: initial;
 
   text-rendering: optimizeLegibility;
   -webkit-tap-highlight-color: transparent;
@@ -68,6 +68,15 @@
 
 .sp-wrapper * {
   box-sizing: border-box;
+}
+
+.sp-pre-placeholder {
+  margin: 0;
+  padding: 0 var(--space-3);
+  font-family: var(--fonts-mono);
+  font-size: var(--fontSizes-default);
+  color: var(--colors-highlightText);
+  line-height: 1.4;
 }
 
 .sp-cm {
@@ -264,6 +273,7 @@
   width: 80px;
   height: 80px;
 }
+
 .sp-cubes div {
   position: absolute;
   top: 32px;
@@ -272,23 +282,28 @@
   background: var(--colors-defaultText);
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
+
 .sp-cubes div:nth-child(1) {
   left: 8px;
-  animation: grow 0.6s infinite;
+  animation: sp-grow 0.6s infinite;
 }
+
 .sp-cubes div:nth-child(2) {
   left: 8px;
-  animation: move 0.6s infinite;
+  animation: sp-move 0.6s infinite;
 }
+
 .sp-cubes div:nth-child(3) {
   left: 32px;
-  animation: move 0.6s infinite;
+  animation: sp-move 0.6s infinite;
 }
+
 .sp-cubes div:nth-child(4) {
   left: 56px;
-  animation: shrink 0.6s infinite;
+  animation: sp-shrink 0.6s infinite;
 }
-@keyframes grow {
+
+@keyframes sp-grow {
   0% {
     transform: scale(0);
   }
@@ -296,7 +311,8 @@
     transform: scale(1);
   }
 }
-@keyframes shrink {
+
+@keyframes sp-shrink {
   0% {
     transform: scale(1);
   }
@@ -304,7 +320,8 @@
     transform: scale(0);
   }
 }
-@keyframes move {
+
+@keyframes sp-move {
   0% {
     transform: translate(0, 0);
   }
@@ -313,7 +330,7 @@
   }
 }
 
-@keyframes fadeIn {
+@keyframes sp-fade-in {
   0% {
     opacity: 0;
     transform: translateY(4px);
@@ -332,6 +349,6 @@
 }
 
 .sp-error-message {
-  animation: fadeIn 0.15s ease-in;
+  animation: sp-fade-in 0.15s ease-in;
   color: var(--colors-fg-error);
 }

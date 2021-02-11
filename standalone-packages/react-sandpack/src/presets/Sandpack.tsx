@@ -14,9 +14,6 @@ import { CodeEditor, CodeEditorOptions } from '../components/CodeEditor';
 import { Preview, PreviewOptions } from '../components/Preview';
 import { getSetup } from '../templates';
 import { ThemeProvider } from '../contexts/theme-context';
-import { getStyleSheet } from '../styles';
-
-let styleInjected = false;
 
 export interface SandpackProps {
   files?: SandpackFiles;
@@ -25,7 +22,6 @@ export interface SandpackProps {
 
   theme?: SandpackPredefinedTheme | SandpackPartialTheme;
   customStyle?: React.CSSProperties;
-  injectStylesAtRuntime?: boolean; // Temporary solution for conditional style injection
 
   options?: {
     openPaths?: string[];
@@ -78,19 +74,6 @@ export const Sandpack: React.FC<SandpackProps> = props => {
   };
 
   const { height, ...otherStyles } = props.customStyle || {};
-
-  const injectStylesAtRuntime = props.injectStylesAtRuntime ?? false;
-  if (
-    injectStylesAtRuntime &&
-    typeof document !== 'undefined' &&
-    !styleInjected
-  ) {
-    const styleTag = document.createElement('style');
-    styleTag.textContent = getStyleSheet();
-    document.head.appendChild(styleTag);
-
-    styleInjected = true;
-  }
 
   return (
     <SandpackProvider

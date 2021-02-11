@@ -7,7 +7,6 @@ import { SandpackLayout } from '../../components/SandpackLayout';
 import { SandpackProvider } from '../../contexts/sandpack-context';
 import { SANDBOX_TEMPLATES } from '../../templates';
 import { ThemeProvider } from '../../contexts/theme-context';
-import { sandpackDarkTheme } from '../../themes';
 
 export default {
   title: 'components/Code Editor',
@@ -63,7 +62,7 @@ export const VueCode = () => (
 );
 
 export const DarkTheme = () => (
-  <ThemeProvider value={sandpackDarkTheme}>
+  <ThemeProvider theme="sp-dark">
     <SandpackProvider
       entry={vueTemplate.entry}
       environment="vue-cli"

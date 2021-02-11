@@ -6,6 +6,7 @@ import { SandpackLayout } from '../../components/SandpackLayout';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
 import { SANDBOX_TEMPLATES } from '../../templates';
+import { ThemeProvider } from '../../contexts/theme-context';
 
 export default {
   title: 'components/Code Viewer',
@@ -54,8 +55,10 @@ export const VueCode = () => (
     openPaths={[vueTemplate.main]}
     dependencies={vueTemplate.dependencies}
   >
-    <SandpackLayout>
-      <CodeViewer />
-    </SandpackLayout>
+    <ThemeProvider theme="sp-dark">
+      <SandpackLayout>
+        <CodeViewer />
+      </SandpackLayout>
+    </ThemeProvider>
   </SandpackProvider>
 );

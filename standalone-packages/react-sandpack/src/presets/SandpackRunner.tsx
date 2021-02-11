@@ -5,19 +5,19 @@ import { Preview } from '../components/Preview';
 import { SandpackLayout } from '../components/SandpackLayout';
 import { getSetup } from '../templates';
 import { SandpackProvider } from '../contexts/sandpack-context';
-import { sandpackLightTheme } from '../themes';
 import { ThemeProvider } from '../contexts/theme-context';
 import {
+  SandpackPartialTheme,
   SandpackPredefinedTemplate,
+  SandpackPredefinedTheme,
   SandpackSetup,
-  SandpackTheme,
 } from '../types';
 
 export interface SandpackRunnerProps {
   code?: string;
   template?: SandpackPredefinedTemplate;
   customSetup?: SandpackSetup;
-  theme?: SandpackTheme;
+  theme?: SandpackPredefinedTheme | SandpackPartialTheme;
   customStyle?: React.CSSProperties;
   options?: {
     showNavigator?: boolean;
@@ -30,7 +30,7 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
   template,
   customSetup,
   options,
-  theme = sandpackLightTheme,
+  theme,
   customStyle,
 }) => {
   const projectSetup = getSetup(template, customSetup);
@@ -55,7 +55,7 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
       environment={projectSetup.environment}
       bundlerURL={options?.bundlerUrl}
     >
-      <ThemeProvider value={theme}>
+      <ThemeProvider theme={theme}>
         <SandpackLayout style={customStyle}>
           <Preview showNavigator={options?.showNavigator} />
         </SandpackLayout>

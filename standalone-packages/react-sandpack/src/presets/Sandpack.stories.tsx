@@ -42,11 +42,6 @@ export const ReactEditor: Story<SandpackProps> = args => (
       '/link.js': linkCode,
     }}
     template="react"
-    theme={{
-      palette: {
-        accent: 'red',
-      },
-    }}
   />
 );
 

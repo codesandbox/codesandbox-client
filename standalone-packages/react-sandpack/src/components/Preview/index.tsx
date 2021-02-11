@@ -12,11 +12,17 @@ export type PreviewOptions = {
 
 export type PreviewProps = PreviewOptions & {
   customStyle?: React.CSSProperties;
+  showOpenInCodeSandbox?: boolean;
+  showRefreshButton?: boolean;
 };
+
+export { RefreshButton, OpenInCodeSandboxButton };
 
 export const Preview: React.FC<PreviewProps> = ({
   customStyle,
-  showNavigator,
+  showNavigator = false,
+  showRefreshButton = true,
+  showOpenInCodeSandbox = true,
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const wrapperRef = React.useRef<HTMLDivElement>(null);
@@ -78,9 +84,9 @@ export const Preview: React.FC<PreviewProps> = ({
           </div>
         )}
 
-        {!showNavigator && <RefreshButton />}
+        {!showNavigator && showRefreshButton && <RefreshButton />}
 
-        <OpenInCodeSandboxButton />
+        {showOpenInCodeSandbox && <OpenInCodeSandboxButton />}
 
         <LoadingAnimation loadingOverlayState={loadingOverlayState} />
       </div>

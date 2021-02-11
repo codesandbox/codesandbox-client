@@ -16,46 +16,15 @@
   "sideEffects": false,
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "yarn build:cjs && yarn build:esm",
+    "build": "yarn build:cjs && yarn build:esm && yarn build:css",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:esm": "tsc -p tsconfig.esm.json",
+    "build:css": "postcss src/styles/index.css -o dist/index.css -u autoprefixer -u cssnano",
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prepublish": "yarn build",
     "start": "tsc -p tsconfig.esm.json --watch",
     "storybook": "start-storybook -p 6006 --no-dll",
     "build-storybook": "build-storybook --no-dll"
-  },
-  "config": {
-    "commitizen": {
-      "path": "node_modules/cz-conventional-changelog"
-    },
-    "validate-commit-msg": {
-      "types": "conventional-commit-types",
-      "helpMessage": "Use \"npm run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
-    }
-  },
-  "jest": {
-    "collectCoverage": true,
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 90,
-        "functions": 95,
-        "lines": 95,
-        "statements": 95
-      }
-    },
-    "mapCoverage": true,
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "preset": "ts-jest",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
   "dependencies": {
     "@codemirror/closebrackets": "^0.17.2",
@@ -90,17 +59,21 @@
     "@types/react": "^16.9.17",
     "@types/react-broadcast": "^0.6.1",
     "@types/shelljs": "^0.8.0",
+    "autoprefixer": "^10.2.4",
     "awesome-typescript-loader": "^3.5.0",
     "babel-loader": "^7.1.5",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
     "coveralls": "^3.0.0",
     "cross-env": "^5.1.3",
+    "cssnano": "^4.1.10",
     "cz-conventional-changelog": "^2.0.0",
     "dotenv": "^8.2.0",
     "jest": "^24.9.0",
     "lodash.camelcase": "^4.3.0",
     "npm-run-all": "^4.1.2",
+    "postcss": "^8.2.6",
+    "postcss-cli": "^8.3.1",
     "prompt": "^1.0.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
@@ -109,7 +82,6 @@
     "semantic-release": "^12.4.1",
     "storybook-addon-jsx": "^7.3.4",
     "ts-jest": "^24.0.1",
-    "ts-node": "^4.1.0",
     "tslint": "^5.8.0",
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",

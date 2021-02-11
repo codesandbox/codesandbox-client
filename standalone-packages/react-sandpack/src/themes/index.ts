@@ -3,6 +3,7 @@ import {
   SandpackPredefinedTheme,
   SandpackPartialTheme,
 } from '../types';
+import { hexToCSSRGBa } from '../utils/string-utils';
 
 export const sandpackLightTheme: SandpackTheme = {
   palette: {
@@ -145,3 +146,22 @@ const simpleHashFunction = (str: string) => {
   }
   return Math.abs(hash);
 };
+
+export const getThemeStyleSheet = (theme: SandpackTheme, themeId: string) => `
+.sp-wrapper.${themeId} {
+  --colors-highlightText: ${theme.palette.highlightText};
+  --colors-defaultText: ${theme.palette.defaultText};
+  --colors-inactive: ${theme.palette.inactive};
+  --colors-mainBackground: ${theme.palette.mainBackground};
+  --colors-mainBackgroundOverlay: ${hexToCSSRGBa(
+    theme.palette.mainBackground,
+    80
+  )};
+  --colors-inputBackground: ${theme.palette.inputBackground};
+  --colors-accent: ${theme.palette.accent};
+  --colors-bg-error: ${theme.palette.errorBackground};
+  --colors-fg-error: ${theme.palette.errorForeground};
+  --fontSizes-default: ${theme.typography.fontSize};
+  --fonts-body: ${theme.typography.bodyFont};
+  --fonts-mono: ${theme.typography.monoFont};
+`;

@@ -1,4 +1,4 @@
-import { getThemeStyleSheet } from '../styles';
+import { getThemeStyleSheet } from '../themes';
 import { SandpackTheme } from '../types';
 
 export const injectThemeStyleSheet = (
