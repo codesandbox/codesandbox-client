@@ -5,14 +5,14 @@ import {
   SandboxTemplate,
   SandpackFiles,
   SandpackPredefinedTemplate,
+  SandpackPredefinedTheme,
   SandpackSetup,
-  SandpackTheme,
+  SandpackPartialTheme,
 } from '../types';
 import { SandpackProvider } from '../contexts/sandpack-context';
 import { CodeEditor, CodeEditorOptions } from '../components/CodeEditor';
 import { Preview, PreviewOptions } from '../components/Preview';
 import { getSetup } from '../templates';
-import { sandpackLightTheme } from '../themes';
 import { ThemeProvider } from '../contexts/theme-context';
 import { getStyleSheet } from '../styles';
 
@@ -23,7 +23,7 @@ export interface SandpackProps {
   template?: SandpackPredefinedTemplate;
   customSetup?: SandpackSetup;
 
-  theme?: SandpackTheme;
+  theme?: SandpackPredefinedTheme | SandpackPartialTheme;
   customStyle?: React.CSSProperties;
   injectStylesAtRuntime?: boolean; // Temporary solution for conditional style injection
 
@@ -77,8 +77,6 @@ export const Sandpack: React.FC<SandpackProps> = props => {
     fileResolver: props.options?.fileResolver,
   };
 
-  const theme = props.theme || sandpackLightTheme;
-
   const { height, ...otherStyles } = props.customStyle || {};
 
   const injectStylesAtRuntime = props.injectStylesAtRuntime ?? false;
@@ -104,7 +102,7 @@ export const Sandpack: React.FC<SandpackProps> = props => {
       activePath={activePath}
       {...providerOptions}
     >
-      <ThemeProvider value={theme}>
+      <ThemeProvider theme={props.theme}>
         <SandpackLayout style={otherStyles}>
           <CodeEditor {...codeEditorOptions} customStyle={{ height }} />
           <Preview {...previewOptions} customStyle={{ height }} />

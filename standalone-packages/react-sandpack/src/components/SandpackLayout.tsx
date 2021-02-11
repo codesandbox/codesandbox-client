@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ThemeContext } from '../contexts/theme-context';
 
 export interface SandpackLayoutProps {
   style?: React.CSSProperties;
@@ -7,8 +8,12 @@ export interface SandpackLayoutProps {
 export const SandpackLayout: React.FC<SandpackLayoutProps> = ({
   children,
   style,
-}) => (
-  <div className="sp-wrapper" style={style}>
-    {children}
-  </div>
-);
+}) => {
+  const { id } = React.useContext(ThemeContext);
+
+  return (
+    <div className={`sp-wrapper ${id}`} style={style}>
+      {children}
+    </div>
+  );
+};

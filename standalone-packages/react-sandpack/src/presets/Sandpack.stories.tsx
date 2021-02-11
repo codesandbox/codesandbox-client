@@ -2,8 +2,8 @@ import React from 'react';
 import { Story } from '@storybook/react';
 import { IFile } from 'smooshpack';
 import { Sandpack, SandpackProps } from './Sandpack';
-import { sandpackDarkTheme } from '../themes';
 import { getSetup } from '../templates';
+import { sandpackDarkTheme } from '../themes';
 
 export default {
   title: 'presets/Sandpack',
@@ -42,6 +42,11 @@ export const ReactEditor: Story<SandpackProps> = args => (
       '/link.js': linkCode,
     }}
     template="react"
+    theme={{
+      palette: {
+        accent: 'red',
+      },
+    }}
   />
 );
 
@@ -68,7 +73,7 @@ export const DarkTheme: Story<SandpackProps> = args => (
       '/link.js': linkCode,
     }}
     template="react"
-    theme={sandpackDarkTheme}
+    theme="sp-dark"
   />
 );
 
@@ -76,6 +81,7 @@ export const CustomSetup: Story<SandpackProps> = args => (
   <Sandpack
     {...args}
     options={{ wrapContent: true }}
+    theme="night-owl"
     files={{
       './tsconfig.json': {
         code: `{
@@ -171,19 +177,83 @@ const helloWorld = `export default function App() {
 
 export const MultipleInstances: Story<SandpackProps> = args => (
   <div>
+    <h2>Light Theme</h2>
     <Sandpack
       {...args}
       files={{
         '/App.js': helloWorld.replace('World', 'world 1'),
       }}
+      options={{
+        showTabs: true,
+        showNavigator: true,
+      }}
       template="react"
     />
+    <h2>Dark Theme</h2>
     <Sandpack
       {...args}
       files={{
         '/App.js': helloWorld.replace('World', 'world 2'),
       }}
+      options={{
+        showTabs: true,
+        showNavigator: true,
+      }}
       template="react"
+      theme="sp-dark"
+    />
+    <h2>Night Owl</h2>
+    <Sandpack
+      {...args}
+      files={{
+        '/App.js': helloWorld.replace('World', 'world 3'),
+      }}
+      options={{
+        showTabs: true,
+        showNavigator: true,
+      }}
+      template="react"
+      theme="night-owl"
+    />
+    <h2>Custom Theme Colors</h2>
+    <Sandpack
+      {...args}
+      files={{
+        '/App.js': helloWorld.replace('World', 'world 4'),
+      }}
+      options={{
+        showTabs: true,
+        showNavigator: true,
+      }}
+      template="react"
+      theme={{
+        palette: {
+          accent: '#fc0e34',
+          inactive: '#aaa',
+        },
+        syntax: {
+          keyword: '#6700ff',
+        },
+      }}
+    />
+    <h2>Custom Theme Typography</h2>
+    <Sandpack
+      {...args}
+      files={{
+        '/App.js': helloWorld.replace('World', 'world 5'),
+      }}
+      options={{
+        showTabs: true,
+        showNavigator: true,
+      }}
+      template="react"
+      theme={{
+        ...sandpackDarkTheme,
+        typography: {
+          fontSize: '16px',
+          bodyFont: 'Arial',
+        },
+      }}
     />
   </div>
 );

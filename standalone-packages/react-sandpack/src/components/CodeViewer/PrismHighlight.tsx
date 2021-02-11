@@ -17,7 +17,7 @@ export const PrismHighlight = ({
   code,
   showLineNumbers,
 }: PrismHighlightProps) => {
-  const theme = React.useContext(ThemeContext);
+  const { theme } = React.useContext(ThemeContext);
 
   return (
     <div

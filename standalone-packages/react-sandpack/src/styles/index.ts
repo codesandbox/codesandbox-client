@@ -1,35 +1,36 @@
 import { SandpackTheme } from '../types';
+import { hexToCSSRGBa } from '../utils/string-utils';
 
-export const getThemeStyleSheet = (theme: SandpackTheme) => `
-.sp-wrapper {
+export const getThemeStyleSheet = (theme: SandpackTheme, themeId: string) => `
+.sp-wrapper.${themeId} {
   --colors-highlightText: ${theme.palette.highlightText};
   --colors-defaultText: ${theme.palette.defaultText};
   --colors-inactive: ${theme.palette.inactive};
   --colors-mainBackground: ${theme.palette.mainBackground};
+  --colors-mainBackgroundOverlay: ${hexToCSSRGBa(
+    theme.palette.mainBackground,
+    80
+  )};
   --colors-inputBackground: ${theme.palette.inputBackground};
   --colors-accent: ${theme.palette.accent};
-  --colors-error: #C02C24;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --fontSizes-default: 14px;
-  --fonts-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --fonts-mono: "Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace;
-  --radii-default: 4px;
+  --colors-bg-error: ${theme.palette.errorBackground};
+  --colors-fg-error: ${theme.palette.errorForeground};
+  --fontSizes-default: ${theme.typography.fontSize};
+  --fonts-body: ${theme.typography.bodyFont};
+  --fonts-mono: ${theme.typography.monoFont};
 `;
 
 export const getStyleSheet = () => `
 .sp-wrapper {
   --colors-highlightText: #5b6776;
-  --colors-defaultText: #999999;
+  --colors-defaultText: #757575;
   --colors-inactive: #e5e7eb;
   --colors-mainBackground: #f8f9fb;
+  --colors-mainBackground80: #f8f9fbcf;
   --colors-inputBackground: #ffffff;
   --colors-accent: #6caedd;
-  --colors-error: #c02c24;
+  --colors-bg-error: #ffcdca;
+  --colors-fg-error: #811e18;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -100,31 +101,20 @@ export const getStyleSheet = () => `
   overflow: auto;
 }
 
-/* TODO: fix
-.sp-cm:focus {
+.sp-cm:focus-visible {
   box-shadow: inset 0 0 0 4px var(--colors-accent);
   padding-left: var(--space-1);
   padding-right: var(--space-1);
 }
 
-.sp-cm:focus .cm-line {
+.sp-cm:focus-visible .cm-line {
   padding: 0 var(--space-2);
 }
 
-.sp-cm:focus:not(:focus-visible) {
-  box-shadow: none;
+.sp-cm:focus-visible .cm-gutter-lineNumber {
   padding-left: 0;
-  padding-right: 0;
+  padding-right: var(--space-2);
 }
-
-.sp-cm:focus:not(:focus-visible).cm-line {
-  padding: 0 var(--space-3);
-}
-
-.sp-cm:focus-visible {
-  box-shadow: inset 0 0 0 4px var(--colors-accent);
-}
-*/
 
 .sp-cm .cm-wrap {
   height: 100%;
@@ -151,7 +141,8 @@ export const getStyleSheet = () => `
 }
 
 .sp-cm .cm-gutter-lineNumber {
-  padding-right: var(--space-2);
+  padding-left: var(--space-1);
+  padding-right: var(--space-1);
 }
 
 .sp-cm .cm-gutterElement.cm-gutterElement-lineNumber {
@@ -185,6 +176,7 @@ export const getStyleSheet = () => `
   height: 40px;
   border-bottom: 1px solid var(--colors-inactive);
   padding: var(--space-2) var(--space-4);
+  background: var(--colors-mainBackground);
 }
 
 /* Elements */
@@ -198,6 +190,7 @@ export const getStyleSheet = () => `
   color: var(--colors-defaultText);
   height: 40px;
   border: 0;
+  outline: none;
   border-bottom: 1px solid transparent;
   transition: border 0.15s ease-out;
 }
@@ -211,15 +204,6 @@ export const getStyleSheet = () => `
   color: var(--colors-highlightText);
 }
 
-.sp-tab-button:focus {
-  background-color: var(--colors-inactive);
-  outline: none;
-}
-
-.sp-tab-button:focus:not(:focus-visible) {
-  background-color: transparent;
-}
-
 .sp-tab-button:focus-visible {
   background-color: var(--colors-inactive);
   outline: none;
@@ -228,15 +212,22 @@ export const getStyleSheet = () => `
 .sp-button {
   appearance: none;
   border: 0;
+  outline: none;
   padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
   border-radius: var(--radii-default);
   display: flex;
   align-items: center;
   color: var(--colors-defaultText);
-  background-color: transparent;
+  background-color: var(--colors-mainBackground);
   font-size: inherit;
   font-family: inherit;
   transition: all 0.15s ease-in-out;
+}
+
+.sp-button.icon-standalone {
+  padding: var(--space-1);
+  background: var(--colors-mainBackgroundOverlay);
+  backdrop-filter: blur(4px);
 }
 
 .sp-button.icon {
@@ -250,14 +241,6 @@ export const getStyleSheet = () => `
 
 .sp-button:disabled {
   color: var(--colors-inactive);
-}
-
-.sp-button:focus {
-  outline: 2px solid var(--colors-accent);
-}
-
-.sp-button:focus:not(:focus-visible) {
-  outline: none;
 }
 
 .sp-button:focus-visible {
@@ -295,6 +278,7 @@ export const getStyleSheet = () => `
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 5;
 }
 
 .sp-cubes {
@@ -352,11 +336,26 @@ export const getStyleSheet = () => `
   }
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .sp-error {
   padding: var(--space-4);
   white-space: pre-wrap;
   font-family: var(--fonts-mono);
-  background-color: var(--colors-error);
-  color: white;
+  background-color: var(--colors-bg-error);
+}
+
+.sp-error-message {
+  animation: fadeIn 0.15s ease-in;
+  color: var(--colors-fg-error);
 }
 `;

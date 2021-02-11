@@ -85,6 +85,8 @@ export type SandpackPredefinedTemplate = 'react' | 'vue' | 'vanilla';
 // | 'angular-cli'
 // | 'parcel';
 
+export type SandpackPredefinedTheme = 'sp-light' | 'sp-dark' | 'night-owl';
+
 export type SandpackTheme = {
   palette: {
     highlightText: string;
@@ -93,6 +95,8 @@ export type SandpackTheme = {
     mainBackground: string;
     inputBackground: string;
     accent: string;
+    errorBackground: string;
+    errorForeground: string;
   };
   syntax: {
     plain: string;
@@ -104,6 +108,17 @@ export type SandpackTheme = {
     tag: string;
     static: string;
   };
+  typography: {
+    bodyFont: string;
+    monoFont: string;
+    fontSize: string;
+  };
+};
+
+export type SandpackPartialTheme = DeepPartial<SandpackTheme>;
+
+export type DeepPartial<Type> = {
+  [Property in keyof Type]?: DeepPartial<Type[Property]>;
 };
 
 export interface FileResolver {
