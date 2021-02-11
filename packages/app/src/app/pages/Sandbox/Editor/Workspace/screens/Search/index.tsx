@@ -38,15 +38,17 @@ export const Search = () => {
   const {
     state: {
       editor: { currentSandbox },
+      workspace: { searchValue, searchResults },
+    },
+    actions: {
+      workspace: { searchValueChanged, searchResultsChanged },
     },
   } = useOvermind();
   const list = useRef<any>();
   const wrapper = useRef<any>();
   const [openFilesSearch, setOpenFilesSearch] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
   const [filesToSearch, setFilesToSearch] = useState('');
   const [filesToExclude, setFilesToExclude] = useState('');
-  const [results, setResults] = useState([]);
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
   const [modules, setModules] = useState<Module[]>(allModules);
   const [showFileFilters, setShowFileFilters] = useState(false);
@@ -95,7 +97,7 @@ export const Search = () => {
         filesToSearch,
         filesToExclude,
       });
-      setResults(val);
+      searchResultsChanged(val);
       if (list.current) {
         list.current.resetAfterIndex(0);
       }
@@ -108,15 +110,15 @@ export const Search = () => {
     }
 
     if (!value) {
-      setResults([]);
+      searchResultsChanged([]);
     }
   };
 
-  const getHeight = (i: string) => 32 + results[i].matches.length * 28;
+  const getHeight = (i: string) => 32 + searchResults[i].matches.length * 28;
 
   const Row = ({ index, style }) => (
     <Element style={style}>
-      <Result {...results[index]} />
+      <Result {...searchResults[index]} />
     </Element>
   );
 
@@ -163,9 +165,10 @@ export const Search = () => {
                 paddingRight: '50px',
                 paddingLeft: '30px',
               })}
+              value={searchValue}
               placeholder="Search"
               onChange={e => {
-                setSearchValue(e.target.value);
+                searchValueChanged(e.target.value);
                 searchFiles(e.target.value);
               }}
             />
@@ -222,7 +225,7 @@ export const Search = () => {
             Open Files
           </TabButton>
         </Stack>
-        {results.length ? (
+        {searchResults.length ? (
           <Element
             paddingY={2}
             css={css({
@@ -234,8 +237,11 @@ export const Search = () => {
             })}
           >
             <Text block variant="muted" align="center">
-              {results.reduce((acc, curr) => acc + curr.matches.length, 0)}{' '}
-              results in {results.length} files
+              {searchResults.reduce(
+                (acc, curr) => acc + curr.matches.length,
+                0
+              )}{' '}
+              results in {searchResults.length} files
             </Text>
           </Element>
         ) : null}
@@ -246,7 +252,7 @@ export const Search = () => {
         >
           <List
             height={wrapper.current ? wrapper.current.clientHeight - 50 : 0}
-            itemCount={results.length}
+            itemCount={searchResults.length}
             itemSize={getHeight}
             width={wrapper.current ? wrapper.current.clientWidth : 0}
             ref={list}

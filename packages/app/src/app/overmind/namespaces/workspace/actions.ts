@@ -566,3 +566,11 @@ export const sandboxAlwaysOnChanged: AsyncAction<{
     });
   }
 };
+
+export const searchValueChanged: Action<string> = ({ state }, value) => {
+  state.workspace.searchValue = value;
+};
+
+export const searchResultsChanged: Action<any[]> = ({ state }, results) => {
+  state.workspace.searchResults = results;
+};

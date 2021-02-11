@@ -26,6 +26,8 @@ type State = {
   };
   showingSelectedDependencies: boolean;
   dependencySearch: string;
+  searchValue: string;
+  searchResults: any[];
 };
 
 export const state: State = {
@@ -48,4 +50,6 @@ export const state: State = {
   hitToVersionMap: {},
   showingSelectedDependencies: false,
   dependencySearch: '',
+  searchValue: '',
+  searchResults: [],
 };
