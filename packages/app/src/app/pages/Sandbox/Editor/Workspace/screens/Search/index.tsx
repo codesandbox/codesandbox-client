@@ -24,6 +24,7 @@ import { FileFilters } from './components/FileFilters';
 export const Search = () => {
   const {
     state: {
+      user,
       editor: { currentSandbox },
       workspace: { searchValue, searchResults, searchOptions },
     },
@@ -67,17 +68,30 @@ export const Search = () => {
   const searchFiles = async (value: string) => {
     if (value.length > 1) {
       if (searchWorker.current) {
-        const val = await searchWorker.current.search(value, modules, {
-          ...searchOptions,
-        });
-        searchResultsChanged(val);
+        const currentResults = await searchWorker.current.search(
+          value,
+          modules,
+          {
+            ...searchOptions,
+          }
+        );
+        searchResultsChanged(
+          currentResults.map((v, i) => {
+            if (i < 2) {
+              return {
+                ...v,
+                open: true,
+              };
+            }
+
+            return v;
+          })
+        );
         if (list.current) {
           list.current.resetAfterIndex(0);
         }
       }
-    }
-
-    if (!value) {
+    } else {
       searchResultsChanged([]);
     }
   };
@@ -86,10 +100,19 @@ export const Search = () => {
     searchFiles(searchValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...Object.values(searchOptions), searchValue]);
+  const getItemSize = i => {
+    if (searchResults[i].open) {
+      return 32 + searchResults[i].matches.length * 28;
+    }
 
+    return 32;
+  };
   const Row = ({ index, style }) => (
     <Element style={style}>
-      <Result {...searchResults[index]} />
+      <Result
+        i={index}
+        updateRender={(i: number) => list.current.resetAfterIndex(i)}
+      />
     </Element>
   );
 
@@ -212,10 +235,10 @@ export const Search = () => {
           <AutoSizer>
             {({ height, width }) => (
               <List
-                height={height}
+                height={user ? height : height - 140}
                 width={width}
                 itemCount={searchResults.length}
-                itemSize={i => 32 + searchResults[i].matches.length * 28}
+                itemSize={getItemSize}
                 ref={list}
               >
                 {Row}

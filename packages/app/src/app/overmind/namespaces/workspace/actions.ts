@@ -1,6 +1,6 @@
 import getTemplate from '@codesandbox/common/lib/templates';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
-import { CustomTemplate } from '@codesandbox/common/lib/types';
+import { CustomTemplate, Module } from '@codesandbox/common/lib/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
@@ -579,7 +579,16 @@ export const filesToExcludeChanged: Action<string> = ({ state }, value) => {
   state.workspace.searchOptions.filesToExclude = value;
 };
 
-export const searchResultsChanged: Action<any[]> = ({ state }, results) => {
+export const openResult: Action<number> = ({ state }, id) => {
+  state.workspace.searchResults[id].open = !state.workspace.searchResults[id]
+    .open;
+};
+
+export const searchResultsChanged: Action<Module &
+  {
+    open: boolean;
+    matches: string[];
+  }[]> = ({ state }, results) => {
   state.workspace.searchResults = results;
 };
 

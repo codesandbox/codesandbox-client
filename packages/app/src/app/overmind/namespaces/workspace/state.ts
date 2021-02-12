@@ -1,3 +1,4 @@
+import { Module } from '@codesandbox/common/lib/types';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
 
 export enum OptionTypes {
@@ -33,7 +34,13 @@ type State = {
   showingSelectedDependencies: boolean;
   dependencySearch: string;
   searchValue: string;
-  searchResults: any[];
+  searchResults:
+    | (Module &
+        {
+          open: boolean;
+          matches: string[];
+        }[])
+    | [];
   searchOptions: {
     [OptionTypes.CaseSensitive]: boolean;
     [OptionTypes.Regex]: boolean;
@@ -67,6 +74,7 @@ export const state: State = {
   dependencySearch: '',
   searchValue: '',
   searchResults: [],
+
   searchOptions: {
     [OptionTypes.CaseSensitive]: false,
     [OptionTypes.Regex]: false,

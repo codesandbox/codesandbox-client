@@ -18,6 +18,7 @@ export default class SearchWorker {
       .map(m => ({
         ...m,
         matches: [],
+        open: false,
       }))
       // do not search binary files
       .filter(module => !module.isBinary);
