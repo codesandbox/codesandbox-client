@@ -14,10 +14,13 @@ export default class SearchWorker {
   async search(term: string, modules: Module[], options: Options) {
     const { filesToExclude, filesToInclude, regex, caseSensitive } = options;
 
-    let searchable: Module[] = modules.map(m => ({
-      ...m,
-      matches: [],
-    }));
+    let searchable: Module[] = modules
+      .map(m => ({
+        ...m,
+        matches: [],
+      }))
+      // do not search binary files
+      .filter(module => !module.isBinary);
 
     if (filesToInclude) {
       const matchesFiles = createIncludedFiles(filesToInclude, {
