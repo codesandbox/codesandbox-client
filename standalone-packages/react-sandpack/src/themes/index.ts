@@ -165,7 +165,7 @@ export const getThemeStyleSheet = (theme: SandpackTheme, themeId: string) => `
   --sp-colors-bg-default: ${theme.palette.defaultBackground};
   --sp-colors-bg-default-overlay: ${hexToCSSRGBa(
     theme.palette.defaultBackground,
-    80
+    0.8
   )};
   --sp-colors-bg-input: ${theme.palette.inputBackground};
   --sp-colors-accent: ${theme.palette.accent};

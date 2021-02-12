@@ -19,12 +19,14 @@ You can install this package by running `npm i react-smooshpack` or
 The package contains multiple components, utilities and typings for diving into
 the `sandpack` ecosystem.
 
-### Using the Sandpack component
+### Using the Sandpack Component
 
 We packed all the components and the bundler inside the `<Sandpack>` component.
+There's also a small stylesheet you should bring into your css pipeline.
 
-```tsx
+```jsx
 import { Sandpack } from 'react-smooshpack';
+import 'react-smooshpack/dist/index.css';
 
 <Sandpack />;
 ```
@@ -33,14 +35,14 @@ This will render a code editor and a preview component with some predefined
 settings. By default, this loads up a vanilla js sandbox, with no other
 framework dependency.
 
-### Templates, files and custom setup
+### Templates, Files and Custom Setup
 
 Your `Sandpack` can start with a predefined `template`. A template is a
 collection of files and dependencies, a basic starter for a project if you want.
 The `react` template in this instance, has the starter files of a
 _create-react-app_ project.
 
-```tsx
+```jsx
 <Sandpack template="react" />
 ```
 
@@ -49,7 +51,7 @@ instance. For this, you can use the `files` prop.
 
 The `code` you pass should be pre-formatted:
 
-```tsx
+```jsx
 const code = `export default function App() {
   return <h1>Hello World</h1>
 }
@@ -73,7 +75,7 @@ With the `customSetup` prop, you can also pass instance specific `files`,
 having higher priority. If you don't want to start from a template, you can
 specify your entire sandbox structure with the `customSetup`.
 
-```tsx
+```jsx
 const code = `import ReactMarkdown from 'react-markdown' 
 
 export default function App() {
@@ -98,7 +100,7 @@ export default function App() {
 
 Sandpack comes with some predefined themes:
 
-```tsx
+```jsx
 <Sandpack theme="sp-dark" />
 ```
 
@@ -147,7 +149,7 @@ content is set with the `code` property. With this notation, additional flags
 you can use to customize the sandpack experience. For example, you can pass a
 `hidden` flag for files that you don't want to show to the user:
 
-```tsx
+```jsx
 <Sandpack
   files={{
     '/App.js': reactCode,
@@ -165,7 +167,7 @@ You can also specify the `active` file, which is open in the code editor
 initially. If no `active` flag is set, the first file will be visible by
 default:
 
-```tsx
+```jsx
 <Sandpack
   files={{
     '/App.js': reactCode,
@@ -186,7 +188,7 @@ You can override the entire hidden/active system with two settings inside the
 `options` prop, but this requires you to set the relative paths in multiple
 places and can be error prone, so use this with caution:
 
-```tsx
+```jsx
 <Sandpack
   template="react"
   files={{
@@ -209,7 +211,7 @@ By default, `Sandpack` will show the file tabs if more than one file is open and
 will show a small refresh button on top of the `Preview`. But you can customize
 some of the parts of the component via flags set on the `options` prop.
 
-```tsx
+```jsx
 <Sandpack
   options={{
     showNavigator: true, // this will show a top navigator bar instead of the refresh button
@@ -228,7 +230,7 @@ avoid any layout shift while the bundler is running or as you type in the editor
 or switch the tab. By default, the height is set to `300px`, but you can adjust
 that with the `customStyle` prop:
 
-```tsx
+```jsx
 <Sandpack
   customStyle={{
     height: 350, // Any valid style property will be passed to the sandpack component here
@@ -242,7 +244,7 @@ By default, the bundling process will start as soon as the component is getting
 closer to the viewport, or when the page loads if the component is already in
 the viewport. But you can allow users to trigger the process manually.
 
-```tsx
+```jsx
 <Sandpack options={{ autorun: false }} template="react" />
 ```
 
@@ -252,7 +254,7 @@ setting, it will show a _Run_ button that initializes the process.
 The `options` also allow you to customize the _recompile mode_, or what happens
 you type inside the code editor.
 
-```tsx
+```jsx
 <Sandpack options={{ recompileMode: 'immediate' }} template="react" />
 ```
 
@@ -261,7 +263,7 @@ that ensures the bundler doesn't run on each keystroke. You can customize this
 experience by modifying the `recompileDelay` value or by setting the
 `recompileMode` to `immediate`.
 
-```tsx
+```jsx
 <Sandpack
   options={{
     recompileMode: 'delayed',
