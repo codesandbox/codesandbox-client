@@ -15,6 +15,11 @@ export const TabButton = ({ children, onClick, active }) => (
       color: active ? 'sideBar.foreground' : 'mutedForeground',
       borderRadius: 'small',
       width: '100%',
+
+      ':hover': {
+        color: 'sideBar.foreground',
+        backgroundColor: 'input.background',
+      },
     })}
     as="button"
     onClick={onClick}

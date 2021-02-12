@@ -13,9 +13,9 @@ export const FileFilters = () => {
     <>
       <Element
         css={css({
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: 'sideBar.border',
+          borderBottomWidth: '1px',
+          borderBottomStyle: 'solid',
+          borderBottomColor: 'sideBar.border',
           marginBottom: 4,
         })}
       />

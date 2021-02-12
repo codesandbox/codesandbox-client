@@ -29,13 +29,17 @@ export const Result = ({ i, updateRender }) => {
       <button
         type="button"
         css={css({
+          color: 'mutedForeground',
           background: 'transparent',
-          color: 'inputOption.activeBorder',
           padding: 0,
           border: 'none',
           cursor: 'pointer',
           width: '100%',
           outline: 'none',
+
+          ':hover': {
+            color: 'sideBar.foreground',
+          },
         })}
         onClick={() => {
           workspace.openResult(i);
@@ -45,6 +49,7 @@ export const Result = ({ i, updateRender }) => {
         <Stack gap={2} paddingBottom={2} paddingTop={4} align="center">
           <Element
             css={css({
+              color: 'inputOption.activeBorder',
               transition: 'transform 100ms ease',
               transform: !open ? 'rotate(-90deg)' : 'rotate(0deg)',
             })}
@@ -54,7 +59,7 @@ export const Result = ({ i, updateRender }) => {
 
           <EntryIcon type={getType(title)} />
 
-          <Text block variant="muted" size={3}>
+          <Text block size={3}>
             {title}
           </Text>
         </Stack>
@@ -73,12 +78,25 @@ export const Result = ({ i, updateRender }) => {
                   display: 'block',
                   width: '100%',
                   cursor: 'pointer',
+                  color: 'mutedForeground',
+
+                  ':hover': {
+                    color: 'sideBar.foreground',
+                  },
                 })}
                 key={`${match[0]}-${match[1]}`}
                 onClick={() => openFile(id, match)}
               >
                 <Stack gap={2} align="center">
-                  <Text block variant="muted" size={3}>
+                  <Text
+                    block
+                    size={3}
+                    css={css({
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    })}
+                  >
                     {code
                       .substring(match[0] - 10, match[0])
                       .split('\n')
@@ -91,7 +109,7 @@ export const Result = ({ i, updateRender }) => {
                       {code.substring(match[0], match[1])}
                     </span>
                     {code
-                      .substring(match[1], match[1] + 15)
+                      .substring(match[1], match[1] + 100)
                       .split('\n')
                       .join(' ')}
                   </Text>

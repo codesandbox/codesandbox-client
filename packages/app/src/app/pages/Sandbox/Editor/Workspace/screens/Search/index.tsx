@@ -224,6 +224,7 @@ export const Search = () => {
           >
             <Text block variant="muted" align="center">
               {searchResults.reduce(
+                // @ts-ignore
                 (acc, curr) => acc + curr.matches.length,
                 0
               )}{' '}

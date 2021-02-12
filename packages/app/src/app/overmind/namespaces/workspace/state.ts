@@ -7,6 +7,11 @@ export enum OptionTypes {
   MatchFullWord = 'matchFullWord',
 }
 
+export type SearchResults = (Module & {
+  open: boolean;
+  matches: [number, number][];
+})[];
+
 type State = {
   project: {
     title: string;
@@ -34,13 +39,7 @@ type State = {
   showingSelectedDependencies: boolean;
   dependencySearch: string;
   searchValue: string;
-  searchResults:
-    | (Module &
-        {
-          open: boolean;
-          matches: string[];
-        }[])
-    | [];
+  searchResults: SearchResults | [];
   searchOptions: {
     [OptionTypes.CaseSensitive]: boolean;
     [OptionTypes.Regex]: boolean;

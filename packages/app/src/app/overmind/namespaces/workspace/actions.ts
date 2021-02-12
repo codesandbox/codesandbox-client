@@ -1,12 +1,13 @@
 import getTemplate from '@codesandbox/common/lib/templates';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
-import { CustomTemplate, Module } from '@codesandbox/common/lib/types';
+import { CustomTemplate } from '@codesandbox/common/lib/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { Action, AsyncAction } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
 import { json } from 'overmind';
+import { SearchResults } from './state';
 
 export const valueChanged: Action<{
   field: string;
@@ -584,11 +585,10 @@ export const openResult: Action<number> = ({ state }, id) => {
     .open;
 };
 
-export const searchResultsChanged: Action<Module &
-  {
-    open: boolean;
-    matches: string[];
-  }[]> = ({ state }, results) => {
+export const searchResultsChanged: Action<SearchResults> = (
+  { state },
+  results
+) => {
   state.workspace.searchResults = results;
 };
 
