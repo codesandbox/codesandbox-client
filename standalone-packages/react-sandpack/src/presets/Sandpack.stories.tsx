@@ -41,6 +41,9 @@ export const ReactEditor: Story<SandpackProps> = args => (
       '/button.js': buttonCode,
       '/link.js': linkCode,
     }}
+    options={{
+      showLineNumbers: true,
+    }}
     template="react"
   />
 );
@@ -63,9 +66,11 @@ export const DarkTheme: Story<SandpackProps> = args => (
       '/App.js': reactCode,
       '/button.js': {
         code: buttonCode,
-        active: true,
       },
-      '/link.js': linkCode,
+      '/link.js': {
+        code: linkCode,
+        hidden: true,
+      },
     }}
     template="react"
     theme="sp-dark"
@@ -93,6 +98,7 @@ export const CustomSetup: Story<SandpackProps> = args => (
   "jsx": "react"
 }
 }`,
+        hidden: true,
       },
       '/public/index.html': {
         code: `<!DOCTYPE html>
@@ -106,6 +112,7 @@ export const CustomSetup: Story<SandpackProps> = args => (
 <div id="root"></div>
 </body>
 </html>`,
+        hidden: true,
       },
 
       '/src/index.tsx': {
@@ -117,6 +124,7 @@ import { Main } from "./main";
 const rootElement = document.getElementById("root");
 render(<Main test="World"/>, rootElement);
         `,
+        hidden: true,
       },
 
       '/src/main.tsx': {
@@ -127,7 +135,6 @@ export const Main: React.FC<{test: string}> = ({test}) => {
     <h1>Hello {test}</h1>
   )
 }`,
-        open: true,
       },
     }}
     customSetup={{
@@ -152,10 +159,10 @@ export const WithCustomLibrary: Story<SandpackProps> = args => (
   <Sandpack
     {...args}
     template="react"
+    files={{
+      '/App.js': reactWithLibCode,
+    }}
     customSetup={{
-      files: {
-        '/App.js': reactWithLibCode,
-      },
       dependencies: {
         'react-markdown': 'latest',
       },

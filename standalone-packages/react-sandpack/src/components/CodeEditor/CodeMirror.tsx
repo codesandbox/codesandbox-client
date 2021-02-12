@@ -167,7 +167,14 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       aria-describedby="enter-instructions"
       ref={wrapper}
     >
-      <pre className="sp-pre-placeholder">{code}</pre>
+      <pre
+        className="sp-pre-placeholder"
+        style={{
+          marginLeft: showLineNumbers ? 28 : 0, // gutter line offset
+        }}
+      >
+        {code}
+      </pre>
       <p id="enter-instructions" style={{ display: 'none' }}>
         To enter the code editing mode, press Enter. To exit the edit mode,
         press Escape

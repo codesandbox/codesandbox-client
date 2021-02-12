@@ -35,7 +35,7 @@ export type SandboxTemplate = {
 
 export type SandpackFile = {
   code: string;
-  open?: boolean;
+  hidden?: boolean;
   active?: boolean;
 };
 

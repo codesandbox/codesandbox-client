@@ -37,6 +37,8 @@ framework dependency.
 
 Your `Sandpack` can start with a predefined `template`. A template is a
 collection of files and dependencies, a basic starter for a project if you want.
+The `react` template in this instance, has the starter files of a
+_create-react-app_ project.
 
 ```tsx
 <Sandpack template="react" />
@@ -48,8 +50,6 @@ instance. For this, you can use the `files` prop.
 The `code` you pass should be pre-formatted:
 
 ```tsx
-import { Sandpack } from 'react-smooshpack';
-
 const code = `export default function App() {
   return <h1>Hello World</h1>
 }
@@ -74,7 +74,7 @@ having higher priority. If you don't want to start from a template, you can
 specify your entire sandbox structure with the `customSetup`.
 
 ```tsx
-const reactWithLibCode = `import ReactMarkdown from 'react-markdown' 
+const code = `import ReactMarkdown from 'react-markdown' 
 
 export default function App() {
   return <ReactMarkdown># Hello, *world*!</ReactMarkdown>
@@ -83,144 +83,187 @@ export default function App() {
 <Sandpack
   template="react"
   files={{
-    '/App.js': reactWithLibCode,
+    '/App.js': code,
   }}
   customSetup={{
     dependencies: {
       'react-markdown': 'latest',
     },
+    entry: '/index.js',
   }}
 />;
 ```
 
 ### Theming
 
-We offer some predefined themes for `react-sandpack`:
+Sandpack comes with some predefined themes:
 
 ```tsx
-import { Sandpack, sandpackDarkTheme } from 'react-smooshpack';
-
-<Sandpack theme={sandpackDarkTheme} />;
+<Sandpack theme="sp-dark" />
 ```
 
-You can also customize the colors of the components and the code syntax with our
-`SandpackTheme` interface.
+You can also pass a _partial_ theme object that overrides properties in the
+default theme
 
 ```jsx
-import { Sandpack } from 'react-smooshpack';
-
-// Emulate NightOwl
-const customTheme = {
-  palette: {
-    highlightText: 'rgb(197, 228, 253)',
-    defaultText: 'rgb(95, 126, 151)',
-    inactive: 'rgb(58, 62, 77)',
-    mainBackground: 'rgb(1, 22, 39)',
-    inputBackground: 'rgb(11, 41, 66)',
-    accent: '#7fdbca',
-  },
-  syntax: {
-    plain: '#d6deeb',
-    disabled: '#999999',
-    keyword: '#c792ea',
-    tag: '#7fdbca',
-    punctuation: '#d6deeb',
-    definition: '#A23DAD',
-    property: '#addb67',
-    static: '#ecc48d',
-  },
-}
-
-<Sandpack theme={customTheme} />;
+<Sandpack
+  theme={{
+    palette: {
+      accent: '#fc0e34',
+      inactiveText: '#aaa',
+    },
+    syntax: {
+      keyword: '#6700ff',
+    },
+  }}
+/>
 ```
 
-### Customizing the UI
+Or you can import an existing theme object and change it or compose your own
+theme from scratch
+
+```jsx
+import { Sandpack, sandpackDarkTheme } from 'react-smooshpack';
+
+<Sandpack
+  theme={{
+    ...sandpackDarkTheme,
+    typography: {
+      fontSize: '16px',
+      bodyFont: 'Arial',
+    },
+  }}
+/>;
+```
+
+### Customizing what is editable
 
 By default, the `Sandpack` component shows all the files you pass through
-`setup`. You can customize which files to be shown as tabs via the `openPaths`
-prop. This prop takes an array of file paths, again relative to the root of the
-project.
+`files`. If not files are passed and you use the `customSetup`, all project
+files will be visible as tab buttons.
+
+The `files` prop also accepts an object. When the object is used, the file
+content is set with the `code` property. With this notation, additional flags
+you can use to customize the sandpack experience. For example, you can pass a
+`hidden` flag for files that you don't want to show to the user:
+
+```tsx
+<Sandpack
+  files={{
+    '/App.js': reactCode,
+    '/button.js': buttonCode,
+    '/link.js': {
+      code: linkCode,
+      hidden: true,
+    },
+  }}
+  template="react"
+/>
+```
+
+You can also specify the `active` file, which is open in the code editor
+initially. If no `active` flag is set, the first file will be visible by
+default:
+
+```tsx
+<Sandpack
+  files={{
+    '/App.js': reactCode,
+    '/button.js': {
+      code: buttonCode,
+      active: true,
+    }
+    '/link.js': {
+      code: linkCode,
+      hidden: true,
+    },
+  }}
+  template="react"
+/>
+```
+
+You can override the entire hidden/active system with two settings inside the
+`options` prop, but this requires you to set the relative paths in multiple
+places and can be error prone, so use this with caution:
 
 ```tsx
 <Sandpack
   template="react"
-  openPaths={['/App.js', '/button.js', '/index.js']}
-  setup={{
-    files: {
-      '/App.js': reactButtonCode,
-      '/button.js': buttonCode,
-    },
+  files={{
+    '/App.js': reactButtonCode,
+    '/button.js': buttonCode,
+  }}
+  options={{
+    openPaths: ['/App.js', '/button.js', '/index.js'],
+    activePath: '/index.js',
   }}
 />
 ```
 
-In this case, `index.js`, coming from the template as the entry file for `React`
-should also be editable. You can also specify which tab is active when the
-component mounts with the `activePath` prop. This defaults to the project `main`
-file.
+When `openPaths` or `activePath` are set, the `hidden` and `active` flags on the
+`files` prop are ignored.
+
+### Customizing the UI Elements
+
+By default, `Sandpack` will show the file tabs if more than one file is open and
+will show a small refresh button on top of the `Preview`. But you can customize
+some of the parts of the component via flags set on the `options` prop.
 
 ```tsx
 <Sandpack
-  template="react"
-  activePath="/button.js"
-  setup={{
-    files: {
-      '/App.js': reactButtonCode,
-      '/button.js': buttonCode,
-    },
+  options={{
+    showNavigator: true, // this will show a top navigator bar instead of the refresh button
+    showTabs: false, // you can toggle the tabs on/off manually
+    showLineNumbers: true, // this is off by default, but you can show line numbers for the editor
+    wrapContent: true, // also off by default, this wraps the code instead of creating horizontal overflow
+    editorWidthPercentage: 60, // by default the split is 50/50 between the editor and the preview
   }}
 />
 ```
 
-Finally, there are two set of option props for customizing the code and the
-preview: `codeOptions` and `previewOptions`. With these props you can show/hide
-different subparts of the main components of `Sandpack`.
+You can also pass css style rules to the `customStyle` prop. This should be used
+with care, because it might mess up the layout and the theming. One useful
+configuration is the height of the component. We recommend **fixed heights**, to
+avoid any layout shift while the bundler is running or as you type in the editor
+or switch the tab. By default, the height is set to `300px`, but you can adjust
+that with the `customStyle` prop:
 
 ```tsx
 <Sandpack
-  previewOptions={{ showNavigator: false }}
-  codeOptions={{ showTabs: false, showLineNumbers: true }}
-  template="react"
+  customStyle={{
+    height: 350, // Any valid style property will be passed to the sandpack component here
+  }}
 />
 ```
-
-### Custom styling
-
-coming soon
 
 ### Execution Options
 
-By default, the bundling process will start as soon as the component mounts. But
-you can allow users to trigger the process manually.
+By default, the bundling process will start as soon as the component is getting
+closer to the viewport, or when the page loads if the component is already in
+the viewport. But you can allow users to trigger the process manually.
 
 ```tsx
-<Sandpack executionOptions={{ autorun: false }} template="react" />
+<Sandpack options={{ autorun: false }} template="react" />
 ```
 
 When a `sandpack` instance is not set on `autorun`, which is the default
-setting, it will show a `run` button that initializes the process. This scenario
-is useful for optimizing the performance on pages that contain several instances
-of `sandpack`.
+setting, it will show a _Run_ button that initializes the process.
 
-The execution options also allow you to customize the recompile mode, or what
-happens you type inside the code editor.
+The `options` also allow you to customize the _recompile mode_, or what happens
+you type inside the code editor.
 
 ```tsx
-<Sandpack
-  executionOptions={{ autorun: false, recompileMode: 'immediate' }}
-  template="react"
-/>
+<Sandpack options={{ recompileMode: 'immediate' }} template="react" />
 ```
 
-By default, the mode is set to `delayed` and there's a `500ms` _debounce_
-timeout that ensures the bundler doesn't run on each keystroke. You can
-customize this experience by modifying the `recompileDelay` value or by setting
-the `recompileMode` to `immediate`.
+By default, the mode is set to `delayed` and there's a `500ms` debounce timeout
+that ensures the bundler doesn't run on each keystroke. You can customize this
+experience by modifying the `recompileDelay` value or by setting the
+`recompileMode` to `immediate`.
 
 ```tsx
 <Sandpack
-  executionOptions={{
-    autorun: false,
+  options={{
     recompileMode: 'delayed',
     recompileDelay: 300,
   }}
@@ -228,18 +271,21 @@ the `recompileMode` to `immediate`.
 />
 ```
 
-### Bundler Options
-
-Coming soon
-
 ### Sandpack Runner
 
 In all the examples above we used `Sandpack`, which, in our internal kitchen, we
 call a preset. In other words, it is a fixed configuration of sandpack
-components and default settings that make up an instance of sandpack.
+components and default settings that make up an instance of _sandpack_.
 
 In case you want to have the bundler running and you don't want the code editing
 component, you can use a `SandpackRunner` preset.
+
+The `SandpackRunner` has some of the props we already described above:
+`template`, `customSetup`, `theme` and `customStyle`. They work exactly the same
+on this preset.
+
+However, your input will be sent through the `code` prop. This is a single
+string that will replace the **main** file of the project.
 
 ```jsx
 import { SandpackRunner } from 'react-smooshpack';
@@ -247,13 +293,12 @@ import { SandpackRunner } from 'react-smooshpack';
 <SandpackRunner code={`...`} template="vue" />;
 ```
 
+In this example, `code` will replace the `App.vue` file, because that is the
+**main** file in the vue template. For `react`, this would be the `App.js` file.
+
 ## Getting deeper
 
-If you don't want to use our presets, we export all the small parts that make up
-`react-sandpack`:
-
-- visual components: CodeEditor, Preview, FileTabs, Navigator, etc.
-- utilities: SandpackContext, ThemeContext, etc.
+Coming soon
 
 ### Build your custom Sandpack
 

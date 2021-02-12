@@ -27,6 +27,8 @@ export interface SandpackProps {
     openPaths?: string[];
     activePath?: string;
 
+    editorWidthPercentage?: number;
+
     showNavigator?: boolean;
 
     showLineNumbers?: boolean;
@@ -44,13 +46,17 @@ export interface SandpackProps {
 }
 
 export const Sandpack: React.FC<SandpackProps> = props => {
-  const userInputSetup: SandpackSetup = {
-    ...props.customSetup,
-    files: {
-      ...props.customSetup?.files,
-      ...props.files,
-    },
-  };
+  // Combine files with customSetup to create the user input structure
+  const userInputSetup = props.files
+    ? {
+        ...props.customSetup,
+        files: {
+          ...props.customSetup?.files,
+          ...props.files,
+        },
+      }
+    : props.customSetup;
+
   const projectSetup = getSetup(props.template, userInputSetup);
   const { activePath, openPaths } = getInitialEditorState(props, projectSetup);
 
@@ -74,6 +80,8 @@ export const Sandpack: React.FC<SandpackProps> = props => {
   };
 
   const { height, ...otherStyles } = props.customStyle || {};
+  const editorPart = props.options?.editorWidthPercentage || 50;
+  const previewPart = 100 - editorPart;
 
   return (
     <SandpackProvider
@@ -87,8 +95,24 @@ export const Sandpack: React.FC<SandpackProps> = props => {
     >
       <ThemeProvider theme={props.theme}>
         <SandpackLayout style={otherStyles}>
-          <CodeEditor {...codeEditorOptions} customStyle={{ height }} />
-          <Preview {...previewOptions} customStyle={{ height }} />
+          <CodeEditor
+            {...codeEditorOptions}
+            customStyle={{
+              height,
+              flexGrow: editorPart,
+              flexShrink: editorPart,
+              minWidth: 700 * (editorPart / (previewPart + editorPart)),
+            }}
+          />
+          <Preview
+            {...previewOptions}
+            customStyle={{
+              height,
+              flexGrow: previewPart,
+              flexShrink: previewPart,
+              minWidth: 700 * (previewPart / (previewPart + editorPart)),
+            }}
+          />
         </SandpackLayout>
       </ThemeProvider>
     </SandpackProvider>
@@ -110,25 +134,21 @@ const getInitialEditorState = (
     Object.keys(inputFiles).forEach(filePath => {
       const file = inputFiles[filePath];
       if (typeof file === 'string') {
+        openPaths.push(filePath);
         return;
       }
 
       if (!activePath && file.active) {
         activePath = filePath;
-        if (file.open === false && openPaths.length > 0) {
-          openPaths.push(filePath); // active file needs to be available even if someone sets it as open = false by accident
+        if (file.hidden === true) {
+          openPaths.push(filePath); // active file needs to be available even if someone sets it as hidden by accident
         }
       }
 
-      if (file.open) {
+      if (!file.hidden) {
         openPaths.push(filePath);
       }
     });
-
-    // If no open flag was specified, all files from the user input are open
-    if (openPaths.length === 0) {
-      openPaths = Object.keys(props.files);
-    }
   }
 
   if (openPaths.length === 0) {
