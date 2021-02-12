@@ -35,6 +35,7 @@
   font-family: var(--sp-font-body);
   overflow: hidden;
   box-sizing: border-box;
+  position: relative;
 
   text-rendering: optimizeLegibility;
   -webkit-tap-highlight-color: transparent;
@@ -70,6 +71,26 @@
 
 .sp-wrapper * {
   box-sizing: border-box;
+}
+
+.sp-wrapper:hover .sp-edit-overlay {
+  display: block;
+}
+
+.sp-edit-overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  background: var(--sp-colors-bg-active);
+  opacity: 0.5;
 }
 
 .sp-pre-placeholder {

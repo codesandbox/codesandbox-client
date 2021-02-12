@@ -1,6 +1,6 @@
 {
   "name": "react-smooshpack",
-  "version": "1.0.0-alpha-25",
+  "version": "1.0.0-alpha-26",
   "description": "",
   "keywords": [],
   "repository": {
@@ -40,7 +40,7 @@
     "@codemirror/view": "^0.17.3",
     "codesandbox-import-utils": "^1.2.3",
     "prism-react-renderer": "^1.1.1",
-    "smooshpack": "^1.0.0-alpha-25"
+    "smooshpack": "^1.0.0-alpha-26"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
