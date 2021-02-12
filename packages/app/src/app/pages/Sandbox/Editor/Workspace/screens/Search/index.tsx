@@ -131,7 +131,7 @@ export const Search = () => {
       })}
     >
       <Element
-        padding={2}
+        paddingY={2}
         marginBottom={5}
         css={{
           height: 'calc(100% - 16px)',
@@ -140,6 +140,7 @@ export const Search = () => {
         }}
       >
         <Element
+          paddingX={2}
           css={{
             position: 'relative',
             display: 'grid',
@@ -189,7 +190,7 @@ export const Search = () => {
         {searchOptions.showFileFilters ? <FileFilters /> : null}
         <Stack
           gap={2}
-          paddingY={2}
+          padding={2}
           css={css({
             borderWidth: 1,
             borderStyle: 'solid',
@@ -213,7 +214,7 @@ export const Search = () => {
         </Stack>
         {searchResults.length ? (
           <Element
-            paddingY={2}
+            padding={2}
             css={css({
               borderWidth: 1,
               borderStyle: 'solid',

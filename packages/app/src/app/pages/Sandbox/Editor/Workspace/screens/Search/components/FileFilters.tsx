@@ -19,18 +19,17 @@ export const FileFilters = () => {
           marginBottom: 4,
         })}
       />
-      <Element>
+
+      <Element paddingX={2} marginBottom={4}>
         <Input
-          marginBottom={4}
           placeholder="Files to Include"
           value={state.workspace.searchOptions.filesToInclude}
           onChange={e => workspace.filesToIncludeChanged(e.target.value)}
         />
       </Element>
 
-      <Element>
+      <Element paddingX={2} marginBottom={4}>
         <Input
-          marginBottom={4}
           placeholder="Files to Exclude"
           value={state.workspace.searchOptions.filesToExclude}
           onChange={e => workspace.filesToExcludeChanged(e.target.value)}
