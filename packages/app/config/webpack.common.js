@@ -120,7 +120,7 @@ module.exports = {
         ],
         'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
         'watermark-button': path.join(paths.src, 'watermark-button.js'),
-        'phishing-banner': path.join(paths.src, 'phishing-banner.js'),
+        banner: path.join(paths.src, 'banner.js'),
         embed: [
           require.resolve('./polyfills'),
           path.join(paths.embedSrc, 'index.js'),
