@@ -29,23 +29,13 @@ const Careers = () => {
 
   const jobs = [
     {
-      title: 'Product Growth Engineer',
-      url:
-        'https://codesandbox.recruitee.com/o/product-growth-engineer-amsterdam',
-    },
-    {
-      title: 'Senior Full Stack Engineer (TypeScript)',
-      url:
-        'https://codesandbox.recruitee.com/o/senior-full-stack-engineer-typescript',
-    },
-    {
       title: 'Head of Engineering',
       url: 'https://codesandbox.recruitee.com/o/head-of-engineering',
     },
     {
       title: 'Data Analyst',
       url: 'https://codesandbox.recruitee.com/o/data-analyst',
-    },
+    }
   ];
 
   return (
