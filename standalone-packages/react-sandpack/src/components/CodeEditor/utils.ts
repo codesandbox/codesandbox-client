@@ -69,9 +69,10 @@ export const getCodeMirrorLanguage = (filePath: string) => {
   switch (extension) {
     case 'js':
     case 'jsx':
+      return javascript({ jsx: true, typescript: false });
     case 'ts':
     case 'tsx':
-      return javascript({ jsx: true });
+      return javascript({ jsx: true, typescript: true });
     case 'vue':
     case 'html':
       return html();

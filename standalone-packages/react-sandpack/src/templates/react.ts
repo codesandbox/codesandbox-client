@@ -25,32 +25,32 @@ ReactDOM.render(
     },
     '/styles.css': {
       code: `body {
-font-family: sans-serif;
--webkit-font-smoothing: auto;
--moz-font-smoothing: auto;
--moz-osx-font-smoothing: grayscale;
-font-smoothing: auto;
-text-rendering: optimizeLegibility;
-font-smooth: always;
--webkit-tap-highlight-color: transparent;
--webkit-touch-callout: none;
+  font-family: sans-serif;
+  -webkit-font-smoothing: auto;
+  -moz-font-smoothing: auto;
+  -moz-osx-font-smoothing: grayscale;
+  font-smoothing: auto;
+  text-rendering: optimizeLegibility;
+  font-smooth: always;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 h1 {
-font-size: 1.5rem;
+  font-size: 1.5rem;
 }`,
     },
     '/public/index.html': {
       code: `<!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Document</title>
-</head>
-<body>
-<div id="root"></div>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>`,
     },
   },

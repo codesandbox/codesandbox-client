@@ -22,20 +22,24 @@ export const getSetup = (
   if (!template) {
     // If not input, default to vanilla
     if (!setup) {
-      return SANDBOX_TEMPLATES.vanilla as SandboxTemplate;
+      return SANDBOX_TEMPLATES.vanilla;
     }
 
     // If not template specified, use the setup entirely
     return setup as SandboxTemplate;
   }
 
+  const baseTemplate = SANDBOX_TEMPLATES[template];
+  if (!baseTemplate) {
+    throw new Error(`Invalid template '${template}' provided.`);
+  }
+
   // If no setup, the template is used entirely
   if (!setup) {
-    return SANDBOX_TEMPLATES[template] as SandboxTemplate;
+    return baseTemplate;
   }
 
   // Merge the setup on top of the template
-  const baseTemplate = SANDBOX_TEMPLATES[template] as SandboxTemplate;
   return {
     files: { ...baseTemplate.files, ...setup.files },
     dependencies: {
@@ -48,10 +52,10 @@ export const getSetup = (
   };
 };
 
-export const SANDBOX_TEMPLATES: Partial<Record<
+export const SANDBOX_TEMPLATES: Record<
   SandpackPredefinedTemplate,
   SandboxTemplate
->> = {
+> = {
   react: REACT_TEMPLATE,
   vue: VUE_TEMPLATE,
   vanilla: VANILLA_TEMPLATE,

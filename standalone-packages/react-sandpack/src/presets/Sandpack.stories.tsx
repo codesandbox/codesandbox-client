@@ -53,7 +53,7 @@ export const VanillaEditor: Story<SandpackProps> = args => (
     {...args}
     template="vanilla"
     options={{
-      openPaths: ['/src/index.js', '/src/styles.css'],
+      openPaths: ['/src/index.js', '/src/styles.css', '/index.html'],
       showNavigator: true,
     }}
   />

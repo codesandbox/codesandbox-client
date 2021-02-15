@@ -119,8 +119,13 @@ export const createThemeObject = (
   }
 
   if (typeof inputTheme === 'string') {
+    const predefinedTheme = SANDPACK_THEMES[inputTheme];
+    if (!predefinedTheme) {
+      throw new Error(`Invalid theme '${inputTheme}' provided.`);
+    }
+
     return {
-      theme: SANDPACK_THEMES[inputTheme] ?? defaultTheme,
+      theme: predefinedTheme,
       id: inputTheme ?? defaultThemeKey,
     };
   }

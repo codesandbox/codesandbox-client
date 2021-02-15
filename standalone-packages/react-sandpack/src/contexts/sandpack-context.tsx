@@ -60,6 +60,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   manager: Manager | null;
   iframeRef: React.RefObject<HTMLIFrameElement>;
   loadingDivRef: React.RefObject<HTMLDivElement>;
+  intersectionObserver?: IntersectionObserver;
   unsubscribe?: Function;
   debounceHook?: number;
 
@@ -154,7 +155,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
         threshold: 1.0,
       };
 
-      const observer = new IntersectionObserver(entries => {
+      this.intersectionObserver = new IntersectionObserver(entries => {
         if (
           entries[0]?.intersectionRatio === 1 &&
           this.state.sandpackStatus === 'idle'
@@ -162,7 +163,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
           this.runSandpack();
         }
       }, options);
-      observer.observe(this.loadingDivRef.current!);
+      this.intersectionObserver.observe(this.loadingDivRef.current!);
     } else {
       this.setState({ sandpackStatus: 'idle' });
     }
@@ -199,6 +200,10 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   componentWillUnmount() {
     if (typeof this.unsubscribe === 'function') {
       this.unsubscribe();
+    }
+
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
     }
   }
 

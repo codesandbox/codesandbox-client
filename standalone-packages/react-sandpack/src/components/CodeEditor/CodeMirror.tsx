@@ -50,6 +50,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
   const wrapper = React.useRef<HTMLDivElement>(null);
   const cmView = React.useRef<EditorView>();
   const { theme } = React.useContext(ThemeContext);
+  const [internalCode, setInternalCode] = React.useState<string>(code);
 
   React.useEffect(() => {
     if (!wrapper.current) {
@@ -130,6 +131,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 
         if (tr.docChanged) {
           const newCode = tr.newDoc.sliceString(0, tr.newDoc.length);
+          setInternalCode(newCode);
           onCodeUpdate(newCode);
         }
       },
@@ -147,6 +149,16 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       view.destroy();
     };
   }, [showLineNumbers, wrapContent, theme]);
+
+  // Update editor when code passed as prop from outside sandpack changes
+  React.useEffect(() => {
+    if (cmView.current && code !== internalCode) {
+      const view = cmView.current;
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length - 1, insert: code },
+      });
+    }
+  }, [code]);
 
   const handleContainerKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key === 'Enter' && cmView.current) {
