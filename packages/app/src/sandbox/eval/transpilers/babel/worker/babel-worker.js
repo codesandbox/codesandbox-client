@@ -1,6 +1,5 @@
 /* eslint-disable global-require, no-console, no-use-before-define */
 import { flatten } from 'lodash-es';
-import codeFrame from 'babel-code-frame';
 import refreshBabelPlugin from 'react-refresh/babel';
 import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
 import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
@@ -409,18 +408,22 @@ async function compile(code, customConfig, path, isV7) {
     } catch (e) {
       e.message = e.message.replace('unknown', path);
 
-      // Match the line+col
-      const lineColRegex = /\((\d+):(\d+)\)/;
+      if (!isV7) {
+        const codeFrame = await import('babel-code-frame').then(x => x.default);
 
-      const match = e.message.match(lineColRegex);
-      if (match && match[1] && match[2]) {
-        const lineNumber = +match[1];
-        const colNumber = +match[2];
+        // Match the line+col
+        const lineColRegex = /\((\d+):(\d+)\)/;
 
-        const niceMessage =
-          e.message + '\n\n' + codeFrame(code, lineNumber, colNumber);
+        const match = e.message.match(lineColRegex);
+        if (match && match[1] && match[2]) {
+          const lineNumber = +match[1];
+          const colNumber = +match[2];
 
-        e.message = niceMessage;
+          const niceMessage =
+            e.message + '\n\n' + codeFrame(code, lineNumber, colNumber);
+
+          e.message = niceMessage;
+        }
       }
 
       throw e;

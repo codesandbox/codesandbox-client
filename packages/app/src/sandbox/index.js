@@ -24,25 +24,34 @@ debug('Booting sandbox v2');
 
 endMeasure('boot', { lastTime: 0, displayName: 'Boot' });
 
-const ID = Math.floor(Math.random() * 1000000);
-
 requirePolyfills().then(() => {
   if (withServiceWorker) {
     registerServiceWorker('/sandbox-service-worker.js', {});
   }
 
   function sendReady() {
-    dispatch({ type: 'initialized', id: ID });
+    dispatch({ type: 'initialized', url: document.location.href });
   }
 
+  let isInitializationCompile = true;
   async function handleMessage(data, source) {
     if (source) {
-      if (data.id && data.id !== ID) {
-        return;
-      }
-
       if (data.type === 'compile') {
+        // In sandpack we always broadcast a compile message from every manager whenever 1 frame reconnects.
+        // We do this because the initialized message does comes before the handshake is done, so there's no channel id.
+        // To prevent every mounted frame from recompiling, we explicitly flag that this compilation is meant to be the
+        // first compilation done by the frame. This way we can ensure that only the new frame, that
+        // hasn't compiled yet, will respond to the compile call. This currently is Sandpack specific.
+        if (
+          data.isInitializationCompile !== undefined &&
+          data.isInitializationCompile === true &&
+          !isInitializationCompile
+        ) {
+          return;
+        }
+
         compile(data);
+        isInitializationCompile = false;
       } else if (data.type === 'get-transpiler-context') {
         const manager = getCurrentManager();
 

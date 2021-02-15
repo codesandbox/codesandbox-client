@@ -18,23 +18,25 @@ function checkIsStandalone() {
 // Whether the tab has a connection with the editor
 export const isStandalone = checkIsStandalone();
 
-let initializeResolved: () => void;
+let iframeHandshakeDone: () => void;
 /**
  * Resolves when the handshake between the frame and the editor has succeeded
  */
-export const intializedPromise = new Promise(resolve => {
-  initializeResolved = resolve;
+export const iframeHandshake = new Promise(resolve => {
+  iframeHandshakeDone = resolve;
 });
 
 // Field used by a "child" frame to determine its parent origin
 let parentOrigin: string | null = null;
+let parentId: number | null = null;
 
 const parentOriginListener = (e: MessageEvent) => {
-  if (e.data.type === 'register-frame') {
+  if (e.data.type === 'register-frame' && !parentId) {
     parentOrigin = e.data.origin;
+    parentId = e.data.id ?? null;
 
-    if (initializeResolved) {
-      initializeResolved();
+    if (iframeHandshakeDone) {
+      iframeHandshakeDone();
     }
     self.removeEventListener('message', parentOriginListener);
   }
@@ -60,6 +62,10 @@ export function dispatch(message: any) {
   if (!message) return;
 
   const newMessage = { ...message, codesandbox: true };
+  if (parentId !== null) {
+    newMessage.$id = parentId;
+  }
+
   notifyListeners(newMessage);
   notifyFrames(newMessage);
 
@@ -119,7 +125,12 @@ function notifyFrames(message: object) {
 function eventListener(e: MessageEvent) {
   const { data } = e;
 
-  if (data && data.codesandbox && (parentOrigin === null || e.origin === parentOrigin)) {
+  if (
+    data &&
+    data.codesandbox &&
+    (parentOrigin === null || e.origin === parentOrigin) &&
+    (data.$id == null || parentId === null || parentId === data.$id)
+  ) {
     notifyListeners(data, e.source);
   }
 }
@@ -129,23 +140,35 @@ function eventListener(e: MessageEvent) {
  *
  * @param frame
  */
-export function registerFrame(frame: Window, origin: string) {
+export function registerFrame(frame: Window, origin: string, bundlerId?: number) {
   bundlers.set(frame, origin);
-
   frame.postMessage(
     {
       type: 'register-frame',
       origin: document.location.origin,
+      id: bundlerId,
     },
     origin
   );
 }
 
 if (typeof window !== 'undefined') {
-  // We now start listening so we can let our listeners know
-  window.addEventListener('message', eventListener);
+  if (isStandalone) {
+    window.addEventListener('message', eventListener);
+  } else {
+    iframeHandshake.then(() => {
+      // We now start listening so we can let our listeners know
+      window.addEventListener('message', eventListener);
+    });
+  }
 }
 
 export function reattach() {
-  window.addEventListener('message', eventListener);
+  if (isStandalone) {
+    window.addEventListener('message', eventListener);
+  } else {
+    iframeHandshake.then(() => {
+      window.addEventListener('message', eventListener);
+    });
+  }
 }
