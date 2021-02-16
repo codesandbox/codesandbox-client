@@ -29,13 +29,17 @@ const Careers = () => {
 
   const jobs = [
     {
+      title: 'Senior Designer: Brand & Digital',
+      url: 'https://codesandbox.recruitee.com/o/senior-designer-brand-digital',
+    },
+    {
       title: 'Head of Engineering',
       url: 'https://codesandbox.recruitee.com/o/head-of-engineering',
     },
     {
       title: 'Data Analyst',
       url: 'https://codesandbox.recruitee.com/o/data-analyst',
-    }
+    },
   ];
 
   return (
