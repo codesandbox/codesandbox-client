@@ -10,6 +10,9 @@ export * from './components/Preview';
 export * from './components/SandpackLayout';
 export * from './components/TranspiledCodeView';
 
+export * from './hooks/useCodeSandboxLink';
+export * from './hooks/useSandpackActions';
+
 export * from './themes';
 
 export * from './contexts/sandpack-context';

@@ -48,17 +48,17 @@ export const ReactCode = () => (
 const vueTemplate = SANDBOX_TEMPLATES.vue;
 
 export const VueCode = () => (
-  <SandpackProvider
-    entry={vueTemplate.entry}
-    environment="vue-cli"
-    files={vueTemplate.files}
-    openPaths={[vueTemplate.main]}
-    dependencies={vueTemplate.dependencies}
-  >
-    <ThemeProvider theme="sp-dark">
+  <ThemeProvider theme="sp-dark">
+    <SandpackProvider
+      entry={vueTemplate.entry}
+      environment="vue-cli"
+      files={vueTemplate.files}
+      openPaths={[vueTemplate.main]}
+      dependencies={vueTemplate.dependencies}
+    >
       <SandpackLayout>
         <CodeViewer />
       </SandpackLayout>
-    </ThemeProvider>
-  </SandpackProvider>
+    </SandpackProvider>
+  </ThemeProvider>
 );

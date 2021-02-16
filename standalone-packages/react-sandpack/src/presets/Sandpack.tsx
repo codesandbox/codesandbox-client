@@ -84,16 +84,16 @@ export const Sandpack: React.FC<SandpackProps> = props => {
   const previewPart = 100 - editorPart;
 
   return (
-    <SandpackProvider
-      files={projectSetup.files}
-      dependencies={projectSetup.dependencies}
-      entry={projectSetup.entry}
-      environment={projectSetup.environment}
-      openPaths={openPaths}
-      activePath={activePath}
-      {...providerOptions}
-    >
-      <ThemeProvider theme={props.theme}>
+    <ThemeProvider theme={props.theme}>
+      <SandpackProvider
+        files={projectSetup.files}
+        dependencies={projectSetup.dependencies}
+        entry={projectSetup.entry}
+        environment={projectSetup.environment}
+        openPaths={openPaths}
+        activePath={activePath}
+        {...providerOptions}
+      >
         <SandpackLayout style={otherStyles}>
           <CodeEditor
             {...codeEditorOptions}
@@ -114,8 +114,8 @@ export const Sandpack: React.FC<SandpackProps> = props => {
             }}
           />
         </SandpackLayout>
-      </ThemeProvider>
-    </SandpackProvider>
+      </SandpackProvider>
+    </ThemeProvider>
   );
 };
 

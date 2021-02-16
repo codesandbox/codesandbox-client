@@ -84,9 +84,27 @@ export const Preview: React.FC<PreviewProps> = ({
           </div>
         )}
 
-        {!showNavigator && showRefreshButton && <RefreshButton />}
+        {!showNavigator && showRefreshButton && (
+          <RefreshButton
+            customStyle={{
+              position: 'absolute',
+              bottom: 'var(--sp-space-2)',
+              left: 'var(--sp-space-2)',
+              zIndex: 4,
+            }}
+          />
+        )}
 
-        {showOpenInCodeSandbox && <OpenInCodeSandboxButton />}
+        {showOpenInCodeSandbox && (
+          <OpenInCodeSandboxButton
+            customStyle={{
+              position: 'absolute',
+              bottom: 'var(--sp-space-2)',
+              right: 'var(--sp-space-2)',
+              zIndex: 4,
+            }}
+          />
+        )}
 
         <LoadingAnimation loadingOverlayState={loadingOverlayState} />
       </div>

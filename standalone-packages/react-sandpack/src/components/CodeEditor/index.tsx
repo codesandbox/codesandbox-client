@@ -47,7 +47,7 @@ export const CodeEditor = ({
   // };
 
   return (
-    <div style={customStyle}>
+    <div style={{ background: 'var(--sp-colors-bg-default)', ...customStyle }}>
       {showTabs && <FileTabs />}
       <div
         className="sp-editor"

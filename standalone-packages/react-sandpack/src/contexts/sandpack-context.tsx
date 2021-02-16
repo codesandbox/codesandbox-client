@@ -16,6 +16,7 @@ import {
   SandpackStatus,
   EditorState,
 } from '../types';
+import { ThemeConsumer } from './theme-context';
 
 const Sandpack = React.createContext<SandpackContext | null>(null);
 
@@ -39,7 +40,7 @@ export interface Props {
   environment?: SandboxEnviornment;
 
   // execution and recompile
-  recompileMode?: 'immediate' | 'delayed'; // | 'onCommand'; TODO: implement run on command
+  recompileMode?: 'immediate' | 'delayed';
   recompileDelay?: number;
   autorun?: boolean;
 
@@ -59,7 +60,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
   manager: Manager | null;
   iframeRef: React.RefObject<HTMLIFrameElement>;
-  loadingDivRef: React.RefObject<HTMLDivElement>;
+  wrapperRef: React.RefObject<HTMLDivElement>;
   intersectionObserver?: IntersectionObserver;
   unsubscribe?: Function;
   debounceHook?: number;
@@ -79,7 +80,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
     this.manager = null;
     this.iframeRef = React.createRef<HTMLIFrameElement>();
-    this.loadingDivRef = React.createRef<HTMLDivElement>();
+    this.wrapperRef = React.createRef<HTMLDivElement>();
   }
 
   handleMessage = (m: any) => {
@@ -163,7 +164,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
           this.runSandpack();
         }
       }, options);
-      this.intersectionObserver.observe(this.loadingDivRef.current!);
+      this.intersectionObserver.observe(this.wrapperRef.current!);
     } else {
       this.setState({ sandpackStatus: 'idle' });
     }
@@ -302,21 +303,25 @@ class SandpackProvider extends React.PureComponent<Props, State> {
 
     return (
       <Sandpack.Provider value={this._getSandpackState()}>
-        <div id="loading-frame" ref={this.loadingDivRef}>
-          <iframe
-            ref={this.iframeRef}
-            title="Sandpack Preview"
-            style={{
-              width: 0,
-              height: 0,
-              border: 0,
-              outline: 0,
-              position: 'absolute',
-              visibility: 'hidden',
-            }}
-          />
-        </div>
-        {children}
+        <ThemeConsumer>
+          {({ id }) => (
+            <div ref={this.wrapperRef} className={`sp-wrapper ${id}`}>
+              <iframe
+                ref={this.iframeRef}
+                title="Sandpack Preview"
+                style={{
+                  width: 0,
+                  height: 0,
+                  border: 0,
+                  outline: 0,
+                  position: 'absolute',
+                  visibility: 'hidden',
+                }}
+              />
+              {children}
+            </div>
+          )}
+        </ThemeConsumer>
       </Sandpack.Provider>
     );
   }

@@ -23,7 +23,7 @@ export const PrismHighlight = ({
     <div
       style={{
         backgroundColor: 'var(--sp-colors-bg-default)',
-        padding: 'var(--space-4) var(--sp-space-2)',
+        padding: 'var(--sp-space-4) var(--sp-space-2)',
         lineHeight: '1.4',
         overflow: 'auto',
         flex: 1,

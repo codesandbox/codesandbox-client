@@ -8,7 +8,7 @@ import { hexToCSSRGBa } from '../utils/string-utils';
 export const sandpackLightTheme: SandpackTheme = {
   palette: {
     activeText: '#1f2933',
-    defaultText: '#999999',
+    defaultText: '#737373',
     inactiveText: '#e4e7eb',
     activeBackground: '#e4e7eb',
     defaultBackground: '#f8f9fb',

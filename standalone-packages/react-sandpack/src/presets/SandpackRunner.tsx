@@ -48,18 +48,18 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
   }
 
   return (
-    <SandpackProvider
-      files={projectSetup.files}
-      dependencies={projectSetup.dependencies}
-      entry={projectSetup.entry}
-      environment={projectSetup.environment}
-      bundlerURL={options?.bundlerUrl}
-    >
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <SandpackProvider
+        files={projectSetup.files}
+        dependencies={projectSetup.dependencies}
+        entry={projectSetup.entry}
+        environment={projectSetup.environment}
+        bundlerURL={options?.bundlerUrl}
+      >
         <SandpackLayout style={customStyle}>
           <Preview showNavigator={options?.showNavigator} />
         </SandpackLayout>
-      </ThemeProvider>
-    </SandpackProvider>
+      </SandpackProvider>
+    </ThemeProvider>
   );
 };
