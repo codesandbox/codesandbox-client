@@ -20,10 +20,11 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   const { activePath, status, runSandpack } = sandpack;
   const code = sandpack.files[activePath].code;
   const lang = getPrismLanguage(activePath);
+  const shouldShowTabs = showTabs ?? sandpack.openPaths.length > 1;
 
   return (
     <div>
-      {showTabs && <FileTabs />}
+      {shouldShowTabs && <FileTabs />}
       <PrismHighlight {...rest} code={code} lang={lang} />
       {status === 'idle' && (
         <button

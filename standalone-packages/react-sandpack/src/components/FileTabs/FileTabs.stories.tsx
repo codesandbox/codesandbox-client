@@ -1,6 +1,6 @@
 import React from 'react';
 import { FileTabs } from './index';
-
+import { CodeViewer } from '../CodeViewer';
 import { SandpackProvider } from '../../contexts/sandpack-context';
 import { SandpackLayout } from '../../components/SandpackLayout';
 
@@ -10,47 +10,35 @@ export default {
 
 export const Component = () => (
   <SandpackProvider
-    entry="/index.tsx"
-    openPaths={['/index.tsx', '/src/app.tsx', '/src/components/button.tsx']}
-    files={{
-      '/index.tsx': {
-        code: '',
-      },
-      '/src/app.tsx': {
-        code: '',
-      },
-      '/src/components/button.tsx': {
-        code: '',
+    customSetup={{
+      entry: '/index.tsx',
+      files: {
+        '/index.tsx': '',
+        '/src/app.tsx': { code: '', active: true },
+        '/src/components/button.tsx': '',
       },
     }}
-    dependencies={{}}
   >
-    <SandpackLayout>
-      <FileTabs />
-    </SandpackLayout>
+    <FileTabs />
   </SandpackProvider>
 );
 
 export const WithHiddenFiles = () => (
   <SandpackProvider
-    entry="/index.tsx"
-    openPaths={['/src/app.tsx', '/src/components/button.tsx']}
-    files={{
-      '/index.tsx': {
-        // Not visible
-        code: '',
-      },
-      '/src/app.tsx': {
-        code: '',
-      },
-      '/src/components/button.tsx': {
-        code: '',
+    customSetup={{
+      entry: '/index.tsx',
+      files: {
+        '/index.tsx': { code: '', hidden: true },
+        '/src/app.tsx': 'Hello',
+        '/src/components/button.tsx': 'World',
       },
     }}
-    dependencies={{}}
   >
     <SandpackLayout>
-      <FileTabs />
+      <div>
+        <FileTabs />
+        <CodeViewer showTabs={false} />
+      </div>
     </SandpackLayout>
   </SandpackProvider>
 );

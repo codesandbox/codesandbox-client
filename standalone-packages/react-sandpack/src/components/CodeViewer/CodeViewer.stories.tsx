@@ -2,11 +2,8 @@ import React from 'react';
 import { Story } from '@storybook/react';
 
 import { CodeViewer, CodeViewerProps } from '.';
-import { SandpackLayout } from '../../components/SandpackLayout';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
-import { SANDBOX_TEMPLATES } from '../../templates';
-import { ThemeProvider } from '../../contexts/theme-context';
 
 export default {
   title: 'components/Code Viewer',
@@ -15,50 +12,27 @@ export default {
 
 export const Component: Story<CodeViewerProps> = args => (
   <SandpackProvider
-    entry="/index.js"
-    files={{
-      '/index.js': {
-        code: 'const title = "This is a simple code editor"',
+    customSetup={{
+      entry: '/index.js',
+      files: {
+        '/index.js': {
+          code: 'const title = "This is not editable"',
+        },
       },
     }}
-    dependencies={{}}
   >
-    <SandpackLayout>
-      <CodeViewer {...args} />
-    </SandpackLayout>
+    <CodeViewer {...args} />
   </SandpackProvider>
 );
-
-const reactTemplate = SANDBOX_TEMPLATES.react;
 
 export const ReactCode = () => (
-  <SandpackProvider
-    entry={reactTemplate.entry}
-    environment="create-react-app"
-    files={reactTemplate.files}
-    openPaths={[reactTemplate.main]}
-    dependencies={reactTemplate.dependencies}
-  >
-    <SandpackLayout>
-      <CodeViewer />
-    </SandpackLayout>
+  <SandpackProvider template="react">
+    <CodeViewer />
   </SandpackProvider>
 );
 
-const vueTemplate = SANDBOX_TEMPLATES.vue;
-
 export const VueCode = () => (
-  <ThemeProvider theme="sp-dark">
-    <SandpackProvider
-      entry={vueTemplate.entry}
-      environment="vue-cli"
-      files={vueTemplate.files}
-      openPaths={[vueTemplate.main]}
-      dependencies={vueTemplate.dependencies}
-    >
-      <SandpackLayout>
-        <CodeViewer />
-      </SandpackLayout>
-    </SandpackProvider>
-  </ThemeProvider>
+  <SandpackProvider template="vue" theme="sp-dark">
+    <CodeViewer />
+  </SandpackProvider>
 );

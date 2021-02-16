@@ -1,4 +1,4 @@
-import { IManagerState, IModuleError, IFiles, IFile } from 'smooshpack';
+import { IManagerState, IModuleError, IFiles } from 'smooshpack';
 
 export type SandpackContext = SandpackState & {
   dispatch: (message: any) => void;
@@ -45,7 +45,7 @@ export type SandpackSetup = {
   dependencies?: Record<string, string>;
   entry?: string;
   main?: string;
-  files?: Record<string, string | IFile>;
+  files?: SandpackFiles;
   environment?: SandboxEnviornment;
 };
 

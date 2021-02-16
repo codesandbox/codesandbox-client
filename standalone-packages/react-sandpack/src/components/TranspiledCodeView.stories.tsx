@@ -11,15 +11,17 @@ export default {
 
 export const Component = () => (
   <SandpackProvider
-    files={{
-      '/index.js': {
-        code: `const text = 'Hello World!'
+    customSetup={{
+      entry: '/index.js',
+      files: {
+        '/index.js': {
+          code: `const text = 'Hello World!'
 const str = \`<div>\${text}</div>\`
 `,
+        },
       },
+      dependencies: { '@babel/runtime': 'latest' },
     }}
-    dependencies={{ '@babel/runtime': 'latest' }}
-    entry="/index.js"
   >
     <SandpackLayout>
       <CodeEditor />

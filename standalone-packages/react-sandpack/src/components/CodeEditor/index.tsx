@@ -15,7 +15,7 @@ export type CodeEditorProps = CodeEditorOptions & {
 
 export const CodeEditor = ({
   customStyle,
-  showTabs = false,
+  showTabs,
   showLineNumbers = false,
   wrapContent = false,
 }: CodeEditorProps) => {
@@ -30,6 +30,7 @@ export const CodeEditor = ({
     // changeActiveFile,
   } = sandpack;
   const code = sandpack.files[activePath].code;
+  const shouldShowTabs = showTabs ?? sandpack.openPaths.length > 1;
 
   const handleCodeUpdate = (newCode: string) => {
     sandpack.updateCurrentFile(newCode);
@@ -47,8 +48,8 @@ export const CodeEditor = ({
   // };
 
   return (
-    <div style={{ background: 'var(--sp-colors-bg-default)', ...customStyle }}>
-      {showTabs && <FileTabs />}
+    <div style={customStyle}>
+      {shouldShowTabs && <FileTabs />}
       <div
         className="sp-editor"
         // onMouseEnter={() => setMouseOver(true)}

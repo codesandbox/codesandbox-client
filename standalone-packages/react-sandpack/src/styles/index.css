@@ -92,7 +92,7 @@
   flex: 1;
   position: relative;
   overflow: auto;
-  margin: 1px;
+  background: var(--sp-colors-bg-default);
 }
 
 .sp-editor-overlay {
@@ -168,6 +168,7 @@
 
 .sp-tabs {
   border-bottom: 1px solid var(--sp-colors-fg-inactive);
+  background: var(--sp-colors-bg-default);
 }
 
 .sp-tabs-scrollable-container {

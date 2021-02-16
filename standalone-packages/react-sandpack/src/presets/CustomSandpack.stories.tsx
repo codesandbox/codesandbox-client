@@ -5,7 +5,6 @@ import {
   SandpackProvider,
   OpenInCodeSandboxButton,
   RefreshButton,
-  ThemeProvider,
   SandpackLayout,
   CodeViewer,
   CodeEditor,
@@ -13,55 +12,52 @@ import {
   useSandpackActions,
 } from '../index';
 
-import { SANDBOX_TEMPLATES } from '../templates';
-
 export default {
   title: 'presets/Custom Sandpack',
 };
 
 export const UsingSandpackLayout = () => (
-  <ThemeProvider theme="sp-dark">
-    <SandpackProvider
-      files={SANDBOX_TEMPLATES.react.files}
-      dependencies={SANDBOX_TEMPLATES.react.dependencies}
-      entry="/index.js"
-    >
-      <SandpackLayout>
-        <CodeViewer />
-        <Preview showNavigator />
-      </SandpackLayout>
-    </SandpackProvider>
-  </ThemeProvider>
+  <SandpackProvider template="react" theme="sp-dark">
+    <SandpackLayout>
+      <CodeViewer />
+      <Preview showNavigator />
+    </SandpackLayout>
+  </SandpackProvider>
 );
 
 export const UsingVisualElements = () => (
-  <ThemeProvider theme="sp-dark">
-    <SandpackProvider
-      files={SANDBOX_TEMPLATES.react.files}
-      dependencies={SANDBOX_TEMPLATES.react.dependencies}
-      activePath="/App.js"
-      entry="/index.js"
-    >
-      <CodeEditor customStyle={{ width: 400, height: 200 }} />
+  <SandpackProvider template="react" theme="sp-dark" activePath="/App.js">
+    <CodeEditor
+      customStyle={{
+        width: 500,
+        height: 300,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    />
 
-      <div
-        style={{
-          border: '1px solid red',
-          marginBottom: 4,
-          marginTop: 4,
-          width: 400,
-        }}
-      >
-        <Preview showRefreshButton={false} showOpenInCodeSandbox={false} />
-      </div>
-      <div
-        style={{ display: 'flex', width: 400, justifyContent: 'space-between' }}
-      >
-        <OpenInCodeSandboxButton />
-        <RefreshButton />
-      </div>
-    </SandpackProvider>
-  </ThemeProvider>
+    <div
+      style={{
+        border: '1px solid red',
+        marginBottom: 4,
+        marginTop: 4,
+        width: 500,
+        height: 300,
+      }}
+    >
+      <Preview showRefreshButton={false} showOpenInCodeSandbox={false} />
+    </div>
+    <div
+      style={{
+        display: 'flex',
+        width: 500,
+        justifyContent: 'space-between',
+      }}
+    >
+      <OpenInCodeSandboxButton />
+      <RefreshButton />
+    </div>
+  </SandpackProvider>
 );
 
 const CustomOpenInCSB = () => {
@@ -79,11 +75,7 @@ const CustomRefreshButton = () => {
 };
 
 export const UsingBehavior = () => (
-  <SandpackProvider
-    files={SANDBOX_TEMPLATES.react.files}
-    dependencies={SANDBOX_TEMPLATES.react.dependencies}
-    entry="/index.js"
-  >
+  <SandpackProvider template="react">
     <div
       style={{
         border: '1px solid red',
@@ -92,7 +84,7 @@ export const UsingBehavior = () => (
         display: 'flex',
       }}
     >
-      <Preview showOpenInCodeSandbox={false} />
+      <Preview showRefreshButton={false} showOpenInCodeSandbox={false} />
     </div>
     <CustomOpenInCSB />
     <CustomRefreshButton />

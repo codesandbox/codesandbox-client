@@ -12,10 +12,10 @@ export * from './components/TranspiledCodeView';
 
 export * from './hooks/useCodeSandboxLink';
 export * from './hooks/useSandpackActions';
+export * from './hooks/useTheme';
 
 export * from './themes';
 
 export * from './contexts/sandpack-context';
-export * from './contexts/theme-context';
 
 export * from './types';

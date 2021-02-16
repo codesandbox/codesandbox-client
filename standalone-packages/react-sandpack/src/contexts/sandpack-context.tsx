@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  Manager,
-  generatePackageJSON,
-  IManagerState,
-  IModuleError,
-  IFiles,
-} from 'smooshpack';
+import { Manager, IManagerState, IModuleError, IFiles } from 'smooshpack';
 
 import {
   SandpackContext,
@@ -15,13 +9,19 @@ import {
   FileResolver,
   SandpackStatus,
   EditorState,
+  SandpackPredefinedTemplate,
+  SandpackSetup,
+  SandpackPredefinedTheme,
+  SandpackPartialTheme,
 } from '../types';
-import { ThemeConsumer } from './theme-context';
+import { getSandpackStateFromProps } from '../utils/sandpack-utils';
+import { ThemeConsumer, ThemeProvider } from './theme-context';
 
 const Sandpack = React.createContext<SandpackContext | null>(null);
 
-export interface State {
+export interface SandpackProviderState {
   files: IFiles;
+  environment?: SandboxEnviornment;
   activePath: string;
   openPaths: string[];
   bundlerState: IManagerState | undefined;
@@ -30,14 +30,14 @@ export interface State {
   editorState: EditorState;
 }
 
-export interface Props {
-  // setup/input
-  files: IFiles;
+export interface SandpackProviderProps {
+  template?: SandpackPredefinedTemplate;
+  customSetup?: SandpackSetup;
+  theme?: SandpackPredefinedTheme | SandpackPartialTheme;
+
+  // editor state (override values)
   activePath?: string;
-  entry: string;
   openPaths?: string[];
-  dependencies?: Record<string, string>;
-  environment?: SandboxEnviornment;
 
   // execution and recompile
   recompileMode?: 'immediate' | 'delayed';
@@ -50,7 +50,10 @@ export interface Props {
   fileResolver?: FileResolver;
 }
 
-class SandpackProvider extends React.PureComponent<Props, State> {
+class SandpackProvider extends React.PureComponent<
+  SandpackProviderProps,
+  SandpackProviderState
+> {
   static defaultProps = {
     skipEval: false,
     recompileMode: 'delayed',
@@ -65,13 +68,21 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   unsubscribe?: Function;
   debounceHook?: number;
 
-  constructor(props: Props) {
+  constructor(props: SandpackProviderProps) {
     super(props);
 
+    const {
+      activePath,
+      openPaths,
+      files,
+      environment,
+    } = getSandpackStateFromProps(props);
+
     this.state = {
-      files: generatePackageJSON(props.files, props.dependencies, props.entry),
-      openPaths: props.openPaths || [props.entry],
-      activePath: props.activePath || props.openPaths?.[0] || props.entry,
+      files,
+      environment,
+      openPaths,
+      activePath,
       bundlerState: undefined,
       error: null,
       sandpackStatus: 'idle',
@@ -170,29 +181,32 @@ class SandpackProvider extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: SandpackProviderProps) {
     if (
-      JSON.stringify(prevProps.files) !== JSON.stringify(this.props.files) ||
-      prevProps.dependencies !== this.props.dependencies ||
-      prevProps.entry !== this.props.entry ||
-      prevProps.environment !== this.props.environment
+      prevProps.template !== this.props.template ||
+      prevProps.activePath !== this.props.activePath ||
+      JSON.stringify(prevProps.openPaths) !==
+        JSON.stringify(this.props.openPaths) ||
+      JSON.stringify(prevProps.customSetup) !==
+        JSON.stringify(this.props.customSetup)
     ) {
-      const newFiles = generatePackageJSON(
-        this.props.files,
-        this.props.dependencies,
-        this.props.entry
-      );
+      const {
+        activePath,
+        openPaths,
+        files,
+        environment,
+      } = getSandpackStateFromProps(this.props);
 
       /* eslint-disable react/no-did-update-set-state */
-      this.setState({ files: newFiles });
+      this.setState({ activePath, openPaths, files, environment });
 
       if (this.state.sandpackStatus !== 'running' || !this.manager) {
         return;
       }
 
       this.manager.updatePreview({
-        files: newFiles,
-        template: this.props.environment,
+        files,
+        template: environment,
         showOpenInCodeSandbox: false,
       });
     }
@@ -219,7 +233,7 @@ class SandpackProvider extends React.PureComponent<Props, State> {
       this.iframeRef.current,
       {
         files: this.state.files,
-        template: this.props.environment,
+        template: this.state.environment,
         showOpenInCodeSandbox: false,
       },
       {
@@ -299,30 +313,32 @@ class SandpackProvider extends React.PureComponent<Props, State> {
   };
 
   render() {
-    const { children } = this.props;
+    const { children, theme } = this.props;
 
     return (
-      <Sandpack.Provider value={this._getSandpackState()}>
-        <ThemeConsumer>
-          {({ id }) => (
-            <div ref={this.wrapperRef} className={`sp-wrapper ${id}`}>
-              <iframe
-                ref={this.iframeRef}
-                title="Sandpack Preview"
-                style={{
-                  width: 0,
-                  height: 0,
-                  border: 0,
-                  outline: 0,
-                  position: 'absolute',
-                  visibility: 'hidden',
-                }}
-              />
-              {children}
-            </div>
-          )}
-        </ThemeConsumer>
-      </Sandpack.Provider>
+      <ThemeProvider theme={theme}>
+        <Sandpack.Provider value={this._getSandpackState()}>
+          <ThemeConsumer>
+            {({ id }) => (
+              <div ref={this.wrapperRef} className={`sp-wrapper ${id}`}>
+                <iframe
+                  ref={this.iframeRef}
+                  title="Sandpack Preview"
+                  style={{
+                    width: 0,
+                    height: 0,
+                    border: 0,
+                    outline: 0,
+                    position: 'absolute',
+                    visibility: 'hidden',
+                  }}
+                />
+                {children}
+              </div>
+            )}
+          </ThemeConsumer>
+        </Sandpack.Provider>
+      </ThemeProvider>
     );
   }
 }

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-import { IFile } from 'smooshpack';
 import { Sandpack, SandpackProps } from './Sandpack';
-import { getSetup } from '../templates';
 import { sandpackDarkTheme } from '../themes';
 
 export default {
@@ -46,6 +44,10 @@ export const ReactEditor: Story<SandpackProps> = args => (
     }}
     template="react"
   />
+);
+
+export const VueEditor: Story<SandpackProps> = args => (
+  <Sandpack {...args} template="vue" />
 );
 
 export const VanillaEditor: Story<SandpackProps> = args => (
@@ -266,31 +268,17 @@ const code = `export default function Kitten() {
   );
 }`;
 
-export const RunnableComponent = () => {
-  const projectSetup = getSetup('react');
-
-  // Replace the code in the main file
-  if (code) {
-    const mainFileName = projectSetup.main;
-    const mainFile: IFile = {
-      code,
-    };
-
-    projectSetup.files = {
-      ...projectSetup.files,
-      [mainFileName]: mainFile,
-    };
-  }
-
-  return (
-    <Sandpack
-      customSetup={projectSetup}
-      options={{
-        autorun: false,
-        showTabs: true,
-        showLineNumbers: true,
-        showNavigator: true,
-      }}
-    />
-  );
-};
+export const RunnableComponent = () => (
+  <Sandpack
+    template="react"
+    files={{
+      '/App.js': code,
+    }}
+    options={{
+      autorun: false,
+      showTabs: true,
+      showLineNumbers: true,
+      showNavigator: true,
+    }}
+  />
+);

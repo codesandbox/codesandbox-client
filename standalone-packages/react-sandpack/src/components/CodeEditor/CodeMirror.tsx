@@ -26,9 +26,9 @@ import {
   getSyntaxHighlight,
 } from './utils';
 
-import { ThemeContext } from '../../contexts/theme-context';
 import { getFileName } from '../../utils/string-utils';
 import { EditorState as SandpackEditorState } from '../../types';
+import { useTheme } from '../../hooks/useTheme';
 
 export interface CodeMirrorProps {
   code: string;
@@ -49,7 +49,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 }) => {
   const wrapper = React.useRef<HTMLDivElement>(null);
   const cmView = React.useRef<EditorView>();
-  const { theme } = React.useContext(ThemeContext);
+  const { theme } = useTheme();
   const [internalCode, setInternalCode] = React.useState<string>(code);
 
   React.useEffect(() => {
