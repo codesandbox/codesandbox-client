@@ -4,7 +4,7 @@ lastEdited: 2017-07-19
 version: 0.8.0
 ---
 
-_Last Edited on 2017-07-19_
+### Last Edited on 2017-07-19
 
 This privacy policy has been compiled to better serve those who are concerned
 with how their 'Personally Identifiable Information' (PII) is being used online.
@@ -259,8 +259,7 @@ can email us at hello@codesandbox.io**
 If there are any questions regarding this privacy policy, you may contact us
 using the information below.
 
-codesandbox.io  
-Calslaan 5B  
-Enschede, Overijssel 7522 MH  
-Netherlands  
-hello@codesandbox.io
+### Codesandbox.io
+
+Calslaan 5B<br> Enschede, Overijssel 7522 MH<br> Netherlands<br>
+hello@codesandbox.io<br>

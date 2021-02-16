@@ -1,10 +1,10 @@
 ---
 title: Terms of Use
 lastEdited: 2017-07-20
-version: 1.0.0
+version: 0.8.0
 ---
 
-_Last Edited on 2017-07-20_
+#### Last Edited on 2017-07-20
 
 These Terms and Conditions ("Terms", "Terms and Conditions") govern your
 relationship with https://codesandbox.io website (the "Service") and the Sandbox
