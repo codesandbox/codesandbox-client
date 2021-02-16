@@ -361,6 +361,8 @@ export function convertEsModule(
                 { type: n.Identifier, name: specifier.local.name }
               )
             );
+            // Make sure that nothing can get inbetween this
+            importOffset++;
           }
         });
       }
