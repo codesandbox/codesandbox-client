@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { RunIcon } from '../../icons';
 
-import { useSandpack } from '../../contexts/sandpack-context';
+import { useSandpack } from '../../hooks/useSandpack';
 import { FileTabs } from '../FileTabs';
 import { PrismHighlight } from './PrismHighlight';
 import { getPrismLanguage } from './utils';
+import { useActiveCode } from '../../hooks/useActiveCode';
 
 export interface CodeViewerProps {
   style?: React.CSSProperties;
@@ -17,13 +18,14 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   ...rest
 }) => {
   const { sandpack } = useSandpack();
+  const { code } = useActiveCode();
   const { activePath, status, runSandpack } = sandpack;
-  const code = sandpack.files[activePath].code;
+
   const lang = getPrismLanguage(activePath);
   const shouldShowTabs = showTabs ?? sandpack.openPaths.length > 1;
 
   return (
-    <div>
+    <div className="sp-stack">
       {shouldShowTabs && <FileTabs />}
       <PrismHighlight {...rest} code={code} lang={lang} />
       {status === 'idle' && (

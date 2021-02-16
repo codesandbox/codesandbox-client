@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer';
 import { getPrismTheme } from './utils';
-import { useTheme } from '../../hooks/useTheme';
+import { useSandpackTheme } from '../../hooks/useSandpackTheme';
 
 export interface PrismHighlightProps {
   lang?: Language;
@@ -16,7 +16,7 @@ export const PrismHighlight = ({
   code,
   showLineNumbers,
 }: PrismHighlightProps) => {
-  const { theme } = useTheme();
+  const { theme } = useSandpackTheme();
 
   return (
     <div

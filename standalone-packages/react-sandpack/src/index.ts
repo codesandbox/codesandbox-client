@@ -10,9 +10,12 @@ export * from './components/Preview';
 export * from './components/SandpackLayout';
 export * from './components/TranspiledCodeView';
 
+export * from './hooks/useActiveCode';
 export * from './hooks/useCodeSandboxLink';
-export * from './hooks/useSandpackActions';
-export * from './hooks/useTheme';
+export * from './hooks/useSandpack';
+export * from './hooks/useSandpackNavigation';
+export * from './hooks/useSandpackTheme';
+export * from './hooks/useTranspiledCode';
 
 export * from './themes';
 

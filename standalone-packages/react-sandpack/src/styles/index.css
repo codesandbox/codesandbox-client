@@ -30,7 +30,7 @@
 
   font-size: var(--sp-font-size);
   font-family: var(--sp-font-body);
-
+  display: block;
   box-sizing: border-box;
 
   text-rendering: optimizeLegibility;
@@ -57,7 +57,6 @@
   background: var(--sp-colors-bg-default);
   border-radius: var(--sp-border-radius);
   overflow: hidden;
-  position: relative;
   -webkit-mask-image: -webkit-radial-gradient(
     var(--sp-colors-bg-input),
     var(--sp-colors-bg-default)
@@ -79,6 +78,12 @@
   position: relative;
 }
 
+.sp-stack {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .sp-pre-placeholder {
   margin: 0;
   padding: 0 var(--sp-space-3);
@@ -88,7 +93,7 @@
   line-height: 1.4;
 }
 
-.sp-editor {
+.sp-editor-frame {
   flex: 1;
   position: relative;
   overflow: auto;
@@ -106,7 +111,6 @@
   align-items: center;
   width: 100%;
   height: 100%;
-  margin-right: -1px;
   color: var(--sp-colors-fg-active);
   background: var(--sp-colors-bg-default-overlay);
   z-index: 4;
@@ -273,12 +277,14 @@
   color: var(--sp-colors-fg-default);
   padding: var(--sp-space-1) var(--sp-space-2);
   border-radius: var(--sp-border-radius);
-  border: 0;
+  border: 1px solid var(--sp-colors-fg-inactive);
   height: 24px;
   font-size: inherit;
+  outline: none;
 }
 
 .sp-input:focus {
+  border: 1px solid var(--sp-colors-accent);
   color: var(--sp-colors-fg-active);
 }
 

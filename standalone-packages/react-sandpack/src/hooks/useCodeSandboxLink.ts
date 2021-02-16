@@ -1,6 +1,6 @@
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
 import { IFiles } from 'smooshpack';
-import { useSandpack } from '../contexts/sandpack-context';
+import { useSandpack } from './useSandpack';
 
 const getFileParameters = (files: IFiles) => {
   const normalized: {

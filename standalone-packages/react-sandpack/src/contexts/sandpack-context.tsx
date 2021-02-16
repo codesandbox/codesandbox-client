@@ -5,7 +5,6 @@ import {
   SandpackContext,
   SandboxEnviornment,
   SandpackListener,
-  SandpackState,
   FileResolver,
   SandpackStatus,
   EditorState,
@@ -164,12 +163,12 @@ class SandpackProvider extends React.PureComponent<
     if (this.props.autorun) {
       const options = {
         rootMargin: '600px 0px',
-        threshold: 1.0,
+        threshold: 0,
       };
 
       this.intersectionObserver = new IntersectionObserver(entries => {
         if (
-          entries[0]?.intersectionRatio === 1 &&
+          entries[0]?.intersectionRatio > 0 &&
           this.state.sandpackStatus === 'idle'
         ) {
           this.runSandpack();
@@ -351,24 +350,6 @@ function getDisplayName(
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-function useSandpack() {
-  const sandpack = React.useContext(Sandpack);
-
-  if (sandpack === null) {
-    throw new Error(
-      `useSandpack can only be used inside components wrapped by 'SandpackProvider'`
-    );
-  }
-
-  const { dispatch, listen, ...rest } = sandpack;
-
-  return {
-    sandpack: { ...rest } as SandpackState,
-    dispatch,
-    listen,
-  };
-}
-
 function withSandpack(Component: React.ComponentClass<any> | React.FC<any>) {
   const WrappedComponent = (props: any) => (
     <SandpackConsumer>
@@ -398,4 +379,9 @@ function withSandpack(Component: React.ComponentClass<any> | React.FC<any>) {
   return WrappedComponent;
 }
 
-export { SandpackProvider, SandpackConsumer, withSandpack, useSandpack };
+export {
+  SandpackProvider,
+  SandpackConsumer,
+  withSandpack,
+  Sandpack as SandpackReactContext,
+};

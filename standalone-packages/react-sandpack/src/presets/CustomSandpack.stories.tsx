@@ -8,8 +8,11 @@ import {
   SandpackLayout,
   CodeViewer,
   CodeEditor,
+  TranspiledCodeView,
   useCodeSandboxLink,
-  useSandpackActions,
+  useSandpackTheme,
+  useActiveCode,
+  useSandpackNavigation,
 } from '../index';
 
 export default {
@@ -31,22 +34,21 @@ export const UsingVisualElements = () => (
       customStyle={{
         width: 500,
         height: 300,
-        display: 'flex',
-        flexDirection: 'column',
       }}
     />
 
-    <div
-      style={{
+    <Preview
+      showRefreshButton={false}
+      showOpenInCodeSandbox={false}
+      customStyle={{
         border: '1px solid red',
         marginBottom: 4,
         marginTop: 4,
         width: 500,
         height: 300,
       }}
-    >
-      <Preview showRefreshButton={false} showOpenInCodeSandbox={false} />
-    </div>
+    />
+
     <div
       style={{
         display: 'flex',
@@ -66,7 +68,7 @@ const CustomOpenInCSB = () => {
 };
 
 const CustomRefreshButton = () => {
-  const { refresh } = useSandpackActions();
+  const { refresh } = useSandpackNavigation();
   return (
     <button type="button" onClick={() => refresh()}>
       Refresh Sandpack
@@ -74,19 +76,52 @@ const CustomRefreshButton = () => {
   );
 };
 
-export const UsingBehavior = () => (
-  <SandpackProvider template="react">
-    <div
+const CustomCodeEditor = () => {
+  const { code, updateCode } = useActiveCode();
+  const { theme } = useSandpackTheme();
+
+  return (
+    <textarea
+      onChange={evt => updateCode(evt.target.value)}
       style={{
-        border: '1px solid red',
         width: 400,
-        height: 300,
-        display: 'flex',
+        height: 200,
+        padding: 8,
+        fontFamily: theme.typography.monoFont,
+        fontSize: theme.typography.fontSize,
+        background: theme.palette.defaultBackground,
+        border: `1px solid ${theme.palette.inactiveText}`,
+        color: theme.palette.activeText,
+        lineHeight: 1.4,
       }}
     >
-      <Preview showRefreshButton={false} showOpenInCodeSandbox={false} />
+      {code}
+    </textarea>
+  );
+};
+
+export const UsingBehavior = () => (
+  <SandpackProvider template="react">
+    <CustomCodeEditor />
+
+    <Preview
+      showRefreshButton={false}
+      showOpenInCodeSandbox={false}
+      customStyle={{ border: '1px solid red', width: 400, height: 300 }}
+    />
+
+    <div
+      style={{
+        display: 'flex',
+        width: 400,
+        margin: '8px 0',
+        justifyContent: 'space-between',
+      }}
+    >
+      <CustomRefreshButton />
+      <CustomOpenInCSB />
     </div>
-    <CustomOpenInCSB />
-    <CustomRefreshButton />
+
+    <TranspiledCodeView customStyle={{ width: 400, height: 300 }} />
   </SandpackProvider>
 );

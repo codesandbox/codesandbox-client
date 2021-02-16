@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useSandpack } from '../../contexts/sandpack-context';
+import { useSandpack } from '../../hooks/useSandpack';
 import { Navigator } from '../Navigator';
 import { LoadingAnimation } from './LoadingAnimation';
 import { OpenInCodeSandboxButton } from './OpenInCodeSandboxButton';
@@ -74,7 +74,7 @@ export const Preview: React.FC<PreviewProps> = ({
   }
 
   return (
-    <div style={customStyle} ref={wrapperRef}>
+    <div className="sp-stack" style={customStyle} ref={wrapperRef}>
       {showNavigator && <Navigator />}
 
       <div className="sp-preview-frame" id="preview-frame" ref={containerRef}>

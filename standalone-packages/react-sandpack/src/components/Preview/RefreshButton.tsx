@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RefreshIcon } from '../../icons';
-import { useSandpackActions } from '../../hooks/useSandpackActions';
+import { useSandpackNavigation } from '../../hooks/useSandpackNavigation';
 
 export interface RefreshButtonProps {
   customStyle?: React.CSSProperties;
@@ -9,7 +9,7 @@ export interface RefreshButtonProps {
 export const RefreshButton: React.FC<RefreshButtonProps> = ({
   customStyle,
 }) => {
-  const { refresh } = useSandpackActions();
+  const { refresh } = useSandpackNavigation();
 
   return (
     <button

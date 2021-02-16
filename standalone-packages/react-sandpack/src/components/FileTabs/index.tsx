@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useSandpack } from '../../contexts/sandpack-context';
+import { useSandpack } from '../../hooks/useSandpack';
 import { getFileName } from '../../utils/string-utils';
 
 export interface FileTabsProps {

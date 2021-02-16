@@ -34,6 +34,7 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
   const mainFile =
     customSetup?.main ?? SANDBOX_TEMPLATES[template || 'vanilla'].main;
 
+  // Override the main file of the sandbox
   const userInput = code
     ? {
         ...customSetup,

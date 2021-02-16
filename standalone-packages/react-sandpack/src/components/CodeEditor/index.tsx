@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { CodeMirror } from './CodeMirror';
-import { useSandpack } from '../../contexts/sandpack-context';
+import { useSandpack } from '../../hooks/useSandpack';
 import { FileTabs } from '../FileTabs';
 import { RunIcon } from '../../icons';
+import { useActiveCode } from '../../hooks/useActiveCode';
 
 export type CodeEditorOptions = {
   showTabs?: boolean;
@@ -20,6 +21,7 @@ export const CodeEditor = ({
   wrapContent = false,
 }: CodeEditorProps) => {
   const { sandpack } = useSandpack();
+  const { code, updateCode } = useActiveCode();
   // const [mouseOver, setMouseOver] = React.useState(false);
   const editorRef = React.useRef<HTMLDivElement>(null);
   const {
@@ -29,11 +31,10 @@ export const CodeEditor = ({
     runSandpack,
     // changeActiveFile,
   } = sandpack;
-  const code = sandpack.files[activePath].code;
   const shouldShowTabs = showTabs ?? sandpack.openPaths.length > 1;
 
   const handleCodeUpdate = (newCode: string) => {
-    sandpack.updateCurrentFile(newCode);
+    updateCode(newCode);
   };
 
   // const handleCloseOverlay = () => {
@@ -48,10 +49,10 @@ export const CodeEditor = ({
   // };
 
   return (
-    <div style={customStyle}>
+    <div className="sp-stack" style={customStyle}>
       {shouldShowTabs && <FileTabs />}
       <div
-        className="sp-editor"
+        className="sp-editor-frame"
         // onMouseEnter={() => setMouseOver(true)}
         // onMouseLeave={() => setMouseOver(false)}
         ref={editorRef}
