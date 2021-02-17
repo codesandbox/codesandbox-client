@@ -234,19 +234,26 @@ export const Search = () => {
           </Element>
         ) : null}
         <Element marginTop={4} css={{ height: 'calc(100% - 16px)' }}>
-          <AutoSizer>
-            {({ height, width }) => (
-              <List
-                height={user ? height : height - 140}
-                width={width}
-                itemCount={searchResults.length}
-                itemSize={getItemSize}
-                ref={list}
-              >
-                {Row}
-              </List>
-            )}
-          </AutoSizer>
+          {searchResults.length && searchValue ? (
+            <AutoSizer>
+              {({ height, width }) => (
+                <List
+                  height={user ? height : height - 140}
+                  width={width}
+                  itemCount={searchResults.length}
+                  itemSize={getItemSize}
+                  ref={list}
+                >
+                  {Row}
+                </List>
+              )}
+            </AutoSizer>
+          ) : null}
+          {!searchResults.length && searchValue.length > 1 && (
+            <Stack justify="center" marginTop={10}>
+              <Text variant="muted">No results found</Text>
+            </Stack>
+          )}
         </Element>
       </Element>
     </Collapsible>
