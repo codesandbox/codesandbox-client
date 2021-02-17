@@ -13,11 +13,7 @@ function checkIsStandalone() {
   }
 
   if (window.opener || window.parent !== window) {
-    if (
-      window.location &&
-      window.location.href.indexOf(host) > -1 &&
-      window.location.href.indexOf('/embed') > -1
-    ) {
+    if (window.location && window.location.href.indexOf(host) > -1) {
       // If this location href is codesandbox.io or something, we're most probably in an embed
       // iframed on another page. This means that we're actually standalone, but we're fooled
       // by the fact that we're embedded somewhere else.
