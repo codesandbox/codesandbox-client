@@ -5,13 +5,14 @@ import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
 import { SandpackTheme } from '../../types';
 import { hexToCSSRGBa } from '../../utils/string-utils';
+import { getSyntaxStyle } from '../../themes';
 
 export const getEditorTheme = (theme: SandpackTheme) =>
   EditorView.theme({
     $: {
-      color: theme.syntax.plain,
       backgroundColor: theme.palette.defaultBackground,
       '& ::selection': { backgroundColor: theme.palette.activeBackground },
+      color: theme.palette.activeText,
     },
 
     '$$focused $selectionBackground': {
@@ -41,25 +42,32 @@ export const getSyntaxHighlight = (theme: SandpackTheme) =>
     { tag: tags.strong, fontWeight: 'bold' },
 
     {
-      tag: [tags.keyword, tags.atom, tags.number, tags.bool],
-      color: theme.syntax.keyword,
+      tag: tags.keyword,
+      ...getSyntaxStyle(theme.syntax.keyword),
+    },
+    {
+      tag: [tags.atom, tags.number, tags.bool],
+      ...getSyntaxStyle(theme.syntax.static),
     },
     {
       tag: tags.typeName,
-      color: theme.syntax.tag,
+      ...getSyntaxStyle(theme.syntax.tag),
     },
-    { tag: tags.variableName, color: theme.syntax.plain },
-    // {
-    //   tag: tags.definition(tags.variableName),
-    //   color: theme.syntax.definition,
-    // },
-    { tag: [tags.literal, tags.inserted], color: theme.syntax.static },
+    { tag: tags.variableName, ...getSyntaxStyle(theme.syntax.plain) },
+    {
+      tag: tags.definition(tags.function(tags.variableName)),
+      ...getSyntaxStyle(theme.syntax.definition),
+    },
+    {
+      tag: [tags.literal, tags.inserted],
+      ...getSyntaxStyle(theme.syntax.string ?? theme.syntax.static),
+    },
     {
       tag: tags.propertyName,
-      color: theme.syntax.property,
+      ...getSyntaxStyle(theme.syntax.property),
     },
-    { tag: tags.punctuation, color: theme.syntax.punctuation },
-    { tag: tags.comment, color: theme.syntax.disabled, fontStyle: 'italic' }
+    { tag: tags.punctuation, ...getSyntaxStyle(theme.syntax.punctuation) },
+    { tag: tags.comment, ...getSyntaxStyle(theme.syntax.comment) }
   );
 
 export const getCodeMirrorLanguage = (filePath: string) => {

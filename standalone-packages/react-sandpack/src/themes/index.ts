@@ -2,6 +2,7 @@ import {
   SandpackTheme,
   SandpackPredefinedTheme,
   SandpackPartialTheme,
+  SandpackSyntaxStyle,
 } from '../types';
 import { hexToCSSRGBa } from '../utils/string-utils';
 
@@ -20,13 +21,14 @@ export const sandpackLightTheme: SandpackTheme = {
 
   syntax: {
     plain: '#1F2933',
-    disabled: '#A7B6C2',
+    comment: { color: '#A7B6C2', fontStyle: 'italic' },
     keyword: '#1A56DB',
     tag: '#1A56DB',
     punctuation: '#394b59',
     definition: '#A23DAD',
     property: '#14919B',
-    static: '#1992D4',
+    static: '#1A56DB',
+    string: '#1992D4',
   },
   typography: {
     bodyFont:
@@ -51,7 +53,7 @@ export const sandpackDarkTheme: SandpackTheme = {
   },
   syntax: {
     plain: '#FFFFFF',
-    disabled: '#757575',
+    comment: { color: '#757575', fontStyle: 'italic' },
     keyword: '#64D2FF',
     tag: '#86D9CA',
     punctuation: '#ffffff',
@@ -82,13 +84,46 @@ export const nightOwlTheme: SandpackTheme = {
   },
   syntax: {
     plain: '#d6deeb',
-    disabled: '#999999',
-    keyword: '#c792ea',
+    comment: { color: '#999999', fontStyle: 'italic' },
+    keyword: { color: '#c792ea', fontStyle: 'italic' },
     tag: '#7fdbca',
-    punctuation: '#d6deeb',
-    definition: '#A23DAD',
-    property: '#addb67',
-    static: '#ecc48d',
+    punctuation: '#7fdbca',
+    definition: '#82aaff',
+    property: { color: '#addb67', fontStyle: 'italic' },
+    static: '#f78c6c',
+    string: '#ecc48d',
+  },
+  typography: {
+    bodyFont:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+    monoFont:
+      '"Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace',
+    fontSize: '14px',
+  },
+};
+
+export const csbLightTheme: SandpackTheme = {
+  palette: {
+    activeText: '#1f2933',
+    defaultText: '#757575',
+    inactiveText: '#E6E6E6',
+    activeBackground: '#E6E6E6',
+    defaultBackground: '#FFF',
+    inputBackground: '#ffffff',
+    accent: '#64D2FF',
+    errorBackground: '#ffcdca',
+    errorForeground: '#811e18',
+  },
+  syntax: {
+    plain: '#151515',
+    comment: { color: '#999', fontStyle: 'italic' },
+    keyword: '#0971F1',
+    tag: '#0971F1',
+    punctuation: '#151515',
+    definition: '#151515',
+    property: '#151515',
+    static: '#FF453A',
+    string: '#BF5AF2',
   },
   typography: {
     bodyFont:
@@ -103,6 +138,7 @@ export const SANDPACK_THEMES: Record<SandpackPredefinedTheme, SandpackTheme> = {
   'sp-light': sandpackLightTheme,
   'sp-dark': sandpackDarkTheme,
   'night-owl': nightOwlTheme,
+  'csb-light': csbLightTheme,
 };
 
 export const createThemeObject = (
@@ -180,3 +216,11 @@ export const getThemeStyleSheet = (theme: SandpackTheme, themeId: string) => `
   --sp-font-body: ${theme.typography.bodyFont};
   --sp-font-mono: ${theme.typography.monoFont};
 `;
+
+export const getSyntaxStyle = (token: string | SandpackSyntaxStyle) => {
+  if (typeof token === 'string') {
+    return { color: token };
+  }
+
+  return token;
+};

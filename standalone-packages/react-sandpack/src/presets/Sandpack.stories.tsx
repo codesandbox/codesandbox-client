@@ -47,7 +47,7 @@ export const ReactEditor: Story<SandpackProps> = args => (
 );
 
 export const VueEditor: Story<SandpackProps> = args => (
-  <Sandpack {...args} template="vue" />
+  <Sandpack {...args} template="vue" theme="csb-light" />
 );
 
 export const VanillaEditor: Story<SandpackProps> = args => (

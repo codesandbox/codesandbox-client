@@ -22,51 +22,17 @@ export const SandpackCodeEditor = ({
 }: CodeEditorProps) => {
   const { sandpack } = useSandpack();
   const { code, updateCode } = useActiveCode();
-  // const [mouseOver, setMouseOver] = React.useState(false);
-  const editorRef = React.useRef<HTMLDivElement>(null);
-  const {
-    activePath,
-    status,
-    editorState,
-    runSandpack,
-    // changeActiveFile,
-  } = sandpack;
+  const { activePath, status, editorState, runSandpack } = sandpack;
   const shouldShowTabs = showTabs ?? sandpack.openPaths.length > 1;
 
   const handleCodeUpdate = (newCode: string) => {
     updateCode(newCode);
   };
 
-  // const handleCloseOverlay = () => {
-  //   setMouseOver(false);
-  //   if (editorRef.current) {
-  //     const contentNode = editorRef.current.querySelector(
-  //       '.cm-content'
-  //     ) as HTMLElement;
-  //     contentNode.focus();
-  //     changeActiveFile(activePath); // force editor status to switch to dirty
-  //   }
-  // };
-
   return (
     <div className="sp-stack" style={customStyle}>
       {shouldShowTabs && <FileTabs />}
-      <div
-        className="sp-editor-frame"
-        // onMouseEnter={() => setMouseOver(true)}
-        // onMouseLeave={() => setMouseOver(false)}
-        ref={editorRef}
-      >
-        {/* {mouseOver && editorState === 'pristine' && (
-          <div
-            aria-hidden
-            className="sp-editor-overlay"
-            onClick={handleCloseOverlay}
-          >
-            <span>Click to Edit</span>
-          </div>
-        )} */}
-
+      <div className="sp-editor-frame">
         <CodeMirror
           activePath={activePath}
           code={code}

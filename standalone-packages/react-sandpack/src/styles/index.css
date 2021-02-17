@@ -100,22 +100,6 @@
   background: var(--sp-colors-bg-default);
 }
 
-.sp-editor-overlay {
-  display: flex;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  color: var(--sp-colors-fg-active);
-  background: var(--sp-colors-bg-default-overlay);
-  z-index: 4;
-}
-
 .sp-cm {
   padding: var(--sp-space-4) 0;
   outline: none;
@@ -159,6 +143,14 @@
 
 .sp-cm .cm-scroller {
   font-family: var(--sp-font-mono);
+}
+
+.sp-cm.sp-pristine .cm-scroller {
+  overflow: hidden;
+}
+
+.sp-cm.sp-pristine:focus-within .cm-scroller {
+  overflow: auto;
 }
 
 .sp-cm .cm-gutter-lineNumber {

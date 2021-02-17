@@ -49,7 +49,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 }) => {
   const wrapper = React.useRef<HTMLDivElement>(null);
   const cmView = React.useRef<EditorView>();
-  const { theme } = useSandpackTheme();
+  const { theme, themeId } = useSandpackTheme();
   const [internalCode, setInternalCode] = React.useState<string>(code);
 
   React.useEffect(() => {
@@ -148,7 +148,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     return () => {
       view.destroy();
     };
-  }, [showLineNumbers, wrapContent, theme]);
+  }, [showLineNumbers, wrapContent, themeId]);
 
   // Update editor when code passed as prop from outside sandpack changes
   React.useEffect(() => {
@@ -171,7 +171,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
     /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
     <div
-      className="sp-cm"
+      className={`sp-cm sp-${editorState}`}
       onKeyDown={handleContainerKeyDown}
       tabIndex={0}
       role="group"

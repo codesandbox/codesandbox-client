@@ -85,7 +85,29 @@ export type SandpackPredefinedTemplate = 'react' | 'vue' | 'vanilla';
 // | 'angular-cli'
 // | 'parcel';
 
-export type SandpackPredefinedTheme = 'sp-light' | 'sp-dark' | 'night-owl';
+export type SandpackPredefinedTheme =
+  | 'sp-light'
+  | 'sp-dark'
+  | 'night-owl'
+  | 'csb-light';
+
+export type SandpackSyntaxStyle = {
+  color?: string;
+  fontStyle?: 'normal' | 'italic';
+  fontWeight?:
+    | 'normal'
+    | 'bold'
+    | '100'
+    | '200'
+    | '300'
+    | '400'
+    | '500'
+    | '600'
+    | '700'
+    | '800'
+    | '900';
+  textDecoration?: 'underline' | 'line-through';
+};
 
 export type SandpackTheme = {
   palette: {
@@ -100,14 +122,15 @@ export type SandpackTheme = {
     errorForeground: string;
   };
   syntax: {
-    plain: string;
-    disabled: string;
-    keyword: string;
-    definition: string;
-    punctuation: string;
-    property: string;
-    tag: string;
-    static: string;
+    plain: string | SandpackSyntaxStyle;
+    comment: string | SandpackSyntaxStyle;
+    keyword: string | SandpackSyntaxStyle;
+    definition: string | SandpackSyntaxStyle;
+    punctuation: string | SandpackSyntaxStyle;
+    property: string | SandpackSyntaxStyle;
+    tag: string | SandpackSyntaxStyle;
+    static: string | SandpackSyntaxStyle;
+    string?: string | SandpackSyntaxStyle; // use static as fallback
   };
   typography: {
     bodyFont: string;
