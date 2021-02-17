@@ -53,7 +53,7 @@ export default function initialize() {
         }
 
         if (isV3) {
-          initializeV3(vuePreset);
+          await initializeV3(vuePreset);
         } else {
           initializeV2(vuePreset);
         }

@@ -15,6 +15,7 @@ import andras from '../assets/images/people/andras.png';
 import alex from '../assets/images/people/alex.jpg';
 import maurice from '../assets/images/people/maurice.jpg';
 import zeh from '../assets/images/people/zeh.png';
+import ceora from '../assets/images/people/ceora.jpg';
 
 const people = [
   {
@@ -100,6 +101,12 @@ const people = [
     pic: zeh,
     color: '#B567EB',
     team: 'Design',
+  },
+  {
+    name: 'Ceora Ford',
+    pic: ceora,
+    color: '#97c8d6',
+    team: 'Growth',
   },
 ];
 

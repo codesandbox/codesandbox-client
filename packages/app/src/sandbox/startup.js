@@ -7,22 +7,21 @@ import setupScreenshotListener from 'sandbox-hooks/screenshot';
 import { listenForPreviewSecret } from 'sandbox-hooks/preview-secret';
 import { isStandalone } from 'codesandbox-api';
 
+const WORKERS_TO_LOAD = process.env.SANDPACK ? 1 : 3;
 window.babelworkers = [];
-if (!process.env.SANDPACK) {
-  for (let i = 0; i < 3; i++) {
-    const worker = new BabelWorker();
-    window.babelworkers.push(worker);
+for (let i = 0; i < WORKERS_TO_LOAD; i++) {
+  const worker = new BabelWorker();
+  window.babelworkers.push(worker);
 
-    // Warm up the babel worker
-    worker.postMessage({
-      type: 'warmup',
-      path: 'test.js',
-      code: 'const a = "b"',
-      config: { presets: ['env'] },
-      version: 7,
-      loaderOptions: {},
-    });
-  }
+  // Warm up the babel worker
+  worker.postMessage({
+    type: 'warmup',
+    path: 'test.js',
+    code: 'const a = "b"',
+    config: { presets: ['env'] },
+    version: 7,
+    loaderOptions: {},
+  });
 }
 
 if (!isStandalone) {
