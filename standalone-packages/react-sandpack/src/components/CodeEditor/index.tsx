@@ -14,7 +14,7 @@ export type CodeEditorProps = CodeEditorOptions & {
   customStyle?: React.CSSProperties;
 };
 
-export const CodeEditor = ({
+export const SandpackCodeEditor = ({
   customStyle,
   showTabs,
   showLineNumbers = false,

@@ -1,14 +1,14 @@
 import React from 'react';
 
 import {
-  Preview,
+  SandpackPreview,
   SandpackProvider,
   OpenInCodeSandboxButton,
   RefreshButton,
   SandpackLayout,
-  CodeViewer,
-  CodeEditor,
-  TranspiledCodeView,
+  SandpackCodeViewer,
+  SandpackCodeEditor,
+  SandpackTranspiledCode,
   useCodeSandboxLink,
   useSandpackTheme,
   useActiveCode,
@@ -22,22 +22,22 @@ export default {
 export const UsingSandpackLayout = () => (
   <SandpackProvider template="react" theme="sp-dark">
     <SandpackLayout>
-      <CodeViewer />
-      <Preview showNavigator />
+      <SandpackPreview showNavigator />
+      <SandpackCodeViewer />
     </SandpackLayout>
   </SandpackProvider>
 );
 
 export const UsingVisualElements = () => (
   <SandpackProvider template="react" theme="sp-dark" activePath="/App.js">
-    <CodeEditor
+    <SandpackCodeEditor
       customStyle={{
         width: 500,
         height: 300,
       }}
     />
 
-    <Preview
+    <SandpackPreview
       showRefreshButton={false}
       showOpenInCodeSandbox={false}
       customStyle={{
@@ -104,7 +104,7 @@ export const UsingBehavior = () => (
   <SandpackProvider template="react">
     <CustomCodeEditor />
 
-    <Preview
+    <SandpackPreview
       showRefreshButton={false}
       showOpenInCodeSandbox={false}
       customStyle={{ border: '1px solid red', width: 400, height: 300 }}
@@ -122,6 +122,6 @@ export const UsingBehavior = () => (
       <CustomOpenInCSB />
     </div>
 
-    <TranspiledCodeView customStyle={{ width: 400, height: 300 }} />
+    <SandpackTranspiledCode customStyle={{ width: 400, height: 300 }} />
   </SandpackProvider>
 );

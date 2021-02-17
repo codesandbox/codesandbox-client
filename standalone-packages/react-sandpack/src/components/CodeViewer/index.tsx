@@ -13,7 +13,7 @@ export interface CodeViewerProps {
   showLineNumbers?: boolean;
 }
 
-export const CodeViewer: React.FC<CodeViewerProps> = ({
+export const SandpackCodeViewer: React.FC<CodeViewerProps> = ({
   showTabs,
   ...rest
 }) => {

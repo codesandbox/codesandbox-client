@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { Preview } from '../components/Preview';
-import { SandpackLayout } from '../components/SandpackLayout';
+import { SandpackPreview } from '../components/Preview';
+import { SandpackLayout } from '../components/Layout';
 import { SandpackProvider } from '../contexts/sandpack-context';
 import {
   SandpackPartialTheme,
@@ -53,7 +53,7 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
       bundlerURL={options?.bundlerUrl}
     >
       <SandpackLayout style={customStyle}>
-        <Preview showNavigator={options?.showNavigator} />
+        <SandpackPreview showNavigator={options?.showNavigator} />
       </SandpackLayout>
     </SandpackProvider>
   );

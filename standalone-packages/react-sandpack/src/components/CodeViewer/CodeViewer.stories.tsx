@@ -1,13 +1,13 @@
 import React from 'react';
 import { Story } from '@storybook/react';
 
-import { CodeViewer, CodeViewerProps } from '.';
+import { SandpackCodeViewer, CodeViewerProps } from '.';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
 
 export default {
   title: 'components/Code Viewer',
-  component: CodeViewer,
+  component: SandpackCodeViewer,
 };
 
 export const Component: Story<CodeViewerProps> = args => (
@@ -21,18 +21,18 @@ export const Component: Story<CodeViewerProps> = args => (
       },
     }}
   >
-    <CodeViewer {...args} />
+    <SandpackCodeViewer {...args} />
   </SandpackProvider>
 );
 
 export const ReactCode = () => (
   <SandpackProvider template="react">
-    <CodeViewer />
+    <SandpackCodeViewer />
   </SandpackProvider>
 );
 
 export const VueCode = () => (
   <SandpackProvider template="vue" theme="sp-dark">
-    <CodeViewer />
+    <SandpackCodeViewer />
   </SandpackProvider>
 );

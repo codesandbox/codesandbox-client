@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SandpackLayout } from '../components/SandpackLayout';
+import { SandpackLayout } from '../components/Layout';
 import {
   FileResolver,
   SandpackFiles,
@@ -9,8 +9,11 @@ import {
   SandpackPartialTheme,
 } from '../types';
 import { SandpackProvider } from '../contexts/sandpack-context';
-import { CodeEditor, CodeEditorOptions } from '../components/CodeEditor';
-import { Preview, PreviewOptions } from '../components/Preview';
+import {
+  SandpackCodeEditor,
+  CodeEditorOptions,
+} from '../components/CodeEditor';
+import { SandpackPreview, PreviewOptions } from '../components/Preview';
 
 export interface SandpackProps {
   files?: SandpackFiles;
@@ -87,7 +90,7 @@ export const Sandpack: React.FC<SandpackProps> = props => {
       {...providerOptions}
     >
       <SandpackLayout style={otherStyles}>
-        <CodeEditor
+        <SandpackCodeEditor
           {...codeEditorOptions}
           customStyle={{
             height,
@@ -96,7 +99,7 @@ export const Sandpack: React.FC<SandpackProps> = props => {
             minWidth: 700 * (editorPart / (previewPart + editorPart)),
           }}
         />
-        <Preview
+        <SandpackPreview
           {...previewOptions}
           customStyle={{
             height,

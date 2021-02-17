@@ -18,7 +18,7 @@ export type PreviewProps = PreviewOptions & {
 
 export { RefreshButton, OpenInCodeSandboxButton };
 
-export const Preview: React.FC<PreviewProps> = ({
+export const SandpackPreview: React.FC<PreviewProps> = ({
   customStyle,
   showNavigator = false,
   showRefreshButton = true,

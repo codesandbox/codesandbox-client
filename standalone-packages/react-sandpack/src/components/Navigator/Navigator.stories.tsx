@@ -1,8 +1,8 @@
 import React from 'react';
-import { SandpackLayout } from '../../components/SandpackLayout';
+import { SandpackLayout } from '../../components/Layout';
 import { SandpackProvider } from '../../contexts/sandpack-context';
 import { Navigator } from '.';
-import { Preview } from '../Preview';
+import { SandpackPreview } from '../Preview';
 
 export default {
   title: 'components/Navigator',
@@ -107,7 +107,7 @@ function Dashboard() {
     }}
   >
     <SandpackLayout>
-      <Preview showNavigator />
+      <SandpackPreview showNavigator />
     </SandpackLayout>
   </SandpackProvider>
 );

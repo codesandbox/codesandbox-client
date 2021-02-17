@@ -1,13 +1,13 @@
 import React from 'react';
 import { Story } from '@storybook/react';
 
-import { CodeEditor, CodeEditorProps } from './index';
+import { SandpackCodeEditor, CodeEditorProps } from './index';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
 
 export default {
   title: 'components/Code Editor',
-  component: CodeEditor,
+  component: SandpackCodeEditor,
 };
 
 export const Component: Story<CodeEditorProps> = args => (
@@ -21,24 +21,24 @@ export const Component: Story<CodeEditorProps> = args => (
       },
     }}
   >
-    <CodeEditor {...args} />
+    <SandpackCodeEditor {...args} />
   </SandpackProvider>
 );
 
 export const ReactCode = () => (
   <SandpackProvider template="react">
-    <CodeEditor showLineNumbers />
+    <SandpackCodeEditor showLineNumbers />
   </SandpackProvider>
 );
 
 export const VueCode = () => (
   <SandpackProvider template="vue">
-    <CodeEditor />
+    <SandpackCodeEditor />
   </SandpackProvider>
 );
 
 export const DarkTheme = () => (
   <SandpackProvider template="vue" theme="sp-dark">
-    <CodeEditor />
+    <SandpackCodeEditor />
   </SandpackProvider>
 );

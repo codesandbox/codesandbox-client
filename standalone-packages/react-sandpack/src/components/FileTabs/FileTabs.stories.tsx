@@ -1,8 +1,8 @@
 import React from 'react';
 import { FileTabs } from './index';
-import { CodeViewer } from '../CodeViewer';
+import { SandpackCodeViewer } from '../CodeViewer';
 import { SandpackProvider } from '../../contexts/sandpack-context';
-import { SandpackLayout } from '../../components/SandpackLayout';
+import { SandpackLayout } from '../../components/Layout';
 
 export default {
   title: 'components/File Tabs',
@@ -37,7 +37,7 @@ export const WithHiddenFiles = () => (
     <SandpackLayout>
       <div>
         <FileTabs />
-        <CodeViewer showTabs={false} />
+        <SandpackCodeViewer showTabs={false} />
       </div>
     </SandpackLayout>
   </SandpackProvider>

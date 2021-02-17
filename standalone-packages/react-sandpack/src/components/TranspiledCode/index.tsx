@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { PrismHighlight } from './CodeViewer/PrismHighlight';
-import { useTranspiledCode } from '../hooks/useTranspiledCode';
-import { useSandpack } from '../hooks/useSandpack';
+import { PrismHighlight } from '../CodeViewer/PrismHighlight';
+import { useTranspiledCode } from '../../hooks/useTranspiledCode';
+import { useSandpack } from '../../hooks/useSandpack';
 
-export interface TranspiledCodeViewProps {
+export interface TranspiledCodeProps {
   customStyle?: React.CSSProperties;
 }
 
-export const TranspiledCodeView: React.FC<TranspiledCodeViewProps> = ({
+export const SandpackTranspiledCode: React.FC<TranspiledCodeProps> = ({
   customStyle,
 }) => {
   const { sandpack } = useSandpack();

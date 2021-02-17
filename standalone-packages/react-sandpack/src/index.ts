@@ -7,8 +7,8 @@ export * from './components/FileExplorer';
 export * from './components/FileTabs';
 export * from './components/Navigator';
 export * from './components/Preview';
-export * from './components/SandpackLayout';
-export * from './components/TranspiledCodeView';
+export * from './components/Layout';
+export * from './components/TranspiledCode';
 
 export * from './hooks/useActiveCode';
 export * from './hooks/useCodeSandboxLink';
@@ -17,8 +17,6 @@ export * from './hooks/useSandpackNavigation';
 export * from './hooks/useSandpackTheme';
 export * from './hooks/useTranspiledCode';
 
-export * from './themes';
-
 export * from './contexts/sandpack-context';
-
+export * from './themes';
 export * from './types';

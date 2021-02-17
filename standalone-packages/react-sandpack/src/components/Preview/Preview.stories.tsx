@@ -1,6 +1,6 @@
 import React from 'react';
-import { Preview } from './index';
-import { SandpackLayout } from '../SandpackLayout';
+import { SandpackPreview } from './index';
+import { SandpackLayout } from '../Layout';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
 
@@ -24,7 +24,7 @@ export const Component = () => (
     }}
   >
     <SandpackLayout>
-      <Preview />
+      <SandpackPreview />
     </SandpackLayout>
   </SandpackProvider>
 );
@@ -39,7 +39,7 @@ export const WithNavigator = () => (
     }}
   >
     <SandpackLayout>
-      <Preview showNavigator />
+      <SandpackPreview showNavigator />
     </SandpackLayout>
   </SandpackProvider>
 );
