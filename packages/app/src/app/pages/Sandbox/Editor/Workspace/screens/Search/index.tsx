@@ -223,7 +223,7 @@ export const Search = () => {
               borderRightWidth: 0,
             })}
           >
-            <Text block variant="muted" align="center">
+            <Text block align="center">
               {searchResults.reduce(
                 // @ts-ignore
                 (acc, curr) => acc + curr.matches.length,

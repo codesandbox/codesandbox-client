@@ -35,7 +35,6 @@ export const Result = ({ i, updateRender }) => {
           border: 'none',
           cursor: 'pointer',
           width: '100%',
-          outline: 'none',
 
           ':hover': {
             color: 'sideBar.foreground',
@@ -46,7 +45,7 @@ export const Result = ({ i, updateRender }) => {
           updateRender(i);
         }}
       >
-        <Stack gap={2} paddingBottom={2} paddingTop={4} align="center">
+        <Stack gap={2} paddingY={1} align="center">
           <Element
             css={css({
               color: 'inputOption.activeBorder',
@@ -67,56 +66,58 @@ export const Result = ({ i, updateRender }) => {
 
       {open ? (
         <Element>
-          {matches.map(match => (
-            <ListAction css={css({ minHeight: '28px' })}>
-              <button
-                type="button"
-                css={css({
-                  '-webkit-appearance': 'none',
-                  border: 'none',
-                  background: 'transparent',
-                  display: 'block',
-                  width: '100%',
-                  cursor: 'pointer',
-                  color: 'mutedForeground',
+          {matches.map(match => {
+            const firstPart = code
+              .substring(match[0] - 40, match[0])
+              .split('\n');
+            const secondPart = code
+              .substring(match[1], match[1] + 100)
+              .split('\n');
+            return (
+              <ListAction css={css({ minHeight: '28px' })}>
+                <button
+                  type="button"
+                  css={css({
+                    '-webkit-appearance': 'none',
+                    border: 'none',
+                    background: 'transparent',
+                    display: 'block',
+                    width: '100%',
+                    cursor: 'pointer',
+                    color: 'mutedForeground',
 
-                  ':hover': {
-                    color: 'sideBar.foreground',
-                  },
-                })}
-                key={`${match[0]}-${match[1]}`}
-                onClick={() => openFile(id, match)}
-              >
-                <Stack gap={2} align="center">
-                  <Text
-                    block
-                    size={3}
-                    css={css({
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    })}
-                  >
-                    {code
-                      .substring(match[0] - 10, match[0])
-                      .split('\n')
-                      .join(' ')}
-                    <span
+                    ':hover': {
+                      color: 'sideBar.foreground',
+                    },
+                  })}
+                  key={`${match[0]}-${match[1]}`}
+                  onClick={() => openFile(id, match)}
+                >
+                  <Stack gap={2} align="center">
+                    <Text
+                      block
+                      size={3}
                       css={css({
-                        background: 'rgba(251, 204, 67, 0.2)',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
                       })}
                     >
-                      {code.substring(match[0], match[1])}
-                    </span>
-                    {code
-                      .substring(match[1], match[1] + 100)
-                      .split('\n')
-                      .join(' ')}
-                  </Text>
-                </Stack>
-              </button>
-            </ListAction>
-          ))}
+                      {firstPart[firstPart.length - 1]}
+                      <span
+                        css={css({
+                          background: 'rgba(251, 204, 67, 0.2)',
+                        })}
+                      >
+                        {code.substring(match[0], match[1])}
+                      </span>
+                      {secondPart[0]}
+                    </Text>
+                  </Stack>
+                </button>
+              </ListAction>
+            );
+          })}
         </Element>
       ) : null}
     </Element>
