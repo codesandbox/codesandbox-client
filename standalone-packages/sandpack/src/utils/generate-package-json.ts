@@ -25,13 +25,13 @@ export default function createMissingPackageJSON(
   if (!newFiles['/package.json']) {
     if (!dependencies) {
       throw new Error(
-        'No dependencies specified, please specify either a package.json or provide dependencies.'
+        'No dependencies specified, please specify either a package.json or dependencies.'
       );
     }
 
     if (!entry) {
       throw new Error(
-        "No entry specified, please specify either a package.json with 'main' field or provide entry."
+        "Missing 'entry' parameter. Either specify an entry point, or pass in a package.json with the 'main' field set."
       );
     }
 
