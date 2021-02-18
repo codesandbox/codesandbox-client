@@ -32,10 +32,6 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
   >('visible');
 
   React.useEffect(() => {
-    if (sandpack.status === 'idle') {
-      return () => {}; // No listener attached while sandpack is not instantiated
-    }
-
     const unsub = listen((message: any) => {
       if (message.type === 'start' && message.firstLoad === true) {
         setLoadingOverlayState('visible');
@@ -48,7 +44,7 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
     });
 
     return () => unsub();
-  }, [sandpack?.browserFrame]);
+  }, []);
 
   React.useEffect(() => {
     if (

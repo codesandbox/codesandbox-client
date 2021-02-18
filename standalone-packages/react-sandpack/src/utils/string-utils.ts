@@ -33,3 +33,6 @@ export const hexToCSSRGBa = (hex: string, alpha: number) => {
 
   return hex;
 };
+
+export const generateRandomId = () =>
+  Math.floor(Math.random() * 10000).toString();

@@ -298,19 +298,275 @@ import { SandpackRunner } from 'react-smooshpack';
 In this example, `code` will replace the `App.vue` file, because that is the
 **main** file in the vue template. For `react`, this would be the `App.js` file.
 
+> The main file can be specified in the customSetup. You can use any of your
+> files to override with the code prop.
+
 ## Getting deeper
 
-Coming soon
+If you open a preset file from the sandpack repository, you'll see it is made up
+of smaller sandpack **components** and has limited logic for passing props to
+those smaller components.
+
+If you need a more custom solution, you can opt in to use these smaller
+components that we export from the main package.
+
+It all starts with the `SandpackProvider`, which is the central point of our
+architecture. The provider abstracts the functionality of `sandpack` and places
+the relevant state values and functions on a `context` object. The `React`
+components that are exported by the main package (eg: SandpackCodeEditor,
+SandpackPreview) use that `context` object to communicate with `sandpack`.
 
 ### Build your custom Sandpack
 
-Coming soon
+Let's start from the `SandpackProvider`. This becomes the root node of our new
+`Sandpack` component.
+
+```jsx
+import { SandpackProvider, SandpackPreview } from 'react-smooshpack';
+
+const CustomSandpack = () => (
+  <SandpackProvider>
+    <SandpackPreview />
+  </SandpackProvider>
+);
+```
+
+The `SandpackProvider` has the same style of parameters as the presets:
+`template`, `theme`, `customSetup` and some of the options for the bundler and
+execution mode. So even if you run this basic snippet above, you will see a
+default vanilla template preview, because the sandpack logic is running behind
+the scenes through the context object.
+
+Let's add a code editor
+
+```jsx
+import {
+  SandpackProvider,
+  SandpackLayout,
+  SandpackCodeEditor,
+  SandpackPreview,
+} from 'react-smooshpack';
+
+const CustomSandpack = () => (
+  <SandpackProvider template="react">
+    <SandpackLayout>
+      <SandpackCodeEditor />
+      <SandpackPreview />
+    </SandpackLayout>
+  </SandpackProvider>
+);
+```
+
+And now we have pretty much the same component as the preset, minus the prop
+passing, which you can decide based on your specific needs.
+
+> `SandpackLayout` gives you the left-right split between two components and
+> also breaks the columns when the component is under 700px wide, so you have
+> some responsiveness built-in.
+
+You can also bring other components in the mix: `SandpackCodeViewer`,
+`SandpackTranspiledCode`, `FileTabs`, `Navigator` and so on.
+
+Some of the components have configuration flags that toggle subparts on/off. All
+of them comunicate with sandpack through the shared context.
+
+For example, you can create an editor instance that gives you the transpiled
+code of your **active** component instead of the preview page:
+
+```jsx
+import {
+  SandpackProvider,
+  SandpackLayout,
+  SandpackCodeEditor,
+  SandpackTranspiledCode,
+} from 'react-smooshpack';
+
+const CustomSandpack = () => (
+  <SandpackProvider template="react">
+    <SandpackLayout>
+      <SandpackCodeEditor />
+      <SandpackTranspiledCode />
+    </SandpackLayout>
+  </SandpackProvider>
+);
+```
+
+You will notice that the theming applies to all components in the same way, as
+the theme object is also distributed by the context.
 
 ### Create a custom sandpack-aware component
 
-Coming soon
+If you want to build a new component or you want to re-implement the code
+editor, for example, you can still rely on the sandpack state and create your UI
+from scratch.
 
-### sandpack core
+We added a set of hooks in the main package, with which you can connect your own
+components to the sandpack context.
+
+#### useSandpack
+
+To access the sandpack state in any of your components, you can use the
+`useSandpack` hook, as long as the component that uses that hook is mounted
+inside the `<SandpackProvider>`.
+
+Let's build a simple code viewer:
+
+```jsx
+import { useSandpack } from 'react-smooshpack';
+
+const SimpleCodeViewer = () => {
+  const { sandpack } = useSandpack();
+  const { files, activePath } = sandpack;
+
+  const code = files[activePath].code;
+  return <pre>{code}</pre>;
+};
+```
+
+The `sandpack` object is available in any component and exposes all the internal
+state:
+
+- the `files` including all the setup/template files
+- the `activePath` / `openPaths` fields
+- the `error` object, if any
+- multiple functions for changing the state of sandpack: `updateCurrentFile`,
+  `changeActiveFile`, etc.
+
+In the component above, you get the active code string by calling
+`files[activePath].code`, so any change of state will trigger a re-render of the
+component and an update of the code.
+
+We can test this with the `CustomSandpack` we implemented at the previous step.
+
+```jsx
+const CustomSandpack = () => (
+  <SandpackProvider template="react">
+    <SandpackLayout>
+      <SandpackCodeEditor />
+      <SimpleCodeViewer /> {/* This will render the pre on the right side of your sandpack component */}
+    </SandpackLayout>
+  </SandpackProvider>
+);
+```
+
+`useSandpack` also exports `dispatch` and `listen`, two functions with which you
+can directly communicate with the bundler. However, at this point, you'd have to
+understand all the different types of messages and payloads that are passed from
+the sandpack manager to the iframe and back.
+
+```jsx
+import { useSandpack } from 'react-smooshpack';
+
+const CustomRefreshButton = () => {
+  const { dispatch, listen } = useSandpack();
+
+  const handleRefresh = () => {
+    // listens for any message dispatched between sandpack and the bundler
+    const stopListening = listen(message => console.log(message));
+
+    // sends the refresh message to the bundler, should be logged by the listener
+    dispatch({ type: 'refresh' });
+
+    // unsubscribe
+    stopListening();
+  };
+
+  return (
+    <button type="button" onClick={handleRefresh}>
+      Refresh
+    </button>
+  );
+};
+```
+
+#### useActiveCode, useCodeSandboxLink, useSandpackNavigation
+
+Some of the common functionalities of sandpack are also extracted into
+specialized hooks. These all use `useSandpack` under the hood, but abstract away
+the shape of the **state** object and the **dispatch/listen** functions.
+
+The refresh button can be built with the `useSandpackNavigation` hook:
+
+```jsx
+import { useSandpackNavigation } from 'react-smooshpack';
+
+const CustomRefreshButton = () => {
+  const { refresh } = useSandpackNavigation();
+  return (
+    <button type="button" onClick={() => refresh()}>
+      Refresh Sandpack
+    </button>
+  );
+};
+```
+
+Similarly, we can build a custom link that opens the sandpack files in a new tab
+on https://codesandbox.io. Let's the use `useCodeSandboxLink` for that:
+
+```jsx
+import { useCodeSandboxLink } from 'react-smooshpack';
+
+const CustomOpenInCSB = () => {
+  const url = useCodeSandboxLink();
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      Open in CodeSandbox
+    </a>
+  );
+};
+```
+
+We implemented the `SandpackCodeEditor` on top of
+[codemirror/next](https://codemirror.net/6/), but it is super easy to switch to
+your favorite code editor. Let's connect the sandpack state to an instance of
+[AceEditor](https://securingsincity.github.io/react-ace/). We can use the
+`useActiveCode` hook, which gives us the `code` and the `updateCode` callback.
+
+```jsx
+import { useActiveCode } from 'react-smooshpack';
+import AceEditor from 'react-ace';
+import 'ace-builds/src-noconflict/mode-javascript';
+import 'ace-builds/src-noconflict/theme-textmate';
+
+const CustomAceEditor = () => {
+  const { code, updateCode } = useActiveCode();
+
+  return (
+    <AceEditor
+      mode="javascript"
+      defaultValue={code}
+      onChange={updateCode}
+      fontSize={14}
+      height="300px"
+      width="100%"
+    />
+  );
+};
+```
+
+Now, let's put all of these custom components together:
+
+```jsx
+export const CustomSandpack = () => (
+  <SandpackProvider template="react">
+    <CustomAceEditor />
+    <SandpackPreview showRefreshButton={false} showOpenInCodeSandbox={false} />
+    <CustomRefreshButton />
+    <CustomOpenInCSB />
+  </SandpackProvider>
+);
+```
+
+It's not pretty, but with just a few lines of code, you can create a whole new
+component that uses the power of sandpack, but has all the UI and functionality
+you need for your specific use case.
+
+Notice how the `SandpackPreview` is the only component left from our package.
+You can also implement your own preview component, but we recommend sticking
+with the standard one, as it is a bit more coupled to the bundler
+implementation.
+
+### Sandpack Manager
 
 Coming soon
 

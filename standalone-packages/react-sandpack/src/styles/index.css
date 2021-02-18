@@ -206,7 +206,7 @@
   border: 0;
   outline: none;
   border-bottom: 1px solid transparent;
-  transition: border 0.15s ease-out;
+  transition: all 0.15s ease-out;
 }
 
 .sp-tab-button[data-active='true'] {
@@ -216,11 +216,15 @@
 
 .sp-tab-button:hover {
   color: var(--sp-colors-fg-active);
+  background: var(--sp-colors-bg-active);
+}
+
+.sp-tab-button:focus {
+  outline: none;
 }
 
 .sp-tab-button:focus-visible {
-  background-color: var(--sp-colors-bg-active);
-  outline: none;
+  box-shadow: inset 0 0 0 2px var(--sp-colors-accent);
 }
 
 .sp-button {
@@ -258,6 +262,10 @@
 
 .sp-button:disabled {
   color: var(--sp-colors-fg-inactive);
+}
+
+.sp-button:focus {
+  outline: none;
 }
 
 .sp-button:focus-visible {

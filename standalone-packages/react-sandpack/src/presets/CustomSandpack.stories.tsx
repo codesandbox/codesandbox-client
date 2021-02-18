@@ -100,7 +100,7 @@ const CustomCodeEditor = () => {
   );
 };
 
-export const UsingBehavior = () => (
+export const UsingHooks = () => (
   <SandpackProvider template="react">
     <CustomCodeEditor />
 

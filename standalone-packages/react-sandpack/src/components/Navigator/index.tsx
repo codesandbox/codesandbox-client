@@ -38,7 +38,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
     });
 
     return () => unsub();
-  }, [sandpack.status]);
+  }, []);
 
   const commitUrl = () => {
     if (!sandpack.browserFrame) {
