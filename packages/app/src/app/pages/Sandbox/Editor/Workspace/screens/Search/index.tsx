@@ -39,6 +39,7 @@ export const Search = () => {
   const list = useRef<any>();
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
   const [modules, setModules] = useState<Module[]>(allModules);
+  const [loading, setLoading] = useState(false);
 
   const toggleSearch = () => {
     searchOptionsToggled('openFilesSearch');
@@ -68,6 +69,7 @@ export const Search = () => {
   const searchFiles = async (value: string) => {
     if (value.length > 1) {
       if (searchWorker.current) {
+        setLoading(true);
         const currentResults = await searchWorker.current.search(
           value,
           modules,
@@ -75,18 +77,20 @@ export const Search = () => {
             ...searchOptions,
           }
         );
+        setLoading(false);
         searchResultsChanged(
-          currentResults.map((v, i) => {
+          currentResults.map((res, i) => {
             if (i < 2) {
               return {
-                ...v,
+                ...res,
                 open: true,
               };
             }
 
-            return v;
+            return res;
           })
         );
+
         if (list.current) {
           list.current.resetAfterIndex(0);
         }
@@ -249,7 +253,7 @@ export const Search = () => {
               )}
             </AutoSizer>
           ) : null}
-          {!searchResults.length && searchValue.length > 1 && (
+          {!searchResults.length && searchValue.length > 1 && !loading && (
             <Stack justify="center" marginTop={10}>
               <Text variant="muted">No results found</Text>
             </Stack>

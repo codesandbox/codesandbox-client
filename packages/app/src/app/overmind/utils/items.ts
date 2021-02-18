@@ -40,14 +40,13 @@ export const GITHUB_SUMMARY: INavigationItem = {
 export const SEARCH: INavigationItem = {
   id: 'search',
   name: 'Search',
-  defaultOpen: true,
 };
 
 export const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
   hasCustomHeader: true,
-  // defaultOpen: true,
+  defaultOpen: true,
 };
 
 export const GITHUB: INavigationItem = {
