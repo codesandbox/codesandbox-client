@@ -3,13 +3,14 @@ import {
   SandboxFragmentDashboardFragment,
   SidebarCollectionDashboardFragment,
 } from 'app/graphql/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import Fuse from 'fuse.js';
 import React, { useEffect } from 'react';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 
 const useSearchedSandboxes = (query: string) => {
-  const { actions, state } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const [foundResults, setFoundResults] = React.useState<
     | (SandboxFragmentDashboardFragment | SidebarCollectionDashboardFragment)[]
     | null

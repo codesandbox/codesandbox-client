@@ -10,7 +10,7 @@ import {
 } from '@codesandbox/components';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { Helmet } from 'react-helmet';
 import {
   dashboardUrl,
@@ -90,7 +90,7 @@ const ErrorDialog = ({ error }: { error: Error }) => (
 );
 
 const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
-  const { actions } = useOvermind();
+  const actions = useActions();
   const { loading, error, data } = useQuery(teamByToken, {
     variables: { inviteToken },
   });
@@ -131,7 +131,7 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
 };
 
 const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
-  const { effects } = useOvermind();
+  const effects = useEffects();
   const [loading, setLoading] = React.useState(true);
   const [team, setTeam] = React.useState<{
     id: string;
@@ -177,7 +177,7 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
 export const TeamInvitation: React.FC<{
   match: { params: { token: string } };
 }> = ({ match }) => {
-  const { state } = useOvermind();
+  const state = useAppState();
   const inviteToken = match?.params?.token;
 
   return (

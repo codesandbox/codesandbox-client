@@ -1,16 +1,14 @@
 import React from 'react';
 import { Checkbox, Text, Button, Stack } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { SubscriptionBillingInterval } from 'app/graphql/types';
 import { Alert } from '../Common/Alert';
 
 export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
   title,
 }) => {
-  const {
-    actions,
-    state: { activeTeamInfo },
-  } = useOvermind();
+  const { activeTeamInfo } = useAppState();
+  const actions = useActions();
 
   const [confirmed, setConfirmed] = React.useState(false);
 

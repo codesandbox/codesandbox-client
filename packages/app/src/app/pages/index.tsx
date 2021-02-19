@@ -2,7 +2,7 @@ import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { Toasts } from '@codesandbox/notifications';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import Loadable from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
@@ -112,10 +112,9 @@ const CodeSadbox = () => this[`💥`].kaboom();
 const Boundary = withRouter(ErrorBoundary);
 
 const RoutesComponent: React.FC = () => {
-  const {
-    actions: { appUnmounted },
-    state: { modals, activeTeamInfo },
-  } = useOvermind();
+  const { appUnmounted } = useActions();
+  const { modals, activeTeamInfo } = useAppState();
+
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
   return (

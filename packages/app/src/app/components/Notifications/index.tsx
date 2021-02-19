@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { Button, Icon, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -9,16 +9,14 @@ import { NotificationsContent } from './Content';
 
 export const Notifications = () => {
   const {
-    actions: {
-      userNotifications: { notificationsClosed, notificationsOpened },
-    },
-    state: {
-      userNotifications: {
-        notificationsOpened: notificationsMenuOpened,
-        unreadCount,
-      },
-    },
-  } = useOvermind();
+    notificationsOpened: notificationsMenuOpened,
+    unreadCount,
+  } = useAppState().userNotifications;
+  const {
+    notificationsClosed,
+    notificationsOpened,
+  } = useActions().userNotifications;
+
   return (
     <Overlay
       content={NotificationsContent}
