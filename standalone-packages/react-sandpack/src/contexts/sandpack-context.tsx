@@ -28,6 +28,7 @@ export interface SandpackProviderState {
   error: Partial<IModuleError> | null;
   sandpackStatus: SandpackStatus;
   editorState: EditorState;
+  shouldRenderHiddenIframe: boolean;
 }
 
 export interface SandpackProviderProps {
@@ -89,6 +90,7 @@ class SandpackProvider extends React.PureComponent<
       error: null,
       sandpackStatus: 'idle',
       editorState: 'pristine',
+      shouldRenderHiddenIframe: false,
     };
 
     this.manager = null;
@@ -182,6 +184,10 @@ class SandpackProvider extends React.PureComponent<
       this.intersectionObserver.observe(this.wrapperRef.current!);
     } else {
       this.setState({ sandpackStatus: 'idle' });
+    }
+
+    if (!this.iframeRef.current) {
+      this.setState({ shouldRenderHiddenIframe: true });
     }
   }
 
@@ -333,7 +339,7 @@ class SandpackProvider extends React.PureComponent<
       editorState,
       changeActiveFile: this.changeActiveFile,
       openFile: this.openFile,
-      browserFrame: this.iframeRef.current,
+      iframeRef: this.iframeRef,
       updateCurrentFile: this.updateCurrentFile,
       runSandpack: this.runSandpack,
       dispatch: this.dispatchMessage,
@@ -343,6 +349,7 @@ class SandpackProvider extends React.PureComponent<
 
   render() {
     const { children, theme } = this.props;
+    const { shouldRenderHiddenIframe } = this.state;
 
     return (
       <ThemeProvider theme={theme}>
@@ -350,18 +357,13 @@ class SandpackProvider extends React.PureComponent<
           <ThemeConsumer>
             {({ id }) => (
               <div ref={this.wrapperRef} className={`sp-wrapper ${id}`}>
-                <iframe
-                  ref={this.iframeRef}
-                  title="Sandpack Preview"
-                  style={{
-                    width: 0,
-                    height: 0,
-                    border: 0,
-                    outline: 0,
-                    position: 'absolute',
-                    visibility: 'hidden',
-                  }}
-                />
+                {shouldRenderHiddenIframe && (
+                  <iframe
+                    title="Sandpack"
+                    ref={this.iframeRef}
+                    style={{ display: 'none' }}
+                  />
+                )}
                 {children}
               </div>
             )}

@@ -11,15 +11,14 @@ import { history, historyKeymap } from '@codemirror/history';
 import {
   defaultKeymap,
   indentLess,
-  indentMore,
   deleteGroupBackward,
+  insertTab,
 } from '@codemirror/commands';
 import { lineNumbers } from '@codemirror/gutter';
 import { bracketMatching } from '@codemirror/matchbrackets';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets';
 import { EditorState } from '@codemirror/state';
 import { commentKeymap } from '@codemirror/comment';
-
 import {
   getCodeMirrorLanguage,
   getEditorTheme,
@@ -62,7 +61,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     const customCommandsKeymap: KeyBinding[] = [
       {
         key: 'Tab',
-        run: indentMore,
+        run: insertTab,
       },
       {
         key: 'Shift-Tab',

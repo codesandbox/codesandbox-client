@@ -24,8 +24,6 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
   showRefreshButton = true,
   showOpenInCodeSandbox = true,
 }) => {
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const wrapperRef = React.useRef<HTMLDivElement>(null);
   const { sandpack, listen } = useSandpack();
   const [loadingOverlayState, setLoadingOverlayState] = React.useState<
     'visible' | 'fading' | 'hidden'
@@ -46,37 +44,31 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
     return () => unsub();
   }, []);
 
-  React.useEffect(() => {
-    if (
-      !sandpack.browserFrame ||
-      !containerRef.current ||
-      sandpack.status !== 'running'
-    ) {
-      return;
-    }
-
-    const { browserFrame } = sandpack;
-    browserFrame.style.width = 'auto';
-    browserFrame.style.height = 'auto';
-    browserFrame.style.flex = '1';
-    browserFrame.style.visibility = 'visible';
-    browserFrame.style.position = 'relative';
-
-    containerRef.current.appendChild(browserFrame);
-  }, [sandpack?.browserFrame, sandpack.status]);
-
-  if (sandpack.status !== 'running') {
-    return null;
-  }
+  const { status, error, iframeRef } = sandpack;
 
   return (
-    <div className="sp-stack" style={customStyle} ref={wrapperRef}>
+    <div
+      className="sp-stack"
+      style={{
+        ...customStyle,
+        display: status === 'running' ? 'flex' : 'none',
+      }}
+    >
       {showNavigator && <Navigator />}
 
-      <div className="sp-preview-frame" id="preview-frame" ref={containerRef}>
-        {sandpack.error && (
+      <div className="sp-preview-frame">
+        <iframe
+          ref={iframeRef}
+          title="Sandpack Preview"
+          style={{
+            flex: 1,
+            border: 0,
+            outline: 0,
+          }}
+        />
+        {error && (
           <div className="sp-overlay sp-error">
-            <div className="sp-error-message">{sandpack.error.message}</div>
+            <div className="sp-error-message">{error.message}</div>
           </div>
         )}
 

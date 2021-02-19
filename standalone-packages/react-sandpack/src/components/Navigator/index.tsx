@@ -41,12 +41,12 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
   }, []);
 
   const commitUrl = () => {
-    if (!sandpack.browserFrame) {
+    if (!sandpack.iframeRef.current) {
       return;
     }
 
     const newUrl = baseUrl + relativeUrl;
-    sandpack.browserFrame.src = newUrl;
+    sandpack.iframeRef.current.src = newUrl;
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

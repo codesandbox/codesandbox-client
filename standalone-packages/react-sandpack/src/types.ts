@@ -6,7 +6,7 @@ export type SandpackContext = SandpackState & {
 };
 
 export interface SandpackState {
-  browserFrame: HTMLIFrameElement | null;
+  iframeRef: React.RefObject<HTMLIFrameElement>;
   bundlerState: IManagerState | undefined;
   openPaths: string[];
   activePath: string;

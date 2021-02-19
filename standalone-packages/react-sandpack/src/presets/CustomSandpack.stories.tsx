@@ -22,7 +22,7 @@ export default {
 export const UsingSandpackLayout = () => (
   <SandpackProvider template="react" theme="sp-dark">
     <SandpackLayout>
-      <SandpackPreview showNavigator />
+      <SandpackTranspiledCode />
       <SandpackCodeViewer />
     </SandpackLayout>
   </SandpackProvider>
