@@ -35,6 +35,7 @@ export interface SandpackProviderProps {
   template?: SandpackPredefinedTemplate;
   customSetup?: SandpackSetup;
   theme?: SandpackPredefinedTheme | SandpackPartialTheme;
+  renderRootContainer?: boolean;
 
   // editor state (override values)
   activePath?: string;
@@ -60,6 +61,7 @@ class SandpackProvider extends React.PureComponent<
     recompileMode: 'delayed',
     recompileDelay: 500,
     autorun: true,
+    renderRootContainer: true,
   };
 
   manager: Manager | null;
@@ -168,20 +170,24 @@ class SandpackProvider extends React.PureComponent<
 
   componentDidMount() {
     if (this.props.autorun) {
-      const options = {
-        rootMargin: '600px 0px',
-        threshold: 0,
-      };
+      if (this.wrapperRef.current) {
+        const options = {
+          rootMargin: '600px 0px',
+          threshold: 0,
+        };
 
-      this.intersectionObserver = new IntersectionObserver(entries => {
-        if (
-          entries[0]?.intersectionRatio > 0 &&
-          this.state.sandpackStatus === 'idle'
-        ) {
-          this.runSandpack();
-        }
-      }, options);
-      this.intersectionObserver.observe(this.wrapperRef.current!);
+        this.intersectionObserver = new IntersectionObserver(entries => {
+          if (
+            entries[0]?.intersectionRatio > 0 &&
+            this.state.sandpackStatus === 'idle'
+          ) {
+            this.runSandpack();
+          }
+        }, options);
+        this.intersectionObserver.observe(this.wrapperRef.current!);
+      } else {
+        this.runSandpack();
+      }
     } else {
       this.setState({ sandpackStatus: 'idle' });
     }
@@ -348,8 +354,23 @@ class SandpackProvider extends React.PureComponent<
   };
 
   render() {
-    const { children, theme } = this.props;
+    const { children, theme, renderRootContainer } = this.props;
     const { shouldRenderHiddenIframe } = this.state;
+
+    if (!renderRootContainer) {
+      return (
+        <Sandpack.Provider value={this._getSandpackState()}>
+          {shouldRenderHiddenIframe && (
+            <iframe
+              title="Sandpack"
+              ref={this.iframeRef}
+              style={{ display: 'none' }}
+            />
+          )}
+          {children}
+        </Sandpack.Provider>
+      );
+    }
 
     return (
       <ThemeProvider theme={theme}>

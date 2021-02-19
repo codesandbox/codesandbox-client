@@ -138,16 +138,27 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 
     view.contentDOM.setAttribute('tabIndex', '-1');
     view.contentDOM.setAttribute('aria-describedby', 'exit-instructions');
-    if (editorState === 'dirty') {
-      view.contentDOM.focus();
-    }
 
     cmView.current = view;
 
     return () => {
       view.destroy();
     };
+
+    // TODO: Would be nice to reconfigure the editor when these change, instead of recreating with all the extensions from scratch
   }, [showLineNumbers, wrapContent, themeId]);
+
+  React.useEffect(() => {
+    // When the user clicks on a tab button on a larger screen
+    // Avoid autofocus on mobile as it leads to a bad experience and an unexpected layout shift
+    if (
+      cmView.current &&
+      editorState === 'dirty' &&
+      window.matchMedia('(min-width: 768px)').matches
+    ) {
+      cmView.current.contentDOM.focus();
+    }
+  });
 
   // Update editor when code passed as prop from outside sandpack changes
   React.useEffect(() => {

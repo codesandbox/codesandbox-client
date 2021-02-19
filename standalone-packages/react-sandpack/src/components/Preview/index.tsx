@@ -25,6 +25,7 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
   showOpenInCodeSandbox = true,
 }) => {
   const { sandpack, listen } = useSandpack();
+  const iframeContainerRef = React.useRef<HTMLDivElement>(null);
   const [loadingOverlayState, setLoadingOverlayState] = React.useState<
     'visible' | 'fading' | 'hidden'
   >('visible');
@@ -39,6 +40,12 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
         setLoadingOverlayState('fading');
         setTimeout(() => setLoadingOverlayState('hidden'), 300); // 300 ms animation
       }
+
+      // TODO: Check why the bundler sends the resize message so late
+      // TODO: iframeContainerRef should not be changed probably because it messes up the position of the buttons
+      // if (message.type === 'resize' && iframeContainerRef.current) {
+      //   iframeContainerRef.current.style.minHeight = `${message.height}px`;
+      // }
     });
 
     return () => unsub();
@@ -56,15 +63,11 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
     >
       {showNavigator && <Navigator />}
 
-      <div className="sp-preview-frame">
+      <div className="sp-preview-container" ref={iframeContainerRef}>
         <iframe
+          className="sp-preview-iframe"
           ref={iframeRef}
           title="Sandpack Preview"
-          style={{
-            flex: 1,
-            border: 0,
-            outline: 0,
-          }}
         />
         {error && (
           <div className="sp-overlay sp-error">

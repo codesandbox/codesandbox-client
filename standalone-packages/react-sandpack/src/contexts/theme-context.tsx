@@ -16,7 +16,11 @@ const ThemeProvider: React.FC<{
   theme?: SandpackPredefinedTheme | SandpackPartialTheme;
 }> = props => {
   const { theme, id } = createThemeObject(props.theme);
-  injectThemeStyleSheet(theme, id);
+
+  // If theme is not explicitly set, don't inject any stylesheet
+  if (props.theme) {
+    injectThemeStyleSheet(theme, id);
+  }
 
   return (
     <ThemeContext.Provider
