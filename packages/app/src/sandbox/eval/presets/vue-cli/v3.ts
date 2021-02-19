@@ -1,8 +1,3 @@
-import {
-  stylePostLoader,
-  vueLoader,
-  templateLoader,
-} from 'vue3-transpiler/lib/transpilers';
 import { TranspilerDefinition, Preset } from 'sandpack-core';
 import babelTranspiler from '../../transpilers/babel';
 import typescriptTranspiler from '../../transpilers/typescript';
@@ -18,7 +13,11 @@ import base64Transpiler from '../../transpilers/base64';
 import pugTranspiler from '../../transpilers/pug';
 import coffeeTranspiler from '../../transpilers/coffee';
 
-export default function initialize(vuePreset: Preset) {
+export default async function initialize(vuePreset: Preset) {
+  const { stylePostLoader, vueLoader, templateLoader } = await import(
+    'vue3-transpiler/lib/transpilers'
+  );
+
   const sassWithConfig: TranspilerDefinition = {
     transpiler: sassTranspiler,
     options: {

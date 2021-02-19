@@ -7,6 +7,7 @@ import { Context } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
 import { json } from 'overmind';
+import { SearchResults } from './state';
 
 export const valueChanged = (
   { state }: Context,
@@ -594,4 +595,34 @@ export const sandboxAlwaysOnChanged = async (
       error: { name: 'Always on', message },
     });
   }
+};
+
+export const searchValueChanged: Action<string> = ({ state }, value) => {
+  state.workspace.searchValue = value;
+};
+
+export const filesToIncludeChanged: Action<string> = ({ state }, value) => {
+  state.workspace.searchOptions.filesToInclude = value;
+};
+
+export const filesToExcludeChanged: Action<string> = ({ state }, value) => {
+  state.workspace.searchOptions.filesToExclude = value;
+};
+
+export const openResult: Action<number> = ({ state }, id) => {
+  state.workspace.searchResults[id].open = !state.workspace.searchResults[id]
+    .open;
+};
+
+export const searchResultsChanged: Action<SearchResults> = (
+  { state },
+  results
+) => {
+  state.workspace.searchResults = results;
+};
+
+export const searchOptionsToggled: Action<string> = ({ state }, option) => {
+  state.workspace.searchOptions[option] = !state.workspace.searchOptions[
+    option
+  ];
 };

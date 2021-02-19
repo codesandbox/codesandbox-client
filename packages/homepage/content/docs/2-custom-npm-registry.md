@@ -114,7 +114,7 @@ Workspace, we'll use the credentials in the `.npmrc` to fetch packages. However,
 we discourage this approach, since you'd share your registry auth token with
 anyone visiting the sandbox. Using the Workspace Setting ensures that any
 collaborator of a sandbox can use the private registry without getting access to
-the token. -->
+the token.
 
 ### Does this work with container sandboxes?
 

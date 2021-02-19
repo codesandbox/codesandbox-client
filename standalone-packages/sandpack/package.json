@@ -1,6 +1,6 @@
 {
   "name": "smooshpack",
-  "version": "0.0.66",
+  "version": "1.0.0-alpha-26",
   "description": "",
   "keywords": [],
   "repository": {
@@ -16,7 +16,7 @@
   ],
   "sideEffects": false,
   "main": "dist/sandpack.umd.js",
-  "module": "dist/sandpack.es5.js",
+  "module": "dist/sandpack.js",
   "typings": "dist/types/sandpack.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -28,7 +28,7 @@
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "start": "rollup -c rollup.config.ts -w",
+    "start": "tsc --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
     "install-dependencies": "yarn"
   },
@@ -65,7 +65,7 @@
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
   },
   "dependencies": {
-    "codesandbox-api": "0.0.24",
+    "codesandbox-api": "^0.0.31",
     "codesandbox-import-utils": "^1.2.3",
     "lodash.isequal": "^4.5.0"
   },
@@ -74,6 +74,7 @@
     "@types/node": "^9.3.0",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
+    "core-js": "^3.7.0",
     "coveralls": "^3.0.0",
     "cross-env": "^5.0.1",
     "cz-conventional-changelog": "^2.0.0",
