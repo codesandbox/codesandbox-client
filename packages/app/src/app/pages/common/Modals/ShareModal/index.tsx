@@ -272,7 +272,7 @@ export const ShareModal: React.FC<Props> = () => {
                   maxHeight: 300,
                   overflow: 'auto',
                   '> div > div[class*="FileContainer"]': {
-                    paddingLeft: 0,
+                    paddingLeft: '12px',
                   },
                 })}
               >

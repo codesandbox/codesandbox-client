@@ -9,7 +9,10 @@ import {
   UserSelection,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import {
+  captureException,
+  logBreadcrumb,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
 import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
@@ -185,6 +188,7 @@ export const addNpmDependency = withOwnedSandbox(
               },
             });
           } else {
+            captureException(e);
             actions.internal.handleError({
               error: e,
               message: 'There was a problem adding the private package',

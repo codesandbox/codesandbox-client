@@ -35,7 +35,7 @@ export const Result = ({ i, updateRender }) => {
           border: 'none',
           cursor: 'pointer',
           width: '100%',
-
+          paddingLeft: 2,
           ':hover': {
             color: 'sideBar.foreground',
           },
@@ -78,6 +78,7 @@ export const Result = ({ i, updateRender }) => {
                 <button
                   type="button"
                   css={css({
+                    paddingLeft: 4,
                     '-webkit-appearance': 'none',
                     border: 'none',
                     background: 'transparent',

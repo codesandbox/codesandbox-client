@@ -12,7 +12,6 @@ import {
   Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 
 const icons = {
   0: () => <Icon size={10} name="globe" />,
@@ -37,9 +36,7 @@ export const Permissions: FunctionComponent = () => {
   // if this user is not part of this workspace,
   // they should not see permissions at all
   const isActiveTeam = currentSandbox.team?.id === activeTeam;
-  const sandoxPermissionsVisible =
-    isActiveTeam &&
-    activeTeamInfo?.subscription?.type === WorkspaceSubscriptionTypes.Team;
+  const sandoxPermissionsVisible = isActiveTeam && activeTeamInfo?.subscription;
 
   const togglePreventSandboxLeaving = () => {
     setPreventSandboxLeaving(!currentSandbox.permissions.preventSandboxLeaving);

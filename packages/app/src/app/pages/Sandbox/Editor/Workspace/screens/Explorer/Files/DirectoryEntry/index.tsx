@@ -371,7 +371,7 @@ const DirectoryEntry: React.FunctionComponent<Props> = ({
         {...modalConfirm}
       />
       {open && (
-        <Opener open={open}>
+        <Opener aria-hidden={!open} open={open}>
           {creating === 'directory' && (
             <Entry
               id=""
