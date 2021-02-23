@@ -25,19 +25,27 @@ export const deployWithNetlify: AsyncAction = async ({
   }
 
   state.deployment.deploying = true;
+  state.deployment.netlifyLogs = null;
+
+  const zip = await effects.zip.create(sandbox);
 
   try {
-    const id = await effects.netlify.deploy(sandbox);
+    const id = await effects.netlify.deploy(zip.file, sandbox);
     state.deployment.deploying = false;
 
     await actions.deployment.getNetlifyDeploys();
-
+    // Does not seem that we use this thing? Not in other code either
+    // const deploys = await actions.deployment.internal.getNetlifyDeploys();
     state.deployment.building = true;
-    await effects.netlify.getLogs(id);
-    effects.notificationToast.success('Sandbox Deploying');
+    await effects.netlify.waitForDeploy(id, logUrl => {
+      if (!state.deployment.netlifyLogs) {
+        state.deployment.netlifyLogs = logUrl;
+      }
+    });
+    effects.notificationToast.success('Sandbox Deployed');
   } catch (error) {
     actions.internal.handleError({
-      message: 'An error occurred when deploying your Netlify site',
+      message: 'An unknown error occurred when deploying your Netlify site',
       error,
     });
   }
