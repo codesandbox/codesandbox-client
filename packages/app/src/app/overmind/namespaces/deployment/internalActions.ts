@@ -1,10 +1,10 @@
-import { AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 
-export const getVercelUserDetails: AsyncAction = async ({
+export const getVercelUserDetails = async ({
   state,
   actions,
   effects,
-}) => {
+}: Context) => {
   if (
     state.user &&
     state.user.integrations.zeit &&

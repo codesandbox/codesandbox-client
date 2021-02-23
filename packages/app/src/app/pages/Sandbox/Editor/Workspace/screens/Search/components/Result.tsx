@@ -2,18 +2,16 @@ import React from 'react';
 import getType from 'app/utils/get-type';
 import { Text, Element, ListAction, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import EntryIcon from '../../../Files/DirectoryEntry/Entry/EntryIcons';
 import { ToggleIcon } from '../icons';
 
 export const Result = ({ i, updateRender }) => {
   const {
-    state: {
-      workspace: { searchResults },
-    },
-    actions: { editor, workspace },
-    effects: { vscode },
-  } = useOvermind();
+    workspace: { searchResults },
+  } = useAppState();
+  const { editor, workspace } = useActions();
+  const { vscode } = useEffects();
   const { id, title, matches, code, open } = searchResults[i];
 
   const openFile = async (selectedFileId: string, match: [number, number]) => {

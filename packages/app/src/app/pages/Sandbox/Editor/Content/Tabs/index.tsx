@@ -47,7 +47,7 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   }, [container, currentModuleId, tabEls]);
 
   const closeTab = tabIndex => {
-    editorAction.tabClosed({ tabIndex });
+    editorAction.tabClosed(tabIndex);
   };
 
   const moveTab = (prevIndex, nextIndex) => {
@@ -213,9 +213,7 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
 
         <Tooltip content={previewVisible ? 'Hide Browser' : 'Show Browser'}>
           <IconWrapper active={previewVisible}>
-            <PreviewIcon
-              onClick={() => editorAction.togglePreviewContent({})}
-            />
+            <PreviewIcon onClick={() => editorAction.togglePreviewContent()} />
           </IconWrapper>
         </Tooltip>
       </IconContainer>

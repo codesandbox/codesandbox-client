@@ -597,31 +597,31 @@ export const sandboxAlwaysOnChanged = async (
   }
 };
 
-export const searchValueChanged: Action<string> = ({ state }, value) => {
+export const searchValueChanged = ({ state }: Context, value: string) => {
   state.workspace.searchValue = value;
 };
 
-export const filesToIncludeChanged: Action<string> = ({ state }, value) => {
+export const filesToIncludeChanged = ({ state }: Context, value: string) => {
   state.workspace.searchOptions.filesToInclude = value;
 };
 
-export const filesToExcludeChanged: Action<string> = ({ state }, value) => {
+export const filesToExcludeChanged = ({ state }: Context, value: string) => {
   state.workspace.searchOptions.filesToExclude = value;
 };
 
-export const openResult: Action<number> = ({ state }, id) => {
+export const openResult = ({ state }: Context, id: number) => {
   state.workspace.searchResults[id].open = !state.workspace.searchResults[id]
     .open;
 };
 
-export const searchResultsChanged: Action<SearchResults> = (
-  { state },
-  results
+export const searchResultsChanged = (
+  { state }: Context,
+  results: SearchResults
 ) => {
   state.workspace.searchResults = results;
 };
 
-export const searchOptionsToggled: Action<string> = ({ state }, option) => {
+export const searchOptionsToggled = ({ state }: Context, option: string) => {
   state.workspace.searchOptions[option] = !state.workspace.searchOptions[
     option
   ];

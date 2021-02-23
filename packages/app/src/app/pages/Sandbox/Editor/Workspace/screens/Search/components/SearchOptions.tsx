@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Stack, Tooltip } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { OptionTypes } from 'app/overmind/namespaces/workspace/state';
 import { CaseSensitiveIcon, RegexIcon } from '../icons';
 
@@ -40,13 +40,11 @@ const OptionButton = ({ title, active, onClick, children }) => (
 
 export const SearchOptions = () => {
   const {
-    state: {
-      workspace: { searchOptions },
-    },
-    actions: {
-      workspace: { searchOptionsToggled },
-    },
-  } = useOvermind();
+    workspace: { searchOptions },
+  } = useAppState();
+  const {
+    workspace: { searchOptionsToggled },
+  } = useActions();
 
   return (
     <Stack

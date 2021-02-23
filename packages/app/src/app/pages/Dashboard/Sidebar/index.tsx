@@ -454,7 +454,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   folders,
 }) => {
   const actions = useActions();
-  const state = useState();
+  const state = useAppState();
 
   const {
     menuState: {
