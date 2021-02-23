@@ -72,6 +72,13 @@ export const onInitialize: OnInitialize = async (
     getUserId() {
       return state.user?.id ?? null;
     },
+    provideJwtToken() {
+      if (process.env.LOCAL_SERVER || process.env.STAGING) {
+        return localStorage.getItem('devJwt');
+      }
+
+      return null;
+    },
   });
 
   effects.prettyfier.initialize({
