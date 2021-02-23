@@ -1,7 +1,6 @@
 /* eslint-disable global-require */
 const webpack = require('webpack');
 const path = require('path');
-const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -121,6 +120,7 @@ module.exports = {
         ],
         'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
         'watermark-button': path.join(paths.src, 'watermark-button.js'),
+        banner: path.join(paths.src, 'banner.js'),
         embed: [
           require.resolve('./polyfills'),
           path.join(paths.embedSrc, 'index.js'),
@@ -204,6 +204,19 @@ module.exports = {
         test: /\.wasm$/,
         loader: 'file-loader',
         type: 'javascript/auto',
+      },
+      {
+        test: /\.worker\.(js|ts)$/i,
+        use: [
+          {
+            loader: 'comlink-loader',
+            options: {
+              singleton: true,
+              multi: true,
+              multiple: true,
+            },
+          },
+        ],
       },
       {
         test: /\.scss$/,

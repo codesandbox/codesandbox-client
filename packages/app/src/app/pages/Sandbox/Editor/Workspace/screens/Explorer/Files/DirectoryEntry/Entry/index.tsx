@@ -133,6 +133,16 @@ const Entry: React.FC<IEntryProps> = ({
   const onMouseEnter = () => setHovering(true);
   const onMouseLeave = () => setHovering(false);
 
+  const onKeyPress = e => {
+    if (e.key === 'Enter') {
+      if (setCurrentModule) {
+        setCurrentModuleAction();
+      } else if (typeof onClick === 'function') {
+        onClick();
+      }
+    }
+  };
+
   const items = [
     [
       isNotSynced && {
@@ -177,8 +187,12 @@ const Entry: React.FC<IEntryProps> = ({
         <ListAction
           justify="space-between"
           onClick={setCurrentModule ? setCurrentModuleAction : onClick}
+          onKeyPress={onKeyPress}
+          // @ts-ignore
+          tabIndex="0"
           onDoubleClick={markTabsNotDirty}
           aria-selected={active}
+          aria-expanded={active}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           css={{

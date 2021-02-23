@@ -21,7 +21,7 @@
   "dependencies": {
     "@codesandbox/common": "^1.0.8",
     "axios": "^0.19.2",
-    "codesandbox-api": "0.0.24",
+    "codesandbox-api": "0.0.31",
     "debug": "^4.1.1",
     "socket.io-client": "^2.2.0"
   },
