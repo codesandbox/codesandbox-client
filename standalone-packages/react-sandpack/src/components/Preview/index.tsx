@@ -25,7 +25,6 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
   showOpenInCodeSandbox = true,
 }) => {
   const { sandpack, listen } = useSandpack();
-  const iframeContainerRef = React.useRef<HTMLDivElement>(null);
   const [loadingOverlayState, setLoadingOverlayState] = React.useState<
     'visible' | 'fading' | 'hidden'
   >('visible');
@@ -63,7 +62,7 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
     >
       {showNavigator && <Navigator />}
 
-      <div className="sp-preview-container" ref={iframeContainerRef}>
+      <div className="sp-preview-container">
         <iframe
           className="sp-preview-iframe"
           ref={iframeRef}

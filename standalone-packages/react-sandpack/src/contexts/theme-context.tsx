@@ -7,12 +7,15 @@ import {
 } from '../types';
 import { injectThemeStyleSheet } from '../utils/dom-utils';
 
-const ThemeContext = React.createContext<{ theme: SandpackTheme; id: string }>({
+const SandpackThemeContext = React.createContext<{
+  theme: SandpackTheme;
+  id: string;
+}>({
   theme: sandpackLightTheme,
   id: 'sp-light',
 });
 
-const ThemeProvider: React.FC<{
+const SandpackThemeProvider: React.FC<{
   theme?: SandpackPredefinedTheme | SandpackPartialTheme;
 }> = props => {
   const { theme, id } = createThemeObject(props.theme);
@@ -23,17 +26,17 @@ const ThemeProvider: React.FC<{
   }
 
   return (
-    <ThemeContext.Provider
+    <SandpackThemeContext.Provider
       value={{
         theme,
         id,
       }}
     >
-      {props.children}
-    </ThemeContext.Provider>
+      <div className={`sp-wrapper ${id}`}>{props.children}</div>
+    </SandpackThemeContext.Provider>
   );
 };
 
-const ThemeConsumer = ThemeContext.Consumer;
+const SandpackThemeConsumer = SandpackThemeContext.Consumer;
 
-export { ThemeProvider, ThemeConsumer, ThemeContext };
+export { SandpackThemeProvider, SandpackThemeConsumer, SandpackThemeContext };

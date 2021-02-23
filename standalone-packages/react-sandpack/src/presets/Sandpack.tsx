@@ -70,9 +70,9 @@ export const Sandpack: React.FC<SandpackProps> = props => {
   const providerOptions = {
     openPaths: props.options?.openPaths,
     activePath: props.options?.activePath,
-    autorun: props.options?.autorun ?? true,
     recompileMode: props.options?.recompileMode,
     recompileDelay: props.options?.recompileDelay,
+    autorun: props.options?.autorun ?? true,
     bundlerURL: props.options?.bundlerURL,
     skipEval: props.options?.skipEval,
     fileResolver: props.options?.fileResolver,
@@ -86,10 +86,9 @@ export const Sandpack: React.FC<SandpackProps> = props => {
     <SandpackProvider
       template={props.template}
       customSetup={userInputSetup}
-      theme={props.theme}
       {...providerOptions}
     >
-      <SandpackLayout style={otherStyles}>
+      <SandpackLayout style={otherStyles} theme={props.theme}>
         <SandpackCodeEditor
           {...codeEditorOptions}
           customStyle={{

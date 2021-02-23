@@ -331,13 +331,38 @@ const CustomSandpack = () => (
 );
 ```
 
-The `SandpackProvider` has the same style of parameters as the presets:
-`template`, `theme`, `customSetup` and some of the options for the bundler and
-execution mode. So even if you run this basic snippet above, you will see a
+The `SandpackProvider` has the same style of parameters for the input:
+`template` and `customSetup`. Additionally you can pass options for the bundler
+and execution mode. So even if you run this basic snippet above, you will see a
 default vanilla template preview, because the sandpack logic is running behind
 the scenes through the context object.
 
-Let's add a code editor
+However, you will notice that the buttons on the Preview look off. This is
+because there is no root node to set the styling and the theme variables.
+
+You can fix that with the `SandpackThemeProvider`:
+
+```jsx
+import {
+  SandpackProvider,
+  SandpackThemeProvider,
+  SandpackPreview,
+} from 'react-smooshpack';
+
+const CustomSandpack = () => (
+  <SandpackProvider>
+    <SandpackThemeProvider>
+      <SandpackPreview />
+    <SandpackThemeProvider/>
+  </SandpackProvider>
+);
+```
+
+The theme provider component will also render a wrapper div around your sandpack
+components. That div ensures the theme variables and styling is specific to this
+instance of sandpack.
+
+Let's add a code editor and introduce the `SandpackLayout` component.
 
 ```jsx
 import {
@@ -362,7 +387,7 @@ passing, which you can decide based on your specific needs.
 
 > `SandpackLayout` gives you the left-right split between two components and
 > also breaks the columns when the component is under 700px wide, so you have
-> some responsiveness built-in.
+> some responsiveness built-in. It also renders the SandpackThemeProvider.
 
 You can also bring other components in the mix: `SandpackCodeViewer`,
 `SandpackTranspiledCode`, `FileTabs`, `Navigator` and so on.

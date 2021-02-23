@@ -10,12 +10,9 @@ import {
   EditorState,
   SandpackPredefinedTemplate,
   SandpackSetup,
-  SandpackPredefinedTheme,
-  SandpackPartialTheme,
 } from '../types';
 import { getSandpackStateFromProps } from '../utils/sandpack-utils';
 import { generateRandomId } from '../utils/string-utils';
-import { ThemeConsumer, ThemeProvider } from './theme-context';
 
 const Sandpack = React.createContext<SandpackContext | null>(null);
 
@@ -28,14 +25,12 @@ export interface SandpackProviderState {
   error: Partial<IModuleError> | null;
   sandpackStatus: SandpackStatus;
   editorState: EditorState;
-  shouldRenderHiddenIframe: boolean;
+  renderHiddenIframe: boolean;
 }
 
 export interface SandpackProviderProps {
   template?: SandpackPredefinedTemplate;
   customSetup?: SandpackSetup;
-  theme?: SandpackPredefinedTheme | SandpackPartialTheme;
-  renderRootContainer?: boolean;
 
   // editor state (override values)
   activePath?: string;
@@ -61,12 +56,11 @@ class SandpackProvider extends React.PureComponent<
     recompileMode: 'delayed',
     recompileDelay: 500,
     autorun: true,
-    renderRootContainer: true,
   };
 
   manager: Manager | null;
   iframeRef: React.RefObject<HTMLIFrameElement>;
-  wrapperRef: React.RefObject<HTMLDivElement>;
+  lazyAnchorRef: React.RefObject<HTMLDivElement>;
   intersectionObserver?: IntersectionObserver;
   queuedListeners: Record<string, SandpackListener>;
   unsubscribeQueuedListeners: Record<string, Function>;
@@ -92,14 +86,14 @@ class SandpackProvider extends React.PureComponent<
       error: null,
       sandpackStatus: 'idle',
       editorState: 'pristine',
-      shouldRenderHiddenIframe: false,
+      renderHiddenIframe: false,
     };
 
     this.manager = null;
     this.queuedListeners = {};
     this.unsubscribeQueuedListeners = {};
     this.iframeRef = React.createRef<HTMLIFrameElement>();
-    this.wrapperRef = React.createRef<HTMLDivElement>();
+    this.lazyAnchorRef = React.createRef<HTMLDivElement>();
   }
 
   handleMessage = (m: any) => {
@@ -169,31 +163,30 @@ class SandpackProvider extends React.PureComponent<
   };
 
   componentDidMount() {
-    if (this.props.autorun) {
-      if (this.wrapperRef.current) {
-        const options = {
-          rootMargin: '600px 0px',
-          threshold: 0,
-        };
-
-        this.intersectionObserver = new IntersectionObserver(entries => {
-          if (
-            entries[0]?.intersectionRatio > 0 &&
-            this.state.sandpackStatus === 'idle'
-          ) {
-            this.runSandpack();
-          }
-        }, options);
-        this.intersectionObserver.observe(this.wrapperRef.current!);
-      } else {
-        this.runSandpack();
-      }
-    } else {
-      this.setState({ sandpackStatus: 'idle' });
+    if (!this.props.autorun) {
+      return;
     }
 
-    if (!this.iframeRef.current) {
-      this.setState({ shouldRenderHiddenIframe: true });
+    if (this.lazyAnchorRef.current) {
+      // If any component registerd a lazy anchor ref component, use that for the intersection observer
+      const options = {
+        rootMargin: '600px 0px',
+        threshold: 0,
+      };
+
+      this.intersectionObserver = new IntersectionObserver(entries => {
+        if (
+          entries[0]?.intersectionRatio > 0 &&
+          this.state.sandpackStatus === 'idle'
+        ) {
+          this.runSandpack();
+        }
+      }, options);
+
+      this.intersectionObserver.observe(this.lazyAnchorRef.current);
+    } else {
+      // else run the sandpack on the spot
+      this.runSandpack();
     }
   }
 
@@ -239,14 +232,16 @@ class SandpackProvider extends React.PureComponent<
   }
 
   runSandpack = () => {
-    if (!this.iframeRef.current) {
-      throw new Error(
-        'Sandpack iframe was not initialized. Check the render function of <SandpackProvider>'
-      );
+    const iframe = this.iframeRef.current;
+    if (!iframe) {
+      // If no component mounts an iframe, the context will render a hidden one, mount it and run sandpack on it
+      this.setState({ renderHiddenIframe: true }, this.runSandpack);
+
+      return;
     }
 
     this.manager = new Manager(
-      this.iframeRef.current,
+      iframe,
       {
         files: this.state.files,
         template: this.state.environment,
@@ -345,52 +340,30 @@ class SandpackProvider extends React.PureComponent<
       editorState,
       changeActiveFile: this.changeActiveFile,
       openFile: this.openFile,
-      iframeRef: this.iframeRef,
       updateCurrentFile: this.updateCurrentFile,
       runSandpack: this.runSandpack,
       dispatch: this.dispatchMessage,
       listen: this.addListener,
+      iframeRef: this.iframeRef,
+      lazyAnchorRef: this.lazyAnchorRef,
     };
   };
 
   render() {
-    const { children, theme, renderRootContainer } = this.props;
-    const { shouldRenderHiddenIframe } = this.state;
-
-    if (!renderRootContainer) {
-      return (
-        <Sandpack.Provider value={this._getSandpackState()}>
-          {shouldRenderHiddenIframe && (
-            <iframe
-              title="Sandpack"
-              ref={this.iframeRef}
-              style={{ display: 'none' }}
-            />
-          )}
-          {children}
-        </Sandpack.Provider>
-      );
-    }
+    const { children } = this.props;
+    const { renderHiddenIframe } = this.state;
 
     return (
-      <ThemeProvider theme={theme}>
-        <Sandpack.Provider value={this._getSandpackState()}>
-          <ThemeConsumer>
-            {({ id }) => (
-              <div ref={this.wrapperRef} className={`sp-wrapper ${id}`}>
-                {shouldRenderHiddenIframe && (
-                  <iframe
-                    title="Sandpack"
-                    ref={this.iframeRef}
-                    style={{ display: 'none' }}
-                  />
-                )}
-                {children}
-              </div>
-            )}
-          </ThemeConsumer>
-        </Sandpack.Provider>
-      </ThemeProvider>
+      <Sandpack.Provider value={this._getSandpackState()}>
+        {renderHiddenIframe && (
+          <iframe
+            title="Sandpack"
+            ref={this.iframeRef}
+            style={{ display: 'none' }}
+          />
+        )}
+        {children}
+      </Sandpack.Provider>
     );
   }
 }

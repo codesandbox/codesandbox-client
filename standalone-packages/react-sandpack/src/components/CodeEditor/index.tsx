@@ -42,23 +42,23 @@ export const SandpackCodeEditor = ({
           showLineNumbers={showLineNumbers}
           wrapContent={wrapContent}
         />
-      </div>
 
-      {status === 'idle' && (
-        <button
-          type="button"
-          className="sp-button"
-          style={{
-            position: 'absolute',
-            bottom: 'var(--sp-space-2)',
-            right: 'var(--sp-space-2)',
-          }}
-          onClick={() => runSandpack()}
-        >
-          <RunIcon />
-          Run
-        </button>
-      )}
+        {status === 'idle' && (
+          <button
+            type="button"
+            className="sp-button"
+            style={{
+              position: 'absolute',
+              bottom: 'var(--sp-space-2)',
+              right: 'var(--sp-space-2)',
+            }}
+            onClick={() => runSandpack()}
+          >
+            <RunIcon />
+            Run
+          </button>
+        )}
+      </div>
     </div>
   );
 };

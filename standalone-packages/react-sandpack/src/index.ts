@@ -18,5 +18,6 @@ export * from './hooks/useSandpackTheme';
 export * from './hooks/useTranspiledCode';
 
 export * from './contexts/sandpack-context';
+export * from './contexts/theme-context';
 export * from './themes';
 export * from './types';

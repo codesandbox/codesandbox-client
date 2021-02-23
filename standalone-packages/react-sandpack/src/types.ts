@@ -6,7 +6,6 @@ export type SandpackContext = SandpackState & {
 };
 
 export interface SandpackState {
-  iframeRef: React.RefObject<HTMLIFrameElement>;
   bundlerState: IManagerState | undefined;
   openPaths: string[];
   activePath: string;
@@ -18,6 +17,8 @@ export interface SandpackState {
   updateCurrentFile: (newCode: string) => void;
   openFile: (path: string) => void;
   changeActiveFile: (path: string) => void;
+  iframeRef: React.RefObject<HTMLIFrameElement>;
+  lazyAnchorRef: React.RefObject<HTMLDivElement>;
 }
 
 export type SandpackStatus = 'idle' | 'running';

@@ -49,10 +49,9 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
     <SandpackProvider
       template={template}
       customSetup={userInput}
-      theme={theme}
       bundlerURL={options?.bundlerUrl}
     >
-      <SandpackLayout style={customStyle}>
+      <SandpackLayout style={customStyle} theme={theme}>
         <SandpackPreview showNavigator={options?.showNavigator} />
       </SandpackLayout>
     </SandpackProvider>

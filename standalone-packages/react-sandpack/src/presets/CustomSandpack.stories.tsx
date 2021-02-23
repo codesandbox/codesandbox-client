@@ -3,6 +3,7 @@ import React from 'react';
 import {
   SandpackPreview,
   SandpackProvider,
+  SandpackThemeProvider,
   OpenInCodeSandboxButton,
   RefreshButton,
   SandpackLayout,
@@ -20,8 +21,8 @@ export default {
 };
 
 export const UsingSandpackLayout = () => (
-  <SandpackProvider template="react" theme="sp-dark">
-    <SandpackLayout>
+  <SandpackProvider template="react">
+    <SandpackLayout theme="sp-dark">
       <SandpackTranspiledCode />
       <SandpackCodeViewer />
     </SandpackLayout>
@@ -29,36 +30,38 @@ export const UsingSandpackLayout = () => (
 );
 
 export const UsingVisualElements = () => (
-  <SandpackProvider template="react" theme="sp-dark" activePath="/App.js">
-    <SandpackCodeEditor
-      customStyle={{
-        width: 500,
-        height: 300,
-      }}
-    />
+  <SandpackProvider template="react" activePath="/App.js">
+    <SandpackThemeProvider theme="sp-dark">
+      <SandpackCodeEditor
+        customStyle={{
+          width: 500,
+          height: 300,
+        }}
+      />
 
-    <SandpackPreview
-      showRefreshButton={false}
-      showOpenInCodeSandbox={false}
-      customStyle={{
-        border: '1px solid red',
-        marginBottom: 4,
-        marginTop: 4,
-        width: 500,
-        height: 300,
-      }}
-    />
+      <SandpackPreview
+        showRefreshButton={false}
+        showOpenInCodeSandbox={false}
+        customStyle={{
+          border: '1px solid red',
+          marginBottom: 4,
+          marginTop: 4,
+          width: 500,
+          height: 300,
+        }}
+      />
 
-    <div
-      style={{
-        display: 'flex',
-        width: 500,
-        justifyContent: 'space-between',
-      }}
-    >
-      <OpenInCodeSandboxButton />
-      <RefreshButton />
-    </div>
+      <div
+        style={{
+          display: 'flex',
+          width: 500,
+          justifyContent: 'space-between',
+        }}
+      >
+        <OpenInCodeSandboxButton />
+        <RefreshButton />
+      </div>
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
 
@@ -102,26 +105,28 @@ const CustomCodeEditor = () => {
 
 export const UsingHooks = () => (
   <SandpackProvider template="react">
-    <CustomCodeEditor />
+    <SandpackThemeProvider>
+      <CustomCodeEditor />
 
-    <SandpackPreview
-      showRefreshButton={false}
-      showOpenInCodeSandbox={false}
-      customStyle={{ border: '1px solid red', width: 400, height: 300 }}
-    />
+      <SandpackPreview
+        showRefreshButton={false}
+        showOpenInCodeSandbox={false}
+        customStyle={{ border: '1px solid red', width: 400, height: 300 }}
+      />
 
-    <div
-      style={{
-        display: 'flex',
-        width: 400,
-        margin: '8px 0',
-        justifyContent: 'space-between',
-      }}
-    >
-      <CustomRefreshButton />
-      <CustomOpenInCSB />
-    </div>
+      <div
+        style={{
+          display: 'flex',
+          width: 400,
+          margin: '8px 0',
+          justifyContent: 'space-between',
+        }}
+      >
+        <CustomRefreshButton />
+        <CustomOpenInCSB />
+      </div>
 
-    <SandpackTranspiledCode customStyle={{ width: 400, height: 300 }} />
+      <SandpackTranspiledCode customStyle={{ width: 400, height: 300 }} />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
