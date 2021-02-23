@@ -137,7 +137,7 @@ const Entry: React.FC<IEntryProps> = ({
     if (e.key === 'Enter') {
       if (setCurrentModule) {
         setCurrentModuleAction();
-      } else {
+      } else if (typeof onClick === 'function') {
         onClick();
       }
     }
