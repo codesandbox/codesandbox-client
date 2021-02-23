@@ -1614,6 +1614,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "NullVoxPopuli",
+      "name": "NullVoxPopuli",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/199018?v=4",
+      "profile": "http://nullvoxpopuli.com",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
