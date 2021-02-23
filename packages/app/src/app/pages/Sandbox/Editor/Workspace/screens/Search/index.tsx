@@ -220,11 +220,10 @@ export const Search = () => {
           <Element
             padding={2}
             css={css({
-              borderWidth: 1,
+              borderWidth: 0,
+              borderBottomWidth: 1,
               borderStyle: 'solid',
               borderColor: 'sideBar.border',
-              borderLeftWidth: 0,
-              borderRightWidth: 0,
             })}
           >
             <Text block align="center">
