@@ -64,7 +64,11 @@ export const teamInvite = (teamId?: string | null) =>
 export const createWorkspace = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/new`, teamId);
 
-export const search = (query: string, teamId?: string | null) => {
+export const search = (
+  query: string,
+  teamId?: string | null,
+  global?: boolean
+) => {
   let searchUrl = appendTeamIdQueryParam(
     `${DASHBOARD_URL_PREFIX}/search`,
     teamId
@@ -77,6 +81,8 @@ export const search = (query: string, teamId?: string | null) => {
   }
 
   searchUrl += `query=${query}`;
+
+  if (global) searchUrl += `&global=${global}`;
 
   return searchUrl;
 };

@@ -12,6 +12,9 @@ import {
   Link,
   Icon,
   IconButton,
+  Switch,
+  List,
+  ListAction,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -24,7 +27,12 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState(
+      new URLSearchParams(window.location.search).get('query') || ''
+    );
+    const [global, setGlobal] = useState(
+      new URLSearchParams(window.location.search).has('global')
+    );
 
     const {
       actions: { openCreateSandboxModal },
@@ -33,12 +41,8 @@ export const Header: React.FC<HeaderProps> = React.memo(
 
     const history = useHistory();
 
-    const searchQuery = new URLSearchParams(window.location.search).get(
-      'query'
-    );
-
     const search = (query: string) =>
-      history.push(dashboardUrls.search(query, activeTeam));
+      history.push(dashboardUrls.search(query, activeTeam, global));
 
     const [debouncedSearch] = useDebouncedCallback(search, 100);
 
@@ -49,6 +53,16 @@ export const Header: React.FC<HeaderProps> = React.memo(
         history.push(dashboardUrls.allSandboxes('/', activeTeam));
       if (e.target.value.length >= 2) debouncedSearch(e.target.value);
     };
+
+    const toggleGlobal = () => {
+      const newValue = !global;
+      setGlobal(newValue);
+      history.push(dashboardUrls.search(value, activeTeam, newValue));
+    };
+
+    const [globalSwitchVisible, setGlobalSwitchVisibility] = React.useState(
+      false
+    );
 
     return (
       <Stack
@@ -85,13 +99,39 @@ export const Header: React.FC<HeaderProps> = React.memo(
           onClick={onSidebarToggle}
           css={css({ display: ['block', 'block', 'none'] })}
         />
-        <Input
-          type="text"
-          value={value || searchQuery || ''}
-          onChange={onChange}
-          placeholder="Search all sandboxes"
-          css={css({ maxWidth: 480, display: ['none', 'none', 'block'] })}
-        />
+        <Stack
+          css={css({
+            flexGrow: 1,
+            maxWidth: 480,
+            display: ['none', 'none', 'block'],
+            position: 'relative',
+          })}
+        >
+          <Input
+            type="text"
+            value={value}
+            onChange={onChange}
+            placeholder="Search all sandboxes"
+          />
+          <List
+            css={css({
+              position: 'absolute',
+              width: '100%',
+              zIndex: 4,
+              backgroundColor: 'menuList.background',
+              borderRadius: 3,
+              boxShadow: 2,
+              overflow: 'hidden',
+              border: '1px solid',
+              borderColor: 'menuList.border',
+              fontSize: 3,
+            })}
+          >
+            <ListAction>in your workspace</ListAction>
+            <ListAction>all of CodeSandbox</ListAction>
+          </List>
+        </Stack>
+
         <Stack align="center" gap={2}>
           <Button
             variant="primary"

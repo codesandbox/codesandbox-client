@@ -13,6 +13,7 @@ import { AlwaysOn } from './routes/AlwaysOn';
 import { All } from './routes/All';
 import { Repositories } from './routes/Repositories';
 import { Search } from './routes/Search';
+import { GlobalSearch } from './routes/GlobalSearch';
 import { Settings } from './routes/Settings';
 import { NewTeam } from './routes/Settings/NewTeam';
 
@@ -54,6 +55,7 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/recent" component={Recent} />
         <Route path="/dashboard/deleted" component={Deleted} />
         <Route path="/dashboard/search" component={Search} />
+        <Route path="/dashboard/global-search" component={GlobalSearch} />
         <Route path="/dashboard/settings" component={Settings} />
         {/* old dashboard - redirects: */}
         <Route path="/dashboard/trash" component={Deleted} />

@@ -5,7 +5,7 @@ export const getTemplateIcon = sandbox => {
 
   const { UserIcon } = commonTemplateIcon(
     sandbox.forkedTemplate?.iconUrl,
-    sandbox.source.template
+    sandbox.source?.template
   );
 
   return UserIcon;
