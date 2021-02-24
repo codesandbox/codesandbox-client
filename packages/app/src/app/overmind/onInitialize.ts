@@ -67,17 +67,16 @@ export const onInitialize: OnInitialize = async (
       return state.user?.integrations.zeit?.token ?? null;
     },
   });
-  const token = await provideJwtToken();
   effects.netlify.initialize({
     getUserId() {
       return state.user?.id ?? null;
     },
     provideJwtToken() {
       if (process.env.LOCAL_SERVER || process.env.STAGING) {
-        return localStorage.getItem('devJwt');
+        return Promise.resolve(localStorage.getItem('devJwt'));
       }
 
-      return token;
+      return provideJwtToken();
     },
   });
 

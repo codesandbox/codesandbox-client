@@ -7,15 +7,16 @@ const NetlifyBaseURL = 'https://builder.csbops.io/netlify/site';
 
 type Options = {
   getUserId(): string | null;
-  provideJwtToken: () => string | null;
+  provideJwtToken: () => Promise<string>;
 };
 
 export default (() => {
   let _options: Options;
-  const createHeaders = (provideJwt: () => string | null) =>
-    provideJwt()
+  let _jwtToken: string | null;
+  const createHeaders = (jwt: string | null) =>
+    jwt
       ? {
-          Authorization: `Bearer ${provideJwt()}`,
+          Authorization: `Bearer ${jwt}`,
         }
       : {};
 
@@ -23,36 +24,58 @@ export default (() => {
     initialize(options: Options) {
       _options = options;
     },
+    async provideJwtCached() {
+      if (!_jwtToken) {
+        try {
+          const token = await _options.provideJwtToken();
+          setTimeout(() => {
+            // Token expires after 10 seconds, for safety we actually cache the token
+            // for 5 seconds
+            _jwtToken = undefined;
+          }, 5000);
+          return token;
+        } catch (e) {
+          _jwtToken = undefined;
+          return Promise.reject(e);
+        }
+      }
+
+      return _jwtToken;
+    },
 
     async getLogs(id: string) {
       const url = `${NetlifyBaseURL}/${id}/status`;
+      const token = await this.provideJwtCached();
 
       const { data } = await axios.get(url, {
-        headers: createHeaders(_options.provideJwtToken),
+        headers: createHeaders(token),
       });
 
       return data;
     },
     async claimSite(sandboxId: string) {
       const userId = _options.getUserId();
+      const token = await this.provideJwtCached();
       const sessionId = `${userId}-${sandboxId}`;
 
       const { data } = await axios.post(
         `${NetlifyBaseURL}/${sandboxId}/claim`,
         { sessionId },
-        { headers: createHeaders(_options.provideJwtToken) }
+        { headers: createHeaders(token) }
       );
 
       return data.claim;
     },
     async getDeployments(sandboxId: string): Promise<NetlifySite> {
+      const token = await this.provideJwtCached();
       const response = await axios.get(`${NetlifyBaseURL}/${sandboxId}`, {
-        headers: createHeaders(_options.provideJwtToken),
+        headers: createHeaders(token),
       });
 
       return response.data;
     },
     async deploy(sandbox: Sandbox): Promise<string> {
+      const token = await this.provideJwtCached();
       const userId = _options.getUserId();
       const template = getTemplate(sandbox.template);
       const buildCommand = (name: string) => {
@@ -74,7 +97,7 @@ export default (() => {
       try {
         const { data } = await axios.request({
           url: `${NetlifyBaseURL}/${sandbox.id}`,
-          headers: createHeaders(_options.provideJwtToken),
+          headers: createHeaders(token),
         });
 
         id = data.site_id;
@@ -85,7 +108,7 @@ export default (() => {
             name: `csb-${sandbox.id}`,
             sessionId: `${userId}-${sandbox.id}`,
           },
-          { headers: createHeaders(_options.provideJwtToken) }
+          { headers: createHeaders(token) }
         );
         id = data.site_id;
       }
@@ -96,7 +119,7 @@ export default (() => {
           dist: buildConfig.publish || template.distDir,
           buildCommand: buildCommandFromConfig || buildCommand(template.name),
         },
-        { headers: createHeaders(_options.provideJwtToken) }
+        { headers: createHeaders(token) }
       );
 
       return id;
