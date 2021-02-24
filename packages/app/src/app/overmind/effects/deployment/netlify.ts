@@ -7,13 +7,13 @@ const NetlifyBaseURL = 'https://builder.csbops.io/netlify/site';
 
 type Options = {
   getUserId(): string | null;
-  provideJwtToken: () => Promise<string>;
+  provideJwtToken: () => any;
 };
 
 export default (() => {
   let _options: Options;
-  let _jwtToken: string | null;
-  const createHeaders = (jwt: string | null) =>
+  let _jwtToken: string | undefined;
+  const createHeaders = (jwt: string) =>
     jwt
       ? {
           Authorization: `Bearer ${jwt}`,
