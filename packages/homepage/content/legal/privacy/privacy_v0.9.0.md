@@ -1,7 +1,7 @@
 ---
 title: Privacy Policy
 lastEdited: 2020-04-16
-version:0.9.0
+version: 0.9.0
 ---
 
 # Privacy Policy
