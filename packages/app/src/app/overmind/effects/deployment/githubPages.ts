@@ -5,7 +5,6 @@ import axios from 'axios';
 const GHPagesBaseUrl = 'https://builder.csbops.io/gh-pages/';
 
 type Options = {
-  getEmail: () => string;
   provideJwtToken: () => Promise<string>;
 };
 
@@ -55,7 +54,6 @@ export default (() => {
 
     async deploy(sandbox: Sandbox): Promise<any> {
       const token = await this.provideJwtCached();
-      const email = _options.getEmail();
       const template = getTemplate(sandbox.template);
       const buildCommand = (name: string) => {
         if (name === 'styleguidist') {
@@ -73,7 +71,6 @@ export default (() => {
         {
           dist: template.distDir,
           buildCommand: buildCommand(template.name),
-          username: email,
         },
         { headers: createHeaders(token) }
       );

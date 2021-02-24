@@ -81,9 +81,6 @@ export const onInitialize: OnInitialize = async (
   });
 
   effects.githubPages.initialize({
-    getEmail() {
-      return state.user?.integrations.github?.email ?? null;
-    },
     provideJwtToken() {
       if (process.env.LOCAL_SERVER || process.env.STAGING) {
         return Promise.resolve(localStorage.getItem('devJwt'));
