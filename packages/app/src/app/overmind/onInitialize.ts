@@ -5,6 +5,7 @@ export const onInitialize: OnInitialize = async (
   overmindInstance
 ) => {
   const provideJwtToken = () => effects.api.getJWTToken();
+
   state.isFirstVisit = Boolean(
     !state.hasLogIn && !effects.browser.storage.get('hasVisited')
   );
@@ -34,7 +35,6 @@ export const onInitialize: OnInitialize = async (
       if (process.env.LOCAL_SERVER || process.env.STAGING) {
         return localStorage.getItem('devJwt');
       }
-
       return null;
     },
   });
@@ -67,10 +67,16 @@ export const onInitialize: OnInitialize = async (
       return state.user?.integrations.zeit?.token ?? null;
     },
   });
-
   effects.netlify.initialize({
     getUserId() {
       return state.user?.id ?? null;
+    },
+    provideJwtToken() {
+      if (process.env.LOCAL_SERVER || process.env.STAGING) {
+        return Promise.resolve(localStorage.getItem('devJwt'));
+      }
+
+      return provideJwtToken();
     },
   });
 
