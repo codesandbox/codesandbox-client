@@ -15,6 +15,7 @@ export { default as analytics } from './analytics';
 export { default as notificationToast } from './notificationToast';
 export { default as vscode } from './vscode';
 export { default as vercel } from './deployment/vercel';
+export { default as githubPages } from './deployment/githubPages';
 export { default as netlify } from './deployment/netlify';
 export { default as prettyfier } from './prettyfier';
 export { default as zip } from './zip';

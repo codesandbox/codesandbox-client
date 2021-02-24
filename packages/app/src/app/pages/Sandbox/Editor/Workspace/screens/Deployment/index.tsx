@@ -7,6 +7,7 @@ import { Netlify } from './Netlify';
 import { NotLoggedIn } from './NotLoggedIn';
 import { NotOwner } from './NotOwner';
 import { Vercel } from './Vercel';
+import { GithubPages } from './GithubPages';
 
 export const Deployment: FunctionComponent = () => {
   const {
@@ -40,13 +41,14 @@ export const Deployment: FunctionComponent = () => {
       <Element paddingX={2}>
         <Text block marginBottom={6} variant="muted">
           You can deploy a production version of your sandbox using one of our
-          supported providers - Netlify or Vercel.
+          supported providers.
         </Text>
 
         <Stack direction="vertical" gap={5}>
           <Vercel />
 
           <Netlify />
+          <GithubPages />
         </Stack>
       </Element>
     </Collapsible>

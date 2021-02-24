@@ -223,3 +223,33 @@ export const aliasDeployment: AsyncAction<string> = async (
     });
   }
 };
+
+export const deployWithGitHubPages: AsyncAction = async ({
+  effects,
+  actions,
+  state,
+}) => {
+  const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+
+  state.deployment.deploying = true;
+
+  try {
+    await effects.githubPages.deploy(sandbox);
+    state.deployment.deploying = false;
+
+    state.deployment.building = true;
+    await effects.githubPages.getLogs(sandbox.id);
+    effects.notificationToast.success('Sandbox Deploying');
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'An error occurred when deploying your Netlify site',
+      error,
+    });
+  }
+  state.deployment.deploying = false;
+  state.deployment.building = false;
+};
