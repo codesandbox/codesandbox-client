@@ -2,7 +2,7 @@ import getTemplate from '@codesandbox/common/lib/templates';
 import { Sandbox } from '@codesandbox/common/lib/types';
 import axios from 'axios';
 
-const GHPagesBaseUrl = 'https://builder.csbops.io/gh-pages/';
+const GHPagesBaseUrl = 'https://builder.csbops.io/gh-pages';
 
 type Options = {
   provideJwtToken: () => Promise<string>;
