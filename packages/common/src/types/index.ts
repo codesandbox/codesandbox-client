@@ -138,6 +138,7 @@ export type CurrentUser = {
     } | null;
     github: {
       email: string;
+      token?: string;
     } | null;
   };
   sendSurvey: boolean;
