@@ -29,7 +29,7 @@ export const GithubPages: FunctionComponent = () => {
 
   return (
     <Integration icon={GitHubIcon} title="GitHub Pages">
-      {github && github.token ? (
+      {github ? (
         <Element marginX={2}>
           <Text variant="muted" block marginBottom={4}>
             Deploy your sandbox to{' '}
