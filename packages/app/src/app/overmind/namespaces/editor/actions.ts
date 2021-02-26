@@ -135,7 +135,8 @@ export const addNpmDependency: AsyncAction<{
             currentSandbox.id,
             name
           );
-          const absoluteVersion = manifest['dist-tags'][newVersion];
+          const distTags = manifest['dist-tags'];
+          const absoluteVersion = distTags ? distTags[newVersion] : null;
 
           if (absoluteVersion) {
             newVersion = absoluteVersion;
