@@ -21,14 +21,40 @@ import { useOvermind } from 'app/overmind';
 type Props = {
   setEditing: (editing: boolean) => void;
 };
+
+const readDataURL = (file: File): Promise<string | ArrayBuffer> =>
+  new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      resolve(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+
+type parsedFiles = { [k: string]: { dataURI: string; type: string } };
+const getFile = async (file: File): Promise<parsedFiles> => {
+  const returnedFiles = {};
+  const dataURI = await readDataURL(file);
+  // @ts-ignore
+  const fileName = file.path || file.name;
+
+  returnedFiles[`thumbnail.${fileName.split('.').pop()}`] = {
+    dataURI,
+    type: file.type,
+  };
+
+  return returnedFiles;
+};
+
 export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
   const {
     actions: {
+      files: { thumbnailUploaded },
       workspace: { sandboxInfoUpdated, valueChanged, tagsChanged2 },
     },
     state: {
       editor: {
-        currentSandbox: { tags },
+        currentSandbox: { tags, modules },
       },
       workspace: {
         project: { title, description },
@@ -36,7 +62,7 @@ export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
     },
   } = useOvermind();
   const [newTags, setNewTags] = useState(tags || []);
-
+  const thumbnailExists = modules.find(m => m.path.includes('/thumbnail.'));
   const onTitleChange = ({ target }: ChangeEvent<HTMLInputElement>) =>
     valueChanged({ field: 'title', value: target.value });
   const onDescriptionChange = ({ target }: ChangeEvent<HTMLTextAreaElement>) =>
@@ -56,6 +82,23 @@ export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
     sandboxInfoUpdated();
     tagsChanged2(newTags);
     setEditing(false);
+  };
+
+  const uploadThumbnail = () => {
+    const fileSelector = document.createElement('input');
+    fileSelector.setAttribute('type', 'file');
+    fileSelector.setAttribute('accept', 'image/x-png,image/gif,image/jpeg');
+    fileSelector.onchange = async event => {
+      const target = event.target as HTMLInputElement;
+      const files = await getFile(target.files[0]);
+
+      thumbnailUploaded({
+        files,
+        directoryShortid: null,
+      });
+    };
+
+    fileSelector.click();
   };
 
   return (
@@ -98,6 +141,24 @@ export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
         </FormField>
 
         <TagInput onChange={setNewTags} value={newTags} />
+        <button
+          onClick={uploadThumbnail}
+          type="button"
+          css={css({
+            marginTop: 6,
+            background: 'transparent',
+            borderWidth: '1px',
+            borderStyle: 'dashed',
+            borderColor: 'sideBar.border',
+            color: 'mutedForeground',
+            height: 54,
+            padding: 0,
+            outline: 'none',
+            cursor: 'pointer',
+          })}
+        >
+          {thumbnailExists ? 'Replace Cover' : '+ Add cover'}
+        </button>
       </Stack>
 
       <Stack justify="space-between" paddingX={2}>

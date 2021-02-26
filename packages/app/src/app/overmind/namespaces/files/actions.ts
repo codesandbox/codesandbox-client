@@ -578,6 +578,62 @@ export const filesUploaded: AsyncAction<{
   'write_code'
 );
 
+export const thumbnailUploaded: AsyncAction<{
+  files: { [k: string]: { dataURI: string; type: string } };
+  directoryShortid: string;
+}> = withOwnedSandbox(
+  async ({ state, effects, actions }, { files, directoryShortid }) => {
+    const sandbox = state.editor.currentSandbox;
+    if (!sandbox) {
+      return;
+    }
+    const modal = 'uploading';
+    effects.analytics.track('Open Modal', { modal });
+    // What message?
+    // state.currentModalMessage = message;
+    state.currentModal = modal;
+    const thumb = sandbox.modules.find(m => m.path.includes('/thumbnail.'));
+    if (thumb) {
+      await actions.files.moduleDeleted({ moduleShortid: thumb.shortid });
+    }
+
+    try {
+      const { modules, directories } = await actions.files.internal.uploadFiles(
+        {
+          files,
+          directoryShortid,
+        }
+      );
+
+      actions.files.massCreateModules({
+        modules,
+        directories,
+        directoryShortid,
+      });
+
+      effects.executor.updateFiles(sandbox);
+      actions.git.updateGitChanges();
+    } catch (error) {
+      if (error.message.indexOf('413') !== -1) {
+        actions.internal.handleError({
+          message: `The uploaded file is bigger than 7MB, contact hello@codesandbox.io if you want to raise this limit`,
+          error,
+          hideErrorMessage: true,
+        });
+      } else {
+        actions.internal.handleError({
+          message: 'Unable to upload files',
+          error,
+        });
+      }
+    }
+
+    actions.internal.closeModals(false);
+  },
+  async () => {},
+  'write_code'
+);
+
 export const massCreateModules: AsyncAction<{
   modules: any;
   directories: any;
