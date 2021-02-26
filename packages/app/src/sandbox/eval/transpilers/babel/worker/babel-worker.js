@@ -3,7 +3,6 @@ import { flatten } from 'lodash-es';
 import refreshBabelPlugin from 'react-refresh/babel';
 import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
 import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
-import * as envPreset from '@babel/preset-env';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
@@ -659,6 +658,7 @@ self.addEventListener('message', async event => {
       }
 
       if (version === 7) {
+        const envPreset = await import('@babel/preset-env');
         // Hardcode, since we want to override env
         Babel.availablePresets.env = envPreset;
       }

@@ -149,7 +149,7 @@ export const reactPreset = babelConfig => {
         }
       },
       preEvaluate: async manager => {
-        if (manager.isFirstLoad) {
+        if (manager.isFirstLoad && !process.env.SANDPACK) {
           await initializeReactDevTools();
         }
 
