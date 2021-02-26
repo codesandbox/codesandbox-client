@@ -49,7 +49,7 @@ const getFile = async (file: File): Promise<parsedFiles> => {
 export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
   const {
     actions: {
-      files: { thumbnailUploaded },
+      files: { thumbnailToBeCropped },
       workspace: { sandboxInfoUpdated, valueChanged, tagsChanged2 },
     },
     state: {
@@ -90,11 +90,10 @@ export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
     fileSelector.setAttribute('accept', 'image/x-png,image/gif,image/jpeg');
     fileSelector.onchange = async event => {
       const target = event.target as HTMLInputElement;
-      const files = await getFile(target.files[0]);
+      const file = await getFile(target.files[0]);
 
-      thumbnailUploaded({
-        files,
-        directoryShortid: null,
+      thumbnailToBeCropped({
+        file,
       });
     };
 
