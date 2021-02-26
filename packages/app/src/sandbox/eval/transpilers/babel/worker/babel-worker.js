@@ -6,6 +6,7 @@ import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
+import * as envPreset from '@babel/preset-env';
 import * as resolve from 'resolve';
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
@@ -14,6 +15,8 @@ import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
 import renameImport from './plugins/babel-plugin-rename-imports';
+
+import { BABEL7_VERSION } from '../babel-version';
 
 import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
@@ -483,8 +486,12 @@ try {
 
   self.importScripts(
     process.env.NODE_ENV === 'development'
-      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.12.12.js`
-      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.12.12.min.js`
+      ? `${
+          process.env.CODESANDBOX_HOST || ''
+        }/static/js/babel.${BABEL7_VERSION}.js`
+      : `${
+          process.env.CODESANDBOX_HOST || ''
+        }/static/js/babel.${BABEL7_VERSION}.min.js`
   );
 
   remapBabelHack();
@@ -658,7 +665,6 @@ self.addEventListener('message', async event => {
       }
 
       if (version === 7) {
-        const envPreset = await import('@babel/preset-env');
         // Hardcode, since we want to override env
         Babel.availablePresets.env = envPreset;
       }
