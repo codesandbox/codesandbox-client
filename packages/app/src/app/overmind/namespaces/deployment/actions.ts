@@ -253,3 +253,12 @@ export const deployWithGitHubPages: AsyncAction = async ({
   state.deployment.deploying = false;
   state.deployment.building = false;
 };
+
+export const fetchGithubSite: AsyncAction = async ({ effects, state }) => {
+  const sandbox = state.editor.currentSandbox;
+  try {
+    const site = await effects.githubPages.getSite(sandbox.id);
+    state.deployment.githubSite = site || true;
+    // eslint-disable-next-line no-empty
+  } catch {}
+};

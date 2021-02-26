@@ -41,6 +41,17 @@ export default (() => {
       return _jwtToken;
     },
 
+    async getSite(id: string) {
+      const url = `${GHPagesBaseUrl}/${id}`;
+      const token = await this.provideJwtCached();
+
+      const { data } = await axios.get(url, {
+        headers: createHeaders(token),
+      });
+
+      return data;
+    },
+
     async getLogs(id: string) {
       const url = `${GHPagesBaseUrl}/${id}/status`;
       const token = await this.provideJwtCached();

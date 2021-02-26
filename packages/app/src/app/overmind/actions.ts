@@ -77,6 +77,7 @@ export const connectionChanged: Action<boolean> = ({ state }, connected) => {
 };
 
 type ModalName =
+  | 'githubPagesLogs'
   | 'deleteWorkspace'
   | 'deleteDeployment'
   | 'deleteSandbox'

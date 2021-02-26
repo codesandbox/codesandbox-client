@@ -535,6 +535,7 @@ export const filesUploaded: AsyncAction<{
     if (!sandbox) {
       return;
     }
+
     const modal = 'uploading';
     effects.analytics.track('Open Modal', { modal });
     // What message?
