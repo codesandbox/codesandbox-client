@@ -19,7 +19,6 @@ function preloadJs(url) {
 }
 
 preloadJs(`/static/js/babel.${BABEL7_VERSION}.min.js`);
-preloadJs(`/static/browserfs12/browserfs.min.js`);
 
 const WORKERS_TO_LOAD = process.env.SANDPACK ? 1 : 3;
 window.babelworkers = [];
