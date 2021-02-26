@@ -146,6 +146,16 @@ export const reactPreset = babelConfig => {
           preset.registerTranspiler(() => true, [
             { transpiler: rawTranspiler },
           ]);
+
+          // Try to preload jsx-runtime
+          manager
+            .resolveTranspiledModuleAsync('react/jsx-runtime')
+            .then(x => {
+              x.transpile(manager);
+            })
+            .catch(() => {
+              /* Ignore */
+            });
         }
       },
       preEvaluate: async manager => {
