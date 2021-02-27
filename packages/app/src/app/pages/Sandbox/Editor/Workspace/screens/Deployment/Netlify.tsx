@@ -22,13 +22,7 @@ export const Netlify: FunctionComponent = () => {
     modalOpened,
   } = useActions();
   const {
-    deployment: {
-      building,
-      deploying,
-      netlifyClaimUrl,
-      netlifyLogs,
-      netlifySite,
-    },
+    deployment: { building, deploying, netlifyClaimUrl, netlifySite },
     editor: { currentSandbox },
   } = useAppState();
 
@@ -67,12 +61,6 @@ export const Netlify: FunctionComponent = () => {
               <Text weight="bold">{netlifySite.name}</Text>
             </ListItem>
 
-            {building && !netlifyLogs ? (
-              <ListItem>
-                <Text variant="muted">Building</Text>
-              </ListItem>
-            ) : null}
-
             {netlifySite.url ? (
               <ListAction
                 onClick={() => window.open(netlifySite.url, '_blank')}
@@ -95,14 +83,12 @@ export const Netlify: FunctionComponent = () => {
               </ListAction>
             ) : null}
 
-            {netlifyLogs ? (
-              <ListAction onClick={() => modalOpened({ modal: 'netlifyLogs' })}>
-                <Element marginRight={2}>
-                  <FileIcon />
-                </Element>{' '}
-                View Logs
-              </ListAction>
-            ) : null}
+            <ListAction onClick={() => modalOpened({ modal: 'netlifyLogs' })}>
+              <Element marginRight={2}>
+                <FileIcon />
+              </Element>{' '}
+              View Logs
+            </ListAction>
           </List>
         )}
       </Integration>

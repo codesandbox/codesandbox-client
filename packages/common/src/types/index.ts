@@ -387,7 +387,7 @@ type PackageVersionInfo = {
 export type NpmManifest = {
   name: string;
   description: string;
-  'dist-tags': {
+  'dist-tags'?: {
     [tag: string]: string;
   };
   versions: {

@@ -78,10 +78,7 @@ export const persistCursorToUrl = debounce(
     // and all the browsers do too.
     if (newUrl) {
       effects.router.replace(
-        newUrl
-          .toString()
-          .replace(/%2F/g, '/')
-          .replace('%3A', ':')
+        newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
       );
     }
   },
@@ -154,7 +151,8 @@ export const addNpmDependency = withOwnedSandbox(
             currentSandbox.id,
             name
           );
-          const absoluteVersion = manifest['dist-tags'][newVersion];
+          const distTags = manifest['dist-tags'];
+          const absoluteVersion = distTags ? distTags[newVersion] : null;
 
           if (absoluteVersion) {
             newVersion = absoluteVersion;

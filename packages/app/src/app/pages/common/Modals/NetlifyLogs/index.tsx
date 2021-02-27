@@ -1,29 +1,36 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { Element, Button, Stack } from '@codesandbox/components';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import css from '@styled-system/css';
 import { Item } from './elements';
 import { Alert } from '../Common/Alert';
 
 export const NetlifyLogs: FunctionComponent = () => {
+  const effects = useEffects();
   const { modalClosed } = useActions();
-  const { netlifyLogs: netlifyLogsUrl } = useAppState().deployment;
+  const {
+    editor: { currentSandbox },
+  } = useAppState();
   const [logs, setLogs] = useState(['Waiting for build to start']);
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const { logs: fetchedLogs } = await fetch(netlifyLogsUrl).then(data =>
-        data.json()
+      const { logs: fetchedLogs, status } = await effects.netlify.getLogs(
+        currentSandbox.id
       );
 
       if (fetchedLogs.length > 0) {
         setLogs(fetchedLogs);
       }
+
+      if (status === 'DONE') {
+        clearInterval(interval);
+      }
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [netlifyLogsUrl]);
+  }, []);
 
   return (
     <Alert
