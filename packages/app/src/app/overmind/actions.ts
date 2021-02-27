@@ -87,6 +87,13 @@ export const onInitializeOvermind = async (
     getUserId() {
       return state.user?.id ?? null;
     },
+    provideJwtToken() {
+      if (process.env.LOCAL_SERVER || process.env.STAGING) {
+        return Promise.resolve(localStorage.getItem('devJwt'));
+      }
+
+      return provideJwtToken();
+    },
   });
 
   effects.prettyfier.initialize({
