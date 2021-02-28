@@ -295,8 +295,10 @@ function getDependencies(
   // Always include this, because most sandboxes need this with babel6 and the
   // packager will only include the package.json for it.
   if (isBabel7(d, devDependencies)) {
+    // Don't pin this version, because other dependencies installed by the sandbox might need
+    // @babel/runtime as well, multiple versions of @babel/runtime will lead to problems.
     returnedDependencies['@babel/runtime'] =
-      returnedDependencies['@babel/runtime'] || '7.12.18';
+      returnedDependencies['@babel/runtime'] || '^7.3.1';
   } else {
     returnedDependencies['babel-runtime'] =
       returnedDependencies['babel-runtime'] || '6.26.0';
