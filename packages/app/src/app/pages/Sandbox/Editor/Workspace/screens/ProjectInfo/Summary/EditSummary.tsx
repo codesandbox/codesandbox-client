@@ -57,6 +57,7 @@ export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
         currentSandbox: { tags, modules },
       },
       workspace: {
+        uploadingThumb,
         project: { title, description },
       },
     },
@@ -98,6 +99,16 @@ export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
     };
 
     fileSelector.click();
+  };
+
+  const getText = () => {
+    if (uploadingThumb) {
+      return 'Uploading...';
+    }
+    if (thumbnailExists) {
+      return 'Replace Cover';
+    }
+    return '+ Add cover';
   };
 
   return (
@@ -155,8 +166,9 @@ export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
             outline: 'none',
             cursor: 'pointer',
           })}
+          disabled={uploadingThumb}
         >
-          {thumbnailExists ? 'Replace Cover' : '+ Add cover'}
+          {getText()}
         </button>
       </Stack>
 

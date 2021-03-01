@@ -591,9 +591,8 @@ export const thumbnailToBeCropped: AsyncAction<{
 
     // if it's a gif we can't crop it, just upload it
     if (fileName.split('.').pop() === 'gif') {
-      state.currentModal = 'uploading';
       await actions.files.thumbnailUploaded({ file });
-      actions.internal.closeModals(false);
+
       return;
     }
     state.workspace.activeThumb = file;
@@ -611,6 +610,7 @@ export const thumbnailUploaded: AsyncAction<{
     return;
   }
   const thumb = sandbox.modules.find(m => m.path.includes('/thumbnail.'));
+  state.workspace.uploadingThumb = true;
   if (thumb) {
     await actions.files.moduleDeleted({ moduleShortid: thumb.shortid });
   }
@@ -629,6 +629,8 @@ export const thumbnailUploaded: AsyncAction<{
 
     effects.executor.updateFiles(sandbox);
     actions.git.updateGitChanges();
+    state.workspace.editingSandboxInfo = false;
+    effects.notificationToast.success('Cover image updated');
   } catch (error) {
     if (error.message.indexOf('413') !== -1) {
       actions.internal.handleError({
@@ -643,7 +645,7 @@ export const thumbnailUploaded: AsyncAction<{
       });
     }
   }
-
+  state.workspace.uploadingThumb = false;
   actions.internal.closeModals(false);
 };
 
