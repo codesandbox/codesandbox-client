@@ -4,7 +4,6 @@ type State = {
   hasAlias: boolean;
   building: boolean;
   netlifyClaimUrl: string | null;
-  netlifyLogs: string | null;
   netlifySite: NetlifySite | null;
   deploysBeingDeleted: string[];
   deployToDelete: string | null;
@@ -23,7 +22,6 @@ export const state: State = {
   url: null,
   gettingDeploys: true,
   sandboxDeploys: [],
-  netlifyLogs: null,
   netlifyClaimUrl: null,
   netlifySite: null,
 };

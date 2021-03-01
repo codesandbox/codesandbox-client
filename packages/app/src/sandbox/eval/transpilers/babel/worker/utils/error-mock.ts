@@ -44,6 +44,9 @@ export function installErrorMock() {
       split() {
         return [stackSplit, stackSplit, stackSplit, stackSplit];
       },
+      replace() {
+        return ''
+      }
     };
     hasStack = true;
   }

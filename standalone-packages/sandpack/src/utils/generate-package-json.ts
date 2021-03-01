@@ -1,4 +1,4 @@
-import { IFiles, IFile, IDependencies } from '../manager';
+import { IFiles, IDependencies } from '../manager';
 
 export function getPackageJSON(
   dependencies: IDependencies = {},
@@ -31,7 +31,7 @@ export default function createMissingPackageJSON(
 
     if (!entry) {
       throw new Error(
-        "No entry specified, please specify either a package.json with 'main' field or dependencies."
+        "Missing 'entry' parameter. Either specify an entry point, or pass in a package.json with the 'main' field set."
       );
     }
 

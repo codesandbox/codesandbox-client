@@ -7,11 +7,7 @@ import generatePackageJSON, {
   getPackageJSON,
 } from '../utils/generate-package-json';
 import version from '../version';
-import {
-  IManagerState,
-  IModuleError,
-  ManagerStatus,
-} from '../typings/types';
+import { IManagerState, IModuleError, ManagerStatus } from '../typings/types';
 
 export interface IManagerOptions {
   /**
@@ -82,15 +78,16 @@ export interface ISandboxInfo {
 
 const BUNDLER_URL =
   process.env.CODESANDBOX_ENV === 'development'
-    ? 'http://localhost:3002'
-    : `https://sandpack-${version.replace(/\./g, '-')}.codesandbox.io`;
+    ? 'http://localhost:3000'
+    : `https://${version.replace(/\./g, '-')}-sandpack.codesandbox.io`;
 
 export default class PreviewManager {
   selector: string | undefined;
   element: Element;
   iframe: HTMLIFrameElement;
   options: IManagerOptions;
-  id: string | null = null;
+  readonly id: number = Math.floor(Math.random() * 1000000);
+
   listener?: Function;
   fileResolverProtocol?: Protocol;
   bundlerURL: string;
@@ -127,24 +124,35 @@ export default class PreviewManager {
       this.element = selector;
       this.iframe = selector;
     }
-    this.iframe.setAttribute(
-      'sandbox',
-      'allow-autoplay allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts'
-    );
+    if (!this.iframe.getAttribute('sandbox')) {
+      this.iframe.setAttribute(
+        'sandbox',
+        'allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts'
+      );
+    }
+    if (!this.iframe.getAttribute('allow')) {
+      this.iframe.setAttribute(
+        'allow',
+        'accelerometer; ambient-light-sensor; autoplay; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking'
+      );
+    }
 
     this.iframe.src = this.bundlerURL;
-
     this.listener = listen((mes: any) => {
-      if (mes.type !== 'initialized' && mes.id && mes.id !== this.id) {
+      if (mes.type !== 'initialized' && mes.$id && mes.$id !== this.id) {
         // This message was not meant for this instance of the manager.
         return;
       }
+
       switch (mes.type) {
         case 'initialized': {
           if (this.iframe) {
             if (this.iframe.contentWindow) {
-              registerFrame(this.iframe.contentWindow, this.bundlerURL);
-              this.id = mes.id || null;
+              registerFrame(
+                this.iframe.contentWindow,
+                this.bundlerURL,
+                this.id
+              );
 
               if (this.options.fileResolver) {
                 this.fileResolverProtocol = new Protocol(
@@ -161,7 +169,7 @@ export default class PreviewManager {
               }
             }
 
-            this.updatePreview();
+            this.updatePreview(this.sandboxInfo, true);
           }
           break;
         }
@@ -176,7 +184,10 @@ export default class PreviewManager {
         case 'action': {
           if (mes.action === 'show-error') {
             const { title, path, message, line, column } = mes;
-            this.errors = [...this.errors, { title, path, message, line, column }];
+            this.errors = [
+              ...this.errors,
+              { title, path, message, line, column },
+            ];
           }
           break;
         }
@@ -198,7 +209,10 @@ export default class PreviewManager {
     }
   }
 
-  updatePreview(sandboxInfo = this.sandboxInfo) {
+  updatePreview(
+    sandboxInfo = this.sandboxInfo,
+    isInitializationCompile?: boolean
+  ) {
     this.sandboxInfo = sandboxInfo;
 
     const files = this.getFiles();
@@ -239,6 +253,7 @@ export default class PreviewManager {
       type: 'compile',
       codesandbox: true,
       version: 3,
+      isInitializationCompile,
       modules,
       externalResources: [],
       hasFileResolver: Boolean(this.options.fileResolver),
@@ -256,9 +271,19 @@ export default class PreviewManager {
   }
 
   public dispatch(message: Object) {
-    // @ts-ignore We want to add the id, don't use Object.assign since that copies the whole message
-    message.id = this.id;
+    // @ts-ignore We want to add the id, don't use Object.assign since that copies the message.
+    message.$id = this.id;
     dispatch(message);
+  }
+
+  public listen(listener: (msg: any) => void): Function {
+    return listen((msg: any) => {
+      if (msg.$id !== this.id) {
+        return;
+      }
+
+      listener(msg);
+    });
   }
 
   /**
@@ -294,9 +319,11 @@ export default class PreviewManager {
       }));
   }
 
-  public getManagerTranspilerContext = (): Promise<{ [transpiler: string]: Object }> =>
+  public getManagerTranspilerContext = (): Promise<{
+    [transpiler: string]: Object;
+  }> =>
     new Promise(resolve => {
-      const listener = listen((message: any) => {
+      const listener = this.listen((message: any) => {
         if (message.type === 'transpiler-context') {
           resolve(message.data);
 
@@ -304,7 +331,7 @@ export default class PreviewManager {
         }
       });
 
-        this.dispatch({ type: 'get-transpiler-context' });
+      this.dispatch({ type: 'get-transpiler-context' });
     });
 
   private getFiles() {

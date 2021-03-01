@@ -29,14 +29,8 @@ const Careers = () => {
 
   const jobs = [
     {
-      title: 'Product Growth Engineer',
-      url:
-        'https://codesandbox.recruitee.com/o/product-growth-engineer-amsterdam',
-    },
-    {
-      title: 'Senior Full Stack Engineer (TypeScript)',
-      url:
-        'https://codesandbox.recruitee.com/o/senior-full-stack-engineer-typescript',
+      title: 'Visual Designer',
+      url: 'https://codesandbox.recruitee.com/o/visual-designer',
     },
     {
       title: 'Head of Engineering',

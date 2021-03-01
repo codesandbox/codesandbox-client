@@ -25,6 +25,7 @@ import { fetchPrivateDependency } from './private-type-fetch';
 const global = getGlobal() as Window & { BrowserFS: any };
 
 const SERVICE_URL = 'https://ata.codesandbox.io/api/v8';
+const FALLBACK_SERVICE_URL = 'https://typings.csb.dev/api/v8';
 const BUCKET_URL = 'https://prod-packager-packages.codesandbox.io/v1/typings';
 
 async function callApi(url: string, method = 'GET') {
@@ -537,12 +538,21 @@ class SandboxFsSync {
       // Hasn't been generated
     }
 
-    const { files } = await requestPackager(
-      `${SERVICE_URL}/${dependencyQuery}.json`,
-      3
-    );
+    try {
+      const { files } = await requestPackager(
+        `${SERVICE_URL}/${dependencyQuery}.json`,
+        3
+      );
 
-    return files;
+      return files;
+    } catch {
+      const { files } = await requestPackager(
+        `${FALLBACK_SERVICE_URL}/${dependencyQuery}.json`,
+        3
+      );
+
+      return files;
+    }
   }
 
   private clearSandboxFiles(dir = '/sandbox') {
