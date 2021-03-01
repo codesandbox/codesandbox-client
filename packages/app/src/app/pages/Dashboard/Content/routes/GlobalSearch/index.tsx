@@ -1,14 +1,15 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { Helmet } from 'react-helmet';
-import { useLocation, useHistory } from 'react-router-dom';
-import { InstantSearch } from 'react-instantsearch/dom';
+import { useLocation } from 'react-router-dom';
+import { InstantSearch, SearchBox } from 'react-instantsearch/dom';
 import { connectHits } from 'react-instantsearch-dom';
+import VisuallyHidden from '@reach/visually-hidden';
 
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
-import { PageTypes } from 'app/pages/Dashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 
 import {
   ALGOLIA_API_KEY,
@@ -16,22 +17,19 @@ import {
   ALGOLIA_DEFAULT_INDEX,
 } from '@codesandbox/common/lib/utils/config';
 
+import { Element } from '@codesandbox/components';
+
 export const GlobalSearch = () => {
   const {
-    state: {
-      activeTeam,
-      dashboard: { getFilteredSandboxes },
-    },
+    state: { activeTeam },
   } = useOvermind();
   const location = useLocation();
   const query = new URLSearchParams(location.search).get('query');
 
   const pageType: PageTypes = 'search';
 
-  const [items, setItems] = React.useState([]);
-
   return (
-    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
+    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={[]}>
       <Helmet>
         <title>
           {location.search
@@ -46,32 +44,47 @@ export const GlobalSearch = () => {
         showFilters
         showSortOptions
       />
-      <InstantSearch
-        apiKey={ALGOLIA_API_KEY}
-        appId={ALGOLIA_APPLICATION_ID}
-        indexName={ALGOLIA_DEFAULT_INDEX}
+
+      <Element
+        as="section"
+        css={{
+          position: 'relative',
+          height: '100%',
+          width: '100%',
+          '> div': { height: '100%' },
+        }}
       >
-        <Results setItems={setItems} />
-      </InstantSearch>
-      <section style={{ position: 'relative', height: '100%', width: '100%' }}>
-        <VariableGrid items={items} page={pageType} />
-      </section>
+        <InstantSearch
+          apiKey={ALGOLIA_API_KEY}
+          appId={ALGOLIA_APPLICATION_ID}
+          indexName={ALGOLIA_DEFAULT_INDEX}
+          searchState={{ query }}
+        >
+          <VisuallyHidden>
+            <SearchBox />
+          </VisuallyHidden>
+          <Results />
+        </InstantSearch>
+      </Element>
     </SelectionProvider>
   );
 };
 
-const Results = connectHits(({ hits, setItems }) => {
-  // "steal" results from the connected component
-  const items = hits.map(sandbox => {
-    return {
-      type: 'sandbox',
-      sandbox: {
-        ...sandbox,
-        updatedAt: sandbox.updated_at,
-        screenshotUrl: `https://codesandbox.io/api/v1/sandboxes/${sandbox.alias}/screenshot.png`,
-      },
-    };
-  });
-  setItems(items);
-  return null;
+const Results = connectHits(({ hits }) => {
+  const pageType: PageTypes = 'search';
+
+  const items: DashboardGridItem[] = hits.map(sandbox => ({
+    noDrag: true,
+    type: 'searched-sandbox',
+    sandbox: {
+      alias: sandbox.alias,
+      title: sandbox.title,
+      description: sandbox.description,
+      updatedAt: sandbox.updated_at,
+      screenshotUrl: `https://codesandbox.io/api/v1/sandboxes/${sandbox.alias}/screenshot.png`,
+      viewCount: Number(sandbox.view_count),
+    },
+  }));
+
+  return <VariableGrid items={items} page={pageType} />;
 });

@@ -115,6 +115,20 @@ export type DashboardNewMasterBranch = {
   };
 };
 
+export type DashboardSearchedSandbox = {
+  type: 'searched-sandbox';
+  sandbox: Pick<
+    DashboardSandbox['sandbox'],
+    | 'alias'
+    | 'title'
+    | 'description'
+    | 'updatedAt'
+    | 'screenshotUrl'
+    | 'viewCount'
+  >;
+  noDrag?: boolean;
+};
+
 export type PageTypes = PT;
 
 export type DashboardGridItem =
@@ -132,4 +146,5 @@ export type DashboardGridItem =
   | DashboardRepo
   | DashboardRepoSandbox
   | DashboardBlankRowFill
-  | DashboardSkeleton;
+  | DashboardSkeleton
+  | DashboardSearchedSandbox;

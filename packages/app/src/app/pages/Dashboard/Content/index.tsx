@@ -55,7 +55,7 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/recent" component={Recent} />
         <Route path="/dashboard/deleted" component={Deleted} />
         <Route path="/dashboard/search" component={Search} />
-        <Route path="/dashboard/global-search" component={GlobalSearch} />
+        <Route path="/dashboard/explore/search" component={GlobalSearch} />
         <Route path="/dashboard/settings" component={Settings} />
         {/* old dashboard - redirects: */}
         <Route path="/dashboard/trash" component={Deleted} />

@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
 import { useOvermind } from 'app/overmind';
-import { useHistory } from 'react-router-dom';
-import LogoIcon from '@codesandbox/common/lib/components/Logo';
-import { UserMenu } from 'app/pages/common/UserMenu';
+import { useDebouncedCallback } from 'use-debounce';
+import { useHistory, useLocation } from 'react-router-dom';
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxPopover,
+  ComboboxList,
+  ComboboxOption,
+} from '@reach/combobox';
 
 import {
   Stack,
@@ -12,14 +17,16 @@ import {
   Link,
   Icon,
   IconButton,
-  Switch,
   List,
-  ListAction,
+  Text,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import LogoIcon from '@codesandbox/common/lib/components/Logo';
+import { UserMenu } from 'app/pages/common/UserMenu';
 
 import { Notifications } from 'app/components/Notifications';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -27,42 +34,10 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
-    const [value, setValue] = useState(
-      new URLSearchParams(window.location.search).get('query') || ''
-    );
-    const [global, setGlobal] = useState(
-      new URLSearchParams(window.location.search).has('global')
-    );
-
     const {
       actions: { openCreateSandboxModal },
-      state: { user, activeTeam, activeWorkspaceAuthorization },
+      state: { user, activeWorkspaceAuthorization },
     } = useOvermind();
-
-    const history = useHistory();
-
-    const search = (query: string) =>
-      history.push(dashboardUrls.search(query, activeTeam, global));
-
-    const [debouncedSearch] = useDebouncedCallback(search, 100);
-
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(e.target.value);
-
-      if (!e.target.value)
-        history.push(dashboardUrls.allSandboxes('/', activeTeam));
-      if (e.target.value.length >= 2) debouncedSearch(e.target.value);
-    };
-
-    const toggleGlobal = () => {
-      const newValue = !global;
-      setGlobal(newValue);
-      history.push(dashboardUrls.search(value, activeTeam, newValue));
-    };
-
-    const [globalSwitchVisible, setGlobalSwitchVisibility] = React.useState(
-      false
-    );
 
     return (
       <Stack
@@ -99,38 +74,8 @@ export const Header: React.FC<HeaderProps> = React.memo(
           onClick={onSidebarToggle}
           css={css({ display: ['block', 'block', 'none'] })}
         />
-        <Stack
-          css={css({
-            flexGrow: 1,
-            maxWidth: 480,
-            display: ['none', 'none', 'block'],
-            position: 'relative',
-          })}
-        >
-          <Input
-            type="text"
-            value={value}
-            onChange={onChange}
-            placeholder="Search all sandboxes"
-          />
-          <List
-            css={css({
-              position: 'absolute',
-              width: '100%',
-              zIndex: 4,
-              backgroundColor: 'menuList.background',
-              borderRadius: 3,
-              boxShadow: 2,
-              overflow: 'hidden',
-              border: '1px solid',
-              borderColor: 'menuList.border',
-              fontSize: 3,
-            })}
-          >
-            <ListAction>in your workspace</ListAction>
-            <ListAction>all of CodeSandbox</ListAction>
-          </List>
-        </Stack>
+
+        <SearchInputGroup />
 
         <Stack align="center" gap={2}>
           <Button
@@ -160,3 +105,112 @@ export const Header: React.FC<HeaderProps> = React.memo(
     );
   }
 );
+
+const SearchInputGroup = () => {
+  const {
+    state: { activeTeam },
+  } = useOvermind();
+
+  const history = useHistory();
+  const location = useLocation();
+
+  const [value, setValue] = useState(
+    new URLSearchParams(window.location.search).get('query') || ''
+  );
+
+  const search = (query: string) => {
+    if (location.pathname.includes('/explore')) {
+      history.push(dashboardUrls.exploreSearch(query, activeTeam));
+    } else {
+      history.push(dashboardUrls.search(query, activeTeam));
+    }
+  };
+  const [debouncedSearch] = useDebouncedCallback(search, 100);
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+
+    if (event.target.value.length >= 2) debouncedSearch(event.target.value);
+    if (!event.target.value) {
+      history.push(dashboardUrls.allSandboxes('/', activeTeam));
+    }
+  };
+
+  const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.which === ENTER) event.currentTarget.blur();
+  };
+
+  return (
+    <Stack
+      css={css({
+        flexGrow: 1,
+        maxWidth: 480,
+        display: ['none', 'none', 'block'],
+        position: 'relative',
+      })}
+    >
+      <Combobox
+        openOnFocus
+        onSelect={() => {
+          history.push(dashboardUrls.exploreSearch(value, activeTeam));
+        }}
+      >
+        <ComboboxInput
+          as={Input}
+          value={value}
+          onChange={onChange}
+          onKeyPress={handleEnter}
+          placeholder="Search all sandboxes"
+        />
+        <ComboboxPopover
+          css={css({ zIndex: 4, fontFamily: 'Inter, sans-serif', fontSize: 3 })}
+        >
+          <ComboboxList
+            as={List}
+            css={css({
+              backgroundColor: 'menuList.background',
+              borderRadius: 3,
+              boxShadow: 2,
+              border: '1px solid',
+              borderColor: 'menuList.border',
+            })}
+          >
+            <ComboboxOption
+              value={value}
+              justify="space-between"
+              css={css({
+                outline: 'none',
+                height: 7,
+                paddingX: 2,
+                color: 'list.foreground',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                ':hover, &[aria-selected="true"]': {
+                  color: 'list.hoverForeground',
+                  backgroundColor: 'list.hoverBackground',
+                },
+              })}
+            >
+              <span>{value}</span>
+              <span>Community ⏎</span>
+            </ComboboxOption>
+          </ComboboxList>
+          <Text
+            size={3}
+            variant="muted"
+            css={css({
+              position: 'absolute',
+              width: 'fit-content',
+              top: -5,
+              right: 0,
+              paddingX: 2,
+            })}
+          >
+            in workspace ⏎
+          </Text>
+        </ComboboxPopover>
+      </Combobox>
+    </Stack>
+  );
+};

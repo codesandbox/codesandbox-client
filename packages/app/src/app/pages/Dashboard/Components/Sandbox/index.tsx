@@ -14,7 +14,12 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
-import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
+import {
+  DashboardSandbox,
+  DashboardTemplate,
+  DashboardSearchedSandbox,
+  PageTypes,
+} from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
 
@@ -27,7 +32,7 @@ const PrivacyIcons = {
 interface GenericSandboxProps {
   page: PageTypes;
   isScrolling: boolean;
-  item: DashboardSandbox | DashboardTemplate;
+  item: DashboardSandbox | DashboardTemplate | DashboardSearchedSandbox;
 }
 
 function getFolderName(item: GenericSandboxProps['item']): string {

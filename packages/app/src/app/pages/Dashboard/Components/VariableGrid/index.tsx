@@ -26,6 +26,7 @@ import {
   DashboardRepo,
   DashboardNewRepo,
   DashboardNewMasterBranch,
+  DashboardSearchedSandbox,
   PageTypes,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
@@ -72,6 +73,7 @@ interface IComponentForTypes {
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
+  'searched-sandbox': React.FC<DecoratedItemProps<DashboardSearchedSandbox>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -126,6 +128,13 @@ const ComponentForTypes: IComponentForTypes = {
   ),
   blank: () => <div />,
   skeleton: () => <SkeletonSandbox />,
+  'searched-sandbox': React.memo(props => (
+    <Sandbox
+      page={props.page}
+      item={props.item}
+      isScrolling={props.isScrolling}
+    />
+  )),
 };
 
 const Item = React.memo(
@@ -319,6 +328,7 @@ export const VariableGrid = ({
                 'new-sandbox',
                 'template',
                 'sandbox',
+                'search-result',
               ].includes(item.type)
             ) {
               filledItems.push({ ...item, viewMode });
