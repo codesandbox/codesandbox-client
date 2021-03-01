@@ -1,6 +1,6 @@
 ---
 title: Terms of Use
-lastEdited: 2021-02-17
+lastEdited: 2021-03-01
 version: 0.9.0
 ---
 
