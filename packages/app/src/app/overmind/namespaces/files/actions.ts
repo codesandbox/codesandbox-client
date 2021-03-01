@@ -607,6 +607,9 @@ export const thumbnailUploaded: AsyncAction<{
   file: { [k: string]: { dataURI: string; type: string } };
 }> = async ({ state, effects, actions }, { file }) => {
   const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
   const thumb = sandbox.modules.find(m => m.path.includes('/thumbnail.'));
   if (thumb) {
     await actions.files.moduleDeleted({ moduleShortid: thumb.shortid });
@@ -615,7 +618,7 @@ export const thumbnailUploaded: AsyncAction<{
   try {
     const { modules, directories } = await actions.files.internal.uploadFiles({
       files: file,
-      directoryShortid: null,
+      directoryShortid: '',
     });
 
     actions.files.massCreateModules({
