@@ -43,7 +43,7 @@ export const ThumbnailEdit = () => {
   const uploadThumbnail = () => {
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
-    fileSelector.setAttribute('accept', 'image/x-png,image/gif,image/jpeg');
+    fileSelector.setAttribute('accept', 'image/png,image/gif,image/jpeg');
     fileSelector.onchange = async event => {
       const target = event.target as HTMLInputElement;
       const file = await getFile(target.files[0]);

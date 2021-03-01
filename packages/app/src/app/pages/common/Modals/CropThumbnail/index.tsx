@@ -64,7 +64,7 @@ export const CropThumbnail: FunctionComponent = () => {
           src={base64}
           ref={image}
           alt=""
-          style={{ maxWidth: '80%', maxHeight: '80%', display: 'block' }}
+          style={{ maxWidth: '80%', maxHeight: 410, display: 'block' }}
         />
       </Element>
       <Stack justify="flex-end" marginTop={11} gap={2}>
