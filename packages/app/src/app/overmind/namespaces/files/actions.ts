@@ -581,9 +581,19 @@ export const filesUploaded: AsyncAction<{
 export const thumbnailToBeCropped: AsyncAction<{
   file: { [k: string]: { dataURI: string; type: string } };
 }> = withOwnedSandbox(
-  async ({ state }, { file }) => {
+  async ({ state, actions }, { file }) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
+      return;
+    }
+
+    const fileName = Object.keys(file)[0];
+
+    // if it's a gif we can't crop it, just upload it
+    if (fileName.split('.').pop() === 'gif') {
+      state.currentModal = 'uploading';
+      await actions.files.thumbnailUploaded({ file });
+      actions.internal.closeModals(false);
       return;
     }
     state.workspace.activeThumb = file;
@@ -601,7 +611,7 @@ export const thumbnailUploaded: AsyncAction<{
   if (thumb) {
     await actions.files.moduleDeleted({ moduleShortid: thumb.shortid });
   }
-
+  state.currentModal = 'uploading';
   try {
     const { modules, directories } = await actions.files.internal.uploadFiles({
       files: file,
