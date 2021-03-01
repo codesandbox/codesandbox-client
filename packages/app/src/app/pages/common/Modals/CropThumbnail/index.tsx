@@ -3,6 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 import { Element, Button, Stack } from '@codesandbox/components';
 import { useOvermind } from 'app/overmind';
 import Cropper from 'cropperjs';
+// @ts-ignore
 import CropperCSS from 'cropperjs/dist/cropper.min.css';
 import { Alert } from '../Common/Alert';
 
@@ -33,7 +34,6 @@ export const CropThumbnail: FunctionComponent = () => {
         crop() {
           const croppedImage = cropper.getCroppedCanvas();
           const canvasURI = croppedImage.toDataURL();
-          console.log(canvasURI);
           setNewImage(canvasURI);
         },
       });
