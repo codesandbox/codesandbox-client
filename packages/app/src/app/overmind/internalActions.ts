@@ -532,8 +532,7 @@ export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-// add ACCEPTED_TERMS_CODESANDBOX_v1.1
-const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
+const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX_v1.1';
 export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
   if (effects.browser.storage.get(seenTermsKey)) {
     return;
@@ -552,7 +551,10 @@ export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
           label: 'Open Commit Message',
           run: () => {
             // GH LINK HERE
-            window.open('https://codesandbox.io/legal/privacy', '_blank');
+            window.open(
+              'https://github.com/codesandbox/codesandbox-client/commit/36b0f928cb863868bbfd93bb455a74ff46951edc',
+              '_blank'
+            );
           },
         },
         primary: {
