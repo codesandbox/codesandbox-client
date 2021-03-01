@@ -5,14 +5,24 @@ export const Content = styled.div`
   margin-top: 5%;
   text-align: left;
   max-width: 800px;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.5rem;
   margin-bottom: 4rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #999999;
 
   h1,
   h2 {
-    color: rgba(255, 255, 255, 0.9);
-    margin: 30px 0;
+    color: #fff;
+    margin: 3rem 0 0.5rem 0;
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+
+  h3 {
+    color: #fff;
+    margin: 3rem 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 500;
   }
 `;
 

@@ -532,6 +532,7 @@ export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
   }
 };
 
+// add ACCEPTED_TERMS_CODESANDBOX_v1.1
 const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
 export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
   if (effects.browser.storage.get(seenTermsKey)) {
@@ -542,11 +543,18 @@ export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
     effects.analytics.track('Saw Privacy Policy Notification');
     effects.notificationToast.add({
       message:
-        'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
+        'Hello, we are changing our Terms of Use effective Mar 14, 2021 12:00 UTC. Please read them, or see commit message for a brief sum up.',
       title: 'Updated Privacy',
       status: NotificationStatus.NOTICE,
       sticky: true,
       actions: {
+        secondary: {
+          label: 'Open Commit Message',
+          run: () => {
+            // GH LINK HERE
+            window.open('https://codesandbox.io/legal/privacy', '_blank');
+          },
+        },
         primary: {
           label: 'Open Privacy Policy',
           run: () => {
