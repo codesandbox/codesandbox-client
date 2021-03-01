@@ -1,12 +1,10 @@
 ---
 title: Privacy Policy
 lastEdited: 2020-04-16
+version: 0.9.0
 ---
 
 # Privacy Policy
-
-_This version 0.90 has been last updated April 16, 2020
-([list of revisions](https://github.com/codesandbox/codesandbox-client/commits/master/packages/homepage/content/legal/privacy.md))._
 
 This privacy policy allows you to learn about the way CodeSandbox B.V.
 (“CodeSandbox”) controls and processes data about you or data that may allow
