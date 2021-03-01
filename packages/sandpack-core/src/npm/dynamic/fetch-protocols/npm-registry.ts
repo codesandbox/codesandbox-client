@@ -26,7 +26,7 @@ type PackageVersionInfo = {
 type PackageRegistryInfo = {
   name: string;
   description: string;
-  'dist-tags': {
+  'dist-tags'?: {
     [tag: string]: string;
   };
   versions: {
@@ -171,7 +171,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
 
     const metadata = await this.getPackageMetadata(name);
 
-    if (metadata['dist-tags'][version]) {
+    if (metadata['dist-tags'] && metadata['dist-tags'][version]) {
       return metadata['dist-tags'][version];
     }
 

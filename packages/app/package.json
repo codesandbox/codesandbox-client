@@ -110,6 +110,8 @@
     "codesandbox-api": "0.0.31",
     "codesandbox-import-utils": "^2.2.2",
     "color": "^0.11.4",
+    "comlink": "^4.3.0",
+    "comlink-loader": "^2.0.0",
     "compare-versions": "^3.1.0",
     "console": "^0.7.2",
     "console-feed": "^3.1.9",

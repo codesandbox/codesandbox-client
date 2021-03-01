@@ -19,16 +19,18 @@ export const Form = styled.form`
 `;
 
 export const NameInput = styled(AutosizeInput)`
-  input {
-    display: inline-block;
-    background-color: transparent;
-    outline: 0;
-    border: 0;
-    color: white;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
+  ${({ theme }) => css`
+    input {
+      display: inline-block;
+      background-color: transparent;
+      outline: 0;
+      border: 0;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      color: ${theme['input.foreground']};
+    }
+  `};
 `;
 
 export const Main = styled.div`

@@ -8,26 +8,31 @@ import { Alert } from '../Common/Alert';
 
 export const NetlifyLogs: FunctionComponent = () => {
   const {
+    effects,
     actions: { modalClosed },
     state: {
-      deployment: { netlifyLogs: netlifyLogsUrl },
+      editor: { currentSandbox },
     },
   } = useOvermind();
   const [logs, setLogs] = useState(['Waiting for build to start']);
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const { logs: fetchedLogs } = await fetch(netlifyLogsUrl).then(data =>
-        data.json()
+      const { logs: fetchedLogs, status } = await effects.netlify.getLogs(
+        currentSandbox.id
       );
 
       if (fetchedLogs.length > 0) {
         setLogs(fetchedLogs);
       }
+
+      if (status === 'DONE') {
+        clearInterval(interval);
+      }
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [netlifyLogsUrl]);
+  }, []);
 
   return (
     <Alert

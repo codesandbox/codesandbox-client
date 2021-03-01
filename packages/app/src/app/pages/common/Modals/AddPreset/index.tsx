@@ -123,7 +123,7 @@ export const AddPreset: FunctionComponent<Props> = ({ id, user }) => {
             <Button
               autoWidth
               type="submit"
-              disabled={!name || !width || !height}
+              disabled={!name || !name.trim() || !width || !height}
             >
               Add Preset
             </Button>

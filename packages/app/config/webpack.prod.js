@@ -242,7 +242,7 @@ module.exports = merge(commonConfig, {
       maximumFileSizeToCacheInBytes: 1024 * 1024 * 20, // 20mb
       runtimeCaching: [
         {
-          urlPattern: /api\/v1\/sandboxes/,
+          urlPattern: /api\/v1\//,
           handler: 'networkFirst',
           options: {
             cache: {

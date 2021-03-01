@@ -1,4 +1,16 @@
+import { Module } from '@codesandbox/common/lib/types';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
+
+export enum OptionTypes {
+  CaseSensitive = 'caseSensitive',
+  Regex = 'regex',
+  MatchFullWord = 'matchFullWord',
+}
+
+export type SearchResults = (Module & {
+  open: boolean;
+  matches: [number, number][];
+})[];
 
 type State = {
   project: {
@@ -26,6 +38,17 @@ type State = {
   };
   showingSelectedDependencies: boolean;
   dependencySearch: string;
+  searchValue: string;
+  searchResults: SearchResults | [];
+  searchOptions: {
+    [OptionTypes.CaseSensitive]: boolean;
+    [OptionTypes.Regex]: boolean;
+    [OptionTypes.MatchFullWord]: boolean;
+    showFileFilters: boolean;
+    openFilesSearch: boolean;
+    filesToInclude: string;
+    filesToExclude: string;
+  };
 };
 
 export const state: State = {
@@ -48,4 +71,16 @@ export const state: State = {
   hitToVersionMap: {},
   showingSelectedDependencies: false,
   dependencySearch: '',
+  searchValue: '',
+  searchResults: [],
+
+  searchOptions: {
+    [OptionTypes.CaseSensitive]: false,
+    [OptionTypes.Regex]: false,
+    [OptionTypes.MatchFullWord]: false,
+    showFileFilters: false,
+    openFilesSearch: false,
+    filesToInclude: '',
+    filesToExclude: '',
+  },
 };
