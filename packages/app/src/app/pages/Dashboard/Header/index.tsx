@@ -32,6 +32,9 @@ interface HeaderProps {
   onSidebarToggle: () => void;
 }
 
+/** poor man's feature flag - to ship the unfinished version */
+const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
+
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const {
@@ -162,54 +165,60 @@ const SearchInputGroup = () => {
           onKeyPress={handleEnter}
           placeholder="Search all sandboxes"
         />
-        <ComboboxPopover
-          css={css({ zIndex: 4, fontFamily: 'Inter, sans-serif', fontSize: 3 })}
-        >
-          <ComboboxList
-            as={List}
+        {SHOW_COMMUNITY_SEARCH && (
+          <ComboboxPopover
             css={css({
-              backgroundColor: 'menuList.background',
-              borderRadius: 3,
-              boxShadow: 2,
-              border: '1px solid',
-              borderColor: 'menuList.border',
+              zIndex: 4,
+              fontFamily: 'Inter, sans-serif',
+              fontSize: 3,
             })}
           >
-            <ComboboxOption
-              value={value}
-              justify="space-between"
+            <ComboboxList
+              as={List}
               css={css({
-                outline: 'none',
-                height: 7,
-                paddingX: 2,
-                color: 'list.foreground',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                ':hover, &[aria-selected="true"]': {
-                  color: 'list.hoverForeground',
-                  backgroundColor: 'list.hoverBackground',
-                },
+                backgroundColor: 'menuList.background',
+                borderRadius: 3,
+                boxShadow: 2,
+                border: '1px solid',
+                borderColor: 'menuList.border',
               })}
             >
-              <span>{value}</span>
-              <span>Community ⏎</span>
-            </ComboboxOption>
-          </ComboboxList>
-          <Text
-            size={3}
-            variant="muted"
-            css={css({
-              position: 'absolute',
-              width: 'fit-content',
-              top: -5,
-              right: 0,
-              paddingX: 2,
-            })}
-          >
-            in workspace ⏎
-          </Text>
-        </ComboboxPopover>
+              <ComboboxOption
+                value={value}
+                justify="space-between"
+                css={css({
+                  outline: 'none',
+                  height: 7,
+                  paddingX: 2,
+                  color: 'list.foreground',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  ':hover, &[aria-selected="true"]': {
+                    color: 'list.hoverForeground',
+                    backgroundColor: 'list.hoverBackground',
+                  },
+                })}
+              >
+                <span>{value}</span>
+                <span>Community ⏎</span>
+              </ComboboxOption>
+            </ComboboxList>
+            <Text
+              size={3}
+              variant="muted"
+              css={css({
+                position: 'absolute',
+                width: 'fit-content',
+                top: -5,
+                right: 0,
+                paddingX: 2,
+              })}
+            >
+              in workspace ⏎
+            </Text>
+          </ComboboxPopover>
+        )}
       </Combobox>
     </Stack>
   );
