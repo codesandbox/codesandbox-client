@@ -14,12 +14,7 @@ import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
-import {
-  DashboardSandbox,
-  DashboardTemplate,
-  DashboardCommunitySandbox,
-  PageTypes,
-} from '../../types';
+import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
 
@@ -32,7 +27,7 @@ const PrivacyIcons = {
 interface GenericSandboxProps {
   page: PageTypes;
   isScrolling: boolean;
-  item: DashboardSandbox | DashboardTemplate | DashboardCommunitySandbox;
+  item: DashboardSandbox | DashboardTemplate;
 }
 
 function getFolderName(item: GenericSandboxProps['item']): string {
@@ -49,8 +44,6 @@ function getFolderName(item: GenericSandboxProps['item']): string {
     }
     return 'Templates';
   }
-
-  if (item.type === 'community-sandbox') return 'Community';
 
   const { sandbox } = item;
 
