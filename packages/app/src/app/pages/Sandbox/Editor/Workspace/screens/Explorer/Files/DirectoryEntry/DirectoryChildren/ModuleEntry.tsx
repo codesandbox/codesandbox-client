@@ -1,7 +1,6 @@
 import { Directory, Module } from '@codesandbox/common/lib/types';
 import { useOvermind } from 'app/overmind';
-// eslint-disable-next-line import/extensions
-import getType from 'app/utils/get-type.ts';
+import { getType } from 'app/utils/get-type';
 import React from 'react';
 
 import { Entry } from '../Entry';

@@ -12,8 +12,8 @@ import { NativeTypes } from 'react-dnd-html5-backend';
 import { DirectoryChildren } from './DirectoryChildren';
 import { DirectoryEntryModal } from './DirectoryEntryModal';
 import { EntryContainer, Opener, Overlay } from './elements';
-import Entry from './Entry';
-import validateTitle from './validateTitle';
+import { Entry } from './Entry';
+import { validateTitle } from './validateTitle';
 
 const readDataURL = (file: File): Promise<string | ArrayBuffer> =>
   new Promise(resolve => {

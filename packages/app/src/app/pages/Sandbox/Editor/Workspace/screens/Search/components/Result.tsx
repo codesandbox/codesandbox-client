@@ -1,5 +1,5 @@
 import React from 'react';
-import getType from 'app/utils/get-type';
+import { getType } from 'app/utils/get-type';
 import { Text, Element, ListAction, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useOvermind } from 'app/overmind';

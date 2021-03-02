@@ -52,7 +52,7 @@ interface IEntryProps {
   state?: string;
 }
 
-const Entry: React.FC<IEntryProps> = ({
+const EntryElement: React.FC<IEntryProps> = ({
   title,
   id,
   depth,
@@ -254,4 +254,8 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-export default DragSource('ENTRY', entrySource, collectSource)(Entry);
+export const Entry = DragSource(
+  'ENTRY',
+  entrySource,
+  collectSource
+)(EntryElement);

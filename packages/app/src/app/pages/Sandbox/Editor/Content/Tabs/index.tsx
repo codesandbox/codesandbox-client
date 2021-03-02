@@ -24,7 +24,7 @@ interface IOvermindProp {
   actions: any;
 }
 
-const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
+export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   currentModuleId,
 }) => {
   const {
@@ -230,5 +230,3 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
     </Container>
   );
 };
-
-export default EditorTabs;
