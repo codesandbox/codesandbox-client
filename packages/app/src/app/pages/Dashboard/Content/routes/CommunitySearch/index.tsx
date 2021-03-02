@@ -2,7 +2,7 @@ import React from 'react';
 import { useOvermind } from 'app/overmind';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
-import { InstantSearch, SearchBox } from 'react-instantsearch/dom';
+import { InstantSearch, SearchBox, Configure } from 'react-instantsearch/dom';
 import { connectHits } from 'react-instantsearch-dom';
 import VisuallyHidden from '@reach/visually-hidden';
 
@@ -42,6 +42,7 @@ export const CommunitySearch = () => {
         indexName={ALGOLIA_DEFAULT_INDEX}
         searchState={{ query }}
       >
+        <Configure hitsPerPage={100} />
         <VisuallyHidden>
           <SearchBox />
         </VisuallyHidden>
