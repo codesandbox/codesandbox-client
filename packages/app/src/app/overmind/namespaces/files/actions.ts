@@ -560,7 +560,7 @@ export const filesUploaded: AsyncAction<{
     } catch (error) {
       if (error.message.indexOf('413') !== -1) {
         actions.internal.handleError({
-          message: `The uploaded file is bigger than 7MB, contact hello@codesandbox.io if you want to raise this limit`,
+          message: `The uploaded file is bigger than 7MB, please upgrade to PRO for 30MB limits.`,
           error,
           hideErrorMessage: true,
         });
@@ -577,6 +577,76 @@ export const filesUploaded: AsyncAction<{
   async () => {},
   'write_code'
 );
+
+export const thumbnailToBeCropped: AsyncAction<{
+  file: { [k: string]: { dataURI: string; type: string } };
+}> = withOwnedSandbox(
+  async ({ state, actions }, { file }) => {
+    const sandbox = state.editor.currentSandbox;
+    if (!sandbox) {
+      return;
+    }
+
+    const fileName = Object.keys(file)[0];
+
+    // if it's a gif we can't crop it, just upload it
+    if (fileName.split('.').pop() === 'gif') {
+      await actions.files.thumbnailUploaded({ file });
+
+      return;
+    }
+    state.workspace.activeThumb = file;
+    state.currentModal = 'cropThumbnail';
+  },
+  async () => {},
+  'write_code'
+);
+
+export const thumbnailUploaded: AsyncAction<{
+  file: { [k: string]: { dataURI: string; type: string } };
+}> = async ({ state, effects, actions }, { file }) => {
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+  const thumb = sandbox.modules.find(m => m.path.includes('/thumbnail.'));
+  state.workspace.uploadingThumb = true;
+  if (thumb) {
+    await actions.files.moduleDeleted({ moduleShortid: thumb.shortid });
+  }
+  state.currentModal = 'uploading';
+  try {
+    const { modules, directories } = await actions.files.internal.uploadFiles({
+      files: file,
+      directoryShortid: '',
+    });
+
+    actions.files.massCreateModules({
+      modules,
+      directories,
+      directoryShortid: null,
+    });
+
+    effects.executor.updateFiles(sandbox);
+    actions.git.updateGitChanges();
+    effects.notificationToast.success('Thumbnail image updated');
+  } catch (error) {
+    if (error.message.indexOf('413') !== -1) {
+      actions.internal.handleError({
+        message: `The uploaded file is bigger than 7MB, please upgrade to PRO for 30MB limits.`,
+        error,
+        hideErrorMessage: true,
+      });
+    } else {
+      actions.internal.handleError({
+        message: 'Unable to upload files',
+        error,
+      });
+    }
+  }
+  state.workspace.uploadingThumb = false;
+  actions.internal.closeModals(false);
+};
 
 export const massCreateModules: AsyncAction<{
   modules: any;

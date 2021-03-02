@@ -597,3 +597,7 @@ export const searchOptionsToggled: Action<string> = ({ state }, option) => {
     option
   ];
 };
+
+export const toggleEditingSandboxInfo: Action<boolean> = ({ state }, value) => {
+  state.workspace.editingSandboxInfo = value;
+};
