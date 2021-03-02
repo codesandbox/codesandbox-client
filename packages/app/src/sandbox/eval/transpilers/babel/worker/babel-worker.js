@@ -44,6 +44,9 @@ const { BrowserFS } = self;
 BrowserFS.configure({ fs: 'InMemory' }, () => {});
 
 self.process = {
+  cwd() {
+    return '/';
+  },
   env: { NODE_ENV: 'development', BABEL_ENV: 'development' },
   platform: 'linux',
   argv: [],
@@ -662,11 +665,6 @@ self.addEventListener('message', async event => {
         version !== 7
       ) {
         Babel.registerPreset('env', Babel.availablePresets.latest);
-      }
-
-      if (version === 7) {
-        // Hardcode, since we want to override env
-        Babel.availablePresets.env = envPreset;
       }
 
       if (
