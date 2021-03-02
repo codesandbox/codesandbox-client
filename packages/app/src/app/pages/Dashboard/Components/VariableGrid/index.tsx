@@ -73,7 +73,7 @@ interface IComponentForTypes {
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
-  'searched-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
+  'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -128,7 +128,7 @@ const ComponentForTypes: IComponentForTypes = {
   ),
   blank: () => <div />,
   skeleton: () => <SkeletonSandbox />,
-  'searched-sandbox': React.memo(props => (
+  'community-sandbox': React.memo(props => (
     <Sandbox
       page={props.page}
       item={props.item}

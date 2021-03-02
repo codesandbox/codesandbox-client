@@ -16,6 +16,7 @@ import {
   RepoMenu,
   MasterMenu,
   ContainerMenu,
+  CommunitySandboxMenu,
 } from './ContextMenus';
 
 interface IMenuProps {
@@ -111,6 +112,8 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     menu = <RepoMenu repo={selectedItems[0]} />;
   } else if (selectedItems[0].type === 'new-master-branch') {
     menu = <MasterMenu repo={selectedItems[0].repo} />;
+  } else if (selectedItems[0].type === 'community-sandbox') {
+    menu = <CommunitySandboxMenu item={selectedItems[0]} />;
   }
 
   return (

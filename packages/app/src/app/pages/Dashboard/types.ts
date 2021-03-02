@@ -116,7 +116,7 @@ export type DashboardNewMasterBranch = {
 };
 
 export type DashboardCommunitySandbox = {
-  type: 'searched-sandbox';
+  type: 'community-sandbox';
   sandbox: Pick<
     DashboardSandbox['sandbox'],
     | 'id'

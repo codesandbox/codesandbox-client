@@ -63,7 +63,7 @@ const Results = connectHits(({ hits }) => {
 
   const items: DashboardCommunitySandbox[] = hits.map(sandbox => ({
     noDrag: true,
-    type: 'searched-sandbox',
+    type: 'community-sandbox',
     sandbox: {
       id: sandbox.alias,
       alias: sandbox.alias,
