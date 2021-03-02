@@ -9,6 +9,7 @@ import {
   DashboardFolder,
   DashboardRepo,
   DashboardNewMasterBranch,
+  DashboardCommunitySandbox,
   PageTypes,
 } from '../../../types';
 
@@ -19,6 +20,7 @@ interface IMultiMenuProps {
     | DashboardFolder
     | DashboardRepo
     | DashboardNewMasterBranch
+    | DashboardCommunitySandbox
   >;
   page: PageTypes;
 }

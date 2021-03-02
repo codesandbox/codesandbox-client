@@ -6,6 +6,7 @@ import {
   DashboardFolder,
   DashboardRepo,
   DashboardNewMasterBranch,
+  DashboardCommunitySandbox,
   PageTypes,
 } from '../../types';
 import {
@@ -61,6 +62,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     | DashboardTemplate
     | DashboardRepo
     | DashboardNewMasterBranch
+    | DashboardCommunitySandbox
   > = selectedIds.map(id => {
     if (id.startsWith('/')) {
       if (repos && repos.length) {

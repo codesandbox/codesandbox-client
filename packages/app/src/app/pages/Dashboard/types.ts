@@ -115,10 +115,11 @@ export type DashboardNewMasterBranch = {
   };
 };
 
-export type DashboardSearchedSandbox = {
+export type DashboardCommunitySandbox = {
   type: 'searched-sandbox';
   sandbox: Pick<
     DashboardSandbox['sandbox'],
+    | 'id'
     | 'alias'
     | 'title'
     | 'description'
@@ -147,4 +148,4 @@ export type DashboardGridItem =
   | DashboardRepoSandbox
   | DashboardBlankRowFill
   | DashboardSkeleton
-  | DashboardSearchedSandbox;
+  | DashboardCommunitySandbox;

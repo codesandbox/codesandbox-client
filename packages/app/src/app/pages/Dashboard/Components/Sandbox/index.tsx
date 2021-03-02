@@ -17,7 +17,7 @@ import { useSelection } from '../Selection';
 import {
   DashboardSandbox,
   DashboardTemplate,
-  DashboardSearchedSandbox,
+  DashboardCommunitySandbox,
   PageTypes,
 } from '../../types';
 import { SandboxItemComponentProps } from './types';
@@ -32,7 +32,7 @@ const PrivacyIcons = {
 interface GenericSandboxProps {
   page: PageTypes;
   isScrolling: boolean;
-  item: DashboardSandbox | DashboardTemplate | DashboardSearchedSandbox;
+  item: DashboardSandbox | DashboardTemplate | DashboardCommunitySandbox;
 }
 
 function getFolderName(item: GenericSandboxProps['item']): string {

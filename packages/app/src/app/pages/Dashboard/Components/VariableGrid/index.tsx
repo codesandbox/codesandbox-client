@@ -26,7 +26,7 @@ import {
   DashboardRepo,
   DashboardNewRepo,
   DashboardNewMasterBranch,
-  DashboardSearchedSandbox,
+  DashboardCommunitySandbox,
   PageTypes,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
@@ -73,7 +73,7 @@ interface IComponentForTypes {
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
-  'searched-sandbox': React.FC<DecoratedItemProps<DashboardSearchedSandbox>>;
+  'searched-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
