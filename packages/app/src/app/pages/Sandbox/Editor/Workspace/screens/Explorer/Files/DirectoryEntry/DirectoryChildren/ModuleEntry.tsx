@@ -4,7 +4,7 @@ import { useOvermind } from 'app/overmind';
 import getType from 'app/utils/get-type.ts';
 import React from 'react';
 
-import Entry from '../Entry';
+import { Entry } from '../Entry';
 
 interface IModuleEntryProps {
   module: Module;
@@ -26,7 +26,7 @@ interface IModuleEntryProps {
   isActive: boolean;
 }
 
-const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
+export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
   ({
     module,
     setCurrentModule,
@@ -78,5 +78,3 @@ const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
     );
   }
 );
-
-export default ModuleEntry;

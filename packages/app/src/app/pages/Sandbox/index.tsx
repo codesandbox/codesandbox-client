@@ -48,6 +48,7 @@ export const Sandbox = React.memo<Props>(
       actions.editor,
       actions.preferences,
       showNewSandboxModal,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       match?.params,
     ]);
 

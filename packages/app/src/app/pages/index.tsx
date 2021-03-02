@@ -37,8 +37,10 @@ const routeDebugger = _debug('cs:app:router');
 const SignInAuth = Loadable(
   () => import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
 );
-const SignIn = Loadable(
-  () => import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
+const SignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-in' */ './SignIn').then(module => ({
+    default: module.SignIn,
+  }))
 );
 const Live = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({

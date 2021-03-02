@@ -64,6 +64,7 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [up, down]);
 
   useEffect(() => {
@@ -91,7 +92,7 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
             content: '""',
             position: 'absolute',
             top: 0,
-            backgroundImage: (theme) => getBackgroundColor({ focus, theme }),
+            backgroundImage: theme => getBackgroundColor({ focus, theme }),
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center center',
             opacity: focus ? 1 : 0.8,
