@@ -42,6 +42,7 @@ import { GenericAlertModal } from './GenericAlertModal';
 import { AccountDeletionModal } from './AccountDeletion';
 import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfirmation';
 import { NotFoundBranchModal } from './NotFoundBranchModal';
+import { CropThumbnail } from './CropThumbnail';
 
 const modals = {
   preferences: {
@@ -82,6 +83,10 @@ const modals = {
   },
   netlifyLogs: {
     Component: NetlifyLogs,
+    width: 750,
+  },
+  cropThumbnail: {
+    Component: CropThumbnail,
     width: 750,
   },
   deleteDeployment: {

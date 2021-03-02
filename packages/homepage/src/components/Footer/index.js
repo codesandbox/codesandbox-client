@@ -82,8 +82,12 @@ const footerNavElements = [
         link: '/jobs',
       },
       {
-        text: 'Legal',
-        link: '/legal',
+        text: 'Terms Of Use',
+        link: '/legal/terms',
+      },
+      {
+        text: 'Privacy Policy',
+        link: '/legal/privacy',
       },
     ],
   },

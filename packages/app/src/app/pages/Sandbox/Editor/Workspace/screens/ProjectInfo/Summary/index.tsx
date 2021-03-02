@@ -33,7 +33,9 @@ import { TemplateConfig } from './TemplateConfig';
 
 export const Summary = () => {
   const { currentSandbox, sessionFrozen } = useAppState().editor;
+  const { editingSandboxInfo } = useAppState().workspace;
   const { frozenUpdated, sessionFreezeOverride } = useActions().editor;
+  const { toggleEditingSandboxInfo } = useActions().workspace;
   const {
     author,
     description,
@@ -65,16 +67,14 @@ export const Summary = () => {
   const isForked = forkedFromSandbox || forkedTemplateSandbox;
   const { url: templateUrl } = getTemplateDefinition(template);
 
-  const [editing, setEditing] = React.useState(false);
-
   return (
     <Collapsible
       title={customTemplate ? 'Template Info' : 'Sandbox Info'}
       defaultOpen
     >
-      <Element marginBottom={editing ? 10 : 6}>
-        {editing ? (
-          <EditSummary setEditing={setEditing} />
+      <Element marginBottom={editingSandboxInfo ? 10 : 6}>
+        {editingSandboxInfo ? (
+          <EditSummary setEditing={toggleEditingSandboxInfo} />
         ) : (
           <Stack as="section" direction="vertical" gap={2} paddingX={2}>
             <Stack justify="space-between" align="center">
@@ -93,7 +93,7 @@ export const Summary = () => {
                 name="edit"
                 title="Edit description"
                 size={12}
-                onClick={() => setEditing(true)}
+                onClick={() => toggleEditingSandboxInfo(true)}
               />
             </Stack>
 

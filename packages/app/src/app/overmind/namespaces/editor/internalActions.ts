@@ -9,6 +9,7 @@ import {
   ServerContainerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
+import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
@@ -229,6 +230,7 @@ export const saveCode = async (
       message: 'There was a problem with saving the code, please try again',
       error,
     });
+    captureException(error);
 
     if (cbID) {
       effects.vscode.callCallbackError(cbID, error.message);

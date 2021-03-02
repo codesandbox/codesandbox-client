@@ -25,6 +25,23 @@ function checkHasStack() {
 
 checkHasStack();
 
+class NewError extends Error {
+  constructor(n: string) {
+    super(n);
+
+    // @ts-ignore
+    this.stack = {
+      [2]: stackSplit,
+      split() {
+        return [stackSplit, stackSplit, stackSplit, stackSplit];
+      },
+      replace() {
+        return '';
+      },
+    };
+  }
+}
+
 /**
  * Babel expects to be able to do this:
  *
@@ -39,15 +56,8 @@ checkHasStack();
 export function installErrorMock() {
   if (!hasStack) {
     // @ts-ignore
-    Error.prototype.stack = {
-      [2]: stackSplit,
-      split() {
-        return [stackSplit, stackSplit, stackSplit, stackSplit];
-      },
-      replace() {
-        return ''
-      }
-    };
+    self.Error = NewError;
+
     hasStack = true;
   }
 }

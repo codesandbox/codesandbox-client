@@ -17,10 +17,12 @@ import React, {
 } from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
+import { ThumbnailEdit } from './ThumbnailEdit';
 
 type Props = {
   setEditing: (editing: boolean) => void;
 };
+
 export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
   const {
     editor: {
@@ -98,8 +100,8 @@ export const EditSummary: FunctionComponent<Props> = ({ setEditing }) => {
         </FormField>
 
         <TagInput onChange={setNewTags} value={newTags} />
+        <ThumbnailEdit />
       </Stack>
-
       <Stack justify="space-between" paddingX={2}>
         <Button
           css={{ flex: 1 }}
