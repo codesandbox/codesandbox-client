@@ -117,7 +117,7 @@ const SearchInputGroup = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const [value, setValue] = useState(
+  const [query, setQuery] = useState(
     new URLSearchParams(window.location.search).get('query') || ''
   );
 
@@ -125,17 +125,17 @@ const SearchInputGroup = () => {
     ? 'COMMUNITY'
     : 'WORKSPACE';
 
-  const search = (query: string) => {
+  const search = (queryString: string) => {
     if (searchType === 'COMMUNITY') {
-      history.push(dashboardUrls.exploreSearch(query, activeTeam));
+      history.push(dashboardUrls.exploreSearch(queryString, activeTeam));
     } else {
-      history.push(dashboardUrls.search(query, activeTeam));
+      history.push(dashboardUrls.search(queryString, activeTeam));
     }
   };
   const [debouncedSearch] = useDebouncedCallback(search, 100);
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
+    setQuery(event.target.value);
 
     if (event.target.value.length >= 2) debouncedSearch(event.target.value);
     if (!event.target.value) {
@@ -144,6 +144,10 @@ const SearchInputGroup = () => {
   };
 
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!location.pathname.includes('search')) {
+      // navigate from other places on enter
+      history.push(dashboardUrls.search(query, activeTeam));
+    }
     if (event.which === ENTER) event.currentTarget.blur();
   };
 
@@ -161,15 +165,15 @@ const SearchInputGroup = () => {
         onSelect={() => {
           // switch to the other search
           if (searchType === 'COMMUNITY') {
-            history.push(dashboardUrls.search(value, activeTeam));
+            history.push(dashboardUrls.search(query, activeTeam));
           } else {
-            history.push(dashboardUrls.exploreSearch(value, activeTeam));
+            history.push(dashboardUrls.exploreSearch(query, activeTeam));
           }
         }}
       >
         <ComboboxInput
           as={Input}
-          value={value}
+          value={query}
           onChange={onChange}
           onKeyPress={handleEnter}
           placeholder="Search all sandboxes"
@@ -193,7 +197,7 @@ const SearchInputGroup = () => {
               })}
             >
               <ComboboxOption
-                value={value}
+                value={query}
                 justify="space-between"
                 css={css({
                   outline: 'none',
@@ -209,7 +213,7 @@ const SearchInputGroup = () => {
                   },
                 })}
               >
-                <span>{value}</span>
+                <span>{query}</span>
                 <span>
                   {searchType === 'COMMUNITY' ? 'Workspace' : 'Community'} ⏎
                 </span>
