@@ -121,8 +121,12 @@ const SearchInputGroup = () => {
     new URLSearchParams(window.location.search).get('query') || ''
   );
 
+  const searchType = location.pathname.includes('/explore')
+    ? 'COMMUNITY'
+    : 'WORKSPACE';
+
   const search = (query: string) => {
-    if (location.pathname.includes('/explore')) {
+    if (searchType === 'COMMUNITY') {
       history.push(dashboardUrls.exploreSearch(query, activeTeam));
     } else {
       history.push(dashboardUrls.search(query, activeTeam));
@@ -155,7 +159,12 @@ const SearchInputGroup = () => {
       <Combobox
         openOnFocus
         onSelect={() => {
-          history.push(dashboardUrls.exploreSearch(value, activeTeam));
+          // switch to the other search
+          if (searchType === 'COMMUNITY') {
+            history.push(dashboardUrls.search(value, activeTeam));
+          } else {
+            history.push(dashboardUrls.exploreSearch(value, activeTeam));
+          }
         }}
       >
         <ComboboxInput
@@ -201,7 +210,9 @@ const SearchInputGroup = () => {
                 })}
               >
                 <span>{value}</span>
-                <span>Community ⏎</span>
+                <span>
+                  {searchType === 'COMMUNITY' ? 'Workspace' : 'Community'} ⏎
+                </span>
               </ComboboxOption>
             </ComboboxList>
             <Text
@@ -215,7 +226,7 @@ const SearchInputGroup = () => {
                 paddingX: 2,
               })}
             >
-              in workspace ⏎
+              {searchType === 'COMMUNITY' ? 'in community' : 'in workspace'} ⏎
             </Text>
           </ComboboxPopover>
         )}
