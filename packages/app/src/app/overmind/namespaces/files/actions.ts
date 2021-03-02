@@ -629,7 +629,7 @@ export const thumbnailUploaded: AsyncAction<{
 
     effects.executor.updateFiles(sandbox);
     actions.git.updateGitChanges();
-    effects.notificationToast.success('Cover image updated');
+    effects.notificationToast.success('Thumbnail image updated');
   } catch (error) {
     if (error.message.indexOf('413') !== -1) {
       actions.internal.handleError({

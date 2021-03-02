@@ -57,7 +57,7 @@ export const CropThumbnail: FunctionComponent = () => {
   };
 
   return (
-    <Alert title="Crop your sandbox cover thumbnail">
+    <Alert title="Crop your sandbox thumbnail">
       <GlobalStyle />
       <Element marginY={6}>
         <img
