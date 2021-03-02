@@ -629,7 +629,6 @@ export const thumbnailUploaded: AsyncAction<{
 
     effects.executor.updateFiles(sandbox);
     actions.git.updateGitChanges();
-    state.workspace.editingSandboxInfo = false;
     effects.notificationToast.success('Cover image updated');
   } catch (error) {
     if (error.message.indexOf('413') !== -1) {
