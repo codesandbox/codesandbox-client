@@ -4,8 +4,8 @@ import { useOvermind } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import * as React from 'react';
 
-import ModuleEntry from './ModuleEntry';
-import DirectoryEntry from '..';
+import { ModuleEntry } from './ModuleEntry';
+import { DirectoryEntry } from '..';
 
 interface IDirectoryChildrenProps {
   depth?: number;
@@ -24,7 +24,7 @@ interface IDirectoryChildrenProps {
   renameValidator?: (id: string, title: string) => string | false | null;
 }
 
-const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
+export const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   depth = 0,
   renameModule,
   setCurrentModule,
@@ -99,5 +99,3 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
     </div>
   );
 };
-
-export default DirectoryChildren;

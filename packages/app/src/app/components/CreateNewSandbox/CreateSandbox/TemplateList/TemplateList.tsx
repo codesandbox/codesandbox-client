@@ -370,12 +370,12 @@ export const TemplateList = ({
                     ? template.sandbox.collection?.team?.name ||
                       template.sandbox.author?.username
                     : '';
+                  let shortKey = '';
 
-                  const shortKey = showSecondaryShortcuts
-                    ? index < 9
-                      ? `${MODIFIER_KEY}+${index + 1}`
-                      : ''
-                    : '';
+                  if (showSecondaryShortcuts) {
+                    shortKey = index < 9 ? `${MODIFIER_KEY}+${index + 1}` : '';
+                  }
+
                   const detailText = focused ? '↵' : shortKey;
 
                   return (

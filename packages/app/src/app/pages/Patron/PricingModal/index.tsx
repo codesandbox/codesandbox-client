@@ -1,6 +1,6 @@
 import React from 'react';
 import { useOvermind } from 'app/overmind';
-import PricingInfo from './PricingInfo';
+import { PricingInfo } from './PricingInfo';
 import { PricingChoice } from './PricingChoice';
 import { Badge } from './Badge';
 import { Container, Details } from './elements';

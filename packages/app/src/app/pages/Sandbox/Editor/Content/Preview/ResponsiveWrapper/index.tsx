@@ -117,6 +117,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
 
   useEffect(() => {
     actions.checkURLParameters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -239,7 +240,9 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
         widthResizer={widthResizer}
         heightResizer={heightResizer}
       >
-        <PreviewCommentWrapper scale={on ? scale : 1}>{children}</PreviewCommentWrapper>
+        <PreviewCommentWrapper scale={on ? scale : 1}>
+          {children}
+        </PreviewCommentWrapper>
       </ResizeHandles>
     </ThemeProvider>
   );

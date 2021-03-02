@@ -33,6 +33,7 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   }: IOvermindProp = useOvermind();
 
   let container = null;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const tabEls = {};
 
   useEffect(() => {

@@ -30,17 +30,24 @@ export const InstallExtensionBanner = withTheme(({ theme }: { theme: any }) => {
     state.preview.mode === 'responsive' ||
     state.preview.mode === 'responsive-add-comment';
 
+  const getTop = () => {
+    if (isShowing) {
+      if (isResponsive) {
+        return ADDRESSBAR_HEIGHT + RESPONSIVE_BAR_HEIGHT;
+      }
+      return ADDRESSBAR_HEIGHT;
+    }
+
+    return 0;
+  };
+
   return (
     <ThemeProvider theme={theme.vscodeTheme}>
       <Stack
         align="center"
         justify="space-between"
         style={{
-          top: isShowing
-            ? isResponsive
-              ? ADDRESSBAR_HEIGHT + RESPONSIVE_BAR_HEIGHT
-              : ADDRESSBAR_HEIGHT
-            : 0,
+          top: getTop(),
         }}
         padding={2}
         css={css({

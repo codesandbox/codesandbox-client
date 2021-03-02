@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Alert } from '../Common/Alert';
 
-const LiveVersionMismatch: FunctionComponent = () => (
+export const LiveVersionMismatch: FunctionComponent = () => (
   <Alert
     title="Version Mismatch"
     description={
@@ -9,5 +9,3 @@ const LiveVersionMismatch: FunctionComponent = () => (
     }
   />
 );
-
-export default LiveVersionMismatch;

@@ -24,7 +24,7 @@ interface IModuleEntryProps {
   renameValidator?: (id: string, title: string) => string | false | null;
 }
 
-const ModuleEntry: React.FC<IModuleEntryProps> = ({
+export const ModuleEntry: React.FC<IModuleEntryProps> = ({
   module,
   setCurrentModule,
   markTabsNotDirty,
@@ -72,5 +72,3 @@ const ModuleEntry: React.FC<IModuleEntryProps> = ({
     />
   );
 };
-
-export default ModuleEntry;

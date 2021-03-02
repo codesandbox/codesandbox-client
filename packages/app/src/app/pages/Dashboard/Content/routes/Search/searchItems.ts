@@ -24,6 +24,7 @@ const useSearchedSandboxes = (query: string) => {
     if (index) {
       setFoundResults(index.search(query));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, searchIndex]);
 
   return foundResults;
