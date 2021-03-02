@@ -178,7 +178,7 @@ const SearchInputGroup = () => {
           onKeyPress={handleEnter}
           placeholder="Search all sandboxes"
         />
-        {SHOW_COMMUNITY_SEARCH && (
+        {SHOW_COMMUNITY_SEARCH && query.length >= 2 && (
           <ComboboxPopover
             css={css({
               zIndex: 4,
