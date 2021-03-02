@@ -70,12 +70,8 @@ const Results = connectHits(({ hits }) => {
       alias: sandbox.alias,
       title: sandbox.title,
       description: sandbox.description,
-      updatedAt: sandbox.updated_at,
       screenshotUrl: `https://codesandbox.io/api/v1/sandboxes/${sandbox.alias}/screenshot.png`,
       viewCount: Number(sandbox.view_count),
-      // defaults:
-      privacy: 0,
-      alwaysOn: false,
     },
   }));
 
@@ -91,9 +87,7 @@ const Results = connectHits(({ hits }) => {
       <Header
         title={`Search results for '${query}'`}
         activeTeam={activeTeam}
-        showViewOptions
         showFilters
-        showSortOptions
       />
       <VariableGrid items={items} page={pageType} />;
     </SelectionProvider>

@@ -11,6 +11,7 @@ import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { ImportRepo } from '../Repo/ImportRepo';
 import { Folder } from '../Folder';
 import { Repo } from '../Repo';
+import { CommunitySandbox } from '../CommunitySandbox';
 import { EmptyScreen } from '../EmptyScreen';
 import {
   DashboardGridItem,
@@ -129,11 +130,7 @@ const ComponentForTypes: IComponentForTypes = {
   blank: () => <div />,
   skeleton: () => <SkeletonSandbox />,
   'community-sandbox': React.memo(props => (
-    <Sandbox
-      page={props.page}
-      item={props.item}
-      isScrolling={props.isScrolling}
-    />
+    <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
 };
 
@@ -227,6 +224,7 @@ export const VariableGrid = ({
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
+  if (location.pathname.includes('explore')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
