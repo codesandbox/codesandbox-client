@@ -11,6 +11,7 @@ import {
   DashboardFolder,
   DashboardTemplate,
   PageTypes,
+  DashboardCommunitySandbox,
 } from '../types';
 
 export type DndDropType = {
@@ -28,7 +29,8 @@ export type CollectionReturn = {
 export type DragItemType =
   | DashboardSandbox
   | DashboardFolder
-  | DashboardTemplate;
+  | DashboardTemplate
+  | DashboardCommunitySandbox;
 
 /**
  * We re-export `useDrop` and `useDrag` from `react-dnd` with the right types attached to it. This way

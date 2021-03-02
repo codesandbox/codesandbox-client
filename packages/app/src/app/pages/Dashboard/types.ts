@@ -117,6 +117,8 @@ export type DashboardNewMasterBranch = {
 
 export type DashboardCommunitySandbox = {
   type: 'community-sandbox';
+  noDrag: true;
+  autoFork: false;
   sandbox: Pick<
     DashboardSandbox['sandbox'],
     | 'id'
@@ -126,8 +128,9 @@ export type DashboardCommunitySandbox = {
     | 'updatedAt'
     | 'screenshotUrl'
     | 'viewCount'
+    | 'privacy'
+    | 'alwaysOn'
   >;
-  noDrag?: boolean;
 };
 
 export type PageTypes = PT;

@@ -49,6 +49,9 @@ function getFolderName(item: GenericSandboxProps['item']): string {
     }
     return 'Templates';
   }
+
+  if (item.type === 'community-sandbox') return 'Community';
+
   const { sandbox } = item;
 
   if (sandbox.collection) {

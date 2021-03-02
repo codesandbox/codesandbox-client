@@ -1,9 +1,16 @@
-import { DashboardSandbox, DashboardTemplate } from '../../types';
+import {
+  DashboardCommunitySandbox,
+  DashboardSandbox,
+  DashboardTemplate,
+} from '../../types';
 
 export interface SandboxItemComponentProps {
   noDrag?: boolean;
   autoFork?: boolean;
-  sandbox: DashboardSandbox['sandbox'] | DashboardTemplate['sandbox'];
+  sandbox:
+    | DashboardSandbox['sandbox']
+    | DashboardTemplate['sandbox']
+    | DashboardCommunitySandbox['sandbox'];
   sandboxTitle: string;
   sandboxLocation: string;
   lastUpdated: string;

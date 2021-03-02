@@ -63,15 +63,19 @@ const Results = connectHits(({ hits }) => {
 
   const items: DashboardCommunitySandbox[] = hits.map(sandbox => ({
     noDrag: true,
+    autoFork: false,
     type: 'community-sandbox',
     sandbox: {
-      id: sandbox.alias,
+      id: sandbox.objectID,
       alias: sandbox.alias,
       title: sandbox.title,
       description: sandbox.description,
       updatedAt: sandbox.updated_at,
       screenshotUrl: `https://codesandbox.io/api/v1/sandboxes/${sandbox.alias}/screenshot.png`,
       viewCount: Number(sandbox.view_count),
+      // defaults:
+      privacy: 0,
+      alwaysOn: false,
     },
   }));
 
