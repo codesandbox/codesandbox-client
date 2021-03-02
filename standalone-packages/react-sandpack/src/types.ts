@@ -21,7 +21,7 @@ export interface SandpackState {
   lazyAnchorRef: React.RefObject<HTMLDivElement>;
 }
 
-export type SandpackStatus = 'idle' | 'running';
+export type SandpackStatus = 'initial' | 'idle' | 'running';
 export type EditorState = 'pristine' | 'dirty';
 
 export type SandpackListener = (msg: any) => void;
@@ -87,10 +87,11 @@ export type SandpackPredefinedTemplate = 'react' | 'vue' | 'vanilla';
 // | 'parcel';
 
 export type SandpackPredefinedTheme =
-  | 'sp-light'
-  | 'sp-dark'
+  | 'codesandbox-light'
+  | 'codesandbox-dark'
   | 'night-owl'
-  | 'csb-light';
+  | 'aqua-blue'
+  | 'monokai-pro';
 
 export type SandpackSyntaxStyle = {
   color?: string;

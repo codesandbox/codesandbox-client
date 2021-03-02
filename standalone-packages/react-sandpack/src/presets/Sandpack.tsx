@@ -28,6 +28,7 @@ export interface SandpackProps {
     activePath?: string;
 
     editorWidthPercentage?: number;
+    editorHeight?: React.CSSProperties['height'];
 
     showNavigator?: boolean;
 
@@ -78,9 +79,9 @@ export const Sandpack: React.FC<SandpackProps> = props => {
     fileResolver: props.options?.fileResolver,
   };
 
-  const { height, ...otherStyles } = props.customStyle || {};
   const editorPart = props.options?.editorWidthPercentage || 50;
   const previewPart = 100 - editorPart;
+  const editorHeight = props.options?.editorHeight;
 
   return (
     <SandpackProvider
@@ -88,11 +89,11 @@ export const Sandpack: React.FC<SandpackProps> = props => {
       customSetup={userInputSetup}
       {...providerOptions}
     >
-      <SandpackLayout style={otherStyles} theme={props.theme}>
+      <SandpackLayout style={props.customStyle} theme={props.theme}>
         <SandpackCodeEditor
           {...codeEditorOptions}
           customStyle={{
-            height,
+            height: editorHeight,
             flexGrow: editorPart,
             flexShrink: editorPart,
             minWidth: 700 * (editorPart / (previewPart + editorPart)),
@@ -101,7 +102,7 @@ export const Sandpack: React.FC<SandpackProps> = props => {
         <SandpackPreview
           {...previewOptions}
           customStyle={{
-            height,
+            height: editorHeight,
             flexGrow: previewPart,
             flexShrink: previewPart,
             minWidth: 700 * (previewPart / (previewPart + editorPart)),

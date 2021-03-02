@@ -28,6 +28,7 @@ export const FileTabs: React.FC<FileTabsProps> = props => {
             aria-selected={filePath === activePath}
             data-active={filePath === activePath}
             onClick={() => changeActiveFile(filePath)}
+            title={filePath}
           >
             {getFileName(filePath)}
           </button>

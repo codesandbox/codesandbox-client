@@ -88,6 +88,12 @@ export const getSetup = (
       return SANDBOX_TEMPLATES.vanilla;
     }
 
+    if (!setup.files || Object.keys(setup.files).length === 0) {
+      throw new Error(
+        `When using the customSetup without a template, you must pass at least one file for sandpack to work`
+      );
+    }
+
     // If not template specified, use the setup entirely
     return setup as SandboxTemplate;
   }

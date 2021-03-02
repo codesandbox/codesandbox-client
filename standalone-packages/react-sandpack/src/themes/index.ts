@@ -6,7 +6,39 @@ import {
 } from '../types';
 import { hexToCSSRGBa } from '../utils/string-utils';
 
-export const sandpackLightTheme: SandpackTheme = {
+export const codesandboxLightTheme: SandpackTheme = {
+  palette: {
+    activeText: '#1f2933',
+    defaultText: '#757678',
+    inactiveText: '#e4e7eb',
+    activeBackground: '#e4e7eb',
+    defaultBackground: '#f8f9fb',
+    inputBackground: '#ffffff',
+    accent: '#64D2FF',
+    errorBackground: '#ffcdca',
+    errorForeground: '#811e18',
+  },
+  syntax: {
+    plain: '#151515',
+    comment: { color: '#999', fontStyle: 'italic' },
+    keyword: '#0971F1',
+    tag: '#0971F1',
+    punctuation: '#151515',
+    definition: '#151515',
+    property: '#151515',
+    static: '#FF453A',
+    string: '#BF5AF2',
+  },
+  typography: {
+    bodyFont:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+    monoFont:
+      '"Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace',
+    fontSize: '14px',
+  },
+};
+
+export const aquaBlueTheme: SandpackTheme = {
   palette: {
     activeText: '#1f2933',
     defaultText: '#737373',
@@ -39,7 +71,7 @@ export const sandpackLightTheme: SandpackTheme = {
   },
 };
 
-export const sandpackDarkTheme: SandpackTheme = {
+export const codesandboxDarkTheme: SandpackTheme = {
   palette: {
     activeText: '#FFFFFF',
     defaultText: '#999999',
@@ -54,12 +86,13 @@ export const sandpackDarkTheme: SandpackTheme = {
   syntax: {
     plain: '#FFFFFF',
     comment: { color: '#757575', fontStyle: 'italic' },
-    keyword: '#64D2FF',
-    tag: '#86D9CA',
+    keyword: '#77B7D7',
+    tag: '#DFAB5C',
     punctuation: '#ffffff',
-    definition: '#DFAB5C',
-    property: '86D9CA',
-    static: '#A8A5F3',
+    definition: '#86D9CA',
+    property: '#77B7D7',
+    static: '#C64640',
+    string: '#977CDC',
   },
   typography: {
     bodyFont:
@@ -73,8 +106,8 @@ export const sandpackDarkTheme: SandpackTheme = {
 export const nightOwlTheme: SandpackTheme = {
   palette: {
     activeText: 'rgb(197, 228, 253)',
-    defaultText: 'rgb(95, 126, 151)',
-    inactiveText: 'rgb(58, 62, 77)',
+    defaultText: 'rgb(105, 136, 161)',
+    inactiveText: 'rgb(78, 82, 97)',
     activeBackground: 'rgb(58, 62, 77)',
     defaultBackground: 'rgb(1, 22, 39)',
     inputBackground: 'rgb(11, 41, 66)',
@@ -102,28 +135,28 @@ export const nightOwlTheme: SandpackTheme = {
   },
 };
 
-export const csbLightTheme: SandpackTheme = {
+export const monokaiProTheme: SandpackTheme = {
   palette: {
-    activeText: '#1f2933',
-    defaultText: '#757575',
-    inactiveText: '#E6E6E6',
-    activeBackground: '#E6E6E6',
-    defaultBackground: '#FFF',
-    inputBackground: '#ffffff',
-    accent: '#64D2FF',
+    activeText: 'rgb(252, 252, 250)',
+    defaultText: 'rgb(147, 146, 147)',
+    inactiveText: '#444344',
+    activeBackground: '#444344',
+    defaultBackground: 'rgb(45, 42, 46)',
+    inputBackground: 'rgb(25, 24, 26)',
+    accent: 'rgb(255, 216, 102)',
     errorBackground: '#ffcdca',
     errorForeground: '#811e18',
   },
   syntax: {
-    plain: '#151515',
-    comment: { color: '#999', fontStyle: 'italic' },
-    keyword: '#0971F1',
-    tag: '#0971F1',
-    punctuation: '#151515',
-    definition: '#151515',
-    property: '#151515',
-    static: '#FF453A',
-    string: '#BF5AF2',
+    plain: 'rgb(252, 252, 250)',
+    comment: { color: '#757575', fontStyle: 'italic' },
+    keyword: 'rgb(255, 97, 136)',
+    tag: 'rgb(120, 220, 232)',
+    punctuation: 'rgb(147, 146, 147)',
+    definition: 'rgb(169, 220, 118)',
+    property: { color: 'rgb(120, 220, 232)', fontStyle: 'italic' },
+    static: 'rgb(171, 157, 242)',
+    string: 'rgb(255, 216, 102)',
   },
   typography: {
     bodyFont:
@@ -135,17 +168,18 @@ export const csbLightTheme: SandpackTheme = {
 };
 
 export const SANDPACK_THEMES: Record<SandpackPredefinedTheme, SandpackTheme> = {
-  'sp-light': sandpackLightTheme,
-  'sp-dark': sandpackDarkTheme,
+  'codesandbox-light': codesandboxLightTheme,
+  'codesandbox-dark': codesandboxDarkTheme,
   'night-owl': nightOwlTheme,
-  'csb-light': csbLightTheme,
+  'aqua-blue': aquaBlueTheme,
+  'monokai-pro': monokaiProTheme,
 };
 
 export const createThemeObject = (
   inputTheme?: SandpackPredefinedTheme | SandpackPartialTheme
 ) => {
-  const defaultTheme = sandpackLightTheme;
-  const defaultThemeKey = 'sp-light';
+  const defaultTheme = codesandboxLightTheme;
+  const defaultThemeKey = 'codesandbox-light';
 
   if (inputTheme === undefined) {
     return {

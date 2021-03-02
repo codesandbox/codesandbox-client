@@ -4,6 +4,7 @@ import { Story } from '@storybook/react';
 import { SandpackCodeEditor, CodeEditorProps } from './index';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
+import { SandpackThemeProvider } from '../../contexts/theme-context';
 
 export default {
   title: 'components/Code Editor',
@@ -21,24 +22,32 @@ export const Component: Story<CodeEditorProps> = args => (
       },
     }}
   >
-    <SandpackCodeEditor {...args} />
+    <SandpackThemeProvider>
+      <SandpackCodeEditor {...args} />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
 
 export const ReactCode = () => (
   <SandpackProvider template="react">
-    <SandpackCodeEditor showLineNumbers />
+    <SandpackThemeProvider>
+      <SandpackCodeEditor showLineNumbers />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
 
 export const VueCode = () => (
   <SandpackProvider template="vue">
-    <SandpackCodeEditor />
+    <SandpackThemeProvider>
+      <SandpackCodeEditor />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
 
 export const DarkTheme = () => (
-  <SandpackProvider template="vue" theme="sp-dark">
-    <SandpackCodeEditor />
+  <SandpackProvider template="vue">
+    <SandpackThemeProvider theme="codesandbox-dark">
+      <SandpackCodeEditor />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );

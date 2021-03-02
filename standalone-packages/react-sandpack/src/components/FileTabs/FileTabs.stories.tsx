@@ -19,7 +19,9 @@ export const Component = () => (
       },
     }}
   >
-    <FileTabs />
+    <SandpackLayout>
+      <FileTabs />
+    </SandpackLayout>
   </SandpackProvider>
 );
 
@@ -35,7 +37,7 @@ export const WithHiddenFiles = () => (
     }}
   >
     <SandpackLayout>
-      <div>
+      <div style={{ width: '100%' }}>
         <FileTabs />
         <SandpackCodeViewer showTabs={false} />
       </div>

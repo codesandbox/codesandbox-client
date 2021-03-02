@@ -101,7 +101,10 @@ export default function App() {
 Sandpack comes with some predefined themes:
 
 ```jsx
-<Sandpack theme="sp-dark" />
+<Sandpack theme="codesandbox-dark" />
+<Sandpack theme="codesandbox-light" />
+<Sandpack theme="night-owl" />
+<Sandpack theme="monokai-pro" />
 ```
 
 You can also pass a _partial_ theme object that overrides properties in the
@@ -125,11 +128,11 @@ Or you can import an existing theme object and change it or compose your own
 theme from scratch
 
 ```jsx
-import { Sandpack, sandpackDarkTheme } from 'react-smooshpack';
+import { Sandpack, codesandboxDarkTheme } from 'react-smooshpack';
 
 <Sandpack
   theme={{
-    ...sandpackDarkTheme,
+    ...codesandboxDarkTheme,
     typography: {
       fontSize: '16px',
       bodyFont: 'Arial',
@@ -224,16 +227,25 @@ some of the parts of the component via flags set on the `options` prop.
 ```
 
 You can also pass css style rules to the `customStyle` prop. This should be used
-with care, because it might mess up the layout and the theming. One useful
-configuration is the height of the component. We recommend **fixed heights**, to
-avoid any layout shift while the bundler is running or as you type in the editor
-or switch the tab. By default, the height is set to `300px`, but you can adjust
-that with the `customStyle` prop:
+with care, because it might mess up the layout and the theming.
 
 ```jsx
 <Sandpack
   customStyle={{
-    height: 350, // Any valid style property will be passed to the sandpack component here
+    border: 'none', // Any valid style property will be passed to the sandpack layout component here
+  }}
+/>
+```
+
+One useful configuration is the height of the component. We recommend **fixed
+heights**, to avoid any layout shift while the bundler is running or as you type
+in the editor or switch the tab. By default, the height is set to `300px`, but
+you can adjust that with the `options.editorHeight` prop:
+
+```jsx
+<Sandpack
+  options={{
+    editorHeight: 350,
   }}
 />
 ```

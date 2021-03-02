@@ -45,7 +45,7 @@ ReactRunner.args = {
 };
 
 export const VueRunner: Story<SandpackRunnerProps> = args => (
-  <SandpackRunner {...args} template="vue" theme="sp-dark" />
+  <SandpackRunner {...args} template="vue" theme="codesandbox-dark" />
 );
 
 VueRunner.args = {

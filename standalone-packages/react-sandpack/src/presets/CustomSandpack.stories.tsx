@@ -22,7 +22,7 @@ export default {
 
 export const UsingSandpackLayout = () => (
   <SandpackProvider template="react">
-    <SandpackLayout theme="sp-dark">
+    <SandpackLayout theme="codesandbox-dark">
       <SandpackTranspiledCode />
       <SandpackCodeViewer />
     </SandpackLayout>
@@ -31,7 +31,7 @@ export const UsingSandpackLayout = () => (
 
 export const UsingVisualElements = () => (
   <SandpackProvider template="react" activePath="/App.js">
-    <SandpackThemeProvider theme="sp-dark">
+    <SandpackThemeProvider theme="codesandbox-dark">
       <SandpackCodeEditor
         customStyle={{
           width: 500,

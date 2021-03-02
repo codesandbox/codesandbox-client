@@ -4,6 +4,7 @@ import { Story } from '@storybook/react';
 import { SandpackCodeViewer, CodeViewerProps } from '.';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
+import { SandpackThemeProvider } from '../../contexts/theme-context';
 
 export default {
   title: 'components/Code Viewer',
@@ -21,18 +22,24 @@ export const Component: Story<CodeViewerProps> = args => (
       },
     }}
   >
-    <SandpackCodeViewer {...args} />
+    <SandpackThemeProvider>
+      <SandpackCodeViewer {...args} />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
 
 export const ReactCode = () => (
   <SandpackProvider template="react">
-    <SandpackCodeViewer />
+    <SandpackThemeProvider>
+      <SandpackCodeViewer />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
 
 export const VueCode = () => (
-  <SandpackProvider template="vue" theme="sp-dark">
-    <SandpackCodeViewer />
+  <SandpackProvider template="vue">
+    <SandpackThemeProvider theme="codesandbox-dark">
+      <SandpackCodeViewer />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );

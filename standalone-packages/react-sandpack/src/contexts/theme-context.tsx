@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createThemeObject, sandpackLightTheme } from '../themes';
+import { createThemeObject, codesandboxLightTheme } from '../themes';
 import {
   SandpackPartialTheme,
   SandpackPredefinedTheme,
@@ -11,8 +11,8 @@ const SandpackThemeContext = React.createContext<{
   theme: SandpackTheme;
   id: string;
 }>({
-  theme: sandpackLightTheme,
-  id: 'sp-light',
+  theme: codesandboxLightTheme,
+  id: 'codesandbox-light',
 });
 
 const SandpackThemeProvider: React.FC<{

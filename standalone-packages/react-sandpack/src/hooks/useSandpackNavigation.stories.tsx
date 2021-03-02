@@ -1,4 +1,5 @@
 import React from 'react';
+import { SandpackLayout } from '../components/Layout';
 import { SandpackPreview } from '../components/Preview';
 import { SandpackProvider } from '../contexts/sandpack-context';
 import { useSandpackNavigation } from './useSandpackNavigation';
@@ -18,7 +19,9 @@ const CustomRefreshButton = () => {
 
 export const CustomCodeEditor = () => (
   <SandpackProvider template="react">
-    <SandpackPreview showRefreshButton={false} />
+    <SandpackLayout>
+      <SandpackPreview showRefreshButton={false} />
+    </SandpackLayout>
     <CustomRefreshButton />
   </SandpackProvider>
 );

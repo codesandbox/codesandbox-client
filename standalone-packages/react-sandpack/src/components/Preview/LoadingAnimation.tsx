@@ -14,14 +14,20 @@ export const LoadingAnimation = ({
       className="sp-overlay sp-loading"
       style={{
         opacity: loadingOverlayState === 'visible' ? 1 : 0,
-        transition: 'opacity 0.3s ease-out',
+        transition: 'opacity 0.5s ease-out',
       }}
     >
-      <div className="sp-cubes">
-        <div />
-        <div />
-        <div />
-        <div />
+      <div className="sp-cube-wrapper">
+        <div className="sp-cube">
+          <div className="sides">
+            <div className="top" />
+            <div className="right" />
+            <div className="bottom" />
+            <div className="left" />
+            <div className="front" />
+            <div className="back" />
+          </div>
+        </div>
       </div>
     </div>
   );

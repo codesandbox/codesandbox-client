@@ -84,7 +84,7 @@ class SandpackProvider extends React.PureComponent<
       activePath,
       bundlerState: undefined,
       error: null,
-      sandpackStatus: 'idle',
+      sandpackStatus: this.props.autorun ? 'initial' : 'idle',
       editorState: 'pristine',
       renderHiddenIframe: false,
     };
@@ -177,7 +177,7 @@ class SandpackProvider extends React.PureComponent<
       this.intersectionObserver = new IntersectionObserver(entries => {
         if (
           entries[0]?.intersectionRatio > 0 &&
-          this.state.sandpackStatus === 'idle'
+          this.state.sandpackStatus === 'initial'
         ) {
           this.runSandpack();
         }

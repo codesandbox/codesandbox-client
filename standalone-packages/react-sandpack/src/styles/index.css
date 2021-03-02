@@ -1,14 +1,15 @@
 .sp-wrapper {
-  --sp-colors-fg-active: #5b6776;
-  --sp-colors-fg-default: #737373;
-  --sp-colors-fg-inactive: #e5e7eb;
-  --sp-colors-bg-active: #e5e7eb;
+  --sp-colors-fg-active: #1f2933;
+  --sp-colors-fg-default: #757678;
+  --sp-colors-fg-inactive: #e4e7eb;
+  --sp-colors-bg-active: #e4e7eb;
   --sp-colors-bg-default: #f8f9fb;
   --sp-colors-bg-default-overlay: #f8f9fbcf;
   --sp-colors-bg-input: #ffffff;
-  --sp-colors-accent: #6caedd;
+  --sp-colors-accent: #64d2ff;
   --sp-colors-bg-error: #ffcdca;
   --sp-colors-fg-error: #811e18;
+
   --sp-font-size: 14px;
   --sp-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
@@ -192,6 +193,18 @@
   height: 100%;
 }
 
+.sp-preview-actions {
+  display: flex;
+  position: absolute;
+  bottom: var(--sp-space-2);
+  right: var(--sp-space-2);
+  z-index: 4;
+}
+
+.sp-preview-actions > * {
+  margin-left: var(--sp-space-2);
+}
+
 .sp-navigator {
   display: flex;
   align-items: center;
@@ -215,6 +228,7 @@
   outline: none;
   border-bottom: 1px solid transparent;
   transition: all 0.15s ease-out;
+  white-space: nowrap;
 }
 
 .sp-tab-button[data-active='true'] {
@@ -280,6 +294,15 @@
   outline: 2px solid var(--sp-colors-accent);
 }
 
+.sp-button.csb-icon-dark {
+  color: var(--sp-colors-bg-default);
+}
+
+.sp-button.csb-icon-dark:hover:not(:disabled) {
+  background-color: var(--sp-colors-bg-active);
+  color: var(--sp-colors-bg-active);
+}
+
 .sp-input {
   background-color: var(--sp-colors-bg-input);
   color: var(--sp-colors-fg-default);
@@ -310,73 +333,80 @@
 
 .sp-loading {
   background-color: var(--sp-colors-bg-default);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 5;
 }
 
-.sp-cubes {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-
-.sp-cubes div {
+.sp-cube-wrapper {
   position: absolute;
-  top: 32px;
-  width: 12px;
-  height: 12px;
-  background: var(--sp-colors-fg-default);
-  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  right: var(--sp-space-2);
+  bottom: var(--sp-space-2);
+  z-index: 4;
+  width: 32px;
+  height: 32px;
+  background: var(--sp-colors-bg-default);
+  border-radius: var(--sp-border-radius);
 }
 
-.sp-cubes div:nth-child(1) {
-  left: 8px;
-  animation: sp-grow 0.6s infinite;
+.sp-cube {
+  transform: translate(-4px, 9px) scale(0.13, 0.13);
 }
 
-.sp-cubes div:nth-child(2) {
-  left: 8px;
-  animation: sp-move 0.6s infinite;
+.sp-cube * {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+}
+.sp-cube .sides * {
+  border: 10px solid var(--sp-colors-fg-default);
+  border-radius: 8px;
+  background: var(--sp-colors-bg-default-overlay);
 }
 
-.sp-cubes div:nth-child(3) {
-  left: 32px;
-  animation: sp-move 0.6s infinite;
-}
-
-.sp-cubes div:nth-child(4) {
-  left: 56px;
-  animation: sp-shrink 0.6s infinite;
-}
-
-@keyframes sp-grow {
+@keyframes sp-cube-rotate {
   0% {
-    transform: scale(0);
+    transform: rotateX(-25.5deg) rotateY(45deg);
   }
+
   100% {
-    transform: scale(1);
+    transform: rotateX(-25.5deg) rotateY(405deg);
   }
 }
 
-@keyframes sp-shrink {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(0);
-  }
+.sp-cube .sides {
+  animation: sp-cube-rotate 1s linear infinite;
+  animation-fill-mode: forwards;
+  transform-style: preserve-3d;
+  transform: rotateX(-25.5deg) rotateY(45deg);
 }
 
-@keyframes sp-move {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(24px, 0);
-  }
+.sp-cube .sides .top {
+  transform: rotateX(90deg) translateZ(44px);
+  transform-origin: 50% 50%;
+}
+
+.sp-cube .sides .bottom {
+  transform: rotateX(-90deg) translateZ(44px);
+  transform-origin: 50% 50%;
+}
+
+.sp-cube .sides .front {
+  transform: rotateY(0deg) translateZ(44px);
+  transform-origin: 50% 50%;
+}
+
+.sp-cube .sides .back {
+  transform: rotateY(-180deg) translateZ(44px);
+  transform-origin: 50% 50%;
+}
+
+.sp-cube .sides .left {
+  transform: rotateY(-90deg) translateZ(44px);
+  transform-origin: 50% 50%;
+}
+
+.sp-cube .sides .right {
+  transform: rotateY(90deg) translateZ(44px);
+  transform-origin: 50% 50%;
 }
 
 @keyframes sp-fade-in {

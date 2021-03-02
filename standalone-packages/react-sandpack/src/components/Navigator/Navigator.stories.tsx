@@ -3,6 +3,7 @@ import { SandpackLayout } from '../../components/Layout';
 import { SandpackProvider } from '../../contexts/sandpack-context';
 import { Navigator } from '.';
 import { SandpackPreview } from '../Preview';
+import { SandpackThemeProvider } from '../../contexts/theme-context';
 
 export default {
   title: 'components/Navigator',
@@ -10,7 +11,9 @@ export default {
 
 export const Component = () => (
   <SandpackProvider template="react">
-    <Navigator />
+    <SandpackThemeProvider>
+      <Navigator />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
 

@@ -12,7 +12,8 @@ export const getEditorTheme = (theme: SandpackTheme) =>
     $: {
       backgroundColor: theme.palette.defaultBackground,
       '& ::selection': { backgroundColor: theme.palette.activeBackground },
-      color: theme.palette.activeText,
+      color:
+        getSyntaxStyle(theme.syntax.plain).color || theme.palette.activeText,
     },
 
     '$$focused $selectionBackground': {

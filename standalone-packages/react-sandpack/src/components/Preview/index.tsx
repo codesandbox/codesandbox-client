@@ -14,6 +14,7 @@ export type PreviewProps = PreviewOptions & {
   customStyle?: React.CSSProperties;
   showOpenInCodeSandbox?: boolean;
   showRefreshButton?: boolean;
+  showSandpackErrorOverlay?: boolean;
 };
 
 export { RefreshButton, OpenInCodeSandboxButton };
@@ -23,6 +24,7 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
   showNavigator = false,
   showRefreshButton = true,
   showOpenInCodeSandbox = true,
+  showSandpackErrorOverlay = true,
 }) => {
   const { sandpack, listen } = useSandpack();
   const [loadingOverlayState, setLoadingOverlayState] = React.useState<
@@ -37,7 +39,7 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
 
       if (message.type === 'done') {
         setLoadingOverlayState('fading');
-        setTimeout(() => setLoadingOverlayState('hidden'), 300); // 300 ms animation
+        setTimeout(() => setLoadingOverlayState('hidden'), 500); // 300 ms animation
       }
 
       // TODO: Check why the bundler sends the resize message so late
@@ -57,7 +59,7 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
       className="sp-stack"
       style={{
         ...customStyle,
-        display: status === 'running' ? 'flex' : 'none',
+        display: status !== 'idle' ? 'flex' : 'none',
       }}
     >
       {showNavigator && <Navigator />}
@@ -68,35 +70,23 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
           ref={iframeRef}
           title="Sandpack Preview"
         />
-        {error && (
+        {showSandpackErrorOverlay && error && (
           <div className="sp-overlay sp-error">
             <div className="sp-error-message">{error.message}</div>
           </div>
         )}
 
-        {!showNavigator && showRefreshButton && (
-          <RefreshButton
-            customStyle={{
-              position: 'absolute',
-              bottom: 'var(--sp-space-2)',
-              left: 'var(--sp-space-2)',
-              zIndex: 4,
-            }}
-          />
-        )}
+        <div className="sp-preview-actions">
+          {!showNavigator && showRefreshButton && status === 'running' && (
+            <RefreshButton />
+          )}
 
-        {showOpenInCodeSandbox && (
-          <OpenInCodeSandboxButton
-            customStyle={{
-              position: 'absolute',
-              bottom: 'var(--sp-space-2)',
-              right: 'var(--sp-space-2)',
-              zIndex: 4,
-            }}
-          />
-        )}
+          {showOpenInCodeSandbox && <OpenInCodeSandboxButton />}
+        </div>
 
-        <LoadingAnimation loadingOverlayState={loadingOverlayState} />
+        {status === 'running' && (
+          <LoadingAnimation loadingOverlayState={loadingOverlayState} />
+        )}
       </div>
     </div>
   );
