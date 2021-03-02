@@ -5,7 +5,7 @@ import { AnimatePresence } from 'framer-motion';
 
 import { ToastContainer } from './elements';
 
-const key = 'ACCEPTED_TERMS_CODESANDBOX';
+const key = 'ACCEPTED_TERMS_CODESANDBOX_v1.1';
 const Privacy = () => {
   const [show, setShow] = useState(false);
 
@@ -15,7 +15,7 @@ const Privacy = () => {
       setShow(true);
       window.localStorage.setItem(key, true);
 
-      track('Saw Privacy Policy Notification');
+      track('Saw Terms of Use Notification');
     }
   }, []);
 
