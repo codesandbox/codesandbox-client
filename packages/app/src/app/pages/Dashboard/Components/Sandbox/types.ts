@@ -4,7 +4,6 @@ export interface SandboxItemComponentProps {
   noDrag?: boolean;
   autoFork?: boolean;
   sandbox: DashboardSandbox['sandbox'] | DashboardTemplate['sandbox'];
-
   sandboxTitle: string;
   sandboxLocation: string;
   lastUpdated: string;
