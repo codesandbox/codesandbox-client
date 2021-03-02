@@ -281,7 +281,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     ];
   }
 
-  return (
+  return options.length > 0 ? (
     <Menu.ContextMenu
       visible={visible}
       setVisibility={setVisibility}
@@ -298,5 +298,5 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
         )
       )}
     </Menu.ContextMenu>
-  );
+  ) : null;
 };
