@@ -22,7 +22,7 @@ import {
 
 import { Element } from '@codesandbox/components';
 
-export const GlobalSearch = () => {
+export const CommunitySearch = () => {
   const location = useLocation();
   const query = new URLSearchParams(location.search).get('query');
 
