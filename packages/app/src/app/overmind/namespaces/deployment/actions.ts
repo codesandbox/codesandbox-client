@@ -239,6 +239,7 @@ export const deployWithGitHubPages = async ({
 
     state.deployment.building = true;
     await effects.githubPages.getLogs(sandbox.id);
+    state.deployment.githubSite.ghPages = true;
     effects.notificationToast.success('Sandbox Deploying');
   } catch (error) {
     actions.internal.handleError({
@@ -254,7 +255,14 @@ export const fetchGithubSite = async ({ effects, state }: Context) => {
   const sandbox = state.editor.currentSandbox;
   try {
     const site = await effects.githubPages.getSite(sandbox.id);
-    state.deployment.githubSite = site || true;
-    // eslint-disable-next-line no-empty
-  } catch {}
+    state.deployment.githubSite = {
+      ...site,
+      name: `csb-${sandbox.id}`,
+    };
+  } catch {
+    state.deployment.githubSite = {
+      ...state.deployment.githubSite,
+      name: `csb-${sandbox.id}`,
+    };
+  }
 };

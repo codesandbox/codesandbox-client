@@ -48,7 +48,6 @@ export default (() => {
       const { data } = await axios.get(url, {
         headers: createHeaders(token),
       });
-      console.log(data);
       return data;
     },
 

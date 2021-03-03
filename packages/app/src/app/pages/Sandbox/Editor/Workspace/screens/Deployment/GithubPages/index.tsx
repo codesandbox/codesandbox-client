@@ -3,6 +3,7 @@ import {
   List,
   ListAction,
   Element,
+  ListItem,
   Integration,
   Link,
   Stack,
@@ -12,12 +13,12 @@ import React, { FunctionComponent, useEffect } from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
 
-import { GitHubIcon, FileIcon } from '../icons';
+import { GitHubIcon, FileIcon, VisitIcon } from '../icons';
 
 export const GithubPages: FunctionComponent = () => {
   const {
     isLoadingGithub,
-    deployment: { deploying },
+    deployment: { deploying, githubSite },
     user: {
       integrations: { github },
     },
@@ -36,7 +37,7 @@ export const GithubPages: FunctionComponent = () => {
     <Integration icon={GitHubIcon} title="GitHub Pages">
       {github ? (
         <>
-          <Element marginX={2}>
+          <Element marginX={2} marginBottom={githubSite.ghPages ? 6 : 0}>
             <Text variant="muted" block marginBottom={4}>
               Deploy your sandbox to{' '}
               <Link href="https://pages.github.com/" target="_blank">
@@ -48,16 +49,36 @@ export const GithubPages: FunctionComponent = () => {
               Deploy to GitHub Pages
             </Button>
           </Element>
-          <List>
-            <ListAction
-              onClick={() => modalOpened({ modal: 'githubPagesLogs' })}
-            >
-              <Element marginRight={2}>
-                <FileIcon />
-              </Element>{' '}
-              View Logs
-            </ListAction>
-          </List>
+          {githubSite.ghPages && (
+            <List>
+              <ListItem>
+                <Text weight="bold">{githubSite.name}</Text>
+              </ListItem>
+
+              <ListAction
+                onClick={() =>
+                  window.open(
+                    `https://${githubSite.ghLogin}.github.io/${githubSite.name}/`,
+                    '_blank'
+                  )
+                }
+              >
+                <Element marginRight={2}>
+                  <VisitIcon />
+                </Element>{' '}
+                Visit Site
+              </ListAction>
+
+              <ListAction
+                onClick={() => modalOpened({ modal: 'githubPagesLogs' })}
+              >
+                <Element marginRight={2}>
+                  <FileIcon />
+                </Element>{' '}
+                View Logs
+              </ListAction>
+            </List>
+          )}
         </>
       ) : (
         <Stack justify="space-between" marginX={2}>

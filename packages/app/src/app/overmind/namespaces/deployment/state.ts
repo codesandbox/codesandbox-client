@@ -10,7 +10,11 @@ type State = {
   deploying: boolean;
   url: string | null;
   gettingDeploys: boolean;
-  githubSite: any;
+  githubSite: {
+    ghLogin: string;
+    ghPages: boolean;
+    name: string;
+  };
   sandboxDeploys: VercelDeployment[];
 };
 
@@ -25,5 +29,9 @@ export const state: State = {
   sandboxDeploys: [],
   netlifyClaimUrl: null,
   netlifySite: null,
-  githubSite: null,
+  githubSite: {
+    name: '',
+    ghLogin: '',
+    ghPages: false,
+  },
 };
