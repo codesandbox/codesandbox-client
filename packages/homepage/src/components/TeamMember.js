@@ -18,6 +18,7 @@ import zeh from '../assets/images/people/zeh.png';
 import ceora from '../assets/images/people/ceora.jpg';
 import danilowoz from '../assets/images/people/danilowoz.jpg';
 import matan from '../assets/images/people/matan.png';
+import scott from '../assets/images/people/scott.png';
 
 const people = [
   {
@@ -122,6 +123,12 @@ const people = [
     color: '#F24E62',
     team: 'Engineering',
   },
+  {
+     name: 'Scott Hutcheson',
+    pic: scott,
+    color: '#F24E62',
+    team: 'Engineering',
+  }
 ];
 
 const Peep = styled.img`
