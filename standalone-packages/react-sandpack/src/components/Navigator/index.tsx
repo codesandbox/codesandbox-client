@@ -82,7 +82,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
   return (
     <div className="sp-navigator" style={customStyle}>
       <button
-        className="sp-button icon"
+        className="sp-button sp-icon"
         type="button"
         onClick={handleBack}
         disabled={!backEnabled}
@@ -91,7 +91,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
         <BackwardIcon />
       </button>
       <button
-        className="sp-button icon"
+        className="sp-button sp-icon"
         type="button"
         onClick={handleForward}
         disabled={!forwardEnabled}
@@ -100,7 +100,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
         <ForwardIcon />
       </button>
       <button
-        className="sp-button icon"
+        className="sp-button sp-icon"
         type="button"
         onClick={handleRefresh}
         aria-label="Refresh page"

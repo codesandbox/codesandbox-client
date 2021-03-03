@@ -280,7 +280,7 @@
   transition: all 0.15s ease-in-out;
 }
 
-.sp-button.icon-standalone {
+.sp-button.sp-icon-standalone {
   padding: var(--sp-space-1);
   background: var(--sp-colors-bg-default-overlay);
   backdrop-filter: blur(4px);
@@ -288,7 +288,7 @@
   height: var(--sp-space-8);
 }
 
-.sp-button.icon {
+.sp-button.sp-icon {
   padding: 0;
 }
 
@@ -371,7 +371,7 @@
   width: 96px;
   height: 96px;
 }
-.sp-cube .sides * {
+.sp-cube .sp-sides * {
   border: 10px solid var(--sp-colors-fg-default);
   border-radius: 8px;
   background: var(--sp-colors-bg-default-overlay);
@@ -387,39 +387,39 @@
   }
 }
 
-.sp-cube .sides {
+.sp-cube .sp-sides {
   animation: sp-cube-rotate 1s linear infinite;
   animation-fill-mode: forwards;
   transform-style: preserve-3d;
   transform: rotateX(-25.5deg) rotateY(45deg);
 }
 
-.sp-cube .sides .top {
+.sp-cube .sp-sides .sp-top {
   transform: rotateX(90deg) translateZ(44px);
   transform-origin: 50% 50%;
 }
 
-.sp-cube .sides .bottom {
+.sp-cube .sp-sides .sp-bottom {
   transform: rotateX(-90deg) translateZ(44px);
   transform-origin: 50% 50%;
 }
 
-.sp-cube .sides .front {
+.sp-cube .sp-sides .sp-front {
   transform: rotateY(0deg) translateZ(44px);
   transform-origin: 50% 50%;
 }
 
-.sp-cube .sides .back {
+.sp-cube .sp-sides .sp-back {
   transform: rotateY(-180deg) translateZ(44px);
   transform-origin: 50% 50%;
 }
 
-.sp-cube .sides .left {
+.sp-cube .sp-sides .sp-left {
   transform: rotateY(-90deg) translateZ(44px);
   transform-origin: 50% 50%;
 }
 
-.sp-cube .sides .right {
+.sp-cube .sp-sides .sp-right {
   transform: rotateY(90deg) translateZ(44px);
   transform-origin: 50% 50%;
 }

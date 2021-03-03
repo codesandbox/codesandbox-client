@@ -15,7 +15,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
     <button
       type="button"
       title="Refresh Sandpack"
-      className="sp-button icon-standalone"
+      className="sp-button sp-icon-standalone"
       style={customStyle}
       onClick={refresh}
     >

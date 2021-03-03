@@ -19,13 +19,13 @@ export const LoadingAnimation = ({
     >
       <div className="sp-cube-wrapper">
         <div className="sp-cube">
-          <div className="sides">
-            <div className="top" />
-            <div className="right" />
-            <div className="bottom" />
-            <div className="left" />
-            <div className="front" />
-            <div className="back" />
+          <div className="sp-sides">
+            <div className="sp-top" />
+            <div className="sp-right" />
+            <div className="sp-bottom" />
+            <div className="sp-left" />
+            <div className="sp-front" />
+            <div className="sp-back" />
           </div>
         </div>
       </div>

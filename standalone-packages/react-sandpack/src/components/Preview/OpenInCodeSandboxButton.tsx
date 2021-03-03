@@ -30,7 +30,7 @@ export const OpenInCodeSandboxButton: React.FC<OpenInCodeSandboxButtonProps> = (
       href={url}
       target="_blank"
       rel="noreferrer noopener"
-      className={`sp-button icon-standalone ${csbIconClass}`}
+      className={`sp-button sp-icon-standalone ${csbIconClass}`}
       style={customStyle}
     >
       <CSBIcon />
