@@ -227,6 +227,7 @@ export default () => (
         <TeamMember name="maurice" />
         <TeamMember name="zeh" />
         <TeamMember name="ceora" />
+        <TeamMember name="danilo" />
         <Link
           to={`/jobs`}
           css={`
