@@ -2,23 +2,19 @@ import { Button, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { LiveIcon } from '../icons';
 
 export const Owner: FunctionComponent = () => {
+  const { createLiveClicked } = useActions().live;
   const {
-    actions: {
-      live: { createLiveClicked },
+    editor: {
+      currentSandbox: { id },
+      isAllModulesSynced,
     },
-    state: {
-      editor: {
-        currentSandbox: { id },
-        isAllModulesSynced,
-      },
-      live: { isLoading },
-    },
-  } = useOvermind();
+    live: { isLoading },
+  } = useAppState();
 
   return (
     <>

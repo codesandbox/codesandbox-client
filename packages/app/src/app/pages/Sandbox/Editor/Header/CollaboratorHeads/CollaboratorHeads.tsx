@@ -6,7 +6,7 @@ import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
 import { TippyProps } from '@tippy.js/react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Stack, Avatar, Text, Menu, Link } from '@codesandbox/components';
 import { LiveUser } from '@codesandbox/common/lib/types';
 
@@ -104,7 +104,8 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
 );
 
 export const CollaboratorHeads: FunctionComponent = () => {
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const liveUsers = state.live.roomInfo?.users || [];
 

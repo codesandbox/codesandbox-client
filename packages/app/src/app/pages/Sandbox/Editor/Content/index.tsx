@@ -2,7 +2,7 @@ import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { BACKTICK } from '@codesandbox/common/lib/utils/keycodes';
 import { VSCode as CodeEditor } from 'app/components/CodeEditor/VSCode';
 import { DevTools } from 'app/components/Preview/DevTools';
-import { useOvermind } from 'app/overmind';
+import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
 import useKey from 'react-use/lib/useKey';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
@@ -13,7 +13,10 @@ import { Preview } from './Preview';
 import { EditorToast } from './EditorToast';
 
 export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
-  const { state, actions, effects, reaction } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
+  const effects = useEffects();
+  const reaction = useReaction();
   const editorEl = useRef(null);
   const contentEl = useRef(null);
   const [showConsoleDevtool, setShowConsoleDevtool] = useState(false);

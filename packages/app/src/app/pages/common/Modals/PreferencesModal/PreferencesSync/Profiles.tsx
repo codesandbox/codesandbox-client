@@ -1,14 +1,10 @@
 import React from 'react';
 import { Element, List } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Profile } from './Profile';
 
 export const Profiles = () => {
-  const {
-    state: {
-      preferences: { settingsSync },
-    },
-  } = useOvermind();
+  const { settingsSync } = useAppState().preferences;
 
   return (
     <Element paddingTop={4}>

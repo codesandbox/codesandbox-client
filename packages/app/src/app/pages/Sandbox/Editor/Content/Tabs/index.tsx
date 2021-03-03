@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import TabContainer from './TabContainer';
 import PreviewIcon from './PreviewIcon';
@@ -19,25 +19,18 @@ interface IEditorTabsProps {
   currentModuleId: string | number;
 }
 
-interface IOvermindProp {
-  state: any;
-  actions: any;
-}
-
 export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   currentModuleId,
 }) => {
-  const {
-    state: { editor: editorState },
-    actions: { editor: editorAction },
-  }: IOvermindProp = useOvermind();
+  const editorState = useAppState().editor;
+  const editorAction = useActions().editor;
 
   let container = null;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const tabEls = {};
 
   useEffect(() => {
-    const currentTab = tabEls[currentModuleId];
+    const currentTab = tabEls[currentModuleId] as ModuleTab;
 
     // We need to scroll to the tab
     if (currentTab && container) {
@@ -55,7 +48,7 @@ export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   }, [container, currentModuleId, tabEls]);
 
   const closeTab = tabIndex => {
-    editorAction.tabClosed({ tabIndex });
+    editorAction.tabClosed(tabIndex);
   };
 
   const moveTab = (prevIndex, nextIndex) => {
@@ -78,9 +71,13 @@ export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   };
 
   const prettifyModule = () => {
+    /*
+      This no longer exists
+
     editorAction.prettifyClicked({
       moduleShortid: editorState.currentModuleShortid,
     });
+    */
   };
 
   const canPrettify = module => {
@@ -101,8 +98,7 @@ export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
     moduleObject[m.shortid] = m;
   });
 
-  editorState.tabs
-    .filter(tab => tab.type === 'MODULE')
+  (editorState.tabs.filter(tab => tab.type === 'MODULE') as ModuleTab[])
     .filter(tab => moduleObject[tab.moduleShortid])
     .forEach(tab => {
       const module = moduleObject[tab.moduleShortid];
@@ -111,7 +107,7 @@ export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
       tabNamesObject[module.title].push(module.shortid);
     });
 
-  const { currentTab } = editorState;
+  const currentTab = editorState.currentTab as ModuleTab;
   const { currentModule } = editorState;
 
   const previewVisible = editorState.previewWindowVisible;
@@ -123,7 +119,7 @@ export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
           container = el;
         }}
       >
-        {editorState.tabs
+        {(editorState.tabs as ModuleTab[])
           .map(tab => ({ ...tab, module: moduleObject[tab.moduleShortid] }))
           .map((tab, i) => {
             if (tab.type === 'MODULE') {
@@ -161,8 +157,9 @@ export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
                   key={id}
                   module={tab.module}
                   hasError={Boolean(
-                    editorState.errors.filter(error => error.moduleId === id)
-                      .length
+                    editorState.errors.filter(
+                      error => (error as any).moduleId === id
+                    ).length
                   )}
                   closeTab={closeTab}
                   moveTab={moveTab}
@@ -221,9 +218,7 @@ export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
 
         <Tooltip content={previewVisible ? 'Hide Browser' : 'Show Browser'}>
           <IconWrapper active={previewVisible}>
-            <PreviewIcon
-              onClick={() => editorAction.togglePreviewContent({})}
-            />
+            <PreviewIcon onClick={() => editorAction.togglePreviewContent()} />
           </IconWrapper>
         </Tooltip>
       </IconContainer>

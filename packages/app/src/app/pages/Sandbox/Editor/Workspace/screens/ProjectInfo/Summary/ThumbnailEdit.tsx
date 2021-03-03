@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Element, Tooltip } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -27,17 +27,16 @@ const getFile = async (file: File): Promise<parsedFiles> => {
   return returnedFiles;
 };
 export const ThumbnailEdit = () => {
+  const{
+      files: { thumbnailToBeCropped }
+
+  } = useActions();
   const {
-    actions: {
-      files: { thumbnailToBeCropped },
+    editor: {
+      currentSandbox: { modules },
     },
-    state: {
-      editor: {
-        currentSandbox: { modules },
-      },
-      workspace: { uploadingThumb },
-    },
-  } = useOvermind();
+    workspace: { uploadingThumb },
+  } = useAppState()
   const thumbnailExists = modules.find(m => m.path.includes('/thumbnail.'));
 
   const uploadThumbnail = () => {

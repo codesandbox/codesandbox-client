@@ -1,13 +1,11 @@
 import { Button } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useActions, useEffects } from 'app/overmind';
 
 export const OpenVSCodeSettingsButton: FunctionComponent = () => {
-  const {
-    actions: { modalClosed },
-    effects: { vscode },
-  } = useOvermind();
+  const { vscode } = useEffects();
+  const { modalClosed } = useActions();
 
   const openCommand = () => {
     vscode

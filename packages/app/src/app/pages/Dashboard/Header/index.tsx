@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
@@ -25,11 +25,8 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const [value, setValue] = useState('');
-
-    const {
-      actions: { openCreateSandboxModal },
-      state: { user, activeTeam, activeWorkspaceAuthorization },
-    } = useOvermind();
+    const { openCreateSandboxModal } = useActions();
+    const { user, activeTeam, activeWorkspaceAuthorization } = useAppState();
 
     const history = useHistory();
 

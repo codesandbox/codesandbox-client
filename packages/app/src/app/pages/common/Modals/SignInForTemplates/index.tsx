@@ -1,11 +1,9 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
 export const SignInForTemplates: FunctionComponent = () => {
-  const {
-    actions: { modalClosed, toggleSignInModal },
-  } = useOvermind();
+  const { modalClosed, toggleSignInModal } = useActions();
 
   return (
     <Alert

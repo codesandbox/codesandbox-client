@@ -2,12 +2,12 @@ import React from 'react';
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { withTheme } from 'styled-components';
 import { makeTheme } from '@codesandbox/common/lib/utils/makeTheme';
 
 export const Code = withTheme(({ value, language, theme }) => {
-  const { state } = useOvermind();
+  const state = useAppState();
 
   const defaultLanguage = () => {
     const template = state.editor.currentSandbox.template;

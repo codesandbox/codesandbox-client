@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import Modal from 'app/components/Modal';
 import { Alert } from '../Common/Alert';
 import { MemberPaymentConfirmation } from '../MemberPaymentConfirmation';
@@ -7,14 +7,14 @@ import { MemberPaymentConfirmation } from '../MemberPaymentConfirmation';
 export const AlertModalComponents = { MemberPaymentConfirmation };
 
 export const GenericAlertModal = () => {
-  const { state, actions } = useOvermind();
+  const { alertModal } = useActions().modals;
   const {
     title,
     message,
     type,
     isCurrent,
     customComponent,
-  } = state.modals.alertModal;
+  } = useAppState().modals.alertModal;
 
   if (customComponent) {
     const Component = AlertModalComponents[customComponent];
@@ -22,7 +22,7 @@ export const GenericAlertModal = () => {
       <Modal
         isOpen={isCurrent}
         width={450}
-        onClose={() => actions.modals.alertModal.close(false)}
+        onClose={() => alertModal.close(false)}
       >
         <Component title={title} />
       </Modal>
@@ -33,7 +33,7 @@ export const GenericAlertModal = () => {
     <Modal
       isOpen={isCurrent}
       width={450}
-      onClose={() => actions.modals.alertModal.close(false)}
+      onClose={() => alertModal.close(false)}
     >
       <Alert
         title={title}
@@ -42,10 +42,10 @@ export const GenericAlertModal = () => {
         type={type}
         cancelMessage="Cancel"
         onPrimaryAction={() => {
-          actions.modals.alertModal.close(true);
+          alertModal.close(true);
         }}
         onCancel={() => {
-          actions.modals.alertModal.close(false);
+          alertModal.close(false);
         }}
       />
     </Modal>

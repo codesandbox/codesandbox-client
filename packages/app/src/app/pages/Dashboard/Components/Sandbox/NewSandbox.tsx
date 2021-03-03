@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Stack, Text, Button, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -8,10 +8,10 @@ interface NewSandboxProps {
 }
 
 export const NewSandbox: React.FC<NewSandboxProps> = props => {
-  const { actions } = useOvermind();
+  const { openCreateSandboxModal } = useActions();
 
   const onClick = () =>
-    actions.openCreateSandboxModal({ collectionId: props.collectionId });
+    openCreateSandboxModal({ collectionId: props.collectionId });
   return (
     <Button
       variant="link"

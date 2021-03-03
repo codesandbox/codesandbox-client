@@ -1,4 +1,4 @@
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Loadable } from 'app/utils/Loadable';
 import React, { FunctionComponent } from 'react';
 
@@ -10,11 +10,9 @@ const Feedback = Loadable(() =>
 
 export const FeedbackModal: FunctionComponent = () => {
   const {
-    state: {
-      editor: { currentSandbox },
-      user,
-    },
-  } = useOvermind();
+    editor: { currentSandbox },
+    user,
+  } = useAppState();
 
   return <Feedback user={user} id={currentSandbox?.id} />;
 };

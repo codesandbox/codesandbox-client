@@ -8,7 +8,7 @@ import { Button, Element, Stack, Text } from '@codesandbox/components';
 import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
 import { Sandbox } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React, {
   ChangeEvent,
   FunctionComponent,
@@ -38,15 +38,13 @@ const getFolderName = (sandbox: Sandbox) => {
 
 export const SandboxName: FunctionComponent = () => {
   const {
-    actions: {
-      modals,
-      workspace: { sandboxInfoUpdated, valueChanged },
-    },
-    state: {
-      editor: { currentSandbox },
-      isLoggedIn,
-    },
-  } = useOvermind();
+    modals,
+    workspace: { sandboxInfoUpdated, valueChanged },
+  } = useActions();
+  const {
+    editor: { currentSandbox },
+    isLoggedIn,
+  } = useAppState();
   const [updatingName, setUpdatingName] = useState(false);
   const [name, setName] = useState('');
   const [fadeIn, setFadeIn] = useState(false);

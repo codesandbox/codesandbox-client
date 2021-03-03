@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { compareDesc } from 'date-fns';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { DashboardGridItem } from 'app/pages/Dashboard/types';
 
 type Params = {
@@ -10,15 +10,11 @@ type Params = {
 export const useFilteredItems = (params: Params) => {
   const param = params.path || '';
   const {
-    state: {
-      dashboard: {
-        getFilteredSandboxes,
-        sandboxes,
-        filters,
-        orderBy: sandboxesOrder,
-      },
-    },
-  } = useOvermind();
+    getFilteredSandboxes,
+    sandboxes,
+    filters,
+    orderBy: sandboxesOrder,
+  } = useAppState().dashboard;
   const [items, setItems] = useState<Array<DashboardGridItem>>([]);
   const sandboxesExist = sandboxes.REPOS && param && sandboxes.REPOS[param];
   const sandboxesForPath = sandboxesExist

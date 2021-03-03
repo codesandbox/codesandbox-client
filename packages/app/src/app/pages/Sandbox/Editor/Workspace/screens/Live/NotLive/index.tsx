@@ -1,19 +1,15 @@
 import { Collapsible, Element, Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 import { NotOwner } from './NotOwner';
 import { Owner } from './Owner';
 
 export const NotLive: FunctionComponent = () => {
   const {
-    state: {
-      editor: {
-        currentSandbox: { owned },
-      },
-    },
-  } = useOvermind();
+    currentSandbox: { owned },
+  } = useAppState().editor;
 
   return (
     <Collapsible defaultOpen title="Live">

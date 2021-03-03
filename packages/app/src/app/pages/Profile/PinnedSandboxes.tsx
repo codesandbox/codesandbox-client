@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { useDrop } from 'react-dnd';
 import { motion } from 'framer-motion';
 import { Grid, Column, Stack, Text } from '@codesandbox/components';
@@ -10,12 +10,10 @@ import { SandboxType, DropTarget } from './constants';
 
 export const PinnedSandboxes = () => {
   const {
-    state: {
-      user: loggedInUser,
-      profile: { current: user },
-    },
-    actions: { modalOpened },
-  } = useOvermind();
+    user: loggedInUser,
+    profile: { current: user },
+  } = useAppState();
+  const { modalOpened } = useActions();
 
   const myProfile = loggedInUser?.username === user.username;
 

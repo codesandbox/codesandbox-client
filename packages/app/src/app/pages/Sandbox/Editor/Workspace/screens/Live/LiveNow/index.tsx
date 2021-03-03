@@ -15,7 +15,7 @@ import css from '@styled-system/css';
 import { sortBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { ClassroomIcon, LiveIcon, OpenIcon, StopIcon } from '../icons';
 
@@ -24,23 +24,17 @@ import { User } from './User';
 
 export const LiveNow: FunctionComponent = () => {
   const {
-    actions: {
-      live: {
-        onChatEnabledToggle,
-        onModeChanged,
-        onSessionCloseClicked,
-        onToggleNotificationsHidden,
-      },
-    },
-    state: {
-      live: {
-        isOwner,
-        notificationsHidden,
-        reconnecting,
-        roomInfo: { chatEnabled, editorIds, mode, ownerIds, roomId, users },
-      },
-    },
-  } = useOvermind();
+    onChatEnabledToggle,
+    onModeChanged,
+    onSessionCloseClicked,
+    onToggleNotificationsHidden,
+  } = useActions().live;
+  const {
+    isOwner,
+    notificationsHidden,
+    reconnecting,
+    roomInfo: { chatEnabled, editorIds, mode, ownerIds, roomId, users },
+  } = useAppState().live;
 
   const owners = users.filter(({ id }) => ownerIds.includes(id));
   const editors = sortBy(

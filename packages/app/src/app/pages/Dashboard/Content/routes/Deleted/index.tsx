@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
@@ -11,16 +11,17 @@ import { getPossibleTemplates } from '../../utils';
 
 export const Deleted = () => {
   const {
-    actions,
-    state: {
-      activeTeam,
-      dashboard: { deletedSandboxesByTime, getFilteredSandboxes, sandboxes },
-    },
-  } = useOvermind();
+    activeTeam,
+    dashboard: { deletedSandboxesByTime, getFilteredSandboxes, sandboxes },
+  } = useAppState();
+  const {
+    dashboard: { getPage },
+  } = useActions();
 
   useEffect(() => {
-    actions.dashboard.getPage(sandboxesTypes.DELETED);
-  }, [actions.dashboard, activeTeam]);
+    getPage(sandboxesTypes.DELETED);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTeam]);
 
   const getSection = (
     title: string,

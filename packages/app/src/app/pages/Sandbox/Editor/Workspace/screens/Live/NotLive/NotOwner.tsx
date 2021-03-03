@@ -1,17 +1,10 @@
 import { Button, Stack, Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
-
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 export const NotOwner: FunctionComponent = () => {
-  const {
-    actions: {
-      editor: { forkSandboxClicked },
-    },
-    state: {
-      editor: { isForkingSandbox },
-    },
-  } = useOvermind();
+  const { forkSandboxClicked } = useActions().editor;
+  const { isForkingSandbox } = useAppState().editor;
 
   return (
     <>

@@ -20,7 +20,7 @@ import {
   Button,
   Icon,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { isPrivateScope } from 'app/utils/private-registry';
 
 import { BundleSizes } from './BundleSizes';
@@ -41,7 +41,7 @@ export const Dependency = ({
   onRemove,
   onRefresh,
 }: Props) => {
-  const { state } = useOvermind();
+  const state = useAppState();
 
   const [version, setVersion] = useState(null);
   const [open, setOpen] = useState(false);

@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 import { isEqual } from 'lodash-es';
 
 import { useTheme } from 'styled-components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { SwitchIcon } from './Icons';
 import { ResponsiveWrapperProps } from './types';
@@ -30,18 +30,28 @@ import { ResizeHandles } from './ResizeHandles';
 import { PreviewCommentWrapper } from './PreviewCommentWrapper';
 
 export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
-  const overmind = useOvermind();
-  const state = overmind.state.preview.responsive;
-  const actions = overmind.actions.preview;
+  const {
+    preview: {
+      responsive: { resolution, scale: stateScale, presets },
+      mode,
+    },
+    editor,
+  } = useAppState();
+  const {
+    checkURLParameters,
+    openDeletePresetModal,
+    openAddPresetModal,
+    setResolution,
+    toggleEditPresets,
+  } = useActions().preview;
+
   const theme = useTheme();
   const canChangePresets = hasPermission(
-    overmind.state.editor.currentSandbox!.authorization,
+    editor.currentSandbox!.authorization,
     'write_code'
   );
-  const on =
-    overmind.state.preview.mode === 'responsive' ||
-    overmind.state.preview.mode === 'responsive-add-comment';
-  const resolution = state.resolution;
+  const on = mode === 'responsive' || mode === 'responsive-add-comment';
+
   const element = document.getElementById('styled-resize-wrapper');
   const [wrapperWidth, setWrapperWidth] = useState(
     element?.getBoundingClientRect().width
@@ -78,7 +88,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
     MIN_SIZE_Y
   );
 
-  let scale = state.scale / 100;
+  let scale = stateScale / 100;
 
   const hasHeightMostSpace =
     wrapperWidth - resolutionWidth < wrapperHeight - resolutionHeight;
@@ -110,13 +120,11 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
   }, [element]);
 
   const exists = Boolean(
-    Object.keys(state.presets).find(preset =>
-      isEqual(resolution, state.presets[preset])
-    )
+    Object.keys(presets).find(preset => isEqual(resolution, presets[preset]))
   );
 
   useEffect(() => {
-    actions.checkURLParameters();
+    checkURLParameters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -130,7 +138,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
               <IconButton
                 title="Remove Preset"
                 name="close"
-                onClick={actions.openDeletePresetModal}
+                onClick={openDeletePresetModal}
               />
             ) : null}
             {!exists ? (
@@ -143,7 +151,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                 }
                 title="Add Preset"
                 name="add"
-                onClick={actions.openAddPresetModal}
+                onClick={openAddPresetModal}
               />
             ) : null}
             <Stack align="center" gap={1}>
@@ -163,7 +171,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                         resolutionWidth
                   }
                   onChange={e =>
-                    actions.setResolution([
+                    setResolution([
                       parseInt(e.target.value, 10),
                       resolutionHeight,
                     ])
@@ -175,19 +183,14 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
                 variant="link"
                 autoWidth
                 onClick={() =>
-                  actions.setResolution(
-                    json(resolution).reverse() as [number, number]
-                  )
+                  setResolution(json(resolution).reverse() as [number, number])
                 }
               >
                 <SwitchIcon color={theme['sideBar.foreground']} />
               </Button>{' '}
               <Input
                 onChange={e =>
-                  actions.setResolution([
-                    resolutionWidth,
-                    parseInt(e.target.value, 10),
-                  ])
+                  setResolution([resolutionWidth, parseInt(e.target.value, 10)])
                 }
                 type="number"
                 css={css({
@@ -213,29 +216,29 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
             </Text>
           </Stack>
           <PresetMenu
-            openEditPresets={actions.toggleEditPresets}
+            openEditPresets={toggleEditPresets}
             onSelect={preset => {
               track('Responsive Preview - Preset Changed', {
                 width: preset[0],
                 height: preset[1],
               });
-              actions.setResolution(preset);
+              setResolution(preset);
             }}
             theme={theme}
             resolution={resolution}
-            presets={state.presets}
+            presets={presets}
             canChangePresets={canChangePresets}
           />
         </Stack>
       </Wrapper>
       <ResizeHandles
         on={on}
-        showResizeHandles={overmind.state.preview.mode === 'responsive'}
+        showResizeHandles={mode === 'responsive'}
         width={minResolutionWidth}
         height={minResolutionHeight}
         wrapper={element as any}
         scale={scale}
-        setResolution={actions.setResolution}
+        setResolution={setResolution}
         widthAndHeightResizer={widthAndHeightResizer}
         widthResizer={widthResizer}
         heightResizer={heightResizer}

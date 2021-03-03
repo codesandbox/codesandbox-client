@@ -20,7 +20,6 @@ import base64Transpiler from '../../transpilers/base64';
 import pugTranspiler from '../../transpilers/pug';
 import coffeeTranspiler from '../../transpilers/coffee';
 
-
 export default function initialize(vuePreset: Preset) {
   vuePreset.setAdditionalAliases({
     vue$: 'vue/dist/vue.common.js',

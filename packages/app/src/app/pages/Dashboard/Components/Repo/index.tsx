@@ -1,15 +1,13 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { RepoCard } from './RepoCard';
 import { RepoListItem } from './RepoListItem';
 import { useSelection } from '../Selection';
 import { DashboardRepo } from '../../types';
 
 export const Repo = ({ name = '', path = null, ...props }: DashboardRepo) => {
-  const {
-    state: { dashboard },
-  } = useOvermind();
+  const { dashboard } = useAppState();
 
   const Component = dashboard.viewMode === 'list' ? RepoListItem : RepoCard;
 

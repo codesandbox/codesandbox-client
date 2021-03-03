@@ -1,14 +1,12 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Input, Text, Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
 export const DeleteWorkspace: FunctionComponent = () => {
-  const {
-    actions: { dashboard, modalClosed },
-    state: { activeTeamInfo, user },
-  } = useOvermind();
+  const { dashboard, modalClosed } = useActions();
+  const { activeTeamInfo, user } = useAppState();
   const [teamName, setTeamName] = useState('');
   const otherUsers = (activeTeamInfo.users || []).filter(
     teamPerson => teamPerson.id !== user.id

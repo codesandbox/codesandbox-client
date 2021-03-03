@@ -1,11 +1,15 @@
-import { Action } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 
 /**
  * Change sandbox frozen in state and returns the sandboxes that have changed in their old state
  */
-export const changeSandboxesInState: Action<
+export const changeSandboxesInState = (
+  { state: { dashboard } }: Context,
   {
+    sandboxIds,
+    sandboxMutation,
+  }: {
     sandboxIds: string[];
     /**
      * The mutation that happens on the sandbox, make sure to return a *new* sandbox here, to make sure
@@ -14,11 +18,8 @@ export const changeSandboxesInState: Action<
     sandboxMutation: <T extends SandboxFragmentDashboardFragment>(
       sandbox: T
     ) => T;
-  },
-  {
-    changedSandboxes: Set<SandboxFragmentDashboardFragment>;
   }
-> = ({ state: { dashboard } }, { sandboxIds, sandboxMutation }) => {
+) => {
   const changedSandboxes: Set<ReturnType<typeof sandboxMutation>> = new Set();
 
   const doMutateSandbox = <T extends SandboxFragmentDashboardFragment>(
@@ -93,9 +94,14 @@ export const changeSandboxesInState: Action<
   return { changedSandboxes };
 };
 
-export const deleteSandboxesFromState: Action<{
-  ids: string[];
-}> = ({ state: { dashboard } }, { ids }) => {
+export const deleteSandboxesFromState = (
+  { state: { dashboard } }: Context,
+  {
+    ids,
+  }: {
+    ids: string[];
+  }
+) => {
   const sandboxFilter = <T extends SandboxFragmentDashboardFragment>(
     sandbox: T
   ): boolean => !ids.includes(sandbox.id);

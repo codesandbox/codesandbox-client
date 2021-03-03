@@ -1,10 +1,10 @@
 import { Sandbox, Profile } from '@codesandbox/common/lib/types';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { SandboxType } from 'app/pages/Profile/constants';
 
-export const profileMounted: AsyncAction<string> = withLoadApp(
-  async ({ effects, state }, username) => {
+export const profileMounted = withLoadApp(
+  async ({ effects, state }: Context, username: string) => {
     state.profile.isLoadingProfile = true;
     state.profile.notFound = false;
 
@@ -38,7 +38,7 @@ export const profileMounted: AsyncAction<string> = withLoadApp(
   }
 );
 
-export const fetchSandboxes: AsyncAction = async ({ effects, state }) => {
+export const fetchSandboxes = async ({ effects, state }: Context) => {
   if (!state.profile.current) return;
 
   state.profile.isLoadingSandboxes = true;
@@ -65,35 +65,35 @@ export const fetchSandboxes: AsyncAction = async ({ effects, state }) => {
   state.profile.isLoadingSandboxes = false;
 };
 
-export const sandboxesPageChanged: Action<number> = (
-  { state, actions },
-  page
+export const sandboxesPageChanged = (
+  { state, actions }: Context,
+  page: number
 ) => {
   state.profile.currentSandboxesPage = page;
   actions.profile.fetchSandboxes();
 };
 
-export const sortByChanged: Action<'view_count' | 'inserted_at'> = (
-  { state, actions },
-  sortBy
+export const sortByChanged = (
+  { state, actions }: Context,
+  sortBy: 'view_count' | 'inserted_at'
 ) => {
   state.profile.currentSortBy = sortBy;
   state.profile.currentSandboxesPage = 1;
   actions.profile.fetchSandboxes();
 };
 
-export const sortDirectionChanged: Action<'asc' | 'desc'> = (
-  { state, actions },
-  direction
+export const sortDirectionChanged = (
+  { state, actions }: Context,
+  direction: 'asc' | 'desc'
 ) => {
   state.profile.currentSortDirection = direction;
   state.profile.currentSandboxesPage = 1;
   actions.profile.fetchSandboxes();
 };
 
-export const likedSandboxesPageChanged: AsyncAction<number> = async (
-  { effects, state },
-  page
+export const likedSandboxesPageChanged = async (
+  { effects, state }: Context,
+  page: number
 ) => {
   state.profile.isLoadingSandboxes = true;
   state.profile.currentLikedSandboxesPage = page;
@@ -121,7 +121,7 @@ export const likedSandboxesPageChanged: AsyncAction<number> = async (
   state.profile.isLoadingSandboxes = false;
 };
 
-export const selectSandboxClicked: AsyncAction = async ({ state, effects }) => {
+export const selectSandboxClicked = async ({ state, effects }: Context) => {
   state.currentModal = 'selectSandbox';
 
   if (!state.profile.userSandboxes.length) {
@@ -131,9 +131,9 @@ export const selectSandboxClicked: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const newSandboxShowcaseSelected: AsyncAction<string> = async (
-  { state, effects },
-  id
+export const newSandboxShowcaseSelected = async (
+  { state, effects }: Context,
+  id: string
 ) => {
   state.currentModal = null;
 
@@ -164,12 +164,12 @@ export const newSandboxShowcaseSelected: AsyncAction<string> = async (
   effects.analytics.track('Profile - Showcase Sandbox selected');
 };
 
-export const deleteSandboxClicked: Action<string> = ({ state }, id) => {
+export const deleteSandboxClicked = ({ state }: Context, id: string) => {
   state.profile.sandboxToDeleteId = id;
   state.currentModal = 'deleteProfileSandbox';
 };
 
-export const sandboxDeleted: AsyncAction = async ({ state, effects }) => {
+export const sandboxDeleted = async ({ state, effects }: Context) => {
   state.profile.isLoadingSandboxes = true;
   state.currentModal = null;
 
@@ -192,10 +192,10 @@ export const sandboxDeleted: AsyncAction = async ({ state, effects }) => {
   state.profile.isLoadingSandboxes = false;
 };
 
-export const updateUserProfile: AsyncAction<Pick<
-  Profile,
-  'bio' | 'socialLinks'
->> = async ({ actions, effects, state }, { bio = '', socialLinks = [] }) => {
+export const updateUserProfile = async (
+  { actions, effects, state }: Context,
+  { bio = '', socialLinks = [] }: Pick<Profile, 'bio' | 'socialLinks'>
+) => {
   if (!state.profile.current) return;
 
   // optimistic update
@@ -224,9 +224,14 @@ export const updateUserProfile: AsyncAction<Pick<
   }
 };
 
-export const addFeaturedSandboxesInState: Action<{
-  sandboxId: Sandbox['id'];
-}> = ({ state, actions, effects }, { sandboxId }) => {
+export const addFeaturedSandboxesInState = (
+  { state, actions, effects }: Context,
+  {
+    sandboxId,
+  }: {
+    sandboxId: Sandbox['id'];
+  }
+) => {
   if (!state.profile.current) return;
 
   const username = state.profile.current.username;
@@ -244,9 +249,14 @@ export const addFeaturedSandboxesInState: Action<{
   ];
 };
 
-export const removeFeaturedSandboxesInState: Action<{
-  sandboxId: Sandbox['id'];
-}> = ({ state, actions, effects }, { sandboxId }) => {
+export const removeFeaturedSandboxesInState = (
+  { state, actions, effects }: Context,
+  {
+    sandboxId,
+  }: {
+    sandboxId: Sandbox['id'];
+  }
+) => {
   if (!state.profile.current) return;
 
   state.profile.current.featuredSandboxes = state.profile.current.featuredSandboxes.filter(
@@ -254,9 +264,14 @@ export const removeFeaturedSandboxesInState: Action<{
   );
 };
 
-export const addFeaturedSandboxes: AsyncAction<{
-  sandboxId: Sandbox['id'];
-}> = async ({ actions, effects, state }, { sandboxId }) => {
+export const addFeaturedSandboxes = async (
+  { actions, effects, state }: Context,
+  {
+    sandboxId,
+  }: {
+    sandboxId: Sandbox['id'];
+  }
+) => {
   if (!state.profile.current) return;
 
   const currentFeaturedSandboxIds = state.profile.current.featuredSandboxes.map(
@@ -289,9 +304,14 @@ export const addFeaturedSandboxes: AsyncAction<{
   }
 };
 
-export const removeFeaturedSandboxes: AsyncAction<{
-  sandboxId: Sandbox['id'];
-}> = async ({ actions, effects, state }, { sandboxId }) => {
+export const removeFeaturedSandboxes = async (
+  { actions, effects, state }: Context,
+  {
+    sandboxId,
+  }: {
+    sandboxId: Sandbox['id'];
+  }
+) => {
   if (!state.profile.current) return;
 
   const filteredSandboxIds = state.profile.current.featuredSandboxes
@@ -319,10 +339,16 @@ export const removeFeaturedSandboxes: AsyncAction<{
   }
 };
 
-export const reorderFeaturedSandboxesInState: Action<{
-  startPosition: number;
-  endPosition: number;
-}> = ({ state, actions, effects }, { startPosition, endPosition }) => {
+export const reorderFeaturedSandboxesInState = (
+  { state }: Context,
+  {
+    startPosition,
+    endPosition,
+  }: {
+    startPosition: number;
+    endPosition: number;
+  }
+) => {
   if (!state.profile.current) return;
 
   // optimisic update
@@ -337,11 +363,11 @@ export const reorderFeaturedSandboxesInState: Action<{
   state.profile.current.featuredSandboxes = featuredSandboxes;
 };
 
-export const saveFeaturedSandboxesOrder: AsyncAction = async ({
+export const saveFeaturedSandboxesOrder = async ({
   actions,
   effects,
   state,
-}) => {
+}: Context) => {
   if (!state.profile.current) return;
 
   try {
@@ -364,10 +390,10 @@ export const saveFeaturedSandboxesOrder: AsyncAction = async ({
   }
 };
 
-export const changeSandboxPrivacyInState: Action<Pick<
-  Sandbox,
-  'id' | 'privacy'
->> = ({ state, actions, effects }, { id, privacy }) => {
+export const changeSandboxPrivacyInState = (
+  { state }: Context,
+  { id, privacy }: Pick<Sandbox, 'id' | 'privacy'>
+) => {
   if (!state.profile.current) {
     return;
   }
@@ -389,10 +415,10 @@ export const changeSandboxPrivacyInState: Action<Pick<
   });
 };
 
-export const changeSandboxPrivacy: AsyncAction<Pick<
-  Sandbox,
-  'id' | 'privacy'
->> = async ({ state, actions, effects }, { id, privacy }) => {
+export const changeSandboxPrivacy = async (
+  { actions, effects }: Context,
+  { id, privacy }: Pick<Sandbox, 'id' | 'privacy'>
+) => {
   // optimisitc update
   actions.profile.changeSandboxPrivacyInState({ id, privacy });
 
@@ -415,7 +441,7 @@ export const changeSandboxPrivacy: AsyncAction<Pick<
   }
 };
 
-export const fetchAllSandboxes: AsyncAction = async ({ effects, state }) => {
+export const fetchAllSandboxes = async ({ effects, state }: Context) => {
   if (!state.profile.current) return;
 
   const { username } = state.profile.current;
@@ -433,9 +459,9 @@ export const fetchAllSandboxes: AsyncAction = async ({ effects, state }) => {
   state.profile.isLoadingSandboxes = false;
 };
 
-export const searchQueryChanged: AsyncAction<string> = async (
-  { state, actions, effects },
-  query
+export const searchQueryChanged = async (
+  { state, actions, effects }: Context,
+  query: string
 ) => {
   state.profile.searchQuery = query;
 
@@ -446,15 +472,22 @@ export const searchQueryChanged: AsyncAction<string> = async (
   }
 };
 
-export const openContextMenu: Action<{
-  sandboxId: Sandbox['id'];
-  sandboxType: SandboxType;
-  position: { x: number; y: number };
-}> = ({ state }, { sandboxId, sandboxType, position }) => {
+export const openContextMenu = (
+  { state }: Context,
+  {
+    sandboxId,
+    sandboxType,
+    position,
+  }: {
+    sandboxId: Sandbox['id'];
+    sandboxType: SandboxType;
+    position: { x: number; y: number };
+  }
+) => {
   state.profile.contextMenu = { sandboxId, sandboxType, position };
 };
 
-export const closeContextMenu: Action = ({ state }) => {
+export const closeContextMenu = ({ state }: Context) => {
   state.profile.contextMenu = {
     sandboxId: null,
     sandboxType: null,
@@ -462,7 +495,7 @@ export const closeContextMenu: Action = ({ state }) => {
   };
 };
 
-export const fetchCollections: AsyncAction = async ({ state, effects }) => {
+export const fetchCollections = async ({ state, effects }: Context) => {
   if (!state.profile.current) return;
 
   try {
@@ -484,9 +517,9 @@ export const fetchCollections: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const getSandboxesByPath: AsyncAction<{ path: string }> = async (
-  { state, effects },
-  { path }
+export const getSandboxesByPath = async (
+  { state, effects }: Context,
+  { path }: { path: string }
 ) => {
   if (!state.profile.current) return;
 

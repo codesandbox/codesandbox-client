@@ -1,14 +1,14 @@
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { isEqual } from 'lodash-es';
 import { json } from 'overmind';
 import { Presets, defaultPresets } from './state';
 
-export const toggleResponsiveMode: AsyncAction = async ({
+export const toggleResponsiveMode = async ({
   state,
   actions,
   effects,
-}) => {
+}: Context) => {
   const existingMode = state.preview.mode;
   const newUrl = new URL(document.location.href);
 
@@ -55,9 +55,9 @@ export const toggleResponsiveMode: AsyncAction = async ({
   }
 };
 
-export const setResolution: Action<[number, number]> = (
-  { state, effects },
-  newResolution
+export const setResolution = (
+  { state, effects }: Context,
+  newResolution: [number, number]
 ) => {
   if (!newResolution) return;
   const width = Math.round(newResolution[0]);
@@ -76,19 +76,19 @@ export const setResolution: Action<[number, number]> = (
   }
 };
 
-export const openDeletePresetModal: Action = ({ state }) => {
+export const openDeletePresetModal = ({ state }: Context) => {
   state.currentModal = 'deletePreset';
 };
 
-export const openAddPresetModal: Action = ({ state }) => {
+export const openAddPresetModal = ({ state }: Context) => {
   state.currentModal = 'addPreset';
 };
 
-export const toggleEditPresets: Action = ({ state }) => {
+export const toggleEditPresets = ({ state }: Context) => {
   state.currentModal = 'editPresets';
 };
 
-export const deletePreset: AsyncAction = async ({ state, actions }) => {
+export const deletePreset = async ({ state, actions }: Context) => {
   const { presets, resolution } = state.preview.responsive;
 
   const canChangePresets = hasPermission(
@@ -119,11 +119,18 @@ export const deletePreset: AsyncAction = async ({ state, actions }) => {
   }
 };
 
-export const addPreset: AsyncAction<{
-  name: string;
-  width: number;
-  height: number;
-}> = async ({ state, actions, effects }, { name, width, height }) => {
+export const addPreset = async (
+  { state, actions, effects }: Context,
+  {
+    name,
+    width,
+    height,
+  }: {
+    name: string;
+    width: number;
+    height: number;
+  }
+) => {
   if (!name || !width || !height) return;
   effects.analytics.track('Responsive Preview - Preset Created', {
     width,
@@ -151,28 +158,28 @@ export const addPreset: AsyncAction<{
   });
 };
 
-export const editPresets: AsyncAction<Presets> = async (
-  { actions },
-  newPresets
+export const editPresets = async (
+  { actions }: Context,
+  newPresets: Presets
 ) => {
   await actions.files.updateWorkspaceConfig({
     'responsive-preview': newPresets,
   });
 };
 
-export const setExtension: Action<boolean> = ({ state }, hasExtension) => {
+export const setExtension = ({ state }: Context, hasExtension: boolean) => {
   state.preview.hasExtension = hasExtension;
 };
 
-export const closeExtensionBanner: Action = ({ state }) => {
+export const closeExtensionBanner = ({ state }: Context) => {
   state.preview.showExtensionBanner = false;
 };
 
-export const installExtension: AsyncAction = async ({
+export const installExtension = async ({
   actions,
   state,
   effects,
-}) => {
+}: Context) => {
   await effects.browserExtension.install();
 
   const doReload = await actions.modals.extensionInstalledModal.open();
@@ -184,7 +191,7 @@ export const installExtension: AsyncAction = async ({
   state.preview.showExtensionBanner = false;
 };
 
-export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
+export const createPreviewComment = async ({ state, effects }: Context) => {
   const currentSandbox = state.editor.currentSandbox;
 
   if (!currentSandbox || !effects.preview.canAddComments(currentSandbox)) {
@@ -246,7 +253,7 @@ export const createPreviewComment: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-export const checkURLParameters: Action = ({ state, effects }) => {
+export const checkURLParameters = ({ state, effects }: Context) => {
   const ULRResolutionWidth = effects.router.getParameter('resolutionWidth');
   const URLResolutionHeight = effects.router.getParameter('resolutionHeight');
 

@@ -5,7 +5,7 @@ import {
   github as GitHubIcon,
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Button } from 'app/pages/SignIn/components/Button';
 
 export const DuplicateAccount = ({
@@ -13,10 +13,8 @@ export const DuplicateAccount = ({
 }: {
   provider: 'google' | 'github';
 }) => {
-  const {
-    actions: { signInButtonClicked, setLoadingAuth },
-    state: { loadingAuth },
-  } = useOvermind();
+  const { loadingAuth } = useAppState();
+  const { signInButtonClicked, setLoadingAuth } = useActions();
 
   const handleSignIn = async () => {
     setLoadingAuth('github');

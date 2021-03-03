@@ -1,3 +1,3 @@
-import IDE from "./ide"
+import IDE from './ide';
 
-export default IDE
+export default IDE;

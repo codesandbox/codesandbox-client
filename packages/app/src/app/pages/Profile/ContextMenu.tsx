@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation } from 'react-router-dom';
 import { Menu } from '@codesandbox/components';
@@ -7,27 +7,25 @@ import { SandboxType } from './constants';
 
 export const ContextMenu = () => {
   const {
-    state: {
-      user: loggedInUser,
-      activeTeamInfo,
-      profile: {
-        current: user,
-        contextMenu: { sandboxId, sandboxType, position },
-      },
+    user: loggedInUser,
+    activeTeamInfo,
+    profile: {
+      current: user,
+      contextMenu: { sandboxId, sandboxType, position },
     },
-    actions: {
-      editor: { forkExternalSandbox },
-      profile: {
-        addFeaturedSandboxes,
-        removeFeaturedSandboxes,
-        changeSandboxPrivacy,
-        deleteSandboxClicked,
-        closeContextMenu,
-        newSandboxShowcaseSelected,
-      },
-      modalClosed,
+  } = useAppState();
+  const {
+    editor: { forkExternalSandbox },
+    profile: {
+      addFeaturedSandboxes,
+      removeFeaturedSandboxes,
+      changeSandboxPrivacy,
+      deleteSandboxClicked,
+      closeContextMenu,
+      newSandboxShowcaseSelected,
     },
-  } = useOvermind();
+    modalClosed,
+  } = useActions();
   const location = useLocation();
 
   if (!sandboxId) return null;

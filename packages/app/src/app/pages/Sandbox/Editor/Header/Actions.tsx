@@ -1,7 +1,7 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { Avatar, Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
 import { Notifications } from 'app/components/Notifications';
@@ -30,35 +30,30 @@ const TooltipButton = ({ tooltip, ...props }) => {
 
 export const Actions = () => {
   const {
-    actions: {
-      modalOpened,
-      openCreateSandboxModal,
-      editor: { likeSandboxToggled, forkSandboxClicked },
-      explore: { pickSandboxModal },
-    },
-    state: {
-      hasLogIn,
-      updateStatus,
-      user,
-      activeWorkspaceAuthorization,
-      live: { isLive },
-      editor: {
-        isForkingSandbox,
-        currentSandbox: {
-          id,
-          author,
-          owned,
-          title,
-          description,
-          likeCount,
-          userLiked,
-          permissions,
-        },
-      },
-    },
-
-    actions: { signInClicked },
-  } = useOvermind();
+    signInClicked,
+    modalOpened,
+    openCreateSandboxModal,
+    editor: { likeSandboxToggled, forkSandboxClicked },
+    explore: { pickSandboxModal },
+  } = useActions();
+  const {
+    hasLogIn,
+    updateStatus,
+    user,
+    activeWorkspaceAuthorization,
+    live: { isLive },
+    editor: { isForkingSandbox, currentSandbox },
+  } = useAppState();
+  const {
+    id,
+    author,
+    owned,
+    title,
+    description,
+    likeCount,
+    userLiked,
+    permissions,
+  } = currentSandbox;
   const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {

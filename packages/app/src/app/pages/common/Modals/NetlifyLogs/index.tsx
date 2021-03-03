@@ -1,19 +1,17 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { Element, Button, Stack } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import css from '@styled-system/css';
 import { Item } from './elements';
 import { Alert } from '../Common/Alert';
 
 export const NetlifyLogs: FunctionComponent = () => {
+  const effects = useEffects();
+  const { modalClosed } = useActions();
   const {
-    effects,
-    actions: { modalClosed },
-    state: {
-      editor: { currentSandbox },
-    },
-  } = useOvermind();
+    editor: { currentSandbox },
+  } = useAppState();
   const [logs, setLogs] = useState(['Waiting for build to start']);
 
   useEffect(() => {

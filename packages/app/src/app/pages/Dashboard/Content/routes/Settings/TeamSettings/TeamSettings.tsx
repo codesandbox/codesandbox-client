@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Element, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Header } from 'app/pages/Dashboard/Components/Header';
@@ -21,9 +21,7 @@ import { WorkspaceSettings } from './WorkspaceSettings';
 import { RegistrySettings } from './RegistrySettings';
 
 export const TeamSettings = () => {
-  const {
-    state: { user: stateUser, activeTeam, activeTeamInfo: team },
-  } = useOvermind();
+  const { user: stateUser, activeTeam, activeTeamInfo: team } = useAppState();
   const location = useLocation();
 
   if (!team || !stateUser) {

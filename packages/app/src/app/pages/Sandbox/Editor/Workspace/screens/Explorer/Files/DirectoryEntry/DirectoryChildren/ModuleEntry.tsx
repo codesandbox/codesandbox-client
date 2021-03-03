@@ -1,6 +1,6 @@
 import { Directory, Module } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
-import { getType } from 'app/utils/get-type';
+import { useAppState } from 'app/overmind';
+import { getType } from 'app/utils/get-type.ts';
 import React from 'react';
 
 import { Entry } from '../Entry';
@@ -40,11 +40,9 @@ export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
     isActive,
   }) => {
     const {
-      state: {
-        editor: { mainModule },
-        live,
-      },
-    } = useOvermind();
+      editor: { mainModule },
+      live,
+    } = useAppState();
     const isMainModule = module.id === mainModule.id;
     const type = getType(module.title);
     const hasError = module.errors.length > 0;

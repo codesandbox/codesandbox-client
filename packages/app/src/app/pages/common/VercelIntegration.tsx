@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 import { Integration } from 'app/components/Integration';
 import { VercelLogo } from 'app/components/VercelLogo';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 type Props = {
   small?: boolean;
@@ -10,10 +10,8 @@ type Props = {
 export const VercelIntegration: FunctionComponent<Props> = ({
   small = false,
 }) => {
-  const {
-    actions: { signInVercelClicked, signOutVercelClicked },
-    state: { user, isLoadingVercel },
-  } = useOvermind();
+  const { user, isLoadingVercel } = useAppState();
+  const { signInVercelClicked, signOutVercelClicked } = useActions();
 
   return (
     <Integration

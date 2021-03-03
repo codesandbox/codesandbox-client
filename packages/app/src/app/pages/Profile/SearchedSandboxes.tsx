@@ -1,6 +1,6 @@
 import React from 'react';
 import Fuse from 'fuse.js';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Grid, Column, Stack, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
@@ -9,15 +9,11 @@ const SANDBOXES_PER_PAGE = 15;
 
 export const SearchedSandboxes = () => {
   const {
-    state: {
-      profile: {
-        isLoadingSandboxes,
-        current: { username },
-        searchQuery,
-        sandboxes: fetchedSandboxes,
-      },
-    },
-  } = useOvermind();
+    isLoadingSandboxes,
+    current: { username },
+    searchQuery,
+    sandboxes: fetchedSandboxes,
+  } = useAppState().profile;
 
   const [page, setPage] = React.useState(1);
 

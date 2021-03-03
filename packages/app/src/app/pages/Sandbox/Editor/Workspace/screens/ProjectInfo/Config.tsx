@@ -2,24 +2,22 @@ import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { Button, Element } from '@codesandbox/components';
 import React, { FunctionComponent, MouseEvent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 export const Config: FunctionComponent = () => {
   const {
-    actions: {
-      modalOpened,
-      workspace: { addedTemplate },
+    modalOpened,
+    workspace: { addedTemplate },
+  } = useActions();
+  const {
+    editor: {
+      currentSandbox: { customTemplate, template },
     },
-    state: {
-      editor: {
-        currentSandbox: { customTemplate, template },
-      },
-      user,
-      workspace: {
-        project: { description, title },
-      },
+    user,
+    workspace: {
+      project: { description, title },
     },
-  } = useOvermind();
+  } = useAppState();
 
   const onCreateTemplate = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();

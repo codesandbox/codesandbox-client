@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@codesandbox/components';
 import Modal from 'app/components/Modal';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { DELETE_ME_COLLECTION } from 'app/overmind/namespaces/dashboard/types';
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
@@ -34,10 +34,8 @@ function getImplicitCollectionIdFromFolder(
 
 const collectionPathRegex = /^.*dashboard\/all/;
 export const CreateSandboxModal = () => {
-  const {
-    state: { modals, dashboard },
-    actions: { modals: modalsActions },
-  } = useOvermind();
+  const { modals, dashboard } = useAppState();
+  const { modals: modalsActions } = useActions();
 
   const location = useLocation();
   const implicitCollection = getImplicitCollectionIdFromFolder(

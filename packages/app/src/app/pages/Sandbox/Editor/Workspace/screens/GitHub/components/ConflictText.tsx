@@ -1,20 +1,16 @@
 import { Button, Stack, Text } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import React from 'react';
 
 export const OutOfSync: React.FC = () => {
   const {
-    state: {
-      git: { isResolving },
-      editor: {
-        currentSandbox: { originalGit, originalGitCommitSha, prNumber },
-      },
+    git: { isResolving },
+    editor: {
+      currentSandbox: { originalGit, originalGitCommitSha, prNumber },
     },
-    actions: {
-      git: { resolveOutOfSync },
-    },
-    effects,
-  } = useOvermind();
+  } = useAppState();
+  const { resolveOutOfSync } = useActions().git;
+  const effects = useEffects();
 
   return (
     <Stack direction="vertical">
@@ -50,17 +46,13 @@ export const OutOfSync: React.FC = () => {
 
 export const OutOfSyncPR: React.FC = () => {
   const {
-    state: {
-      git: { isResolving },
-      editor: {
-        currentSandbox: { originalGit, baseGit, originalGitCommitSha },
-      },
+    git: { isResolving },
+    editor: {
+      currentSandbox: { originalGit, baseGit, originalGitCommitSha },
     },
-    actions: {
-      git: { resolveOutOfSync },
-    },
-    effects,
-  } = useOvermind();
+  } = useAppState();
+  const { resolveOutOfSync } = useActions().git;
+  const effects = useEffects();
 
   return (
     <Stack direction="vertical">

@@ -23,7 +23,7 @@ import {
   ImageReferenceMetadata,
   PreviewReferenceMetadata,
 } from 'app/graphql/types';
-import { Action, AsyncAction, Operator } from 'app/overmind';
+import { Context } from 'app/overmind';
 import {
   convertImagesToImageReferences,
   convertMentionsToMentionLinks,
@@ -35,7 +35,7 @@ import {
 } from 'app/overmind/utils/common';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Selection, TextOperation } from 'ot';
-import { debounce, filter, map, mutate, pipe } from 'overmind';
+import { debounce, filter, pipe } from 'overmind';
 import * as uuid from 'uuid';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
@@ -48,21 +48,28 @@ const BUBBLE_IMAGE =
 const BUBBLE_IMAGE_2X =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAFsSURBVHgBxZfBUcMwEEW/5ISzS1AqQNwYLoQOoAJaCBUAHUAHoQOoIOaQGW64A9QBPsMEs5IdBA6ZKImsfTM7icce79f3yt4VCKQe6xwfOIfAKR1qCkWRt6crCkNRUhQY4kkUZRVyX7HpgvpYK0hM6MrLXwlDmGKBW/FSGuwiwK34E9f0d4L9uBPz8grbCGhXPaOzCnEw5MbZf27IleQnWkdOblHIMHP37vDHgR5W3mXFiR8BbZW/9pjcixjiaLlL/COwBdd/cotqi9vhHHDWZ3hDShYY2UfROJDhBqmRzfYW7X5/R3oqqoWRdK9XHtyrXVIVjMEFfVdsDRyCD20FKPChrIBtvnCxySWY4RZQcQsw3AJKbgEFrwBqXjkFTG1PwCeAOmb7wyNA4H7ZlnEIMBj4/mOAtDRN6dxPTSkdMKhx0Z0NUjkQPphEhwrOteFrZsS+HKjI7gd80Vy4YTiNJcCP5zWecYDH0PH8G30scDsRZ7W6AAAAAElFTkSuQmCC';
 
-export const selectCommentsFilter: Action<CommentsFilterOption> = (
-  { state },
-  option
+export const selectCommentsFilter = (
+  { state }: Context,
+  option: CommentsFilterOption
 ) => {
   state.comments.selectedCommentsFilter = option;
 };
 
-export const updateComment: AsyncAction<{
-  commentId: string;
-  mentions: { [username: string]: UserQuery };
-  images: { [fileName: string]: { src: string; resolution: [number, number] } };
-  content: string;
-}> = async (
-  { actions, effects, state },
-  { commentId, content, mentions, images }
+export const updateComment = async (
+  { actions, effects, state }: Context,
+  {
+    commentId,
+    content,
+    mentions,
+    images,
+  }: {
+    commentId: string;
+    mentions: { [username: string]: UserQuery };
+    images: {
+      [fileName: string]: { src: string; resolution: [number, number] };
+    };
+    content: string;
+  }
 ) => {
   if (!state.editor.currentSandbox) {
     return;
@@ -107,26 +114,28 @@ export const updateComment: AsyncAction<{
   }
 };
 
-export const queryUsers: Operator<string | null> = pipe(
-  mutate(({ state }, query) => {
+export const queryUsers = pipe(
+  ({ state }: Context, query: string | null) => {
     state.comments.isQueryingUsers = true;
     // We reset the users when we detect a new query being written
     if (query && query.length === 3) {
       state.comments.usersQueryResult = [];
     }
-  }),
+
+    return query;
+  },
   debounce(200),
   filter((_, query) => Boolean(query && query.length >= 3)),
-  map(({ effects }, query) => effects.api.queryUsers(query!)),
-  mutate(({ state }, result) => {
+  ({ effects }: Context, query) => effects.api.queryUsers(query!),
+  ({ state }: Context, result) => {
     state.comments.usersQueryResult = result;
     state.comments.isQueryingUsers = false;
-  })
+  }
 );
 
-export const getCommentReplies: AsyncAction<string> = async (
-  { state, effects },
-  commentId
+export const getCommentReplies = async (
+  { state, effects }: Context,
+  commentId: string
 ) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
@@ -157,15 +166,21 @@ export const getCommentReplies: AsyncAction<string> = async (
   }
 };
 
-export const onCommentClick: Action<{
-  commentIds: string[];
-  bounds: {
-    left: number;
-    top: number;
-    right: number;
-    bottom: number;
-  };
-}> = ({ state, effects, actions }, { commentIds, bounds }) => {
+export const onCommentClick = (
+  { state, effects, actions }: Context,
+  {
+    commentIds,
+    bounds,
+  }: {
+    commentIds: string[];
+    bounds: {
+      left: number;
+      top: number;
+      right: number;
+      bottom: number;
+    };
+  }
+) => {
   if (
     state.comments.currentCommentId &&
     commentIds.includes(state.comments.currentCommentId)
@@ -191,7 +206,7 @@ export const onCommentClick: Action<{
   }
 };
 
-export const closeComment: Action = ({ state, effects }) => {
+export const closeComment = ({ state, effects }: Context) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -216,19 +231,25 @@ export const closeComment: Action = ({ state, effects }) => {
   }
 };
 
-export const closeMultiCommentsSelector: Action = ({ state }) => {
+export const closeMultiCommentsSelector = ({ state }: Context) => {
   state.comments.multiCommentsSelector = null;
 };
 
-export const selectComment: AsyncAction<{
-  commentId: string;
-  bounds?: {
-    left: number;
-    top: number;
-    right: number;
-    bottom: number;
-  };
-}> = async ({ state, effects, actions }, { commentId, bounds }) => {
+export const selectComment = async (
+  { state, effects, actions }: Context,
+  {
+    commentId,
+    bounds,
+  }: {
+    commentId: string;
+    bounds?: {
+      left: number;
+      top: number;
+      right: number;
+      bottom: number;
+    };
+  }
+) => {
   actions.comments.closeMultiCommentsSelector();
 
   const sandbox = state.editor.currentSandbox;
@@ -311,11 +332,11 @@ export const selectComment: AsyncAction<{
   }
 };
 
-export const createCodeLineComment: AsyncAction = async ({
+export const createCodeLineComment = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   const selection = state.live.currentSelection!;
   const codeLines = state.editor.currentModule.code.split('\n');
   const { lineNumber } = indexToLineAndColumn(
@@ -342,11 +363,11 @@ export const createCodeLineComment: AsyncAction = async ({
   });
 };
 
-export const createCodeComment: AsyncAction = async ({
+export const createCodeComment = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   const selection = state.live.currentSelection!;
 
   effects.analytics.track('Comments - Compose Comment', {
@@ -369,9 +390,9 @@ export const createCodeComment: AsyncAction = async ({
   });
 };
 
-export const addOptimisticCodeComment: AsyncAction<CodeReferenceMetadata> = async (
-  { state, effects },
-  codeReference
+export const addOptimisticCodeComment = async (
+  { state, effects }: Context,
+  codeReference: CodeReferenceMetadata
 ) => {
   const sandbox = state.editor.currentSandbox!;
   const user = state.user!;
@@ -431,12 +452,20 @@ export const addOptimisticCodeComment: AsyncAction<CodeReferenceMetadata> = asyn
   };
 };
 
-export const addOptimisticPreviewComment: AsyncAction<{
-  x: number;
-  y: number;
-  scale: number;
-  screenshot: string;
-}> = async ({ state, effects }, { x, y, scale, screenshot }) => {
+export const addOptimisticPreviewComment = async (
+  { state, effects }: Context,
+  {
+    x,
+    y,
+    scale,
+    screenshot,
+  }: {
+    x: number;
+    y: number;
+    scale: number;
+    screenshot: string;
+  }
+) => {
   effects.analytics.track('Comments - Create Optimistic Preview Comment');
 
   const sandbox = state.editor.currentSandbox!;
@@ -520,10 +549,16 @@ export const addOptimisticPreviewComment: AsyncAction<{
   };
 };
 
-export const saveOptimisticComment: AsyncAction<{
-  content: string;
-  mentions: { [username: string]: UserQuery };
-}> = async ({ state, actions, effects }, { content: rawContent, mentions }) => {
+export const saveOptimisticComment = async (
+  { state, actions, effects }: Context,
+  {
+    content: rawContent,
+    mentions,
+  }: {
+    content: string;
+    mentions: { [username: string]: UserQuery };
+  }
+) => {
   const sandbox = state.editor.currentSandbox!;
   const sandboxId = sandbox.id;
   const id = uuid.v4();
@@ -548,19 +583,24 @@ export const saveOptimisticComment: AsyncAction<{
   return actions.comments.saveComment(comment);
 };
 
-export const saveNewComment: AsyncAction<{
-  content: string;
-  mentions: { [username: string]: UserQuery };
-  images: {
-    [fileName: string]: {
-      src: string;
-      resolution: [number, number];
+export const saveNewComment = async (
+  { state, actions }: Context,
+  {
+    content: rawContent,
+    mentions,
+    images,
+    parentCommentId,
+  }: {
+    content: string;
+    mentions: { [username: string]: UserQuery };
+    images: {
+      [fileName: string]: {
+        src: string;
+        resolution: [number, number];
+      };
     };
-  };
-  parentCommentId?: string;
-}> = async (
-  { state, actions },
-  { content: rawContent, mentions, images, parentCommentId }
+    parentCommentId?: string;
+  }
 ) => {
   const user = state.user!;
   const sandbox = state.editor.currentSandbox!;
@@ -597,9 +637,9 @@ export const saveNewComment: AsyncAction<{
   return actions.comments.saveComment(comment);
 };
 
-export const saveComment: AsyncAction<CommentFragment> = async (
-  { state, effects },
-  comment
+export const saveComment = async (
+  { state, effects }: Context,
+  comment: CommentFragment
 ) => {
   const comments = state.comments.comments;
   const sandbox = state.editor.currentSandbox!;
@@ -733,9 +773,14 @@ export const saveComment: AsyncAction<CommentFragment> = async (
   }
 };
 
-export const deleteComment: AsyncAction<{
-  commentId: string;
-}> = async ({ state, effects }, { commentId }) => {
+export const deleteComment = async (
+  { state, effects }: Context,
+  {
+    commentId,
+  }: {
+    commentId: string;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -759,10 +804,16 @@ export const deleteComment: AsyncAction<{
   }
 };
 
-export const resolveComment: AsyncAction<{
-  commentId: string;
-  isResolved: boolean;
-}> = async ({ effects, state }, { commentId, isResolved }) => {
+export const resolveComment = async (
+  { effects, state }: Context,
+  {
+    commentId,
+    isResolved,
+  }: {
+    commentId: string;
+    isResolved: boolean;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -793,18 +844,18 @@ export const resolveComment: AsyncAction<{
   }
 };
 
-export const copyPermalinkToClipboard: Action<string> = (
-  { effects },
-  commentId
+export const copyPermalinkToClipboard = (
+  { effects }: Context,
+  commentId: string
 ) => {
   effects.analytics.track('Comments - Copy Permalink');
   effects.browser.copyToClipboard(effects.router.createCommentUrl(commentId));
   effects.notificationToast.success('Comment permalink copied to clipboard');
 };
 
-export const getSandboxComments: AsyncAction<string> = async (
-  { state, effects, actions },
-  sandboxId
+export const getSandboxComments = async (
+  { state, effects, actions }: Context,
+  sandboxId: string
 ) => {
   try {
     const { sandbox: sandboxComments } = await effects.gql.queries.comments({
@@ -883,9 +934,9 @@ export const getSandboxComments: AsyncAction<string> = async (
   });
 };
 
-export const onCommentAdded: Action<CommentAddedSubscription> = (
-  { state },
-  { commentAdded: comment }
+export const onCommentAdded = (
+  { state }: Context,
+  { commentAdded: comment }: CommentAddedSubscription
 ) => {
   if (comment.anchorReference && comment.anchorReference.type === 'code') {
     const metadata = comment.anchorReference
@@ -919,9 +970,9 @@ export const onCommentAdded: Action<CommentAddedSubscription> = (
   state.comments.comments[comment.sandbox.id][comment.id] = comment;
 };
 
-export const onCommentChanged: Action<CommentChangedSubscription> = (
-  { state },
-  { commentChanged: comment }
+export const onCommentChanged = (
+  { state }: Context,
+  { commentChanged: comment }: CommentChangedSubscription
 ) => {
   Object.assign(
     state.comments.comments[comment.sandbox.id][comment.id],
@@ -929,17 +980,23 @@ export const onCommentChanged: Action<CommentChangedSubscription> = (
   );
 };
 
-export const onCommentRemoved: Action<CommentRemovedSubscription> = (
-  { state },
-  { commentRemoved: comment }
+export const onCommentRemoved = (
+  { state }: Context,
+  { commentRemoved: comment }: CommentRemovedSubscription
 ) => {
   delete state.comments.comments[comment.sandbox.id][comment.id];
 };
 
-export const transposeComments: Action<{
-  module: Module;
-  operation: TextOperation;
-}> = ({ state }, { module, operation }) => {
+export const transposeComments = (
+  { state }: Context,
+  {
+    module,
+    operation,
+  }: {
+    module: Module;
+    operation: TextOperation;
+  }
+) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;

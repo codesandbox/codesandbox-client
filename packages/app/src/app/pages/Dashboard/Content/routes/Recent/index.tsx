@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
@@ -15,16 +15,16 @@ import { getPossibleTemplates } from '../../utils';
 
 export const Recent = () => {
   const {
-    actions,
-    state: {
-      activeTeam,
-      dashboard: { sandboxes, recentSandboxesByTime, getFilteredSandboxes },
-    },
-  } = useOvermind();
+    activeTeam,
+    dashboard: { sandboxes, recentSandboxesByTime, getFilteredSandboxes },
+  } = useAppState();
+  const {
+    dashboard: { getPage },
+  } = useActions();
 
   React.useEffect(() => {
-    actions.dashboard.getPage(sandboxesTypes.RECENT);
-  }, [actions.dashboard, activeTeam]);
+    getPage(sandboxesTypes.RECENT);
+  }, [activeTeam, getPage]);
 
   const getSection = (
     title: string,

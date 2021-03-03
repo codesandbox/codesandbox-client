@@ -1,21 +1,17 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { ListAction, Switch, Label } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const AlwaysOn: FunctionComponent = () => {
+  const { sandboxAlwaysOnChanged } = useActions().workspace;
   const {
-    actions: {
-      workspace: { sandboxAlwaysOnChanged },
+    activeTeamInfo,
+    activeWorkspaceAuthorization,
+    editor: {
+      currentSandbox: { alwaysOn },
     },
-    state: {
-      activeTeamInfo,
-      activeWorkspaceAuthorization,
-      editor: {
-        currentSandbox: { alwaysOn },
-      },
-    },
-  } = useOvermind();
+  } = useAppState();
 
   if (
     !activeTeamInfo?.joinedPilotAt ||

@@ -4,13 +4,14 @@ import { Stack, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 import { Authorization } from 'app/graphql/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 
 import { PermissionSelect, MENU_WIDTH } from './PermissionSelect';
 
 export const AddCollaboratorForm = () => {
-  const { actions, state } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
 
   const controls = useAnimation();
   const [inputValue, setInputValue] = React.useState<string>('');

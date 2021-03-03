@@ -300,7 +300,7 @@ const Navigation = () => {
                         </Link>
                       ),
                       Label: () => <Link to="/feedback">Feedback</Link>,
-                    },                              
+                    },
                     {
                       Icon: () => (
                         <Link to="/changelog">

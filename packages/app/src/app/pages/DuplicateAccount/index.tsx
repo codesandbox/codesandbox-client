@@ -1,15 +1,15 @@
 import { FunctionComponent, useEffect } from 'react';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
-import { useOvermind } from 'app/overmind';
+import { useEffects } from 'app/overmind';
 
 export const DuplicateAccount: FunctionComponent = () => {
-  const { effects } = useOvermind();
+  const { analytics } = useEffects();
   const providerToLoginWith = new URLSearchParams(location.search).get(
     'provider'
   );
 
   useEffect(() => {
-    effects.analytics.track('Sign In - Duplicate Account', {
+    analytics.track('Sign In - Duplicate Account', {
       provider: providerToLoginWith,
     });
 

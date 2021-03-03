@@ -8,7 +8,7 @@ import {
   Text,
   Tooltip,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { CurrentUser } from '@codesandbox/common/lib/types';
 import { MemberAuthorization } from 'app/graphql/types';
@@ -101,7 +101,7 @@ interface ForkButtonProps {
 }
 
 export const ForkButton: React.FC<ForkButtonProps> = props => {
-  const { state } = useOvermind();
+  const state = useAppState();
   const { user } = props;
   let teams: ITeamItem[] = [];
   let currentSpace: ITeamItem | null = null;

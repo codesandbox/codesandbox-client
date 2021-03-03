@@ -4,7 +4,7 @@ import {
   inDirectory,
 } from '@codesandbox/common/lib/sandbox/modules';
 import { Directory, Module } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useReaction } from 'app/overmind';
 import React from 'react';
 import { DropTarget, DropTargetMonitor } from 'react-dnd';
 import { NativeTypes } from 'react-dnd-html5-backend';
@@ -91,27 +91,25 @@ const DirectoryEntryElement: React.FunctionComponent<Props> = ({
   canDrop,
 }) => {
   const {
-    state: {
-      isLoggedIn,
-      editor: {
-        currentSandbox: { modules, directories, privacy },
-        shouldDirectoryBeOpen,
-      },
+    isLoggedIn,
+    editor: {
+      currentSandbox: { modules, directories, privacy },
+      shouldDirectoryBeOpen,
     },
-    actions: {
-      files: {
-        moduleCreated,
-        moduleRenamed,
-        directoryCreated,
-        directoryRenamed,
-        directoryDeleted,
-        moduleDeleted,
-        filesUploaded,
-      },
-      editor: { moduleSelected, moduleDoubleClicked, discardModuleChanges },
+  } = useAppState();
+  const {
+    files: {
+      moduleCreated,
+      moduleRenamed,
+      directoryCreated,
+      directoryRenamed,
+      directoryDeleted,
+      moduleDeleted,
+      filesUploaded,
     },
-    reaction,
-  } = useOvermind();
+    editor: { moduleSelected, moduleDoubleClicked, discardModuleChanges },
+  } = useActions();
+  const reaction = useReaction();
 
   const [creating, setCreating] = React.useState<ItemTypes>(null);
   const [open, setOpen] = React.useState(

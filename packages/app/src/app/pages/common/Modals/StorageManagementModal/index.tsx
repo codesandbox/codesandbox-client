@@ -1,6 +1,6 @@
 import filesize from 'filesize';
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Text } from '@codesandbox/components';
 
 import { LoadingAnimationContainer } from './elements';
@@ -8,9 +8,7 @@ import { FilesList } from './FilesList';
 import { Alert } from '../Common/Alert';
 
 export const StorageManagementModal: FunctionComponent = () => {
-  const {
-    state: { maxStorage, uploadedFiles, usedStorage },
-  } = useOvermind();
+  const { maxStorage, uploadedFiles, usedStorage } = useAppState();
   const isLoading = uploadedFiles === null;
   const isEmpty = !isLoading && uploadedFiles.length === 0;
 

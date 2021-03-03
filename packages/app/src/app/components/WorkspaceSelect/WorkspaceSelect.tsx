@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { Text, Menu, Stack, Icon, Tooltip } from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
@@ -21,7 +21,7 @@ interface WorkspaceSelectProps {
 
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ activeAccount, disabled, onSelect }) => {
-    const { state } = useOvermind();
+    const state = useAppState();
     const { dashboard } = state;
     const history = useHistory();
 

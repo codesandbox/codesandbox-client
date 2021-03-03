@@ -1,33 +1,38 @@
 import { format, subDays } from 'date-fns';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { Step, Plan, PaymentSummary } from './types';
 
-export const pageMounted: AsyncAction = withLoadApp();
+export const pageMounted = withLoadApp();
 
-export const setStep: Action<Step> = ({ state }, step) => {
+export const setStep = ({ state }: Context, step: Step) => {
   state.pro.step = step;
 };
 
-export const updateSeats: Action<number> = ({ state }, seats) => {
+export const updateSeats = ({ state }: Context, seats: number) => {
   state.pro.seats = seats;
 };
 
-export const paddleInitialised: Action<number> = ({ state }) => {
+export const paddleInitialised = ({ state }: Context) => {
   state.pro.isPaddleInitialised = true;
 };
 
-export const billingAmountLoaded: Action<number> = ({ state }) => {
+export const billingAmountLoaded = ({ state }: Context) => {
   state.pro.isBillingAmountLoaded = true;
 };
 
-export const updateSelectedPlan: Action<Plan> = ({ state }, plan) => {
+export const updateSelectedPlan = ({ state }: Context, plan: Plan) => {
   state.pro.selectedPlan = plan;
 };
 
-export const previewUpdateSubscriptionBillingInterval: AsyncAction<{
-  billingInterval: Plan['billingInterval'];
-}> = async ({ state, effects }, { billingInterval }) => {
+export const previewUpdateSubscriptionBillingInterval = async (
+  { state, effects }: Context,
+  {
+    billingInterval,
+  }: {
+    billingInterval: Plan['billingInterval'];
+  }
+) => {
   try {
     const previewSummary = await effects.gql.mutations.previewUpdateSubscriptionBillingInterval(
       {
@@ -47,13 +52,18 @@ export const previewUpdateSubscriptionBillingInterval: AsyncAction<{
   }
 };
 
-export const updateSummary: Action<PaymentSummary> = ({ state }, summary) => {
+export const updateSummary = ({ state }: Context, summary: PaymentSummary) => {
   state.pro.summary = summary;
 };
 
-export const updateSubscriptionBillingInterval: AsyncAction<{
-  billingInterval: Plan['billingInterval'];
-}> = async ({ state, effects }, { billingInterval }) => {
+export const updateSubscriptionBillingInterval = async (
+  { state, effects }: Context,
+  {
+    billingInterval,
+  }: {
+    billingInterval: Plan['billingInterval'];
+  }
+) => {
   state.pro.updatingSubscription = true;
 
   try {
@@ -72,11 +82,11 @@ export const updateSubscriptionBillingInterval: AsyncAction<{
   }
 };
 
-export const cancelWorkspaceSubscription: AsyncAction = async ({
+export const cancelWorkspaceSubscription = async ({
   state,
   actions,
   effects,
-}) => {
+}: Context) => {
   const nextBillDate = state.activeTeamInfo!.subscription!.nextBillDate;
   const expirationDate = format(subDays(new Date(nextBillDate), 1), 'PP');
 
@@ -104,10 +114,10 @@ export const cancelWorkspaceSubscription: AsyncAction = async ({
   }
 };
 
-export const reactivateWorkspaceSubscription: AsyncAction = async ({
+export const reactivateWorkspaceSubscription = async ({
   state,
   effects,
-}) => {
+}: Context) => {
   try {
     await effects.gql.mutations.reactivateSubscription({
       teamId: state.activeTeam,

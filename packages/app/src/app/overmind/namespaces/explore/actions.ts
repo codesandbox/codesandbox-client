@@ -1,9 +1,9 @@
 import { PickedSandboxDetails } from '@codesandbox/common/lib/types';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 
-export const popularSandboxesMounted: AsyncAction<string> = withLoadApp(
-  async ({ state, actions, effects }, date) => {
+export const popularSandboxesMounted = withLoadApp(
+  async ({ state, actions, effects }: Context, date: string) => {
     try {
       state.explore.popularSandboxes = await effects.api.getPopularSandboxes(
         date
@@ -17,9 +17,9 @@ export const popularSandboxesMounted: AsyncAction<string> = withLoadApp(
   }
 );
 
-export const pickSandbox: AsyncAction<PickedSandboxDetails> = async (
-  { effects, state, actions },
-  { description, id, title }
+export const pickSandbox = async (
+  { effects, state, actions }: Context,
+  { description, id, title }: PickedSandboxDetails
 ) => {
   try {
     const data = await effects.api.saveSandboxPick(id, title, description);
@@ -45,17 +45,17 @@ export const pickSandbox: AsyncAction<PickedSandboxDetails> = async (
   }
 };
 
-export const pickSandboxModal: Action<PickedSandboxDetails> = (
-  { state },
-  details
+export const pickSandboxModal = (
+  { state }: Context,
+  details: PickedSandboxDetails
 ) => {
   state.explore.pickedSandboxDetails = details;
   state.currentModal = 'pickSandbox';
 };
 
-export const getSandbox: AsyncAction<string> = async (
-  { state, actions, effects },
-  id
+export const getSandbox = async (
+  { state, actions, effects }: Context,
+  id: string
 ) => {
   try {
     state.explore.selectedSandbox = await effects.api.getSandbox(id);
@@ -67,11 +67,11 @@ export const getSandbox: AsyncAction<string> = async (
   }
 };
 
-export const pickedSandboxesMounted: AsyncAction = async ({
+export const pickedSandboxesMounted = async ({
   state,
   actions,
   effects,
-}) => {
+}: Context) => {
   state.explore.pickedSandboxesLoading = true;
 
   try {

@@ -1,14 +1,10 @@
 import React, { FunctionComponent, useEffect } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
 export const NotFoundBranchModal: FunctionComponent = () => {
-  const {
-    state: {
-      editor: { currentSandbox },
-    },
-  } = useOvermind();
+  const { currentSandbox } = useAppState().editor;
 
   useEffect(() => {
     window.setTimeout(() => {

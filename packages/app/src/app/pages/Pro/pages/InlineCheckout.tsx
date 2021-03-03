@@ -1,19 +1,17 @@
 import React from 'react';
 import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { useScript } from 'app/hooks';
 import { PADDLE_VENDOR_ID } from '../plans';
 
 export const InlineCheckout: React.FC = () => {
+  const { updateSummary, paddleInitialised } = useActions().pro;
   const {
-    state: {
-      user,
-      activeTeam,
-      pro: { seats, selectedPlan, summary },
-    },
-    actions,
-  } = useOvermind();
+    user,
+    activeTeam,
+    pro: { seats, selectedPlan, summary },
+  } = useAppState();
 
   const [scriptLoaded] = useScript('https://cdn.paddle.com/paddle/paddle.js');
 
@@ -28,7 +26,7 @@ export const InlineCheckout: React.FC = () => {
       eventCallback: event => {
         if (event?.eventData?.checkout) {
           const customSummary = event.eventData.checkout.prices.customer;
-          actions.pro.updateSummary({
+          updateSummary({
             unitPrice: customSummary.unit_price,
             unit: customSummary.unit,
             unitTax: customSummary.unit_tax,
@@ -41,7 +39,7 @@ export const InlineCheckout: React.FC = () => {
     });
 
     // @ts-ignore 3rd party integration with global
-    window.loadCallback = () => actions.pro.paddleInitialised();
+    window.loadCallback = () => paddleInitialised();
 
     Paddle.Checkout.open({
       method: 'inline',

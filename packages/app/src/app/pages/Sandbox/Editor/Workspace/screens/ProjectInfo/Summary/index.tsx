@@ -24,7 +24,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Markdown } from 'app/components/Markdown';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React, { useEffect } from 'react';
 
 import { GitHubIcon } from '../../GitHub/Icons';
@@ -32,16 +32,10 @@ import { EditSummary } from './EditSummary';
 import { TemplateConfig } from './TemplateConfig';
 
 export const Summary = () => {
-  const {
-    actions: {
-      workspace: { toggleEditingSandboxInfo },
-      editor: { frozenUpdated, sessionFreezeOverride },
-    },
-    state: {
-      editor: { currentSandbox, sessionFrozen },
-      workspace: { editingSandboxInfo },
-    },
-  } = useOvermind();
+  const { currentSandbox, sessionFrozen } = useAppState().editor;
+  const { editingSandboxInfo } = useAppState().workspace;
+  const { frozenUpdated, sessionFreezeOverride } = useActions().editor;
+  const { toggleEditingSandboxInfo } = useActions().workspace;
   const {
     author,
     description,

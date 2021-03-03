@@ -9,7 +9,7 @@ import {
   Button,
   Stack,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import css from '@styled-system/css';
 import { Module } from '@codesandbox/common/lib/types';
@@ -23,19 +23,17 @@ import { FileFilters } from './components/FileFilters';
 
 export const Search = () => {
   const {
-    state: {
-      user,
-      editor: { currentSandbox },
-      workspace: { searchValue, searchResults, searchOptions },
+    user,
+    editor: { currentSandbox },
+    workspace: { searchValue, searchResults, searchOptions },
+  } = useAppState();
+  const {
+    workspace: {
+      searchValueChanged,
+      searchResultsChanged,
+      searchOptionsToggled,
     },
-    actions: {
-      workspace: {
-        searchValueChanged,
-        searchResultsChanged,
-        searchOptionsToggled,
-      },
-    },
-  } = useOvermind();
+  } = useActions();
   const list = useRef<any>();
   const allModules = JSON.parse(JSON.stringify(currentSandbox.modules));
   const [modules, setModules] = useState<Module[]>(allModules);

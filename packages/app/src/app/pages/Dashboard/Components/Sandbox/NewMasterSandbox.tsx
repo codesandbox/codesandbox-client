@@ -7,7 +7,7 @@ import {
   Grid,
   ListAction,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import css from '@styled-system/css';
 import { useSelection } from '../Selection';
 
@@ -21,10 +21,8 @@ export interface NewMasterSandboxProps {
 
 export const NewMasterSandbox = (props: NewMasterSandboxProps) => {
   const {
-    state: {
-      dashboard: { viewMode },
-    },
-  } = useOvermind();
+    dashboard: { viewMode },
+  } = useAppState();
 
   if (viewMode === 'grid') {
     return <NewMasterSandboxCard {...props} />;

@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import { Element, Button, Stack } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import Cropper from 'cropperjs';
 // @ts-ignore
 import CropperCSS from 'cropperjs/dist/cropper.min.css';
@@ -12,15 +12,13 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export const CropThumbnail: FunctionComponent = () => {
+  const {      modalClosed,
+    files: { thumbnailUploaded }} = useActions()
   const {
-    actions: {
-      modalClosed,
-      files: { thumbnailUploaded },
-    },
-    state: {
+
       workspace: { activeThumb },
-    },
-  } = useOvermind();
+
+  } = useAppState();
   const [newImage, setNewImage] = useState('');
   const [loading, setLoading] = useState(false);
   const image = useRef();

@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import { Navigation } from 'app/pages/common/Navigation';
@@ -12,10 +12,8 @@ import { PricingModal } from './PricingModal';
 import { Content } from './elements';
 
 export const Patron: React.FC = () => {
-  const {
-    state: { hasLoadedApp, hasLogIn, user },
-    actions,
-  } = useOvermind();
+  const { hasLoadedApp, hasLogIn, user } = useAppState();
+  const actions = useActions();
 
   if (!hasLogIn) {
     location.href = '/pro';

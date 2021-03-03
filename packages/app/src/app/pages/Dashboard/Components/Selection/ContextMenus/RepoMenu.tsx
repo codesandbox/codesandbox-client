@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useEffects } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import {
   sandboxUrl,
@@ -13,7 +13,7 @@ type RepoMenuProps = {
 };
 
 export const RepoMenu = ({ repo }: RepoMenuProps) => {
-  const { effects } = useOvermind();
+  const effects = useEffects();
   const { visible, setVisibility, position } = React.useContext(Context);
   return (
     <Menu.ContextMenu

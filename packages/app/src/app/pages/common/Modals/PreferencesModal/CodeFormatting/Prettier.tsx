@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Text, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import {
   SubContainer,
@@ -12,18 +12,13 @@ import {
 
 export const Prettier: FunctionComponent = () => {
   const {
-    actions: {
-      preferences: { settingChanged },
+    settings: {
+      prettierConfig,
+      prettierConfig: { fluid },
     },
-    state: {
-      preferences: {
-        settings: {
-          prettierConfig,
-          prettierConfig: { fluid },
-        },
-      },
-    },
-  } = useOvermind();
+  } = useAppState().preferences;
+
+  const { settingChanged } = useActions().preferences;
 
   const bindValue = (name: string) => ({
     setValue: value =>
