@@ -6,16 +6,27 @@ class Base64Transpiler extends Transpiler {
   }
 
   doTranspilation(code: string) {
-    return new Promise<TranspilerResult>(resolve => {
+    return new Promise<TranspilerResult>((resolve, reject) => {
       const reader = new FileReader();
+
+      // Is there a way to get the filename? (kinda needed for mime types)
       // @ts-ignore
-      reader.readAsDataURL(code);
+      const blob: Blob =
+        typeof code === 'string'
+          ? new Blob([code], { type: 'image/svg+xml' })
+          : code;
+
+      reader.readAsDataURL(blob);
 
       reader.onloadend = () => {
         const base64data = reader.result;
         resolve({
           transpiledCode: `module.exports = "${base64data.toString()}"`,
         });
+      };
+
+      reader.onerror = err => {
+        reject(err);
       };
     });
   }

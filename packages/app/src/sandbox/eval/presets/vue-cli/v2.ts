@@ -96,6 +96,10 @@ export default function initialize(vuePreset: Preset) {
     { transpiler: binaryTranspiler },
     { transpiler: base64Transpiler },
   ]);
+  // TODO: Is this correct? Or is there a way to get the actual link?
+  vuePreset.registerTranspiler(module => /\.svg$/.test(module.path), [
+    { transpiler: base64Transpiler },
+  ]);
   vuePreset.registerTranspiler(module => /!noop/.test(module.path), [
     { transpiler: noopTranspiler },
   ]);
