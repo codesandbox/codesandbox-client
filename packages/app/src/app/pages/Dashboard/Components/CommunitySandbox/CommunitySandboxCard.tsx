@@ -67,9 +67,11 @@ const Author: React.FC<AuthorProps> = React.memo(({ author }) => {
   if (!author.username) return <div />;
 
   return (
-    <Stack align="center" gap={2}>
-      <Avatar css={css({ size: '26px', borderRadius: 2 })} user={author} />
-      <Text size={3}>{author.username}</Text>
+    <Stack align="center" gap={2} css={{ flexShrink: 1, overflow: 'hidden' }}>
+      <Avatar css={css({ size: 6, borderRadius: 2 })} user={author} />
+      <Text size={3} maxWidth="100%">
+        {author.username}
+      </Text>
     </Stack>
   );
 });
@@ -145,6 +147,7 @@ export const SandboxCard = ({
       <Stack
         justify="space-between"
         align="center"
+        gap={2}
         marginLeft={4}
         marginRight={3}
       >
