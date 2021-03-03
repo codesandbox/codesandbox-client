@@ -42,6 +42,17 @@ export const PrivacyTooltip: FunctionComponent = () => {
   };
   const { description, Icon } = config[privacy];
 
+  const Owned = () =>
+    activeTeamInfo?.subscription ? (
+      <>Adjust privacy settings.</>
+    ) : (
+      <>
+        You can change privacy of a sandbox as a Pro.
+        <br />
+        <Link href="/pricing">Upgrade to Pro</Link>
+      </>
+    );
+
   return (
     <ThemeProvider theme={theme}>
       <Container>
@@ -49,19 +60,7 @@ export const PrivacyTooltip: FunctionComponent = () => {
           content={
             <>
               <Text size="3" marginBottom={4}>
-                {owned ? (
-                  activeTeamInfo?.subscription ? (
-                    'Adjust privacy settings.'
-                  ) : (
-                    <>
-                      You can change privacy of a sandbox as a Pro.
-                      <br />
-                      <Link href="/pricing">Upgrade to Pro</Link>
-                    </>
-                  )
-                ) : (
-                  'The author has set privacy to'
-                )}
+                {owned ? <Owned /> : 'The author has set privacy to'}
               </Text>
 
               <Select

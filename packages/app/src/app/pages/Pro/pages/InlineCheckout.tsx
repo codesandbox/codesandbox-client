@@ -60,6 +60,7 @@ export const InlineCheckout: React.FC = () => {
         transparent; border: none;
       `,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scriptLoaded, seats, user.email, selectedPlan]);
 
   const unitPricePreTax =

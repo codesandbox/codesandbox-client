@@ -76,6 +76,4 @@ export function getMode(title: string = '') {
   return titleArr[titleArr.length - 1];
 }
 
-export default function getType(title: string) {
-  return getMode(title);
-}
+export const getType = (title: string) => getMode(title);

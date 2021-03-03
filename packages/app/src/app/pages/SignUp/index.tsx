@@ -23,7 +23,7 @@ export const SignUp: React.FC = () => {
       actions.setPendingUserId(params.userId);
       history.push('/signin');
     }
-  }, [params.userId]);
+  }, [params.userId, actions]);
 
   return null;
 };

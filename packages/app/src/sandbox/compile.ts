@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
 import getDefinition, {
   TemplateType,
@@ -657,14 +658,14 @@ async function compile({
         const htmlEntries = templateDefinition.getHTMLEntries(configurations);
         const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
         const htmlModule = modules[htmlModulePath];
-
-        const { head, body } = getHTMLParts(
-          htmlModule && htmlModule.code
-            ? htmlModule.code
-            : template === 'vue-cli'
+        let html =
+          template === 'vue-cli'
             ? '<div id="app"></div>'
-            : '<div id="root"></div>'
-        );
+            : '<div id="root"></div>';
+        if (htmlModule && htmlModule.code) {
+          html = htmlModule.code;
+        }
+        const { head, body } = getHTMLParts(html);
 
         if (lastHeadHTML && lastHeadHTML !== head) {
           document.location.reload();

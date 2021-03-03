@@ -3,7 +3,7 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { Toasts } from '@codesandbox/notifications';
 import { useAppState, useActions } from 'app/overmind';
-import Loadable from 'app/utils/Loadable';
+import { Loadable } from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
@@ -37,8 +37,10 @@ const routeDebugger = _debug('cs:app:router');
 const SignInAuth = Loadable(
   () => import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
 );
-const SignIn = Loadable(
-  () => import(/* webpackChunkName: 'page-sign-in' */ './SignIn')
+const SignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-in' */ './SignIn').then(module => ({
+    default: module.SignIn,
+  }))
 );
 const Live = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
@@ -92,15 +94,21 @@ const CliInstructions = Loadable(() =>
     /* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'
   ).then(module => ({ default: module.CLIInstructions }))
 );
-const Patron = Loadable(
-  () => import(/* webpackChunkName: 'page-patron' */ './Patron')
+const Patron = Loadable(() =>
+  import(/* webpackChunkName: 'page-patron' */ './Patron').then(module => ({
+    default: module.Patron,
+  }))
 );
 const SignUp = Loadable(() =>
   import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
     default: module.SignUp,
   }))
 );
-const Pro = Loadable(() => import(/* webpackChunkName: 'page-pro' */ './Pro'));
+const Pro = Loadable(() =>
+  import(/* webpackChunkName: 'page-pro' */ './Pro').then(module => ({
+    default: module.ProPage,
+  }))
+);
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
     default: module.Curator,

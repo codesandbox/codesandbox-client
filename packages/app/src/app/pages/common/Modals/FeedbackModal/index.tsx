@@ -1,5 +1,5 @@
 import { useAppState } from 'app/overmind';
-import Loadable from 'app/utils/Loadable';
+import { Loadable } from 'app/utils/Loadable';
 import React, { FunctionComponent } from 'react';
 
 const Feedback = Loadable(() =>

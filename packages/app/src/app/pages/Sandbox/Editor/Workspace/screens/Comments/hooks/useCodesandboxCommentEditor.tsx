@@ -86,15 +86,16 @@ export const useCodesandboxCommentEditor = ({
   // propagation
   React.useEffect(() => {
     if (ref.current) {
+      const currentRef = ref.current;
       const onKeyDown = event => {
         if (event.keyCode === ESC && mention.query !== null) {
           event.stopPropagation();
         }
       };
-      ref.current.addEventListener('keydown', onKeyDown);
+      currentRef.addEventListener('keydown', onKeyDown);
 
       return () => {
-        ref.current.removeEventListener('keydown', onKeyDown);
+        currentRef.removeEventListener('keydown', onKeyDown);
       };
     }
 

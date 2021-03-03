@@ -1,10 +1,9 @@
 import { Directory, Module } from '@codesandbox/common/lib/types';
 import { useAppState } from 'app/overmind';
-// eslint-disable-next-line import/extensions
-import getType from 'app/utils/get-type.ts';
+import { getType } from 'app/utils/get-type';
 import React from 'react';
 
-import Entry from '../Entry';
+import { Entry } from '../Entry';
 
 interface IModuleEntryProps {
   module: Module;
@@ -24,7 +23,7 @@ interface IModuleEntryProps {
   renameValidator?: (id: string, title: string) => string | false | null;
 }
 
-const ModuleEntry: React.FC<IModuleEntryProps> = ({
+export const ModuleEntry: React.FC<IModuleEntryProps> = ({
   module,
   setCurrentModule,
   markTabsNotDirty,
@@ -70,5 +69,3 @@ const ModuleEntry: React.FC<IModuleEntryProps> = ({
     />
   );
 };
-
-export default ModuleEntry;

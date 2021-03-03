@@ -43,6 +43,7 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
 
   useEffect(() => {
     checkIfSyncedPrefs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

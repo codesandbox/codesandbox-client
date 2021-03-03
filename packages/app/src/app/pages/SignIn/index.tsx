@@ -8,7 +8,7 @@ import { css } from '@styled-system/css';
 import { Navigation } from '../common/Navigation';
 import { SignInModalElement } from './Modal';
 
-const SignIn = () => {
+export const SignIn = () => {
   const state = useAppState();
   const { genericPageMounted } = useActions();
   const redirectTo = new URL(location.href).searchParams.get('continue');
@@ -47,5 +47,3 @@ const SignIn = () => {
     </ThemeProvider>
   );
 };
-
-export default SignIn;

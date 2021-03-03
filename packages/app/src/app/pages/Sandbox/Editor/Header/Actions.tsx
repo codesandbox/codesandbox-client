@@ -73,6 +73,29 @@ export const Actions = () => {
   if (!hasLogIn) primaryAction = 'Sign in';
   else primaryAction = owned ? 'Share' : 'Fork';
 
+  const NotLive = () =>
+    hasLogIn ? (
+      <TooltipButton
+        tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
+        variant="link"
+        onClick={() => likeSandboxToggled(id)}
+      >
+        <LikeIcon
+          css={css({
+            height: 3,
+            marginRight: 1,
+            color: userLiked ? 'reds.500' : 'inherit',
+          })}
+        />{' '}
+        <span>{likeCount}</span>
+      </TooltipButton>
+    ) : (
+      <Stack gap={1} paddingX={2} align="center">
+        <LikeIcon css={css({ height: 3 })} />
+        <span>{likeCount}</span>
+      </Stack>
+    );
+
   return (
     <Stack
       align="center"
@@ -105,26 +128,8 @@ export const Actions = () => {
 
       {user?.experiments?.collaborator && isLive ? (
         <CollaboratorHeads />
-      ) : hasLogIn ? (
-        <TooltipButton
-          tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
-          variant="link"
-          onClick={() => likeSandboxToggled(id)}
-        >
-          <LikeIcon
-            css={css({
-              height: 3,
-              marginRight: 1,
-              color: userLiked ? 'reds.500' : 'inherit',
-            })}
-          />{' '}
-          <span>{likeCount}</span>
-        </TooltipButton>
       ) : (
-        <Stack gap={1} paddingX={2} align="center">
-          <LikeIcon css={css({ height: 3 })} />
-          <span>{likeCount}</span>
-        </Stack>
+        <NotLive />
       )}
 
       {user?.curatorAt && (

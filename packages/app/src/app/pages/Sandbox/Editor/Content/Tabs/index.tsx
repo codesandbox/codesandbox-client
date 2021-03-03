@@ -19,13 +19,14 @@ interface IEditorTabsProps {
   currentModuleId: string | number;
 }
 
-const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
+export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   currentModuleId,
 }) => {
   const editorState = useAppState().editor;
   const editorAction = useActions().editor;
 
   let container = null;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const tabEls = {};
 
   useEffect(() => {
@@ -224,5 +225,3 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
     </Container>
   );
 };
-
-export default EditorTabs;

@@ -14,7 +14,7 @@ import { ConfirmBillingInterval } from './pages/ConfirmBillingInterval';
 import { PaymentSuccess } from './pages/PaymentSuccess';
 import { SignInModalElement } from '../SignIn/Modal';
 
-const ProPage: React.FC = () => {
+export const ProPage: React.FC = () => {
   const { pageMounted } = useActions().pro;
   const { hasLoadedApp, isLoggedIn } = useAppState();
 
@@ -127,5 +127,3 @@ const StartOrModifySubscription = () => {
     </Stack>
   );
 };
-
-export default ProPage;

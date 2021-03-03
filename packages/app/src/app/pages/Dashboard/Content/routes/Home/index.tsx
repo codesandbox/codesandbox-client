@@ -23,6 +23,7 @@ export const Home = () => {
 
   useEffect(() => {
     getPage(sandboxesTypes.HOME);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
 
   const templates: DashboardGridItem[] = (sandboxes.TEMPLATE_HOME || []).map(

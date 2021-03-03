@@ -1,9 +1,9 @@
 import React from 'react';
-import getType from 'app/utils/get-type';
+import { getType } from 'app/utils/get-type';
 import { Text, Element, ListAction, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useActions, useAppState, useEffects } from 'app/overmind';
-import EntryIcon from '../../../Files/DirectoryEntry/Entry/EntryIcons';
+import { EntryIcons } from '../../../Files/DirectoryEntry/Entry/EntryIcons';
 import { ToggleIcon } from '../icons';
 
 export const Result = ({ i, updateRender }) => {
@@ -54,7 +54,7 @@ export const Result = ({ i, updateRender }) => {
             <ToggleIcon />
           </Element>
 
-          <EntryIcon type={getType(title)} />
+          <EntryIcons type={getType(title)} />
 
           <Text block size={3}>
             {title}

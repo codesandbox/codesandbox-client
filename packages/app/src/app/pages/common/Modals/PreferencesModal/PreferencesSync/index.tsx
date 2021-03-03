@@ -57,7 +57,7 @@ export const PreferencesSync: FunctionComponent = () => {
     };
 
     fileSelector.click();
-  }, []);
+  }, [notificationToast, updateServerSettings]);
 
   return (
     <>

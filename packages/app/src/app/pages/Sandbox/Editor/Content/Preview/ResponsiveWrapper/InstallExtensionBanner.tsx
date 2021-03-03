@@ -32,9 +32,17 @@ export const InstallExtensionBanner = withTheme(({ theme }: { theme: any }) => {
 
   const isResponsive =
     mode === 'responsive' || mode === 'responsive-add-comment';
-  const topValue = isShowing
-    ? ADDRESSBAR_HEIGHT + RESPONSIVE_BAR_HEIGHT
-    : ADDRESSBAR_HEIGHT;
+
+  const getTop = () => {
+    if (isShowing) {
+      if (isResponsive) {
+        return ADDRESSBAR_HEIGHT + RESPONSIVE_BAR_HEIGHT;
+      }
+      return ADDRESSBAR_HEIGHT;
+    }
+
+    return 0;
+  };
 
   return (
     <ThemeProvider theme={theme.vscodeTheme}>
@@ -42,7 +50,7 @@ export const InstallExtensionBanner = withTheme(({ theme }: { theme: any }) => {
         align="center"
         justify="space-between"
         style={{
-          top: isResponsive ? topValue : 0,
+          top: getTop(),
         }}
         padding={2}
         css={css({

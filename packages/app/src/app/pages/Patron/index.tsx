@@ -11,7 +11,7 @@ import { ThemeProvider, Element } from '@codesandbox/components';
 import { PricingModal } from './PricingModal';
 import { Content } from './elements';
 
-const Patron: React.FC = () => {
+export const Patron: React.FC = () => {
   const { hasLoadedApp, hasLogIn, user } = useAppState();
   const actions = useActions();
 
@@ -67,5 +67,3 @@ const Patron: React.FC = () => {
     </ThemeProvider>
   );
 };
-
-export default Patron;

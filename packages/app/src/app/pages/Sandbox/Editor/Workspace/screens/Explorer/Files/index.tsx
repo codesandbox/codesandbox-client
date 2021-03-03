@@ -6,7 +6,7 @@ import React, { FunctionComponent, useCallback, useState } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
-import DirectoryEntry from './DirectoryEntry/index';
+import { DirectoryEntry } from './DirectoryEntry/index';
 
 const noop = () => undefined;
 

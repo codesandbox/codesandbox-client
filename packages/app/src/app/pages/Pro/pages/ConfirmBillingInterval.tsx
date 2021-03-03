@@ -20,6 +20,7 @@ export const ConfirmBillingInterval: React.FC = () => {
     previewUpdateSubscriptionBillingInterval({
       billingInterval: selectedPlan.billingInterval,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!paymentPreview) return null;

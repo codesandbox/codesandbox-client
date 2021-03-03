@@ -20,6 +20,7 @@ export const Drafts = () => {
 
   React.useEffect(() => {
     getPage(sandboxesTypes.DRAFTS);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
 
   const items: DashboardGridItem[] = sandboxes.DRAFTS

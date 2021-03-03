@@ -6,7 +6,7 @@ import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
-import Editor from './Editor';
+import { Editor } from './Editor';
 import { GitHubError } from './GitHubError';
 
 interface Props {
@@ -49,6 +49,7 @@ export const Sandbox = React.memo<Props>(
       actions.editor,
       actions.preferences,
       showNewSandboxModal,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       match?.params,
     ]);
 

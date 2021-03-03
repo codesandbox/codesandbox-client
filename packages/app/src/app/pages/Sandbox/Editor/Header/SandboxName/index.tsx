@@ -117,6 +117,45 @@ export const SandboxName: FunctionComponent = () => {
 
   const owned = hasPermission(currentSandbox.authorization, 'owner');
 
+  const SandboxNameElement = () => {
+    if (updatingName && !git) {
+      return (
+        <Form onSubmit={submitNameChange}>
+          <NameInput
+            autoFocus
+            ref={(el: HTMLInputElement) => {
+              if (el) {
+                el.focus();
+              }
+            }}
+            onBlur={handleBlur}
+            onChange={handleInputUpdate}
+            onKeyUp={handleKeyUp}
+            placeholder={name}
+            value={value}
+            arial-label="sandbox name"
+          />
+        </Form>
+      );
+    }
+
+    if (!git) {
+      return owned ? (
+        <Button
+          variant="link"
+          css={css({ fontSize: 3, width: 'auto', color: 'foreground' })}
+          arial-label="Change sandbox name"
+          onClick={handleNameClick}
+        >
+          {sandboxName}
+        </Button>
+      ) : (
+        <Text>{sandboxName}</Text>
+      );
+    }
+    return null;
+  };
+
   return (
     <Main style={fadeIn ? { opacity: 1 } : null}>
       <Stack align="center">
@@ -146,37 +185,7 @@ export const SandboxName: FunctionComponent = () => {
           </Folder>
         )}
 
-        {updatingName && !git ? (
-          <Form onSubmit={submitNameChange}>
-            <NameInput
-              autoFocus
-              ref={(el: HTMLInputElement) => {
-                if (el) {
-                  el.focus();
-                }
-              }}
-              onBlur={handleBlur}
-              onChange={handleInputUpdate}
-              onKeyUp={handleKeyUp}
-              placeholder={name}
-              value={value}
-              arial-label="sandbox name"
-            />
-          </Form>
-        ) : !git ? (
-          owned ? (
-            <Button
-              variant="link"
-              css={css({ fontSize: 3, width: 'auto', color: 'foreground' })}
-              arial-label="Change sandbox name"
-              onClick={handleNameClick}
-            >
-              {sandboxName}
-            </Button>
-          ) : (
-            <Text>{sandboxName}</Text>
-          )
-        ) : null}
+        <SandboxNameElement />
 
         {!updatingName && !git ? (
           <Element as="span" marginLeft={owned ? 0 : 2}>

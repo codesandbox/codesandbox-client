@@ -16,6 +16,40 @@ import { SignInBanner } from './SignInAd';
 export const Header = () => {
   const { hasLogIn, editor, isAuthenticating, user } = useAppState();
 
+  const LoggedIn = () =>
+    user ? (
+      <WorkspaceDashboardIcon />
+    ) : (
+      <Link
+        as={RouterLink}
+        variant="muted"
+        to={dashboardUrl()}
+        style={{ color: 'inherit' }}
+        css={{
+          transition: '0.3s ease opacity',
+          opacity: 0.6,
+          lineHeight: 0 /* micro adjustment */,
+          ':hover': {
+            opacity: 1,
+          },
+        }}
+      >
+        <DashboardIcon />
+      </Link>
+    );
+
+  const LoginLink = () => (
+    <Link
+      as="a"
+      target="_blank"
+      rel="noreferrer noopener"
+      href="/"
+      css={{ padding: '2px' /* micro adjustment */ }}
+    >
+      <LogoIcon height={24} />
+    </Link>
+  );
+
   return (
     <>
       {!user && <SignInBanner />}
@@ -35,38 +69,7 @@ export const Header = () => {
         })}
       >
         <Stack align="center">
-          {hasLogIn ? (
-            user ? (
-              <WorkspaceDashboardIcon />
-            ) : (
-              <Link
-                as={RouterLink}
-                variant="muted"
-                to={dashboardUrl()}
-                style={{ color: 'inherit' }}
-                css={{
-                  transition: '0.3s ease opacity',
-                  opacity: 0.6,
-                  lineHeight: 0 /* micro adjustment */,
-                  ':hover': {
-                    opacity: 1,
-                  },
-                }}
-              >
-                <DashboardIcon />
-              </Link>
-            )
-          ) : (
-            <Link
-              as="a"
-              target="_blank"
-              rel="noreferrer noopener"
-              href="/"
-              css={{ padding: '2px' /* micro adjustment */ }}
-            >
-              <LogoIcon height={24} />
-            </Link>
-          )}
+          {hasLogIn ? <LoggedIn /> : <LoginLink />}
           <MenuBar />
         </Stack>
 

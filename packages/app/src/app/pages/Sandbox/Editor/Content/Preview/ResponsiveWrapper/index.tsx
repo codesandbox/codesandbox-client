@@ -125,6 +125,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
 
   useEffect(() => {
     checkURLParameters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

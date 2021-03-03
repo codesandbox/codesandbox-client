@@ -63,6 +63,7 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [up, down]);
 
   useEffect(() => {
