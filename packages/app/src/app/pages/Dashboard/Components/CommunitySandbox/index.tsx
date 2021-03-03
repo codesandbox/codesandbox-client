@@ -19,12 +19,11 @@ export const CommunitySandbox = ({
   item,
 }: GenericSandboxProps) => {
   const { sandbox } = item;
-  const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
+  const title = sandbox.title || sandbox.alias || sandbox.id;
   const viewCount = formatNumber(sandbox.viewCount);
-  const url = sandboxUrl({
-    id: sandbox.id,
-    alias: sandbox.alias,
-  });
+  const likeCount = formatNumber(sandbox.likeCount);
+  const url = sandboxUrl({ id: sandbox.id, alias: sandbox.alias });
+  const author = sandbox.author;
 
   const TemplateIcon = getTemplateIcon(sandbox);
 
@@ -69,11 +68,12 @@ export const CommunitySandbox = ({
   };
 
   const sandboxProps = {
-    sandboxTitle,
-    viewCount,
-    sandbox,
+    title,
     TemplateIcon,
     screenshotUrl,
+    viewCount,
+    likeCount,
+    author,
   };
 
   const interactionProps = {

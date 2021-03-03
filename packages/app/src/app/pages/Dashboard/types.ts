@@ -2,6 +2,7 @@ import {
   SandboxFragmentDashboardFragment,
   TemplateFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
+  Sandbox,
 } from 'app/graphql/types';
 import {
   PageTypes as PT,
@@ -128,7 +129,9 @@ export type DashboardCommunitySandbox = {
     | 'screenshotUrl'
     | 'viewCount'
     | 'source'
-  >;
+  > & {
+    author: Pick<Sandbox['author'], 'username' | 'avatarUrl'>;
+  } & Pick<Sandbox, 'likeCount'>;
 };
 
 export type PageTypes = PT;

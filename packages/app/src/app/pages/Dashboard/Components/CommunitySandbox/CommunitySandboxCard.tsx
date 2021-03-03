@@ -1,21 +1,19 @@
 import React from 'react';
 
-import { Stack, Text, Icon, IconButton } from '@codesandbox/components';
+import { Stack, Text, Icon, IconButton, Avatar } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { CommunitySandboxItemComponentProps } from './types';
 
 type SandboxTitleProps = {
   stoppedScrolling: boolean;
-} & Pick<CommunitySandboxItemComponentProps, 'sandboxTitle' | 'onContextMenu'>;
+} & Pick<CommunitySandboxItemComponentProps, 'title' | 'onContextMenu'>;
 
 const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
-  ({ sandboxTitle, onContextMenu, stoppedScrolling }) => (
+  ({ title, onContextMenu, stoppedScrolling }) => (
     <Stack justify="space-between" align="center" marginLeft={4}>
-      <Stack gap={1} align="center">
-        <Text size={3} weight="medium">
-          {sandboxTitle}
-        </Text>
-      </Stack>
+      <Text size={3} weight="medium">
+        {title}
+      </Text>
 
       {!stoppedScrolling ? (
         // During scrolling we don't show the button, because it takes 1ms to render a button,
@@ -46,38 +44,43 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
   )
 );
 
-type SandboxStatsProps = Pick<CommunitySandboxItemComponentProps, 'viewCount'>;
-const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ viewCount }) => (
-    <div style={{ margin: '0 16px' }}>
-      <Stack
-        as={Text}
-        align="center"
-        gap={1}
-        size={3}
-        variant="muted"
-        css={css({
-          '> *:not(:last-child):after': { content: `'•'`, marginLeft: 1 },
-        })}
-      >
-        <Stack align="center" key="views">
-          <Icon style={{ marginRight: 4, minWidth: 14 }} name="eye" size={14} />{' '}
-          {viewCount}
-        </Stack>
-        <Text key="location" maxWidth="100%">
-          Community
-        </Text>
-      </Stack>
-    </div>
-  )
-);
+type StatsProps = Pick<
+  CommunitySandboxItemComponentProps,
+  'viewCount' | 'likeCount'
+>;
+const Stats: React.FC<StatsProps> = React.memo(({ viewCount, likeCount }) => (
+  <Stack as={Text} variant="muted" align="center" gap={2}>
+    <Stack align="center" gap={1}>
+      <Icon name="eye" size={14} />
+      <Text size={3}>{viewCount}</Text>
+    </Stack>
+    <Stack align="center" gap={1}>
+      <Icon name="heart" size={14} />
+      <Text size={3}>{likeCount}</Text>
+    </Stack>
+  </Stack>
+));
+
+type AuthorProps = Pick<CommunitySandboxItemComponentProps, 'author'>;
+const Author: React.FC<AuthorProps> = React.memo(({ author }) => {
+  // return empty div for alignment
+  if (!author.username) return <div />;
+
+  return (
+    <Stack align="center" gap={2}>
+      <Avatar css={css({ size: '26px', borderRadius: 2 })} user={author} />
+      <Text size={3}>{author.username}</Text>
+    </Stack>
+  );
+});
 
 export const SandboxCard = ({
-  sandbox,
-  sandboxTitle,
-  viewCount,
+  title,
   TemplateIcon,
   screenshotUrl,
+  viewCount,
+  likeCount,
+  author,
   // interactions
   isScrolling,
   selected,
@@ -135,11 +138,19 @@ export const SandboxCard = ({
         <TemplateIcon width="16" height="16" />
       </div>
       <SandboxTitle
-        sandboxTitle={sandboxTitle}
+        title={title}
         onContextMenu={onContextMenu}
         stoppedScrolling={stoppedScrolling}
       />
-      <SandboxStats viewCount={viewCount} />
+      <Stack
+        justify="space-between"
+        align="center"
+        marginLeft={4}
+        marginRight={3}
+      >
+        <Author author={author} />
+        <Stats viewCount={viewCount} likeCount={likeCount} />
+      </Stack>
     </Stack>
   );
 };
@@ -158,6 +169,7 @@ const Thumbnail = ({ TemplateIcon, screenshotUrl }) => (
       borderBottom: '1px solid',
       borderColor: '#242424',
       backgroundImage: `url(${screenshotUrl})`,
+      flexShrink: 0,
     }}
   >
     {!screenshotUrl && (

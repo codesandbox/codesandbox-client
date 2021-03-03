@@ -70,9 +70,17 @@ const Results = connectHits(({ hits }) => {
       alias: sandbox.alias,
       title: sandbox.title,
       description: sandbox.description,
-      screenshotUrl: `https://codesandbox.io/api/v1/sandboxes/${sandbox.alias}/screenshot.png`,
+      screenshotUrl: `https://codesandbox.io/api/v1/sandboxes/${sandbox.objectID}/screenshot.png`,
       viewCount: Number(sandbox.view_count),
+      likeCount: Number(sandbox.like_count),
       source: { template: sandbox.template },
+      author: {
+        // @ts-ignore - Hit<BasicDoc> assumes every field
+        // is a string even when it's an object
+        username: sandbox.author?.username,
+        // @ts-ignore
+        avatarUrl: sandbox.author?.avatar_url,
+      },
     },
   }));
 
