@@ -61,6 +61,11 @@ class SandpackProvider extends React.PureComponent<
   manager: Manager | null;
   iframeRef: React.RefObject<HTMLIFrameElement>;
   lazyAnchorRef: React.RefObject<HTMLDivElement>;
+
+  errorScreenRegistered: React.MutableRefObject<boolean>;
+  openInCSBRegistered: React.MutableRefObject<boolean>;
+  loadingScreenRegistered: React.MutableRefObject<boolean>;
+
   intersectionObserver?: IntersectionObserver;
   queuedListeners: Record<string, SandpackListener>;
   unsubscribeQueuedListeners: Record<string, Function>;
@@ -94,6 +99,15 @@ class SandpackProvider extends React.PureComponent<
     this.unsubscribeQueuedListeners = {};
     this.iframeRef = React.createRef<HTMLIFrameElement>();
     this.lazyAnchorRef = React.createRef<HTMLDivElement>();
+    this.errorScreenRegistered = React.createRef<
+      boolean
+    >() as React.MutableRefObject<boolean>;
+    this.openInCSBRegistered = React.createRef<
+      boolean
+    >() as React.MutableRefObject<boolean>;
+    this.loadingScreenRegistered = React.createRef<
+      boolean
+    >() as React.MutableRefObject<boolean>;
   }
 
   handleMessage = (m: any) => {
@@ -143,7 +157,6 @@ class SandpackProvider extends React.PureComponent<
 
       this.manager.updatePreview({
         files: newFiles,
-        showOpenInCodeSandbox: false,
       });
     }
 
@@ -156,7 +169,6 @@ class SandpackProvider extends React.PureComponent<
 
         this.manager.updatePreview({
           files: this.state.files,
-          showOpenInCodeSandbox: false,
         });
       }, recompileDelay);
     }
@@ -216,7 +228,6 @@ class SandpackProvider extends React.PureComponent<
       this.manager.updatePreview({
         files,
         template: environment,
-        showOpenInCodeSandbox: false,
       });
     }
   }
@@ -245,12 +256,14 @@ class SandpackProvider extends React.PureComponent<
       {
         files: this.state.files,
         template: this.state.environment,
-        showOpenInCodeSandbox: false,
       },
       {
         bundlerURL: this.props.bundlerURL,
         fileResolver: this.props.fileResolver,
         skipEval: this.props.skipEval,
+        showOpenInCodeSandbox: !this.openInCSBRegistered.current,
+        showErrorScreen: !this.errorScreenRegistered.current,
+        showLoadingScreen: !this.loadingScreenRegistered.current,
       }
     );
 
@@ -346,6 +359,9 @@ class SandpackProvider extends React.PureComponent<
       listen: this.addListener,
       iframeRef: this.iframeRef,
       lazyAnchorRef: this.lazyAnchorRef,
+      errorScreenRegisteredRef: this.errorScreenRegistered,
+      openInCSBRegisteredRef: this.openInCSBRegistered,
+      loadingScreenRegisteredRef: this.loadingScreenRegistered,
     };
   };
 

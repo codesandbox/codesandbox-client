@@ -28,6 +28,13 @@ export interface IManagerOptions {
   skipEval?: boolean;
 
   /**
+   * Boolean flags to trigger certain UI elements in the bundler
+   */
+  showOpenInCodeSandbox?: boolean;
+  showErrorScreen?: boolean;
+  showLoadingScreen?: boolean;
+
+  /**
    * You can pass a custom file resolver that is responsible for resolving files.
    * We will use this to get all files from the file system.
    */
@@ -66,8 +73,6 @@ export interface ISandboxInfo {
    * @type {string}
    */
   template?: string;
-
-  showOpenInCodeSandbox?: boolean;
 
   /**
    * Only use unpkg for fetching the dependencies, no preprocessing. It's slower, but doesn't talk
@@ -262,10 +267,9 @@ export default class PreviewManager {
       template:
         this.sandboxInfo.template ||
         getTemplate(packageJSON, normalizedModules),
-      showOpenInCodeSandbox:
-        this.sandboxInfo.showOpenInCodeSandbox == null
-          ? true
-          : this.sandboxInfo.showOpenInCodeSandbox,
+      showOpenInCodeSandbox: this.options.showOpenInCodeSandbox ?? true,
+      showErrorScreen: this.options.showErrorScreen ?? true,
+      showLoadingScreen: this.options.showLoadingScreen ?? true,
       skipEval: this.options.skipEval || false,
     });
   }

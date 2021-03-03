@@ -36,7 +36,7 @@ import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
 
-let initializedResizeListener = false;
+let initializedDOMMutationListener = false;
 let manager: Manager | null = null;
 let actionsEnabled = false;
 
@@ -376,31 +376,39 @@ function getDocumentHeight() {
   const { body } = document;
   const html = document.documentElement;
 
-  return Math.max(
-    body.scrollHeight,
-    body.offsetHeight,
-    html.clientHeight,
-    html.scrollHeight,
-    html.offsetHeight
-  );
+  return Math.max(body.scrollHeight, body.offsetHeight, html.offsetHeight);
 }
 
 function sendResize() {
   const height = getDocumentHeight();
 
   if (lastHeight !== height) {
-    if (document.body) {
-      dispatch({ type: 'resize', height });
-    }
+    dispatch({ type: 'resize', height });
   }
 
   lastHeight = height;
 }
 
-function initializeResizeListener() {
-  setInterval(sendResize, 5000);
+function initializeDOMMutationListener() {
+  if (typeof window === 'undefined') {
+    return;
+  }
 
-  initializedResizeListener = true;
+  // Listen on document body for any change that could trigger a resize of the content
+  // When a change is found, the sendResize function will determine if a message is dispatched
+  const observer = new MutationObserver(sendResize);
+
+  observer.observe(document.body, {
+    attributes: true,
+    childList: true,
+    subtree: true,
+  });
+
+  window.addEventListener('unload', () => {
+    observer.disconnect();
+  });
+
+  initializedDOMMutationListener = true;
 }
 
 function overrideDocumentClose() {
@@ -430,6 +438,8 @@ interface CompileOptions {
   template: TemplateType;
   entry: string;
   showOpenInCodeSandbox?: boolean;
+  showErrorScreen?: boolean;
+  showLoadingScreen?: boolean;
   skipEval?: boolean;
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
@@ -445,7 +455,9 @@ async function compile({
   isModuleView = false,
   template,
   entry,
-  showOpenInCodeSandbox = false,
+  showOpenInCodeSandbox,
+  showLoadingScreen,
+  showErrorScreen,
   skipEval = false,
   hasFileResolver = false,
   disableDependencyPreprocessing = false,
@@ -744,8 +756,8 @@ async function compile({
 
     await manager.preset.teardown(manager, updatedModules);
 
-    if (!initializedResizeListener && !manager.preset.htmlDisabled) {
-      initializeResizeListener();
+    if (!initializedDOMMutationListener && !manager.preset.htmlDisabled) {
+      initializeDOMMutationListener();
     }
 
     if (showOpenInCodeSandbox) {
@@ -851,6 +863,11 @@ async function compile({
 
   dispatch({ type: 'status', status: 'idle' });
   dispatch({ type: 'done', compilatonError: hadError });
+
+  if (!hadError) {
+    // If compile is successful, compute the size of the content after a small delay and dispatch that
+    setTimeout(sendResize, 100);
+  }
 
   if (typeof (window as any).__puppeteer__ === 'function') {
     setTimeout(() => {

@@ -31,7 +31,19 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
     'visible' | 'fading' | 'hidden'
   >('visible');
 
+  const {
+    status,
+    error,
+    iframeRef,
+    errorScreenRegisteredRef,
+    loadingScreenRegisteredRef,
+  } = sandpack;
+
   React.useEffect(() => {
+    // The Preview component will take care of displaying the error and the loading screen
+    errorScreenRegisteredRef.current = true;
+    loadingScreenRegisteredRef.current = true;
+
     const unsub = listen((message: any) => {
       if (message.type === 'start' && message.firstLoad === true) {
         setLoadingOverlayState('visible');
@@ -42,17 +54,13 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
         setTimeout(() => setLoadingOverlayState('hidden'), 500); // 300 ms animation
       }
 
-      // TODO: Check why the bundler sends the resize message so late
-      // TODO: iframeContainerRef should not be changed probably because it messes up the position of the buttons
-      // if (message.type === 'resize' && iframeContainerRef.current) {
-      //   iframeContainerRef.current.style.minHeight = `${message.height}px`;
-      // }
+      if (message.type === 'resize' && iframeRef.current) {
+        iframeRef.current.style.height = `${message.height}px`;
+      }
     });
 
     return () => unsub();
   }, []);
-
-  const { status, error, iframeRef } = sandpack;
 
   return (
     <div

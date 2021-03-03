@@ -17,8 +17,20 @@ export interface SandpackState {
   updateCurrentFile: (newCode: string) => void;
   openFile: (path: string) => void;
   changeActiveFile: (path: string) => void;
+
+  // Element refs
+  // Different components inside the SandpackProvider might register certain elements of interest for sandpack
+  // eg: the preview iframe - if no iframe is registered, the context needs to register a hidden one to run the bundler
+  // eg: lazy anchor - if no component registers this, then the sandpack runs on mount, without lazy mode
   iframeRef: React.RefObject<HTMLIFrameElement>;
   lazyAnchorRef: React.RefObject<HTMLDivElement>;
+
+  // eg: error screen - if no component registers this, the bundler needs to show the custom error screen
+  // When the value is boolean, we only care if the components have the responsibility to render the elements,
+  // we don't need the actual element reference
+  errorScreenRegisteredRef: React.MutableRefObject<boolean>;
+  openInCSBRegisteredRef: React.MutableRefObject<boolean>;
+  loadingScreenRegisteredRef: React.MutableRefObject<boolean>;
 }
 
 export type SandpackStatus = 'initial' | 'idle' | 'running';

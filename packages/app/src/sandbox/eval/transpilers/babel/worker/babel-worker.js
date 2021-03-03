@@ -6,7 +6,6 @@ import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
-import * as envPreset from '@babel/preset-env';
 import * as resolve from 'resolve';
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
@@ -665,6 +664,15 @@ self.addEventListener('message', async event => {
         version !== 7
       ) {
         Babel.registerPreset('env', Babel.availablePresets.latest);
+      }
+
+      // A plugin reaches into the internal of the preset and the pre-bundled preset-env does not have this function
+      // Hence, for this particular case, we dynamically import the real @babel/preset-env
+      if (version === 7 && flattenedPresets.includes('@vue/app')) {
+        // Hardcode, since we want to override env
+        Babel.availablePresets.env = await import(
+          /* webpackChunkName: 'babel-preset-env' */ '@babel/preset-env'
+        );
       }
 
       if (

@@ -79,6 +79,9 @@ export const Sandpack: React.FC<SandpackProps> = props => {
     fileResolver: props.options?.fileResolver,
   };
 
+  // Parts are set as `flex` values, so they set the flex shrink/grow
+  // Cannot use width percentages as it doesn't work with
+  // the automatic layout break when the component is under 700px
   const editorPart = props.options?.editorWidthPercentage || 50;
   const previewPart = 100 - editorPart;
   const editorHeight = props.options?.editorHeight;
