@@ -1,6 +1,6 @@
 import React from 'react';
-
 import { Stack, Text, Icon, IconButton, Avatar } from '@codesandbox/components';
+import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import css from '@styled-system/css';
 import { CommunitySandboxItemComponentProps } from './types';
 
@@ -52,11 +52,11 @@ const Stats: React.FC<StatsProps> = React.memo(({ viewCount, likeCount }) => (
   <Stack as={Text} variant="muted" align="center" gap={2}>
     <Stack align="center" gap={1}>
       <Icon name="eye" size={14} />
-      <Text size={3}>{viewCount}</Text>
+      <Text size={3}>{formatNumber(viewCount)}</Text>
     </Stack>
     <Stack align="center" gap={1}>
       <Icon name="heart" size={14} />
-      <Text size={3}>{likeCount}</Text>
+      <Text size={3}>{formatNumber(likeCount)}</Text>
     </Stack>
   </Stack>
 ));

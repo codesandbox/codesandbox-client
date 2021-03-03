@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { SandboxCard } from './CommunitySandboxCard';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
@@ -20,8 +19,8 @@ export const CommunitySandbox = ({
 }: GenericSandboxProps) => {
   const { sandbox } = item;
   const title = sandbox.title || sandbox.alias || sandbox.id;
-  const viewCount = formatNumber(sandbox.viewCount);
-  const likeCount = formatNumber(sandbox.likeCount);
+  const viewCount = sandbox.viewCount;
+  const likeCount = sandbox.likeCount;
   const url = sandboxUrl({ id: sandbox.id, alias: sandbox.alias });
   const author = sandbox.author;
 
