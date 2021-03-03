@@ -121,7 +121,13 @@ export type DashboardCommunitySandbox = {
   autoFork: false;
   sandbox: Pick<
     DashboardSandbox['sandbox'],
-    'id' | 'alias' | 'title' | 'description' | 'screenshotUrl' | 'viewCount'
+    | 'id'
+    | 'alias'
+    | 'title'
+    | 'description'
+    | 'screenshotUrl'
+    | 'viewCount'
+    | 'source'
   >;
 };
 

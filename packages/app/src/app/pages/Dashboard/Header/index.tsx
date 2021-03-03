@@ -210,6 +210,7 @@ const SearchInputGroup = () => {
                   ':hover, &[aria-selected="true"]': {
                     color: 'list.hoverForeground',
                     backgroundColor: 'list.hoverBackground',
+                    cursor: 'pointer',
                   },
                 })}
               >

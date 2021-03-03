@@ -72,6 +72,7 @@ const Results = connectHits(({ hits }) => {
       description: sandbox.description,
       screenshotUrl: `https://codesandbox.io/api/v1/sandboxes/${sandbox.alias}/screenshot.png`,
       viewCount: Number(sandbox.view_count),
+      source: { template: sandbox.template },
     },
   }));
 
