@@ -1,19 +1,15 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { Element, Button, Stack } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useEffects, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import { Item } from './elements';
 import { Alert } from '../Common/Alert';
 
 export const GithubPagesLogs: FunctionComponent = () => {
-  const {
-    effects,
-    actions: { modalClosed },
-    state: {
-      editor: { currentSandbox },
-    },
-  } = useOvermind();
+  const effects = useEffects();
+  const { modalClosed } = useActions();
+  const { currentSandbox } = useAppState().editor;
   const [logs, setLogs] = useState(['Waiting for build to start']);
 
   useEffect(() => {

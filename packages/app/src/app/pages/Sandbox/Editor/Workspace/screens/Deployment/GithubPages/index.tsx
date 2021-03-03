@@ -10,25 +10,23 @@ import {
 } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { GitHubIcon, FileIcon } from '../icons';
 
 export const GithubPages: FunctionComponent = () => {
   const {
-    actions: {
-      modalOpened,
-      signInGithubClicked,
-      deployment: { deployWithGitHubPages, fetchGithubSite },
+    isLoadingGithub,
+    deployment: { deploying },
+    user: {
+      integrations: { github },
     },
-    state: {
-      isLoadingGithub,
-      deployment: { deploying },
-      user: {
-        integrations: { github },
-      },
-    },
-  } = useOvermind();
+  } = useAppState();
+  const {
+    modalOpened,
+    signInGithubClicked,
+    deployment: { deployWithGitHubPages, fetchGithubSite },
+  } = useActions();
 
   useEffect(() => {
     fetchGithubSite();

@@ -67,20 +67,18 @@ export const onInitializeOvermind = async (
       return state.user?.integrations.zeit?.token ?? null;
     },
   });
-  effects.netlify.initialize({
-    getUserId() {
-      return state.user?.id ?? null;
-    },
+  effects.githubPages.initialize({
     provideJwtToken() {
       if (process.env.LOCAL_SERVER || process.env.STAGING) {
         return Promise.resolve(localStorage.getItem('devJwt'));
       }
-
       return provideJwtToken();
     },
   });
-
-  effects.githubPages.initialize({
+  effects.netlify.initialize({
+    getUserId() {
+      return state.user?.id ?? null;
+    },
     provideJwtToken() {
       if (process.env.LOCAL_SERVER || process.env.STAGING) {
         return Promise.resolve(localStorage.getItem('devJwt'));

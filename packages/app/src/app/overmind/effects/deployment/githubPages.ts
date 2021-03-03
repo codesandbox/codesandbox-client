@@ -10,8 +10,8 @@ type Options = {
 
 export default (() => {
   let _options: Options;
-  let _jwtToken: string | null;
-  const createHeaders = (jwt: string | null) =>
+  let _jwtToken: string | undefined;
+  const createHeaders = (jwt: string) =>
     jwt
       ? {
           Authorization: `Bearer ${jwt}`,
@@ -48,7 +48,7 @@ export default (() => {
       const { data } = await axios.get(url, {
         headers: createHeaders(token),
       });
-
+      console.log(data);
       return data;
     },
 

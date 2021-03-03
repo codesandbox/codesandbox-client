@@ -7,7 +7,7 @@ const NetlifyBaseURL = 'https://builder.csbops.io/netlify/site';
 
 type Options = {
   getUserId(): string | null;
-  provideJwtToken: () => any;
+  provideJwtToken: () => Promise<string>;
 };
 
 export default (() => {

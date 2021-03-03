@@ -220,11 +220,11 @@ export const aliasDeployment = async (
   }
 };
 
-export const deployWithGitHubPages: AsyncAction = async ({
+export const deployWithGitHubPages = async ({
   effects,
   actions,
   state,
-}) => {
+}: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -242,7 +242,7 @@ export const deployWithGitHubPages: AsyncAction = async ({
     effects.notificationToast.success('Sandbox Deploying');
   } catch (error) {
     actions.internal.handleError({
-      message: 'An error occurred when deploying your Netlify site',
+      message: 'An error occurred when deploying your sandbox to GitHub Pages',
       error,
     });
   }
@@ -250,7 +250,7 @@ export const deployWithGitHubPages: AsyncAction = async ({
   state.deployment.building = false;
 };
 
-export const fetchGithubSite: AsyncAction = async ({ effects, state }) => {
+export const fetchGithubSite = async ({ effects, state }: Context) => {
   const sandbox = state.editor.currentSandbox;
   try {
     const site = await effects.githubPages.getSite(sandbox.id);
