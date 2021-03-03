@@ -113,6 +113,7 @@ const useFlash = (
     }
 
     return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref.current, activate]);
 };
 

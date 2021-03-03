@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useOvermind } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -12,10 +12,11 @@ export const ConfirmBillingInterval: React.FC = () => {
     effects,
   } = useOvermind();
 
-  React.useEffect(() => {
+  useEffect(() => {
     actions.pro.previewUpdateSubscriptionBillingInterval({
       billingInterval: selectedPlan.billingInterval,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!paymentPreview) return null;

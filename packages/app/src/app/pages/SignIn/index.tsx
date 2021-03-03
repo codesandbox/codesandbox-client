@@ -8,7 +8,7 @@ import { css } from '@styled-system/css';
 import { Navigation } from '../common/Navigation';
 import { SignInModalElement } from './Modal';
 
-const SignIn = () => {
+export const SignIn = () => {
   const {
     state,
     actions: { genericPageMounted },
@@ -49,5 +49,3 @@ const SignIn = () => {
     </ThemeProvider>
   );
 };
-
-export default SignIn;

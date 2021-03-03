@@ -105,6 +105,7 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
 
 export const CollaboratorHeads: FunctionComponent = () => {
   const { state, actions } = useOvermind();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const liveUsers = state.live.roomInfo?.users || [];
 
   const liveUserId = state.live.liveUserId;

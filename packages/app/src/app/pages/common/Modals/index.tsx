@@ -14,15 +14,15 @@ import { AddPreset } from './AddPreset';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
 import { DeletePreset } from './DeletePreset';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
-import DeleteSandboxModal from './DeleteSandboxModal';
+import { DeleteSandboxModal } from './DeleteSandboxModal';
 import { DeploymentModal } from './DeploymentModal';
 import { EditPresets } from './EditPresets';
 import { EmptyTrash } from './EmptyTrash';
-import ExportGitHubModal from './ExportGitHubModal';
+import { ExportGitHubModal } from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
-import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
+import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
@@ -31,11 +31,11 @@ import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
-import SignInForTemplates from './SignInForTemplates';
+import { SignInForTemplates } from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
 import { TeamInviteModal } from './TeamInviteModal';
-import UploadModal from './UploadModal';
+import { UploadModal } from './UploadModal';
 import { DeleteWorkspace } from './DeleteWorkspace';
 import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
@@ -134,7 +134,7 @@ const modals = {
     width: 400,
   },
   liveVersionMismatch: {
-    Component: LiveSessionVersionMismatch,
+    Component: LiveVersionMismatch,
     width: 400,
   },
   uploading: {

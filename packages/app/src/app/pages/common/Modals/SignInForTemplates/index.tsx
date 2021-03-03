@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
-const SignInForTemplates: FunctionComponent = () => {
+export const SignInForTemplates: FunctionComponent = () => {
   const {
     actions: { modalClosed, toggleSignInModal },
   } = useOvermind();
@@ -17,5 +17,3 @@ const SignInForTemplates: FunctionComponent = () => {
     />
   );
 };
-
-export default SignInForTemplates;

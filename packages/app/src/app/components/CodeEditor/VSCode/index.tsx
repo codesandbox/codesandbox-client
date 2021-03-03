@@ -21,7 +21,7 @@ export const VSCode: React.FunctionComponent = () => {
     () => state.editor.currentModule,
     [] // eslint-disable-line
   );
-
+  const currentSandboxTemplate = state.editor.currentSandbox?.template;
   useEffect(() => {
     const rootEl = containerEl.current;
     const mainContainer = effects.vscode.getEditorElement(
@@ -70,7 +70,7 @@ export const VSCode: React.FunctionComponent = () => {
     actions.editor,
     effects.vscode,
     state.editor.currentSandbox,
-    state.editor.currentSandbox?.template,
+    currentSandboxTemplate,
     getCurrentModule,
   ]);
 

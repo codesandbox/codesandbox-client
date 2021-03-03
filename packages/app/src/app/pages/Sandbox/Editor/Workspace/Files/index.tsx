@@ -2,8 +2,8 @@ import { getModulePath } from '@codesandbox/common/lib/sandbox/modules';
 import { useOvermind } from 'app/overmind';
 import React from 'react';
 
-import EditIcons from './DirectoryEntry/Entry/EditIcons';
-import DirectoryEntry from './DirectoryEntry/index';
+import { EditIcons } from './DirectoryEntry/Entry/EditIcons';
+import { DirectoryEntry } from './DirectoryEntry/index';
 
 interface IFilesProps {
   setEditActions: React.Dispatch<any>;

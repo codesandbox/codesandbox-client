@@ -264,5 +264,3 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
     </ThemeProvider>
   );
 };
-
-export default MainWorkspace;

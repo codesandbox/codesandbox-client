@@ -24,7 +24,7 @@ interface IOvermindProp {
   actions: any;
 }
 
-const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
+export const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   currentModuleId,
 }) => {
   const {
@@ -33,6 +33,7 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
   }: IOvermindProp = useOvermind();
 
   let container = null;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const tabEls = {};
 
   useEffect(() => {
@@ -229,5 +230,3 @@ const EditorTabs: React.FunctionComponent<IEditorTabsProps> = ({
     </Container>
   );
 };
-
-export default EditorTabs;

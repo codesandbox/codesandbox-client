@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useOvermind } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
-import Editor from '../Sandbox/Editor';
+import { Editor } from '../Sandbox/Editor';
 
 import { Error } from './Error';
 import { NotAuthenticated } from './NotAuthenticated';

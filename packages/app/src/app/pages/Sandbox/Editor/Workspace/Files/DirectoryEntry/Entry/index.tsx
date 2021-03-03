@@ -11,10 +11,10 @@ import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
 import UndoIcon from 'react-icons/lib/md/undo';
 
 import { EntryContainer } from '../../../elements';
-import EditIcons from './EditIcons';
+import { EditIcons } from './EditIcons';
 import { NotSyncedIconWithMargin, Right } from './elements';
-import EntryIcons from './EntryIcons';
-import EntryTitle from './EntryTitle';
+import { EntryIcons } from './EntryIcons';
+import { EntryTitle } from './EntryTitle';
 import { EntryTitleInput } from './EntryTitleInput';
 
 interface IEntryProps {
@@ -52,7 +52,7 @@ interface IEntryProps {
   state?: string;
 }
 
-const Entry: React.FC<IEntryProps> = ({
+const EntryElement: React.FC<IEntryProps> = ({
   title,
   id,
   depth,
@@ -254,4 +254,8 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-export default DragSource('ENTRY', entrySource, collectSource)(Entry);
+export const Entry = DragSource(
+  'ENTRY',
+  entrySource,
+  collectSource
+)(EntryElement);

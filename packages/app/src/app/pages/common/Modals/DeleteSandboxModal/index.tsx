@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { useOvermind } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
-const DeleteSandboxModal: FunctionComponent = () => {
+export const DeleteSandboxModal: FunctionComponent = () => {
   const {
     actions: {
       modalClosed,
@@ -21,5 +21,3 @@ const DeleteSandboxModal: FunctionComponent = () => {
     />
   );
 };
-
-export default DeleteSandboxModal;

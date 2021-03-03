@@ -61,7 +61,7 @@ export const PreferencesSync: FunctionComponent = () => {
     };
 
     fileSelector.click();
-  }, []);
+  }, [actions.preferences, effects.notificationToast]);
 
   return (
     <>

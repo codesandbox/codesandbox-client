@@ -16,7 +16,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
 
-import Content from './Content';
+import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
@@ -36,7 +36,7 @@ const StatusBar = styled.div`
   }
 `;
 
-const Editor = ({ showNewSandboxModal }: EditorTypes) => {
+export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
   const { state, actions, effects, reaction } = useOvermind();
   const statusbarEl = useRef(null);
   const [showSkeleton, setShowSkeleton] = useState(
@@ -266,8 +266,6 @@ const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     </ThemeProvider>
   );
 };
-
-export default Editor;
 
 /** To use the same styles + behavior of the vscode status bar,
  *  we recreate the html structure outside of the status bar
