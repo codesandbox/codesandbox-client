@@ -12,7 +12,7 @@ import {
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { VercelIcon, VisitIcon, TrashIcon } from '../icons';
 
@@ -20,19 +20,17 @@ import { State } from './elements';
 
 export const Vercel: FunctionComponent = () => {
   const {
-    actions: {
-      deployment,
-      deployment: { deploySandboxClicked, setDeploymentToDelete },
-      modalOpened,
-      signInVercelClicked,
+    deployment,
+    deployment: { deploySandboxClicked, setDeploymentToDelete },
+    modalOpened,
+    signInVercelClicked,
+  } = useActions();
+  const {
+    deployment: { deploying, deploysBeingDeleted, sandboxDeploys },
+    user: {
+      integrations: { zeit },
     },
-    state: {
-      deployment: { deploying, deploysBeingDeleted, sandboxDeploys },
-      user: {
-        integrations: { zeit },
-      },
-    },
-  } = useOvermind();
+  } = useAppState();
 
   return (
     <Integration icon={VercelIcon} title="Vercel">
@@ -102,20 +100,16 @@ export const Vercel: FunctionComponent = () => {
         </>
       ) : (
         <Stack justify="space-between" marginX={2}>
-            <Stack direction="vertical">
-              <Text variant="muted">Enables</Text>
+          <Stack direction="vertical">
+            <Text variant="muted">Enables</Text>
 
-              <Text>Deployments</Text>
-            </Stack>
-
-            <Button
-              autoWidth
-              disabled={deploying}
-              onClick={signInVercelClicked}
-            >
-              Sign in
-            </Button>
+            <Text>Deployments</Text>
           </Stack>
+
+          <Button autoWidth disabled={deploying} onClick={signInVercelClicked}>
+            Sign in
+          </Button>
+        </Stack>
       )}
     </Integration>
   );

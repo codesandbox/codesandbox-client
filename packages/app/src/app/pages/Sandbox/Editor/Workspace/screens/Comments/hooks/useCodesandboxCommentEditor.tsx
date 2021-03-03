@@ -2,7 +2,7 @@ import { UserQuery } from '@codesandbox/common/lib/types';
 import { ENTER, ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { FormField, List, ListAction, Textarea } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { convertMentionLinksToMentions } from 'app/overmind/utils/comments';
 import React, { Attributes } from 'react';
 
@@ -41,7 +41,8 @@ export const useCodesandboxCommentEditor = ({
     : never;
 }): [React.ReactElement, string, Mentions, Images] => {
   const ref = React.useRef(null);
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const [images, setImages] = React.useState(initialImages);
   const [value, setValue, mention, mentions] = useMention(
     ref,
@@ -85,15 +86,16 @@ export const useCodesandboxCommentEditor = ({
   // propagation
   React.useEffect(() => {
     if (ref.current) {
+      const currentRef = ref.current;
       const onKeyDown = event => {
         if (event.keyCode === ESC && mention.query !== null) {
           event.stopPropagation();
         }
       };
-      ref.current.addEventListener('keydown', onKeyDown);
+      currentRef.addEventListener('keydown', onKeyDown);
 
       return () => {
-        ref.current.removeEventListener('keydown', onKeyDown);
+        currentRef.removeEventListener('keydown', onKeyDown);
       };
     }
 

@@ -3,25 +3,31 @@ import { Dependency } from '@codesandbox/common/lib/types/algolia';
 import { CustomTemplate } from '@codesandbox/common/lib/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import slugify from '@codesandbox/common/lib/utils/slugify';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import getItems from 'app/overmind/utils/items';
 import { json } from 'overmind';
 import { SearchResults } from './state';
 
-export const valueChanged: Action<{
-  field: string;
-  value: string;
-}> = ({ state }, { field, value }) => {
+export const valueChanged = (
+  { state }: Context,
+  {
+    field,
+    value,
+  }: {
+    field: string;
+    value: string;
+  }
+) => {
   state.workspace.project[field] = value;
 };
 
-export const tagChanged: Action<string> = ({ state }, tagName) => {
+export const tagChanged = ({ state }: Context, tagName: string) => {
   state.workspace.tags.tagName = tagName;
 };
 
-export const tagAdded: AsyncAction = withOwnedSandbox(
-  async ({ state, effects, actions }) => {
+export const tagAdded = withOwnedSandbox(
+  async ({ state, effects, actions }: Context) => {
     const { tagName } = state.workspace.tags;
     const sandbox = state.editor.currentSandbox;
 
@@ -45,8 +51,8 @@ export const tagAdded: AsyncAction = withOwnedSandbox(
   }
 );
 
-export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
-  async ({ state, effects, actions }, tag) => {
+export const tagRemoved = withOwnedSandbox(
+  async ({ state, effects, actions }: Context, tag: string) => {
     const sandbox = state.editor.currentSandbox;
 
     if (!sandbox) {
@@ -95,10 +101,16 @@ export const tagRemoved: AsyncAction<string> = withOwnedSandbox(
   }
 );
 
-export const tagsChanged: AsyncAction<{
-  newTags: string[];
-  removedTags: string[];
-}> = async ({ actions, effects, state }, { newTags, removedTags }) => {
+export const tagsChanged = async (
+  { actions, effects, state }: Context,
+  {
+    newTags,
+    removedTags,
+  }: {
+    newTags: string[];
+    removedTags: string[];
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -122,8 +134,8 @@ export const tagsChanged: AsyncAction<{
 /** tagsChanged2 takes new tags and does the diffing on its own
  * This is v2 of tagsChanged. It's used in the redesign
  */
-export const tagsChanged2: AsyncAction<string[]> = withOwnedSandbox(
-  async ({ state, effects, actions }, newTags) => {
+export const tagsChanged2 = withOwnedSandbox(
+  async ({ state, effects, actions }: Context, newTags: string[]) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) return;
 
@@ -144,8 +156,8 @@ export const tagsChanged2: AsyncAction<string[]> = withOwnedSandbox(
   }
 );
 
-export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
-  async ({ state, effects, actions }) => {
+export const sandboxInfoUpdated = withOwnedSandbox(
+  async ({ state, effects, actions }: Context) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
@@ -200,8 +212,8 @@ export const sandboxInfoUpdated: AsyncAction = withOwnedSandbox(
   }
 );
 
-export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
-  async ({ effects, state, actions }, resource) => {
+export const externalResourceAdded = withOwnedSandbox(
+  async ({ effects, state, actions }: Context, resource: string) => {
     if (!state.editor.currentSandbox) {
       return;
     }
@@ -231,8 +243,8 @@ export const externalResourceAdded: AsyncAction<string> = withOwnedSandbox(
   }
 );
 
-export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
-  async ({ effects, state, actions }, resource) => {
+export const externalResourceRemoved = withOwnedSandbox(
+  async ({ effects, state, actions }: Context, resource: string) => {
     if (!state.editor.currentSandbox) {
       return;
     }
@@ -265,17 +277,13 @@ export const externalResourceRemoved: AsyncAction<string> = withOwnedSandbox(
   }
 );
 
-export const integrationsOpened: Action = ({ state }) => {
+export const integrationsOpened = ({ state }: Context) => {
   state.preferences.itemId = 'integrations';
   // I do not think this showModal is used?
   state.preferences.showModal = true;
 };
 
-export const sandboxDeleted: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const sandboxDeleted = async ({ state, effects, actions }: Context) => {
   actions.modalClosed();
 
   if (!state.editor.currentSandbox) {
@@ -291,10 +299,16 @@ export const sandboxDeleted: AsyncAction = async ({
   effects.router.redirectToSandboxWizard();
 };
 
-export const sandboxPrivacyChanged: AsyncAction<{
-  privacy: 0 | 1 | 2;
-  source?: string;
-}> = async ({ actions, effects, state }, { privacy, source = 'generic' }) => {
+export const sandboxPrivacyChanged = async (
+  { actions, effects, state }: Context,
+  {
+    privacy,
+    source = 'generic',
+  }: {
+    privacy: 0 | 1 | 2;
+    source?: string;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -333,29 +347,30 @@ export const sandboxPrivacyChanged: AsyncAction<{
   }
 };
 
-export const setWorkspaceItem: Action<{
-  item: string;
-}> = ({ state }, { item }) => {
+export const setWorkspaceItem = (
+  { state }: Context,
+  {
+    item,
+  }: {
+    item: string;
+  }
+) => {
   state.workspace.openedWorkspaceItem = item;
 };
 
-export const toggleCurrentWorkspaceItem: Action = ({ state }) => {
+export const toggleCurrentWorkspaceItem = ({ state }: Context) => {
   state.workspace.workspaceHidden = !state.workspace.workspaceHidden;
 };
 
-export const setWorkspaceHidden: Action<{ hidden: boolean }> = (
-  { state, effects },
-  { hidden }
+export const setWorkspaceHidden = (
+  { state, effects }: Context,
+  { hidden }: { hidden: boolean }
 ) => {
   state.workspace.workspaceHidden = hidden;
   effects.vscode.resetLayout();
 };
 
-export const deleteTemplate: AsyncAction = async ({
-  state,
-  actions,
-  effects,
-}) => {
+export const deleteTemplate = async ({ state, actions, effects }: Context) => {
   effects.analytics.track('Template - Removed', { source: 'editor' });
   if (
     !state.editor.currentSandbox ||
@@ -381,9 +396,9 @@ export const deleteTemplate: AsyncAction = async ({
   }
 };
 
-export const editTemplate: AsyncAction<CustomTemplate> = async (
-  { state, actions, effects },
-  template
+export const editTemplate = async (
+  { state, actions, effects }: Context,
+  template: CustomTemplate
 ) => {
   if (!state.editor.currentSandbox) {
     return;
@@ -410,11 +425,14 @@ export const editTemplate: AsyncAction<CustomTemplate> = async (
   }
 };
 
-export const addedTemplate: AsyncAction<{
-  color: string;
-  description: string;
-  title: string;
-}> = async ({ state, actions, effects }, template) => {
+export const addedTemplate = async (
+  { state, actions, effects }: Context,
+  template: {
+    color: string;
+    description: string;
+    title: string;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -441,20 +459,20 @@ export const addedTemplate: AsyncAction<{
   }
 };
 
-export const openDefaultItem: Action = ({ state }) => {
+export const openDefaultItem = ({ state }: Context) => {
   const items = getItems(state);
   const defaultItem = items.find(i => i.defaultOpen) || items[0];
 
   state.workspace.openedWorkspaceItem = defaultItem.id;
 };
 
-export const changeDependencySearch: Action<string> = ({ state }, value) => {
+export const changeDependencySearch = ({ state }: Context, value: string) => {
   state.workspace.dependencySearch = value;
 };
 
-export const getExplorerDependencies: AsyncAction<string> = async (
-  { state, effects },
-  value
+export const getExplorerDependencies = async (
+  { state, effects }: Context,
+  value: string
 ) => {
   state.workspace.explorerDependenciesEmpty = false;
   if (!value) {
@@ -475,13 +493,13 @@ export const getExplorerDependencies: AsyncAction<string> = async (
   }
 };
 
-export const clearExplorerDependencies: Action = ({ state }) => {
+export const clearExplorerDependencies = ({ state }: Context) => {
   state.workspace.explorerDependencies = [];
 };
 
-export const getDependencies: AsyncAction<string> = async (
-  { state, effects },
-  value
+export const getDependencies = async (
+  { state, effects }: Context,
+  value: string
 ) => {
   state.workspace.loadingDependencySearch = true;
   const searchResults = await effects.algoliaSearch.searchDependencies(value);
@@ -490,9 +508,9 @@ export const getDependencies: AsyncAction<string> = async (
   state.workspace.dependencies = searchResults;
 };
 
-export const setSelectedDependencies: Action<Dependency> = (
-  { state },
-  dependency
+export const setSelectedDependencies = (
+  { state }: Context,
+  dependency: Dependency
 ) => {
   const selectedDependencies = state.workspace.selectedDependencies;
   const versionMap = state.workspace.hitToVersionMap;
@@ -506,10 +524,16 @@ export const setSelectedDependencies: Action<Dependency> = (
   }
 };
 
-export const handleVersionChange: Action<{
-  dependency: Dependency;
-  version: string;
-}> = ({ state }, { dependency, version }) => {
+export const handleVersionChange = (
+  { state }: Context,
+  {
+    dependency,
+    version,
+  }: {
+    dependency: Dependency;
+    version: string;
+  }
+) => {
   if (state.editor.parsedConfigurations?.package?.parsed?.dependencies) {
     const installedVersion =
       state.editor.parsedConfigurations.package.parsed.dependencies[
@@ -528,18 +552,23 @@ export const handleVersionChange: Action<{
   state.workspace.hitToVersionMap[dependency.objectID] = version;
 };
 
-export const clearSelectedDependencies: Action = ({ state }) => {
+export const clearSelectedDependencies = ({ state }: Context) => {
   state.workspace.selectedDependencies = {};
 };
 
-export const toggleShowingSelectedDependencies: Action = ({ state }) => {
+export const toggleShowingSelectedDependencies = ({ state }: Context) => {
   state.workspace.showingSelectedDependencies = !state.workspace
     .showingSelectedDependencies;
 };
 
-export const sandboxAlwaysOnChanged: AsyncAction<{
-  alwaysOn: boolean;
-}> = async ({ actions, effects, state }, { alwaysOn }) => {
+export const sandboxAlwaysOnChanged = async (
+  { actions, effects, state }: Context,
+  {
+    alwaysOn,
+  }: {
+    alwaysOn: boolean;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -568,32 +597,36 @@ export const sandboxAlwaysOnChanged: AsyncAction<{
   }
 };
 
-export const searchValueChanged: Action<string> = ({ state }, value) => {
+export const searchValueChanged = ({ state }: Context, value: string) => {
   state.workspace.searchValue = value;
 };
 
-export const filesToIncludeChanged: Action<string> = ({ state }, value) => {
+export const filesToIncludeChanged = ({ state }: Context, value: string) => {
   state.workspace.searchOptions.filesToInclude = value;
 };
 
-export const filesToExcludeChanged: Action<string> = ({ state }, value) => {
+export const filesToExcludeChanged = ({ state }: Context, value: string) => {
   state.workspace.searchOptions.filesToExclude = value;
 };
 
-export const openResult: Action<number> = ({ state }, id) => {
+export const openResult = ({ state }: Context, id: number) => {
   state.workspace.searchResults[id].open = !state.workspace.searchResults[id]
     .open;
 };
 
-export const searchResultsChanged: Action<SearchResults> = (
-  { state },
-  results
+export const searchResultsChanged = (
+  { state }: Context,
+  results: SearchResults
 ) => {
   state.workspace.searchResults = results;
 };
 
-export const searchOptionsToggled: Action<string> = ({ state }, option) => {
+export const searchOptionsToggled = ({ state }: Context, option: string) => {
   state.workspace.searchOptions[option] = !state.workspace.searchOptions[
     option
   ];
+};
+
+export const toggleEditingSandboxInfo = ({ state }: Context, value: boolean) => {
+  state.workspace.editingSandboxInfo = value;
 };

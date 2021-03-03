@@ -4,8 +4,15 @@ import { CodeSandboxIcon as CodeSandboxIconBase } from '@codesandbox/common/lib/
 import { PreviewIcon as PreviewIconBase } from '@codesandbox/common/lib/components/icons/Preview';
 import { HeartIconSVG, ReloadIconSVG, NewWindowIconSVG } from './icons';
 
-export const Container = styled.div(props =>
-  css({
+export const Container = styled.div(props => {
+  let bottom; // 28 is the height of console
+  if (props.isDragging) {
+    bottom = -32;
+  } else {
+    bottom = props.offsetBottom ? 28 + 16 : 16;
+  }
+
+  return css({
     position: 'absolute',
     [props.align]: 16,
     zIndex: 99,
@@ -16,15 +23,14 @@ export const Container = styled.div(props =>
       marginLeft: 1,
     },
 
-    // 28 is the height of console
-    bottom: props.isDragging ? -32 : props.offsetBottom ? 28 + 16 : 16,
+    bottom,
     opacity: props.isDragging ? 0 : 1,
     transitionProperty: 'opacity, bottom',
     transitionDuration: theme =>
       // go out fast, come back slow
       props.isDragging ? theme.speed[3] : theme.speed[5],
-  })
-);
+  });
+});
 
 export const Button = styled.button(
   css({

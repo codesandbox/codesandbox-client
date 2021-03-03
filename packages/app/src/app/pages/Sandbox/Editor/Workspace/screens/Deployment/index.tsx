@@ -1,7 +1,7 @@
 import { Element, Collapsible, Stack, Text } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { Netlify } from './Netlify';
 import { NotLoggedIn } from './NotLoggedIn';
@@ -11,16 +11,12 @@ import { GithubPages } from './GithubPages';
 
 export const Deployment: FunctionComponent = () => {
   const {
-    actions: {
-      deployment: { getDeploys },
+    editor: {
+      currentSandbox: { owned },
     },
-    state: {
-      editor: {
-        currentSandbox: { owned },
-      },
-      isLoggedIn,
-    },
-  } = useOvermind();
+    isLoggedIn,
+  } = useAppState();
+  const { getDeploys } = useActions().deployment;
 
   useEffect(() => {
     if (owned && isLoggedIn) {

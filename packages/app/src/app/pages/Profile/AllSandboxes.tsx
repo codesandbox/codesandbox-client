@@ -13,28 +13,28 @@ import {
 import css from '@styled-system/css';
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
 import { motion } from 'framer-motion';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
 import { SANDBOXES_PER_PAGE, SandboxType } from './constants';
 
 export const AllSandboxes = () => {
   const {
-    actions: {
-      profile: { fetchSandboxes, sortByChanged, sortDirectionChanged },
+    fetchSandboxes,
+    sortByChanged,
+    sortDirectionChanged,
+  } = useActions().profile;
+  const {
+    user: loggedInUser,
+    profile: {
+      current: { username, featuredSandboxes },
+      currentSandboxesPage,
+      isLoadingSandboxes,
+      currentSortBy,
+      currentSortDirection,
+      showcasedSandbox,
+      sandboxes: fetchedSandboxes,
     },
-    state: {
-      user: loggedInUser,
-      profile: {
-        current: { username, featuredSandboxes },
-        currentSandboxesPage,
-        isLoadingSandboxes,
-        currentSortBy,
-        currentSortDirection,
-        showcasedSandbox,
-        sandboxes: fetchedSandboxes,
-      },
-    },
-  } = useOvermind();
+  } = useAppState();
 
   const featuredSandboxIds = featuredSandboxes.map(sandbox => sandbox.id);
 
@@ -171,17 +171,11 @@ export const AllSandboxes = () => {
 };
 
 const Pagination = () => {
+  const { sandboxesPageChanged } = useActions().profile;
   const {
-    actions: {
-      profile: { sandboxesPageChanged },
-    },
-    state: {
-      profile: {
-        currentSandboxesPage,
-        current: { sandboxCount, templateCount },
-      },
-    },
-  } = useOvermind();
+    currentSandboxesPage,
+    current: { sandboxCount, templateCount },
+  } = useAppState().profile;
 
   const numberOfPages = Math.ceil(
     (sandboxCount + templateCount) / SANDBOXES_PER_PAGE
@@ -222,29 +216,27 @@ const Pagination = () => {
 
 const UpgradeBanner = () => {
   const {
-    state: {
-      user,
-      profile: { current },
-      dashboard: { teams },
-      personalWorkspaceId,
-      activeTeamInfo,
-    },
-    actions: { modalOpened },
-    effects: { browser },
-  } = useOvermind();
+    user,
+    profile: { current },
+    dashboard: { teams },
+    personalWorkspaceId,
+    activeTeamInfo,
+  } = useAppState();
+  const { modalOpened } = useActions();
+  const { storage } = useEffects().browser;
 
   const myProfile = user?.username === current.username;
   const isPro = activeTeamInfo?.subscription;
 
   const [showUpgradeMessage, setShowUpgradeMessage] = React.useState(
-    myProfile && browser.storage.get('PROFILE_SHOW_UPGRADE') !== false
+    myProfile && storage.get('PROFILE_SHOW_UPGRADE') !== false
   );
 
-  const dontShowUpgradeMessage = (
+  const donShowUpgradeMessage = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
-    browser.storage.set('PROFILE_SHOW_UPGRADE', false);
+    storage.set('PROFILE_SHOW_UPGRADE', false);
     setShowUpgradeMessage(false);
   };
 
@@ -257,7 +249,7 @@ const UpgradeBanner = () => {
       as={isPro ? Button : Link}
       href={isPro ? null : '/pro'}
       variant="link"
-      onClick={event => {
+      onClick={() => {
         // if not pro, the link will take care of it
         if (isPro) modalOpened({ modal: 'minimumPrivacy' });
       }}
@@ -304,7 +296,7 @@ const UpgradeBanner = () => {
         name="cross"
         size={10}
         title="Don't show me this again"
-        onClick={dontShowUpgradeMessage}
+        onClick={donShowUpgradeMessage}
       />
     </Stack>
   );

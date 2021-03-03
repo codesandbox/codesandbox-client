@@ -1,22 +1,29 @@
-import { AsyncAction, Action } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { StripeErrorCode } from '@codesandbox/common/lib/types';
 import { NotificationStatus } from '@codesandbox/notifications';
 
-export const patronMounted: AsyncAction = withLoadApp();
+export const patronMounted = withLoadApp();
 
-export const priceChanged: Action<{ price: number }> = (
-  { state },
-  { price }
+export const priceChanged = (
+  { state }: Context,
+  { price }: { price: number }
 ) => {
   state.patron.price = price;
 };
 
-export const createSubscriptionClicked: AsyncAction<{
-  token: string;
-  coupon: string;
-  duration: 'yearly' | 'monthly';
-}> = async ({ state, effects, actions }, { token, coupon, duration }) => {
+export const createSubscriptionClicked = async (
+  { state, effects, actions }: Context,
+  {
+    token,
+    coupon,
+    duration,
+  }: {
+    token: string;
+    coupon: string;
+    duration: 'yearly' | 'monthly';
+  }
+) => {
   effects.analytics.track('Create Patron Subscription', { duration });
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
@@ -65,9 +72,14 @@ export const createSubscriptionClicked: AsyncAction<{
   state.patron.isUpdatingSubscription = false;
 };
 
-export const updateSubscriptionClicked: AsyncAction<{
-  coupon: string;
-}> = async ({ state, effects }, { coupon }) => {
+export const updateSubscriptionClicked = async (
+  { state, effects }: Context,
+  {
+    coupon,
+  }: {
+    coupon: string;
+  }
+) => {
   effects.analytics.track('Update Patron Subscription');
   state.patron.error = null;
   state.patron.isUpdatingSubscription = true;
@@ -83,10 +95,10 @@ export const updateSubscriptionClicked: AsyncAction<{
   state.patron.isUpdatingSubscription = false;
 };
 
-export const cancelSubscriptionClicked: AsyncAction = async ({
+export const cancelSubscriptionClicked = async ({
   state,
   effects,
-}) => {
+}: Context) => {
   effects.analytics.track('Cancel Subscription');
   if (
     effects.browser.confirm(
@@ -124,6 +136,6 @@ export const cancelSubscriptionClicked: AsyncAction = async ({
   }
 };
 
-export const tryAgainClicked: Action = ({ state }) => {
+export const tryAgainClicked = ({ state }: Context) => {
   state.patron.error = null;
 };

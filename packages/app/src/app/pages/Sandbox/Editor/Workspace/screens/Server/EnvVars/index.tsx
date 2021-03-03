@@ -8,7 +8,7 @@ import {
 } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { DeleteIcon, EditIcon } from '../Icons';
 
@@ -16,17 +16,11 @@ import { VarForm } from './VarForm';
 
 export const EnvVars: FunctionComponent = () => {
   const {
-    actions: {
-      editor: {
-        deleteEnvironmentVariable,
-        fetchEnvironmentVariables,
-        updateEnvironmentVariables,
-      },
-    },
-    state: {
-      editor: { currentSandbox },
-    },
-  } = useOvermind();
+    deleteEnvironmentVariable,
+    fetchEnvironmentVariables,
+    updateEnvironmentVariables,
+  } = useActions().editor;
+  const { currentSandbox } = useAppState().editor;
   const [editMode, setEditMode] = useState(null);
 
   useEffect(() => {

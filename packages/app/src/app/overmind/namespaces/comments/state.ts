@@ -4,7 +4,7 @@ import {
   CommentFragment,
   CommentWithRepliesFragment,
 } from 'app/graphql/types';
-import { RootState } from 'app/overmind';
+import { Context } from 'app/overmind';
 import isToday from 'date-fns/isToday';
 import { derived } from 'overmind';
 
@@ -53,7 +53,7 @@ export const state: State = {
   comments: {},
   currentCommentId: null,
   fileComments: derived(
-    ({ comments }: State, { editor: { currentSandbox } }: RootState) => {
+    ({ comments }: State, { editor: { currentSandbox } }: Context['state']) => {
       if (!currentSandbox || !comments[currentSandbox.id]) {
         return {};
       }
@@ -89,7 +89,7 @@ export const state: State = {
   currentComment: derived(
     (
       { comments, currentCommentId }: State,
-      { editor: { currentSandbox } }: RootState
+      { editor: { currentSandbox } }: Context['state']
     ) => {
       if (
         !currentSandbox ||
@@ -146,7 +146,7 @@ export const state: State = {
   currentComments: derived(
     (
       { comments, selectedCommentsFilter }: State,
-      { editor: { currentSandbox } }: RootState
+      { editor: { currentSandbox } }: Context['state']
     ) => {
       if (!currentSandbox || !comments[currentSandbox.id]) {
         return [];

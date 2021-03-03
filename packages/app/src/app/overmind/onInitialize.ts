@@ -1,7 +1,7 @@
-import { OnInitialize } from '.';
+import { Context } from '.';
 
-export const onInitialize: OnInitialize = async (
-  { state, effects, actions },
+export const onInitializeOvermind = async (
+  { state, effects, actions }: Context,
   overmindInstance
 ) => {
   const provideJwtToken = () => effects.api.getJWTToken();

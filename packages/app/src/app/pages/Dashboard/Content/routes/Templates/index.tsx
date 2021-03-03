@@ -1,4 +1,4 @@
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Helmet } from 'react-helmet';
 import React, { useEffect } from 'react';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
@@ -11,16 +11,14 @@ import { getPossibleTemplates } from '../../utils';
 
 export const Templates = () => {
   const {
-    actions,
-    state: {
-      dashboard: { sandboxes, getFilteredSandboxes },
-      activeTeam,
-    },
-  } = useOvermind();
+    dashboard: { sandboxes, getFilteredSandboxes },
+    activeTeam,
+  } = useAppState();
+  const { getPage } = useActions().dashboard;
 
   useEffect(() => {
-    actions.dashboard.getPage(sandboxesTypes.TEMPLATES);
-  }, [actions.dashboard, activeTeam]);
+    getPage(sandboxesTypes.TEMPLATES);
+  }, [getPage, activeTeam]);
 
   const possibleTemplates = sandboxes.TEMPLATES
     ? getPossibleTemplates(sandboxes.TEMPLATES)

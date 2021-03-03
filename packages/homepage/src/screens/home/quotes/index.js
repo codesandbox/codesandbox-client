@@ -64,8 +64,7 @@ const Quotes = () => (
   <div
     css={`
       margin-bottom: 320px;
-      padding:10rem 0 0 0;
-
+      padding: 10rem 0 0 0;
 
       @media screen and (max-width: 1023px) {
         margin-bottom: 130px;
@@ -80,7 +79,6 @@ const Quotes = () => (
       css={`
         text-align: center;
         margin: 0 0 5rem 0;
- 
       `}
     >
       What others are saying

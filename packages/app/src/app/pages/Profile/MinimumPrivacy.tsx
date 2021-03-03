@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import {
   Stack,
   Text,
@@ -29,16 +29,13 @@ export const MinimumPrivacy: React.FC<{ closeModal?: () => void }> = ({
   closeModal,
 }) => {
   const {
-    state: {
-      dashboard: { teams },
-      personalWorkspaceId,
-    },
-    actions: {
-      dashboard: { setTeamMinimumPrivacy },
-      profile: { fetchSandboxes },
-    },
-  } = useOvermind();
-
+    dashboard: { teams },
+    personalWorkspaceId,
+  } = useAppState();
+  const {
+    dashboard: { setTeamMinimumPrivacy },
+    profile: { fetchSandboxes },
+  } = useActions();
   const personalWorkspace = teams.find(team => team.id === personalWorkspaceId);
   const [minimumPrivacy, setMinimumPrivacy] = React.useState(
     personalWorkspace.settings.minimumPrivacy

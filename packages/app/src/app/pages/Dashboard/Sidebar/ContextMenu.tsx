@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Stack, Menu, Icon, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -33,7 +33,8 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   setRenaming,
   setNewFolderPath,
 }) => {
-  const { actions } = useOvermind();
+  const { deleteFolder } = useActions().dashboard;
+
   const history = useHistory();
   const location = useLocation();
 
@@ -67,7 +68,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
         <MenuItem onSelect={() => setRenaming(true)}>Rename folder</MenuItem>
         <MenuItem
           onSelect={() => {
-            actions.dashboard.deleteFolder({ path: folder.path });
+            deleteFolder({ path: folder.path });
 
             const isCurrentlyOpened =
               dashboardUrls.allSandboxes(folder.path) === location.pathname;

@@ -10,7 +10,7 @@ import {
   ListAction,
   isMenuClicked,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { TeamIcon } from './Icons';
 import { Menu } from './Menu';
 
@@ -32,9 +32,7 @@ export const TeamInvite: FunctionComponent<Props> = ({
   inviterAvatar,
   insertedAt,
 }) => {
-  const {
-    actions: { userNotifications },
-  } = useOvermind();
+  const { userNotifications } = useActions();
   const [hover, setHover] = useState(false);
 
   const onClick = async () => {

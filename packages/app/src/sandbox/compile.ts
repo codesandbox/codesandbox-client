@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
 import getDefinition, {
   TemplateType,
@@ -295,8 +296,10 @@ function getDependencies(
   // Always include this, because most sandboxes need this with babel6 and the
   // packager will only include the package.json for it.
   if (isBabel7(d, devDependencies)) {
+    // Don't pin this version, because other dependencies installed by the sandbox might need
+    // @babel/runtime as well, multiple versions of @babel/runtime will lead to problems.
     returnedDependencies['@babel/runtime'] =
-      returnedDependencies['@babel/runtime'] || '7.12.18';
+      returnedDependencies['@babel/runtime'] || '^7.3.1';
   } else {
     returnedDependencies['babel-runtime'] =
       returnedDependencies['babel-runtime'] || '6.26.0';
@@ -655,14 +658,14 @@ async function compile({
         const htmlEntries = templateDefinition.getHTMLEntries(configurations);
         const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
         const htmlModule = modules[htmlModulePath];
-
-        const { head, body } = getHTMLParts(
-          htmlModule && htmlModule.code
-            ? htmlModule.code
-            : template === 'vue-cli'
+        let html =
+          template === 'vue-cli'
             ? '<div id="app"></div>'
-            : '<div id="root"></div>'
-        );
+            : '<div id="root"></div>';
+        if (htmlModule && htmlModule.code) {
+          html = htmlModule.code;
+        }
+        const { head, body } = getHTMLParts(html);
 
         if (lastHeadHTML && lastHeadHTML !== head) {
           document.location.reload();

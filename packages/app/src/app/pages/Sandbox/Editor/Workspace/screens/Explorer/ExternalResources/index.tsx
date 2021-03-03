@@ -15,7 +15,7 @@ import css from '@styled-system/css';
 import React, { FunctionComponent } from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { fonts as listOfFonts } from './google-fonts';
 
@@ -26,15 +26,12 @@ type Props = {
 };
 export const ExternalResources: FunctionComponent<Props> = ({ readonly }) => {
   const {
-    actions: {
-      workspace: { externalResourceAdded, externalResourceRemoved },
-    },
-    state: {
-      editor: {
-        currentSandbox: { externalResources, template },
-      },
-    },
-  } = useOvermind();
+    externalResourceAdded,
+    externalResourceRemoved,
+  } = useActions().workspace;
+  const {
+    currentSandbox: { externalResources, template },
+  } = useAppState().editor;
 
   const fonts = externalResources.filter(isGoogleFont);
   const otherResources = externalResources.filter(
@@ -183,9 +180,6 @@ const getFontFamily = (search: string) => {
 
   return {
     name: family.split('+').join(' '),
-    id: family
-      .split('+')
-      .join('-')
-      .toLowerCase(),
+    id: family.split('+').join('-').toLowerCase(),
   };
 };

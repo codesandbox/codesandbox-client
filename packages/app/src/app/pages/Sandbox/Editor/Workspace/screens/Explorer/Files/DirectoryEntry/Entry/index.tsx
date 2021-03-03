@@ -16,7 +16,7 @@ import {
   UploadFileIcon,
 } from '../../icons';
 import EditIcons from './EditIcons';
-import EntryIcons from './EntryIcons';
+import { EntryIcons } from './EntryIcons';
 import { FileInput } from './FileInput';
 
 interface IEntryProps {
@@ -55,7 +55,7 @@ interface IEntryProps {
   state?: string;
 }
 
-const Entry: React.FC<IEntryProps> = ({
+const EntryComponent: React.FC<IEntryProps> = ({
   title,
   id,
   readonly,
@@ -302,4 +302,8 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-export default DragSource('ENTRY', entrySource, collectSource)(Entry);
+export const Entry = DragSource(
+  'ENTRY',
+  entrySource,
+  collectSource
+)(EntryComponent);

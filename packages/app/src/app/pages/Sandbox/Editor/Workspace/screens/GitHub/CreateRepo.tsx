@@ -9,20 +9,18 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React, { ChangeEvent } from 'react';
 
 export const CreateRepo = () => {
   const {
-    actions: {
-      git: { createRepoClicked, repoTitleChanged },
-      openCreateSandboxModal,
-    },
-    state: {
-      editor: { isAllModulesSynced, currentSandbox },
-      git: { error, repoTitle },
-    },
-  } = useOvermind();
+    git: { createRepoClicked, repoTitleChanged },
+    openCreateSandboxModal,
+  } = useActions();
+  const {
+    editor: { isAllModulesSynced, currentSandbox },
+    git: { error, repoTitle },
+  } = useAppState();
 
   const updateRepoTitle = ({
     target: { value: title },

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Dependency as DependencyType } from '@codesandbox/common/lib/types/algolia';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Element, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { isPrivateScope } from 'app/utils/private-registry';
@@ -14,9 +14,7 @@ type DependencyListProps = {
 };
 
 const DependencyList = ({ isPrivateDependency, list }: DependencyListProps) => {
-  const {
-    state: { workspace },
-  } = useOvermind();
+  const { workspace } = useAppState();
 
   let message: string | undefined;
 
@@ -56,11 +54,10 @@ const DependencyList = ({ isPrivateDependency, list }: DependencyListProps) => {
 };
 
 export const SearchDependencies = ({ onConfirm }) => {
-  const {
-    state: { workspace, editor },
-    actions,
-  } = useOvermind();
+  const actions = useActions();
+  const { workspace, editor } = useAppState();
   const list = useRef();
+
   const [isPrivateDependency, setIsPrivateDependency] = React.useState<boolean>(
     false
   );
@@ -130,6 +127,7 @@ export const SearchDependencies = ({ onConfirm }) => {
     return () => {
       actions.workspace.changeDependencySearch('');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

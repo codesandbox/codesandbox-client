@@ -4,21 +4,16 @@ import { Element, ListAction, Text } from '@codesandbox/components';
 import React, { FunctionComponent, useState } from 'react';
 import { usePopoverState } from 'reakit/Popover';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { IconButton, IconList, IconWrapper, OpenPopover } from './elements';
 
 export const TemplateConfig: FunctionComponent = () => {
+  const { editTemplate } = useActions().workspace;
   const {
-    actions: {
-      workspace: { editTemplate },
-    },
-    state: {
-      editor: {
-        currentSandbox: { customTemplate, template },
-      },
-    },
-  } = useOvermind();
+    currentSandbox: { customTemplate, template },
+  } = useAppState().editor;
+
   const [popupVisible, setPopupVisible] = useState(false);
   const iconPopover = usePopoverState({
     placement: 'top',

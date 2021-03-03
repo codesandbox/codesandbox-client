@@ -3,17 +3,18 @@ import css from '@styled-system/css';
 import { motion } from 'framer-motion';
 import { Stack, Button } from '@codesandbox/components';
 import CheckIcon from 'react-icons/lib/md/check';
-import { useOvermind } from 'app/overmind';
+import { useEffects, useActions } from 'app/overmind';
 
 export const ButtonActions = () => {
   const [linkCopied, setLinkCopied] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
-  const { actions, effects } = useOvermind();
+  const { modalOpened } = useActions();
+  const { copyToClipboard } = useEffects().browser;
   const timeout = React.useRef(null);
   const copyLink = () => {
     setLinkCopied(true);
 
-    effects.browser.copyToClipboard(document.location.href);
+    copyToClipboard(document.location.href);
 
     if (timeout.current) {
       clearTimeout(timeout.current);
@@ -42,7 +43,7 @@ export const ButtonActions = () => {
         css={css({ width: 'initial' })}
         variant="secondary"
         onClick={() => {
-          actions.modalOpened({ modal: 'share' });
+          modalOpened({ modal: 'share' });
         }}
       >
         Embed

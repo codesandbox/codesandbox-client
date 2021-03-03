@@ -12,7 +12,7 @@ import Downshift, { PropGetters } from 'downshift';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
 import { isPrivateScope } from 'app/utils/private-registry';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { useKeyboard } from './useKeys';
 
 const buttonStyles = css({
@@ -37,7 +37,7 @@ const AddDependencyResultList = ({
   getItemProps,
   addNpmDependency,
 }: AddDependencyResultListProps) => {
-  const { state } = useOvermind();
+  const state = useAppState();
 
   const isPrivateNpmScope =
     state.editor.currentSandbox &&
@@ -182,25 +182,23 @@ const AddDependencyResultList = ({
 
 export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
   const {
-    actions: {
-      modalOpened,
-      editor: { addNpmDependency },
-      workspace: {
-        getExplorerDependencies,
-        clearExplorerDependencies,
-        changeDependencySearch,
-      },
+    modalOpened,
+    editor: { addNpmDependency },
+    workspace: {
+      getExplorerDependencies,
+      clearExplorerDependencies,
+      changeDependencySearch,
     },
-    state: {
-      currentModal,
-      workspace: {
-        explorerDependencies,
-        explorerDependenciesEmpty,
-        dependencySearch,
-      },
+  } = useActions();
+  const effects = useEffects();
+  const {
+    currentModal,
+    workspace: {
+      explorerDependencies,
+      explorerDependenciesEmpty,
+      dependencySearch,
     },
-    effects,
-  } = useOvermind();
+  } = useAppState();
   const modalOpen = currentModal === 'searchDependencies';
   const searchInput = useRef();
   useKeyboard(searchInput);

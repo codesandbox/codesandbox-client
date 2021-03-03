@@ -1,4 +1,4 @@
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 import denormalize from 'codesandbox-import-utils/lib/utils/files/denormalize';
 import { chunk } from 'lodash-es';
@@ -16,7 +16,7 @@ function b64DecodeUnicode(file: string) {
   );
 }
 
-export const recoverFiles: Action = ({ effects, actions, state }) => {
+export const recoverFiles = ({ effects, state }: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -47,16 +47,16 @@ export const recoverFiles: Action = ({ effects, actions, state }) => {
   }
 };
 
-export const uploadFiles: AsyncAction<
+export const uploadFiles = async (
+  { effects }: Context,
   {
+    files,
+    directoryShortid,
+  }: {
     files: { [k: string]: { dataURI: string; type: string } };
     directoryShortid: string;
-  },
-  {
-    modules: any;
-    directories: any;
   }
-> = async ({ effects }, { files, directoryShortid }) => {
+) => {
   const parsedFiles: {
     [key: string]: { isBinary: boolean; content: string };
   } = {};
@@ -145,11 +145,18 @@ export const uploadFiles: AsyncAction<
   };
 };
 
-export const renameDirectoryInState: Action<{
-  title: string;
-  directory: Directory;
-  sandbox: Sandbox;
-}> = ({ state, effects }, { title, directory, sandbox }) => {
+export const renameDirectoryInState = (
+  { state, effects }: Context,
+  {
+    title,
+    directory,
+    sandbox,
+  }: {
+    title: string;
+    directory: Directory;
+    sandbox: Sandbox;
+  }
+) => {
   const oldPath = directory.path;
   directory.title = title;
   const newPath = getDirectoryPath(

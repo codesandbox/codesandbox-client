@@ -6,7 +6,7 @@ import FlaskIcon from 'react-icons/lib/fa/flask';
 import BuildIcon from 'react-icons/lib/fa/wrench';
 import NodeIcon from 'react-icons/lib/io/social-nodejs';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 // These scripts are only supposed to run on the main thread.
 const blacklistedScripts = ['dev', 'develop', 'serve', 'start'];
@@ -23,11 +23,7 @@ const getIcon = (script: string) => {
 };
 
 export const Tasks: FunctionComponent = () => {
-  const {
-    state: {
-      editor: { parsedConfigurations: pkg },
-    },
-  } = useOvermind();
+  const { parsedConfigurations: pkg } = useAppState().editor;
 
   if (!pkg?.scripts) {
     return null;

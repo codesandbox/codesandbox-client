@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -10,7 +10,7 @@ import { UserSettings } from './UserSettings';
 import { Invite } from './Invite';
 
 export const Settings = () => {
-  const { state } = useOvermind();
+  const { activeTeam, personalWorkspaceId } = useAppState();
   const location = useLocation();
 
   const getComponent = () => {
@@ -20,7 +20,7 @@ export const Settings = () => {
     if (location.pathname.includes('invite')) {
       return Invite;
     }
-    if (state.activeTeam === state.personalWorkspaceId) {
+    if (activeTeam === personalWorkspaceId) {
       return UserSettings;
     }
 

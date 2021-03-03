@@ -1,7 +1,7 @@
 import { Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import {
   PaddedPreference,
@@ -11,14 +11,8 @@ import {
 } from '../elements';
 
 export const PreviewSettings: FunctionComponent = () => {
-  const {
-    actions: {
-      preferences: { settingChanged },
-    },
-    state: {
-      preferences: { settings },
-    },
-  } = useOvermind();
+  const { settingChanged } = useActions().preferences;
+  const { settings } = useAppState().preferences;
 
   const bindValue = (name: string) => ({
     setValue: value => settingChanged({ name, value }),

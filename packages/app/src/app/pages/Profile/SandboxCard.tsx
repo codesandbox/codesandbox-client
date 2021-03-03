@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   Stack,
   Text,
@@ -31,25 +31,21 @@ export const SandboxCard: React.FC<{
   ...props
 }) => {
   const {
-    state: {
-      user: loggedInUser,
-      profile: {
-        current: { username, featuredSandboxes },
-        contextMenu,
-      },
+    user: loggedInUser,
+    profile: {
+      current: { username, featuredSandboxes },
+      contextMenu,
     },
-    actions: {
-      profile: {
-        addFeaturedSandboxesInState,
-        addFeaturedSandboxes,
-        reorderFeaturedSandboxesInState,
-        saveFeaturedSandboxesOrder,
-        removeFeaturedSandboxesInState,
-        newSandboxShowcaseSelected,
-        openContextMenu,
-      },
-    },
-  } = useOvermind();
+  } = useAppState();
+  const {
+    addFeaturedSandboxesInState,
+    addFeaturedSandboxes,
+    reorderFeaturedSandboxesInState,
+    saveFeaturedSandboxesOrder,
+    removeFeaturedSandboxesInState,
+    newSandboxShowcaseSelected,
+    openContextMenu,
+  } = useActions().profile;
 
   const ref = React.useRef<HTMLDivElement>(null);
   let previousPosition: number;

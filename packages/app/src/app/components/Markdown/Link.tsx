@@ -1,11 +1,12 @@
 import { Button, Link, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React from 'react';
 
 export const LinkElement = ({ href, children, ...props }) => {
   let commentId = null;
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const { id, alias } = state.editor.currentSandbox;
 
   try {

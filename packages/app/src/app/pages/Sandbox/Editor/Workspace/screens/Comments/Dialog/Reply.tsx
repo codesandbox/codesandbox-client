@@ -3,7 +3,7 @@ import css from '@styled-system/css';
 import { Markdown } from 'app/components/Markdown';
 import { DIALOG_TRANSITION_DURATION } from 'app/constants';
 import { CommentFragment } from 'app/graphql/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   convertImageReferencesToMarkdownImages,
   convertUserReferencesToMentions,
@@ -20,7 +20,8 @@ type ReplyProps = {
 const animationDelay = DIALOG_TRANSITION_DURATION + 's';
 
 export const Reply = ({ reply }: ReplyProps) => {
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const [editing, setEditing] = useState(false);
   const { user, id, content } = reply;
 

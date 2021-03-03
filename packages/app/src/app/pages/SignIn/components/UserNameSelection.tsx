@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Element, Text, Stack, Input, Button } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { css } from '@styled-system/css';
 
 export const UserNameSelection = () => {
-  const {
-    state: { pendingUser },
-    actions: { validateUsername, finalizeSignUp },
-  } = useOvermind();
-
+  const { pendingUser } = useAppState();
+  const { validateUsername, finalizeSignUp } = useActions();
   const [newUsername, setNewUsername] = useState('');
   const [loadingUsername, setLoadingUserName] = useState(false);
 

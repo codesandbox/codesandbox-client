@@ -8,7 +8,7 @@ export const FooterWrapper = styled.footer`
 `;
 
 export const Nav = styled.section`
-   padding-top: 6rem;
+  padding-top: 6rem;
 
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));

@@ -3,16 +3,16 @@ import { join } from 'path';
 import { useLocation } from 'react-router-dom';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
 import { DashboardNewFolder } from '../../types';
 
 export const CreateFolder = ({ basePath, setCreating }: DashboardNewFolder) => {
   const {
-    state: { dashboard },
-    actions,
-  } = useOvermind();
+    dashboard: { createFolder },
+  } = useActions();
+  const { dashboard } = useAppState();
 
   const location = useLocation();
 
@@ -48,7 +48,7 @@ export const CreateFolder = ({ basePath, setCreating }: DashboardNewFolder) => {
         dashboardVersion: 2,
         folderPath: newFolderPath,
       });
-      await actions.dashboard.createFolder(newFolderPath);
+      await createFolder(newFolderPath);
     }
   };
 

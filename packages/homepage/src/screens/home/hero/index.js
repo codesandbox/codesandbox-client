@@ -33,8 +33,8 @@ export default () => (
           margin-bottom: 2rem;
         `}
       >
-        Create, share, and get feedback with 
-        collaborative sandboxes for rapid web development.
+        Create, share, and get feedback with collaborative sandboxes for rapid
+        web development.
       </SubTitle>
 
       <SandboxButtons>

@@ -1,4 +1,4 @@
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import React from 'react';
 import {
@@ -12,10 +12,8 @@ import {
 import { GitHubIcon } from './Icons';
 
 export const GithubLogin = () => {
-  const {
-    actions: { signInGithubClicked },
-    state: { isLoadingGithub },
-  } = useOvermind();
+  const { signInGithubClicked } = useActions();
+  const { isLoadingGithub } = useAppState();
 
   return (
     <Collapsible title="Github" defaultOpen>

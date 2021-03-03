@@ -10,7 +10,7 @@ import {
   isMenuClicked,
 } from '@codesandbox/components';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { AcceptedIcon } from './Icons';
 import { Menu } from './Menu';
 
@@ -31,12 +31,9 @@ export const TeamAccepted = ({
   userName,
   userAvatar,
 }: Props) => {
-  const {
-    actions: {
-      userNotifications: { updateReadStatus },
-    },
-  } = useOvermind();
+  const { updateReadStatus } = useActions().userNotifications;
   const [hover, setHover] = useState(false);
+
   return (
     <ListAction
       key={teamName}

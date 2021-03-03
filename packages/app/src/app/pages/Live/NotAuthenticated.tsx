@@ -2,14 +2,10 @@ import { Button, Element, Stack, Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 
 export const NotAuthenticated: FunctionComponent = () => {
-  const {
-    actions: {
-      live: { signInToRoom },
-    },
-  } = useOvermind();
+  const { signInToRoom } = useActions().live;
   const { roomId } = useParams<{ roomId: string }>();
 
   return (

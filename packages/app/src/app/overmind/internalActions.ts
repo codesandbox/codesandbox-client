@@ -16,18 +16,18 @@ import values from 'lodash-es/values';
 import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
-import { Action, AsyncAction } from '.';
+import { Context } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 
 /**
  * After getting the current user we need to hydrate the app with new data from that user.
  * Everything with fetching for the user happens here.
  */
-export const initializeNewUser: AsyncAction = async ({
+export const initializeNewUser = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   actions.dashboard.getTeams();
   actions.internal.setPatronPrice();
   effects.analytics.identify('signed_in', true);
@@ -47,10 +47,13 @@ export const initializeNewUser: AsyncAction = async ({
   effects.api.preloadTemplates();
 };
 
-export const signIn: AsyncAction<{
-  useExtraScopes?: boolean;
-  provider: 'google' | 'github';
-}> = async ({ state, effects, actions }, options) => {
+export const signIn = async (
+  { state, effects, actions }: Context,
+  options: {
+    useExtraScopes?: boolean;
+    provider: 'google' | 'github';
+  }
+) => {
   effects.analytics.track('Sign In', {
     provider: options.provider,
   });
@@ -72,7 +75,7 @@ export const signIn: AsyncAction<{
   }
 };
 
-export const setStoredSettings: Action = ({ state, effects }) => {
+export const setStoredSettings = ({ state, effects }: Context) => {
   const settings = effects.settingsStore.getAll();
 
   if (settings.keybindings) {
@@ -89,7 +92,7 @@ export const setStoredSettings: Action = ({ state, effects }) => {
   Object.assign(state.preferences.settings, settings);
 };
 
-export const setPatronPrice: Action = ({ state }) => {
+export const setPatronPrice = ({ state }: Context) => {
   if (!state.user) {
     return;
   }
@@ -99,7 +102,11 @@ export const setPatronPrice: Action = ({ state }) => {
     : 10;
 };
 
-export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
+export const showUserSurveyIfNeeded = ({
+  state,
+  effects,
+  actions,
+}: Context) => {
   if (state.user?.sendSurvey) {
     // Let the server know that we've seen the survey
     effects.api.markSurveySeen();
@@ -127,12 +134,20 @@ export const showUserSurveyIfNeeded: Action = ({ state, effects, actions }) => {
 /**
  * @deprecated
  */
-export const addNotification: Action<{
-  title: string;
-  type: 'notice' | 'success' | 'warning' | 'error';
-  timeAlive?: number;
-  buttons?: Array<NotificationButton>;
-}> = ({ state }, { title, type, timeAlive, buttons }) => {
+export const addNotification = (
+  { state }: Context,
+  {
+    title,
+    type,
+    timeAlive,
+    buttons,
+  }: {
+    title: string;
+    type: 'notice' | 'success' | 'warning' | 'error';
+    timeAlive?: number;
+    buttons?: Array<NotificationButton>;
+  }
+) => {
   const now = Date.now();
   const timeAliveDefault = type === 'error' ? 6 : 3;
 
@@ -145,17 +160,20 @@ export const addNotification: Action<{
   });
 };
 
-export const authorize: AsyncAction = async ({ state, effects }) => {
+export const authorize = async ({ state, effects }: Context) => {
   try {
     state.authToken = await effects.api.getAuthToken();
   } catch (error) {
     state.editor.error = error.message;
   }
 };
-export const runProviderAuth: AsyncAction<
-  { useExtraScopes?: boolean; provider?: 'github' | 'google' },
-  any
-> = ({ effects, state }, { provider, useExtraScopes }) => {
+export const runProviderAuth = (
+  { effects, state }: Context,
+  {
+    provider,
+    useExtraScopes,
+  }: { useExtraScopes?: boolean; provider?: 'github' | 'google' }
+) => {
   const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
 
   const authPath = new URL(
@@ -205,7 +223,7 @@ export const runProviderAuth: AsyncAction<
   return signInPromise;
 };
 
-export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
+export const closeModals = ({ state }: Context, isKeyDown: boolean) => {
   if (
     state.currentModal === 'preferences' &&
     state.preferences.itemId === 'keybindings' &&
@@ -217,9 +235,9 @@ export const closeModals: Action<boolean> = ({ state, effects }, isKeyDown) => {
   state.currentModal = null;
 };
 
-export const switchCurrentWorkspaceBySandbox: Action<{ sandbox: Sandbox }> = (
-  { state, actions },
-  { sandbox }
+export const switchCurrentWorkspaceBySandbox = (
+  { state, actions }: Context,
+  { sandbox }: { sandbox: Sandbox }
 ) => {
   if (
     hasPermission(sandbox.authorization, 'owner') &&
@@ -230,16 +248,16 @@ export const switchCurrentWorkspaceBySandbox: Action<{ sandbox: Sandbox }> = (
   }
 };
 
-export const currentSandboxChanged: Action = ({ state, actions }) => {
+export const currentSandboxChanged = ({ state, actions }: Context) => {
   const sandbox = state.editor.currentSandbox!;
   actions.internal.switchCurrentWorkspaceBySandbox({
     sandbox,
   });
 };
 
-export const setCurrentSandbox: AsyncAction<Sandbox> = async (
-  { state, effects, actions },
-  sandbox
+export const setCurrentSandbox = async (
+  { state, effects, actions }: Context,
+  sandbox: Sandbox
 ) => {
   state.editor.sandboxes[sandbox.id] = sandbox;
   state.editor.currentId = sandbox.id;
@@ -340,7 +358,7 @@ export const setCurrentSandbox: AsyncAction<Sandbox> = async (
   actions.internal.currentSandboxChanged();
 };
 
-export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
+export const closeTabByIndex = ({ state }: Context, tabIndex: number) => {
   const { currentModule } = state.editor;
   const tabs = state.editor.tabs as ModuleTab[];
   const isActiveTab = currentModule.shortid === tabs[tabIndex].moduleShortid;
@@ -356,9 +374,9 @@ export const closeTabByIndex: Action<number> = ({ state }, tabIndex) => {
   state.editor.tabs.splice(tabIndex, 1);
 };
 
-export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
-  context,
-  { error }
+export const getErrorMessage = (
+  context: Context,
+  { error }: { error: ApiError | Error }
 ) => {
   const isGenericError =
     !('response' in error) ||
@@ -407,16 +425,20 @@ export const getErrorMessage: Action<{ error: ApiError | Error }, string> = (
   return error.message;
 };
 
-export const handleError: Action<{
-  /*
-    The message that will show as title of the notification
-  */
-  message: string;
-  error: ApiError | Error;
-  hideErrorMessage?: boolean;
-}> = (
-  { actions, effects, state },
-  { message, error, hideErrorMessage = false }
+export const handleError = (
+  { actions, effects, state }: Context,
+  {
+    message,
+    error,
+    hideErrorMessage = false,
+  }: {
+    /*
+      The message that will show as title of the notification
+    */
+    message: string;
+    error: ApiError | Error;
+    hideErrorMessage?: boolean;
+  }
 ) => {
   if (hideErrorMessage) {
     effects.analytics.logError(error);
@@ -504,7 +526,7 @@ export const handleError: Action<{
   });
 };
 
-export const trackCurrentTeams: AsyncAction = async ({ effects, state }) => {
+export const trackCurrentTeams = async ({ effects, state }: Context) => {
   const user = state.user;
   if (!user) {
     return;
@@ -519,7 +541,7 @@ export const trackCurrentTeams: AsyncAction = async ({ effects, state }) => {
   }
 };
 
-export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
+export const identifyCurrentUser = async ({ state, effects }: Context) => {
   const user = state.user;
   if (user) {
     effects.analytics.identify('pilot', user.experiments.inPilot);
@@ -532,21 +554,31 @@ export const identifyCurrentUser: AsyncAction = async ({ state, effects }) => {
   }
 };
 
-const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX';
-export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
+
+export const showPrivacyPolicyNotification = ({ effects, state }: Context) => {
+  const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX_v1.1';
   if (effects.browser.storage.get(seenTermsKey)) {
     return;
   }
 
   if (!state.isFirstVisit) {
-    effects.analytics.track('Saw Privacy Policy Notification');
+    effects.analytics.track('Saw Terms of Use Notification');
     effects.notificationToast.add({
       message:
-        'Hello, our privacy policy has been updated recently. What’s new? CodeSandbox emails. Please read and reach out.',
-      title: 'Updated Privacy',
+        'Hello, we are changing our Terms of Use effective Mar 31, 2021 12:00 UTC. Please read them, or see commit message for a brief sum up.',
+      title: 'Updated Terms of Use',
       status: NotificationStatus.NOTICE,
       sticky: true,
       actions: {
+        secondary: {
+          label: 'Open Commit Message',
+          run: () => {
+            window.open(
+              'https://github.com/codesandbox/codesandbox-client/commit/36b0f928cb863868bbfd93bb455a74ff46951edc',
+              '_blank'
+            );
+          },
+        },
         primary: {
           label: 'Open Privacy Policy',
           run: () => {
@@ -561,24 +593,22 @@ export const showPrivacyPolicyNotification: Action = ({ effects, state }) => {
 };
 
 const VIEW_MODE_DASHBOARD = 'VIEW_MODE_DASHBOARD';
-export const setViewModeForDashboard: Action = ({ effects, state }) => {
+export const setViewModeForDashboard = ({ effects, state }: Context) => {
   const localStorageViewMode = effects.browser.storage.get(VIEW_MODE_DASHBOARD);
   if (localStorageViewMode === 'grid' || localStorageViewMode === 'list') {
     state.dashboard.viewMode = localStorageViewMode;
   }
 };
 
-export const setActiveTeamFromUrlOrStore: AsyncAction<void, string> = async ({
-  actions,
-}) =>
+export const setActiveTeamFromUrlOrStore = async ({ actions }: Context) =>
   actions.internal.setActiveTeamFromUrl() ||
   actions.internal.setActiveTeamFromLocalStorage() ||
   actions.internal.setActiveTeamFromPersonalWorkspaceId();
 
-export const setActiveTeamFromLocalStorage: Action<void, string | null> = ({
+export const setActiveTeamFromLocalStorage = ({
   effects,
   actions,
-}) => {
+}: Context) => {
   const localStorageTeam = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
 
   if (typeof localStorageTeam === 'string') {
@@ -589,9 +619,7 @@ export const setActiveTeamFromLocalStorage: Action<void, string | null> = ({
   return null;
 };
 
-export const setActiveTeamFromUrl: Action<void, string | null> = ({
-  actions,
-}) => {
+export const setActiveTeamFromUrl = ({ actions }: Context) => {
   const currentUrl =
     typeof document === 'undefined' ? null : document.location.href;
   if (!currentUrl) {
@@ -609,10 +637,11 @@ export const setActiveTeamFromUrl: Action<void, string | null> = ({
   return null;
 };
 
-export const setActiveTeamFromPersonalWorkspaceId: AsyncAction<
-  void,
-  string
-> = async ({ actions, state, effects }) => {
+export const setActiveTeamFromPersonalWorkspaceId = async ({
+  actions,
+  state,
+  effects,
+}: Context) => {
   const personalWorkspaceId = state.personalWorkspaceId;
 
   if (personalWorkspaceId) {
@@ -628,7 +657,7 @@ export const setActiveTeamFromPersonalWorkspaceId: AsyncAction<
   return null;
 };
 
-export const replaceWorkspaceParameterInUrl: Action = ({ state }) => {
+export const replaceWorkspaceParameterInUrl = ({ state }: Context) => {
   const id = state.activeTeam;
   const currentUrl =
     typeof document === 'undefined' ? null : document.location.href;

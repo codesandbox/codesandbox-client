@@ -1,11 +1,9 @@
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 import { Alert } from '../Common/Alert';
 
 export const AccountDeletionConfirmationModal: FunctionComponent = () => {
-  const {
-    actions: { modalClosed, signOutClicked },
-  } = useOvermind();
+  const { modalClosed, signOutClicked } = useActions();
 
   return (
     <Alert
