@@ -658,14 +658,12 @@ async function compile({
         const htmlEntries = templateDefinition.getHTMLEntries(configurations);
         const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
         const htmlModule = modules[htmlModulePath];
-        let html = '<div id="root"></div>';
+        let html =
+          template === 'vue-cli'
+            ? '<div id="app"></div>'
+            : '<div id="root"></div>';
         if (htmlModule && htmlModule.code) {
-          if (htmlModule.code) {
-            html =
-              template === 'vue-cli'
-                ? '<div id="app"></div>'
-                : '<div id="root"></div>';
-          }
+          html = htmlModule.code;
         }
         const { head, body } = getHTMLParts(html);
 
