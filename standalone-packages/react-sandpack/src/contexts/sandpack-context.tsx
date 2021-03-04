@@ -191,7 +191,8 @@ class SandpackProvider extends React.PureComponent<
           entries[0]?.intersectionRatio > 0 &&
           this.state.sandpackStatus === 'initial'
         ) {
-          this.runSandpack();
+          // Delay a cycle so all hooks register the refs for the sub-components (open in csb, loading, error overlay)
+          setTimeout(() => this.runSandpack());
         }
       }, options);
 
@@ -261,8 +262,7 @@ class SandpackProvider extends React.PureComponent<
         bundlerURL: this.props.bundlerURL,
         fileResolver: this.props.fileResolver,
         skipEval: this.props.skipEval,
-        // TODO: Needs investigation, there are some scenarios in which the ref is not updated in time.
-        showOpenInCodeSandbox: !this.openInCSBRegistered.current ?? false,
+        showOpenInCodeSandbox: !this.openInCSBRegistered.current,
         showErrorScreen: !this.errorScreenRegistered.current,
         showLoadingScreen: !this.loadingScreenRegistered.current,
       }

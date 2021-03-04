@@ -391,7 +391,10 @@ function sendResize() {
 }
 
 function initializeDOMMutationListener() {
-  if (typeof window === 'undefined') {
+  if (
+    typeof window === 'undefined' ||
+    typeof window.MutationObserver !== 'function'
+  ) {
     return;
   }
 
