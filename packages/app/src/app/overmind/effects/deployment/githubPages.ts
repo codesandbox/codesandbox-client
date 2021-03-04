@@ -62,7 +62,7 @@ export default (() => {
       return data;
     },
 
-    async deploy(sandbox: Sandbox): Promise<any> {
+    async deploy(sandbox: Sandbox, username: string): Promise<any> {
       const token = await this.provideJwtCached();
       const template = getTemplate(sandbox.template);
       const buildCommand = (name: string) => {
@@ -73,13 +73,25 @@ export default (() => {
           return 'generate';
         }
 
+        if (name === 'parcel') {
+          return `build --public-url /csb-${sandbox.id}/`;
+        }
+
         return 'build';
+      };
+
+      const env = (name: string) => {
+        if (name === 'create-react-app') {
+          return `PUBLIC_URL=https://${username}.github.io/csb-${sandbox.id}/`;
+        }
+        return '';
       };
 
       const website = await axios.post(
         `${GHPagesBaseUrl}/${sandbox.id}`,
         {
           dist: template.distDir,
+          env: env(template.name),
           buildCommand: buildCommand(template.name),
         },
         { headers: createHeaders(token) }

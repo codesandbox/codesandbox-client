@@ -234,7 +234,10 @@ export const deployWithGitHubPages = async ({
   state.deployment.deploying = true;
 
   try {
-    await effects.githubPages.deploy(sandbox);
+    await effects.githubPages.deploy(
+      sandbox,
+      state.deployment.githubSite.ghLogin
+    );
     state.deployment.deploying = false;
 
     state.deployment.building = true;
