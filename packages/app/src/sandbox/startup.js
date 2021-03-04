@@ -18,7 +18,11 @@ function preloadJs(url) {
   document.head.appendChild(preloadLink);
 }
 
-preloadJs(`/static/js/babel.${BABEL7_VERSION}.min.js`);
+preloadJs(
+  `${
+    process.env.CODESANDBOX_HOST || ''
+  }/static/js/babel.${BABEL7_VERSION}.min.js`
+);
 
 const WORKERS_TO_LOAD = process.env.SANDPACK ? 1 : 3;
 window.babelworkers = [];
