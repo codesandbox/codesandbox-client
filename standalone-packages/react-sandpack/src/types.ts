@@ -43,7 +43,7 @@ export type SandboxTemplate = {
   dependencies: Record<string, string>;
   entry: string;
   main: string;
-  environment: SandboxEnviornment;
+  environment: SandboxEnvironment;
 };
 
 export type SandpackFile = {
@@ -59,10 +59,10 @@ export type SandpackSetup = {
   entry?: string;
   main?: string;
   files?: SandpackFiles;
-  environment?: SandboxEnviornment;
+  environment?: SandboxEnvironment;
 };
 
-export type SandboxEnviornment =
+export type SandboxEnvironment =
   | 'adonis'
   | 'create-react-app'
   | 'vue-cli'

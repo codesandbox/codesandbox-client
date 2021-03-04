@@ -3,7 +3,7 @@ import { Manager, IManagerState, IModuleError, IFiles } from 'smooshpack';
 
 import {
   SandpackContext,
-  SandboxEnviornment,
+  SandboxEnvironment,
   SandpackListener,
   FileResolver,
   SandpackStatus,
@@ -18,7 +18,7 @@ const Sandpack = React.createContext<SandpackContext | null>(null);
 
 export interface SandpackProviderState {
   files: IFiles;
-  environment?: SandboxEnviornment;
+  environment?: SandboxEnvironment;
   activePath: string;
   openPaths: string[];
   bundlerState: IManagerState | undefined;
