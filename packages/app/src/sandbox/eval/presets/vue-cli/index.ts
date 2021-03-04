@@ -38,11 +38,6 @@ export default function initialize() {
     },
     {
       setup: async (manager: Manager) => {
-        // TODO: Remove this, Ives mentioned a flag in the meeting two weeks ago, just forgot how it works...
-        manager.clearCache();
-        manager.clearCompiledCache();
-        manager.clearTranspilationCache();
-
         const dependencies = manager.manifest.dependencies;
         const vue = dependencies.find(dep => dep.name === 'vue');
         const isV3 = vue && isMinimalSemverVersion(vue.version, '3.0.0');
