@@ -198,7 +198,7 @@ class SandpackProvider extends React.PureComponent<
       this.intersectionObserver.observe(this.lazyAnchorRef.current);
     } else {
       // else run the sandpack on the spot
-      this.runSandpack();
+      setTimeout(() => this.runSandpack());
     }
   }
 
@@ -261,7 +261,8 @@ class SandpackProvider extends React.PureComponent<
         bundlerURL: this.props.bundlerURL,
         fileResolver: this.props.fileResolver,
         skipEval: this.props.skipEval,
-        showOpenInCodeSandbox: !this.openInCSBRegistered.current,
+        // TODO: Needs investigation, there are some scenarios in which the ref is not updated in time.
+        showOpenInCodeSandbox: !this.openInCSBRegistered.current ?? false,
         showErrorScreen: !this.errorScreenRegistered.current,
         showLoadingScreen: !this.loadingScreenRegistered.current,
       }

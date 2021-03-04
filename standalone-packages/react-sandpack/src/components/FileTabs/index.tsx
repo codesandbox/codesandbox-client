@@ -1,27 +1,24 @@
 import * as React from 'react';
-
+import { useClasser } from '@code-hike/classer';
 import { useSandpack } from '../../hooks/useSandpack';
 import { getFileName } from '../../utils/string-utils';
 
-export interface FileTabsProps {
-  customStyle?: React.CSSProperties;
-}
-
-export const FileTabs: React.FC<FileTabsProps> = props => {
+export const FileTabs: React.FC = () => {
   const { sandpack } = useSandpack();
+  const c = useClasser('sp');
 
   const { activePath, openPaths, changeActiveFile } = sandpack;
 
   return (
-    <div className="sp-tabs" style={props.customStyle}>
+    <div className={c('tabs')}>
       <div
-        className="sp-tabs-scrollable-container"
+        className={c('tabs-scrollable-container')}
         role="tablist"
         aria-label="Select active file"
       >
         {openPaths.map(filePath => (
           <button
-            className="sp-tab-button"
+            className={c('tab-button')}
             type="button"
             role="tab"
             key={filePath}

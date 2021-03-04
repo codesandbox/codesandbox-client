@@ -1,23 +1,22 @@
 import * as React from 'react';
-
+import { useClasser } from '@code-hike/classer';
 import { useSandpack } from '../../hooks/useSandpack';
 import { Navigator } from '../Navigator';
-import { LoadingAnimation } from './LoadingAnimation';
-import { OpenInCodeSandboxButton } from './OpenInCodeSandboxButton';
 import { RefreshButton } from './RefreshButton';
+import { LoadingOverlay } from '../../common/LoadingOverlay';
+import { OpenInCodeSandboxButton } from '../../common/OpenInCodeSandboxButton';
+import { ErrorOverlay } from '../../common/ErrorOverlay';
+import { SandpackStack } from '../../common/Stack';
 
-export type PreviewOptions = {
-  showNavigator?: boolean;
-};
-
-export type PreviewProps = PreviewOptions & {
+export type PreviewProps = {
   customStyle?: React.CSSProperties;
+  showNavigator?: boolean;
   showOpenInCodeSandbox?: boolean;
   showRefreshButton?: boolean;
   showSandpackErrorOverlay?: boolean;
 };
 
-export { RefreshButton, OpenInCodeSandboxButton };
+export { RefreshButton };
 
 export const SandpackPreview: React.FC<PreviewProps> = ({
   customStyle,
@@ -27,33 +26,15 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
   showSandpackErrorOverlay = true,
 }) => {
   const { sandpack, listen } = useSandpack();
-  const [loadingOverlayState, setLoadingOverlayState] = React.useState<
-    'visible' | 'fading' | 'hidden'
-  >('visible');
 
-  const {
-    status,
-    error,
-    iframeRef,
-    errorScreenRegisteredRef,
-    loadingScreenRegisteredRef,
-  } = sandpack;
+  const { status, iframeRef, errorScreenRegisteredRef } = sandpack;
+
+  const c = useClasser('sp');
 
   React.useEffect(() => {
-    // The Preview component will take care of displaying the error and the loading screen
     errorScreenRegisteredRef.current = true;
-    loadingScreenRegisteredRef.current = true;
 
     const unsub = listen((message: any) => {
-      if (message.type === 'start' && message.firstLoad === true) {
-        setLoadingOverlayState('visible');
-      }
-
-      if (message.type === 'done') {
-        setLoadingOverlayState('fading');
-        setTimeout(() => setLoadingOverlayState('hidden'), 500); // 300 ms animation
-      }
-
       if (message.type === 'resize' && iframeRef.current) {
         iframeRef.current.style.height = `${message.height}px`;
       }
@@ -63,28 +44,23 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
   }, []);
 
   return (
-    <div
-      className="sp-stack"
-      style={{
+    <SandpackStack
+      customStyle={{
         ...customStyle,
         display: status !== 'idle' ? 'flex' : 'none',
       }}
     >
       {showNavigator && <Navigator />}
 
-      <div className="sp-preview-container">
+      <div className={c('preview-container')}>
         <iframe
-          className="sp-preview-iframe"
+          className={c('preview-iframe')}
           ref={iframeRef}
           title="Sandpack Preview"
         />
-        {showSandpackErrorOverlay && error && (
-          <div className="sp-overlay sp-error">
-            <div className="sp-error-message">{error.message}</div>
-          </div>
-        )}
+        {showSandpackErrorOverlay && <ErrorOverlay />}
 
-        <div className="sp-preview-actions">
+        <div className={c('preview-actions')}>
           {!showNavigator && showRefreshButton && status === 'running' && (
             <RefreshButton />
           )}
@@ -92,10 +68,8 @@ export const SandpackPreview: React.FC<PreviewProps> = ({
           {showOpenInCodeSandbox && <OpenInCodeSandboxButton />}
         </div>
 
-        {status === 'running' && (
-          <LoadingAnimation loadingOverlayState={loadingOverlayState} />
-        )}
+        <LoadingOverlay />
       </div>
-    </div>
+    </SandpackStack>
   );
 };

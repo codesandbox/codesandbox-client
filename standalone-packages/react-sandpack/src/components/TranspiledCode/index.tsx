@@ -1,26 +1,19 @@
 import * as React from 'react';
-import { PrismHighlight } from '../CodeViewer/PrismHighlight';
+import { useClasser } from '@code-hike/classer';
+import { PrismHighlight } from '../../common/PrismHighlight';
 import { useTranspiledCode } from '../../hooks/useTranspiledCode';
-import { useSandpack } from '../../hooks/useSandpack';
+import { ErrorOverlay } from '../../common/ErrorOverlay';
+import { LoadingOverlay } from '../../common/LoadingOverlay';
 
-export interface TranspiledCodeProps {
-  customStyle?: React.CSSProperties;
-}
-
-export const SandpackTranspiledCode: React.FC<TranspiledCodeProps> = ({
-  customStyle,
-}) => {
-  const { sandpack } = useSandpack();
+export const SandpackTranspiledCode: React.FC = () => {
   const transpiledCode = useTranspiledCode();
+  const c = useClasser('sp');
 
   return (
-    <div className="sp-stack" style={{ position: 'relative', ...customStyle }}>
+    <div className={c('transpiled-code')}>
       {transpiledCode && <PrismHighlight code={transpiledCode} />}
-      {sandpack.error && (
-        <div className="sp-overlay sp-error">
-          <span className="sp-error-message">{sandpack.error.message}</span>
-        </div>
-      )}
+      <ErrorOverlay />
+      <LoadingOverlay />
     </div>
   );
 };

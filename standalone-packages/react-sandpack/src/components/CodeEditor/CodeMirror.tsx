@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { useClasser } from '@code-hike/classer';
 import {
   highlightSpecialChars,
   highlightActiveLine,
@@ -50,6 +50,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
   const cmView = React.useRef<EditorView>();
   const { theme, themeId } = useSandpackTheme();
   const [internalCode, setInternalCode] = React.useState<string>(code);
+  const c = useClasser('sp');
 
   React.useEffect(() => {
     if (!wrapper.current) {
@@ -181,7 +182,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
     /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
     <div
-      className={`sp-cm sp-${editorState}`}
+      className={c('cm', editorState)}
       onKeyDown={handleContainerKeyDown}
       tabIndex={0}
       role="group"
@@ -190,7 +191,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       ref={wrapper}
     >
       <pre
-        className="sp-pre-placeholder"
+        className={c('pre-placeholder')}
         style={{
           marginLeft: showLineNumbers ? 28 : 0, // gutter line offset
         }}

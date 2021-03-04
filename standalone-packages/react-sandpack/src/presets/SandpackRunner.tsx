@@ -1,7 +1,7 @@
 import * as React from 'react';
-
+import { ClasserProvider } from '@code-hike/classer';
 import { SandpackPreview } from '../components/Preview';
-import { SandpackLayout } from '../components/Layout';
+import { SandpackLayout } from '../common/Layout';
 import { SandpackProvider } from '../contexts/sandpack-context';
 import {
   SandpackPartialTheme,
@@ -16,10 +16,10 @@ export interface SandpackRunnerProps {
   template?: SandpackPredefinedTemplate;
   customSetup?: SandpackSetup;
   theme?: SandpackPredefinedTheme | SandpackPartialTheme;
-  customStyle?: React.CSSProperties;
   options?: {
     showNavigator?: boolean;
     bundlerUrl?: string;
+    classes?: Record<string, string>;
   };
 }
 
@@ -29,7 +29,6 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
   customSetup,
   options,
   theme,
-  customStyle,
 }) => {
   const mainFile =
     customSetup?.main ?? SANDBOX_TEMPLATES[template || 'vanilla'].main;
@@ -51,9 +50,11 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
       customSetup={userInput}
       bundlerURL={options?.bundlerUrl}
     >
-      <SandpackLayout style={customStyle} theme={theme}>
-        <SandpackPreview showNavigator={options?.showNavigator} />
-      </SandpackLayout>
+      <ClasserProvider classes={options?.classes}>
+        <SandpackLayout theme={theme}>
+          <SandpackPreview showNavigator={options?.showNavigator} />
+        </SandpackLayout>
+      </ClasserProvider>
     </SandpackProvider>
   );
 };

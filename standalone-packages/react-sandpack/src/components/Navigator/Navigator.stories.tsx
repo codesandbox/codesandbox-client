@@ -1,5 +1,5 @@
 import React from 'react';
-import { SandpackLayout } from '../../components/Layout';
+import { SandpackLayout } from '../../common/Layout';
 import { SandpackProvider } from '../../contexts/sandpack-context';
 import { Navigator } from '.';
 import { SandpackPreview } from '../Preview';

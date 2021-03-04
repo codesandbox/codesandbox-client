@@ -760,7 +760,7 @@ async function compile({
       initializeDOMMutationListener();
     }
 
-    if (showOpenInCodeSandbox) {
+    if (firstLoad && showOpenInCodeSandbox) {
       createCodeSandboxOverlay(modules);
     }
 

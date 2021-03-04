@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { SandpackLayout } from '../components/Layout';
+import { ClasserProvider } from '@code-hike/classer';
+import { SandpackLayout } from '../common/Layout';
 import {
   FileResolver,
   SandpackFiles,
@@ -9,11 +10,8 @@ import {
   SandpackPartialTheme,
 } from '../types';
 import { SandpackProvider } from '../contexts/sandpack-context';
-import {
-  SandpackCodeEditor,
-  CodeEditorOptions,
-} from '../components/CodeEditor';
-import { SandpackPreview, PreviewOptions } from '../components/Preview';
+import { SandpackCodeEditor, CodeEditorProps } from '../components/CodeEditor';
+import { SandpackPreview, PreviewProps } from '../components/Preview';
 
 export interface SandpackProps {
   files?: SandpackFiles;
@@ -21,7 +19,6 @@ export interface SandpackProps {
   customSetup?: SandpackSetup;
 
   theme?: SandpackPredefinedTheme | SandpackPartialTheme;
-  customStyle?: React.CSSProperties;
 
   options?: {
     openPaths?: string[];
@@ -29,6 +26,7 @@ export interface SandpackProps {
 
     editorWidthPercentage?: number;
     editorHeight?: React.CSSProperties['height'];
+    classes?: Record<string, string>;
 
     showNavigator?: boolean;
 
@@ -58,11 +56,11 @@ export const Sandpack: React.FC<SandpackProps> = props => {
       }
     : props.customSetup;
 
-  const previewOptions: PreviewOptions = {
+  const previewOptions: PreviewProps = {
     showNavigator: props.options?.showNavigator,
   };
 
-  const codeEditorOptions: CodeEditorOptions = {
+  const codeEditorOptions: CodeEditorProps = {
     showTabs: props.options?.showTabs,
     showLineNumbers: props.options?.showLineNumbers,
     wrapContent: props.options?.wrapContent,
@@ -92,26 +90,28 @@ export const Sandpack: React.FC<SandpackProps> = props => {
       customSetup={userInputSetup}
       {...providerOptions}
     >
-      <SandpackLayout style={props.customStyle} theme={props.theme}>
-        <SandpackCodeEditor
-          {...codeEditorOptions}
-          customStyle={{
-            height: editorHeight,
-            flexGrow: editorPart,
-            flexShrink: editorPart,
-            minWidth: 700 * (editorPart / (previewPart + editorPart)),
-          }}
-        />
-        <SandpackPreview
-          {...previewOptions}
-          customStyle={{
-            height: editorHeight,
-            flexGrow: previewPart,
-            flexShrink: previewPart,
-            minWidth: 700 * (previewPart / (previewPart + editorPart)),
-          }}
-        />
-      </SandpackLayout>
+      <ClasserProvider classes={props.options?.classes}>
+        <SandpackLayout theme={props.theme}>
+          <SandpackCodeEditor
+            {...codeEditorOptions}
+            customStyle={{
+              height: editorHeight,
+              flexGrow: editorPart,
+              flexShrink: editorPart,
+              minWidth: 700 * (editorPart / (previewPart + editorPart)),
+            }}
+          />
+          <SandpackPreview
+            {...previewOptions}
+            customStyle={{
+              height: editorHeight,
+              flexGrow: previewPart,
+              flexShrink: previewPart,
+              minWidth: 700 * (previewPart / (previewPart + editorPart)),
+            }}
+          />
+        </SandpackLayout>
+      </ClasserProvider>
     </SandpackProvider>
   );
 };

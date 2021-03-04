@@ -64,37 +64,40 @@
   );
 }
 
+.sp-stack {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .sp-layout > .sp-stack {
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: 0;
   min-width: 350px;
   height: 300px;
-  border: 1px solid var(--sp-colors-fg-inactive);
-  margin: -1px;
+}
+
+.sp-layout > *:not(:first-child) {
+  border-left: 1px solid var(--sp-colors-fg-inactive);
+  border-top: 1px solid var(--sp-colors-fg-inactive);
+  margin-left: -1px;
+  margin-top: -1px;
   position: relative;
 }
 
-@media screen and (max-width: 768px) {
-  .sp-layout {
-    border-radius: 0;
-  }
+.sp-layout > *:first-child .sp-overlay {
+  border-right: 1px solid var(--sp-colors-fg-inactive);
+}
 
+@media screen and (max-width: 768px) {
   .sp-layout > .sp-stack {
     height: auto;
-    min-width: 100% !important;
-  }
-
-  .sp-layout .sp-preview-iframe {
-    height: auto;
+    min-width: 100% !important; /* triggers the layout break at the 768px breakpoint, not when the component is less then 700px */
   }
 }
 
-.sp-stack {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
+/* Components styling */
 
 .sp-pre-placeholder {
   margin: 0;
@@ -105,7 +108,7 @@
   line-height: 1.4;
 }
 
-.sp-editor-frame {
+.sp-code-editor {
   flex: 1;
   position: relative;
   overflow: auto;
@@ -174,6 +177,25 @@
   padding: 0;
 }
 
+.sp-transpiled-code {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+  overflow: auto;
+  min-height: 160px;
+  flex: 1;
+}
+
+.sp-code-view {
+  background: var(--sp-colors-bg-default);
+  padding: var(--sp-space-4) var(--sp-space-2);
+  line-height: 1.4;
+  overflow: auto;
+  flex: 1;
+  position: relative;
+}
+
 .sp-tabs {
   border-bottom: 1px solid var(--sp-colors-fg-inactive);
   background: var(--sp-colors-bg-default);
@@ -229,7 +251,7 @@
   background: var(--sp-colors-bg-default);
 }
 
-/* Elements */
+/* Common Styling */
 
 .sp-tab-button {
   display: block;
@@ -309,11 +331,11 @@
   outline: 2px solid var(--sp-colors-accent);
 }
 
-.sp-button.csb-icon-dark {
+.sp-button.sp-csb-icon-dark {
   color: var(--sp-colors-bg-default);
 }
 
-.sp-button.csb-icon-dark:hover:not(:disabled) {
+.sp-button.sp-csb-icon-dark:hover:not(:disabled) {
   background-color: var(--sp-colors-bg-active);
   color: var(--sp-colors-bg-active);
 }
@@ -327,6 +349,9 @@
   height: 24px;
   font-size: inherit;
   outline: none;
+  flex: 1;
+  margin-left: var(--sp-space-4);
+  width: 0;
 }
 
 .sp-input:focus {
@@ -360,6 +385,22 @@
   height: 32px;
   background: var(--sp-colors-bg-default);
   border-radius: var(--sp-border-radius);
+}
+
+.sp-cube-wrapper .sp-cube {
+  display: block;
+}
+
+.sp-cube-wrapper .sp-button {
+  display: none;
+}
+
+.sp-cube-wrapper:hover .sp-button {
+  display: block;
+}
+
+.sp-cube-wrapper:hover .sp-cube {
+  display: none;
 }
 
 .sp-cube {

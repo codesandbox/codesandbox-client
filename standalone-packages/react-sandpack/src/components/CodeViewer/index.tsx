@@ -1,48 +1,37 @@
 import * as React from 'react';
-import { RunIcon } from '../../icons';
-
 import { useSandpack } from '../../hooks/useSandpack';
 import { FileTabs } from '../FileTabs';
-import { PrismHighlight } from './PrismHighlight';
+import { PrismHighlight } from '../../common/PrismHighlight';
 import { getPrismLanguage } from './utils';
 import { useActiveCode } from '../../hooks/useActiveCode';
+import { RunButton } from '../../common/RunButton';
+import { SandpackStack } from '../../common/Stack';
 
 export interface CodeViewerProps {
-  style?: React.CSSProperties;
   showTabs?: boolean;
   showLineNumbers?: boolean;
 }
 
 export const SandpackCodeViewer: React.FC<CodeViewerProps> = ({
   showTabs,
-  ...rest
+  showLineNumbers,
 }) => {
   const { sandpack } = useSandpack();
   const { code } = useActiveCode();
-  const { activePath, status, runSandpack } = sandpack;
+  const { activePath, status } = sandpack;
 
   const lang = getPrismLanguage(activePath);
   const shouldShowTabs = showTabs ?? sandpack.openPaths.length > 1;
 
   return (
-    <div className="sp-stack">
+    <SandpackStack>
       {shouldShowTabs && <FileTabs />}
-      <PrismHighlight {...rest} code={code} lang={lang} />
-      {status === 'idle' && (
-        <button
-          type="button"
-          className="sp-button"
-          style={{
-            position: 'absolute',
-            bottom: 'var(--sp-space-2)',
-            right: 'var(--sp-space-2)',
-          }}
-          onClick={() => runSandpack()}
-        >
-          <RunIcon />
-          Run
-        </button>
-      )}
-    </div>
+      <PrismHighlight
+        showLineNumbers={showLineNumbers}
+        code={code}
+        lang={lang}
+      />
+      {status === 'idle' && <RunButton />}
+    </SandpackStack>
   );
 };

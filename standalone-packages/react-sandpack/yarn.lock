@@ -1208,6 +1208,11 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@code-hike/classer@^0.0.0-aa6efee":
+  version "0.0.0-aa6efee"
+  resolved "https://registry.yarnpkg.com/@code-hike/classer/-/classer-0.0.0-aa6efee.tgz#ce2423505baa66679dc4477498d5226a1e282c00"
+  integrity sha512-+NcPLh4d/AGFFK3wUQ2EzTI0zeeSIQUMczKEwwd8MlMYZl8rP/M6C6iWLwaAkGiOuadLDC/gO01MtIV18kSyQw==
+
 "@codemirror/autocomplete@^0.17.0":
   version "0.17.4"
   resolved "https://registry.yarnpkg.com/@codemirror/autocomplete/-/autocomplete-0.17.4.tgz#06e1ff689b07c7fb3a4a9de121e94282b49c86ee"
@@ -12869,10 +12874,10 @@ slide@^1.1.3:
   resolved "https://registry.yarnpkg.com/slide/-/slide-1.1.6.tgz#56eb027d65b4d2dce6cb2e2d32c4d4afc9e1d707"
   integrity sha1-VusCfWW00tzmyy4tMsTUr8nh1wc=
 
-smooshpack@^1.0.0-alpha-32:
-  version "1.0.0-alpha-32"
-  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-1.0.0-alpha-32.tgz#51cea851fe5ea23a9aaf3c7128b7d9a1b448b0e8"
-  integrity sha512-lKBPWfegpDdvnEORh24kPMf/JJz/B7Avb/rsq7myvs8gRO5SHYMWVGi2H8bQEkyNRWFAWv0JYpDfE+f3tBS48Q==
+smooshpack@^1.0.0-alpha-34:
+  version "1.0.0-alpha-34"
+  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-1.0.0-alpha-34.tgz#f22555fe11e1000a6d0716c2efc8c126c149c6c8"
+  integrity sha512-EQ2mf1hz5+u772OfinyXzXmoDaBaF5riebXjzh0qdq+Y8gz4eXTfAXfL3nwjpp06V48o2l6FqmDB+fnDoXPBow==
   dependencies:
     codesandbox-api "^0.0.31"
     codesandbox-import-utils "^1.2.3"

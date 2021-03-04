@@ -2,7 +2,7 @@ import React from 'react';
 import { FileExplorer } from './index';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
-import { SandpackLayout } from '../../components/Layout';
+import { SandpackLayout } from '../../common/Layout';
 
 export default {
   title: 'components/File Explorer',

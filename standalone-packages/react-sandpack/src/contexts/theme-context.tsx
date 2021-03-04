@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useClasser } from '@code-hike/classer';
 import { createThemeObject, codesandboxLightTheme } from '../themes';
 import {
   SandpackPartialTheme,
@@ -19,6 +20,7 @@ const SandpackThemeProvider: React.FC<{
   theme?: SandpackPredefinedTheme | SandpackPartialTheme;
 }> = props => {
   const { theme, id } = createThemeObject(props.theme);
+  const c = useClasser('sp');
 
   // If theme is not explicitly set, don't inject any stylesheet
   if (props.theme) {
@@ -32,7 +34,7 @@ const SandpackThemeProvider: React.FC<{
         id,
       }}
     >
-      <div className={`sp-wrapper ${id}`}>{props.children}</div>
+      <div className={c('wrapper', id)}>{props.children}</div>
     </SandpackThemeContext.Provider>
   );
 };

@@ -226,17 +226,6 @@ some of the parts of the component via flags set on the `options` prop.
 />
 ```
 
-You can also pass css style rules to the `customStyle` prop. This should be used
-with care, because it might mess up the layout and the theming.
-
-```jsx
-<Sandpack
-  customStyle={{
-    border: 'none', // Any valid style property will be passed to the sandpack layout component here
-  }}
-/>
-```
-
 One useful configuration is the height of the component. We recommend **fixed
 heights**, to avoid any layout shift while the bundler is running or as you type
 in the editor or switch the tab. By default, the height is set to `300px`, but
@@ -249,6 +238,9 @@ you can adjust that with the `options.editorHeight` prop:
   }}
 />
 ```
+
+Furthermore, we implemented our css classes with a handy utility package called
+`classer`.
 
 ### Execution Options
 
@@ -295,8 +287,8 @@ In case you want to have the bundler running and you don't want the code editing
 component, you can use a `SandpackRunner` preset.
 
 The `SandpackRunner` has some of the props we already described above:
-`template`, `customSetup`, `theme` and `customStyle`. They work exactly the same
-on this preset.
+`template`, `customSetup` and `theme`. They work exactly the same on this
+preset.
 
 However, your input will be sent through the `code` prop. This is a single
 string that will replace the **main** file of the project.

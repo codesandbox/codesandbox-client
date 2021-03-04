@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSandpack } from '../hooks/useSandpack';
 
 import {
   SandpackPreview,
@@ -14,6 +15,7 @@ import {
   useSandpackTheme,
   useActiveCode,
   useSandpackNavigation,
+  SandpackStack,
 } from '../index';
 
 export default {
@@ -23,7 +25,9 @@ export default {
 export const UsingSandpackLayout = () => (
   <SandpackProvider template="react">
     <SandpackLayout theme="codesandbox-dark">
-      <SandpackTranspiledCode />
+      <SandpackStack>
+        <SandpackTranspiledCode />
+      </SandpackStack>
       <SandpackCodeViewer />
     </SandpackLayout>
   </SandpackProvider>
@@ -126,7 +130,88 @@ export const UsingHooks = () => (
         <CustomOpenInCSB />
       </div>
 
-      <SandpackTranspiledCode customStyle={{ width: 400, height: 300 }} />
+      <div style={{ width: 400 }}>
+        <SandpackTranspiledCode />
+      </div>
     </SandpackThemeProvider>
   </SandpackProvider>
 );
+
+const code1 = `import React from 'react'
+
+function Kitten() {
+  return (
+    <img 
+      src="https://placekitten.com/200/200" 
+      alt="Kitten" 
+    />
+  )
+}
+
+export default function KittenGallery() {
+  return (
+    <section>
+      <h1>A Gallery of Adorable Kittens</h1>
+      <Kitten />
+      <Kitten />
+      <Kitten />
+    </section>
+  );
+}`;
+const code2 = `import React from 'react'
+
+export default function KittenGallery() {
+  return (
+    <img 
+      src="https://placekitten.com/200/200" 
+      alt="Kitten" 
+    />
+  )
+}`;
+
+const CustomPreview = () => {
+  const { sandpack } = useSandpack();
+
+  return (
+    <iframe
+      style={{
+        width: 400,
+        height: 400,
+      }}
+      ref={sandpack.iframeRef}
+      title="Sandpack Preview"
+    />
+  );
+};
+
+export const JustIframe = () => {
+  const [first, setFirst] = React.useState(true);
+  const code = first ? code1 : code2;
+
+  return (
+    <SandpackProvider
+      template="react"
+      customSetup={{
+        files: {
+          '/App.js': code,
+        },
+      }}
+    >
+      <CustomPreview />
+      <div
+        style={{
+          display: 'flex',
+          width: 400,
+          margin: '8px 0',
+          justifyContent: 'space-between',
+        }}
+      >
+        <CustomRefreshButton />
+        <button type="button" onClick={() => setFirst(!first)}>
+          Switch
+        </button>
+        <CustomOpenInCSB />
+      </div>
+    </SandpackProvider>
+  );
+};

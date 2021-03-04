@@ -228,7 +228,7 @@ const simpleHashFunction = (str: string) => {
 // inactive fg and active bg are interchangable to limit the number of colors in the theme
 // bg-default-overlay is determined by adjusting the alpha channel on the default bg to 80%
 export const getThemeStyleSheet = (theme: SandpackTheme, themeId: string) => `
-.sp-wrapper.${themeId} {
+.sp-wrapper.sp-${themeId} {
   --sp-colors-fg-active: ${theme.palette.activeText};
   --sp-colors-fg-default: ${theme.palette.defaultText};
   --sp-colors-fg-inactive: ${
