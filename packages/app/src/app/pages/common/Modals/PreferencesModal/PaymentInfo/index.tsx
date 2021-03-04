@@ -2,23 +2,18 @@ import { Element, Stack, Text } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
 
 import { SubscribeForm } from 'app/components/SubscribeForm';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { Card } from './Card';
 
 const Body: FunctionComponent = () => {
+  const { paymentDetailsUpdated } = useActions().preferences;
   const {
-    actions: {
-      preferences: { paymentDetailsUpdated },
-    },
-    state: {
-      preferences: {
-        isLoadingPaymentDetails,
-        paymentDetailError,
-        paymentDetails,
-      },
-    },
-  } = useOvermind();
+    isLoadingPaymentDetails,
+    paymentDetailError,
+    paymentDetails,
+  } = useAppState().preferences;
+
   const { name } = paymentDetails || {};
 
   if (isLoadingPaymentDetails) {
@@ -64,11 +59,7 @@ const Body: FunctionComponent = () => {
 };
 
 export const PaymentInfo: FunctionComponent = () => {
-  const {
-    actions: {
-      preferences: { paymentDetailsRequested },
-    },
-  } = useOvermind();
+  const { paymentDetailsRequested } = useActions().preferences;
 
   useEffect(() => {
     paymentDetailsRequested();

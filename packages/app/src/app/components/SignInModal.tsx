@@ -4,13 +4,11 @@ import { ThemeProvider, Stack } from '@codesandbox/components';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 export const SignInModal = () => {
-  const {
-    actions: { toggleSignInModal },
-    state: { redirectOnLogin, signInModalOpen, user },
-  } = useOvermind();
+  const { toggleSignInModal } = useActions();
+  const { redirectOnLogin, signInModalOpen, user } = useAppState();
 
   const closeModal = useCallback(
     event => {

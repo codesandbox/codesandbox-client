@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 import { Dependencies } from './Dependencies';
 import { ExternalResources } from './ExternalResources';
@@ -12,12 +12,8 @@ type Props = {
 
 export const Explorer: FunctionComponent<Props> = ({ readonly = false }) => {
   const {
-    state: {
-      editor: {
-        currentSandbox: { template },
-      },
-    },
-  } = useOvermind();
+    currentSandbox: { template },
+  } = useAppState().editor;
 
   return (
     <>

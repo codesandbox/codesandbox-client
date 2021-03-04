@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { ThemeProvider, Stack, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Switch, Route, RouteComponentProps } from 'react-router-dom';
@@ -24,14 +24,8 @@ export const Profile: React.FunctionComponent<RouteComponentProps<{
     params: { username },
   },
 }) => {
-  const {
-    actions: {
-      profile: { profileMounted },
-    },
-    state: {
-      profile: { current: user, notFound },
-    },
-  } = useOvermind();
+  const { profileMounted } = useActions().profile;
+  const { current: user, notFound } = useAppState().profile;
 
   React.useEffect(() => {
     profileMounted(username);

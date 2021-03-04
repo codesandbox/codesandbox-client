@@ -8,19 +8,14 @@ import {
   Text,
 } from '@codesandbox/components';
 import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React from 'react';
 
 import { Explorer } from '../Explorer';
 
 export const GithubSummary = () => {
-  const {
-    state: { editor },
-    actions: {
-      editor: { forkSandboxClicked },
-    },
-  } = useOvermind();
-
+  const { forkSandboxClicked } = useActions().editor;
+  const { editor } = useAppState();
   if (!editor.currentSandbox?.git) {
     // Race condition where `git` is undefined, but this is still rendered
     return null;

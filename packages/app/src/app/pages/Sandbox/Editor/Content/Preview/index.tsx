@@ -3,7 +3,7 @@ import BasePreview from '@codesandbox/common/lib/components/Preview';
 import RunOnClick from '@codesandbox/common/lib/components/RunOnClick';
 
 import React, { FunctionComponent, useState } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 
 import { ResponsiveWrapper } from './ResponsiveWrapper';
 import { InstallExtensionBanner } from './ResponsiveWrapper/InstallExtensionBanner';
@@ -21,28 +21,26 @@ export const Preview: FunctionComponent<Props> = ({
   runOnClick,
 }) => {
   const {
-    actions: {
-      preview: previewActions,
-      editor: { errorsCleared, previewActionReceived, projectViewToggled },
+    preview: previewActions,
+    editor: { errorsCleared, previewActionReceived, projectViewToggled },
+  } = useActions();
+  const {
+    preview,
+    editor: {
+      currentModule,
+      currentSandbox,
+      initialPath,
+      isInProjectView,
+      isResizing,
+      previewWindowVisible,
     },
-    effects: {
-      preview: { initializePreview },
-    },
-    state: {
-      preview,
-      editor: {
-        currentModule,
-        currentSandbox,
-        initialPath,
-        isInProjectView,
-        isResizing,
-        previewWindowVisible,
-      },
-      preferences: { settings },
-      server: { containerStatus, error, hasUnrecoverableError },
-    },
-    effects,
-  } = useOvermind();
+    preferences: { settings },
+    server: { containerStatus, error, hasUnrecoverableError },
+  } = useAppState();
+  const {
+    preview: { initializePreview, canAddComments },
+    browser,
+  } = useEffects();
   const [running, setRunning] = useState(!runOnClick);
 
   /**
@@ -66,12 +64,9 @@ export const Preview: FunctionComponent<Props> = ({
     return undefined;
   };
 
-  const canAddComments = effects.preview.canAddComments(currentSandbox);
-
   // Only show in chromium browsers
   const showBanner =
-    preview.showExtensionBanner &&
-    effects.browser.isChromium(navigator.userAgent);
+    preview.showExtensionBanner && browser.isChromium(navigator.userAgent);
 
   const content = running ? (
     <BasePreview
@@ -103,7 +98,7 @@ export const Preview: FunctionComponent<Props> = ({
       settings={settings}
       isScreenshotLoading={preview.screenshot.isLoading}
       createPreviewComment={
-        canAddComments && previewActions.createPreviewComment
+        canAddComments(currentSandbox) && previewActions.createPreviewComment
       }
       url={options.url}
     />

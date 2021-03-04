@@ -3,7 +3,7 @@ import css from '@styled-system/css';
 import { withTheme } from 'styled-components';
 import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
 import Margin from '@codesandbox/common/lib/components/spacing/Margin';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Element, Button, ThemeProvider, Text } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
 import { format, getTime, subMonths, subWeeks } from 'date-fns';
@@ -24,14 +24,8 @@ import {
 import { SandboxCard } from './SandboxCard';
 
 export const Curator: FunctionComponent = withTheme(({ theme }) => {
-  const {
-    actions: {
-      explore: { pickSandboxModal, popularSandboxesMounted },
-    },
-    state: {
-      explore: { popularSandboxes },
-    },
-  } = useOvermind();
+  const { pickSandboxModal, popularSandboxesMounted } = useActions().explore;
+  const { popularSandboxes } = useAppState().explore;
   const [selectedDate, setSelectedDate] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
 

@@ -1,11 +1,11 @@
 import { HIDDEN_DIRECTORIES } from '@codesandbox/common/lib/templates/constants/files';
 import { Directory, Module } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import * as React from 'react';
 
-import ModuleEntry from './ModuleEntry';
-import DirectoryEntry from '..';
+import { ModuleEntry } from './ModuleEntry';
+import { DirectoryEntry } from '..';
 
 interface IDirectoryChildrenProps {
   depth?: number;
@@ -24,7 +24,7 @@ interface IDirectoryChildrenProps {
   renameValidator?: (id: string, title: string) => string | false | null;
 }
 
-const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
+export const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   depth = 0,
   renameModule,
   setCurrentModule,
@@ -36,10 +36,9 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
   getModulePath,
   renameValidator,
 }) => {
-  const {
-    state: { isLoggedIn, editor: editorState },
-    actions: { files, editor },
-  } = useOvermind();
+  const { isLoggedIn, editor: editorState } = useAppState();
+
+  const { files, editor } = useActions();
   const { currentSandbox, mainModule, currentModuleShortid } = editorState;
 
   const {
@@ -99,5 +98,3 @@ const DirectoryChildren: React.FC<IDirectoryChildrenProps> = ({
     </div>
   );
 };
-
-export default DirectoryChildren;

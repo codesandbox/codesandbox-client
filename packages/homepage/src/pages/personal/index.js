@@ -171,7 +171,7 @@ export default () => {
               <h3>Share code & creations.</h3>
               With friends, colleagues, or the world.
             </div>
-           <div>
+            <div>
               <h3>Provide reproducibles.</h3>
               When creating GitHub issues.
             </div>

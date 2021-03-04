@@ -1,18 +1,16 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Element, Stack, ThemeProvider } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { Navigation } from '../common/Navigation';
 import { SignInModalElement } from './Modal';
 
-const SignIn = () => {
-  const {
-    state,
-    actions: { genericPageMounted },
-  } = useOvermind();
+export const SignIn = () => {
+  const state = useAppState();
+  const { genericPageMounted } = useActions();
   const redirectTo = new URL(location.href).searchParams.get('continue');
 
   useEffect(() => {
@@ -49,5 +47,3 @@ const SignIn = () => {
     </ThemeProvider>
   );
 };
-
-export default SignIn;

@@ -12,21 +12,19 @@ import {
 } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { FileIcon, FlagIcon, NetlifyIcon, VisitIcon } from './icons';
 
 export const Netlify: FunctionComponent = () => {
   const {
-    actions: {
-      deployment: { deployWithNetlify, getNetlifyDeploys },
-      modalOpened,
-    },
-    state: {
-      deployment: { building, deploying, netlifyClaimUrl, netlifySite },
-      editor: { currentSandbox },
-    },
-  } = useOvermind();
+    deployment: { deployWithNetlify, getNetlifyDeploys },
+    modalOpened,
+  } = useActions();
+  const {
+    deployment: { building, deploying, netlifyClaimUrl, netlifySite },
+    editor: { currentSandbox },
+  } = useAppState();
 
   useEffect(() => {
     getNetlifyDeploys();

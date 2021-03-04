@@ -6,7 +6,7 @@ import {
 } from 'app/components/CreateNewSandbox/CreateSandbox';
 import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
@@ -14,15 +14,15 @@ import { AddPreset } from './AddPreset';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
 import { DeletePreset } from './DeletePreset';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
-import DeleteSandboxModal from './DeleteSandboxModal';
+import { DeleteSandboxModal } from './DeleteSandboxModal';
 import { DeploymentModal } from './DeploymentModal';
 import { EditPresets } from './EditPresets';
 import { EmptyTrash } from './EmptyTrash';
-import ExportGitHubModal from './ExportGitHubModal';
+import { ExportGitHubModal } from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
-import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
+import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
@@ -31,17 +31,18 @@ import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
-import SignInForTemplates from './SignInForTemplates';
+import { SignInForTemplates } from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
 import { TeamInviteModal } from './TeamInviteModal';
-import UploadModal from './UploadModal';
+import { UploadModal } from './UploadModal';
 import { DeleteWorkspace } from './DeleteWorkspace';
 import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
 import { AccountDeletionModal } from './AccountDeletion';
 import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfirmation';
 import { NotFoundBranchModal } from './NotFoundBranchModal';
+import { CropThumbnail } from './CropThumbnail';
 
 const modals = {
   preferences: {
@@ -82,6 +83,10 @@ const modals = {
   },
   netlifyLogs: {
     Component: NetlifyLogs,
+    width: 750,
+  },
+  cropThumbnail: {
+    Component: CropThumbnail,
     width: 750,
   },
   deleteDeployment: {
@@ -129,7 +134,7 @@ const modals = {
     width: 400,
   },
   liveVersionMismatch: {
-    Component: LiveSessionVersionMismatch,
+    Component: LiveVersionMismatch,
     width: 400,
   },
   uploading: {
@@ -178,16 +183,14 @@ const modals = {
 const Modals: FunctionComponent = () => {
   const [themeProps, setThemeProps] = useState({});
   const { pathname } = useLocation();
+  const { modalClosed } = useActions();
   const {
-    actions,
-    state: {
-      modals: stateModals,
-      preferences: {
-        settings: { customVSCodeTheme },
-      },
-      currentModal,
+    modals: stateModals,
+    preferences: {
+      settings: { customVSCodeTheme },
     },
-  } = useOvermind();
+    currentModal,
+  } = useAppState();
 
   const [localState, setLocalState] = useState({
     theme: {
@@ -231,11 +234,11 @@ const Modals: FunctionComponent = () => {
           (typeof modal.width === 'function' ? modal.width() : modal.width)
         }
         top={modal && modal.top}
-        onClose={isKeyDown => actions.modalClosed()}
+        onClose={() => modalClosed()}
       >
         {modal
           ? React.createElement(modal.Component, {
-              closeModal: () => actions.modalClosed(),
+              closeModal: () => modalClosed(),
             })
           : null}
       </Modal>

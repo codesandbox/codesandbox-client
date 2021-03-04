@@ -68,9 +68,7 @@ describe('preset', () => {
         code: '',
       };
 
-      expect(preset.getQuery(module, evaluator)).toEqual(
-        '!babel-loader'
-      );
+      expect(preset.getQuery(module, evaluator)).toEqual('!babel-loader');
     });
 
     it('generates the right query for 2 transpiler', () => {

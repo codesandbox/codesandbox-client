@@ -1,7 +1,7 @@
 import { css } from '@styled-system/css';
 import React, { FunctionComponent, useEffect } from 'react';
 import { Element, Button, ThemeProvider, Text } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import styled, { keyframes } from 'styled-components';
 import { Navigation } from '../Navigation';
 
@@ -54,10 +54,8 @@ const Glitch = styled(Text)`
 `;
 
 export const NotFound: FunctionComponent = () => {
-  const {
-    actions: { genericPageMounted },
-    state: { hasLogIn },
-  } = useOvermind();
+  const { genericPageMounted } = useActions();
+  const { hasLogIn } = useAppState();
 
   useEffect(() => {
     genericPageMounted();

@@ -1,14 +1,14 @@
 import React from 'react';
 import { Menu as BaseMenu, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 
 export const Menu = ({ read, id }) => {
   const {
-    actions: {
-      userNotifications: { updateReadStatus, archiveNotification },
-    },
-  } = useOvermind();
+    updateReadStatus,
+    archiveNotification,
+  } = useActions().userNotifications;
+
   return (
     <BaseMenu>
       <Element

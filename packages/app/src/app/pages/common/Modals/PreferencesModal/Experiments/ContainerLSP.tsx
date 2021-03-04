@@ -1,17 +1,13 @@
 import { Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { PaddedPreference } from '../elements';
 
 export const ContainerLSP: FunctionComponent = () => {
-  const {
-    actions: {
-      preferences: { toggleContainerLspExperiment },
-    },
-    state: { user },
-  } = useOvermind();
+  const { user } = useAppState();
+  const { toggleContainerLspExperiment } = useActions().preferences;
 
   return user ? (
     <>

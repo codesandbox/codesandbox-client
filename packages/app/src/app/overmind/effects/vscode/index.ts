@@ -1,5 +1,6 @@
 import DEFAULT_PRETTIER_CONFIG from '@codesandbox/common/lib/prettify-default-config';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
+import { IReaction, json } from 'overmind';
 import getTemplate from '@codesandbox/common/lib/templates';
 import {
   CurrentUser,
@@ -19,7 +20,7 @@ import {
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
 import { CodeReferenceMetadata } from 'app/graphql/types';
-import { Reaction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { indexToLineAndColumn } from 'app/overmind/utils/common';
 import prettify from 'app/src/app/utils/prettify';
 import { blocker } from 'app/utils/blocker';
@@ -27,7 +28,7 @@ import { listen } from 'codesandbox-api';
 import { debounce } from 'lodash-es';
 import * as childProcess from 'node-services/lib/child_process';
 import { TextOperation } from 'ot';
-import { json } from 'overmind';
+
 import FontFaceObserver from 'fontfaceobserver';
 import io from 'socket.io-client';
 
@@ -70,7 +71,7 @@ export type VsCodeOptions = {
       right: number;
     };
   }) => void;
-  reaction: Reaction;
+  reaction: IReaction<Context>;
   // These two should be removed
   getSignal: any;
   getState: any;
@@ -453,7 +454,7 @@ export class VSCodeEffect {
     if (isFirstLoad) {
       const container = this.elements.editor;
 
-      await new Promise(resolve => {
+      await new Promise<void>(resolve => {
         loadScript(true, ['vs/editor/codesandbox.editor.main'])(resolve);
       }).then(() => this.loadEditor(window.monaco, container));
     }
@@ -518,7 +519,7 @@ export class VSCodeEffect {
     // allowing for a paint, like selections in explorer. For this to work we have to ensure
     // that we are actually indeed still trying to open this file, as we might have changed
     // the file
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       requestAnimationFrame(async () => {
         const currentModule = this.options.getCurrentModule();
         if (currentModule && module.id === currentModule.id) {
@@ -945,7 +946,7 @@ export class VSCodeEffect {
       );
     });
 
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       // It has to run the accessor within the callback
       serviceCollection.get(IInstantiationService).invokeFunction(accessor => {
         // Initialize these services

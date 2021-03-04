@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import React from 'react';
 import { withTheme } from 'styled-components';
 
@@ -33,12 +33,12 @@ const workspaceTabs = {
 };
 
 export const WorkspaceComponent = ({ theme }) => {
-  const { state } = useOvermind();
   const {
     live: { isLive, roomInfo },
     workspace: { openedWorkspaceItem: activeTab },
     user,
-  } = state;
+    editor,
+  } = useAppState();
 
   if (!activeTab) {
     return null;
@@ -64,7 +64,7 @@ export const WorkspaceComponent = ({ theme }) => {
               height: user ? '100%' : 'calc(100% - 170px)',
             }}
           >
-            {state.editor.currentSandbox && <Component />}
+            {editor.currentSandbox && <Component />}
           </div>
 
           {isLive && roomInfo.chatEnabled && <Chat />}

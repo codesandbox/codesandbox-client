@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   Stack,
   List,
@@ -20,19 +20,15 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
   closeModal,
 }) => {
   const {
-    state: {
-      profile: { collections },
-      currentModalMessage,
-    },
-    actions: {
-      profile: {
-        fetchCollections,
-        getSandboxesByPath,
-        newSandboxShowcaseSelected,
-        addFeaturedSandboxes,
-      },
-    },
-  } = useOvermind();
+    profile: { collections },
+    currentModalMessage,
+  } = useAppState();
+  const {
+    fetchCollections,
+    getSandboxesByPath,
+    newSandboxShowcaseSelected,
+    addFeaturedSandboxes,
+  } = useActions().profile;
 
   const [selectedPath, setPath] = React.useState('/');
   const [isLoading, setLoading] = React.useState(true);

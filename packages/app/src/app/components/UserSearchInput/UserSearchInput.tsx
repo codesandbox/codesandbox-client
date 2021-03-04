@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Downshift, { DownshiftProps } from 'downshift';
 import css from '@styled-system/css';
 import { Input, List, ListAction } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 type User = {
   id: string;
@@ -28,9 +28,8 @@ const UserAutoComplete = ({
   const [users, setUsers] = React.useState<User[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<Error | null>(null);
-  const {
-    state: { user },
-  } = useOvermind();
+  const { user } = useAppState();
+
   useEffect(() => {
     setLoading(true);
     setError(null);

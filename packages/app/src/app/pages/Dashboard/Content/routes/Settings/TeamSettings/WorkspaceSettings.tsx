@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import { format } from 'date-fns';
 import {
@@ -32,15 +32,13 @@ import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 
 export const WorkspaceSettings = () => {
+  const actions = useActions();
+  const effects = useEffects();
   const {
-    state: {
-      user: stateUser,
-      activeTeamInfo: team,
-      activeWorkspaceAuthorization,
-    },
-    actions,
-    effects,
-  } = useOvermind();
+    user: stateUser,
+    activeTeamInfo: team,
+    activeWorkspaceAuthorization,
+  } = useAppState();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);

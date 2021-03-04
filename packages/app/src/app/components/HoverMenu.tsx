@@ -24,7 +24,7 @@ export const HoverMenu: React.FC<IHoverMenuProps> = ({ onClose, children }) => {
   };
 
   return (
-    <div role="menu" tabIndex={0} onClick={handleViewClick}>
+    <div role="menu" aria-hidden="true" tabIndex={0} onClick={handleViewClick}>
       {children}
     </div>
   );

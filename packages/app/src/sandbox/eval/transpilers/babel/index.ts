@@ -178,6 +178,7 @@ class BabelTranspiler extends WorkerTranspiler {
   }
 
   async getTranspilerContext(manager: Manager): Promise<any> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async resolve => {
       const baseConfig = await super.getTranspilerContext(manager);
 

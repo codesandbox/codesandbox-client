@@ -49,6 +49,9 @@ type State = {
     filesToInclude: string;
     filesToExclude: string;
   };
+  activeThumb: { [k: string]: { dataURI: string; type: string } } | null;
+  uploadingThumb: boolean;
+  editingSandboxInfo: boolean;
 };
 
 export const state: State = {
@@ -83,4 +86,7 @@ export const state: State = {
     filesToInclude: '',
     filesToExclude: '',
   },
+  activeThumb: null,
+  uploadingThumb: false,
+  editingSandboxInfo: false,
 };

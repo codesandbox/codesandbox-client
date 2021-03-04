@@ -1,5 +1,5 @@
 import { Sandbox } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { LikeHeart } from 'app/pages/common/LikeHeart';
 import React from 'react';
 
@@ -14,7 +14,7 @@ interface Props {
 
 const StatsComponent: React.FC<Props> = ({ sandbox }) => {
   // We want to observe the sandbox
-  useOvermind();
+  useAppState();
 
   return (
     <StatsWrapper>

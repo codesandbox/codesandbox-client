@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { Stack, Text, Button } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const SignInBanner = () => {
-  const { actions } = useOvermind();
+  const { signInClicked } = useActions();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export const SignInBanner = () => {
                   })}
                   onClick={() => {
                     track('Header Sign In Ad Clicked');
-                    actions.signInClicked();
+                    signInClicked();
                   }}
                   variant="link"
                 >

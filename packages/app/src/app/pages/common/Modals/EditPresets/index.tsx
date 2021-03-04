@@ -1,5 +1,5 @@
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Element, Button, Stack, Text } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
 import CodeMirror from 'codemirror';
@@ -38,12 +38,8 @@ const validateValue = (value: string) => {
 };
 
 export const EditPresets: FunctionComponent = () => {
-  const {
-    actions: { preview: previewActions, modalClosed },
-    state: {
-      preview: { responsive },
-    },
-  } = useOvermind();
+  const { preview: previewActions, modalClosed } = useActions();
+  const { responsive } = useAppState().preview;
   const [value, setValue] = React.useState(
     JSON.stringify(responsive.presets, null, 2)
   );

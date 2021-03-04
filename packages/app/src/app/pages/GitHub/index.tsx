@@ -17,7 +17,7 @@ import React, {
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 
 import {
@@ -33,9 +33,7 @@ const getFullGitHubUrl = (url: string) =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
 export const GitHub: FunctionComponent = withTheme(({ theme }) => {
-  const {
-    actions: { githubPageMounted },
-  } = useOvermind();
+  const { githubPageMounted } = useActions();
   const [error, setError] = useState(null);
   const [transformedUrl, setTransformedUrl] = useState('');
   const [url, setUrl] = useState('');

@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 import { CreateTeamParams, RegistryForm } from './RegistryForm';
 import { Alert } from '../components/Alert';
 
 export const RegistrySettings = () => {
-  const { actions, state } = useOvermind();
+  const actions = useActions();
+  const state = useAppState();
   const [loading, setLoading] = React.useState(true);
   const [submitting, setSubmitting] = React.useState(false);
   const [resetting, setResetting] = React.useState(false);
@@ -27,7 +28,7 @@ export const RegistrySettings = () => {
     setLoading(true);
 
     try {
-      await actions.dashboard.fetchCurrentNpmRegistry({});
+      await actions.dashboard.fetchCurrentNpmRegistry();
     } finally {
       setLoading(false);
     }

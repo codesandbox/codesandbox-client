@@ -1,12 +1,12 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Stack, Text, Button, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const ImportRepo = () => {
-  const { actions } = useOvermind();
+  const { openCreateSandboxModal } = useActions();
 
-  const onClick = () => actions.openCreateSandboxModal({});
+  const onClick = () => openCreateSandboxModal({});
 
   return (
     <Button

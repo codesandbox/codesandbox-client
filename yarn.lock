@@ -8133,10 +8133,10 @@ betsy@1.0.2:
     "@types/node" "^10.5.1"
     tslib "^1.9.3"
 
-betsy@1.0.2-1608668658836:
-  version "1.0.2-1608668658836"
-  resolved "https://registry.yarnpkg.com/betsy/-/betsy-1.0.2-1608668658836.tgz#8e030f2330dac1aaeadf91ec872c09eb0a256297"
-  integrity sha512-kEjsKPrP6WGszwqLLWZf5DvGyfU5st5VSUEq73Bgo+9CkpSLb0p73LeuL/S0iiBDI1wxM8nZ35HKFSvAKOzcbg==
+betsy@1.0.2-1613637620112:
+  version "1.0.2-1613637620112"
+  resolved "https://registry.yarnpkg.com/betsy/-/betsy-1.0.2-1613637620112.tgz#5691613b503f9cf6166263396909b2f757e0c92b"
+  integrity sha512-JoXI/mduZF1vr4mw23oTFrO5hYPA4Jp3TsbhyWt7mL9AantV04utcL+paZbw9FrKmI8+Nzra+Po56PLlOaMoYA==
 
 better-ajv-errors@^0.6.1, better-ajv-errors@^0.6.7:
   version "0.6.7"
@@ -10503,6 +10503,11 @@ create-react-context@^0.2.1:
   dependencies:
     fbjs "^0.8.0"
     gud "^1.0.0"
+
+cropperjs@^1.5.11:
+  version "1.5.11"
+  resolved "https://registry.yarnpkg.com/cropperjs/-/cropperjs-1.5.11.tgz#502ae6d8ca098b124de6813601cca70015879fc0"
+  integrity sha512-SJUeBBhtNBnnn+UrLKluhFRIXLJn7XFPv8QN1j49X5t+BIMwkgvDev541f96bmu8Xe0TgCx3gON22KmY/VddaA==
 
 cross-env@5.2.0, cross-env@^5.0.1, cross-env@^5.0.5:
   version "5.2.0"
@@ -22609,10 +22614,10 @@ non-blocking-json@1.1.1:
   resolved "https://registry.yarnpkg.com/non-blocking-json/-/non-blocking-json-1.1.1.tgz#2180c25ee0330475bdc5e14b27d0750d7c0d73a4"
   integrity sha512-iweGQWA3+GZkjJEXhvtRh1fjo8DpnotpL8+13NSwaI28X6HaqlYTxAI/ZXawCmva2GS3NaOl5NdNudg3RyQreQ==
 
-non-blocking-json@1.1.1-1608668658836:
-  version "1.1.1-1608668658836"
-  resolved "https://registry.yarnpkg.com/non-blocking-json/-/non-blocking-json-1.1.1-1608668658836.tgz#80ffeb6199fc5ee7f7f569892826762fa0ec2118"
-  integrity sha512-wp79c8Ox6hWScNKHW1KHoBuLhCUGS0bGBV1MDyK7MS0Nt+uCLm2aIoqz2LtWXt93cGHs2E48QMlmPHnCNh51vg==
+non-blocking-json@1.1.1-1613637620112:
+  version "1.1.1-1613637620112"
+  resolved "https://registry.yarnpkg.com/non-blocking-json/-/non-blocking-json-1.1.1-1613637620112.tgz#01dedf0796cf29bdd0c0c226139e1d8b35732667"
+  integrity sha512-w0Ie7br2PXmpHMPq5GOrTKauVrgzRVL4sXtPUQTtJZKWv83VQQf5g+Q5mwSqEf6JU5QhDwksQwT0C3z+aZ551w==
 
 noop-logger@^0.1.1:
   version "0.1.1"
@@ -23564,16 +23569,16 @@ overmind-devtools@^26.0.2:
     overmind-devtools-client "8.0.2"
     ws "^7.0.0"
 
-overmind-graphql@^7.0.0-1608668658836:
-  version "7.0.0-1608668658836"
-  resolved "https://registry.yarnpkg.com/overmind-graphql/-/overmind-graphql-7.0.0-1608668658836.tgz#df35449e396aaa91d4a981e5aa2e97cc9757fd63"
-  integrity sha512-SLAlgr9twK84eSF4KWHjXL0rsFaQm0kVi9X2tlVRt2sc6SK3L5QJjhzj5VkJiabdyxYyegpOlEjGBfKuqwux2w==
+overmind-graphql@^8.0.0-1613637620112:
+  version "8.0.0-1613637620112"
+  resolved "https://registry.yarnpkg.com/overmind-graphql/-/overmind-graphql-8.0.0-1613637620112.tgz#a00856e379b0932c715fa6279fa1f9a401034bc0"
+  integrity sha512-upclV9InTgN9eBuMbSmpMIsucByuYALm47mRAQ03KHyqbMddKps9Y4QKlINxJGMF204TA+gWzPMFaK3O63aSEw==
   dependencies:
     "@absinthe/socket" "^0.2.1"
     graphql "^14.5.8"
     graphql-request "^3.3.0"
     graphql-tag "^2.10.3"
-    overmind "27.0.0-1608668658836"
+    overmind "28.0.0-1613637620112"
     phoenix "^1.4.13"
 
 overmind-react@26.0.2:
@@ -23583,12 +23588,12 @@ overmind-react@26.0.2:
   dependencies:
     overmind "25.0.2"
 
-overmind-react@^28.0.0-1608668658836:
-  version "28.0.0-1608668658836"
-  resolved "https://registry.yarnpkg.com/overmind-react/-/overmind-react-28.0.0-1608668658836.tgz#09668c980587fa80b0cdc19433fb7e7677fba3d6"
-  integrity sha512-rQve26DAWfo2n+JpT3OJiljJClh6j0Ws9cOGuhZhxYiEyuic4h1dVbeczXya9JofduMTc+QFK3FzolQAwLG1Bw==
+overmind-react@^29.0.0-1613637620112:
+  version "29.0.0-1613637620112"
+  resolved "https://registry.yarnpkg.com/overmind-react/-/overmind-react-29.0.0-1613637620112.tgz#e1ccdd16e108d0f7f0cb14894567f352cf49a433"
+  integrity sha512-rAhoibTErTcHI7Mf+j8svH2WRLKBw/HYsxZwNUzJERBr6VhU9RycLBqfaEqpSMnTjRzb+bPfMiIuI6AsVgj8fw==
   dependencies:
-    overmind "27.0.0-1608668658836"
+    overmind "28.0.0-1613637620112"
 
 overmind@25.0.2:
   version "25.0.2"
@@ -23601,15 +23606,15 @@ overmind@25.0.2:
     proxy-state-tree "6.0.2"
     tslib "^1.10.0"
 
-overmind@27.0.0-1608668658836, overmind@^27.0.0-1608668658836:
-  version "27.0.0-1608668658836"
-  resolved "https://registry.yarnpkg.com/overmind/-/overmind-27.0.0-1608668658836.tgz#c02506b0af7f034312991b1c35ce9a6fdea83f2a"
-  integrity sha512-HkNWKQUgUOtlHQOA91VD3rtu54HNL7nYZUoXrW01w40II5CyqirY5UPxK8STTmDf7KDRCkBRQIlRQFQLgnBQAQ==
+overmind@28.0.0-1613637620112, overmind@^28.0.0-1613637620112:
+  version "28.0.0-1613637620112"
+  resolved "https://registry.yarnpkg.com/overmind/-/overmind-28.0.0-1613637620112.tgz#439bdcb6b2d3dee666372168d59a3f6102d3bd51"
+  integrity sha512-x8PlYJrRQbNr4SuEwrlmH7Zz8aMn14QzNiXyCKEjY0IAV7yk1EHZRYz/Oxwa2MYAycK14N+Fo1MOp+oy8GwwqQ==
   dependencies:
-    betsy "1.0.2-1608668658836"
+    betsy "1.0.2-1613637620112"
     is-plain-obj "^1.1.0"
-    non-blocking-json "1.1.1-1608668658836"
-    proxy-state-tree "6.2.0-1608668658836"
+    non-blocking-json "1.1.1-1613637620112"
+    proxy-state-tree "6.3.0-1613637620112"
     tslib "^1.10.0"
 
 ow@^0.15.0:
@@ -25901,10 +25906,10 @@ proxy-state-tree@6.0.2:
   dependencies:
     is-plain-obj "^1.1.0"
 
-proxy-state-tree@6.2.0-1608668658836:
-  version "6.2.0-1608668658836"
-  resolved "https://registry.yarnpkg.com/proxy-state-tree/-/proxy-state-tree-6.2.0-1608668658836.tgz#c00565adea9b327c5e42af8c695562ff44471a1d"
-  integrity sha512-wjXNLtQ86c9dCWAPU1VMQLsuH18fR5H98xmwDN7mFdCsA86F7nfX0isJTNAfpkYoBl2Z+2zi0vxKNeUWD7xTgA==
+proxy-state-tree@6.3.0-1613637620112:
+  version "6.3.0-1613637620112"
+  resolved "https://registry.yarnpkg.com/proxy-state-tree/-/proxy-state-tree-6.3.0-1613637620112.tgz#50409e9b33b8ed467782dc46eb953acf48bd89af"
+  integrity sha512-4kxRUnjJapuRySHRbHo2BlGVqqoxCZ37yN9kBUwO529miqKThFeTmAiooIz8tezgrPyfmkF16zcynGY9ke9vMw==
   dependencies:
     is-plain-obj "^1.1.0"
 

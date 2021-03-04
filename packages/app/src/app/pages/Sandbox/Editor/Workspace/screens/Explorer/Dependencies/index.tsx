@@ -1,6 +1,6 @@
 import { Collapsible, List, SidebarRow, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { motion } from 'framer-motion';
 import React, { FunctionComponent, useState } from 'react';
 
@@ -21,14 +21,8 @@ const Animated = ({ children, showMountAnimations }) => (
 export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
   readonly = false,
 }) => {
-  const {
-    actions: {
-      editor: { addNpmDependency, npmDependencyRemoved },
-    },
-    state: {
-      editor: { parsedConfigurations },
-    },
-  } = useOvermind();
+  const { addNpmDependency, npmDependencyRemoved } = useActions().editor;
+  const { parsedConfigurations } = useAppState().editor;
   const [showMountAnimations, setShowMountAnimations] = useState(false);
 
   React.useEffect(() => {

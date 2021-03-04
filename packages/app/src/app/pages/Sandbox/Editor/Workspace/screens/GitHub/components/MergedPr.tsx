@@ -5,11 +5,11 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import React from 'react';
 
 export const MergedPr: React.FC = () => {
-  const { actions } = useOvermind();
+  const { openSourceSandbox } = useActions().git;
   return (
     <Collapsible title="GitHub" defaultOpen>
       <Element paddingX={2}>
@@ -18,11 +18,11 @@ export const MergedPr: React.FC = () => {
             <Text variant="muted">This </Text> PR
             <Text variant="muted">
               {' '}
-              has been succesfully merged. To create new changes, go back to the
-              GitHub sandbox and create a new fork.{' '}
+              has been successfully merged. To create new changes, go back to
+              the GitHub sandbox and create a new fork.{' '}
             </Text>
           </Text>
-          <Button onClick={() => actions.git.openSourceSandbox()}>
+          <Button onClick={() => openSourceSandbox()}>
             Open GitHub Sandbox
           </Button>
         </Stack>

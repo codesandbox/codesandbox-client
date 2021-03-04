@@ -14,7 +14,7 @@ deeper into our ecosystem.
 ## Getting Started
 
 You can install this package by running `npm i react-smooshpack` or
-`yarn react-smooshpack`.
+`yarn add react-smooshpack`.
 
 The package contains multiple components, utilities and typings for diving into
 the `sandpack` ecosystem.

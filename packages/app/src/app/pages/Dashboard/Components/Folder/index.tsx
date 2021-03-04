@@ -6,7 +6,7 @@ import { useLocation, useHistory } from 'react-router-dom';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { FolderCard } from './FolderCard';
 import { FolderListItem } from './FolderListItem';
 import { useSelection } from '../Selection';
@@ -14,10 +14,10 @@ import { DashboardFolder } from '../../types';
 import { useDrop, useDrag, DragItemType } from '../../utils/dnd';
 
 export const Folder = (folderItem: DashboardFolder) => {
+  const { dashboard } = useAppState();
   const {
-    state: { dashboard },
-    actions,
-  } = useOvermind();
+    dashboard: { renameFolder },
+  } = useActions();
 
   const {
     name = '',
@@ -157,7 +157,7 @@ export const Folder = (folderItem: DashboardFolder) => {
     if (name === newName) {
       // nothing to do here
     } else {
-      await actions.dashboard.renameFolder({
+      await renameFolder({
         path,
         newPath: join(dirname(path), newName),
         teamId: activeTeamId,

@@ -4,7 +4,7 @@ import { sortBy } from 'lodash-es';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Stack, Text, Menu, Icon, Button, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Step, Plan } from 'app/overmind/namespaces/pro/types';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
@@ -26,21 +26,19 @@ export const WorkspacePlanSelection: React.FC<{
   loading: boolean;
 }> = ({ loading }) => {
   const {
-    state: {
-      personalWorkspaceId,
-      user,
-      activeTeam,
-      activeTeamInfo,
-      dashboard,
-      pro: { selectedPlan },
-    },
-    actions: {
-      setActiveTeam,
-      modalOpened,
-      pro: { setStep, updateSelectedPlan, updateSeats },
-      patron: { cancelSubscriptionClicked },
-    },
-  } = useOvermind();
+    personalWorkspaceId,
+    user,
+    activeTeam,
+    activeTeamInfo,
+    dashboard,
+    pro: { selectedPlan },
+  } = useAppState();
+  const {
+    setActiveTeam,
+    modalOpened,
+    pro: { setStep, updateSelectedPlan, updateSeats },
+    patron: { cancelSubscriptionClicked },
+  } = useActions();
 
   const location = useLocation();
   const history = useHistory();

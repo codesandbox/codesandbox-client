@@ -7,7 +7,6 @@ import Manager from '../manager';
 import { Transpiler } from '../transpiler';
 import { TranspiledModule } from '../transpiled-module';
 import { WebpackTranspiler } from '../transpiler/transpilers/webpack';
-import csbDynamicImportTranspiler from '../transpiler/transpilers/csb-dynamic-import';
 import { IEvaluator } from '../evaluator';
 
 export type TranspilerDefinition = {

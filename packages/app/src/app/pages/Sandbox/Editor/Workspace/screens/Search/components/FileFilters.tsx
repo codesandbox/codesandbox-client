@@ -1,13 +1,11 @@
 import React from 'react';
 import css from '@styled-system/css';
 import { Element, Input } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 export const FileFilters = () => {
-  const {
-    state,
-    actions: { workspace },
-  } = useOvermind();
+  const state = useAppState();
+  const { workspace } = useActions();
 
   return (
     <>

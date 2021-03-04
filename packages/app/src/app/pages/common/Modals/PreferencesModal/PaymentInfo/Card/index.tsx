@@ -2,7 +2,7 @@ import { Element, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 import {
   AmexIcon,
@@ -25,11 +25,7 @@ const Icon: FunctionComponent<{ brand?: string }> = ({ brand }) => {
 };
 
 export const Card: FunctionComponent = () => {
-  const {
-    state: {
-      preferences: { paymentDetails },
-    },
-  } = useOvermind();
+  const { paymentDetails } = useAppState().preferences;
   const { brand, last4, name } = paymentDetails || {};
 
   return (

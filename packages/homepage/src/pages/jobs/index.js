@@ -36,10 +36,6 @@ const Careers = () => {
       title: 'Head of Engineering',
       url: 'https://codesandbox.recruitee.com/o/head-of-engineering',
     },
-    {
-      title: 'Data Analyst',
-      url: 'https://codesandbox.recruitee.com/o/data-analyst',
-    },
   ];
 
   return (

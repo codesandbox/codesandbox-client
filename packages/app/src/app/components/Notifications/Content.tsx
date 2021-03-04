@@ -1,4 +1,4 @@
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React, { useEffect } from 'react';
 import { Element, Text, List } from '@codesandbox/components';
 import { mapKeys, camelCase } from 'lodash-es';
@@ -80,12 +80,8 @@ const getNotificationComponent = ({ id, type, data, read, insertedAt }) => {
 };
 
 export const NotificationsContent = props => {
-  const {
-    state: { userNotifications },
-    actions: {
-      userNotifications: { getNotifications },
-    },
-  } = useOvermind();
+  const { userNotifications } = useAppState();
+  const { getNotifications } = useActions().userNotifications;
 
   useEffect(() => {
     getNotifications();

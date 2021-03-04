@@ -1,14 +1,12 @@
 import React from 'react';
 import { Stack, Element, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { CloseIcon } from './icons';
 
 export const AddDependencyModalFooter = ({ onClick }) => {
-  const {
-    actions,
-    state: { workspace },
-  } = useOvermind();
+  const actions = useActions();
+  const workspace = useAppState().workspace;
 
   const numberOfDependencies = Object.keys(workspace.selectedDependencies)
     .length;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useEffects, useActions, useAppState } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 import { Context, MenuItem } from '../ContextMenu';
@@ -31,7 +31,9 @@ type MenuAction =
     };
 
 export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
-  const { actions, state, effects } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
+  const { notificationToast } = useEffects();
   const { visible, setVisibility, position } = React.useContext(Context);
 
   /*
@@ -68,7 +70,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     );
 
     if (skippedSandboxes.length) {
-      effects.notificationToast.error(
+      notificationToast.error(
         `${skippedSandboxes.length} ${
           skippedSandboxes.length === 1 ? 'sandbox was' : 'sandboxes were'
         } skipped because you do not have permission to export ${

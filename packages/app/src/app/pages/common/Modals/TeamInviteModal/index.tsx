@@ -1,6 +1,6 @@
 import React from 'react';
 import { teamOverviewUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   REJECT_TEAM_INVITATION,
   ACCEPT_TEAM_INVITATION,
@@ -13,12 +13,11 @@ import { TeamAvatar } from 'app/components/TeamAvatar';
 
 export const TeamInviteModal = () => {
   const {
-    actions: { acceptTeamInvitation, rejectTeamInvitation, modalClosed },
-    state: {
-      userNotifications: { activeInvitation },
-    },
-  } = useOvermind();
-
+    acceptTeamInvitation,
+    rejectTeamInvitation,
+    modalClosed,
+  } = useActions();
+  const { activeInvitation } = useAppState().userNotifications;
   const { teamId, teamName } = activeInvitation || {};
 
   const [

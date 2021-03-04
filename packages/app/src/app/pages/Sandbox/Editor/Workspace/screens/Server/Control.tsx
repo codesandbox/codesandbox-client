@@ -7,19 +7,14 @@ import {
 } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { RestartServerIcon } from './Icons';
 
 export const Control: FunctionComponent = () => {
-  const {
-    actions: {
-      server: { restartContainer, restartSandbox },
-    },
-    state: {
-      server: { containerStatus, status },
-    },
-  } = useOvermind();
+  const { restartContainer, restartSandbox } = useActions().server;
+  const { containerStatus, status } = useAppState().server;
+
   const disconnected = status !== 'connected';
 
   return (

@@ -55,7 +55,6 @@ const Workspaces = () => {
       css={`
         padding: 0rem 0 0 0;
 
-
         @media screen and (max-width: 1023px) {
           padding-top: 0px;
         }
@@ -150,8 +149,8 @@ const Workspaces = () => {
           margin-bottom: 80px;
         `}
       >
-        A link is all you need to hop into a sandbox and keep development
-        work flowing.
+        A link is all you need to hop into a sandbox and keep development work
+        flowing.
       </P>
       <motion.div
         initial={{ opacity: 0, y: 140 }}

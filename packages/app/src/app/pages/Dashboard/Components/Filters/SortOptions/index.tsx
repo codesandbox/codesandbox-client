@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { Text, Menu, Stack, IconButton } from '@codesandbox/components';
 
 const FIELD_TO_NAME = {
@@ -11,16 +11,13 @@ const FIELD_TO_NAME = {
 
 export const SortOptions: FunctionComponent = React.memo(() => {
   const {
-    actions: {
-      dashboard: { orderByChanged },
+    dashboard: {
+      orderBy: { field, order },
     },
-    state: {
-      dashboard: {
-        orderBy: { field, order },
-      },
-    },
-  } = useOvermind();
-
+  } = useAppState();
+  const {
+    dashboard: { orderByChanged },
+  } = useActions();
   const toggleSort = () => {
     orderByChanged({
       field,

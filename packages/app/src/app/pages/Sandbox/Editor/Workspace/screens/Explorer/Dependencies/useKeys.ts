@@ -1,19 +1,15 @@
 import { useEffect } from 'react';
 import useKeys from 'react-use/lib/useKeyboardJs';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
 
 export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
   const {
-    actions: {
-      modalOpened,
-      editor: { addNpmDependency },
-    },
-    state: {
-      workspace: { explorerDependencies },
-    },
-    effects,
-  } = useOvermind();
+    modalOpened,
+    editor: { addNpmDependency },
+  } = useActions();
+  const { explorerDependencies } = useAppState().workspace;
+  const effects = useEffects();
   const [one] = useKeys('ctrl + one');
   const [two] = useKeys('ctrl + two');
   const [three] = useKeys('ctrl + three');

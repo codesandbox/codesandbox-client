@@ -1,4 +1,4 @@
-export default (id, title, siblings = []) => {
+export const validateTitle = (id, title, siblings = []) => {
   if (title.length === 0) return 'Title cannot be empty';
   if (title.includes(' ')) {
     // It has whitespaces

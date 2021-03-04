@@ -1,15 +1,9 @@
 import { Button, Stack, Text } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 import React from 'react';
 
 export const NoPermissions = () => {
-  const {
-    state: {
-      editor: {
-        currentSandbox: { originalGit },
-      },
-    },
-  } = useOvermind();
+  const { originalGit } = useAppState().editor.currentSandbox;
 
   return (
     <Text size={3} paddingBottom={4}>
@@ -22,13 +16,7 @@ export const NoPermissions = () => {
 };
 
 export const CommitToMaster = () => {
-  const {
-    state: {
-      editor: {
-        currentSandbox: { originalGit },
-      },
-    },
-  } = useOvermind();
+  const { originalGit } = useAppState().editor.currentSandbox;
 
   return (
     <Text size={3} paddingBottom={4}>
@@ -42,14 +30,13 @@ export const CommitToMaster = () => {
 };
 
 export const CommitToPr = () => {
+  const { openWindow } = useEffects().browser;
   const {
-    state: {
-      editor: {
-        currentSandbox: { originalGit, baseGit, prNumber },
-      },
-    },
-    effects,
-  } = useOvermind();
+    originalGit,
+    baseGit,
+    prNumber,
+  } = useAppState().editor.currentSandbox;
+
   return (
     <Stack direction="vertical">
       <Text size={3} paddingBottom={4}>
@@ -61,7 +48,7 @@ export const CommitToPr = () => {
       <Button
         variant="secondary"
         onClick={() => {
-          effects.browser.openWindow(
+          openWindow(
             `https://github.com/${baseGit.username}/${baseGit.repo}/pull/${prNumber}`
           );
         }}

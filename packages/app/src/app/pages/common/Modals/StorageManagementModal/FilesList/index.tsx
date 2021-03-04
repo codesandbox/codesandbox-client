@@ -12,21 +12,19 @@ import {
   Checkbox,
 } from '@codesandbox/components';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { AddFileToSandboxButton } from './AddFileToSandboxButton';
 import { DeleteFileButton } from './DeleteFileButton';
 
 export const FilesList: FunctionComponent = () => {
   const {
-    actions: {
-      files: { deletedUploadedFile, addedFileToSandbox },
-    },
-    state: {
-      editor: { currentSandbox },
-      uploadedFiles,
-    },
-  } = useOvermind();
+    files: { deletedUploadedFile, addedFileToSandbox },
+  } = useActions();
+  const {
+    editor: { currentSandbox },
+    uploadedFiles,
+  } = useAppState();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const getSelection = () =>
