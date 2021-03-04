@@ -10,7 +10,7 @@ export default new Template(
   {
     showOnHomePage: true,
     main: true,
-    netlify: false,
+    staticDeployment: false,
     popular: true,
     mainFile: ['/pages/index.vue', '/pages/index.js', '/src/pages/index.js'],
   }

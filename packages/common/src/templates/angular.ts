@@ -125,7 +125,7 @@ export default new AngularTemplate(
       '/angular.json': configurations.angularJSON,
       '/tsconfig.json': configurations.tsconfig,
     },
-    netlify: false,
+    staticDeployment: false,
     isTypescript: true,
     distDir: 'dist',
     showOnHomePage: true,

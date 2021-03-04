@@ -11,7 +11,7 @@ import { PackageJSON } from '../types';
 export type Options = {
   showOnHomePage?: boolean;
   distDir?: string;
-  netlify?: boolean;
+  staticDeployment?: boolean;
   popular?: boolean;
   extraConfigurations?: {
     [path: string]: ConfigurationFile;
@@ -90,7 +90,7 @@ export default class Template {
   popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
-  netlify: boolean;
+  staticDeployment: boolean;
   configurationFiles: ConfigurationFiles;
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
@@ -129,7 +129,7 @@ export default class Template {
         : true;
 
     this.mainFile = options.mainFile;
-    this.netlify = options.netlify;
+    this.staticDeployment = options.staticDeployment;
     this.backgroundColor = options.backgroundColor;
 
     this.showCube = options.showCube != null ? options.showCube : true;

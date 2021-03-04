@@ -8,7 +8,7 @@ export default new Template(
   'apollo-server',
   decorateSelector(() => '#c4198b'),
   {
-    netlify: false,
+    staticDeployment: false,
     mainFile: ['/src/index.js'],
     showOnHomePage: true,
   }
