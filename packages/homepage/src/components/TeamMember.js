@@ -238,7 +238,6 @@ const TeamMember = ({ name, border, noHover, ...props }) => {
   return null;
 };
 
-export const getRandomTeamMembers = number =>
-  shuffle(people).splice(0, number + 2);
+export const getRandomTeamMembers = number => shuffle(people).splice(0, number + 2);
 
 export default TeamMember;
