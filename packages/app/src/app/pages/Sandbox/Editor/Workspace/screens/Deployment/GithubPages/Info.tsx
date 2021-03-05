@@ -24,6 +24,11 @@ const info = [
     link: 'https://nuxtjs.org/docs/2.x/deployment/github-pages/',
     template: 'nuxt',
   },
+  {
+    template: 'gridsome',
+    link: 'https://gridsome.org/docs/deploy-to-github/',
+    name: 'pathPrefix',
+  },
 ];
 
 export const Info = ({
