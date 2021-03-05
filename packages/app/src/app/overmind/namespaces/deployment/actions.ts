@@ -52,14 +52,14 @@ export const getNetlifyDeploys = async ({ state, effects }: Context) => {
   }
 
   try {
-    state.deployment.netlifyClaimUrl = await effects.netlify.claimSite(
+    state.deployment.netlify.claimUrl = await effects.netlify.claimSite(
       sandbox.id
     );
-    state.deployment.netlifySite = await effects.netlify.getDeployments(
+    state.deployment.netlify.site = await effects.netlify.getDeployments(
       sandbox.id
     );
   } catch (error) {
-    state.deployment.netlifySite = null;
+    state.deployment.netlify.site = null;
   }
 };
 
@@ -72,14 +72,14 @@ export const getDeploys = async ({ state, actions, effects }: Context) => {
     return;
   }
 
-  state.deployment.gettingDeploys = true;
+  state.deployment.vercel.gettingDeploys = true;
 
   try {
     const vercelConfig = effects.vercel.getConfig(state.editor.currentSandbox);
 
-    state.deployment.vercelHasAlias = !!vercelConfig.alias;
+    state.deployment.vercel.hasAlias = !!vercelConfig.alias;
     if (vercelConfig.name) {
-      state.deployment.vercelDeploys = await effects.vercel.getDeployments(
+      state.deployment.vercel.deploys = await effects.vercel.getDeployments(
         vercelConfig.name
       );
     }
@@ -90,7 +90,7 @@ export const getDeploys = async ({ state, actions, effects }: Context) => {
     });
   }
 
-  state.deployment.gettingDeploys = false;
+  state.deployment.vercel.gettingDeploys = false;
 };
 
 export const deployClicked = async ({ state, effects, actions }: Context) => {
@@ -114,7 +114,10 @@ export const deployClicked = async ({ state, effects, actions }: Context) => {
       }
     }
 
-    state.deployment.vercelUrl = await effects.vercel.deploy(contents, sandbox);
+    state.deployment.vercel.url = await effects.vercel.deploy(
+      contents,
+      sandbox
+    );
   } catch (error) {
     actions.internal.handleError({
       message: getVercelErrorMessage(error),
@@ -158,11 +161,11 @@ export const deploySandboxClicked = async ({
     }
   }
 
-  state.deployment.vercelUrl = null;
+  state.deployment.vercel.url = null;
 };
 
 export const setDeploymentToDelete = ({ state }: Context, id: string) => {
-  state.deployment.vercelDeployToDelete = id;
+  state.deployment.vercel.deployToDelete = id;
 };
 
 export const deleteDeployment = async ({
@@ -170,14 +173,14 @@ export const deleteDeployment = async ({
   effects,
   actions,
 }: Context) => {
-  const id = state.deployment.vercelDeployToDelete;
+  const id = state.deployment.vercel.deployToDelete;
 
   if (!id) {
     return;
   }
 
   state.currentModal = null;
-  state.deployment.vercelDeploysBeingDeleted.push(id);
+  state.deployment.vercel.deploysBeingDeleted.push(id);
 
   try {
     await effects.vercel.deleteDeployment(id);
@@ -191,8 +194,8 @@ export const deleteDeployment = async ({
     });
   }
 
-  state.deployment.vercelDeploysBeingDeleted.splice(
-    state.deployment.vercelDeploysBeingDeleted.indexOf(id),
+  state.deployment.vercel.deploysBeingDeleted.splice(
+    state.deployment.vercel.deploysBeingDeleted.indexOf(id),
     1
   );
 };

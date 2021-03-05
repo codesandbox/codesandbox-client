@@ -22,7 +22,11 @@ export const Netlify: FunctionComponent = () => {
     modalOpened,
   } = useActions();
   const {
-    deployment: { building, deploying, netlifyClaimUrl, netlifySite },
+    deployment: {
+      building,
+      deploying,
+      netlify: { claimUrl, site },
+    },
     editor: { currentSandbox },
   } = useAppState();
 
@@ -36,7 +40,7 @@ export const Netlify: FunctionComponent = () => {
   }
   return (
     <Integration icon={NetlifyIcon} title="Netlify">
-      <Element marginBottom={netlifySite ? 6 : 0} marginX={2}>
+      <Element marginBottom={site ? 6 : 0} marginX={2}>
         <Text block marginBottom={4} variant="muted">
           Deploy your sandbox site to{' '}
           <Link href="https://www.netlify.com/" target="_blank">
@@ -56,14 +60,14 @@ export const Netlify: FunctionComponent = () => {
         </Button>
       </Element>
 
-      {netlifySite && (
+      {site && (
         <List>
           <ListItem>
-            <Text weight="bold">{netlifySite.name}</Text>
+            <Text weight="bold">{site.name}</Text>
           </ListItem>
 
-          {netlifySite.url ? (
-            <ListAction onClick={() => window.open(netlifySite.url, '_blank')}>
+          {site.url ? (
+            <ListAction onClick={() => window.open(site.url, '_blank')}>
               <Element marginRight={2}>
                 <VisitIcon />
               </Element>{' '}
@@ -71,8 +75,8 @@ export const Netlify: FunctionComponent = () => {
             </ListAction>
           ) : null}
 
-          {netlifySite.url ? (
-            <ListAction onClick={() => window.open(netlifyClaimUrl, '_blank')}>
+          {site.url ? (
+            <ListAction onClick={() => window.open(claimUrl, '_blank')}>
               <Element marginRight={2}>
                 <FlagIcon />
               </Element>{' '}

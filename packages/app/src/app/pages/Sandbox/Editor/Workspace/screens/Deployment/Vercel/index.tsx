@@ -26,7 +26,10 @@ export const Vercel: FunctionComponent = () => {
     signInVercelClicked,
   } = useActions();
   const {
-    deployment: { deploying, vercelDeploysBeingDeleted, vercelDeploys },
+    deployment: {
+      deploying,
+      vercel: { deploysBeingDeleted, deploys },
+    },
     user: {
       integrations: { zeit },
     },
@@ -36,7 +39,7 @@ export const Vercel: FunctionComponent = () => {
     <Integration icon={VercelIcon} title="Vercel">
       {zeit ? (
         <>
-          <Element marginX={2} marginBottom={vercelDeploys.length ? 6 : 0}>
+          <Element marginX={2} marginBottom={deploys.length ? 6 : 0}>
             <Text variant="muted" block marginBottom={4}>
               Deploy your sandbox to{' '}
               <Link href="https://vercel.com/home" target="_blank">
@@ -50,9 +53,9 @@ export const Vercel: FunctionComponent = () => {
           </Element>
 
           <Element>
-            {vercelDeploys.map(({ created, name, state, uid, url }) => {
-              const disabled = vercelDeploysBeingDeleted
-                ? vercelDeploysBeingDeleted.includes(uid)
+            {deploys.map(({ created, name, state, uid, url }) => {
+              const disabled = deploysBeingDeleted
+                ? deploysBeingDeleted.includes(uid)
                 : deployment[`${uid}Deleting`];
 
               return (

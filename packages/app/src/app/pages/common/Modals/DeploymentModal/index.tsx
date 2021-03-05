@@ -9,7 +9,10 @@ import { Alert } from '../Common/Alert';
 export const DeploymentModal: FunctionComponent = () => {
   const {
     user,
-    deployment: { deploying, vercelUrl },
+    deployment: {
+      deploying,
+      vercel: { url },
+    },
   } = useAppState();
   const { deployClicked } = useActions().deployment;
 
@@ -27,13 +30,13 @@ export const DeploymentModal: FunctionComponent = () => {
       title="Deployment"
       description="Deploy a production version of your Sandbox to Vercel"
     >
-      {vercelUrl ? (
+      {url ? (
         <Element marginBottom={4}>
           <Text weight="bold" block size={4} align="center" paddingBottom={4}>
             Deployed!
           </Text>
-          <Link variant="muted" block size={3} align="center" href={vercelUrl}>
-            {vercelUrl}
+          <Link variant="muted" block size={3} align="center" href={url}>
+            {url}
           </Link>
           <Text paddingTop={4} block size={3} align="center">
             You can manage your deployments{' '}
