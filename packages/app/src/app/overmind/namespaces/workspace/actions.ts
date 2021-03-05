@@ -627,6 +627,9 @@ export const searchOptionsToggled = ({ state }: Context, option: string) => {
   ];
 };
 
-export const toggleEditingSandboxInfo = ({ state }: Context, value: boolean) => {
+export const toggleEditingSandboxInfo = (
+  { state }: Context,
+  value: boolean
+) => {
   state.workspace.editingSandboxInfo = value;
 };

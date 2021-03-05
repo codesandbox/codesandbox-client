@@ -83,6 +83,7 @@ module.exports = merge(commonConfig, {
       }),
     ],
     concatenateModules: true, // ModuleConcatenationPlugin
+    chunkIds: 'named',
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
 

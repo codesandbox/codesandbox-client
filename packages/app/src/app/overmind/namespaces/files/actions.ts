@@ -626,9 +626,9 @@ export const filesUploaded = withOwnedSandbox(
   'write_code'
 );
 
-type File =  { [k: string]: { dataURI: string; type: string }}
+type File = { [k: string]: { dataURI: string; type: string } };
 export const thumbnailToBeCropped = withOwnedSandbox(
-  async ({ state, actions }: Context, { file }:  {file: File}) => {
+  async ({ state, actions }: Context, { file }: { file: File }) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
@@ -649,7 +649,10 @@ export const thumbnailToBeCropped = withOwnedSandbox(
   'write_code'
 );
 
-export const thumbnailUploaded = async ({ state, effects, actions }: Context, { file }: {file: File} )=> {
+export const thumbnailUploaded = async (
+  { state, effects, actions }: Context,
+  { file }: { file: File }
+) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;

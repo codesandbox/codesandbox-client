@@ -554,7 +554,6 @@ export const identifyCurrentUser = async ({ state, effects }: Context) => {
   }
 };
 
-
 export const showPrivacyPolicyNotification = ({ effects, state }: Context) => {
   const seenTermsKey = 'ACCEPTED_TERMS_CODESANDBOX_v1.1';
   if (effects.browser.storage.get(seenTermsKey)) {

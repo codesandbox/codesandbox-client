@@ -12,12 +12,12 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export const CropThumbnail: FunctionComponent = () => {
-  const {      modalClosed,
-    files: { thumbnailUploaded }} = useActions()
   const {
-
-      workspace: { activeThumb },
-
+    modalClosed,
+    files: { thumbnailUploaded },
+  } = useActions();
+  const {
+    workspace: { activeThumb },
   } = useAppState();
   const [newImage, setNewImage] = useState('');
   const [loading, setLoading] = useState(false);
