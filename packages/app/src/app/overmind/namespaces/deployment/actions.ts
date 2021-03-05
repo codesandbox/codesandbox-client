@@ -256,6 +256,9 @@ export const deployWithGitHubPages = async ({
 
 export const fetchGithubSite = async ({ effects, state }: Context) => {
   const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
   try {
     const site = await effects.githubPages.getSite(sandbox.id);
     state.deployment.githubSite = {

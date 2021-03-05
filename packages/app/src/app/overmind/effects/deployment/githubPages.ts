@@ -5,7 +5,7 @@ import axios from 'axios';
 const GHPagesBaseUrl = 'https://builder.csbops.io/gh-pages';
 
 type Options = {
-  provideJwtToken: () => Promise<string>;
+  provideJwtToken: () => Promise<string | null>;
 };
 
 export default (() => {
@@ -75,6 +75,10 @@ export default (() => {
 
         if (name === 'parcel') {
           return `build --public-url /csb-${sandbox.id}/`;
+        }
+
+        if (name === 'preact-cli') {
+          return 'build --no-prerender';
         }
 
         return 'build';
