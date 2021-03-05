@@ -19,6 +19,11 @@ const info = [
     template: 'vuepress',
     link: 'https://vuepress.vuejs.org/guide/deploy.html#github-pages',
   },
+  {
+    name: 'base',
+    link: 'https://nuxtjs.org/docs/2.x/deployment/github-pages/',
+    template: 'nuxt',
+  },
 ];
 
 export const Info = ({

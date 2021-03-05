@@ -26,6 +26,7 @@ export default new DojoTemplate(
     showCube: false,
     distDir: 'output/dist',
     isTypescript: true,
+    githubPagesDeploy: false,
     extraConfigurations: {
       '/tsconfig.json': configurations.tsconfig,
     },

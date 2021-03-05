@@ -82,6 +82,11 @@ export default (() => {
         if (name === 'styleguidist') {
           return 'styleguide:build';
         }
+
+        if (name === 'preact-cli') {
+          return 'build --no-prerender';
+        }
+
         if (name === 'nuxt') {
           return 'generate';
         }
