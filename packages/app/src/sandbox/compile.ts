@@ -858,8 +858,6 @@ async function compile({
   }
 
   if (!hadError && firstLoad) {
-    // If compile is successful, compute the size of the content after a small delay and dispatch that
-    // setTimeout(sendResize, 100);
     initializeDOMMutationListener();
   }
 
