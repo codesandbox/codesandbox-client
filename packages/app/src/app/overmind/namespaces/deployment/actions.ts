@@ -264,7 +264,7 @@ export const fetchGithubSite = async ({ effects, state }: Context) => {
   }
   try {
     const site = await effects.githubPages.getSite(sandbox.id);
-    state.deployment.githubSite.name = {
+    state.deployment.githubSite = {
       ...site,
       name: `csb-${sandbox.id}`,
     };
