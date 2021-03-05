@@ -77,9 +77,9 @@ export const getDeploys = async ({ state, actions, effects }: Context) => {
   try {
     const vercelConfig = effects.vercel.getConfig(state.editor.currentSandbox);
 
-    state.deployment.hasAlias = !!vercelConfig.alias;
+    state.deployment.vercelHasAlias = !!vercelConfig.alias;
     if (vercelConfig.name) {
-      state.deployment.sandboxDeploys = await effects.vercel.getDeployments(
+      state.deployment.vercelDeploys = await effects.vercel.getDeployments(
         vercelConfig.name
       );
     }
@@ -114,7 +114,7 @@ export const deployClicked = async ({ state, effects, actions }: Context) => {
       }
     }
 
-    state.deployment.url = await effects.vercel.deploy(contents, sandbox);
+    state.deployment.vercelUrl = await effects.vercel.deploy(contents, sandbox);
   } catch (error) {
     actions.internal.handleError({
       message: getVercelErrorMessage(error),
@@ -158,11 +158,11 @@ export const deploySandboxClicked = async ({
     }
   }
 
-  state.deployment.url = null;
+  state.deployment.vercelUrl = null;
 };
 
 export const setDeploymentToDelete = ({ state }: Context, id: string) => {
-  state.deployment.deployToDelete = id;
+  state.deployment.vercelDeployToDelete = id;
 };
 
 export const deleteDeployment = async ({
@@ -170,14 +170,14 @@ export const deleteDeployment = async ({
   effects,
   actions,
 }: Context) => {
-  const id = state.deployment.deployToDelete;
+  const id = state.deployment.vercelDeployToDelete;
 
   if (!id) {
     return;
   }
 
   state.currentModal = null;
-  state.deployment.deploysBeingDeleted.push(id);
+  state.deployment.vercelDeploysBeingDeleted.push(id);
 
   try {
     await effects.vercel.deleteDeployment(id);
@@ -191,8 +191,8 @@ export const deleteDeployment = async ({
     });
   }
 
-  state.deployment.deploysBeingDeleted.splice(
-    state.deployment.deploysBeingDeleted.indexOf(id),
+  state.deployment.vercelDeploysBeingDeleted.splice(
+    state.deployment.vercelDeploysBeingDeleted.indexOf(id),
     1
   );
 };
@@ -261,14 +261,11 @@ export const fetchGithubSite = async ({ effects, state }: Context) => {
   }
   try {
     const site = await effects.githubPages.getSite(sandbox.id);
-    state.deployment.githubSite = {
+    state.deployment.githubSite.name = {
       ...site,
       name: `csb-${sandbox.id}`,
     };
   } catch {
-    state.deployment.githubSite = {
-      ...state.deployment.githubSite,
-      name: `csb-${sandbox.id}`,
-    };
+    state.deployment.githubSite.name = `csb-${sandbox.id}`;
   }
 };
