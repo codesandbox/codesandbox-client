@@ -2,7 +2,7 @@ import React from 'react';
 import { FileExplorer } from './index';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
-import { SandpackLayout } from '../../components/SandpackLayout';
+import { SandpackLayout } from '../../common/Layout';
 
 export default {
   title: 'components/File Explorer',
@@ -10,19 +10,14 @@ export default {
 
 export const Component = () => (
   <SandpackProvider
-    entry="/index.tsx"
-    files={{
-      '/index.tsx': {
-        code: '',
-      },
-      '/src/app.tsx': {
-        code: '',
-      },
-      '/src/components/button.tsx': {
-        code: '',
+    customSetup={{
+      entry: '/index.tsx',
+      files: {
+        '/index.tsx': '',
+        '/src/app.tsx': '',
+        '/src/components/button.tsx': '',
       },
     }}
-    dependencies={{}}
   >
     <SandpackLayout>
       <FileExplorer />

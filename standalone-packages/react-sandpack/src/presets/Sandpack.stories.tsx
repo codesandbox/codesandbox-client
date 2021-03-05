@@ -1,9 +1,7 @@
 import React from 'react';
 import { Story } from '@storybook/react';
-import { IFile } from 'smooshpack';
 import { Sandpack, SandpackProps } from './Sandpack';
-import { getSetup } from '../templates';
-import { sandpackDarkTheme } from '../themes';
+import { codesandboxDarkTheme } from '../themes';
 
 export default {
   title: 'presets/Sandpack',
@@ -48,12 +46,17 @@ export const ReactEditor: Story<SandpackProps> = args => (
   />
 );
 
+export const VueEditor: Story<SandpackProps> = args => (
+  <Sandpack {...args} template="vue" theme="aqua-blue" />
+);
+
 export const VanillaEditor: Story<SandpackProps> = args => (
   <Sandpack
     {...args}
+    theme="codesandbox-dark"
     template="vanilla"
     options={{
-      openPaths: ['/src/index.js', '/src/styles.css'],
+      openPaths: ['/src/index.js', '/src/styles.css', '/index.html'],
       showNavigator: true,
     }}
   />
@@ -73,7 +76,7 @@ export const DarkTheme: Story<SandpackProps> = args => (
       },
     }}
     template="react"
-    theme="sp-dark"
+    theme="codesandbox-dark"
   />
 );
 
@@ -170,21 +173,11 @@ export const WithCustomLibrary: Story<SandpackProps> = args => (
   />
 );
 
-const helloWorld = `export default function App() {
-  return (
-    <h1>Hello World</h1>
-  )
-}
-`;
-
 export const MultipleInstances: Story<SandpackProps> = args => (
   <div>
     <h2>Light Theme</h2>
     <Sandpack
       {...args}
-      files={{
-        '/App.js': helloWorld.replace('World', 'world 1'),
-      }}
       options={{
         showTabs: true,
         showNavigator: true,
@@ -194,22 +187,16 @@ export const MultipleInstances: Story<SandpackProps> = args => (
     <h2>Dark Theme</h2>
     <Sandpack
       {...args}
-      files={{
-        '/App.js': helloWorld.replace('World', 'world 2'),
-      }}
       options={{
         showTabs: true,
         showNavigator: true,
       }}
       template="react"
-      theme="sp-dark"
+      theme="codesandbox-dark"
     />
     <h2>Night Owl</h2>
     <Sandpack
       {...args}
-      files={{
-        '/App.js': helloWorld.replace('World', 'world 3'),
-      }}
       options={{
         showTabs: true,
         showNavigator: true,
@@ -217,12 +204,29 @@ export const MultipleInstances: Story<SandpackProps> = args => (
       template="react"
       theme="night-owl"
     />
+    <h2>Aqua Theme</h2>
+    <Sandpack
+      {...args}
+      options={{
+        showTabs: true,
+        showNavigator: true,
+      }}
+      template="react"
+      theme="aqua-blue"
+    />
+    <h2>Monokai Theme</h2>
+    <Sandpack
+      {...args}
+      options={{
+        showTabs: true,
+        showNavigator: true,
+      }}
+      template="react"
+      theme="monokai-pro"
+    />
     <h2>Custom Theme Colors</h2>
     <Sandpack
       {...args}
-      files={{
-        '/App.js': helloWorld.replace('World', 'world 4'),
-      }}
       options={{
         showTabs: true,
         showNavigator: true,
@@ -241,16 +245,13 @@ export const MultipleInstances: Story<SandpackProps> = args => (
     <h2>Custom Theme Typography</h2>
     <Sandpack
       {...args}
-      files={{
-        '/App.js': helloWorld.replace('World', 'world 5'),
-      }}
       options={{
         showTabs: true,
         showNavigator: true,
       }}
       template="react"
       theme={{
-        ...sandpackDarkTheme,
+        ...codesandboxDarkTheme,
         typography: {
           fontSize: '16px',
           bodyFont: 'Arial',
@@ -266,31 +267,17 @@ const code = `export default function Kitten() {
   );
 }`;
 
-export const RunnableComponent = () => {
-  const projectSetup = getSetup('react');
-
-  // Replace the code in the main file
-  if (code) {
-    const mainFileName = projectSetup.main;
-    const mainFile: IFile = {
-      code,
-    };
-
-    projectSetup.files = {
-      ...projectSetup.files,
-      [mainFileName]: mainFile,
-    };
-  }
-
-  return (
-    <Sandpack
-      customSetup={projectSetup}
-      options={{
-        autorun: false,
-        showTabs: true,
-        showLineNumbers: true,
-        showNavigator: true,
-      }}
-    />
-  );
-};
+export const RunnableComponent = () => (
+  <Sandpack
+    template="react"
+    files={{
+      '/App.js': code,
+    }}
+    options={{
+      autorun: false,
+      showTabs: true,
+      showLineNumbers: true,
+      showNavigator: true,
+    }}
+  />
+);

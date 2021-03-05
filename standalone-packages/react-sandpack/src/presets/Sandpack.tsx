@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { SandpackLayout } from '../components/SandpackLayout';
+import { ClasserProvider } from '@code-hike/classer';
+import { SandpackLayout } from '../common/Layout';
 import {
   FileResolver,
-  SandboxTemplate,
   SandpackFiles,
   SandpackPredefinedTemplate,
   SandpackPredefinedTheme,
@@ -10,10 +10,8 @@ import {
   SandpackPartialTheme,
 } from '../types';
 import { SandpackProvider } from '../contexts/sandpack-context';
-import { CodeEditor, CodeEditorOptions } from '../components/CodeEditor';
-import { Preview, PreviewOptions } from '../components/Preview';
-import { getSetup } from '../templates';
-import { ThemeProvider } from '../contexts/theme-context';
+import { SandpackCodeEditor, CodeEditorProps } from '../components/CodeEditor';
+import { SandpackPreview, PreviewProps } from '../components/Preview';
 
 export interface SandpackProps {
   files?: SandpackFiles;
@@ -21,13 +19,14 @@ export interface SandpackProps {
   customSetup?: SandpackSetup;
 
   theme?: SandpackPredefinedTheme | SandpackPartialTheme;
-  customStyle?: React.CSSProperties;
 
   options?: {
     openPaths?: string[];
     activePath?: string;
 
     editorWidthPercentage?: number;
+    editorHeight?: React.CSSProperties['height'];
+    classes?: Record<string, string>;
 
     showNavigator?: boolean;
 
@@ -57,120 +56,62 @@ export const Sandpack: React.FC<SandpackProps> = props => {
       }
     : props.customSetup;
 
-  const projectSetup = getSetup(props.template, userInputSetup);
-  const { activePath, openPaths } = getInitialEditorState(props, projectSetup);
-
-  const previewOptions: PreviewOptions = {
+  const previewOptions: PreviewProps = {
     showNavigator: props.options?.showNavigator,
   };
 
-  const codeEditorOptions: CodeEditorOptions = {
-    showTabs: props.options?.showTabs ?? openPaths.length > 1,
+  const codeEditorOptions: CodeEditorProps = {
+    showTabs: props.options?.showTabs,
     showLineNumbers: props.options?.showLineNumbers,
     wrapContent: props.options?.wrapContent,
   };
 
   const providerOptions = {
-    autorun: props.options?.autorun ?? true,
+    openPaths: props.options?.openPaths,
+    activePath: props.options?.activePath,
     recompileMode: props.options?.recompileMode,
     recompileDelay: props.options?.recompileDelay,
+    autorun: props.options?.autorun ?? true,
     bundlerURL: props.options?.bundlerURL,
     skipEval: props.options?.skipEval,
     fileResolver: props.options?.fileResolver,
   };
 
-  const { height, ...otherStyles } = props.customStyle || {};
+  // Parts are set as `flex` values, so they set the flex shrink/grow
+  // Cannot use width percentages as it doesn't work with
+  // the automatic layout break when the component is under 700px
   const editorPart = props.options?.editorWidthPercentage || 50;
   const previewPart = 100 - editorPart;
+  const editorHeight = props.options?.editorHeight;
 
   return (
     <SandpackProvider
-      files={projectSetup.files}
-      dependencies={projectSetup.dependencies}
-      entry={projectSetup.entry}
-      environment={projectSetup.environment}
-      openPaths={openPaths}
-      activePath={activePath}
+      template={props.template}
+      customSetup={userInputSetup}
       {...providerOptions}
     >
-      <ThemeProvider theme={props.theme}>
-        <SandpackLayout style={otherStyles}>
-          <CodeEditor
+      <ClasserProvider classes={props.options?.classes}>
+        <SandpackLayout theme={props.theme}>
+          <SandpackCodeEditor
             {...codeEditorOptions}
             customStyle={{
-              height,
+              height: editorHeight,
               flexGrow: editorPart,
               flexShrink: editorPart,
               minWidth: 700 * (editorPart / (previewPart + editorPart)),
             }}
           />
-          <Preview
+          <SandpackPreview
             {...previewOptions}
             customStyle={{
-              height,
+              height: editorHeight,
               flexGrow: previewPart,
               flexShrink: previewPart,
               minWidth: 700 * (previewPart / (previewPart + editorPart)),
             }}
           />
         </SandpackLayout>
-      </ThemeProvider>
+      </ClasserProvider>
     </SandpackProvider>
   );
-};
-
-const getInitialEditorState = (
-  props: SandpackProps,
-  projectSetup: SandboxTemplate
-) => {
-  // openPaths and activePath override the setup flags
-  let openPaths = props.options?.openPaths || [];
-  let activePath = props.options?.activePath;
-
-  if (openPaths.length === 0 && props.files) {
-    const inputFiles = props.files;
-
-    // extract open and active files from the custom input files
-    Object.keys(inputFiles).forEach(filePath => {
-      const file = inputFiles[filePath];
-      if (typeof file === 'string') {
-        openPaths.push(filePath);
-        return;
-      }
-
-      if (!activePath && file.active) {
-        activePath = filePath;
-        if (file.hidden === true) {
-          openPaths.push(filePath); // active file needs to be available even if someone sets it as hidden by accident
-        }
-      }
-
-      if (!file.hidden) {
-        openPaths.push(filePath);
-      }
-    });
-  }
-
-  if (openPaths.length === 0) {
-    // If no files are received, use the project setup / template
-    openPaths = Object.keys(projectSetup.files);
-  }
-
-  // If no activePath is specified, use the first open file
-  if (!activePath) {
-    activePath = openPaths[0];
-  }
-
-  // If for whatever reason the active path was not set as open, set it
-  if (!openPaths.includes(activePath)) {
-    openPaths.push(activePath);
-  }
-
-  if (!projectSetup.files[activePath]) {
-    throw new Error(
-      `${activePath} was set as the active file but was not provided`
-    );
-  }
-
-  return { openPaths, activePath };
 };

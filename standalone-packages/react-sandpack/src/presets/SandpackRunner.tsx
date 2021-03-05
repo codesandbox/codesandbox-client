@@ -1,27 +1,25 @@
 import * as React from 'react';
-import { IFile } from 'smooshpack';
-
-import { Preview } from '../components/Preview';
-import { SandpackLayout } from '../components/SandpackLayout';
-import { getSetup } from '../templates';
+import { ClasserProvider } from '@code-hike/classer';
+import { SandpackPreview } from '../components/Preview';
+import { SandpackLayout } from '../common/Layout';
 import { SandpackProvider } from '../contexts/sandpack-context';
-import { ThemeProvider } from '../contexts/theme-context';
 import {
   SandpackPartialTheme,
   SandpackPredefinedTemplate,
   SandpackPredefinedTheme,
   SandpackSetup,
 } from '../types';
+import { SANDBOX_TEMPLATES } from '../templates';
 
 export interface SandpackRunnerProps {
   code?: string;
   template?: SandpackPredefinedTemplate;
   customSetup?: SandpackSetup;
   theme?: SandpackPredefinedTheme | SandpackPartialTheme;
-  customStyle?: React.CSSProperties;
   options?: {
     showNavigator?: boolean;
     bundlerUrl?: string;
+    classes?: Record<string, string>;
   };
 }
 
@@ -31,35 +29,32 @@ export const SandpackRunner: React.FC<SandpackRunnerProps> = ({
   customSetup,
   options,
   theme,
-  customStyle,
 }) => {
-  const projectSetup = getSetup(template, customSetup);
+  const mainFile =
+    customSetup?.main ?? SANDBOX_TEMPLATES[template || 'vanilla'].main;
 
-  if (code) {
-    const mainFileName = projectSetup.main;
-    const mainFile: IFile = {
-      code,
-    };
-
-    projectSetup.files = {
-      ...projectSetup.files,
-      [mainFileName]: mainFile,
-    };
-  }
+  // Override the main file of the sandbox
+  const userInput = code
+    ? {
+        ...customSetup,
+        files: {
+          ...customSetup?.files,
+          [mainFile]: code,
+        },
+      }
+    : customSetup;
 
   return (
     <SandpackProvider
-      files={projectSetup.files}
-      dependencies={projectSetup.dependencies}
-      entry={projectSetup.entry}
-      environment={projectSetup.environment}
+      template={template}
+      customSetup={userInput}
       bundlerURL={options?.bundlerUrl}
     >
-      <ThemeProvider theme={theme}>
-        <SandpackLayout style={customStyle}>
-          <Preview showNavigator={options?.showNavigator} />
+      <ClasserProvider classes={options?.classes}>
+        <SandpackLayout theme={theme}>
+          <SandpackPreview showNavigator={options?.showNavigator} />
         </SandpackLayout>
-      </ThemeProvider>
+      </ClasserProvider>
     </SandpackProvider>
   );
 };

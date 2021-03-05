@@ -1,6 +1,6 @@
 {
   "name": "react-smooshpack",
-  "version": "1.0.0-alpha-26",
+  "version": "1.0.0-alpha-36",
   "description": "",
   "keywords": [],
   "repository": {
@@ -21,26 +21,28 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "build:css": "postcss src/styles/index.css -o dist/index.css -u autoprefixer -u cssnano",
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prepublish": "yarn build",
     "start": "tsc -p tsconfig.esm.json --watch",
     "storybook": "start-storybook -p 6006 --no-dll",
     "build-storybook": "build-storybook --no-dll"
   },
   "dependencies": {
+    "@code-hike/classer": "^0.0.0-aa6efee",
     "@codemirror/closebrackets": "^0.17.2",
-    "@codemirror/commands": "^0.17.1",
-    "@codemirror/comment": "^0.17.1",
-    "@codemirror/gutter": "^0.17.1",
-    "@codemirror/highlight": "^0.17.1",
-    "@codemirror/history": "^0.17.1",
+    "@codemirror/commands": "^0.17.4",
+    "@codemirror/comment": "^0.17.2",
+    "@codemirror/gutter": "^0.17.2",
+    "@codemirror/highlight": "^0.17.2",
+    "@codemirror/history": "^0.17.2",
     "@codemirror/lang-css": "^0.17.1",
     "@codemirror/lang-html": "^0.17.1",
-    "@codemirror/lang-javascript": "^0.17.1",
-    "@codemirror/language": "^0.17.2",
-    "@codemirror/view": "^0.17.3",
+    "@codemirror/lang-javascript": "^0.17.2",
+    "@codemirror/language": "^0.17.4",
+    "@codemirror/matchbrackets": "^0.17.2",
+    "@codemirror/state": "^0.17.1",
+    "@codemirror/view": "^0.17.9",
     "codesandbox-import-utils": "^1.2.3",
     "prism-react-renderer": "^1.1.1",
-    "smooshpack": "^1.0.0-alpha-26"
+    "smooshpack": "^1.0.0-alpha-36"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

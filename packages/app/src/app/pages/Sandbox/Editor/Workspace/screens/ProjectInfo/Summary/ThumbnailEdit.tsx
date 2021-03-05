@@ -27,16 +27,15 @@ const getFile = async (file: File): Promise<parsedFiles> => {
   return returnedFiles;
 };
 export const ThumbnailEdit = () => {
-  const{
-      files: { thumbnailToBeCropped }
-
+  const {
+    files: { thumbnailToBeCropped },
   } = useActions();
   const {
     editor: {
       currentSandbox: { modules },
     },
     workspace: { uploadingThumb },
-  } = useAppState()
+  } = useAppState();
   const thumbnailExists = modules.find(m => m.path.includes('/thumbnail.'));
 
   const uploadThumbnail = () => {

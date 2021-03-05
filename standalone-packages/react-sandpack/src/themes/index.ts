@@ -2,13 +2,46 @@ import {
   SandpackTheme,
   SandpackPredefinedTheme,
   SandpackPartialTheme,
+  SandpackSyntaxStyle,
 } from '../types';
 import { hexToCSSRGBa } from '../utils/string-utils';
 
-export const sandpackLightTheme: SandpackTheme = {
+export const codesandboxLightTheme: SandpackTheme = {
   palette: {
     activeText: '#1f2933',
-    defaultText: '#999999',
+    defaultText: '#757678',
+    inactiveText: '#e4e7eb',
+    activeBackground: '#e4e7eb',
+    defaultBackground: '#f8f9fb',
+    inputBackground: '#ffffff',
+    accent: '#64D2FF',
+    errorBackground: '#ffcdca',
+    errorForeground: '#811e18',
+  },
+  syntax: {
+    plain: '#151515',
+    comment: { color: '#999', fontStyle: 'italic' },
+    keyword: '#0971F1',
+    tag: '#0971F1',
+    punctuation: '#151515',
+    definition: '#151515',
+    property: '#151515',
+    static: '#FF453A',
+    string: '#BF5AF2',
+  },
+  typography: {
+    bodyFont:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+    monoFont:
+      '"Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace',
+    fontSize: '14px',
+  },
+};
+
+export const aquaBlueTheme: SandpackTheme = {
+  palette: {
+    activeText: '#1f2933',
+    defaultText: '#737373',
     inactiveText: '#e4e7eb',
     activeBackground: '#e4e7eb',
     defaultBackground: '#f8f9fb',
@@ -20,13 +53,14 @@ export const sandpackLightTheme: SandpackTheme = {
 
   syntax: {
     plain: '#1F2933',
-    disabled: '#A7B6C2',
+    comment: { color: '#A7B6C2', fontStyle: 'italic' },
     keyword: '#1A56DB',
     tag: '#1A56DB',
     punctuation: '#394b59',
     definition: '#A23DAD',
     property: '#14919B',
-    static: '#1992D4',
+    static: '#1A56DB',
+    string: '#1992D4',
   },
   typography: {
     bodyFont:
@@ -37,7 +71,7 @@ export const sandpackLightTheme: SandpackTheme = {
   },
 };
 
-export const sandpackDarkTheme: SandpackTheme = {
+export const codesandboxDarkTheme: SandpackTheme = {
   palette: {
     activeText: '#FFFFFF',
     defaultText: '#999999',
@@ -51,13 +85,14 @@ export const sandpackDarkTheme: SandpackTheme = {
   },
   syntax: {
     plain: '#FFFFFF',
-    disabled: '#757575',
-    keyword: '#64D2FF',
-    tag: '#86D9CA',
+    comment: { color: '#757575', fontStyle: 'italic' },
+    keyword: '#77B7D7',
+    tag: '#DFAB5C',
     punctuation: '#ffffff',
-    definition: '#DFAB5C',
-    property: '86D9CA',
-    static: '#A8A5F3',
+    definition: '#86D9CA',
+    property: '#77B7D7',
+    static: '#C64640',
+    string: '#977CDC',
   },
   typography: {
     bodyFont:
@@ -71,8 +106,8 @@ export const sandpackDarkTheme: SandpackTheme = {
 export const nightOwlTheme: SandpackTheme = {
   palette: {
     activeText: 'rgb(197, 228, 253)',
-    defaultText: 'rgb(95, 126, 151)',
-    inactiveText: 'rgb(58, 62, 77)',
+    defaultText: 'rgb(105, 136, 161)',
+    inactiveText: 'rgb(78, 82, 97)',
     activeBackground: 'rgb(58, 62, 77)',
     defaultBackground: 'rgb(1, 22, 39)',
     inputBackground: 'rgb(11, 41, 66)',
@@ -82,13 +117,46 @@ export const nightOwlTheme: SandpackTheme = {
   },
   syntax: {
     plain: '#d6deeb',
-    disabled: '#999999',
-    keyword: '#c792ea',
+    comment: { color: '#999999', fontStyle: 'italic' },
+    keyword: { color: '#c792ea', fontStyle: 'italic' },
     tag: '#7fdbca',
-    punctuation: '#d6deeb',
-    definition: '#A23DAD',
-    property: '#addb67',
-    static: '#ecc48d',
+    punctuation: '#7fdbca',
+    definition: '#82aaff',
+    property: { color: '#addb67', fontStyle: 'italic' },
+    static: '#f78c6c',
+    string: '#ecc48d',
+  },
+  typography: {
+    bodyFont:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+    monoFont:
+      '"Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace',
+    fontSize: '14px',
+  },
+};
+
+export const monokaiProTheme: SandpackTheme = {
+  palette: {
+    activeText: 'rgb(252, 252, 250)',
+    defaultText: 'rgb(147, 146, 147)',
+    inactiveText: '#444344',
+    activeBackground: '#444344',
+    defaultBackground: 'rgb(45, 42, 46)',
+    inputBackground: 'rgb(25, 24, 26)',
+    accent: 'rgb(255, 216, 102)',
+    errorBackground: '#ffcdca',
+    errorForeground: '#811e18',
+  },
+  syntax: {
+    plain: 'rgb(252, 252, 250)',
+    comment: { color: '#757575', fontStyle: 'italic' },
+    keyword: 'rgb(255, 97, 136)',
+    tag: 'rgb(120, 220, 232)',
+    punctuation: 'rgb(147, 146, 147)',
+    definition: 'rgb(169, 220, 118)',
+    property: { color: 'rgb(120, 220, 232)', fontStyle: 'italic' },
+    static: 'rgb(171, 157, 242)',
+    string: 'rgb(255, 216, 102)',
   },
   typography: {
     bodyFont:
@@ -100,16 +168,18 @@ export const nightOwlTheme: SandpackTheme = {
 };
 
 export const SANDPACK_THEMES: Record<SandpackPredefinedTheme, SandpackTheme> = {
-  'sp-light': sandpackLightTheme,
-  'sp-dark': sandpackDarkTheme,
+  'codesandbox-light': codesandboxLightTheme,
+  'codesandbox-dark': codesandboxDarkTheme,
   'night-owl': nightOwlTheme,
+  'aqua-blue': aquaBlueTheme,
+  'monokai-pro': monokaiProTheme,
 };
 
 export const createThemeObject = (
   inputTheme?: SandpackPredefinedTheme | SandpackPartialTheme
 ) => {
-  const defaultTheme = sandpackLightTheme;
-  const defaultThemeKey = 'sp-light';
+  const defaultTheme = codesandboxLightTheme;
+  const defaultThemeKey = 'codesandbox-light';
 
   if (inputTheme === undefined) {
     return {
@@ -119,8 +189,13 @@ export const createThemeObject = (
   }
 
   if (typeof inputTheme === 'string') {
+    const predefinedTheme = SANDPACK_THEMES[inputTheme];
+    if (!predefinedTheme) {
+      throw new Error(`Invalid theme '${inputTheme}' provided.`);
+    }
+
     return {
-      theme: SANDPACK_THEMES[inputTheme] ?? defaultTheme,
+      theme: predefinedTheme,
       id: inputTheme ?? defaultThemeKey,
     };
   }
@@ -153,7 +228,7 @@ const simpleHashFunction = (str: string) => {
 // inactive fg and active bg are interchangable to limit the number of colors in the theme
 // bg-default-overlay is determined by adjusting the alpha channel on the default bg to 80%
 export const getThemeStyleSheet = (theme: SandpackTheme, themeId: string) => `
-.sp-wrapper.${themeId} {
+.sp-wrapper.sp-${themeId} {
   --sp-colors-fg-active: ${theme.palette.activeText};
   --sp-colors-fg-default: ${theme.palette.defaultText};
   --sp-colors-fg-inactive: ${
@@ -175,3 +250,11 @@ export const getThemeStyleSheet = (theme: SandpackTheme, themeId: string) => `
   --sp-font-body: ${theme.typography.bodyFont};
   --sp-font-mono: ${theme.typography.monoFont};
 `;
+
+export const getSyntaxStyle = (token: string | SandpackSyntaxStyle) => {
+  if (typeof token === 'string') {
+    return { color: token };
+  }
+
+  return token;
+};

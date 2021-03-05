@@ -1,35 +1,33 @@
 import { PrismTheme, Language } from 'prism-react-renderer';
+import { getSyntaxStyle } from '../../themes';
 import { SandpackTheme } from '../../types';
 
 export const getPrismTheme = (theme: SandpackTheme): PrismTheme => ({
-  plain: {
-    color: theme.syntax.plain,
-  },
+  plain: getSyntaxStyle(theme.syntax.plain),
   styles: [
     {
       types: ['comment', 'prolog', 'doctype', 'cdata'],
-      style: {
-        color: theme.syntax.disabled,
-        fontStyle: 'italic',
-      },
-    },
-    {
-      types: ['namespace'],
-      style: {
-        opacity: 0.7,
-      },
+      style: getSyntaxStyle(theme.syntax.comment),
     },
     {
       types: ['string', 'attr-value'],
-      style: {
-        color: theme.syntax.static,
-      },
+      style: getSyntaxStyle(theme.syntax.static),
     },
     {
-      types: ['punctuation', 'operator'],
-      style: {
-        color: theme.syntax.plain,
-      },
+      types: ['punctuation', 'operator', 'deleted'],
+      style: getSyntaxStyle(theme.syntax.plain),
+    },
+    {
+      types: ['keyword'],
+      style: getSyntaxStyle(theme.syntax.keyword),
+    },
+    {
+      types: ['string'],
+      style: getSyntaxStyle(theme.syntax.string ?? theme.syntax.static),
+    },
+    {
+      types: ['function'],
+      style: getSyntaxStyle(theme.syntax.definition),
     },
     {
       types: [
@@ -44,33 +42,15 @@ export const getPrismTheme = (theme: SandpackTheme): PrismTheme => ({
         'regex',
         'inserted',
       ],
-      style: {
-        color: theme.syntax.keyword,
-      },
+      style: getSyntaxStyle(theme.syntax.static),
     },
     {
       types: ['atrule', 'attr-name', 'selector'],
-      style: {
-        color: theme.syntax.property,
-      },
-    },
-    {
-      types: ['function', 'deleted'],
-      style: {
-        color: theme.syntax.plain,
-      },
+      style: getSyntaxStyle(theme.syntax.property),
     },
     {
       types: ['tag'],
-      style: {
-        color: theme.syntax.tag,
-      },
-    },
-    {
-      types: ['keyword'],
-      style: {
-        color: theme.syntax.keyword,
-      },
+      style: getSyntaxStyle(theme.syntax.tag),
     },
   ],
 });

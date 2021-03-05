@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { createThemeObject, sandpackLightTheme } from '../themes';
+import { useClasser } from '@code-hike/classer';
+import { createThemeObject, codesandboxLightTheme } from '../themes';
 import {
   SandpackPartialTheme,
   SandpackPredefinedTheme,
@@ -7,29 +8,37 @@ import {
 } from '../types';
 import { injectThemeStyleSheet } from '../utils/dom-utils';
 
-const ThemeContext = React.createContext<{ theme: SandpackTheme; id: string }>({
-  theme: sandpackLightTheme,
-  id: 'sp-light',
+const SandpackThemeContext = React.createContext<{
+  theme: SandpackTheme;
+  id: string;
+}>({
+  theme: codesandboxLightTheme,
+  id: 'codesandbox-light',
 });
 
-const ThemeProvider: React.FC<{
+const SandpackThemeProvider: React.FC<{
   theme?: SandpackPredefinedTheme | SandpackPartialTheme;
 }> = props => {
   const { theme, id } = createThemeObject(props.theme);
-  injectThemeStyleSheet(theme, id);
+  const c = useClasser('sp');
+
+  // If theme is not explicitly set, don't inject any stylesheet
+  if (props.theme) {
+    injectThemeStyleSheet(theme, id);
+  }
 
   return (
-    <ThemeContext.Provider
+    <SandpackThemeContext.Provider
       value={{
         theme,
         id,
       }}
     >
-      {props.children}
-    </ThemeContext.Provider>
+      <div className={c('wrapper', id)}>{props.children}</div>
+    </SandpackThemeContext.Provider>
   );
 };
 
-const ThemeConsumer = ThemeContext.Consumer;
+const SandpackThemeConsumer = SandpackThemeContext.Consumer;
 
-export { ThemeProvider, ThemeConsumer, ThemeContext };
+export { SandpackThemeProvider, SandpackThemeConsumer, SandpackThemeContext };

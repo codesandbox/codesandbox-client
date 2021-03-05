@@ -1,60 +1,52 @@
 import * as React from 'react';
+import { useClasser } from '@code-hike/classer';
 import { CodeMirror } from './CodeMirror';
-import { useSandpack } from '../../contexts/sandpack-context';
+import { useSandpack } from '../../hooks/useSandpack';
 import { FileTabs } from '../FileTabs';
-import { RunIcon } from '../../icons';
+import { useActiveCode } from '../../hooks/useActiveCode';
+import { RunButton } from '../../common/RunButton';
+import { SandpackStack } from '../../common/Stack';
 
-export type CodeEditorOptions = {
+export type CodeEditorProps = {
+  customStyle?: React.CSSProperties;
   showTabs?: boolean;
   showLineNumbers?: boolean;
   wrapContent?: boolean;
 };
-export type CodeEditorProps = CodeEditorOptions & {
-  customStyle?: React.CSSProperties;
-};
 
-export const CodeEditor = ({
+export const SandpackCodeEditor = ({
   customStyle,
-  showTabs = false,
+  showTabs,
   showLineNumbers = false,
   wrapContent = false,
 }: CodeEditorProps) => {
   const { sandpack } = useSandpack();
+  const { code, updateCode } = useActiveCode();
+  const { activePath, status, editorState } = sandpack;
+  const shouldShowTabs = showTabs ?? sandpack.openPaths.length > 1;
 
-  const { activePath, status, editorState, runSandpack } = sandpack;
-  const code = sandpack.files[activePath].code;
+  const c = useClasser('sp');
 
   const handleCodeUpdate = (newCode: string) => {
-    sandpack.updateCurrentFile(newCode);
+    updateCode(newCode);
   };
 
   return (
-    <div style={customStyle}>
-      {showTabs && <FileTabs />}
-      <CodeMirror
-        activePath={activePath}
-        code={code}
-        key={activePath}
-        editorState={editorState}
-        onCodeUpdate={handleCodeUpdate}
-        showLineNumbers={showLineNumbers}
-        wrapContent={wrapContent}
-      />
-      {status === 'idle' && (
-        <button
-          type="button"
-          className="sp-button"
-          style={{
-            position: 'absolute',
-            bottom: 'var(--sp-space-2)',
-            right: 'var(--sp-space-2)',
-          }}
-          onClick={() => runSandpack()}
-        >
-          <RunIcon />
-          Run
-        </button>
-      )}
-    </div>
+    <SandpackStack customStyle={customStyle}>
+      {shouldShowTabs && <FileTabs />}
+      <div className={c('code-editor')}>
+        <CodeMirror
+          activePath={activePath}
+          code={code}
+          key={activePath}
+          editorState={editorState}
+          onCodeUpdate={handleCodeUpdate}
+          showLineNumbers={showLineNumbers}
+          wrapContent={wrapContent}
+        />
+
+        {status === 'idle' && <RunButton />}
+      </div>
+    </SandpackStack>
   );
 };

@@ -1,4 +1,4 @@
-import { IManagerState, IModuleError, IFiles, IFile } from 'smooshpack';
+import { IManagerState, IModuleError, IFiles } from 'smooshpack';
 
 export type SandpackContext = SandpackState & {
   dispatch: (message: any) => void;
@@ -6,7 +6,6 @@ export type SandpackContext = SandpackState & {
 };
 
 export interface SandpackState {
-  browserFrame: HTMLIFrameElement | null;
   bundlerState: IManagerState | undefined;
   openPaths: string[];
   activePath: string;
@@ -18,9 +17,23 @@ export interface SandpackState {
   updateCurrentFile: (newCode: string) => void;
   openFile: (path: string) => void;
   changeActiveFile: (path: string) => void;
+
+  // Element refs
+  // Different components inside the SandpackProvider might register certain elements of interest for sandpack
+  // eg: the preview iframe - if no iframe is registered, the context needs to register a hidden one to run the bundler
+  // eg: lazy anchor - if no component registers this, then the sandpack runs on mount, without lazy mode
+  iframeRef: React.RefObject<HTMLIFrameElement>;
+  lazyAnchorRef: React.RefObject<HTMLDivElement>;
+
+  // eg: error screen - if no component registers this, the bundler needs to show the custom error screen
+  // When the value is boolean, we only care if the components have the responsibility to render the elements,
+  // we don't need the actual element reference
+  errorScreenRegisteredRef: React.MutableRefObject<boolean>;
+  openInCSBRegisteredRef: React.MutableRefObject<boolean>;
+  loadingScreenRegisteredRef: React.MutableRefObject<boolean>;
 }
 
-export type SandpackStatus = 'idle' | 'running';
+export type SandpackStatus = 'initial' | 'idle' | 'running';
 export type EditorState = 'pristine' | 'dirty';
 
 export type SandpackListener = (msg: any) => void;
@@ -30,7 +43,7 @@ export type SandboxTemplate = {
   dependencies: Record<string, string>;
   entry: string;
   main: string;
-  environment: SandboxEnviornment;
+  environment: SandboxEnvironment;
 };
 
 export type SandpackFile = {
@@ -45,11 +58,11 @@ export type SandpackSetup = {
   dependencies?: Record<string, string>;
   entry?: string;
   main?: string;
-  files?: Record<string, string | IFile>;
-  environment?: SandboxEnviornment;
+  files?: SandpackFiles;
+  environment?: SandboxEnvironment;
 };
 
-export type SandboxEnviornment =
+export type SandboxEnvironment =
   | 'adonis'
   | 'create-react-app'
   | 'vue-cli'
@@ -85,7 +98,30 @@ export type SandpackPredefinedTemplate = 'react' | 'vue' | 'vanilla';
 // | 'angular-cli'
 // | 'parcel';
 
-export type SandpackPredefinedTheme = 'sp-light' | 'sp-dark' | 'night-owl';
+export type SandpackPredefinedTheme =
+  | 'codesandbox-light'
+  | 'codesandbox-dark'
+  | 'night-owl'
+  | 'aqua-blue'
+  | 'monokai-pro';
+
+export type SandpackSyntaxStyle = {
+  color?: string;
+  fontStyle?: 'normal' | 'italic';
+  fontWeight?:
+    | 'normal'
+    | 'bold'
+    | '100'
+    | '200'
+    | '300'
+    | '400'
+    | '500'
+    | '600'
+    | '700'
+    | '800'
+    | '900';
+  textDecoration?: 'underline' | 'line-through';
+};
 
 export type SandpackTheme = {
   palette: {
@@ -100,14 +136,15 @@ export type SandpackTheme = {
     errorForeground: string;
   };
   syntax: {
-    plain: string;
-    disabled: string;
-    keyword: string;
-    definition: string;
-    punctuation: string;
-    property: string;
-    tag: string;
-    static: string;
+    plain: string | SandpackSyntaxStyle;
+    comment: string | SandpackSyntaxStyle;
+    keyword: string | SandpackSyntaxStyle;
+    definition: string | SandpackSyntaxStyle;
+    punctuation: string | SandpackSyntaxStyle;
+    property: string | SandpackSyntaxStyle;
+    tag: string | SandpackSyntaxStyle;
+    static: string | SandpackSyntaxStyle;
+    string?: string | SandpackSyntaxStyle; // use static as fallback
   };
   typography: {
     bodyFont: string;

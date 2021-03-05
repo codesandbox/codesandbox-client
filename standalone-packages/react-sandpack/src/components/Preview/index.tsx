@@ -1,95 +1,75 @@
 import * as React from 'react';
-
-import { useSandpack } from '../../contexts/sandpack-context';
+import { useClasser } from '@code-hike/classer';
+import { useSandpack } from '../../hooks/useSandpack';
 import { Navigator } from '../Navigator';
-import { LoadingAnimation } from './LoadingAnimation';
-import { OpenInCodeSandboxButton } from './OpenInCodeSandboxButton';
 import { RefreshButton } from './RefreshButton';
+import { LoadingOverlay } from '../../common/LoadingOverlay';
+import { OpenInCodeSandboxButton } from '../../common/OpenInCodeSandboxButton';
+import { ErrorOverlay } from '../../common/ErrorOverlay';
+import { SandpackStack } from '../../common/Stack';
 
-export type PreviewOptions = {
-  showNavigator?: boolean;
-};
-
-export type PreviewProps = PreviewOptions & {
+export type PreviewProps = {
   customStyle?: React.CSSProperties;
+  showNavigator?: boolean;
   showOpenInCodeSandbox?: boolean;
   showRefreshButton?: boolean;
+  showSandpackErrorOverlay?: boolean;
 };
 
-export { RefreshButton, OpenInCodeSandboxButton };
+export { RefreshButton };
 
-export const Preview: React.FC<PreviewProps> = ({
+export const SandpackPreview: React.FC<PreviewProps> = ({
   customStyle,
   showNavigator = false,
   showRefreshButton = true,
   showOpenInCodeSandbox = true,
+  showSandpackErrorOverlay = true,
 }) => {
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const wrapperRef = React.useRef<HTMLDivElement>(null);
   const { sandpack, listen } = useSandpack();
-  const [loadingOverlayState, setLoadingOverlayState] = React.useState<
-    'visible' | 'fading' | 'hidden'
-  >('visible');
+
+  const { status, iframeRef, errorScreenRegisteredRef } = sandpack;
+
+  const c = useClasser('sp');
 
   React.useEffect(() => {
-    if (sandpack.status === 'idle') {
-      return () => {}; // No listener attached while sandpack is not instantiated
-    }
+    errorScreenRegisteredRef.current = true;
 
     const unsub = listen((message: any) => {
-      if (message.type === 'start' && message.firstLoad === true) {
-        setLoadingOverlayState('visible');
-      }
-
-      if (message.type === 'done') {
-        setLoadingOverlayState('fading');
-        setTimeout(() => setLoadingOverlayState('hidden'), 300); // 300 ms animation
+      if (message.type === 'resize' && iframeRef.current) {
+        iframeRef.current.style.height = `${message.height}px`;
       }
     });
 
     return () => unsub();
-  }, [sandpack?.browserFrame]);
-
-  React.useEffect(() => {
-    if (
-      !sandpack.browserFrame ||
-      !containerRef.current ||
-      sandpack.status !== 'running'
-    ) {
-      return;
-    }
-
-    const { browserFrame } = sandpack;
-    browserFrame.style.width = 'auto';
-    browserFrame.style.height = 'auto';
-    browserFrame.style.flex = '1';
-    browserFrame.style.visibility = 'visible';
-    browserFrame.style.position = 'relative';
-
-    containerRef.current.appendChild(browserFrame);
-  }, [sandpack?.browserFrame, sandpack.status]);
-
-  if (sandpack.status !== 'running') {
-    return null;
-  }
+  }, []);
 
   return (
-    <div style={customStyle} ref={wrapperRef}>
+    <SandpackStack
+      customStyle={{
+        ...customStyle,
+        display: status !== 'idle' ? 'flex' : 'none',
+      }}
+    >
       {showNavigator && <Navigator />}
 
-      <div className="sp-preview-frame" id="preview-frame" ref={containerRef}>
-        {sandpack.error && (
-          <div className="sp-overlay sp-error">
-            <div className="sp-error-message">{sandpack.error.message}</div>
-          </div>
-        )}
+      <div className={c('preview-container')}>
+        <iframe
+          className={c('preview-iframe')}
+          ref={iframeRef}
+          title="Sandpack Preview"
+        />
+        {showSandpackErrorOverlay && <ErrorOverlay />}
 
-        {!showNavigator && showRefreshButton && <RefreshButton />}
+        <div className={c('preview-actions')}>
+          {!showNavigator && showRefreshButton && status === 'running' && (
+            <RefreshButton />
+          )}
 
-        {showOpenInCodeSandbox && <OpenInCodeSandboxButton />}
+          {showOpenInCodeSandbox && <OpenInCodeSandboxButton />}
+        </div>
 
-        <LoadingAnimation loadingOverlayState={loadingOverlayState} />
+        <LoadingOverlay />
       </div>
-    </div>
+    </SandpackStack>
   );
 };

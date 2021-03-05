@@ -1,45 +1,45 @@
 import React from 'react';
-import { SandpackLayout } from '../../components/SandpackLayout';
+import { SandpackLayout } from '../../common/Layout';
 import { SandpackProvider } from '../../contexts/sandpack-context';
-import { Preview } from '../Preview';
+import { Navigator } from '.';
+import { SandpackPreview } from '../Preview';
+import { SandpackThemeProvider } from '../../contexts/theme-context';
 
 export default {
   title: 'components/Navigator',
 };
 
 export const Component = () => (
-  <SandpackProvider
-    entry="/index.js"
-    files={{
-      '/index.js': {
-        code: '',
-      },
-    }}
-    dependencies={{}}
-  >
-    <SandpackLayout>
-      <Preview showNavigator />
-    </SandpackLayout>
+  <SandpackProvider template="react">
+    <SandpackThemeProvider>
+      <Navigator />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
 
 export const WithRoutingExample = () => (
   <SandpackProvider
-    entry="/index.js"
-    environment="create-react-app"
-    files={{
-      '/index.html': {
-        code: `<div id="root"></div>`,
+    template="react"
+    customSetup={{
+      dependencies: {
+        'react-router-dom': 'latest',
+        'react-scripts': 'latest',
+        react: 'latest',
+        'react-dom': 'latest',
       },
-      '/index.js': {
-        code: `import ReactDOM from "react-dom";
+      files: {
+        '/index.html': {
+          code: `<div id="root"></div>`,
+        },
+        '/index.js': {
+          code: `import ReactDOM from "react-dom";
 import App from "./example";
 
 ReactDOM.render(<App />, document.getElementById("root"));
         `,
-      },
-      '/example.js': {
-        code: `import {
+        },
+        '/example.js': {
+          code: `import {
   BrowserRouter as Router,
   Switch,
   Route,
@@ -105,17 +105,12 @@ function Dashboard() {
 }
         
 `,
+        },
       },
-    }}
-    dependencies={{
-      'react-router-dom': 'latest',
-      'react-scripts': 'latest',
-      react: 'latest',
-      'react-dom': 'latest',
     }}
   >
     <SandpackLayout>
-      <Preview showNavigator />
+      <SandpackPreview showNavigator />
     </SandpackLayout>
   </SandpackProvider>
 );

@@ -1,35 +1,25 @@
 import * as React from 'react';
+import { useClasser } from '@code-hike/classer';
 import Highlight, { defaultProps, Language } from 'prism-react-renderer';
-import { getPrismTheme } from './utils';
-
-import { ThemeContext } from '../../contexts/theme-context';
+import { getPrismTheme } from '../components/CodeViewer/utils';
+import { useSandpackTheme } from '../hooks/useSandpackTheme';
 
 export interface PrismHighlightProps {
   lang?: Language;
-  customStyle?: React.CSSProperties;
   code: string;
   showLineNumbers?: boolean;
 }
 
 export const PrismHighlight = ({
   lang = 'javascript',
-  customStyle,
   code,
   showLineNumbers,
 }: PrismHighlightProps) => {
-  const { theme } = React.useContext(ThemeContext);
+  const { theme } = useSandpackTheme();
+  const c = useClasser('sp');
 
   return (
-    <div
-      style={{
-        backgroundColor: 'var(--sp-colors-bg-default)',
-        padding: 'var(--space-4) var(--sp-space-2)',
-        lineHeight: '1.4',
-        overflow: 'auto',
-        flex: 1,
-        ...customStyle,
-      }}
-    >
+    <div className={c('code-view')}>
       <Highlight
         {...defaultProps}
         theme={getPrismTheme(theme)}

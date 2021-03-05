@@ -1,6 +1,6 @@
 import * as React from 'react';
-
-import { useSandpack } from '../../contexts/sandpack-context';
+import { useClasser } from '@code-hike/classer';
+import { useSandpack } from '../../hooks/useSandpack';
 import { BackwardIcon, ForwardIcon, RefreshIcon } from '../../icons';
 import { splitUrl } from './utils';
 
@@ -10,11 +10,7 @@ type UrlChangeMessage = {
   forward: boolean;
 };
 
-export interface NavigatorProps {
-  customStyle?: React.CSSProperties;
-}
-
-export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
+export const Navigator: React.FC = () => {
   const [baseUrl, setBaseUrl] = React.useState<string>('');
   const [relativeUrl, setRelativeUrl] = React.useState<string>('/');
 
@@ -22,6 +18,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
   const [forwardEnabled, setForwardEnabled] = React.useState(false);
 
   const { sandpack, dispatch, listen } = useSandpack();
+  const c = useClasser('sp');
 
   React.useEffect(() => {
     const unsub = listen((message: any) => {
@@ -38,15 +35,15 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
     });
 
     return () => unsub();
-  }, [sandpack.status]);
+  }, []);
 
   const commitUrl = () => {
-    if (!sandpack.browserFrame) {
+    if (!sandpack.iframeRef.current) {
       return;
     }
 
     const newUrl = baseUrl + relativeUrl;
-    sandpack.browserFrame.src = newUrl;
+    sandpack.iframeRef.current.src = newUrl;
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,9 +77,9 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
   };
 
   return (
-    <div className="sp-navigator" style={customStyle}>
+    <div className={c('navigator')}>
       <button
-        className="sp-button icon"
+        className={c('button', 'icon')}
         type="button"
         onClick={handleBack}
         disabled={!backEnabled}
@@ -91,7 +88,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
         <BackwardIcon />
       </button>
       <button
-        className="sp-button icon"
+        className={c('button', 'icon')}
         type="button"
         onClick={handleForward}
         disabled={!forwardEnabled}
@@ -100,7 +97,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
         <ForwardIcon />
       </button>
       <button
-        className="sp-button icon"
+        className={c('button', 'icon')}
         type="button"
         onClick={handleRefresh}
         aria-label="Refresh page"
@@ -109,8 +106,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ customStyle }) => {
       </button>
 
       <input
-        className="sp-input"
-        style={{ flex: 1, width: 0, marginLeft: 'var(--sp-space-4)' }}
+        className={c('input')}
         type="text"
         name="Current Sandpack URL"
         aria-label="Current Sandpack URL"

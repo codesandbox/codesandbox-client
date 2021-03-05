@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { useClasser } from '@code-hike/classer';
 import {
   highlightSpecialChars,
   highlightActiveLine,
@@ -11,24 +11,23 @@ import { history, historyKeymap } from '@codemirror/history';
 import {
   defaultKeymap,
   indentLess,
-  indentMore,
   deleteGroupBackward,
+  insertTab,
 } from '@codemirror/commands';
 import { lineNumbers } from '@codemirror/gutter';
 import { bracketMatching } from '@codemirror/matchbrackets';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets';
 import { EditorState } from '@codemirror/state';
 import { commentKeymap } from '@codemirror/comment';
-
 import {
   getCodeMirrorLanguage,
   getEditorTheme,
   getSyntaxHighlight,
 } from './utils';
 
-import { ThemeContext } from '../../contexts/theme-context';
 import { getFileName } from '../../utils/string-utils';
 import { EditorState as SandpackEditorState } from '../../types';
+import { useSandpackTheme } from '../../hooks/useSandpackTheme';
 
 export interface CodeMirrorProps {
   code: string;
@@ -49,7 +48,9 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 }) => {
   const wrapper = React.useRef<HTMLDivElement>(null);
   const cmView = React.useRef<EditorView>();
-  const { theme } = React.useContext(ThemeContext);
+  const { theme, themeId } = useSandpackTheme();
+  const [internalCode, setInternalCode] = React.useState<string>(code);
+  const c = useClasser('sp');
 
   React.useEffect(() => {
     if (!wrapper.current) {
@@ -61,7 +62,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     const customCommandsKeymap: KeyBinding[] = [
       {
         key: 'Tab',
-        run: indentMore,
+        run: insertTab,
       },
       {
         key: 'Shift-Tab',
@@ -130,6 +131,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 
         if (tr.docChanged) {
           const newCode = tr.newDoc.sliceString(0, tr.newDoc.length);
+          setInternalCode(newCode);
           onCodeUpdate(newCode);
         }
       },
@@ -137,16 +139,37 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
 
     view.contentDOM.setAttribute('tabIndex', '-1');
     view.contentDOM.setAttribute('aria-describedby', 'exit-instructions');
-    if (editorState === 'dirty') {
-      view.contentDOM.focus();
-    }
 
     cmView.current = view;
 
     return () => {
       view.destroy();
     };
-  }, [showLineNumbers, wrapContent, theme]);
+
+    // TODO: Would be nice to reconfigure the editor when these change, instead of recreating with all the extensions from scratch
+  }, [showLineNumbers, wrapContent, themeId]);
+
+  React.useEffect(() => {
+    // When the user clicks on a tab button on a larger screen
+    // Avoid autofocus on mobile as it leads to a bad experience and an unexpected layout shift
+    if (
+      cmView.current &&
+      editorState === 'dirty' &&
+      window.matchMedia('(min-width: 768px)').matches
+    ) {
+      cmView.current.contentDOM.focus();
+    }
+  });
+
+  // Update editor when code passed as prop from outside sandpack changes
+  React.useEffect(() => {
+    if (cmView.current && code !== internalCode) {
+      const view = cmView.current;
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length - 1, insert: code },
+      });
+    }
+  }, [code]);
 
   const handleContainerKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key === 'Enter' && cmView.current) {
@@ -159,7 +182,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
     /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
     /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
     <div
-      className="sp-cm"
+      className={c('cm', editorState)}
       onKeyDown={handleContainerKeyDown}
       tabIndex={0}
       role="group"
@@ -168,7 +191,7 @@ export const CodeMirror: React.FC<CodeMirrorProps> = ({
       ref={wrapper}
     >
       <pre
-        className="sp-pre-placeholder"
+        className={c('pre-placeholder')}
         style={{
           marginLeft: showLineNumbers ? 28 : 0, // gutter line offset
         }}

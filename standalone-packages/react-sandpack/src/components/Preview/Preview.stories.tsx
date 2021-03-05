@@ -1,6 +1,6 @@
 import React from 'react';
-import { Preview } from './index';
-import { SandpackLayout } from '../SandpackLayout';
+import { SandpackPreview } from './index';
+import { SandpackLayout } from '../../common/Layout';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
 
@@ -8,34 +8,38 @@ export default {
   title: 'components/Preview',
 };
 
+const code = `export default function Kitten() {
+  return (
+    <img src="https://placekitten.com/200/250" alt="Kitten" />
+  );
+}`;
+
 export const Component = () => (
   <SandpackProvider
-    entry="/index.js"
-    files={{
-      '/index.js': {
-        code: '',
+    template="react"
+    customSetup={{
+      files: {
+        '/App.js': code,
       },
     }}
-    dependencies={{}}
   >
     <SandpackLayout>
-      <Preview />
+      <SandpackPreview />
     </SandpackLayout>
   </SandpackProvider>
 );
 
 export const WithNavigator = () => (
   <SandpackProvider
-    entry="/index.js"
-    files={{
-      '/index.js': {
-        code: '',
+    template="react"
+    customSetup={{
+      files: {
+        '/App.js': code,
       },
     }}
-    dependencies={{}}
   >
     <SandpackLayout>
-      <Preview showNavigator />
+      <SandpackPreview showNavigator />
     </SandpackLayout>
   </SandpackProvider>
 );

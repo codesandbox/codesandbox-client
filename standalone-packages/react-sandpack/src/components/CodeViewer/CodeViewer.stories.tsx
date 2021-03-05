@@ -1,64 +1,45 @@
 import React from 'react';
 import { Story } from '@storybook/react';
 
-import { CodeViewer, CodeViewerProps } from '.';
-import { SandpackLayout } from '../../components/SandpackLayout';
+import { SandpackCodeViewer, CodeViewerProps } from '.';
 
 import { SandpackProvider } from '../../contexts/sandpack-context';
-import { SANDBOX_TEMPLATES } from '../../templates';
-import { ThemeProvider } from '../../contexts/theme-context';
+import { SandpackThemeProvider } from '../../contexts/theme-context';
 
 export default {
   title: 'components/Code Viewer',
-  component: CodeViewer,
+  component: SandpackCodeViewer,
 };
 
 export const Component: Story<CodeViewerProps> = args => (
   <SandpackProvider
-    entry="/index.js"
-    files={{
-      '/index.js': {
-        code: 'const title = "This is a simple code editor"',
+    customSetup={{
+      entry: '/index.js',
+      files: {
+        '/index.js': {
+          code: 'const title = "This is not editable" // this is a comaent',
+        },
       },
     }}
-    dependencies={{}}
   >
-    <SandpackLayout>
-      <CodeViewer {...args} />
-    </SandpackLayout>
+    <SandpackThemeProvider>
+      <SandpackCodeViewer {...args} />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
-
-const reactTemplate = SANDBOX_TEMPLATES.react;
 
 export const ReactCode = () => (
-  <SandpackProvider
-    entry={reactTemplate.entry}
-    environment="create-react-app"
-    files={reactTemplate.files}
-    openPaths={[reactTemplate.main]}
-    dependencies={reactTemplate.dependencies}
-  >
-    <SandpackLayout>
-      <CodeViewer />
-    </SandpackLayout>
+  <SandpackProvider template="react">
+    <SandpackThemeProvider>
+      <SandpackCodeViewer />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
 
-const vueTemplate = SANDBOX_TEMPLATES.vue;
-
 export const VueCode = () => (
-  <SandpackProvider
-    entry={vueTemplate.entry}
-    environment="vue-cli"
-    files={vueTemplate.files}
-    openPaths={[vueTemplate.main]}
-    dependencies={vueTemplate.dependencies}
-  >
-    <ThemeProvider theme="sp-dark">
-      <SandpackLayout>
-        <CodeViewer />
-      </SandpackLayout>
-    </ThemeProvider>
+  <SandpackProvider template="vue">
+    <SandpackThemeProvider theme="codesandbox-dark">
+      <SandpackCodeViewer />
+    </SandpackThemeProvider>
   </SandpackProvider>
 );
