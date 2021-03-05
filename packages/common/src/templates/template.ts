@@ -12,6 +12,7 @@ export type Options = {
   showOnHomePage?: boolean;
   distDir?: string;
   staticDeployment?: boolean;
+  githubPagesDeploy?: boolean;
   popular?: boolean;
   extraConfigurations?: {
     [path: string]: ConfigurationFile;
@@ -91,6 +92,7 @@ export default class Template {
   showOnHomePage: boolean;
   distDir: string;
   staticDeployment: boolean;
+  githubPagesDeploy: boolean;
   configurationFiles: ConfigurationFiles;
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
@@ -130,6 +132,7 @@ export default class Template {
 
     this.mainFile = options.mainFile;
     this.staticDeployment = options.staticDeployment;
+    this.githubPagesDeploy = options.githubPagesDeploy;
     this.backgroundColor = options.backgroundColor;
 
     this.showCube = options.showCube != null ? options.showCube : true;

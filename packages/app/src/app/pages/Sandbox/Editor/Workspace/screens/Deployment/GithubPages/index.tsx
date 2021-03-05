@@ -13,7 +13,7 @@ import getTemplate from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useEffect } from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
-
+import { Info } from './Info';
 import { GitHubIcon, FileIcon, VisitIcon } from '../icons';
 
 export const GithubPages: FunctionComponent = () => {
@@ -33,11 +33,15 @@ export const GithubPages: FunctionComponent = () => {
 
   useEffect(() => {
     fetchGithubSite();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const template = getTemplate(currentSandbox.template);
 
-  if (template.staticDeployment === false) {
+  if (
+    template.staticDeployment === false ||
+    template.githubPagesDeploy === false
+  ) {
     return null;
   }
 
@@ -56,6 +60,7 @@ export const GithubPages: FunctionComponent = () => {
             <Button disabled={deploying} onClick={deployWithGitHubPages}>
               Deploy to GitHub Pages
             </Button>
+            <Info template={template.name} path={`csb-${currentSandbox.id}`} />
           </Element>
           {githubSite.ghPages && (
             <List>

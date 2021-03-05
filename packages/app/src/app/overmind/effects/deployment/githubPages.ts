@@ -81,6 +81,10 @@ export default (() => {
           return 'build --no-prerender';
         }
 
+        if (name === 'gatsby') {
+          return 'build --prefix-paths';
+        }
+
         return 'build';
       };
 
