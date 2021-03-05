@@ -37,7 +37,6 @@ import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
 
-let initializedDOMMutationListener = false;
 let manager: Manager | null = null;
 let actionsEnabled = false;
 
@@ -402,7 +401,7 @@ function initializeDOMMutationListener() {
   // When a change is found, the sendResize function will determine if a message is dispatched
   const observer = new MutationObserver(sendResize);
 
-  observer.observe(document.body, {
+  observer.observe(document, {
     attributes: true,
     childList: true,
     subtree: true,
@@ -411,8 +410,6 @@ function initializeDOMMutationListener() {
   window.addEventListener('unload', () => {
     observer.disconnect();
   });
-
-  initializedDOMMutationListener = true;
 }
 
 function overrideDocumentClose() {
@@ -760,10 +757,6 @@ async function compile({
 
     await manager.preset.teardown(manager, updatedModules);
 
-    if (!initializedDOMMutationListener && !manager.preset.htmlDisabled) {
-      initializeDOMMutationListener();
-    }
-
     if (firstLoad && showOpenInCodeSandbox) {
       createCodeSandboxOverlay(modules);
     }
@@ -863,15 +856,17 @@ async function compile({
         });
     }
   }
+
+  if (!hadError && firstLoad) {
+    // If compile is successful, compute the size of the content after a small delay and dispatch that
+    // setTimeout(sendResize, 100);
+    initializeDOMMutationListener();
+  }
+
   firstLoad = false;
 
   dispatch({ type: 'status', status: 'idle' });
   dispatch({ type: 'done', compilatonError: hadError });
-
-  if (!hadError) {
-    // If compile is successful, compute the size of the content after a small delay and dispatch that
-    setTimeout(sendResize, 100);
-  }
 
   if (typeof (window as any).__puppeteer__ === 'function') {
     setTimeout(() => {

@@ -18,6 +18,3 @@ www/
 *.html
 
 .drone.yml
-
-!/standalone-packages/react-sandpack
-!/standalone-packages/sandpack
