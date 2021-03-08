@@ -6,6 +6,8 @@ import {
   RecentlyDeletedTeamSandboxesQuery,
   RecentlyDeletedTeamSandboxesQueryVariables,
   SandboxesByPathQuery,
+  LikedSandboxesQuery,
+  LikedSandboxesQueryVariables,
   SandboxesByPathQueryVariables,
   OwnedTemplatesQuery,
   OwnedTemplatesQueryVariables,
@@ -325,6 +327,20 @@ export const sharedWithmeSandboxes: Query<
   query SharedWithMeSandboxes {
     me {
       collaboratorSandboxes {
+        ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const likedSandboxes: Query<
+  LikedSandboxesQuery,
+  LikedSandboxesQueryVariables
+> = gql`
+  query LikedSandboxes {
+    me {
+      likedSandboxes {
         ...sandboxFragmentDashboard
       }
     }

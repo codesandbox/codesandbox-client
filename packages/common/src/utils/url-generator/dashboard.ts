@@ -12,7 +12,12 @@ function appendTeamIdQueryParam(url: string, teamId?: string | null) {
 function sanitizePath(path: string) {
   return path
     .split('/')
-    .map(p => p.split(' ').map(encodeURIComponent).join(' '))
+    .map(p =>
+      p
+        .split(' ')
+        .map(encodeURIComponent)
+        .join(' ')
+    )
     .join('/');
 }
 
@@ -42,6 +47,9 @@ export const deleted = (teamId?: string | null) =>
 
 export const shared = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/shared`, teamId);
+
+export const liked = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/liked`, teamId);
 
 export const home = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/home`, teamId);

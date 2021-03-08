@@ -1030,6 +1030,9 @@ export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
     case sandboxesTypes.SHARED:
       dashboard.getSharedSandboxes();
       break;
+    case sandboxesTypes.LIKED:
+      dashboard.getLikedSandboxes();
+      break;
 
     default:
       break;
@@ -1801,7 +1804,7 @@ export const deleteAccount = async ({ state, effects }: Context) => {
 export const getSharedSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
-    const data = await effects.gql.queries.sharedWithmeSandboxes();
+    const data = await effects.gql.queries.sharedWithmeSandboxes({});
 
     if (!data.me?.collaboratorSandboxes) {
       return;
@@ -1811,6 +1814,23 @@ export const getSharedSandboxes = async ({ state, effects }: Context) => {
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting Sandboxes shared with you'
+    );
+  }
+};
+
+export const getLikedSandboxes = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    const data = await effects.gql.queries.likedSandboxes({});
+
+    if (!data.me?.likedSandboxes) {
+      return;
+    }
+
+    dashboard.sandboxes[sandboxesTypes.LIKED] = data.me?.likedSandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting liked Sandboxes'
     );
   }
 };

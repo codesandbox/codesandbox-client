@@ -169,7 +169,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   const isTeamPro =
     state.activeTeamInfo?.subscription?.type ===
-    WorkspaceSubscriptionTypes.Team;
+    WorkspaceSubscriptionTypes?.Team;
 
   const PROTECTED_SANDBOXES_ITEMS =
     isTeamPro && state.activeWorkspaceAuthorization === 'ADMIN'

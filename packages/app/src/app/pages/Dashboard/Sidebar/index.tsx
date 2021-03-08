@@ -225,6 +225,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.shared(activeTeam)}
             icon="sharing"
           />
+          <RowItem
+            name="Likes by Me"
+            page="liked"
+            path={dashboardUrls.liked(activeTeam)}
+            icon="heart"
+          />
         </List>
         <Element margin={4}>
           <Button

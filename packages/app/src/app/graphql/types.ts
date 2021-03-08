@@ -2462,6 +2462,18 @@ export type SharedWithMeSandboxesQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type LikedSandboxesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LikedSandboxesQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      likedSandboxes: Array<
+        { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
+      >;
+    }
+  >;
+};
+
 export type LatestTeamSandboxesQueryVariables = Exact<{
   limit: Scalars['Int'];
   orderField: Scalars['String'];
