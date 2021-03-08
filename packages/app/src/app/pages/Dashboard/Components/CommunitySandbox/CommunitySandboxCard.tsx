@@ -2,6 +2,7 @@ import React from 'react';
 import { Stack, Text, Icon, IconButton, Avatar } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import css from '@styled-system/css';
+import { AnonymousAvatar } from './AnonymousAvatar';
 import { CommunitySandboxItemComponentProps } from './types';
 
 type SandboxTitleProps = {
@@ -62,19 +63,20 @@ const Stats: React.FC<StatsProps> = React.memo(({ forkCount, likeCount }) => (
 ));
 
 type AuthorProps = Pick<CommunitySandboxItemComponentProps, 'author'>;
-const Author: React.FC<AuthorProps> = React.memo(({ author }) => {
+const Author: React.FC<AuthorProps> = React.memo(({ author }) => (
   // return empty div for alignment
-  if (!author.username) return <div />;
 
-  return (
-    <Stack align="center" gap={2} css={{ flexShrink: 1, overflow: 'hidden' }}>
+  <Stack align="center" gap={2} css={{ flexShrink: 1, overflow: 'hidden' }}>
+    {author.username ? (
       <Avatar css={css({ size: 6, borderRadius: 2 })} user={author} />
-      <Text size={3} maxWidth="100%">
-        {author.username}
-      </Text>
-    </Stack>
-  );
-});
+    ) : (
+      <AnonymousAvatar />
+    )}
+    <Text size={3} maxWidth="100%">
+      {author.username || 'Anonymous'}
+    </Text>
+  </Stack>
+));
 
 export const SandboxCard = ({
   title,

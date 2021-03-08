@@ -10,6 +10,7 @@ import {
   ListAction,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { AnonymousAvatar } from './AnonymousAvatar';
 import { CommunitySandboxItemComponentProps } from './types';
 
 export const SandboxListItem = ({
@@ -107,18 +108,20 @@ export const SandboxListItem = ({
           </Stack>
         </Column>
         <Column span={[0, 2, 2]} as={Stack} align="center">
-          {author.username && (
-            <Stack
-              align="center"
-              gap={2}
-              css={{ flexShrink: 1, overflow: 'hidden' }}
-            >
+          <Stack
+            align="center"
+            gap={2}
+            css={{ flexShrink: 1, overflow: 'hidden' }}
+          >
+            {author.username ? (
               <Avatar css={css({ size: 6, borderRadius: 2 })} user={author} />
-              <Text size={3} maxWidth="100%">
-                {author.username}
-              </Text>
-            </Stack>
-          )}
+            ) : (
+              <AnonymousAvatar />
+            )}
+            <Text size={3} maxWidth="100%">
+              {author.username || 'Anonymous'}
+            </Text>
+          </Stack>
         </Column>
       </Grid>
       <IconButton
