@@ -1801,16 +1801,13 @@ export const deleteAccount = async ({ state, effects }: Context) => {
 export const getSharedSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
-    const data = await effects.gql.queries.sharedWithmeSandboxes({
-      page: 1,
-    });
+    const data = await effects.gql.queries.sharedWithmeSandboxes();
 
-    if (!data.me?.collaboratorSandboxes?.sandboxes) {
+    if (!data.me?.collaboratorSandboxes) {
       return;
     }
 
-    dashboard.sandboxes[sandboxesTypes.SHARED] =
-      data.me?.collaboratorSandboxes?.sandboxes;
+    dashboard.sandboxes[sandboxesTypes.SHARED] = data.me?.collaboratorSandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting Sandboxes shared with you'

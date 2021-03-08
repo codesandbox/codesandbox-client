@@ -121,13 +121,14 @@ export type Comment = {
 export type CurrentUser = {
   __typename?: 'CurrentUser';
   bookmarkedTemplates: Array<Template>;
-  collaboratorSandboxes: PaginatedSandboxes;
+  collaboratorSandboxes: Array<Sandbox>;
   collection: Maybe<Collection>;
   collections: Array<Collection>;
   email: Scalars['String'];
   firstName: Maybe<Scalars['String']>;
   id: Scalars['UUID4'];
   lastName: Maybe<Scalars['String']>;
+  likedSandboxes: Array<Sandbox>;
   notificationPreferences: Maybe<NotificationPreferences>;
   notifications: Array<Notification>;
   personalWorkspaceId: Scalars['UUID4'];
@@ -140,10 +141,6 @@ export type CurrentUser = {
   templates: Array<Template>;
   username: Scalars['String'];
   workspaces: Array<Team>;
-};
-
-export type CurrentUserCollaboratorSandboxesArgs = {
-  page: Maybe<Scalars['Int']>;
 };
 
 export type CurrentUserCollectionArgs = {
@@ -261,15 +258,6 @@ export type NotificationPreferences = {
 export type OrderBy = {
   direction: Direction;
   field: Scalars['String'];
-};
-
-export type PaginatedSandboxes = {
-  __typename?: 'PaginatedSandboxes';
-  pageNumber: Maybe<Scalars['Int']>;
-  pageSize: Maybe<Scalars['Int']>;
-  sandboxes: Array<Sandbox>;
-  totalEntries: Maybe<Scalars['Int']>;
-  totalPages: Maybe<Scalars['Int']>;
 };
 
 export type PreviewReference = {
@@ -2461,17 +2449,15 @@ export type RecentlyAccessedSandboxesQuery = {
 };
 
 export type SharedWithMeSandboxesQueryVariables = Exact<{
-  page: Maybe<Scalars['Int']>;
+  [key: string]: never;
 }>;
 
 export type SharedWithMeSandboxesQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
-      collaboratorSandboxes: { __typename?: 'PaginatedSandboxes' } & {
-        sandboxes: Array<
-          { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
-        >;
-      };
+      collaboratorSandboxes: Array<
+        { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
+      >;
     }
   >;
 };

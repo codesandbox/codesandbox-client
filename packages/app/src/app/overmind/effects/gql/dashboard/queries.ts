@@ -322,12 +322,10 @@ export const sharedWithmeSandboxes: Query<
   SharedWithMeSandboxesQuery,
   SharedWithMeSandboxesQueryVariables
 > = gql`
-  query SharedWithMeSandboxes($page: Int) {
+  query SharedWithMeSandboxes {
     me {
-      collaboratorSandboxes(page: $page) {
-        sandboxes {
-          ...sandboxFragmentDashboard
-        }
+      collaboratorSandboxes {
+        ...sandboxFragmentDashboard
       }
     }
   }
