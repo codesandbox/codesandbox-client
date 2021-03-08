@@ -1,9 +1,11 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
+import { useOvermind } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SandboxCard } from './CommunitySandboxCard';
+import { SandboxListItem } from './CommunitySandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
 import { DashboardCommunitySandbox } from '../../types';
@@ -17,6 +19,12 @@ export const CommunitySandbox = ({
   isScrolling,
   item,
 }: GenericSandboxProps) => {
+  const {
+    state: {
+      dashboard: { viewMode },
+    },
+  } = useOvermind();
+
   const { sandbox } = item;
   const title = sandbox.title || sandbox.alias || sandbox.id;
   const forkCount = sandbox.forkCount;
@@ -88,9 +96,11 @@ export const CommunitySandbox = ({
     'data-selection-id': sandbox.id,
   };
 
+  const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
+
   return (
     <div>
-      <SandboxCard
+      <Component
         {...sandboxProps}
         {...interactionProps}
         isScrolling={isScrolling}

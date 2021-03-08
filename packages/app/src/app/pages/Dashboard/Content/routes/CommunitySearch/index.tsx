@@ -97,6 +97,7 @@ const Results = connectHits(({ hits }) => {
         title={`Search results for '${query}' in Community`}
         activeTeam={activeTeam}
         showFilters
+        showViewOptions
       />
       <VariableGrid items={items} page={pageType} />;
     </SelectionProvider>

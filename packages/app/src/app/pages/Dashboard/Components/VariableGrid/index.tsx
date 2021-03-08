@@ -224,7 +224,6 @@ export const VariableGrid = ({
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  if (location.pathname.includes('explore')) viewMode = 'grid';
   else viewMode = dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
