@@ -122,16 +122,10 @@ export type DashboardCommunitySandbox = {
   autoFork: false;
   sandbox: Pick<
     DashboardSandbox['sandbox'],
-    | 'id'
-    | 'alias'
-    | 'title'
-    | 'description'
-    | 'screenshotUrl'
-    | 'viewCount'
-    | 'source'
+    'id' | 'alias' | 'title' | 'description' | 'screenshotUrl' | 'source'
   > & {
     author: Pick<Sandbox['author'], 'username' | 'avatarUrl'>;
-  } & Pick<Sandbox, 'likeCount'>;
+  } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
 };
 
 export type PageTypes = PT;

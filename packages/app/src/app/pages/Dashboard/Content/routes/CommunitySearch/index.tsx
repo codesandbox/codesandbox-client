@@ -71,7 +71,7 @@ const Results = connectHits(({ hits }) => {
       title: sandbox.title,
       description: sandbox.description,
       screenshotUrl: `https://codesandbox.io/api/v1/sandboxes/${sandbox.objectID}/screenshot.png`,
-      viewCount: Number(sandbox.view_count),
+      forkCount: Number(sandbox.fork_count),
       likeCount: Number(sandbox.like_count),
       source: { template: sandbox.template },
       author: {

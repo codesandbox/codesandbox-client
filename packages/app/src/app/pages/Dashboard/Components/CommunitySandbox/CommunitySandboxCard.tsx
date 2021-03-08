@@ -46,13 +46,13 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type StatsProps = Pick<
   CommunitySandboxItemComponentProps,
-  'viewCount' | 'likeCount'
+  'forkCount' | 'likeCount'
 >;
-const Stats: React.FC<StatsProps> = React.memo(({ viewCount, likeCount }) => (
+const Stats: React.FC<StatsProps> = React.memo(({ forkCount, likeCount }) => (
   <Stack as={Text} variant="muted" align="center" gap={2}>
     <Stack align="center" gap={1}>
-      <Icon name="eye" size={14} />
-      <Text size={3}>{formatNumber(viewCount)}</Text>
+      <Icon name="fork" size={14} />
+      <Text size={3}>{formatNumber(forkCount)}</Text>
     </Stack>
     <Stack align="center" gap={1}>
       <Icon name="heart" size={14} />
@@ -80,8 +80,8 @@ export const SandboxCard = ({
   title,
   TemplateIcon,
   screenshotUrl,
-  viewCount,
   likeCount,
+  forkCount,
   author,
   // interactions
   isScrolling,
@@ -152,7 +152,7 @@ export const SandboxCard = ({
         marginRight={3}
       >
         <Author author={author} />
-        <Stats viewCount={viewCount} likeCount={likeCount} />
+        <Stats likeCount={likeCount} forkCount={forkCount} />
       </Stack>
     </Stack>
   );

@@ -19,7 +19,7 @@ export const CommunitySandbox = ({
 }: GenericSandboxProps) => {
   const { sandbox } = item;
   const title = sandbox.title || sandbox.alias || sandbox.id;
-  const viewCount = sandbox.viewCount;
+  const forkCount = sandbox.forkCount;
   const likeCount = sandbox.likeCount;
   const url = sandboxUrl({ id: sandbox.id, alias: sandbox.alias });
   const author = sandbox.author;
@@ -70,7 +70,7 @@ export const CommunitySandbox = ({
     title,
     TemplateIcon,
     screenshotUrl,
-    viewCount,
+    forkCount,
     likeCount,
     author,
   };

@@ -2,7 +2,7 @@ import { DashboardCommunitySandbox } from '../../types';
 
 export type CommunitySandboxItemComponentProps = Pick<
   DashboardCommunitySandbox['sandbox'],
-  'title' | 'viewCount' | 'likeCount' | 'screenshotUrl' | 'author'
+  'title' | 'forkCount' | 'likeCount' | 'screenshotUrl' | 'author'
 > & {
   TemplateIcon: React.FC<{
     width: string;
