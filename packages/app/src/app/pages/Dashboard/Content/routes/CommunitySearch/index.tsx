@@ -94,7 +94,7 @@ const Results = connectHits(({ hits }) => {
         </title>
       </Helmet>
       <Header
-        title={`Search results for '${query}'`}
+        title={`Search results for '${query}' in Community`}
         activeTeam={activeTeam}
         showFilters
       />
