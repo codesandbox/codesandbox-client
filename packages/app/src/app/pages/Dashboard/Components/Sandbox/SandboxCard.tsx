@@ -73,7 +73,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
     newTitle,
     sandboxTitle,
   }) => (
-    <Stack justify="space-between" align="center" marginLeft={4}>
+    <Stack justify="space-between" marginLeft={4}>
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input
@@ -85,7 +85,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           />
         </form>
       ) : (
-        <Stack gap={1} align="center">
+        <Stack gap={1}>
           {prNumber ? (
             <Link
               title="Open pull request on GitHub"
@@ -98,16 +98,12 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           ) : null}
           {isFrozen && (
             <Tooltip label={stoppedScrolling ? 'Frozen Sandbox' : null}>
-              <div style={{ display: 'inherit' }}>
-                <Icon
-                  style={{ minWidth: 14 }}
-                  title="Frozen Sandbox"
-                  name="frozen"
-                  size={14}
-                />
-              </div>
+              <span style={{ marginTop: '2px' }}>
+                <Icon size={14} title="Frozen Sandbox" name="frozen" />
+              </span>
             </Tooltip>
           )}
+
           <PrivacyIcon />
           <Text size={3} weight="medium">
             {sandboxTitle}
@@ -127,6 +123,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            marginTop: '-6px',
           }}
           css={css({ color: 'mutedForeground' })}
         >
@@ -138,6 +135,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           size={9}
           title="Sandbox Actions"
           onClick={onContextMenu}
+          style={{ marginTop: '-6px' }}
         />
       )}
     </Stack>
@@ -244,7 +242,6 @@ export const SandboxCard = ({
   return (
     <Stack
       direction="vertical"
-      gap={2}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
       onBlur={onBlur}
@@ -274,43 +271,35 @@ export const SandboxCard = ({
         screenshotUrl={screenshotUrl}
         screenshotOutdated={sandbox.screenshotOutdated}
       />
-      <div
-        style={{
-          position: 'absolute',
-          top: 2,
-          right: 2,
-          width: 16,
-          height: 16,
-          border: '3px solid',
-          borderRadius: 2,
-          backgroundColor: '#343434',
-          borderColor: '#343434',
-        }}
+
+      <Stack
+        direction="vertical"
+        justify="space-between"
+        css={css({ flexGrow: 1, paddingY: 4 })}
       >
-        <TemplateIcon width="16" height="16" />
-      </div>
-      <SandboxTitle
-        originalGit={sandbox.originalGit}
-        prNumber={sandbox.prNumber}
-        isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
-        editing={editing}
-        stoppedScrolling={stoppedScrolling}
-        onContextMenu={onContextMenu}
-        onSubmit={onSubmit}
-        onChange={onChange}
-        onInputKeyDown={onInputKeyDown}
-        onInputBlur={onInputBlur}
-        PrivacyIcon={PrivacyIcon}
-        newTitle={newTitle}
-        sandboxTitle={sandboxTitle}
-      />
-      <SandboxStats
-        noDrag={noDrag}
-        lastUpdated={lastUpdated}
-        viewCount={viewCount}
-        sandboxLocation={sandboxLocation}
-        alwaysOn={alwaysOn}
-      />
+        <SandboxTitle
+          originalGit={sandbox.originalGit}
+          prNumber={sandbox.prNumber}
+          isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
+          editing={editing}
+          stoppedScrolling={stoppedScrolling}
+          onContextMenu={onContextMenu}
+          onSubmit={onSubmit}
+          onChange={onChange}
+          onInputKeyDown={onInputKeyDown}
+          onInputBlur={onInputBlur}
+          PrivacyIcon={PrivacyIcon}
+          newTitle={newTitle}
+          sandboxTitle={sandboxTitle}
+        />
+        <SandboxStats
+          noDrag={noDrag}
+          lastUpdated={lastUpdated}
+          viewCount={viewCount}
+          sandboxLocation={sandboxLocation}
+          alwaysOn={alwaysOn}
+        />
+      </Stack>
     </Stack>
   );
 };
@@ -350,30 +339,49 @@ const Thumbnail = ({
   );
 
   return (
-    <div
-      ref={thumbnailRef}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '160px',
-        backgroundColor: '#242424',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center center',
-        backgroundRepeat: 'no-repeat',
-        borderBottom: '1px solid',
-        borderColor: '#242424',
-        [screenshotToUse ? 'backgroundImage' : null]: `url(${screenshotToUse})`,
-      }}
-    >
-      {!screenshotUrlLoaded && (
-        <TemplateIcon
-          style={{ filter: 'grayscale(1)', opacity: 0.1 }}
-          width="60"
-          height="60"
-        />
-      )}
-    </div>
+    <>
+      <div
+        ref={thumbnailRef}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '144px',
+          backgroundColor: '#242424',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+          backgroundRepeat: 'no-repeat',
+          borderBottom: '1px solid',
+          borderColor: '#242424',
+          [screenshotToUse
+            ? 'backgroundImage'
+            : null]: `url(${screenshotToUse})`,
+        }}
+      >
+        {!screenshotUrlLoaded && (
+          <TemplateIcon
+            style={{ filter: 'grayscale(1)', opacity: 0.1 }}
+            width="60"
+            height="60"
+          />
+        )}
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          top: 2,
+          right: 2,
+          width: 16,
+          height: 16,
+          border: '3px solid',
+          borderRadius: 2,
+          backgroundColor: '#343434',
+          borderColor: '#343434',
+        }}
+      >
+        <TemplateIcon width="16" height="16" />
+      </div>
+    </>
   );
 };
 
@@ -390,7 +398,7 @@ export const SkeletonCard = () => (
       overflow: 'hidden',
     })}
   >
-    <SkeletonText css={{ width: '100%', height: 160, borderRadius: 0 }} />
+    <SkeletonText css={{ width: '100%', height: 144, borderRadius: 0 }} />
     <Stack direction="vertical" gap={2} marginX={4}>
       <SkeletonText css={{ width: 120 }} />
       <SkeletonText css={{ width: 180 }} />

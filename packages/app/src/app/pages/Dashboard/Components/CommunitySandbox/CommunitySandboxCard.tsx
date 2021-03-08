@@ -102,7 +102,6 @@ export const SandboxCard = ({
   return (
     <Stack
       direction="vertical"
-      gap={2}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
       onContextMenu={onContextMenu}
@@ -124,35 +123,27 @@ export const SandboxCard = ({
       })}
     >
       <Thumbnail TemplateIcon={TemplateIcon} screenshotUrl={screenshotUrl} />
-      <div
-        style={{
-          position: 'absolute',
-          top: 2,
-          right: 2,
-          width: 16,
-          height: 16,
-          border: '3px solid',
-          borderRadius: 2,
-          backgroundColor: '#343434',
-          borderColor: '#343434',
-        }}
-      >
-        <TemplateIcon width="16" height="16" />
-      </div>
-      <SandboxTitle
-        title={title}
-        onContextMenu={onContextMenu}
-        stoppedScrolling={stoppedScrolling}
-      />
+
       <Stack
+        direction="vertical"
         justify="space-between"
-        align="center"
-        gap={2}
-        marginLeft={4}
-        marginRight={3}
+        css={css({ flexGrow: 1, paddingY: 4 })}
       >
-        <Author author={author} />
-        <Stats likeCount={likeCount} forkCount={forkCount} />
+        <SandboxTitle
+          title={title}
+          onContextMenu={onContextMenu}
+          stoppedScrolling={stoppedScrolling}
+        />
+        <Stack
+          justify="space-between"
+          align="center"
+          gap={2}
+          marginLeft={4}
+          marginRight={3}
+        >
+          <Author author={author} />
+          <Stats likeCount={likeCount} forkCount={forkCount} />
+        </Stack>
       </Stack>
     </Stack>
   );
@@ -164,7 +155,7 @@ const Thumbnail = ({ TemplateIcon, screenshotUrl }) => (
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      height: '160px',
+      height: '144px',
       backgroundColor: '#242424',
       backgroundSize: 'cover',
       backgroundPosition: 'center center',
@@ -182,5 +173,20 @@ const Thumbnail = ({ TemplateIcon, screenshotUrl }) => (
         height="60"
       />
     )}
+    <div
+      style={{
+        position: 'absolute',
+        top: 2,
+        right: 2,
+        width: 16,
+        height: 16,
+        border: '3px solid',
+        borderRadius: 2,
+        backgroundColor: '#343434',
+        borderColor: '#343434',
+      }}
+    >
+      <TemplateIcon width="16" height="16" />
+    </div>
   </div>
 );
