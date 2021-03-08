@@ -328,10 +328,6 @@ export const sharedWithmeSandboxes: Query<
         sandboxes {
           ...sandboxFragmentDashboard
         }
-        pageNumber
-        pageSize
-        totalEntries
-        totalPages
       }
     }
   }
