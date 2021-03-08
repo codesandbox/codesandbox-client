@@ -40,6 +40,9 @@ export const recents = (teamId?: string | null) =>
 export const deleted = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/deleted`, teamId);
 
+export const shared = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/shared`, teamId);
+
 export const home = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/home`, teamId);
 

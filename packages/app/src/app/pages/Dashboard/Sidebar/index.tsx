@@ -217,6 +217,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
           />
+
+          <Menu.Divider />
+          <RowItem
+            name="Shared With Me"
+            page="shared"
+            path={dashboardUrls.shared(activeTeam)}
+            icon="sharing"
+          />
         </List>
         <Element margin={4}>
           <Button
@@ -520,7 +528,10 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     });
   } else {
     subFolders = folders.filter(folder => {
-      const parentPath = folder.path.split('/').slice(0, -1).join('/');
+      const parentPath = folder.path
+        .split('/')
+        .slice(0, -1)
+        .join('/');
 
       return parentPath === folderPath;
     });

@@ -300,11 +300,9 @@ export const VariableGrid = ({
                   MAX_COLUMN_COUNT
                 );
 
-          const filledItems: Array<
-            DashboardGridItem & {
-              viewMode?: 'list' | 'grid';
-            }
-          > = [];
+          const filledItems: Array<DashboardGridItem & {
+            viewMode?: 'list' | 'grid';
+          }> = [];
           const blankItem = { type: 'blank' as 'blank' };
           const skeletonItem = { type: 'skeleton' as 'skeleton' };
 

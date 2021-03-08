@@ -39,6 +39,8 @@ import {
   GetPrivateNpmRegistryQueryVariables,
   _AlwaysOnTeamSandboxesQuery,
   _AlwaysOnTeamSandboxesQueryVariables,
+  SharedWithMeSandboxesQuery,
+  SharedWithMeSandboxesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -310,6 +312,26 @@ export const recentlyAccessedSandboxes: Query<
     me {
       recentlyAccessedSandboxes(limit: $limit, teamId: $teamId) {
         ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const sharedWithmeSandboxes: Query<
+  SharedWithMeSandboxesQuery,
+  SharedWithMeSandboxesQueryVariables
+> = gql`
+  query SharedWithMeSandboxes($page: Int) {
+    me {
+      collaboratorSandboxes(page: $page) {
+        sandboxes {
+          ...sandboxFragmentDashboard
+        }
+        pageNumber
+        pageSize
+        totalEntries
+        totalPages
       }
     }
   }

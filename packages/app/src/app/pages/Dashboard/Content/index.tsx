@@ -9,6 +9,7 @@ import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
 import { Recent } from './routes/Recent';
+import { Shared } from './routes/Shared';
 import { AlwaysOn } from './routes/AlwaysOn';
 import { All } from './routes/All';
 import { Repositories } from './routes/Repositories';
@@ -54,6 +55,7 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/always-on" component={AlwaysOn} />
         <Route path="/dashboard/recent" component={Recent} />
         <Route path="/dashboard/deleted" component={Deleted} />
+        <Route path="/dashboard/shared" component={Shared} />
         <Route path="/dashboard/search" component={Search} />
         <Route path="/dashboard/settings" component={Settings} />
         {/* old dashboard - redirects: */}

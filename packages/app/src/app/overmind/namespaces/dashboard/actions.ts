@@ -1027,6 +1027,9 @@ export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
     case sandboxesTypes.ALWAYS_ON:
       dashboard.getAlwaysOnSandboxes();
       break;
+    case sandboxesTypes.SHARED:
+      dashboard.getSharedSandboxes();
+      break;
 
     default:
       break;
@@ -1791,6 +1794,26 @@ export const deleteAccount = async ({ state, effects }: Context) => {
   } catch {
     effects.notificationToast.error(
       'There was a problem requesting your account deletion. Please email us at hello@codesandbox.io'
+    );
+  }
+};
+
+export const getSharedSandboxes = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    const data = await effects.gql.queries.sharedWithmeSandboxes({
+      page: 1,
+    });
+
+    if (!data.me?.collaboratorSandboxes?.sandboxes) {
+      return;
+    }
+
+    dashboard.sandboxes[sandboxesTypes.SHARED] =
+      data.me?.collaboratorSandboxes?.sandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting Sandboxes shared with you'
     );
   }
 };
