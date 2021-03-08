@@ -35,7 +35,7 @@ export const Shared = () => {
         <title>Shared with Me - CodeSandbox</title>
       </Helmet>
       <Header
-        title="Sanboxes Shared with Me"
+        title="Sandboxes Shared with Me"
         activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.SHARED)}
         showViewOptions
