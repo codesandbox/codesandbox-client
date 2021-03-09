@@ -217,11 +217,11 @@ export const inviteToTeam = async (
   { state, actions, effects }: Context,
   {
     value,
-    authorization,
+    authorization = null,
     confirm = false,
   }: {
     value: string;
-    authorization?: TeamMemberAuthorization;
+    authorization?: TeamMemberAuthorization | null;
     confirm?: boolean;
   }
 ) => {
