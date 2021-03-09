@@ -1751,6 +1751,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
 export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
   PrivateRegistry,
   | 'id'
+  | 'authType'
   | 'enabledScopes'
   | 'limitToScopes'
   | 'proxyEnabled'
@@ -1999,6 +2000,7 @@ export type CreateOrUpdateNpmRegistryMutationVariables = Exact<{
   registryType: RegistryType;
   registryUrl: Maybe<Scalars['String']>;
   registryAuthKey: Scalars['String'];
+  registryAuthType: Maybe<AuthType>;
   proxyEnabled: Scalars['Boolean'];
   limitToScopes: Scalars['Boolean'];
   enabledScopes: Array<Scalars['String']>;

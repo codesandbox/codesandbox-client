@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from '@codesandbox/components';
 import {
+  AuthType,
   CreateOrUpdateNpmRegistryMutationVariables,
   NpmRegistryFragment,
   RegistryType,
@@ -31,7 +32,7 @@ const CustomFormField = (props: React.ComponentProps<typeof FormField>) => (
   </FormField>
 );
 
-export type CreateTeamParams = Omit<
+export type CreateRegistryParams = Omit<
   CreateOrUpdateNpmRegistryMutationVariables,
   'teamId'
 >;
@@ -39,7 +40,7 @@ export type CreateTeamParams = Omit<
 type RegistryFormProps = {
   registry: NpmRegistryFragment | null;
   onCancel: () => void;
-  onSubmit: (params: CreateTeamParams) => void;
+  onSubmit: (params: CreateRegistryParams) => void;
   isSubmitting: boolean;
   disabled?: boolean;
 };
@@ -65,6 +66,10 @@ export const RegistryForm = ({
   // eslint-disable-next-line
   const [isLimitedToScopes, setIsLimitedToScopes] = React.useState<boolean>(
     registry?.limitToScopes || true
+  );
+  // eslint-disable-next-line
+  const [authenticationType, setAuthenticationType] = React.useState<AuthType>(
+    registry?.authType || AuthType.Bearer
   );
   const [authKey, setAuthKey] = React.useState<string>(
     registry?.registryAuthKey || ''
@@ -92,11 +97,12 @@ export const RegistryForm = ({
     });
   };
 
-  const serializeValues = (): CreateTeamParams => ({
+  const serializeValues = (): CreateRegistryParams => ({
     registryAuthKey: authKey,
     registryType,
     limitToScopes: isLimitedToScopes,
     enabledScopes: scopes.filter(s => s !== ''),
+    registryAuthType: authenticationType,
     registryUrl,
     proxyEnabled: true,
   });
@@ -201,6 +207,30 @@ export const RegistryForm = ({
                   type="password"
                 />
               </CustomFormField>
+
+              {registryType === RegistryType.Custom && (
+                <div>
+                  <CustomFormField label="Authentication Type">
+                    <Select
+                      value={authenticationType}
+                      onChange={e => {
+                        setAuthenticationType(e.target.value);
+                      }}
+                      disabled={disabled}
+                    >
+                      {Object.keys(AuthType).map(type => (
+                        <option value={AuthType[type]} key={type}>
+                          {type}
+                        </option>
+                      ))}
+                    </Select>
+                  </CustomFormField>
+                  <Text size={3} variant="muted">
+                    If you{"'"}re setting <code>_auth</code> inside{' '}
+                    <code>.npmrc</code>, this setting should be {'"'}Basic{'"'}.
+                  </Text>
+                </div>
+              )}
             </Stack>
             <Stack
               align="center"

@@ -199,6 +199,7 @@ export const currentTeamInfoFragment = gql`
 export const npmRegistryFragment = gql`
   fragment npmRegistry on PrivateRegistry {
     id
+    authType
     enabledScopes
     limitToScopes
     proxyEnabled
