@@ -33,8 +33,7 @@ export const GithubPages: FunctionComponent = () => {
 
   useEffect(() => {
     fetchGithubSite();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchGithubSite, currentSandbox.id]);
 
   const template = getTemplate(currentSandbox.template);
 
@@ -53,12 +52,12 @@ export const GithubPages: FunctionComponent = () => {
             <Text variant="muted" block marginBottom={4}>
               Deploy your sandbox to{' '}
               <Link href="https://pages.github.com/" target="_blank">
-                GitHub Pages
+                GitHub
               </Link>
             </Text>
 
             <Button disabled={deploying} onClick={deployWithGitHubPages}>
-              Deploy to GitHub Pages
+              Deploy to GitHub
             </Button>
             <Info template={template.name} path={`csb-${currentSandbox.id}`} />
           </Element>

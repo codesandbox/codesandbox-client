@@ -32,7 +32,7 @@ export const Netlify: FunctionComponent = () => {
 
   useEffect(() => {
     getNetlifyDeploys();
-  }, [getNetlifyDeploys]);
+  }, [getNetlifyDeploys, currentSandbox.id]);
 
   const template = getTemplate(currentSandbox.template);
   if (template.staticDeployment === false) {
