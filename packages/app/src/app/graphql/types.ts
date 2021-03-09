@@ -669,7 +669,7 @@ export type RootMutationTypeAddCollaboratorArgs = {
 };
 
 export type RootMutationTypeInviteToTeamArgs = {
-  authorization?: TeamMemberAuthorization;
+  authorization: Maybe<TeamMemberAuthorization>;
   teamId: Scalars['UUID4'];
   username: Scalars['String'];
 };
@@ -736,7 +736,7 @@ export type RootMutationTypeUnresolveCommentArgs = {
 };
 
 export type RootMutationTypeInviteToTeamViaEmailArgs = {
-  authorization?: TeamMemberAuthorization;
+  authorization: Maybe<TeamMemberAuthorization>;
   email: Scalars['String'];
   teamId: Scalars['UUID4'];
 };
@@ -1887,7 +1887,7 @@ export type _RemoveFromTeamMutation = { __typename?: 'RootMutationType' } & {
 export type _InviteToTeamMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   username: Scalars['String'];
-  authorization?: TeamMemberAuthorization;
+  authorization: Maybe<TeamMemberAuthorization>;
 }>;
 
 export type _InviteToTeamMutation = { __typename?: 'RootMutationType' } & {
@@ -1897,7 +1897,7 @@ export type _InviteToTeamMutation = { __typename?: 'RootMutationType' } & {
 export type _InviteToTeamViaEmailMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   email: Scalars['String'];
-  authorization?: TeamMemberAuthorization;
+  authorization: Maybe<TeamMemberAuthorization>;
 }>;
 
 export type _InviteToTeamViaEmailMutation = {
