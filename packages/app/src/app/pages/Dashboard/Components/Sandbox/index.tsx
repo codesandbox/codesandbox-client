@@ -295,13 +295,11 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   return (
     <div {...dragProps}>
-      {' '}
       <Component
         {...sandboxProps}
         {...interactionProps}
         isScrolling={isScrolling}
       />
-      ;
     </div>
   );
 };
