@@ -3,7 +3,7 @@ import { Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 import { useActions, useAppState } from 'app/overmind';
-import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
+import { SubscriptionType } from 'app/graphql/types';
 import { CreateTeamParams, RegistryForm } from './RegistryForm';
 import { Alert } from '../components/Alert';
 
@@ -57,9 +57,7 @@ export const RegistrySettings = () => {
     };
   } | null = null;
 
-  if (
-    state.activeTeamInfo?.subscription?.type !== WorkspaceSubscriptionTypes.Team
-  ) {
+  if (state.activeTeamInfo?.subscription?.type !== SubscriptionType.TeamPro) {
     alert = {
       message: 'You need a Team Pro subscription to set a custom npm registry.',
       cta: { label: 'Upgrade to Pro', href: '/pro' },
