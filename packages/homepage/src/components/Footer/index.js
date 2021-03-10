@@ -40,6 +40,7 @@ const footerNavElements = [
         link: '/explore',
       },
       {
+        external: true,
         text: 'Search Sandboxes',
         link: '/search',
       },
