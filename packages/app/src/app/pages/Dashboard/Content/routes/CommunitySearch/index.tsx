@@ -61,20 +61,6 @@ export const CommunitySearch = () => {
         <VisuallyHidden>
           <SearchBox />
         </VisuallyHidden>
-        {/* <div style={{ width: 256 }}>
-          <Filters
-            attribute="template"
-            limit={3}
-            refinementList={refinementList}
-            setRefinementList={setRefinementList}
-          />
-          <Filters
-            attribute="npm_dependencies.dependency"
-            limit={3}
-            refinementList={refinementList}
-            setRefinementList={setRefinementList}
-          />
-        </div> */}
         <Results
           refinementList={refinementList}
           setRefinementList={setRefinementList}

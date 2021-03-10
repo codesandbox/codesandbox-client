@@ -190,7 +190,11 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           size={3}
           variant="muted"
           css={css({
-            '> *:not(:last-child):after': { content: `'•'`, marginLeft: 1 },
+            '> *:not(:last-child):after': {
+              content: `'•'`,
+              marginLeft: 1,
+              fontSize: 1,
+            },
           })}
         >
           {footer.map(item => item)}
