@@ -95,8 +95,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   /* Drag logic */
 
-  const location = useLocation();
-
   const [, dragRef, preview] = useDrag({
     item,
     end: (_item, monitor) => {
@@ -111,7 +109,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   /* View logic */
   let viewMode: string;
 
-  if (location.pathname.includes('deleted')) viewMode = 'list';
+  if (page === 'deleted') viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
   const Component: React.FC<SandboxItemComponentProps> =
@@ -159,7 +157,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const history = useHistory();
   const onDoubleClick = event => {
     // can't open deleted items, they don't exist anymore
-    if (location.pathname.includes('deleted')) {
+    if (page === 'deleted') {
       onContextMenu(event);
       return;
     }

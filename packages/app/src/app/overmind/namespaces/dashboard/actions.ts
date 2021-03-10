@@ -15,6 +15,7 @@ import {
 import { getDecoratedCollection } from './utils';
 import { OrderBy, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
+import { json } from 'overmind';
 
 export const internal = internalActions;
 
@@ -1832,5 +1833,21 @@ export const getLikedSandboxes = async ({ state, effects }: Context) => {
     effects.notificationToast.error(
       'There was a problem getting liked Sandboxes'
     );
+  }
+};
+
+export const unlikeSandbox = async (
+  { state, effects }: Context,
+  id: string
+) => {
+  const all = state.dashboard.sandboxes[sandboxesTypes.LIKED];
+  try {
+    state.dashboard.sandboxes[sandboxesTypes.LIKED] = all.filter(
+      sandbox => sandbox.id !== id
+    );
+    await effects.api.unlikeSandbox(id);
+  } catch (e) {
+    state.dashboard.sandboxes[sandboxesTypes.LIKED] = json(all);
+    effects.notificationToast.error('There was a problem removing your like');
   }
 };

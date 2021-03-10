@@ -252,7 +252,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   let viewMode: 'grid' | 'list';
   const location = useLocation();
 
-  if (location.pathname.includes('deleted')) viewMode = 'list';
+  if (page === 'deleted') viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
   const history = useHistory();
