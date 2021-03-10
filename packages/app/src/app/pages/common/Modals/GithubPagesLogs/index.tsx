@@ -10,6 +10,7 @@ export const GithubPagesLogs: FunctionComponent = () => {
   const effects = useEffects();
   const { modalClosed } = useActions();
   const { currentSandbox } = useAppState().editor;
+  const { githubSite } = useAppState().deployment;
   const [logs, setLogs] = useState(['Waiting for build to start']);
 
   useEffect(() => {
@@ -56,6 +57,19 @@ export const GithubPagesLogs: FunctionComponent = () => {
         ))}
       </Element>
       <Stack gap={2} align="center" justify="flex-end">
+        <Button
+          css={css({
+            width: 'auto',
+          })}
+          onClick={() => {
+            window.open(
+              `https://${githubSite.ghLogin}.github.io/${githubSite.name}/`,
+              '_blank'
+            );
+          }}
+        >
+          Open Github Site
+        </Button>
         <Button
           css={css({
             width: 'auto',

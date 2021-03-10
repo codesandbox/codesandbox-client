@@ -38,6 +38,12 @@ export const Netlify: FunctionComponent = () => {
   if (template.staticDeployment === false) {
     return null;
   }
+
+  const deploy = () => {
+    track('Deploy Clicked', { provider: 'netlify' });
+    deployWithNetlify();
+    modalOpened({ modal: 'netlifyLogs' });
+  };
   return (
     <Integration icon={NetlifyIcon} title="Netlify">
       <Element marginBottom={site ? 6 : 0} marginX={2}>
@@ -48,14 +54,7 @@ export const Netlify: FunctionComponent = () => {
           </Link>
         </Text>
 
-        <Button
-          disabled={deploying || building}
-          onClick={() => {
-            track('Deploy Clicked', { provider: 'netlify' });
-
-            deployWithNetlify();
-          }}
-        >
+        <Button disabled={deploying || building} onClick={deploy}>
           Deploy to Netlify
         </Button>
       </Element>

@@ -9,6 +9,7 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import getTemplate from '@codesandbox/common/lib/templates';
 import React, { FunctionComponent, useEffect } from 'react';
 
@@ -44,6 +45,12 @@ export const GithubPages: FunctionComponent = () => {
     return null;
   }
 
+  const deploy = () => {
+    track('Deploy Clicked', { provider: 'github' });
+    deployWithGitHubPages();
+    modalOpened({ modal: 'githubPagesLogs' });
+  };
+
   return (
     <Integration icon={GitHubIcon} title="GitHub Pages">
       {github ? (
@@ -56,7 +63,7 @@ export const GithubPages: FunctionComponent = () => {
               </Link>
             </Text>
 
-            <Button disabled={deploying} onClick={deployWithGitHubPages}>
+            <Button disabled={deploying} onClick={deploy}>
               Deploy to GitHub
             </Button>
             <Info template={template.name} path={`csb-${currentSandbox.id}`} />
@@ -88,6 +95,19 @@ export const GithubPages: FunctionComponent = () => {
                   <FileIcon />
                 </Element>{' '}
                 View Logs
+              </ListAction>
+              <ListAction
+                onClick={() =>
+                  window.open(
+                    `https://github.com/${githubSite.ghLogin}/${githubSite.name}/`,
+                    '_blank'
+                  )
+                }
+              >
+                <Element marginRight={2}>
+                  <GitHubIcon />
+                </Element>{' '}
+                Visit Github Repository
               </ListAction>
             </List>
           )}
