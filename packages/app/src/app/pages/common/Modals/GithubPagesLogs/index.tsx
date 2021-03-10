@@ -61,6 +61,15 @@ export const GithubPagesLogs: FunctionComponent = () => {
           css={css({
             width: 'auto',
           })}
+          variant="link"
+          onClick={modalClosed}
+        >
+          Close
+        </Button>
+        <Button
+          css={css({
+            width: 'auto',
+          })}
           onClick={() => {
             window.open(
               `https://${githubSite.ghLogin}.github.io/${githubSite.name}/`,
@@ -69,15 +78,6 @@ export const GithubPagesLogs: FunctionComponent = () => {
           }}
         >
           Open Github Site
-        </Button>
-        <Button
-          css={css({
-            width: 'auto',
-          })}
-          variant="link"
-          onClick={modalClosed}
-        >
-          Close
         </Button>
       </Stack>
     </Alert>

@@ -11,6 +11,9 @@ export const NetlifyLogs: FunctionComponent = () => {
   const { modalClosed } = useActions();
   const {
     editor: { currentSandbox },
+    deployment: {
+      netlify: { site },
+    },
   } = useAppState();
   const [logs, setLogs] = useState(['Waiting for build to start']);
 
@@ -66,6 +69,16 @@ export const NetlifyLogs: FunctionComponent = () => {
           onClick={modalClosed}
         >
           Close
+        </Button>
+        <Button
+          css={css({
+            width: 'auto',
+          })}
+          onClick={() => {
+            window.open(site.url, '_blank');
+          }}
+        >
+          Open Netlify Site
         </Button>
       </Stack>
     </Alert>
