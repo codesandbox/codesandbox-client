@@ -1841,6 +1841,7 @@ export const unlikeSandbox = async (
   id: string
 ) => {
   const all = state.dashboard.sandboxes[sandboxesTypes.LIKED];
+  if (!all) return;
   try {
     state.dashboard.sandboxes[sandboxesTypes.LIKED] = all.filter(
       sandbox => sandbox.id !== id
