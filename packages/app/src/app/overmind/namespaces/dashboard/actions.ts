@@ -1,4 +1,5 @@
 import { compareDesc, parseISO } from 'date-fns';
+import { json } from 'overmind';
 import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
@@ -15,7 +16,6 @@ import {
 import { getDecoratedCollection } from './utils';
 import { OrderBy, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
-import { json } from 'overmind';
 
 export const internal = internalActions;
 
