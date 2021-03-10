@@ -11,10 +11,11 @@ import { TemplateFilter } from 'app/pages/Dashboard/Content/utils';
 
 type Props = {
   possibleTemplates?: TemplateFilter[];
+  CustomFilters?: React.ReactElement;
 };
 
 export const FilterOptions: FunctionComponent<Props> = React.memo(
-  ({ possibleTemplates = [] }) => {
+  ({ possibleTemplates = [], CustomFilters }) => {
     const {
       actions: {
         dashboard: {
@@ -43,14 +44,18 @@ export const FilterOptions: FunctionComponent<Props> = React.memo(
 
     return (
       <Menu>
-          <Menu.Button>
-            <Text
-              variant={blacklistedTemplates.length ? 'active' : 'muted'}
-              paddingRight={2}
-            >
-              Filters
-            </Text>
-          </Menu.Button>
+        <Menu.Button>
+          <Text
+            variant={blacklistedTemplates.length ? 'active' : 'muted'}
+            paddingRight={2}
+          >
+            Filters
+          </Text>
+        </Menu.Button>
+
+        {CustomFilters ? (
+          <Menu.List>{CustomFilters}</Menu.List>
+        ) : (
           <Menu.List>
             {templates ? (
               orderBy(possibleTemplates, 'niceName').map(
@@ -108,7 +113,8 @@ export const FilterOptions: FunctionComponent<Props> = React.memo(
               </Menu.Item>
             )}
           </Menu.List>
-        </Menu>
+        )}
+      </Menu>
     );
   }
 );
