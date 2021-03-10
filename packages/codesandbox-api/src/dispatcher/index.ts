@@ -29,12 +29,14 @@ function checkIsStandalone() {
 // Whether the tab has a connection with the editor
 export const isStandalone = checkIsStandalone();
 
-let iframeHandshakeDone: () => void;
+let resolveIframeHandshake: () => void;
+
+let iframeHandShakeDone = false;
 /**
  * Resolves when the handshake between the frame and the editor has succeeded
  */
 export const iframeHandshake = new Promise(resolve => {
-  iframeHandshakeDone = resolve;
+  resolveIframeHandshake = resolve as () => void;
 });
 
 // Field used by a "child" frame to determine its parent origin
@@ -46,8 +48,9 @@ const parentOriginListener = (e: MessageEvent) => {
     parentOrigin = e.data.origin;
     parentId = e.data.id ?? null;
 
-    if (iframeHandshakeDone) {
-      iframeHandshakeDone();
+    if (!iframeHandShakeDone) {
+      resolveIframeHandshake();
+      iframeHandShakeDone = true;
     }
     self.removeEventListener('message', parentOriginListener);
   }
@@ -134,6 +137,17 @@ function notifyFrames(message: object) {
 }
 
 function eventListener(e: MessageEvent) {
+  if (e.data.type === 'initialized') {
+    // iframe handshake done for parent when initialized is received
+    // only the child needs to wait for the handshake (receiving an id)
+    // before receiving messages
+    iframeHandShakeDone = true;
+  }
+
+  if (!iframeHandShakeDone) {
+    return;
+  }
+
   const { data } = e;
 
   if (
@@ -164,22 +178,9 @@ export function registerFrame(frame: Window, origin: string, bundlerId?: number)
 }
 
 if (typeof window !== 'undefined') {
-  if (isStandalone) {
-    window.addEventListener('message', eventListener);
-  } else {
-    iframeHandshake.then(() => {
-      // We now start listening so we can let our listeners know
-      window.addEventListener('message', eventListener);
-    });
-  }
+  window.addEventListener('message', eventListener);
 }
 
 export function reattach() {
-  if (isStandalone) {
-    window.addEventListener('message', eventListener);
-  } else {
-    iframeHandshake.then(() => {
-      window.addEventListener('message', eventListener);
-    });
-  }
+  window.addEventListener('message', eventListener);
 }
