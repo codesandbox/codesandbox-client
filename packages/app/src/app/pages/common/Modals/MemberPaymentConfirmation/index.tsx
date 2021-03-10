@@ -1,7 +1,7 @@
 import React from 'react';
 import { Checkbox, Text, Button, Stack } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import { SubscriptionBillingInterval } from 'app/graphql/types';
+import { SubscriptionInterval } from 'app/graphql/types';
 import { Alert } from '../Common/Alert';
 
 export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
@@ -17,9 +17,9 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
   const value =
     subscription.currency +
     ' ' +
-    (subscription.unitPrice / 100).toFixed(2) +
+    ((subscription.unitPrice || 0) / 100).toFixed(2) +
     '/' +
-    subscription.billingInterval.toLowerCase() +
+    subscription.billingInterval?.toLowerCase() +
     ' (excl. tax)';
 
   return (
@@ -38,8 +38,7 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
               </Text>{' '}
               for 1 seat will be added to the invoice
             </Text>
-            {subscription.billingInterval ===
-              SubscriptionBillingInterval.Yearly && (
+            {subscription.billingInterval === SubscriptionInterval.Yearly && (
               <Text variant="muted">
                 {' '}
                 (prorated for the days remaining in the billing cycle)

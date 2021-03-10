@@ -113,6 +113,44 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
     );
   }
 
+  if (page === 'shared') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Stack
+          direction="vertical"
+          align="center"
+          gap={8}
+          css={{ width: 500, height: '100vh', userSelect: 'none' }}
+        >
+          <Stack direction="vertical" align="center" gap={1}>
+            <Text variant="muted" align="center">
+              Uh oh, you have not had any sandboxes shared with you yet.
+            </Text>
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  if (page === 'liked') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Stack
+          direction="vertical"
+          align="center"
+          gap={8}
+          css={{ width: 500, height: '100vh', userSelect: 'none' }}
+        >
+          <Stack direction="vertical" align="center" gap={1}>
+            <Text variant="muted" align="center">
+              Uh oh, you haven’t liked any sandboxes yet!
+            </Text>
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  }
+
   return (
     <Stack justify="center" align="center" marginTop={120}>
       <Stack

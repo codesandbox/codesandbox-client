@@ -6,6 +6,8 @@ import {
   RecentlyDeletedTeamSandboxesQuery,
   RecentlyDeletedTeamSandboxesQueryVariables,
   SandboxesByPathQuery,
+  LikedSandboxesQuery,
+  LikedSandboxesQueryVariables,
   SandboxesByPathQueryVariables,
   OwnedTemplatesQuery,
   OwnedTemplatesQueryVariables,
@@ -39,6 +41,8 @@ import {
   GetPrivateNpmRegistryQueryVariables,
   _AlwaysOnTeamSandboxesQuery,
   _AlwaysOnTeamSandboxesQueryVariables,
+  SharedWithMeSandboxesQuery,
+  SharedWithMeSandboxesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -309,6 +313,34 @@ export const recentlyAccessedSandboxes: Query<
   query RecentlyAccessedSandboxes($limit: Int!, $teamId: UUID4) {
     me {
       recentlyAccessedSandboxes(limit: $limit, teamId: $teamId) {
+        ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const sharedWithmeSandboxes: Query<
+  SharedWithMeSandboxesQuery,
+  SharedWithMeSandboxesQueryVariables
+> = gql`
+  query SharedWithMeSandboxes {
+    me {
+      collaboratorSandboxes {
+        ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const likedSandboxes: Query<
+  LikedSandboxesQuery,
+  LikedSandboxesQueryVariables
+> = gql`
+  query LikedSandboxes {
+    me {
+      likedSandboxes {
         ...sandboxFragmentDashboard
       }
     }

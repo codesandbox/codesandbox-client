@@ -1,7 +1,7 @@
 import { format, subDays } from 'date-fns';
 import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-import { Step, Plan, PaymentSummary } from './types';
+import { Step, Plan, PaymentSummary, PaymentPreview } from './types';
 
 export const pageMounted = withLoadApp();
 
@@ -42,8 +42,7 @@ export const previewUpdateSubscriptionBillingInterval = async (
       }
     );
 
-    state.pro.paymentPreview =
-      previewSummary.previewUpdateSubscriptionBillingInterval;
+    state.pro.paymentPreview = previewSummary.previewUpdateSubscriptionBillingInterval as PaymentPreview;
     state.pro.isBillingAmountLoaded = true;
   } catch {
     effects.notificationToast.error(

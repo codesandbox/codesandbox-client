@@ -1,7 +1,4 @@
-import {
-  WorkspaceSubscriptionTypes,
-  SubscriptionBillingInterval,
-} from 'app/graphql/types';
+import { SubscriptionType, SubscriptionInterval } from 'app/graphql/types';
 
 export enum Step {
   WorkspacePlanSelection = 'WorkspacePlanSelection',
@@ -12,8 +9,8 @@ export enum Step {
 export type Plan = {
   id: string;
   name: string;
-  type: WorkspaceSubscriptionTypes;
-  billingInterval: SubscriptionBillingInterval;
+  type: SubscriptionType;
+  billingInterval: SubscriptionInterval;
   unit: number;
   multiplier: number;
   currency: string;
