@@ -139,8 +139,8 @@ function notifyFrames(message: object) {
 function eventListener(e: MessageEvent) {
   if (e.data.type === 'initialized' || isStandalone) {
     // iframe handshake is auto-resolved in the parent, only the child needs to wait for it
-    // we detect the parent either by the initialized message which only the parent receives
-    // or by the isStandalone flag which works for codesandbox.io and when sandpack is not inside an iframe
+    // we detect the parent either by the "initialized" message which only the parent receives
+    // or by the "isStandalone" flag which works for codesandbox.io and when sandpack is not inside an iframe
     iframeHandShakeDone = true;
   }
 
