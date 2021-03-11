@@ -31,7 +31,7 @@ export const isStandalone = checkIsStandalone();
 
 let resolveIframeHandshake: () => void;
 
-let iframeHandShakeDone = false;
+let iframeHandshakeDone = false;
 /**
  * Resolves when the handshake between the frame and the editor has succeeded
  */
@@ -48,9 +48,9 @@ const parentOriginListener = (e: MessageEvent) => {
     parentOrigin = e.data.origin;
     parentId = e.data.id ?? null;
 
-    if (!iframeHandShakeDone) {
+    if (!iframeHandshakeDone) {
       resolveIframeHandshake();
-      iframeHandShakeDone = true;
+      iframeHandshakeDone = true;
     }
     self.removeEventListener('message', parentOriginListener);
   }
@@ -141,10 +141,10 @@ function eventListener(e: MessageEvent) {
     // iframe handshake is auto-resolved in the parent, only the child needs to wait for it
     // we detect the parent either by the "initialized" message which only the parent receives
     // or by the "isStandalone" flag which works for codesandbox.io and when sandpack is not inside an iframe
-    iframeHandShakeDone = true;
+    iframeHandshakeDone = true;
   }
 
-  if (!iframeHandShakeDone) {
+  if (!iframeHandshakeDone) {
     return;
   }
 
