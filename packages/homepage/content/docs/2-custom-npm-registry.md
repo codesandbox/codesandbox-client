@@ -25,6 +25,16 @@ the registry host with the GitHub Registry. When choosing npm, we'll prefill the
 host with the npm registry url. When choosing `Custom` you have the option to
 define the npm registry host yourself.
 
+### Auth Type
+
+Npm supports two types of authentication: `Basic` and `Bearer`. More recent
+implementations use `Bearer` by default. If your local configuration of the
+private registry involves setting the auth token as parameter on the registry
+url (like `//registry.npmjs.org/:_authToken={token}`), this should be `Bearer`.
+If you're using a registry like Artifactory and configure your npm registry
+using `_auth={token}` in `.npmrc`, you should use `Basic` auth and use the token
+from `_auth` as auth token.
+
 ### Auth Token
 
 This is the token that we'll use to connect to your registry. This token is
