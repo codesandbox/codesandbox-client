@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useAppState } from 'app/overmind';
 import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -212,8 +212,10 @@ export const VariableGrid = ({
 }: VariableGridProps) => {
   const { dashboard } = useAppState();
 
+  const location = useLocation();
+
   let viewMode: 'grid' | 'list';
-  if (page === 'deleted') viewMode = 'list';
+  if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
