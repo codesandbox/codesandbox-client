@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 // header
 
@@ -32,5 +32,29 @@ export const PageSubtitle = styled.h2`
 
   @media screen and (max-width: 768px) {
     font-size: 1rem;
+  }
+`;
+
+export const Podcasts = styled.main`
+  margin-top: 80px;
+  margin-bottom: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  a:not(:last-child) {
+    margin-right: 36px;
+  }
+
+  img {
+    filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.24)),
+      drop-shadow(0px 8px 4px rgba(0, 0, 0, 0.12));
+    border-radius: 8px;
+    transition: transform 100ms ease;
+    width: 415px;
+
+    :hover {
+      transform: scale(1.03);
+    }
   }
 `;

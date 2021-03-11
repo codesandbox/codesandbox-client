@@ -21,9 +21,7 @@ const getBlogNodeInfo = ({
   photo,
 });
 const getDocsSlug = ({ node: { fileAbsolutePath } }) => {
-  const fileName = getRelativePath(fileAbsolutePath)
-    .split('/')
-    .reverse()[0];
+  const fileName = getRelativePath(fileAbsolutePath).split('/').reverse()[0];
 
   return fileName.split('.md')[0].split('-')[1];
 };
@@ -174,6 +172,10 @@ exports.createPages = async ({ graphql, actions }) => {
   const oldPrivacyTemplate = resolve(__dirname, './src/templates/privacy.js');
 
   const featureTemplate = resolve(__dirname, './src/templates/feature.js');
+  const episodeTemplate = resolve(
+    __dirname,
+    './src/templates/podcast-episode.js'
+  );
   // Redirect /index.html to root.
   createRedirect({
     fromPath: '/index.html',
@@ -272,6 +274,62 @@ exports.createPages = async ({ graphql, actions }) => {
       createPage({
         path: edge.node.frontmatter.slug,
         component: featureTemplate,
+        context: { id: edge.node.id },
+      });
+    });
+  }
+
+  // Podcasts
+
+  const version1 = await graphql(`
+    {
+      allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/podcasts/version-one/" } }
+      ) {
+        edges {
+          node {
+            id
+            frontmatter {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (version1.data) {
+    version1.data.allMarkdownRemark.edges.forEach(edge => {
+      createPage({
+        path: `/podcasts/version-one/` + edge.node.frontmatter.slug,
+        component: episodeTemplate,
+        context: { id: edge.node.id },
+      });
+    });
+  }
+
+  const csb = await graphql(`
+    {
+      allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/podcasts/codesandbox-podcast/" }
+        }
+      ) {
+        edges {
+          node {
+            id
+            frontmatter {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (csb.data) {
+    csb.data.allMarkdownRemark.edges.forEach(edge => {
+      createPage({
+        path: `/podcasts/codesandbox-podcast/` + edge.node.frontmatter.slug,
+        component: episodeTemplate,
         context: { id: edge.node.id },
       });
     });
