@@ -8,55 +8,33 @@ import PodcastLinks from '../components/PodcastLinks';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import { Article, Header, PostTitle, PostContainer } from './_post.elements';
+import {
+  AirDate,
+  Audio,
+  Description,
+  EpisodeNumber,
+  GuestInfo,
+  IMG,
+} from './_episode.elements';
 
 export default ({
   data: {
-    episode: {
-      frontmatter: {
-        image: { publicURL },
-        podcastName,
-        title,
-        guestName,
-        guestTwitter,
-        appleLink,
-        googleLink,
-        spotify,
-        audio,
-        airDate,
-        description,
-        episodeNumber,
-      },
-      html,
-    },
+    episode: { frontmatter: data, html },
   },
 }) => (
-  <Layout css={``}>
+  <Layout>
     <Article>
       <TitleAndMetaTags
-        image={publicURL}
-        title={`${podcastName} - ${title}- CodeSandbox`}
+        image={data.publicURL}
+        title={`${data.podcastName} - ${data.title}- CodeSandbox`}
       />
 
       <Header>
-        <Link to="podcasts">{podcastName}</Link>
+        <Link to="podcasts">{data.podcastName}</Link>
 
-        <PostTitle>{title}</PostTitle>
-        <div
-          css={`
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          `}
-        >
-          <img
-            alt={title}
-            src={publicURL}
-            css={`
-              width: 64px;
-              border-radius: 2px;
-              margin-right: 16px;
-            `}
-          />
+        <PostTitle>{data.title}</PostTitle>
+        <GuestInfo>
+          <IMG alt={data.title} src={data.image.publicURL} />
           <div
             css={`
               text-align: left;
@@ -68,10 +46,10 @@ export default ({
                 font-weight: bold;
               `}
             >
-              {guestName}
+              {data.guestName}
             </span>
             <a
-              href={`https://twitter.com/${guestTwitter}`}
+              href={`https://twitter.com/${data.guestTwitter}`}
               target="_blank"
               rel="noreferrer"
               css={`
@@ -79,10 +57,10 @@ export default ({
                 text-decoration: none;
               `}
             >
-              @{guestTwitter}
+              @{data.guestTwitter}
             </a>
           </div>
-        </div>
+        </GuestInfo>
       </Header>
 
       <PageContainer width={640}>
@@ -91,66 +69,31 @@ export default ({
             padding-bottom: 34px;
           `}
         >
-          <h4
-            css={`
-              font-weight: 900;
-              font-size: 33px;
-              line-height: 44px;
-              color: #ffffff;
-              margin-bottom: 16px;
-            `}
-          >
-            Episode 0{episodeNumber}
-          </h4>
-          <time
-            css={`
-              font-weight: 500;
-              font-size: 16px;
-              line-height: 19px;
-              color: #757575;
-            `}
-          >
-            {airDate}
-          </time>
+          <EpisodeNumber>Episode 0{data.episodeNumber}</EpisodeNumber>
+          <AirDate>{data.airDate}</AirDate>
         </section>
-        <span
-          css={`
-            font-size: 1.1rem;
-            line-height: 1.6rem;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.75);
-            padding: 0;
-          `}
-        >
-          {description.split(`\n`).map(des => (
+        <Description>
+          {data.description.split(`\n`).map(des => (
             <span key={des}>
               {des}
               <br />
               <br />
             </span>
           ))}
-        </span>
+        </Description>
 
         <PostContainer dangerouslySetInnerHTML={{ __html: html }} />
 
         <PodcastLinks
-          appleLink={appleLink}
-          googleLink={googleLink}
-          spotify={spotify}
-          name={podcastName}
+          appleLink={data.appleLink}
+          googleLink={data.googleLink}
+          spotify={data.spotify}
+          name={data.podcastName}
         />
       </PageContainer>
-      <iframe
-        css={`
-          position: fixed;
-          bottom: 0;
-          z-index: 999;
-          left: 0;
-          background-color: rgb(242, 242, 242);
-          max-width: 100vw;
-        `}
-        title={title}
-        src={audio}
+      <Audio
+        title={data.title}
+        src={data.audio}
         width="100%"
         height="155"
         frameBorder="0"

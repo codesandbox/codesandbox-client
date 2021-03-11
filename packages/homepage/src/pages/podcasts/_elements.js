@@ -85,3 +85,40 @@ export const EpisodeNumber = styled.span`
   padding-bottom: 4px;
   color: #999999;
 `;
+
+export const Episode = styled.li`
+  display: flex;
+  margin-bottom: 40px;
+  align-items: center;
+
+  img {
+    width: 96px;
+    border-radius: 2px;
+    margin-right: 40px;
+
+    @media screen and (max-width: 768px) {
+      display: none;
+    }
+  }
+`;
+
+export const Description = styled.span`
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  padding-top: 8px;
+  font-size: 19px;
+  line-height: 23px;
+
+  color: #757575;
+`;
+
+export const EpisodeTitle = styled.span`
+  font-weight: bold;
+  font-size: 19px;
+  line-height: 23px;
+
+  color: #ffffff;
+`;

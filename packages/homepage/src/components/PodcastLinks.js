@@ -15,6 +15,13 @@ const Links = styled.section`
     grid-template-columns: 1fr 1fr;
     justify-content: center;
     grid-gap: 24px;
+    width: 80%;
+  }
+
+  @media screen and (max-width: 360px) {
+    grid-template-columns: 1fr;
+    justify-content: center;
+    width: 80%;
   }
 
   a {
