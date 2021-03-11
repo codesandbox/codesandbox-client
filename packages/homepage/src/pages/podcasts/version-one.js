@@ -77,7 +77,7 @@ const VersionOne = ({
                     color: #999999;
                   `}
                 >
-                  Episode {frontmatter.number}
+                  Episode 0{frontmatter.number}
                 </span>
                 <span
                   css={`

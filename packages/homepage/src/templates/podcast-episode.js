@@ -100,7 +100,7 @@ export default ({
               margin-bottom: 16px;
             `}
           >
-            Episode {episodeNumber}
+            Episode 0{episodeNumber}
           </h4>
           <time
             css={`
