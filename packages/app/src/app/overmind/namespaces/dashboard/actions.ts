@@ -1,4 +1,5 @@
 import { compareDesc, parseISO } from 'date-fns';
+import { json } from 'overmind';
 import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
@@ -217,11 +218,11 @@ export const inviteToTeam = async (
   { state, actions, effects }: Context,
   {
     value,
-    authorization,
+    authorization = null,
     confirm = false,
   }: {
     value: string;
-    authorization?: TeamMemberAuthorization;
+    authorization?: TeamMemberAuthorization | null;
     confirm?: boolean;
   }
 ) => {
@@ -1027,6 +1028,12 @@ export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
     case sandboxesTypes.ALWAYS_ON:
       dashboard.getAlwaysOnSandboxes();
       break;
+    case sandboxesTypes.SHARED:
+      dashboard.getSharedSandboxes();
+      break;
+    case sandboxesTypes.LIKED:
+      dashboard.getLikedSandboxes();
+      break;
 
     default:
       break;
@@ -1792,5 +1799,56 @@ export const deleteAccount = async ({ state, effects }: Context) => {
     effects.notificationToast.error(
       'There was a problem requesting your account deletion. Please email us at hello@codesandbox.io'
     );
+  }
+};
+
+export const getSharedSandboxes = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    const data = await effects.gql.queries.sharedWithmeSandboxes({});
+
+    if (!data.me?.collaboratorSandboxes) {
+      return;
+    }
+
+    dashboard.sandboxes[sandboxesTypes.SHARED] = data.me?.collaboratorSandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting Sandboxes shared with you'
+    );
+  }
+};
+
+export const getLikedSandboxes = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    const data = await effects.gql.queries.likedSandboxes({});
+
+    if (!data.me?.likedSandboxes) {
+      return;
+    }
+
+    dashboard.sandboxes[sandboxesTypes.LIKED] = data.me?.likedSandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting liked Sandboxes'
+    );
+  }
+};
+
+export const unlikeSandbox = async (
+  { state, effects }: Context,
+  id: string
+) => {
+  const all = state.dashboard.sandboxes[sandboxesTypes.LIKED];
+  if (!all) return;
+  try {
+    state.dashboard.sandboxes[sandboxesTypes.LIKED] = all.filter(
+      sandbox => sandbox.id !== id
+    );
+    await effects.api.unlikeSandbox(id);
+  } catch (e) {
+    state.dashboard.sandboxes[sandboxesTypes.LIKED] = json(all);
+    effects.notificationToast.error('There was a problem removing your like');
   }
 };
