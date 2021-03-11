@@ -6,9 +6,19 @@ import PageContainer from '../../components/PageContainer';
 
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
-import { Header, PageTitle, PageSubtitle, Episodes } from './_elements';
+import {
+  Header,
+  PageTitle,
+  PageSubtitle,
+  Episodes,
+  EpisodeNumber,
+} from './_elements';
 
 import version1 from '../../assets/images/podcasts/version1.png';
+import allPodcasts from '../../../content/podcasts/info';
+import PodcastLinks from '../../components/PodcastLinks';
+
+const info = allPodcasts.find(podcast => podcast.slug === 'version-one');
 
 const VersionOne = ({
   data: {
@@ -18,7 +28,7 @@ const VersionOne = ({
   <Layout>
     <PageContainer>
       <TitleAndMetaTags
-        description="Level up by listening to podcasts from the best in the industry"
+        description={info.description}
         title="Version One Podcast - CodeSandbox"
       />
 
@@ -28,30 +38,28 @@ const VersionOne = ({
             width: 270px;
           `}
           src={version1}
-          alt="Version One Podcast"
+          alt={info.name}
         />
         <PageTitle
           css={`
             font-size: 48px;
           `}
         >
-          Version One Podcast
+          {info.name} Podcast
         </PageTitle>
 
-        <PageSubtitle>
-          Level up by listening to podcasts from the best in the industry
-        </PageSubtitle>
+        <PageSubtitle>{info.description}</PageSubtitle>
       </Header>
       <Episodes>
-        {episodes.map(({ node: { id, frontmatter } }, i) => (
+        {episodes.map(({ node: { id, frontmatter } }) => (
           <Link
             css={`
               text-decoration: none;
             `}
+            key={id}
             to={`podcasts/version-one/${frontmatter.slug}`}
           >
             <li
-              key={id}
               css={`
                 display: flex;
                 margin-bottom: 40px;
@@ -62,23 +70,18 @@ const VersionOne = ({
                   width: 96px;
                   border-radius: 2px;
                   margin-right: 40px;
+
+                  @media screen and (max-width: 768px) {
+                    display: none;
+                  }
                 `}
                 src={frontmatter.image.publicURL}
                 alt={frontmatter.title}
               />
               <section>
-                <span
-                  css={`
-                    font-weight: bold;
-                    font-size: 16px;
-                    line-height: 19px;
-                    display: block;
-                    padding-bottom: 4px;
-                    color: #999999;
-                  `}
-                >
-                  Episode 0{frontmatter.number}
-                </span>
+                <EpisodeNumber>
+                  Episode 0{frontmatter.episodeNumber}
+                </EpisodeNumber>
                 <span
                   css={`
                     font-weight: bold;
@@ -111,6 +114,12 @@ const VersionOne = ({
           </Link>
         ))}
       </Episodes>
+      <PodcastLinks
+        appleLink={info.links.apple}
+        googleLink={info.links.google}
+        spotify={info.links.spotify}
+        name={info.name}
+      />
     </PageContainer>
   </Layout>
 );
@@ -126,6 +135,7 @@ export const query = graphql`
           id
           frontmatter {
             description
+            episodeNumber
             title
             slug
             image {

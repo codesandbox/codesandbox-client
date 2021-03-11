@@ -47,6 +47,14 @@ export const Podcasts = styled.main`
     margin-right: 36px;
   }
 
+  @media screen and (max-width: 768px) {
+    display: block;
+
+    > a img {
+      margin-bottom: 40px;
+    }
+  }
+
   img {
     filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.24)),
       drop-shadow(0px 8px 4px rgba(0, 0, 0, 0.12));
@@ -63,5 +71,17 @@ export const Podcasts = styled.main`
 export const Episodes = styled.ul`
   margin: 0;
   list-style: none;
+  width: 640px;
+  margin: auto;
+  max-width: 80%;
   margin-bottom: 200px;
+`;
+
+export const EpisodeNumber = styled.span`
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 19px;
+  display: block;
+  padding-bottom: 4px;
+  color: #999999;
 `;
