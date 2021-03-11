@@ -198,19 +198,9 @@ export const RegistryForm = ({
                 </div>
               )}
 
-              <CustomFormField label="Auth Token">
-                <Input
-                  value={authKey}
-                  required
-                  onChange={e => setAuthKey(e.target.value)}
-                  disabled={disabled}
-                  type="password"
-                />
-              </CustomFormField>
-
               {registryType === RegistryType.Custom && (
                 <div>
-                  <CustomFormField label="Authentication Type">
+                  <CustomFormField label="Auth Type">
                     <Select
                       value={authenticationType}
                       onChange={e => {
@@ -231,6 +221,16 @@ export const RegistryForm = ({
                   </Text>
                 </div>
               )}
+
+              <CustomFormField label="Auth Token">
+                <Input
+                  value={authKey}
+                  required
+                  onChange={e => setAuthKey(e.target.value)}
+                  disabled={disabled}
+                  type="password"
+                />
+              </CustomFormField>
             </Stack>
             <Stack
               align="center"
