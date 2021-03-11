@@ -13,6 +13,7 @@ export const AirDate = styled.time`
   font-size: 16px;
   line-height: 19px;
   color: #757575;
+  display: block;
 `;
 
 export const IMG = styled.img`

@@ -33,6 +33,7 @@ const VersionOne = ({
       <TitleAndMetaTags
         description={info.description}
         title="Version One Podcast - CodeSandbox"
+        image={version1}
       />
 
       <Header>
