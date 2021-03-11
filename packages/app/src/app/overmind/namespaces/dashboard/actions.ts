@@ -1,4 +1,5 @@
 import { compareDesc, parseISO } from 'date-fns';
+import { json } from 'overmind';
 import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
@@ -1832,5 +1833,22 @@ export const getLikedSandboxes = async ({ state, effects }: Context) => {
     effects.notificationToast.error(
       'There was a problem getting liked Sandboxes'
     );
+  }
+};
+
+export const unlikeSandbox = async (
+  { state, effects }: Context,
+  id: string
+) => {
+  const all = state.dashboard.sandboxes[sandboxesTypes.LIKED];
+  if (!all) return;
+  try {
+    state.dashboard.sandboxes[sandboxesTypes.LIKED] = all.filter(
+      sandbox => sandbox.id !== id
+    );
+    await effects.api.unlikeSandbox(id);
+  } catch (e) {
+    state.dashboard.sandboxes[sandboxesTypes.LIKED] = json(all);
+    effects.notificationToast.error('There was a problem removing your like');
   }
 };

@@ -408,6 +408,15 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           )}
         </>
       )}
+      {!hasAccess && !isTemplate && location.pathname.includes('liked') && (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.unlikeSandbox(sandbox.id);
+          }}
+        >
+          Unlike Sandbox
+        </MenuItem>
+      )}
     </Menu.ContextMenu>
   );
 };
