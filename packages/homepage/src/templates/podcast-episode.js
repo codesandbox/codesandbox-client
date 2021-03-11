@@ -1,22 +1,13 @@
-import { format } from 'date-fns';
 import { graphql, Link } from 'gatsby';
 import React from 'react';
 
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
-import { AuthorImage } from '../components/PostElements';
+
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import { PageTitle } from '../pages/podcasts/_elements';
 
-import {
-  Article,
-  Header,
-  PostTitle,
-  AuthorContainer,
-  Image,
-  MetaData,
-  PostContainer,
-} from './_post.elements';
+import { Article, Header, PostTitle, PostContainer } from './_post.elements';
 
 export default ({
   data: {
@@ -25,9 +16,15 @@ export default ({
         image: { publicURL },
         podcastName,
         title,
-        airDate,
+        guestName,
+        guestTwitter,
+        appleLink,
+        googleLink,
+        spotify,
         audio,
-        slug,
+        airDate,
+        description,
+        episodeNumber,
       },
       html,
     },
@@ -41,7 +38,7 @@ export default ({
       />
 
       <Header>
-        <Link to="blog">CodeSandbox Podcast</Link>
+        <Link to="podcasts">{podcastName}</Link>
 
         <PostTitle>{title}</PostTitle>
         <div
@@ -71,21 +68,69 @@ export default ({
                 font-weight: bold;
               `}
             >
-              Guillermo Rauch
+              {guestName}
             </span>
-            <span
+            <a
+              href={`https://twitter.com/${guestTwitter}`}
+              target="_blank"
+              rel="noreferrer"
               css={`
                 color: #757575;
+                text-decoration: none;
               `}
             >
-              {' '}
-              @rauchg
-            </span>
+              @{guestTwitter}
+            </a>
           </div>
         </div>
       </Header>
 
       <PageContainer width={768}>
+        <section
+          css={`
+            padding-bottom: 34px;
+          `}
+        >
+          <h4
+            css={`
+              font-weight: 900;
+              font-size: 33px;
+              line-height: 44px;
+              color: #ffffff;
+              margin-bottom: 16px;
+            `}
+          >
+            Episode {episodeNumber}
+          </h4>
+          <time
+            css={`
+              font-weight: 500;
+              font-size: 16px;
+              line-height: 19px;
+              color: #757575;
+            `}
+          >
+            {airDate}
+          </time>
+        </section>
+        <span
+          css={`
+            font-size: 1.1rem;
+            line-height: 1.6rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.75);
+            padding: 0;
+          `}
+        >
+          {description.split(`\n`).map(des => (
+            <>
+              {des}
+              <br />
+              <br />
+            </>
+          ))}
+        </span>
+
         <PostContainer dangerouslySetInnerHTML={{ __html: html }} />
         <div
           css={`
@@ -130,15 +175,15 @@ export default ({
               }
             `}
           >
-            <a href="#" target="_blank">
+            <a href={appleLink} target="_blank" rel="noreferrer">
               <Apple />
               Apple Podcasts
             </a>
-            <a href="#" target="_blank">
+            <a href={googleLink} target="_blank" rel="noreferrer">
               <Google />
               Google Podcasts
             </a>
-            <a href="#" target="_blank">
+            <a href={spotify} target="_blank" rel="noreferrer">
               <Spotify /> Spotify
             </a>
           </section>
@@ -176,7 +221,11 @@ export const pageQuery = graphql`
         slug
         appleLink
         googleLink
+        description
+        episodeNumber
         spotify
+        guestName
+        guestTwitter
         image {
           publicURL
         }

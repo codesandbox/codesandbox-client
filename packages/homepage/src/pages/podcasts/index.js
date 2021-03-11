@@ -11,7 +11,7 @@ import { Header, PageTitle, PageSubtitle, Podcasts } from './_elements';
 import version1 from '../../assets/images/podcasts/version1.png';
 import csb from '../../assets/images/podcasts/csb.png';
 
-const Blog = () => (
+const PodcastsPage = () => (
   <Layout>
     <PageContainer>
       <TitleAndMetaTags
@@ -50,4 +50,4 @@ const Blog = () => (
   </Layout>
 );
 
-export default Blog;
+export default PodcastsPage;

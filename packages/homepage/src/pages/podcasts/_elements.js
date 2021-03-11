@@ -14,10 +14,10 @@ export const Header = styled.section`
 `;
 
 export const PageTitle = styled.h1`
-  font-weight: 500;
+  font-weight: 900;
   font-size: 4.5rem;
-  font-weight: 700;
-  line-height: 5.5rem;
+  margin-top: 40px;
+  margin-bottom: 24px;
   letter-spacing: -0.02rem;
 
   @media screen and (max-width: 768px) {
@@ -27,8 +27,9 @@ export const PageTitle = styled.h1`
 `;
 
 export const PageSubtitle = styled.h2`
-  font-size: 2rem;
   font-weight: 400;
+  font-size: 19px;
+  color: #999999;
 
   @media screen and (max-width: 768px) {
     font-size: 1rem;
@@ -57,4 +58,10 @@ export const Podcasts = styled.main`
       transform: scale(1.03);
     }
   }
+`;
+
+export const Episodes = styled.ul`
+  margin: 0;
+  list-style: none;
+  margin-bottom: 200px;
 `;
