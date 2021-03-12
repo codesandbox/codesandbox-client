@@ -18,6 +18,8 @@ available for all Team Pro workspaces, you can access the settings
 You can configure your private npm registry in your
 [Workspace Settings](https://codesandbox.io/dashboard/settings/npm-registry).
 
+![Configuration Form](./images/custom-npm-registry.png)
+
 ### Registry Host
 
 This can be either GitHub, npm or Custom. When choosing GitHub, we'll prefill
@@ -28,12 +30,24 @@ define the npm registry host yourself.
 ### Auth Type
 
 Npm supports two types of authentication: `Basic` and `Bearer`. More recent
-implementations use `Bearer` by default. If your local configuration of the
-private registry involves setting the auth token as parameter on the registry
-url (like `//registry.npmjs.org/:_authToken={token}`), this should be `Bearer`.
-If you're using a registry like Artifactory and configure your npm registry
-using `_auth={token}` in `.npmrc`, you should use `Basic` auth and use the token
-from `_auth` as auth token.
+implementations use `Bearer` by default. You can see which type you need by
+looking at your `.npmrc`. If your `.npmrc` is showing something similar to this:
+
+```
+_auth={token}
+```
+
+This means that you should use `Basic` auth. Artifactory often defaults to
+`Basic` auth.
+
+If your `.npmrc` is showing something along the lines of this:
+
+```
+//registry.npmjs.org/:_authToken={token}
+```
+
+You need to opt for `Bearer` auth. Any configuration that uses `_authToken`
+needs `Bearer` auth.
 
 ### Auth Token
 

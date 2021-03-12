@@ -216,8 +216,15 @@ export const RegistryForm = ({
                     </Select>
                   </CustomFormField>
                   <Text size={3} variant="muted">
-                    If you{"'"}re setting <code>_auth</code> inside{' '}
-                    <code>.npmrc</code>, this setting should be {'"'}Basic{'"'}.
+                    More information on which one to choose can be found{' '}
+                    <a
+                      href="https://codesandbox.io/docs/custom-npm-registry#auth-token"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      here
+                    </a>
+                    .
                   </Text>
                 </div>
               )}
