@@ -12,3 +12,16 @@ export function getDependencyName(path: string): string {
 
   return dependencyName!;
 }
+
+export function getAliasVersion(path: string): string | null {
+  const name = getDependencyName(path);
+  const split = name.split('/');
+  const expectedSplitLength = name.startsWith('@') ? 3 : 2;
+
+  if (split.length !== expectedSplitLength) {
+    return null;
+  }
+
+  const version = split.pop()!;
+  return version;
+}
