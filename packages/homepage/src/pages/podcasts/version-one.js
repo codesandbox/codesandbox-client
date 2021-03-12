@@ -34,12 +34,16 @@ const VersionOne = ({
         description={info.description}
         title="Version One - CodeSandbox"
         image={version1}
+        meta={[
+          { name: 'robots', content: 'noindex' },
+          { name: 'googlebot', content: 'noindex' },
+        ]}
       />
-
       <Header>
         <img
           css={`
             width: 270px;
+            border-radius: 4px;
           `}
           src={version1}
           alt={info.name}
@@ -64,33 +68,33 @@ const VersionOne = ({
         </PageSubtitle>
       </Header>
       <Episodes>
-        {episodes.map(({ node: { id, frontmatter } }) => (
-          <Link
-            css={`
-              text-decoration: none;
-            `}
-            key={id}
-            to={`podcasts/version-one/${frontmatter.slug}`}
-          >
-            <Episode>
-              {/* <img src={frontmatter.image.publicURL} alt={frontmatter.title} /> */}
-              <section>
-                <EpisodeNumber>
-                  Episode {frontmatter.episodeNumber}
-                </EpisodeNumber>
-                <EpisodeTitle>{frontmatter.title}</EpisodeTitle>
-                <Description>{frontmatter.description}</Description>
-              </section>
-            </Episode>
-          </Link>
-        ))}
+        {episodes
+          .filter(e => e.node.frontmatter.slug)
+          .map(({ node: { id, frontmatter } }) => (
+            <Link
+              css={`
+                text-decoration: none;
+              `}
+              key={id}
+              to={`podcasts/version-one/${frontmatter.slug}`}
+            >
+              <Episode>
+                <img
+                  src={frontmatter.image.publicURL}
+                  alt={frontmatter.title}
+                />
+                <section>
+                  <EpisodeNumber>
+                    Episode {frontmatter.episodeNumber}
+                  </EpisodeNumber>
+                  <EpisodeTitle>{frontmatter.title}</EpisodeTitle>
+                  <Description>{frontmatter.description}</Description>
+                </section>
+              </Episode>
+            </Link>
+          ))}
       </Episodes>
-      <PodcastLinks
-        appleLink={info.links.apple}
-        googleLink={info.links.google}
-        spotify={info.links.spotify}
-        name={info.name}
-      />
+      <PodcastLinks {...info.links} name={info.name} />
     </PageContainer>
   </Layout>
 );

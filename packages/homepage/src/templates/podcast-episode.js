@@ -10,11 +10,10 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import { Article, Header, PostTitle } from './_post.elements';
 import {
-  AirDate,
   Audio,
   GuestInfo,
   InfoContainer,
-  IMG,
+  TranscriptButton,
 } from './_episode.elements';
 
 export default ({ data: { episode } }) => {
@@ -30,11 +29,13 @@ export default ({ data: { episode } }) => {
         <TitleAndMetaTags
           image={data.publicURL}
           title={`${data.podcastName} - ${data.title}- CodeSandbox`}
+          meta={[
+            { name: 'robots', content: 'noindex' },
+            { name: 'googlebot', content: 'noindex' },
+          ]}
         />
 
         <Header>
-          <Link to="podcasts">{data.podcastName}</Link>
-
           <PostTitle>{data.title}</PostTitle>
           <GuestInfo>
             {/* <IMG alt={data.title} src={data.image.publicURL} /> */}
@@ -49,37 +50,18 @@ export default ({ data: { episode } }) => {
                   font-weight: bold;
                 `}
               >
-                {data.guestName}
+                {data.airDate}
               </span>
-              <a
-                href={`https://twitter.com/${data.guestTwitter}`}
-                target="_blank"
-                rel="noreferrer"
-                css={`
-                  color: #757575;
-                  text-decoration: none;
-                `}
-              >
-                @{data.guestTwitter}
-              </a>
             </div>
           </GuestInfo>
         </Header>
 
         <PageContainer width={640}>
-          <section
-            css={`
-              padding-bottom: 34px;
-            `}
-          >
-            <AirDate>{data.airDate}</AirDate>
-          </section>
-
           <InfoContainer dangerouslySetInnerHTML={{ __html: html }} />
 
-          <button type="button" onClick={() => setOpen(o => !o)}>
+          <TranscriptButton type="button" onClick={() => setOpen(o => !o)}>
             Show Full Transcript
-          </button>
+          </TranscriptButton>
           <AnimatePresence>
             {open && (
               <motion.div
@@ -87,7 +69,7 @@ export default ({ data: { episode } }) => {
                 initial={{ height: 0 }}
                 animate={{ height: 'auto' }}
                 exit={{ height: 0 }}
-                transition={{ duration: 1 }}
+                transition={{ duration: 0.4 }}
               >
                 <InfoContainer
                   dangerouslySetInnerHTML={{ __html: transcript.html }}
@@ -96,9 +78,11 @@ export default ({ data: { episode } }) => {
             )}
           </AnimatePresence>
           <PodcastLinks
-            appleLink={data.appleLink}
-            googleLink={data.googleLink}
+            apple={data.apple}
+            google={data.google}
             spotify={data.spotify}
+            stitcher={data.stitcher}
+            tuneIn={data.tuneIn}
             name={data.podcastName}
           />
         </PageContainer>
@@ -128,13 +112,14 @@ export const pageQuery = graphql`
             airDate
             audio
             slug
-            appleLink
-            googleLink
+            apple
+            google
+            spotify
+            tuneIn
+            stitcher
             description
             episodeNumber
-            spotify
-            guestName
-            guestTwitter
+
             image {
               publicURL
             }

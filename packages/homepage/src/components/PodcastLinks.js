@@ -43,7 +43,7 @@ const Links = styled.section`
   }
 `;
 
-const PodcastLinks = ({ appleLink, googleLink, spotify, name }) => (
+const PodcastLinks = ({ apple, google, spotify, name, tuneIn, stitcher }) => (
   <div
     css={`
       margin-top: 72px;
@@ -62,22 +62,22 @@ const PodcastLinks = ({ appleLink, googleLink, spotify, name }) => (
       Follow {name}
     </PageTitle>
     <Links>
-      <a href={appleLink} target="_blank" rel="noreferrer">
+      <a href={tuneIn} target="_blank" rel="noreferrer">
         <TuneIn />
         TuneIn
       </a>
-      <a href={appleLink} target="_blank" rel="noreferrer">
+      <a href={apple} target="_blank" rel="noreferrer">
         <Apple />
         Apple Podcasts
       </a>
-      <a href={googleLink} target="_blank" rel="noreferrer">
+      <a href={google} target="_blank" rel="noreferrer">
         <Google />
         Google Podcasts
       </a>
       <a href={spotify} target="_blank" rel="noreferrer">
         <Spotify /> Spotify
       </a>
-      <a href={appleLink} target="_blank" rel="noreferrer">
+      <a href={stitcher} target="_blank" rel="noreferrer">
         <Stitcher />
         Sticther
       </a>

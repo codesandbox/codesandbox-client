@@ -17,6 +17,10 @@ const PodcastsPage = () => (
       <TitleAndMetaTags
         description="Level up by listening to podcasts from the best in the industry"
         title="Podcasts - CodeSandbox"
+        meta={[
+          { name: 'robots', content: 'noindex' },
+          { name: 'googlebot', content: 'noindex' },
+        ]}
       />
 
       <Header>

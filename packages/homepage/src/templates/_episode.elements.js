@@ -2,24 +2,10 @@ import styled from 'styled-components';
 import { PostContainer } from './_post.elements';
 
 export const InfoContainer = styled(PostContainer)`
-  section {
-    height: 0;
-    overflow: auto;
+  ul {
+    list-style: none;
+    margin: 0;
   }
-`;
-
-export const AirDate = styled.time`
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 19px;
-  color: #757575;
-  display: block;
-`;
-
-export const IMG = styled.img`
-  width: 64px;
-  border-radius: 2px;
-  margin-right: 16px;
 `;
 
 export const GuestInfo = styled.div`
@@ -35,4 +21,22 @@ export const Audio = styled.iframe`
   left: 0;
   background-color: rgb(242, 242, 242);
   max-width: 100vw;
+`;
+
+export const TranscriptButton = styled.button`
+  background: #242424;
+  border-radius: 0.125rem;
+  border: none;
+  font-size: 0.8125em;
+  line-height: 19px;
+  text-align: center;
+  padding: 8px 24px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #fff;
+  transition: all 200ms ease;
+  box-shadow: 0px 2px 4px rgb(0 0 0 / 10%);
+  width: 100%;
+  cursor: pointer;
+  margin-bottom: 32px;
 `;

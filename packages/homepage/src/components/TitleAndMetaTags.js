@@ -14,6 +14,7 @@ export default ({
   title = 'CodeSandbox: Online Code Editor and IDE for Rapid Web Development',
   description = 'CodeSandbox is an online code editor and prototyping tool that makes creating and sharing web apps faster',
   image = 'https://codesandbox.io/static/img/banner.png',
+  meta,
 }) => (
   <Helmet
     title={title}
@@ -41,6 +42,7 @@ export default ({
       { property: 'twitter:creator', content: '@codesandbox' },
       { property: 'twitter:image:width', content: '1200' },
       { property: 'twitter:image:height', content: '630' },
+      ...meta,
     ]}
   />
 );
