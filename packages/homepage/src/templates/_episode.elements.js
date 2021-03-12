@@ -1,11 +1,11 @@
 import styled from 'styled-components';
+import { PostContainer } from './_post.elements';
 
-export const Description = styled.span`
-  font-size: 1.1rem;
-  line-height: 1.6rem;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.75);
-  padding: 0;
+export const InfoContainer = styled(PostContainer)`
+  section {
+    height: 0;
+    overflow: auto;
+  }
 `;
 
 export const AirDate = styled.time`
@@ -26,14 +26,6 @@ export const GuestInfo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-export const EpisodeNumber = styled.span`
-  font-weight: 900;
-  font-size: 33px;
-  line-height: 44px;
-  color: #ffffff;
-  margin-bottom: 16px;
 `;
 
 export const Audio = styled.iframe`

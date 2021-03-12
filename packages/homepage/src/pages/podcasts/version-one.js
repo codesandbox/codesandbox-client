@@ -32,7 +32,7 @@ const VersionOne = ({
     <PageContainer>
       <TitleAndMetaTags
         description={info.description}
-        title="Version One Podcast - CodeSandbox"
+        title="Version One - CodeSandbox"
         image={version1}
       />
 
@@ -52,7 +52,16 @@ const VersionOne = ({
           {info.name} Podcast
         </PageTitle>
 
-        <PageSubtitle>{info.description}</PageSubtitle>
+        <PageSubtitle
+          css={`
+            width: 640px;
+            max-width: 80%;
+            margin: auto;
+            line-height: 1.25;
+          `}
+        >
+          {info.description}
+        </PageSubtitle>
       </Header>
       <Episodes>
         {episodes.map(({ node: { id, frontmatter } }) => (
@@ -64,10 +73,10 @@ const VersionOne = ({
             to={`podcasts/version-one/${frontmatter.slug}`}
           >
             <Episode>
-              <img src={frontmatter.image.publicURL} alt={frontmatter.title} />
+              {/* <img src={frontmatter.image.publicURL} alt={frontmatter.title} /> */}
               <section>
                 <EpisodeNumber>
-                  Episode 0{frontmatter.episodeNumber}
+                  Episode {frontmatter.episodeNumber}
                 </EpisodeNumber>
                 <EpisodeTitle>{frontmatter.title}</EpisodeTitle>
                 <Description>{frontmatter.description}</Description>

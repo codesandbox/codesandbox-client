@@ -7,13 +7,12 @@ import PodcastLinks from '../components/PodcastLinks';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
-import { Article, Header, PostTitle, PostContainer } from './_post.elements';
+import { Article, Header, PostTitle } from './_post.elements';
 import {
   AirDate,
   Audio,
-  Description,
-  EpisodeNumber,
   GuestInfo,
+  InfoContainer,
   IMG,
 } from './_episode.elements';
 
@@ -69,20 +68,10 @@ export default ({
             padding-bottom: 34px;
           `}
         >
-          <EpisodeNumber>Episode 0{data.episodeNumber}</EpisodeNumber>
           <AirDate>{data.airDate}</AirDate>
         </section>
-        <Description>
-          {data.description.split(`\n`).map(des => (
-            <span key={des}>
-              {des}
-              <br />
-              <br />
-            </span>
-          ))}
-        </Description>
 
-        <PostContainer dangerouslySetInnerHTML={{ __html: html }} />
+        <InfoContainer dangerouslySetInnerHTML={{ __html: html }} />
 
         <PodcastLinks
           appleLink={data.appleLink}
