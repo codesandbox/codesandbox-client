@@ -52,7 +52,7 @@ export default () => {
       applyParallax(parallaxRef3.current, settings);
       applyParallax(parallaxRef4.current, settings);
     }
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <Layout>

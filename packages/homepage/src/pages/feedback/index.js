@@ -43,7 +43,7 @@ export default () => {
         center: true,
       });
     }
-  }, []);
+  }, [prefersReducedMotion]);
   return (
     <Layout>
       <TitleAndMetaTags title="Feedback - Codesandbox" />

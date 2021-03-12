@@ -47,7 +47,7 @@ export default () => {
         center: true,
       });
     }
-  }, []);
+  }, [prefersReducedMotion]);
   return (
     <Layout>
       <TitleAndMetaTags title="Personal Plan - Codesandbox" />

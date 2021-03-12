@@ -36,9 +36,9 @@ export default ({ data: { episode } }) => {
         />
 
         <Header>
+          <Link to="podcasts">{data.podcastName}</Link>
           <PostTitle>{data.title}</PostTitle>
           <GuestInfo>
-            {/* <IMG alt={data.title} src={data.image.publicURL} /> */}
             <div
               css={`
                 text-align: left;
