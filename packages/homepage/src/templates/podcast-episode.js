@@ -59,7 +59,30 @@ export default ({ data: { episode } }) => {
         <PageContainer width={640}>
           <InfoContainer dangerouslySetInnerHTML={{ __html: html }} />
 
-          <TranscriptButton type="button" onClick={() => setOpen(o => !o)}>
+          <TranscriptButton
+            open={open}
+            type="button"
+            onClick={() => setOpen(o => !o)}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clipPath="url(#clip0)">
+                <path
+                  d="M12.6 6.21057H11.4V11.6106H6V12.8106H11.4V18.2106H12.6V12.8106H18V11.6106H12.6V6.21057Z"
+                  fill="white"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0">
+                  <rect width="24" height="24" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
             Show Full Transcript
           </TranscriptButton>
           <AnimatePresence>

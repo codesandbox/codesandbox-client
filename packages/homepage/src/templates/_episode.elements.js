@@ -39,4 +39,16 @@ export const TranscriptButton = styled.button`
   width: 100%;
   cursor: pointer;
   margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 100ms ease;
+
+  ${props =>
+    props.open &&
+    `
+    svg {
+      transform: rotate(45deg);
+    }
+  `}
 `;
