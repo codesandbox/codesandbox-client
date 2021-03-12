@@ -298,13 +298,16 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
   if (version1.data) {
-    version1.data.allMarkdownRemark.edges.forEach(edge => {
-      createPage({
-        path: `/podcasts/version-one/` + edge.node.frontmatter.slug,
-        component: episodeTemplate,
-        context: { id: edge.node.id },
+    const ids = version1.data.allMarkdownRemark.edges.map(edge => edge.node.id);
+    version1.data.allMarkdownRemark.edges
+      .filter(e => e.node.frontmatter.slug)
+      .forEach(edge => {
+        createPage({
+          path: `/podcasts/version-one/` + edge.node.frontmatter.slug,
+          component: episodeTemplate,
+          context: { ids },
+        });
       });
-    });
   }
 
   const csb = await graphql(`
@@ -326,13 +329,16 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
   if (csb.data) {
-    csb.data.allMarkdownRemark.edges.forEach(edge => {
-      createPage({
-        path: `/podcasts/codesandbox-podcast/` + edge.node.frontmatter.slug,
-        component: episodeTemplate,
-        context: { id: edge.node.id },
+    const ids = csb.data.allMarkdownRemark.edges.map(edge => edge.node.id);
+    csb.data.allMarkdownRemark.edges
+      .filter(e => e.node.frontmatter.slug)
+      .forEach(edge => {
+        createPage({
+          path: `/podcasts/codesandbox-podcast/` + edge.node.frontmatter.slug,
+          component: episodeTemplate,
+          context: { ids },
+        });
       });
-    });
   }
 
   const allOldTerms = await graphql(`
