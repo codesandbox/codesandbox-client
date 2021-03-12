@@ -33,7 +33,7 @@ export default ({
 
         <PostTitle>{data.title}</PostTitle>
         <GuestInfo>
-          <IMG alt={data.title} src={data.image.publicURL} />
+          {/* <IMG alt={data.title} src={data.image.publicURL} /> */}
           <div
             css={`
               text-align: left;
