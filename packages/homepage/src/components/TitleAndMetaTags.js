@@ -14,7 +14,7 @@ export default ({
   title = 'CodeSandbox: Online Code Editor and IDE for Rapid Web Development',
   description = 'CodeSandbox is an online code editor and prototyping tool that makes creating and sharing web apps faster',
   image = 'https://codesandbox.io/static/img/banner.png',
-  meta,
+  meta = [],
 }) => (
   <Helmet
     title={title}

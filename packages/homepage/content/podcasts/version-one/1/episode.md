@@ -3,7 +3,7 @@ podcastName: Version One
 title: Matt Biilmann, CEO and Co-Founder of Netlify
 airDate: Apr 6, 2021
 episodeNumber: 1
-audio: https://player.resonaterecordings.com/embed?uuid=583d4fdc-ab24-4dce-9a30-946683e20198&accentColor=13,180,206&backgroundColor=242,242,242
+audio: https://player.resonaterecordings.com/embed?uuid=583d4fdc-ab24-4dce-9a30-946683e20198&accentColor=13,180,206&backgroundColor=36, 36, 36
 slug: matt-biilmann-netlify
 image: ./images/matt-biilmann.jpg
 apple: '#'
