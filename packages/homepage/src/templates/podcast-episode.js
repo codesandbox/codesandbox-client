@@ -83,7 +83,7 @@ export default ({ data: { episode } }) => {
                 </clipPath>
               </defs>
             </svg>
-            Show Full Transcript
+            {open ? 'Hide' : 'Show'} Full Transcript
           </TranscriptButton>
           <AnimatePresence>
             {open && (
