@@ -4,7 +4,7 @@ import css from '@styled-system/css';
 
 import { useActions, useAppState } from 'app/overmind';
 import { SubscriptionType } from 'app/graphql/types';
-import { CreateTeamParams, RegistryForm } from './RegistryForm';
+import { CreateRegistryParams, RegistryForm } from './RegistryForm';
 import { Alert } from '../components/Alert';
 
 export const RegistrySettings = () => {
@@ -40,7 +40,7 @@ export const RegistrySettings = () => {
     loadCurrentNpmRegistry();
   }, [loadCurrentNpmRegistry]);
 
-  const onSubmit = async (params: CreateTeamParams) => {
+  const onSubmit = async (params: CreateRegistryParams) => {
     setSubmitting(true);
     try {
       await actions.dashboard.createOrUpdateCurrentNpmRegistry(params);
