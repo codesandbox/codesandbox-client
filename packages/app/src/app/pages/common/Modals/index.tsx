@@ -42,6 +42,7 @@ import { GenericAlertModal } from './GenericAlertModal';
 import { AccountDeletionModal } from './AccountDeletion';
 import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfirmation';
 import { NotFoundBranchModal } from './NotFoundBranchModal';
+import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
 
 const modals = {
@@ -83,6 +84,10 @@ const modals = {
   },
   netlifyLogs: {
     Component: NetlifyLogs,
+    width: 750,
+  },
+  githubPagesLogs: {
+    Component: GithubPagesLogs,
     width: 750,
   },
   cropThumbnail: {

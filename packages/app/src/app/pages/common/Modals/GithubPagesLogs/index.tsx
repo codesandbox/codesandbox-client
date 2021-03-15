@@ -1,25 +1,21 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { Element, Button, Stack } from '@codesandbox/components';
-import { useAppState, useActions, useEffects } from 'app/overmind';
+import { useAppState, useEffects, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import { Item } from './elements';
 import { Alert } from '../Common/Alert';
 
-export const NetlifyLogs: FunctionComponent = () => {
+export const GithubPagesLogs: FunctionComponent = () => {
   const effects = useEffects();
   const { modalClosed } = useActions();
-  const {
-    editor: { currentSandbox },
-    deployment: {
-      netlify: { site },
-    },
-  } = useAppState();
+  const { currentSandbox } = useAppState().editor;
+  const { githubSite } = useAppState().deployment;
   const [logs, setLogs] = useState(['Waiting for build to start']);
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const { logs: fetchedLogs, status } = await effects.netlify.getLogs(
+      const { logs: fetchedLogs, status } = await effects.githubPages.getLogs(
         currentSandbox.id
       );
 
@@ -39,7 +35,7 @@ export const NetlifyLogs: FunctionComponent = () => {
   return (
     <Alert
       title="Sandbox Site Logs"
-      description="Builds typically take a minute or two to complete"
+      description="Deploys to Github may take up to 15 minutes before being visible"
     >
       <Element
         marginY={6}
@@ -75,10 +71,13 @@ export const NetlifyLogs: FunctionComponent = () => {
             width: 'auto',
           })}
           onClick={() => {
-            window.open(site.url, '_blank');
+            window.open(
+              `https://${githubSite.ghLogin}.github.io/${githubSite.name}/`,
+              '_blank'
+            );
           }}
         >
-          Open Netlify Site
+          Open Github Site
         </Button>
       </Stack>
     </Alert>

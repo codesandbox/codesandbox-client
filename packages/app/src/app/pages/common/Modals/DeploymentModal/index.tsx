@@ -9,7 +9,10 @@ import { Alert } from '../Common/Alert';
 export const DeploymentModal: FunctionComponent = () => {
   const {
     user,
-    deployment: { deploying, url },
+    deployment: {
+      deploying,
+      vercel: { url },
+    },
   } = useAppState();
   const { deployClicked } = useActions().deployment;
 

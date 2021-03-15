@@ -15,5 +15,6 @@ export default new Template(
     distDir: 'styleguide',
     mainFile: [], // '/src/components/Button.js'
     showOnHomePage: true,
+    githubPagesDeploy: false,
   }
 );

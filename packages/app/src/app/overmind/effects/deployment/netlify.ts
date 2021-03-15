@@ -7,7 +7,7 @@ const NetlifyBaseURL = 'https://builder.csbops.io/netlify/site';
 
 type Options = {
   getUserId(): string | null;
-  provideJwtToken: () => any;
+  provideJwtToken: () => Promise<string | null>;
 };
 
 export default (() => {
@@ -82,6 +82,11 @@ export default (() => {
         if (name === 'styleguidist') {
           return 'styleguide:build';
         }
+
+        if (name === 'preact-cli') {
+          return 'build --no-prerender';
+        }
+
         if (name === 'nuxt') {
           return 'generate';
         }

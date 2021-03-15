@@ -96,6 +96,15 @@ export const onInitializeOvermind = async (
     },
   });
 
+  effects.githubPages.initialize({
+    provideJwtToken() {
+      if (process.env.LOCAL_SERVER || process.env.STAGING) {
+        return Promise.resolve(localStorage.getItem('devJwt'));
+      }
+      return provideJwtToken();
+    },
+  });
+
   effects.prettyfier.initialize({
     getCurrentModule() {
       return state.editor.currentModule;
@@ -223,6 +232,7 @@ export const connectionChanged = ({ state }: Context, connected: boolean) => {
 };
 
 type ModalName =
+  | 'githubPagesLogs'
   | 'deleteWorkspace'
   | 'deleteDeployment'
   | 'deleteSandbox'

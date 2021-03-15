@@ -10,6 +10,6 @@ export default new Template(
   {
     mainFile: ['/src/pages/Index.vue'],
     showOnHomePage: true,
-    netlify: false,
+    staticDeployment: false,
   }
 );

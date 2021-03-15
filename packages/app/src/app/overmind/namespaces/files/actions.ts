@@ -582,6 +582,7 @@ export const filesUploaded = withOwnedSandbox(
     if (!sandbox) {
       return;
     }
+
     const modal = 'uploading';
     effects.analytics.track('Open Modal', { modal });
     // What message?

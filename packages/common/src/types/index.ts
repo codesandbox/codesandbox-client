@@ -98,7 +98,7 @@ export type Template = {
   popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
-  netlify: boolean;
+  staticDeployment: boolean;
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
   showCube: boolean;
