@@ -542,6 +542,19 @@ export function test3() {
     expect(result).toMatchSnapshot();
   });
 
+  it('retains import orders with re-exports', () => {
+    const code = `
+    import * as _TypeChecker from './propTypeChecker';
+    export { _TypeChecker as TypeChecker, _Kikker as Kikker };
+
+    export { default as getDataGroupBy } from './getDataGroupBy';
+
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
   it('predefines possible exports', () => {
     const code = `
       export const a = 5;

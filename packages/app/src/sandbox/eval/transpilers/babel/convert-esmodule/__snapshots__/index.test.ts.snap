@@ -804,6 +804,16 @@ Object.defineProperty(exports, \\"e1\\", {
     return e;
   }
 });
+Object.defineProperty(exports, \\"d\\", {
+  enumerable: true,
+  configurable: true,
+  get: function $csbGet() {
+    return d;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
 var $csb__foo = require(\\"./foo\\");
 Object.defineProperty(exports, \\"j\\", {
   enumerable: true,
@@ -827,16 +837,6 @@ Object.defineProperty(exports, \\"default\\", {
   get: function $csbGet() {
     return $csb__foo__.m;
   }
-});
-Object.defineProperty(exports, \\"d\\", {
-  enumerable: true,
-  configurable: true,
-  get: function $csbGet() {
-    return d;
-  }
-});
-Object.defineProperty(exports, \\"__esModule\\", {
-  value: true
 });
 exports.b = b;
 const a = 5;
@@ -871,6 +871,44 @@ exports[`convert-esmodule renames exports that are already defined, even in bloc
 var __$csb_exports = 'testtest';
 function a() {
   __$csb_exports = 'blaat';
+}
+"
+`;
+
+exports[`convert-esmodule retains import orders with re-exports 1`] = `
+"\\"use strict\\";
+exports.getDataGroupBy = exports.Kikker = exports.TypeChecker = void  0;
+Object.defineProperty(exports, \\"Kikker\\", {
+  enumerable: true,
+  configurable: true,
+  get: function $csbGet() {
+    return _Kikker;
+  }
+});
+Object.defineProperty(exports, \\"TypeChecker\\", {
+  enumerable: true,
+  configurable: true,
+  get: function $csbGet() {
+    return _TypeChecker;
+  }
+});
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb__propTypeChecker = require(\\"./propTypeChecker\\");
+var _TypeChecker = $csb__propTypeChecker;
+var $csb__getDataGroupBy = $_csb__interopRequireDefault(require(\\"./getDataGroupBy\\"));
+Object.defineProperty(exports, \\"getDataGroupBy\\", {
+  enumerable: true,
+  configurable: true,
+  get: function $csbGet() {
+    return $csb__getDataGroupBy.default;
+  }
+});
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
 }
 "
 `;
