@@ -10,6 +10,9 @@ const getRelativePath = absolutePath => absolutePath.replace(__dirname, '');
 const getNodeType = ({ fileAbsolutePath }) =>
   getRelativePath(fileAbsolutePath).split('/')[2];
 
+const getEpisodeNumber = path =>
+  parseInt(path.split('/codesandbox-podcast/')[1].split('/')[0], 10);
+
 const getBlogNodeInfo = ({
   node: {
     frontmatter: { authors, date, description, photo },
@@ -298,16 +301,23 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
   if (version1.data) {
-    const ids = version1.data.allMarkdownRemark.edges.map(edge => edge.node.id);
-    version1.data.allMarkdownRemark.edges
-      .filter(e => e.node.frontmatter.slug)
-      .forEach(edge => {
-        createPage({
-          path: `/podcasts/version-one/` + edge.node.frontmatter.slug,
-          component: episodeTemplate,
-          context: { ids },
-        });
+    version1.data.allMarkdownRemark.edges.forEach(edge => {
+      const ids = version1.data.allMarkdownRemark.edges
+        .map(e => ({
+          id: e.node.id,
+          episdeNumber: getEpisodeNumber(e.node.fileAbsolutePath),
+        }))
+        .filter(
+          file =>
+            file.episdeNumber === getEpisodeNumber(edge.node.fileAbsolutePath)
+        )
+        .map(a => a.id);
+      createPage({
+        path: `/podcasts/version-one/` + edge.node.frontmatter.slug,
+        component: episodeTemplate,
+        context: { ids },
       });
+    });
   }
 
   const csb = await graphql(`
@@ -320,6 +330,7 @@ exports.createPages = async ({ graphql, actions }) => {
         edges {
           node {
             id
+            fileAbsolutePath
             frontmatter {
               slug
             }
@@ -329,10 +340,19 @@ exports.createPages = async ({ graphql, actions }) => {
     }
   `);
   if (csb.data) {
-    const ids = csb.data.allMarkdownRemark.edges.map(edge => edge.node.id);
     csb.data.allMarkdownRemark.edges
       .filter(e => e.node.frontmatter.slug)
       .forEach(edge => {
+        const ids = csb.data.allMarkdownRemark.edges
+          .map(e => ({
+            id: e.node.id,
+            episdeNumber: getEpisodeNumber(e.node.fileAbsolutePath),
+          }))
+          .filter(
+            file =>
+              file.episdeNumber === getEpisodeNumber(edge.node.fileAbsolutePath)
+          )
+          .map(a => a.id);
         createPage({
           path: `/podcasts/codesandbox-podcast/` + edge.node.frontmatter.slug,
           component: episodeTemplate,
