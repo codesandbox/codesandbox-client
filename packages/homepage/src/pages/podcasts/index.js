@@ -52,7 +52,7 @@ const PodcastsPage = () => (
             alt="Version One Podcast"
           />
         </Link>
-        <Link to="podcasts/codesanbdox-podcast">
+        <Link to="podcasts/codesandbox-podcast">
           <img
             css={`
               border: 1px solid #343434;
