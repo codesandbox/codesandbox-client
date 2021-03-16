@@ -669,7 +669,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
               })}
             />
           ) : (
-            <Element as="span" css={css({ width: 5, flexShrink: 0 })} />
+            <Element as="span" css={css({ width: 4, flexShrink: 0 })} />
           )}
 
           <Stack align="center" gap={2} css={{ width: 'calc(100% - 28px)' }}>
