@@ -108,15 +108,15 @@ export default ({ data: { episode } }) => {
               </motion.div>
             )}
           </AnimatePresence>
-          <PodcastLinks
-            apple={data.apple}
-            google={data.google}
-            spotify={data.spotify}
-            stitcher={data.stitcher}
-            tuneIn={data.tuneIn}
-            name={data.podcastName}
-          />
         </PageContainer>
+        <PodcastLinks
+          apple={data.apple}
+          google={data.google}
+          spotify={data.spotify}
+          stitcher={data.stitcher}
+          tuneIn={data.tuneIn}
+          name={data.podcastName}
+        />
         <Audio
           title={data.title}
           src={data.audio}
