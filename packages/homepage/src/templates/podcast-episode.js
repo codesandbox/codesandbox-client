@@ -29,6 +29,7 @@ export default ({ data: { episode } }) => {
         <TitleAndMetaTags
           image={data.publicURL}
           title={`${data.podcastName} - ${data.title}- CodeSandbox`}
+          keywords={data.tags}
           meta={[
             { name: 'robots', content: 'noindex' },
             { name: 'googlebot', content: 'noindex' },
@@ -37,7 +38,14 @@ export default ({ data: { episode } }) => {
 
         <Header>
           <Link to="podcasts">{data.podcastName}</Link>
-          <PostTitle>{data.title}</PostTitle>
+          <PostTitle
+            css={`
+              max-width: 860px;
+              margin: auto;
+            `}
+          >
+            {data.title}
+          </PostTitle>
           <GuestInfo>
             <div
               css={`
@@ -142,6 +150,7 @@ export const pageQuery = graphql`
             stitcher
             description
             episodeNumber
+            tags
 
             image {
               publicURL

@@ -15,6 +15,7 @@ export default ({
   description = 'CodeSandbox is an online code editor and prototyping tool that makes creating and sharing web apps faster',
   image = 'https://codesandbox.io/static/img/banner.png',
   meta = [],
+  keywords = '',
 }) => (
   <Helmet
     title={title}
@@ -28,7 +29,8 @@ export default ({
       {
         name: 'keywords',
         content:
-          'react, codesandbox, editor, vue, angular, ide, code, javascript, playground, sharing, spa, single, page, application, web, application, frontend, front, end',
+          'react, codesandbox, editor, vue, angular, ide, code, javascript, playground, sharing, spa, single, page, application, web, application, frontend, front, end ' +
+            keywords || '',
       },
 
       { name: 'referrer', content: 'origin' },

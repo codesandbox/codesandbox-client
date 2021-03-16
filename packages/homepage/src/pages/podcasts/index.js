@@ -44,10 +44,22 @@ const PodcastsPage = () => (
 
       <Podcasts>
         <Link to="podcasts/version-one">
-          <img src={version1} alt="Version One Podcast" />
+          <img
+            css={`
+              border: 1px solid #343434;
+            `}
+            src={version1}
+            alt="Version One Podcast"
+          />
         </Link>
         <Link to="podcasts/codesanbdox-podcast">
-          <img src={csb} alt="CodeSandbox Podcast" />
+          <img
+            css={`
+              border: 1px solid #343434;
+            `}
+            src={csb}
+            alt="CodeSandbox Podcast"
+          />
         </Link>
       </Podcasts>
     </PageContainer>

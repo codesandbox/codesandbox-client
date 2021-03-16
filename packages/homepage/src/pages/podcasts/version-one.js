@@ -44,6 +44,7 @@ const VersionOne = ({
           css={`
             width: 270px;
             border-radius: 4px;
+            border: 1px solid #343434;
           `}
           src={version1}
           alt={info.name}

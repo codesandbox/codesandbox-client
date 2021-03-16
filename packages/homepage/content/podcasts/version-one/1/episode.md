@@ -11,6 +11,12 @@ google: '#'
 spotify: '#'
 tuneIn: "#"
 stitcher: "#"
+tags: "Tools, makers, programming, business, Netlify, platform, apps, music,
+psychology, journalist, engineer, Domestika, websites, Webpop, CMS services,
+cloud, efficiency, platform, developing, BitBalloon, series, software, create,
+vision, goal, fast, cheap, secure, blueprints, brainstorming, circles, core,
+group, adopters, investigate, marketing, content, publishing, blog posts, open
+source adoption, setbacks, funding, team, friend, rewarding, process"
 description: "Netlify is known as one of the fastest-growing platforms for high-performance
 websites and apps. Dozens of big companies use Netlify -- including Figma,
 Shopify, Mailchimp, and Nike -- and to date, they have onboarded over a million
@@ -107,12 +113,3 @@ passion with his best friend to pour themselves into such a rewarding outcome.
 - Follow CodeSandbox on [Twitter](https://twitter.com/codesandbox).
 - To learn more about Netlify, visit their website [here](https://netlify.com).
 - Follow Netlify on [FaceBook](https://www.facebook.com/netlify/).
-
-### Tags:
-
-Tools, makers, programming, business, Netlify, platform, apps, music,
-psychology, journalist, engineer, Domestika, websites, Webpop, CMS services,
-cloud, efficiency, platform, developing, BitBalloon, series, software, create,
-vision, goal, fast, cheap, secure, blueprints, brainstorming, circles, core,
-group, adopters, investigate, marketing, content, publishing, blog posts, open
-source adoption, setbacks, funding, team, friend, rewarding, process.
