@@ -22,6 +22,16 @@ export default ({ data: { episode } }) => {
   const transcript = episode.edges.find(edge => !edge.node.frontmatter.slug)
     .node;
   const { frontmatter: data, html } = info;
+  let link;
+  try {
+    link =
+      'podcasts/' +
+      episode.edges[0].node.fileAbsolutePath
+        .split('/homepage/content/podcasts/')[1]
+        .split('/')[0];
+  } catch {
+    link = 'podcasts/';
+  }
 
   return (
     <Layout>
@@ -37,7 +47,7 @@ export default ({ data: { episode } }) => {
         />
 
         <Header>
-          <Link to="podcasts">{data.podcastName}</Link>
+          <Link to={link}>{data.podcastName}</Link>
           <PostTitle
             css={`
               max-width: 860px;
@@ -137,6 +147,7 @@ export const pageQuery = graphql`
       edges {
         node {
           id
+          fileAbsolutePath
           frontmatter {
             podcastName
             title
