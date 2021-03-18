@@ -28,6 +28,7 @@ export default function HTML(props) {
         <div
           key="body"
           id="___gatsby"
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: props.body }}
         />
         {props.postBodyComponents}

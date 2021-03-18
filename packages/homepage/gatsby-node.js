@@ -10,6 +10,11 @@ const getRelativePath = absolutePath => absolutePath.replace(__dirname, '');
 const getNodeType = ({ fileAbsolutePath }) =>
   getRelativePath(fileAbsolutePath).split('/')[2];
 
+const getEpisodeNumber = (filePath, podcast) => {
+  if (!filePath || !filePath.trim().length) return '';
+  return parseInt(filePath.split(`/${podcast}/`)[1].split('/')[0], 10);
+};
+
 const getBlogNodeInfo = ({
   node: {
     frontmatter: { authors, date, description, photo },
@@ -21,9 +26,7 @@ const getBlogNodeInfo = ({
   photo,
 });
 const getDocsSlug = ({ node: { fileAbsolutePath } }) => {
-  const fileName = getRelativePath(fileAbsolutePath)
-    .split('/')
-    .reverse()[0];
+  const fileName = getRelativePath(fileAbsolutePath).split('/').reverse()[0];
 
   return fileName.split('.md')[0].split('-')[1];
 };
@@ -174,6 +177,10 @@ exports.createPages = async ({ graphql, actions }) => {
   const oldPrivacyTemplate = resolve(__dirname, './src/templates/privacy.js');
 
   const featureTemplate = resolve(__dirname, './src/templates/feature.js');
+  const episodeTemplate = resolve(
+    __dirname,
+    './src/templates/podcast-episode.js'
+  );
   // Redirect /index.html to root.
   createRedirect({
     fromPath: '/index.html',
@@ -275,6 +282,98 @@ exports.createPages = async ({ graphql, actions }) => {
         context: { id: edge.node.id },
       });
     });
+  }
+
+  // Podcasts
+
+  const version1 = await graphql(`
+    {
+      allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/podcasts/version-one/" } }
+      ) {
+        edges {
+          node {
+            id
+            fileAbsolutePath
+            frontmatter {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (version1.data) {
+    version1.data.allMarkdownRemark.edges.forEach(edge => {
+      const ids = version1.data.allMarkdownRemark.edges
+        .map(e => ({
+          id: e.node.id,
+          episodeNumber: getEpisodeNumber(
+            e.node.fileAbsolutePath,
+            'version-one'
+          ),
+        }))
+        .filter(
+          file =>
+            file.episodeNumber ===
+            getEpisodeNumber(edge.node.fileAbsolutePath, 'version-one')
+        )
+        .map(a => a.id);
+
+      createPage({
+        path: `/podcasts/version-one/` + edge.node.frontmatter.slug,
+        component: episodeTemplate,
+        context: { ids },
+      });
+    });
+  }
+
+  const csb = await graphql(`
+    {
+      allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/podcasts/codesandbox-podcast/" }
+        }
+      ) {
+        edges {
+          node {
+            id
+            fileAbsolutePath
+            frontmatter {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (csb.data) {
+    csb.data.allMarkdownRemark.edges
+      .filter(e => e.node.frontmatter.slug)
+      .forEach(edge => {
+        const ids = csb.data.allMarkdownRemark.edges
+          .map(e => ({
+            id: e.node.id,
+            episodeNumber: getEpisodeNumber(
+              e.node.fileAbsolutePath,
+              'codesandbox-podcast'
+            ),
+          }))
+          .filter(
+            file =>
+              file.episodeNumber ===
+              getEpisodeNumber(
+                edge.node.fileAbsolutePath,
+                'codesandbox-podcast'
+              )
+          )
+          .map(a => a.id);
+        createPage({
+          path: `/podcasts/codesandbox-podcast/` + edge.node.frontmatter.slug,
+          component: episodeTemplate,
+          context: { ids },
+        });
+      });
   }
 
   const allOldTerms = await graphql(`

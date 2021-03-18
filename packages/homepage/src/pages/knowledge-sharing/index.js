@@ -38,7 +38,7 @@ export default () => {
         center: true,
       });
     }
-  }, []);
+  }, [prefersReducedMotion]);
   return (
     <Layout>
       <TitleAndMetaTags title="Knowledge Sharing - Codesandbox" />
