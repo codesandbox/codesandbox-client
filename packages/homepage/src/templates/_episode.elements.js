@@ -38,7 +38,7 @@ export const TranscriptButton = styled.button`
   box-shadow: 0px 2px 4px rgb(0 0 0 / 10%);
   width: 100%;
   cursor: pointer;
-  margin-bottom: 32px;
+  margin: 32px 0;
   display: flex;
   align-items: center;
   justify-content: center;

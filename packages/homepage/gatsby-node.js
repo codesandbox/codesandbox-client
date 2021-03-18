@@ -10,8 +10,10 @@ const getRelativePath = absolutePath => absolutePath.replace(__dirname, '');
 const getNodeType = ({ fileAbsolutePath }) =>
   getRelativePath(fileAbsolutePath).split('/')[2];
 
-const getEpisodeNumber = path =>
-  parseInt(path.split('/codesandbox-podcast/')[1].split('/')[0], 10);
+const getEpisodeNumber = (filePath, podcast) => {
+  if (!filePath || !filePath.trim().length) return '';
+  return parseInt(filePath.split(`/${podcast}/`)[1].split('/')[0], 10);
+};
 
 const getBlogNodeInfo = ({
   node: {
@@ -292,6 +294,7 @@ exports.createPages = async ({ graphql, actions }) => {
         edges {
           node {
             id
+            fileAbsolutePath
             frontmatter {
               slug
             }
@@ -305,13 +308,18 @@ exports.createPages = async ({ graphql, actions }) => {
       const ids = version1.data.allMarkdownRemark.edges
         .map(e => ({
           id: e.node.id,
-          episdeNumber: getEpisodeNumber(e.node.fileAbsolutePath),
+          episodeNumber: getEpisodeNumber(
+            e.node.fileAbsolutePath,
+            'version-one'
+          ),
         }))
         .filter(
           file =>
-            file.episdeNumber === getEpisodeNumber(edge.node.fileAbsolutePath)
+            file.episodeNumber ===
+            getEpisodeNumber(edge.node.fileAbsolutePath, 'version-one')
         )
         .map(a => a.id);
+
       createPage({
         path: `/podcasts/version-one/` + edge.node.frontmatter.slug,
         component: episodeTemplate,
@@ -346,11 +354,18 @@ exports.createPages = async ({ graphql, actions }) => {
         const ids = csb.data.allMarkdownRemark.edges
           .map(e => ({
             id: e.node.id,
-            episdeNumber: getEpisodeNumber(e.node.fileAbsolutePath),
+            episodeNumber: getEpisodeNumber(
+              e.node.fileAbsolutePath,
+              'codesandbox-podcast'
+            ),
           }))
           .filter(
             file =>
-              file.episdeNumber === getEpisodeNumber(edge.node.fileAbsolutePath)
+              file.episodeNumber ===
+              getEpisodeNumber(
+                edge.node.fileAbsolutePath,
+                'codesandbox-podcast'
+              )
           )
           .map(a => a.id);
         createPage({
