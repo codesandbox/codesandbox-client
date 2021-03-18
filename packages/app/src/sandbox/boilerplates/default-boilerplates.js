@@ -14,8 +14,6 @@ export default function(module) {
     document.body.appendChild(root);
   }
 
-  console.log(root);
-
   render(React.createElement(module.default), root);
 }
 `,
