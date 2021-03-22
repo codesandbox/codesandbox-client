@@ -574,6 +574,19 @@ export function test3() {
     expect(result).toMatchSnapshot();
   });
 
+  it('can do array exports', () => {
+    const code = `
+    function a() {
+      return [1, 2];
+    }
+
+    export const [x, y] = a();
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
   describe('syntax info', () => {
     it('can detect jsx', () => {
       const code = `const a = <div>Hello</div>`;

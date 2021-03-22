@@ -341,6 +341,24 @@ export function convertEsModule(
                   exportNames.add(node.id.name);
                   return generateExportStatement(node.id.name, node.id.name);
                 }
+                if (node.id.type === n.ArrayPattern) {
+                  // export const [a, b] = c;
+
+                  return flatten(
+                    node.id.elements.map(property => {
+                      if (property.type !== n.Identifier) {
+                        return false;
+                      }
+
+                      exportNames.add(property.name);
+                      trackedExports[property.name] = property.name;
+                      return generateExportStatement(
+                        property.name,
+                        property.name
+                      );
+                    })
+                  ).filter(Boolean);
+                }
 
                 return null;
               })

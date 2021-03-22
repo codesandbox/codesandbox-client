@@ -179,6 +179,21 @@ exports.default = $csb__default;
 "
 `;
 
+exports[`convert-esmodule can do array exports 1`] = `
+"\\"use strict\\";
+exports.y = exports.x = void  0;
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+function a() {
+  return [1, 2];
+}
+const [x, y] = a();
+exports.x = x;
+exports.y = y;
+"
+`;
+
 exports[`convert-esmodule can handle as imports 1`] = `
 "\\"use strict\\";
 var $csb__b = require(\\"./b\\");
