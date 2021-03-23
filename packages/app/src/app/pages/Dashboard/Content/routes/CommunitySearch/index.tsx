@@ -4,6 +4,11 @@ import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import { InstantSearch, SearchBox, Configure } from 'react-instantsearch/dom';
 import { connectHits, connectRefinementList } from 'react-instantsearch-dom';
+import {
+  RefinementListProvided,
+  HitsProvided,
+  BasicDoc,
+} from 'react-instantsearch-core';
 import VisuallyHidden from '@reach/visually-hidden';
 
 import getTemplateDefinition, {
@@ -41,6 +46,10 @@ export const CommunitySearch = () => {
     'npm_dependencies.dependency': [],
   });
 
+  const setRefinement = (attribute: string, values: string[]) => {
+    setRefinementList({ ...refinementList, [attribute]: values });
+  };
+
   return (
     <Element
       as="section"
@@ -62,15 +71,31 @@ export const CommunitySearch = () => {
           <SearchBox />
         </VisuallyHidden>
         <Results
-          refinementList={refinementList}
-          setRefinementList={setRefinementList}
+          filters={
+            <div style={{ width: 256 }}>
+              <Filters
+                attribute="template"
+                limit={3}
+                operator="or"
+                setRefinement={setRefinement}
+              />
+              <Filters
+                attribute="npm_dependencies.dependency"
+                limit={3}
+                operator="and"
+                setRefinement={setRefinement}
+              />
+            </div>
+          }
         />
       </InstantSearch>
     </Element>
   );
 };
 
-const Results = connectHits(({ hits, refinementList, setRefinementList }) => {
+type ResultProps = HitsProvided<BasicDoc> & { filters: React.ReactElement };
+
+const Results = connectHits(({ hits, filters }: ResultProps) => {
   const location = useLocation();
   const query = new URLSearchParams(location.search).get('query');
   const pageType: PageTypes = 'search';
@@ -117,33 +142,20 @@ const Results = connectHits(({ hits, refinementList, setRefinementList }) => {
           activeTeam={activeTeam}
           showViewOptions
           showFilters
-          CustomFilters={
-            <div style={{ width: 256 }}>
-              <Filters
-                attribute="template"
-                limit={3}
-                operator="or"
-                refinementList={refinementList}
-                setRefinementList={setRefinementList}
-              />
-              <Filters
-                attribute="npm_dependencies.dependency"
-                limit={3}
-                operator="and"
-                refinementList={refinementList}
-                setRefinementList={setRefinementList}
-              />
-            </div>
-          }
+          CustomFilters={filters}
         />
       </Stack>
-      <VariableGrid items={items} page={pageType} />;
+      <VariableGrid items={items} page={pageType} />
     </SelectionProvider>
   );
 });
 
+type FilterProps = RefinementListProvided & {
+  attribute: string;
+  setRefinement: (attribute: string, values: string[]) => void;
+};
 const Filters = connectRefinementList(
-  ({ attribute, items, searchForItems, refinementList, setRefinementList }) => {
+  ({ attribute, items, searchForItems, setRefinement }: FilterProps) => {
     const prettyAttribute =
       attribute === 'template' ? 'Environment' : 'Dependencies';
 
@@ -194,10 +206,7 @@ const Filters = connectRefinementList(
                   key={item.label}
                   checked={item.isRefined}
                   onChange={() => {
-                    setRefinementList({
-                      ...refinementList,
-                      [attribute]: item.value,
-                    });
+                    setRefinement([attribute], item.value);
                     inputRef.current.value = '';
                   }}
                   label={
