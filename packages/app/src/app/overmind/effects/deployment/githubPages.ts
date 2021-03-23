@@ -90,7 +90,9 @@ export default (() => {
 
       const env = (name: string) => {
         if (name === 'create-react-app') {
-          return `PUBLIC_URL=https://${username}.github.io/csb-${sandbox.id}/`;
+          return `PUBLIC_URL=https://${username.toLowerCase()}.github.io/csb-${
+            sandbox.id
+          }/`;
         }
         return '';
       };
