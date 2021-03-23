@@ -50,10 +50,8 @@ const Blog = ({
         }) => (
           <Posts key={id}>
             <Aside>
-              <Postitle>
-                <a name={title}>
-                  CodeSandbox <strong> {title} </strong>
-                </a>
+              <Postitle name={title}>
+                CodeSandbox <strong> {title} </strong>
               </Postitle>
               Released on {format(date, 'MMM / DD / YYYY')}
             </Aside>

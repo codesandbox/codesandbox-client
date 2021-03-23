@@ -10,7 +10,7 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React from 'react';
 
 import { Changes } from './Changes';
@@ -45,35 +45,33 @@ import { getConflictType } from './utils/getConflictType';
 
 export const GitHub = () => {
   const {
-    state: {
-      git: {
-        gitChanges,
-        gitState,
-        conflicts,
-        permission,
-        isFetching,
-        isExported,
-        pr,
-        isLinkingToGitSandbox,
-      },
-      editor: {
-        currentSandbox: {
-          id,
-          originalGit,
-          baseGit,
-          owned,
-          originalGitCommitSha,
-          prNumber,
-          forkedTemplateSandbox,
-          forkedFromSandbox,
-        },
-        modulesByPath,
-      },
-      isLoggedIn,
-      user,
+    git: {
+      gitChanges,
+      gitState,
+      conflicts,
+      permission,
+      isFetching,
+      isExported,
+      pr,
+      isLinkingToGitSandbox,
     },
-    actions,
-  } = useOvermind();
+    editor: {
+      currentSandbox: {
+        id,
+        originalGit,
+        baseGit,
+        owned,
+        originalGitCommitSha,
+        prNumber,
+        forkedTemplateSandbox,
+        forkedFromSandbox,
+      },
+      modulesByPath,
+    },
+    isLoggedIn,
+    user,
+  } = useAppState();
+  const actions = useActions();
 
   const changeCount = gitChanges
     ? gitChanges.added.length +

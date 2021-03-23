@@ -14,5 +14,6 @@ export default new Template(
       '/.babelrc': configurations.babelrc,
     },
     defaultOpenedFile: ['/src/app.js'],
+    githubPagesDeploy: false,
   }
 );

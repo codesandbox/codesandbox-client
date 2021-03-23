@@ -25,7 +25,10 @@ import fetchModule, {
 } from './npm/dynamic/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import dependenciesToQuery from './npm/dependencies-to-query';
-import { getDependencyName } from './utils/get-dependency-name';
+import {
+  getAliasVersion,
+  getDependencyName,
+} from './utils/get-dependency-name';
 import { packageFilter } from './utils/resolve-utils';
 
 import {
@@ -609,18 +612,34 @@ export default class Manager implements IEvaluator {
     }
 
     const dependencyName = getDependencyName(path);
-    const previousDependencyName = getDependencyName(
+    const currentDependencyName = getDependencyName(
       currentPath.replace('/node_modules/', '')
     );
 
+    // There's a case where an aliased dependency requests itself. Eg. @babel/runtime/7.13.1 has an import
+    // of @babel/runtime. We know that this dependency needs to be @babel/runtime/7.13.1, so we do an explicit
+    // check for this here.
+    if (currentDependencyName.startsWith(dependencyName + '/')) {
+      // Okay, we now know for sure that the current dependency is aliased, and the imported dependency is the same
+      const aliasedVersion = getAliasVersion(
+        currentPath.replace('/node_modules/', '')
+      );
+      if (aliasedVersion) {
+        return path.replace(
+          dependencyName,
+          dependencyName + '/' + aliasedVersion
+        );
+      }
+    }
+
     if (
-      previousDependencyName &&
+      currentDependencyName &&
       dependencyName &&
-      this.manifest.dependencyAliases[previousDependencyName] &&
-      this.manifest.dependencyAliases[previousDependencyName][dependencyName]
+      this.manifest.dependencyAliases[currentDependencyName] &&
+      this.manifest.dependencyAliases[currentDependencyName][dependencyName]
     ) {
       const aliasedDependencyName = this.manifest.dependencyAliases[
-        previousDependencyName
+        currentDependencyName
       ][dependencyName];
 
       return path.replace(dependencyName, aliasedDependencyName);

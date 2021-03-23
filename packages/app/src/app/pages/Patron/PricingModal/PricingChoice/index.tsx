@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { PatronBadge } from '@codesandbox/common/lib/types';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import badges from '@codesandbox/common/lib/utils/badges/patron-info';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { SubscribeForm } from 'app/components/SubscribeForm';
 import { Range } from './Range';
 import { ChangeSubscription } from './ChangeSubscription';
@@ -23,12 +23,8 @@ type Props = {
   badge: PatronBadge;
 };
 export const PricingChoice: FunctionComponent<Props> = ({ badge }) => {
-  const {
-    actions: {
-      patron: { priceChanged, createSubscriptionClicked },
-    },
-    state: { isLoggedIn, isPatron, user, patron },
-  } = useOvermind();
+  const { priceChanged, createSubscriptionClicked } = useActions().patron;
+  const { isLoggedIn, isPatron, user, patron } = useAppState();
 
   return (
     <Container>

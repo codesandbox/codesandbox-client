@@ -18,7 +18,6 @@ export abstract class Transpiler {
     this.HMREnabled = true;
   }
 
-  /* eslint-disable */
   initialize() {}
 
   dispose() {}

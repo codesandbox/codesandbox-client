@@ -3,16 +3,12 @@ import css from '@styled-system/css';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 import { RoomNotFoundError } from './RoomNotFoundError';
 
 export const Error: FunctionComponent = () => {
-  const {
-    state: {
-      live: { error },
-    },
-  } = useOvermind();
+  const { error } = useAppState().live;
 
   if (error === 'room not found') {
     return <RoomNotFoundError />;

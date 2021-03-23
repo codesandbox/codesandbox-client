@@ -2,7 +2,7 @@ import {
   CommentWithRepliesFragment,
   PreviewReferenceMetadata,
 } from 'app/graphql/types';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import * as React from 'react';
 import { Icon } from '@codesandbox/components';
 import styled, { createGlobalStyle } from 'styled-components';
@@ -113,11 +113,13 @@ const useFlash = (
     }
 
     return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref.current, activate]);
 };
 
 export const PreviewCommentWrapper = ({ children, scale }: Props) => {
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const wrapperRef = React.useRef(null);
   const previewReference = getPreviewReference(state.comments.currentComment);
   const isAddingPreviewComment =

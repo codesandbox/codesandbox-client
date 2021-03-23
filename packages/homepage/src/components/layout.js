@@ -6,7 +6,8 @@ import { VisuallyHidden } from './style';
 import Privacy from './Toast';
 import '../css/typography.css';
 import '../css/global.css';
-import Navigation from './Navigation/index';
+// eslint-disable-next-line import/no-cycle
+import Navigation from './Navigation';
 import Footer from './Footer';
 
 const text = number => `@media only screen and (max-width: ${number}px)`;

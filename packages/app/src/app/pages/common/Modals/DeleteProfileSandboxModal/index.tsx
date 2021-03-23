@@ -1,14 +1,12 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Alert } from '../Common/Alert';
 
 export const DeleteProfileSandboxModal: FunctionComponent = () => {
   const {
-    actions: {
-      modalClosed,
-      profile: { sandboxDeleted },
-    },
-  } = useOvermind();
+    modalClosed,
+    profile: { sandboxDeleted },
+  } = useActions();
 
   return (
     <Alert

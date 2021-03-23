@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { Element, Stack, Text, Input, Button } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import history from 'app/utils/history';
 
 export const NewTeam: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
-  const {
-    actions: { dashboard },
-  } = useOvermind();
+  const { createTeam } = useActions().dashboard;
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async event => {
@@ -19,7 +17,7 @@ export const NewTeam: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
       event.target.name.setCustomValidity('');
       setLoading(true);
       try {
-        await dashboard.createTeam({
+        await createTeam({
           teamName,
           pilot: location.search.includes('pilot'),
         });

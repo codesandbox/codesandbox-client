@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   Stack,
   Text,
@@ -31,14 +31,8 @@ export const SandboxCard: React.FC<{
   sandbox: Sandbox | SandboxFragmentDashboardFragment;
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }> = ({ sandbox, onClick }) => {
-  const {
-    state: {
-      profile: { contextMenu },
-    },
-    actions: {
-      profile: { openContextMenu },
-    },
-  } = useOvermind();
+  const { contextMenu } = useAppState().profile;
+  const { openContextMenu } = useActions().profile;
 
   const PrivacyIcon = PrivacyIcons[sandbox.privacy || 0];
   const isPublic = sandbox.privacy === 0;

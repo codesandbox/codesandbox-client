@@ -6,7 +6,7 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Icon, Input, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Header } from '../elements';
@@ -31,7 +31,8 @@ const getFullGitHubUrl = (url: string) =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
 export const ImportFromGithub = () => {
-  const { actions, effects } = useOvermind();
+  const actions = useActions();
+  const effects = useEffects();
   const [error, setError] = useState(null);
   const [transformedUrl, setTransformedUrl] = useState('');
   const [url, setUrl] = useState('');
@@ -129,7 +130,8 @@ export const ImportFromGithub = () => {
 };
 
 export const Import = () => {
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
 
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: 'import' });

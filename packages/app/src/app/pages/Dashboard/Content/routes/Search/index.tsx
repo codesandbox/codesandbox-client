@@ -1,4 +1,4 @@
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 import { Helmet } from 'react-helmet';
 import { Header } from 'app/pages/Dashboard/Components/Header';
@@ -13,11 +13,9 @@ import { useGetItems } from './searchItems';
 
 export const SearchComponent = () => {
   const {
-    state: {
-      activeTeam,
-      dashboard: { getFilteredSandboxes },
-    },
-  } = useOvermind();
+    activeTeam,
+    dashboard: { getFilteredSandboxes },
+  } = useAppState();
   const location = useLocation();
   const query = new URLSearchParams(location.search).get('query');
   const [items, filteredSandboxes] = useGetItems({

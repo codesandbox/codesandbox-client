@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
 import getDefinition, {
   TemplateType,
@@ -36,7 +37,6 @@ import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
 
-let initializedResizeListener = false;
 let manager: Manager | null = null;
 let actionsEnabled = false;
 
@@ -295,6 +295,8 @@ function getDependencies(
   // Always include this, because most sandboxes need this with babel6 and the
   // packager will only include the package.json for it.
   if (isBabel7(d, devDependencies)) {
+    // Don't pin this version, because other dependencies installed by the sandbox might need
+    // @babel/runtime as well, multiple versions of @babel/runtime will lead to problems.
     returnedDependencies['@babel/runtime'] =
       returnedDependencies['@babel/runtime'] || '^7.3.1';
   } else {
@@ -374,31 +376,40 @@ function getDocumentHeight() {
   const { body } = document;
   const html = document.documentElement;
 
-  return Math.max(
-    body.scrollHeight,
-    body.offsetHeight,
-    html.clientHeight,
-    html.scrollHeight,
-    html.offsetHeight
-  );
+  return Math.max(body.scrollHeight, body.offsetHeight, html.offsetHeight);
 }
 
 function sendResize() {
   const height = getDocumentHeight();
 
   if (lastHeight !== height) {
-    if (document.body) {
-      dispatch({ type: 'resize', height });
-    }
+    dispatch({ type: 'resize', height });
   }
 
   lastHeight = height;
 }
 
-function initializeResizeListener() {
-  setInterval(sendResize, 5000);
+function initializeDOMMutationListener() {
+  if (
+    typeof window === 'undefined' ||
+    typeof window.MutationObserver !== 'function'
+  ) {
+    return;
+  }
 
-  initializedResizeListener = true;
+  // Listen on document body for any change that could trigger a resize of the content
+  // When a change is found, the sendResize function will determine if a message is dispatched
+  const observer = new MutationObserver(sendResize);
+
+  observer.observe(document, {
+    attributes: true,
+    childList: true,
+    subtree: true,
+  });
+
+  window.addEventListener('unload', () => {
+    observer.disconnect();
+  });
 }
 
 function overrideDocumentClose() {
@@ -428,6 +439,8 @@ interface CompileOptions {
   template: TemplateType;
   entry: string;
   showOpenInCodeSandbox?: boolean;
+  showErrorScreen?: boolean;
+  showLoadingScreen?: boolean;
   skipEval?: boolean;
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
@@ -443,7 +456,9 @@ async function compile({
   isModuleView = false,
   template,
   entry,
-  showOpenInCodeSandbox = false,
+  showOpenInCodeSandbox,
+  showLoadingScreen,
+  showErrorScreen,
   skipEval = false,
   hasFileResolver = false,
   disableDependencyPreprocessing = false,
@@ -655,14 +670,14 @@ async function compile({
         const htmlEntries = templateDefinition.getHTMLEntries(configurations);
         const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
         const htmlModule = modules[htmlModulePath];
-
-        const { head, body } = getHTMLParts(
-          htmlModule && htmlModule.code
-            ? htmlModule.code
-            : template === 'vue-cli'
+        let html =
+          template === 'vue-cli'
             ? '<div id="app"></div>'
-            : '<div id="root"></div>'
-        );
+            : '<div id="root"></div>';
+        if (htmlModule && htmlModule.code) {
+          html = htmlModule.code;
+        }
+        const { head, body } = getHTMLParts(html);
 
         if (lastHeadHTML && lastHeadHTML !== head) {
           document.location.reload();
@@ -742,11 +757,7 @@ async function compile({
 
     await manager.preset.teardown(manager, updatedModules);
 
-    if (!initializedResizeListener && !manager.preset.htmlDisabled) {
-      initializeResizeListener();
-    }
-
-    if (showOpenInCodeSandbox) {
+    if (firstLoad && showOpenInCodeSandbox) {
       createCodeSandboxOverlay(modules);
     }
 
@@ -845,6 +856,11 @@ async function compile({
         });
     }
   }
+
+  if (!hadError && firstLoad) {
+    initializeDOMMutationListener();
+  }
+
   firstLoad = false;
 
   dispatch({ type: 'status', status: 'idle' });

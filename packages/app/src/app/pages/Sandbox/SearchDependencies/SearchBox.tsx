@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input, Element } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import useKeys from 'react-use/lib/useKeyboardJs';
 import { AlgoliaIcon } from './icons';
@@ -13,12 +13,11 @@ const getBackgroundColor = ({ focus, theme }) =>
   }"/%3E%3C/svg%3E%0A')`;
 
 export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
+  const { workspace } = useAppState();
   const {
-    state: { workspace },
-    actions: {
-      workspace: { changeDependencySearch, toggleShowingSelectedDependencies },
-    },
-  } = useOvermind();
+    changeDependencySearch,
+    toggleShowingSelectedDependencies,
+  } = useActions().workspace;
   const [focus, setFocus] = useState(false);
   const form = useRef<HTMLFormElement>();
   const [up] = useKeys('up');
@@ -64,6 +63,7 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [up, down]);
 
   useEffect(() => {
@@ -91,7 +91,7 @@ export const SearchBox = ({ handleManualSelect, onChange, listRef }) => {
             content: '""',
             position: 'absolute',
             top: 0,
-            backgroundImage: (theme) => getBackgroundColor({ focus, theme }),
+            backgroundImage: theme => getBackgroundColor({ focus, theme }),
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center center',
             opacity: focus ? 1 : 0.8,

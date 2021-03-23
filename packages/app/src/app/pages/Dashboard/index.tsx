@@ -4,7 +4,7 @@ import { Redirect, useLocation } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Media from 'react-media';
 import Backend from 'react-dnd-html5-backend';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   ThemeProvider,
   Stack,
@@ -24,10 +24,8 @@ const GlobalStyles = createGlobalStyle({
 });
 
 export const Dashboard: FunctionComponent = () => {
-  const {
-    state: { hasLogIn },
-    actions,
-  } = useOvermind();
+  const { hasLogIn } = useAppState();
+  const actions = useActions();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);

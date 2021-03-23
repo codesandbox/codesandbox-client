@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { useDrop } from 'react-dnd';
 import { Element, Button, Stack, Text, Icon } from '@codesandbox/components';
 import designLanguage from '@codesandbox/components/lib/design-language/theme';
@@ -9,17 +9,15 @@ import { SandboxType, DropTarget } from './constants';
 
 export const ShowcaseSandbox = () => {
   const {
-    state: {
-      profile: { showcasedSandbox },
-      user: loggedInUser,
-      profile: { current: user },
-      activeTeamInfo,
-    },
-    actions: {
-      modalOpened,
-      profile: { newSandboxShowcaseSelected },
-    },
-  } = useOvermind();
+    modalOpened,
+    profile: { newSandboxShowcaseSelected },
+  } = useActions();
+  const {
+    profile: { showcasedSandbox },
+    user: loggedInUser,
+    profile: { current: user },
+    activeTeamInfo,
+  } = useAppState();
 
   const myProfile = loggedInUser?.username === user.username;
   const isPro = user && activeTeamInfo?.subscription;
@@ -69,7 +67,7 @@ export const ShowcaseSandbox = () => {
             allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
             sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
           />
-          {/* This code is a bit lol because we 
+          {/* This code is a bit lol because we
               inject the "Open Sandbox" watermark on the server
               for non-pro users. So here we check for Pro and add
               a "Open Sandbox" user to avoid duplicate buttons.

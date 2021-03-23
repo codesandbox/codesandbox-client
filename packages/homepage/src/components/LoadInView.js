@@ -24,7 +24,6 @@ const LoadInView = ({ children }) => {
             duration: 0.4,
             ease: 'easeInOut',
           }}
-          
         >
           {children}
         </motion.section>

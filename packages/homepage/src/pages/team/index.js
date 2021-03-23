@@ -51,7 +51,7 @@ export default () => {
         center: true,
       });
     }
-  }, []);
+  }, [prefersReducedMotion]);
   return (
     <Layout>
       <TitleAndMetaTags title="Team Plan - Codesandbox" />

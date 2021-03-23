@@ -96,8 +96,8 @@ const DevExperience = () => (
         <NPMIcon />
         <H3>Supercharged with npm</H3>
         <P muted>
-          Use private packages, or any of the 1M+ public ones, to build 
-          powerful apps quickly.
+          Use private packages, or any of the 1M+ public ones, to build powerful
+          apps quickly.
         </P>
       </Feature>
       <Feature variants={item}>

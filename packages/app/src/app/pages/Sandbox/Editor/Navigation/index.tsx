@@ -4,7 +4,7 @@ import Tooltip, {
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { TippyProps } from '@tippy.js/react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import getWorkspaceItems, {
   INavigationItem,
   getDisabledItems,
@@ -22,6 +22,7 @@ import {
   LiveIcon,
   ServerIcon,
   SettingsIcon,
+  SearchIcon,
 } from './icons';
 
 const IDS_TO_ICONS = {
@@ -29,6 +30,7 @@ const IDS_TO_ICONS = {
   'project-summary': InfoIcon,
   'github-summary': GithubIcon,
   files: ExplorerIcon,
+  search: SearchIcon,
   github: GithubIcon,
   deploy: DeployIcon,
   config: SettingsIcon,
@@ -48,15 +50,11 @@ const IconComponent: FunctionComponent<IconProps> = ({
   isDisabled,
   singleton,
 }) => {
+  const { setWorkspaceHidden, setWorkspaceItem } = useActions().workspace;
   const {
-    actions: {
-      workspace: { setWorkspaceHidden, setWorkspaceItem },
-    },
-    state: {
-      workspace: { openedWorkspaceItem, workspaceHidden },
-      git: { gitChanges, isFetching, conflicts },
-    },
-  } = useOvermind();
+    workspace: { openedWorkspaceItem, workspaceHidden },
+    git: { gitChanges, isFetching, conflicts },
+  } = useAppState();
 
   const Icon = IDS_TO_ICONS[id];
   const selected = !workspaceHidden && id === openedWorkspaceItem;
@@ -121,7 +119,7 @@ export const Navigation: FunctionComponent<Props> = ({
   topOffset,
   bottomOffset,
 }) => {
-  const { state } = useOvermind();
+  const state = useAppState();
   const shownItems = getWorkspaceItems(state);
   const disabledItems = getDisabledItems(state);
 

@@ -83,6 +83,7 @@ module.exports = merge(commonConfig, {
       }),
     ],
     concatenateModules: true, // ModuleConcatenationPlugin
+    chunkIds: 'named',
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
 
@@ -242,7 +243,7 @@ module.exports = merge(commonConfig, {
       maximumFileSizeToCacheInBytes: 1024 * 1024 * 20, // 20mb
       runtimeCaching: [
         {
-          urlPattern: /api\/v1\/sandboxes/,
+          urlPattern: /api\/v1\//,
           handler: 'networkFirst',
           options: {
             cache: {

@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Switch, Route } from 'react-router-dom';
 import { ThemeProvider, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
 import { Navigation } from 'app/pages/common/Navigation';
 import { NewTeam } from 'app/pages/common/NewTeam';
@@ -14,13 +14,9 @@ import { ConfirmBillingInterval } from './pages/ConfirmBillingInterval';
 import { PaymentSuccess } from './pages/PaymentSuccess';
 import { SignInModalElement } from '../SignIn/Modal';
 
-const ProPage: React.FC = () => {
-  const {
-    state: { hasLoadedApp, isLoggedIn },
-    actions: {
-      pro: { pageMounted },
-    },
-  } = useOvermind();
+export const ProPage: React.FC = () => {
+  const { pageMounted } = useActions().pro;
+  const { hasLoadedApp, isLoggedIn } = useAppState();
 
   React.useEffect(() => {
     pageMounted();
@@ -95,10 +91,10 @@ const StartOrModifySubscription = () => {
    */
 
   const {
-    state: {
-      pro: { step, isPaddleInitialised, isBillingAmountLoaded },
-    },
-  } = useOvermind();
+    step,
+    isPaddleInitialised,
+    isBillingAmountLoaded,
+  } = useAppState().pro;
 
   return (
     <Stack
@@ -131,5 +127,3 @@ const StartOrModifySubscription = () => {
     </Stack>
   );
 };
-
-export default ProPage;

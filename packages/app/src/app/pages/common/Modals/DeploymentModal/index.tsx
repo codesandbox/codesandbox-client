@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Element, Button, Text, Stack, Link } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { VercelIntegration } from 'app/pages/common/VercelIntegration';
@@ -8,14 +8,13 @@ import { Alert } from '../Common/Alert';
 
 export const DeploymentModal: FunctionComponent = () => {
   const {
-    state: {
-      user,
-      deployment: { deploying, url },
+    user,
+    deployment: {
+      deploying,
+      vercel: { url },
     },
-    actions: {
-      deployment: { deployClicked },
-    },
-  } = useOvermind();
+  } = useAppState();
+  const { deployClicked } = useActions().deployment;
 
   if (!user) {
     return null;

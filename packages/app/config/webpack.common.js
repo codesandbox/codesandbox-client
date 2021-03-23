@@ -206,6 +206,19 @@ module.exports = {
         type: 'javascript/auto',
       },
       {
+        test: /\.worker\.(js|ts)$/i,
+        use: [
+          {
+            loader: 'comlink-loader',
+            options: {
+              singleton: true,
+              multi: true,
+              multiple: true,
+            },
+          },
+        ],
+      },
+      {
         test: /\.scss$/,
         use: getStyleLoaders(
           {

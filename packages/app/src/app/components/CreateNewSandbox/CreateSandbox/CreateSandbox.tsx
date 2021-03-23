@@ -1,6 +1,6 @@
 import { Element, Stack, ThemeProvider } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useActions, useEffects, useAppState } from 'app/overmind';
 import latestChangelog from 'homepage/content/changelog';
 import React, { useEffect, useState } from 'react';
 import { useTabState } from 'reakit/Tab';
@@ -38,11 +38,10 @@ interface CreateSandboxProps {
 }
 
 export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
-  const {
-    state: { isFirstVisit, hasLogIn },
-    effects: { browser },
-    actions,
-  } = useOvermind();
+  const { isFirstVisit, hasLogIn } = useAppState();
+  const { browser } = useEffects();
+  const actions = useActions();
+
   const [newChangelogToSee, setNewChangelogToSee] = useState(false);
   const tab = useTabState({
     orientation: 'vertical',

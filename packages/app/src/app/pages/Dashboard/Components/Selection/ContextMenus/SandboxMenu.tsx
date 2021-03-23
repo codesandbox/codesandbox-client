@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useEffects, useActions } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Menu, Tooltip } from '@codesandbox/components';
 import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
@@ -8,7 +8,6 @@ import {
   sandboxUrl,
   dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
@@ -20,11 +19,16 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   item,
   setRenaming,
 }) => {
+  const actions = useActions();
   const {
-    state: { user, activeTeam, activeTeamInfo, activeWorkspaceAuthorization },
-    effects,
-    actions,
-  } = useOvermind();
+    user,
+    activeTeam,
+    activeTeamInfo,
+    activeWorkspaceAuthorization,
+  } = useAppState();
+  const {
+    browser: { copyToClipboard },
+  } = useEffects();
   const { sandbox, type } = item;
   const isTemplate = type === 'template';
 
@@ -43,8 +47,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const label = isTemplate ? 'Template' : 'Sandbox';
 
   const isPro = activeTeamInfo?.subscription;
-  const isTeamPro =
-    activeTeamInfo?.subscription?.type === WorkspaceSubscriptionTypes.Team;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
@@ -138,7 +140,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       </MenuItem>
       <MenuItem
         onSelect={() => {
-          effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
+          copyToClipboard(`https://codesandbox.io${url}`);
         }}
       >
         Copy {label} Link
@@ -324,7 +326,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           </MenuItem>
         ))}
       {hasAccess &&
-        isTeamPro &&
+        isPro &&
         activeWorkspaceAuthorization === 'ADMIN' &&
         (sandbox.permissions.preventSandboxLeaving ? (
           <MenuItem
@@ -351,7 +353,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         ))}
 
       {hasAccess &&
-        isTeamPro &&
+        isPro &&
         activeWorkspaceAuthorization === 'ADMIN' &&
         (sandbox.permissions.preventSandboxExport ? (
           <MenuItem
@@ -405,6 +407,15 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             </MenuItem>
           )}
         </>
+      )}
+      {!hasAccess && !isTemplate && location.pathname.includes('liked') && (
+        <MenuItem
+          onSelect={() => {
+            actions.dashboard.unlikeSandbox(sandbox.id);
+          }}
+        >
+          Unlike Sandbox
+        </MenuItem>
       )}
     </Menu.ContextMenu>
   );

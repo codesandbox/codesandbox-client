@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Element, SkipNav } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
@@ -128,11 +128,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   ) as Array<DashboardSandbox | DashboardTemplate>;
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
-
-  const {
-    state: { dashboard, activeTeam },
-    actions,
-  } = useOvermind();
+  const actions = useActions();
+  const { dashboard, activeTeam } = useAppState();
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
     if (event.ctrlKey || event.metaKey) {

@@ -1,19 +1,15 @@
 import { Text, Element } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { SubContainer, PaddedPreference } from '../elements';
 
 export const MailPreferences: FunctionComponent = () => {
   const {
-    actions: {
-      userNotifications: {
-        getNotificationPreferences,
-        updateNotificationPreferences,
-      },
-    },
-    state: { userNotifications },
-  } = useOvermind();
+    getNotificationPreferences,
+    updateNotificationPreferences,
+  } = useActions().userNotifications;
+  const { preferences } = useAppState().userNotifications;
 
   useEffect(() => {
     getNotificationPreferences();
@@ -25,7 +21,7 @@ export const MailPreferences: FunctionComponent = () => {
         Email me when...
       </Text>
 
-      {userNotifications.preferences ? (
+      {preferences ? (
         <SubContainer>
           <Element paddingTop={4}>
             <PaddedPreference
@@ -37,7 +33,7 @@ export const MailPreferences: FunctionComponent = () => {
               title="New comment"
               tooltip="Email on new comment"
               type="boolean"
-              value={userNotifications.preferences.emailNewComment}
+              value={preferences.emailNewComment}
             />
             <Text
               block
@@ -59,7 +55,7 @@ export const MailPreferences: FunctionComponent = () => {
               title="Replies"
               tooltip="Email on new reply"
               type="boolean"
-              value={userNotifications.preferences.emailCommentReply}
+              value={preferences.emailCommentReply}
             />
             <Text
               block
@@ -81,7 +77,7 @@ export const MailPreferences: FunctionComponent = () => {
               title="@Mentions"
               tooltip="Email on new mention"
               type="boolean"
-              value={userNotifications.preferences.emailCommentMention}
+              value={preferences.emailCommentMention}
             />
           </Element>
           <Text

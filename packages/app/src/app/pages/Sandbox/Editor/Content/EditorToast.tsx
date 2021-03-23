@@ -4,12 +4,12 @@ import { LiveUser } from '@codesandbox/common/lib/types';
 import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Icons } from 'app/components/CodeEditor/elements';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import * as React from 'react';
 import QuestionIcon from 'react-icons/lib/go/question';
 
 export const EditorToast = () => {
-  const { state } = useOvermind();
+  const state = useAppState();
 
   const sandbox = state.editor.currentSandbox;
   const { currentModule } = state.editor;

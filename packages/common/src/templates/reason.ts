@@ -10,7 +10,7 @@ export default new Template(
   {
     showOnHomePage: true,
     main: false,
-    netlify: false,
+    staticDeployment: false,
     mainFile: ['/src/Main.re', 'App.re', 'Index.re'],
   }
 );

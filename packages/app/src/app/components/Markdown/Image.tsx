@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import Modal from 'react-modal';
 import { Text, Element, Button, IconButton } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -9,7 +9,7 @@ export const Image: React.FC<{
   alt: string;
   ignorePrivateSandboxRestriction?: boolean;
 }> = props => {
-  const { state } = useOvermind();
+  const state = useAppState();
   const [modalOpen, setModalOpen] = useState(false);
   const privateSandbox =
     state.editor.currentSandbox.privacy === 1 ||

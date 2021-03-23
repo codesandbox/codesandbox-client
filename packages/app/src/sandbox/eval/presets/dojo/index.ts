@@ -39,7 +39,7 @@ export default function initialize() {
 
   preset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },
-    { transpiler: csbDynamicImportTranspiler }
+    { transpiler: csbDynamicImportTranspiler },
   ]);
 
   preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [

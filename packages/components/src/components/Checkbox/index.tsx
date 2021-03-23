@@ -7,7 +7,7 @@ import { Text } from '../Text';
 
 interface ICheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   checked?: boolean;
-  label?: string | React.Element;
+  label?: string | React.ReactElement;
   id?: string;
 }
 

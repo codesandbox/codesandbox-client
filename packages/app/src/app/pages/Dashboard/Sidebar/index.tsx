@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
 import { orderBy } from 'lodash-es';
 import { join, dirname } from 'path';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
@@ -46,7 +46,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSidebarToggle,
   ...props
 }) => {
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const [activeAccount, setActiveAccount] = useState<{
     id: string;
     name: string;
@@ -215,6 +216,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
             page="deleted"
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
+          />
+          <Element marginTop={8}>
+            <Menu.Divider />
+          </Element>
+          <RowItem
+            name="Shared With Me"
+            page="shared"
+            path={dashboardUrls.shared(activeTeam)}
+            icon="sharing"
+          />
+          <RowItem
+            name="Likes by Me"
+            page="liked"
+            path={dashboardUrls.liked(activeTeam)}
+            icon="heart"
           />
         </List>
         <Element margin={4}>
@@ -452,7 +468,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   folderPath,
   folders,
 }) => {
-  const { actions, state } = useOvermind();
+  const actions = useActions();
+  const state = useAppState();
 
   const {
     menuState: {
@@ -652,7 +669,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
               })}
             />
           ) : (
-            <Element as="span" css={css({ width: 5, flexShrink: 0 })} />
+            <Element as="span" css={css({ width: 4, flexShrink: 0 })} />
           )}
 
           <Stack align="center" gap={2} css={{ width: 'calc(100% - 28px)' }}>

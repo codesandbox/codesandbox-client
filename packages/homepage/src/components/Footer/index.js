@@ -25,7 +25,7 @@ const footerNavElements = [
       {
         text: 'Feedback',
         link: '/feedback',
-      },      
+      },
       {
         text: 'What’s New',
         link: '/changelog',
@@ -40,6 +40,7 @@ const footerNavElements = [
         link: '/explore',
       },
       {
+        external: true,
         text: 'Search Sandboxes',
         link: '/search',
       },
@@ -68,7 +69,7 @@ const footerNavElements = [
       {
         text: 'Pricing',
         link: '/pricing',
-      },      
+      },
       {
         text: 'Company',
         link: '/company',
@@ -82,9 +83,13 @@ const footerNavElements = [
         link: '/jobs',
       },
       {
-        text: 'Legal',
-        link: '/legal',
-      }      
+        text: 'Terms Of Use',
+        link: '/legal/terms',
+      },
+      {
+        text: 'Privacy Policy',
+        link: '/legal/privacy',
+      },
     ],
   },
   {

@@ -21,7 +21,7 @@ const handleClick = func => e => {
   func();
 };
 
-function EditIcons({
+export function EditIcons({
   className = undefined,
   hovering,
   onDelete,
@@ -104,5 +104,3 @@ function EditIcons({
     </div>
   );
 }
-
-export default EditIcons;

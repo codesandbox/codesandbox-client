@@ -42,9 +42,7 @@ const Experiment = () => (
         zIndex: 2,
       }}
     >
-      <H2 css={'white-space: pre-line;'}>
-        Free for personal use
-      </H2>
+      <H2 css={'white-space: pre-line;'}>Free for personal use</H2>
       <P
         big
         muted
@@ -55,8 +53,9 @@ const Experiment = () => (
           text-align: center;
         `}
       >
-        Create static sites, components, or full-stack web apps with a community 
-        who’ve crafted&nbsp;<SandboxCount /> public sandboxes and counting.
+        Create static sites, components, or full-stack web apps with a community
+        who’ve crafted&nbsp;
+        <SandboxCount /> public sandboxes and counting.
       </P>
       <Button
         style={{

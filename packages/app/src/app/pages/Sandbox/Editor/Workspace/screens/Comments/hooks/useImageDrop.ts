@@ -13,6 +13,7 @@ const toBase64 = (file: File) =>
         const ctx = canvas.getContext('2d');
 
         const image = new Image();
+        // eslint-disable-next-line func-names
         image.onload = function () {
           const minWidth = Math.min(image.width, MAX_IMAGE_WIDTH);
           const resolution = [
@@ -41,6 +42,7 @@ export const useImageDrop = ({
 }) => {
   React.useEffect(() => {
     if (ref.current) {
+      const currentRef = ref.current;
       const onDropListener = (event: DragEvent) => {
         const file = event.dataTransfer.files[0];
 
@@ -48,7 +50,7 @@ export const useImageDrop = ({
           const fileName = file.name.replace(/\s/g, '_');
           toBase64(file)
             .then(({ src, resolution }) => {
-              const currentCaretIndex = ref.current.selectionStart;
+              const currentCaretIndex = currentRef.selectionStart;
               try {
                 const leadingValue = value.substr(0, currentCaretIndex);
                 const tailingValue = value.substr(currentCaretIndex);
@@ -61,8 +63,7 @@ export const useImageDrop = ({
                 // We can not update cursor position until React has actually
                 // updated the textarea
                 setTimeout(() => {
-                  ref.current.selectionEnd =
-                    currentCaretIndex + imageRef.length;
+                  currentRef.selectionEnd = currentCaretIndex + imageRef.length;
                 });
               } catch {
                 // Unmounted
@@ -73,13 +74,14 @@ export const useImageDrop = ({
             });
         }
       };
-      ref.current.addEventListener('drop', onDropListener);
+      currentRef.addEventListener('drop', onDropListener);
 
       return () => {
-        ref.current.removeEventListener('drop', onDropListener);
+        currentRef.removeEventListener('drop', onDropListener);
       };
     }
 
     return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref.current, value]);
 };

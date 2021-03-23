@@ -6,9 +6,15 @@ export const JS = {
 import React from 'react';
 import { render } from 'react-dom';
 export default function(module) {
-  const node = document.createElement('div');
-  document.body.appendChild(node);
-  render(React.createElement(module.default), node);
+  let root = document.getElementById('root');
+
+  if (!root) {
+    root = document.createElement('div');
+    root.id = 'root';
+    document.body.appendChild(root);
+  }
+
+  render(React.createElement(module.default), root);
 }
 `,
 };

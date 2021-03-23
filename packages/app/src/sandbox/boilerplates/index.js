@@ -11,9 +11,10 @@ export async function evalBoilerplates(boilerplates) {
       };
 
       const manager = getCurrentManager();
-
-      await manager.transpileModules(fakeModule);
-      const module = manager.evaluateModule(fakeModule);
+      const tModule = manager.getTranspiledModule(fakeModule);
+      const module = await tModule
+        .transpile(manager)
+        .then(() => tModule.evaluate(manager, { force: true }));
 
       return { ...boilerplate, module };
     })

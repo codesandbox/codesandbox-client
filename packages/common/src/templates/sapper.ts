@@ -27,7 +27,7 @@ export default new Template(
     extraConfigurations: {
       '/sandbox.config.json': extendedSandboxConfig,
     },
-    netlify: false,
+    staticDeployment: false,
     mainFile: ['/src/routes/index.html'],
     showOnHomePage: true,
   }

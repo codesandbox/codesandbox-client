@@ -14,6 +14,6 @@ export default new Template(
     },
     mainFile: ['/src/main.ts'],
     showOnHomePage: true,
-    netlify: false,
+    staticDeployment: false,
   }
 );

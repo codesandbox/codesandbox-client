@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import { format } from 'date-fns';
 import {
@@ -23,24 +23,22 @@ import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
-  WorkspaceSubscriptionTypes,
-  SubscriptionBillingInterval,
-  WorkspaceSubscriptionOrigin,
+  SubscriptionType,
+  SubscriptionInterval,
+  SubscriptionOrigin,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 
 export const WorkspaceSettings = () => {
+  const actions = useActions();
+  const effects = useEffects();
   const {
-    state: {
-      user: stateUser,
-      activeTeamInfo: team,
-      activeWorkspaceAuthorization,
-    },
-    actions,
-    effects,
-  } = useOvermind();
+    user: stateUser,
+    activeTeamInfo: team,
+    activeWorkspaceAuthorization,
+  } = useAppState();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -97,7 +95,7 @@ export const WorkspaceSettings = () => {
   // then removed some members from the team
   const numberOfUnusedSeats =
     team.subscription &&
-    team.subscription.billingInterval === SubscriptionBillingInterval.Yearly
+    team.subscription.billingInterval === SubscriptionInterval.Yearly
       ? team.subscription.quantity - numberOfEditors
       : 0;
 
@@ -105,12 +103,12 @@ export const WorkspaceSettings = () => {
   // throw them a confirmation modal
   const confirmNewMemberAddition =
     team?.subscription &&
-    team?.subscription.origin !== WorkspaceSubscriptionOrigin.Pilot &&
+    team?.subscription.origin !== SubscriptionOrigin.Pilot &&
     numberOfUnusedSeats === 0 &&
     newMemberAuthorization !== TeamMemberAuthorization.Read;
   const confirmMemberRoleChange =
     team?.subscription &&
-    team?.subscription.origin !== WorkspaceSubscriptionOrigin.Pilot &&
+    team?.subscription.origin !== SubscriptionOrigin.Pilot &&
     numberOfUnusedSeats === 0;
 
   const onInviteSubmit = async event => {
@@ -282,7 +280,7 @@ export const WorkspaceSettings = () => {
                   )}
                 </Stack>
                 <Text size={3}>
-                  {team?.subscription?.type === WorkspaceSubscriptionTypes.Team
+                  {team?.subscription?.type === SubscriptionType.TeamPro
                     ? 'Team Pro'
                     : 'Team (Free)'}
                 </Text>
@@ -344,7 +342,7 @@ export const WorkspaceSettings = () => {
         </Card>
         {activeWorkspaceAuthorization === TeamMemberAuthorization.Admin ? (
           <div>
-            {team?.subscription?.type === WorkspaceSubscriptionTypes.Team ? (
+            {team?.subscription?.type === SubscriptionType.TeamPro ? (
               <Card>
                 <Stack direction="vertical" gap={2}>
                   <Stack direction="vertical" gap={4}>
@@ -505,7 +503,7 @@ export const WorkspaceSettings = () => {
               onInputValueChange={val => setInviteValue(val)}
               style={{ paddingRight: 80 }}
             />
-            {team?.subscription?.type === WorkspaceSubscriptionTypes.Team ? (
+            {team?.subscription?.type === SubscriptionType.TeamPro ? (
               <Menu>
                 <Menu.Button
                   css={css({

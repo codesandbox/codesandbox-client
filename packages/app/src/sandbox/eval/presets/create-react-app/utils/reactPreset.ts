@@ -146,10 +146,20 @@ export const reactPreset = babelConfig => {
           preset.registerTranspiler(() => true, [
             { transpiler: rawTranspiler },
           ]);
+
+          // Try to preload jsx-runtime
+          manager
+            .resolveTranspiledModuleAsync('react/jsx-runtime')
+            .then(x => {
+              x.transpile(manager);
+            })
+            .catch(() => {
+              /* Ignore */
+            });
         }
       },
       preEvaluate: async manager => {
-        if (manager.isFirstLoad) {
+        if (manager.isFirstLoad && !process.env.SANDPACK) {
           await initializeReactDevTools();
         }
 

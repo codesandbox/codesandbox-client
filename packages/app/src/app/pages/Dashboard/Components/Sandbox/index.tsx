@@ -4,7 +4,7 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
 
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -58,10 +58,8 @@ function getFolderName(item: GenericSandboxProps['item']): string {
 }
 
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
-  const {
-    state: { dashboard, activeWorkspaceAuthorization },
-    actions,
-  } = useOvermind();
+  const { dashboard, activeWorkspaceAuthorization } = useAppState();
+  const actions = useActions();
 
   const { sandbox, type } = item;
 
@@ -285,6 +283,16 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     });
   }, [preview]);
 
+  if (page === 'liked') {
+    return (
+      <Component
+        {...sandboxProps}
+        {...interactionProps}
+        isScrolling={isScrolling}
+      />
+    );
+  }
+
   return (
     <div {...dragProps}>
       <Component
@@ -299,9 +307,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 export const Sandbox = GenericSandbox;
 
 export const SkeletonSandbox = () => {
-  const {
-    state: { dashboard },
-  } = useOvermind();
+  const { dashboard } = useAppState();
 
   const location = useLocation();
 

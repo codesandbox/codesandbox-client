@@ -1,7 +1,7 @@
 import React from 'react';
 import { Profile } from '@codesandbox/common/lib/types';
 import { motion } from 'framer-motion';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Grid,
@@ -20,15 +20,11 @@ import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 
 export const ProfileCard = () => {
+  const { updateUserProfile } = useActions().profile;
   const {
-    actions: {
-      profile: { updateUserProfile },
-    },
-    state: {
-      user: loggedInUser,
-      profile: { current: user },
-    },
-  } = useOvermind();
+    user: loggedInUser,
+    profile: { current: user },
+  } = useAppState();
 
   const [editing, setEditing] = React.useState(false);
   const [bio, setBio] = React.useState(user.bio || '');

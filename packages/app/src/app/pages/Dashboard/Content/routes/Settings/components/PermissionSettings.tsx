@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
   Grid,
@@ -11,27 +11,22 @@ import {
   Switch,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import {
-  TeamMemberAuthorization,
-  WorkspaceSubscriptionTypes,
-} from 'app/graphql/types';
+import { TeamMemberAuthorization, SubscriptionType } from 'app/graphql/types';
 import { Alert } from './Alert';
 
 export const PermissionSettings = () => {
   const {
-    state: {
-      activeTeamInfo,
-      personalWorkspaceId,
-      activeWorkspaceAuthorization,
-    },
-  } = useOvermind();
+    activeTeamInfo,
+    personalWorkspaceId,
+    activeWorkspaceAuthorization,
+  } = useAppState();
 
   // different scenarios
   const isPersonalWorkspace = activeTeamInfo.id === personalWorkspaceId;
   const isTeamPro =
-    activeTeamInfo?.subscription?.type === WorkspaceSubscriptionTypes.Team;
+    activeTeamInfo?.subscription?.type === SubscriptionType.TeamPro;
   const isPersonalPro =
-    activeTeamInfo?.subscription?.type === WorkspaceSubscriptionTypes.Personal;
+    activeTeamInfo?.subscription?.type === SubscriptionType.PersonalPro;
   const isAdmin =
     activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
 
@@ -92,12 +87,8 @@ const privacyOptions = {
 };
 
 const MinimumPrivacy = ({ disabled }: { disabled: boolean }) => {
-  const {
-    state: { activeTeamInfo },
-    actions: {
-      dashboard: { setTeamMinimumPrivacy },
-    },
-  } = useOvermind();
+  const { activeTeamInfo } = useAppState();
+  const { setTeamMinimumPrivacy } = useActions().dashboard;
 
   const [minimumPrivacy, setMinimumPrivacy] = React.useState(
     activeTeamInfo.settings.minimumPrivacy
@@ -184,17 +175,11 @@ const MinimumPrivacy = ({ disabled }: { disabled: boolean }) => {
 };
 
 const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
+  const { settings } = useAppState().activeTeamInfo;
   const {
-    state: {
-      activeTeamInfo: { settings },
-    },
-    actions: {
-      dashboard: {
-        setWorkspaceSandboxSettings,
-        setDefaultTeamMemberAuthorization,
-      },
-    },
-  } = useOvermind();
+    setWorkspaceSandboxSettings,
+    setDefaultTeamMemberAuthorization,
+  } = useActions().dashboard;
 
   const [preventSandboxExport, setPreventSandboxExport] = React.useState(
     settings.preventSandboxExport

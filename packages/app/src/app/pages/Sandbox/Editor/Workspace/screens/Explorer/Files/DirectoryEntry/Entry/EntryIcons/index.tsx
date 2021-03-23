@@ -16,7 +16,6 @@ class GetIcon extends Component<Props> {
 
   getIcon = async type => {
     const icon = await getIconURL(type);
-
     this.setState({
       icon,
     });
@@ -47,7 +46,7 @@ class GetIcon extends Component<Props> {
   }
 }
 
-const EntryIcon: React.FC<Props> = ({
+export const EntryIcons: React.FC<Props> = ({
   type,
   width = 16,
   height = 16,
@@ -57,5 +56,3 @@ const EntryIcon: React.FC<Props> = ({
     <GetIcon type={type} error={error} width={width} height={height} />
   </div>
 );
-
-export default EntryIcon;

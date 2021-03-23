@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, Element, Button, Link, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 const NewButton = ({ children, ...props }) => (
@@ -31,17 +31,8 @@ const NewButton = ({ children, ...props }) => (
 );
 
 export const CreateProfile = ({ importFile }) => {
-  const {
-    state: {
-      preferences: { settingsSync },
-    },
-    actions,
-  } = useOvermind();
-
-  const createPreferencesProfile = () => {
-    track('Preferences Profiles - Create New Profile');
-    actions.preferences.createPreferencesProfile();
-  };
+  const { createPreferencesProfile } = useActions().preferences;
+  const { settingsSync } = useAppState().preferences;
 
   return (
     <>
@@ -59,7 +50,10 @@ export const CreateProfile = ({ importFile }) => {
       <Stack gap={5}>
         <NewButton
           disabled={settingsSync.syncing}
-          onClick={createPreferencesProfile}
+          onClick={() => {
+            track('Preferences Profiles - Create New Profile');
+            createPreferencesProfile();
+          }}
         >
           Create new profile
         </NewButton>

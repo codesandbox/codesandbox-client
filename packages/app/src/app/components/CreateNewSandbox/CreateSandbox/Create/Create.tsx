@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Scrollable } from '@codesandbox/common/lib/components/Scrollable';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { LinkButton } from 'app/components/LinkButton';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from '../elements';
@@ -15,7 +15,8 @@ interface CreateProps {
 }
 
 export const Create: React.FC<CreateProps> = ({ collectionId }) => {
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const [filter, setFilter] = React.useState('');
   const [officialTemplateInfos, setOfficialTemplates] = React.useState([]);
 

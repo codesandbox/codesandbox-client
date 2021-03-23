@@ -1,4 +1,5 @@
 const env = require('@codesandbox/common/lib/config/env');
+const semver = require('semver');
 const slugify = require('@sindresorhus/slugify');
 const { createFilePath } = require('gatsby-source-filesystem');
 const noop = require('lodash/noop');
@@ -8,6 +9,11 @@ const getRelativePath = absolutePath => absolutePath.replace(__dirname, '');
 
 const getNodeType = ({ fileAbsolutePath }) =>
   getRelativePath(fileAbsolutePath).split('/')[2];
+
+const getEpisodeNumber = (filePath, podcast) => {
+  if (!filePath || !filePath.trim().length) return '';
+  return parseInt(filePath.split(`/${podcast}/`)[1].split('/')[0], 10);
+};
 
 const getBlogNodeInfo = ({
   node: {
@@ -167,8 +173,14 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const docsTemplate = resolve(__dirname, './src/templates/docs.js');
   const blogTemplate = resolve(__dirname, './src/templates/post.js');
+  const oldTermsTemplate = resolve(__dirname, './src/templates/terms.js');
+  const oldPrivacyTemplate = resolve(__dirname, './src/templates/privacy.js');
 
   const featureTemplate = resolve(__dirname, './src/templates/feature.js');
+  const episodeTemplate = resolve(
+    __dirname,
+    './src/templates/podcast-episode.js'
+  );
   // Redirect /index.html to root.
   createRedirect({
     fromPath: '/index.html',
@@ -267,6 +279,166 @@ exports.createPages = async ({ graphql, actions }) => {
       createPage({
         path: edge.node.frontmatter.slug,
         component: featureTemplate,
+        context: { id: edge.node.id },
+      });
+    });
+  }
+
+  // Podcasts
+
+  const version1 = await graphql(`
+    {
+      allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/podcasts/version-one/" } }
+      ) {
+        edges {
+          node {
+            id
+            fileAbsolutePath
+            frontmatter {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (version1.data) {
+    version1.data.allMarkdownRemark.edges.forEach(edge => {
+      const ids = version1.data.allMarkdownRemark.edges
+        .map(e => ({
+          id: e.node.id,
+          episodeNumber: getEpisodeNumber(
+            e.node.fileAbsolutePath,
+            'version-one'
+          ),
+        }))
+        .filter(
+          file =>
+            file.episodeNumber ===
+            getEpisodeNumber(edge.node.fileAbsolutePath, 'version-one')
+        )
+        .map(a => a.id);
+
+      createPage({
+        path: `/podcasts/version-one/` + edge.node.frontmatter.slug,
+        component: episodeTemplate,
+        context: { ids },
+      });
+    });
+  }
+
+  const csb = await graphql(`
+    {
+      allMarkdownRemark(
+        filter: {
+          fileAbsolutePath: { regex: "/podcasts/codesandbox-podcast/" }
+        }
+      ) {
+        edges {
+          node {
+            id
+            fileAbsolutePath
+            frontmatter {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (csb.data) {
+    csb.data.allMarkdownRemark.edges
+      .filter(e => e.node.frontmatter.slug)
+      .forEach(edge => {
+        const ids = csb.data.allMarkdownRemark.edges
+          .map(e => ({
+            id: e.node.id,
+            episodeNumber: getEpisodeNumber(
+              e.node.fileAbsolutePath,
+              'codesandbox-podcast'
+            ),
+          }))
+          .filter(
+            file =>
+              file.episodeNumber ===
+              getEpisodeNumber(
+                edge.node.fileAbsolutePath,
+                'codesandbox-podcast'
+              )
+          )
+          .map(a => a.id);
+        createPage({
+          path: `/podcasts/codesandbox-podcast/` + edge.node.frontmatter.slug,
+          component: episodeTemplate,
+          context: { ids },
+        });
+      });
+  }
+
+  const allOldTerms = await graphql(`
+    {
+      allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/legal/terms/" } }
+      ) {
+        edges {
+          node {
+            id
+            html
+            frontmatter {
+              version
+              lastEdited
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (allOldTerms.data) {
+    const edges = allOldTerms.data.allMarkdownRemark.edges;
+    const versions = edges.map(edge => edge.node.frontmatter.version);
+    const all = versions.sort(semver.rcompare);
+    const olderVersions = edges.filter(
+      edge => edge.node.frontmatter.version !== all[0]
+    );
+    olderVersions.forEach(edge => {
+      createPage({
+        path: `/legal/terms/version/` + edge.node.frontmatter.version,
+        component: oldTermsTemplate,
+        context: { id: edge.node.id },
+      });
+    });
+  }
+
+  const oldPrivacy = await graphql(`
+    {
+      allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/legal/privacy/" } }
+      ) {
+        edges {
+          node {
+            id
+            html
+            frontmatter {
+              version
+              lastEdited
+            }
+          }
+        }
+      }
+    }
+  `);
+  if (oldPrivacy.data) {
+    const edges = oldPrivacy.data.allMarkdownRemark.edges;
+    const versions = edges.map(edge => edge.node.frontmatter.version);
+    const all = versions.sort(semver.rcompare);
+    const olderVersions = edges.filter(
+      edge => edge.node.frontmatter.version !== all[0]
+    );
+    olderVersions.forEach(edge => {
+      createPage({
+        path: `/legal/privacy/version/` + edge.node.frontmatter.version,
+        component: oldPrivacyTemplate,
         context: { id: edge.node.id },
       });
     });

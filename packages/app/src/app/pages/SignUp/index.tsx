@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { useParams } from 'react-router-dom';
 import history from 'app/utils/history';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 
 export const SignUp: React.FC = () => {
   const params: { userId?: string } = useParams();
-  const { actions } = useOvermind();
+  const actions = useActions();
 
   useEffect(() => {
     if (window.opener?.location?.origin === window.location.origin) {
@@ -23,7 +23,7 @@ export const SignUp: React.FC = () => {
       actions.setPendingUserId(params.userId);
       history.push('/signin');
     }
-  }, [params.userId]);
+  }, [params.userId, actions]);
 
   return null;
 };

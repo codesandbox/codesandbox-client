@@ -1,12 +1,12 @@
 import css from '@styled-system/css';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { ThemeProvider, Element, Stack } from '@codesandbox/components';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
-import Editor from './Editor';
+import { Editor } from './Editor';
 import { GitHubError } from './GitHubError';
 
 interface Props {
@@ -20,7 +20,8 @@ interface Props {
 
 export const Sandbox = React.memo<Props>(
   ({ match, showNewSandboxModal }) => {
-    const { state, actions } = useOvermind();
+    const state = useAppState();
+    const actions = useActions();
 
     useEffect(() => {
       if (!showNewSandboxModal) {
@@ -48,6 +49,7 @@ export const Sandbox = React.memo<Props>(
       actions.editor,
       actions.preferences,
       showNewSandboxModal,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       match?.params,
     ]);
 

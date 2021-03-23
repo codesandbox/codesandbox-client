@@ -16,7 +16,7 @@ import {
   UploadFileIcon,
 } from '../../icons';
 import EditIcons from './EditIcons';
-import EntryIcons from './EntryIcons';
+import { EntryIcons } from './EntryIcons';
 import { FileInput } from './FileInput';
 
 interface IEntryProps {
@@ -55,7 +55,7 @@ interface IEntryProps {
   state?: string;
 }
 
-const Entry: React.FC<IEntryProps> = ({
+const EntryComponent: React.FC<IEntryProps> = ({
   title,
   id,
   readonly,
@@ -133,6 +133,16 @@ const Entry: React.FC<IEntryProps> = ({
   const onMouseEnter = () => setHovering(true);
   const onMouseLeave = () => setHovering(false);
 
+  const onKeyPress = e => {
+    if (e.key === 'Enter') {
+      if (setCurrentModule) {
+        setCurrentModuleAction();
+      } else if (typeof onClick === 'function') {
+        onClick();
+      }
+    }
+  };
+
   const items = [
     [
       isNotSynced && {
@@ -177,8 +187,12 @@ const Entry: React.FC<IEntryProps> = ({
         <ListAction
           justify="space-between"
           onClick={setCurrentModule ? setCurrentModuleAction : onClick}
+          onKeyPress={onKeyPress}
+          // @ts-ignore
+          tabIndex="0"
           onDoubleClick={markTabsNotDirty}
           aria-selected={active}
+          aria-expanded={active}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
           css={{
@@ -288,4 +302,8 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-export default DragSource('ENTRY', entrySource, collectSource)(Entry);
+export const Entry = DragSource(
+  'ENTRY',
+  entrySource,
+  collectSource
+)(EntryComponent);

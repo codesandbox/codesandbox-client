@@ -15,17 +15,15 @@ import {
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
-import { WorkspaceSubscriptionOrigin } from 'app/graphql/types';
+import { useAppState, useActions } from 'app/overmind';
+import { SubscriptionOrigin } from 'app/graphql/types';
 
 import { Header } from '../../../../Components/Header';
 import { Card } from '../components';
 
 export const WorkspaceSettings = () => {
-  const {
-    state: { user, activeTeam, activeTeamInfo },
-    actions,
-  } = useOvermind();
+  const { user, activeTeam, activeTeamInfo } = useAppState();
+  const actions = useActions();
 
   useEffect(() => {
     actions.dashboard.dashboardMounted();
@@ -234,7 +232,7 @@ export const WorkspaceSettings = () => {
               {activeTeamInfo?.subscription && (
                 <div>
                   {activeTeamInfo?.subscription.origin ===
-                  WorkspaceSubscriptionOrigin.Patron ? (
+                  SubscriptionOrigin.Patron ? (
                     <Text size={3} variant="muted">
                       USD {user?.subscription.amount}{' '}
                     </Text>

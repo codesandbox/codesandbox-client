@@ -17,7 +17,7 @@ import {
   REPLY_TRANSITION_DELAY,
 } from 'app/constants';
 import { CommentWithRepliesFragment } from 'app/graphql/types';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { OPTIMISTIC_COMMENT_ID } from 'app/overmind/namespaces/comments/state';
 
 import {
@@ -44,13 +44,14 @@ export const CommentDialog: React.FC<CommentDialogProps> = props =>
   ReactDOM.createPortal(<Dialog {...props} />, document.body);
 
 export const Dialog: React.FC<CommentDialogProps> = props => {
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const controller = useAnimation();
 
   const { comment } = props;
   const replies = comment.comments;
 
-  // This comment doens't exist in the database, it's an optimistic comment
+  // This comment doesn't exist in the database, it's an optimistic comment
   const isNewComment = comment.id === OPTIMISTIC_COMMENT_ID;
 
   const [editing, setEditing] = useState(isNewComment);
@@ -221,7 +222,9 @@ const DialogAddComment: React.FC<{
   onDragHandlerPan: (deltaX: number, deltaY: number) => void;
   onDragHandlerPanEnd: () => void;
 }> = ({ comment, onSave, onDragHandlerPan, onDragHandlerPanEnd }) => {
-  const { actions, effects } = useOvermind();
+  const actions = useActions();
+  const effects = useEffects();
+
   const [elements] = useCodesandboxCommentEditor({
     initialValue: '',
     initialMentions: {},
@@ -314,10 +317,8 @@ const DragHandle: React.FC<{
 );
 
 const DialogHeader = ({ comment, hasShadow }) => {
-  const {
-    state: { editor, user },
-    actions: { comments },
-  } = useOvermind();
+  const { editor, user } = useAppState();
+  const { comments } = useActions();
 
   const closeDialog = () => comments.closeComment();
 
@@ -378,11 +379,9 @@ const DialogHeader = ({ comment, hasShadow }) => {
 };
 
 const CommentBody = ({ comment, editing, setEditing, hasReplies }) => {
-  const {
-    state,
-    effects,
-    actions: { comments },
-  } = useOvermind();
+  const { comments } = useActions();
+  const state = useAppState();
+  const effects = useEffects();
   const isCommenter = state.user.id === comment.user.id;
 
   return (
@@ -663,7 +662,7 @@ const Replies = ({ replies, replyCount, listRef, repliesRenderedCallback }) => {
 };
 
 const AddReply: React.FC<any> = ({ comment, ...props }) => {
-  const { actions } = useOvermind();
+  const actions = useActions();
   const [elements] = useCodesandboxCommentEditor({
     initialValue: '',
     initialMentions: {},

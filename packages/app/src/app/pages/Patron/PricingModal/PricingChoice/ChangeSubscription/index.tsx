@@ -7,8 +7,7 @@ import React, {
 } from 'react';
 
 import { LinkButton } from 'app/components/LinkButton';
-import { useOvermind } from 'app/overmind';
-
+import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
   Buttons,
@@ -21,19 +20,17 @@ import {
 
 export const ChangeSubscription: FunctionComponent = () => {
   const {
-    actions: {
-      modalOpened,
-      patron: {
-        cancelSubscriptionClicked,
-        tryAgainClicked,
-        updateSubscriptionClicked,
-      },
+    modalOpened,
+    patron: {
+      cancelSubscriptionClicked,
+      tryAgainClicked,
+      updateSubscriptionClicked,
     },
-    state: {
-      patron: { error, isUpdatingSubscription },
-      user: { subscription },
-    },
-  } = useOvermind();
+  } = useActions();
+  const {
+    patron: { error, isUpdatingSubscription },
+    user: { subscription },
+  } = useAppState();
   const [coupon, setCoupon] = useState('');
 
   if (error) {

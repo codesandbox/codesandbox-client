@@ -98,7 +98,7 @@ export type Template = {
   popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
-  netlify: boolean;
+  staticDeployment: boolean;
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
   showCube: boolean;
@@ -387,7 +387,7 @@ type PackageVersionInfo = {
 export type NpmManifest = {
   name: string;
   description: string;
-  'dist-tags': {
+  'dist-tags'?: {
     [tag: string]: string;
   };
   versions: {

@@ -13,11 +13,11 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import css from '@styled-system/css';
 import { format } from 'date-fns';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { SyncedIcon, OutOfSyncIcon } from './Icons';
 
 export const Profile = ({ setting }: { setting: SettingSync }) => {
-  const { actions } = useOvermind();
+  const preferences = useActions().preferences;
   const [rename, setRename] = useState<boolean>(false);
   const [isSynced, setIsSynced] = useState<boolean | null>(null);
   const [name, setName] = useState<string>(setting.name);
@@ -25,7 +25,7 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
   const renameProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await actions.preferences.renameUserSettings({ name, id: setting.id });
+      await preferences.renameUserSettings({ name, id: setting.id });
 
       setRename(false);
     } catch {
@@ -36,13 +36,14 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
   const checkIfSyncedPrefs = () => {
     const settingFromComputer = localStorage.getItem(`profile-${setting.id}`);
     if (settingFromComputer) {
-      const synced = actions.preferences.checkifSynced(setting.settings);
+      const synced = preferences.checkifSynced(setting.settings);
       setIsSynced(synced);
     }
   };
 
   useEffect(() => {
     checkIfSyncedPrefs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -108,7 +109,7 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
                 <Menu.Item
                   onSelect={() => {
                     track('Preferences Profiles - Apply Profile');
-                    actions.preferences.applyPreferences(setting.settings);
+                    preferences.applyPreferences(setting.settings);
                   }}
                 >
                   Apply
@@ -116,7 +117,7 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
                 <Menu.Item
                   onSelect={() => {
                     track('Preferences Profiles - Update Profile');
-                    actions.preferences.createPreferencesProfile();
+                    preferences.createPreferencesProfile();
                     setIsSynced(true);
                   }}
                 >
@@ -129,7 +130,7 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
             <Menu.Item
               onSelect={() => {
                 track('Preferences Profiles - Download Profile');
-                actions.preferences.downloadPreferences(setting);
+                preferences.downloadPreferences(setting);
               }}
             >
               Export Profile
@@ -138,7 +139,7 @@ export const Profile = ({ setting }: { setting: SettingSync }) => {
               css={css({ color: 'dangerButton.background' })}
               onSelect={() => {
                 track('Preferences Profiles - Delete Profile');
-                actions.preferences.deleteUserSetting(setting.id);
+                preferences.deleteUserSetting(setting.id);
               }}
             >
               Delete

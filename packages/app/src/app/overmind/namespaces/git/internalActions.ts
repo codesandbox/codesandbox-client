@@ -1,6 +1,6 @@
-import { AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 
-export const fetchGitChanges: AsyncAction = async ({ state, effects }) => {
+export const fetchGitChanges = async ({ state, effects }: Context) => {
   if (!state.editor.currentSandbox) {
     return;
   }

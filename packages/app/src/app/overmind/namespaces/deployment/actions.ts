@@ -1,4 +1,4 @@
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { AxiosError } from 'axios';
 import { get } from 'lodash-es';
 
@@ -13,11 +13,11 @@ const getVercelErrorMessage = (error: AxiosError) =>
     'An unknown error occurred when connecting to Vercel'
   );
 
-export const deployWithNetlify: AsyncAction = async ({
+export const deployWithNetlify = async ({
   effects,
   actions,
   state,
-}) => {
+}: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -25,27 +25,19 @@ export const deployWithNetlify: AsyncAction = async ({
   }
 
   state.deployment.deploying = true;
-  state.deployment.netlifyLogs = null;
-
-  const zip = await effects.zip.create(sandbox);
 
   try {
-    const id = await effects.netlify.deploy(zip.file, sandbox);
+    const id = await effects.netlify.deploy(sandbox);
     state.deployment.deploying = false;
 
     await actions.deployment.getNetlifyDeploys();
-    // Does not seem that we use this thing? Not in other code either
-    // const deploys = await actions.deployment.internal.getNetlifyDeploys();
+
     state.deployment.building = true;
-    await effects.netlify.waitForDeploy(id, logUrl => {
-      if (!state.deployment.netlifyLogs) {
-        state.deployment.netlifyLogs = logUrl;
-      }
-    });
-    effects.notificationToast.success('Sandbox Deployed');
+    await effects.netlify.getLogs(id);
+    effects.notificationToast.success('Sandbox Deploying');
   } catch (error) {
     actions.internal.handleError({
-      message: 'An unknown error occurred when deploying your Netlify site',
+      message: 'An error occurred when deploying your Netlify site',
       error,
     });
   }
@@ -53,25 +45,25 @@ export const deployWithNetlify: AsyncAction = async ({
   state.deployment.building = false;
 };
 
-export const getNetlifyDeploys: AsyncAction = async ({ state, effects }) => {
+export const getNetlifyDeploys = async ({ state, effects }: Context) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;
   }
 
   try {
-    state.deployment.netlifyClaimUrl = await effects.netlify.claimSite(
+    state.deployment.netlify.claimUrl = await effects.netlify.claimSite(
       sandbox.id
     );
-    state.deployment.netlifySite = await effects.netlify.getDeployments(
+    state.deployment.netlify.site = await effects.netlify.getDeployments(
       sandbox.id
     );
   } catch (error) {
-    state.deployment.netlifySite = null;
+    state.deployment.netlify.site = null;
   }
 };
 
-export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
+export const getDeploys = async ({ state, actions, effects }: Context) => {
   if (
     !state.user ||
     !state.user.integrations.zeit ||
@@ -80,14 +72,14 @@ export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
     return;
   }
 
-  state.deployment.gettingDeploys = true;
+  state.deployment.vercel.gettingDeploys = true;
 
   try {
     const vercelConfig = effects.vercel.getConfig(state.editor.currentSandbox);
 
-    state.deployment.hasAlias = !!vercelConfig.alias;
+    state.deployment.vercel.hasAlias = !!vercelConfig.alias;
     if (vercelConfig.name) {
-      state.deployment.sandboxDeploys = await effects.vercel.getDeployments(
+      state.deployment.vercel.deploys = await effects.vercel.getDeployments(
         vercelConfig.name
       );
     }
@@ -98,14 +90,10 @@ export const getDeploys: AsyncAction = async ({ state, actions, effects }) => {
     });
   }
 
-  state.deployment.gettingDeploys = false;
+  state.deployment.vercel.gettingDeploys = false;
 };
 
-export const deployClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const deployClicked = async ({ state, effects, actions }: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -126,7 +114,10 @@ export const deployClicked: AsyncAction = async ({
       }
     }
 
-    state.deployment.url = await effects.vercel.deploy(contents, sandbox);
+    state.deployment.vercel.url = await effects.vercel.deploy(
+      contents,
+      sandbox
+    );
   } catch (error) {
     actions.internal.handleError({
       message: getVercelErrorMessage(error),
@@ -139,11 +130,11 @@ export const deployClicked: AsyncAction = async ({
   actions.deployment.getDeploys();
 };
 
-export const deploySandboxClicked: AsyncAction = async ({
+export const deploySandboxClicked = async ({
   actions,
   effects,
   state,
-}) => {
+}: Context) => {
   state.currentModal = 'deployment';
 
   const vercelIntegration = state.user && state.user.integrations.zeit;
@@ -170,26 +161,26 @@ export const deploySandboxClicked: AsyncAction = async ({
     }
   }
 
-  state.deployment.url = null;
+  state.deployment.vercel.url = null;
 };
 
-export const setDeploymentToDelete: Action<string> = ({ state }, id) => {
-  state.deployment.deployToDelete = id;
+export const setDeploymentToDelete = ({ state }: Context, id: string) => {
+  state.deployment.vercel.deployToDelete = id;
 };
 
-export const deleteDeployment: AsyncAction = async ({
+export const deleteDeployment = async ({
   state,
   effects,
   actions,
-}) => {
-  const id = state.deployment.deployToDelete;
+}: Context) => {
+  const id = state.deployment.vercel.deployToDelete;
 
   if (!id) {
     return;
   }
 
   state.currentModal = null;
-  state.deployment.deploysBeingDeleted.push(id);
+  state.deployment.vercel.deploysBeingDeleted.push(id);
 
   try {
     await effects.vercel.deleteDeployment(id);
@@ -203,15 +194,15 @@ export const deleteDeployment: AsyncAction = async ({
     });
   }
 
-  state.deployment.deploysBeingDeleted.splice(
-    state.deployment.deploysBeingDeleted.indexOf(id),
+  state.deployment.vercel.deploysBeingDeleted.splice(
+    state.deployment.vercel.deploysBeingDeleted.indexOf(id),
     1
   );
 };
 
-export const aliasDeployment: AsyncAction<string> = async (
-  { state, effects, actions },
-  id
+export const aliasDeployment = async (
+  { state, effects, actions }: Context,
+  id: string
 ) => {
   if (!state.editor.currentSandbox) {
     return;
@@ -229,5 +220,55 @@ export const aliasDeployment: AsyncAction<string> = async (
       message: 'An unknown error occurred when aliasing your deployment',
       error,
     });
+  }
+};
+
+export const deployWithGitHubPages = async ({
+  effects,
+  actions,
+  state,
+}: Context) => {
+  const sandbox = state.editor.currentSandbox;
+
+  if (!sandbox) {
+    return;
+  }
+
+  state.deployment.deploying = true;
+
+  try {
+    await effects.githubPages.deploy(
+      sandbox,
+      state.deployment.githubSite.ghLogin
+    );
+    state.deployment.deploying = false;
+
+    state.deployment.building = true;
+    await effects.githubPages.getLogs(sandbox.id);
+    state.deployment.githubSite.ghPages = true;
+    effects.notificationToast.success('Sandbox Deploying');
+  } catch (error) {
+    actions.internal.handleError({
+      message: 'An error occurred when deploying your sandbox to GitHub Pages',
+      error,
+    });
+  }
+  state.deployment.deploying = false;
+  state.deployment.building = false;
+};
+
+export const fetchGithubSite = async ({ effects, state }: Context) => {
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+  try {
+    const site = await effects.githubPages.getSite(sandbox.id);
+    state.deployment.githubSite = {
+      ...site,
+      name: `csb-${sandbox.id}`,
+    };
+  } catch {
+    state.deployment.githubSite.name = `csb-${sandbox.id}`;
   }
 };

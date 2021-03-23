@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
@@ -216,9 +216,7 @@ export const VariableGrid = ({
   collectionId,
   page,
 }: VariableGridProps) => {
-  const {
-    state: { dashboard },
-  } = useOvermind();
+  const { dashboard } = useAppState();
 
   const location = useLocation();
 

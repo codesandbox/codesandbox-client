@@ -1,11 +1,11 @@
 import React from 'react';
 import css from '@styled-system/css';
 import { Stack, Text, Button, Element } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 export const SignInBanner = ({ theme }) => {
-  const { actions } = useOvermind();
+  const { signInClicked } = useActions();
   const dark = theme.type !== 'light';
 
   const Checkmark = ({ children }) => (
@@ -64,7 +64,7 @@ export const SignInBanner = ({ theme }) => {
           variant="secondary"
           onClick={() => {
             track('Sidebar Sign In Ad Clicked');
-            actions.signInClicked();
+            signInClicked();
           }}
           marginTop={2}
         >

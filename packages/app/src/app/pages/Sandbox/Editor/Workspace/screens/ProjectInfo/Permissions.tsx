@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   Collapsible,
   Link,
@@ -12,7 +12,6 @@ import {
   Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { WorkspaceSubscriptionTypes } from 'app/graphql/types';
 
 const icons = {
   0: () => <Icon size={10} name="globe" />,
@@ -22,26 +21,22 @@ const icons = {
 
 export const Permissions: FunctionComponent = () => {
   const {
-    actions: {
-      workspace: { sandboxPrivacyChanged },
-      editor: { setPreventSandboxLeaving, setPreventSandboxExport },
-    },
-    state: {
-      editor: { currentSandbox },
-      activeTeam,
-      activeTeamInfo,
-      activeWorkspaceAuthorization,
-    },
-  } = useOvermind();
+    workspace: { sandboxPrivacyChanged },
+    editor: { setPreventSandboxLeaving, setPreventSandboxExport },
+  } = useActions();
+  const {
+    editor: { currentSandbox },
+    activeTeam,
+    activeTeamInfo,
+    activeWorkspaceAuthorization,
+  } = useAppState();
 
   const isPaidUser = activeTeamInfo?.subscription;
 
   // if this user is not part of this workspace,
   // they should not see permissions at all
   const isActiveTeam = currentSandbox.team?.id === activeTeam;
-  const sandoxPermissionsVisible =
-    isActiveTeam &&
-    activeTeamInfo?.subscription?.type === WorkspaceSubscriptionTypes.Team;
+  const sandoxPermissionsVisible = isActiveTeam && activeTeamInfo?.subscription;
 
   const togglePreventSandboxLeaving = () => {
     setPreventSandboxLeaving(!currentSandbox.permissions.preventSandboxLeaving);

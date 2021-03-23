@@ -3,7 +3,6 @@ import { flatten } from 'lodash-es';
 import refreshBabelPlugin from 'react-refresh/babel';
 import chainingPlugin from '@babel/plugin-proposal-optional-chaining';
 import coalescingPlugin from '@babel/plugin-proposal-nullish-coalescing-operator';
-import * as envPreset from '@babel/preset-env';
 
 import delay from '@codesandbox/common/lib/utils/delay';
 
@@ -15,6 +14,8 @@ import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
 import renameImport from './plugins/babel-plugin-rename-imports';
+
+import { BABEL7_VERSION } from '../babel-version';
 
 import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
@@ -42,6 +43,9 @@ const { BrowserFS } = self;
 BrowserFS.configure({ fs: 'InMemory' }, () => {});
 
 self.process = {
+  cwd() {
+    return '/';
+  },
   env: { NODE_ENV: 'development', BABEL_ENV: 'development' },
   platform: 'linux',
   argv: [],
@@ -484,8 +488,12 @@ try {
 
   self.importScripts(
     process.env.NODE_ENV === 'development'
-      ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.12.12.js`
-      : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.12.12.min.js`
+      ? `${
+          process.env.CODESANDBOX_HOST || ''
+        }/static/js/babel.${BABEL7_VERSION}.js`
+      : `${
+          process.env.CODESANDBOX_HOST || ''
+        }/static/js/babel.${BABEL7_VERSION}.min.js`
   );
 
   remapBabelHack();
@@ -658,9 +666,13 @@ self.addEventListener('message', async event => {
         Babel.registerPreset('env', Babel.availablePresets.latest);
       }
 
-      if (version === 7) {
+      // A plugin reaches into the internal of the preset and the pre-bundled preset-env does not have this function
+      // Hence, for this particular case, we dynamically import the real @babel/preset-env
+      if (version === 7 && flattenedPresets.includes('@vue/app')) {
         // Hardcode, since we want to override env
-        Babel.availablePresets.env = envPreset;
+        Babel.availablePresets.env = await import(
+          /* webpackChunkName: 'babel-preset-env' */ '@babel/preset-env'
+        );
       }
 
       if (

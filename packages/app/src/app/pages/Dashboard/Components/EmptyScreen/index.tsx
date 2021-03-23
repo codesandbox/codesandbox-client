@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, Text, Button, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { PageTypes } from '../../types';
 import { ImportRepo } from '../Repo/ImportRepo';
@@ -15,9 +15,9 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
   collectionId,
   page,
 }) => {
-  const { actions } = useOvermind();
+  const { openCreateSandboxModal, modalOpened } = useActions();
 
-  const onClick = () => actions.openCreateSandboxModal({ collectionId });
+  const onClick = () => openCreateSandboxModal({ collectionId });
 
   if (page === 'search') {
     return (
@@ -98,7 +98,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
               as={Text}
               variant="link"
               onClick={() =>
-                actions.modalOpened({
+                modalOpened({
                   modal: 'feedback',
                   message: "I'd like more Always-On sandboxes",
                 })
@@ -108,6 +108,44 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
             </Button>
             if you need more Always on Sandboxes
           </Text>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  if (page === 'shared') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Stack
+          direction="vertical"
+          align="center"
+          gap={8}
+          css={{ width: 500, height: '100vh', userSelect: 'none' }}
+        >
+          <Stack direction="vertical" align="center" gap={1}>
+            <Text variant="muted" align="center">
+              Uh oh, you have not had any sandboxes shared with you yet.
+            </Text>
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  if (page === 'liked') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Stack
+          direction="vertical"
+          align="center"
+          gap={8}
+          css={{ width: 500, height: '100vh', userSelect: 'none' }}
+        >
+          <Stack direction="vertical" align="center" gap={1}>
+            <Text variant="muted" align="center">
+              Uh oh, you haven’t liked any sandboxes yet!
+            </Text>
+          </Stack>
         </Stack>
       </Stack>
     );

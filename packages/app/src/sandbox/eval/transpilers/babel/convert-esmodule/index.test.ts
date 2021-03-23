@@ -542,6 +542,19 @@ export function test3() {
     expect(result).toMatchSnapshot();
   });
 
+  it('retains import orders with re-exports', () => {
+    const code = `
+    import * as _TypeChecker from './propTypeChecker';
+    export { _TypeChecker as TypeChecker, _Kikker as Kikker };
+
+    export { default as getDataGroupBy } from './getDataGroupBy';
+
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
   it('predefines possible exports', () => {
     const code = `
       export const a = 5;
@@ -557,6 +570,19 @@ export function test3() {
       export { k as l } from './foo';
       export { m as default } from './foo';
     `;
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('can do array exports', () => {
+    const code = `
+    function a() {
+      return [1, 2];
+    }
+
+    export const [x, y] = a();
+    `;
+
     const result = convertEsModule(code);
     expect(result).toMatchSnapshot();
   });

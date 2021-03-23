@@ -10,7 +10,7 @@ import {
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Authorization } from 'app/graphql/types';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { formatDistanceStrict } from 'date-fns';
 import { useHistory } from 'react-router-dom';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -40,14 +40,11 @@ export const SandboxInvitation = ({
   authorization,
   insertedAt,
 }: ISandboxInvitationProps) => {
-  const {
-    actions: {
-      userNotifications: { updateReadStatus },
-    },
-  } = useOvermind();
+  const { updateReadStatus } = useActions().userNotifications;
   const [hover, setHover] = useState(false);
   const history = useHistory();
   const niceSandboxTitle = sandboxTitle || sandboxAlias || sandboxId;
+
   let nicePermissionName = 'view';
   if (authorization === Authorization.Comment) {
     nicePermissionName = 'comment on';

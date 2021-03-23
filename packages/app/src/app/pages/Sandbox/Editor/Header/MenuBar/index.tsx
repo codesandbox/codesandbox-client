@@ -1,7 +1,7 @@
 import './titlebar.css';
 
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 import React, { FunctionComponent, useEffect, useRef } from 'react';
 
 import {
@@ -26,13 +26,14 @@ const MenuBarSkeleton: FunctionComponent = () => (
 );
 
 export const MenuBar: FunctionComponent = () => {
-  const { state, effects } = useOvermind();
+  const { isLoading } = useAppState().editor;
+  const vscode = useEffects().vscode;
   const menuBarEl = useRef(null);
 
   useEffect(() => {
     // Get the menu bar part from vscode and mount it
-    menuBarEl.current.appendChild(effects.vscode.getMenubarElement());
-  }, [effects.vscode]);
+    menuBarEl.current.appendChild(vscode.getMenubarElement());
+  }, [vscode]);
 
   return (
     // Explicitly use inline styles here to override the vscode styles
@@ -41,11 +42,8 @@ export const MenuBar: FunctionComponent = () => {
       className="part titlebar"
       onClick={() => track('Editor - Click Menubar')}
     >
-      <Child
-        ref={menuBarEl}
-        style={state.editor.isLoading ? { display: 'none' } : null}
-      />
-      {state.editor.isLoading ? <MenuBarSkeleton /> : null}
+      <Child ref={menuBarEl} style={isLoading ? { display: 'none' } : null} />
+      {isLoading ? <MenuBarSkeleton /> : null}
     </Container>
   );
 };

@@ -13,7 +13,7 @@ import AppearanceIcon from 'react-icons/lib/md/color-lens';
 import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import IntegrationIcon from 'react-icons/lib/md/device-hub';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { CurrentUser } from '@codesandbox/common/lib/types';
 
 import { Alert } from '../Common/Alert';
@@ -114,13 +114,11 @@ const getItems = (
 
 export const PreferencesModal: FunctionComponent = () => {
   const {
-    state: {
-      isLoggedIn,
-      isPatron,
-      user,
-      preferences: { itemId = 'appearance' },
-    },
-  } = useOvermind();
+    isLoggedIn,
+    isPatron,
+    user,
+    preferences: { itemId = 'appearance' },
+  } = useAppState();
   const items = getItems(isLoggedIn, isPatron, user);
   const { Content } = items.find(({ id }) => id === itemId);
 

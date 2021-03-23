@@ -10,7 +10,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 // eslint-disable-next-line
 import Files from 'embed/components/Sidebar/FileTree';
 import React, { useEffect, useState } from 'react';
@@ -38,10 +38,8 @@ export const Field = ({ children, label }) => (
 );
 
 export const ShareModal: React.FC<Props> = () => {
-  const {
-    state: { editor },
-    effects,
-  } = useOvermind();
+  const { copyToClipboard } = useEffects().browser;
+  const { editor } = useAppState();
   const [copied, setCopied] = useState(false);
   const [state, updateState] = useState({
     view: VIEW_OPTIONS[0],
@@ -193,7 +191,7 @@ export const ShareModal: React.FC<Props> = () => {
                 window.setTimeout(() => {
                   setCopied(false);
                 }, 2000);
-                effects.browser.copyToClipboard(
+                copyToClipboard(
                   getIframeScript(sandbox, mainModule, state, 500)
                 );
               }}
@@ -274,7 +272,7 @@ export const ShareModal: React.FC<Props> = () => {
                   maxHeight: 300,
                   overflow: 'auto',
                   '> div > div[class*="FileContainer"]': {
-                    paddingLeft: 0,
+                    paddingLeft: '12px',
                   },
                 })}
               >

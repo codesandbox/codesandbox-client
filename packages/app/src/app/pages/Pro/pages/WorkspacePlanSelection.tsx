@@ -4,15 +4,15 @@ import { sortBy } from 'lodash-es';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Stack, Text, Menu, Icon, Button, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Step, Plan } from 'app/overmind/namespaces/pro/types';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
-  WorkspaceSubscription,
-  WorkspaceSubscriptionTypes,
-  SubscriptionBillingInterval,
-  WorkspaceSubscriptionOrigin,
+  ProSubscription,
+  SubscriptionType,
+  SubscriptionInterval,
+  SubscriptionOrigin,
 } from 'app/graphql/types';
 import { plans } from '../plans';
 
@@ -26,31 +26,29 @@ export const WorkspacePlanSelection: React.FC<{
   loading: boolean;
 }> = ({ loading }) => {
   const {
-    state: {
-      personalWorkspaceId,
-      user,
-      activeTeam,
-      activeTeamInfo,
-      dashboard,
-      pro: { selectedPlan },
-    },
-    actions: {
-      setActiveTeam,
-      modalOpened,
-      pro: { setStep, updateSelectedPlan, updateSeats },
-      patron: { cancelSubscriptionClicked },
-    },
-  } = useOvermind();
+    personalWorkspaceId,
+    user,
+    activeTeam,
+    activeTeamInfo,
+    dashboard,
+    pro: { selectedPlan },
+  } = useAppState();
+  const {
+    setActiveTeam,
+    modalOpened,
+    pro: { setStep, updateSelectedPlan, updateSeats },
+    patron: { cancelSubscriptionClicked },
+  } = useActions();
 
   const location = useLocation();
   const history = useHistory();
   const searchParams = new URLSearchParams(location.search);
-  const type = searchParams.get('type') as WorkspaceSubscriptionTypes;
-  const interval = searchParams.get('interval') as SubscriptionBillingInterval;
+  const type = searchParams.get('type') as SubscriptionType;
+  const interval = searchParams.get('interval') as SubscriptionInterval;
 
   const [billingInterval, setBillingInterval] = React.useState<
     Plan['billingInterval']
-  >(interval || SubscriptionBillingInterval.Monthly);
+  >(interval || SubscriptionInterval.Monthly);
 
   const isPersonalWorkspace = personalWorkspaceId === activeTeam;
 
@@ -58,12 +56,12 @@ export const WorkspacePlanSelection: React.FC<{
     function setPlan() {
       let newPlan: typeof plans[keyof typeof plans];
       if (isPersonalWorkspace) {
-        if (billingInterval === SubscriptionBillingInterval.Yearly) {
+        if (billingInterval === SubscriptionInterval.Yearly) {
           newPlan = plans.PERSONAL_PRO_ANNUAL;
         } else {
           newPlan = plans.PERSONAL_PRO_MONTHLY;
         }
-      } else if (billingInterval === SubscriptionBillingInterval.Yearly) {
+      } else if (billingInterval === SubscriptionInterval.Yearly) {
         newPlan = plans.TEAM_PRO_ANNUAL;
       } else {
         newPlan = plans.TEAM_PRO_MONTHLY;
@@ -105,7 +103,7 @@ export const WorkspacePlanSelection: React.FC<{
   React.useEffect(
     function switchToWorkspaceWithAdminRights() {
       // if type is PERSONAL_PRO, switch to personal workspace
-      if (type === WorkspaceSubscriptionTypes.Personal) {
+      if (type === SubscriptionType.PersonalPro) {
         setActiveTeam({ id: personalWorkspaceId });
         return;
       }
@@ -151,13 +149,13 @@ export const WorkspacePlanSelection: React.FC<{
   const currentSubscription = activeTeamInfo?.subscription;
   const isTeamProPilot =
     currentSubscription &&
-    currentSubscription.origin === WorkspaceSubscriptionOrigin.Pilot;
+    currentSubscription.origin === SubscriptionOrigin.Pilot;
 
   // if there is mismatch of intent - team/personal
   // or you don't have access to upgrade
   // open the workspace switcher on load
   const switcherDefaultOpen =
-    (type === WorkspaceSubscriptionTypes.Team && isPersonalWorkspace) ||
+    (type === SubscriptionType.TeamPro && isPersonalWorkspace) ||
     activeUserAuthorization !== TeamMemberAuthorization.Admin;
 
   return (
@@ -463,8 +461,7 @@ export const WorkspacePlanSelection: React.FC<{
                   selectedPlan.unit *
                   selectedPlan.multiplier}{' '}
                 /{' '}
-                {selectedPlan.billingInterval ===
-                SubscriptionBillingInterval.Monthly
+                {selectedPlan.billingInterval === SubscriptionInterval.Monthly
                   ? 'month'
                   : 'year'}
               </Text>
@@ -480,7 +477,7 @@ export const WorkspacePlanSelection: React.FC<{
                   activeUserAuthorization !== TeamMemberAuthorization.Admin ||
                   // you are not allowed to change from yearly to monthly
                   currentSubscription.billingInterval ===
-                    SubscriptionBillingInterval.Yearly ||
+                    SubscriptionInterval.Yearly ||
                   // if it's already the same, then nothing to do here
                   selectedPlan.billingInterval ===
                     currentSubscription.billingInterval
@@ -496,9 +493,8 @@ export const WorkspacePlanSelection: React.FC<{
                 Update billing interval
               </Button>
               {currentSubscription.billingInterval ===
-                SubscriptionBillingInterval.Yearly &&
-              selectedPlan.billingInterval ===
-                SubscriptionBillingInterval.Monthly ? (
+                SubscriptionInterval.Yearly &&
+              selectedPlan.billingInterval === SubscriptionInterval.Monthly ? (
                 <Text align="center">
                   Changing billing interval from Yearly to Monthly is not
                   supported yet. Please email us at hello@codesandbox.io
@@ -533,12 +529,12 @@ const PlanCard: React.FC<{
   plan: Plan;
   billingInterval: Plan['billingInterval'];
   setBillingInterval: (billingInterval: Plan['billingInterval']) => void;
-  currentSubscription: WorkspaceSubscription | null;
+  currentSubscription: ProSubscription | null;
 }> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
   const isSelected = plan.billingInterval === billingInterval;
   const isCurrent =
     plan.billingInterval === currentSubscription?.billingInterval &&
-    currentSubscription?.origin !== WorkspaceSubscriptionOrigin.Pilot;
+    currentSubscription?.origin !== SubscriptionOrigin.Pilot;
 
   return (
     <Stack
@@ -558,7 +554,7 @@ const PlanCard: React.FC<{
       <Stack justify="space-between" align="center">
         <Stack direction="vertical" gap={1}>
           <Text size={4} weight="bold">
-            {plan.billingInterval === SubscriptionBillingInterval.Yearly
+            {plan.billingInterval === SubscriptionInterval.Yearly
               ? 'Annual'
               : 'Monthly'}
             {isCurrent ? ' (Current)' : null}
@@ -567,10 +563,8 @@ const PlanCard: React.FC<{
           <Text size={3} variant="muted">
             {plan.currency}
             {plan.unit}{' '}
-            {plan.type === WorkspaceSubscriptionTypes.Team
-              ? 'per editor'
-              : null}{' '}
-            per month
+            {plan.type === SubscriptionType.TeamPro ? 'per editor' : null} per
+            month
           </Text>
         </Stack>
         <div>

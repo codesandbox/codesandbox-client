@@ -1,7 +1,7 @@
 import { Element, Text } from '@codesandbox/components';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { css } from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { formatDistanceStrict } from 'date-fns';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import React from 'react';
@@ -13,10 +13,8 @@ type MultiCommentProps = {
 };
 
 export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
-  const {
-    state: { editor, comments },
-    actions,
-  } = useOvermind();
+  const { editor, comments } = useAppState();
+  const { closeMultiCommentsSelector, selectComment } = useActions().comments;
 
   const CARROT_LEFT_MARGIN = 25;
   const BORDER_WIDTH = 10;
@@ -107,9 +105,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
 
   return (
     <Element css={css({ position: 'absolute' })}>
-      <OutsideClickHandler
-        onOutsideClick={() => actions.comments.closeMultiCommentsSelector()}
-      >
+      <OutsideClickHandler onOutsideClick={() => closeMultiCommentsSelector()}>
         <Element as="ul" css={list}>
           {sortedComments.map(comment =>
             comment ? (
@@ -119,7 +115,7 @@ export const MultiComment = ({ x, y, ids }: MultiCommentProps) => {
                   type="button"
                   onClick={event => {
                     const bounds = event.currentTarget.getBoundingClientRect();
-                    actions.comments.selectComment({
+                    selectComment({
                       commentId: comment.id,
                       bounds: {
                         left: bounds.left,

@@ -4,7 +4,7 @@ import {
   useMutation,
   MutationHookOptions,
 } from '@apollo/react-hooks';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import {
   BookmarkedSandboxInfoQuery,
   BookmarkTemplateMutation,
@@ -19,14 +19,12 @@ import { BOOKMARKED_SANDBOX_INFO } from './queries';
 
 export const BookmarkTemplateButton = () => {
   const {
-    state: {
-      isLoggedIn,
-      editor: {
-        currentId: sandboxId,
-        currentSandbox: { customTemplate },
-      },
+    isLoggedIn,
+    editor: {
+      currentId: sandboxId,
+      currentSandbox: { customTemplate },
     },
-  } = useOvermind();
+  } = useAppState();
 
   const [runQuery, { loading, data }] = useLazyQuery<
     BookmarkedSandboxInfoQuery,

@@ -1,7 +1,7 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { Avatar, Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
 import { Notifications } from 'app/components/Notifications';
@@ -30,35 +30,30 @@ const TooltipButton = ({ tooltip, ...props }) => {
 
 export const Actions = () => {
   const {
-    actions: {
-      modalOpened,
-      openCreateSandboxModal,
-      editor: { likeSandboxToggled, forkSandboxClicked },
-      explore: { pickSandboxModal },
-    },
-    state: {
-      hasLogIn,
-      updateStatus,
-      user,
-      activeWorkspaceAuthorization,
-      live: { isLive },
-      editor: {
-        isForkingSandbox,
-        currentSandbox: {
-          id,
-          author,
-          owned,
-          title,
-          description,
-          likeCount,
-          userLiked,
-          permissions,
-        },
-      },
-    },
-
-    actions: { signInClicked },
-  } = useOvermind();
+    signInClicked,
+    modalOpened,
+    openCreateSandboxModal,
+    editor: { likeSandboxToggled, forkSandboxClicked },
+    explore: { pickSandboxModal },
+  } = useActions();
+  const {
+    hasLogIn,
+    updateStatus,
+    user,
+    activeWorkspaceAuthorization,
+    live: { isLive },
+    editor: { isForkingSandbox, currentSandbox },
+  } = useAppState();
+  const {
+    id,
+    author,
+    owned,
+    title,
+    description,
+    likeCount,
+    userLiked,
+    permissions,
+  } = currentSandbox;
   const [fadeIn, setFadeIn] = useState(false);
 
   useEffect(() => {
@@ -77,6 +72,29 @@ export const Actions = () => {
   let primaryAction: 'Sign in' | 'Share' | 'Fork';
   if (!hasLogIn) primaryAction = 'Sign in';
   else primaryAction = owned ? 'Share' : 'Fork';
+
+  const NotLive = () =>
+    hasLogIn ? (
+      <TooltipButton
+        tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
+        variant="link"
+        onClick={() => likeSandboxToggled(id)}
+      >
+        <LikeIcon
+          css={css({
+            height: 3,
+            marginRight: 1,
+            color: userLiked ? 'reds.500' : 'inherit',
+          })}
+        />{' '}
+        <span>{likeCount}</span>
+      </TooltipButton>
+    ) : (
+      <Stack gap={1} paddingX={2} align="center">
+        <LikeIcon css={css({ height: 3 })} />
+        <span>{likeCount}</span>
+      </Stack>
+    );
 
   return (
     <Stack
@@ -110,26 +128,8 @@ export const Actions = () => {
 
       {user?.experiments?.collaborator && isLive ? (
         <CollaboratorHeads />
-      ) : hasLogIn ? (
-        <TooltipButton
-          tooltip={userLiked ? 'Undo like sandbox' : 'Like sandbox'}
-          variant="link"
-          onClick={() => likeSandboxToggled(id)}
-        >
-          <LikeIcon
-            css={css({
-              height: 3,
-              marginRight: 1,
-              color: userLiked ? 'reds.500' : 'inherit',
-            })}
-          />{' '}
-          <span>{likeCount}</span>
-        </TooltipButton>
       ) : (
-        <Stack gap={1} paddingX={2} align="center">
-          <LikeIcon css={css({ height: 3 })} />
-          <span>{likeCount}</span>
-        </Stack>
+        <NotLive />
       )}
 
       {user?.curatorAt && (

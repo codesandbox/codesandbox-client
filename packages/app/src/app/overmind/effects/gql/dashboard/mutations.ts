@@ -383,6 +383,7 @@ export const createOrUpdateNpmRegistry: Query<
     $registryType: RegistryType!
     $registryUrl: String
     $registryAuthKey: String!
+    $registryAuthType: AuthType
     $proxyEnabled: Boolean!
     $limitToScopes: Boolean!
     $enabledScopes: [String!]!
@@ -392,6 +393,7 @@ export const createOrUpdateNpmRegistry: Query<
       registryType: $registryType
       registryUrl: $registryUrl
       registryAuthKey: $registryAuthKey
+      authType: $registryAuthType
       proxyEnabled: $proxyEnabled
       limitToScopes: $limitToScopes
       enabledScopes: $enabledScopes

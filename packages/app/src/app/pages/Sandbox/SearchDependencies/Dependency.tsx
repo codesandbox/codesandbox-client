@@ -4,7 +4,7 @@ import React from 'react';
 import { json } from 'overmind';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import compareVersions from 'compare-versions';
 import { Dependency as DependencyType } from '@codesandbox/common/lib/types/algolia';
 import {
@@ -84,19 +84,16 @@ const checkboxStyles = ({ areSameVersion }) =>
 
 export const Dependency = ({ dependency }: { dependency: DependencyType }) => {
   const {
-    state: {
-      workspace: { selectedDependencies, hitToVersionMap },
-      editor: {
-        parsedConfigurations: {
-          package: {
-            parsed: { dependencies: installedDependencies },
-          },
+    workspace: { selectedDependencies, hitToVersionMap },
+    editor: {
+      parsedConfigurations: {
+        package: {
+          parsed: { dependencies: installedDependencies },
         },
       },
     },
-    actions,
-  } = useOvermind();
-
+  } = useAppState();
+  const actions = useActions();
   const selectedVersion =
     hitToVersionMap[dependency.objectID] || dependency.tags?.latest;
 

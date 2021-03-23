@@ -5,7 +5,7 @@ import css from '@styled-system/css';
 import { Stack, Element, Text, ListAction } from '@codesandbox/components';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { useOvermind } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
 import { CommentIcon } from './Icons';
 import { Menu } from './Menu';
@@ -31,14 +31,10 @@ export const Mention = ({
   read,
   sandboxId,
 }: Props) => {
-  const {
-    actions: {
-      userNotifications: { updateReadStatus },
-    },
-  } = useOvermind();
-
+  const { updateReadStatus } = useActions().userNotifications;
   const history = useHistory();
   const [hover, setHover] = useState(false);
+
   return (
     <ListAction
       key={id}

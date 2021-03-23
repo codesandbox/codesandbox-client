@@ -3,12 +3,14 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { Element } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Home } from './routes/Home';
 import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
 import { Recent } from './routes/Recent';
+import { Shared } from './routes/Shared';
+import { Liked } from './routes/Liked';
 import { AlwaysOn } from './routes/AlwaysOn';
 import { All } from './routes/All';
 import { Repositories } from './routes/Repositories';
@@ -18,22 +20,23 @@ import { Settings } from './routes/Settings';
 import { NewTeam } from './routes/Settings/NewTeam';
 
 export const Content = withRouter(({ history }) => {
-  const { actions, state } = useOvermind();
+  const { dashboard } = useActions();
+  const { activeTeam } = useAppState();
 
   useEffect(() => {
-    actions.dashboard.dashboardMounted();
-  }, [actions.dashboard]);
+    dashboard.dashboardMounted();
+  }, [dashboard]);
 
   useEffect(() => {
     const removeListener = history.listen(() => {
-      actions.dashboard.blacklistedTemplatesCleared();
-      actions.dashboard.orderByReset();
+      dashboard.blacklistedTemplatesCleared();
+      dashboard.orderByReset();
     });
 
     return () => {
       removeListener();
     };
-  }, [history, history.listen, actions.dashboard]);
+  }, [history, history.listen, dashboard]);
 
   return (
     <Element
@@ -54,6 +57,8 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/always-on" component={AlwaysOn} />
         <Route path="/dashboard/recent" component={Recent} />
         <Route path="/dashboard/deleted" component={Deleted} />
+        <Route path="/dashboard/shared" component={Shared} />
+        <Route path="/dashboard/liked" component={Liked} />
         <Route path="/dashboard/search" component={Search} />
         <Route path="/dashboard/explore/search" component={CommunitySearch} />
         <Route path="/dashboard/settings" component={Settings} />
@@ -61,7 +66,7 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/trash" component={Deleted} />
         <Route path="/dashboard/sandboxes/:path*" component={All} />
         <Route path="/dashboard/teams/new" component={NewTeam} />
-        <Redirect to={dashboardUrls.home(state.activeTeam)} />
+        <Redirect to={dashboardUrls.home(activeTeam)} />
       </Switch>
     </Element>
   );

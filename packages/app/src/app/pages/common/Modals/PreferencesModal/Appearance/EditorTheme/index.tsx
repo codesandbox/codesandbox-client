@@ -1,21 +1,14 @@
 import { Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
-
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { Rule } from '../../elements';
 
 import { PreferenceText } from './elements';
 
 export const EditorTheme: FunctionComponent = () => {
-  const {
-    actions: {
-      preferences: { settingChanged },
-    },
-    state: {
-      preferences: { settings },
-    },
-  } = useOvermind();
+  const { settings } = useAppState().preferences;
+  const { settingChanged } = useActions().preferences;
 
   const bindValue = (name: string, setUndefined?: boolean) => ({
     setValue: value => settingChanged({ name, value }),

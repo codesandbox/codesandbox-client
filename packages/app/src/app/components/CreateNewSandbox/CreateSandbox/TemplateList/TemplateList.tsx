@@ -4,7 +4,7 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import useKey from 'react-use/lib/useKey';
 import { isMac } from '@codesandbox/common/lib/utils/platform';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
@@ -49,7 +49,8 @@ export const TemplateList = ({
   columnCount = 2,
   collectionId,
 }: ITemplateListProps) => {
-  const { actions, state } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const [focusedTemplateIndex, setFocusedTemplate] = React.useState(0);
   const lastMouseMoveEventAt = React.useRef<number>(Date.now());
 
@@ -370,12 +371,12 @@ export const TemplateList = ({
                     ? template.sandbox.collection?.team?.name ||
                       template.sandbox.author?.username
                     : '';
+                  let shortKey = '';
 
-                  const shortKey = showSecondaryShortcuts
-                    ? index < 9
-                      ? `${MODIFIER_KEY}+${index + 1}`
-                      : ''
-                    : '';
+                  if (showSecondaryShortcuts) {
+                    shortKey = index < 9 ? `${MODIFIER_KEY}+${index + 1}` : '';
+                  }
+
                   const detailText = focused ? '↵' : shortKey;
 
                   return (

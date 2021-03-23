@@ -2,13 +2,11 @@
 title: Using a Custom NPM Registry
 authors: ['CompuIves']
 slug: /custom-npm-registry
-description:
-  You can use your own private npm registry if you have Team Pro.
+description: You can use your own private npm registry if you have Team Pro.
 ---
 
 **Note: Custom NPM Registry support is currently only available to Team Pro
-pilot members.
-[Sign up to join the waitlist](https://airtable.com/shrlgLSJWiX8rYqyG).**
+members. [Check out Team Pro](https://codesandbox.io/pricing).**
 
 The custom private npm registry setting makes it possible for sandboxes in your
 workspace to retrieve npm packages from your own npm registry. This setting is
@@ -20,12 +18,36 @@ available for all Team Pro workspaces, you can access the settings
 You can configure your private npm registry in your
 [Workspace Settings](https://codesandbox.io/dashboard/settings/npm-registry).
 
+![Configuration Form](./images/custom-npm-registry.png)
+
 ### Registry Host
 
 This can be either GitHub, npm or Custom. When choosing GitHub, we'll prefill
 the registry host with the GitHub Registry. When choosing npm, we'll prefill the
 host with the npm registry url. When choosing `Custom` you have the option to
 define the npm registry host yourself.
+
+### Auth Type
+
+Npm supports two types of authentication: `Basic` and `Bearer`. More recent
+implementations use `Bearer` by default. You can see which type you need by
+looking at your `.npmrc`. If your `.npmrc` is showing something similar to this:
+
+```
+_auth={token}
+```
+
+This means that you should use `Basic` auth. Artifactory often defaults to
+`Basic` auth.
+
+If your `.npmrc` is showing something along the lines of this:
+
+```
+//registry.npmjs.org/:_authToken={token}
+```
+
+You need to opt for `Bearer` auth. Any configuration that uses `_authToken`
+needs `Bearer` auth.
 
 ### Auth Token
 
@@ -92,20 +114,21 @@ Since we use a proxy to access the npm registry, we don't support registries
 behind a VPN out of the box. However, we do have three solutions:
 
 **Solution 1: bypass the proxy** We can bypass the proxy on our service to let
-the browser fetch from the registry directly. This is not enabled by default
-for everyone - please [request this be turned on](mailto:hello@codesandbox.io). 
-The disadvantage of this approach is that you have to share your registry auth 
-token with everyone who has access to the sandbox. Also, to make this work, you 
-need to add CORS headers to your registry so the browser can fetch the packages 
+the browser fetch from the registry directly. This is not enabled by default for
+everyone - please [request this be turned on](mailto:hello@codesandbox.io). The
+disadvantage of this approach is that you have to share your registry auth token
+with everyone who has access to the sandbox. Also, to make this work, you need
+to add CORS headers to your registry so the browser can fetch the packages
 directly from our origin.
 
 **Solution 2: whitelist the proxy** Another solution is to whitelist the IP
-range of our proxy. We make sure that we keep the same IP for our proxy. Please 
+range of our proxy. We make sure that we keep the same IP for our proxy. Please
 [request these details](mailto:hello@codesandbox.io).
 
-**Solution 3: self-host the proxy** A third option is to self-host the proxy
-in your network, and letting the proxy communicate with our API server to
-validate the tokens that are sent in. We can [help get you setup with this](mailto:hello@codesandbox.io).
+**Solution 3: self-host the proxy** A third option is to self-host the proxy in
+your network, and letting the proxy communicate with our API server to validate
+the tokens that are sent in. We can
+[help get you setup with this](mailto:hello@codesandbox.io).
 
 ### Can I use a .npmrc file?
 

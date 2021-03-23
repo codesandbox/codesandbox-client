@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useOvermind } from 'app/overmind';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
@@ -10,6 +9,7 @@ import {
   ComboboxOption,
 } from '@reach/combobox';
 
+import { useAppState, useActions } from 'app/overmind';
 import {
   Stack,
   Input,
@@ -37,10 +37,8 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
-    const {
-      actions: { openCreateSandboxModal },
-      state: { user, activeWorkspaceAuthorization },
-    } = useOvermind();
+    const { openCreateSandboxModal } = useActions();
+    const { user, activeWorkspaceAuthorization } = useAppState();
 
     return (
       <Stack
@@ -110,9 +108,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
 );
 
 const SearchInputGroup = () => {
-  const {
-    state: { activeTeam },
-  } = useOvermind();
+  const { activeTeam } = useAppState();
 
   const history = useHistory();
   const location = useLocation();

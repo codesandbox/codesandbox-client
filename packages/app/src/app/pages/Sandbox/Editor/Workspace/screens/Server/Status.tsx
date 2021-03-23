@@ -6,7 +6,7 @@ import { Element, Stack, Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 import styled, { css } from 'styled-components';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 const StatusCircle = styled.div<{ color: string }>`
   ${({ color, theme }) => css`
@@ -74,11 +74,7 @@ const getManagerStatusInfo = (status: SSEManagerStatus) => {
 };
 
 export const Status: FunctionComponent = () => {
-  const {
-    state: {
-      server: { containerStatus, status: managerStatus },
-    },
-  } = useOvermind();
+  const { containerStatus, status: managerStatus } = useAppState().server;
   const { color, message } =
     getManagerStatusInfo(managerStatus) ||
     getContainerStatusInfo(containerStatus);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Breadcrumbs } from '../Breadcrumbs';
@@ -36,10 +36,8 @@ export const Header = ({
   CustomFilters,
 }: Props) => {
   const location = useLocation();
-  const {
-    actions,
-    state: { dashboard },
-  } = useOvermind();
+  const { modals } = useActions();
+  const { dashboard } = useAppState();
 
   return (
     <Stack
@@ -81,7 +79,7 @@ export const Header = ({
         {location.pathname.includes('/repositories') &&
           dashboard.viewMode === 'list' && (
             <Button
-              onClick={() => actions.modals.newSandboxModal.open({})}
+              onClick={() => modals.newSandboxModal.open({})}
               variant="link"
               css={css({
                 fontSize: 2,

@@ -9,6 +9,8 @@ export type PageTypes =
   | 'drafts'
   | 'sandboxes'
   | 'repos'
+  | 'shared'
+  | 'liked'
   | 'always-on';
 
 export type OrderBy = {
@@ -27,6 +29,8 @@ export enum sandboxesTypes {
   TEMPLATES = 'TEMPLATES',
   DELETED = 'DELETED',
   RECENT = 'RECENT',
+  SHARED = 'SHARED',
+  LIKED = 'LIKED',
   HOME = 'HOME',
   TEMPLATE_HOME = 'TEMPLATE_HOME',
   RECENT_HOME = 'RECENT_HOME',
