@@ -126,6 +126,7 @@ export type DashboardCommunitySandbox = {
   > & {
     author: Pick<Sandbox['author'], 'username' | 'avatarUrl'>;
   } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
+  liked: boolean;
 };
 
 export type PageTypes = PT;

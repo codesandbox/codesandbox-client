@@ -11,6 +11,7 @@ export type CommunitySandboxItemComponentProps = Pick<
   }>;
   isScrolling: boolean;
   selected: boolean;
+  liked: boolean;
   onClick: (evt: React.MouseEvent) => void;
   onDoubleClick: (evt: React.MouseEvent) => void;
   onContextMenu: (evt: React.MouseEvent) => void;

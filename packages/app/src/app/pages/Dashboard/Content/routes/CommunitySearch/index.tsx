@@ -1,5 +1,4 @@
 import React from 'react';
-import { useAppState } from 'app/overmind';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import { InstantSearch, SearchBox, Configure } from 'react-instantsearch/dom';
@@ -14,6 +13,8 @@ import VisuallyHidden from '@reach/visually-hidden';
 import getTemplateDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates';
+import { useAppState, useActions } from 'app/overmind';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
@@ -100,7 +101,19 @@ const Results = connectHits(({ hits, filters }: ResultProps) => {
   const query = new URLSearchParams(location.search).get('query');
   const pageType: PageTypes = 'search';
 
-  const { activeTeam } = useAppState();
+  const {
+    activeTeam,
+    dashboard: { sandboxes },
+  } = useAppState();
+  const {
+    dashboard: { getPage },
+  } = useActions();
+
+  React.useEffect(() => {
+    getPage(sandboxesTypes.LIKED);
+  }, [activeTeam, getPage]);
+
+  const likedSandboxIds = (sandboxes.LIKED || []).map(sandbox => sandbox.id);
 
   const items: DashboardCommunitySandbox[] = hits.map(sandbox => ({
     noDrag: true,
@@ -122,6 +135,7 @@ const Results = connectHits(({ hits, filters }: ResultProps) => {
         // @ts-ignore
         avatarUrl: sandbox.author?.avatar_url,
       },
+      liked: likedSandboxIds.includes(sandbox.objectID),
     },
   }));
 

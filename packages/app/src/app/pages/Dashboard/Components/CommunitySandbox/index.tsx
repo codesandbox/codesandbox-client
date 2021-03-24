@@ -29,6 +29,7 @@ export const CommunitySandbox = ({
   const likeCount = sandbox.likeCount;
   const url = sandboxUrl({ id: sandbox.id, alias: sandbox.alias });
   const author = sandbox.author;
+  const liked = sandbox.liked;
 
   const TemplateIcon = getTemplateIcon(sandbox);
 
@@ -79,6 +80,7 @@ export const CommunitySandbox = ({
     forkCount,
     likeCount,
     author,
+    liked,
   };
 
   const interactionProps = {

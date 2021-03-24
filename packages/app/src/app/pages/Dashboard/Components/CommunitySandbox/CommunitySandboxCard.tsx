@@ -47,20 +47,26 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type StatsProps = Pick<
   CommunitySandboxItemComponentProps,
-  'forkCount' | 'likeCount'
+  'forkCount' | 'likeCount' | 'liked'
 >;
-const Stats: React.FC<StatsProps> = React.memo(({ forkCount, likeCount }) => (
-  <Stack as={Text} variant="muted" align="center" gap={2}>
-    <Stack align="center" gap={1}>
-      <Icon name="fork" size={14} />
-      <Text size={3}>{formatNumber(forkCount)}</Text>
+const Stats: React.FC<StatsProps> = React.memo(
+  ({ forkCount, likeCount, liked }) => (
+    <Stack as={Text} variant="muted" align="center" gap={2}>
+      <Stack align="center" gap={1}>
+        <Icon name="fork" size={14} />
+        <Text size={3}>{formatNumber(forkCount)}</Text>
+      </Stack>
+      <Stack align="center" gap={1}>
+        <Icon
+          name="heart"
+          size={14}
+          css={css({ color: liked ? 'reds.300' : 'inherit' })}
+        />
+        <Text size={3}>{formatNumber(likeCount)}</Text>
+      </Stack>
     </Stack>
-    <Stack align="center" gap={1}>
-      <Icon name="heart" size={14} />
-      <Text size={3}>{formatNumber(likeCount)}</Text>
-    </Stack>
-  </Stack>
-));
+  )
+);
 
 type AuthorProps = Pick<CommunitySandboxItemComponentProps, 'author'>;
 const Author: React.FC<AuthorProps> = React.memo(({ author }) => (
@@ -85,6 +91,7 @@ export const SandboxCard = ({
   likeCount,
   forkCount,
   author,
+  liked,
   // interactions
   isScrolling,
   selected,
@@ -144,7 +151,7 @@ export const SandboxCard = ({
           marginRight={3}
         >
           <Author author={author} />
-          <Stats likeCount={likeCount} forkCount={forkCount} />
+          <Stats likeCount={likeCount} forkCount={forkCount} liked={liked} />
         </Stack>
       </Stack>
     </Stack>
