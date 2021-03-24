@@ -3,11 +3,7 @@ import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import { InstantSearch, SearchBox, Configure } from 'react-instantsearch/dom';
 import { connectHits, connectRefinementList } from 'react-instantsearch-dom';
-import {
-  RefinementListProvided,
-  HitsProvided,
-  BasicDoc,
-} from 'react-instantsearch-core';
+import { RefinementListProvided } from 'react-instantsearch-core';
 import VisuallyHidden from '@reach/visually-hidden';
 
 import getTemplateDefinition, {
@@ -38,6 +34,12 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
+
+/** instantsearch is very specific about it's connect types,
+ * so instead of passing props, I created a context here */
+const LocalContext = React.createContext({
+  setRefinement: (attribute: string, values: string[]) => null,
+});
 
 export const CommunitySearch = () => {
   const location = useLocation();
@@ -71,32 +73,15 @@ export const CommunitySearch = () => {
         <VisuallyHidden>
           <SearchBox />
         </VisuallyHidden>
-        <Results
-          filters={
-            <div style={{ width: 256 }}>
-              <Filters
-                attribute="template"
-                limit={3}
-                operator="or"
-                setRefinement={setRefinement}
-              />
-              <Filters
-                attribute="npm_dependencies.dependency"
-                limit={3}
-                operator="and"
-                setRefinement={setRefinement}
-              />
-            </div>
-          }
-        />
+        <LocalContext.Provider value={{ setRefinement }}>
+          <Results />
+        </LocalContext.Provider>
       </InstantSearch>
     </Element>
   );
 };
 
-type ResultProps = HitsProvided<BasicDoc> & { filters: React.ReactElement };
-
-const Results = connectHits(({ hits, filters }: ResultProps) => {
+const Results = connectHits(({ hits }) => {
   const location = useLocation();
   const query = new URLSearchParams(location.search).get('query');
   const pageType: PageTypes = 'search';
@@ -154,7 +139,16 @@ const Results = connectHits(({ hits, filters }: ResultProps) => {
           activeTeam={activeTeam}
           showViewOptions
           showFilters
-          CustomFilters={filters}
+          CustomFilters={
+            <div style={{ width: 256 }}>
+              <Filters attribute="template" limit={3} operator="or" />
+              <Filters
+                attribute="npm_dependencies.dependency"
+                limit={3}
+                operator="and"
+              />
+            </div>
+          }
         />
       </Stack>
       <VariableGrid items={items} page={pageType} />
@@ -164,14 +158,14 @@ const Results = connectHits(({ hits, filters }: ResultProps) => {
 
 type FilterProps = RefinementListProvided & {
   attribute: string;
-  setRefinement: (attribute: string, values: string[]) => void;
 };
 const Filters = connectRefinementList(
-  ({ attribute, items, searchForItems, setRefinement }: FilterProps) => {
+  ({ attribute, items, searchForItems }: FilterProps) => {
     const prettyAttribute =
       attribute === 'template' ? 'Environment' : 'Dependencies';
 
     const inputRef = React.useRef(null);
+    const { setRefinement } = React.useContext(LocalContext);
 
     return (
       <Stack direction="vertical" gap={4} marginY={4}>
@@ -218,7 +212,7 @@ const Filters = connectRefinementList(
                   key={item.label}
                   checked={item.isRefined}
                   onChange={() => {
-                    setRefinement([attribute], item.value);
+                    setRefinement(attribute, item.value);
                     inputRef.current.value = '';
                   }}
                   label={
