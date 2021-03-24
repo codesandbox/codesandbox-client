@@ -180,21 +180,23 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
       } else if (response.dependencyDependencies[depDepName]) {
         const exDepDep = response.dependencyDependencies[depDepName];
 
+        // Determine which version is newer, needed for some checks later.
+        const [newerVersionDepDep, olderVersionDepDep] = semver.gt(
+          newDepDep.resolved,
+          exDepDep.resolved
+        )
+          ? [newDepDep, exDepDep]
+          : [exDepDep, newDepDep];
+
         if (exDepDep.resolved === newDepDep.resolved) {
           exDepDep.parents = uniq([...exDepDep.parents, ...newDepDep.parents]);
           exDepDep.entries = uniq([...exDepDep.entries, ...newDepDep.entries]);
         } else if (
           intersects(exDepDep.semver, newDepDep.semver) &&
-          isEqual(exDepDep.entries, newDepDep.entries)
+          (isEqual(exDepDep.entries, newDepDep.entries) ||
+            olderVersionDepDep.entries.length === 0) // Meaning that the existing dependency is not called from other dependencies, so safe to replace with the newer version.
         ) {
-          const replacingDepDep = semver.gt(
-            newDepDep.resolved,
-            exDepDep.resolved
-          )
-            ? newDepDep
-            : exDepDep;
-
-          response.dependencyDependencies[depDepName] = replacingDepDep;
+          response.dependencyDependencies[depDepName] = newerVersionDepDep;
           response.dependencyDependencies[depDepName].parents = uniq([
             ...exDepDep.parents,
             ...newDepDep.parents,
