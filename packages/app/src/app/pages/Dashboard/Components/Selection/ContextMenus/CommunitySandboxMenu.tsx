@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useEffects, useActions } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
 import { Menu } from '@codesandbox/components';
 
@@ -12,7 +12,8 @@ interface MenuProps {
 }
 
 export const CommunitySandboxMenu: React.FC<MenuProps> = ({ item }) => {
-  const { effects, actions } = useOvermind();
+  const effects = useEffects();
+  const actions = useActions();
   const { visible, setVisibility, position } = React.useContext(Context);
 
   const { sandbox } = item;

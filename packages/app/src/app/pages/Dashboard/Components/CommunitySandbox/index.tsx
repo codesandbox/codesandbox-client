@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SandboxCard } from './CommunitySandboxCard';
@@ -20,10 +20,8 @@ export const CommunitySandbox = ({
   item,
 }: GenericSandboxProps) => {
   const {
-    state: {
-      dashboard: { viewMode },
-    },
-  } = useOvermind();
+    dashboard: { viewMode },
+  } = useAppState();
 
   const { sandbox } = item;
   const title = sandbox.title || sandbox.alias || sandbox.id;
