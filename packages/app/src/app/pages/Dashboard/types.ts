@@ -125,8 +125,8 @@ export type DashboardCommunitySandbox = {
     'id' | 'alias' | 'title' | 'description' | 'screenshotUrl' | 'source'
   > & {
     author: Pick<Sandbox['author'], 'username' | 'avatarUrl'>;
+    liked: boolean;
   } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
-  liked: boolean;
 };
 
 export type PageTypes = PT;
