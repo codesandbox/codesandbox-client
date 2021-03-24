@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import { InstantSearch, SearchBox, Configure } from 'react-instantsearch/dom';
@@ -100,9 +100,7 @@ const Results = connectHits(({ hits, filters }: ResultProps) => {
   const query = new URLSearchParams(location.search).get('query');
   const pageType: PageTypes = 'search';
 
-  const {
-    state: { activeTeam },
-  } = useOvermind();
+  const { activeTeam } = useAppState();
 
   const items: DashboardCommunitySandbox[] = hits.map(sandbox => ({
     noDrag: true,
