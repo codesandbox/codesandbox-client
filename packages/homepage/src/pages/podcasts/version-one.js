@@ -69,15 +69,21 @@ const VersionOne = ({
         </PageSubtitle>
       </Header>
 
-      <iframe
-        title="versionone"
-        src="https://player.resonaterecordings.com/embed?uuid=7c540626-fe2a-46ed-af8b-99cec654a2de&accentColor=13,180,206&backgroundColor=242,242,242"
-        width="100%"
-        height="155"
-        frameBorder="0"
-        allowtransparency="true"
-        allow="encrypted-media"
-      />
+      <div
+        css={`
+          margin: 0 0 4rem 0;
+        `}
+      >
+        <iframe
+          title="versionone"
+          src="https://player.resonaterecordings.com/embed?uuid=7c540626-fe2a-46ed-af8b-99cec654a2de&accentColor=13,180,206&backgroundColor=242,242,242"
+          width="100%"
+          height="155"
+          frameBorder="0"
+          allowtransparency="true"
+          allow="encrypted-media"
+        />
+      </div>
 
       <Episodes>
         {episodes
