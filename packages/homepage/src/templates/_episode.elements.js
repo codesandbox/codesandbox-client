@@ -21,6 +21,14 @@ export const Audio = styled.iframe`
   left: 0;
   background-color: rgb(242, 242, 242);
   max-width: 100vw;
+
+  // margin:2rem 0;
+  > iframe{
+    padding:0;
+    width:100%;
+    back
+  }
+
 `;
 
 export const TranscriptButton = styled.button`
