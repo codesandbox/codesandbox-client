@@ -68,6 +68,17 @@ const VersionOne = ({
           {info.description}
         </PageSubtitle>
       </Header>
+
+      <iframe
+        title="versionone"
+        src="https://player.resonaterecordings.com/embed?uuid=7c540626-fe2a-46ed-af8b-99cec654a2de&accentColor=13,180,206&backgroundColor=242,242,242"
+        width="100%"
+        height="155"
+        frameBorder="0"
+        allowtransparency="true"
+        allow="encrypted-media"
+      />
+
       <Episodes>
         {episodes
           .filter(e => e.node.frontmatter.slug)

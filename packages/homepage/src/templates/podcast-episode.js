@@ -40,10 +40,6 @@ export default ({ data: { episode } }) => {
           image={data.publicURL}
           title={`${data.podcastName} - ${data.title}- CodeSandbox`}
           keywords={data.tags}
-          meta={[
-            { name: 'robots', content: 'noindex' },
-            { name: 'googlebot', content: 'noindex' },
-          ]}
         />
 
         <Header>

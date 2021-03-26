@@ -70,6 +70,17 @@ const VersionOne = ({
           {info.description}
         </PageSubtitle>
       </Header>
+
+      <iframe
+        title="CodeSandbox Podcast"
+        src="https://player.resonaterecordings.com/embed?uuid=5a6b601f-d415-4b61-848a-08a7597d63a4&accentColor=13,180,206&backgroundColor=242,242,242"
+        width="100%"
+        height="155"
+        frameBorder="0"
+        allowtransparency="true"
+        allow="encrypted-media"
+      />
+
       <Episodes>
         {episodes
           .filter(e => e.node.frontmatter.slug)
