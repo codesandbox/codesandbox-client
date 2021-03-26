@@ -17,7 +17,7 @@ import {
   EpisodeTitle,
 } from './_elements';
 
-import version1 from '../../assets/images/podcasts/version1.png';
+import version1 from '../../assets/images/podcasts/version1.jpg';
 import allPodcasts from '../../../content/podcasts/info';
 import PodcastLinks from '../../components/PodcastLinks';
 

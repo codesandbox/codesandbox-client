@@ -17,7 +17,7 @@ import {
   EpisodeTitle,
 } from './_elements';
 
-import csb from '../../assets/images/podcasts/csb.png';
+import csb from '../../assets/images/podcasts/csb.jpg';
 import allPodcasts from '../../../content/podcasts/info';
 import PodcastLinks from '../../components/PodcastLinks';
 
