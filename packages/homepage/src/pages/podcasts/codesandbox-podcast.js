@@ -1,5 +1,5 @@
 import React from 'react';
-import { graphql, Link } from 'gatsby';
+// import { graphql, Link } from 'gatsby';
 
 import Layout from '../../components/layout';
 import PageContainer from '../../components/PageContainer';
@@ -25,11 +25,7 @@ const info = allPodcasts.find(
   podcast => podcast.slug === 'codesandbox-podcast'
 );
 
-const VersionOne = ({
-  data: {
-    allMarkdownRemark: { edges: episodes },
-  },
-}) => (
+const VersionOne = () => (
   <Layout>
     <PageContainer>
       <TitleAndMetaTags
@@ -82,7 +78,7 @@ const VersionOne = ({
       />
 
       <Episodes>
-        {episodes
+        {/* {episodes
           .filter(e => e.node.frontmatter.slug)
           .map(({ node: { id, frontmatter } }) => (
             <Link
@@ -91,8 +87,7 @@ const VersionOne = ({
               `}
               key={id}
               to={`podcasts/codesandbox-podcast/${frontmatter.slug}`}
-            >
-              {/*               
+            >         
               <Episode>
                 <img
                   src={frontmatter.image.publicURL}
@@ -106,37 +101,35 @@ const VersionOne = ({
                   <Description>{frontmatter.description}</Description>
                 </section>
               </Episode>
- */}
             </Link>
-          ))}
+          ))} */}
       </Episodes>
       <PodcastLinks {...info.links} name={info.name} />
     </PageContainer>
   </Layout>
 );
 
-export const query = graphql`
-  {
-    allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/podcasts/codesandbox-podcast/" } }
-      sort: { fields: id, order: DESC }
-    ) {
-      edges {
-        node {
-          id
-          frontmatter {
-            description
-            // episodeNumber
-            title
-            slug
-            image {
-              publicURL
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+// export const query = graphql`
+//   {
+//     allMarkdownRemark(
+//       filter: { fileAbsolutePath: { regex: "/podcasts/codesandbox-podcast/" } }
+//       sort: { fields: id, order: DESC }
+//     ) {
+//       edges {
+//         node {
+//           id
+//           frontmatter {
+//             description
+//             title
+//             slug
+//             image {
+//               publicURL
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
 
 export default VersionOne;
