@@ -11,10 +11,10 @@ import {
   PageTitle,
   PageSubtitle,
   Episodes,
-  EpisodeNumber,
-  Episode,
-  Description,
-  EpisodeTitle,
+  // EpisodeNumber,
+  // Episode,
+  // Description,
+  // EpisodeTitle,
 } from './_elements';
 
 import csb from '../../assets/images/podcasts/csb.jpg';
@@ -92,6 +92,7 @@ const VersionOne = ({
               key={id}
               to={`podcasts/codesandbox-podcast/${frontmatter.slug}`}
             >
+              {/*               
               <Episode>
                 <img
                   src={frontmatter.image.publicURL}
@@ -105,6 +106,7 @@ const VersionOne = ({
                   <Description>{frontmatter.description}</Description>
                 </section>
               </Episode>
+ */}
             </Link>
           ))}
       </Episodes>
