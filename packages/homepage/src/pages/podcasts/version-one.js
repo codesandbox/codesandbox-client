@@ -71,7 +71,7 @@ const VersionOne = ({
 
       <div
         css={`
-          margin: 0 0 4rem 0;
+          margin: 2rem 0 6rem 0;
         `}
       >
         <iframe
@@ -85,7 +85,12 @@ const VersionOne = ({
         />
       </div>
 
-      <Episodes>
+      {/* hack hack need to remove css */}
+      <Episodes
+        css={`
+          display: none;
+        `}
+      >
         {episodes
           .filter(e => e.node.frontmatter.slug)
           .map(({ node: { id, frontmatter } }) => (
