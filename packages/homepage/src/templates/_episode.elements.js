@@ -15,19 +15,12 @@ export const GuestInfo = styled.div`
 `;
 
 export const Audio = styled.iframe`
-  position: fixed;
-  bottom: 0;
-  z-index: 999;
-  left: 0;
-  background-color: rgb(242, 242, 242);
-  max-width: 100vw;
 
-  // margin:2rem 0;
-  > iframe{
-    padding:0;
-    width:100%;
-    back
-  }
+  margin:0 0 2rem 0;
+  widh:300px;
+  background:#F2F2F2;
+  border-radius: 0.125rem;
+}
 
 `;
 
