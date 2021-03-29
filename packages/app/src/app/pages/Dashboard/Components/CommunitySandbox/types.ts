@@ -15,4 +15,5 @@ export type CommunitySandboxItemComponentProps = Pick<
   onClick: (evt: React.MouseEvent) => void;
   onDoubleClick: (evt: React.MouseEvent) => void;
   onContextMenu: (evt: React.MouseEvent) => void;
+  onLikeToggle: (evt: React.MouseEvent) => void;
 };
