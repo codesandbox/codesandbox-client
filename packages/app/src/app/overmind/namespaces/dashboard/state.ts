@@ -4,6 +4,7 @@ import {
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
+  Album,
 } from 'app/graphql/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
@@ -69,6 +70,7 @@ export type State = {
     week: Sandbox[];
     older: Sandbox[];
   };
+  curatedAlbums: Album[];
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -94,6 +96,7 @@ export const state: State = {
   workspaceSettings: {
     npmRegistry: null,
   },
+  curatedAlbums: [],
   recentSandboxesByTime: derived(({ sandboxes }: State) => {
     const recentSandboxes = sandboxes.RECENT;
 

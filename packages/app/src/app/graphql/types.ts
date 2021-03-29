@@ -3059,3 +3059,15 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
     'id' | 'name' | 'joinedPilotAt'
   >;
 };
+
+export type Album = {
+  id: Scalars['UUID4'];
+  title: String;
+  sandboxes: Array<SandboxFragmentDashboardFragment>;
+};
+
+export type CuratedAlbumsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
+  curatedAlbums: Array<Album>;
+};

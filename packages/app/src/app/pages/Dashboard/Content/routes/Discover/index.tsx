@@ -9,17 +9,38 @@ import {
   Link,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useAppState } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
+import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
+import { Album } from 'app/graphql/types';
 import {
   GRID_MAX_WIDTH,
   GUTTER,
 } from 'app/pages/Dashboard/Components/VariableGrid';
 import { CommunitySandbox } from 'app/pages/Dashboard/Components/CommunitySandbox';
+import { PICKED_SANDBOXES_ALBUM } from './contants';
 
 export const Discover = () => {
   const {
-    dashboard: { sandboxes },
+    dashboard: { sandboxes, curatedAlbums },
   } = useAppState();
+
+  const {
+    dashboard: { getPage },
+  } = useActions();
+
+  React.useEffect(() => {
+    getPage(sandboxesTypes.DISCOVER);
+  }, []);
+
+  const fakeAlbum: Album = {
+    id: '',
+    title: '',
+    sandboxes: sandboxes.LIKED || [],
+  };
+
+  const pickedSandboxesAlbum =
+    curatedAlbums.find(album => album.id !== PICKED_SANDBOXES_ALBUM) ||
+    fakeAlbum;
 
   return (
     <>
@@ -32,7 +53,7 @@ export const Discover = () => {
             marginX: 'auto',
             width: `calc(100% - ${2 * GUTTER}px)`,
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-            paddingTop: 10,
+            paddingY: 10,
           })}
         >
           <Stack
@@ -69,43 +90,52 @@ export const Discover = () => {
             />
           </Stack>
 
-          <Grid marginBottom={16}>
-            <Column>hi</Column>
-          </Grid>
+          <Section album={pickedSandboxesAlbum} showMore={false} />
 
-          <Stack direction="vertical" gap={6}>
-            <Stack justify="space-between">
-              <Text size={4} weight="bold">
-                Learn React
-              </Text>
-              <Link size={4} variant="muted">
-                See all →
-              </Link>
-            </Stack>
-
-            <Grid
-              rowGap={6}
-              columnGap={6}
-              css={{
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              }}
-            >
-              {(sandboxes.LIKED || []).map(sandbox => (
-                <Column key={sandbox.id}>
-                  <CommunitySandbox
-                    item={{
-                      sandbox: {
-                        ...sandbox,
-                        author: { username: null, avatarUrl: null },
-                      },
-                    }}
-                  />
-                </Column>
-              ))}
-            </Grid>
-          </Stack>
+          {curatedAlbums
+            .filter(album => album.id !== PICKED_SANDBOXES_ALBUM)
+            .map(album => (
+              <Section key={album.id} album={album} showMore />
+            ))}
         </Element>
       </Element>
     </>
   );
 };
+
+type SectionTypes = { album: Album; showMore: boolean };
+const Section: React.FC<SectionTypes> = ({ album, showMore = false }) => (
+  <Stack key={album.id} direction="vertical" gap={6}>
+    <Stack justify="space-between">
+      <Text size={4} weight="bold">
+        {album.title}
+      </Text>
+      {showMore && (
+        <Link size={4} variant="muted">
+          See all →
+        </Link>
+      )}
+    </Stack>
+
+    <Grid
+      rowGap={6}
+      columnGap={6}
+      css={{
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+      }}
+    >
+      {album.sandboxes.slice(0, 3).map(sandbox => (
+        <Column key={sandbox.id}>
+          <CommunitySandbox
+            item={{
+              sandbox: {
+                ...sandbox,
+                author: { username: null, avatarUrl: null },
+              },
+            }}
+          />
+        </Column>
+      ))}
+    </Grid>
+  </Stack>
+);

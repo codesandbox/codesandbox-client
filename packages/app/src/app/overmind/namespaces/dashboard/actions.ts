@@ -1035,6 +1035,10 @@ export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
       dashboard.getLikedSandboxes();
       break;
 
+    case sandboxesTypes.DISCOVER:
+      dashboard.getCuratedAlbums();
+      break;
+
     default:
       break;
   }
@@ -1865,5 +1869,17 @@ export const likeCommunitySandbox = async (
     actions.dashboard.getLikedSandboxes();
   } catch (e) {
     effects.notificationToast.error('There was a problem liking the sandbox');
+  }
+};
+
+export const getCuratedAlbums = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    const data = await effects.gql.queries.curatedAlbums({});
+    dashboard.curatedAlbums = data.curatedAlbums;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting curated collections'
+    );
   }
 };
