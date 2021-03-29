@@ -11,7 +11,8 @@ export type PageTypes =
   | 'repos'
   | 'shared'
   | 'liked'
-  | 'always-on';
+  | 'always-on'
+  | 'discover';
 
 export type OrderBy = {
   field: string;

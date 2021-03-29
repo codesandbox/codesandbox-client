@@ -15,9 +15,10 @@ import { AlwaysOn } from './routes/AlwaysOn';
 import { All } from './routes/All';
 import { Repositories } from './routes/Repositories';
 import { Search } from './routes/Search';
-import { CommunitySearch } from './routes/CommunitySearch';
 import { Settings } from './routes/Settings';
 import { NewTeam } from './routes/Settings/NewTeam';
+import { Discover } from './routes/Discover';
+import { CommunitySearch } from './routes/Discover/CommunitySearch';
 
 export const Content = withRouter(({ history }) => {
   const { dashboard } = useActions();
@@ -60,7 +61,8 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/shared" component={Shared} />
         <Route path="/dashboard/liked" component={Liked} />
         <Route path="/dashboard/search" component={Search} />
-        <Route path="/dashboard/explore/search" component={CommunitySearch} />
+        <Route path="/dashboard/discover/search" component={CommunitySearch} />
+        <Route path="/dashboard/discover" component={Discover} />
         <Route path="/dashboard/settings" component={Settings} />
         {/* old dashboard - redirects: */}
         <Route path="/dashboard/trash" component={Deleted} />

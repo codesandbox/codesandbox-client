@@ -168,6 +168,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             style={{ marginTop: 1 }}
           />
           <RowItem
+            name="Discover"
+            page="discover"
+            path={dashboardUrls.discover(activeTeam)}
+            icon="discover"
+          />
+          <RowItem
             name="My Drafts"
             page="drafts"
             path={dashboardUrls.drafts(activeTeam)}
