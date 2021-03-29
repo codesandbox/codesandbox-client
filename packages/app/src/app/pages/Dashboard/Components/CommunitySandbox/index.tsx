@@ -77,12 +77,15 @@ export const CommunitySandbox = ({
   };
 
   const [managedLikeCount, setLikeCount] = React.useState(likeCount);
+  const [managedLiked, setLiked] = React.useState(liked);
   const onLikeToggle = () => {
-    if (liked) {
+    if (managedLiked) {
       unlikeSandbox(sandbox.id);
+      setLiked(false);
       setLikeCount(managedLikeCount - 1);
     } else {
       likeCommunitySandbox(sandbox.id);
+      setLiked(true);
       setLikeCount(managedLikeCount + 1);
     }
   };
@@ -92,9 +95,9 @@ export const CommunitySandbox = ({
     TemplateIcon,
     screenshotUrl,
     forkCount,
-    likeCount: managedLikeCount,
     author,
-    liked,
+    likeCount: managedLikeCount,
+    liked: managedLiked,
   };
 
   const interactionProps = {
