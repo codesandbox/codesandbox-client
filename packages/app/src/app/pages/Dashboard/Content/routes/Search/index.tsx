@@ -34,7 +34,7 @@ export const SearchComponent = () => {
         </title>
       </Helmet>
       <Header
-        title={`Search results for '${query}'`}
+        title={`Search results for '${query}' in Workspace`}
         activeTeam={activeTeam}
         showViewOptions
         showFilters

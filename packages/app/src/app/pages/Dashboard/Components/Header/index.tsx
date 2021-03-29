@@ -20,6 +20,7 @@ type Props = {
   showSortOptions?: boolean;
   repos?: boolean;
   activeTeam: string;
+  CustomFilters?: React.ReactElement;
 };
 
 export const Header = ({
@@ -32,6 +33,7 @@ export const Header = ({
   showFilters = false,
   showViewOptions = false,
   showSortOptions = false,
+  CustomFilters,
 }: Props) => {
   const location = useLocation();
   const { modals } = useActions();
@@ -91,7 +93,12 @@ export const Header = ({
           )}
 
         <Stack gap={4}>
-          {showFilters && <FilterOptions possibleTemplates={templates} />}
+          {showFilters && (
+            <FilterOptions
+              possibleTemplates={templates}
+              CustomFilters={CustomFilters}
+            />
+          )}
           {showSortOptions && <SortOptions />}
           {showViewOptions && <ViewOptions />}
         </Stack>

@@ -9,6 +9,7 @@ import {
   DashboardFolder,
   DashboardRepo,
   DashboardNewMasterBranch,
+  DashboardCommunitySandbox,
   PageTypes,
 } from '../../../types';
 
@@ -19,6 +20,7 @@ interface IMultiMenuProps {
     | DashboardFolder
     | DashboardRepo
     | DashboardNewMasterBranch
+    | DashboardCommunitySandbox
   >;
   page: PageTypes;
 }
@@ -280,7 +282,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     ];
   }
 
-  return (
+  return options.length > 0 ? (
     <Menu.ContextMenu
       visible={visible}
       setVisibility={setVisibility}
@@ -297,5 +299,5 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
         )
       )}
     </Menu.ContextMenu>
-  );
+  ) : null;
 };
