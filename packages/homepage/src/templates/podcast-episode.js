@@ -40,10 +40,6 @@ export default ({ data: { episode } }) => {
           image={data.publicURL}
           title={`${data.podcastName} - ${data.title}- CodeSandbox`}
           keywords={data.tags}
-          meta={[
-            { name: 'robots', content: 'noindex' },
-            { name: 'googlebot', content: 'noindex' },
-          ]}
         />
 
         <Header>
@@ -75,6 +71,16 @@ export default ({ data: { episode } }) => {
         </Header>
 
         <PageContainer width={640}>
+          <Audio
+            title={data.title}
+            src={data.audio}
+            width="100%"
+            height="155"
+            frameBorder="0"
+            allowtransparency="true"
+            allow="encrypted-media"
+          />
+
           <InfoContainer dangerouslySetInnerHTML={{ __html: html }} />
 
           <TranscriptButton
@@ -126,15 +132,6 @@ export default ({ data: { episode } }) => {
           stitcher={data.stitcher}
           tuneIn={data.tuneIn}
           name={data.podcastName}
-        />
-        <Audio
-          title={data.title}
-          src={data.audio}
-          width="100%"
-          height="155"
-          frameBorder="0"
-          allowtransparency="true"
-          allow="encrypted-media"
         />
       </Article>
     </Layout>

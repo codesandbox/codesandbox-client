@@ -9,10 +9,12 @@ export default [
         'https://podcasts.apple.com/us/podcast/version-one-with-maurice-cherry/id1558498088',
       spotify:
         'https://open.spotify.com/show/1c88C5z8EdpkikZlxU8z5i?si=Z05e0pE5QJK4RSBqdUNVuQ',
-      google: '#',
+      google:
+        'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL3ZlcnNpb24tb25lLXdpdGgtbWF1cmljZS1jaGVycnk',
       tuneIn:
         'https://tunein.com/podcasts/Technology-Podcasts/Version-One-with-Maurice-Cherry-p1416547/',
-      stitcher: '#',
+      stitcher:
+        'https://www.stitcher.com/show/version-one-with-maurice-cherry/',
     },
   },
   {
@@ -25,10 +27,11 @@ export default [
         'https://podcasts.apple.com/us/podcast/the-codesandbox-podcast/id1558498059',
       spotify:
         'https://open.spotify.com/show/1JNGRiwV214kLi3cBZCKaS?si=7Rgupv6MRPyYWr4iKYTLTw',
-      google: '#',
+      google:
+        'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL2NvZGVzYW5kYm94LXBvZGNhc3Q',
       tuneIn:
         'https://tunein.com/podcasts/Technology-Podcasts/The-CodeSandbox-Podcast-p1416545/',
-      stitcher: '#',
+      stitcher: '#https://www.stitcher.com/show/the-codesandbox-podcast/',
     },
   },
 ];

@@ -8,8 +8,8 @@ import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
 import { Header, PageTitle, PageSubtitle, Podcasts } from './_elements';
 
-import version1 from '../../assets/images/podcasts/version1.png';
-import csb from '../../assets/images/podcasts/csb.png';
+import version1 from '../../assets/images/podcasts/version1.jpg';
+import csb from '../../assets/images/podcasts/csb.jpg';
 
 const PodcastsPage = () => (
   <Layout>

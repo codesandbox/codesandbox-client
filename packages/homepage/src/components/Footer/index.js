@@ -79,6 +79,10 @@ const footerNavElements = [
         link: '/blog',
       },
       {
+        text: 'Podcasts',
+        link: '/podcasts',
+      },
+      {
         text: 'Careers',
         link: '/jobs',
       },
