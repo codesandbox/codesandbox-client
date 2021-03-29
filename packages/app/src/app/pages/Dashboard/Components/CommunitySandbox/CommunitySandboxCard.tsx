@@ -1,5 +1,12 @@
 import React from 'react';
-import { Stack, Text, Icon, IconButton, Avatar } from '@codesandbox/components';
+import {
+  Stack,
+  Text,
+  Icon,
+  IconButton,
+  Avatar,
+  Button,
+} from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import css from '@styled-system/css';
 import { AnonymousAvatar } from './AnonymousAvatar';
@@ -47,25 +54,35 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type StatsProps = Pick<
   CommunitySandboxItemComponentProps,
-  'forkCount' | 'likeCount' | 'liked'
+  'forkCount' | 'likeCount' | 'liked' | 'onLikeToggle'
 >;
-const Stats: React.FC<StatsProps> = React.memo(
-  ({ forkCount, likeCount, liked }) => (
-    <Stack as={Text} variant="muted" align="center" gap={2}>
-      <Stack align="center" gap={1}>
-        <Icon name="fork" size={14} />
-        <Text size={3}>{formatNumber(forkCount)}</Text>
-      </Stack>
-      <Stack align="center" gap={1}>
-        <Icon
-          name="heart"
-          size={14}
-          css={css({ color: liked ? 'reds.300' : 'inherit' })}
-        />
-        <Text size={3}>{formatNumber(likeCount)}</Text>
-      </Stack>
+const Stats: React.FC<StatsProps> = ({
+  forkCount,
+  likeCount,
+  liked,
+  onLikeToggle,
+}) => (
+  <Stack as={Text} variant="muted" align="center" gap={2}>
+    <Stack align="center" gap={1}>
+      <Icon name="fork" size={14} />
+      <Text size={3}>{formatNumber(forkCount)}</Text>
     </Stack>
-  )
+    <Stack
+      as={Button}
+      variant="link"
+      gap={1}
+      autoWidth
+      paddingX={0}
+      onClick={onLikeToggle}
+    >
+      <Icon
+        name="heart"
+        size={14}
+        css={css({ color: liked ? 'reds.300' : 'inherit' })}
+      />
+      <Text size={3}>{formatNumber(likeCount)}</Text>
+    </Stack>
+  </Stack>
 );
 
 type AuthorProps = Pick<CommunitySandboxItemComponentProps, 'author'>;
@@ -98,6 +115,7 @@ export const SandboxCard = ({
   onClick,
   onDoubleClick,
   onContextMenu,
+  onLikeToggle,
   ...props
 }: CommunitySandboxItemComponentProps) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
@@ -151,7 +169,12 @@ export const SandboxCard = ({
           marginRight={3}
         >
           <Author author={author} />
-          <Stats likeCount={likeCount} forkCount={forkCount} liked={liked} />
+          <Stats
+            likeCount={likeCount}
+            forkCount={forkCount}
+            liked={liked}
+            onLikeToggle={onLikeToggle}
+          />
         </Stack>
       </Stack>
     </Stack>

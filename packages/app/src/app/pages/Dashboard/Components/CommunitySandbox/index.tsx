@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { useAppState } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { SandboxCard } from './CommunitySandboxCard';
@@ -22,6 +22,9 @@ export const CommunitySandbox = ({
   const {
     dashboard: { viewMode },
   } = useAppState();
+  const {
+    dashboard: { likeCommunitySandbox, unlikeSandbox },
+  } = useActions();
 
   const { sandbox } = item;
   const title = sandbox.title || sandbox.alias || sandbox.id;
@@ -73,12 +76,23 @@ export const CommunitySandbox = ({
     track('Dashboard - Community Search sandbox opened');
   };
 
+  const [managedLikeCount, setLikeCount] = React.useState(likeCount);
+  const onLikeToggle = () => {
+    if (liked) {
+      unlikeSandbox(sandbox.id);
+      setLikeCount(managedLikeCount - 1);
+    } else {
+      likeCommunitySandbox(sandbox.id);
+      setLikeCount(managedLikeCount + 1);
+    }
+  };
+
   const sandboxProps = {
     title,
     TemplateIcon,
     screenshotUrl,
     forkCount,
-    likeCount,
+    likeCount: managedLikeCount,
     author,
     liked,
   };
@@ -94,6 +108,7 @@ export const CommunitySandbox = ({
     onDoubleClick,
     onContextMenu,
     'data-selection-id': sandbox.id,
+    onLikeToggle,
   };
 
   const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
