@@ -427,7 +427,9 @@ function overrideDocumentClose() {
 
 overrideDocumentClose();
 
-inject();
+if (!process.env.SANDPACK) {
+  inject();
+}
 
 interface CompileOptions {
   sandboxId: string;
@@ -478,7 +480,7 @@ async function compile({
 
   const startTime = Date.now();
   try {
-    inject();
+    inject(showErrorScreen);
     clearErrorTransformers();
     initializeErrorTransformers();
     unmount(manager && manager.webpackHMR ? true : hadError);
@@ -541,7 +543,7 @@ async function compile({
 
     metrics.measure('dependencies');
 
-    if (firstLoad) {
+    if (firstLoad && showLoadingScreen) {
       setScreen({
         type: 'loading',
         showFullScreen: firstLoad,
@@ -552,6 +554,10 @@ async function compile({
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       ({ done, total, remainingDependencies }) => {
+        if (!showLoadingScreen) {
+          return;
+        }
+
         const progress = total - done;
         if (done === total) {
           return;
@@ -624,11 +630,13 @@ async function compile({
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
 
-    setScreen({
-      type: 'loading',
-      text: 'Transpiling Modules...',
-      showFullScreen: firstLoad,
-    });
+    if (showLoadingScreen) {
+      setScreen({
+        type: 'loading',
+        text: 'Transpiling Modules...',
+        showFullScreen: firstLoad,
+      });
+    }
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
@@ -701,6 +709,11 @@ async function compile({
           // on the first run. However, if there's no server to provide the static file (in the case of a local server
           // or sandpack), then do it anyways.
           document.body.innerHTML = body;
+
+          // Preseve the head tags and add anything that comes from the template at the end of the tag
+          // This way, title and other meta tags will overwrite whatever the bundler <head> tag has,
+          // but all the preloads and scripts/styles that are needed by the bundler are kept
+          document.head.insertAdjacentHTML('beforeend', head);
         }
         lastBodyHTML = body;
         lastHeadHTML = head;
