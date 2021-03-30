@@ -710,10 +710,10 @@ async function compile({
           // or sandpack), then do it anyways.
           document.body.innerHTML = body;
 
-          // Preseve the head tags and add anything that comes from the template at the end of the tag
-          // This way, title and other meta tags will overwrite whatever the bundler <head> tag has,
-          // but all the preloads and scripts/styles that are needed by the bundler are kept
-          document.head.insertAdjacentHTML('beforeend', head);
+          // Add head tags or anything that comes from the template
+          // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
+          // At this point, the original head was parsed and the files loaded / preloaded.
+          document.head.innerHTML = head;
         }
         lastBodyHTML = body;
         lastHeadHTML = head;
