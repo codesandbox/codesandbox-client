@@ -7,6 +7,7 @@ import {
   Grid,
   Column,
   Link,
+  Avatar,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -19,6 +20,8 @@ import {
   GUTTER,
 } from 'app/pages/Dashboard/Components/VariableGrid';
 import { CommunitySandbox } from 'app/pages/Dashboard/Components/CommunitySandbox';
+import { Stats } from 'app/pages/Dashboard/Components/CommunitySandbox/CommunitySandboxCard';
+import { AnonymousAvatar } from 'app/pages/Dashboard/Components/CommunitySandbox/AnonymousAvatar';
 import { Album } from 'app/graphql/types';
 import { DashboardCommunitySandbox } from 'app/pages/Dashboard/types';
 import { PICKED_SANDBOXES_ALBUM } from './contants';
@@ -109,9 +112,85 @@ export const Discover = () => {
           </Stack>
 
           <Stack direction="vertical" gap={16}>
-            {pickedSandboxesAlbum && (
-              <Section album={pickedSandboxesAlbum} showMore={false} />
-            )}
+            <Grid
+              rowGap={6}
+              columnGap={6}
+              css={{
+                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                height: '528px',
+                overflow: 'hidden',
+              }}
+            >
+              {pickedSandboxesAlbum?.sandboxes.map(sandbox => (
+                <Element
+                  key={sandbox.id}
+                  css={{
+                    position: 'relative',
+                    button: { color: 'white' },
+                    span: { color: 'white' },
+                  }}
+                >
+                  <Element
+                    as="iframe"
+                    src={`https://${sandbox.id}.codesandbox.dev?standalone=1`}
+                    css={css({
+                      backgroundColor: 'white',
+                      width: '100%',
+                      height: '528px',
+                      borderRadius: '4px',
+                      border: '1px solid',
+                      borderColor: 'grays.600',
+                    })}
+                    scrolling="no"
+                    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+                    sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+                  />
+                  <Stack
+                    justify="space-between"
+                    align="center"
+                    gap={2}
+                    css={css({
+                      position: 'absolute',
+                      left: 0,
+                      bottom: 0,
+                      width: '100%',
+                      background: 'linear-gradient(transparent, #242424)',
+                      padding: 4,
+                      paddingRight: 3,
+                    })}
+                  >
+                    <Stack
+                      align="center"
+                      gap={2}
+                      css={{ flexShrink: 1, overflow: 'hidden' }}
+                    >
+                      {sandbox.author.username ? (
+                        <Avatar
+                          css={css({
+                            size: 6,
+                            borderRadius: 2,
+                            img: { borderColor: 'white' },
+                          })}
+                          user={sandbox.author}
+                        />
+                      ) : (
+                        <AnonymousAvatar />
+                      )}
+                      <Text size={3} maxWidth="100%">
+                        {sandbox.author.username || 'Anonymous'}
+                      </Text>
+                    </Stack>
+
+                    <Stats
+                      likeCount={sandbox.likeCount}
+                      forkCount={sandbox.forkCount}
+                      liked={false}
+                      onLikeToggle={() => {}}
+                    />
+                  </Stack>
+                </Element>
+              ))}
+            </Grid>
 
             {curatedAlbums
               .filter(album => album.id !== PICKED_SANDBOXES_ALBUM)
