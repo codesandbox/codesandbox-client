@@ -3060,14 +3060,22 @@ export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
   >;
 };
 
+export type AlbumSandboxFragment = Pick<
+  SandboxFragmentDashboardFragment,
+  'id' | 'alias' | 'title' | 'description' | 'screenshotUrl' | 'source'
+> & {
+  author: Pick<Sandbox['author'], 'username' | 'avatarUrl'>;
+  liked: boolean;
+} & Pick<Sandbox, 'forkCount' | 'likeCount'>;
+
 export type Album = {
   id: Scalars['UUID4'];
   title: String;
-  sandboxes: Array<SandboxFragmentDashboardFragment>;
+  sandboxes: Array<AlbumSandboxFragment>;
 };
 
 export type CuratedAlbumsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
-  curatedAlbums: Array<Album>;
+  albums: Array<Album>;
 };

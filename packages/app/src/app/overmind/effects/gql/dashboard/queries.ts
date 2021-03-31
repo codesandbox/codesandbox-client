@@ -433,11 +433,26 @@ export const curatedAlbums: Query<
   CuratedAlbumsQueryVariables
 > = gql`
   query CuratedAlbums {
-    curatedAlbums {
+    albums(username: "siddharthkp") {
+      id
+      title
       sandboxes {
-        ...sandboxFragmentDashboard
+        id
+        alias
+        title
+        description
+        screenshotUrl
+        forkCount
+        likeCount
+        author {
+          username
+          avatarUrl
+        }
+        source {
+          id
+          template
+        }
       }
     }
   }
-  ${sandboxFragmentDashboard}
 `;
