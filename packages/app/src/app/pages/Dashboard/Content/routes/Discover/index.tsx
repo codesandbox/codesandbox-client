@@ -41,10 +41,6 @@ export const Discover = () => {
     if (!sandboxes.LIKED) getPage(sandboxesTypes.LIKED);
   }, [getPage, sandboxes.LIKED]);
 
-  const pickedSandboxesAlbum = curatedAlbums.find(
-    album => album.id === PICKED_SANDBOXES_ALBUM
-  );
-
   const flatAlbumSandboxes = Array.prototype.concat.apply(
     [],
     curatedAlbums.map(album => album.sandboxes)
@@ -112,90 +108,12 @@ export const Discover = () => {
           </Stack>
 
           <Stack direction="vertical" gap={16}>
-            <Grid
-              rowGap={6}
-              columnGap={6}
-              css={{
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                height: '528px',
-                overflow: 'hidden',
-              }}
-            >
-              {pickedSandboxesAlbum?.sandboxes.map(sandbox => (
-                <Element
-                  key={sandbox.id}
-                  css={{
-                    position: 'relative',
-                    button: { color: 'white' },
-                    span: { color: 'white' },
-                  }}
-                >
-                  <Element
-                    as="iframe"
-                    src={`https://${sandbox.id}.codesandbox.dev?standalone=1`}
-                    css={css({
-                      backgroundColor: 'white',
-                      width: '100%',
-                      height: '528px',
-                      borderRadius: '4px',
-                      border: '1px solid',
-                      borderColor: 'grays.600',
-                    })}
-                    scrolling="no"
-                    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                    sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-                  />
-                  <Stack
-                    justify="space-between"
-                    align="center"
-                    gap={2}
-                    css={css({
-                      position: 'absolute',
-                      left: 0,
-                      bottom: 0,
-                      width: '100%',
-                      background: 'linear-gradient(transparent, #242424)',
-                      padding: 4,
-                      paddingRight: 3,
-                    })}
-                  >
-                    <Stack
-                      align="center"
-                      gap={2}
-                      css={{ flexShrink: 1, overflow: 'hidden' }}
-                    >
-                      {sandbox.author.username ? (
-                        <Avatar
-                          css={css({
-                            size: 6,
-                            borderRadius: 2,
-                            img: { borderColor: 'white' },
-                          })}
-                          user={sandbox.author}
-                        />
-                      ) : (
-                        <AnonymousAvatar />
-                      )}
-                      <Text size={3} maxWidth="100%">
-                        {sandbox.author.username || 'Anonymous'}
-                      </Text>
-                    </Stack>
-
-                    <Stats
-                      likeCount={sandbox.likeCount}
-                      forkCount={sandbox.forkCount}
-                      liked={false}
-                      onLikeToggle={() => {}}
-                    />
-                  </Stack>
-                </Element>
-              ))}
-            </Grid>
+            <PickedSandboxes />
 
             {curatedAlbums
               .filter(album => album.id !== PICKED_SANDBOXES_ALBUM)
               .map(album => (
-                <Section
+                <Collection
                   key={album.id}
                   album={album}
                   showMore={album.sandboxes.length > 3}
@@ -208,8 +126,130 @@ export const Discover = () => {
   );
 };
 
-type SectionTypes = { album: Album; showMore: boolean };
-const Section: React.FC<SectionTypes> = ({ album, showMore = false }) => {
+const PickedSandboxes = () => {
+  const {
+    dashboard: { curatedAlbums },
+  } = useAppState();
+
+  const pickedSandboxesAlbum = curatedAlbums.find(
+    album => album.id === PICKED_SANDBOXES_ALBUM
+  );
+
+  return (
+    <Grid
+      rowGap={6}
+      columnGap={6}
+      css={{
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        height: '528px',
+        overflow: 'hidden',
+      }}
+    >
+      {pickedSandboxesAlbum?.sandboxes.slice(0, 3).map(sandbox => (
+        <PickedSandbox key={sandbox.id} sandbox={sandbox} />
+      ))}
+    </Grid>
+  );
+};
+
+const PickedSandbox = ({ sandbox }) => {
+  const {
+    dashboard: { sandboxes },
+  } = useAppState();
+  const {
+    dashboard: { likeCommunitySandbox, unlikeSandbox },
+  } = useActions();
+
+  const likedSandboxIds = (sandboxes.LIKED || []).map(s => s.id);
+  const liked = likedSandboxIds.includes(sandbox.id);
+
+  const [managedLikeCount, setLikeCount] = React.useState(sandbox.likeCount);
+  const [managedLiked, setLiked] = React.useState(liked);
+
+  const onLikeToggle = () => {
+    if (managedLiked) {
+      unlikeSandbox(sandbox.id);
+      setLiked(false);
+      setLikeCount(managedLikeCount - 1);
+    } else {
+      likeCommunitySandbox(sandbox.id);
+      setLiked(true);
+      setLikeCount(managedLikeCount + 1);
+    }
+  };
+
+  return (
+    <Element
+      css={{
+        position: 'relative',
+        button: { color: 'white' },
+        span: { color: 'white' },
+      }}
+    >
+      <Element
+        as="iframe"
+        src={`https://${sandbox.id}.codesandbox.dev?standalone=1`}
+        css={css({
+          backgroundColor: 'white',
+          width: '100%',
+          height: '528px',
+          borderRadius: '4px',
+          border: '1px solid',
+          borderColor: 'grays.600',
+        })}
+        scrolling="no"
+        allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+        sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+      />
+      <Stack
+        justify="space-between"
+        align="center"
+        gap={2}
+        css={css({
+          position: 'absolute',
+          left: 0,
+          bottom: 0,
+          width: '100%',
+          background: 'linear-gradient(transparent, #242424)',
+          padding: 4,
+          paddingRight: 3,
+        })}
+      >
+        <Stack
+          align="center"
+          gap={2}
+          css={{ flexShrink: 1, overflow: 'hidden' }}
+        >
+          {sandbox.author.username ? (
+            <Avatar
+              css={css({
+                size: 6,
+                borderRadius: 2,
+                img: { borderColor: 'white' },
+              })}
+              user={sandbox.author}
+            />
+          ) : (
+            <AnonymousAvatar />
+          )}
+          <Text size={3} maxWidth="100%">
+            {sandbox.author.username || 'Anonymous'}
+          </Text>
+        </Stack>
+
+        <Stats
+          likeCount={managedLikeCount}
+          forkCount={sandbox.forkCount}
+          liked={managedLiked}
+          onLikeToggle={onLikeToggle}
+        />
+      </Stack>
+    </Element>
+  );
+};
+
+type CollectionTypes = { album: Album; showMore: boolean };
+const Collection: React.FC<CollectionTypes> = ({ album, showMore = false }) => {
   const {
     dashboard: { sandboxes },
   } = useAppState();
