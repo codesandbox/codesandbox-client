@@ -348,13 +348,14 @@ export const sandboxPrivacyChanged = async (
 };
 
 export const setWorkspaceItem = (
-  { state }: Context,
+  { state, effects }: Context,
   {
     item,
   }: {
     item: string;
   }
 ) => {
+  effects.analytics.track('Sidebar - Changed Workspace Item', { item });
   state.workspace.openedWorkspaceItem = item;
 };
 
@@ -366,6 +367,8 @@ export const setWorkspaceHidden = (
   { state, effects }: Context,
   { hidden }: { hidden: boolean }
 ) => {
+  effects.analytics.track('Sidebar - Set Visibility', { hidden });
+
   state.workspace.workspaceHidden = hidden;
   effects.vscode.resetLayout();
 };
