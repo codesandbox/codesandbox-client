@@ -4,9 +4,8 @@ import styled from 'styled-components';
 
 export const Header = styled.section`
   text-align: center;
-  padding: 4rem 0 8rem 0;
+  padding: 4rem 0 2rem 0;
   color: #f2f2f2;
-  margin-bottom: 2rem;
 
   @media screen and (max-width: 768px) {
     padding: 4rem 0 2rem 0;
@@ -37,7 +36,6 @@ export const PageSubtitle = styled.h2`
 `;
 
 export const Podcasts = styled.main`
-  margin-top: 80px;
   margin-bottom: 230px;
   display: flex;
   align-items: center;
@@ -90,6 +88,7 @@ export const Episode = styled.li`
   display: flex;
   margin-bottom: 40px;
   align-items: center;
+  transition: transform 150ms ease;
 
   img {
     width: 96px;
@@ -99,6 +98,10 @@ export const Episode = styled.li`
     @media screen and (max-width: 768px) {
       display: none;
     }
+  }
+
+  :hover {
+    transform: scale(1.03);
   }
 `;
 

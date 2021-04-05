@@ -10,7 +10,7 @@ import {
   Header,
   PageTitle,
   PageSubtitle,
-  Episodes,
+  // Episodes,
   // EpisodeNumber,
   // Episode,
   // Description,
@@ -25,12 +25,12 @@ const info = allPodcasts.find(
   podcast => podcast.slug === 'codesandbox-podcast'
 );
 
-const VersionOne = () => (
+const TheCodeSandboxPodcast = () => (
   <Layout>
     <PageContainer>
       <TitleAndMetaTags
         description={info.description}
-        title="CodeSandbox Podcast - CodeSandbox"
+        title="The CodeSandbox Podcast - CodeSandbox"
         image={csb}
         meta={[
           { name: 'robots', content: 'noindex' },
@@ -57,8 +57,8 @@ const VersionOne = () => (
 
         <PageSubtitle
           css={`
-            width: 640px;
-            max-width: 80%;
+            width: 100%;
+            max-width: 640px;
             margin: auto;
             line-height: 1.25;
           `}
@@ -69,11 +69,11 @@ const VersionOne = () => (
 
       <div
         css={`
-          margin: 2rem 0 6rem 0;
+          margin: 2rem 0 12rem 0;
         `}
       >
         <iframe
-          title="CodeSandbox Podcast"
+          title="The CodeSandbox Podcast"
           src="https://player.resonaterecordings.com/embed?uuid=5a6b601f-d415-4b61-848a-08a7597d63a4&accentColor=13,180,206&backgroundColor=242,242,242"
           width="100%"
           height="155"
@@ -83,8 +83,8 @@ const VersionOne = () => (
         />
       </div>
 
-      <Episodes>
-        {/* {episodes
+      {/* <Episodes>
+       {episodes
           .filter(e => e.node.frontmatter.slug)
           .map(({ node: { id, frontmatter } }) => (
             <Link
@@ -108,8 +108,9 @@ const VersionOne = () => (
                 </section>
               </Episode>
             </Link>
-          ))} */}
-      </Episodes>
+          ))} 
+      </Episodes> */}
+
       <PodcastLinks {...info.links} name={info.name} />
     </PageContainer>
   </Layout>
@@ -138,4 +139,4 @@ const VersionOne = () => (
 //   }
 // `;
 
-export default VersionOne;
+export default TheCodeSandboxPodcast;
