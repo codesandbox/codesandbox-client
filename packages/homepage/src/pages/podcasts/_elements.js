@@ -37,7 +37,7 @@ export const PageSubtitle = styled.h2`
 `;
 
 export const Podcasts = styled.main`
-  margin-top: 80px;
+  margin-top: -6rem;
   margin-bottom: 230px;
   display: flex;
   align-items: center;
@@ -73,7 +73,7 @@ export const Episodes = styled.ul`
   list-style: none;
   width: 640px;
   margin: auto;
-  max-width: 80%;
+  max-width: 100%;
   margin-bottom: 200px;
 `;
 

@@ -6,7 +6,7 @@ const Links = styled.section`
   margin: auto;
   display: flex;
   justify-content: center;
-  max-width: 80%;
+  max-width: 100%;
   margin-top: 32px;
   color: #999999;
   flex-wrap: wrap;

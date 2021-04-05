@@ -1,5 +1,5 @@
 import React from 'react';
-import { graphql, Link } from 'gatsby';
+import { graphql } from 'gatsby';
 
 import Layout from '../../components/layout';
 import PageContainer from '../../components/PageContainer';
@@ -11,10 +11,10 @@ import {
   PageTitle,
   PageSubtitle,
   Episodes,
-  EpisodeNumber,
-  Episode,
-  Description,
-  EpisodeTitle,
+  // EpisodeNumber,
+  // Episode,
+  // Description,
+  // EpisodeTitle,
 } from './_elements';
 
 import version1 from '../../assets/images/podcasts/version1.jpg';
@@ -23,11 +23,12 @@ import PodcastLinks from '../../components/PodcastLinks';
 
 const info = allPodcasts.find(podcast => podcast.slug === 'version-one');
 
-const VersionOne = ({
-  data: {
-    allMarkdownRemark: { edges: episodes },
-  },
-}) => (
+const VersionOne = () => (
+  //   {
+  //   data: {
+  //     allMarkdownRemark: { edges: episodes },
+  //   },
+  // }
   <Layout>
     <PageContainer>
       <TitleAndMetaTags
@@ -54,7 +55,7 @@ const VersionOne = ({
             font-size: 48px;
           `}
         >
-          {info.name} Podcast
+          {info.name}
         </PageTitle>
 
         <PageSubtitle
@@ -69,8 +70,24 @@ const VersionOne = ({
         </PageSubtitle>
       </Header>
 
+      <div
+        css={`
+          margin: 2rem 0 6rem 0;
+        `}
+      >
+        <iframe
+          title="Version one"
+          src="https://player.resonaterecordings.com/embed?uuid=7c540626-fe2a-46ed-af8b-99cec654a2de&accentColor=13,180,206&backgroundColor=242,242,242"
+          width="100%"
+          height="155"
+          frameBorder="0"
+          allowtransparency="true"
+          allow="encrypted-media"
+        />
+      </div>
+
       <Episodes>
-        {episodes
+        {/* {episodes
           .filter(e => e.node.frontmatter.slug)
           .map(({ node: { id, frontmatter } }) => (
             <Link
@@ -94,7 +111,7 @@ const VersionOne = ({
                 </section>
               </Episode>
             </Link>
-          ))}
+          ))} */}
       </Episodes>
 
       <PodcastLinks {...info.links} name={info.name} />

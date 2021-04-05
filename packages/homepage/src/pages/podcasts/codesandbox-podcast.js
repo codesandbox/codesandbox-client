@@ -25,12 +25,12 @@ const info = allPodcasts.find(
   podcast => podcast.slug === 'codesandbox-podcast'
 );
 
-const VersionOne = () => (
+const TheCodeSandboxPodcast = () => (
   <Layout>
     <PageContainer>
       <TitleAndMetaTags
         description={info.description}
-        title="CodeSandbox Podcast - CodeSandbox"
+        title="The CodeSandbox Podcast - CodeSandbox"
         image={csb}
         meta={[
           { name: 'robots', content: 'noindex' },
@@ -73,7 +73,7 @@ const VersionOne = () => (
         `}
       >
         <iframe
-          title="CodeSandbox Podcast"
+          title="The CodeSandbox Podcast"
           src="https://player.resonaterecordings.com/embed?uuid=5a6b601f-d415-4b61-848a-08a7597d63a4&accentColor=13,180,206&backgroundColor=242,242,242"
           width="100%"
           height="155"
@@ -138,4 +138,4 @@ const VersionOne = () => (
 //   }
 // `;
 
-export default VersionOne;
+export default TheCodeSandboxPodcast;
