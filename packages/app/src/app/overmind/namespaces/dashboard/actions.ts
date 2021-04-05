@@ -108,6 +108,7 @@ export const viewModeChanged = (
   { state, effects }: Context,
   { mode }: { mode: 'grid' | 'list' }
 ) => {
+  effects.analytics.track('Dashboard - Change View Mode', { mode });
   state.dashboard.viewMode = mode;
   effects.browser.storage.set('VIEW_MODE_DASHBOARD', mode);
 };
@@ -173,6 +174,7 @@ export const removeFromTeam = async (
 ) => {
   if (!state.activeTeam || !state.activeTeamInfo) return;
   try {
+    effects.analytics.track('Dashboard - Remove Team Member');
     await effects.gql.mutations.removeFromTeam({
       teamId: state.activeTeam,
       userId: id,
@@ -1850,5 +1852,20 @@ export const unlikeSandbox = async (
   } catch (e) {
     state.dashboard.sandboxes[sandboxesTypes.LIKED] = json(all);
     effects.notificationToast.error('There was a problem removing your like');
+  }
+};
+
+export const likeCommunitySandbox = async (
+  { actions, effects }: Context,
+  id: string
+) => {
+  try {
+    // we don't have optimistic updates because the shape of
+    // a liked sandbox is not the same as a community sandbox
+    // so we refetch liked sandboxes from the api
+    await effects.api.likeSandbox(id);
+    actions.dashboard.getLikedSandboxes();
+  } catch (e) {
+    effects.notificationToast.error('There was a problem liking the sandbox');
   }
 };

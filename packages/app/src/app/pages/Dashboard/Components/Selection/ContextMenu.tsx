@@ -6,6 +6,7 @@ import {
   DashboardFolder,
   DashboardRepo,
   DashboardNewMasterBranch,
+  DashboardCommunitySandbox,
   PageTypes,
 } from '../../types';
 import {
@@ -15,6 +16,7 @@ import {
   RepoMenu,
   MasterMenu,
   ContainerMenu,
+  CommunitySandboxMenu,
 } from './ContextMenus';
 
 interface IMenuProps {
@@ -61,6 +63,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     | DashboardTemplate
     | DashboardRepo
     | DashboardNewMasterBranch
+    | DashboardCommunitySandbox
   > = selectedIds.map(id => {
     if (id.startsWith('/')) {
       if (repos && repos.length) {
@@ -109,6 +112,8 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     menu = <RepoMenu repo={selectedItems[0]} />;
   } else if (selectedItems[0].type === 'new-master-branch') {
     menu = <MasterMenu repo={selectedItems[0].repo} />;
+  } else if (selectedItems[0].type === 'community-sandbox') {
+    menu = <CommunitySandboxMenu item={selectedItems[0]} />;
   }
 
   return (

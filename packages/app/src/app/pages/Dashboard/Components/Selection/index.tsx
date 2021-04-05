@@ -25,6 +25,7 @@ import {
   DashboardFolder,
   DashboardGridItem,
   DashboardRepo,
+  DashboardCommunitySandbox,
   PageTypes,
 } from '../../types';
 import { DndDropType } from '../../utils/dnd';
@@ -100,9 +101,14 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'sandbox' ||
       item.type === 'template' ||
       item.type === 'folder' ||
-      item.type === 'repo'
+      item.type === 'repo' ||
+      item.type === 'community-sandbox'
   ) as Array<
-    DashboardSandbox | DashboardTemplate | DashboardFolder | DashboardRepo
+    | DashboardSandbox
+    | DashboardTemplate
+    | DashboardFolder
+    | DashboardRepo
+    | DashboardCommunitySandbox
   >;
 
   const selectionItems = possibleItems.map(item => {
@@ -115,7 +121,10 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     item => item.type === 'folder'
   ) as DashboardFolder[];
   const sandboxes = (items || []).filter(
-    item => item.type === 'sandbox' || item.type === 'template'
+    item =>
+      item.type === 'sandbox' ||
+      item.type === 'template' ||
+      item.type === 'community-sandbox'
   ) as Array<DashboardSandbox | DashboardTemplate>;
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);

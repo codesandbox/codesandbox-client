@@ -2,6 +2,7 @@ import {
   SandboxFragmentDashboardFragment,
   TemplateFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
+  Sandbox,
 } from 'app/graphql/types';
 import {
   PageTypes as PT,
@@ -115,6 +116,19 @@ export type DashboardNewMasterBranch = {
   };
 };
 
+export type DashboardCommunitySandbox = {
+  type: 'community-sandbox';
+  noDrag: true;
+  autoFork: false;
+  sandbox: Pick<
+    DashboardSandbox['sandbox'],
+    'id' | 'alias' | 'title' | 'description' | 'screenshotUrl' | 'source'
+  > & {
+    author: Pick<Sandbox['author'], 'username' | 'avatarUrl'>;
+    liked: boolean;
+  } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
+};
+
 export type PageTypes = PT;
 
 export type DashboardGridItem =
@@ -132,4 +146,5 @@ export type DashboardGridItem =
   | DashboardRepo
   | DashboardRepoSandbox
   | DashboardBlankRowFill
-  | DashboardSkeleton;
+  | DashboardSkeleton
+  | DashboardCommunitySandbox;

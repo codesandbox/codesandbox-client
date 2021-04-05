@@ -199,6 +199,9 @@ export default class TestRunner {
       document: jsdomDocument,
       window: jsdomWindow,
       global: jsdomWindow,
+
+      // When calling `Event` we don't want the native `Event` but the JSDOM version
+      Event: jsdomWindow.Event,
     };
 
     Object.keys(jestRuntimeGlobals).forEach(globalKey => {

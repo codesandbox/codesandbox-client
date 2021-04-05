@@ -91,3 +91,17 @@ export const search = (query: string, teamId?: string | null) => {
 
   return searchUrl;
 };
+
+export const exploreSearch = (query: string, teamId?: string | null) => {
+  let searchUrl = appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/explore/search`,
+    teamId
+  );
+
+  if (searchUrl.includes('?')) searchUrl += '&';
+  else searchUrl += '?';
+
+  searchUrl += `query=${query}`;
+
+  return searchUrl;
+};

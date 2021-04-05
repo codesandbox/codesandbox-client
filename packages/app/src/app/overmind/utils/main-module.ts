@@ -1,4 +1,4 @@
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { Module, Sandbox } from '@codesandbox/common/lib/types';
 import getDefinition from '@codesandbox/common/lib/templates';
 import { resolveModuleWrapped } from './resolve-module-wrapped';
 
@@ -18,7 +18,7 @@ export function mainModule(sandbox: Sandbox, parsedConfigurations: any) {
 export function defaultOpenedModule(
   sandbox: Sandbox,
   parsedConfigurations: any
-) {
+): Module | undefined {
   const templateDefinition = getDefinition(sandbox.template);
 
   const resolve = resolveModuleWrapped(sandbox);
