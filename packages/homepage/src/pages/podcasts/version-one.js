@@ -70,6 +70,7 @@ const VersionOne = () => (
         </PageSubtitle>
       </Header>
 
+
       <div
         css={`
           margin: 2rem 0 6rem 0;
@@ -113,6 +114,7 @@ const VersionOne = () => (
             </Link>
           ))} */}
       </Episodes>
+
 
       <PodcastLinks {...info.links} name={info.name} />
     </PageContainer>
