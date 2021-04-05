@@ -69,7 +69,7 @@ const VersionOne = ({
         </PageSubtitle>
       </Header>
 
-      <div
+      {/* <div
         css={`
           margin: 2rem 0 6rem 0;
         `}
@@ -83,14 +83,9 @@ const VersionOne = ({
           allowtransparency="true"
           allow="encrypted-media"
         />
-      </div>
+      </div> */}
 
-      {/* hack hack need to remove css */}
-      <Episodes
-        css={`
-          display: none;
-        `}
-      >
+      <Episodes>
         {episodes
           .filter(e => e.node.frontmatter.slug)
           .map(({ node: { id, frontmatter } }) => (
