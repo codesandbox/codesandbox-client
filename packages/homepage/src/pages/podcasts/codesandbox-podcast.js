@@ -57,8 +57,8 @@ const TheCodeSandboxPodcast = () => (
 
         <PageSubtitle
           css={`
-            width: 640px;
-            max-width: 80%;
+            width: 100%;
+            max-width: 640px;
             margin: auto;
             line-height: 1.25;
           `}
@@ -69,7 +69,7 @@ const TheCodeSandboxPodcast = () => (
 
       <div
         css={`
-          margin: 2rem 0 6rem 0;
+          margin: 2rem 0 12rem 0;
         `}
       >
         <iframe
