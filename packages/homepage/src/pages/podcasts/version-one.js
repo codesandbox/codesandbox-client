@@ -69,11 +69,7 @@ const VersionOne = ({
         </PageSubtitle>
       </Header>
 
-
-
-
-      <Episodes
-
+      <Episodes>
         {episodes
           .filter(e => e.node.frontmatter.slug)
           .map(({ node: { id, frontmatter } }) => (
@@ -100,6 +96,7 @@ const VersionOne = ({
             </Link>
           ))}
       </Episodes>
+
       <PodcastLinks {...info.links} name={info.name} />
     </PageContainer>
   </Layout>
