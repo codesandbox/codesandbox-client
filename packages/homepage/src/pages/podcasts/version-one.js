@@ -69,28 +69,7 @@ const VersionOne = ({
         </PageSubtitle>
       </Header>
 
-      <div
-        css={`
-          margin: 2rem 0 6rem 0;
-        `}
-      >
-        <iframe
-          title="versionone"
-          src="https://player.resonaterecordings.com/embed?uuid=7c540626-fe2a-46ed-af8b-99cec654a2de&accentColor=13,180,206&backgroundColor=242,242,242"
-          width="100%"
-          height="155"
-          frameBorder="0"
-          allowtransparency="true"
-          allow="encrypted-media"
-        />
-      </div>
-
-      {/* hack hack need to remove css */}
-      <Episodes
-        css={`
-          display: none;
-        `}
-      >
+      <Episodes>
         {episodes
           .filter(e => e.node.frontmatter.slug)
           .map(({ node: { id, frontmatter } }) => (
@@ -117,6 +96,7 @@ const VersionOne = ({
             </Link>
           ))}
       </Episodes>
+
       <PodcastLinks {...info.links} name={info.name} />
     </PageContainer>
   </Layout>
