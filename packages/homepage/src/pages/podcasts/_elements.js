@@ -73,7 +73,7 @@ export const Episodes = styled.ul`
   list-style: none;
   width: 640px;
   margin: auto;
-  max-width: 100%;
+  max-width: 80%;
   margin-bottom: 200px;
 `;
 
@@ -90,6 +90,7 @@ export const Episode = styled.li`
   display: flex;
   margin-bottom: 40px;
   align-items: center;
+  transition: transform 150ms ease;
 
   img {
     width: 96px;
@@ -99,6 +100,10 @@ export const Episode = styled.li`
     @media screen and (max-width: 768px) {
       display: none;
     }
+  }
+
+  :hover {
+    transform: scale(1.03);
   }
 `;
 

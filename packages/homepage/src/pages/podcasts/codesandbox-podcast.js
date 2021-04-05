@@ -10,7 +10,7 @@ import {
   Header,
   PageTitle,
   PageSubtitle,
-  Episodes,
+  // Episodes,
   // EpisodeNumber,
   // Episode,
   // Description,
@@ -83,8 +83,8 @@ const TheCodeSandboxPodcast = () => (
         />
       </div>
 
-      <Episodes>
-        {/* {episodes
+      {/* <Episodes>
+       {episodes
           .filter(e => e.node.frontmatter.slug)
           .map(({ node: { id, frontmatter } }) => (
             <Link
@@ -108,8 +108,9 @@ const TheCodeSandboxPodcast = () => (
                 </section>
               </Episode>
             </Link>
-          ))} */}
-      </Episodes>
+          ))} 
+      </Episodes> */}
+
       <PodcastLinks {...info.links} name={info.name} />
     </PageContainer>
   </Layout>
