@@ -13,7 +13,7 @@ import css from '@styled-system/css';
 
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
-
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import {
   GRID_MAX_WIDTH,
@@ -160,6 +160,7 @@ const PickedSandbox = ({ sandbox }) => {
     dashboard: { likeCommunitySandbox, unlikeSandbox },
   } = useActions();
 
+  const url = sandboxUrl({ id: sandbox.id, alias: sandbox.alias });
   const likedSandboxIds = (sandboxes.LIKED || []).map(s => s.id);
   const liked = likedSandboxIds.includes(sandbox.id);
 
@@ -186,21 +187,35 @@ const PickedSandbox = ({ sandbox }) => {
         span: { color: 'white' },
       }}
     >
-      <Element
-        as="iframe"
-        src={`https://${sandbox.id}.codesandbox.dev?standalone=1`}
+      <Link
+        href={url}
+        target="_blank"
+        block
         css={css({
-          backgroundColor: 'white',
           width: '100%',
           height: '528px',
-          borderRadius: '4px',
           border: '1px solid',
           borderColor: 'grays.600',
+          borderRadius: 'medium',
+          overflow: 'hidden',
         })}
-        scrolling="no"
-        allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-        sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-      />
+      >
+        <Element
+          as="img"
+          src={sandbox.screenshotUrl}
+          css={css({
+            objectFit: 'cover',
+            height: '100%',
+            width: '100%',
+            willChange: 'transform',
+            transition: 'transform',
+            transitionDuration: theme => theme.speeds[4],
+            ':hover': {
+              transform: 'scale(1.05)',
+            },
+          })}
+        />
+      </Link>
       <Stack
         justify="space-between"
         align="center"
@@ -213,6 +228,7 @@ const PickedSandbox = ({ sandbox }) => {
           background: 'linear-gradient(transparent, #242424)',
           padding: 4,
           paddingRight: 3,
+          borderRadius: 'medium',
         })}
       >
         <Stack
