@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Stack,
   Text,
@@ -279,7 +280,12 @@ const Collection: React.FC<CollectionTypes> = ({ album, showMore = false }) => {
           {album.title}
         </Text>
         {showMore && (
-          <Link size={4} variant="muted">
+          <Link
+            as={RouterLink}
+            to={'/dashboard/discover/' + album.id}
+            size={4}
+            variant="muted"
+          >
             See all →
           </Link>
         )}
