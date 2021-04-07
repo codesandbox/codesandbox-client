@@ -87,8 +87,16 @@ export const search = (query: string, teamId?: string | null) => {
   return searchUrl;
 };
 
-export const discover = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/discover`, teamId);
+export const discover = (teamId?: string | null, albumId?: string) => {
+  if (albumId) {
+    return appendTeamIdQueryParam(
+      `${DASHBOARD_URL_PREFIX}/discover/${albumId}`,
+      teamId
+    );
+  }
+
+  return appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/discover`, teamId);
+};
 
 export const discoverSearch = (query: string, teamId?: string | null) => {
   let searchUrl = appendTeamIdQueryParam(

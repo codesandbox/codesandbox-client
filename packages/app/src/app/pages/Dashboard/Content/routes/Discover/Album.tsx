@@ -2,10 +2,10 @@ import React from 'react';
 import css from '@styled-system/css';
 import { Helmet } from 'react-helmet';
 import { useAppState, useActions } from 'app/overmind';
-import { Grid, Column, Stack, Text, Element } from '@codesandbox/components';
-
+import { Grid, Column, Element } from '@codesandbox/components';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { CommunitySandbox } from 'app/pages/Dashboard/Components/CommunitySandbox';
+import { Header } from 'app/pages/Dashboard/Components/Header';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import {
   GRID_MAX_WIDTH,
@@ -45,59 +45,105 @@ export const Album = ({ match }) => {
 
   return (
     <Element
-      css={{ width: '100%', '#selection-container': { overflowY: 'auto' } }}
+      css={css({
+        width: '100%',
+        paddingY: 10,
+        '#selection-container': { overflowY: 'auto' },
+      })}
     >
       <Helmet>
         <title>Discover - CodeSandbox</title>
       </Helmet>
-      <Stack direction="vertical" gap={6}>
-        <Text size={4} weight="bold">
-          {album.title}
-        </Text>
+      <Header
+        activeTeam={activeTeam}
+        path={album.title as string}
+        albumId={album.id}
+      />
 
-        <SelectionProvider
-          activeTeamId={activeTeam}
-          page="discover"
-          items={selectionItems}
+      <SelectionProvider
+        activeTeamId={activeTeam}
+        page="discover"
+        items={selectionItems}
+      >
+        <Element
+          css={css({
+            marginX: 'auto',
+            width: `calc(100% - ${2 * GUTTER}px)`,
+            maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
+          })}
         >
-          <Element
-            css={css({
-              marginX: 'auto',
-              width: `calc(100% - ${2 * GUTTER}px)`,
-              maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-              paddingY: 10,
-            })}
+          <Grid
+            id="variable-grid"
+            rowGap={6}
+            columnGap={6}
+            css={{
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            }}
           >
-            <Grid
-              id="variable-grid"
-              rowGap={6}
-              columnGap={6}
-              css={{
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              }}
-            >
-              {album.sandboxes.map(sandbox => (
-                <Column key={sandbox.id}>
-                  <CommunitySandbox
-                    isScrolling={false}
-                    item={{
-                      type: 'community-sandbox',
-                      noDrag: true,
-                      autoFork: false,
-                      sandbox: {
-                        ...sandbox,
-                        liked: likedSandboxIds.includes(sandbox.id),
-                      },
-                    }}
-                  />
-                </Column>
-              ))}
-              <div />
-              <div />
-            </Grid>
-          </Element>
-        </SelectionProvider>
-      </Stack>
+            {album.sandboxes.map(sandbox => (
+              <Column key={sandbox.id}>
+                <CommunitySandbox
+                  isScrolling={false}
+                  item={{
+                    type: 'community-sandbox',
+                    noDrag: true,
+                    autoFork: false,
+                    sandbox: {
+                      ...sandbox,
+                      liked: likedSandboxIds.includes(sandbox.id),
+                    },
+                  }}
+                />
+              </Column>
+            ))}
+            <div />
+            <div />
+          </Grid>
+        </Element>
+      </SelectionProvider>
     </Element>
   );
 };
+
+// export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
+//   path,
+//   activeTeam,
+//   repos,
+// }) => (
+//   <Text marginBottom={1} block weight="bold" size={5}>
+//     <Link
+//       to={
+//         repos
+//           ? dashboard.repos(activeTeam)
+//           : dashboard.allSandboxes('/', activeTeam)
+//       }
+//       as={LinkBase}
+//       variant={path && path.split('/').length ? 'muted' : 'body'}
+//     >
+//       {repos ? 'Repositories' : 'All Sandboxes'} {path && ' / '}
+//     </Link>
+//     {path
+//       ? path.split('/').map((p, i) => {
+//           const partPath = path
+//             .split('/')
+//             .slice(0, i + 1)
+//             .join('/');
+
+//           return (
+//             <Link
+//               key={p}
+//               as={LinkBase}
+//               to={
+//                 repos
+//                   ? dashboard.repos(activeTeam)
+//                   : dashboard.allSandboxes('/' + partPath, activeTeam)
+//               }
+//               variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
+//             >
+//               {p} {i < path.split('/').length - 1 && '/ '}
+//             </Link>
+//           );
+//         })
+//       : null}
+//   </Text>
+// );

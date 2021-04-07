@@ -11,10 +11,14 @@ import {
   Avatar,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import {
+  dashboard,
+  sandboxUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
-import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import {
   GRID_MAX_WIDTH,
@@ -268,6 +272,7 @@ const PickedSandbox = ({ sandbox }) => {
 type CollectionTypes = { album: Album; showMore: boolean };
 const Collection: React.FC<CollectionTypes> = ({ album, showMore = false }) => {
   const {
+    activeTeam,
     dashboard: { sandboxes },
   } = useAppState();
 
@@ -282,7 +287,7 @@ const Collection: React.FC<CollectionTypes> = ({ album, showMore = false }) => {
         {showMore && (
           <Link
             as={RouterLink}
-            to={'/dashboard/discover/' + album.id}
+            to={dashboard.discover(activeTeam, album.id)}
             size={4}
             variant="muted"
           >

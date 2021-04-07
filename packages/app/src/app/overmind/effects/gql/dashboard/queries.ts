@@ -44,7 +44,6 @@ import {
   SharedWithMeSandboxesQuery,
   SharedWithMeSandboxesQueryVariables,
   CuratedAlbumsQuery,
-  CuratedAlbumsQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -428,10 +427,7 @@ export const alwaysOnTeamSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
-export const curatedAlbums: Query<
-  CuratedAlbumsQuery,
-  CuratedAlbumsQueryVariables
-> = gql`
+export const curatedAlbums: Query<CuratedAlbumsQuery> = gql`
   query CuratedAlbums {
     albums(username: "siddharthkp") {
       id

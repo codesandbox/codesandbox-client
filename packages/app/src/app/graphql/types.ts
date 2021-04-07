@@ -3074,8 +3074,6 @@ export type Album = {
   sandboxes: Array<AlbumSandboxFragment>;
 };
 
-export type CuratedAlbumsQueryVariables = Exact<{ [key: string]: never }>;
-
 export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
   albums: Array<Album>;
 };
