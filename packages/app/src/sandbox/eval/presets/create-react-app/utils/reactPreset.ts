@@ -16,6 +16,7 @@ import {
 } from '../utils';
 import { initializeReactDevTools } from './initDevTools';
 import { createRefreshEntry } from './createRefreshEntry';
+import base64Transpiler from '../../../transpilers/base64';
 
 export const reactPreset = babelConfig => {
   const debug = _debug('cs:compiler:cra');
@@ -141,6 +142,10 @@ export const reactPreset = babelConfig => {
 
           preset.registerTranspiler(module => /\.json$/.test(module.path), [
             { transpiler: jsonTranspiler },
+          ]);
+
+          preset.registerTranspiler(module => /\.md$/.test(module.path), [
+            { transpiler: base64Transpiler },
           ]);
 
           preset.registerTranspiler(() => true, [
