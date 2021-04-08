@@ -6,11 +6,12 @@ episodeNumber: 1
 audio: https://player.resonaterecordings.com/embed?uuid=2f5026dd-8c6d-41a8-898a-97f0d239cd42&accentColor=13,180,206&backgroundColor=242,242,242 
 slug: charlie-gerard-netlify
 image: ./images/charlie-gerard.jpg
-apple: "https://podcasts.apple.com/us/podcast/prototyping-with-charlie-gerard/id1558498059?i=1000516262532"
-google: "https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL2NvZGVzYW5kYm94LXBvZGNhc3Q/episode/MmY1MDI2ZGQtOGM2ZC00MWE4LTg5OGEtOTdmMGQyMzljZDQy?sa=X&ved=0CAQQ8qgGahcKEwjgws3D5e7vAhUAAAAAHQAAAAAQAg"
-spotify: "https://open.spotify.com/episode/5NLw30nyowTpwjV9HDq7bg?si=9314d9ff14544972"
-tuneIn: "https://tunein.com/podcasts/Technology-Podcasts/The-CodeSandbox-Podcast-p1416545/?topicId=162133133"
-stitcher: "undefined/show/the-codesandbox-podcast/episode/prototyping-with-charlie-gerard-83012942"
+apple: "https://podcasts.apple.com/us/podcast/the-codesandbox-podcast/id1558498059"
+google: "https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL2NvZGVzYW5kYm94LXBvZGNhc3Q"
+spotify: "https://open.spotify.com/show/1JNGRiwV214kLi3cBZCKaS?si=7Rgupv6MRPyYWr4iKYTLTw&nd=1"
+tuneIn: "https://tunein.com/podcasts/Technology-Podcasts/The-CodeSandbox-Podcast-p1416545/"
+stitcher: "https://www.stitcher.com/show/the-codesandbox-podcast/"
+
 tags: "Prototyping, senior frontend developer, creative developer, creative technologist, product development, HTML, transcribing, code, coding, app development, app, project creation, JavaScript, Python, Tensorflow, open source, closed source, software, hardware, learning, motivation, author, technology, hosting, machine learning, brain senses, mind control, mind controlled applications, raw data, TED Talks, public speaking, conference speaker, web developer, web development"
 description: "On this first episode of The CodeSandbox Podcast, we're looking at prototyping. Prototyping allows you to test ideas earlier, iterate more, and create better products. Whether it's a static website, a component, or a full-stack web app, prototyping is extremely important when it comes to project development.
 
