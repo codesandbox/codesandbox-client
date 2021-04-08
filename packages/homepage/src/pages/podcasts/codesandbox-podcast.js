@@ -131,6 +131,7 @@ export const query = graphql`
           id
           frontmatter {
             description
+            episodeNumber
             title
             slug
             image {
