@@ -91,7 +91,7 @@ round of funding and grow their team of engineers. He concludes the podcast by
 sharing how the best part of creating Netlify has been getting to use his
 passion with his best friend to pour themselves into such a rewarding outcome.
 
-### Time Stamps:
+### Time Stamps
 
 - 0:14 - Introduction to new podcast: Version One
 - 0:32 - The Host introduces guest Matt Biilmann.
@@ -106,7 +106,7 @@ passion with his best friend to pour themselves into such a rewarding outcome.
 - 15:10 - How they overcame the setbacks
 - 16:00 - Matt shares about the rewarding outcome of Netlify
 
-### Links:
+### Links
 
 - To learn more about CodeSandbox and Version One, visit their website
   [here](https://codesandbox.io).

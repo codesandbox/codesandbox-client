@@ -71,7 +71,7 @@ const VersionOne = ({
 
       <div
         css={`
-          margin: 1rem 0 10rem 0;
+          margin: 5rem 0 10rem 0;
         `}
       >
         <iframe
