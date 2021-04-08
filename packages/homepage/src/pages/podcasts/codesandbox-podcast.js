@@ -1,5 +1,5 @@
 import React from 'react';
-// import { graphql, Link } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 
 import Layout from '../../components/layout';
 import PageContainer from '../../components/PageContainer';
@@ -10,11 +10,11 @@ import {
   Header,
   PageTitle,
   PageSubtitle,
-  // Episodes,
-  // EpisodeNumber,
-  // Episode,
-  // Description,
-  // EpisodeTitle,
+  Episodes,
+  EpisodeNumber,
+  Episode,
+  Description,
+  EpisodeTitle,
 } from './_elements';
 
 import csb from '../../assets/images/podcasts/csb.jpg';
@@ -25,7 +25,11 @@ const info = allPodcasts.find(
   podcast => podcast.slug === 'codesandbox-podcast'
 );
 
-const TheCodeSandboxPodcast = () => (
+const TheCodeSandboxPodcast = ({
+  data: {
+    allMarkdownRemark: { edges: episodes },
+  },
+}) => (
   <Layout>
     <PageContainer>
       <TitleAndMetaTags
@@ -69,7 +73,7 @@ const TheCodeSandboxPodcast = () => (
 
       <div
         css={`
-          margin: 2rem 0 12rem 0;
+          margin: 5rem 0 10rem 0;
         `}
       >
         <iframe
@@ -83,8 +87,8 @@ const TheCodeSandboxPodcast = () => (
         />
       </div>
 
-      {/* <Episodes>
-       {episodes
+      <Episodes>
+        {episodes
           .filter(e => e.node.frontmatter.slug)
           .map(({ node: { id, frontmatter } }) => (
             <Link
@@ -93,7 +97,7 @@ const TheCodeSandboxPodcast = () => (
               `}
               key={id}
               to={`podcasts/codesandbox-podcast/${frontmatter.slug}`}
-            >         
+            >
               <Episode>
                 <img
                   src={frontmatter.image.publicURL}
@@ -108,35 +112,35 @@ const TheCodeSandboxPodcast = () => (
                 </section>
               </Episode>
             </Link>
-          ))} 
-      </Episodes> */}
+          ))}
+      </Episodes>
 
       <PodcastLinks {...info.links} name={info.name} />
     </PageContainer>
   </Layout>
 );
 
-// export const query = graphql`
-//   {
-//     allMarkdownRemark(
-//       filter: { fileAbsolutePath: { regex: "/podcasts/codesandbox-podcast/" } }
-//       sort: { fields: id, order: DESC }
-//     ) {
-//       edges {
-//         node {
-//           id
-//           frontmatter {
-//             description
-//             title
-//             slug
-//             image {
-//               publicURL
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// `;
+export const query = graphql`
+  {
+    allMarkdownRemark(
+      filter: { fileAbsolutePath: { regex: "/podcasts/codesandbox-podcast/" } }
+      sort: { fields: id, order: DESC }
+    ) {
+      edges {
+        node {
+          id
+          frontmatter {
+            description
+            title
+            slug
+            image {
+              publicURL
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 export default TheCodeSandboxPodcast;
