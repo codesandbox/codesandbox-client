@@ -20,7 +20,7 @@ import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 
 export const ProfileCard = () => {
-  const { updateUserProfile } = useActions().profile;
+  const { updateUserProfile, validateUsernameUpdate } = useActions().profile;
   const {
     user: loggedInUser,
     profile: { current: user },
@@ -29,18 +29,30 @@ export const ProfileCard = () => {
   const [editing, setEditing] = React.useState(false);
   const [bio, setBio] = React.useState(user.bio || '');
   const [socialLinks, setSocialLinks] = React.useState(user.socialLinks || []);
+  const [username, setUsername] = React.useState(user.username);
+  const [name, setName] = React.useState(user.name || '');
+  const [usernameAvailable, setUsernameAvailable] = React.useState(true);
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    updateUserProfile({ bio, socialLinks: socialLinks.filter(item => item) });
-
-    setSocialLinks(socialLinks.filter(item => item));
+  const onCancel = () => {
+    setUsernameAvailable(true);
+    setUsername(user.username);
+    setName(user.name || '');
+    setBio(user.bio || '');
+    setSocialLinks(user.socialLinks);
     setEditing(false);
   };
 
-  const onCancel = () => {
-    setBio(user.bio || '');
-    setSocialLinks(user.socialLinks);
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    updateUserProfile({
+      bio,
+      socialLinks: socialLinks.filter(item => item),
+      username,
+      name,
+      onCancel,
+    });
+
     setEditing(false);
   };
 
@@ -85,14 +97,22 @@ export const ProfileCard = () => {
               })}
             />
             <Stack direction="vertical">
-              <Text size={5} weight="bold">
-                {user.name}
-              </Text>
-              <Text size={3} variant="muted">
-                {user.username}
-              </Text>
+              <DisplayName name={name} editing={editing} setName={setName} />
+              <Username
+                username={username}
+                editing={editing}
+                setUsername={setUsername}
+                setUsernameAvailable={setUsernameAvailable}
+                validateUsernameUpdate={validateUsernameUpdate}
+              />
             </Stack>
           </Stack>
+
+          {!usernameAvailable ? (
+            <Text size={3} variant="danger">
+              Sorry, that username is already taken.
+            </Text>
+          ) : null}
 
           <Bio bio={bio} editing={editing} setBio={setBio} />
 
@@ -163,7 +183,6 @@ export const ProfileCard = () => {
               Other places
             </Text>
             <SocialLinks
-              username={user.username}
               socialLinks={socialLinks}
               githubUsername={user.githubUsername}
               editing={editing}
@@ -184,7 +203,9 @@ export const ProfileCard = () => {
         >
           {editing ? (
             <>
-              <Button type="submit">Save changes</Button>
+              <Button type="submit" disabled={!usernameAvailable}>
+                Save changes
+              </Button>
               <Button variant="link" type="button" onClick={onCancel}>
                 Cancel
               </Button>
@@ -228,12 +249,11 @@ export const Bio: React.FC<{
   );
 
 const SocialLinks: React.FC<{
-  username: Profile['username'];
   socialLinks: Profile['socialLinks'];
   githubUsername: Profile['githubUsername'];
   editing: boolean;
   setSocialLinks: (socialLinks: Profile['socialLinks']) => void;
-}> = ({ username, socialLinks, githubUsername, setSocialLinks, editing }) => (
+}> = ({ socialLinks, githubUsername, setSocialLinks, editing }) => (
   <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
     {editing ? (
       <Stack direction="vertical" gap={4} key={socialLinks.length}>
@@ -312,6 +332,60 @@ const SocialLinks: React.FC<{
           </Stack>
         ))}
       </>
+    )}
+  </Stack>
+);
+
+const Username: React.FC<{
+  username: Profile['username'];
+  editing: boolean;
+  setUsername: (username: Profile['username']) => void;
+  setUsernameAvailable: (boolean) => void;
+  validateUsernameUpdate: (string) => void;
+}> = ({
+  username,
+  editing,
+  setUsername,
+  setUsernameAvailable,
+  validateUsernameUpdate,
+}) => (
+  <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
+    {editing ? (
+      <Input
+        onBlur={async event => {
+          const valid = await validateUsernameUpdate(event.target.value);
+          setUsernameAvailable(valid);
+        }}
+        defaultValue={username}
+        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+          setUsername(event.target.value);
+        }}
+      />
+    ) : (
+      <Text size={3} variant="muted">
+        {username}
+      </Text>
+    )}
+  </Stack>
+);
+
+const DisplayName: React.FC<{
+  name: Profile['name'];
+  editing: boolean;
+  setName: (name: Profile['name']) => void;
+}> = ({ name, editing, setName }) => (
+  <Stack direction="vertical" gap={4} css={{ width: '100%' }}>
+    {editing ? (
+      <Input
+        defaultValue={name}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          setName(event.target.value)
+        }
+      />
+    ) : (
+      <Text size={5} weight="bold">
+        {name}
+      </Text>
     )}
   </Stack>
 );
