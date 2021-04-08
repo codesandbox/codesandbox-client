@@ -76,7 +76,7 @@ Gerard.
 
 ### Links
 
-- Learn more about Charlie Gerard on her [website](https://charliegerard.dev) .
+- Learn more about Charlie Gerard on her [website](https://charliegerard.dev).
 - Connect with Charlie Gerard on [Twitter](https://twitter.com/devdevcharlie),
   [GitHub](https://github.com/charliegerard), and
   [LinkedIn](https://www.linkedin.com/in/charliegerard/?locale=en_US).
