@@ -7,7 +7,7 @@ audio: https://player.resonaterecordings.com/embed?uuid=2f5026dd-8c6d-41a8-898a-
 slug: charlie-gerard-netlify
 image: ./images/charlie-gerard.jpg
 apple: "https://podcasts.apple.com/us/podcast/prototyping-with-charlie-gerard/id1558498059?i=1000516262532"
-google: "#"
+google: "https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL2NvZGVzYW5kYm94LXBvZGNhc3Q/episode/MmY1MDI2ZGQtOGM2ZC00MWE4LTg5OGEtOTdmMGQyMzljZDQy?sa=X&ved=0CAQQ8qgGahcKEwjgws3D5e7vAhUAAAAAHQAAAAAQAg"
 spotify: "https://open.spotify.com/episode/5NLw30nyowTpwjV9HDq7bg?si=9314d9ff14544972"
 tuneIn: "https://tunein.com/podcasts/Technology-Podcasts/The-CodeSandbox-Podcast-p1416545/?topicId=162133133"
 stitcher: "undefined/show/the-codesandbox-podcast/episode/prototyping-with-charlie-gerard-83012942"
