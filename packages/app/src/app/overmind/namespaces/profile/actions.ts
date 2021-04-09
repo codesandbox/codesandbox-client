@@ -218,6 +218,8 @@ export const updateUserProfile = async (
     onCancel: any;
   }
 ) => {
+  if (!state.profile.current) return;
+
   const usernameChanged = state.profile.current.username !== username;
 
   try {
