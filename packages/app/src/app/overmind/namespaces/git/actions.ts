@@ -166,11 +166,7 @@ export const createRepoClicked = async ({
     state.git.isExported = true;
     state.currentModal = null;
 
-    actions.editor.internal.forkSandbox({
-      sandboxId: `github/${git.username}/${git.repo}/tree/${git.branch}/${
-        git.path || ''
-      }`,
-    });
+    effects.router.updateSandboxUrl({ git });
   } catch (error) {
     actions.internal.handleError({
       error,
