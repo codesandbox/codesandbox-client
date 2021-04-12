@@ -45,5 +45,8 @@ export const Input = styled(Element).attrs(p => ({
       opacity: 0.4,
       borderColor: 'input.border', // (default border)
     },
+    ':invalid': {
+      borderColor: 'inputValidation.errorBorder',
+    },
   })
 );

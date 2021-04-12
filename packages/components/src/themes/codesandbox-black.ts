@@ -131,11 +131,11 @@ const colors = {
   input: {
     background: tokens.grays[600],
     foreground: tokens.white,
-    border: tokens.grays[900],
+    border: tokens.grays[500],
     placeholderForeground: tokens.grays[300],
   },
   inputOption: {
-    activeBorder: tokens.grays[500],
+    activeBorder: tokens.grays[400],
   },
   inputValidation: {
     infoForeground: null,
@@ -146,7 +146,7 @@ const colors = {
     warningBorder: tokens.yellow,
     errorForeground: null,
     errorBackground: null,
-    errorBorder: tokens.reds[500],
+    errorBorder: tokens.reds[300],
   },
   list: {
     dropBackground: tokens.grays[700],
