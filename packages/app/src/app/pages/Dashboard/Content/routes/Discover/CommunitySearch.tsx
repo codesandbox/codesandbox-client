@@ -142,6 +142,15 @@ const Results = connectHits(({ hits }) => {
           CustomFilters={
             <div style={{ width: 256 }}>
               <Filters attribute="template" limit={3} operator="or" />
+              <Element
+                as="hr"
+                css={css({
+                  marginY: 0,
+                  marginX: 3,
+                  borderBottom: '1px solid',
+                  borderColor: 'menuList.border',
+                })}
+              />
               <Filters
                 attribute="npm_dependencies.dependency"
                 limit={3}
@@ -235,13 +244,6 @@ const Filters = connectRefinementList(
             </Text>
           )}
         </List>
-        <Element
-          css={css({
-            paddingX: 3,
-            borderBottom: '1px solid',
-            borderColor: 'menuList.border',
-          })}
-        />
       </Stack>
     );
   }
