@@ -225,7 +225,10 @@ const Filters = connectRefinementList(
                     inputRef.current.value = '';
                   }}
                   label={
-                    <Stack justify="space-between" css={{ flexGrow: 1 }}>
+                    <Stack
+                      justify="space-between"
+                      css={{ flexGrow: 1, width: '100%' }}
+                    >
                       <Text maxWidth="100%" size={3}>
                         {label}
                       </Text>
