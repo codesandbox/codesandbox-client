@@ -19,6 +19,5 @@ export const Variants = () => (
     <Input value="Filled" marginBottom={2} />
     <Input value="Focused" autoFocus marginBottom={2} />
     <Input value="Disabled" disabled marginBottom={2} />
-    <Input value="Error" type="email" pattern=".+@codesandbox.io" />
   </>
 );
