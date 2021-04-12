@@ -3064,7 +3064,7 @@ export type AlbumSandboxFragment = Pick<
   SandboxFragmentDashboardFragment,
   'id' | 'alias' | 'title' | 'description' | 'screenshotUrl' | 'source'
 > & {
-  author: Pick<Sandbox['author'], 'username' | 'avatarUrl'>;
+  author: Pick<User, 'username' | 'avatarUrl'>;
   liked: boolean;
 } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
 
