@@ -3077,5 +3077,5 @@ export type Album = {
 export type CuratedAlbumsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
-  albums: Array<Album>;
+  curatedAlbums: Array<Album>;
 };

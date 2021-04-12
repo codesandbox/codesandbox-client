@@ -433,7 +433,7 @@ export const curatedAlbums: Query<
   CuratedAlbumsQueryVariables
 > = gql`
   query CuratedAlbums {
-    curatedAlbums
+    curatedAlbums {
       id
       title
       sandboxes {

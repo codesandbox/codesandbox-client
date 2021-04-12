@@ -1876,7 +1876,7 @@ export const getCuratedAlbums = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
     const data = await effects.gql.queries.curatedAlbums({});
-    dashboard.curatedAlbums = data.albums;
+    dashboard.curatedAlbums = data.curatedAlbums;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting curated collections'
