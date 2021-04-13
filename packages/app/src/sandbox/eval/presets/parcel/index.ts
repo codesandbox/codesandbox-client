@@ -2,6 +2,7 @@ import { Preset } from 'sandpack-core';
 
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
+import postcssTranspiler from '../../transpilers/postcss';
 import stylesTranspiler from '../../transpilers/style';
 import sassTranspiler from '../../transpilers/sass';
 import rawTranspiler from '../../transpilers/raw';
@@ -82,7 +83,16 @@ export default function initialize() {
   ]);
 
   parcelPreset.registerTranspiler(module => /\.css$/.test(module.path), [
+    { transpiler: postcssTranspiler },
     { transpiler: stylesTranspiler },
+  ]);
+
+  parcelPreset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
+    { transpiler: sassTranspiler },
+    { transpiler: postcssTranspiler },
+    {
+      transpiler: stylesTranspiler,
+    },
   ]);
 
   parcelPreset.registerTranspiler(module => /\.json$/.test(module.path), [
