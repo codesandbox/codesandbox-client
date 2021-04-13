@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Input, Text } from '@codesandbox/components';
+import { Input, Link, Text } from '@codesandbox/components';
 import { AuthType, RegistryType } from 'app/graphql/types';
 import { RegistryPresetProps } from '.';
 import { CustomFormField } from '../RegistryForm';
@@ -32,13 +32,13 @@ export const ArtifactoryRegistryPreset = ({
         </CustomFormField>
         <Text size={3} variant="muted">
           Is your registry behind a VPN? Please read these{' '}
-          <a
+          <Link
             href="https://codesandbox.io/docs/custom-npm-registry"
             target="_blank"
-            rel="noreferrer noopener"
+            variant="active"
           >
             docs
-          </a>
+          </Link>
           .
         </Text>
       </div>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Select, Input, Text } from '@codesandbox/components';
+import { Select, Input, Text, Link } from '@codesandbox/components';
 import { AuthType, RegistryType } from 'app/graphql/types';
 import { RegistryPresetProps } from '.';
 import { CustomFormField } from '../RegistryForm';
@@ -31,13 +31,13 @@ export const CustomRegistryPreset = ({
         </CustomFormField>
         <Text size={3} variant="muted">
           Is your registry behind a VPN? Please read these{' '}
-          <a
+          <Link
             href="https://codesandbox.io/docs/custom-npm-registry"
             target="_blank"
-            rel="noreferrer noopener"
+            variant="active"
           >
             docs
-          </a>
+          </Link>
           .
         </Text>
       </div>
@@ -60,13 +60,13 @@ export const CustomRegistryPreset = ({
         </CustomFormField>
         <Text size={3} variant="muted">
           More information on which one to choose can be found{' '}
-          <a
+          <Link
             href="https://codesandbox.io/docs/custom-npm-registry#auth-token"
             target="_blank"
-            rel="noreferrer noopener"
+            variant="active"
           >
             here
-          </a>
+          </Link>
           .
         </Text>
       </div>
