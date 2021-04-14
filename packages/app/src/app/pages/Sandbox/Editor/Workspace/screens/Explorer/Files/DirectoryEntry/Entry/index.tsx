@@ -237,7 +237,7 @@ const EntryComponent: React.FC<IEntryProps> = ({
             )}
           </Stack>
           {state === '' && (
-            <Stack align="center">
+            <Stack align="top">
               {isMainModule && hovering && (
                 <Text variant="muted" size={2}>
                   entry

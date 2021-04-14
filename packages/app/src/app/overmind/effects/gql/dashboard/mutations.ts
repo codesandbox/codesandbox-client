@@ -71,6 +71,8 @@ import {
   SoftCancelSubscriptionMutationVariables,
   ReactivateSubscriptionMutation,
   ReactivateSubscriptionMutationVariables,
+  UpdateCurrentUserMutation,
+  UpdateCurrentUserMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -600,6 +602,30 @@ export const reactivateSubscription: Query<
   mutation reactivateSubscription($teamId: UUID4!, $subscriptionId: UUID4!) {
     reactivateSubscription(teamId: $teamId, subscriptionId: $subscriptionId) {
       id
+    }
+  }
+`;
+
+export const updateCurrentUser: Query<
+  UpdateCurrentUserMutation,
+  UpdateCurrentUserMutationVariables
+> = gql`
+  mutation updateCurrentUser(
+    $username: String!
+    $name: String
+    $bio: String
+    $socialLinks: [String!]
+  ) {
+    updateCurrentUser(
+      username: $username
+      name: $name
+      bio: $bio
+      socialLinks: $socialLinks
+    ) {
+      username
+      name
+      bio
+      socialLinks
     }
   }
 `;

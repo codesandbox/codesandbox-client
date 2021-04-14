@@ -601,14 +601,14 @@ export type Profile = {
   sandboxCount: number;
   templateCount: number;
   receivedLikeCount: number;
-  name: string;
+  name: string | null;
   id: string;
   givenLikeCount: number;
   forkedCount: number;
   badges: Badge[];
   avatarUrl: string;
-  bio?: string;
-  socialLinks?: string[];
+  bio?: string | null;
+  socialLinks?: string[] | null;
   featuredSandboxes: Sandbox[];
   personalWorkspaceId: string;
   teams: Array<{

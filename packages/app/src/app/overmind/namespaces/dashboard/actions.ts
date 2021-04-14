@@ -108,6 +108,7 @@ export const viewModeChanged = (
   { state, effects }: Context,
   { mode }: { mode: 'grid' | 'list' }
 ) => {
+  effects.analytics.track('Dashboard - Change View Mode', { mode });
   state.dashboard.viewMode = mode;
   effects.browser.storage.set('VIEW_MODE_DASHBOARD', mode);
 };
@@ -173,6 +174,7 @@ export const removeFromTeam = async (
 ) => {
   if (!state.activeTeam || !state.activeTeamInfo) return;
   try {
+    effects.analytics.track('Dashboard - Remove Team Member');
     await effects.gql.mutations.removeFromTeam({
       teamId: state.activeTeam,
       userId: id,
