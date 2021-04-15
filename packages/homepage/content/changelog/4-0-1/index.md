@@ -8,7 +8,7 @@ description: Add custom thumbnails to your sandboxes
 
 #### Features
 
-1. Anti Phishing banner 
+1. Add a warning banner to sandboxes that are more likely to be phishing
 2. Keyboard traversing in file tree [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/5505)
 3. More helpful error messages for errors while installing a private package
 4. Improvements in our state management 
