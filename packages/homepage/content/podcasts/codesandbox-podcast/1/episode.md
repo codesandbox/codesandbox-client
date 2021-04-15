@@ -79,7 +79,8 @@ Gerard.
 
 - Learn more about Charlie Gerard on her [website](https://charliegerard.dev).
 - Connect with Charlie Gerard on [Twitter](https://twitter.com/devdevcharlie),
-  [GitHub](https://github.com/charliegerard), and
+  [GitHub](https://github.com/charliegerard),
+  [CodeSandbox](https://codesandbox.io/u/charliegerard), and
   [LinkedIn](https://www.linkedin.com/in/charliegerard/?locale=en_US).
 - Purchase Charlie’s book
   [Practical Machine Learning in JavaScript](https://www.amazon.com/Practical-Machine-Learning-JavaScript-TensorFlow-js/dp/1484264177).
