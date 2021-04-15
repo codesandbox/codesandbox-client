@@ -10,7 +10,7 @@ description: Add custom thumbnails to your sandboxes
 
 1. Anti Phishing banner 
 2. Keyboard traversing in file tree [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/5505)
-3. Logging for errors when installing private package 
+3. More helpful error messages for errors while installing a private package
 4. New Over-mind typing 
 5. Custom Cover Images for sandboxes 
 
