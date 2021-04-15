@@ -9,7 +9,7 @@ description: Likes and Shared With You pages in the dashboard and the ability to
 #### Features
 
 1. Improve esmodule detection in the bundler
-2. Preload babel.min.js from root 
+2. Improve initial loading speed of the bundler
 3. Added support for deploying to GitHub Pages
 4. Added Shared with me & Liked page 
 5. Add Basic auth as option in private npm 
