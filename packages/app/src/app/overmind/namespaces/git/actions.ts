@@ -6,6 +6,10 @@ import {
   Module,
   SandboxGitState,
 } from '@codesandbox/common/lib/types';
+import {
+  captureException,
+  logBreadcrumb,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
@@ -922,25 +926,43 @@ export const _getGitChanges = async ({ state, effects }: Context) => {
 
   return {
     added: await Promise.all(
-      git.gitChanges.added.map(async path => {
-        const module = sandbox.modules.find(
-          moduleItem => moduleItem.path === path
-        );
+      git.gitChanges.added
+        .map(async path => {
+          const module = sandbox.modules.find(
+            moduleItem => moduleItem.path === path
+          );
 
-        if (module!.isBinary) {
+          if (!module) {
+            logBreadcrumb({
+              message: `Tried adding Git change, but paths don't match. Expected: ${path}, paths available: ${JSON.stringify(
+                sandbox.modules.map(m => ({
+                  shortid: m.shortid,
+                  path: m.path,
+                  isBinary: m.isBinary,
+                }))
+              )}`,
+            });
+            const err = new Error('Unable to add module to git changes');
+            captureException(err);
+
+            return false;
+          }
+
+          if (module!.isBinary) {
+            return {
+              path,
+              content: await effects.http.blobToBase64(module!.code),
+              encoding: 'base64' as 'base64',
+            };
+          }
+
           return {
             path,
-            content: await effects.http.blobToBase64(module!.code),
-            encoding: 'base64' as 'base64',
+            content: module!.code,
+            encoding: 'utf-8' as 'utf-8',
           };
-        }
-
-        return {
-          path,
-          content: module!.code,
-          encoding: 'utf-8' as 'utf-8',
-        };
-      })
+        })
+        .filter(Boolean)
     ),
     deleted: git.gitChanges.deleted,
     modified: git.gitChanges.modified.map(path => {
