@@ -18,6 +18,4 @@ description: Add custom thumbnails to your sandboxes
 
 #### Fixes
 - Export ordering when re-exporting an import 
-- Yarn lockfile was updated [@NullVoxPopuli](https://github.com/codesandbox/codesandbox-client/pull/5501)
-
 
