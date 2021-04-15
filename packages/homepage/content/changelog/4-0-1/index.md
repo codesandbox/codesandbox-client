@@ -17,5 +17,4 @@ description: Add custom thumbnails to your sandboxes
 
 
 #### Fixes
-- Export ordering when re-exporting an import 
-
+- Bundler: fix the export ordering when you're re-exporting an import
