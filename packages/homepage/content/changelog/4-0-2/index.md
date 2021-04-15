@@ -3,7 +3,7 @@ banner: ./4-0-2.jpg
 title: v4.0.2
 slug: Custom Artwork
 date: 2021-03-21
-description: Likes and shared with you, now in the dashboard and Publish to GitHub Pages
+description: Likes and Shared With You pages in the dashboard and the ability to publish to GitHub Pages
 ---
 
 #### Features
