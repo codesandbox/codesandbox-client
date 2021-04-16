@@ -20,6 +20,15 @@ function debounce(func, wait, immediate) {
 	};
 };
 
+const enqueueUpdate = debounce(() => {
+    try {
+        Refresh.performReactRefresh();
+    } catch (e) {
+        module.hot.decline();
+        throw e;
+    }
+}, 30);
+
 function isReactRefreshBoundary(moduleExports) {
   if (Object.keys(Refresh).length === 0) {
     return false;
@@ -111,15 +120,6 @@ var registerExportsForReactRefresh = (moduleExports, moduleID) => {
     Refresh.register(exportValue, typeID);
   }
 };
-
-const enqueueUpdate = debounce(() => {
-    try {
-        Refresh.performReactRefresh();
-    } catch (e) {
-        module.hot.decline();
-        throw e;
-    }
-}, 30);
 
 function prelude(module) {
     window.$RefreshReg$ = (type, id) => {
