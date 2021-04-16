@@ -166,22 +166,23 @@ module.exports = {
 };
 `.trim();
 
+const prelude = `var _csbRefreshUtils = require("${HELPER_PATH}");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+_csbRefreshUtils.prelude(module);
+try {`.replace(/[\n]+/gm, '');
+
+const postlude = `_csbRefreshUtils.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}`.replace(/[\n]+/gm, '');
+
 /**
  * This is the compressed version of the code in the comment above. We compress the code
  * to a single line so we don't mess with the source mapping when showing errors.
  */
-const getWrapperCode = (sourceCode: string) =>
-  `var _csbRefreshUtils = require("${HELPER_PATH}");
-  var prevRefreshReg = window.$RefreshReg$;
-  var prevRefreshSig = window.$RefreshSig$;
-  _csbRefreshUtils.prelude(module);
-  try {
-    ${sourceCode}
-    _csbRefreshUtils.postlude(module);
-  } finally {
-    window.$RefreshReg$ = prevRefreshReg;
-    window.$RefreshSig$ = prevRefreshSig;
-  }`;
+const getWrapperCode = (sourceCode: string) => prelude + sourceCode + postlude;
 
 class RefreshTranspiler extends Transpiler {
   constructor() {
