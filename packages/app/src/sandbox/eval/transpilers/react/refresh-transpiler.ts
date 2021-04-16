@@ -182,7 +182,8 @@ const postlude = `_csbRefreshUtils.postlude(module);
  * This is the compressed version of the code in the comment above. We compress the code
  * to a single line so we don't mess with the source mapping when showing errors.
  */
-const getWrapperCode = (sourceCode: string) => prelude + sourceCode + postlude;
+const getWrapperCode = (sourceCode: string) =>
+  prelude + sourceCode + '\n' + postlude;
 
 class RefreshTranspiler extends Transpiler {
   constructor() {
