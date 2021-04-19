@@ -108,7 +108,7 @@
     "browser-resolve": "CompuIves/node-browser-resolve",
     "circular-json": "^0.4.0",
     "codemirror": "^5.27.4",
-    "codesandbox-api": "latest",
+    "codesandbox-api": "0.0.31",
     "codesandbox-import-utils": "^2.2.2",
     "color": "^0.11.4",
     "comlink": "^4.3.0",

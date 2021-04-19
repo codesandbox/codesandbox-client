@@ -96,9 +96,7 @@ function buildDynamicError(ref: ErrorRecord) {
           message: ref.error.message,
           line: relevantFrame._originalLineNumber,
           column: relevantFrame._originalColumnNumber,
-          payload: {
-            frames: ref.enhancedFrames,
-          },
+          payload: {},
           severity: 'error',
         };
       }

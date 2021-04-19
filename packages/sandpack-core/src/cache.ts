@@ -127,7 +127,7 @@ export function deleteAPICache(
   sandboxId: string,
   version: string
 ): Promise<any> {
-  if (APICacheUsed && !process.env.SANDPACK) {
+  if (APICacheUsed) {
     debug('Deleting cache of API');
     return window
       .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {

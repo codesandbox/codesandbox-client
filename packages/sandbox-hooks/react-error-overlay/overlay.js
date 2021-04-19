@@ -105,20 +105,6 @@ function renderErrorByIndex(index: number) {
   }
 }
 
-const SHORTCUT_ESCAPE = 1;
-const SHORTCUT_LEFT = 2;
-const SHORTCUT_RIGHT = 3;
-
-function keyEventHandler(cb, event) {
-  if (event.key === 'Escape' || event.key === 'Esc') {
-    cb(SHORTCUT_ESCAPE);
-  } else if (event.key === 'Left' || event.key === 'ArrowLeft') {
-    cb(SHORTCUT_LEFT);
-  } else if (event.key === 'Right' || event.key === 'ArrowRight') {
-    cb(SHORTCUT_RIGHT);
-  }
-}
-
 function switchError(offset) {
   if (errorReferences.length === 0) {
     return;
@@ -231,11 +217,7 @@ function transformErrors() {
   }
 }
 
-function crash(
-  error: Error,
-  unhandledRejection = false,
-  renderErrorOverlay = true
-) {
+function crash(error: Error, unhandledRejection = false) {
   if (module.hot && typeof module.hot.decline === 'function') {
     module.hot.decline();
   }
@@ -250,23 +232,21 @@ function crash(
 
       sendErrorsToEditor();
       transformErrors();
-      if (renderErrorOverlay) {
-        if (iframeReference !== null && additionalReference !== null) {
-          updateAdditional(
-            iframeReference.contentDocument,
-            additionalReference,
-            currReferenceIndex + 1,
-            errorReferences.length,
-            offset => {
-              switchError(offset);
-            }
-          );
-        } else {
-          if (errorReferences.length !== 1) {
-            throw new Error('Something is *really* wrong.');
+      if (iframeReference !== null && additionalReference !== null) {
+        updateAdditional(
+          iframeReference.contentDocument,
+          additionalReference,
+          currReferenceIndex + 1,
+          errorReferences.length,
+          offset => {
+            switchError(offset);
           }
-          renderErrorByIndex((currReferenceIndex = 0));
+        );
+      } else {
+        if (errorReferences.length !== 1) {
+          throw new Error('Something is *really* wrong.');
         }
+        renderErrorByIndex((currReferenceIndex = 0));
       }
     })
     .catch(e => {
@@ -297,9 +277,9 @@ function shortcutHandler(type: string) {
 
 let listenToRuntimeErrorsUnmounter;
 
-function inject(renderErrorOverlay = true) {
+function inject() {
   listenToRuntimeErrorsUnmounter = listenToRuntimeErrors(error => {
-    crash(error.error, false, renderErrorOverlay);
+    crash(error.error);
   });
 }
 
