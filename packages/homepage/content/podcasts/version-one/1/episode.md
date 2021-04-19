@@ -6,11 +6,11 @@ episodeNumber: 1
 audio: https://player.resonaterecordings.com/embed?uuid=583d4fdc-ab24-4dce-9a30-946683e20198&accentColor=13,180,206&backgroundColor=242,242,242
 slug: matt-biilmann-netlify
 image: ./images/matt-biilmann.jpg
-apple: '#'
-google: '#'
-spotify: '#'
-tuneIn: "#"
-stitcher: "#"
+apple: 'https://podcasts.apple.com/us/podcast/introducing-version-one/id1558498088?i=1000513093620'
+google: 'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL3ZlcnNpb24tb25lLXdpdGgtbWF1cmljZS1jaGVycnk/episode/N2M1NDA2MjYtZmUyYS00NmVkLWFmOGItOTljZWM2NTRhMmRl?sa=X&ved=0CAQQkfYCahcKEwio7urO7-bvAhUAAAAAHQAAAAAQAQ'
+spotify: 'https://open.spotify.com/episode/2cbE6VawhUWuIoHKBpONaZ'
+tuneIn: "https://tunein.com/podcasts/Technology-Podcasts/Version-One-with-Maurice-Cherry-p1416547/?topicId=161575825"
+stitcher: "https://www.stitcher.com/show/version-one-with-maurice-cherry/episode/introducing-version-one-82408223"
 tags: "Tools, makers, programming, business, Netlify, platform, apps, music,
 psychology, journalist, engineer, Domestika, websites, Webpop, CMS services,
 cloud, efficiency, platform, developing, BitBalloon, series, software, create,
@@ -91,7 +91,7 @@ round of funding and grow their team of engineers. He concludes the podcast by
 sharing how the best part of creating Netlify has been getting to use his
 passion with his best friend to pour themselves into such a rewarding outcome.
 
-### Time Stamps:
+### Time Stamps
 
 - 0:14 - Introduction to new podcast: Version One
 - 0:32 - The Host introduces guest Matt Biilmann.
@@ -106,7 +106,7 @@ passion with his best friend to pour themselves into such a rewarding outcome.
 - 15:10 - How they overcame the setbacks
 - 16:00 - Matt shares about the rewarding outcome of Netlify
 
-### Links:
+### Links
 
 - To learn more about CodeSandbox and Version One, visit their website
   [here](https://codesandbox.io).

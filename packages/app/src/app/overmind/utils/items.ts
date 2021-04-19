@@ -86,7 +86,16 @@ export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
   if (!currentSandbox) {
-    return [PROJECT_SUMMARY, SEARCH, CONFIGURATION, GITHUB, DEPLOYMENT, LIVE];
+    return [
+      PROJECT_SUMMARY,
+      FILES,
+      SEARCH,
+      CONFIGURATION,
+      GITHUB,
+      COMMENTS,
+      DEPLOYMENT,
+      LIVE,
+    ];
   }
 
   if (currentSandbox.git) {

@@ -138,6 +138,7 @@ export const WorkspaceSettings = () => {
       if (!confirmed) return;
     }
 
+    actions.track({ name: 'Dashboard - Copied Team Invite URL', data: {} });
     effects.browser.copyToClipboard(teamInviteLink(team.inviteToken));
     effects.notificationToast.success('Copied Team Invite URL!');
   };

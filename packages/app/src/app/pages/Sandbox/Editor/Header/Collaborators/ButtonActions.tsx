@@ -8,11 +8,12 @@ import { useEffects, useActions } from 'app/overmind';
 export const ButtonActions = () => {
   const [linkCopied, setLinkCopied] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
-  const { modalOpened } = useActions();
+  const { modalOpened, track } = useActions();
   const { copyToClipboard } = useEffects().browser;
   const timeout = React.useRef(null);
   const copyLink = () => {
     setLinkCopied(true);
+    track({ name: "Share - 'Copy Sandbox URL' Clicked", data: {} });
 
     copyToClipboard(document.location.href);
 

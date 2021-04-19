@@ -360,7 +360,14 @@ export const sandboxChanged = withLoadApp<{
     actions.files.internal.recoverFiles();
   }
 
-  effects.vscode.openModule(state.editor.currentModule);
+  if (state.editor.currentModule.id) {
+    effects.vscode.openModule(state.editor.currentModule);
+  } else {
+    // This means that there is no current module. Normally we tell that the editor has loaded
+    // when the module has loaded (for the skeleton), but in this case we will never load a module.
+    // So we need to explicitly mark that the module has been loaded instead.
+    state.editor.hasLoadedInitialModule = true;
+  }
   try {
     await actions.editor.loadCursorFromUrl();
   } catch (e) {

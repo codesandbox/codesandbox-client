@@ -21,8 +21,11 @@ import {
 import css from '@styled-system/css';
 import { useTheme } from 'styled-components';
 import Media from 'react-media';
+import { getFormFromPreset, RegistryPreset } from './RegistryPreset';
 
-const CustomFormField = (props: React.ComponentProps<typeof FormField>) => (
+export const CustomFormField = (
+  props: React.ComponentProps<typeof FormField>
+) => (
   <FormField
     css={css({ paddingX: 0, label: { marginBottom: 1 } })}
     direction={props.direction || 'vertical'}
@@ -45,11 +48,19 @@ type RegistryFormProps = {
   disabled?: boolean;
 };
 
-const nameMap = {
-  Github: 'GitHub',
-  Npm: 'npm',
-  Custom: 'Custom',
-};
+function getDefaultRegistryPreset(regType?: RegistryType): RegistryPreset {
+  if (!regType) {
+    return RegistryPreset.npm;
+  }
+
+  if (regType === RegistryType.Npm) {
+    return RegistryPreset.npm;
+  }
+  if (regType === RegistryType.Github) {
+    return RegistryPreset.GitHub;
+  }
+  return RegistryPreset.Custom;
+}
 
 export const RegistryForm = ({
   registry,
@@ -60,6 +71,9 @@ export const RegistryForm = ({
 }: RegistryFormProps) => {
   const theme = useTheme() as any;
 
+  const [registryPreset, setRegistryPreset] = React.useState<RegistryPreset>(
+    getDefaultRegistryPreset(registry?.registryType)
+  );
   const [registryType, setRegistryType] = React.useState<RegistryType>(
     registry?.registryType || RegistryType.Npm
   );
@@ -110,6 +124,8 @@ export const RegistryForm = ({
   // We make sure to always show one input field
   const prefilledScopes = scopes.length === 0 ? [''] : scopes;
 
+  const PresetComponent = getFormFromPreset(registryPreset);
+
   return (
     <Media query={`(min-width: ${theme.breakpoints[2]})`}>
       {isHorizontal => (
@@ -159,85 +175,31 @@ export const RegistryForm = ({
 
               <CustomFormField label="Registry Host">
                 <Select
-                  value={registryType}
+                  value={registryPreset}
                   onChange={e => {
-                    setRegistryType(e.target.value);
+                    setRegistryPreset(e.target.value);
                   }}
                   disabled={disabled}
                 >
-                  {Object.keys(RegistryType).map(type => (
-                    <option value={RegistryType[type]} key={type}>
-                      {nameMap[type] || type}
+                  {Object.keys(RegistryPreset).map(preset => (
+                    <option value={RegistryPreset[preset]} key={preset}>
+                      {RegistryPreset[preset]}
                     </option>
                   ))}
                 </Select>
               </CustomFormField>
 
-              {registryType === RegistryType.Custom && (
-                <div>
-                  <CustomFormField label="Registry URL">
-                    <Input
-                      value={registryUrl}
-                      onChange={e => setRegistryUrl(e.target.value)}
-                      required
-                      pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
-                      disabled={disabled}
-                    />
-                  </CustomFormField>
-                  <Text size={3} variant="muted">
-                    Is your registry behind a VPN? Please read these{' '}
-                    <a
-                      href="https://codesandbox.io/docs/custom-npm-registry"
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >
-                      docs
-                    </a>
-                    .
-                  </Text>
-                </div>
-              )}
-
-              {registryType === RegistryType.Custom && (
-                <div>
-                  <CustomFormField label="Auth Type">
-                    <Select
-                      value={authenticationType}
-                      onChange={e => {
-                        setAuthenticationType(e.target.value);
-                      }}
-                      disabled={disabled}
-                    >
-                      {Object.keys(AuthType).map(type => (
-                        <option value={AuthType[type]} key={type}>
-                          {type}
-                        </option>
-                      ))}
-                    </Select>
-                  </CustomFormField>
-                  <Text size={3} variant="muted">
-                    More information on which one to choose can be found{' '}
-                    <a
-                      href="https://codesandbox.io/docs/custom-npm-registry#auth-token"
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >
-                      here
-                    </a>
-                    .
-                  </Text>
-                </div>
-              )}
-
-              <CustomFormField label="Auth Token">
-                <Input
-                  value={authKey}
-                  required
-                  onChange={e => setAuthKey(e.target.value)}
-                  disabled={disabled}
-                  type="password"
-                />
-              </CustomFormField>
+              <PresetComponent
+                registryType={registryType}
+                registryUrl={registryUrl}
+                authKey={authKey}
+                authenticationType={authenticationType}
+                setRegistryType={setRegistryType}
+                setRegistryUrl={setRegistryUrl}
+                setAuthenticationType={setAuthenticationType}
+                setAuthKey={setAuthKey}
+                disabled={disabled}
+              />
             </Stack>
             <Stack
               align="center"

@@ -19,7 +19,7 @@ export default [
   },
   {
     slug: 'codesandbox-podcast',
-    name: 'CodeSandbox Podcast',
+    name: 'The CodeSandbox Podcast',
     description:
       "At CodeSandbox, we are working hard to enable any creator to build and share their ideas with code. On The CodeSandbox Podcast, we'll introduce you to the best and brightest from our community, show you how people use CodeSandbox for a number of different tasks, and explore the more human side of open source than the purely technical.",
     links: {
@@ -31,7 +31,7 @@ export default [
         'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL2NvZGVzYW5kYm94LXBvZGNhc3Q',
       tuneIn:
         'https://tunein.com/podcasts/Technology-Podcasts/The-CodeSandbox-Podcast-p1416545/',
-      stitcher: '#https://www.stitcher.com/show/the-codesandbox-podcast/',
+      stitcher: 'https://www.stitcher.com/show/the-codesandbox-podcast/',
     },
   },
 ];
