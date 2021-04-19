@@ -427,7 +427,9 @@ function overrideDocumentClose() {
 
 overrideDocumentClose();
 
-inject();
+if (!process.env.SANDPACK) {
+  inject();
+}
 
 interface CompileOptions {
   sandboxId: string;
@@ -457,8 +459,8 @@ async function compile({
   template,
   entry,
   showOpenInCodeSandbox,
-  showLoadingScreen,
-  showErrorScreen,
+  showLoadingScreen = true,
+  showErrorScreen = true,
   skipEval = false,
   hasFileResolver = false,
   disableDependencyPreprocessing = false,
@@ -478,7 +480,7 @@ async function compile({
 
   const startTime = Date.now();
   try {
-    inject();
+    inject(showErrorScreen);
     clearErrorTransformers();
     initializeErrorTransformers();
     unmount(manager && manager.webpackHMR ? true : hadError);
@@ -541,7 +543,7 @@ async function compile({
 
     metrics.measure('dependencies');
 
-    if (firstLoad) {
+    if (firstLoad && showLoadingScreen) {
       setScreen({
         type: 'loading',
         showFullScreen: firstLoad,
@@ -552,6 +554,10 @@ async function compile({
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       ({ done, total, remainingDependencies }) => {
+        if (!showLoadingScreen) {
+          return;
+        }
+
         const progress = total - done;
         if (done === total) {
           return;
@@ -624,11 +630,13 @@ async function compile({
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
 
-    setScreen({
-      type: 'loading',
-      text: 'Transpiling Modules...',
-      showFullScreen: firstLoad,
-    });
+    if (showLoadingScreen) {
+      setScreen({
+        type: 'loading',
+        text: 'Transpiling Modules...',
+        showFullScreen: firstLoad,
+      });
+    }
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
@@ -701,6 +709,11 @@ async function compile({
           // on the first run. However, if there's no server to provide the static file (in the case of a local server
           // or sandpack), then do it anyways.
           document.body.innerHTML = body;
+
+          // Add head tags or anything that comes from the template
+          // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
+          // At this point, the original head was parsed and the files loaded / preloaded.
+          document.head.innerHTML = head;
         }
         lastBodyHTML = body;
         lastHeadHTML = head;
