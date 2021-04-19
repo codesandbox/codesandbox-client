@@ -713,10 +713,12 @@ async function compile({
           // Add head tags or anything that comes from the template
           // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
           // At this point, the original head was parsed and the files loaded / preloaded.
-          // Head might be empty
-          if (document.head && head) {
-            document.head.innerHTML = head;
-          }
+
+          // TODO: figure out a way to fix this without overriding head changes done by the bundler
+          // Original issue: https://github.com/codesandbox/sandpack/issues/32
+          // if (document.head && head) {
+          //   document.head.innerHTML = head;
+          // }
         }
         lastBodyHTML = body;
         lastHeadHTML = head;
