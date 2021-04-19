@@ -11,12 +11,7 @@ google: 'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZG
 spotify: 'https://open.spotify.com/episode/2cbE6VawhUWuIoHKBpONaZ'
 tuneIn: "https://tunein.com/podcasts/Technology-Podcasts/Version-One-with-Maurice-Cherry-p1416547/?topicId=161575825"
 stitcher: "https://www.stitcher.com/show/version-one-with-maurice-cherry/episode/introducing-version-one-82408223"
-tags: "Tools, makers, programming, business, Netlify, platform, apps, music,
-psychology, journalist, engineer, Domestika, websites, Webpop, CMS services,
-cloud, efficiency, platform, developing, BitBalloon, series, software, create,
-vision, goal, fast, cheap, secure, blueprints, brainstorming, circles, core,
-group, adopters, investigate, marketing, content, publishing, blog posts, open
-source adoption, setbacks, funding, team, friend, rewarding, process"
+tags: "web,linux,sharing,guillermo,conversation,obsession,journey,experiences,passion,challenges,"
 description: "Vercel is the best place to deploy any frontend app, and the platform enables frontend teams to do their best work. It works with over 30 Jamstack frameworks and is used by teams at Airbnb, Twilio, and The Washington Post (to name a few).
 
 Guillermo Rauch, the founder and CEO of Vercel is our guest this week on Version One. From his early start with tech and open source in Argentina to becoming a part of the startup community in San Francisco, we'll follow Guillermo on his international journey that led to creating the Vercel platform."
