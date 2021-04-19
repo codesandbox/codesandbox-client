@@ -713,7 +713,10 @@ async function compile({
           // Add head tags or anything that comes from the template
           // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
           // At this point, the original head was parsed and the files loaded / preloaded.
-          document.head.innerHTML = head;
+          // Head might be empty
+          if (document.head && head) {
+            document.head.innerHTML = head;
+          }
         }
         lastBodyHTML = body;
         lastHeadHTML = head;
