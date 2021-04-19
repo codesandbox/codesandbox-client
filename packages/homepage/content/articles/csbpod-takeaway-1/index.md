@@ -2,8 +2,8 @@
 banner: ./images/banner.png
 slug: begginers-guide-to-project-building
 authors: ['Ceora Ford']
-photo: 
-title: A Beginners Guide to Project Building 
+photo: https://codesandbox.io/static/ceora-85ee1c599a24d888540eea740f7747be.jpg
+title: A Beginner's Guide to Project Building 
 description: Project building is an integral part of developer growth. Learn how to create and finish amazing coding projects in this post. 
 date: 2021-04-19
 ---
