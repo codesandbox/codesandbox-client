@@ -15,7 +15,7 @@ This article will answer those very questions. If you want to know what steps yo
 
 ## Establish a goal
 
-Before starting, you should establish what your main objective is. What do you want to accomplish with your project? Try to be as specific as possible, including what languages or frameworks you want to build with and what new things you would like to learn. Here’s an example of a great project goal: 
+Before starting, you should establish what your main objective is. What do you want to accomplish with your project? Try to be as specific as possible, including what languages or frameworks you want to build with and what new things you would like to learn. Here’s an example of a great project goal: "Build a gif search engine with JavaScript using the GIPHY API".
 
 ## Make a game plan
 
@@ -45,7 +45,7 @@ Try sharing your progress with others. Twitter is a great place for this. When y
 
 This was a point Charlie made in her podcast episode and I think this is a step we often overlook. 
 
-> "Maybe I pause that project and then I know that I'll get back to it later when I have more knowledge or when I re- frame the question in a way that I can actually be achieved. So to me, that's my way of finishing things.
+> "Maybe I pause that project and then I know that I'll get back to it later when I have more knowledge or when I re-frame the question in a way that it can actually be achieved. So to me, that's my way of finishing things.
 
 It's okay to adjust the scope of your project. Learning that your project goal was too ambitious or having a busy schedule that doesn't allow for lots of project building is completely normal. It's an inevitable part of being a developer who builds side projects. 
 
