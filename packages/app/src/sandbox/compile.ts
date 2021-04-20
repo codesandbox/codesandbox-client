@@ -460,6 +460,8 @@ async function compile(opts: CompileOptions) {
     template,
     entry,
     showOpenInCodeSandbox,
+    showLoadingScreen = true,
+    showErrorScreen = true,
     skipEval = false,
     hasFileResolver = false,
     disableDependencyPreprocessing = false,
