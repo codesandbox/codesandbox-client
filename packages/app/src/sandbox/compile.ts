@@ -482,8 +482,7 @@ async function compile(opts: CompileOptions) {
 
   const startTime = Date.now();
   try {
-    inject(
-    );
+    inject(showErrorScreen);
     clearErrorTransformers();
     initializeErrorTransformers();
     unmount(manager && manager.webpackHMR ? true : hadError);
