@@ -427,7 +427,9 @@ function overrideDocumentClose() {
 
 overrideDocumentClose();
 
-inject();
+if (!process.env.SANDPACK) {
+  inject();
+}
 
 interface CompileOptions {
   sandboxId: string;
@@ -463,7 +465,7 @@ async function compile(opts: CompileOptions) {
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
   } = opts;
-
+  
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
@@ -478,7 +480,8 @@ async function compile(opts: CompileOptions) {
 
   const startTime = Date.now();
   try {
-    inject();
+    inject(
+    );
     clearErrorTransformers();
     initializeErrorTransformers();
     unmount(manager && manager.webpackHMR ? true : hadError);
@@ -541,7 +544,7 @@ async function compile(opts: CompileOptions) {
 
     metrics.measure('dependencies');
 
-    if (firstLoad) {
+    if (firstLoad && showLoadingScreen) {
       setScreen({
         type: 'loading',
         showFullScreen: firstLoad,
@@ -552,6 +555,10 @@ async function compile(opts: CompileOptions) {
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       ({ done, total, remainingDependencies }) => {
+        if (!showLoadingScreen) {
+          return;
+        }
+
         const progress = total - done;
         if (done === total) {
           return;
@@ -624,11 +631,13 @@ async function compile(opts: CompileOptions) {
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
 
-    setScreen({
-      type: 'loading',
-      text: 'Transpiling Modules...',
-      showFullScreen: firstLoad,
-    });
+    if (showLoadingScreen) {
+      setScreen({
+        type: 'loading',
+        text: 'Transpiling Modules...',
+        showFullScreen: firstLoad,
+      });
+    }
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
@@ -701,6 +710,16 @@ async function compile(opts: CompileOptions) {
           // on the first run. However, if there's no server to provide the static file (in the case of a local server
           // or sandpack), then do it anyways.
           document.body.innerHTML = body;
+
+          // Add head tags or anything that comes from the template
+          // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
+          // At this point, the original head was parsed and the files loaded / preloaded.
+
+          // TODO: figure out a way to fix this without overriding head changes done by the bundler
+          // Original issue: https://github.com/codesandbox/sandpack/issues/32
+          // if (document.head && head) {
+          //   document.head.innerHTML = head;
+          // }
         }
         lastBodyHTML = body;
         lastHeadHTML = head;
