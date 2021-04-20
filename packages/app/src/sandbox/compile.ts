@@ -449,23 +449,25 @@ interface CompileOptions {
   clearConsoleDisabled?: boolean;
 }
 
-async function compile({
-  sandboxId,
-  modules,
-  externalResources,
-  customNpmRegistries = [],
-  hasActions,
-  isModuleView = false,
-  template,
-  entry,
-  showOpenInCodeSandbox,
-  showLoadingScreen = true,
-  showErrorScreen = true,
-  skipEval = false,
-  hasFileResolver = false,
-  disableDependencyPreprocessing = false,
-  clearConsoleDisabled = false,
-}: CompileOptions) {
+async function compile(opts: CompileOptions) {
+  const {
+    sandboxId,
+    modules,
+    externalResources,
+    customNpmRegistries = [],
+    hasActions,
+    isModuleView = false,
+    template,
+    entry,
+    showOpenInCodeSandbox,
+    showLoadingScreen = true,
+    showErrorScreen = true,
+    skipEval = false,
+    hasFileResolver = false,
+    disableDependencyPreprocessing = false,
+    clearConsoleDisabled = false,
+  } = opts;
+  
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
@@ -735,6 +737,7 @@ async function compile({
       const evalled = manager.evaluateModule(managerModuleToTranspile, {
         force: isModuleView,
       });
+
       metrics.endMeasure('evaluation', { displayName: 'Evaluation' });
 
       const domChanged =
