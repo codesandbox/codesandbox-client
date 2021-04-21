@@ -786,6 +786,11 @@ export class TranspiledModule {
     }: { asUMD?: boolean; force?: boolean; globals?: any } = {},
     initiator?: TranspiledModule
   ) {
+    // Just let the browser reload...
+    if (manager.isReloading) {
+      return {};
+    }
+
     if (this.source == null) {
       if (this.module.path === '/node_modules/empty/index.js') {
         return {};
@@ -836,14 +841,15 @@ export class TranspiledModule {
         if (shouldReloadPage) {
           if (manager.isFirstLoad) {
             // We're in a reload loop! Ignore all caches!
-
+            manager.isReloading = true;
             manager.clearCache();
             manager.deleteAPICache().then(() => {
-              document.location.reload();
+              manager.reload();
             });
           } else {
-            document.location.reload();
+            manager.reload();
           }
+
           return {};
         }
       } else if (

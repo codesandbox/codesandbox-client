@@ -276,7 +276,9 @@ export const setCurrentSandbox = async (
   ) {
     const defaultModule = defaultOpenedModule(sandbox, parsedConfigs);
 
-    currentModuleShortid = defaultModule.shortid;
+    if (defaultModule) {
+      currentModuleShortid = defaultModule.shortid;
+    }
   }
 
   const sandboxOptions = effects.router.getSandboxOptions();

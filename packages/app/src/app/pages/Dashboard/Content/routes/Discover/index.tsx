@@ -27,8 +27,10 @@ import {
 import { CommunitySandbox } from 'app/pages/Dashboard/Components/CommunitySandbox';
 import { Stats } from 'app/pages/Dashboard/Components/CommunitySandbox/CommunitySandboxCard';
 import { AnonymousAvatar } from 'app/pages/Dashboard/Components/CommunitySandbox/AnonymousAvatar';
-import { Album } from 'app/graphql/types';
-import { DashboardCommunitySandbox } from 'app/pages/Dashboard/types';
+import {
+  DashboardCommunitySandbox,
+  DashboardAlbum,
+} from 'app/pages/Dashboard/types';
 import { PICKED_SANDBOXES_ALBUM } from './contants';
 
 export const Discover = () => {
@@ -269,7 +271,7 @@ const PickedSandbox = ({ sandbox }) => {
   );
 };
 
-type CollectionTypes = { album: Album; showMore: boolean };
+type CollectionTypes = { album: DashboardAlbum; showMore: boolean };
 const Collection: React.FC<CollectionTypes> = ({ album, showMore = false }) => {
   const {
     activeTeam,

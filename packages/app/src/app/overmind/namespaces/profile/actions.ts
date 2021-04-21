@@ -192,35 +192,83 @@ export const sandboxDeleted = async ({ state, effects }: Context) => {
   state.profile.isLoadingSandboxes = false;
 };
 
+export const validateUsernameUpdate = async (
+  { effects, state }: Context,
+  userName: string
+) => {
+  if (!state.profile) return;
+  const validity = await effects.api.validateUsername(userName);
+  // eslint-disable-next-line consistent-return
+  return validity.available;
+};
+
 export const updateUserProfile = async (
-  { actions, effects, state }: Context,
-  { bio = '', socialLinks = [] }: Pick<Profile, 'bio' | 'socialLinks'>
+  { state, actions, effects }: Context,
+  {
+    username,
+    name,
+    bio,
+    socialLinks,
+    onCancel,
+  }: {
+    username: string;
+    name: string;
+    bio: string;
+    socialLinks: string[];
+    onCancel: any;
+  }
 ) => {
   if (!state.profile.current) return;
 
-  // optimistic update
-  const oldBio = state.profile.current.bio;
-  state.profile.current.bio = bio;
-  const oldSocialLinks = state.profile.current.socialLinks;
-  state.profile.current.socialLinks = socialLinks;
+  const usernameChanged = state.profile.current.username !== username;
 
   try {
-    await effects.api.updateUserProfile(
-      state.profile.current.id,
+    if (usernameChanged) {
+      const confirmed = await actions.modals.alertModal.open({
+        title: 'Change Username',
+        message:
+          'Are you sure you want to change your username? You will need to update any external links to your CodeSandbox profile or sandboxes.',
+        type: 'danger',
+      });
+
+      if (!confirmed) throw new Error();
+    }
+
+    const response = await effects.gql.mutations.updateCurrentUser({
+      username,
+      name,
       bio,
-      socialLinks
-    );
+      socialLinks,
+    });
+
+    // Pessimistic state update
+    state.profile.current.name = response.updateCurrentUser.name;
+    state.profile.current.username = response.updateCurrentUser.username;
+    state.profile.current.bio = response.updateCurrentUser.bio;
+    state.profile.current.socialLinks = response.updateCurrentUser.socialLinks;
 
     effects.analytics.track('Profile - User profile updated');
-  } catch (error) {
-    // revert optimistic update
-    state.profile.current.bio = oldBio;
-    state.profile.current.socialLinks = oldSocialLinks;
 
-    actions.internal.handleError({
-      message: "We weren't able to update your bio",
-      error,
-    });
+    // Redirect user to new username path only if username has changed
+    if (usernameChanged) {
+      location.href = `/u/${username}`;
+    }
+  } catch (error) {
+    // Reset state in ProfileCard
+    onCancel();
+
+    if (
+      error.response &&
+      error.response.errors[0].message.includes('Username')
+    ) {
+      effects.notificationToast.error(
+        `There was a problem updating your profile: ${error.response.errors[0].message}.`
+      );
+    } else {
+      effects.notificationToast.error(
+        'There was a problem updating your profile.'
+      );
+    }
   }
 };
 

@@ -54,13 +54,13 @@ const VersionOne = ({
             font-size: 48px;
           `}
         >
-          {info.name} Podcast
+          {info.name}
         </PageTitle>
 
         <PageSubtitle
           css={`
-            width: 640px;
-            max-width: 80%;
+            width: 100%;
+            max-width: 640px;
             margin: auto;
             line-height: 1.25;
           `}
@@ -71,11 +71,11 @@ const VersionOne = ({
 
       <div
         css={`
-          margin: 2rem 0 6rem 0;
+          margin: 5rem 0 10rem 0;
         `}
       >
         <iframe
-          title="versionone"
+          title="The CodeSandbox Podcast"
           src="https://player.resonaterecordings.com/embed?uuid=7c540626-fe2a-46ed-af8b-99cec654a2de&accentColor=13,180,206&backgroundColor=242,242,242"
           width="100%"
           height="155"
@@ -85,12 +85,7 @@ const VersionOne = ({
         />
       </div>
 
-      {/* hack hack need to remove css */}
-      <Episodes
-        css={`
-          display: none;
-        `}
-      >
+      <Episodes>
         {episodes
           .filter(e => e.node.frontmatter.slug)
           .map(({ node: { id, frontmatter } }) => (
@@ -117,6 +112,7 @@ const VersionOne = ({
             </Link>
           ))}
       </Episodes>
+
       <PodcastLinks {...info.links} name={info.name} />
     </PageContainer>
   </Layout>

@@ -437,22 +437,15 @@ export const curatedAlbums: Query<
       id
       title
       sandboxes {
-        id
-        alias
-        title
-        description
-        screenshotUrl
+        ...sandboxFragmentDashboard
         forkCount
         likeCount
         author {
           username
           avatarUrl
         }
-        source {
-          id
-          template
-        }
       }
     }
   }
+  ${sandboxFragmentDashboard}
 `;

@@ -1,1 +1,1 @@
-export const PICKED_SANDBOXES_ALBUM = 'vyt5kc';
+export const PICKED_SANDBOXES_ALBUM = 'i1pxky';
