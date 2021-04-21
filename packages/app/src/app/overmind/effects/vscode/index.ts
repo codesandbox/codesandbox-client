@@ -52,7 +52,7 @@ import SandboxFsSync from './SandboxFsSync';
 import { getSelection } from './utils';
 import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
-import { composeMenuTree, MenuItems } from './composeMenuTree';
+import { composeMenuAppTree, MenuAppItems } from './composeMenuAppTree';
 
 export type VsCodeOptions = {
   getCurrentSandbox: () => Sandbox | null;
@@ -130,7 +130,7 @@ export class VSCodeEffect {
     statusbar: document.createElement('div'),
   };
 
-  private menuItems: MenuItems = [];
+  private menuAppItems: MenuAppItems = [];
 
   private customEditorApi: ICustomEditorApi = {
     getCustomEditor: () => null,
@@ -271,8 +271,8 @@ export class VSCodeEffect {
     return this.elements.editor;
   }
 
-  public getMenuItems(): MenuItems {
-    return this.menuItems;
+  public getMenuAppItems(): MenuItems {
+    return this.menuAppItems;
   }
 
   public getStatusbarElement() {
@@ -1008,7 +1008,9 @@ export class VSCodeEffect {
         editorPart.create(this.elements.editorPart);
         editorPart.layout(container.offsetWidth, container.offsetHeight);
 
-        this.menuItems = composeMenuTree(id => MenuRegistry.getMenuItems(id));
+        this.menuAppItems = composeMenuAppTree(id =>
+          MenuRegistry.getMenuItems(id)
+        );
 
         editorPart.parent = container;
 

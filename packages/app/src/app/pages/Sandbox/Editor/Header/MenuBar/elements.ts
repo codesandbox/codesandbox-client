@@ -11,6 +11,26 @@ export const Container = styled.div`
   z-index: 99999;
   background: black;
   align-items: flex-start;
+
+  .menu {
+    width: 150px;
+    position: relative;
+  }
+
+  .sub-menu {
+    display: none;
+
+    position: absolute;
+    top: 0;
+    left: 150px;
+
+    z-index: 99999;
+    background: #222;
+  }
+
+  .menu:hover > .sub-menu {
+    display: block;
+  }
 `;
 
 export const SkeletonMenuItem = styled.div`

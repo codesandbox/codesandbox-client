@@ -4,7 +4,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useEffects } from 'app/overmind';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { MenuItems } from 'app/overmind/effects/vscode';
+import { MenuAppItems } from 'app/overmind/effects/vscode/composeMenuAppTree';
 import { Container, SkeletonContainer, SkeletonMenuItem } from './elements';
 
 const MenuBarSkeleton: FunctionComponent = () => (
@@ -21,18 +21,56 @@ const MenuBarSkeleton: FunctionComponent = () => (
   </SkeletonContainer>
 );
 
+// TODO: find out a proper place to TS helpers
+type Unpacked<T> = T extends (infer U)[]
+  ? U
+  : T extends (...args: any[]) => infer U
+  ? U
+  : T extends Promise<infer U>
+  ? U
+  : T;
+
 export const MenuBar: FunctionComponent = () => {
   const { isLoading } = useAppState().editor;
-  const [menu, setMenu] = useState<MenuItems>([]);
+  const [menu, setMenu] = useState<MenuAppItems>([]);
 
-  const vscode = useEffects().vscode;
-  const vscodeMenuItems = vscode.getMenuItems();
+  const { vscode } = useEffects();
+  const vscodeMenuItems = vscode.getMenuAppItems();
 
   useEffect(() => {
     setMenu(vscodeMenuItems);
   }, [vscodeMenuItems]);
 
-  console.log(menu);
+  const renderSubMenu = (submenu: Unpacked<MenuAppItems>['submenu']) =>
+    submenu.map(subItem => {
+      if (subItem.submenu) {
+        return (
+          <div className="menu">
+            <p>
+              {subItem.title} {'>'}
+            </p>
+            <div className="menu sub-menu">
+              {renderSubMenu(subItem.submenu)}
+            </div>
+          </div>
+        );
+      }
+
+      if (subItem.command) {
+        return (
+          <div className="item">
+            <button
+              type="button"
+              onClick={() => vscode.runCommand(subItem.command.id)}
+            >
+              {subItem.command.title}
+            </button>
+          </div>
+        );
+      }
+
+      return null;
+    });
 
   return (
     // Explicitly use inline styles here to override the vscode styles
@@ -42,14 +80,11 @@ export const MenuBar: FunctionComponent = () => {
         <MenuBarSkeleton />
       ) : (
         menu.map(item => (
-          <p>
-            {item.title}
+          <div className="menu">
+            <button type="button">{item.title}</button>
 
-            {item.submenu.map(subItem => {
-              if (subItem.command) return <p>{subItem.command.title}</p>;
-              return <p>{subItem.title}</p>;
-            })}
-          </p>
+            {renderSubMenu(item.submenu)}
+          </div>
         ))
       )}
     </Container>

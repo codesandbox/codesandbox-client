@@ -9,25 +9,27 @@ interface SubMenu {
   submenu?: SubMenu[];
 }
 
-export type MenuItems = Array<{
+export type MenuAppItems = Array<{
   title: string;
   submenu: SubMenu[];
 }>;
 
-export const composeMenuTree = (getMenuItems: any): MenuItems => {
-  enum RootMenuId {
-    File = MenuId.MenubarFileMenu,
-    Edit = MenuId.MenubarEditMenu,
-    Selection = MenuId.MenubarSelectionMenu,
-    View = MenuId.MenubarViewMenu,
-    Go = MenuId.MenubarGoMenu,
-    Help = MenuId.MenubarHelpMenu,
-  }
+enum RootMenuId {
+  '&&File' = MenuId.MenubarFileMenu,
+  '&&Edit' = MenuId.MenubarEditMenu,
+  '&&Selection' = MenuId.MenubarSelectionMenu,
+  '&&View' = MenuId.MenubarViewMenu,
+  '&&Go' = MenuId.MenubarGoMenu,
+  '&&Help' = MenuId.MenubarHelpMenu,
+}
 
-  const getSubmenu = (menu: Array<{ submenu?: Array<unknown> }>) =>
+export const composeMenuAppTree = (
+  getVsCodeMenuItems: (id: string | RootMenuId) => Array<unknown>
+): MenuAppItems => {
+  const getSubmenu = (menu: Array<{ submenu?: string }>) =>
     menu.map(item => {
       if (item.submenu) {
-        const submenu = getMenuItems(item.submenu);
+        const submenu = getVsCodeMenuItems(item.submenu);
 
         return {
           ...item,
@@ -40,7 +42,7 @@ export const composeMenuTree = (getMenuItems: any): MenuItems => {
 
   return Object.entries(RootMenuId)
     .map(([rootTitle, id]) => {
-      const rootMenu = getMenuItems(id);
+      const rootMenu = getVsCodeMenuItems(id);
 
       if (rootMenu.length === 0) {
         return null;
