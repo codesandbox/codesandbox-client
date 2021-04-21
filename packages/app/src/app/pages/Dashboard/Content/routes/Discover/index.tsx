@@ -157,7 +157,7 @@ const PickedSandboxes = () => {
   );
 };
 
-const PickedSandbox = ({ sandbox }) => {
+export const PickedSandbox = ({ sandbox }) => {
   const {
     dashboard: { sandboxes },
   } = useAppState();
@@ -270,7 +270,10 @@ const PickedSandbox = ({ sandbox }) => {
 };
 
 type CollectionTypes = { album: Album; showMore: boolean };
-const Collection: React.FC<CollectionTypes> = ({ album, showMore = false }) => {
+export const Collection: React.FC<CollectionTypes> = ({
+  album,
+  showMore = false,
+}) => {
   const {
     activeTeam,
     dashboard: { sandboxes },

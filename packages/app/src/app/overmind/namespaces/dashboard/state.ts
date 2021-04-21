@@ -5,6 +5,7 @@ import {
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
   Album,
+  User,
 } from 'app/graphql/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
@@ -70,7 +71,15 @@ export type State = {
     week: Sandbox[];
     older: Sandbox[];
   };
-  curatedAlbums: Album[];
+  curatedAlbums: Array<
+    Pick<Album, 'id' | 'title'> & {
+      sandboxes: Array<
+        Sandbox & {
+          author: Pick<User, 'username' | 'avatarUrl'>;
+        }
+      >;
+    }
+  >;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {

@@ -39,7 +39,7 @@ export const Album = ({ match }) => {
       type: 'community-sandbox',
       noDrag: true,
       autoFork: false,
-      sandbox,
+      sandbox: { ...sandbox, liked: false },
     })
   );
 

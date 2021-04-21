@@ -2269,6 +2269,37 @@ export type UpdateCurrentUserMutation = { __typename?: 'RootMutationType' } & {
   >;
 };
 
+export type AddSandboxesToAlbumMutationVariables = Exact<{
+  albumId: Scalars['ID'];
+  sandboxIds: Array<Scalars['ID']>;
+}>;
+
+export type AddSandboxesToAlbumMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  addSandboxesToAlbum: Maybe<{ __typename?: 'Album' } & Pick<Album, 'id'>>;
+};
+
+export type RemoveSandboxesFromAlbumMutationVariables = Exact<{
+  albumId: Scalars['ID'];
+  sandboxIds: Array<Scalars['ID']>;
+}>;
+
+export type RemoveSandboxesFromAlbumMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  removeSandboxesFromAlbum: Maybe<{ __typename?: 'Album' } & Pick<Album, 'id'>>;
+};
+
+export type UpdateAlbumMutationVariables = Exact<{
+  id: Scalars['ID'];
+  title: Scalars['String'];
+}>;
+
+export type UpdateAlbumMutation = { __typename?: 'RootMutationType' } & {
+  updateAlbum: { __typename?: 'Album' } & Pick<Album, 'id'>;
+};
+
 export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
   [key: string]: never;
 }>;

@@ -1885,3 +1885,46 @@ export const getCuratedAlbums = async ({ state, effects }: Context) => {
     );
   }
 };
+
+export const addSandboxesToAlbum = async (
+  { effects }: Context,
+  { albumId, sandboxIds }: { albumId: string; sandboxIds: string[] }
+) => {
+  try {
+    await effects.gql.mutations.addSandboxesToAlbum({
+      albumId,
+      sandboxIds,
+    });
+  } catch (error) {
+    effects.notificationToast.error('There was a problem updating albums');
+  }
+};
+
+export const removeSandboxesFromAlbum = async (
+  { effects }: Context,
+  { albumId, sandboxIds }: { albumId: string; sandboxIds: string[] }
+) => {
+  try {
+    await effects.gql.mutations.removeSandboxesFromAlbum({
+      albumId,
+      sandboxIds,
+    });
+  } catch (error) {
+    effects.notificationToast.error('There was a problem updating albums');
+  }
+};
+
+export const updateAlbum = async (
+  { state, effects }: Context,
+  { id, title }: { id: string; title: string }
+) => {
+  try {
+    await effects.gql.mutations.updateAlbum({ id, title });
+    state.dashboard.curatedAlbums = state.dashboard.curatedAlbums.map(album => {
+      if (album.id === id) album.title = title;
+      return album;
+    });
+  } catch (error) {
+    effects.notificationToast.error('There was a problem updating album');
+  }
+};
