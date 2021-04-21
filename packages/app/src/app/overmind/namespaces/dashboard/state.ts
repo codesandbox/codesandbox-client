@@ -4,8 +4,8 @@ import {
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
-  Album,
 } from 'app/graphql/types';
+import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
 import isSameWeek from 'date-fns/isSameWeek';
@@ -70,7 +70,7 @@ export type State = {
     week: Sandbox[];
     older: Sandbox[];
   };
-  curatedAlbums: Album[];
+  curatedAlbums: DashboardAlbum[];
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
