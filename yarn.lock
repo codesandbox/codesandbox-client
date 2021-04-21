@@ -9613,11 +9613,6 @@ codemirror@^5.27.4:
   version "5.38.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.38.0.tgz#26a9551446e51dbdde36aabe60f72469724fd332"
 
-codesandbox-api@latest:
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.32.tgz#dd2a937687398a3288f6b6534b56a2d059edeaef"
-  integrity sha512-YMQDDW9AdkAAQij0yg+DjdACulkIgtnsOGam70zUP/tuGI5hM4pjaadXPU1BI/GrZHO2Df7Y/TSWcxwyz10PbQ==
-
 codesandbox-import-util-types@^2.1.9, codesandbox-import-util-types@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-2.2.1.tgz#fbd0babed213eed068ad8251f5cdb1a01e573171"
