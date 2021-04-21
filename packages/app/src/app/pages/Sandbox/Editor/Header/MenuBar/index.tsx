@@ -2,14 +2,10 @@ import './titlebar.css';
 
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useEffects } from 'app/overmind';
-import React, { FunctionComponent, useEffect, useRef } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import {
-  Child,
-  Container,
-  SkeletonContainer,
-  SkeletonMenuItem,
-} from './elements';
+import { MenuItems } from 'app/overmind/effects/vscode';
+import { Container, SkeletonContainer, SkeletonMenuItem } from './elements';
 
 const MenuBarSkeleton: FunctionComponent = () => (
   <SkeletonContainer>
@@ -27,23 +23,35 @@ const MenuBarSkeleton: FunctionComponent = () => (
 
 export const MenuBar: FunctionComponent = () => {
   const { isLoading } = useAppState().editor;
+  const [menu, setMenu] = useState<MenuItems>([]);
+
   const vscode = useEffects().vscode;
-  const menuBarEl = useRef(null);
+  const vscodeMenuItems = vscode.getMenuItems();
 
   useEffect(() => {
-    // Get the menu bar part from vscode and mount it
-    menuBarEl.current.appendChild(vscode.getMenubarElement());
-  }, [vscode]);
+    setMenu(vscodeMenuItems);
+  }, [vscodeMenuItems]);
+
+  console.log(menu);
 
   return (
     // Explicitly use inline styles here to override the vscode styles
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <Container
-      className="part titlebar"
-      onClick={() => track('Editor - Click Menubar')}
-    >
-      <Child ref={menuBarEl} style={isLoading ? { display: 'none' } : null} />
-      {isLoading ? <MenuBarSkeleton /> : null}
+    <Container onClick={() => track('Editor - Click Menubar')}>
+      {isLoading ? (
+        <MenuBarSkeleton />
+      ) : (
+        menu.map(item => (
+          <p>
+            {item.title}
+
+            {item.submenu.map(subItem => {
+              if (subItem.command) return <p>{subItem.command.title}</p>;
+              return <p>{subItem.title}</p>;
+            })}
+          </p>
+        ))
+      )}
     </Container>
   );
 };
