@@ -31,7 +31,9 @@ type Unpacked<T> = T extends (infer U)[]
   : T;
 
 export const MenuBar: FunctionComponent = () => {
-  const { isLoading } = useAppState().editor;
+  const {
+    editor: { isLoading },
+  } = useAppState();
   const [menu, setMenu] = useState<MenuAppItems>([]);
 
   const { vscode } = useEffects();
@@ -65,6 +67,8 @@ export const MenuBar: FunctionComponent = () => {
             >
               {subItem.command.title}
             </button>
+
+            {vscode.lookupKeybinding(subItem.command.id)?.getLabel()}
           </div>
         );
       }

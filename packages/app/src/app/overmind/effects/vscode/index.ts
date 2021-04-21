@@ -140,6 +140,8 @@ export class VSCodeEffect {
     cancel(): void;
   };
 
+  public lookupKeybinding: (commandId: string) => { getLabel(): string | null };
+
   public initialize(options: VsCodeOptions) {
     this.options = options;
     this.controller = {
@@ -271,7 +273,7 @@ export class VSCodeEffect {
     return this.elements.editor;
   }
 
-  public getMenuAppItems(): MenuItems {
+  public getMenuAppItems(): MenuAppItems {
     return this.menuAppItems;
   }
 
@@ -914,6 +916,7 @@ export class VSCodeEffect {
       { IExtensionEnablementService },
       { IContextViewService },
       { MenuRegistry },
+      { IKeybindingService },
     ] = [
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
@@ -933,6 +936,7 @@ export class VSCodeEffect {
       r('vs/platform/extensionManagement/common/extensionManagement'),
       r('vs/platform/contextview/browser/contextView'),
       r('vs/platform/actions/common/actions'),
+      r('vs/platform/keybinding/common/keybinding'),
     ];
 
     const { serviceCollection } = await new Promise<any>(resolve => {
@@ -963,14 +967,14 @@ export class VSCodeEffect {
         const extensionEnablementService = accessor.get(
           IExtensionEnablementService
         );
+        const keybindingService = accessor.get(IKeybindingService);
 
+        this.lookupKeybinding = id => keybindingService.lookupKeybinding(id);
         this.commandService.resolve(commandService);
         this.extensionService.resolve(extensionService);
-
         this.extensionEnablementService.resolve(extensionEnablementService);
 
         const editorPart = accessor.get(IEditorGroupsService);
-
         const codeEditorService = accessor.get(ICodeEditorService);
         const textFileService = accessor.get(ITextFileService);
         const editorService = accessor.get(IEditorService);

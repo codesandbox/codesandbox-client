@@ -26,6 +26,7 @@ export const Container = styled.div`
 
     z-index: 99999;
     background: #222;
+    padding: 15px;
   }
 
   .menu:hover > .sub-menu {
