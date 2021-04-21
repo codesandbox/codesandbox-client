@@ -96,7 +96,7 @@ const Results = connectHits(({ hits }) => {
 
   React.useEffect(() => {
     getPage(sandboxesTypes.LIKED);
-  }, [activeTeam, getPage]);
+  }, [getPage]);
 
   const likedSandboxIds = (sandboxes.LIKED || []).map(sandbox => sandbox.id);
 

@@ -117,13 +117,13 @@ const SearchInputGroup = () => {
     new URLSearchParams(window.location.search).get('query') || ''
   );
 
-  const searchType = location.pathname.includes('/explore')
+  const searchType = location.pathname.includes('/discover')
     ? 'COMMUNITY'
     : 'WORKSPACE';
 
   const search = (queryString: string) => {
     if (searchType === 'COMMUNITY') {
-      history.push(dashboardUrls.exploreSearch(queryString, activeTeam));
+      history.push(dashboardUrls.discoverSearch(queryString, activeTeam));
     } else {
       history.push(dashboardUrls.search(queryString, activeTeam));
     }
@@ -163,7 +163,7 @@ const SearchInputGroup = () => {
           if (searchType === 'COMMUNITY') {
             history.push(dashboardUrls.search(query, activeTeam));
           } else {
-            history.push(dashboardUrls.exploreSearch(query, activeTeam));
+            history.push(dashboardUrls.discoverSearch(query, activeTeam));
           }
         }}
       >

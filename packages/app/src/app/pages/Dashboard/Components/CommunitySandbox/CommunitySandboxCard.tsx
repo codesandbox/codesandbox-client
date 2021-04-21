@@ -56,7 +56,7 @@ type StatsProps = Pick<
   CommunitySandboxItemComponentProps,
   'forkCount' | 'likeCount' | 'liked' | 'onLikeToggle'
 >;
-const Stats: React.FC<StatsProps> = ({
+export const Stats: React.FC<StatsProps> = ({
   forkCount,
   likeCount,
   liked,

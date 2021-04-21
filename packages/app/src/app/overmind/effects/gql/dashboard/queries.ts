@@ -43,6 +43,8 @@ import {
   _AlwaysOnTeamSandboxesQueryVariables,
   SharedWithMeSandboxesQuery,
   SharedWithMeSandboxesQueryVariables,
+  CuratedAlbumsQuery,
+  CuratedAlbumsQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -419,6 +421,28 @@ export const alwaysOnTeamSandboxes: Query<
       team(id: $teamId) {
         sandboxes(alwaysOn: true) {
           ...sandboxFragmentDashboard
+        }
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const curatedAlbums: Query<
+  CuratedAlbumsQuery,
+  CuratedAlbumsQueryVariables
+> = gql`
+  query CuratedAlbums {
+    curatedAlbums {
+      id
+      title
+      sandboxes {
+        ...sandboxFragmentDashboard
+        forkCount
+        likeCount
+        author {
+          username
+          avatarUrl
         }
       }
     }

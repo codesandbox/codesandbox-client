@@ -14,6 +14,7 @@ export const sandboxFragmentDashboard = gql`
     screenshotUrl
     screenshotOutdated
     viewCount
+    likeCount
     alwaysOn
 
     source {
