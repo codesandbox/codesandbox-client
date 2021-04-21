@@ -19,7 +19,10 @@ import { Settings } from './routes/Settings';
 import { NewTeam } from './routes/Settings/NewTeam';
 import { Discover } from './routes/Discover';
 import { Album } from './routes/Discover/Album';
+<<<<<<< HEAD
 import { Curate } from './routes/Discover/Curate';
+=======
+>>>>>>> master
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
 
 export const Content = withRouter(({ history }) => {

@@ -7,6 +7,7 @@ import {
   Album,
   User,
 } from 'app/graphql/types';
+import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
 import isSameWeek from 'date-fns/isSameWeek';
@@ -71,15 +72,7 @@ export type State = {
     week: Sandbox[];
     older: Sandbox[];
   };
-  curatedAlbums: Array<
-    Pick<Album, 'id' | 'title'> & {
-      sandboxes: Array<
-        Sandbox & {
-          author: Pick<User, 'username' | 'avatarUrl'>;
-        }
-      >;
-    }
-  >;
+  curatedAlbums: DashboardAlbum[];
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {

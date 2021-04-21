@@ -2,7 +2,7 @@
 banner: ./images/banner.png
 slug: creator-profile-charlie-gerard
 authors: ['Siddharth Kshetrapal']
-photo: https://avatars0.githubusercontent.com/u/1863771?s=460&v=4
+photo: https://codesandbox.io/static/ceora-85ee1c599a24d888540eea740f7747be.jpg
 title: Curiosity-driven Development with Charlie Gerard
 description: Coders and creators of all kinds use CodeSandbox to prototype and share their ideas. This creator profile showcases the sandboxes of creative technologist Charlie Gerard and we chat to her about how she harnesses her curiosity to inspire and drive her creative experiments.
 date: 2020-11-30

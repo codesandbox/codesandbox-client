@@ -337,13 +337,14 @@ function run(port) {
     });
     http
       .createServer(function (req, res) {
-        if (req.url.includes('.js')) {
-          proxy.web(req, res, { target: 'http://localhost:3000' });
-        } else {
+        // Not sure if this is always "/"?
+        if (req.url === '/') {
           proxy.web(req, res, {
             target: 'http://localhost:3000/frame.html',
             ignorePath: true,
           });
+        } else {
+          proxy.web(req, res, { target: 'http://localhost:3000', ws: true });
         }
       })
       .listen(3002);

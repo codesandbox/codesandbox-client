@@ -36,13 +36,7 @@ export function isBabel7(
 
   if (dependencies.svelte || devDependencies.svelte) {
     const ver = dependencies.svelte || devDependencies.svelte;
-    const [maj] = ver.split('.');
-
-    if (maj) {
-      return +maj > 2;
-    }
-
-    return false;
+    return semver.gte(semver.minVersion(ver), '3.0.0');
   }
 
   if ('typescript' in devDependencies && !dependencies['@angular/core']) {

@@ -166,7 +166,7 @@ export const SandboxCard = ({
           align="center"
           gap={2}
           marginLeft={4}
-          marginRight={3}
+          marginRight={1}
         >
           <Author author={author} />
           <Stats
