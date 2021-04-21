@@ -140,7 +140,13 @@ export class VSCodeEffect {
     cancel(): void;
   };
 
-  public lookupKeybinding: (commandId: string) => { getLabel(): string | null };
+  /**
+   * Look up the preferred (last defined) keybinding for a command.
+   * @returns {ResolvedKeybinding} The preferred keybinding or null if the command is not bound.
+   */
+  public lookupKeybinding: (
+    commandId: string
+  ) => { getLabel(): string | null } | null;
 
   public initialize(options: VsCodeOptions) {
     this.options = options;
