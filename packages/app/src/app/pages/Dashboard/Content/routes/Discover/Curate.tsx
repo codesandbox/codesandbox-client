@@ -154,9 +154,18 @@ const CustomisePickedSandboxes = () => {
             shown depending on the space.
           </Text>
           <Stack gap={8}>
-            <Input defaultValue={sandboxes[0]?.id} placeholder="Sandbox id" />
-            <Input defaultValue={sandboxes[1]?.id} placeholder="Sandbox id" />
-            <Input defaultValue={sandboxes[2]?.id} placeholder="Sandbox id" />
+            <Input
+              defaultValue={sandboxes[0]?.id}
+              placeholder="Sandbox id, example: e0res"
+            />
+            <Input
+              defaultValue={sandboxes[1]?.id}
+              placeholder="Sandbox id, example: e0res"
+            />
+            <Input
+              defaultValue={sandboxes[2]?.id}
+              placeholder="Sandbox id, example: e0res"
+            />
           </Stack>
         </Stack>
       </form>
@@ -222,16 +231,19 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
 
       <Stack gap={6} css={css({ overflowX: 'auto', '> *': { minWidth: 300 } })}>
         {album.sandboxes.map(sandbox => (
-          <CommunitySandbox
-            key={sandbox.id}
-            isScrolling={false}
-            item={{
-              type: 'community-sandbox',
-              noDrag: true,
-              autoFork: false,
-              sandbox,
-            }}
-          />
+          <Stack direction="vertical" gap={2}>
+            <CommunitySandbox
+              key={sandbox.id}
+              isScrolling={false}
+              item={{
+                type: 'community-sandbox',
+                noDrag: true,
+                autoFork: false,
+                sandbox,
+              }}
+            />
+            <RemoveSandbox albumId={album.id} sandboxId={sandbox.id} />
+          </Stack>
         ))}
         <Stack
           as="form"
@@ -246,7 +258,7 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
             event.target.sandboxId.value = '';
           }}
         >
-          <Input id="sandboxId" placeholder="Sandbox ID" />
+          <Input id="sandboxId" placeholder="Sandbox id, example: e0res" />
           <Button type="submit" css={{ width: 100 }}>
             Add
           </Button>
@@ -264,7 +276,7 @@ const CreateNewAlbum = () => {
   return (
     <Stack direction="vertical" gap={6}>
       <Text size={4} weight="bold">
-        Create new album
+        Create new Album
       </Text>
       <Stack
         as="form"
@@ -284,5 +296,21 @@ const CreateNewAlbum = () => {
         </Button>
       </Stack>
     </Stack>
+  );
+};
+
+const RemoveSandbox = ({ albumId, sandboxId }) => {
+  const {
+    dashboard: { removeSandboxesFromAlbum },
+  } = useActions();
+  return (
+    <Button
+      variant="secondary"
+      onClick={() => {
+        removeSandboxesFromAlbum({ albumId, sandboxIds: [sandboxId] });
+      }}
+    >
+      Remove sandbox from Album
+    </Button>
   );
 };
