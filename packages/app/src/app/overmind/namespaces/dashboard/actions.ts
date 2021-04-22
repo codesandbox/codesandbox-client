@@ -1174,6 +1174,7 @@ export const setTeamInfo = async (
     team => team.id === state.activeTeam
   );
   const oldActiveTeamInfo = state.activeTeamInfo;
+
   try {
     await effects.gql.mutations.setTeamName({
       name,

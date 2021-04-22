@@ -22,7 +22,7 @@ interface WorkspaceSelectProps {
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ activeAccount, disabled, onSelect }) => {
     const state = useAppState();
-    const { dashboard } = state;
+    const { dashboard, user } = state;
     const history = useHistory();
 
     const personalWorkspace = dashboard.teams.find(
@@ -110,7 +110,11 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   }
                 >
                   <TeamAvatar
-                    avatar={team.avatarUrl}
+                    avatar={
+                      team.id === state.personalWorkspaceId && user
+                        ? user.avatarUrl
+                        : team.avatarUrl
+                    }
                     name={team.name}
                     size="small"
                   />
