@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { sampleSize, shuffle } from 'lodash-es';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Stack,
@@ -60,6 +61,13 @@ export const Discover = () => {
     })
   );
 
+  const fiveRandomAlbums = shuffle(
+    sampleSize(
+      curatedAlbums.filter(album => album.id !== PICKED_SANDBOXES_ALBUM),
+      5
+    )
+  );
+
   return (
     <Element
       css={{ width: '100%', '#selection-container': { overflowY: 'auto' } }}
@@ -117,15 +125,13 @@ export const Discover = () => {
           <Stack direction="vertical" gap={16}>
             <PickedSandboxes />
 
-            {curatedAlbums
-              .filter(album => album.id !== PICKED_SANDBOXES_ALBUM)
-              .map(album => (
-                <Collection
-                  key={album.id}
-                  album={album}
-                  showMore={album.sandboxes.length > 3}
-                />
-              ))}
+            {fiveRandomAlbums.map(album => (
+              <Collection
+                key={album.id}
+                album={album}
+                showMore={album.sandboxes.length > 3}
+              />
+            ))}
           </Stack>
         </Element>
       </SelectionProvider>
@@ -159,10 +165,7 @@ const PickedSandboxes = () => {
   );
 };
 
-
 export const PickedSandbox = ({ sandbox }) => {
-
-
   const {
     dashboard: { sandboxes },
   } = useAppState();
@@ -274,10 +277,8 @@ export const PickedSandbox = ({ sandbox }) => {
   );
 };
 
-
 type CollectionTypes = { album: DashboardAlbum; showMore: boolean };
 const Collection: React.FC<CollectionTypes> = ({ album, showMore = false }) => {
-
   const {
     activeTeam,
     dashboard: { sandboxes },
