@@ -10,7 +10,7 @@ import { Actions } from './Actions';
 import { DashboardIcon } from './icons';
 import { MenuBar } from './MenuBar';
 import { SandboxName } from './SandboxName';
-import { WorkspaceDashboardIcon } from './WorkspaceDashboardIcon';
+import { WorkspaceName } from './WorkspaceName';
 import { SignInBanner } from './SignInAd';
 
 export const Header = () => {
@@ -18,7 +18,7 @@ export const Header = () => {
 
   const LoggedIn = () =>
     user ? (
-      <WorkspaceDashboardIcon />
+      <WorkspaceName />
     ) : (
       <Link
         as={RouterLink}
@@ -70,7 +70,7 @@ export const Header = () => {
       >
         <Stack align="center">
           {hasLogIn ? <LoggedIn /> : <LoginLink />}
-          <MenuBar />
+          {/* <MenuBar /> */}
         </Stack>
 
         {editor.currentSandbox && !isAuthenticating ? <SandboxName /> : null}

@@ -157,7 +157,7 @@ const Triangle = ({ triggerRect }) => (
         height: 0,
         border: '6px solid transparent',
         borderBottomColor: 'grays.600',
-        zIndex: 4, // one heigher than the tooltip itself
+        zIndex: 4, // one higher than the tooltip itself
         ':after': {
           content: " ' '",
           border: '6px solid transparent',
