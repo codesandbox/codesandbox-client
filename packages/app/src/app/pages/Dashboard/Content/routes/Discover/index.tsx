@@ -159,11 +159,10 @@ const PickedSandboxes = () => {
   );
 };
 
-<<<<<<< HEAD
+
 export const PickedSandbox = ({ sandbox }) => {
-=======
-const PickedSandbox = ({ sandbox }) => {
->>>>>>> master
+
+
   const {
     dashboard: { sandboxes },
   } = useAppState();
@@ -275,16 +274,10 @@ const PickedSandbox = ({ sandbox }) => {
   );
 };
 
-<<<<<<< HEAD
-type CollectionTypes = { album: Album; showMore: boolean };
-export const Collection: React.FC<CollectionTypes> = ({
-  album,
-  showMore = false,
-}) => {
-=======
+
 type CollectionTypes = { album: DashboardAlbum; showMore: boolean };
 const Collection: React.FC<CollectionTypes> = ({ album, showMore = false }) => {
->>>>>>> master
+
   const {
     activeTeam,
     dashboard: { sandboxes },

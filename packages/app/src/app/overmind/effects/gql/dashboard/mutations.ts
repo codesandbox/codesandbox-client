@@ -79,6 +79,8 @@ import {
   RemoveSandboxesFromAlbumMutationVariables,
   UpdateAlbumMutation,
   UpdateAlbumMutationVariables,
+  CreateAlbumMutation,
+  CreateAlbumMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -654,6 +656,18 @@ export const removeSandboxesFromAlbum: Query<
   mutation removeSandboxesFromAlbum($albumId: ID!, $sandboxIds: [ID!]!) {
     removeSandboxesFromAlbum(albumId: $albumId, sandboxIds: $sandboxIds) {
       id
+    }
+  }
+`;
+
+export const createAlbum: Query<
+  CreateAlbumMutation,
+  CreateAlbumMutationVariables
+> = gql`
+  mutation createAlbum($title: String!) {
+    createAlbum(title: $title) {
+      id
+      title
     }
   }
 `;

@@ -93,7 +93,11 @@ const CustomisePickedSandboxes = () => {
     dashboard: { curatedAlbums },
   } = useAppState();
   const {
-    dashboard: { getPage, addSandboxesToAlbum, removeSandboxesFromAlbum },
+    dashboard: {
+      getCuratedAlbums,
+      addSandboxesToAlbum,
+      removeSandboxesFromAlbum,
+    },
   } = useActions();
 
   const featuredAlbum = curatedAlbums.find(
@@ -129,7 +133,7 @@ const CustomisePickedSandboxes = () => {
     });
 
     // fetch albums again with details
-    await getPage(sandboxesTypes.DISCOVER);
+    await getCuratedAlbums();
     setLoading(false);
   };
 
@@ -176,7 +180,7 @@ const CustomisePickedSandboxes = () => {
 type CollectionTypes = { album: Album };
 export const Collection: React.FC<CollectionTypes> = ({ album }) => {
   const {
-    dashboard: { updateAlbum },
+    dashboard: { updateAlbum, addSandboxesToAlbum },
   } = useActions();
 
   const [renaming, setRenaming] = React.useState(false);
@@ -216,10 +220,7 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
         </Stack>
       )}
 
-      <Stack
-        gap={6}
-        css={css({ overflowX: 'auto', '> div': { minWidth: 300 } })}
-      >
+      <Stack gap={6} css={css({ overflowX: 'auto', '> *': { minWidth: 300 } })}>
         {album.sandboxes.map(sandbox => (
           <CommunitySandbox
             key={sandbox.id}
@@ -232,16 +233,56 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
             }}
           />
         ))}
+        <Stack
+          as="form"
+          align="center"
+          gap={4}
+          onSubmit={event => {
+            event.preventDefault();
+            addSandboxesToAlbum({
+              albumId: album.id,
+              sandboxIds: [event.target.sandboxId.value],
+            });
+            event.target.sandboxId.value = '';
+          }}
+        >
+          <Input id="sandboxId" placeholder="Sandbox ID" />
+          <Button type="submit" css={{ width: 100 }}>
+            Add
+          </Button>
+        </Stack>
       </Stack>
     </Stack>
   );
 };
 
 const CreateNewAlbum = () => {
+  const {
+    dashboard: { createAlbum },
+  } = useActions();
+
   return (
-    <Stack as="form">
-      <Input placeholder="" />
-      <Button>Create</Button>
+    <Stack direction="vertical" gap={6}>
+      <Text size={4} weight="bold">
+        Create new album
+      </Text>
+      <Stack
+        as="form"
+        gap={2}
+        onSubmit={event => {
+          event.preventDefault();
+          createAlbum({ title: event.target.title.value });
+        }}
+      >
+        <Input
+          placeholder="Album title"
+          id="title"
+          style={{ maxWidth: 300, fontSize: 16, fontWeight: 700 }}
+        />
+        <Button type="submit" css={{ width: 100 }}>
+          Create
+        </Button>
+      </Stack>
     </Stack>
   );
 };

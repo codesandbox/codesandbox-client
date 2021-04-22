@@ -1887,7 +1887,7 @@ export const getCuratedAlbums = async ({ state, effects }: Context) => {
 };
 
 export const addSandboxesToAlbum = async (
-  { effects }: Context,
+  { actions, effects }: Context,
   { albumId, sandboxIds }: { albumId: string; sandboxIds: string[] }
 ) => {
   try {
@@ -1895,13 +1895,14 @@ export const addSandboxesToAlbum = async (
       albumId,
       sandboxIds,
     });
+    actions.dashboard.getCuratedAlbums();
   } catch (error) {
     effects.notificationToast.error('There was a problem updating albums');
   }
 };
 
 export const removeSandboxesFromAlbum = async (
-  { effects }: Context,
+  { actions, effects }: Context,
   { albumId, sandboxIds }: { albumId: string; sandboxIds: string[] }
 ) => {
   try {
@@ -1909,8 +1910,25 @@ export const removeSandboxesFromAlbum = async (
       albumId,
       sandboxIds,
     });
+    actions.dashboard.getCuratedAlbums();
   } catch (error) {
     effects.notificationToast.error('There was a problem updating albums');
+  }
+};
+
+export const createAlbum = async (
+  { state, effects }: Context,
+  { title }: { title: string }
+) => {
+  try {
+    const data = await effects.gql.mutations.createAlbum({ title });
+    state.dashboard.curatedAlbums.push({
+      id: data.createAlbum.id,
+      title: data.createAlbum.title,
+      sandboxes: [],
+    });
+  } catch (error) {
+    effects.notificationToast.error('There was a problem updating album');
   }
 };
 

@@ -2291,6 +2291,14 @@ export type RemoveSandboxesFromAlbumMutation = {
   removeSandboxesFromAlbum: Maybe<{ __typename?: 'Album' } & Pick<Album, 'id'>>;
 };
 
+export type CreateAlbumMutationVariables = Exact<{
+  title: Scalars['String'];
+}>;
+
+export type CreateAlbumMutation = { __typename?: 'RootMutationType' } & {
+  createAlbum: { __typename?: 'Album' } & Pick<Album, 'id' | 'title'>;
+};
+
 export type UpdateAlbumMutationVariables = Exact<{
   id: Scalars['ID'];
   title: Scalars['String'];
