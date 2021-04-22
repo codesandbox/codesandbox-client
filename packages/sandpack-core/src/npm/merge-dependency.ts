@@ -177,7 +177,7 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
             i = -1;
           } else {
             // Remove the contents so we don't overwrite the root version's content
-            const pathPrefix = `/node_modules/${depDepName}`;
+            const pathPrefix = `/node_modules/${depDepName}/`;
             Object.keys(r.contents).forEach(p => {
               if (p.startsWith(pathPrefix) && !VERSIONED_MODULE_RE.test(p)) {
                 delete r.contents[p];
