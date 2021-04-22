@@ -4,8 +4,6 @@ import {
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
-  Album,
-  User,
 } from 'app/graphql/types';
 import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameDay from 'date-fns/isSameDay';
