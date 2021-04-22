@@ -96,7 +96,7 @@ const Results = connectHits(({ hits }) => {
 
   React.useEffect(() => {
     getPage(sandboxesTypes.LIKED);
-  }, [activeTeam, getPage]);
+  }, [getPage]);
 
   const likedSandboxIds = (sandboxes.LIKED || []).map(sandbox => sandbox.id);
 
@@ -142,6 +142,15 @@ const Results = connectHits(({ hits }) => {
           CustomFilters={
             <div style={{ width: 256 }}>
               <Filters attribute="template" limit={3} operator="or" />
+              <Element
+                as="hr"
+                css={css({
+                  marginY: 0,
+                  marginX: 3,
+                  borderBottom: '1px solid',
+                  borderColor: 'menuList.border',
+                })}
+              />
               <Filters
                 attribute="npm_dependencies.dependency"
                 limit={3}
@@ -216,7 +225,10 @@ const Filters = connectRefinementList(
                     inputRef.current.value = '';
                   }}
                   label={
-                    <Stack justify="space-between" css={{ flexGrow: 1 }}>
+                    <Stack
+                      justify="space-between"
+                      css={{ flexGrow: 1, width: '100%' }}
+                    >
                       <Text maxWidth="100%" size={3}>
                         {label}
                       </Text>
@@ -235,13 +247,6 @@ const Filters = connectRefinementList(
             </Text>
           )}
         </List>
-        <Element
-          css={css({
-            paddingX: 3,
-            borderBottom: '1px solid',
-            borderColor: 'menuList.border',
-          })}
-        />
       </Stack>
     );
   }
