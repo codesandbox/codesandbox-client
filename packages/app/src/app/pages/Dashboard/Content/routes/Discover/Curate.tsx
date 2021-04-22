@@ -210,6 +210,7 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
           <Input
             id="title"
             defaultValue={album.title}
+            autoFocus
             style={{ maxWidth: 300, fontSize: 16, fontWeight: 700 }}
           />
           <Button type="submit" autoWidth>

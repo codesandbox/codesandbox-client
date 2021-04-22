@@ -72,7 +72,7 @@ export const Discover = () => {
         5
       )
     );
-  }, []);
+  }, [curatedAlbums.length]);
 
   const fiveRandomAlbums = fiveRandomAlbumIds.map(albumId => {
     return curatedAlbums.find(album => album.id === albumId);
