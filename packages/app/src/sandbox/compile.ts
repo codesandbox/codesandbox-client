@@ -766,10 +766,7 @@ async function compile(opts: CompileOptions) {
           process.env.LOCAL_SERVER ||
           process.env.SANDPACK
         ) {
-          // Add head tags or anything that comes from the template
-          // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
-          // At this point, the original head was parsed and the files loaded / preloaded.
-          // Original issue: https://github.com/codesandbox/sandpack/issues/32
+          // Append all head elements and execute scripts/styles
           if (head) {
             cloneDOMTree(head, 'head');
           }
