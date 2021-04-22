@@ -134,6 +134,14 @@ function replaceDependencyInfo(
   replacePaths(r.dependencyAliases, depDepName, newPath);
 }
 
+const intersects = (v1: string, v2: string) => {
+  try {
+    return semver.intersects(v1, v2);
+  } catch (e) {
+    return false;
+  }
+};
+
 export function mergeDependencies(responses: ILambdaResponse[]) {
   // For consistency between requests
   const sortedResponses = responses.sort((a, b) =>
@@ -160,7 +168,7 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
       if (rootDependency) {
         // packages that require themselves?
         if (r.dependency.name !== depDepName) {
-          if (!semver.intersects(rootDependency.version, newDepDep.semver)) {
+          if (!intersects(rootDependency.version, newDepDep.semver)) {
             // If a root dependency is in conflict with a child dependency, we always
             // go for the root dependency
             replaceDependencyInfo(r, depDepName, newDepDep);
@@ -193,7 +201,7 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
           exDepDep.parents = uniq([...exDepDep.parents, ...newDepDep.parents]);
           exDepDep.entries = uniq([...exDepDep.entries, ...newDepDep.entries]);
         } else if (
-          semver.intersects(exDepDep.semver, newDepDep.semver) &&
+          intersects(exDepDep.semver, newDepDep.semver) &&
           (isEqual(exDepDep.entries, newDepDep.entries) ||
             olderVersionDepDep.entries.length === 0) // Meaning that the existing dependency is not called from other dependencies, so safe to replace with the newer version.
         ) {
