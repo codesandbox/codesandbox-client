@@ -71,7 +71,7 @@ export default () => {
             margin: 2rem 0;
           `}
         >
-          <Button cta href="https://codesandbox.io/s/">
+          <Button cta href="https://codesandbox.io/dashboard/settings/new">
             Get Started
           </Button>
         </div>

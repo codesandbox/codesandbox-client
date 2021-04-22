@@ -19,6 +19,7 @@ import { Settings } from './routes/Settings';
 import { NewTeam } from './routes/Settings/NewTeam';
 import { Discover } from './routes/Discover';
 import { Album } from './routes/Discover/Album';
+import { Curate } from './routes/Discover/Curate';
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
 
 export const Content = withRouter(({ history }) => {
@@ -63,6 +64,7 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/liked" component={Liked} />
         <Route path="/dashboard/search" component={Search} />
         <Route path="/dashboard/discover/search" component={CommunitySearch} />
+        <Route path="/dashboard/discover/curate" component={Curate} />
         <Route path="/dashboard/discover/:id" component={Album} />
         <Route path="/dashboard/discover" component={Discover} />
         <Route path="/dashboard/settings" component={Settings} />

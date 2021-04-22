@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { sampleSize, shuffle } from 'lodash-es';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Stack,
@@ -44,7 +45,7 @@ export const Discover = () => {
   } = useActions();
 
   React.useEffect(() => {
-    getPage(sandboxesTypes.DISCOVER);
+    if (!curatedAlbums.length) getPage(sandboxesTypes.DISCOVER);
     if (!sandboxes.LIKED) getPage(sandboxesTypes.LIKED);
   }, [getPage, sandboxes.LIKED]);
 
@@ -58,6 +59,25 @@ export const Discover = () => {
       type: 'community-sandbox',
       sandbox,
     })
+  );
+
+  // We want to randomly pick 5 collections to show
+  // but don't want it to update on every render
+  const fiveRandomAlbumIds = React.useMemo(
+    () =>
+      shuffle(
+        sampleSize(
+          curatedAlbums
+            .map(album => album.id)
+            .filter(id => id !== PICKED_SANDBOXES_ALBUM),
+          5
+        )
+      ),
+    [curatedAlbums]
+  );
+
+  const fiveRandomAlbums = fiveRandomAlbumIds.map((albumId) =>
+    curatedAlbums.find((album) => album.id === albumId)
   );
 
   return (
@@ -117,15 +137,13 @@ export const Discover = () => {
           <Stack direction="vertical" gap={16}>
             <PickedSandboxes />
 
-            {curatedAlbums
-              .filter(album => album.id !== PICKED_SANDBOXES_ALBUM)
-              .map(album => (
-                <Collection
-                  key={album.id}
-                  album={album}
-                  showMore={album.sandboxes.length > 3}
-                />
-              ))}
+            {fiveRandomAlbums.map(album => (
+              <Collection
+                key={album.id}
+                album={album}
+                showMore={album.sandboxes.length > 3}
+              />
+            ))}
           </Stack>
         </Element>
       </SelectionProvider>
@@ -159,7 +177,7 @@ const PickedSandboxes = () => {
   );
 };
 
-const PickedSandbox = ({ sandbox }) => {
+export const PickedSandbox = ({ sandbox }) => {
   const {
     dashboard: { sandboxes },
   } = useAppState();
