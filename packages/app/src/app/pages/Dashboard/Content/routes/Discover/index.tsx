@@ -63,16 +63,18 @@ export const Discover = () => {
 
   // We want to randomly pick 5 collections to show
   // but don't want it to update on every render
-  const fiveRandomAlbumIds = React.useMemo(() => {
-    return shuffle(
-      sampleSize(
-        curatedAlbums
-          .map(album => album.id)
-          .filter(id => id !== PICKED_SANDBOXES_ALBUM),
-        5
-      )
-    );
-  }, [curatedAlbums.length]);
+  const fiveRandomAlbumIds = React.useMemo(
+    () =>
+      shuffle(
+        sampleSize(
+          curatedAlbums
+            .map(album => album.id)
+            .filter(id => id !== PICKED_SANDBOXES_ALBUM),
+          5
+        )
+      ),
+    [curatedAlbums]
+  );
 
   const fiveRandomAlbums = fiveRandomAlbumIds.map(albumId => {
     return curatedAlbums.find(album => album.id === albumId);
