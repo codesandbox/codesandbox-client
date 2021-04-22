@@ -17,9 +17,10 @@ import {
   GRID_MAX_WIDTH,
   GUTTER,
 } from 'app/pages/Dashboard/Components/VariableGrid';
-import { Album } from 'app/graphql/types';
-
-import { DashboardCommunitySandbox } from 'app/pages/Dashboard/types';
+import {
+  DashboardCommunitySandbox,
+  DashboardAlbum,
+} from 'app/pages/Dashboard/types';
 import { CommunitySandbox } from 'app/pages/Dashboard/Components/CommunitySandbox';
 
 import { PickedSandbox } from './index';
@@ -186,7 +187,7 @@ const CustomisePickedSandboxes = () => {
   );
 };
 
-type CollectionTypes = { album: Album };
+type CollectionTypes = { album: DashboardAlbum };
 export const Collection: React.FC<CollectionTypes> = ({ album }) => {
   const {
     dashboard: { updateAlbum, addSandboxesToAlbum },
