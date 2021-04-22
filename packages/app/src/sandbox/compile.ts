@@ -449,6 +449,65 @@ interface CompileOptions {
   clearConsoleDisabled?: boolean;
 }
 
+// element.cloneNode(true) doesn't really work for scripts unfortunately
+function cloneDOMElement(element: HTMLElement) {
+  const clonedElement = document.createElement(element.tagName);
+  let isAsync = false;
+  for (
+    let attributeIndex = 0;
+    attributeIndex < element.attributes.length;
+    attributeIndex++
+  ) {
+    const attribute = element.attributes[attributeIndex];
+    clonedElement.setAttribute(attribute.name, attribute.value);
+    if (attribute.name === 'async' || attribute.name === 'defer') {
+      isAsync = true;
+    }
+  }
+  if (!isAsync && element.tagName === 'script') {
+    clonedElement.setAttribute('async', 'false');
+  }
+  clonedElement.innerHTML = element.innerHTML;
+  return clonedElement;
+}
+
+function cloneDOMTree(origin: string, key: string) {
+  const parser = new DOMParser();
+  const originRoot: HTMLElement = parser.parseFromString(origin, 'text/html')[
+    key
+  ];
+  if (originRoot.hasChildNodes()) {
+    const targetRoot: HTMLElement = document[key];
+    const firstElement = targetRoot.firstChild;
+
+    const styleElements = originRoot.getElementsByTagName('style');
+    for (let i = 0; i < styleElements.length; i++) {
+      const styleElement = styleElements[i];
+      targetRoot.insertBefore(cloneDOMElement(styleElement), firstElement);
+      originRoot.removeChild(styleElement);
+    }
+
+    const linkElements = originRoot.getElementsByTagName('link');
+    for (let i = 0; i < linkElements.length; i++) {
+      const linkElement = linkElements[i];
+      targetRoot.insertBefore(cloneDOMElement(linkElement), firstElement);
+      originRoot.removeChild(linkElement);
+    }
+
+    const scriptElements = originRoot.getElementsByTagName('script');
+    for (let i = 0; i < scriptElements.length; i++) {
+      const scriptElement = scriptElements[i];
+      targetRoot.insertBefore(cloneDOMElement(scriptElement), firstElement);
+      originRoot.removeChild(scriptElement);
+    }
+
+    for (let i = 0; i < originRoot.children.length; i++) {
+      const childElement = originRoot.children[i];
+      targetRoot.insertBefore(childElement, firstElement);
+    }
+  }
+}
+
 async function compile(opts: CompileOptions) {
   const {
     sandboxId,
@@ -467,7 +526,7 @@ async function compile(opts: CompileOptions) {
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
   } = opts;
-  
+
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
@@ -707,20 +766,20 @@ async function compile(opts: CompileOptions) {
           process.env.LOCAL_SERVER ||
           process.env.SANDPACK
         ) {
-          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-          // on the first run. However, if there's no server to provide the static file (in the case of a local server
-          // or sandpack), then do it anyways.
-          document.body.innerHTML = body;
-
           // Add head tags or anything that comes from the template
           // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
           // At this point, the original head was parsed and the files loaded / preloaded.
-
-          // TODO: figure out a way to fix this without overriding head changes done by the bundler
           // Original issue: https://github.com/codesandbox/sandpack/issues/32
-          // if (document.head && head) {
-          //   document.head.innerHTML = head;
-          // }
+          if (head) {
+            cloneDOMTree(head, 'head');
+          }
+
+          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+          // on the first run. However, if there's no server to provide the static file (in the case of a local server
+          // or sandpack), then do it anyways.
+          if (body) {
+            cloneDOMTree(body, 'body');
+          }
         }
         lastBodyHTML = body;
         lastHeadHTML = head;
