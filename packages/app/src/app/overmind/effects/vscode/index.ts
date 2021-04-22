@@ -149,7 +149,7 @@ export class VSCodeEffect {
   ) => { getLabel(): string | null } | null;
 
   /**
-   * Extract method from ContextKeyService
+   * Extract `contextMatchesRules` method from ContextKeyService
    * to match rules and conditionals in the editor
    */
   public contextMatchesRules: (rules: any | undefined) => boolean;

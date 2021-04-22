@@ -1,25 +1,43 @@
-import './titlebar.css';
-
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useAppState, useEffects } from 'app/overmind';
+import { useEffects } from 'app/overmind';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 import { MenuAppItems } from 'app/overmind/effects/vscode/composeMenuAppTree';
-import { Container, SkeletonContainer, SkeletonMenuItem } from './elements';
 
-const MenuBarSkeleton: FunctionComponent = () => (
-  <SkeletonContainer>
-    <SkeletonMenuItem>File</SkeletonMenuItem>
-    <SkeletonMenuItem>Edit</SkeletonMenuItem>
-    <SkeletonMenuItem>Selection</SkeletonMenuItem>
-    <SkeletonMenuItem>View</SkeletonMenuItem>
-    <SkeletonMenuItem>Go</SkeletonMenuItem>
-    <SkeletonMenuItem>Help</SkeletonMenuItem>
-    <SkeletonMenuItem style={{ visibility: 'hidden' }}>
-      <div style={{ width: 20 }} />
-    </SkeletonMenuItem>
-  </SkeletonContainer>
-);
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 99999;
+  background: black;
+  align-items: flex-start;
+
+  .menu {
+    width: 150px;
+    position: relative;
+  }
+
+  .sub-menu {
+    display: none;
+
+    position: absolute;
+    top: 0;
+    left: 150px;
+
+    z-index: 99999;
+    background: #222;
+    padding: 15px;
+  }
+
+  .menu:hover > .sub-menu {
+    display: block;
+  }
+`;
 
 // TODO: find out a proper place to TS helpers
 type Unpacked<T> = T extends (infer U)[]
@@ -31,7 +49,6 @@ type Unpacked<T> = T extends (infer U)[]
   : T;
 
 export const MenuBar: FunctionComponent = () => {
-  const { editor } = useAppState();
   const [menu, setMenu] = useState<MenuAppItems>([]);
 
   const { vscode } = useEffects();
@@ -93,17 +110,13 @@ export const MenuBar: FunctionComponent = () => {
     // Explicitly use inline styles here to override the vscode styles
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <Container onClick={() => track('Editor - Click Menubar')}>
-      {editor.isLoading ? (
-        <MenuBarSkeleton />
-      ) : (
-        menu.map(item => (
-          <div className="menu">
-            <button type="button">{item.title}</button>
+      {menu.map(item => (
+        <div className="menu">
+          <button type="button">{item.title}</button>
 
-            {renderSubMenu(item.submenu)}
-          </div>
-        ))
-      )}
+          {renderSubMenu(item.submenu)}
+        </div>
+      ))}
     </Container>
   );
 };
