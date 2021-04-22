@@ -31,17 +31,18 @@ type Unpacked<T> = T extends (infer U)[]
   : T;
 
 export const MenuBar: FunctionComponent = () => {
-  const {
-    editor: { isLoading },
-  } = useAppState();
+  const { editor } = useAppState();
   const [menu, setMenu] = useState<MenuAppItems>([]);
 
   const { vscode } = useEffects();
   const vscodeMenuItems = vscode.getMenuAppItems();
 
-  useEffect(() => {
-    setMenu(vscodeMenuItems);
-  }, [vscodeMenuItems]);
+  useEffect(
+    function loadMenuData() {
+      setMenu(vscodeMenuItems);
+    },
+    [vscodeMenuItems]
+  );
 
   const renderSubMenu = (submenu: Unpacked<MenuAppItems>['submenu']) =>
     submenu.map(subItem => {
@@ -59,12 +60,24 @@ export const MenuBar: FunctionComponent = () => {
       }
 
       if (subItem.command) {
+        const when = vscode.contextMatchesRules(subItem.command.when);
+        const toggled = vscode.contextMatchesRules(subItem.command.toggled);
+        const disabled = vscode.contextMatchesRules(
+          subItem.command.precondition
+        );
+
+        if (when === false) return null;
+
         return (
           <div className="item">
             <button
               type="button"
               onClick={() => vscode.runCommand(subItem.command.id)}
+              style={{
+                opacity: disabled ? 1 : 0.4,
+              }}
             >
+              {'toggled' in subItem.command && toggled && '✅'}
               {subItem.command.title}
             </button>
 
@@ -80,7 +93,7 @@ export const MenuBar: FunctionComponent = () => {
     // Explicitly use inline styles here to override the vscode styles
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <Container onClick={() => track('Editor - Click Menubar')}>
-      {isLoading ? (
+      {editor.isLoading ? (
         <MenuBarSkeleton />
       ) : (
         menu.map(item => (

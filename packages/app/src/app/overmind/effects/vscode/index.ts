@@ -148,6 +148,12 @@ export class VSCodeEffect {
     commandId: string
   ) => { getLabel(): string | null } | null;
 
+  /**
+   * Extract method from ContextKeyService
+   * to match rules and conditionals in the editor
+   */
+  public contextMatchesRules: (rules: any | undefined) => boolean;
+
   public initialize(options: VsCodeOptions) {
     this.options = options;
     this.controller = {
@@ -923,6 +929,7 @@ export class VSCodeEffect {
       { IContextViewService },
       { MenuRegistry },
       { IKeybindingService },
+      { IContextKeyService },
     ] = [
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
@@ -943,6 +950,7 @@ export class VSCodeEffect {
       r('vs/platform/contextview/browser/contextView'),
       r('vs/platform/actions/common/actions'),
       r('vs/platform/keybinding/common/keybinding'),
+      r('vs/platform/contextkey/common/contextkey'),
     ];
 
     const { serviceCollection } = await new Promise<any>(resolve => {
@@ -974,8 +982,11 @@ export class VSCodeEffect {
           IExtensionEnablementService
         );
         const keybindingService = accessor.get(IKeybindingService);
+        const contextKeyService = accessor.get(IContextKeyService);
 
         this.lookupKeybinding = id => keybindingService.lookupKeybinding(id);
+        this.contextMatchesRules = rules =>
+          contextKeyService.contextMatchesRules(rules);
         this.commandService.resolve(commandService);
         this.extensionService.resolve(extensionService);
         this.extensionEnablementService.resolve(extensionEnablementService);

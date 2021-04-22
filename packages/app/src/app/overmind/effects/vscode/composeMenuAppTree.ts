@@ -3,7 +3,13 @@ import { MenuId } from './Workbench';
 interface SubMenu {
   group: string;
   order: number;
-  command?: { id: string; title: string };
+  command?: {
+    id: string;
+    title: string;
+    when?: { key: string };
+    precondition?: { key: string };
+    toggled?: { key: string };
+  };
   title?: string;
   when?: { key: string };
   submenu?: SubMenu[];
