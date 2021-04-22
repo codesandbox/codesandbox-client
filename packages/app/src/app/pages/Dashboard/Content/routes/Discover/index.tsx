@@ -76,9 +76,9 @@ export const Discover = () => {
     [curatedAlbums]
   );
 
-  const fiveRandomAlbums = fiveRandomAlbumIds.map(albumId => {
-    return curatedAlbums.find(album => album.id === albumId);
-  });
+  const fiveRandomAlbums = fiveRandomAlbumIds.map((albumId) =>
+    curatedAlbums.find((album) => album.id === albumId)
+  );
 
   return (
     <Element
