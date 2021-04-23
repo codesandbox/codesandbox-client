@@ -1,17 +1,18 @@
-import * as htmlparser2 from 'htmlparser2';
+import { Parser } from 'htmlparser2';
+import { DomHandler } from 'domhandler';
 
 const EXCLUDED_TAGS = ['noscript'];
 
 function parseDOM(content: string) {
   return new Promise((resolve, reject) => {
-    const domHandler = new htmlparser2.DomHandler((err, dom) => {
+    const domHandler = new DomHandler((err, dom) => {
       if (err) {
         reject(err);
       } else {
         resolve(dom);
       }
     });
-    const parser = new htmlparser2.Parser(domHandler);
+    const parser = new Parser(domHandler);
     parser.write(content);
     parser.end();
   });
