@@ -4,7 +4,7 @@ import { GitProgress } from 'app/components/GitProgress';
 type Props = {
   isExported?: boolean;
 };
-const ExportGitHubModal: FunctionComponent<Props> = ({
+export const ExportGitHubModal: FunctionComponent<Props> = ({
   isExported = false,
 }) => (
   <GitProgress
@@ -12,5 +12,3 @@ const ExportGitHubModal: FunctionComponent<Props> = ({
     message="Creating Repository..."
   />
 );
-
-export default ExportGitHubModal;

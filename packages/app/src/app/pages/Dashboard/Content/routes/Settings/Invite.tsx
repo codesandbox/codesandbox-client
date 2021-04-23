@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Element,
@@ -26,11 +26,9 @@ import { Card } from './components';
 const CARD_WIDTH = 528;
 
 export const Invite = () => {
-  const {
-    state: { activeTeam, activeTeamInfo: team },
-    actions,
-    effects,
-  } = useOvermind();
+  const { copyToClipboard } = useEffects().browser;
+  const actions = useActions();
+  const { activeTeam, activeTeamInfo: team } = useAppState();
 
   const inviteLink = team && teamInviteLink(team.inviteToken);
 
@@ -44,14 +42,14 @@ export const Invite = () => {
     event.preventDefault();
     setLoading(true);
     setInviteValue('');
-    await actions.dashboard.inviteToTeam(inviteValue);
+    await actions.dashboard.inviteToTeam({ value: inviteValue });
     setLoading(false);
   };
 
   if (!team) return null;
 
   const copyLink = () => {
-    effects.browser.copyToClipboard(inviteLink);
+    copyToClipboard(inviteLink);
     setLinkCopied(true);
 
     if (copyLinkTimeoutRef.current) {

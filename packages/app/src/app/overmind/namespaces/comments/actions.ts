@@ -17,11 +17,15 @@ import {
   CommentChangedSubscription,
   CommentFragment,
   CommentRemovedSubscription,
+  ImageReference,
   UserReference,
   UserReferenceMetadata,
+  ImageReferenceMetadata,
+  PreviewReferenceMetadata,
 } from 'app/graphql/types';
-import { Action, AsyncAction, Operator } from 'app/overmind';
+import { Context } from 'app/overmind';
 import {
+  convertImagesToImageReferences,
   convertMentionsToMentionLinks,
   convertMentionsToUserReferences,
 } from 'app/overmind/utils/comments';
@@ -31,23 +35,42 @@ import {
 } from 'app/overmind/utils/common';
 import { utcToZonedTime } from 'date-fns-tz';
 import { Selection, TextOperation } from 'ot';
-import { debounce, filter, map, mutate, pipe } from 'overmind';
+import { debounce, filter, pipe } from 'overmind';
 import * as uuid from 'uuid';
 
 import { OPTIMISTIC_COMMENT_ID } from './state';
 
-export const selectCommentsFilter: Action<CommentsFilterOption> = (
-  { state },
-  option
+const PREVIEW_COMMENT_OFFSET = -500;
+const CODE_COMMENT_OFFSET = 500;
+const BUBBLE_IMAGE =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC8SURBVHgBxZO9EYJAEIW/PTG3BEogNIQKoBQ7QDvQTrQCCQwMrwMpwdxR3ANkGAIHjoA3czd7P+/b25lbYaBqG8WsSKnIEMJ229bjzUHutuzfl84YRxte5Bru+K8jawUV9tkBWvNVw4hxsgpJHMTUyybzWDP13caDaM2h1vzAR0Ji1Jzjqw+ZYdrThy9I5wEgNMzUXIBdGKBf2x8gnFxf+AIsAXsXTAdo5l8fuGUwylRR6nzRdGe52aJ/9AWAvjArPZuVDgAAAABJRU5ErkJggg==';
+
+const BUBBLE_IMAGE_2X =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAFsSURBVHgBxZfBUcMwEEW/5ISzS1AqQNwYLoQOoAJaCBUAHUAHoQOoIOaQGW64A9QBPsMEs5IdBA6ZKImsfTM7icce79f3yt4VCKQe6xwfOIfAKR1qCkWRt6crCkNRUhQY4kkUZRVyX7HpgvpYK0hM6MrLXwlDmGKBW/FSGuwiwK34E9f0d4L9uBPz8grbCGhXPaOzCnEw5MbZf27IleQnWkdOblHIMHP37vDHgR5W3mXFiR8BbZW/9pjcixjiaLlL/COwBdd/cotqi9vhHHDWZ3hDShYY2UfROJDhBqmRzfYW7X5/R3oqqoWRdK9XHtyrXVIVjMEFfVdsDRyCD20FKPChrIBtvnCxySWY4RZQcQsw3AJKbgEFrwBqXjkFTG1PwCeAOmb7wyNA4H7ZlnEIMBj4/mOAtDRN6dxPTSkdMKhx0Z0NUjkQPphEhwrOteFrZsS+HKjI7gd80Vy4YTiNJcCP5zWecYDH0PH8G30scDsRZ7W6AAAAAElFTkSuQmCC';
+
+export const selectCommentsFilter = (
+  { state }: Context,
+  option: CommentsFilterOption
 ) => {
   state.comments.selectedCommentsFilter = option;
 };
 
-export const updateComment: AsyncAction<{
-  commentId: string;
-  mentions: { [username: string]: UserQuery };
-  content: string;
-}> = async ({ actions, effects, state }, { commentId, content, mentions }) => {
+export const updateComment = async (
+  { actions, effects, state }: Context,
+  {
+    commentId,
+    content,
+    mentions,
+    images,
+  }: {
+    commentId: string;
+    mentions: { [username: string]: UserQuery };
+    images: {
+      [fileName: string]: { src: string; resolution: [number, number] };
+    };
+    content: string;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -73,6 +96,12 @@ export const updateComment: AsyncAction<{
       content: comment.content,
       sandboxId,
       codeReferences: [],
+      imageReferences: Object.keys(images).map(fileName => ({
+        fileName,
+        resolution: images[fileName].resolution,
+        src: images[fileName].src,
+        url: '', // Typing issue on backend, need the url here
+      })),
       userReferences: Object.keys(mentions).map(username => ({
         username,
         userId: mentions[username].id,
@@ -85,26 +114,28 @@ export const updateComment: AsyncAction<{
   }
 };
 
-export const queryUsers: Operator<string | null> = pipe(
-  mutate(({ state }, query) => {
+export const queryUsers = pipe(
+  ({ state }: Context, query: string | null) => {
     state.comments.isQueryingUsers = true;
     // We reset the users when we detect a new query being written
     if (query && query.length === 3) {
       state.comments.usersQueryResult = [];
     }
-  }),
+
+    return query;
+  },
   debounce(200),
   filter((_, query) => Boolean(query && query.length >= 3)),
-  map(({ effects }, query) => effects.api.queryUsers(query!)),
-  mutate(({ state }, result) => {
+  ({ effects }: Context, query) => effects.api.queryUsers(query!),
+  ({ state }: Context, result) => {
     state.comments.usersQueryResult = result;
     state.comments.isQueryingUsers = false;
-  })
+  }
 );
 
-export const getCommentReplies: AsyncAction<string> = async (
-  { state, effects },
-  commentId
+export const getCommentReplies = async (
+  { state, effects }: Context,
+  commentId: string
 ) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
@@ -135,15 +166,21 @@ export const getCommentReplies: AsyncAction<string> = async (
   }
 };
 
-export const onCommentClick: Action<{
-  commentIds: string[];
-  bounds: {
-    left: number;
-    top: number;
-    right: number;
-    bottom: number;
-  };
-}> = ({ state, effects, actions }, { commentIds, bounds }) => {
+export const onCommentClick = (
+  { state, effects, actions }: Context,
+  {
+    commentIds,
+    bounds,
+  }: {
+    commentIds: string[];
+    bounds: {
+      left: number;
+      top: number;
+      right: number;
+      bottom: number;
+    };
+  }
+) => {
   if (
     state.comments.currentCommentId &&
     commentIds.includes(state.comments.currentCommentId)
@@ -169,7 +206,7 @@ export const onCommentClick: Action<{
   }
 };
 
-export const closeComment: Action = ({ state, effects }) => {
+export const closeComment = ({ state, effects }: Context) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -184,21 +221,35 @@ export const closeComment: Action = ({ state, effects }) => {
 
   state.comments.currentCommentId = null;
   state.comments.currentCommentPositions = null;
+
+  if (state.preview.mode === 'add-comment') {
+    state.preview.mode = null;
+    effects.preview.hideCommentCursor();
+  } else if (state.preview.mode === 'responsive-add-comment') {
+    state.preview.mode = 'responsive';
+    effects.preview.hideCommentCursor();
+  }
 };
 
-export const closeMultiCommentsSelector: Action = ({ state }) => {
+export const closeMultiCommentsSelector = ({ state }: Context) => {
   state.comments.multiCommentsSelector = null;
 };
 
-export const selectComment: AsyncAction<{
-  commentId: string;
-  bounds?: {
-    left: number;
-    top: number;
-    right: number;
-    bottom: number;
-  };
-}> = async ({ state, effects, actions }, { commentId, bounds }) => {
+export const selectComment = async (
+  { state, effects, actions }: Context,
+  {
+    commentId,
+    bounds,
+  }: {
+    commentId: string;
+    bounds?: {
+      left: number;
+      top: number;
+      right: number;
+      bottom: number;
+    };
+  }
+) => {
   actions.comments.closeMultiCommentsSelector();
 
   const sandbox = state.editor.currentSandbox;
@@ -244,6 +295,34 @@ export const selectComment: AsyncAction<{
         },
       };
     }
+  } else if (
+    comment.anchorReference &&
+    comment.anchorReference.type === 'preview'
+  ) {
+    const metadata = comment.anchorReference
+      .metadata as PreviewReferenceMetadata;
+
+    const previewBounds = await effects.preview.getIframeBoundingRect();
+
+    state.preview.responsive.resolution = [metadata.width, metadata.height];
+    state.preview.mode = 'responsive';
+    state.comments.currentCommentId = commentId;
+
+    // We have to wait for the bubble to appear
+    await Promise.resolve();
+
+    const left = previewBounds.left + PREVIEW_COMMENT_OFFSET;
+    const top = previewBounds.top;
+    state.comments.currentCommentPositions = {
+      trigger: bounds,
+      dialog: {
+        // never go over the left of the screen
+        left: left >= 20 ? left : 20,
+        top,
+        bottom: top,
+        right: left,
+      },
+    };
   } else {
     state.comments.currentCommentId = commentId;
     state.comments.currentCommentPositions = {
@@ -253,11 +332,11 @@ export const selectComment: AsyncAction<{
   }
 };
 
-export const createCodeLineComment: AsyncAction = async ({
+export const createCodeLineComment = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   const selection = state.live.currentSelection!;
   const codeLines = state.editor.currentModule.code.split('\n');
   const { lineNumber } = indexToLineAndColumn(
@@ -284,11 +363,11 @@ export const createCodeLineComment: AsyncAction = async ({
   });
 };
 
-export const createCodeComment: AsyncAction = async ({
+export const createCodeComment = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   const selection = state.live.currentSelection!;
 
   effects.analytics.track('Comments - Compose Comment', {
@@ -311,9 +390,9 @@ export const createCodeComment: AsyncAction = async ({
   });
 };
 
-export const addOptimisticCodeComment: AsyncAction<CodeReferenceMetadata> = async (
-  { state, effects },
-  codeReference
+export const addOptimisticCodeComment = async (
+  { state, effects }: Context,
+  codeReference: CodeReferenceMetadata
 ) => {
   const sandbox = state.editor.currentSandbox!;
   const user = state.user!;
@@ -355,16 +434,17 @@ export const addOptimisticCodeComment: AsyncAction<CodeReferenceMetadata> = asyn
     top,
     bottom,
   } = await effects.vscode.getCodeReferenceBoundary(id, codeReference);
+
   state.comments.currentCommentId = id;
   state.comments.currentCommentPositions = {
     trigger: {
       left,
       top,
       bottom,
-      right,
+      right: right + CODE_COMMENT_OFFSET,
     },
     dialog: {
-      left,
+      left: left + CODE_COMMENT_OFFSET,
       top,
       bottom,
       right,
@@ -372,10 +452,113 @@ export const addOptimisticCodeComment: AsyncAction<CodeReferenceMetadata> = asyn
   };
 };
 
-export const saveOptimisticComment: AsyncAction<{
-  content: string;
-  mentions: { [username: string]: UserQuery };
-}> = async ({ state, actions }, { content: rawContent, mentions }) => {
+export const addOptimisticPreviewComment = async (
+  { state, effects }: Context,
+  {
+    x,
+    y,
+    scale,
+    screenshot,
+  }: {
+    x: number;
+    y: number;
+    scale: number;
+    screenshot: string;
+  }
+) => {
+  effects.analytics.track('Comments - Create Optimistic Preview Comment');
+
+  const sandbox = state.editor.currentSandbox!;
+  const user = state.user!;
+  const id = OPTIMISTIC_COMMENT_ID;
+  const now = utcToZonedTime(new Date().toISOString(), 'Etc/UTC');
+  const comments = state.comments.comments;
+  const previewIframeBounds = await effects.preview.getIframeBoundingRect();
+  const previewPath = await effects.preview.getPreviewPath();
+  const screenshotUrl = await effects.preview.createScreenshot({
+    screenshotSource: screenshot,
+    bubbleSource: window.devicePixelRatio > 1 ? BUBBLE_IMAGE_2X : BUBBLE_IMAGE,
+    cropWidth: 1000,
+    cropHeight: 400,
+    x: Math.round(x),
+    y: Math.round(y),
+    scale: state.preview.hasExtension ? 1 : scale,
+  });
+  const isResponsive = state.preview.mode === 'responsive-add-comment';
+  const metadata: PreviewReferenceMetadata = {
+    userAgent: effects.browser.getUserAgent(),
+    screenshotUrl,
+    width: isResponsive
+      ? state.preview.responsive.resolution[0]
+      : previewIframeBounds.width,
+    height: isResponsive
+      ? state.preview.responsive.resolution[1]
+      : previewIframeBounds.height,
+    x: isResponsive ? Math.round(x * (1 / scale)) : x,
+    y: isResponsive ? Math.round(y * (1 / scale)) : y,
+    previewPath,
+  };
+  const optimisticComment: CommentFragment = {
+    parentComment: null,
+    id,
+    anchorReference: {
+      id: uuid.v4(),
+      type: 'preview',
+      metadata,
+      resource: previewPath,
+    },
+    insertedAt: now,
+    updatedAt: now,
+    content: '',
+    isResolved: false,
+    user: {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      avatarUrl: user.avatarUrl,
+    },
+    references: [],
+    replyCount: 0,
+  };
+
+  if (!comments[sandbox.id]) {
+    comments[sandbox.id] = {};
+  }
+
+  comments[sandbox.id][id] = optimisticComment;
+  state.comments.currentCommentId = id;
+
+  const left = x + previewIframeBounds.left;
+  const top = y + previewIframeBounds.top;
+  const bottom = top;
+  const right = left;
+
+  state.comments.currentCommentPositions = {
+    trigger: {
+      left,
+      top,
+      bottom,
+      right: right + PREVIEW_COMMENT_OFFSET,
+    },
+    dialog: {
+      left: left + PREVIEW_COMMENT_OFFSET,
+      top,
+      bottom,
+      right,
+    },
+  };
+};
+
+export const saveOptimisticComment = async (
+  { state, actions, effects }: Context,
+  {
+    content: rawContent,
+    mentions,
+  }: {
+    content: string;
+    mentions: { [username: string]: UserQuery };
+  }
+) => {
   const sandbox = state.editor.currentSandbox!;
   const sandboxId = sandbox.id;
   const id = uuid.v4();
@@ -389,16 +572,35 @@ export const saveOptimisticComment: AsyncAction<{
   state.comments.currentCommentId = state.comments.currentCommentId ? id : null;
   delete state.comments.comments[sandbox.id][OPTIMISTIC_COMMENT_ID];
 
+  effects.preview.hideCommentCursor();
+
+  if (state.preview.mode === 'responsive-add-comment') {
+    state.preview.mode = 'responsive';
+  } else {
+    state.preview.mode = null;
+  }
+
   return actions.comments.saveComment(comment);
 };
 
-export const saveNewComment: AsyncAction<{
-  content: string;
-  mentions: { [username: string]: UserQuery };
-  parentCommentId?: string;
-}> = async (
-  { state, actions },
-  { content: rawContent, mentions, parentCommentId }
+export const saveNewComment = async (
+  { state, actions }: Context,
+  {
+    content: rawContent,
+    mentions,
+    images,
+    parentCommentId,
+  }: {
+    content: string;
+    mentions: { [username: string]: UserQuery };
+    images: {
+      [fileName: string]: {
+        src: string;
+        resolution: [number, number];
+      };
+    };
+    parentCommentId?: string;
+  }
 ) => {
   const user = state.user!;
   const sandbox = state.editor.currentSandbox!;
@@ -425,16 +627,19 @@ export const saveNewComment: AsyncAction<{
       username: user.username,
       avatarUrl: user.avatarUrl,
     },
-    references: convertMentionsToUserReferences(mentions),
+    references: [
+      ...convertMentionsToUserReferences(mentions),
+      ...convertImagesToImageReferences(images),
+    ],
     replyCount: 0,
   };
 
   return actions.comments.saveComment(comment);
 };
 
-export const saveComment: AsyncAction<CommentFragment> = async (
-  { state, effects },
-  comment
+export const saveComment = async (
+  { state, effects }: Context,
+  comment: CommentFragment
 ) => {
   const comments = state.comments.comments;
   const sandbox = state.editor.currentSandbox!;
@@ -457,9 +662,14 @@ export const saveComment: AsyncAction<CommentFragment> = async (
   async function trySaveComment() {
     tryCount++;
 
-    const { userReferences, codeReferences } = comment.references.reduce<{
+    const {
+      userReferences,
+      codeReferences,
+      imageReferences,
+    } = comment.references.reduce<{
       userReferences: UserReference[];
       codeReferences: CodeReference[];
+      imageReferences: ImageReference[];
     }>(
       (aggr, reference) => {
         if (reference.type === 'user') {
@@ -479,12 +689,21 @@ export const saveComment: AsyncAction<CommentFragment> = async (
                 (reference.metadata as CodeReferenceMetadata).path
             )!.updatedAt,
           });
+        } else if (reference.type === 'image') {
+          aggr.imageReferences.push({
+            fileName: (reference.metadata as ImageReferenceMetadata).fileName,
+            resolution: (reference.metadata as ImageReferenceMetadata)
+              .resolution,
+            src: (reference.metadata as ImageReferenceMetadata).url,
+            url: '', // Backend typing issue, need the url here
+          });
         }
         return aggr;
       },
       {
         userReferences: [],
         codeReferences: [],
+        imageReferences: [],
       }
     );
     const baseCommentPayload = {
@@ -494,6 +713,7 @@ export const saveComment: AsyncAction<CommentFragment> = async (
       content: comment.content || '',
       userReferences,
       codeReferences,
+      imageReferences,
     };
 
     if (comment.anchorReference) {
@@ -511,6 +731,20 @@ export const saveComment: AsyncAction<CommentFragment> = async (
             lastUpdatedAt: state.editor.currentSandbox!.modules.find(
               module => module.path === metadata.path
             )!.updatedAt,
+          },
+        });
+      } else if (reference.type === 'preview') {
+        const metadata = reference.metadata as PreviewReferenceMetadata;
+        await effects.gql.mutations.createPreviewComment({
+          ...baseCommentPayload,
+          anchorReference: {
+            height: Math.round(metadata.height),
+            previewPath: metadata.previewPath,
+            userAgent: metadata.userAgent,
+            screenshotSrc: metadata.screenshotUrl || null,
+            width: Math.round(metadata.width),
+            x: Math.round(metadata.x),
+            y: Math.round(metadata.y),
           },
         });
       }
@@ -539,9 +773,14 @@ export const saveComment: AsyncAction<CommentFragment> = async (
   }
 };
 
-export const deleteComment: AsyncAction<{
-  commentId: string;
-}> = async ({ state, effects }, { commentId }) => {
+export const deleteComment = async (
+  { state, effects }: Context,
+  {
+    commentId,
+  }: {
+    commentId: string;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -565,10 +804,16 @@ export const deleteComment: AsyncAction<{
   }
 };
 
-export const resolveComment: AsyncAction<{
-  commentId: string;
-  isResolved: boolean;
-}> = async ({ effects, state }, { commentId, isResolved }) => {
+export const resolveComment = async (
+  { effects, state }: Context,
+  {
+    commentId,
+    isResolved,
+  }: {
+    commentId: string;
+    isResolved: boolean;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -599,18 +844,18 @@ export const resolveComment: AsyncAction<{
   }
 };
 
-export const copyPermalinkToClipboard: Action<string> = (
-  { effects },
-  commentId
+export const copyPermalinkToClipboard = (
+  { effects }: Context,
+  commentId: string
 ) => {
   effects.analytics.track('Comments - Copy Permalink');
   effects.browser.copyToClipboard(effects.router.createCommentUrl(commentId));
   effects.notificationToast.success('Comment permalink copied to clipboard');
 };
 
-export const getSandboxComments: AsyncAction<string> = async (
-  { state, effects, actions },
-  sandboxId
+export const getSandboxComments = async (
+  { state, effects, actions }: Context,
+  sandboxId: string
 ) => {
   try {
     const { sandbox: sandboxComments } = await effects.gql.queries.comments({
@@ -689,9 +934,9 @@ export const getSandboxComments: AsyncAction<string> = async (
   });
 };
 
-export const onCommentAdded: Action<CommentAddedSubscription> = (
-  { state },
-  { commentAdded: comment }
+export const onCommentAdded = (
+  { state }: Context,
+  { commentAdded: comment }: CommentAddedSubscription
 ) => {
   if (comment.anchorReference && comment.anchorReference.type === 'code') {
     const metadata = comment.anchorReference
@@ -725,9 +970,9 @@ export const onCommentAdded: Action<CommentAddedSubscription> = (
   state.comments.comments[comment.sandbox.id][comment.id] = comment;
 };
 
-export const onCommentChanged: Action<CommentChangedSubscription> = (
-  { state },
-  { commentChanged: comment }
+export const onCommentChanged = (
+  { state }: Context,
+  { commentChanged: comment }: CommentChangedSubscription
 ) => {
   Object.assign(
     state.comments.comments[comment.sandbox.id][comment.id],
@@ -735,17 +980,23 @@ export const onCommentChanged: Action<CommentChangedSubscription> = (
   );
 };
 
-export const onCommentRemoved: Action<CommentRemovedSubscription> = (
-  { state },
-  { commentRemoved: comment }
+export const onCommentRemoved = (
+  { state }: Context,
+  { commentRemoved: comment }: CommentRemovedSubscription
 ) => {
   delete state.comments.comments[comment.sandbox.id][comment.id];
 };
 
-export const transposeComments: Action<{
-  module: Module;
-  operation: TextOperation;
-}> = ({ state }, { module, operation }) => {
+export const transposeComments = (
+  { state }: Context,
+  {
+    module,
+    operation,
+  }: {
+    module: Module;
+    operation: TextOperation;
+  }
+) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;

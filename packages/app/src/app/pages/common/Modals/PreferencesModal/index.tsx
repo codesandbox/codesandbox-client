@@ -13,7 +13,7 @@ import AppearanceIcon from 'react-icons/lib/md/color-lens';
 import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import IntegrationIcon from 'react-icons/lib/md/device-hub';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { CurrentUser } from '@codesandbox/common/lib/types';
 
 import { Alert } from '../Common/Alert';
@@ -24,16 +24,19 @@ import { CodeFormatting } from './CodeFormatting';
 import { EditorSettings } from './EditorPageSettings/EditorSettings';
 import { PreviewSettings } from './EditorPageSettings/PreviewSettings';
 import { Experiments } from './Experiments';
+import { PreferencesSync } from './PreferencesSync';
 import { Integrations } from './Integrations';
 import { KeyMapping } from './KeyMapping';
 import { PaymentInfo } from './PaymentInfo';
 import { MailPreferences } from './MailPreferences';
 
 import { SideNavigation } from './SideNavigation';
+import { ProfileIcon } from './PreferencesSync/Icons';
 
 type MenuItem = ComponentProps<typeof SideNavigation>['menuItems'][0] & {
   Content: ComponentType;
 };
+
 const getItems = (
   isLoggedIn: boolean,
   isPatron: boolean,
@@ -101,17 +104,21 @@ const getItems = (
       id: 'experiments',
       title: 'Experiments',
     },
+    user && {
+      Content: PreferencesSync,
+      Icon: ProfileIcon,
+      id: 'preferencesSync',
+      title: 'Preferences Profiles',
+    },
   ].filter(Boolean);
 
 export const PreferencesModal: FunctionComponent = () => {
   const {
-    state: {
-      isLoggedIn,
-      isPatron,
-      user,
-      preferences: { itemId = 'appearance' },
-    },
-  } = useOvermind();
+    isLoggedIn,
+    isPatron,
+    user,
+    preferences: { itemId = 'appearance' },
+  } = useAppState();
   const items = getItems(isLoggedIn, isPatron, user);
   const { Content } = items.find(({ id }) => id === itemId);
 

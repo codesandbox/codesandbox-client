@@ -1,6 +1,7 @@
 import getTemplateDefinition, {
   TemplateType,
 } from '@codesandbox/common/lib/templates';
+import { ViewConfig } from '@codesandbox/common/lib/templates/template';
 import {
   Module,
   ModuleTab,
@@ -8,18 +9,19 @@ import {
   ServerContainerStatus,
   TabType,
 } from '@codesandbox/common/lib/types';
+import { captureException } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import {
   editorUrl,
   sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { sortObjectByKeys } from 'app/overmind/utils/common';
 import { getTemplate as computeTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 import { mapValues } from 'lodash-es';
 
-export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
+export const ensureSandboxId = ({ state }: Context, id: string) => {
   if (state.editor.sandboxes[id]) {
     return id;
   }
@@ -33,9 +35,9 @@ export const ensureSandboxId: Action<string, string> = ({ state }, id) => {
   return matchingSandboxId || id;
 };
 
-export const initializeSandbox: AsyncAction<Sandbox> = async (
-  { actions },
-  sandbox
+export const initializeSandbox = async (
+  { actions }: Context,
+  sandbox: Sandbox
 ) => {
   await Promise.all([
     actions.editor.internal.initializeLiveSandbox(sandbox),
@@ -45,9 +47,9 @@ export const initializeSandbox: AsyncAction<Sandbox> = async (
   ]);
 };
 
-export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
-  { state, actions },
-  sandbox
+export const initializeLiveSandbox = async (
+  { state, actions }: Context,
+  sandbox: Sandbox
 ) => {
   state.live.isTeam = Boolean(sandbox.team);
 
@@ -76,9 +78,9 @@ export const initializeLiveSandbox: AsyncAction<Sandbox> = async (
   }
 };
 
-export const updateSelectionsOfModule: AsyncAction<{ module: Module }> = async (
-  { actions, effects },
-  { module }
+export const updateSelectionsOfModule = async (
+  { actions, effects }: Context,
+  { module }: { module: Module }
 ) => {
   effects.vscode.updateUserSelections(
     module,
@@ -86,10 +88,16 @@ export const updateSelectionsOfModule: AsyncAction<{ module: Module }> = async (
   );
 };
 
-export const setModuleSavedCode: Action<{
-  moduleShortid: string;
-  savedCode: string | null;
-}> = ({ state }, { moduleShortid, savedCode }) => {
+export const setModuleSavedCode = (
+  { state }: Context,
+  {
+    moduleShortid,
+    savedCode,
+  }: {
+    moduleShortid: string;
+    savedCode: string | null;
+  }
+) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -107,11 +115,18 @@ export const setModuleSavedCode: Action<{
   }
 };
 
-export const saveCode: AsyncAction<{
-  code: string;
-  moduleShortid: string;
-  cbID?: string | null;
-}> = async ({ state, effects, actions }, { code, moduleShortid, cbID }) => {
+export const saveCode = async (
+  { state, effects, actions }: Context,
+  {
+    code,
+    moduleShortid,
+    cbID,
+  }: {
+    code: string;
+    moduleShortid: string;
+    cbID?: string | null;
+  }
+) => {
   effects.analytics.track('Save Code');
 
   const sandbox = state.editor.currentSandbox;
@@ -215,6 +230,7 @@ export const saveCode: AsyncAction<{
       message: 'There was a problem with saving the code, please try again',
       error,
     });
+    captureException(error);
 
     if (cbID) {
       effects.vscode.callCallbackError(cbID, error.message);
@@ -222,10 +238,7 @@ export const saveCode: AsyncAction<{
   }
 };
 
-export const updateCurrentTemplate: AsyncAction = async ({
-  effects,
-  state,
-}) => {
+export const updateCurrentTemplate = async ({ effects, state }: Context) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -276,9 +289,9 @@ export const updateCurrentTemplate: AsyncAction = async ({
   }
 };
 
-export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
-  { state, actions, effects },
-  name
+export const removeNpmDependencyFromPackageJson = async (
+  { state, actions }: Context,
+  name: string
 ) => {
   if (
     !state.editor.currentSandbox ||
@@ -311,11 +324,18 @@ export const removeNpmDependencyFromPackageJson: AsyncAction<string> = async (
   });
 };
 
-export const addNpmDependencyToPackageJson: AsyncAction<{
-  name: string;
-  version?: string;
-  isDev: boolean;
-}> = async ({ state, actions, effects }, { name, isDev, version }) => {
+export const addNpmDependencyToPackageJson = async (
+  { state, actions }: Context,
+  {
+    name,
+    isDev,
+    version,
+  }: {
+    name: string;
+    version?: string;
+    isDev: boolean;
+  }
+) => {
   if (
     !state.editor.currentSandbox ||
     !state.editor.currentPackageJSONCode ||
@@ -352,10 +372,16 @@ export const addNpmDependencyToPackageJson: AsyncAction<{
   });
 };
 
-export const updateModuleCode: Action<{
-  module: Module;
-  code: string;
-}> = ({ state, effects }, { module, code }) => {
+export const updateModuleCode = (
+  { state, effects }: Context,
+  {
+    module,
+    code,
+  }: {
+    module: Module;
+    code: string;
+  }
+) => {
   const { currentSandbox } = state.editor;
 
   if (!currentSandbox) {
@@ -381,14 +407,19 @@ export const updateModuleCode: Action<{
   effects.moduleRecover.save(currentSandbox.id, currentSandbox.version, module);
 };
 
-export const forkSandbox: AsyncAction<{
-  sandboxId: string;
-  teamId?: string | null;
-  body?: { collectionId: string | undefined };
-  openInNewWindow?: boolean;
-}> = async (
-  { state, effects, actions },
-  { sandboxId: id, teamId, body, openInNewWindow = false }
+export const forkSandbox = async (
+  { state, effects, actions }: Context,
+  {
+    sandboxId: id,
+    teamId,
+    body,
+    openInNewWindow = false,
+  }: {
+    sandboxId: string;
+    teamId?: string | null;
+    body?: { collectionId: string | undefined };
+    openInNewWindow?: boolean;
+  }
 ) => {
   const sandbox = state.editor.currentSandbox;
   const currentSandboxId = state.editor.currentId;
@@ -496,9 +527,9 @@ export const forkSandbox: AsyncAction<{
   }
 };
 
-export const setCurrentModule: AsyncAction<Module> = async (
-  { state, effects },
-  module
+export const setCurrentModule = async (
+  { state, effects }: Context,
+  module: Module
 ) => {
   state.editor.currentTabId = null;
 
@@ -526,11 +557,7 @@ export const setCurrentModule: AsyncAction<Module> = async (
   effects.vscode.setCorrections(state.editor.corrections);
 };
 
-export const updateSandboxPackageJson: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const updateSandboxPackageJson = async ({ state, actions }: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (
@@ -569,43 +596,20 @@ export const updateSandboxPackageJson: AsyncAction = async ({
   });
 };
 
-export const updateDevtools: AsyncAction<{
-  code: string;
-}> = async ({ state, actions }, { code }) => {
+export const updateDevtools = async (
+  { state, actions }: Context,
+  viewConfig: ViewConfig[]
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
 
-  if (state.editor.currentSandbox.owned) {
-    const devtoolsModule =
-      state.editor.modulesByPath['/.codesandbox/workspace.json'];
-
-    if (devtoolsModule) {
-      actions.editor.codeChanged({
-        moduleShortid: devtoolsModule.shortid,
-        code,
-      });
-      await actions.editor.codeSaved({
-        code,
-        moduleShortid: devtoolsModule.shortid,
-        cbID: null,
-      });
-    } else {
-      await actions.files.createModulesByPath({
-        files: {
-          '/.codesandbox/workspace.json': {
-            content: code,
-            isBinary: false,
-          },
-        },
-      });
-    }
-  } else {
-    state.editor.workspaceConfigCode = code;
-  }
+  await actions.files.updateWorkspaceConfig({
+    preview: viewConfig,
+  });
 };
 
-export const updatePreviewCode: Action = ({ state, effects }) => {
+export const updatePreviewCode = ({ state, effects }: Context) => {
   if (state.preferences.settings.instantPreviewEnabled) {
     effects.preview.executeCodeImmediately();
   } else {

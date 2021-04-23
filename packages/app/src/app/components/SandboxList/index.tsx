@@ -9,7 +9,7 @@ import FullHeartIcon from 'react-icons/lib/fa/heart';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 import { Link } from 'react-router-dom';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 import { PrivacyStatus } from '../PrivacyStatus';
 
@@ -34,11 +34,7 @@ export const SandboxList: FunctionComponent<Props> = ({
   sandboxes,
   source,
 }) => {
-  const {
-    state: {
-      profile: { isProfileCurrentUser },
-    },
-  } = useOvermind();
+  const { isProfileCurrentUser } = useAppState().profile;
   const showDeleteButton =
     isProfileCurrentUser && source === 'currentSandboxes';
 

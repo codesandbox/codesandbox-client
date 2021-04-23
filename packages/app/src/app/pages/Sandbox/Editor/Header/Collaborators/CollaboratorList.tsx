@@ -3,7 +3,7 @@ import css from '@styled-system/css';
 import { Element } from '@codesandbox/components';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Authorization } from 'app/graphql/types';
 import { sortBy } from 'lodash-es';
@@ -33,7 +33,7 @@ function getLiveUser(currentUserId: string, roomInfo: RoomInfo) {
 }
 
 export const CollaboratorList = () => {
-  const { state } = useOvermind();
+  const { editor, live } = useAppState();
 
   const [showMountAnimations, setShowMountAnimations] = React.useState(false);
 
@@ -41,18 +41,12 @@ export const CollaboratorList = () => {
     setShowMountAnimations(true);
   }, [setShowMountAnimations]);
 
-  const isOwner = hasPermission(
-    state.editor.currentSandbox.authorization,
-    'owner'
-  );
-  const { author, team } = state.editor.currentSandbox;
+  const isOwner = hasPermission(editor.currentSandbox.authorization, 'owner');
+  const { author, team } = editor.currentSandbox;
 
-  const collaboratorsConnectedWithLive = state.editor.collaborators.map(
+  const collaboratorsConnectedWithLive = editor.collaborators.map(
     collaborator => {
-      const currentLiveUser = getLiveUser(
-        collaborator.user.id,
-        state.live?.roomInfo
-      );
+      const currentLiveUser = getLiveUser(collaborator.user.id, live?.roomInfo);
       if (currentLiveUser) {
         return { ...collaborator, lastSeenAt: Infinity };
       }
@@ -125,7 +119,7 @@ export const CollaboratorList = () => {
           </Animated>
         ))}
 
-        {state.editor.invitations.map(invitation => (
+        {editor.invitations.map(invitation => (
           <Animated
             showMountAnimations={showMountAnimations}
             key={invitation.email}

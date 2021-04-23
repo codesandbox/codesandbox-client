@@ -83,6 +83,7 @@ module.exports = merge(commonConfig, {
       }),
     ],
     concatenateModules: true, // ModuleConcatenationPlugin
+    chunkIds: 'named',
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
 
@@ -242,7 +243,7 @@ module.exports = merge(commonConfig, {
       maximumFileSizeToCacheInBytes: 1024 * 1024 * 20, // 20mb
       runtimeCaching: [
         {
-          urlPattern: /api\/v1\/sandboxes/,
+          urlPattern: /api\/v1\//,
           handler: 'networkFirst',
           options: {
             cache: {
@@ -350,13 +351,24 @@ module.exports = merge(commonConfig, {
     new ManifestPlugin({
       fileName: 'file-manifest.json',
       publicPath: commonConfig.output.publicPath,
-    }),
-    new CopyWebpackPlugin([
-      {
-        from: '../sse-hooks/dist',
-        to: 'public/sse-hooks',
+
+      map: fileDescriptor => {
+        const { name } = fileDescriptor;
+
+        // Removes the ".[contenthash]" part from name
+        return merge(fileDescriptor, {
+          name: name.replace(/(\.[a-f0-9]+)(\.[a-z]{2,})$/, '$2'),
+        });
       },
-    ]),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: '../sse-hooks/dist/sse-hooks.js',
+          to: 'public/sse-hooks/[name].[contenthash].[ext]',
+        },
+      ],
+    }),
     new ImageminPlugin({
       pngquant: {
         quality: '95-100',

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
 import { orderBy } from 'lodash-es';
 import { join, dirname } from 'path';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
@@ -31,6 +31,9 @@ import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH, NEW_FOLDER_ID } from './constants';
 import { DragItemType, useDrop } from '../utils/dnd';
 
+/** poor man's feature flag - to ship the unfinished version */
+const SHOW_DISCOVER = localStorage.SHOW_DISCOVER;
+
 const SidebarContext = React.createContext(null);
 
 interface SidebarProps {
@@ -46,13 +49,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSidebarToggle,
   ...props
 }) => {
-  const { state, actions } = useOvermind();
+  const state = useAppState();
+  const actions = useActions();
   const [activeAccount, setActiveAccount] = useState<{
     id: string;
     name: string;
     avatarUrl: string;
   } | null>(null);
-  const { dashboard, activeTeam } = state;
+  const { dashboard, activeTeam, activeTeamInfo, user } = state;
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
@@ -61,13 +65,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
   React.useEffect(() => {
     if (state.activeTeam) {
       const team = dashboard.teams.find(({ id }) => id === state.activeTeam);
-
-      if (team)
+      if (team) {
+        const isPersonalWorkspace = team.id === state.personalWorkspaceId;
         setActiveAccount({
           id: team.id,
           name: team.name,
-          avatarUrl: team.avatarUrl,
+          avatarUrl:
+            isPersonalWorkspace && user ? user.avatarUrl : team.avatarUrl,
         });
+      }
     }
   }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
 
@@ -166,6 +172,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="box"
             style={{ marginTop: 1 }}
           />
+          {SHOW_DISCOVER && (
+            <RowItem
+              name="Discover"
+              page="discover"
+              path={dashboardUrls.discover(activeTeam)}
+              icon="discover"
+            />
+          )}
           <RowItem
             name="My Drafts"
             page="drafts"
@@ -196,6 +210,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.repos(activeTeam)}
             icon="fork"
           />
+          {activeTeamInfo?.joinedPilotAt && (
+            <RowItem
+              name="Always-On"
+              page="always-on"
+              path={dashboardUrls.alwaysOn(activeTeam)}
+              icon="server"
+            />
+          )}
           <RowItem
             name="Recently Modified"
             page="recents"
@@ -207,6 +229,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
             page="deleted"
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
+          />
+          <Element marginTop={8}>
+            <Menu.Divider />
+          </Element>
+          <RowItem
+            name="Shared With Me"
+            page="shared"
+            path={dashboardUrls.shared(activeTeam)}
+            icon="sharing"
+          />
+          <RowItem
+            name="Likes by Me"
+            page="liked"
+            path={dashboardUrls.liked(activeTeam)}
+            icon="heart"
           />
         </List>
         <Element margin={4}>
@@ -266,12 +303,13 @@ const linkStyles = {
   flexShrink: 0,
 };
 
-const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents'];
+const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
   'home',
   'recents',
   'drafts',
   'templates',
+  'always-on',
 ];
 
 const isSamePath = (
@@ -443,7 +481,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   folderPath,
   folders,
 }) => {
-  const { actions, state } = useOvermind();
+  const actions = useActions();
+  const state = useAppState();
 
   const {
     menuState: {
@@ -509,10 +548,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     });
   } else {
     subFolders = folders.filter(folder => {
-      const parentPath = folder.path
-        .split('/')
-        .slice(0, -1)
-        .join('/');
+      const parentPath = folder.path.split('/').slice(0, -1).join('/');
 
       return parentPath === folderPath;
     });
@@ -635,7 +671,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 event.stopPropagation();
               }}
               css={css({
-                width: 5,
+                width: 4,
                 height: '100%',
                 borderRadius: 0,
                 svg: {
@@ -646,18 +682,12 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
               })}
             />
           ) : (
-            <Element as="span" css={css({ width: 5, flexShrink: 0 })} />
+            <Element as="span" css={css({ width: 4, flexShrink: 0 })} />
           )}
 
-          <Stack align="center" gap={3} css={{ width: 'calc(100% - 28px)' }}>
-            <Stack
-              as="span"
-              css={css({ width: 4 })}
-              align="center"
-              justify="center"
-            >
-              <Icon name="folder" />
-            </Stack>
+          <Stack align="center" gap={2} css={{ width: 'calc(100% - 28px)' }}>
+            <Icon name="folder" size={24} css={css({ flexShrink: 0 })} />
+
             {isRenaming || isNewFolder ? (
               <form onSubmit={onSubmit}>
                 <Input

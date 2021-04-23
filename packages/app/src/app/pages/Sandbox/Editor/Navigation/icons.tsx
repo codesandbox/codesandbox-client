@@ -12,6 +12,17 @@ export const CommentsIcon = props => (
   </svg>
 );
 
+export const SearchIcon = props => (
+  <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
+    <path
+      fill="currentColor"
+      fillRule="evenodd"
+      d="M20 26c5.523 0 10-4.477 10-10S25.523 6 20 6s-10 4.477-10 10 4.477 10 10 10zm-.46-15a4.54 4.54 0 102.404 8.393L24.8 22.45 26.25 21l-2.857-3.056A4.54 4.54 0 0019.54 11zm-2.49 4.54a2.49 2.49 0 114.98 0 2.49 2.49 0 01-4.98 0z"
+      clipRule="evenodd"
+    />
+  </svg>
+);
+
 export const DeployIcon = props => (
   <svg width={40} height={32} fill="none" viewBox="0 0 40 32" {...props}>
     <g fill="currentColor">

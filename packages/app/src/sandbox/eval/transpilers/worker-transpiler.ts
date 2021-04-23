@@ -61,9 +61,9 @@ export default abstract class WorkerTranspiler extends Transpiler {
 
     if (options.preload) {
       if (this.workers.length === 0) {
-        Promise.all(
-          Array.from({ length: this.workerCount }, () => this.loadWorker())
-        );
+        for (let i = 0; i < this.workerCount; i++) {
+          this.loadWorker();
+        }
       }
     }
   }

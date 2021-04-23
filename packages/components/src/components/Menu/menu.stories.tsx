@@ -1,6 +1,7 @@
 import React from 'react';
-import { Menu } from '.';
+import { Menu, MenuStyles } from '.';
 import { Element } from '../Element';
+import { Icon } from '../Icon';
 import { Stack } from '../Stack';
 import { Text } from '../Text';
 
@@ -15,6 +16,7 @@ export const Access = () => {
 
   return (
     <Stack justify="flex-end" align="center" css={{ '> *': { lineHeight: 1 } }}>
+      <MenuStyles />
       <Text size={2} variant="muted">
         Everyone with link
       </Text>{' '}
@@ -54,6 +56,7 @@ export const IconButton = () => {
 
   return (
     <Stack align="center" css={{ '> *': { lineHeight: 1 } }}>
+      <MenuStyles />
       <Menu>
         <Menu.IconButton
           name="filter"
@@ -91,6 +94,7 @@ export const ContextMenu = () => {
 
   return (
     <Stack>
+      <MenuStyles />
       <Element
         tabIndex={0}
         onContextMenu={onContextMenu}
@@ -119,3 +123,38 @@ export const ContextMenu = () => {
     </Stack>
   );
 };
+
+export const MenuWithLinks = () => (
+  <>
+    <MenuStyles />
+    <Menu>
+      <Menu.IconButton name="more" />
+      <Menu.List>
+        <Menu.Link href="/docs">
+          <Stack align="center">
+            <Icon name="bell" />
+            Menu Link with Icon
+          </Stack>
+        </Menu.Link>
+        <Menu.Item>Menu Item</Menu.Item>
+        <Menu.Link href="/internal">
+          <Stack align="center">Menu Link</Stack>
+        </Menu.Link>
+      </Menu.List>
+    </Menu>
+  </>
+);
+
+export const DefaultOpen = () => (
+  <>
+    <MenuStyles />
+    <Menu defaultOpen>
+      <Menu.Button variant="primary">Open Menu</Menu.Button>
+      <Menu.List>
+        <Menu.Item>Menu Item</Menu.Item>
+        <Menu.Item>Menu Item</Menu.Item>
+        <Menu.Item>Menu Item</Menu.Item>
+      </Menu.List>
+    </Menu>
+  </>
+);

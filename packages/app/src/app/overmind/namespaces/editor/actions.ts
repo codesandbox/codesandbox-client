@@ -9,7 +9,10 @@ import {
   UserSelection,
   WindowOrientation,
 } from '@codesandbox/common/lib/types';
-import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
+import {
+  captureException,
+  logBreadcrumb,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
 import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
@@ -21,7 +24,7 @@ import {
   CollaboratorFragment,
   InvitationFragment,
 } from 'app/graphql/types';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { withLoadApp, withOwnedSandbox } from 'app/overmind/factories';
 import { getSavedCode } from 'app/overmind/utils/sandbox';
 import {
@@ -32,6 +35,7 @@ import {
 import { convertAuthorizationToPermissionType } from 'app/utils/authorization';
 import { clearCorrectionsFromAction } from 'app/utils/corrections';
 import history from 'app/utils/history';
+import { isPrivateScope } from 'app/utils/private-registry';
 import { debounce } from 'lodash-es';
 import { TextOperation } from 'ot';
 import { json } from 'overmind';
@@ -42,44 +46,50 @@ import * as internalActions from './internalActions';
 
 export const internal = internalActions;
 
-export const onNavigateAway: Action = () => {};
+export const onNavigateAway = () => {};
 
-export const persistCursorToUrl: Action<{
-  module: Module;
-  selection?: UserSelection;
-}> = debounce(({ effects }, { module, selection }) => {
-  let parameter = module.path;
+export const persistCursorToUrl = debounce(
+  (
+    { effects }: Context,
+    {
+      module,
+      selection,
+    }: {
+      module: Module;
+      selection?: UserSelection;
+    }
+  ) => {
+    let parameter = module.path;
 
-  if (!parameter) {
-    return;
-  }
+    if (!parameter) {
+      return;
+    }
 
-  if (selection?.primary?.selection?.length) {
-    const [head, anchor] = selection.primary.selection;
-    const serializedSelection = head + '-' + anchor;
-    parameter += `:${serializedSelection}`;
-  }
+    if (selection?.primary?.selection?.length) {
+      const [head, anchor] = selection.primary.selection;
+      const serializedSelection = head + '-' + anchor;
+      parameter += `:${serializedSelection}`;
+    }
 
-  const newUrl = new URL(document.location.href);
-  newUrl.searchParams.set('file', parameter);
+    const newUrl = new URL(document.location.href);
+    newUrl.searchParams.set('file', parameter);
 
-  // Restore the URI encoded parts to their original values. Our server handles this well
-  // and all the browsers do too.
-  if (newUrl) {
-    effects.router.replace(
-      newUrl
-        .toString()
-        .replace(/%2F/g, '/')
-        .replace('%3A', ':')
-    );
-  }
-}, 500);
+    // Restore the URI encoded parts to their original values. Our server handles this well
+    // and all the browsers do too.
+    if (newUrl) {
+      effects.router.replace(
+        newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
+      );
+    }
+  },
+  500
+);
 
-export const loadCursorFromUrl: AsyncAction = async ({
+export const loadCursorFromUrl = async ({
   effects,
   actions,
   state,
-}) => {
+}: Context) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -107,23 +117,87 @@ export const loadCursorFromUrl: AsyncAction = async ({
   }
 };
 
-export const refreshPreview: Action = ({ effects }) => {
+export const refreshPreview = ({ effects }: Context) => {
   effects.preview.refresh();
 };
 
-export const addNpmDependency: AsyncAction<{
-  name: string;
-  version?: string;
-  isDev?: boolean;
-}> = withOwnedSandbox(
-  async ({ actions, effects, state }, { name, version, isDev }) => {
-    effects.analytics.track('Add NPM Dependency');
+export const addNpmDependency = withOwnedSandbox(
+  async (
+    { actions, effects, state }: Context,
+    {
+      name,
+      version,
+      isDev,
+    }: {
+      name: string;
+      version?: string;
+      isDev?: boolean;
+    }
+  ) => {
+    const currentSandbox = state.editor.currentSandbox;
+    const isPrivatePackage =
+      currentSandbox && isPrivateScope(currentSandbox, name);
+
+    effects.analytics.track('Add NPM Dependency', {
+      private: isPrivatePackage,
+    });
     state.currentModal = null;
     let newVersion = version || 'latest';
 
     if (!isAbsoluteVersion(newVersion)) {
-      const dependency = await effects.api.getDependency(name, newVersion);
-      newVersion = dependency.version;
+      if (isPrivatePackage && currentSandbox) {
+        try {
+          const manifest = await effects.api.getDependencyManifest(
+            currentSandbox.id,
+            name
+          );
+          const distTags = manifest['dist-tags'];
+          const absoluteVersion = distTags ? distTags[newVersion] : null;
+
+          if (absoluteVersion) {
+            newVersion = absoluteVersion;
+          }
+        } catch (e) {
+          if (currentSandbox.privacy !== 2) {
+            effects.notificationToast.add({
+              status: NotificationStatus.ERROR,
+              title: 'There was a problem adding the private package',
+              message:
+                'Private packages can only be added to private sandboxes',
+              actions: {
+                primary: {
+                  label: 'Make Sandbox Private',
+                  run: async () => {
+                    await actions.workspace.sandboxPrivacyChanged({
+                      privacy: 2,
+                      source: 'Private Package Notification',
+                    });
+                    actions.editor.addNpmDependency({ name, version });
+                  },
+                },
+                secondary: {
+                  label: 'Learn More',
+                  run: () => {
+                    effects.browser.openWindow(
+                      'https://codesandbox.io/docs/custom-npm-registry'
+                    );
+                  },
+                },
+              },
+            });
+          } else {
+            captureException(e);
+            actions.internal.handleError({
+              error: e,
+              message: 'There was a problem adding the private package',
+            });
+          }
+          return;
+        }
+      } else {
+        const dependency = await effects.api.getDependency(name, newVersion);
+        newVersion = dependency.version;
+      }
     }
 
     await actions.editor.internal.addNpmDependencyToPackageJson({
@@ -139,8 +213,8 @@ export const addNpmDependency: AsyncAction<{
   }
 );
 
-export const npmDependencyRemoved: AsyncAction<string> = withOwnedSandbox(
-  async ({ actions, effects }, name) => {
+export const npmDependencyRemoved = withOwnedSandbox(
+  async ({ actions, effects }: Context, name: string) => {
     effects.analytics.track('Remove NPM Dependency');
 
     await actions.editor.internal.removeNpmDependencyFromPackageJson(name);
@@ -149,9 +223,9 @@ export const npmDependencyRemoved: AsyncAction<string> = withOwnedSandbox(
   }
 );
 
-export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
+export const sandboxChanged = withLoadApp<{
   id: string;
-}>(async ({ state, actions, effects }, { id }) => {
+}>(async ({ state, actions, effects }: Context, { id }: { id: string }) => {
   // This happens when we fork. This can be avoided with state first routing
   if (state.editor.isForkingSandbox && state.editor.currentSandbox) {
     if (state.editor.currentModule.id) {
@@ -286,7 +360,14 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
     actions.files.internal.recoverFiles();
   }
 
-  effects.vscode.openModule(state.editor.currentModule);
+  if (state.editor.currentModule.id) {
+    effects.vscode.openModule(state.editor.currentModule);
+  } else {
+    // This means that there is no current module. Normally we tell that the editor has loaded
+    // when the module has loaded (for the skeleton), but in this case we will never load a module.
+    // So we need to explicitly mark that the module has been loaded instead.
+    state.editor.hasLoadedInitialModule = true;
+  }
   try {
     await actions.editor.loadCursorFromUrl();
   } catch (e) {
@@ -308,7 +389,7 @@ export const sandboxChanged: AsyncAction<{ id: string }> = withLoadApp<{
   state.editor.isLoading = false;
 });
 
-export const contentMounted: Action = ({ state, effects }) => {
+export const contentMounted = ({ state, effects }: Context) => {
   effects.browser.onUnload(event => {
     if (!state.editor.isAllModulesSynced && !state.editor.isForkingSandbox) {
       const returnMessage =
@@ -323,20 +404,27 @@ export const contentMounted: Action = ({ state, effects }) => {
   });
 };
 
-export const resizingStarted: Action = ({ state }) => {
+export const resizingStarted = ({ state }: Context) => {
   state.editor.isResizing = true;
 };
 
-export const resizingStopped: Action = ({ state }) => {
+export const resizingStopped = ({ state }: Context) => {
   state.editor.isResizing = false;
 };
 
-export const codeSaved: AsyncAction<{
-  code: string;
-  moduleShortid: string;
-  cbID: string | null;
-}> = withOwnedSandbox(
-  async ({ state, actions }, { code, moduleShortid, cbID }) => {
+export const codeSaved = withOwnedSandbox(
+  async (
+    { state, actions }: Context,
+    {
+      code,
+      moduleShortid,
+      cbID,
+    }: {
+      code: string;
+      moduleShortid: string;
+      cbID: string | null;
+    }
+  ) => {
     actions.editor.internal.saveCode({
       code,
       moduleShortid,
@@ -351,11 +439,18 @@ export const codeSaved: AsyncAction<{
   'write_code'
 );
 
-export const onOperationApplied: Action<{
-  moduleShortid: string;
-  operation: TextOperation;
-  code: string;
-}> = ({ state, effects, actions }, { code, moduleShortid, operation }) => {
+export const onOperationApplied = (
+  { state, effects, actions }: Context,
+  {
+    code,
+    moduleShortid,
+    operation,
+  }: {
+    moduleShortid: string;
+    operation: TextOperation;
+    code: string;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -375,7 +470,9 @@ export const onOperationApplied: Action<{
     code,
   });
 
-  actions.editor.internal.updatePreviewCode();
+  if (state.preferences.settings.livePreviewEnabled) {
+    actions.editor.internal.updatePreviewCode();
+  }
 
   // If we are in a state of sync, we set "revertModule" to set it as saved
   if (module.savedCode !== null && module.code === module.savedCode) {
@@ -409,10 +506,16 @@ export const onOperationApplied: Action<{
  * ### Not opened in VSCode
  *  1. codeChanged called directly
  */
-export const setCode: Action<{
-  moduleShortid: string;
-  code: string;
-}> = ({ effects, state, actions }, { code, moduleShortid }) => {
+export const setCode = (
+  { effects, state, actions }: Context,
+  {
+    code,
+    moduleShortid,
+  }: {
+    moduleShortid: string;
+    code: string;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -435,11 +538,18 @@ export const setCode: Action<{
   }
 };
 
-export const codeChanged: Action<{
-  moduleShortid: string;
-  code: string;
-  event?: any;
-}> = ({ effects, state, actions }, { code, event, moduleShortid }) => {
+export const codeChanged = (
+  { effects, state, actions }: Context,
+  {
+    code,
+    event,
+    moduleShortid,
+  }: {
+    moduleShortid: string;
+    code: string;
+    event?: any;
+  }
+) => {
   effects.analytics.trackOnce('Change Code');
 
   if (!state.editor.currentSandbox) {
@@ -505,8 +615,8 @@ export const codeChanged: Action<{
   }
 };
 
-export const saveClicked: AsyncAction = withOwnedSandbox(
-  async ({ state, effects, actions }) => {
+export const saveClicked = withOwnedSandbox(
+  async ({ state, effects, actions }: Context) => {
     const sandbox = state.editor.currentSandbox;
 
     if (!sandbox) {
@@ -577,20 +687,32 @@ export const saveClicked: AsyncAction = withOwnedSandbox(
   }
 );
 
-export const createZipClicked: Action = ({ state, effects }) => {
+export const createZipClicked = ({ state, effects }: Context) => {
   if (!state.editor.currentSandbox) {
     return;
   }
+
+  if (state.editor.currentSandbox.permissions.preventSandboxExport) {
+    effects.notificationToast.error(
+      'You do not permission to export this sandbox'
+    );
+    return;
+  }
+
   effects.zip.download(state.editor.currentSandbox);
 };
 
-export const forkExternalSandbox: AsyncAction<{
-  sandboxId: string;
-  openInNewWindow?: boolean;
-  body?: { collectionId: string };
-}> = async (
-  { effects, state, actions },
-  { sandboxId, openInNewWindow, body }
+export const forkExternalSandbox = async (
+  { effects, state, actions }: Context,
+  {
+    sandboxId,
+    openInNewWindow,
+    body,
+  }: {
+    sandboxId: string;
+    openInNewWindow?: boolean;
+    body?: { collectionId: string };
+  }
 ) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });
 
@@ -614,9 +736,14 @@ export const forkExternalSandbox: AsyncAction<{
   }
 };
 
-export const forkSandboxClicked: AsyncAction<{
-  teamId?: string | null;
-}> = async ({ state, actions }, { teamId }) => {
+export const forkSandboxClicked = async (
+  { state, actions }: Context,
+  {
+    teamId,
+  }: {
+    teamId?: string | null;
+  }
+) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -627,9 +754,9 @@ export const forkSandboxClicked: AsyncAction<{
   });
 };
 
-export const likeSandboxToggled: AsyncAction<string> = async (
-  { state, effects },
-  id
+export const likeSandboxToggled = async (
+  { state, effects }: Context,
+  id: string
 ) => {
   if (state.editor.sandboxes[id].userLiked) {
     state.editor.sandboxes[id].likeCount--;
@@ -642,18 +769,23 @@ export const likeSandboxToggled: AsyncAction<string> = async (
   state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
-export const moduleSelected: AsyncAction<
-  | {
-      // Id means it is coming from Explorer
-      id: string;
-      path?: undefined;
-    }
-  | {
-      // Path means it is coming from VSCode
-      id?: undefined;
-      path: string;
-    }
-> = async ({ actions, effects, state }, { id, path }) => {
+export const moduleSelected = async (
+  { actions, effects, state }: Context,
+  {
+    id,
+    path,
+  }:
+    | {
+        // Id means it is coming from Explorer
+        id: string;
+        path?: undefined;
+      }
+    | {
+        // Path means it is coming from VSCode
+        id?: undefined;
+        path: string;
+      }
+) => {
   effects.analytics.track('Open File');
 
   state.editor.hasLoadedInitialModule = true;
@@ -714,11 +846,11 @@ export const moduleSelected: AsyncAction<
   }
 };
 
-export const clearModuleSelected: Action = ({ state }) => {
+export const clearModuleSelected = ({ state }: Context) => {
   state.editor.currentModuleShortid = null;
 };
 
-export const moduleDoubleClicked: Action = ({ state, effects }) => {
+export const moduleDoubleClicked = ({ state, effects }: Context) => {
   effects.vscode.runCommand('workbench.action.keepEditor');
 
   const { currentModule } = state.editor;
@@ -732,16 +864,22 @@ export const moduleDoubleClicked: Action = ({ state, effects }) => {
   }
 };
 
-export const tabClosed: Action<number> = ({ state, actions }, tabIndex) => {
+export const tabClosed = ({ state, actions }: Context, tabIndex: number) => {
   if (state.editor.tabs.length > 1) {
     actions.internal.closeTabByIndex(tabIndex);
   }
 };
 
-export const tabMoved: Action<{
-  prevIndex: number;
-  nextIndex: number;
-}> = ({ state }, { prevIndex, nextIndex }) => {
+export const tabMoved = (
+  { state }: Context,
+  {
+    prevIndex,
+    nextIndex,
+  }: {
+    prevIndex: number;
+    nextIndex: number;
+  }
+) => {
   const { tabs } = state.editor;
   const tab = json(tabs[prevIndex]);
 
@@ -751,7 +889,7 @@ export const tabMoved: Action<{
 
 // TODO(@CompuIves): Look into whether we even want to call this function.
 // We can probably call the dispatch from the bundler itself instead.
-export const errorsCleared: Action = ({ state, effects }) => {
+export const errorsCleared = ({ state, effects }: Context) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;
@@ -776,18 +914,18 @@ export const errorsCleared: Action = ({ state, effects }) => {
   }
 };
 
-export const toggleStatusBar: Action = ({ state }) => {
+export const toggleStatusBar = ({ state }: Context) => {
   state.editor.statusBar = !state.editor.statusBar;
 };
 
-export const projectViewToggled: Action = ({ state, actions }) => {
+export const projectViewToggled = ({ state, actions }: Context) => {
   state.editor.isInProjectView = !state.editor.isInProjectView;
   actions.editor.internal.updatePreviewCode();
 };
 
-export const frozenUpdated: AsyncAction<boolean> = async (
-  { effects, state },
-  frozen
+export const frozenUpdated = async (
+  { effects, state }: Context,
+  frozen: boolean
 ) => {
   if (!state.editor.currentSandbox) {
     return;
@@ -798,30 +936,40 @@ export const frozenUpdated: AsyncAction<boolean> = async (
   await effects.api.saveFrozen(state.editor.currentSandbox.id, frozen);
 };
 
-export const quickActionsOpened: Action = ({ state }) => {
+export const quickActionsOpened = ({ state }: Context) => {
   state.editor.quickActionsOpen = true;
 };
 
-export const quickActionsClosed: Action = ({ state }) => {
+export const quickActionsClosed = ({ state }: Context) => {
   state.editor.quickActionsOpen = false;
 };
 
-export const setPreviewContent: Action = () => {};
+export const setPreviewContent = () => {};
 
-export const togglePreviewContent: Action = ({ state, effects }) => {
+export const togglePreviewContent = ({ state, effects }: Context) => {
   state.editor.previewWindowVisible = !state.editor.previewWindowVisible;
   effects.vscode.resetLayout();
 };
 
-export const currentTabChanged: Action<{
-  tabId: string;
-}> = ({ state }, { tabId }) => {
+export const currentTabChanged = (
+  { state }: Context,
+  {
+    tabId,
+  }: {
+    tabId: string;
+  }
+) => {
   state.editor.currentTabId = tabId;
 };
 
-export const discardModuleChanges: Action<{
-  moduleShortid: string;
-}> = ({ state, effects, actions }, { moduleShortid }) => {
+export const discardModuleChanges = (
+  { state, effects, actions }: Context,
+  {
+    moduleShortid,
+  }: {
+    moduleShortid: string;
+  }
+) => {
   effects.analytics.track('Code Discarded');
 
   const sandbox = state.editor.currentSandbox;
@@ -841,10 +989,10 @@ export const discardModuleChanges: Action<{
   effects.vscode.syncModule(module);
 };
 
-export const fetchEnvironmentVariables: AsyncAction = async ({
+export const fetchEnvironmentVariables = async ({
   state,
   effects,
-}) => {
+}: Context) => {
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -854,9 +1002,9 @@ export const fetchEnvironmentVariables: AsyncAction = async ({
   );
 };
 
-export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = async (
-  { effects, state },
-  environmentVariable
+export const updateEnvironmentVariables = async (
+  { effects, state }: Context,
+  environmentVariable: EnvironmentVariable
 ) => {
   if (!state.editor.currentSandbox) {
     return;
@@ -870,9 +1018,9 @@ export const updateEnvironmentVariables: AsyncAction<EnvironmentVariable> = asyn
   effects.codesandboxApi.restartSandbox();
 };
 
-export const deleteEnvironmentVariable: AsyncAction<string> = async (
-  { effects, state },
-  name
+export const deleteEnvironmentVariable = async (
+  { effects, state }: Context,
+  name: string
 ) => {
   if (!state.editor.currentSandbox) {
     return;
@@ -890,11 +1038,11 @@ export const deleteEnvironmentVariable: AsyncAction<string> = async (
 /**
  * This will let the user know on fork that some secrets need to be set if there are any empty ones
  */
-export const showEnvironmentVariablesNotification: AsyncAction = async ({
+export const showEnvironmentVariablesNotification = async ({
   state,
   actions,
   effects,
-}) => {
+}: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -924,9 +1072,9 @@ export const showEnvironmentVariablesNotification: AsyncAction = async ({
   }
 };
 
-export const onSelectionChanged: Action<UserSelection> = (
-  { actions, state },
-  selection
+export const onSelectionChanged = (
+  { actions, state }: Context,
+  selection: UserSelection
 ) => {
   if (!state.editor.currentModule) {
     return;
@@ -938,7 +1086,7 @@ export const onSelectionChanged: Action<UserSelection> = (
   });
 };
 
-export const toggleEditorPreviewLayout: Action = ({ state, effects }) => {
+export const toggleEditorPreviewLayout = ({ state, effects }: Context) => {
   const currentOrientation = state.editor.previewWindowOrientation;
 
   state.editor.previewWindowOrientation =
@@ -949,9 +1097,9 @@ export const toggleEditorPreviewLayout: Action = ({ state, effects }) => {
   effects.vscode.resetLayout();
 };
 
-export const previewActionReceived: Action<any> = (
-  { actions, effects, state },
-  action
+export const previewActionReceived = (
+  { actions, effects, state }: Context,
+  action: any
 ) => {
   switch (action.action) {
     case 'notification':
@@ -1133,11 +1281,17 @@ export const previewActionReceived: Action<any> = (
   }
 };
 
-export const renameModule: AsyncAction<{
-  title: string;
-  moduleShortid: string;
-}> = withOwnedSandbox(
-  async ({ state, actions, effects }, { title, moduleShortid }) => {
+export const renameModule = withOwnedSandbox(
+  async (
+    { state, actions, effects }: Context,
+    {
+      title,
+      moduleShortid,
+    }: {
+      title: string;
+      moduleShortid: string;
+    }
+  ) => {
     const sandbox = state.editor.currentSandbox;
     if (!sandbox) {
       return;
@@ -1168,66 +1322,82 @@ export const renameModule: AsyncAction<{
   }
 );
 
-export const onDevToolsTabAdded: Action<{
-  tab: any;
-}> = ({ state, actions }, { tab }) => {
+export const onDevToolsTabAdded = (
+  { state, actions }: Context,
+  {
+    tab,
+  }: {
+    tab: any;
+  }
+) => {
   const { devToolTabs } = state.editor;
   const { devTools: newDevToolTabs, position } = addDevToolsTabUtil(
     json(devToolTabs),
     tab
   );
-
-  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
   const nextPos = position;
 
-  actions.editor.internal.updateDevtools({
-    code,
-  });
+  actions.editor.internal.updateDevtools(newDevToolTabs);
 
   state.editor.currentDevToolsPosition = nextPos;
 };
 
-export const onDevToolsTabMoved: Action<{
-  prevPos: any;
-  nextPos: any;
-}> = ({ state, actions }, { prevPos, nextPos }) => {
+export const onDevToolsTabMoved = (
+  { state, actions }: Context,
+  {
+    prevPos,
+    nextPos,
+  }: {
+    prevPos: any;
+    nextPos: any;
+  }
+) => {
   const { devToolTabs } = state.editor;
   const newDevToolTabs = moveDevToolsTabUtil(
     json(devToolTabs),
     prevPos,
     nextPos
   );
-  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
 
-  actions.editor.internal.updateDevtools({
-    code,
-  });
+  actions.editor.internal.updateDevtools(newDevToolTabs);
 
   state.editor.currentDevToolsPosition = nextPos;
 };
 
-export const onDevToolsTabClosed: Action<{
-  pos: any;
-}> = ({ state, actions }, { pos }) => {
+export const onDevToolsTabClosed = (
+  { state, actions }: Context,
+  {
+    pos,
+  }: {
+    pos: any;
+  }
+) => {
   const { devToolTabs } = state.editor;
   const closePos = pos;
   const newDevToolTabs = closeDevToolsTabUtil(json(devToolTabs), closePos);
-  const code = JSON.stringify({ preview: newDevToolTabs }, null, 2);
 
-  actions.editor.internal.updateDevtools({
-    code,
-  });
+  actions.editor.internal.updateDevtools(newDevToolTabs);
 };
 
-export const onDevToolsPositionChanged: Action<{
-  position: any;
-}> = ({ state }, { position }) => {
+export const onDevToolsPositionChanged = (
+  { state }: Context,
+  {
+    position,
+  }: {
+    position: any;
+  }
+) => {
   state.editor.currentDevToolsPosition = position;
 };
 
-export const openDevtoolsTab: Action<{
-  tab: any;
-}> = ({ state, actions }, { tab: tabToFind }) => {
+export const openDevtoolsTab = (
+  { state, actions }: Context,
+  {
+    tab: tabToFind,
+  }: {
+    tab: any;
+  }
+) => {
   const serializedTab = JSON.stringify(tabToFind);
   const { devToolTabs } = state.editor;
   let nextPos;
@@ -1255,13 +1425,18 @@ export const openDevtoolsTab: Action<{
   }
 };
 
-export const sessionFreezeOverride: Action<boolean> = ({ state }, frozen) => {
+export const sessionFreezeOverride = ({ state }: Context, frozen: boolean) => {
   state.editor.sessionFrozen = frozen;
 };
 
-export const listenToSandboxChanges: AsyncAction<{
-  sandboxId: string;
-}> = async ({ state, actions, effects }, { sandboxId }) => {
+export const listenToSandboxChanges = async (
+  { state, actions, effects }: Context,
+  {
+    sandboxId,
+  }: {
+    sandboxId: string;
+  }
+) => {
   effects.gql.subscriptions.onSandboxChangged.dispose();
 
   if (!state.isLoggedIn) {
@@ -1288,9 +1463,9 @@ export const listenToSandboxChanges: AsyncAction<{
   });
 };
 
-export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
-  { state, effects },
-  { sandboxId }
+export const loadCollaborators = async (
+  { state, effects }: Context,
+  { sandboxId }: { sandboxId: string }
 ) => {
   if (!state.editor.currentSandbox || !state.isLoggedIn) {
     return;
@@ -1389,11 +1564,18 @@ export const loadCollaborators: AsyncAction<{ sandboxId: string }> = async (
   }
 };
 
-export const changeCollaboratorAuthorization: AsyncAction<{
-  username: string;
-  authorization: Authorization;
-  sandboxId: string;
-}> = async ({ state, effects }, { username, authorization, sandboxId }) => {
+export const changeCollaboratorAuthorization = async (
+  { state, effects }: Context,
+  {
+    username,
+    authorization,
+    sandboxId,
+  }: {
+    username: string;
+    authorization: Authorization;
+    sandboxId: string;
+  }
+) => {
   effects.analytics.track('Update Collaborator Authorization', {
     authorization,
   });
@@ -1422,11 +1604,18 @@ export const changeCollaboratorAuthorization: AsyncAction<{
   }
 };
 
-export const addCollaborator: AsyncAction<{
-  username: string;
-  sandboxId: string;
-  authorization: Authorization;
-}> = async ({ state, effects }, { username, sandboxId, authorization }) => {
+export const addCollaborator = async (
+  { state, effects }: Context,
+  {
+    username,
+    sandboxId,
+    authorization,
+  }: {
+    username: string;
+    sandboxId: string;
+    authorization: Authorization;
+  }
+) => {
   effects.analytics.track('Add Collaborator', { authorization });
   const newCollaborator: CollaboratorFragment = {
     lastSeenAt: null,
@@ -1459,10 +1648,16 @@ export const addCollaborator: AsyncAction<{
   }
 };
 
-export const removeCollaborator: AsyncAction<{
-  username: string;
-  sandboxId: string;
-}> = async ({ state, effects }, { username, sandboxId }) => {
+export const removeCollaborator = async (
+  { state, effects }: Context,
+  {
+    username,
+    sandboxId,
+  }: {
+    username: string;
+    sandboxId: string;
+  }
+) => {
   effects.analytics.track('Remove Collaborator');
   const existingCollaborator = state.editor.collaborators.find(
     c => c.user.username === username
@@ -1487,11 +1682,18 @@ export const removeCollaborator: AsyncAction<{
   }
 };
 
-export const inviteCollaborator: AsyncAction<{
-  email: string;
-  sandboxId: string;
-  authorization: Authorization;
-}> = async ({ state, effects }, { email, sandboxId, authorization }) => {
+export const inviteCollaborator = async (
+  { state, effects }: Context,
+  {
+    email,
+    sandboxId,
+    authorization,
+  }: {
+    email: string;
+    sandboxId: string;
+    authorization: Authorization;
+  }
+) => {
   effects.analytics.track('Invite Collaborator (Email)', { authorization });
 
   const newInvitation: InvitationFragment = {
@@ -1533,10 +1735,16 @@ export const inviteCollaborator: AsyncAction<{
   }
 };
 
-export const revokeSandboxInvitation: AsyncAction<{
-  invitationId: string;
-  sandboxId: string;
-}> = async ({ state, effects }, { invitationId, sandboxId }) => {
+export const revokeSandboxInvitation = async (
+  { state, effects }: Context,
+  {
+    invitationId,
+    sandboxId,
+  }: {
+    invitationId: string;
+    sandboxId: string;
+  }
+) => {
   effects.analytics.track('Cancel Invite Collaborator (Email)');
 
   const existingInvitation = state.editor.invitations.find(
@@ -1562,11 +1770,18 @@ export const revokeSandboxInvitation: AsyncAction<{
   }
 };
 
-export const changeInvitationAuthorization: AsyncAction<{
-  invitationId: string;
-  authorization: Authorization;
-  sandboxId: string;
-}> = async ({ state, effects }, { invitationId, sandboxId, authorization }) => {
+export const changeInvitationAuthorization = async (
+  { state, effects }: Context,
+  {
+    invitationId,
+    sandboxId,
+    authorization,
+  }: {
+    invitationId: string;
+    authorization: Authorization;
+    sandboxId: string;
+  }
+) => {
   const existingInvitation = state.editor.invitations.find(
     c => c.id === invitationId
   );
@@ -1588,5 +1803,60 @@ export const changeInvitationAuthorization: AsyncAction<{
     if (existingInvitation && oldAuthorization) {
       existingInvitation.authorization = oldAuthorization;
     }
+  }
+};
+
+export const setPreventSandboxLeaving = async (
+  { effects, state }: Context,
+  preventSandboxLeaving: boolean
+) => {
+  if (!state.editor.currentSandbox) return;
+
+  // optimistic update
+  const oldValue =
+    state.editor.currentSandbox.permissions.preventSandboxLeaving;
+  state.editor.currentSandbox.permissions.preventSandboxLeaving = preventSandboxLeaving;
+
+  effects.analytics.track(`Editor - Change sandbox permissions`, {
+    preventSandboxLeaving,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesLeavingWorkspace({
+      sandboxIds: [state.editor.currentSandbox.id],
+      preventSandboxLeaving,
+    });
+  } catch (error) {
+    state.editor.currentSandbox.permissions.preventSandboxLeaving = oldValue;
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
+  }
+};
+
+export const setPreventSandboxExport = async (
+  { effects, state }: Context,
+  preventSandboxExport: boolean
+) => {
+  if (!state.editor.currentSandbox) return;
+
+  // optimistic update
+  const oldValue = state.editor.currentSandbox.permissions.preventSandboxExport;
+  state.editor.currentSandbox.permissions.preventSandboxExport = preventSandboxExport;
+
+  effects.analytics.track(`Editor - Change sandbox permissions`, {
+    preventSandboxExport,
+  });
+
+  try {
+    await effects.gql.mutations.setPreventSandboxesExport({
+      sandboxIds: [state.editor.currentSandbox.id],
+      preventSandboxExport,
+    });
+  } catch (error) {
+    state.editor.currentSandbox.permissions.preventSandboxExport = oldValue;
+    effects.notificationToast.error(
+      'There was a problem updating your sandbox permissions'
+    );
   }
 };

@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import React from 'react';
 import { withTheme } from 'styled-components';
 
@@ -16,6 +16,8 @@ import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './screens/ProjectInfo';
 import { Server } from './screens/Server';
 import { Inspector } from './screens/Inspector';
+import { Search } from './screens/Search';
+import { SignInBanner } from './SignInBanner';
 
 const workspaceTabs = {
   project: ProjectInfo,
@@ -24,6 +26,7 @@ const workspaceTabs = {
   'github-summary': GithubSummary,
   github: GitHub,
   files: Explorer,
+  search: Search,
   deploy: Deployment,
   config: ConfigurationFiles,
   live: Live,
@@ -32,11 +35,12 @@ const workspaceTabs = {
 };
 
 export const WorkspaceComponent = ({ theme }) => {
-  const { state } = useOvermind();
   const {
     live: { isLive, roomInfo },
     workspace: { openedWorkspaceItem: activeTab },
-  } = state;
+    user,
+    editor,
+  } = useAppState();
 
   if (!activeTab) {
     return null;
@@ -45,20 +49,28 @@ export const WorkspaceComponent = ({ theme }) => {
   const Component = workspaceTabs[activeTab];
 
   return (
-    <Container>
+    <Container
+      style={{
+        // this does exist in webkit
+        // @ts-ignore
+        overflowY: !user ? 'hidden' : 'overlay',
+      }}
+    >
       <ThemeProvider theme={theme.vscodeTheme}>
         <>
           <div
             style={{
-              flex: 1,
+              flex: !user ? 1 : null,
               overflowY: 'auto',
               fontFamily: 'Inter, Roboto, sans-serif',
+              height: user ? '100%' : 'calc(100% - 170px)',
             }}
           >
-            {state.editor.currentSandbox && <Component />}
+            {editor.currentSandbox && <Component />}
           </div>
 
           {isLive && roomInfo.chatEnabled && <Chat />}
+          {!user && <SignInBanner theme={theme.vscodeTheme} />}
         </>
       </ThemeProvider>
     </Container>

@@ -11,7 +11,8 @@ import { PackageJSON } from '../types';
 export type Options = {
   showOnHomePage?: boolean;
   distDir?: string;
-  netlify?: boolean;
+  staticDeployment?: boolean;
+  githubPagesDeploy?: boolean;
   popular?: boolean;
   extraConfigurations?: {
     [path: string]: ConfigurationFile;
@@ -40,7 +41,7 @@ const defaultConfigurations = {
   '/package.json': configurations.packageJSON,
   '/.prettierrc': configurations.prettierRC,
   '/sandbox.config.json': configurations.sandboxConfig,
-  '/now.json': configurations.nowConfig,
+  '/vercel.json': configurations.nowConfig,
   '/netlify.toml': configurations.netlifyConfig,
 };
 
@@ -90,7 +91,8 @@ export default class Template {
   popular: boolean;
   showOnHomePage: boolean;
   distDir: string;
-  netlify: boolean;
+  staticDeployment: boolean;
+  githubPagesDeploy: boolean;
   configurationFiles: ConfigurationFiles;
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
@@ -129,7 +131,8 @@ export default class Template {
         : true;
 
     this.mainFile = options.mainFile;
-    this.netlify = options.netlify;
+    this.staticDeployment = options.staticDeployment;
+    this.githubPagesDeploy = options.githubPagesDeploy;
     this.backgroundColor = options.backgroundColor;
 
     this.showCube = options.showCube != null ? options.showCube : true;

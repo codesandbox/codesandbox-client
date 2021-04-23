@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { getSandboxName } from '@codesandbox/common/lib/utils/get-sandbox-name';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import {
   Stack,
   Text,
@@ -13,12 +13,8 @@ import { zonedTimeToUtc } from 'date-fns-tz';
 import { Alert } from '../Common/Alert';
 
 export const SelectSandboxModal: FunctionComponent = () => {
-  const {
-    actions: {
-      profile: { newSandboxShowcaseSelected },
-    },
-    state: { profile },
-  } = useOvermind();
+  const { newSandboxShowcaseSelected } = useActions().profile;
+  const profile = useAppState().profile;
 
   if (!profile) {
     return null;

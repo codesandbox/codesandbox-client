@@ -1,17 +1,13 @@
 import React, { FunctionComponent } from 'react';
 
 import { Button, Stack } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import { Alert } from '../Common/Alert';
 
 export const RecoverFilesModal: FunctionComponent = () => {
-  const {
-    actions: { files, modalClosed },
-    state: {
-      editor: { recoveredFiles },
-    },
-  } = useOvermind();
+  const { files, modalClosed } = useActions();
+  const { recoveredFiles } = useAppState().editor;
 
   return (
     <Alert

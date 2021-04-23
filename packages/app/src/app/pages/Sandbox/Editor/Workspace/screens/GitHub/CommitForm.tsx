@@ -7,32 +7,28 @@ import {
   Text,
   Textarea,
 } from '@codesandbox/components';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React, { ChangeEvent, useState } from 'react';
 
 export const CommitForm = () => {
   const [currentAction, setCurrentAction] = useState('branch');
   const {
-    actions: {
-      git: {
-        createPrClicked,
-        createCommitClicked,
-        titleChanged,
-        descriptionChanged,
-      },
+    createPrClicked,
+    createCommitClicked,
+    titleChanged,
+    descriptionChanged,
+  } = useActions().git;
+  const {
+    editor: { currentSandbox, isAllModulesSynced },
+    git: {
+      description,
+      title,
+      permission,
+      gitChanges,
+      isCommitting,
+      isCreatingPr,
     },
-    state: {
-      editor: { currentSandbox, isAllModulesSynced },
-      git: {
-        description,
-        title,
-        permission,
-        gitChanges,
-        isCommitting,
-        isCreatingPr,
-      },
-    },
-  } = useOvermind();
+  } = useAppState();
 
   const changeDescription = ({
     target: { value },

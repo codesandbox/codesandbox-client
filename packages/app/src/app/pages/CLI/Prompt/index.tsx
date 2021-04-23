@@ -3,15 +3,13 @@ import React, { FunctionComponent, useRef } from 'react';
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { Buttons, Container, TokenInput } from './elements';
 
 export const Prompt: FunctionComponent = () => {
-  const {
-    state: { authToken, error, isLoadingCLI, user },
-  } = useOvermind();
+  const { authToken, error, isLoadingCLI, user } = useAppState();
   const tokenInputRef = useRef<HTMLInputElement>(null);
 
   if (error) {

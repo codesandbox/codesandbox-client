@@ -7,7 +7,7 @@ const specialCasesMap = {
   'yarn.lock': 'yarn',
   'package.json': 'npm',
   'sandbox.config.json': 'codesandbox',
-  'now.json': 'now',
+  'vercel.json': 'now',
   prisma: 'prisma',
   'netlify.toml': 'netlify',
   'readme.md': 'readme',
@@ -76,6 +76,4 @@ export function getMode(title: string = '') {
   return titleArr[titleArr.length - 1];
 }
 
-export default function getType(title: string) {
-  return getMode(title);
-}
+export const getType = (title: string) => getMode(title);

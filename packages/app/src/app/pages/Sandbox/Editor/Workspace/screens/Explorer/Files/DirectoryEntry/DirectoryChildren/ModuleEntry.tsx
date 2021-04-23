@@ -1,10 +1,9 @@
 import { Directory, Module } from '@codesandbox/common/lib/types';
-import { useOvermind } from 'app/overmind';
-// eslint-disable-next-line import/extensions
-import getType from 'app/utils/get-type.ts';
+import { useAppState } from 'app/overmind';
+import { getType } from 'app/utils/get-type.ts';
 import React from 'react';
 
-import Entry from '../Entry';
+import { Entry } from '../Entry';
 
 interface IModuleEntryProps {
   module: Module;
@@ -26,7 +25,7 @@ interface IModuleEntryProps {
   isActive: boolean;
 }
 
-const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
+export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
   ({
     module,
     setCurrentModule,
@@ -41,11 +40,9 @@ const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
     isActive,
   }) => {
     const {
-      state: {
-        editor: { mainModule },
-        live,
-      },
-    } = useOvermind();
+      editor: { mainModule },
+      live,
+    } = useAppState();
     const isMainModule = module.id === mainModule.id;
     const type = getType(module.title);
     const hasError = module.errors.length > 0;
@@ -78,5 +75,3 @@ const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
     );
   }
 );
-
-export default ModuleEntry;

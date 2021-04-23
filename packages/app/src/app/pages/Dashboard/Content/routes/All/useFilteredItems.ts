@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { orderBy } from 'lodash-es';
 import {
   DashboardSandbox,
@@ -18,16 +18,12 @@ export const useFilteredItems = (
   level: number
 ) => {
   const {
-    state: {
-      dashboard: {
-        allCollections,
-        getFilteredSandboxes,
-        sandboxes,
-        filters,
-        orderBy: sandboxesOrder,
-      },
-    },
-  } = useOvermind();
+    allCollections,
+    getFilteredSandboxes,
+    sandboxes,
+    filters,
+    orderBy: sandboxesOrder,
+  } = useAppState().dashboard;
   const [items, setItems] = useState<
     Array<
       | DashboardSandbox

@@ -16,12 +16,13 @@ function isMinimalSemverVersion(version: string, minimalVersion: string) {
 
 const getFileNameFromVm = vm => {
   if (vm) {
-    const options =
-      typeof vm === 'function' && vm.cid != null
-        ? vm.options
-        : vm._isVue
-        ? vm.$options || vm.constructor.options
-        : vm || {};
+    let options = vm || {};
+
+    if (typeof vm === 'function' && vm.cid != null) {
+      options = vm.options;
+    } else if (vm._isVue) {
+      options = vm.$options || vm.constructor.options;
+    }
 
     return options.__file;
   }
@@ -53,7 +54,7 @@ export default function initialize() {
         }
 
         if (isV3) {
-          initializeV3(vuePreset);
+          await initializeV3(vuePreset);
         } else {
           initializeV2(vuePreset);
         }

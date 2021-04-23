@@ -10,7 +10,7 @@ description: Learn what CodeSandbox is and how to use it.
 CodeSandbox is an online editor for rapid web development. With CodeSandbox, you
 can prototype quickly, experiment easily, and share creations with a click.
 
-Use it to create static sites, full-stack web apps or components, on any device
+Use it to create static sites, full-stack web apps, or components on any device
 with a web browser.
 
 ## Product Values

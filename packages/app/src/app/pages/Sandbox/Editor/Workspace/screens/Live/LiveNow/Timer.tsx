@@ -1,7 +1,7 @@
 import { Text } from '@codesandbox/components';
 import React, { FunctionComponent, useState } from 'react';
 import useInterval from 'use-interval';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 const pad = (number: number) => {
   if (`${number}`.length === 1) {
@@ -13,12 +13,8 @@ const pad = (number: number) => {
 
 export const Timer: FunctionComponent = () => {
   const {
-    state: {
-      live: {
-        roomInfo: { startTime },
-      },
-    },
-  } = useOvermind();
+    roomInfo: { startTime },
+  } = useAppState().live;
   const [since, setSince] = useState(Date.now() - startTime);
 
   useInterval(() => {

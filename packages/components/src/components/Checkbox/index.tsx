@@ -7,7 +7,7 @@ import { Text } from '../Text';
 
 interface ICheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   checked?: boolean;
-  label?: string;
+  label?: string | React.ReactElement;
   id?: string;
 }
 
@@ -43,7 +43,8 @@ const Label = styled(Text)(
       width: 4,
       borderRadius: 'small',
       backgroundColor: 'input.background',
-      color: 'input.foreground',
+      border: '1px solid',
+      borderColor: 'inputOption.activeBorder',
       transition: 'all ease-in',
       transitionDuration: theme => theme.speeds[2],
     },

@@ -29,6 +29,13 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
+  it('can convert imports with spaces', () => {
+    const code = `
+      import aTest from 'a test';
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
   it('can convert default exports', () => {
     const code = `
       export default function test() {}
@@ -138,6 +145,19 @@ describe('convert-esmodule', () => {
       async () => {
         const test = await test2()
       }
+    `;
+    expect(convertEsModule(code)).toMatchSnapshot();
+  });
+
+  it('can handle block scopes', () => {
+    const code = `
+    import{makeRect as t,getOppositeSide as e,getCollisions as n}from"@interop-ui/utils";
+
+    if (true) {
+      let e = c;
+    }
+    e();
+
     `;
     expect(convertEsModule(code)).toMatchSnapshot();
   });
@@ -496,12 +516,71 @@ describe('convert-esmodule', () => {
     expect(result.indexOf('function a')).toBeGreaterThan(result.indexOf('./b'));
   });
 
+  it('keeps star exports after default export order', () => {
+    const code = `
+    export { default as withSearch } from "./withSearch";
+    export { default as WithSearch } from "./WithSearch";
+    export { a } from './test';
+    export * from "./containers";
+    `;
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+    expect(result.indexOf('./containers')).toBeGreaterThan(
+      result.indexOf('./withSearch')
+    );
+  });
+
   it('hoists function exports', () => {
     const code = `
     export { test, test2 } from './test/store.js';
 
 export function test3() {
 }
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('retains import orders with re-exports', () => {
+    const code = `
+    import * as _TypeChecker from './propTypeChecker';
+    export { _TypeChecker as TypeChecker, _Kikker as Kikker };
+
+    export { default as getDataGroupBy } from './getDataGroupBy';
+
+    `;
+
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('predefines possible exports', () => {
+    const code = `
+      export const a = 5;
+      export function b() {};
+      export class c {};
+      const d = 5;
+      const e = 5;
+      export { d, e as e1 };
+      export const { f, g: bah } = b();
+      export default function h() {};
+      export default class i {};
+      export { j } from './foo';
+      export { k as l } from './foo';
+      export { m as default } from './foo';
+    `;
+    const result = convertEsModule(code);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('can do array exports', () => {
+    const code = `
+    function a() {
+      return [1, 2];
+    }
+
+    export const [x, y] = a();
     `;
 
     const result = convertEsModule(code);

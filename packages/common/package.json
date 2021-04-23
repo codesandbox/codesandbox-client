@@ -21,6 +21,7 @@
     "start": "(yarn tsc --watch & yarn babel src --out-dir lib --watch & yarn cpx \"src/**/*.{css,svg,png,jpg,woff,woff2}\" lib --watch)",
     "start:storybook": "start-storybook",
     "test": "cross-env NODE_ENV=test jest --maxWorkers 2",
+    "test:update": "cross-env NODE_ENV=test jest --updateSnapshot",
     "typecheck": "tsc --noEmit"
   },
   "jest": {
@@ -52,7 +53,7 @@
     "@tippy.js/react": "^3.1.1",
     "babel-plugin-preval": "^3.0.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "codesandbox-api": "0.0.24",
+    "codesandbox-api": "0.0.32",
     "color": "0.11.4",
     "date-fns": "^2.0.0",
     "dot-object": "1.9.0",
@@ -71,7 +72,7 @@
     "react-scrollbars-custom": "^4.0.20",
     "react-spring": "^8.0.25",
     "react-textarea-autosize": "^6.1.0",
-    "semver": "^5.6.0",
+    "semver": "^7.3.5",
     "sha1": "^1.1.1",
     "styled-components": "^5.2.0",
     "template-icons": "^1.0.0",

@@ -1,15 +1,16 @@
 import React from 'react';
+// eslint-disable-next-line import/no-cycle
 import { useTheme } from '../../components/layout';
 
 const IDE = props => {
   const white = useTheme().homepage.white;
+
   return (
-    <svg width={33} height={28} fill="none" viewBox="0 0 33 28" {...props}>
+    <svg width={32} height={32} fill="none" viewBox="0 0 24 24" {...props}>
       <path
         fill={white}
         fillRule="evenodd"
-        d="M1.833 0C.821 0 0 .82 0 1.833v23.834C0 26.679.82 27.5 1.833 27.5h29.334c1.012 0 1.833-.82 1.833-1.833V1.833C33 .821 32.18 0 31.167 0H1.833zM5.5 13.96l7.188-7.5 1.797 1.875-5.391 5.625 5.39 5.625-1.796 1.875-7.188-7.5zm22 0l-7.188 7.5-1.797-1.875 5.391-5.625-5.391-5.625 1.797-1.875 7.188 7.5z"
-        clipRule="evenodd"
+        d="M4.0702 4C3.47914 4 3 4.47914 3 5.0702V18.9298C3 19.5209 3.47914 20 4.0702 20H19.9298C20.5209 20 21 19.5209 21 18.9298V5.0702C21 4.47914 20.5209 4 19.9298 4H4.0702ZM5 11.9091L9.35634 7L10.4454 8.22727L7.17814 11.9091L10.4454 15.5909L9.35632 16.8182L5 11.9091ZM18.3333 11.9091L13.977 16.8182L12.8879 15.5909L16.1552 11.9091L12.8879 8.22728L13.977 7.00002L18.3333 11.9091Z"
       />
     </svg>
   );

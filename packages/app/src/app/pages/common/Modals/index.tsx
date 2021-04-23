@@ -4,33 +4,46 @@ import {
   COLUMN_MEDIA_THRESHOLD,
   CreateSandbox,
 } from 'app/components/CreateNewSandbox/CreateSandbox';
+import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import getVSCodeTheme from 'app/src/app/pages/Sandbox/Editor/utils/get-vscode-theme';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
+import { AddPreset } from './AddPreset';
 import { DeleteDeploymentModal } from './DeleteDeploymentModal';
+import { DeletePreset } from './DeletePreset';
 import { DeleteProfileSandboxModal } from './DeleteProfileSandboxModal';
-import DeleteSandboxModal from './DeleteSandboxModal';
+import { DeleteSandboxModal } from './DeleteSandboxModal';
 import { DeploymentModal } from './DeploymentModal';
+import { EditPresets } from './EditPresets';
 import { EmptyTrash } from './EmptyTrash';
-import ExportGitHubModal from './ExportGitHubModal';
+import { ExportGitHubModal } from './ExportGitHubModal';
 import { FeedbackModal } from './FeedbackModal';
 import { ForkServerModal } from './ForkServerModal';
 import { LiveSessionEnded } from './LiveSessionEnded';
-import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
+import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
+import { RecoverFilesModal } from './RecoverFilesModal';
+import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
 import { ShareModal } from './ShareModal';
-import SignInForTemplates from './SignInForTemplates';
+import { SignInForTemplates } from './SignInForTemplates';
 import { StorageManagementModal } from './StorageManagementModal';
 import { SurveyModal } from './SurveyModal';
-import { RecoverFilesModal } from './RecoverFilesModal';
 import { TeamInviteModal } from './TeamInviteModal';
-import UploadModal from './UploadModal';
+import { UploadModal } from './UploadModal';
+import { DeleteWorkspace } from './DeleteWorkspace';
+import { MinimumPrivacyModal } from './MinimumPrivacyModal';
+import { GenericAlertModal } from './GenericAlertModal';
+import { AccountDeletionModal } from './AccountDeletion';
+import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfirmation';
+import { NotFoundBranchModal } from './NotFoundBranchModal';
+import { GithubPagesLogs } from './GithubPagesLogs';
+import { CropThumbnail } from './CropThumbnail';
 
 const modals = {
   preferences: {
@@ -48,6 +61,10 @@ const modals = {
   deployment: {
     Component: DeploymentModal,
     width: 600,
+  },
+  deleteWorkspace: {
+    Component: DeleteWorkspace,
+    width: 400,
   },
   recoveredFiles: {
     Component: RecoverFilesModal,
@@ -69,6 +86,14 @@ const modals = {
     Component: NetlifyLogs,
     width: 750,
   },
+  githubPagesLogs: {
+    Component: GithubPagesLogs,
+    width: 750,
+  },
+  cropThumbnail: {
+    Component: CropThumbnail,
+    width: 750,
+  },
   deleteDeployment: {
     Component: DeleteDeploymentModal,
     width: 400,
@@ -84,6 +109,18 @@ const modals = {
   deleteProfileSandbox: {
     Component: DeleteProfileSandboxModal,
     width: 400,
+  },
+  deletePreset: {
+    Component: DeletePreset,
+    width: 400,
+  },
+  addPreset: {
+    Component: AddPreset,
+    width: 400,
+  },
+  editPresets: {
+    Component: EditPresets,
+    width: 600,
   },
   emptyTrash: {
     Component: EmptyTrash,
@@ -102,7 +139,7 @@ const modals = {
     width: 400,
   },
   liveVersionMismatch: {
-    Component: LiveSessionVersionMismatch,
+    Component: LiveVersionMismatch,
     width: 400,
   },
   uploading: {
@@ -125,18 +162,40 @@ const modals = {
     Component: SurveyModal,
     width: 850,
   },
+  sandboxPicker: {
+    Component: SandboxPickerModal,
+    width: '90%',
+    top: 10, // vh
+  },
+  minimumPrivacy: {
+    Component: MinimumPrivacyModal,
+    width: 450,
+  },
+  accountClosing: {
+    Component: AccountDeletionModal,
+    width: 450,
+  },
+  deleteConfirmation: {
+    Component: AccountDeletionConfirmationModal,
+    width: 450,
+  },
+  notFoundBranchModal: {
+    Component: NotFoundBranchModal,
+    width: 450,
+  },
 };
 
 const Modals: FunctionComponent = () => {
+  const [themeProps, setThemeProps] = useState({});
+  const { pathname } = useLocation();
+  const { modalClosed } = useActions();
   const {
-    actions,
-    state: {
-      preferences: {
-        settings: { customVSCodeTheme },
-      },
-      currentModal,
+    modals: stateModals,
+    preferences: {
+      settings: { customVSCodeTheme },
     },
-  } = useOvermind();
+    currentModal,
+  } = useAppState();
 
   const [localState, setLocalState] = useState({
     theme: {
@@ -160,24 +219,36 @@ const Modals: FunctionComponent = () => {
     }
   }, [localState.customVSCodeTheme, customVSCodeTheme]);
 
-  const modal = currentModal && modals[currentModal];
+  useEffect(() => {
+    setThemeProps(
+      pathname.includes('/s/')
+        ? {
+            theme: localState.theme.vscodeTheme,
+          }
+        : {}
+    );
+  }, [pathname, localState]);
 
+  const modal = currentModal && modals[currentModal];
   return (
-    <ThemeProvider theme={localState.theme.vscodeTheme}>
+    <ThemeProvider {...themeProps}>
       <Modal
         isOpen={Boolean(modal)}
         width={
           modal &&
           (typeof modal.width === 'function' ? modal.width() : modal.width)
         }
-        onClose={isKeyDown => actions.modalClosed()}
+        top={modal && modal.top}
+        onClose={() => modalClosed()}
       >
         {modal
           ? React.createElement(modal.Component, {
-              closeModal: () => actions.modalClosed(),
+              closeModal: () => modalClosed(),
             })
           : null}
       </Modal>
+
+      {stateModals.alertModal.isCurrent && <GenericAlertModal />}
     </ThemeProvider>
   );
 };

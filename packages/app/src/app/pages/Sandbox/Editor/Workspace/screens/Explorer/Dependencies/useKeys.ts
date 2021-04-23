@@ -1,18 +1,15 @@
 import { useEffect } from 'react';
 import useKeys from 'react-use/lib/useKeyboardJs';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
 
 export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
   const {
-    actions: {
-      modalOpened,
-      editor: { addNpmDependency },
-    },
-    state: {
-      workspace: { explorerDependencies },
-    },
-  } = useOvermind();
+    modalOpened,
+    editor: { addNpmDependency },
+  } = useActions();
+  const { explorerDependencies } = useAppState().workspace;
+  const effects = useEffects();
   const [one] = useKeys('ctrl + one');
   const [two] = useKeys('ctrl + two');
   const [three] = useKeys('ctrl + three');
@@ -21,10 +18,16 @@ export const useKeyboard = (searchInput: { current: HTMLFormElement }) => {
   const [enter] = useKeys('enter');
 
   const addDependency = (dependency: Dependency) => {
-    addNpmDependency({
-      name: dependency.name,
-      version: dependency.tags.latest,
-    });
+    if (dependency.tags) {
+      addNpmDependency({
+        name: dependency.name,
+        version: dependency.tags?.latest,
+      });
+    } else {
+      effects.notificationToast.error(
+        `There has been a problem installing ${dependency.name}. No installable version found`
+      );
+    }
   };
 
   useEffect(() => {

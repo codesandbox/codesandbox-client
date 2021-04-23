@@ -70,6 +70,7 @@ type Props = {
   toggleSidebar: () => void;
   toggleLike: () => void;
   editorSize: number;
+  disableLogging?: boolean;
 };
 
 type State = {
@@ -464,6 +465,8 @@ export default class Content extends React.PureComponent<Props, State> {
       views[1].open = expandDevTools;
     }
 
+    const preferences = this.getPreferences();
+
     const browserConfig: IViewType = {
       id: 'codesandbox.browser',
       title: options =>
@@ -471,11 +474,12 @@ export default class Content extends React.PureComponent<Props, State> {
       Content: ({ hidden, options }: DevToolProps) => (
         <BasePreview
           onInitialized={this.onPreviewInitialized}
+          customNpmRegistries={sandbox.npmRegistries}
           sandbox={sandbox}
           hide={hidden}
           url={options.url ? options.url : undefined}
           currentModule={mainModule}
-          settings={this.getPreferences()}
+          settings={preferences}
           initialPath={initialPath}
           isInProjectView={isInProjectView}
           onClearErrors={this.clearErrors}

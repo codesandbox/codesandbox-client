@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   github as GitHubIcon,
   GoogleIcon,
@@ -23,9 +23,12 @@ export const SignInModalElement = ({
   onSignIn,
 }: SignInModalElementProps) => {
   const {
-    state: { duplicateAccountStatus, pendingUser, pendingUserId, loadingAuth },
-    actions: { signInButtonClicked, getPendingUser, setLoadingAuth },
-  } = useOvermind();
+    duplicateAccountStatus,
+    pendingUser,
+    pendingUserId,
+    loadingAuth,
+  } = useAppState();
+  const { signInButtonClicked, getPendingUser, setLoadingAuth } = useActions();
 
   useEffect(() => {
     if (pendingUserId) {
@@ -45,7 +48,6 @@ export const SignInModalElement = ({
       return history.push(redirectTo.replace(location.origin, ''));
     }
     setLoadingAuth('github');
-    window.close();
 
     return null;
   };
@@ -62,7 +64,6 @@ export const SignInModalElement = ({
       return history.push(redirectTo.replace(location.origin, ''));
     }
     setLoadingAuth('google');
-    window.close();
 
     return null;
   };

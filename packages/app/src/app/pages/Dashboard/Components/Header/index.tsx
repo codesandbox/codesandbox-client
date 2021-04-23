@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Breadcrumbs } from '../Breadcrumbs';
@@ -19,25 +19,27 @@ type Props = {
   showViewOptions?: boolean;
   showSortOptions?: boolean;
   repos?: boolean;
+  albumId?: string;
   activeTeam: string;
+  CustomFilters?: React.ReactElement;
 };
 
 export const Header = ({
   createNewFolder,
   templates,
   repos,
+  albumId,
   path,
   title,
   activeTeam,
   showFilters = false,
   showViewOptions = false,
   showSortOptions = false,
+  CustomFilters,
 }: Props) => {
   const location = useLocation();
-  const {
-    actions,
-    state: { dashboard },
-  } = useOvermind();
+  const { modals } = useActions();
+  const { dashboard } = useAppState();
 
   return (
     <Stack
@@ -59,7 +61,12 @@ export const Header = ({
           {title}
         </Text>
       ) : (
-        <Breadcrumbs repos={repos} activeTeam={activeTeam} path={path} />
+        <Breadcrumbs
+          repos={repos}
+          activeTeam={activeTeam}
+          path={path}
+          albumId={albumId}
+        />
       )}
       <Stack gap={4} align="center">
         {location.pathname.includes('/all') && (
@@ -79,7 +86,7 @@ export const Header = ({
         {location.pathname.includes('/repositories') &&
           dashboard.viewMode === 'list' && (
             <Button
-              onClick={() => actions.modals.newSandboxModal.open({})}
+              onClick={() => modals.newSandboxModal.open({})}
               variant="link"
               css={css({
                 fontSize: 2,
@@ -93,7 +100,12 @@ export const Header = ({
           )}
 
         <Stack gap={4}>
-          {showFilters && <FilterOptions possibleTemplates={templates} />}
+          {showFilters && (
+            <FilterOptions
+              possibleTemplates={templates}
+              CustomFilters={CustomFilters}
+            />
+          )}
           {showSortOptions && <SortOptions />}
           {showViewOptions && <ViewOptions />}
         </Stack>

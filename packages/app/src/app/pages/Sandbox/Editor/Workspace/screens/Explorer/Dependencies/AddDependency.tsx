@@ -8,9 +8,11 @@ import {
   Element,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import Downshift from 'downshift';
+import Downshift, { PropGetters } from 'downshift';
+import { Dependency } from '@codesandbox/common/lib/types/algolia';
+import { isPrivateScope } from 'app/utils/private-registry';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { useKeyboard } from './useKeys';
 
 const buttonStyles = css({
@@ -18,26 +20,185 @@ const buttonStyles = css({
   justifyContent: 'space-between',
 });
 
+type AddDependencyResultListProps = {
+  inputValue: string;
+  explorerDependenciesEmpty: boolean;
+  usedExplorerDependencies: ('OPEN_MODAL' | Dependency)[];
+  highlightedIndex: number;
+  getItemProps: PropGetters<unknown>['getItemProps'];
+  addNpmDependency: (dep: { name: string; version: string }) => void;
+};
+
+const AddDependencyResultList = ({
+  inputValue,
+  explorerDependenciesEmpty,
+  usedExplorerDependencies,
+  highlightedIndex,
+  getItemProps,
+  addNpmDependency,
+}: AddDependencyResultListProps) => {
+  const state = useAppState();
+
+  const isPrivateNpmScope =
+    state.editor.currentSandbox &&
+    isPrivateScope(state.editor.currentSandbox, inputValue);
+
+  if (isPrivateNpmScope) {
+    return (
+      <ListAction
+        css={css({
+          color: 'sideBar.foreground',
+          borderWidth: 0,
+          borderTopWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'sideBar.border',
+          padding: 3,
+        })}
+      >
+        <Text
+          css={css({
+            maxWidth: '80%',
+            margin: 'auto',
+            lineHeight: 1.5,
+          })}
+          size={2}
+          align="center"
+          variant="muted"
+        >
+          This is a package from your npm registry, you can type the full name
+          and press {'"'}Enter{'"'} to add it.
+        </Text>
+      </ListAction>
+    );
+  }
+
+  if (explorerDependenciesEmpty) {
+    return (
+      <ListAction
+        css={css({
+          color: 'sideBar.foreground',
+          borderWidth: 0,
+          borderTopWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'sideBar.border',
+          padding: 3,
+        })}
+      >
+        <Text
+          css={css({
+            maxWidth: '80%',
+            margin: 'auto',
+            lineHeight: 1.5,
+          })}
+          size={2}
+          align="center"
+          variant="muted"
+        >
+          It looks like there aren’t any matches for your query
+        </Text>
+      </ListAction>
+    );
+  }
+
+  return (
+    <>
+      {usedExplorerDependencies.map((dependency, i) =>
+        dependency === 'OPEN_MODAL' ? (
+          <ListAction
+            key="show-all"
+            justify="space-between"
+            isActive={highlightedIndex === i}
+            css={css({
+              color: 'sideBar.foreground',
+              borderWidth: 0,
+              borderTopWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: 'sideBar.border',
+            })}
+            {...getItemProps({
+              key: 'OPEN_MODAL',
+              index: i,
+              item: 'OPEN_MODAL',
+            })}
+          >
+            <Button
+              css={buttonStyles}
+              tabIndex={0}
+              variant="link"
+              type="button"
+            >
+              <Text weight="400">Show All</Text>
+              <Text variant="muted">Ctrl + D</Text>
+            </Button>
+          </ListAction>
+        ) : (
+          <ListAction
+            key={dependency.objectID}
+            justify="space-between"
+            isActive={highlightedIndex === i}
+            css={css({ color: 'sideBar.foreground' })}
+            {...getItemProps({
+              key: dependency.objectID,
+              index: i,
+              item: dependency,
+            })}
+          >
+            <Button
+              css={buttonStyles}
+              variant="link"
+              type="button"
+              onClick={() => {
+                addNpmDependency({
+                  name: dependency.name,
+                  version: dependency.tags?.latest,
+                });
+              }}
+            >
+              <Text maxWidth="80%" weight="400">
+                {dependency._highlightResult ? (
+                  <Text
+                    css={css({
+                      em: {
+                        fontWeight: 'bold',
+                        fontStyle: 'initial',
+                      },
+                    })}
+                    dangerouslySetInnerHTML={{
+                      __html: dependency._highlightResult.name?.value,
+                    }}
+                  />
+                ) : (
+                  dependency.name
+                )}
+              </Text>
+              <Text variant="muted">Ctrl + {i + 1}</Text>
+            </Button>
+          </ListAction>
+        )
+      )}
+    </>
+  );
+};
+
 export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
   const {
-    actions: {
-      modalOpened,
-      editor: { addNpmDependency },
-      workspace: {
-        getExplorerDependencies,
-        clearExplorerDependencies,
-        changeDependencySearch,
-      },
+    modalOpened,
+    editor: { addNpmDependency },
+    workspace: {
+      getExplorerDependencies,
+      clearExplorerDependencies,
+      changeDependencySearch,
     },
-    state: {
-      currentModal,
-      workspace: {
-        explorerDependencies,
-        explorerDependenciesEmpty,
-        dependencySearch,
-      },
+  } = useActions();
+  const effects = useEffects();
+  const {
+    currentModal,
+    workspace: {
+      explorerDependencies,
+      explorerDependenciesEmpty,
+      dependencySearch,
     },
-  } = useOvermind();
+  } = useAppState();
   const modalOpen = currentModal === 'searchDependencies';
   const searchInput = useRef();
   useKeyboard(searchInput);
@@ -60,6 +221,26 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
     getExplorerDependencies(value);
   };
 
+  const onDependencySelect = dependency => {
+    if (dependency === 'OPEN_MODAL') {
+      modalOpened({ modal: 'searchDependencies' });
+      clearExplorerDependencies();
+    } else if (dependency?.name) {
+      if (dependency.tags) {
+        addNpmDependency({
+          name: dependency.name,
+          version: dependency.tags?.latest,
+        });
+      } else {
+        effects.notificationToast.error(
+          `There has been a problem installing ${dependency.name}. No installable version found`
+        );
+      }
+      clearExplorerDependencies();
+      changeDependencySearch('');
+    }
+  };
+
   const usedExplorerDependencies = [
     ...explorerDependencies,
     'OPEN_MODAL' as const,
@@ -67,19 +248,7 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
 
   return (
     <Downshift
-      onSelect={dependency => {
-        if (dependency === 'OPEN_MODAL') {
-          modalOpened({ modal: 'searchDependencies' });
-          clearExplorerDependencies();
-        } else if (dependency?.name) {
-          addNpmDependency({
-            name: dependency.name,
-            version: dependency.tags.latest,
-          });
-          clearExplorerDependencies();
-          changeDependencySearch('');
-        }
-      }}
+      onSelect={onDependencySelect}
       itemToString={dependency => {
         if (dependency === 'OPEN_MODAL') {
           return 'OPEN_MODAL';
@@ -182,107 +351,14 @@ export const AddDependency: FunctionComponent<{ readonly?: boolean }> = () => {
                   {...getMenuProps()}
                   id="list"
                 >
-                  {!explorerDependenciesEmpty ? (
-                    usedExplorerDependencies.map((dependency, i) =>
-                      dependency === 'OPEN_MODAL' ? (
-                        <ListAction
-                          key="show-all"
-                          justify="space-between"
-                          isActive={highlightedIndex === i}
-                          css={css({
-                            color: 'sideBar.foreground',
-                            borderWidth: 0,
-                            borderTopWidth: '1px',
-                            borderStyle: 'solid',
-                            borderColor: 'sideBar.border',
-                          })}
-                          {...getItemProps({
-                            key: 'OPEN_MODAL',
-                            index: i,
-                            item: 'OPEN_MODAL',
-                          })}
-                        >
-                          <Button
-                            css={buttonStyles}
-                            tabIndex={0}
-                            variant="link"
-                            type="button"
-                          >
-                            <Text weight="400">Show All</Text>
-                            <Text variant="muted">Ctrl + D</Text>
-                          </Button>
-                        </ListAction>
-                      ) : (
-                        <ListAction
-                          key={dependency.objectID}
-                          justify="space-between"
-                          isActive={highlightedIndex === i}
-                          css={css({ color: 'sideBar.foreground' })}
-                          {...getItemProps({
-                            key: dependency.objectID,
-                            index: i,
-                            item: dependency,
-                          })}
-                        >
-                          <Button
-                            css={buttonStyles}
-                            variant="link"
-                            type="button"
-                            onClick={() =>
-                              addNpmDependency({
-                                name: dependency.name,
-                                version: dependency.tags.latest,
-                              })
-                            }
-                          >
-                            <Text maxWidth="80%" weight="400">
-                              {dependency._highlightResult ? (
-                                <Text
-                                  css={css({
-                                    em: {
-                                      fontWeight: 'bold',
-                                      fontStyle: 'initial',
-                                    },
-                                  })}
-                                  dangerouslySetInnerHTML={{
-                                    __html:
-                                      dependency._highlightResult.name?.value,
-                                  }}
-                                />
-                              ) : (
-                                dependency.name
-                              )}
-                            </Text>
-                            <Text variant="muted">Ctrl + {i + 1}</Text>
-                          </Button>
-                        </ListAction>
-                      )
-                    )
-                  ) : (
-                    <ListAction
-                      css={css({
-                        color: 'sideBar.foreground',
-                        borderWidth: 0,
-                        borderTopWidth: '1px',
-                        borderStyle: 'solid',
-                        borderColor: 'sideBar.border',
-                        padding: 3,
-                      })}
-                    >
-                      <Text
-                        css={css({
-                          maxWidth: '80%',
-                          margin: 'auto',
-                          lineHeight: 1.5,
-                        })}
-                        size={2}
-                        align="center"
-                        variant="muted"
-                      >
-                        It looks like there aren’t any matches for your query
-                      </Text>
-                    </ListAction>
-                  )}
+                  <AddDependencyResultList
+                    inputValue={inputValue}
+                    explorerDependenciesEmpty={explorerDependenciesEmpty}
+                    usedExplorerDependencies={usedExplorerDependencies}
+                    highlightedIndex={highlightedIndex}
+                    getItemProps={getItemProps}
+                    addNpmDependency={addNpmDependency}
+                  />
                 </Element>
               </Element>
             ) : null}

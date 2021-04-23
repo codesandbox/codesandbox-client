@@ -3,7 +3,7 @@ import { Loading } from 'app/components/Loading';
 
 type Unpacked<T> = T extends Promise<infer U> ? U : T;
 
-const Loadable: <T extends Promise<{ default: React.ComponentType }>>(
+export const Loadable: <T extends Promise<{ default: React.ComponentType }>>(
   loader: () => T
 ) => Unpacked<T>['default'] = loader =>
   class extends React.Component {
@@ -47,5 +47,3 @@ const Loadable: <T extends Promise<{ default: React.ComponentType }>>(
       return null;
     }
   };
-
-export default Loadable;

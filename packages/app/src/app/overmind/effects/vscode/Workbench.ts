@@ -211,14 +211,21 @@ export class Workbench {
       },
     });
 
-    this.appendMenuItem(MenuId.MenubarFileMenu, {
-      group: '4_zsandbox',
-      order: 2,
-      command: {
-        id: 'codesandbox.sandbox.exportzip',
-        title: 'Export to ZIP',
-      },
-    });
+    if (
+      this.controller.getState().editor?.currentSandbox?.permissions
+        .preventSandboxExport
+    ) {
+      // don't add the option to add export
+    } else {
+      this.appendMenuItem(MenuId.MenubarFileMenu, {
+        group: '4_zsandbox',
+        order: 2,
+        command: {
+          id: 'codesandbox.sandbox.exportzip',
+          title: 'Export to ZIP',
+        },
+      });
+    }
 
     this.appendMenuItem(MenuId.MenubarPreferencesMenu, {
       group: '1_settings',
@@ -296,6 +303,11 @@ export class Workbench {
       'codesandbox.help.twitter',
       'Follow Us on Twitter',
       'https://twitter.com/codesandbox'
+    );
+    addBrowserNavigationCommand(
+      'codesandbox.help.discord',
+      'Join our discord server',
+      'https://discord.gg/5BpufEP7MH'
     );
 
     this.addWorkbenchAction({

@@ -1,6 +1,6 @@
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 
-export const initialize: AsyncAction = async ({ state, effects, actions }) => {
+export const initialize = async ({ state, effects, actions }: Context) => {
   if (!state.user || !state.user.id) {
     return;
   }
@@ -15,9 +15,9 @@ export const initialize: AsyncAction = async ({ state, effects, actions }) => {
   );
 };
 
-export const messageReceived: Action<{ event: string; data: any }> = (
-  { state },
-  message
+export const messageReceived = (
+  { state }: Context,
+  message: { event: string; data: any }
 ) => {
   switch (message.event) {
     case 'new-notification': {

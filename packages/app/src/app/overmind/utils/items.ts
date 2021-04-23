@@ -42,6 +42,11 @@ export const GITHUB_SUMMARY: INavigationItem = {
   hasCustomHeader: true,
 };
 
+export const SEARCH: INavigationItem = {
+  id: 'search',
+  name: 'Search',
+};
+
 export const FILES: INavigationItem = {
   id: 'files',
   name: 'Explorer',
@@ -86,7 +91,16 @@ export function getDisabledItems(store: any): INavigationItem[] {
   const { currentSandbox } = store.editor;
 
   if (!currentSandbox) {
-    return [PROJECT_SUMMARY, CONFIGURATION, GITHUB, DEPLOYMENT, SERVER, LIVE];
+    return [
+      PROJECT_SUMMARY,
+      FILES,
+      SEARCH,
+      CONFIGURATION,
+      GITHUB,
+      COMMENTS,
+      DEPLOYMENT,
+      LIVE,
+    ];
   }
 
   if (currentSandbox.git) {
@@ -146,7 +160,7 @@ export default function getItems(
   }
 
   if (!currentSandbox || !currentSandbox.owned) {
-    return [PROJECT_SUMMARY, CONFIGURATION];
+    return [PROJECT_SUMMARY, SEARCH, CONFIGURATION];
   }
 
   const isCustomTemplate = !!currentSandbox.customTemplate;
@@ -154,6 +168,7 @@ export default function getItems(
     isCustomTemplate ? PROJECT_TEMPLATE : PROJECT,
     FILES,
     INSPECTOR,
+    SEARCH,
     CONFIGURATION,
   ];
 

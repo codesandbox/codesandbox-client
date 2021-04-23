@@ -30,6 +30,8 @@
   "fst": "image/vnd.fst",
   "mmr": "image/vnd.fujixerox.edmics-mmr",
   "rlc": "image/vnd.fujixerox.edmics-rlc",
+  "txt": "text/plain",
+  "md": "text/plain",
   "mdi": "image/vnd.ms-modi",
   "wdp": "image/vnd.ms-photo",
   "npx": "image/vnd.net-fpx",

@@ -1,699 +1,213 @@
-import React from 'react';
-
+/* eslint-disable no-nested-ternary */
+import React, { useState, useEffect } from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { motion } from 'framer-motion';
 import Layout from '../../components/layout';
 import PageContainer from '../../components/PageContainer';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
-import Join from '../../screens/home/join';
-import { Title } from '../../templates/_feature.elements';
+import Switch from '../../components/Switch';
 import { P } from '../../components/Typography';
+import { Title } from '../../components/LayoutComponents';
 import {
-  Card,
-  CardTitle,
-  Price,
-  PriceSubText,
-  List,
-  Button,
+  Plan,
+  PlanName,
   FeaturesTableHeader,
   FeaturesTable,
   FeatureTitle,
-  CardContainer,
-  FeaturesTitle,
+  TableWrapper,
+  ModeChooser,
+  ProductChooser,
+  TableSection,
 } from './_elements';
+import { personal } from './data/_personal';
+import { business } from './data/_business';
+import Cards from './_cards';
+import { OpenIcon, SavePersonal, SaveTeam } from './_icons';
 
-export default () => (
-  <Layout>
-    <TitleAndMetaTags title="Pricing - CodeSandbox" />
-    <PageContainer width={1086}>
-      <Title textCenter>Pricing</Title>
-    </PageContainer>
-    <CardContainer>
-      <Card
-        dark
+export default () => {
+  const [open, setOpen] = useState({});
+  const [mode, setMode] = useState('annually');
+  const [product, setProduct] = useState();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    setProduct(urlParams.get('for') === 'individual' ? 'personal' : 'team');
+  }, []);
+
+  useEffect(() => {
+    const array = product === 'personal' ? personal : business;
+    const opened = {};
+
+    array.defaultOpen.forEach(item => {
+      opened[item] = true;
+    });
+
+    setOpen(opened);
+  }, [product]);
+
+  const toggleTable = name => {
+    if (!open[name]) {
+      track('Plan detail opened', {
+        category: name,
+        tab: product === 'personal' ? 'Individual' : 'Business',
+      });
+    }
+    setOpen(o => ({ ...o, [name]: !o[name] }));
+  };
+
+  const array = product === 'personal' ? personal : business;
+
+  return (
+    <Layout>
+      <TitleAndMetaTags title="Pricing - CodeSandbox" />
+      <PageContainer width={1086}>
+        <Title
+          css={`
+            font-size: 64px;
+            max-width: 802px;
+            margin: auto;
+            line-height: 76px;
+            margin-bottom: 76px;
+            margin-top: 40px;
+          `}
+        >
+          Choose a plan that's right for you
+        </Title>
+      </PageContainer>
+      <ProductChooser>
+        <button
+          type="button"
+          aria-pressed={product === 'personal'}
+          onClick={() => setProduct('personal')}
+        >
+          For Individuals
+        </button>
+        <button
+          type="button"
+          aria-pressed={product === 'team'}
+          onClick={() => setProduct('team')}
+        >
+          For Businesses
+        </button>
+      </ProductChooser>
+      <ModeChooser>
+        <span>Bill monthly</span>
+        <Switch
+          on={mode === 'annually'}
+          onClick={() =>
+            setMode(m => (m === 'annually' ? 'monthly' : 'annually'))
+          }
+        />
+        <span>Bill annually</span>
+        {product === 'team' ? <SaveTeam /> : <SavePersonal />}
+      </ModeChooser>
+      <Cards team={product === 'team'} mode={mode} />
+      <Title
+        as="h2"
         css={`
-          grid-area: free;
+          font-size: 33px;
+          margin-top: 70px;
+          margin-bottom: 48px;
+          text-align: left;
         `}
       >
-        <div>
-          <CardTitle>Community</CardTitle>
-          <Price>Free</Price>
-          <List>
-            <li>
-              <span>✓</span> Development & Prototyping
-            </li>{' '}
-            <li>
-              <span>✓</span> Online IDE{' '}
-            </li>
-            <li>
-              <span>✓</span> Embeds{' '}
-            </li>
-            <li>
-              <span>✓</span> CodeSandbox CI{' '}
-            </li>
-            <li>
-              <span>✓</span> Teams
-            </li>
-          </List>
-        </div>
-        <Button href="/s">Create Sandbox, it’s free </Button>
-      </Card>
-      <Card
-        css={`
-          grid-area: pro;
-        `}
-      >
-        <div>
-          <CardTitle>Pro</CardTitle>
-          <Price style={{ marginBottom: '0.5rem' }}>$9/Month</Price>
-          <PriceSubText>billed annually or $12 month-to-month</PriceSubText>
-          <List
-            css={`
-              color: white;
-              margin-top: 1.5rem;
-            `}
-          >
-            <li
+        Compare plans & features
+      </Title>
+      <TableSection>
+        {array.items.map(item => (
+          <TableWrapper>
+            <FeaturesTableHeader
+              team={product === 'team'}
+              onClick={() => toggleTable(item.name)}
               css={`
-                margin-bottom: 2rem;
+                margin-top: 0;
               `}
             >
-              Everything in Community, plus:
-            </li>
-            <li>+ Unlimited Private Sandboxes </li>
-            <li>+ Private GitHub Repos</li>
-          </List>
-        </div>
-        <Button white href="/pro">
-          Subscribe to Pro
-        </Button>
-      </Card>
-      <Card
-        css={props => `
-          grid-area: team;
-          background: transparent;
-          border: 1px solid;
-          border-color: ${props.theme.homepage.grey};
-          height: auto;
-        `}
-      >
-        <div>
-          <CardTitle>Team Pro</CardTitle>
-          <Price>Coming soon</Price>
+              <span>{item.name}</span>
+              <OpenIcon open={open[item.name]} />
+            </FeaturesTableHeader>
+            <FeaturesTable
+              team={product === 'team'}
+              as={motion.div}
+              initial={{ height: 0 }}
+              animate={{ height: `${open[item.name] ? 'auto' : 0}` }}
+              open={open[item.name]}
+            >
+              <Plan as="div" team={product === 'team'}>
+                <span />
+                {array.plans.map(plan => (
+                  <PlanName style={{ color: plan.color }} paid={!plan.free}>
+                    {plan.name}
+                  </PlanName>
+                ))}
+              </Plan>
+              {item.features.map(feature => {
+                if (feature.subheading) {
+                  return (
+                    <>
+                      <li
+                        css={`
+                          grid-template-columns: 1fr;
+                        `}
+                      >
+                        {' '}
+                        <FeatureTitle>{feature.subheading}</FeatureTitle>
+                      </li>
+                      {feature.features.map(fea => (
+                        <li>
+                          <div>
+                            <FeatureTitle>{fea.name}</FeatureTitle>
+                            <P muted small>
+                              {fea.desc}
+                            </P>{' '}
+                          </div>
+                          <Checks feature={fea} product={product} />
+                        </li>
+                      ))}
+                    </>
+                  );
+                }
+                return (
+                  <li>
+                    <div>
+                      <FeatureTitle>{feature.name}</FeatureTitle>
+                      <P muted small>
+                        {feature.desc}
+                      </P>
+                    </div>
+                    <Checks feature={feature} product={product} />
+                  </li>
+                );
+              })}
+            </FeaturesTable>
+          </TableWrapper>
+        ))}
+      </TableSection>
+    </Layout>
+  );
+};
 
-          <div
-            css={props => `
-              font-size: 1.4rem;
-              margin-bottom: 1rem;
-              color: ${props.theme.homepage.greyLight};
-            `}
-          >
-            Use CodeSandbox with your team
-          </div>
-        </div>
-        <div>
-          <Button
-            white
-            href="https://airtable.com/shrlgLSJWiX8rYqyG"
-            css={`
-              max-width: 20rem;
-              margin: 0 auto;
-            `}
-          >
-            Get early access
-          </Button>
-        </div>
-      </Card>
-    </CardContainer>
+const Checks = ({ feature, product }) => {
+  if (typeof feature.available === 'boolean') {
+    return product === 'team' ? (
+      <>
+        <span>✓</span>
+        <span>✓</span>
+        <span>✓</span>
+      </>
+    ) : (
+      <>
+        <span>✓</span>
+        <span>✓</span>
+      </>
+    );
+  }
 
-    <FeaturesTitle>Features</FeaturesTitle>
-    <FeaturesTableHeader
-      css={`
-        margin-top: 0;
-      `}
-    >
-      <span>Development & Prototyping</span>
-      <span
-        css={`
-          text-align: center;
-        `}
-      >
-        Community
-      </span>
-      <span
-        css={`
-          text-align: center;
-        `}
-      >
-        Pro
-      </span>
-    </FeaturesTableHeader>
-    <FeaturesTable>
-      <li>
-        <div>
-          <FeatureTitle>Templates</FeatureTitle>
-          <P muted small>
-            Start from an official template, or create your own.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
+  return feature.available.map(available => {
+    if (typeof available === 'string') {
+      return <span className="text">{available}</span>;
+    }
 
-      <li>
-        <div>
-          <FeatureTitle>Static File Hosting</FeatureTitle>
-          <P muted small>
-            All static files served via CDN.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-
-      <li>
-        <div>
-          <FeatureTitle>Public Sandboxes</FeatureTitle>
-          <P muted small>
-            Sandboxes, both the app and code, are available publicly by default.
-          </P>
-        </div>
-        <span>∞</span>
-        <span>∞</span>
-      </li>
-
-      <li>
-        <div>
-          <FeatureTitle>Unlimited Private Sandboxes</FeatureTitle>
-          <P muted small>
-            Set a sandbox as private or unlisted so others can't see the code or
-            the app.
-          </P>
-        </div>
-        <span />
-        <span>✓</span>
-      </li>
-
-      <li>
-        <div>
-          <FeatureTitle>Private GitHub Repos</FeatureTitle>
-          <P muted small>
-            Import and sync repos which are private on GitHub to CodeSandbox.
-          </P>
-        </div>
-        <span />
-        <span>✓</span>
-      </li>
-    </FeaturesTable>
-    <FeaturesTableHeader>
-      <span>Online IDE</span>
-    </FeaturesTableHeader>
-    <FeaturesTable>
-      <li>
-        <div>
-          <FeatureTitle>VS Code powered Editor</FeatureTitle>
-          <P muted small>
-            Leverage the power and familiarity of VS Code.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Hot Module Reloading</FeatureTitle>
-          <P muted small>
-            See changes as you make them.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Keybindings & Quick Actions</FeatureTitle>
-          <P muted small>
-            Perform common tasks speedily.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Console</FeatureTitle>
-          <P muted small>
-            View logging and console output to see loading progress and debug
-            issues.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Test Viewer</FeatureTitle>
-          <P muted small>
-            Showing test results alongside your code.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Problem Viewer</FeatureTitle>
-          <P muted small>
-            See errors clearly with our user-friendly overlay.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Zen Mode</FeatureTitle>
-          <P muted small>
-            Zen mode hides distracting editor elements for demos and
-            screenshots.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Custom Themes</FeatureTitle>
-          <P muted small>
-            Tweak theme styles with support for all VS Code themes.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Vim Mode</FeatureTitle>
-          <P muted small>
-            Vim emulation in the editor, powered by the VSCodeVim extension.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Type Acquisition</FeatureTitle>
-          <P muted small>
-            Typings automatically downloaded for every dependency.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>External Resources</FeatureTitle>
-          <P muted small>
-            Automatically include external resources, like CSS or JS files.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Session Restore</FeatureTitle>
-          <P muted small>
-            Recover un-saved changes between sessions.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>External Previews</FeatureTitle>
-          <P muted small>
-            Open sandbox previews on a separate URL but with Hot Module
-            Reloading.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-    </FeaturesTable>
-    <FeaturesTableHeader inside>
-      <span>Dev Tool Integrations</span>
-    </FeaturesTableHeader>
-    <FeaturesTable inside>
-      <li>
-        <div>
-          <FeatureTitle>NPM Packages</FeatureTitle>
-          <P muted small>
-            Add any of the 1M+ dependencies on npm directly from the editor.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>GitHub</FeatureTitle>
-          <P muted small>
-            Import and sync public repos, export a sandbox to a repo, or create
-            commits and open PRs.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Vercel Deploy</FeatureTitle>
-          <P muted small>
-            Deploy a production version of your sandbox to Vercel.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Netlify Deploy</FeatureTitle>
-          <P muted small>
-            Deploy a production version of your sandbox to Netlify.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Jest</FeatureTitle>
-          <P muted small>
-            Auto-detect and run Jest tests.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>React DevTools</FeatureTitle>
-          <P muted small>
-            Integration of React’s own DevTools into the editor.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Prettier</FeatureTitle>
-          <P muted small>
-            Code gets prettified on save according to preferences.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>ESLint</FeatureTitle>
-          <P muted small>
-            Code is linted automatically.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Emmet</FeatureTitle>
-          <P muted small>
-            Expand abbreviations with Emmet.io in all JS, HTML, and CSS files.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Stackbit</FeatureTitle>
-          <P muted small>
-            Import projects generated by Stackbit.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-    </FeaturesTable>
-
-    <FeaturesTableHeader inside>
-      <span>Collaboration</span>
-    </FeaturesTableHeader>
-    <FeaturesTable inside>
-      <li>
-        <div>
-          <FeatureTitle>Live Mode</FeatureTitle>
-          <P muted small>
-            Work on code and edit sandboxes with multiple people.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>In-editor Chat</FeatureTitle>
-          <P muted small>
-            Chat with collaborators about the code you're all working on.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Classroom Mode</FeatureTitle>
-          <P muted small>
-            Use Classroom Mode to control who can make edits or watch.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Shareable Links</FeatureTitle>
-          <P muted small>
-            Per sandbox URL with HTTPS support for secure project sharing.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-    </FeaturesTable>
-    <FeaturesTableHeader inside>
-      <span>Containers</span>
-    </FeaturesTableHeader>
-    <FeaturesTable inside>
-      <li>
-        <div>
-          <FeatureTitle>Server Sandboxes</FeatureTitle>
-          <P muted small>
-            Create full-stack web apps and use Node packages.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Terminal</FeatureTitle>
-          <P muted small>
-            Run scripts and commands from a terminal.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Server Control Panel</FeatureTitle>
-          <P muted small>
-            Restart the sandbox or server.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Multiple Ports</FeatureTitle>
-          <P muted small>
-            Container apps can listen on one or more ports simultaneously.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Secrets</FeatureTitle>
-          <P muted small>
-            Hide sensitive information in your app and access them via
-            environment variables.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-    </FeaturesTable>
-    <FeaturesTableHeader inside>
-      <span>Sandbox Config & Management</span>
-    </FeaturesTableHeader>
-    <FeaturesTable inside>
-      <li>
-        <div>
-          <FeatureTitle>Dashboard</FeatureTitle>
-          <P muted small>
-            Organize sandboxes and templates. Search, sort, or modify multiple
-            sandboxes at once.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Configuration UI</FeatureTitle>
-          <P muted small>
-            Edit config files for npm, Prettier, Netlify, Vercel, TypeScript,
-            JavaScript, and your sandbox.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Export Zip</FeatureTitle>
-          <P muted small>
-            Download your sandbox as a zip.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Import CLI </FeatureTitle>
-          <P muted small>
-            Import a local project to CodeSandbox easily.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Define API </FeatureTitle>
-          <P muted small>
-            Programmatically create sandboxes via an API.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Storage Management </FeatureTitle>
-          <P muted small>
-            View storage usage and upload or delete files from one management
-            screen.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-    </FeaturesTable>
-    <FeaturesTableHeader>
-      <span>Community</span>
-    </FeaturesTableHeader>
-    <FeaturesTable>
-      <li>
-        <div>
-          <FeatureTitle>Public Profile</FeatureTitle>
-          <P muted small>
-            A personal portfolio page highlighting your best sandboxes.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Sandbox Search</FeatureTitle>
-          <P muted small>
-            Search public sandboxes and filter by dependency, environment, and
-            tag.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Explore</FeatureTitle>
-          <P muted small>
-            Hand-picked sandboxes highlighting the best recent community
-            creations.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-    </FeaturesTable>
-    <FeaturesTable
-      css={`
-        margin-top: 5.5rem;
-
-        li {
-          margin-top: 2rem;
-        }
-      `}
-    >
-      <li>
-        <div>
-          <FeatureTitle>Embeds</FeatureTitle>
-          <P muted small>
-            Embed sandboxes in docs, blog posts, and websites.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>CodeSandbox CI</FeatureTitle>
-          <P muted small>
-            A GitHub integration that auto-builds from pull requests.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-      <li>
-        <div>
-          <FeatureTitle>Teams</FeatureTitle>
-          <P muted small>
-            View and edit sandboxes with all team members.
-          </P>
-        </div>
-        <span>✓</span>
-        <span>✓</span>
-      </li>
-    </FeaturesTable>
-    <Join />
-  </Layout>
-);
+    return <span>{available ? '✓' : ''}</span>;
+  });
+};

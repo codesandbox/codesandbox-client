@@ -1,18 +1,66 @@
 import React, { useEffect, useRef } from 'react';
 import { Dependency as DependencyType } from '@codesandbox/common/lib/types/algolia';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Element, Text, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { isPrivateScope } from 'app/utils/private-registry';
 import { SearchBox } from './SearchBox';
 import { Dependency } from './Dependency';
 import { AddDependencyModalFooter } from './Footer';
 
+type DependencyListProps = {
+  isPrivateDependency: boolean;
+  list: React.MutableRefObject<HTMLDivElement>;
+};
+
+const DependencyList = ({ isPrivateDependency, list }: DependencyListProps) => {
+  const { workspace } = useAppState();
+
+  let message: string | undefined;
+
+  if (!workspace.dependencies.length && !workspace.loadingDependencySearch) {
+    message = 'It looks like there aren’t any matches for your query';
+  } else if (isPrivateDependency) {
+    message =
+      "This is a private package, please fill in the full package name and press 'Enter'";
+  }
+
+  const dependencyList = workspace.showingSelectedDependencies
+    ? Object.values(workspace.selectedDependencies).map(dependency => (
+        <Dependency key={dependency.objectID} dependency={dependency} />
+      ))
+    : workspace.dependencies.map(dependency => (
+        <Dependency key={dependency.objectID} dependency={dependency} />
+      ));
+
+  return (
+    <Element
+      ref={list}
+      paddingBottom={10}
+      css={css({
+        height: '60vh',
+        overflow: 'auto',
+      })}
+    >
+      {message ? (
+        <Stack align="center" justify="center" css={css({ height: '100%' })}>
+          <Text variant="muted">{message}</Text>
+        </Stack>
+      ) : (
+        dependencyList
+      )}
+    </Element>
+  );
+};
+
 export const SearchDependencies = ({ onConfirm }) => {
-  const {
-    state: { workspace },
-    actions,
-  } = useOvermind();
+  const actions = useActions();
+  const { workspace, editor } = useAppState();
   const list = useRef();
+
+  const [isPrivateDependency, setIsPrivateDependency] = React.useState<boolean>(
+    false
+  );
 
   const handleSelect = async (hit: DependencyType) => {
     let version = workspace.hitToVersionMap[hit.objectID];
@@ -64,15 +112,22 @@ export const SearchDependencies = ({ onConfirm }) => {
     }
 
     actions.workspace.getDependencies(searchValue);
+
+    setIsPrivateDependency(
+      editor.currentSandbox &&
+        isPrivateScope(editor.currentSandbox, searchValue)
+    );
   };
 
   useEffect(() => {
     actions.workspace.clearSelectedDependencies();
-    actions.workspace.getDependencies();
+    // Why did we call this? The action just returns when undefined
+    // actions.workspace.getDependencies();
 
     return () => {
       actions.workspace.changeDependencySearch('');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -89,30 +144,7 @@ export const SearchDependencies = ({ onConfirm }) => {
         handleManualSelect={handleManualSelect}
         listRef={list}
       />
-      <Element
-        ref={list}
-        paddingBottom={10}
-        css={css({
-          height: '60vh',
-          overflow: 'auto',
-        })}
-      >
-        {!workspace.dependencies.length &&
-        !workspace.loadingDependencySearch ? (
-          <Stack align="center" justify="center" css={css({ height: '100%' })}>
-            <Text variant="muted">
-              It looks like there aren’t any matches for your query
-            </Text>
-          </Stack>
-        ) : null}
-        {workspace.showingSelectedDependencies
-          ? Object.values(workspace.selectedDependencies).map(dependency => (
-              <Dependency key={dependency.objectID} dependency={dependency} />
-            ))
-          : workspace.dependencies.map(dependency => (
-              <Dependency key={dependency.objectID} dependency={dependency} />
-            ))}
-      </Element>
+      <DependencyList isPrivateDependency={isPrivateDependency} list={list} />
       <AddDependencyModalFooter onClick={onSelectDependencies} />
     </div>
   );

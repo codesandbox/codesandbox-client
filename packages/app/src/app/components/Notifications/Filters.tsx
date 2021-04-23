@@ -1,19 +1,15 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Stack, Menu, Checkbox } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const Filters = () => {
+  const { userNotifications } = useAppState();
   const {
-    state: { userNotifications },
-    actions: {
-      userNotifications: {
-        filterNotifications,
-        markAllNotificationsAsRead,
-        archiveAllNotifications,
-      },
-    },
-  } = useOvermind();
+    filterNotifications,
+    markAllNotificationsAsRead,
+    archiveAllNotifications,
+  } = useActions().userNotifications;
 
   const options = {
     team_invite: 'Team Invite',

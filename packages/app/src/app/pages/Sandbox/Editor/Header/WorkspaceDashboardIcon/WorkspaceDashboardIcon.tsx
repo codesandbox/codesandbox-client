@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Link } from 'react-router-dom';
 import { Avatar, Icon, Tooltip, Stack } from '@codesandbox/components';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
@@ -7,14 +7,12 @@ import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 
 export const WorkspaceDashboardIcon = () => {
-  const { state } = useOvermind();
-
-  const user = state.user;
+  const { user, activeTeam, activeTeamInfo } = useAppState();
 
   return (
     <Tooltip label="To Dashboard">
       <Link
-        to={dashboard.home(state.activeTeam)}
+        to={dashboard.home(activeTeam)}
         style={{
           position: 'relative',
           width: 40,
@@ -47,10 +45,10 @@ export const WorkspaceDashboardIcon = () => {
         >
           <Icon style={{ color: 'white' }} name="backArrow" />
         </Stack>
-        {state.activeTeam && state.activeTeamInfo ? (
+        {activeTeam && activeTeamInfo ? (
           <TeamAvatar
-            avatar={state.activeTeamInfo.avatarUrl}
-            name={state.activeTeamInfo.name}
+            avatar={activeTeamInfo.avatarUrl}
+            name={activeTeamInfo.name}
           />
         ) : (
           <Avatar css={css({ size: '26px', borderRadius: 2 })} user={user} />

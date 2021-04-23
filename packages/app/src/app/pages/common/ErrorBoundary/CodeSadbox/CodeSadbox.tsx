@@ -1,6 +1,6 @@
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Navigation } from 'app/pages/common/Navigation';
 import React, { useEffect } from 'react';
 import GoHome from 'react-icons/lib/go/home';
@@ -18,10 +18,8 @@ import { Sadbox } from './Sadbox';
 
 export const CodeSadbox: React.FC<IFallbackComponentProps> = withTheme(
   ({ error, trace, theme }) => {
-    const {
-      actions: { codesadboxMounted },
-      state: { isLoggedIn },
-    } = useOvermind();
+    const { codesadboxMounted } = useActions();
+    const { isLoggedIn } = useAppState();
     const [errorCode, setErrorCode] = React.useState<string | null>(null);
 
     useEffect(() => {

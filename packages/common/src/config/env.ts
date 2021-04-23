@@ -21,5 +21,11 @@ export default Object.keys(process.env)
       'process.env.LOCAL_SERVER': Boolean(LOCAL_SERVER),
       'process.env.STAGING': 'STAGING_BRANCH' in process.env,
       'process.env.VSCODE': Boolean(JSON.stringify(process.env.VSCODE)),
+      'process.env.SANDPACK': Boolean(
+        JSON.parse(process.env.SANDPACK || 'false')
+      ),
+      'process.env.DEV_DOMAIN': JSON.stringify(
+        process.env.DEV_DOMAIN || 'codesandbox.test'
+      ),
     }
   );

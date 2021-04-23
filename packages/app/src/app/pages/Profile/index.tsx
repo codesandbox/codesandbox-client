@@ -1,38 +1,33 @@
-import MaxWidth from '@codesandbox/common/lib/components/flex/MaxWidth';
-import {
-  profileLikesUrl,
-  profileSandboxesUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
-import React, { FunctionComponent, useEffect } from 'react';
+import React from 'react';
+import { useAppState, useActions } from 'app/overmind';
+import { ThemeProvider, Stack, Element } from '@codesandbox/components';
+import css from '@styled-system/css';
+import { Switch, Route, RouteComponentProps } from 'react-router-dom';
+import { DndProvider } from 'react-dnd';
+import Backend from 'react-dnd-html5-backend';
 import { Helmet } from 'react-helmet';
-import { Route, RouteComponentProps, Switch } from 'react-router-dom';
-
-import { useOvermind } from 'app/overmind';
 import { NotFound } from 'app/pages/common/NotFound';
-
-import { Container, Content, Margin } from './elements';
 import { Header } from './Header';
-import { Navigation } from './Navigation';
-import { Sandboxes } from './Sandboxes';
-import { Showcase } from './Showcase';
+import { ProfileCard } from './ProfileCard';
+import { ShowcaseSandbox } from './ShowcaseSandbox';
+import { PinnedSandboxes } from './PinnedSandboxes';
+import { AllSandboxes } from './AllSandboxes';
+import { SearchedSandboxes } from './SearchedSandboxes';
+import { LikedSandboxes } from './LikedSandboxes';
 
-type Props = RouteComponentProps<{ username: string }>;
-export const Profile: FunctionComponent<Props> = ({
+import { ContextMenu } from './ContextMenu';
+
+export const Profile: React.FunctionComponent<RouteComponentProps<{
+  username: string;
+}>> = ({
   match: {
     params: { username },
-    url,
   },
 }) => {
-  const {
-    actions: {
-      profile: { profileMounted },
-    },
-    state: {
-      profile: { current: user, notFound },
-    },
-  } = useOvermind();
+  const { profileMounted } = useActions().profile;
+  const { current: user, notFound } = useAppState().profile;
 
-  useEffect(() => {
+  React.useEffect(() => {
     profileMounted(username);
   }, [profileMounted, username]);
 
@@ -40,53 +35,58 @@ export const Profile: FunctionComponent<Props> = ({
     return <NotFound />;
   }
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   return (
-    <Container>
-      <Helmet>
-        <title>{user.name || user.username} - CodeSandbox</title>
-      </Helmet>
+    <ThemeProvider>
+      <Stack
+        direction="vertical"
+        gap={104}
+        css={css({
+          width: '100vw',
+          minHeight: '100vh',
+          backgroundColor: 'grays.900',
+          color: 'white',
+          fontFamily: 'Inter, sans-serif',
+        })}
+      >
+        <Helmet>
+          <title>{user.name || user.username} - CodeSandbox</title>
+        </Helmet>
+        <Header />
 
-      <Header />
-
-      <Content>
-        <MaxWidth>
-          <Navigation />
-        </MaxWidth>
-      </Content>
-
-      <MaxWidth width={1024}>
-        <Margin horizontal={2}>
-          <Switch>
-            <Route component={Showcase} exact path={url} />
-
-            <Route
-              path={`${profileSandboxesUrl(user.username)}/:page?`}
-              render={({ match }: RouteComponentProps<{ page?: string }>) => (
-                <Sandboxes
-                  baseUrl={profileSandboxesUrl(user.username)}
-                  page={Number(match.params.page) || 1}
-                  source="currentSandboxes"
-                />
-              )}
-            />
-
-            <Route
-              path={`${profileLikesUrl(user.username)}/:page?`}
-              render={({ match }: RouteComponentProps<{ page?: string }>) => (
-                <Sandboxes
-                  baseUrl={profileLikesUrl(user.username)}
-                  page={Number(match.params.page) || 1}
-                  source="currentLikedSandboxes"
-                />
-              )}
-            />
-          </Switch>
-        </Margin>
-      </MaxWidth>
-    </Container>
+        <Stack
+          gap={8}
+          css={css({
+            flexDirection: ['column', 'row'],
+            marginX: [32, 64],
+          })}
+        >
+          <Element css={css({ width: ['100%', '320px'] })}>
+            <ProfileCard />
+          </Element>
+          <Element css={css({ width: ['100%', 'calc(100% - 320px)'] })}>
+            <Switch>
+              <Route path={`/u/${user.username}/likes`}>
+                <LikedSandboxes />
+              </Route>
+              <Route path={`/u/${user.username}/search`}>
+                <SearchedSandboxes />
+              </Route>
+              <Route path={`/u/${user.username}`}>
+                <DndProvider backend={Backend}>
+                  <Stack direction="vertical" gap={14} css={{ flexGrow: 1 }}>
+                    <ShowcaseSandbox />
+                    <PinnedSandboxes />
+                    <AllSandboxes />
+                  </Stack>
+                </DndProvider>
+              </Route>
+            </Switch>
+          </Element>
+        </Stack>
+      </Stack>
+      <ContextMenu />
+    </ThemeProvider>
   );
 };

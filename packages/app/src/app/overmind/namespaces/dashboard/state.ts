@@ -1,9 +1,11 @@
 import {
   SandboxFragmentDashboardFragment as Sandbox,
   RepoFragmentDashboardFragment as Repo,
-  Team,
   TemplateFragmentDashboardFragment as Template,
+  NpmRegistryFragment,
+  TeamFragmentDashboardFragment,
 } from 'app/graphql/types';
+import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameDay from 'date-fns/isSameDay';
 import isSameMonth from 'date-fns/isSameMonth';
 import isSameWeek from 'date-fns/isSameWeek';
@@ -21,6 +23,8 @@ export type DashboardSandboxStructure = {
   SEARCH: Sandbox[] | null;
   TEMPLATE_HOME: Template[] | null;
   RECENT_HOME: Sandbox[] | null;
+  SHARED: Sandbox[] | null;
+  LIKED: Sandbox[] | null;
   ALL: {
     [path: string]: Sandbox[];
   } | null;
@@ -33,16 +37,15 @@ export type DashboardSandboxStructure = {
       sandboxes: Repo[];
     };
   } | null;
+  ALWAYS_ON: Sandbox[] | null;
 };
 
 export type State = {
   sandboxes: DashboardSandboxStructure;
-  teams: Array<
-    { __typename?: 'Team' } & Pick<
-      Team,
-      'id' | 'name' | 'avatarUrl' | 'userAuthorizations'
-    >
-  >;
+  teams: Array<TeamFragmentDashboardFragment>;
+  workspaceSettings: {
+    npmRegistry: NpmRegistryFragment | null;
+  };
   allCollections: DELETE_ME_COLLECTION[] | null;
   selectedSandboxes: string[];
   trashSandboxIds: string[];
@@ -67,18 +70,22 @@ export type State = {
     week: Sandbox[];
     older: Sandbox[];
   };
+  curatedAlbums: DashboardAlbum[];
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   DRAFTS: null,
   TEMPLATES: null,
   DELETED: null,
+  SHARED: null,
+  LIKED: null,
   RECENT: null,
   SEARCH: null,
   TEMPLATE_HOME: null,
   RECENT_HOME: null,
   ALL: null,
   REPOS: null,
+  ALWAYS_ON: null,
 };
 
 export const state: State = {
@@ -86,6 +93,10 @@ export const state: State = {
   viewMode: 'grid',
   allCollections: null,
   teams: [],
+  workspaceSettings: {
+    npmRegistry: null,
+  },
+  curatedAlbums: [],
   recentSandboxesByTime: derived(({ sandboxes }: State) => {
     const recentSandboxes = sandboxes.RECENT;
 
@@ -199,6 +210,10 @@ export const state: State = {
         if (orderField === 'title') {
           const field = sandbox.title || sandbox.alias || sandbox.id;
           return field.toLowerCase();
+        }
+
+        if (orderField === 'views') {
+          return sandbox.viewCount;
         }
 
         return sandbox[orderField];

@@ -2,9 +2,9 @@ import { Button, Stack, Element, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React, { FunctionComponent, MouseEvent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
-import { GithubIcon, TwitterIcon } from './icons';
+import { DiscordIcon, GithubIcon, TwitterIcon } from './social-icons';
 
 const links = [
   { href: 'https://twitter.com/codesandbox', Icon: TwitterIcon },
@@ -12,20 +12,20 @@ const links = [
     href: 'https://github.com/codesandbox/codesandbox-client',
     Icon: GithubIcon,
   },
+  {
+    href: 'https://discord.gg/5BpufEP7MH',
+    Icon: DiscordIcon,
+  },
 ];
 
 export const Delete: FunctionComponent = () => {
   const {
-    actions: {
-      modalOpened,
-      workspace: { deleteTemplate },
-    },
-    state: {
-      editor: {
-        currentSandbox: { customTemplate },
-      },
-    },
-  } = useOvermind();
+    modalOpened,
+    workspace: { deleteTemplate },
+  } = useActions();
+  const {
+    currentSandbox: { customTemplate },
+  } = useAppState().editor;
 
   const onDelete = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -55,7 +55,7 @@ export const Delete: FunctionComponent = () => {
       </Stack>
 
       <Element marginBottom={3} paddingX={2}>
-        <Stack gap={2}>
+        <Stack>
           {links.map(({ href, Icon }) => (
             <Link
               css={css({ color: 'sideBar.border' })}

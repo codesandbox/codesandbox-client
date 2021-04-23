@@ -25,7 +25,10 @@ import fetchModule, {
 } from './npm/dynamic/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import dependenciesToQuery from './npm/dependencies-to-query';
-import { getDependencyName } from './utils/get-dependency-name';
+import {
+  getAliasVersion,
+  getDependencyName,
+} from './utils/get-dependency-name';
 import { packageFilter } from './utils/resolve-utils';
 
 import {
@@ -36,7 +39,10 @@ import {
 } from './cache';
 import { splitQueryFromPath } from './transpiled-module/utils/query-path';
 import { IEvaluator } from './evaluator';
-import { setContributedProtocols } from './npm/dynamic/fetch-protocols';
+import {
+  prependToContributedProtocols,
+  ProtocolDefinition,
+} from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
 
@@ -140,11 +146,13 @@ export default class Manager implements IEvaluator {
     dependencyDependencies: {},
     dependencyAliases: {},
   };
+
   webpackHMR: boolean;
   hardReload: boolean;
   hmrStatus: HMRStatus = 'idle';
   hmrStatusChangeListeners: Set<(status: HMRStatus) => void>;
   isFirstLoad: boolean;
+  isReloading: boolean = false;
 
   fileResolver: IFileResolver | undefined;
 
@@ -190,9 +198,10 @@ export default class Manager implements IEvaluator {
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
      */
-    setContributedProtocols([
+    prependToContributedProtocols([
       {
-        condition: version => version.startsWith('file:'),
+        condition: (name: string, version: string) =>
+          version.startsWith('file:'),
         protocol: new FileFetcher(this),
       },
     ]);
@@ -226,6 +235,17 @@ export default class Manager implements IEvaluator {
     if (options.hasFileResolver) {
       this.setupFileResolver();
     }
+  }
+
+  reload() {
+    this.isReloading = true;
+    if (typeof window !== 'undefined') {
+      window.location.reload();
+    }
+  }
+
+  prependNpmProtocolDefinition(protocol: ProtocolDefinition) {
+    prependToContributedProtocols([protocol]);
   }
 
   async evaluate(path: string, baseTModule?: TranspiledModule): Promise<any> {
@@ -361,10 +381,15 @@ export default class Manager implements IEvaluator {
   evaluateModule(
     module: Module,
     { force = false, globals }: { force?: boolean; globals?: object } = {}
-  ) {
+  ): any {
+    // Do a hard reload
     if (this.hardReload && !this.isFirstLoad) {
-      // Do a hard reload
-      document.location.reload();
+      this.reload();
+      return {};
+    }
+
+    // Page is reloading, skip further evaluation
+    if (this.isReloading) {
       return {};
     }
 
@@ -385,6 +410,26 @@ export default class Manager implements IEvaluator {
         undefined,
         { force, globals }
       );
+
+      if (this.webpackHMR) {
+        // Check if any module has been invalidated, because in that case we need to
+        // restart evaluation.
+
+        const invalidatedModules = this.getTranspiledModules().filter(t => {
+          if (t.hmrConfig?.invalidated) {
+            t.compilation = null;
+            t.hmrConfig = null;
+
+            return true;
+          }
+
+          return false;
+        });
+
+        if (invalidatedModules.length > 0) {
+          return this.evaluateModule(module, { force, globals });
+        }
+      }
 
       this.setHmrStatus('idle');
 
@@ -580,18 +625,34 @@ export default class Manager implements IEvaluator {
     }
 
     const dependencyName = getDependencyName(path);
-    const previousDependencyName = getDependencyName(
+    const currentDependencyName = getDependencyName(
       currentPath.replace('/node_modules/', '')
     );
 
+    // There's a case where an aliased dependency requests itself. Eg. @babel/runtime/7.13.1 has an import
+    // of @babel/runtime. We know that this dependency needs to be @babel/runtime/7.13.1, so we do an explicit
+    // check for this here.
+    if (currentDependencyName.startsWith(dependencyName + '/')) {
+      // Okay, we now know for sure that the current dependency is aliased, and the imported dependency is the same
+      const aliasedVersion = getAliasVersion(
+        currentPath.replace('/node_modules/', '')
+      );
+      if (aliasedVersion) {
+        return path.replace(
+          dependencyName,
+          dependencyName + '/' + aliasedVersion
+        );
+      }
+    }
+
     if (
-      previousDependencyName &&
+      currentDependencyName &&
       dependencyName &&
-      this.manifest.dependencyAliases[previousDependencyName] &&
-      this.manifest.dependencyAliases[previousDependencyName][dependencyName]
+      this.manifest.dependencyAliases[currentDependencyName] &&
+      this.manifest.dependencyAliases[currentDependencyName][dependencyName]
     ) {
       const aliasedDependencyName = this.manifest.dependencyAliases[
-        previousDependencyName
+        currentDependencyName
       ][dependencyName];
 
       return path.replace(dependencyName, aliasedDependencyName);

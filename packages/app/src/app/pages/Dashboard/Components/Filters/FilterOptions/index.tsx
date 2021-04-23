@@ -5,32 +5,32 @@ import React, { FunctionComponent } from 'react';
 // can click anywhere
 import { orderBy, noop } from 'lodash-es';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { Text, Menu, Checkbox } from '@codesandbox/components';
 import { TemplateFilter } from 'app/pages/Dashboard/Content/utils';
 
 type Props = {
   possibleTemplates?: TemplateFilter[];
+  CustomFilters?: React.ReactElement;
 };
 
 export const FilterOptions: FunctionComponent<Props> = React.memo(
-  ({ possibleTemplates = [] }) => {
+  ({ possibleTemplates = [], CustomFilters }) => {
     const {
-      actions: {
-        dashboard: {
-          blacklistedTemplateAdded,
-          blacklistedTemplateRemoved,
-          blacklistedTemplatesChanged,
-          blacklistedTemplatesCleared,
-        },
+      dashboard: {
+        filters: { blacklistedTemplates },
+        isTemplateSelected,
       },
-      state: {
-        dashboard: {
-          filters: { blacklistedTemplates },
-          isTemplateSelected,
-        },
+    } = useAppState();
+    const {
+      dashboard: {
+        blacklistedTemplateAdded,
+        blacklistedTemplateRemoved,
+        blacklistedTemplatesChanged,
+        blacklistedTemplatesCleared,
       },
-    } = useOvermind();
+    } = useActions();
+
     const templates = possibleTemplates && possibleTemplates.length > 0;
     const allSelected = possibleTemplates.every(({ id }) =>
       isTemplateSelected(id)
@@ -43,14 +43,18 @@ export const FilterOptions: FunctionComponent<Props> = React.memo(
 
     return (
       <Menu>
-          <Menu.Button>
-            <Text
-              variant={blacklistedTemplates.length ? 'active' : 'muted'}
-              paddingRight={2}
-            >
-              Filters
-            </Text>
-          </Menu.Button>
+        <Menu.Button>
+          <Text
+            variant={blacklistedTemplates.length ? 'active' : 'muted'}
+            paddingRight={2}
+          >
+            Filters
+          </Text>
+        </Menu.Button>
+
+        {CustomFilters ? (
+          <Menu.List>{CustomFilters}</Menu.List>
+        ) : (
           <Menu.List>
             {templates ? (
               orderBy(possibleTemplates, 'niceName').map(
@@ -108,7 +112,8 @@ export const FilterOptions: FunctionComponent<Props> = React.memo(
               </Menu.Item>
             )}
           </Menu.List>
-        </Menu>
+        )}
+      </Menu>
     );
   }
 );

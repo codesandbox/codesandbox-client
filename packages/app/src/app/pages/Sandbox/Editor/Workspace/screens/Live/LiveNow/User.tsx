@@ -3,7 +3,7 @@ import { LiveUser } from '@codesandbox/common/lib/types';
 import { Avatar, Stack, Text } from '@codesandbox/components';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 import { AddIcon, FollowIcon, RemoveIcon, UnfollowIcon } from '../icons';
 
@@ -13,23 +13,17 @@ type Props = {
 };
 export const User: FunctionComponent<Props> = ({ liveRole, user }) => {
   const {
-    actions: {
-      live: {
-        onAddEditorClicked,
-        onFollow,
-        onStopFollow,
-        onRemoveEditorClicked,
-      },
-    },
-    state: {
-      live: {
-        followingUserId,
-        isOwner,
-        liveUserId,
-        roomInfo: { mode },
-      },
-    },
-  } = useOvermind();
+    onAddEditorClicked,
+    onFollow,
+    onStopFollow,
+    onRemoveEditorClicked,
+  } = useActions().live;
+  const {
+    followingUserId,
+    isOwner,
+    liveUserId,
+    roomInfo: { mode },
+  } = useAppState().live;
 
   const loggedInUser = user.id === liveUserId;
 

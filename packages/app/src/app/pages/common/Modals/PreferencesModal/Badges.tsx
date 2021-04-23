@@ -2,21 +2,15 @@ import { Text, Element } from '@codesandbox/components';
 import Badge from '@codesandbox/common/lib/utils/badges/Badge';
 import React, { FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 export const Badges: FunctionComponent = () => {
-  const {
-    actions: {
-      preferences: { setBadgeVisibility },
-    },
-    state: {
-      user: { badges },
-    },
-  } = useOvermind();
+  const { setBadgeVisibility } = useActions().preferences;
+  const { badges } = useAppState().user;
 
   return (
     <>
-      <Text block marginBottom={6} size={4} variant="muted" weight="bold">
+      <Text block marginBottom={6} size={4} weight="bold">
         Badges
       </Text>
 

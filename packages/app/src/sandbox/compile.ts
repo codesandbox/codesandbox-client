@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import parseConfigurations from '@codesandbox/common/lib/templates/configuration/parse';
 import getDefinition, {
   TemplateType,
@@ -20,9 +21,11 @@ import {
 } from 'sandpack-core/lib/cache';
 import { Module } from 'sandpack-core/lib/types/module';
 import * as metrics from '@codesandbox/common/lib/utils/metrics';
+import { NpmRegistry } from '@codesandbox/common/lib/types';
 import { Manager, TranspiledModule } from 'sandpack-core';
 
 import { loadDependencies, NPMDependencies } from 'sandpack-core/lib/npm';
+import { NpmRegistryFetcher } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
 import {
   evalBoilerplates,
   findBoilerplate,
@@ -36,7 +39,6 @@ import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
 
-let initializedResizeListener = false;
 let manager: Manager | null = null;
 let actionsEnabled = false;
 
@@ -295,8 +297,10 @@ function getDependencies(
   // Always include this, because most sandboxes need this with babel6 and the
   // packager will only include the package.json for it.
   if (isBabel7(d, devDependencies)) {
+    // Don't pin this version, because other dependencies installed by the sandbox might need
+    // @babel/runtime as well, multiple versions of @babel/runtime will lead to problems.
     returnedDependencies['@babel/runtime'] =
-      returnedDependencies['@babel/runtime'] || '7.3.1';
+      returnedDependencies['@babel/runtime'] || '^7.3.1';
   } else {
     returnedDependencies['babel-runtime'] =
       returnedDependencies['babel-runtime'] || '6.26.0';
@@ -313,22 +317,49 @@ function getDependencies(
   return returnedDependencies;
 }
 
-function initializeManager(
+async function initializeManager(
   sandboxId: string,
   template: TemplateType,
   modules: { [path: string]: Module },
   configurations: ParsedConfigurationFiles,
-  { hasFileResolver = false }: { hasFileResolver?: boolean } = {}
+  {
+    hasFileResolver = false,
+    customNpmRegistries = [],
+  }: { hasFileResolver?: boolean; customNpmRegistries?: NpmRegistry[] } = {}
 ) {
-  return new Manager(
+  const newManager = new Manager(
     sandboxId,
-    getPreset(template, configurations.package.parsed),
+    await getPreset(template, configurations.package.parsed),
     modules,
     {
       hasFileResolver,
       versionIdentifier: SCRIPT_VERSION,
     }
   );
+
+  // Add the custom registered npm registries
+  customNpmRegistries.forEach(registry => {
+    const cleanUrl = registry.registryUrl.replace(/\/$/, '');
+
+    const options = registry.limitToScopes
+      ? {
+          scopeWhitelist: registry.enabledScopes,
+          // With our custom proxy on the server we want to handle downloading
+          // the tarball. So we proxy it.
+          provideTarballUrl: (name: string, version: string) =>
+            `${cleanUrl}/${name.replace('/', '%2f')}/${version}`,
+        }
+      : {};
+
+    const protocol = new NpmRegistryFetcher(cleanUrl, options);
+
+    newManager.prependNpmProtocolDefinition({
+      protocol,
+      condition: protocol.condition,
+    });
+  });
+
+  return newManager;
 }
 
 async function updateManager(
@@ -347,34 +378,40 @@ function getDocumentHeight() {
   const { body } = document;
   const html = document.documentElement;
 
-  return Math.max(
-    body.scrollHeight,
-    body.offsetHeight,
-    html.clientHeight,
-    html.scrollHeight,
-    html.offsetHeight
-  );
+  return Math.max(body.scrollHeight, body.offsetHeight, html.offsetHeight);
 }
 
 function sendResize() {
   const height = getDocumentHeight();
 
   if (lastHeight !== height) {
-    if (document.body) {
-      dispatch({
-        type: 'resize',
-        height,
-      });
-    }
+    dispatch({ type: 'resize', height });
   }
 
   lastHeight = height;
 }
 
-function initializeResizeListener() {
-  setInterval(sendResize, 5000);
+function initializeDOMMutationListener() {
+  if (
+    typeof window === 'undefined' ||
+    typeof window.MutationObserver !== 'function'
+  ) {
+    return;
+  }
 
-  initializedResizeListener = true;
+  // Listen on document body for any change that could trigger a resize of the content
+  // When a change is found, the sendResize function will determine if a message is dispatched
+  const observer = new MutationObserver(sendResize);
+
+  observer.observe(document, {
+    attributes: true,
+    childList: true,
+    subtree: true,
+  });
+
+  window.addEventListener('unload', () => {
+    observer.disconnect();
+  });
 }
 
 function overrideDocumentClose() {
@@ -392,37 +429,47 @@ function overrideDocumentClose() {
 
 overrideDocumentClose();
 
-inject();
+if (!process.env.SANDPACK) {
+  inject();
+}
 
 interface CompileOptions {
   sandboxId: string;
   modules: { [path: string]: Module };
+  customNpmRegistries?: NpmRegistry[];
   externalResources: string[];
   hasActions?: boolean;
   isModuleView?: boolean;
   template: TemplateType;
   entry: string;
   showOpenInCodeSandbox?: boolean;
+  showErrorScreen?: boolean;
+  showLoadingScreen?: boolean;
   skipEval?: boolean;
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
   clearConsoleDisabled?: boolean;
 }
 
-async function compile({
-  sandboxId,
-  modules,
-  externalResources,
-  hasActions,
-  isModuleView = false,
-  template,
-  entry,
-  showOpenInCodeSandbox = false,
-  skipEval = false,
-  hasFileResolver = false,
-  disableDependencyPreprocessing = false,
-  clearConsoleDisabled = false,
-}: CompileOptions) {
+async function compile(opts: CompileOptions) {
+  const {
+    sandboxId,
+    modules,
+    externalResources,
+    customNpmRegistries = [],
+    hasActions,
+    isModuleView = false,
+    template,
+    entry,
+    showOpenInCodeSandbox,
+    showLoadingScreen = true,
+    showErrorScreen = true,
+    skipEval = false,
+    hasFileResolver = false,
+    disableDependencyPreprocessing = false,
+    clearConsoleDisabled = false,
+  } = opts;
+  
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
@@ -432,12 +479,12 @@ async function compile({
     }
   }
 
-  dispatch({ type: 'start' });
+  dispatch({ type: 'start', firstLoad });
   metrics.measure('compilation');
 
   const startTime = Date.now();
   try {
-    inject();
+    inject(showErrorScreen);
     clearErrorTransformers();
     initializeErrorTransformers();
     unmount(manager && manager.webpackHMR ? true : hadError);
@@ -485,9 +532,10 @@ async function compile({
 
     manager =
       manager ||
-      initializeManager(sandboxId, template, modules, configurations, {
+      (await initializeManager(sandboxId, template, modules, configurations, {
         hasFileResolver,
-      });
+        customNpmRegistries,
+      }));
 
     let dependencies: NPMDependencies = getDependencies(
       parsedPackageJSON,
@@ -499,7 +547,7 @@ async function compile({
 
     metrics.measure('dependencies');
 
-    if (firstLoad) {
+    if (firstLoad && showLoadingScreen) {
       setScreen({
         type: 'loading',
         showFullScreen: firstLoad,
@@ -510,6 +558,10 @@ async function compile({
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       ({ done, total, remainingDependencies }) => {
+        if (!showLoadingScreen) {
+          return;
+        }
+
         const progress = total - done;
         if (done === total) {
           return;
@@ -545,7 +597,7 @@ async function compile({
       // Just reset the whole manager if it's a new combination
       manager.dispose();
 
-      manager = initializeManager(
+      manager = await initializeManager(
         sandboxId,
         template,
         modules,
@@ -582,11 +634,13 @@ async function compile({
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
 
-    setScreen({
-      type: 'loading',
-      text: 'Transpiling Modules...',
-      showFullScreen: firstLoad,
-    });
+    if (showLoadingScreen) {
+      setScreen({
+        type: 'loading',
+        text: 'Transpiling Modules...',
+        showFullScreen: firstLoad,
+      });
+    }
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
@@ -609,7 +663,8 @@ async function compile({
         if (
           firstLoad &&
           localStorage.getItem('running') &&
-          Date.now() - +localStorage.getItem('running') > 8000
+          Date.now() - +localStorage.getItem('running') > 8000 &&
+          !process.env.SANDPACK
         ) {
           localStorage.removeItem('running');
           showRunOnClick();
@@ -627,14 +682,14 @@ async function compile({
         const htmlEntries = templateDefinition.getHTMLEntries(configurations);
         const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
         const htmlModule = modules[htmlModulePath];
-
-        const { head, body } = getHTMLParts(
-          htmlModule && htmlModule.code
-            ? htmlModule.code
-            : template === 'vue-cli'
+        let html =
+          template === 'vue-cli'
             ? '<div id="app"></div>'
-            : '<div id="root"></div>'
-        );
+            : '<div id="root"></div>';
+        if (htmlModule && htmlModule.code) {
+          html = htmlModule.code;
+        }
+        const { head, body } = getHTMLParts(html);
 
         if (lastHeadHTML && lastHeadHTML !== head) {
           document.location.reload();
@@ -648,10 +703,26 @@ async function compile({
         // preferred.
         const serverProvidedHTML =
           modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-        if (!serverProvidedHTML || !firstLoad || process.env.LOCAL_SERVER) {
+        if (
+          !serverProvidedHTML ||
+          !firstLoad ||
+          process.env.LOCAL_SERVER ||
+          process.env.SANDPACK
+        ) {
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-          // on the first run.
+          // on the first run. However, if there's no server to provide the static file (in the case of a local server
+          // or sandpack), then do it anyways.
           document.body.innerHTML = body;
+
+          // Add head tags or anything that comes from the template
+          // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
+          // At this point, the original head was parsed and the files loaded / preloaded.
+
+          // TODO: figure out a way to fix this without overriding head changes done by the bundler
+          // Original issue: https://github.com/codesandbox/sandpack/issues/32
+          // if (document.head && head) {
+          //   document.head.innerHTML = head;
+          // }
         }
         lastBodyHTML = body;
         lastHeadHTML = head;
@@ -668,6 +739,7 @@ async function compile({
       const evalled = manager.evaluateModule(managerModuleToTranspile, {
         force: isModuleView,
       });
+
       metrics.endMeasure('evaluation', { displayName: 'Evaluation' });
 
       const domChanged =
@@ -715,11 +787,7 @@ async function compile({
 
     await manager.preset.teardown(manager, updatedModules);
 
-    if (!initializedResizeListener && !manager.preset.htmlDisabled) {
-      initializeResizeListener();
-    }
-
-    if (showOpenInCodeSandbox) {
+    if (firstLoad && showOpenInCodeSandbox) {
       createCodeSandboxOverlay(modules);
     }
 
@@ -818,6 +886,11 @@ async function compile({
         });
     }
   }
+
+  if (!hadError && firstLoad) {
+    initializeDOMMutationListener();
+  }
+
   firstLoad = false;
 
   dispatch({ type: 'status', status: 'idle' });

@@ -11,9 +11,11 @@ const notRelative = image => {
 };
 
 export default ({
-  title = 'CodeSandbox: Online IDE for Rapid Web Development',
+  title = 'CodeSandbox: Online Code Editor and IDE for Rapid Web Development',
   description = 'CodeSandbox is an online code editor and prototyping tool that makes creating and sharing web apps faster',
   image = 'https://codesandbox.io/static/img/banner.png',
+  meta = [],
+  keywords = '',
 }) => (
   <Helmet
     title={title}
@@ -27,7 +29,8 @@ export default ({
       {
         name: 'keywords',
         content:
-          'react, codesandbox, editor, vue, angular, ide, code, javascript, playground, sharing, spa, single, page, application, web, application, frontend, front, end',
+          'react, codesandbox, editor, vue, angular, ide, code, javascript, playground, sharing, spa, single, page, application, web, application, frontend, front, end ' +
+            keywords || '',
       },
 
       { name: 'referrer', content: 'origin' },
@@ -41,6 +44,7 @@ export default ({
       { property: 'twitter:creator', content: '@codesandbox' },
       { property: 'twitter:image:width', content: '1200' },
       { property: 'twitter:image:height', content: '630' },
+      ...meta,
     ]}
   />
 );

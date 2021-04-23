@@ -8,7 +8,11 @@ export type PageTypes =
   | 'templates'
   | 'drafts'
   | 'sandboxes'
-  | 'repos';
+  | 'repos'
+  | 'shared'
+  | 'liked'
+  | 'always-on'
+  | 'discover';
 
 export type OrderBy = {
   field: string;
@@ -26,10 +30,14 @@ export enum sandboxesTypes {
   TEMPLATES = 'TEMPLATES',
   DELETED = 'DELETED',
   RECENT = 'RECENT',
+  SHARED = 'SHARED',
+  LIKED = 'LIKED',
   HOME = 'HOME',
   TEMPLATE_HOME = 'TEMPLATE_HOME',
   RECENT_HOME = 'RECENT_HOME',
   ALL = 'ALL',
   SEARCH = 'SEARCH',
   REPOS = 'REPOS',
+  ALWAYS_ON = 'ALWAYS_ON',
+  DISCOVER = 'DISCOVER',
 }

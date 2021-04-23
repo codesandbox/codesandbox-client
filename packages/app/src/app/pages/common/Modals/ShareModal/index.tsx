@@ -10,13 +10,13 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 // eslint-disable-next-line
 import Files from 'embed/components/Sidebar/FileTree';
 import React, { useEffect, useState } from 'react';
 
 import { PaddedPreference } from './elements';
-import { VIEW_OPTIONS, getEditorUrl, getIframeScript } from './getCode';
+import { VIEW_OPTIONS, getEmbedUrl, getIframeScript } from './getCode';
 import { SocialShare } from './SocialShare';
 
 interface Props {}
@@ -38,10 +38,8 @@ export const Field = ({ children, label }) => (
 );
 
 export const ShareModal: React.FC<Props> = () => {
-  const {
-    state: { editor },
-    effects,
-  } = useOvermind();
+  const { copyToClipboard } = useEffects().browser;
+  const { editor } = useAppState();
   const [copied, setCopied] = useState(false);
   const [state, updateState] = useState({
     view: VIEW_OPTIONS[0],
@@ -151,8 +149,8 @@ export const ShareModal: React.FC<Props> = () => {
         <Collapsible title="Embed" defaultOpen>
           <Element paddingX={4}>
             <Text block variant="muted">
-              Customize the embed to better integrate dwith your website, blog
-              or documentation{' '}
+              Customize the embed to better integrate with your website, blog or
+              documentation{' '}
             </Text>
             <Element
               marginTop={4}
@@ -193,17 +191,17 @@ export const ShareModal: React.FC<Props> = () => {
                 window.setTimeout(() => {
                   setCopied(false);
                 }, 2000);
-                effects.browser.copyToClipboard(
+                copyToClipboard(
                   getIframeScript(sandbox, mainModule, state, 500)
                 );
               }}
             >
               {copied ? 'Copied' : 'Copy Embed Code'}
             </Button>
-            <Field label="Editor url (also works on Medium)">
+            <Field label="Embed url">
               <Input
                 onFocus={select}
-                value={getEditorUrl(sandbox, mainModule, state)}
+                value={getEmbedUrl(sandbox, mainModule, state)}
                 readOnly
               />
             </Field>
@@ -274,7 +272,7 @@ export const ShareModal: React.FC<Props> = () => {
                   maxHeight: 300,
                   overflow: 'auto',
                   '> div > div[class*="FileContainer"]': {
-                    paddingLeft: 0,
+                    paddingLeft: '12px',
                   },
                 })}
               >

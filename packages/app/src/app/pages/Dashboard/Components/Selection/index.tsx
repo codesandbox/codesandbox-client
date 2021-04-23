@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Element, SkipNav } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
@@ -25,6 +25,7 @@ import {
   DashboardFolder,
   DashboardGridItem,
   DashboardRepo,
+  DashboardCommunitySandbox,
   PageTypes,
 } from '../../types';
 import { DndDropType } from '../../utils/dnd';
@@ -100,9 +101,14 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'sandbox' ||
       item.type === 'template' ||
       item.type === 'folder' ||
-      item.type === 'repo'
+      item.type === 'repo' ||
+      item.type === 'community-sandbox'
   ) as Array<
-    DashboardSandbox | DashboardTemplate | DashboardFolder | DashboardRepo
+    | DashboardSandbox
+    | DashboardTemplate
+    | DashboardFolder
+    | DashboardRepo
+    | DashboardCommunitySandbox
   >;
 
   const selectionItems = possibleItems.map(item => {
@@ -115,15 +121,15 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     item => item.type === 'folder'
   ) as DashboardFolder[];
   const sandboxes = (items || []).filter(
-    item => item.type === 'sandbox' || item.type === 'template'
+    item =>
+      item.type === 'sandbox' ||
+      item.type === 'template' ||
+      item.type === 'community-sandbox'
   ) as Array<DashboardSandbox | DashboardTemplate>;
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
-
-  const {
-    state: { dashboard, activeTeam },
-    actions,
-  } = useOvermind();
+  const actions = useActions();
+  const { dashboard, activeTeam } = useAppState();
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
     if (event.ctrlKey || event.metaKey) {

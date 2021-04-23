@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import React, { useState } from 'react';
 import { Link } from 'gatsby';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Logo from '../../assets/images/logo.svg';
@@ -13,6 +14,8 @@ import {
   Items,
   Pricing,
   LinkButton,
+  UserAvatar,
+  IconWrapper,
 } from './elements';
 import SupportIcon from '../../assets/icons/Support';
 import StatusIcon from '../../assets/icons/Status';
@@ -21,15 +24,16 @@ import PricingIcon from '../../assets/icons/Pricing';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
 import IDEIcon from '../../assets/icons/Ide';
-import EmbedIcon from '../../assets/icons/Embed';
-import CIIcon from '../../assets/icons/Ci';
+import FeedbackIcon from '../../assets/icons/Feedback';
+import PrototypeIcon from '../../assets/icons/Prototype';
 import TeamsIcon from '../../assets/icons/Teams';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
 import Button from '../Button';
-// import NewIcon from '../../assets/icons/New';
+import { useLogin } from '../../hooks/useLogin';
 
 export default () => {
+  const user = useLogin();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -39,9 +43,19 @@ export default () => {
           CodeSandbox
         </LogoWrapper>
         <div>
-          <LinkButton as="a" href={signInPageUrl()}>
-            Sign In
-          </LinkButton>
+          {!user ? (
+            <LinkButton as="a" href={signInPageUrl()}>
+              Sign In
+            </LinkButton>
+          ) : (
+            <a style={{ display: 'flex' }} href="/dashboard">
+              <UserAvatar
+                className="tablet-remove"
+                src={user.avatar_url}
+                alt={user.username}
+              />
+            </a>
+          )}
           {open ? (
             <svg
               onClick={() => setOpen(!open)}
@@ -91,38 +105,38 @@ export default () => {
             transition={{ ease: 'easeOut', duration: 0.25 }}
           >
             <PopUpNav>
-              <Headers>Features</Headers>
+              <Headers>Product</Headers>
               <Items>
                 <li>
                   <Link to="/ide">
-                    <section>
+                    <IconWrapper>
                       <IDEIcon />
-                    </section>
-                    <span>IDE</span>
+                    </IconWrapper>
+                    <span>Coding</span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/embeds">
-                    <section>
-                      <EmbedIcon />
-                    </section>
-                    <span>Embed</span>
+                  <Link to="/prototyping">
+                    <IconWrapper>
+                      <PrototypeIcon />
+                    </IconWrapper>
+                    <span>Prototyping</span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/ci">
-                    <section>
-                      <CIIcon />
-                    </section>
-                    <span>CI</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/team">
-                    <section>
+                  <Link to="/knowledge-sharing">
+                    <IconWrapper>
                       <TeamsIcon />
-                    </section>
-                    <span>Teams</span>
+                    </IconWrapper>
+                    <span>Knowledge Sharing</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/feedback">
+                    <IconWrapper>
+                      <FeedbackIcon />
+                    </IconWrapper>
+                    <span>Feedback</span>
                   </Link>
                 </li>
               </Items>
@@ -130,17 +144,17 @@ export default () => {
               <Items>
                 <li>
                   <Link to="/explore">
-                    <section>
+                    <IconWrapper>
                       <HighlightedICon />
-                    </section>
+                    </IconWrapper>
                     <span>Featured Sandboxes</span>
                   </Link>
                 </li>
                 <li>
                   <a href="/search">
-                    <section>
+                    <IconWrapper>
                       <SearchIcon />
-                    </section>
+                    </IconWrapper>
                     <span>Search Sandboxes</span>
                   </a>
                 </li>
@@ -149,17 +163,17 @@ export default () => {
               <Items>
                 <li>
                   <Link to="/docs/start">
-                    <section>
+                    <IconWrapper>
                       <DocsIcon />
-                    </section>
+                    </IconWrapper>
                     <span>Documentation</span>
                   </Link>
                 </li>
                 <li>
                   <Link to="/blog">
-                    <section>
+                    <IconWrapper>
                       <BlogIcon />
-                    </section>
+                    </IconWrapper>
                     <span>Blog</span>
                   </Link>
                 </li>
@@ -168,9 +182,9 @@ export default () => {
               <Items>
                 <li>
                   <a href="mailto:hello@codesandbox.io" title="Support">
-                    <section>
+                    <IconWrapper>
                       <SupportIcon />
-                    </section>
+                    </IconWrapper>
                     <span>Contact Support</span>
                   </a>
                 </li>
@@ -181,18 +195,18 @@ export default () => {
                     href="https://status.codesandbox.io"
                     title="Status"
                   >
-                    <section>
+                    <IconWrapper>
                       <StatusIcon />
-                    </section>
+                    </IconWrapper>
                     <span>Status</span>
                   </a>
                 </li>
                 <Headers>Pricing</Headers>
                 <Pricing>
                   <Link to="/pricing">
-                    <section>
+                    <IconWrapper>
                       <PricingIcon />
-                    </section>
+                    </IconWrapper>
                     <span>Pricing</span>
                   </Link>
                 </Pricing>
@@ -202,6 +216,7 @@ export default () => {
                   margin-top: 4rem;
                   display: block;
                   padding: 6px 21px;
+                  background: #5962df;
                 `}
                 className="button"
                 href="/s"

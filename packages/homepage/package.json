@@ -18,7 +18,7 @@
     "build:clean": "rimraf public",
     "lint": "eslint .",
     "start": "gatsby develop --host=0.0.0.0",
-    "start:dev": "LOCAL_SERVER=1 LOCAL_DEV=1 gatsby develop",
+    "start:dev": "LOCAL_SERVER=1 gatsby develop",
     "test": "echo \"Todo: no test specified\" && exit 0"
   },
   "browserslist": [

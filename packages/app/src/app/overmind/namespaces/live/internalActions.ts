@@ -7,14 +7,14 @@ import {
 } from '@codesandbox/common/lib/types';
 import { logBreadcrumb } from '@codesandbox/common/lib/utils/analytics/sentry';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
-import { Action, AsyncAction } from 'app/overmind';
+import { Context } from 'app/overmind';
 import { json } from 'overmind';
 
 import { getSavedCode } from '../../utils/sandbox';
 
-export const clearUserSelections: Action<string | null> = (
-  { state, effects },
-  live_user_id
+export const clearUserSelections = (
+  { state, effects }: Context,
+  live_user_id: string | null
 ) => {
   if (!state.live.roomInfo) {
     return;
@@ -41,7 +41,7 @@ export const clearUserSelections: Action<string | null> = (
   }
 };
 
-export const reset: Action = ({ state, actions, effects }) => {
+export const reset = ({ state, actions, effects }: Context) => {
   actions.live.internal.clearUserSelections(null);
   state.live.isLive = false;
   state.live.error = null;
@@ -51,14 +51,14 @@ export const reset: Action = ({ state, actions, effects }) => {
   effects.live.reset();
 };
 
-export const disconnect: Action = ({ effects, actions }) => {
+export const disconnect = ({ effects, actions }: Context) => {
   effects.live.disconnect();
   actions.live.internal.reset();
 };
 
-export const initialize: AsyncAction<string, Sandbox | null> = async (
-  { state, effects, actions },
-  id
+export const initialize = async (
+  { state, effects, actions }: Context,
+  id: string
 ) => {
   state.live.isLoading = true;
 
@@ -88,7 +88,7 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
     effects.live.listen(actions.live.liveMessageReceived);
     actions.live.internal.sendUnsavedChanges({ sandbox, moduleState });
 
-    state.editor.changedModuleShortids.forEach(moduleShortId => {
+    (state.editor.changedModuleShortids || []).forEach(moduleShortId => {
       effects.vscode.openModule(
         sandbox!.modules.find(
           moduleItem => moduleItem.shortid === moduleShortId
@@ -110,10 +110,16 @@ export const initialize: AsyncAction<string, Sandbox | null> = async (
   return null;
 };
 
-export const initializeModuleFromState: Action<{
-  moduleShortid: string;
-  moduleInfo: IModuleStateModule;
-}> = ({ state, effects, actions }, { moduleShortid, moduleInfo }) => {
+export const initializeModuleFromState = (
+  { state, effects }: Context,
+  {
+    moduleShortid,
+    moduleInfo,
+  }: {
+    moduleShortid: string;
+    moduleInfo: IModuleStateModule;
+  }
+) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
     return;
@@ -158,9 +164,9 @@ export const initializeModuleFromState: Action<{
   }
 };
 
-export const initializeModuleState: Action<IModuleState> = (
-  { state, actions, effects },
-  moduleState
+export const initializeModuleState = (
+  { state, actions }: Context,
+  moduleState: IModuleState
 ) => {
   const sandbox = state.editor.currentSandbox;
   if (!sandbox) {
@@ -183,10 +189,7 @@ export const initializeModuleState: Action<IModuleState> = (
   actions.editor.internal.updatePreviewCode();
 };
 
-export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
-  { state },
-  module
-) => {
+export const getSelectionsForModule = ({ state }: Context, module: Module) => {
   const selections: EditorSelection[] = [];
   const moduleShortid = module.shortid;
 
@@ -221,10 +224,16 @@ export const getSelectionsForModule: Action<Module, EditorSelection[]> = (
  * This sends over all modules that are not synced with OT, and of which we have local changes.
  * If there's a module that has OT changes from the module_state, we ignore them.
  */
-export const sendUnsavedChanges: Action<{
-  sandbox: Sandbox;
-  moduleState: IModuleState;
-}> = ({ effects, actions }, { sandbox, moduleState }) => {
+export const sendUnsavedChanges = (
+  { effects }: Context,
+  {
+    sandbox,
+    moduleState,
+  }: {
+    sandbox: Sandbox;
+    moduleState: IModuleState;
+  }
+) => {
   // We now need to send all dirty files that came over from the last sandbox.
   // There is the scenario where you edit a file and press fork. Then the server
   // doesn't know about how you got to that dirty state.

@@ -13,7 +13,7 @@ export function resetOverlay() {
      * after a timeout, we keep track of the last rendered at and compare
      * it before clearing the iframe
      */
-    let lastIframeRenderedAt = iframeRenderedAt;
+    const lastIframeRenderedAt = iframeRenderedAt;
 
     setTimeout(() => {
       if (iframeReference && lastIframeRenderedAt === iframeRenderedAt) {

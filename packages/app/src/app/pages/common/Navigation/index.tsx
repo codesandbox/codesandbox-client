@@ -1,4 +1,4 @@
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import React from 'react';
 import {
   Stack,
@@ -23,10 +23,8 @@ type Props = {
 } & RouteComponentProps;
 
 export const NavigationComponent = ({ title, match }: Props) => {
-  const {
-    actions: { signInClicked, openCreateSandboxModal },
-    state: { isLoggedIn, isAuthenticating, user },
-  } = useOvermind();
+  const { signInClicked, openCreateSandboxModal } = useActions();
+  const { isLoggedIn, isAuthenticating, user } = useAppState();
   const link = isLoggedIn ? '/dashboard' : '/';
 
   return (
@@ -88,6 +86,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
               {isLoggedIn ? (
                 <UserMenu>
                   <Button
+                    as={UserMenu.Button}
                     variant="secondary"
                     css={css({
                       padding: 0,

@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { Element } from '@codesandbox/components';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Overlay } from 'app/components/Overlay';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 import { Container, HorizontalSeparator } from './elements';
 import { AddCollaboratorForm } from './AddCollaboratorForm';
@@ -11,12 +11,9 @@ import { ButtonActions } from './ButtonActions';
 import { CollaboratorList } from './CollaboratorList';
 
 const CollaboratorContent = () => {
-  const { state } = useOvermind();
+  const { currentSandbox } = useAppState().editor;
 
-  const isOwner = hasPermission(
-    state.editor.currentSandbox.authorization,
-    'owner'
-  );
+  const isOwner = hasPermission(currentSandbox.authorization, 'owner');
 
   return (
     <Container direction="vertical" style={{ borderRadius: 4 }}>

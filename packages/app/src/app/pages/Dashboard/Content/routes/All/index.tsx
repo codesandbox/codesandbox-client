@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams, useHistory } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
@@ -18,13 +18,11 @@ export const AllPage = () => {
   const currentPath = decodeURIComponent(params.path || '');
   const cleanParam = currentPath.split(' ').join('{}');
   const items = useFilteredItems(currentPath, cleanParam, level);
+  const actions = useActions();
   const {
-    actions,
-    state: {
-      dashboard: { allCollections, sandboxes },
-      activeTeam,
-    },
-  } = useOvermind();
+    dashboard: { allCollections, sandboxes },
+    activeTeam,
+  } = useAppState();
   const [localTeam, setLocalTeam] = React.useState(activeTeam);
 
   React.useEffect(() => {

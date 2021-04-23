@@ -11,7 +11,7 @@ import css from '@styled-system/css';
 import getDefinition from '@codesandbox/common/lib/templates';
 import { resolveModule } from '@codesandbox/common/lib/sandbox/modules';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import styled, { withTheme } from 'styled-components';
 import { TypescriptIcon } from 'app/components/TypescriptIcon';
 import {
@@ -27,7 +27,7 @@ const getIcon = name => {
   const icons = {
     'netlify.toml': NetlifyIcon,
     'package.json': NPMIcon,
-    'now.json': VercelIcon,
+    'vercel.json': VercelIcon,
     '.prettierrc': PrettierIcon,
     'jsconfig.json': JSIcon,
     'tsconfig.json': TypescriptIcon,
@@ -44,13 +44,8 @@ const Grid = styled(BaseGrid)`
 `;
 
 export const ConfigurationFilesComponent = ({ theme }) => {
-  const {
-    state: {
-      editor: { currentSandbox },
-    },
-    actions: { files, editor },
-  } = useOvermind();
-
+  const { currentSandbox } = useAppState().editor;
+  const { files, editor } = useActions();
   const { configurationFiles } = getDefinition(currentSandbox.template);
 
   const createdPaths = {};

@@ -126,7 +126,12 @@ export const SandboxCard: React.FC<Props> = ({
             }}
           />
           <div style={{ flex: 1 }}>
-            <div role="button" tabIndex={0} onClick={openSandbox}>
+            <div
+              role="button"
+              tabIndex={0}
+              aria-hidden="true"
+              onClick={openSandbox}
+            >
               <SandboxTitle>{title || id}</SandboxTitle>
               {description}
             </div>

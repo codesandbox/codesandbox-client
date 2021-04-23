@@ -10,13 +10,13 @@ import {
 import { CreateSandbox } from 'app/components/CreateNewSandbox/CreateSandbox';
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
 import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
 
-import Content from './Content';
+import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
 import { Header } from './Header';
@@ -36,8 +36,11 @@ const StatusBar = styled.div`
   }
 `;
 
-const Editor = ({ showNewSandboxModal }: EditorTypes) => {
-  const { state, actions, effects, reaction } = useOvermind();
+export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
+  const state = useAppState();
+  const actions = useActions();
+  const effects = useEffects();
+  const reaction = useReaction();
   const statusbarEl = useRef(null);
   const [showSkeleton, setShowSkeleton] = useState(
     !state.editor.hasLoadedInitialModule
@@ -266,8 +269,6 @@ const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     </ThemeProvider>
   );
 };
-
-export default Editor;
 
 /** To use the same styles + behavior of the vscode status bar,
  *  we recreate the html structure outside of the status bar

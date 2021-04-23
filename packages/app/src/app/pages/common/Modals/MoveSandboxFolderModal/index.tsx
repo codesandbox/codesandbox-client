@@ -3,7 +3,7 @@ import { basename } from 'path';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 import React, { FunctionComponent, useState } from 'react';
 import css from '@styled-system/css';
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
   Stack,
@@ -17,22 +17,21 @@ import Modal from 'app/components/Modal';
 import { DirectoryPicker } from './DirectoryPicker';
 
 export const MoveSandboxFolderModal: FunctionComponent = () => {
-  const {
-    actions: { dashboard, refetchSandboxInfo, modals: modalsActions },
-    state: { activeTeamInfo, activeTeam, modals },
-  } = useOvermind();
+  const { dashboard, refetchSandboxInfo, modals: modalsActions } = useActions();
+  const { activeTeam, modals, activeTeamInfo } = useAppState();
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [path, setPath] = useState<string | null>(
     modals.moveSandboxModal.defaultOpenedPath
   );
   const [teamId, setTeamId] = useState(activeTeam);
-
   const [selectedTeam, setSelectedTeam] = useState({
     id: activeTeamInfo.id,
     name: activeTeamInfo.name,
     avatarUrl: activeTeamInfo.avatarUrl,
   });
+
+  const preventSandboxLeaving = modals.moveSandboxModal.preventSandboxLeaving;
 
   const handleMove = () => {
     setLoading(true);
@@ -90,11 +89,12 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
               })}
             >
               <WorkspaceSelect
+                activeAccount={selectedTeam}
+                disabled={preventSandboxLeaving}
                 onSelect={workspace => {
                   setSelectedTeam(workspace);
                   setTeamId(workspace.id);
                 }}
-                activeAccount={selectedTeam}
               />
             </Element>
             <Stack direction="vertical" gap={4}>

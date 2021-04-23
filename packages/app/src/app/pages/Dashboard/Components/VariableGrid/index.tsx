@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { useOvermind } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
@@ -11,6 +11,7 @@ import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { ImportRepo } from '../Repo/ImportRepo';
 import { Folder } from '../Folder';
 import { Repo } from '../Repo';
+import { CommunitySandbox } from '../CommunitySandbox';
 import { EmptyScreen } from '../EmptyScreen';
 import {
   DashboardGridItem,
@@ -26,6 +27,7 @@ import {
   DashboardRepo,
   DashboardNewRepo,
   DashboardNewMasterBranch,
+  DashboardCommunitySandbox,
   PageTypes,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
@@ -72,6 +74,7 @@ interface IComponentForTypes {
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
+  'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -126,6 +129,9 @@ const ComponentForTypes: IComponentForTypes = {
   ),
   blank: () => <div />,
   skeleton: () => <SkeletonSandbox />,
+  'community-sandbox': React.memo(props => (
+    <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
+  )),
 };
 
 const Item = React.memo(
@@ -210,9 +216,7 @@ export const VariableGrid = ({
   collectionId,
   page,
 }: VariableGridProps) => {
-  const {
-    state: { dashboard },
-  } = useOvermind();
+  const { dashboard } = useAppState();
 
   const location = useLocation();
 
@@ -319,6 +323,7 @@ export const VariableGrid = ({
                 'new-sandbox',
                 'template',
                 'sandbox',
+                'search-result',
               ].includes(item.type)
             ) {
               filledItems.push({ ...item, viewMode });

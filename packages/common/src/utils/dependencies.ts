@@ -1,3 +1,5 @@
+import { valid } from 'semver';
+
 async function fetchWithRetries(url: string) {
   let err: Error;
   for (let i = 0; i < 5; i++) {
@@ -38,6 +40,10 @@ export function isAbsoluteVersion(version: string) {
   return isAbsolute || /\//.test(version);
 }
 
+export function isValidSemver(version: string) {
+  return Boolean(valid(version));
+}
+
 export async function getAbsoluteDependency(
   depName: string,
   depVersion: string
@@ -59,7 +65,9 @@ export async function getAbsoluteDependency(
   return { name: depName, version: data.version };
 }
 
-export async function getAbsoluteDependencies(dependencies: Object) {
+export async function getAbsoluteDependencies(dependencies: {
+  [dep: string]: string;
+}) {
   const nonAbsoluteDependencies = Object.keys(dependencies).filter(
     dep => !isAbsoluteVersion(dependencies[dep])
   );
@@ -71,7 +79,7 @@ export async function getAbsoluteDependencies(dependencies: Object) {
       try {
         const { version } = await getAbsoluteDependency(
           dep,
-          nonAbsoluteDependencies[dep]
+          newDependencies[dep]
         );
 
         newDependencies[dep] = version;

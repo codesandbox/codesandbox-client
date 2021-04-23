@@ -12,7 +12,7 @@ import { Spring } from 'react-spring/renderprops.cjs';
 import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
-import { Module, Sandbox } from '../../types';
+import { Module, NpmRegistry, Sandbox } from '../../types';
 import track from '../../utils/analytics';
 import { getSandboxName } from '../../utils/get-sandbox-name';
 import { frameUrl, host } from '../../utils/url-generator';
@@ -20,11 +20,14 @@ import { Container, Loading, StyledFrame } from './elements';
 import Navigator from './Navigator';
 import { Settings } from './types';
 
+const DefaultWrapper = ({ children }) => children;
+
 export type Props = {
   sandbox: Sandbox;
   privacy?: number;
   previewSecret?: string;
   settings: Settings;
+  customNpmRegistries: NpmRegistry[];
   onInitialized?: (preview: BasePreview) => () => void; // eslint-disable-line no-use-before-define
   extraModules?: { [path: string]: { code: string; path: string } };
   currentModule?: Module;
@@ -47,6 +50,12 @@ export type Props = {
   className?: string;
   onMount?: (preview: BasePreview) => () => void;
   overlayMessage?: string;
+  Wrapper?: React.FC<{ children: any }>;
+  isResponsiveModeActive?: boolean;
+  isPreviewCommentModeActive?: boolean;
+  toggleResponsiveMode?: () => void;
+  createPreviewComment?: () => void;
+  isScreenshotLoading?: boolean;
   /**
    * Whether to show a screenshot in the preview as a "placeholder" while loading
    * to reduce perceived loading time
@@ -79,7 +88,7 @@ interface IModulesByPath {
   [path: string]: { path: string; code: null | string; isBinary?: boolean };
 }
 
-class BasePreview extends React.Component<Props, State> {
+class BasePreview extends React.PureComponent<Props, State> {
   serverPreview: boolean;
   element: HTMLIFrameElement;
   onUnmount: () => void;
@@ -435,6 +444,7 @@ class BasePreview extends React.Component<Props, State> {
           type: 'compile',
           version: 3,
           entry: this.getRenderedModule(),
+          customNpmRegistries: this.props.customNpmRegistries,
           modules: modulesToSend,
           sandboxId: sandbox.id,
           externalResources: sandbox.externalResources,
@@ -549,6 +559,12 @@ class BasePreview extends React.Component<Props, State> {
       noPreview,
       className,
       overlayMessage,
+      Wrapper = DefaultWrapper,
+      isResponsiveModeActive,
+      toggleResponsiveMode,
+      createPreviewComment,
+      isScreenshotLoading,
+      isPreviewCommentModeActive,
     } = this.props;
 
     const { urlInAddressBar, back, forward } = this.state;
@@ -565,6 +581,7 @@ class BasePreview extends React.Component<Props, State> {
 
     return (
       <Container
+        id="sandbox-preview-container"
         className={className}
         style={{
           position: 'relative',
@@ -575,6 +592,7 @@ class BasePreview extends React.Component<Props, State> {
         {showNavigation && (
           <Navigator
             url={url}
+            isScreenshotLoading={isScreenshotLoading}
             onChange={this.updateUrl}
             onConfirm={this.sendUrl}
             onBack={back ? this.handleBack : null}
@@ -584,69 +602,77 @@ class BasePreview extends React.Component<Props, State> {
             toggleProjectView={
               this.props.onToggleProjectView && this.toggleProjectView
             }
+            toggleResponsiveView={toggleResponsiveMode}
+            isInResponsivePreview={isResponsiveModeActive}
+            isPreviewCommentModeActive={isPreviewCommentModeActive}
             openNewWindow={this.openNewWindow}
+            createPreviewComment={createPreviewComment}
             zenMode={settings.zenMode}
+            sandbox={sandbox}
           />
         )}
         {overlayMessage && <Loading>{overlayMessage}</Loading>}
-
-        <AnySpring
-          from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
-          to={{
-            opacity: this.state.showScreenshot ? 0 : 1,
-          }}
-        >
-          {(style: { opacity: number }) => (
-            <>
-              <StyledFrame
-                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-                src={this.state.url}
-                ref={this.setIframeElement}
-                title={getSandboxName(sandbox)}
-                id="sandbox-preview"
-                style={{
-                  ...style,
-                  zIndex: 1,
-                  backgroundColor: 'white',
-                  pointerEvents:
-                    dragging || inactive || this.props.isResizing
-                      ? 'none'
-                      : 'initial',
-                }}
-              />
-
-              {this.props.sandbox.screenshotUrl && style.opacity !== 1 && (
-                <div
+        <Wrapper>
+          <AnySpring
+            key="preview"
+            from={{ opacity: this.props.showScreenshotOverlay ? 0 : 1 }}
+            to={{
+              opacity: this.state.showScreenshot ? 0 : 1,
+            }}
+          >
+            {(style: { opacity: number }) => (
+              <>
+                <StyledFrame
+                  key="PREVIEW"
+                  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+                  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts allow-downloads"
+                  src={this.state.url}
+                  ref={this.setIframeElement}
+                  title={getSandboxName(sandbox)}
+                  id="sandbox-preview"
                   style={{
-                    overflow: 'hidden',
-                    width: '100%',
-                    position: 'absolute',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    top: showNavigation ? 35 : 0,
-                    zIndex: 0,
+                    ...style,
+                    zIndex: 1,
+                    backgroundColor: 'white',
+                    pointerEvents:
+                      dragging || inactive || this.props.isResizing
+                        ? 'none'
+                        : 'initial',
                   }}
-                >
+                />
+
+                {this.props.sandbox.screenshotUrl && style.opacity !== 1 && (
                   <div
                     style={{
+                      overflow: 'hidden',
                       width: '100%',
-                      height: '100%',
-                      filter: `blur(2px)`,
-                      transform: 'scale(1.025, 1.025)',
-                      backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPositionX: 'center',
+                      position: 'absolute',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      top: showNavigation ? 35 : 0,
+                      zIndex: 0,
                     }}
-                  />
-                </div>
-              )}
-            </>
-          )}
-        </AnySpring>
+                  >
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        filter: `blur(2px)`,
+                        transform: 'scale(1.025, 1.025)',
+                        backgroundImage: `url("${this.props.sandbox.screenshotUrl}")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPositionX: 'center',
+                      }}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </AnySpring>
+        </Wrapper>
       </Container>
     );
   }

@@ -9,20 +9,16 @@ import React, { FunctionComponent } from 'react';
 import BrowserIcon from 'react-icons/lib/go/browser';
 import css from '@styled-system/css';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 export const Ports: FunctionComponent = () => {
+  const { onBrowserTabOpened, onBrowserFromPortOpened } = useActions().server;
   const {
-    actions: {
-      server: { onBrowserTabOpened, onBrowserFromPortOpened },
+    editor: {
+      currentSandbox: { template },
     },
-    state: {
-      editor: {
-        currentSandbox: { template },
-      },
-      server: { ports },
-    },
-  } = useOvermind();
+    server: { ports },
+  } = useAppState();
 
   const openGraphiQLPort = () =>
     onBrowserTabOpened({

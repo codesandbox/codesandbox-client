@@ -2,7 +2,7 @@ import { Element, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React, { ComponentType, FunctionComponent } from 'react';
 
-import { useOvermind } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 
 type MenuItem = {
   Icon: ComponentType;
@@ -13,14 +13,8 @@ type Props = {
   menuItems: MenuItem[];
 };
 export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
-  const {
-    actions: {
-      preferences: { itemIdChanged },
-    },
-    state: {
-      preferences: { itemId = 'appearance' },
-    },
-  } = useOvermind();
+  const { itemId = 'appearance' } = useAppState().preferences;
+  const { itemIdChanged } = useActions().preferences;
 
   return (
     <Element
@@ -29,14 +23,14 @@ export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
         borderWidth: 1,
         borderRightStyle: 'solid',
         borderColor: 'sideBar.border',
-        width: 220,
+        width: 244,
       })}
       paddingBottom={8}
     >
       <Text
         block
         paddingBottom={6}
-        paddingLeft={6}
+        paddingLeft={5}
         paddingTop={6}
         size={4}
         weight="bold"
@@ -51,7 +45,7 @@ export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
             css={css({
               transition: '0.3s ease all',
               fontSize: 3,
-              paddingX: 6,
+              paddingX: 5,
               paddingY: 2,
               cursor: 'pointer',
               lineHeight: 1,

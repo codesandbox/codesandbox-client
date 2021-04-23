@@ -17,7 +17,11 @@ import {
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 import { isPreact10 } from '@codesandbox/common/lib/utils/is-preact-10';
 import { PackageJSON } from '@codesandbox/common/lib/types';
-import { reactPresetV1, reactPresetV3 } from './presets/create-react-app';
+import {
+  reactPresetV1,
+  reactPresetV3,
+  reactPresetV4,
+} from './presets/create-react-app';
 import reactTsPreset from './presets/create-react-app-typescript';
 import vuePreset from './presets/vue-cli';
 import { preactPreset, preactPresetV8 } from './presets/preact-cli';
@@ -29,10 +33,17 @@ import cxjsPreset from './presets/cxjs';
 import reasonPreset from './presets/reason';
 import dojoPreset from './presets/dojo';
 import customPreset from './presets/custom';
+import { supportsNewReactTransform } from './presets/create-react-app/utils';
 
-export default function getPreset(template: string, pkg: PackageJSON) {
+export default async function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
     case react.name:
+      if (
+        await supportsNewReactTransform(pkg.dependencies, pkg.devDependencies)
+      ) {
+        return reactPresetV4();
+      }
+
       if (isBabel7(pkg.dependencies, pkg.devDependencies)) {
         return reactPresetV3();
       }
@@ -45,7 +56,6 @@ export default function getPreset(template: string, pkg: PackageJSON) {
       }
 
       return preactPresetV8();
-
     case reactTs.name:
       return reactTsPreset();
     case reason.name:

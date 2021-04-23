@@ -6,20 +6,29 @@ import {
   Module,
   SandboxGitState,
 } from '@codesandbox/common/lib/types';
+import {
+  captureException,
+  logBreadcrumb,
+} from '@codesandbox/common/lib/utils/analytics/sentry';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { Action, AsyncAction, Operator } from 'app/overmind';
-import { debounce, mutate, pipe } from 'overmind';
-
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
+import { Context } from 'app/overmind';
+import { debounce, pipe } from 'overmind';
+
 import * as internalActions from './internalActions';
 import { createDiff } from './utils';
 
 export const internal = internalActions;
 
-export const repoTitleChanged: Action<{
-  title: string;
-}> = ({ state }, { title }) => {
+export const repoTitleChanged = (
+  { state }: Context,
+  {
+    title,
+  }: {
+    title: string;
+  }
+) => {
   state.git.repoTitle = title;
   state.git.error = null;
 };
@@ -41,11 +50,7 @@ export const repoTitleChanged: Action<{
  * 5. We pass the "originalGitCommitSha" and the branch of the BASE
  * 6. Now we evaluate the comparison against your files to see if anything is "out of sync" or in "conflict" and if so we break out and tell user
  */
-export const loadGitSource: AsyncAction = async ({
-  state,
-  actions,
-  effects,
-}) => {
+export const loadGitSource = async ({ state, actions, effects }: Context) => {
   const sandbox = state.editor.currentSandbox!;
   state.git.isExported = false;
   state.git.pr = null;
@@ -115,11 +120,11 @@ export const loadGitSource: AsyncAction = async ({
   state.git.isFetching = false;
 };
 
-export const createRepoClicked: AsyncAction = async ({
+export const createRepoClicked = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   effects.analytics.track('GitHub - Create Repo');
   const { repoTitle } = state.git;
   const modulesNotSaved = !state.editor.isAllModulesSynced;
@@ -165,11 +170,7 @@ export const createRepoClicked: AsyncAction = async ({
     state.git.isExported = true;
     state.currentModal = null;
 
-    actions.editor.internal.forkSandbox({
-      sandboxId: `github/${git.username}/${git.repo}/tree/${git.branch}/${
-        git.path || ''
-      }`,
-    });
+    effects.router.updateSandboxUrl({ git });
   } catch (error) {
     actions.internal.handleError({
       error,
@@ -179,9 +180,9 @@ export const createRepoClicked: AsyncAction = async ({
   }
 };
 
-export const importFromGithub: AsyncAction<string> = async (
-  { state, effects, actions },
-  sandboxUrl
+export const importFromGithub = async (
+  { state, effects, actions }: Context,
+  sandboxUrl: string
 ) => {
   actions.modalClosed();
   state.currentModal = 'exportGithub';
@@ -211,7 +212,7 @@ export const importFromGithub: AsyncAction<string> = async (
   }
 };
 
-export const openSourceSandbox: Action = ({ state, effects }) => {
+export const openSourceSandbox = ({ state, effects }: Context) => {
   effects.analytics.track('GitHub - Open Source Sandbox');
   const git = state.editor.currentSandbox!.baseGit
     ? state.editor.currentSandbox!.baseGit
@@ -220,11 +221,41 @@ export const openSourceSandbox: Action = ({ state, effects }) => {
   effects.router.updateSandboxUrl({ git });
 };
 
-export const createCommitClicked: AsyncAction = async ({
+/*
+  Due to us creating new urls when syncing source, we have to move these updates
+  from the source back to the sandbox
+*/
+export const _updateBinaryUploads = async (
+  { state, actions }: Context,
+  changes: GitChanges
+) => {
+  const binariesToUpdate = changes.added
+    .filter(change => change.encoding === 'base64')
+    .concat(changes.modified.filter(change => change.encoding === 'base64'));
+
+  await Promise.all(
+    binariesToUpdate.map(change => {
+      const module = state.editor.modulesByPath[change.path] as Module;
+      const sourceModule = state.git.sourceModulesByPath[change.path];
+
+      actions.editor.codeChanged({
+        moduleShortid: module.shortid,
+        code: sourceModule.code,
+      });
+      return actions.editor.codeSaved({
+        moduleShortid: module.shortid,
+        code: sourceModule.code,
+        cbID: null,
+      });
+    })
+  );
+};
+
+export const createCommitClicked = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   effects.analytics.track('GitHub - Create Commit');
   const sandbox = state.editor.currentSandbox!;
   const git = state.git;
@@ -262,6 +293,7 @@ export const createCommitClicked: AsyncAction = async ({
     sandbox.originalGit!.commitSha = commit.sha;
     sandbox.originalGitCommitSha = commit.sha;
     await actions.git._loadSourceSandbox();
+    await actions.git._updateBinaryUploads(changes);
     actions.git._setGitChanges();
     state.git.isCommitting = false;
     state.git.title = '';
@@ -300,19 +332,15 @@ export const createCommitClicked: AsyncAction = async ({
   }
 };
 
-export const titleChanged: Action<string> = ({ state }, title) => {
+export const titleChanged = ({ state }: Context, title: string) => {
   state.git.title = title;
 };
 
-export const descriptionChanged: Action<string> = ({ state }, description) => {
+export const descriptionChanged = ({ state }: Context, description: string) => {
   state.git.description = description;
 };
 
-export const createPrClicked: AsyncAction = async ({
-  state,
-  effects,
-  actions,
-}) => {
+export const createPrClicked = async ({ state, effects, actions }: Context) => {
   effects.analytics.track('GitHub - Open PR');
   const git = state.git;
   git.isCreatingPr = true;
@@ -338,17 +366,6 @@ export const createPrClicked: AsyncAction = async ({
       changes
     );
 
-    changes.added.forEach(change => {
-      git.sourceModulesByPath[change.path].code = change.content;
-    });
-    changes.modified.forEach(change => {
-      git.sourceModulesByPath[change.path].code = change.content;
-    });
-    changes.deleted.forEach(path => {
-      delete git.sourceModulesByPath[path];
-    });
-    actions.git._setGitChanges();
-
     sandbox.baseGit = {
       ...sandbox.originalGit,
     } as GitInfo;
@@ -363,11 +380,17 @@ export const createPrClicked: AsyncAction = async ({
     sandbox.originalGitCommitSha = pr.commitSha;
     sandbox.prNumber = pr.number;
     git.pr = pr;
-    git.isCreatingPr = false;
+
+    await actions.git._loadSourceSandbox();
+    await actions.git._updateBinaryUploads(changes);
+    actions.git._setGitChanges();
+
     git.title = '';
     git.description = '';
     state.git.conflicts = [];
     state.git.gitState = SandboxGitState.SYNCED;
+
+    git.isCreatingPr = false;
 
     effects.notificationToast.add({
       title: 'Successfully created your PR',
@@ -396,14 +419,13 @@ export const createPrClicked: AsyncAction = async ({
   }
 };
 
-export const updateGitChanges: Operator = pipe(
-  debounce(500),
-  mutate(({ actions }) => actions.git._setGitChanges())
-);
+export const updateGitChanges = pipe(debounce(500), ({ actions }: Context) => {
+  actions.git._setGitChanges();
+});
 
-export const resolveConflicts: AsyncAction<Module> = async (
-  { state, actions, effects },
-  module
+export const resolveConflicts = async (
+  { state, actions, effects }: Context,
+  module: Module
 ) => {
   const conflict = state.git.conflicts.find(
     conflictItem => module.path === '/' + conflictItem.filename
@@ -423,9 +445,9 @@ export const resolveConflicts: AsyncAction<Module> = async (
   }
 };
 
-export const addConflictedFile: AsyncAction<GitFileCompare> = async (
-  { state, actions },
-  conflict
+export const addConflictedFile = async (
+  { state, actions }: Context,
+  conflict: GitFileCompare
 ) => {
   state.git.conflictsResolving.push(conflict.filename);
   await actions.files.createModulesByPath({
@@ -446,18 +468,18 @@ export const addConflictedFile: AsyncAction<GitFileCompare> = async (
   actions.git._tryResolveConflict();
 };
 
-export const ignoreConflict: Action<GitFileCompare> = (
-  { state, actions },
-  conflict
+export const ignoreConflict = (
+  { state, actions }: Context,
+  conflict: GitFileCompare
 ) => {
   state.git.conflicts.splice(state.git.conflicts.indexOf(conflict), 1);
 
   actions.git._tryResolveConflict();
 };
 
-export const deleteConflictedFile: AsyncAction<GitFileCompare> = async (
-  { state, actions },
-  conflict
+export const deleteConflictedFile = async (
+  { state, actions }: Context,
+  conflict: GitFileCompare
 ) => {
   state.git.conflictsResolving.push(conflict.filename);
   const module = state.editor.modulesByPath['/' + conflict.filename];
@@ -474,9 +496,9 @@ export const deleteConflictedFile: AsyncAction<GitFileCompare> = async (
   actions.git._tryResolveConflict();
 };
 
-export const diffConflictedFile: AsyncAction<GitFileCompare> = async (
-  { state, actions },
-  conflict
+export const diffConflictedFile = async (
+  { state, actions }: Context,
+  conflict: GitFileCompare
 ) => {
   const module = state.editor.modulesByPath['/' + conflict.filename] as Module;
 
@@ -488,11 +510,11 @@ export const diffConflictedFile: AsyncAction<GitFileCompare> = async (
   });
 };
 
-export const resolveOutOfSync: AsyncAction = async ({
+export const resolveOutOfSync = async ({
   state,
   actions,
   effects,
-}) => {
+}: Context) => {
   effects.analytics.track('GitHub - Resolve out of sync');
   const git = state.git;
   const { added, deleted, modified } = git.outOfSyncUpdates;
@@ -618,7 +640,7 @@ export const resolveOutOfSync: AsyncAction = async ({
   git.isResolving = false;
 };
 
-export const _setGitChanges: Action = ({ state }) => {
+export const _setGitChanges = ({ state }: Context) => {
   const changes: {
     added: string[];
     deleted: string[];
@@ -649,13 +671,10 @@ export const _setGitChanges: Action = ({ state }) => {
   state.git.gitChanges = changes;
 };
 
-export const _evaluateGitChanges: AsyncAction<
-  GitFileCompare[],
-  {
-    changesCount: number;
-    conflicts: GitFileCompare[];
-  }
-> = async ({ state }, changes) => {
+export const _evaluateGitChanges = async (
+  { state }: Context,
+  changes: GitFileCompare[]
+) => {
   const conflicts = changes.reduce<GitFileCompare[]>((aggr, change) => {
     const path = '/' + change.filename;
 
@@ -732,7 +751,7 @@ export const _evaluateGitChanges: AsyncAction<
   };
 };
 
-export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
+export const _loadSourceSandbox = async ({ state, effects }: Context) => {
   const sandbox = state.editor.currentSandbox!;
   const { originalGit } = sandbox;
 
@@ -772,68 +791,79 @@ export const _loadSourceSandbox: AsyncAction = async ({ state, effects }) => {
   );
 };
 
-export const _compareWithSource: AsyncAction = async ({
+export const _compareWithSource = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   const sandbox = state.editor.currentSandbox!;
   const originalGitCommitSha = sandbox.originalGitCommitSha;
-  const originalChanges = await effects.api.compareGit(
-    sandbox.id,
-    sandbox.originalGitCommitSha!,
-    sandbox.originalGit!.branch,
-    true
-  );
 
-  const updates = await actions.git._evaluateGitChanges(originalChanges.files);
+  try {
+    const originalChanges = await effects.api.compareGit(
+      sandbox.id,
+      sandbox.originalGitCommitSha!,
+      sandbox.originalGit!.branch,
+      true
+    );
+    const updates = await actions.git._evaluateGitChanges(
+      originalChanges.files
+    );
 
-  state.git.sourceCommitSha = originalChanges.headCommitSha;
-  state.git.conflicts = updates.conflicts;
+    state.git.sourceCommitSha = originalChanges.headCommitSha;
+    state.git.conflicts = updates.conflicts;
 
-  if (updates.changesCount || updates.conflicts.length) {
-    effects.notificationToast.add({
-      message: `The sandbox is out of sync with "${
-        sandbox.originalGit!.branch
-      }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
-      title: 'Out of sync',
-      status: convertTypeToStatus('notice'),
-      sticky: false,
-      actions: {
-        primary: {
-          label: 'Resolve',
-          run: () => {
-            actions.workspace.setWorkspaceItem({ item: 'github' });
+    if (updates.changesCount || updates.conflicts.length) {
+      effects.notificationToast.add({
+        message: `The sandbox is out of sync with "${
+          sandbox.originalGit!.branch
+        }" ${updates.conflicts.length ? 'and there are conflicts' : ''}`,
+        title: 'Out of sync',
+        status: convertTypeToStatus('notice'),
+        sticky: false,
+        actions: {
+          primary: {
+            label: 'Resolve',
+            run: () => {
+              actions.workspace.setWorkspaceItem({ item: 'github' });
+            },
+          },
+          secondary: {
+            label: 'See changes',
+            run: () => {
+              effects.browser.openWindow(
+                `https://github.com/${sandbox.originalGit!.username}/${
+                  sandbox.originalGit!.repo
+                }/compare/${originalGitCommitSha}...${
+                  sandbox.originalGit!.branch
+                }`
+              );
+            },
           },
         },
-        secondary: {
-          label: 'See changes',
-          run: () => {
-            effects.browser.openWindow(
-              `https://github.com/${sandbox.originalGit!.username}/${
-                sandbox.originalGit!.repo
-              }/compare/${originalGitCommitSha}...${
-                sandbox.originalGit!.branch
-              }`
-            );
-          },
-        },
-      },
-    });
-    effects.preview.refresh();
-    state.git.gitState = updates.conflicts.length
-      ? SandboxGitState.CONFLICT_SOURCE
-      : SandboxGitState.OUT_OF_SYNC_SOURCE;
-  } else {
-    state.git.gitState = SandboxGitState.SYNCED;
+      });
+      effects.preview.refresh();
+      state.git.gitState = updates.conflicts.length
+        ? SandboxGitState.CONFLICT_SOURCE
+        : SandboxGitState.OUT_OF_SYNC_SOURCE;
+    } else {
+      state.git.gitState = SandboxGitState.SYNCED;
+    }
+  } catch (e) {
+    // if there is a base git the issue is that the new branch does not exist, if not carry on
+    if (sandbox.baseGit) {
+      state.currentModal = 'notFoundBranchModal';
+    } else {
+      throw new Error();
+    }
   }
 };
 
-export const _compareWithBase: AsyncAction = async ({
+export const _compareWithBase = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   const sandbox = state.editor.currentSandbox!;
 
   state.git.pr = await effects.api.getGitPr(sandbox.id, sandbox.prNumber!);
@@ -849,7 +879,7 @@ export const _compareWithBase: AsyncAction = async ({
 
   const updates = await actions.git._evaluateGitChanges(baseChanges.files);
 
-  state.git.baseCommitSha = baseChanges.headCommitSha;
+  state.git.baseCommitSha = baseChanges?.headCommitSha;
   state.git.conflicts = updates.conflicts;
 
   if (updates.changesCount || updates.conflicts.length) {
@@ -890,34 +920,49 @@ export const _compareWithBase: AsyncAction = async ({
   }
 };
 
-export const _getGitChanges: AsyncAction<void, GitChanges> = async ({
-  state,
-  effects,
-}) => {
+export const _getGitChanges = async ({ state, effects }: Context) => {
   const git = state.git;
   const sandbox = state.editor.currentSandbox!;
 
   return {
     added: await Promise.all(
-      git.gitChanges.added.map(async path => {
-        const module = sandbox.modules.find(
-          moduleItem => moduleItem.path === path
-        );
+      git.gitChanges.added
+        .map(async path => {
+          const module = sandbox.modules.find(
+            moduleItem => moduleItem.path === path
+          );
 
-        if (module!.isBinary) {
+          if (!module) {
+            logBreadcrumb({
+              message: `Tried adding Git change, but paths don't match. Expected: ${path}, paths available: ${JSON.stringify(
+                sandbox.modules.map(m => ({
+                  shortid: m.shortid,
+                  path: m.path,
+                  isBinary: m.isBinary,
+                }))
+              )}`,
+            });
+            const err = new Error('Unable to add module to git changes');
+            captureException(err);
+
+            return false;
+          }
+
+          if (module!.isBinary) {
+            return {
+              path,
+              content: await effects.http.blobToBase64(module!.code),
+              encoding: 'base64' as 'base64',
+            };
+          }
+
           return {
             path,
-            content: await effects.http.blobToBase64(module!.code),
-            encoding: 'base64' as 'base64',
+            content: module!.code,
+            encoding: 'utf-8' as 'utf-8',
           };
-        }
-
-        return {
-          path,
-          content: module!.code,
-          encoding: 'utf-8' as 'utf-8',
-        };
-      })
+        })
+        .filter(Boolean)
     ),
     deleted: git.gitChanges.deleted,
     modified: git.gitChanges.modified.map(path => {
@@ -933,14 +978,14 @@ export const _getGitChanges: AsyncAction<void, GitChanges> = async ({
         encoding: 'utf-8',
       };
     }),
-  };
+  } as GitChanges;
 };
 
-export const _tryResolveConflict: AsyncAction = async ({
+export const _tryResolveConflict = async ({
   state,
   effects,
   actions,
-}) => {
+}: Context) => {
   const git = state.git;
   actions.git._setGitChanges();
 
@@ -979,9 +1024,9 @@ export const _tryResolveConflict: AsyncAction = async ({
   }
 };
 
-export const linkToGitSandbox: AsyncAction<string> = async (
-  { state, effects, actions },
-  sandboxId
+export const linkToGitSandbox = async (
+  { state, effects, actions }: Context,
+  sandboxId: string
 ) => {
   if (!state.editor.currentSandbox) return;
   try {

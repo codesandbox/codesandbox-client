@@ -13,3 +13,10 @@ export const defaultOn = () => <Switch defaultOn />;
 
 /* eslint-disable no-console */
 export const onChange = () => <Switch onChange={action('changed')} />;
+
+export const Disabled = () => (
+  <div>
+    <Switch disabled defaultOn />
+    <Switch disabled />
+  </div>
+);

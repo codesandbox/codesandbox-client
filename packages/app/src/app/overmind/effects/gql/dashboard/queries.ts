@@ -6,6 +6,8 @@ import {
   RecentlyDeletedTeamSandboxesQuery,
   RecentlyDeletedTeamSandboxesQueryVariables,
   SandboxesByPathQuery,
+  LikedSandboxesQuery,
+  LikedSandboxesQueryVariables,
   SandboxesByPathQueryVariables,
   OwnedTemplatesQuery,
   OwnedTemplatesQueryVariables,
@@ -35,6 +37,14 @@ import {
   GetTeamReposQuery,
   GetPersonalWorkspaceIdQuery,
   GetPersonalWorkspaceIdQueryVariables,
+  GetPrivateNpmRegistryQuery,
+  GetPrivateNpmRegistryQueryVariables,
+  _AlwaysOnTeamSandboxesQuery,
+  _AlwaysOnTeamSandboxesQueryVariables,
+  SharedWithMeSandboxesQuery,
+  SharedWithMeSandboxesQueryVariables,
+  CuratedAlbumsQuery,
+  CuratedAlbumsQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -44,6 +54,8 @@ import {
   templateFragmentDashboard,
   repoFragmentDashboard,
   currentTeamInfoFragment,
+  npmRegistryFragment,
+  teamFragmentDashboard,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -203,16 +215,11 @@ export const getTeams: Query<AllTeamsQuery, AllTeamsQueryVariables> = gql`
     me {
       personalWorkspaceId
       workspaces {
-        id
-        name
-        avatarUrl
-        userAuthorizations {
-          userId
-          authorization
-        }
+        ...teamFragmentDashboard
       }
     }
   }
+  ${teamFragmentDashboard}
 `;
 
 export const searchPersonalSandboxes: Query<
@@ -315,6 +322,34 @@ export const recentlyAccessedSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
+export const sharedWithmeSandboxes: Query<
+  SharedWithMeSandboxesQuery,
+  SharedWithMeSandboxesQueryVariables
+> = gql`
+  query SharedWithMeSandboxes {
+    me {
+      collaboratorSandboxes {
+        ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const likedSandboxes: Query<
+  LikedSandboxesQuery,
+  LikedSandboxesQueryVariables
+> = gql`
+  query LikedSandboxes {
+    me {
+      likedSandboxes {
+        ...sandboxFragmentDashboard
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
 export const recentTeamSandboxes: Query<
   LatestTeamSandboxesQuery,
   LatestTeamSandboxesQueryVariables
@@ -359,4 +394,58 @@ export const getPersonalWorkspaceId: Query<
       personalWorkspaceId
     }
   }
+`;
+
+export const getPrivateNpmRegistry: Query<
+  GetPrivateNpmRegistryQuery,
+  GetPrivateNpmRegistryQueryVariables
+> = gql`
+  query getPrivateNpmRegistry($teamId: UUID4!) {
+    me {
+      team(id: $teamId) {
+        privateRegistry {
+          ...npmRegistry
+        }
+      }
+    }
+  }
+  ${npmRegistryFragment}
+`;
+
+export const alwaysOnTeamSandboxes: Query<
+  _AlwaysOnTeamSandboxesQuery,
+  _AlwaysOnTeamSandboxesQueryVariables
+> = gql`
+  query _AlwaysOnTeamSandboxes($teamId: UUID4!) {
+    me {
+      team(id: $teamId) {
+        sandboxes(alwaysOn: true) {
+          ...sandboxFragmentDashboard
+        }
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
+export const curatedAlbums: Query<
+  CuratedAlbumsQuery,
+  CuratedAlbumsQueryVariables
+> = gql`
+  query CuratedAlbums {
+    curatedAlbums {
+      id
+      title
+      sandboxes {
+        ...sandboxFragmentDashboard
+        forkCount
+        likeCount
+        author {
+          username
+          avatarUrl
+        }
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
 `;

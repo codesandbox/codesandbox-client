@@ -12,12 +12,7 @@ function appendTeamIdQueryParam(url: string, teamId?: string | null) {
 function sanitizePath(path: string) {
   return path
     .split('/')
-    .map(p =>
-      p
-        .split(' ')
-        .map(encodeURIComponent)
-        .join(' ')
-    )
+    .map(p => p.split(' ').map(encodeURIComponent).join(' '))
     .join('/');
 }
 
@@ -33,6 +28,9 @@ export const drafts = (teamId?: string | null) =>
 export const repos = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories`, teamId);
 
+export const alwaysOn = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/always-on`, teamId);
+
 export const templates = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/templates`, teamId);
 
@@ -42,11 +40,29 @@ export const recents = (teamId?: string | null) =>
 export const deleted = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/deleted`, teamId);
 
+export const shared = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/shared`, teamId);
+
+export const liked = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/liked`, teamId);
+
 export const home = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/home`, teamId);
 
 export const settings = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings`, teamId);
+
+export const registrySettings = (teamId?: string | null) =>
+  appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/settings/npm-registry`,
+    teamId
+  );
+
+export const permissionSettings = (teamId?: string | null) =>
+  appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/settings/permissions`,
+    teamId
+  );
 
 export const teamInvite = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/invite`, teamId);
@@ -65,6 +81,31 @@ export const search = (query: string, teamId?: string | null) => {
   } else {
     searchUrl += '?';
   }
+
+  searchUrl += `query=${query}`;
+
+  return searchUrl;
+};
+
+export const discover = (teamId?: string | null, albumId?: string) => {
+  if (albumId) {
+    return appendTeamIdQueryParam(
+      `${DASHBOARD_URL_PREFIX}/discover/${albumId}`,
+      teamId
+    );
+  }
+
+  return appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/discover`, teamId);
+};
+
+export const discoverSearch = (query: string, teamId?: string | null) => {
+  let searchUrl = appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/discover/search`,
+    teamId
+  );
+
+  if (searchUrl.includes('?')) searchUrl += '&';
+  else searchUrl += '?';
 
   searchUrl += `query=${query}`;
 

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
+import { Button } from '@codesandbox/components';
 
 export const Container = styled.div`
   display: flex;
@@ -37,6 +38,28 @@ export const Tabs = styled(TabList)`
 
   @media screen and (max-width: 800px) {
     display: none;
+  }
+`;
+
+export const DashboardButton = styled(Button).attrs({
+  variant: 'secondary',
+})`
+  margin-top: 16px;
+  justify-content: flex-start;
+  height: 32px;
+  color: #999999;
+
+  > div {
+    width: 24px;
+    height: 24px;
+  }
+
+  :hover:not(:disabled) {
+    background: transparent;
+    color: white;
+    path {
+      fill: white;
+    }
   }
 `;
 
