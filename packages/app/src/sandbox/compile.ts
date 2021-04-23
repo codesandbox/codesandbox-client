@@ -36,6 +36,7 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
+import { appendHTML } from './html-writer';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -449,65 +450,6 @@ interface CompileOptions {
   clearConsoleDisabled?: boolean;
 }
 
-// element.cloneNode(true) doesn't really work for scripts unfortunately
-function cloneDOMElement(element: HTMLElement) {
-  const clonedElement = document.createElement(element.tagName);
-  let isAsync = false;
-  for (
-    let attributeIndex = 0;
-    attributeIndex < element.attributes.length;
-    attributeIndex++
-  ) {
-    const attribute = element.attributes[attributeIndex];
-    clonedElement.setAttribute(attribute.name, attribute.value);
-    if (attribute.name === 'async' || attribute.name === 'defer') {
-      isAsync = true;
-    }
-  }
-  if (!isAsync && element.tagName === 'script') {
-    clonedElement.setAttribute('async', 'false');
-  }
-  clonedElement.innerHTML = element.innerHTML;
-  return clonedElement;
-}
-
-function cloneDOMTree(origin: string, key: string) {
-  const parser = new DOMParser();
-  const originRoot: HTMLElement = parser.parseFromString(origin, 'text/html')[
-    key
-  ];
-  if (originRoot.hasChildNodes()) {
-    const targetRoot: HTMLElement = document[key];
-    const firstElement = targetRoot.firstChild;
-
-    const styleElements = originRoot.getElementsByTagName('style');
-    for (let i = 0; i < styleElements.length; i++) {
-      const styleElement = styleElements[i];
-      targetRoot.insertBefore(cloneDOMElement(styleElement), firstElement);
-      originRoot.removeChild(styleElement);
-    }
-
-    const linkElements = originRoot.getElementsByTagName('link');
-    for (let i = 0; i < linkElements.length; i++) {
-      const linkElement = linkElements[i];
-      targetRoot.insertBefore(cloneDOMElement(linkElement), firstElement);
-      originRoot.removeChild(linkElement);
-    }
-
-    const scriptElements = originRoot.getElementsByTagName('script');
-    for (let i = 0; i < scriptElements.length; i++) {
-      const scriptElement = scriptElements[i];
-      targetRoot.insertBefore(cloneDOMElement(scriptElement), firstElement);
-      originRoot.removeChild(scriptElement);
-    }
-
-    for (let i = 0; i < originRoot.children.length; i++) {
-      const childElement = originRoot.children[i];
-      targetRoot.insertBefore(childElement, firstElement);
-    }
-  }
-}
-
 async function compile(opts: CompileOptions) {
   const {
     sandboxId,
@@ -768,14 +710,14 @@ async function compile(opts: CompileOptions) {
         ) {
           // Append all head elements and execute scripts/styles
           if (head) {
-            cloneDOMTree(head, 'head');
+            await appendHTML(head, document.head);
           }
 
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run. However, if there's no server to provide the static file (in the case of a local server
           // or sandpack), then do it anyways.
           if (body) {
-            cloneDOMTree(body, 'body');
+            await appendHTML(body, document.body);
           }
         }
         lastBodyHTML = body;
