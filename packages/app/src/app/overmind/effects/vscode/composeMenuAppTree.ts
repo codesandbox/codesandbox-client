@@ -1,6 +1,6 @@
 import { MenuId } from './Workbench';
 
-interface SubMenu {
+export type MenuAppItems = Array<{
   group: string;
   order: number;
   command?: {
@@ -12,27 +12,56 @@ interface SubMenu {
   };
   title?: string;
   when?: { key: string };
-  submenu?: SubMenu[];
-}
-
-export type MenuAppItems = Array<{
-  title: string;
-  submenu: SubMenu[];
+  submenu?: MenuAppItems;
 }>;
 
-enum RootMenuId {
-  '&&File' = MenuId.MenubarFileMenu,
-  '&&Edit' = MenuId.MenubarEditMenu,
-  '&&Selection' = MenuId.MenubarSelectionMenu,
-  '&&View' = MenuId.MenubarViewMenu,
-  '&&Go' = MenuId.MenubarGoMenu,
-  '&&Help' = MenuId.MenubarHelpMenu,
-}
+type InternalMenuType = Array<{ submenu?: string }>;
+
+const DEFAULT_ITEMS = [
+  {
+    title: '&&File',
+    submenu: MenuId.MenubarFileMenu,
+    group: '2_root',
+    order: 1,
+  },
+  {
+    title: '&&Edit',
+    submenu: MenuId.MenubarEditMenu,
+    group: '2_root',
+    order: 2,
+  },
+  {
+    title: '&&Selection',
+    submenu: MenuId.MenubarSelectionMenu,
+    group: '2_root',
+    order: 3,
+  },
+  {
+    title: '&&View',
+    submenu: MenuId.MenubarViewMenu,
+    group: '2_root',
+    order: 4,
+  },
+  {
+    title: '&&Go',
+    submenu: MenuId.MenubarGoMenu,
+    group: '2_root',
+    order: 5,
+  },
+  {
+    title: '&&Help',
+    submenu: MenuId.MenubarHelpMenu,
+    group: '3_support',
+    order: 1,
+  },
+];
 
 export const composeMenuAppTree = (
-  getVsCodeMenuItems: (id: string | RootMenuId) => Array<unknown>
+  getVsCodeMenuItems: (id: string | MenuId) => Array<unknown>
 ): MenuAppItems => {
-  const getSubmenu = (menu: Array<{ submenu?: string }>) =>
+  const rootMenu = [...getVsCodeMenuItems(MenuId.Root), ...DEFAULT_ITEMS];
+
+  const getSubmenu = (menu: InternalMenuType) =>
     menu.map(item => {
       if (item.submenu) {
         const submenu = getVsCodeMenuItems(item.submenu);
@@ -46,18 +75,5 @@ export const composeMenuAppTree = (
       return item;
     });
 
-  return Object.entries(RootMenuId)
-    .map(([rootTitle, id]) => {
-      const rootMenu = getVsCodeMenuItems(id);
-
-      if (rootMenu.length === 0) {
-        return null;
-      }
-
-      return {
-        title: rootTitle,
-        submenu: getSubmenu(rootMenu),
-      };
-    })
-    .filter(Boolean);
+  return getSubmenu((rootMenu as unknown) as InternalMenuType);
 };

@@ -1,18 +1,25 @@
-import { createElement, Fragment } from 'react';
+import { createElement } from 'react';
+
+const REGEX_ELEMENT = /&&/;
+const REGEX_ELEMENT_SHORTCUT = /(&&\w)/g;
+
+const clean = (payload: string) => payload.replace(REGEX_ELEMENT, '').trim();
 
 const renderTitle = (label: string) => {
-  const matches = /(&&\w)/g.exec(label);
-  const cleanLabel = label.replace(/&&/, '').trim();
-  const shortcut = matches?.[1].replace(/&&/, '').trim();
+  const cleanLabel = clean(label);
+  const labelSplit = label.split(REGEX_ELEMENT_SHORTCUT);
 
   return {
     label: cleanLabel,
     render: () => {
-      if (shortcut) {
-        return createElement(Fragment, {}, [
-          createElement('mnemonic', {}, shortcut),
-          cleanLabel.replace(shortcut, ''),
-        ]);
+      if (labelSplit) {
+        return labelSplit.map(element => {
+          if (/(&&\w)/g.test(element)) {
+            return createElement('mnemonic', null, clean(element));
+          }
+
+          return element;
+        });
       }
 
       return cleanLabel;

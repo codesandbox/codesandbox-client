@@ -19,6 +19,8 @@ type Unpacked<T> = T extends (infer U)[]
 export const MenuBar: FunctionComponent = () => {
   const [menu, setMenu] = useState<MenuAppItems>([]);
 
+  console.log(menu);
+
   const { vscode } = useEffects();
   const vscodeMenuItems = vscode.getMenuAppItems();
 
@@ -74,6 +76,23 @@ export const MenuBar: FunctionComponent = () => {
       return null;
     });
 
+  const groupMenu = menu
+    .sort((a, b) => (a.group > b.group ? 1 : -1))
+    .reduce((acc, curr) => {
+      const { group } = curr;
+
+      if (group in acc) {
+        return { ...acc, [group]: [...acc[group], curr] };
+      }
+
+      return { ...acc, [group]: [curr] };
+    }, {});
+
+  const listGroupsMenu: MenuAppItems[] = Object.entries(groupMenu).reduce(
+    (acc, [_, value]) => [...acc, value],
+    []
+  );
+
   return (
     // Explicitly use inline styles here to override the vscode styles
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
@@ -83,19 +102,33 @@ export const MenuBar: FunctionComponent = () => {
           <Icon width={14} height={10} name="menu" />
         </MenuHandler>
 
-        {/* {menu.map(item => (
-        <div className="menu">
-          <button type="button">{item.title}</button>
-
-          {renderSubMenu(item.submenu)}
-        </div>
-      ))} */}
-
         <Menu.List>
-          {menu.map(item => {
-            const { label, render } = renderTitle(item.title);
-            return <Menu.Item aria-label={label}>{render()}</Menu.Item>;
-          })}
+          {listGroupsMenu.map((group, groupIndex) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <React.Fragment key={groupIndex}>
+              {group
+                .sort((a, b) => (a.order > b.order ? 1 : -1))
+                .map(item => {
+                  const { label, render } = renderTitle(
+                    item.title || item.command.title
+                  );
+
+                  return (
+                    <Menu.Item
+                      onClick={() => vscode.runCommand(item.command.id)}
+                      key={label}
+                      aria-label={label}
+                    >
+                      {render()}
+
+                      {item.command &&
+                        vscode.lookupKeybinding(item.command.id)?.getLabel()}
+                    </Menu.Item>
+                  );
+                })}
+              {groupIndex !== listGroupsMenu.length - 1 && <Menu.Divider />}
+            </React.Fragment>
+          ))}
         </Menu.List>
       </Menu>
     </Container>

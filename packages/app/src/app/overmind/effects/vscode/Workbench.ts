@@ -46,6 +46,7 @@ export enum MenuId {
   TouchBarContext,
   ViewItemContext,
   ViewTitle,
+  Root,
 }
 
 export class Workbench {
@@ -72,6 +73,7 @@ export class Workbench {
         this.controller.getSignal('editor.toggleStatusBar')();
       },
     });
+
     this.addWorkbenchAction({
       id: 'view.preview.flip',
       label: 'Flip Preview Layout',
@@ -138,6 +140,18 @@ export class Workbench {
     });
 
     this.addWorkbenchAction({
+      id: 'codesandbox.dashboard',
+      label: 'Dashboard',
+      category: 'Root',
+      run: () => {
+        this.controller.getSignal('editor.refreshPreview')();
+      },
+      keybindings: {
+        primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_R,
+      },
+    });
+
+    this.addWorkbenchAction({
       id: 'view.fullscreen',
       label: 'Toggle Fullscreen',
       category: 'View',
@@ -191,6 +205,24 @@ export class Workbench {
         },
       });
     }
+
+    this.appendMenuItem(MenuId.Root, {
+      group: '1_workspace',
+      order: 1,
+      command: {
+        id: 'codesandbox.dashboard',
+        title: 'Dashboard',
+      },
+    });
+
+    this.appendMenuItem(MenuId.Root, {
+      group: '2_open',
+      order: 1,
+      command: {
+        id: 'workbench.action.showCommands',
+        title: '&&Command Palette...',
+      },
+    });
 
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '1_new',
@@ -257,12 +289,19 @@ export class Workbench {
     const addBrowserNavigationCommand = (
       id: string,
       label: string,
-      url: string
+      url: string,
+      keybindings?: {
+        primary: number;
+        mac?: {
+          primary: number;
+        };
+      }
     ) => {
       this.addWorkbenchAction({
         id,
         label,
         category: 'Help',
+        keybindings,
         run: () => {
           window.open(url, '_blank');
         },
@@ -287,7 +326,11 @@ export class Workbench {
     addBrowserNavigationCommand(
       'codesandbox.dashboard',
       'Dashboard',
-      'https://codesandbox.io/dashboard'
+      'https://codesandbox.io/dashboard',
+      {
+        primary: KeyMod.CtrlCmd | KeyCode.KEY_D,
+        mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_D },
+      }
     );
     addBrowserNavigationCommand(
       'codesandbox.help.open-issue',
