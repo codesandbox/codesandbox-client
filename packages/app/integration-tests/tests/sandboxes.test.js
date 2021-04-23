@@ -1,13 +1,12 @@
 import puppeteer from 'puppeteer';
 
-
 const SECOND = 1000;
 const SANDBOXES = [
   // 'new',
   // // 'preact',
   // 'vue',
   // 'svelte',
-  // 'react-ts',
+  'react-ts',
   // { id: 'reduxjs-redux-examples-todomvc', threshold: 0.04 },
   // 'vVoQVk78',
   // 'faceyspacey-redux-first-router-codesandbox',
