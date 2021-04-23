@@ -1,43 +1,10 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useEffects } from 'app/overmind';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import styled from 'styled-components';
 
 import { MenuAppItems } from 'app/overmind/effects/vscode/composeMenuAppTree';
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: 0.5rem;
-
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 99999;
-  background: black;
-  align-items: flex-start;
-
-  .menu {
-    width: 150px;
-    position: relative;
-  }
-
-  .sub-menu {
-    display: none;
-
-    position: absolute;
-    top: 0;
-    left: 150px;
-
-    z-index: 99999;
-    background: #222;
-    padding: 15px;
-  }
-
-  .menu:hover > .sub-menu {
-    display: block;
-  }
-`;
+import { Icon, Stack } from '@codesandbox/components';
+import { Container, MenuHandler } from './elements';
 
 // TODO: find out a proper place to TS helpers
 type Unpacked<T> = T extends (infer U)[]
@@ -110,13 +77,17 @@ export const MenuBar: FunctionComponent = () => {
     // Explicitly use inline styles here to override the vscode styles
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <Container onClick={() => track('Editor - Click Menubar')}>
-      {menu.map(item => (
+      <MenuHandler type="button">
+        <Icon width={14} height={10} name="menu" />
+      </MenuHandler>
+
+      {/* {menu.map(item => (
         <div className="menu">
           <button type="button">{item.title}</button>
 
           {renderSubMenu(item.submenu)}
         </div>
-      ))}
+      ))} */}
     </Container>
   );
 };

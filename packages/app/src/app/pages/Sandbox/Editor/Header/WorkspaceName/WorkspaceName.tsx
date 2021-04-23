@@ -28,8 +28,8 @@ export const WorkspaceName: React.FC = () => {
   const { user } = useAppState();
 
   return (
-    <Stack gap={3} align="center">
-      <Text>{user.name}</Text>
+    <Stack gap={2} align="center">
+      <Text css={{ lineHeight: 1 }}>{user.name}</Text>
 
       <TeamBadge />
     </Stack>

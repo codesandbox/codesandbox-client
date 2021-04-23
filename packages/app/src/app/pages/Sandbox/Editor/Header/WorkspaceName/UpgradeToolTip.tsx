@@ -4,8 +4,6 @@ import styled, { keyframes } from 'styled-components';
 import css from '@styled-system/css';
 import { Link } from 'react-router-dom';
 
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
-
 import { Button, Text } from '@codesandbox/components';
 import { Badge } from './shared';
 

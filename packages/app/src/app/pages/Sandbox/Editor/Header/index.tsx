@@ -38,18 +38,6 @@ export const Header = () => {
       </Link>
     );
 
-  const LoginLink = () => (
-    <Link
-      as="a"
-      target="_blank"
-      rel="noreferrer noopener"
-      href="/"
-      css={{ padding: '2px' /* micro adjustment */ }}
-    >
-      <LogoIcon height={24} />
-    </Link>
-  );
-
   return (
     <>
       {!user && <SignInBanner />}
@@ -69,8 +57,20 @@ export const Header = () => {
         })}
       >
         <Stack align="center">
-          {hasLogIn ? <LoggedIn /> : <LoginLink />}
-          {/* <MenuBar /> */}
+          <MenuBar />
+          {hasLogIn ? (
+            <LoggedIn />
+          ) : (
+            <Link
+              as="a"
+              target="_blank"
+              rel="noreferrer noopener"
+              href="/"
+              css={{ padding: '2px' /* micro adjustment */ }}
+            >
+              <LogoIcon height={24} />
+            </Link>
+          )}
         </Stack>
 
         {editor.currentSandbox && !isAuthenticating ? <SandboxName /> : null}
