@@ -688,38 +688,43 @@ async function compile(opts: CompileOptions) {
         if (htmlModule && htmlModule.code) {
           html = htmlModule.code;
         }
-        const { head, body } = getHTMLParts(html);
 
-        if (lastHeadHTML && lastHeadHTML !== head) {
+        const { head, body } = getHTMLParts(html);
+        if (!lastHeadHTML && !lastBodyHTML) {
+          // Whether the server has provided the HTML file. If that isn't the case
+          // we have to fall back to setting hydrating the html client-side
+          const serverProvidedHTML =
+            modules[htmlEntries[0]] || manager.preset.htmlDisabled;
+          if (
+            !serverProvidedHTML ||
+            !firstLoad ||
+            process.env.LOCAL_SERVER ||
+            process.env.SANDPACK
+          ) {
+            // Append all head elements and execute scripts/styles
+            if (head) {
+              await appendHTML(head, document.head);
+            }
+
+            // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+            // on the first run. However, if there's no server to provide the static file (in the case of a local server
+            // or sandpack), then do it anyways.
+            if (body) {
+              await appendHTML(body, document.body);
+            }
+          }
+        } else if (
+          (lastHeadHTML && lastHeadHTML !== head) ||
+          (lastBodyHTML && lastBodyHTML !== body)
+        ) {
+          // Always refresh if html changed
+          if (manager) {
+            manager.clearCompiledCache();
+          }
+
           document.location.reload();
         }
-        if (manager && lastBodyHTML && lastBodyHTML !== body) {
-          manager.clearCompiledCache();
-        }
 
-        // Whether the server has provided the HTML file. If that isn't the case
-        // we have to fall back to setting `document.body.innerHTML`, which isn't
-        // preferred.
-        const serverProvidedHTML =
-          modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-        if (
-          !serverProvidedHTML ||
-          !firstLoad ||
-          process.env.LOCAL_SERVER ||
-          process.env.SANDPACK
-        ) {
-          // Append all head elements and execute scripts/styles
-          if (head) {
-            await appendHTML(head, document.head);
-          }
-
-          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-          // on the first run. However, if there's no server to provide the static file (in the case of a local server
-          // or sandpack), then do it anyways.
-          if (body) {
-            await appendHTML(body, document.body);
-          }
-        }
         lastBodyHTML = body;
         lastHeadHTML = head;
       }
