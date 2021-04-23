@@ -36,6 +36,7 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
+import { appendHTML } from './html-writer';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -449,65 +450,6 @@ interface CompileOptions {
   clearConsoleDisabled?: boolean;
 }
 
-// element.cloneNode(true) doesn't really work for scripts unfortunately
-function cloneDOMElement(element: HTMLElement) {
-  const clonedElement = document.createElement(element.tagName);
-  let isAsync = false;
-  for (
-    let attributeIndex = 0;
-    attributeIndex < element.attributes.length;
-    attributeIndex++
-  ) {
-    const attribute = element.attributes[attributeIndex];
-    clonedElement.setAttribute(attribute.name, attribute.value);
-    if (attribute.name === 'async' || attribute.name === 'defer') {
-      isAsync = true;
-    }
-  }
-  if (!isAsync && element.tagName === 'script') {
-    clonedElement.setAttribute('async', 'false');
-  }
-  clonedElement.innerHTML = element.innerHTML;
-  return clonedElement;
-}
-
-function cloneDOMTree(origin: string, key: string) {
-  const parser = new DOMParser();
-  const originRoot: HTMLElement = parser.parseFromString(origin, 'text/html')[
-    key
-  ];
-  if (originRoot.hasChildNodes()) {
-    const targetRoot: HTMLElement = document[key];
-    const firstElement = targetRoot.firstChild;
-
-    const styleElements = originRoot.getElementsByTagName('style');
-    for (let i = 0; i < styleElements.length; i++) {
-      const styleElement = styleElements[i];
-      targetRoot.insertBefore(cloneDOMElement(styleElement), firstElement);
-      originRoot.removeChild(styleElement);
-    }
-
-    const linkElements = originRoot.getElementsByTagName('link');
-    for (let i = 0; i < linkElements.length; i++) {
-      const linkElement = linkElements[i];
-      targetRoot.insertBefore(cloneDOMElement(linkElement), firstElement);
-      originRoot.removeChild(linkElement);
-    }
-
-    const scriptElements = originRoot.getElementsByTagName('script');
-    for (let i = 0; i < scriptElements.length; i++) {
-      const scriptElement = scriptElements[i];
-      targetRoot.insertBefore(cloneDOMElement(scriptElement), firstElement);
-      originRoot.removeChild(scriptElement);
-    }
-
-    for (let i = 0; i < originRoot.children.length; i++) {
-      const childElement = originRoot.children[i];
-      targetRoot.insertBefore(childElement, firstElement);
-    }
-  }
-}
-
 async function compile(opts: CompileOptions) {
   const {
     sandboxId,
@@ -746,41 +688,43 @@ async function compile(opts: CompileOptions) {
         if (htmlModule && htmlModule.code) {
           html = htmlModule.code;
         }
-        const { head, body } = getHTMLParts(html);
 
-        if (lastHeadHTML && lastHeadHTML !== head) {
+        const { head, body } = getHTMLParts(html);
+        if (!lastHeadHTML && !lastBodyHTML) {
+          // Whether the server has provided the HTML file. If that isn't the case
+          // we have to fall back to setting hydrating the html client-side
+          const serverProvidedHTML =
+            modules[htmlEntries[0]] || manager.preset.htmlDisabled;
+          if (
+            !serverProvidedHTML ||
+            !firstLoad ||
+            process.env.LOCAL_SERVER ||
+            process.env.SANDPACK
+          ) {
+            // Append all head elements and execute scripts/styles
+            if (head) {
+              await appendHTML(head, document.head);
+            }
+
+            // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+            // on the first run. However, if there's no server to provide the static file (in the case of a local server
+            // or sandpack), then do it anyways.
+            if (body) {
+              await appendHTML(body, document.body);
+            }
+          }
+        } else if (
+          (lastHeadHTML && lastHeadHTML !== head) ||
+          (lastBodyHTML && lastBodyHTML !== body)
+        ) {
+          // Always refresh if html changed
+          if (manager) {
+            manager.clearCompiledCache();
+          }
+
           document.location.reload();
         }
-        if (manager && lastBodyHTML && lastBodyHTML !== body) {
-          manager.clearCompiledCache();
-        }
 
-        // Whether the server has provided the HTML file. If that isn't the case
-        // we have to fall back to setting `document.body.innerHTML`, which isn't
-        // preferred.
-        const serverProvidedHTML =
-          modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-        if (
-          !serverProvidedHTML ||
-          !firstLoad ||
-          process.env.LOCAL_SERVER ||
-          process.env.SANDPACK
-        ) {
-          // Add head tags or anything that comes from the template
-          // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
-          // At this point, the original head was parsed and the files loaded / preloaded.
-          // Original issue: https://github.com/codesandbox/sandpack/issues/32
-          if (head) {
-            cloneDOMTree(head, 'head');
-          }
-
-          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-          // on the first run. However, if there's no server to provide the static file (in the case of a local server
-          // or sandpack), then do it anyways.
-          if (body) {
-            cloneDOMTree(body, 'body');
-          }
-        }
         lastBodyHTML = body;
         lastHeadHTML = head;
       }
