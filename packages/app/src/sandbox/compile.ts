@@ -11,7 +11,7 @@ import VERSION from '@codesandbox/common/lib/version';
 import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
-import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
+import { inject, uninject } from 'sandbox-hooks/react-error-overlay/overlay';
 import {
   consumeCache,
   deleteAPICache,
@@ -427,10 +427,6 @@ function overrideDocumentClose() {
 
 overrideDocumentClose();
 
-if (!process.env.SANDPACK) {
-  inject();
-}
-
 interface CompileOptions {
   sandboxId: string;
   modules: { [path: string]: Module };
@@ -467,7 +463,7 @@ async function compile(opts: CompileOptions) {
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
   } = opts;
-  
+
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
@@ -482,10 +478,10 @@ async function compile(opts: CompileOptions) {
 
   const startTime = Date.now();
   try {
+    uninject(manager && manager.webpackHMR ? true : hadError);
     inject(showErrorScreen);
     clearErrorTransformers();
     initializeErrorTransformers();
-    unmount(manager && manager.webpackHMR ? true : hadError);
   } catch (e) {
     console.error(e);
   }
@@ -824,10 +820,6 @@ async function compile(opts: CompileOptions) {
       if (firstLoad && changedModuleCount === 0) {
         await deleteAPICache(manager.id, SCRIPT_VERSION);
       }
-    }
-
-    if (firstLoad) {
-      inject();
     }
 
     const event = new Event('error');

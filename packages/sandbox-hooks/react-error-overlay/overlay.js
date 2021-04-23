@@ -303,11 +303,11 @@ function inject(renderErrorOverlay = true) {
   });
 }
 
-function uninject() {
+function uninject(force) {
   if (listenToRuntimeErrorsUnmounter) {
     listenToRuntimeErrorsUnmounter();
   }
-  unmount();
+  unmount(force);
 }
 
 export { inject, uninject, unmount };
