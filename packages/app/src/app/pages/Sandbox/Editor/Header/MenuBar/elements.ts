@@ -57,7 +57,8 @@ const MenuHandler = styled.button`
   }
 
   &:active,
-  &:hover {
+  &:hover,
+  &[aria-expanded='true'] {
     outline: none;
     border-color: ${({ theme }) => theme.colors.grays['500']};
   }
