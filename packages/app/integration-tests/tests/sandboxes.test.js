@@ -2,45 +2,45 @@ import puppeteer from 'puppeteer';
 
 const SECOND = 1000;
 const SANDBOXES = [
-  'new',
-  // 'preact',
-  'vue',
-  'svelte',
-  'react-ts',
-  { id: 'reduxjs-redux-examples-todomvc', threshold: 0.04 },
-  'vVoQVk78',
-  'faceyspacey-redux-first-router-codesandbox',
-  'mZRjw05yp',
-  'o29j95wx9',
-  'k3q1zjjml5',
-  'reduxjs-redux-examples-real-world',
-  'CompuIves-codesandbox-presentation',
-  'lp5rjr0z4z',
-  'nOymMxyY',
-  'y26rj99yov', // react transition
-  // '6w66jzw3mn', // material-design & preact
-  '4j7m47vlm4', // material-ui
-  'cssinjs-egghead-templates-and-variables', // postcss egghead
-  'xp5qy8r93q', // babel example
-  'angular', // angular template
-  // Sass importing
-  '2ppkvzx570', // nested imports
-  'rl2m3xklyo', // node_modules import
-  'vanilla',
-  //
+  // 'new',
+  // // 'preact',
+  // 'vue',
+  // 'svelte',
+  // 'react-ts',
+  // { id: 'reduxjs-redux-examples-todomvc', threshold: 0.04 },
+  // 'vVoQVk78',
+  // 'faceyspacey-redux-first-router-codesandbox',
+  // 'mZRjw05yp',
+  // 'o29j95wx9',
+  // 'k3q1zjjml5',
+  // 'reduxjs-redux-examples-real-world',
+  // 'CompuIves-codesandbox-presentation',
+  // 'lp5rjr0z4z',
+  // 'nOymMxyY',
+  // 'y26rj99yov', // react transition
+  // // '6w66jzw3mn', // material-design & preact
+  // '4j7m47vlm4', // material-ui
+  // 'cssinjs-egghead-templates-and-variables', // postcss egghead
+  // 'xp5qy8r93q', // babel example
+  // 'angular', // angular template
+  // // Sass importing
+  // '2ppkvzx570', // nested imports
+  // 'rl2m3xklyo', // node_modules import
+  // 'vanilla',
+  // //
   'n5wy74w8vl', // material-ui generated demo
-  'algolia-doc-onboarding-demos-angular-media', // algolia angular demo
-  { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
-  { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
-  'pm79km5lmj', // babel macros with styled components
-  'j2wpjwqj93', // sandbox with need of transpiling in node_modules
-  '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
-  '31kn7voz4q', // cxjs
-  'zw9zjy0683', // aurelia
-  'zx22owojr3', // vue v-slot test
-  // '4888omqqz7', // material-ui https://github.com/codesandbox/codesandbox-client/issues/1741,
-  'sebn6', // babel plugin dynamically downloaded
-  'utmms', // babel plugin pragmatic-jsx which requires other babel plugin
+  // 'algolia-doc-onboarding-demos-angular-media', // algolia angular demo
+  // { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
+  // { id: '98o3k45m8p', threshold: 0.05 }, // direct path test
+  // 'pm79km5lmj', // babel macros with styled components
+  // 'j2wpjwqj93', // sandbox with need of transpiling in node_modules
+  // '1oknw8q8zq', // Parcel with async function (no regeneratorRuntime error)
+  // '31kn7voz4q', // cxjs
+  // 'zw9zjy0683', // aurelia
+  // 'zx22owojr3', // vue v-slot test
+  // // '4888omqqz7', // material-ui https://github.com/codesandbox/codesandbox-client/issues/1741,
+  // 'sebn6', // babel plugin dynamically downloaded
+  // 'utmms', // babel plugin pragmatic-jsx which requires other babel plugin
 ];
 const SANDBOXES_REPO = 'codesandbox/integration-sandboxes';
 
@@ -73,8 +73,9 @@ function loadSandbox(page, sandboxId, timeout) {
     const timer = setTimeout(async () => {
       reject(
         Error(
-          `Timeout: loading sandbox '${sandboxId}' took more than ${timeout /
-            SECOND}s`
+          `Timeout: loading sandbox '${sandboxId}' took more than ${
+            timeout / SECOND
+          }s`
         )
       );
     }, timeout);
@@ -91,7 +92,8 @@ function loadSandbox(page, sandboxId, timeout) {
     });
     await pageLoaded(page);
     clearTimeout(timer);
-    await page.waitFor(2 * SECOND);
+    await page.waitFor(5 * SECOND);
+
     resolve();
   });
 }
