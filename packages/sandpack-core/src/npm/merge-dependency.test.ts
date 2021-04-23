@@ -30,9 +30,8 @@ async function getFixture(
 it('can merge 2 responses', async () => {
   const react = await getFixture('react', '17.0.2');
   const reactDom = await getFixture('react-dom', '17.0.2');
-  const merge = mergeDependencies([react, reactDom]);
-
-  expect(merge).toMatchSnapshot();
+  const mergedDependencies = mergeDependencies([react, reactDom]);
+  expect(mergedDependencies).toMatchSnapshot();
 });
 
 it('conflicting versions dnd-kit', async () => {
@@ -40,15 +39,39 @@ it('conflicting versions dnd-kit', async () => {
   const dndKitSortable = await getFixture('@dnd-kit/sortable', '3.0.1');
   const dndKitUtilities = await getFixture('@dnd-kit/utilities', '2.0.0');
 
-  const merge = mergeDependencies([
+  const mergedDependencies = mergeDependencies([
     dndKitCore,
     dndKitSortable,
     dndKitUtilities,
   ]);
   const parsedPkg = JSON.parse(
-    merge.contents['/node_modules/@dnd-kit/core/package.json'].content
+    mergedDependencies.contents['/node_modules/@dnd-kit/core/package.json']
+      .content
   );
 
   expect(parsedPkg.version).toBe('3.0.1');
-  expect(merge).toMatchSnapshot();
+  expect(mergedDependencies).toMatchSnapshot();
+});
+
+it('Similarly named packages and pathnames', async () => {
+  const utilPkg = await getFixture('util', '0.11.1');
+  const utilDeprecatePkg = await getFixture('util-deprecate', '1.0.2');
+  const readableStreamPkg = await getFixture('readable-stream', '2.3.7');
+  const nodeLibsBrowserPkg = await getFixture('node-libs-browser', '2.2.1');
+
+  const mergedDependencies = mergeDependencies([
+    utilPkg,
+    utilDeprecatePkg,
+    nodeLibsBrowserPkg,
+    readableStreamPkg,
+  ]);
+
+  expect(
+    mergedDependencies.contents['/node_modules/util-deprecate/browser.js']
+  ).toBeTruthy();
+  expect(
+    mergedDependencies.contents['/node_modules/util/support/isBufferBrowser.js']
+  ).toBeTruthy();
+
+  expect(mergedDependencies).toMatchSnapshot();
 });
