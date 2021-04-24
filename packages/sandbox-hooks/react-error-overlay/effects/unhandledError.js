@@ -8,14 +8,13 @@
  */
 
 /* @flow */
-let boundErrorHandler = null;
-
 type ErrorCallback = (error: Error) => void;
 
 function errorHandler(callback: ErrorCallback, e: Event): void {
   if (!e.error) {
     return;
   }
+  
   // $FlowFixMe
   const { error } = e;
   if (error instanceof Error) {
@@ -27,23 +26,10 @@ function errorHandler(callback: ErrorCallback, e: Event): void {
   }
 }
 
-function registerUnhandledError(target: EventTarget, callback: ErrorCallback) {
-  if (boundErrorHandler !== null) {
-    return;
-  }
-  boundErrorHandler = errorHandler.bind(undefined, callback);
+export function registerUnhandledError(target: EventTarget, callback: ErrorCallback) {
+  const boundErrorHandler = errorHandler.bind(undefined, callback);
   target.addEventListener('error', boundErrorHandler);
-}
-
-function unregisterUnhandledError(target: EventTarget) {
-  if (boundErrorHandler === null) {
-    return;
+  return () => {
+    target.removeEventListener('error', boundErrorHandler);
   }
-  target.removeEventListener('error', boundErrorHandler);
-  boundErrorHandler = null;
 }
-
-export {
-  registerUnhandledError as register,
-  unregisterUnhandledError as unregister,
-};
