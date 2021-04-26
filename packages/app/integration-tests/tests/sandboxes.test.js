@@ -91,7 +91,7 @@ function loadSandbox(page, sandboxId, timeout) {
     });
     await pageLoaded(page);
     clearTimeout(timer);
-    await page.waitFor(5 * SECOND);
+    await page.waitFor(3 * SECOND);
 
     resolve();
   });
