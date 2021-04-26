@@ -7,92 +7,67 @@ import { Icon, Menu, Stack } from '@codesandbox/components';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 import { Container, MenuHandler } from './elements';
 import { renderTitle } from './renderTItle';
-
-// TODO: find out a proper place to TS helpers
-type Unpacked<T> = T extends (infer U)[]
-  ? U
-  : T extends (...args: any[]) => infer U
-  ? U
-  : T extends Promise<infer U>
-  ? U
-  : T;
+import { formatMenuData } from './formatMenuData';
 
 export const MenuBar: FunctionComponent = () => {
   const [menu, setMenu] = useState<MenuAppItems>([]);
-
-  console.log(menu);
 
   const { vscode } = useEffects();
   const vscodeMenuItems = vscode.getMenuAppItems();
 
   useEffect(
-    function loadMenuData() {
+    function loadMenuItemsFromVscode() {
       setMenu(vscodeMenuItems);
     },
     [vscodeMenuItems]
   );
 
-  const renderSubMenu = (submenu: Unpacked<MenuAppItems>['submenu']) =>
-    submenu.map(subItem => {
-      if (subItem.submenu) {
-        return (
-          <div className="menu">
-            <p>
-              {subItem.title} {'>'}
-            </p>
-            <div className="menu sub-menu">
-              {renderSubMenu(subItem.submenu)}
-            </div>
-          </div>
-        );
-      }
+  // const renderSubMenu = (submenu: Unpacked<MenuAppItems>['submenu']) =>
+  //   submenu.map(subItem => {
+  //     if (subItem.submenu) {
+  //       return (
+  //         <div className="menu">
+  //           <p>
+  //             {subItem.title} {'>'}
+  //           </p>
+  //           <div className="menu sub-menu">
+  //             {renderSubMenu(subItem.submenu)}
+  //           </div>
+  //         </div>
+  //       );
+  //     }
 
-      if (subItem.command) {
-        const when = vscode.contextMatchesRules(subItem.command.when);
-        const toggled = vscode.contextMatchesRules(subItem.command.toggled);
-        const disabled = vscode.contextMatchesRules(
-          subItem.command.precondition
-        );
+  //     if (subItem.command) {
+  //       const when = vscode.contextMatchesRules(subItem.command.when);
+  //       const toggled = vscode.contextMatchesRules(subItem.command.toggled);
+  //       const disabled = vscode.contextMatchesRules(
+  //         subItem.command.precondition
+  //       );
 
-        if (when === false) return null;
+  //       if (when === false) return null;
 
-        return (
-          <div className="item">
-            <button
-              type="button"
-              onClick={() => vscode.runCommand(subItem.command.id)}
-              style={{
-                opacity: disabled ? 1 : 0.4,
-              }}
-            >
-              {'toggled' in subItem.command && toggled && '✅'}
-              {subItem.command.title}
-            </button>
+  //       return (
+  //         <div className="item">
+  //           <button
+  //             type="button"
+  //             onClick={() => vscode.runCommand(subItem.command.id)}
+  //             style={{
+  //               opacity: disabled ? 1 : 0.4,
+  //             }}
+  //           >
+  //             {'toggled' in subItem.command && toggled && '✅'}
+  //             {subItem.command.title}
+  //           </button>
 
-            {vscode.lookupKeybinding(subItem.command.id)?.getLabel()}
-          </div>
-        );
-      }
+  //           {vscode.lookupKeybinding(subItem.command.id)?.getLabel()}
+  //         </div>
+  //       );
+  //     }
 
-      return null;
-    });
+  //     return null;
+  //   });
 
-  const groupMenu = menu
-    .sort((a, b) => (a.group > b.group ? 1 : -1))
-    .reduce((acc, curr) => {
-      const { group } = curr;
-
-      if (group in acc) {
-        return { ...acc, [group]: [...acc[group], curr] };
-      }
-
-      return { ...acc, [group]: [curr] };
-    }, {});
-
-  const listGroupsMenu: MenuAppItems[] = Object.entries(groupMenu).reduce(
-    (acc, [_, value]) => [...acc, value],
-    []
-  );
+  const menuByGroup = formatMenuData(menu);
 
   return (
     // Explicitly use inline styles here to override the vscode styles
@@ -104,48 +79,44 @@ export const MenuBar: FunctionComponent = () => {
         </MenuHandler>
 
         <Menu.List>
-          {listGroupsMenu.map((group, groupIndex) => (
+          {menuByGroup.map((group, groupIndex, innerArr) => (
             // eslint-disable-next-line react/no-array-index-key
             <React.Fragment key={groupIndex}>
-              {group
-                .sort((a, b) => (a.order > b.order ? 1 : -1))
-                .map(item => {
-                  const { label, renderMnemonic } = renderTitle(
-                    item.title || item.command.title
-                  );
+              {group.map(item => {
+                const { label, renderMnemonic } = renderTitle(
+                  item.title || item.command.title
+                );
 
-                  if (item.submenu) {
-                    return (
-                      <Menu.Item key={label} aria-label={label}>
-                        <Stack justify="space-between">
-                          <span>{renderMnemonic()}</span>
-                          <ChevronRight size="15" />
-                        </Stack>
-                      </Menu.Item>
-                    );
-                  }
-
+                if (item.submenu) {
                   return (
-                    <Menu.Item
-                      onClick={() => vscode.runCommand(item.command.id)}
-                      key={label}
-                      aria-label={label}
-                    >
-                      <Stack gap={4} justify="space-between">
+                    <Menu.Item key={label} aria-label={label}>
+                      <Stack justify="space-between">
                         <span>{renderMnemonic()}</span>
-
-                        {item.command && (
-                          <span>
-                            {vscode
-                              .lookupKeybinding(item.command.id)
-                              ?.getLabel()}
-                          </span>
-                        )}
+                        <ChevronRight size="15" />
                       </Stack>
                     </Menu.Item>
                   );
-                })}
-              {groupIndex !== listGroupsMenu.length - 1 && <Menu.Divider />}
+                }
+
+                return (
+                  <Menu.Item
+                    onClick={() => vscode.runCommand(item.command.id)}
+                    key={label}
+                    aria-label={label}
+                  >
+                    <Stack gap={4} justify="space-between">
+                      <span>{renderMnemonic()}</span>
+
+                      {item.command && (
+                        <span>
+                          {vscode.lookupKeybinding(item.command.id)?.getLabel()}
+                        </span>
+                      )}
+                    </Stack>
+                  </Menu.Item>
+                );
+              })}
+              {groupIndex !== innerArr.length - 1 && <Menu.Divider />}
             </React.Fragment>
           ))}
         </Menu.List>
