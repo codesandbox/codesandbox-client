@@ -141,6 +141,9 @@ try {
   fetch(`https://codesandbox.io/api/v1/sandboxes/${sandboxId}/phishing`)
     .then(response => response.json())
     .then(data => {
+      if (data.deleted) {
+        window.location.replace('https://codesandbox.io/phew');
+      }
       if (data.flagged) {
         setTimeout(() => createIframe(), 250);
       }
