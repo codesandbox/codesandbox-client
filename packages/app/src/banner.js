@@ -75,7 +75,7 @@ const iframeStyles = `
   top: 0;
   left: 0;
   border: none;
-  width: 100%;  
+  width: 100%;
   z-index: 9999999999999;
 `;
 
@@ -144,6 +144,9 @@ try {
       if (data.flagged) {
         setTimeout(() => createIframe(), 250);
       }
+    })
+    .catch(() => {
+      // noop
     });
 } catch (e) {
   console.error(e);
