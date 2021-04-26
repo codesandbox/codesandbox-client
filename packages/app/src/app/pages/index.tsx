@@ -60,6 +60,13 @@ const NotFound = Loadable(() =>
     })
   )
 );
+const Phew = Loadable(() =>
+  import(/* webpackChunkName: 'phishing-phew' */ './common/Phew').then(
+    module => ({
+      default: module.Phew,
+    })
+  )
+);
 const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
     default: module.Profile,
@@ -163,6 +170,7 @@ const RoutesComponent: React.FC = () => {
             />
             <Route path="/invite/:token" component={TeamInvitation} />
 
+            <Route path="/phew" component={Phew} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
