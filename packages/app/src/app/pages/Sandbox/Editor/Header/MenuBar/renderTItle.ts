@@ -11,19 +11,14 @@ const renderTitle = (label: string) => {
 
   return {
     label: cleanLabel,
-    render: () => {
-      if (labelSplit) {
-        return labelSplit.map(element => {
-          if (/(&&\w)/g.test(element)) {
-            return createElement('mnemonic', null, clean(element));
-          }
+    renderMnemonic: () =>
+      labelSplit.map(element => {
+        if (/(&&\w)/g.test(element)) {
+          return createElement('mnemonic', null, clean(element));
+        }
 
-          return element;
-        });
-      }
-
-      return cleanLabel;
-    },
+        return element;
+      }),
   };
 };
 

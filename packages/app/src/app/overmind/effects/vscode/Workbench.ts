@@ -220,7 +220,7 @@ export class Workbench {
       order: 1,
       command: {
         id: 'workbench.action.showCommands',
-        title: '&&Command Palette...',
+        title: '&&Command Palette',
       },
     });
 

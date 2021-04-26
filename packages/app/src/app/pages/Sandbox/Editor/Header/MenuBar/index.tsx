@@ -4,6 +4,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { MenuAppItems } from 'app/overmind/effects/vscode/composeMenuAppTree';
 import { Icon, Menu, Stack } from '@codesandbox/components';
+import ChevronRight from 'react-icons/lib/md/chevron-right';
 import { Container, MenuHandler } from './elements';
 import { renderTitle } from './renderTItle';
 
@@ -109,9 +110,20 @@ export const MenuBar: FunctionComponent = () => {
               {group
                 .sort((a, b) => (a.order > b.order ? 1 : -1))
                 .map(item => {
-                  const { label, render } = renderTitle(
+                  const { label, renderMnemonic } = renderTitle(
                     item.title || item.command.title
                   );
+
+                  if (item.submenu) {
+                    return (
+                      <Menu.Item key={label} aria-label={label}>
+                        <Stack justify="space-between">
+                          <span>{renderMnemonic()}</span>
+                          <ChevronRight size="15" />
+                        </Stack>
+                      </Menu.Item>
+                    );
+                  }
 
                   return (
                     <Menu.Item
@@ -119,10 +131,17 @@ export const MenuBar: FunctionComponent = () => {
                       key={label}
                       aria-label={label}
                     >
-                      {render()}
+                      <Stack gap={4} justify="space-between">
+                        <span>{renderMnemonic()}</span>
 
-                      {item.command &&
-                        vscode.lookupKeybinding(item.command.id)?.getLabel()}
+                        {item.command && (
+                          <span>
+                            {vscode
+                              .lookupKeybinding(item.command.id)
+                              ?.getLabel()}
+                          </span>
+                        )}
+                      </Stack>
                     </Menu.Item>
                   );
                 })}
