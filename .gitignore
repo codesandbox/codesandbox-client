@@ -22,6 +22,7 @@ yarn-error.log
 .idea
 jest
 stats.json
+.parcel-cache
 
 lerna-debug.log
 
