@@ -51,7 +51,7 @@ export function getCurrentManager(): Manager | null {
   return manager;
 }
 
-export function getHTMLParts(html: string) {
+export function getHTMLParts(html: string): { head: string; body: string } {
   if (html.includes('<body>')) {
     const bodyMatcher = /<body.*>([\s\S]*)<\/body>/m;
     const headMatcher = /<head>([\s\S]*)<\/head>/m;
@@ -677,57 +677,56 @@ async function compile(opts: CompileOptions) {
 
       await manager.preset.preEvaluate(manager, updatedModules);
 
-      if (!manager.webpackHMR) {
-        const htmlEntries = templateDefinition.getHTMLEntries(configurations);
-        const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
-        const htmlModule = modules[htmlModulePath];
-        let html =
-          template === 'vue-cli'
-            ? '<div id="app"></div>'
-            : '<div id="root"></div>';
-        if (htmlModule && htmlModule.code) {
-          html = htmlModule.code;
+      // Start HTML Hydration and HMR
+      const htmlEntries = templateDefinition.getHTMLEntries(configurations);
+      const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
+      const htmlModule = modules[htmlModulePath];
+      let html =
+        template === 'vue-cli'
+          ? '<div id="app"></div>'
+          : '<div id="root"></div>';
+      if (htmlModule && htmlModule.code) {
+        html = htmlModule.code;
+      }
+
+      const { head, body } = getHTMLParts(html);
+      if (lastHeadHTML == null && lastBodyHTML == null) {
+        // Whether the server has provided the HTML file. If that isn't the case
+        // we have to fall back to setting hydrating the html client-side
+        const serverProvidedHTML =
+          modules[htmlEntries[0]] || manager.preset.htmlDisabled;
+        const isServerHTML =
+          !!serverProvidedHTML &&
+          !process.env.LOCAL_SERVER &&
+          !process.env.SANDPACK;
+        if (!isServerHTML) {
+          // Append all head elements and execute scripts/styles
+          if (head) {
+            await appendHTML(head, document.head);
+          }
+
+          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+          // on the first run. However, if there's no server to provide the static file (in the case of a local server
+          // or sandpack), then do it anyways.
+          if (body) {
+            await appendHTML(body, document.body);
+          }
         }
-
-        const { head, body } = getHTMLParts(html);
-        if (!lastHeadHTML && !lastBodyHTML) {
-          // Whether the server has provided the HTML file. If that isn't the case
-          // we have to fall back to setting hydrating the html client-side
-          const serverProvidedHTML =
-            modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-          if (
-            !serverProvidedHTML ||
-            !firstLoad ||
-            process.env.LOCAL_SERVER ||
-            process.env.SANDPACK
-          ) {
-            // Append all head elements and execute scripts/styles
-            if (head) {
-              await appendHTML(head, document.head);
-            }
-
-            // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-            // on the first run. However, if there's no server to provide the static file (in the case of a local server
-            // or sandpack), then do it anyways.
-            if (body) {
-              await appendHTML(body, document.body);
-            }
-          }
-        } else if (
-          (lastHeadHTML && lastHeadHTML !== head) ||
-          (lastBodyHTML && lastBodyHTML !== body)
-        ) {
-          // Always refresh if html changed
-          if (manager) {
-            manager.clearCompiledCache();
-          }
-
+      } else if (lastHeadHTML !== head || lastBodyHTML !== body) {
+        // Always refresh if html changed
+        if (manager) {
+          manager.clearCompiledCache();
+          manager.reload();
+        } else {
           document.location.reload();
         }
 
-        lastBodyHTML = body;
-        lastHeadHTML = head;
+        return;
       }
+
+      lastBodyHTML = body;
+      lastHeadHTML = head;
+      // HTML Hydration and HMR Finished
 
       metrics.measure('external-resources');
       await handleExternalResources(externalResources);
