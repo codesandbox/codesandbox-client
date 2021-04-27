@@ -13,6 +13,7 @@ export type MenuAppItems = Array<{
   title?: string;
   when?: { key: string };
   submenu?: MenuAppItems;
+  submenuId?: number;
 }>;
 
 type InternalMenuType = Array<{ submenu?: string }>;
@@ -63,13 +64,11 @@ export const composeMenuAppTree = (
 
   const getSubmenu = (menu: InternalMenuType) =>
     menu.map(item => {
-      if (item.submenu) {
-        const submenu = getVsCodeMenuItems(item.submenu);
+      const submenuId = item.submenu;
 
-        return {
-          ...item,
-          submenu: getSubmenu(submenu),
-        };
+      if (submenuId) {
+        const submenu = getVsCodeMenuItems(submenuId);
+        return { ...item, submenuId, submenu: getSubmenu(submenu) };
       }
 
       return item;

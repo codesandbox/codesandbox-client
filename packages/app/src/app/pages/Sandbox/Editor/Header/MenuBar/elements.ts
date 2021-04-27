@@ -1,37 +1,16 @@
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
-const Container = styled.div`
-  /* display: flex;
-  align-items: center;
-  margin-left: 0.5rem; */
-
-  /* position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 99999;
-  background: black;
-  align-items: flex-start;
-
-  .menu {
-    width: 150px;
-    position: relative;
+const GlobalMenuStyle = createGlobalStyle`
+  [data-component='MenuList'][data-menu='MenuBar'],
+  [data-component='MenuList'][data-menu='MenuBar'] [data-reach-menu-list] {
+    overflow: visible !important;
   }
 
-  .sub-menu {
-    display: none;
-
+  [data-menu='MenuBar'] [data-reach-submenu-list] {
     position: absolute;
-    top: 0;
-    left: 150px;
-
-    z-index: 99999;
-    background: #222;
-    padding: 15px;
+    top: -5px;
+    left: 100%;
   }
-
-  .menu:hover > .sub-menu {
-    display: block;
-  } */
 `;
 
 const MenuHandler = styled.button`
@@ -64,4 +43,4 @@ const MenuHandler = styled.button`
   }
 `;
 
-export { Container, MenuHandler };
+export { GlobalMenuStyle, MenuHandler };
