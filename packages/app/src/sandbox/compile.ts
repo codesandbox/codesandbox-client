@@ -690,17 +690,16 @@ async function compile(opts: CompileOptions) {
         }
 
         const { head, body } = getHTMLParts(html);
-        if (!lastHeadHTML && !lastBodyHTML) {
+        if (lastHeadHTML == null && lastBodyHTML == null) {
           // Whether the server has provided the HTML file. If that isn't the case
           // we have to fall back to setting hydrating the html client-side
           const serverProvidedHTML =
             modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-          if (
-            !serverProvidedHTML ||
-            !firstLoad ||
-            process.env.LOCAL_SERVER ||
-            process.env.SANDPACK
-          ) {
+          const isServerHTML =
+            !!serverProvidedHTML &&
+            !process.env.LOCAL_SERVER &&
+            !process.env.SANDPACK;
+          if (!isServerHTML) {
             // Append all head elements and execute scripts/styles
             if (head) {
               await appendHTML(head, document.head);
@@ -713,10 +712,7 @@ async function compile(opts: CompileOptions) {
               await appendHTML(body, document.body);
             }
           }
-        } else if (
-          (lastHeadHTML && lastHeadHTML !== head) ||
-          (lastBodyHTML && lastBodyHTML !== body)
-        ) {
+        } else if (lastHeadHTML !== head || lastBodyHTML !== body) {
           // Always refresh if html changed
           if (manager) {
             manager.clearCompiledCache();
