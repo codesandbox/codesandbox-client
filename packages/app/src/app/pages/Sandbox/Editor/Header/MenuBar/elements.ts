@@ -1,4 +1,6 @@
-import styled, { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle, keyframes } from 'styled-components';
+
+const transitions = keyframes({ from: { opacity: 0 } });
 
 const GlobalMenuStyle = createGlobalStyle`
   [data-menu='MenuBar'] {
@@ -15,6 +17,9 @@ const GlobalMenuStyle = createGlobalStyle`
       position: absolute;
       top: -5px;
       left: 100%;
+      min-width: 180px !important;
+
+      animation: ${transitions} 150ms ease-out;
     }
 
     [data-reach-menu-item][data-component='MenuItem']:hover,

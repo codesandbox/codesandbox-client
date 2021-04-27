@@ -5,51 +5,6 @@ import { MenuAppItems } from 'app/overmind/effects/vscode/composeMenuAppTree';
 import { useEffects } from 'app/overmind';
 import { renderTitle } from './renderTitle';
 
-// const renderSubMenu = (submenu: Unpacked<MenuAppItems>['submenu']) =>
-//   submenu.map(subItem => {
-//     if (subItem.submenu) {
-//       return (
-//         <div className="menu">
-//           <p>
-//             {subItem.title} {'>'}
-//           </p>
-//           <div className="menu sub-menu">
-//             {renderSubMenu(subItem.submenu)}
-//           </div>
-//         </div>
-//       );
-//     }
-
-//     if (subItem.command) {
-//       const when = vscode.contextMatchesRules(subItem.command.when);
-//       const toggled = vscode.contextMatchesRules(subItem.command.toggled);
-//       const disabled = vscode.contextMatchesRules(
-//         subItem.command.precondition
-//       );
-
-//       if (when === false) return null;
-
-//       return (
-//         <div className="item">
-//           <button
-//             type="button"
-//             onClick={() => vscode.runCommand(subItem.command.id)}
-//             style={{
-//               opacity: disabled ? 1 : 0.4,
-//             }}
-//           >
-//             {'toggled' in subItem.command && toggled && '✅'}
-//             {subItem.command.title}
-//           </button>
-
-//           {vscode.lookupKeybinding(subItem.command.id)?.getLabel()}
-//         </div>
-//       );
-//     }
-
-//     return null;
-//   });
-
 const SubMenu: React.FC<{
   payload: MenuAppItems[];
 }> = ({ payload }) => {
@@ -70,7 +25,7 @@ const SubMenu: React.FC<{
          */
         timer = setTimeout(() => {
           setDebounceActiveItem(undefined);
-        }, 1000);
+        }, 600);
       } else {
         /**
          * Unsure it doesn't hide by any user's mistake
@@ -89,66 +44,95 @@ const SubMenu: React.FC<{
 
   return (
     <>
-      {payload.map((group, groupIndex, innerArr) => {
-        return (
-          // eslint-disable-next-line react/no-array-index-key
-          <React.Fragment key={groupIndex}>
-            {group.map(item => {
-              const { label, renderMnemonic } = renderTitle(
-                item.title || item.command.title
-              );
+      {payload.map((group, groupIndex, innerArr) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <React.Fragment key={groupIndex}>
+          {group.map(item => {
+            const title = item.title || item.command.title;
+            const { label, renderMnemonic } = renderTitle(title);
 
-              if (item.submenu) {
-                return (
-                  <Menu.Item
-                    key={label}
-                    aria-label={label}
-                    onMouseEnter={() => setActiveItem(item.submenuId)}
-                    onMouseLeave={() => setActiveItem(undefined)}
-                  >
-                    <Stack justify="space-between">
-                      <Text size={2}>{renderMnemonic()}</Text>
-                      <ChevronRight size="15" />
-                    </Stack>
-
-                    {debounceActiveItem === item.submenuId && (
-                      <div
-                        data-reach-menu-list
-                        data-reach-submenu-list
-                        data-component="MenuList"
-                      >
-                        <SubMenu
-                          payload={(item.submenu as unknown) as MenuAppItems[]}
-                        />
-                      </div>
-                    )}
-                  </Menu.Item>
-                );
-              }
-
+            if (item.submenu) {
               return (
                 <Menu.Item
-                  onClick={() => vscode.runCommand(item.command.id)}
                   key={label}
                   aria-label={label}
+                  onMouseEnter={() => setActiveItem(item.submenuId)}
+                  onMouseLeave={() => setActiveItem(undefined)}
                 >
-                  <Stack gap={4} justify="space-between">
+                  <Stack justify="space-between">
                     <Text size={2}>{renderMnemonic()}</Text>
-
-                    {item.command && (
-                      <span>
-                        {vscode.lookupKeybinding(item.command.id)?.getLabel()}
-                      </span>
-                    )}
+                    <ChevronRight size="15" />
                   </Stack>
+
+                  {debounceActiveItem === item.submenuId && (
+                    <div
+                      data-reach-menu-list
+                      data-reach-submenu-list
+                      data-component="MenuList"
+                    >
+                      <SubMenu
+                        payload={(item.submenu as unknown) as MenuAppItems[]}
+                      />
+                    </div>
+                  )}
                 </Menu.Item>
               );
-            })}
+            }
 
-            {groupIndex !== innerArr.length - 1 && <Menu.Divider />}
-          </React.Fragment>
-        );
-      })}
+            const when = vscode.contextMatchesRules(item.command.when);
+            if (when === false) return null;
+
+            const renderToggle = () => {
+              if ('toggled' in item.command) {
+                const command = item.command.toggled;
+                const toggled = vscode.contextMatchesRules(command);
+
+                // TODO
+                return toggled ? '✅' : '⛔️';
+              }
+
+              return null;
+            };
+
+            const content = (
+              <Stack gap={4} justify="space-between">
+                <Text size={2}>
+                  {renderToggle()}
+                  {renderMnemonic()}
+                </Text>
+
+                {item.command && (
+                  <Text size={2}>
+                    {vscode.lookupKeybinding(item.command.id)?.getLabel()}
+                  </Text>
+                )}
+              </Stack>
+            );
+
+            const disabled =
+              vscode.contextMatchesRules(item.command.precondition) === false;
+            if (disabled) {
+              return (
+                <Menu.Item key={label} aria-label={label} data-disabled>
+                  {content}
+                </Menu.Item>
+              );
+            }
+
+            return (
+              <Menu.Item
+                onClick={() => vscode.runCommand(item.command.id)}
+                key={label}
+                aria-label={label}
+              >
+                {content}
+              </Menu.Item>
+            );
+          })}
+
+          {groupIndex !== innerArr.length - 1 && <Menu.Divider />}
+        </React.Fragment>
+      ))}
     </>
   );
 };
