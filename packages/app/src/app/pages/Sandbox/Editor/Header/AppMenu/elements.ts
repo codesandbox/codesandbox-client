@@ -65,6 +65,17 @@ const MenuHandler = styled.button`
   }
 `;
 
+const ToggleBox = styled.div`
+  display: inline-block;
+  width: 16px;
+  height: 12px;
+
+  position: relative;
+  top: 1px;
+  left: -2px;
+  margin-right: 2px;
+`;
+
 const REGEX_ELEMENT = /&&/;
 const REGEX_ELEMENT_SHORTCUT = /(&&\w)/g;
 
@@ -87,4 +98,4 @@ const renderTitle = (label: string) => {
   };
 };
 
-export { GlobalMenuStyle, MenuHandler, renderTitle };
+export { GlobalMenuStyle, MenuHandler, renderTitle, ToggleBox };

@@ -36,7 +36,7 @@ export const AppMenu: React.FC = () => {
         </MenuHandler>
 
         <Menu.List data-menu="AppMenu">
-          {menuByGroup.length > 0 && <SubMenu payload={menuByGroup} />}
+          {menuByGroup.length > 0 && <SubMenu root payload={menuByGroup} />}
         </Menu.List>
       </Menu>
     </div>

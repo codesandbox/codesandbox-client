@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, Stack, Text } from '@codesandbox/components';
+import { Menu, Stack, Text, Icon } from '@codesandbox/components';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 import { MenuAppItems } from 'app/overmind/effects/vscode/composeMenuAppTree';
 import { useEffects } from 'app/overmind';
 
-import { renderTitle } from './elements';
+import { renderTitle, ToggleBox } from './elements';
 
 const SubMenu: React.FC<{
   payload: MenuAppItems[];
-}> = ({ payload }) => {
+  root?: boolean;
+}> = ({ payload, root }) => {
   const { vscode } = useEffects();
 
   const [activeItem, setActiveItem] = useState<number | undefined>();
@@ -62,7 +63,10 @@ const SubMenu: React.FC<{
                   onMouseLeave={() => setActiveItem(undefined)}
                 >
                   <Stack justify="space-between">
-                    <Text size={2}>{renderMnemonic()}</Text>
+                    <Text size={2}>
+                      {!root && <ToggleBox />}
+                      {renderMnemonic()}
+                    </Text>
                     <ChevronRight size="15" />
                   </Stack>
 
@@ -89,8 +93,14 @@ const SubMenu: React.FC<{
                 const command = item.command.toggled;
                 const toggled = vscode.contextMatchesRules(command);
 
-                // TODO
-                return toggled ? '✅' : '⛔️';
+                return (
+                  toggled && (
+                    <Icon
+                      style={{ width: 16, height: 12 }}
+                      name="simpleCheck"
+                    />
+                  )
+                );
               }
 
               return null;
@@ -99,7 +109,7 @@ const SubMenu: React.FC<{
             const content = (
               <Stack gap={4} justify="space-between">
                 <Text size={2}>
-                  {renderToggle()}
+                  {!root && <ToggleBox>{renderToggle()}</ToggleBox>}
                   {renderMnemonic()}
                 </Text>
 
