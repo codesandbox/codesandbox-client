@@ -1,9 +1,10 @@
+import { createElement } from 'react';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 
 const transitions = keyframes({ from: { opacity: 0 } });
 
 const GlobalMenuStyle = createGlobalStyle`
-  [data-menu='MenuBar'] {
+  [data-menu='AppMenu'] {
     &[data-component='MenuList'],
     &[data-component='MenuList'] [data-reach-menu-list] {
       overflow: visible !important;
@@ -28,7 +29,8 @@ const GlobalMenuStyle = createGlobalStyle`
     }
 
     [data-reach-menu-item][data-component='MenuItem']:hover >*:not([data-reach-menu-list]) {
-      color: #fff !important;
+      /* TODO: extend the theme type */
+      color: ${({ theme }: any) => theme.colors.white} !important;
     }
   }
 `;
@@ -63,4 +65,26 @@ const MenuHandler = styled.button`
   }
 `;
 
-export { GlobalMenuStyle, MenuHandler };
+const REGEX_ELEMENT = /&&/;
+const REGEX_ELEMENT_SHORTCUT = /(&&\w)/g;
+
+const renderTitle = (label: string) => {
+  const clean = (payload: string) => payload.replace(REGEX_ELEMENT, '').trim();
+
+  const cleanLabel = clean(label);
+  const labelSplit = label.split(REGEX_ELEMENT_SHORTCUT);
+
+  return {
+    label: cleanLabel,
+    renderMnemonic: () =>
+      labelSplit.map(element => {
+        if (/(&&\w)/g.test(element)) {
+          return createElement('mnemonic', null, clean(element));
+        }
+
+        return element;
+      }),
+  };
+};
+
+export { GlobalMenuStyle, MenuHandler, renderTitle };

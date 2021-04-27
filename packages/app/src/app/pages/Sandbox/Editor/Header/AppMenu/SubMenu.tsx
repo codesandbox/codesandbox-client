@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Stack, Text } from '@codesandbox/components';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
+
 import { MenuAppItems } from 'app/overmind/effects/vscode/composeMenuAppTree';
 import { useEffects } from 'app/overmind';
-import { renderTitle } from './renderTitle';
+
+import { renderTitle } from './elements';
 
 const SubMenu: React.FC<{
   payload: MenuAppItems[];

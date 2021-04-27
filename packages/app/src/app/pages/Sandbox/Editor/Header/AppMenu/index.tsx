@@ -9,12 +9,12 @@ import { MenuAppItems } from 'app/overmind/effects/vscode/composeMenuAppTree';
 import { Icon, Menu } from '@codesandbox/components';
 
 import { GlobalMenuStyle, MenuHandler } from './elements';
-
 import { formatMenuData } from './formatMenuData';
 import { SubMenu } from './SubMenu';
 
-export const MenuBar: React.FC = () => {
+export const AppMenu: React.FC = () => {
   const [menu, setMenu] = useState<MenuAppItems>([]);
+  const menuByGroup = useMemo(() => formatMenuData(menu), [menu]);
 
   const { vscode } = useEffects();
   const vscodeMenuItems = vscode.getMenuAppItems();
@@ -26,8 +26,6 @@ export const MenuBar: React.FC = () => {
     [vscodeMenuItems]
   );
 
-  const menuByGroup = useMemo(() => formatMenuData(menu), [menu]);
-
   return (
     <div onClick={() => track('Editor - Click Menubar')}>
       <GlobalMenuStyle />
@@ -37,7 +35,7 @@ export const MenuBar: React.FC = () => {
           <Icon width={14} height={10} name="menu" />
         </MenuHandler>
 
-        <Menu.List data-menu="MenuBar">
+        <Menu.List data-menu="AppMenu">
           {menuByGroup.length > 0 && <SubMenu payload={menuByGroup} />}
         </Menu.List>
       </Menu>
