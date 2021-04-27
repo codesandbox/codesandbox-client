@@ -1,15 +1,30 @@
 import styled, { createGlobalStyle } from 'styled-components';
 
 const GlobalMenuStyle = createGlobalStyle`
-  [data-component='MenuList'][data-menu='MenuBar'],
-  [data-component='MenuList'][data-menu='MenuBar'] [data-reach-menu-list] {
-    overflow: visible !important;
-  }
+  [data-menu='MenuBar'] {
+    &[data-component='MenuList'],
+    &[data-component='MenuList'] [data-reach-menu-list] {
+      overflow: visible !important;
+    }
 
-  [data-menu='MenuBar'] [data-reach-submenu-list] {
-    position: absolute;
-    top: -5px;
-    left: 100%;
+    [data-reach-menu-item] {
+      position: relative;
+    }
+
+    [data-reach-submenu-list] {
+      position: absolute;
+      top: -5px;
+      left: 100%;
+    }
+
+    [data-reach-menu-item][data-component='MenuItem']:hover,
+    [data-reach-menu-item][data-component='MenuItem'][data-selected] {
+      color: inherit !important;
+    }
+
+    [data-reach-menu-item][data-component='MenuItem']:hover >*:not([data-reach-menu-list]) {
+      color: #fff !important;
+    }
   }
 `;
 
