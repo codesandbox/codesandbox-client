@@ -3,6 +3,7 @@ import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
+import router from '../router';
 
 import { KeyCode, KeyMod } from './keyCodes';
 
@@ -144,10 +145,11 @@ export class Workbench {
       label: 'Dashboard',
       category: 'Root',
       run: () => {
-        this.controller.getSignal('editor.refreshPreview')();
+        router.redirectToDashboard();
       },
       keybindings: {
-        primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_R,
+        primary: KeyMod.CtrlCmd | KeyCode.KEY_D,
+        mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_D },
       },
     });
 
@@ -323,15 +325,15 @@ export class Workbench {
       'Search',
       'https://codesandbox.io/search'
     );
-    addBrowserNavigationCommand(
-      'codesandbox.dashboard',
-      'Dashboard',
-      'https://codesandbox.io/dashboard',
-      {
-        primary: KeyMod.CtrlCmd | KeyCode.KEY_D,
-        mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_D },
-      }
-    );
+    // addBrowserNavigationCommand(
+    //   'codesandbox.dashboard',
+    //   'Dashboard',
+    //   'https://codesandbox.io/dashboard',
+    //   {
+    //     primary: KeyMod.CtrlCmd | KeyCode.KEY_D,
+    //     mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_D },
+    //   }
+    // );
     addBrowserNavigationCommand(
       'codesandbox.help.open-issue',
       'Open Issue on GitHub',
