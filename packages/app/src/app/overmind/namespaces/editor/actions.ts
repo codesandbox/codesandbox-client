@@ -298,7 +298,8 @@ export const sandboxChanged = withLoadApp<{
   }
 
   try {
-    const sandbox = await effects.api.getSandbox(newId);
+    const params = state.activeTeam ? { teamId: state.activeTeam } : undefined;
+    const sandbox = await effects.api.getSandbox(newId, params);
 
     actions.internal.setCurrentSandbox(sandbox);
   } catch (error) {
