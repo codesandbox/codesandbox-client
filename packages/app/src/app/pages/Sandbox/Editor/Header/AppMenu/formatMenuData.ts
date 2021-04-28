@@ -52,8 +52,8 @@ const groupMenu = (
 const flattenObjectToArray = (
   groups: Record<string, MenuAppItemsSubmenuAsObject>
 ): MenuAppItems[] =>
-  Object.entries(groups).reduce((acc, [_, value]) => {
-    const flattenSubmenu = value.map((item: any) => {
+  Object.entries(groups).reduce((acc, [_, value]: any) => {
+    const flattenSubmenu = value.map(item => {
       if (item.submenu) {
         return { ...item, submenu: flattenObjectToArray(item.submenu) };
       }

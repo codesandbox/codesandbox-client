@@ -58,7 +58,7 @@ const DEFAULT_ITEMS = [
 ];
 
 export const composeMenuAppTree = (
-  getVsCodeMenuItems: (id: string | MenuId) => Array<unknown>
+  getVsCodeMenuItems: (id: string | MenuId) => InternalMenuType
 ): MenuAppItems => {
   const rootMenu = [...getVsCodeMenuItems(MenuId.Root), ...DEFAULT_ITEMS];
 
