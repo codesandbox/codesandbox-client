@@ -690,7 +690,6 @@ async function compile(opts: CompileOptions) {
       }
 
       const { head, body } = getHTMLParts(html);
-      console.log({ head, body, lastHeadHTML, lastBodyHTML, firstLoad });
       if (lastHeadHTML == null && lastBodyHTML == null) {
         // Whether the server has provided the HTML file. If that isn't the case
         // we have to fall back to setting hydrating the html client-side
@@ -700,28 +699,21 @@ async function compile(opts: CompileOptions) {
           !!serverProvidedHTML &&
           !process.env.LOCAL_SERVER &&
           !process.env.SANDPACK;
-        console.log({ isServerHTML, serverProvidedHTML });
-        if (!isServerHTML) {
-          console.log('Write HTML client-side');
 
-          // Append all head elements and execute scripts/styles
-          if (head) {
-            await appendHTML(head, document.head);
-          }
+        // Append all head elements and execute scripts/styles
+        if (!isServerHTML && head) {
+          await appendHTML(head, document.head);
+        }
 
-          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-          // on the first run. However, if there's no server to provide the static file (in the case of a local server
-          // or sandpack), then do it anyways.
-          if (body) {
-            await appendHTML(body, document.body);
-          }
-        } else {
-          console.log(
-            'Skip writing html as it should have been server side rendered'
-          );
+        // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+        // on the first run. However, if there's no server to provide the static file (in the case of a local server
+        // or sandpack), then do it anyways.
+        if (body) {
+          document.body.innerHTML = '';
+
+          await appendHTML(body, document.body);
         }
       } else if (lastHeadHTML !== head || lastBodyHTML !== body) {
-        console.log('Refresh the page');
         // Always refresh if html changed
         if (manager) {
           manager.clearCompiledCache();
