@@ -11,7 +11,7 @@ interface IAvatarProps {
     name?: string;
     avatarUrl: string;
     badges?: any[];
-    subscriptionSince?: string | null;
+    subscriptionPlan?: 'pro' | 'patron' | null;
   };
   className?: string;
 }
@@ -59,6 +59,6 @@ export const Avatar = ({ user, ...props }: IAvatarProps) =>
   user && (
     <AvatarContainer {...props}>
       <AvatarImage src={user.avatarUrl} alt={user.username} />
-      {user.subscriptionSince ? <Pro>Pro</Pro> : null}
+      {['pro', 'patron'].includes(user.subscriptionPlan) && <Pro>Pro</Pro>}
     </AvatarContainer>
   );

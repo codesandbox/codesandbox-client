@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useAppState } from 'app/overmind';
 
 import css from '@styled-system/css';
 
@@ -8,12 +7,15 @@ import { SubscriptionType } from 'app/graphql/types';
 import { Badge } from './shared';
 import { UpgradeToolTip } from './UpgradeToolTip';
 
-const TeamBadge: React.FC = () => {
-  const { activeTeamInfo } = useAppState();
-  const isTeamPro =
-    activeTeamInfo?.subscription?.type === SubscriptionType.TeamPro;
+const TeamBadge: React.FC<{
+  plan?: SubscriptionType;
+  showFreeBadge: boolean;
+}> = ({ showFreeBadge, plan }) => {
+  if (!plan) {
+    return null;
+  }
 
-  if (isTeamPro) {
+  if (plan === SubscriptionType.TeamPro || plan === 'patron') {
     return (
       <Tooltip label="Team pro">
         <Badge css={css({ backgroundColor: 'grays.500' })}>Pro</Badge>
@@ -21,17 +23,21 @@ const TeamBadge: React.FC = () => {
     );
   }
 
+  if (!showFreeBadge) {
+    return null;
+  }
+
   return <UpgradeToolTip />;
 };
 
-export const WorkspaceName: React.FC = () => {
-  const { user } = useAppState();
+export const WorkspaceName: React.FC<{
+  name: string;
+  plan?: SubscriptionType;
+  showFreeBadge?: boolean;
+}> = ({ name, plan, showFreeBadge = false }) => (
+  <Stack gap={2} align="center">
+    <Text css={{ lineHeight: 1 }}>{name}</Text>
 
-  return (
-    <Stack gap={2} align="center">
-      <Text css={{ lineHeight: 1 }}>{user.name}</Text>
-
-      <TeamBadge />
-    </Stack>
-  );
-};
+    <TeamBadge showFreeBadge={showFreeBadge} plan={plan} />
+  </Stack>
+);

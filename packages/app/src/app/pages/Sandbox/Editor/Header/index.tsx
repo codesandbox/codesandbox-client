@@ -1,9 +1,9 @@
-import { Link as RouterLink } from 'react-router-dom';
-import { Link, Stack } from '@codesandbox/components';
+import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useAppState } from 'app/overmind';
 import React from 'react';
 
+import { SubscriptionType } from 'app/graphql/types';
 import { Actions } from './Actions';
 import { AppMenu } from './AppMenu';
 import { SandboxName } from './SandboxName';
@@ -11,7 +11,29 @@ import { WorkspaceName } from './WorkspaceName';
 import { SignInBanner } from './SignInAd';
 
 export const Header = () => {
-  const { editor, isAuthenticating, user } = useAppState();
+  const { editor, isAuthenticating, activeTeamInfo, user } = useAppState();
+
+  const renderWorkspace = () => {
+    if (user && activeTeamInfo) {
+      return (
+        <WorkspaceName
+          showFreeBadge
+          name={user.name}
+          plan={activeTeamInfo.subscription.type}
+        />
+      );
+    }
+
+    if (editor.currentSandbox?.author) {
+      const { author } = editor.currentSandbox;
+      const name = author.name;
+      const plan = author.subscriptionPlan as SubscriptionType;
+
+      return <WorkspaceName name={name} plan={plan} />;
+    }
+
+    return null;
+  };
 
   return (
     <>
@@ -33,7 +55,7 @@ export const Header = () => {
       >
         <Stack align="center">
           <AppMenu />
-          {user ? <WorkspaceName /> : <Link as={RouterLink}>TODO</Link>}
+          {renderWorkspace()}
         </Stack>
 
         {editor.currentSandbox && !isAuthenticating ? <SandboxName /> : null}
