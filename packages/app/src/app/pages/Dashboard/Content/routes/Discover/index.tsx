@@ -76,8 +76,8 @@ export const Discover = () => {
     [curatedAlbums]
   );
 
-  const fiveRandomAlbums = fiveRandomAlbumIds.map((albumId) =>
-    curatedAlbums.find((album) => album.id === albumId)
+  const fiveRandomAlbums = fiveRandomAlbumIds.map(albumId =>
+    curatedAlbums.find(album => album.id === albumId)
   );
 
   return (
@@ -166,7 +166,7 @@ const PickedSandboxes = () => {
       columnGap={6}
       css={{
         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        height: '528px',
+        height: 'max(60vh, 528px)',
         overflow: 'hidden',
       }}
     >
@@ -218,7 +218,7 @@ export const PickedSandbox = ({ sandbox }) => {
         block
         css={css({
           width: '100%',
-          height: '528px',
+          height: 'max(60vh, 528px)',
           border: '1px solid',
           borderColor: 'grays.600',
           borderRadius: 'medium',
@@ -243,17 +243,18 @@ export const PickedSandbox = ({ sandbox }) => {
       </Link>
       <Stack
         justify="space-between"
-        align="center"
+        align="flex-end"
         gap={2}
         css={css({
           position: 'absolute',
           left: 0,
           bottom: 0,
           width: '100%',
-          background: 'linear-gradient(transparent, #242424)',
+          background: 'linear-gradient(transparent, #000000b3)',
           padding: 4,
           paddingRight: 3,
           borderRadius: 'medium',
+          height: 160,
         })}
       >
         <Stack
