@@ -14,7 +14,6 @@ This edition is all about animation. Animations are great because they can be cr
 
 ## Community Spotlight
 
-
 https://codesandbox.io/s/playground-9cenu?from-embed
 
 [Playground](https://codesandbox.io/s/9cenu) by [Fabio Ottaviani](https://codesandbox.io/u/supahfunk) - This mesmerizing 3D animation was built with Three.js and react-three-fiber. Three.js and react-three-fiber together make building 3D animations in React applications possible. I'm already thinking of ways I want to use this in the future!
