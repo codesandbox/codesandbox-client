@@ -699,18 +699,19 @@ async function compile(opts: CompileOptions) {
           !!serverProvidedHTML &&
           !process.env.LOCAL_SERVER &&
           !process.env.SANDPACK;
-        if (!isServerHTML) {
-          // Append all head elements and execute scripts/styles
-          if (head) {
-            await appendHTML(head, document.head);
-          }
 
-          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-          // on the first run. However, if there's no server to provide the static file (in the case of a local server
-          // or sandpack), then do it anyways.
-          if (body) {
-            await appendHTML(body, document.body);
-          }
+        // Append all head elements and execute scripts/styles
+        if (!isServerHTML && head) {
+          await appendHTML(head, document.head);
+        }
+
+        // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+        // on the first run. However, if there's no server to provide the static file (in the case of a local server
+        // or sandpack), then do it anyways.
+        if (body) {
+          document.body.innerHTML = '';
+
+          await appendHTML(body, document.body);
         }
       } else if (lastHeadHTML !== head || lastBodyHTML !== body) {
         // Always refresh if html changed
