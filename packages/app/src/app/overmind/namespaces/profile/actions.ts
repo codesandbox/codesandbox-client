@@ -169,8 +169,26 @@ export const deleteSandboxClicked = ({ state }: Context, id: string) => {
   state.currentModal = 'deleteProfileSandbox';
 };
 
-export const sandboxDeleted = async ({ state, effects }: Context) => {
-  state.profile.isLoadingSandboxes = true;
+export const deleteSandboxInState = ({ state }: Context, id: Sandbox['id']) => {
+  if (!state.profile.current) return;
+
+  const username = state.profile.current.username;
+  const page = state.profile.currentSandboxesPage;
+  const sandboxes = state.profile.sandboxes[username][page];
+
+  state.profile.sandboxes[username][page] = sandboxes.filter(
+    sandbox => sandbox.id !== id
+  );
+  state.profile.current.sandboxCount--;
+
+  // for picker
+  state.profile.collections = state.profile.collections.map(collection => ({
+    ...collection,
+    sandboxes: collection.sandboxes.filter(sandbox => sandbox.id !== id),
+  }));
+};
+
+export const sandboxDeleted = async ({ state, effects, actions }: Context) => {
   state.currentModal = null;
 
   const sandboxId = state.profile.sandboxToDeleteId;
@@ -179,17 +197,20 @@ export const sandboxDeleted = async ({ state, effects }: Context) => {
     return;
   }
 
-  await effects.api.deleteSandbox(sandboxId);
+  // optimisitc update
+  actions.profile.deleteSandboxInState(sandboxId);
 
-  state.profile.current.sandboxCount--;
-
-  const page = state.profile.currentSandboxesPage;
-  const { username } = state.user;
-  const data = await effects.api.getUserSandboxes(username, page);
-
-  state.profile.sandboxes[username][page] = data[page];
-
-  state.profile.isLoadingSandboxes = false;
+  try {
+    throw Error();
+    // await effects.api.deleteSandbox(sandboxId);
+  } catch (error) {
+    // oops! refetch sandboxes from api
+    actions.profile.fetchSandboxes();
+    state.profile.current.sandboxCount++;
+    effects.notificationToast.error(
+      'There was a problem deleting your sandbox'
+    );
+  }
 };
 
 export const validateUsernameUpdate = async (
