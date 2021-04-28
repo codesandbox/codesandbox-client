@@ -80,7 +80,13 @@ export const Stats: React.FC<StatsProps> = ({
         size={14}
         css={css({ color: liked ? 'reds.300' : 'inherit' })}
       />
-      <Text size={3}>{formatNumber(likeCount)}</Text>
+      <Text
+        size={3}
+        weight="normal"
+        css={{ fontVariantNumeric: 'tabular-nums', letterSpacing: '-1px' }}
+      >
+        {formatNumber(likeCount)}
+      </Text>
     </Stack>
   </Stack>
 );
