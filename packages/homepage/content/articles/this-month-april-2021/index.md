@@ -14,7 +14,6 @@ This edition is all about animation. Animations are great because they can be cr
 
 ## Community Spotlight
 
-
 https://codesandbox.io/embed/playground-9cenu?fontsize=14&hidenavigation=1&theme=dark
 [Playground](https://codesandbox.io/s/9cenu) by [Fabio Ottaviani](https://codesandbox.io/u/supahfunk) - This mesmerizing 3D animation was built with Three.js and react-three-fiber. Three.js and react-three-fiber together make building 3D animations in React applications possible. I'm already thinking of ways I want to use this in the future!
 
@@ -24,6 +23,7 @@ https://codesandbox.io/embed/result-rotating-stars-nhndw?fontsize=14&hidenavigat
 
 
 https://codesandbox.io/s/cell-fracture-3rjsl?from-embed
+
 [Cell Fracture](https://codesandbox.io/s/cell-fracture-forked-3rjsl) by [Paul Henschel](https://codesandbox.io/u/drcmda) - This animation may seem deceptive at first glance. You only see the word "Hello" in simple black text. But click once to see "Hello" burst into colorful pieces. Cell Fracture was built with Three.js.
 
 ## Around the Web
