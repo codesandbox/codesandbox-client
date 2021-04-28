@@ -2,7 +2,7 @@ import { Parser } from 'htmlparser2';
 import { DomHandler } from 'domhandler';
 
 const EXCLUDED_TAGS = ['noscript'];
-const TAGNAME_RE = /^[A-Za-z_-]*$/;
+const TAGNAME_RE = /^[A-Za-z_-][A-Za-z0-9_-]*$/;
 
 export function isValidTagName(tagName: string): boolean {
   if (TAGNAME_RE.test(tagName)) {
