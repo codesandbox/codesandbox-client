@@ -201,8 +201,7 @@ export const sandboxDeleted = async ({ state, effects, actions }: Context) => {
   actions.profile.deleteSandboxInState(sandboxId);
 
   try {
-    throw Error();
-    // await effects.api.deleteSandbox(sandboxId);
+    await effects.api.deleteSandbox(sandboxId);
   } catch (error) {
     // oops! refetch sandboxes from api
     actions.profile.fetchSandboxes();
