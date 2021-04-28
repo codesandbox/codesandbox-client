@@ -76,10 +76,18 @@ const ToggleBox = styled.div`
   margin-right: 2px;
 `;
 
-const REGEX_ELEMENT = /&&/;
-const REGEX_ELEMENT_SHORTCUT = /(&&\w)/g;
+const HiddenElement = styled.div`
+  position: absolute;
+  top: -50px;
+  right: 0;
+  height: 50px;
+  width: calc(100% - ${({ theme }) => theme.sizes[7]}px);
+`;
 
 const renderTitle = (label: string) => {
+  const REGEX_ELEMENT = /&&/;
+  const REGEX_ELEMENT_SHORTCUT = /(&&\w)/g;
+
   const clean = (payload: string) => payload.replace(REGEX_ELEMENT, '').trim();
 
   const cleanLabel = clean(label);
@@ -98,4 +106,4 @@ const renderTitle = (label: string) => {
   };
 };
 
-export { GlobalMenuStyle, MenuHandler, renderTitle, ToggleBox };
+export { GlobalMenuStyle, MenuHandler, renderTitle, ToggleBox, HiddenElement };

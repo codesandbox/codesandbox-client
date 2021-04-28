@@ -8,7 +8,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { MenuAppItems } from 'app/overmind/effects/vscode/composeMenuAppTree';
 import { Icon, Menu } from '@codesandbox/components';
 
-import { GlobalMenuStyle, MenuHandler } from './elements';
+import { GlobalMenuStyle, MenuHandler, HiddenElement } from './elements';
 import { formatMenuData } from './formatMenuData';
 import { SubMenu } from './SubMenu';
 
@@ -36,6 +36,9 @@ export const AppMenu: React.FC = () => {
         </MenuHandler>
 
         <Menu.List data-menu="AppMenu">
+          {/* It avoids interact with elements that are behind of 
+          the menu, like the WorkspaceName/UpgradeToolTip.tsx */}
+          <HiddenElement />
           {menuByGroup.length > 0 && <SubMenu root payload={menuByGroup} />}
         </Menu.List>
       </Menu>
