@@ -23,6 +23,12 @@ const GlobalMenuStyle = createGlobalStyle`
       animation: ${transitions} 150ms ease-out;
     }
 
+    @media (max-height: 800px) {
+      [data-reach-submenu-list] {
+        transform: translateY(calc(-15% + 1px)) !important;
+      }
+    }
+
     [data-reach-menu-item][data-component='MenuItem']:hover,
     [data-reach-menu-item][data-component='MenuItem'][data-selected] {
       color: inherit !important;
