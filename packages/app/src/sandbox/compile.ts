@@ -36,7 +36,7 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
-import { appendHTML } from './html-writer';
+import { appendHTML, cleanupHTMLUserCode } from './html-writer';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -703,26 +703,32 @@ async function compile(opts: CompileOptions) {
             !process.env.SANDPACK;
 
           let shouldRefresh = false;
+          const hasHTML = lastHeadHTML != null && lastBodyHTML != null;
+          const isHotHTML = isServerHTML || hasHTML;
+
+          cleanupHTMLUserCode();
 
           // Append all head elements and execute scripts/styles
           if (!isServerHTML && head) {
             // This will execute scripts so should refresh to prevent double executions?
-            shouldRefresh = await appendHTML(head, document.head);
+            shouldRefresh = await appendHTML(head, document.head, isHotHTML);
           }
 
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run. However, if there's no server to provide the static file (in the case of a local server
           // or sandpack), then do it anyways.
           if (body && !shouldRefresh) {
-            // Should only remove user-code related html nodes
-            document.body.innerHTML = '';
+            // We remove the entire body if we're running ssr html, to ensure we don't duplicate tags
+            if (isServerHTML && !hasHTML) {
+              document.body.innerHTML = '';
+            }
 
             // This will execute scripts so should refresh to prevent double executions?
-            shouldRefresh = await appendHTML(body, document.body);
+            shouldRefresh = await appendHTML(body, document.body, isHotHTML);
           }
 
           // Only reload if it's not the first load and there's a reason to refresh, for example updated scripts or styles
-          if (lastHeadHTML != null && lastBodyHTML != null && shouldRefresh) {
+          if (hasHTML && shouldRefresh) {
             if (manager) {
               manager.clearCompiledCache();
               manager.reload();
