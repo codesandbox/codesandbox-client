@@ -70,7 +70,7 @@ const UpgradeToolTip: React.FC = () => (
       </Text>
       <Text as="p">Get Private Sandboxes, Private github repos, and more.</Text>
 
-      <Link to="/pro">
+      <Link to="/pro" target="_blank">
         <Button marginTop={3} css={css({ borderRadius: 99999 })}>
           Upgrade
         </Button>

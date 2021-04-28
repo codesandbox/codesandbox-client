@@ -8,7 +8,7 @@ import { Badge } from './shared';
 import { UpgradeToolTip } from './UpgradeToolTip';
 
 const TeamBadge: React.FC<{
-  plan?: SubscriptionType;
+  plan?: SubscriptionType | string;
   showFreeBadge: boolean;
 }> = ({ showFreeBadge, plan }) => {
   if (!plan) {
