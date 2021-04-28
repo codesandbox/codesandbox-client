@@ -243,17 +243,18 @@ export const PickedSandbox = ({ sandbox }) => {
       </Link>
       <Stack
         justify="space-between"
-        align="center"
+        align="flex-end"
         gap={2}
         css={css({
           position: 'absolute',
           left: 0,
           bottom: 0,
           width: '100%',
-          background: 'linear-gradient(transparent, #242424)',
+          background: 'linear-gradient(transparent, #000000b3)',
           padding: 4,
           paddingRight: 3,
           borderRadius: 'medium',
+          height: 160,
         })}
       >
         <Stack
