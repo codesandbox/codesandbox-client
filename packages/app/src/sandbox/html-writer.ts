@@ -27,7 +27,12 @@ function parseDOM(content: string) {
   });
 }
 
-function addTagNode(node: any, firstElement: ChildNode, parent: HTMLElement) {
+function addTagNode(
+  node: any,
+  firstElement: ChildNode,
+  parent: HTMLElement,
+  skipScripts: boolean
+) {
   // Skip invalid tag names
   if (!isValidTagName(node.name)) {
     parent.insertBefore(
@@ -42,6 +47,11 @@ function addTagNode(node: any, firstElement: ChildNode, parent: HTMLElement) {
     return;
   }
 
+  // Skip scripts if ssr or hmr
+  if (skipScripts && node.name === 'script') {
+    return;
+  }
+
   try {
     const nodeToInsert = document.createElement(node.name);
     Object.entries(node.attribs).forEach(([key, value]) => {
@@ -51,7 +61,7 @@ function addTagNode(node: any, firstElement: ChildNode, parent: HTMLElement) {
       nodeToInsert.setAttribute('async', 'false');
     }
     if (node.children) {
-      writeDOMNodes(node.children, nodeToInsert);
+      writeDOMNodes(node.children, nodeToInsert, skipScripts);
     }
     parent.insertBefore(nodeToInsert, firstElement);
   } catch (err) {
@@ -60,7 +70,11 @@ function addTagNode(node: any, firstElement: ChildNode, parent: HTMLElement) {
   }
 }
 
-function writeDOMNodes(nodes: Array<any>, parent: HTMLElement) {
+function writeDOMNodes(
+  nodes: Array<any>,
+  parent: HTMLElement,
+  skipScripts: boolean
+) {
   const firstElement = parent.firstChild;
 
   nodes.forEach(node => {
@@ -70,12 +84,16 @@ function writeDOMNodes(nodes: Array<any>, parent: HTMLElement) {
       parent.insertBefore(document.createComment(node.data), firstElement);
     } else if (typeof node.attribs !== 'undefined') {
       // We can't use node.type === 'tag' as that's different for script and style
-      addTagNode(node, firstElement, parent);
+      addTagNode(node, firstElement, parent, skipScripts);
     }
   });
 }
 
-export async function appendHTML(origin: string, parent: HTMLElement) {
+export async function appendHTML(
+  origin: string,
+  parent: HTMLElement,
+  skipScripts: boolean
+) {
   const domTree: any = await parseDOM(origin);
-  writeDOMNodes(domTree, parent);
+  writeDOMNodes(domTree, parent, skipScripts);
 }

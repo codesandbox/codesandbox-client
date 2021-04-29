@@ -677,57 +677,74 @@ async function compile(opts: CompileOptions) {
 
       await manager.preset.preEvaluate(manager, updatedModules);
 
-      // Start HTML Hydration and HMR
-      const htmlEntries = templateDefinition.getHTMLEntries(configurations);
-      const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
-      const htmlModule = modules[htmlModulePath];
-      let html =
-        template === 'vue-cli'
-          ? '<div id="app"></div>'
-          : '<div id="root"></div>';
-      if (htmlModule && htmlModule.code) {
-        html = htmlModule.code;
+      // HTML Hydration and HMR
+      // If the user code handles hot module reload, we don't modify html dynamically (users can refresh the page manually in this case)
+      if (!manager?.webpackHMR) {
+        let pathname = document.location.pathname;
+        if (!pathname.endsWith('.html')) {
+          pathname = '/index.html';
+        }
+        const htmlEntries = Object.keys(modules).filter(k =>
+          k.endsWith('.html')
+        );
+        const htmlModulePath = htmlEntries.find(p => p === pathname);
+        const htmlModule = modules[htmlModulePath];
+        let html =
+          template === 'vue-cli'
+            ? '<div id="app"></div>'
+            : '<div id="root"></div>';
+        if (htmlModule && htmlModule.code) {
+          html = htmlModule.code;
+        }
+
+        const { head, body } = getHTMLParts(html);
+        if (lastHeadHTML !== head || lastBodyHTML !== body) {
+          // Whether the server has provided the HTML file. If that isn't the case
+          // we have to fall back to setting hydrating the html client-side
+          const serverProvidedHTML =
+            modules[htmlEntries[0]] || manager.preset.htmlDisabled;
+          const isServerHTML =
+            !!serverProvidedHTML &&
+            !process.env.LOCAL_SERVER &&
+            !process.env.SANDPACK;
+
+          // Refresh if we found a script...
+          const hasHTML = lastHeadHTML != null && lastBodyHTML != null;
+          const shouldRefresh =
+            head?.includes('script') || body.includes('script');
+
+          if (!shouldRefresh) {
+            // Append all head elements and execute scripts/styles
+            if (head) {
+              await appendHTML(head, document.head, isServerHTML);
+            }
+
+            // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+            // on the first run. However, if there's no server to provide the static file (in the case of a local server
+            // or sandpack), then do it anyways.
+            if (body) {
+              document.body.innerHTML = '';
+
+              await appendHTML(body, document.body, isServerHTML);
+            }
+          }
+
+          if (hasHTML && shouldRefresh) {
+            // Always refresh if html changed
+            if (manager) {
+              manager.clearCompiledCache();
+              manager.reload();
+            } else {
+              document.location.reload();
+            }
+
+            return;
+          }
+        }
+
+        lastBodyHTML = body;
+        lastHeadHTML = head;
       }
-
-      const { head, body } = getHTMLParts(html);
-      if (lastHeadHTML == null && lastBodyHTML == null) {
-        // Whether the server has provided the HTML file. If that isn't the case
-        // we have to fall back to setting hydrating the html client-side
-        const serverProvidedHTML =
-          modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-        const isServerHTML =
-          !!serverProvidedHTML &&
-          !process.env.LOCAL_SERVER &&
-          !process.env.SANDPACK;
-
-        // Append all head elements and execute scripts/styles
-        if (!isServerHTML && head) {
-          await appendHTML(head, document.head);
-        }
-
-        // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-        // on the first run. However, if there's no server to provide the static file (in the case of a local server
-        // or sandpack), then do it anyways.
-        if (body) {
-          document.body.innerHTML = '';
-
-          await appendHTML(body, document.body);
-        }
-      } else if (lastHeadHTML !== head || lastBodyHTML !== body) {
-        // Always refresh if html changed
-        if (manager) {
-          manager.clearCompiledCache();
-          manager.reload();
-        } else {
-          document.location.reload();
-        }
-
-        return;
-      }
-
-      lastBodyHTML = body;
-      lastHeadHTML = head;
-      // HTML Hydration and HMR Finished
 
       metrics.measure('external-resources');
       await handleExternalResources(externalResources);
