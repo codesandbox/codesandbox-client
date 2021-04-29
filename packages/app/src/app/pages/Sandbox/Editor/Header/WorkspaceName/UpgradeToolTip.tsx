@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import track from '@codesandbox/common/lib/utils/analytics';
 import styled, { keyframes } from 'styled-components';
 import css from '@styled-system/css';
 import { Link } from 'react-router-dom';
@@ -56,7 +57,10 @@ const ToolTip = styled.div`
 const UpgradeToolTip: React.FC = () => (
   <ToolTip>
     <Badge css={css({ backgroundColor: 'blues.600' })}>Free</Badge>
-    <TooltipBody>
+
+    <TooltipBody
+      onMouseEnter={() => track('Editor - Mouse enter tooltip upgrade')}
+    >
       <Text
         as="p"
         block
@@ -70,7 +74,11 @@ const UpgradeToolTip: React.FC = () => (
       </Text>
       <Text as="p">Get Private Sandboxes, Private github repos, and more.</Text>
 
-      <Link to="/pro" target="_blank">
+      <Link
+        to="/pro"
+        target="_blank"
+        onClick={() => track('Editor - Click tooltip upgrade')}
+      >
         <Button marginTop={3} css={css({ borderRadius: 99999 })}>
           Upgrade
         </Button>
