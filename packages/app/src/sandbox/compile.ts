@@ -36,7 +36,6 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
-import { appendHTML } from './html-writer';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -468,7 +467,7 @@ async function compile(opts: CompileOptions) {
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
   } = opts;
-
+  
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
@@ -688,43 +687,41 @@ async function compile(opts: CompileOptions) {
         if (htmlModule && htmlModule.code) {
           html = htmlModule.code;
         }
-
         const { head, body } = getHTMLParts(html);
-        if (!lastHeadHTML && !lastBodyHTML) {
-          // Whether the server has provided the HTML file. If that isn't the case
-          // we have to fall back to setting hydrating the html client-side
-          const serverProvidedHTML =
-            modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-          if (
-            !serverProvidedHTML ||
-            !firstLoad ||
-            process.env.LOCAL_SERVER ||
-            process.env.SANDPACK
-          ) {
-            // Append all head elements and execute scripts/styles
-            if (head) {
-              await appendHTML(head, document.head);
-            }
 
-            // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-            // on the first run. However, if there's no server to provide the static file (in the case of a local server
-            // or sandpack), then do it anyways.
-            if (body) {
-              await appendHTML(body, document.body);
-            }
-          }
-        } else if (
-          (lastHeadHTML && lastHeadHTML !== head) ||
-          (lastBodyHTML && lastBodyHTML !== body)
-        ) {
-          // Always refresh if html changed
-          if (manager) {
-            manager.clearCompiledCache();
-          }
-
+        if (lastHeadHTML && lastHeadHTML !== head) {
           document.location.reload();
         }
+        if (manager && lastBodyHTML && lastBodyHTML !== body) {
+          manager.clearCompiledCache();
+        }
 
+        // Whether the server has provided the HTML file. If that isn't the case
+        // we have to fall back to setting `document.body.innerHTML`, which isn't
+        // preferred.
+        const serverProvidedHTML =
+          modules[htmlEntries[0]] || manager.preset.htmlDisabled;
+        if (
+          !serverProvidedHTML ||
+          !firstLoad ||
+          process.env.LOCAL_SERVER ||
+          process.env.SANDPACK
+        ) {
+          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+          // on the first run. However, if there's no server to provide the static file (in the case of a local server
+          // or sandpack), then do it anyways.
+          document.body.innerHTML = body;
+
+          // Add head tags or anything that comes from the template
+          // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
+          // At this point, the original head was parsed and the files loaded / preloaded.
+
+          // TODO: figure out a way to fix this without overriding head changes done by the bundler
+          // Original issue: https://github.com/codesandbox/sandpack/issues/32
+          // if (document.head && head) {
+          //   document.head.innerHTML = head;
+          // }
+        }
         lastBodyHTML = body;
         lastHeadHTML = head;
       }

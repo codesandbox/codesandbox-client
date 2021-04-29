@@ -27,6 +27,7 @@ const SANDBOXES = [
   '2ppkvzx570', // nested imports
   'rl2m3xklyo', // node_modules import
   'vanilla',
+  //
   'n5wy74w8vl', // material-ui generated demo
   'algolia-doc-onboarding-demos-angular-media', // algolia angular demo
   { id: 'ymjwwrw2rj', threshold: 0.05 }, // empty path
@@ -72,9 +73,8 @@ function loadSandbox(page, sandboxId, timeout) {
     const timer = setTimeout(async () => {
       reject(
         Error(
-          `Timeout: loading sandbox '${sandboxId}' took more than ${
-            timeout / SECOND
-          }s`
+          `Timeout: loading sandbox '${sandboxId}' took more than ${timeout /
+            SECOND}s`
         )
       );
     }, timeout);
@@ -91,8 +91,7 @@ function loadSandbox(page, sandboxId, timeout) {
     });
     await pageLoaded(page);
     clearTimeout(timer);
-    await page.waitFor(3 * SECOND);
-
+    await page.waitFor(2 * SECOND);
     resolve();
   });
 }
