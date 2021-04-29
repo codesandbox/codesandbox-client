@@ -291,19 +291,12 @@ export class Workbench {
     const addBrowserNavigationCommand = (
       id: string,
       label: string,
-      url: string,
-      keybindings?: {
-        primary: number;
-        mac?: {
-          primary: number;
-        };
-      }
+      url: string
     ) => {
       this.addWorkbenchAction({
         id,
         label,
         category: 'Help',
-        keybindings,
         run: () => {
           window.open(url, '_blank');
         },
@@ -325,15 +318,6 @@ export class Workbench {
       'Search',
       'https://codesandbox.io/search'
     );
-    // addBrowserNavigationCommand(
-    //   'codesandbox.dashboard',
-    //   'Dashboard',
-    //   'https://codesandbox.io/dashboard',
-    //   {
-    //     primary: KeyMod.CtrlCmd | KeyCode.KEY_D,
-    //     mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_D },
-    //   }
-    // );
     addBrowserNavigationCommand(
       'codesandbox.help.open-issue',
       'Open Issue on GitHub',

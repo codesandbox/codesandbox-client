@@ -47,7 +47,7 @@ const groupMenu = (
 
 /**
  * Given an object of array,
- * Returns a two-dimensional data, meaning just remove the key
+ * Returns a array bi-dimensional, in other words it removes the key
  */
 const flattenObjectToArray = (
   groups: Record<string, MenuAppItemsSubmenuAsObject>
@@ -65,7 +65,7 @@ const flattenObjectToArray = (
   }, [] as MenuAppItems[]);
 
 /**
- * Get the menu data and group by names
+ * Get the menu data and group it by names
  * which returns an array bi-dimensional
  */
 const formatMenuData = (payload: MenuAppItems): MenuAppItems[] => {

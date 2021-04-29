@@ -24,14 +24,15 @@ const SubMenu: React.FC<{
 
       if (activeItem === undefined) {
         /**
-         * Ensure the user want to hide it
+         * Avoid unexpected leave out move event
          */
         timer = setTimeout(() => {
           setDebounceActiveItem(undefined);
         }, 600);
       } else {
         /**
-         * Unsure it doesn't hide by any user's mistake
+         * Avoid unexpected enter in move
+         * event into another sub menu item
          */
         timer = setTimeout(() => {
           setDebounceActiveItem(activeItem);
@@ -93,13 +94,10 @@ const SubMenu: React.FC<{
                 const command = item.command.toggled;
                 const toggled = vscode.contextMatchesRules(command);
 
+                if (!toggled) return null;
+
                 return (
-                  toggled && (
-                    <Icon
-                      style={{ width: 16, height: 12 }}
-                      name="simpleCheck"
-                    />
-                  )
+                  <Icon style={{ width: 16, height: 12 }} name="simpleCheck" />
                 );
               }
 

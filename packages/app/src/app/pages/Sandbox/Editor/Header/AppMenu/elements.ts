@@ -1,10 +1,12 @@
 import { createElement } from 'react';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 
+export const APP_MENU_ID = 'AppMenu';
+
 const transitions = keyframes({ from: { opacity: 0 } });
 
 const GlobalMenuStyle = createGlobalStyle`
-  [data-menu='AppMenu'] {
+  [data-menu=${APP_MENU_ID}] {
     &[data-component='MenuList'],
     &[data-component='MenuList'] [data-reach-menu-list] {
       overflow: visible !important;

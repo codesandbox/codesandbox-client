@@ -132,7 +132,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <List>
           <ListItem
             css={css({
-              paddingX: '6px',
+              paddingLeft: '6px',
+              paddingRight: 0,
               height: 10,
               borderBottom: '1px solid',
               borderColor: 'sideBar.border',

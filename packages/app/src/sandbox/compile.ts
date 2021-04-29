@@ -472,7 +472,7 @@ async function compile(opts: CompileOptions) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
       // @ts-ignore Chrome behaviour
-      // console.clear('__internal__'); // eslint-disable-line no-console
+      console.clear('__internal__'); // eslint-disable-line no-console
       dispatch({ type: 'clear-console' });
     }
   }

@@ -16,8 +16,6 @@ export type MenuAppItems = Array<{
   submenuId?: number;
 }>;
 
-type InternalMenuType = Array<{ submenu?: string }>;
-
 const DEFAULT_ITEMS = [
   {
     title: '&&File',
@@ -57,6 +55,7 @@ const DEFAULT_ITEMS = [
   },
 ];
 
+type InternalMenuType = Array<{ submenu?: string }>;
 export const composeMenuAppTree = (
   getVsCodeMenuItems: (id: string | MenuId) => InternalMenuType
 ): MenuAppItems => {
