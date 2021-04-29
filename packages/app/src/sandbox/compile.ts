@@ -36,6 +36,7 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
+import { appendHTML } from './html-writer';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -50,7 +51,7 @@ export function getCurrentManager(): Manager | null {
   return manager;
 }
 
-export function getHTMLParts(html: string) {
+export function getHTMLParts(html: string): { head: string; body: string } {
   if (html.includes('<body>')) {
     const bodyMatcher = /<body.*>([\s\S]*)<\/body>/m;
     const headMatcher = /<head>([\s\S]*)<\/head>/m;
@@ -427,7 +428,9 @@ function overrideDocumentClose() {
 
 overrideDocumentClose();
 
-inject();
+if (!process.env.SANDPACK) {
+  inject();
+}
 
 interface CompileOptions {
   sandboxId: string;
@@ -447,23 +450,25 @@ interface CompileOptions {
   clearConsoleDisabled?: boolean;
 }
 
-async function compile({
-  sandboxId,
-  modules,
-  externalResources,
-  customNpmRegistries = [],
-  hasActions,
-  isModuleView = false,
-  template,
-  entry,
-  showOpenInCodeSandbox,
-  showLoadingScreen,
-  showErrorScreen,
-  skipEval = false,
-  hasFileResolver = false,
-  disableDependencyPreprocessing = false,
-  clearConsoleDisabled = false,
-}: CompileOptions) {
+async function compile(opts: CompileOptions) {
+  const {
+    sandboxId,
+    modules,
+    externalResources,
+    customNpmRegistries = [],
+    hasActions,
+    isModuleView = false,
+    template,
+    entry,
+    showOpenInCodeSandbox,
+    showLoadingScreen = true,
+    showErrorScreen = true,
+    skipEval = false,
+    hasFileResolver = false,
+    disableDependencyPreprocessing = false,
+    clearConsoleDisabled = false,
+  } = opts;
+
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
@@ -478,7 +483,7 @@ async function compile({
 
   const startTime = Date.now();
   try {
-    inject();
+    inject(showErrorScreen);
     clearErrorTransformers();
     initializeErrorTransformers();
     unmount(manager && manager.webpackHMR ? true : hadError);
@@ -541,7 +546,7 @@ async function compile({
 
     metrics.measure('dependencies');
 
-    if (firstLoad) {
+    if (firstLoad && showLoadingScreen) {
       setScreen({
         type: 'loading',
         showFullScreen: firstLoad,
@@ -552,6 +557,10 @@ async function compile({
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       ({ done, total, remainingDependencies }) => {
+        if (!showLoadingScreen) {
+          return;
+        }
+
         const progress = total - done;
         if (done === total) {
           return;
@@ -624,11 +633,13 @@ async function compile({
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
 
-    setScreen({
-      type: 'loading',
-      text: 'Transpiling Modules...',
-      showFullScreen: firstLoad,
-    });
+    if (showLoadingScreen) {
+      setScreen({
+        type: 'loading',
+        text: 'Transpiling Modules...',
+        showFullScreen: firstLoad,
+      });
+    }
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
@@ -666,45 +677,57 @@ async function compile({
 
       await manager.preset.preEvaluate(manager, updatedModules);
 
-      if (!manager.webpackHMR) {
-        const htmlEntries = templateDefinition.getHTMLEntries(configurations);
-        const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
-        const htmlModule = modules[htmlModulePath];
-        let html =
-          template === 'vue-cli'
-            ? '<div id="app"></div>'
-            : '<div id="root"></div>';
-        if (htmlModule && htmlModule.code) {
-          html = htmlModule.code;
-        }
-        const { head, body } = getHTMLParts(html);
+      // Start HTML Hydration and HMR
+      const htmlEntries = templateDefinition.getHTMLEntries(configurations);
+      const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
+      const htmlModule = modules[htmlModulePath];
+      let html =
+        template === 'vue-cli'
+          ? '<div id="app"></div>'
+          : '<div id="root"></div>';
+      if (htmlModule && htmlModule.code) {
+        html = htmlModule.code;
+      }
 
-        if (lastHeadHTML && lastHeadHTML !== head) {
-          document.location.reload();
-        }
-        if (manager && lastBodyHTML && lastBodyHTML !== body) {
-          manager.clearCompiledCache();
-        }
-
+      const { head, body } = getHTMLParts(html);
+      if (lastHeadHTML == null && lastBodyHTML == null) {
         // Whether the server has provided the HTML file. If that isn't the case
-        // we have to fall back to setting `document.body.innerHTML`, which isn't
-        // preferred.
+        // we have to fall back to setting hydrating the html client-side
         const serverProvidedHTML =
           modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-        if (
-          !serverProvidedHTML ||
-          !firstLoad ||
-          process.env.LOCAL_SERVER ||
-          process.env.SANDPACK
-        ) {
-          // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
-          // on the first run. However, if there's no server to provide the static file (in the case of a local server
-          // or sandpack), then do it anyways.
-          document.body.innerHTML = body;
+        const isServerHTML =
+          !!serverProvidedHTML &&
+          !process.env.LOCAL_SERVER &&
+          !process.env.SANDPACK;
+
+        // Append all head elements and execute scripts/styles
+        if (!isServerHTML && head) {
+          await appendHTML(head, document.head);
         }
-        lastBodyHTML = body;
-        lastHeadHTML = head;
+
+        // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
+        // on the first run. However, if there's no server to provide the static file (in the case of a local server
+        // or sandpack), then do it anyways.
+        if (body) {
+          document.body.innerHTML = '';
+
+          await appendHTML(body, document.body);
+        }
+      } else if (lastHeadHTML !== head || lastBodyHTML !== body) {
+        // Always refresh if html changed
+        if (manager) {
+          manager.clearCompiledCache();
+          manager.reload();
+        } else {
+          document.location.reload();
+        }
+
+        return;
       }
+
+      lastBodyHTML = body;
+      lastHeadHTML = head;
+      // HTML Hydration and HMR Finished
 
       metrics.measure('external-resources');
       await handleExternalResources(externalResources);
@@ -717,6 +740,7 @@ async function compile({
       const evalled = manager.evaluateModule(managerModuleToTranspile, {
         force: isModuleView,
       });
+
       metrics.endMeasure('evaluation', { displayName: 'Evaluation' });
 
       const domChanged =

@@ -912,3 +912,20 @@ export const server = props => (
     />
   </Element>
 );
+
+export const discover = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M7.11111 0H0V7.11111H7.11111V0ZM7.11111 8.88889H0V16H7.11111V8.88889ZM8.88889 8.88889H16V16H8.88889V8.88889ZM16 0H8.88889V7.11111H16V0Z"
+      fill="currentColor"
+    />
+  </Element>
+);
