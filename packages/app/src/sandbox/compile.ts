@@ -687,7 +687,9 @@ async function compile(opts: CompileOptions) {
         const htmlEntries = Object.keys(modules).filter(k =>
           k.endsWith('.html')
         );
-        const htmlModulePath = htmlEntries.find(p => p === pathname);
+        const htmlModulePath = htmlEntries.find(
+          p => p === pathname || p === `/public${pathname}`
+        );
         const htmlModule = modules[htmlModulePath];
         let html =
           template === 'vue-cli'
