@@ -695,7 +695,12 @@ async function compile(opts: CompileOptions) {
           // we have to fall back to setting hydrating the html client-side
           const serverProvidedHTML =
             modules[htmlEntries[0]] || manager.preset.htmlDisabled;
-          if (!serverProvidedHTML) {
+          if (
+            !serverProvidedHTML ||
+            !firstLoad ||
+            process.env.LOCAL_SERVER ||
+            process.env.SANDPACK
+          ) {
             // Append all head elements and execute scripts/styles
             if (head) {
               await appendHTML(head, document.head);

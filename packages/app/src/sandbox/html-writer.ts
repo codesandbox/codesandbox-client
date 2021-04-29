@@ -24,22 +24,17 @@ function addTagNode(node: any, firstElement: ChildNode, parent: HTMLElement) {
     return;
   }
 
-  try {
-    const nodeToInsert = document.createElement(node.name);
-    Object.entries(node.attribs).forEach(([key, value]) => {
-      nodeToInsert.setAttribute(key, value);
-    });
-    if (node.name === 'script' && !node.attribs.async) {
-      nodeToInsert.setAttribute('async', 'false');
-    }
-    if (node.children) {
-      writeDOMNodes(node.children, nodeToInsert);
-    }
-    parent.insertBefore(nodeToInsert, firstElement);
-  } catch (err) {
-    // This is mainly to handle invalid tags, for example template things
-    console.error(err);
+  const nodeToInsert = document.createElement(node.name);
+  Object.entries(node.attribs).forEach(([key, value]) => {
+    nodeToInsert.setAttribute(key, value);
+  });
+  if (node.name === 'script' && !node.attribs.async) {
+    nodeToInsert.setAttribute('async', 'false');
   }
+  if (node.children) {
+    writeDOMNodes(node.children, nodeToInsert);
+  }
+  parent.insertBefore(nodeToInsert, firstElement);
 }
 
 function writeDOMNodes(nodes: Array<any>, parent: HTMLElement) {
