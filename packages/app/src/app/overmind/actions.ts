@@ -575,13 +575,20 @@ export const validateUsername = async (
 
 export const finalizeSignUp = async (
   { effects, actions, state }: Context,
-  username: string
+  {
+    username,
+    name,
+  }: {
+    username: string;
+    name: string;
+  }
 ) => {
   if (!state.pendingUser) return;
   try {
     await effects.api.finalizeSignUp({
       id: state.pendingUser.id,
       username,
+      name,
     });
     window.postMessage(
       {
