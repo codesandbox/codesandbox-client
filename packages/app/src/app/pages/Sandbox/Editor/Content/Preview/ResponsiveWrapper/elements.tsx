@@ -1,3 +1,4 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { Element } from '@codesandbox/components';
 import { ResizeIcon } from './Icons';
@@ -10,7 +11,7 @@ export const PADDING_OFFSET_X = 30;
 
 export const PADDING_OFFSET_Y = 30;
 
-export const Styled = styled(Element)<{
+export const Styled = styled(({ on: _, ...props }) => <Element {...props} />)<{
   on: boolean;
   theme: any;
 }>`
