@@ -78,7 +78,7 @@ export const reactPreset = babelConfig => {
                       ...babelConfig.config,
                       plugins: [
                         ...babelConfig.config.plugins,
-                        'react-refresh/babel',
+                        ['react-refresh/babel', { skipEnvCheck: true }],
                       ],
                     },
                   },
