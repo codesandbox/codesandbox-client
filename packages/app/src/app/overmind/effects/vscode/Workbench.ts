@@ -158,7 +158,8 @@ export class Workbench {
       label: 'Homepage',
       category: 'Root',
       run: () => {
-        router.redirectToHomepage();
+        window.history.replaceState({}, '', '/?from-app=1');
+        window.location.reload();
       },
     });
 
