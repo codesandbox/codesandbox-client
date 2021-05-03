@@ -43,10 +43,10 @@ const transitions = {
 
 const animation = styledcss`
   [data-reach-tooltip][data-component=Tooltip] {
-    animation: ${transitions.slide} 150ms ease-out;
+    animation: ${transitions.slide} 100ms ease-out;
   }
   [data-component=TooltipTriangle] {
-    animation: ${transitions.slide} 150ms ease-out;
+    animation: ${transitions.slide} 100ms ease-out;
   }
 `;
 
