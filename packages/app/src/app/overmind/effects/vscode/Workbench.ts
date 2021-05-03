@@ -154,6 +154,15 @@ export class Workbench {
     });
 
     this.addWorkbenchAction({
+      id: 'codesandbox.homepage',
+      label: 'Homepage',
+      category: 'Root',
+      run: () => {
+        router.redirectToHomepage();
+      },
+    });
+
+    this.addWorkbenchAction({
       id: 'view.fullscreen',
       label: 'Toggle Fullscreen',
       category: 'View',
@@ -212,13 +221,22 @@ export class Workbench {
       group: '1_workspace',
       order: 1,
       command: {
+        id: 'codesandbox.homepage',
+        title: 'Homepage',
+      },
+    });
+
+    this.appendMenuItem(MenuId.Root, {
+      group: '1_workspace',
+      order: 1,
+      command: {
         id: 'codesandbox.dashboard',
         title: 'Dashboard',
       },
     });
 
     this.appendMenuItem(MenuId.Root, {
-      group: '2_open',
+      group: '3_open',
       order: 1,
       command: {
         id: 'workbench.action.showCommands',
