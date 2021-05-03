@@ -158,8 +158,14 @@ export class Workbench {
       label: 'Homepage',
       category: 'Root',
       run: () => {
-        window.history.replaceState({}, '', '/?from-app=1');
-        window.location.reload();
+        /**
+         * It creates a fake link, once the history object
+         * is used by the react router and it doesn't route to the proper place
+         */
+        const fakeLink = document.createElement('a');
+        fakeLink.href = `${window.location.origin}/?from-app=1`;
+        document.body.appendChild(fakeLink);
+        fakeLink.click();
       },
     });
 
