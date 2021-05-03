@@ -18,7 +18,7 @@ const TooltipBody = styled.div`
 `;
 
 const UpgradeToolTip: React.FC = () => (
-  <SingletonTooltip interactive>
+  <SingletonTooltip interactive delay={400}>
     {singleton => (
       <Tooltip
         singleton={singleton}
