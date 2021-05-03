@@ -53,6 +53,10 @@ export default new (class RouterEffect {
     history.replace('/dashboard/home');
   }
 
+  redirectToHomepage() {
+    history.replace('/?from-app=1');
+  }
+
   getSandboxOptions() {
     return getSandboxOptions(decodeURIComponent(document.location.href));
   }

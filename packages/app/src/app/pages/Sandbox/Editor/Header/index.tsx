@@ -3,7 +3,6 @@ import css from '@styled-system/css';
 import { useAppState } from 'app/overmind';
 import React from 'react';
 
-import { SubscriptionType } from 'app/graphql/types';
 import { Actions } from './Actions';
 import { AppMenu } from './AppMenu';
 import { SandboxName } from './SandboxName';
@@ -24,15 +23,7 @@ export const Header = () => {
       );
     }
 
-    if (editor.currentSandbox?.author) {
-      const { author } = editor.currentSandbox;
-      const name = author.name;
-      const plan = author.subscriptionPlan as SubscriptionType;
-
-      return <WorkspaceName name={name} plan={plan} />;
-    }
-
-    return null;
+    return <WorkspaceName name="CodeSandbox" />;
   };
 
   return (
