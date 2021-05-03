@@ -80,10 +80,25 @@ const EntryComponent: React.FC<IEntryProps> = ({
   rightColors = [],
   renameValidator,
   state: incomingState = '',
+  gitChanges,
+  getModulePath,
 }) => {
   const [state, setState] = useState(incomingState);
   const [error, setError] = useState<string | false | null>(null);
   const [hovering, setHovering] = useState(false);
+
+  const getVersioningState = () => {
+    const originalPath = getModulePath(id);
+
+    if (!gitChanges) return null;
+    const { added, removed, change } = gitChanges;
+
+    if (added.includes(originalPath)) {
+      console.log(added, originalPath);
+    }
+  };
+
+  getVersioningState();
 
   const resetState = () => {
     if (onRenameCancel) {

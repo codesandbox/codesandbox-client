@@ -99,6 +99,7 @@ const DirectoryEntryComponent: React.FunctionComponent<Props> = ({
       currentSandbox: { modules, directories, privacy },
       shouldDirectoryBeOpen,
     },
+    git: { gitChanges },
   } = useAppState();
   const {
     files: {
@@ -362,6 +363,7 @@ const DirectoryEntryComponent: React.FunctionComponent<Props> = ({
             hasChildren={getChildren().length > 0}
             closeTree={closeTree}
             getModulePath={getModulePath}
+            gitChanges={gitChanges}
           />
         </EntryContainer>
       )}
