@@ -51,7 +51,7 @@ const DEFAULT_ITEMS = [
     title: '&&Help',
     submenu: MenuId.MenubarHelpMenu,
     group: '3_support',
-    order: 1,
+    order: 2,
   },
 ];
 

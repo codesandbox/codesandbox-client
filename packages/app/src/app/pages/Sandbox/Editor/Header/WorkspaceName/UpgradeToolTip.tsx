@@ -18,7 +18,7 @@ const TooltipBody = styled.div`
 `;
 
 const UpgradeToolTip: React.FC = () => (
-  <SingletonTooltip interactive delay={400}>
+  <SingletonTooltip interactive delay={600}>
     {singleton => (
       <Tooltip
         singleton={singleton}
@@ -53,7 +53,9 @@ const UpgradeToolTip: React.FC = () => (
           </TooltipBody>
         }
       >
-        <Badge css={css({ backgroundColor: 'blues.600' })}>Free</Badge>
+        <Badge css={css({ backgroundColor: 'blues.600', cursor: 'pointer' })}>
+          Free
+        </Badge>
       </Tooltip>
     )}
   </SingletonTooltip>

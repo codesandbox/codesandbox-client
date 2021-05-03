@@ -13,12 +13,11 @@ export const Header = () => {
   const { editor, isAuthenticating, activeTeamInfo, user } = useAppState();
 
   const renderWorkspace = () => {
-    if (user && activeTeamInfo) {
+    if (activeTeamInfo) {
       return (
         <WorkspaceName
-          showFreeBadge
-          name={user.name}
-          plan={activeTeamInfo.subscription.type}
+          name={activeTeamInfo.name}
+          plan={activeTeamInfo.subscription?.type}
         />
       );
     }

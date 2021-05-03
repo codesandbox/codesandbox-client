@@ -221,15 +221,6 @@ export class Workbench {
       group: '1_workspace',
       order: 1,
       command: {
-        id: 'codesandbox.homepage',
-        title: 'Homepage',
-      },
-    });
-
-    this.appendMenuItem(MenuId.Root, {
-      group: '1_workspace',
-      order: 1,
-      command: {
         id: 'codesandbox.dashboard',
         title: 'Dashboard',
       },
@@ -250,6 +241,15 @@ export class Workbench {
       command: {
         id: 'codesandbox.sandbox.new',
         title: 'New Sandbox...',
+      },
+    });
+
+    this.appendMenuItem(MenuId.Root, {
+      group: '3_support',
+      order: 1,
+      command: {
+        id: 'codesandbox.homepage',
+        title: 'Go to homepage',
       },
     });
 

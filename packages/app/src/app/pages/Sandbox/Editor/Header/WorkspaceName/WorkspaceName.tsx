@@ -9,12 +9,7 @@ import { UpgradeToolTip } from './UpgradeToolTip';
 
 const TeamBadge: React.FC<{
   plan?: SubscriptionType | string;
-  showFreeBadge: boolean;
-}> = ({ showFreeBadge, plan }) => {
-  if (!plan) {
-    return null;
-  }
-
+}> = ({ plan }) => {
   if (plan === SubscriptionType.TeamPro || plan === 'patron') {
     return (
       <Tooltip label="Team pro">
@@ -23,21 +18,18 @@ const TeamBadge: React.FC<{
     );
   }
 
-  if (!showFreeBadge) {
-    return null;
-  }
-
   return <UpgradeToolTip />;
 };
 
 export const WorkspaceName: React.FC<{
   name: string;
   plan?: SubscriptionType;
-  showFreeBadge?: boolean;
-}> = ({ name, plan, showFreeBadge = false }) => (
+}> = ({ name, plan }) => (
   <Stack gap={2} align="center">
     <Text css={{ lineHeight: 1 }}>{name}</Text>
 
-    <TeamBadge showFreeBadge={showFreeBadge} plan={plan} />
+    <div>
+      <TeamBadge plan={plan} />
+    </div>
   </Stack>
 );
