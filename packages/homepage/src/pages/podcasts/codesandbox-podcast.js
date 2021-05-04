@@ -124,7 +124,7 @@ export const query = graphql`
   {
     allMarkdownRemark(
       filter: { fileAbsolutePath: { regex: "/podcasts/codesandbox-podcast/" } }
-      sort: { fields: id, order: DESC }
+      sort: { fields: frontmatter___episodeNumber, order: DESC }
     ) {
       edges {
         node {
