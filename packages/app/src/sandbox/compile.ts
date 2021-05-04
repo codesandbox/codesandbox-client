@@ -121,6 +121,7 @@ const BABEL_DEPENDENCIES = [
 const PREINSTALLED_DEPENDENCIES = [
   'react-scripts',
   'react-scripts-ts',
+  'parcel',
   'parcel-bundler',
   'babel-plugin-check-es2015-constants',
   'babel-plugin-external-helpers',
@@ -467,7 +468,7 @@ async function compile(opts: CompileOptions) {
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
   } = opts;
-  
+
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
