@@ -44,7 +44,7 @@
     "@reach/visually-hidden": "0.10.2",
     "@styled-system/css": "^5.1.4",
     "chromatic": "^4.0.2",
-    "codesandbox-api": "0.0.31",
+    "codesandbox-api": "0.0.32",
     "color": "3.1.2",
     "date-fns": "^2.8.1",
     "deepmerge": "^4.2.2",

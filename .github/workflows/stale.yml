@@ -18,7 +18,7 @@ jobs:
             2 weeks, this issue will automatically be closed, unless a comment
             is made or the stale label is removed.'
           stale-issue-label: 'stale'
-          exempt-issue-label: '💥 Crash Report, To Be Fixed'
+          exempt-issue-label: '💥 Crash Report,To Be Fixed,no-stale'
           close-issue-message:
             "This issue has been automatically closed because there wasn't any
             activity after the previous notice or the stale label wasn't

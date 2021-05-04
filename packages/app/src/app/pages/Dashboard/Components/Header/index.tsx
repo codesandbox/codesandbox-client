@@ -19,6 +19,7 @@ type Props = {
   showViewOptions?: boolean;
   showSortOptions?: boolean;
   repos?: boolean;
+  albumId?: string;
   activeTeam: string;
   CustomFilters?: React.ReactElement;
 };
@@ -27,6 +28,7 @@ export const Header = ({
   createNewFolder,
   templates,
   repos,
+  albumId,
   path,
   title,
   activeTeam,
@@ -59,7 +61,12 @@ export const Header = ({
           {title}
         </Text>
       ) : (
-        <Breadcrumbs repos={repos} activeTeam={activeTeam} path={path} />
+        <Breadcrumbs
+          repos={repos}
+          activeTeam={activeTeam}
+          path={path}
+          albumId={albumId}
+        />
       )}
       <Stack gap={4} align="center">
         {location.pathname.includes('/all') && (

@@ -1,6 +1,8 @@
 import uniq from 'lodash-es/uniq';
 import * as semver from 'semver';
 
+const VERSIONED_MODULE_RE = /^.+\/\d+\.\d+\.\d+\/.+$/;
+
 export interface ILambdaResponse {
   contents: {
     [path: string]: { content: string };
@@ -163,20 +165,27 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
         d => d.name === depDepName
       );
 
-      if (
-        rootDependency &&
-        !intersects(rootDependency.version, newDepDep.semver) &&
-        // If the resolved or semver is the same we don't have to actually replace dependency info
-        rootDependency.version !== newDepDep.resolved &&
-        rootDependency.version !== newDepDep.semver &&
-        rootDependency.name !== r.dependency.name // and this dependency doesn't require an older version of itself
-      ) {
-        // If a root dependency is in conflict with a child dependency, we always
-        // go for the root dependency
-        replaceDependencyInfo(r, depDepName, newDepDep);
+      if (rootDependency) {
+        // packages that require themselves?
+        if (r.dependency.name !== depDepName) {
+          if (!intersects(rootDependency.version, newDepDep.semver)) {
+            // If a root dependency is in conflict with a child dependency, we always
+            // go for the root dependency
+            replaceDependencyInfo(r, depDepName, newDepDep);
 
-        // Start from the beginning, to make sure everything is correct
-        i = -1;
+            // Start from the beginning, to make sure everything is correct
+            i = -1;
+          } else {
+            // Remove the contents so we don't overwrite the root version's content
+            const pathPrefix = `/node_modules/${depDepName}/`;
+            Object.keys(r.contents).forEach(p => {
+              if (p.startsWith(pathPrefix) && !VERSIONED_MODULE_RE.test(p)) {
+                delete r.contents[p];
+              }
+            });
+          }
+        }
+        // TODO: Also remove contents for conflicts in transient dependencies?
       } else if (response.dependencyDependencies[depDepName]) {
         const exDepDep = response.dependencyDependencies[depDepName];
 
@@ -203,6 +212,7 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
           ]);
         } else {
           replaceDependencyInfo(r, depDepName, newDepDep);
+
           // Start from the beginning, to make sure everything is correct
           i = -1;
         }

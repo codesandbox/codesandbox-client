@@ -3,6 +3,9 @@ import {
   TemplateFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
   Sandbox,
+  Album,
+  User,
+  Maybe,
 } from 'app/graphql/types';
 import {
   PageTypes as PT,
@@ -124,9 +127,17 @@ export type DashboardCommunitySandbox = {
     DashboardSandbox['sandbox'],
     'id' | 'alias' | 'title' | 'description' | 'screenshotUrl' | 'source'
   > & {
-    author: Pick<Sandbox['author'], 'username' | 'avatarUrl'>;
-    liked: boolean;
+    author: Maybe<Pick<User, 'username' | 'avatarUrl'>>;
+    liked?: boolean;
   } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
+};
+
+export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
+  sandboxes: Array<
+    SandboxFragmentDashboardFragment & {
+      author: Maybe<Pick<User, 'username' | 'avatarUrl'>>;
+    } & Pick<Sandbox, 'forkCount' | 'likeCount'>
+  >;
 };
 
 export type PageTypes = PT;
