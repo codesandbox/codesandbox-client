@@ -1,3 +1,4 @@
+import track from '@codesandbox/common/lib/utils/analytics';
 import React, { useEffect, useState } from 'react';
 import { Menu, Stack, Text, Icon } from '@codesandbox/components';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
@@ -104,6 +105,9 @@ const SubMenu: React.FC<{
               return null;
             };
 
+            const keybinding = vscode
+              .lookupKeybinding(item.command.id)
+              ?.getLabel();
             const content = (
               <Stack gap={4} justify="space-between">
                 <Text size={2}>
@@ -111,11 +115,7 @@ const SubMenu: React.FC<{
                   {renderMnemonic()}
                 </Text>
 
-                {item.command && (
-                  <Text size={2}>
-                    {vscode.lookupKeybinding(item.command.id)?.getLabel()}
-                  </Text>
-                )}
+                {item.command && <Text size={2}>{keybinding}</Text>}
               </Stack>
             );
 
@@ -131,7 +131,15 @@ const SubMenu: React.FC<{
 
             return (
               <Menu.Item
-                onClick={() => vscode.runCommand(item.command.id)}
+                onClick={() => {
+                  track('Editor - Click Menu Item', {
+                    id: item.command.id,
+                    name: label,
+                    keybinding,
+                  });
+
+                  vscode.runCommand(item.command.id);
+                }}
                 key={label}
                 aria-label={label}
               >
