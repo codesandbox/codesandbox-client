@@ -1,7 +1,7 @@
 ---
 podcastName: Version One
 title: Guillermo Rauch, CEO and Co-Founder of Vercel
-airDate: Apr 20, 2021
+airDate: Apr 20 2021
 episodeNumber: 2
 audio: https://player.resonaterecordings.com/embed?uuid=58822b8a-5c4f-4eee-8d3c-4cde2052d31f&accentColor=13,180,206&backgroundColor=242,242,242
 slug: Vercel-Guillermo-Rauch
