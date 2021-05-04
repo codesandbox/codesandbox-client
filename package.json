@@ -108,7 +108,8 @@
     "username": "^5.1.0"
   },
   "resolutions": {
-    "eslint/esquery": "1.0.1"
+    "eslint/esquery": "1.0.1",
+    "sharp": "0.28.1"
   },
   "husky": {
     "hooks": {
@@ -121,9 +122,6 @@
       "pretty-quick --staged",
       "git add"
     ]
-  },
-  "engines": {
-    "node": "^10.22.1"
   },
   "collective": {
     "type": "opencollective",
