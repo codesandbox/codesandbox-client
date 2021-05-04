@@ -49,4 +49,3 @@ Don’t forget to like, share, and subscribe!
 ### Link
 - Find out more on CodeSandbox’s [webside](https://codesandbox.io).
 - Check out more about [Vercel](https://vercel.com) and [Guillermo Rauch](https://rauchg.com). Connect with Guillermo Rauch on [Twitter](https://twitter.com/rauchg) and [LinkedIn](https://www.linkedin.com/in/guillermo-rauch-b834b917b/).
-
