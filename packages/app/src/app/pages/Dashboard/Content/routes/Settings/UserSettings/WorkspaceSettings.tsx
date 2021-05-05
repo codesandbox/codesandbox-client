@@ -78,7 +78,7 @@ export const WorkspaceSettings = () => {
     <Grid
       columnGap={4}
       css={css({
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
       })}
     >
       <Card>
