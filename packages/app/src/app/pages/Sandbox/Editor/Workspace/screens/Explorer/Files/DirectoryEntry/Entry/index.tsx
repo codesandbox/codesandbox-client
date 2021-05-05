@@ -1,10 +1,11 @@
 import theme from '@codesandbox/common/lib/theme';
-import { Directory, Module } from '@codesandbox/common/lib/types';
+import { GitPathChanges } from '@codesandbox/common/lib/types';
 import { ListAction, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { ContextMenu, ContextMenuItemType } from 'app/components/ContextMenu';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DragSource } from 'react-dnd';
+import { useAppState } from 'app/overmind';
 
 import {
   AddDirectoryIcon,
@@ -43,11 +44,7 @@ interface IEntryProps {
   onClick?: () => void;
   markTabsNotDirty?: () => void;
   onRenameCancel?: () => void;
-  getModulePath?: (
-    modules: Module[],
-    directories: Directory[],
-    id: string
-  ) => string;
+  getModulePath?: (id: string) => string;
   isNotSynced?: boolean;
   isMainModule?: boolean;
   moduleHasError?: boolean;
@@ -80,25 +77,41 @@ const EntryComponent: React.FC<IEntryProps> = ({
   rightColors = [],
   renameValidator,
   state: incomingState = '',
-  gitChanges,
   getModulePath,
 }) => {
   const [state, setState] = useState(incomingState);
   const [error, setError] = useState<string | false | null>(null);
   const [hovering, setHovering] = useState(false);
+  const [gitChanges, setGitChanges] = useState<GitPathChanges>();
 
-  const getVersioningState = () => {
+  const { git } = useAppState();
+
+  useEffect(() => {
+    setGitChanges(git.gitChanges);
+  }, [git.gitChanges]);
+
+  const getVersioningState = ():
+    | Record<'color' | 'status', string>
+    | undefined => {
     const originalPath = getModulePath(id);
 
-    if (!gitChanges) return null;
-    const { added, removed, change } = gitChanges;
+    if (!gitChanges) return undefined;
+
+    const { added, modified } = gitChanges;
 
     if (added.includes(originalPath)) {
-      console.log(added, originalPath);
+      return {
+        color: 'gitDecoration.untrackedResourceForeground',
+        status: 'U',
+      };
     }
-  };
 
-  getVersioningState();
+    if (modified.includes(originalPath)) {
+      return { color: 'gitDecoration.modifiedResourceForeground', status: 'M' };
+    }
+
+    return undefined;
+  };
 
   const resetState = () => {
     if (onRenameCancel) {
@@ -245,7 +258,16 @@ const EntryComponent: React.FC<IEntryProps> = ({
                 })}
               />
             ) : (
-              <Text maxWidth="100%">{title}</Text>
+              <Text
+                maxWidth="100%"
+                css={css({ color: getVersioningState()?.color, width: '100%' })}
+              >
+                <Stack as="span" justify="space-between">
+                  <span>{title}</span>
+
+                  <span>{getVersioningState()?.status}</span>
+                </Stack>
+              </Text>
             )}
             {isNotSynced && !state && (
               <NotSyncedIcon css={css({ color: 'blues.300' })} />

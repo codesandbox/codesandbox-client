@@ -1,0 +1,114 @@
+{
+	"name": "codesandbox-theme-extra-colors",
+	"displayName": "codesandbox-theme-extra-colors",
+	"description": "New colors",
+	"version": "0.0.1",
+	"publisher": "codesandbox",
+	"repository": "codesandbox/codesandbox-client",
+	"engines": {
+		"vscode": "^1.28.0"
+	},
+	"activationEvents": [
+    "*",
+    "onFileSystem:git"
+  ],
+	"main": "./index",
+	"icon": "icon.png",
+	"categories": [
+		"Themes"
+	],
+	"contributes": {
+		"colors": [
+			{
+				"id": "gitDecoration.addedResourceForeground",
+				"description": "Color for added resources.",
+				"defaults": {
+					"light": "#587c0c",
+					"dark": "#81b88b",
+					"highContrast": "#1b5225"
+				}
+			},
+			{
+				"id": "gitDecoration.modifiedResourceForeground",
+				"description": "Color for modified resources.",
+				"defaults": {
+					"light": "#895503",
+					"dark": "#E2C08D",
+					"highContrast": "#E2C08D"
+				}
+			},
+			{
+				"id": "gitDecoration.deletedResourceForeground",
+				"description": "Color for deleted resources.",
+				"defaults": {
+					"light": "#ad0707",
+					"dark": "#c74e39",
+					"highContrast": "#c74e39"
+				}
+			},
+			{
+				"id": "gitDecoration.renamedResourceForeground",
+				"description": "Color for renamed or copied resources.",
+				"defaults": {
+					"light": "#007100",
+					"dark": "#73C991",
+					"highContrast": "#73C991"
+				}
+			},
+			{
+				"id": "gitDecoration.untrackedResourceForeground",
+				"description": "Color for untracked resources.",
+				"defaults": {
+					"light": "#007100",
+					"dark": "#73C991",
+					"highContrast": "#73C991"
+				}
+			},
+			{
+				"id": "gitDecoration.ignoredResourceForeground",
+				"description": "Color for ignored resources.",
+				"defaults": {
+					"light": "#8E8E90",
+					"dark": "#8C8C8C",
+					"highContrast": "#A7A8A9"
+				}
+			},
+			{
+				"id": "gitDecoration.stageModifiedResourceForeground",
+				"description": "Color for modified resources which have been staged.",
+				"defaults": {
+					"light": "#895503",
+					"dark": "#E2C08D",
+					"highContrast": "#E2C08D"
+				}
+			},
+			{
+				"id": "gitDecoration.stageDeletedResourceForeground",
+				"description": "%Color for deleted resources which have been staged.",
+				"defaults": {
+					"light": "#ad0707",
+					"dark": "#c74e39",
+					"highContrast": "#c74e39"
+				}
+			},
+			{
+				"id": "gitDecoration.conflictingResourceForeground",
+				"description": "Color for resources with conflicts.",
+				"defaults": {
+					"light": "#ad0707",
+					"dark": "#e4676b",
+					"highContrast": "#c74e39"
+				}
+			},
+			{
+				"id": "gitDecoration.submoduleResourceForeground",
+				"description": "Color for submodule resources.",
+				"defaults": {
+					"light": "#1258a7",
+					"dark": "#8db9e2",
+					"highContrast": "#8db9e2"
+				}
+			}
+		]
+	}
+}
