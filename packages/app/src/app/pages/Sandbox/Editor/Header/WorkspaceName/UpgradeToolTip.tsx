@@ -35,10 +35,10 @@ const UpgradeToolTip: React.FC = () => (
               size={4}
               weight="bold"
             >
-              Upgrade now
+              Upgrade Now
             </Text>
             <Text as="p">
-              Get Private Sandboxes, Private github repos, and more.
+              Get private sandboxes, private GitHub repos, and more.
             </Text>
 
             <Link

@@ -22,7 +22,7 @@ export const Header = () => {
       );
     }
 
-    return <WorkspaceName name="CodeSandbox" />;
+    return <WorkspaceName showBadge={false} name="CodeSandbox" />;
   };
 
   return (

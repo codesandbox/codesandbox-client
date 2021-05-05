@@ -8,9 +8,9 @@ import { Badge } from './shared';
 import { UpgradeToolTip } from './UpgradeToolTip';
 
 const TeamBadge: React.FC<{
-  plan?: SubscriptionType | string;
+  plan?: SubscriptionType;
 }> = ({ plan }) => {
-  if (plan === SubscriptionType.TeamPro || plan === 'patron') {
+  if ([SubscriptionType.TeamPro, SubscriptionType.PersonalPro].includes(plan)) {
     return (
       <Tooltip label="Team pro">
         <Badge css={css({ backgroundColor: 'grays.500' })}>Pro</Badge>
@@ -24,12 +24,15 @@ const TeamBadge: React.FC<{
 export const WorkspaceName: React.FC<{
   name: string;
   plan?: SubscriptionType;
-}> = ({ name, plan }) => (
+  showBadge?: boolean;
+}> = ({ name, plan, showBadge = true }) => (
   <Stack gap={2} align="center">
     <Text css={{ lineHeight: 1 }}>{name}</Text>
 
-    <div>
-      <TeamBadge plan={plan} />
-    </div>
+    {showBadge && (
+      <div>
+        <TeamBadge plan={plan} />
+      </div>
+    )}
   </Stack>
 );

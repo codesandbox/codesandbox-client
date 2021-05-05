@@ -256,7 +256,7 @@ export class Workbench {
       order: 1,
       command: {
         id: 'codesandbox.homepage',
-        title: 'Go to homepage',
+        title: 'Go to Homepage',
       },
     });
 

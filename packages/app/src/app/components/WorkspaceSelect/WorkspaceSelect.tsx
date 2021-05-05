@@ -108,9 +108,10 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                       {team.id === state.personalWorkspaceId && ' (Personal)'}
                     </Text>
 
-                    {team.subscription?.type === SubscriptionType.TeamPro && (
-                      <Badge>Pro</Badge>
-                    )}
+                    {[
+                      SubscriptionType.TeamPro,
+                      SubscriptionType.PersonalPro,
+                    ].includes(team.subscription?.type) && <Badge>Pro</Badge>}
                   </Stack>
 
                   {activeAccount.id === team.id && <Icon name="simpleCheck" />}
