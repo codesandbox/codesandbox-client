@@ -27,7 +27,7 @@ import registry from './images/registry.svg';
 import privateImg from './images/private.svg';
 import deps from './images/deps.png';
 
-export default () => {
+const PrototypingPage = () => {
   const parallaxRef = useRef(null);
   const parallaxRef1 = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -214,3 +214,5 @@ export default () => {
     </Layout>
   );
 };
+
+export default PrototypingPage;

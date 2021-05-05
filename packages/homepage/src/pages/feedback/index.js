@@ -27,7 +27,7 @@ import comments from './images/comments.svg';
 import comments1 from './images/comments1.svg';
 import comments2 from './images/comments2.svg';
 
-export default () => {
+const FeedbackPage = () => {
   const parallaxRef = useRef(null);
   const parallaxRef1 = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -206,3 +206,5 @@ export default () => {
     </Layout>
   );
 };
+
+export default FeedbackPage;

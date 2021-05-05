@@ -25,7 +25,7 @@ const TERMS = graphql`
   }
 `;
 
-export default () => (
+const TermsPage = () => (
   <Wrapper>
     <StaticQuery
       query={TERMS}
@@ -90,3 +90,5 @@ export default () => (
     />
   </Wrapper>
 );
+
+export default TermsPage;

@@ -13,7 +13,7 @@ import ShuffleWords from './_shuffleWords';
 
 import { Container, Sandboxes } from './explore/_elements';
 
-export default class extends React.PureComponent {
+export default class ReactHooksPage extends React.PureComponent {
   state = {
     sandboxes: this.props.data.allAirtable.edges.map(s => ({
       ...s.node.data,
@@ -128,6 +128,7 @@ export default class extends React.PureComponent {
     );
   }
 }
+
 export const query = graphql`
   {
     allAirtable {

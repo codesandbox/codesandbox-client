@@ -29,7 +29,7 @@ import GM from '../../assets/images/flags/GM.png';
 import { Title, Text, Investors, AngelInvestors } from './_elements';
 import TeamMember from '../../components/TeamMember';
 
-export default () => (
+const CompanyPage = () => (
   <Layout>
     <TitleAndMetaTags title="Our Mission - CodeSandbox" />
     <Wrapper>
@@ -399,3 +399,5 @@ export default () => (
     </Wrapper>
   </Layout>
 );
+
+export default CompanyPage;

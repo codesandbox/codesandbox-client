@@ -7,7 +7,7 @@ import Sadbox from '../components/Sadbox';
 import { Title, TitleWrapper } from './embeds/_elements';
 import Button from '../components/Button';
 
-export default () => (
+const NotFoundPage = () => (
   <Layout>
     <TitleAndMetaTags
       title={`${' Embed CodeSandbox in Docs, Blog Posts, and Websites'} - CodeSandbox`}
@@ -40,3 +40,5 @@ export default () => (
     </PageContainer>
   </Layout>
 );
+
+export default NotFoundPage;

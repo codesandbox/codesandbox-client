@@ -30,7 +30,7 @@ import people from './images/people.svg';
 import brian from './images/brian.png';
 import briefcase from './images/briefcase.svg';
 
-export default () => {
+const EnterprisePage = () => {
   const parallaxRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -205,3 +205,5 @@ export default () => {
     </Layout>
   );
 };
+
+export default EnterprisePage;

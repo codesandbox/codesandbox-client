@@ -32,7 +32,7 @@ import gh from './images/gh.svg';
 import deploy from './images/deploy.svg';
 import vscode from './images/vscode.svg';
 
-export default () => {
+const IDEPage = () => {
   const parallaxRef = useRef(null);
   const parallaxRef1 = useRef(null);
   const parallaxRef2 = useRef(null);
@@ -374,3 +374,5 @@ export default () => {
     </Layout>
   );
 };
+
+export default IDEPage;

@@ -35,7 +35,7 @@ import sso from './images/sso.svg';
 import analytics from './images/analytics.svg';
 import workspaces from './images/workspaces.svg';
 
-export default () => {
+const TeamPage = () => {
   const parallaxRef = useRef(null);
   const parallaxRef1 = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -299,3 +299,5 @@ export default () => {
     </Layout>
   );
 };
+
+export default TeamPage;

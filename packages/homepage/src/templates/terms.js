@@ -3,8 +3,9 @@ import { Link, graphql } from 'gatsby';
 import { Content } from '../pages/legal/_elements';
 import Wrapper from '../pages/legal/_wrapper';
 
-export default ({ data }) => {
+const TermsTemplate = ({ data }) => {
   const HTML = data.markdownRemark.html;
+
   return (
     <Wrapper>
       <h1>Terms of Use - Outdated</h1>
@@ -31,3 +32,5 @@ export const pageQuery = graphql`
     }
   }
 `;
+
+export default TermsTemplate;

@@ -16,7 +16,7 @@ import {
   TranscriptButton,
 } from './_episode.elements';
 
-export default ({ data: { episode } }) => {
+const PodcastTemplate = ({ data: { episode } }) => {
   const [open, setOpen] = useState(false);
   const info = episode.edges.find(edge => edge.node.frontmatter.slug).node;
   const transcript = episode.edges.find(edge => !edge.node.frontmatter.slug)
@@ -170,3 +170,5 @@ export const pageQuery = graphql`
     }
   }
 `;
+
+export default PodcastTemplate;

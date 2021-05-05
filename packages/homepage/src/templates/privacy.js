@@ -3,7 +3,7 @@ import { Link, graphql } from 'gatsby';
 import { Content } from '../pages/legal/_elements';
 import Wrapper from '../pages/legal/_wrapper';
 
-export default ({ data }) => {
+const PrivacyTemplate = ({ data }) => {
   const HTML = data.markdownRemark.html;
   return (
     <Wrapper>
@@ -31,3 +31,5 @@ export const pageQuery = graphql`
     }
   }
 `;
+
+export default PrivacyTemplate;

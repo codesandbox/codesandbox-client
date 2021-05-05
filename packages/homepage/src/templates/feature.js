@@ -18,7 +18,7 @@ import {
 } from './_feature.elements';
 import Button from '../components/Button';
 
-export default ({
+const FeatureTemplate = ({
   data: {
     feature: {
       frontmatter: {
@@ -159,3 +159,5 @@ export const pageQuery = graphql`
     }
   }
 `;
+
+export default FeatureTemplate;

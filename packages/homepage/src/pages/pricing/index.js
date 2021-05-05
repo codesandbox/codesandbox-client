@@ -24,7 +24,7 @@ import { business } from './data/_business';
 import Cards from './_cards';
 import { OpenIcon, SavePersonal, SaveTeam } from './_icons';
 
-export default () => {
+const PricingPage = () => {
   const [open, setOpen] = useState({});
   const [mode, setMode] = useState('annually');
   const [product, setProduct] = useState();
@@ -211,3 +211,5 @@ const Checks = ({ feature, product }) => {
     return <span>{available ? '✓' : ''}</span>;
   });
 };
+
+export default PricingPage;

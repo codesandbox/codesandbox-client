@@ -25,7 +25,7 @@ const PRIVACY = graphql`
   }
 `;
 
-export default () => (
+const PrivacyPage = () => (
   <Wrapper>
     <StaticQuery
       query={PRIVACY}
@@ -90,3 +90,5 @@ export default () => (
     />
   </Wrapper>
 );
+
+export default PrivacyPage;

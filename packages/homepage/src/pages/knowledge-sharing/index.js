@@ -22,7 +22,7 @@ import bg from './images/bg.png';
 import madetoshare from './images/madetoshare.png';
 import bg1 from './images/bg1.png';
 
-export default () => {
+const KnowledgeSharing = () => {
   const parallaxRef = useRef(null);
   const parallaxRef1 = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -188,3 +188,5 @@ export default () => {
     </Layout>
   );
 };
+
+export default KnowledgeSharing;

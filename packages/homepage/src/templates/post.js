@@ -17,7 +17,7 @@ import {
   PostContainer,
 } from './_post.elements';
 
-export default ({
+const PostTemplate = ({
   data: {
     blogPost: {
       fields: { authors, date, description, photo, title },
@@ -82,3 +82,5 @@ export const pageQuery = graphql`
     }
   }
 `;
+
+export default PostTemplate;

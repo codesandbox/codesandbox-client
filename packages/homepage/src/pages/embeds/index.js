@@ -21,7 +21,7 @@ import {
   Wrapper,
 } from './_elements';
 
-export default () => {
+const EmbedsPage = () => {
   const [theme, setTheme] = useState('dark');
   const [devToolsHidden, setDevToolsHidden] = useState(1);
   const [navigation, setNavigation] = useState(1);
@@ -156,3 +156,5 @@ export default () => {
     </Layout>
   );
 };
+
+export default EmbedsPage;

@@ -41,7 +41,7 @@ const words = [
   'DebugValue',
 ];
 
-export default () => (
+const Shuffle = () => (
   <ShuffleWords>
     import {'{ '}
     use
@@ -51,3 +51,5 @@ export default () => (
     {"'"}
   </ShuffleWords>
 );
+
+export default Shuffle;

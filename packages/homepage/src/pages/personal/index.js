@@ -31,7 +31,7 @@ import roy from './images/roy.png';
 import bg from './images/bg.png';
 import bg1 from './images/bg1.png';
 
-export default () => {
+const PersonalPage = () => {
   const parallaxRef = useRef(null);
   const parallaxRef1 = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -252,3 +252,5 @@ export default () => {
     </Layout>
   );
 };
+
+export default PersonalPage;
