@@ -1,9 +1,7 @@
 import { createElement } from 'react';
-import styled, { createGlobalStyle, keyframes } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
 export const APP_MENU_ID = 'AppMenu';
-
-const transitions = keyframes({ from: { opacity: 0 } });
 
 const GlobalMenuStyle = createGlobalStyle`
   [data-menu=${APP_MENU_ID}] {
@@ -22,7 +20,15 @@ const GlobalMenuStyle = createGlobalStyle`
       left: 100%;
       min-width: 180px !important;
 
-      animation: ${transitions} 150ms ease-out;
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 50px;
+        left: -50px;
+      }
     }
 
     @media (max-height: 800px) {

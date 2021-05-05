@@ -37,7 +37,7 @@ const SubMenu: React.FC<{
          */
         timer = setTimeout(() => {
           setDebounceActiveItem(activeItem);
-        }, 100);
+        }, 50);
       }
 
       return () => {
