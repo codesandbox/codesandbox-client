@@ -110,7 +110,8 @@
   "resolutions": {
     "eslint/esquery": "1.0.1",
     "sharp": "0.28.1",
-    "graphql": "15.5.0"
+    "graphql": "15.5.0",
+    "@types/estree": "0.0.47"
   },
   "husky": {
     "hooks": {

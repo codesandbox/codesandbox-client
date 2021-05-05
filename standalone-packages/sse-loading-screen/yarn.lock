@@ -1037,6 +1037,11 @@
     styled-components "^4.2.0"
     uuid "^3.3.2"
 
+"@codesandbox/template-icons@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@codesandbox/template-icons/-/template-icons-0.7.1.tgz#18090393b4ff2c614d5fe5b2fdf9f8c6b024de32"
+  integrity sha512-EcFDVIyQY7aaahy63Cpt8seK0I34EsL5GcLRd0YktaIVeIoxMC5/GjG6foI5RLg4zw9XwbTHQaRNM+UG0KlHdQ==
+
 "@emotion/babel-utils@^0.6.4":
   version "0.6.10"
   resolved "https://registry.yarnpkg.com/@emotion/babel-utils/-/babel-utils-0.6.10.tgz#83dbf3dfa933fae9fc566e54fbb45f14674c6ccc"
