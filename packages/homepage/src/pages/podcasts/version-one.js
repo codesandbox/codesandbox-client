@@ -33,7 +33,7 @@ const VersionOne = ({
       <TitleAndMetaTags
         description={info.description}
         title="Version One - CodeSandbox"
-        image={version1}
+        image="https://codesandbox.io/static/img/podcast/versionone-cover.png"
         meta={[
           { name: 'robots', content: 'noindex' },
           { name: 'googlebot', content: 'noindex' },

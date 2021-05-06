@@ -35,7 +35,7 @@ const TheCodeSandboxPodcast = ({
       <TitleAndMetaTags
         description={info.description}
         title="The CodeSandbox Podcast - CodeSandbox"
-        image={csb}
+        image="https://codesandbox.io/static/img/podcast/thecodesandbox-cover.png"
         meta={[
           { name: 'robots', content: 'noindex' },
           { name: 'googlebot', content: 'noindex' },
