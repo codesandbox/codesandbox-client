@@ -44,7 +44,6 @@ further connect with CodeSandbox and to keep up with their latest work, be sure 
 - 11:29 - The joys of John’s job and his exciting new project in automation. 12:49 - Where you can further connect with John Lindquist.
 - 13:22 - Where to keep up with CodeSandbox and their latest work.
 
-
 ## Links
 Learn more about Egghead.io and their services on their [website](https://egghead.io).
 Follow Egghead.io on [Twitter](https://twitter.com/eggheadio?ref_src=twsrc%25255Egoogle%25257Ctwcamp%25255Eserp%25257Ctwgr%25255Eauthor).
