@@ -1,5 +1,5 @@
 ---
-banner: ./images/banner.jpg
+banner: ./images/banner.png
 slug: how-to-make-your-first-open-source-contribution
 authors: ['Ceora Ford']
 photo: https://codesandbox.io/static/ceora-85ee1c599a24d888540eea740f7747be.jpg
