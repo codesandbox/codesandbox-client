@@ -1329,7 +1329,7 @@ export const updateTeamAvatar = async (
     teamId: string;
   }
 ) => {
-  if (!state.activeTeamInfo) return;
+  if (!state.activeTeamInfo || !state.user) return;
   const oldAvatar = state.activeTeamInfo.avatarUrl;
   const isPersonalWorkspace =
     state.activeTeamInfo.id === state.personalWorkspaceId;
@@ -1345,6 +1345,7 @@ export const updateTeamAvatar = async (
   } catch (error) {
     state.activeTeamInfo.avatarUrl = oldAvatar;
     if (isPersonalWorkspace) {
+      // @ts-ignore
       state.user.avatarUrl = oldAvatar;
     }
 
