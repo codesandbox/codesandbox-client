@@ -1,6 +1,10 @@
 import theme from '@codesandbox/common/lib/theme';
-import { GitPathChanges } from '@codesandbox/common/lib/types';
-import { ListAction, Stack, Text } from '@codesandbox/components';
+import {
+  Directory,
+  GitPathChanges,
+  Module,
+} from '@codesandbox/common/lib/types';
+import { ListAction, Stack, Text, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { ContextMenu, ContextMenuItemType } from 'app/components/ContextMenu';
 import React, { useEffect, useState } from 'react';
@@ -44,7 +48,11 @@ interface IEntryProps {
   onClick?: () => void;
   markTabsNotDirty?: () => void;
   onRenameCancel?: () => void;
-  getModulePath?: (id: string) => string;
+  getModulePath?: (
+    modules: Module[],
+    directories: Directory[],
+    id: string
+  ) => string;
   isNotSynced?: boolean;
   isMainModule?: boolean;
   moduleHasError?: boolean;
@@ -89,29 +97,6 @@ const EntryComponent: React.FC<IEntryProps> = ({
   useEffect(() => {
     setGitChanges(git.gitChanges);
   }, [git.gitChanges]);
-
-  const getVersioningState = ():
-    | Record<'color' | 'status', string>
-    | undefined => {
-    const originalPath = getModulePath(id);
-
-    if (!gitChanges) return undefined;
-
-    const { added, modified } = gitChanges;
-
-    if (added.includes(originalPath)) {
-      return {
-        color: 'gitDecoration.untrackedResourceForeground',
-        status: 'U',
-      };
-    }
-
-    if (modified.includes(originalPath)) {
-      return { color: 'gitDecoration.modifiedResourceForeground', status: 'M' };
-    }
-
-    return undefined;
-  };
 
   const resetState = () => {
     if (onRenameCancel) {
@@ -169,6 +154,38 @@ const EntryComponent: React.FC<IEntryProps> = ({
         onClick();
       }
     }
+  };
+
+  const isFolder = ['directory', 'directory-open'].includes(type);
+  const getVersioningState = ():
+    | Record<'color' | 'status', string>
+    | undefined => {
+    if (!gitChanges) return undefined;
+    const { added, modified } = gitChanges;
+
+    type OverWriteCall = (id: string) => string;
+    const originalPath = ((getModulePath as unknown) as OverWriteCall)(id);
+
+    const folderAdded =
+      isFolder && added.map(e => e.split('/')[depth + 1]).includes(title);
+    const fileAdded = added.includes(originalPath);
+
+    if (folderAdded || fileAdded) {
+      return {
+        color: 'gitDecoration.untrackedResourceForeground',
+        status: 'U',
+      };
+    }
+
+    const folderChange =
+      isFolder && modified.map(e => e.split('/')[depth + 1]).includes(title);
+    const fileChange = modified.includes(originalPath);
+
+    if (folderChange || fileChange) {
+      return { color: 'gitDecoration.modifiedResourceForeground', status: 'M' };
+    }
+
+    return undefined;
   };
 
   const items = [
@@ -262,10 +279,24 @@ const EntryComponent: React.FC<IEntryProps> = ({
                 maxWidth="100%"
                 css={css({ color: getVersioningState()?.color, width: '100%' })}
               >
-                <Stack as="span" justify="space-between">
+                <Stack as="span" justify="space-between" align="center">
                   <span>{title}</span>
 
-                  <span>{getVersioningState()?.status}</span>
+                  {isFolder ? (
+                    <Element
+                      css={css({
+                        backgroundColor: getVersioningState()?.color,
+                        width: 2,
+                        height: 2,
+                        borderRadius: 4,
+                        opacity: 0.3,
+                        marginTop: '1px',
+                        marginRight: '1px',
+                      })}
+                    />
+                  ) : (
+                    <span>{getVersioningState()?.status}</span>
+                  )}
                 </Stack>
               </Text>
             )}
