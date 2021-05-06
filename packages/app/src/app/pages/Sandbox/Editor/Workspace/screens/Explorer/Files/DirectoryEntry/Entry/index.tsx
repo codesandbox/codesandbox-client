@@ -291,7 +291,7 @@ const EntryComponent: React.FC<IEntryProps> = ({
                         borderRadius: 4,
                         opacity: 0.3,
                         marginTop: '1px',
-                        marginRight: '1px',
+                        marginRight: '2px',
                       })}
                     />
                   ) : (
