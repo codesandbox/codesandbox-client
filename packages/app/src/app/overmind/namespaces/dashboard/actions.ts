@@ -1174,7 +1174,6 @@ export const setTeamInfo = async (
     team => team.id === state.activeTeam
   );
   const oldActiveTeamInfo = state.activeTeamInfo;
-
   try {
     await effects.gql.mutations.setTeamName({
       name,
@@ -1332,7 +1331,12 @@ export const updateTeamAvatar = async (
 ) => {
   if (!state.activeTeamInfo) return;
   const oldAvatar = state.activeTeamInfo.avatarUrl;
+  const isPersonalWorkspace =
+    state.activeTeamInfo.id === state.personalWorkspaceId;
   state.activeTeamInfo.avatarUrl = url;
+  if (isPersonalWorkspace) {
+    state.user.avatarUrl = url;
+  }
 
   effects.analytics.track('Team - Update Team Avatar', { dashboardVersion: 2 });
 
@@ -1340,6 +1344,9 @@ export const updateTeamAvatar = async (
     await effects.api.updateTeamAvatar(name, url, teamId);
   } catch (error) {
     state.activeTeamInfo.avatarUrl = oldAvatar;
+    if (isPersonalWorkspace) {
+      state.user.avatarUrl = oldAvatar;
+    }
 
     actions.internal.handleError({
       message: "We weren't able to update your team avatar",

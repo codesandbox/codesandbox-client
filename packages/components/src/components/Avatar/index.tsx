@@ -5,7 +5,7 @@ import { Element } from '../Element';
 import { Text } from '../Text';
 
 interface IAvatarProps {
-  file?: string | null;
+  file?: string;
   user: {
     id?: string;
     username: string;
@@ -59,7 +59,7 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
 export const Avatar = ({ user, file, ...props }: IAvatarProps) =>
   user && (
     <AvatarContainer {...props}>
-      <AvatarImage src={file || user.avatarUrl} alt={user.username} />
+      <AvatarImage src={file ?? user.avatarUrl} alt={user.username} />
       {user.subscriptionSince ? <Pro>Pro</Pro> : null}
     </AvatarContainer>
   );

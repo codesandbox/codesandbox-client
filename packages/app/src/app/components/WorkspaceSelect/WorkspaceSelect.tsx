@@ -64,7 +64,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               <Stack gap={2} as="span" align="center">
                 <Stack as="span" align="center" justify="center">
                   <TeamAvatar
-                    avatar={activeAccount.avatarUrl}
+                    avatar={state.activeTeamInfo.avatarUrl}
                     name={activeAccount.name}
                   />
                 </Stack>

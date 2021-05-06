@@ -45,11 +45,12 @@ export const WorkspaceSettings = () => {
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
 
   const getFile = async avatar => {
-    const url = await new Promise(resolve => {
+    const url = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = e => {
         resolve(e.target.result);
       };
+      reader.onerror = reject;
       reader.readAsDataURL(avatar);
     });
 
@@ -72,9 +73,8 @@ export const WorkspaceSettings = () => {
         description,
         file,
       });
-      setLoading(false);
       setEditing(false);
-    } catch {
+    } finally {
       setLoading(false);
     }
   };
