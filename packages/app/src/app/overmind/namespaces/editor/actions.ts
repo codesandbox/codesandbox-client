@@ -701,6 +701,8 @@ export const createZipClicked = ({ state, effects }: Context) => {
   }
 
   effects.zip.download(state.editor.currentSandbox);
+
+  effects.analytics.track('Editor - Click Menu Item - Export as ZIP');
 };
 
 export const forkExternalSandbox = async (
