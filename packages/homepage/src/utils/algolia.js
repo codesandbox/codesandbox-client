@@ -24,8 +24,7 @@ export function search({
   hitsPerPage,
   searchParameters,
 }) {
-  return index.search({
-    query,
+  return index.search(query, {
     attributesToRetrieve,
     attributesToHighlight,
     hitsPerPage,
