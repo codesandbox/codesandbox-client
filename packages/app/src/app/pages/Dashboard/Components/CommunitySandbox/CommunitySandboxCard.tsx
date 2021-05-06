@@ -96,13 +96,13 @@ const Author: React.FC<AuthorProps> = React.memo(({ author }) => (
   // return empty div for alignment
 
   <Stack align="center" gap={2} css={{ flexShrink: 1, overflow: 'hidden' }}>
-    {author.username ? (
+    {author?.username ? (
       <Avatar css={css({ size: 6, borderRadius: 2 })} user={author} />
     ) : (
       <AnonymousAvatar />
     )}
     <Text size={3} maxWidth="100%">
-      {author.username || 'Anonymous'}
+      {author?.username || 'Anonymous'}
     </Text>
   </Stack>
 ));
