@@ -12,8 +12,15 @@ const TeamBadge: React.FC<{
 }> = ({ plan }) => {
   if ([SubscriptionType.TeamPro, SubscriptionType.PersonalPro].includes(plan)) {
     return (
-      <Tooltip label="Team pro">
-        <Badge css={css({ backgroundColor: 'grays.500' })}>Pro</Badge>
+      <Tooltip label="Team Pro">
+        <Badge
+          css={css({
+            backgroundColor: 'secondaryButton.background',
+            color: 'secondaryButton.foreground',
+          })}
+        >
+          Pro
+        </Badge>
       </Tooltip>
     );
   }

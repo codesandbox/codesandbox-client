@@ -53,7 +53,13 @@ const UpgradeToolTip: React.FC = () => (
           </TooltipBody>
         }
       >
-        <Badge css={css({ backgroundColor: 'blues.600', cursor: 'pointer' })}>
+        <Badge
+          css={css({
+            backgroundColor: 'button.background',
+            color: 'button.foreground',
+            cursor: 'pointer',
+          })}
+        >
           Free
         </Badge>
       </Tooltip>

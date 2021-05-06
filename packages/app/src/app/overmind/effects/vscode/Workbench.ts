@@ -148,8 +148,8 @@ export class Workbench {
         router.redirectToDashboard();
       },
       keybindings: {
-        primary: KeyMod.CtrlCmd | KeyCode.KEY_H,
-        mac: { primary: KeyMod.CtrlCmd | KeyCode.KEY_H },
+        primary: KeyMod.CtrlCmd | KeyCode.Escape,
+        mac: { primary: KeyMod.CtrlCmd | KeyCode.Escape },
       },
     });
 
