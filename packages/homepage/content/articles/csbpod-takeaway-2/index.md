@@ -8,7 +8,7 @@ description: Getting start with open source can seem very intimidating. But ther
 date: 2021-05-06
 ---
 
-Open source software is a huge part of the tech industry. Over and over, we hear about the power of open source. I[n episode 2 of The CodeSandbox Podcast](https://codesandbox.io/podcasts/codesandbox-podcast/elizabet-oliveira), guest Elizabet Oliveira discussed open source and how it has impacted her career. This article will focus on getting you up and running as an open source contributor. Let's start by discussing why you should be interested in getting involved with open source. 
+Open source software is a huge part of the tech industry. Over and over, we hear about the power of open source. In [episode 2 of The CodeSandbox Podcast](https://codesandbox.io/podcasts/codesandbox-podcast/elizabet-oliveira), guest Elizabet Oliveira discussed open source and how it has impacted her career. This article will focus on getting you up and running as an open source contributor. Let's start by discussing why you should be interested in getting involved with open source. 
 
 ## Why you should start contributing to open source projects
 
@@ -53,7 +53,7 @@ First and foremost, make sure that you're being polite and kind when talking to 
 
 Most projects will have communication guidelines specifically outlined for the project. These can usually the `README.md` or `CONTRIBUTING.md` file. Make sure to read through the whole document and when the time comes to actually contribute your code to the project, be sure that you're following the structure and guidelines that maintainers have specified.
 
-Aside from reading and folllowing the [CONTRIBUTING.md] guidelines, here are some general rules that you should try to adhere to when opening up issues, submitting pull requests (both of which will be covered soon), and any other communication between you and others involved in the project:
+Aside from reading and following the [CONTRIBUTING.md] guidelines, here are some general rules that you should try to adhere to when opening up issues, submitting pull requests (both of which will be covered soon), and any other communication between you and others involved in the project:
 
 - When you open an issue, be sure to thoroughly describe the bug or problem you've run into. Include information that will help maintainers or others to reproduce the bug locally on their end.
 - It's also good to provide a possible solution if you have one in mind. This streamlines communication and will help maintainers to quickly determine whether or not your possible contribution fits the direction of the project.
@@ -129,7 +129,25 @@ Now you can finally code! You may also be editing copy, fixing grammatical error
 
 ### 5. Commit and push your changes
 
-Go to the original project on GitHub and you should see a prompt encouraging you to open a new pull request from the branch you created. 
+Before you commit and push your changes, make sure to run and test your code. Once your sure that your code is functioning as desired, you can commit and push your changes to GitHub.
+
+```shell
+git add .
+git commit -m 'commit message here'
+git push -u origin head
+```
+
+### 6. Create a pull request
+
+Go to the original project on GitHub and you should see a prompt encouraging you to open a new pull request from the branch you created. Click the "Compare and pull request" button. 
+
+![Compare and pull request button](./images/img6-compare.png)
+
+Once you do this you will be shown a text editor. Fill this in with all the relevant information needed to understand the work you've just done. When you do this, click the "Create pull request" button.
+
+![Text editor and Create pull request button](./images/img7-text-ed.png)
+
+Once you create your pull request, you'll have to wait on maintainers to respond. If the work you've done is error free and fits the scope and direction of the project, maintainers might merge your work into the project. They may request that you make changes to the work you've done. They might also decide to reject your pull request. If this happens, don't be discouraged. Maintainers will probably have a good reason for doing this and it's likely that will let you know. You can decide to work on another issue in the same project or you can find a new project to work with.
 
 ## Conclusion
 
