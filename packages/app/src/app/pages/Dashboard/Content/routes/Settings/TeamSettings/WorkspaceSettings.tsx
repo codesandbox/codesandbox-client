@@ -45,11 +45,12 @@ export const WorkspaceSettings = () => {
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
 
   const getFile = async avatar => {
-    const url = await new Promise(resolve => {
+    const url = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = e => {
         resolve(e.target.result);
       };
+      reader.onerror = reject;
       reader.readAsDataURL(avatar);
     });
 
@@ -72,9 +73,8 @@ export const WorkspaceSettings = () => {
         description,
         file,
       });
-      setLoading(false);
       setEditing(false);
-    } catch {
+    } finally {
       setLoading(false);
     }
   };
@@ -156,7 +156,7 @@ export const WorkspaceSettings = () => {
       <Grid
         columnGap={4}
         css={css({
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         })}
       >
         <Card>
@@ -267,7 +267,7 @@ export const WorkspaceSettings = () => {
               />
               <Stack direction="vertical" gap={2} css={{ width: '100%' }}>
                 <Stack justify="space-between">
-                  <Text size={6} weight="bold">
+                  <Text size={6} weight="bold" css={{ wordBreak: 'break-all' }}>
                     {team.name}
                   </Text>
                   {activeWorkspaceAuthorization ===
