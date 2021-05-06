@@ -37,7 +37,7 @@ export default ({ data: { episode } }) => {
     <Layout>
       <Article>
         <TitleAndMetaTags
-          image={data.socialImage}
+          image={data.socialImage.publicURL}
           title={`${data.podcastName} - ${data.title}- CodeSandbox`}
           description={data.description}
           keywords={data.tags}
@@ -160,6 +160,10 @@ export const pageQuery = graphql`
             description
             episodeNumber
             tags
+
+            socialImage {
+              publicURL
+            }
 
             image {
               publicURL
