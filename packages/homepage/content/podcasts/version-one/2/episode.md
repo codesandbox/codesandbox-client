@@ -6,7 +6,7 @@ episodeNumber: 2
 audio: https://player.resonaterecordings.com/embed?uuid=58822b8a-5c4f-4eee-8d3c-4cde2052d31f&accentColor=13,180,206&backgroundColor=242,242,242
 slug: Vercel-Guillermo-Rauch
 
-publicURL: https://codesandbox.io/static/img/podcast/cover-versionone-2.png
+socialImage: ./images/cover.png
 image: ./images/Guillermo-Rauch.jpg
 apple: 'https://podcasts.apple.com/us/podcast/introducing-version-one/id1558498088?i=1000513093620'
 google: 'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL3ZlcnNpb24tb25lLXdpdGgtbWF1cmljZS1jaGVycnk/episode/N2M1NDA2MjYtZmUyYS00NmVkLWFmOGItOTljZWM2NTRhMmRl?sa=X&ved=0CAQQkfYCahcKEwio7urO7-bvAhUAAAAAHQAAAAAQAQ'

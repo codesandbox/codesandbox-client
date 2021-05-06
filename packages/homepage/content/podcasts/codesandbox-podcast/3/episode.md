@@ -6,7 +6,7 @@ episodeNumber: 3
 audio: https://player.resonaterecordings.com/embed?uuid=d2f1e3e9-d60f-41cc-b1b7-38a8253c6ca4&accentColor=13,180,206&backgroundColor=242,242,242
 slug: Collaboration
 
-publicURL: https://codesandbox.io/static/img/podcast/cover-cbx-3.png
+socialImage: ./images/cover.png
 image: ./images/John-Lindquist.jpeg
 apple: "https://podcasts.apple.com/us/podcast/the-codesandbox-podcast/id1558498059"
 google: "https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL2NvZGVzYW5kYm94LXBvZGNhc3Q"

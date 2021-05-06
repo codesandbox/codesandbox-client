@@ -37,8 +37,9 @@ export default ({ data: { episode } }) => {
     <Layout>
       <Article>
         <TitleAndMetaTags
-          image={data.publicURL}
+          image={data.socialImage}
           title={`${data.podcastName} - ${data.title}- CodeSandbox`}
+          description={data.description}
           keywords={data.tags}
         />
 

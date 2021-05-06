@@ -6,7 +6,7 @@ episodeNumber: 1
 audio: https://player.resonaterecordings.com/embed?uuid=2f5026dd-8c6d-41a8-898a-97f0d239cd42&accentColor=13,180,206&backgroundColor=242,242,242 
 slug: charlie-gerard-netlify
 
-publicURL: https://codesandbox.io/static/img/podcast/cover-cbx-1.png
+socialImage: ./images/cover.png
 image: ./images/charlie-gerard.jpg
 apple: "https://podcasts.apple.com/us/podcast/the-codesandbox-podcast/id1558498059"
 google: "https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL2NvZGVzYW5kYm94LXBvZGNhc3Q"

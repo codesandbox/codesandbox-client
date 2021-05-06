@@ -6,7 +6,7 @@ episodeNumber: 3
 audio: https://player.resonaterecordings.com/embed?uuid=902eca55-938f-4606-8402-fea9920dedd3&accentColor=13,180,206&backgroundColor=242,242,242
 slug: Zachariah-Moreno-SquadCast
 
-publicURL: https://codesandbox.io/static/img/podcast/cover-versionone-3.png
+socialImage: ./images/cover.png
 image: ./images/Zachariah-Moreno.jpg
 apple: 'https://podcasts.apple.com/us/podcast/introducing-version-one/id1558498088?i=1000513093620'
 google: 'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL3ZlcnNpb24tb25lLXdpdGgtbWF1cmljZS1jaGVycnk/episode/N2M1NDA2MjYtZmUyYS00NmVkLWFmOGItOTljZWM2NTRhMmRl?sa=X&ved=0CAQQkfYCahcKEwio7urO7-bvAhUAAAAAHQAAAAAQAQ'
