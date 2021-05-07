@@ -18,6 +18,7 @@ import {
 } from './_elements';
 
 import csb from '../../assets/images/podcasts/csb.jpg';
+import socialCover from '../../assets/images/podcasts/thecodesandbox-cover.png';
 import allPodcasts from '../../../content/podcasts/info';
 import PodcastLinks from '../../components/PodcastLinks';
 
@@ -35,7 +36,7 @@ const TheCodeSandboxPodcast = ({
       <TitleAndMetaTags
         description={info.description}
         title="The CodeSandbox Podcast - CodeSandbox"
-        image={csb}
+        image={socialCover}
         meta={[
           { name: 'robots', content: 'noindex' },
           { name: 'googlebot', content: 'noindex' },
