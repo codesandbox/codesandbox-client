@@ -301,8 +301,8 @@ const Collection: React.FC<CollectionTypes> = ({ album, showMore = false }) => {
 
   return (
     <Stack key={album.id} direction="vertical" gap={6}>
-      <Stack justify="space-between">
-        <Text size={4} weight="bold">
+      <Stack justify="space-between" align="flex-end">
+        <Text size={6} weight="bold">
           {album.title}
         </Text>
         {showMore && (

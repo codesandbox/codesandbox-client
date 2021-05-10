@@ -142,8 +142,8 @@ const CustomisePickedSandboxes = () => {
     <>
       <form onSubmit={onSubmit} key={String(sandboxes)}>
         <Stack direction="vertical" gap={4}>
-          <Stack justify="space-between">
-            <Text size={4} weight="bold">
+          <Stack justify="space-between" align="flex-end">
+            <Text size={6} weight="bold">
               Featured sandboxes
             </Text>
             <Button type="submit" css={{ maxWidth: 100 }} disabled={loading}>
@@ -210,8 +210,9 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
           <Input
             id="title"
             defaultValue={album.title}
+            placeholder="Album title"
             autoFocus
-            style={{ maxWidth: 300, fontSize: 16, fontWeight: 700 }}
+            style={{ maxWidth: 300, fontSize: 24, fontWeight: 700 }}
           />
           <Button type="submit" autoWidth>
             Update
@@ -219,7 +220,7 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
         </Stack>
       ) : (
         <Stack gap={2} align="center">
-          <Text size={4} weight="bold">
+          <Text size={6} weight="bold">
             {album.title}
           </Text>
           <IconButton
@@ -277,7 +278,7 @@ const CreateNewAlbum = () => {
 
   return (
     <Stack direction="vertical" gap={6}>
-      <Text size={4} weight="bold">
+      <Text size={6} weight="bold">
         Create new Album
       </Text>
       <Stack
@@ -291,7 +292,7 @@ const CreateNewAlbum = () => {
         <Input
           placeholder="Album title"
           id="title"
-          style={{ maxWidth: 300, fontSize: 16, fontWeight: 700 }}
+          style={{ maxWidth: 300, fontSize: 24, fontWeight: 700 }}
         />
         <Button type="submit" css={{ width: 100 }}>
           Create
