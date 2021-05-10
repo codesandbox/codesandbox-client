@@ -1175,7 +1175,7 @@ export class VSCodeEffect {
   };
 
   public onFileDiff = (
-    module,
+    module: Module,
     original: { code: string; sha?: string },
     modified: { code: string; sha?: string }
   ) => {
@@ -1189,7 +1189,7 @@ export class VSCodeEffect {
       {
         shouldComputeCharChanges: true,
         shouldPostProcessCharChanges: true,
-        shouldIgnoreTrimWhitespace: true,
+        shouldIgnoreTrimWhitespace: false,
         shouldMakePrettyDiff: true,
         maxComputationTime: 1000,
       }

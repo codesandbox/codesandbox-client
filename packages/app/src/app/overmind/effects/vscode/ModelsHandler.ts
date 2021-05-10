@@ -205,7 +205,7 @@ export class ModelsHandler {
           ),
           options: {
             isWholeLine: true,
-            linesDecorationsClassName: 'editor--line_delete',
+            linesDecorationsClassName: 'editor--line editor--line_delete',
           },
         };
       }
@@ -222,7 +222,7 @@ export class ModelsHandler {
         ),
         options: {
           isWholeLine: true,
-          linesDecorationsClassName: 'editor--line_change',
+          linesDecorationsClassName: 'editor--line editor--line_change',
         },
       };
     });
@@ -241,7 +241,7 @@ export class ModelsHandler {
 
     this._decorations = model.deltaDecorations(this._decorations, []);
     document
-      .querySelectorAll('.editor--line_change')
+      .querySelectorAll('.editor--line')
       .forEach(element => element.remove());
   }
 
