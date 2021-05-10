@@ -61,24 +61,23 @@ export const Discover = () => {
     })
   );
 
-  // We want to randomly pick 5 collections to show
+  // We want to randomly pick 8 album to show
   // but don't want it to update on every render
-  const fiveRandomAlbumIds = React.useMemo(
-    () =>
-      shuffle(
-        sampleSize(
-          curatedAlbums
-            .map(album => album.id)
-            .filter(id => id !== PICKED_SANDBOXES_ALBUM),
-          5
-        )
-      ),
-    [curatedAlbums]
-  );
+  const randomAlbums = React.useMemo(() => {
+    const randomAlbumIds = shuffle(
+      sampleSize(
+        curatedAlbums
+          .map(album => album.id)
+          .filter(id => id !== PICKED_SANDBOXES_ALBUM),
+        8
+      )
+    );
 
-  const fiveRandomAlbums = fiveRandomAlbumIds.map(albumId =>
-    curatedAlbums.find(album => album.id === albumId)
-  );
+    // shuffle sandboxes inside the album
+    return randomAlbumIds
+      .map(albumId => curatedAlbums.find(album => album.id === albumId))
+      .map(album => ({ ...album, sandboxes: shuffle(album.sandboxes) }));
+  }, [curatedAlbums]);
 
   return (
     <Element
@@ -137,7 +136,7 @@ export const Discover = () => {
           <Stack direction="vertical" gap={16}>
             <PickedSandboxes />
 
-            {fiveRandomAlbums.map(album => (
+            {randomAlbums.map(album => (
               <Collection
                 key={album.id}
                 album={album}
@@ -301,8 +300,8 @@ const Collection: React.FC<CollectionTypes> = ({ album, showMore = false }) => {
 
   return (
     <Stack key={album.id} direction="vertical" gap={6}>
-      <Stack justify="space-between">
-        <Text size={4} weight="bold">
+      <Stack justify="space-between" align="flex-end">
+        <Text size={6} weight="bold">
           {album.title}
         </Text>
         {showMore && (
