@@ -668,10 +668,10 @@ export const _setGitChanges = ({ state, effects }: Context) => {
 
   effects.vscode.onFileDiff(
     currentModule,
-    state.git.sourceModulesByPath[currentModule.path],
+    state.git.sourceModulesByPath[currentModule.path]!,
     state.editor.currentSandbox!.modules.find(
-      e => e.path === currentModule.path
-    )
+      e => e?.path === currentModule?.path
+    )!
   );
 
   Object.keys(state.git.sourceModulesByPath).forEach(path => {
