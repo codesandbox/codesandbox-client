@@ -148,6 +148,15 @@ const ContextMenu = ({ visible, setVisibility, position, ...props }) => {
   const [computedMenuWidth, setComputedMenuWidth] = React.useState<number>(0);
   const [menuIsReadyToShow, setMenuIsReadyToShow] = React.useState(false);
 
+  // enables keyboard navigation
+  React.useEffect(() => {
+    setTimeout(() => {
+      if (!visible && !menuRef.current) return;
+      menuRef.current.focus();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, menuRef.current]);
+
   React.useEffect(() => {
     // for the initial render, the menu is not ready to be shown
     // because the element height cannot be computed
