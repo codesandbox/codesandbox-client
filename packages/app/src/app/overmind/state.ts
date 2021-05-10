@@ -14,6 +14,7 @@ import { hasLogIn } from '@codesandbox/common/lib/utils/user';
 export type PendingUserType = {
   avatarUrl: string | null;
   username: string;
+  name: string | null;
   id: string;
   valid?: boolean;
 } | null;

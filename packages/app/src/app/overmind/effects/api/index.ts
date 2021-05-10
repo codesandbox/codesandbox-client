@@ -491,13 +491,16 @@ export default {
   finalizeSignUp({
     username,
     id,
+    name,
   }: {
     username: string;
     id: string;
+    name: string;
   }): Promise<void> {
     return api.post('/users/finalize', {
       username,
       id,
+      name,
     });
   },
   updateShowcasedSandbox(username: string, sandboxId: string) {
