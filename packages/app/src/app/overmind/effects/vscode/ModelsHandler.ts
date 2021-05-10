@@ -168,34 +168,39 @@ export class ModelsHandler {
 
   _decorations = [];
 
-  public markDecoratorDiff(
+  public applyLineChanges(
     module: Module,
     position: {
       modifiedEndLineNumber: number;
       modifiedStartLineNumber: number;
       originalEndLineNumber: number;
       originalStartLineNumber: number;
+      charChanges: [] | undefined;
     }[]
   ) {
     const moduleModel = this.getModuleModelByPath(module.path);
-
-    if (!moduleModel?.model) {
-      return;
-    }
-
+    if (!moduleModel?.model) return;
     const model = moduleModel.model;
 
     const markers = position.map(pos => {
-      console.log(pos);
-      if (
+      const isDeletion =
         pos.modifiedEndLineNumber !== pos.modifiedStartLineNumber &&
-        pos.originalStartLineNumber === pos.originalEndLineNumber
-      ) {
+        pos.originalStartLineNumber === pos.originalEndLineNumber &&
+        pos.originalEndLineNumber !== 0 &&
+        pos.originalStartLineNumber !== 0 &&
+        pos.charChanges === undefined;
+
+      /**
+       * Deletion
+       */
+      if (isDeletion) {
+        const deletedPosition = pos.modifiedStartLineNumber + 1;
+
         return {
           range: new window.CSEditor.monaco.Range(
-            pos.originalStartLineNumber,
+            deletedPosition,
             1,
-            pos.originalEndLineNumber,
+            deletedPosition,
             1
           ),
           options: {
@@ -205,6 +210,9 @@ export class ModelsHandler {
         };
       }
 
+      /**
+       * Change
+       */
       return {
         range: new window.CSEditor.monaco.Range(
           pos.modifiedStartLineNumber,

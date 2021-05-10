@@ -1196,13 +1196,11 @@ export class VSCodeEffect {
     );
     const resultDiff = diff.computeDiff();
 
-    console.log(resultDiff);
-
     if (
       resultDiff.length > 0 &&
       (original.sha !== modified.sha || original.code !== modified.code)
     ) {
-      this.modelsHandler.markDecoratorDiff(module, resultDiff);
+      this.modelsHandler.applyLineChanges(module, resultDiff);
     } else {
       this.modelsHandler.cleanMarkDecoratorDiff(module);
     }
