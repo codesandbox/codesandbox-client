@@ -166,6 +166,77 @@ export class ModelsHandler {
     });
   }
 
+  _decorations = [];
+
+  public markDecoratorDiff(
+    module: Module,
+    position: {
+      modifiedEndLineNumber: number;
+      modifiedStartLineNumber: number;
+      originalEndLineNumber: number;
+      originalStartLineNumber: number;
+    }[]
+  ) {
+    const moduleModel = this.getModuleModelByPath(module.path);
+
+    if (!moduleModel?.model) {
+      return;
+    }
+
+    const model = moduleModel.model;
+
+    const markers = position.map(pos => {
+      console.log(pos);
+      if (
+        pos.modifiedEndLineNumber !== pos.modifiedStartLineNumber &&
+        pos.originalStartLineNumber === pos.originalEndLineNumber
+      ) {
+        return {
+          range: new window.CSEditor.monaco.Range(
+            pos.originalStartLineNumber,
+            1,
+            pos.originalEndLineNumber,
+            1
+          ),
+          options: {
+            isWholeLine: true,
+            linesDecorationsClassName: 'editor--line_delete',
+          },
+        };
+      }
+
+      return {
+        range: new window.CSEditor.monaco.Range(
+          pos.modifiedStartLineNumber,
+          1,
+          pos.modifiedEndLineNumber,
+          1
+        ),
+        options: {
+          isWholeLine: true,
+          linesDecorationsClassName: 'editor--line_change',
+        },
+      };
+    });
+
+    this._decorations = model.deltaDecorations(this._decorations, markers);
+  }
+
+  public cleanMarkDecoratorDiff(module: Module) {
+    const moduleModel = this.getModuleModelByPath(module.path);
+
+    if (!moduleModel?.model) {
+      return;
+    }
+
+    const model = moduleModel.model;
+
+    this._decorations = model.deltaDecorations(this._decorations, []);
+    document
+      .querySelectorAll('.editor--line_change')
+      .forEach(element => element.remove());
+  }
+
   public isModuleOpened(module: Module) {
     const moduleModel = this.getModuleModelByPath(module.path);
     return Boolean(moduleModel?.model);
