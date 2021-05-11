@@ -762,14 +762,14 @@ export const likeSandboxToggled = async (
   id: string
 ) => {
   if (state.editor.sandboxes[id].userLiked) {
+    state.editor.sandboxes[id].userLiked = false;
     state.editor.sandboxes[id].likeCount--;
     await effects.api.unlikeSandbox(id);
   } else {
+    state.editor.sandboxes[id].userLiked = true;
     state.editor.sandboxes[id].likeCount++;
     await effects.api.likeSandbox(id);
   }
-
-  state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
 export const moduleSelected = async (
