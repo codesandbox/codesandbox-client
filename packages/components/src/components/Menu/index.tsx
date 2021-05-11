@@ -53,7 +53,7 @@ export const MenuStyles = createGlobalStyle(
     '[data-reach-menu-item][data-component=MenuItem], [data-reach-menu-item][data-component=MenuLink]': {
       fontSize: 2,
       paddingY: 2,
-      paddingX: 3,
+      paddingX: 2,
       cursor: 'pointer',
       outline: 'none',
       color: 'menuList.foreground',
@@ -238,17 +238,18 @@ interface MenuListProps {
 }
 
 const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
-  (props, ref) => {
+  ({ style, children, ...props }, ref) => {
     const { trigger, portal } = React.useContext(MenuContext);
     return (
       <ReachMenu.MenuList
-        style={props.style}
+        style={style}
         ref={ref}
         data-component="MenuList"
         data-trigger={trigger}
         portal={portal}
+        {...props}
       >
-        {props.children}
+        {children}
       </ReachMenu.MenuList>
     );
   }

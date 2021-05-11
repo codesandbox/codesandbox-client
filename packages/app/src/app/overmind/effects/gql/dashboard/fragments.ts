@@ -143,6 +143,7 @@ export const teamFragmentDashboard = gql`
 
     subscription {
       origin
+      type
     }
   }
 `;

@@ -264,15 +264,15 @@ export const plusInCircle = props => (
 export const menu = props => (
   <Element
     as="svg"
-    viewBox="0 0 16 16"
+    viewBox="0 0 10 7"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
     <path
-      d="M16 4H0V3H16V4ZM16 8.66762H0V7.66762H16V8.66762ZM0 13.3352H16V12.3352H0V13.3352Z"
-      fill="currentColor"
       fillRule="evenodd"
       clipRule="evenodd"
+      d="M7.5 5.806H0v.944h7.5v-.944zm2.25-2.903H0v.944h9.75v-.944zM0 0h9.75v.944H0V0z"
+      fill="currentColor"
     />
   </Element>
 );
