@@ -79,6 +79,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             <Menu.List
               css={css({
                 width: '100%',
+                marginTop: -2,
                 backgroundColor: 'grays.600',
               })}
               style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
