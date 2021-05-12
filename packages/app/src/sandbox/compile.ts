@@ -467,7 +467,7 @@ async function compile(opts: CompileOptions) {
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
   } = opts;
-  
+
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {

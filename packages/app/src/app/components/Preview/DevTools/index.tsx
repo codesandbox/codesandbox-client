@@ -244,6 +244,8 @@ export class DevTools extends React.PureComponent<Props, State> {
     document.removeEventListener('touchend', this.handleTouchEnd, false);
     document.removeEventListener('touchmove', this.handleTouchMove, false);
 
+    clearTimeout(this.setStateTimer);
+
     if (this.node) {
       this.node.removeEventListener('mousewheel', this.mouseWheelHandler);
     }

@@ -112,7 +112,11 @@ const renderTitle = (label: string) => {
     renderMnemonic: () =>
       labelSplit.map(element => {
         if (/(&&\w)/g.test(element)) {
-          return createElement('mnemonic', null, clean(element));
+          return createElement(
+            'mnemonic',
+            { key: clean(element) },
+            clean(element)
+          );
         }
 
         return element;
