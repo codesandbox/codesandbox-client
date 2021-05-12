@@ -18,6 +18,7 @@ import danilowoz from '../assets/images/people/danilowoz.jpg';
 import matan from '../assets/images/people/matan.png';
 import scott from '../assets/images/people/scott.png';
 import kate from '../assets/images/people/kate.jpg';
+import tamas from '../assets/images/people/tamas.jpg';
 
 const people = [
   {
@@ -121,6 +122,12 @@ const people = [
     pic: kate,
     color: '#F24E62',
     team: 'Engineering',
+  },
+  {
+    name: 'Tamas Szuromi',
+    pic: tamas,
+    color: '#F7A239',
+    team: 'Data',
   },
 ];
 
