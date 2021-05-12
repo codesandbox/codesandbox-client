@@ -1020,11 +1020,6 @@ export class VSCodeEffect {
           monaco,
         };
 
-        if (process.env.NODE_ENV === 'development') {
-          // eslint-disable-next-line
-          console.log(accessor);
-        }
-
         statusbarPart.create(this.elements.statusbar);
         editorPart.create(this.elements.editorPart);
         editorPart.layout(container.offsetWidth, container.offsetHeight);
