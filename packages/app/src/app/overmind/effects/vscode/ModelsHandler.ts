@@ -197,7 +197,7 @@ export class ModelsHandler {
         const deletedPosition = pos.modifiedStartLineNumber + 1;
 
         return {
-          range: new window.CSEditor.monaco.Range(
+          range: new window.monaco.Range(
             deletedPosition,
             1,
             deletedPosition,
@@ -214,7 +214,7 @@ export class ModelsHandler {
        * Change
        */
       return {
-        range: new window.CSEditor.monaco.Range(
+        range: new window.monaco.Range(
           pos.modifiedStartLineNumber,
           1,
           pos.modifiedEndLineNumber,
