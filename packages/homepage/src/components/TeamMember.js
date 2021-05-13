@@ -126,13 +126,13 @@ const people = [
   },
   {
     name: 'Tamas Szuromi',
-    pic: jasper,
+    pic: tamas,
     color: '#F7A239',
     team: 'Data',
   },
   {
     name: 'Jasper De Moor',
-    pic: tamas,
+    pic: jasper,
     color: '#F24E62',
     team: 'Engineering',
   },
