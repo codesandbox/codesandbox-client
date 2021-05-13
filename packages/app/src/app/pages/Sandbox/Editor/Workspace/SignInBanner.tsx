@@ -33,7 +33,6 @@ export const SignInBanner = ({ theme }) => {
         borderTop: '1px solid',
         borderColor: 'sideBar.border',
         filter: dark ? 'drop-shadow(0px -16px 8px rgba(0,0,0,.32))' : null,
-        zIndex: 999,
       })}
     >
       <Stack
