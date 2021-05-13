@@ -15,6 +15,7 @@ Zachariah, CEO and CTO of SquadCast, had this experience. In [episode 3 of the V
 
 As Zachariah mentioned, there are many things you can do to stay sharp. This post will explain 5 ways you can maintain and grow your coding skills. 
 
+
 ## Read other people's code
 
 When it comes to getting better at a certain coding language or framework, we usually think that we need to work on some fancy, new project. While that isn't a bad idea, reading other people's code is another very helpful step. Reading other people's code can often be overlooked but it's a great way to familiarize yourself with new and old syntax and to test your ability to understand unfamiliar codebases. 
