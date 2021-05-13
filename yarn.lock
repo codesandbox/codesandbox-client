@@ -26440,10 +26440,10 @@ react-dev-utils@^9.0.0:
     strip-ansi "5.2.0"
     text-table "0.2.0"
 
-react-devtools-inline@^4.11.1:
-  version "4.11.1"
-  resolved "https://registry.yarnpkg.com/react-devtools-inline/-/react-devtools-inline-4.11.1.tgz#406cdc370fd416393a81a4654991956d8c7d6157"
-  integrity sha512-pOC3Rscr2S2D1l2NQuDYdC0WHaf1KjW/IB8nBoUtT5AUM1X1yfmbWFANzr1FeT21v4eF9FwjaVpDXnl2kSlRdg==
+react-devtools-inline@^4.13.2:
+  version "4.13.2"
+  resolved "https://registry.yarnpkg.com/react-devtools-inline/-/react-devtools-inline-4.13.2.tgz#59a5991ab2a946acedd871693a4ceca3ed7f7441"
+  integrity sha512-erlHuLtRTClO+B79eu4nyjHGt0vFak1UoDpmSNmA9brF5SsdUTLsmiv6huTnJyNJ2pDKF8nUaekXkRf6E7mwqg==
 
 react-dnd-html5-backend@^9.4.0:
   version "9.4.0"
