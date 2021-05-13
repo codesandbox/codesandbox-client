@@ -9,11 +9,12 @@ date: 2021-05-13
 ---
 It’s no secret that the tech industry is always changing. New frameworks are always emerging and new features are constantly being added to the languages and frameworks that already exist. This can be exciting but sometimes it can be hard to keep up. Some people work in environments that don’t welcome change. Not everyone’s team is looking to implement the latest innovation. 
 
-Zachariah, CEO and CTO of SquadCast, had this experience. In e[pisode 3 of the Version One podcast](https://codesandbox.io/podcasts/version-one/Zachariah-Moreno-SquadCast), he talked about an experience he had early on in his career. He was in a position that didn’t allow for much growth. So how was he able to keep his coding skills up to par? 
+Zachariah, CEO and CTO of SquadCast, had this experience. In [episode 3 of the Version One podcast](https://codesandbox.io/podcasts/version-one/Zachariah-Moreno-SquadCast), he talked about an experience he had early on in his career. He was in a position that didn’t allow for much growth. So how was he able to keep his coding skills up to par? 
 
 > So what I did was I used that time to contribute to open source projects, research, sharpen my skills, [to] kind of stay sharp.
 
-As Zachariah mentioned, there are many things you can do to stay sharp. This post will explain 4 ways you can maintain and grow your coding skills. 
+As Zachariah mentioned, there are many things you can do to stay sharp. This post will explain 5 ways you can maintain and grow your coding skills. 
+
 
 ## Read other people's code
 
