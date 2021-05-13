@@ -1037,6 +1037,10 @@ export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
       dashboard.getLikedSandboxes();
       break;
 
+    case sandboxesTypes.DISCOVER:
+      dashboard.getCuratedAlbums();
+      break;
+
     default:
       break;
   }
@@ -1325,9 +1329,14 @@ export const updateTeamAvatar = async (
     teamId: string;
   }
 ) => {
-  if (!state.activeTeamInfo) return;
+  if (!state.activeTeamInfo || !state.user) return;
   const oldAvatar = state.activeTeamInfo.avatarUrl;
+  const isPersonalWorkspace =
+    state.activeTeamInfo.id === state.personalWorkspaceId;
   state.activeTeamInfo.avatarUrl = url;
+  if (isPersonalWorkspace) {
+    state.user.avatarUrl = url;
+  }
 
   effects.analytics.track('Team - Update Team Avatar', { dashboardVersion: 2 });
 
@@ -1335,6 +1344,10 @@ export const updateTeamAvatar = async (
     await effects.api.updateTeamAvatar(name, url, teamId);
   } catch (error) {
     state.activeTeamInfo.avatarUrl = oldAvatar;
+    if (isPersonalWorkspace) {
+      // @ts-ignore
+      state.user.avatarUrl = oldAvatar;
+    }
 
     actions.internal.handleError({
       message: "We weren't able to update your team avatar",
@@ -1867,5 +1880,78 @@ export const likeCommunitySandbox = async (
     actions.dashboard.getLikedSandboxes();
   } catch (e) {
     effects.notificationToast.error('There was a problem liking the sandbox');
+  }
+};
+
+export const getCuratedAlbums = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    const data = await effects.gql.queries.curatedAlbums({});
+    dashboard.curatedAlbums = data.curatedAlbums;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting curated collections'
+    );
+  }
+};
+
+export const addSandboxesToAlbum = async (
+  { actions, effects }: Context,
+  { albumId, sandboxIds }: { albumId: string; sandboxIds: string[] }
+) => {
+  try {
+    await effects.gql.mutations.addSandboxesToAlbum({
+      albumId,
+      sandboxIds,
+    });
+    actions.dashboard.getCuratedAlbums();
+  } catch (error) {
+    effects.notificationToast.error('There was a problem updating albums');
+  }
+};
+
+export const removeSandboxesFromAlbum = async (
+  { actions, effects }: Context,
+  { albumId, sandboxIds }: { albumId: string; sandboxIds: string[] }
+) => {
+  try {
+    await effects.gql.mutations.removeSandboxesFromAlbum({
+      albumId,
+      sandboxIds,
+    });
+    actions.dashboard.getCuratedAlbums();
+  } catch (error) {
+    effects.notificationToast.error('There was a problem updating albums');
+  }
+};
+
+export const createAlbum = async (
+  { state, effects }: Context,
+  { title }: { title: string }
+) => {
+  try {
+    const data = await effects.gql.mutations.createAlbum({ title });
+    state.dashboard.curatedAlbums.push({
+      id: data.createAlbum.id,
+      title: data.createAlbum.title,
+      sandboxes: [],
+    });
+  } catch (error) {
+    effects.notificationToast.error('There was a problem updating album');
+  }
+};
+
+export const updateAlbum = async (
+  { state, effects }: Context,
+  { id, title }: { id: string; title: string }
+) => {
+  try {
+    await effects.gql.mutations.updateAlbum({ id, title });
+    state.dashboard.curatedAlbums = state.dashboard.curatedAlbums.map(album => {
+      if (album.id === id) album.title = title;
+      return album;
+    });
+  } catch (error) {
+    effects.notificationToast.error('There was a problem updating album');
   }
 };

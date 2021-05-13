@@ -44,7 +44,7 @@ const Label = styled(Text)(
       borderRadius: 'small',
       backgroundColor: 'input.background',
       border: '1px solid',
-      borderColor: 'inputOption.activeBorder',
+      borderColor: 'input.border',
       transition: 'all ease-in',
       transitionDuration: theme => theme.speeds[2],
     },

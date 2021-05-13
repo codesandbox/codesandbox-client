@@ -19,9 +19,7 @@ export const CommunitySandbox = ({
   isScrolling,
   item,
 }: GenericSandboxProps) => {
-  const {
-    dashboard: { viewMode },
-  } = useAppState();
+  const { dashboard } = useAppState();
   const {
     dashboard: { likeCommunitySandbox, unlikeSandbox },
   } = useActions();
@@ -113,6 +111,16 @@ export const CommunitySandbox = ({
     'data-selection-id': sandbox.id,
     onLikeToggle,
   };
+
+  /* View logic */
+
+  let viewMode: string;
+  if (
+    location.pathname.includes('discover') &&
+    !location.pathname.includes('search')
+  ) {
+    viewMode = 'grid';
+  } else viewMode = dashboard.viewMode;
 
   const Component = viewMode === 'list' ? SandboxListItem : SandboxCard;
 

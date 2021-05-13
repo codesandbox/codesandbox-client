@@ -298,7 +298,8 @@ export const sandboxChanged = withLoadApp<{
   }
 
   try {
-    const sandbox = await effects.api.getSandbox(newId);
+    const params = state.activeTeam ? { teamId: state.activeTeam } : undefined;
+    const sandbox = await effects.api.getSandbox(newId, params);
 
     actions.internal.setCurrentSandbox(sandbox);
   } catch (error) {
@@ -700,6 +701,8 @@ export const createZipClicked = ({ state, effects }: Context) => {
   }
 
   effects.zip.download(state.editor.currentSandbox);
+
+  effects.analytics.track('Editor - Click Menu Item - Export as ZIP');
 };
 
 export const forkExternalSandbox = async (
@@ -759,14 +762,14 @@ export const likeSandboxToggled = async (
   id: string
 ) => {
   if (state.editor.sandboxes[id].userLiked) {
+    state.editor.sandboxes[id].userLiked = false;
     state.editor.sandboxes[id].likeCount--;
     await effects.api.unlikeSandbox(id);
   } else {
+    state.editor.sandboxes[id].userLiked = true;
     state.editor.sandboxes[id].likeCount++;
     await effects.api.likeSandbox(id);
   }
-
-  state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
 export const moduleSelected = async (

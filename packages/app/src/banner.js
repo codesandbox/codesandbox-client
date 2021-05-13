@@ -75,7 +75,7 @@ const iframeStyles = `
   top: 0;
   left: 0;
   border: none;
-  width: 100%;  
+  width: 100%;
   z-index: 9999999999999;
 `;
 
@@ -141,9 +141,15 @@ try {
   fetch(`https://codesandbox.io/api/v1/sandboxes/${sandboxId}/phishing`)
     .then(response => response.json())
     .then(data => {
+      if (data.deleted) {
+        window.location.replace('https://codesandbox.io/phew');
+      }
       if (data.flagged) {
         setTimeout(() => createIframe(), 250);
       }
+    })
+    .catch(() => {
+      // noop
     });
 } catch (e) {
   console.error(e);

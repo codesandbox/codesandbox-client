@@ -152,6 +152,7 @@ export default class Manager implements IEvaluator {
   hmrStatus: HMRStatus = 'idle';
   hmrStatusChangeListeners: Set<(status: HMRStatus) => void>;
   isFirstLoad: boolean;
+  isReloading: boolean = false;
 
   fileResolver: IFileResolver | undefined;
 
@@ -233,6 +234,13 @@ export default class Manager implements IEvaluator {
 
     if (options.hasFileResolver) {
       this.setupFileResolver();
+    }
+  }
+
+  reload() {
+    this.isReloading = true;
+    if (typeof window !== 'undefined') {
+      window.location.reload();
     }
   }
 
@@ -374,9 +382,14 @@ export default class Manager implements IEvaluator {
     module: Module,
     { force = false, globals }: { force?: boolean; globals?: object } = {}
   ): any {
+    // Do a hard reload
     if (this.hardReload && !this.isFirstLoad) {
-      // Do a hard reload
-      document.location.reload();
+      this.reload();
+      return {};
+    }
+
+    // Page is reloading, skip further evaluation
+    if (this.isReloading) {
       return {};
     }
 

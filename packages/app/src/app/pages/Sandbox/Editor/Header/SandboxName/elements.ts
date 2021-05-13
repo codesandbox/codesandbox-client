@@ -10,9 +10,8 @@ export const Folder = styled.div`
 `;
 
 export const Form = styled.form`
-  position: absolute;
-  left: 0;
-  right: 0;
+  position: relative;
+  top: -1px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,6 +28,7 @@ export const NameInput = styled(AutosizeInput)`
       padding: 0;
       text-align: center;
       color: ${theme['input.foreground']};
+      font: inherit;
     }
   `};
 `;

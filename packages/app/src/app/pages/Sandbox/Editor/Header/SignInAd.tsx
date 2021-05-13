@@ -10,10 +10,14 @@ export const SignInBanner = () => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setShow(true);
       // 3 minutes
     }, 180000);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   return (

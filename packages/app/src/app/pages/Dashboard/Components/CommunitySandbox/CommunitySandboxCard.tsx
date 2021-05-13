@@ -56,7 +56,7 @@ type StatsProps = Pick<
   CommunitySandboxItemComponentProps,
   'forkCount' | 'likeCount' | 'liked' | 'onLikeToggle'
 >;
-const Stats: React.FC<StatsProps> = ({
+export const Stats: React.FC<StatsProps> = ({
   forkCount,
   likeCount,
   liked,
@@ -80,7 +80,13 @@ const Stats: React.FC<StatsProps> = ({
         size={14}
         css={css({ color: liked ? 'reds.300' : 'inherit' })}
       />
-      <Text size={3}>{formatNumber(likeCount)}</Text>
+      <Text
+        size={3}
+        weight="normal"
+        css={{ fontVariantNumeric: 'tabular-nums', letterSpacing: '-1px' }}
+      >
+        {formatNumber(likeCount)}
+      </Text>
     </Stack>
   </Stack>
 );
@@ -90,13 +96,13 @@ const Author: React.FC<AuthorProps> = React.memo(({ author }) => (
   // return empty div for alignment
 
   <Stack align="center" gap={2} css={{ flexShrink: 1, overflow: 'hidden' }}>
-    {author.username ? (
+    {author?.username ? (
       <Avatar css={css({ size: 6, borderRadius: 2 })} user={author} />
     ) : (
       <AnonymousAvatar />
     )}
     <Text size={3} maxWidth="100%">
-      {author.username || 'Anonymous'}
+      {author?.username || 'Anonymous'}
     </Text>
   </Stack>
 ));
@@ -166,7 +172,7 @@ export const SandboxCard = ({
           align="center"
           gap={2}
           marginLeft={4}
-          marginRight={3}
+          marginRight={1}
         >
           <Author author={author} />
           <Stats

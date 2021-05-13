@@ -31,6 +31,9 @@ import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH, NEW_FOLDER_ID } from './constants';
 import { DragItemType, useDrop } from '../utils/dnd';
 
+/** poor man's feature flag - to ship the unfinished version */
+const SHOW_DISCOVER = localStorage.SHOW_DISCOVER;
+
 const SidebarContext = React.createContext(null);
 
 interface SidebarProps {
@@ -53,7 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     name: string;
     avatarUrl: string;
   } | null>(null);
-  const { dashboard, activeTeam, activeTeamInfo } = state;
+  const { dashboard, activeTeam, activeTeamInfo, user } = state;
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
@@ -62,13 +65,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
   React.useEffect(() => {
     if (state.activeTeam) {
       const team = dashboard.teams.find(({ id }) => id === state.activeTeam);
-
-      if (team)
+      if (team) {
+        const isPersonalWorkspace = team.id === state.personalWorkspaceId;
         setActiveAccount({
           id: team.id,
           name: team.name,
-          avatarUrl: team.avatarUrl,
+          avatarUrl:
+            isPersonalWorkspace && user ? user.avatarUrl : team.avatarUrl,
         });
+      }
     }
   }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
 
@@ -127,7 +132,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <List>
           <ListItem
             css={css({
-              paddingX: 0,
+              paddingLeft: '6px',
+              paddingRight: 0,
               height: 10,
               borderBottom: '1px solid',
               borderColor: 'sideBar.border',
@@ -167,6 +173,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="box"
             style={{ marginTop: 1 }}
           />
+          {SHOW_DISCOVER && (
+            <RowItem
+              name="Discover"
+              page="discover"
+              path={dashboardUrls.discover(activeTeam)}
+              icon="discover"
+            />
+          )}
           <RowItem
             name="My Drafts"
             page="drafts"

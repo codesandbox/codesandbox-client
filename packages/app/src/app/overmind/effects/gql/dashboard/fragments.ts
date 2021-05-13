@@ -14,6 +14,7 @@ export const sandboxFragmentDashboard = gql`
     screenshotUrl
     screenshotOutdated
     viewCount
+    likeCount
     alwaysOn
 
     source {
@@ -142,6 +143,7 @@ export const teamFragmentDashboard = gql`
 
     subscription {
       origin
+      type
     }
   }
 `;

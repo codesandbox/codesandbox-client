@@ -12,12 +12,7 @@ function appendTeamIdQueryParam(url: string, teamId?: string | null) {
 function sanitizePath(path: string) {
   return path
     .split('/')
-    .map(p =>
-      p
-        .split(' ')
-        .map(encodeURIComponent)
-        .join(' ')
-    )
+    .map(p => p.split(' ').map(encodeURIComponent).join(' '))
     .join('/');
 }
 
@@ -92,9 +87,20 @@ export const search = (query: string, teamId?: string | null) => {
   return searchUrl;
 };
 
-export const exploreSearch = (query: string, teamId?: string | null) => {
+export const discover = (teamId?: string | null, albumId?: string) => {
+  if (albumId) {
+    return appendTeamIdQueryParam(
+      `${DASHBOARD_URL_PREFIX}/discover/${albumId}`,
+      teamId
+    );
+  }
+
+  return appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/discover`, teamId);
+};
+
+export const discoverSearch = (query: string, teamId?: string | null) => {
   let searchUrl = appendTeamIdQueryParam(
-    `${DASHBOARD_URL_PREFIX}/explore/search`,
+    `${DASHBOARD_URL_PREFIX}/discover/search`,
     teamId
   );
 

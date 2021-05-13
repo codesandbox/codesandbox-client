@@ -33,7 +33,7 @@ import {
   transformModule,
   transformSandbox,
 } from '../utils/sandbox';
-import apiFactory, { Api, ApiConfig } from './apiFactory';
+import apiFactory, { Api, ApiConfig, Params } from './apiFactory';
 import {
   IDirectoryAPIResponse,
   IModuleAPIResponse,
@@ -100,8 +100,11 @@ export default {
       `/sandboxes/${sandboxId}/npm_registry/${name.replace('/', '%2f')}`
     );
   },
-  async getSandbox(id: string): Promise<Sandbox> {
-    const sandbox = await api.get<SandboxAPIResponse>(`/sandboxes/${id}`);
+  async getSandbox(id: string, params?: Params): Promise<Sandbox> {
+    const sandbox = await api.get<SandboxAPIResponse>(
+      `/sandboxes/${id}`,
+      params
+    );
 
     // We need to add client side properties for tracking
     return transformSandbox(sandbox);
@@ -488,13 +491,16 @@ export default {
   finalizeSignUp({
     username,
     id,
+    name,
   }: {
     username: string;
     id: string;
+    name: string;
   }): Promise<void> {
     return api.post('/users/finalize', {
       username,
       id,
+      name,
     });
   },
   updateShowcasedSandbox(username: string, sandboxId: string) {
@@ -616,14 +622,6 @@ export default {
   },
   makeGitSandbox(sandboxId: string): Promise<Sandbox> {
     return api.post<Sandbox>(`/sandboxes/${sandboxId}/make_git_sandbox`, null);
-  },
-  updateUserProfile(username: string, bio: string, socialLinks: string[]) {
-    return api.patch(`/users/${username}`, {
-      user: {
-        bio,
-        socialLinks,
-      },
-    });
   },
   updateUserFeaturedSandboxes(
     username: string,

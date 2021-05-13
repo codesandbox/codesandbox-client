@@ -71,6 +71,16 @@ import {
   SoftCancelSubscriptionMutationVariables,
   ReactivateSubscriptionMutation,
   ReactivateSubscriptionMutationVariables,
+  UpdateCurrentUserMutation,
+  UpdateCurrentUserMutationVariables,
+  AddSandboxesToAlbumMutation,
+  AddSandboxesToAlbumMutationVariables,
+  RemoveSandboxesFromAlbumMutation,
+  RemoveSandboxesFromAlbumMutationVariables,
+  UpdateAlbumMutation,
+  UpdateAlbumMutationVariables,
+  CreateAlbumMutation,
+  CreateAlbumMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -599,6 +609,75 @@ export const reactivateSubscription: Query<
 > = gql`
   mutation reactivateSubscription($teamId: UUID4!, $subscriptionId: UUID4!) {
     reactivateSubscription(teamId: $teamId, subscriptionId: $subscriptionId) {
+      id
+    }
+  }
+`;
+
+export const updateCurrentUser: Query<
+  UpdateCurrentUserMutation,
+  UpdateCurrentUserMutationVariables
+> = gql`
+  mutation updateCurrentUser(
+    $username: String!
+    $name: String
+    $bio: String
+    $socialLinks: [String!]
+  ) {
+    updateCurrentUser(
+      username: $username
+      name: $name
+      bio: $bio
+      socialLinks: $socialLinks
+    ) {
+      username
+      name
+      bio
+      socialLinks
+    }
+  }
+`;
+
+export const addSandboxesToAlbum: Query<
+  AddSandboxesToAlbumMutation,
+  AddSandboxesToAlbumMutationVariables
+> = gql`
+  mutation addSandboxesToAlbum($albumId: ID!, $sandboxIds: [ID!]!) {
+    addSandboxesToAlbum(albumId: $albumId, sandboxIds: $sandboxIds) {
+      id
+    }
+  }
+`;
+
+export const removeSandboxesFromAlbum: Query<
+  RemoveSandboxesFromAlbumMutation,
+  RemoveSandboxesFromAlbumMutationVariables
+> = gql`
+  mutation removeSandboxesFromAlbum($albumId: ID!, $sandboxIds: [ID!]!) {
+    removeSandboxesFromAlbum(albumId: $albumId, sandboxIds: $sandboxIds) {
+      id
+    }
+  }
+`;
+
+export const createAlbum: Query<
+  CreateAlbumMutation,
+  CreateAlbumMutationVariables
+> = gql`
+  mutation createAlbum($title: String!) {
+    createAlbum(title: $title) {
+      id
+      title
+    }
+  }
+`;
+
+export const updateAlbum: Query<
+  UpdateAlbumMutation,
+  UpdateAlbumMutationVariables
+> = gql`
+  mutation updateAlbum($id: ID!, $title: String!) {
+    updateAlbum(id: $id, title: $title) {
       id
     }
   }

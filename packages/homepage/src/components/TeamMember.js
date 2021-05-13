@@ -5,9 +5,7 @@ import ives from '../assets/images/people/ives.png';
 import bas from '../assets/images/people/bas.png';
 import bogdan from '../assets/images/people/bogdan.png';
 import oskar from '../assets/images/people/oskar.png';
-import sara from '../assets/images/people/sara.png';
 import danny from '../assets/images/people/danny.png';
-import gareth from '../assets/images/people/gareth.png';
 import sid from '../assets/images/people/sid.jpg';
 import christian from '../assets/images/people/christian.png';
 import sanne from '../assets/images/people/sanne.png';
@@ -19,6 +17,8 @@ import ceora from '../assets/images/people/ceora.jpg';
 import danilowoz from '../assets/images/people/danilowoz.jpg';
 import matan from '../assets/images/people/matan.png';
 import scott from '../assets/images/people/scott.png';
+import kate from '../assets/images/people/kate.jpg';
+import tamas from '../assets/images/people/tamas.png';
 
 const people = [
   {
@@ -46,22 +46,10 @@ const people = [
     team: 'Engineering',
   },
   {
-    name: 'Sara Vieira',
-    pic: sara,
-    color: '#F24E62',
-    team: 'Engineering',
-  },
-  {
     name: 'Danny Rutchie',
     pic: danny,
     color: '#B567EB',
     team: 'Design',
-  },
-  {
-    name: 'Gareth Wilson',
-    pic: gareth,
-    color: '#F7A239',
-    team: 'Growth',
   },
   {
     name: 'Siddharth Kshetrapal',
@@ -124,11 +112,23 @@ const people = [
     team: 'Engineering',
   },
   {
-     name: 'Scott Hutcheson',
+    name: 'Scott Hutcheson',
     pic: scott,
     color: '#F24E62',
     team: 'Engineering',
-  }
+  },
+  {
+    name: 'Kate Beard',
+    pic: kate,
+    color: '#F24E62',
+    team: 'Engineering',
+  },
+  {
+    name: 'Tamas Szuromi',
+    pic: tamas,
+    color: '#F7A239',
+    team: 'Data',
+  },
 ];
 
 const Peep = styled.img`
@@ -238,6 +238,7 @@ const TeamMember = ({ name, border, noHover, ...props }) => {
   return null;
 };
 
-export const getRandomTeamMembers = number => shuffle(people).splice(0, number + 2);
+export const getRandomTeamMembers = number =>
+  shuffle(people).splice(0, number + 2);
 
 export default TeamMember;

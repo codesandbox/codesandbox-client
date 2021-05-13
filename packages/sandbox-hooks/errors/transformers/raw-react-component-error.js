@@ -29,7 +29,7 @@ function findRawModule(module) {
  * @param {any} module
  * @returns
  */
-export default function(error: Error, module) {
+export default function (error: Error, module) {
   if (
     error.message.includes(
       "Failed to execute 'createElement' on 'Document': The tag name provided "

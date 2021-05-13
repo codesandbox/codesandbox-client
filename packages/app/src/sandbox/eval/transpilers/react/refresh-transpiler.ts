@@ -20,14 +20,14 @@ function debounce(func, wait, immediate) {
 	};
 };
 
-const enqueueUpdate = () => {
-  try {
-    Refresh.performReactRefresh()
-  } catch (e) {
-    module.hot.decline();
-    throw e;
-  }
-}
+const enqueueUpdate = debounce(() => {
+    try {
+        Refresh.performReactRefresh();
+    } catch (e) {
+        module.hot.decline();
+        throw e;
+    }
+}, 30);
 
 function isReactRefreshBoundary(moduleExports) {
   if (Object.keys(Refresh).length === 0) {
@@ -121,67 +121,69 @@ var registerExportsForReactRefresh = (moduleExports, moduleID) => {
   }
 };
 
+function prelude(module) {
+    window.$RefreshReg$ = (type, id) => {
+        // Note module.id is webpack-specific, this may vary in other bundlers
+        const fullId = module.id + ' ' + id;
+        Refresh.register(type, fullId);
+    }
+    
+    window.$RefreshSig$ = Refresh.createSignatureFunctionForTransform;
+}
+
+function postlude(module) {
+    const isHotUpdate = !!module.hot.data;
+    const prevExports = isHotUpdate ? module.hot.data.prevExports : null;
+    if (isReactRefreshBoundary) {
+        if (isReactRefreshBoundary(module.exports)) {
+            registerExportsForReactRefresh(module.exports, module.id)
+            const currentExports = { ...module.exports };
+
+            module.hot.dispose(function hotDisposeCallback(data) {
+                data.prevExports = currentExports;
+            });
+
+            if (isHotUpdate && shouldInvalidateReactRefreshBoundary(prevExports, currentExports)) {
+                module.hot.invalidate();
+            } else {
+                module.hot.accept();
+            }
+
+            enqueueUpdate();
+        } else if (isHotUpdate && isReactRefreshBoundary(prevExports)) {
+            module.hot.invalidate();
+        }
+    }
+}
+
 module.exports = {
-  enqueueUpdate: debounce(enqueueUpdate, 30),
+  enqueueUpdate,
   isReactRefreshBoundary,
   registerExportsForReactRefresh,
-  shouldInvalidateReactRefreshBoundary
+  shouldInvalidateReactRefreshBoundary,
+  prelude,
+  postlude,
 };
 `.trim();
 
-// const getWrapperCode = (sourceCode: string) =>
-//   `
-// var prevRefreshReg = window.$RefreshReg$;
-// var prevRefreshSig = window.$RefreshSig$;
-// var RefreshRuntime = require('react-refresh/runtime');
+const prelude = `var _csbRefreshUtils = require("${HELPER_PATH}");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+_csbRefreshUtils.prelude(module);
+try {`.replace(/[\n]+/gm, '');
 
-// window.$RefreshReg$ = (type, id) => {
-//   // Note module.id is webpack-specific, this may vary in other bundlers
-//   const fullId = module.id + ' ' + id;
-//   RefreshRuntime.register(type, fullId);
-// }
-// window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
-
-// try {
-//   ${sourceCode}
-// } finally {
-//   window.$RefreshReg$ = prevRefreshReg;
-//   window.$RefreshSig$ = prevRefreshSig;
-// }
-
-// const _csbRefreshUtils = require('${HELPER_PATH}');
-
-// const isHotUpdate = !!module.hot.data;
-// const prevExports = isHotUpdate ? module.hot.data.prevExports : null;
-// if (_csbRefreshUtils.isReactRefreshBoundary) {
-//   if (_csbRefreshUtils.isReactRefreshBoundary(module.exports)) {
-//     _csbRefreshUtils.registerExportsForReactRefresh(module.exports, module.id)
-//     const currentExports = { ...module.exports };
-
-//     module.hot.dispose(function hotDisposeCallback(data) {
-//       data.prevExports = currentExports;
-//     });
-
-//     if (isHotUpdate && _csbRefreshUtils.shouldInvalidateReactRefreshBoundary(prevExports, currentExports)) {
-//       module.hot.invalidate();
-//     } else {
-//       module.hot.accept();
-//     }
-
-//     _csbRefreshUtils.enqueueUpdate();
-//   } else if (isHotUpdate && _csbRefreshUtils.isReactRefreshBoundary(prevExports)) {
-//     module.hot.invalidate();
-//   }
-// }
-// `;
+const postlude = `_csbRefreshUtils.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}`.replace(/[\n]+/gm, '');
 
 /**
  * This is the compressed version of the code in the comment above. We compress the code
  * to a single line so we don't mess with the source mapping when showing errors.
  */
 const getWrapperCode = (sourceCode: string) =>
-  `var prevRefreshReg=window.$RefreshReg$,prevRefreshSig=window.$RefreshSig$,RefreshRuntime=require("react-refresh/runtime");window.$RefreshReg$=(e,r)=>{const s=module.id+" "+r;RefreshRuntime.register(e,s)},window.$RefreshSig$=RefreshRuntime.createSignatureFunctionForTransform;try{${sourceCode}
-}finally{window.$RefreshReg$=prevRefreshReg,window.$RefreshSig$=prevRefreshSig}const _csbRefreshUtils=require("${HELPER_PATH}"),isHotUpdate=!!module.hot.data,prevExports=isHotUpdate?module.hot.data.prevExports:null;if(_csbRefreshUtils.isReactRefreshBoundary)if(_csbRefreshUtils.isReactRefreshBoundary(module.exports)){_csbRefreshUtils.registerExportsForReactRefresh(module.exports,module.id);const e={...module.exports};module.hot.dispose((function(r){r.prevExports=e})),isHotUpdate&&_csbRefreshUtils.shouldInvalidateReactRefreshBoundary(prevExports,e)?module.hot.invalidate():module.hot.accept(),_csbRefreshUtils.enqueueUpdate()}else isHotUpdate&&_csbRefreshUtils.isReactRefreshBoundary(prevExports)&&module.hot.invalidate();`;
+  prelude + sourceCode + '\n' + postlude;
 
 class RefreshTranspiler extends Transpiler {
   constructor() {

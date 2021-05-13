@@ -7,47 +7,55 @@ interface BreadcrumbProps {
   path: string;
   activeTeam: string;
   repos?: boolean;
+  albumId?: string;
 }
 
 export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   path,
   activeTeam,
   repos,
-}) => (
-  <Text marginBottom={1} block weight="bold" size={5}>
-    <Link
-      to={
-        repos
-          ? dashboard.repos(activeTeam)
-          : dashboard.allSandboxes('/', activeTeam)
-      }
-      as={LinkBase}
-      variant={path && path.split('/').length ? 'muted' : 'body'}
-    >
-      {repos ? 'Repositories' : 'All Sandboxes'} {path && ' / '}
-    </Link>
-    {path
-      ? path.split('/').map((p, i) => {
-          const partPath = path
-            .split('/')
-            .slice(0, i + 1)
-            .join('/');
+  albumId,
+}) => {
+  let link = dashboard.allSandboxes('/', activeTeam);
+  if (repos) link = dashboard.repos(activeTeam);
+  else if (albumId) link = dashboard.discover(activeTeam);
 
-          return (
-            <Link
-              key={p}
-              as={LinkBase}
-              to={
-                repos
-                  ? dashboard.repos(activeTeam)
-                  : dashboard.allSandboxes('/' + partPath, activeTeam)
-              }
-              variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
-            >
-              {p} {i < path.split('/').length - 1 && '/ '}
-            </Link>
-          );
-        })
-      : null}
-  </Text>
-);
+  let prefix = 'All Sandboxes';
+  if (repos) prefix = 'Repositories';
+  else if (albumId) prefix = 'Discover';
+
+  return (
+    <Text marginBottom={1} block weight="bold" size={5}>
+      <Link
+        to={link}
+        as={LinkBase}
+        variant={path && path.split('/').length ? 'muted' : 'body'}
+      >
+        {prefix} {path && ' / '}
+      </Link>
+      {path
+        ? path.split('/').map((p, i) => {
+            const partPath = path
+              .split('/')
+              .slice(0, i + 1)
+              .join('/');
+
+            return (
+              <Link
+                key={p}
+                as={LinkBase}
+                to={
+                  repos
+                    ? dashboard.repos(activeTeam)
+                    : dashboard.allSandboxes('/' + partPath, activeTeam)
+                }
+                variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
+              >
+                {p} {i < path.split('/').length - 1 && '/ '}
+              </Link>
+            );
+          })
+        : null}
+    </Text>
+  );
+};

@@ -11,6 +11,7 @@ import { Sandbox } from '@codesandbox/common/lib/types';
 import { useAppState, useActions } from 'app/overmind';
 import React, {
   ChangeEvent,
+  CSSProperties,
   FunctionComponent,
   KeyboardEvent,
   useEffect,
@@ -117,6 +118,11 @@ export const SandboxName: FunctionComponent = () => {
 
   const owned = hasPermission(currentSandbox.authorization, 'owner');
 
+  const disabledStyle: CSSProperties = {
+    opacity: updatingName ? 0 : 1,
+    pointerEvents: updatingName ? 'none' : 'auto',
+  };
+
   const SandboxNameElement = () => {
     if (updatingName && !git) {
       return (
@@ -159,8 +165,8 @@ export const SandboxName: FunctionComponent = () => {
   return (
     <Main style={fadeIn ? { opacity: 1 } : null}>
       <Stack align="center">
-        {!customTemplate && owned && !git && !updatingName && (
-          <Folder>
+        {!customTemplate && owned && !git && (
+          <Folder style={disabledStyle}>
             {isLoggedIn ? (
               <Button
                 variant="link"
@@ -187,8 +193,8 @@ export const SandboxName: FunctionComponent = () => {
 
         <SandboxNameElement />
 
-        {!updatingName && !git ? (
-          <Element as="span" marginLeft={owned ? 0 : 2}>
+        {!git ? (
+          <Element as="span" marginLeft={owned ? 0 : 2} style={disabledStyle}>
             <PrivacyTooltip />
           </Element>
         ) : null}

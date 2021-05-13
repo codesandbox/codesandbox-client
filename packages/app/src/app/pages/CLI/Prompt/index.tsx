@@ -21,7 +21,7 @@ export const Prompt: FunctionComponent = () => {
 
         <Buttons>
           <Button autoWidth href="/?from-app=1">
-            Go to homepage
+            Go to Homepage
           </Button>
         </Buttons>
       </Container>
