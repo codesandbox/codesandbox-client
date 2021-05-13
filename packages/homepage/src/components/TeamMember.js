@@ -19,6 +19,7 @@ import matan from '../assets/images/people/matan.png';
 import scott from '../assets/images/people/scott.png';
 import kate from '../assets/images/people/kate.jpg';
 import tamas from '../assets/images/people/tamas.png';
+import jasper from '../assets/images/people/jasper.jpg';
 
 const people = [
   {
@@ -128,6 +129,12 @@ const people = [
     pic: tamas,
     color: '#F7A239',
     team: 'Data',
+  },
+  {
+    name: 'Jasper De Moor',
+    pic: jasper,
+    color: '#F24E62',
+    team: 'Engineering',
   },
 ];
 
