@@ -29,10 +29,6 @@ const Careers = () => {
 
   const jobs = [
     {
-      title: 'Visual Designer',
-      url: 'https://codesandbox.recruitee.com/o/visual-designer',
-    },
-    {
       title: 'Head of Engineering',
       url: 'https://codesandbox.recruitee.com/o/head-of-engineering',
     },
