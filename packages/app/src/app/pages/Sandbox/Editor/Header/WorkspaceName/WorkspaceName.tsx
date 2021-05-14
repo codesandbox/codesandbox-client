@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import css from '@styled-system/css';
 
@@ -34,7 +36,12 @@ export const WorkspaceName: React.FC<{
   showBadge?: boolean;
 }> = ({ name, plan, showBadge = true }) => (
   <Stack gap={2} align="center">
-    <Text css={{ lineHeight: 1 }}>{name}</Text>
+    <RouterLink
+      to={dashboardUrl()}
+      css={{ lineHeight: 1, textDecoration: 'none', color: 'inherit' }}
+    >
+      <Text css={{ lineHeight: 1 }}>{name}</Text>
+    </RouterLink>
 
     {showBadge && (
       <div>
