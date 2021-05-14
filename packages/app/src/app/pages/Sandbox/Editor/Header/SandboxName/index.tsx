@@ -7,7 +7,7 @@ import { ESC } from '@codesandbox/common/lib/utils/keycodes';
 import { Button, Element, Stack, Text } from '@codesandbox/components';
 import { github as GitHubIcon } from '@codesandbox/components/lib/components/Icon/icons';
 import css from '@styled-system/css';
-import { Sandbox } from '@codesandbox/common/lib/types';
+import { GitInfo, Sandbox } from '@codesandbox/common/lib/types';
 import { useAppState, useActions } from 'app/overmind';
 import React, {
   ChangeEvent,
@@ -22,6 +22,68 @@ import { Link } from 'react-router-dom';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { PrivacyTooltip } from '../PrivacyTooltip';
 import { Folder, Form, Main, NameInput, TemplateBadge } from './elements';
+
+const SandboxNameElement: React.FC<{
+  git: GitInfo;
+  handleBlur: () => void;
+  handleInputUpdate: (e: ChangeEvent<HTMLInputElement>) => void;
+  handleKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void;
+  handleNameClick: () => void;
+  owned: boolean;
+  sandboxName: string;
+  submitNameChange: (event: ChangeEvent<HTMLFormElement>) => void;
+  updatingName: boolean;
+  value: string;
+}> = ({
+  git,
+  handleBlur,
+  handleInputUpdate,
+  handleKeyUp,
+  sandboxName,
+  submitNameChange,
+  updatingName,
+  value,
+  owned,
+  handleNameClick,
+}) => {
+  if (updatingName && !git) {
+    return (
+      <Form onSubmit={submitNameChange}>
+        <NameInput
+          autoFocus
+          ref={(el: HTMLInputElement) => {
+            if (el) {
+              el.focus();
+            }
+          }}
+          onBlur={handleBlur}
+          onChange={handleInputUpdate}
+          onKeyUp={handleKeyUp}
+          placeholder={name}
+          value={value}
+          arial-label="sandbox name"
+        />
+      </Form>
+    );
+  }
+
+  if (!git) {
+    return owned ? (
+      <Button
+        variant="link"
+        css={css({ fontSize: 3, width: 'auto', color: 'foreground' })}
+        arial-label="Change sandbox name"
+        onClick={handleNameClick}
+      >
+        {sandboxName}
+      </Button>
+    ) : (
+      <Text>{sandboxName}</Text>
+    );
+  }
+
+  return null;
+};
 
 const getFolderName = (sandbox: Sandbox) => {
   if (!sandbox) {
@@ -123,45 +185,6 @@ export const SandboxName: FunctionComponent = () => {
     pointerEvents: updatingName ? 'none' : 'auto',
   };
 
-  const SandboxNameElement = () => {
-    if (updatingName && !git) {
-      return (
-        <Form onSubmit={submitNameChange}>
-          <NameInput
-            autoFocus
-            ref={(el: HTMLInputElement) => {
-              if (el) {
-                el.focus();
-              }
-            }}
-            onBlur={handleBlur}
-            onChange={handleInputUpdate}
-            onKeyUp={handleKeyUp}
-            placeholder={name}
-            value={value}
-            arial-label="sandbox name"
-          />
-        </Form>
-      );
-    }
-
-    if (!git) {
-      return owned ? (
-        <Button
-          variant="link"
-          css={css({ fontSize: 3, width: 'auto', color: 'foreground' })}
-          arial-label="Change sandbox name"
-          onClick={handleNameClick}
-        >
-          {sandboxName}
-        </Button>
-      ) : (
-        <Text>{sandboxName}</Text>
-      );
-    }
-    return null;
-  };
-
   return (
     <Main style={fadeIn ? { opacity: 1 } : null}>
       <Stack align="center">
@@ -191,7 +214,18 @@ export const SandboxName: FunctionComponent = () => {
           </Folder>
         )}
 
-        <SandboxNameElement />
+        <SandboxNameElement
+          git={git}
+          handleBlur={handleBlur}
+          handleInputUpdate={handleInputUpdate}
+          handleKeyUp={handleKeyUp}
+          handleNameClick={handleNameClick}
+          owned={owned}
+          sandboxName={sandboxName}
+          submitNameChange={submitNameChange}
+          updatingName={updatingName}
+          value={value}
+        />
 
         {!git ? (
           <Element as="span" marginLeft={owned ? 0 : 2} style={disabledStyle}>
