@@ -75,3 +75,17 @@ it('Similarly named packages and pathnames', async () => {
 
   expect(mergedDependencies).toMatchSnapshot();
 });
+
+it('Should not remap sub-dependencies if they are already in a sub-folder', async () => {
+  const babelCorePkg = await getFixture('@babel/core', '7.6.4');
+  const babelPresetEnvPkg = await getFixture('@babel/preset-env', '7.6.3');
+  const babelStandalonePkg = await getFixture('@babel/standalone', '7.6.4');
+
+  const mergedDependencies = mergeDependencies([
+    babelCorePkg,
+    babelPresetEnvPkg,
+    babelStandalonePkg,
+  ]);
+
+  expect(mergedDependencies).toMatchSnapshot();
+});
