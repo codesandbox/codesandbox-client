@@ -1,5 +1,5 @@
 import { Button } from '@codesandbox/components';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
@@ -10,6 +10,12 @@ import { Buttons, Container } from './elements';
 
 export const Prompt: FunctionComponent = () => {
   const { authToken, error, isLoadingCLI, user } = useAppState();
+
+  const [deepLink, setDeepLink] = useState('');
+
+  useEffect(() => {
+    setDeepLink(`codesandbox://auth-completion/?nonce=${authToken}`);
+  }, [authToken]);
 
   if (error) {
     return (
@@ -58,8 +64,9 @@ export const Prompt: FunctionComponent = () => {
 
       <Buttons>
         <Button
+          as="a"
           autoWidth
-          href={`codesandbox://auth-completion/?nonce=${authToken}`}
+          href={deepLink}
           style={{ fontSize: 13, height: 40 }}
         >
           Open Client

@@ -84,7 +84,7 @@ const CLI = Loadable(() =>
 );
 
 const Client = Loadable(() =>
-  import(/* webpackChunkName: 'page-client */ './Client').then(module => ({
+  import(/* webpackChunkName: 'page-client' */ './Client').then(module => ({
     default: module.Client,
   }))
 );
