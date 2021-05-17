@@ -35,10 +35,6 @@ const VersionOne = ({
         description={info.description}
         title="Version One - CodeSandbox"
         image={socialCover}
-        meta={[
-          { name: 'robots', content: 'noindex' },
-          { name: 'googlebot', content: 'noindex' },
-        ]}
       />
       <Header>
         <img

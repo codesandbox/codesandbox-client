@@ -37,10 +37,6 @@ const TheCodeSandboxPodcast = ({
         description={info.description}
         title="The CodeSandbox Podcast - CodeSandbox"
         image={socialCover}
-        meta={[
-          { name: 'robots', content: 'noindex' },
-          { name: 'googlebot', content: 'noindex' },
-        ]}
       />
       <Header>
         <img
