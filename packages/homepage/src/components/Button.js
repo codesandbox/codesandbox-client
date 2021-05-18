@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 const styles = css`
   background: #5962df;
-  border-radius: 0.125rem;
+  border-radius: 0.25rem;
   border: none;
   font-family: ${props => props.theme.homepage.appleFont};
   font-size: 0.8125em;
