@@ -13,19 +13,22 @@ module.exports = function normalizeComponent(
   scopeId,
   moduleIdentifier /* server only */
 ) {
-  var esModule;
-  var scriptExports = (rawScriptExports = rawScriptExports || {});
+  let scriptExports = (rawScriptExports = rawScriptExports || {});
 
   // ES6 modules interop
-  var type = typeof rawScriptExports.default;
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports;
-    scriptExports = rawScriptExports.default;
-  }
+  //   let type = typeof rawScriptExports.default;
+  //   if (type === 'object' || type === 'function') {
+  //     let { default: defaultExport, ...otherExports } = rawScriptExports;
+  //     scriptExports = defaultExport;
+  //     Object.keys(otherExports).forEach(k => {
+  //       scriptExports[k] = otherExports[k];
+  //     });
+  //   }
 
   // Vue.extend constructor export interop
-  var options =
-    typeof scriptExports === 'function' ? scriptExports.options : scriptExports;
+  let defaultExport = scriptExports.default || scriptExports;
+  let options =
+    typeof defaultExport === 'function' ? defaultExport.options : defaultExport;
 
   // render functions
   if (compiledTemplate) {
@@ -44,10 +47,10 @@ module.exports = function normalizeComponent(
     options._scopeId = scopeId;
   }
 
-  var hook;
+  let hook;
   if (moduleIdentifier) {
     // server build
-    hook = function(context) {
+    hook = function (context) {
       // 2.3 injection
       context =
         context || // cached call
@@ -74,8 +77,8 @@ module.exports = function normalizeComponent(
   }
 
   if (hook) {
-    var functional = options.functional;
-    var existing = functional ? options.render : options.beforeCreate;
+    let functional = options.functional;
+    let existing = functional ? options.render : options.beforeCreate;
 
     if (!functional) {
       // inject component registration as beforeCreate hook
@@ -93,7 +96,6 @@ module.exports = function normalizeComponent(
   }
 
   return {
-    esModule: esModule,
     exports: scriptExports,
     options: options,
   };
