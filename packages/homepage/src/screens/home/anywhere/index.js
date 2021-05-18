@@ -67,7 +67,7 @@ const Anywhere = () => (
       <div
         css={`
           margin: 6rem 0 4rem 0;
-          min-width: 640px;
+
           max-height: 320px;
           max-width: 1024px;
           display: block;
@@ -77,12 +77,14 @@ const Anywhere = () => (
           css={`
             position: relative;
             margin: -14rem auto 0rem -10rem;
+
             @media (max-width: 992px) {
-              margin: 0 0 0 0;
+              margin: -10rem 0 0 0;
             }
 
-            @media (max-width: 1024px) {
-              margin: 0;
+            @media (max-width: 576px) {
+              margin: -8rem 0 0 0;
+              background: yellow;
             }
           `}
         >
