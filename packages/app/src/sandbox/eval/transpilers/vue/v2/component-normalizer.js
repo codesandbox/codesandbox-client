@@ -15,16 +15,6 @@ module.exports = function normalizeComponent(
 ) {
   let scriptExports = (rawScriptExports = rawScriptExports || {});
 
-  // ES6 modules interop
-  //   let type = typeof rawScriptExports.default;
-  //   if (type === 'object' || type === 'function') {
-  //     let { default: defaultExport, ...otherExports } = rawScriptExports;
-  //     scriptExports = defaultExport;
-  //     Object.keys(otherExports).forEach(k => {
-  //       scriptExports[k] = otherExports[k];
-  //     });
-  //   }
-
   // Vue.extend constructor export interop
   let defaultExport = scriptExports.default || scriptExports;
   let options =
