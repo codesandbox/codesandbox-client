@@ -75,3 +75,33 @@ it('Similarly named packages and pathnames', async () => {
 
   expect(mergedDependencies).toMatchSnapshot();
 });
+
+it('Should not remap sub-dependencies if they are already in a sub-folder', async () => {
+  const babelCorePkg = await getFixture('@babel/core', '7.6.4');
+  const babelPresetEnvPkg = await getFixture('@babel/preset-env', '7.6.3');
+  const babelStandalonePkg = await getFixture('@babel/standalone', '7.6.4');
+
+  const mergedDependencies = mergeDependencies([
+    babelCorePkg,
+    babelPresetEnvPkg,
+    babelStandalonePkg,
+  ]);
+
+  // Transient dependency
+  expect(
+    JSON.parse(
+      mergedDependencies.contents['/node_modules/semver/package.json'].content
+    ).version
+  ).toBe('5.7.1');
+
+  // Transient dep of transient dep... Yarn made this sub-folder so we just keep it...
+  expect(
+    JSON.parse(
+      mergedDependencies.contents[
+        '/node_modules/core-js-compat/node_modules/semver/package.json'
+      ].content
+    ).version
+  ).toBe('7.0.0');
+
+  expect(mergedDependencies).toMatchSnapshot();
+});
