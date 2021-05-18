@@ -3,13 +3,12 @@ import { getAbsoluteDependency } from '@codesandbox/common/lib/utils/dependencie
 import { ILambdaResponse } from '../merge-dependency';
 
 import delay from '../../utils/delay';
-import dependenciesToQuery from '../dependencies-to-query';
-
-type Dependencies = {
-  [dependency: string]: string;
-};
+import dependenciesToQuery, {
+  normalizeVersion,
+} from '../dependencies-to-query';
 
 const RETRY_COUNT = 60;
+const MAX_RETRY_DELAY = 10_000;
 const debug = _debug('cs:sandbox:packager');
 
 const VERSION = 2;
@@ -39,12 +38,16 @@ function callApi(url: string, method = 'GET') {
       if (!response.ok) {
         const error = new Error(response.statusText || '' + response.status);
 
-        const message = await response.json();
+        try {
+          // @ts-ignore
+          error.response = await response.text();
+        } catch (err) {
+          console.error(err);
+        }
 
         // @ts-ignore
-        error.response = message;
-        // @ts-ignore
         error.statusCode = response.status;
+
         throw error;
       }
 
@@ -59,33 +62,38 @@ function callApi(url: string, method = 'GET') {
  *
  * @param {string} query The dependencies to call
  */
-async function requestPackager(url: string, method = 'GET') {
-  let retries = 0;
-
+async function requestPackager(
+  url: string,
+  method: string = 'GET',
+  retries: number = 0
+): Promise<any> {
   // eslint-disable-next-line no-constant-condition
-  while (true) {
-    debug(`Trying to call packager for ${retries} time`);
-    try {
-      const manifest = await callApi(url, method); // eslint-disable-line no-await-in-loop
+  debug(`Trying to call packager for ${retries} time`);
 
-      return manifest;
-    } catch (e) {
-      if (e.response && e.statusCode !== 504) {
-        throw new Error(e.response.error);
-      }
-      // 403 status code means the bundler is still bundling
-      if (retries < RETRY_COUNT) {
-        retries += 1;
-        await delay(1000 * 2); // eslint-disable-line no-await-in-loop
-      } else {
-        throw e;
-      }
+  try {
+    const manifest = await callApi(url, method);
+    return manifest;
+  } catch (err) {
+    console.error({ err });
+
+    // If it's a 403 or network error, we retry the fetch
+    if (err.response && err.statusCode !== 403) {
+      throw new Error(err.response.error);
     }
-  }
-}
 
-function dependencyToPackagePath(name: string, version: string) {
-  return `v${VERSION}/packages/${name}/${version}.json`;
+    // 403 status code means the bundler is still bundling
+    if (retries < RETRY_COUNT) {
+      const msDelay = Math.min(
+        MAX_RETRY_DELAY,
+        1000 * retries + Math.round(Math.random() * 1000)
+      );
+      console.warn(`Retrying package fetch in ${msDelay}ms`);
+      await delay(msDelay);
+      return requestPackager(url, method, retries + 1);
+    }
+
+    throw err;
+  }
 }
 
 export async function getDependency(
@@ -103,16 +111,17 @@ export async function getDependency(
     /* Ignore this, not critical */
   }
 
-  const dependencyUrl = dependenciesToQuery({ [depName]: depVersion });
-  const bucketDependencyUrl = dependencyToPackagePath(depName, version);
-  const fullUrl = `${BUCKET_URL}/${bucketDependencyUrl}`;
+  const normalizedVersion = normalizeVersion(version);
+  const dependencyUrl = dependenciesToQuery({ [depName]: normalizedVersion });
+  const fullUrl = `${BUCKET_URL}/v${VERSION}/packages/${depName}/${normalizedVersion}.json`;
 
   try {
     const bucketManifest = await callApi(fullUrl);
     return bucketManifest;
   } catch (e) {
     // The dep has not been generated yet...
-    await requestPackager(`${PACKAGER_URL}/${dependencyUrl}`, 'POST');
+    const packagerRequestUrl = `${PACKAGER_URL}/${dependencyUrl}`;
+    await requestPackager(packagerRequestUrl, 'POST');
 
     return requestPackager(fullUrl);
   }
