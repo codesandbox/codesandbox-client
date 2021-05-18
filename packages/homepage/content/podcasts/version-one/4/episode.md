@@ -21,7 +21,6 @@ Webflow empowers designers worldwide to build professional, custom websites in a
 To get a sense of how Webflow came to be, you have to know about its CEO and co-founder Vlad Magdalin. In this episode of Version One, we talk with Vlad and learn how his life and early career as a designer helped influence the creation of this revolutionary platform.
 "
 ---
-
 Tune in to today’s episode of Version One, a podcast about the product development journey from the makers behind some of the web’s most talked about tools and resources with host, Maurice Cherry.
 
 Today’s guest is the co-founder and CEO of Webflow, a visual development platform that provides designers with the tools they need to create powerful web pages without needing to write code. Today’s guest is Vlad Magdalin. 
