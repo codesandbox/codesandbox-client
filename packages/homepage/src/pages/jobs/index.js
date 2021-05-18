@@ -27,12 +27,24 @@ import {
 const Careers = () => {
   const [team1, team2, team3, team4, team5, team6] = getRandomTeamMembers(6);
 
-  const jobs = [
-    {
-      title: 'Head of Engineering',
-      url: 'https://codesandbox.recruitee.com/o/head-of-engineering',
-    },
-  ];
+  const [jobs, setJobs] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch('https://codesandbox.recruitee.com/api/offers/')
+      .then(x => x.json())
+      .then(recruiteeJobs => {
+        setJobs(
+          recruiteeJobs.offers.map(job => ({
+            title: job.title,
+            url: job.careers_url,
+          }))
+        );
+      })
+      .catch(e => {
+        console.error('Could not fetch jobs.');
+        console.error(e);
+      });
+  }, []);
 
   return (
     <Layout>
