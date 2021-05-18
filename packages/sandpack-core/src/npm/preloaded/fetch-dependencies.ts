@@ -96,10 +96,6 @@ async function requestPackager(
   }
 }
 
-function dependencyToPackagePath(name: string, version: string) {
-  return `v${VERSION}/packages/${name}/${version}.json`;
-}
-
 export async function getDependency(
   depName: string,
   depVersion: string
@@ -117,11 +113,7 @@ export async function getDependency(
 
   const normalizedVersion = normalizeVersion(version);
   const dependencyUrl = dependenciesToQuery({ [depName]: normalizedVersion });
-  const bucketDependencyUrl = dependencyToPackagePath(
-    depName,
-    normalizedVersion
-  );
-  const fullUrl = `${BUCKET_URL}/${bucketDependencyUrl}`;
+  const fullUrl = `${BUCKET_URL}/v${VERSION}/packages/${depName}/${normalizedVersion}.json`;
 
   try {
     const bucketManifest = await callApi(fullUrl);
