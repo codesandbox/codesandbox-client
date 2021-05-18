@@ -27,7 +27,7 @@ import {
 const Careers = () => {
   const [team1, team2, team3, team4, team5, team6] = getRandomTeamMembers(6);
 
-  const [jobs, setJobs] = React.useState([]);
+  const [jobs, setJobs] = React.useState(undefined);
 
   React.useEffect(() => {
     fetch('https://codesandbox.recruitee.com/api/offers/')
@@ -54,7 +54,6 @@ const Careers = () => {
             description="Find out here about careers and working at CodeSandbox!"
             title="Careers - CodeSandbox"
           />
-
           <PageTitle>Join CodeSandbox</PageTitle>
           <HeroSection>
             <TitleDescription>
@@ -264,37 +263,53 @@ const Careers = () => {
             </TitleDescription>
           </div>
           <PageSubtitle>Open Positions</PageSubtitle>
-          <Jobs>
-            {jobs.map(({ title, url }) => (
-              <a
-                href={url}
-                key={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                css={`
-                  text-decoration: none;
-                `}
-              >
-                <Job>
-                  <span
-                    css={`
-                      font-weight: bold;
-                    `}
-                  >
-                    {title}
-                  </span>
+          {jobs != null && (
+            <div>
+              {jobs.length === 0 ? (
+                <TitleDescription
+                  css={`
+                    width: 640px;
+                    max-width: 80%;
+                  `}
+                >
+                  There are no positions open right now, but please feel free to
+                  still apply <a href="mailto:careers@codesandbox.io">here</a>!
+                </TitleDescription>
+              ) : (
+                <Jobs>
+                  {jobs.map(({ title, url }) => (
+                    <a
+                      href={url}
+                      key={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      css={`
+                        text-decoration: none;
+                      `}
+                    >
+                      <Job>
+                        <span
+                          css={`
+                            font-weight: bold;
+                          `}
+                        >
+                          {title}
+                        </span>
 
-                  <span
-                    css={`
-                      color: #757575;
-                    `}
-                  >
-                    Remote
-                  </span>
-                </Job>
-              </a>
-            ))}
-          </Jobs>
+                        <span
+                          css={`
+                            color: #757575;
+                          `}
+                        >
+                          Remote
+                        </span>
+                      </Job>
+                    </a>
+                  ))}
+                </Jobs>
+              )}
+            </div>
+          )}
         </PageContainer>
       </ThemeProvider>
     </Layout>
