@@ -91,14 +91,19 @@ function replacePaths(
 }
 
 function replaceDependencyInfo(
-  r: ILambdaResponse,
+  res: ILambdaResponse,
   depDepName: string,
   newDepDep: IDepDepInfo
-) {
-  if (
-    process.env.NODE_ENV === 'development' ||
-    process.env.NODE_ENV === 'test'
-  ) {
+): boolean {
+  // Don't change anything if the module is already part of a sub-folder
+  // in this case pkg.json won't contain the requested version...
+  const pkgJSONPath = `/node_modules/${depDepName}/package.json`;
+  const parsedPkgJson = JSON.parse(res.contents[pkgJSONPath].content);
+  if (parsedPkgJson.version !== newDepDep.resolved) {
+    return false;
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line
     console.log(
       'Resolving conflict for ' +
@@ -108,30 +113,32 @@ function replaceDependencyInfo(
     );
   }
 
+  // Remap dependency
   const newPath = `${depDepName}/${newDepDep.resolved}`;
-
   replacePaths(
-    r.contents,
+    res.contents,
     `/node_modules/${depDepName}`,
     `/node_modules/${newPath}`
   );
 
-  r.dependencyDependencies[newPath] = r.dependencyDependencies[depDepName];
-  delete r.dependencyDependencies[depDepName];
+  res.dependencyDependencies[newPath] = res.dependencyDependencies[depDepName];
+  delete res.dependencyDependencies[depDepName];
 
   // eslint-disable-next-line
-  for (const n of Object.keys(r.dependencyDependencies)) {
-    r.dependencyDependencies[n].parents = r.dependencyDependencies[
+  for (const n of Object.keys(res.dependencyDependencies)) {
+    res.dependencyDependencies[n].parents = res.dependencyDependencies[
       n
     ].parents.map(p => (p === depDepName ? newPath : p));
   }
 
-  r.dependencyAliases = r.dependencyAliases || {};
+  res.dependencyAliases = res.dependencyAliases || {};
   newDepDep.parents.forEach(p => {
-    r.dependencyAliases[p] = r.dependencyAliases[p] || {};
-    r.dependencyAliases[p][depDepName] = newPath;
+    res.dependencyAliases[p] = res.dependencyAliases[p] || {};
+    res.dependencyAliases[p][depDepName] = newPath;
   });
-  replacePaths(r.dependencyAliases, depDepName, newPath);
+  replacePaths(res.dependencyAliases, depDepName, newPath);
+
+  return true;
 }
 
 const intersects = (v1: string, v2: string) => {
@@ -171,10 +178,10 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
           if (!intersects(rootDependency.version, newDepDep.semver)) {
             // If a root dependency is in conflict with a child dependency, we always
             // go for the root dependency
-            replaceDependencyInfo(r, depDepName, newDepDep);
-
-            // Start from the beginning, to make sure everything is correct
-            i = -1;
+            if (replaceDependencyInfo(r, depDepName, newDepDep)) {
+              // Start from the beginning, to make sure everything is correct
+              i = -1;
+            }
           } else {
             // Remove the contents so we don't overwrite the root version's content
             const pathPrefix = `/node_modules/${depDepName}/`;
@@ -210,9 +217,7 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
             ...exDepDep.parents,
             ...newDepDep.parents,
           ]);
-        } else {
-          replaceDependencyInfo(r, depDepName, newDepDep);
-
+        } else if (replaceDependencyInfo(r, depDepName, newDepDep)) {
           // Start from the beginning, to make sure everything is correct
           i = -1;
         }
