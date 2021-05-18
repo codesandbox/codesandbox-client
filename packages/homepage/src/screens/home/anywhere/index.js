@@ -15,7 +15,11 @@ const Anywhere = () => (
       text-align: center;
       @media screen and (max-width: 992px) {
         margin-bottom: 4rem;
-        padding: 0 0 15rem 0;
+        padding: 0 0 10rem 0;
+      }
+
+      @media (max-width: 576px) {
+        padding: 0 0 0 0;
       }
     `}
   >
@@ -79,12 +83,11 @@ const Anywhere = () => (
             margin: -14rem auto 0rem -10rem;
 
             @media (max-width: 992px) {
-              margin: -10rem 0 0 0;
+              margin: -8rem 0 0 0;
             }
 
             @media (max-width: 576px) {
-              margin: -8rem 0 0 0;
-              background: yellow;
+              margin: -4rem 0 0 0;
             }
           `}
         >
@@ -102,7 +105,7 @@ const Anywhere = () => (
               background: #040404;
               transform: scale(0.5, 0.5);
 
-              @media (max-width: 1200px) {
+              @media (max-width: 1300px) {
                 display: none;
               }
             `}
@@ -123,7 +126,7 @@ const Anywhere = () => (
               max-width: 340px;
               max-height: 480px;
 
-              @media (max-width: 1024px) {
+              @media (max-width: 1023px) {
                 display: none;
               }
 
