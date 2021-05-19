@@ -16,7 +16,10 @@ export const Container = styled(Stack)`
     bottom: ${bottomOffset}px;
     left: 0;
     padding: ${theme.space[2]}px;
-    border-right: 1px solid ${theme.colors.activityBar.border};
+    border-right: 1px solid
+      ${theme.colors.activityBar.border ||
+      theme.colors.titleBar.border ||
+      'transparent'};
     height: 100%;
     color: ${theme.colors.mutedForeground};
     font-size: 1.4rem;
@@ -50,15 +53,15 @@ export const IconContainer = styled(Stack)<{
     }
 
     ${props.selected &&
-      css`
-        color: ${props.theme.colors.activityBar.selectedForeground};
-      `};
+    css`
+      color: ${props.theme.colors.activityBar.selectedForeground};
+    `};
 
     ${props.isDisabled &&
-      !props.selected &&
-      css`
-        opacity: 0.4;
-      `}
+    !props.selected &&
+    css`
+      opacity: 0.4;
+    `}
   `
 );
 

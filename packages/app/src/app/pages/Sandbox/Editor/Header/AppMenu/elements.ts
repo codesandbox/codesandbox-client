@@ -58,7 +58,7 @@ const MenuHandler = styled.button`
   height: ${({ theme }) => theme.sizes[7]}px;
   display: flex;
 
-  color: ${({ theme }) => theme.colors.grays['300']};
+  color: ${({ theme }) => theme.colors.activityBar.inactiveForeground};
   cursor: pointer;
   border-radius: ${({ theme }) => theme.radii.small}px;
   border: 1px solid transparent;
@@ -75,7 +75,8 @@ const MenuHandler = styled.button`
   &:hover,
   &[aria-expanded='true'] {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.grays['500']};
+    color: ${({ theme }) => theme.colors.menuList.foreground};
+    border-color: ${({ theme }) => theme.colors.menuList.foreground}20;
   }
 `;
 
