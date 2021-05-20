@@ -18329,18 +18329,18 @@ isomorphic-unfetch@^2.0.0:
     node-fetch "^2.1.2"
     unfetch "^3.1.0"
 
-isomorphic-untar-gzip@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/isomorphic-untar-gzip/-/isomorphic-untar-gzip-1.0.3.tgz#596880756ddaaa2c0b89d2e775f2826f0128b2c7"
-  integrity sha512-cUwqXS48CFka37DYaTP3LujPm79Tk/Ju0jZy2vBIlKsGoxt0NBTov3ENaemFasZlJg49XG9KvvHx2CGhM0Ih+Q==
+isomorphic-untar-gzip@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/isomorphic-untar-gzip/-/isomorphic-untar-gzip-1.0.5.tgz#389e2eaf3436a2989eafbdf45fd3a77eea6fc3bd"
+  integrity sha512-SfrYLkMkBHziUOm3aZQiuVO/b3kOWtgfDSC2jvLTmQbWXMha8rF/8ny+4hLq2WQBOhqDbC3AjUD6MYh6Jc52VA==
   dependencies:
     gzip-js "^0.3.2"
-    isomorphic-untar "^1.0.0"
+    isomorphic-untar "^1.0.3"
 
-isomorphic-untar@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/isomorphic-untar/-/isomorphic-untar-1.0.2.tgz#74cb3fde59a34709b39a51ee3981b59648ffcb04"
-  integrity sha512-O1bFqawW7A4FlTP8FtYr7g4PNa3dFwLjld3nZd6cYnPpjrO+YWmeU+Y0DSJogTfU3LPWBqMD8tGWah/5js/dBA==
+isomorphic-untar@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/isomorphic-untar/-/isomorphic-untar-1.0.3.tgz#dcb0ee66042627cfa119e4a9de5c395b9c0e4ff9"
+  integrity sha512-45OUQShN91fOtpKhs7gsKv/2pbVXEuTigWyHtjFh3HClryhfjrWg8eM8rMeCxTzN5t++/2THZUV1iDoD2UsQhg==
   dependencies:
     js-untar "^2.0.0"
     tar-stream "^2.2.0"
