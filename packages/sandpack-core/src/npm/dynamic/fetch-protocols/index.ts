@@ -2,8 +2,8 @@ import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
 import { CsbFetcher } from './csb';
 import { UnpkgFetcher } from './unpkg';
 import { JSDelivrNPMFetcher } from './jsdelivr/jsdelivr-npm';
-import { JSDelivrGHFetcher } from './jsdelivr/jsdelivr-gh';
-import { TarFetcher } from './tar';
+import { isGithubDependency, JSDelivrGHFetcher } from './jsdelivr/jsdelivr-gh';
+import { isTarDependency, TarFetcher } from './tar';
 import { GistFetcher } from './gist';
 import { FetchProtocol } from '../fetch-npm-module';
 
@@ -24,13 +24,12 @@ const protocols: ProtocolDefinition[] = [
     condition: (name, version) => CSB_PKG_PROTOCOL.test(version),
   },
   {
-    protocol: new TarFetcher(),
-    condition: (name, version) =>
-      version.includes('http') && !version.includes('github.com'),
+    protocol: new JSDelivrGHFetcher(),
+    condition: (name, version) => isGithubDependency(version),
   },
   {
-    protocol: new JSDelivrGHFetcher(),
-    condition: (name, version) => /\//.test(version),
+    protocol: new TarFetcher(),
+    condition: (name, version) => isTarDependency(version),
   },
   {
     protocol: preloadedProtocols.unpkg,
