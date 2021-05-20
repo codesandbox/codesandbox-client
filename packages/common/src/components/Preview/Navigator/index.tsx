@@ -86,7 +86,7 @@ function Navigator({
             color:
               isPreviewCommentModeActive && !isScreenshotLoading
                 ? '#FF3B30'
-                : '#757575',
+                : 'currentColor',
           }}
         >
           <Tooltip
