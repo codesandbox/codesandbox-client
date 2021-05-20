@@ -32,7 +32,11 @@ export default function (loaderContext, files) {
         if (!file) {
           const matches = PKG_IMPORT_RE.match(importName[0]);
           if (matches && matches[1]) {
-            return this.loadFile(matches[1], dirname, ...args);
+            return this.loadFile(
+              `/node_modules/${matches[1]}`,
+              dirname,
+              ...args
+            );
           }
 
           throw new Error(`${filepath} not found`);
