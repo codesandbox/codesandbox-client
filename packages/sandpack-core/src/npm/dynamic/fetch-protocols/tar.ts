@@ -1,6 +1,17 @@
 import { FetchProtocol, Meta } from '../fetch-npm-module';
 import { TarStore } from './utils/tar-store';
 
+export function isTarDependency(uri: string) {
+  try {
+    const url = new URL(uri);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch (err) {
+    // do nothing...
+  }
+
+  return false;
+}
+
 export class TarFetcher implements FetchProtocol {
   private tarStore = new TarStore();
 
