@@ -90,6 +90,9 @@ from File > Preferences > Settings in the editor.
   updated this way.
 - Container sandboxes sleep after around 10 minutes and can be woken by opening
   the sandbox or preview in a web browser.
+- Container sandboxes have a 1GB persistent storage limit, a 1GB vCPU soft limit,
+  and a hard memory limit of 2GB.
+
 
 ## I'm getting a 'Request Entity too Large' error, what should I do?
 
