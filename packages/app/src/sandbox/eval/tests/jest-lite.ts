@@ -342,21 +342,25 @@ export default class TestRunner {
       if (this.manager.preset.name === react.name) {
         try {
           testModules = [
-            this.manager.resolveModule('./src/setupTests.js', '/'),
+            await this.manager.resolveModuleAsync('./src/setupTests.js', '/'),
           ];
         } catch (e) {
           testModules = [
-            this.manager.resolveModule('./src/setupTests.ts', '/'),
+            await this.manager.resolveModuleAsync('./src/setupTests.ts', '/'),
           ];
         }
       } else if (this.manager.preset.name === reactTs.name) {
-        testModules = [this.manager.resolveModule('./src/setupTests.ts', '/')];
+        testModules = [
+          await this.manager.resolveModuleAsync('./src/setupTests.ts', '/'),
+        ];
       } else if (this.manager.configurations.package) {
         const { parsed } = this.manager.configurations.package;
 
         if (parsed && parsed.jest && parsed.jest.setupFilesAfterEnv) {
-          testModules = parsed.jest.setupFilesAfterEnv.map(
-            (setupPath: string) => this.manager.resolveModule(setupPath, '/')
+          testModules = await Promise.all(
+            parsed.jest.setupFilesAfterEnv.map((setupPath: string) =>
+              this.manager.resolveModuleAsync(setupPath, '/')
+            )
           );
         }
       }

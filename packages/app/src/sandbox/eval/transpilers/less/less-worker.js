@@ -17,9 +17,7 @@ self.window.document = {
   head: { appendChild: () => {}, removeChild: () => {} },
 };
 
-self.importScripts(
-  `${process.env.CODESANDBOX_HOST || ''}/static/js/less.min.js`
-);
+self.importScripts('https://cdn.jsdelivr.net/npm/less@4.1.1/dist/less.min.js');
 
 self.postMessage('ready');
 
@@ -40,14 +38,15 @@ self.addEventListener('message', async event => {
       },
     };
 
-    const filename = path.split('/').pop();
-
     // Remove the linebreaks at the beginning of the file, it confuses less.
     const cleanCode = code.replace(/^\n$/gm, '');
 
     // register a custom importer callback
     less
-      .render(cleanCode, { filename, plugins: [FileManager(context, files)] })
+      .render(cleanCode, {
+        filename: path,
+        plugins: [FileManager(context, files)],
+      })
       .then(({ css }) => {
         self.postMessage({
           type: 'result',

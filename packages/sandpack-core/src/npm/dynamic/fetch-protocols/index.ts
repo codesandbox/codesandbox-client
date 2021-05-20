@@ -2,7 +2,7 @@ import { CSB_PKG_PROTOCOL } from '@codesandbox/common/lib/utils/ci';
 import { CsbFetcher } from './csb';
 import { UnpkgFetcher } from './unpkg';
 import { JSDelivrNPMFetcher } from './jsdelivr/jsdelivr-npm';
-import { JSDelivrGHFetcher } from './jsdelivr/jsdelivr-gh';
+import { isGithubDependency, JSDelivrGHFetcher } from './jsdelivr/jsdelivr-gh';
 import { TarFetcher } from './tar';
 import { GistFetcher } from './gist';
 import { FetchProtocol } from '../fetch-npm-module';
@@ -30,7 +30,7 @@ const protocols: ProtocolDefinition[] = [
   },
   {
     protocol: new JSDelivrGHFetcher(),
-    condition: (name, version) => /\//.test(version),
+    condition: (name, version) => isGithubDependency(version),
   },
   {
     protocol: preloadedProtocols.unpkg,
