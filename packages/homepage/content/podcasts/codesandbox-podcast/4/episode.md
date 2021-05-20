@@ -3,7 +3,7 @@ podcastName: The CodeSandbox Podcast
 title: Learning with Kent C. Dodds
 airDate: May 20, 2021
 episodeNumber: 4
-audio: https://player.resonaterecordings.com/embed?uuid=d2f1e3e9-d60f-41cc-b1b7-38a8253c6ca4&accentColor=13,180,206&backgroundColor=242,242,242
+audio: https://player.resonaterecordings.com/embed?uuid=082514b7-9718-464e-8393-bb9d8c1152fb&accentColor=13,180,206&backgroundColor=242,242,242
 slug: Learning
 
 socialImage: ./images/cover.png
