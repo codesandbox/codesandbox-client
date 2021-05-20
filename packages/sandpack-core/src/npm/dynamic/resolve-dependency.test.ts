@@ -6,7 +6,7 @@ window.fetch = fetch;
 // eslint-disable-next-line import/first
 import { resolveDependencyInfo } from './resolve-dependency';
 
-describe('resolve-dependency', () => {
+describe.skip('resolve-dependency', () => {
   jest.mock('./fetch-protocols/tar', () => ({
     TarFetcher: class A {},
   }));
