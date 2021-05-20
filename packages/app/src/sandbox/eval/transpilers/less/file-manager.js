@@ -22,6 +22,8 @@ export default function (loaderContext, files) {
       ) {
         // eslint-disable-next-line no-param-reassign
         importName = importName.replace('file://', '');
+        // eslint-disable-next-line no-param-reassign
+        dirname = dirname || '/';
 
         let filepath = importName;
         if (importName[0] !== '/') {
