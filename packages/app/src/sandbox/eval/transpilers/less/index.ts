@@ -21,8 +21,7 @@ class LessTranspiler extends WorkerTranspiler {
   ): Promise<TranspilerResult> {
     return new Promise((resolve, reject) => {
       const modules = loaderContext.getModules();
-
-      const lessModules = modules.filter(m => /\.[css|less]$/.test(m.path));
+      const lessModules = modules.filter(m => /.*\.(css|less)$/.test(m.path));
       const files = lessModules.reduce(
         (interMediateFiles, module) => ({
           ...interMediateFiles,
