@@ -2,10 +2,11 @@ import fetch from 'fetch-vcr';
 
 // @ts-ignore
 window.fetch = fetch;
-describe('resolve-dependency', () => {
-  const resolveDependencyInfo: typeof import('./resolve-dependency').resolveDependencyInfo = require('./resolve-dependency')
-    .resolveDependencyInfo;
 
+// eslint-disable-next-line import/first
+import { resolveDependencyInfo } from './resolve-dependency';
+
+describe('resolve-dependency', () => {
   jest.mock('./fetch-protocols/tar', () => ({
     TarFetcher: class A {},
   }));
