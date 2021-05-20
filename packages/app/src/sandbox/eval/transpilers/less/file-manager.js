@@ -1,5 +1,7 @@
 import path from 'path';
 
+const PKG_IMPORT_RE = /^~?([@A-Za-z].*)/;
+
 /* eslint-disable no-unused-vars */
 /* eslint-disable func-names */
 export default function (loaderContext, files) {
@@ -13,35 +15,35 @@ export default function (loaderContext, files) {
         return true;
       };
 
-      CSBFileManager.prototype.resolve = function (importName, ...args) {
-        console.log({ args, files, importName });
-        return new Promise((resolve, reject) => {
-          try {
-            // let dirname = loaderContext.
-            // let fullFilePath = importName;
-            // if (importName[0] !== '/') {
-            //     resolve(path.join())
-            // }
+      CSBFileManager.prototype.loadFile = async function (
+        importName,
+        dirname,
+        ...args
+      ) {
+        // eslint-disable-next-line no-param-reassign
+        importName = importName.replace('file://', '');
 
-            const file = files[importName];
-            if (!file) {
-              throw new Error(`${importName} not found`);
-            }
+        let filepath = importName;
+        if (importName[0] !== '/') {
+          filepath = path.join(dirname, importName);
+        }
 
-            loaderContext.addDependency(importName);
-            resolve(file);
-          } catch (e) {
-            reject(e);
+        const file = files[filepath];
+        if (!file) {
+          const matches = PKG_IMPORT_RE.match(importName[0]);
+          if (matches && matches[1]) {
+            return this.loadFile(matches[1], dirname, ...args);
           }
-        });
-      };
 
-      CSBFileManager.prototype.loadFile = function (filename, ...args) {
-        console.log(args);
-        return this.resolve(...args).then(code => ({
-          contents: code,
-          filename,
-        }));
+          throw new Error(`${filepath} not found`);
+        }
+
+        loaderContext.addDependency(filepath);
+
+        return {
+          contents: file,
+          filename: filepath,
+        };
       };
 
       pluginManager.addFileManager(new CSBFileManager());
