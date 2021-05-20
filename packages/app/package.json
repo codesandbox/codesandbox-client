@@ -327,7 +327,7 @@
     "jest-image-snapshot": "^1.0.1",
     "jest-junit": "^3.4.1",
     "jest-styled-components": "7.0.2",
-    "isomorphic-untar-gzip": "^1.0.3",
+    "isomorphic-untar-gzip": "^1.0.5",
     "mini-css-extract-plugin": "^0.8.0",
     "object-assign": "^4.1.1",
     "opn": "4.0.2",
