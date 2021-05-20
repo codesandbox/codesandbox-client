@@ -55,6 +55,7 @@ export const DevAuthPage = withTheme(({ theme }) => {
         css={css({
           width: '100vw',
           height: '100vh',
+          padding: 4,
           backgroundColor: 'sideBar.background',
           fontFamily: 'Inter',
           color: 'white',
@@ -86,7 +87,7 @@ export const DevAuthPage = withTheme(({ theme }) => {
         </Text>
         <Stack justify="center" marginTop={4}>
           <Input
-            style={{ width: 600, height: 26 }}
+            style={{ width: 600, height: 26, fontSize: 16 }}
             placeholder="Auth Code"
             value={authCode}
             onChange={e => {

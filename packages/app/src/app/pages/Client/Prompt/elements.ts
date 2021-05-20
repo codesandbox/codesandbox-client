@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  min-height: calc(100vh - 48px);
+  min-height: 100vh;
   width: 100%;
-  padding-top: 10%;
+  padding-top: 3vh;
   text-align: center;
   box-sizing: border-box;
 `;
