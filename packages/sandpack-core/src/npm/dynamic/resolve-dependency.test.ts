@@ -4,22 +4,21 @@ import fetch from 'fetch-vcr';
 window.fetch = fetch;
 
 // eslint-disable-next-line import/first
-import { resolveDependencyInfo } from './resolve-dependency';
+// import { resolveDependencyInfo } from './resolve-dependency';
 
 describe.skip('resolve-dependency', () => {
-  jest.mock('./fetch-protocols/tar', () => ({
-    TarFetcher: class A {},
-  }));
+  //   jest.mock('./fetch-protocols/tar', () => ({
+  //     TarFetcher: class A {},
+  //   }));
 
   it('marks the original dependency requester as parent on subdependencies', async () => {
-    const result = await resolveDependencyInfo(
-      'antd',
-      'https://pkg.csb.dev/ant-design/ant-design/commit/ad3a0ecb/antd',
-      []
-    );
-
-    expect(result.dependencyDependencies['@babel/runtime'].parents).toContain(
-      'antd'
-    );
+    // const result = await resolveDependencyInfo(
+    //   'antd',
+    //   'https://pkg.csb.dev/ant-design/ant-design/commit/ad3a0ecb/antd',
+    //   []
+    // );
+    // expect(result.dependencyDependencies['@babel/runtime'].parents).toContain(
+    //   'antd'
+    // );
   });
 });
