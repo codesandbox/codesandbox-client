@@ -834,11 +834,6 @@ self.addEventListener('message', async event => {
         })
     );
 
-    console.log({
-      rawBabelConfig: customConfig,
-      babelConfig: normalizeV7Config(customConfig),
-    });
-
     if (type === 'warmup') {
       Babel.transform(code, normalizeV7Config(customConfig));
       return;
