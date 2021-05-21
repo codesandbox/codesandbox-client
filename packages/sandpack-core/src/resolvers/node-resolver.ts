@@ -364,7 +364,7 @@ export class NodeResolver extends Resolver {
         return {
           filepath: module.filePath,
           code: module.code,
-          isDependency: true,
+          isDependency: module.filePath.startsWith('/node_modules'),
         };
       }
 
@@ -378,7 +378,7 @@ export class NodeResolver extends Resolver {
     if (resolved) {
       return {
         filepath: resolved.path,
-        isDependency: false,
+        isDependency: resolved.path.startsWith('/node_modules'),
       };
     }
 
