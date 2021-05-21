@@ -7,9 +7,10 @@ it('Normalize version', () => {
   expect(normalizeVersion('1.2.4')).toBe('1.2.4');
   expect(normalizeVersion('>=12.56.87-beta')).toBe('12.56.87-beta');
   expect(normalizeVersion('>=1.0.12-beta.5.4')).toBe('1.0.12-beta.5.4');
+  expect(normalizeVersion('>=1.0.0-beta-15')).toBe('1.0.0-beta-15');
 });
 
-it('creates a right query', () => {
+it('creates the right query', () => {
   const packages = {
     react: 'latest',
     'react-dom': '15.5.3',

@@ -1,6 +1,6 @@
 import { NPMDependencies } from '.';
 
-const VERSION_RE = /(\d+)(\.\d+)?(\.\d+)?(-[^\s+-]+)?/;
+const VERSION_RE = /(\d+)(\.\d+)?(\.\d+)?(-[^\s+]+)?/;
 
 export function normalizeVersion(version: string): string {
   const matches = version.match(VERSION_RE);
