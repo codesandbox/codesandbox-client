@@ -5,6 +5,8 @@
 /* eslint-disable no-param-reassign */
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import { PackageJSON } from '@codesandbox/common/lib/types';
+import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
+import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
 import { Resolver, IResolveOpts, IResolverResult } from './resolver';
 import { DEFAULT_EXTENSIONS } from '../utils/extensions';
@@ -311,7 +313,11 @@ export class NodeResolver extends Resolver {
       }));
 
     if (!resolvedFile) {
-      throw new Error(`Cannot load file '${filename}' in '${parentdir}'.`);
+      throw new ModuleNotFoundError(
+        filename,
+        filename.startsWith('/node_modules/'),
+        parentdir
+      );
     }
 
     return resolvedFile;
@@ -358,7 +364,29 @@ export class NodeResolver extends Resolver {
 
     let resolved;
     if (module.moduleDir) {
-      resolved = await this.loadNodeModules(module, extensions);
+      let thrownError = null;
+      try {
+        resolved = await this.loadNodeModules(module, extensions);
+      } catch (err) {
+        thrownError = err;
+      }
+
+      if (!resolved) {
+        let hasNodeModule = false;
+        try {
+          hasNodeModule = await this.fs.isFile(
+            pathUtils.join(module.moduleDir, 'package.json')
+          );
+        } catch (err) {
+          // do nothing...
+        }
+
+        if (!hasNodeModule) {
+          throw new DependencyNotFoundError(module.moduleName, filename);
+        } else if (thrownError) {
+          throw thrownError;
+        }
+      }
     } else if (module.filePath) {
       if (module.code != null) {
         return {

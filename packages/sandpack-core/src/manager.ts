@@ -760,6 +760,11 @@ export default class Manager implements IEvaluator {
     currentPath: string,
     defaultExtensions = ['js', 'jsx', 'json', 'mjs']
   ): Promise<Module> {
+    // No resolving required, it's an absolute path and module already exists
+    if (this.transpiledModules[path]?.module) {
+      return this.transpiledModules[path]?.module;
+    }
+
     const dirredPath = pathUtils.dirname(currentPath);
     if (!this.cachedPaths[dirredPath]) {
       this.cachedPaths[dirredPath] = {};
