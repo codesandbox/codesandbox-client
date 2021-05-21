@@ -7,9 +7,14 @@ import {
   ThemeProvider,
   Element,
   Text,
-  Stack,
 } from '@codesandbox/components';
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
+
+import { SubTitle } from 'app/components/SubTitle';
+import { Title } from 'app/components/Title';
+import { Container } from './elements';
+
+import Logo from '../../logo.svg';
 
 export const DevAuthPage = withTheme(({ theme }) => {
   const [authCode, setAuthCode] = React.useState('');
@@ -54,52 +59,69 @@ export const DevAuthPage = withTheme(({ theme }) => {
       <Element
         css={css({
           width: '100vw',
-          height: '100vh',
-          padding: 4,
+          overflow: 'hidden',
           backgroundColor: 'sideBar.background',
-          fontFamily: 'Inter',
-          color: 'white',
         })}
       >
-        <Text size={8} align="center" block marginY={4}>
-          Developer Sign In
-        </Text>
-        <Text
-          size={4}
-          block
-          align="center"
-          css={css({ maxWidth: 800, margin: ' auto' })}
+        <Element
+          css={css({
+            height: '100%',
+            width: '100%',
+            padding: '0 1em',
+            boxSizing: 'border-box',
+          })}
         >
-          Please enter the token you get from{' '}
-          <a
-            href={cliLoginUrl}
-            target="popup"
-            rel="noreferrer noopener"
-            onClick={e => {
-              e.preventDefault();
-              window.open(cliLoginUrl, 'popup', 'width=600,height=600');
-              return false;
-            }}
-          >
-            here
-          </a>
-          . This token will sign you in with your account from codesandbox.io.
-        </Text>
-        <Stack justify="center" marginTop={4}>
-          <Input
-            style={{ width: 600, height: 26, fontSize: 16 }}
-            placeholder="Auth Code"
-            value={authCode}
-            onChange={e => {
-              setAuthCode(e.target.value);
-            }}
-          />
-          <Button autoWidth onClick={getJWTToken}>
-            Submit
-          </Button>
-        </Stack>
+          <Container>
+            <img
+              src={Logo}
+              width="32"
+              alt="CodeSandbox Logo"
+              style={{ paddingBottom: 32 }}
+            />
 
-        {error && <Text style={{ marginTop: '1rem' }}>Error: {error}</Text>}
+            <Title>Developer Sign In</Title>
+            <SubTitle style={{ paddingBottom: 16 }}>
+              Please enter the token you get from{' '}
+              <a
+                href={cliLoginUrl}
+                target="popup"
+                rel="noreferrer noopener"
+                onClick={e => {
+                  e.preventDefault();
+                  window.open(cliLoginUrl, 'popup', 'width=600,height=600');
+                  return false;
+                }}
+              >
+                here
+              </a>
+              . This token will sign you in with your account from
+              codesandbox.io.
+            </SubTitle>
+
+            <Input
+              style={{ width: '100%', height: 42, fontSize: 16 }}
+              placeholder="Auth Code"
+              value={authCode}
+              onChange={e => {
+                setAuthCode(e.target.value);
+              }}
+            />
+            <Button
+              onClick={getJWTToken}
+              style={{
+                fontSize: 16,
+                height: 40,
+                width: '100px',
+                marginTop: '1rem',
+                display: 'block',
+              }}
+            >
+              Submit
+            </Button>
+
+            {error && <Text style={{ marginTop: '2rem' }}>Error: {error}</Text>}
+          </Container>
+        </Element>
       </Element>
     </ThemeProvider>
   );

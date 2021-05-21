@@ -7,6 +7,7 @@ import { useAppState } from 'app/overmind';
 
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { Buttons, Container } from './elements';
+import Logo from '../../../logo.svg';
 
 export const Prompt: FunctionComponent = () => {
   const { authToken, error, isLoadingCLI, user } = useAppState();
@@ -20,12 +21,27 @@ export const Prompt: FunctionComponent = () => {
   if (error) {
     return (
       <Container>
-        <Title>An error occured:</Title>
+        <img
+          src={Logo}
+          width="32"
+          alt="CodeSandbox Logo"
+          style={{ paddingBottom: 32 }}
+        />
 
+        <Title>An error occured:</Title>
         <SubTitle>{error}</SubTitle>
 
         <Buttons>
-          <Button autoWidth href="/?from-app=1">
+          <Button
+            autoWidth
+            href="/?from-app=1"
+            style={{
+              fontSize: 16,
+              height: 40,
+              width: '100%',
+              marginTop: '1rem',
+            }}
+          >
             Go to homepage
           </Button>
         </Buttons>
@@ -36,7 +52,16 @@ export const Prompt: FunctionComponent = () => {
   if (!user?.username) {
     return (
       <Container>
-        <Title>Welcome to CodeSandbox!</Title>
+        <img
+          src={Logo}
+          width="32"
+          alt="CodeSandbox Logo"
+          style={{ paddingBottom: 32 }}
+        />
+        <Title>
+          Welcome to <br />
+          CodeSandbox!
+        </Title>
 
         <SubTitle style={{ paddingBottom: 16 }}>You need to sign in.</SubTitle>
 
@@ -48,17 +73,32 @@ export const Prompt: FunctionComponent = () => {
   if (isLoadingCLI) {
     return (
       <Container>
-        <Title>Fetching authorization key...</Title>
+        <img
+          src={Logo}
+          width="32"
+          alt="CodeSandbox Logo"
+          style={{ paddingBottom: 32 }}
+        />
+        <SubTitle>Fetching authorization key...</SubTitle>
       </Container>
     );
   }
 
   return (
     <Container>
-      <Title>Hello {user.username}!</Title>
+      <img
+        src={Logo}
+        width="32"
+        alt="CodeSandbox Logo"
+        style={{ paddingBottom: 32 }}
+      />
+
+      <Title style={{ paddingBottom: 4 }}>
+        Hello <br />
+        {user.username}!
+      </Title>
 
       <SubTitle>
-        <br />
         Click the button below to continue and finish signing in.
       </SubTitle>
 
@@ -67,7 +107,7 @@ export const Prompt: FunctionComponent = () => {
           as="a"
           autoWidth
           href={deepLink}
-          style={{ fontSize: 13, height: 40 }}
+          style={{ fontSize: 16, height: 40, width: '100%', marginTop: '1rem' }}
         >
           Open Client
         </Button>
