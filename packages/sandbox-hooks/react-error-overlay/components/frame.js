@@ -289,7 +289,7 @@ function createFrame(
       onSourceClick = () => {
         const manager = getCurrentManager();
         if (manager) {
-          const tModule = manager.resolveTranspiledModule(
+          const tModule = manager.resolveTranspiledModuleSync(
             sourceFileName.replace(location.origin, '').replace('file://', ''),
             '/'
           );

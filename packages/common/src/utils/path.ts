@@ -8,7 +8,7 @@ function splitPath(filename: string) {
 // must be no slashes or device names (c:\) in the array
 // (so also no leading and trailing slashes - it does not distinguish
 // relative and absolute paths)
-function normalizeArray(parts: string[], allowAboveRoot?: boolean) {
+export function normalizeArray(parts: Array<string>, allowAboveRoot?: boolean) {
   const res = [];
   for (let i = 0; i < parts.length; i += 1) {
     const p = parts[i];
@@ -183,4 +183,35 @@ export function extname(path) {
     return '';
   }
   return path.slice(startDot, end);
+}
+
+export function resolve(...args: Array<string>): string {
+  let resolvedPath = '';
+  let resolvedAbsolute = false;
+
+  for (let i = args.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    const path = i >= 0 ? args[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path[0] === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(
+    resolvedPath.split('/'),
+    !resolvedAbsolute
+  ).join('/');
+
+  return (resolvedAbsolute ? '/' : '') + resolvedPath || '.';
 }

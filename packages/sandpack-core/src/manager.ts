@@ -955,6 +955,7 @@ export default class Manager implements IEvaluator {
     });
   }
 
+  // This should probably be part of the resolver?
   resolveTranspiledModuleAsync = async (
     path: string,
     currentTModule?: TranspiledModule,
@@ -968,18 +969,18 @@ export default class Manager implements IEvaluator {
         tModule.module.path,
         ignoredExtensions
       );
-    } catch (e) {
-      if (e.type === 'module-not-found' && e.isDependency) {
+    } catch (err) {
+      if (err.type === 'module-not-found' && err.isDependency) {
         const { queryPath } = splitQueryFromPath(path);
         return this.downloadDependency(
-          e.path,
+          err.path,
           tModule,
           queryPath,
           ignoredExtensions
         );
       }
 
-      throw e;
+      throw err;
     }
   };
 
@@ -1004,39 +1005,42 @@ export default class Manager implements IEvaluator {
    * @param {*} path
    * @param {*} currentPath
    */
-  resolveTranspiledModule(
+  async resolveTranspiledModule(
     path: string,
     currentPath: string,
-    ignoredExtensions: string[] | undefined,
-    async: true
-  ): Promise<TranspiledModule>;
-
-  resolveTranspiledModule(
-    path: string,
-    currentPath: string,
-    ignoredExtensions?: string[],
-    async?: false
-  ): TranspiledModule;
-
-  resolveTranspiledModule(
-    path: string,
-    currentPath: string,
-    ignoredExtensions?: string[],
-    async?: boolean
-  ): Promise<TranspiledModule> | TranspiledModule {
+    ignoredExtensions?: string[]
+  ): Promise<TranspiledModule> {
     if (path.startsWith('webpack:')) {
       throw new Error('Cannot resolve webpack path');
     }
 
     const { queryPath, modulePath } = splitQueryFromPath(path);
 
-    if (async) {
-      return this.resolveModuleAsync(
-        modulePath,
-        currentPath,
-        ignoredExtensions || this.preset.ignoredExtensions
-      ).then(module => this.getTranspiledModule(module, queryPath));
+    const resolvedModule = await this.resolveModuleAsync(
+      modulePath,
+      currentPath,
+      ignoredExtensions || this.preset.ignoredExtensions
+    );
+
+    return this.getTranspiledModule(resolvedModule, queryPath);
+  }
+
+  /**
+   * Resolve the transpiled module from the path, note that the path can actually
+   * include loaders. That's why we're focussing on first extracting this query
+   * @param {*} path
+   * @param {*} currentPath
+   */
+  resolveTranspiledModuleSync(
+    path: string,
+    currentPath: string,
+    ignoredExtensions?: string[]
+  ): TranspiledModule {
+    if (path.startsWith('webpack:')) {
+      throw new Error('Cannot resolve webpack path');
     }
+
+    const { queryPath, modulePath } = splitQueryFromPath(path);
 
     const module = this.resolveModule(
       modulePath,

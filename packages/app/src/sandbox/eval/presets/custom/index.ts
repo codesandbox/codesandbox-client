@@ -15,7 +15,7 @@ async function registerTranspilers(
   transpilerConfig: { [expression: string]: string[] }
 ) {
   const savedTranspilers = {};
-  const configModule = manager.resolveTranspiledModule(
+  const configModule = await manager.resolveTranspiledModule(
     '/.codesandbox/template.json',
     '/'
   );
@@ -43,7 +43,7 @@ async function registerTranspilers(
             return { transpiler };
           }
 
-          const tModule = manager.resolveTranspiledModule(
+          const tModule = await manager.resolveTranspiledModule(
             t,
             '/.codesandbox/template.json'
           );

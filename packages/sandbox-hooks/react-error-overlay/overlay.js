@@ -179,7 +179,7 @@ function transformErrors() {
         try {
           return (
             manager &&
-            !!manager.resolveTranspiledModule(
+            !!manager.resolveTranspiledModuleSync(
               (r._originalFileName || r.fileName || '').replace(
                 location.origin,
                 ''
@@ -198,7 +198,7 @@ function transformErrors() {
       if (!tModule && relevantFrame) {
         const fileName =
           relevantFrame._originalFileName || relevantFrame.fileName || '';
-        tModule = manager.resolveTranspiledModule(
+        tModule = manager.resolveTranspiledModuleSync(
           fileName.replace(location.origin, ''),
           '/'
         );

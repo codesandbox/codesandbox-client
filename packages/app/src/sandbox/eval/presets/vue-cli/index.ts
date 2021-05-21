@@ -43,7 +43,7 @@ export default function initialize() {
         const isV3 = vue && isMinimalSemverVersion(vue.version, '3.0.0');
 
         try {
-          const tModule = manager.resolveTranspiledModule(
+          const tModule = await manager.resolveTranspiledModule(
             '@vue/babel-preset-app',
             '/package.json'
           );
@@ -60,7 +60,7 @@ export default function initialize() {
         }
 
         try {
-          const vueModule = manager.resolveTranspiledModule('vue', '/');
+          const vueModule = await manager.resolveTranspiledModule('vue', '/');
 
           if (!vueModule.source) {
             await vueModule.transpile(manager);

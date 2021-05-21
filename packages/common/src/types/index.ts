@@ -544,6 +544,8 @@ export type PackageJSON = {
   version: string;
   description?: string;
   alias?: { [key: string]: string };
+  browser?: string | { [key: string]: string | boolean };
+  source?: string | Array<string>;
   keywords?: string[];
   main?: string;
   module?: string;

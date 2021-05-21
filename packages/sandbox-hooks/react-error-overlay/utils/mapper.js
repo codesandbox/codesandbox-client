@@ -46,7 +46,7 @@ async function map(
             fileName.split('?')[1]
           );
         } else {
-          transpiledModule = manager.resolveTranspiledModule(
+          transpiledModule = await manager.resolveTranspiledModule(
             fileName.replace(location.origin, ''),
             '/'
           );
