@@ -45,6 +45,8 @@ import {
 } from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
+import { IFileSystem, Resolver } from './resolvers/resolver';
+import { NodeResolver } from './resolvers/node-resolver';
 
 declare const BrowserFS: any;
 
@@ -173,6 +175,9 @@ export default class Manager implements IEvaluator {
 
   version: string;
 
+  resolverFS: IFileSystem;
+  resolvers: Array<Resolver>;
+
   constructor(
     id: string,
     preset: Preset,
@@ -235,6 +240,49 @@ export default class Manager implements IEvaluator {
     if (options.hasFileResolver) {
       this.setupFileResolver();
     }
+
+    this.resolverFS = this.getResolverFS();
+    this.resolvers = [
+      new NodeResolver({
+        fs: this.resolverFS,
+      }),
+    ];
+  }
+
+  getResolverFS(): IFileSystem {
+    if (this.resolverFS) {
+      return this.resolverFS;
+    }
+
+    return {
+      // eslint-disable-next-line arrow-body-style
+      isFile: p => {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        return new Promise((resolve, reject) => {
+          this.isFile(p, (err: any, fileExists: any) => {
+            if (err) {
+              return reject(err);
+            }
+            return resolve(!!fileExists);
+          });
+        });
+      },
+      // eslint-disable-next-line arrow-body-style
+      readFile: p => {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        return new Promise((resolve, reject) => {
+          this.readFileSync(p, (err, content) => {
+            if (err) {
+              return reject(err);
+            }
+            if (!content) {
+              return reject(new Error('File not found'));
+            }
+            return resolve(content);
+          });
+        });
+      },
+    };
   }
 
   reload() {
@@ -713,7 +761,7 @@ export default class Manager implements IEvaluator {
     defaultExtensions = ['js', 'jsx', 'json', 'mjs']
   ): Promise<Module> {
     const dirredPath = pathUtils.dirname(currentPath);
-    if (this.cachedPaths[dirredPath] === undefined) {
+    if (!this.cachedPaths[dirredPath]) {
       this.cachedPaths[dirredPath] = {};
     }
 
@@ -724,107 +772,89 @@ export default class Manager implements IEvaluator {
     }
 
     const measureKey = `resolve-async:${path}:${currentPath}`;
-    return new Promise((promiseResolve, promiseReject) => {
-      measure(measureKey);
-      const presetAliasedPath = this.getPresetAliasedPath(path);
 
-      const aliasedPath = this.getAliasedDependencyPath(
-        presetAliasedPath,
-        currentPath
-      );
-      const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+    // TODO: Refactor these aliases out into the resolver plugin system at some point...
+    const presetAliasedPath = this.getPresetAliasedPath(path);
+    const aliasedPath = this.getAliasedDependencyPath(
+      presetAliasedPath,
+      currentPath
+    );
 
-      if (NODE_LIBS.indexOf(shimmedPath) > -1) {
-        this.cachedPaths[dirredPath][path] = shimmedPath;
-        promiseResolve(getShimmedModuleFromPath(currentPath, path));
-        return;
+    const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+    if (NODE_LIBS.indexOf(shimmedPath) > -1) {
+      this.cachedPaths[dirredPath][path] = shimmedPath;
+      return getShimmedModuleFromPath(currentPath, path);
+    }
+
+    console.log({ path, presetAliasedPath, aliasedPath, shimmedPath });
+
+    const extensions = defaultExtensions.map(ext => '.' + ext);
+
+    // Start resolver performance measuring
+    measure(measureKey);
+
+    const resolverErrors = [];
+    let resolutionResult = null;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const resolver of this.resolvers) {
+      try {
+        const resolverRequest = {
+          filename: shimmedPath,
+          parent: currentPath,
+          extensions,
+        };
+        console.log({ resolverRequest });
+        // eslint-disable-next-line no-await-in-loop
+        resolutionResult = await resolver.resolve(resolverRequest);
+
+        if (resolutionResult) {
+          break;
+        }
+      } catch (err) {
+        resolverErrors.push(err);
+      }
+    }
+
+    endMeasure(measureKey);
+
+    // TODO: Create ResolverError object
+    if (!resolutionResult) {
+      if (resolverErrors.length) {
+        resolverErrors.forEach(console.error);
+        throw new Error(resolverErrors[0]);
       }
 
-      resolve(
-        shimmedPath,
-        {
-          filename: currentPath,
-          extensions: defaultExtensions.map(ext => '.' + ext),
-          isFile: this.isFile,
-          // @ts-ignore
-          readFile: this.readFileSync,
-          packageFilter: packageFilter(this.isFile),
-          moduleDirectory: this.getModuleDirectories(),
-        },
-        (err: Error | undefined, foundPath: string) => {
-          endMeasure(measureKey, { silent: true });
-          if (err) {
-            if (
-              this.cachedPaths[dirredPath] &&
-              this.cachedPaths[dirredPath][path]
-            ) {
-              delete this.cachedPaths[dirredPath][path];
-            }
+      throw new Error(`Could not resolve ${path} in ${currentPath}`);
+    }
 
-            let connectedPath = shimmedPath;
-            if (connectedPath.indexOf('/node_modules') !== 0) {
-              connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
-                ? pathUtils.join('/node_modules', shimmedPath)
-                : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
-            }
+    if (!this.cachedPaths[dirredPath]) {
+      this.cachedPaths[dirredPath] = {};
+    }
 
-            const isDependency = connectedPath.includes('/node_modules/');
+    this.cachedPaths[dirredPath][path] = resolutionResult.filepath;
 
-            connectedPath = connectedPath.replace('/node_modules/', '');
+    // Not entirely sure what this even means...
+    if (resolutionResult.filepath === '//empty.js') {
+      return getShimmedModuleFromPath(currentPath, path);
+    }
 
-            if (!isDependency) {
-              promiseReject(
-                new ModuleNotFoundError(shimmedPath, false, currentPath)
-              );
-            }
+    if (!this.transpiledModules[resolutionResult.filepath]) {
+      if (!resolutionResult.code) {
+        // eslint-disable-next-line no-await-in-loop
+        resolutionResult.code = await this.resolverFS.readFile(
+          resolutionResult.filepath
+        );
+      }
 
-            const dependencyName = getDependencyName(connectedPath);
+      this.addModule({
+        path: resolutionResult.filepath,
+        code: resolutionResult.code || '',
+      });
+      return this.transpiledModules[resolutionResult.filepath].module;
+    }
 
-            if (
-              dependencyName &&
-              (this.manifest.dependencies.find(
-                d => d.name === dependencyName
-              ) ||
-                this.manifest.dependencyDependencies[dependencyName] ||
-                this.manifest.contents[
-                  `/node_modules/${dependencyName}/package.json`
-                ])
-            ) {
-              promiseReject(
-                new ModuleNotFoundError(connectedPath, true, currentPath)
-              );
-            } else {
-              promiseReject(
-                new DependencyNotFoundError(connectedPath, currentPath)
-              );
-            }
-
-            return;
-          }
-
-          this.cachedPaths[dirredPath][path] = foundPath;
-
-          if (foundPath === '//empty.js') {
-            promiseResolve(getShimmedModuleFromPath(currentPath, path));
-            return;
-          }
-
-          if (!this.transpiledModules[foundPath]) {
-            this.readFileSync(foundPath, (error, code) => {
-              if (error) {
-                promiseReject(error);
-                return;
-              }
-
-              this.addModule({ path: foundPath, code: code || '' });
-              promiseResolve(this.transpiledModules[foundPath].module);
-            });
-          } else {
-            promiseResolve(this.transpiledModules[foundPath].module);
-          }
-        }
-      );
-    });
+    return this.transpiledModules[resolutionResult.filepath].module;
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH ASYNC VERSION
@@ -833,6 +863,7 @@ export default class Manager implements IEvaluator {
     currentPath: string,
     defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
   ): Module {
+    console.log('Sync resolve', { path, currentPath, defaultExtensions });
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
       this.cachedPaths[dirredPath] = {};
@@ -870,7 +901,7 @@ export default class Manager implements IEvaluator {
           packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         });
-        endMeasure(measureKey, { silent: true });
+        endMeasure(measureKey);
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
 

@@ -386,10 +386,6 @@ export class NodeResolver extends Resolver {
     return null;
   }
 
-  resolveSync(opts: IResolveOpts): IResolverResult {
-    throw new Error('resolveSync is not implemented for this resolver');
-  }
-
   // Clear the cache
   invalidateAll() {}
 }

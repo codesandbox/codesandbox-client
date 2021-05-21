@@ -1,8 +1,6 @@
 export interface IFileSystem {
   isFile: (path: string) => Promise<boolean>;
-  isFileSync: (path: string) => boolean;
   readFile: (path: string) => Promise<string>;
-  readFileSync: (path: string) => string;
 }
 
 export interface IResolverOpts {
@@ -30,10 +28,6 @@ export class Resolver {
 
   resolve(opts: IResolveOpts): Promise<IResolverResult | null | undefined> {
     throw new Error('resolve is not implemented for this resolver');
-  }
-
-  resolveSync(opts: IResolveOpts): IResolverResult | null | undefined {
-    throw new Error('resolveSync is not implemented for this resolver');
   }
 
   // Clear the cache
