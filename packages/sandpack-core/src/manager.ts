@@ -45,6 +45,7 @@ import {
 } from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
+import { fetchWithRetries } from './npm/dynamic/fetch-protocols/utils';
 
 declare const BrowserFS: any;
 
@@ -173,6 +174,8 @@ export default class Manager implements IEvaluator {
 
   version: string;
 
+  esmodules: Map<string, Promise<string>>;
+
   constructor(
     id: string,
     preset: Preset,
@@ -194,6 +197,7 @@ export default class Manager implements IEvaluator {
     this.configurations = {};
     this.stage = 'transpilation';
     this.version = options.versionIdentifier;
+    this.esmodules = new Map();
 
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
@@ -706,6 +710,28 @@ export default class Manager implements IEvaluator {
     return this.moduleDirectoriesCache;
   }
 
+  async downloadESModule(url: string): Promise<string> {
+    const p =
+      this.esmodules.get(url) ||
+      fetchWithRetries(url)
+        .then(r => {
+          if (!r.ok) {
+            throw new Error(
+              `Fetching ESModule return error status ${r.status}`
+            );
+          }
+
+          return r.text();
+        })
+        .catch(err => {
+          throw new ModuleNotFoundError(url, true);
+        });
+
+    this.esmodules.set(url, p);
+
+    return p;
+  }
+
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
   async resolveModuleAsync(
     path: string,
@@ -714,8 +740,16 @@ export default class Manager implements IEvaluator {
   ): Promise<Module> {
     // Handle ESModule import
     if (isUrl(path) || isUrl(currentPath)) {
-      console.error('resolve', path, currentPath);
-      throw new Error('HTTP Imports are not yet supported');
+      const esmoduleUrl = new URL(
+        path,
+        isUrl(currentPath) ? currentPath : undefined
+      ).href;
+      const esmoduleContent = await this.downloadESModule(esmoduleUrl);
+      if (!esmoduleContent) {
+        throw new ModuleNotFoundError();
+      }
+      this.addModule({ path: esmoduleUrl, code: esmoduleContent || '' });
+      return this.transpiledModules[esmoduleUrl].module;
     }
 
     const dirredPath = pathUtils.dirname(currentPath);
@@ -1025,7 +1059,6 @@ export default class Manager implements IEvaluator {
     }
 
     const { queryPath, modulePath } = splitQueryFromPath(path);
-
     const resolvedModule = await this.resolveModuleAsync(
       modulePath,
       currentPath,
