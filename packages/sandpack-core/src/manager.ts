@@ -29,7 +29,7 @@ import {
   getAliasVersion,
   getDependencyName,
 } from './utils/get-dependency-name';
-import { packageFilter } from './utils/resolve-utils';
+import { isUrl, packageFilter } from './utils/resolve-utils';
 
 import {
   ignoreNextCache,
@@ -712,6 +712,12 @@ export default class Manager implements IEvaluator {
     currentPath: string,
     defaultExtensions = ['js', 'jsx', 'json', 'mjs']
   ): Promise<Module> {
+    // Handle ESModule import
+    if (isUrl(path) || isUrl(currentPath)) {
+      console.error('resolve', path, currentPath);
+      throw new Error('HTTP Imports are not yet supported');
+    }
+
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
       this.cachedPaths[dirredPath] = {};
@@ -752,7 +758,7 @@ export default class Manager implements IEvaluator {
           moduleDirectory: this.getModuleDirectories(),
         },
         (err: Error | undefined, foundPath: string) => {
-          endMeasure(measureKey, { silent: true });
+          endMeasure(measureKey);
           if (err) {
             if (
               this.cachedPaths[dirredPath] &&
@@ -833,6 +839,10 @@ export default class Manager implements IEvaluator {
     currentPath: string,
     defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
   ): Module {
+    if (isUrl(path) || isUrl(currentPath)) {
+      throw new Error('Cannot import urls synchronously');
+    }
+
     const dirredPath = pathUtils.dirname(currentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
       this.cachedPaths[dirredPath] = {};
@@ -870,7 +880,7 @@ export default class Manager implements IEvaluator {
           packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         });
-        endMeasure(measureKey, { silent: true });
+        endMeasure(measureKey);
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
@@ -963,11 +973,12 @@ export default class Manager implements IEvaluator {
     const tModule =
       currentTModule || this.getTranspiledModule(this.modules['/package.json']); // Get arbitrary file from root
     try {
-      return this.resolveTranspiledModule(
+      const transpiledModule = await this.resolveTranspiledModule(
         path,
         tModule.module.path,
         ignoredExtensions
       );
+      return transpiledModule;
     } catch (e) {
       if (e.type === 'module-not-found' && e.isDependency) {
         const { queryPath } = splitQueryFromPath(path);
@@ -1004,46 +1015,46 @@ export default class Manager implements IEvaluator {
    * @param {*} path
    * @param {*} currentPath
    */
-  resolveTranspiledModule(
+  async resolveTranspiledModule(
     path: string,
     currentPath: string,
-    ignoredExtensions: string[] | undefined,
-    async: true
-  ): Promise<TranspiledModule>;
-
-  resolveTranspiledModule(
-    path: string,
-    currentPath: string,
-    ignoredExtensions?: string[],
-    async?: false
-  ): TranspiledModule;
-
-  resolveTranspiledModule(
-    path: string,
-    currentPath: string,
-    ignoredExtensions?: string[],
-    async?: boolean
-  ): Promise<TranspiledModule> | TranspiledModule {
+    ignoredExtensions?: string[]
+  ): Promise<TranspiledModule> {
     if (path.startsWith('webpack:')) {
       throw new Error('Cannot resolve webpack path');
     }
 
     const { queryPath, modulePath } = splitQueryFromPath(path);
 
-    if (async) {
-      return this.resolveModuleAsync(
-        modulePath,
-        currentPath,
-        ignoredExtensions || this.preset.ignoredExtensions
-      ).then(module => this.getTranspiledModule(module, queryPath));
+    const resolvedModule = await this.resolveModuleAsync(
+      modulePath,
+      currentPath,
+      ignoredExtensions || this.preset.ignoredExtensions
+    );
+    return this.getTranspiledModule(resolvedModule, queryPath);
+  }
+
+  /**
+   * Resolve the transpiled module from the path, note that the path can actually
+   * include loaders. That's why we're focussing on first extracting this query
+   * @param {*} path
+   * @param {*} currentPath
+   */
+  resolveTranspiledModuleSync(
+    path: string,
+    currentPath: string,
+    ignoredExtensions?: string[]
+  ): TranspiledModule {
+    if (path.startsWith('webpack:')) {
+      throw new Error('Cannot resolve webpack path');
     }
 
+    const { queryPath, modulePath } = splitQueryFromPath(path);
     const module = this.resolveModule(
       modulePath,
       currentPath,
       ignoredExtensions || this.preset.ignoredExtensions
     );
-
     return this.getTranspiledModule(module, queryPath);
   }
 

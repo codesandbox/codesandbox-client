@@ -365,8 +365,7 @@ export class TranspiledModule {
                 const tModule = await manager.resolveTranspiledModule(
                   depPath,
                   options && options.isAbsolute ? '/' : this.module.path,
-                  undefined,
-                  true
+                  undefined
                 );
 
                 if (isTranspilationDep) {
@@ -502,7 +501,7 @@ export class TranspiledModule {
         });
       },
       resolveTranspiledModule: (depPath: string, options = {}) =>
-        manager.resolveTranspiledModule(
+        manager.resolveTranspiledModuleSync(
           depPath,
           options.isAbsolute ? '/' : this.module.path,
           options.ignoredExtensions
@@ -1013,7 +1012,7 @@ export class TranspiledModule {
           return resolveDependency(path);
         }
 
-        const requiredTranspiledModule = manager.resolveTranspiledModule(
+        const requiredTranspiledModule = manager.resolveTranspiledModuleSync(
           path,
           localModule.path
         );

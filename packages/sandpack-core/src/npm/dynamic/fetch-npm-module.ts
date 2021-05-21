@@ -170,7 +170,7 @@ function resolvePath(
           const callback = cb || c;
 
           try {
-            const tModule = manager.resolveTranspiledModule(p, '/');
+            const tModule = await manager.resolveTranspiledModule(p, '/');
             tModule.initiators.add(currentTModule);
             currentTModule.dependencies.add(tModule);
             return callback(null, tModule.module.code);
