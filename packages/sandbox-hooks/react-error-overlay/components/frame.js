@@ -115,7 +115,7 @@ function frameDiv(
   if (internalUrl) {
     applyStyles(
       frameFunctionName,
-      Object.assign({}, functionNameStyle, depStyle)
+      { ...functionNameStyle, ...depStyle}
     );
   } else {
     applyStyles(frameFunctionName, functionNameStyle);
@@ -133,7 +133,7 @@ function frameDiv(
   frame.appendChild(frameLink);
 
   if (typeof onSourceClick === 'function') {
-    let handler = onSourceClick;
+    const handler = onSourceClick;
     enableTabClick(frameAnchor);
     frameAnchor.style.cursor = 'pointer';
     frameAnchor.addEventListener('click', function() {
@@ -362,7 +362,7 @@ function createFrame(
     }
   }
 
-  return { elem: elem, hasSource: hasSource, collapseElement: collapseElement };
+  return { elem, hasSource, collapseElement };
 }
 
 export { createFrame };
