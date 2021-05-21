@@ -738,6 +738,10 @@ export default class Manager implements IEvaluator {
     currentPath: string,
     defaultExtensions = ['js', 'jsx', 'json', 'mjs']
   ): Promise<Module> {
+    if (this.transpiledModules[path]) {
+      return this.transpiledModules[path].module;
+    }
+
     // Handle ESModule import
     if (isUrl(path) || isUrl(currentPath)) {
       const esmoduleUrl = new URL(
@@ -873,6 +877,10 @@ export default class Manager implements IEvaluator {
     currentPath: string,
     defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
   ): Module {
+    if (this.transpiledModules[path]) {
+      return this.transpiledModules[path].module;
+    }
+
     if (isUrl(path) || isUrl(currentPath)) {
       throw new Error('Cannot import urls synchronously');
     }
