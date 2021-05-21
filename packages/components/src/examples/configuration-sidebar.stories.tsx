@@ -129,7 +129,7 @@ export const Basic = () => (
         <Element css={{ paddingX: 2 }}>
           <SidebarRow>Configuration your Sandbox</SidebarRow>
           <Text variant="muted">
-            CodeSandbox supports several config giles per template, you van see
+            CodeSandbox supports several config files per template, you can see
             and edit all supported files for the current sandbox here.
           </Text>
         </Element>
