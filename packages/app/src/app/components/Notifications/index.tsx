@@ -40,7 +40,7 @@ export const Notifications = () => {
           <Element
             css={css({
               position: 'relative',
-              top: '1px',
+              top: '2px',
             })}
           >
             <Icon name="bell" size={11} title="Notifications" />
