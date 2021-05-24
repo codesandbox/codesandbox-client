@@ -88,10 +88,10 @@ export const SignInModalElement = ({
     <Wrapper>
       <LeftSide />
       <Element padding={8}>
-        <Text weight="bold" size={23} paddingBottom={3} block>
+        <Text weight="bold" size={23} paddingBottom={1} block>
           Sign in to CodeSandbox
         </Text>
-        <Text variant="muted" size={3} paddingBottom={60} block>
+        <Text variant="muted" size={3} paddingBottom={30} block>
           Get a free account, no credit card required
         </Text>
 

@@ -7,7 +7,7 @@ import { Element, ThemeProvider } from '@codesandbox/components';
 import { Container } from './elements';
 import { Prompt } from './Prompt';
 
-export const CLI: FunctionComponent = withTheme(({ theme }) => {
+export const Client: FunctionComponent = withTheme(({ theme }) => {
   const { cliMounted } = useActions();
 
   useEffect(() => {

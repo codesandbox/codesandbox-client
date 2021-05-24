@@ -1,17 +1,22 @@
 import { Button } from '@codesandbox/components';
-import React, { FunctionComponent, useRef } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
 import { useAppState } from 'app/overmind';
 
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
-import { Buttons, Container, TokenInput } from './elements';
+import { Buttons, Container } from './elements';
 import Logo from '../../../logo.svg';
 
 export const Prompt: FunctionComponent = () => {
   const { authToken, error, isLoadingCLI, user } = useAppState();
-  const tokenInputRef = useRef<HTMLInputElement>(null);
+
+  const [deepLink, setDeepLink] = useState('');
+
+  useEffect(() => {
+    setDeepLink(`codesandbox://auth-completion/?nonce=${authToken}`);
+  }, [authToken]);
 
   if (error) {
     return (
@@ -58,9 +63,7 @@ export const Prompt: FunctionComponent = () => {
           CodeSandbox!
         </Title>
 
-        <SubTitle style={{ paddingBottom: 16 }}>
-          You need to sign in to use the CLI.
-        </SubTitle>
+        <SubTitle style={{ paddingBottom: 16 }}>You need to sign in.</SubTitle>
 
         <SignInModalElement />
       </Container>
@@ -70,7 +73,13 @@ export const Prompt: FunctionComponent = () => {
   if (isLoadingCLI) {
     return (
       <Container>
-        <Title>Fetching authorization key...</Title>
+        <img
+          src={Logo}
+          width="32"
+          alt="CodeSandbox Logo"
+          style={{ paddingBottom: 32 }}
+        />
+        <SubTitle>Fetching authorization key...</SubTitle>
       </Container>
     );
   }
@@ -83,20 +92,26 @@ export const Prompt: FunctionComponent = () => {
         alt="CodeSandbox Logo"
         style={{ paddingBottom: 32 }}
       />
-      {/* <Title>Hello <br/>{user.username}!</Title> */}
 
-      <SubTitle style={{ paddingBottom: 16 }}>
-        The CLI needs authorization to work.
-        <br />
-        Please paste the following code in the CLI:
+      <Title style={{ paddingBottom: 4 }}>
+        Hello <br />
+        {user.username}!
+      </Title>
+
+      <SubTitle>
+        Click the button below to continue and finish signing in.
       </SubTitle>
 
-      <TokenInput
-        onClick={() => tokenInputRef.current.select()}
-        ref={tokenInputRef}
-        value={authToken}
-        style={{ width: '100%' }}
-      />
+      <Buttons>
+        <Button
+          as="a"
+          autoWidth
+          href={deepLink}
+          style={{ fontSize: 16, height: 40, width: '100%', marginTop: '1rem' }}
+        >
+          Open Client
+        </Button>
+      </Buttons>
     </Container>
   );
 };
