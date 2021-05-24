@@ -46,7 +46,7 @@ export default () => {
   }, [prefersReducedMotion]);
   return (
     <Layout>
-      <TitleAndMetaTags title="Feedback - Codesandbox" />
+      <TitleAndMetaTags title="Feedback - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
           <Title>Get better feedback from your whole team</Title>
