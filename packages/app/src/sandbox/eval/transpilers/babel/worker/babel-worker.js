@@ -408,32 +408,6 @@ async function compile(code, customConfig, path, isV7) {
   try {
     let result;
     try {
-      // Set modern targets for env preset, speeds up Babel significantly
-      if (isV7) {
-        if (customConfig.presets?.length) {
-          customConfig.presets = customConfig.presets.map(preset => {
-            const isArr = Array.isArray(preset);
-            const presetName = isArr ? preset[0] : preset;
-            if (presetName === 'env' || presetName.includes('preset-env')) {
-              const presetOptions = {
-                ...(isArr && typeof preset[1] === 'object' ? preset[1] : {}),
-                targets: {
-                  browsers: '> 0.25%, not ie 11, not op_mini all',
-                  esmodules: false,
-                },
-              };
-              return [presetName, presetOptions];
-            }
-            return preset;
-          });
-        }
-
-        customConfig.caller = {
-          name: 'codesandbox',
-          supportsStaticESM: false,
-          supportsTopLevelAwait: false,
-        };
-      }
       result = Babel.transform(code, customConfig);
     } catch (e) {
       e.message = e.message.replace('unknown', path);
@@ -512,17 +486,14 @@ try {
   self.path$2 = BrowserFS.BFSRequire('path');
   self.fs$1 = BrowserFS.BFSRequire('fs');
 
-  // process.env.NODE_ENV === 'development'
-  //   ? `${
-  //       process.env.CODESANDBOX_HOST || ''
-  //     }/static/js/babel.${BABEL7_VERSION}.js`
-  //   : `${
-  //       process.env.CODESANDBOX_HOST || ''
-  //     }/static/js/babel.${BABEL7_VERSION}.min.js`
   self.importScripts(
-    `${
-      process.env.CODESANDBOX_HOST || ''
-    }/static/js/babel.${BABEL7_VERSION}.min.js`
+    process.env.NODE_ENV === 'development'
+      ? `${
+          process.env.CODESANDBOX_HOST || ''
+        }/static/js/babel.${BABEL7_VERSION}.js`
+      : `${
+          process.env.CODESANDBOX_HOST || ''
+        }/static/js/babel.${BABEL7_VERSION}.min.js`
   );
 
   remapBabelHack();
