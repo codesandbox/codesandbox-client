@@ -70,8 +70,7 @@ const Anywhere = () => (
     >
       <div
         css={`
-          margin: 6rem 0 4rem 0;
-
+          margin: 6rem 4rem 0;
           max-height: 320px;
           max-width: 1024px;
           display: block;
@@ -105,7 +104,7 @@ const Anywhere = () => (
               background: #040404;
               transform: scale(0.5, 0.5);
 
-              @media (max-width: 1300px) {
+              @media (max-width: 1440px) {
                 display: none;
               }
             `}
