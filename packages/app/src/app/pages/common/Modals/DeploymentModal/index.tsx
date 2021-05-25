@@ -14,7 +14,10 @@ export const DeploymentModal: FunctionComponent = () => {
       vercel: { url },
     },
   } = useAppState();
-  const { deployClicked } = useActions().deployment;
+  const {
+    deployPreviewClicked,
+    deployProductionClicked,
+  } = useActions().deployment;
 
   if (!user) {
     return null;
@@ -69,11 +72,21 @@ export const DeploymentModal: FunctionComponent = () => {
           css={css({ width: 'auto' })}
           onClick={() => {
             track('Deploy Clicked', { provider: 'vercel' });
-            deployClicked();
+            deployProductionClicked();
           }}
           disabled={!vercelSignedIn || deploying}
         >
-          {deploying ? 'Deploying' : 'Deploy Sandbox'}
+          {deploying ? 'Deploying' : 'Deploy Sandbox to Production'}
+        </Button>
+        <Button
+          css={css({ width: 'auto' })}
+          onClick={() => {
+            track('Deploy Clicked', { provider: 'vercel' });
+            deployPreviewClicked();
+          }}
+          disabled={!vercelSignedIn || deploying}
+        >
+          {deploying ? 'Deploying' : 'Deploy Sandbox to Preview'}
         </Button>
       </Stack>
     </Alert>
