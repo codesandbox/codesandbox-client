@@ -479,12 +479,10 @@ export class TranspiledModule {
       // Add an explicit transpilation dependency, this is needed for loaders
       // that include the source of another file by themselves, we need to
       // force transpilation to rebuild the file
-      addTranspilationDependency: (depPath: string, options) => {
-        this.addDependency(manager, depPath, options, true);
-      },
-      addDependency: async (depPath: string, options = {}) => {
-        this.addDependency(manager, depPath, options);
-      },
+      addTranspilationDependency: (depPath: string, options) =>
+        this.addDependency(manager, depPath, options, true),
+      addDependency: async (depPath: string, options = {}) =>
+        this.addDependency(manager, depPath, options),
       addDependenciesInDirectory: (folderPath: string, options = {}) => {
         const tModules = manager.resolveTranspiledModulesInDirectory(
           folderPath,

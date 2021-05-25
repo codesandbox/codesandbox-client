@@ -203,7 +203,7 @@ export default abstract class WorkerTranspiler extends Transpiler {
               isEntry: data.isEntry,
             });
           } else {
-            loaderContext.addDependency(data.path, {
+            await loaderContext.addDependency(data.path, {
               isAbsolute: data.isAbsolute,
               isEntry: data.isEntry,
             });
@@ -212,7 +212,7 @@ export default abstract class WorkerTranspiler extends Transpiler {
         }
 
         if (data.type === 'add-transpilation-dependency') {
-          loaderContext.addTranspilationDependency(data.path, {
+          await loaderContext.addTranspilationDependency(data.path, {
             isAbsolute: data.isAbsolute,
             isEntry: data.isEntry,
           });

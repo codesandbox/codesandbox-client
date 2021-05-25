@@ -18,6 +18,10 @@ import { getSyntaxInfoFromAst, getSyntaxInfoFromCode } from './syntax-info';
 const global = window as any;
 const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
 
+interface TranspilationResult {
+  transpiledCode: string;
+}
+
 // Right now this is in a worker, but when we're going to allow custom plugins
 // we need to move this out of the worker again, because the config needs
 // to support custom plugins
@@ -46,108 +50,108 @@ class BabelTranspiler extends WorkerTranspiler {
     return global.babelworkers.pop();
   }
 
-  doTranspilation(
+  async doTranspilation(
     code: string,
     loaderContext: LoaderContext
-  ): Promise<{ transpiledCode: string }> {
-    return new Promise((resolve, reject) => {
-      const { path } = loaderContext;
-      let newCode = code;
+  ): Promise<TranspilationResult> {
+    const { path } = loaderContext;
+    let newCode = code;
 
-      const isNodeModule = path.startsWith('/node_modules');
+    const isNodeModule = path.startsWith('/node_modules');
 
-      /**
-       * We should never transpile babel-standalone, because it relies on code that runs
-       * in non-strict mode. Transpiling this code would add a "use strict;" piece, which
-       * would then break the code (because it expects `this` to be global). No transpiler
-       * can fix this, and because of this we need to just specifically ignore this file.
-       */
-      const shouldIgnore = path === '/node_modules/babel-standalone/babel.js';
+    /**
+     * We should never transpile babel-standalone, because it relies on code that runs
+     * in non-strict mode. Transpiling this code would add a "use strict;" piece, which
+     * would then break the code (because it expects `this` to be global). No transpiler
+     * can fix this, and because of this we need to just specifically ignore this file.
+     */
+    const shouldIgnore = path === '/node_modules/babel-standalone/babel.js';
 
-      if (shouldIgnore) {
-        resolve({ transpiledCode: code });
-        return;
-      }
+    if (shouldIgnore) {
+      return { transpiledCode: code };
+    }
 
-      let convertedToEsmodule = false;
-      let ast: Program | undefined;
-      if (isESModule(newCode) && isNodeModule) {
-        try {
-          measure(`esconvert-${path}`);
-          const esModuleInfo = convertEsModule(newCode);
-          newCode = esModuleInfo.code;
-          endMeasure(`esconvert-${path}`, { silent: true });
-          ast = esModuleInfo.ast;
-          convertedToEsmodule = true;
-        } catch (e) {
-          console.warn(
-            `Error when converting '${path}' esmodule to commonjs: ${e.message}`
-          );
-        }
-      }
-
-      const syntaxInfo = ast
-        ? getSyntaxInfoFromAst(ast)
-        : getSyntaxInfoFromCode(newCode, path);
+    let convertedToEsmodule = false;
+    let ast: Program | undefined;
+    if (isESModule(newCode) && isNodeModule) {
       try {
-        // When we find a node_module that already is commonjs we will just get the
-        // dependencies from the file and return the same code. We get the dependencies
-        // with a regex since commonjs modules just have `require` and regex is MUCH
-        // faster than generating an AST from the code.
-        if (
-          (loaderContext.options.simpleRequire || isNodeModule) &&
-          !syntaxInfo.jsx &&
-          !(!convertedToEsmodule && syntaxInfo.esm)
-        ) {
-          regexGetRequireStatements(newCode).forEach(dependency => {
+        measure(`esconvert-${path}`);
+        const esModuleInfo = convertEsModule(newCode);
+        newCode = esModuleInfo.code;
+        endMeasure(`esconvert-${path}`, { silent: true });
+        ast = esModuleInfo.ast;
+        convertedToEsmodule = true;
+      } catch (e) {
+        console.warn(
+          `Error when converting '${path}' esmodule to commonjs: ${e.message}`
+        );
+      }
+    }
+
+    const syntaxInfo = ast
+      ? getSyntaxInfoFromAst(ast)
+      : getSyntaxInfoFromCode(newCode, path);
+    try {
+      // When we find a node_module that already is commonjs we will just get the
+      // dependencies from the file and return the same code. We get the dependencies
+      // with a regex since commonjs modules just have `require` and regex is MUCH
+      // faster than generating an AST from the code.
+      if (
+        (loaderContext.options.simpleRequire || isNodeModule) &&
+        !syntaxInfo.jsx &&
+        !(!convertedToEsmodule && syntaxInfo.esm)
+      ) {
+        await Promise.all(
+          regexGetRequireStatements(newCode).map(async dependency => {
             if (dependency.isGlob) {
               loaderContext.addDependenciesInDirectory(dependency.path);
             } else {
-              loaderContext.addDependency(dependency.path);
+              await loaderContext.addDependency(dependency.path);
             }
-          });
-
-          resolve({
-            transpiledCode: newCode,
-          });
-          return;
-        }
-      } catch (e) {
-        console.warn(
-          `Error when reading dependencies of '${path}' using quick method: '${e.message}'`
+          })
         );
+
+        return {
+          transpiledCode: newCode,
+        };
       }
-
-      const configs = loaderContext.options.configurations;
-      const foundConfig = configs.babel && configs.babel.parsed;
-      const loaderOptions = loaderContext.options || {};
-
-      const dependencies =
-        (configs.package &&
-          configs.package.parsed &&
-          configs.package.parsed.dependencies) ||
-        {};
-
-      const devDependencies =
-        (configs.package &&
-          configs.package.parsed &&
-          configs.package.parsed.devDependencies) ||
-        {};
-
-      const isV7 =
-        loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
-
-      const hasMacros = Object.keys(dependencies).some(
-        d => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
+    } catch (e) {
+      console.warn(
+        `Error when reading dependencies of '${path}' using quick method: '${e.message}'`
       );
+    }
 
-      const babelConfig = getBabelConfig(
-        foundConfig || (loaderOptions as any).config,
-        loaderOptions,
-        path,
-        isV7
-      );
+    const configs = loaderContext.options.configurations;
+    const foundConfig = configs.babel && configs.babel.parsed;
+    const loaderOptions = loaderContext.options || {};
 
+    const dependencies =
+      (configs.package &&
+        configs.package.parsed &&
+        configs.package.parsed.dependencies) ||
+      {};
+
+    const devDependencies =
+      (configs.package &&
+        configs.package.parsed &&
+        configs.package.parsed.devDependencies) ||
+      {};
+
+    const isV7 =
+      loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
+
+    const hasMacros = Object.keys(dependencies).some(
+      d => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
+    );
+
+    const babelConfig = getBabelConfig(
+      foundConfig || (loaderOptions as any).config,
+      loaderOptions,
+      path,
+      isV7
+    );
+
+    const result: TranspilationResult = await new Promise((resolve, reject) => {
       this.queueTask(
         {
           code: newCode,
@@ -167,14 +171,14 @@ class BabelTranspiler extends WorkerTranspiler {
         (err, data) => {
           if (err) {
             loaderContext.emitError(err);
-
             return reject(err);
           }
-
           return resolve(data);
         }
       );
     });
+
+    return result;
   }
 
   async getTranspilerContext(manager: Manager): Promise<any> {
