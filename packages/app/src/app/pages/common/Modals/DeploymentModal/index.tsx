@@ -78,7 +78,7 @@ export const DeploymentModal: FunctionComponent = () => {
           <Button
             css={css({ width: 'auto' })}
             onClick={() => {
-              track('Deploy Clicked', { provider: 'vercel' });
+              track('Production Deploy Clicked', { provider: 'vercel' });
               deployProductionClicked();
             }}
           >
@@ -87,7 +87,7 @@ export const DeploymentModal: FunctionComponent = () => {
           <Button
             css={css({ width: 'auto' })}
             onClick={() => {
-              track('Deploy Clicked', { provider: 'vercel' });
+              track('Preview Deploy Clicked', { provider: 'vercel' });
               deployPreviewClicked();
             }}
           >
