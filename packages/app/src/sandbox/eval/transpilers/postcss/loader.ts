@@ -77,11 +77,13 @@ export default async function (
   );
   if (result.messages) {
     const messages = result.messages as any[];
-    messages.forEach(m => {
-      if (m.type === 'dependency') {
-        loaderContext.addDependency(m.file);
-      }
-    });
+    await Promise.all(
+      messages.map(async m => {
+        if (m.type === 'dependency') {
+          await loaderContext.addDependency(m.file);
+        }
+      })
+    );
   }
 
   const map = result.map && result.map.toJSON();

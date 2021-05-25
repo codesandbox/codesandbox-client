@@ -190,15 +190,15 @@ class RefreshTranspiler extends Transpiler {
     super('refresh-loader');
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
-    loaderContext.addDependency('react-refresh/runtime');
+  async doTranspilation(code: string, loaderContext: LoaderContext) {
+    await loaderContext.addDependency('react-refresh/runtime');
     loaderContext.emitModule(HELPER_PATH, HELPER_CODE, '/', false, false);
 
     const newCode = getWrapperCode(code);
 
-    return Promise.resolve({
+    return {
       transpiledCode: newCode || '',
-    });
+    };
   }
 }
 
