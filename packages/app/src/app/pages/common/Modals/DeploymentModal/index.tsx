@@ -67,7 +67,7 @@ export const DeploymentModal: FunctionComponent = () => {
           <VercelIntegration />
         </Stack>
       )}
-      <Stack gap={2} justify="flex-end">
+      <Stack gap={4} justify="flex-end">
         {!vercelSignedIn || deploying ? (
           <Button css={css({ width: 'auto' })} disabled>
             Deploying
