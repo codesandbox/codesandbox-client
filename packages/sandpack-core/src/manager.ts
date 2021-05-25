@@ -738,16 +738,17 @@ export default class Manager implements IEvaluator {
     currentPath: string,
     defaultExtensions = ['js', 'jsx', 'json', 'mjs']
   ): Promise<Module> {
-    if (this.transpiledModules[path]) {
-      return this.transpiledModules[path].module;
-    }
-
     // Handle ESModule import
     if (isUrl(path) || isUrl(currentPath)) {
       const esmoduleUrl = new URL(
         path,
         isUrl(currentPath) ? currentPath : undefined
       ).href;
+
+      if (this.transpiledModules[esmoduleUrl]) {
+        return this.transpiledModules[esmoduleUrl].module;
+      }
+
       const esmoduleContent = await this.downloadESModule(esmoduleUrl);
       this.addModule({
         path: esmoduleUrl,
@@ -764,12 +765,11 @@ export default class Manager implements IEvaluator {
 
     const cachedPath = this.cachedPaths[dirredPath][path];
 
-    if (cachedPath) {
-      return Promise.resolve(this.transpiledModules[cachedPath].module);
-    }
-
-    const measureKey = `resolve-async:${path}:${currentPath}`;
-    return new Promise((promiseResolve, promiseReject) => {
+    let resolvedPath: string;
+    if (cachedPath && this.transpiledModules[cachedPath]) {
+      resolvedPath = cachedPath;
+    } else {
+      const measureKey = `resolve-async:${path}:${currentPath}`;
       measure(measureKey);
       const presetAliasedPath = this.getPresetAliasedPath(path);
 
@@ -781,95 +781,112 @@ export default class Manager implements IEvaluator {
 
       if (NODE_LIBS.indexOf(shimmedPath) > -1) {
         this.cachedPaths[dirredPath][path] = shimmedPath;
-        promiseResolve(getShimmedModuleFromPath(currentPath, path));
-        return;
+        return getShimmedModuleFromPath(currentPath, path);
       }
 
-      resolve(
-        shimmedPath,
-        {
-          filename: currentPath,
-          extensions: defaultExtensions.map(ext => '.' + ext),
-          isFile: this.isFile,
-          // @ts-ignore
-          readFile: this.readFileSync,
-          packageFilter: packageFilter(this.isFile),
-          moduleDirectory: this.getModuleDirectories(),
-        },
-        (err: Error | undefined, foundPath: string) => {
-          endMeasure(measureKey);
-          if (err) {
-            if (
-              this.cachedPaths[dirredPath] &&
-              this.cachedPaths[dirredPath][path]
-            ) {
-              delete this.cachedPaths[dirredPath][path];
-            }
-
-            let connectedPath = shimmedPath;
-            if (connectedPath.indexOf('/node_modules') !== 0) {
-              connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
-                ? pathUtils.join('/node_modules', shimmedPath)
-                : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
-            }
-
-            const isDependency = connectedPath.includes('/node_modules/');
-
-            connectedPath = connectedPath.replace('/node_modules/', '');
-
-            if (!isDependency) {
-              promiseReject(
-                new ModuleNotFoundError(shimmedPath, false, currentPath)
-              );
-            }
-
-            const dependencyName = getDependencyName(connectedPath);
-
-            if (
-              dependencyName &&
-              (this.manifest.dependencies.find(
-                d => d.name === dependencyName
-              ) ||
-                this.manifest.dependencyDependencies[dependencyName] ||
-                this.manifest.contents[
-                  `/node_modules/${dependencyName}/package.json`
-                ])
-            ) {
-              promiseReject(
-                new ModuleNotFoundError(connectedPath, true, currentPath)
-              );
-            } else {
-              promiseReject(
-                new DependencyNotFoundError(connectedPath, currentPath)
-              );
-            }
-
-            return;
-          }
-
-          this.cachedPaths[dirredPath][path] = foundPath;
-
-          if (foundPath === '//empty.js') {
-            promiseResolve(getShimmedModuleFromPath(currentPath, path));
-            return;
-          }
-
-          if (!this.transpiledModules[foundPath]) {
-            this.readFileSync(foundPath, (error, code) => {
-              if (error) {
-                promiseReject(error);
-                return;
+      try {
+        resolvedPath = await new Promise((resolvePromise, rejectPromise) => {
+          resolve(
+            shimmedPath,
+            {
+              filename: currentPath,
+              extensions: defaultExtensions.map(ext => '.' + ext),
+              isFile: this.isFile,
+              // @ts-ignore
+              readFile: this.readFileSync,
+              packageFilter: packageFilter(this.isFile),
+              moduleDirectory: this.getModuleDirectories(),
+            },
+            (err: Error | undefined, foundPath: string) => {
+              if (err) {
+                return rejectPromise(err);
               }
+              return resolvePromise(foundPath);
+            }
+          );
+        });
 
-              this.addModule({ path: foundPath, code: code || '' });
-              promiseResolve(this.transpiledModules[foundPath].module);
+        endMeasure(measureKey);
+
+        this.cachedPaths[dirredPath][path] = resolvedPath;
+
+        if (resolvedPath === '//empty.js') {
+          return getShimmedModuleFromPath(currentPath, path);
+        }
+
+        if (!this.transpiledModules[resolvedPath]) {
+          try {
+            const remoteFileContent: string = await new Promise(
+              (promiseResolve, promiseReject) => {
+                this.readFileSync(resolvedPath, (error, content) => {
+                  if (error) {
+                    return promiseReject(error);
+                  }
+
+                  if (!content) {
+                    return promiseReject(
+                      new Error(`File ${resolvedPath} not found.`)
+                    );
+                  }
+
+                  return promiseResolve(content);
+                });
+              }
+            );
+            this.addModule({
+              path: resolvedPath,
+              code: remoteFileContent || '',
             });
-          } else {
-            promiseResolve(this.transpiledModules[foundPath].module);
+          } catch (err) {
+            throw new Error(`Could not find '${resolvedPath}' in local files.`);
           }
         }
-      );
-    });
+      } catch (err) {
+        if (
+          this.cachedPaths[dirredPath] &&
+          this.cachedPaths[dirredPath][path]
+        ) {
+          delete this.cachedPaths[dirredPath][path];
+        }
+
+        let connectedPath = shimmedPath;
+        if (connectedPath.indexOf('/node_modules') !== 0) {
+          connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
+            ? pathUtils.join('/node_modules', shimmedPath)
+            : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+        }
+
+        const isDependency = connectedPath.includes('/node_modules/');
+
+        connectedPath = connectedPath.replace('/node_modules/', '');
+
+        if (!isDependency) {
+          throw new ModuleNotFoundError(shimmedPath, false, currentPath);
+        }
+
+        const dependencyName = getDependencyName(connectedPath);
+
+        // TODO: fix the stack hack
+        if (
+          dependencyName &&
+          (this.manifest.dependencies.find(d => d.name === dependencyName) ||
+            this.manifest.dependencyDependencies[dependencyName] ||
+            this.manifest.contents[
+              `/node_modules/${dependencyName}/package.json`
+            ])
+        ) {
+          throw new ModuleNotFoundError(connectedPath, true, currentPath);
+        } else {
+          throw new DependencyNotFoundError(connectedPath, currentPath);
+        }
+      }
+    }
+
+    if (resolvedPath === '//empty.js') {
+      return getShimmedModuleFromPath(currentPath, path);
+    }
+
+    return this.transpiledModules[resolvedPath].module;
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH ASYNC VERSION
@@ -878,11 +895,16 @@ export default class Manager implements IEvaluator {
     currentPath: string,
     defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
   ): Module {
-    if (this.transpiledModules[path]) {
-      return this.transpiledModules[path].module;
-    }
-
     if (isUrl(path) || isUrl(currentPath)) {
+      const esmoduleUrl = new URL(
+        path,
+        isUrl(currentPath) ? currentPath : undefined
+      ).href;
+
+      if (this.transpiledModules[esmoduleUrl]) {
+        return this.transpiledModules[esmoduleUrl].module;
+      }
+
       throw new Error('Cannot import urls synchronously');
     }
 
@@ -1092,12 +1114,12 @@ export default class Manager implements IEvaluator {
     }
 
     const { queryPath, modulePath } = splitQueryFromPath(path);
-    const module = this.resolveModule(
+    const resolvedModule = this.resolveModule(
       modulePath,
       currentPath,
       ignoredExtensions || this.preset.ignoredExtensions
     );
-    return this.getTranspiledModule(module, queryPath);
+    return this.getTranspiledModule(resolvedModule, queryPath);
   }
 
   resolveTranspiledModulesInDirectory(

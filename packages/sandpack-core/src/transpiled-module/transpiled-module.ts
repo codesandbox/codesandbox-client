@@ -331,8 +331,7 @@ export class TranspiledModule {
     }
 
     try {
-      // TODO: This causes everything to crash if we make it async... figure out why?
-      const tModule = manager.resolveTranspiledModuleSync(
+      const tModule = await manager.resolveTranspiledModule(
         depPath,
         options && options.isAbsolute ? '/' : this.module.path
       );
