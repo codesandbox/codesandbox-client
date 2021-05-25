@@ -67,27 +67,33 @@ export const DeploymentModal: FunctionComponent = () => {
           <VercelIntegration />
         </Stack>
       )}
-      <Stack justify="flex-end">
-        <Button
-          css={css({ width: 'auto' })}
-          onClick={() => {
-            track('Deploy Clicked', { provider: 'vercel' });
-            deployProductionClicked();
-          }}
-          disabled={!vercelSignedIn || deploying}
-        >
-          {deploying ? 'Deploying' : 'Deploy Sandbox to Production'}
-        </Button>
-        <Button
-          css={css({ width: 'auto' })}
-          onClick={() => {
-            track('Deploy Clicked', { provider: 'vercel' });
-            deployPreviewClicked();
-          }}
-          disabled={!vercelSignedIn || deploying}
-        >
-          {deploying ? 'Deploying' : 'Deploy Sandbox to Preview'}
-        </Button>
+      <Stack gap={2} justify="flex-end">
+        {!vercelSignedIn || deploying ? (
+          <Button css={css({ width: 'auto' })} disabled>
+            Deploying
+          </Button>
+        ) : (
+          <span>
+            <Button
+              css={css({ width: 'auto' })}
+              onClick={() => {
+                track('Deploy Clicked', { provider: 'vercel' });
+                deployProductionClicked();
+              }}
+            >
+              Deploy Sandbox to Production
+            </Button>
+            <Button
+              css={css({ width: 'auto' })}
+              onClick={() => {
+                track('Deploy Clicked', { provider: 'vercel' });
+                deployPreviewClicked();
+              }}
+            >
+              Deploy Sandbox to Preview
+            </Button>
+          </span>
+        )}
       </Stack>
     </Alert>
   );
