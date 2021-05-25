@@ -68,9 +68,11 @@ export const DeploymentModal: FunctionComponent = () => {
         </Stack>
       )}
       {!vercelSignedIn || deploying ? (
-        <Button css={css({ width: 'auto' })} disabled>
-          Deploying
-        </Button>
+        <Stack justify="flex-end">
+          <Button css={css({ width: 'auto' })} disabled>
+            Deploying
+          </Button>
+        </Stack>
       ) : (
         <Stack gap={4} justify="flex-end">
           <Button
