@@ -49,7 +49,12 @@ top of that we’re also making play.js free, which means you can try it out
 directly by installing it
 [from here!](https://apps.apple.com/us/app/play-js-javascript-ide/id1423330822)
 
-![playjs](./images/playjs.gif)
+<!-- ![playjs](./images/playjs.gif) -->
+<!-- import video from ‘!file-loader!./images/playjs.webm’; -->
+<video autoplay loop muted width="100%">
+  <source src="./images/playjs.webm" type="video/webm">
+  <source src="./images/playjs.mp4" type="video/mp4">
+</video>
 
 ### What’s Next
 
