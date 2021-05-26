@@ -42,7 +42,7 @@ const Anywhere = () => (
         display: block;
       `}
     >
-      Code from anywhere with Play.js by CodeSandbox
+      Code from anywhere with play.js by CodeSandbox
     </P>
 
     <Button
@@ -53,7 +53,7 @@ const Anywhere = () => (
       `}
       href="/blog"
     >
-      Learn more about Play.js
+      Learn more about play.js
     </Button>
 
     <motion.div
@@ -70,7 +70,7 @@ const Anywhere = () => (
     >
       <div
         css={`
-          margin: 6rem 4rem 0;
+          margin: 6rem 4rem 0 7rem;
           max-height: 320px;
           max-width: 1024px;
           display: block;
