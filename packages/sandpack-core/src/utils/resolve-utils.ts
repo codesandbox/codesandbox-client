@@ -10,13 +10,3 @@ export const packageFilter = (isFile: (p: string) => boolean = () => true) => (
 
   return p;
 };
-
-export const isUrl = (filepath: string) => {
-  try {
-    const parsedUrl = new URL(filepath);
-    return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
-  } catch (err) {
-    // do nothing
-  }
-  return false;
-};

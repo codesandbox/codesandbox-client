@@ -29,7 +29,7 @@ import {
   getAliasVersion,
   getDependencyName,
 } from './utils/get-dependency-name';
-import { isUrl, packageFilter } from './utils/resolve-utils';
+import { packageFilter } from './utils/resolve-utils';
 
 import {
   ignoreNextCache,
@@ -46,7 +46,7 @@ import {
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
 import { fetchWithRetries } from './npm/dynamic/fetch-protocols/utils';
-import { getESModuleUrl } from './utils/esmodule-url';
+import { getESModuleUrl, isUrl } from './utils/esmodule-url';
 
 declare const BrowserFS: any;
 
