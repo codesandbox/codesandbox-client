@@ -28,7 +28,9 @@ async function addAngularJSONPolyfills(manager) {
         const polyfillLocation = absolute(
           join(project.root, build.options.polyfill)
         );
-        const polyfills = await manager.resolveModuleAsync(polyfillLocation, '/');
+        const polyfills = await manager.resolveModuleAsync({
+          path: polyfillLocation,
+        });
 
         await manager.transpileModules(polyfills);
         manager.evaluateModule(polyfills);
@@ -44,7 +46,9 @@ async function addAngularCLIPolyfills(manager) {
 
     if (app.root && app.polyfills) {
       const polyfillLocation = absolute(join(app.root, app.polyfills));
-      const polyfills = await manager.resolveModuleAsync(polyfillLocation, '/');
+      const polyfills = await manager.resolveModuleAsync({
+        path: polyfillLocation,
+      });
 
       await manager.transpileModules(polyfills);
       manager.evaluateModule(polyfills);
@@ -163,7 +167,9 @@ export default function initialize() {
     {
       setup: async manager => {
         if (!polyfillsLoaded) {
-          const zone = await manager.resolveModuleAsync('zone.js', '/');
+          const zone = await manager.resolveModuleAsync({
+            path: 'zone.js',
+          });
           await manager.transpileModules(zone);
           manager.evaluateModule(zone);
 

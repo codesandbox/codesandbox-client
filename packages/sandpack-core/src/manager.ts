@@ -733,17 +733,23 @@ export default class Manager implements IEvaluator {
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
-  async resolveModuleAsync(
-    path: string,
-    currentPath: string,
-    defaultExtensions = ['js', 'jsx', 'json', 'mjs']
-  ): Promise<Module> {
+  async resolveModuleAsync({
+    path,
+    parentPath = '/',
+    query = '',
+    defaultExtensions = DEFAULT_EXTENSIONS,
+  }: {
+    path: string;
+    parentPath?: string;
+    query?: string;
+    defaultExtensions?: Array<string>;
+  }): Promise<Module> {
     // Handle ESModule import
-    if (isUrl(path) || isUrl(currentPath)) {
+    if (isUrl(path) || isUrl(parentPath)) {
       if (isUrl(path) || path[0] === '/' || path[0] === '.') {
         const esmoduleUrl = new URL(
-          path,
-          isUrl(currentPath) ? currentPath : undefined
+            path, //`${path}?${query}`,
+          isUrl(parentPath) ? parentPath : undefined
         ).href;
 
         if (this.transpiledModules[esmoduleUrl]) {
@@ -760,10 +766,10 @@ export default class Manager implements IEvaluator {
       }
 
       // eslint-disable-next-line no-param-reassign
-      currentPath = '/package.json';
+      parentPath = '/package.json';
     }
 
-    const dirredPath = pathUtils.dirname(currentPath);
+    const dirredPath = pathUtils.dirname(parentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
       this.cachedPaths[dirredPath] = {};
     }
@@ -774,19 +780,19 @@ export default class Manager implements IEvaluator {
     if (cachedPath && this.transpiledModules[cachedPath]) {
       resolvedPath = cachedPath;
     } else {
-      const measureKey = `resolve-async:${path}:${currentPath}`;
+      const measureKey = `resolve-async:${path}:${parentPath}`;
       measure(measureKey);
       const presetAliasedPath = this.getPresetAliasedPath(path);
 
       const aliasedPath = this.getAliasedDependencyPath(
         presetAliasedPath,
-        currentPath
+        parentPath
       );
       const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
       if (NODE_LIBS.indexOf(shimmedPath) > -1) {
         this.cachedPaths[dirredPath][path] = shimmedPath;
-        return getShimmedModuleFromPath(currentPath, path);
+        return getShimmedModuleFromPath(parentPath, path);
       }
 
       try {
@@ -794,7 +800,7 @@ export default class Manager implements IEvaluator {
           resolve(
             shimmedPath,
             {
-              filename: currentPath,
+              filename: parentPath,
               extensions: defaultExtensions.map(ext => '.' + ext),
               isFile: this.isFile,
               // @ts-ignore
@@ -816,7 +822,7 @@ export default class Manager implements IEvaluator {
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
         if (resolvedPath === '//empty.js') {
-          return getShimmedModuleFromPath(currentPath, path);
+          return getShimmedModuleFromPath(parentPath, path);
         }
 
         if (!this.transpiledModules[resolvedPath]) {
@@ -858,7 +864,7 @@ export default class Manager implements IEvaluator {
         if (connectedPath.indexOf('/node_modules') !== 0) {
           connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
             ? pathUtils.join('/node_modules', shimmedPath)
-            : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+            : pathUtils.join(pathUtils.dirname(parentPath), shimmedPath);
         }
 
         const isDependency = connectedPath.includes('/node_modules/');
@@ -866,7 +872,7 @@ export default class Manager implements IEvaluator {
         connectedPath = connectedPath.replace('/node_modules/', '');
 
         if (!isDependency) {
-          throw new ModuleNotFoundError(shimmedPath, false, currentPath);
+          throw new ModuleNotFoundError(shimmedPath, false, parentPath);
         }
 
         const dependencyName = getDependencyName(connectedPath);
@@ -880,31 +886,37 @@ export default class Manager implements IEvaluator {
               `/node_modules/${dependencyName}/package.json`
             ])
         ) {
-          throw new ModuleNotFoundError(connectedPath, true, currentPath);
+          throw new ModuleNotFoundError(connectedPath, true, parentPath);
         } else {
-          throw new DependencyNotFoundError(connectedPath, currentPath);
+          throw new DependencyNotFoundError(connectedPath, parentPath);
         }
       }
     }
 
     if (resolvedPath === '//empty.js') {
-      return getShimmedModuleFromPath(currentPath, path);
+      return getShimmedModuleFromPath(parentPath, path);
     }
 
     return this.transpiledModules[resolvedPath].module;
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH ASYNC VERSION
-  resolveModule(
-    path: string,
-    currentPath: string,
-    defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
-  ): Module {
-    if (isUrl(path) || isUrl(currentPath)) {
-      if (currentPath[0] === '/' || currentPath[0] === '.') {
+  resolveModule({
+    path,
+    parentPath = '/',
+    query = '',
+    defaultExtensions = DEFAULT_EXTENSIONS,
+  }: {
+    path: string;
+    parentPath?: string;
+    query?: string;
+    defaultExtensions?: Array<string>;
+  }): Module {
+    if (isUrl(path) || isUrl(parentPath)) {
+      if (parentPath[0] === '/' || parentPath[0] === '.') {
         const esmoduleUrl = new URL(
-          path,
-          isUrl(currentPath) ? currentPath : undefined
+            path, // `${path}?${query}`,
+          isUrl(parentPath) ? parentPath : undefined
         ).href;
 
         if (this.transpiledModules[esmoduleUrl]) {
@@ -915,10 +927,10 @@ export default class Manager implements IEvaluator {
       }
 
       // eslint-disable-next-line no-param-reassign
-      currentPath = '/package.json';
+      parentPath = '/package.json';
     }
 
-    const dirredPath = pathUtils.dirname(currentPath);
+    const dirredPath = pathUtils.dirname(parentPath);
     if (this.cachedPaths[dirredPath] === undefined) {
       this.cachedPaths[dirredPath] = {};
     }
@@ -930,24 +942,24 @@ export default class Manager implements IEvaluator {
     if (cachedPath && this.transpiledModules[cachedPath]) {
       resolvedPath = cachedPath;
     } else {
-      const measureKey = `resolve-sync:${path}:${currentPath}`;
+      const measureKey = `resolve-sync:${path}:${parentPath}`;
       measure(measureKey);
       const presetAliasedPath = this.getPresetAliasedPath(path);
 
       const aliasedPath = this.getAliasedDependencyPath(
         presetAliasedPath,
-        currentPath
+        parentPath
       );
       const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
       if (NODE_LIBS.indexOf(shimmedPath) > -1) {
         this.cachedPaths[dirredPath][path] = shimmedPath;
-        return getShimmedModuleFromPath(currentPath, path);
+        return getShimmedModuleFromPath(parentPath, path);
       }
 
       try {
         resolvedPath = resolve.sync(shimmedPath, {
-          filename: currentPath,
+          filename: parentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
           // @ts-ignore
@@ -960,7 +972,7 @@ export default class Manager implements IEvaluator {
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
         if (resolvedPath === '//empty.js') {
-          return getShimmedModuleFromPath(currentPath, path);
+          return getShimmedModuleFromPath(parentPath, path);
         }
 
         if (!this.transpiledModules[resolvedPath]) {
@@ -979,7 +991,7 @@ export default class Manager implements IEvaluator {
         if (connectedPath.indexOf('/node_modules') !== 0) {
           connectedPath = /^(\w|@\w|@-)/.test(shimmedPath)
             ? pathUtils.join('/node_modules', shimmedPath)
-            : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+            : pathUtils.join(pathUtils.dirname(parentPath), shimmedPath);
         }
 
         const isDependency = connectedPath.includes('/node_modules/');
@@ -987,7 +999,7 @@ export default class Manager implements IEvaluator {
         connectedPath = connectedPath.replace('/node_modules/', '');
 
         if (!isDependency) {
-          throw new ModuleNotFoundError(shimmedPath, false, currentPath);
+          throw new ModuleNotFoundError(shimmedPath, false, parentPath);
         }
 
         const dependencyName = getDependencyName(connectedPath);
@@ -1001,15 +1013,15 @@ export default class Manager implements IEvaluator {
               `/node_modules/${dependencyName}/package.json`
             ])
         ) {
-          throw new ModuleNotFoundError(connectedPath, true, currentPath);
+          throw new ModuleNotFoundError(connectedPath, true, parentPath);
         } else {
-          throw new DependencyNotFoundError(connectedPath, currentPath);
+          throw new DependencyNotFoundError(connectedPath, parentPath);
         }
       }
     }
 
     if (resolvedPath === '//empty.js') {
-      return getShimmedModuleFromPath(currentPath, path);
+      return getShimmedModuleFromPath(parentPath, path);
     }
 
     return this.transpiledModules[resolvedPath].module;
@@ -1100,11 +1112,12 @@ export default class Manager implements IEvaluator {
     }
 
     const { queryPath, modulePath } = splitQueryFromPath(path);
-    const resolvedModule = await this.resolveModuleAsync(
-      modulePath,
-      currentPath,
-      ignoredExtensions || this.preset.ignoredExtensions
-    );
+    const resolvedModule = await this.resolveModuleAsync({
+      path: modulePath,
+      parentPath: currentPath,
+      defaultExtensions: ignoredExtensions || this.preset.ignoredExtensions,
+      query: queryPath,
+    });
     return this.getTranspiledModule(resolvedModule, queryPath);
   }
 
@@ -1124,11 +1137,12 @@ export default class Manager implements IEvaluator {
     }
 
     const { queryPath, modulePath } = splitQueryFromPath(path);
-    const resolvedModule = this.resolveModule(
-      modulePath,
-      currentPath,
-      ignoredExtensions || this.preset.ignoredExtensions
-    );
+    const resolvedModule = this.resolveModule({
+      path: modulePath,
+      parentPath: currentPath,
+      query: queryPath,
+      defaultExtensions: ignoredExtensions || this.preset.ignoredExtensions,
+    });
     return this.getTranspiledModule(resolvedModule, queryPath);
   }
 

@@ -995,7 +995,10 @@ export class TranspiledModule {
                 throw new Error('Module has no filename');
               }
 
-              const m = manager.resolveModule(toPath, module.filename);
+              const m = manager.resolveModule({
+                path: toPath,
+                parentPath: module.filename,
+              });
               return m.path;
             }
 
@@ -1030,7 +1033,10 @@ export class TranspiledModule {
 
       // @ts-ignore
       require.resolve = function resolve(path: string) {
-        const foundModule = manager.resolveModule(path, localModule.path);
+        const foundModule = manager.resolveModule({
+          path,
+          parentPath: localModule.path,
+        });
 
         return foundModule.path;
       };
