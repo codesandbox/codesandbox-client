@@ -109,7 +109,7 @@ export const Prompt: FunctionComponent = () => {
           href={deepLink}
           style={{ fontSize: 16, height: 40, width: '100%', marginTop: '1rem' }}
         >
-          Open Client
+          Open play.js
         </Button>
       </Buttons>
     </Container>
