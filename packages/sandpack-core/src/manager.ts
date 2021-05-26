@@ -740,22 +740,27 @@ export default class Manager implements IEvaluator {
   ): Promise<Module> {
     // Handle ESModule import
     if (isUrl(path) || isUrl(currentPath)) {
-      const esmoduleUrl = new URL(
-        path,
-        isUrl(currentPath) ? currentPath : undefined
-      ).href;
+      if (isUrl(path) || path[0] === '/' || path[0] === '.') {
+        const esmoduleUrl = new URL(
+          path,
+          isUrl(currentPath) ? currentPath : undefined
+        ).href;
 
-      if (this.transpiledModules[esmoduleUrl]) {
+        if (this.transpiledModules[esmoduleUrl]) {
+          return this.transpiledModules[esmoduleUrl].module;
+        }
+
+        const esmoduleContent = await this.downloadESModule(esmoduleUrl);
+        this.addModule({
+          path: esmoduleUrl,
+          code: esmoduleContent || '',
+          downloaded: true,
+        });
         return this.transpiledModules[esmoduleUrl].module;
       }
 
-      const esmoduleContent = await this.downloadESModule(esmoduleUrl);
-      this.addModule({
-        path: esmoduleUrl,
-        code: esmoduleContent || '',
-        downloaded: true,
-      });
-      return this.transpiledModules[esmoduleUrl].module;
+      // eslint-disable-next-line no-param-reassign
+      currentPath = '/package.json';
     }
 
     const dirredPath = pathUtils.dirname(currentPath);
@@ -896,16 +901,21 @@ export default class Manager implements IEvaluator {
     defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
   ): Module {
     if (isUrl(path) || isUrl(currentPath)) {
-      const esmoduleUrl = new URL(
-        path,
-        isUrl(currentPath) ? currentPath : undefined
-      ).href;
+      if (currentPath[0] === '/' || currentPath[0] === '.') {
+        const esmoduleUrl = new URL(
+          path,
+          isUrl(currentPath) ? currentPath : undefined
+        ).href;
 
-      if (this.transpiledModules[esmoduleUrl]) {
-        return this.transpiledModules[esmoduleUrl].module;
+        if (this.transpiledModules[esmoduleUrl]) {
+          return this.transpiledModules[esmoduleUrl].module;
+        }
+
+        throw new Error('Cannot import urls synchronously');
       }
 
-      throw new Error('Cannot import urls synchronously');
+      // eslint-disable-next-line no-param-reassign
+      currentPath = '/package.json';
     }
 
     const dirredPath = pathUtils.dirname(currentPath);
