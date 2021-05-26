@@ -226,9 +226,9 @@ export class Preset {
     const transpilerNames = query.split('!').filter(x => x);
 
     const extraTranspilers = transpilerNames
-      .map(loaderName => {
-        const [name, options] = loaderName.split('?');
-
+      .map(loaderName => loaderName.split('?'))
+      .filter(([name]) => !!name)
+      .map(([name, options]) => {
         let transpiler = Array.from(this.transpilers).find(
           t => t.name === name
         );

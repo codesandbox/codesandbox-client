@@ -46,6 +46,7 @@ import {
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
 import { fetchWithRetries } from './npm/dynamic/fetch-protocols/utils';
+import { getESModuleUrl } from './utils/esmodule-url';
 
 declare const BrowserFS: any;
 
@@ -744,27 +745,26 @@ export default class Manager implements IEvaluator {
     query?: string;
     defaultExtensions?: Array<string>;
   }): Promise<Module> {
+    const esmoduleUrl = getESModuleUrl(parentPath, path);
     // Handle ESModule import
-    if (isUrl(path) || isUrl(parentPath)) {
-      if (isUrl(path) || path[0] === '/' || path[0] === '.') {
-        const esmoduleUrl = new URL(
-            path, //`${path}?${query}`,
-          isUrl(parentPath) ? parentPath : undefined
-        ).href;
-
-        if (this.transpiledModules[esmoduleUrl]) {
-          return this.transpiledModules[esmoduleUrl].module;
-        }
-
-        const esmoduleContent = await this.downloadESModule(esmoduleUrl);
-        this.addModule({
-          path: esmoduleUrl,
-          code: esmoduleContent || '',
-          downloaded: true,
-        });
+    if (esmoduleUrl) {
+      if (this.transpiledModules[esmoduleUrl]) {
         return this.transpiledModules[esmoduleUrl].module;
       }
 
+      const esmoduleContent = await this.downloadESModule(
+        `${esmoduleUrl}?${query}`
+      );
+      this.addModule({
+        path: esmoduleUrl,
+        code: esmoduleContent || '',
+        downloaded: true,
+      });
+      return this.transpiledModules[esmoduleUrl].module;
+    }
+
+    // Node modules?
+    if (isUrl(parentPath) && !esmoduleUrl) {
       // eslint-disable-next-line no-param-reassign
       parentPath = '/package.json';
     }
@@ -912,20 +912,18 @@ export default class Manager implements IEvaluator {
     query?: string;
     defaultExtensions?: Array<string>;
   }): Module {
-    if (isUrl(path) || isUrl(parentPath)) {
-      if (parentPath[0] === '/' || parentPath[0] === '.') {
-        const esmoduleUrl = new URL(
-            path, // `${path}?${query}`,
-          isUrl(parentPath) ? parentPath : undefined
-        ).href;
-
-        if (this.transpiledModules[esmoduleUrl]) {
-          return this.transpiledModules[esmoduleUrl].module;
-        }
-
-        throw new Error('Cannot import urls synchronously');
+    const esmoduleUrl = getESModuleUrl(parentPath, path);
+    // Handle ESModule import
+    if (esmoduleUrl) {
+      if (this.transpiledModules[esmoduleUrl]) {
+        return this.transpiledModules[esmoduleUrl].module;
       }
 
+      throw new Error('Cannot download ESModule dependencies synchronously');
+    }
+
+    // Node modules?
+    if (isUrl(parentPath) && !esmoduleUrl) {
       // eslint-disable-next-line no-param-reassign
       parentPath = '/package.json';
     }
@@ -1115,8 +1113,8 @@ export default class Manager implements IEvaluator {
     const resolvedModule = await this.resolveModuleAsync({
       path: modulePath,
       parentPath: currentPath,
-      defaultExtensions: ignoredExtensions || this.preset.ignoredExtensions,
       query: queryPath,
+      defaultExtensions: ignoredExtensions || this.preset.ignoredExtensions,
     });
     return this.getTranspiledModule(resolvedModule, queryPath);
   }
