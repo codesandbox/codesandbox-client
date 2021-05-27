@@ -273,6 +273,10 @@ function getDependencies(
     }
   });
 
+  if (d.vue) {
+    returnedDependencies['@vue/babel-plugin-jsx'] = '1.0.6';
+  }
+
   const sandpackConfig =
     (configurations.customTemplate &&
       configurations.customTemplate.parsed &&

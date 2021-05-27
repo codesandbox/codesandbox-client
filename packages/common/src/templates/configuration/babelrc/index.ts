@@ -93,7 +93,7 @@ const config: ConfigurationFile = {
 
       if (isV7) {
         return JSON.stringify({
-          presets: ['@vue/app'],
+          plugins: [['@vue/babel-plugin-jsx', {}]],
         });
       }
       return JSON.stringify(
