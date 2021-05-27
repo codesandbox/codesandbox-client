@@ -98,6 +98,10 @@ function replaceDependencyInfo(
   // Don't change anything if the module is already part of a sub-folder
   // in this case pkg.json won't contain the requested version...
   const pkgJSONPath = `/node_modules/${depDepName}/package.json`;
+  if (!res.contents[pkgJSONPath]) {
+    throw new Error(`Dependency ${depDepName} not found`);
+  }
+
   const parsedPkgJson = JSON.parse(res.contents[pkgJSONPath].content);
   if (parsedPkgJson.version !== newDepDep.resolved) {
     return false;
@@ -142,6 +146,10 @@ function replaceDependencyInfo(
 }
 
 const intersects = (v1: string, v2: string) => {
+  if (v1 === v2) {
+    return true;
+  }
+
   try {
     return semver.intersects(v1, v2);
   } catch (e) {
@@ -195,7 +203,6 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
         // TODO: Also remove contents for conflicts in transient dependencies?
       } else if (response.dependencyDependencies[depDepName]) {
         const exDepDep = response.dependencyDependencies[depDepName];
-
         // Determine which version is newer, needed for some checks later.
         const [newerVersionDepDep, olderVersionDepDep] = semver.gt(
           newDepDep.resolved,
