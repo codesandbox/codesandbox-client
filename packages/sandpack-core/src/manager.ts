@@ -1208,6 +1208,7 @@ export default class Manager implements IEvaluator {
       if (
         !m.path.startsWith('/node_modules') &&
         m.path !== '/var/task/node_modules/browser-resolve/empty.js' &&
+        !isUrl(m.path) &&
         !modules[m.path] &&
         !(m as ChildModule).parent // not an emitted module
       ) {
