@@ -666,15 +666,6 @@ self.addEventListener('message', async event => {
         Babel.registerPreset('env', Babel.availablePresets.latest);
       }
 
-      // A plugin reaches into the internal of the preset and the pre-bundled preset-env does not have this function
-      // Hence, for this particular case, we dynamically import the real @babel/preset-env
-      if (version === 7 && flattenedPresets.includes('@vue/app')) {
-        // Hardcode, since we want to override env
-        Babel.availablePresets.env = await import(
-          /* webpackChunkName: 'babel-preset-env' */ '@babel/preset-env'
-        );
-      }
-
       if (
         (flattenedPlugins.indexOf('transform-vue-jsx') > -1 ||
           flattenedPlugins.indexOf('babel-plugin-transform-vue-jsx') > -1) &&
