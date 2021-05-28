@@ -4,6 +4,7 @@ import resolve from 'browser-resolve';
 import fs from 'fs';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
+import { isUrl } from '@codesandbox/common/lib/utils/is-url';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
@@ -46,7 +47,7 @@ import {
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
 import { fetchWithRetries } from './npm/dynamic/fetch-protocols/utils';
-import { getESModuleUrl, isUrl } from './utils/esmodule-url';
+import { getESModuleUrl } from './utils/esmodule-url';
 
 declare const BrowserFS: any;
 

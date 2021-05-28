@@ -1,5 +1,6 @@
 /* eslint-enable import/default */
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
+import { isUrl } from '@codesandbox/common/lib/utils/is-url';
 import isESModule from 'sandbox/eval/utils/is-es-module';
 /* eslint-disable import/default */
 // @ts-ignore
@@ -57,7 +58,7 @@ class BabelTranspiler extends WorkerTranspiler {
     const { path } = loaderContext;
     let newCode = code;
 
-    const isNodeModule = path.startsWith('/node_modules');
+    const isNodeModule = path.startsWith('/node_modules') || isUrl(path);
 
     /**
      * We should never transpile babel-standalone, because it relies on code that runs
@@ -71,7 +72,7 @@ class BabelTranspiler extends WorkerTranspiler {
       return { transpiledCode: code };
     }
 
-    let convertedToEsmodule = false;
+    let convertedToCommonJS = false;
     let ast: Program | undefined;
     if (isESModule(newCode) && isNodeModule) {
       try {
@@ -80,7 +81,7 @@ class BabelTranspiler extends WorkerTranspiler {
         newCode = esModuleInfo.code;
         endMeasure(`esconvert-${path}`, { silent: true });
         ast = esModuleInfo.ast;
-        convertedToEsmodule = true;
+        convertedToCommonJS = true;
       } catch (e) {
         console.warn(
           `Error when converting '${path}' esmodule to commonjs: ${e.message}`
@@ -99,7 +100,7 @@ class BabelTranspiler extends WorkerTranspiler {
       if (
         (loaderContext.options.simpleRequire || isNodeModule) &&
         !syntaxInfo.jsx &&
-        !(!convertedToEsmodule && syntaxInfo.esm)
+        !(!convertedToCommonJS && syntaxInfo.esm)
       ) {
         await Promise.all(
           regexGetRequireStatements(newCode).map(async dependency => {
