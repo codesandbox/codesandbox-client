@@ -94,7 +94,7 @@ class BabelTranspiler extends WorkerTranspiler {
           !syntaxInfo.jsx &&
           !(!convertedToEsmodule && syntaxInfo.esm)
         ) {
-          measure(`regex-dep-collection-old-${path}`);
+          measure(`dep-collection-${path}`);
           collectDependencies(ast).forEach(dependency => {
             if (dependency.isGlob) {
               loaderContext.addDependenciesInDirectory(dependency.path);
@@ -102,7 +102,7 @@ class BabelTranspiler extends WorkerTranspiler {
               loaderContext.addDependency(dependency.path);
             }
           });
-          endMeasure(`regex-dep-collection-old-${path}`, { silent: false });
+          endMeasure(`dep-collection-${path}`, { silent: true });
 
           resolve({
             transpiledCode: generateCode(ast),
