@@ -136,9 +136,8 @@ export function convertEsModule(program: meriyah.ESTree.Program) {
   // If there is a declaration of `exports` (`var exports = []`), we need to rename this
   // variable as it's a reserved keyword
   let exportsDefined = false;
-  // @ts-ignore
-  // eslint-disable-next-line no-param-reassign
-  program = walk(program, {
+
+  walk(program, {
     enter(node, parent) {
       if (node.type === n.VariableDeclaration) {
         // We don't rename exports vars in functions, only on root level
@@ -552,9 +551,7 @@ export function convertEsModule(program: meriyah.ESTree.Program) {
   ) {
     // Convert all the object shorthands to not shorthands, needed later when we rename variables so we
     // don't change to the key literals
-    // @ts-ignore
-    // eslint-disable-next-line no-param-reassign
-    program = walk(program, {
+    walk(program, {
       enter(node, parent, prop, index) {
         if (node.type === n.Property) {
           const property = node as Property;
