@@ -1,5 +1,5 @@
-import { ESTree } from 'meriyah';
 import { walk } from 'estree-walker';
+import { ESTreeAST } from './utils';
 
 interface Dependency {
   type: string;
@@ -7,9 +7,9 @@ interface Dependency {
   isGlob?: boolean;
 }
 
-export function collectDependencies(ast: ESTree.Program): Array<Dependency> {
+export function collectDependencies(ast: ESTreeAST): Array<Dependency> {
   const deps: Array<Dependency> = [];
-  walk(ast, {
+  walk(ast.program, {
     enter(node) {
       // @ts-ignore
       if (node.type === 'CallExpression' && node.callee.name === 'require') {

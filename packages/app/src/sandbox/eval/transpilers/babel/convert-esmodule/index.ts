@@ -21,12 +21,16 @@ import {
   generateInteropRequireExpression,
   generateExportGetter,
 } from './utils';
+import { ESTreeAST } from '../ast/utils';
 
 // TODO: Don't generate or parse in this method... we can re-use the ast...
 /**
  * Converts esmodule code to commonjs code, built to be as fast as possible
  */
-export function convertEsModule(program: meriyah.ESTree.Program) {
+export function convertEsModule(ast: ESTreeAST) {
+  const program = ast.program;
+  ast.isDirty = true;
+
   const usedVarNames = {};
   const varsToRename = {};
   const trackedExports = {};

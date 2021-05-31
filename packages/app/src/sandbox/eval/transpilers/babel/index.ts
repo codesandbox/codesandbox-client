@@ -7,13 +7,12 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 
 import delay from '@codesandbox/common/lib/utils/delay';
 import { endMeasure, measure } from '@codesandbox/common/lib/utils/metrics';
-import { Program } from 'meriyah/dist/estree';
 import { LoaderContext, Manager } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler';
 import getBabelConfig from './babel-parser';
 import { convertEsModule } from './convert-esmodule';
 import { getSyntaxInfoFromAst } from './syntax-info';
-import { generateCode, parseModule } from './ast/utils';
+import { ESTreeAST, generateCode, parseModule } from './ast/utils';
 import { collectDependencies } from './ast/collect-dependencies';
 
 const global = window as any;
@@ -68,7 +67,7 @@ class BabelTranspiler extends WorkerTranspiler {
         return;
       }
 
-      const ast: Program | undefined = parseModule(code);
+      const ast: ESTreeAST = parseModule(code);
       let convertedToEsmodule = false;
       if (isESModule(code) && isNodeModule) {
         try {
@@ -147,7 +146,7 @@ class BabelTranspiler extends WorkerTranspiler {
 
       // TODO: Sourcemaps?
       // eslint-disable-next-line no-param-reassign
-      code = generateCode(ast);
+      code = ast.isDirty ? generateCode(ast) : code;
       this.queueTask(
         {
           code,
