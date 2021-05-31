@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { Stack, Text, Button } from '@codesandbox/components';
-import { useActions } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const SignInBanner = () => {
-  const { signInClicked } = useActions();
+  const state = useAppState();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    if (state.editor.changeCounter >= 3) {
       setShow(true);
-      // 3 minutes
-    }, 180000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
+    }
+  }, [state.editor.changeCounter]);
 
   return (
     <AnimatePresence>

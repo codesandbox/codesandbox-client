@@ -553,6 +553,10 @@ export const codeChanged = (
 ) => {
   effects.analytics.trackOnce('Change Code');
 
+  if (!state.user) {
+    state.editor.changeCounter++;
+  }
+
   if (!state.editor.currentSandbox) {
     return;
   }
