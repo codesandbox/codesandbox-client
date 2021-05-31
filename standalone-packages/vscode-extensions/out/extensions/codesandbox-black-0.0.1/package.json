@@ -18,6 +18,11 @@
 				"label": "CodeSandbox Black",
 				"uiTheme": "vs-dark",
 				"path": "./themes/codesandbox-black.json"
+			},
+			{
+				"label": "CodeSandbox Black 2021",
+				"uiTheme": "vs-dark",
+				"path": "./themes/codesandbox-black-2021.json"
 			}
 		]
 	}
