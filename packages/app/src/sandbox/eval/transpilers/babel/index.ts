@@ -12,8 +12,9 @@ import { LoaderContext, Manager } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler';
 import getBabelConfig from './babel-parser';
 import { convertEsModule } from './convert-esmodule';
-import regexGetRequireStatements from './worker/simple-get-require-statements';
-import { getSyntaxInfoFromAst, getSyntaxInfoFromCode } from './syntax-info';
+import { getSyntaxInfoFromAst } from './syntax-info';
+import { generateCode, parseModule } from './ast/utils';
+import { collectDependencies } from './ast/collect-dependencies';
 
 const global = window as any;
 const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
@@ -52,8 +53,6 @@ class BabelTranspiler extends WorkerTranspiler {
   ): Promise<{ transpiledCode: string }> {
     return new Promise((resolve, reject) => {
       const { path } = loaderContext;
-      let newCode = code;
-
       const isNodeModule = path.startsWith('/node_modules');
 
       /**
@@ -69,15 +68,13 @@ class BabelTranspiler extends WorkerTranspiler {
         return;
       }
 
+      const ast: Program | undefined = parseModule(code);
       let convertedToEsmodule = false;
-      let ast: Program | undefined;
-      if (isESModule(newCode) && isNodeModule) {
+      if (isESModule(code) && isNodeModule) {
         try {
           measure(`esconvert-${path}`);
-          const esModuleInfo = convertEsModule(newCode);
-          newCode = esModuleInfo.code;
+          convertEsModule(ast);
           endMeasure(`esconvert-${path}`, { silent: true });
-          ast = esModuleInfo.ast;
           convertedToEsmodule = true;
         } catch (e) {
           console.warn(
@@ -86,9 +83,7 @@ class BabelTranspiler extends WorkerTranspiler {
         }
       }
 
-      const syntaxInfo = ast
-        ? getSyntaxInfoFromAst(ast)
-        : getSyntaxInfoFromCode(newCode, path);
+      const syntaxInfo = getSyntaxInfoFromAst(ast);
       try {
         // When we find a node_module that already is commonjs we will just get the
         // dependencies from the file and return the same code. We get the dependencies
@@ -99,16 +94,18 @@ class BabelTranspiler extends WorkerTranspiler {
           !syntaxInfo.jsx &&
           !(!convertedToEsmodule && syntaxInfo.esm)
         ) {
-          regexGetRequireStatements(newCode).forEach(dependency => {
+          measure(`regex-dep-collection-old-${path}`);
+          collectDependencies(ast).forEach(dependency => {
             if (dependency.isGlob) {
               loaderContext.addDependenciesInDirectory(dependency.path);
             } else {
               loaderContext.addDependency(dependency.path);
             }
           });
+          endMeasure(`regex-dep-collection-old-${path}`, { silent: false });
 
           resolve({
-            transpiledCode: newCode,
+            transpiledCode: generateCode(ast),
           });
           return;
         }
@@ -148,9 +145,12 @@ class BabelTranspiler extends WorkerTranspiler {
         isV7
       );
 
+      // TODO: Sourcemaps?
+      // eslint-disable-next-line no-param-reassign
+      code = generateCode(ast);
       this.queueTask(
         {
-          code: newCode,
+          code,
           config: babelConfig,
           path,
           loaderOptions,

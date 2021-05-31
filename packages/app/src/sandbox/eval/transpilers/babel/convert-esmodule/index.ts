@@ -1,7 +1,6 @@
 // This code is written to be performant, that's why we opted to ignore these linting issues
 /* eslint-disable no-loop-func, no-continue */
 import * as meriyah from 'meriyah';
-import * as astring from 'astring';
 import * as escope from 'escope';
 import { basename } from 'path';
 import { walk } from 'estree-walker';
@@ -22,14 +21,12 @@ import {
   generateInteropRequireExpression,
   generateExportGetter,
 } from './utils';
-import { customGenerator } from './generator';
 
+// TODO: Don't generate or parse in this method... we can re-use the ast...
 /**
  * Converts esmodule code to commonjs code, built to be as fast as possible
  */
-export function convertEsModule(
-  code: string
-): { code: string; ast: meriyah.ESTree.Program } {
+export function convertEsModule(program: meriyah.ESTree.Program) {
   const usedVarNames = {};
   const varsToRename = {};
   const trackedExports = {};
@@ -46,12 +43,6 @@ export function convertEsModule(
     usedVarNames[usedName] = true;
     return usedName;
   };
-
-  let program = meriyah.parseModule(code, {
-    next: true,
-    raw: true,
-    jsx: true,
-  });
 
   let i = 0;
   let importOffset = 0;
@@ -146,6 +137,7 @@ export function convertEsModule(
   // variable as it's a reserved keyword
   let exportsDefined = false;
   // @ts-ignore
+  // eslint-disable-next-line no-param-reassign
   program = walk(program, {
     enter(node, parent) {
       if (node.type === n.VariableDeclaration) {
@@ -561,6 +553,7 @@ export function convertEsModule(
     // Convert all the object shorthands to not shorthands, needed later when we rename variables so we
     // don't change to the key literals
     // @ts-ignore
+    // eslint-disable-next-line no-param-reassign
     program = walk(program, {
       enter(node, parent, prop, index) {
         if (node.type === n.Property) {
@@ -617,9 +610,4 @@ export function convertEsModule(
   }
 
   addExportVoids();
-  const finalCode = astring.generate(program as any, {
-    generator: customGenerator,
-  });
-
-  return { code: `"use strict";\n${finalCode}`, ast: program };
 }
