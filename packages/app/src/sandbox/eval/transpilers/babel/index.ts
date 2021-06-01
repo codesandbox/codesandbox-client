@@ -60,58 +60,51 @@ class BabelTranspiler extends WorkerTranspiler {
        * would then break the code (because it expects `this` to be global). No transpiler
        * can fix this, and because of this we need to just specifically ignore this file.
        */
-      const shouldIgnore = path === '/node_modules/babel-standalone/babel.js';
-
-      if (shouldIgnore) {
+      if (path === '/node_modules/babel-standalone/babel.js') {
         resolve({ transpiledCode: code });
         return;
       }
 
-      const ast: ESTreeAST = parseModule(code);
-      let convertedToEsmodule = false;
-      if (isESModule(code) && isNodeModule) {
+      if (loaderContext.options.simpleRequire || isNodeModule) {
         try {
-          measure(`esconvert-${path}`);
-          convertEsModule(ast);
-          endMeasure(`esconvert-${path}`, { silent: true });
-          convertedToEsmodule = true;
-        } catch (e) {
+          const ast: ESTreeAST = parseModule(code);
+          if (isNodeModule && isESModule(code)) {
+            measure(`esconvert-${path}`);
+            convertEsModule(ast);
+            endMeasure(`esconvert-${path}`, { silent: true });
+          }
+
+          const syntaxInfo = getSyntaxInfoFromAst(ast);
+          // When we find a node_module that already is commonjs we will just get the
+          // dependencies from the file and return the same code. We get the dependencies
+          // with a regex since commonjs modules just have `require` and regex is MUCH
+          // faster than generating an AST from the code.
+          if (!syntaxInfo.jsx && !syntaxInfo.esm) {
+            measure(`dep-collection-${path}`);
+            collectDependencies(ast).forEach(dependency => {
+              if (dependency.isGlob) {
+                loaderContext.addDependenciesInDirectory(dependency.path);
+              } else {
+                loaderContext.addDependency(dependency.path);
+              }
+            });
+            endMeasure(`dep-collection-${path}`, { silent: true });
+
+            resolve({
+              transpiledCode: generateCode(ast),
+            });
+            return;
+          }
+
+          // TODO: Sourcemaps?
+          // eslint-disable-next-line no-param-reassign
+          code = ast.isDirty ? generateCode(ast) : code;
+        } catch (err) {
           console.warn(
-            `Error when converting '${path}' esmodule to commonjs: ${e.message}`
+            `Error occurred while trying to quickly transform '${path}'`
           );
+          console.warn(err);
         }
-      }
-
-      const syntaxInfo = getSyntaxInfoFromAst(ast);
-      try {
-        // When we find a node_module that already is commonjs we will just get the
-        // dependencies from the file and return the same code. We get the dependencies
-        // with a regex since commonjs modules just have `require` and regex is MUCH
-        // faster than generating an AST from the code.
-        if (
-          (loaderContext.options.simpleRequire || isNodeModule) &&
-          !syntaxInfo.jsx &&
-          !(!convertedToEsmodule && syntaxInfo.esm)
-        ) {
-          measure(`dep-collection-${path}`);
-          collectDependencies(ast).forEach(dependency => {
-            if (dependency.isGlob) {
-              loaderContext.addDependenciesInDirectory(dependency.path);
-            } else {
-              loaderContext.addDependency(dependency.path);
-            }
-          });
-          endMeasure(`dep-collection-${path}`, { silent: true });
-
-          resolve({
-            transpiledCode: generateCode(ast),
-          });
-          return;
-        }
-      } catch (e) {
-        console.warn(
-          `Error when reading dependencies of '${path}' using quick method: '${e.message}'`
-        );
       }
 
       const configs = loaderContext.options.configurations;
@@ -144,9 +137,6 @@ class BabelTranspiler extends WorkerTranspiler {
         isV7
       );
 
-      // TODO: Sourcemaps?
-      // eslint-disable-next-line no-param-reassign
-      code = ast.isDirty ? generateCode(ast) : code;
       this.queueTask(
         {
           code,

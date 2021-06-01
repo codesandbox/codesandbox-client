@@ -37,6 +37,14 @@ describe('simple-get-require-statements', () => {
     ]);
   });
 
+  it('allow comments in require statement', () => {
+    const code = `  /*#__PURE__*/ require(/*TYPE=ESM*/ '@emotion/stylis')`;
+
+    expect(collectDependencies(parseModule(code))).toStrictEqual([
+      { type: 'direct', path: '@emotion/stylis' },
+    ]);
+  });
+
   it('allows comment after require statement', () => {
     const code = `require('test');
     require('test2') // yes very nice`;
