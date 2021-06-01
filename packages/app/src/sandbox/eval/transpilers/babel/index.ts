@@ -75,10 +75,7 @@ class BabelTranspiler extends WorkerTranspiler {
           }
 
           const syntaxInfo = getSyntaxInfoFromAst(ast);
-          // When we find a node_module that already is commonjs we will just get the
-          // dependencies from the file and return the same code. We get the dependencies
-          // with a regex since commonjs modules just have `require` and regex is MUCH
-          // faster than generating an AST from the code.
+          // If the code is commonjs and does not contain any more jsx, we generate and return the code.
           if (!syntaxInfo.jsx && !syntaxInfo.esm) {
             measure(`dep-collection-${path}`);
             collectDependencies(ast).forEach(dependency => {
@@ -91,7 +88,7 @@ class BabelTranspiler extends WorkerTranspiler {
             endMeasure(`dep-collection-${path}`, { silent: true });
 
             resolve({
-              transpiledCode: generateCode(ast),
+              transpiledCode: ast.isDirty ? generateCode(ast) : code,
             });
             return;
           }
