@@ -51,7 +51,7 @@ export const Discover = () => {
   React.useEffect(() => {
     if (!curatedAlbums.length) getPage(sandboxesTypes.DISCOVER);
     if (!sandboxes.LIKED) getPage(sandboxesTypes.LIKED);
-  }, [getPage, sandboxes.LIKED]);
+  }, [getPage, sandboxes.LIKED, curatedAlbums.length]);
 
   const flatAlbumSandboxes = Array.prototype.concat.apply(
     [],
@@ -125,52 +125,50 @@ export const Discover = () => {
   );
 };
 
-const Banner = () => {
-  return (
-    <Stack
-      as={Link}
-      href={banner.link}
-      target="_blank"
-      align="center"
-      css={css({
-        width: '100%',
-        height: 195,
-        background: 'linear-gradient(#422677, #392687)',
-        borderRadius: 'medium',
-        position: 'relative',
-        marginBottom: 12,
-        willChange: 'transform',
-        transition: 'transform',
-        transitionDuration: theme => theme.speeds[4],
-        ':hover, :focus': {
-          transform: 'scale(1.01)',
-        },
-      })}
-    >
-      <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
-        <Text size={4} marginBottom={2}>
-          {banner.label}
-        </Text>
-        <Text size={9} weight="bold" marginBottom={1}>
-          {banner.title}
-        </Text>
-        <Text size={5} css={{ opacity: 0.5 }}>
-          {banner.subtitle}
-        </Text>
-      </Stack>
-      <Element
-        as="img"
-        src={banner.image}
-        css={css({
-          position: 'absolute',
-          right: 0,
-          zIndex: 1,
-          opacity: [0.25, 1, 1],
-        })}
-      />
+const Banner = () => (
+  <Stack
+    as={Link}
+    href={banner.link}
+    target="_blank"
+    align="center"
+    css={css({
+      width: '100%',
+      height: 195,
+      background: 'linear-gradient(#422677, #392687)',
+      borderRadius: 'medium',
+      position: 'relative',
+      marginBottom: 12,
+      willChange: 'transform',
+      transition: 'transform',
+      transitionDuration: theme => theme.speeds[4],
+      ':hover, :focus': {
+        transform: 'scale(1.01)',
+      },
+    })}
+  >
+    <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
+      <Text size={4} marginBottom={2}>
+        {banner.label}
+      </Text>
+      <Text size={9} weight="bold" marginBottom={1}>
+        {banner.title}
+      </Text>
+      <Text size={5} css={{ opacity: 0.5 }}>
+        {banner.subtitle}
+      </Text>
     </Stack>
-  );
-};
+    <Element
+      as="img"
+      src={banner.image}
+      css={css({
+        position: 'absolute',
+        right: 0,
+        zIndex: 1,
+        opacity: [0.25, 1, 1],
+      })}
+    />
+  </Stack>
+);
 
 const FeaturedSandboxes = () => {
   const {
@@ -377,6 +375,7 @@ const TrendingSandboxes = () => {
   const trendingSandboxesAlbum = curatedAlbums.find(
     album => album.id === TRENDING_SANDBOXES_ALBUM
   ) || {
+    title: null,
     sandboxes: [],
   };
 
@@ -388,21 +387,26 @@ const TrendingSandboxes = () => {
   const [limit, setLimit] = React.useState(batchSize);
 
   const endOfGrid = React.useRef(null);
-  React.useEffect(function addMoreAtScrollEnd() {
-    /** An interesection observer watches for intersection with
-     * the end of the grid and adds more sandboxes to the grid
-     */
+  React.useEffect(
+    function addMoreAtScrollEnd() {
+      /** An interesection observer watches for intersection with
+       * the end of the grid and adds more sandboxes to the grid
+       */
 
-    const observer = new IntersectionObserver(entities => {
-      const target = entities[0];
-      if (target.isIntersecting) {
-        if (limit < maxLimit) setLimit(limit => limit + batchSize);
-        else observer.disconnect(); // no more sandboxes
-      }
-    });
+      const observer = new IntersectionObserver(entities => {
+        const target = entities[0];
+        if (target.isIntersecting) {
+          if (limit < maxLimit) setLimit(count => count + batchSize);
+          else observer.disconnect(); // no more sandboxes
+        }
+      });
 
-    observer.observe(endOfGrid.current);
-  }, []);
+      observer.observe(endOfGrid.current);
+
+      return () => observer.unobserve(endOfGrid.current);
+    },
+    [limit, maxLimit]
+  );
 
   return (
     <Stack direction="vertical" gap={6}>
