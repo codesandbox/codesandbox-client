@@ -104,39 +104,7 @@ export const Discover = () => {
             paddingY: 10,
           })}
         >
-          <Stack
-            align="center"
-            css={css({
-              width: '100%',
-              height: 195,
-              background: 'linear-gradient(#422677, #392687)',
-              borderRadius: 'medium',
-              position: 'relative',
-              marginBottom: 12,
-            })}
-          >
-            <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
-              <Text size={4} marginBottom={2}>
-                {banner.label}
-              </Text>
-              <Text size={9} weight="bold" marginBottom={1}>
-                {banner.title}
-              </Text>
-              <Text size={5} css={{ opacity: 0.5 }}>
-                {banner.subtitle}
-              </Text>
-            </Stack>
-            <Element
-              as="img"
-              src={banner.image}
-              css={css({
-                position: 'absolute',
-                right: 0,
-                zIndex: 1,
-                opacity: [0.25, 1, 1],
-              })}
-            />
-          </Stack>
+          <Banner />
 
           <Stack direction="vertical" gap={16}>
             <FeaturedSandboxes />
@@ -154,6 +122,53 @@ export const Discover = () => {
         </Element>
       </SelectionProvider>
     </Element>
+  );
+};
+
+const Banner = () => {
+  return (
+    <Stack
+      as={Link}
+      href={banner.link}
+      target="_blank"
+      align="center"
+      css={css({
+        width: '100%',
+        height: 195,
+        background: 'linear-gradient(#422677, #392687)',
+        borderRadius: 'medium',
+        position: 'relative',
+        marginBottom: 12,
+        willChange: 'transform',
+        transition: 'transform',
+        transitionDuration: theme => theme.speeds[4],
+        ':hover': {
+          transform: 'scale(1.01)',
+        },
+      })}
+    >
+      <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
+        <Text size={4} marginBottom={2}>
+          {banner.label}
+        </Text>
+        <Text size={9} weight="bold" marginBottom={1}>
+          {banner.title}
+        </Text>
+        <Text size={5} css={{ opacity: 0.5 }}>
+          {banner.subtitle}
+        </Text>
+      </Stack>
+      <Element
+        as="img"
+        src={banner.image}
+        css={css({
+          position: 'absolute',
+          right: 0,
+          zIndex: 1,
+          opacity: [0.25, 1, 1],
+        })}
+      />
+    </Stack>
   );
 };
 

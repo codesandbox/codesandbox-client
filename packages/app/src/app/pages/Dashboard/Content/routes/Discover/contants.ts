@@ -6,4 +6,5 @@ export const banner = {
   title: 'Search in files',
   subtitle: 'Blazing fast way to search files inside your sandbox.',
   image: '/static/img/discover-banner-search.png',
+  link: 'https://codesandbox.io/blog',
 };
