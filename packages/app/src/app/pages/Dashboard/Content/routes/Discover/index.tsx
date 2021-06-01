@@ -102,6 +102,7 @@ export const Discover = () => {
             width: `calc(100% - ${2 * GUTTER}px)`,
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
             paddingY: 10,
+            userSelect: 'none',
           })}
         >
           <Banner />
