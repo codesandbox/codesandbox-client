@@ -342,9 +342,11 @@ const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
         columnGap={6}
         css={{
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          height: '264px',
+          overflow: 'hidden',
         }}
       >
-        {album.sandboxes.slice(0, 3).map(sandbox => (
+        {album.sandboxes.map(sandbox => (
           <Column key={sandbox.id}>
             <CommunitySandbox
               isScrolling={false}
