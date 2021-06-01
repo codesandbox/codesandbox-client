@@ -80,6 +80,7 @@ Version One.
 - 20:25 SquadCast beta
 - 23:13 Zachariah’s one piece of advice to his younger self.
 
+## Links
 Love [Version One](https://codesandbox.io/podcasts/version-one)? Let us know by
 [subscribing and giving us a review](https://podcasts.apple.com/us/podcast/version-one-with-maurice-cherry/id1558498088)!
 
