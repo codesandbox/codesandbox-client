@@ -12,6 +12,8 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { TeamMemberAuthorization, SubscriptionType } from 'app/graphql/types';
+import track from '@codesandbox/common/lib/utils/analytics';
+
 import { Alert } from './Alert';
 
 export const PermissionSettings = () => {
@@ -32,21 +34,23 @@ export const PermissionSettings = () => {
 
   let alert: {
     message: string;
-    cta?: { label: string; href: string };
+    cta?: { label: string; href: string; onClick?: () => void };
   } | null = null;
+
+  const proTracking = () => track('Dashboard - Workspace Settings Pro link');
 
   if (isPersonalWorkspace) {
     if (!isPersonalPro) {
       alert = {
         message: 'Upgrade to Pro to change sandbox permissions.',
-        cta: { label: 'Upgrade to Pro', href: '/pro' },
+        cta: { label: 'Upgrade to Pro', href: '/pro', onClick: proTracking },
       };
     }
   } else if (!isTeamPro) {
     alert = {
       message:
         'You need a Team Pro subscription to change sandbox permissions.',
-      cta: { label: 'Upgrade to Pro', href: '/pro' },
+      cta: { label: 'Upgrade to Pro', href: '/pro', onClick: proTracking },
     };
   } else if (!isAdmin) {
     alert = {
