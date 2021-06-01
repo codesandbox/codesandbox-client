@@ -32,7 +32,11 @@ import {
   DashboardCommunitySandbox,
   DashboardAlbum,
 } from 'app/pages/Dashboard/types';
-import { FEATURED_SANDBOXES_ALBUM, TRENDING_SANDBOXES_ALBUM } from './contants';
+import {
+  FEATURED_SANDBOXES_ALBUM,
+  TRENDING_SANDBOXES_ALBUM,
+  banner,
+} from './contants';
 
 export const Discover = () => {
   const {
@@ -113,23 +117,23 @@ export const Discover = () => {
           >
             <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
               <Text size={4} marginBottom={2}>
-                NEW FEATURE
+                {banner.label}
               </Text>
               <Text size={9} weight="bold" marginBottom={1}>
-                Discover Search
+                {banner.title}
               </Text>
               <Text size={5} css={{ opacity: 0.5 }}>
-                Blazzy fast to search files inside your sandbox.
+                {banner.subtitle}
               </Text>
             </Stack>
             <Element
               as="img"
-              src="/static/img/discover-banner-decoration.png"
+              src={banner.image}
               css={css({
                 position: 'absolute',
                 right: 0,
                 zIndex: 1,
-                opacity: [0.5, 1, 1],
+                opacity: [0.25, 1, 1],
               })}
             />
           </Stack>
