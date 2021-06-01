@@ -89,7 +89,7 @@ export default () => (
           }}
           href="/s"
         >
-          Create Sandbox, it’s free
+          Get started for free
         </Button>
       </motion.div>
     </motion.div>

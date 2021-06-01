@@ -74,7 +74,7 @@ export default () => {
           `}
         >
           <Button cta href="https://codesandbox.io/s/">
-            Get Started
+            Get started for free
           </Button>
         </div>
         <div>
