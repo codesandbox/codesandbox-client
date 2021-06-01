@@ -73,13 +73,6 @@ export const WorkspacePlanSelection: React.FC<{
     [isPersonalWorkspace, billingInterval, updateSelectedPlan]
   );
 
-  React.useEffect(
-    function trackingPlanChoice() {
-      track('Pro - Set billing interval', { billingInterval });
-    },
-    [billingInterval]
-  );
-
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
   )!;
@@ -144,6 +137,20 @@ export const WorkspacePlanSelection: React.FC<{
       personalWorkspaceId,
       getUserAuthorization,
     ]
+  );
+
+  React.useEffect(
+    function trackingPlanChoice() {
+      track('Pro - Set billing interval', { billingInterval });
+    },
+    [billingInterval]
+  );
+
+  React.useEffect(
+    function trackingWorkspace() {
+      track('Pro - Change Workspace');
+    },
+    [activeWorkspace]
   );
 
   if (!activeTeam || !dashboard.teams.length || !selectedPlan) return null;
