@@ -364,7 +364,7 @@ const TrendingSandboxes = () => {
   return (
     <Stack direction="vertical" gap={6}>
       <Text size={6} weight="bold">
-        Trending
+        {trendingSandboxesAlbum.title}
       </Text>
 
       <Grid
