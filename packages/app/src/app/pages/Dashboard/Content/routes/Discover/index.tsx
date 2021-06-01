@@ -357,9 +357,33 @@ const TrendingSandboxes = () => {
 
   const trendingSandboxesAlbum = curatedAlbums.find(
     album => album.id === TRENDING_SANDBOXES_ALBUM
-  );
+  ) || {
+    sandboxes: [],
+  };
 
   const likedSandboxIds = (sandboxes.LIKED || []).map(s => s.id);
+
+  /** Infinite scroll */
+  const batchSize = 25;
+  const maxLimit = trendingSandboxesAlbum.sandboxes.length;
+  const [limit, setLimit] = React.useState(batchSize);
+
+  const endOfGrid = React.useRef(null);
+  React.useEffect(function addMoreAtScrollEnd() {
+    /** An interesection observer watches for intersection with
+     * the end of the grid and adds more sandboxes to the grid
+     */
+
+    const observer = new IntersectionObserver(entities => {
+      const target = entities[0];
+      if (target.isIntersecting) {
+        if (limit < maxLimit) setLimit(limit => limit + batchSize);
+        else observer.disconnect(); // no more sandboxes
+      }
+    });
+
+    observer.observe(endOfGrid.current);
+  }, []);
 
   return (
     <Stack direction="vertical" gap={6}>
@@ -375,7 +399,7 @@ const TrendingSandboxes = () => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         }}
       >
-        {trendingSandboxesAlbum.sandboxes.map(sandbox => (
+        {trendingSandboxesAlbum.sandboxes.slice(0, limit).map(sandbox => (
           <Column key={sandbox.id}>
             <CommunitySandbox
               isScrolling={false}
@@ -394,6 +418,7 @@ const TrendingSandboxes = () => {
         <div />
         <div />
       </Grid>
+      <div ref={endOfGrid} />
     </Stack>
   );
 };
