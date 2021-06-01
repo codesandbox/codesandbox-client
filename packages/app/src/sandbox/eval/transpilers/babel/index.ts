@@ -65,6 +65,8 @@ class BabelTranspiler extends WorkerTranspiler {
         return;
       }
 
+      // Check if we can take a shortcut, we have a custom pipeline for transforming
+      // node_modules to commonjs and collecting deps
       if (loaderContext.options.simpleRequire || isNodeModule) {
         try {
           const ast: ESTreeAST = parseModule(code);
