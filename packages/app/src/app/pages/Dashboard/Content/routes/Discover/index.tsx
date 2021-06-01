@@ -142,7 +142,7 @@ const Banner = () => {
         willChange: 'transform',
         transition: 'transform',
         transitionDuration: theme => theme.speeds[4],
-        ':hover': {
+        ':hover, :focus': {
           transform: 'scale(1.01)',
         },
       })}
