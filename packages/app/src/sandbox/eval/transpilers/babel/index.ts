@@ -70,7 +70,7 @@ class BabelTranspiler extends WorkerTranspiler {
       if (loaderContext.options.simpleRequire || isNodeModule) {
         try {
           const ast: ESTreeAST = parseModule(code);
-          if (isNodeModule && isESModule(code)) {
+          if (isESModule(code)) {
             measure(`esconvert-${path}`);
             convertEsModule(ast);
             endMeasure(`esconvert-${path}`, { silent: true });
