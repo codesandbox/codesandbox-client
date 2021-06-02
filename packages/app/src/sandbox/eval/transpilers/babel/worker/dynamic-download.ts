@@ -3,6 +3,7 @@ import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import getRequireStatements from './simple-get-require-statements';
 import { packageFilter } from '../../../utils/resolve-utils';
 import { convertEsModule } from '../convert-esmodule';
+import { generateCode, parseModule } from '../ast/utils';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -177,7 +178,9 @@ export async function downloadPath(
 
   let code = r.code;
   try {
-    code = convertEsModule(r.code).code;
+    const ast = parseModule(r.code);
+    convertEsModule(ast);
+    code = generateCode(ast);
   } catch (e) {
     console.warn(e);
   }

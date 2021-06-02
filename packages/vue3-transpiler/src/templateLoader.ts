@@ -1,15 +1,17 @@
 import qs from 'querystring';
 import { LoaderContext } from 'sandpack-core';
 import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
-import { VueLoaderOptions } from './';
-import { formatError } from './formatError';
 import { compileTemplate, TemplateCompiler } from 'vue3-browser-compiler';
 import { WarningStructure } from 'sandpack-core/lib/transpiler/utils/worker-warning-handler';
+
+import { VueLoaderOptions } from './index';
+import { formatError } from './formatError';
 
 // Loader that compiles raw template into JavaScript functions.
 // This is injected by the global pitcher (../pitch) for template
 // selection requests initiated from vue files.
-const TemplateLoader = function(source: string, loaderContext: LoaderContext) {
+function TemplateLoader(source: string, loaderContext: LoaderContext) {
+  // eslint-disable-next-line no-param-reassign
   source = String(source);
   const inMap = undefined;
 
@@ -19,8 +21,6 @@ const TemplateLoader = function(source: string, loaderContext: LoaderContext) {
   const options = (loaderUtils.getOptions(loaderContext) ||
     {}) as VueLoaderOptions;
 
-  // const isServer = loaderContext.target === 'node'
-  // const isProduction = options.productionMode || loaderContext.minimize || process.env.NODE_ENV === 'production'
   const query = qs.parse(loaderContext.resourceQuery.slice(1));
   const scopeId = query.scoped ? `data-v-${query.id}` : null;
 
@@ -82,6 +82,6 @@ const TemplateLoader = function(source: string, loaderContext: LoaderContext) {
   const { code, map } = compiled;
   // loaderContext.callback(null, code, map);
   return { transpiledCode: code, sourceMap: map };
-};
+}
 
 export default TemplateLoader;

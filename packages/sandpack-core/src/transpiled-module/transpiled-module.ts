@@ -796,7 +796,11 @@ export class TranspiledModule {
         return {};
       }
 
-      if (this.module.path.startsWith('/node_modules')) {
+      // TODO: Never return untranspiled modules, as these can always have side-effects...
+      if (
+        this.module.path.startsWith('/node_modules') &&
+        !this.module.path.endsWith('.vue')
+      ) {
         if (process.env.NODE_ENV === 'development') {
           console.warn(
             `[WARN] Sandpack: loading an untranspiled module: ${this.module.path}`
@@ -826,7 +830,7 @@ export class TranspiledModule {
         // this state is to just hard reload everything.
         manager.clearCache();
 
-        throw new Error(`${this.module.path} hasn't been transpiled yet.`);
+        throw new Error(`${this.getId()} hasn't been transpiled yet.`);
       }
     }
 

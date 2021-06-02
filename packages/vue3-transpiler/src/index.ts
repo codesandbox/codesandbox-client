@@ -145,7 +145,7 @@ export default function loader(
       query
     )}`;
     templateRequest = stringifyRequest(importers + '!' + src);
-    templateImport = `import { ${renderFnName} } from ${templateRequest}`;
+    templateImport = `import { ${renderFnName} } from ${templateRequest};`;
   }
 
   // styles

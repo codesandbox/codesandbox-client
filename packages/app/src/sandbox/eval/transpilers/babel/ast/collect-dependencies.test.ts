@@ -1,10 +1,11 @@
-import getRequireStatements from './simple-get-require-statements';
+import { parseModule } from './utils';
+import { collectDependencies } from './collect-dependencies';
 
 describe('simple-get-require-statements', () => {
   it('finds a simple require statement', () => {
     const code = `require('test')`;
 
-    expect(getRequireStatements(code)).toStrictEqual([
+    expect(collectDependencies(parseModule(code))).toStrictEqual([
       { type: 'direct', path: 'test' },
     ]);
   });
@@ -13,7 +14,7 @@ describe('simple-get-require-statements', () => {
     const code = `require('test');
     require('test2')`;
 
-    expect(getRequireStatements(code)).toStrictEqual([
+    expect(collectDependencies(parseModule(code))).toStrictEqual([
       { type: 'direct', path: 'test' },
       { type: 'direct', path: 'test2' },
     ]);
@@ -23,7 +24,7 @@ describe('simple-get-require-statements', () => {
     const code = `require('test');
     // require('test2')`;
 
-    expect(getRequireStatements(code)).toStrictEqual([
+    expect(collectDependencies(parseModule(code))).toStrictEqual([
       { type: 'direct', path: 'test' },
     ]);
   });
@@ -31,7 +32,15 @@ describe('simple-get-require-statements', () => {
   it("doesn't ignore pure markers", () => {
     const code = `  /*#__PURE__*/ require('@emotion/stylis')`;
 
-    expect(getRequireStatements(code)).toStrictEqual([
+    expect(collectDependencies(parseModule(code))).toStrictEqual([
+      { type: 'direct', path: '@emotion/stylis' },
+    ]);
+  });
+
+  it('allow comments in require statement', () => {
+    const code = `  /*#__PURE__*/ require(/*TYPE=ESM*/ '@emotion/stylis')`;
+
+    expect(collectDependencies(parseModule(code))).toStrictEqual([
       { type: 'direct', path: '@emotion/stylis' },
     ]);
   });
@@ -40,7 +49,7 @@ describe('simple-get-require-statements', () => {
     const code = `require('test');
     require('test2') // yes very nice`;
 
-    expect(getRequireStatements(code)).toStrictEqual([
+    expect(collectDependencies(parseModule(code))).toStrictEqual([
       { type: 'direct', path: 'test' },
       { type: 'direct', path: 'test2' },
     ]);
@@ -50,7 +59,7 @@ describe('simple-get-require-statements', () => {
     const code = `require('test');
     require('test2') // yes very nice require('nice')`;
 
-    expect(getRequireStatements(code)).toStrictEqual([
+    expect(collectDependencies(parseModule(code))).toStrictEqual([
       { type: 'direct', path: 'test' },
       { type: 'direct', path: 'test2' },
     ]);
@@ -59,21 +68,21 @@ describe('simple-get-require-statements', () => {
   it('ignores dependencies with no quotes', () => {
     const code = `require(test);`;
 
-    expect(getRequireStatements(code)).toStrictEqual([]);
+    expect(collectDependencies(parseModule(code))).toStrictEqual([]);
   });
 
   it('handles a * that looks like a comment', () => {
-    const code = `$export($export.S + $export.F * !require('./_iter-detect')(function (iter) { Array.from(iter); }), 'Array', {`;
+    const code = `$export($export.S + $export.F * !require('./_iter-detect')(function (iter) { Array.from(iter); }), 'Array', {})`;
 
-    expect(getRequireStatements(code)).toStrictEqual([
+    expect(collectDependencies(parseModule(code))).toStrictEqual([
       { type: 'direct', path: './_iter-detect' },
     ]);
   });
 
   it('handles quotes in a require statement', () => {
-    const code = `var $csb__Textareavue = require("!babel-loader!vue-template-loader!vue-loader?vue&type=template&id=d8507872&bindings={"modelValue":"props","autoResize":"props","resize":"options","onInput":"options","filled":"options"}!./Textarea.vue");`;
+    const code = `var $csb__Textareavue = require("!babel-loader!vue-template-loader!vue-loader?vue&type=template&id=d8507872&bindings={\\"modelValue\\":\\"props\\",\\"autoResize\\":\\"props\\",\\"resize\\":\\"options\\",\\"onInput\\":\\"options\\",\\"filled\\":\\"options\\"}!./Textarea.vue");`;
 
-    expect(getRequireStatements(code)).toStrictEqual([
+    expect(collectDependencies(parseModule(code))).toStrictEqual([
       {
         type: 'direct',
         path:

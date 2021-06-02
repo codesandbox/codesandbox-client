@@ -7,13 +7,13 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 
 import delay from '@codesandbox/common/lib/utils/delay';
 import { endMeasure, measure } from '@codesandbox/common/lib/utils/metrics';
-import { Program } from 'meriyah/dist/estree';
 import { LoaderContext, Manager } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler';
 import getBabelConfig from './babel-parser';
 import { convertEsModule } from './convert-esmodule';
-import regexGetRequireStatements from './worker/simple-get-require-statements';
-import { getSyntaxInfoFromAst, getSyntaxInfoFromCode } from './syntax-info';
+import { getSyntaxInfoFromAst } from './syntax-info';
+import { ESTreeAST, generateCode, parseModule } from './ast/utils';
+import { collectDependencies } from './ast/collect-dependencies';
 
 const global = window as any;
 const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
@@ -52,8 +52,6 @@ class BabelTranspiler extends WorkerTranspiler {
   ): Promise<{ transpiledCode: string }> {
     return new Promise((resolve, reject) => {
       const { path } = loaderContext;
-      let newCode = code;
-
       const isNodeModule = path.startsWith('/node_modules');
 
       /**
@@ -62,60 +60,50 @@ class BabelTranspiler extends WorkerTranspiler {
        * would then break the code (because it expects `this` to be global). No transpiler
        * can fix this, and because of this we need to just specifically ignore this file.
        */
-      const shouldIgnore = path === '/node_modules/babel-standalone/babel.js';
-
-      if (shouldIgnore) {
+      if (path === '/node_modules/babel-standalone/babel.js') {
         resolve({ transpiledCode: code });
         return;
       }
 
-      let convertedToEsmodule = false;
-      let ast: Program | undefined;
-      if (isESModule(newCode) && isNodeModule) {
+      // Check if we can take a shortcut, we have a custom pipeline for transforming
+      // node_modules to commonjs and collecting deps
+      if (loaderContext.options.simpleRequire || isNodeModule) {
         try {
-          measure(`esconvert-${path}`);
-          const esModuleInfo = convertEsModule(newCode);
-          newCode = esModuleInfo.code;
-          endMeasure(`esconvert-${path}`, { silent: true });
-          ast = esModuleInfo.ast;
-          convertedToEsmodule = true;
-        } catch (e) {
+          const ast: ESTreeAST = parseModule(code);
+          if (isESModule(code)) {
+            measure(`esconvert-${path}`);
+            convertEsModule(ast);
+            endMeasure(`esconvert-${path}`, { silent: true });
+          }
+
+          const syntaxInfo = getSyntaxInfoFromAst(ast);
+          // If the code is commonjs and does not contain any more jsx, we generate and return the code.
+          if (!syntaxInfo.jsx && !syntaxInfo.esm) {
+            measure(`dep-collection-${path}`);
+            collectDependencies(ast).forEach(dependency => {
+              if (dependency.isGlob) {
+                loaderContext.addDependenciesInDirectory(dependency.path);
+              } else {
+                loaderContext.addDependency(dependency.path);
+              }
+            });
+            endMeasure(`dep-collection-${path}`, { silent: true });
+
+            resolve({
+              transpiledCode: ast.isDirty ? generateCode(ast) : code,
+            });
+            return;
+          }
+
+          // TODO: Sourcemaps?
+          // eslint-disable-next-line no-param-reassign
+          code = ast.isDirty ? generateCode(ast) : code;
+        } catch (err) {
           console.warn(
-            `Error when converting '${path}' esmodule to commonjs: ${e.message}`
+            `Error occurred while trying to quickly transform '${path}'`
           );
+          console.warn(err);
         }
-      }
-
-      const syntaxInfo = ast
-        ? getSyntaxInfoFromAst(ast)
-        : getSyntaxInfoFromCode(newCode, path);
-      try {
-        // When we find a node_module that already is commonjs we will just get the
-        // dependencies from the file and return the same code. We get the dependencies
-        // with a regex since commonjs modules just have `require` and regex is MUCH
-        // faster than generating an AST from the code.
-        if (
-          (loaderContext.options.simpleRequire || isNodeModule) &&
-          !syntaxInfo.jsx &&
-          !(!convertedToEsmodule && syntaxInfo.esm)
-        ) {
-          regexGetRequireStatements(newCode).forEach(dependency => {
-            if (dependency.isGlob) {
-              loaderContext.addDependenciesInDirectory(dependency.path);
-            } else {
-              loaderContext.addDependency(dependency.path);
-            }
-          });
-
-          resolve({
-            transpiledCode: newCode,
-          });
-          return;
-        }
-      } catch (e) {
-        console.warn(
-          `Error when reading dependencies of '${path}' using quick method: '${e.message}'`
-        );
       }
 
       const configs = loaderContext.options.configurations;
@@ -150,7 +138,7 @@ class BabelTranspiler extends WorkerTranspiler {
 
       this.queueTask(
         {
-          code: newCode,
+          code,
           config: babelConfig,
           path,
           loaderOptions,
