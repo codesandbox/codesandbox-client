@@ -765,12 +765,12 @@ export const likeSandboxToggled = async (
     state.editor.sandboxes[id].userLiked = false;
     state.editor.sandboxes[id].likeCount--;
     await effects.api.unlikeSandbox(id);
-    effects.analytics.track('Sandbox - Like');
+    effects.analytics.track('Sandbox - Like', { place: 'EDITOR' });
   } else {
     state.editor.sandboxes[id].userLiked = true;
     state.editor.sandboxes[id].likeCount++;
     await effects.api.likeSandbox(id);
-    effects.analytics.track('Sandbox - Undo Like');
+    effects.analytics.track('Sandbox - Undo Like', { place: 'EDITOR' });
   }
 };
 

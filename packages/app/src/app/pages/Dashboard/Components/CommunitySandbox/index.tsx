@@ -81,10 +81,12 @@ export const CommunitySandbox = ({
       unlikeSandbox(sandbox.id);
       setLiked(false);
       setLikeCount(managedLikeCount - 1);
+      track('Sandbox - Undo Like', { place: 'DASHBOARD' });
     } else {
       likeCommunitySandbox(sandbox.id);
       setLiked(true);
       setLikeCount(managedLikeCount + 1);
+      track('Sandbox - Like', { place: 'DASHBOARD' });
     }
   };
 
