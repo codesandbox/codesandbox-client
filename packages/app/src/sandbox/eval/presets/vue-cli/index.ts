@@ -44,7 +44,7 @@ export default function initialize() {
 
         try {
           const tModule = manager.resolveTranspiledModule(
-            '@vue/babel-preset-app',
+            '@vue/babel-plugin-jsx',
             '/package.json'
           );
           await tModule.transpile(manager);
