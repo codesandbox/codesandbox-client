@@ -242,25 +242,21 @@ function getDependencies(
   }
 
   Object.keys(d).forEach(dep => {
-    const usedDep = dep;
-
     if (dep === 'reason-react') {
       return; // is replaced
     }
 
-    returnedDependencies[usedDep] = d[dep];
+    returnedDependencies[dep] = d[dep];
   });
 
   Object.keys(devDependencies).forEach(dep => {
-    const usedDep = dep;
-
-    if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
+    if (foundWhitelistedDevDependencies.indexOf(dep) > -1) {
       // Skip @vue/babel-preset-app
-      if (usedDep === '@vue/babel-preset-app') {
+      if (dep === '@vue/babel-preset-app') {
         return;
       }
 
-      returnedDependencies[usedDep] = devDependencies[dep];
+      returnedDependencies[dep] = devDependencies[dep];
     }
   });
 
