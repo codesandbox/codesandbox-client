@@ -213,10 +213,10 @@ export default class Manager implements IEvaluator {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console
       console.log(this);
-
-      // Initialize benchmark logic
-      getGlobal().Benchmark = generateBenchmarkInterface(this);
     }
+
+    // Initialize benchmark logic
+    getGlobal().Benchmark = generateBenchmarkInterface(this);
 
     BrowserFS.configure(
       {
