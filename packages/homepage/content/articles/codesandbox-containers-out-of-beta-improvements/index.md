@@ -37,7 +37,8 @@ CodeSandbox.
 
 [Phil Plückthun](https://twitter.com/_philpl) created
 [a sandbox that runs Expo](https://codesandbox.io/s/wkjn0zlxpw)! This way you
-can build [React Native](/framework/react-native) apps directly on CodeSandbox.
+can build [React Native](https://github.com/facebook/react-native) apps directly
+on CodeSandbox.
 
 ![](images/0.png)
 
