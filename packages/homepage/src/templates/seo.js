@@ -1,10 +1,8 @@
-import { format } from 'date-fns';
-import { graphql, Link } from 'gatsby';
+import { graphql } from 'gatsby';
 import React from 'react';
 
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
-import { AuthorImage } from '../components/PostElements';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
 import {

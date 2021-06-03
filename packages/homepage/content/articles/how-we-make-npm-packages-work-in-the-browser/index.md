@@ -82,9 +82,9 @@ this:
 ```
 
 Every path is mapped to a module id. If I would require
-[React](https://github.com/facebook/react) I would only have to call
-`dll_bundle(3)` and I would get React! This was perfect for our use case, so I
-started typing away and came up with this actual system:
+[React](/framework/react) I would only have to call `dll_bundle(3)` and I would
+get React! This was perfect for our use case, so I started typing away and came
+up with this actual system:
 
 ![The source of the service can be found here: https://github.com/CompuIves/codesandbox-bundler. This service also contains code to publish any sandbox to npm (really cool), we scrapped this feature later on.](./images/2.png)
 
@@ -184,11 +184,10 @@ back to the drawing board.
 A couple months went by and
 [I released a new bundler for CodeSandbox](/post/creating-a-parallel-offline-extensible-browser-based-bundler-for-codesandbox).
 This bundler is very powerful, and allows us to easily support more libraries
-like [Vue](https://github.com/vuejs/vue) and
-[Preact](https://github.com/preactjs/preact). By supporting these libraries we
-got some interesting requests. For example: if you want to use a
-[React](https://github.com/facebook/react) library in Preact, you'd need to
-alias `require('react')` to `require('preact-compat')`. For Vue, you may want to
+like [Vue](/framework/vue) and [Preact](/framework/preact). By supporting these
+libraries we got some interesting requests. For example: if you want to use a
+[React](/framework/react) library in Preact, you'd need to alias
+`require('react')` to `require('preact-compat')`. For Vue, you may want to
 resolve `@/components/App.vue` to your sandbox files. Our packager doesn't do
 this for dependencies, but our bundler does.
 

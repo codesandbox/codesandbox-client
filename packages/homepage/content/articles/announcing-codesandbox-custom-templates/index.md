@@ -17,12 +17,11 @@ templates!
 ## What are Templates?
 
 We've found that for many of our users, after having used one of our built-in
-sandbox starters such as [React](https://github.com/facebook/react),
-[Vue](https://github.com/vuejs/vue) or
-[Gatsby](https://github.com/gatsbyjs/gatsby) for the first time to prototype an
-application, they often want to create new projects using the same framework
-with a specific set of dependencies, folder structure, and configuration set up
-just the way they like it.
+sandbox starters such as [React](/framework/react), [Vue](/framework/vue) or
+[Gatsby](/framework/gatsby) for the first time to prototype an application, they
+often want to create new projects using the same framework with a specific set
+of dependencies, folder structure, and configuration set up just the way they
+like it.
 
 This is so common that we decided why not make it easy for users to create their
 own custom templates which they can quickly bootstrap new projects with! Today's
