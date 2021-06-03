@@ -1,5 +1,6 @@
 /* eslint-enable import/default */
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
+import { isUrl } from '@codesandbox/common/lib/utils/is-url';
 import isESModule from 'sandbox/eval/utils/is-es-module';
 /* eslint-disable import/default */
 // @ts-ignore
@@ -14,6 +15,10 @@ import { convertEsModule } from './convert-esmodule';
 import { getSyntaxInfoFromAst } from './syntax-info';
 import { ESTreeAST, generateCode, parseModule } from './ast/utils';
 import { collectDependencies } from './ast/collect-dependencies';
+
+interface TranspilationResult {
+  transpiledCode: string;
+}
 
 const global = window as any;
 const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
@@ -46,96 +51,96 @@ class BabelTranspiler extends WorkerTranspiler {
     return global.babelworkers.pop();
   }
 
-  doTranspilation(
+  async doTranspilation(
     code: string,
     loaderContext: LoaderContext
-  ): Promise<{ transpiledCode: string }> {
-    return new Promise((resolve, reject) => {
-      const { path } = loaderContext;
-      const isNodeModule = path.startsWith('/node_modules');
+  ): Promise<TranspilationResult> {
+    const { path } = loaderContext;
+    const isNodeModule = path.startsWith('/node_modules') || isUrl(path);
 
-      /**
-       * We should never transpile babel-standalone, because it relies on code that runs
-       * in non-strict mode. Transpiling this code would add a "use strict;" piece, which
-       * would then break the code (because it expects `this` to be global). No transpiler
-       * can fix this, and because of this we need to just specifically ignore this file.
-       */
-      if (path === '/node_modules/babel-standalone/babel.js') {
-        resolve({ transpiledCode: code });
-        return;
-      }
+    /**
+     * We should never transpile babel-standalone, because it relies on code that runs
+     * in non-strict mode. Transpiling this code would add a "use strict;" piece, which
+     * would then break the code (because it expects `this` to be global). No transpiler
+     * can fix this, and because of this we need to just specifically ignore this file.
+     */
+    if (path === '/node_modules/babel-standalone/babel.js') {
+      return { transpiledCode: code };
+    }
 
-      // Check if we can take a shortcut, we have a custom pipeline for transforming
-      // node_modules to commonjs and collecting deps
-      if (loaderContext.options.simpleRequire || isNodeModule) {
-        try {
-          const ast: ESTreeAST = parseModule(code);
-          if (isESModule(code)) {
-            measure(`esconvert-${path}`);
-            convertEsModule(ast);
-            endMeasure(`esconvert-${path}`, { silent: true });
-          }
+    // Check if we can take a shortcut, we have a custom pipeline for transforming
+    // node_modules to commonjs and collecting deps
+    if (loaderContext.options.simpleRequire || isNodeModule) {
+      try {
+        const ast: ESTreeAST = parseModule(code);
+        if (isESModule(code)) {
+          measure(`esconvert-${path}`);
+          convertEsModule(ast);
+          endMeasure(`esconvert-${path}`, { silent: true });
+        }
 
-          const syntaxInfo = getSyntaxInfoFromAst(ast);
-          // If the code is commonjs and does not contain any more jsx, we generate and return the code.
-          if (!syntaxInfo.jsx && !syntaxInfo.esm) {
-            measure(`dep-collection-${path}`);
-            collectDependencies(ast).forEach(dependency => {
+        const syntaxInfo = getSyntaxInfoFromAst(ast);
+        // If the code is commonjs and does not contain any more jsx, we generate and return the code.
+        if (!syntaxInfo.jsx && !syntaxInfo.esm) {
+          measure(`dep-collection-${path}`);
+          await Promise.all(
+            collectDependencies(ast).map(async dependency => {
               if (dependency.isGlob) {
                 loaderContext.addDependenciesInDirectory(dependency.path);
               } else {
-                loaderContext.addDependency(dependency.path);
+                await loaderContext.addDependency(dependency.path);
               }
-            });
-            endMeasure(`dep-collection-${path}`, { silent: true });
-
-            resolve({
-              transpiledCode: ast.isDirty ? generateCode(ast) : code,
-            });
-            return;
-          }
-
-          // TODO: Sourcemaps?
-          // eslint-disable-next-line no-param-reassign
-          code = ast.isDirty ? generateCode(ast) : code;
-        } catch (err) {
-          console.warn(
-            `Error occurred while trying to quickly transform '${path}'`
+            })
           );
-          console.warn(err);
+          endMeasure(`dep-collection-${path}`, { silent: true });
+
+          return {
+            transpiledCode: ast.isDirty ? generateCode(ast) : code,
+          };
         }
+
+        // TODO: Sourcemaps?
+        // eslint-disable-next-line no-param-reassign
+        code = ast.isDirty ? generateCode(ast) : code;
+      } catch (err) {
+        console.warn(
+          `Error occurred while trying to quickly transform '${path}'`
+        );
+        console.warn(err);
       }
+    }
 
-      const configs = loaderContext.options.configurations;
-      const foundConfig = configs.babel && configs.babel.parsed;
-      const loaderOptions = loaderContext.options || {};
+    const configs = loaderContext.options.configurations;
+    const foundConfig = configs.babel && configs.babel.parsed;
+    const loaderOptions = loaderContext.options || {};
 
-      const dependencies =
-        (configs.package &&
-          configs.package.parsed &&
-          configs.package.parsed.dependencies) ||
-        {};
+    const dependencies =
+      (configs.package &&
+        configs.package.parsed &&
+        configs.package.parsed.dependencies) ||
+      {};
 
-      const devDependencies =
-        (configs.package &&
-          configs.package.parsed &&
-          configs.package.parsed.devDependencies) ||
-        {};
+    const devDependencies =
+      (configs.package &&
+        configs.package.parsed &&
+        configs.package.parsed.devDependencies) ||
+      {};
 
-      const isV7 =
-        loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
+    const isV7 =
+      loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
 
-      const hasMacros = Object.keys(dependencies).some(
-        d => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
-      );
+    const hasMacros = Object.keys(dependencies).some(
+      d => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
+    );
 
-      const babelConfig = getBabelConfig(
-        foundConfig || (loaderOptions as any).config,
-        loaderOptions,
-        path,
-        isV7
-      );
+    const babelConfig = getBabelConfig(
+      foundConfig || (loaderOptions as any).config,
+      loaderOptions,
+      path,
+      isV7
+    );
 
+    return new Promise((resolve, reject) => {
       this.queueTask(
         {
           code,
