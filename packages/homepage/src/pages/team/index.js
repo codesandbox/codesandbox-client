@@ -54,7 +54,7 @@ export default () => {
   }, [prefersReducedMotion]);
   return (
     <Layout>
-      <TitleAndMetaTags title="Team Plan - Codesandbox" />
+      <TitleAndMetaTags title="Team Plan - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
           <Title>Keep development work flowing</Title>

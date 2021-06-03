@@ -93,7 +93,11 @@ export const getDeploys = async ({ state, actions, effects }: Context) => {
   state.deployment.vercel.gettingDeploys = false;
 };
 
-export const deployClicked = async ({ state, effects, actions }: Context) => {
+export const deployPreviewClicked = async ({
+  state,
+  effects,
+  actions,
+}: Context) => {
   const sandbox = state.editor.currentSandbox;
 
   if (!sandbox) {
@@ -129,7 +133,47 @@ export const deployClicked = async ({ state, effects, actions }: Context) => {
 
   actions.deployment.getDeploys();
 };
+export const deployProductionClicked = async ({
+  state,
+  effects,
+  actions,
+}: Context) => {
+  const sandbox = state.editor.currentSandbox;
 
+  if (!sandbox) {
+    return;
+  }
+
+  try {
+    state.deployment.deploying = true;
+    const zip = await effects.zip.create(sandbox);
+    const contents = await effects.jsZip.loadAsync(zip.file);
+
+    if (sandbox.isSse && state.editor.currentSandbox) {
+      const envs = await effects.api.getEnvironmentVariables(
+        state.editor.currentSandbox.id
+      );
+      if (envs) {
+        await effects.vercel.checkEnvironmentVariables(sandbox, envs);
+      }
+    }
+
+    state.deployment.vercel.url = await effects.vercel.deploy(
+      contents,
+      sandbox,
+      'production'
+    );
+  } catch (error) {
+    actions.internal.handleError({
+      message: getVercelErrorMessage(error),
+      error,
+    });
+  }
+
+  state.deployment.deploying = false;
+
+  actions.deployment.getDeploys();
+};
 export const deploySandboxClicked = async ({
   actions,
   effects,

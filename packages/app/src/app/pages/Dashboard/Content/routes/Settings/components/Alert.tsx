@@ -7,6 +7,7 @@ interface AlertProps {
   cta?: {
     label: string;
     href: string;
+    onClick?: () => void;
   };
 }
 
@@ -39,6 +40,7 @@ export const Alert = (props: AlertProps) => (
         target="_blank"
         rel="noreferrer noopener"
         href={props.cta.href}
+        onClick={props.cta.onClick}
       >
         {props.cta.label}
       </Link>

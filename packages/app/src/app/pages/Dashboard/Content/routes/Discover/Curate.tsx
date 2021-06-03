@@ -23,8 +23,8 @@ import {
 } from 'app/pages/Dashboard/types';
 import { CommunitySandbox } from 'app/pages/Dashboard/Components/CommunitySandbox';
 
-import { PickedSandbox } from './index';
-import { PICKED_SANDBOXES_ALBUM } from './contants';
+import { FeaturedSandbox } from './index';
+import { FEATURED_SANDBOXES_ALBUM } from './contants';
 
 export const Curate = () => {
   const {
@@ -74,10 +74,10 @@ export const Curate = () => {
           })}
         >
           <Stack direction="vertical" gap={10}>
-            <CustomisePickedSandboxes />
+            <CustomiseFeaturedSandboxes />
 
             {curatedAlbums
-              .filter(album => album.id !== PICKED_SANDBOXES_ALBUM)
+              .filter(album => album.id !== FEATURED_SANDBOXES_ALBUM)
               .map(album => (
                 <Collection key={album.id} album={album} />
               ))}
@@ -89,7 +89,7 @@ export const Curate = () => {
     </Element>
   );
 };
-const CustomisePickedSandboxes = () => {
+const CustomiseFeaturedSandboxes = () => {
   const {
     dashboard: { curatedAlbums },
   } = useAppState();
@@ -102,7 +102,7 @@ const CustomisePickedSandboxes = () => {
   } = useActions();
 
   const featuredAlbum = curatedAlbums.find(
-    album => album.id === PICKED_SANDBOXES_ALBUM
+    album => album.id === FEATURED_SANDBOXES_ALBUM
   );
 
   const [loading, setLoading] = React.useState(false);
@@ -123,13 +123,13 @@ const CustomisePickedSandboxes = () => {
 
     // clean up old options
     await removeSandboxesFromAlbum({
-      albumId: PICKED_SANDBOXES_ALBUM,
+      albumId: FEATURED_SANDBOXES_ALBUM,
       sandboxIds: currentSandboxIds,
     });
 
     // set them fresh
     await addSandboxesToAlbum({
-      albumId: PICKED_SANDBOXES_ALBUM,
+      albumId: FEATURED_SANDBOXES_ALBUM,
       sandboxIds: newSandboxIds,
     });
 
@@ -180,7 +180,7 @@ const CustomisePickedSandboxes = () => {
         }}
       >
         {sandboxes.slice(0, 3).map(sandbox => (
-          <PickedSandbox key={sandbox.id} sandbox={sandbox} />
+          <FeaturedSandbox key={sandbox.id} sandbox={sandbox} />
         ))}
       </Grid>
     </>

@@ -41,7 +41,7 @@ export default () => {
   }, [prefersReducedMotion]);
   return (
     <Layout>
-      <TitleAndMetaTags title="Knowledge Sharing - Codesandbox" />
+      <TitleAndMetaTags title="Knowledge Sharing - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
           <Title>Share knowledge and learn together</Title>

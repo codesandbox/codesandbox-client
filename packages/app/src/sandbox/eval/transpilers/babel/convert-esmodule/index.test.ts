@@ -1,8 +1,11 @@
 import { convertEsModule as convert } from '.';
+import { generateCode, parseModule } from '../ast/utils';
 import { getSyntaxInfoFromAst } from '../syntax-info';
 
 function convertEsModule(code: string) {
-  return convert(code).code;
+  const ast = parseModule(code);
+  convert(ast);
+  return generateCode(ast);
 }
 
 describe('convert-esmodule', () => {
@@ -590,15 +593,17 @@ export function test3() {
   describe('syntax info', () => {
     it('can detect jsx', () => {
       const code = `const a = <div>Hello</div>`;
-      const info = convert(code);
-      const syntaxInfo = getSyntaxInfoFromAst(info.ast);
+      const ast = parseModule(code);
+      convert(ast);
+      const syntaxInfo = getSyntaxInfoFromAst(ast);
       expect(syntaxInfo.jsx).toBeTruthy();
     });
 
     it('can detect non jsx', () => {
       const code = `const a = /<div>Hello<\\/div>/`;
-      const info = convert(code);
-      const syntaxInfo = getSyntaxInfoFromAst(info.ast);
+      const ast = parseModule(code);
+      convert(ast);
+      const syntaxInfo = getSyntaxInfoFromAst(ast);
       expect(syntaxInfo.jsx).toBeFalsy();
     });
   });

@@ -40,7 +40,8 @@ const EXPRESSIONS_PRECEDENCE = {
  * Add support for next syntax
  */
 export const customGenerator = {
-  ...astring.baseGenerator,
+  // @ts-ignore baseGenerator is deprecated, and GENERATOR is not in the types?
+  ...astring.GENERATOR,
   FieldDefinition(
     node: meriyah.ESTree.FieldDefinition,
     state: { write(s: string): void }

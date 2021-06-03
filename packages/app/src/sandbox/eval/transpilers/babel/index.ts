@@ -1,6 +1,5 @@
 /* eslint-enable import/default */
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-import { isUrl } from '@codesandbox/common/lib/utils/is-url';
 import isESModule from 'sandbox/eval/utils/is-es-module';
 /* eslint-disable import/default */
 // @ts-ignore
@@ -8,20 +7,16 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 
 import delay from '@codesandbox/common/lib/utils/delay';
 import { endMeasure, measure } from '@codesandbox/common/lib/utils/metrics';
-import { Program } from 'meriyah/dist/estree';
 import { LoaderContext, Manager } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler';
 import getBabelConfig from './babel-parser';
 import { convertEsModule } from './convert-esmodule';
-import regexGetRequireStatements from './worker/simple-get-require-statements';
-import { getSyntaxInfoFromAst, getSyntaxInfoFromCode } from './syntax-info';
+import { getSyntaxInfoFromAst } from './syntax-info';
+import { ESTreeAST, generateCode, parseModule } from './ast/utils';
+import { collectDependencies } from './ast/collect-dependencies';
 
 const global = window as any;
 const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
-
-interface TranspilationResult {
-  transpiledCode: string;
-}
 
 // Right now this is in a worker, but when we're going to allow custom plugins
 // we need to move this out of the worker again, because the config needs
@@ -51,111 +46,99 @@ class BabelTranspiler extends WorkerTranspiler {
     return global.babelworkers.pop();
   }
 
-  async doTranspilation(
+  doTranspilation(
     code: string,
     loaderContext: LoaderContext
-  ): Promise<TranspilationResult> {
-    const { path } = loaderContext;
-    let newCode = code;
+  ): Promise<{ transpiledCode: string }> {
+    return new Promise((resolve, reject) => {
+      const { path } = loaderContext;
+      const isNodeModule = path.startsWith('/node_modules');
 
-    const isNodeModule = path.startsWith('/node_modules') || isUrl(path);
-
-    /**
-     * We should never transpile babel-standalone, because it relies on code that runs
-     * in non-strict mode. Transpiling this code would add a "use strict;" piece, which
-     * would then break the code (because it expects `this` to be global). No transpiler
-     * can fix this, and because of this we need to just specifically ignore this file.
-     */
-    const shouldIgnore = path === '/node_modules/babel-standalone/babel.js';
-
-    if (shouldIgnore) {
-      return { transpiledCode: code };
-    }
-
-    let convertedToCommonJS = false;
-    let ast: Program | undefined;
-    if (isESModule(newCode) && isNodeModule) {
-      try {
-        measure(`esconvert-${path}`);
-        const esModuleInfo = convertEsModule(newCode);
-        newCode = esModuleInfo.code;
-        endMeasure(`esconvert-${path}`, { silent: true });
-        ast = esModuleInfo.ast;
-        convertedToCommonJS = true;
-      } catch (e) {
-        console.warn(
-          `Error when converting '${path}' esmodule to commonjs: ${e.message}`
-        );
+      /**
+       * We should never transpile babel-standalone, because it relies on code that runs
+       * in non-strict mode. Transpiling this code would add a "use strict;" piece, which
+       * would then break the code (because it expects `this` to be global). No transpiler
+       * can fix this, and because of this we need to just specifically ignore this file.
+       */
+      if (path === '/node_modules/babel-standalone/babel.js') {
+        resolve({ transpiledCode: code });
+        return;
       }
-    }
 
-    const syntaxInfo = ast
-      ? getSyntaxInfoFromAst(ast)
-      : getSyntaxInfoFromCode(newCode, path);
-    try {
-      // When we find a node_module that already is commonjs we will just get the
-      // dependencies from the file and return the same code. We get the dependencies
-      // with a regex since commonjs modules just have `require` and regex is MUCH
-      // faster than generating an AST from the code.
-      if (
-        (loaderContext.options.simpleRequire || isNodeModule) &&
-        !syntaxInfo.jsx &&
-        !(!convertedToCommonJS && syntaxInfo.esm)
-      ) {
-        await Promise.all(
-          regexGetRequireStatements(newCode).map(async dependency => {
-            if (dependency.isGlob) {
-              loaderContext.addDependenciesInDirectory(dependency.path);
-            } else {
-              await loaderContext.addDependency(dependency.path);
-            }
-          })
-        );
+      // Check if we can take a shortcut, we have a custom pipeline for transforming
+      // node_modules to commonjs and collecting deps
+      if (loaderContext.options.simpleRequire || isNodeModule) {
+        try {
+          const ast: ESTreeAST = parseModule(code);
+          if (isESModule(code)) {
+            measure(`esconvert-${path}`);
+            convertEsModule(ast);
+            endMeasure(`esconvert-${path}`, { silent: true });
+          }
 
-        return {
-          transpiledCode: newCode,
-        };
+          const syntaxInfo = getSyntaxInfoFromAst(ast);
+          // If the code is commonjs and does not contain any more jsx, we generate and return the code.
+          if (!syntaxInfo.jsx && !syntaxInfo.esm) {
+            measure(`dep-collection-${path}`);
+            collectDependencies(ast).forEach(dependency => {
+              if (dependency.isGlob) {
+                loaderContext.addDependenciesInDirectory(dependency.path);
+              } else {
+                loaderContext.addDependency(dependency.path);
+              }
+            });
+            endMeasure(`dep-collection-${path}`, { silent: true });
+
+            resolve({
+              transpiledCode: ast.isDirty ? generateCode(ast) : code,
+            });
+            return;
+          }
+
+          // TODO: Sourcemaps?
+          // eslint-disable-next-line no-param-reassign
+          code = ast.isDirty ? generateCode(ast) : code;
+        } catch (err) {
+          console.warn(
+            `Error occurred while trying to quickly transform '${path}'`
+          );
+          console.warn(err);
+        }
       }
-    } catch (e) {
-      console.warn(
-        `Error when reading dependencies of '${path}' using quick method: '${e.message}'`
+
+      const configs = loaderContext.options.configurations;
+      const foundConfig = configs.babel && configs.babel.parsed;
+      const loaderOptions = loaderContext.options || {};
+
+      const dependencies =
+        (configs.package &&
+          configs.package.parsed &&
+          configs.package.parsed.dependencies) ||
+        {};
+
+      const devDependencies =
+        (configs.package &&
+          configs.package.parsed &&
+          configs.package.parsed.devDependencies) ||
+        {};
+
+      const isV7 =
+        loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
+
+      const hasMacros = Object.keys(dependencies).some(
+        d => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
       );
-    }
 
-    const configs = loaderContext.options.configurations;
-    const foundConfig = configs.babel && configs.babel.parsed;
-    const loaderOptions = loaderContext.options || {};
+      const babelConfig = getBabelConfig(
+        foundConfig || (loaderOptions as any).config,
+        loaderOptions,
+        path,
+        isV7
+      );
 
-    const dependencies =
-      (configs.package &&
-        configs.package.parsed &&
-        configs.package.parsed.dependencies) ||
-      {};
-
-    const devDependencies =
-      (configs.package &&
-        configs.package.parsed &&
-        configs.package.parsed.devDependencies) ||
-      {};
-
-    const isV7 =
-      loaderContext.options.isV7 || isBabel7(dependencies, devDependencies);
-
-    const hasMacros = Object.keys(dependencies).some(
-      d => d.indexOf('macro') > -1 || d.indexOf('codegen') > -1
-    );
-
-    const babelConfig = getBabelConfig(
-      foundConfig || (loaderOptions as any).config,
-      loaderOptions,
-      path,
-      isV7
-    );
-
-    const result: TranspilationResult = await new Promise((resolve, reject) => {
       this.queueTask(
         {
-          code: newCode,
+          code,
           config: babelConfig,
           path,
           loaderOptions,
@@ -172,14 +155,14 @@ class BabelTranspiler extends WorkerTranspiler {
         (err, data) => {
           if (err) {
             loaderContext.emitError(err);
+
             return reject(err);
           }
+
           return resolve(data);
         }
       );
     });
-
-    return result;
   }
 
   async getTranspilerContext(manager: Manager): Promise<any> {

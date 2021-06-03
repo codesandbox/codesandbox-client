@@ -3,6 +3,8 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Element, Button, Stack } from '@codesandbox/components';
 import { useAppState, useActions, useEffects } from 'app/overmind';
 import css from '@styled-system/css';
+import track from '@codesandbox/common/lib/utils/analytics';
+
 import { Item } from './elements';
 import { Alert } from '../Common/Alert';
 
@@ -76,6 +78,7 @@ export const NetlifyLogs: FunctionComponent = () => {
           })}
           onClick={() => {
             window.open(site.url, '_blank');
+            track('Editor - Open Netlify Site');
           }}
         >
           Open Netlify Site

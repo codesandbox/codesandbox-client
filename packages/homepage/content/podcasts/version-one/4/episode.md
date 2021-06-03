@@ -54,7 +54,7 @@ Maurice concludes the episode by asking Vlad if he has any parting words of wisd
 - 20:43 - Vlad’s final piece of advice for listeners
 
 
-#Links:
+## Links:
 Find out more about CodeSandbox on their [website](https://codesandbox.io). 
 Learn more about Webflow on their [website](https://webflow.com).
 Connect with Vlad Magdalin on [LinkedIn](https://www.linkedin.com/in/vladmagdalin/) and [Twitter](https://twitter.com/callmevlad?ref_src=twsrc%255Egoogle%257Ctwcamp%255Eserp%257Ctwgr%255Eauthor).

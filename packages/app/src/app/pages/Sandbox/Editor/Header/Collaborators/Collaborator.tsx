@@ -8,6 +8,7 @@ import { Authorization } from 'app/graphql/types';
 import { useAppState, useActions } from 'app/overmind';
 import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Mail, WarningIcon } from './icons';
 import { PermissionSelect } from './PermissionSelect';
@@ -274,7 +275,12 @@ export const LinkPermissions = ({ readOnly }: ILinkPermissionProps) => {
       {!isPatron && (
         <Text size={3} variant="muted" align="center">
           Changing sandbox access is available with{' '}
-          <a href="/pricing" target="_blank" rel="noreferrer noopener">
+          <a
+            href="/pricing"
+            target="_blank"
+            rel="noreferrer noopener"
+            onClick={() => track('Editor - Share sandbox Pricing link')}
+          >
             CodeSandbox Pro
           </a>
         </Text>

@@ -1,16 +1,16 @@
 import { walk } from 'estree-walker';
-import { Program } from 'meriyah/dist/estree';
 import isESModule from 'sandbox/eval/utils/is-es-module';
 import { Syntax as n } from './convert-esmodule/syntax';
+import { ESTreeAST } from './ast/utils';
 
 export interface SyntaxInfo {
   jsx: boolean;
   esm: boolean;
 }
 
-export function getSyntaxInfoFromAst(program: Program): SyntaxInfo {
+export function getSyntaxInfoFromAst(ast: ESTreeAST): SyntaxInfo {
   const syntaxInfo: SyntaxInfo = { jsx: false, esm: false };
-  walk(program, {
+  walk(ast.program, {
     enter(node) {
       const esmTypes: string[] = [
         n.ImportDeclaration,

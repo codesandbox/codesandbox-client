@@ -181,7 +181,7 @@ other local files used by the component to ensure render.
 
 ## Setting inference
 
-When importting, we infer sandbox settings based on several files in a
+When importing, we infer sandbox settings based on several files in a
 repository.
 
 | Sandbox Setting | Inferred from                                                                                                                                         |

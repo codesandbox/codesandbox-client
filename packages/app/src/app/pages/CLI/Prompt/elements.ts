@@ -3,8 +3,7 @@ import styled from 'styled-components';
 export const Container = styled.div`
   height: 100%;
   width: 100%;
-  margin-top: 10%;
-  text-align: center;
+  text-align: left;
 `;
 
 export const Buttons = styled.div`
@@ -20,14 +19,12 @@ export const TokenInput = styled.input`
   color: white;
 
   width: 100%;
-  max-width: 20em;
   border: none;
   outline: none;
   padding: 1rem;
   font-size: 1.5rem;
-  text-align: center;
-  margin: auto;
 
+  margin: auto;
   border-radius: 2px;
   box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
 
