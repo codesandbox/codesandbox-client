@@ -20,6 +20,7 @@ import scott from '../assets/images/people/scott.png';
 import kate from '../assets/images/people/kate.jpg';
 import tamas from '../assets/images/people/tamas.png';
 import jasper from '../assets/images/people/jasper.jpg';
+import joana from '../assets/images/people/joana.jpg';
 
 const people = [
   {
@@ -135,6 +136,12 @@ const people = [
     pic: jasper,
     color: '#F24E62',
     team: 'Engineering',
+  },
+  {
+    name: 'Joana Telker',
+    pic: joana,
+    color: '#76D0FB',
+    team: 'Operations',
   },
 ];
 
