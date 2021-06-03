@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
+import { loadSandboxRetry, SECOND } from './utils';
 
-const SECOND = 1000;
 const SANDBOXES = [
   'new',
   // 'preact',
@@ -41,8 +41,8 @@ const SANDBOXES = [
   // '4888omqqz7', // material-ui https://github.com/codesandbox/codesandbox-client/issues/1741,
   'sebn6', // babel plugin dynamically downloaded
   'utmms', // babel plugin pragmatic-jsx which requires other babel plugin
+  'circle-svg', // svgs don't render properly if you use document.createElement
 ];
-const SANDBOXES_REPO = 'codesandbox/integration-sandboxes';
 
 // Logic for parallelizing the tests
 const PARALLEL_NODES = Number.parseInt(process.env.CIRCLE_NODE_TOTAL, 10) || 1;
@@ -53,74 +53,6 @@ const sandboxesToTest = SANDBOXES.slice(
   batchSize * PARALLEL_INDEX,
   batchSize * (PARALLEL_INDEX + 1)
 );
-
-function pageLoaded(page) {
-  return new Promise(resolve =>
-    page.exposeFunction('__puppeteer__', () => {
-      if (resolve) {
-        resolve();
-      }
-    })
-  );
-}
-
-function sandboxUrl(sandboxId) {
-  return `http://localhost:3000/#github/${SANDBOXES_REPO}/tree/master/${sandboxId}`;
-}
-
-function loadSandbox(page, sandboxId, timeout) {
-  return new Promise(async (resolve, reject) => {
-    const timer = setTimeout(async () => {
-      reject(
-        Error(
-          `Timeout: loading sandbox '${sandboxId}' took more than ${timeout /
-            SECOND}s`
-        )
-      );
-    }, timeout);
-    page.goto(sandboxUrl(sandboxId), {
-      timeout: 0, // we manage the timeout ourselves
-    });
-    page.on('console', msg => {
-      for (let i = 0; i < msg.args().length; ++i) {
-        console.log(`${i}: ${msg.args()[i]}`); // eslint-disable-line
-      }
-    });
-    page.on('error', msg => {
-      console.log('error', msg); // eslint-disable-line
-    });
-    await pageLoaded(page);
-    clearTimeout(timer);
-    await page.waitFor(2 * SECOND);
-    resolve();
-  });
-}
-
-// eslint-disable-next-line consistent-return
-async function loadSandboxRetry(browser, sandboxId, timeout, retries) {
-  let page;
-  for (let i = 1; i <= retries; i++) {
-    try {
-      const start = new Date();
-      /* eslint-disable no-await-in-loop */
-      page = await browser.newPage();
-      await loadSandbox(page, sandboxId, timeout);
-      process.stdout.write(
-        `Sandbox '${sandboxId}' loaded in ${(new Date() - start) / SECOND}s\n`
-      );
-      return page;
-    } catch (err) {
-      await page.waitFor(SECOND);
-      await page.close();
-      /* eslint-enable no-await-in-loop */
-      if (i === retries) {
-        throw new Error(`${err.message}, retried ${retries} times.`);
-      } else {
-        process.stdout.write(`Loading sandbox '${sandboxId}', retry ${i}...\n`);
-      }
-    }
-  }
-}
 
 describe('sandboxes', () => {
   let browser = puppeteer.launch({
