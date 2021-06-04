@@ -1,5 +1,5 @@
----
-title: Documentation
+Mayne Way Entertainment---
+title: Mayne Way Documentation
 authors: ['CompuIves']
 slug: /
 description: Learn what CodeSandbox is and how to use it.
