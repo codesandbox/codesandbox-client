@@ -67,7 +67,6 @@ class ModalComponent extends React.Component {
     },
     content: {
       position: 'relative',
-      overflow: 'hidden',
       padding: 0,
       maxWidth: width,
       top: fullWidth ? 0 : `${top}vh`,
