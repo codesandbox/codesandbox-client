@@ -243,6 +243,7 @@ export const FeaturedSandbox = ({ sandbox }) => {
           borderColor: 'grays.600',
           borderRadius: 'medium',
           overflow: 'hidden',
+          willChange: 'transform', // because child has will change
         })}
       >
         <Element
