@@ -74,7 +74,15 @@ const TemplateWrapper = styled.li`
   text-align: left;
 
   margin-bottom: 1rem;
-  width: calc(((100% - 1rem * 3) / 4));
+  width: 100%;
+
+  @media screen and (min-width: 460px) {
+    width: calc(((100% - 1rem) / 2));
+  }
+
+  @media screen and (min-width: 650px) {
+    width: calc(((100% - 1rem * 3) / 4));
+  }
 
   border-radius: 4px;
   border: 1px solid ${props => props.theme.homepage.grey};
