@@ -1,11 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 
-export const HeroWrapper = styled.section`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  text-align: center;
+export const HeroWrapper = styled.div`
   padding: 10rem 0 5rem 0;
   margin-bottom: 4rem;
 
@@ -16,6 +13,7 @@ export const HeroWrapper = styled.section`
   > div {
     text-align: center;
     max-width: 80%;
+    width: 100%;
     margin: auto;
   }
 
@@ -64,18 +62,17 @@ export const TemplateList = styled.ul`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  width: 100%;
+  max-width: 850px;
 
-  &:after {
-    content: '';
-    flex: 1;
-  }
+  margin: 0 auto;
+  padding: 0;
 `;
 
 const TemplateWrapper = styled.li`
   list-style: none;
   text-align: left;
 
-  padding: 1em;
   margin-bottom: 1rem;
   width: calc(((100% - 1rem * 3) / 4));
 
@@ -91,33 +88,114 @@ const TemplateWrapper = styled.li`
   a {
     color: inherit;
     text-decoration: none;
-    display: block;
+    display: flex;
+    align-items: center;
+    padding: 1.1em 1em;
   }
 `;
 
 const TemplateTitle = styled.h3`
   font-family: ${props => props.theme.homepage.appleFont};
   font-size: 1rem;
-
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: ${props => props.theme.homepage.white};
+
   margin: 0;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.3em;
 `;
 
 const TemplateDescription = styled.p`
   font-family: ${props => props.theme.homepage.appleFont};
   font-size: 0.8rem;
 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   color: #757575;
   margin: 0;
 `;
 
-export const TemplateItem = ({ alias, title, environment }) => (
-  <TemplateWrapper>
-    <a href={`https://codesandbox.io/s/${alias}`}>
-      {/* <img src="" alt={`Template ${title}`} /> */}
-      <TemplateTitle>{title}</TemplateTitle>
-      <TemplateDescription>{environment}</TemplateDescription>
-    </a>
-  </TemplateWrapper>
-);
+export const TemplateItem = ({
+  alias,
+  iconUrl,
+  title,
+  environment,
+  ...props
+}) => {
+  const { UserIcon } = getTemplateIcon(iconUrl, environment);
+
+  return (
+    <TemplateWrapper {...props}>
+      <a href={`https://codesandbox.io/s/${alias}`}>
+        <div css={{ marginRight: '1rem' }}>
+          <UserIcon />
+        </div>
+
+        <div css={{ width: 'calc(100% - 32px - 1rem)' }}>
+          <TemplateTitle>{title}</TemplateTitle>
+          <TemplateDescription>{environment}</TemplateDescription>
+        </div>
+      </a>
+    </TemplateWrapper>
+  );
+};
+
+export const ShowMoreButtonLine = styled.div`
+  width: 100%;
+  border-top: 1px solid ${props => props.theme.homepage.grey};
+  margin-top: 1em;
+  text-align: center;
+`;
+
+export const ShowMoreButton = styled.button`
+  border: 0;
+  background-color: ${props => props.theme.homepage.greyDark};
+  color: #757575;
+  transform: translateY(-1.7em);
+
+  padding: 1em;
+  display: inline-flex;
+  align-items: center;
+
+  cursor: pointer;
+  transition: filter 200ms ease;
+
+  &:hover {
+    filter: brightness(1.5);
+  }
+`;
+
+export const ShowMoreIcon = styled.span`
+  width: 21px;
+  height: 21px;
+  border-radius: 21px;
+  display: inline-flex;
+  margin-right: 0.6rem;
+
+  transition: color 200ms ease;
+
+  border: 1px solid #343434;
+  background-color: #343434;
+
+  color: ${props => props.theme.homepage.greyDark};
+
+  svg {
+    margin: auto;
+    display: block;
+    transition: transform 200ms ease;
+  }
+
+  ${({ active, theme }) =>
+    active &&
+    css`
+      color: #343434;
+      background: ${theme.homepage.greyDark};
+
+      svg {
+        transform: rotate(135deg);
+      }
+    `}
+`;
