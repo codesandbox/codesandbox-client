@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 
 export const HeroWrapper = styled.section`
@@ -58,3 +59,65 @@ export const SubTitle = styled.h2`
     font-size: 0.875rem;
   }
 `;
+
+export const TemplateList = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  &:after {
+    content: '';
+    flex: 1;
+  }
+`;
+
+const TemplateWrapper = styled.li`
+  list-style: none;
+  text-align: left;
+
+  padding: 1em;
+  margin-bottom: 1rem;
+  width: calc(((100% - 1rem * 3) / 4));
+
+  border-radius: 4px;
+  border: 1px solid ${props => props.theme.homepage.grey};
+
+  transition: background 200ms ease;
+
+  &:hover {
+    background: #151515;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+  }
+`;
+
+const TemplateTitle = styled.h3`
+  font-family: ${props => props.theme.homepage.appleFont};
+  font-size: 1rem;
+
+  color: ${props => props.theme.homepage.white};
+  margin: 0;
+  margin-bottom: 0.5em;
+`;
+
+const TemplateDescription = styled.p`
+  font-family: ${props => props.theme.homepage.appleFont};
+  font-size: 0.8rem;
+
+  color: #757575;
+  margin: 0;
+`;
+
+export const TemplateItem = ({ alias, title, environment }) => (
+  <TemplateWrapper>
+    <a href={`https://codesandbox.io/s/${alias}`}>
+      {/* <img src="" alt={`Template ${title}`} /> */}
+      <TemplateTitle>{title}</TemplateTitle>
+      <TemplateDescription>{environment}</TemplateDescription>
+    </a>
+  </TemplateWrapper>
+);

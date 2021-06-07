@@ -2,7 +2,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useStaticQuery, graphql } from 'gatsby';
 
-import { HeroWrapper, Title, SubTitle } from './elements';
+import {
+  TemplateItem,
+  TemplateList,
+  HeroWrapper,
+  Title,
+  SubTitle,
+} from './elements';
 
 export default () => {
   const {
@@ -48,9 +54,18 @@ export default () => {
           Create, share, and get feedback with collaborative sandboxes for rapid
           web development.
         </SubTitle>
-      </motion.div>
 
-      {nodes.map(template => template.title)}
+        <TemplateList>
+          {nodes.map(template => (
+            <TemplateItem
+              key={template.alias}
+              alias={template.alias}
+              title={template.title}
+              environment={template.environment}
+            />
+          ))}
+        </TemplateList>
+      </motion.div>
     </HeroWrapper>
   );
 };
