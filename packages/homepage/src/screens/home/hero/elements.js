@@ -183,7 +183,7 @@ export const ShowMoreIcon = styled.span`
   display: inline-flex;
   margin-right: 0.6rem;
 
-  transition: color 200ms ease;
+  transition: all 200ms ease;
 
   border: 1px solid #343434;
   background-color: #343434;
@@ -193,7 +193,7 @@ export const ShowMoreIcon = styled.span`
   svg {
     margin: auto;
     display: block;
-    transition: transform 200ms ease;
+    transition: all 200ms ease;
   }
 
   ${({ active, theme }) =>
