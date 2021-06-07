@@ -96,7 +96,7 @@ export type LoaderContext = {
       isAbsolute?: boolean;
       isEntry?: boolean;
     }
-  ) => void;
+  ) => Promise<void>;
   resolveTranspiledModule: (
     depPath: string,
     options?: {
@@ -117,7 +117,7 @@ export type LoaderContext = {
       isAbsolute?: boolean;
       isEntry?: boolean;
     }
-  ) => void;
+  ) => Promise<void>;
   addDependenciesInDirectory: (
     depPath: string,
     options?: {
@@ -481,7 +481,7 @@ export class TranspiledModule {
       // force transpilation to rebuild the file
       addTranspilationDependency: (depPath: string, options) =>
         this.addDependency(manager, depPath, options, true),
-      addDependency: async (depPath: string, options = {}) =>
+      addDependency: (depPath: string, options = {}) =>
         this.addDependency(manager, depPath, options),
       addDependenciesInDirectory: (folderPath: string, options = {}) => {
         const tModules = manager.resolveTranspiledModulesInDirectory(
