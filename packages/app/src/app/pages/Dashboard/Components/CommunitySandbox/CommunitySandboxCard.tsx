@@ -67,14 +67,7 @@ export const Stats: React.FC<StatsProps> = ({
       <Icon name="fork" size={14} />
       <Text size={3}>{formatNumber(forkCount)}</Text>
     </Stack>
-    <Stack
-      as={Button}
-      variant="link"
-      gap={1}
-      autoWidth
-      paddingX={0}
-      onClick={onLikeToggle}
-    >
+    <Stack as={Button} variant="link" gap={1} autoWidth onClick={onLikeToggle}>
       <Icon
         name="heart"
         size={14}
