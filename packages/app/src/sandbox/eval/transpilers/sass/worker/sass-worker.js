@@ -232,6 +232,7 @@ self.addEventListener('message', async event => {
         request.previous === 'stdin' ? path : request.previous;
 
       // request.path sometimes returns a partially resolved path
+      // See: https://github.com/codesandbox/codesandbox-client/issues/4865
       const foundPath = await resolveSass(fs, request.current, currentPath);
 
       self.postMessage({
