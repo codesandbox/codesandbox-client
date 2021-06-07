@@ -243,6 +243,7 @@ export const FeaturedSandbox = ({ sandbox }) => {
           borderColor: 'grays.600',
           borderRadius: 'medium',
           overflow: 'hidden',
+          willChange: 'transform', // because child has will change
         })}
       >
         <Element
@@ -278,6 +279,10 @@ export const FeaturedSandbox = ({ sandbox }) => {
         })}
       >
         <Stack
+          as={sandbox.author?.username ? Link : Text}
+          href={`https://codesandbox.io/u/${sandbox.author?.username}`}
+          variant="muted"
+          target="_blank"
           align="center"
           gap={2}
           css={{ flexShrink: 1, overflow: 'hidden' }}
@@ -304,6 +309,7 @@ export const FeaturedSandbox = ({ sandbox }) => {
           forkCount={sandbox.forkCount}
           liked={managedLiked}
           onLikeToggle={onLikeToggle}
+          url={url}
         />
       </Stack>
     </Element>

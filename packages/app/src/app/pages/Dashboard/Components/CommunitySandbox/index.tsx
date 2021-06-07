@@ -98,6 +98,7 @@ export const CommunitySandbox = ({
     author,
     likeCount: managedLikeCount,
     liked: managedLiked,
+    url,
   };
 
   const interactionProps = {
