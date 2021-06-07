@@ -18,18 +18,12 @@ declare var Sass: {
   registerPlugin: (name: string, plugin: Function) => void,
 };
 
-const resolveAsyncModule = (
+function resolveAsyncModule(
   path: string,
-  { ignoredExtensions }?: { ignoredExtensions?: Array<string> }
-) =>
-  new Promise((r, reject) => {
+  { ignoredExtensions }: { ignoredExtensions?: Array<string> } = {}
+) {
+  return new Promise((r, reject) => {
     const sendId = Math.floor(Math.random() * 10000);
-    self.postMessage({
-      type: 'resolve-async-transpiled-module',
-      path,
-      id: sendId,
-      options: { isAbsolute: true, ignoredExtensions },
-    });
 
     const resolveFunc = message => {
       const { type, id, found } = message.data;
@@ -48,12 +42,20 @@ const resolveAsyncModule = (
     };
 
     self.addEventListener('message', resolveFunc);
+
+    self.postMessage({
+      type: 'resolve-async-transpiled-module',
+      path,
+      id: sendId,
+      options: { isAbsolute: true, ignoredExtensions },
+    });
   });
+}
 
 const SUPPORTED_EXTS = ['scss', 'sass', 'css'];
 
-const existsPromise = (fs, file) =>
-  new Promise(r => {
+function existsPromise(fs, file) {
+  return new Promise(r => {
     fs.stat(file, async (err, stats) => {
       if (err || stats.isDirectory()) {
         if (stats && stats.isDirectory()) {
@@ -82,6 +84,7 @@ const existsPromise = (fs, file) =>
       }
     });
   });
+}
 
 /**
  * Return and stop as soon as one promise returns a truthy value
@@ -116,25 +119,23 @@ const getExistingPath = async (fs, p) => {
 };
 
 const resolvedCache = {};
-const resolveSass = (fs, p, path) => {
+async function resolveSass(fs, p, path) {
   const usedPath = p.startsWith('~') ? p.replace('~', '/node_modules/') : p;
 
   const sourceDir = dirname(path);
   resolvedCache[sourceDir] = resolvedCache[sourceDir] || {};
   if (resolvedCache[sourceDir][usedPath]) {
-    return Promise.resolve(resolvedCache[sourceDir][usedPath]);
+    return resolvedCache[sourceDir][usedPath];
   }
 
-  return new Promise((r, reject) => {
-    const directPath = join(sourceDir, usedPath);
+  const directPath = usedPath[0] === '/' ? usedPath : join(sourceDir, usedPath);
 
-    // First try to do the relative path, as a performance optimization
-    getExistingPath(fs, directPath).then(foundPath => {
-      if (foundPath) {
-        r(foundPath);
-        return;
-      }
-
+  // First try to do the relative path, as a performance optimization
+  const existingPath = await getExistingPath(fs, directPath);
+  if (existingPath) {
+    resolvedCache[sourceDir][usedPath] = existingPath;
+  } else {
+    await new Promise((promiseResolve, promiseReject) => {
       resolve(
         usedPath,
         {
@@ -165,23 +166,21 @@ const resolveSass = (fs, p, path) => {
         async (err, resolvedPath) => {
           if (err) {
             if (/^\w/.test(p)) {
-              r(resolveSass(fs, '.' + absolute(p), path));
+              promiseResolve(resolveSass(fs, '.' + absolute(p), path));
+            } else {
+              promiseReject(err);
             }
-
-            reject(err);
           } else {
             const newFoundPath = await getExistingPath(fs, resolvedPath);
-
-            r(newFoundPath);
+            promiseResolve(newFoundPath);
           }
         }
       );
     });
-  }).then(result => {
-    resolvedCache[sourceDir][usedPath] = result;
-    return result;
-  });
-};
+  }
+
+  return resolvedCache[sourceDir][usedPath];
+}
 
 function initializeBrowserFS() {
   return new Promise(res => {
@@ -232,8 +231,8 @@ self.addEventListener('message', async event => {
       const currentPath =
         request.previous === 'stdin' ? path : request.previous;
 
-      const foundPath =
-        request.path || (await resolveSass(fs, request.current, currentPath));
+      // request.path sometimes returns a partially resolved path
+      const foundPath = await resolveSass(fs, request.current, currentPath);
 
       self.postMessage({
         type: 'add-transpilation-dependency',
