@@ -139,7 +139,7 @@ const Banner = () => (
     css={css({
       width: '100%',
       height: 195,
-      background: 'linear-gradient(#060606, #060606)',
+      background: 'linear-gradient(#422677, #392687)',
       borderRadius: 'medium',
       overflow: 'hidden',
       position: 'relative',
