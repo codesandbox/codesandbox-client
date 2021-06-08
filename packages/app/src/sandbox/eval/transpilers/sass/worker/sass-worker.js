@@ -18,12 +18,18 @@ declare var Sass: {
   registerPlugin: (name: string, plugin: Function) => void,
 };
 
-function resolveAsyncModule(
+const resolveAsyncModule = (
   path: string,
-  { ignoredExtensions }: { ignoredExtensions?: Array<string> } = {}
-) {
-  return new Promise((r, reject) => {
+  { ignoredExtensions }?: { ignoredExtensions?: Array<string> }
+) =>
+  new Promise((r, reject) => {
     const sendId = Math.floor(Math.random() * 10000);
+    self.postMessage({
+      type: 'resolve-async-transpiled-module',
+      path,
+      id: sendId,
+      options: { isAbsolute: true, ignoredExtensions },
+    });
 
     const resolveFunc = message => {
       const { type, id, found } = message.data;
@@ -42,20 +48,12 @@ function resolveAsyncModule(
     };
 
     self.addEventListener('message', resolveFunc);
-
-    self.postMessage({
-      type: 'resolve-async-transpiled-module',
-      path,
-      id: sendId,
-      options: { isAbsolute: true, ignoredExtensions },
-    });
   });
-}
 
 const SUPPORTED_EXTS = ['scss', 'sass', 'css'];
 
-function existsPromise(fs, file) {
-  return new Promise(r => {
+const existsPromise = (fs, file) =>
+  new Promise(r => {
     fs.stat(file, async (err, stats) => {
       if (err || stats.isDirectory()) {
         if (stats && stats.isDirectory()) {
@@ -84,7 +82,6 @@ function existsPromise(fs, file) {
       }
     });
   });
-}
 
 /**
  * Return and stop as soon as one promise returns a truthy value
@@ -119,23 +116,25 @@ const getExistingPath = async (fs, p) => {
 };
 
 const resolvedCache = {};
-async function resolveSass(fs, p, path) {
+const resolveSass = (fs, p, path) => {
   const usedPath = p.startsWith('~') ? p.replace('~', '/node_modules/') : p;
 
   const sourceDir = dirname(path);
   resolvedCache[sourceDir] = resolvedCache[sourceDir] || {};
   if (resolvedCache[sourceDir][usedPath]) {
-    return resolvedCache[sourceDir][usedPath];
+    return Promise.resolve(resolvedCache[sourceDir][usedPath]);
   }
 
-  const directPath = usedPath[0] === '/' ? usedPath : join(sourceDir, usedPath);
+  return new Promise((r, reject) => {
+    const directPath = join(sourceDir, usedPath);
 
-  // First try to do the relative path, as a performance optimization
-  const existingPath = await getExistingPath(fs, directPath);
-  if (existingPath) {
-    resolvedCache[sourceDir][usedPath] = existingPath;
-  } else {
-    await new Promise((promiseResolve, promiseReject) => {
+    // First try to do the relative path, as a performance optimization
+    getExistingPath(fs, directPath).then(foundPath => {
+      if (foundPath) {
+        r(foundPath);
+        return;
+      }
+
       resolve(
         usedPath,
         {
@@ -166,21 +165,23 @@ async function resolveSass(fs, p, path) {
         async (err, resolvedPath) => {
           if (err) {
             if (/^\w/.test(p)) {
-              promiseResolve(resolveSass(fs, '.' + absolute(p), path));
-            } else {
-              promiseReject(err);
+              r(resolveSass(fs, '.' + absolute(p), path));
             }
+
+            reject(err);
           } else {
             const newFoundPath = await getExistingPath(fs, resolvedPath);
-            promiseResolve(newFoundPath);
+
+            r(newFoundPath);
           }
         }
       );
     });
-  }
-
-  return resolvedCache[sourceDir][usedPath];
-}
+  }).then(result => {
+    resolvedCache[sourceDir][usedPath] = result;
+    return result;
+  });
+};
 
 function initializeBrowserFS() {
   return new Promise(res => {
@@ -231,9 +232,8 @@ self.addEventListener('message', async event => {
       const currentPath =
         request.previous === 'stdin' ? path : request.previous;
 
-      // request.path sometimes returns a partially resolved path
-      // See: https://github.com/codesandbox/codesandbox-client/issues/4865
-      const foundPath = await resolveSass(fs, request.current, currentPath);
+      const foundPath =
+        request.path || (await resolveSass(fs, request.current, currentPath));
 
       self.postMessage({
         type: 'add-transpilation-dependency',
