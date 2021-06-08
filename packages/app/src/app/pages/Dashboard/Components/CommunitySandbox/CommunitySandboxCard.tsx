@@ -69,7 +69,7 @@ export const Stats: React.FC<StatsProps> = ({
       as={Link}
       href={url}
       target="_blank"
-      variant="body"
+      variant="muted"
       align="center"
       gap={1}
     >
