@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
+import { track } from '@codesandbox/common/lib/utils/analytics';
 
 export const HeroWrapper = styled.div`
   padding: 10rem 0 5rem 0;
@@ -137,7 +138,12 @@ export const TemplateItem = ({
 
   return (
     <TemplateWrapper {...props}>
-      <a href={`https://codesandbox.io/s/${alias}`}>
+      <a
+        href={`https://codesandbox.io/s/${alias}`}
+        onClick={() =>
+          track('Homepage - Template clicked', { templateAlias: alias })
+        }
+      >
         <div css={{ marginRight: '1rem' }}>
           <UserIcon />
         </div>

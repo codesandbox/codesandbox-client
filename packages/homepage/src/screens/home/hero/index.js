@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStaticQuery, graphql } from 'gatsby';
+import { track } from '@codesandbox/common/lib/utils/analytics';
 
 import {
   TemplateItem,
@@ -144,7 +145,12 @@ export default () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 1.4 }}
           >
-            <ShowMoreButton onClick={() => setShowMore(p => !p)}>
+            <ShowMoreButton
+              onClick={() => {
+                setShowMore(p => !p);
+                track('Homepage - Template show more', { open: showMore });
+              }}
+            >
               <ShowMoreIcon active={showMore}>
                 <Plus />
               </ShowMoreIcon>
