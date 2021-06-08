@@ -6,6 +6,7 @@ import {
   IconButton,
   Avatar,
   Button,
+  Link,
 } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import css from '@styled-system/css';
@@ -54,27 +55,28 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type StatsProps = Pick<
   CommunitySandboxItemComponentProps,
-  'forkCount' | 'likeCount' | 'liked' | 'onLikeToggle'
+  'forkCount' | 'likeCount' | 'liked' | 'onLikeToggle' | 'url'
 >;
 export const Stats: React.FC<StatsProps> = ({
   forkCount,
   likeCount,
   liked,
   onLikeToggle,
+  url,
 }) => (
-  <Stack as={Text} variant="muted" align="center" gap={2}>
-    <Stack align="center" gap={1}>
+  <Stack align="center" gap={2}>
+    <Stack
+      as={Link}
+      href={url}
+      target="_blank"
+      variant="body"
+      align="center"
+      gap={1}
+    >
       <Icon name="fork" size={14} />
       <Text size={3}>{formatNumber(forkCount)}</Text>
     </Stack>
-    <Stack
-      as={Button}
-      variant="link"
-      gap={1}
-      autoWidth
-      paddingX={0}
-      onClick={onLikeToggle}
-    >
+    <Stack as={Button} variant="link" gap={1} autoWidth onClick={onLikeToggle}>
       <Icon
         name="heart"
         size={14}
@@ -95,9 +97,17 @@ type AuthorProps = Pick<CommunitySandboxItemComponentProps, 'author'>;
 const Author: React.FC<AuthorProps> = React.memo(({ author }) => (
   // return empty div for alignment
 
-  <Stack align="center" gap={2} css={{ flexShrink: 1, overflow: 'hidden' }}>
+  <Stack
+    as={author?.username ? Link : Text}
+    href={`https://codesandbox.io/u/${author?.username}`}
+    variant="muted"
+    target="_blank"
+    align="center"
+    gap={2}
+    css={{ flexShrink: 1, overflow: 'hidden' }}
+  >
     {author?.username ? (
-      <Avatar css={css({ size: 6, borderRadius: 2 })} user={author} />
+      <Avatar user={author} css={css({ size: 6, borderRadius: 2 })} />
     ) : (
       <AnonymousAvatar />
     )}
@@ -115,6 +125,7 @@ export const SandboxCard = ({
   forkCount,
   author,
   liked,
+  url,
   // interactions
   isScrolling,
   selected,
@@ -180,6 +191,7 @@ export const SandboxCard = ({
             forkCount={forkCount}
             liked={liked}
             onLikeToggle={onLikeToggle}
+            url={url}
           />
         </Stack>
       </Stack>

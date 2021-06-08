@@ -5,7 +5,7 @@ import { exec } from 'child_process';
 
 import { loadSandboxRetry, SECOND } from './utils';
 
-const SANDBOXES = ['vue-3-basics-program-easily'];
+const SANDBOXES = ['sass-imports'];
 
 async function runTests() {
   console.log('Launching puppeteer');
