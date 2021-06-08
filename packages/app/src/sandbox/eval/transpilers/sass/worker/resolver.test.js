@@ -1,10 +1,9 @@
-import * as Sass from 'sass';
 import { getPossibleSassPaths, getPathVariations } from './resolver';
 
 describe('sass resolver', () => {
   it('Generates a list of all possible sass import locations', () => {
     const paths = ['/fragments', '/mixins'];
-    expect(getPossibleSassPaths(paths, 'test', Sass)).toStrictEqual([
+    expect(getPossibleSassPaths(paths, 'test')).toStrictEqual([
       '/fragments/test',
       '/mixins/test',
       '/node_modules/test',
@@ -13,13 +12,13 @@ describe('sass resolver', () => {
 
   it('Should handle node_module imports using `~`', () => {
     const paths = ['/src'];
-    expect(getPossibleSassPaths(paths, 'something.scss', Sass)).toStrictEqual([
+    expect(getPossibleSassPaths(paths, 'something.scss')).toStrictEqual([
       '/src/something.scss',
       '/node_modules/something.scss',
     ]);
   });
 
-  it('Should handle node_module imports using `~`', () => {
+  it('Get path variations without extension', () => {
     expect(getPathVariations('test')).toStrictEqual([
       'test.scss',
       '_test.scss',
@@ -36,7 +35,7 @@ describe('sass resolver', () => {
     ]);
   });
 
-  it('Should handle node_module imports using `~`', () => {
+  it('Get path variations with extension', () => {
     expect(getPathVariations('something.scss')).toStrictEqual([
       'something.scss',
       '_something.scss',

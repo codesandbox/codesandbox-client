@@ -7,15 +7,21 @@ export function getPathVariations(filename: string) {
   const hasExtension = !!pathUtils.extname(filename);
   const extensions = hasExtension ? [''] : POTENTIAL_EXTENSIONS;
   const pathVariations = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const extension of extensions) {
-    pathVariations.push(pathUtils.join(filename + extension));
-    pathVariations.push(pathUtils.join('_' + filename + extension));
-    if (extension) {
-      pathVariations.push(pathUtils.join(filename, 'index' + extension));
-      pathVariations.push(pathUtils.join(filename, '_index' + extension));
+
+  // eslint-disable-next-line no-unused-vars
+  for (const ext of extensions) {
+    pathVariations.push(pathUtils.join(filename + ext));
+    pathVariations.push(pathUtils.join('_' + filename + ext));
+  }
+
+  if (!hasExtension) {
+    // eslint-disable-next-line no-unused-vars
+    for (const ext of extensions) {
+      pathVariations.push(pathUtils.join(filename, 'index' + ext));
+      pathVariations.push(pathUtils.join(filename, '_index' + ext));
     }
   }
+
   return pathVariations;
 }
 
@@ -36,7 +42,7 @@ export function getPossibleSassPaths(
     directories.push('/node_modules');
   }
 
-  // eslint-disable-next-line no-restricted-syntax
+  // eslint-disable-next-line no-unused-vars
   for (const directory of directories) {
     potentialPaths.push(pathUtils.join(directory, filepath));
   }
@@ -139,7 +145,7 @@ async function resolvePotentialPath(fs: any, p: string) {
       resolutionCache[p] = foundFilePath;
     }
     return foundFilePath;
-  } catch(err) {
+  } catch (err) {
     return null;
   }
 }
@@ -180,9 +186,9 @@ export async function resolveSassUrl(opts: ISassResolverOptions) {
       ...env.SASS_PATH.split(process.platform === 'win32' ? ';' : ':')
     );
   }
-  
+
   const potentialPaths = getPossibleSassPaths(paths, url);
-  // eslint-disable-next-line no-restricted-syntax
+  // eslint-disable-next-line no-unused-vars
   for (const potentialPath of potentialPaths) {
     // eslint-disable-next-line no-await-in-loop
     const resolvedPath = await resolvePotentialPath(fs, potentialPath);
