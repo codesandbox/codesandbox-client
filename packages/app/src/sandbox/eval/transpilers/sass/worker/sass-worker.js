@@ -1,9 +1,9 @@
 import delay from '@codesandbox/common/lib/utils/delay';
 import { resolveSassUrl } from './resolver';
 
-self.importScripts([
-  'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.11.0/sass.sync.js',
-]);
+self.importScripts(
+  'https://cdn.jsdelivr.net/npm/sass.js@0.11.0/dist/sass.sync.js'
+);
 
 self.postMessage('ready');
 
@@ -15,8 +15,6 @@ declare var Sass: {
   registerPlugin: (name: string, plugin: Function) => void,
 };
 
-const foundFileCache = {};
-
 interface ISassCompileOptions {
   code: string;
   path: string;
@@ -27,6 +25,11 @@ async function compileSass(opts: ISassCompileOptions) {
   const { code, path, indentedSyntax } = opts;
 
   Sass._path = '/';
+
+  // TODO: Invalidate this in a smarter way
+  // we reset the found file cache and resolution cache in case one of the imports/filenames changed
+  const foundFileCache = {};
+  const resolutionCache = {};
 
   const importer = async request => {
     // eslint-disable-next-line
@@ -43,6 +46,7 @@ async function compileSass(opts: ISassCompileOptions) {
         previousFilePath,
         importUrl,
         fs,
+        resolutionCache,
       });
 
       if (!foundPath) {

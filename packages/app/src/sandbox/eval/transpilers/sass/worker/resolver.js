@@ -29,40 +29,32 @@ export function getPossibleSassPaths(
   directories: Array<string>,
   filepath: string
 ) {
-  const potentialPaths: Array<string> = [];
-
   if (filepath[0] === '~') {
     // eslint-disable-next-line no-param-reassign
     directories = ['/node_modules'];
     // eslint-disable-next-line no-param-reassign
     filepath = filepath.substr(1);
-  }
-
-  if (filepath[0] !== '.') {
+  } else if (filepath[0] !== '.' && filepath[0] !== '/') {
     directories.push('/node_modules');
   }
 
-  // eslint-disable-next-line no-unused-vars
-  for (const directory of directories) {
-    potentialPaths.push(pathUtils.join(directory, filepath));
-  }
-
-  return potentialPaths;
+  return directories.map(directory => pathUtils.join(directory, filepath));
 }
 
+let idx = 0;
 function resolveAsyncModule(
   path: string,
   { ignoredExtensions }: { ignoredExtensions?: Array<string> } = {}
 ) {
   return new Promise((r, reject) => {
-    const sendId = Math.floor(Math.random() * 10000);
-
+    idx += 1;
+    const callId = `${self.process.pid}::${idx}`;
     const resolveFunc = message => {
       const { type, id, found } = message.data;
 
       if (
         type === 'resolve-async-transpiled-module-response' &&
-        id === sendId
+        id === callId
       ) {
         if (found) {
           r(message.data);
@@ -78,7 +70,7 @@ function resolveAsyncModule(
     self.postMessage({
       type: 'resolve-async-transpiled-module',
       path,
-      id: sendId,
+      id: callId,
       options: { isAbsolute: true, ignoredExtensions },
     });
   });
@@ -127,12 +119,7 @@ function firstTrue(promises) {
   return Promise.race(newPromises);
 }
 
-const resolutionCache: { [k: string]: string } = {};
 async function resolvePotentialPath(fs: any, p: string) {
-  if (resolutionCache[p]) {
-    return resolutionCache[p];
-  }
-
   try {
     const pathDirName = pathUtils.dirname(p);
     const pathVariations = getPathVariations(
@@ -141,9 +128,6 @@ async function resolvePotentialPath(fs: any, p: string) {
     const foundFilePath = await firstTrue(
       pathVariations.map(path => existsPromise(fs, path))
     );
-    if (foundFilePath) {
-      resolutionCache[p] = foundFilePath;
-    }
     return foundFilePath;
   } catch (err) {
     return null;
@@ -156,43 +140,50 @@ interface ISassResolverOptions {
   includePaths?: Array<string>;
   env?: any;
   fs: any;
+  resolutionCache: { [k: string]: string };
 }
 
-// This is a reimplementation of the Sass resolution algorithm that utilizes the codesandbox filesystem.
+/* Re-implementation of sass importer
+Imports are resolved by trying, in order:
+  * Loading a file relative to the file in which the `@import` appeared.
+  * Each custom importer.
+  * Loading a file relative to the current working directory.
+  * Each load path in `includePaths`
+  * Each load path specified in the `SASS_PATH` environment variable, which should be semicolon-separated on Windows and colon-separated elsewhere.
+See: https://sass-lang.com/documentation/js-api#importer
+See also: https://github.com/sass/dart-sass/blob/006e6aa62f2417b5267ad5cdb5ba050226fab511/lib/src/importer/node/implementation.dart
+*/
 export async function resolveSassUrl(opts: ISassResolverOptions) {
-  const { importUrl, previousFilePath, includePaths = [], env = {}, fs } = opts;
+  const {
+    importUrl,
+    previousFilePath,
+    includePaths = [],
+    env = {},
+    fs,
+    resolutionCache,
+  } = opts;
 
   const url = importUrl.replace(/^file:\/\//, '');
-
-  /*
-    Imports are resolved by trying, in order:
-      * Loading a file relative to the file in which the `@import` appeared.
-      * Each custom importer.
-      * Loading a file relative to the current working directory.
-    We don't support these yet:
-      * Each load path in `includePaths`
-      * Each load path specified in the `SASS_PATH` environment variable, which should be semicolon-separated on Windows and colon-separated elsewhere.
-    See: https://sass-lang.com/documentation/js-api#importer
-    See also: https://github.com/sass/dart-sass/blob/006e6aa62f2417b5267ad5cdb5ba050226fab511/lib/src/importer/node/implementation.dart
-    */
-
   const paths = [pathUtils.dirname(previousFilePath.replace(/^file:\/\//, ''))];
   if (includePaths) {
     paths.push(...includePaths);
   }
 
   if (env.SASS_PATH) {
-    paths.push(
-      ...env.SASS_PATH.split(process.platform === 'win32' ? ';' : ':')
-    );
+    paths.push(...env.SASS_PATH.split(':'));
   }
 
   const potentialPaths = getPossibleSassPaths(paths, url);
   // eslint-disable-next-line no-unused-vars
   for (const potentialPath of potentialPaths) {
+    if (resolutionCache[potentialPath]) {
+      return resolutionCache[potentialPath];
+    }
+
     // eslint-disable-next-line no-await-in-loop
     const resolvedPath = await resolvePotentialPath(fs, potentialPath);
     if (resolvedPath) {
+      resolutionCache[potentialPath] = resolvedPath;
       return resolvedPath;
     }
   }
