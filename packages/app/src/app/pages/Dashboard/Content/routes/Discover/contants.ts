@@ -2,9 +2,9 @@ export const FEATURED_SANDBOXES_ALBUM = 'i1pxky';
 export const TRENDING_SANDBOXES_ALBUM = 'nynbnp';
 
 export const banner = {
-  label: 'NEW FEATURE',
-  title: 'Search in files',
-  subtitle: 'Blazing fast way to search files inside your sandbox.',
-  image: '/static/img/discover-banner-search.png',
-  link: 'https://codesandbox.io/blog',
+  label: 'NEWS',
+  title: 'Native JavaScript IDE for iOS',
+  subtitle: 'Code from anywhere with play.js by CodeSandbox',
+  image: '/static/img/discover-banner-playjs.png',
+  link: 'https://codesandbox.io/post/codesandbox-acquires-playjs',
 };

@@ -101,14 +101,14 @@ export const Discover = () => {
             marginX: 'auto',
             width: `calc(100% - ${2 * GUTTER}px)`,
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-            paddingY: 10,
+            paddingY: 0,
             userSelect: 'none',
           })}
         >
           <Banner />
 
           <Stack direction="vertical" gap={16}>
-            <FeaturedSandboxes />
+            {/* <FeaturedSandboxes /> */}
 
             {randomAlbums.map(album => (
               <Album
@@ -135,8 +135,9 @@ const Banner = () => (
     css={css({
       width: '100%',
       height: 195,
-      background: 'linear-gradient(#422677, #392687)',
+      background: 'linear-gradient(#060606, #060606)',
       borderRadius: 'medium',
+      overflow: 'hidden',
       position: 'relative',
       marginBottom: 12,
       willChange: 'transform',
@@ -163,6 +164,7 @@ const Banner = () => (
       src={banner.image}
       css={css({
         position: 'absolute',
+        height: '100%',
         right: 0,
         zIndex: 1,
         opacity: [0.25, 1, 1],
@@ -171,31 +173,31 @@ const Banner = () => (
   </Stack>
 );
 
-const FeaturedSandboxes = () => {
-  const {
-    dashboard: { curatedAlbums },
-  } = useAppState();
+// const FeaturedSandboxes = () => {
+//   const {
+//     dashboard: { curatedAlbums },
+//   } = useAppState();
 
-  const featuredSandboxesAlbum = curatedAlbums.find(
-    album => album.id === FEATURED_SANDBOXES_ALBUM
-  );
+//   const featuredSandboxesAlbum = curatedAlbums.find(
+//     album => album.id === FEATURED_SANDBOXES_ALBUM
+//   );
 
-  return (
-    <Grid
-      rowGap={6}
-      columnGap={6}
-      css={{
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        height: 'max(60vh, 528px)',
-        overflow: 'hidden',
-      }}
-    >
-      {featuredSandboxesAlbum?.sandboxes.slice(0, 3).map(sandbox => (
-        <FeaturedSandbox key={sandbox.id} sandbox={sandbox} />
-      ))}
-    </Grid>
-  );
-};
+//   return (
+//     <Grid
+//       rowGap={6}
+//       columnGap={6}
+//       css={{
+//         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+//         height: 'max(60vh, 528px)',
+//         overflow: 'hidden',
+//       }}
+//     >
+//       {featuredSandboxesAlbum?.sandboxes.slice(0, 3).map(sandbox => (
+//         <FeaturedSandbox key={sandbox.id} sandbox={sandbox} />
+//       ))}
+//     </Grid>
+//   );
+// };
 
 export const FeaturedSandbox = ({ sandbox }) => {
   const {
