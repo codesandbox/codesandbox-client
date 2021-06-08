@@ -33,7 +33,7 @@
     "start:sandpack-sandbox": "cross-env SANDPACK=true LOCAL_SERVER=1 SANDBOX_ONLY=true node scripts/start.js",
     "start:test": "cross-env LOCAL_SERVER=1 SANDBOX_ONLY=true node scripts/start.js",
     "test": "jest --env=jsdom",
-    "test:integrations": "jest --config integration-tests/jest.config.json --maxWorkers=2",
+    "test:integrations": "jest --config integration-tests/jest.config.json --maxWorkers=3",
     "test:watch": "jest --watch --env=jsdom",
     "typecheck": "tsc --noEmit -p tsconfig.check.json && tsc --noEmit -p tsconfig.strictNullChecks.json"
   },
