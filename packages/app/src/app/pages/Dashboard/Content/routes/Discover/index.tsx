@@ -1,6 +1,5 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { sampleSize, shuffle } from 'lodash-es';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Stack,
@@ -32,11 +31,15 @@ import {
   DashboardCommunitySandbox,
   DashboardAlbum,
 } from 'app/pages/Dashboard/types';
+import { shuffleSeed } from '../../utils';
 import {
   FEATURED_SANDBOXES_ALBUM,
   TRENDING_SANDBOXES_ALBUM,
   banner,
 } from './contants';
+
+const today = new Date();
+const SEED = today.getDate() + today.getMonth() + today.getFullYear();
 
 export const Discover = () => {
   const {
@@ -68,20 +71,21 @@ export const Discover = () => {
   // We want to randomly pick 8 album to show
   // but don't want it to update on every render
   const randomAlbums = React.useMemo(() => {
-    const randomAlbumIds = shuffle(
-      sampleSize(
-        curatedAlbums
-          .map(album => album.id)
-          .filter(id => id !== FEATURED_SANDBOXES_ALBUM)
-          .filter(id => id !== TRENDING_SANDBOXES_ALBUM),
-        8
-      )
-    );
+    const randomAlbumIds = shuffleSeed(
+      curatedAlbums
+        .map(album => album.id)
+        .filter(id => id !== FEATURED_SANDBOXES_ALBUM)
+        .filter(id => id !== TRENDING_SANDBOXES_ALBUM),
+      SEED
+    ).slice(0, 8);
 
     // shuffle sandboxes inside the album
     return randomAlbumIds
       .map(albumId => curatedAlbums.find(album => album.id === albumId))
-      .map(album => ({ ...album, sandboxes: shuffle(album.sandboxes) }));
+      .map(album => ({
+        ...album,
+        sandboxes: shuffleSeed(album.sandboxes, SEED),
+      }));
   }, [curatedAlbums]);
 
   return (
