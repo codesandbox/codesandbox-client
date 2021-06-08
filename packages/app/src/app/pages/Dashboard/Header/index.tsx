@@ -23,8 +23,10 @@ import {
 import css from '@styled-system/css';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Notifications } from 'app/components/Notifications';
+import { PlusIcon } from 'app/components/CreateNewSandbox/CreateSandbox/Icons';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
@@ -38,7 +40,13 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const { openCreateSandboxModal } = useActions();
-    const { user, activeWorkspaceAuthorization } = useAppState();
+    const {
+      activeTeam,
+      activeWorkspaceAuthorization,
+      personalWorkspaceId,
+      user,
+    } = useAppState();
+    const history = useHistory();
 
     return (
       <Stack
@@ -79,6 +87,22 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
+          {/* Only for workspaces */}
+          {activeTeam !== personalWorkspaceId && (
+            <Button
+              type="button"
+              variant="link"
+              onClick={() => {
+                track('Dashboard - Invite members');
+                history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
+              }}
+              css={css({ width: 'auto' })}
+            >
+              <PlusIcon css={css({ marginRight: 2, width: '.8em' })} /> Invite
+              members
+            </Button>
+          )}
+
           <Button
             variant="primary"
             css={css({ width: 'auto', paddingX: 3 })}
