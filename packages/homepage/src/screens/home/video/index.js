@@ -136,6 +136,7 @@ const Video = () => {
       >
         <TabsWrapper active={active}>
           <Title
+            as="h2"
             css={`
               text-align: center;
               margin-bottom: 40px;

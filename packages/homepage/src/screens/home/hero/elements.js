@@ -1,40 +1,9 @@
-import styled, { keyframes } from 'styled-components';
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
+import { track } from '@codesandbox/common/lib/utils/analytics';
 
-const dropIn = (offset = 100) => keyframes`
-  0% { 
-    transform: translateY(${offset}px) translateZ(200px);
-    filter: blur(20px);
-    opacity: 0;
-    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.7);
-  }
-
-  70% {
-    filter: blur(0);
-    opacity: 1;
-    box-shadow: 0;
-  }
-
-  100% {
-    transform: translateZ(0px);
-    filter: blur(0);
-    opacity: 1;
-    box-shadow: 0;
-  }
-`;
-
-export const EditorElement = styled.img`
-  animation: ${props => dropIn(props.i * 250)} 3s;
-  animation-delay: ${props => props.i * 100}ms;
-  animation-fill-mode: backwards;
-
-  z-index: ${props => props.i};
-`;
-
-export const HeroWrapper = styled.section`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  text-align: center;
+export const HeroWrapper = styled.div`
   padding: 10rem 0 5rem 0;
   margin-bottom: 4rem;
 
@@ -45,6 +14,7 @@ export const HeroWrapper = styled.section`
   > div {
     text-align: center;
     max-width: 80%;
+    width: 100%;
     margin: auto;
   }
 
@@ -52,53 +22,6 @@ export const HeroWrapper = styled.section`
     > div {
       max-width: 90%;
     }
-  }
-`;
-
-export const StyledEditorLink = styled.a`
-  transition: 0.3s ease opacity;
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 110px;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  transition: 0.3 ease all;
-  border-radius: 4px;
-  font-size: 1.25rem;
-  text-decoration: none;
-
-  color: white;
-  font-weight: 400;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-
-  &:hover {
-    opacity: 1;
-  }
-`;
-
-export const CountText = styled.div`
-  font-size: 1.25rem;
-  color: #757575;
-  margin-bottom: 1.5rem;
-  ${props => props.theme.breakpoints.sm} {
-    font-size: 0.875rem;
-  }
-`;
-
-export const InspiredText = styled.span`
-  transition: 0.3s ease color;
-  font-size: 1rem;
-  color: #757575;
-  margin-bottom: 1rem;
-  text-decoration: none;
-
-  ${props => props.theme.breakpoints.sm} {
-    font-size: 0.875rem;
   }
 `;
 
@@ -136,59 +59,157 @@ export const SubTitle = styled.h2`
   }
 `;
 
-// All for the B variant for A/B test
-
-export const SandboxButtons = styled.section`
-  height: auto;
-  width: auto;
-  margin: 5rem 0;
-  transition: all 200ms ease-in;
-  justify-content: center;
+export const TemplateList = styled.ul`
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 850px;
+
+  margin: 0 auto;
+  padding: 0;
 `;
 
-export const Sandbox = styled.a`
-  display: flex;
-  opacity: 0.4;
-  border: none;
-  background-color: transparent;
-  background-size: cover;
-  background-position: center center;
-  transition: all 200ms ease-in;
-  justify-content: center;
-  animation: easeInOutBack 1s cubic-bezier(0, -0.6, 0.12, 2) 1s backwards;
+const TemplateWrapper = styled.li`
+  list-style: none;
+  text-align: left;
 
-  width: 4rem;
-  height: 4rem;
-  margin: 0 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
 
-  ${props => props.theme.breakpoints.md} {
-    width: 4rem;
-    height: 4rem;
+  @media screen and (min-width: 460px) {
+    width: calc(((100% - 1rem) / 2));
   }
 
-  ${props => props.theme.breakpoints.sm} {
-    width: 2rem;
-    height: 2rem;
+  @media screen and (min-width: 650px) {
+    width: calc(((100% - 1rem * 3) / 4));
   }
 
-  :hover {
-    cursor: pointer;
-    animation-play-state: paused;
-    transform: scale(1.2);
-    opacity: 1;
+  border-radius: 4px;
+  border: 1px solid ${props => props.theme.homepage.grey};
+
+  transition: background 200ms ease;
+
+  &:hover {
+    background: #151515;
   }
 
-  @keyframes easeInOutBack {
-    0% {
-      opacity: 0;
-      transform: scale(0.01);
-    }
-
-    100% {
-      opacity: 0.4;
-      transform: scale(1);
-    }
+  a {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 1.1em 1em;
   }
+`;
+
+const TemplateTitle = styled.h3`
+  font-family: ${props => props.theme.homepage.appleFont};
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: ${props => props.theme.homepage.white};
+
+  margin: 0;
+  margin-bottom: 0.3em;
+`;
+
+const TemplateDescription = styled.p`
+  font-family: ${props => props.theme.homepage.appleFont};
+  font-size: 0.8rem;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  color: #757575;
+  margin: 0;
+`;
+
+export const TemplateItem = ({
+  alias,
+  iconUrl,
+  title,
+  environment,
+  ...props
+}) => {
+  const { UserIcon } = getTemplateIcon(iconUrl, environment);
+
+  return (
+    <TemplateWrapper {...props}>
+      <a
+        href={`https://codesandbox.io/s/${alias}`}
+        onClick={() =>
+          track('Homepage - Template clicked', { templateAlias: alias })
+        }
+      >
+        <div css={{ marginRight: '1rem' }}>
+          <UserIcon />
+        </div>
+
+        <div css={{ width: 'calc(100% - 32px - 1rem)' }}>
+          <TemplateTitle>{title}</TemplateTitle>
+          <TemplateDescription>{environment}</TemplateDescription>
+        </div>
+      </a>
+    </TemplateWrapper>
+  );
+};
+
+export const ShowMoreButtonLine = styled.div`
+  width: 100%;
+  border-top: 1px solid ${props => props.theme.homepage.grey};
+  margin-top: 1em;
+  text-align: center;
+`;
+
+export const ShowMoreButton = styled.button`
+  border: 0;
+  background-color: ${props => props.theme.homepage.greyDark};
+  color: #757575;
+  transform: translateY(-1.7em);
+
+  padding: 1em;
+  display: inline-flex;
+  align-items: center;
+
+  cursor: pointer;
+  transition: filter 200ms ease;
+
+  &:hover {
+    filter: brightness(1.5);
+  }
+`;
+
+export const ShowMoreIcon = styled.span`
+  width: 21px;
+  height: 21px;
+  border-radius: 21px;
+  display: inline-flex;
+  margin-right: 0.6rem;
+
+  transition: all 200ms ease;
+
+  border: 1px solid #343434;
+  background-color: #343434;
+
+  color: ${props => props.theme.homepage.greyDark};
+
+  svg {
+    margin: auto;
+    display: block;
+    transition: all 200ms ease;
+  }
+
+  ${({ active, theme }) =>
+    active &&
+    css`
+      color: #343434;
+      background: ${theme.homepage.greyDark};
+
+      svg {
+        transform: rotate(135deg);
+      }
+    `}
 `;
