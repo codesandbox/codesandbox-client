@@ -26,8 +26,7 @@ export default function (
     module,
     exports,
     process,
-    global,
-    window: global,
+    global,    
     ...globals,
   };
 
