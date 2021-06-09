@@ -9,7 +9,7 @@ import {
   Article,
   Header,
   PostTitle,
-  Image,
+  // Image,
   PostContainer,
 } from './_post.elements';
 
@@ -37,7 +37,8 @@ export default ({
         <PostTitle>{title}</PostTitle>
       </Header>
 
-      {banner && <Image alt={title} src={banner} />}
+      {/* TODO: Missing the artwork
+      {banner && <Image alt={title} src={banner} />} */}
 
       <PageContainer width={768}>
         <PostContainer dangerouslySetInnerHTML={{ __html: html }} />
