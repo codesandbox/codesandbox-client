@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
 import {
   Element,
   List,
@@ -139,7 +140,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               borderColor: 'sideBar.border',
             })}
           >
-            {activeAccount && (
+            {activeAccount ? (
               <WorkspaceSelect
                 onSelect={workspace => {
                   actions.setActiveTeam({
@@ -148,6 +149,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }}
                 activeAccount={activeAccount}
               />
+            ) : (
+              <Stack align="center" css={{ width: '100%' }}>
+                <SkeletonTextBlock
+                  css={{ width: 26, height: 26, marginLeft: 8 }}
+                />
+                <SkeletonTextBlock
+                  css={{ width: 65, height: 12, marginLeft: 8 }}
+                />
+              </Stack>
             )}
             <Link
               css={css({ height: '100%' })}

@@ -111,6 +111,7 @@ export async function resolveDependencyInfo(
   version: string,
   parsedResolutions: IParsedResolution[]
 ) {
+  const IS_ALIAS = /^npm:/;
   const packageJSONCode = await getPackageJSON(dep, version);
   const packageJSON = JSON.parse(packageJSONCode);
   const response: ILambdaResponse = {
@@ -145,10 +146,14 @@ export async function resolveDependencyInfo(
 
   await Promise.all(
     Object.keys(response.dependencyDependencies).map(async packageName => {
-      const pkgJson = await getPackageJSON(
-        packageName,
-        response.dependencyDependencies[packageName].resolved
-      );
+      let packageVersion =
+        response.dependencyDependencies[packageName].resolved;
+
+      if (response.dependencyDependencies[packageName].semver.match(IS_ALIAS)) {
+        packageVersion = response.dependencyDependencies[packageName].semver;
+      }
+
+      const pkgJson = await getPackageJSON(packageName, packageVersion);
       response.contents[`/node_modules/${packageName}/package.json`] = {
         content: pkgJson,
       };

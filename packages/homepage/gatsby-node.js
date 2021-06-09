@@ -3,7 +3,8 @@ const semver = require('semver');
 const slugify = require('@sindresorhus/slugify');
 const { createFilePath } = require('gatsby-source-filesystem');
 const noop = require('lodash/noop');
-const { resolve } = require('path');
+const path = require('path');
+const fetch = require('node-fetch');
 
 const getRelativePath = absolutePath => absolutePath.replace(__dirname, '');
 
@@ -171,14 +172,17 @@ exports.onCreateNode = ({ actions: { createNodeField }, getNode, node }) => {
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage, createRedirect } = actions;
 
-  const docsTemplate = resolve(__dirname, './src/templates/docs.js');
-  const blogTemplate = resolve(__dirname, './src/templates/post.js');
-  const seoPagesTemplate = resolve(__dirname, './src/templates/seo.js');
-  const oldTermsTemplate = resolve(__dirname, './src/templates/terms.js');
-  const oldPrivacyTemplate = resolve(__dirname, './src/templates/privacy.js');
+  const docsTemplate = path.resolve(__dirname, './src/templates/docs.js');
+  const blogTemplate = path.resolve(__dirname, './src/templates/post.js');
+  const seoPagesTemplate = path.resolve(__dirname, './src/templates/seo.js');
+  const oldTermsTemplate = path.resolve(__dirname, './src/templates/terms.js');
+  const oldPrivacyTemplate = path.resolve(
+    __dirname,
+    './src/templates/privacy.js'
+  );
 
-  const featureTemplate = resolve(__dirname, './src/templates/feature.js');
-  const episodeTemplate = resolve(
+  const featureTemplate = path.resolve(__dirname, './src/templates/feature.js');
+  const episodeTemplate = path.resolve(
     __dirname,
     './src/templates/podcast-episode.js'
   );
@@ -513,4 +517,45 @@ exports.onCreateWebpackConfig = ({ getConfig, loaders, actions, plugins }) => {
 
   // This will completely replace the webpack config with the modified object.
   actions.replaceWebpackConfig(config);
+};
+
+exports.sourceNodes = async ({
+  actions: { createNode },
+  createNodeId,
+  createContentDigest,
+}) => {
+  const data = await fetch(
+    'https://codesandbox.io/api/v1/sandboxes/templates/official'
+  );
+  const json = await data.json();
+
+  return new Promise(resolve => {
+    json[0].sandboxes.forEach(template => {
+      const node = {
+        // Content
+        alias: template.alias,
+        author: template.author,
+        custom_template: template.custom_template,
+        description: template.description,
+        environment: template.environment,
+        inserted_at: template.inserted_at,
+        template_id: template.id,
+        title: template.title,
+        updated_at: template.updated_at,
+
+        // Required fields
+        id: createNodeId(template.alias),
+        parent: null,
+        children: [],
+        internal: {
+          type: `OfficialTemplate`,
+          contentDigest: createContentDigest(template),
+        },
+      };
+
+      createNode(node);
+    });
+
+    resolve();
+  });
 };

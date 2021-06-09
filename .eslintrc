@@ -65,6 +65,7 @@
     "no-bitwise": "off",
     "arrow-body-style": ["error", "as-needed"],
     "no-restricted-globals": "off",
+    "no-restricted-syntax": "off",
     "lines-between-class-members": [
       "error",
       "always",
