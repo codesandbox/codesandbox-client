@@ -1,7 +1,7 @@
 import { walk } from 'estree-walker';
 import isESModule from 'sandbox/eval/utils/is-es-module';
-import { Syntax as n } from './convert-esmodule/syntax';
-import { ESTreeAST } from './ast/utils';
+import { Syntax as n } from './syntax';
+import { ESTreeAST } from './utils';
 
 export interface SyntaxInfo {
   jsx: boolean;

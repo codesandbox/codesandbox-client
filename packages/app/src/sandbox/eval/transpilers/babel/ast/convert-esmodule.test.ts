@@ -1,11 +1,16 @@
-import { convertEsModule as convert } from '.';
-import { generateCode, parseModule } from '../ast/utils';
-import { getSyntaxInfoFromAst } from '../syntax-info';
+import { convertEsModule as convert } from './convert-esmodule';
+import { generateCode, parseModule } from './utils';
+import { getSyntaxInfoFromAst } from './syntax-info';
 
 function convertEsModule(code: string) {
   const ast = parseModule(code);
-  convert(ast);
-  return generateCode(ast);
+  const { deps } = convert(ast);
+  const result = {
+    deps,
+    code: generateCode(ast),
+  }
+  console.log(result);
+  return result;
 }
 
 describe('convert-esmodule', () => {
@@ -375,17 +380,14 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it('has good perf', () => {
+  it('Has good performance', () => {
     /* eslint-disable */
     const code = require('./big-file');
-
-    const t = Date.now();
-    const n = 5;
-
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < 5; i++) {
+      const t = Date.now();
       convertEsModule(code);
+      console.log(`Converting ESM to CommonJS took: ${Date.now() - t}ms`);
     }
-    console.log((Date.now() - t) / n);
     /* eslint-enable */
   });
 
@@ -432,7 +434,7 @@ describe('convert-esmodule', () => {
     expect(convertEsModule(code)).toMatchSnapshot();
   });
 
-  it('can convert import expressions', () => {
+  it.only('can convert import expressions', () => {
     const code = `
     import('test');
     `;
