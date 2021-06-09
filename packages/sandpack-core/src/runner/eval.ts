@@ -1,3 +1,4 @@
+/* eslint-disable no-eval */
 import buildProcess from './utils/process';
 
 const g = typeof window === 'undefined' ? self : window;
