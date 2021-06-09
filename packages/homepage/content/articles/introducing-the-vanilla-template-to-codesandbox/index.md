@@ -73,11 +73,10 @@ https://codesandbox.io/s/vanilla?fontsize=14&view=split
 #### Configuration
 
 Like Parcel, we automatically do configuration for you. We automatically detect
-if you're using [React](https://github.com/facebook/react) or
-[Preact](https://github.com/preactjs/preact) and will adjust our Babel
-configuration for it. We do support Babel/TypeScript configuration, so you can
-also choose to do your own configuration by creating a `tsconfig.json` or a
-`.babelrc`.
+if you're using [React](/framework/react) or [Preact](/framework/preact) and
+will adjust our Babel configuration for it. We do support Babel/TypeScript
+configuration, so you can also choose to do your own configuration by creating a
+`tsconfig.json` or a `.babelrc`.
 
 #### GitHub, Zip Extraction & Deployment Integration
 

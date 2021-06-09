@@ -78,10 +78,10 @@ CodeSandbox.
 #### 1. Make it so easy that a child can use it
 
 I've received dozens of emails from people who are learning
-[React](https://github.com/facebook/react) using CodeSandbox, and this makes a
-lot of sense. With a tool like CodeSandbox you don't have to learn how `bash`
-works, or what `npm` is, or what '[`node`](https://github.com/nodejs/node)'
-stands for. You can just open a web page and start hacking away.
+[React](/framework/react) using CodeSandbox, and this makes a lot of sense. With
+a tool like CodeSandbox you don't have to learn how `bash` works, or what `npm`
+is, or what '[`node`](/software/node)' stands for. You can just open a web page
+and start hacking away.
 
 When you're just starting out, you want to immediately get started with the fun
 stuff instead of having to learn all these additional technologies first. Of

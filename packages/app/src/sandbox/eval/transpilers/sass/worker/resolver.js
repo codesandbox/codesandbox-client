@@ -46,15 +46,15 @@ function resolveAsyncModule(
   path: string,
   { ignoredExtensions }: { ignoredExtensions?: Array<string> } = {}
 ) {
+  idx += 1;
+  const idxClone = idx;
+
   return new Promise((r, reject) => {
-    idx += 1;
-    const callId = `${self.process.pid}::${idx}`;
     const resolveFunc = message => {
       const { type, id, found } = message.data;
-
       if (
         type === 'resolve-async-transpiled-module-response' &&
-        id === callId
+        id === idxClone
       ) {
         if (found) {
           r(message.data);
@@ -70,7 +70,7 @@ function resolveAsyncModule(
     self.postMessage({
       type: 'resolve-async-transpiled-module',
       path,
-      id: callId,
+      id: idxClone,
       options: { isAbsolute: true, ignoredExtensions },
     });
   });
