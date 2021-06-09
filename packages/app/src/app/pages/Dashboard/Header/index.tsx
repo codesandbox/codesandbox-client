@@ -87,21 +87,26 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
-          {/* Only for workspaces */}
-          {activeTeam !== personalWorkspaceId && (
-            <Button
-              type="button"
-              variant="link"
-              onClick={() => {
-                track('Dashboard - Invite members');
+          <Button
+            type="button"
+            variant="link"
+            onClick={() => {
+              track('Dashboard - Invite members');
+
+              /* Only for workspaces */
+              if (activeTeam !== personalWorkspaceId) {
                 history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
-              }}
-              autoWidth
-            >
-              <PlusIcon css={css({ marginRight: 2, width: '.8em' })} /> Invite
-              members
-            </Button>
-          )}
+              } else {
+                history.push(
+                  `${dashboardUrls.createWorkspace()}?from-header=1`
+                );
+              }
+            }}
+            autoWidth
+          >
+            <PlusIcon css={css({ marginRight: 2, width: '.8em' })} /> Invite
+            members
+          </Button>
 
           <Button
             variant="primary"
