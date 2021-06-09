@@ -43,7 +43,7 @@ export const Invite = () => {
    * Comes from "Invite members" links on the Header
    * so this page should have a different behavior
    */
-  const comesFromHeaderLink = /fromHeader/.test(history.location.search);
+  const comesFromHeaderLink = /from-header/.test(history.location.search);
 
   const onSubmit = async event => {
     event.preventDefault();
