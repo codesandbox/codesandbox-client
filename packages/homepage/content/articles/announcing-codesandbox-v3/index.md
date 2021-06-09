@@ -33,7 +33,7 @@ with the new integration:
 We now support
 [VS Code Extensions](https://code.visualstudio.com/docs/editor/extension-gallery)!
 The cool thing about this integration is that everything runs in the browser.
-Instead of spawning [`node`](https://github.com/nodejs/node) processes, we spawn
+Instead of spawning [`node`](/software/node) processes, we spawn
 [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
 with stubbed `node` modules like
 [`fs`](https://nodejs.org/api/fs.html#fs_file_system),
@@ -97,9 +97,9 @@ Small quality of life improvements!
 
 Functionality that didn't work before, like the configuration UI and the image
 viewer now work in VS Code as well. We added some custom editor types that are
-actually rendered in [React](https://github.com/facebook/react), which is quite
-interesting. We now mount VS Code in a React application, and we mount React in
-the VS Code view.
+actually rendered in [React](/framework/react), which is quite interesting. We
+now mount VS Code in a React application, and we mount React in the VS Code
+view.
 
 ![](./images/4.png)
 

@@ -174,6 +174,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const docsTemplate = path.resolve(__dirname, './src/templates/docs.js');
   const blogTemplate = path.resolve(__dirname, './src/templates/post.js');
+  const seoPagesTemplate = path.resolve(__dirname, './src/templates/seo.js');
   const oldTermsTemplate = path.resolve(__dirname, './src/templates/terms.js');
   const oldPrivacyTemplate = path.resolve(
     __dirname,
@@ -190,6 +191,28 @@ exports.createPages = async ({ graphql, actions }) => {
     fromPath: '/index.html',
     redirectInBrowser: true,
     toPath: '/',
+  });
+
+  const allMarkdownSeoPages = await graphql(`
+    {
+      allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/seo/" } }) {
+        edges {
+          node {
+            id
+            frontmatter {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `);
+  allMarkdownSeoPages.data.allMarkdownRemark.edges.forEach(edge => {
+    createPage({
+      path: edge.node.frontmatter.slug,
+      component: seoPagesTemplate,
+      context: { id: edge.node.id },
+    });
   });
 
   const allMarkdownArticles = await graphql(`

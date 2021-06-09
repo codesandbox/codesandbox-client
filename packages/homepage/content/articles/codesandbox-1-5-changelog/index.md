@@ -123,9 +123,9 @@ in response time.
 
 A new feature that comes with the new packager is that we support version ranges
 instead besides absolute versions. You will be able to install `react@next` for
-example, and it will update automatically as
-[React](https://github.com/facebook/react) updates. This functionality will be
-deployed somewhere this week, I need to change some server logic first.
+example, and it will update automatically as [React](/framework/react) updates.
+This functionality will be deployed somewhere this week, I need to change some
+server logic first.
 
 After working with [Serverless](https://serverless.com), I have to say that I'm
 _really_ impressed by how it works in practice. Our hosting costs went down from
