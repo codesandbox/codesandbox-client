@@ -38,30 +38,32 @@ export const SignInBanner = () => {
         >
           <Button
             autoWidth
-            css={css({
-              color: '#F7A239',
-              height: 'auto',
-              padding: 0,
-              fontSize: 3,
-              paddingRight: '.3em',
-              ':hover:not(:disabled), :focus:not(:disabled)': {
-                color: '#F7A239',
-              },
-            })}
+            css={css({ lineHeight: 1 })}
             onClick={() => {
               track('Header Sign In Ad Clicked');
               signInClicked();
             }}
             variant="link"
           >
-            Sign up for free
+            <Text
+              css={css({
+                color: '#F7A239',
+                height: 'auto',
+                padding: 0,
+                fontSize: 3,
+                paddingRight: '.3em',
+              })}
+            >
+              Sign up for free
+            </Text>
+
+            <Text>
+              to save your work{' '}
+              <span role="img" aria-label="sparkles">
+                ✨
+              </span>
+            </Text>
           </Button>
-          <Text css={css({ lineHeight: 1 })}>
-            to save your work{' '}
-            <span role="img" aria-label="sparkles">
-              ✨
-            </span>
-          </Text>
 
           <Button
             css={css({
