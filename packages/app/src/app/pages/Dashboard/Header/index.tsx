@@ -96,7 +96,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
                 track('Dashboard - Invite members');
                 history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
               }}
-              css={css({ width: 'auto' })}
+              autoWidth
             >
               <PlusIcon css={css({ marginRight: 2, width: '.8em' })} /> Invite
               members
