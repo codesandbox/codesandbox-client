@@ -875,12 +875,6 @@ exports.default = i;
 "
 `;
 
-exports[`convert-esmodule printer issues can convert + + 1`] = `
-"\\"use strict\\";
-c = (10.0, + + 15);
-"
-`;
-
 exports[`convert-esmodule renames exports that are already defined, even in block scope 1`] = `
 "\\"use strict\\";
 var __$csb_exports = 'testtest';

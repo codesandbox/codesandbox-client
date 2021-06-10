@@ -20,14 +20,14 @@ import {
   generateInteropRequire,
   generateInteropRequireExpression,
   generateExportGetter,
-} from './utils';
-import { ESTreeAST } from '../ast/utils';
+} from './ast-node-utils';
+import { ESTreeAST } from './utils';
 
-// TODO: Don't generate or parse in this method... we can re-use the ast...
 /**
  * Converts esmodule code to commonjs code, built to be as fast as possible
  */
-export function convertEsModule(ast: ESTreeAST) {
+export function convertEsModule(ast: ESTreeAST): { deps: Array<string> } {
+  const deps: Set<string> = new Set();
   const program = ast.program;
   ast.isDirty = true;
 
@@ -189,7 +189,7 @@ export function convertEsModule(ast: ESTreeAST) {
       }
       const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
       addNodeInImportSpace(i, generateRequireStatement(varName, source.value));
-
+      deps.add(source.value);
       program.body.push(generateAllExportsIterator(varName));
     } else if (statement.type === n.ExportNamedDeclaration) {
       // export { a } from './test';
@@ -233,11 +233,13 @@ export function convertEsModule(ast: ESTreeAST) {
               varName
             )
           );
+          deps.add(source.value);
         } else {
           addNodeInImportSpace(
             i,
             generateRequireStatement(varName, source.value)
           );
+          deps.add(source.value);
         }
 
         if (statement.specifiers.length) {
@@ -460,6 +462,7 @@ export function convertEsModule(ast: ESTreeAST) {
       const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
 
       addNodeInImportSpace(i, generateRequireStatement(varName, source.value));
+      deps.add(source.value);
 
       statement.specifiers.reverse().forEach(specifier => {
         let localName: string;
@@ -611,4 +614,8 @@ export function convertEsModule(ast: ESTreeAST) {
   }
 
   addExportVoids();
+
+  return {
+    deps: Array.from(deps),
+  };
 }

@@ -1,6 +1,5 @@
 /* eslint-enable import/default */
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
-import isESModule from 'sandbox/eval/utils/is-es-module';
 /* eslint-disable import/default */
 // @ts-ignore
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index';
@@ -10,13 +9,19 @@ import { endMeasure, measure } from '@codesandbox/common/lib/utils/metrics';
 import { LoaderContext, Manager } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler';
 import getBabelConfig from './babel-parser';
-import { convertEsModule } from './convert-esmodule';
-import { getSyntaxInfoFromAst } from './syntax-info';
+import { getSyntaxInfoFromAst } from './ast/syntax-info';
+import { convertEsModule } from './ast/convert-esmodule';
 import { ESTreeAST, generateCode, parseModule } from './ast/utils';
-import { collectDependencies } from './ast/collect-dependencies';
+import { collectDependenciesFromAST } from './ast/collect-dependencies';
 
 const global = window as any;
 const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
+
+function addCollectedDependencies(loaderContext, deps: Array<string>) {
+  deps.forEach(dep => {
+    loaderContext.addDependency(dep);
+  });
+}
 
 // Right now this is in a worker, but when we're going to allow custom plugins
 // we need to move this out of the worker again, because the config needs
@@ -70,34 +75,30 @@ class BabelTranspiler extends WorkerTranspiler {
       if (loaderContext.options.simpleRequire || isNodeModule) {
         try {
           const ast: ESTreeAST = parseModule(code);
-          if (isESModule(code)) {
-            measure(`esconvert-${path}`);
-            convertEsModule(ast);
-            endMeasure(`esconvert-${path}`, { silent: true });
-          }
-
           const syntaxInfo = getSyntaxInfoFromAst(ast);
-          // If the code is commonjs and does not contain any more jsx, we generate and return the code.
-          if (!syntaxInfo.jsx && !syntaxInfo.esm) {
-            measure(`dep-collection-${path}`);
-            collectDependencies(ast).forEach(dependency => {
-              if (dependency.isGlob) {
-                loaderContext.addDependenciesInDirectory(dependency.path);
-              } else {
-                loaderContext.addDependency(dependency.path);
-              }
-            });
-            endMeasure(`dep-collection-${path}`, { silent: true });
+          if (!syntaxInfo.jsx) {
+            // If the code is ESM we transform it to commonjs and return it
+            if (syntaxInfo.esm) {
+              measure(`esconvert-${path}`);
+              const { deps } = convertEsModule(ast);
+              addCollectedDependencies(loaderContext, deps);
+              endMeasure(`esconvert-${path}`, { silent: true });
+              resolve({
+                transpiledCode: generateCode(ast),
+              });
+              return;
+            }
 
+            // If the code is commonjs and does not contain any more jsx, we generate and return the code.
+            measure(`dep-collection-${path}`);
+            const deps = collectDependenciesFromAST(ast);
+            addCollectedDependencies(loaderContext, deps);
+            endMeasure(`dep-collection-${path}`, { silent: true });
             resolve({
-              transpiledCode: ast.isDirty ? generateCode(ast) : code,
+              transpiledCode: code,
             });
             return;
           }
-
-          // TODO: Sourcemaps?
-          // eslint-disable-next-line no-param-reassign
-          code = ast.isDirty ? generateCode(ast) : code;
         } catch (err) {
           console.warn(
             `Error occurred while trying to quickly transform '${path}'`
