@@ -764,7 +764,8 @@ export default class Manager implements IEvaluator {
       return this.transpiledModules[esmoduleUrl].module;
     }
 
-    // Node modules?
+    // This handles the imports of node_modules from remote ESModules
+    // In the future we should probably resolve these from a pkg.json the ESModule provides...
     if (isUrl(parentPath) && !esmoduleUrl) {
       // eslint-disable-next-line no-param-reassign
       parentPath = '/package.json';
@@ -923,7 +924,8 @@ export default class Manager implements IEvaluator {
       throw new Error('Cannot download ESModule dependencies synchronously');
     }
 
-    // Node modules?
+    // This handles the imports of node_modules from remote ESModules
+    // In the future we should probably resolve these from a pkg.json the ESModule provides...
     if (isUrl(parentPath) && !esmoduleUrl) {
       // eslint-disable-next-line no-param-reassign
       parentPath = '/package.json';
