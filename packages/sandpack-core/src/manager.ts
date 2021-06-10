@@ -818,7 +818,7 @@ export default class Manager implements IEvaluator {
           );
         });
 
-        endMeasure(measureKey);
+        endMeasure(measureKey, { silent: true });
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
@@ -966,7 +966,7 @@ export default class Manager implements IEvaluator {
           packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         });
-        endMeasure(measureKey);
+        endMeasure(measureKey, { silent: true });
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
