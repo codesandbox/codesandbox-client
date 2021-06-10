@@ -233,6 +233,7 @@ export function convertEsModule(ast: ESTreeAST): { deps: Array<string> } {
               varName
             )
           );
+          deps.add(source.value);
         } else {
           addNodeInImportSpace(
             i,

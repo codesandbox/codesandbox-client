@@ -3,6 +3,14 @@ import isESModule from 'sandbox/eval/utils/is-es-module';
 import { Syntax as n } from './syntax';
 import { ESTreeAST } from './utils';
 
+const ESM_TYPES: Set<string> = new Set([
+  n.ImportDeclaration,
+  n.ExportAllDeclaration,
+  n.ExportDefaultDeclaration,
+  n.ExportNamedDeclaration,
+  n.ExportSpecifier,
+]);
+
 export interface SyntaxInfo {
   jsx: boolean;
   esm: boolean;
@@ -10,18 +18,23 @@ export interface SyntaxInfo {
 
 export function getSyntaxInfoFromAst(ast: ESTreeAST): SyntaxInfo {
   const syntaxInfo: SyntaxInfo = { jsx: false, esm: false };
+
   walk(ast.program, {
     enter(node) {
-      const esmTypes: string[] = [
-        n.ImportDeclaration,
-        n.ExportAllDeclaration,
-        n.ExportDefaultDeclaration,
-        n.ExportNamedDeclaration,
-        n.ExportSpecifier,
-      ];
-      if (esmTypes.includes(node.type)) {
-        syntaxInfo.esm = true;
+      // TODO: Figure out if we can exit the walk entirely
+      // Just skip everything if we already know it's esm and jsx
+      if (syntaxInfo.jsx && syntaxInfo.esm) {
         this.skip();
+        return;
+      }
+
+      if (ESM_TYPES.has(node.type)) {
+        syntaxInfo.esm = true;
+        // Imports cannot contain JSX
+        if (node.type === n.ImportDeclaration) {
+          this.skip();
+        }
+        return;
       }
 
       if (node.type === n.JSXElement) {
