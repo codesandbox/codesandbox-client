@@ -1,4 +1,4 @@
-import { getSyntaxInfoFromCode } from './syntax-info';
+import { getSyntaxInfoFromCode } from './ast/syntax-info';
 
 export function shouldTranspile(code: string, path: string) {
   const syntaxInformation = getSyntaxInfoFromCode(code, path);

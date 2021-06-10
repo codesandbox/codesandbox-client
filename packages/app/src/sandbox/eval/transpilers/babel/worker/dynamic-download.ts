@@ -2,7 +2,7 @@ import resolve from 'browser-resolve';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import getRequireStatements from './simple-get-require-statements';
 import { packageFilter } from '../../../utils/resolve-utils';
-import { convertEsModule } from '../convert-esmodule';
+import { convertEsModule } from '../ast/convert-esmodule';
 import { generateCode, parseModule } from '../ast/utils';
 
 const global = getGlobal();
