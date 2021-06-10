@@ -84,6 +84,7 @@ describe('simple-get-require-statements', () => {
     for (let i = 0; i < 5; i++) {
       const t = Date.now();
       collectDependencies(code);
+      // eslint-disable-next-line no-console
       console.log(
         `Collecting CommonJS dependencies for react-dom took: ${
           Date.now() - t
