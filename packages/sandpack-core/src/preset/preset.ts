@@ -41,6 +41,8 @@ type LoaderDefinition = {
  * and loaders.
  */
 export class Preset {
+  public experimentalEsmSupport = false;
+
   loaders: Array<LoaderDefinition>;
 
   transpilers: Set<Transpiler>;
