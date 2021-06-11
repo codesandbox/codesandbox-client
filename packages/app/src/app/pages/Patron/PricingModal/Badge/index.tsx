@@ -15,11 +15,7 @@ export const Badge: React.FC<IBadgeProps> = memo(({ badge, subscribed }) => {
   const BadgeComponent = badges[badge].Badge;
 
   return (
-    <div
-      css={`
-        position: relative;
-      `}
-    >
+    <div>
       {/* We prerender all particles, performance reasons */}
       <Particles makeItRain={subscribed} badge={badge} />
       <BadgeContainer key={badge} id="badge">
