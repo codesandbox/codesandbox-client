@@ -326,6 +326,9 @@ export class TranspiledModule {
     } = {},
     isTranspilationDep: boolean = false
   ) {
+      if (depPath.startsWith('http')) {
+        console.log('addDependency', depPath);
+      }
     if (depPath.startsWith('codesandbox-api')) {
       return;
     }
@@ -335,6 +338,10 @@ export class TranspiledModule {
         depPath,
         options && options.isAbsolute ? '/' : this.module.path
       );
+
+      if (depPath.startsWith('http')) {
+        console.log('addDependency finished', depPath);
+      }
 
       if (isTranspilationDep) {
         this.transpilationDependencies.add(tModule);

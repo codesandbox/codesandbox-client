@@ -93,6 +93,16 @@ export const reactPreset = babelConfig => {
           }
 
           preset.registerTranspiler(
+            module => {
+              if (module.path.startsWith('http')) {
+                console.log(module.path, /^https?:\/\/.*/.test(module.path));
+              }
+              return /^https?:\/\/.*/.test(module.path);
+            },
+            [{ transpiler: babelTranspiler, options: {} }]
+          );
+
+          preset.registerTranspiler(
             module =>
               /\.m?(t|j)sx?$/.test(module.path) &&
               !module.path.endsWith('.d.ts'),

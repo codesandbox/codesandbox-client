@@ -746,14 +746,14 @@ export default class Manager implements IEvaluator {
     query?: string;
     defaultExtensions?: Array<string>;
   }): Promise<Module> {
-    if (
-      !this.preset.experimentalEsmSupport &&
-      (isUrl(parentPath) || isUrl(path))
-    ) {
-      throw new Error(
-        'ESModules url imports are only supported in the experimental ESModule preset.'
-      );
-    }
+    // if (
+    //   !this.preset.experimentalEsmSupport &&
+    //   (isUrl(parentPath) || isUrl(path))
+    // ) {
+    //   throw new Error(
+    //     'ESModules url imports are only supported in the experimental ESModule preset.'
+    //   );
+    // }
 
     const esmoduleUrl = getESModuleUrl(parentPath, path);
     // Handle ESModule import
@@ -761,10 +761,11 @@ export default class Manager implements IEvaluator {
       if (this.transpiledModules[esmoduleUrl]) {
         return this.transpiledModules[esmoduleUrl].module;
       }
-
+      console.log('Adding esmodule:', esmoduleUrl)
       const esmoduleContent = await this.downloadESModule(
         `${esmoduleUrl}?${query}`
       );
+      console.log('Downloaded esmodule:', esmoduleUrl)
       this.addModule({
         path: esmoduleUrl,
         code: esmoduleContent || '',
@@ -923,14 +924,14 @@ export default class Manager implements IEvaluator {
     query?: string;
     defaultExtensions?: Array<string>;
   }): Module {
-    if (
-      !this.preset.experimentalEsmSupport &&
-      (isUrl(parentPath) || isUrl(path))
-    ) {
-      throw new Error(
-        'ESModules url imports are only supported in the experimental ESModule preset.'
-      );
-    }
+    // if (
+    //   !this.preset.experimentalEsmSupport &&
+    //   (isUrl(parentPath) || isUrl(path))
+    // ) {
+    //   throw new Error(
+    //     'ESModules url imports are only supported in the experimental ESModule preset.'
+    //   );
+    // }
 
     const esmoduleUrl = getESModuleUrl(parentPath, path);
     // Handle ESModule import

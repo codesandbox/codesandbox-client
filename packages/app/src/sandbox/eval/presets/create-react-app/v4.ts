@@ -30,7 +30,7 @@ const BABEL7_CONFIG = {
         {
           // This is incompatible with the official target
           // but sandpack does not even run on ie9 so no point in doing more transforms
-          targets: '>1%, not ie 11, not op_mini',
+          targets: '>1%, not ie 11',
           // Users cannot override this behavior because this Babel
           // configuration is highly tuned for ES5 support
           ignoreBrowserslistConfig: true,
