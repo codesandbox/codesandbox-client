@@ -28,11 +28,9 @@ const BABEL7_CONFIG = {
       [
         'env',
         {
-          // We want Create React App to be IE 9 compatible until React itself
-          // no longer works with IE 9
-          targets: {
-            ie: 9,
-          },
+          // This is incompatible with the official target
+          // but sandpack does not even run on ie9 so no point in doing more transforms
+          targets: '>1%, not ie 11, not op_mini',
           // Users cannot override this behavior because this Babel
           // configuration is highly tuned for ES5 support
           ignoreBrowserslistConfig: true,
