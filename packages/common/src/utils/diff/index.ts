@@ -13,6 +13,7 @@ export function findDiff(
 
 export function getTextOperation(originalText: string, modifiedText: string) {
   const ot = new TextOperation();
+  console.log('hello world'); // eslint-disable-line
 
   if (Math.max(originalText.length, modifiedText.length) > MAX_DIFF_SIZE) {
     ot.delete(originalText.length);
