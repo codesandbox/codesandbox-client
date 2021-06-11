@@ -4,10 +4,8 @@ import { generateCode, parseModule } from './utils';
 
 function convertEsModule(code: string) {
   const ast = parseModule(code);
-  const { deps } = convert(ast);
-  expect(deps).toStrictEqual(collectDependenciesFromAST(ast));
+  convert(ast);
   const result = {
-    deps,
     code: generateCode(ast),
   };
   return result;
@@ -385,7 +383,9 @@ describe('convert-esmodule', () => {
     const code = require('./big-file');
     for (let i = 0; i < 5; i++) {
       const t = Date.now();
-      convertEsModule(code);
+      const ast = parseModule(code);
+      convert(ast);
+      collectDependenciesFromAST(ast);
       console.log(`Converting ESM to CommonJS took: ${Date.now() - t}ms`);
     }
     /* eslint-enable */

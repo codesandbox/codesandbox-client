@@ -80,7 +80,10 @@ class BabelTranspiler extends WorkerTranspiler {
             // If the code is ESM we transform it to commonjs and return it
             if (syntaxInfo.esm) {
               measure(`esconvert-${path}`);
-              const { deps } = convertEsModule(ast);
+              convertEsModule(ast);
+              // We collect requires instead of doing this in convertESModule as some modules also use require
+              // Which is actually invalid but we probably don't wanna break anyone's code if it works in other bundlers...
+              const deps = collectDependenciesFromAST(ast);
               addCollectedDependencies(loaderContext, deps);
               endMeasure(`esconvert-${path}`, { silent: true });
               resolve({
