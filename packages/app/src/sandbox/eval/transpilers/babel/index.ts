@@ -81,14 +81,16 @@ class BabelTranspiler extends WorkerTranspiler {
       try {
         const ast: ESTreeAST = parseModule(code);
         const syntaxInfo = getSyntaxInfoFromAst(ast);
-
         if (!syntaxInfo.jsx) {
           // If the code is ESM we transform it to commonjs and return it
           if (syntaxInfo.esm) {
             measure(`esconvert-${path}`);
-            const { deps } = convertEsModule(ast);
-            endMeasure(`esconvert-${path}`, { silent: true });
+            convertEsModule(ast);
+            // We collect requires instead of doing this in convertESModule as some modules also use require
+            // Which is actually invalid but we probably don't wanna break anyone's code if it works in other bundlers...
+            const deps = collectDependenciesFromAST(ast);
             await addCollectedDependencies(loaderContext, deps);
+            endMeasure(`esconvert-${path}`, { silent: true });
             return {
               transpiledCode: generateCode(ast),
             };
@@ -97,8 +99,8 @@ class BabelTranspiler extends WorkerTranspiler {
           // If the code is commonjs and does not contain any more jsx, we generate and return the code.
           measure(`dep-collection-${path}`);
           const deps = collectDependenciesFromAST(ast);
-          endMeasure(`dep-collection-${path}`, { silent: true });
           await addCollectedDependencies(loaderContext, deps);
+          endMeasure(`dep-collection-${path}`, { silent: true });
           return {
             transpiledCode: code,
           };

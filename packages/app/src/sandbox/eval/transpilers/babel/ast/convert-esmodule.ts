@@ -26,8 +26,7 @@ import { ESTreeAST } from './utils';
 /**
  * Converts esmodule code to commonjs code, built to be as fast as possible
  */
-export function convertEsModule(ast: ESTreeAST): { deps: Array<string> } {
-  const deps: Set<string> = new Set();
+export function convertEsModule(ast: ESTreeAST): void {
   const program = ast.program;
   ast.isDirty = true;
 
@@ -189,7 +188,6 @@ export function convertEsModule(ast: ESTreeAST): { deps: Array<string> } {
       }
       const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
       addNodeInImportSpace(i, generateRequireStatement(varName, source.value));
-      deps.add(source.value);
       program.body.push(generateAllExportsIterator(varName));
     } else if (statement.type === n.ExportNamedDeclaration) {
       // export { a } from './test';
@@ -233,13 +231,11 @@ export function convertEsModule(ast: ESTreeAST): { deps: Array<string> } {
               varName
             )
           );
-          deps.add(source.value);
         } else {
           addNodeInImportSpace(
             i,
             generateRequireStatement(varName, source.value)
           );
-          deps.add(source.value);
         }
 
         if (statement.specifiers.length) {
@@ -462,7 +458,6 @@ export function convertEsModule(ast: ESTreeAST): { deps: Array<string> } {
       const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
 
       addNodeInImportSpace(i, generateRequireStatement(varName, source.value));
-      deps.add(source.value);
 
       statement.specifiers.reverse().forEach(specifier => {
         let localName: string;
@@ -614,8 +609,4 @@ export function convertEsModule(ast: ESTreeAST): { deps: Array<string> } {
   }
 
   addExportVoids();
-
-  return {
-    deps: Array.from(deps),
-  };
 }
