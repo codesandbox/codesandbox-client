@@ -23,7 +23,8 @@ function getV3Code({ code, version, path }) {
   }
 
   return {
-    code: js,
+    code: js.code,
+    map: js.map,
     warnings: warnings.map(w => ({
       fileName: w.fileName,
       lineNumber: w.start && w.start.line,
