@@ -1,26 +1,31 @@
-import { buildWorkerError } from '../utils/worker-error-handler';
+import { ChildHandler } from '../worker-transpiler/child-handler';
 
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST ||
-    ''}/static/js/browserified-pug.0.1.0.min.js`
+  `${
+    process.env.CODESANDBOX_HOST || ''
+  }/static/js/browserified-pug.0.1.0.min.js`
 );
-self.postMessage('ready');
 
-self.addEventListener('message', event => {
-  const { code, path } = event.data;
+const childHandler = new ChildHandler();
+
+async function workerCompile(opts) {
+  const { code, path } = opts;
 
   // register a custom importer callback
-  self.pug.render(code, { filename: path }, (err, html) => {
-    if (err) {
-      return self.postMessage({
-        type: 'error',
-        error: buildWorkerError(err),
-      });
-    }
+  const transpiledCode = await new Promise((resolve, reject) => {
+    self.pug.render(code, { filename: path }, (err, html) => {
+      if (err) {
+        return reject(err);
+      }
 
-    return self.postMessage({
-      type: 'result',
-      transpiledCode: html,
+      return resolve(html);
     });
   });
-});
+
+  return {
+    transpiledCode,
+  };
+}
+
+childHandler.registerFunction('compile', workerCompile);
+childHandler.emitReady();
