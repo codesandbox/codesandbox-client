@@ -295,7 +295,10 @@ async function installPlugin({
      * We assume that a file is missing in the in-memory file system, and try to download it by
      * parsing the error.
      */
-    evaluatedPlugin = await downloadFromError(firstError).then(() => {
+    evaluatedPlugin = await downloadFromError(firstError, {
+      childHandler,
+      loaderContextId,
+    }).then(() => {
       resetCache();
       return installPlugin({
         Babel,
@@ -377,7 +380,10 @@ async function installPreset({
      * We assume that a file is missing in the in-memory file system, and try to download it by
      * parsing the error.
      */
-    evaluatedPreset = await downloadFromError(firstError).then(() => {
+    evaluatedPreset = await downloadFromError(firstError, {
+      childHandler,
+      loaderContextId,
+    }).then(() => {
       resetCache();
       return installPreset({
         Babel,
@@ -562,7 +568,10 @@ async function compile(opts: any) {
 
     if (err.message.indexOf('Cannot find module') > -1) {
       // Try to download the file and all dependencies, retry compilation then
-      await downloadFromError(err);
+      await downloadFromError(err, {
+        childHandler,
+        loaderContextId,
+      });
       resetCache();
       return compile(opts);
     }

@@ -56,16 +56,13 @@ interface IResolveResponse {
 const downloadCache = new Map<string, Promise<IResolveResponse>>();
 export const resolveAsyncModule = (
   modulePath: string,
-  {
-    ignoredExtensions,
-    childHandler,
-    loaderContextId,
-  }: {
+  opts: {
     ignoredExtensions?: Array<string>;
     childHandler: ChildHandler;
     loaderContextId: number;
   }
 ): Promise<IResolveResponse> => {
+  const { ignoredExtensions, childHandler, loaderContextId } = opts;
   if (downloadCache.get(modulePath)) {
     return downloadCache.get(modulePath);
   }
@@ -96,14 +93,12 @@ export const resolveAsyncModule = (
 function downloadRequires(
   currentPath: string,
   code: string,
-  {
-    childHandler,
-    loaderContextId,
-  }: {
+  opts: {
     childHandler: ChildHandler;
     loaderContextId: number;
   }
 ) {
+  const { childHandler, loaderContextId } = opts;
   const requires = getRequireStatements(code);
 
   // Download all other needed files
@@ -224,14 +219,12 @@ export async function downloadPath(
 
 export function downloadFromError(
   err: Error,
-  {
-    childHandler,
-    loaderContextId,
-  }: {
+  opts: {
     childHandler: ChildHandler;
     loaderContextId: number;
   }
 ) {
+  const { childHandler, loaderContextId } = opts;
   if (err.message.indexOf('Cannot find module') > -1) {
     const dep = err.message.match(/Cannot find module '(.*?)'/)[1];
     const from = err.message.match(/from '(.*?)'/)[1];
