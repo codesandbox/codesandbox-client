@@ -188,10 +188,18 @@ export class WorkerManager {
         foundCall.reject(parseWorkerError(msg.data));
       }
 
-      if (foundCall.workerId) {
-        this.workers[foundCall.workerId].activeCalls -= 1;
+      if (foundCall.workerId != null) {
+        const foundWorker = this.workers.get(foundCall.workerId);
+        if (!foundWorker) {
+          console.warn('Worker not found for call:', foundCall);
+        } else {
+          foundWorker.activeCalls -= 1;
+        }
+
         this.executeRemainingTasks();
       }
+    } else {
+      console.warn('Could not find call for:', msg);
     }
   }
 
