@@ -1185,6 +1185,13 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@codesandbox/ab@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@codesandbox/ab/-/ab-1.0.2.tgz#2d27b3faaf799c6d392a8f743471cd2a4b283a5c"
+  integrity sha512-24FaThfIx2Bb6EmaliuTDMLB6aCQzP4kKEV8vvKUPiaqBBiWyn2Y690AQsVFveEyXEehHxFc5kqFbtcGcm3XMA==
+  dependencies:
+    react "^16.9.0"
+
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
