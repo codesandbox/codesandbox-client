@@ -761,7 +761,6 @@ export default class Manager implements IEvaluator {
       if (this.transpiledModules[esmoduleUrl]) {
         return this.transpiledModules[esmoduleUrl].module;
       }
-
       const esmoduleContent = await this.downloadESModule(
         `${esmoduleUrl}?${query}`
       );
