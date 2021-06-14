@@ -765,9 +765,7 @@ async function executeWarmupSequence() {
   };
   const { customConfig } = await initBabel(opts);
   const { code } = opts;
-  for (let i = 0; i < 10; i++) {
-    Babel.transform(code, normalizeV7Config(customConfig));
-  }
+  Babel.transform(code, normalizeV7Config(customConfig));
   console.log('Babel worker finished warmup procedure');
 }
 
