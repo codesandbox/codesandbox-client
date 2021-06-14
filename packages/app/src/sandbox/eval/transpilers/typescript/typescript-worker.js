@@ -1,7 +1,7 @@
 import getDependencies from './get-require-statements';
 import { ChildHandler } from '../worker-transpiler/child-handler';
 
-const childHandler = new ChildHandler('svelte-worker');
+const childHandler = new ChildHandler('typescript-worker');
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/typescript/3.4.1/typescript.min.js',
