@@ -243,14 +243,6 @@ async function installPlugin({
   isV7,
   loaderContextId,
 }) {
-  console.warn('install plugin', {
-    Babel,
-    BFSRequire,
-    name,
-    currentPath,
-    isV7,
-    loaderContextId,
-  });
   const normalizedPluginName = normalizePluginName(name);
   if (Babel.availablePlugins[name]) {
     Babel.availablePlugins[normalizedPluginName] = Babel.availablePlugins[name];

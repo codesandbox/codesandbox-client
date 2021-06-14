@@ -205,8 +205,8 @@ export async function downloadPath(
     const ast = parseModule(r.code);
     convertEsModule(ast);
     code = generateCode(ast);
-  } catch (e) {
-    console.warn(e);
+  } catch (err) {
+    console.warn(err);
   }
 
   fs.writeFileSync(r.path, code);
