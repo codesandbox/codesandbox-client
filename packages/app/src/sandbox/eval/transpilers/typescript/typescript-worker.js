@@ -1,11 +1,11 @@
-import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
+import { ChildHandler } from '../worker-transpiler/child-handler';
+
+const childHandler = new ChildHandler('svelte-worker');
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/typescript/3.4.1/typescript.min.js',
 ]);
-
-self.postMessage('ready');
 
 declare var ts: {
   transpileModule: (
@@ -19,8 +19,8 @@ declare var ts: {
   registerPlugin: (name: string, plugin: Function) => void,
 };
 
-self.addEventListener('message', event => {
-  const { code, path, config, typescriptVersion } = event.data;
+async function compile(data) {
+  const { code, path, config, typescriptVersion } = data;
 
   if (typescriptVersion !== '3.4.1') {
     self.importScripts(
@@ -72,35 +72,25 @@ self.addEventListener('message', event => {
   finalConfig.fileName = path;
   finalConfig.reportDiagnostics = true;
 
-  try {
-    const { outputText: compiledCode } = ts.transpileModule(code, finalConfig);
+  const { outputText: compiledCode } = ts.transpileModule(code, finalConfig);
 
-    const sourceFile = ts.createSourceFile(
-      path,
-      compiledCode,
-      ts.ScriptTarget.Latest,
-      true,
-      ts.ScriptKind.TS
-    );
+  const sourceFile = ts.createSourceFile(
+    path,
+    compiledCode,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS
+  );
 
-    const dependencies = getDependencies(sourceFile, self.ts);
+  const dependencies = getDependencies(sourceFile, self.ts);
+  return {
+    transpiledCode: compiledCode,
+    foundDependencies: dependencies.map(dependency => ({
+      path: dependency.path,
+      isGlob: dependency.type === 'glob',
+    })),
+  };
+}
 
-    dependencies.forEach(dependency => {
-      self.postMessage({
-        type: 'add-dependency',
-        path: dependency.path,
-        isGlob: dependency.type === 'glob',
-      });
-    });
-
-    self.postMessage({
-      type: 'result',
-      transpiledCode: compiledCode,
-    });
-  } catch (e) {
-    self.postMessage({
-      type: 'error',
-      error: buildWorkerError(e),
-    });
-  }
-});
+childHandler.registerFunction('compile', compile);
+childHandler.emitReady();
