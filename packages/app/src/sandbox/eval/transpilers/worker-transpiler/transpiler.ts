@@ -70,6 +70,21 @@ export default abstract class WorkerTranspiler extends Transpiler {
         });
       }
     });
+    this.workerManager.registerFunction(
+      'add-transpilation-dependency',
+      async data => {
+        const loaderContext = this.loaderContexts.get(data.loaderContextId);
+        if (!loaderContext) {
+          console.warn('Could not find loader context', data);
+          throw new Error('Could not find loader context');
+        }
+
+        await loaderContext.addTranspilationDependency(data.path, {
+          isAbsolute: data.isAbsolute,
+          isEntry: data.isEntry,
+        });
+      }
+    );
   }
 
   initialize() {

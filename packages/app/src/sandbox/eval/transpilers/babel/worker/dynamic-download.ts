@@ -151,9 +151,12 @@ export async function downloadPath(
     throw new Error(`${absolutePath} not found.`);
   }
 
-  global.postMessage({
-    type: 'add-transpilation-dependency',
-    path: r.path,
+  await childHandler.callFn({
+    method: 'add-transpilation-dependency',
+    data: {
+      loaderContextId,
+      path: r.path,
+    },
   });
 
   const fs = global.BrowserFS.BFSRequire('fs');
