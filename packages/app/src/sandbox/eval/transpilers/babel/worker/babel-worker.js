@@ -260,27 +260,28 @@ async function installPlugin(opts) {
     loaderContextId,
   });
 
-  await downloadPath(`/node_modules/${pluginName}`, {
+  const nodeModulePath = `/node_modules/${pluginName}`;
+  await downloadPath(nodeModulePath, {
     childHandler,
     loaderContextId,
   });
 
   try {
-    await downloadPath(pluginName, {
+    await downloadPath(nodeModulePath, {
       childHandler,
       loaderContextId,
     });
+
     const evaluatedFromPath = evaluateFromPath(
       fs,
       BFSRequire,
-      pluginName,
+      nodeModulePath,
       currentPath,
       Babel.availablePlugins,
       Babel.availablePresets
     );
-    evaluatedPlugin = evaluatedFromPath.default
-      ? evaluatedFromPath.default
-      : evaluatedFromPath;
+
+    evaluatedPlugin = evaluatedFromPath.default || evaluatedFromPath;
   } catch (firstError) {
     console.warn('First time compiling ' + name + ' went wrong, got:');
     console.warn(firstError);
@@ -350,9 +351,7 @@ async function installPreset(opts) {
       Babel.availablePlugins,
       Babel.availablePresets
     );
-    evaluatedPreset = evaluatedFromPath.default
-      ? evaluatedFromPath.default
-      : evaluatedFromPath;
+    evaluatedPreset = evaluatedFromPath.default || evaluatedFromPath;
   } catch (firstError) {
     console.warn('First time compiling ' + name + ' went wrong, got:');
     console.warn(firstError);
