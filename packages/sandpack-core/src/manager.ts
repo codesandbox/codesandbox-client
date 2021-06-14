@@ -746,14 +746,14 @@ export default class Manager implements IEvaluator {
     query?: string;
     defaultExtensions?: Array<string>;
   }): Promise<Module> {
-    // if (
-    //   !this.preset.experimentalEsmSupport &&
-    //   (isUrl(parentPath) || isUrl(path))
-    // ) {
-    //   throw new Error(
-    //     'ESModules url imports are only supported in the experimental ESModule preset.'
-    //   );
-    // }
+    if (
+      !this.preset.experimentalEsmSupport &&
+      (isUrl(parentPath) || isUrl(path))
+    ) {
+      throw new Error(
+        'ESModules url imports are only supported in the experimental ESModule preset.'
+      );
+    }
 
     const esmoduleUrl = getESModuleUrl(parentPath, path);
     // Handle ESModule import
@@ -922,14 +922,14 @@ export default class Manager implements IEvaluator {
     query?: string;
     defaultExtensions?: Array<string>;
   }): Module {
-    // if (
-    //   !this.preset.experimentalEsmSupport &&
-    //   (isUrl(parentPath) || isUrl(path))
-    // ) {
-    //   throw new Error(
-    //     'ESModules url imports are only supported in the experimental ESModule preset.'
-    //   );
-    // }
+    if (
+      !this.preset.experimentalEsmSupport &&
+      (isUrl(parentPath) || isUrl(path))
+    ) {
+      throw new Error(
+        'ESModules url imports are only supported in the experimental ESModule preset.'
+      );
+    }
 
     const esmoduleUrl = getESModuleUrl(parentPath, path);
     // Handle ESModule import
