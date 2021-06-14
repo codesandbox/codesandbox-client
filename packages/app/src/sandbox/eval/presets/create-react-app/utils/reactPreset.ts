@@ -62,6 +62,11 @@ export const reactPreset = babelConfig => {
           refreshInitialized = isRefresh;
           preset.resetTranspilers();
 
+          preset.registerTranspiler(
+            module => /^https?:\/\/.*/.test(module.path),
+            [{ transpiler: babelTranspiler, options: {} }]
+          );
+
           if (isRefresh) {
             debug('Refresh is enabled, registering additional transpiler');
             // Add react refresh babel plugin for non-node_modules
@@ -91,16 +96,6 @@ export const reactPreset = babelConfig => {
           } else {
             debug('Refresh is disabled');
           }
-
-          preset.registerTranspiler(
-            module => {
-              if (module.path.startsWith('http')) {
-                console.log(module.path, /^https?:\/\/.*/.test(module.path));
-              }
-              return /^https?:\/\/.*/.test(module.path);
-            },
-            [{ transpiler: babelTranspiler, options: {} }]
-          );
 
           preset.registerTranspiler(
             module =>
