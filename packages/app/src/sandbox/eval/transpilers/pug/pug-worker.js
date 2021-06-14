@@ -6,7 +6,7 @@ self.importScripts(
   }/static/js/browserified-pug.0.1.0.min.js`
 );
 
-const childHandler = new ChildHandler();
+const childHandler = new ChildHandler('pug-worker');
 
 async function workerCompile(opts) {
   const { code, path } = opts;

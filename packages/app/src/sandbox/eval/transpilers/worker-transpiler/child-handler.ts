@@ -4,6 +4,7 @@ import {
 } from '../../../../../../sandpack-core/lib/transpiler/utils/worker-error-handler';
 
 type ChildFunc = (data: any) => Promise<any>;
+type FSInitializerFunc = () => void | Promise<void>;
 
 interface ChildCall {
   method: string;
@@ -13,24 +14,30 @@ interface ChildCall {
 }
 
 export class ChildHandler {
+  name: string;
   functions: Map<string, ChildFunc> = new Map();
   pendingCalls: Map<number, ChildCall> = new Map();
   callId: number = 0;
   isReady: boolean = false;
+  initializeFS: FSInitializerFunc;
 
-  constructor() {
-    self.addEventListener('message', evt => {
-      this.handleMessage(evt.data).catch(console.error);
-    });
+  constructor(name: string) {
+    this.name = name;
   }
 
   registerFunction(method: string, fn: ChildFunc) {
     this.functions.set(method, fn);
   }
 
+  registerFSInitializer(newInitializeFS: FSInitializerFunc) {
+    this.initializeFS = newInitializeFS;
+  }
+
   async handleMessage(msg: any) {
     if (typeof msg !== 'object' || !msg.codesandbox) {
-      console.warn('Invalid worker message', msg);
+      if (!msg.browserfsMessage) {
+        console.warn(`Invalid message from main thread to ${this.name}`, msg);
+      }
       return;
     }
 
@@ -45,6 +52,12 @@ export class ChildHandler {
         break;
       case 'response':
         await this.handleCallResponse(msg);
+        break;
+      case 'initialize-fs':
+        if (!this.initializeFS) {
+          throw new Error(`initializeFS is undefined for ${this.name}`);
+        }
+        await this.initializeFS();
         break;
     }
   }
@@ -65,7 +78,7 @@ export class ChildHandler {
       const fn = this.functions.get(msg.method);
       if (!fn) {
         throw new Error(
-          `Could not find registered child function for call ${msg.method}`
+          `Could not find registered child function for call ${this.name}#${msg.method}`
         );
       }
       const result = await fn(msg.data);
@@ -111,6 +124,10 @@ export class ChildHandler {
 
   emitReady() {
     this.isReady = true;
+
+    self.addEventListener('message', evt => {
+      this.handleMessage(evt.data).catch(console.error);
+    });
 
     self.postMessage({
       type: 'ready',

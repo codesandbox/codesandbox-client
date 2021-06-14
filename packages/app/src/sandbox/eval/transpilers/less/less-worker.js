@@ -3,7 +3,7 @@ import { ChildHandler } from '../worker-transpiler/child-handler';
 // This is a less plugin to resolve paths
 import FileManager from './file-manager';
 
-const childHandler = new ChildHandler();
+const childHandler = new ChildHandler('less-worker');
 
 self.less = {
   env: 'development',

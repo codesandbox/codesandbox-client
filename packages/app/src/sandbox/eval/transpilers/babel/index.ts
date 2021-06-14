@@ -61,7 +61,6 @@ class BabelTranspiler extends WorkerTranspiler {
       },
       {
         maxWorkerCount: WORKER_COUNT,
-        hasFS: true,
         preload: true,
       }
     );

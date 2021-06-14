@@ -63,7 +63,7 @@ self.module = { exports: {} };
 const { exports } = self.module;
 self.exports = exports;
 
-const childHandler = new ChildHandler();
+const childHandler = new ChildHandler('babel-worker');
 
 // This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {

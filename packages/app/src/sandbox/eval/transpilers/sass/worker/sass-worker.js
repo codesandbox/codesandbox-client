@@ -1,11 +1,13 @@
 import delay from '@codesandbox/common/lib/utils/delay';
 import { resolveSassUrl } from './resolver';
+import { ChildHandler } from '../../worker-transpiler/child-handler';
 
 self.importScripts(
   'https://cdn.jsdelivr.net/npm/sass.js@0.11.0/dist/sass.sync.js'
 );
 
-self.postMessage('ready');
+let fsInitialized = false;
+const childHandler = new ChildHandler('sass-worker');
 
 declare var Sass: {
   options: Object => void,
@@ -19,10 +21,17 @@ interface ISassCompileOptions {
   code: string;
   path: string;
   indentedSyntax: boolean;
+  loaderContextId: number;
 }
 
 async function compileSass(opts: ISassCompileOptions) {
-  const { code, path, indentedSyntax } = opts;
+  const { code, path, indentedSyntax, loaderContextId } = opts;
+
+  if (!fsInitialized) {
+    while (!fsInitialized) {
+      await delay(50); // eslint-disable-line
+    }
+  }
 
   Sass._path = '/';
 
@@ -30,6 +39,7 @@ async function compileSass(opts: ISassCompileOptions) {
   // we reset the found file cache and resolution cache in case one of the imports/filenames changed
   const foundFileCache = {};
   const resolutionCache = {};
+  const transpilationDependencies = [];
 
   const importer = async request => {
     // eslint-disable-next-line
@@ -47,16 +57,19 @@ async function compileSass(opts: ISassCompileOptions) {
         importUrl,
         fs,
         resolutionCache,
+        loaderContextId,
+        childHandler,
       });
 
       if (!foundPath) {
         throw new Error(`Could not resolve ${importUrl}`);
       }
 
-      self.postMessage({
-        type: 'add-transpilation-dependency',
+      transpilationDependencies.push({
         path: foundPath,
-        isAbsolute: true,
+        options: {
+          isAbsolute: true,
+        },
       });
 
       if (!foundFileCache[foundPath]) {
@@ -90,34 +103,28 @@ async function compileSass(opts: ISassCompileOptions) {
       .catch(err => done({ error: err.message || 'Could not resolve import' }));
   });
 
-  Sass.compile(
-    code,
-    {
-      sourceMapEmbed: true,
-      indentedSyntax,
-    },
-    result => {
-      if (result.status === 0) {
-        self.postMessage({
-          type: 'result',
-          transpiledCode: result.text,
-        });
-      } else {
-        self.postMessage({
-          type: 'error',
-          error: {
-            name: 'CompileError',
-            message: result.formatted,
-            fileName: result.file && result.file.replace('/sass/', ''),
-          },
-        });
+  const transpiledCode = await new Promise((resolve, reject) => {
+    Sass.compile(
+      code,
+      {
+        sourceMapEmbed: true,
+        indentedSyntax,
+      },
+      result => {
+        if (result.status === 0) {
+          resolve(result.text);
+        } else {
+          reject(new Error(result.formatted));
+        }
       }
-    }
-  );
+    );
+  });
+
+  return { transpiledCode, transpilationDependencies };
 }
 
-function initializeBrowserFS() {
-  return new Promise(res => {
+async function initializeBrowserFS() {
+  await new Promise(res => {
     // eslint-disable-next-line
     BrowserFS.configure(
       {
@@ -129,29 +136,10 @@ function initializeBrowserFS() {
       }
     );
   });
+
+  fsInitialized = true;
 }
 
-let fsInitialized = false;
-self.addEventListener('message', async event => {
-  const { code, path, indentedSyntax, codesandbox } = event.data;
-
-  if (!codesandbox) {
-    return;
-  }
-
-  if (event.data.type === 'initialize-fs') {
-    await initializeBrowserFS();
-    fsInitialized = true;
-    return;
-  }
-
-  if (!fsInitialized) {
-    while (!fsInitialized) {
-      await delay(50); // eslint-disable-line
-    }
-  }
-
-  if (event.data.type === 'compile') {
-    compileSass({ code, path, indentedSyntax });
-  }
-});
+childHandler.registerFunction('compile', compileSass);
+childHandler.registerFSInitializer(initializeBrowserFS);
+childHandler.emitReady();

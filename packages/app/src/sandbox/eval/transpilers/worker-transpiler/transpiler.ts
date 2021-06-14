@@ -18,7 +18,7 @@ export abstract class WorkerTranspiler extends Transpiler {
     this.workerManager.registerFunction('resolve-fs', data => {
       const loaderContext = this.loaderContexts.get(data.loaderContextId);
       if (!loaderContext) {
-        console.warn('Could not find loader context', data);
+        console.warn('Could not find loader context for resolve-fs', data);
         throw new Error('Could not find loader context');
       }
 
@@ -30,7 +30,10 @@ export abstract class WorkerTranspiler extends Transpiler {
       async data => {
         const loaderContext = this.loaderContexts.get(data.loaderContextId);
         if (!loaderContext) {
-          console.warn('Could not find loader context', data);
+          console.warn(
+            'Could not find loader context for resolve-async-transpiled-module',
+            data
+          );
           throw new Error('Could not find loader context');
         }
 
@@ -54,7 +57,7 @@ export abstract class WorkerTranspiler extends Transpiler {
     this.workerManager.registerFunction('add-dependency', async data => {
       const loaderContext = this.loaderContexts.get(data.loaderContextId);
       if (!loaderContext) {
-        console.warn('Could not find loader context', data);
+        console.warn('Could not find loader context for add-dependency', data);
         throw new Error('Could not find loader context');
       }
 
@@ -75,7 +78,10 @@ export abstract class WorkerTranspiler extends Transpiler {
       async data => {
         const loaderContext = this.loaderContexts.get(data.loaderContextId);
         if (!loaderContext) {
-          console.warn('Could not find loader context', data);
+          console.warn(
+            'Could not find loader context for add-transpilation-dependency',
+            data
+          );
           throw new Error('Could not find loader context');
         }
 

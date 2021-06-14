@@ -1,6 +1,6 @@
 import { ChildHandler } from '../worker-transpiler/child-handler';
 
-const childHandler = new ChildHandler();
+const childHandler = new ChildHandler('coffee-worker');
 
 self.importScripts(
   `${process.env.CODESANDBOX_HOST || ''}/static/js/coffeescript.2.3.2.js`

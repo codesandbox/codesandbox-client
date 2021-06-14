@@ -89,21 +89,28 @@ export class WorkerManager {
     this.workerCount = 0;
   }
 
+  handleWorkerReady(workerData: WorkerData) {
+    debug(
+      `Loaded '${this.name}' worker in ${Date.now() - workerData.startedAt}ms`
+    );
+    workerData.status = WorkerStatus.Ready;
+    this.executeRemainingTasks();
+  }
+
   handleMessage(workerData: WorkerData, msg: any): void {
     if (typeof msg !== 'object' || !msg.codesandbox) {
-      console.warn(`Invalid worker message for ${this.name}`, msg);
+      if (!msg.browserfsMessage) {
+        console.warn(
+          `Invalid message from worker ${this.name}#${workerData.workerId}`,
+          msg
+        );
+      }
       return;
     }
 
     switch (msg.type) {
       case 'ready':
-        debug(
-          `Loaded '${this.name}' worker in ${
-            Date.now() - workerData.startedAt
-          }ms`
-        );
-        workerData.status = WorkerStatus.Ready;
-        this.executeRemainingTasks();
+        this.handleWorkerReady(workerData);
         break;
       case 'request':
         this.handleCallRequest(workerData.worker, msg);
@@ -134,11 +141,15 @@ export class WorkerManager {
       this.handleMessage(workerdata, evt.data);
     });
 
+    // TODO: Move this to onReady, now sure why that doesn't work...
     if (this.hasFS) {
       // Register file system that syncs with filesystem in manager
       // @ts-ignore
-      BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker); // eslint-disable-line
-      worker.postMessage({ type: 'initialize-fs', codesandbox: true });
+      BrowserFS.FileSystem.WorkerFS.attachRemoteListener(workerdata.worker);
+      workerdata.worker.postMessage({
+        type: 'initialize-fs',
+        codesandbox: true,
+      });
     }
 
     worker.postMessage({ type: 'ping', codesandbox: true });
