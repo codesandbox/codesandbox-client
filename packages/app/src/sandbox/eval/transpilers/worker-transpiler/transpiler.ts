@@ -2,7 +2,7 @@ import { LoaderContext, Transpiler, Manager } from 'sandpack-core';
 import { WorkerManager, WorkerManagerOptions } from './worker-manager';
 
 // A transpiler that uses web workers for concurrent transpilation on multiple threads
-export default abstract class WorkerTranspiler extends Transpiler {
+export abstract class WorkerTranspiler extends Transpiler {
   public workerManager: WorkerManager;
 
   loaderContextId: number = 0;
@@ -129,3 +129,5 @@ export default abstract class WorkerTranspiler extends Transpiler {
     }));
   }
 }
+
+export default WorkerTranspiler;

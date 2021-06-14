@@ -115,7 +115,7 @@ export class WorkerManager {
   }
 
   async loadWorker() {
-    if (this.workerCount >= this.maxWorkerCount - 1) {
+    if (this.workerCount >= this.maxWorkerCount) {
       return;
     }
 
@@ -148,6 +148,8 @@ export class WorkerManager {
     if (!this.pendingCalls.length) {
       return;
     }
+
+    this.initialize();
 
     for (const [workerId, worker] of this.workers) {
       if (worker.status === WorkerStatus.Ready) {
