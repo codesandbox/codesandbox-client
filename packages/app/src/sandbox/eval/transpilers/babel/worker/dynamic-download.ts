@@ -80,7 +80,7 @@ export const resolveAsyncModule = (
       })
       .then(data => {
         if (!data.found) {
-          throw new Error(`Could not find path: "modulePath".`);
+          throw new Error(`Could not find path: "${modulePath}".`);
         }
 
         return data;
@@ -117,7 +117,8 @@ function downloadRequires(
             packageFilter: packageFilter(),
           });
         } catch (err) {
-          await downloadFromError(err, {
+          await downloadFromError({
+            error: err,
             childHandler,
             loaderContextId,
           });
@@ -217,17 +218,15 @@ export async function downloadPath(
   return r;
 }
 
-export function downloadFromError(
-  err: Error,
-  opts: {
-    childHandler: ChildHandler;
-    loaderContextId: number;
-  }
-) {
-  const { childHandler, loaderContextId } = opts;
-  if (err.message.indexOf('Cannot find module') > -1) {
-    const dep = err.message.match(/Cannot find module '(.*?)'/)[1];
-    const from = err.message.match(/from '(.*?)'/)[1];
+export function downloadFromError(opts: {
+  error: Error;
+  childHandler: ChildHandler;
+  loaderContextId: number;
+}) {
+  const { error, childHandler, loaderContextId } = opts;
+  if (error.message.indexOf('Cannot find module') > -1) {
+    const dep = error.message.match(/Cannot find module '(.*?)'/)[1];
+    const from = error.message.match(/from '(.*?)'/)[1];
     const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
 
     return downloadPath(absolutePath, {

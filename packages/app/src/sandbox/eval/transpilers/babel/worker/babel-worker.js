@@ -235,14 +235,8 @@ async function resolveDependencyName({
   }
 }
 
-async function installPlugin({
-  Babel,
-  BFSRequire,
-  name,
-  currentPath,
-  isV7,
-  loaderContextId,
-}) {
+async function installPlugin(opts) {
+  const { Babel, BFSRequire, name, currentPath, isV7, loaderContextId } = opts;
   const normalizedPluginName = normalizePluginName(name);
   if (Babel.availablePlugins[name]) {
     Babel.availablePlugins[normalizedPluginName] = Babel.availablePlugins[name];
@@ -295,20 +289,13 @@ async function installPlugin({
      * We assume that a file is missing in the in-memory file system, and try to download it by
      * parsing the error.
      */
-    evaluatedPlugin = await downloadFromError(firstError, {
+    await downloadFromError({
+      error: firstError,
       childHandler,
       loaderContextId,
-    }).then(() => {
-      resetCache();
-      return installPlugin({
-        Babel,
-        BFSRequire,
-        name,
-        currentPath,
-        isV7,
-        loaderContextId,
-      });
     });
+    resetCache();
+    return installPlugin(opts);
   }
 
   if (!evaluatedPlugin) {
@@ -324,14 +311,8 @@ async function installPlugin({
   return evaluatedPlugin;
 }
 
-async function installPreset({
-  Babel,
-  BFSRequire,
-  name,
-  currentPath,
-  isV7,
-  loaderContextId,
-}) {
+async function installPreset(opts) {
+  const { Babel, BFSRequire, name, currentPath, isV7, loaderContextId } = opts;
   const normalizedPresetName = normalizePresetName(name);
   if (Babel.availablePresets[name]) {
     Babel.availablePresets[normalizedPresetName] = Babel.availablePresets[name];
@@ -380,20 +361,13 @@ async function installPreset({
      * We assume that a file is missing in the in-memory file system, and try to download it by
      * parsing the error.
      */
-    evaluatedPreset = await downloadFromError(firstError, {
+    await downloadFromError({
+      error: firstError,
       childHandler,
       loaderContextId,
-    }).then(() => {
-      resetCache();
-      return installPreset({
-        Babel,
-        BFSRequire,
-        name,
-        currentPath,
-        isV7,
-        loaderContextId,
-      });
     });
+    resetCache();
+    return installPreset(opts);
   }
 
   if (process.env.NODE_ENV === 'development') {
