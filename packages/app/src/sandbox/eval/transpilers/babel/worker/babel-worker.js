@@ -122,10 +122,13 @@ self.require = path => {
 
 self.require.resolve = p => resolve.sync(p);
 
-async function initializeBrowserFS() {
+async function initializeBrowserFS(loaderContextId) {
   fsLoading = true;
 
-  const modules = await getModulesFromMainThread();
+  const modules = await getModulesFromMainThread({
+    childHandler,
+    loaderContextId,
+  });
   const tModules = {};
   modules.forEach(module => {
     tModules[module.path] = { module };
@@ -153,9 +156,9 @@ async function initializeBrowserFS() {
           },
         },
       },
-      e => {
-        if (e) {
-          console.error(e);
+      err => {
+        if (err) {
+          console.error(err);
           return;
         }
         fsLoading = false;
@@ -167,14 +170,18 @@ async function initializeBrowserFS() {
   });
 }
 
-async function waitForFs() {
+async function waitForFs(loaderContextId) {
   if (!fsInitialized) {
     if (!fsLoading) {
       // We only load the fs when it's needed. The FS is expensive, as we sync all
       // files of the main thread to the worker. We only want to do this if it's really
       // needed.
-      await Promise.all([initializeBrowserFS(), loadBabelTypes()]);
+      await Promise.all([
+        initializeBrowserFS(loaderContextId),
+        loadBabelTypes(),
+      ]);
     }
+
     while (!fsInitialized) {
       await delay(50); // eslint-disable-line
     }
@@ -185,19 +192,28 @@ async function waitForFs() {
  * Babel can transform the plugin name to a longer name (eg. styled-jsx -> babel-styled-jsx)
  * We want to know this beforehand, this function will check which one it is
  */
-async function resolveDependencyName(
+async function resolveDependencyName({
+  name,
+  isV7,
+  isPreset = false,
+  loaderContextId,
+}: {
   name: string,
   isV7: boolean,
-  isPreset = false
-) {
+  isPreset: boolean,
+  loaderContextId: number,
+}) {
   // styled-jsx/babel -> styled-jsx
   // @babel/plugin-env/package.json -> @babel/plugin-env
   const dependencyName = getDependencyName(name);
   try {
-    await downloadPath(join(dependencyName, 'package.json'));
+    await downloadPath(join(dependencyName, 'package.json'), {
+      loaderContextId,
+      childHandler,
+    });
 
     return name;
-  } catch (_e) {
+  } catch (e) {
     const prefixedFunction = isPreset
       ? getPrefixedPresetName
       : getPrefixedPluginName;
@@ -205,8 +221,11 @@ async function resolveDependencyName(
     const prefixedName = prefixedFunction(dependencyName, isV7);
 
     try {
-      await downloadPath(join(prefixedName, 'package.json'));
-    } catch (_er) {
+      await downloadPath(join(prefixedName, 'package.json'), {
+        loaderContextId,
+        childHandler,
+      });
+    } catch (err) {
       throw new Error(
         `Cannot find plugin '${dependencyName}' or '${prefixedName}'`
       );
@@ -216,7 +235,22 @@ async function resolveDependencyName(
   }
 }
 
-async function installPlugin(Babel, BFSRequire, name, currentPath, isV7) {
+async function installPlugin({
+  Babel,
+  BFSRequire,
+  name,
+  currentPath,
+  isV7,
+  loaderContextId,
+}) {
+  console.warn('install plugin', {
+    Babel,
+    BFSRequire,
+    name,
+    currentPath,
+    isV7,
+    loaderContextId,
+  });
   const normalizedPluginName = normalizePluginName(name);
   if (Babel.availablePlugins[name]) {
     Babel.availablePlugins[normalizedPluginName] = Babel.availablePlugins[name];
@@ -228,18 +262,28 @@ async function installPlugin(Babel, BFSRequire, name, currentPath, isV7) {
     return Babel.availablePlugins[name];
   }
 
-  await waitForFs();
+  await waitForFs(loaderContextId);
 
   const fs = BFSRequire('fs');
 
   let evaluatedPlugin = null;
 
-  const pluginName = await resolveDependencyName(name, isV7);
+  const pluginName = await resolveDependencyName({
+    name,
+    isV7,
+    loaderContextId,
+  });
 
-  await downloadPath(`/node_modules/${pluginName}`);
+  await downloadPath(`/node_modules/${pluginName}`, {
+    childHandler,
+    loaderContextId,
+  });
 
   try {
-    await downloadPath(pluginName);
+    await downloadPath(pluginName, {
+      childHandler,
+      loaderContextId,
+    });
     const evaluatedFromPath = evaluateFromPath(
       fs,
       BFSRequire,
@@ -261,7 +305,14 @@ async function installPlugin(Babel, BFSRequire, name, currentPath, isV7) {
      */
     evaluatedPlugin = await downloadFromError(firstError).then(() => {
       resetCache();
-      return installPlugin(Babel, BFSRequire, name, currentPath, isV7);
+      return installPlugin({
+        Babel,
+        BFSRequire,
+        name,
+        currentPath,
+        isV7,
+        loaderContextId,
+      });
     });
   }
 
@@ -278,7 +329,14 @@ async function installPlugin(Babel, BFSRequire, name, currentPath, isV7) {
   return evaluatedPlugin;
 }
 
-async function installPreset(Babel, BFSRequire, name, currentPath, isV7) {
+async function installPreset({
+  Babel,
+  BFSRequire,
+  name,
+  currentPath,
+  isV7,
+  loaderContextId,
+}) {
   const normalizedPresetName = normalizePresetName(name);
   if (Babel.availablePresets[name]) {
     Babel.availablePresets[normalizedPresetName] = Babel.availablePresets[name];
@@ -290,16 +348,24 @@ async function installPreset(Babel, BFSRequire, name, currentPath, isV7) {
     return Babel.availablePresets[name];
   }
 
-  await waitForFs();
+  await waitForFs(loaderContextId);
 
   const fs = BFSRequire('fs');
 
   let evaluatedPreset = null;
 
-  const presetName = await resolveDependencyName(name, isV7, true);
+  const presetName = await resolveDependencyName({
+    name,
+    isV7,
+    isPreset: true,
+    loaderContextId,
+  });
 
   try {
-    await downloadPath(presetName);
+    await downloadPath(presetName, {
+      childHandler,
+      loaderContextId,
+    });
     const evaluatedFromPath = evaluateFromPath(
       fs,
       BFSRequire,
@@ -321,7 +387,14 @@ async function installPreset(Babel, BFSRequire, name, currentPath, isV7) {
      */
     evaluatedPreset = await downloadFromError(firstError).then(() => {
       resetCache();
-      return installPreset(Babel, BFSRequire, name, currentPath, isV7);
+      return installPreset({
+        Babel,
+        BFSRequire,
+        name,
+        currentPath,
+        isV7,
+        loaderContextId,
+      });
     });
   }
 
@@ -436,14 +509,14 @@ function getCustomConfig(
 }
 
 async function compile(opts: any) {
-  const { code, config, path, isV7 } = opts;
+  const { code, config, path, isV7, loaderContextId } = opts;
 
   try {
     let result;
     try {
       result = Babel.transform(code, config);
-    } catch (e) {
-      e.message = e.message.replace('unknown', path);
+    } catch (err) {
+      err.message = err.message.replace('unknown', path);
 
       if (!isV7) {
         const codeFrame = await import('babel-code-frame').then(x => x.default);
@@ -451,19 +524,19 @@ async function compile(opts: any) {
         // Match the line+col
         const lineColRegex = /\((\d+):(\d+)\)/;
 
-        const match = e.message.match(lineColRegex);
+        const match = err.message.match(lineColRegex);
         if (match && match[1] && match[2]) {
           const lineNumber = +match[1];
           const colNumber = +match[2];
 
           const niceMessage =
-            e.message + '\n\n' + codeFrame(code, lineNumber, colNumber);
+            err.message + '\n\n' + codeFrame(code, lineNumber, colNumber);
 
-          e.message = niceMessage;
+          err.message = niceMessage;
         }
       }
 
-      throw e;
+      throw err;
     }
 
     const dependencies = getDependencies(detective.metadata(result));
@@ -491,7 +564,7 @@ async function compile(opts: any) {
       (err.message.indexOf('Cannot find module') > -1 || err.code === 'EIO')
     ) {
       // BrowserFS was needed but wasn't initialized
-      await waitForFs();
+      await waitForFs(loaderContextId);
       return compile(opts);
     }
 
@@ -549,6 +622,7 @@ async function initBabel(opts) {
     loaderOptions,
     version,
     hasMacros,
+    loaderContextId,
   } = opts;
 
   const { disableCodeSandboxPlugins } = loaderOptions;
@@ -637,7 +711,7 @@ async function initBabel(opts) {
       Object.keys(Babel.availablePlugins).indexOf('babel-plugin-macros') === -1
     ) {
       if (hasMacros) {
-        await waitForFs();
+        await waitForFs(loaderContextId);
       }
 
       Babel.registerPlugin('babel-plugin-macros', patchedMacrosPlugin);
@@ -694,17 +768,18 @@ async function initBabel(opts) {
       .filter(p => typeof p === 'string')
       .map(async p => {
         try {
-          await installPlugin(
+          await installPlugin({
             Babel,
-            BrowserFS.BFSRequire,
-            p,
-            path,
-            !Babel.version.startsWith('6')
-          );
-        } catch (e) {
-          console.warn(e);
+            BFSRequire: BrowserFS.BFSRequire,
+            name: p,
+            currentPath: path,
+            isV7: !Babel.version.startsWith('6'),
+            loaderContextId,
+          });
+        } catch (err) {
+          console.warn(err);
           throw new Error(
-            `Could not find/install babel plugin '${p}': ${e.message}`
+            `Could not find/install babel plugin '${p}': ${err.message}`
           );
         }
       })
@@ -715,16 +790,17 @@ async function initBabel(opts) {
       .filter(p => typeof p === 'string')
       .map(async p => {
         try {
-          await installPreset(
+          await installPreset({
             Babel,
-            BrowserFS.BFSRequire,
-            p,
-            path,
-            !Babel.version.startsWith('6')
-          );
-        } catch (e) {
+            BFSRequire: BrowserFS.BFSRequire,
+            name: p,
+            currentPath: path,
+            isV7: !Babel.version.startsWith('6'),
+            loaderContextId,
+          });
+        } catch (err) {
           throw new Error(
-            `Could not find/install babel preset '${p}': ${e.message}`
+            `Could not find/install babel preset '${p}': ${err.message}`
           );
         }
       })

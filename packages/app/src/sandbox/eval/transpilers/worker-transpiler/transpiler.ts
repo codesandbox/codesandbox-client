@@ -17,14 +17,24 @@ export default abstract class WorkerTranspiler extends Transpiler {
     this.workerManager = new WorkerManager(name, workerFactory, options);
     this.workerManager.registerFunction('resolve-fs', data => {
       const loaderContext = this.loaderContexts.get(data.loaderContextId);
+      if (!loaderContext) {
+        console.warn('Could not find loader context', data);
+        throw new Error('Could not find loader context');
+      }
+
       const modules = loaderContext.getModules();
       return { modules };
     });
     this.workerManager.registerFunction(
       'resolve-async-transpiled-module',
       async data => {
+        const loaderContext = this.loaderContexts.get(data.loaderContextId);
+        if (!loaderContext) {
+          console.warn('Could not find loader context', data);
+          throw new Error('Could not find loader context');
+        }
+
         try {
-          const loaderContext = this.loaderContexts.get(data.loaderContextId);
           const tModule = await loaderContext.resolveTranspiledModuleAsync(
             data.path,
             data.options
@@ -43,6 +53,11 @@ export default abstract class WorkerTranspiler extends Transpiler {
     );
     this.workerManager.registerFunction('add-dependency', async data => {
       const loaderContext = this.loaderContexts.get(data.loaderContextId);
+      if (!loaderContext) {
+        console.warn('Could not find loader context', data);
+        throw new Error('Could not find loader context');
+      }
+
       if (data.isGlob) {
         loaderContext.addDependenciesInDirectory(data.path, {
           isAbsolute: data.isAbsolute,

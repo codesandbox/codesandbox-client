@@ -30,7 +30,7 @@ export class ChildHandler {
 
   async handleMessage(msg: any) {
     if (typeof msg !== 'object' || !msg.codesandbox) {
-      console.warn(`Invalid worker message for ${msg}`);
+      console.warn('Invalid worker message', msg);
       return;
     }
 
@@ -76,6 +76,7 @@ export class ChildHandler {
         data: result,
       });
     } catch (err) {
+      console.error(err);
       self.postMessage({
         type: 'response',
         codesandbox: true,

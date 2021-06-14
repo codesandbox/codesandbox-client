@@ -91,7 +91,7 @@ export class WorkerManager {
 
   handleMessage(workerData: WorkerData, msg: any): void {
     if (typeof msg !== 'object' || !msg.codesandbox) {
-      debug(`Invalid worker message for ${this.name}: ${msg}`);
+      console.warn(`Invalid worker message for ${this.name}`, msg);
       return;
     }
 

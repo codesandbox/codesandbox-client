@@ -4,6 +4,7 @@ import getRequireStatements from './simple-get-require-statements';
 import { packageFilter } from '../../../utils/resolve-utils';
 import { convertEsModule } from '../ast/convert-esmodule';
 import { generateCode, parseModule } from '../ast/utils';
+import { ChildHandler } from '../../worker-transpiler/child-handler';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -53,11 +54,17 @@ interface IResolveResponse {
 }
 
 const downloadCache = new Map<string, Promise<IResolveResponse>>();
-let lastSentId = 0;
-
 export const resolveAsyncModule = (
   modulePath: string,
-  { ignoredExtensions }: { ignoredExtensions?: Array<string> }
+  {
+    ignoredExtensions,
+    childHandler,
+    loaderContextId,
+  }: {
+    ignoredExtensions?: Array<string>;
+    childHandler: ChildHandler;
+    loaderContextId: number;
+  }
 ): Promise<IResolveResponse> => {
   if (downloadCache.get(modulePath)) {
     return downloadCache.get(modulePath);
@@ -65,40 +72,38 @@ export const resolveAsyncModule = (
 
   downloadCache.set(
     modulePath,
-    new Promise((r, reject) => {
-      const sendId = lastSentId++;
-
-      global.postMessage({
-        type: 'resolve-async-transpiled-module',
-        path: modulePath,
-        id: sendId,
-        options: { isAbsolute: true, ignoredExtensions },
-      });
-
-      const resolveFunc = (message: { data: IResolveResponse }) => {
-        const { type, id, found } = message.data;
-
-        if (
-          type === 'resolve-async-transpiled-module-response' &&
-          id === sendId
-        ) {
-          if (found) {
-            r(message.data);
-          } else {
-            reject(new Error("Could not find path: '" + modulePath + "'."));
-          }
-          global.removeEventListener('message', resolveFunc);
+    childHandler
+      .callFn({
+        method: 'resolve-async-transpiled-module',
+        data: {
+          loaderContextId,
+          path: modulePath,
+          options: { isAbsolute: true, ignoredExtensions },
+        },
+      })
+      .then(data => {
+        if (!data.found) {
+          throw new Error(`Could not find path: "modulePath".`);
         }
-      };
 
-      global.addEventListener('message', resolveFunc);
-    })
+        return data;
+      })
   );
 
   return downloadCache.get(modulePath);
 };
 
-function downloadRequires(currentPath: string, code: string) {
+function downloadRequires(
+  currentPath: string,
+  code: string,
+  {
+    childHandler,
+    loaderContextId,
+  }: {
+    childHandler: ChildHandler;
+    loaderContextId: number;
+  }
+) {
   const requires = getRequireStatements(code);
 
   // Download all other needed files
@@ -116,8 +121,11 @@ function downloadRequires(currentPath: string, code: string) {
             moduleDirectory: ['node_modules'],
             packageFilter: packageFilter(),
           });
-        } catch (e) {
-          await downloadFromError(e);
+        } catch (err) {
+          await downloadFromError(err, {
+            childHandler,
+            loaderContextId,
+          });
         }
       }
     })
@@ -125,9 +133,19 @@ function downloadRequires(currentPath: string, code: string) {
 }
 
 export async function downloadPath(
-  absolutePath: string
+  absolutePath: string,
+  {
+    childHandler,
+    loaderContextId,
+  }: {
+    childHandler: ChildHandler;
+    loaderContextId: number;
+  }
 ): Promise<{ code: string; path: string }> {
-  const r = await resolveAsyncModule(absolutePath, {});
+  const r = await resolveAsyncModule(absolutePath, {
+    childHandler,
+    loaderContextId,
+  });
 
   if (!r.found) {
     throw new Error(`${absolutePath} not found.`);
@@ -154,7 +172,10 @@ export async function downloadPath(
       // if the babel worker doesn't have the package.json it enters an infinite loop.
       const r2 = await resolveAsyncModule(
         path.join(absolutePath, 'package.json'),
-        {}
+        {
+          childHandler,
+          loaderContextId,
+        }
       );
       if (r2) {
         mkDirByPathSync(path.dirname(r2.path));
@@ -166,7 +187,10 @@ export async function downloadPath(
     }
 
     const code = existingFile.toString();
-    await downloadRequires(r.path, code);
+    await downloadRequires(r.path, code, {
+      childHandler,
+      loaderContextId,
+    });
 
     return {
       code,
@@ -187,18 +211,33 @@ export async function downloadPath(
 
   fs.writeFileSync(r.path, code);
 
-  await downloadRequires(r.path, code);
+  await downloadRequires(r.path, code, {
+    childHandler,
+    loaderContextId,
+  });
 
   return r;
 }
 
-export function downloadFromError(e: Error) {
-  if (e.message.indexOf('Cannot find module') > -1) {
-    const dep = e.message.match(/Cannot find module '(.*?)'/)[1];
-    const from = e.message.match(/from '(.*?)'/)[1];
+export function downloadFromError(
+  err: Error,
+  {
+    childHandler,
+    loaderContextId,
+  }: {
+    childHandler: ChildHandler;
+    loaderContextId: number;
+  }
+) {
+  if (err.message.indexOf('Cannot find module') > -1) {
+    const dep = err.message.match(/Cannot find module '(.*?)'/)[1];
+    const from = err.message.match(/from '(.*?)'/)[1];
     const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
 
-    return downloadPath(absolutePath);
+    return downloadPath(absolutePath, {
+      childHandler,
+      loaderContextId,
+    });
   }
 
   return Promise.resolve();
