@@ -1,7 +1,8 @@
 import _debug from '@codesandbox/common/lib/utils/debug';
-import { LoaderContext } from 'sandpack-core';
-
-import { errorToObj } from './utils';
+import {
+  buildWorkerError,
+  parseWorkerError,
+} from '../../../../../../sandpack-core/lib/transpiler/utils/worker-error-handler';
 
 const debug = _debug('cs:compiler:worker-manager');
 
@@ -10,16 +11,12 @@ enum WorkerStatus {
   Ready,
 }
 
-type WorkerFactoryType = () => Worker;
-type RegisteredFunc = (
-  data: any,
-  loaderContext: LoaderContext
-) => any | Promise<any>;
+type WorkerFactoryType = () => Worker | Promise<Worker>;
+type RegisteredFunc = (data: any) => any | Promise<any>;
 
 interface WorkerCall {
   method: string;
   data: any;
-  loaderContextId: number;
   workerId?: number;
   resolve: (result: Promise<any> | any) => void;
   reject: (error: any) => void;
@@ -41,13 +38,10 @@ export interface WorkerManagerOptions {
 }
 
 export class WorkerManager {
-  pendingCalls: Array<WorkerCall>;
-  activeCalls: Map<number, WorkerCall>;
+  pendingCalls: Array<WorkerCall> = [];
+  activeCalls: Map<number, WorkerCall> = new Map();
   callId: number = 0;
-  contextId: number = 0;
-  functions: Map<string, RegisteredFunc>;
-
-  loaderContexts: Map<number, LoaderContext>;
+  functions: Map<string, RegisteredFunc> = new Map();
 
   // Options
   name: string;
@@ -95,11 +89,6 @@ export class WorkerManager {
     this.workerCount = 0;
   }
 
-  getWorker(): Promise<Worker> {
-    // @ts-ignore
-    return Promise.resolve(new this.Worker());
-  }
-
   handleMessage(workerData: WorkerData, msg: any): void {
     if (typeof msg !== 'object' || !msg.codesandbox) {
       debug(`Invalid worker message for ${this.name}: ${msg}`);
@@ -132,7 +121,7 @@ export class WorkerManager {
 
     const workerId = this.workerCount++;
     const startedAt = Date.now();
-    const worker = await this.getWorker();
+    const worker = await this.workerFactory();
     const workerdata: WorkerData = {
       workerId,
       status: WorkerStatus.Initializing,
@@ -152,7 +141,7 @@ export class WorkerManager {
       worker.postMessage({ type: 'initialize-fs', codesandbox: true });
     }
 
-    // this.executeRemainingTasks();
+    worker.postMessage({ type: 'ping', codesandbox: true });
   }
 
   executeRemainingTasks() {
@@ -164,35 +153,26 @@ export class WorkerManager {
       if (worker.status === WorkerStatus.Ready) {
         while (worker.activeCalls < this.maxConcurrency) {
           const pendingCall = this.pendingCalls.shift();
-          if (pendingCall) {
-            const idx = this.callId++;
-            const message = {
-              type: 'request',
-              codesandbox: true,
-              idx,
-              method: pendingCall.method,
-              data: pendingCall.data,
-              loaderContextId: pendingCall.loaderContextId,
-            };
-
-            this.activeCalls.set(idx, { ...pendingCall, workerId });
-            worker.activeCalls += 1;
-
-            worker.worker.postMessage(message);
+          if (!pendingCall) {
+            break;
           }
+
+          const idx = this.callId++;
+          const message = {
+            type: 'request',
+            codesandbox: true,
+            idx,
+            method: pendingCall.method,
+            data: pendingCall.data,
+          };
+
+          this.activeCalls.set(idx, { ...pendingCall, workerId });
+          worker.activeCalls += 1;
+
+          worker.worker.postMessage(message);
         }
       }
     }
-  }
-
-  registerLoaderContext(loaderContext: LoaderContext): number {
-    const cid = this.contextId++;
-    this.loaderContexts.set(cid, loaderContext);
-    return cid;
-  }
-
-  cleanupLoaderContext(loaderContextId: number): void {
-    this.loaderContexts.delete(loaderContextId);
   }
 
   registerFunction(method: string, fn: RegisteredFunc) {
@@ -205,7 +185,7 @@ export class WorkerManager {
       if (!msg.isError) {
         foundCall.resolve(msg.data);
       } else {
-        foundCall.reject(msg.data);
+        foundCall.reject(parseWorkerError(msg.data));
       }
 
       if (foundCall.workerId) {
@@ -223,18 +203,11 @@ export class WorkerManager {
           `Could not find registered child function for call "${msg.method}"`
         );
       }
-      const loaderContext = this.loaderContexts.get(msg.loaderContextId);
-      if (!loaderContext) {
-        throw new Error(
-          `Could not find loaderContext with id "${msg.loaderContextId}" for call "${msg.method}"`
-        );
-      }
-      const result = await fn(msg.data, loaderContext);
+      const result = await fn(msg.data);
       worker.postMessage({
         type: 'response',
         codesandbox: true,
         idx: msg.idx,
-        loaderContextId: msg.loaderContextId,
         data: result,
       });
     } catch (err) {
@@ -242,27 +215,17 @@ export class WorkerManager {
         type: 'response',
         codesandbox: true,
         idx: msg.idx,
-        loaderContextId: msg.loaderContextId,
         isError: true,
-        data: errorToObj(err),
+        data: buildWorkerError(err),
       });
     }
   }
 
-  callFn({
-    method,
-    data,
-    loaderContextId,
-  }: {
-    method: string;
-    data: any;
-    loaderContextId: number;
-  }): Promise<any> {
+  callFn({ method, data }: { method: string; data: any }): Promise<any> {
     return new Promise((resolve, reject) => {
       this.pendingCalls.push({
         method,
         data,
-        loaderContextId,
         resolve,
         reject,
       });

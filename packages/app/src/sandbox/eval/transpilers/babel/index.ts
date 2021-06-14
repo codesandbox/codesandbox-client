@@ -9,12 +9,14 @@ import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:
 import delay from '@codesandbox/common/lib/utils/delay';
 import { endMeasure, measure } from '@codesandbox/common/lib/utils/metrics';
 import { LoaderContext, Manager } from 'sandpack-core';
-import WorkerTranspiler from '../worker-transpiler';
+import WorkerTranspiler from '../worker-transpiler/transpiler';
 import getBabelConfig from './babel-parser';
 import { getSyntaxInfoFromAst } from './ast/syntax-info';
 import { convertEsModule } from './ast/convert-esmodule';
 import { ESTreeAST, generateCode, parseModule } from './ast/utils';
 import { collectDependenciesFromAST } from './ast/collect-dependencies';
+
+const MAX_WORKER_ITERS = 100;
 
 interface TranspilationResult {
   transpiledCode: string;
@@ -37,26 +39,35 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('babel-loader', BabelWorker, WORKER_COUNT, {
-      hasFS: true,
-      preload: true,
-    });
+    super(
+      'babel-loader',
+      // @ts-ignore
+      async () => {
+        let iteration = 0;
+        while (typeof global.babelworkers === 'undefined') {
+          if (iteration >= MAX_WORKER_ITERS) {
+            throw new Error('Could not load Babel worker');
+          }
+          await delay(50); // eslint-disable-line
+          iteration++;
+        }
+
+        if (global.babelworkers.length === 0) {
+          return BabelWorker();
+        }
+
+        // We set these up in startup.js.
+        return global.babelworkers.pop();
+      },
+      {
+        maxWorkerCount: WORKER_COUNT,
+        hasFS: true,
+        preload: true,
+      }
+    );
   }
 
   startupWorkersInitialized = false;
-
-  async getWorker() {
-    while (typeof global.babelworkers === 'undefined') {
-      await delay(50); // eslint-disable-line
-    }
-
-    if (global.babelworkers.length === 0) {
-      return super.getWorker();
-    }
-
-    // We set these up in startup.js.
-    return global.babelworkers.pop();
-  }
 
   async doTranspilation(
     code: string,
@@ -143,67 +154,66 @@ class BabelTranspiler extends WorkerTranspiler {
       isV7
     );
 
-    return new Promise((resolve, reject) => {
-      this.queueTask(
-        {
-          code,
-          config: babelConfig,
-          path,
-          loaderOptions,
-          babelTranspilerOptions:
-            configs &&
-            configs.babelTranspiler &&
-            configs.babelTranspiler.parsed,
-          sandboxOptions: configs && configs.sandbox && configs.sandbox.parsed,
-          version: isV7 ? 7 : 6,
-          hasMacros,
-        },
-        loaderContext._module.getId(),
-        loaderContext,
-        (err, data) => {
-          if (err) {
-            loaderContext.emitError(err);
+    const {
+      code: transpiledCode,
+      dependencies: foundDependencies,
+    } = await this.queueCompileFn(
+      {
+        code,
+        config: babelConfig,
+        path,
+        loaderOptions,
+        babelTranspilerOptions:
+          configs && configs.babelTranspiler && configs.babelTranspiler.parsed,
+        sandboxOptions: configs && configs.sandbox && configs.sandbox.parsed,
+        version: isV7 ? 7 : 6,
+        hasMacros,
+      },
+      loaderContext
+    );
 
-            return reject(err);
-          }
-
-          return resolve(data);
+    await Promise.all(
+      foundDependencies.map(async dep => {
+        if (dep.isGlob) {
+          loaderContext.addDependenciesInDirectory(dep.path, {
+            isAbsolute: dep.isAbsolute,
+            isEntry: dep.isEntry,
+          });
+        } else {
+          await loaderContext.addDependency(dep.path, {
+            isAbsolute: dep.isAbsolute,
+            isEntry: dep.isEntry,
+          });
         }
-      );
-    });
+      })
+    );
+
+    return { transpiledCode };
   }
 
   async getTranspilerContext(manager: Manager): Promise<any> {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async resolve => {
-      const baseConfig = await super.getTranspilerContext(manager);
+    const baseConfig = await super.getTranspilerContext(manager);
 
-      const babelTranspilerOptions =
-        manager.configurations &&
-        manager.configurations.babelTranspiler &&
-        manager.configurations.babelTranspiler.parsed;
+    const babelTranspilerOptions =
+      manager.configurations &&
+      manager.configurations.babelTranspiler &&
+      manager.configurations.babelTranspiler.parsed;
 
-      this.queueTask(
-        {
-          type: 'get-babel-context',
-          babelTranspilerOptions,
-        },
-        'babelContext',
-        // @ts-ignore
-        {},
-        (err, data) => {
-          const { version, availablePlugins, availablePresets } = data as any;
-
-          resolve({
-            ...baseConfig,
-            babelVersion: version,
-            availablePlugins,
-            availablePresets,
-            babelTranspilerOptions,
-          });
-        }
-      );
+    const result = await this.workerManager.callFn({
+      method: 'get-babel-context',
+      data: {
+        transpilerOptions: babelTranspilerOptions,
+      },
     });
+
+    const { version, availablePlugins, availablePresets } = result;
+    return {
+      ...baseConfig,
+      babelVersion: version,
+      availablePlugins,
+      availablePresets,
+      babelTranspilerOptions,
+    };
   }
 }
 

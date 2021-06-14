@@ -17,7 +17,6 @@ import renameImport from './plugins/babel-plugin-rename-imports';
 
 import { BABEL7_VERSION } from '../babel-version';
 
-import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 import { downloadFromError, downloadPath } from './dynamic-download';
 import { getModulesFromMainThread } from '../../utils/fs';
@@ -35,6 +34,7 @@ import {
 } from './get-prefixed-name';
 import { patchedResolve } from './utils/resolvePatch';
 import { loadBabelTypes } from './utils/babelTypes';
+import { ChildHandler } from '../../worker-transpiler/child-handler';
 
 let fsInitialized = false;
 let fsLoading = false;
@@ -62,6 +62,8 @@ self.process = {
 self.module = { exports: {} };
 const { exports } = self.module;
 self.exports = exports;
+
+const childHandler = new ChildHandler();
 
 // This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {
@@ -433,11 +435,13 @@ function getCustomConfig(
   };
 }
 
-async function compile(code, customConfig, path, isV7) {
+async function compile(opts: any) {
+  const { code, config, path, isV7 } = opts;
+
   try {
     let result;
     try {
-      result = Babel.transform(code, customConfig);
+      result = Babel.transform(code, config);
     } catch (e) {
       e.message = e.message.replace('unknown', path);
 
@@ -477,36 +481,28 @@ async function compile(code, customConfig, path, isV7) {
       });
     }
 
-    dependencies.forEach(dependency => {
-      self.postMessage({
-        type: 'add-dependency',
-        path: dependency.path,
-        isGlob: dependency.type === 'glob',
-      });
-    });
-
-    self.postMessage({
-      type: 'result',
-      transpiledCode: result.code,
-    });
-  } catch (e) {
+    return {
+      code: result.code,
+      dependencies,
+    };
+  } catch (err) {
     if (
       !fsInitialized &&
-      (e.message.indexOf('Cannot find module') > -1 || e.code === 'EIO')
+      (err.message.indexOf('Cannot find module') > -1 || err.code === 'EIO')
     ) {
       // BrowserFS was needed but wasn't initialized
       await waitForFs();
-
-      await compile(code, customConfig, path);
-    } else if (e.message.indexOf('Cannot find module') > -1) {
-      // Try to download the file and all dependencies, retry compilation then
-      await downloadFromError(e).then(() => {
-        resetCache();
-        return compile(code, customConfig, path);
-      });
-    } else {
-      throw e;
+      return compile(opts);
     }
+
+    if (err.message.indexOf('Cannot find module') > -1) {
+      // Try to download the file and all dependencies, retry compilation then
+      await downloadFromError(err);
+      resetCache();
+      return compile(opts);
+    }
+
+    throw err;
   }
 }
 
@@ -531,7 +527,252 @@ try {
   console.error(e);
 }
 
-self.postMessage('ready');
+async function getBabelContext(opts) {
+  const transpilerOptions = opts.babelTranspilerOptions;
+  loadCustomTranspiler(
+    transpilerOptions && transpilerOptions.babelURL,
+    transpilerOptions && transpilerOptions.babelEnvURL
+  );
+  return {
+    version: Babel.version,
+    availablePlugins: Object.keys(Babel.availablePlugins),
+    availablePresets: Object.keys(Babel.availablePresets),
+  };
+}
+
+async function initBabel(opts) {
+  const {
+    path,
+    sandboxOptions,
+    babelTranspilerOptions,
+    config,
+    loaderOptions,
+    version,
+    hasMacros,
+  } = opts;
+
+  const { disableCodeSandboxPlugins } = loaderOptions;
+
+  const babelUrl = babelTranspilerOptions && babelTranspilerOptions.babelURL;
+  const babelEnvUrl =
+    babelTranspilerOptions && babelTranspilerOptions.babelEnvURL;
+
+  if (babelUrl || babelEnvUrl) {
+    loadCustomTranspiler(babelUrl, babelEnvUrl);
+  } else if (version !== 7) {
+    loadCustomTranspiler(
+      process.env.NODE_ENV === 'development'
+        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.js`
+        : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
+    );
+  }
+
+  const stringifiedConfig = JSON.stringify(babelTranspilerOptions);
+  if (stringifiedConfig && lastConfig !== stringifiedConfig) {
+    resetCache();
+    lastConfig = stringifiedConfig;
+  }
+
+  const codeSandboxPlugins = [];
+
+  if (!disableCodeSandboxPlugins) {
+    if (loaderOptions.dynamicCSSModules) {
+      codeSandboxPlugins.push('dynamic-css-modules');
+    }
+
+    if (!sandboxOptions || sandboxOptions.infiniteLoopProtection) {
+      codeSandboxPlugins.push('babel-plugin-transform-prevent-infinite-loops');
+    }
+  }
+
+  codeSandboxPlugins.push([
+    'babel-plugin-detective',
+    { source: true, nodes: true, generated: true },
+  ]);
+
+  const customConfig = getCustomConfig(
+    { config, codeSandboxPlugins },
+    version,
+    path,
+    loaderOptions
+  );
+
+  const flattenedPresets = flatten(customConfig.presets || []);
+  const flattenedPlugins = flatten(customConfig.plugins || []);
+
+  if (!disableCodeSandboxPlugins) {
+    if (
+      Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
+      version !== 7
+    ) {
+      Babel.registerPreset('env', Babel.availablePresets.latest);
+    }
+
+    if (
+      (flattenedPlugins.indexOf('transform-vue-jsx') > -1 ||
+        flattenedPlugins.indexOf('babel-plugin-transform-vue-jsx') > -1) &&
+      Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
+    ) {
+      const vuePlugin = await import(
+        /* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx'
+      );
+      Babel.registerPlugin('transform-vue-jsx', vuePlugin);
+      Babel.registerPlugin('babel-plugin-transform-vue-jsx', vuePlugin);
+    }
+
+    if (
+      (flattenedPlugins.indexOf('jsx-pragmatic') > -1 ||
+        flattenedPlugins.indexOf('babel-plugin-jsx-pragmatic') > -1) &&
+      Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
+    ) {
+      const pragmaticPlugin = await import(
+        /* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic'
+      );
+      Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+      Babel.registerPlugin('babel-plugin-jsx-pragmatic', pragmaticPlugin);
+    }
+
+    if (
+      flattenedPlugins.indexOf('babel-plugin-macros') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('babel-plugin-macros') === -1
+    ) {
+      if (hasMacros) {
+        await waitForFs();
+      }
+
+      Babel.registerPlugin('babel-plugin-macros', patchedMacrosPlugin);
+    }
+
+    if (
+      (flattenedPlugins.indexOf('proposal-optional-chaining') > -1 ||
+        flattenedPlugins.indexOf('@babel/plugin-proposal-optional-chaining') >
+          -1) &&
+      Object.keys(Babel.availablePlugins).indexOf(
+        'proposal-optional-chaining'
+      ) === -1
+    ) {
+      Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
+    }
+
+    if (
+      flattenedPlugins.indexOf('react-refresh/babel') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('react-refresh/babel') === -1
+    ) {
+      Babel.registerPlugin('react-refresh/babel', refreshBabelPlugin);
+    }
+
+    const coalescingInPlugins =
+      flattenedPlugins.indexOf('proposal-nullish-coalescing-operator') > -1 ||
+      flattenedPlugins.indexOf(
+        '@babel/plugin-proposal-nullish-coalescing-operator'
+      ) > -1;
+    if (
+      coalescingInPlugins &&
+      Object.keys(Babel.availablePlugins).indexOf(
+        'proposal-nullish-coalescing-operator'
+      ) === -1
+    ) {
+      Babel.registerPlugin(
+        'proposal-nullish-coalescing-operator',
+        coalescingPlugin
+      );
+    }
+
+    if (
+      flattenedPlugins.indexOf('transform-cx-jsx') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('transform-cx-jsx') === -1
+    ) {
+      const cxJsxPlugin = await import(
+        /* webpackChunkName: 'transform-cx-jsx' */ 'babel-plugin-transform-cx-jsx'
+      );
+      Babel.registerPlugin('transform-cx-jsx', cxJsxPlugin);
+    }
+  }
+
+  await Promise.all(
+    flattenedPlugins
+      .filter(p => typeof p === 'string')
+      .map(async p => {
+        try {
+          await installPlugin(
+            Babel,
+            BrowserFS.BFSRequire,
+            p,
+            path,
+            !Babel.version.startsWith('6')
+          );
+        } catch (e) {
+          console.warn(e);
+          throw new Error(
+            `Could not find/install babel plugin '${p}': ${e.message}`
+          );
+        }
+      })
+  );
+
+  await Promise.all(
+    flattenedPresets
+      .filter(p => typeof p === 'string')
+      .map(async p => {
+        try {
+          await installPreset(
+            Babel,
+            BrowserFS.BFSRequire,
+            p,
+            path,
+            !Babel.version.startsWith('6')
+          );
+        } catch (e) {
+          throw new Error(
+            `Could not find/install babel preset '${p}': ${e.message}`
+          );
+        }
+      })
+  );
+
+  return { customConfig };
+}
+
+async function workerCompile(opts) {
+  const { customConfig } = await initBabel(opts);
+  const { code, path, version, loaderContextId } = opts;
+  if (loaderContextId == null) {
+    throw new Error(
+      'Loader context is required to compile run BabelWorker#compile()'
+    );
+  }
+
+  return compile({
+    code,
+    config: version === 7 ? normalizeV7Config(customConfig) : customConfig,
+    path,
+    isV7: version === 7,
+    loaderContextId,
+  });
+}
+
+childHandler.registerFunction('get-babel-context', getBabelContext);
+childHandler.registerFunction('compile', workerCompile);
+childHandler.emitReady();
+
+async function executeWarmupSequence() {
+  const opts = {
+    path: 'test.js',
+    code: 'const a = "b";',
+    config: { presets: ['env'] },
+    version: 7,
+    loaderOptions: {},
+  };
+  const { customConfig } = await initBabel(opts);
+  const { code } = opts;
+  for (let i = 0; i < 10; i++) {
+    Babel.transform(code, normalizeV7Config(customConfig));
+  }
+  console.log('Babel worker finished warmup procedure');
+}
+
+// Warmup the worker...
+executeWarmupSequence().catch(console.error);
 
 export type IBabel = {
   transform: (
@@ -599,246 +840,3 @@ function loadCustomTranspiler(babelUrl, babelEnvUrl) {
   registerCodeSandboxPlugins();
 }
 installErrorMock();
-
-self.addEventListener('message', async event => {
-  if (!event.data.codesandbox) {
-    return;
-  }
-
-  if (event.data.type === 'get-babel-context') {
-    const transpilerOptions = event.data.babelTranspilerOptions;
-    loadCustomTranspiler(
-      transpilerOptions && transpilerOptions.babelURL,
-      transpilerOptions && transpilerOptions.babelEnvURL
-    );
-    self.postMessage({
-      type: 'result',
-      version: Babel.version,
-      availablePlugins: Object.keys(Babel.availablePlugins),
-      availablePresets: Object.keys(Babel.availablePresets),
-    });
-    return;
-  }
-
-  const {
-    code,
-    path,
-    sandboxOptions,
-    babelTranspilerOptions,
-    config,
-    loaderOptions,
-    version,
-    type,
-    hasMacros,
-  } = event.data;
-
-  if (type !== 'compile' && type !== 'warmup') {
-    return;
-  }
-  try {
-    const { disableCodeSandboxPlugins } = loaderOptions;
-
-    const babelUrl = babelTranspilerOptions && babelTranspilerOptions.babelURL;
-    const babelEnvUrl =
-      babelTranspilerOptions && babelTranspilerOptions.babelEnvURL;
-
-    if (babelUrl || babelEnvUrl) {
-      loadCustomTranspiler(babelUrl, babelEnvUrl);
-    } else if (version !== 7) {
-      loadCustomTranspiler(
-        process.env.NODE_ENV === 'development'
-          ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.js`
-          : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
-      );
-    }
-
-    const stringifiedConfig = JSON.stringify(babelTranspilerOptions);
-    if (stringifiedConfig && lastConfig !== stringifiedConfig) {
-      resetCache();
-      lastConfig = stringifiedConfig;
-    }
-
-    const codeSandboxPlugins = [];
-
-    if (!disableCodeSandboxPlugins) {
-      if (loaderOptions.dynamicCSSModules) {
-        codeSandboxPlugins.push('dynamic-css-modules');
-      }
-
-      if (!sandboxOptions || sandboxOptions.infiniteLoopProtection) {
-        codeSandboxPlugins.push(
-          'babel-plugin-transform-prevent-infinite-loops'
-        );
-      }
-    }
-
-    codeSandboxPlugins.push([
-      'babel-plugin-detective',
-      { source: true, nodes: true, generated: true },
-    ]);
-
-    const customConfig = getCustomConfig(
-      { config, codeSandboxPlugins },
-      version,
-      path,
-      loaderOptions
-    );
-
-    const flattenedPresets = flatten(customConfig.presets || []);
-    const flattenedPlugins = flatten(customConfig.plugins || []);
-
-    if (!disableCodeSandboxPlugins) {
-      if (
-        Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
-        version !== 7
-      ) {
-        Babel.registerPreset('env', Babel.availablePresets.latest);
-      }
-
-      if (
-        (flattenedPlugins.indexOf('transform-vue-jsx') > -1 ||
-          flattenedPlugins.indexOf('babel-plugin-transform-vue-jsx') > -1) &&
-        Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
-      ) {
-        const vuePlugin = await import(
-          /* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx'
-        );
-        Babel.registerPlugin('transform-vue-jsx', vuePlugin);
-        Babel.registerPlugin('babel-plugin-transform-vue-jsx', vuePlugin);
-      }
-
-      if (
-        (flattenedPlugins.indexOf('jsx-pragmatic') > -1 ||
-          flattenedPlugins.indexOf('babel-plugin-jsx-pragmatic') > -1) &&
-        Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
-      ) {
-        const pragmaticPlugin = await import(
-          /* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic'
-        );
-        Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
-        Babel.registerPlugin('babel-plugin-jsx-pragmatic', pragmaticPlugin);
-      }
-
-      if (
-        flattenedPlugins.indexOf('babel-plugin-macros') > -1 &&
-        Object.keys(Babel.availablePlugins).indexOf('babel-plugin-macros') ===
-          -1
-      ) {
-        if (hasMacros) {
-          await waitForFs();
-        }
-
-        Babel.registerPlugin('babel-plugin-macros', patchedMacrosPlugin);
-      }
-
-      if (
-        (flattenedPlugins.indexOf('proposal-optional-chaining') > -1 ||
-          flattenedPlugins.indexOf('@babel/plugin-proposal-optional-chaining') >
-            -1) &&
-        Object.keys(Babel.availablePlugins).indexOf(
-          'proposal-optional-chaining'
-        ) === -1
-      ) {
-        Babel.registerPlugin('proposal-optional-chaining', chainingPlugin);
-      }
-
-      if (
-        flattenedPlugins.indexOf('react-refresh/babel') > -1 &&
-        Object.keys(Babel.availablePlugins).indexOf('react-refresh/babel') ===
-          -1
-      ) {
-        Babel.registerPlugin('react-refresh/babel', refreshBabelPlugin);
-      }
-
-      const coalescingInPlugins =
-        flattenedPlugins.indexOf('proposal-nullish-coalescing-operator') > -1 ||
-        flattenedPlugins.indexOf(
-          '@babel/plugin-proposal-nullish-coalescing-operator'
-        ) > -1;
-      if (
-        coalescingInPlugins &&
-        Object.keys(Babel.availablePlugins).indexOf(
-          'proposal-nullish-coalescing-operator'
-        ) === -1
-      ) {
-        Babel.registerPlugin(
-          'proposal-nullish-coalescing-operator',
-          coalescingPlugin
-        );
-      }
-
-      if (
-        flattenedPlugins.indexOf('transform-cx-jsx') > -1 &&
-        Object.keys(Babel.availablePlugins).indexOf('transform-cx-jsx') === -1
-      ) {
-        const cxJsxPlugin = await import(
-          /* webpackChunkName: 'transform-cx-jsx' */ 'babel-plugin-transform-cx-jsx'
-        );
-        Babel.registerPlugin('transform-cx-jsx', cxJsxPlugin);
-      }
-    }
-
-    await Promise.all(
-      flattenedPlugins
-        .filter(p => typeof p === 'string')
-        .map(async p => {
-          try {
-            await installPlugin(
-              Babel,
-              BrowserFS.BFSRequire,
-              p,
-              path,
-              !Babel.version.startsWith('6')
-            );
-          } catch (e) {
-            console.warn(e);
-            throw new Error(
-              `Could not find/install babel plugin '${p}': ${e.message}`
-            );
-          }
-        })
-    );
-
-    await Promise.all(
-      flattenedPresets
-        .filter(p => typeof p === 'string')
-        .map(async p => {
-          try {
-            await installPreset(
-              Babel,
-              BrowserFS.BFSRequire,
-              p,
-              path,
-              !Babel.version.startsWith('6')
-            );
-          } catch (e) {
-            throw new Error(
-              `Could not find/install babel preset '${p}': ${e.message}`
-            );
-          }
-        })
-    );
-
-    if (type === 'warmup') {
-      Babel.transform(code, normalizeV7Config(customConfig));
-      return;
-    }
-
-    await compile(
-      code,
-      version === 7 ? normalizeV7Config(customConfig) : customConfig,
-      path,
-      version === 7
-    );
-  } catch (e) {
-    if (type === 'warmup') {
-      return;
-    }
-
-    console.error(e);
-    self.postMessage({
-      type: 'error',
-      error: buildWorkerError(e),
-    });
-  }
-});

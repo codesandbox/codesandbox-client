@@ -3,7 +3,10 @@ import { WorkerManager, WorkerManagerOptions } from './worker-manager';
 
 // A transpiler that uses web workers for concurrent transpilation on multiple threads
 export default abstract class WorkerTranspiler extends Transpiler {
-  workerManager: WorkerManager;
+  public workerManager: WorkerManager;
+
+  loaderContextId: number = 0;
+  loaderContexts: Map<number, LoaderContext> = new Map();
 
   constructor(
     name: string,
@@ -12,13 +15,16 @@ export default abstract class WorkerTranspiler extends Transpiler {
   ) {
     super(name);
     this.workerManager = new WorkerManager(name, workerFactory, options);
-    this.workerManager.registerFunction('resolve-fs', (data, loaderContext) =>
-      loaderContext.getModules()
-    );
+    this.workerManager.registerFunction('resolve-fs', data => {
+      const loaderContext = this.loaderContexts.get(data.loaderContextId);
+      const modules = loaderContext.getModules();
+      return { modules };
+    });
     this.workerManager.registerFunction(
       'resolve-async-transpiled-module',
-      async (data, loaderContext) => {
+      async data => {
         try {
+          const loaderContext = this.loaderContexts.get(data.loaderContextId);
           const tModule = await loaderContext.resolveTranspiledModuleAsync(
             data.path,
             data.options
@@ -35,27 +41,20 @@ export default abstract class WorkerTranspiler extends Transpiler {
         }
       }
     );
-    this.workerManager.registerFunction(
-      'add-dependency',
-      async (data, loaderContext) => {
-        if (data.isGlob) {
-          loaderContext.addDependenciesInDirectory(data.path, {
-            isAbsolute: data.isAbsolute,
-            isEntry: data.isEntry,
-          });
-        } else {
-          await loaderContext.addDependency(data.path, {
-            isAbsolute: data.isAbsolute,
-            isEntry: data.isEntry,
-          });
-        }
+    this.workerManager.registerFunction('add-dependency', async data => {
+      const loaderContext = this.loaderContexts.get(data.loaderContextId);
+      if (data.isGlob) {
+        loaderContext.addDependenciesInDirectory(data.path, {
+          isAbsolute: data.isAbsolute,
+          isEntry: data.isEntry,
+        });
+      } else {
+        await loaderContext.addDependency(data.path, {
+          isAbsolute: data.isAbsolute,
+          isEntry: data.isEntry,
+        });
       }
-    );
-  }
-
-  getWorker(): Promise<Worker> {
-    // @ts-ignore
-    return Promise.resolve(new this.Worker());
+    });
   }
 
   initialize() {
@@ -66,17 +65,26 @@ export default abstract class WorkerTranspiler extends Transpiler {
     this.workerManager.dispose();
   }
 
-  async runTask(data: any, loaderContext: LoaderContext) {
-    const loaderContextId = this.workerManager.registerLoaderContext(
-      loaderContext
-    );
+  registerLoaderContext(loaderContext: LoaderContext): number {
+    const cid = this.loaderContextId++;
+    this.loaderContexts.set(cid, loaderContext);
+    return cid;
+  }
 
+  cleanupLoaderContext(loaderContextId: number): void {
+    this.loaderContexts.delete(loaderContextId);
+  }
+
+  async queueCompileFn(data: any, loaderContext: LoaderContext) {
+    const loaderContextId = this.registerLoaderContext(loaderContext);
     const result = await this.workerManager.callFn({
       method: 'compile',
-      data,
-      loaderContextId,
+      data: {
+        ...data,
+        loaderContextId,
+      },
     });
-    this.workerManager.cleanupLoaderContext(loaderContextId);
+    this.cleanupLoaderContext(loaderContextId);
     return result;
   }
 
