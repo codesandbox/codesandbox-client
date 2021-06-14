@@ -575,7 +575,7 @@ try {
 }
 
 async function getBabelContext(opts) {
-  const transpilerOptions = opts.babelTranspilerOptions;
+  const { transpilerOptions } = opts;
   loadCustomTranspiler(
     transpilerOptions && transpilerOptions.babelURL,
     transpilerOptions && transpilerOptions.babelEnvURL
