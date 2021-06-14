@@ -62,7 +62,7 @@ export class WorkerManager {
     const {
       hasFS = false,
       preload = false,
-      maxConcurrency = 5,
+      maxConcurrency = 25,
       maxWorkerCount = navigator.hardwareConcurrency,
     } = options;
 
