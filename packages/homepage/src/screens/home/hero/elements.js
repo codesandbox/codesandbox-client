@@ -209,7 +209,7 @@ export const ShowMoreIcon = styled.span`
       background: ${theme.homepage.greyDark};
 
       svg {
-        transform: rotate(135deg);
+        transform: rotate(135deg) translateX(-0.3px) translateY(0.1px);
       }
     `}
 `;
