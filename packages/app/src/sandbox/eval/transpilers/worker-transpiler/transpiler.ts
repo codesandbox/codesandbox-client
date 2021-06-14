@@ -1,4 +1,6 @@
 import { LoaderContext, Transpiler, Manager } from 'sandpack-core';
+import { dispatch, actions } from 'codesandbox-api';
+
 import { WorkerManager, WorkerManagerOptions } from './worker-manager';
 
 // A transpiler that uses web workers for concurrent transpilation on multiple threads
@@ -91,6 +93,17 @@ export abstract class WorkerTranspiler extends Transpiler {
         });
       }
     );
+    this.workerManager.registerFunction('clear-warnings', data => {
+      dispatch(actions.correction.clear(data.path, data.source));
+    });
+    this.workerManager.registerFunction('warning', data => {
+      const loaderContext = this.loaderContexts.get(data.loaderContextId);
+      if (!loaderContext) {
+        console.warn('Could not find loader context for warning', data);
+        throw new Error('Could not find loader context');
+      }
+      loaderContext.emitWarning(data.warning);
+    });
   }
 
   initialize() {
