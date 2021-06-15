@@ -125,7 +125,12 @@ const Results = connectHits(({ hits }) => {
   }));
 
   return (
-    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
+    <SelectionProvider
+      interactive={false}
+      activeTeamId={activeTeam}
+      page={pageType}
+      items={items}
+    >
       <Helmet>
         <title>
           {location.search

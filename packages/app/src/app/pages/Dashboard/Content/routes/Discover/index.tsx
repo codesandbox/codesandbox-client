@@ -96,6 +96,7 @@ export const Discover = () => {
         <title>Discover - CodeSandbox</title>
       </Helmet>
       <SelectionProvider
+        interactive={false}
         activeTeamId={activeTeam}
         page="discover"
         items={selectionItems}
@@ -364,6 +365,7 @@ const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
         {album.sandboxes.map(sandbox => (
           <Column key={sandbox.id}>
             <CommunitySandbox
+              interactive={false}
               isScrolling={false}
               item={{
                 type: 'community-sandbox',
@@ -442,6 +444,7 @@ const TrendingSandboxes = () => {
         {trendingSandboxesAlbum.sandboxes.slice(0, limit).map(sandbox => (
           <Column key={sandbox.id}>
             <CommunitySandbox
+              interactive={false}
               isScrolling={false}
               item={{
                 type: 'community-sandbox',

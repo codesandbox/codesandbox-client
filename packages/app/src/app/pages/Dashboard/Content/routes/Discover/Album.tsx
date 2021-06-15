@@ -61,6 +61,7 @@ export const Album = ({ match }) => {
       />
 
       <SelectionProvider
+        interactive={false}
         activeTeamId={activeTeam}
         page="discover"
         items={selectionItems}
@@ -83,6 +84,7 @@ export const Album = ({ match }) => {
             {album.sandboxes.map(sandbox => (
               <Column key={sandbox.id}>
                 <CommunitySandbox
+                  interactive={false}
                   isScrolling={false}
                   item={{
                     type: 'community-sandbox',

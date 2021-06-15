@@ -61,6 +61,7 @@ export const Curate = () => {
         <title>Curate - CodeSandbox</title>
       </Helmet>
       <SelectionProvider
+        interactive={false}
         activeTeamId={activeTeam}
         page="discover"
         items={selectionItems}
@@ -236,6 +237,7 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
         {album.sandboxes.map(sandbox => (
           <Stack direction="vertical" gap={2}>
             <CommunitySandbox
+              interactive={false}
               key={sandbox.id}
               isScrolling={false}
               item={{
