@@ -40,6 +40,7 @@ let fsInitialized = false;
 let fsLoading = false;
 let lastConfig = null;
 
+const childHandler = new ChildHandler('babel-worker');
 const IGNORED_MODULES = ['util', 'os'];
 const { BrowserFS } = self;
 
@@ -62,8 +63,6 @@ self.process = {
 self.module = { exports: {} };
 const { exports } = self.module;
 self.exports = exports;
-
-const childHandler = new ChildHandler('babel-worker');
 
 // This one is called from the babel transpiler and babel-plugin-macros
 self.require = path => {

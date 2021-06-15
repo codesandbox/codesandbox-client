@@ -20,9 +20,13 @@ export class ChildHandler {
   callId: number = 0;
   isReady: boolean = false;
   initializeFS: FSInitializerFunc;
+  queuedMessages: Array<any> = [];
 
   constructor(name: string) {
     this.name = name;
+    self.addEventListener('message', evt => {
+      this.handleMessage(evt.data).catch(console.error);
+    });
   }
 
   registerFunction(method: string, fn: ChildFunc) {
@@ -38,6 +42,11 @@ export class ChildHandler {
       if (!msg.browserfsMessage) {
         console.warn(`Invalid message from main thread to ${this.name}`, msg);
       }
+      return;
+    }
+
+    if (!this.isReady) {
+      this.queuedMessages.push(msg);
       return;
     }
 
@@ -124,9 +133,9 @@ export class ChildHandler {
 
   emitReady() {
     this.isReady = true;
-
-    self.addEventListener('message', evt => {
-      this.handleMessage(evt.data).catch(console.error);
+    this.queuedMessages.forEach(msg => {
+      console.warn('Run queued message', msg);
+      this.handleMessage(msg).catch(console.error);
     });
 
     self.postMessage({
