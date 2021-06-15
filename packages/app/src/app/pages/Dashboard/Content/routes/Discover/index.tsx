@@ -331,6 +331,8 @@ const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
 
   const likedSandboxIds = (sandboxes.LIKED || []).map(sandbox => sandbox.id);
 
+  if (album.sandboxes.length === 0) return null;
+
   return (
     <Stack key={album.id} direction="vertical" gap={6}>
       <Stack justify="space-between" align="flex-end">
