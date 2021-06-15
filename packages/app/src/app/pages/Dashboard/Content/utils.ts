@@ -40,17 +40,6 @@ export function getPossibleTemplates(
   );
 }
 
-function copyArray(source) {
-  let index = -1;
-  const length = source.length;
-
-  const array = new Array(length);
-  while (++index < length) {
-    array[index] = source[index];
-  }
-  return array;
-}
-
 export function shuffleSeed(array, inputSeed) {
   let seed = inputSeed || 1;
 
@@ -65,7 +54,7 @@ export function shuffleSeed(array, inputSeed) {
   }
   let index = -1;
   const lastIndex = length - 1;
-  const result = copyArray(array);
+  const result = [...array];
   while (++index < length) {
     const rand = index + Math.floor(random() * (lastIndex - index + 1));
     const value = result[rand];
