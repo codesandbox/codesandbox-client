@@ -93,7 +93,7 @@ export function cleanUsingUnmount(manager: Manager) {
       manager.manifest &&
       manager.manifest.dependencies.find(n => n.name === 'react-dom')
     ) {
-      const reactDOMModule = manager.resolveModule('react-dom', '');
+      const reactDOMModule = manager.resolveModule({ path: 'react-dom' });
       const reactDOM = manager.evaluateModule(reactDOMModule);
 
       reactDOM.unmountComponentAtNode(document.body);

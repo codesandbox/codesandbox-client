@@ -44,7 +44,7 @@ export default function (loaderContext, files) {
           throw new Error(`${filepath} not found`);
         }
 
-        loaderContext.addDependency(filepath);
+        await loaderContext.addDependency(filepath);
 
         return {
           contents: file,

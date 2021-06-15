@@ -10,10 +10,10 @@
 // TODO change this
 import { getCurrentManager } from 'app/src/sandbox/compile';
 // @flow
+import { settle } from 'settle-promise';
 import StackFrame from './stack-frame';
 import { getSourceMap } from './getSourceMap';
 import { getLinesAround } from './getLinesAround';
-import { settle } from 'settle-promise';
 
 /**
  * Enhances a set of <code>StackFrame</code>s with their original positions and code (when available).
@@ -46,7 +46,7 @@ async function map(
             fileName.split('?')[1]
           );
         } else {
-          transpiledModule = manager.resolveTranspiledModule(
+          transpiledModule = await manager.resolveTranspiledModule(
             fileName.replace(location.origin, ''),
             '/'
           );
@@ -65,7 +65,7 @@ async function map(
   );
   return frames.map(frame => {
     const { functionName, fileName, lineNumber, columnNumber } = frame;
-    let { map, fileSource } = cache[fileName] || {};
+    const { map, fileSource } = cache[fileName] || {};
     if (map == null || lineNumber == null) {
       return frame;
     }

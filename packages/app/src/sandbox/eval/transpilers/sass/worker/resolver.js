@@ -1,4 +1,5 @@
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
+import { ChildHandler } from '../../worker-transpiler/child-handler';
 
 const POTENTIAL_EXTENSIONS = ['.scss', '.sass', '.css'];
 
@@ -41,44 +42,41 @@ export function getPossibleSassPaths(
   return directories.map(directory => pathUtils.join(directory, filepath));
 }
 
-let idx = 0;
-function resolveAsyncModule(
+async function resolveAsyncModule(opts: {
   path: string,
-  { ignoredExtensions }: { ignoredExtensions?: Array<string> } = {}
-) {
-  idx += 1;
-  const idxClone = idx;
+  options: {
+    ignoredExtensions: POTENTIAL_EXTENSIONS,
+  },
+  loaderContextId: number,
+  childHandler: ChildHandler,
+}) {
+  const { path, options = {}, loaderContextId, childHandler } = opts;
 
-  return new Promise((r, reject) => {
-    const resolveFunc = message => {
-      const { type, id, found } = message.data;
-      if (
-        type === 'resolve-async-transpiled-module-response' &&
-        id === idxClone
-      ) {
-        if (found) {
-          r(message.data);
-        } else {
-          reject(message.data);
-        }
-        self.removeEventListener('message', resolveFunc);
-      }
-    };
-
-    self.addEventListener('message', resolveFunc);
-
-    self.postMessage({
-      type: 'resolve-async-transpiled-module',
+  const resolvedModule = await childHandler.callFn({
+    method: 'resolve-async-transpiled-module',
+    data: {
       path,
-      id: idxClone,
-      options: { isAbsolute: true, ignoredExtensions },
-    });
+      options,
+      loaderContextId,
+    },
   });
+
+  if (!resolvedModule.found) {
+    throw new Error(`Module ${path} not found.`);
+  }
+
+  return resolvedModule;
 }
 
-function existsPromise(fs, file) {
+function existsPromise(opts: {
+  fs: any,
+  filepath: string,
+  loaderContextId: number,
+  childHandler: ChildHandler,
+}) {
+  const { fs, filepath, loaderContextId, childHandler } = opts;
   return new Promise(r => {
-    fs.stat(file, async (err, stats) => {
+    fs.stat(filepath, async (err, stats) => {
       if (err || stats.isDirectory()) {
         if (stats && stats.isDirectory()) {
           r(false);
@@ -87,8 +85,13 @@ function existsPromise(fs, file) {
 
         // We try to download it
         try {
-          const resolvedModule = await resolveAsyncModule(file, {
-            ignoredExtensions: POTENTIAL_EXTENSIONS,
+          const resolvedModule = await resolveAsyncModule({
+            path: filepath,
+            options: {
+              ignoredExtensions: POTENTIAL_EXTENSIONS,
+            },
+            loaderContextId,
+            childHandler,
           });
 
           const ext = pathUtils.extname(resolvedModule.path);
@@ -102,7 +105,7 @@ function existsPromise(fs, file) {
           r(false);
         }
       } else {
-        r(file);
+        r(filepath);
       }
     });
   });
@@ -119,14 +122,22 @@ function firstTrue(promises) {
   return Promise.race(newPromises);
 }
 
-async function resolvePotentialPath(fs: any, p: string) {
+async function resolvePotentialPath(opts: {
+  fs: any,
+  potentialPath: string,
+  loaderContextId: number,
+  childHandler: ChildHandler,
+}) {
+  const { fs, potentialPath, loaderContextId, childHandler } = opts;
   try {
-    const pathDirName = pathUtils.dirname(p);
+    const pathDirName = pathUtils.dirname(potentialPath);
     const pathVariations = getPathVariations(
-      pathUtils.basename(p)
+      pathUtils.basename(potentialPath)
     ).map(variation => pathUtils.join(pathDirName, variation));
     const foundFilePath = await firstTrue(
-      pathVariations.map(path => existsPromise(fs, path))
+      pathVariations.map(path =>
+        existsPromise({ fs, filepath: path, loaderContextId, childHandler })
+      )
     );
     return foundFilePath;
   } catch (err) {
@@ -141,6 +152,8 @@ interface ISassResolverOptions {
   env?: any;
   fs: any;
   resolutionCache: { [k: string]: string };
+  loaderContextId: number;
+  childHandler: ChildHandler;
 }
 
 /* Re-implementation of sass importer
@@ -161,7 +174,13 @@ export async function resolveSassUrl(opts: ISassResolverOptions) {
     env = {},
     fs,
     resolutionCache,
+    loaderContextId,
+    childHandler,
   } = opts;
+
+  if (loaderContextId == null) {
+    throw new Error('Loader context id is required');
+  }
 
   const url = importUrl.replace(/^file:\/\//, '');
   const paths = [pathUtils.dirname(previousFilePath.replace(/^file:\/\//, ''))];
@@ -181,7 +200,12 @@ export async function resolveSassUrl(opts: ISassResolverOptions) {
     }
 
     // eslint-disable-next-line no-await-in-loop
-    const resolvedPath = await resolvePotentialPath(fs, potentialPath);
+    const resolvedPath = await resolvePotentialPath({
+      fs,
+      potentialPath,
+      loaderContextId,
+      childHandler,
+    });
     if (resolvedPath) {
       resolutionCache[potentialPath] = resolvedPath;
       return resolvedPath;

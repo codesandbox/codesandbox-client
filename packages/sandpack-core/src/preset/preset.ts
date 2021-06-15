@@ -41,6 +41,8 @@ type LoaderDefinition = {
  * and loaders.
  */
 export class Preset {
+  public experimentalEsmSupport = false;
+
   loaders: Array<LoaderDefinition>;
 
   transpilers: Set<Transpiler>;
@@ -226,9 +228,9 @@ export class Preset {
     const transpilerNames = query.split('!').filter(x => x);
 
     const extraTranspilers = transpilerNames
-      .map(loaderName => {
-        const [name, options] = loaderName.split('?');
-
+      .map(loaderName => loaderName.split('?'))
+      .filter(([name]) => !!name)
+      .map(([name, options]) => {
         let transpiler = Array.from(this.transpilers).find(
           t => t.name === name
         );
