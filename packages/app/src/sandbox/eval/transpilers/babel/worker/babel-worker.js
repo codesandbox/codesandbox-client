@@ -540,7 +540,8 @@ async function compile(opts: any) {
 
     if (err.message.indexOf('Cannot find module') > -1) {
       // Try to download the file and all dependencies, retry compilation then
-      await downloadFromError(err, {
+      await downloadFromError({
+        error: err,
         childHandler,
         loaderContextId,
       });
