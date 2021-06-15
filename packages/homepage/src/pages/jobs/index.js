@@ -12,6 +12,7 @@ import imageTwo from '../../assets/images/jobs/two.png';
 import imageThree from '../../assets/images/jobs/three.png';
 import imageFour from '../../assets/images/jobs/four.png';
 import worldMap from '../../assets/images/world-map.svg';
+import wearehiring from '../../assets/images/jobs/we-are-hiring.jpg';
 
 import {
   PageTitle,
@@ -53,6 +54,7 @@ const Careers = () => {
           <TitleAndMetaTags
             description="Find out here about careers and working at CodeSandbox!"
             title="Careers - CodeSandbox"
+            image={wearehiring}
           />
           <PageTitle>Join CodeSandbox</PageTitle>
           <HeroSection>
