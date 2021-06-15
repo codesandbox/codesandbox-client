@@ -424,7 +424,7 @@ const TrendingSandboxes = () => {
   );
 
   return (
-    <Stack direction="vertical" gap={6}>
+    <Stack direction="vertical" gap={6} css={css({ marginTop: '100px' })}>
       <Text size={6} weight="bold">
         {trendingSandboxesAlbum.title}
       </Text>
