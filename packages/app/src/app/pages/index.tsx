@@ -9,7 +9,10 @@ import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbox/CreateSandboxModal';
 import { useInitializeExperimentStore } from '@codesandbox/ab';
-import uuid from 'uuid';
+import {
+  getExperimentUserId,
+  AB_TESTING_URL,
+} from '@codesandbox/common/lib/config/env';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
@@ -142,19 +145,8 @@ const RoutesComponent: React.FC = () => {
   useEffect(() => () => appUnmounted(), [appUnmounted]);
 
   useInitializeExperimentStore(
-    'https://ab-testing.codesandbox.workers.dev',
-    () => {
-      const KEY_NAME = 'csb-ab-user-id';
-
-      let userId = localStorage.getItem(KEY_NAME);
-
-      if (!userId) {
-        userId = uuid.v4();
-        localStorage.setItem(KEY_NAME, userId);
-      }
-
-      return userId;
-    },
+    AB_TESTING_URL,
+    getExperimentUserId,
     async (key, value) => {
       await analytics.identify(key, value);
     }

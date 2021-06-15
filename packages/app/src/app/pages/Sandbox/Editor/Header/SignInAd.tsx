@@ -15,8 +15,10 @@ export const SignInBanner = () => {
   useEffect(() => {
     experimentPromise.then(experiment => {
       if (experiment === ExperimentValues.A) {
+        // eslint-disable-next-line no-console
         console.log('A');
       } else {
+        // eslint-disable-next-line no-console
         console.log('B');
       }
     });
