@@ -7,7 +7,7 @@ import { Manager } from 'sandpack-core';
 export async function createRefreshEntry(manager: Manager) {
   const entryModule = {
     path: '/node_modules/__csb/react-dom-entrypoint.js',
-    code: `if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
+    code: `if (typeof window !== 'undefined') {
 const runtime = require('react-refresh/runtime');
 runtime.injectIntoGlobalHook(window);
 window.$RefreshReg$ = () => {};

@@ -1329,9 +1329,14 @@ export const updateTeamAvatar = async (
     teamId: string;
   }
 ) => {
-  if (!state.activeTeamInfo) return;
+  if (!state.activeTeamInfo || !state.user) return;
   const oldAvatar = state.activeTeamInfo.avatarUrl;
+  const isPersonalWorkspace =
+    state.activeTeamInfo.id === state.personalWorkspaceId;
   state.activeTeamInfo.avatarUrl = url;
+  if (isPersonalWorkspace) {
+    state.user.avatarUrl = url;
+  }
 
   effects.analytics.track('Team - Update Team Avatar', { dashboardVersion: 2 });
 
@@ -1339,6 +1344,10 @@ export const updateTeamAvatar = async (
     await effects.api.updateTeamAvatar(name, url, teamId);
   } catch (error) {
     state.activeTeamInfo.avatarUrl = oldAvatar;
+    if (isPersonalWorkspace) {
+      // @ts-ignore
+      state.user.avatarUrl = oldAvatar;
+    }
 
     actions.internal.handleError({
       message: "We weren't able to update your team avatar",

@@ -50,7 +50,7 @@ const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 
 /*
  * Resolve name and version from npm aliases
- * e.g. "my-react": "npm:react@16.0.0
+ * e.g. "react": "npm:preact-compat@16.0.0"
  */
 const resolveNPMAlias = (name: string, version: string): string[] => {
   const IS_ALIAS = /^npm:/;
@@ -170,7 +170,7 @@ function resolvePath(
           const callback = cb || c;
 
           try {
-            const tModule = manager.resolveTranspiledModule(p, '/');
+            const tModule = await manager.resolveTranspiledModule(p, '/');
             tModule.initiators.add(currentTModule);
             currentTModule.dependencies.add(tModule);
             return callback(null, tModule.module.code);

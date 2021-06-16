@@ -29,6 +29,7 @@ interface ApiData {
   routes: Object[];
   scope?: string;
   version: number;
+  target: string | null;
 }
 
 interface File {
@@ -163,8 +164,8 @@ export default (() => {
       );
       return response.data.deployments;
     },
-    async deploy(contents: any, sandbox: Sandbox): Promise<string> {
-      const apiData = await getApiData(contents, sandbox);
+    async deploy(contents: any, sandbox: Sandbox, type?: any): Promise<string> {
+      const apiData = await getApiData(contents, sandbox, type);
       const deploymentVersion = apiData.version === 2 ? 'v9' : 'v3';
 
       const response = await axios.post(
@@ -194,7 +195,7 @@ export default (() => {
   };
 })();
 
-async function getApiData(contents: any, sandbox: Sandbox) {
+async function getApiData(contents: any, sandbox: Sandbox, type?: any) {
   const template = getTemplate(sandbox.template);
 
   let apiData: Partial<ApiData> = {
@@ -254,6 +255,7 @@ async function getApiData(contents: any, sandbox: Sandbox) {
   apiData.scope = nowJSON.scope;
   apiData['build.env'] = nowJSON['build.env'];
   apiData.regions = nowJSON.regions;
+  apiData.target = type || 'staging';
 
   if (!nowJSON.files && apiData?.files) {
     apiData.files.push({

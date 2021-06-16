@@ -35,7 +35,7 @@ const postcssExtensions = ['postcss', 'pcss', 'sugarss', 'sss'];
 
 const rewriterInjectRE = /\b(css(?:-loader)?(?:\?[^!]+)?)(?:!|$)/;
 
-export default function(content: string, loaderContext: LoaderContext) {
+export default function (content: string, loaderContext: LoaderContext) {
   // Emit the vue-hot-reload-api so it's available in the sandbox
   loaderContext.emitModule(
     hotReloadAPIPath,
@@ -48,16 +48,11 @@ export default function(content: string, loaderContext: LoaderContext) {
   const { path, _module } = loaderContext;
   const query = loaderContext.options;
   const options = {
+    // Always disable esModule as sandpack is CommonJS
     esModule: false,
     ...this.vue,
     ...query,
   };
-
-  // disable esModule in inject mode
-  // because import/export must be top-level
-  if (query.inject) {
-    options.esModule = false;
-  }
 
   const rawRequest = getRawRequest(loaderContext);
   const filePath = _module.module.path;
@@ -155,6 +150,7 @@ export default function(content: string, loaderContext: LoaderContext) {
             output += `var cssModules = {}\n`;
           }
         }
+
         if (moduleName in cssModules) {
           loaderContext.emitError(
             new Error('CSS module name "' + moduleName + '" is not unique!')
@@ -235,23 +231,13 @@ export default function(content: string, loaderContext: LoaderContext) {
   output += '  /* script */\n  ';
   const { script } = parts;
   if (script) {
-    if (options.esModule) {
-      output += script.src
-        ? getNamedExportForImport('script', script) +
-          '\n' +
-          getImportForImport('script', script)
-        : getNamedExport('script', script) +
-          '\n' +
-          getImport('script', script) +
-          '\n';
-    } else {
-      output +=
-        'var __vue_script__ = ' +
-        (script.src
-          ? getRequireForImport('script', script)
-          : getRequire('script', script)) +
-        '\n';
-    }
+    output +=
+      'var __vue_script__ = ' +
+      (script.src
+        ? getRequireForImport('script', script)
+        : getRequire('script', script)) +
+      '\n';
+
     // inject loader interop
     if (query.inject) {
       output += '__vue_script__ = __vue_script__(injections)\n';
@@ -264,19 +250,12 @@ export default function(content: string, loaderContext: LoaderContext) {
   output += '/* template */\n';
   const { template } = parts;
   if (template) {
-    if (options.esModule) {
-      output +=
-        (template.src
-          ? getImportForImport('template', template)
-          : getImport('template', template)) + '\n';
-    } else {
-      output +=
-        'var __vue_template__ = ' +
-        (template.src
-          ? getRequireForImport('template', template)
-          : getRequire('template', template)) +
-        '\n';
-    }
+    output +=
+      'var __vue_template__ = ' +
+      (template.src
+        ? getRequireForImport('template', template)
+        : getRequire('template', template)) +
+      '\n';
   } else {
     output += 'var __vue_template__ = null\n';
   }
@@ -358,11 +337,7 @@ export default function(content: string, loaderContext: LoaderContext) {
     }
 
     // final export
-    if (options.esModule) {
-      output += '\nexport default Component.exports\n';
-    } else {
-      output += '\nmodule.exports = Component.exports\n';
-    }
+    output += '\nmodule.exports = Component.exports\n';
   } else {
     // inject-loader support
     output =
@@ -380,19 +355,6 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   function getRequire(type, part, index, scoped) {
     return 'require(' + getRequireString(type, part, index, scoped) + ')';
-  }
-
-  function getImport(type, part, index, scoped) {
-    return (
-      'import __vue_' +
-      type +
-      '__ from ' +
-      getRequireString(type, part, index, scoped)
-    );
-  }
-
-  function getNamedExport(type, part, index, scoped) {
-    return 'export * from ' + getRequireString(type, part, index, scoped);
   }
 
   function getRequireString(type, part, index, scoped) {
@@ -416,19 +378,6 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   function getRequireForImport(type, impt, scoped) {
     return 'require(' + getRequireForImportString(type, impt, scoped) + ')';
-  }
-
-  function getImportForImport(type, impt, scoped) {
-    return (
-      'import __vue_' +
-      type +
-      '__ from ' +
-      getRequireForImportString(type, impt, scoped)
-    );
-  }
-
-  function getNamedExportForImport(type, impt, scoped) {
-    return 'export * from ' + getRequireForImportString(type, impt, scoped);
   }
 
   function getRequireForImportString(type, impt, scoped) {

@@ -21,12 +21,11 @@ Let's dive in!
 
 Since the first release we've added many things to CodeSandbox. To give you an
 idea: we released CodeSandbox without embeds! A lot has changed, we're not an
-editor for [React](https://github.com/facebook/react) only anymore, and I think
-we moved past the definition of a playground. All these changes, but the
-homepage didn't receive a single update. This caused confusion, as people didn't
-know about the things we built. It was time to do something about that. We've
-now designed and built the homepage from scratch using
-[Gatsby](https://github.com/gatsbyjs/gatsby).
+editor for [React](/framework/react) only anymore, and I think we moved past the
+definition of a playground. All these changes, but the homepage didn't receive a
+single update. This caused confusion, as people didn't know about the things we
+built. It was time to do something about that. We've now designed and built the
+homepage from scratch using [Gatsby](/framework/gatsby).
 [You can see it here](https://codesandbox.io)! A very big thanks to
 [Danny Ruchtie](https://twitter.com/druchtie) for helping us with the design.
 
@@ -92,8 +91,8 @@ One of the biggest differences between the local development server and
 CodeSandbox was the behaviour of `index.html` and the `public` folder.
 CodeSandbox didn't host the files in the `public` folder, which was confusing
 until now. From this update on we do host all files from the `public` (or
-`static` for [Vue](https://github.com/vuejs/vue)) directory. Many exciting
-possibilities arise with this. You can, for example, add
+`static` for [Vue](/framework/vue)) directory. Many exciting possibilities arise
+with this. You can, for example, add
 [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API),
 static images, mock API call responses now. You also get full control of
 `index.html` from now on!

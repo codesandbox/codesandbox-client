@@ -1,30 +1,26 @@
-import { buildWorkerError } from '../utils/worker-error-handler';
+import { ChildHandler } from '../worker-transpiler/child-handler';
+
+const childHandler = new ChildHandler('coffee-worker');
 
 self.importScripts(
   `${process.env.CODESANDBOX_HOST || ''}/static/js/coffeescript.2.3.2.js`
 );
-self.postMessage('ready');
 
-self.addEventListener('message', event => {
-  const { code, path } = event.data;
+async function workerCompile(opts) {
+  const { code, path } = opts;
+  const compiled = self.CoffeeScript.compile(code, {
+    filename: path,
+    sourceFiles: [path],
+    bare: true,
+    literate: false,
+    inlineMap: true,
+    sourceMap: false,
+  });
 
-  try {
-    const compiled = self.CoffeeScript.compile(code, {
-      filename: path,
-      sourceFiles: [path],
-      bare: true,
-      literate: false,
-      inlineMap: true,
-      sourceMap: false,
-    });
-    return self.postMessage({
-      type: 'result',
-      transpiledCode: compiled,
-    });
-  } catch (err) {
-    return self.postMessage({
-      type: 'error',
-      error: buildWorkerError(err),
-    });
-  }
-});
+  return {
+    code: compiled,
+  };
+}
+
+childHandler.registerFunction('compile', workerCompile);
+childHandler.emitReady();

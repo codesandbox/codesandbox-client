@@ -1,7 +1,9 @@
-import { buildWorkerError } from '../utils/worker-error-handler';
+import { ChildHandler } from '../worker-transpiler/child-handler';
 
 // This is a less plugin to resolve paths
 import FileManager from './file-manager';
+
+const childHandler = new ChildHandler('less-worker');
 
 self.less = {
   env: 'development',
@@ -17,50 +19,41 @@ self.window.document = {
   head: { appendChild: () => {}, removeChild: () => {} },
 };
 
+// self.importScripts('https://cdn.jsdelivr.net/npm/less@4.1.1/dist/less.min.js');
 self.importScripts(
   `${process.env.CODESANDBOX_HOST || ''}/static/js/less.min.js`
 );
-
-self.postMessage('ready');
 
 declare var less: {
   render: (code: string) => Promise<string>,
 };
 
-self.addEventListener('message', event => {
-  const { code, path, files } = event.data;
+async function workerCompile(opts) {
+  const { code, path, files } = opts;
 
+  const transpilationDependencies = [];
   const context = {
     addDependency: depPath => {
-      self.postMessage({ type: 'add-transpilation-dependency', path: depPath });
+      transpilationDependencies.push({
+        path: depPath,
+      });
     },
   };
-
-  const filename = path.split('/').pop();
 
   // Remove the linebreaks at the beginning of the file, it confuses less.
   const cleanCode = code.replace(/^\n$/gm, '');
 
-  try {
-    // register a custom importer callback
-    less
-      .render(cleanCode, { filename, plugins: [FileManager(context, files)] })
-      .then(({ css }) =>
-        self.postMessage({
-          type: 'result',
-          transpiledCode: css,
-        })
-      )
-      .catch(err =>
-        self.postMessage({
-          type: 'error',
-          error: buildWorkerError(err),
-        })
-      );
-  } catch (e) {
-    self.postMessage({
-      type: 'error',
-      error: buildWorkerError(e),
-    });
-  }
-});
+  // register a custom importer callback
+  const { css } = await less.render(cleanCode, {
+    filename: path,
+    plugins: [FileManager(context, files)],
+  });
+
+  return {
+    css,
+    transpilationDependencies,
+  };
+}
+
+childHandler.registerFunction('compile', workerCompile);
+childHandler.emitReady();

@@ -1,6 +1,8 @@
 import uniq from 'lodash-es/uniq';
 import * as semver from 'semver';
 
+const VERSIONED_MODULE_RE = /^.+\/\d+\.\d+\.\d+\/.+$/;
+
 export interface ILambdaResponse {
   contents: {
     [path: string]: { content: string };
@@ -89,14 +91,23 @@ function replacePaths(
 }
 
 function replaceDependencyInfo(
-  r: ILambdaResponse,
+  res: ILambdaResponse,
   depDepName: string,
   newDepDep: IDepDepInfo
-) {
-  if (
-    process.env.NODE_ENV === 'development' ||
-    process.env.NODE_ENV === 'test'
-  ) {
+): boolean {
+  // Don't change anything if the module is already part of a sub-folder
+  // in this case pkg.json won't contain the requested version...
+  const pkgJSONPath = `/node_modules/${depDepName}/package.json`;
+  if (!res.contents[pkgJSONPath]) {
+    throw new Error(`Dependency ${depDepName} not found`);
+  }
+
+  const parsedPkgJson = JSON.parse(res.contents[pkgJSONPath].content);
+  if (parsedPkgJson.version !== newDepDep.resolved) {
+    return false;
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line
     console.log(
       'Resolving conflict for ' +
@@ -106,33 +117,39 @@ function replaceDependencyInfo(
     );
   }
 
+  // Remap dependency
   const newPath = `${depDepName}/${newDepDep.resolved}`;
-
   replacePaths(
-    r.contents,
+    res.contents,
     `/node_modules/${depDepName}`,
     `/node_modules/${newPath}`
   );
 
-  r.dependencyDependencies[newPath] = r.dependencyDependencies[depDepName];
-  delete r.dependencyDependencies[depDepName];
+  res.dependencyDependencies[newPath] = res.dependencyDependencies[depDepName];
+  delete res.dependencyDependencies[depDepName];
 
   // eslint-disable-next-line
-  for (const n of Object.keys(r.dependencyDependencies)) {
-    r.dependencyDependencies[n].parents = r.dependencyDependencies[
+  for (const n of Object.keys(res.dependencyDependencies)) {
+    res.dependencyDependencies[n].parents = res.dependencyDependencies[
       n
     ].parents.map(p => (p === depDepName ? newPath : p));
   }
 
-  r.dependencyAliases = r.dependencyAliases || {};
+  res.dependencyAliases = res.dependencyAliases || {};
   newDepDep.parents.forEach(p => {
-    r.dependencyAliases[p] = r.dependencyAliases[p] || {};
-    r.dependencyAliases[p][depDepName] = newPath;
+    res.dependencyAliases[p] = res.dependencyAliases[p] || {};
+    res.dependencyAliases[p][depDepName] = newPath;
   });
-  replacePaths(r.dependencyAliases, depDepName, newPath);
+  replacePaths(res.dependencyAliases, depDepName, newPath);
+
+  return true;
 }
 
 const intersects = (v1: string, v2: string) => {
+  if (v1 === v2) {
+    return true;
+  }
+
   try {
     return semver.intersects(v1, v2);
   } catch (e) {
@@ -163,23 +180,29 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
         d => d.name === depDepName
       );
 
-      if (
-        rootDependency &&
-        !intersects(rootDependency.version, newDepDep.semver) &&
-        // If the resolved or semver is the same we don't have to actually replace dependency info
-        rootDependency.version !== newDepDep.resolved &&
-        rootDependency.version !== newDepDep.semver &&
-        rootDependency.name !== r.dependency.name // and this dependency doesn't require an older version of itself
-      ) {
-        // If a root dependency is in conflict with a child dependency, we always
-        // go for the root dependency
-        replaceDependencyInfo(r, depDepName, newDepDep);
-
-        // Start from the beginning, to make sure everything is correct
-        i = -1;
+      if (rootDependency) {
+        // packages that require themselves?
+        if (r.dependency.name !== depDepName) {
+          if (!intersects(rootDependency.version, newDepDep.semver)) {
+            // If a root dependency is in conflict with a child dependency, we always
+            // go for the root dependency
+            if (replaceDependencyInfo(r, depDepName, newDepDep)) {
+              // Start from the beginning, to make sure everything is correct
+              i = -1;
+            }
+          } else {
+            // Remove the contents so we don't overwrite the root version's content
+            const pathPrefix = `/node_modules/${depDepName}/`;
+            Object.keys(r.contents).forEach(p => {
+              if (p.startsWith(pathPrefix) && !VERSIONED_MODULE_RE.test(p)) {
+                delete r.contents[p];
+              }
+            });
+          }
+        }
+        // TODO: Also remove contents for conflicts in transient dependencies?
       } else if (response.dependencyDependencies[depDepName]) {
         const exDepDep = response.dependencyDependencies[depDepName];
-
         // Determine which version is newer, needed for some checks later.
         const [newerVersionDepDep, olderVersionDepDep] = semver.gt(
           newDepDep.resolved,
@@ -201,8 +224,7 @@ export function mergeDependencies(responses: ILambdaResponse[]) {
             ...exDepDep.parents,
             ...newDepDep.parents,
           ]);
-        } else {
-          replaceDependencyInfo(r, depDepName, newDepDep);
+        } else if (replaceDependencyInfo(r, depDepName, newDepDep)) {
           // Start from the beginning, to make sure everything is correct
           i = -1;
         }

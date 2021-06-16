@@ -2,8 +2,8 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
     <Identity Language="en-US" Id="codesandbox-theme" Version="0.0.1" Publisher="ngryman"/>
-    <DisplayName>Codesandbox Theme</DisplayName>
-    <Description xml:space="preserve">Codesandbox theme for VSCode.</Description>
+    <DisplayName>CodeSandbox Theme</DisplayName>
+    <Description xml:space="preserve">CodeSandbox theme for VSCode.</Description>
     <Tags>theme,color-theme</Tags>
     <Categories>Themes</Categories>
     <GalleryFlags>Public</GalleryFlags>

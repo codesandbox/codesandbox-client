@@ -14,6 +14,7 @@ import {
   SubscriptionInterval,
   SubscriptionOrigin,
 } from 'app/graphql/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { plans } from '../plans';
 
 const prettyPermissions = {
@@ -136,6 +137,20 @@ export const WorkspacePlanSelection: React.FC<{
       personalWorkspaceId,
       getUserAuthorization,
     ]
+  );
+
+  React.useEffect(
+    function trackingPlanChoice() {
+      track('Pro - Set billing interval', { billingInterval });
+    },
+    [billingInterval]
+  );
+
+  React.useEffect(
+    function trackingWorkspace() {
+      track('Pro - Change Workspace');
+    },
+    [activeWorkspace]
   );
 
   if (!activeTeam || !dashboard.teams.length || !selectedPlan) return null;

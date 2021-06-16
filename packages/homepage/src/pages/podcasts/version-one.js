@@ -18,6 +18,7 @@ import {
 } from './_elements';
 
 import version1 from '../../assets/images/podcasts/version1.jpg';
+import socialCover from '../../assets/images/podcasts/versionone-cover.png';
 import allPodcasts from '../../../content/podcasts/info';
 import PodcastLinks from '../../components/PodcastLinks';
 
@@ -33,11 +34,7 @@ const VersionOne = ({
       <TitleAndMetaTags
         description={info.description}
         title="Version One - CodeSandbox"
-        image={version1}
-        meta={[
-          { name: 'robots', content: 'noindex' },
-          { name: 'googlebot', content: 'noindex' },
-        ]}
+        image={socialCover}
       />
       <Header>
         <img
@@ -122,7 +119,7 @@ export const query = graphql`
   {
     allMarkdownRemark(
       filter: { fileAbsolutePath: { regex: "/podcasts/version-one/" } }
-      sort: { fields: id, order: DESC }
+      sort: { fields: frontmatter___episodeNumber, order: DESC }
     ) {
       edges {
         node {

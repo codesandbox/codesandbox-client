@@ -19,18 +19,16 @@ on a server, which allows you to work on **any JavaScript project that works
 locally**.
 
 Want to try a new [GraphQL](https://graphql.org) API server? That's possible!
-Want to quickly add a new post to your
-[Gatsby](https://github.com/gatsbyjs/gatsby) blog? You can do it from
-CodeSandbox with its [GitHub](https://github.com) integration.
+Want to quickly add a new post to your [Gatsby](/framework/gatsby) blog? You can
+do it from CodeSandbox with its [GitHub](https://github.com) integration.
 
 Along with this update we'd like to announce new templates running on this
 system. Everyone can now work with **[Next.js](https://github.com/zeit/next.js),
-Gatsby, [Nuxt.js](https://github.com/nuxt/nuxt.js),
+Gatsby, [Nuxt.js](/framework/nuxt),
 [Apollo Server](https://github.com/apollographql/apollo-server),
-[Node](https://github.com/nodejs/node) and
-[ReasonML](https://github.com/facebook/reason)** right from within CodeSandbox!
-We give first-class support for these templates, but you will still be able to
-run anything you want on CodeSandbox. You can
+[Node](/software/node) and [ReasonML](https://github.com/facebook/reason)**
+right from within CodeSandbox! We give first-class support for these templates,
+but you will still be able to run anything you want on CodeSandbox. You can
 [create a new project here](https://codesandbox.io/s).
 
 ## Run Any Project
@@ -124,9 +122,9 @@ We want to thank [**Bogdan Luca**](https://twitter.com/lucabogdan) for building
 the _whole_ infrastructure for CodeSandbox Containers, this is an incredible
 undertaking and he pulled it off.
 
-We also want to thank [**Gatsby**](https://github.com/gatsbyjs/gatsby) for
-inspiring us to start this and for being both our counselor and funder of this
-project. [Kyle Matthews](https://twitter.com/kylemathews) and
+We also want to thank [**Gatsby**](/framework/gatsby) for inspiring us to start
+this and for being both our counselor and funder of this project.
+[Kyle Matthews](https://twitter.com/kylemathews) and
 [Sam Bhagwat](https://twitter.com/calcsam) were extremely supportive and helped
 us think everything through while also relieving us of other worries.
 

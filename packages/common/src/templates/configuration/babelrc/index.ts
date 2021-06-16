@@ -93,9 +93,37 @@ const config: ConfigurationFile = {
 
       if (isV7) {
         return JSON.stringify({
-          presets: ['@vue/app'],
+          presets: [
+            [
+              'env',
+              {
+                modules: false,
+                targets: {
+                  browsers: ['>0.25%', 'not ie 11', 'not op_mini all'],
+                },
+              },
+            ],
+          ],
+          plugins: [
+            '@vue/babel-plugin-jsx',
+            '@babel/plugin-syntax-dynamic-import',
+            [
+              '@babel/plugin-proposal-decorators',
+              {
+                decoratorsBeforeExport: false,
+                legacy: false,
+              },
+            ],
+            [
+              '@babel/plugin-proposal-class-properties',
+              {
+                loose: false,
+              },
+            ],
+          ],
         });
       }
+
       return JSON.stringify(
         {
           presets: [

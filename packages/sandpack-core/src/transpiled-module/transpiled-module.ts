@@ -96,7 +96,7 @@ export type LoaderContext = {
       isAbsolute?: boolean;
       isEntry?: boolean;
     }
-  ) => void;
+  ) => Promise<void>;
   resolveTranspiledModule: (
     depPath: string,
     options?: {
@@ -117,7 +117,7 @@ export type LoaderContext = {
       isAbsolute?: boolean;
       isEntry?: boolean;
     }
-  ) => void;
+  ) => Promise<void>;
   addDependenciesInDirectory: (
     depPath: string,
     options?: {
@@ -365,8 +365,7 @@ export class TranspiledModule {
                 const tModule = await manager.resolveTranspiledModule(
                   depPath,
                   options && options.isAbsolute ? '/' : this.module.path,
-                  undefined,
-                  true
+                  undefined
                 );
 
                 if (isTranspilationDep) {
@@ -480,12 +479,10 @@ export class TranspiledModule {
       // Add an explicit transpilation dependency, this is needed for loaders
       // that include the source of another file by themselves, we need to
       // force transpilation to rebuild the file
-      addTranspilationDependency: (depPath: string, options) => {
-        this.addDependency(manager, depPath, options, true);
-      },
-      addDependency: async (depPath: string, options = {}) => {
-        this.addDependency(manager, depPath, options);
-      },
+      addTranspilationDependency: (depPath: string, options) =>
+        this.addDependency(manager, depPath, options, true),
+      addDependency: (depPath: string, options = {}) =>
+        this.addDependency(manager, depPath, options),
       addDependenciesInDirectory: (folderPath: string, options = {}) => {
         const tModules = manager.resolveTranspiledModulesInDirectory(
           folderPath,
@@ -502,7 +499,7 @@ export class TranspiledModule {
         });
       },
       resolveTranspiledModule: (depPath: string, options = {}) =>
-        manager.resolveTranspiledModule(
+        manager.resolveTranspiledModuleSync(
           depPath,
           options.isAbsolute ? '/' : this.module.path,
           options.ignoredExtensions
@@ -796,7 +793,11 @@ export class TranspiledModule {
         return {};
       }
 
-      if (this.module.path.startsWith('/node_modules')) {
+      // TODO: Never return untranspiled modules, as these can always have side-effects...
+      if (
+        this.module.path.startsWith('/node_modules') &&
+        !this.module.path.endsWith('.vue')
+      ) {
         if (process.env.NODE_ENV === 'development') {
           console.warn(
             `[WARN] Sandpack: loading an untranspiled module: ${this.module.path}`
@@ -826,7 +827,7 @@ export class TranspiledModule {
         // this state is to just hard reload everything.
         manager.clearCache();
 
-        throw new Error(`${this.module.path} hasn't been transpiled yet.`);
+        throw new Error(`${this.getId()} hasn't been transpiled yet.`);
       }
     }
 
@@ -998,7 +999,10 @@ export class TranspiledModule {
                 throw new Error('Module has no filename');
               }
 
-              const m = manager.resolveModule(toPath, module.filename);
+              const m = manager.resolveModule({
+                path: toPath,
+                parentPath: module.filename,
+              });
               return m.path;
             }
 
@@ -1013,7 +1017,7 @@ export class TranspiledModule {
           return resolveDependency(path);
         }
 
-        const requiredTranspiledModule = manager.resolveTranspiledModule(
+        const requiredTranspiledModule = manager.resolveTranspiledModuleSync(
           path,
           localModule.path
         );
@@ -1033,7 +1037,10 @@ export class TranspiledModule {
 
       // @ts-ignore
       require.resolve = function resolve(path: string) {
-        const foundModule = manager.resolveModule(path, localModule.path);
+        const foundModule = manager.resolveModule({
+          path,
+          parentPath: localModule.path,
+        });
 
         return foundModule.path;
       };

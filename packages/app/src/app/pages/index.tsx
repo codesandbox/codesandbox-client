@@ -60,6 +60,13 @@ const NotFound = Loadable(() =>
     })
   )
 );
+const Phew = Loadable(() =>
+  import(/* webpackChunkName: 'phishing-phew' */ './common/Phew').then(
+    module => ({
+      default: module.Phew,
+    })
+  )
+);
 const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
     default: module.Profile,
@@ -73,6 +80,12 @@ const Search = Loadable(() =>
 const CLI = Loadable(() =>
   import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
     default: module.CLI,
+  }))
+);
+
+const Client = Loadable(() =>
+  import(/* webpackChunkName: 'page-client' */ './Client').then(module => ({
+    default: module.Client,
   }))
 );
 
@@ -163,6 +176,7 @@ const RoutesComponent: React.FC = () => {
             />
             <Route path="/invite/:token" component={TeamInvitation} />
 
+            <Route path="/phew" component={Phew} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
@@ -178,6 +192,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
+            <Route path="/client/login" component={Client} />
             <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (

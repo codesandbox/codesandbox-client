@@ -2,12 +2,15 @@ import fetch from 'fetch-vcr';
 
 // @ts-ignore
 window.fetch = fetch;
-describe('resolve-dependency', () => {
+
+describe.skip('resolve-dependency', () => {
+  // eslint-disable-next-line global-require
   const resolveDependencyInfo: typeof import('./resolve-dependency').resolveDependencyInfo = require('./resolve-dependency')
     .resolveDependencyInfo;
 
   jest.mock('./fetch-protocols/tar', () => ({
     TarFetcher: class A {},
+    isTarDependency: () => true,
   }));
 
   it('marks the original dependency requester as parent on subdependencies', async () => {

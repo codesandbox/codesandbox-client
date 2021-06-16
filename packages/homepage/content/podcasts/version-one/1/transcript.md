@@ -1,7 +1,7 @@
 Matt Biilmann: There was a lot of grinding on finding the right product market
 fit, the right vision and long, long, long nights of coding.
 
-Maurice Cherry: This is Version One, a new podcast from Code Sandbox about the
+Maurice Cherry: This is Version One, a new podcast from CodeSandbox about the
 product development journey of some of the web's most talked about tools and
 resources from the makers behind them.
 
@@ -257,9 +257,9 @@ been a really exciting journey with a lot of big milestones along the way.
 
 Maurice Cherry: Thank you so much for listening to the first episode of Version
 One. For more information about the show, visit us at codesandbox.io/versionone.
-That's all one word. Or you can send us a tweet at Code Sandbox. This podcast is
+That's all one word. Or you can send us a tweet at CodeSandbox. This podcast is
 produced by Maurice Cherry, with engineering and editing from Resonate
 Recordings. The song you're listening to now, that's I Don't Mind from Particle
 House, courtesy of Epidemic Sound. Special thanks to Matt Biilmann and Kelly
-Tenn from Netlify. And of course the entire team at Code Sandbox. I'm Maurice
+Tenn from Netlify. And of course the entire team at CodeSandbox. I'm Maurice
 Cherry, and this is Version One. See you next time.

@@ -141,10 +141,9 @@ those configurations.
 
 A much requested feature was custom [Babel](https://github.com/babel/babel)
 plugins support, not only the official ones, but also community plugins. We now
-allow the configuration of `.babelrc` in the
-[Preact](https://github.com/preactjs/preact) template and will soon enable this
-in [Vue](https://github.com/vuejs/vue) and our upcoming '`Custom`' sandbox. A
-cool addition to this is that we support the
+allow the configuration of `.babelrc` in the [Preact](/framework/preact)
+template and will soon enable this in [Vue](/framework/vue) and our upcoming
+'`Custom`' sandbox. A cool addition to this is that we support the
 [`fs`](https://nodejs.org/api/fs.html#fs_file_system) interface. This is
 especially useful for Babel plugins like
 [`babel-plugin-preval`](https://github.com/kentcdodds/babel-plugin-preval). Go
@@ -172,9 +171,9 @@ more documentation about `sandbox.config.json`
 
 ![](./images/11.png)
 
-Official [Angular](https://github.com/angular/angular) support was an often
-requested feature from day one. We now officially support Angular templates,
-including the corresponding `angular-cli.json` file that comes with it!
+Official [Angular](/framework/angular) support was an often requested feature
+from day one. We now officially support Angular templates, including the
+corresponding `angular-cli.json` file that comes with it!
 
 Give it a try here:
 
