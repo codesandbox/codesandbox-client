@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { Stack, Text, Button } from '@codesandbox/components';
-import { useActions, useAppState } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 export const SignInBanner = () => {
   const { signInClicked } = useActions();
-  const state = useAppState();
   const [show, setShow] = useState(false);
 
   const experimentPromise = useExperimentResult('editor-signin-banner-trigger');
@@ -35,16 +34,20 @@ export const SignInBanner = () => {
          * B
          */
         experiment === ExperimentValues.B &&
-        state.editor.changeCounter === 3
+        bannerTriggerOnce === false
       ) {
-        setShow(true);
+        timer = window.setTimeout(() => {
+          setShow(true);
+          setBannerTriggerOnce(true);
+          // 3 minutes
+        }, 180000);
       }
     });
 
     return () => {
       clearTimeout(timer);
     };
-  }, [state.editor.changeCounter, experimentPromise, bannerTriggerOnce]);
+  }, [experimentPromise, bannerTriggerOnce]);
 
   return (
     <AnimatePresence>

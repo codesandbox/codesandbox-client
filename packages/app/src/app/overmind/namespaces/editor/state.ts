@@ -28,7 +28,6 @@ import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
 type State = {
-  changeCounter: number;
   /**
    * Never use this! It doesn't reflect the id of the current sandbox. Use editor.currentSandbox.id instead.
    */
@@ -91,7 +90,6 @@ type State = {
 };
 
 export const state: State = {
-  changeCounter: 0,
   hasLoadedInitialModule: false,
   sandboxes: {},
   currentId: null,
