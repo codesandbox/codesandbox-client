@@ -141,6 +141,7 @@ export const CommunitySandbox = ({
       <Component
         {...sandboxProps}
         {...(interactive ? interactionProps : nonInteractionProps)}
+        interactive={interactive}
         isScrolling={isScrolling}
       />
     </div>

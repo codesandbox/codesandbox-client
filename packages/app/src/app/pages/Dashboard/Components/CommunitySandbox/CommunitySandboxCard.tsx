@@ -19,7 +19,12 @@ type SandboxTitleProps = {
 
 const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
   ({ title, onContextMenu, stoppedScrolling }) => (
-    <Stack justify="space-between" align="center" marginLeft={4}>
+    <Stack
+      justify="space-between"
+      align="center"
+      marginLeft={4}
+      css={css({ width: '100%' })}
+    >
       <Text size={3} weight="medium">
         {title}
       </Text>
@@ -133,6 +138,7 @@ export const SandboxCard = ({
   onDoubleClick,
   onContextMenu,
   onLikeToggle,
+  interactive = true,
   ...props
 }: CommunitySandboxItemComponentProps) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
@@ -166,18 +172,40 @@ export const SandboxCard = ({
         },
       })}
     >
-      <Thumbnail TemplateIcon={TemplateIcon} screenshotUrl={screenshotUrl} />
+      {interactive ? (
+        <Thumbnail TemplateIcon={TemplateIcon} screenshotUrl={screenshotUrl} />
+      ) : (
+        <Stack css={css({ cursor: 'pointer' })} onClick={onDoubleClick}>
+          <Thumbnail
+            TemplateIcon={TemplateIcon}
+            screenshotUrl={screenshotUrl}
+          />
+        </Stack>
+      )}
 
       <Stack
         direction="vertical"
         justify="space-between"
         css={css({ flexGrow: 1, paddingY: 4 })}
       >
-        <SandboxTitle
-          title={title}
-          onContextMenu={onContextMenu}
-          stoppedScrolling={stoppedScrolling}
-        />
+        {interactive ? (
+          <SandboxTitle
+            title={title}
+            onContextMenu={onContextMenu}
+            stoppedScrolling={stoppedScrolling}
+          />
+        ) : (
+          <Stack
+            css={css({ cursor: 'pointer', width: '100%' })}
+            onClick={onDoubleClick}
+          >
+            <SandboxTitle
+              title={title}
+              onContextMenu={onContextMenu}
+              stoppedScrolling={stoppedScrolling}
+            />
+          </Stack>
+        )}
         <Stack
           justify="space-between"
           align="center"
@@ -206,6 +234,7 @@ const Thumbnail = ({ TemplateIcon, screenshotUrl }) => (
       alignItems: 'center',
       justifyContent: 'center',
       height: '144px',
+      width: '100%',
       backgroundColor: '#242424',
       backgroundSize: 'cover',
       backgroundPosition: 'center center',
