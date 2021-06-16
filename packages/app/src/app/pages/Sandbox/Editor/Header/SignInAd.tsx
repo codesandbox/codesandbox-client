@@ -12,17 +12,28 @@ export const SignInBanner = () => {
   const [show, setShow] = useState(false);
 
   const experimentPromise = useExperimentResult('editor-signin-banner-trigger');
+  const [bannerTriggerOnce, setBannerTriggerOnce] = useState(false);
 
   useEffect(() => {
-    let timer;
+    let timer: number | undefined;
 
+    /**
+     * Experiment
+     */
     experimentPromise.then(experiment => {
-      if (experiment === ExperimentValues.A) {
+      /**
+       * A
+       */
+      if (experiment === ExperimentValues.A && bannerTriggerOnce === false) {
         timer = window.setTimeout(() => {
           setShow(true);
+          setBannerTriggerOnce(true);
           // 3 minutes
         }, 180000);
       } else if (
+        /**
+         * B
+         */
         experiment === ExperimentValues.B &&
         state.editor.changeCounter === 3
       ) {
@@ -33,7 +44,7 @@ export const SignInBanner = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [state.editor.changeCounter, experimentPromise]);
+  }, [state.editor.changeCounter, experimentPromise, bannerTriggerOnce]);
 
   return (
     <AnimatePresence>

@@ -1,14 +1,18 @@
-import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
+import {
+  DNT,
+  trackPageview,
+  identify,
+} from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { Toasts } from '@codesandbox/notifications';
-import { useAppState, useActions, useEffects } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Loadable } from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbox/CreateSandboxModal';
-import { useInitializeExperimentStore } from '@codesandbox/ab';
+import { initializeExperimentStore } from '@codesandbox/ab';
 import {
   getExperimentUserId,
   AB_TESTING_URL,
@@ -137,20 +141,19 @@ const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
 
+initializeExperimentStore(
+  AB_TESTING_URL,
+  getExperimentUserId,
+  async (key, value) => {
+    await identify(key, value);
+  }
+);
+
 const RoutesComponent: React.FC = () => {
   const { appUnmounted } = useActions();
   const { modals, activeTeamInfo } = useAppState();
-  const { analytics } = useEffects();
 
   useEffect(() => () => appUnmounted(), [appUnmounted]);
-
-  useInitializeExperimentStore(
-    AB_TESTING_URL,
-    getExperimentUserId,
-    async (key, value) => {
-      await analytics.identify(key, value);
-    }
-  );
 
   return (
     <Container>
