@@ -4,17 +4,36 @@ import { Stack, Text, Button } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 export const SignInBanner = () => {
   const { signInClicked } = useActions();
   const state = useAppState();
   const [show, setShow] = useState(false);
 
+  const experimentPromise = useExperimentResult('editor-signin-banner-trigger');
+
   useEffect(() => {
-    if (state.editor.changeCounter >= 3) {
-      setShow(true);
-    }
-  }, [state.editor.changeCounter]);
+    let timer;
+
+    experimentPromise.then(experiment => {
+      if (experiment === ExperimentValues.A) {
+        timer = window.setTimeout(() => {
+          setShow(true);
+          // 3 minutes
+        }, 180000);
+      } else if (
+        experiment === ExperimentValues.B &&
+        state.editor.changeCounter === 3
+      ) {
+        setShow(true);
+      }
+    });
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [state.editor.changeCounter, experimentPromise]);
 
   return (
     <AnimatePresence>
