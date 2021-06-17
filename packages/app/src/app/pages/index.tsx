@@ -2,6 +2,7 @@ import {
   DNT,
   trackPageview,
   identify,
+  trackPageLoad,
 } from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -43,8 +44,8 @@ const DuplicateAccount = Loadable(() =>
 
 const routeDebugger = _debug('cs:app:router');
 
-const SignInAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
+const SignInAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
 );
 const SignIn = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './SignIn').then(module => ({
@@ -56,11 +57,11 @@ const Live = Loadable(() =>
     default: module.Live,
   }))
 );
-const VercelSignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
+const VercelSignIn = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
 );
-const PreviewAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
+const PreviewAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
@@ -171,6 +172,11 @@ const RoutesComponent: React.FC = () => {
               trackPageview();
             }
           }
+
+          window.onload = () => {
+            console.log('Onload');
+            trackPageLoad();
+          };
           return null;
         }}
       />

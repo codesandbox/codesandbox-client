@@ -53,11 +53,7 @@ export async function setAnonymousId() {
     let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
 
     if (!anonymousUid) {
-      anonymousUid = String(
-        Math.random()
-          .toString(36)
-          .substring(2)
-      );
+      anonymousUid = String(Math.random().toString(36).substring(2));
 
       localStorage.setItem(ANONYMOUS_UID_KEY, anonymousUid);
     }
@@ -93,6 +89,17 @@ export function trackPageview() {
     amplitude.track('pageview', data);
     vero.trackPageview();
     google.trackPageView();
+  }
+}
+
+export function trackPageLoad() {
+  if (!DO_NOT_TRACK_ENABLED) {
+    const data = {
+      version: VERSION,
+      path: location.pathname + location.search,
+    };
+
+    amplitude.track('pageload', data);
   }
 }
 
