@@ -1,4 +1,9 @@
-const { trackPageview } = require('@codesandbox/common/lib/utils/analytics');
+const { initializeExperimentStore } = require('@codesandbox/ab');
+const {
+  AB_TESTING_URL,
+  getExperimentUserId,
+} = require('@codesandbox/common/lib/config/env');
+const analytics = require('@codesandbox/common/lib/utils/analytics');
 
 exports.onClientEntry = () => {
   (function addDocSearch() {
@@ -9,8 +14,19 @@ exports.onClientEntry = () => {
     link.setAttribute(`href`, path);
     document.head.appendChild(link);
   })();
+
+  /**
+   * AB framework
+   */
+  initializeExperimentStore(
+    AB_TESTING_URL,
+    getExperimentUserId,
+    async (key, value) => {
+      await analytics.identify(key, value);
+    }
+  );
 };
 
 exports.onRouteUpdate = () => {
-  trackPageview();
+  analytics.trackPageview();
 };

@@ -28,6 +28,7 @@
   ],
   "dependencies": {
     "@babel/preset-flow": "^7.0.0",
+    "@codesandbox/ab": "^1.0.4",
     "@codesandbox/common": "^1.0.8",
     "@juggle/resize-observer": "^2.5.0",
     "@react-hook/mouse-position": "^1.0.3",

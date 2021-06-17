@@ -78,7 +78,10 @@ export const persistCursorToUrl = debounce(
     // and all the browsers do too.
     if (newUrl) {
       effects.router.replace(
-        newUrl.toString().replace(/%2F/g, '/').replace('%3A', ':')
+        newUrl
+          .toString()
+          .replace(/%2F/g, '/')
+          .replace('%3A', ':')
       );
     }
   },
