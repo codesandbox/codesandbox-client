@@ -86,6 +86,7 @@ interface SelectionProviderProps {
   createNewSandbox?: (() => void) | null;
   activeTeamId: string | null;
   page: PageTypes;
+  interactive?: boolean;
 }
 
 export const SelectionProvider: React.FC<SelectionProviderProps> = ({
@@ -95,6 +96,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   activeTeamId,
   page,
   children,
+  interactive = true,
 }) => {
   const possibleItems = (items || []).filter(
     item =>
@@ -604,10 +606,6 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     >
       <Element
         id="selection-container"
-        onKeyDown={onContainerKeyDown}
-        onMouseDown={onContainerMouseDown}
-        onMouseMove={onContainerMouseMove}
-        onMouseUp={onContainerMouseUp}
         onContextMenu={onContainerContextMenu}
         css={css({
           paddingTop: 10,
@@ -615,6 +613,14 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           width: '100%',
           height: '100%',
         })}
+        {...(interactive
+          ? {
+              onKeyDown: onContainerKeyDown,
+              onMouseDown: onContainerMouseDown,
+              onMouseMove: onContainerMouseMove,
+              onMouseUp: onContainerMouseUp,
+            }
+          : {})}
       >
         <SkipNav.Content
           tabIndex={0}

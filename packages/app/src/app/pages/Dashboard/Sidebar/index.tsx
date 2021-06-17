@@ -32,9 +32,6 @@ import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH, NEW_FOLDER_ID } from './constants';
 import { DragItemType, useDrop } from '../utils/dnd';
 
-/** poor man's feature flag - to ship the unfinished version */
-const SHOW_DISCOVER = localStorage.SHOW_DISCOVER;
-
 const SidebarContext = React.createContext(null);
 
 interface SidebarProps {
@@ -183,14 +180,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="box"
             style={{ marginTop: 1 }}
           />
-          {SHOW_DISCOVER && (
-            <RowItem
-              name="Discover"
-              page="discover"
-              path={dashboardUrls.discover(activeTeam)}
-              icon="discover"
-            />
-          )}
+          <RowItem
+            name="Discover"
+            page="discover"
+            path={dashboardUrls.discover(activeTeam)}
+            icon="discover"
+          />
           <RowItem
             name="My Drafts"
             page="drafts"
@@ -559,7 +554,10 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     });
   } else {
     subFolders = folders.filter(folder => {
-      const parentPath = folder.path.split('/').slice(0, -1).join('/');
+      const parentPath = folder.path
+        .split('/')
+        .slice(0, -1)
+        .join('/');
 
       return parentPath === folderPath;
     });
