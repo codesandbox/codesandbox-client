@@ -21,7 +21,7 @@ sandboxes have been hidden without too much attention. Until now, the only way
 to find these interesting sandboxes was by accidentally finding the right tweet.
 That's why we started to work on new ways to highlight the great sandboxes that
 are being created. And today, we're excited to announce our latest work on this:
-the Discover page!
+the [Discover page](https://codesandbox.io/dashboard/discover)!
 
 ### The Discover Page
 
@@ -37,13 +37,10 @@ working on.
 
 ### More to come
 
-This is our first iteration of the Discover page. In the future, we'll make it
-possible for you to customise and create your own collections that you can
-share. With this, we're making sharing a core part of CodeSandbox
-
-This is our first iteration of the Discover page. In the future, we'll make it
-possible for you to customise and create your own collections that you can
-share. With this, we're making sharing a core part of CodeSandbox
+This is our first iteration of the
+[Discover page](https://codesandbox.io/dashboard/discover). In the future, we'll
+make it possible for you to customise and create your own collections that you
+can share. With this, we're making sharing a core part of CodeSandbox
 
 We'll update this page regularly, so that every time you visit, you'll find some
 new interesting sandboxes on there. We could definitely use help with finding
