@@ -31,8 +31,6 @@ found on CodeSandbox, and organised these sandboxes into collections. This page
 is a great way to find inspiration or just to look at what others are working
 on.
 
-![Discovery page](./images/body.png)
-
 With this, we want to make it extremely easy for people to discover and share
 work from each-other, and encourage more people to share what they've been
 working on.
