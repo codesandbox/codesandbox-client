@@ -6,5 +6,5 @@ export const banner = {
   title: 'Welcome Discover Page',
   subtitle: 'Search sandboxes from the community right on your dashboard',
   image: '/static/img/discover-banner-search.png',
-  link: 'https://codesandbox.io/',
+  link: 'https://codesandbox.io/post/discover-announcement',
 };
