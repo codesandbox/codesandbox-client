@@ -184,8 +184,6 @@ export const initializeModuleState = (
       moduleInfo,
     });
   });
-  // TODO: enable once we know exactly when we want to recover
-  // actions.files.internal.recoverFiles();
   actions.editor.internal.updatePreviewCode();
 };
 
