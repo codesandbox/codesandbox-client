@@ -115,10 +115,14 @@ export const WorkspaceSettings = () => {
     event.preventDefault();
     setInviteLoading(true);
 
+    const inviteLink = teamInviteLink(team.inviteToken);
+
     await actions.dashboard.inviteToTeam({
       value: inviteValue,
       authorization: newMemberAuthorization,
       confirm: confirmNewMemberAddition,
+      triggerPlace: 'settings',
+      inviteLink,
     });
     setInviteLoading(false);
   };
@@ -138,8 +142,13 @@ export const WorkspaceSettings = () => {
       if (!confirmed) return;
     }
 
-    actions.track({ name: 'Dashboard - Copied Team Invite URL', data: {} });
-    effects.browser.copyToClipboard(teamInviteLink(team.inviteToken));
+    const inviteLink = teamInviteLink(team.inviteToken);
+
+    actions.track({
+      name: 'Dashboard - Copied Team Invite URL',
+      data: { place: 'settings', inviteLink },
+    });
+    effects.browser.copyToClipboard(inviteLink);
     effects.notificationToast.success('Copied Team Invite URL!');
   };
 
