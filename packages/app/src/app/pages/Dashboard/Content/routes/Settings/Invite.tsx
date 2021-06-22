@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
@@ -26,7 +26,10 @@ import { Card } from './components';
 const CARD_WIDTH = 528;
 
 export const Invite = () => {
-  const { copyToClipboard } = useEffects().browser;
+  const {
+    browser: { copyToClipboard },
+    analytics,
+  } = useEffects();
   const actions = useActions();
   const { activeTeam, activeTeamInfo: team } = useAppState();
   const history = useHistory();
@@ -52,6 +55,10 @@ export const Invite = () => {
     await actions.dashboard.inviteToTeam({ value: inviteValue });
     setLoading(false);
   };
+
+  useEffect(() => {
+    analytics.identify('inviteLink', inviteLink);
+  }, [analytics, inviteLink]);
 
   if (!team) return null;
 
