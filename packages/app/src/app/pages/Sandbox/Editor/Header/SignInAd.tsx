@@ -11,7 +11,9 @@ export const SignInBanner = () => {
   const { signInClicked } = useActions();
   const [show, setShow] = useState(false);
 
-  const experimentPromise = useExperimentResult('editor-signin-banner-trigger');
+  const experimentPromise = useExperimentResult(
+    'editor-signin-banner-trigger-real'
+  );
   const [bannerTriggerOnce, setBannerTriggerOnce] = useState(false);
 
   useEffect(() => {
