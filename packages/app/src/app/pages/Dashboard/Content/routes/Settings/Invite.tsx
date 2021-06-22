@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import {
   Element,
   Stack,
@@ -29,6 +29,7 @@ export const Invite = () => {
   const { copyToClipboard } = useEffects().browser;
   const actions = useActions();
   const { activeTeam, activeTeamInfo: team } = useAppState();
+  const history = useHistory();
 
   const inviteLink = team && teamInviteLink(team.inviteToken);
 
@@ -37,6 +38,12 @@ export const Invite = () => {
   const copyLinkTimeoutRef = React.useRef<number>();
 
   const [loading, setLoading] = React.useState(false);
+
+  /**
+   * Comes from "Invite members" links on the Header
+   * so this page should have a different behavior
+   */
+  const comesFromHeaderLink = /from-header/.test(history.location.search);
 
   const onSubmit = async event => {
     event.preventDefault();
@@ -202,7 +209,7 @@ export const Invite = () => {
                 )
               )}
             </List>
-            {hasAddedUser && (
+            {!comesFromHeaderLink && hasAddedUser && (
               <>
                 <hr
                   css={css({
@@ -221,15 +228,17 @@ export const Invite = () => {
               </>
             )}
           </Card>
-          <Link
-            as={RouterLink}
-            to={dashboardUrls.settings(activeTeam)}
-            variant="muted"
-            size={3}
-            align="center"
-          >
-            Skip for now
-          </Link>
+          {!comesFromHeaderLink && (
+            <Link
+              as={RouterLink}
+              to={dashboardUrls.settings(activeTeam)}
+              variant="muted"
+              size={3}
+              align="center"
+            >
+              Skip for now
+            </Link>
+          )}
         </Stack>
       </Element>
     </>
