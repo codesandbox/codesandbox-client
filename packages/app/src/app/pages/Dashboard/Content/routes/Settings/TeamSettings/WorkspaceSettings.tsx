@@ -119,6 +119,7 @@ export const WorkspaceSettings = () => {
       value: inviteValue,
       authorization: newMemberAuthorization,
       confirm: confirmNewMemberAddition,
+      triggerPlace: 'settings',
     });
     setInviteLoading(false);
   };
@@ -138,7 +139,10 @@ export const WorkspaceSettings = () => {
       if (!confirmed) return;
     }
 
-    actions.track({ name: 'Dashboard - Copied Team Invite URL', data: {} });
+    actions.track({
+      name: 'Dashboard - Copied Team Invite URL',
+      data: { place: 'settings' },
+    });
     effects.browser.copyToClipboard(teamInviteLink(team.inviteToken));
     effects.notificationToast.success('Copied Team Invite URL!');
   };

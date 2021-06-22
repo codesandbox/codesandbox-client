@@ -52,7 +52,10 @@ export const Invite = () => {
     event.preventDefault();
     setLoading(true);
     setInviteValue('');
-    await actions.dashboard.inviteToTeam({ value: inviteValue });
+    await actions.dashboard.inviteToTeam({
+      value: inviteValue,
+      triggerPlace: 'invite-modal',
+    });
     setLoading(false);
   };
 
@@ -72,6 +75,11 @@ export const Invite = () => {
     copyLinkTimeoutRef.current = window.setTimeout(() => {
       setLinkCopied(false);
     }, 1500);
+
+    actions.track({
+      name: 'Dashboard - Copied Team Invite URL',
+      data: { place: 'invite-modal' },
+    });
   };
 
   const hasAddedUser = team.users.length + team.invitees.length > 1;
