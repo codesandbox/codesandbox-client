@@ -2,7 +2,7 @@ import React from 'react';
 import { SVGIcon, ISVGIconProps } from './SVGIcon';
 
 export const AdonisIcon: React.FC<ISVGIconProps> = ({ ...props }) => (
-  <SVGIcon {...props} viewBox="0 0 36 36">
+  <SVGIcon {...props} viewBox="0 0 33 33">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
