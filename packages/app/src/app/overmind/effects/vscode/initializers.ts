@@ -96,7 +96,7 @@ export function initializeSettings() {
 
       settingsChanged = changeIfNeeded(
         'workbench.colorTheme',
-        'CodeSandbox Black'
+        'CodeSandbox Black 2021'
       );
     }
 
