@@ -1,20 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { Stack, Text, Button } from '@codesandbox/components';
-import { useActions } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 export const SignInBanner = () => {
+  const state = useAppState();
   const { signInClicked } = useActions();
   const [show, setShow] = useState(false);
 
-  const experimentPromise = useExperimentResult('editor-signin-banner-trigger');
+  const experimentPromise = useExperimentResult(
+    'editor-signin-banner-trigger-real'
+  );
   const [bannerTriggerOnce, setBannerTriggerOnce] = useState(false);
 
   useEffect(() => {
     let timer: number | undefined;
+
+    const showBanner = () => {
+      setShow(true);
+      setBannerTriggerOnce(true);
+    };
 
     /**
      * Experiment
@@ -24,30 +32,24 @@ export const SignInBanner = () => {
        * A
        */
       if (experiment === ExperimentValues.A && bannerTriggerOnce === false) {
-        timer = window.setTimeout(() => {
-          setShow(true);
-          setBannerTriggerOnce(true);
-          // 3 minutes
-        }, 180000);
+        timer = window.setTimeout(showBanner, 180000);
+        // 3 minutes
       } else if (
         /**
          * B
          */
         experiment === ExperimentValues.B &&
+        state.editor.changeCounter === 3 &&
         bannerTriggerOnce === false
       ) {
-        timer = window.setTimeout(() => {
-          setShow(true);
-          setBannerTriggerOnce(true);
-          // 3 minutes
-        }, 180000);
+        showBanner();
       }
     });
 
     return () => {
       clearTimeout(timer);
     };
-  }, [experimentPromise, bannerTriggerOnce]);
+  }, [state.editor.changeCounter, experimentPromise, bannerTriggerOnce]);
 
   return (
     <AnimatePresence>
