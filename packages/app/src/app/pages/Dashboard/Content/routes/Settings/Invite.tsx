@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
@@ -26,10 +26,7 @@ import { Card } from './components';
 const CARD_WIDTH = 528;
 
 export const Invite = () => {
-  const {
-    browser: { copyToClipboard },
-    analytics,
-  } = useEffects();
+  const { copyToClipboard } = useEffects().browser;
   const actions = useActions();
   const { activeTeam, activeTeamInfo: team } = useAppState();
   const history = useHistory();
@@ -55,13 +52,10 @@ export const Invite = () => {
     await actions.dashboard.inviteToTeam({
       value: inviteValue,
       triggerPlace: 'invite-modal',
+      inviteLink,
     });
     setLoading(false);
   };
-
-  useEffect(() => {
-    analytics.identify('inviteLink', inviteLink);
-  }, [analytics, inviteLink]);
 
   if (!team) return null;
 
@@ -78,7 +72,7 @@ export const Invite = () => {
 
     actions.track({
       name: 'Dashboard - Copied Team Invite URL',
-      data: { place: 'invite-modal' },
+      data: { place: 'invite-modal', inviteLink },
     });
   };
 

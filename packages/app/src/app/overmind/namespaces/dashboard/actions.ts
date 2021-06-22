@@ -223,11 +223,13 @@ export const inviteToTeam = async (
     authorization = null,
     confirm = false,
     triggerPlace,
+    inviteLink,
   }: {
     value: string;
     authorization?: TeamMemberAuthorization | null;
     confirm?: boolean;
     triggerPlace: 'settings' | 'invite-modal';
+    inviteLink: string;
   }
 ) => {
   if (!state.activeTeam) return;
@@ -252,6 +254,7 @@ export const inviteToTeam = async (
   try {
     effects.analytics.track('Team - Add Member', {
       place: triggerPlace,
+      inviteLink,
       dashboardVersion: 2,
       isEmail,
     });
