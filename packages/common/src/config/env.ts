@@ -8,7 +8,11 @@ const NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
 const LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 const STAGING_API = Boolean(JSON.stringify(process.env.STAGING_API));
 
-export const AB_TESTING_URL = 'https://ab-testing.codesandbox.io';
+const AB_TESTING_URL_STAGING = 'https://ab-testing.codesandbox.stream';
+const AB_TESTING_URL_PRODUCTION = 'https://ab-testing.codesandbox.io';
+export const AB_TESTING_URL = STAGING_API
+  ? AB_TESTING_URL_STAGING
+  : AB_TESTING_URL_PRODUCTION;
 
 export const getExperimentUserId = () => {
   const KEY_NAME = 'csb-ab-user-id';
