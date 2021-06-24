@@ -134,6 +134,8 @@ export class NpmRegistryFetcher implements FetchProtocol {
     return fetchWithRetries(url, 3, this.getRequestInit())
       .then(x => x.json())
       .catch(async e => {
+        console.error(e);
+
         let errorMessage = 'Make sure the right auth token and URL are set';
         if (e.responseObject) {
           const res = await e.responseObject.json();
