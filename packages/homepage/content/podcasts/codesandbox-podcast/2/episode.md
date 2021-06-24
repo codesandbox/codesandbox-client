@@ -5,6 +5,8 @@ airDate: Apr 22, 2021
 episodeNumber: 2
 audio: https://player.resonaterecordings.com/embed?uuid=96dbd0aa-6e30-4a8a-84d9-4526e00e1c23&accentColor=13,180,206&backgroundColor=242,242,242
 slug: elizabet-oliveira
+
+socialImage: ./images/cover.png
 image: ./images/elizabet-oliveira.jpeg
 apple: "https://podcasts.apple.com/us/podcast/the-codesandbox-podcast/id1558498059"
 google: "https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL2NvZGVzYW5kYm94LXBvZGNhc3Q"

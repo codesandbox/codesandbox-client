@@ -1,97 +1,164 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useStaticQuery, graphql } from 'gatsby';
+import { track } from '@codesandbox/common/lib/utils/analytics';
 
-import Button from '../../../components/Button';
 import {
+  TemplateItem,
+  TemplateList,
   HeroWrapper,
-  SandboxButtons,
-  Sandbox,
   Title,
   SubTitle,
+  ShowMoreIcon,
+  ShowMoreButton,
+  ShowMoreButtonLine,
 } from './elements';
+import Plus from '../../../assets/icons/Plus';
 
-import react from '../../../assets/icons/home-react.svg';
-import vanilla from '../../../assets/icons/home-js.svg';
-import vue from '../../../assets/icons/home-vue.svg';
-import angular from '../../../assets/icons/home-angular.svg';
-import html from '../../../assets/icons/home-html.svg';
-import more from '../../../assets/icons/home-more.svg';
+const MAIN_TEMPLATES = [
+  'react-new',
+  'vanilla-vanilla',
+  'vue-vue',
+  'angular-angular',
+];
 
-export default () => (
-  <HeroWrapper>
-    <motion.div
-      initial={{ opacity: 0, y: 140 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, ease: 'easeOut', staggerChildren: 0.5 }}
-      style={{
-        zIndex: 20,
-      }}
-    >
-      <Title>Where teams build faster, together</Title>
-      <SubTitle
-        css={`
-          margin-bottom: 2rem;
-        `}
-      >
-        Create, share, and get feedback with collaborative sandboxes for rapid
-        web development.
-      </SubTitle>
+const HIDE_LIST = ['p5js-9tgmp', 'codesandbox-appsapper-template-88wlq002r8'];
 
-      <SandboxButtons>
-        <Sandbox href="/s/new" title="React" style={{ animationDelay: '0.5s' }}>
-          <img src={react} alt="React Template" />
-        </Sandbox>
-        <Sandbox
-          href="/s/vanilla"
-          title="Vanilla"
-          style={{
-            animationDelay: '0.6s',
-          }}
-        >
-          <img src={vanilla} alt="Vanilla Template" />
-        </Sandbox>
-        <Sandbox href="/s/vue" title="Vue" style={{ animationDelay: '0.7s' }}>
-          <img src={vue} alt="Vue Template" />
-        </Sandbox>
-        <Sandbox
-          href="/s/angular"
-          title="Angular"
-          style={{
-            animationDelay: '0.8s',
-          }}
-        >
-          <img src={angular} alt="angular Template" />
-        </Sandbox>
-        <Sandbox
-          href="/s/github/codesandbox-app/static-template/tree/master/"
-          title="HTML 5"
-          style={{
-            animationDelay: '0.9s',
-          }}
-        >
-          <img src={html} alt="HTML Template" />
-        </Sandbox>
-        <Sandbox href="/s" title="More" style={{ animationDelay: '1.0s' }}>
-          <img src={more} alt="More Template" />
-        </Sandbox>
-      </SandboxButtons>
+export default () => {
+  const [showMore, setShowMore] = useState(false);
 
+  const {
+    allOfficialTemplate: { nodes },
+  } = useStaticQuery(graphql`
+    query OfficialTemplates {
+      allOfficialTemplate {
+        nodes {
+          id
+          author {
+            username
+          }
+          alias
+          custom_template {
+            color
+            id
+            icon_url
+          }
+          description
+          environment
+          title
+        }
+      }
+    }
+  `);
+
+  const mainTemplates = nodes
+    .filter(e => MAIN_TEMPLATES.includes(e.alias))
+    .sort((a, b) => {
+      if (MAIN_TEMPLATES.indexOf(a.alias) > MAIN_TEMPLATES.indexOf(b.alias)) {
+        return 1;
+      }
+
+      return -1;
+    });
+  const allNodesSort = nodes
+    .filter(e => !MAIN_TEMPLATES.includes(e.alias))
+    .filter(e => !HIDE_LIST.includes(e.alias))
+    .sort((a, b) => {
+      if (a.title > b.title) {
+        return 1;
+      }
+
+      return -1;
+    })
+    .slice(0, 28);
+
+  return (
+    <HeroWrapper>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 140 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut', delay: 0.5 }}
+        transition={{ duration: 1, ease: 'easeOut', staggerChildren: 0.5 }}
+        style={{
+          zIndex: 20,
+        }}
       >
-        <Button
-          style={{
-            padding: '.75rem 2rem',
-            marginBottom: '.5rem',
-            borderRadius: '.25rem',
-          }}
-          href="/s"
+        <Title>Where teams build faster, together</Title>
+        <SubTitle
+          css={`
+            margin-bottom: 3.7rem;
+          `}
         >
-          Create Sandbox
-        </Button>
+          Create, share, and get feedback with collaborative sandboxes for rapid
+          web development.
+        </SubTitle>
+
+        <TemplateList>
+          {mainTemplates.map((template, index) => (
+            <TemplateItem
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: (index + 1) * 0.3, delay: 1 }}
+              as={motion.li}
+              key={template.alias}
+              alias={template.alias}
+              title={template.title}
+              environment={template.environment}
+              iconUrl={template.custom_template.icon_url}
+            />
+          ))}
+        </TemplateList>
+
+        <AnimatePresence>
+          {showMore && (
+            <TemplateList
+              as={motion.div}
+              initial="collapsed"
+              animate="open"
+              exit="collapsed"
+              variants={{
+                open: { opacity: 1, height: 'auto' },
+                collapsed: { opacity: 0, height: 0 },
+              }}
+              transition={{ duration: 0.4, ease: 'easeInOut' }}
+            >
+              {allNodesSort.map((template, index) => (
+                <TemplateItem
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: Math.min((index + 1) * 0.3, 1.6) }}
+                  as={motion.li}
+                  key={template.alias}
+                  alias={template.alias}
+                  title={template.title}
+                  environment={template.environment}
+                  iconUrl={template.custom_template.icon_url}
+                />
+              ))}
+            </TemplateList>
+          )}
+        </AnimatePresence>
+
+        <TemplateList>
+          <ShowMoreButtonLine
+            as={motion.div}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 1.4 }}
+          >
+            <ShowMoreButton
+              onClick={() => {
+                setShowMore(p => !p);
+                track('Homepage - Template show more', { open: showMore });
+              }}
+            >
+              <ShowMoreIcon active={showMore}>
+                <Plus />
+              </ShowMoreIcon>
+              {showMore ? 'Less Template' : 'More Templates'}
+            </ShowMoreButton>
+          </ShowMoreButtonLine>
+        </TemplateList>
       </motion.div>
-    </motion.div>
-  </HeroWrapper>
-);
+    </HeroWrapper>
+  );
+};

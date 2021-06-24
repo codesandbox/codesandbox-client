@@ -431,7 +431,7 @@ export const resolveConflicts = async (
     conflictItem => module.path === '/' + conflictItem.filename
   );
 
-  if (conflict && module.code.indexOf('<<<<<<< Codesandbox') === -1) {
+  if (conflict && module.code.indexOf('<<<<<<< CodeSandbox') === -1) {
     state.git.conflicts.splice(state.git.conflicts.indexOf(conflict), 1);
 
     await actions.editor.codeSaved({

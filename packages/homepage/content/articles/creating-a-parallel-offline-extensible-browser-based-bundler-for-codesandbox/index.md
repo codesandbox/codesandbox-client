@@ -13,20 +13,18 @@ date: 2017-08-27
 ---
 
 When I first started [CodeSandbox](https://codesandbox.io), I was completely
-focused on [React](https://github.com/facebook/react) development. We even named
-it 'ReactSandbox' at first, but I changed it to CodeSandbox last minute so we
-could expand to other libraries. I'm proud to say that we now succeeded in that
+focused on [React](/framework/react) development. We even named it
+'ReactSandbox' at first, but I changed it to CodeSandbox last minute so we could
+expand to other libraries. I'm proud to say that we now succeeded in that
 regard!
 
 The past week we slowly rolled out support for other libraries. We now have
-support for React, [Vue](https://github.com/vuejs/vue) and
-[Preact](https://github.com/preactjs/preact) templates and are planning to
-support [Angular](https://github.com/angular/angular),
-[ReasonML](https://github.com/facebook/reason) and
-[Svelte](https://github.com/sveltejs/svelte) (let me know if you have other
-suggestions). To make this happen I had to rewrite the bundler from scratch. In
-this post I will explain mostly how the new bundler is built and what decisions
-I took to get there.
+support for React, [Vue](/framework/vue) and [Preact](/framework/preact)
+templates and are planning to support [Angular](/framework/angular),
+[ReasonML](https://github.com/facebook/reason) and [Svelte](/framework/svelte)
+(let me know if you have other suggestions). To make this happen I had to
+rewrite the bundler from scratch. In this post I will explain mostly how the new
+bundler is built and what decisions I took to get there.
 
 <!-- https://vue.codesandbox.io -->
 
@@ -66,10 +64,10 @@ turned out to be.
 I got `webpack` running in the browser, however the bundle size was 3.5MB
 uglified. I had to provide many polyfills and compilation threw a dozen warnings
 because of dynamic requires. Furthermore, only half of the loaders worked.
-`webpack` assumes a [Node](https://github.com/nodejs/node) environment, and it
-turned out that the cost to simulate that environment was (in my opinion) too
-big for the advantages gained from it. My second reason is that CodeSandbox is a
-very specific platform, and if we build the bundler ourselves we can completely
+`webpack` assumes a [Node](/software/node) environment, and it turned out that
+the cost to simulate that environment was (in my opinion) too big for the
+advantages gained from it. My second reason is that CodeSandbox is a very
+specific platform, and if we build the bundler ourselves we can completely
 optimize for that platform.
 
 #### webpack Loader API in the browser

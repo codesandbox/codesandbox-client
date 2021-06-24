@@ -79,7 +79,7 @@ limitation on what you can run. With Container Sandboxes we actually run the
 code on a server, this makes it possible to eg. create a
 [Node](https://github.com/nodejs/node)/[GraphQL](https://graphql.org) server on
 CodeSandbox. It also opens up the possibility to create
-[Next.js](https://github.com/zeit/next.js)/[Gatsby](https://github.com/gatsbyjs/gatsby)/[Nuxt.js](https://github.com/nuxt/nuxt.js)
+[Next.js](https://github.com/zeit/next.js)/[Gatsby](/framework/gatsby)/[Nuxt.js](/framework/nuxt)
 projects inside CodeSandbox. It runs anything that works locally.
 
 ## Dashboard & Teams

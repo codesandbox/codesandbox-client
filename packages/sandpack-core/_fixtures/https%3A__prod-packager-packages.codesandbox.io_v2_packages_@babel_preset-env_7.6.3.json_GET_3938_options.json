@@ -1,0 +1,32 @@
+{
+  "url": "https://prod-packager-packages.codesandbox.io/v2/packages/@babel/preset-env/7.6.3.json",
+  "status": 200,
+  "statusText": "OK",
+  "ok": true,
+  "headers": {
+    "date": ["Mon, 17 May 2021 13:21:58 GMT"],
+    "content-type": ["application/json"],
+    "content-length": ["451246"],
+    "connection": ["close"],
+    "x-amz-id-2": [
+      "Dd8eowS7Vj6wnTJe9//I3gPhNDDw7p8EtAJj9HotEJfklMB0uTR15morfDhw8R0AwBNoGoZmDfk="
+    ],
+    "x-amz-request-id": ["PPDEBYG5WT5FETY6"],
+    "last-modified": ["Wed, 03 Jun 2020 19:44:48 GMT"],
+    "etag": ["\"9f1ca920f143a25b6edd5c83d3e8a848\""],
+    "cache-control": ["public, max-age=31536000"],
+    "content-encoding": ["gzip"],
+    "cf-cache-status": ["MISS"],
+    "accept-ranges": ["bytes"],
+    "cf-request-id": ["0a1c16a1f70000edef82857000000001"],
+    "expect-ct": [
+      "max-age=604800, report-uri=\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\""
+    ],
+    "vary": ["Accept-Encoding"],
+    "server": ["cloudflare"],
+    "cf-ray": ["650d26e32e67edef-CDG"],
+    "alt-svc": [
+      "h3-27=\":443\"; ma=86400, h3-28=\":443\"; ma=86400, h3-29=\":443\"; ma=86400"
+    ]
+  }
+}

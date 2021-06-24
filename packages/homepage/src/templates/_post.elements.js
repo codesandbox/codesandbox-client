@@ -66,6 +66,11 @@ export const PostContainer = styled.div`
       border-bottom: 1px solid;
       border-color: ${theme.shySecondary};
     }
+
+    font-weight: 400;
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      font-weight: 300;
+    }
   `};
 `;
 

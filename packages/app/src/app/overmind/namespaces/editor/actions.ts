@@ -298,7 +298,8 @@ export const sandboxChanged = withLoadApp<{
   }
 
   try {
-    const sandbox = await effects.api.getSandbox(newId);
+    const params = state.activeTeam ? { teamId: state.activeTeam } : undefined;
+    const sandbox = await effects.api.getSandbox(newId, params);
 
     actions.internal.setCurrentSandbox(sandbox);
   } catch (error) {
@@ -350,15 +351,6 @@ export const sandboxChanged = withLoadApp<{
   }
 
   await actions.editor.internal.initializeSandbox(sandbox);
-
-  // We only recover files at this point if we are not live. When live we recover them
-  // when the module_state is received
-  if (
-    !state.live.isLive &&
-    hasPermission(sandbox.authorization, 'write_code')
-  ) {
-    actions.files.internal.recoverFiles();
-  }
 
   if (state.editor.currentModule.id) {
     effects.vscode.openModule(state.editor.currentModule);
@@ -552,6 +544,10 @@ export const codeChanged = (
 ) => {
   effects.analytics.trackOnce('Change Code');
 
+  if (!state.user) {
+    state.editor.changeCounter++;
+  }
+
   if (!state.editor.currentSandbox) {
     return;
   }
@@ -665,8 +661,6 @@ export const saveClicked = withOwnedSandbox(
               state.editor.modulesByPath,
               module
             );
-
-            effects.moduleRecover.remove(sandbox.id, module);
           } else {
             // We might not have the module, as it was created by the server. In
             // this case we put it in. There is an edge case here where the user
@@ -700,6 +694,8 @@ export const createZipClicked = ({ state, effects }: Context) => {
   }
 
   effects.zip.download(state.editor.currentSandbox);
+
+  effects.analytics.track('Editor - Click Menu Item - Export as ZIP');
 };
 
 export const forkExternalSandbox = async (
@@ -759,14 +755,16 @@ export const likeSandboxToggled = async (
   id: string
 ) => {
   if (state.editor.sandboxes[id].userLiked) {
+    state.editor.sandboxes[id].userLiked = false;
     state.editor.sandboxes[id].likeCount--;
     await effects.api.unlikeSandbox(id);
+    effects.analytics.track('Sandbox - Like', { place: 'EDITOR' });
   } else {
+    state.editor.sandboxes[id].userLiked = true;
     state.editor.sandboxes[id].likeCount++;
     await effects.api.likeSandbox(id);
+    effects.analytics.track('Sandbox - Undo Like', { place: 'EDITOR' });
   }
-
-  state.editor.sandboxes[id].userLiked = !state.editor.sandboxes[id].userLiked;
 };
 
 export const moduleSelected = async (

@@ -27,6 +27,8 @@ import {
   LogoImage,
   List,
   LogIn,
+  Jobs,
+  Span,
 } from './elements';
 import SubNav from './SubNav';
 import MobileNav from './MobileNav';
@@ -136,6 +138,12 @@ const Navigation = () => {
                         Pricing
                       </Link>
                     </li>
+
+                    <Jobs>
+                      <Link to="/jobs" onMouseEnter={() => setOpenedNav(null)}>
+                        Jobs <Span>2</Span>
+                      </Link>
+                    </Jobs>
                   </List>
                   <List>
                     {!user && (

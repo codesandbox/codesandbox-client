@@ -86,10 +86,6 @@ let lastHeight = 0;
 let changedModuleCount = 0;
 let usedCache = false;
 
-const DEPENDENCY_ALIASES = {
-  '@vue/cli-plugin-babel': '@vue/babel-preset-app',
-};
-
 // TODO make devDependencies lazy loaded by the packager
 const WHITELISTED_DEV_DEPENDENCIES = [
   'redux-devtools',
@@ -247,32 +243,27 @@ function getDependencies(
   }
 
   Object.keys(d).forEach(dep => {
-    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
-
     if (dep === 'reason-react') {
       return; // is replaced
     }
 
-    returnedDependencies[usedDep] = d[dep];
+    returnedDependencies[dep] = d[dep];
   });
 
   Object.keys(devDependencies).forEach(dep => {
-    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
-
-    if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
-      if (
-        usedDep === '@vue/babel-preset-app' &&
-        devDependencies[dep].startsWith('^3')
-      ) {
-        // Native modules got added in 3.7.0, we need to hardcode to latest
-        // working version of the babel plugin as a fix. https://twitter.com/notphanan/status/1122475053633941509
-        returnedDependencies[usedDep] = '3.6.0';
+    if (foundWhitelistedDevDependencies.indexOf(dep) > -1) {
+      // Skip @vue/babel-preset-app
+      if (dep === '@vue/babel-preset-app') {
         return;
       }
 
-      returnedDependencies[usedDep] = devDependencies[dep];
+      returnedDependencies[dep] = devDependencies[dep];
     }
   });
+
+  if (d.vue) {
+    returnedDependencies['@vue/babel-plugin-jsx'] = '1.0.6';
+  }
 
   const sandpackConfig =
     (configurations.customTemplate &&

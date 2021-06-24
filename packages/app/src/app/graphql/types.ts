@@ -1758,7 +1758,10 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
       >
     >;
     subscription: Maybe<
-      { __typename?: 'ProSubscription' } & Pick<ProSubscription, 'origin'>
+      { __typename?: 'ProSubscription' } & Pick<
+        ProSubscription,
+        'origin' | 'type'
+      >
     >;
   };
 

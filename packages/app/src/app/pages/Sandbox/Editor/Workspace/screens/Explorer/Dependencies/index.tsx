@@ -64,7 +64,10 @@ export const Dependencies: FunctionComponent<{ readonly?: boolean }> = ({
         {Object.keys(dependencies)
           .sort()
           .map(dependency => (
-            <Animated showMountAnimations={showMountAnimations}>
+            <Animated
+              key={dependency}
+              showMountAnimations={showMountAnimations}
+            >
               <Dependency
                 dependencies={dependencies}
                 dependency={dependency}

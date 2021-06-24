@@ -92,6 +92,28 @@ export const Wrapper = styled.div`
   justify-content: space-between;
 `;
 
+export const Jobs = styled.li`
+  display: none;
+  @media screen and (min-width: 1200px) {
+    display: block;
+  }
+`;
+
+export const Span = styled.span`
+  font-size: 10px;
+  padding: 2px;
+  text-align: center;
+  font-weight: 500;
+  color: #fff;
+  height: 1rem;
+  width: 1rem;
+  display: inline-block;
+  background: #5962df;
+  border-radius: 50%;
+  position: relative;
+  top: -0.5rem;
+`;
+
 export const UserAvatar = styled.img`
   border: 1px solid ${props => props.theme.homepage.grey};
   border-radius: 2px;

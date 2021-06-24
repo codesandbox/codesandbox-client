@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
@@ -23,10 +23,13 @@ import {
 import css from '@styled-system/css';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Notifications } from 'app/components/Notifications';
+import { PlusIcon } from 'app/components/CreateNewSandbox/CreateSandbox/Icons';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -38,7 +41,35 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const { openCreateSandboxModal } = useActions();
-    const { user, activeWorkspaceAuthorization } = useAppState();
+    const {
+      activeTeam,
+      activeWorkspaceAuthorization,
+      personalWorkspaceId,
+      user,
+    } = useAppState();
+    const history = useHistory();
+
+    const [showInviteMembersButton, setShowInviteMembersButton] = useState(
+      false
+    );
+    const experimentPromise = useExperimentResult('dashboard-invite-members');
+
+    useEffect(() => {
+      /* Wait for the API */
+      experimentPromise.then(experiment => {
+        if (experiment === ExperimentValues.A) {
+          /**
+           * A
+           */
+          setShowInviteMembersButton(false);
+        } else if (experiment === ExperimentValues.B) {
+          /**
+           * B
+           */
+          setShowInviteMembersButton(true);
+        }
+      });
+    }, [experimentPromise]);
 
     return (
       <Stack
@@ -79,6 +110,29 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
+          {showInviteMembersButton && (
+            <Button
+              type="button"
+              variant="link"
+              onClick={() => {
+                track('Dashboard - Invite members');
+
+                /* Only for workspaces */
+                if (activeTeam !== personalWorkspaceId) {
+                  history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
+                } else {
+                  history.push(
+                    `${dashboardUrls.createWorkspace()}?from-header=1`
+                  );
+                }
+              }}
+              autoWidth
+            >
+              <PlusIcon css={css({ marginRight: 2, width: '.8em' })} /> Invite
+              members
+            </Button>
+          )}
+
           <Button
             variant="primary"
             css={css({ width: 'auto', paddingX: 3 })}

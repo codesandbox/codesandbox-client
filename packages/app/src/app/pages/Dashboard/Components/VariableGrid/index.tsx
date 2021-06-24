@@ -417,7 +417,12 @@ export const VariableGrid = ({
                   viewMode,
                   page,
                 }}
-                style={{ overflowX: 'hidden', userSelect: 'none' }}
+                style={{
+                  overflowX: 'hidden',
+                  userSelect: 'none',
+                  paddingBottom: 40,
+                  boxSizing: 'border-box',
+                }}
               >
                 {Item}
               </VariableSizeGrid>

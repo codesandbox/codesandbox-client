@@ -1,5 +1,4 @@
-import * as gzip from 'gzip-js';
-import untar from 'js-untar';
+import untar, { UntarredFiles } from 'isomorphic-untar-gzip';
 
 import { Meta } from '../../fetch-npm-module';
 import { fetchWithRetries } from '../utils';
@@ -7,26 +6,6 @@ import { fetchWithRetries } from '../utils';
 type DeserializedFetchedTar = {
   content: string;
 };
-
-type UntarredFiles = Array<{
-  name: string;
-  mode: string;
-  uid: number;
-  gid: number;
-  size: number;
-  mtime: number;
-  checksum: number;
-  type: string;
-  linkname: string;
-  ustarFormat: string;
-  version: string;
-  uname: string;
-  gname: string;
-  devmajor: number;
-  devminor: number;
-  namePrefix: string;
-  buffer: ArrayBuffer;
-}>;
 
 /**
  * Responsible for fetching, caching and converting tars to a structure that sandpack
@@ -59,8 +38,7 @@ export class TarStore {
       const file = await fetchWithRetries(version, 6, requestInit).then(x =>
         x.arrayBuffer()
       );
-      const unzippedFile = gzip.unzip(new Uint8Array(file));
-      const untarredFile = await untar(new Uint8Array(unzippedFile).buffer);
+      const untarredFile = await untar(file);
       const normalizedTar = this.normalizeTar(untarredFile);
 
       return normalizedTar;

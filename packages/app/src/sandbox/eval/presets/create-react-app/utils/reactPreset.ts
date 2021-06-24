@@ -7,7 +7,9 @@ import rawTranspiler from '../../../transpilers/raw';
 import svgrTranspiler from '../../../transpilers/svgr';
 import sassTranspiler from '../../../transpilers/sass';
 import refreshTranspiler from '../../../transpilers/react/refresh-transpiler';
+import lessTranspiler from '../../../transpilers/less';
 import styleProcessor from '../../../transpilers/postcss';
+
 import {
   hasRefresh,
   aliases,
@@ -60,6 +62,11 @@ export const reactPreset = babelConfig => {
           refreshInitialized = isRefresh;
           preset.resetTranspilers();
 
+          preset.registerTranspiler(
+            module => /^https?:\/\/.*/.test(module.path),
+            [{ transpiler: babelTranspiler, options: {} }]
+          );
+
           if (isRefresh) {
             debug('Refresh is enabled, registering additional transpiler');
             // Add react refresh babel plugin for non-node_modules
@@ -78,7 +85,7 @@ export const reactPreset = babelConfig => {
                       ...babelConfig.config,
                       plugins: [
                         ...babelConfig.config.plugins,
-                        'react-refresh/babel',
+                        ['react-refresh/babel', { skipEnvCheck: true }],
                       ],
                     },
                   },
@@ -100,6 +107,15 @@ export const reactPreset = babelConfig => {
           preset.registerTranspiler(module => /\.svg$/.test(module.path), [
             { transpiler: svgrTranspiler },
             { transpiler: babelTranspiler, options: babelConfig },
+          ]);
+
+          preset.registerTranspiler(module => /\.less$/.test(module.path), [
+            { transpiler: lessTranspiler },
+            { transpiler: styleProcessor },
+            {
+              transpiler: stylesTranspiler,
+              options: { hmrEnabled: true },
+            },
           ]);
 
           preset.registerTranspiler(

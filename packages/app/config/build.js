@@ -7,7 +7,7 @@ const staticAssets = [
   },
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-extensions/out',
-    to: 'public/vscode-extensions/v14',
+    to: 'public/vscode-extensions/v15',
   },
   !SANDBOX_ONLY && {
     from: 'node_modules/vscode-oniguruma/release/onig.wasm',

@@ -8,7 +8,7 @@ export function createDiff(textA, textB) {
 
   function closeConflict(line) {
     result = result.concat(
-      '<<<<<<< Codesandbox',
+      '<<<<<<< CodeSandbox',
       currentConflict!.a,
       '=======',
       currentConflict!.b,

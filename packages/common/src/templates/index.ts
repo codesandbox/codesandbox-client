@@ -28,6 +28,7 @@ import unibit from './unibit';
 import vue from './vue';
 import vuepress from './vuepress';
 import docusaurus from './docusaurus';
+import esmReact from './esmodule-react';
 
 export {
   adonis,
@@ -39,6 +40,7 @@ export {
   next,
   nuxt,
   node,
+  esmReact,
   babel,
   cxjs,
   dojo,
@@ -92,7 +94,8 @@ export type TemplateType =
   | 'ember'
   | 'custom'
   | 'docusaurus'
-  | 'babel-repl';
+  | 'babel-repl'
+  | 'esm-react';
 
 export default function getDefinition(theme?: TemplateType | null) {
   switch (theme) {
@@ -156,6 +159,8 @@ export default function getDefinition(theme?: TemplateType | null) {
       return quasar;
     case unibit.name:
       return unibit;
+    case esmReact.name:
+      return esmReact;
     default:
       return react;
   }

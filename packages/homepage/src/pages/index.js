@@ -6,11 +6,12 @@ import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import Layout, { WRAPPER_STYLING } from '../components/layout';
 
 import Hero from '../screens/home/hero';
-import DevExperiencOne from '../screens/home/devExperiencOne';
+import DevExperienceOne from '../screens/home/devExperienceOne';
 import DevExperience from '../screens/home/devExperience';
 import LoadInView from '../components/LoadInView';
 import Quotes from '../screens/home/quotes';
 import Teams from '../screens/home/teams';
+import Anywhere from '../screens/home/anywhere';
 import Explore from '../screens/home/explore';
 import Video from '../screens/home/video';
 import Workspaces from '../screens/home/workspaces';
@@ -43,10 +44,14 @@ const Homepage = () => (
         <Teams />
       </LoadInView>
       <LoadInView>
+        <Anywhere />
+      </LoadInView>
+
+      <LoadInView>
         <Workspaces />
       </LoadInView>
       <LoadInView>
-        <DevExperiencOne />
+        <DevExperienceOne />
       </LoadInView>
       <LoadInView>
         <DevExperience />

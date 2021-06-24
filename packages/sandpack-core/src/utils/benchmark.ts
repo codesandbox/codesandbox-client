@@ -27,7 +27,9 @@ const printTranspilationMeasurements = (results: TranspilationTimes) => {
 export function generateBenchmarkInterface(manager: Manager) {
   return {
     transpilation: async (n = 10, path = '/src/index.js') => {
-      const module = manager.resolveModule(path, '/');
+      const module = await manager.resolveModuleAsync({
+        path,
+      });
 
       const times: TranspilationTimes[] = [];
       for (let i = 0; i < n; i++) {

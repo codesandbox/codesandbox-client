@@ -39,87 +39,80 @@ async function resolveCSSFile(
   return loaderContext.resolveTranspiledModuleAsync(fullPath);
 }
 
-export default function(
+export default async function (
   code: string,
   loaderContext: LoaderContext
 ): Promise<{ transpiledCode: string; sourceMap: any }> {
-  return new Promise((resolve, reject) => {
-    const query = loaderContext.options;
+  const query = loaderContext.options;
 
-    let vueOptions = loaderContext.options.__vueOptions__;
+  let vueOptions = loaderContext.options.__vueOptions__;
 
-    if (!vueOptions) {
-      vueOptions = {
-        ...loaderContext.options.vue,
-      };
-    }
-
-    // TODO autoprefixer
-    const plugins = [
-      postcssImportPlugin({
-        resolve: async (id: string, root: string) => {
-          try {
-            const result = await resolveCSSFile(loaderContext, id, root);
-
-            return result.module.path;
-          } catch (e) {
-            return null;
-          }
-        },
-        load: async (filename: string) => {
-          const tModule = await loaderContext.resolveTranspiledModuleAsync(
-            filename
-          );
-
-          return tModule.module.code;
-        },
-      }),
-      trim,
-    ];
-
-    const options: ProcessOptions = {
-      to: loaderContext.path,
-      from: loaderContext.path,
+  if (!vueOptions) {
+    vueOptions = {
+      ...loaderContext.options.vue,
     };
+  }
 
-    // add plugin for vue-loader scoped css rewrite
-    if (query.scoped) {
-      plugins.push(scopeId({ id: query.id }));
-    }
+  // TODO autoprefixer
+  const plugins = [
+    postcssImportPlugin({
+      resolve: async (id: string, root: string) => {
+        try {
+          const result = await resolveCSSFile(loaderContext, id, root);
 
-    // source map
-    if (
-      loaderContext.sourceMap &&
-      vueOptions.cssSourceMap !== false
-      // !loaderContext.map
-    ) {
-      options.map = {
-        inline: false,
-        annotation: false,
-        // prev: loaderContext.map,
-      };
-    }
+          return result.module.path;
+        } catch (e) {
+          return null;
+        }
+      },
+      load: async (filename: string) => {
+        const tModule = await loaderContext.resolveTranspiledModuleAsync(
+          filename
+        );
 
-    return (
-      postcss(plugins)
-        // Explcitly give undefined if code is null, otherwise postcss crashses
-        .process(code || '', options)
-        .then(result => {
-          if (result.messages) {
-            const messages = result.messages as any[];
-            messages.forEach(m => {
-              if (m.type === 'dependency') {
-                loaderContext.addDependency(m.file);
-              }
-            });
-          }
+        return tModule.module.code;
+      },
+    }),
+    trim,
+  ];
 
-          const map = result.map && result.map.toJSON();
-          resolve({ transpiledCode: result.css, sourceMap: map });
+  const options: ProcessOptions = {
+    to: loaderContext.path,
+    from: loaderContext.path,
+  };
 
-          return null; // silence bluebird warning
-        })
-        .catch(err => reject(err))
+  // add plugin for vue-loader scoped css rewrite
+  if (query.scoped) {
+    plugins.push(scopeId({ id: query.id }));
+  }
+
+  // source map
+  if (
+    loaderContext.sourceMap &&
+    vueOptions.cssSourceMap !== false
+    // !loaderContext.map
+  ) {
+    options.map = {
+      inline: false,
+      annotation: false,
+      // prev: loaderContext.map,
+    };
+  }
+
+  // Explcitly give undefined if code is null, otherwise postcss crashses
+  const postcssResult = await postcss(plugins).process(code || '', options);
+
+  if (postcssResult.messages) {
+    const messages = postcssResult.messages as any[];
+    await Promise.all(
+      messages.map(async m => {
+        if (m.type === 'dependency') {
+          await loaderContext.addDependency(m.file);
+        }
+      })
     );
-  });
+  }
+
+  const map = postcssResult.map && postcssResult.map.toJSON();
+  return { transpiledCode: postcssResult.css, sourceMap: map };
 }

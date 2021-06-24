@@ -5,7 +5,7 @@ import { ILambdaResponse } from '../merge-dependency';
 import { downloadDependency } from './fetch-npm-module';
 import { IParsedResolution } from './resolutions';
 
-async function getPackageJSON(dep: string, version: string) {
+export async function getPackageJSON(dep: string, version: string) {
   const m = await downloadDependency(dep, version, '/package.json');
   return m.code;
 }
@@ -111,6 +111,7 @@ export async function resolveDependencyInfo(
   version: string,
   parsedResolutions: IParsedResolution[]
 ) {
+  const IS_ALIAS = /^npm:/;
   const packageJSONCode = await getPackageJSON(dep, version);
   const packageJSON = JSON.parse(packageJSONCode);
   const response: ILambdaResponse = {
@@ -142,6 +143,22 @@ export async function resolveDependencyInfo(
       content: packageJSONCode,
     },
   };
+
+  await Promise.all(
+    Object.keys(response.dependencyDependencies).map(async packageName => {
+      let packageVersion =
+        response.dependencyDependencies[packageName].resolved;
+
+      if (response.dependencyDependencies[packageName].semver.match(IS_ALIAS)) {
+        packageVersion = response.dependencyDependencies[packageName].semver;
+      }
+
+      const pkgJson = await getPackageJSON(packageName, packageVersion);
+      response.contents[`/node_modules/${packageName}/package.json`] = {
+        content: pkgJson,
+      };
+    })
+  );
 
   return response;
 }

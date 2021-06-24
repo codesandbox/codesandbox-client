@@ -1,5 +1,4 @@
 // @flow
-
 type WorkerError = {
   name: string,
   message: string,
