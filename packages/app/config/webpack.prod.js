@@ -242,16 +242,18 @@ module.exports = merge(commonConfig, {
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
       maximumFileSizeToCacheInBytes: 1024 * 1024 * 20, // 20mb
       runtimeCaching: [
-        {
-          urlPattern: /api\/v1\//,
-          handler: 'networkFirst',
-          options: {
-            cache: {
-              maxEntries: 50,
-              name: 'sandboxes-cache',
-            },
-          },
-        },
+        // Don't do this, because it will cache API responses to the server. Even if no-cache headers
+        // are set.
+        // {
+        //   urlPattern: /api\/v1\//,
+        //   handler: 'networkFirst',
+        //   options: {
+        //     cache: {
+        //       maxEntries: 50,
+        //       name: 'sandboxes-cache',
+        //     },
+        //   },
+        // },
         {
           urlPattern: /api\/v1\/dependencies/,
           handler: 'fastest',
@@ -293,6 +295,18 @@ module.exports = merge(commonConfig, {
             cache: {
               maxAgeSeconds: 60 * 60 * 24 * 7,
               name: 'dependency-files-cache',
+            },
+          },
+        },
+        // We resolve `package.json` to resolve versions (e.g. next -> 15.0.5). We need to have a much shorter cache on this
+        {
+          urlPattern: /^https:\/\/unpkg\.com\/.*\/package.json/,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              maxEntries: 300,
+              name: 'unpkg-dep-pkg-cache',
+              maxAgeSeconds: 60 * 5, // 5 minutes
             },
           },
         },
