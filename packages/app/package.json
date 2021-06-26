@@ -85,7 +85,7 @@
     "@reach/combobox": "0.10.3",
     "@sentry/webpack-plugin": "^1.8.0",
     "@styled-system/css": "^5.0.23",
-    "@svgr/core": "^2.4.1",
+    "@svgr/core": "^4.0.0",
     "@typeform/embed": "^0.12.0",
     "@types/rc-slider": "^8.6.5",
     "@types/socket.io-client": "^1.4.32",
