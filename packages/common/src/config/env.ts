@@ -8,23 +8,13 @@ const NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
 const LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 const STAGING_API = Boolean(JSON.stringify(process.env.STAGING_API));
 
-const getAbTestingEnv = () => {
-  const host = () => {
-    if (process.env.NODE_ENV === 'production') {
-      const CODESANDBOX_HOST = getHost();
-      return CODESANDBOX_HOST.split('//')[1];
-    }
-
-    return process.env.DEV_DOMAIN;
-  };
-
-  return `https://ab-testing.${
-    process.env.NODE_ENV === 'development' || process.env.STAGING
-      ? 'codesandbox.stream'
-      : host()
-  }`;
-};
-export const AB_TESTING_URL = getAbTestingEnv();
+const AB_TESTING_URL_STAGING = 'https://ab-testing.codesandbox.stream';
+const AB_TESTING_URL_PRODUCTION = 'https://ab-testing.codesandbox.io';
+export const AB_TESTING_URL = /codesandbox\.io/.test(
+  typeof window !== `undefined` ? window?.location?.host : ''
+)
+  ? AB_TESTING_URL_PRODUCTION
+  : AB_TESTING_URL_STAGING;
 
 export const getExperimentUserId = () => {
   const KEY_NAME = 'csb-ab-user-id';
