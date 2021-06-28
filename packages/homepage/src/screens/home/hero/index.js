@@ -10,10 +10,7 @@ export default () => {
   const [templateVersion, setTemplateVersion] = useState(undefined);
   const experimentPromise = useExperimentResult('dashboard-invite-members');
 
-  console.log(templateVersion);
-
   useEffect(() => {
-    /* Wait for the API */
     experimentPromise.then(setTemplateVersion);
   }, [experimentPromise]);
 
