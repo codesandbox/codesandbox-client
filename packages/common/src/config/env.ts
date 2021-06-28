@@ -2,20 +2,29 @@
 // injected into the application via DefinePlugin in Webpack configuration.
 import uuid from 'uuid';
 import getHost from '../utils/host';
-import { host } from '../utils/url-generator';
 
 const REACT_APP = /^REACT_APP_/i;
 const NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
 const LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 const STAGING_API = Boolean(JSON.stringify(process.env.STAGING_API));
 
-const getAbTestingEnv = () =>
-  `https://ab-testing.${
+const getAbTestingEnv = () => {
+  const host = () => {
+    if (process.env.NODE_ENV === 'production') {
+      const CODESANDBOX_HOST = JSON.stringify(getHost());
+
+      return CODESANDBOX_HOST.split('//')[1];
+    }
+
+    return process.env.DEV_DOMAIN;
+  };
+
+  return `https://ab-testing.${
     process.env.NODE_ENV === 'development' || process.env.STAGING
       ? 'codesandbox.stream'
       : host()
   }`;
-
+};
 export const AB_TESTING_URL = getAbTestingEnv();
 
 export const getExperimentUserId = () => {
