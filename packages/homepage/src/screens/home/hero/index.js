@@ -8,7 +8,7 @@ import { ListTemplateBVersion } from './B-Version';
 
 export default () => {
   const [templateVersion, setTemplateVersion] = useState(undefined);
-  const experimentPromise = useExperimentResult('dashboard-invite-members');
+  const experimentPromise = useExperimentResult('homepage-template-picker');
 
   useEffect(() => {
     experimentPromise.then(setTemplateVersion);
