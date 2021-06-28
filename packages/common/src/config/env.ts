@@ -11,8 +11,7 @@ const STAGING_API = Boolean(JSON.stringify(process.env.STAGING_API));
 const getAbTestingEnv = () => {
   const host = () => {
     if (process.env.NODE_ENV === 'production') {
-      const CODESANDBOX_HOST = JSON.stringify(getHost());
-
+      const CODESANDBOX_HOST = getHost();
       return CODESANDBOX_HOST.split('//')[1];
     }
 
