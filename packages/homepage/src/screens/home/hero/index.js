@@ -1,11 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useExperimentResult } from '@codesandbox/ab';
 
 import { HeroWrapper, Title, SubTitle } from './elements';
 import { CTATemplateAVersion } from './A-Version';
 import { ListTemplateBVersion } from './B-Version';
 
 export default () => {
+  const [templateVersion, setTemplateVersion] = useState(undefined);
+  const experimentPromise = useExperimentResult('dashboard-invite-members');
+
+  console.log(templateVersion);
+
+  useEffect(() => {
+    /* Wait for the API */
+    experimentPromise.then(setTemplateVersion);
+  }, [experimentPromise]);
+
   return (
     <HeroWrapper>
       <motion.div
@@ -26,8 +37,8 @@ export default () => {
           web development.
         </SubTitle>
 
-        <ListTemplateBVersion />
-        <CTATemplateAVersion />
+        {templateVersion === 'A' && <CTATemplateAVersion />}
+        {templateVersion === 'B' && <ListTemplateBVersion />}
       </motion.div>
     </HeroWrapper>
   );
