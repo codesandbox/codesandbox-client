@@ -9,17 +9,12 @@ const NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
 const LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 const STAGING_API = Boolean(JSON.stringify(process.env.STAGING_API));
 
-const getAbTestingEnv = () => {
-  const domain = process.env.STAGING_API
-    ? 'codesandbox.stream'
-    : 'codesandbox.io';
-
-  return `https://ab-testing.${
+const getAbTestingEnv = () =>
+  `https://ab-testing.${
     process.env.NODE_ENV === 'development' || process.env.STAGING
-      ? domain
+      ? 'codesandbox.stream'
       : host()
   }`;
-};
 
 export const AB_TESTING_URL = getAbTestingEnv();
 
