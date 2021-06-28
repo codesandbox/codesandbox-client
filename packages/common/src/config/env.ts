@@ -11,9 +11,7 @@ const STAGING_API = Boolean(JSON.stringify(process.env.STAGING_API));
 const AB_TESTING_URL_STAGING = 'https://ab-testing.codesandbox.stream';
 const AB_TESTING_URL_PRODUCTION = 'https://ab-testing.codesandbox.io';
 export const AB_TESTING_URL =
-  'STAGING_BRANCH' in process.env
-    ? AB_TESTING_URL_PRODUCTION
-    : AB_TESTING_URL_STAGING;
+  'STAGING' in process.env ? AB_TESTING_URL_PRODUCTION : AB_TESTING_URL_STAGING;
 
 export const getExperimentUserId = () => {
   const KEY_NAME = 'csb-ab-user-id';
