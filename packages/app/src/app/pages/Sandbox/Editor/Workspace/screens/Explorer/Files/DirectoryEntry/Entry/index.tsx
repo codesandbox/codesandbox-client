@@ -86,9 +86,9 @@ const EntryComponent: React.FC<IEntryProps> = ({
   module,
   path,
 }) => {
-  const [state, setState] = useState(incomingState);
-  const appState = useAppState();
   const effects = useEffects();
+  const appState = useAppState();
+  const [state, setState] = useState(incomingState);
   const [error, setError] = useState<string | false | null>(null);
   const [hovering, setHovering] = useState(false);
 
