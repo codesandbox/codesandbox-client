@@ -71,6 +71,8 @@ export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
         markTabsNotDirty={markTabsNotDirty}
         discardModuleChanges={discardModuleChanges}
         getModulePath={getModulePath}
+        path={module.path}
+        module={module}
       />
     );
   }

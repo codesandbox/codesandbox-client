@@ -3,6 +3,7 @@ import { Directory, Module } from '@codesandbox/common/lib/types';
 import { ListAction, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { ContextMenu, ContextMenuItemType } from 'app/components/ContextMenu';
+import { useAppState, useEffects } from 'app/overmind';
 import React, { useState } from 'react';
 import { DragSource } from 'react-dnd';
 
@@ -53,6 +54,8 @@ interface IEntryProps {
   moduleHasError?: boolean;
   rightColors?: string[];
   state?: string;
+  module?: Module;
+  path?: string;
 }
 
 const EntryComponent: React.FC<IEntryProps> = ({
@@ -80,8 +83,12 @@ const EntryComponent: React.FC<IEntryProps> = ({
   rightColors = [],
   renameValidator,
   state: incomingState = '',
+  module,
+  path,
 }) => {
   const [state, setState] = useState(incomingState);
+  const appState = useAppState();
+  const effects = useEffects();
   const [error, setError] = useState<string | false | null>(null);
   const [hovering, setHovering] = useState(false);
 
@@ -128,6 +135,23 @@ const EntryComponent: React.FC<IEntryProps> = ({
     }
   };
 
+  const showESModuleItem: boolean = !!(
+    module &&
+    path &&
+    appState.editor.currentSandbox.template === 'esm-react'
+  );
+  const copyESModuleURL = () => {
+    const esmoduleUrl = new URL(
+      path.substr(1),
+      `https://esmodule-cdn.fly.dev/${appState.editor.currentSandbox.id}/fs/`
+    );
+    esmoduleUrl.searchParams.set(
+      'mtime',
+      `${new Date(module.updatedAt).getTime()}`
+    );
+    effects.browser.copyToClipboard(esmoduleUrl.href);
+  };
+
   const setCurrentModuleAction = () => setCurrentModule(id);
 
   const onMouseEnter = () => setHovering(true);
@@ -171,6 +195,11 @@ const EntryComponent: React.FC<IEntryProps> = ({
         title: 'Rename',
         action: renameAction,
         icon: EditIcon,
+      },
+      showESModuleItem && {
+        title: 'Copy as ESModule url',
+        action: copyESModuleURL,
+        icon: AddFileIcon, // TODO: Figure out what the actual icon is
       },
       deleteEntry && {
         title: 'Delete',
