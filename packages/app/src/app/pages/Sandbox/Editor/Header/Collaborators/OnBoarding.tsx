@@ -7,49 +7,43 @@ import { Text } from '@codesandbox/components';
 
 import { EmbedIcon } from '../icons';
 
-const OnBoarding = ({ visibility, onClose }) => {
-  return (
-    <AnimatePresence>
-      {visibility && (
-        <Container
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.7 }}
-        >
-          <CloseButton onClick={onClose}>
-            <svg width={9} height={9} fill="none">
-              <path
-                d="M8.672.868L7.95.14 4.702 3.413 1.454.14.733.868 3.98 4.14.733 7.413l.721.727 3.248-3.272L7.95 8.14l.722-.727L5.424 4.14 8.672.868z"
-                fill="#fff"
-              />
-            </svg>
-          </CloseButton>
-
-          <Image src="/static/img/livesession-onboarding.png" alt="Example" />
-          <Text
-            as="h3"
-            size={3}
-            css={{ display: 'block', marginBottom: '.5em' }}
-          >
-            <EmbedIcon
-              css={css({
-                height: 3,
-                marginRight: 1,
-                top: '1px',
-                position: 'relative',
-              })}
+const OnBoarding = ({ visibility, onClose }) => (
+  <AnimatePresence>
+    {visibility && (
+      <Container
+        initial={{ opacity: 0, scale: 0.7 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.7 }}
+      >
+        <CloseButton onClick={onClose}>
+          <svg width={9} height={9} fill="none">
+            <path
+              d="M8.672.868L7.95.14 4.702 3.413 1.454.14.733.868 3.98 4.14.733 7.413l.721.727 3.248-3.272L7.95 8.14l.722-.727L5.424 4.14 8.672.868z"
+              fill="#fff"
             />
-            Share
-          </Text>
-          <Text css={{ opacity: 0.6, lineHeight: 1.6 }}>
-            A link is all you need to hop into a sandbox and keep development
-            work flowing.
-          </Text>
-        </Container>
-      )}
-    </AnimatePresence>
-  );
-};
+          </svg>
+        </CloseButton>
+
+        <Image src="/static/img/livesession-onboarding.png" alt="Example" />
+        <Text as="h3" size={3} css={{ display: 'block', marginBottom: '.5em' }}>
+          <EmbedIcon
+            css={css({
+              height: 3,
+              marginRight: 1,
+              top: '1px',
+              position: 'relative',
+            })}
+          />
+          Share
+        </Text>
+        <Text css={{ opacity: 0.6, lineHeight: 1.6 }}>
+          A link is all you need to hop into a sandbox and keep development work
+          flowing.
+        </Text>
+      </Container>
+    )}
+  </AnimatePresence>
+);
 
 const CloseButton = styled.button`
   background: none;
