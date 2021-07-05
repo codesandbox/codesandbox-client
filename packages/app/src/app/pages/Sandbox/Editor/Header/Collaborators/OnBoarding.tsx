@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { AnimatePresence, motion } from 'framer-motion';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Text } from '@codesandbox/components';
 
@@ -15,7 +16,12 @@ const OnBoarding = ({ visibility, onClose }) => (
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.7 }}
       >
-        <CloseButton onClick={onClose}>
+        <CloseButton
+          onClick={() => {
+            onClose();
+            track('Editor - Close - Share onboarding');
+          }}
+        >
           <svg width={9} height={9} fill="none">
             <path
               d="M8.672.868L7.95.14 4.702 3.413 1.454.14.733.868 3.98 4.14.733 7.413l.721.727 3.248-3.272L7.95 8.14l.722-.727L5.424 4.14 8.672.868z"
