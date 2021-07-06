@@ -43,6 +43,7 @@ interface IEntryProps {
   onClick?: () => void;
   markTabsNotDirty?: () => void;
   onRenameCancel?: () => void;
+  copyESModuleURL?: () => void;
   getModulePath?: (
     modules: Module[],
     directories: Directory[],
@@ -71,6 +72,7 @@ const EntryComponent: React.FC<IEntryProps> = ({
   deleteEntry,
   onClick,
   onRenameCancel,
+  copyESModuleURL,
   markTabsNotDirty,
   rename,
   isNotSynced,
@@ -171,6 +173,11 @@ const EntryComponent: React.FC<IEntryProps> = ({
         title: 'Rename',
         action: renameAction,
         icon: EditIcon,
+      },
+      !!copyESModuleURL && {
+        title: 'Copy as ESModule URL',
+        action: copyESModuleURL,
+        icon: AddFileIcon, // TODO: Figure out what the actual icon is
       },
       deleteEntry && {
         title: 'Delete',
