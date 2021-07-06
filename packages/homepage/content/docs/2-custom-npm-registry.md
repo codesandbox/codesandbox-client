@@ -132,12 +132,10 @@ the tokens that are sent in. We can
 
 ### Can I use a .npmrc file?
 
-If you have a `.npmrc` in your sandbox, and the sandbox belongs to a Pro
-Workspace, we'll use the credentials in the `.npmrc` to fetch packages. However,
-we discourage this approach, since you'd share your registry auth token with
-anyone visiting the sandbox. Using the Workspace Setting ensures that any
-collaborator of a sandbox can use the private registry without getting access to
-the token.
+To make sure that credentials don't accidentally get shared with collaborators 
+of a sandbox, we don't support reading credentials from a `.npmrc` file. We
+recommend you to put the auth token in the workspace configuration instead,
+so that it's encrypted and only shared with the admin of the workspace.
 
 ### Does this work with container sandboxes?
 
