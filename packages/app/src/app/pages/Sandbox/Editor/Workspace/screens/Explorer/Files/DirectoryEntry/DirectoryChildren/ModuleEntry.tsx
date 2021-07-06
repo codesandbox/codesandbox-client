@@ -1,4 +1,6 @@
 import { Directory, Module } from '@codesandbox/common/lib/types';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { useAppState, useEffects } from 'app/overmind';
 import { getType } from 'app/utils/get-type.ts';
 import React from 'react';
@@ -69,6 +71,10 @@ export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
         `${new Date(module.updatedAt).getTime()}`
       );
       copyToClipboard(esmoduleUrl.href);
+      notificationState.addNotification({
+        message: 'Copied ESModule URL',
+        status: NotificationStatus.SUCCESS,
+      });
     }, [currentSandbox.id, module.updatedAt, module.path, copyToClipboard]);
 
     return (
@@ -92,7 +98,7 @@ export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
         markTabsNotDirty={markTabsNotDirty}
         discardModuleChanges={discardModuleChanges}
         getModulePath={getModulePath}
-        onCopyESModuleURL={showESModuleItem ? handleCopyESModuleUrl : null}
+        copyESModuleURL={showESModuleItem ? handleCopyESModuleUrl : null}
       />
     );
   }
