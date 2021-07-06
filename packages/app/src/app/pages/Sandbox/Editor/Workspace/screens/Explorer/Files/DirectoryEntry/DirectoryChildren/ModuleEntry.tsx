@@ -1,5 +1,5 @@
 import { Directory, Module } from '@codesandbox/common/lib/types';
-import { useAppState } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 import { getType } from 'app/utils/get-type.ts';
 import React from 'react';
 
@@ -40,7 +40,10 @@ export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
     isActive,
   }) => {
     const {
-      editor: { mainModule },
+      browser: { copyToClipboard },
+    } = useEffects();
+    const {
+      editor: { mainModule, currentSandbox },
       live,
     } = useAppState();
     const isMainModule = module.id === mainModule.id;
@@ -49,6 +52,24 @@ export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
     const liveUsers = live.liveUsersByModule[module.shortid] || [];
 
     const isNotSynced = module.savedCode && module.code !== module.savedCode;
+
+    const showESModuleItem: boolean = !!(
+      module &&
+      module.path &&
+      currentSandbox.template === 'esm-react'
+    );
+
+    const handleCopyESModuleUrl = React.useCallback(() => {
+      const esmoduleUrl = new URL(
+        module.path.substr(1),
+        `https://esmodule-cdn.fly.dev/${currentSandbox.id}/fs/`
+      );
+      esmoduleUrl.searchParams.set(
+        'mtime',
+        `${new Date(module.updatedAt).getTime()}`
+      );
+      copyToClipboard(esmoduleUrl.href);
+    }, [currentSandbox.id, module.updatedAt, module.path, copyToClipboard]);
 
     return (
       // @ts-ignore
@@ -71,8 +92,7 @@ export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
         markTabsNotDirty={markTabsNotDirty}
         discardModuleChanges={discardModuleChanges}
         getModulePath={getModulePath}
-        path={module.path}
-        module={module}
+        onCopyESModuleURL={showESModuleItem ? handleCopyESModuleUrl : null}
       />
     );
   }
