@@ -175,7 +175,7 @@ const EntryComponent: React.FC<IEntryProps> = ({
         icon: EditIcon,
       },
       !!onCopyESModuleURL && {
-        title: 'Copy as ESModule url',
+        title: 'Copy as ESModule URL',
         action: onCopyESModuleURL,
         icon: AddFileIcon, // TODO: Figure out what the actual icon is
       },
