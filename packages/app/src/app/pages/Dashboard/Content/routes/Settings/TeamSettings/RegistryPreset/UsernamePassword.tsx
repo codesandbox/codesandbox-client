@@ -20,7 +20,7 @@ export const UsernamePassword = ({
     .toString('utf-8')
     .split(':');
 
-  if (!initialPassword) {
+  if (!initialPassword || !authKey.endsWith('=')) {
     // Meaning that we parsed wrong
     initialUsername = '';
     initialPassword = '';
