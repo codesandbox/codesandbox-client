@@ -52,6 +52,7 @@ export const Content = withRouter(({ history }) => {
       })}
     >
       <Switch>
+        <Route path="/dashboard/beta" component={() => <p>Beta</p>} />
         <Route path="/dashboard/home" component={Home} />
         <Route path="/dashboard/drafts" component={Drafts} />
         <Route path="/dashboard/all/:path*" component={All} />

@@ -8,6 +8,7 @@ import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { SubscriptionType } from 'app/graphql/types';
 import { MenuItem, Badge } from './elements';
+import { BetaMenuItem, BetaActiveItem } from './BetaItem';
 
 type Team = {
   id: string;
@@ -27,6 +28,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const { dashboard, user } = state;
     const history = useHistory();
 
+    const isInBetaScreen = history.location.pathname === dashboardUrls.beta();
     const personalWorkspace = dashboard.teams.find(
       t => t.id === state.personalWorkspaceId
     )!;
@@ -63,21 +65,27 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 },
               })}
             >
-              <Stack gap={2} as="span" align="center">
-                <Stack as="span" align="center" justify="center">
-                  <TeamAvatar
-                    avatar={
-                      state.activeTeamInfo?.avatarUrl || activeAccount.avatarUrl
-                    }
-                    name={activeAccount.name}
-                  />
+              {isInBetaScreen ? (
+                <BetaActiveItem />
+              ) : (
+                <Stack gap={2} as="span" align="center">
+                  <Stack as="span" align="center" justify="center">
+                    <TeamAvatar
+                      avatar={
+                        state.activeTeamInfo?.avatarUrl ||
+                        activeAccount.avatarUrl
+                      }
+                      name={activeAccount.name}
+                    />
+                  </Stack>
+                  <Text size={4} weight="normal" maxWidth={140}>
+                    {activeAccount.name}
+                  </Text>
                 </Stack>
-                <Text size={4} weight="normal" maxWidth={140}>
-                  {activeAccount.name}
-                </Text>
-              </Stack>
+              )}
               <Icon name="caret" size={8} />
             </Stack>
+
             <Menu.List
               css={css({
                 width: '100%',
@@ -92,13 +100,17 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   key={team.id}
                   align="center"
                   gap={2}
-                  onSelect={() =>
+                  onSelect={() => {
                     onSelect({
                       name: team.name,
                       id: team.id,
                       avatarUrl: team.avatarUrl,
-                    })
-                  }
+                    });
+
+                    if (isInBetaScreen) {
+                      history.push('/dashboard/all');
+                    }
+                  }}
                 >
                   <TeamAvatar
                     avatar={
@@ -121,9 +133,15 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                     ].includes(team.subscription?.type) && <Badge>Pro</Badge>}
                   </Stack>
 
-                  {activeAccount.id === team.id && <Icon name="simpleCheck" />}
+                  {activeAccount.id === team.id && !isInBetaScreen && (
+                    <Icon name="simpleCheck" />
+                  )}
                 </MenuItem>
               ))}
+
+              {/* TODO: Wrap pilot user */}
+              <BetaMenuItem />
+
               <Stack
                 as={Menu.Item}
                 align="center"

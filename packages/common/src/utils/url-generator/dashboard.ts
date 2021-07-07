@@ -22,6 +22,8 @@ export const allSandboxes = (path: string, teamId?: string | null) =>
     teamId
   );
 
+export const beta = () => `${DASHBOARD_URL_PREFIX}/beta`;
+
 export const drafts = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/drafts`, teamId);
 

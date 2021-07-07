@@ -18,6 +18,12 @@ const Badge = styled.p`
   top: 1px; // 👌
 `;
 
+const BetaBadge = styled(Badge)`
+  background-color: #3dc9b0;
+  color: ${({ theme }) => theme.colors.grays[700]};
+  border: 1px solid ${({ theme }) => theme.colors.grays[700]};
+`;
+
 const MenuItem = styled(Stack)`
   height: 10;
   text-align: left;
@@ -30,9 +36,9 @@ const MenuItem = styled(Stack)`
 
   padding-left: 8;
 
-  &:hover ${Badge} {
+  &:hover ${Badge}:not(${BetaBadge}) {
     background-color: ${({ theme }) => theme.colors.grays[600]};
   }
 `;
 
-export { MenuItem, Badge };
+export { MenuItem, Badge, BetaBadge };
