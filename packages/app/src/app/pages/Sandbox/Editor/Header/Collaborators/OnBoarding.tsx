@@ -30,7 +30,7 @@ const OnBoarding = ({ visibility, onClose }) => (
           </svg>
         </CloseButton>
 
-        <Image src="/static/img/livesession-onboarding.png" alt="Example" />
+        <Image src="/static/img/livesession-onboarding.jpeg" alt="Example" />
         <Text as="h3" size={3} css={{ display: 'block', marginBottom: '.5em' }}>
           <EmbedIcon
             css={css({
