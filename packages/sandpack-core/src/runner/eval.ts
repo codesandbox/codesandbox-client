@@ -1,20 +1,7 @@
-// @flow
+/* eslint-disable no-eval */
 import buildProcess from './utils/process';
 
 const g = typeof window === 'undefined' ? self : window;
-const requestFrame = (() => {
-  const raf =
-    g.requestAnimationFrame ||
-    // @ts-ignore
-    g.mozRequestAnimationFrame ||
-    g.webkitRequestAnimationFrame ||
-    function (fn) {
-      return g.setTimeout(fn, 20);
-    };
-  return function (fn: (time: number) => void) {
-    return raf(fn);
-  };
-})();
 
 const hasGlobalDeclaration = /^const global/m;
 
@@ -39,8 +26,7 @@ export default function (
     module,
     exports,
     process,
-    setImmediate: requestFrame,
-    global,
+    global,    
     ...globals,
   };
 
@@ -58,9 +44,10 @@ export default function (
   const globalsCode = allGlobalKeys.length ? allGlobalKeys.join(', ') : '';
   const globalsValues = allGlobalKeys.map(k => allGlobals[k]);
   try {
-    const newCode = `(function evaluate(` + globalsCode + `) {` + code + `\n})`;
+    const newCode =
+      `(function $csb$eval(` + globalsCode + `) {` + code + `\n})`;
     // @ts-ignore
-    (0, eval)(newCode).apply(allGlobals.window || this, globalsValues);
+    (0, eval)(newCode).apply(allGlobals.global, globalsValues);
 
     return module.exports;
   } catch (e) {
