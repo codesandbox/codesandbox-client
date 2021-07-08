@@ -21,6 +21,7 @@ import { Discover } from './routes/Discover';
 import { Album } from './routes/Discover/Album';
 import { Curate } from './routes/Discover/Curate';
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
+import { BetaRepositoriesPage } from './routes/Beta';
 
 export const Content = withRouter(({ history }) => {
   const { dashboard } = useActions();
@@ -52,7 +53,7 @@ export const Content = withRouter(({ history }) => {
       })}
     >
       <Switch>
-        <Route path="/dashboard/beta" component={() => <p>Beta</p>} />
+        <Route path="/dashboard/beta" component={BetaRepositoriesPage} />
         <Route path="/dashboard/home" component={Home} />
         <Route path="/dashboard/drafts" component={Drafts} />
         <Route path="/dashboard/all/:path*" component={All} />
