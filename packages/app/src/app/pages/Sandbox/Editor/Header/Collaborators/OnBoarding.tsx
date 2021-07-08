@@ -85,7 +85,7 @@ const Container = styled(motion.div)`
   border: 1px solid ${({ theme }) => theme.colors.dialog.border};
 
   position: absolute;
-  top: 36px;
+  top: 30px;
   left: calc(245px / -2 + 70px / 4);
   z-index: 99999;
 
