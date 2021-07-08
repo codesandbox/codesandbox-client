@@ -3,6 +3,7 @@ import { Input, Link, Text } from '@codesandbox/components';
 import { AuthType, RegistryType } from 'app/graphql/types';
 import { RegistryPresetProps } from '.';
 import { CustomFormField } from '../RegistryForm';
+import { UsernamePassword } from './UsernamePassword';
 
 export const AzureRegistryPreset = ({
   registryUrl,
@@ -11,28 +12,12 @@ export const AzureRegistryPreset = ({
   setAuthenticationType,
   setAuthKey,
   setRegistryType,
+  authKey,
 }: RegistryPresetProps) => {
   React.useEffect(() => {
     setRegistryType(RegistryType.Custom);
     setAuthenticationType(AuthType.Basic);
   }, [setRegistryType, setAuthenticationType]);
-
-  const [username, setUsername] = React.useState('');
-  const [token, setToken] = React.useState('');
-
-  React.useEffect(() => {
-    if (!username || !token) {
-      return;
-    }
-
-    // First unencode the token, this is what npm does as well
-    const unencodedToken = Buffer.from(token, 'base64').toString('utf-8');
-
-    const key = `${username}:${unencodedToken}`;
-    const base64Data = Buffer.from(key);
-    const authKey = base64Data.toString('base64');
-    setAuthKey(authKey);
-  }, [username, token, setAuthKey]);
 
   return (
     <>
@@ -59,24 +44,11 @@ export const AzureRegistryPreset = ({
         </Text>
       </div>
 
-      <CustomFormField label="Username">
-        <Input
-          value={username}
-          required
-          onChange={e => setUsername(e.target.value)}
-          disabled={disabled}
-        />
-      </CustomFormField>
-
-      <CustomFormField label="Access Token (base64 encoded)">
-        <Input
-          value={token}
-          required
-          onChange={e => setToken(e.target.value)}
-          disabled={disabled}
-          type="password"
-        />
-      </CustomFormField>
+      <UsernamePassword
+        authKey={authKey}
+        setAuthKey={setAuthKey}
+        disabled={disabled}
+      />
     </>
   );
 };
