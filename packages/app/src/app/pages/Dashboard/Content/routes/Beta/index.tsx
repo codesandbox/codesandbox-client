@@ -11,8 +11,7 @@ import { useFilteredItems } from './useFilteredItems';
 export const BetaRepositoriesPage = () => {
   const params = useParams<{ path: string }>();
   const items = useFilteredItems(params);
-  const param = params.path || '';
-  const home = !param || param === '/';
+
   const actions = useActions();
   const {
     activeTeam,
@@ -20,35 +19,17 @@ export const BetaRepositoriesPage = () => {
   } = useAppState();
 
   React.useEffect(() => {
-    const p = home ? null : param;
-    actions.dashboard.getReposByPath(p);
-  }, [param, actions.dashboard, activeTeam, home]);
+    actions.dashboard.getReposByPath(null);
+  }, [actions.dashboard]);
 
   const itemsToShow = (): DashboardGridItem[] => {
     if (sandboxes.REPOS === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
-    if (home) {
-      return viewMode === 'grid' && items.length
-        ? [{ type: 'new-repo' }, ...items]
-        : items;
-    }
 
-    if (sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes) {
-      return [
-        {
-          type: 'new-master-branch',
-          repo: {
-            owner: sandboxes.REPOS[param].owner,
-            name: sandboxes.REPOS[param].name,
-            branch: sandboxes.REPOS[param].branch,
-          },
-        },
-        ...items,
-      ];
-    }
-
-    return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
+    return viewMode === 'grid' && items.length
+      ? [{ type: 'new-repo' }, ...items]
+      : items;
   };
 
   const pageType: PageTypes = 'repos';
