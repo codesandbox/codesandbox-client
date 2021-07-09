@@ -81,6 +81,7 @@ const Container = styled(motion.div)`
   width: 245px;
   padding: 1em;
   border-radius: 4px;
+  overflow: hidden;
 
   border: 1px solid ${({ theme }) => theme.colors.dialog.border};
 
