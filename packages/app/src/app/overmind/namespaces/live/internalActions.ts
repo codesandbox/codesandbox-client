@@ -69,6 +69,11 @@ export const initialize = async (
       moduleState,
     } = await effects.live.joinChannel(id, reason => {
       if (reason === 'room not found') {
+        // Reset the live room id so that the logic that checks if the room id changed
+        // doesn't get confused. We changed that a sandbox will always have a consistent
+        // room id, so we need to manually change the id so the "change" logic actually
+        // makes sure that we reconnect.
+        state.live.roomInfo.roomId = 'INVALID_ROOM';
         actions.refetchSandboxInfo();
       }
     });
