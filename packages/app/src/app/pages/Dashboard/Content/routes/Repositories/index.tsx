@@ -67,7 +67,7 @@ export const RepositoriesPage = () => {
     activeSandboxes.length && param && items[0] && items[0].type === 'sandbox'
       ? getPossibleTemplates(possibleTemplates)
       : [];
-
+  console.log(itemsToShow());
   const pageType: PageTypes = 'repos';
 
   return (

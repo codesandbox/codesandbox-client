@@ -154,6 +154,10 @@ export type CurrentUser = {
   workspaces: Array<Team>;
 };
 
+export type CurrentUserCollaboratorSandboxesArgs = {
+  isInBeta: Maybe<Scalars['Boolean']>;
+};
+
 export type CurrentUserCollectionArgs = {
   path: Scalars['String'];
   teamId: Maybe<Scalars['ID']>;
@@ -180,6 +184,7 @@ export type CurrentUserRecentlyUsedTemplatesArgs = {
 
 export type CurrentUserSandboxesArgs = {
   hasOriginalGit: Maybe<Scalars['Boolean']>;
+  isInBeta: Maybe<Scalars['Boolean']>;
   limit: Maybe<Scalars['Int']>;
   orderBy: Maybe<OrderBy>;
   showDeleted: Maybe<Scalars['Boolean']>;
@@ -937,6 +942,7 @@ export type Sandbox = {
   invitations: Array<Invitation>;
   isFrozen: Scalars['Boolean'];
   isSse: Maybe<Scalars['Boolean']>;
+  isV2: Scalars['Boolean'];
   likeCount: Scalars['Int'];
   /** If the sandbox has been forked from a git sandbox this will be set */
   originalGit: Maybe<Git>;
@@ -2583,6 +2589,22 @@ export type SharedWithMeSandboxesQuery = { __typename?: 'RootQueryType' } & {
     { __typename?: 'CurrentUser' } & {
       collaboratorSandboxes: Array<
         { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
+      >;
+    }
+  >;
+};
+
+export type SharedWithMeSandboxesBetaQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type SharedWithMeSandboxesBetaQuery = {
+  __typename?: 'RootQueryType';
+} & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      collaboratorSandboxes: Array<
+        { __typename?: 'Sandbox' } & RepoFragmentDashboardFragment
       >;
     }
   >;

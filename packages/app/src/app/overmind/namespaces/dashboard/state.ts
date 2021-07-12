@@ -24,6 +24,7 @@ export type DashboardSandboxStructure = {
   TEMPLATE_HOME: Template[] | null;
   RECENT_HOME: Sandbox[] | null;
   SHARED: Sandbox[] | null;
+  SHARED_BETA: Sandbox[] | null;
   LIKED: Sandbox[] | null;
   ALL: {
     [path: string]: Sandbox[];
@@ -78,6 +79,7 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   TEMPLATES: null,
   DELETED: null,
   SHARED: null,
+  SHARED_BETA: null,
   LIKED: null,
   RECENT: null,
   SEARCH: null,
