@@ -70,7 +70,7 @@ export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
     const handleCopyESModuleUrl = useCallback(() => {
       const esmoduleUrl = new URL(
         module.path.substr(1),
-        `https://esmodule-cdn.fly.dev/${currentSandbox.id}/fs/`
+        `https://esm-cdn-preview.codesandbox.io/${currentSandbox.id}/fs/`
       );
       esmoduleUrl.searchParams.set(
         'mtime',
