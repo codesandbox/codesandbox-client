@@ -3,9 +3,11 @@ import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { useAppState, useEffects } from 'app/overmind';
 import { getType } from 'app/utils/get-type.ts';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { Entry } from '../Entry';
+
+const ESM_EXTENSIONS = ['ts', 'tsx', 'js', 'jsx'];
 
 interface IModuleEntryProps {
   module: Module;
@@ -55,16 +57,20 @@ export const ModuleEntry: React.FC<IModuleEntryProps> = React.memo(
 
     const isNotSynced = module.savedCode && module.code !== module.savedCode;
 
-    const showESModuleItem: boolean = !!(
-      module &&
-      module.path &&
-      currentSandbox.template === 'esm-react'
-    );
+    const showESModuleItem: boolean = useMemo(() => {
+      if (!module.path || currentSandbox.template !== 'esm-react') {
+        return false;
+      }
 
-    const handleCopyESModuleUrl = React.useCallback(() => {
+      const modulePathParts = module.path.split('.');
+      const extname = modulePathParts[modulePathParts.length - 1];
+      return ESM_EXTENSIONS.includes(extname);
+    }, [module.path, currentSandbox.template]);
+
+    const handleCopyESModuleUrl = useCallback(() => {
       const esmoduleUrl = new URL(
         module.path.substr(1),
-        `https://esmodule-cdn.fly.dev/${currentSandbox.id}/fs/`
+        `https://esm-cdn-preview.codesandbox.io/${currentSandbox.id}/fs/`
       );
       esmoduleUrl.searchParams.set(
         'mtime',
