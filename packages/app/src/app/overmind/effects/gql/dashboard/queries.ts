@@ -45,8 +45,8 @@ import {
   SharedWithMeSandboxesQueryVariables,
   CuratedAlbumsQuery,
   CuratedAlbumsQueryVariables,
-  SharedWithMeSandboxesBetaQuery,
-  SharedWithMeSandboxesBetaQueryVariables,
+  SandboxesBetaQuery,
+  SandboxesBetaQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -338,11 +338,11 @@ export const sharedWithmeSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
-export const sharedWithMeSandboxesBeta: Query<
-  SharedWithMeSandboxesBetaQuery,
-  SharedWithMeSandboxesBetaQueryVariables
+export const sandboxesBeta: Query<
+  SandboxesBetaQuery,
+  SandboxesBetaQueryVariables
 > = gql`
-  query SharedWithMeSandboxesBeta {
+  query SandboxesBeta {
     me {
       collaboratorSandboxes(isInBeta: true) {
         ...repoFragmentDashboard

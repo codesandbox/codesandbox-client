@@ -1840,17 +1840,16 @@ export const getSharedSandboxes = async ({ state, effects }: Context) => {
   }
 };
 
-export const getSharedSandboxesBeta = async ({ state, effects }: Context) => {
+export const getBetaSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
-    const data = await effects.gql.queries.sharedWithMeSandboxesBeta({});
+    const data = await effects.gql.queries.sandboxesBeta({});
 
     if (!data.me?.collaboratorSandboxes) {
       return;
     }
 
-    dashboard.sandboxes[sandboxesTypes.SHARED_BETA] =
-      data.me?.collaboratorSandboxes;
+    dashboard.sandboxes[sandboxesTypes.BETA] = data.me?.collaboratorSandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting Sandboxes shared with you - beta'

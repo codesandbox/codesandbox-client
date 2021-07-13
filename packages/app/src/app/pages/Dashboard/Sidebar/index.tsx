@@ -57,6 +57,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   } | null>(null);
   const { dashboard, activeTeam, activeTeamInfo, user } = state;
 
+  const history = useHistory();
+  const isInBetaScreen = history.location.pathname === dashboardUrls.beta();
+
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
   }, [actions.dashboard, state.activeTeam]);
@@ -188,71 +191,79 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="discover"
             badge
           />
-          <RowItem
-            name="My Drafts"
-            page="drafts"
-            path={dashboardUrls.drafts(activeTeam)}
-            icon="file"
-          />
-          <Menu.Divider />
-          <NestableRowItem
-            name="All Sandboxes"
-            path={dashboardUrls.allSandboxes('/', activeTeam)}
-            folderPath="/"
-            folders={[
-              ...folders,
-              ...(newFolderPath
-                ? [{ path: newFolderPath, name: '', parent: null }]
-                : []),
-            ]}
-          />
-          <RowItem
-            name="Templates"
-            page="templates"
-            path={dashboardUrls.templates(activeTeam)}
-            icon="star"
-          />
-          <RowItem
-            name="Repositories"
-            page="repos"
-            path={dashboardUrls.repos(activeTeam)}
-            icon="fork"
-          />
-          {activeTeamInfo?.joinedPilotAt && (
-            <RowItem
-              name="Always-On"
-              page="always-on"
-              path={dashboardUrls.alwaysOn(activeTeam)}
-              icon="server"
-            />
+          {!isInBetaScreen ? (
+            <>
+              <RowItem
+                name="My Drafts"
+                page="drafts"
+                path={dashboardUrls.drafts(activeTeam)}
+                icon="file"
+              />
+              <Menu.Divider />
+              <NestableRowItem
+                name="All Sandboxes"
+                path={dashboardUrls.allSandboxes('/', activeTeam)}
+                folderPath="/"
+                folders={[
+                  ...folders,
+                  ...(newFolderPath
+                    ? [{ path: newFolderPath, name: '', parent: null }]
+                    : []),
+                ]}
+              />
+              <RowItem
+                name="Templates"
+                page="templates"
+                path={dashboardUrls.templates(activeTeam)}
+                icon="star"
+              />
+              <RowItem
+                name="Repositories"
+                page="repos"
+                path={dashboardUrls.repos(activeTeam)}
+                icon="fork"
+              />
+              {activeTeamInfo?.joinedPilotAt && (
+                <RowItem
+                  name="Always-On"
+                  page="always-on"
+                  path={dashboardUrls.alwaysOn(activeTeam)}
+                  icon="server"
+                />
+              )}
+              <RowItem
+                name="Recently Modified"
+                page="recents"
+                path={dashboardUrls.recents(activeTeam)}
+                icon="clock"
+              />
+              <RowItem
+                name="Recently Deleted"
+                page="deleted"
+                path={dashboardUrls.deleted(activeTeam)}
+                icon="trash"
+              />
+              <Element marginTop={8}>
+                <Menu.Divider />
+              </Element>
+              <RowItem
+                name="Shared With Me"
+                page="shared"
+                path={dashboardUrls.shared(activeTeam)}
+                icon="sharing"
+              />
+              <RowItem
+                name="Likes by Me"
+                page="liked"
+                path={dashboardUrls.liked(activeTeam)}
+                icon="heart"
+              />
+            </>
+          ) : (
+            <Element marginTop={2}>
+              <Menu.Divider />
+            </Element>
           )}
-          <RowItem
-            name="Recently Modified"
-            page="recents"
-            path={dashboardUrls.recents(activeTeam)}
-            icon="clock"
-          />
-          <RowItem
-            name="Recently Deleted"
-            page="deleted"
-            path={dashboardUrls.deleted(activeTeam)}
-            icon="trash"
-          />
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
-          <RowItem
-            name="Shared With Me"
-            page="shared"
-            path={dashboardUrls.shared(activeTeam)}
-            icon="sharing"
-          />
-          <RowItem
-            name="Likes by Me"
-            page="liked"
-            path={dashboardUrls.liked(activeTeam)}
-            icon="heart"
-          />
         </List>
         <Element margin={4}>
           <Button

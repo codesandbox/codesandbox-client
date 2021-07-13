@@ -85,6 +85,10 @@ export type DashboardNewRepo = {
   type: 'new-repo';
 };
 
+export type DashboardBetaNewRepo = {
+  type: 'beta-new-repo';
+};
+
 export type DashboardSkeletonRow = {
   type: 'skeleton-row';
 };
@@ -151,6 +155,7 @@ export type DashboardGridItem =
   | DashboardNewFolder
   | DashboardNewSandbox
   | DashboardNewRepo
+  | DashboardBetaNewRepo
   | DashboardSkeletonRow
   | DashboardNewMasterBranch
   | DashboardBlank

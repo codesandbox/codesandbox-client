@@ -35,7 +35,7 @@ export const GithubPagesLogs: FunctionComponent = () => {
   return (
     <Alert
       title="Sandbox Site Logs"
-      description="Deploys to Github may take up to 15 minutes before being visible"
+      description="Deploys to GitHub may take up to 15 minutes before being visible"
     >
       <Element
         marginY={6}

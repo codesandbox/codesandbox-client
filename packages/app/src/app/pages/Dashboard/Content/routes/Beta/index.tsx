@@ -10,23 +10,24 @@ export const BetaRepositoriesPage = () => {
   const actions = useActions();
   const {
     activeTeam,
-    dashboard: { sandboxes, getFilteredSandboxes },
+    dashboard: { sandboxes },
   } = useAppState();
 
   React.useEffect(() => {
-    actions.dashboard.getSharedSandboxesBeta();
+    actions.dashboard.getBetaSandboxes();
   }, [actions.dashboard]);
 
-  const items: DashboardGridItem[] = sandboxes.SHARED_BETA
-    ? getFilteredSandboxes(sandboxes.SHARED_BETA).map(sandbox => ({
-        type: 'sandbox',
-        sandbox,
-      }))
+  const items: DashboardGridItem[] = sandboxes.BETA
+    ? [
+        { type: 'beta-new-repo' },
+        ...sandboxes.BETA.map(sandbox => ({
+          type: 'repo',
+          sandbox,
+        })),
+      ]
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const pageType: PageTypes = 'repos';
-
-  console.log(items);
 
   return (
     <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>

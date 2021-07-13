@@ -2594,13 +2594,9 @@ export type SharedWithMeSandboxesQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
-export type SharedWithMeSandboxesBetaQueryVariables = Exact<{
-  [key: string]: never;
-}>;
+export type SandboxesBetaQueryVariables = Exact<{ [key: string]: never }>;
 
-export type SharedWithMeSandboxesBetaQuery = {
-  __typename?: 'RootQueryType';
-} & {
+export type SandboxesBetaQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       collaboratorSandboxes: Array<

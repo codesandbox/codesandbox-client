@@ -31,7 +31,6 @@ export enum sandboxesTypes {
   DELETED = 'DELETED',
   RECENT = 'RECENT',
   SHARED = 'SHARED',
-  SHARED_BETA = 'SHARED_BETA',
   LIKED = 'LIKED',
   HOME = 'HOME',
   TEMPLATE_HOME = 'TEMPLATE_HOME',
@@ -39,6 +38,7 @@ export enum sandboxesTypes {
   ALL = 'ALL',
   SEARCH = 'SEARCH',
   REPOS = 'REPOS',
+  BETA = 'BETA',
   ALWAYS_ON = 'ALWAYS_ON',
   DISCOVER = 'DISCOVER',
 }

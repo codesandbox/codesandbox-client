@@ -103,7 +103,7 @@ export const ImportFromGithub = () => {
           </Stack>
         ) : (
           <PlaceHolderLink error={error}>
-            {error || 'Enter a Github URL and generate a sandbox link'}
+            {error || 'Enter a GitHub URL and generate a sandbox link'}
           </PlaceHolderLink>
         )}
       </Stack>
