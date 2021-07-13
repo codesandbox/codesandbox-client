@@ -667,9 +667,19 @@ async function compile(opts: CompileOptions) {
 
       await manager.preset.preEvaluate(manager, updatedModules);
 
-      if (!manager.webpackHMR) {
-        const htmlEntries = templateDefinition.getHTMLEntries(configurations);
-        const htmlModulePath = htmlEntries.find(p => Boolean(modules[p]));
+      // HTML Hydration and HMR
+      // If the user code handles hot module reload, we don't modify html dynamically (users can refresh the page manually in this case)
+      if (!manager?.webpackHMR) {
+        let pathname = document.location.pathname;
+        if (!pathname.endsWith('.html')) {
+          pathname = '/index.html';
+        }
+        const htmlEntries = Object.keys(modules).filter(k =>
+          k.endsWith('.html')
+        );
+        const htmlModulePath = htmlEntries.find(
+          p => p === pathname || p === `/public${pathname}`
+        );
         const htmlModule = modules[htmlModulePath];
         let html =
           template === 'vue-cli'
@@ -683,6 +693,7 @@ async function compile(opts: CompileOptions) {
         if (lastHeadHTML && lastHeadHTML !== head) {
           document.location.reload();
         }
+
         if (manager && lastBodyHTML && lastBodyHTML !== body) {
           manager.clearCompiledCache();
         }
@@ -698,20 +709,20 @@ async function compile(opts: CompileOptions) {
           process.env.LOCAL_SERVER ||
           process.env.SANDPACK
         ) {
+          // TODO: Load scripts using document.createElement...
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run. However, if there's no server to provide the static file (in the case of a local server
           // or sandpack), then do it anyways.
-          document.body.innerHTML = body;
+          if (body !== lastBodyHTML) {
+            document.body.innerHTML = body;
+          }
 
           // Add head tags or anything that comes from the template
           // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
           // At this point, the original head was parsed and the files loaded / preloaded.
-
-          // TODO: figure out a way to fix this without overriding head changes done by the bundler
-          // Original issue: https://github.com/codesandbox/sandpack/issues/32
-          // if (document.head && head) {
-          //   document.head.innerHTML = head;
-          // }
+          if (head !== lastHeadHTML) {
+            document.head.innerHTML += head;
+          }
         }
         lastBodyHTML = body;
         lastHeadHTML = head;
