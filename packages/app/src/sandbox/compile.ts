@@ -78,6 +78,21 @@ function sendTestCount(modules: { [path: string]: Module }) {
   });
 }
 
+function getBestHTMLEntrypointMatch(
+  entries: Set<string>,
+  prefixes: Array<string> = ['', '/public', '/src']
+): string | null {
+  for (const prefix of prefixes) {
+    for (const entry of entries) {
+      const fullPath = `${prefix}${entry}`;
+      if (entries.has(fullPath)) {
+        return fullPath;
+      }
+    }
+  }
+  return null;
+}
+
 let firstLoad = true;
 let hadError = false;
 let lastHeadHTML = null;
@@ -671,17 +686,19 @@ async function compile(opts: CompileOptions) {
       // HTML Hydration and HMR
       // If the user code handles hot module reload, we don't modify html dynamically (users can refresh the page manually in this case)
       if (!manager?.webpackHMR) {
-        let pathname = document.location.pathname;
-        if (!pathname.endsWith('.html')) {
-          pathname = '/index.html';
-        }
-        const htmlEntries = Object.keys(modules).filter(k =>
-          k.endsWith('.html')
+        const templateEntries = document.location.pathname.endsWith('.html')
+          ? [document.location.pathname]
+          : templateDefinition.getHTMLEntries(configurations);
+        const htmlTemplateEntriesSet = new Set(
+          templateEntries.length ? templateEntries : ['/index.html']
         );
-        const htmlModulePath = htmlEntries.find(
-          p => p === pathname || p === `/public${pathname}`
+        const htmlEntries = new Set(
+          Object.keys(modules).filter(k => k.endsWith('.html'))
         );
-        const htmlModule = modules[htmlModulePath];
+        const htmlModulePath = getBestHTMLEntrypointMatch(
+          htmlTemplateEntriesSet
+        );
+        const htmlModule = htmlModulePath ? modules[htmlModulePath] : null;
         let html =
           template === 'vue-cli'
             ? '<div id="app"></div>'
