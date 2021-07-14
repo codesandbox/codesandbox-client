@@ -78,14 +78,20 @@ function sendTestCount(modules: { [path: string]: Module }) {
   });
 }
 
-function getBestHTMLEntrypointMatch(
-  entries: Set<string>,
-  prefixes: Array<string> = ['', '/public', '/src']
-): string | null {
+function getBestHTMLEntrypointMatch(opts: {
+  entrypoints: Set<string>;
+  htmlModulePaths: Set<string>;
+  prefixes?: Array<string>;
+}): string | null {
+  const {
+    entrypoints,
+    htmlModulePaths,
+    prefixes = ['', '/public', '/src'],
+  } = opts;
   for (const prefix of prefixes) {
-    for (const entry of entries) {
-      const fullPath = `${prefix}${entry}`;
-      if (entries.has(fullPath)) {
+    for (const entrypoint of entrypoints) {
+      const fullPath = `${prefix}${entrypoint}`;
+      if (htmlModulePaths.has(fullPath)) {
         return fullPath;
       }
     }
@@ -686,18 +692,19 @@ async function compile(opts: CompileOptions) {
       // HTML Hydration and HMR
       // If the user code handles hot module reload, we don't modify html dynamically (users can refresh the page manually in this case)
       if (!manager?.webpackHMR) {
-        const templateEntries = document.location.pathname.endsWith('.html')
-          ? [document.location.pathname]
-          : templateDefinition.getHTMLEntries(configurations);
-        const htmlTemplateEntriesSet = new Set(
-          templateEntries.length ? templateEntries : ['/index.html']
-        );
-        const htmlEntries = new Set(
+        const templateHTMLEntries =
+          templateDefinition.getHTMLEntries(configurations) || [];
+        if (document.location.pathname.endsWith('.html')) {
+          templateHTMLEntries.unshift(document.location.pathname);
+        }
+        const htmlEntrypoints = new Set(templateHTMLEntries);
+        const htmlModulePaths = new Set(
           Object.keys(modules).filter(k => k.endsWith('.html'))
         );
-        const htmlModulePath = getBestHTMLEntrypointMatch(
-          htmlTemplateEntriesSet
-        );
+        const htmlModulePath = getBestHTMLEntrypointMatch({
+          entrypoints: htmlEntrypoints,
+          htmlModulePaths,
+        });
         const htmlModule = htmlModulePath ? modules[htmlModulePath] : null;
         let html =
           template === 'vue-cli'
@@ -720,7 +727,7 @@ async function compile(opts: CompileOptions) {
         // we have to fall back to setting `document.body.innerHTML`, which isn't
         // preferred.
         const serverProvidedHTML =
-          modules[htmlEntries[0]] || manager.preset.htmlDisabled;
+          modules[htmlModulePath] || manager.preset.htmlDisabled;
         if (
           !serverProvidedHTML ||
           !firstLoad ||
