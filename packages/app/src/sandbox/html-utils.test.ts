@@ -11,7 +11,7 @@ describe('HTML Utils', () => {
     expect(isExternalUrl('lib/test.js')).toBe(false);
   });
 
-  it('extractScripts - simple external scripts', async () => {
+  it('extractScripts - scripts with a src attribute', async () => {
     const extracted = await extractScripts(`
     <script src="./test.js"></script>
     <script src="https://unpkg.com/lodash.min.js" async="false"></script>
@@ -27,6 +27,57 @@ describe('HTML Utils', () => {
         isAsync: false,
         isExternal: false,
         src: './test.js',
+      },
+      {
+        attribs: {
+          async: 'false',
+          src: 'https://unpkg.com/lodash.min.js',
+        },
+        content: undefined,
+        isAsync: false,
+        isExternal: true,
+        src: 'https://unpkg.com/lodash.min.js',
+      },
+      {
+        attribs: {
+          async: '',
+          src: 'https://unpkg.com/lodash.min.js',
+        },
+        content: undefined,
+        isAsync: true,
+        isExternal: true,
+        src: 'https://unpkg.com/lodash.min.js',
+      },
+      {
+        attribs: {
+          src: 'https://unpkg.com/lodash.min.js',
+        },
+        content: undefined,
+        isAsync: false,
+        isExternal: true,
+        src: 'https://unpkg.com/lodash.min.js',
+      },
+    ]);
+  });
+
+  it('extractScripts - only return external scripts', async () => {
+    const extracted = await extractScripts(
+      `
+    <script>import * as test from './test.js';</script>
+    <script src="./test.js"></script>
+    <script src="https://unpkg.com/lodash.min.js" async="false"></script>
+    <script src="https://unpkg.com/lodash.min.js" async></script>
+    <script src="https://unpkg.com/lodash.min.js"></script>
+    `,
+      true
+    );
+    expect(extracted).toEqual([
+      {
+        attribs: {},
+        content: `import * as test from './test.js';`,
+        isAsync: false,
+        isExternal: false,
+        src: undefined,
       },
       {
         attribs: {

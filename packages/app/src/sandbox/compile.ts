@@ -36,6 +36,7 @@ import handleExternalResources from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
+import { appendScripts, extractScripts } from './html-utils';
 
 let manager: Manager | null = null;
 let actionsEnabled = false;
@@ -709,12 +710,21 @@ async function compile(opts: CompileOptions) {
           process.env.LOCAL_SERVER ||
           process.env.SANDPACK
         ) {
-          // TODO: Load scripts using document.createElement...
           // The HTML is loaded from the server as a static file, no need to set the innerHTML of the body
           // on the first run. However, if there's no server to provide the static file (in the case of a local server
           // or sandpack), then do it anyways.
           if (body !== lastBodyHTML) {
             document.body.innerHTML = body;
+
+            const scripts = await extractScripts(body, true);
+            if (scripts.length) {
+              // Reload page to re-execute scripts properly...
+              if (!firstLoad) {
+                window.location.reload();
+                return;
+              }
+              appendScripts(scripts, document.body);
+            }
           }
 
           // Add head tags or anything that comes from the template
@@ -722,6 +732,11 @@ async function compile(opts: CompileOptions) {
           // At this point, the original head was parsed and the files loaded / preloaded.
           if (head !== lastHeadHTML) {
             document.head.innerHTML += head;
+
+            const scripts = await extractScripts(head, true);
+            if (scripts.length) {
+              appendScripts(scripts, document.head);
+            }
           }
         }
         lastBodyHTML = body;

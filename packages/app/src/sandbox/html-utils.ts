@@ -54,12 +54,37 @@ function collectScripts(nodes: Array<any>, scripts: Array<IScriptElement>) {
 }
 
 export async function extractScripts(
-  content: string
+  content: string,
+  noLocalScripts: boolean = false
 ): Promise<Array<IScriptElement>> {
-  const scripts = [];
+  const scripts: Array<IScriptElement> = [];
   const nodes = await parseDOM(content);
   collectScripts(nodes, scripts);
+  if (noLocalScripts) {
+    return scripts.filter(s => s.isExternal || s.content);
+  }
   return scripts;
 }
 
-// export function appendScript(script: IScriptElement, parentNode: DOMElement) {}
+export function appendScript(script: IScriptElement, parentNode: HTMLElement) {
+  const nodeToInsert = document.createElement('script');
+  Object.entries(script.attribs).forEach(([key, value]) => {
+    nodeToInsert.setAttribute(key, value);
+  });
+  if (!script.isAsync) {
+    nodeToInsert.setAttribute('async', 'false');
+  }
+  if (script.content?.length) {
+    document.createTextNode(script.content);
+  }
+  parentNode.appendChild(nodeToInsert);
+}
+
+export function appendScripts(
+  scripts: Array<IScriptElement>,
+  parentNode: HTMLElement
+) {
+  scripts.forEach(script => {
+    appendScript(script, parentNode);
+  });
+}
