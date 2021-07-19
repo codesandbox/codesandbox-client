@@ -132,6 +132,7 @@ export type Comment = {
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
+  betaSandboxes: Array<SandboxV2>;
   bookmarkedTemplates: Array<Template>;
   collaboratorSandboxes: Array<Sandbox>;
   collection: Maybe<Collection>;
@@ -152,10 +153,6 @@ export type CurrentUser = {
   templates: Array<Template>;
   username: Scalars['String'];
   workspaces: Array<Team>;
-};
-
-export type CurrentUserCollaboratorSandboxesArgs = {
-  isInBeta: Maybe<Scalars['Boolean']>;
 };
 
 export type CurrentUserCollectionArgs = {
@@ -184,7 +181,6 @@ export type CurrentUserRecentlyUsedTemplatesArgs = {
 
 export type CurrentUserSandboxesArgs = {
   hasOriginalGit: Maybe<Scalars['Boolean']>;
-  isInBeta: Maybe<Scalars['Boolean']>;
   limit: Maybe<Scalars['Int']>;
   orderBy: Maybe<OrderBy>;
   showDeleted: Maybe<Scalars['Boolean']>;
@@ -204,6 +200,7 @@ export enum Direction {
   Desc = 'DESC',
 }
 
+/** A v1 git object */
 export type Git = {
   __typename?: 'Git';
   baseGitSandboxes: Array<Sandbox>;
@@ -216,12 +213,41 @@ export type Git = {
   username: Maybe<Scalars['String']>;
 };
 
+/** A v1 git object */
 export type GitBaseGitSandboxesArgs = {
   teamId: Maybe<Scalars['UUID4']>;
 };
 
+/** A v1 git object */
 export type GitOriginalGitSandboxesArgs = {
   teamId: Maybe<Scalars['UUID4']>;
+};
+
+/** A git branch object specifically for v2 */
+export type GitBranch = {
+  __typename?: 'GitBranch';
+  branch: Maybe<Scalars['String']>;
+  gitRepoId: Maybe<Scalars['UUID4']>;
+  id: Maybe<Scalars['UUID4']>;
+  repoInfo: Maybe<GitRepo>;
+  sandboxId: Maybe<Scalars['UUID4']>;
+};
+
+/** A git repo specifically for v2 */
+export type GitRepo = {
+  __typename?: 'GitRepo';
+  branches: Array<GitBranch>;
+  id: Maybe<Scalars['UUID4']>;
+  owner: Maybe<Scalars['String']>;
+  repo: Maybe<Scalars['String']>;
+};
+
+/** A git object specifically for v2 that combines git_branch and git_repo */
+export type GitV2 = {
+  __typename?: 'GitV2';
+  branch: Maybe<Scalars['String']>;
+  owner: Maybe<Scalars['String']>;
+  repo: Maybe<Scalars['String']>;
 };
 
 export type ImageReference = {
@@ -831,6 +857,8 @@ export type RootQueryType = {
   curatedAlbums: Array<Album>;
   /** Get git repo and related sandboxes */
   git: Maybe<Git>;
+  /** Get v2 git repo and all its branches */
+  gitRepoWithBranches: Maybe<GitRepo>;
   /** Get current user */
   me: Maybe<CurrentUser>;
   /** Get a sandbox */
@@ -852,6 +880,10 @@ export type RootQueryTypeGitArgs = {
   path: Scalars['String'];
   repo: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type RootQueryTypeGitRepoWithBranchesArgs = {
+  repoName: Scalars['String'];
 };
 
 export type RootQueryTypeSandboxArgs = {
@@ -935,7 +967,7 @@ export type Sandbox = {
   description: Maybe<Scalars['String']>;
   forkCount: Scalars['Int'];
   forkedTemplate: Maybe<Template>;
-  /** If the sandbox has a git repo tied to it this will be set */
+  /** If the sandbox has a v1 git repo tied to it this will be set */
   git: Maybe<Git>;
   id: Scalars['ID'];
   insertedAt: Scalars['String'];
@@ -970,6 +1002,21 @@ export type SandboxProtectionSettings = {
   __typename?: 'SandboxProtectionSettings';
   preventSandboxExport: Scalars['Boolean'];
   preventSandboxLeaving: Scalars['Boolean'];
+};
+
+/** A blank v2 sandbox */
+export type SandboxV2 = {
+  __typename?: 'SandboxV2';
+  alias: Maybe<Scalars['String']>;
+  authorization: Authorization;
+  collaborators: Array<Collaborator>;
+  /** If the sandbox has a v2 git tied to it this will be set */
+  gitv2: Maybe<GitV2>;
+  id: Scalars['ID'];
+  insertedAt: Scalars['String'];
+  isV2: Scalars['Boolean'];
+  removedAt: Maybe<Scalars['String']>;
+  updatedAt: Scalars['String'];
 };
 
 export type Source = {
@@ -2599,8 +2646,15 @@ export type SandboxesBetaQueryVariables = Exact<{ [key: string]: never }>;
 export type SandboxesBetaQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
-      collaboratorSandboxes: Array<
-        { __typename?: 'Sandbox' } & RepoFragmentDashboardFragment
+      betaSandboxes: Array<
+        { __typename?: 'SandboxV2' } & Pick<SandboxV2, 'id'> & {
+            gitv2: Maybe<
+              { __typename?: 'GitV2' } & Pick<
+                GitV2,
+                'branch' | 'owner' | 'repo'
+              >
+            >;
+          }
       >;
     }
   >;

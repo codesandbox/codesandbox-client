@@ -344,12 +344,16 @@ export const sandboxesBeta: Query<
 > = gql`
   query SandboxesBeta {
     me {
-      collaboratorSandboxes(isInBeta: true) {
-        ...repoFragmentDashboard
+      betaSandboxes {
+        id
+        gitv2 {
+          branch
+          owner
+          repo
+        }
       }
     }
   }
-  ${repoFragmentDashboard}
 `;
 
 export const likedSandboxes: Query<

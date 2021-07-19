@@ -4,6 +4,7 @@ import {
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
+  SandboxesBetaQuery,
 } from 'app/graphql/types';
 import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameDay from 'date-fns/isSameDay';
@@ -28,7 +29,7 @@ export type DashboardSandboxStructure = {
   ALL: {
     [path: string]: Sandbox[];
   } | null;
-  BETA: Sandbox[];
+  BETA: SandboxesBetaQuery['me']['betaSandboxes'];
   REPOS: {
     [path: string]: {
       branch: string;

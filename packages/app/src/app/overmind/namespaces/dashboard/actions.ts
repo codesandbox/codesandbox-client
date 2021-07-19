@@ -1845,11 +1845,11 @@ export const getBetaSandboxes = async ({ state, effects }: Context) => {
   try {
     const data = await effects.gql.queries.sandboxesBeta({});
 
-    if (!data.me?.collaboratorSandboxes) {
+    if (!data.me?.betaSandboxes) {
       return;
     }
 
-    dashboard.sandboxes[sandboxesTypes.BETA] = data.me?.collaboratorSandboxes;
+    dashboard.sandboxes[sandboxesTypes.BETA] = data.me?.betaSandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting Sandboxes shared with you - beta'
