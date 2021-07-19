@@ -257,7 +257,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <Element margin={4}>
           <Button
             as={RouterLink}
-            to={dashboardUrls.createWorkspace()}
+            to={dashboardUrls.createTeam()}
             variant="secondary"
           >
             <Icon name="plus" size={10} marginRight={1} />
