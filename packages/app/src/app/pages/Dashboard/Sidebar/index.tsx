@@ -23,6 +23,7 @@ import {
   Input,
   IconNames,
 } from '@codesandbox/components';
+import styled from 'styled-components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
@@ -31,9 +32,6 @@ import { DashboardBaseFolder, PageTypes } from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH, NEW_FOLDER_ID } from './constants';
 import { DragItemType, useDrop } from '../utils/dnd';
-
-/** poor man's feature flag - to ship the unfinished version */
-const SHOW_DISCOVER = localStorage.SHOW_DISCOVER;
 
 const SidebarContext = React.createContext(null);
 
@@ -183,14 +181,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="box"
             style={{ marginTop: 1 }}
           />
-          {SHOW_DISCOVER && (
-            <RowItem
-              name="Discover"
-              page="discover"
-              path={dashboardUrls.discover(activeTeam)}
-              icon="discover"
-            />
-          )}
+          <RowItem
+            name="Discover"
+            page="discover"
+            path={dashboardUrls.discover(activeTeam)}
+            icon="discover"
+            badge
+          />
           <RowItem
             name="My Drafts"
             page="drafts"
@@ -351,6 +348,23 @@ const isSamePath = (
   return false;
 };
 
+const Badge = styled.p`
+  border-radius: 2px;
+  background-color: ${({ theme }) => theme.colors.blues[700]};
+  color: ${({ theme }) => theme.colors.white};
+
+  width: ${({ theme }) => theme.sizes[7]}px;
+  height: ${({ theme }) => theme.sizes[3]}px;
+
+  text-align: center;
+  line-height: 1.4;
+  font-size: ${({ theme }) => theme.fontSizes[1]}px;
+  font-weight: ${({ theme }) => theme.fontWeights.medium};
+
+  position: relative;
+  top: 1px; // 👌
+`;
+
 interface RowItemProps {
   name: string;
   path: string;
@@ -359,6 +373,7 @@ interface RowItemProps {
   setFoldersVisibility?: (val: boolean) => void;
   folderPath?: string;
   style?: React.CSSProperties;
+  badge?: boolean;
 }
 
 const RowItem: React.FC<RowItemProps> = ({
@@ -368,6 +383,7 @@ const RowItem: React.FC<RowItemProps> = ({
   page,
   icon,
   setFoldersVisibility = null,
+  badge,
   ...props
 }) => {
   const accepts: Array<'sandbox' | 'folder' | 'template'> = [];
@@ -473,6 +489,16 @@ const RowItem: React.FC<RowItemProps> = ({
             <Icon name={icon} />
           </Stack>
           {name}
+          {badge && (
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Badge>New</Badge>
+            </Stack>
+          )}
         </Link>
       )}
     </ListAction>

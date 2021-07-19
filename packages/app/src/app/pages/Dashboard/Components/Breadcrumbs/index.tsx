@@ -34,15 +34,21 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
         {prefix} {path && ' / '}
       </Link>
       {path
-        ? path.split('/').map((p, i) => {
+        ? path.split('/').map((currentPath, i, arr) => {
             const partPath = path
               .split('/')
               .slice(0, i + 1)
               .join('/');
 
+            const isCurrent = i + 1 === arr.length;
+
+            if (isCurrent) {
+              return currentPath;
+            }
+
             return (
               <Link
-                key={p}
+                key={currentPath}
                 as={LinkBase}
                 to={
                   repos
@@ -51,7 +57,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
                 }
                 variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
               >
-                {p} {i < path.split('/').length - 1 && '/ '}
+                {currentPath} {i < path.split('/').length - 1 && '/ '}
               </Link>
             );
           })

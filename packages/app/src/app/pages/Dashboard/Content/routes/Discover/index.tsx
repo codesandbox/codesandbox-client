@@ -1,6 +1,5 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { sampleSize, shuffle } from 'lodash-es';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Stack,
@@ -32,11 +31,15 @@ import {
   DashboardCommunitySandbox,
   DashboardAlbum,
 } from 'app/pages/Dashboard/types';
+import { shuffleSeed } from '../../utils';
 import {
   FEATURED_SANDBOXES_ALBUM,
   TRENDING_SANDBOXES_ALBUM,
   banner,
 } from './contants';
+
+const today = new Date();
+const SEED = today.getDate() + today.getMonth() + today.getFullYear();
 
 export const Discover = () => {
   const {
@@ -68,20 +71,21 @@ export const Discover = () => {
   // We want to randomly pick 8 album to show
   // but don't want it to update on every render
   const randomAlbums = React.useMemo(() => {
-    const randomAlbumIds = shuffle(
-      sampleSize(
-        curatedAlbums
-          .map(album => album.id)
-          .filter(id => id !== FEATURED_SANDBOXES_ALBUM)
-          .filter(id => id !== TRENDING_SANDBOXES_ALBUM),
-        8
-      )
-    );
+    const randomAlbumIds = shuffleSeed(
+      curatedAlbums
+        .map(album => album.id)
+        .filter(id => id !== FEATURED_SANDBOXES_ALBUM)
+        .filter(id => id !== TRENDING_SANDBOXES_ALBUM),
+      SEED
+    ).slice(0, 8);
 
     // shuffle sandboxes inside the album
     return randomAlbumIds
       .map(albumId => curatedAlbums.find(album => album.id === albumId))
-      .map(album => ({ ...album, sandboxes: shuffle(album.sandboxes) }));
+      .map(album => ({
+        ...album,
+        sandboxes: shuffleSeed(album.sandboxes, SEED),
+      }));
   }, [curatedAlbums]);
 
   return (
@@ -92,6 +96,7 @@ export const Discover = () => {
         <title>Discover - CodeSandbox</title>
       </Helmet>
       <SelectionProvider
+        interactive={false}
         activeTeamId={activeTeam}
         page="discover"
         items={selectionItems}
@@ -101,14 +106,14 @@ export const Discover = () => {
             marginX: 'auto',
             width: `calc(100% - ${2 * GUTTER}px)`,
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-            paddingY: 10,
+            paddingY: 0,
             userSelect: 'none',
           })}
         >
           <Banner />
 
           <Stack direction="vertical" gap={16}>
-            <FeaturedSandboxes />
+            {/* <FeaturedSandboxes /> */}
 
             {randomAlbums.map(album => (
               <Album
@@ -137,6 +142,7 @@ const Banner = () => (
       height: 195,
       background: 'linear-gradient(#422677, #392687)',
       borderRadius: 'medium',
+      overflow: 'hidden',
       position: 'relative',
       marginBottom: 12,
       willChange: 'transform',
@@ -163,6 +169,7 @@ const Banner = () => (
       src={banner.image}
       css={css({
         position: 'absolute',
+        height: '100%',
         right: 0,
         zIndex: 1,
         opacity: [0.25, 1, 1],
@@ -171,31 +178,31 @@ const Banner = () => (
   </Stack>
 );
 
-const FeaturedSandboxes = () => {
-  const {
-    dashboard: { curatedAlbums },
-  } = useAppState();
+// const FeaturedSandboxes = () => {
+//   const {
+//     dashboard: { curatedAlbums },
+//   } = useAppState();
 
-  const featuredSandboxesAlbum = curatedAlbums.find(
-    album => album.id === FEATURED_SANDBOXES_ALBUM
-  );
+//   const featuredSandboxesAlbum = curatedAlbums.find(
+//     album => album.id === FEATURED_SANDBOXES_ALBUM
+//   );
 
-  return (
-    <Grid
-      rowGap={6}
-      columnGap={6}
-      css={{
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        height: 'max(60vh, 528px)',
-        overflow: 'hidden',
-      }}
-    >
-      {featuredSandboxesAlbum?.sandboxes.slice(0, 3).map(sandbox => (
-        <FeaturedSandbox key={sandbox.id} sandbox={sandbox} />
-      ))}
-    </Grid>
-  );
-};
+//   return (
+//     <Grid
+//       rowGap={6}
+//       columnGap={6}
+//       css={{
+//         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+//         height: 'max(60vh, 528px)',
+//         overflow: 'hidden',
+//       }}
+//     >
+//       {featuredSandboxesAlbum?.sandboxes.slice(0, 3).map(sandbox => (
+//         <FeaturedSandbox key={sandbox.id} sandbox={sandbox} />
+//       ))}
+//     </Grid>
+//   );
+// };
 
 export const FeaturedSandbox = ({ sandbox }) => {
   const {
@@ -325,6 +332,8 @@ const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
 
   const likedSandboxIds = (sandboxes.LIKED || []).map(sandbox => sandbox.id);
 
+  if (album.sandboxes.length === 0) return null;
+
   return (
     <Stack key={album.id} direction="vertical" gap={6}>
       <Stack justify="space-between" align="flex-end">
@@ -356,6 +365,7 @@ const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
         {album.sandboxes.map(sandbox => (
           <Column key={sandbox.id}>
             <CommunitySandbox
+              interactive={false}
               isScrolling={false}
               item={{
                 type: 'community-sandbox',
@@ -418,7 +428,7 @@ const TrendingSandboxes = () => {
   );
 
   return (
-    <Stack direction="vertical" gap={6}>
+    <Stack direction="vertical" gap={6} css={css({ marginTop: '100px' })}>
       <Text size={6} weight="bold">
         {trendingSandboxesAlbum.title}
       </Text>
@@ -434,6 +444,7 @@ const TrendingSandboxes = () => {
         {trendingSandboxesAlbum.sandboxes.slice(0, limit).map(sandbox => (
           <Column key={sandbox.id}>
             <CommunitySandbox
+              interactive={false}
               isScrolling={false}
               item={{
                 type: 'community-sandbox',

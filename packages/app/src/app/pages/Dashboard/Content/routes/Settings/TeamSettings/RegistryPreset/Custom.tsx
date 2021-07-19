@@ -3,6 +3,7 @@ import { Select, Input, Text, Link } from '@codesandbox/components';
 import { AuthType, RegistryType } from 'app/graphql/types';
 import { RegistryPresetProps } from '.';
 import { CustomFormField } from '../RegistryForm';
+import { UsernamePassword } from './UsernamePassword';
 
 export const CustomRegistryPreset = ({
   registryUrl,
@@ -17,6 +18,7 @@ export const CustomRegistryPreset = ({
   React.useEffect(() => {
     setRegistryType(RegistryType.Custom);
   }, [setRegistryType]);
+
   return (
     <>
       <div>
@@ -71,15 +73,23 @@ export const CustomRegistryPreset = ({
         </Text>
       </div>
 
-      <CustomFormField label="Auth Token">
-        <Input
-          value={authKey}
-          required
-          onChange={e => setAuthKey(e.target.value)}
+      {authenticationType === AuthType.Basic ? (
+        <UsernamePassword
+          authKey={authKey}
           disabled={disabled}
-          type="password"
+          setAuthKey={setAuthKey}
         />
-      </CustomFormField>
+      ) : (
+        <CustomFormField label="Auth Token">
+          <Input
+            value={authKey}
+            required
+            onChange={e => setAuthKey(e.target.value)}
+            disabled={disabled}
+            type="password"
+          />
+        </CustomFormField>
+      )}
     </>
   );
 };

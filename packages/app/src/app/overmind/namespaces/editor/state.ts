@@ -20,7 +20,6 @@ import {
 } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 import { CollaboratorFragment, InvitationFragment } from 'app/graphql/types';
-import { RecoverData } from 'app/overmind/effects/moduleRecover.ts';
 import immer from 'immer';
 import { derived } from 'overmind';
 
@@ -28,6 +27,7 @@ import { mainModule as getMainModule } from '../../utils/main-module';
 import { parseConfigurations } from '../../utils/parse-configurations';
 
 type State = {
+  changeCounter: number;
   /**
    * Never use this! It doesn't reflect the id of the current sandbox. Use editor.currentSandbox.id instead.
    */
@@ -86,10 +86,10 @@ type State = {
   currentDevToolsPosition: DevToolsTabPosition;
   sessionFrozen: boolean;
   hasLoadedInitialModule: boolean;
-  recoveredFiles: Array<{ recoverData: RecoverData; module: Module }>;
 };
 
 export const state: State = {
+  changeCounter: 0,
   hasLoadedInitialModule: false,
   sandboxes: {},
   currentId: null,
@@ -127,7 +127,6 @@ export const state: State = {
   quickActionsOpen: false,
   previewWindowVisible: true,
   statusBar: true,
-  recoveredFiles: [],
   previewWindowOrientation:
     window.innerHeight / window.innerWidth > 0.9
       ? WindowOrientation.HORIZONTAL

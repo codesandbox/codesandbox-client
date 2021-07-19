@@ -3,8 +3,8 @@ export const TRENDING_SANDBOXES_ALBUM = 'nynbnp';
 
 export const banner = {
   label: 'NEW FEATURE',
-  title: 'Search in files',
-  subtitle: 'Blazing fast way to search files inside your sandbox.',
+  title: 'Welcome Discover Page',
+  subtitle: 'Search sandboxes from the community right on your dashboard',
   image: '/static/img/discover-banner-search.png',
-  link: 'https://codesandbox.io/blog',
+  link: 'https://codesandbox.io/post/discover-announcement',
 };
