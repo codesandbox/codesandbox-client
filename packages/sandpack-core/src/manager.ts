@@ -735,7 +735,7 @@ export default class Manager implements IEvaluator {
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
-  private async resolveModuleAsync(opts: {
+  async resolveModuleAsync(opts: {
     path: string;
     parentPath?: string;
     query?: string;
