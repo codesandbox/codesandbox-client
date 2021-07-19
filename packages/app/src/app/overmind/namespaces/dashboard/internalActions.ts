@@ -147,6 +147,8 @@ export const deleteSandboxesFromState = (
             repoSandbox.sandboxes = newSandboxes;
           }
         });
+      } else if (type === 'BETA') {
+        // do nothing as it only appears in the beta page
       } else {
         const newSandboxes = sandboxStructure[type].filter(sandboxFilter);
         if (newSandboxes.length !== sandboxStructure[type].length) {

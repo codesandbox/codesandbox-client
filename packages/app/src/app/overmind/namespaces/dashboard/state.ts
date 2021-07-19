@@ -29,7 +29,7 @@ export type DashboardSandboxStructure = {
   ALL: {
     [path: string]: Sandbox[];
   } | null;
-  BETA: SandboxesBetaQuery['me']['betaSandboxes'];
+  BETA: SandboxesBetaQuery['me']['betaSandboxes'] | null;
   REPOS: {
     [path: string]: {
       branch: string;
