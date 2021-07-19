@@ -738,9 +738,9 @@ export default class Manager implements IEvaluator {
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
   private async resolveModuleAsync(opts: {
     path: string;
-    parentPath: string;
-    query: string;
-    defaultExtensions: Array<string>;
+    parentPath?: string;
+    query?: string;
+    defaultExtensions?: Array<string>;
   }): Promise<Module> {
     const { path, query = '', defaultExtensions = DEFAULT_EXTENSIONS } = opts;
     let parentPath = opts.parentPath || '/';
