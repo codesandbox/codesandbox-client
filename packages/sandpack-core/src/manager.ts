@@ -8,7 +8,7 @@ import { isUrl } from '@codesandbox/common/lib/utils/is-url';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
-import { measure, endMeasure } from '@codesandbox/common/lib/utils/metrics';
+import { endMeasure, now } from '@codesandbox/common/lib/utils/metrics';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
@@ -788,8 +788,8 @@ export default class Manager implements IEvaluator {
     if (cachedPath && this.transpiledModules[cachedPath]) {
       resolvedPath = cachedPath;
     } else {
-      const measureKey = `resolve-async:${path}::${parentPath}::${query}::${Date.now()}`;
-      measure(measureKey);
+      const measureKey = `resolve-async:${path}::${parentPath}::${query}`;
+      const measureStartTime = now();
       const presetAliasedPath = this.getPresetAliasedPath(path);
 
       const aliasedPath = this.getAliasedDependencyPath(
@@ -825,7 +825,7 @@ export default class Manager implements IEvaluator {
           );
         });
 
-        endMeasure(measureKey, { silent: true });
+        endMeasure(measureKey, { silent: true, lastTime: measureStartTime });
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
@@ -959,7 +959,7 @@ export default class Manager implements IEvaluator {
       resolvedPath = cachedPath;
     } else {
       const measureKey = `resolve-sync:${path}:${parentPath}`;
-      measure(measureKey);
+      const measureStartTime = now();
       const presetAliasedPath = this.getPresetAliasedPath(path);
 
       const aliasedPath = this.getAliasedDependencyPath(
@@ -983,7 +983,7 @@ export default class Manager implements IEvaluator {
           packageFilter: packageFilter(this.isFile),
           moduleDirectory: this.getModuleDirectories(),
         });
-        endMeasure(measureKey, { silent: true });
+        endMeasure(measureKey, { silent: true, lastTime: measureStartTime });
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
