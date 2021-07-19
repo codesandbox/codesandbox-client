@@ -1,68 +1,47 @@
 import semver from 'semver';
-import { buildWorkerError } from '../utils/worker-error-handler';
-import { buildWorkerWarning } from '../utils/worker-warning-handler';
+import { ChildHandler } from '../worker-transpiler/child-handler';
+
+const childHandler = new ChildHandler('svelte-worker');
 
 // Allow svelte to use btoa
 self.window = self;
 
-self.postMessage('ready');
-
-function getV3Code(code, version, path) {
+function getV3Code({ code, version, path }) {
   self.importScripts([`https://unpkg.com/svelte@${version}/compiler.js`]);
-  try {
-    const { js, warnings } = self.svelte.compile(code, {
-      filename: path,
-      dev: true,
-    });
 
-    self.postMessage({
-      type: 'clear-warnings',
-      path,
-      source: 'svelte',
-    });
+  const { js, warnings } = self.svelte.compile(code, {
+    filename: path,
+    dev: true,
+  });
 
-    warnings.forEach(w => {
-      self.postMessage({
-        type: 'warning',
-        warning: buildWorkerWarning(
-          {
-            fileName: w.fileName,
-            lineNumber: w.start && w.start.line,
-            columnNumber: w.start && w.start.column,
-            message: w.message,
-          },
-          'svelte'
-        ),
-      });
-    });
-
-    // Fallback to generate sourcemaps on Svelte 3.13+
-    // See https://github.com/codesandbox/codesandbox-client/pull/3114
-    if (!js.map.toUrl) {
-      js.map.toUrl = () =>
-        'data:application/json;charset=utf-8;base64,' +
-        btoa(JSON.stringify(js.map));
-    }
-
-    return js;
-  } catch (e) {
-    return self.postMessage({
-      type: 'error',
-      error: buildWorkerError(e),
-    });
+  // Fallback to generate sourcemaps on Svelte 3.13+
+  // See https://github.com/codesandbox/codesandbox-client/pull/3114
+  if (!js.map.toUrl) {
+    js.map.toUrl = () =>
+      'data:application/json;charset=utf-8;base64,' +
+      btoa(JSON.stringify(js.map));
   }
+
+  return {
+    code: js.code,
+    map: js.map,
+    warnings: warnings.map(w => ({
+      fileName: w.fileName,
+      lineNumber: w.start && w.start.line,
+      columnNumber: w.start && w.start.column,
+      message: w.message,
+      source: 'svelte',
+    })),
+  };
 }
 
-function getV2Code(code, version, path) {
+function getV2Code({ code, version, path }) {
   self.importScripts([
     `https://unpkg.com/svelte@${version}/compiler/svelte.js`,
   ]);
-  self.postMessage({
-    type: 'clear-warnings',
-    path,
-    source: 'svelte',
-  });
 
+  let error = null;
+  const warnings = [];
   const {
     js: { code: compiledCode, map },
   } = self.svelte.compile(code, {
@@ -71,87 +50,89 @@ function getV2Code(code, version, path) {
     cascade: false,
     store: true,
 
-    onerror: e => {
-      self.postMessage({
-        type: 'error',
-        error: buildWorkerError(e),
-      });
+    onerror: err => {
+      error = err;
     },
 
     onwarn: w => {
-      self.postMessage({
-        type: 'warning',
-        warning: buildWorkerWarning(
-          {
-            fileName: w.fileName,
-            lineNumber: w.loc && w.loc.line,
-            columnNumber: w.loc && w.loc.column,
-            message: w.message,
-          },
-          'svelte'
-        ),
+      warnings.push({
+        fileName: w.fileName,
+        lineNumber: w.loc && w.loc.line,
+        columnNumber: w.loc && w.loc.column,
+        message: w.message,
+        source: 'svelte',
       });
     },
   });
 
-  return { code: compiledCode, map };
+  if (error) {
+    throw error;
+  }
+
+  return { code: compiledCode, map, warnings };
 }
 
-function getV1Code(code, version, path) {
+function getV1Code({ code, version, path }) {
   self.importScripts([
     `https://unpkg.com/svelte@${version}/compiler/svelte.js`,
   ]);
-  return self.svelte.compile(code, {
+
+  let error = null;
+  const warnings = [];
+  const { code: compiledCode, map } = self.svelte.compile(code, {
     filename: path,
     dev: true,
     cascade: false,
     store: true,
 
-    onerror: e => {
-      self.postMessage({
-        type: 'error',
-        error: buildWorkerError(e),
-      });
+    onerror: err => {
+      error = err;
     },
 
     onwarn: w => {
-      self.postMessage({
-        type: 'warning',
-        warning: buildWorkerWarning(
-          {
-            fileName: w.fileName,
-            lineNumber: w.loc && w.loc.line,
-            columnNumber: w.loc && w.loc.column,
-            message: w.message,
-          },
-          'svelte'
-        ),
+      warnings.push({
+        fileName: w.fileName,
+        lineNumber: w.loc && w.loc.line,
+        columnNumber: w.loc && w.loc.column,
+        message: w.message,
+        source: 'svelte',
       });
     },
   });
+
+  if (error) {
+    throw error;
+  }
+
+  return { code: compiledCode, map, warnings };
 }
 
-self.addEventListener('message', event => {
-  const { code, path, version } = event.data;
+async function compile(data) {
+  const { code, path, version } = data;
   let versionCode = '';
 
   if (semver.satisfies(version, '1.x')) {
-    versionCode = getV1Code(code, version, path);
-  }
-  if (semver.satisfies(version, '2.x')) {
-    versionCode = getV2Code(code, version, path);
-  }
-  if (semver.satisfies(version, '3.x')) {
-    versionCode = getV3Code(code, version, path);
+    versionCode = getV1Code({ code, version, path });
   }
 
-  const { code: compiledCode, map } = versionCode;
+  if (semver.satisfies(version, '2.x')) {
+    versionCode = getV2Code({ code, version, path });
+  }
+
+  if (semver.satisfies(version, '3.x')) {
+    versionCode = getV3Code({ code, version, path });
+  }
+
+  const { code: compiledCode, map, warnings } = versionCode;
 
   const withInlineSourcemap = `${compiledCode}
-  //# sourceMappingURL=${map.toUrl()}`;
+    //# sourceMappingURL=${map.toUrl()}`;
 
-  self.postMessage({
-    type: 'result',
+  return {
     transpiledCode: withInlineSourcemap,
-  });
-});
+    warnings,
+  };
+}
+
+childHandler.registerFunction('compile', compile);
+childHandler.emitReady();

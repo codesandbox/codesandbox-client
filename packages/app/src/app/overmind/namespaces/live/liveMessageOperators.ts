@@ -146,6 +146,8 @@ export const onUserEntered = (
     return;
   }
 
+  effects.analytics.track('Editor - Someone joined the live session');
+
   const users = camelizeKeys(data.users);
 
   state.live.roomInfo.users = users as LiveUser[];
@@ -195,6 +197,8 @@ export const onUserLeft = (
   if (!state.live.roomInfo) {
     return;
   }
+
+  effects.analytics.track('Editor - Someone left the live session');
 
   if (!state.live.notificationsHidden) {
     const { users } = state.live.roomInfo;

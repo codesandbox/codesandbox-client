@@ -58,7 +58,7 @@ function buildErrorMessage(e: TModuleError) {
 
 const wrappedResolveModule = (manager, path) => {
   try {
-    return manager && manager.resolveTranspiledModule(path, '/');
+    return manager && manager.resolveTranspiledModuleSync(path, '/');
   } catch (e) {
     return null;
   }
@@ -81,7 +81,7 @@ function buildDynamicError(ref: ErrorRecord) {
   if (relevantFrame && manager) {
     const fileName = relevantFrame._originalFileName || relevantFrame.fileName;
     if (fileName) {
-      const tModule = manager.resolveTranspiledModule(
+      const tModule = manager.resolveTranspiledModuleSync(
         fileName.replace(location.origin, '').replace('file://', ''),
         '/'
       );
@@ -96,7 +96,9 @@ function buildDynamicError(ref: ErrorRecord) {
           message: ref.error.message,
           line: relevantFrame._originalLineNumber,
           column: relevantFrame._originalColumnNumber,
-          payload: {},
+          payload: {
+            frames: ref.enhancedFrames,
+          },
           severity: 'error',
         };
       }

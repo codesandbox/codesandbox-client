@@ -6,6 +6,7 @@ import {
   IconButton,
   Avatar,
   Button,
+  Link,
 } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import css from '@styled-system/css';
@@ -18,7 +19,12 @@ type SandboxTitleProps = {
 
 const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
   ({ title, onContextMenu, stoppedScrolling }) => (
-    <Stack justify="space-between" align="center" marginLeft={4}>
+    <Stack
+      justify="space-between"
+      align="center"
+      marginLeft={4}
+      css={css({ width: '100%' })}
+    >
       <Text size={3} weight="medium">
         {title}
       </Text>
@@ -54,33 +60,40 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type StatsProps = Pick<
   CommunitySandboxItemComponentProps,
-  'forkCount' | 'likeCount' | 'liked' | 'onLikeToggle'
+  'forkCount' | 'likeCount' | 'liked' | 'onLikeToggle' | 'url'
 >;
-const Stats: React.FC<StatsProps> = ({
+export const Stats: React.FC<StatsProps> = ({
   forkCount,
   likeCount,
   liked,
   onLikeToggle,
+  url,
 }) => (
-  <Stack as={Text} variant="muted" align="center" gap={2}>
-    <Stack align="center" gap={1}>
+  <Stack align="center" gap={2}>
+    <Stack
+      as={Link}
+      href={url}
+      target="_blank"
+      variant="muted"
+      align="center"
+      gap={1}
+    >
       <Icon name="fork" size={14} />
       <Text size={3}>{formatNumber(forkCount)}</Text>
     </Stack>
-    <Stack
-      as={Button}
-      variant="link"
-      gap={1}
-      autoWidth
-      paddingX={0}
-      onClick={onLikeToggle}
-    >
+    <Stack as={Button} variant="link" gap={1} autoWidth onClick={onLikeToggle}>
       <Icon
         name="heart"
         size={14}
         css={css({ color: liked ? 'reds.300' : 'inherit' })}
       />
-      <Text size={3}>{formatNumber(likeCount)}</Text>
+      <Text
+        size={3}
+        weight="normal"
+        css={{ fontVariantNumeric: 'tabular-nums', letterSpacing: '-1px' }}
+      >
+        {formatNumber(likeCount)}
+      </Text>
     </Stack>
   </Stack>
 );
@@ -89,14 +102,22 @@ type AuthorProps = Pick<CommunitySandboxItemComponentProps, 'author'>;
 const Author: React.FC<AuthorProps> = React.memo(({ author }) => (
   // return empty div for alignment
 
-  <Stack align="center" gap={2} css={{ flexShrink: 1, overflow: 'hidden' }}>
-    {author.username ? (
-      <Avatar css={css({ size: 6, borderRadius: 2 })} user={author} />
+  <Stack
+    as={author?.username ? Link : Text}
+    href={`https://codesandbox.io/u/${author?.username}`}
+    variant="muted"
+    target="_blank"
+    align="center"
+    gap={2}
+    css={{ flexShrink: 1, overflow: 'hidden' }}
+  >
+    {author?.username ? (
+      <Avatar user={author} css={css({ size: 6, borderRadius: 2 })} />
     ) : (
       <AnonymousAvatar />
     )}
     <Text size={3} maxWidth="100%">
-      {author.username || 'Anonymous'}
+      {author?.username || 'Anonymous'}
     </Text>
   </Stack>
 ));
@@ -109,6 +130,7 @@ export const SandboxCard = ({
   forkCount,
   author,
   liked,
+  url,
   // interactions
   isScrolling,
   selected,
@@ -116,6 +138,7 @@ export const SandboxCard = ({
   onDoubleClick,
   onContextMenu,
   onLikeToggle,
+  interactive = true,
   ...props
 }: CommunitySandboxItemComponentProps) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
@@ -149,24 +172,46 @@ export const SandboxCard = ({
         },
       })}
     >
-      <Thumbnail TemplateIcon={TemplateIcon} screenshotUrl={screenshotUrl} />
+      {interactive ? (
+        <Thumbnail TemplateIcon={TemplateIcon} screenshotUrl={screenshotUrl} />
+      ) : (
+        <Stack css={css({ cursor: 'pointer' })} onClick={onDoubleClick}>
+          <Thumbnail
+            TemplateIcon={TemplateIcon}
+            screenshotUrl={screenshotUrl}
+          />
+        </Stack>
+      )}
 
       <Stack
         direction="vertical"
         justify="space-between"
         css={css({ flexGrow: 1, paddingY: 4 })}
       >
-        <SandboxTitle
-          title={title}
-          onContextMenu={onContextMenu}
-          stoppedScrolling={stoppedScrolling}
-        />
+        {interactive ? (
+          <SandboxTitle
+            title={title}
+            onContextMenu={onContextMenu}
+            stoppedScrolling={stoppedScrolling}
+          />
+        ) : (
+          <Stack
+            css={css({ cursor: 'pointer', width: '100%' })}
+            onClick={onDoubleClick}
+          >
+            <SandboxTitle
+              title={title}
+              onContextMenu={onContextMenu}
+              stoppedScrolling={stoppedScrolling}
+            />
+          </Stack>
+        )}
         <Stack
           justify="space-between"
           align="center"
           gap={2}
           marginLeft={4}
-          marginRight={3}
+          marginRight={1}
         >
           <Author author={author} />
           <Stats
@@ -174,6 +219,7 @@ export const SandboxCard = ({
             forkCount={forkCount}
             liked={liked}
             onLikeToggle={onLikeToggle}
+            url={url}
           />
         </Stack>
       </Stack>
@@ -188,6 +234,7 @@ const Thumbnail = ({ TemplateIcon, screenshotUrl }) => (
       alignItems: 'center',
       justifyContent: 'center',
       height: '144px',
+      width: '100%',
       backgroundColor: '#242424',
       backgroundSize: 'cover',
       backgroundPosition: 'center center',

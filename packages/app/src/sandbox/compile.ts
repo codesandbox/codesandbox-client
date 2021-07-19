@@ -85,10 +85,6 @@ let lastHeight = 0;
 let changedModuleCount = 0;
 let usedCache = false;
 
-const DEPENDENCY_ALIASES = {
-  '@vue/cli-plugin-babel': '@vue/babel-preset-app',
-};
-
 // TODO make devDependencies lazy loaded by the packager
 const WHITELISTED_DEV_DEPENDENCIES = [
   'redux-devtools',
@@ -246,32 +242,27 @@ function getDependencies(
   }
 
   Object.keys(d).forEach(dep => {
-    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
-
     if (dep === 'reason-react') {
       return; // is replaced
     }
 
-    returnedDependencies[usedDep] = d[dep];
+    returnedDependencies[dep] = d[dep];
   });
 
   Object.keys(devDependencies).forEach(dep => {
-    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
-
-    if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
-      if (
-        usedDep === '@vue/babel-preset-app' &&
-        devDependencies[dep].startsWith('^3')
-      ) {
-        // Native modules got added in 3.7.0, we need to hardcode to latest
-        // working version of the babel plugin as a fix. https://twitter.com/notphanan/status/1122475053633941509
-        returnedDependencies[usedDep] = '3.6.0';
+    if (foundWhitelistedDevDependencies.indexOf(dep) > -1) {
+      // Skip @vue/babel-preset-app
+      if (dep === '@vue/babel-preset-app') {
         return;
       }
 
-      returnedDependencies[usedDep] = devDependencies[dep];
+      returnedDependencies[dep] = devDependencies[dep];
     }
   });
+
+  if (d.vue) {
+    returnedDependencies['@vue/babel-plugin-jsx'] = '1.0.6';
+  }
 
   const sandpackConfig =
     (configurations.customTemplate &&
@@ -427,7 +418,9 @@ function overrideDocumentClose() {
 
 overrideDocumentClose();
 
-inject();
+if (!process.env.SANDPACK) {
+  inject();
+}
 
 interface CompileOptions {
   sandboxId: string;
@@ -447,23 +440,25 @@ interface CompileOptions {
   clearConsoleDisabled?: boolean;
 }
 
-async function compile({
-  sandboxId,
-  modules,
-  externalResources,
-  customNpmRegistries = [],
-  hasActions,
-  isModuleView = false,
-  template,
-  entry,
-  showOpenInCodeSandbox,
-  showLoadingScreen,
-  showErrorScreen,
-  skipEval = false,
-  hasFileResolver = false,
-  disableDependencyPreprocessing = false,
-  clearConsoleDisabled = false,
-}: CompileOptions) {
+async function compile(opts: CompileOptions) {
+  const {
+    sandboxId,
+    modules,
+    externalResources,
+    customNpmRegistries = [],
+    hasActions,
+    isModuleView = false,
+    template,
+    entry,
+    showOpenInCodeSandbox,
+    showLoadingScreen = true,
+    showErrorScreen = true,
+    skipEval = false,
+    hasFileResolver = false,
+    disableDependencyPreprocessing = false,
+    clearConsoleDisabled = false,
+  } = opts;
+
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
@@ -478,7 +473,7 @@ async function compile({
 
   const startTime = Date.now();
   try {
-    inject();
+    inject(showErrorScreen);
     clearErrorTransformers();
     initializeErrorTransformers();
     unmount(manager && manager.webpackHMR ? true : hadError);
@@ -541,7 +536,7 @@ async function compile({
 
     metrics.measure('dependencies');
 
-    if (firstLoad) {
+    if (firstLoad && showLoadingScreen) {
       setScreen({
         type: 'loading',
         showFullScreen: firstLoad,
@@ -552,6 +547,10 @@ async function compile({
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
       ({ done, total, remainingDependencies }) => {
+        if (!showLoadingScreen) {
+          return;
+        }
+
         const progress = total - done;
         if (done === total) {
           return;
@@ -624,11 +623,13 @@ async function compile({
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
 
-    setScreen({
-      type: 'loading',
-      text: 'Transpiling Modules...',
-      showFullScreen: firstLoad,
-    });
+    if (showLoadingScreen) {
+      setScreen({
+        type: 'loading',
+        text: 'Transpiling Modules...',
+        showFullScreen: firstLoad,
+      });
+    }
 
     dispatch({ type: 'status', status: 'transpiling' });
     manager.setStage('transpilation');
@@ -701,6 +702,16 @@ async function compile({
           // on the first run. However, if there's no server to provide the static file (in the case of a local server
           // or sandpack), then do it anyways.
           document.body.innerHTML = body;
+
+          // Add head tags or anything that comes from the template
+          // This way, title and other meta tags will overwrite whatever the bundler <head> tag has.
+          // At this point, the original head was parsed and the files loaded / preloaded.
+
+          // TODO: figure out a way to fix this without overriding head changes done by the bundler
+          // Original issue: https://github.com/codesandbox/sandpack/issues/32
+          // if (document.head && head) {
+          //   document.head.innerHTML = head;
+          // }
         }
         lastBodyHTML = body;
         lastHeadHTML = head;
@@ -717,6 +728,7 @@ async function compile({
       const evalled = manager.evaluateModule(managerModuleToTranspile, {
         force: isModuleView,
       });
+
       metrics.endMeasure('evaluation', { displayName: 'Evaluation' });
 
       const domChanged =

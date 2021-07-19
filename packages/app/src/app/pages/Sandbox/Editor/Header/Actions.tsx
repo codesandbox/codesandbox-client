@@ -5,6 +5,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
 import { Notifications } from 'app/components/Notifications';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import {
   EmbedIcon,
@@ -208,6 +209,7 @@ export const Actions = () => {
         <UserMenu>
           {user?.experiments.collaborator ? (
             <Button
+              onClick={() => track('Editor - Click More Menu')}
               as={UserMenu.Button}
               variant="secondary"
               css={css({

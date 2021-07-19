@@ -30,6 +30,13 @@ export type Scalars = {
   Base64: any;
 };
 
+export type Album = {
+  __typename?: 'Album';
+  id: Scalars['ID'];
+  sandboxes: Array<Sandbox>;
+  title: Maybe<Scalars['String']>;
+};
+
 export enum Authorization {
   Comment = 'COMMENT',
   None = 'NONE',
@@ -347,6 +354,8 @@ export type RootMutationType = {
   acceptTeamInvitation: Team;
   /** Add a collaborator */
   addCollaborator: Collaborator;
+  /** Add sandboxes to an album (idempotent) */
+  addSandboxesToAlbum: Maybe<Album>;
   /** Add sandboxes to a collection */
   addToCollection: Collection;
   /** Add sandboxes to a collection and/or team */
@@ -366,6 +375,7 @@ export type RootMutationType = {
   changeTeamMemberAuthorizations: Team;
   /** Clear notification unread count */
   clearNotificationCount: User;
+  createAlbum: Album;
   createCodeComment: Comment;
   /** Create a collection */
   createCollection: Collection;
@@ -376,6 +386,7 @@ export type RootMutationType = {
   createSandboxInvitation: Invitation;
   /** Create a team */
   createTeam: Team;
+  deleteAlbum: Scalars['String'];
   /** Delete a collection and all subfolders */
   deleteCollection: Array<Collection>;
   /** Soft delete a comment. Note: all child comments will also be deleted. */
@@ -411,6 +422,8 @@ export type RootMutationType = {
   removeCollaborator: Collaborator;
   /** Remove someone from a team */
   removeFromTeam: Team;
+  /** Remove sandboxes from album (idempotent) */
+  removeSandboxesFromAlbum: Maybe<Album>;
   /** Rename a collection and all subfolders */
   renameCollection: Array<Collection>;
   renameSandbox: Sandbox;
@@ -439,6 +452,7 @@ export type RootMutationType = {
   /** Convert templates back to sandboxes */
   unmakeSandboxesTemplates: Array<Template>;
   unresolveComment: Comment;
+  updateAlbum: Album;
   updateComment: Comment;
   /** Change details of current user */
   updateCurrentUser: User;
@@ -459,6 +473,11 @@ export type RootMutationTypeAddCollaboratorArgs = {
   authorization: Authorization;
   sandboxId: Scalars['ID'];
   username: Scalars['String'];
+};
+
+export type RootMutationTypeAddSandboxesToAlbumArgs = {
+  albumId: Scalars['ID'];
+  sandboxIds: Array<Scalars['ID']>;
 };
 
 export type RootMutationTypeAddToCollectionArgs = {
@@ -497,6 +516,11 @@ export type RootMutationTypeChangeSandboxInvitationAuthorizationArgs = {
 export type RootMutationTypeChangeTeamMemberAuthorizationsArgs = {
   memberAuthorizations: Maybe<Array<MemberAuthorization>>;
   teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeCreateAlbumArgs = {
+  description: Maybe<Scalars['String']>;
+  title: Scalars['String'];
 };
 
 export type RootMutationTypeCreateCodeCommentArgs = {
@@ -557,6 +581,10 @@ export type RootMutationTypeCreateSandboxInvitationArgs = {
 export type RootMutationTypeCreateTeamArgs = {
   name: Scalars['String'];
   pilot: Maybe<Scalars['Boolean']>;
+};
+
+export type RootMutationTypeDeleteAlbumArgs = {
+  id: Scalars['ID'];
 };
 
 export type RootMutationTypeDeleteCollectionArgs = {
@@ -641,6 +669,11 @@ export type RootMutationTypeRemoveCollaboratorArgs = {
 export type RootMutationTypeRemoveFromTeamArgs = {
   teamId: Scalars['UUID4'];
   userId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeRemoveSandboxesFromAlbumArgs = {
+  albumId: Scalars['ID'];
+  sandboxIds: Array<Scalars['ID']>;
 };
 
 export type RootMutationTypeRenameCollectionArgs = {
@@ -741,6 +774,12 @@ export type RootMutationTypeUnresolveCommentArgs = {
   sandboxId: Scalars['ID'];
 };
 
+export type RootMutationTypeUpdateAlbumArgs = {
+  description: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  title: Maybe<Scalars['String']>;
+};
+
 export type RootMutationTypeUpdateCommentArgs = {
   codeReferences: Maybe<Array<CodeReference>>;
   commentId: Scalars['UUID4'];
@@ -782,6 +821,9 @@ export type RootMutationTypeUpdateSubscriptionBillingIntervalArgs = {
 
 export type RootQueryType = {
   __typename?: 'RootQueryType';
+  album: Maybe<Album>;
+  albums: Array<Album>;
+  curatedAlbums: Array<Album>;
   /** Get git repo and related sandboxes */
   git: Maybe<Git>;
   /** Get current user */
@@ -790,6 +832,14 @@ export type RootQueryType = {
   sandbox: Maybe<Sandbox>;
   /** A team from an invite token */
   teamByToken: Maybe<Team>;
+};
+
+export type RootQueryTypeAlbumArgs = {
+  albumId: Scalars['ID'];
+};
+
+export type RootQueryTypeAlbumsArgs = {
+  username: Scalars['String'];
 };
 
 export type RootQueryTypeGitArgs = {
@@ -1620,6 +1670,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'screenshotUrl'
   | 'screenshotOutdated'
   | 'viewCount'
+  | 'likeCount'
   | 'alwaysOn'
   | 'authorId'
   | 'teamId'
@@ -1707,7 +1758,10 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
       >
     >;
     subscription: Maybe<
-      { __typename?: 'ProSubscription' } & Pick<ProSubscription, 'origin'>
+      { __typename?: 'ProSubscription' } & Pick<
+        ProSubscription,
+        'origin' | 'type'
+      >
     >;
   };
 
@@ -2218,6 +2272,45 @@ export type UpdateCurrentUserMutation = { __typename?: 'RootMutationType' } & {
   >;
 };
 
+export type AddSandboxesToAlbumMutationVariables = Exact<{
+  albumId: Scalars['ID'];
+  sandboxIds: Array<Scalars['ID']>;
+}>;
+
+export type AddSandboxesToAlbumMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  addSandboxesToAlbum: Maybe<{ __typename?: 'Album' } & Pick<Album, 'id'>>;
+};
+
+export type RemoveSandboxesFromAlbumMutationVariables = Exact<{
+  albumId: Scalars['ID'];
+  sandboxIds: Array<Scalars['ID']>;
+}>;
+
+export type RemoveSandboxesFromAlbumMutation = {
+  __typename?: 'RootMutationType';
+} & {
+  removeSandboxesFromAlbum: Maybe<{ __typename?: 'Album' } & Pick<Album, 'id'>>;
+};
+
+export type CreateAlbumMutationVariables = Exact<{
+  title: Scalars['String'];
+}>;
+
+export type CreateAlbumMutation = { __typename?: 'RootMutationType' } & {
+  createAlbum: { __typename?: 'Album' } & Pick<Album, 'id' | 'title'>;
+};
+
+export type UpdateAlbumMutationVariables = Exact<{
+  id: Scalars['ID'];
+  title: Scalars['String'];
+}>;
+
+export type UpdateAlbumMutation = { __typename?: 'RootMutationType' } & {
+  updateAlbum: { __typename?: 'Album' } & Pick<Album, 'id'>;
+};
+
 export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
   [key: string]: never;
 }>;
@@ -2583,6 +2676,25 @@ export type _AlwaysOnTeamSandboxesQuery = { __typename?: 'RootQueryType' } & {
         }
       >;
     }
+  >;
+};
+
+export type CuratedAlbumsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
+  curatedAlbums: Array<
+    { __typename?: 'Album' } & Pick<Album, 'id' | 'title'> & {
+        sandboxes: Array<
+          { __typename?: 'Sandbox' } & Pick<
+            Sandbox,
+            'forkCount' | 'likeCount'
+          > & {
+              author: Maybe<
+                { __typename?: 'User' } & Pick<User, 'username' | 'avatarUrl'>
+              >;
+            } & SandboxFragmentDashboardFragment
+        >;
+      }
   >;
 };
 

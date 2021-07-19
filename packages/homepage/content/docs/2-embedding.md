@@ -64,7 +64,9 @@ These are some examples of embeds, based on their properties.
 
 This embed is focused on being as light as possible:
 
-`https://codesandbox.io/embed/new?codemirror=1`
+```md
+https://codesandbox.io/embed/new?codemirror=1
+```
 
 Use this code to embed:
 
@@ -79,14 +81,16 @@ Use this code to embed:
 
 That will give to a result like this:
 
-<iframe src="https://codesandbox.io/embed/new?codemirror=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+https://codesandbox.io/s/new?codemirror=1
 
 ### Code Example Embed
 
 You can also use CodeSandbox to show code examples, with highlighted lines. This
 is only supported with the CodeMirror editor currently:
 
-`https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14`
+```md
+https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14
+```
 
 Use this code to embed:
 
@@ -101,4 +105,4 @@ Use this code to embed:
 
 That will give to a result like this:
 
-<iframe src="https://codesandbox.io/embed/new?codemirror=1&highlights=6,7,8,9" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+https://codesandbox.io/s/new?codemirror=1&highlights=6,7,8,9

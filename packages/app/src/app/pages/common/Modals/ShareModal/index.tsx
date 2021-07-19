@@ -16,7 +16,7 @@ import Files from 'embed/components/Sidebar/FileTree';
 import React, { useEffect, useState } from 'react';
 
 import { PaddedPreference } from './elements';
-import { VIEW_OPTIONS, getEditorUrl, getIframeScript } from './getCode';
+import { VIEW_OPTIONS, getEmbedUrl, getIframeScript } from './getCode';
 import { SocialShare } from './SocialShare';
 
 interface Props {}
@@ -198,10 +198,10 @@ export const ShareModal: React.FC<Props> = () => {
             >
               {copied ? 'Copied' : 'Copy Embed Code'}
             </Button>
-            <Field label="Editor url (also works on Medium)">
+            <Field label="Embed url">
               <Input
                 onFocus={select}
-                value={getEditorUrl(sandbox, mainModule, state)}
+                value={getEmbedUrl(sandbox, mainModule, state)}
                 readOnly
               />
             </Field>

@@ -43,7 +43,13 @@ export const NavigationComponent = ({ title, match }: Props) => {
         })}
       >
         <Stack
-          css={css({ maxWidth: '80%', width: 1080, marginX: 'auto' })}
+          css={css({
+            '@media screen and (min-width: 768px)': {
+              maxWidth: '80%',
+            },
+            width: 1080,
+            marginX: 'auto',
+          })}
           justify="space-between"
           align="center"
         >

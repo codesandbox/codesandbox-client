@@ -66,6 +66,11 @@ export const PostContainer = styled.div`
       border-bottom: 1px solid;
       border-color: ${theme.shySecondary};
     }
+
+    font-weight: 400;
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      font-weight: 300;
+    }
   `};
 `;
 
@@ -74,13 +79,9 @@ export const Article = styled.article`
   padding: 1rem 0rem;
 `;
 
-export const Back = styled.div`
-  background: red;
-`;
-
 export const Header = styled.section`
   text-align: center;
-  padding: 6rem 0 2.5em 0;
+  padding: 4rem 0 2.5em 0;
   color: rgb(242, 242, 242);
   margin-bottom: 2rem;
 
@@ -111,9 +112,10 @@ export const PostTitle = styled.h1`
   }
 
   @media screen and (min-width: 960px) {
-    font-size: 4.5rem;
+    font-size: 5rem;
     font-weight: 700;
-    line-height: 5.5rem;
+    line-height: 6.2rem;
+    padding: 2rem 0;
   }
 `;
 

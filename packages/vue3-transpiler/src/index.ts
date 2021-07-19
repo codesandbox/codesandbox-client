@@ -35,8 +35,6 @@ export interface VueLoaderOptions {
 
 qs.escape = encodeURIComponent;
 
-let errorEmitted = false;
-
 export default function loader(
   source: string,
   loaderContext: LoaderContext
@@ -115,6 +113,7 @@ export default function loader(
     } catch (e) {
       loaderContext.emitError(e);
     }
+
     if (script) {
       const src = script.src || resourcePath;
       const attrsQuery = attrsToQuery(script.attrs, 'js');
@@ -146,7 +145,7 @@ export default function loader(
       query
     )}`;
     templateRequest = stringifyRequest(importers + '!' + src);
-    templateImport = `import { ${renderFnName} } from ${templateRequest}`;
+    templateImport = `import { ${renderFnName} } from ${templateRequest};`;
   }
 
   // styles
@@ -244,6 +243,7 @@ export default function loader(
 
   // finalize
   code += `\n\nexport default script`;
+
   return { transpiledCode: code };
 }
 

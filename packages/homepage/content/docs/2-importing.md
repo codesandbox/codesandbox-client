@@ -198,7 +198,7 @@ const url = `https://codesandbox.io/api/v1/sandboxes/define?parameters=${paramet
 
 #### Example Sandbox
 
-<iframe src="https://codesandbox.io/embed/6yznjvl7nw?editorsize=50&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+https://codesandbox.io/s/6yznjvl7nw?editorsize=50&fontsize=14&hidenavigation=1&runonclick=1
 
 ### POST Form
 
@@ -207,7 +207,7 @@ show a form. With a POST request you can create bigger sandboxes.
 
 #### Example Sandbox
 
-<iframe src="https://codesandbox.io/embed/qzlp7nw34q?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+https://codesandbox.io/s/qzlp7nw34q?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1
 
 ### Define without render
 
@@ -228,7 +228,7 @@ Both `get` and `post` requests are supported.
 You can also create a sandbox using an XHR request, like using `fetch`. An
 example sandbox of that is here:
 
-<iframe src="https://codesandbox.io/embed/9loovqj5oy?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+https://codesandbox.io/s/9loovqj5oy?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1
 
 ## Import Single Components
 
@@ -255,12 +255,12 @@ Using this creates an easy way to upload an example instead of an entire git
 repository. This enables you to easily share examples with others, or to link to
 editable versions of examples from a documentation website. React-codesandboxer
 is the main version, but there are also versions for VS Code, Atom, and
-Bitbucket.
+BitBucket.
 
 ### How it works
 
-Below the surface, react-codesandboxer fetches the files it needs from github or
-bitbucket, using a single file that will be rendered as the 'example' as an
+Below the surface, react-codesandboxer fetches the files it needs from GitHub or
+BitBucket, using a single file that will be rendered as the 'example' as an
 entry point, then uses the Define API to upload the necessary files into a new
 `create-react-app` sandbox.
 
@@ -285,9 +285,9 @@ export default () => (
 );
 ```
 
-## Import Using Remark-Codesandbox
+## Import Using Remark-codesandbox
 
-[Remark-Codesandbox](https://github.com/kevin940726/remark-codesandbox) is a
+[Remark-codesandbox](https://github.com/kevin940726/remark-codesandbox) is a
 remark plugin for creating sandboxes directly from code blocks in documentation.
 Developed by CodeSandbox community member Kai Hao, it supports popular platforms
 including MDX, Gatsby, Storybook Docs, docz etc. Learn more about it in their

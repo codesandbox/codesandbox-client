@@ -1,0 +1,36 @@
+{
+  "url": "https://prod-packager-packages.codesandbox.io/v2/packages/react/17.0.2.json",
+  "status": 200,
+  "statusText": "OK",
+  "ok": true,
+  "headers": {
+    "date": ["Fri, 23 Apr 2021 11:13:38 GMT"],
+    "content-type": ["application/json"],
+    "content-length": ["23915"],
+    "connection": ["close"],
+    "set-cookie": [
+      "__cfduid=d79c861e3d64ff5ca79a3c68216bc00c91619176418; expires=Sun, 23-May-21 11:13:38 GMT; path=/; domain=.codesandbox.io; HttpOnly; SameSite=Lax; Secure"
+    ],
+    "x-amz-id-2": [
+      "UcT0a7w43lX+Zqs2pC/uOFH3pXcwMBfLhSH7Nc6Zc/H3cjePe/PRqGGdm7Vy70Bj+8S28F1aTwc="
+    ],
+    "x-amz-request-id": ["XPHNTZRF5CEN5WPC"],
+    "last-modified": ["Mon, 22 Mar 2021 22:04:26 GMT"],
+    "etag": ["\"8b7773c6724a9a348b5a5eb961f9ac3a\""],
+    "cache-control": ["public, max-age=31536000"],
+    "content-encoding": ["gzip"],
+    "cf-cache-status": ["HIT"],
+    "age": ["13252"],
+    "accept-ranges": ["bytes"],
+    "cf-request-id": ["09a00884df0000eddbd03e6000000001"],
+    "expect-ct": [
+      "max-age=604800, report-uri=\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\""
+    ],
+    "vary": ["Accept-Encoding"],
+    "server": ["cloudflare"],
+    "cf-ray": ["6446a9e7ca1feddb-CDG"],
+    "alt-svc": [
+      "h3-27=\":443\"; ma=86400, h3-28=\":443\"; ma=86400, h3-29=\":443\"; ma=86400"
+    ]
+  }
+}

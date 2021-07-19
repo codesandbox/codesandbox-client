@@ -7,6 +7,7 @@ import { useAppState } from 'app/overmind';
 
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { Buttons, Container, TokenInput } from './elements';
+import Logo from '../../../logo.svg';
 
 export const Prompt: FunctionComponent = () => {
   const { authToken, error, isLoadingCLI, user } = useAppState();
@@ -15,12 +16,27 @@ export const Prompt: FunctionComponent = () => {
   if (error) {
     return (
       <Container>
-        <Title>An error occured:</Title>
+        <img
+          src={Logo}
+          width="32"
+          alt="CodeSandbox Logo"
+          style={{ paddingBottom: 32 }}
+        />
 
+        <Title>An error occured:</Title>
         <SubTitle>{error}</SubTitle>
 
         <Buttons>
-          <Button autoWidth href="/?from-app=1">
+          <Button
+            autoWidth
+            href="/?from-app=1"
+            style={{
+              fontSize: 16,
+              height: 40,
+              width: '100%',
+              marginTop: '1rem',
+            }}
+          >
             Go to homepage
           </Button>
         </Buttons>
@@ -31,7 +47,16 @@ export const Prompt: FunctionComponent = () => {
   if (!user?.username) {
     return (
       <Container>
-        <Title>Welcome to CodeSandbox!</Title>
+        <img
+          src={Logo}
+          width="32"
+          alt="CodeSandbox Logo"
+          style={{ paddingBottom: 32 }}
+        />
+        <Title>
+          Welcome to <br />
+          CodeSandbox!
+        </Title>
 
         <SubTitle style={{ paddingBottom: 16 }}>
           You need to sign in to use the CLI.
@@ -52,9 +77,15 @@ export const Prompt: FunctionComponent = () => {
 
   return (
     <Container>
-      <Title>Hello {user.username}!</Title>
+      <img
+        src={Logo}
+        width="32"
+        alt="CodeSandbox Logo"
+        style={{ paddingBottom: 32 }}
+      />
+      {/* <Title>Hello <br/>{user.username}!</Title> */}
 
-      <SubTitle>
+      <SubTitle style={{ paddingBottom: 16 }}>
         The CLI needs authorization to work.
         <br />
         Please paste the following code in the CLI:
@@ -64,6 +95,7 @@ export const Prompt: FunctionComponent = () => {
         onClick={() => tokenInputRef.current.select()}
         ref={tokenInputRef}
         value={authToken}
+        style={{ width: '100%' }}
       />
     </Container>
   );

@@ -1,4 +1,8 @@
-import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
+import {
+  DNT,
+  trackPageview,
+  identify,
+} from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { Toasts } from '@codesandbox/notifications';
@@ -8,6 +12,11 @@ import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbox/CreateSandboxModal';
+import { initializeExperimentStore } from '@codesandbox/ab';
+import {
+  getExperimentUserId,
+  AB_TESTING_URL,
+} from '@codesandbox/common/lib/config/env';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
@@ -34,8 +43,8 @@ const DuplicateAccount = Loadable(() =>
 
 const routeDebugger = _debug('cs:app:router');
 
-const SignInAuth = Loadable(
-  () => import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
+const SignInAuth = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
 );
 const SignIn = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './SignIn').then(module => ({
@@ -47,16 +56,23 @@ const Live = Loadable(() =>
     default: module.Live,
   }))
 );
-const VercelSignIn = Loadable(
-  () => import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
+const VercelSignIn = Loadable(() =>
+  import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
 );
-const PreviewAuth = Loadable(
-  () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
+const PreviewAuth = Loadable(() =>
+  import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
     module => ({
       default: module.NotFound,
+    })
+  )
+);
+const Phew = Loadable(() =>
+  import(/* webpackChunkName: 'phishing-phew' */ './common/Phew').then(
+    module => ({
+      default: module.Phew,
     })
   )
 );
@@ -73,6 +89,12 @@ const Search = Loadable(() =>
 const CLI = Loadable(() =>
   import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
     default: module.CLI,
+  }))
+);
+
+const Client = Loadable(() =>
+  import(/* webpackChunkName: 'page-client' */ './Client').then(module => ({
+    default: module.Client,
   }))
 );
 
@@ -119,6 +141,14 @@ const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
 
+initializeExperimentStore(
+  AB_TESTING_URL,
+  getExperimentUserId,
+  async (key, value) => {
+    await identify(key, value);
+  }
+);
+
 const RoutesComponent: React.FC = () => {
   const { appUnmounted } = useActions();
   const { modals, activeTeamInfo } = useAppState();
@@ -163,6 +193,7 @@ const RoutesComponent: React.FC = () => {
             />
             <Route path="/invite/:token" component={TeamInvitation} />
 
+            <Route path="/phew" component={Phew} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
@@ -178,6 +209,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
+            <Route path="/client/login" component={Client} />
             <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (

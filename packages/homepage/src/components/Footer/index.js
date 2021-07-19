@@ -83,8 +83,9 @@ const footerNavElements = [
         link: '/podcasts',
       },
       {
-        text: 'Careers',
+        text: 'Jobs ',
         link: '/jobs',
+        count: '2',
       },
       {
         text: 'Terms Of Use',
@@ -125,13 +126,15 @@ const Footer = () => (
           <li>
             <Title>{menu.title}</Title>
           </li>
-          {menu.elements.map(({ text, link, external }) => (
+          {menu.elements.map(({ text, link, count, external }) => (
             <li key={text}>
               <P small muted>
                 {external ? (
                   <a href={link}>{text}</a>
                 ) : (
-                  <Link to={link}>{text}</Link>
+                  <Link to={link}>
+                    {text} {count != null && <span>{count}</span>}
+                  </Link>
                 )}
               </P>
             </li>

@@ -29,16 +29,6 @@ window.babelworkers = [];
 for (let i = 0; i < WORKERS_TO_LOAD; i++) {
   const worker = new BabelWorker();
   window.babelworkers.push(worker);
-
-  // Warm up the babel worker
-  worker.postMessage({
-    type: 'warmup',
-    path: 'test.js',
-    code: 'const a = "b"',
-    config: { presets: ['env'] },
-    version: 7,
-    loaderOptions: {},
-  });
 }
 
 if (!isStandalone) {

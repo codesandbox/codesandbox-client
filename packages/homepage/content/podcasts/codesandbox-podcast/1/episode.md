@@ -5,6 +5,8 @@ airDate: Apr 8, 2021
 episodeNumber: 1
 audio: https://player.resonaterecordings.com/embed?uuid=2f5026dd-8c6d-41a8-898a-97f0d239cd42&accentColor=13,180,206&backgroundColor=242,242,242 
 slug: charlie-gerard-netlify
+
+socialImage: ./images/cover.png
 image: ./images/charlie-gerard.jpg
 apple: "https://podcasts.apple.com/us/podcast/the-codesandbox-podcast/id1558498059"
 google: "https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5yZXNvbmF0ZXJlY29yZGluZ3MuY29tL2NvZGVzYW5kYm94LXBvZGNhc3Q"
@@ -79,7 +81,8 @@ Gerard.
 
 - Learn more about Charlie Gerard on her [website](https://charliegerard.dev).
 - Connect with Charlie Gerard on [Twitter](https://twitter.com/devdevcharlie),
-  [GitHub](https://github.com/charliegerard), and
+  [GitHub](https://github.com/charliegerard),
+  [CodeSandbox](https://codesandbox.io/u/charliegerard), and
   [LinkedIn](https://www.linkedin.com/in/charliegerard/?locale=en_US).
 - Purchase Charlie’s book
   [Practical Machine Learning in JavaScript](https://www.amazon.com/Practical-Machine-Learning-JavaScript-TensorFlow-js/dp/1484264177).

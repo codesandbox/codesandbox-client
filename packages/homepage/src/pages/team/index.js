@@ -54,7 +54,7 @@ export default () => {
   }, [prefersReducedMotion]);
   return (
     <Layout>
-      <TitleAndMetaTags title="Team Plan - Codesandbox" />
+      <TitleAndMetaTags title="Team Plan - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
           <Title>Keep development work flowing</Title>
@@ -71,7 +71,7 @@ export default () => {
             margin: 2rem 0;
           `}
         >
-          <Button cta href="https://codesandbox.io/s/">
+          <Button cta href="https://codesandbox.io/dashboard/settings/new">
             Get Started
           </Button>
         </div>

@@ -83,13 +83,16 @@ from File > Preferences > Settings in the editor.
 - In container sandboxes, there is a sync limit of 10 files per second and only
   files up to 2MB are synced with the editor. Files larger than that still exist
   but are not shown in the editor's file tree. You're still able to write and
-  read to and from them in your code code and they can be seen and edited via
+  read to and from them in your code and they can be seen and edited via
   the terminal.
 - Terminal commands which alter the filesystem of the container instance aren't
   synced with files shown in the editor. You'll need to refresh to see files
   updated this way.
 - Container sandboxes sleep after around 10 minutes and can be woken by opening
   the sandbox or preview in a web browser.
+- Container sandboxes have a 1GB persistent storage limit, a 1GB vCPU soft limit,
+  and a hard memory limit of 2GB.
+
 
 ## I'm getting a 'Request Entity too Large' error, what should I do?
 

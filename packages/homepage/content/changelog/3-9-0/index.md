@@ -11,7 +11,7 @@ description:
 
 1. Repositories Sandboxes in the Dashboard  
    Quickly access all our sandboxes linked with GitHub from the dashboard
-2. Codesandbox now sets the TypeScript version of the editor dynamically
+2. CodeSandbox now sets the TypeScript version of the editor dynamically
 3. Added Sass and CSS support to Svelte template
 
 #### Fixes

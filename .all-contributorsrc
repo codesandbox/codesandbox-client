@@ -1614,6 +1614,26 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "cherniavskii",
+      "name": "Andrew Cherniavskii",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13808724?v=4",
+      "profile": "http://cherniavskii.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "NullVoxPopuli",
+      "name": "NullVoxPopuli",
+      "avatar_url": "https://avatars.githubusercontent.com/u/199018?v=4",
+      "profile": "http://nullvoxpopuli.com",
+      "contributions": [
+        "code",
+        "content",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,

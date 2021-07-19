@@ -28,6 +28,7 @@
   ],
   "dependencies": {
     "@babel/preset-flow": "^7.0.0",
+    "@codesandbox/ab": "^1.0.5",
     "@codesandbox/common": "^1.0.8",
     "@juggle/resize-observer": "^2.5.0",
     "@react-hook/mouse-position": "^1.0.3",
@@ -85,6 +86,7 @@
     "@babel/core": "^7.5.5",
     "babel-plugin-styled-components": "^1.10.7",
     "dotenv": "^6.2.0",
+    "node-fetch": "^2.6.1",
     "rimraf": "^2.6.2",
     "terser": "^3.17.0"
   }

@@ -1,1 +1,0 @@
-export { WorkspaceDashboardIcon } from './WorkspaceDashboardIcon';

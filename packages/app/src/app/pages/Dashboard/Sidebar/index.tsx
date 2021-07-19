@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
 import {
   Element,
   List,
@@ -22,6 +23,7 @@ import {
   Input,
   IconNames,
 } from '@codesandbox/components';
+import styled from 'styled-components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
@@ -129,13 +131,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <List>
           <ListItem
             css={css({
-              paddingX: 0,
+              paddingLeft: '6px',
+              paddingRight: 0,
               height: 10,
               borderBottom: '1px solid',
               borderColor: 'sideBar.border',
             })}
           >
-            {activeAccount && (
+            {activeAccount ? (
               <WorkspaceSelect
                 onSelect={workspace => {
                   actions.setActiveTeam({
@@ -144,6 +147,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }}
                 activeAccount={activeAccount}
               />
+            ) : (
+              <Stack align="center" css={{ width: '100%' }}>
+                <SkeletonTextBlock
+                  css={{ width: 26, height: 26, marginLeft: 8 }}
+                />
+                <SkeletonTextBlock
+                  css={{ width: 65, height: 12, marginLeft: 8 }}
+                />
+              </Stack>
             )}
             <Link
               css={css({ height: '100%' })}
@@ -168,6 +180,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.home(activeTeam)}
             icon="box"
             style={{ marginTop: 1 }}
+          />
+          <RowItem
+            name="Discover"
+            page="discover"
+            path={dashboardUrls.discover(activeTeam)}
+            icon="discover"
+            badge
           />
           <RowItem
             name="My Drafts"
@@ -329,6 +348,23 @@ const isSamePath = (
   return false;
 };
 
+const Badge = styled.p`
+  border-radius: 2px;
+  background-color: ${({ theme }) => theme.colors.blues[700]};
+  color: ${({ theme }) => theme.colors.white};
+
+  width: ${({ theme }) => theme.sizes[7]}px;
+  height: ${({ theme }) => theme.sizes[3]}px;
+
+  text-align: center;
+  line-height: 1.4;
+  font-size: ${({ theme }) => theme.fontSizes[1]}px;
+  font-weight: ${({ theme }) => theme.fontWeights.medium};
+
+  position: relative;
+  top: 1px; // 👌
+`;
+
 interface RowItemProps {
   name: string;
   path: string;
@@ -337,6 +373,7 @@ interface RowItemProps {
   setFoldersVisibility?: (val: boolean) => void;
   folderPath?: string;
   style?: React.CSSProperties;
+  badge?: boolean;
 }
 
 const RowItem: React.FC<RowItemProps> = ({
@@ -346,6 +383,7 @@ const RowItem: React.FC<RowItemProps> = ({
   page,
   icon,
   setFoldersVisibility = null,
+  badge,
   ...props
 }) => {
   const accepts: Array<'sandbox' | 'folder' | 'template'> = [];
@@ -451,6 +489,16 @@ const RowItem: React.FC<RowItemProps> = ({
             <Icon name={icon} />
           </Stack>
           {name}
+          {badge && (
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Badge>New</Badge>
+            </Stack>
+          )}
         </Link>
       )}
     </ListAction>

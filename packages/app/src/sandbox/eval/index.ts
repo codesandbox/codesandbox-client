@@ -12,6 +12,7 @@ import {
   dojo,
   custom,
   reason,
+  esmReact,
 } from '@codesandbox/common/lib/templates';
 
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
@@ -37,11 +38,18 @@ import { supportsNewReactTransform } from './presets/create-react-app/utils';
 
 export default async function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
+    case esmReact.name:
     case react.name:
       if (
         await supportsNewReactTransform(pkg.dependencies, pkg.devDependencies)
       ) {
-        return reactPresetV4();
+        const preset = reactPresetV4();
+
+        if (template === esmReact.name) {
+          preset.experimentalEsmSupport = true;
+        }
+
+        return preset;
       }
 
       if (isBabel7(pkg.dependencies, pkg.devDependencies)) {
