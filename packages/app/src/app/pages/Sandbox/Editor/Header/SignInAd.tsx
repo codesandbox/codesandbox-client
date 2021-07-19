@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import css from '@styled-system/css';
 import { Stack, Text, Button } from '@codesandbox/components';
-import { useActions, useAppState } from 'app/overmind';
+import { useActions } from 'app/overmind';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 export const SignInBanner = () => {
-  const state = useAppState();
   const { signInClicked } = useActions();
   const [show, setShow] = useState(false);
 
-  const experimentPromise = useExperimentResult(
-    'editor-signin-banner-trigger-real'
-  );
   const [bannerTriggerOnce, setBannerTriggerOnce] = useState(false);
 
   useEffect(() => {
@@ -24,32 +19,15 @@ export const SignInBanner = () => {
       setBannerTriggerOnce(true);
     };
 
-    /**
-     * Experiment
-     */
-    experimentPromise.then(experiment => {
-      /**
-       * A
-       */
-      if (experiment === ExperimentValues.A && bannerTriggerOnce === false) {
-        timer = window.setTimeout(showBanner, 180000);
-        // 3 minutes
-      } else if (
-        /**
-         * B
-         */
-        experiment === ExperimentValues.B &&
-        state.editor.changeCounter === 3 &&
-        bannerTriggerOnce === false
-      ) {
-        showBanner();
-      }
-    });
+    if (bannerTriggerOnce === false) {
+      // 3 minutes
+      timer = window.setTimeout(showBanner, 180000);
+    }
 
     return () => {
       clearTimeout(timer);
     };
-  }, [state.editor.changeCounter, experimentPromise, bannerTriggerOnce]);
+  }, [bannerTriggerOnce]);
 
   return (
     <AnimatePresence>
