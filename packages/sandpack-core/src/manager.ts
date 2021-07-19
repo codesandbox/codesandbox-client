@@ -735,17 +735,19 @@ export default class Manager implements IEvaluator {
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
-  async resolveModuleAsync({
-    path,
-    parentPath = '/',
-    query = '',
-    defaultExtensions = DEFAULT_EXTENSIONS,
-  }: {
+  async resolveModuleAsync(opts: {
     path: string;
     parentPath?: string;
     query?: string;
     defaultExtensions?: Array<string>;
   }): Promise<Module> {
+    const { path, query = '', defaultExtensions = DEFAULT_EXTENSIONS } = opts;
+    let parentPath = opts.parentPath || '/';
+
+    const key = `${path}::${parentPath}::${query}::${defaultExtensions.join(
+      ','
+    )}`;
+
     if (
       !this.preset.experimentalEsmSupport &&
       (isUrl(parentPath) || isUrl(path))
@@ -790,7 +792,7 @@ export default class Manager implements IEvaluator {
     if (cachedPath && this.transpiledModules[cachedPath]) {
       resolvedPath = cachedPath;
     } else {
-      const measureKey = `resolve-async:${path}:${parentPath}`;
+      const measureKey = `resolve-async:${key}`;
       measure(measureKey);
       const presetAliasedPath = this.getPresetAliasedPath(path);
 
