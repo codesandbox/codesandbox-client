@@ -735,46 +735,19 @@ export default class Manager implements IEvaluator {
     return p;
   }
 
-  resolveModuleAsync(opts: {
-    path: string;
-    parentPath?: string;
-    query?: string;
-    defaultExtensions?: Array<string>;
-  }): Promise<Module> {
-    const {
-      path,
-      parentPath = '/',
-      query = '',
-      defaultExtensions = DEFAULT_EXTENSIONS,
-    } = opts;
-
-    const key = `${path}::${parentPath}::${query}::${defaultExtensions.join(
-      ','
-    )}`;
-
-    const promise: Promise<Module> =
-      this.asyncModuleResolutions.get(key) ||
-      this._resolveModuleAsync({
-        key,
-        path,
-        parentPath,
-        query,
-        defaultExtensions,
-      });
-    this.asyncModuleResolutions.set(key, promise);
-    return promise;
-  }
-
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
-  private async _resolveModuleAsync(opts: {
-    key: string;
+  private async resolveModuleAsync(opts: {
     path: string;
     parentPath: string;
     query: string;
     defaultExtensions: Array<string>;
   }): Promise<Module> {
-    const { key, path, query, defaultExtensions } = opts;
-    let parentPath = opts.parentPath;
+    const { path, query = '', defaultExtensions = DEFAULT_EXTENSIONS } = opts;
+    let parentPath = opts.parentPath || '/';
+
+    const key = `${path}::${parentPath}::${query}::${defaultExtensions.join(
+      ','
+    )}`;
 
     if (
       !this.preset.experimentalEsmSupport &&
