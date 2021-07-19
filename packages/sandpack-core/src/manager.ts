@@ -744,10 +744,6 @@ export default class Manager implements IEvaluator {
     const { path, query = '', defaultExtensions = DEFAULT_EXTENSIONS } = opts;
     let parentPath = opts.parentPath || '/';
 
-    const key = `${path}::${parentPath}::${query}::${defaultExtensions.join(
-      ','
-    )}`;
-
     if (
       !this.preset.experimentalEsmSupport &&
       (isUrl(parentPath) || isUrl(path))
@@ -792,7 +788,7 @@ export default class Manager implements IEvaluator {
     if (cachedPath && this.transpiledModules[cachedPath]) {
       resolvedPath = cachedPath;
     } else {
-      const measureKey = `resolve-async:${key}`;
+      const measureKey = `resolve-async:${path}::${parentPath}::${query}::${Date.now()}`;
       measure(measureKey);
       const presetAliasedPath = this.getPresetAliasedPath(path);
 
