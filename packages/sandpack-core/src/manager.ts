@@ -177,7 +177,6 @@ export default class Manager implements IEvaluator {
   version: string;
 
   esmodules: Map<string, Promise<string>>;
-  asyncModuleResolutions: Map<string, Promise<Module>> = new Map();
 
   constructor(
     id: string,
@@ -1204,7 +1203,6 @@ export default class Manager implements IEvaluator {
   async updateData(modules: {
     [path: string]: Module;
   }): Promise<Array<TranspiledModule>> {
-    this.asyncModuleResolutions = new Map();
     this.transpileJobs = {};
     this.hardReload = false;
 
