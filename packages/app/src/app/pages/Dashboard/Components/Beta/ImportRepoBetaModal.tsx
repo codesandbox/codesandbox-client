@@ -11,7 +11,7 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 
 const getFullGitHubUrl = (url: string) =>
-  `https://beta.codesandbox.stream${gitHubToSandboxBetaUrl(url)}/master`;
+  `https://beta.codesandbox.stream${gitHubToSandboxBetaUrl(url)}`;
 
 export const ImportRepoBetaModal = () => {
   const { modals } = useAppState();
