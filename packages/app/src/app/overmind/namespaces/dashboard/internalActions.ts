@@ -39,7 +39,9 @@ export const changeSandboxesInState = (
         [key in SandboxTypes]: NonNullable<typeof dashboard.sandboxes[key]>;
       };
 
-      if (type === 'REPOS') {
+      if (type === 'BETA') {
+        // do nothing
+      } else if (type === 'REPOS') {
         Object.keys(sandboxStructure.REPOS).forEach(repoName => {
           const repoSandboxes = sandboxStructure.REPOS[repoName];
           if (!repoSandboxes.sandboxes) {
@@ -116,7 +118,9 @@ export const deleteSandboxesFromState = (
         [key in SandboxTypes]: NonNullable<typeof dashboard.sandboxes[key]>;
       };
 
-      if (type === 'ALL') {
+      if (type === 'BETA') {
+        // do nothing
+      } else if (type === 'ALL') {
         const folderNames = Object.keys(sandboxStructure[type]);
         folderNames.forEach(folderName => {
           if (!sandboxStructure.ALL[folderName]) {
@@ -147,8 +151,6 @@ export const deleteSandboxesFromState = (
             repoSandbox.sandboxes = newSandboxes;
           }
         });
-      } else if (type === 'BETA') {
-        // do nothing as it only appears in the beta page
       } else {
         const newSandboxes = sandboxStructure[type].filter(sandboxFilter);
         if (newSandboxes.length !== sandboxStructure[type].length) {

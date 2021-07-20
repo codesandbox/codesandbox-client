@@ -100,7 +100,9 @@ type Unpacked<T> = T extends (infer U)[]
 
 export type DashboardBetaRepo = {
   type: 'beta-repo';
-  sandbox: Unpacked<SandboxesBetaQuery['me']['betaSandboxes']>;
+  sandbox: Unpacked<
+    NonNullable<NonNullable<SandboxesBetaQuery>['me']>['betaSandboxes']
+  >;
 };
 
 export type DashboardSkeletonRow = {

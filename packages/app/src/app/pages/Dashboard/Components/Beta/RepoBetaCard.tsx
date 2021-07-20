@@ -10,11 +10,7 @@ const getFullGitHubUrl = (owner: string, repo: string, branch: string) =>
 export const RepoBetaCard = ({
   sandbox,
   // interactions
-  selected,
   isScrolling,
-  onClick,
-  onDoubleClick,
-  onContextMenu,
   ...props
 }) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
@@ -31,7 +27,6 @@ export const RepoBetaCard = ({
     <Stack
       direction="vertical"
       gap={2}
-      onClick={onClick}
       onDoubleClick={() => {
         window.location.href = getFullGitHubUrl(owner, repo, branch);
       }}
@@ -42,9 +37,9 @@ export const RepoBetaCard = ({
         height: 240,
         backgroundColor: 'grays.700',
         border: '1px solid',
+        borderColor: 'grays.500',
         borderRadius: 'medium',
         overflow: 'hidden',
-        borderColor: selected ? 'blues.600' : 'grays.500',
         ':hover, :focus, :focus-within': {
           boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
         },
