@@ -10,7 +10,7 @@ import angular from '../../../assets/icons/home-angular.svg';
 import html from '../../../assets/icons/home-html.svg';
 import more from '../../../assets/icons/home-more.svg';
 
-const CTATemplateAVersion = () => (
+const Content = () => (
   <>
     <SandboxButtons>
       <Sandbox href="/s/new" title="React" style={{ animationDelay: '0.5s' }}>
@@ -120,4 +120,4 @@ const Sandbox = styled.a`
   }
 `;
 
-export { CTATemplateAVersion };
+export { Content };
