@@ -4,8 +4,24 @@ import { render } from 'react-dom';
 import requirePolyfills from '@codesandbox/common/lib/load-dynamic-polyfills';
 import 'normalize.css';
 import '@codesandbox/common/lib/global.css';
-import track, { identifyOnce } from '@codesandbox/common/lib/utils/analytics';
+import track, {
+  identifyOnce,
+  identify,
+} from '@codesandbox/common/lib/utils/analytics';
+import { initializeExperimentStore } from '@codesandbox/ab';
+import {
+  getExperimentUserId,
+  AB_TESTING_URL,
+} from '@codesandbox/common/lib/config/env';
 import App from './components/App';
+
+initializeExperimentStore(
+  AB_TESTING_URL,
+  getExperimentUserId,
+  async (key, value) => {
+    await identify(key, value);
+  }
+);
 
 try {
   // If this value is not set, set it to false
