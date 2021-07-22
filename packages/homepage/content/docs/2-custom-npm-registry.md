@@ -9,14 +9,14 @@ description: You can use your own private npm registry if you have Team Pro.
 members. [Check out Team Pro](https://codesandbox.io/pricing).**
 
 The custom private npm registry setting makes it possible for sandboxes in your
-workspace to retrieve npm packages from your own npm registry. This setting is
-available for all Team Pro workspaces, you can access the settings
+team settings to retrieve npm packages from your own npm registry. This setting
+is available for all Team Pro accounts, you can access the settings
 [here](https://codesandbox.io/dashboard/settings/npm-registry).
 
 ## Configuration
 
 You can configure your private npm registry in your
-[Workspace Settings](https://codesandbox.io/dashboard/settings/npm-registry).
+[Team Settings](https://codesandbox.io/dashboard/settings/npm-registry).
 
 ![Configuration Form](./images/custom-npm-registry.png)
 
@@ -132,10 +132,10 @@ the tokens that are sent in. We can
 
 ### Can I use a .npmrc file?
 
-To make sure that credentials don't accidentally get shared with collaborators 
+To make sure that credentials don't accidentally get shared with collaborators
 of a sandbox, we don't support reading credentials from a `.npmrc` file. We
-recommend you to put the auth token in the workspace configuration instead,
-so that it's encrypted and only shared with the admin of the workspace.
+recommend you to put the auth token in the workspace configuration instead, so
+that it's encrypted and only shared with the admin of the workspace.
 
 ### Does this work with container sandboxes?
 
