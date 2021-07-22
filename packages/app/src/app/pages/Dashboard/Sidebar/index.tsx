@@ -261,7 +261,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             variant="secondary"
           >
             <Icon name="plus" size={10} marginRight={1} />
-            Create New Workspace
+            Create a new team
           </Button>
         </Element>
       </Stack>

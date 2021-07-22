@@ -148,7 +148,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 >
                   <Icon name="plus" size={10} />
                 </Stack>
-                <Text size={3}>Create a new workspace</Text>
+                <Text size={3}>Create a new team</Text>
               </Stack>
             </Menu.List>
           </Menu>
