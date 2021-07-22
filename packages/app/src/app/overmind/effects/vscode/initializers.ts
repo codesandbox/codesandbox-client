@@ -81,6 +81,7 @@ export function initializeSettings() {
       );
     }
 
+    settingsChanged = changeIfNeeded('files.autoSave', 'off');
     settingsChanged = changeIfNeeded('javascript.autoClosingTags', false);
     settingsChanged = changeIfNeeded('typescript.autoClosingTags', false);
     settingsChanged = changeIfNeeded('html.autoClosingTags', false);
