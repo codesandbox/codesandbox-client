@@ -90,7 +90,7 @@ export const WorkspaceSettings = () => {
     member => member.authorization !== TeamMemberAuthorization.Read
   ).length;
 
-  // A workspace can have unused seats in their subscription
+  // A team can have unused seats in their subscription
   // if they have already paid for X editors for the YEARLY plan
   // then removed some members from the team
   const numberOfUnusedSeats =
@@ -128,7 +128,7 @@ export const WorkspaceSettings = () => {
   };
 
   if (!team || !stateUser) {
-    return <Header title="Workspace Settings" activeTeam={null} />;
+    return <Header title="Team Settings" activeTeam={null} />;
   }
 
   const onCopyInviteUrl = async event => {

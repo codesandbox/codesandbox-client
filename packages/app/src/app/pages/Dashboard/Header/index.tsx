@@ -93,7 +93,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
             onClick={() => {
               track('Dashboard - Invite members');
 
-              /* Only for workspaces */
+              /* Only for teams */
               if (activeTeam !== personalWorkspaceId) {
                 history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
               } else {
