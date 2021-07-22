@@ -344,7 +344,7 @@ export const WorkspaceSettings = () => {
                     actions.modalOpened({ modal: 'deleteWorkspace' })
                   }
                 >
-                  Delete Workspace
+                  Delete Team
                 </Button>
               )}
             </Stack>
