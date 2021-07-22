@@ -148,7 +148,7 @@ export const WorkspacePlanSelection: React.FC<{
 
   React.useEffect(
     function trackingWorkspace() {
-      track('Pro - Change Workspace');
+      track('Pro - Change Team selection');
     },
     [activeWorkspace]
   );

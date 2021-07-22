@@ -86,7 +86,7 @@ export const CollaboratorList = () => {
             authorization={Authorization.Owner}
             permissions={[]}
             permissionText="Can Access"
-            subtext="All workspace members"
+            subtext="All team members"
           />
         </Animated>
       )}

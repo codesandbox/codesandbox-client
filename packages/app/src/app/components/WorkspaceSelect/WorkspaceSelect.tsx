@@ -112,7 +112,6 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   <Stack align="center">
                     <Text css={css({ width: '100%' })} size={3}>
                       {team.name}
-                      {team.id === state.personalWorkspaceId && ' (Personal)'}
                     </Text>
 
                     {[
