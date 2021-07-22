@@ -102,7 +102,7 @@ export default () => {
             <div>
               <h3>Role-based permissions</h3>
               So you can control who can view and add comments, edit a sandbox,
-              or administrate your workspace.
+              or administrate your team.
             </div>
 
             <div>
