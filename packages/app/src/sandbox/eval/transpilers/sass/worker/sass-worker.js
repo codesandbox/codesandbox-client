@@ -23,18 +23,6 @@ import('browser-dart-sass/lib/dartSass-1.25.0.js').then(x => {
   );
 });
 
-// console.log(DartSass);
-
-self.importScripts(
-  process.env.NODE_ENV === 'development'
-    ? `${
-        process.env.CODESANDBOX_HOST || ''
-      }/static/js/dartSass-1.25.0.browser.js`
-    : `${
-        process.env.CODESANDBOX_HOST || ''
-      }/static/js/dartSass-1.25.0.browser.min.js`
-);
-
 let fsInitialized = false;
 const childHandler = new ChildHandler('sass-worker');
 
