@@ -2,8 +2,37 @@ import delay from '@codesandbox/common/lib/utils/delay';
 import { resolveSassUrl } from './resolver';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
 
+self.window = self;
+import('browser-dart-sass/lib/dartSass-1.25.0.js').then(x => {
+  console.log(x.default);
+  x.default.render(
+    {
+      data: "@import 'test'; .body { color: green; }",
+      importer: (url, prev, done) => {
+        console.log('resolving', url, prev);
+        // const foundIndex = data.files.findIndex(file => file.filePath === url);
+        done({
+          // file: '/test.scss',
+          contents: '',
+        });
+      },
+    },
+    function (err, result) {
+      console.log(err, result);
+    }
+  );
+});
+
+// console.log(DartSass);
+
 self.importScripts(
-  'https://cdn.jsdelivr.net/npm/sass.js@0.11.0/dist/sass.sync.js'
+  process.env.NODE_ENV === 'development'
+    ? `${
+        process.env.CODESANDBOX_HOST || ''
+      }/static/js/dartSass-1.25.0.browser.js`
+    : `${
+        process.env.CODESANDBOX_HOST || ''
+      }/static/js/dartSass-1.25.0.browser.min.js`
 );
 
 let fsInitialized = false;

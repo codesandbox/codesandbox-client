@@ -1,0 +1,14 @@
+{
+  "name": "browser-dart-sass",
+  "version": "1.0.0",
+  "description": "Browserified version of JSDOM",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "generate": "node index.js",
+    "build:dev": "yarn generate"
+  },
+  "dependencies": {
+    "dart-sass": "1.25.0"
+  }
+}
