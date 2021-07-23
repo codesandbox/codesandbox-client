@@ -4,7 +4,7 @@ export const validateTitle = (id, title, siblings = []) => {
     // It has whitespaces
     return 'Title cannot have whitespaces';
   }
-  if (/[!@#$%^&*(),?":{}|<>]/g.test(title)) {
+  if (/[!@#%^&*(),?":{}|<>]/g.test(title)) {
     return 'Title cannot have special characters';
   }
 
