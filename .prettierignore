@@ -11,7 +11,6 @@ packages/executors/.rts2_cache_es
 packages/executors/.rts2_cache_umd
 packages/homepage/.cache
 packages/homepage/public
-packages/browser-dart-sass/*
 static/
 www/
 

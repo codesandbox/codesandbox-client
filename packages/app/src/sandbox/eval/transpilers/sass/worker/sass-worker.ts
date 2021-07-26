@@ -10,9 +10,7 @@ let libPromise = null;
 async function fetchSassLibrary() {
   if (!libPromise) {
     // @ts-ignore
-    libPromise = import('browser-dart-sass/lib/dartSass-1.25.0.js').then(
-      x => x.default
-    );
+    libPromise = import('browser-dart-sass').then(x => x.default);
   }
   return libPromise;
 }
