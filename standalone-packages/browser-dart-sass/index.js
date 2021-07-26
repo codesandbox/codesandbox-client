@@ -1,21 +1,17 @@
 const fs = require('fs');
 const path = require('path');
+const packageJson = require('./package.json');
 
-const dartSasspkg = JSON.parse(
-  fs.readFileSync('./node_modules/dart-sass/package.json').toString()
-);
-const dartSassloc = path.resolve(
-  path.join('./node_modules/dart-sass', dartSasspkg.main)
-);
-
-const libLoc = `lib/dartSass-${dartSasspkg.version}.js`;
+// Could also use require.resolve('dart-sass') but this seemed more reliable
+const dartSassLoc = path.join(__dirname, 'sass.js');
+const libLoc = `lib/dartSass-${packageJson.version}.js`;
 
 try {
   fs.mkdirSync('lib');
 } catch (e) {
   /* */
 }
-fs.copyFileSync(dartSassloc, libLoc);
+fs.copyFileSync(dartSassLoc, libLoc);
 
 const file = fs
   .readFileSync(libLoc)

@@ -3,3 +3,4 @@
 **/stories/*.*
 **/lib/*.*
 **/*.d.ts
+/standalone-packages/*
