@@ -1,4 +1,3 @@
-standalone-packages/*
 !/standalone-packages/vscode/src/vs/codesandbox/
 !/standalone-packages/vscode/src/vs/codesandbox/*
 !/standalone-packages/vscode/src/vs/codesandbox/**/*.ts
