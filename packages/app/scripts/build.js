@@ -129,12 +129,18 @@ function build(previousSizeMap) {
       process.exit(1);
     }
 
+    console.log(
+      stats.toString({
+        chunks: false,
+        colors: true,
+      })
+    );
+
     const info = stats.toJson();
 
     if (stats.hasErrors()) {
       console.error('Error creating a production build:');
       console.error(info.errors);
-      console.error(stats.compilation.errors);
       process.exit(1);
     }
 
