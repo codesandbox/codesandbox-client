@@ -134,7 +134,6 @@ function build(previousSizeMap) {
     if (stats.hasErrors()) {
       console.error('Error creating a production build:');
       console.error(info.errors);
-      ls - a;
       process.exit(1);
     }
 
@@ -149,8 +148,9 @@ function build(previousSizeMap) {
 
     console.log(
       chalk.green(
-        `Built ${stats.hasWarnings() ? 'with warnings ' : ''}in ${took /
-          1000}s.`
+        `Built ${stats.hasWarnings() ? 'with warnings ' : ''}in ${
+          took / 1000
+        }s.`
       )
     );
     console.log();
