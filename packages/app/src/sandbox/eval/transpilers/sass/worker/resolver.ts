@@ -43,12 +43,12 @@ export function getPossibleSassPaths(
 }
 
 async function resolveAsyncModule(opts: {
-  path: string,
+  path: string;
   options: {
-    ignoredExtensions: POTENTIAL_EXTENSIONS,
-  },
-  loaderContextId: number,
-  childHandler: ChildHandler,
+    ignoredExtensions: typeof POTENTIAL_EXTENSIONS;
+  };
+  loaderContextId: number;
+  childHandler: ChildHandler;
 }) {
   const { path, options = {}, loaderContextId, childHandler } = opts;
 
@@ -69,11 +69,11 @@ async function resolveAsyncModule(opts: {
 }
 
 function existsPromise(opts: {
-  fs: any,
-  filepath: string,
-  loaderContextId: number,
-  childHandler: ChildHandler,
-}) {
+  fs: any;
+  filepath: string;
+  loaderContextId: number;
+  childHandler: ChildHandler;
+}): Promise<false | string> {
   const { fs, filepath, loaderContextId, childHandler } = opts;
   return new Promise(r => {
     fs.stat(filepath, async (err, stats) => {
@@ -114,31 +114,62 @@ function existsPromise(opts: {
 /**
  * Return and stop as soon as one promise returns a truthy value
  */
-function firstTrue(promises) {
-  const newPromises = promises.map(
-    p => new Promise((res, reject) => p.then(v => v && res(v), reject))
-  );
-  newPromises.push(Promise.all(promises).then(() => false));
-  return Promise.race(newPromises);
+function firstTrue<T>(promises: Array<Promise<T | false>>): Promise<T> {
+  if (!promises.length) {
+    return Promise.reject(new Error('No promises supplied'));
+  }
+
+  return new Promise((resolvePromise, rejectPromise) => {
+    let resolved: boolean = false;
+    let firstError: any;
+
+    Promise.all(
+      promises.map(promise =>
+        promise.then(
+          result => {
+            if (result && !resolved) {
+              resolved = true;
+              resolvePromise(result);
+            }
+          },
+          err => {
+            firstError = firstError || err;
+          }
+        )
+      )
+    ).then(() => {
+      if (!resolved) {
+        const err =
+          firstError ||
+          new Error('None of the promises returned a truthy value');
+        rejectPromise(err);
+      }
+    });
+  });
 }
 
 async function resolvePotentialPath(opts: {
-  fs: any,
-  potentialPath: string,
-  loaderContextId: number,
-  childHandler: ChildHandler,
-}) {
+  fs: any;
+  potentialPath: string;
+  loaderContextId: number;
+  childHandler: ChildHandler;
+}): Promise<string | null> {
   const { fs, potentialPath, loaderContextId, childHandler } = opts;
   try {
     const pathDirName = pathUtils.dirname(potentialPath);
     const pathVariations = getPathVariations(
       pathUtils.basename(potentialPath)
     ).map(variation => pathUtils.join(pathDirName, variation));
-    const foundFilePath = await firstTrue(
+    const foundFilePath = await firstTrue<string>(
       pathVariations.map(path =>
         existsPromise({ fs, filepath: path, loaderContextId, childHandler })
       )
     );
+
+    if (!foundFilePath) {
+      return null;
+    }
+
     return foundFilePath;
   } catch (err) {
     return null;
@@ -146,8 +177,8 @@ async function resolvePotentialPath(opts: {
 }
 
 interface ISassResolverOptions {
-  previousFilePath: string;
-  importUrl: string;
+  url: string;
+  previous: string;
   includePaths?: Array<string>;
   env?: any;
   fs: any;
@@ -168,8 +199,6 @@ See also: https://github.com/sass/dart-sass/blob/006e6aa62f2417b5267ad5cdb5ba050
 */
 export async function resolveSassUrl(opts: ISassResolverOptions) {
   const {
-    importUrl,
-    previousFilePath,
     includePaths = [],
     env = {},
     fs,
@@ -177,13 +206,16 @@ export async function resolveSassUrl(opts: ISassResolverOptions) {
     loaderContextId,
     childHandler,
   } = opts;
+  let { url, previous } = opts;
 
   if (loaderContextId == null) {
     throw new Error('Loader context id is required');
   }
 
-  const url = importUrl.replace(/^file:\/\//, '');
-  const paths = [pathUtils.dirname(previousFilePath.replace(/^file:\/\//, ''))];
+  url = url.replace(/^file:\/\//, '');
+  previous = previous.replace(/^file:\/\//, '');
+
+  const paths = [pathUtils.dirname(previous)];
   if (includePaths) {
     paths.push(...includePaths);
   }

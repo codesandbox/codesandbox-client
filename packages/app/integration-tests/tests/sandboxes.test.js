@@ -25,7 +25,6 @@ const SANDBOXES = [
   'angular', // angular template
   // Sass importing
   '2ppkvzx570', // nested imports
-  'rl2m3xklyo', // node_modules import
   'vanilla',
   'n5wy74w8vl', // material-ui generated demo
   'algolia-doc-onboarding-demos-angular-media', // algolia angular demo
@@ -41,7 +40,8 @@ const SANDBOXES = [
   'sebn6', // babel plugin dynamically downloaded
   'utmms', // babel plugin pragmatic-jsx which requires other babel plugin
   'circle-svg', // svgs don't render properly if you use document.createElement
-  'vue-3-basics-program-easily' // vue w/ custom html
+  'vue-3-basics-program-easily', // vue w/ custom html
+  'scss-mixins',
 ];
 
 // Logic for parallelizing the tests

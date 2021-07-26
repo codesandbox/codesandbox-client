@@ -5,7 +5,7 @@ import { exec } from 'child_process';
 
 import { loadSandboxRetry, SECOND } from './utils';
 
-const SANDBOXES = ['sass-imports'];
+const SANDBOXES = ['scss-mixins'];
 
 async function runTests() {
   console.log('Launching puppeteer');

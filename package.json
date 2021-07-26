@@ -28,6 +28,7 @@
       "packages/vue3-transpiler",
       "packages/vue3-browser-compiler",
       "packages/browser-eslint-rules",
+      "packages/browser-dart-sass",
       "packages/sandpack-core"
     ],
     "nohoist": [

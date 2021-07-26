@@ -3,3 +3,5 @@
 **/stories/*.*
 **/lib/*.*
 **/*.d.ts
+packages/app/integration-tests/*
+static/*
