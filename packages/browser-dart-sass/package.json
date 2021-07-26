@@ -1,7 +1,7 @@
 {
   "name": "browser-dart-sass",
   "version": "1.25.0",
-  "description": "Browserified version of JSDOM",
+  "description": "Browserified version of dart-sass",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
