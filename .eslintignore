@@ -3,4 +3,6 @@
 **/stories/*.*
 **/lib/*.*
 **/*.d.ts
-/standalone-packages/*
+standalone-packages/*
+packages/browser-dart-sass/*
+packages/app/integration-tests/*

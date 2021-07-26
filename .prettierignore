@@ -1,3 +1,4 @@
+standalone-packages/*
 !/standalone-packages/vscode/src/vs/codesandbox/
 !/standalone-packages/vscode/src/vs/codesandbox/*
 !/standalone-packages/vscode/src/vs/codesandbox/**/*.ts
@@ -10,8 +11,8 @@ packages/executors/.rts2_cache_es
 packages/executors/.rts2_cache_umd
 packages/homepage/.cache
 packages/homepage/public
+packages/browser-dart-sass/*
 static/
-/standalone-packages/*
 www/
 
 # Our server side code changes html, we don't want to unintentionally break this by formatting
