@@ -57,6 +57,7 @@ aliases:
       - packages/sse-hooks/node_modules
       - packages/sandpack-core/node_modules
       - packages/browser-eslint-rules/node_modules
+      - packages/browser-dart-sass/node_modules
       - packages/vue3-browser-compiler/node_modules
       - packages/vue3-transpiler/node_modules
 
