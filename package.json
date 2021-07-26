@@ -34,7 +34,6 @@
     "nohoist": [
       "**/react-codemirror2",
       "**/react-codemirror2/**",
-      "packages/browser-dart-sass",
       "codesandbox-deps/tern"
     ]
   },
