@@ -69,7 +69,10 @@ async function compileSass(opts: ISassCompileOptions) {
     return foundFileCache[filepath];
   };
 
-  const importer = async (url, prev) => {
+  const importer = async (
+    url,
+    prev
+  ): Promise<{ file: string; contents: string }> => {
     try {
       const previous = prev === 'stdin' ? path : prev;
 
