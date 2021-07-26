@@ -25,7 +25,6 @@ const SANDBOXES = [
   'angular', // angular template
   // Sass importing
   '2ppkvzx570', // nested imports
-  'rl2m3xklyo', // node_modules import
   'vanilla',
   'n5wy74w8vl', // material-ui generated demo
   'algolia-doc-onboarding-demos-angular-media', // algolia angular demo
