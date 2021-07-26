@@ -97,7 +97,7 @@ async function compileSass(opts: ISassCompileOptions) {
 
       const contents = await readFile(foundPath);
 
-      return { path: foundPath, contents };
+      return { file: foundPath, contents };
     } catch (err) {
       err.message = `Could not resolve ${url}: ${err.message}`;
       throw err;
