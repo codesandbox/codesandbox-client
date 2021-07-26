@@ -5,8 +5,8 @@
   "main": "./lib/index.js",
   "license": "MIT",
   "scripts": {
-    "generate": "node index.js",
-    "build:dev": "yarn generate"
+    "build": "node index.js",
+    "build:dev": "yarn build"
   },
   "dependencies": {
     "sass": "1.36.0"
