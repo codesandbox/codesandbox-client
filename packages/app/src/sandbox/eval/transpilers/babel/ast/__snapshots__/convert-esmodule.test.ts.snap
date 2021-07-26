@@ -90,8 +90,8 @@ $csbImport('test');
 
 exports[`convert-esmodule can convert imports with spaces 1`] = `
 "\\"use strict\\";
-var $csb__atest = require(\\"a test\\");
-var aTest = $_csb__interopRequireDefault($csb__atest);
+var $csb__a_test = require(\\"a test\\");
+var aTest = $_csb__interopRequireDefault($csb__a_test);
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     default: obj
@@ -269,9 +269,9 @@ function $_csb__interopRequireDefault(obj) {
 
 exports[`convert-esmodule converts object shorthands 1`] = `
 "\\"use strict\\";
-var $csb__templatefactory = require(\\"./template-factory.js\\");
+var $csb__template_factory = require(\\"./template-factory.js\\");
 const short = {
-  templateFactory: (0, $csb__templatefactory.templateFactory)
+  templateFactory: (0, $csb__template_factory.templateFactory)
 };
 "
 `;
@@ -283,7 +283,7 @@ Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
 exports.get = get;
-var $csb__colorsvalues = require(\\"./colors-values\\");
+var $csb__colors_values = require(\\"./colors-values\\");
 function get() {
   return 5;
 }
@@ -296,7 +296,7 @@ exports.EuiDataGrid = void  0;
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-var $csb__column_sorting_draggable = require(\\"./column_sorting_draggable\\");
+var $csb__ng_draggable = require(\\"./column_sorting_draggable\\");
 var $csb__data_grid = require(\\"./data_grid\\");
 Object.defineProperty(exports, \\"EuiDataGrid\\", {
   enumerable: true,
@@ -325,17 +325,17 @@ exports[`convert-esmodule doesn't hoist single import above export 1`] = `
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-var $csb__tfjscore = require(\\"@tensorflow/tfjs-core\\");
-var $csb__tfjsdata = require(\\"@tensorflow/tfjs-data\\");
-var data = $csb__tfjsdata;
-Object.keys($csb__tfjscore).forEach(function (key) {
+var $csb__tfjs_core = require(\\"@tensorflow/tfjs-core\\");
+var $csb__tfjs_data = require(\\"@tensorflow/tfjs-data\\");
+var data = $csb__tfjs_data;
+Object.keys($csb__tfjs_core).forEach(function (key) {
   if (key === \\"default\\" || key === \\"__esModule\\") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     configurable: true,
     get: function $csbGet() {
-      return $csb__tfjscore[key];
+      return $csb__tfjs_core[key];
     }
   });
 });
@@ -372,7 +372,7 @@ function a() {
 
 exports[`convert-esmodule generates parseable var name with @ 1`] = `
 "\\"use strict\\";
-var $csb__akjaw = require(\\"./a-@kjaw\\");
+var $csb__a_kjaw = require(\\"./a-@kjaw\\");
 "
 `;
 
@@ -407,17 +407,17 @@ Object.defineProperty(exports, \\"a\\", {
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-var $csb__testlibdom = require(\\"test-lib-dom\\");
-var $csb__testlibdom_ = require(\\"test-lib-dom\\");
-var a = () => (0, $csb__testlibdom.a);
-Object.keys($csb__testlibdom_).forEach(function (key) {
+var $csb__test_lib_dom = require(\\"test-lib-dom\\");
+var $csb__test_lib_dom_ = require(\\"test-lib-dom\\");
+var a = () => (0, $csb__test_lib_dom.a);
+Object.keys($csb__test_lib_dom_).forEach(function (key) {
   if (key === \\"default\\" || key === \\"__esModule\\") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     configurable: true,
     get: function $csbGet() {
-      return $csb__testlibdom_[key];
+      return $csb__test_lib_dom_[key];
     }
   });
 });
@@ -730,8 +730,8 @@ function test3() {}
 
 exports[`convert-esmodule hoists imports at bottom 1`] = `
 "\\"use strict\\";
-var $csb__proptypes = require(\\"prop-types\\");
-var PropTypes = $_csb__interopRequireDefault($csb__proptypes);
+var $csb__prop_types = require(\\"prop-types\\");
+var PropTypes = $_csb__interopRequireDefault($csb__prop_types);
 const a = (0, PropTypes.default).a;
 function $_csb__interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
@@ -935,43 +935,43 @@ Object.defineProperty(exports, \\"data\\", {
 Object.defineProperty(exports, \\"__esModule\\", {
   value: true
 });
-var $csb__tfjscore = require(\\"@tensorflow/tfjs-core\\");
-var $csb__tfjstest = require(\\"@tensorflow/tfjs-test\\");
-var data2 = $csb__tfjstest;
-var $csb__tfjslayers = require(\\"@tensorflow/tfjs-layers\\");
-var $csb__tfjsconverter = require(\\"@tensorflow/tfjs-converter\\");
-var $csb__tfjsdata = require(\\"@tensorflow/tfjs-data\\");
-var data = $csb__tfjsdata;
-Object.keys($csb__tfjscore).forEach(function (key) {
+var $csb__tfjs_core = require(\\"@tensorflow/tfjs-core\\");
+var $csb__tfjs_test = require(\\"@tensorflow/tfjs-test\\");
+var data2 = $csb__tfjs_test;
+var $csb__tfjs_layers = require(\\"@tensorflow/tfjs-layers\\");
+var $csb__tfjs_converter = require(\\"@tensorflow/tfjs-converter\\");
+var $csb__tfjs_data = require(\\"@tensorflow/tfjs-data\\");
+var data = $csb__tfjs_data;
+Object.keys($csb__tfjs_core).forEach(function (key) {
   if (key === \\"default\\" || key === \\"__esModule\\") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     configurable: true,
     get: function $csbGet() {
-      return $csb__tfjscore[key];
+      return $csb__tfjs_core[key];
     }
   });
 });
-Object.keys($csb__tfjslayers).forEach(function (key) {
+Object.keys($csb__tfjs_layers).forEach(function (key) {
   if (key === \\"default\\" || key === \\"__esModule\\") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     configurable: true,
     get: function $csbGet() {
-      return $csb__tfjslayers[key];
+      return $csb__tfjs_layers[key];
     }
   });
 });
-Object.keys($csb__tfjsconverter).forEach(function (key) {
+Object.keys($csb__tfjs_converter).forEach(function (key) {
   if (key === \\"default\\" || key === \\"__esModule\\") return;
   if (Object.prototype.hasOwnProperty.call(exports, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     configurable: true,
     get: function $csbGet() {
-      return $csb__tfjsconverter[key];
+      return $csb__tfjs_converter[key];
     }
   });
 });
