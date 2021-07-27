@@ -29,6 +29,7 @@ export const initializeNewUser = async ({
   actions,
 }: Context) => {
   actions.dashboard.getTeams();
+  actions.dashboard.getFeatureFlags();
   actions.internal.setPatronPrice();
   effects.analytics.identify('signed_in', true);
   effects.analytics.setUserId(state.user!.id, state.user!.email);

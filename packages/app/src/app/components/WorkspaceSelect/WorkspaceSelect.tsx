@@ -28,10 +28,15 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const { dashboard, user } = state;
     const history = useHistory();
 
-    const isInBetaScreen = history.location.pathname === dashboardUrls.beta();
     const personalWorkspace = dashboard.teams.find(
       t => t.id === state.personalWorkspaceId
     )!;
+
+    const isInBetaScreen = history.location.pathname === dashboardUrls.beta();
+    const isFeatureFlagBeta = !!dashboard.featureFlags.find(
+      e => e.name === 'beta'
+    );
+
     const workspaces = [
       personalWorkspace,
       ...sortBy(
@@ -139,8 +144,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 </MenuItem>
               ))}
 
-              {/* TODO: Wrap pilot user */}
-              <BetaMenuItem />
+              {isFeatureFlagBeta && <BetaMenuItem />}
 
               <Stack
                 as={Menu.Item}

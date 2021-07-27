@@ -47,6 +47,8 @@ import {
   CuratedAlbumsQueryVariables,
   SandboxesBetaQuery,
   SandboxesBetaQueryVariables,
+  FeatureFlagQuery,
+  FeatureFlagQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -468,4 +470,17 @@ export const curatedAlbums: Query<
     }
   }
   ${sandboxFragmentDashboard}
+`;
+
+export const featureFlag: Query<
+  FeatureFlagQuery,
+  FeatureFlagQueryVariables
+> = gql`
+  query FeatureFlag {
+    me {
+      featureFlags {
+        name
+      }
+    }
+  }
 `;

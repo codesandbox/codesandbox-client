@@ -1978,3 +1978,13 @@ export const updateAlbum = async (
     effects.notificationToast.error('There was a problem updating album');
   }
 };
+
+export const getFeatureFlags = async ({ state, effects }: Context) => {
+  if (!state.user) return;
+  const payload = await effects.gql.queries.featureFlag({});
+  if (!payload || !payload.me) {
+    return;
+  }
+
+  state.dashboard.featureFlags = payload.me.featureFlags;
+};

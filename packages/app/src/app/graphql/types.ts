@@ -138,6 +138,8 @@ export type CurrentUser = {
   collection: Maybe<Collection>;
   collections: Array<Collection>;
   email: Scalars['String'];
+  /** Get enabled feature flags for all teams user is in */
+  featureFlags: Array<FeatureFlag>;
   id: Scalars['UUID4'];
   likedSandboxes: Array<Sandbox>;
   name: Maybe<Scalars['String']>;
@@ -200,6 +202,16 @@ export enum Direction {
   Desc = 'DESC',
 }
 
+/** A feature flag */
+export type FeatureFlag = {
+  __typename?: 'FeatureFlag';
+  description: Scalars['String'];
+  enabled: Scalars['Boolean'];
+  id: Scalars['UUID4'];
+  name: Scalars['String'];
+  teams: Array<Team>;
+};
+
 /** A v1 git object */
 export type Git = {
   __typename?: 'Git';
@@ -230,7 +242,7 @@ export type GitBranch = {
   gitRepoId: Maybe<Scalars['UUID4']>;
   id: Maybe<Scalars['UUID4']>;
   repoInfo: Maybe<GitRepo>;
-  sandboxId: Maybe<Scalars['UUID4']>;
+  sandboxId: Maybe<Scalars['ID']>;
 };
 
 /** A git repo specifically for v2 */
@@ -411,6 +423,8 @@ export type RootMutationType = {
   /** Create a collection */
   createCollection: Collection;
   createComment: Comment;
+  /** Create a feature flag */
+  createFeatureFlag: FeatureFlag;
   /** Create or Update a private registry */
   createOrUpdatePrivateNpmRegistry: PrivateRegistry;
   createPreviewComment: Comment;
@@ -429,6 +443,14 @@ export type RootMutationType = {
   /** Delete sandboxes */
   deleteSandboxes: Array<Sandbox>;
   deleteWorkspace: Scalars['String'];
+  /** Disable a feature flag globally */
+  disableFeatureFlag: FeatureFlag;
+  /** Disable a feature flag for a team */
+  disableFeatureFlagForTeam: TeamsFeatureFlag;
+  /** Enable a feature flag globally */
+  enableFeatureFlag: FeatureFlag;
+  /** Enable a feature flag for a team */
+  enableFeatureFlagForTeam: TeamsFeatureFlag;
   /** Invite someone to a team */
   inviteToTeam: Team;
   /** Invite someone to a team via email */
@@ -581,6 +603,12 @@ export type RootMutationTypeCreateCommentArgs = {
   userReferences: Maybe<Array<UserReference>>;
 };
 
+export type RootMutationTypeCreateFeatureFlagArgs = {
+  description: Scalars['String'];
+  enabled: Maybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+};
+
 export type RootMutationTypeCreateOrUpdatePrivateNpmRegistryArgs = {
   authType: Maybe<AuthType>;
   enabledScopes: Array<Scalars['String']>;
@@ -637,6 +665,24 @@ export type RootMutationTypeDeleteSandboxesArgs = {
 };
 
 export type RootMutationTypeDeleteWorkspaceArgs = {
+  teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeDisableFeatureFlagArgs = {
+  name: Scalars['String'];
+};
+
+export type RootMutationTypeDisableFeatureFlagForTeamArgs = {
+  featureFlagId: Scalars['UUID4'];
+  teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeEnableFeatureFlagArgs = {
+  name: Scalars['String'];
+};
+
+export type RootMutationTypeEnableFeatureFlagForTeamArgs = {
+  featureFlagId: Scalars['UUID4'];
   teamId: Scalars['UUID4'];
 };
 
@@ -855,6 +901,8 @@ export type RootQueryType = {
   album: Maybe<Album>;
   albums: Array<Album>;
   curatedAlbums: Array<Album>;
+  /** Get all feature flags  */
+  featureFlags: Array<FeatureFlag>;
   /** Get git repo and related sandboxes */
   git: Maybe<Git>;
   /** Get v2 git repo and all its branches */
@@ -1094,6 +1142,14 @@ export enum TeamMemberAuthorization {
   /** Permission create and edit team sandboxes (in addition to read). */
   Write = 'WRITE',
 }
+
+/** A team's feature flag */
+export type TeamsFeatureFlag = {
+  __typename?: 'TeamsFeatureFlag';
+  enabledForTeam: Scalars['Boolean'];
+  featureFlagId: Scalars['UUID4'];
+  teamId: Scalars['UUID4'];
+};
 
 /** A Template */
 export type Template = {
@@ -2767,6 +2823,18 @@ export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
             } & SandboxFragmentDashboardFragment
         >;
       }
+  >;
+};
+
+export type FeatureFlagQueryVariables = Exact<{ [key: string]: never }>;
+
+export type FeatureFlagQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      featureFlags: Array<
+        { __typename?: 'FeatureFlag' } & Pick<FeatureFlag, 'name'>
+      >;
+    }
   >;
 };
 

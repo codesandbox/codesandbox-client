@@ -45,6 +45,7 @@ export type DashboardSandboxStructure = {
 };
 
 export type State = {
+  featureFlags: { name: string }[];
   sandboxes: DashboardSandboxStructure;
   teams: Array<TeamFragmentDashboardFragment>;
   workspaceSettings: {
@@ -94,6 +95,7 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
 };
 
 export const state: State = {
+  featureFlags: [],
   sandboxes: DEFAULT_DASHBOARD_SANDBOXES,
   viewMode: 'grid',
   allCollections: null,
