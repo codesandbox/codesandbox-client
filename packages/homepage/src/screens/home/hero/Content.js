@@ -13,7 +13,7 @@ import more from '../../../assets/icons/home-more.svg';
 import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 const experimentPromise = useExperimentResult('hp-cta-iteration-1');
-const [freeWordingB, setFreeWordingB] = useState(false);
+const [freeWordingA, setFreeWordingA] = useState(false);
 
 useEffect(() => {
   /* Wait for the API */
@@ -22,12 +22,12 @@ useEffect(() => {
       /**
        * A
        */
-      setFreeWordingB(true);
+      setFreeWordingA(true);
     } else if (experiment === ExperimentValues.B) {
       /**
        * B
        */
-      setFreeWordingB(false);
+      setFreeWordingA(false);
     }
   });
 }, [experimentPromise]);
@@ -86,12 +86,11 @@ const Content = () => (
         }}
         href="/s"
       >
-          {freeWordingB ? (
-            'Create Sandbox, it’s free'
-          ) : (
-            'Create Sandbox'
-          )}
-        
+        {freeWordingA ? (
+          'Create Sandbox, it’s free'
+        ) : (
+          'Create Sandbox →'
+        )}
       </Button>
     </motion.div>
   </>
