@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
@@ -9,6 +9,28 @@ import vue from '../../../assets/icons/home-vue.svg';
 import angular from '../../../assets/icons/home-angular.svg';
 import html from '../../../assets/icons/home-html.svg';
 import more from '../../../assets/icons/home-more.svg';
+
+import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
+
+const experimentPromise = useExperimentResult('hp-cta-iteration-1');
+const [freeWordingB, setFreeWordingB] = useState(false);
+
+useEffect(() => {
+  /* Wait for the API */
+  experimentPromise.then(experiment => {
+    if (experiment === ExperimentValues.A) {
+      /**
+       * A
+       */
+      setFreeWordingB(true);
+    } else if (experiment === ExperimentValues.B) {
+      /**
+       * B
+       */
+      setFreeWordingB(false);
+    }
+  });
+}, [experimentPromise]);
 
 const Content = () => (
   <>
@@ -64,7 +86,12 @@ const Content = () => (
         }}
         href="/s"
       >
-        Create Sandbox, it’s free
+          {freeWordingB ? (
+            'Create Sandbox, it’s free'
+          ) : (
+            'Create Sandbox'
+          )}
+        
       </Button>
     </motion.div>
   </>
