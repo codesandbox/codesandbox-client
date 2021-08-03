@@ -9,16 +9,16 @@ import { isStandalone } from 'codesandbox-api';
 
 import { BABEL7_VERSION } from './eval/transpilers/babel/babel-version';
 
-function preloadJs(url) {
-  // Preload the babel script too
+// Prefetch file as it's not used quickly enough to use preload without warnings
+function prefetchScript(url) {
   const preloadLink = document.createElement('link');
   preloadLink.href = url;
-  preloadLink.rel = 'preload';
+  preloadLink.rel = 'prefetch';
   preloadLink.as = 'script';
   document.head.appendChild(preloadLink);
 }
 
-preloadJs(
+prefetchScript(
   `${
     process.env.CODESANDBOX_HOST || ''
   }/static/js/babel.${BABEL7_VERSION}.min.js`
