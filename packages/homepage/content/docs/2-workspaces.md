@@ -32,7 +32,7 @@ different team, select one or more sandboxes, right-click and select 'Move to
 Folder', where you can choose the team and folder you want to move them into.
 All sandboxes in a team can be seen or edited by other team members, depending
 on their permission levels. We keep track of who created the sandbox, though,
-and only the the original creator of the sandbox can delete it.
+and only the original creator of the sandbox can delete it.
 
 ## Collaborating on Sandboxes
 
