@@ -85,7 +85,7 @@ const footerNavElements = [
       {
         text: 'Jobs ',
         link: '/jobs',
-        count: '2',
+        count: '3',
       },
       {
         text: 'Terms Of Use',
