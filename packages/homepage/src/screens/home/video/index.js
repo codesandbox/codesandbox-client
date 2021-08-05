@@ -120,7 +120,7 @@ const Video = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1, duration: 1, ease: 'easeOut' }}
       css={`
-        overflow-x: ${active ? 'initial' : 'hidden'};
+        overflow-x: hidden;
         padding-top: 4rem;
       `}
     >
