@@ -187,7 +187,7 @@ export function ignoreNextCache() {
   }
 }
 
-export async function consumeCache(manager: Manager) {
+export async function consumeCache(manager?: Manager) {
   try {
     const shouldIgnoreCache =
       localStorage.getItem('ignoreCache') ||
@@ -197,6 +197,8 @@ export async function consumeCache(manager: Manager) {
 
       return false;
     }
+
+    if (!manager || !manager.id) return false;
 
     const cacheData = (window as any).__SANDBOX_DATA__;
     const localData: ManagerCache | undefined = await localforage.getItem(
