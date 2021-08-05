@@ -121,6 +121,7 @@ const Video = () => {
       transition={{ delay: 1, duration: 1, ease: 'easeOut' }}
       css={`
         overflow-x: ${active ? 'initial' : 'hidden'};
+        padding-top: 4rem;
       `}
     >
       <section

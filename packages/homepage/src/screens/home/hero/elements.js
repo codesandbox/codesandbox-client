@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 export const HeroWrapper = styled.div`
   padding: 10rem 0 5rem 0;
-  margin-bottom: 4rem;
 
   ${props => props.theme.breakpoints.md} {
     padding-top: 5rem;
