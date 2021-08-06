@@ -141,7 +141,7 @@ const Navigation = () => {
 
                     <Jobs>
                       <Link to="/jobs" onMouseEnter={() => setOpenedNav(null)}>
-                        Jobs <Span>2</Span>
+                        Jobs <Span>3</Span>
                       </Link>
                     </Jobs>
                   </List>
