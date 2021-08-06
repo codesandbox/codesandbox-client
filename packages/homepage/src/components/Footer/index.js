@@ -4,6 +4,7 @@ import { P } from '../Typography';
 import Github from '../../assets/icons/github';
 import Twitter from '../../assets/icons/twitter';
 import Discord from '../../assets/icons/discord';
+import { OPEN_JOBS_COUNT } from '../../config/hiring';
 import { FooterWrapper, Nav, Social, Title } from './elements';
 
 const footerNavElements = [
@@ -85,7 +86,7 @@ const footerNavElements = [
       {
         text: 'Jobs ',
         link: '/jobs',
-        count: '3',
+        count: OPEN_JOBS_COUNT,
       },
       {
         text: 'Terms Of Use',
@@ -126,14 +127,14 @@ const Footer = () => (
           <li>
             <Title>{menu.title}</Title>
           </li>
-          {menu.elements.map(({ text, link, count, external }) => (
+          {menu.elements.map(({ text, link, count = 0, external }) => (
             <li key={text}>
               <P small muted>
                 {external ? (
                   <a href={link}>{text}</a>
                 ) : (
                   <Link to={link}>
-                    {text} {count != null && <span>{count}</span>}
+                    {text} {count && <span>{count}</span>}
                   </Link>
                 )}
               </P>

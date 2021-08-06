@@ -17,6 +17,7 @@ import TeamsIcon from '../../assets/icons/Teams';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
 import NewIcon from '../../assets/icons/New';
+import { OPEN_JOBS_COUNT } from '../../config/hiring';
 import { useLogin } from '../../hooks/useLogin';
 import {
   Header,
@@ -141,7 +142,7 @@ const Navigation = () => {
 
                     <Jobs>
                       <Link to="/jobs" onMouseEnter={() => setOpenedNav(null)}>
-                        Jobs <Span>2</Span>
+                        Jobs {OPEN_JOBS_COUNT && <Span>{OPEN_JOBS_COUNT}</Span>}
                       </Link>
                     </Jobs>
                   </List>
