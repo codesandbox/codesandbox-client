@@ -130,7 +130,7 @@ function triggerFileWatch(path: string, type: 'rename' | 'change') {
   }
 }
 export default class Manager implements IEvaluator {
-  id: string;
+  id?: string | null;
   transpiledModules: {
     [path: string]: {
       module: Module;
@@ -179,7 +179,7 @@ export default class Manager implements IEvaluator {
   esmodules: Map<string, Promise<string>>;
 
   constructor(
-    id: string,
+    id: string | null | undefined,
     preset: Preset,
     modules: { [path: string]: Module },
     options: TManagerOptions,
@@ -1457,6 +1457,9 @@ export default class Manager implements IEvaluator {
 
   deleteAPICache() {
     ignoreNextCache();
+    if (!this.id) {
+      return Promise.resolve();
+    }
     return deleteAPICache(this.id, this.version);
   }
 

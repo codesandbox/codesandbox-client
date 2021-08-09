@@ -130,7 +130,7 @@ export type LoaderContext = {
   // Remaining loaders after current loader
   remainingRequests: string;
   template: string;
-  sandboxId: string | null;
+  sandboxId?: string | null;
   resourceQuery: string;
   getLoaderQuery: (module: Module) => string;
 };

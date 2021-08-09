@@ -419,7 +419,7 @@ function overrideDocumentClose() {
 overrideDocumentClose();
 
 interface CompileOptions {
-  sandboxId: string;
+  sandboxId?: string | null;
   modules: { [path: string]: Module };
   customNpmRegistries?: NpmRegistry[];
   externalResources: string[];
@@ -777,13 +777,7 @@ async function compile(opts: CompileOptions) {
       type: 'success',
     });
 
-    saveCache(
-      sandboxId,
-      managerModuleToTranspile,
-      manager,
-      changedModuleCount,
-      firstLoad
-    );
+    saveCache(managerModuleToTranspile, manager, changedModuleCount, firstLoad);
 
     setTimeout(async () => {
       try {
