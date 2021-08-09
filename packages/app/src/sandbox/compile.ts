@@ -419,7 +419,7 @@ function overrideDocumentClose() {
 overrideDocumentClose();
 
 interface CompileOptions {
-  sandboxId: string;
+  sandboxId?: string | null;
   modules: { [path: string]: Module };
   customNpmRegistries?: NpmRegistry[];
   externalResources: string[];
