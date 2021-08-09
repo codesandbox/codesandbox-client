@@ -115,13 +115,21 @@ async function compileSass(opts: ISassCompileOptions) {
       {
         data: code,
         importer: (url, prev, done) => {
-          importer(url, prev).then(done).catch(done);
+          importer(url, prev)
+            .then(result => {
+              done(result);
+            })
+            .catch(err => {
+              done(err);
+            });
         },
         sourceMapEmbed: true,
         indentedSyntax,
       },
       (err, result) => {
-        if (err) return reject(err);
+        if (err) {
+          return reject(err);
+        }
         return resolve(result);
       }
     );
