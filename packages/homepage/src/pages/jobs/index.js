@@ -336,13 +336,13 @@ const Careers = () => {
                       `}
                     >
                       <Job>
-                        <span
+                        <strong
                           css={`
-                            font-weight: bold;
+                            margin-right: 1rem;
                           `}
                         >
                           {title}
-                        </span>
+                        </strong>
 
                         <span
                           css={`
