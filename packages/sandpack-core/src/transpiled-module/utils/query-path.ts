@@ -1,7 +1,9 @@
+import { isUrl } from '@codesandbox/common/lib/utils/is-url';
+
 export const splitQueryFromPath = (
   path: string
 ): { queryPath: string; modulePath: string } => {
-  if (path.includes('!')) {
+  if (path.includes('!') && !/^\.?\/.*/.test(path) && !isUrl(path)) {
     const queryPath = path.split('!');
     const modulePath = queryPath.pop()!;
 
