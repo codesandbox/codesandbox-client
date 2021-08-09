@@ -30,6 +30,8 @@ import HighlightedICon from '../../assets/icons/Highlighted';
 import JobsIcon from '../../assets/icons/Jobs';
 import Button from '../Button';
 import { useLogin } from '../../hooks/useLogin';
+import { OPEN_JOBS_COUNT } from '../../config/hiring';
+import { JobBadge } from '../JobBadge';
 
 export default () => {
   const user = useLogin();
@@ -212,7 +214,12 @@ export default () => {
                       <IconWrapper>
                         <JobsIcon />
                       </IconWrapper>
-                      <span>Jobs</span>
+                      <span>
+                        Jobs{' '}
+                        {OPEN_JOBS_COUNT && (
+                          <JobBadge>{OPEN_JOBS_COUNT}</JobBadge>
+                        )}
+                      </span>
                     </Link>
                   </li>
                 </Items>

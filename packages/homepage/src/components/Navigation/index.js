@@ -19,6 +19,7 @@ import HighlightedICon from '../../assets/icons/Highlighted';
 import NewIcon from '../../assets/icons/New';
 import { OPEN_JOBS_COUNT } from '../../config/hiring';
 import { useLogin } from '../../hooks/useLogin';
+import { JobBadge } from '../JobBadge';
 import {
   Header,
   Nav,
@@ -29,7 +30,6 @@ import {
   List,
   LogIn,
   Jobs,
-  Span,
 } from './elements';
 import SubNav from './SubNav';
 import MobileNav from './MobileNav';
@@ -142,7 +142,10 @@ const Navigation = () => {
 
                     <Jobs>
                       <Link to="/jobs" onMouseEnter={() => setOpenedNav(null)}>
-                        Jobs {OPEN_JOBS_COUNT && <Span>{OPEN_JOBS_COUNT}</Span>}
+                        Jobs{' '}
+                        {OPEN_JOBS_COUNT && (
+                          <JobBadge>{OPEN_JOBS_COUNT}</JobBadge>
+                        )}
                       </Link>
                     </Jobs>
                   </List>
