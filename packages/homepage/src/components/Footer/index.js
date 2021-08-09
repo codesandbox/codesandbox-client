@@ -134,7 +134,7 @@ const Footer = () => (
                   <a href={link}>{text}</a>
                 ) : (
                   <Link to={link}>
-                    {text} {count && <span>{count}</span>}
+                    {text} {count !== 0 && <span>{count}</span>}
                   </Link>
                 )}
               </P>
