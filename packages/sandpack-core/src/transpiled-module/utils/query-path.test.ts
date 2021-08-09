@@ -13,9 +13,19 @@ describe('Split query from path', () => {
       modulePath: './test.js',
       queryPath: 'url-loader!test',
     });
+    expect(
+      splitQueryFromPath('url-loader!test!some-dependency/test.js')
+    ).toEqual({
+      modulePath: 'some-dependency/test.js',
+      queryPath: 'url-loader!test',
+    });
+    expect(splitQueryFromPath('url-loader!test!another-dependency')).toEqual({
+      modulePath: 'another-dependency',
+      queryPath: 'url-loader!test',
+    });
   });
 
-  it('Should not extract `!` is it is part of a url or filepath', () => {
+  it('Should not extract `!` if it is part of a url or filepath', () => {
     expect(splitQueryFromPath('./test.js!cjs')).toEqual({
       modulePath: './test.js!cjs',
       queryPath: '',
@@ -24,6 +34,13 @@ describe('Split query from path', () => {
     expect(splitQueryFromPath('/npm:shopify-buy@2.11.0!cjs')).toEqual({
       modulePath: '/npm:shopify-buy@2.11.0!cjs',
       queryPath: '',
+    });
+
+    expect(
+      splitQueryFromPath('test-loader!/npm:shopify-buy@2.11.0!cjs')
+    ).toEqual({
+      modulePath: '/npm:shopify-buy@2.11.0!cjs',
+      queryPath: 'test-loader',
     });
   });
 });
