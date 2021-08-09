@@ -179,7 +179,7 @@ export default class Manager implements IEvaluator {
   esmodules: Map<string, Promise<string>>;
 
   constructor(
-    id: string | null,
+    id: string | null | undefined,
     preset: Preset,
     modules: { [path: string]: Module },
     options: TManagerOptions,
