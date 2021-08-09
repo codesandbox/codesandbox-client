@@ -51,13 +51,12 @@ export function clearIndexedDBCache() {
 }
 
 export async function saveCache(
-  sandboxId: string,
   managerModuleToTranspile: any,
   manager: Manager,
   changes: number,
   firstRun: boolean
 ) {
-  if (!sandboxId) {
+  if (!manager.id) {
     return Promise.resolve(false);
   }
 
@@ -101,7 +100,7 @@ export async function saveCache(
     );
 
     return window
-      .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
+      .fetch(`${host}/api/v1/sandboxes/${manager.id}/cache`, {
         method: 'POST',
         body: JSON.stringify({
           version: manager.version,
@@ -188,6 +187,10 @@ export function ignoreNextCache() {
 }
 
 export async function consumeCache(manager: Manager) {
+  if (!manager.id) {
+    return false;
+  }
+
   try {
     const shouldIgnoreCache =
       localStorage.getItem('ignoreCache') ||

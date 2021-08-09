@@ -777,13 +777,7 @@ async function compile(opts: CompileOptions) {
       type: 'success',
     });
 
-    saveCache(
-      sandboxId,
-      managerModuleToTranspile,
-      manager,
-      changedModuleCount,
-      firstLoad
-    );
+    saveCache(managerModuleToTranspile, manager, changedModuleCount, firstLoad);
 
     setTimeout(async () => {
       try {
