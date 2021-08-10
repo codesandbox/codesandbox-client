@@ -15,6 +15,7 @@ import { getSyntaxInfoFromAst } from './ast/syntax-info';
 import { convertEsModule } from './ast/convert-esmodule';
 import { ESTreeAST, generateCode, parseModule } from './ast/utils';
 import { collectDependenciesFromAST } from './ast/collect-dependencies';
+import { rewriteImportMeta } from './ast/rewrite-meta';
 
 const MAX_WORKER_ITERS = 100;
 
@@ -30,6 +31,13 @@ function addCollectedDependencies(
   deps: Array<string>
 ): Promise<Array<void>> {
   return Promise.all(deps.map(dep => loaderContext.addDependency(dep)));
+}
+
+function getModuleUrl(path: string): string {
+  if (isUrl(path)) {
+    return path;
+  }
+  return new URL(path, window.location.href).href;
 }
 
 // Right now this is in a worker, but when we're going to allow custom plugins
@@ -100,6 +108,9 @@ class BabelTranspiler extends WorkerTranspiler {
             // Which is actually invalid but we probably don't wanna break anyone's code if it works in other bundlers...
             const deps = collectDependenciesFromAST(ast);
             await addCollectedDependencies(loaderContext, deps);
+            rewriteImportMeta(ast, {
+              url: getModuleUrl(loaderContext.path),
+            });
             endMeasure(`esconvert-${path}`, { silent: true });
             return {
               transpiledCode: generateCode(ast),
