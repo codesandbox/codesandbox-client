@@ -13,14 +13,6 @@ export const RepoBetaCard = ({
   isScrolling,
   ...props
 }) => {
-  const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!isScrolling && !stoppedScrolling) {
-      setStoppedScrolling(true);
-    }
-  }, [isScrolling, stoppedScrolling]);
-
   const { owner, repo, branch } = sandbox.gitv2;
 
   return (

@@ -3,11 +3,7 @@ import { Helmet } from 'react-helmet';
 import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
-import {
-  DashboardBetaRepo,
-  DashboardGridItem,
-  PageTypes,
-} from 'app/pages/Dashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 
 export const BetaRepositoriesPage = () => {
@@ -25,7 +21,7 @@ export const BetaRepositoriesPage = () => {
     ? [
         { type: 'beta-new-repo' },
         ...sandboxes.BETA.map(sandbox => ({
-          type: 'beta-repo' as DashboardBetaRepo['type'],
+          type: 'beta-repo' as const,
           sandbox,
         })),
       ]

@@ -142,9 +142,6 @@ export const Sandbox = React.memo<Props>(
         <Helmet>
           <title>{getTitle()} - CodeSandbox</title>
         </Helmet>
-        <div
-          style={{ width: '100%', height: '30px', backgroundColor: 'red' }}
-        />
         <Editor showNewSandboxModal={showNewSandboxModal} />
       </>
     );
