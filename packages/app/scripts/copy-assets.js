@@ -22,7 +22,7 @@ const assets = [
   },
   !SANDBOX_ONLY && {
     from: 'standalone-packages/vscode-editor/release/min/vs',
-    to: 'public/vscode29/vs',
+    to: 'public/vscode31/vs',
   },
   {
     from: 'packages/app/public',
