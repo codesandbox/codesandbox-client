@@ -475,6 +475,7 @@ export default class Content extends React.PureComponent<Props, State> {
         <BasePreview
           onInitialized={this.onPreviewInitialized}
           customNpmRegistries={sandbox.npmRegistries}
+          previewSecret={sandbox.previewSecret}
           sandbox={sandbox}
           hide={hidden}
           url={options.url ? options.url : undefined}
