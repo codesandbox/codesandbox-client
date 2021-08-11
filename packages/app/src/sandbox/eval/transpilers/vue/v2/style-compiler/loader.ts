@@ -58,7 +58,11 @@ export default async function (
     postcssImportPlugin({
       resolve: async (id: string, root: string) => {
         try {
-          const result = await resolveCSSFile(loaderContext, id, root);
+          const result = await resolveCSSFile(
+            loaderContext,
+            id.replace(/^~/, ''),
+            root
+          );
 
           return result.module.path;
         } catch (e) {
