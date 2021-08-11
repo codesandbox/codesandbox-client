@@ -19,6 +19,11 @@ async function addAngularJSONPolyfills(manager) {
   const { parsed } = manager.configurations['angular-config'];
 
   const { defaultProject } = parsed;
+
+  if (!defaultProject || !parsed.projects) {
+    return;
+  }
+
   const project = parsed.projects[defaultProject];
 
   if (project && project.architect) {
@@ -60,6 +65,10 @@ async function addAngularJSONResources(manager) {
   const { parsed } = manager.configurations['angular-config'];
 
   const { defaultProject } = parsed;
+  if (!defaultProject || !parsed.projects) {
+    return;
+  }
+
   const project = parsed.projects[defaultProject];
 
   if (project && project.architect) {
