@@ -69,7 +69,7 @@ export const permissionSettings = (teamId?: string | null) =>
 export const teamInvite = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/invite`, teamId);
 
-export const createWorkspace = (teamId?: string | null) =>
+export const createTeam = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings/new`, teamId);
 
 export const search = (query: string, teamId?: string | null) => {

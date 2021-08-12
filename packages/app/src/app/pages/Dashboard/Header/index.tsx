@@ -93,13 +93,11 @@ export const Header: React.FC<HeaderProps> = React.memo(
             onClick={() => {
               track('Dashboard - Invite members');
 
-              /* Only for workspaces */
+              /* Only for teams */
               if (activeTeam !== personalWorkspaceId) {
                 history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
               } else {
-                history.push(
-                  `${dashboardUrls.createWorkspace()}?from-header=1`
-                );
+                history.push(`${dashboardUrls.createTeam()}?from-header=1`);
               }
             }}
             autoWidth

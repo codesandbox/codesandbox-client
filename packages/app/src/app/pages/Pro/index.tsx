@@ -78,9 +78,9 @@ export const ProPage: React.FC = () => {
 
 const StartOrModifySubscription = () => {
   /**
-   * The user flow forks based on the workspace
+   * The user flow forks based on the account.
    *
-   * step 1 - choose workspace and plan
+   * step 1 - choose account (personal or team) and plan
    * step 2 -
    *    if subscription doens't exist - Inline Checkout
    *    if subscription already exists - Confirm Amount Change

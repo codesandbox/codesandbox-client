@@ -151,7 +151,7 @@ export const ProfileCard = () => {
               css={{ gridTemplateColumns: 'repeat(auto-fill, 26px)', gap: 12 }}
             >
               {user.teams
-                .slice(1) // first one is always personal workspace
+                .slice(1) // first one is always personal account
                 .sort((team1, team2) =>
                   team1.avatarUrl && !team2.avatarUrl ? -1 : 1
                 )

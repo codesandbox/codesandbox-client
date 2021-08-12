@@ -129,7 +129,6 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   <Stack align="center">
                     <Text css={css({ width: '100%' })} size={3}>
                       {team.name}
-                      {team.id === state.personalWorkspaceId && ' (Personal)'}
                     </Text>
 
                     {[
@@ -156,7 +155,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   marginLeft: '1px',
                 })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() => history.push(dashboardUrls.createWorkspace())}
+                onSelect={() => history.push(dashboardUrls.createTeam())}
               >
                 <Stack
                   justify="center"
@@ -170,7 +169,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 >
                   <Icon name="plus" size={10} />
                 </Stack>
-                <Text size={3}>Create a new workspace</Text>
+                <Text size={3}>Create a new team</Text>
               </Stack>
             </Menu.List>
           </Menu>

@@ -45,8 +45,8 @@ export const TeamCards = ({ mode }) => (
           <CardTitle>Team Pro</CardTitle>
           <Price>${mode === 'monthly' ? 30 : 24}</Price>
           <PriceSubText>
-            per editor/workspace/billed{' '}
-            {mode === 'monthly' ? 'monthly' : 'annually'} <br />
+            per editor/team/billed {mode === 'monthly' ? 'monthly' : 'annually'}{' '}
+            <br />
             or ${mode === 'annually' ? 30 : 24} per month billed{' '}
             {mode === 'annually' ? 'monthly' : 'annually'}
           </PriceSubText>
@@ -107,8 +107,8 @@ export const TeamCards = ({ mode }) => (
           </li>
           <li>All in Team Pro, plus:</li>
           <li>+ SSO</li>
-          <li>+ Multiple team workspaces</li>
-          <li>+ Workspace secrets</li>
+          <li>+ Multiple teams</li>
+          <li>+ Team secrets</li>
           <li>+ Analytics</li>
           <li>+ Priority support</li>
         </List>
@@ -196,7 +196,7 @@ export const PersonalCards = ({ mode }) => (
           <li>Free for individuals</li>
           <li>✓ All Platform features</li>
           <li>✓ Public sandboxes</li>
-          <li>✓ Personal workspace</li>
+          <li>✓ Personal dashboard</li>
         </List>
       </div>
       <Button
