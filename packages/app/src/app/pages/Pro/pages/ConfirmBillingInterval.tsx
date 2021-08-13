@@ -56,7 +56,7 @@ export const ConfirmBillingInterval: React.FC = () => {
             overflow: 'hidden',
           })}
         >
-          <Text size={3}>Workspace editors</Text>
+          <Text size={3}>Team editors</Text>
           <Stack justify="space-between">
             <Text variant="muted" size={3}>
               {seats} {seats === 1 ? 'seat' : 'seats'}

@@ -37,7 +37,8 @@ export const PermissionSettings = () => {
     cta?: { label: string; href: string; onClick?: () => void };
   } | null = null;
 
-  const proTracking = () => track('Dashboard - Workspace Settings Pro link');
+  const proTracking = () =>
+    track('Dashboard - Permissions panel - Clicked on Pro upgrade');
 
   if (isPersonalWorkspace) {
     if (!isPersonalPro) {

@@ -556,6 +556,10 @@ export const openCreateSandboxModal = (
   actions.modals.newSandboxModal.open(props);
 };
 
+export const openImportBetaSandboxModal = ({ actions }: Context) => {
+  actions.modals.importRepoBeta.open();
+};
+
 export const validateUsername = async (
   { effects, state }: Context,
   userName: string

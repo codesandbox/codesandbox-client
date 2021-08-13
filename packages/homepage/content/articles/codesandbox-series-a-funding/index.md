@@ -54,14 +54,14 @@ teams and organizations to collaborate on code—not by taking local development
 and putting it in the Cloud, but with a web-first solution that's faster, more
 collaborative, and easier to use for the whole team.
 
-### Get early access: Pro Workspaces
+### Get early access: Team Pro
 
-Today we're opening up the waitlist for Pro Workspaces, which is purpose-built
-for product teams of all sizes to work on code collectively—either to get
-feedback or code together on ideas. With custom npm registry support, private
-workspaces, and team member management, it hooks right into your component
-library or design system, so you can prototype, review, and iterate on ideas
-faster than ever, from wherever.
+Today we're opening up the waitlist for Team Pro, which is purpose-built for
+product teams of all sizes to work on code collectively—either to get feedback
+or code together on ideas. With custom npm registry support, private dashboards,
+and team member management, it hooks right into your component library or design
+system, so you can prototype, review, and iterate on ideas faster than ever,
+from wherever.
 
 #### [Join the Waitlist](https://airtable.com/shrlgLSJWiX8rYqyG)
 

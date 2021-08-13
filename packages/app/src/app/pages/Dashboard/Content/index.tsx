@@ -21,10 +21,11 @@ import { Discover } from './routes/Discover';
 import { Album } from './routes/Discover/Album';
 import { Curate } from './routes/Discover/Curate';
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
+import { BetaRepositoriesPage } from './routes/Beta';
 
 export const Content = withRouter(({ history }) => {
   const { dashboard } = useActions();
-  const { activeTeam } = useAppState();
+  const { activeTeam, dashboard: dashboardState } = useAppState();
 
   useEffect(() => {
     dashboard.dashboardMounted();
@@ -41,6 +42,10 @@ export const Content = withRouter(({ history }) => {
     };
   }, [history, history.listen, dashboard]);
 
+  const isFeatureFlagBeta = !!dashboardState.featureFlags.find(
+    e => e.name === 'beta'
+  );
+
   return (
     <Element
       css={css({
@@ -52,6 +57,9 @@ export const Content = withRouter(({ history }) => {
       })}
     >
       <Switch>
+        {isFeatureFlagBeta && (
+          <Route path="/dashboard/beta" component={BetaRepositoriesPage} />
+        )}
         <Route path="/dashboard/home" component={Home} />
         <Route path="/dashboard/drafts" component={Drafts} />
         <Route path="/dashboard/all/:path*" component={All} />

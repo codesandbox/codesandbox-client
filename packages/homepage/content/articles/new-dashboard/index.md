@@ -3,34 +3,33 @@ banner: ./images/banner.png
 slug: new-dashboard
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
-title: Introducing Workspaces
+title: Introducing Teams
 description: A new dashboard that's built for collaboration.
 date: 2020-07-08
 ---
 
 While we often write code alone, creating products typically takes a whole group
 of people to work together. That's why we've rebuilt our dashboard with
-collaboration in mind, putting workspaces at its core.
+collaboration in mind, putting teams at its core.
 
-Workspaces are where individuals and teams of people can create and organize
+Teams are where individuals and teams of people can create and organize
 sandboxes. They enable you to keep your personal and work projects separate, as
-well as manage sandboxes more effectively. Everyone gets a private workspace,
+well as manage sandboxes more effectively. Everyone gets a private dashboard,
 where you can experiment, work on side-projects, and keep whichever sandboxes
-you want to yourself. But now you can create shared workspaces too. You might
+you want to yourself. But now you can create team dashboards too. You might
 create one or more to work with a team, or on various projects. Then invite your
 friends and colleagues to join you, so you can all work on a set of shared
 sandboxes, sorted into folders. This is the best way to collaborate together on
 sandboxes.
 
-You can create a new workspace for your team
-[here](https://codesandbox.io/dashboard/settings/new)! In the future, you'll be
-able to set workspace-level settings and secrets too.
+You can create a new team [here](https://codesandbox.io/dashboard/settings/new)!
+In the future, you'll be able to set team-level settings and secrets too.
 
 ## A new-look dashboard
 
-But workspaces aren't the only new thing. While staying close to what people are
-familiar with, we've refreshed the look and feel of the dashboard. This update
-evolves the design to bring through the
+But team dashboards aren't the only new thing. While staying close to what
+people are familiar with, we've refreshed the look and feel of the dashboard.
+This update evolves the design to bring through the
 [updates made in the editor](https://codesandbox.io/post/new-look-editor) and
 makes working with large numbers of sandboxes a much better experience too.
 

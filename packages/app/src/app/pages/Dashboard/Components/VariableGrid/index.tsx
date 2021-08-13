@@ -9,6 +9,8 @@ import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { ImportRepo } from '../Repo/ImportRepo';
+import { ImportRepoBeta } from '../Beta/ImportRepoBeta';
+import { RepoBetaCard } from '../Beta/RepoBetaCard';
 import { Folder } from '../Folder';
 import { Repo } from '../Repo';
 import { CommunitySandbox } from '../CommunitySandbox';
@@ -26,6 +28,8 @@ import {
   DashboardNewFolder,
   DashboardRepo,
   DashboardNewRepo,
+  DashboardBetaNewRepo,
+  DashboardBetaRepo,
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
   PageTypes,
@@ -75,6 +79,8 @@ interface IComponentForTypes {
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
+  'beta-new-repo': React.FC<DecoratedItemProps<DashboardBetaNewRepo>>;
+  'beta-repo': React.FC<DecoratedItemProps<DashboardBetaRepo>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -132,6 +138,10 @@ const ComponentForTypes: IComponentForTypes = {
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
+  'beta-new-repo': () => <ImportRepoBeta />,
+  'beta-repo': props => (
+    <RepoBetaCard {...props.item} isScrolling={props.isScrolling} />
+  ),
 };
 
 const Item = React.memo(

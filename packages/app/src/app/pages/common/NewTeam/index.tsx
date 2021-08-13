@@ -34,14 +34,14 @@ export const NewTeam: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
     if (value && value.trim()) {
       e.target.setCustomValidity('');
     } else {
-      e.target.setCustomValidity('Workspace name is required.');
+      e.target.setCustomValidity('Team name is required.');
     }
   };
 
   return (
     <>
       <Helmet>
-        <title>Create Workspace - CodeSandbox</title>
+        <title>Create Team - CodeSandbox</title>
       </Helmet>
       <Element
         css={css({
@@ -66,7 +66,7 @@ export const NewTeam: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
             <Stack direction="vertical" gap={7}>
               <Stack direction="vertical" gap={4}>
                 <Text size={6} weight="bold" align="center">
-                  Create a workspace
+                  Create a team
                 </Text>
                 <Text size={3} variant="muted" align="center">
                   Collaborate on code with friends or co-workers. Manage and
@@ -78,7 +78,7 @@ export const NewTeam: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
                 <Input
                   name="name"
                   type="text"
-                  placeholder="Workspace name"
+                  placeholder="Team name"
                   autoFocus
                   required
                   onChange={handleInput}
@@ -90,7 +90,7 @@ export const NewTeam: React.FC<{ redirectTo?: string }> = ({ redirectTo }) => {
                   type="submit"
                   css={css({ height: 8, fontSize: 3 })}
                 >
-                  Create Workspace
+                  Create Team
                 </Button>
               </Stack>
             </Stack>

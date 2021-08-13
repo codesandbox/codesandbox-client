@@ -4,6 +4,7 @@ import {
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
+  SandboxesBetaQuery,
 } from 'app/graphql/types';
 import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameDay from 'date-fns/isSameDay';
@@ -28,6 +29,9 @@ export type DashboardSandboxStructure = {
   ALL: {
     [path: string]: Sandbox[];
   } | null;
+  BETA:
+    | NonNullable<NonNullable<SandboxesBetaQuery>['me']>['betaSandboxes']
+    | null;
   REPOS: {
     [path: string]: {
       branch: string;
@@ -41,6 +45,7 @@ export type DashboardSandboxStructure = {
 };
 
 export type State = {
+  featureFlags: { name: string }[];
   sandboxes: DashboardSandboxStructure;
   teams: Array<TeamFragmentDashboardFragment>;
   workspaceSettings: {
@@ -85,10 +90,12 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   RECENT_HOME: null,
   ALL: null,
   REPOS: null,
+  BETA: null,
   ALWAYS_ON: null,
 };
 
 export const state: State = {
+  featureFlags: [],
   sandboxes: DEFAULT_DASHBOARD_SANDBOXES,
   viewMode: 'grid',
   allCollections: null,

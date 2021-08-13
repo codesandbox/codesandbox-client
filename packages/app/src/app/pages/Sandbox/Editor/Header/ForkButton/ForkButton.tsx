@@ -49,7 +49,7 @@ const DisabledTeamItem = (props: TeamItemProps) => (
     }}
     onSelect={props.onSelect}
   >
-    <Tooltip label="You don't have access to fork sandboxes in this workspace.">
+    <Tooltip label="You don't have access to fork this sandbox">
       <Stack gap={2} align="center">
         <TeamAvatar size="small" avatar={props.avatar} name={props.name} />
         <Text>{props.name}</Text>
@@ -88,7 +88,7 @@ const TeamOrUserItem: React.FC<TeamOrUserItemProps> = props => {
         const item = props.item as ITeamItem;
         props.forkClicked(item.teamId);
       }}
-      name={props.item.teamName + (props.isPersonal ? ' (Personal)' : '')}
+      name={props.item.teamName}
       avatar={props.item.teamAvatar}
     />
   );
