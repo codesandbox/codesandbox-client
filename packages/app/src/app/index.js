@@ -231,3 +231,19 @@ if (module.hot) {
     );
   });
 }
+
+const isInStandaloneMode = () =>
+  'standalone' in window.navigator && window.navigator.standalone;
+
+// If we're in PWA mode we want to override CMD+W, so that people can use that to close the tabs. This is a little
+// hack, but gives good QoL improvement for a small effort.
+if (isInStandaloneMode()) {
+  document.addEventListener('keydown', e => {
+    if (
+      (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
+      e.keyCode === 83
+    ) {
+      e.preventDefault();
+    }
+  });
+}
