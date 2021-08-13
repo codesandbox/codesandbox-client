@@ -57,9 +57,15 @@ export const Content = withRouter(({ history }) => {
       })}
     >
       <Switch>
-        {isFeatureFlagBeta && (
-          <Route path="/dashboard/beta" component={BetaRepositoriesPage} />
-        )}
+        <Route
+          path="/dashboard/beta"
+          /**
+           * Wrap the component instead of the whole route, as the
+           * feature-flag query takes a few ms to load, and meanwhile the Route
+           * redirect the page because the route hasn't been registered yet
+           */
+          component={isFeatureFlagBeta ? BetaRepositoriesPage : () => null}
+        />
         <Route path="/dashboard/home" component={Home} />
         <Route path="/dashboard/drafts" component={Drafts} />
         <Route path="/dashboard/all/:path*" component={All} />
