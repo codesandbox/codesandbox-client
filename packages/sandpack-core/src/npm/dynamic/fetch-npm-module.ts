@@ -14,6 +14,7 @@ import { DEFAULT_EXTENSIONS } from '../../utils/extensions';
 export type Meta = {
   [path: string]: true;
 };
+
 type Metas = {
   [dependencyAndVersion: string]: Promise<Meta>;
 };
@@ -63,12 +64,12 @@ const resolveNPMAlias = (name: string, version: string): string[] => {
   return [parts[1]!, parts[2]!];
 };
 
-async function getMeta(
+function getMeta(
   name: string,
   packageJSONPath: string | null,
   version: string,
   useFallback = false
-) {
+): Promise<Meta> {
   const [depName, depVersion] = resolveNPMAlias(name, version);
   const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
   const id = `${packageJSONPath || depName}@${depVersion}`;
@@ -87,7 +88,7 @@ async function getMeta(
   return metas[id];
 }
 
-export async function downloadDependency(
+export function downloadDependency(
   name: string,
   version: string,
   path: string
