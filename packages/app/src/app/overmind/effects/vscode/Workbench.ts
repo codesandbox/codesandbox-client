@@ -3,7 +3,6 @@ import {
   NotificationMessage,
   NotificationStatus,
 } from '@codesandbox/notifications/lib/state';
-import router from '../router';
 
 import { KeyCode, KeyMod } from './keyCodes';
 
@@ -145,7 +144,8 @@ export class Workbench {
       label: 'Dashboard',
       category: 'Root',
       run: () => {
-        router.redirectToDashboard();
+        // hard link
+        window.location.pathname = '/dashboard/home';
       },
       keybindings: {
         primary: KeyMod.CtrlCmd | KeyCode.Escape,
