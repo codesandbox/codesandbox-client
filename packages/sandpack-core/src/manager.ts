@@ -78,6 +78,11 @@ export type Manifest = {
   };
 };
 
+interface IRemoteModuleResult {
+  url: string;
+  content: string;
+}
+
 interface IFileResolver {
   protocol: Protocol;
   isFile: (path: string) => Promise<boolean>;
@@ -129,6 +134,23 @@ function triggerFileWatch(path: string, type: 'rename' | 'change') {
     /* ignore */
   }
 }
+
+async function fetchRemoteModule(url: string): Promise<IRemoteModuleResult> {
+  const r = await fetchWithRetries(url).catch(err => {
+    throw new ModuleNotFoundError(url, true);
+  });
+
+  if (!r.ok) {
+    throw new Error(`Fetching ESModule return error status ${r.status}`);
+  }
+
+  const content = await r.text();
+  return {
+    url: r.url,
+    content,
+  };
+}
+
 export default class Manager implements IEvaluator {
   id?: string | null;
   transpiledModules: {
@@ -176,7 +198,8 @@ export default class Manager implements IEvaluator {
 
   version: string;
 
-  esmodules: Map<string, Promise<string>>;
+  esmodules: Map<string, Promise<IRemoteModuleResult>>;
+  esmoduleAliases: Map<string, string>;
 
   constructor(
     id: string | null | undefined,
@@ -200,6 +223,7 @@ export default class Manager implements IEvaluator {
     this.stage = 'transpilation';
     this.version = options.versionIdentifier;
     this.esmodules = new Map();
+    this.esmoduleAliases = new Map();
 
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
@@ -712,26 +736,10 @@ export default class Manager implements IEvaluator {
     return this.moduleDirectoriesCache;
   }
 
-  async downloadESModule(url: string): Promise<string> {
-    const p =
-      this.esmodules.get(url) ||
-      fetchWithRetries(url)
-        .then(r => {
-          if (!r.ok) {
-            throw new Error(
-              `Fetching ESModule return error status ${r.status}`
-            );
-          }
-
-          return r.text();
-        })
-        .catch(err => {
-          throw new ModuleNotFoundError(url, true);
-        });
-
-    this.esmodules.set(url, p);
-
-    return p;
+  async downloadESModule(url: string): Promise<IRemoteModuleResult> {
+    const mod = this.esmodules.get(url) || fetchRemoteModule(url);
+    this.esmodules.set(url, mod);
+    return mod;
   }
 
   // ALWAYS KEEP THIS METHOD IN SYNC WITH SYNC VERSION
@@ -744,30 +752,34 @@ export default class Manager implements IEvaluator {
     const { path, query = '', defaultExtensions = DEFAULT_EXTENSIONS } = opts;
     let parentPath = opts.parentPath || '/';
 
-    if (
-      !this.preset.experimentalEsmSupport &&
-      (isUrl(parentPath) || isUrl(path))
-    ) {
-      throw new Error(
-        'ESModules url imports are only supported in the experimental ESModule preset.'
-      );
-    }
-
     const esmoduleUrl = getESModuleUrl(parentPath, path);
     // Handle ESModule import
     if (esmoduleUrl) {
-      if (this.transpiledModules[esmoduleUrl]) {
-        return this.transpiledModules[esmoduleUrl].module;
+      if (!this.preset.experimentalEsmSupport) {
+        throw new Error(
+          'ESModules url imports are only supported in the experimental ESModule preset.'
+        );
       }
-      const esmoduleContent = await this.downloadESModule(
-        `${esmoduleUrl}?${query}`
-      );
+
+      const fullUrl = `${esmoduleUrl}?${query}`;
+      const aliasedUrl = this.esmoduleAliases.get(fullUrl);
+      const cachedModule =
+        this.transpiledModules[fullUrl] ||
+        (aliasedUrl && this.transpiledModules[aliasedUrl]);
+      if (cachedModule) {
+        return cachedModule.module;
+      }
+
+      const downloadResult = await this.downloadESModule(fullUrl);
+      if (downloadResult.url !== fullUrl) {
+        this.esmoduleAliases.set(fullUrl, downloadResult.url);
+      }
       this.addModule({
-        path: esmoduleUrl,
-        code: esmoduleContent || '',
+        path: downloadResult.url,
+        code: downloadResult.content || '',
         downloaded: true,
       });
-      return this.transpiledModules[esmoduleUrl].module;
+      return this.transpiledModules[downloadResult.url].module;
     }
 
     // This handles the imports of node_modules from remote ESModules
@@ -920,23 +932,27 @@ export default class Manager implements IEvaluator {
     query?: string;
     defaultExtensions?: Array<string>;
   }): Module {
-    if (
-      !this.preset.experimentalEsmSupport &&
-      (isUrl(parentPath) || isUrl(path))
-    ) {
-      throw new Error(
-        'ESModules url imports are only supported in the experimental ESModule preset.'
-      );
-    }
-
     const esmoduleUrl = getESModuleUrl(parentPath, path);
     // Handle ESModule import
     if (esmoduleUrl) {
-      if (this.transpiledModules[esmoduleUrl]) {
-        return this.transpiledModules[esmoduleUrl].module;
+      if (!this.preset.experimentalEsmSupport) {
+        throw new Error(
+          'ESModules url imports are only supported in the experimental ESModule preset.'
+        );
       }
 
-      throw new Error('Cannot download ESModule dependencies synchronously');
+      const fullUrl = `${esmoduleUrl}?${query}`;
+      const aliasedUrl = this.esmoduleAliases.get(fullUrl);
+      const cachedModule =
+        this.transpiledModules[fullUrl] ||
+        (aliasedUrl && this.transpiledModules[aliasedUrl]);
+      if (cachedModule) {
+        return cachedModule.module;
+      }
+
+      throw new Error(
+        `Cannot download ESModule dependencies synchronously: ${esmoduleUrl}`
+      );
     }
 
     // This handles the imports of node_modules from remote ESModules
