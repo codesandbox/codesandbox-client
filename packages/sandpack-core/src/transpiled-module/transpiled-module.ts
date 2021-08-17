@@ -24,6 +24,7 @@ import Manager, { HMRStatus } from '../manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 import delay from '../utils/delay';
+import { getModuleUrl } from './module-url';
 
 declare const BrowserFS: any;
 
@@ -89,6 +90,7 @@ export type LoaderContext = {
   sourceMap: boolean;
   target: string;
   path: string;
+  url: string;
   getModules: () => Array<Module>;
   addTranspilationDependency: (
     depPath: string,
@@ -521,6 +523,7 @@ export class TranspiledModule {
       target: 'web',
       _module: this,
       path: this.module.path,
+      url: this.module.url ? this.module.url : getModuleUrl(this.module.path),
       template: manager.preset.name,
       remainingRequests: '', // will be filled during transpilation
       sandboxId: manager.id,

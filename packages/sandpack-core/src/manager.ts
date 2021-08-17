@@ -101,6 +101,7 @@ const SKIPPED_BROWSER_FIELD_DEPENDENCIES: { [path: string]: true } = [
   }),
   {}
 );
+
 const SHIMMED_MODULE: Module = {
   path: pathUtils.join('/node_modules', 'empty', 'index.js'),
   code: `// empty`,
@@ -136,19 +137,22 @@ function triggerFileWatch(path: string, type: 'rename' | 'change') {
 }
 
 async function fetchRemoteModule(url: string): Promise<IRemoteModuleResult> {
-  const r = await fetchWithRetries(url).catch(err => {
+  try {
+    const r = await fetchWithRetries(url);
+
+    if (!r.ok) {
+      throw new Error(`Fetching ESModule return error status ${r.status}`);
+    }
+
+    const content = await r.text();
+    return {
+      url: r.url,
+      content,
+    };
+  } catch (err) {
+    console.error(err);
     throw new ModuleNotFoundError(url, true);
-  });
-
-  if (!r.ok) {
-    throw new Error(`Fetching ESModule return error status ${r.status}`);
   }
-
-  const content = await r.text();
-  return {
-    url: r.url,
-    content,
-  };
 }
 
 export default class Manager implements IEvaluator {
@@ -199,7 +203,6 @@ export default class Manager implements IEvaluator {
   version: string;
 
   esmodules: Map<string, Promise<IRemoteModuleResult>>;
-  esmoduleAliases: Map<string, string>;
 
   constructor(
     id: string | null | undefined,
@@ -223,7 +226,6 @@ export default class Manager implements IEvaluator {
     this.stage = 'transpilation';
     this.version = options.versionIdentifier;
     this.esmodules = new Map();
-    this.esmoduleAliases = new Map();
 
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
@@ -762,24 +764,19 @@ export default class Manager implements IEvaluator {
       }
 
       const fullUrl = `${esmoduleUrl}?${query}`;
-      const aliasedUrl = this.esmoduleAliases.get(fullUrl);
-      const cachedModule =
-        this.transpiledModules[fullUrl] ||
-        (aliasedUrl && this.transpiledModules[aliasedUrl]);
+      const cachedModule = this.transpiledModules[fullUrl];
       if (cachedModule) {
         return cachedModule.module;
       }
 
       const downloadResult = await this.downloadESModule(fullUrl);
-      if (downloadResult.url !== fullUrl) {
-        this.esmoduleAliases.set(fullUrl, downloadResult.url);
-      }
       this.addModule({
-        path: downloadResult.url,
+        path: fullUrl,
+        url: downloadResult.url,
         code: downloadResult.content || '',
         downloaded: true,
       });
-      return this.transpiledModules[downloadResult.url].module;
+      return this.transpiledModules[fullUrl].module;
     }
 
     // This handles the imports of node_modules from remote ESModules
@@ -942,16 +939,13 @@ export default class Manager implements IEvaluator {
       }
 
       const fullUrl = `${esmoduleUrl}?${query}`;
-      const aliasedUrl = this.esmoduleAliases.get(fullUrl);
-      const cachedModule =
-        this.transpiledModules[fullUrl] ||
-        (aliasedUrl && this.transpiledModules[aliasedUrl]);
+      const cachedModule = this.transpiledModules[fullUrl];
       if (cachedModule) {
         return cachedModule.module;
       }
 
       throw new Error(
-        `Cannot download ESModule dependencies synchronously: ${esmoduleUrl}`
+        `Cannot download ESModule dependencies synchronously: ${fullUrl}`
       );
     }
 

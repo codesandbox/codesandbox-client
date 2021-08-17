@@ -402,11 +402,12 @@ export default async function fetchModule(
     // we don't have meta to find which modules are browser modules and we still
     // need to return an empty module for browser modules.
     const isDependency = /^(\w|@\w|@-)/.test(path);
+    const fullFilePath = isDependency
+      ? pathUtils.join('/node_modules', path)
+      : pathUtils.join(currentPath, path);
 
     return {
-      path: isDependency
-        ? pathUtils.join('/node_modules', path)
-        : pathUtils.join(currentPath, path),
+      path: fullFilePath,
       code: 'module.exports = {};',
       requires: [],
       stubbed: true,

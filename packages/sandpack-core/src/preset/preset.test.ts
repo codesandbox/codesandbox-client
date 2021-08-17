@@ -43,6 +43,7 @@ describe('preset', () => {
       ]);
       const module = {
         path: 'test.js',
+        url: 'https://csb.io/test.js',
         code: '',
       };
       preset.getLoaders(module, evaluator, '!babel-loader!');
@@ -65,6 +66,7 @@ describe('preset', () => {
     it('generates the right query for 1 transpiler', () => {
       const module = {
         path: 'test.js',
+        url: 'https://csb.io/test.js',
         code: '',
       };
 
@@ -85,6 +87,7 @@ describe('preset', () => {
     it('generates the right query for absolute custom query', () => {
       const module = {
         path: 'test.css',
+        url: 'https://csb.io/test.css',
         code: '',
       };
 
@@ -96,6 +99,7 @@ describe('preset', () => {
     it('generates the right query for custom query', () => {
       const module = {
         path: 'test.css',
+        url: 'https://csb.io/test.css',
         code: '',
       };
 
