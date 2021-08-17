@@ -525,7 +525,7 @@ export class TranspiledModule {
       target: 'web',
       _module: this,
       path: this.module.path,
-      url: this.module.url,
+      url: this.module.url ? this.module.url : getModuleUrl(this.module.path),
       template: manager.preset.name,
       remainingRequests: '', // will be filled during transpilation
       sandboxId: manager.id,

@@ -2,7 +2,7 @@ import path from 'path';
 import qs from 'querystring';
 import hash from 'hash-sum';
 import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
-import { LoaderContext, TranspilerResult, getModuleUrl } from 'sandpack-core';
+import { LoaderContext, TranspilerResult } from 'sandpack-core';
 import {
   parse,
   compileScript,
@@ -41,11 +41,9 @@ export default function loader(
 ): TranspilerResult {
   function getLoaderQuery(lang: string | undefined, vueQuery: string) {
     // !style-loader!css-loader
-    const LanguagePath = `test.${lang}`;
     const query = lang
       ? loaderContext.getLoaderQuery({
           path: `test.${lang}`,
-          url: getModuleUrl(LanguagePath),
           code: '',
         })
       : '';

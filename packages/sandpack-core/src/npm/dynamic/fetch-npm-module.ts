@@ -10,7 +10,6 @@ import { getDependencyName } from '../../utils/get-dependency-name';
 import { packageFilter } from '../../utils/resolve-utils';
 import { TranspiledModule } from '../../transpiled-module';
 import { DEFAULT_EXTENSIONS } from '../../utils/extensions';
-import { getModuleUrl } from '../../transpiled-module/module-url';
 
 export type Meta = {
   [path: string]: true;
@@ -112,7 +111,6 @@ export function downloadDependency(
   const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
   const protocol = getFetchProtocol(depName, depVersion);
 
-  const moduleUrl = getModuleUrl(path);
   packages[id] = protocol
     .file(nameWithoutAlias, depVersion, relativePath)
     .catch(async () => {
@@ -125,7 +123,6 @@ export function downloadDependency(
     })
     .then(code => ({
       path,
-      url: moduleUrl,
       code,
       downloaded: true,
     }));
@@ -411,7 +408,6 @@ export default async function fetchModule(
 
     return {
       path: fullFilePath,
-      url: getModuleUrl(fullFilePath),
       code: 'module.exports = {};',
       requires: [],
       stubbed: true,

@@ -1,6 +1,6 @@
 export type Module = {
   path: string;
-  url: string;
+  url?: string;
   code: string;
   requires?: Array<string>;
   downloaded?: boolean;

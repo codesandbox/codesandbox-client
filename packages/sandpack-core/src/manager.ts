@@ -103,14 +103,8 @@ const SKIPPED_BROWSER_FIELD_DEPENDENCIES: { [path: string]: true } = [
   {}
 );
 
-const EMPTY_MODULE_FILEPATH = pathUtils.join(
-  '/node_modules',
-  'empty',
-  'index.js'
-);
 const SHIMMED_MODULE: Module = {
-  path: EMPTY_MODULE_FILEPATH,
-  url: getModuleUrl(EMPTY_MODULE_FILEPATH),
+  path: pathUtils.join('/node_modules', 'empty', 'index.js'),
   code: `// empty`,
   requires: [],
 };

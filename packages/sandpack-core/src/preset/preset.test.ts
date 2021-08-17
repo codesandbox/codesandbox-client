@@ -30,7 +30,6 @@ describe('preset', () => {
       const preset = new Preset('test', [], {});
       const module = {
         path: 'test.js',
-        url: 'https://csb.io/test.js',
         code: '',
       };
       preset.getLoaders(module, evaluator, '!mdx-loader!');
@@ -77,7 +76,6 @@ describe('preset', () => {
     it('generates the right query for 2 transpiler', () => {
       const module = {
         path: 'test.css',
-        url: 'https://csb.io/test.css',
         code: '',
       };
 
