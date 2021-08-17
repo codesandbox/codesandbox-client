@@ -446,10 +446,8 @@ export class TranspiledModule {
         // pop() mutates queryPath, queryPath is now just the loaders
         const modulePath = queryPath.pop();
 
-        const absModulePath = pathUtils.join(directoryPath, modulePath);
         const moduleCopy: ChildModule = {
-          path: absModulePath,
-          url: getModuleUrl(absModulePath),
+          path: pathUtils.join(directoryPath, modulePath),
           parent: this.module,
           code,
         };
