@@ -48,6 +48,7 @@ import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
 import { fetchWithRetries } from './npm/dynamic/fetch-protocols/utils';
 import { getESModuleUrl } from './utils/esmodule-url';
+import { getModuleUrl } from './transpiled-module/module-url';
 
 declare const BrowserFS: any;
 
@@ -101,8 +102,15 @@ const SKIPPED_BROWSER_FIELD_DEPENDENCIES: { [path: string]: true } = [
   }),
   {}
 );
+
+const EMPTY_MODULE_FILEPATH = pathUtils.join(
+  '/node_modules',
+  'empty',
+  'index.js'
+);
 const SHIMMED_MODULE: Module = {
-  path: pathUtils.join('/node_modules', 'empty', 'index.js'),
+  path: EMPTY_MODULE_FILEPATH,
+  url: getModuleUrl(EMPTY_MODULE_FILEPATH),
   code: `// empty`,
   requires: [],
 };
@@ -136,19 +144,22 @@ function triggerFileWatch(path: string, type: 'rename' | 'change') {
 }
 
 async function fetchRemoteModule(url: string): Promise<IRemoteModuleResult> {
-  const r = await fetchWithRetries(url).catch(err => {
+  try {
+    const r = await fetchWithRetries(url);
+
+    if (!r.ok) {
+      throw new Error(`Fetching ESModule return error status ${r.status}`);
+    }
+
+    const content = await r.text();
+    return {
+      url: r.url,
+      content,
+    };
+  } catch (err) {
+    console.error(err);
     throw new ModuleNotFoundError(url, true);
-  });
-
-  if (!r.ok) {
-    throw new Error(`Fetching ESModule return error status ${r.status}`);
   }
-
-  const content = await r.text();
-  return {
-    url: r.url,
-    content,
-  };
 }
 
 export default class Manager implements IEvaluator {
@@ -362,7 +373,7 @@ export default class Manager implements IEvaluator {
     }
     if (hasCallback && this.fileResolver) {
       return this.fileResolver.readFile(p).then(code => {
-        this.addModule({ code, path: p });
+        this.addModule({ code, path: p, url: getModuleUrl(p) });
 
         callback!(null, code);
       });
@@ -394,6 +405,7 @@ export default class Manager implements IEvaluator {
       const module: Module = {
         path,
         code: this.manifest.contents[path].content,
+        url: getModuleUrl(path),
       };
 
       if (SKIPPED_BROWSER_FIELD_DEPENDENCIES[path]) {
@@ -762,24 +774,19 @@ export default class Manager implements IEvaluator {
       }
 
       const fullUrl = `${esmoduleUrl}?${query}`;
-      const aliasedUrl = this.esmoduleAliases.get(fullUrl);
-      const cachedModule =
-        this.transpiledModules[fullUrl] ||
-        (aliasedUrl && this.transpiledModules[aliasedUrl]);
+      const cachedModule = this.transpiledModules[fullUrl];
       if (cachedModule) {
         return cachedModule.module;
       }
 
       const downloadResult = await this.downloadESModule(fullUrl);
-      if (downloadResult.url !== fullUrl) {
-        this.esmoduleAliases.set(fullUrl, downloadResult.url);
-      }
       this.addModule({
-        path: downloadResult.url,
+        path: fullUrl,
+        url: downloadResult.url,
         code: downloadResult.content || '',
         downloaded: true,
       });
-      return this.transpiledModules[downloadResult.url].module;
+      return this.transpiledModules[fullUrl].module;
     }
 
     // This handles the imports of node_modules from remote ESModules
@@ -866,6 +873,7 @@ export default class Manager implements IEvaluator {
             );
             this.addModule({
               path: resolvedPath,
+              url: getModuleUrl(resolvedPath),
               code: remoteFileContent || '',
             });
           } catch (err) {
@@ -951,7 +959,7 @@ export default class Manager implements IEvaluator {
       }
 
       throw new Error(
-        `Cannot download ESModule dependencies synchronously: ${esmoduleUrl}`
+        `Cannot download ESModule dependencies synchronously: ${fullUrl} | ${aliasedUrl}`
       );
     }
 

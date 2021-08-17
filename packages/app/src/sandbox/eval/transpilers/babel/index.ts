@@ -33,13 +33,6 @@ function addCollectedDependencies(
   return Promise.all(deps.map(dep => loaderContext.addDependency(dep)));
 }
 
-function getModuleUrl(path: string): string {
-  if (isUrl(path)) {
-    return path;
-  }
-  return new URL(path, window.location.href).href;
-}
-
 // Right now this is in a worker, but when we're going to allow custom plugins
 // we need to move this out of the worker again, because the config needs
 // to support custom plugins
@@ -109,7 +102,7 @@ class BabelTranspiler extends WorkerTranspiler {
             const deps = collectDependenciesFromAST(ast);
             await addCollectedDependencies(loaderContext, deps);
             rewriteImportMeta(ast, {
-              url: getModuleUrl(loaderContext.path),
+              url: loaderContext.url,
             });
             endMeasure(`esconvert-${path}`, { silent: true });
             return {
