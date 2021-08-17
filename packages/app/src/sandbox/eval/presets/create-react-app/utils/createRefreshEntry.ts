@@ -1,14 +1,12 @@
-import { Manager, getModuleUrl } from 'sandpack-core';
+import { Manager } from 'sandpack-core';
 
 /**
  * When using React Refresh we need to evaluate some code before 'react-dom' is initialized
  * (https://github.com/facebook/react/issues/16604#issuecomment-528663101) this is the code.
  */
 export async function createRefreshEntry(manager: Manager) {
-  const path = '/node_modules/__csb/react-dom-entrypoint.js';
   const entryModule = {
-    path,
-    url: getModuleUrl(path),
+    path: '/node_modules/__csb/react-dom-entrypoint.js',
     code: `if (typeof window !== 'undefined') {
 const runtime = require('react-refresh/runtime');
 runtime.injectIntoGlobalHook(window);
