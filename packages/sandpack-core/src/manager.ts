@@ -204,7 +204,6 @@ export default class Manager implements IEvaluator {
   version: string;
 
   esmodules: Map<string, Promise<IRemoteModuleResult>>;
-  esmoduleAliases: Map<string, string>;
 
   constructor(
     id: string | null | undefined,
@@ -228,7 +227,6 @@ export default class Manager implements IEvaluator {
     this.stage = 'transpilation';
     this.version = options.versionIdentifier;
     this.esmodules = new Map();
-    this.esmoduleAliases = new Map();
 
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
@@ -944,16 +942,13 @@ export default class Manager implements IEvaluator {
       }
 
       const fullUrl = `${esmoduleUrl}?${query}`;
-      const aliasedUrl = this.esmoduleAliases.get(fullUrl);
-      const cachedModule =
-        this.transpiledModules[fullUrl] ||
-        (aliasedUrl && this.transpiledModules[aliasedUrl]);
+      const cachedModule = this.transpiledModules[fullUrl];
       if (cachedModule) {
         return cachedModule.module;
       }
 
       throw new Error(
-        `Cannot download ESModule dependencies synchronously: ${fullUrl} | ${aliasedUrl}`
+        `Cannot download ESModule dependencies synchronously: ${fullUrl}`
       );
     }
 
