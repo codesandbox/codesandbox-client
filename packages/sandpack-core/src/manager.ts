@@ -48,7 +48,6 @@ import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
 import { fetchWithRetries } from './npm/dynamic/fetch-protocols/utils';
 import { getESModuleUrl } from './utils/esmodule-url';
-import { getModuleUrl } from './transpiled-module/module-url';
 
 declare const BrowserFS: any;
 
@@ -365,7 +364,7 @@ export default class Manager implements IEvaluator {
     }
     if (hasCallback && this.fileResolver) {
       return this.fileResolver.readFile(p).then(code => {
-        this.addModule({ code, path: p, url: getModuleUrl(p) });
+        this.addModule({ code, path: p });
 
         callback!(null, code);
       });
@@ -397,7 +396,6 @@ export default class Manager implements IEvaluator {
       const module: Module = {
         path,
         code: this.manifest.contents[path].content,
-        url: getModuleUrl(path),
       };
 
       if (SKIPPED_BROWSER_FIELD_DEPENDENCIES[path]) {
@@ -865,7 +863,6 @@ export default class Manager implements IEvaluator {
             );
             this.addModule({
               path: resolvedPath,
-              url: getModuleUrl(resolvedPath),
               code: remoteFileContent || '',
             });
           } catch (err) {
