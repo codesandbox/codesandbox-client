@@ -45,7 +45,8 @@ export default function initialize() {
         try {
           const tModule = await manager.resolveTranspiledModule(
             '@vue/babel-plugin-jsx',
-            '/package.json'
+            '/package.json',
+            []
           );
           await tModule.transpile(manager);
         } catch (e) {
