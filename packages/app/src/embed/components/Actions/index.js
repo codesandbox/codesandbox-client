@@ -3,7 +3,6 @@ import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
-import Logo from '../../logo.svg';
 
 import {
   Container,
@@ -27,7 +26,7 @@ export function GlobalActions({
   previewVisible,
   initialPath,
 }) {
-  const experimentPromise = useExperimentResult('embed-open-wording');
+  const experimentPromise = useExperimentResult('embed-open-wording-iteration2');
   const [openWordingB, setOpenWordingB] = useState(false);
 
   useEffect(() => {
@@ -102,24 +101,7 @@ export function GlobalActions({
               : `${sandboxUrl(sandbox)}?from-embed`
           }
         >
-          {openWordingB ? (
-            <>
-              <img
-                src={Logo}
-                width="32"
-                alt="CodeSandbox Logo"
-                style={{
-                  paddingRight: '8px',
-                  width: '18px',
-                  top: '-1px',
-                  position: 'relative',
-                }}
-              />
-              Edit Sandbox
-            </>
-          ) : (
-            'Open Sandbox'
-          )}
+          {openWordingB ? 'Open and Fork' : 'Open Sandbox'}
         </Button>
       )}
     </Container>
