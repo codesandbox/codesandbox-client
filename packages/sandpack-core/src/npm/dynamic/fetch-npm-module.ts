@@ -171,7 +171,7 @@ function resolvePath(
           const callback = cb || c;
 
           try {
-            const tModule = await manager.resolveTranspiledModule(p, '/');
+            const tModule = await manager.resolveTranspiledModule(p, '/', []);
             tModule.initiators.add(currentTModule);
             currentTModule.dependencies.add(tModule);
             return callback(null, tModule.module.code);
@@ -192,7 +192,6 @@ function resolvePath(
             const subDepVersionVersionInfo = await getDependencyVersion(
               currentTModule,
               manager,
-              defaultExtensions,
               depName
             );
 
@@ -253,7 +252,6 @@ type DependencyVersionResult =
 async function getDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: string[] = DEFAULT_EXTENSIONS,
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
@@ -263,7 +261,7 @@ async function getDependencyVersion(
       pathUtils.join(dependencyName, 'package.json'),
       currentTModule,
       manager,
-      defaultExtensions
+      []
     );
 
     // If the dependency is in the root we get it from the manifest, as the manifest
@@ -346,6 +344,7 @@ export default async function fetchModule(
   defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
 ): Promise<Module> {
   const currentPath = currentTModule.module.path;
+
   // Get the last part of the path as dependency name for paths like
   // instantsearch.js/node_modules/lodash/sum.js
   // In this case we want to get the lodash dependency info
@@ -356,7 +355,6 @@ export default async function fetchModule(
   const versionInfo = await getDependencyVersion(
     currentTModule,
     manager,
-    defaultExtensions,
     dependencyName
   );
 
