@@ -26,9 +26,6 @@ With real-time collaboration, you can see others editing a project and others ca
   <source src="./images/playjs-live.mp4" type="video/mp4">
 </video>
 
-
-
-
 ### Create & Manage Sandboxes
 
 Creating a sandbox is as easy as signing in with your CodeSandbox account and selecting a template to get you started. It will automatically become available online for you to edit from any other device or share with anyone.
