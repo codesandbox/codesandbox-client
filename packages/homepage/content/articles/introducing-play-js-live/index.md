@@ -22,6 +22,9 @@ With this update, you can now do it from anywhere! When you're on the go and som
 With real-time collaboration, you can see others editing a project and others can see you too. Pair programming, helping, teaching, or learning… these are now possible from anywhere!
 
 
+<video autoplay loop muted playsinline width="100%">
+  <source src="./images/playjs-live.mp4" type="video/mp4">
+</video>
 
 
 
