@@ -1,5 +1,5 @@
 ---
-banner: ./images/banner.png
+banner: ./images/banner.jpg
 slug: Introducing-play-js-live
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
