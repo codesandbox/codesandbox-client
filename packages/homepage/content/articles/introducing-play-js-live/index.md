@@ -4,11 +4,10 @@ slug: Introducing-play-js-live
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
 title: Introducing Play.js Live
-description:
-  Last May we announced that play.js was joining CodeSandbox to enable web development on mobile.
+description: Today, we're happy to announce Play.js Live. From today, you can edit sandboxes directly from play.js, while real-time collaborating with anyone from CodeSandbox.
+
 date: 2021-08-19
 ---
-
 
 Last May we announced that play.js was joining CodeSandbox to enable web development on mobile. Carlos, the creator of play.js, has been hard at work since then. Today, we're happy to announce Play.js Live. From today, you can edit sandboxes directly from play.js, while real-time collaborating with anyone from CodeSandbox. This means that you can now collaborate with others and create sandboxes *while working from your iPad or iPhone*!
 
