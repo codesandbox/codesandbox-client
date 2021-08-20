@@ -1,6 +1,6 @@
 import { flattenDeep, uniq, values } from 'lodash-es';
 import { Protocol } from 'codesandbox-api';
-import resolve from 'browser-resolve';
+import { default as bresolve } from 'browser-resolve';
 import fs from 'fs';
 import gensync from 'gensync';
 
@@ -814,9 +814,10 @@ export default class Manager implements IEvaluator {
 
       try {
         resolvedPath = await new Promise((resolvePromise, rejectPromise) => {
-          resolve(
+          bresolve(
             shimmedPath,
             {
+              // @ts-ignore
               filename: parentPath,
               extensions: defaultExtensions.map(ext => '.' + ext),
               isFile: this.isFile.errback,
@@ -969,7 +970,8 @@ export default class Manager implements IEvaluator {
       }
 
       try {
-        resolvedPath = resolve.sync(shimmedPath, {
+        resolvedPath = bresolve.sync(shimmedPath, {
+          // @ts-ignore
           filename: parentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFileSync,
