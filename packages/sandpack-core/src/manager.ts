@@ -821,7 +821,7 @@ export default class Manager implements IEvaluator {
               extensions: defaultExtensions.map(ext => '.' + ext),
               isFile: this.isFile.errback,
               readFile: this.readFile.errback,
-              packageFilter: packageFilter(),
+              packageFilter,
               moduleDirectory: this.getModuleDirectories(),
             },
             (err: Error | undefined, foundPath: string) => {
@@ -974,7 +974,7 @@ export default class Manager implements IEvaluator {
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFileSync,
           readFileSync: this.readFileSync,
-          packageFilter: packageFilter(),
+          packageFilter,
           moduleDirectory: this.getModuleDirectories(),
         });
         endMeasure(measureKey, { silent: true, lastTime: measureStartTime });

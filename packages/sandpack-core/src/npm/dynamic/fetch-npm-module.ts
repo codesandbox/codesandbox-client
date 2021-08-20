@@ -3,7 +3,7 @@ import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
 import { Module } from '../../types/module';
-import Manager, { ReadFileCallback } from '../../manager';
+import Manager from '../../manager';
 
 import { getFetchProtocol } from './fetch-protocols';
 import { getDependencyName } from '../../utils/get-dependency-name';
@@ -156,18 +156,14 @@ function resolvePath(
       {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
-        packageFilter: packageFilter(isFile),
+        packageFilter,
         moduleDirectory: [
           'node_modules',
           manager.envVariables.NODE_PATH,
         ].filter(Boolean),
         isFile,
         // @ts-ignore
-        readFile: async (
-          p: string,
-          c: ReadFileCallback,
-          cb: ReadFileCallback
-        ) => {
+        readFile: async (p: string, c, cb) => {
           const callback = cb || c;
 
           try {
