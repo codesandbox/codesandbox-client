@@ -351,14 +351,12 @@ export default class Manager implements IEvaluator {
 
   private readFileSync(p: string): string {
     if (this.transpiledModules[p]) {
-      const { code } = this.transpiledModules[p].module;
-      return code;
+      return this.transpiledModules[p].module.code;
     }
 
     const err = new Error('Could not find ' + p);
     // @ts-ignore
     err.code = 'ENOENT';
-
     throw err;
   }
 
