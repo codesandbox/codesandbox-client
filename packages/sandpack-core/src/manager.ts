@@ -323,17 +323,17 @@ export default class Manager implements IEvaluator {
     });
   }
 
-  private isFileSync(p: string): boolean {
+  private _isFileSync = (p: string): boolean => {
     if (this.stage === 'transpilation') {
       // In transpilation phase we can afford to download the file if not found,
       // because we're async. That's why we also include the meta here.
       return Boolean(this.transpiledModules[p] || combinedMetas[p]);
     }
     return Boolean(this.transpiledModules[p]);
-  }
+  };
 
-  private isFileAsync(p: string): Promise<boolean> {
-    const exists = this.isFileSync(p);
+  private _isFileAsync = (p: string): Promise<boolean> => {
+    const exists = this._isFileSync(p);
     if (exists) {
       return Promise.resolve(true);
     }
@@ -341,27 +341,26 @@ export default class Manager implements IEvaluator {
       return this.fileResolver.isFile(p);
     }
     return Promise.resolve(false);
-  }
+  };
 
   isFile = gensync({
-    sync: this.isFileSync.bind(this),
-    async: this.isFileAsync.bind(this),
+    sync: this._isFileSync,
+    async: this._isFileAsync,
   });
 
-  private readFileSync(p: string): string {
-    if (this.transpiledModules[p]) {
-      return this.transpiledModules[p].module.code;
+  private _readFileSync = (p: string): string => {
+    if (!this.transpiledModules[p]) {
+      const err = new Error('Could not find ' + p);
+      // @ts-ignore
+      err.code = 'ENOENT';
+      throw err;
     }
+    return this.transpiledModules[p].module.code;
+  };
 
-    const err = new Error('Could not find ' + p);
-    // @ts-ignore
-    err.code = 'ENOENT';
-    throw err;
-  }
-
-  private readFileAsync(p: string): Promise<string> {
+  private _readFileAsync = (p: string): Promise<string> => {
     try {
-      const content = this.readFileSync(p);
+      const content = this._readFileSync(p);
       return Promise.resolve(content);
     } catch (err) {
       if (this.fileResolver) {
@@ -373,11 +372,11 @@ export default class Manager implements IEvaluator {
 
       return Promise.reject(err);
     }
-  }
+  };
 
   readFile = gensync({
-    sync: this.readFileSync.bind(this),
-    async: this.readFileAsync.bind(this),
+    sync: this._readFileSync,
+    async: this._readFileAsync,
   });
 
   setStage = (stage: Stage) => {
@@ -844,7 +843,7 @@ export default class Manager implements IEvaluator {
 
         if (!this.transpiledModules[resolvedPath]) {
           try {
-            const remoteFileContent: string = await this.readFileAsync(
+            const remoteFileContent: string = await this.readFile.async(
               resolvedPath
             );
             this.addModule({
@@ -974,8 +973,8 @@ export default class Manager implements IEvaluator {
           // @ts-ignore
           filename: parentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
-          isFile: this.isFileSync,
-          readFileSync: this.readFileSync,
+          isFile: this.isFile.sync,
+          readFileSync: this.readFile.sync,
           packageFilter,
           moduleDirectory: this.getModuleDirectories(),
         });
