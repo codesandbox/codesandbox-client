@@ -130,7 +130,9 @@ function processPackageJSON(
         const exportValue = content.exports[exportKey];
         const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
         if (typeof exportValue === 'string') {
-          aliases[normalizedKey] = normalizeAliasFilePath(exportValue, pkgRoot);
+          aliases[normalizedKey] = normalizePackageExport(exportValue, pkgRoot);
+        } else if (!exportValue) {
+          aliases[normalizedKey] = EMPTY_SHIM;
         } else if (typeof exportValue === 'object') {
           aliases[normalizedKey] =
             processPackageExportsObject(exportValue, pkgRoot) || EMPTY_SHIM;

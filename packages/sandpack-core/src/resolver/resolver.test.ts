@@ -307,7 +307,7 @@ describe('resolver', () => {
     });
   });
 
-  describe.only('package#exports', () => {
+  describe('package#exports', () => {
     it('should alias package.exports root export', () => {
       const resolved = resolveSync('package-exports', {
         filename: '/foo.js',
@@ -329,23 +329,45 @@ describe('resolver', () => {
     });
 
     it('should alias package.exports globs', () => {
-      const resolved = resolveSync('package-exports/something', {
+      const resolved = resolveSync('package-exports/components/a', {
         filename: '/foo.js',
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         isFile,
         readFile,
       });
-      expect(resolved).toBe('/node_modules/package-exports/foo.js');
+      expect(resolved).toBe(
+        '/node_modules/package-exports/src/components/a.js'
+      );
+    });
+
+    it('should alias package.exports object globs', () => {
+      const resolved = resolveSync('package-exports/utils/path', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/package-exports/src/utils/path.js');
+    });
+
+    it('should resolve exports if it is a string', () => {
+      const resolved = resolveSync('@scope/pkg-exports-main', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/@scope/pkg-exports-main/export.js');
     });
 
     it('should alias package.exports null/false to empty file', () => {
-      const resolved = resolveSync('package-exports', {
+      const resolved = resolveSync('package-exports/internal', {
         filename: '/foo.js',
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         isFile,
         readFile,
       });
-      expect(resolved).toBe('/node_modules/package-exports/module.js');
+      expect(resolved).toBe('//empty.js');
     });
   });
 });
