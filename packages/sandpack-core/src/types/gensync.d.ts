@@ -34,6 +34,6 @@ declare module 'gensync' {
     all<Return>(gensyncs: Array<Handler<Return>>): Handler<Return[]>;
     race<Return>(gensyncs: Array<Handler<Return>>): Handler<Return>;
   };
-  
+
   export default gensync;
 }
