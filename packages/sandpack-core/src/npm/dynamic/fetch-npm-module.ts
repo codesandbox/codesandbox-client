@@ -139,6 +139,10 @@ function resolvePath(
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
 
+  const isFile = gensync({
+    sync: p => Boolean(manager.transpiledModules[p]) || Boolean(meta[p]),
+  });
+
   const readFile = gensync({
     sync: () => {
       throw new Error('no sync version');
@@ -199,7 +203,7 @@ function resolvePath(
     moduleDirectories: ['node_modules', manager.envVariables.NODE_PATH].filter(
       Boolean
     ),
-    isFile: manager.isFile,
+    isFile,
     readFile,
   });
 }
