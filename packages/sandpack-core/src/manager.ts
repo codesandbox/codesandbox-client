@@ -2,6 +2,7 @@ import { flattenDeep, uniq, values } from 'lodash-es';
 import { Protocol } from 'codesandbox-api';
 import resolve from 'browser-resolve';
 import fs from 'fs';
+import gensync from 'gensync';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import { isUrl } from '@codesandbox/common/lib/utils/is-url';
@@ -124,8 +125,6 @@ type TManagerOptions = {
   hasFileResolver: boolean;
   versionIdentifier: string;
 };
-
-export type ReadFileCallback = (error: Error | null, code?: string) => void;
 
 function triggerFileWatch(path: string, type: 'rename' | 'change') {
   try {
@@ -324,61 +323,62 @@ export default class Manager implements IEvaluator {
     });
   }
 
-  // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string, cb?: Function | undefined, c?: Function) => {
-    const callback = (c || cb)!;
-    const hasCallback = typeof callback === 'function';
-
-    let returnValue;
+  private isFileSync(p: string): boolean {
     if (this.stage === 'transpilation') {
       // In transpilation phase we can afford to download the file if not found,
       // because we're async. That's why we also include the meta here.
-      returnValue = this.transpiledModules[p] || combinedMetas[p];
-    } else {
-      returnValue = this.transpiledModules[p];
+      return Boolean(this.transpiledModules[p] || combinedMetas[p]);
     }
+    return Boolean(this.transpiledModules[p]);
+  }
 
-    if (returnValue == null && hasCallback && this.fileResolver) {
-      return this.fileResolver.isFile(p).then(bool => {
-        callback(null, Boolean(bool));
-      });
+  private isFileAsync(p: string): Promise<boolean> {
+    const exists = this.isFileSync(p);
+    if (exists) {
+      return Promise.resolve(true);
     }
+    if (this.fileResolver) {
+      return this.fileResolver.isFile(p);
+    }
+    return Promise.resolve(false);
+  }
 
-    return hasCallback
-      ? callback(null, Boolean(returnValue))
-      : Boolean(returnValue);
-  };
+  isFile = gensync({
+    sync: this.isFileSync.bind(this),
+    async: this.isFileAsync.bind(this),
+  });
 
-  readFileSync = (
-    p: string,
-    cb?: ReadFileCallback | undefined,
-    c?: ReadFileCallback
-  ) => {
-    const callback = c || cb;
-    const hasCallback = typeof callback === 'function';
-
+  private readFileSync(p: string): string {
     if (this.transpiledModules[p]) {
-      const { code } = this.transpiledModules[p].module;
-
-      return hasCallback ? callback!(null, code) : code;
-    }
-    if (hasCallback && this.fileResolver) {
-      return this.fileResolver.readFile(p).then(code => {
-        this.addModule({ code, path: p });
-
-        callback!(null, code);
-      });
+      return this.transpiledModules[p].module.code;
     }
 
     const err = new Error('Could not find ' + p);
     // @ts-ignore
     err.code = 'ENOENT';
-
-    if (hasCallback) {
-      return callback!(err);
-    }
     throw err;
-  };
+  }
+
+  private readFileAsync(p: string): Promise<string> {
+    try {
+      const content = this.readFileSync(p);
+      return Promise.resolve(content);
+    } catch (err) {
+      if (this.fileResolver) {
+        return this.fileResolver.readFile(p).then(code => {
+          this.addModule({ path: p, code });
+          return code;
+        });
+      }
+
+      return Promise.reject(err);
+    }
+  }
+
+  readFile = gensync({
+    sync: this.readFileSync.bind(this),
+    async: this.readFileAsync.bind(this),
+  });
 
   setStage = (stage: Stage) => {
     this.stage = stage;
@@ -819,10 +819,9 @@ export default class Manager implements IEvaluator {
             {
               filename: parentPath,
               extensions: defaultExtensions.map(ext => '.' + ext),
-              isFile: this.isFile,
-              // @ts-ignore
-              readFile: this.readFileSync,
-              packageFilter: packageFilter(this.isFile),
+              isFile: this.isFile.errback,
+              readFile: this.readFile.errback,
+              packageFilter: packageFilter(),
               moduleDirectory: this.getModuleDirectories(),
             },
             (err: Error | undefined, foundPath: string) => {
@@ -844,22 +843,8 @@ export default class Manager implements IEvaluator {
 
         if (!this.transpiledModules[resolvedPath]) {
           try {
-            const remoteFileContent: string = await new Promise(
-              (promiseResolve, promiseReject) => {
-                this.readFileSync(resolvedPath, (error, content) => {
-                  if (error) {
-                    return promiseReject(error);
-                  }
-
-                  if (!content) {
-                    return promiseReject(
-                      new Error(`File ${resolvedPath} not found.`)
-                    );
-                  }
-
-                  return promiseResolve(content);
-                });
-              }
+            const remoteFileContent: string = await this.readFileAsync(
+              resolvedPath
             );
             this.addModule({
               path: resolvedPath,
@@ -987,10 +972,9 @@ export default class Manager implements IEvaluator {
         resolvedPath = resolve.sync(shimmedPath, {
           filename: parentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
-          isFile: this.isFile,
-          // @ts-ignore
+          isFile: this.isFileSync,
           readFileSync: this.readFileSync,
-          packageFilter: packageFilter(this.isFile),
+          packageFilter: packageFilter(),
           moduleDirectory: this.getModuleDirectories(),
         });
         endMeasure(measureKey, { silent: true, lastTime: measureStartTime });
