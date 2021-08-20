@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import gensync from 'gensync';
 
-import { resolveSync } from './resolver';
+import { resolveSync, normalizeModuleSpecifier } from './resolver';
 
 const FIXTURE_PATH = path.join(__dirname, 'fixture');
 
@@ -329,7 +329,7 @@ describe('resolver', () => {
     });
 
     it('should alias package.exports globs', () => {
-      const resolved = resolveSync('package-exports/components/a', {
+      const resolved = resolveSync('package-exports///components/a', {
         filename: '/foo.js',
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         isFile,
@@ -341,7 +341,7 @@ describe('resolver', () => {
     });
 
     it('should alias package.exports object globs', () => {
-      const resolved = resolveSync('package-exports/utils/path', {
+      const resolved = resolveSync('package-exports/utils/path/', {
         filename: '/foo.js',
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
         isFile,
@@ -368,6 +368,19 @@ describe('resolver', () => {
         readFile,
       });
       expect(resolved).toBe('//empty.js');
+    });
+  });
+
+  describe('normalize module specifier', () => {
+    it('normalize module specifier', () => {
+      expect(normalizeModuleSpecifier('/test//fluent-d')).toBe(
+        '/test/fluent-d'
+      );
+      expect(normalizeModuleSpecifier('//node_modules/react/')).toBe(
+        '/node_modules/react'
+      );
+      expect(normalizeModuleSpecifier('./foo.js')).toBe('./foo.js');
+      expect(normalizeModuleSpecifier('react//test')).toBe('react/test');
     });
   });
 });

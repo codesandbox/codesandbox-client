@@ -354,17 +354,28 @@ function* isFile(
   return yield* isFileFn(filepath);
 }
 
+export function normalizeModuleSpecifier(specifier: string): string {
+  const normalized = specifier.replace(/(\/|\\)+/g, '/');
+  if (normalized.endsWith('/')) {
+    return normalized.substring(0, normalized.length - 1);
+  }
+  return normalized;
+}
+
 const resolverRunner = gensync<
   (moduleSpecifier: string, inputOpts: IResolveOptionsInput) => string
 >(function* resolve(moduleSpecifier, inputOpts): Generator<any, string, any> {
+  const normalizedSpecifier = normalizeModuleSpecifier(moduleSpecifier);
   const opts = normalizeResolverOptions(inputOpts);
-  const modulePath = yield* resolveModule(moduleSpecifier, opts);
+  const modulePath = yield* resolveModule(normalizedSpecifier, opts);
 
   if (modulePath[0] !== '/') {
     try {
       return yield* resolveNodeModule(modulePath, opts);
     } catch (e) {
-      throw new Error(`Could not find ${moduleSpecifier} in ${opts.filename}`);
+      throw new Error(
+        `Could not find ${normalizedSpecifier} in ${opts.filename}`
+      );
     }
   }
 
@@ -374,7 +385,7 @@ const resolverRunner = gensync<
   }
 
   if (!foundFile) {
-    throw new Error(`Cannot find module ${foundFile}`);
+    throw new Error(`Cannot find module ${modulePath}`);
   }
 
   return foundFile;
