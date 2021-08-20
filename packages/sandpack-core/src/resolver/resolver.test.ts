@@ -191,7 +191,7 @@ describe('resolver', () => {
     });
   });
 
-  describe('aliases', () => {
+  describe('package#browser', () => {
     it('should alias the main file using the package.browser field', () => {
       const resolved = resolveSync('package-browser-alias', {
         filename: '/foo.js',
@@ -234,6 +234,18 @@ describe('resolver', () => {
       );
     });
 
+    it('should resolve to an empty file when package.browser resolves to false', () => {
+      const resolved = resolveSync('package-browser-exclude', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('//empty.js');
+    });
+  });
+
+  describe('package#alias', () => {
     it('should alias a sub-file using the package.alias field', () => {
       const resolved = resolveSync('package-alias/foo', {
         filename: '/foo.js',
@@ -284,16 +296,6 @@ describe('resolver', () => {
       expect(resolved).toBe('/bar.js');
     });
 
-    it('should resolve to an empty file when package.browser resolves to false', () => {
-      const resolved = resolveSync('package-browser-exclude', {
-        filename: '/foo.js',
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        isFile,
-        readFile,
-      });
-      expect(resolved).toBe('//empty.js');
-    });
-
     it('should resolve to an empty file when package.alias resolves to false', () => {
       const resolved = resolveSync('package-alias-exclude', {
         filename: '/foo.js',
@@ -302,6 +304,48 @@ describe('resolver', () => {
         readFile,
       });
       expect(resolved).toBe('//empty.js');
+    });
+  });
+
+  describe.only('package#exports', () => {
+    it('should alias package.exports root export', () => {
+      const resolved = resolveSync('package-exports', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/package-exports/module.js');
+    });
+
+    it('should alias package.exports sub-module export', () => {
+      const resolved = resolveSync('package-exports', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/package-exports/module.js');
+    });
+
+    it('should alias package.exports globs', () => {
+      const resolved = resolveSync('package-exports/something', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/package-exports/foo.js');
+    });
+
+    it('should alias package.exports null/false to empty file', () => {
+      const resolved = resolveSync('package-exports', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/package-exports/module.js');
     });
   });
 });

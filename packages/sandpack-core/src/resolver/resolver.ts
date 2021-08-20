@@ -128,10 +128,11 @@ function processPackageJSON(
     } else if (typeof content.exports === 'object') {
       for (const exportKey of Object.keys(content.exports)) {
         const exportValue = content.exports[exportKey];
+        const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
         if (typeof exportValue === 'string') {
-          aliases[exportKey] = normalizeAliasFilePath(exportValue, pkgRoot);
+          aliases[normalizedKey] = normalizeAliasFilePath(exportValue, pkgRoot);
         } else if (typeof exportValue === 'object') {
-          aliases[exportKey] =
+          aliases[normalizedKey] =
             processPackageExportsObject(exportValue, pkgRoot) || EMPTY_SHIM;
         }
       }
