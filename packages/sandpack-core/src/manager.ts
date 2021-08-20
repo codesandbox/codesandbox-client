@@ -832,12 +832,13 @@ export default class Manager implements IEvaluator {
 
         if (!this.transpiledModules[resolvedPath]) {
           try {
-            await this.readFile.async(resolvedPath);
-            // ReadFile already does this for us...
-            // this.addModule({
-            //   path: resolvedPath,
-            //   code: remoteFileContent || '',
-            // });
+            const remoteFileContent: string = await this.readFile.async(
+              resolvedPath
+            );
+            this.addModule({
+              path: resolvedPath,
+              code: remoteFileContent || '',
+            });
           } catch (err) {
             throw new Error(`Could not find '${resolvedPath}' in local files.`);
           }
