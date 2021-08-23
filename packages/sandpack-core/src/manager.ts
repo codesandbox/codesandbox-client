@@ -1,6 +1,5 @@
 import { flattenDeep, uniq, values } from 'lodash-es';
 import { Protocol } from 'codesandbox-api';
-import { default as bresolve } from 'browser-resolve';
 import fs from 'fs';
 import gensync from 'gensync';
 
@@ -13,6 +12,7 @@ import { endMeasure, now } from '@codesandbox/common/lib/utils/metrics';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
+import { resolveAsync, resolveSync } from './resolver/resolver';
 import { generateBenchmarkInterface } from './utils/benchmark';
 import { Module } from './types/module';
 import {
@@ -31,7 +31,6 @@ import {
   getAliasVersion,
   getDependencyName,
 } from './utils/get-dependency-name';
-import { packageFilter } from './utils/resolve-utils';
 
 import {
   ignoreNextCache,
@@ -817,25 +816,12 @@ export default class Manager implements IEvaluator {
       }
 
       try {
-        resolvedPath = await new Promise((resolvePromise, rejectPromise) => {
-          bresolve(
-            shimmedPath,
-            {
-              // @ts-ignore
-              filename: parentPath,
-              extensions: defaultExtensions.map(ext => '.' + ext),
-              isFile: this.isFile.errback,
-              readFile: this.readFile.errback,
-              packageFilter,
-              moduleDirectory: this.getModuleDirectories(),
-            },
-            (err: Error | undefined, foundPath: string) => {
-              if (err) {
-                return rejectPromise(err);
-              }
-              return resolvePromise(foundPath);
-            }
-          );
+        resolvedPath = await resolveAsync(shimmedPath, {
+          filename: parentPath,
+          extensions: defaultExtensions.map(ext => '.' + ext),
+          isFile: this.isFile,
+          readFile: this.readFile,
+          moduleDirectories: this.getModuleDirectories(),
         });
 
         endMeasure(measureKey, { silent: true, lastTime: measureStartTime });
@@ -974,14 +960,12 @@ export default class Manager implements IEvaluator {
       }
 
       try {
-        resolvedPath = bresolve.sync(shimmedPath, {
-          // @ts-ignore
+        resolvedPath = resolveSync(shimmedPath, {
           filename: parentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
-          isFile: this.isFile.sync,
-          readFileSync: this.readFile.sync,
-          packageFilter,
-          moduleDirectory: this.getModuleDirectories(),
+          isFile: this.isFile,
+          readFile: this.readFile,
+          moduleDirectories: this.getModuleDirectories(),
         });
         endMeasure(measureKey, { silent: true, lastTime: measureStartTime });
 

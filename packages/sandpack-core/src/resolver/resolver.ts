@@ -272,13 +272,13 @@ function* resolveNodeModule(
           const filepath = pkgSpecifierParts.filepath
             ? './' + pkgSpecifierParts.filepath
             : '.';
-          return yield* resolverRunner(filepath, {
+          return yield* resolver(filepath, {
             ...opts,
             filename: packageJsonPath,
           });
         } catch (err) {
           if (!pkgSpecifierParts.filepath) {
-            return yield* resolverRunner('./index', {
+            return yield* resolver('./index', {
               ...opts,
               filename: packageJsonPath,
             });
@@ -362,7 +362,7 @@ export function normalizeModuleSpecifier(specifier: string): string {
   return normalized;
 }
 
-const resolverRunner = gensync<
+export const resolver = gensync<
   (moduleSpecifier: string, inputOpts: IResolveOptionsInput) => string
 >(function* resolve(moduleSpecifier, inputOpts): Generator<any, string, any> {
   const normalizedSpecifier = normalizeModuleSpecifier(moduleSpecifier);
@@ -391,5 +391,5 @@ const resolverRunner = gensync<
   return foundFile;
 });
 
-export const resolveSync = resolverRunner.sync;
-export const resolveAsync = resolverRunner.async;
+export const resolveSync = resolver.sync;
+export const resolveAsync = resolver.async;
