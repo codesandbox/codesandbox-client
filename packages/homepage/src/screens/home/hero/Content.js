@@ -86,7 +86,13 @@ const Content = () => {
           }}
           href="/s"
         >
-          {freeWordingA ? 'Create Sandbox, it’s free' : '</> Start coding for free'}
+          {freeWordingA ? (
+            'Create Sandbox, it’s free'
+          ) : (
+            <>
+              <strong>{'</>'}</strong> Start coding for free
+            </>
+          )}
         </Button>
       </motion.div>
     </>
