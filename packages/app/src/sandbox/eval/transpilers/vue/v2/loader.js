@@ -37,16 +37,8 @@ const rewriterInjectRE = /\b(css(?:-loader)?(?:\?[^!]+)?)(?:!|$)/;
 
 export default async function (content: string, loaderContext: LoaderContext) {
   const dependencyPromises = [];
-  const addDependency = (
-    depPath: string,
-    options?: {
-      isAbsolute?: boolean,
-      isEntry?: boolean,
-    }
-  ) => {
-    const p = loaderContext.addDependency(depPath, options);
-    dependencyPromises.push(p);
-    return p;
+  const addDependency = (p: string) => {
+    dependencyPromises.push(loaderContext.addDependency(p, options));
   };
 
   // Emit the vue-hot-reload-api so it's available in the sandbox
