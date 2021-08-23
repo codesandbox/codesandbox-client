@@ -9,14 +9,12 @@ class VueTranspiler extends Transpiler {
     super('vue-loader');
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
-    return import(/* webpackChunkName: 'vue-loader' */ './loader').then(
-      loader => {
-        const transpiledCode = loader.default(code, loaderContext);
-
-        return Promise.resolve({ transpiledCode });
-      }
+  async doTranspilation(code: string, loaderContext: LoaderContext) {
+    const loader = await import(
+      /* webpackChunkName: 'vue-loader' */ './loader'
     );
+    const transpiledCode = await loader.default(code, loaderContext);
+    return { transpiledCode };
   }
 }
 

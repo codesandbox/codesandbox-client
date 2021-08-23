@@ -1,6 +1,4 @@
 // eslint-disable-next-line max-classes-per-file
-import { flattenDeep } from 'lodash-es';
-
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import interopRequireWildcard from '@babel/runtime/helpers/interopRequireWildcard';
@@ -558,7 +556,7 @@ export class TranspiledModule {
    * after the initial transpilation finished.
    * @param {*} manager
    */
-  async doTranspile(manager: Manager) {
+  async doTranspile(manager: Manager): Promise<TranspiledModule> {
     this.hasMissingDependencies = false;
 
     // Remove this module from the initiators of old deps, so we can populate a
@@ -586,14 +584,16 @@ export class TranspiledModule {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
-      requires.forEach(r => {
-        if (r.indexOf('glob:') === 0) {
-          const reGlob = r.replace('glob:', '');
-          loaderContext.addDependenciesInDirectory(reGlob);
-        } else {
-          loaderContext.addDependency(r);
-        }
-      });
+      await Promise.all(
+        requires.map(r => {
+          if (r.indexOf('glob:') === 0) {
+            const reGlob = r.replace('glob:', '');
+            loaderContext.addDependenciesInDirectory(reGlob);
+            return Promise.resolve();
+          }
+          return loaderContext.addDependency(r);
+        })
+      );
 
       // eslint-disable-next-line
       code = this.module.code;
@@ -699,19 +699,17 @@ export class TranspiledModule {
 
     this.asyncDependencies = [];
 
-    await Promise.all(
-      flattenDeep([
-        ...Array.from(this.transpilationInitiators).map(t =>
-          t.transpile(manager)
-        ),
-        ...Array.from(this.dependencies).map(t => t.transpile(manager)),
-      ])
-    );
+    await Promise.all([
+      ...Array.from(this.transpilationInitiators).map(t =>
+        t.transpile(manager)
+      ),
+      ...Array.from(this.dependencies).map(t => t.transpile(manager)),
+    ]);
 
     return this;
   }
 
-  transpile(manager: Manager): Promise<this> {
+  transpile(manager: Manager): Promise<TranspiledModule> {
     if (this.source) {
       return Promise.resolve(this);
     }
@@ -723,14 +721,21 @@ export class TranspiledModule {
         // because it is working on executing the promise. This rare case only
         // happens when we have a dependency loop, which could result in a
         // StackTraceOverflow. Dependency loop: A -> B -> C -> A -> B -> C
-        return new Promise(async resolve => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
           while (!this.source && manager.transpileJobs[id] === true) {
             // eslint-disable-next-line
             await delay(10);
           }
 
-          if (manager.transpileJobs[id] && manager.transpileJobs[id] !== true) {
-            resolve(manager.transpileJobs[id] as Promise<this>);
+          const foundTranspileJob = manager.transpileJobs[id];
+          if (foundTranspileJob !== true) {
+            try {
+              const result = await foundTranspileJob;
+              resolve(result);
+            } catch (err) {
+              reject(err);
+            }
           } else {
             resolve(this);
           }
@@ -740,6 +745,7 @@ export class TranspiledModule {
     }
 
     manager.transpileJobs[id] = true;
+
     // eslint-disable-next-line
     return (manager.transpileJobs[id] = this.doTranspile(manager)).finally(
       () => {

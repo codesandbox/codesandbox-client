@@ -7,34 +7,34 @@ var defaultOptions = {
   image: 'xlink:href',
 };
 
-export default (userOptions, loaderContext: LoaderContext) => {
+export default async (userOptions, addDependency) => {
   var options = userOptions
     ? { ...defaultOptions, userOptions }
     : defaultOptions;
 
   return {
     postTransformNode: node => {
-      transform(node, options, loaderContext);
+      transform(node, options, addDependency);
     },
   };
 };
 
-function transform(node, options, loaderContext: LoaderContext) {
+function transform(node, options, addDependency) {
   for (var tag in options) {
     if (node.tag === tag && node.attrs) {
       var attributes = options[tag];
       if (typeof attributes === 'string') {
-        node.attrs.some(attr => rewrite(attr, attributes, loaderContext));
+        node.attrs.some(attr => rewrite(attr, attributes, addDependency));
       } else if (Array.isArray(attributes)) {
         attributes.forEach(item =>
-          node.attrs.some(attr => rewrite(attr, item, loaderContext))
+          node.attrs.some(attr => rewrite(attr, item, addDependency))
         );
       }
     }
   }
 }
 
-function rewrite(attr, name, loaderContext: LoaderContext) {
+function rewrite(attr, name, addDependency) {
   if (attr.name === name) {
     var value = attr.value;
     var isStatic =
@@ -51,7 +51,7 @@ function rewrite(attr, name, loaderContext: LoaderContext) {
       attr.value = `require(${value})`;
 
       const rawDependency = value.slice(1).slice(0, -1);
-      loaderContext.addDependency(rawDependency);
+      addDependency(rawDependency);
     }
     return true;
   }

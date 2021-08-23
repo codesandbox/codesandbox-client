@@ -9,11 +9,10 @@ import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
 import addStylesClientRaw from '!raw-loader!./addStylesClient';
 import listToStylesRaw from '!raw-loader!./listToStyles';
 
-
 const addStylesClientPath = '/node_modules/vue-style-loader/addStylesClient.js';
 const listToStylesPath = '/node_modules/vue-style-loader/listToStyles.js';
 
-export default function(content: string, loaderContext) {
+export default async function (content: string, loaderContext) {
   const isServer = false;
   const isProduction = false;
 
@@ -40,7 +39,7 @@ export default function(content: string, loaderContext) {
   );
 
   const id = JSON.stringify(hash(request));
-  loaderContext.addDependency(JSON.parse(request));
+  await loaderContext.addDependency(JSON.parse(request));
 
   const shared = [
     '// style-loader: Adds some css to the DOM by adding a <style> tag',
