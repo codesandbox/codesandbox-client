@@ -12,7 +12,7 @@ import html from '../../../assets/icons/home-html.svg';
 import more from '../../../assets/icons/home-more.svg';
 
 const Content = () => {
-  const experimentPromise = useExperimentResult('hp-cta-iteration-1');
+  const experimentPromise = useExperimentResult('hp-cta-iteration-2');
   const [freeWordingA, setFreeWordingA] = useState(false);
 
   useEffect(() => {
@@ -86,7 +86,13 @@ const Content = () => {
           }}
           href="/s"
         >
-          {freeWordingA ? 'Create Sandbox, it’s free' : 'Create Sandbox →'}
+          {freeWordingA ? (
+            'Create Sandbox, it’s free'
+          ) : (
+            <>
+              <strong>{'</>'}</strong> Start coding for free
+            </>
+          )}
         </Button>
       </motion.div>
     </>
