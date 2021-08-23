@@ -2,7 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import gensync from 'gensync';
 
-import { resolveSync, normalizeModuleSpecifier } from './resolver';
+import {
+  resolveSync,
+  normalizeModuleSpecifier,
+  _processPackageJSON,
+} from './resolver';
 
 const FIXTURE_PATH = path.join(__dirname, 'fixture');
 
@@ -27,7 +31,7 @@ const readFiles = (
   return files;
 };
 
-describe('resolver', () => {
+describe('resolve', () => {
   const files: Map<string, string> = readFiles(
     FIXTURE_PATH,
     FIXTURE_PATH,
@@ -382,5 +386,21 @@ describe('resolver', () => {
       expect(normalizeModuleSpecifier('./foo.js')).toBe('./foo.js');
       expect(normalizeModuleSpecifier('react//test')).toBe('react/test');
     });
+  });
+});
+
+describe('process package.json', () => {
+  it('Should correctly process pkg.exports from @babel/runtime', () => {
+    const content = JSON.parse(
+      fs.readFileSync(
+        path.join(FIXTURE_PATH, 'node_modules/@babel/runtime/package.json'),
+        'utf-8'
+      )
+    );
+    const processedPkg = _processPackageJSON(
+      content,
+      '/node_modules/@babel/runtime'
+    );
+    expect(processedPkg).toMatchSnapshot();
   });
 });

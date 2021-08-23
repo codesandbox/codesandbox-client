@@ -1,3 +1,4 @@
+/* eslint-disable no-else-return */
 /* eslint-disable no-continue */
 import gensync, { Gensync } from 'gensync';
 import micromatch from 'micromatch';
@@ -7,7 +8,7 @@ import * as pathUtils from '@codesandbox/common/lib/utils/path';
 const EMPTY_SHIM = '//empty.js';
 
 // alias/exports/main keys, sorted from high to low priority
-const EXPORTS_KEYS = ['browser', 'development', 'default'];
+const EXPORTS_KEYS = ['browser', 'development', 'default', 'require', 'import'];
 const MAIN_PKG_FIELDS = ['module', 'browser', 'main', 'jsnext:main'];
 const PKG_ALIAS_FIELDS = ['browser', 'alias'];
 
@@ -72,24 +73,47 @@ function normalizePackageExport(filepath: string, pkgRoot: string): string {
   return normalizeAliasFilePath(filepath.replace(/\*/g, '$1'), pkgRoot);
 }
 
-function processPackageExportsObject(
-  exports: {
-    [key: string]: string | null | false;
-  },
+type PackageExportObj = {
+  [key: string]: string | null | false;
+};
+
+type PackageExportArr = Array<PackageExportObj | string>;
+
+type PackageExportType = string | null | PackageExportObj | PackageExportArr;
+
+function extractPathFromExport(
+  exportValue: PackageExportType,
   pkgRoot: string
 ): string | false {
-  for (const key of EXPORTS_KEYS) {
-    const exportFilename = exports[key];
-    if (exportFilename !== undefined) {
-      return typeof exportFilename === 'string'
-        ? normalizePackageExport(exportFilename, pkgRoot)
-        : false;
+  if (!exportValue) {
+    return false;
+  } else if (typeof exportValue === 'string') {
+    return normalizePackageExport(exportValue, pkgRoot);
+  } else if (Array.isArray(exportValue)) {
+    const foundPaths = exportValue
+      .map(v => extractPathFromExport(v, pkgRoot))
+      .filter(Boolean);
+    if (!foundPaths.length) {
+      return false;
+    } else {
+      return foundPaths[0];
     }
+  } else if (typeof exportValue === 'object') {
+    for (const key of EXPORTS_KEYS) {
+      const exportFilename = exportValue[key];
+      if (exportFilename !== undefined) {
+        return typeof exportFilename === 'string'
+          ? normalizePackageExport(exportFilename, pkgRoot)
+          : false;
+      }
+    }
+    return false;
+  } else {
+    throw new Error(`Unsupported export type ${typeof exportValue}`);
   }
-  return false;
 }
 
-function processPackageJSON(
+export function _processPackageJSON(
   content: any,
   pkgRoot: string
 ): ProcessedPackageJSON {
@@ -127,16 +151,12 @@ function processPackageJSON(
       aliases[pkgRoot] = normalizeAliasFilePath(content.exports, pkgRoot);
     } else if (typeof content.exports === 'object') {
       for (const exportKey of Object.keys(content.exports)) {
-        const exportValue = content.exports[exportKey];
+        const exportValue = extractPathFromExport(
+          content.exports[exportKey],
+          pkgRoot
+        );
         const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
-        if (typeof exportValue === 'string') {
-          aliases[normalizedKey] = normalizePackageExport(exportValue, pkgRoot);
-        } else if (!exportValue) {
-          aliases[normalizedKey] = EMPTY_SHIM;
-        } else if (typeof exportValue === 'object') {
-          aliases[normalizedKey] =
-            processPackageExportsObject(exportValue, pkgRoot) || EMPTY_SHIM;
-        }
+        aliases[normalizedKey] = exportValue || EMPTY_SHIM;
       }
     }
   }
@@ -159,7 +179,7 @@ function* loadPackageJSON(
     let packageContent = opts.packageCache.get(packageFilePath);
     if (!opts.packageCache.has(packageFilePath)) {
       try {
-        packageContent = processPackageJSON(
+        packageContent = _processPackageJSON(
           JSON.parse(yield* opts.readFile(packageFilePath)),
           pathUtils.dirname(packageFilePath)
         );
