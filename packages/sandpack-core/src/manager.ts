@@ -364,10 +364,15 @@ export default class Manager implements IEvaluator {
       return Promise.resolve(content);
     } catch (err) {
       if (this.fileResolver) {
-        return this.fileResolver.readFile(p).then(code => {
-          this.addModule({ path: p, code });
-          return code;
-        });
+        return this.fileResolver
+          .readFile(p)
+          .then(code => {
+            this.addModule({ path: p, code });
+            return code;
+          })
+          .catch(() => {
+            throw err;
+          });
       }
 
       return Promise.reject(err);
@@ -855,6 +860,7 @@ export default class Manager implements IEvaluator {
           }
         }
       } catch (err) {
+        console.error(err);
         if (
           this.cachedPaths[dirredPath] &&
           this.cachedPaths[dirredPath][path]
@@ -990,6 +996,7 @@ export default class Manager implements IEvaluator {
           throw new Error(`Could not find '${resolvedPath}' in local files.`);
         }
       } catch (e) {
+        console.error(e);
         // MAKE SURE TO SYNC THIS WITH ASYNC VERSION
         if (
           this.cachedPaths[dirredPath] &&
