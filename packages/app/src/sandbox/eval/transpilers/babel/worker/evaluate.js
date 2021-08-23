@@ -136,7 +136,7 @@ export default function evaluate(
         filename: path,
         extensions: ['.js', '.json'],
         moduleDirectory: ['node_modules'],
-        packageFilter: packageFilter(),
+        packageFilter,
       });
 
     cachedPaths[dirName][requirePath] = resolvedPath;
@@ -210,7 +210,7 @@ export function evaluateFromPath(
     filename: currentPath,
     extensions: ['.js', '.json'],
     moduleDirectory: ['node_modules'],
-    packageFilter: packageFilter(),
+    packageFilter,
   });
 
   const code = fs.readFileSync(resolvedPath).toString();

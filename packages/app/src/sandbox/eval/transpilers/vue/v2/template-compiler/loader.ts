@@ -11,7 +11,10 @@ import transformRequire from './modules/transform-require';
 import transformSrcset from './modules/transform-srcset';
 
 const hotReloadAPIPath = '!noop-loader!/node_modules/vue-hot-reload-api.js';
-export default function (html: string, loaderContext: LoaderContext) {
+export default async function (
+  html: string,
+  loaderContext: LoaderContext
+): Promise<string> {
   loaderContext.emitModule(
     hotReloadAPIPath,
     vueHotReloadAPIRaw,
@@ -24,8 +27,13 @@ export default function (html: string, loaderContext: LoaderContext) {
   const vueOptions = options.vueOptions || {};
   const needsHotReload = true;
 
+  const depPromises = [];
+  const addDependency = (p: string) => {
+    depPromises.push(loaderContext.addDependency(p));
+  };
+
   const defaultModules = [
-    transformRequire(options.transformRequire, loaderContext),
+    transformRequire(options.transformRequire, addDependency),
     transformSrcset(),
   ];
   const userModules = vueOptions.compilerModules || options.compilerModules;
@@ -113,6 +121,8 @@ export default function (html: string, loaderContext: LoaderContext) {
       '  }\n' +
       '}';
   }
+
+  await Promise.all(depPromises);
 
   return code;
 }

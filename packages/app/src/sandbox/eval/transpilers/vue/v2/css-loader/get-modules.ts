@@ -24,7 +24,7 @@ export default async (code: string, loaderContext: LoaderContext) => {
     }
   );
 
-  await depPromises;
+  await Promise.all(depPromises);
 
   return {
     css: injectableSource,

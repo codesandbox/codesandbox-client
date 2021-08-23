@@ -1,7 +1,8 @@
 import { flattenDeep, uniq, values } from 'lodash-es';
 import { Protocol } from 'codesandbox-api';
-import resolve from 'browser-resolve';
+import { default as bresolve } from 'browser-resolve';
 import fs from 'fs';
+import gensync from 'gensync';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import { isUrl } from '@codesandbox/common/lib/utils/is-url';
@@ -124,8 +125,6 @@ type TManagerOptions = {
   hasFileResolver: boolean;
   versionIdentifier: string;
 };
-
-export type ReadFileCallback = (error: Error | null, code?: string) => void;
 
 function triggerFileWatch(path: string, type: 'rename' | 'change') {
   try {
@@ -324,61 +323,66 @@ export default class Manager implements IEvaluator {
     });
   }
 
-  // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string, cb?: Function | undefined, c?: Function) => {
-    const callback = (c || cb)!;
-    const hasCallback = typeof callback === 'function';
-
-    let returnValue;
+  private _isFileSync = (p: string): boolean => {
     if (this.stage === 'transpilation') {
       // In transpilation phase we can afford to download the file if not found,
       // because we're async. That's why we also include the meta here.
-      returnValue = this.transpiledModules[p] || combinedMetas[p];
-    } else {
-      returnValue = this.transpiledModules[p];
+      return Boolean(this.transpiledModules[p] || combinedMetas[p]);
     }
-
-    if (returnValue == null && hasCallback && this.fileResolver) {
-      return this.fileResolver.isFile(p).then(bool => {
-        callback(null, Boolean(bool));
-      });
-    }
-
-    return hasCallback
-      ? callback(null, Boolean(returnValue))
-      : Boolean(returnValue);
+    return Boolean(this.transpiledModules[p]);
   };
 
-  readFileSync = (
-    p: string,
-    cb?: ReadFileCallback | undefined,
-    c?: ReadFileCallback
-  ) => {
-    const callback = c || cb;
-    const hasCallback = typeof callback === 'function';
-
-    if (this.transpiledModules[p]) {
-      const { code } = this.transpiledModules[p].module;
-
-      return hasCallback ? callback!(null, code) : code;
+  private _isFileAsync = (p: string): Promise<boolean> => {
+    const exists = this._isFileSync(p);
+    if (exists) {
+      return Promise.resolve(true);
     }
-    if (hasCallback && this.fileResolver) {
-      return this.fileResolver.readFile(p).then(code => {
-        this.addModule({ code, path: p });
-
-        callback!(null, code);
-      });
+    if (this.fileResolver) {
+      return this.fileResolver.isFile(p);
     }
-
-    const err = new Error('Could not find ' + p);
-    // @ts-ignore
-    err.code = 'ENOENT';
-
-    if (hasCallback) {
-      return callback!(err);
-    }
-    throw err;
+    return Promise.resolve(false);
   };
+
+  isFile = gensync({
+    sync: this._isFileSync,
+    async: this._isFileAsync,
+  });
+
+  private _readFileSync = (p: string): string => {
+    if (!this.transpiledModules[p]) {
+      const err = new Error('Could not find ' + p);
+      // @ts-ignore
+      err.code = 'ENOENT';
+      throw err;
+    }
+    return this.transpiledModules[p].module.code;
+  };
+
+  private _readFileAsync = (p: string): Promise<string> => {
+    try {
+      const content = this._readFileSync(p);
+      return Promise.resolve(content);
+    } catch (err) {
+      if (this.fileResolver) {
+        return this.fileResolver
+          .readFile(p)
+          .then(code => {
+            this.addModule({ path: p, code });
+            return code;
+          })
+          .catch(() => {
+            throw err;
+          });
+      }
+
+      return Promise.reject(err);
+    }
+  };
+
+  readFile = gensync({
+    sync: this._readFileSync,
+    async: this._readFileAsync,
+  });
 
   setStage = (stage: Stage) => {
     this.stage = stage;
@@ -814,15 +818,15 @@ export default class Manager implements IEvaluator {
 
       try {
         resolvedPath = await new Promise((resolvePromise, rejectPromise) => {
-          resolve(
+          bresolve(
             shimmedPath,
             {
+              // @ts-ignore
               filename: parentPath,
               extensions: defaultExtensions.map(ext => '.' + ext),
-              isFile: this.isFile,
-              // @ts-ignore
-              readFile: this.readFileSync,
-              packageFilter: packageFilter(this.isFile),
+              isFile: this.isFile.errback,
+              readFile: this.readFile.errback,
+              packageFilter,
               moduleDirectory: this.getModuleDirectories(),
             },
             (err: Error | undefined, foundPath: string) => {
@@ -844,22 +848,8 @@ export default class Manager implements IEvaluator {
 
         if (!this.transpiledModules[resolvedPath]) {
           try {
-            const remoteFileContent: string = await new Promise(
-              (promiseResolve, promiseReject) => {
-                this.readFileSync(resolvedPath, (error, content) => {
-                  if (error) {
-                    return promiseReject(error);
-                  }
-
-                  if (!content) {
-                    return promiseReject(
-                      new Error(`File ${resolvedPath} not found.`)
-                    );
-                  }
-
-                  return promiseResolve(content);
-                });
-              }
+            const remoteFileContent: string = await this.readFile.async(
+              resolvedPath
             );
             this.addModule({
               path: resolvedPath,
@@ -984,13 +974,13 @@ export default class Manager implements IEvaluator {
       }
 
       try {
-        resolvedPath = resolve.sync(shimmedPath, {
+        resolvedPath = bresolve.sync(shimmedPath, {
+          // @ts-ignore
           filename: parentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
-          isFile: this.isFile,
-          // @ts-ignore
-          readFileSync: this.readFileSync,
-          packageFilter: packageFilter(this.isFile),
+          isFile: this.isFile.sync,
+          readFileSync: this.readFile.sync,
+          packageFilter,
           moduleDirectory: this.getModuleDirectories(),
         });
         endMeasure(measureKey, { silent: true, lastTime: measureStartTime });

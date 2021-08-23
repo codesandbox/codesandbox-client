@@ -103,16 +103,17 @@ export default async function (
     };
   }
 
-  // Explcitly give undefined if code is null, otherwise postcss crashses
+  // Explicitly give undefined if code is null, otherwise postcss crashses
   const postcssResult = await postcss(plugins).process(code || '', options);
 
   if (postcssResult.messages) {
     const messages = postcssResult.messages as any[];
     await Promise.all(
-      messages.map(async m => {
+      messages.map(m => {
         if (m.type === 'dependency') {
-          await loaderContext.addDependency(m.file);
+          return loaderContext.addDependency(m.file);
         }
+        return Promise.resolve();
       })
     );
   }

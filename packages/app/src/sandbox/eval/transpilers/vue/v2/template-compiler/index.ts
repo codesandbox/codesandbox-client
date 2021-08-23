@@ -5,14 +5,12 @@ class VueTemplateTranspiler extends Transpiler {
     super('vue-template-compiler');
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
-    return import(
+  async doTranspilation(code: string, loaderContext: LoaderContext) {
+    const loader = await import(
       /* webpackChunkName: 'vue-template-compiler' */ './loader'
-    ).then(loader => {
-      const transpiledCode = loader.default(code, loaderContext);
-
-      return Promise.resolve({ transpiledCode });
-    });
+    );
+    const transpiledCode = await loader.default(code, loaderContext);
+    return { transpiledCode };
   }
 }
 

@@ -35,7 +35,12 @@ const postcssExtensions = ['postcss', 'pcss', 'sugarss', 'sss'];
 
 const rewriterInjectRE = /\b(css(?:-loader)?(?:\?[^!]+)?)(?:!|$)/;
 
-export default function (content: string, loaderContext: LoaderContext) {
+export default async function (content: string, loaderContext: LoaderContext) {
+  const dependencyPromises = [];
+  const addDependency = (p: string) => {
+    dependencyPromises.push(loaderContext.addDependency(p, options));
+  };
+
   // Emit the vue-hot-reload-api so it's available in the sandbox
   loaderContext.emitModule(
     hotReloadAPIPath,
@@ -45,7 +50,7 @@ export default function (content: string, loaderContext: LoaderContext) {
     false
   );
 
-  const { path, _module } = loaderContext;
+  const path = loaderContext.path;
   const query = loaderContext.options;
   const options = {
     // Always disable esModule as sandpack is CommonJS
@@ -55,7 +60,7 @@ export default function (content: string, loaderContext: LoaderContext) {
   };
 
   const rawRequest = getRawRequest(loaderContext);
-  const filePath = _module.module.path;
+  const filePath = loaderContext._module.module.path;
   const fileName = basename(filePath);
 
   const sourceRoot = dirname(path);
@@ -348,6 +353,8 @@ export default function (content: string, loaderContext: LoaderContext) {
       '\nreturn Component.exports\n}';
   }
 
+  await Promise.all(dependencyPromises);
+
   // done
   return output;
 
@@ -371,7 +378,7 @@ export default function (content: string, loaderContext: LoaderContext) {
     // loaderContext.emitModule(rawPath, part.content, dirname(filePath), false, false);
 
     const depPath = loaderUtils.stringifyRequest(loaderContext, rawPath);
-    loaderContext.addDependency(JSON.parse(depPath));
+    addDependency(JSON.parse(depPath));
 
     return depPath;
   }
@@ -386,7 +393,7 @@ export default function (content: string, loaderContext: LoaderContext) {
       '!!' + getLoaderString(type, impt, -1, scoped) + impt.src
     );
 
-    loaderContext.addDependency(JSON.parse(depPath));
+    addDependency(JSON.parse(depPath));
 
     return depPath;
   }
