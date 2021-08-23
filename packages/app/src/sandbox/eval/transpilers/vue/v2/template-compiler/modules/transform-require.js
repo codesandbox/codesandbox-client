@@ -7,7 +7,7 @@ var defaultOptions = {
   image: 'xlink:href',
 };
 
-export default async (userOptions, addDependency) => {
+export default (userOptions, addDependency) => {
   var options = userOptions
     ? { ...defaultOptions, userOptions }
     : defaultOptions;

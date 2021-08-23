@@ -11,7 +11,10 @@ import transformRequire from './modules/transform-require';
 import transformSrcset from './modules/transform-srcset';
 
 const hotReloadAPIPath = '!noop-loader!/node_modules/vue-hot-reload-api.js';
-export default async function (html: string, loaderContext: LoaderContext) {
+export default async function (
+  html: string,
+  loaderContext: LoaderContext
+): Promise<string> {
   loaderContext.emitModule(
     hotReloadAPIPath,
     vueHotReloadAPIRaw,
