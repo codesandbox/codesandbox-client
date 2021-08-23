@@ -13,7 +13,7 @@ import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 import { Module, NpmRegistry, Sandbox } from '../../types';
-import track from '../../utils/analytics';
+import track, { trackWithCooldown } from '../../utils/analytics';
 import { getSandboxName } from '../../utils/get-sandbox-name';
 import { frameUrl, host } from '../../utils/url-generator';
 import { Container, Loading, StyledFrame } from './elements';
@@ -361,6 +361,10 @@ class BasePreview extends React.PureComponent<Props, State> {
           }
           case 'done': {
             this.setState({ showScreenshot: false });
+            break;
+          }
+          case 'document-focus': {
+            trackWithCooldown('Browser focus', 30 * 1000);
             break;
           }
           default: {
