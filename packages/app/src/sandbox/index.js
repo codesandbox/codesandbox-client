@@ -139,3 +139,10 @@ requirePolyfills().then(() => {
       });
   }
 });
+
+/**
+ * For tracking purpose
+ */
+document.addEventListener('click', () => {
+  dispatch({ type: 'document-focus' });
+});

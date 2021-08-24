@@ -794,13 +794,6 @@ async function compile(opts: CompileOptions) {
         }
       }
     }, 600);
-
-    /**
-     * For tracking purpose
-     */
-    document.addEventListener('click', () => {
-      dispatch({ type: 'document-focus' });
-    });
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log('Error in sandbox:');
