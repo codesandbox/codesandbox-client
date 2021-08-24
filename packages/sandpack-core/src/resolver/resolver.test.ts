@@ -8,6 +8,7 @@ import {
   _processPackageJSON,
   getParentDirectories,
 } from './resolver';
+import { ModuleNotFoundError } from './errors/ModuleNotFound';
 
 const FIXTURE_PATH = path.join(__dirname, 'fixture');
 
@@ -99,6 +100,19 @@ describe('resolve', () => {
         readFile,
       });
       expect(resolved).toBe('/nested/index.js');
+    });
+
+    it('should throw a module not found error if not found', () => {
+      expect(() => {
+        resolveSync('/nestedeeeee', {
+          filename: '/nested/test.js',
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          isFile,
+          readFile,
+        });
+      }).toThrowError(
+        new ModuleNotFoundError('/nestedeeeee', '/nested/test.js')
+      );
     });
   });
 
@@ -203,6 +217,19 @@ describe('resolve', () => {
         readFile,
       });
       expect(resolved).toBe('/node_modules/@scope/pkg/foo/bar.js');
+    });
+
+    it('should throw a module not found error if not found', () => {
+      expect(() => {
+        resolveSync('unknown-module/test.js', {
+          filename: '/nested/test.js',
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          isFile,
+          readFile,
+        });
+      }).toThrowError(
+        new ModuleNotFoundError('unknown-module/test.js', '/nested/test.js')
+      );
     });
   });
 
