@@ -529,16 +529,14 @@ async function compile(opts: any) {
       dependencies,
     };
   } catch (err) {
-    if (
-      !fsInitialized &&
-      (err.message.indexOf('Cannot find module') > -1 || err.code === 'EIO')
-    ) {
+    const isModuleNotFoundError = err.code === 'MODULE_NOT_FOUND';
+    if (!fsInitialized && (isModuleNotFoundError || err.code === 'EIO')) {
       // BrowserFS was needed but wasn't initialized
       await waitForFs(loaderContextId);
       return compile(opts);
     }
 
-    if (err.message.indexOf('Cannot find module') > -1) {
+    if (isModuleNotFoundError) {
       // Try to download the file and all dependencies, retry compilation then
       await downloadFromError({
         error: err,

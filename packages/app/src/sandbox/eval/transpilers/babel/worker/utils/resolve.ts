@@ -14,23 +14,25 @@ export function resolve(
 ) {
   const fs = global.BrowserFS.BFSRequire('fs');
 
+  const isFile = p => {
+    try {
+      const stats = fs.statSync(p);
+      return stats.isFile();
+    } catch (err) {
+      return false;
+    }
+  };
+
   const resolvedPath = resolveSync(specifier, {
     filename: '/index.js', // idk...
     extensions: ['.js', '.mjs', '.json', '.ts', '.tsx'],
     moduleDirectories: ['node_modules'],
     ...opts,
     isFile: gensync({
-      sync: p => {
-        try {
-          const stats = fs.statSync(p);
-          return stats.isFile();
-        } catch (err) {
-          return false;
-        }
-      },
+      sync: p => isFile(p),
     }),
     readFile: gensync({
-      sync: p => fs.readFileSync(p),
+      sync: p => fs.readFileSync(p, 'utf8'),
     }),
   });
   return resolvedPath;

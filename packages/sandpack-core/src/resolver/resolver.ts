@@ -4,6 +4,7 @@ import gensync, { Gensync } from 'gensync';
 import micromatch from 'micromatch';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
+import { ModuleNotFoundError } from './errors/ModuleNotFound';
 
 const EMPTY_SHIM = '//empty.js';
 
@@ -29,6 +30,23 @@ export interface IResolveOptionsInput {
 interface IResolveOptions extends IResolveOptionsInput {
   moduleDirectories: string[];
   packageCache: PackageCache;
+}
+
+export function getParentDirectories(
+  filepath: string,
+  rootDir: string = '/'
+): string[] {
+  const parts = filepath.split('/');
+  const directories = [];
+  while (parts.length > 0) {
+    const directory = parts.join('/') || '/';
+    if (directory.length < rootDir.length || !directory.startsWith(rootDir)) {
+      break;
+    }
+    directories.push(directory);
+    parts.pop();
+  }
+  return directories;
 }
 
 function normalizeAliasFilePath(
@@ -171,11 +189,12 @@ interface IFoundPackageJSON {
 
 function* loadPackageJSON(
   filepath: string,
-  opts: IResolveOptions
+  opts: IResolveOptions,
+  rootDir: string = '/'
 ): Generator<any, IFoundPackageJSON | null, any> {
-  const parts = filepath.split('/');
-  while (parts.length > 0) {
-    const packageFilePath = parts.join('/') + '/package.json';
+  const directories = getParentDirectories(filepath, rootDir);
+  for (const directory of directories) {
+    const packageFilePath = pathUtils.join(directory, 'package.json');
     let packageContent = opts.packageCache.get(packageFilePath);
     if (!opts.packageCache.has(packageFilePath)) {
       try {
@@ -194,7 +213,6 @@ function* loadPackageJSON(
         content: packageContent,
       };
     }
-    parts.pop();
   }
   return null;
 }
@@ -277,39 +295,35 @@ function* resolveNodeModule(
   opts: IResolveOptions
 ): Generator<any, string, any> {
   const pkgSpecifierParts = extractPkgSpecifierParts(moduleSpecifier);
+  const directories = getParentDirectories(opts.filename);
   for (const modulesPath of opts.moduleDirectories) {
-    const parts = opts.filename.split('/');
-    while (parts.length > 0) {
-      const packageJsonPath = [
-        ...parts,
+    for (const directory of directories) {
+      const rootDir = pathUtils.join(
+        directory,
         modulesPath,
-        pkgSpecifierParts.pkgName,
-        'package.json',
-      ].join('/');
-      const pkgExists = yield* isFile(packageJsonPath, opts.isFile);
-      if (pkgExists) {
+        pkgSpecifierParts.pkgName
+      );
+      const pkgFilePath = pathUtils.join(rootDir, pkgSpecifierParts.filepath);
+      const pkgJson = yield* loadPackageJSON(pkgFilePath, opts, rootDir);
+      if (pkgJson) {
         try {
-          const filepath = pkgSpecifierParts.filepath
-            ? './' + pkgSpecifierParts.filepath
-            : '.';
-          return yield* resolver(filepath, {
+          return yield* resolver(pkgFilePath, {
             ...opts,
-            filename: packageJsonPath,
+            filename: pkgJson.filepath,
           });
         } catch (err) {
           if (!pkgSpecifierParts.filepath) {
-            return yield* resolver('./index', {
+            return yield* resolver(pathUtils.join(pkgFilePath, 'index'), {
               ...opts,
-              filename: packageJsonPath,
+              filename: pkgJson.filepath,
             });
           }
           throw err;
         }
       }
-      parts.pop();
     }
   }
-  throw new Error(`Could not find module ${moduleSpecifier}`);
+  throw new ModuleNotFoundError(moduleSpecifier, opts.filename);
 }
 
 function* findPackageJSON(
@@ -393,9 +407,7 @@ export const resolver = gensync<
     try {
       return yield* resolveNodeModule(modulePath, opts);
     } catch (e) {
-      throw new Error(
-        `Could not find ${normalizedSpecifier} in ${opts.filename}`
-      );
+      throw new ModuleNotFoundError(normalizedSpecifier, opts.filename);
     }
   }
 
@@ -405,7 +417,7 @@ export const resolver = gensync<
   }
 
   if (!foundFile) {
-    throw new Error(`Cannot find module ${modulePath}`);
+    throw new ModuleNotFoundError(modulePath, opts.filename);
   }
 
   return foundFile;
