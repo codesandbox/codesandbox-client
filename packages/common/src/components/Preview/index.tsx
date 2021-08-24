@@ -364,7 +364,7 @@ class BasePreview extends React.PureComponent<Props, State> {
             break;
           }
           case 'document-focus': {
-            trackWithCooldown('Browser focus', 5000);
+            trackWithCooldown('Preview focus', 30_000);
             break;
           }
           default: {
