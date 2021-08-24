@@ -1,4 +1,3 @@
-import resolve from 'browser-resolve';
 import hashsum from 'hash-sum';
 import * as events from 'events';
 import * as crypto from 'crypto';
@@ -8,8 +7,8 @@ import type FSType from 'fs';
 import isESModule from 'sandbox/eval/utils/is-es-module';
 import evaluateCode from 'sandpack-core/lib/runner/eval';
 import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
-import { packageFilter } from '../../../utils/resolve-utils';
-import { patchedResolve } from './utils/resolvePatch';
+
+import { resolve } from './utils/resolve';
 import { getBabelTypes } from './utils/babelTypes';
 
 let cache = {};
@@ -67,7 +66,7 @@ export default function evaluate(
     }
 
     if (requirePath === 'resolve') {
-      return patchedResolve();
+      return (...args) => resolve(...args);
     }
 
     if (requirePath === 'babel-register') {
@@ -132,11 +131,9 @@ export default function evaluate(
 
     const resolvedPath =
       cachedPaths[dirName][requirePath] ||
-      resolve.sync(requirePath, {
+      resolve(requirePath, {
         filename: path,
         extensions: ['.js', '.json'],
-        moduleDirectory: ['node_modules'],
-        packageFilter,
       });
 
     cachedPaths[dirName][requirePath] = resolvedPath;
@@ -206,11 +203,9 @@ export function evaluateFromPath(
   availablePlugins: Object,
   availablePresets: Object
 ) {
-  const resolvedPath = resolve.sync(path, {
-    filename: currentPath,
+  const resolvedPath = resolve(path, {
+    filename: path,
     extensions: ['.js', '.json'],
-    moduleDirectory: ['node_modules'],
-    packageFilter,
   });
 
   const code = fs.readFileSync(resolvedPath).toString();

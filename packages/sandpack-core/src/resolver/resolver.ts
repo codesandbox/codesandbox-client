@@ -17,7 +17,7 @@ export type PackageCache = Map<string, any>;
 export type FnIsFile = Gensync<(filepath: string) => boolean>;
 export type FnReadFile = Gensync<(filepath: string) => string>;
 
-interface IResolveOptionsInput {
+export interface IResolveOptionsInput {
   filename: string;
   extensions: string[];
   isFile: FnIsFile;

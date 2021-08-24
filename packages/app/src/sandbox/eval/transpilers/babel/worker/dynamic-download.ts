@@ -1,10 +1,10 @@
-import resolve from 'browser-resolve';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
+
 import getRequireStatements from './simple-get-require-statements';
-import { packageFilter } from '../../../utils/resolve-utils';
 import { convertEsModule } from '../ast/convert-esmodule';
 import { generateCode, parseModule } from '../ast/utils';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
+import { resolve } from './utils/resolve';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -110,11 +110,9 @@ function downloadRequires(
         }
 
         try {
-          resolve.sync(foundR.path, {
+          resolve(foundR.path, {
             filename: currentPath,
             extensions: ['.js', '.json'],
-            moduleDirectory: ['node_modules'],
-            packageFilter,
           });
         } catch (err) {
           await downloadFromError({
