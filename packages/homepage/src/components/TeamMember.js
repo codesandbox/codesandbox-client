@@ -19,6 +19,7 @@ import tamas from '../assets/images/people/tamas.png';
 import jasper from '../assets/images/people/jasper.jpg';
 import joana from '../assets/images/people/joana.jpg';
 import marco from '../assets/images/people/marco.jpg';
+import roman from '../assets/images/people/roman.jpg';
 
 const people = [
   {
