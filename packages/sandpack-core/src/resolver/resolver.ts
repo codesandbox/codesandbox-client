@@ -40,6 +40,7 @@ export function getParentDirectories(
   const directories = [];
   while (parts.length > 0) {
     const directory = parts.join('/') || '/';
+    // Test /foo vs /foo-something - /foo-something is not in rootDir
     if (directory.length < rootDir.length || !directory.startsWith(rootDir)) {
       break;
     }
@@ -224,6 +225,7 @@ function resolveFile(filepath: string, dir: string): string {
     case '/':
       return filepath;
     default:
+      // is a node module
       return filepath;
   }
 }
