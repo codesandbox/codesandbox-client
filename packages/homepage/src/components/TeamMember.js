@@ -129,6 +129,12 @@ const people = [
     color: '#76D0FB',
     team: 'Operations',
   },
+  {
+    name: 'Roman Kuba',
+    pic: roman,
+    color: '#B567EB',
+    team: 'Engineering'
+  }
 ];
 
 const Peep = styled.img`
