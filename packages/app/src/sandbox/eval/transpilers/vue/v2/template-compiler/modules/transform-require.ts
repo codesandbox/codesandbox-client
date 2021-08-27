@@ -1,22 +1,20 @@
 /* eslint-disable */
-import { type LoaderContext } from '../../../../transpiled-module';
-// vue compiler module for transforming `<tag>:<attribute>` to `require`
+import type { ModuleOptions } from 'vue-template-compiler';
 
+// vue compiler module for transforming `<tag>:<attribute>` to `require`
 var defaultOptions = {
   img: 'src',
   image: 'xlink:href',
 };
 
-export default (userOptions, addDependency) => {
+export default (userOptions, addDependency): ModuleOptions => {
   var options = userOptions
     ? { ...defaultOptions, userOptions }
     : defaultOptions;
 
   return {
-    postTransformNode: node => {
-      transform(node, options, addDependency);
-    },
-  };
+    postTransformNode: node => transform(node, options, addDependency),
+  } as ModuleOptions;
 };
 
 function transform(node, options, addDependency) {
@@ -50,8 +48,7 @@ function rewrite(attr, name, addDependency) {
       // get dependency the quotes
       attr.value = `require(${value})`;
 
-      const rawDependency = value.slice(1).slice(0, -1);
-      addDependency(rawDependency);
+      addDependency(JSON.parse(value));
     }
     return true;
   }

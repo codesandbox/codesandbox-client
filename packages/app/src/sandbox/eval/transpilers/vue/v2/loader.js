@@ -52,6 +52,7 @@ export default async function (content: string, loaderContext: LoaderContext) {
 
   const path = loaderContext.path;
   const query = loaderContext.options;
+  const filePath = loaderContext._module.module.path;
   const options = {
     // Always disable esModule as sandpack is CommonJS
     esModule: false,
@@ -60,7 +61,6 @@ export default async function (content: string, loaderContext: LoaderContext) {
   };
 
   const rawRequest = getRawRequest(loaderContext);
-  const filePath = loaderContext._module.module.path;
   const fileName = basename(filePath);
 
   const sourceRoot = dirname(path);
