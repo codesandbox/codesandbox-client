@@ -38,13 +38,15 @@ export default async function (
   ];
   const userModules = vueOptions.compilerModules || options.compilerModules;
 
-  const compilerOptions = {
+  const compilerOptions: compiler.CompilerOptionsWithSourceRange = {
     preserveWhitespace: options.preserveWhitespace,
     modules: defaultModules.concat(userModules || []),
     directives:
       vueOptions.compilerDirectives || options.compilerDirectives || {},
-    scopeId: options.hasScoped ? options.id : null,
+    // @ts-ignore
     comments: options.hasComment,
+    // @ts-ignore
+    scopeId: options.hasScoped ? options.id : null,
   };
 
   const compiled = compiler.compile(html, compilerOptions);
@@ -54,7 +56,7 @@ export default async function (
     compiled.tips.forEach(tip => {
       loaderContext.emitWarning({
         name: 'vue-warning',
-        message: tip,
+        message: typeof tip === 'string' ? tip : '',
         fileName: loaderContext._module.module.parent
           ? loaderContext._module.module.parent.path
           : loaderContext.path,

@@ -1,15 +1,14 @@
 /* eslint-disable */
-// vue compiler module for transforming `img:srcset` to a number of `require`s
+import type { ModuleOptions } from 'vue-template-compiler';
 
-export default function() {
+// vue compiler module for transforming `img:srcset` to a number of `require`s
+export default function (): ModuleOptions {
   return {
-    postTransformNode: node => {
-      transform(node);
-    },
-  };
+    postTransformNode: node => transform(node),
+  } as ModuleOptions;
 }
 
-function transform(node) {
+function transform(node): void {
   const tags = ['img', 'source'];
 
   if (tags.indexOf(node.tag) !== -1 && node.attrs) {
