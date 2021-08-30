@@ -62,6 +62,7 @@ export const signIn = async (
     await actions.internal.runProviderAuth(options);
 
     state.signInModalOpen = false;
+    state.cancelOnLogin = null;
     state.pendingUser = null;
     state.user = await effects.api.getCurrentUser();
     await actions.internal.initializeNewUser();

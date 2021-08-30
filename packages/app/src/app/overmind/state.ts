@@ -57,6 +57,7 @@ type State = {
   isContributor: (username: String) => boolean;
   signInModalOpen: boolean;
   redirectOnLogin: string | null;
+  cancelOnLogin: null | (() => void);
   duplicateAccountStatus: {
     duplicate: boolean;
     provider: 'google' | 'github';
@@ -123,6 +124,7 @@ export const state: State = {
   updateStatus: null,
   signInModalOpen: false,
   redirectOnLogin: null,
+  cancelOnLogin: null,
   duplicateAccountStatus: null,
   loadingAuth: {
     google: false,
