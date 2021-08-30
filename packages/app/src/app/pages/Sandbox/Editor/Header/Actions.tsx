@@ -1,6 +1,7 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { Avatar, Button, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 import { useAppState, useActions } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
@@ -56,6 +57,25 @@ export const Actions = () => {
     permissions,
   } = currentSandbox;
   const [fadeIn, setFadeIn] = useState(false);
+  const [signinWallAnonymous, setSigninWallAnonymous] = useState(false);
+  const experimentPromise = useExperimentResult('anon-users-iteration-1');
+
+  useEffect(() => {
+    /* Wait for the API */
+    experimentPromise.then(experiment => {
+      if (experiment === ExperimentValues.A) {
+        /**
+         * A
+         */
+        setSigninWallAnonymous(false);
+      } else if (experiment === ExperimentValues.B) {
+        /**
+         * B
+         */
+        setSigninWallAnonymous(true);
+      }
+    });
+  }, [experimentPromise]);
 
   useEffect(() => {
     if (!fadeIn) {
@@ -187,7 +207,11 @@ export const Actions = () => {
           loading={isForkingSandbox}
           variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
           onClick={() => {
-            signInClicked({ onCancel: () => forkSandboxClicked({}) });
+            if (signinWallAnonymous) {
+              signInClicked({ onCancel: () => forkSandboxClicked({}) });
+            } else {
+              forkSandboxClicked({});
+            }
           }}
           disabled={permissions.preventSandboxLeaving}
         >
@@ -199,7 +223,11 @@ export const Actions = () => {
         variant="secondary"
         css={css({ paddingX: 3 })}
         onClick={() => {
-          signInClicked({ onCancel: () => openCreateSandboxModal({}) });
+          if (signinWallAnonymous) {
+            signInClicked({ onCancel: () => openCreateSandboxModal({}) });
+          } else {
+            openCreateSandboxModal({});
+          }
         }}
         disabled={activeWorkspaceAuthorization === 'READ'}
       >
