@@ -376,6 +376,11 @@ const TYPESCRIPT_PARSER_OPTIONS = {
     // note you must disable the base rule as it can report incorrect errors
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': 'error',
+    /**
+     * Off because this gives false positive errors when using global namspace types like `JSX.*`
+     * @link https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/FAQ.md#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
+     */
+    'no-undef': 'off',
   },
 };
 
