@@ -30,7 +30,7 @@ export const EditorSettings: FunctionComponent = () => {
   return (
     <>
       <Text block marginBottom={6} size={4} weight="bold">
-        Appearance
+        Editor
       </Text>
 
       <Element>
