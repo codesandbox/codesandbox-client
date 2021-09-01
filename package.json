@@ -101,7 +101,7 @@
     "gulp": "^3.9.1",
     "husky": "^4.3.0",
     "lerna": "^3.16.4",
-    "lint-staged": "^9.2.5",
+    "lint-staged": "10.5.4",
     "overmind-devtools": "^26.0.2",
     "prettier": "2.1.1",
     "pretty-quick": "^3.0.0",
@@ -119,8 +119,7 @@
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "cross-env LINT=1 eslint --fix",
-      "pretty-quick --staged",
-      "git add"
+      "pretty-quick --staged"
     ]
   },
   "engines": {
