@@ -21,7 +21,7 @@ import { Alert } from '../Common/Alert';
 import { Appearance } from './Appearance';
 import { Badges } from './Badges';
 import { CodeFormatting } from './CodeFormatting';
-import { EditorSettings } from './EditorPageSettings/EditorSettings';
+import { Editor } from './Editor';
 import { Preview } from './Preview';
 import { Experiments } from './Experiments';
 import { PreferencesSync } from './PreferencesSync';
@@ -50,7 +50,7 @@ const getItems = (
       title: 'Appearance',
     },
     {
-      Content: EditorSettings,
+      Content: Editor,
       Icon: CodeIcon,
       id: 'editor',
       title: 'Editor',

@@ -6,7 +6,7 @@ import { VSCodePlaceholder } from '../VSCodePlaceholder';
 import { LinterSettings } from './LinterSettings';
 import { VimModeSettings } from './VimModeSettings';
 
-export const EditorSettings: React.FC = () => (
+export const Editor: React.FC = () => (
   <>
     <Text block marginBottom={6} size={4} weight="bold">
       Editor
