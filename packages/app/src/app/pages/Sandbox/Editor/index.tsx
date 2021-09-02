@@ -15,6 +15,7 @@ import { templateColor } from 'app/utils/template-color';
 import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
+import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
@@ -25,7 +26,7 @@ import { ContentSkeleton } from './Skeleton';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 import { CommentsAPI } from './Workspace/screens/Comments/API';
-import { SignInBanner } from './SignInBanner';
+import { FixedSignInBanner } from './FixedSignInBanner';
 
 type EditorTypes = { showNewSandboxModal?: boolean };
 
@@ -53,6 +54,28 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     },
     customVSCodeTheme: null,
   });
+
+  /**
+   * A/B
+   */
+  const experimentPromise = useExperimentResult('fixed-signin-banner');
+  const [newSignInBanner, setNewSignInBanner] = useState(false);
+  useEffect(() => {
+    /* Wait for the API */
+    experimentPromise.then(experiment => {
+      if (experiment === ExperimentValues.A) {
+        /**
+         * A
+         */
+        setNewSignInBanner(false);
+      } else if (experiment === ExperimentValues.B) {
+        /**
+         * B
+         */
+        setNewSignInBanner(true);
+      }
+    });
+  }, [experimentPromise]);
 
   useEffect(() => {
     let timeout;
@@ -106,7 +129,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
       return 0;
     }
 
-    if (!state.hasLogIn) {
+    if (!state.hasLogIn && newSignInBanner) {
       // Header + Signin banner + border
       return 5.5 * 16 + 2;
     }
@@ -131,7 +154,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
       >
         {state.preferences.settings.zenMode ? null : (
           <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
-            {!state.hasLogIn && <SignInBanner />}
+            {!state.hasLogIn && newSignInBanner && <FixedSignInBanner />}
             <Header />
           </ComponentsThemeProvider>
         )}

@@ -36,7 +36,7 @@ const Wrapper = styled.button`
   }
 `;
 
-export const SignInBanner: React.FC = () => {
+export const FixedSignInBanner: React.FC = () => {
   const { signInClicked } = useActions();
 
   return (
