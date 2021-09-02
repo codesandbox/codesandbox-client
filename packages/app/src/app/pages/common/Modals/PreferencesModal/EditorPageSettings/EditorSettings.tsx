@@ -37,7 +37,7 @@ export const EditorSettings: FunctionComponent = () => {
         <VSCodePlaceholder />
 
         {/* {Vim mode does not work on FF or Safari */}
-        <Element marginTop={4}>
+        <Element marginTop={8}>
           <PreferenceContainer disabled={isSafari}>
             <Preference
               title="Enable VIM extension"
