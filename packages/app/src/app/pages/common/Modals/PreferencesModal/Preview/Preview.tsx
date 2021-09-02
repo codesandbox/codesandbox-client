@@ -1,5 +1,5 @@
 import { Text } from '@codesandbox/components';
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
 
@@ -10,7 +10,7 @@ import {
   Rule,
 } from '../elements';
 
-export const PreviewSettings: FunctionComponent = () => {
+export const Preview: React.FC = () => {
   const { settingChanged } = useActions().preferences;
   const { settings } = useAppState().preferences;
 

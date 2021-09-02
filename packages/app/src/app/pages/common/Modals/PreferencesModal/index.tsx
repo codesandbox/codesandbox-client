@@ -22,7 +22,7 @@ import { Appearance } from './Appearance';
 import { Badges } from './Badges';
 import { CodeFormatting } from './CodeFormatting';
 import { EditorSettings } from './EditorPageSettings/EditorSettings';
-import { PreviewSettings } from './EditorPageSettings/PreviewSettings';
+import { Preview } from './Preview';
 import { Experiments } from './Experiments';
 import { PreferencesSync } from './PreferencesSync';
 import { Integrations } from './Integrations';
@@ -62,7 +62,7 @@ const getItems = (
       title: 'Prettier Settings',
     },
     {
-      Content: PreviewSettings,
+      Content: Preview,
       Icon: BrowserIcon,
       id: 'preview',
       title: 'Preview',
