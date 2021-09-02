@@ -30,7 +30,7 @@ interface GenericSandboxProps {
   item: DashboardSandbox | DashboardTemplate;
 }
 
-function getFolderName(item: GenericSandboxProps['item']): string {
+function getFolderName(item: GenericSandboxProps['item']): string | undefined {
   if (item.type === 'template') {
     const { sandbox } = item;
     if (sandbox.team) {
@@ -48,7 +48,7 @@ function getFolderName(item: GenericSandboxProps['item']): string {
 
   if (sandbox.collection) {
     if (sandbox.collection.path === '/' && !sandbox.teamId) {
-      return 'Drafts';
+      return undefined;
     }
 
     return sandbox.collection.path.split('/').pop();
