@@ -1,5 +1,6 @@
 import { isSafari } from '@codesandbox/common/lib/utils/platform';
 import { Preference } from '@codesandbox/common/lib/components/Preference';
+import { Settings } from '@codesandbox/common/lib/components/Preview/types';
 import { Text } from '@codesandbox/components';
 import React, { useState } from 'react';
 
@@ -10,7 +11,7 @@ import { Alert } from '../../Common/Alert';
 
 import { PreferenceContainer } from '../elements';
 
-const SETTING_NAME = 'vimMode' as const;
+const SETTING_NAME: keyof Settings = 'vimMode';
 
 export const VimModeSettings: React.FC = () => {
   const { settingChanged } = useActions().preferences;
@@ -37,8 +38,7 @@ export const VimModeSettings: React.FC = () => {
           style={{ maxWidth: '60%', lineHeight: 1.5 }}
           variant="muted"
         >
-          Toggling the VIM extension will require a refresh. When enabled, use
-          the command palette to control VIM
+          Use the command palette to control VIM
         </Text>
         {/* Vim mode does not work on Safari */}
         {isSafari ? (

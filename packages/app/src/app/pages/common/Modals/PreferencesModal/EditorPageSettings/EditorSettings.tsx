@@ -1,7 +1,9 @@
 import { Text, Element } from '@codesandbox/components';
 import React from 'react';
 
+import { Rule } from '../elements';
 import { VSCodePlaceholder } from '../VSCodePlaceholder';
+import { LinterSettings } from './LinterSettings';
 import { VimModeSettings } from './VimModeSettings';
 
 export const EditorSettings: React.FC = () => (
@@ -15,6 +17,8 @@ export const EditorSettings: React.FC = () => (
 
       <Element marginTop={8}>
         <VimModeSettings />
+        <Rule />
+        <LinterSettings />
       </Element>
     </Element>
   </>
