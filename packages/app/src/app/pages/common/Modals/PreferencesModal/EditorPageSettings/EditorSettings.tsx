@@ -72,7 +72,7 @@ export const EditorSettings: FunctionComponent = () => {
           <Alert
             description="You need to refresh the browser for this to take effect, do you want to do that now?"
             onCancel={() => setShowModal(false)}
-            onPrimaryAction={() => location.reload(true)}
+            onPrimaryAction={() => location.reload()}
             title="Toggle VIM extension"
           />
         </Modal>
