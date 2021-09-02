@@ -7,10 +7,9 @@ import { Actions } from './Actions';
 import { AppMenu } from './AppMenu';
 import { SandboxName } from './SandboxName';
 import { WorkspaceName } from './WorkspaceName';
-import { SignInBanner } from './SignInAd';
 
 export const Header = () => {
-  const { editor, isAuthenticating, activeTeamInfo, user } = useAppState();
+  const { editor, isAuthenticating, activeTeamInfo } = useAppState();
 
   const renderWorkspace = () => {
     if (activeTeamInfo) {
@@ -27,7 +26,6 @@ export const Header = () => {
 
   return (
     <>
-      {!user && <SignInBanner />}
       <Stack
         as="header"
         justify="space-between"

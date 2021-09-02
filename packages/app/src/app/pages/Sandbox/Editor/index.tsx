@@ -25,6 +25,7 @@ import { ContentSkeleton } from './Skeleton';
 import getVSCodeTheme from './utils/get-vscode-theme';
 import { Workspace } from './Workspace';
 import { CommentsAPI } from './Workspace/screens/Comments/API';
+import { SignInBanner } from './SignInBanner';
 
 type EditorTypes = { showNewSandboxModal?: boolean };
 
@@ -100,7 +101,20 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
 
   const templateDef = sandbox && getTemplateDefinition(sandbox.template);
 
-  const topOffset = state.preferences.settings.zenMode ? 0 : 3 * 16;
+  const getTopOffset = () => {
+    if (state.preferences.settings.zenMode) {
+      return 0;
+    }
+
+    if (!state.hasLogIn) {
+      // Header + Signin banner + border
+      return 5.5 * 16 + 2;
+    }
+
+    // Header height
+    return 3 * 16;
+  };
+
   const bottomOffset = STATUS_BAR_SIZE;
 
   return (
@@ -117,6 +131,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
       >
         {state.preferences.settings.zenMode ? null : (
           <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
+            {!state.hasLogIn && <SignInBanner />}
             <Header />
           </ComponentsThemeProvider>
         )}
@@ -124,7 +139,10 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
         <Fullscreen style={{ width: 'initial' }}>
           {!hideNavigation && (
             <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
-              <Navigation topOffset={topOffset} bottomOffset={bottomOffset} />
+              <Navigation
+                topOffset={getTopOffset()}
+                bottomOffset={bottomOffset}
+              />
             </ComponentsThemeProvider>
           )}
 
@@ -132,7 +150,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
             style={{
               position: 'fixed',
               left: hideNavigation ? 0 : 'calc(3.5rem + 1px)',
-              top: topOffset,
+              top: getTopOffset(),
               right: 0,
               bottom: bottomOffset,
               height: statusBar ? 'auto' : 'calc(100% - 3.5rem)',

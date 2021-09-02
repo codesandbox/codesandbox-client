@@ -68,7 +68,6 @@ export const WorkspaceComponent = ({ theme }) => {
           </div>
 
           {isLive && roomInfo.chatEnabled && <Chat />}
-          {!user && <SignInBanner theme={theme.vscodeTheme} />}
         </>
       </ThemeProvider>
     </Container>
