@@ -192,7 +192,7 @@ export const ConfigWizard = (props: ConfigurationUIProps) => {
             <PaddedPreference
               title="Node Version"
               type="dropdown"
-              options={['10', '12', '14']}
+              options={['10', '12', '14', '16']}
               {...bindValue(parsedFile, 'container.node')}
             />
             <ConfigDescription>
