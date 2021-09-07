@@ -616,3 +616,9 @@ export const setLoadingAuth = async (
 ) => {
   state.loadingAuth[provider] = !state.loadingAuth[provider];
 };
+
+export const getSandboxesLimits = async ({ effects, state }: Context) => {
+  const limits = await effects.api.sandboxesLimits();
+
+  state.sandboxesLimits = limits;
+};

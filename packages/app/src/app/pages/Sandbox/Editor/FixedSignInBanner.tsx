@@ -1,7 +1,7 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import { useActions } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 import { Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 
@@ -38,6 +38,9 @@ const Wrapper = styled.button`
 
 export const FixedSignInBanner: React.FC = () => {
   const { signInClicked } = useActions();
+  const { sandboxesLimits } = useAppState();
+
+  if (!sandboxesLimits) return null;
 
   return (
     <Wrapper onClick={() => signInClicked()}>
@@ -46,7 +49,8 @@ export const FixedSignInBanner: React.FC = () => {
         Sign up for free to save your work
       </Text>
       <Text size={2} css={css({ textAlign: 'right', paddingRight: 4 })}>
-        2/3 Sandboxes used - <strong>Anonymous</strong>
+        {sandboxesLimits.sandboxCount}/{sandboxesLimits.sandboxLimit} Sandboxes
+        used - <strong>Anonymous</strong>
       </Text>
     </Wrapper>
   );

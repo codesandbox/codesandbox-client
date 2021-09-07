@@ -44,6 +44,7 @@ export const initializeSandbox = async (
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
     actions.internal.switchCurrentWorkspaceBySandbox({ sandbox }),
+    actions.getSandboxesLimits(),
   ]);
 };
 
@@ -511,6 +512,7 @@ export const forkSandbox = async (
     }
 
     actions.internal.currentSandboxChanged();
+    await actions.getSandboxesLimits();
   } catch (error) {
     console.error(error);
     actions.internal.handleError({
