@@ -6,7 +6,9 @@ import { basename, dirname } from '@codesandbox/common/lib/utils/path';
 
 import type { LoaderContext } from 'sandpack-core';
 import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
+// @ts-ignore
 import componentNormalizerRaw from '!raw-loader!./component-normalizer';
+// @ts-ignore
 import vueHotReloadAPIRaw from '!raw-loader!vue-hot-reload-api';
 
 import genId from './utils/gen-id';
@@ -239,8 +241,8 @@ export default async function (content: string, loaderContext: LoaderContext) {
     output +=
       'var __vue_script__ = ' +
       (script.src
-        ? getRequireForImport('script', script)
-        : getRequire('script', script)) +
+        ? getRequireForImport('script', script, false)
+        : getRequire('script', script, -1, false)) +
       '\n';
 
     // inject loader interop
@@ -258,8 +260,8 @@ export default async function (content: string, loaderContext: LoaderContext) {
     output +=
       'var __vue_template__ = ' +
       (template.src
-        ? getRequireForImport('template', template)
-        : getRequire('template', template)) +
+        ? getRequireForImport('template', template, false)
+        : getRequire('template', template, -1, false)) +
       '\n';
   } else {
     output += 'var __vue_template__ = null\n';
@@ -360,11 +362,11 @@ export default async function (content: string, loaderContext: LoaderContext) {
 
   // --- helpers ---
 
-  function getRequire(type, part, index, scoped) {
+  function getRequire(type, part, index: number, scoped: boolean) {
     return 'require(' + getRequireString(type, part, index, scoped) + ')';
   }
 
-  function getRequireString(type, part, index, scoped) {
+  function getRequireString(type, part, index: number, scoped: boolean) {
     const rawPath =
       '!!' +
       // get loader string for pre-processors
@@ -383,11 +385,11 @@ export default async function (content: string, loaderContext: LoaderContext) {
     return depPath;
   }
 
-  function getRequireForImport(type, impt, scoped) {
+  function getRequireForImport(type, impt, scoped: boolean) {
     return 'require(' + getRequireForImportString(type, impt, scoped) + ')';
   }
 
-  function getRequireForImportString(type, impt, scoped) {
+  function getRequireForImportString(type, impt, scoped: boolean) {
     const depPath = loaderUtils.stringifyRequest(
       loaderContext,
       '!!' + getLoaderString(type, impt, -1, scoped) + impt.src
@@ -398,7 +400,7 @@ export default async function (content: string, loaderContext: LoaderContext) {
     return depPath;
   }
 
-  function addCssModulesToLoader(loader, part, index) {
+  function addCssModulesToLoader(loader, part, index: number) {
     if (!part.module) return loader;
     const option = options.cssModules || {};
     const DEFAULT_OPTIONS = {
@@ -411,16 +413,16 @@ export default async function (content: string, loaderContext: LoaderContext) {
     return loader.replace(/((?:^|!)css(?:-loader)?)(\?[^!]*)?/, (m, $1, $2) => {
       // $1: !css-loader
       // $2: ?a=b
-      const query = loaderUtils.parseQuery($2 || '?');
-      Object.assign(query, OPTIONS, option, DEFAULT_OPTIONS);
-      if (index !== -1) {
+      const q = loaderUtils.parseQuery($2 || '?');
+      Object.assign(q, OPTIONS, option, DEFAULT_OPTIONS);
+      if (index >= 0) {
         // Note:
         //   Class name is generated according to its filename.
         //   Different <style> tags in the same .vue file may generate same names.
         //   Append `_[index]` to class name to avoid this.
-        query.localIdentName += '_' + index;
+        q.localIdentName += '_' + index;
       }
-      return $1 + '?' + JSON.stringify(query);
+      return $1 + '?' + JSON.stringify(q);
     });
   }
 
@@ -432,8 +434,8 @@ export default async function (content: string, loaderContext: LoaderContext) {
   }
 
   // stringify an Array of loader objects
-  function stringifyLoaders(loaders) {
-    return loaders
+  function stringifyLoaders(_loaders) {
+    return _loaders
       .map(obj =>
         obj && typeof obj === 'object' && typeof obj.loader === 'string'
           ? obj.loader + (obj.options ? '?' + JSON.stringify(obj.options) : '')
@@ -442,7 +444,7 @@ export default async function (content: string, loaderContext: LoaderContext) {
       .join('!');
   }
 
-  function getLoaderString(type, part, index, scoped) {
+  function getLoaderString(type, part, index: number, scoped: boolean) {
     let loader = getRawLoaderString(type, part, index, scoped);
     const lang = getLangString(type, part);
     if (preLoaders[lang]) {
@@ -462,7 +464,7 @@ export default async function (content: string, loaderContext: LoaderContext) {
     }
   }
 
-  function getRawLoaderString(type, part, index, scoped) {
+  function getRawLoaderString(type, part, index: number, scoped: boolean) {
     let lang = part.lang || defaultLang[type];
 
     let styleCompiler = '';
@@ -549,14 +551,14 @@ export default async function (content: string, loaderContext: LoaderContext) {
       .map(loader =>
         loader.replace(
           /^([\w-]+)(\?.*)?/,
-          (_, name, query) =>
-            (/-loader$/.test(name) ? name : name + '-loader') + (query || '')
+          (_, name, q) =>
+            (/-loader$/.test(name) ? name : name + '-loader') + (q || '')
         )
       )
       .join('!');
   }
 
-  function getSelectorString(type, index) {
+  function getSelectorString(type: string, index: number) {
     return (
       selectorPath +
       '?type=' +
