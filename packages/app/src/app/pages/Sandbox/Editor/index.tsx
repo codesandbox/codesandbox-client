@@ -129,7 +129,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
       return 0;
     }
 
-    if (!state.hasLogIn && newSignInBanner) {
+    if (!state.hasLogIn && newSignInBanner && state.sandboxesLimits) {
       // Header + Signin banner + border
       return 5.5 * 16 + 2;
     }

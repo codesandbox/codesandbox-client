@@ -412,6 +412,7 @@ export const signOutClicked = async ({ state, effects, actions }: Context) => {
     'signedInDev=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   state.hasLogIn = false;
   state.user = null;
+  state.sandboxesLimits = null;
   effects.browser.reload();
 };
 
