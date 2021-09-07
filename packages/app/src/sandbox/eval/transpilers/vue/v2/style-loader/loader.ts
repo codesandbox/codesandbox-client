@@ -6,13 +6,17 @@
 import hash from 'hash-sum';
 
 import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
+import type { LoaderContext } from 'sandpack-core/lib/transpiled-module';
+
+// @ts-ignore
 import addStylesClientRaw from '!raw-loader!./addStylesClient';
+// @ts-ignore
 import listToStylesRaw from '!raw-loader!./listToStyles';
 
 const addStylesClientPath = '/node_modules/vue-style-loader/addStylesClient.js';
 const listToStylesPath = '/node_modules/vue-style-loader/listToStyles.js';
 
-export default async function (content: string, loaderContext) {
+export default async function (content: string, loaderContext: LoaderContext) {
   loaderContext.emitModule(
     addStylesClientPath,
     addStylesClientRaw,
