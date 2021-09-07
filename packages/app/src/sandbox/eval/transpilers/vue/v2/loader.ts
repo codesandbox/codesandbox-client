@@ -242,7 +242,7 @@ export default async function (content: string, loaderContext: LoaderContext) {
       'var __vue_script__ = ' +
       (script.src
         ? getRequireForImport('script', script, false)
-        : getRequire('script', script, -1, false)) +
+        : getRequire('script', script, 0, false)) +
       '\n';
 
     // inject loader interop
@@ -261,7 +261,7 @@ export default async function (content: string, loaderContext: LoaderContext) {
       'var __vue_template__ = ' +
       (template.src
         ? getRequireForImport('template', template, false)
-        : getRequire('template', template, -1, false)) +
+        : getRequire('template', template, 0, false)) +
       '\n';
   } else {
     output += 'var __vue_template__ = null\n';
@@ -392,7 +392,7 @@ export default async function (content: string, loaderContext: LoaderContext) {
   function getRequireForImportString(type, impt, scoped: boolean) {
     const depPath = loaderUtils.stringifyRequest(
       loaderContext,
-      '!!' + getLoaderString(type, impt, -1, scoped) + impt.src
+      '!!' + getLoaderString(type, impt, 0, scoped) + impt.src
     );
 
     addDependency(JSON.parse(depPath));
