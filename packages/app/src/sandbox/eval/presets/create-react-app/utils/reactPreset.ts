@@ -3,8 +3,6 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import stylesTranspiler from '../../../transpilers/style';
 import babelTranspiler from '../../../transpilers/babel';
 import jsonTranspiler from '../../../transpilers/json';
-import rawTranspiler from '../../../transpilers/raw';
-import svgrTranspiler from '../../../transpilers/svgr';
 import sassTranspiler from '../../../transpilers/sass';
 import refreshTranspiler from '../../../transpilers/react/refresh-transpiler';
 import lessTranspiler from '../../../transpilers/less';
@@ -104,10 +102,11 @@ export const reactPreset = babelConfig => {
             [{ transpiler: babelTranspiler, options: babelConfig }]
           );
 
-          preset.registerTranspiler(module => /\.svg$/.test(module.path), [
-            { transpiler: svgrTranspiler },
-            { transpiler: babelTranspiler, options: babelConfig },
-          ]);
+          // See https://github.com/facebook/create-react-app/blob/bb64e31a81eb12d688c14713dce812143688750a/packages/babel-plugin-named-asset-import/index.test.js
+          // preset.registerTranspiler(module => /\.svg$/.test(module.path), [
+          //   { transpiler: svgrTranspiler },
+          //   { transpiler: babelTranspiler, options: babelConfig },
+          // ]);
 
           preset.registerTranspiler(module => /\.less$/.test(module.path), [
             { transpiler: lessTranspiler },
@@ -165,7 +164,7 @@ export const reactPreset = babelConfig => {
           ]);
 
           preset.registerTranspiler(() => true, [
-            { transpiler: rawTranspiler },
+            { transpiler: base64Transpiler },
           ]);
 
           // Try to preload jsx-runtime
