@@ -1,5 +1,6 @@
+import { fetchWithRetries } from '@codesandbox/common/lib/utils/fetch';
+
 import { FetchProtocol, Meta } from '../fetch-npm-module';
-import { fetchWithRetries } from './utils';
 
 type GistAPIResponse = {
   path: string;

@@ -1,24 +1,5 @@
 import { valid } from 'semver';
-
-async function fetchWithRetries(url: string) {
-  let err: Error;
-  for (let i = 0; i < 5; i++) {
-    try {
-      // eslint-disable-next-line
-      return await fetch(url).then(x => {
-        if (x.ok) {
-          return x.json();
-        }
-
-        throw new Error('Could not fetch ' + url);
-      });
-    } catch (e) {
-      err = e;
-    }
-  }
-
-  throw err;
-}
+import { fetchWithRetries } from './fetch';
 
 export async function fetchPackageJSON(dep: string, version: string) {
   const fetchJsdelivr = () =>

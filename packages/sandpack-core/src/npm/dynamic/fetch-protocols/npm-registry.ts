@@ -1,6 +1,7 @@
 import { satisfies, valid } from 'semver';
+import { fetchWithRetries } from '@codesandbox/common/lib/utils/fetch';
+
 import { FetchProtocol, Meta } from '../fetch-npm-module';
-import { fetchWithRetries } from './utils';
 import { TarStore } from './utils/tar-store';
 
 type PackageVersionInfo = {
@@ -131,7 +132,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
   }
 
   private fetchRegistry(url: string): Promise<PackageRegistryInfo> {
-    return fetchWithRetries(url, 3, this.getRequestInit())
+    return fetchWithRetries(url, { ...this.getRequestInit(), retries: 3 })
       .then(x => x.json())
       .catch(async e => {
         let errorMessage = 'Make sure the right auth token and URL are set';

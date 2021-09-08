@@ -1,9 +1,10 @@
+import { fetchWithRetries } from '@codesandbox/common/lib/utils/fetch';
+
 import {
   FetchProtocol,
   Meta,
   downloadDependency,
 } from '../../fetch-npm-module';
-import { fetchWithRetries } from '../utils';
 import { JSDelivrMeta, normalizeJSDelivr } from './utils';
 
 export class JSDelivrNPMFetcher implements FetchProtocol {

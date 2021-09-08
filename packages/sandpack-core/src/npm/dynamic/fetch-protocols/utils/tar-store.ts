@@ -1,7 +1,7 @@
 import untar, { UntarredFiles } from 'isomorphic-untar-gzip';
+import { fetchWithRetries } from '@codesandbox/common/lib/utils/fetch';
 
 import { Meta } from '../../fetch-npm-module';
-import { fetchWithRetries } from '../utils';
 
 type DeserializedFetchedTar = {
   content: string;
@@ -31,13 +31,18 @@ export class TarStore {
     return normalized;
   }
 
-  private fetchTar(name: string, version: string, requestInit?: RequestInit) {
+  private fetchTar(
+    name: string,
+    version: string,
+    requestInit: RequestInit = {}
+  ) {
     const tarKey = this.generateKey(name, version);
 
     this.fetchedTars[tarKey] = (async () => {
-      const file = await fetchWithRetries(version, 6, requestInit).then(x =>
-        x.arrayBuffer()
-      );
+      const file = await fetchWithRetries(version, {
+        ...requestInit,
+        retries: 6,
+      }).then(x => x.arrayBuffer());
       const untarredFile = await untar(file);
       const normalizedTar = this.normalizeTar(untarredFile);
 

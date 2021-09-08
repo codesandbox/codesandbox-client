@@ -10,6 +10,7 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { ParsedConfigurationFiles } from '@codesandbox/common/lib/templates/template';
 import { endMeasure, now } from '@codesandbox/common/lib/utils/metrics';
+import { fetchWithRetries } from '@codesandbox/common/lib/utils/fetch';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
@@ -47,7 +48,6 @@ import {
 } from './npm/dynamic/fetch-protocols';
 import { FileFetcher } from './npm/dynamic/fetch-protocols/file';
 import { DEFAULT_EXTENSIONS } from './utils/extensions';
-import { fetchWithRetries } from './npm/dynamic/fetch-protocols/utils';
 import { getESModuleUrl } from './utils/esmodule-url';
 
 declare const BrowserFS: any;

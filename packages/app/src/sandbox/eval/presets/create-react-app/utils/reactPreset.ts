@@ -3,7 +3,6 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import stylesTranspiler from '../../../transpilers/style';
 import babelTranspiler from '../../../transpilers/babel';
 import jsonTranspiler from '../../../transpilers/json';
-import rawTranspiler from '../../../transpilers/raw';
 import svgrTranspiler from '../../../transpilers/svgr';
 import sassTranspiler from '../../../transpilers/sass';
 import refreshTranspiler from '../../../transpilers/react/refresh-transpiler';
@@ -160,12 +159,8 @@ export const reactPreset = babelConfig => {
             { transpiler: jsonTranspiler },
           ]);
 
-          preset.registerTranspiler(module => /\.md$/.test(module.path), [
-            { transpiler: base64Transpiler },
-          ]);
-
           preset.registerTranspiler(() => true, [
-            { transpiler: rawTranspiler },
+            { transpiler: base64Transpiler },
           ]);
 
           // Try to preload jsx-runtime
