@@ -121,7 +121,7 @@ export class Preset {
 
   private addTranspiler(t: Transpiler) {
     // TODO: Should this overwrite or skip?
-    // if (this._transpilers.has(t.name)) {}
+    if (this._transpilers.has(t.name)) return;
 
     this._transpilers.set(t.name, t);
   }
