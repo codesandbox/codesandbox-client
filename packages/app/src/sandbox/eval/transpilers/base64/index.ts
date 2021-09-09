@@ -1,4 +1,4 @@
-import { TranspilerResult, Transpiler, LoaderContext } from 'sandpack-core';
+import { Transpiler, LoaderContext } from 'sandpack-core';
 import { extname } from 'path';
 // @ts-ignore
 import mimeTypes from './mimes.json';
@@ -14,27 +14,14 @@ class Base64Transpiler extends Transpiler {
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
-    return new Promise<TranspilerResult>((resolve, reject) => {
-      const reader = new FileReader();
+    const blob: Blob =
+      typeof code === 'string'
+        ? new Blob([code], { type: getMimeType(loaderContext.path) })
+        : code;
 
-      const blob: Blob =
-        typeof code === 'string'
-          ? new Blob([code], { type: getMimeType(loaderContext.path) })
-          : code;
-
-      reader.readAsDataURL(blob);
-
-      reader.onloadend = () => {
-        const base64data = reader.result;
-        resolve({
-          transpiledCode: `module.exports = "${base64data.toString()}"`,
-        });
-      };
-
-      reader.onerror = err => {
-        reject(err);
-      };
-    });
+    return {
+      transpiledCode: `module.exports = "${URL.createObjectURL(blob)}"`,
+    };
   }
 }
 
