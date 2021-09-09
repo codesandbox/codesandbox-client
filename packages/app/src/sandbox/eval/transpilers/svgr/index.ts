@@ -1,6 +1,10 @@
 import { LoaderContext, Transpiler } from 'sandpack-core';
 
 class SVGRTranspiler extends Transpiler {
+  constructor() {
+    super('svgr-loader');
+  }
+
   async doTranspilation(code: string, loaderContext: LoaderContext) {
     const { svgrTransform } = await import('./transpiler');
 
@@ -24,7 +28,7 @@ class SVGRTranspiler extends Transpiler {
   }
 }
 
-const transpiler = new SVGRTranspiler('svgr-loader');
+const transpiler = new SVGRTranspiler();
 
 export { SVGRTranspiler };
 
