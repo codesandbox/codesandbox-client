@@ -7,14 +7,14 @@ class ReactSVGTranspiler extends Transpiler {
 
   async doTranspilation(code: string, loaderContext: LoaderContext) {
     const transpiledCode =
-      `var link = require(${JSON.stringify(
+      `import link from ${JSON.stringify(
         `!base64-loader!${loaderContext.path}`
-      )});` +
-      `module.exports = link;` +
-      `exports.Url = link;` +
-      `exports.ReactComponent = require(${JSON.stringify(
+      )};` +
+      `export default link;` +
+      `export const Url = link;` +
+      `export { default as ReactComponent } from ${JSON.stringify(
         `!babel-loader!svgr-loader!${loaderContext.path}`
-      )});`;
+      )};`;
 
     return {
       transpiledCode,
