@@ -3,11 +3,12 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import stylesTranspiler from '../../../transpilers/style';
 import babelTranspiler from '../../../transpilers/babel';
 import jsonTranspiler from '../../../transpilers/json';
-import svgrTranspiler from '../../../transpilers/svgr';
 import sassTranspiler from '../../../transpilers/sass';
-import refreshTranspiler from '../../../transpilers/react/refresh-transpiler';
+import refreshTranspiler from '../../../transpilers/react-refresh/refresh-transpiler';
 import lessTranspiler from '../../../transpilers/less';
-import styleProcessor from '../../../transpilers/postcss';
+import postcssTranspiler from '../../../transpilers/postcss';
+import svgrTranspiler from '../../../transpilers/svgr';
+import reactSvgTranspiler from '../../../transpilers/react-svg';
 
 import {
   hasRefresh,
@@ -103,14 +104,16 @@ export const reactPreset = babelConfig => {
             [{ transpiler: babelTranspiler, options: babelConfig }]
           );
 
+          // svgr is required for the react-svg-transpiler
+          preset.addTranspiler(svgrTranspiler);
           preset.registerTranspiler(module => /\.svg$/.test(module.path), [
-            { transpiler: svgrTranspiler },
-            { transpiler: babelTranspiler, options: babelConfig },
+            { transpiler: reactSvgTranspiler },
+            { transpiler: babelTranspiler },
           ]);
 
           preset.registerTranspiler(module => /\.less$/.test(module.path), [
             { transpiler: lessTranspiler },
-            { transpiler: styleProcessor },
+            { transpiler: postcssTranspiler },
             {
               transpiler: stylesTranspiler,
               options: { hmrEnabled: true },
@@ -121,7 +124,7 @@ export const reactPreset = babelConfig => {
             module => /\.module\.s[c|a]ss$/.test(module.path),
             [
               { transpiler: sassTranspiler },
-              { transpiler: styleProcessor },
+              { transpiler: postcssTranspiler },
               {
                 transpiler: stylesTranspiler,
                 options: { module: true, hmrEnabled: isRefresh },
@@ -131,7 +134,7 @@ export const reactPreset = babelConfig => {
           preset.registerTranspiler(
             module => /\.module\.css$/.test(module.path),
             [
-              { transpiler: styleProcessor },
+              { transpiler: postcssTranspiler },
               {
                 transpiler: stylesTranspiler,
                 options: { module: true, hmrEnabled: isRefresh },
@@ -140,7 +143,7 @@ export const reactPreset = babelConfig => {
           );
 
           preset.registerTranspiler(module => /\.css$/.test(module.path), [
-            { transpiler: styleProcessor },
+            { transpiler: postcssTranspiler },
             {
               transpiler: stylesTranspiler,
               options: { hmrEnabled: isRefresh },
@@ -148,7 +151,7 @@ export const reactPreset = babelConfig => {
           ]);
           preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
             { transpiler: sassTranspiler },
-            { transpiler: styleProcessor },
+            { transpiler: postcssTranspiler },
             {
               transpiler: stylesTranspiler,
               options: { hmrEnabled: isRefresh },

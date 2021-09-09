@@ -187,7 +187,7 @@ const getWrapperCode = (sourceCode: string) =>
 
 class RefreshTranspiler extends Transpiler {
   constructor() {
-    super('refresh-loader');
+    super('react-refresh-loader');
   }
 
   async doTranspilation(code: string, loaderContext: LoaderContext) {
