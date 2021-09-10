@@ -196,11 +196,18 @@ export class ServerExecutor implements IExecutor {
       }
     }
 
+    const devJwt = localStorage.getItem('devJwt');
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (devJwt) {
+      headers.Authorization = `Bearer ${devJwt}`;
+    }
+
     return fetch('/api/v1/users/current_user/sse', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
     })
       .then(x => x.json())
       .then(result => result.jwt)
