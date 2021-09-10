@@ -73,6 +73,9 @@ async function compileSass(opts: ISassCompileOptions) {
     url,
     prev
   ): Promise<{ file: string; contents: string }> => {
+    // eslint-disable-next-line no-param-reassign
+    url = url.replace(/^file:\/\//, '');
+
     try {
       const previous = prev === 'stdin' ? path : prev;
 
@@ -99,7 +102,7 @@ async function compileSass(opts: ISassCompileOptions) {
       });
 
       const contents = await readFile(foundPath);
-      return { file: foundPath, contents };
+      return { file: `file://${foundPath}`, contents };
     } catch (err) {
       err.message = `Could not resolve ${url}: ${err.message}`;
       throw err;
