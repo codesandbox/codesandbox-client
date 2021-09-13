@@ -43,6 +43,7 @@ const SANDBOXES = [
   'vue-3-basics-program-easily', // vue w/ custom html
   'scss-mixins',
   'vue-2-css-module-vuzkt',
+  'scss-bulma-ikgrv',
 ];
 
 // Logic for parallelizing the tests
