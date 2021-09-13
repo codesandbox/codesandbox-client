@@ -176,6 +176,19 @@ async function resolvePotentialPath(opts: {
   }
 }
 
+function getFilePathFromUrl(val: string): string {
+  try {
+    const parsed = new URL(val);
+    return parsed.pathname;
+  } catch (err) {
+    return val;
+  }
+}
+
+function getFilePathsFromUrls(urls: string[]): string[] {
+  return urls.map(getFilePathFromUrl);
+}
+
 interface ISassResolverOptions {
   url: string;
   previous: string;
@@ -212,10 +225,10 @@ export async function resolveSassUrl(opts: ISassResolverOptions) {
     throw new Error('Loader context id is required');
   }
 
-  url = url.replace(/^file:\/\//, '');
-  previous = previous.replace(/^file:\/\//, '');
+  url = getFilePathFromUrl(url);
+  previous = getFilePathFromUrl(previous);
 
-  const paths = [pathUtils.dirname(previous)];
+  let paths = [pathUtils.dirname(previous)];
   if (includePaths) {
     paths.push(...includePaths);
   }
@@ -223,6 +236,8 @@ export async function resolveSassUrl(opts: ISassResolverOptions) {
   if (env.SASS_PATH) {
     paths.push(...env.SASS_PATH.split(':'));
   }
+
+  paths = getFilePathsFromUrls(paths);
 
   const potentialPaths = getPossibleSassPaths(paths, url);
   // eslint-disable-next-line no-unused-vars

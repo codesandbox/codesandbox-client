@@ -7,8 +7,5 @@
   "scripts": {
     "build": "node index.js",
     "build:dev": "yarn build"
-  },
-  "dependencies": {
-    "sass": "1.36.0"
   }
 }

@@ -5,7 +5,7 @@ import { exec } from 'child_process';
 
 import { loadSandboxRetry, SECOND } from './utils';
 
-const SANDBOXES = ['vue-2-css-module-vuzkt', 'scss-bulma-ikgrv'];
+const SANDBOXES = ['scss-bulma-ikgrv'];
 
 async function runTests() {
   console.log('Launching puppeteer');
