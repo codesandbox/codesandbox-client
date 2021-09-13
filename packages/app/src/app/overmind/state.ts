@@ -66,6 +66,10 @@ type State = {
     google: boolean;
     github: boolean;
   };
+  sandboxesLimits?: {
+    sandboxCount: number;
+    sandboxLimit: number;
+  };
 };
 
 export const state: State = {

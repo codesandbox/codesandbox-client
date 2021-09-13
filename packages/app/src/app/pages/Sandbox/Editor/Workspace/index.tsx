@@ -1,7 +1,8 @@
 import { ThemeProvider } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { withTheme } from 'styled-components';
+import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 import { Chat } from './Chat';
 import { Container } from './elements';
@@ -40,6 +41,28 @@ export const WorkspaceComponent = ({ theme }) => {
     editor,
   } = useAppState();
 
+  /**
+   * A/B
+   */
+  const experimentPromise = useExperimentResult('fixed-signin-banner');
+  const [newSignInBanner, setNewSignInBanner] = useState(false);
+  useEffect(() => {
+    /* Wait for the API */
+    experimentPromise.then(experiment => {
+      if (experiment === ExperimentValues.A) {
+        /**
+         * A
+         */
+        setNewSignInBanner(false);
+      } else if (experiment === ExperimentValues.B) {
+        /**
+         * B
+         */
+        setNewSignInBanner(true);
+      }
+    });
+  }, [experimentPromise]);
+
   if (!activeTab) {
     return null;
   }
@@ -68,7 +91,9 @@ export const WorkspaceComponent = ({ theme }) => {
           </div>
 
           {isLive && roomInfo.chatEnabled && <Chat />}
-          {!user && <SignInBanner theme={theme.vscodeTheme} />}
+          {!user && !newSignInBanner && (
+            <SignInBanner theme={theme.vscodeTheme} />
+          )}
         </>
       </ThemeProvider>
     </Container>
