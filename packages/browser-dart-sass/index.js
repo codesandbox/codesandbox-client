@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+// See: https://github.com/DeMoorJasper/dart-sass
 const sassLocation = path.resolve('input.js'); // require.resolve('sass');
 const libLoc = path.join(__dirname, 'lib/index.js');
 const prelude = fs.readFileSync(path.join(__dirname, 'prelude.js'), 'utf-8');
