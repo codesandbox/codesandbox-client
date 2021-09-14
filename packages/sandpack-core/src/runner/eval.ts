@@ -26,7 +26,7 @@ export default function (
     module,
     exports,
     process,
-    global,    
+    global,
     ...globals,
   };
 
@@ -38,6 +38,11 @@ export default function (
 
   if (hasGlobalDeclaration.test(code)) {
     delete allGlobals.global;
+  }
+
+  // This is a hack to make core-js work...
+  if (window.process.versions) {
+    window.process.versions.v8 = '50.0';
   }
 
   const allGlobalKeys = Object.keys(allGlobals);
