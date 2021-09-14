@@ -69,7 +69,7 @@ type State = {
   sandboxesLimits?: {
     sandboxCount: number;
     sandboxLimit: number;
-  };
+  } | null;
 };
 
 export const state: State = {
