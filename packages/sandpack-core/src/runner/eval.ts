@@ -41,6 +41,7 @@ export default function (
   }
 
   // This is a hack to make core-js work...
+  // See https://github.com/codesandbox/codesandbox-client/pull/6136
   if (window.process.versions) {
     window.process.versions.v8 = '50.0';
   }
