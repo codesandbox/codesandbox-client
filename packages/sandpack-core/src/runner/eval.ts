@@ -5,6 +5,22 @@ const g = typeof window === 'undefined' ? self : window;
 
 const hasGlobalDeclaration = /^const global/m;
 
+const V8_VERSION = getV8Version();
+function getV8Version(): string {
+  const userAgent = navigator?.userAgent;
+  if (userAgent) {
+    let match = userAgent.match(/Edge\/(\d+)/);
+    // @ts-ignore
+    if (!match || match[1] >= 74) {
+      match = userAgent.match(/Chrome\/(\d+)/);
+      if (match) {
+        return match[1];
+      }
+    }
+  }
+  return '0';
+}
+
 /* eslint-disable no-unused-vars */
 export default function (
   code: string,
@@ -43,7 +59,7 @@ export default function (
   // This is a hack to make core-js work...
   // See https://github.com/codesandbox/codesandbox-client/pull/6136
   if (window.process.versions) {
-    window.process.versions.v8 = '50.0';
+    window.process.versions.v8 = V8_VERSION;
   }
 
   const allGlobalKeys = Object.keys(allGlobals);
