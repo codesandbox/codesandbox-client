@@ -251,11 +251,14 @@ function loadAlias(pkgJson: IFoundPackageJSON, filename: string): string {
       continue;
     }
 
-    const matchers = Object.keys(aliases).filter(a => a.includes('*'));
-    for (const matcher of matchers) {
-      const re = micromatch.makeRe(matcher, { capture: true });
+    for (const aliasKey of Object.keys(aliases)) {
+      if (!aliasKey.includes('*')) {
+        continue;
+      }
+
+      const re = micromatch.makeRe(aliasKey, { capture: true });
       if (re.test(relativeFilepath)) {
-        const val = aliases[matcher];
+        const val = aliases[aliasKey];
         aliasedPath = relativeFilepath.replace(re, val);
         break;
       }
