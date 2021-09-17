@@ -1,13 +1,13 @@
 import * as macrosPlugin from 'babel-plugin-macros';
-import { patchedResolve } from './resolvePatch';
+import { resolve } from './resolve';
 
 // eslint-disable-next-line
 let finalExports = function m(babel, options) {
   return macrosPlugin(babel, {
     ...options,
     resolvePath(source, basePath) {
-      return patchedResolve().sync(source, {
-        basePath,
+      return resolve(source, {
+        filename: basePath + '/index',
       });
     },
   });

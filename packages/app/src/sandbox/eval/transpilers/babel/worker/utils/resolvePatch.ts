@@ -1,5 +1,11 @@
-import * as resolve from 'browser-resolve';
-import { packageFilter } from 'sandbox/eval/utils/resolve-utils';
+import { resolve } from './resolve';
+
+function transformOptions(opts: any): any {
+  return {
+    ...opts,
+    filename: opts.basePath ? opts.basePath + '/index.js' : '/index.js',
+  };
+}
 
 /**
  * Patch 'resolve' to configure it to resolve esmodules by default. babel-plugin-macros goes
@@ -9,11 +15,16 @@ export function patchedResolve() {
   const handler = {
     get(target, prop) {
       if (prop === 'sync') {
-        return (p, options) => target.sync(p, { ...options, packageFilter });
+        return (p, options) => {
+          resolve(p, transformOptions(options));
+        };
       }
 
-      return target[prop];
+      // Useful for logging if somethings sync or not...
+      return (p, options) => {
+        resolve(p, transformOptions(options));
+      };
     },
   };
-  return new Proxy(resolve, handler);
+  return new Proxy({}, handler);
 }
