@@ -193,6 +193,7 @@ export default class Manager implements IEvaluator {
   // All paths are resolved at least twice: during transpilation and evaluation.
   // We can improve performance by almost 2x in this scenario if we cache the lookups
   cachedPaths: { [path: string]: { [path: string]: string } };
+  resolverPackageCache: PackageCache;
 
   configurations: ParsedConfigurationFiles;
 
@@ -201,8 +202,6 @@ export default class Manager implements IEvaluator {
   version: string;
 
   esmodules: Map<string, Promise<IRemoteModuleResult>>;
-
-  resolverPackageCache: PackageCache;
 
   constructor(
     id: string | null | undefined,

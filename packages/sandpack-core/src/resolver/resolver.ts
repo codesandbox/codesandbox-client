@@ -197,7 +197,7 @@ function* loadPackageJSON(
   for (const directory of directories) {
     const packageFilePath = pathUtils.join(directory, 'package.json');
     let packageContent = opts.packageCache.get(packageFilePath);
-    if (!opts.packageCache.has(packageFilePath)) {
+    if (packageContent === undefined) {
       try {
         packageContent = _processPackageJSON(
           JSON.parse(yield* opts.readFile(packageFilePath)),
