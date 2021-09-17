@@ -1043,12 +1043,12 @@ export default class Manager implements IEvaluator {
     query: string = '',
     ignoredExtensions: Array<string> = this.preset.ignoredExtensions
   ): Promise<TranspiledModule> {
-    return fetchModule(
-      path,
-      currentTModule,
-      this,
-      ignoredExtensions
-    ).then(module => this.getTranspiledModule(module, query));
+    return fetchModule(path, currentTModule, this, ignoredExtensions).then(
+      module => {
+        this.resetResolverCache();
+        return this.getTranspiledModule(module, query);
+      }
+    );
   }
 
   updateModule(m: Module) {
