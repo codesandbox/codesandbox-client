@@ -6,16 +6,17 @@
 import hash from 'hash-sum';
 
 import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
+import type { LoaderContext } from 'sandpack-core/lib/transpiled-module';
+
+// @ts-ignore
 import addStylesClientRaw from '!raw-loader!./addStylesClient';
+// @ts-ignore
 import listToStylesRaw from '!raw-loader!./listToStyles';
 
 const addStylesClientPath = '/node_modules/vue-style-loader/addStylesClient.js';
 const listToStylesPath = '/node_modules/vue-style-loader/listToStyles.js';
 
-export default async function (content: string, loaderContext) {
-  const isServer = false;
-  const isProduction = false;
-
+export default async function (content: string, loaderContext: LoaderContext) {
   loaderContext.emitModule(
     addStylesClientPath,
     addStylesClientRaw,
@@ -38,10 +39,10 @@ export default async function (content: string, loaderContext) {
       loaderContext.path
   );
 
-  const id = JSON.stringify(hash(request));
   await loaderContext.addDependency(JSON.parse(request));
 
-  const shared = [
+  const id = JSON.stringify(hash(request));
+  const code = [
     '// style-loader: Adds some css to the DOM by adding a <style> tag',
     '',
     '// load the styles',
@@ -49,39 +50,23 @@ export default async function (content: string, loaderContext) {
     // content list format is [id, css, media, sourceMap]
     "if(typeof content === 'string') content = [[module.id, content, '']];",
     'if(content.locals) module.exports = content.locals;',
-  ];
+    '',
+    '// add the styles to the DOM',
+    `var update = require("${addStylesClientPath}")(${id}, content, false);`,
+    '// Hot Module Replacement',
+    'if(module.hot) {',
+    ' // When the styles change, update the <style> tags',
+    ' if(!content.locals) {',
+    `   module.hot.accept(${request}, function() {`,
+    `     var newContent = require(${request});`,
+    "     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];",
+    '     update(newContent);',
+    '   });',
+    ' }',
+    ' // When the module is disposed, remove the <style> tags',
+    ' module.hot.dispose(function() { update(); });',
+    '}',
+  ].join('\n');
 
-  if (!isServer) {
-    // on the client: dynamic inject + hot-reload
-    let code = [
-      '// add the styles to the DOM',
-      'var update = require("' +
-        addStylesClientPath +
-        '")(' +
-        id +
-        ', content, ' +
-        isProduction +
-        ');',
-    ];
-    if (!isProduction) {
-      code = code.concat([
-        '// Hot Module Replacement',
-        'if(module.hot) {',
-        ' // When the styles change, update the <style> tags',
-        ' if(!content.locals) {',
-        '   module.hot.accept(' + request + ', function() {',
-        '     var newContent = require(' + request + ');',
-        "     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];",
-        '     update(newContent);',
-        '   });',
-        ' }',
-        ' // When the module is disposed, remove the <style> tags',
-        ' module.hot.dispose(function() { update(); });',
-        '}',
-      ]);
-    }
-    return shared.concat(code).join('\n');
-  }
-
-  return undefined;
+  return code;
 }

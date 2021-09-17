@@ -264,8 +264,12 @@ export const modalClosed = ({ state }: Context) => {
   state.currentModal = null;
 };
 
-export const signInClicked = ({ state }: Context) => {
+export const signInClicked = (
+  { state }: Context,
+  props: { onCancel: () => void | null } | null
+) => {
   state.signInModalOpen = true;
+  state.cancelOnLogin = props?.onCancel ?? null;
 };
 
 export const signInWithRedirectClicked = (
@@ -277,6 +281,9 @@ export const signInWithRedirectClicked = (
 };
 
 export const toggleSignInModal = ({ state }: Context) => {
+  if (state.signInModalOpen) {
+    state.cancelOnLogin = null;
+  }
   state.signInModalOpen = !state.signInModalOpen;
 };
 
@@ -294,6 +301,7 @@ export const signInButtonClicked = async (
       useExtraScopes: false,
     });
     state.signInModalOpen = false;
+    state.cancelOnLogin = null;
     return;
   }
   await actions.internal.signIn({
@@ -301,6 +309,7 @@ export const signInButtonClicked = async (
     provider,
   });
   state.signInModalOpen = false;
+  state.cancelOnLogin = null;
 };
 
 export const addNotification = (
@@ -403,6 +412,7 @@ export const signOutClicked = async ({ state, effects, actions }: Context) => {
     'signedInDev=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   state.hasLogIn = false;
   state.user = null;
+  state.sandboxesLimits = null;
   effects.browser.reload();
 };
 
@@ -606,4 +616,10 @@ export const setLoadingAuth = async (
   provider: 'google' | 'github'
 ) => {
   state.loadingAuth[provider] = !state.loadingAuth[provider];
+};
+
+export const getSandboxesLimits = async ({ effects, state }: Context) => {
+  const limits = await effects.api.sandboxesLimits();
+
+  state.sandboxesLimits = limits;
 };

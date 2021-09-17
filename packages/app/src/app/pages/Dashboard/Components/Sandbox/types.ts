@@ -5,7 +5,7 @@ export interface SandboxItemComponentProps {
   autoFork?: boolean;
   sandbox: DashboardSandbox['sandbox'] | DashboardTemplate['sandbox'];
   sandboxTitle: string;
-  sandboxLocation: string;
+  sandboxLocation?: string;
   lastUpdated: string;
   viewCount: number | string;
   TemplateIcon: React.FC<{

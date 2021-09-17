@@ -243,10 +243,10 @@ export default class Manager implements IEvaluator {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console
       console.log(this);
-    }
 
-    // Initialize benchmark logic
-    getGlobal().Benchmark = generateBenchmarkInterface(this);
+      // Initialize benchmark logic
+      getGlobal().Benchmark = generateBenchmarkInterface(this);
+    }
 
     BrowserFS.configure(
       {
@@ -1427,7 +1427,7 @@ export default class Manager implements IEvaluator {
 
   dispose() {
     if (this.preset) {
-      this.preset.transpilers.forEach(t => {
+      this.preset.getTranspilers().forEach(t => {
         if (t.dispose) {
           t.dispose();
         }
@@ -1465,11 +1465,13 @@ export default class Manager implements IEvaluator {
     const info: TranspilerContext = {};
 
     const data = await Promise.all(
-      Array.from(this.preset.transpilers).map(t =>
-        t
-          .getTranspilerContext(this)
-          .then(context => ({ name: t.name, data: context }))
-      )
+      this.preset
+        .getTranspilers()
+        .map(t =>
+          t
+            .getTranspilerContext(this)
+            .then(context => ({ name: t.name, data: context }))
+        )
     );
 
     data.forEach(t => {

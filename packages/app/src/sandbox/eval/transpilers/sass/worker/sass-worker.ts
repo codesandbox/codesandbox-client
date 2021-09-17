@@ -72,7 +72,7 @@ async function compileSass(opts: ISassCompileOptions) {
   const importer = async (
     url,
     prev
-  ): Promise<{ file: string; contents: string }> => {
+  ): Promise<{ file: string; contents: string; isIndentedSyntax: boolean }> => {
     try {
       const previous = prev === 'stdin' ? path : prev;
 
@@ -99,7 +99,11 @@ async function compileSass(opts: ISassCompileOptions) {
       });
 
       const contents = await readFile(foundPath);
-      return { file: foundPath, contents };
+      return {
+        file: foundPath,
+        contents,
+        isIndentedSyntax: foundPath.endsWith('sass'),
+      };
     } catch (err) {
       err.message = `Could not resolve ${url}: ${err.message}`;
       throw err;
