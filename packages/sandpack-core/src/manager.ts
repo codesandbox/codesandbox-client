@@ -12,7 +12,7 @@ import { endMeasure, now } from '@codesandbox/common/lib/utils/metrics';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
-import { resolveAsync, resolveSync } from './resolver/resolver';
+import { PackageCache, resolveAsync, resolveSync } from './resolver/resolver';
 import { generateBenchmarkInterface } from './utils/benchmark';
 import { Module } from './types/module';
 import {
@@ -202,6 +202,8 @@ export default class Manager implements IEvaluator {
 
   esmodules: Map<string, Promise<IRemoteModuleResult>>;
 
+  resolverPackageCache: PackageCache;
+
   constructor(
     id: string | null | undefined,
     preset: Preset,
@@ -224,6 +226,7 @@ export default class Manager implements IEvaluator {
     this.stage = 'transpilation';
     this.version = options.versionIdentifier;
     this.esmodules = new Map();
+    this.resolverPackageCache = new Map();
 
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
@@ -276,6 +279,12 @@ export default class Manager implements IEvaluator {
 
   prependNpmProtocolDefinition(protocol: ProtocolDefinition) {
     prependToContributedProtocols([protocol]);
+  }
+
+  // Call this whenever the file structure or modules change, so before each compilation...
+  resetResolverCache() {
+    this.cachedPaths = {};
+    this.resolverPackageCache = new Map();
   }
 
   async evaluate(path: string, baseTModule?: TranspiledModule): Promise<any> {
@@ -558,8 +567,8 @@ export default class Manager implements IEvaluator {
   }
 
   removeModule(module: Module) {
-    // Reset all cached paths because file structure changed
-    this.cachedPaths = {};
+    // File structure changed, reset resolver cache
+    this.resetResolverCache();
 
     const existingModule = this.transpiledModules[module.path];
 
@@ -822,6 +831,7 @@ export default class Manager implements IEvaluator {
           isFile: this.isFile,
           readFile: this.readFile,
           moduleDirectories: this.getModuleDirectories(),
+          packageCache: this.resolverPackageCache,
         });
 
         endMeasure(measureKey, { silent: true, lastTime: measureStartTime });
@@ -966,6 +976,7 @@ export default class Manager implements IEvaluator {
           isFile: this.isFile,
           readFile: this.readFile,
           moduleDirectories: this.getModuleDirectories(),
+          packageCache: this.resolverPackageCache,
         });
         endMeasure(measureKey, { silent: true, lastTime: measureStartTime });
 
@@ -1191,17 +1202,16 @@ export default class Manager implements IEvaluator {
     const addedModules: Array<Module> = [];
     const updatedModules: Array<Module> = [];
 
+    // File structure likely changed, reset resolver cache
+    this.resetResolverCache();
+
     Object.keys(modules).forEach(k => {
       const module: Module = modules[k];
       const mirrorModule = this.transpiledModules[k];
 
       if (!mirrorModule) {
-        // File structure changed, reset cached paths
-        this.cachedPaths = {};
         addedModules.push(module);
       } else if (mirrorModule.module.code !== module.code) {
-        // File structure changed, reset cached paths
-        this.cachedPaths = {};
         updatedModules.push(module);
       }
     });

@@ -8785,7 +8785,7 @@ browser-process-hrtime@^1.0.0:
   resolved "https://registry.yarnpkg.com/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz#3c9b4b7d782c8121e56f10106d84c0d0ffc94626"
   integrity sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==
 
-browser-resolve@CompuIves/node-browser-resolve, browser-resolve@^1.11.3:
+browser-resolve@^1.11.3:
   version "1.11.5"
   resolved "https://codeload.github.com/CompuIves/node-browser-resolve/tar.gz/0da48af3db28326db85de9aece5c72b9477da5f3"
   dependencies:
