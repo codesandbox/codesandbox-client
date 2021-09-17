@@ -22,6 +22,7 @@
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@codesandbox/common": "^1.0.8",
+    "browser-resolve": "CompuIves/node-browser-resolve",
     "codesandbox-api": "0.0.32",
     "fs-extra": "^9.1.0",
     "gensync": "^1.0.0-beta.2",

@@ -2,13 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import gensync from 'gensync';
 
-import {
-  resolveSync,
-  normalizeModuleSpecifier,
-  _processPackageJSON,
-  getParentDirectories,
-} from './resolver';
-import { ModuleNotFoundError } from './errors/ModuleNotFound';
+import { resolveSync, normalizeModuleSpecifier } from './resolver';
 
 const FIXTURE_PATH = path.join(__dirname, 'fixture');
 
@@ -33,7 +27,7 @@ const readFiles = (
   return files;
 };
 
-describe('resolve', () => {
+describe('resolver', () => {
   const files: Map<string, string> = readFiles(
     FIXTURE_PATH,
     FIXTURE_PATH,
@@ -101,19 +95,6 @@ describe('resolve', () => {
       });
       expect(resolved).toBe('/nested/index.js');
     });
-
-    it('should throw a module not found error if not found', () => {
-      expect(() => {
-        resolveSync('/nestedeeeee', {
-          filename: '/nested/test.js',
-          extensions: ['.ts', '.tsx', '.js', '.jsx'],
-          isFile,
-          readFile,
-        });
-      }).toThrowError(
-        new ModuleNotFoundError('/nestedeeeee', '/nested/test.js')
-      );
-    });
   });
 
   describe('node modules', () => {
@@ -135,16 +116,6 @@ describe('resolve', () => {
         readFile,
       });
       expect(resolved).toBe('/node_modules/package-main/main.js');
-    });
-
-    it('should be able to handle packages with nested package.json files, this is kinda invalid but whatever', () => {
-      const resolved = resolveSync('styled-components/macro', {
-        filename: '/foo.js',
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        isFile,
-        readFile,
-      });
-      expect(resolved).toBe('/node_modules/styled-components/dist/macro.js');
     });
 
     it('should resolve a node_modules package.module', () => {
@@ -217,19 +188,6 @@ describe('resolve', () => {
         readFile,
       });
       expect(resolved).toBe('/node_modules/@scope/pkg/foo/bar.js');
-    });
-
-    it('should throw a module not found error if not found', () => {
-      expect(() => {
-        resolveSync('unknown-module/test.js', {
-          filename: '/nested/test.js',
-          extensions: ['.ts', '.tsx', '.js', '.jsx'],
-          isFile,
-          readFile,
-        });
-      }).toThrowError(
-        new ModuleNotFoundError('unknown-module/test.js', '/nested/test.js')
-      );
     });
   });
 
@@ -424,33 +382,5 @@ describe('resolve', () => {
       expect(normalizeModuleSpecifier('./foo.js')).toBe('./foo.js');
       expect(normalizeModuleSpecifier('react//test')).toBe('react/test');
     });
-  });
-});
-
-describe('process package.json', () => {
-  it('Should correctly process pkg.exports from @babel/runtime', () => {
-    const content = JSON.parse(
-      fs.readFileSync(
-        path.join(FIXTURE_PATH, 'node_modules/@babel/runtime/package.json'),
-        'utf-8'
-      )
-    );
-    const processedPkg = _processPackageJSON(
-      content,
-      '/node_modules/@babel/runtime'
-    );
-    expect(processedPkg).toMatchSnapshot();
-  });
-});
-
-describe('get parent directories', () => {
-  it('Should return a list of all parent directories', () => {
-    const directories = getParentDirectories('/src/index');
-    expect(directories).toEqual(['/src/index', '/src', '/']);
-  });
-
-  it('Should return a list of all parent directories above the rootDir', () => {
-    const directories = getParentDirectories('/src/index', '/src');
-    expect(directories).toEqual(['/src/index', '/src']);
   });
 });
