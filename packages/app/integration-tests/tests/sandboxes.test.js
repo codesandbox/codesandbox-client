@@ -44,6 +44,8 @@ const SANDBOXES = [
   'scss-mixins',
   'vue-2-css-module-vuzkt',
   'scss-bulma-ikgrv',
+  // 'gpgpu-curl-noise-yq6y8', // leva (based on stitches)
+  'vx55c', // react stitches
 ];
 
 // Logic for parallelizing the tests
