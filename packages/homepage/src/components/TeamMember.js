@@ -141,7 +141,7 @@ const people = [
     name: 'James Amey',
     pic: james,
     color: '#6200ff',
-    team: 'Support'
+    team: 'Support',
   }
 ];
 
