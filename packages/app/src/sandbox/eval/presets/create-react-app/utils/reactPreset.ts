@@ -9,6 +9,7 @@ import lessTranspiler from '../../../transpilers/less';
 import postcssTranspiler from '../../../transpilers/postcss';
 import svgrTranspiler from '../../../transpilers/svgr';
 import reactSvgTranspiler from '../../../transpilers/react-svg';
+import rawTranspiler from '../../../transpilers/raw';
 
 import {
   hasRefresh,
@@ -160,6 +161,10 @@ export const reactPreset = babelConfig => {
 
           preset.registerTranspiler(module => /\.json$/.test(module.path), [
             { transpiler: jsonTranspiler },
+          ]);
+
+          preset.registerTranspiler(module => /\.html$/.test(module.path), [
+            { transpiler: rawTranspiler },
           ]);
 
           preset.registerTranspiler(() => true, [
