@@ -2,7 +2,7 @@
 banner: ./images/banner.png
 slug: codesandbox-fighting-with-phishing
 authors: ['Andras Bacsai']
-photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
+photo: https://avatars.githubusercontent.com/u/5845193?v=4
 title: Fishing phishers 🎣
 description: Fighting against scams and phishing sites is always a never-ending game...
 date: 2021-09-28
