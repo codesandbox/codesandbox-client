@@ -592,4 +592,16 @@ export function test3() {
     const result = convertEsModule(code).code;
     expect(result).toMatchSnapshot();
   });
+
+  it('can handle mix of wildcard and specific imports', () => {
+    const code = `
+    import * as React from 'react';
+    import { useMemo, useEffect, useState, forwardRef, useRef } from 'react';
+
+    useMemo(something);
+    `;
+
+    const result = convertEsModule(code).code;
+    expect(result).toMatchSnapshot();
+  });
 });

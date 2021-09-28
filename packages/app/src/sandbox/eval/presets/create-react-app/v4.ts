@@ -30,7 +30,7 @@ const BABEL7_CONFIG = {
         {
           // This is incompatible with the official target
           // but sandpack does not even run on ie9 so no point in doing more transforms
-          targets: '>1%, not ie 11',
+          targets: '>1%, not ie 11, not ie_mob 11',
           // Users cannot override this behavior because this Babel
           // configuration is highly tuned for ES5 support
           ignoreBrowserslistConfig: true,
@@ -39,6 +39,8 @@ const BABEL7_CONFIG = {
           useBuiltIns: false,
           // Do not transform modules to CJS
           modules: false,
+          // loose is enabled for proposal-class-properties so it should be enabled here as well
+          loose: true,
         },
       ],
       [

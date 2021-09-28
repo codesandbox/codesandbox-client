@@ -254,6 +254,15 @@ var $csb___b = require(\\"./b\\");
 "
 `;
 
+exports[`convert-esmodule can handle mix of wildcard and specific imports 1`] = `
+"\\"use strict\\";
+var $csb__react = require(\\"react\\");
+var React = $csb__react;
+var $csb__react_ = require(\\"react\\");
+(0, $csb__react_.useMemo)(something);
+"
+`;
+
 exports[`convert-esmodule changes default imports inline 1`] = `
 "\\"use strict\\";
 var $csb___rgb = require(\\"./rgb\\");
