@@ -20,6 +20,7 @@ import jasper from '../assets/images/people/jasper.jpg';
 import joana from '../assets/images/people/joana.jpg';
 import marco from '../assets/images/people/marco.jpg';
 import roman from '../assets/images/people/roman.jpg';
+import james from '../assets/images/people/james.jpg';
 
 const people = [
   {
@@ -135,6 +136,12 @@ const people = [
     pic: roman,
     color: '#B567EB',
     team: 'Engineering'
+  },
+  {
+    name: 'James Amey',
+    pic: james,
+    color: '#6200ff',
+    team: 'Support',
   }
 ];
 
