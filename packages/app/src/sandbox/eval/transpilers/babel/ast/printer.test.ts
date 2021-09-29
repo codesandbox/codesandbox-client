@@ -13,6 +13,24 @@ describe('printer issues', () => {
     expect(processCode(code)).toMatchSnapshot();
   });
 
+  it('understands optional expression', () => {
+    const code = `
+      const a = {};
+      const b = a?.c;
+      `;
+
+    expect(processCode(code)).toMatchSnapshot();
+  });
+
+  it('understands optional expression in arrow func', () => {
+    const code = `
+      const a = {};
+      const b = () => a?.c;
+      `;
+
+    expect(processCode(code)).toMatchSnapshot();
+  });
+
   it('can convert -(--i)', () => {
     const code = `a = -(--i)`;
     expect(processCode(code)).toBe('"use strict";\na = - --i;\n');

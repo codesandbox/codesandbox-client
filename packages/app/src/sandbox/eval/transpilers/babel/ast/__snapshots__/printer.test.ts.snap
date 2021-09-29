@@ -5,3 +5,17 @@ exports[`printer issues can convert + + 1`] = `
 c = (10.0, + + 15);
 "
 `;
+
+exports[`printer issues understands optional expression 1`] = `
+"\\"use strict\\";
+const a = {};
+const b = a?.c;
+"
+`;
+
+exports[`printer issues understands optional expression in arrow func 1`] = `
+"\\"use strict\\";
+const a = {};
+const b = () => a?.c;
+"
+`;

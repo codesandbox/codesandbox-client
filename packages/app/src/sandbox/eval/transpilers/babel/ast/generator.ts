@@ -36,12 +36,64 @@ const EXPRESSIONS_PRECEDENCE = {
   RestElement: 1,
 };
 
+function formatSequence(state, nodes) {
+  /*
+  Writes into `state` a sequence of `nodes`.
+  */
+  const { generator } = state;
+  state.write('(');
+  if (nodes != null && nodes.length > 0) {
+    generator[nodes[0].type](nodes[0], state);
+    const { length } = nodes;
+    for (let i = 1; i < length; i++) {
+      const param = nodes[i];
+      state.write(', ');
+      generator[param.type](param, state);
+    }
+  }
+  state.write(')');
+}
+
 /**
  * Add support for next syntax
  */
 export const customGenerator = {
   // @ts-ignore baseGenerator is deprecated, and GENERATOR is not in the types?
   ...astring.GENERATOR,
+  OptionalExpression(
+    node: meriyah.ESTree.OptionalExpression,
+    state: { write(s: string): void }
+  ) {
+    this[node.object.type](node.object, state);
+    state.write('?.');
+    this[node.chain.property!.type](node.chain.property!, state);
+  },
+  ArrowFunctionExpression(
+    node: meriyah.ESTree.ArrowFunctionExpression,
+    state: { write(s: string, c?: any): void }
+  ) {
+    state.write(node.async ? 'async ' : '', node);
+    const { params } = node;
+    if (params != null) {
+      // Omit parenthesis if only one named parameter
+      if (params.length === 1 && params[0].type[0] === 'I') {
+        // If params[0].type[0] starts with 'I', it can't be `ImportDeclaration` nor `IfStatement` and thus is `Identifier`
+        const id = params[0] as meriyah.ESTree.Identifier;
+        state.write(id.name, id);
+      } else {
+        formatSequence(state, node.params);
+      }
+    }
+    state.write(' => ');
+    if (node.body.type[0] === 'ObjectExpression') {
+      // Body is an object expression
+      state.write('(');
+      this.ObjectExpression(node.body, state);
+      state.write(')');
+    } else {
+      this[node.body.type](node.body, state);
+    }
+  },
   FieldDefinition(
     node: meriyah.ESTree.FieldDefinition,
     state: { write(s: string): void }
