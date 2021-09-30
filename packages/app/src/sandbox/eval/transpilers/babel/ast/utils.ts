@@ -1,5 +1,5 @@
 import * as meriyah from 'meriyah';
-import * as astring from 'astring';
+import { generate } from 'meriyah-printer';
 import { customGenerator } from './generator';
 
 export interface ESTreeAST {
@@ -19,7 +19,7 @@ export function parseModule(code: string): ESTreeAST {
 }
 
 export function generateCode(ast: ESTreeAST) {
-  const finalCode = astring.generate(ast.program as any, {
+  const finalCode = generate(ast.program as any, {
     generator: customGenerator,
   });
 

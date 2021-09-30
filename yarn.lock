@@ -7296,11 +7296,6 @@ astral-regex@^2.0.0:
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-2.0.0.tgz#483143c567aeed4785759c0865786dc77d7d2e31"
   integrity sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==
 
-astring@^1.7.4:
-  version "1.7.4"
-  resolved "https://registry.yarnpkg.com/astring/-/astring-1.7.4.tgz#06aa7f72ad30097210dee1ae8f7d9615cd3b57d4"
-  integrity sha512-WiVqDJV0AayUUH65FfUrbnBO4KD10854cyU49lK30+2n/lEkJDRqBKj/2fYGhZSD3uIt1H1VfW/pQtO07kR2Xg==
-
 async-each@^1.0.0, async-each@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.3.tgz#b727dbf87d7651602f06f4d4ac387f47d91b0cbf"
@@ -22031,6 +22026,11 @@ merge2@^1.2.3, merge2@^1.3.0:
 merge@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.0.tgz#7531e39d4949c281a66b8c5a6e0265e8b05894da"
+
+meriyah-printer@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/meriyah-printer/-/meriyah-printer-1.0.1.tgz#c4d2adb1356ccedd57bd5e96dc25db015622a580"
+  integrity sha512-8Ug1c5P56nClM44XykYG67F9U5lAIDy8Mh8uG/T1qQSzcSArwEgsocClvBlsIeMB4jfTmD+WedFim7SaRREuVw==
 
 meriyah@^1.9.7:
   version "1.9.7"
