@@ -10,7 +10,7 @@ export const BetaRepositoriesPage = () => {
   const actions = useActions();
   const {
     activeTeam,
-    dashboard: { sandboxes },
+    dashboard: { sandboxes, viewMode },
   } = useAppState();
 
   React.useEffect(() => {
@@ -18,13 +18,13 @@ export const BetaRepositoriesPage = () => {
   }, [actions.dashboard]);
 
   const items: DashboardGridItem[] = sandboxes.BETA
-    ? [
-        { type: 'beta-new-repo' },
+    ? ([
+        viewMode === 'grid' ? { type: 'beta-new-repo' } : null,
         ...sandboxes.BETA.map(sandbox => ({
           type: 'beta-repo' as const,
           sandbox,
         })),
-      ]
+      ].filter(Boolean) as DashboardGridItem[])
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const pageType: PageTypes = 'repos';
@@ -38,6 +38,7 @@ export const BetaRepositoriesPage = () => {
         activeTeam={activeTeam}
         repos
         path="Beta"
+        showViewOptions
         showFilters={false}
         showSortOptions={false}
       />
