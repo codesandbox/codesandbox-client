@@ -7,12 +7,7 @@ import { CardIcon } from '../Repo/Icons';
 const getFullGitHubUrl = (owner: string, repo: string, branch: string) =>
   `https://beta.codesandbox.stream/github/${owner}/${repo}/${branch}`;
 
-export const RepoBetaCard = ({
-  sandbox,
-  // interactions
-  isScrolling,
-  ...props
-}) => {
+export const RepoBetaCard = ({ sandbox, ...props }) => {
   const { owner, repo, branch } = sandbox.gitv2;
 
   return (
