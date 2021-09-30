@@ -4,12 +4,6 @@ import * as meriyah from 'meriyah';
 import * as escope from 'escope';
 import { walk } from 'estree-walker';
 import { flatten } from 'lodash-es';
-import {
-  AssignmentExpression,
-  Identifier,
-  Property,
-  Statement,
-} from 'meriyah/dist/estree';
 import { Syntax as n } from './syntax';
 import {
   generateRequireStatement,
@@ -54,7 +48,10 @@ export function convertEsModule(ast: ESTreeAST): void {
   let i = 0;
   let importOffset = 0;
 
-  function addNodeInImportSpace(oldPosition: number, node: Statement) {
+  function addNodeInImportSpace(
+    oldPosition: number,
+    node: meriyah.ESTree.Statement
+  ) {
     program.body.splice(oldPosition, 1);
     program.body.splice(importOffset, 0, node);
     importOffset++;
@@ -101,7 +98,8 @@ export function convertEsModule(ast: ESTreeAST): void {
           operator: '=',
         },
       };
-      let currentNode: Partial<AssignmentExpression> = totalNode.expression;
+      let currentNode: Partial<meriyah.ESTree.AssignmentExpression> =
+        totalNode.expression;
       while (exportNamesToUse.length > 0) {
         const exportName = exportNamesToUse.pop();
         currentNode.left = {
@@ -113,15 +111,17 @@ export function convertEsModule(ast: ESTreeAST): void {
           property: {
             type: n.Identifier,
             name: exportName,
-          } as Identifier,
+          } as meriyah.ESTree.Identifier,
         };
         if (exportNamesToUse.length) {
           // @ts-expect-error This will be filled in in the next loop
           currentNode.right = {
             type: n.AssignmentExpression,
             operator: '=',
-          } as Partial<AssignmentExpression>;
-          currentNode = currentNode.right as Partial<AssignmentExpression>;
+          } as Partial<meriyah.ESTree.AssignmentExpression>;
+          currentNode = currentNode.right as Partial<
+            meriyah.ESTree.AssignmentExpression
+          >;
         } else {
           currentNode.right = {
             type: n.UnaryExpression,
@@ -176,23 +176,47 @@ export function convertEsModule(ast: ESTreeAST): void {
     const statement = program.body[i];
 
     if (statement.type === n.ExportAllDeclaration) {
-      // export * from './test';
-      // TO:
-      // const _csb = require('./test');
-      // Object.keys(_csb).forEach(key => {
-      //   if (key === 'default' || key === '__esModule')
-      //     return;
-      //   exports[key] = _csb[key])
-      // }
+      // Handles "export * from './something';"
 
       addEsModuleSpecifier();
-      const { source } = statement;
+      const { source, exported } = statement;
       if (typeof source.value !== 'string') {
         continue;
       }
+
       const varName = getVarName(`$csb__${generateVariableName(source.value)}`);
       addNodeInImportSpace(i, generateRequireStatement(varName, source.value));
-      program.body.push(generateAllExportsIterator(varName));
+      if (exported) {
+        // export * as test from './test';
+        // TO:
+        // var $csb___test = require("./test");
+        // Object.defineProperty(exports, "test", {
+        //   enumerable: true,
+        //   configurable: true,
+        //   get: function $csbGet() {
+        //     return $csb___test;
+        //   }
+        // });
+
+        exportNames.add(exported.name);
+        program.body.push(
+          generateExportGetter(
+            { type: n.Literal, value: exported.name },
+            { type: n.Identifier, name: varName }
+          )
+        );
+      } else {
+        // export * from './test';
+        // TO:
+        // const _csb = require('./test');
+        // Object.keys(_csb).forEach(key => {
+        //   if (key === 'default' || key === '__esModule')
+        //     return;
+        //   exports[key] = _csb[key])
+        // }
+
+        program.body.push(generateAllExportsIterator(varName));
+      }
     } else if (statement.type === n.ExportNamedDeclaration) {
       // export { a } from './test';
       // TO:
@@ -264,15 +288,6 @@ export function convertEsModule(ast: ESTreeAST): void {
                       name: specifier.local.name,
                     },
                   }
-                )
-              );
-            } else if (specifier.type === n.ExportNamespaceSpecifier) {
-              program.body.splice(
-                importOffset++,
-                0,
-                generateExportGetter(
-                  { type: n.Literal, value: specifier.specifier.name },
-                  { type: n.Identifier, name: varName }
                 )
               );
             }
@@ -562,7 +577,7 @@ export function convertEsModule(ast: ESTreeAST): void {
     walk(program, {
       enter(node, parent, prop, index) {
         if (node.type === n.Property) {
-          const property = node as Property;
+          const property = node as meriyah.ESTree.Property;
           if (
             property.shorthand &&
             property.value.type !== n.AssignmentPattern // Not a default initializer

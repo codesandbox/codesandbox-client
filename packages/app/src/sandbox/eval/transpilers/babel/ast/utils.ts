@@ -11,9 +11,14 @@ export function parseModule(code: string): ESTreeAST {
   return {
     isDirty: false,
     program: meriyah.parseModule(code, {
+      module: true,
+      webcompat: true,
+      directives: false,
       next: true,
       raw: true,
       jsx: true,
+      loc: false,
+      ranges: false,
     }),
   };
 }
