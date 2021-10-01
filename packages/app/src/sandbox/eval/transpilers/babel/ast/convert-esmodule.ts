@@ -199,7 +199,9 @@ export function convertEsModule(ast: ESTreeAST): void {
         // });
 
         exportNames.add(exported.name);
-        program.body.push(
+        program.body.splice(
+          importOffset++,
+          0,
           generateExportGetter(
             { type: n.Literal, value: exported.name },
             { type: n.Identifier, name: varName }
@@ -408,15 +410,15 @@ export function convertEsModule(ast: ESTreeAST): void {
         if (statement.declaration.type === n.FunctionDeclaration) {
           // @ts-ignore
           statement.declaration.type = n.FunctionExpression;
-        } else if (statement.declaration.type === n.ClassDeclaration) {
+        } else if (statement.declaration.type === n.ClassExpression) {
           // @ts-ignore
-          statement.declaration.type = n.ClassExpression;
+          statement.declaration.type = n.ClassDeclaration;
         }
         const newDeclaration = statement.declaration as meriyah.ESTree.Expression;
 
         // Create a var with the export
         if (
-          statement.declaration.type === n.ClassExpression ||
+          statement.declaration.type === n.ClassDeclaration ||
           statement.declaration.type === n.FunctionExpression
         ) {
           if (!statement.declaration.id) {

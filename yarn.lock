@@ -22027,10 +22027,10 @@ merge@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.0.tgz#7531e39d4949c281a66b8c5a6e0265e8b05894da"
 
-meriyah-printer@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/meriyah-printer/-/meriyah-printer-1.0.2.tgz#bbc547b08151185894ca1e75b7f42d940f9a25d0"
-  integrity sha512-kVT8iyyRVP6Ev0edDLRbMwnE8prL1/HfI2vXWjWs/Cv91j0NZpSP/xjsWwy5pUcr4JptOYF7Q055XTLWeERbkA==
+meriyah-printer@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/meriyah-printer/-/meriyah-printer-1.0.3.tgz#519e61c41889309c128e33e6aa6d418022234f8f"
+  integrity sha512-26Mq3vFmhc681KZbnCld2CPM0ucIxOdXtUG+20L1jO9JcDb+iYq1AQ65Nih5IoeLc/lO0iXHR2IKSc/uJSbTKA==
 
 meriyah@^4.2.0:
   version "4.2.0"

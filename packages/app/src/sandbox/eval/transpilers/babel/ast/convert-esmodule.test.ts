@@ -580,6 +580,15 @@ export function test3() {
     expect(result).toMatchSnapshot();
   });
 
+  it('handles exporting class expressions', () => {
+    const code = `
+      export default function h() {};
+      export default class {};
+    `;
+    const result = convertEsModule(code).code;
+    expect(result).toMatchSnapshot();
+  });
+
   it('can do array exports', () => {
     const code = `
     function a() {
