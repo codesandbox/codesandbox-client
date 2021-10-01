@@ -583,7 +583,7 @@ export function test3() {
   it('handles exporting class expressions', () => {
     const code = `
       export default function h() {};
-      export default class {};
+      export default (class {});
     `;
     const result = convertEsModule(code).code;
     expect(result).toMatchSnapshot();

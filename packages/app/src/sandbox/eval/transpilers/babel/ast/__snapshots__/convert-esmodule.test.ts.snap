@@ -552,7 +552,6 @@ exports.default = h;
 ;
 class $csb__default_ {}
 exports.default = $csb__default_;
-;
 "
 `;
 
