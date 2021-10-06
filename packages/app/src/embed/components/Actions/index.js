@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
-
 
 import {
   Container,
@@ -26,26 +24,6 @@ export function GlobalActions({
   previewVisible,
   initialPath,
 }) {
-  const experimentPromise = useExperimentResult('embed-open-wording-iteration2');
-  const [openWordingB, setOpenWordingB] = useState(false);
-
-  useEffect(() => {
-    /* Wait for the API */
-    experimentPromise.then(experiment => {
-      if (experiment === ExperimentValues.A) {
-        /**
-         * A
-         */
-        setOpenWordingB(false);
-      } else if (experiment === ExperimentValues.B) {
-        /**
-         * B
-         */
-        setOpenWordingB(true);
-      }
-    });
-  }, [experimentPromise]);
-
   const smallTouchScreenButton = previewVisible ? (
     <Button onClick={openEditor}>View Source</Button>
   ) : (
@@ -101,7 +79,7 @@ export function GlobalActions({
               : `${sandboxUrl(sandbox)}?from-embed`
           }
         >
-          {openWordingB ? 'Open and Fork' : 'Open Sandbox'}
+          Open Sandbox
         </Button>
       )}
     </Container>
