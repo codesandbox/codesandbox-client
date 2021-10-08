@@ -43,9 +43,9 @@ export default function (
   const allGlobalKeys = Object.keys(allGlobals);
   const globalsCode = allGlobalKeys.length ? allGlobalKeys.join(', ') : '';
   const globalsValues = allGlobalKeys.map(k => allGlobals[k]);
+  const newCode =
+    `(function $csb$eval(` + globalsCode + `) {` + code + `\n})`;
   try {
-    const newCode =
-      `(function $csb$eval(` + globalsCode + `) {` + code + `\n})`;
     // @ts-ignore
     (0, eval)(newCode).apply(allGlobals.global, globalsValues);
 
@@ -56,6 +56,8 @@ export default function (
       error = new Error(e);
     }
     error.isEvalError = true;
+
+    console.error(error.message + '\n\n\n' + newCode);
 
     throw error;
   }

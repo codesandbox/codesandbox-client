@@ -250,6 +250,42 @@ function $_csb__interopRequireDefault(obj) {
 "
 `;
 
+exports[`convert-esmodule can handle class properties and named imports with same name 1`] = `
+"\\"use strict\\";
+exports.LocalFontSource = void 0;
+Object.defineProperty(exports, \\"__esModule\\", {
+  value: true
+});
+var $csb___fonts_js = require(\\"./fonts.js\\");
+class LocalFontSource {
+  typefaceAliases;
+
+  constructor() {
+    this.typefaceAliases = new Map();
+  }
+  test() {
+    console.log(this.typefaceAliases);
+  }
+}
+exports.LocalFontSource = LocalFontSource;
+"
+`;
+
+exports[`convert-esmodule can handle class properties and named imports with same name 2`] = `
+"\\"use strict\\";
+var $csb__react = require(\\"react\\");
+var React__default = $_csb__interopRequireDefault($csb__react);
+var VisualElementHandler = (function (_super) {
+  return VisualElementHandler;
+})(React__default.Component);
+function $_csb__interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
+}
+"
+`;
+
 exports[`convert-esmodule can handle inline comments 1`] = `
 "\\"use strict\\";
 var $csb___b = require(\\"./b\\");

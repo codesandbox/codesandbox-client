@@ -601,4 +601,39 @@ export function test3() {
     const result = convertEsModule(code).code;
     expect(result).toMatchSnapshot();
   });
+
+  it('can handle class properties and named imports with same name', () => {
+    const code = `
+    import { typefaceAliases } from "./fonts.js";
+
+    export class LocalFontSource {
+      typefaceAliases;
+      
+      constructor() {
+        this.typefaceAliases = new Map();
+      }
+      
+      test() {
+        console.log(this.typefaceAliases);
+      }
+    }
+    `;
+
+    const result = convertEsModule(code).code;
+    expect(result).toMatchSnapshot();
+  });
+
+  it('can handle class properties and named imports with same name', () => {
+    const code = `
+    import React__default from "react";
+
+    var VisualElementHandler = (function (_super) {
+      return VisualElementHandler;
+    })(React__default.Component);
+    `;
+
+    const result = convertEsModule(code).code;
+    console.log(result);
+    expect(result).toMatchSnapshot();
+  });
 });

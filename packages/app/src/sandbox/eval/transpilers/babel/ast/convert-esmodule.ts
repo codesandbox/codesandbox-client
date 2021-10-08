@@ -594,7 +594,10 @@ export function convertEsModule(ast: ESTreeAST): void {
     });
 
     // A second pass where we rename all references to imports that were marked before.
-    const scopeManager = escope.analyze(program, { ecmaVersion: 6 });
+    const scopeManager = escope.analyze(program, {
+      ecmaVersion: 6,
+      sourceType: 'module',
+    });
 
     scopeManager.acquire(program);
     scopeManager.scopes.forEach(scope => {
@@ -607,7 +610,8 @@ export function convertEsModule(ast: ESTreeAST): void {
             ref.identifier.name
           ) &&
           ref.resolved === null &&
-          !ref.writeExpr
+          !ref.writeExpr &&
+          ref.from.type !== 'class'
         ) {
           ref.identifier.name = `(0, ${varsToRename[ref.identifier.name].join(
             '.'
