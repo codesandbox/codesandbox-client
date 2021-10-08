@@ -5,7 +5,7 @@ authors: ['Andras Bacsai']
 photo: https://avatars.githubusercontent.com/u/5845193?v=4
 title: Fishing phishers
 description: Fighting against scams and phishing sites is always a never-ending game...
-date: 2021-09-28
+date: 2021-10-08
 ---
 
 Fighting against scams and phishing sites is always a never-ending game. You won't wake up on a sunny summer day and realize they just disappeared.
