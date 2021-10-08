@@ -632,6 +632,8 @@ export function test3() {
     })(React__default.Component);
     `;
 
+    // Should not transpile React__default.Component to (0, React__default.Component)
+
     const result = convertEsModule(code).code;
     console.log(result);
     expect(result).toMatchSnapshot();
