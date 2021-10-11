@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { Text } from '@codesandbox/components';
 
-const Wrapper = styled.div`
+const Container = styled.div<{ active: boolean }>`
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.24), 0px 4px 4px rgba(0, 0, 0, 0.12);
@@ -11,12 +11,27 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  min-width: calc(100vw / 3);
-  margin-right: 1rem;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
   position: relative;
+
+  transition: opacity 0.3s ease;
+  opacity: ${({ active }) => (active ? 1 : 0.2)};
+
+  /* Slider */
+  scroll-snap-align: center;
+  min-width: calc(100vw / 2.8);
+
+  @media screen and (min-width: 1200px) {
+    min-width: calc(100vw / 3.5);
+  }
+
+  @media screen and (min-width: 1700px) {
+    min-width: calc(100vw / 4.8);
+  }
 `;
 
-const ImageWrap = styled.div`
+const ImageContainer = styled.div`
   flex: 1;
 
   img {
@@ -38,14 +53,20 @@ const Content = styled.div`
   bottom: 0;
 `;
 
-export const Card: React.FC<Record<
-  'title' | 'tagline' | 'img' | 'bgColor',
-  string
->> = ({ title, tagline, img, bgColor, ...props }) => (
-  <Wrapper {...props}>
-    <ImageWrap style={{ backgroundColor: bgColor }}>
+export const Card = forwardRef<
+  HTMLDivElement,
+  {
+    title: string;
+    tagline: string;
+    img: string;
+    bgColor: string;
+    active: boolean;
+  }
+>(({ title, tagline, img, bgColor, active, ...props }, ref) => (
+  <Container active={active} ref={ref} {...props}>
+    <ImageContainer style={{ backgroundColor: bgColor }}>
       <img src={img} alt={title} />
-    </ImageWrap>
+    </ImageContainer>
 
     <Content>
       <Text
@@ -61,5 +82,5 @@ export const Card: React.FC<Record<
         {tagline}
       </Text>
     </Content>
-  </Wrapper>
-);
+  </Container>
+));

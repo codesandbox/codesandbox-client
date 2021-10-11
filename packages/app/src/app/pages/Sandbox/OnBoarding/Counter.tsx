@@ -15,7 +15,7 @@ const Item = styled.div`
   height: 2px;
 `;
 
-export const Navigation: React.FC<{ amount: number }> = ({ amount }) => {
+export const Counter: React.FC<{ amount: number }> = ({ amount }) => {
   return (
     <Wrapper>
       {new Array(amount).fill(' ').map((item, index) => {

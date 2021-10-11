@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { ThemeProvider, Stack } from '@codesandbox/components';
 
 import data from './data';
 import { Card } from './Card';
-import { Navigation } from './Navigation';
+import { Counter } from './Counter';
 
 const Background = styled.div`
   position: fixed;
@@ -21,8 +21,20 @@ const Slider = styled.div`
 
   box-sizing: border-box;
   height: 100%;
+  overflow: auto;
+
   padding-top: 3.75rem;
   padding-bottom: 10rem;
+  margin-right: -2rem;
+  margin-left: -2rem;
+
+  /* Sliding */
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+
+  /* Internal margin */
+  padding-left: calc(50vw + 0.5rem);
+  padding-right: calc(50vw + 0.5rem);
 `;
 
 const CloseButton = styled.button`
@@ -42,11 +54,26 @@ const CloseButton = styled.button`
 `;
 
 const OnBoarding = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const nodeItems = useRef([]);
+
+  const handleSliderScroll = () => {
+    const activeIndex = nodeItems.current.findIndex(element => {
+      const { left, width } = element.getBoundingClientRect();
+
+      return left + width > window.innerWidth / 2;
+    });
+
+    if (activeIndex !== undefined) {
+      setCurrentIndex(activeIndex);
+    }
+  };
+
   return (
     <ThemeProvider>
       <Background>
         <Stack>
-          <Navigation amount={data.length} />
+          <Counter amount={data.length} />
           <CloseButton type="button">
             <svg width={16} height={16} viewBox="0 0 16 16" fill="none">
               <path
@@ -57,9 +84,13 @@ const OnBoarding = () => {
           </CloseButton>
         </Stack>
 
-        <Slider>
-          {data.map(item => (
+        <Slider onScroll={handleSliderScroll}>
+          {data.map((item, index) => (
             <Card
+              ref={node => {
+                nodeItems.current[index] = node;
+              }}
+              active={currentIndex === index}
               key={item.title}
               bgColor={item.bgColor}
               img={item.img}
