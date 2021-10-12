@@ -20,15 +20,16 @@ const Container = styled.div<{ active: boolean }>`
 
   /* Slider */
   scroll-snap-align: center;
-  min-width: calc(100vw / 2.8);
+  min-width: 400px;
+  /* min-width: calc(100vw / 2.8); */
 
-  @media screen and (min-width: 1200px) {
+  /* @media screen and (min-width: 1200px) {
     min-width: calc(100vw / 3.5);
   }
 
   @media screen and (min-width: 1700px) {
     min-width: calc(100vw / 4.8);
-  }
+  } */
 `;
 
 const ImageContainer = styled.div`

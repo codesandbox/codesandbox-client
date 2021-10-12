@@ -8,6 +8,7 @@ import data from './data';
 import { Card } from './Card';
 import { Counter } from './Counter';
 import { Navigation } from './Navigation';
+import { AUTO_RUN_TIMER } from './config';
 
 const Background = styled.div`
   position: fixed;
@@ -77,10 +78,9 @@ const OnBoarding = () => {
     if (currentIndex - 1 === 0) {
       scrollViewRef.current.scrollTo(0, 0);
     } else {
-      nodeItems.current[currentIndex - 1].scrollIntoView({
-        behavior: 'smooth',
-        inline: 'center',
-      });
+      const element = nodeItems.current[currentIndex - 1];
+      const currentScroll = scrollViewRef.current.scrollLeft;
+      scrollViewRef.current.scrollTo(currentScroll - element.offsetWidth, 0);
     }
   }, [currentIndex]);
 
@@ -90,31 +90,46 @@ const OnBoarding = () => {
     if (currentIndex + 1 === listLength) {
       scrollViewRef.current.scrollTo(scrollViewRef.current.scrollWidth, 0);
     } else {
-      nodeItems.current[currentIndex + 1].scrollIntoView({
-        behavior: 'smooth',
-        inline: 'center',
-      });
+      const element = nodeItems.current[currentIndex + 1];
+      const currentScroll = scrollViewRef.current.scrollLeft;
+      scrollViewRef.current.scrollTo(currentScroll + element.offsetWidth, 0);
     }
   }, [currentIndex, listLength]);
 
-  useEffect(() => {
-    const navigate = event => {
-      if (event.key === 'ArrowRight') {
-        onNext();
-      } else if (event.key === 'ArrowLeft') {
-        onPrev();
-      }
-    };
+  useEffect(
+    function keyboardNavigation() {
+      const navigate = event => {
+        if (event.key === 'ArrowRight') {
+          onNext();
+        } else if (event.key === 'ArrowLeft') {
+          onPrev();
+        }
+      };
 
-    document.addEventListener('keydown', navigate, false);
-    return () => document.removeEventListener('keydown', navigate, false);
-  }, [onNext, onPrev]);
+      document.addEventListener('keydown', navigate, false);
+      return () => document.removeEventListener('keydown', navigate, false);
+    },
+    [onNext, onPrev]
+  );
+
+  useEffect(
+    function autoRun() {
+      const timer = setTimeout(() => {
+        onNext();
+      }, AUTO_RUN_TIMER);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    },
+    [currentIndex, onNext]
+  );
 
   return (
     <ThemeProvider>
       <Background>
         <Stack css={{ padding: '1rem 2rem' }}>
-          <Counter amount={listLength} />
+          <Counter amount={listLength} currentIndex={currentIndex} />
           <CloseButton type="button">
             <svg width={16} height={16} viewBox="0 0 16 16" fill="none">
               <path
