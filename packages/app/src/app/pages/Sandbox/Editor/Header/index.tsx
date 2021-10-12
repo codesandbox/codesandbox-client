@@ -25,30 +25,28 @@ export const Header = () => {
   };
 
   return (
-    <>
-      <Stack
-        as="header"
-        justify="space-between"
-        align="center"
-        paddingX={2}
-        css={css({
-          boxSizing: 'border-box',
-          fontFamily: 'Inter, sans-serif',
-          height: 12,
-          backgroundColor: 'titleBar.activeBackground',
-          color: 'titleBar.activeForeground',
-          borderBottom: '1px solid',
-          borderColor: 'titleBar.border',
-        })}
-      >
-        <Stack align="center">
-          <AppMenu />
-          {renderWorkspace()}
-        </Stack>
-
-        {editor.currentSandbox && !isAuthenticating ? <SandboxName /> : null}
-        {editor.currentSandbox && !isAuthenticating ? <Actions /> : null}
+    <Stack
+      as="header"
+      justify="space-between"
+      align="center"
+      paddingX={2}
+      css={css({
+        boxSizing: 'border-box',
+        fontFamily: 'Inter, sans-serif',
+        height: 12,
+        backgroundColor: 'titleBar.activeBackground',
+        color: 'titleBar.activeForeground',
+        borderBottom: '1px solid',
+        borderColor: 'titleBar.border',
+      })}
+    >
+      <Stack align="center">
+        <AppMenu />
+        {renderWorkspace()}
       </Stack>
-    </>
+
+      {editor.currentSandbox && !isAuthenticating ? <SandboxName /> : null}
+      {editor.currentSandbox && !isAuthenticating ? <Actions /> : null}
+    </Stack>
   );
 };

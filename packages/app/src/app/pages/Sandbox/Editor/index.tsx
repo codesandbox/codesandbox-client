@@ -54,7 +54,6 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     customVSCodeTheme: null,
   });
 
-
   useEffect(() => {
     let timeout;
     const dispose = reaction(

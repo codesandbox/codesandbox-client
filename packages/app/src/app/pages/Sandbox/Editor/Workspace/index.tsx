@@ -39,7 +39,6 @@ export const WorkspaceComponent = ({ theme }) => {
     editor,
   } = useAppState();
 
-
   if (!activeTab) {
     return null;
   }
