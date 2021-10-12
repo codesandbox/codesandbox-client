@@ -3,7 +3,6 @@ import { Element } from '@codesandbox/components';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Overlay } from 'app/components/Overlay';
 import { useAppState } from 'app/overmind';
-import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 import { Container, HorizontalSeparator } from './elements';
 import { AddCollaboratorForm } from './AddCollaboratorForm';
@@ -47,37 +46,24 @@ export const Collaborators: FunctionComponent<{
   renderButton: (any) => JSX.Element;
 }> = ({ renderButton }) => {
   const [onboardingVisibility, setOnboardingVisibility] = useState(false);
-  const experimentPromise = useExperimentResult('share-onboarding');
 
   useEffect(() => {
     let timer;
 
-    experimentPromise.then(experiment => {
-      if (experiment === ExperimentValues.A) {
-        /**
-         * A
-         */
-        setOnboardingVisibility(false);
-      } else if (experiment === ExperimentValues.B) {
-        /**
-         * B
-         */
-        if (!localStorage.getItem(LOCAL_STORAGE_KEY)) {
-          /**
-           * There're some many things happening in the UI
-           * So, it waits 1s to show up the onboarding
-           */
-          timer = setTimeout(() => {
-            setOnboardingVisibility(true);
-          }, 1000);
-        }
-      }
-    });
+    if (!localStorage.getItem(LOCAL_STORAGE_KEY)) {
+      /**
+       * There're some many things happening in the UI
+       * So, it waits 1s to show up the onboarding
+       */
+      timer = setTimeout(() => {
+        setOnboardingVisibility(true);
+      }, 1000);
+    }
 
     return () => {
       clearTimeout(timer);
     };
-  }, [experimentPromise]);
+  }, []);
 
   const onCloseOnboarding = () => {
     setOnboardingVisibility(false);
