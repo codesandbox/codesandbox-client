@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const Action = styled.button<{ active: boolean }>`
   z-index: 9;
   position: absolute;
-  top: calc(50% - 44px);
+  top: calc(50% - 44px + 32px);
 
   width: 44px;
   height: 44px;
@@ -16,12 +16,28 @@ const Action = styled.button<{ active: boolean }>`
   cursor: pointer;
 
   transition: opacity 0.3s ease;
-  opacity: ${({ active }) => (active ? 1 : 0.1)};
+  opacity: ${({ active }) => (active ? 1 : 0.2)};
 
   display: flex;
 
   > * {
     margin: auto;
+  }
+`;
+
+const PrevAction = styled(Action)`
+  left: calc(50% - 300px);
+
+  @media screen and (min-width: 1700px) {
+    left: calc(50% - 450px);
+  }
+`;
+
+const NextAction = styled(Action)`
+  right: calc(50% - 300px);
+
+  @media screen and (min-width: 1700px) {
+    right: calc(50% - 450px);
   }
 `;
 
@@ -32,12 +48,11 @@ export const Navigation: React.FC<{
   maxIndex: number;
 }> = ({ onPrev, onNext, currentIndex, maxIndex }) => (
   <>
-    <Action
+    <PrevAction
       active={currentIndex !== 0}
       disabled={currentIndex === 0}
       onClick={onPrev}
       type="button"
-      css={{ left: 'calc(50% - 300px)' }}
     >
       <svg
         width="24"
@@ -59,14 +74,13 @@ export const Navigation: React.FC<{
           strokeLinecap="round"
         />
       </svg>
-    </Action>
+    </PrevAction>
 
-    <Action
+    <NextAction
       active={currentIndex + 1 < maxIndex}
       disabled={currentIndex + 1 === maxIndex}
       onClick={onNext}
       type="button"
-      css={{ right: 'calc(50% - 300px)' }}
     >
       <svg
         width="24"
@@ -88,6 +102,6 @@ export const Navigation: React.FC<{
           strokeLinecap="round"
         />
       </svg>
-    </Action>
+    </NextAction>
   </>
 );

@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 `;
 
 const Item = styled.div<{ active: boolean }>`
-  background: rgba(255, 255, 255, ${({ active }) => (active ? 1 : 0.1)});
+  background: rgba(255, 255, 255, ${({ active }) => (active ? 1 : 0.2)});
   height: 2px;
   position: relative;
 

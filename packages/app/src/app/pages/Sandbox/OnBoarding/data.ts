@@ -5,6 +5,7 @@ export default [
       'Import and run repos direct from GitHub. Or export your sandbox to a repo.',
     img: '/static/img/onboarding/import.jpg',
     bgColor: '#1f1f1f',
+    align: 'bottom',
   },
   {
     title: 'Invite your team members',

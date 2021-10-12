@@ -20,20 +20,22 @@ const Container = styled.div<{ active: boolean }>`
 
   /* Slider */
   scroll-snap-align: center;
-  min-width: 400px;
-  /* min-width: calc(100vw / 2.8); */
+  min-width: 86vw;
 
-  /* @media screen and (min-width: 1200px) {
-    min-width: calc(100vw / 3.5);
+  @media screen and (min-width: 680px) {
+    min-width: 400px;
   }
 
   @media screen and (min-width: 1700px) {
-    min-width: calc(100vw / 4.8);
-  } */
+    min-width: calc(100vw / 5);
+  }
 `;
 
 const ImageContainer = styled.div`
   flex: 1;
+  display: flex;
+  align-items: center;
+  padding-bottom: 265px;
 
   img {
     width: 100%;
@@ -43,9 +45,9 @@ const ImageContainer = styled.div`
 const Content = styled.div`
   background: #fff;
 
-  padding: 1.5rem 2.5rem;
+  padding: 1.5rem 2.5rem 3.5rem;
   color: #242424;
-  min-height: 224px;
+  min-height: 265px;
 
   box-sizing: border-box;
   position: absolute;
@@ -58,14 +60,21 @@ export const Card = forwardRef<
   HTMLDivElement,
   {
     title: string;
+    align: string;
     tagline: string;
     img: string;
     bgColor: string;
     active: boolean;
+    onClick: () => void;
   }
->(({ title, tagline, img, bgColor, active, ...props }, ref) => (
-  <Container active={active} ref={ref} {...props}>
-    <ImageContainer style={{ backgroundColor: bgColor }}>
+>(({ title, tagline, img, bgColor, active, onClick, align, ...props }, ref) => (
+  <Container active={active} ref={ref} onClick={onClick} {...props}>
+    <ImageContainer
+      style={{
+        backgroundColor: bgColor,
+        alignItems: align === 'bottom' ? 'flex-end' : 'center',
+      }}
+    >
       <img src={img} alt={title} />
     </ImageContainer>
 

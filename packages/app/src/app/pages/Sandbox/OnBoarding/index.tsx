@@ -27,6 +27,10 @@ const ScrollView = styled.div`
   padding-top: 3.75rem;
   padding-bottom: 10rem;
 
+  @media screen and (min-width: 1700px) {
+    padding-bottom: 16rem;
+  }
+
   /* Sliding */
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
@@ -151,19 +155,30 @@ const OnBoarding = () => {
           ref={scrollViewRef}
           onScroll={throttle(handleSliderScroll, 300)}
         >
-          {data.map((item, index) => (
-            <Card
-              ref={node => {
-                nodeItems.current[index] = node;
-              }}
-              active={currentIndex === index}
-              key={item.title}
-              bgColor={item.bgColor}
-              img={item.img}
-              tagline={item.tagline}
-              title={item.title}
-            />
-          ))}
+          {data.map((item, index) => {
+            const onClick = () => {
+              if (currentIndex === index) return;
+
+              if (currentIndex > index) onPrev();
+              if (currentIndex < index) onNext();
+            };
+
+            return (
+              <Card
+                ref={node => {
+                  nodeItems.current[index] = node;
+                }}
+                align={item.align}
+                onClick={onClick}
+                active={currentIndex === index}
+                key={item.title}
+                bgColor={item.bgColor}
+                img={item.img}
+                tagline={item.tagline}
+                title={item.title}
+              />
+            );
+          })}
         </ScrollView>
       </Background>
     </ThemeProvider>
