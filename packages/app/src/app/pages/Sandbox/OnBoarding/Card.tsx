@@ -3,59 +3,6 @@ import styled from 'styled-components';
 
 import { Text } from '@codesandbox/components';
 
-const Container = styled.div<{ active: boolean }>`
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.24), 0px 4px 4px rgba(0, 0, 0, 0.12);
-
-  display: flex;
-  flex-direction: column;
-
-  margin-right: 0.5rem;
-  margin-left: 0.5rem;
-  position: relative;
-
-  transition: opacity 0.3s ease;
-  opacity: ${({ active }) => (active ? 1 : 0.2)};
-
-  /* Slider */
-  scroll-snap-align: center;
-  min-width: 86vw;
-
-  @media screen and (min-width: 680px) {
-    min-width: 400px;
-  }
-
-  @media screen and (min-width: 1700px) {
-    min-width: calc(100vw / 5);
-  }
-`;
-
-const ImageContainer = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  padding-bottom: 265px;
-
-  img {
-    width: 100%;
-  }
-`;
-
-const Content = styled.div`
-  background: #fff;
-
-  padding: 1.5rem 2.5rem 3.5rem;
-  color: #242424;
-  min-height: 265px;
-
-  box-sizing: border-box;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-`;
-
 export const Card = forwardRef<
   HTMLDivElement,
   {
@@ -94,3 +41,54 @@ export const Card = forwardRef<
     </Content>
   </Container>
 ));
+
+const Container = styled.div<{ active: boolean }>`
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.24), 0px 4px 4px rgba(0, 0, 0, 0.12);
+
+  display: flex;
+  flex-direction: column;
+
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  position: relative;
+
+  transition: opacity 0.3s ease;
+  opacity: ${({ active }) => (active ? 1 : 0.2)};
+
+  min-width: 86vw;
+
+  @media screen and (min-width: 680px) {
+    min-width: 400px;
+  }
+
+  @media screen and (min-width: 1700px) {
+    min-width: calc(100vw / 5);
+  }
+`;
+
+const ImageContainer = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-bottom: 240px;
+
+  img {
+    width: 100%;
+  }
+`;
+
+const Content = styled.div`
+  background: #fff;
+
+  padding: 1.5rem 2.5rem;
+  color: #242424;
+  min-height: 240px;
+
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+`;

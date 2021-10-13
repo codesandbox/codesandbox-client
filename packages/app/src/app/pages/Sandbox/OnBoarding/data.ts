@@ -15,7 +15,7 @@ export default [
     bgColor: '#1f1f1f',
   },
   {
-    title: 'Add npm deps',
+    title: 'Add npm dependencies',
     tagline:
       'Use private packages, or any of the 1M+ public ones, to build powerful apps quickly.',
     img: '/static/img/onboarding/deps.jpg',

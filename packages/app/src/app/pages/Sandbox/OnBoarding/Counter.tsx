@@ -2,6 +2,24 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { AUTO_RUN_TIMER } from './config';
 
+export const Counter: React.FC<{ amount: number; currentIndex: number }> = ({
+  amount,
+  currentIndex,
+}) => (
+  <Wrapper>
+    {new Array(amount).fill(' ').map((item, index) => (
+      <Item
+        // eslint-disable-next-line react/no-array-index-key
+        key={index}
+        active={currentIndex > index}
+        style={{ width: `calc(100% / ${amount} - 1rem)` }}
+      >
+        {currentIndex === index && <AnimatedItem />}
+      </Item>
+    ))}
+  </Wrapper>
+);
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -38,21 +56,3 @@ const AnimatedItem = styled.div`
   left: 0;
   top: 0;
 `;
-
-export const Counter: React.FC<{ amount: number; currentIndex: number }> = ({
-  amount,
-  currentIndex,
-}) => (
-  <Wrapper>
-    {new Array(amount).fill(' ').map((item, index) => (
-      <Item
-        // eslint-disable-next-line react/no-array-index-key
-        key={index}
-        active={currentIndex > index}
-        style={{ width: `calc(100% / ${amount} - 1rem)` }}
-      >
-        {currentIndex === index && <AnimatedItem />}
-      </Item>
-    ))}
-  </Wrapper>
-);

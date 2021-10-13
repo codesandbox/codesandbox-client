@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { throttle } from 'lodash-es';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import { ThemeProvider, Stack } from '@codesandbox/components';
 
@@ -10,9 +10,158 @@ import { Counter } from './Counter';
 import { Navigation } from './Navigation';
 import { AUTO_RUN_TIMER } from './config';
 
-const Background = styled.div`
+const MARGIN = 16;
+
+const OnBoarding = () => {
+  const [visibility, setVisibility] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [sliderPosition, setSliderPosition] = useState(0);
+
+  const nodeItems = useRef<HTMLDivElement[]>([]);
+  const scrollViewRef = useRef<HTMLDivElement>();
+
+  const listLength = data.length;
+
+  const handlePrev = useCallback(() => {
+    if (currentIndex === 0) return;
+
+    const element = nodeItems.current[currentIndex - 1];
+    setSliderPosition(prev => prev + element.offsetWidth + MARGIN);
+    setCurrentIndex(prev => prev - 1);
+  }, [currentIndex]);
+
+  const handleNext = useCallback(() => {
+    if (currentIndex + 1 >= listLength) return;
+
+    const element = nodeItems.current[currentIndex + 1];
+    setSliderPosition(prev => prev - element.offsetWidth - MARGIN);
+    setCurrentIndex(prev => prev + 1);
+  }, [currentIndex, listLength]);
+
+  useEffect(
+    function keyboardNavigation() {
+      const navigate = event => {
+        if (event.key === 'ArrowRight') {
+          handleNext();
+        } else if (event.key === 'ArrowLeft') {
+          handlePrev();
+        }
+      };
+
+      document.addEventListener('keydown', navigate, false);
+      return () => document.removeEventListener('keydown', navigate, false);
+    },
+    [handleNext, handlePrev]
+  );
+
+  useEffect(
+    function autoRun() {
+      const timer = setTimeout(() => {
+        handleNext();
+
+        // Auto-close after animation
+        if (currentIndex + 1 === listLength) {
+          setVisibility(false);
+        }
+      }, AUTO_RUN_TIMER);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    },
+    [currentIndex, listLength, handleNext]
+  );
+
+  const centerElement = useCallback(() => {
+    const windowWidth = window.innerWidth;
+    const elementWidth = nodeItems.current[0].offsetWidth;
+
+    setCurrentIndex(0);
+    setSliderPosition(windowWidth / 2 - elementWidth / 2);
+  }, []);
+
+  useEffect(
+    function onResizeCenter() {
+      window.addEventListener('resize', centerElement);
+
+      return () => {
+        window.removeEventListener('resize', centerElement);
+      };
+    },
+    [centerElement]
+  );
+
+  useEffect(function init() {
+    centerElement();
+  }, []);
+
+  return (
+    <ThemeProvider>
+      <AnimatePresence>
+        {visibility && (
+          <Background exit={{ opacity: 0 }}>
+            <Stack css={{ padding: '1rem 2rem' }}>
+              <Counter amount={listLength} currentIndex={currentIndex} />
+              <CloseButton type="button" onClick={() => setVisibility(false)}>
+                <svg width={16} height={16} viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M16.5229 1.73532L15.0684 0.280772L8.52295 6.82622L1.97749 0.280762L0.522949 1.73531L7.06841 8.28076L0.522949 14.8262L1.97749 16.2808L8.52295 9.73531L15.0684 16.2808L16.5229 14.8262L9.9775 8.28076L16.5229 1.73532Z"
+                    fill="white"
+                  />
+                </svg>
+              </CloseButton>
+            </Stack>
+
+            <Navigation
+              onNext={handleNext}
+              onPrev={handlePrev}
+              currentIndex={currentIndex}
+              maxIndex={listLength}
+            />
+
+            <ScrollView ref={scrollViewRef}>
+              <StackHolder
+                style={{ transform: `translate3D(${sliderPosition}px, 0, 0)` }}
+              >
+                {data.map((item, index) => {
+                  const onClick = () => {
+                    if (currentIndex === index || currentIndex < index) {
+                      handleNext();
+                    }
+                    if (currentIndex > index) handlePrev();
+                  };
+
+                  return (
+                    <Card
+                      ref={node => {
+                        nodeItems.current[index] = node;
+                      }}
+                      align={item.align}
+                      onClick={onClick}
+                      active={currentIndex === index}
+                      key={item.title}
+                      bgColor={item.bgColor}
+                      img={item.img}
+                      tagline={item.tagline}
+                      title={item.title}
+                    />
+                  );
+                })}
+              </StackHolder>
+            </ScrollView>
+          </Background>
+        )}
+      </AnimatePresence>
+    </ThemeProvider>
+  );
+};
+
+const Background = styled(motion.div)`
   position: fixed;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: #000;
   z-index: 9;
 `;
@@ -22,7 +171,7 @@ const ScrollView = styled.div`
 
   box-sizing: border-box;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
 
   padding-top: 3.75rem;
   padding-bottom: 10rem;
@@ -30,15 +179,11 @@ const ScrollView = styled.div`
   @media screen and (min-width: 1700px) {
     padding-bottom: 16rem;
   }
+`;
 
-  /* Sliding */
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  scroll-behavior: smooth;
-
-  /* Internal margin */
-  padding-left: 50vw;
-  padding-right: 50vw;
+const StackHolder = styled.div`
+  display: flex;
+  transition: all 0.3s ease;
 `;
 
 const CloseButton = styled.button`
@@ -58,131 +203,5 @@ const CloseButton = styled.button`
     margin: auto;
   }
 `;
-
-const OnBoarding = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const nodeItems = useRef<HTMLDivElement[]>([]);
-  const scrollViewRef = useRef<HTMLDivElement>();
-
-  const listLength = data.length;
-
-  const handleSliderScroll = () => {
-    const activeIndex = nodeItems.current.findIndex(element => {
-      const { left, width } = element.getBoundingClientRect();
-      return left + width > window.innerWidth / 2;
-    });
-    if (activeIndex > -1) {
-      setCurrentIndex(activeIndex);
-    }
-  };
-
-  const onPrev = useCallback(() => {
-    if (currentIndex === 0) return;
-
-    if (currentIndex - 1 === 0) {
-      scrollViewRef.current.scrollTo(0, 0);
-    } else {
-      const element = nodeItems.current[currentIndex - 1];
-      const currentScroll = scrollViewRef.current.scrollLeft;
-      scrollViewRef.current.scrollTo(currentScroll - element.offsetWidth, 0);
-    }
-  }, [currentIndex]);
-
-  const onNext = useCallback(() => {
-    if (currentIndex + 1 > listLength) return;
-
-    if (currentIndex + 1 === listLength) {
-      scrollViewRef.current.scrollTo(scrollViewRef.current.scrollWidth, 0);
-    } else {
-      const element = nodeItems.current[currentIndex + 1];
-      const currentScroll = scrollViewRef.current.scrollLeft;
-      scrollViewRef.current.scrollTo(currentScroll + element.offsetWidth, 0);
-    }
-  }, [currentIndex, listLength]);
-
-  useEffect(
-    function keyboardNavigation() {
-      const navigate = event => {
-        if (event.key === 'ArrowRight') {
-          onNext();
-        } else if (event.key === 'ArrowLeft') {
-          onPrev();
-        }
-      };
-
-      document.addEventListener('keydown', navigate, false);
-      return () => document.removeEventListener('keydown', navigate, false);
-    },
-    [onNext, onPrev]
-  );
-
-  useEffect(
-    function autoRun() {
-      const timer = setTimeout(() => {
-        onNext();
-      }, AUTO_RUN_TIMER);
-
-      return () => {
-        clearTimeout(timer);
-      };
-    },
-    [currentIndex, onNext]
-  );
-
-  return (
-    <ThemeProvider>
-      <Background>
-        <Stack css={{ padding: '1rem 2rem' }}>
-          <Counter amount={listLength} currentIndex={currentIndex} />
-          <CloseButton type="button">
-            <svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-              <path
-                d="M16.5229 1.73532L15.0684 0.280772L8.52295 6.82622L1.97749 0.280762L0.522949 1.73531L7.06841 8.28076L0.522949 14.8262L1.97749 16.2808L8.52295 9.73531L15.0684 16.2808L16.5229 14.8262L9.9775 8.28076L16.5229 1.73532Z"
-                fill="white"
-              />
-            </svg>
-          </CloseButton>
-        </Stack>
-
-        <Navigation
-          onNext={onNext}
-          onPrev={onPrev}
-          currentIndex={currentIndex}
-          maxIndex={listLength}
-        />
-
-        <ScrollView
-          ref={scrollViewRef}
-          onScroll={throttle(handleSliderScroll, 300)}
-        >
-          {data.map((item, index) => {
-            const onClick = () => {
-              if (currentIndex === index) return;
-
-              if (currentIndex > index) onPrev();
-              if (currentIndex < index) onNext();
-            };
-
-            return (
-              <Card
-                ref={node => {
-                  nodeItems.current[index] = node;
-                }}
-                align={item.align}
-                onClick={onClick}
-                active={currentIndex === index}
-                key={item.title}
-                bgColor={item.bgColor}
-                img={item.img}
-                tagline={item.tagline}
-                title={item.title}
-              />
-            );
-          })}
-        </ScrollView>
-      </Background>
-    </ThemeProvider>
-  );
-};
 
 export { OnBoarding };
