@@ -73,11 +73,10 @@ const OnBoarding = () => {
   );
 
   const centerElement = useCallback(() => {
-    const windowWidth = window.innerWidth;
     const elementWidth = nodeItems.current[0].offsetWidth;
 
     setCurrentIndex(0);
-    setSliderPosition(windowWidth / 2 - elementWidth / 2);
+    setSliderPosition(-elementWidth / 2);
   }, []);
 
   useEffect(
@@ -175,6 +174,7 @@ const ScrollView = styled.div`
 
   padding-top: 3.75rem;
   padding-bottom: 10rem;
+  padding-left: 50vw;
 
   @media screen and (min-width: 1700px) {
     padding-bottom: 16rem;
