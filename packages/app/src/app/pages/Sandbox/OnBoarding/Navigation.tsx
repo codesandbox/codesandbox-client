@@ -1,6 +1,7 @@
 import React from 'react';
 
 import styled from 'styled-components';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 const Action = styled.button<{ active: boolean }>`
   z-index: 9;
@@ -51,7 +52,10 @@ export const Navigation: React.FC<{
     <PrevAction
       active={currentIndex !== 0}
       disabled={currentIndex === 0}
-      onClick={onPrev}
+      onClick={() => {
+        track('OnBoarding - click prev');
+        onPrev();
+      }}
       type="button"
     >
       <svg
@@ -79,7 +83,10 @@ export const Navigation: React.FC<{
     <NextAction
       active={currentIndex + 1 < maxIndex}
       disabled={currentIndex + 1 === maxIndex}
-      onClick={onNext}
+      onClick={() => {
+        track('OnBoarding - click next');
+        onNext();
+      }}
       type="button"
     >
       <svg
