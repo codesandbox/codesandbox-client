@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 import { ThemeProvider, Stack } from '@codesandbox/components';
 
@@ -13,9 +14,30 @@ import { AUTO_RUN_TIMER } from './config';
 const MARGIN = 16;
 
 const OnBoarding = () => {
-  const [visibility, setVisibility] = useState(true);
+  const [visibility, setVisibility] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(0);
+
+  /**
+   * Experiment
+   */
+  const experimentPromise = useExperimentResult('signup-onboarding');
+  useEffect(() => {
+    /* Wait for the API */
+    experimentPromise.then(experiment => {
+      if (experiment === ExperimentValues.A) {
+        /**
+         * A
+         */
+        setVisibility(false);
+      } else if (experiment === ExperimentValues.B) {
+        /**
+         * B
+         */
+        setVisibility(true);
+      }
+    });
+  }, [experimentPromise]);
 
   const nodeItems = useRef<HTMLDivElement[]>([]);
   const scrollViewRef = useRef<HTMLDivElement>();
@@ -90,9 +112,14 @@ const OnBoarding = () => {
     [centerElement]
   );
 
-  useEffect(function init() {
-    centerElement();
-  }, []);
+  useEffect(
+    function init() {
+      if (visibility) {
+        centerElement();
+      }
+    },
+    [visibility]
+  );
 
   return (
     <ThemeProvider>
