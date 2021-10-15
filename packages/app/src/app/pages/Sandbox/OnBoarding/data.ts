@@ -35,4 +35,10 @@ export default [
     img: '/static/img/onboarding/deploy.jpg',
     bgColor: '#151515',
   },
+  {
+    img: '/static/img/onboarding/ending.jpg',
+    cover: true,
+    bgColor: '#151515',
+    cta: "Let's start",
+  },
 ];

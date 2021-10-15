@@ -169,12 +169,15 @@ const OnBoarding = () => {
                       ref={node => {
                         nodeItems.current[index] = node;
                       }}
-                      align={item.align}
-                      onClick={onClick}
                       active={currentIndex === index}
-                      key={item.title}
+                      align={item.align}
+                      cover={item.cover}
                       bgColor={item.bgColor}
+                      cta={item.cta}
                       img={item.img}
+                      key={item.title}
+                      onClick={onClick}
+                      onClose={() => setVisibility(false)}
                       tagline={item.tagline}
                       title={item.title}
                     />

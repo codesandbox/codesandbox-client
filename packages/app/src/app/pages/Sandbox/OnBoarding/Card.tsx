@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
-import { Text } from '@codesandbox/components';
+import { Text, Button } from '@codesandbox/components';
 
 export const Card = forwardRef<
   HTMLDivElement,
@@ -13,34 +13,68 @@ export const Card = forwardRef<
     bgColor: string;
     active: boolean;
     onClick: () => void;
+    onClose: () => void;
+    cta?: string;
+    cover?: boolean;
   }
->(({ title, tagline, img, bgColor, active, onClick, align, ...props }, ref) => (
-  <Container active={active} ref={ref} onClick={onClick} {...props}>
-    <ImageContainer
-      style={{
-        backgroundColor: bgColor,
-        alignItems: align === 'bottom' ? 'flex-end' : 'center',
-      }}
-    >
-      <img src={img} alt={title} />
-    </ImageContainer>
+>(
+  (
+    {
+      title,
+      tagline,
+      img,
+      bgColor,
+      active,
+      onClick,
+      onClose,
+      align,
+      cta,
+      cover,
+      ...props
+    },
+    ref
+  ) => (
+    <Container active={active} ref={ref} onClick={onClick} {...props}>
+      <ImageContainer
+        style={{
+          backgroundColor: bgColor,
+          backgroundImage: `url(${img})`,
+          backgroundSize: cover ? 'cover' : 'contain',
+          backgroundPosition: align === 'bottom' ? `center bottom` : 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
 
-    <Content>
-      <Text
-        weight="bold"
-        size={6}
-        block
-        as="h2"
-        css={{ margin: 0, marginBottom: '.75rem' }}
-      >
-        {title}
-      </Text>
-      <Text block as="p" size={4} css={{ lineHeight: '24px' }}>
-        {tagline}
-      </Text>
-    </Content>
-  </Container>
-));
+      {title && tagline && (
+        <Content>
+          <Text
+            weight="bold"
+            size={6}
+            block
+            as="h2"
+            css={{ margin: 0, marginBottom: '.75rem' }}
+          >
+            {title}
+          </Text>
+          <Text block as="p" size={4} css={{ lineHeight: '24px' }}>
+            {tagline}
+          </Text>
+        </Content>
+      )}
+
+      {cta && (
+        <Content css={{ display: 'flex', padding: '0 16%' }}>
+          <Button
+            onClick={onClose}
+            css={{ fontSize: 17, height: 35, borderRadius: 3, margin: 'auto' }}
+          >
+            {cta}
+          </Button>
+        </Content>
+      )}
+    </Container>
+  )
+);
 
 const Container = styled.div<{ active: boolean }>`
   border-radius: 8px;
@@ -72,7 +106,6 @@ const ImageContainer = styled.div`
   flex: 1;
   display: flex;
   align-items: center;
-  padding-bottom: 240px;
 
   img {
     width: 100%;
@@ -84,11 +117,7 @@ const Content = styled.div`
 
   padding: 1.5rem 2.5rem;
   color: #242424;
-  min-height: 240px;
+  min-height: 230px;
 
   box-sizing: border-box;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
 `;
