@@ -2760,7 +2760,7 @@
 			]
 		},
 		"ternary-expression": {
-			"begin": "(?!\\?\\.\\s*[^[:digit:]])(\\?)",
+			"begin": "(?!\\?\\.\\s*[^[:digit:]])(\\?)(?!\\?)",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.operator.ternary.ts"
@@ -3202,7 +3202,7 @@
 				},
 				{
 					"name": "keyword.operator.logical.ts",
-					"match": "\\!|&&|\\|\\|"
+					"match": "\\!|&&|\\|\\||\\?\\?"
 				},
 				{
 					"name": "keyword.operator.bitwise.ts",

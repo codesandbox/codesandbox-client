@@ -2684,7 +2684,7 @@
 			]
 		},
 		"ternary-expression": {
-			"begin": "(?!\\?\\.\\s*[^[:digit:]])(\\?)",
+			"begin": "(?!\\?\\.\\s*[^[:digit:]])(\\?)(?!\\?)",
 			"beginCaptures": {
 				"1": {
 					"name": "keyword.operator.ternary.js.jsx"
@@ -3067,7 +3067,7 @@
 				},
 				{
 					"name": "keyword.operator.logical.js.jsx",
-					"match": "\\!|&&|\\|\\|"
+					"match": "\\!|&&|\\|\\||\\?\\?"
 				},
 				{
 					"name": "keyword.operator.bitwise.js.jsx",
