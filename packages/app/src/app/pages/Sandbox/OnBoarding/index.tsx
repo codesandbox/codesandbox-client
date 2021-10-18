@@ -5,7 +5,7 @@ import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { ThemeProvider, Stack } from '@codesandbox/components';
-import { useAppState } from 'app/overmind';
+
 import data from './data';
 import { Card } from './Card';
 import { Counter } from './Counter';
@@ -19,14 +19,14 @@ const OnBoarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(0);
 
-  const { newUser } = useAppState();
-
   /**
    * Experiment
    */
   const experimentPromise = useExperimentResult('signup-onboarding');
   useEffect(() => {
-    if (newUser) {
+    const shouldOnboarding = localStorage.getItem('should-onboarding-user');
+
+    if (shouldOnboarding) {
       /* Wait for the API */
       experimentPromise.then(experiment => {
         if (experiment === ExperimentValues.A) {
@@ -42,7 +42,12 @@ const OnBoarding = () => {
         }
       });
     }
-  }, [newUser]);
+  }, []);
+
+  const completeOnboarding = () => {
+    setVisibility(false);
+    localStorage.removeItem('should-onboarding-user');
+  };
 
   const nodeItems = useRef<HTMLDivElement[]>([]);
   const scrollViewRef = useRef<HTMLDivElement>();
@@ -94,7 +99,7 @@ const OnBoarding = () => {
 
         // Auto-close after animation
         if (currentIndex + 1 === listLength) {
-          setVisibility(false);
+          completeOnboarding();
           track('OnBoarding - complete');
         }
       }, AUTO_RUN_TIMER);
@@ -143,7 +148,7 @@ const OnBoarding = () => {
               <CloseButton
                 type="button"
                 onClick={() => {
-                  setVisibility(false);
+                  completeOnboarding();
                   track('OnBoarding - click close');
                 }}
               >
@@ -188,7 +193,7 @@ const OnBoarding = () => {
                       img={item.img}
                       key={item.title}
                       onClick={onClick}
-                      onClose={() => setVisibility(false)}
+                      onComplete={completeOnboarding}
                       tagline={item.tagline}
                       title={item.title}
                     />

@@ -13,7 +13,7 @@ export const Card = forwardRef<
     bgColor: string;
     active: boolean;
     onClick: () => void;
-    onClose: () => void;
+    onComplete: () => void;
     cta?: string;
     cover?: boolean;
   }
@@ -26,7 +26,7 @@ export const Card = forwardRef<
       bgColor,
       active,
       onClick,
-      onClose,
+      onComplete,
       align,
       cta,
       cover,
@@ -65,7 +65,7 @@ export const Card = forwardRef<
       {cta && (
         <Content css={{ display: 'flex', padding: '0 16%' }}>
           <Button
-            onClick={onClose}
+            onClick={onComplete}
             css={{ fontSize: 17, height: 35, borderRadius: 3, margin: 'auto' }}
           >
             {cta}
