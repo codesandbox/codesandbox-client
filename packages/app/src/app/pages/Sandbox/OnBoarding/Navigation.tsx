@@ -2,8 +2,9 @@ import React from 'react';
 
 import styled from 'styled-components';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { motion } from 'framer-motion';
 
-const Action = styled.button<{ active: boolean }>`
+const Action = styled(motion.button)`
   z-index: 9;
   position: absolute;
   top: calc(50% - 44px + 32px);
@@ -17,7 +18,6 @@ const Action = styled.button<{ active: boolean }>`
   cursor: pointer;
 
   transition: opacity 0.3s ease;
-  opacity: ${({ active }) => (active ? 1 : 0.2)};
 
   display: flex;
 
@@ -50,7 +50,9 @@ export const Navigation: React.FC<{
 }> = ({ onPrev, onNext, currentIndex, maxIndex }) => (
   <>
     <PrevAction
-      active={currentIndex !== 0}
+      transition={{ delay: currentIndex === 0 ? 0.6 : 0 }}
+      initial={{ opacity: 0, x: 150 }}
+      animate={{ opacity: currentIndex === 0 ? 0.2 : 1, x: 0 }}
       disabled={currentIndex === 0}
       onClick={() => {
         track('OnBoarding - click prev');
@@ -81,7 +83,9 @@ export const Navigation: React.FC<{
     </PrevAction>
 
     <NextAction
-      active={currentIndex + 1 < maxIndex}
+      transition={{ delay: currentIndex === 0 ? 0.6 : 0 }}
+      initial={{ opacity: 0, x: -150 }}
+      animate={{ opacity: currentIndex + 1 < maxIndex ? 1 : 0.2, x: 0 }}
       disabled={currentIndex + 1 === maxIndex}
       onClick={() => {
         track('OnBoarding - click next');

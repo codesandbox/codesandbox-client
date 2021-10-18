@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Text, Button } from '@codesandbox/components';
 
@@ -65,7 +66,11 @@ export const Card = forwardRef<
       {cta && (
         <Content css={{ display: 'flex', padding: '0 16%' }}>
           <Button
-            onClick={onComplete}
+            onClick={() => {
+              track('OnBoarding - click on start cta');
+              track('OnBoarding - complete');
+              onComplete();
+            }}
             css={{ fontSize: 17, height: 35, borderRadius: 3, margin: 'auto' }}
           >
             {cta}

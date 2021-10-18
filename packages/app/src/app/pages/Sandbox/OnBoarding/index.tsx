@@ -168,7 +168,12 @@ const OnBoarding = () => {
               maxIndex={listLength}
             />
 
-            <ScrollView ref={scrollViewRef}>
+            <ScrollView
+              transition={{ delay: 0.3 }}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              ref={scrollViewRef}
+            >
               <StackHolder
                 style={{ transform: `translate3D(${sliderPosition}px, 0, 0)` }}
               >
@@ -218,7 +223,7 @@ const Background = styled(motion.div)`
   z-index: 9;
 `;
 
-const ScrollView = styled.div`
+const ScrollView = styled(motion.div)`
   display: flex;
 
   box-sizing: border-box;
