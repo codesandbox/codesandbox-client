@@ -5,6 +5,7 @@ import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { ThemeProvider, Stack } from '@codesandbox/components';
+import { useAppState } from 'app/overmind';
 import data from './data';
 import { Card } from './Card';
 import { Counter } from './Counter';
@@ -18,26 +19,30 @@ const OnBoarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(0);
 
+  const { newUser } = useAppState();
+
   /**
    * Experiment
    */
   const experimentPromise = useExperimentResult('signup-onboarding');
   useEffect(() => {
-    /* Wait for the API */
-    experimentPromise.then(experiment => {
-      if (experiment === ExperimentValues.A) {
-        /**
-         * A
-         */
-        setVisibility(false);
-      } else if (experiment === ExperimentValues.B) {
-        /**
-         * B
-         */
-        setVisibility(true);
-      }
-    });
-  }, [experimentPromise]);
+    if (newUser) {
+      /* Wait for the API */
+      experimentPromise.then(experiment => {
+        if (experiment === ExperimentValues.A) {
+          /**
+           * A
+           */
+          setVisibility(false);
+        } else if (experiment === ExperimentValues.B) {
+          /**
+           * B
+           */
+          setVisibility(true);
+        }
+      });
+    }
+  }, [newUser]);
 
   const nodeItems = useRef<HTMLDivElement[]>([]);
   const scrollViewRef = useRef<HTMLDivElement>();
@@ -48,6 +53,9 @@ const OnBoarding = () => {
     if (currentIndex === 0) return;
 
     const element = nodeItems.current[currentIndex - 1];
+
+    if (!element) return;
+
     setSliderPosition(prev => prev + element.offsetWidth + MARGIN);
     setCurrentIndex(prev => prev - 1);
   }, [currentIndex]);
@@ -56,6 +64,9 @@ const OnBoarding = () => {
     if (currentIndex + 1 >= listLength) return;
 
     const element = nodeItems.current[currentIndex + 1];
+
+    if (!element) return;
+
     setSliderPosition(prev => prev - element.offsetWidth - MARGIN);
     setCurrentIndex(prev => prev + 1);
   }, [currentIndex, listLength]);

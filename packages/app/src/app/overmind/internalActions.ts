@@ -219,6 +219,7 @@ export const runProviderAuth = (
 
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
+    state.newUser = true;
     popup.close();
   });
 
