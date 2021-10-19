@@ -492,10 +492,7 @@ export const forkSandbox = async (
       actions.server.startContainer(forkedSandbox);
     }
 
-    if (
-      state.workspace.openedWorkspaceItem === 'project-summary' ||
-      state.workspace.openedWorkspaceItem === 'github-summary'
-    ) {
+    if (state.workspace.openedWorkspaceItem === 'project-summary') {
       actions.workspace.openDefaultItem();
     }
 
