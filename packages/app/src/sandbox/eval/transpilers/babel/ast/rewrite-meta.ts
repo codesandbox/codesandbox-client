@@ -4,16 +4,17 @@ import * as meriyah from 'meriyah';
 import { walk } from '@meriyah-utils/walker';
 import { NodeTypes as n } from '@meriyah-utils/types';
 
-import { ESTreeAST } from './utils';
-
 export interface IESModuleMeta {
   url: string;
 }
 
 const CSB_IMPORT_META_NAME = '$csb__import_meta';
-export function rewriteImportMeta(ast: ESTreeAST, meta: IESModuleMeta): void {
+export function rewriteImportMeta(
+  program: meriyah.ESTree.Program,
+  meta: IESModuleMeta
+): void {
   let hasImportMeta = false;
-  walk(ast.program, {
+  walk(program, {
     enter(node: meriyah.ESTree.MemberExpression) {
       if (node.type === n.MemberExpression) {
         if (
@@ -34,7 +35,7 @@ export function rewriteImportMeta(ast: ESTreeAST, meta: IESModuleMeta): void {
   });
 
   if (hasImportMeta) {
-    ast.program.body.unshift({
+    program.body.unshift({
       type: n.VariableDeclaration,
       kind: 'var',
       declarations: [
