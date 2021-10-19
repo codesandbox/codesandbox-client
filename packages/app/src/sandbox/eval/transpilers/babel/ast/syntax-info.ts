@@ -1,6 +1,6 @@
 import { walk } from 'estree-walker';
 import isESModule from 'sandbox/eval/utils/is-es-module';
-import { Syntax as n } from './syntax';
+import { NodeTypes as n } from '@meriyah-utils/types';
 import { ESTreeAST } from './utils';
 
 const ESM_TYPES: Set<string> = new Set([
@@ -19,6 +19,7 @@ export interface SyntaxInfo {
 export function getSyntaxInfoFromAst(ast: ESTreeAST): SyntaxInfo {
   const syntaxInfo: SyntaxInfo = { jsx: false, esm: false };
 
+  // @ts-ignore
   walk(ast.program, {
     enter(node) {
       // TODO: Figure out if we can exit the walk entirely

@@ -1,9 +1,9 @@
 // This code is written to be performant, that's why we opted to ignore these linting issues
 /* eslint-disable no-loop-func, no-continue */
 import * as meriyah from 'meriyah';
-import { walk } from 'estree-walker';
+import { walk } from '@meriyah-utils/walker';
+import { NodeTypes as n } from '@meriyah-utils/types';
 
-import { Syntax as n } from './syntax';
 import { ESTreeAST } from './utils';
 
 export interface IESModuleMeta {

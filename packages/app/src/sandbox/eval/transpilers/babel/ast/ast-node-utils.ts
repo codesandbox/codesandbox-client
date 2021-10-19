@@ -1,5 +1,5 @@
 import { ESTree } from 'meriyah';
-import { Syntax as n } from './syntax';
+import { NodeTypes as n } from '@meriyah-utils/types';
 
 export function generateRequireStatement(varName: string, requirePath: string) {
   // Generates `var $varName = require('$requirePath');

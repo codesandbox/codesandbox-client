@@ -1,6 +1,8 @@
 /* eslint-enable import/default */
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 import { isUrl } from '@codesandbox/common/lib/utils/is-url';
+import { convertEsModule } from '@meriyah-utils/esm-to-cjs';
+import { collectDependencies } from '@meriyah-utils/cjs-dependency-collector';
 
 /* eslint-disable import/default */
 // @ts-ignore
@@ -12,9 +14,7 @@ import { LoaderContext, Manager } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler/transpiler';
 import getBabelConfig from './babel-parser';
 import { getSyntaxInfoFromAst } from './ast/syntax-info';
-import { convertEsModule } from './ast/convert-esmodule';
-import { ESTreeAST, generateCode, parseModule } from './ast/utils';
-import { collectDependenciesFromAST } from './ast/collect-dependencies';
+import { generateCode, parseModule } from './ast/utils';
 import { rewriteImportMeta } from './ast/rewrite-meta';
 
 const MAX_WORKER_ITERS = 100;
@@ -111,7 +111,7 @@ class BabelTranspiler extends WorkerTranspiler {
     // node_modules to commonjs and collecting deps
     if (loaderContext.options.simpleRequire || isNodeModule) {
       try {
-        const ast: ESTreeAST = parseModule(code);
+        const ast = parseModule(code);
         const syntaxInfo = getSyntaxInfoFromAst(ast);
         if (!syntaxInfo.jsx) {
           // If the code is ESM we transform it to commonjs and return it
@@ -120,7 +120,7 @@ class BabelTranspiler extends WorkerTranspiler {
             convertEsModule(ast);
             // We collect requires instead of doing this in convertESModule as some modules also use require
             // Which is actually invalid but we probably don't wanna break anyone's code if it works in other bundlers...
-            const deps = collectDependenciesFromAST(ast);
+            const deps = collectDependencies(ast);
             await addCollectedDependencies(
               loaderContext,
               deps.map(d => ({
@@ -138,7 +138,7 @@ class BabelTranspiler extends WorkerTranspiler {
 
           // If the code is commonjs and does not contain any more jsx, we generate and return the code.
           measure(`dep-collection-${path}`);
-          const deps = collectDependenciesFromAST(ast);
+          const deps = collectDependencies(ast);
           await addCollectedDependencies(
             loaderContext,
             deps.map(d => ({

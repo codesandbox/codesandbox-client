@@ -1,4 +1,4 @@
-import { GENERATOR } from 'meriyah-printer';
+import { GENERATOR } from '@meriyah-utils/printer';
 import { ESTree } from 'meriyah';
 
 /**

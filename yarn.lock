@@ -3818,6 +3818,38 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
+"@meriyah-utils/cjs-dependency-collector@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@meriyah-utils/cjs-dependency-collector/-/cjs-dependency-collector-1.0.2.tgz#036d9bef8bd799fd0f22d8068296647fde188bee"
+  integrity sha512-SZJsOkwrTfofw3J2vvBGdlgB9Xem/bUzBc+WU9+k6Z0UCheJaX9ESXgGpwsMtlwjbgOI4xT5Q3OdK1iWp+kjfA==
+  dependencies:
+    "@meriyah-utils/types" "^1.0.2"
+    "@meriyah-utils/walker" "^1.0.2"
+
+"@meriyah-utils/esm-to-cjs@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@meriyah-utils/esm-to-cjs/-/esm-to-cjs-1.0.2.tgz#9bfc09bf6479dee4dc50ddc471a9bf630b3d3f06"
+  integrity sha512-bgq+CGbZHc81JQNtBfhBDf2I2cEIgUs3MkNNG6CTjFnoFkftDsqCsEzb/rEK6O5Z6L1YpPPCuNOwcFMkR2xIkA==
+  dependencies:
+    "@meriyah-utils/types" "^1.0.2"
+    "@meriyah-utils/walker" "^1.0.2"
+    escope "^3.6.0"
+
+"@meriyah-utils/printer@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@meriyah-utils/printer/-/printer-1.0.2.tgz#80355bcb2424c8313379e312280fb506294c7639"
+  integrity sha512-UN4tJ4eQT5R/mZTsFx3k0OiFv/15WwSfCrZH6x3xEHM+HIidzSe7WTYRAUzsDtpGqmE2FSVwouDpHEjDEm/oJg==
+
+"@meriyah-utils/types@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@meriyah-utils/types/-/types-1.0.2.tgz#3cb502b47bf09370722fdc0a988313a3f7c95bf5"
+  integrity sha512-iDlCxJ1mLVDLvwv9XurhG5w4QSCO38sRxB7Se0H70B8k9TjpQ15K12oeiRr1hQZuEVl/mkL1UmCPi1GqbP1Plw==
+
+"@meriyah-utils/walker@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@meriyah-utils/walker/-/walker-1.0.2.tgz#4175b9aa58f2d607e4bc88d99ae591e67702e57a"
+  integrity sha512-l9dqXeU0mQGYr5AkXrNavE2lfnYIU/bSRtHlBfSnv1cMqGZxzZQVM1CUV+MlcFW/3BNVtJIGS/lgIkqFZ3Gypw==
+
 "@mikaelkristiansson/domready@^1.0.9":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@mikaelkristiansson/domready/-/domready-1.0.9.tgz#b2b85d8ac7bb2797e577050b61aeaf1b26fbd906"
@@ -22026,11 +22058,6 @@ merge2@^1.2.3, merge2@^1.3.0:
 merge@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.0.tgz#7531e39d4949c281a66b8c5a6e0265e8b05894da"
-
-meriyah-printer@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/meriyah-printer/-/meriyah-printer-1.0.3.tgz#519e61c41889309c128e33e6aa6d418022234f8f"
-  integrity sha512-26Mq3vFmhc681KZbnCld2CPM0ucIxOdXtUG+20L1jO9JcDb+iYq1AQ65Nih5IoeLc/lO0iXHR2IKSc/uJSbTKA==
 
 meriyah@^4.2.0:
   version "4.2.0"
