@@ -9,13 +9,13 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 
 import {
   Element,
   Collapsible,
   Text,
   Link,
-  Avatar,
   Stack,
   List,
   ListItem,
@@ -85,17 +85,17 @@ export const Summary = () => {
       <Divider marginTop={8} marginBottom={4} />
 
       <Stack as="section" direction="vertical" gap={4}>
-        {author ? (
+        {team ? (
           <Link href={profileUrl(author.username)}>
             <Stack gap={2} align="center" paddingX={2}>
-              <Avatar user={author} />
+              <TeamAvatar name={team.name} avatar={team.avatarUrl} />
               <Stack direction="vertical">
                 <Link variant={team ? 'body' : 'muted'} block>
-                  {author.username}
+                  {team.name}
                 </Link>
-                {team && (
+                {author && (
                   <Text size={2} variant="muted">
-                    {team.name}
+                    {author.name || author.username}
                   </Text>
                 )}
               </Stack>

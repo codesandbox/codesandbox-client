@@ -7,7 +7,6 @@ import {
   sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import {
-  Avatar,
   Collapsible,
   Element,
   Label,
@@ -24,6 +23,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Markdown } from 'app/components/Markdown';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 import { useAppState, useActions } from 'app/overmind';
 import React, { useEffect } from 'react';
 
@@ -115,17 +115,17 @@ export const Summary = () => {
       </Element>
 
       <Stack as="section" direction="vertical" gap={4} paddingX={2}>
-        {author ? (
+        {team ? (
           <Link href={profileUrl(author.username)}>
             <Stack gap={2} align="center" css={{ display: 'inline-flex' }}>
-              <Avatar user={author} />
+              <TeamAvatar name={team.name} avatar={team.avatarUrl} />
               <Element>
                 <Text variant={team ? 'body' : 'muted'} block>
-                  {author.username}
+                  {team.name}
                 </Text>
-                {team && (
+                {author && (
                   <Text size={2} marginTop={1} variant="muted" maxWidth="100%">
-                    {team.name}
+                    {author.name || author.username}
                   </Text>
                 )}
               </Element>
