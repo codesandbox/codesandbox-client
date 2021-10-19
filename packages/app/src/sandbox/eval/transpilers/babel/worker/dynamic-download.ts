@@ -1,8 +1,9 @@
 import resolve from 'browser-resolve';
+import { convertEsModule } from '@meriyah-utils/esm-to-cjs';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
+
 import getRequireStatements from './simple-get-require-statements';
 import { packageFilter } from '../../../utils/resolve-utils';
-import { convertEsModule } from '../ast/convert-esmodule';
 import { generateCode, parseModule } from '../ast/utils';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
 

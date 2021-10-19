@@ -89,7 +89,7 @@ function setupCompiler(port, protocol) {
   // "done" event fires when Webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
   compiler.hooks.done.tap('done', stats => {
-    clearConsole();
+    // clearConsole();
     const took = new Date() - compileStart;
 
     // We have switched off the default Webpack output in WebpackDevServer
@@ -99,6 +99,11 @@ function setupCompiler(port, protocol) {
     // https://github.com/facebookincubator/create-react-app/issues/401#issuecomment-238291901
     if (stats.hasErrors()) {
       console.log(chalk.red(`Failed to compile after ${took / 1000}s.\n`));
+      if (stats.compilation.missingDependencies) {
+        stats.compilation.missingDependencies.forEach(dep => {
+          console.error(`Missing dependency: ${dep}`);
+        });
+      }
       var json = stats.toJson({}, true);
       var formattedErrors = json.errors.map(
         message => 'Error in ' + formatMessage(message)
