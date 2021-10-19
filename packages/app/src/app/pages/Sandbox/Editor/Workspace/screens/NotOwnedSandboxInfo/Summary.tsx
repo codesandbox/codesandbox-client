@@ -28,6 +28,11 @@ import css from '@styled-system/css';
 import { BookmarkTemplateButton } from './BookmarkTemplateButton';
 import { GitHubIcon } from '../GitHub/Icons';
 
+const LinkOrSpan = ({ href, ...props }) => {
+  const component = href ? Link : 'span';
+  return React.createElement(component, { href, ...props });
+};
+
 export const Summary = () => {
   const {
     editor: { currentSandbox, isForkingSandbox },
@@ -89,14 +94,14 @@ export const Summary = () => {
       <Divider marginTop={8} marginBottom={4} />
 
       <Stack as="section" direction="vertical" gap={4}>
-        {team ? (
-          <Link href={profileUrl(author.username)}>
+        {team && !currentSandbox.git ? (
+          <LinkOrSpan href={author && profileUrl(author.username)}>
             <Stack gap={2} align="center" paddingX={2}>
               <TeamAvatar name={team.name} avatar={team.avatarUrl} />
               <Stack direction="vertical">
-                <Link variant={team ? 'body' : 'muted'} block>
+                <Text variant={author ? 'body' : 'muted'} block>
                   {team.name}
-                </Link>
+                </Text>
                 {author && (
                   <Text size={2} variant="muted">
                     {author.name || author.username}
@@ -104,7 +109,7 @@ export const Summary = () => {
                 )}
               </Stack>
             </Stack>
-          </Link>
+          </LinkOrSpan>
         ) : null}
 
         {!author && currentSandbox.git ? (

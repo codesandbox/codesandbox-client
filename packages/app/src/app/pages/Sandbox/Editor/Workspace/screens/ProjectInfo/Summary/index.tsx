@@ -32,6 +32,11 @@ import { GitHubIcon } from '../../GitHub/Icons';
 import { EditSummary } from './EditSummary';
 import { TemplateConfig } from './TemplateConfig';
 
+const LinkOrSpan = ({ href, ...props }) => {
+  const component = href ? Link : 'span';
+  return React.createElement(component, { href, ...props });
+};
+
 export const Summary = () => {
   const {
     currentSandbox,
@@ -124,12 +129,12 @@ export const Summary = () => {
       </Element>
 
       <Stack as="section" direction="vertical" gap={4} paddingX={2}>
-        {team ? (
-          <Link href={profileUrl(author.username)}>
+        {team && !currentSandbox.git ? (
+          <LinkOrSpan href={author && profileUrl(author.username)}>
             <Stack gap={2} align="center" css={{ display: 'inline-flex' }}>
               <TeamAvatar name={team.name} avatar={team.avatarUrl} />
               <Element>
-                <Text variant={team ? 'body' : 'muted'} block>
+                <Text variant={author ? 'body' : 'muted'} block>
                   {team.name}
                 </Text>
                 {author && (
@@ -139,7 +144,7 @@ export const Summary = () => {
                 )}
               </Element>
             </Stack>
-          </Link>
+          </LinkOrSpan>
         ) : null}
 
         {!author && currentSandbox.git ? (
