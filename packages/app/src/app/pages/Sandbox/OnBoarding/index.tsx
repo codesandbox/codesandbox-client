@@ -15,7 +15,7 @@ import { AUTO_RUN_TIMER } from './config';
 const MARGIN = 16;
 
 const OnBoarding = () => {
-  const [visibility, setVisibility] = useState(false);
+  const [visibility, setVisibility] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(0);
 
@@ -47,6 +47,7 @@ const OnBoarding = () => {
   const completeOnboarding = () => {
     setVisibility(false);
     localStorage.removeItem('should-onboarding-user');
+    track('OnBoarding - complete', { slideIndex: currentIndex });
   };
 
   const nodeItems = useRef<HTMLDivElement[]>([]);
@@ -100,7 +101,6 @@ const OnBoarding = () => {
         // Auto-close after animation
         if (currentIndex + 1 === listLength) {
           completeOnboarding();
-          track('OnBoarding - complete');
         }
       }, AUTO_RUN_TIMER);
 
@@ -225,6 +225,7 @@ const Background = styled(motion.div)`
 
 const ScrollView = styled(motion.div)`
   display: flex;
+  align-items: center;
 
   box-sizing: border-box;
   height: 100%;
@@ -233,15 +234,16 @@ const ScrollView = styled(motion.div)`
   padding-top: 3.75rem;
   padding-bottom: 10rem;
   padding-left: 50vw;
-
-  @media screen and (min-width: 1700px) {
-    padding-bottom: 16rem;
-  }
 `;
 
 const StackHolder = styled.div`
   display: flex;
   transition: all 0.3s ease;
+  height: 100%;
+
+  @media screen and (min-width: 420px) {
+    height: auto;
+  }
 `;
 
 const CloseButton = styled.button`
