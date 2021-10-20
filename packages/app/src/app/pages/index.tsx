@@ -52,6 +52,11 @@ const SignIn = Loadable(() =>
     default: module.SignIn,
   }))
 );
+const SignOut = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-out' */ './SignOut').then(module => ({
+    default: module.SignOut,
+  }))
+);
 const Live = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
     default: module.Live,
@@ -201,6 +206,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:roomId" component={Live} />
             <Route path="/signin" exact component={SignIn} />
+            <Route path="/signout" exact component={SignOut} />
             <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
