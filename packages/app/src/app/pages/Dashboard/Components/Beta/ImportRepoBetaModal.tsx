@@ -8,10 +8,11 @@ import css from '@styled-system/css';
 import {
   gitHubRepoPattern,
   gitHubToSandboxBetaUrl,
+  protocolAndHost,
 } from '@codesandbox/common/lib/utils/url-generator';
 
 const getFullGitHubUrl = (url: string) =>
-  `https://beta.codesandbox.stream${gitHubToSandboxBetaUrl(url)}`;
+  `${protocolAndHost()}/p${gitHubToSandboxBetaUrl(url)}`;
 
 export const ImportRepoBetaModal = () => {
   const { modals } = useAppState();
