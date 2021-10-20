@@ -12,6 +12,7 @@ import sassTranspiler from '../../transpilers/sass';
 import rawTranspiler from '../../transpilers/raw';
 import stylusTranspiler from '../../transpilers/stylus';
 import lessTranspiler from '../../transpilers/less';
+import postcssTranspiler from '../../transpilers/postcss';
 
 let polyfillsLoaded = false;
 
@@ -200,6 +201,11 @@ export default function initialize() {
     }
   );
 
+  const postcssWithConfig = {
+    transpiler: postcssTranspiler,
+    options: {},
+  };
+
   const sassWithConfig = {
     transpiler: sassTranspiler,
     options: {},
@@ -214,8 +220,9 @@ export default function initialize() {
     transpiler: stylusTranspiler,
     options: {},
   };
+
   const styles = {
-    css: [],
+    css: [postcssWithConfig],
     scss: [sassWithConfig],
     sass: [sassWithConfig],
     less: [lessWithConfig],
