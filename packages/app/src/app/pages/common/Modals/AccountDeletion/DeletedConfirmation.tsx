@@ -14,8 +14,8 @@ export const AccountDeletionConfirmationModal: FunctionComponent = () => {
           Your account will be deleted within 3 working days. <br />
           <br />
           If you{"'"}ve changed your mind, please email us at{' '}
-          <a href="mailto:hello@codesandbox.io">hello@codesandbox.io</a> with
-          your username.
+          <a href="mailto:support@codesandbox.io">support@codesandbox.io</a>{' '}
+          with your username.
         </>
       }
       onPrimaryAction={async () => {

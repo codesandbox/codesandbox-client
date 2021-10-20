@@ -77,6 +77,6 @@ becoming better, and with the updates we have lined up for the summer you’ll
 soon be able to work on any project from anywhere.
 
 We’re curious about what you think, if you have any feedback or an idea you’d
-like us to hear, don’t hesitate to [let us know](mailto:hello@codesandbox.io)!
+like us to hear, don’t hesitate to [let us know](mailto:support@codesandbox.io)!
 And make sure to try out play.js
 [here!](https://apps.apple.com/us/app/play-js-javascript-ide/id1423330822)

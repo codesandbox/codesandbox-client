@@ -1818,7 +1818,7 @@ export const deleteAccount = async ({ state, effects }: Context) => {
     state.currentModal = 'deleteConfirmation';
   } catch {
     effects.notificationToast.error(
-      'There was a problem requesting your account deletion. Please email us at hello@codesandbox.io'
+      'There was a problem requesting your account deletion. Please email us at support@codesandbox.io'
     );
   }
 };

@@ -199,7 +199,7 @@ export default () => {
           title="Custom deploy options & support"
           subtitle="Get the security and support your organization needs."
           cta="Contact us"
-          link="mailto:hello@codesandbox.io"
+          link="mailto:support@codesandbox.io"
         />
       </Wrapper>
     </Layout>
