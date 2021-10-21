@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
@@ -58,22 +64,22 @@ const OnBoarding = () => {
   const handlePrev = useCallback(() => {
     if (currentIndex === 0) return;
 
-    const element = nodeItems.current[currentIndex - 1];
+    const element = nodeItems.current?.[currentIndex - 1];
 
     if (!element) return;
 
-    setSliderPosition(prev => prev + element.offsetWidth + MARGIN);
+    setSliderPosition(prev => prev + (element.offsetWidth ?? 0) + MARGIN);
     setCurrentIndex(prev => prev - 1);
   }, [currentIndex]);
 
   const handleNext = useCallback(() => {
     if (currentIndex + 1 >= listLength) return;
 
-    const element = nodeItems.current[currentIndex + 1];
+    const element = nodeItems.current?.[currentIndex + 1];
 
     if (!element) return;
 
-    setSliderPosition(prev => prev - element.offsetWidth - MARGIN);
+    setSliderPosition(prev => prev - (element.offsetWidth ?? 0) - MARGIN);
     setCurrentIndex(prev => prev + 1);
   }, [currentIndex, listLength]);
 
@@ -112,7 +118,9 @@ const OnBoarding = () => {
   );
 
   const centerElement = useCallback(() => {
-    const elementWidth = nodeItems.current[0].offsetWidth;
+    if (!nodeItems.current) return;
+
+    const elementWidth = nodeItems.current[0]?.offsetWidth ?? 0;
 
     setCurrentIndex(0);
     setSliderPosition(-elementWidth / 2);
@@ -129,7 +137,7 @@ const OnBoarding = () => {
     [centerElement]
   );
 
-  useEffect(
+  useLayoutEffect(
     function init() {
       if (visibility) {
         centerElement();
