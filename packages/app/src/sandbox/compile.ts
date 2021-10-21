@@ -403,14 +403,10 @@ function initializeDOMMutationListener() {
   });
 }
 
-function initializeListener() {
-  document.addEventListener('load', sendResize, { capture: true });
-  window.addEventListener('resize', sendResize);
-
-  window.addEventListener('unload', () => {
-    document.removeEventListener('load', sendResize);
-    window.removeEventListener('resize', sendResize);
-  });
+let resizePollingTimer;
+function resizePolling() {
+  clearInterval(resizePollingTimer);
+  resizePollingTimer = setInterval(sendResize, 500);
 }
 
 function overrideDocumentClose() {
@@ -867,9 +863,9 @@ async function compile(opts: CompileOptions) {
 
   if (!hadError && firstLoad) {
     initializeDOMMutationListener();
-    initializeListener();
   }
 
+  resizePolling();
   sendResize();
 
   firstLoad = false;
