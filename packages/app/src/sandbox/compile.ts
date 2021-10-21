@@ -859,6 +859,8 @@ async function compile(opts: CompileOptions) {
     initializeDOMMutationListener();
   }
 
+  sendResize();
+
   firstLoad = false;
 
   dispatch({ type: 'status', status: 'idle' });
