@@ -15,7 +15,7 @@ import { AUTO_RUN_TIMER } from './config';
 const MARGIN = 16;
 
 const OnBoarding = () => {
-  const [visibility, setVisibility] = useState(true);
+  const [visibility, setVisibility] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(0);
 
