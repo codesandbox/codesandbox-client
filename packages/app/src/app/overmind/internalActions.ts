@@ -219,6 +219,9 @@ export const runProviderAuth = (
 
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
+
+    localStorage.setItem('should-onboarding-user', 'true');
+
     popup.close();
   });
 
