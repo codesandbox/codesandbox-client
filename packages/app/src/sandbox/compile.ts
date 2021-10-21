@@ -407,6 +407,18 @@ let resizePollingTimer;
 function resizePolling() {
   clearInterval(resizePollingTimer);
   resizePollingTimer = setInterval(sendResize, 500);
+
+  window.addEventListener('unload', () => {
+    clearInterval(resizePollingTimer);
+  });
+}
+
+function onWindowResize() {
+  window.addEventListener('resize', sendResize);
+
+  window.addEventListener('unload', () => {
+    window.removeEventListener('resize', sendResize);
+  });
 }
 
 function overrideDocumentClose() {
@@ -865,7 +877,9 @@ async function compile(opts: CompileOptions) {
     initializeDOMMutationListener();
   }
 
+  onWindowResize();
   resizePolling();
+
   sendResize();
 
   firstLoad = false;
