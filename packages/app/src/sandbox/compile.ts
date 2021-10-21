@@ -403,6 +403,16 @@ function initializeDOMMutationListener() {
   });
 }
 
+function initializeListener() {
+  document.addEventListener('load', sendResize, { capture: true });
+  window.addEventListener('resize', sendResize);
+
+  window.addEventListener('unload', () => {
+    document.removeEventListener('load', sendResize);
+    window.removeEventListener('resize', sendResize);
+  });
+}
+
 function overrideDocumentClose() {
   const oldClose = window.document.close;
 
@@ -857,6 +867,7 @@ async function compile(opts: CompileOptions) {
 
   if (!hadError && firstLoad) {
     initializeDOMMutationListener();
+    initializeListener();
   }
 
   sendResize();
