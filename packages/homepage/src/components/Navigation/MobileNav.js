@@ -163,7 +163,7 @@ export default () => {
               <Headers>Support</Headers>
               <Items>
                 <li>
-                  <a href="mailto:hello@codesandbox.io" title="Support">
+                  <a href="mailto:support@codesandbox.io" title="Support">
                     <IconWrapper>
                       <SupportIcon />
                     </IconWrapper>

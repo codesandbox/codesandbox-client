@@ -282,7 +282,7 @@ jurisdiction.
 
 ## 13. Contact us
 
-CodeSandbox B.V. <br> <hello@codesandbox.io>
+CodeSandbox B.V. <br> <support@codesandbox.io>
 
 Singel 542 <br> 1017AZ Amsterdam<br> The Netherlands<br> VAT ID (BTW):
 NL858886583B01<br> Company Registration ID (KvK): 71881972

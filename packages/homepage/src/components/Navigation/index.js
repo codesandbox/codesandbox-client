@@ -267,12 +267,12 @@ const Navigation = () => {
                   components={[
                     {
                       Icon: () => (
-                        <a href="mailto:hello@codesandbox.io" title="Support">
+                        <a href="mailto:support@codesandbox.io" title="Support">
                           <SupportIcon />
                         </a>
                       ),
                       Label: () => (
-                        <a href="mailto:hello@codesandbox.io">
+                        <a href="mailto:support@codesandbox.io">
                           Contact Support
                         </a>
                       ),

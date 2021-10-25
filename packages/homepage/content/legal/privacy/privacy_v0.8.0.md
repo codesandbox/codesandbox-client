@@ -249,7 +249,7 @@ stopped from being sent to them, and spells out tough penalties for violations.
 - Allow users to unsubscribe by using the link at the bottom of each email.
 
 **If at any time you would like to unsubscribe from receiving future emails, you
-can email us at hello@codesandbox.io**
+can email us at support@codesandbox.io**
 
 - Follow the instructions at the bottom of each email. and we will promptly
   remove you from **ALL** correspondence.
@@ -262,4 +262,4 @@ using the information below.
 ### Codesandbox.io
 
 Calslaan 5B<br> Enschede, Overijssel 7522 MH<br> Netherlands<br>
-hello@codesandbox.io<br>
+support@codesandbox.io<br>
