@@ -1,0 +1,1 @@
+{"version":3,"file":"cancellation.js","sourceRoot":"../../src","sources":["tsServer/cancellation.ts"],"names":[],"mappings":";AAAA;;;gGAGgG;;;AAahG,MAAM,oBAAoB,GAAG,IAAI;IAAA;QAChB,yBAAoB,GAAG,SAAS,CAAC;IAKlD,CAAC;IAHO,uBAAuB,CAAC,IAAY;QAC1C,OAAO,KAAK,CAAC;IACd,CAAC;CACD,CAAC;AAEW,QAAA,2BAA2B,GAAG,IAAI;IAC9C,MAAM,CAAC,SAAiB,EAAE,OAAe;QACxC,OAAO,oBAAoB,CAAC;IAC7B,CAAC;CACD,CAAC"}
