@@ -4,39 +4,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = require("fs");
+exports.SyntaxRoutingTsServer = exports.GetErrRoutingTsServer = exports.ProcessBasedTsServer = exports.ExecutionTarget = void 0;
 const vscode = require("vscode");
+const protocol_const_1 = require("../protocol.const");
+const callbackMap_1 = require("../tsServer/callbackMap");
+const requestQueue_1 = require("../tsServer/requestQueue");
+const serverError_1 = require("../tsServer/serverError");
 const typescriptService_1 = require("../typescriptService");
 const dispose_1 = require("../utils/dispose");
-const wireProtocol_1 = require("../utils/wireProtocol");
-const callbackMap_1 = require("./callbackMap");
-const requestQueue_1 = require("./requestQueue");
-const serverError_1 = require("./serverError");
-class PipeRequestCanceller {
-    constructor(_serverId, _cancellationPipeName, _tracer) {
-        this._serverId = _serverId;
-        this._cancellationPipeName = _cancellationPipeName;
-        this._tracer = _tracer;
-    }
-    tryCancelOngoingRequest(seq) {
-        if (!this._cancellationPipeName) {
-            return false;
-        }
-        this._tracer.logTrace(this._serverId, `TypeScript Server: trying to cancel ongoing request with sequence number ${seq}`);
-        try {
-            fs.writeFileSync(this._cancellationPipeName + seq, '');
-        }
-        catch (_a) {
-            // noop
-        }
-        return true;
-    }
-}
-exports.PipeRequestCanceller = PipeRequestCanceller;
+var ExecutionTarget;
+(function (ExecutionTarget) {
+    ExecutionTarget[ExecutionTarget["Semantic"] = 0] = "Semantic";
+    ExecutionTarget[ExecutionTarget["Syntax"] = 1] = "Syntax";
+})(ExecutionTarget = exports.ExecutionTarget || (exports.ExecutionTarget = {}));
 class ProcessBasedTsServer extends dispose_1.Disposable {
-    constructor(_serverId, _process, _tsServerLogFile, _requestCanceller, _version, _telemetryReporter, _tracer) {
+    constructor(_serverId, _serverSource, _process, _tsServerLogFile, _requestCanceller, _version, _telemetryReporter, _tracer) {
         super();
         this._serverId = _serverId;
+        this._serverSource = _serverSource;
         this._process = _process;
         this._tsServerLogFile = _tsServerLogFile;
         this._requestCanceller = _requestCanceller;
@@ -52,18 +37,18 @@ class ProcessBasedTsServer extends dispose_1.Disposable {
         this.onExit = this._onExit.event;
         this._onError = this._register(new vscode.EventEmitter());
         this.onError = this._onError.event;
-        this._reader = this._register(new wireProtocol_1.Reader(this._process.stdout));
-        this._reader.onData(msg => this.dispatchMessage(msg));
-        this._process.on('exit', code => {
-            this._onExit.fire(code);
+        this._process.onData(msg => {
+            this.dispatchMessage(msg);
+        });
+        this._process.onExit((code, signal) => {
+            this._onExit.fire({ code, signal });
             this._callbacks.destroy('server exited');
         });
-        this._process.on('error', error => {
+        this._process.onError(error => {
             this._onError.fire(error);
             this._callbacks.destroy('server errored');
         });
     }
-    get onReaderError() { return this._reader.onError; }
     get tsServerLogFile() { return this._tsServerLogFile; }
     write(serverRequest) {
         this._process.write(serverRequest);
@@ -80,16 +65,24 @@ class ProcessBasedTsServer extends dispose_1.Disposable {
         try {
             switch (message.type) {
                 case 'response':
-                    this.dispatchResponse(message);
+                    if (this._serverSource) {
+                        this.dispatchResponse({
+                            ...message,
+                            _serverType: this._serverSource
+                        });
+                    }
+                    else {
+                        this.dispatchResponse(message);
+                    }
                     break;
                 case 'event':
                     const event = message;
                     if (event.event === 'requestCompleted') {
                         const seq = event.body.request_seq;
-                        const p = this._callbacks.fetch(seq);
-                        if (p) {
-                            this._tracer.traceRequestCompleted(this._serverId, 'requestCompleted', seq, p.startTime);
-                            p.onSuccess(undefined);
+                        const callback = this._callbacks.fetch(seq);
+                        if (callback) {
+                            this._tracer.traceRequestCompleted(this._serverId, 'requestCompleted', seq, callback);
+                            callback.onSuccess(undefined);
                         }
                     }
                     else {
@@ -129,7 +122,7 @@ class ProcessBasedTsServer extends dispose_1.Disposable {
         if (!callback) {
             return;
         }
-        this._tracer.traceResponse(this._serverId, response, callback.startTime);
+        this._tracer.traceResponse(this._serverId, response, callback);
         if (response.success) {
             callback.onSuccess(response);
         }
@@ -152,7 +145,7 @@ class ProcessBasedTsServer extends dispose_1.Disposable {
         let result;
         if (executeInfo.expectsResult) {
             result = new Promise((resolve, reject) => {
-                this._callbacks.add(request.seq, { onSuccess: resolve, onError: reject, startTime: Date.now(), isAsync: executeInfo.isAsync }, executeInfo.isAsync);
+                this._callbacks.add(request.seq, { onSuccess: resolve, onError: reject, queuingStartTime: Date.now(), isAsync: executeInfo.isAsync }, executeInfo.isAsync);
                 if (executeInfo.token) {
                     executeInfo.token.onCancellationRequested(() => {
                         this.tryCancelRequest(request.seq, command);
@@ -163,21 +156,13 @@ class ProcessBasedTsServer extends dispose_1.Disposable {
                     if (!executeInfo.token || !executeInfo.token.isCancellationRequested) {
                         /* __GDPR__
                             "languageServiceErrorResponse" : {
-                                "command" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-                                "message" : { "classification": "CallstackOrException", "purpose": "PerformanceAndHealth" },
-                                "stack" : { "classification": "CallstackOrException", "purpose": "PerformanceAndHealth" },
-                                "errortext" : { "classification": "CallstackOrException", "purpose": "PerformanceAndHealth" },
                                 "${include}": [
-                                    "${TypeScriptCommonProperties}"
+                                    "${TypeScriptCommonProperties}",
+                                    "${TypeScriptRequestErrorProperties}"
                                 ]
                             }
                         */
-                        this._telemetryReporter.logTelemetry('languageServiceErrorResponse', {
-                            command: err.serverCommand,
-                            message: err.serverMessage || '',
-                            stack: err.serverStack || '',
-                            errortext: err.serverErrorText || '',
-                        });
+                        this._telemetryReporter.logTelemetry('languageServiceErrorResponse', err.telemetry);
                     }
                 }
                 throw err;
@@ -185,7 +170,7 @@ class ProcessBasedTsServer extends dispose_1.Disposable {
         }
         this._requestQueue.enqueue(requestInfo);
         this.sendNextRequests();
-        return result;
+        return [result];
     }
     sendNextRequests() {
         while (this._pendingResponses.size === 0 && this._requestQueue.length > 0) {
@@ -229,72 +214,199 @@ class ProcessBasedTsServer extends dispose_1.Disposable {
         return lowPriority ? requestQueue_1.RequestQueueingType.LowPriority : requestQueue_1.RequestQueueingType.Normal;
     }
 }
-ProcessBasedTsServer.fenceCommands = new Set(['change', 'close', 'open', 'updateOpen']);
 exports.ProcessBasedTsServer = ProcessBasedTsServer;
-class SyntaxRoutingTsServer extends dispose_1.Disposable {
-    constructor(syntaxServer, semanticServer) {
-        super();
-        this.syntaxServer = syntaxServer;
-        this.semanticServer = semanticServer;
-        this._onEvent = this._register(new vscode.EventEmitter());
-        this.onEvent = this._onEvent.event;
-        this._onExit = this._register(new vscode.EventEmitter());
-        this.onExit = this._onExit.event;
-        this._onError = this._register(new vscode.EventEmitter());
-        this.onError = this._onError.event;
-        this._register(syntaxServer.onEvent(e => this._onEvent.fire(e)));
-        this._register(semanticServer.onEvent(e => this._onEvent.fire(e)));
-        this._register(semanticServer.onExit(e => {
-            this._onExit.fire(e);
-            this.syntaxServer.kill();
-        }));
-        this._register(semanticServer.onError(e => this._onError.fire(e)));
+ProcessBasedTsServer.fenceCommands = new Set(['change', 'close', 'open', 'updateOpen']);
+class RequestRouter {
+    constructor(servers, delegate) {
+        this.servers = servers;
+        this.delegate = delegate;
     }
-    get onReaderError() { return this.semanticServer.onReaderError; }
-    get tsServerLogFile() { return this.semanticServer.tsServerLogFile; }
-    kill() {
-        this.syntaxServer.kill();
-        this.semanticServer.kill();
-    }
-    executeImpl(command, args, executeInfo) {
-        if (SyntaxRoutingTsServer.syntaxCommands.has(command)) {
-            return this.syntaxServer.executeImpl(command, args, executeInfo);
-        }
-        else if (SyntaxRoutingTsServer.sharedCommands.has(command)) {
-            // Dispatch to both server but only return from syntax one
+    execute(command, args, executeInfo) {
+        if (RequestRouter.sharedCommands.has(command) && typeof executeInfo.executionTarget === 'undefined') {
+            // Dispatch shared commands to all servers but use first one as the primary response
+            const requestStates = this.servers.map(() => RequestState.Unresolved);
             // Also make sure we never cancel requests to just one server
-            let hasCompletedSyntax = false;
-            let hasCompletedSemantic = false;
             let token = undefined;
             if (executeInfo.token) {
                 const source = new vscode.CancellationTokenSource();
                 executeInfo.token.onCancellationRequested(() => {
-                    if (hasCompletedSyntax && !hasCompletedSemantic || hasCompletedSemantic && !hasCompletedSyntax) {
+                    if (requestStates.some(state => state === RequestState.Resolved)) {
                         // Don't cancel.
                         // One of the servers completed this request so we don't want to leave the other
-                        // in a different state
+                        // in a different state.
                         return;
                     }
                     source.cancel();
                 });
                 token = source.token;
             }
-            const semanticRequest = this.semanticServer.executeImpl(command, args, { ...executeInfo, token });
-            if (semanticRequest) {
-                semanticRequest.finally(() => { hasCompletedSemantic = true; });
+            const allRequests = [];
+            for (let serverIndex = 0; serverIndex < this.servers.length; ++serverIndex) {
+                const server = this.servers[serverIndex].server;
+                const request = server.executeImpl(command, args, { ...executeInfo, token })[0];
+                allRequests.push(request);
+                if (request) {
+                    request
+                        .then(result => {
+                        requestStates[serverIndex] = RequestState.Resolved;
+                        const erroredRequest = requestStates.find(state => state.type === 2 /* Errored */);
+                        if (erroredRequest) {
+                            // We've gone out of sync
+                            this.delegate.onFatalError(command, erroredRequest.err);
+                        }
+                        return result;
+                    }, err => {
+                        requestStates[serverIndex] = new RequestState.Errored(err);
+                        if (requestStates.some(state => state === RequestState.Resolved)) {
+                            // We've gone out of sync
+                            this.delegate.onFatalError(command, err);
+                        }
+                        throw err;
+                    });
+                }
             }
-            const syntaxRequest = this.syntaxServer.executeImpl(command, args, { ...executeInfo, token });
-            if (syntaxRequest) {
-                syntaxRequest.finally(() => { hasCompletedSyntax = true; });
+            return allRequests;
+        }
+        for (const { canRun, server } of this.servers) {
+            if (!canRun || canRun(command, executeInfo)) {
+                return server.executeImpl(command, args, executeInfo);
             }
-            return syntaxRequest;
         }
-        else {
-            return this.semanticServer.executeImpl(command, args, executeInfo);
-        }
+        throw new Error(`Could not find server for command: '${command}'`);
     }
 }
-SyntaxRoutingTsServer.syntaxCommands = new Set([
+RequestRouter.sharedCommands = new Set([
+    'change',
+    'close',
+    'open',
+    'updateOpen',
+    'configure',
+]);
+class GetErrRoutingTsServer extends dispose_1.Disposable {
+    constructor(servers, delegate) {
+        super();
+        this._onEvent = this._register(new vscode.EventEmitter());
+        this.onEvent = this._onEvent.event;
+        this._onExit = this._register(new vscode.EventEmitter());
+        this.onExit = this._onExit.event;
+        this._onError = this._register(new vscode.EventEmitter());
+        this.onError = this._onError.event;
+        this.getErrServer = servers.getErr;
+        this.mainServer = servers.primary;
+        this.router = new RequestRouter([
+            { server: this.getErrServer, canRun: (command) => ['geterr', 'geterrForProject'].includes(command) },
+            { server: this.mainServer, canRun: undefined /* gets all other commands */ }
+        ], delegate);
+        this._register(this.getErrServer.onEvent(e => {
+            if (GetErrRoutingTsServer.diagnosticEvents.has(e.event)) {
+                this._onEvent.fire(e);
+            }
+            // Ignore all other events
+        }));
+        this._register(this.mainServer.onEvent(e => {
+            if (!GetErrRoutingTsServer.diagnosticEvents.has(e.event)) {
+                this._onEvent.fire(e);
+            }
+            // Ignore all other events
+        }));
+        this._register(this.getErrServer.onError(e => this._onError.fire(e)));
+        this._register(this.mainServer.onError(e => this._onError.fire(e)));
+        this._register(this.mainServer.onExit(e => {
+            this._onExit.fire(e);
+            this.getErrServer.kill();
+        }));
+    }
+    get tsServerLogFile() { return this.mainServer.tsServerLogFile; }
+    kill() {
+        this.getErrServer.kill();
+        this.mainServer.kill();
+    }
+    executeImpl(command, args, executeInfo) {
+        return this.router.execute(command, args, executeInfo);
+    }
+}
+exports.GetErrRoutingTsServer = GetErrRoutingTsServer;
+GetErrRoutingTsServer.diagnosticEvents = new Set([
+    protocol_const_1.EventName.configFileDiag,
+    protocol_const_1.EventName.syntaxDiag,
+    protocol_const_1.EventName.semanticDiag,
+    protocol_const_1.EventName.suggestionDiag
+]);
+class SyntaxRoutingTsServer extends dispose_1.Disposable {
+    constructor(servers, delegate, enableDynamicRouting) {
+        super();
+        this._projectLoading = true;
+        this._onEvent = this._register(new vscode.EventEmitter());
+        this.onEvent = this._onEvent.event;
+        this._onExit = this._register(new vscode.EventEmitter());
+        this.onExit = this._onExit.event;
+        this._onError = this._register(new vscode.EventEmitter());
+        this.onError = this._onError.event;
+        this.syntaxServer = servers.syntax;
+        this.semanticServer = servers.semantic;
+        this.router = new RequestRouter([
+            {
+                server: this.syntaxServer,
+                canRun: (command, execInfo) => {
+                    switch (execInfo.executionTarget) {
+                        case ExecutionTarget.Semantic: return false;
+                        case ExecutionTarget.Syntax: return true;
+                    }
+                    if (SyntaxRoutingTsServer.syntaxAlwaysCommands.has(command)) {
+                        return true;
+                    }
+                    if (SyntaxRoutingTsServer.semanticCommands.has(command)) {
+                        return false;
+                    }
+                    if (enableDynamicRouting && this.projectLoading && SyntaxRoutingTsServer.syntaxAllowedCommands.has(command)) {
+                        return true;
+                    }
+                    return false;
+                }
+            }, {
+                server: this.semanticServer,
+                canRun: undefined /* gets all other commands */
+            }
+        ], delegate);
+        this._register(this.syntaxServer.onEvent(e => {
+            return this._onEvent.fire(e);
+        }));
+        this._register(this.semanticServer.onEvent(e => {
+            switch (e.event) {
+                case protocol_const_1.EventName.projectLoadingStart:
+                    this._projectLoading = true;
+                    break;
+                case protocol_const_1.EventName.projectLoadingFinish:
+                case protocol_const_1.EventName.semanticDiag:
+                case protocol_const_1.EventName.syntaxDiag:
+                case protocol_const_1.EventName.suggestionDiag:
+                case protocol_const_1.EventName.configFileDiag:
+                    this._projectLoading = false;
+                    break;
+            }
+            return this._onEvent.fire(e);
+        }));
+        this._register(this.semanticServer.onExit(e => {
+            this._onExit.fire(e);
+            this.syntaxServer.kill();
+        }));
+        this._register(this.semanticServer.onError(e => this._onError.fire(e)));
+    }
+    get projectLoading() { return this._projectLoading; }
+    get tsServerLogFile() { return this.semanticServer.tsServerLogFile; }
+    kill() {
+        this.syntaxServer.kill();
+        this.semanticServer.kill();
+    }
+    executeImpl(command, args, executeInfo) {
+        return this.router.execute(command, args, executeInfo);
+    }
+}
+exports.SyntaxRoutingTsServer = SyntaxRoutingTsServer;
+/**
+ * Commands that should always be run on the syntax server.
+ */
+SyntaxRoutingTsServer.syntaxAlwaysCommands = new Set([
     'navtree',
     'getOutliningSpans',
     'jsxClosingTag',
@@ -303,13 +415,42 @@ SyntaxRoutingTsServer.syntaxCommands = new Set([
     'formatonkey',
     'docCommentTemplate',
 ]);
-SyntaxRoutingTsServer.sharedCommands = new Set([
-    'change',
-    'close',
-    'open',
-    'updateOpen',
-    'configure',
+/**
+ * Commands that should always be run on the semantic server.
+ */
+SyntaxRoutingTsServer.semanticCommands = new Set([
+    'geterr',
+    'geterrForProject',
+    'projectInfo',
     'configurePlugin',
 ]);
-exports.SyntaxRoutingTsServer = SyntaxRoutingTsServer;
+/**
+ * Commands that can be run on the syntax server but would benefit from being upgraded to the semantic server.
+ */
+SyntaxRoutingTsServer.syntaxAllowedCommands = new Set([
+    'completions',
+    'completionEntryDetails',
+    'completionInfo',
+    'definition',
+    'definitionAndBoundSpan',
+    'documentHighlights',
+    'implementation',
+    'navto',
+    'quickinfo',
+    'references',
+    'rename',
+    'signatureHelp',
+]);
+var RequestState;
+(function (RequestState) {
+    RequestState.Unresolved = { type: 0 /* Unresolved */ };
+    RequestState.Resolved = { type: 1 /* Resolved */ };
+    class Errored {
+        constructor(err) {
+            this.err = err;
+            this.type = 2 /* Errored */;
+        }
+    }
+    RequestState.Errored = Errored;
+})(RequestState || (RequestState = {}));
 //# sourceMappingURL=server.js.map

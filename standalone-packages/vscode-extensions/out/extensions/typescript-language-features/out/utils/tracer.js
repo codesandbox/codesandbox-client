@@ -52,7 +52,7 @@ class Tracer {
         }
         this.logTrace(serverId, `Sending request: ${request.command} (${request.seq}). Response expected: ${responseExpected ? 'yes' : 'no'}. Current queue length: ${queueLength}`, data);
     }
-    traceResponse(serverId, response, startTime) {
+    traceResponse(serverId, response, meta) {
         if (this.trace === Trace.Off) {
             return;
         }
@@ -60,13 +60,13 @@ class Tracer {
         if (this.trace === Trace.Verbose && response.body) {
             data = `Result: ${JSON.stringify(response.body, null, 4)}`;
         }
-        this.logTrace(serverId, `Response received: ${response.command} (${response.request_seq}). Request took ${Date.now() - startTime} ms. Success: ${response.success} ${!response.success ? '. Message: ' + response.message : ''}`, data);
+        this.logTrace(serverId, `Response received: ${response.command} (${response.request_seq}). Request took ${Date.now() - meta.queuingStartTime} ms. Success: ${response.success} ${!response.success ? '. Message: ' + response.message : ''}`, data);
     }
-    traceRequestCompleted(serverId, command, request_seq, startTime) {
+    traceRequestCompleted(serverId, command, request_seq, meta) {
         if (this.trace === Trace.Off) {
             return;
         }
-        this.logTrace(serverId, `Async response received: ${command} (${request_seq}). Request took ${Date.now() - startTime} ms.`);
+        this.logTrace(serverId, `Async response received: ${command} (${request_seq}). Request took ${Date.now() - meta.queuingStartTime} ms.`);
     }
     traceEvent(serverId, event) {
         if (this.trace === Trace.Off) {

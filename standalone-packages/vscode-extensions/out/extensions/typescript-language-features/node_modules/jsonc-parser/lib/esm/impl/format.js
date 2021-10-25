@@ -192,4 +192,3 @@ function getEOL(options, text) {
 export function isEOL(text, offset) {
     return '\r\n'.indexOf(text.charAt(offset)) !== -1;
 }
-//# sourceMappingURL=format.js.map

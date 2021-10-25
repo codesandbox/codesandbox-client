@@ -4,6 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.memoize = void 0;
 function memoize(_target, key, descriptor) {
     let fnKey;
     let fn;

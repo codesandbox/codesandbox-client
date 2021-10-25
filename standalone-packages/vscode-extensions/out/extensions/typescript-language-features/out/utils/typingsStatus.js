@@ -4,54 +4,56 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AtaProgressReporter = void 0;
 const vscode = require("vscode");
 const vscode_nls_1 = require("vscode-nls");
 const dispose_1 = require("./dispose");
-const localize = vscode_nls_1.loadMessageBundle();
+const localize = (0, vscode_nls_1.loadMessageBundle)();
 const typingsInstallTimeout = 30 * 1000;
 class TypingsStatus extends dispose_1.Disposable {
     constructor(client) {
         super();
-        this._acquiringTypings = Object.create({});
-        this._subscriptions = [];
+        this._acquiringTypings = new Map();
         this._client = client;
-        this._subscriptions.push(this._client.onDidBeginInstallTypings(event => this.onBeginInstallTypings(event.eventId)));
-        this._subscriptions.push(this._client.onDidEndInstallTypings(event => this.onEndInstallTypings(event.eventId)));
+        this._register(this._client.onDidBeginInstallTypings(event => this.onBeginInstallTypings(event.eventId)));
+        this._register(this._client.onDidEndInstallTypings(event => this.onEndInstallTypings(event.eventId)));
     }
     dispose() {
         super.dispose();
-        this._subscriptions.forEach(x => x.dispose());
-        for (const eventId of Object.keys(this._acquiringTypings)) {
-            clearTimeout(this._acquiringTypings[eventId]);
+        for (const timeout of this._acquiringTypings.values()) {
+            clearTimeout(timeout);
         }
     }
     get isAcquiringTypings() {
         return Object.keys(this._acquiringTypings).length > 0;
     }
     onBeginInstallTypings(eventId) {
-        if (this._acquiringTypings[eventId]) {
+        if (this._acquiringTypings.has(eventId)) {
             return;
         }
-        this._acquiringTypings[eventId] = setTimeout(() => {
+        this._acquiringTypings.set(eventId, setTimeout(() => {
             this.onEndInstallTypings(eventId);
-        }, typingsInstallTimeout);
+        }, typingsInstallTimeout));
     }
     onEndInstallTypings(eventId) {
-        const timer = this._acquiringTypings[eventId];
+        const timer = this._acquiringTypings.get(eventId);
         if (timer) {
             clearTimeout(timer);
         }
-        delete this._acquiringTypings[eventId];
+        this._acquiringTypings.delete(eventId);
     }
 }
 exports.default = TypingsStatus;
-class AtaProgressReporter {
+class AtaProgressReporter extends dispose_1.Disposable {
     constructor(client) {
+        super();
         this._promises = new Map();
-        this._disposable = vscode.Disposable.from(client.onDidBeginInstallTypings(e => this._onBegin(e.eventId)), client.onDidEndInstallTypings(e => this._onEndOrTimeout(e.eventId)), client.onTypesInstallerInitializationFailed(_ => this.onTypesInstallerInitializationFailed()));
+        this._register(client.onDidBeginInstallTypings(e => this._onBegin(e.eventId)));
+        this._register(client.onDidEndInstallTypings(e => this._onEndOrTimeout(e.eventId)));
+        this._register(client.onTypesInstallerInitializationFailed(_ => this.onTypesInstallerInitializationFailed()));
     }
     dispose() {
-        this._disposable.dispose();
+        super.dispose();
         this._promises.forEach(value => value());
     }
     _onBegin(eventId) {
@@ -74,22 +76,16 @@ class AtaProgressReporter {
             resolve();
         }
     }
-    onTypesInstallerInitializationFailed() {
-        if (vscode.workspace.getConfiguration('typescript').get('check.npmIsInstalled', true)) {
-            vscode.window.showWarningMessage(localize('typesInstallerInitializationFailed.title', "Could not install typings files for JavaScript language features. Please ensure that NPM is installed or configure 'typescript.npm' in your user settings. Click [here]({0}) to learn more.", 'https://go.microsoft.com/fwlink/?linkid=847635'), {
+    async onTypesInstallerInitializationFailed() {
+        const config = vscode.workspace.getConfiguration('typescript');
+        if (config.get('check.npmIsInstalled', true)) {
+            const dontShowAgain = {
                 title: localize('typesInstallerInitializationFailed.doNotCheckAgain', "Don't Show Again"),
-                id: 1
-            }).then(selected => {
-                if (!selected) {
-                    return;
-                }
-                switch (selected.id) {
-                    case 1:
-                        const tsConfig = vscode.workspace.getConfiguration('typescript');
-                        tsConfig.update('check.npmIsInstalled', false, true);
-                        break;
-                }
-            });
+            };
+            const selected = await vscode.window.showWarningMessage(localize('typesInstallerInitializationFailed.title', "Could not install typings files for JavaScript language features. Please ensure that NPM is installed or configure 'typescript.npm' in your user settings. Click [here]({0}) to learn more.", 'https://go.microsoft.com/fwlink/?linkid=847635'), dontShowAgain);
+            if (selected === dontShowAgain) {
+                config.update('check.npmIsInstalled', false, true);
+            }
         }
     }
 }

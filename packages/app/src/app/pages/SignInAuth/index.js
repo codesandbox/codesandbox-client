@@ -44,8 +44,10 @@ export default class SignIn extends React.PureComponent {
   }
 
   getMessage = () => {
+    // eslint-disable-next-line no-console
+    console.log(this.props);
     if (this.state.redirect) {
-      document.location.href = newSandboxUrl();
+      // document.location.href = newSandboxUrl();
       return 'Redirecting to sandbox page';
     }
     if (this.state.error) {
@@ -53,9 +55,9 @@ export default class SignIn extends React.PureComponent {
     }
     if (this.state.jwt) return 'Signing in...';
     if (this.state.jwt == null) {
-      setTimeout(() => {
-        document.location.href = signInUrl();
-      }, 2000);
+      // setTimeout(() => {
+      //   document.location.href = signInUrl();
+      // }, 2000);
       return 'Redirecting to sign in page...';
     }
 

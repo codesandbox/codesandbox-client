@@ -4,6 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CallbackMap = void 0;
 const typescriptService_1 = require("../typescriptService");
 class CallbackMap {
     constructor() {

@@ -4,6 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RequestQueue = exports.RequestQueueingType = void 0;
 var RequestQueueingType;
 (function (RequestQueueingType) {
     /**

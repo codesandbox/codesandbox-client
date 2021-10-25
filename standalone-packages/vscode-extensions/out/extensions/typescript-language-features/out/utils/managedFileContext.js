@@ -8,20 +8,23 @@ const vscode = require("vscode");
 const dispose_1 = require("./dispose");
 const languageDescription_1 = require("./languageDescription");
 const languageModeIds_1 = require("./languageModeIds");
-/**
+/**E
  * When clause context set when the current file is managed by vscode's built-in typescript extension.
  */
 class ManagedFileContextManager extends dispose_1.Disposable {
-    constructor(normalizePath) {
+    constructor(activeJsTsEditorTracker, normalizePath) {
         super();
         this.normalizePath = normalizePath;
         this.isInManagedFileContext = false;
-        vscode.window.onDidChangeActiveTextEditor(this.onDidChangeActiveTextEditor, this, this._disposables);
-        this.onDidChangeActiveTextEditor(vscode.window.activeTextEditor);
+        activeJsTsEditorTracker.onDidChangeActiveJsTsEditor(this.onDidChangeActiveTextEditor, this, this._disposables);
+        this.onDidChangeActiveTextEditor(activeJsTsEditorTracker.activeJsTsEditor);
     }
     onDidChangeActiveTextEditor(editor) {
         if (editor) {
             this.updateContext(this.isManagedFile(editor));
+        }
+        else {
+            this.updateContext(false);
         }
     }
     updateContext(newValue) {
@@ -35,12 +38,12 @@ class ManagedFileContextManager extends dispose_1.Disposable {
         return this.isManagedScriptFile(editor) || this.isManagedConfigFile(editor);
     }
     isManagedScriptFile(editor) {
-        return languageModeIds_1.isSupportedLanguageMode(editor.document) && this.normalizePath(editor.document.uri) !== null;
+        return (0, languageModeIds_1.isSupportedLanguageMode)(editor.document) && this.normalizePath(editor.document.uri) !== null;
     }
     isManagedConfigFile(editor) {
-        return languageDescription_1.isJsConfigOrTsConfigFileName(editor.document.fileName);
+        return (0, languageDescription_1.isJsConfigOrTsConfigFileName)(editor.document.fileName);
     }
 }
-ManagedFileContextManager.contextName = 'typescript.isManagedFile';
 exports.default = ManagedFileContextManager;
+ManagedFileContextManager.contextName = 'typescript.isManagedFile';
 //# sourceMappingURL=managedFileContext.js.map

@@ -4,6 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RestartTsServerCommand = void 0;
 class RestartTsServerCommand {
     constructor(lazyClientHost) {
         this.lazyClientHost = lazyClientHost;

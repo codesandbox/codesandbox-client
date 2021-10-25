@@ -13,7 +13,7 @@ JSONC is JSON with JavaScript style comments. This node module provides a scanne
  - the *parseTree* function computes a hierarchical DOM with offsets representing the encountered properties and values.
  - the *parse* function evaluates the JavaScript object represented by JSON string in a fault tolerant fashion. 
  - the *getLocation* API returns a location object that describes the property or value located at a given offset in a JSON document.
- - ths *findNodeAtLocation* API finds the node at a given location path in a JSON DOM.
+ - the *findNodeAtLocation* API finds the node at a given location path in a JSON DOM.
  - the *format* API computes edits to format a JSON document.
  - the *modify* API computes edits to insert, remove or replace a property or value in a JSON document.
  - the *applyEdits* API applies edits to a document.

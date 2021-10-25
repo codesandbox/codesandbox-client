@@ -4,24 +4,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.deactivate = exports.activate = void 0;
+const fs = require("fs");
 const vscode = require("vscode");
 const api_1 = require("./api");
+const commandManager_1 = require("./commands/commandManager");
 const index_1 = require("./commands/index");
-const languageConfiguration_1 = require("./features/languageConfiguration");
-const typeScriptServiceClientHost_1 = require("./typeScriptServiceClientHost");
-const arrays_1 = require("./utils/arrays");
-const electron = require("./utils/electron");
-const rimraf = require("rimraf");
-const commandManager_1 = require("./utils/commandManager");
-const fileSchemes = require("./utils/fileSchemes");
-const languageDescription_1 = require("./utils/languageDescription");
-const lazy_1 = require("./utils/lazy");
-const logDirectoryProvider_1 = require("./utils/logDirectoryProvider");
-const managedFileContext_1 = require("./utils/managedFileContext");
+const languageConfiguration_1 = require("./languageFeatures/languageConfiguration");
+const lazyClientHost_1 = require("./lazyClientHost");
+const cancellation_electron_1 = require("./tsServer/cancellation.electron");
+const logDirectoryProvider_electron_1 = require("./tsServer/logDirectoryProvider.electron");
+const serverProcess_electron_1 = require("./tsServer/serverProcess.electron");
+const versionProvider_electron_1 = require("./tsServer/versionProvider.electron");
+const activeJsTsEditorTracker_1 = require("./utils/activeJsTsEditorTracker");
+const configuration_electron_1 = require("./utils/configuration.electron");
+const fileSystem_electron_1 = require("./utils/fileSystem.electron");
 const plugins_1 = require("./utils/plugins");
-const ProjectStatus = require("./utils/projectStatus");
-const surveyor_1 = require("./utils/surveyor");
-const task_1 = require("./features/task");
+const temp = require("./utils/temp.electron");
 function activate(context) {
     const pluginManager = new plugins_1.PluginManager();
     context.subscriptions.push(pluginManager);
@@ -29,69 +28,36 @@ function activate(context) {
     context.subscriptions.push(commandManager);
     const onCompletionAccepted = new vscode.EventEmitter();
     context.subscriptions.push(onCompletionAccepted);
-    const lazyClientHost = createLazyClientHost(context, pluginManager, commandManager, item => {
+    const logDirectoryProvider = new logDirectoryProvider_electron_1.NodeLogDirectoryProvider(context);
+    const versionProvider = new versionProvider_electron_1.DiskTypeScriptVersionProvider();
+    context.subscriptions.push(new languageConfiguration_1.LanguageConfigurationManager());
+    const activeJsTsEditorTracker = new activeJsTsEditorTracker_1.ActiveJsTsEditorTracker();
+    context.subscriptions.push(activeJsTsEditorTracker);
+    const lazyClientHost = (0, lazyClientHost_1.createLazyClientHost)(context, (0, fileSystem_electron_1.onCaseInsensitiveFileSystem)(), {
+        pluginManager,
+        commandManager,
+        logDirectoryProvider,
+        cancellerFactory: cancellation_electron_1.nodeRequestCancellerFactory,
+        versionProvider,
+        processFactory: serverProcess_electron_1.ChildServerProcess,
+        activeJsTsEditorTracker,
+        serviceConfigurationProvider: new configuration_electron_1.ElectronServiceConfigurationProvider(),
+    }, item => {
         onCompletionAccepted.fire(item);
     });
-    index_1.registerCommands(commandManager, lazyClientHost, pluginManager);
-    context.subscriptions.push(vscode.workspace.registerTaskProvider('typescript', new task_1.default(lazyClientHost.map(x => x.serviceClient))));
-    context.subscriptions.push(new languageConfiguration_1.LanguageConfigurationManager());
-    Promise.resolve().then(() => require('./features/tsconfig')).then(module => {
+    (0, index_1.registerBaseCommands)(commandManager, lazyClientHost, pluginManager, activeJsTsEditorTracker);
+    Promise.resolve().then(() => require('./task/taskProvider')).then(module => {
+        context.subscriptions.push(module.register(lazyClientHost.map(x => x.serviceClient)));
+    });
+    Promise.resolve().then(() => require('./languageFeatures/tsconfig')).then(module => {
         context.subscriptions.push(module.register());
     });
-    context.subscriptions.push(lazilyActivateClient(lazyClientHost, pluginManager));
-    return api_1.getExtensionApi(onCompletionAccepted.event, pluginManager);
+    context.subscriptions.push((0, lazyClientHost_1.lazilyActivateClient)(lazyClientHost, pluginManager, activeJsTsEditorTracker));
+    return (0, api_1.getExtensionApi)(onCompletionAccepted.event, pluginManager);
 }
 exports.activate = activate;
-function createLazyClientHost(context, pluginManager, commandManager, onCompletionAccepted) {
-    return lazy_1.lazy(() => {
-        const logDirectoryProvider = new logDirectoryProvider_1.default(context);
-        const clientHost = new typeScriptServiceClientHost_1.default(languageDescription_1.standardLanguageDescriptions, context.workspaceState, pluginManager, commandManager, logDirectoryProvider, onCompletionAccepted);
-        context.subscriptions.push(clientHost);
-        context.subscriptions.push(new surveyor_1.Surveyor(context.globalState, clientHost.serviceClient));
-        clientHost.serviceClient.onReady(() => {
-            context.subscriptions.push(ProjectStatus.create(clientHost.serviceClient, clientHost.serviceClient.telemetryReporter));
-        });
-        return clientHost;
-    });
-}
-function lazilyActivateClient(lazyClientHost, pluginManager) {
-    const disposables = [];
-    const supportedLanguage = arrays_1.flatten([
-        ...languageDescription_1.standardLanguageDescriptions.map(x => x.modeIds),
-        ...pluginManager.plugins.map(x => x.languages)
-    ]);
-    let hasActivated = false;
-    const maybeActivate = (textDocument) => {
-        if (!hasActivated && isSupportedDocument(supportedLanguage, textDocument)) {
-            hasActivated = true;
-            // Force activation
-            // tslint:disable-next-line:no-unused-expression
-            void lazyClientHost.value;
-            disposables.push(new managedFileContext_1.default(resource => {
-                return lazyClientHost.value.serviceClient.toPath(resource);
-            }));
-            return true;
-        }
-        return false;
-    };
-    const didActivate = vscode.workspace.textDocuments.some(maybeActivate);
-    if (!didActivate) {
-        const openListener = vscode.workspace.onDidOpenTextDocument(doc => {
-            if (maybeActivate(doc)) {
-                openListener.dispose();
-            }
-        }, undefined, disposables);
-    }
-    return vscode.Disposable.from(...disposables);
-}
-function isSupportedDocument(supportedLanguage, document) {
-    if (supportedLanguage.indexOf(document.languageId) < 0) {
-        return false;
-    }
-    return fileSchemes.isSupportedScheme(document.uri.scheme);
-}
 function deactivate() {
-    rimraf.sync(electron.getInstanceDir());
+    fs.rmdirSync(temp.getInstanceTempDir(), { recursive: true });
 }
 exports.deactivate = deactivate;
 //# sourceMappingURL=extension.js.map

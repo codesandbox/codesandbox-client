@@ -3,19 +3,13 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = require("path");
 const vscode = require("vscode");
 const cachedResponse_1 = require("./tsServer/cachedResponse");
+const typescriptService_1 = require("./typescriptService");
 const dispose_1 = require("./utils/dispose");
 const fileSchemes = require("./utils/fileSchemes");
-const memoize_1 = require("./utils/memoize");
 const validateSetting = 'validate.enable';
 const suggestionSetting = 'suggestionActions.enabled';
 class LanguageProvider extends dispose_1.Disposable {
@@ -33,40 +27,46 @@ class LanguageProvider extends dispose_1.Disposable {
         client.onReady(() => this.registerProviders());
     }
     get documentSelector() {
-        const documentSelector = [];
+        const semantic = [];
+        const syntax = [];
         for (const language of this.description.modeIds) {
-            for (const scheme of fileSchemes.supportedSchemes) {
-                documentSelector.push({ language, scheme });
+            syntax.push({ language });
+            for (const scheme of fileSchemes.semanticSupportedSchemes) {
+                semantic.push({ language, scheme });
             }
         }
-        return documentSelector;
+        return { semantic, syntax };
     }
     async registerProviders() {
         const selector = this.documentSelector;
         const cachedResponse = new cachedResponse_1.CachedResponse();
         await Promise.all([
-            Promise.resolve().then(() => require('./features/completions')).then(provider => this._register(provider.register(selector, this.description.id, this.client, this.typingsStatus, this.fileConfigurationManager, this.commandManager, this.telemetryReporter, this.onCompletionAccepted))),
-            Promise.resolve().then(() => require('./features/definitions')).then(provider => this._register(provider.register(selector, this.client))),
-            Promise.resolve().then(() => require('./features/directiveCommentCompletions')).then(provider => this._register(provider.register(selector, this.client))),
-            Promise.resolve().then(() => require('./features/documentHighlight')).then(provider => this._register(provider.register(selector, this.client))),
-            Promise.resolve().then(() => require('./features/documentSymbol')).then(provider => this._register(provider.register(selector, this.client, cachedResponse))),
-            Promise.resolve().then(() => require('./features/folding')).then(provider => this._register(provider.register(selector, this.client))),
-            Promise.resolve().then(() => require('./features/formatting')).then(provider => this._register(provider.register(selector, this.description.id, this.client, this.fileConfigurationManager))),
-            Promise.resolve().then(() => require('./features/hover')).then(provider => this._register(provider.register(selector, this.client))),
-            Promise.resolve().then(() => require('./features/implementations')).then(provider => this._register(provider.register(selector, this.client))),
-            Promise.resolve().then(() => require('./features/implementationsCodeLens')).then(provider => this._register(provider.register(selector, this.description.id, this.client, cachedResponse))),
-            Promise.resolve().then(() => require('./features/jsDocCompletions')).then(provider => this._register(provider.register(selector, this.description.id, this.client))),
-            Promise.resolve().then(() => require('./features/organizeImports')).then(provider => this._register(provider.register(selector, this.client, this.commandManager, this.fileConfigurationManager, this.telemetryReporter))),
-            Promise.resolve().then(() => require('./features/quickFix')).then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager, this.commandManager, this.client.diagnosticsManager, this.telemetryReporter))),
-            Promise.resolve().then(() => require('./features/fixAll')).then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager, this.client.diagnosticsManager))),
-            Promise.resolve().then(() => require('./features/refactor')).then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager, this.commandManager, this.telemetryReporter))),
-            Promise.resolve().then(() => require('./features/references')).then(provider => this._register(provider.register(selector, this.client))),
-            Promise.resolve().then(() => require('./features/referencesCodeLens')).then(provider => this._register(provider.register(selector, this.description.id, this.client, cachedResponse))),
-            Promise.resolve().then(() => require('./features/rename')).then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager))),
-            Promise.resolve().then(() => require('./features/smartSelect')).then(provider => this._register(provider.register(selector, this.client))),
-            Promise.resolve().then(() => require('./features/signatureHelp')).then(provider => this._register(provider.register(selector, this.client))),
-            Promise.resolve().then(() => require('./features/tagClosing')).then(provider => this._register(provider.register(selector, this.description.id, this.client))),
-            Promise.resolve().then(() => require('./features/typeDefinitions')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/callHierarchy')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/codeLens/implementationsCodeLens')).then(provider => this._register(provider.register(selector, this.description.id, this.client, cachedResponse))),
+            Promise.resolve().then(() => require('./languageFeatures/codeLens/referencesCodeLens')).then(provider => this._register(provider.register(selector, this.description.id, this.client, cachedResponse))),
+            Promise.resolve().then(() => require('./languageFeatures/completions')).then(provider => this._register(provider.register(selector, this.description.id, this.client, this.typingsStatus, this.fileConfigurationManager, this.commandManager, this.telemetryReporter, this.onCompletionAccepted))),
+            Promise.resolve().then(() => require('./languageFeatures/definitions')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/directiveCommentCompletions')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/documentHighlight')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/documentSymbol')).then(provider => this._register(provider.register(selector, this.client, cachedResponse))),
+            Promise.resolve().then(() => require('./languageFeatures/fileReferences')).then(provider => this._register(provider.register(this.client, this.commandManager))),
+            Promise.resolve().then(() => require('./languageFeatures/fixAll')).then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager, this.client.diagnosticsManager))),
+            Promise.resolve().then(() => require('./languageFeatures/folding')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/formatting')).then(provider => this._register(provider.register(selector, this.description.id, this.client, this.fileConfigurationManager))),
+            Promise.resolve().then(() => require('./languageFeatures/hover')).then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager))),
+            Promise.resolve().then(() => require('./languageFeatures/implementations')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/jsDocCompletions')).then(provider => this._register(provider.register(selector, this.description.id, this.client, this.fileConfigurationManager))),
+            Promise.resolve().then(() => require('./languageFeatures/organizeImports')).then(provider => this._register(provider.register(selector, this.client, this.commandManager, this.fileConfigurationManager, this.telemetryReporter))),
+            Promise.resolve().then(() => require('./languageFeatures/quickFix')).then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager, this.commandManager, this.client.diagnosticsManager, this.telemetryReporter))),
+            Promise.resolve().then(() => require('./languageFeatures/refactor')).then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager, this.commandManager, this.telemetryReporter))),
+            Promise.resolve().then(() => require('./languageFeatures/references')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/rename')).then(provider => this._register(provider.register(selector, this.client, this.fileConfigurationManager))),
+            Promise.resolve().then(() => require('./languageFeatures/semanticTokens')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/signatureHelp')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/smartSelect')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/tagClosing')).then(provider => this._register(provider.register(selector, this.description.id, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/typeDefinitions')).then(provider => this._register(provider.register(selector, this.client))),
+            Promise.resolve().then(() => require('./languageFeatures/inlayHints')).then(provider => this._register(provider.register(selector, this.description.id, this.description.modeIds, this.client, this.fileConfigurationManager))),
         ]);
     }
     configurationChanged() {
@@ -74,11 +74,15 @@ class LanguageProvider extends dispose_1.Disposable {
         this.updateValidate(config.get(validateSetting, true));
         this.updateSuggestionDiagnostics(config.get(suggestionSetting, true));
     }
-    handles(resource, doc) {
-        if (doc && this.description.modeIds.indexOf(doc.languageId) >= 0) {
-            return true;
-        }
-        const base = path_1.basename(resource.fsPath);
+    handlesUri(resource) {
+        const ext = (0, path_1.extname)(resource.path).slice(1).toLowerCase();
+        return this.description.standardFileExtensions.includes(ext) || this.handlesConfigFile(resource);
+    }
+    handlesDocument(doc) {
+        return this.description.modeIds.includes(doc.languageId) || this.handlesConfigFile(doc.uri);
+    }
+    handlesConfigFile(resource) {
+        const base = (0, path_1.basename)(resource.fsPath);
         return !!base && (!!this.description.configFilePattern && this.description.configFilePattern.test(base));
     }
     get id() {
@@ -100,12 +104,21 @@ class LanguageProvider extends dispose_1.Disposable {
         this.client.bufferSyncSupport.requestAllDiagnostics();
     }
     diagnosticsReceived(diagnosticsKind, file, diagnostics) {
+        if (diagnosticsKind !== 0 /* Syntax */ && !this.client.hasCapabilityForResource(file, typescriptService_1.ClientCapability.Semantic)) {
+            return;
+        }
         const config = vscode.workspace.getConfiguration(this.id, file);
         const reportUnnecessary = config.get('showUnused', true);
+        const reportDeprecated = config.get('showDeprecated', true);
         this.client.diagnosticsManager.updateDiagnostics(file, this._diagnosticLanguage, diagnosticsKind, diagnostics.filter(diag => {
+            // Don't bother reporting diagnostics we know will not be rendered
             if (!reportUnnecessary) {
-                diag.tags = undefined;
                 if (diag.reportUnnecessary && diag.severity === vscode.DiagnosticSeverity.Hint) {
+                    return false;
+                }
+            }
+            if (!reportDeprecated) {
+                if (diag.reportDeprecated && diag.severity === vscode.DiagnosticSeverity.Hint) {
                     return false;
                 }
             }
@@ -119,8 +132,5 @@ class LanguageProvider extends dispose_1.Disposable {
         return this.description.diagnosticLanguage;
     }
 }
-__decorate([
-    memoize_1.memoize
-], LanguageProvider.prototype, "documentSelector", null);
 exports.default = LanguageProvider;
 //# sourceMappingURL=languageProvider.js.map

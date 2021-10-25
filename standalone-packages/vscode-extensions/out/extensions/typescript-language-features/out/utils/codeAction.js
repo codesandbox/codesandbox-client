@@ -4,6 +4,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.applyCodeActionCommands = exports.applyCodeAction = exports.getEditForCodeAction = void 0;
 const vscode = require("vscode");
 const typeConverters = require("./typeConverters");
 function getEditForCodeAction(client, action) {
