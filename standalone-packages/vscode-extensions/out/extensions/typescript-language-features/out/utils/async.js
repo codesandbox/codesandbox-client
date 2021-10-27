@@ -4,7 +4,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setImmediate = exports.Delayer = void 0;
 class Delayer {
     constructor(defaultDelay) {
         this.defaultDelay = defaultDelay;
@@ -47,15 +46,4 @@ class Delayer {
     }
 }
 exports.Delayer = Delayer;
-function setImmediate(callback, ...args) {
-    if (global.setImmediate) {
-        const handle = global.setImmediate(callback, ...args);
-        return { dispose: () => global.clearImmediate(handle) };
-    }
-    else {
-        const handle = setTimeout(callback, 0, ...args);
-        return { dispose: () => clearTimeout(handle) };
-    }
-}
-exports.setImmediate = setImmediate;
 //# sourceMappingURL=async.js.map

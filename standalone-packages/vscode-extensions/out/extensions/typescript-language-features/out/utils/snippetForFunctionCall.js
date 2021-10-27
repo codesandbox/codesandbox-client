@@ -4,7 +4,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.snippetForFunctionCall = void 0;
 const vscode = require("vscode");
 const PConst = require("../protocol.const");
 function snippetForFunctionCall(item, displayParts) {
@@ -55,9 +54,7 @@ function getParameterListParts(displayParts) {
                     const next = displayParts[i + 1];
                     // Skip optional parameters
                     const nameIsFollowedByOptionalIndicator = next && next.text === '?';
-                    // Skip this parameter
-                    const nameIsThis = part.text === 'this';
-                    if (!nameIsFollowedByOptionalIndicator && !nameIsThis) {
+                    if (!nameIsFollowedByOptionalIndicator) {
                         parts.push(part);
                     }
                     hasOptionalParameters = hasOptionalParameters || nameIsFollowedByOptionalIndicator;

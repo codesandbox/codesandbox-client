@@ -1,0 +1,64 @@
+{
+  "name": "applicationinsights",
+  "license": "MIT",
+  "bugs": "https://github.com/Microsoft/ApplicationInsights-node.js/issues",
+  "version": "1.0.8",
+  "description": "Microsoft Application Insights module for Node.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/ApplicationInsights-node.js"
+  },
+  "main": "./out/applicationinsights.js",
+  "types": "./out/applicationinsights.d.ts",
+  "keywords": [
+    "exception monitoring",
+    "request monitoring",
+    "performance monitoring",
+    "application insights",
+    "microsoft",
+    "azure",
+    "cloud",
+    "tracing",
+    "telemetry",
+    "analytics",
+    "apm"
+  ],
+  "contributors": [
+    {
+      "name": "Application Insights Developer Support",
+      "email": "aidevsupport@microsoft.com"
+    },
+    {
+      "name": "Application Insights SDK Maintainers",
+      "email": "appinsightssdk@microsoft.com"
+    }
+  ],
+  "scripts": {
+    "clean": "rm -rf ./out && rm -rf ./node_modules",
+    "build": "npm run build:deps && npm run build:compile",
+    "build:deps": "npm update --dev",
+    "build:compile": "tsc --project ./tsconfig.json",
+    "prepare": "npm run build:compile",
+    "prepublishOnly": "npm run build",
+    "pretest": "npm run build",
+    "test": "npm run test:ts && npm run test:js",
+    "test:ts": "mocha ./out/Tests --recursive",
+    "test:js": "mocha ./Tests/js --recursive",
+    "functionaltest": "npm run build && npm pack && node --use_strict ./Tests/FunctionalTests/RunFunctionalTests.js",
+    "backcompattest": "npm run build && npm pack && node --use_strict ./Tests/BackCompatibility/RunBackCompatTests.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "2.2.40",
+    "@types/node": "4.2.4",
+    "@types/sinon": "2.1.2",
+    "typescript": "2.4.2",
+    "mocha": "3.1.2",
+    "node-mocks-http": "1.2.3",
+    "sinon": "1.17.6"
+  },
+  "dependencies": {
+    "diagnostic-channel": "0.2.0",
+    "diagnostic-channel-publishers": "0.2.1",
+    "zone.js": "0.7.6"
+  }
+}

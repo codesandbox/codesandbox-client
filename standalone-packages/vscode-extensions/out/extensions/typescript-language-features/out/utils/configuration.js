@@ -1,12 +1,13 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BaseServiceConfigurationProvider = exports.areServiceConfigurationsEqual = exports.ImplicitProjectConfiguration = exports.TsServerLogLevel = void 0;
 const vscode = require("vscode");
-const objects = require("../utils/objects");
+const arrays = require("./arrays");
+const os = require("os");
+const path = require("path");
 var TsServerLogLevel;
 (function (TsServerLogLevel) {
     TsServerLogLevel[TsServerLogLevel["Off"] = 0] = "Off";
@@ -44,114 +45,84 @@ var TsServerLogLevel;
     }
     TsServerLogLevel.toString = toString;
 })(TsServerLogLevel = exports.TsServerLogLevel || (exports.TsServerLogLevel = {}));
-class ImplicitProjectConfiguration {
-    constructor(configuration) {
-        this.checkJs = ImplicitProjectConfiguration.readCheckJs(configuration);
-        this.experimentalDecorators = ImplicitProjectConfiguration.readExperimentalDecorators(configuration);
-        this.strictNullChecks = ImplicitProjectConfiguration.readImplicitStrictNullChecks(configuration);
-        this.strictFunctionTypes = ImplicitProjectConfiguration.readImplicitStrictFunctionTypes(configuration);
+class TypeScriptServiceConfiguration {
+    constructor() {
+        this.tsServerLogLevel = TsServerLogLevel.Off;
+        const configuration = vscode.workspace.getConfiguration();
+        this.locale = TypeScriptServiceConfiguration.extractLocale(configuration);
+        this.globalTsdk = TypeScriptServiceConfiguration.extractGlobalTsdk(configuration);
+        this.localTsdk = TypeScriptServiceConfiguration.extractLocalTsdk(configuration);
+        this.npmLocation = TypeScriptServiceConfiguration.readNpmLocation(configuration);
+        this.tsServerLogLevel = TypeScriptServiceConfiguration.readTsServerLogLevel(configuration);
+        this.tsServerPluginPaths = TypeScriptServiceConfiguration.readTsServerPluginPaths(configuration);
+        this.checkJs = TypeScriptServiceConfiguration.readCheckJs(configuration);
+        this.experimentalDecorators = TypeScriptServiceConfiguration.readExperimentalDecorators(configuration);
+        this.disableAutomaticTypeAcquisition = TypeScriptServiceConfiguration.readDisableAutomaticTypeAcquisition(configuration);
+        this.useSeparateSyntaxServer = TypeScriptServiceConfiguration.readUseSeparateSyntaxServer(configuration);
+    }
+    static loadFromWorkspace() {
+        return new TypeScriptServiceConfiguration();
     }
     isEqualTo(other) {
-        return objects.equals(this, other);
+        return this.locale === other.locale
+            && this.globalTsdk === other.globalTsdk
+            && this.localTsdk === other.localTsdk
+            && this.npmLocation === other.npmLocation
+            && this.tsServerLogLevel === other.tsServerLogLevel
+            && this.checkJs === other.checkJs
+            && this.experimentalDecorators === other.experimentalDecorators
+            && this.disableAutomaticTypeAcquisition === other.disableAutomaticTypeAcquisition
+            && arrays.equals(this.tsServerPluginPaths, other.tsServerPluginPaths)
+            && this.useSeparateSyntaxServer === other.useSeparateSyntaxServer;
     }
-    static readCheckJs(configuration) {
-        return configuration.get('js/ts.implicitProjectConfig.checkJs')
-            ?? configuration.get('javascript.implicitProjectConfig.checkJs', false);
+    static fixPathPrefixes(inspectValue) {
+        const pathPrefixes = ['~' + path.sep];
+        for (const pathPrefix of pathPrefixes) {
+            if (inspectValue.startsWith(pathPrefix)) {
+                return path.join(os.homedir(), inspectValue.slice(pathPrefix.length));
+            }
+        }
+        return inspectValue;
     }
-    static readExperimentalDecorators(configuration) {
-        return configuration.get('js/ts.implicitProjectConfig.experimentalDecorators')
-            ?? configuration.get('javascript.implicitProjectConfig.experimentalDecorators', false);
+    static extractGlobalTsdk(configuration) {
+        const inspect = configuration.inspect('typescript.tsdk');
+        if (inspect && typeof inspect.globalValue === 'string') {
+            return this.fixPathPrefixes(inspect.globalValue);
+        }
+        return null;
     }
-    static readImplicitStrictNullChecks(configuration) {
-        return configuration.get('js/ts.implicitProjectConfig.strictNullChecks', false);
+    static extractLocalTsdk(configuration) {
+        const inspect = configuration.inspect('typescript.tsdk');
+        if (inspect && typeof inspect.workspaceValue === 'string') {
+            return this.fixPathPrefixes(inspect.workspaceValue);
+        }
+        return null;
     }
-    static readImplicitStrictFunctionTypes(configuration) {
-        return configuration.get('js/ts.implicitProjectConfig.strictFunctionTypes', true);
-    }
-}
-exports.ImplicitProjectConfiguration = ImplicitProjectConfiguration;
-function areServiceConfigurationsEqual(a, b) {
-    return objects.equals(a, b);
-}
-exports.areServiceConfigurationsEqual = areServiceConfigurationsEqual;
-class BaseServiceConfigurationProvider {
-    loadFromWorkspace() {
-        const configuration = vscode.workspace.getConfiguration();
-        return {
-            locale: this.extractLocale(configuration),
-            globalTsdk: this.extractGlobalTsdk(configuration),
-            localTsdk: this.extractLocalTsdk(configuration),
-            npmLocation: this.readNpmLocation(configuration),
-            tsServerLogLevel: this.readTsServerLogLevel(configuration),
-            tsServerPluginPaths: this.readTsServerPluginPaths(configuration),
-            implicitProjectConfiguration: new ImplicitProjectConfiguration(configuration),
-            disableAutomaticTypeAcquisition: this.readDisableAutomaticTypeAcquisition(configuration),
-            useSyntaxServer: this.readUseSyntaxServer(configuration),
-            enableProjectDiagnostics: this.readEnableProjectDiagnostics(configuration),
-            maxTsServerMemory: this.readMaxTsServerMemory(configuration),
-            enablePromptUseWorkspaceTsdk: this.readEnablePromptUseWorkspaceTsdk(configuration),
-            watchOptions: this.readWatchOptions(configuration),
-            includePackageJsonAutoImports: this.readIncludePackageJsonAutoImports(configuration),
-            enableTsServerTracing: this.readEnableTsServerTracing(configuration),
-        };
-    }
-    readTsServerLogLevel(configuration) {
+    static readTsServerLogLevel(configuration) {
         const setting = configuration.get('typescript.tsserver.log', 'off');
         return TsServerLogLevel.fromString(setting);
     }
-    readTsServerPluginPaths(configuration) {
+    static readTsServerPluginPaths(configuration) {
         return configuration.get('typescript.tsserver.pluginPaths', []);
     }
-    readNpmLocation(configuration) {
+    static readCheckJs(configuration) {
+        return configuration.get('javascript.implicitProjectConfig.checkJs', false);
+    }
+    static readExperimentalDecorators(configuration) {
+        return configuration.get('javascript.implicitProjectConfig.experimentalDecorators', false);
+    }
+    static readNpmLocation(configuration) {
         return configuration.get('typescript.npm', null);
     }
-    readDisableAutomaticTypeAcquisition(configuration) {
+    static readDisableAutomaticTypeAcquisition(configuration) {
         return configuration.get('typescript.disableAutomaticTypeAcquisition', false);
     }
-    extractLocale(configuration) {
+    static extractLocale(configuration) {
         return configuration.get('typescript.locale', null);
     }
-    readUseSyntaxServer(configuration) {
-        const value = configuration.get('typescript.tsserver.useSyntaxServer');
-        switch (value) {
-            case 'never': return 0 /* Never */;
-            case 'always': return 1 /* Always */;
-            case 'auto': return 2 /* Auto */;
-        }
-        // Fallback to deprecated setting
-        const deprecatedValue = configuration.get('typescript.tsserver.useSeparateSyntaxServer', true);
-        if (deprecatedValue === 'forAllRequests') { // Undocumented setting
-            return 1 /* Always */;
-        }
-        if (deprecatedValue === true) {
-            return 2 /* Auto */;
-        }
-        return 0 /* Never */;
-    }
-    readEnableProjectDiagnostics(configuration) {
-        return configuration.get('typescript.tsserver.experimental.enableProjectDiagnostics', false);
-    }
-    readWatchOptions(configuration) {
-        return configuration.get('typescript.tsserver.watchOptions');
-    }
-    readIncludePackageJsonAutoImports(configuration) {
-        return configuration.get('typescript.preferences.includePackageJsonAutoImports');
-    }
-    readMaxTsServerMemory(configuration) {
-        const defaultMaxMemory = 3072;
-        const minimumMaxMemory = 128;
-        const memoryInMB = configuration.get('typescript.tsserver.maxTsServerMemory', defaultMaxMemory);
-        if (!Number.isSafeInteger(memoryInMB)) {
-            return defaultMaxMemory;
-        }
-        return Math.max(memoryInMB, minimumMaxMemory);
-    }
-    readEnablePromptUseWorkspaceTsdk(configuration) {
-        return configuration.get('typescript.enablePromptUseWorkspaceTsdk', false);
-    }
-    readEnableTsServerTracing(configuration) {
-        return configuration.get('typescript.tsserver.enableTracing', false);
+    static readUseSeparateSyntaxServer(configuration) {
+        return configuration.get('typescript.tsserver.useSeparateSyntaxServer', true);
     }
 }
-exports.BaseServiceConfigurationProvider = BaseServiceConfigurationProvider;
+exports.TypeScriptServiceConfiguration = TypeScriptServiceConfiguration;
 //# sourceMappingURL=configuration.js.map

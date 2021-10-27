@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+
+console.log('The vscode extension module got updated to TypeScript 2.0.x.');
+console.log('Please see https://code.visualstudio.com/updates/v1_6#_extension-authoring for instruction on how to migrate your extension.');
+
+process.exit(1);

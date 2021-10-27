@@ -10,7 +10,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VSCodeTelemetryReporter = void 0;
 const vscode = require("vscode");
 const vscode_extension_telemetry_1 = require("vscode-extension-telemetry");
 const memoize_1 = require("./memoize");
@@ -19,18 +18,20 @@ class VSCodeTelemetryReporter {
         this.clientVersionDelegate = clientVersionDelegate;
         this._reporter = null;
     }
-    logTelemetry(eventName, properties = {}) {
+    logTelemetry(eventName, properties) {
         const reporter = this.reporter;
-        if (!reporter) {
-            return;
-        }
-        /* __GDPR__FRAGMENT__
-            "TypeScriptCommonProperties" : {
-                "version" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+        if (reporter) {
+            if (!properties) {
+                properties = {};
             }
-        */
-        properties['version'] = this.clientVersionDelegate();
-        reporter.sendTelemetryEvent(eventName, properties);
+            /* __GDPR__FRAGMENT__
+                "TypeScriptCommonProperties" : {
+                    "version" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
+                }
+            */
+            properties['version'] = this.clientVersionDelegate();
+            reporter.sendTelemetryEvent(eventName, properties);
+        }
     }
     dispose() {
         if (this._reporter) {

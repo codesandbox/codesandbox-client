@@ -1,0 +1,14 @@
+v0.1.1 (03 Apr 2015)
+  Clean up.
+
+v0.1.0 (21 Oct 2013)
+	Performance slightly improved due to the simplification of the code. This is
+		the most basic code that is needed.
+	If you pass an object, the stream is converted automatically to the object
+		mode.
+
+v0.0.2 (19 Jul 2013)
+	Bump version.
+
+v0.0.1 (01 Apr 2013)
+	First release.

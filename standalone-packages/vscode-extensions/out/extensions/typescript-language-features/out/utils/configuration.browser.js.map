@@ -1,1 +1,0 @@
-{"version":3,"file":"configuration.browser.js","sourceRoot":"../../src","sources":["utils/configuration.browser.ts"],"names":[],"mappings":";AAAA;;;gGAGgG;;;AAGhG,mDAAmE;AAEnE,MAAa,mCAAoC,SAAQ,gDAAgC;IAExF,6DAA6D;IACnD,iBAAiB,CAAC,cAA6C;QACxE,OAAO,IAAI,CAAC;IACb,CAAC;IAES,gBAAgB,CAAC,cAA6C;QACvE,OAAO,IAAI,CAAC;IACb,CAAC;CACD;AAVD,kFAUC"}

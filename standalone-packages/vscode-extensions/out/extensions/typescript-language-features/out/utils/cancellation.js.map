@@ -1,1 +1,1 @@
-{"version":3,"file":"cancellation.js","sourceRoot":"../../src","sources":["utils/cancellation.ts"],"names":[],"mappings":";AAAA;;;gGAGgG;;;AAEhG,iCAAiC;AAEjC,MAAM,cAAc,GAAG,MAAM,CAAC,UAAU,CAAC,IAAI,EAAE,CAAC;AAEnC,QAAA,QAAQ,GAA6B;IACjD,uBAAuB,EAAE,KAAK;IAC9B,uBAAuB,EAAE,GAAG,EAAE,CAAC,cAAc;CAC7C,CAAC"}
+{"version":3,"file":"cancellation.js","sourceRoot":"../../src","sources":["utils/cancellation.ts"],"names":[],"mappings":";AAAA;;;gGAGgG;;AAEhG,iCAAiC;AAEjC,MAAM,cAAc,GAAG,IAAI,MAAM,CAAC,uBAAuB,EAAE,CAAC;AAE/C,QAAA,QAAQ,GAAG,cAAc,CAAC,KAAK,CAAC"}

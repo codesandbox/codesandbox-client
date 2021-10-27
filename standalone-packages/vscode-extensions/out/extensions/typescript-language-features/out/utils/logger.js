@@ -10,7 +10,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Logger = void 0;
 const vscode = require("vscode");
 const nls = require("vscode-nls");
 const memoize_1 = require("./memoize");
@@ -32,30 +31,21 @@ class Logger {
         this.logLevel('Info', message, data);
     }
     error(message, data) {
-        // See https://github.com/microsoft/TypeScript/issues/10496
+        // See https://github.com/Microsoft/TypeScript/issues/10496
         if (data && data.message === 'No content available.') {
             return;
         }
         this.logLevel('Error', message, data);
     }
     logLevel(level, message, data) {
-        this.output.appendLine(`[${level}  - ${this.now()}] ${message}`);
+        this.output.appendLine(`[${level}  - ${(new Date().toLocaleTimeString())}] ${message}`);
         if (data) {
             this.output.appendLine(this.data2String(data));
         }
-    }
-    now() {
-        const now = new Date();
-        return padLeft(now.getUTCHours() + '', 2, '0')
-            + ':' + padLeft(now.getMinutes() + '', 2, '0')
-            + ':' + padLeft(now.getUTCSeconds() + '', 2, '0') + '.' + now.getMilliseconds();
     }
 }
 __decorate([
     memoize_1.memoize
 ], Logger.prototype, "output", null);
-exports.Logger = Logger;
-function padLeft(s, n, pad = ' ') {
-    return pad.repeat(Math.max(0, n - s.length)) + s;
-}
+exports.default = Logger;
 //# sourceMappingURL=logger.js.map

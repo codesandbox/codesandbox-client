@@ -3,32 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as nls from 'vscode-nls';
-import { DiagnosticKind, DiagnosticsManager } from './languageFeatures/diagnostics';
+import BufferSyncSupport from './features/bufferSyncSupport';
+import { DiagnosticKind, DiagnosticsManager } from './features/diagnostics';
 import * as Proto from './protocol';
-import { EventName } from './protocol.const';
-import BufferSyncSupport from './tsServer/bufferSyncSupport';
-import { OngoingRequestCancellerFactory } from './tsServer/cancellation';
-import { ILogDirectoryProvider } from './tsServer/logDirectoryProvider';
-import { ITypeScriptServer, TsServerProcessFactory, TypeScriptServerExitEvent } from './tsServer/server';
-import { TypeScriptServerError } from './tsServer/serverError';
-import { TypeScriptServerSpawner } from './tsServer/spawner';
-import { TypeScriptVersionManager } from './tsServer/versionManager';
-import { ITypeScriptVersionProvider, TypeScriptVersion } from './tsServer/versionProvider';
-import { ClientCapabilities, ClientCapability, ExecConfig, ITypeScriptServiceClient, ServerResponse, TypeScriptRequests } from './typescriptService';
+import { ITypeScriptServer } from './tsServer/server';
+import { ITypeScriptServiceClient, ServerResponse, TypeScriptRequests, ExecConfig } from './typescriptService';
 import API from './utils/api';
-import { areServiceConfigurationsEqual, ServiceConfigurationProvider, SyntaxServerConfiguration, TsServerLogLevel, TypeScriptServiceConfiguration } from './utils/configuration';
+import { TsServerLogLevel, TypeScriptServiceConfiguration } from './utils/configuration';
 import { Disposable } from './utils/dispose';
 import * as fileSchemes from './utils/fileSchemes';
-import { Logger } from './utils/logger';
-import { isWeb } from './utils/platform';
+import LogDirectoryProvider from './utils/logDirectoryProvider';
+import Logger from './utils/logger';
 import { TypeScriptPluginPathsProvider } from './utils/pluginPathsProvider';
 import { PluginManager } from './utils/plugins';
-import { TelemetryProperties, TelemetryReporter, VSCodeTelemetryReporter } from './utils/telemetry';
+import TelemetryReporter, { VSCodeTelemetryReporter } from './utils/telemetry';
 import Tracer from './utils/tracer';
-import { inferredProjectCompilerOptions, ProjectType } from './utils/tsconfig';
+import { inferredProjectConfig } from './utils/tsconfig';
+import { TypeScriptVersionPicker } from './utils/versionPicker';
+import { TypeScriptVersion, TypeScriptVersionProvider } from './utils/versionProvider';
+import { TypeScriptServerSpawner } from './tsServer/spawner';
 
 const localize = nls.loadMessageBundle();
 
@@ -38,11 +35,6 @@ export interface TsDiagnostics {
 	readonly diagnostics: Proto.Diagnostic[];
 }
 
-interface ToCancelOnResourceChanged {
-	readonly resource: vscode.Uri;
-	cancel(): void;
-}
-
 namespace ServerState {
 	export const enum Type {
 		None,
@@ -50,11 +42,10 @@ namespace ServerState {
 		Errored
 	}
 
-	export const None = { type: Type.None } as const;
+	export const None = new class { readonly type = Type.None; };
 
 	export class Running {
 		readonly type = Type.Running;
-
 		constructor(
 			public readonly server: ITypeScriptServer,
 
@@ -67,25 +58,14 @@ namespace ServerState {
 			 * Version reported by currently-running tsserver.
 			 */
 			public tsserverVersion: string | undefined,
-			public languageServiceEnabled: boolean,
+			public langaugeServiceEnabled: boolean,
 		) { }
-
-		public readonly toCancelOnResourceChange = new Set<ToCancelOnResourceChanged>();
-
-		updateTsserverVersion(tsserverVersion: string) {
-			this.tsserverVersion = tsserverVersion;
-		}
-
-		updateLanguageServiceEnabled(enabled: boolean) {
-			this.languageServiceEnabled = enabled;
-		}
 	}
 
 	export class Errored {
 		readonly type = Type.Errored;
 		constructor(
 			public readonly error: Error,
-			public readonly tsServerLogFile: string | undefined,
 		) { }
 	}
 
@@ -93,112 +73,81 @@ namespace ServerState {
 }
 
 export default class TypeScriptServiceClient extends Disposable implements ITypeScriptServiceClient {
+	private static readonly WALK_THROUGH_SNIPPET_SCHEME_COLON = `${fileSchemes.walkThroughSnippet}:`;
 
-	private readonly pathSeparator: string;
-	private readonly inMemoryResourcePrefix = '^';
-
-	private readonly workspaceState: vscode.Memento;
+	private pathSeparator: string;
 
 	private _onReady?: { promise: Promise<void>; resolve: () => void; reject: () => void; };
 	private _configuration: TypeScriptServiceConfiguration;
+	private versionProvider: TypeScriptVersionProvider;
 	private pluginPathsProvider: TypeScriptPluginPathsProvider;
-	private readonly _versionManager: TypeScriptVersionManager;
+	private versionPicker: TypeScriptVersionPicker;
 
-	private readonly logger = new Logger();
-	private readonly tracer = new Tracer(this.logger);
+	private tracer: Tracer;
+	public readonly logger: Logger = new Logger();
 
 	private readonly typescriptServerSpawner: TypeScriptServerSpawner;
 	private serverState: ServerState.State = ServerState.None;
 	private lastStart: number;
 	private numberRestarts: number;
-	private _isPromptingAfterCrash = false;
 	private isRestarting: boolean = false;
-	private hasServerFatallyCrashedTooManyTimes = false;
-	private readonly loadingIndicator = new ServerInitializingIndicator();
+	private loadingIndicator = new ServerInitializingIndicator();
 
 	public readonly telemetryReporter: TelemetryReporter;
+
 	public readonly bufferSyncSupport: BufferSyncSupport;
 	public readonly diagnosticsManager: DiagnosticsManager;
-	public readonly pluginManager: PluginManager;
-
-	private readonly logDirectoryProvider: ILogDirectoryProvider;
-	private readonly cancellerFactory: OngoingRequestCancellerFactory;
-	private readonly versionProvider: ITypeScriptVersionProvider;
-	private readonly processFactory: TsServerProcessFactory;
 
 	constructor(
-		private readonly context: vscode.ExtensionContext,
-		onCaseInsenitiveFileSystem: boolean,
-		services: {
-			pluginManager: PluginManager,
-			logDirectoryProvider: ILogDirectoryProvider,
-			cancellerFactory: OngoingRequestCancellerFactory,
-			versionProvider: ITypeScriptVersionProvider,
-			processFactory: TsServerProcessFactory,
-			serviceConfigurationProvider: ServiceConfigurationProvider,
-		},
-		allModeIds: readonly string[]
+		private readonly workspaceState: vscode.Memento,
+		private readonly onDidChangeTypeScriptVersion: (version: TypeScriptVersion) => void,
+		public readonly pluginManager: PluginManager,
+		private readonly logDirectoryProvider: LogDirectoryProvider,
+		allModeIds: string[]
 	) {
 		super();
-
-		this.workspaceState = context.workspaceState;
-
-		this.pluginManager = services.pluginManager;
-		this.logDirectoryProvider = services.logDirectoryProvider;
-		this.cancellerFactory = services.cancellerFactory;
-		this.versionProvider = services.versionProvider;
-		this.processFactory = services.processFactory;
-
 		this.pathSeparator = path.sep;
 		this.lastStart = Date.now();
 
-		let resolve: () => void;
-		let reject: () => void;
-		const p = new Promise<void>((res, rej) => {
-			resolve = res;
-			reject = rej;
+		// tslint:disable-next-line: no-var-keyword
+		var p = new Promise<void>((resolve, reject) => {
+			this._onReady = { promise: p, resolve, reject };
 		});
-		this._onReady = { promise: p, resolve: resolve!, reject: reject! };
+		this._onReady!.promise = p;
 
 		this.numberRestarts = 0;
 
-		this._configuration = services.serviceConfigurationProvider.loadFromWorkspace();
-		this.versionProvider.updateConfiguration(this._configuration);
-
+		this._configuration = TypeScriptServiceConfiguration.loadFromWorkspace();
+		this.versionProvider = new TypeScriptVersionProvider(this._configuration);
 		this.pluginPathsProvider = new TypeScriptPluginPathsProvider(this._configuration);
-		this._versionManager = this._register(new TypeScriptVersionManager(this._configuration, this.versionProvider, this.workspaceState));
-		this._register(this._versionManager.onDidPickNewVersion(() => {
-			this.restartTsServer();
-		}));
+		this.versionPicker = new TypeScriptVersionPicker(this.versionProvider, this.workspaceState);
 
-		this.bufferSyncSupport = new BufferSyncSupport(this, allModeIds, onCaseInsenitiveFileSystem);
+		this.tracer = new Tracer(this.logger);
+
+		this.bufferSyncSupport = new BufferSyncSupport(this, allModeIds);
 		this.onReady(() => { this.bufferSyncSupport.listen(); });
 
-		this.diagnosticsManager = new DiagnosticsManager('typescript', onCaseInsenitiveFileSystem);
+		this.diagnosticsManager = new DiagnosticsManager('typescript');
 		this.bufferSyncSupport.onDelete(resource => {
-			this.cancelInflightRequestsForResource(resource);
 			this.diagnosticsManager.delete(resource);
 		}, null, this._disposables);
 
-		this.bufferSyncSupport.onWillChange(resource => {
-			this.cancelInflightRequestsForResource(resource);
-		});
-
 		vscode.workspace.onDidChangeConfiguration(() => {
 			const oldConfiguration = this._configuration;
-			this._configuration = services.serviceConfigurationProvider.loadFromWorkspace();
+			this._configuration = TypeScriptServiceConfiguration.loadFromWorkspace();
 
 			this.versionProvider.updateConfiguration(this._configuration);
-			this._versionManager.updateConfiguration(this._configuration);
 			this.pluginPathsProvider.updateConfiguration(this._configuration);
 			this.tracer.updateConfiguration();
 
 			if (this.serverState.type === ServerState.Type.Running) {
-				if (!this._configuration.implicitProjectConfiguration.isEqualTo(oldConfiguration.implicitProjectConfiguration)) {
+				if (this._configuration.checkJs !== oldConfiguration.checkJs
+					|| this._configuration.experimentalDecorators !== oldConfiguration.experimentalDecorators
+				) {
 					this.setCompilerOptionsForInferredProjects(this._configuration);
 				}
 
-				if (!areServiceConfigurationsEqual(this._configuration, oldConfiguration)) {
+				if (!this._configuration.isEqualTo(oldConfiguration)) {
 					this.restartTsServer();
 				}
 			}
@@ -210,10 +159,10 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 					return this.serverState.tsserverVersion;
 				}
 			}
-			return this.apiVersion.fullVersionString;
+			return this.apiVersion.versionString;
 		}));
 
-		this.typescriptServerSpawner = new TypeScriptServerSpawner(this.versionProvider, this._versionManager, this.logDirectoryProvider, this.pluginPathsProvider, this.logger, this.telemetryReporter, this.tracer, this.processFactory);
+		this.typescriptServerSpawner = new TypeScriptServerSpawner(this.versionProvider, this.logDirectoryProvider, this.pluginPathsProvider, this.logger, this.telemetryReporter, this.tracer);
 
 		this._register(this.pluginManager.onDidUpdateConfig(update => {
 			this.configurePlugin(update.pluginId, update.config);
@@ -224,51 +173,11 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 		}));
 	}
 
-	public get capabilities() {
-		if (this._configuration.useSyntaxServer === SyntaxServerConfiguration.Always) {
-			return new ClientCapabilities(
-				ClientCapability.Syntax,
-				ClientCapability.EnhancedSyntax);
-		}
-
-		if (isWeb()) {
-			return new ClientCapabilities(
-				ClientCapability.Syntax,
-				ClientCapability.EnhancedSyntax);
-		}
-
-		if (this.apiVersion.gte(API.v400)) {
-			return new ClientCapabilities(
-				ClientCapability.Syntax,
-				ClientCapability.EnhancedSyntax,
-				ClientCapability.Semantic);
-		}
-
-		return new ClientCapabilities(
-			ClientCapability.Syntax,
-			ClientCapability.Semantic);
-	}
-
-	private readonly _onDidChangeCapabilities = this._register(new vscode.EventEmitter<void>());
-	readonly onDidChangeCapabilities = this._onDidChangeCapabilities.event;
-
-	private cancelInflightRequestsForResource(resource: vscode.Uri): void {
-		if (this.serverState.type !== ServerState.Type.Running) {
-			return;
-		}
-
-		for (const request of this.serverState.toCancelOnResourceChange) {
-			if (request.resource.toString() === resource.toString()) {
-				request.cancel();
-			}
-		}
-	}
-
 	public get configuration() {
 		return this._configuration;
 	}
 
-	public override dispose() {
+	public dispose() {
 		super.dispose();
 
 		this.bufferSyncSupport.dispose();
@@ -290,7 +199,7 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 		this.serverState = this.startService(true);
 	}
 
-	private readonly _onTsServerStarted = this._register(new vscode.EventEmitter<{ version: TypeScriptVersion, usedApiVersion: API }>());
+	private readonly _onTsServerStarted = this._register(new vscode.EventEmitter<API>());
 	public readonly onTsServerStarted = this._onTsServerStarted.event;
 
 	private readonly _onDiagnosticsReceived = this._register(new vscode.EventEmitter<TsDiagnostics>());
@@ -336,7 +245,7 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 		this.logger.error(message, data);
 	}
 
-	private logTelemetry(eventName: string, properties?: TelemetryProperties) {
+	private logTelemetry(eventName: string, properties?: { [prop: string]: string }) {
 		this.telemetryReporter.logTelemetry(eventName, properties);
 	}
 
@@ -351,7 +260,7 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 		if (newState.type === ServerState.Type.Running) {
 			return newState;
 		}
-		throw new Error(`Could not create TS service. Service state:${JSON.stringify(newState)}`);
+		throw new Error('Could not create TS service');
 	}
 
 	public ensureServiceStarted() {
@@ -362,49 +271,28 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 
 	private token: number = 0;
 	private startService(resendModels: boolean = false): ServerState.State {
-		this.info(`Starting TS Server `);
-
 		if (this.isDisposed) {
-			this.info(`Not starting server. Disposed `);
 			return ServerState.None;
 		}
 
-		if (this.hasServerFatallyCrashedTooManyTimes) {
-			this.info(`Not starting server. Too many crashes.`);
-			return ServerState.None;
+		let currentVersion = this.versionPicker.currentVersion;
+
+		this.info(`Using tsserver from: ${currentVersion.path}`);
+		if (!fs.existsSync(currentVersion.tsServerPath)) {
+			vscode.window.showWarningMessage(localize('noServerFound', 'The path {0} doesn\'t point to a valid tsserver install. Falling back to bundled TypeScript version.', currentVersion.path));
+
+			this.versionPicker.useBundledVersion();
+			currentVersion = this.versionPicker.currentVersion;
 		}
 
-		let version = this._versionManager.currentVersion;
-		if (!version.isValid) {
-			vscode.window.showWarningMessage(localize('noServerFound', 'The path {0} doesn\'t point to a valid tsserver install. Falling back to bundled TypeScript version.', version.path));
+		const apiVersion = this.versionPicker.currentVersion.apiVersion || API.defaultVersion;
+		this.onDidChangeTypeScriptVersion(currentVersion);
 
-			this._versionManager.reset();
-			version = this._versionManager.currentVersion;
-		}
+		let mytoken = ++this.token;
 
-		this.info(`Using tsserver from: ${version.path}`);
-
-		const apiVersion = version.apiVersion || API.defaultVersion;
-		const mytoken = ++this.token;
-		const handle = this.typescriptServerSpawner.spawn(version, this.capabilities, this.configuration, this.pluginManager, this.cancellerFactory, {
-			onFatalError: (command, err) => this.fatalError(command, err),
-		});
+		const handle = this.typescriptServerSpawner.spawn(currentVersion, this.configuration, this.pluginManager);
 		this.serverState = new ServerState.Running(handle, apiVersion, undefined, true);
 		this.lastStart = Date.now();
-
-		/* __GDPR__
-			"tsserver.spawned" : {
-				"${include}": [
-					"${TypeScriptCommonProperties}"
-				],
-				"localTypeScriptVersion": { "classification": "SystemMetaData", "purpose": "FeatureInsight" },
-				"typeScriptVersionSource": { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-			}
-		*/
-		this.logTelemetry('tsserver.spawned', {
-			localTypeScriptVersion: this.versionProvider.localVersion ? this.versionProvider.localVersion.displayName : '',
-			typeScriptVersionSource: version.source,
-		});
 
 		handle.onError((err: Error) => {
 			if (this.token !== mytoken) {
@@ -416,7 +304,7 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 				vscode.window.showErrorMessage(localize('serverExitedWithError', 'TypeScript language server exited with error. Error message is: {0}', err.message || err.name));
 			}
 
-			this.serverState = new ServerState.Errored(err, handle.tsServerLogFile);
+			this.serverState = new ServerState.Errored(err);
 			this.error('TSServer errored with error.', err);
 			if (handle.tsServerLogFile) {
 				this.error(`TSServer log file: ${handle.tsServerLogFile}`);
@@ -433,30 +321,25 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 			this.serviceExited(false);
 		});
 
-		handle.onExit((data: TypeScriptServerExitEvent) => {
+		handle.onExit((code: any) => {
 			if (this.token !== mytoken) {
 				// this is coming from an old process
 				return;
 			}
 
-			const { code, signal } = data;
-
 			if (code === null || typeof code === 'undefined') {
-				this.info(`TSServer exited. Signal: ${signal}`);
+				this.info('TSServer exited');
 			} else {
-				// In practice, the exit code is an integer with no ties to any identity,
-				// so it can be classified as SystemMetaData, rather than CallstackOrException.
-				this.error(`TSServer exited with code: ${code}. Signal: ${signal}`);
+				this.error(`TSServer exited with code: ${code}`);
 				/* __GDPR__
 					"tsserver.exitWithCode" : {
-						"code" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" },
-						"signal" : { "classification": "SystemMetaData", "purpose": "PerformanceAndHealth" },
+						"code" : { "classification": "CallstackOrException", "purpose": "PerformanceAndHealth" },
 						"${include}": [
 							"${TypeScriptCommonProperties}"
 						]
 					}
 				*/
-				this.logTelemetry('tsserver.exitWithCode', { code, signal: signal ?? undefined });
+				this.logTelemetry('tsserver.exitWithCode', { code: code });
 			}
 
 			if (handle.tsServerLogFile) {
@@ -466,25 +349,43 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 			this.isRestarting = false;
 		});
 
+		handle.onReaderError(error => this.error('ReaderError', error));
 		handle.onEvent(event => this.dispatchEvent(event));
 
-		if (apiVersion.gte(API.v300) && this.capabilities.has(ClientCapability.Semantic)) {
+		this._onReady!.resolve();
+		this._onTsServerStarted.fire(currentVersion.apiVersion);
+
+		if (apiVersion.gte(API.v300)) {
 			this.loadingIndicator.startedLoadingProject(undefined /* projectName */);
 		}
 
 		this.serviceStarted(resendModels);
 
-		this._onReady!.resolve();
-		this._onTsServerStarted.fire({ version: version, usedApiVersion: apiVersion });
-		this._onDidChangeCapabilities.fire();
 		return this.serverState;
 	}
 
-	public async showVersionPicker(): Promise<void> {
-		this._versionManager.promptUserForVersion();
+	public onVersionStatusClicked(): Thenable<void> {
+		return this.showVersionPicker(false);
+	}
+
+	private showVersionPicker(firstRun: boolean): Thenable<void> {
+		return this.versionPicker.show(firstRun).then(change => {
+			if (firstRun || !change.newVersion || !change.oldVersion || change.oldVersion.path === change.newVersion.path) {
+				return;
+			}
+			this.restartTsServer();
+		});
 	}
 
 	public async openTsServerLogFile(): Promise<boolean> {
+		if (this.apiVersion.lt(API.v222)) {
+			vscode.window.showErrorMessage(
+				localize(
+					'typescript.openTsServerLog.notSupported',
+					'TS Server logging requires TS 2.2.2+'));
+			return false;
+		}
+
 		if (this._configuration.tsServerLogLevel === TsServerLogLevel.Off) {
 			vscode.window.showErrorMessage<vscode.MessageItem>(
 				localize(
@@ -533,27 +434,17 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 	}
 
 	private serviceStarted(resendModels: boolean): void {
-		this.bufferSyncSupport.reset();
-
-		const watchOptions = this.apiVersion.gte(API.v380)
-			? this.configuration.watchOptions
-			: undefined;
-
 		const configureOptions: Proto.ConfigureRequestArguments = {
 			hostInfo: 'vscode',
 			preferences: {
 				providePrefixAndSuffixTextForRename: true,
 				allowRenameOfImportPath: true,
-				includePackageJsonAutoImports: this._configuration.includePackageJsonAutoImports,
-			},
-			watchOptions
+			}
 		};
 		this.executeWithoutWaitingForResponse('configure', configureOptions);
 		this.setCompilerOptionsForInferredProjects(this._configuration);
 		if (resendModels) {
 			this._onResendModelsRequested.fire();
-			this.bufferSyncSupport.reinitialize();
-			this.bufferSyncSupport.requestAllDiagnostics();
 		}
 
 		// Reconfigure any plugins
@@ -563,6 +454,10 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 	}
 
 	private setCompilerOptionsForInferredProjects(configuration: TypeScriptServiceConfiguration): void {
+		if (this.apiVersion.lt(API.v206)) {
+			return;
+		}
+
 		const args: Proto.SetCompilerOptionsForInferredProjectsArgs = {
 			options: this.getCompilerOptionsForInferredProjects(configuration)
 		};
@@ -571,40 +466,41 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 
 	private getCompilerOptionsForInferredProjects(configuration: TypeScriptServiceConfiguration): Proto.ExternalProjectCompilerOptions {
 		return {
-			...inferredProjectCompilerOptions(ProjectType.TypeScript, configuration),
+			...inferredProjectConfig(configuration),
 			allowJs: true,
 			allowSyntheticDefaultImports: true,
 			allowNonTsExtensions: true,
-			resolveJsonModule: true,
 		};
 	}
 
 	private serviceExited(restart: boolean): void {
 		this.loadingIndicator.reset();
 
-		const previousState = this.serverState;
-		this.serverState = ServerState.None;
+		enum MessageAction {
+			reportIssue
+		}
 
+		interface MyMessageItem extends vscode.MessageItem {
+			id: MessageAction;
+		}
+
+		this.serverState = ServerState.None;
 		if (restart) {
 			const diff = Date.now() - this.lastStart;
 			this.numberRestarts++;
 			let startService = true;
-
-			const reportIssueItem: vscode.MessageItem = {
-				title: localize('serverDiedReportIssue', 'Report Issue'),
-			};
-			let prompt: Thenable<undefined | vscode.MessageItem> | undefined = undefined;
-
 			if (this.numberRestarts > 5) {
+				let prompt: Thenable<MyMessageItem | undefined> | undefined = undefined;
 				this.numberRestarts = 0;
 				if (diff < 10 * 1000 /* 10 seconds */) {
 					this.lastStart = Date.now();
 					startService = false;
-					this.hasServerFatallyCrashedTooManyTimes = true;
-					prompt = vscode.window.showErrorMessage(
+					prompt = vscode.window.showErrorMessage<MyMessageItem>(
 						localize('serverDiedAfterStart', 'The TypeScript language service died 5 times right after it got started. The service will not be restarted.'),
-						reportIssueItem);
-
+						{
+							title: localize('serverDiedReportIssue', 'Report Issue'),
+							id: MessageAction.reportIssue,
+						});
 					/* __GDPR__
 						"serviceExited" : {
 							"${include}": [
@@ -613,49 +509,24 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 						}
 					*/
 					this.logTelemetry('serviceExited');
-				} else if (diff < 60 * 1000 * 5 /* 5 Minutes */) {
+				} else if (diff < 60 * 1000 /* 1 Minutes */) {
 					this.lastStart = Date.now();
-					prompt = vscode.window.showWarningMessage(
+					prompt = vscode.window.showWarningMessage<MyMessageItem>(
 						localize('serverDied', 'The TypeScript language service died unexpectedly 5 times in the last 5 Minutes.'),
-						reportIssueItem);
+						{
+							title: localize('serverDiedReportIssue', 'Report Issue'),
+							id: MessageAction.reportIssue
+						});
 				}
-			} else if (['vscode-insiders', 'code-oss'].includes(vscode.env.uriScheme)) {
-				// Prompt after a single restart
-				if (!this._isPromptingAfterCrash && previousState.type === ServerState.Type.Errored && previousState.error instanceof TypeScriptServerError) {
-					this.numberRestarts = 0;
-					this._isPromptingAfterCrash = true;
-					prompt = vscode.window.showWarningMessage(
-						localize('serverDiedOnce', 'The TypeScript language service died unexpectedly.'),
-						reportIssueItem);
+				if (prompt) {
+					prompt.then(item => {
+						if (item && item.id === MessageAction.reportIssue) {
+							return vscode.commands.executeCommand('workbench.action.reportIssues');
+						}
+						return undefined;
+					});
 				}
 			}
-
-			prompt?.then(item => {
-				this._isPromptingAfterCrash = false;
-
-				if (item === reportIssueItem) {
-					const minModernTsVersion = this.versionProvider.bundledVersion.apiVersion;
-
-					if (minModernTsVersion && this.apiVersion.lt(minModernTsVersion)) {
-						vscode.window.showWarningMessage(
-							localize('usingOldTsVersion.title', 'Please update your TypeScript version'),
-							{
-								modal: true,
-								detail: localize(
-									'usingOldTsVersion.detail',
-									'The workspace is using an old version of TypeScript ({0}).\n\nBefore reporting an issue, please update the workspace to use the latest stable TypeScript release to make sure the bug has not already been fixed.',
-									previousState.type === ServerState.Type.Errored && previousState.error instanceof TypeScriptServerError ? previousState.error.version.apiVersion?.displayName : undefined),
-								useCustom: true
-							});
-					} else {
-						const args = previousState.type === ServerState.Type.Errored && previousState.error instanceof TypeScriptServerError
-							? getReportIssueArgsForError(previousState.error, previousState.tsServerLogFile)
-							: undefined;
-						vscode.commands.executeCommand('workbench.action.openIssueReporter', args);
-					}
-				}
-			});
-
 			if (startService) {
 				this.startService(true);
 			}
@@ -663,151 +534,86 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 	}
 
 	public normalizedPath(resource: vscode.Uri): string | undefined {
-		if (fileSchemes.disabledSchemes.has(resource.scheme)) {
+		if (this.apiVersion.gte(API.v213)) {
+			if (resource.scheme === fileSchemes.walkThroughSnippet || resource.scheme === fileSchemes.untitled) {
+				const dirName = path.dirname(resource.path);
+				const fileName = this.inMemoryResourcePrefix + path.basename(resource.path);
+				return resource.with({ path: path.posix.join(dirName, fileName) }).toString(true);
+			}
+		}
+
+		if (resource.scheme !== fileSchemes.file) {
 			return undefined;
 		}
 
-		switch (resource.scheme) {
-			case fileSchemes.file:
-				{
-					let result = resource.fsPath;
-					if (!result) {
-						return undefined;
-					}
-					result = path.normalize(result);
-
-					// Both \ and / must be escaped in regular expressions
-					return result.replace(new RegExp('\\' + this.pathSeparator, 'g'), '/');
-				}
-			default:
-				{
-					return this.inMemoryResourcePrefix + '/' + resource.scheme
-						+ (resource.path.startsWith('/') ? resource.path : '/' + resource.path)
-						+ (resource.fragment ? '#' + resource.fragment : '');
-				}
+		const result = resource.fsPath;
+		if (!result) {
+			return undefined;
 		}
+
+		// Both \ and / must be escaped in regular expressions
+		return result.replace(new RegExp('\\' + this.pathSeparator, 'g'), '/');
 	}
 
 	public toPath(resource: vscode.Uri): string | undefined {
 		return this.normalizedPath(resource);
 	}
 
-	public toOpenedFilePath(document: vscode.TextDocument, options: { suppressAlertOnFailure?: boolean } = {}): string | undefined {
-		if (!this.bufferSyncSupport.ensureHasBuffer(document.uri)) {
-			if (!options.suppressAlertOnFailure && !fileSchemes.disabledSchemes.has(document.uri.scheme)) {
-				console.error(`Unexpected resource ${document.uri}`);
-			}
+	public toOpenedFilePath(document: vscode.TextDocument): string | undefined {
+		if (!this.bufferSyncSupport.handles(document.uri)) {
+			console.error(`Unexpected resource ${document.uri}`);
 			return undefined;
 		}
-		return this.toPath(document.uri);
+		return this.toPath(document.uri) || undefined;
 	}
 
-	public hasCapabilityForResource(resource: vscode.Uri, capability: ClientCapability): boolean {
-		if (!this.capabilities.has(capability)) {
-			return false;
-		}
-
-		switch (capability) {
-			case ClientCapability.Semantic:
-				{
-					return fileSchemes.semanticSupportedSchemes.includes(resource.scheme);
-				}
-			case ClientCapability.Syntax:
-			case ClientCapability.EnhancedSyntax:
-				{
-					return true;
-				}
-		}
+	private get inMemoryResourcePrefix(): string {
+		return this.apiVersion.gte(API.v270) ? '^' : '';
 	}
 
 	public toResource(filepath: string): vscode.Uri {
-		if (isWeb()) {
-			// On web, the stdlib paths that TS return look like: '/lib.es2015.collection.d.ts'
-			if (filepath.startsWith('/lib.') && filepath.endsWith('.d.ts')) {
-				return vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'browser', 'typescript', filepath.slice(1));
-			}
-		}
-
-		if (filepath.startsWith(this.inMemoryResourcePrefix)) {
-			const parts = filepath.match(/^\^\/([^\/]+)\/(.+)$/);
-			if (parts) {
-				const resource = vscode.Uri.parse(parts[1] + ':' + parts[2]);
-				return this.bufferSyncSupport.toVsCodeResource(resource);
+		if (this.apiVersion.gte(API.v213)) {
+			if (filepath.startsWith(TypeScriptServiceClient.WALK_THROUGH_SNIPPET_SCHEME_COLON) || (filepath.startsWith(fileSchemes.untitled + ':'))
+			) {
+				let resource = vscode.Uri.parse(filepath);
+				if (this.inMemoryResourcePrefix) {
+					const dirName = path.dirname(resource.path);
+					const fileName = path.basename(resource.path);
+					if (fileName.startsWith(this.inMemoryResourcePrefix)) {
+						resource = resource.with({ path: path.posix.join(dirName, fileName.slice(this.inMemoryResourcePrefix.length)) });
+					}
+				}
+				return resource;
 			}
 		}
 		return this.bufferSyncSupport.toResource(filepath);
 	}
 
 	public getWorkspaceRootForResource(resource: vscode.Uri): string | undefined {
-		const roots = vscode.workspace.workspaceFolders ? Array.from(vscode.workspace.workspaceFolders) : undefined;
+		const roots = vscode.workspace.workspaceFolders;
 		if (!roots || !roots.length) {
 			return undefined;
 		}
 
-		switch (resource.scheme) {
-			case fileSchemes.file:
-			case fileSchemes.untitled:
-			case fileSchemes.vscodeNotebookCell:
-			case fileSchemes.memFs:
-			case fileSchemes.vscodeVfs:
-				for (const root of roots.sort((a, b) => a.uri.fsPath.length - b.uri.fsPath.length)) {
-					if (resource.fsPath.startsWith(root.uri.fsPath + path.sep)) {
-						return root.uri.fsPath;
-					}
+		if (resource.scheme === fileSchemes.file || resource.scheme === fileSchemes.untitled) {
+			for (const root of roots.sort((a, b) => a.uri.fsPath.length - b.uri.fsPath.length)) {
+				if (resource.fsPath.startsWith(root.uri.fsPath + path.sep)) {
+					return root.uri.fsPath;
 				}
-				return roots[0].uri.fsPath;
-
-			default:
-				return undefined;
+			}
+			return roots[0].uri.fsPath;
 		}
+
+		return undefined;
 	}
 
 	public execute(command: keyof TypeScriptRequests, args: any, token: vscode.CancellationToken, config?: ExecConfig): Promise<ServerResponse.Response<Proto.Response>> {
-		let executions: Array<Promise<ServerResponse.Response<Proto.Response>> | undefined>;
-
-		if (config?.cancelOnResourceChange) {
-			const runningServerState = this.service();
-
-			const source = new vscode.CancellationTokenSource();
-			token.onCancellationRequested(() => source.cancel());
-
-			const inFlight: ToCancelOnResourceChanged = {
-				resource: config.cancelOnResourceChange,
-				cancel: () => source.cancel(),
-			};
-			runningServerState.toCancelOnResourceChange.add(inFlight);
-
-			executions = this.executeImpl(command, args, {
-				isAsync: false,
-				token: source.token,
-				expectsResult: true,
-				...config,
-			});
-			executions[0]!.finally(() => {
-				runningServerState.toCancelOnResourceChange.delete(inFlight);
-				source.dispose();
-			});
-		} else {
-			executions = this.executeImpl(command, args, {
-				isAsync: false,
-				token,
-				expectsResult: true,
-				...config,
-			});
-		}
-
-		if (config?.nonRecoverable) {
-			executions[0]!.catch(err => this.fatalError(command, err));
-		}
-
-		if (command === 'updateOpen') {
-			// If update open has completed, consider that the project has loaded
-			Promise.all(executions).then(() => {
-				this.loadingIndicator.reset();
-			});
-		}
-
-		return executions[0]!;
+		return this.executeImpl(command, args, {
+			isAsync: false,
+			token,
+			expectsResult: true,
+			lowPriority: config ? config.lowPriority : undefined
+		});
 	}
 
 	public executeWithoutWaitingForResponse(command: keyof TypeScriptRequests, args: any): void {
@@ -823,50 +629,26 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 			isAsync: true,
 			token,
 			expectsResult: true
-		})[0]!;
+		});
 	}
 
-	private executeImpl(command: keyof TypeScriptRequests, args: any, executeInfo: { isAsync: boolean, token?: vscode.CancellationToken, expectsResult: boolean, lowPriority?: boolean, requireSemantic?: boolean }): Array<Promise<ServerResponse.Response<Proto.Response>> | undefined> {
+	private executeImpl(command: keyof TypeScriptRequests, args: any, executeInfo: { isAsync: boolean, token?: vscode.CancellationToken, expectsResult: false, lowPriority?: boolean }): undefined;
+	private executeImpl(command: keyof TypeScriptRequests, args: any, executeInfo: { isAsync: boolean, token?: vscode.CancellationToken, expectsResult: boolean, lowPriority?: boolean }): Promise<ServerResponse.Response<Proto.Response>>;
+	private executeImpl(command: keyof TypeScriptRequests, args: any, executeInfo: { isAsync: boolean, token?: vscode.CancellationToken, expectsResult: boolean, lowPriority?: boolean }): Promise<ServerResponse.Response<Proto.Response>> | undefined {
 		this.bufferSyncSupport.beforeCommand(command);
 		const runningServerState = this.service();
 		return runningServerState.server.executeImpl(command, args, executeInfo);
 	}
 
 	public interruptGetErr<R>(f: () => R): R {
-		return this.bufferSyncSupport.interruptGetErr(f);
-	}
-
-	private fatalError(command: string, error: unknown): void {
-		/* __GDPR__
-			"fatalError" : {
-				"${include}": [
-					"${TypeScriptCommonProperties}",
-					"${TypeScriptRequestErrorProperties}"
-				],
-				"command" : { "classification": "SystemMetaData", "purpose": "FeatureInsight" }
-			}
-		*/
-		this.logTelemetry('fatalError', { ...(error instanceof TypeScriptServerError ? error.telemetry : { command }) });
-		console.error(`A non-recoverable error occurred while executing tsserver command: ${command}`);
-		if (error instanceof TypeScriptServerError && error.serverErrorText) {
-			console.error(error.serverErrorText);
-		}
-
-		if (this.serverState.type === ServerState.Type.Running) {
-			this.info('Killing TS Server');
-			const logfile = this.serverState.server.tsServerLogFile;
-			this.serverState.server.kill();
-			if (error instanceof TypeScriptServerError) {
-				this.serverState = new ServerState.Errored(error, logfile);
-			}
-		}
+		return this.bufferSyncSupport.interuptGetErr(f);
 	}
 
 	private dispatchEvent(event: Proto.Event) {
 		switch (event.event) {
-			case EventName.syntaxDiag:
-			case EventName.semanticDiag:
-			case EventName.suggestionDiag:
+			case 'syntaxDiag':
+			case 'semanticDiag':
+			case 'suggestionDiag':
 				// This event also roughly signals that projects have been loaded successfully (since the TS server is synchronous)
 				this.loadingIndicator.reset();
 
@@ -880,61 +662,62 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 				}
 				break;
 
-			case EventName.configFileDiag:
+			case 'configFileDiag':
 				this._onConfigDiagnosticsReceived.fire(event as Proto.ConfigFileDiagnosticEvent);
 				break;
 
-			case EventName.telemetry:
+			case 'telemetry':
 				{
 					const body = (event as Proto.TelemetryEvent).body;
 					this.dispatchTelemetryEvent(body);
 					break;
 				}
-			case EventName.projectLanguageServiceState:
+			case 'projectLanguageServiceState':
 				{
 					const body = (event as Proto.ProjectLanguageServiceStateEvent).body!;
 					if (this.serverState.type === ServerState.Type.Running) {
-						this.serverState.updateLanguageServiceEnabled(body.languageServiceEnabled);
+						this.serverState = {
+							...this.serverState,
+							langaugeServiceEnabled: body.languageServiceEnabled,
+						};
 					}
 					this._onProjectLanguageServiceStateChanged.fire(body);
 					break;
 				}
-			case EventName.projectsUpdatedInBackground:
-				this.loadingIndicator.reset();
-
+			case 'projectsUpdatedInBackground':
 				const body = (event as Proto.ProjectsUpdatedInBackgroundEvent).body;
-				const resources = body.openFiles.map(file => this.toResource(file));
+				const resources = body.openFiles.map(vscode.Uri.file);
 				this.bufferSyncSupport.getErr(resources);
 				break;
 
-			case EventName.beginInstallTypes:
+			case 'beginInstallTypes':
 				this._onDidBeginInstallTypings.fire((event as Proto.BeginInstallTypesEvent).body);
 				break;
 
-			case EventName.endInstallTypes:
+			case 'endInstallTypes':
 				this._onDidEndInstallTypings.fire((event as Proto.EndInstallTypesEvent).body);
 				break;
 
-			case EventName.typesInstallerInitializationFailed:
+			case 'typesInstallerInitializationFailed':
 				this._onTypesInstallerInitializationFailed.fire((event as Proto.TypesInstallerInitializationFailedEvent).body);
 				break;
 
-			case EventName.surveyReady:
+			case 'surveyReady':
 				this._onSurveyReady.fire((event as Proto.SurveyReadyEvent).body);
 				break;
 
-			case EventName.projectLoadingStart:
+			case 'projectLoadingStart':
 				this.loadingIndicator.startedLoadingProject((event as Proto.ProjectLoadingStartEvent).body.projectName);
 				break;
 
-			case EventName.projectLoadingFinish:
+			case 'projectLoadingFinish':
 				this.loadingIndicator.finishedLoadingProject((event as Proto.ProjectLoadingFinishEvent).body.projectName);
 				break;
 		}
 	}
 
 	private dispatchTelemetryEvent(telemetryData: Proto.TelemetryEventBody): void {
-		const properties: { [key: string]: string } = Object.create(null);
+		const properties: ObjectMap<string> = Object.create(null);
 		switch (telemetryData.telemetryEventName) {
 			case 'typingsInstalled':
 				const typingsInstalledPayload: Proto.TypingsInstalledTelemetryEventPayload = (telemetryData.payload as Proto.TypingsInstalledTelemetryEventPayload);
@@ -965,7 +748,10 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 		}
 		if (telemetryData.telemetryEventName === 'projectInfo') {
 			if (this.serverState.type === ServerState.Type.Running) {
-				this.serverState.updateTsserverVersion(properties['version']);
+				this.serverState = {
+					...this.serverState,
+					tsserverVersion: properties['version']
+				};
 			}
 		}
 
@@ -988,65 +774,6 @@ export default class TypeScriptServiceClient extends Disposable implements IType
 			this.executeWithoutWaitingForResponse('configurePlugin', { pluginName, configuration });
 		}
 	}
-}
-
-function getReportIssueArgsForError(
-	error: TypeScriptServerError,
-	logPath: string | undefined,
-): { extensionId: string, issueTitle: string, issueBody: string } | undefined {
-	if (!error.serverStack || !error.serverMessage) {
-		return undefined;
-	}
-
-	// Note these strings are intentionally not localized
-	// as we want users to file issues in english
-
-	const sections = [
-		`❗️❗️❗️ Please fill in the sections below to help us diagnose the issue ❗️❗️❗️`,
-		`**TypeScript Version:** ${error.version.apiVersion?.fullVersionString}`,
-		`**Steps to reproduce crash**
-
-1.
-2.
-3.`,
-	];
-
-	if (logPath) {
-		sections.push(`**TS Server Log**
-
-❗️ Please review and upload this log file to help us diagnose this crash:
-
-\`${logPath}\`
-
-The log file may contain personal data, including full paths and source code from your workspace. You can scrub the log file to remove paths or other personal information.
-`);
-	} else {
-
-		sections.push(`**TS Server Log**
-
-❗️Server logging disabled. To help us fix crashes like this, please enable logging by setting:
-
-\`\`\`json
-"typescript.tsserver.log": "verbose"
-\`\`\`
-
-After enabling this setting, future crash reports will include the server log.`);
-	}
-
-	sections.push(`**TS Server Error Stack**
-
-Server: \`${error.serverId}\`
-
-\`\`\`
-${error.serverStack}
-\`\`\``);
-
-	return {
-		extensionId: 'vscode.typescript-language-features',
-		issueTitle: `TS Server fatal error:  ${error.serverMessage}`,
-
-		issueBody: sections.join('\n\n')
-	};
 }
 
 function getDignosticsKind(event: Proto.Event) {
@@ -1079,7 +806,7 @@ class ServerInitializingIndicator extends Disposable {
 		vscode.window.withProgress({
 			location: vscode.ProgressLocation.Window,
 			title: localize('serverLoading.progress', "Initializing JS/TS language features"),
-		}, () => new Promise<void>((resolve, reject) => {
+		}, () => new Promise((resolve, reject) => {
 			this._task = { project: projectName, resolve, reject };
 		}));
 	}
@@ -1091,3 +818,4 @@ class ServerInitializingIndicator extends Disposable {
 		}
 	}
 }
+

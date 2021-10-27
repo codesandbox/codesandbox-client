@@ -4,7 +4,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OpenTsServerLogCommand = void 0;
 class OpenTsServerLogCommand {
     constructor(lazyClientHost) {
         this.lazyClientHost = lazyClientHost;

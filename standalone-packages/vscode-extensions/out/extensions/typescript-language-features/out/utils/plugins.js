@@ -4,7 +4,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PluginManager = void 0;
 const vscode = require("vscode");
 const arrays = require("./arrays");
 const dispose_1 = require("./dispose");
@@ -62,7 +61,6 @@ class PluginManager extends dispose_1.Disposable {
                         enableForWorkspaceTypeScriptVersions: !!plugin.enableForWorkspaceTypeScriptVersions,
                         path: extension.extensionPath,
                         languages: Array.isArray(plugin.languages) ? plugin.languages : [],
-                        configNamespace: plugin.configNamespace,
                     });
                 }
                 if (plugins.length) {

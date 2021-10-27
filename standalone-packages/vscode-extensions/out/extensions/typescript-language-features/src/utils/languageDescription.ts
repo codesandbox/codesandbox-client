@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { basename } from 'path';
-import * as vscode from 'vscode';
 import * as languageModeIds from './languageModeIds';
 
 export const enum DiagnosticLanguage {
@@ -19,10 +18,9 @@ export interface LanguageDescription {
 	readonly diagnosticOwner: string;
 	readonly diagnosticSource: string;
 	readonly diagnosticLanguage: DiagnosticLanguage;
-	readonly modeIds: readonly string[];
+	readonly modeIds: string[];
 	readonly configFilePattern?: RegExp;
 	readonly isExternal?: boolean;
-	readonly standardFileExtensions: readonly string[],
 }
 
 export const standardLanguageDescriptions: LanguageDescription[] = [
@@ -32,28 +30,14 @@ export const standardLanguageDescriptions: LanguageDescription[] = [
 		diagnosticSource: 'ts',
 		diagnosticLanguage: DiagnosticLanguage.TypeScript,
 		modeIds: [languageModeIds.typescript, languageModeIds.typescriptreact],
-		configFilePattern: /^tsconfig(\..*)?\.json$/gi,
-		standardFileExtensions: [
-			'ts',
-			'tsx',
-			'cts',
-			'mts'
-		],
+		configFilePattern: /^tsconfig(\..*)?\.json$/gi
 	}, {
 		id: 'javascript',
 		diagnosticOwner: 'typescript',
 		diagnosticSource: 'ts',
 		diagnosticLanguage: DiagnosticLanguage.JavaScript,
 		modeIds: [languageModeIds.javascript, languageModeIds.javascriptreact],
-		configFilePattern: /^jsconfig(\..*)?\.json$/gi,
-		standardFileExtensions: [
-			'js',
-			'jsx',
-			'cjs',
-			'mjs',
-			'es6',
-			'pac',
-		],
+		configFilePattern: /^jsconfig(\..*)?\.json$/gi
 	}
 ];
 
@@ -63,12 +47,4 @@ export function isTsConfigFileName(fileName: string): boolean {
 
 export function isJsConfigOrTsConfigFileName(fileName: string): boolean {
 	return /^[jt]sconfig\.(.+\.)?json$/i.test(basename(fileName));
-}
-
-export function doesResourceLookLikeATypeScriptFile(resource: vscode.Uri): boolean {
-	return /\.(tsx?|mts|cts)$/i.test(resource.fsPath);
-}
-
-export function doesResourceLookLikeAJavaScriptFile(resource: vscode.Uri): boolean {
-	return /\.(jsx?|mjs|cjs)$/i.test(resource.fsPath);
 }

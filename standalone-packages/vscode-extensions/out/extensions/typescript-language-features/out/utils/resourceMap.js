@@ -3,9 +3,16 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ResourceMap = void 0;
-const fileSchemes = require("../utils/fileSchemes");
+const fs = require("fs");
+const memoize_1 = require("./memoize");
+const temp_1 = require("./temp");
 /**
  * Maps of file resources
  *
@@ -13,9 +20,8 @@ const fileSchemes = require("../utils/fileSchemes");
  * file systems.
  */
 class ResourceMap {
-    constructor(_normalizePath = ResourceMap.defaultPathNormalizer, config) {
+    constructor(_normalizePath = (resource) => resource.fsPath) {
         this._normalizePath = _normalizePath;
-        this.config = config;
         this._map = new Map();
     }
     get size() {
@@ -56,7 +62,7 @@ class ResourceMap {
         this._map.clear();
     }
     get values() {
-        return Array.from(this._map.values(), x => x.value);
+        return Array.from(this._map.values()).map(x => x.value);
     }
     get entries() {
         return this._map.values();
@@ -72,17 +78,26 @@ class ResourceMap {
         if (isWindowsPath(path)) {
             return true;
         }
-        return path[0] === '/' && this.config.onCaseInsensitiveFileSystem;
+        return path[0] === '/' && this.onIsCaseInsenitiveFileSystem;
+    }
+    get onIsCaseInsenitiveFileSystem() {
+        if (process.platform === 'win32') {
+            return true;
+        }
+        if (process.platform !== 'darwin') {
+            return false;
+        }
+        const temp = temp_1.getTempFile('typescript-case-check');
+        fs.writeFileSync(temp, '');
+        return fs.existsSync(temp.toUpperCase());
     }
 }
+__decorate([
+    memoize_1.memoize
+], ResourceMap.prototype, "onIsCaseInsenitiveFileSystem", null);
 exports.ResourceMap = ResourceMap;
-ResourceMap.defaultPathNormalizer = (resource) => {
-    if (resource.scheme === fileSchemes.file) {
-        return resource.fsPath;
-    }
-    return resource.toString(true);
-};
 function isWindowsPath(path) {
-    return /^[a-zA-Z]:[\/\\]/.test(path);
+    return /^[a-zA-Z]:\\/.test(path);
 }
+exports.isWindowsPath = isWindowsPath;
 //# sourceMappingURL=resourceMap.js.map
