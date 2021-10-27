@@ -159,7 +159,7 @@ export const TeamCards = ({ mode }) => (
           color: ${props => props.theme.homepage.blue};
           background: ${props => props.theme.homepage.white};
         `}
-        href="mailto:hello@codesandbox.io"
+        href="mailto:support@codesandbox.io"
       >
         Contact us
       </Button>

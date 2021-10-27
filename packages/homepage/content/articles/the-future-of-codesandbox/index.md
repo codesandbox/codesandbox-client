@@ -281,7 +281,7 @@ Git Extractor:
 On that note, don't hesitate to ping us with your ideas; they've helped us a lot
 in the past months. You can tweet or DM at me
 ([@CompuIves](https://twitter.com/CompuIves)) or shoot an email to
-hello@codesandbox.io.
+support@codesandbox.io.
 
 Let's make CodeSandbox a helpful tool for web application development, both for
 beginners and experienced developers.

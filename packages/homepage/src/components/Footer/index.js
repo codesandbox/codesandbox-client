@@ -108,7 +108,7 @@ const footerNavElements = [
       {
         text: 'Contact Support',
         external: true,
-        link: 'mailto:hello@codesandbox.io',
+        link: 'mailto:support@codesandbox.io',
       },
       {
         text: 'Status',

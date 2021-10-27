@@ -46,7 +46,7 @@ export const previewUpdateSubscriptionBillingInterval = async (
     state.pro.isBillingAmountLoaded = true;
   } catch {
     effects.notificationToast.error(
-      'There was a problem getting your billing summary. Please email us at hello@codesandbox.io'
+      'There was a problem getting your billing summary. Please email us at support@codesandbox.io'
     );
   }
 };
@@ -76,7 +76,7 @@ export const updateSubscriptionBillingInterval = async (
   } catch {
     state.pro.updatingSubscription = false;
     effects.notificationToast.error(
-      'There was a problem updating your billing interval. Please email us at hello@codesandbox.io'
+      'There was a problem updating your billing interval. Please email us at support@codesandbox.io'
     );
   }
 };
@@ -108,7 +108,7 @@ export const cancelWorkspaceSubscription = async ({
       response.softCancelSubscription.cancelAt;
   } catch (error) {
     effects.notificationToast.error(
-      'There was a problem cancelling your subscription. Please email us at hello@codesandbox.io'
+      'There was a problem cancelling your subscription. Please email us at support@codesandbox.io'
     );
   }
 };
@@ -127,7 +127,7 @@ export const reactivateWorkspaceSubscription = async ({
     state.activeTeamInfo!.subscription!.cancelAt = null;
   } catch (error) {
     effects.notificationToast.error(
-      'There was a problem reactivating your subscription. Please email us at hello@codesandbox.io'
+      'There was a problem reactivating your subscription. Please email us at support@codesandbox.io'
     );
   }
 };

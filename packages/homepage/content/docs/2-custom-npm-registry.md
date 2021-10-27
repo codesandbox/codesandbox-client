@@ -115,20 +115,20 @@ behind a VPN out of the box. However, we do have three solutions:
 
 **Solution 1: bypass the proxy** We can bypass the proxy on our service to let
 the browser fetch from the registry directly. This is not enabled by default for
-everyone - please [request this be turned on](mailto:hello@codesandbox.io). The
-disadvantage of this approach is that you have to share your registry auth token
-with everyone who has access to the sandbox. Also, to make this work, you need
-to add CORS headers to your registry so the browser can fetch the packages
+everyone - please [request this be turned on](mailto:support@codesandbox.io).
+The disadvantage of this approach is that you have to share your registry auth
+token with everyone who has access to the sandbox. Also, to make this work, you
+need to add CORS headers to your registry so the browser can fetch the packages
 directly from our origin.
 
 **Solution 2: whitelist the proxy** Another solution is to whitelist the IP
 range of our proxy. We make sure that we keep the same IP for our proxy. Please
-[request these details](mailto:hello@codesandbox.io).
+[request these details](mailto:support@codesandbox.io).
 
 **Solution 3: self-host the proxy** A third option is to self-host the proxy in
 your network, and letting the proxy communicate with our API server to validate
 the tokens that are sent in. We can
-[help get you setup with this](mailto:hello@codesandbox.io).
+[help get you setup with this](mailto:support@codesandbox.io).
 
 ### Can I use a .npmrc file?
 
