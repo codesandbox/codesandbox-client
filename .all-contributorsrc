@@ -1634,6 +1634,15 @@
         "content",
         "maintenance"
       ]
+    },
+    {
+      "login": "StefanRetief",
+      "name": "Stefan Retief",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3196604?v=4",
+      "profile": "https://stefanretief.com",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
