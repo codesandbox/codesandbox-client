@@ -21,7 +21,7 @@ import joana from '../assets/images/people/joana.jpg';
 import marco from '../assets/images/people/marco.jpg';
 import roman from '../assets/images/people/roman.jpg';
 import james from '../assets/images/people/james.jpg';
-import maria from '../assets/images/people/maria.jpg'
+import maria from '../assets/images/people/maria.png'
 
 const people = [
   {
