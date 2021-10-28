@@ -18,8 +18,8 @@
   "main": "lib/index",
   "scripts": {
     "dev": "nodemon --watch src --watch example --exec run-s build",
-    "watch": "babel --watch src --out-dir lib --extensions '.ts,.tsx'",
-    "build": "babel src --out-dir lib --extensions '.ts,.tsx'",
+    "watch": "babel --watch src --out-dir lib --extensions .ts,.tsx",
+    "build": "babel src --out-dir lib --extensions .ts,.tsx",
     "build:dev": "npm run build",
     "lint": "eslint ./src",
     "test": "yarn lint && yarn typecheck && jest -c ./jest.config.js",
