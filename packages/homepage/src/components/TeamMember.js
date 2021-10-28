@@ -21,6 +21,7 @@ import joana from '../assets/images/people/joana.jpg';
 import marco from '../assets/images/people/marco.jpg';
 import roman from '../assets/images/people/roman.jpg';
 import james from '../assets/images/people/james.jpg';
+import maria from '../assets/images/people/maria.jpg'
 
 const people = [
   {
@@ -142,6 +143,12 @@ const people = [
     pic: james,
     color: '#6200ff',
     team: 'Support',
+  },
+  {
+    name: 'Maria Clara',
+    pic: maria,
+    color: 'F24E62',
+    team: 'Engineering'
   }
 ];
 
