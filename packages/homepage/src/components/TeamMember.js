@@ -21,6 +21,7 @@ import joana from '../assets/images/people/joana.jpg';
 import marco from '../assets/images/people/marco.jpg';
 import roman from '../assets/images/people/roman.jpg';
 import james from '../assets/images/people/james.jpg';
+import ace from '../assets/images/people/ace.jpg'
 
 const people = [
   {
@@ -142,6 +143,12 @@ const people = [
     pic: james,
     color: '#6200ff',
     team: 'Support',
+  },
+  {
+    name: 'Adewale Abati',
+    pic: ace,
+    color: '#008753',
+    team: 'Developer Relations',
   }
 ];
 
