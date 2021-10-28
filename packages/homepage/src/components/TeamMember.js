@@ -157,6 +157,7 @@ const Peep = styled.img`
   height: 80px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.24), 0px 8px 4px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
+  object-fit: cover;
 
   ${props => {
     if (props.border) {
