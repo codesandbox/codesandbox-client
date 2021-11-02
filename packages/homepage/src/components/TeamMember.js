@@ -147,7 +147,7 @@ const people = [
   {
     name: 'Gianmarco Simone',
     pic: gianmarco,
-    color: '#F8D628',
+    color: '#ddaa00',
     team: 'Engineering',
   }
 ];
