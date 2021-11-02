@@ -63,6 +63,8 @@ import {
   SetDefaultTeamMemberAuthorizationMutationVariables,
   DeleteCurrentUserMutation,
   DeleteCurrentUserMutationVariables,
+  CancelDeleteCurrentUserMutation,
+  CancelDeleteCurrentUserMutationVariables,
   UpdateSubscriptionBillingIntervalMutation,
   UpdateSubscriptionBillingIntervalMutationVariables,
   PreviewUpdateSubscriptionBillingIntervalMutation,
@@ -543,6 +545,15 @@ export const deleteAccount: Query<
 > = gql`
   mutation deleteCurrentUser {
     deleteCurrentUser
+  }
+`;
+
+export const undoDeleteAccount: Query<
+  CancelDeleteCurrentUserMutation,
+  CancelDeleteCurrentUserMutationVariables
+> = gql`
+  mutation cancelDeleteCurrentUser {
+    cancelDeleteCurrentUser
   }
 `;
 

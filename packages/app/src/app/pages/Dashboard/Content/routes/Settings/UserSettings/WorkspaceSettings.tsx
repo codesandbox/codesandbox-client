@@ -206,10 +206,16 @@ export const WorkspaceSettings = () => {
                     padding: 0,
                   })}
                   onClick={() => {
-                    actions.dashboard.requestAccountClosing();
+                    if (user.deletionRequested) {
+                      actions.dashboard.undoRequestAccountClosing();
+                    } else {
+                      actions.dashboard.requestAccountClosing();
+                    }
                   }}
                 >
-                  Request Account Deletion
+                  {user.deletionRequested
+                    ? 'Undo Account Deletion'
+                    : 'Request Account Deletion'}
                 </Button>
                 <Stack justify="flex-start" gap={1}>
                   <Button
@@ -301,10 +307,16 @@ export const WorkspaceSettings = () => {
                   padding: 0,
                 })}
                 onClick={() => {
-                  actions.dashboard.requestAccountClosing();
+                  if (user.deletionRequested) {
+                    actions.dashboard.undoRequestAccountClosing();
+                  } else {
+                    actions.dashboard.requestAccountClosing();
+                  }
                 }}
               >
-                Request Account Deletion
+                {user.deletionRequested
+                  ? 'Undo Account Deletion'
+                  : 'Request Account Deletion'}
               </Button>
             </Stack>
           </Stack>
