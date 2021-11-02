@@ -2297,6 +2297,14 @@ export type DeleteCurrentUserMutation = {
   __typename?: 'RootMutationType';
 } & Pick<RootMutationType, 'deleteCurrentUser'>;
 
+export type CancelDeleteCurrentUserMutationVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type CancelDeleteCurrentUserMutation = {
+  __typename?: 'RootMutationType';
+} & Pick<RootMutationType, 'cancelDeleteCurrentUser'>;
+
 export type UpdateSubscriptionBillingIntervalMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   subscriptionId: Scalars['UUID4'];
