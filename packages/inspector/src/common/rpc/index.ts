@@ -117,7 +117,6 @@ export class RPCProtocolImpl extends Disposable implements RPCProtocol {
   }
 
   private receiveMessage(rawmsg: string): void {
-    console.log('rpc receive', rawmsg);
     if (this.isDisposed) {
       return;
     }
@@ -129,8 +128,6 @@ export class RPCProtocolImpl extends Disposable implements RPCProtocol {
       this.messageToSendHostId = (<any>msg).setHostID;
       return;
     }
-
-    console.log(msg);
 
     // skip message if not matching host
     if (

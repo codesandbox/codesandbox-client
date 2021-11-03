@@ -317,12 +317,12 @@
         "affectsGlobalScope": false
       },
       "./src/common/rpc/connection.ts": {
-        "version": "94d54f4b3e76d35db2c15d60ddc766cb952b54ffd9891dbb79c7afc0f414d371",
+        "version": "1459d5a0819c1e29df7c49596aec7cea9454dd64ccb254c98f6959b7d65233f0",
         "signature": "c1f2b91b8a00fc5728657fe4d6eb1e40b5edeed94a2441c46683c69b86a42ec3",
         "affectsGlobalScope": false
       },
       "./src/common/rpc/index.ts": {
-        "version": "97c091515857e00ad235353de1432634cec3a78b52e62fd25dfb4ac1770bb6f3",
+        "version": "065231c77f9e3d3d692c398ea2f9535b41dacf3d7be065e5851aea1ede15693f",
         "signature": "c3c2a27455abf2d2ce1a67038ce1a35eb42ba4ecde3683e0478aaf54a47cf7b9",
         "affectsGlobalScope": false
       },
@@ -2632,7 +2632,7 @@
         "affectsGlobalScope": false
       },
       "./src/sandbox/index.ts": {
-        "version": "6afd540673c82538a395c9c46076607c9e0424bae9e27702ea3719da832c8f70",
+        "version": "d01cd3f112cc497f3d8d813fe7ff9b91264742dd0fe2a05416cc2813273cd02c",
         "signature": "19163c30e5f2a306cf45589f0e958ef11e2be9fba481e7a9078ca63026b70c1c",
         "affectsGlobalScope": false
       },

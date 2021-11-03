@@ -14,7 +14,7 @@ import { useAppState, useActions } from 'app/overmind';
 import css from '@styled-system/css';
 import { Module } from '@codesandbox/common/lib/types';
 import { Result } from './components/Result';
-import SearchWorker from './search.worker';
+import SearchWorker from './search.worker.comlink';
 import { TabButton } from './components/TabButton';
 import { SearchOptions } from './components/SearchOptions';
 import { MoreIcon, SearchIcon } from './icons';

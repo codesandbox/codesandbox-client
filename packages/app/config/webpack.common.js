@@ -226,7 +226,7 @@ module.exports = {
         type: 'javascript/auto',
       },
       {
-        test: /\.worker\.(js|ts)$/i,
+        test: /\.worker\.comlink\.(js|ts)$/i,
         use: [
           {
             loader: 'comlink-loader',

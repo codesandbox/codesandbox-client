@@ -46,7 +46,9 @@ export class MainWorkerConnection extends Disposable implements IConnection {
   constructor(workerClass: () => Worker) {
     super();
 
+    console.log('IT IS TRYING');
     this.workerInstance = workerClass();
+    console.log('GETING HERE');
     this.workerInstance.addEventListener('message', this.onMessage);
     window.addEventListener('message', this.onBroadcastMessage);
   }
@@ -55,12 +57,14 @@ export class MainWorkerConnection extends Disposable implements IConnection {
    * For the FS Sync we sometimes need to send messages emitted by the window back to the worker
    */
   onBroadcastMessage = (message: MessageEvent<any>) => {
+    console.log('b-message', message.data);
     if (message.data.$broadcast) {
       this.workerInstance.postMessage(message.data);
     }
   };
 
   onMessage = (message: MessageEvent<unknown>) => {
+    console.log('w-message', message.data);
     if (typeof message.data === 'string') {
       if (message.data === 'ready') {
         this.readyDeferred.resolve();
