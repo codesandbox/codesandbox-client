@@ -4,7 +4,7 @@ import { decorateSelector } from '../utils/decorate-selector';
 export default new Template(
   'quasar',
   'Quasar',
-  'https://quasar-framework.org/',
+  'https://quasar.dev/',
   'github/quasarframework/quasar-codesandbox',
   decorateSelector(() => '#43A4F2'),
   {
