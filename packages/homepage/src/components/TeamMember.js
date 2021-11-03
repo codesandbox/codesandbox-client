@@ -147,7 +147,7 @@ const people = [
   {
     name: 'Maria Clara',
     pic: maria,
-    color: 'F24E62',
+    color: '#272b8c',
     team: 'Engineering'
   }
 ];
