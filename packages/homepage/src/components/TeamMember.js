@@ -148,7 +148,7 @@ const people = [
     name: 'Adewale Abati',
     pic: ace,
     color: '#008753',
-    team: 'Developer Relations',
+    team: 'DevRel',
   }
 ];
 
