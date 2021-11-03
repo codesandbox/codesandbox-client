@@ -784,7 +784,10 @@ async function compile(opts: CompileOptions) {
 
     window.$editor = getInspectorStateService({
       resolve: async (fromPath: string, toPath: string) => {
-        const module = await manager.resolveModuleAsync(toPath, fromPath);
+        const module = await manager.resolveModuleAsync({
+          path: toPath,
+          parentPath: fromPath,
+        });
         return { resolvedPath: module.path, code: module.code };
       },
     });

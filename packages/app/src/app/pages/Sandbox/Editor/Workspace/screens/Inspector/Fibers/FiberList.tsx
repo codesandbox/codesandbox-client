@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOvermind } from 'app/overmind';
+import { useEffects } from 'app/overmind';
 import { EditorInspectorState } from 'inspector/lib/editor';
 import { Fiber } from '../Fiber';
 import { useInspectorFibers } from '../hooks/fibers';
@@ -11,7 +11,7 @@ type FiberListProps = {
 
 export const FiberList = ({ inspectorStateService }: FiberListProps) => {
   const { fibers, selectedFiber } = useInspectorFibers(inspectorStateService);
-  const { effects } = useOvermind();
+  const effects = useEffects();
 
   return (
     <div style={{ marginTop: -16 }}>

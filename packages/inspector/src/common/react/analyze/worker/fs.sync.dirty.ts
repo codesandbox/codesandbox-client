@@ -15,7 +15,7 @@ import {
 
 const EXTENSIONS_LOCATION = process.env.VSCODE
   ? '/vscode/extensions-bundle'
-  : '/public/vscode-extensions/v14';
+  : '/public/vscode-extensions/v18';
 
 const global = getGlobal();
 

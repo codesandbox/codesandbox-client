@@ -4,7 +4,7 @@ import { Collapsible } from '@codesandbox/components';
 
 import { EditorInspectorState } from 'inspector/lib/editor';
 
-import { useOvermind } from 'app/overmind';
+import { useEffects } from 'app/overmind';
 import { VSCodeEditorBridge } from './editor-bridge';
 import { getInspectorStateService } from './inspector-singleton';
 import { Knobs } from './Knobs';
@@ -16,7 +16,7 @@ import { FiberList } from './Fibers';
 // }, 5000);
 
 export const Inspector = () => {
-  const { effects } = useOvermind();
+  const effects = useEffects();
   const [
     inspectorStateService,
     setInspectorStateService,

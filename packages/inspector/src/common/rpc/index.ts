@@ -37,7 +37,7 @@ export class RPCProtocolImpl extends Disposable implements RPCProtocol {
     super();
 
     this.toDispose.push(
-      connection.onReceive((message) => {
+      connection.onReceive(message => {
         this.receiveMessage(message);
       })
     );
@@ -117,6 +117,7 @@ export class RPCProtocolImpl extends Disposable implements RPCProtocol {
   }
 
   private receiveMessage(rawmsg: string): void {
+    console.log('rpc receive', rawmsg);
     if (this.isDisposed) {
       return;
     }
@@ -128,6 +129,8 @@ export class RPCProtocolImpl extends Disposable implements RPCProtocol {
       this.messageToSendHostId = (<any>msg).setHostID;
       return;
     }
+
+    console.log(msg);
 
     // skip message if not matching host
     if (
@@ -161,12 +164,12 @@ export class RPCProtocolImpl extends Disposable implements RPCProtocol {
     const invocation = this.invokeHandler(proxyId, msg.method, msg.args);
 
     invocation.then(
-      (result) => {
+      result => {
         this.connection.send(
           MessageFactory.replyOK(callId, result, this.messageToSendHostId)
         );
       },
-      (error) => {
+      error => {
         this.connection.send(
           MessageFactory.replyErr(callId, error, this.messageToSendHostId)
         );

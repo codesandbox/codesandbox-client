@@ -79,6 +79,7 @@ class Inspector extends Disposable implements ISandboxProxy {
   }
 
   async $getFibers(id?: string): Promise<Fiber[] | undefined> {
+    console.log('get fibers request');
     const fibers = this.bridge.getFibers();
     fibers.forEach(fiber => {
       this.fibers.set(fiber.id, fiber);
