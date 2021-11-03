@@ -12,6 +12,7 @@ import imageTwo from '../../assets/images/jobs/two.png';
 import imageThree from '../../assets/images/jobs/three.png';
 import imageFour from '../../assets/images/jobs/four.png';
 import worldMap from '../../assets/images/world-map.svg';
+import wearehiring from '../../assets/images/jobs/we-are-hiring.jpg';
 
 import {
   PageTitle,
@@ -27,16 +28,24 @@ import {
 const Careers = () => {
   const [team1, team2, team3, team4, team5, team6] = getRandomTeamMembers(6);
 
-  const jobs = [
-    {
-      title: 'Visual Designer',
-      url: 'https://codesandbox.recruitee.com/o/visual-designer',
-    },
-    {
-      title: 'Head of Engineering',
-      url: 'https://codesandbox.recruitee.com/o/head-of-engineering',
-    },
-  ];
+  const [jobs, setJobs] = React.useState(undefined);
+
+  React.useEffect(() => {
+    fetch('https://codesandbox.recruitee.com/api/offers/')
+      .then(x => x.json())
+      .then(recruiteeJobs => {
+        setJobs(
+          recruiteeJobs.offers.map(job => ({
+            title: job.title,
+            url: job.careers_url,
+          }))
+        );
+      })
+      .catch(e => {
+        console.error('Could not fetch jobs.');
+        console.error(e);
+      });
+  }, []);
 
   return (
     <Layout>
@@ -45,8 +54,8 @@ const Careers = () => {
           <TitleAndMetaTags
             description="Find out here about careers and working at CodeSandbox!"
             title="Careers - CodeSandbox"
+            image={wearehiring}
           />
-
           <PageTitle>Join CodeSandbox</PageTitle>
           <HeroSection>
             <TitleDescription>
@@ -216,16 +225,17 @@ const Careers = () => {
               We’re building a team, tool, and community that’s:
               <br />
               <br />
-              <strong>Accessible</strong> - we’re making development accessible
-              to all, building a reality where everyone can be a creator.
+              <strong>Accessible</strong> &mdash; we’re making development
+              accessible to all, building a reality where everyone can be a
+              creator.
               <br />
               <br />
-              <strong>Collaborative</strong> - providing people with the means
-              to encourage and help each other.
+              <strong>Collaborative</strong> &mdash; providing people with the
+              means to encourage and help each other.
               <br />
               <br />
-              <strong>Empowering</strong> - enabling creators to feel like they
-              can build without limits.
+              <strong>Empowering</strong> &mdash; enabling creators to feel like
+              they can build without limits.
             </TitleDescription>
           </div>
           <div
@@ -255,38 +265,99 @@ const Careers = () => {
               delivers better results than other approaches.
             </TitleDescription>
           </div>
+          <div
+            css={`
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+            `}
+          >
+            <PageTitle>Our Hiring Process</PageTitle>
+            <TitleDescription
+              css={`
+                width: 640px;
+                max-width: 80%;
+              `}
+            >
+              Meeting you is always an exciting moment for us and we would like
+              to make sure you feel comfortable when interviewing with us. The
+              steps below outline what you can expect:
+              <br />
+              <br />
+              <strong>Step 1</strong> &mdash; a 30 min informal conversation to
+              get to know each other.
+              <br />
+              <br />
+              <strong>Step 2</strong> &mdash; a 1 hour conversation to dive
+              deeper into your technical skills and explore your fit with our
+              culture.
+              <br />
+              <br />
+              <strong>Step 3</strong> &mdash; a 1 hour coding challenge or
+              assessment where you get the chance to work alongside some of your
+              potential teammates.
+              <br />
+              <br />
+              <strong>Step 4</strong> &mdash; a final conversation during which
+              we tackle any remaining questions on both sides.
+              <br />
+              <br />
+              We do every interview in pairs and with different assessors
+              because we would like you to be able to meet more members of the
+              team. It also gives us the chance to eliminate biases.
+              <br />
+              <br />
+              We are looking forward to receiving your application!
+            </TitleDescription>
+          </div>
           <PageSubtitle>Open Positions</PageSubtitle>
-          <Jobs>
-            {jobs.map(({ title, url }) => (
-              <a
-                href={url}
-                key={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                css={`
-                  text-decoration: none;
-                `}
-              >
-                <Job>
-                  <span
-                    css={`
-                      font-weight: bold;
-                    `}
-                  >
-                    {title}
-                  </span>
+          {jobs != null && (
+            <div>
+              {jobs.length === 0 ? (
+                <TitleDescription
+                  css={`
+                    width: 640px;
+                    max-width: 80%;
+                  `}
+                >
+                  There are no positions open right now, but please feel free to
+                  still apply <a href="mailto:careers@codesandbox.io">here</a>!
+                </TitleDescription>
+              ) : (
+                <Jobs>
+                  {jobs.map(({ title, url }) => (
+                    <a
+                      href={url}
+                      key={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      css={`
+                        text-decoration: none;
+                      `}
+                    >
+                      <Job>
+                        <strong
+                          css={`
+                            margin-right: 1rem;
+                          `}
+                        >
+                          {title}
+                        </strong>
 
-                  <span
-                    css={`
-                      color: #757575;
-                    `}
-                  >
-                    Remote
-                  </span>
-                </Job>
-              </a>
-            ))}
-          </Jobs>
+                        <span
+                          css={`
+                            color: #757575;
+                          `}
+                        >
+                          Remote
+                        </span>
+                      </Job>
+                    </a>
+                  ))}
+                </Jobs>
+              )}
+            </div>
+          )}
         </PageContainer>
       </ThemeProvider>
     </Layout>

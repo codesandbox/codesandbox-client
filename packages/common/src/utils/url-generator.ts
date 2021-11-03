@@ -183,6 +183,12 @@ export const optionsToParameterizedUrl = (options: Object) => {
 export const gitHubToSandboxUrl = (githubUrl: string) =>
   githubUrl.replace(gitHubPrefix, '/s/github').replace(dotGit, '');
 
+export const gitHubToSandboxBetaUrl = (githubUrl: string) =>
+  githubUrl
+    .replace(gitHubPrefix, '/github')
+    .replace(dotGit, '')
+    .replace(/\/tree\//, '/');
+
 export const searchUrl = (query?: string) =>
   `/search${query ? `?query=${query}` : ''}`;
 export const patronUrl = () => `/patron`;

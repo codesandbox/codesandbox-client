@@ -46,7 +46,7 @@ export default () => {
   }, [prefersReducedMotion]);
   return (
     <Layout>
-      <TitleAndMetaTags title="Feedback - Codesandbox" />
+      <TitleAndMetaTags title="Feedback - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
           <Title>Get better feedback from your whole team</Title>
@@ -102,7 +102,7 @@ export default () => {
             <div>
               <h3>Role-based permissions</h3>
               So you can control who can view and add comments, edit a sandbox,
-              or administrate your workspace.
+              or administrate your team.
             </div>
 
             <div>

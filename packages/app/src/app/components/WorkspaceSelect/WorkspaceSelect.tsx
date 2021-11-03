@@ -6,6 +6,9 @@ import { Text, Menu, Stack, Icon, Tooltip } from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
 import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
+import { SubscriptionType } from 'app/graphql/types';
+import { MenuItem, Badge } from './elements';
+import { BetaMenuItem, BetaActiveItem } from './BetaItem';
 
 type Team = {
   id: string;
@@ -22,12 +25,18 @@ interface WorkspaceSelectProps {
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ activeAccount, disabled, onSelect }) => {
     const state = useAppState();
-    const { dashboard } = state;
+    const { dashboard, user } = state;
     const history = useHistory();
 
     const personalWorkspace = dashboard.teams.find(
       t => t.id === state.personalWorkspaceId
     )!;
+
+    const isInBetaScreen = history.location.pathname === dashboardUrls.beta();
+    const isFeatureFlagBeta = !!dashboard.featureFlags.find(
+      e => e.name === 'beta'
+    );
+
     const workspaces = [
       personalWorkspace,
       ...sortBy(
@@ -61,67 +70,82 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 },
               })}
             >
-              <Stack gap={2} as="span" align="center">
-                <Stack as="span" align="center" justify="center">
-                  <TeamAvatar
-                    avatar={activeAccount.avatarUrl}
-                    name={activeAccount.name}
-                  />
+              {isInBetaScreen ? (
+                <BetaActiveItem />
+              ) : (
+                <Stack gap={2} as="span" align="center">
+                  <Stack as="span" align="center" justify="center">
+                    <TeamAvatar
+                      avatar={
+                        state.activeTeamInfo?.avatarUrl ||
+                        activeAccount.avatarUrl
+                      }
+                      name={activeAccount.name}
+                    />
+                  </Stack>
+                  <Text size={4} weight="normal" maxWidth={140}>
+                    {activeAccount.name}
+                  </Text>
                 </Stack>
-                <Text size={4} weight="normal" maxWidth={140}>
-                  {activeAccount.name}
-                </Text>
-              </Stack>
+              )}
               <Icon name="caret" size={8} />
             </Stack>
+
             <Menu.List
               css={css({
                 width: '100%',
-                marginLeft: 2,
-                marginTop: '-4px',
+                marginTop: -2,
                 backgroundColor: 'grays.600',
               })}
               style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
             >
               {workspaces.map(team => (
-                <Stack
+                <MenuItem
                   as={Menu.Item}
                   key={team.id}
                   align="center"
                   gap={2}
-                  css={css({
-                    height: 10,
-                    textAlign: 'left',
-                    backgroundColor: 'grays.600',
-                    borderBottom: '1px solid',
-                    borderColor: 'grays.500',
-
-                    '&[data-reach-menu-item][data-component=MenuItem][data-selected]': {
-                      backgroundColor: 'grays.500',
-                    },
-                  })}
-                  style={{ paddingLeft: 8 }}
-                  onSelect={() =>
+                  onSelect={() => {
                     onSelect({
                       name: team.name,
                       id: team.id,
                       avatarUrl: team.avatarUrl,
-                    })
-                  }
+                    });
+
+                    if (isInBetaScreen) {
+                      history.push('/dashboard/all');
+                    }
+                  }}
                 >
                   <TeamAvatar
-                    avatar={team.avatarUrl}
+                    avatar={
+                      team.id === state.personalWorkspaceId && user
+                        ? user.avatarUrl
+                        : team.avatarUrl
+                    }
                     name={team.name}
                     size="small"
+                    style={{ overflow: 'hidden' }}
                   />
-                  <Text css={css({ width: '100%' })} size={3}>
-                    {team.name}
-                    {team.id === state.personalWorkspaceId && ' (Personal)'}
-                  </Text>
+                  <Stack align="center">
+                    <Text css={css({ width: '100%' })} size={3}>
+                      {team.name}
+                    </Text>
 
-                  {activeAccount.id === team.id && <Icon name="simpleCheck" />}
-                </Stack>
+                    {[
+                      SubscriptionType.TeamPro,
+                      SubscriptionType.PersonalPro,
+                    ].includes(team.subscription?.type) && <Badge>Pro</Badge>}
+                  </Stack>
+
+                  {activeAccount.id === team.id && !isInBetaScreen && (
+                    <Icon name="simpleCheck" />
+                  )}
+                </MenuItem>
               ))}
+
+              {isFeatureFlagBeta && <BetaMenuItem />}
+
               <Stack
                 as={Menu.Item}
                 align="center"
@@ -129,9 +153,10 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 css={css({
                   height: 10,
                   textAlign: 'left',
+                  marginLeft: '1px',
                 })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() => history.push(dashboardUrls.createWorkspace())}
+                onSelect={() => history.push(dashboardUrls.createTeam())}
               >
                 <Stack
                   justify="center"
@@ -145,7 +170,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 >
                   <Icon name="plus" size={10} />
                 </Stack>
-                <Text size={3}>Create a new workspace</Text>
+                <Text size={3}>Create a new team</Text>
               </Stack>
             </Menu.List>
           </Menu>

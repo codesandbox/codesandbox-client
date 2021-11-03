@@ -13,11 +13,13 @@ import { DashboardCommunitySandbox } from '../../types';
 interface GenericSandboxProps {
   isScrolling: boolean;
   item: DashboardCommunitySandbox;
+  interactive?: boolean;
 }
 
 export const CommunitySandbox = ({
   isScrolling,
   item,
+  interactive = true,
 }: GenericSandboxProps) => {
   const { dashboard } = useAppState();
   const {
@@ -67,7 +69,7 @@ export const CommunitySandbox = ({
   );
 
   const history = useHistory();
-  const onDoubleClick = event => {
+  const onOpenSandbox = event => {
     if (event.ctrlKey || event.metaKey) window.open(url, '_blank');
     else history.push(url);
 
@@ -81,10 +83,12 @@ export const CommunitySandbox = ({
       unlikeSandbox(sandbox.id);
       setLiked(false);
       setLikeCount(managedLikeCount - 1);
+      track('Sandbox - Undo Like', { place: 'DASHBOARD' });
     } else {
       likeCommunitySandbox(sandbox.id);
       setLiked(true);
       setLikeCount(managedLikeCount + 1);
+      track('Sandbox - Like', { place: 'DASHBOARD' });
     }
   };
 
@@ -96,6 +100,7 @@ export const CommunitySandbox = ({
     author,
     likeCount: managedLikeCount,
     liked: managedLiked,
+    url,
   };
 
   const interactionProps = {
@@ -106,10 +111,17 @@ export const CommunitySandbox = ({
     selected,
     onClick,
     onMouseDown,
-    onDoubleClick,
+    onDoubleClick: onOpenSandbox,
     onContextMenu,
     'data-selection-id': sandbox.id,
     onLikeToggle,
+  };
+
+  const nonInteractionProps = {
+    ...interactionProps,
+    selected: false,
+    onDoubleClick: onOpenSandbox,
+    onClick: () => {},
   };
 
   /* View logic */
@@ -128,7 +140,8 @@ export const CommunitySandbox = ({
     <div>
       <Component
         {...sandboxProps}
-        {...interactionProps}
+        {...(interactive ? interactionProps : nonInteractionProps)}
+        interactive={interactive}
         isScrolling={isScrolling}
       />
     </div>

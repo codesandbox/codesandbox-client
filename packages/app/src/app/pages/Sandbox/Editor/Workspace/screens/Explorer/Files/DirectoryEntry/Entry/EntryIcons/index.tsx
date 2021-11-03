@@ -14,15 +14,25 @@ type Props = {
 class GetIcon extends Component<Props> {
   state = { icon: null };
 
+  mounted = true;
+
   getIcon = async type => {
     const icon = await getIconURL(type);
-    this.setState({
-      icon,
-    });
+    if (this.mounted) {
+      this.setState({
+        icon,
+      });
+    }
   };
 
   async componentDidMount() {
+    this.mounted = true;
+
     this.getIcon(this.props.type);
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   async componentDidUpdate(prevProps) {

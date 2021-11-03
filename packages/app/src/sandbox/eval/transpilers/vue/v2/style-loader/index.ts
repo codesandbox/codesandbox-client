@@ -7,10 +7,10 @@ class VueStyleLoader extends Transpiler {
     super('vue-style-loader');
   }
 
-  doTranspilation(content: string, loaderContext: LoaderContext) {
-    const transpiledCode = loader(content, loaderContext);
+  async doTranspilation(content: string, loaderContext: LoaderContext) {
+    const transpiledCode = await loader(content, loaderContext);
 
-    return Promise.resolve({ transpiledCode });
+    return { transpiledCode };
   }
 }
 

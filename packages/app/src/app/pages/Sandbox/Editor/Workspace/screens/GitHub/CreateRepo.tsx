@@ -42,7 +42,7 @@ export const CreateRepo = () => {
       <Element paddingX={2}>
         <Text variant="muted" marginBottom={4} block>
           Export the content of this sandbox to a new GitHub repository,
-          allowing you to commit changes made on Codesandbox to GitHub. If you
+          allowing you to commit changes made on CodeSandbox to GitHub. If you
           want to rather import an existing repository,{' '}
           <Link
             css={{ color: 'white' }}

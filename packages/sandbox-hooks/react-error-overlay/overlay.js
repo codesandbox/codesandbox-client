@@ -179,7 +179,7 @@ function transformErrors() {
         try {
           return (
             manager &&
-            !!manager.resolveTranspiledModule(
+            !!manager.resolveTranspiledModuleSync(
               (r._originalFileName || r.fileName || '').replace(
                 location.origin,
                 ''
@@ -198,7 +198,7 @@ function transformErrors() {
       if (!tModule && relevantFrame) {
         const fileName =
           relevantFrame._originalFileName || relevantFrame.fileName || '';
-        tModule = manager.resolveTranspiledModule(
+        tModule = manager.resolveTranspiledModuleSync(
           fileName.replace(location.origin, ''),
           '/'
         );
@@ -297,17 +297,25 @@ function shortcutHandler(type: string) {
 
 let listenToRuntimeErrorsUnmounter;
 
+function unregisterErrorHandlers() {
+  if (listenToRuntimeErrorsUnmounter) {
+    listenToRuntimeErrorsUnmounter();
+    listenToRuntimeErrorsUnmounter = null;
+  }
+}
+
+function uninject(force) {
+  unregisterErrorHandlers();
+  unmount(force);
+}
+
 function inject(renderErrorOverlay = true) {
+  // Remove existing listeners if there are any
+  unregisterErrorHandlers();
+
   listenToRuntimeErrorsUnmounter = listenToRuntimeErrors(error => {
     crash(error.error, false, renderErrorOverlay);
   });
-}
-
-function uninject() {
-  if (listenToRuntimeErrorsUnmounter) {
-    listenToRuntimeErrorsUnmounter();
-  }
-  unmount();
 }
 
 export { inject, uninject, unmount };

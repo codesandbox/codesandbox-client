@@ -35,6 +35,21 @@ export const Nav = styled.section`
     li:first-child {
       margin-bottom: 1rem;
     }
+
+    li span {
+      font-size: 10px;
+      padding: 2px;
+      text-align: center;
+      font-weight: 500;
+      color: #fff;
+      height: 1rem;
+      width: 1rem;
+      display: inline-block;
+      background: #5962df;
+      border-radius: 50%;
+      position: relative;
+      top: -0.2rem;
+    }
   }
 `;
 

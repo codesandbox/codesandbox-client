@@ -45,11 +45,12 @@ export const WorkspaceSettings = () => {
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
 
   const getFile = async avatar => {
-    const url = await new Promise(resolve => {
+    const url = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = e => {
         resolve(e.target.result);
       };
+      reader.onerror = reject;
       reader.readAsDataURL(avatar);
     });
 
@@ -72,9 +73,8 @@ export const WorkspaceSettings = () => {
         description,
         file,
       });
-      setLoading(false);
       setEditing(false);
-    } catch {
+    } finally {
       setLoading(false);
     }
   };
@@ -90,7 +90,7 @@ export const WorkspaceSettings = () => {
     member => member.authorization !== TeamMemberAuthorization.Read
   ).length;
 
-  // A workspace can have unused seats in their subscription
+  // A team can have unused seats in their subscription
   // if they have already paid for X editors for the YEARLY plan
   // then removed some members from the team
   const numberOfUnusedSeats =
@@ -115,16 +115,20 @@ export const WorkspaceSettings = () => {
     event.preventDefault();
     setInviteLoading(true);
 
+    const inviteLink = teamInviteLink(team.inviteToken);
+
     await actions.dashboard.inviteToTeam({
       value: inviteValue,
       authorization: newMemberAuthorization,
       confirm: confirmNewMemberAddition,
+      triggerPlace: 'settings',
+      inviteLink,
     });
     setInviteLoading(false);
   };
 
   if (!team || !stateUser) {
-    return <Header title="Workspace Settings" activeTeam={null} />;
+    return <Header title="Team Settings" activeTeam={null} />;
   }
 
   const onCopyInviteUrl = async event => {
@@ -138,8 +142,13 @@ export const WorkspaceSettings = () => {
       if (!confirmed) return;
     }
 
-    actions.track({ name: 'Dashboard - Copied Team Invite URL', data: {} });
-    effects.browser.copyToClipboard(teamInviteLink(team.inviteToken));
+    const inviteLink = teamInviteLink(team.inviteToken);
+
+    actions.track({
+      name: 'Dashboard - Copied Team Invite URL',
+      data: { place: 'settings', inviteLink },
+    });
+    effects.browser.copyToClipboard(inviteLink);
     effects.notificationToast.success('Copied Team Invite URL!');
   };
 
@@ -156,7 +165,7 @@ export const WorkspaceSettings = () => {
       <Grid
         columnGap={4}
         css={css({
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         })}
       >
         <Card>
@@ -267,7 +276,7 @@ export const WorkspaceSettings = () => {
               />
               <Stack direction="vertical" gap={2} css={{ width: '100%' }}>
                 <Stack justify="space-between">
-                  <Text size={6} weight="bold">
+                  <Text size={6} weight="bold" css={{ wordBreak: 'break-all' }}>
                     {team.name}
                   </Text>
                   {activeWorkspaceAuthorization ===
@@ -335,7 +344,7 @@ export const WorkspaceSettings = () => {
                     actions.modalOpened({ modal: 'deleteWorkspace' })
                   }
                 >
-                  Delete Workspace
+                  Delete Team
                 </Button>
               )}
             </Stack>

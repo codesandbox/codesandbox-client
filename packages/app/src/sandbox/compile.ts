@@ -11,9 +11,8 @@ import VERSION from '@codesandbox/common/lib/version';
 import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
-import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
+import { inject, uninject } from 'sandbox-hooks/react-error-overlay/overlay';
 import { getInspectorStateService } from 'inspector/lib/sandbox';
-
 import {
   consumeCache,
   deleteAPICache,
@@ -86,10 +85,6 @@ let lastBodyHTML = null;
 let lastHeight = 0;
 let changedModuleCount = 0;
 let usedCache = false;
-
-const DEPENDENCY_ALIASES = {
-  '@vue/cli-plugin-babel': '@vue/babel-preset-app',
-};
 
 // TODO make devDependencies lazy loaded by the packager
 const WHITELISTED_DEV_DEPENDENCIES = [
@@ -248,32 +243,27 @@ function getDependencies(
   }
 
   Object.keys(d).forEach(dep => {
-    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
-
     if (dep === 'reason-react') {
       return; // is replaced
     }
 
-    returnedDependencies[usedDep] = d[dep];
+    returnedDependencies[dep] = d[dep];
   });
 
   Object.keys(devDependencies).forEach(dep => {
-    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
-
-    if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
-      if (
-        usedDep === '@vue/babel-preset-app' &&
-        devDependencies[dep].startsWith('^3')
-      ) {
-        // Native modules got added in 3.7.0, we need to hardcode to latest
-        // working version of the babel plugin as a fix. https://twitter.com/notphanan/status/1122475053633941509
-        returnedDependencies[usedDep] = '3.6.0';
+    if (foundWhitelistedDevDependencies.indexOf(dep) > -1) {
+      // Skip @vue/babel-preset-app
+      if (dep === '@vue/babel-preset-app') {
         return;
       }
 
-      returnedDependencies[usedDep] = devDependencies[dep];
+      returnedDependencies[dep] = devDependencies[dep];
     }
   });
+
+  if (d.vue) {
+    returnedDependencies['@vue/babel-plugin-jsx'] = '1.0.6';
+  }
 
   const sandpackConfig =
     (configurations.customTemplate &&
@@ -414,6 +404,24 @@ function initializeDOMMutationListener() {
   });
 }
 
+let resizePollingTimer;
+function resizePolling() {
+  clearInterval(resizePollingTimer);
+  resizePollingTimer = setInterval(sendResize, 500);
+
+  window.addEventListener('unload', () => {
+    clearInterval(resizePollingTimer);
+  });
+}
+
+function onWindowResize() {
+  window.addEventListener('resize', sendResize);
+
+  window.addEventListener('unload', () => {
+    window.removeEventListener('resize', sendResize);
+  });
+}
+
 function overrideDocumentClose() {
   const oldClose = window.document.close;
 
@@ -429,12 +437,8 @@ function overrideDocumentClose() {
 
 overrideDocumentClose();
 
-if (!process.env.SANDPACK) {
-  inject();
-}
-
 interface CompileOptions {
-  sandboxId: string;
+  sandboxId?: string | null;
   modules: { [path: string]: Module };
   customNpmRegistries?: NpmRegistry[];
   externalResources: string[];
@@ -469,7 +473,7 @@ async function compile(opts: CompileOptions) {
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
   } = opts;
-  
+
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
     if (!clearConsoleDisabled) {
@@ -484,10 +488,10 @@ async function compile(opts: CompileOptions) {
 
   const startTime = Date.now();
   try {
+    uninject(manager && manager.webpackHMR ? true : hadError);
     inject(showErrorScreen);
     clearErrorTransformers();
     initializeErrorTransformers();
-    unmount(manager && manager.webpackHMR ? true : hadError);
   } catch (e) {
     console.error(e);
   }
@@ -799,13 +803,7 @@ async function compile(opts: CompileOptions) {
       type: 'success',
     });
 
-    saveCache(
-      sandboxId,
-      managerModuleToTranspile,
-      manager,
-      changedModuleCount,
-      firstLoad
-    );
+    saveCache(managerModuleToTranspile, manager, changedModuleCount, firstLoad);
 
     setTimeout(async () => {
       try {
@@ -833,10 +831,6 @@ async function compile(opts: CompileOptions) {
       if (firstLoad && changedModuleCount === 0) {
         await deleteAPICache(manager.id, SCRIPT_VERSION);
       }
-    }
-
-    if (firstLoad) {
-      inject();
     }
 
     const event = new Event('error');
@@ -890,6 +884,11 @@ async function compile(opts: CompileOptions) {
   if (!hadError && firstLoad) {
     initializeDOMMutationListener();
   }
+
+  onWindowResize();
+  resizePolling();
+
+  sendResize();
 
   firstLoad = false;
 

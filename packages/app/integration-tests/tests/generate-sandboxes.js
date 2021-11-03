@@ -1,71 +1,38 @@
-const puppeteer = require('puppeteer');
-const { exec } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import puppeteer from 'puppeteer';
+import { exec } from 'child_process';
 
-const SANDBOXES = ['svelte'];
+import { loadSandboxRetry, SECOND } from './utils';
 
-const cp = exec('yarn start:test');
-cp.stdout.on('data', data => {
-  console.log(data.toString());
-  if (data.toString().includes('Compiled with warnings.')) {
-    console.log('CSB: Starting tests');
-    runTests();
-  }
-});
+const SANDBOXES = ['gpgpu-curl-noise-yq6y8', 'vx55c'];
 
 async function runTests() {
-  function pageLoaded(page) {
-    return new Promise(async resolve => {
-      await page.exposeFunction('__puppeteer__', () => {
-        if (resolve) {
-          resolve();
-        }
-      });
-    });
-  }
-
+  console.log('Launching puppeteer');
   let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
+
+  console.log('Loading browser');
+  browser = await browser;
 
   await Promise.all(
     SANDBOXES.map(async sandbox => {
       const id = sandbox.id || sandbox;
 
-      console.log('Loading browser');
-      browser = await browser;
-      const page = await browser.newPage();
-      console.log('Opened new page');
-      const waitFunction = pageLoaded(page);
+      console.log(`Loading sandbox ${id}`);
+      const page = await loadSandboxRetry(browser, id, 45 * SECOND, 2);
       console.log('Page loaded');
 
-      page.on('console', msg =>
-        msg.args().forEach(async arg => {
-          console.log(await arg.jsonValue());
-        })
-      );
-      page.on('requestfailed', err => console.log(err));
-
-      console.log('Going to', 'http://localhost:3002/#' + id);
-      await page.goto('http://localhost:3002/#' + id, {
-        timeout: 60000,
-      });
-      console.log('Went to ' + id);
-
-      await waitFunction;
-      console.log('Waited');
-      await page.waitFor(sandbox.waitFor || 2000);
-      console.log('Another wait');
-
+      console.log('Taking screenshot');
       const screenshot = await page.screenshot();
-
-      require('fs').writeFileSync(
-        require('path').join(
-          __dirname,
-          `__image_snapshots__`,
-          `${id.split('/').join('-')}-snap.png`
-        ),
-        screenshot
+      const screenshotFilePath = path.join(
+        __dirname,
+        `__image_snapshots__`,
+        `${id.split('/').join('-')}-snap.png`
       );
+
+      fs.writeFileSync(screenshotFilePath, screenshot);
 
       console.log('Saved screenshot');
 
@@ -73,5 +40,19 @@ async function runTests() {
     })
   );
 
-  process.kill(0);
+  browser.close();
+  process.exit(0);
 }
+
+console.log('Starting sandbox server');
+const cp = exec('yarn start:test');
+cp.stdout.on('data', data => {
+  const dataString = data.toString();
+  if (
+    dataString.includes('Compiled with warnings.') ||
+    dataString.includes('Compiled successfully in')
+  ) {
+    console.log('CSB: Starting tests');
+    runTests();
+  }
+});

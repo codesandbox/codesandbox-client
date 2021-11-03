@@ -157,11 +157,11 @@ class Live {
           return Promise.reject(e);
         })
         .then(jwt => {
+          // Token expires after 10 minutes, we cache the token for 8 minutes.
+          const timeout = 1000 * 60 * 8;
           setTimeout(() => {
-            // Token expires after 10 seconds, for safety we actually cache the token
-            // for 5 seconds
             this.jwtPromise = undefined;
-          }, 5000);
+          }, timeout);
 
           return jwt;
         });

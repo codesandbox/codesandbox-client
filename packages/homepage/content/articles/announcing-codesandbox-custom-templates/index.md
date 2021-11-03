@@ -17,12 +17,11 @@ templates!
 ## What are Templates?
 
 We've found that for many of our users, after having used one of our built-in
-sandbox starters such as [React](https://github.com/facebook/react),
-[Vue](https://github.com/vuejs/vue) or
-[Gatsby](https://github.com/gatsbyjs/gatsby) for the first time to prototype an
-application, they often want to create new projects using the same framework
-with a specific set of dependencies, folder structure, and configuration set up
-just the way they like it.
+sandbox starters such as [React](/framework/react), [Vue](/framework/vue) or
+[Gatsby](/framework/gatsby) for the first time to prototype an application, they
+often want to create new projects using the same framework with a specific set
+of dependencies, folder structure, and configuration set up just the way they
+like it.
 
 This is so common that we decided why not make it easy for users to create their
 own custom templates which they can quickly bootstrap new projects with! Today's
@@ -36,9 +35,9 @@ started with templates!
 ## How to make your first Template
 
 Creating a template from an existing sandbox is really easy! From an existing
-sandbox, pull up the editor and open up the _Project Info_ workspace in the
-upper left corner. If you've just opened one of our official templates, first
-fork it and make some changes.
+sandbox, pull up the editor and open up _Project Info_ in the upper left corner.
+If you've just opened one of our official templates, first fork it and make some
+changes.
 
 ![Make Template from Sandbox](./images/1.gif)
 
@@ -46,7 +45,7 @@ You'll notice there's a new _Make Template_ button. Click that and you'll see
 that your newly created template has been frozen. This is to help prevent making
 accidental changes to the template whenever you open it from the _Dashboard_ or
 _Create New Sandbox_ modal. You can toggle this on and off in the _Project Info_
-workspace of the template to make edits to the template itself.
+sidebar of the template to make edits to the template itself.
 
 ![Unfreeze](./images/2.gif)
 

@@ -5,6 +5,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
 import { Notifications } from 'app/components/Notifications';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import {
   EmbedIcon,
@@ -66,8 +67,6 @@ export const Actions = () => {
 
     return () => {};
   }, [fadeIn]);
-
-  const handleSignIn = () => signInClicked();
 
   let primaryAction: 'Sign in' | 'Share' | 'Fork';
   if (!hasLogIn) primaryAction = 'Sign in';
@@ -187,7 +186,9 @@ export const Actions = () => {
           }
           loading={isForkingSandbox}
           variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
-          onClick={() => forkSandboxClicked({})}
+          onClick={() => {
+            signInClicked({ onCancel: () => forkSandboxClicked({}) });
+          }}
           disabled={permissions.preventSandboxLeaving}
         >
           <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
@@ -197,7 +198,13 @@ export const Actions = () => {
       <Button
         variant="secondary"
         css={css({ paddingX: 3 })}
-        onClick={() => openCreateSandboxModal({})}
+        onClick={() => {
+          if (!user) {
+            signInClicked({ onCancel: () => openCreateSandboxModal({}) });
+          } else {
+            openCreateSandboxModal({});
+          }
+        }}
         disabled={activeWorkspaceAuthorization === 'READ'}
       >
         Create Sandbox
@@ -208,6 +215,7 @@ export const Actions = () => {
         <UserMenu>
           {user?.experiments.collaborator ? (
             <Button
+              onClick={() => track('Editor - Click More Menu')}
               as={UserMenu.Button}
               variant="secondary"
               css={css({
@@ -236,7 +244,7 @@ export const Actions = () => {
           )}
         </UserMenu>
       ) : (
-        <Button variant="primary" onClick={handleSignIn}>
+        <Button variant="primary" onClick={() => signInClicked()}>
           Sign in
         </Button>
       )}

@@ -41,9 +41,11 @@ type LoaderDefinition = {
  * and loaders.
  */
 export class Preset {
+  public experimentalEsmSupport = false;
+  private _transpilers: Map<string, Transpiler>;
+
   loaders: Array<LoaderDefinition>;
 
-  transpilers: Set<Transpiler>;
   name: string;
   ignoredExtensions: Array<string>;
   htmlDisabled: boolean;
@@ -96,7 +98,7 @@ export class Preset {
     } = {}
   ) {
     this.loaders = [];
-    this.transpilers = new Set();
+    this._transpilers = new Map();
     this.name = name;
 
     this.hasDotEnv = hasDotEnv || false;
@@ -113,8 +115,23 @@ export class Preset {
     this.htmlDisabled = htmlDisabled || false;
 
     this.postTranspilers.forEach(transpiler => {
-      this.transpilers.add(transpiler.transpiler);
+      this.addTranspiler(transpiler.transpiler);
     });
+  }
+
+  addTranspiler(t: Transpiler) {
+    // TODO: Should this overwrite or skip?
+    if (this._transpilers.has(t.name)) return;
+
+    this._transpilers.set(t.name, t);
+  }
+
+  getTranspiler(name: string): Transpiler | undefined {
+    return this._transpilers.get(name);
+  }
+
+  getTranspilers(): Transpiler[] {
+    return Array.from(this._transpilers.values());
   }
 
   setAdditionalAliases = (aliases: { [path: string]: string }) => {
@@ -127,7 +144,7 @@ export class Preset {
   };
 
   resetTranspilers = () => {
-    this.transpilers.clear();
+    this._transpilers.clear();
     this.loaders.length = 0;
   };
 
@@ -199,7 +216,7 @@ export class Preset {
       this.loaders.push(transpilerObject);
     }
 
-    transpilers.forEach(t => this.transpilers.add(t.transpiler));
+    transpilers.forEach(t => this.addTranspiler(t.transpiler));
 
     return this.loaders;
   }
@@ -223,20 +240,18 @@ export class Preset {
       : [];
 
     // Remove "" values
-    const transpilerNames = query.split('!').filter(x => x);
+    const transpilerNames = query.split('!').filter(Boolean);
 
     const extraTranspilers = transpilerNames
-      .map(loaderName => {
-        const [name, options] = loaderName.split('?');
-
-        let transpiler = Array.from(this.transpilers).find(
-          t => t.name === name
-        );
+      .map(loaderName => loaderName.split('?'))
+      .filter(([name]) => !!name)
+      .map(([name, options]) => {
+        let transpiler = this.getTranspiler(name);
 
         if (!transpiler) {
           const webpackLoader = new WebpackTranspiler(name, evaluator);
           // If the loader is not installed, we try to run the webpack loader.
-          this.transpilers.add(webpackLoader);
+          this.addTranspiler(webpackLoader);
           transpiler = webpackLoader;
         }
 

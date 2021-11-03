@@ -7,7 +7,6 @@ import {
   sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import {
-  Avatar,
   Collapsible,
   Element,
   Label,
@@ -21,9 +20,11 @@ import {
   Tags,
   Text,
   IconButton,
+  Button,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Markdown } from 'app/components/Markdown';
+import { TeamAvatar } from 'app/components/TeamAvatar';
 import { useAppState, useActions } from 'app/overmind';
 import React, { useEffect } from 'react';
 
@@ -31,10 +32,23 @@ import { GitHubIcon } from '../../GitHub/Icons';
 import { EditSummary } from './EditSummary';
 import { TemplateConfig } from './TemplateConfig';
 
+const LinkOrSpan = ({ href, ...props }) => {
+  const component = href ? Link : 'span';
+  return React.createElement(component, { href, ...props });
+};
+
 export const Summary = () => {
-  const { currentSandbox, sessionFrozen } = useAppState().editor;
+  const {
+    currentSandbox,
+    isForkingSandbox,
+    sessionFrozen,
+  } = useAppState().editor;
   const { editingSandboxInfo } = useAppState().workspace;
-  const { frozenUpdated, sessionFreezeOverride } = useActions().editor;
+  const {
+    frozenUpdated,
+    sessionFreezeOverride,
+    forkSandboxClicked,
+  } = useActions().editor;
   const { toggleEditingSandboxInfo } = useActions().workspace;
   const {
     author,
@@ -115,22 +129,22 @@ export const Summary = () => {
       </Element>
 
       <Stack as="section" direction="vertical" gap={4} paddingX={2}>
-        {author ? (
-          <Link href={profileUrl(author.username)}>
+        {team && !currentSandbox.git ? (
+          <LinkOrSpan href={author && profileUrl(author.username)}>
             <Stack gap={2} align="center" css={{ display: 'inline-flex' }}>
-              <Avatar user={author} />
+              <TeamAvatar name={team.name} avatar={team.avatarUrl} />
               <Element>
-                <Text variant={team ? 'body' : 'muted'} block>
-                  {author.username}
+                <Text variant={author ? 'body' : 'muted'} block>
+                  {team.name}
                 </Text>
-                {team && (
+                {author && (
                   <Text size={2} marginTop={1} variant="muted" maxWidth="100%">
-                    {team.name}
+                    {author.name || author.username}
                   </Text>
                 )}
               </Element>
             </Stack>
-          </Link>
+          </LinkOrSpan>
         ) : null}
 
         {!author && currentSandbox.git ? (
@@ -158,6 +172,24 @@ export const Summary = () => {
 
         <Stats sandbox={currentSandbox} />
       </Stack>
+
+      {!author && currentSandbox.git ? (
+        <Stack as="section" direction="vertical" gap={4} paddingX={2}>
+          <Text variant="muted" size={3}>
+            This sandbox is in sync with{' '}
+            <Text weight="bold">{currentSandbox.git.branch}</Text> on GitHub.
+            You have to fork to make changes
+          </Text>
+          <Button
+            marginTop={8}
+            variant="primary"
+            loading={isForkingSandbox}
+            onClick={() => forkSandboxClicked({})}
+          >
+            {isForkingSandbox ? 'Forking...' : 'Fork'}
+          </Button>
+        </Stack>
+      ) : null}
 
       <Divider marginTop={8} marginBottom={4} />
 

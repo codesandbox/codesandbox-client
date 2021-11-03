@@ -1,4 +1,8 @@
-import { DNT, trackPageview } from '@codesandbox/common/lib/utils/analytics';
+import {
+  DNT,
+  trackPageview,
+  identify,
+} from '@codesandbox/common/lib/utils/analytics';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { Toasts } from '@codesandbox/notifications';
@@ -8,6 +12,11 @@ import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbox/CreateSandboxModal';
+import { initializeExperimentStore } from '@codesandbox/ab';
+import {
+  getExperimentUserId,
+  AB_TESTING_URL,
+} from '@codesandbox/common/lib/config/env';
 
 import { ErrorBoundary } from './common/ErrorBoundary';
 import { Modals } from './common/Modals';
@@ -15,6 +24,7 @@ import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
+import { ImportRepoBetaModal } from './Dashboard/Components/Beta/ImportRepoBetaModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import(
@@ -42,6 +52,11 @@ const SignIn = Loadable(() =>
     default: module.SignIn,
   }))
 );
+const SignOut = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-out' */ './SignOut').then(module => ({
+    default: module.SignOut,
+  }))
+);
 const Live = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './Live').then(module => ({
     default: module.Live,
@@ -60,6 +75,13 @@ const NotFound = Loadable(() =>
     })
   )
 );
+const Phew = Loadable(() =>
+  import(/* webpackChunkName: 'phishing-phew' */ './common/Phew').then(
+    module => ({
+      default: module.Phew,
+    })
+  )
+);
 const Profile = Loadable(() =>
   import(/* webpackChunkName: 'page-profile' */ './Profile').then(module => ({
     default: module.Profile,
@@ -73,6 +95,12 @@ const Search = Loadable(() =>
 const CLI = Loadable(() =>
   import(/* webpackChunkName: 'page-cli' */ './CLI').then(module => ({
     default: module.CLI,
+  }))
+);
+
+const Client = Loadable(() =>
+  import(/* webpackChunkName: 'page-client' */ './Client').then(module => ({
+    default: module.Client,
   }))
 );
 
@@ -119,6 +147,14 @@ const CodeSadbox = () => this[`💥`].kaboom();
 
 const Boundary = withRouter(ErrorBoundary);
 
+initializeExperimentStore(
+  AB_TESTING_URL,
+  getExperimentUserId,
+  async (key, value) => {
+    await identify(key, value);
+  }
+);
+
 const RoutesComponent: React.FC = () => {
   const { appUnmounted } = useActions();
   const { modals, activeTeamInfo } = useAppState();
@@ -163,12 +199,14 @@ const RoutesComponent: React.FC = () => {
             />
             <Route path="/invite/:token" component={TeamInvitation} />
 
+            <Route path="/phew" component={Phew} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={Dashboard} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:roomId" component={Live} />
             <Route path="/signin" exact component={SignIn} />
+            <Route path="/signout" exact component={SignOut} />
             <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
@@ -178,6 +216,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
+            <Route path="/client/login" component={Client} />
             <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
@@ -193,6 +232,8 @@ const RoutesComponent: React.FC = () => {
         {modals.moveSandboxModal.isCurrent && activeTeamInfo && (
           <MoveSandboxFolderModal />
         )}
+
+        <ImportRepoBetaModal />
       </Boundary>
     </Container>
   );

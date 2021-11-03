@@ -12,3 +12,12 @@ export const Placeholder = () => <Input placeholder="Your name" marginX={4} />;
 export const onChange = () => (
   <Input placeholder="John Doe" onChange={action('input change')} />
 );
+
+export const Variants = () => (
+  <>
+    <Input placeholder="Empty" marginBottom={2} />
+    <Input value="Filled" marginBottom={2} />
+    <Input value="Focused" autoFocus marginBottom={2} />
+    <Input value="Disabled" disabled marginBottom={2} />
+  </>
+);

@@ -92,7 +92,7 @@ export async function initializeBrowserFS({
           fs: 'JSDelivrRequest',
           options: {
             dependency: 'typescript',
-            version: '4.1.2',
+            version: '4.4.4',
           },
         };
       }

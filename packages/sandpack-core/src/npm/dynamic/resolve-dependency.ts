@@ -5,7 +5,7 @@ import { ILambdaResponse } from '../merge-dependency';
 import { downloadDependency } from './fetch-npm-module';
 import { IParsedResolution } from './resolutions';
 
-async function getPackageJSON(dep: string, version: string) {
+export async function getPackageJSON(dep: string, version: string) {
   const m = await downloadDependency(dep, version, '/package.json');
   return m.code;
 }
@@ -111,6 +111,7 @@ export async function resolveDependencyInfo(
   version: string,
   parsedResolutions: IParsedResolution[]
 ) {
+  const IS_ALIAS = /^npm:/;
   const packageJSONCode = await getPackageJSON(dep, version);
   const packageJSON = JSON.parse(packageJSONCode);
   const response: ILambdaResponse = {
@@ -142,6 +143,24 @@ export async function resolveDependencyInfo(
       content: packageJSONCode,
     },
   };
+
+  await Promise.all(
+    Object.keys(response.dependencyDependencies).map(async packageName => {
+      let packageVersion =
+        response.dependencyDependencies[packageName].resolved;
+
+      // If the package is a remote module or is an alias we use the semver as the version for fetching
+      const pkgSemver = response.dependencyDependencies[packageName].semver;
+      if (pkgSemver && (pkgSemver.match(IS_ALIAS) || pkgSemver.includes('/'))) {
+        packageVersion = pkgSemver;
+      }
+
+      const pkgJson = await getPackageJSON(packageName, packageVersion);
+      response.contents[`/node_modules/${packageName}/package.json`] = {
+        content: pkgJson,
+      };
+    })
+  );
 
   return response;
 }

@@ -1,6 +1,4 @@
 // eslint-disable-next-line max-classes-per-file
-import { flattenDeep } from 'lodash-es';
-
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import interopRequireWildcard from '@babel/runtime/helpers/interopRequireWildcard';
@@ -24,6 +22,7 @@ import Manager, { HMRStatus } from '../manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 import delay from '../utils/delay';
+import { getModuleUrl } from './module-url';
 
 declare const BrowserFS: any;
 
@@ -89,6 +88,7 @@ export type LoaderContext = {
   sourceMap: boolean;
   target: string;
   path: string;
+  url: string;
   getModules: () => Array<Module>;
   addTranspilationDependency: (
     depPath: string,
@@ -96,7 +96,7 @@ export type LoaderContext = {
       isAbsolute?: boolean;
       isEntry?: boolean;
     }
-  ) => void;
+  ) => Promise<void>;
   resolveTranspiledModule: (
     depPath: string,
     options?: {
@@ -117,7 +117,7 @@ export type LoaderContext = {
       isAbsolute?: boolean;
       isEntry?: boolean;
     }
-  ) => void;
+  ) => Promise<void>;
   addDependenciesInDirectory: (
     depPath: string,
     options?: {
@@ -130,7 +130,7 @@ export type LoaderContext = {
   // Remaining loaders after current loader
   remainingRequests: string;
   template: string;
-  sandboxId: string | null;
+  sandboxId?: string | null;
   resourceQuery: string;
   getLoaderQuery: (module: Module) => string;
 };
@@ -365,8 +365,7 @@ export class TranspiledModule {
                 const tModule = await manager.resolveTranspiledModule(
                   depPath,
                   options && options.isAbsolute ? '/' : this.module.path,
-                  undefined,
-                  true
+                  undefined
                 );
 
                 if (isTranspilationDep) {
@@ -480,12 +479,10 @@ export class TranspiledModule {
       // Add an explicit transpilation dependency, this is needed for loaders
       // that include the source of another file by themselves, we need to
       // force transpilation to rebuild the file
-      addTranspilationDependency: (depPath: string, options) => {
-        this.addDependency(manager, depPath, options, true);
-      },
-      addDependency: async (depPath: string, options = {}) => {
-        this.addDependency(manager, depPath, options);
-      },
+      addTranspilationDependency: (depPath: string, options) =>
+        this.addDependency(manager, depPath, options, true),
+      addDependency: (depPath: string, options = {}) =>
+        this.addDependency(manager, depPath, options),
       addDependenciesInDirectory: (folderPath: string, options = {}) => {
         const tModules = manager.resolveTranspiledModulesInDirectory(
           folderPath,
@@ -502,7 +499,7 @@ export class TranspiledModule {
         });
       },
       resolveTranspiledModule: (depPath: string, options = {}) =>
-        manager.resolveTranspiledModule(
+        manager.resolveTranspiledModuleSync(
           depPath,
           options.isAbsolute ? '/' : this.module.path,
           options.ignoredExtensions
@@ -524,6 +521,7 @@ export class TranspiledModule {
       target: 'web',
       _module: this,
       path: this.module.path,
+      url: this.module.url ? this.module.url : getModuleUrl(this.module.path),
       template: manager.preset.name,
       remainingRequests: '', // will be filled during transpilation
       sandboxId: manager.id,
@@ -558,7 +556,7 @@ export class TranspiledModule {
    * after the initial transpilation finished.
    * @param {*} manager
    */
-  async doTranspile(manager: Manager) {
+  async doTranspile(manager: Manager): Promise<TranspiledModule> {
     this.hasMissingDependencies = false;
 
     // Remove this module from the initiators of old deps, so we can populate a
@@ -586,14 +584,16 @@ export class TranspiledModule {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
-      requires.forEach(r => {
-        if (r.indexOf('glob:') === 0) {
-          const reGlob = r.replace('glob:', '');
-          loaderContext.addDependenciesInDirectory(reGlob);
-        } else {
-          loaderContext.addDependency(r);
-        }
-      });
+      await Promise.all(
+        requires.map(r => {
+          if (r.indexOf('glob:') === 0) {
+            const reGlob = r.replace('glob:', '');
+            loaderContext.addDependenciesInDirectory(reGlob);
+            return Promise.resolve();
+          }
+          return loaderContext.addDependency(r);
+        })
+      );
 
       // eslint-disable-next-line
       code = this.module.code;
@@ -699,19 +699,17 @@ export class TranspiledModule {
 
     this.asyncDependencies = [];
 
-    await Promise.all(
-      flattenDeep([
-        ...Array.from(this.transpilationInitiators).map(t =>
-          t.transpile(manager)
-        ),
-        ...Array.from(this.dependencies).map(t => t.transpile(manager)),
-      ])
-    );
+    await Promise.all([
+      ...Array.from(this.transpilationInitiators).map(t =>
+        t.transpile(manager)
+      ),
+      ...Array.from(this.dependencies).map(t => t.transpile(manager)),
+    ]);
 
     return this;
   }
 
-  transpile(manager: Manager): Promise<this> {
+  transpile(manager: Manager): Promise<TranspiledModule> {
     if (this.source) {
       return Promise.resolve(this);
     }
@@ -723,14 +721,21 @@ export class TranspiledModule {
         // because it is working on executing the promise. This rare case only
         // happens when we have a dependency loop, which could result in a
         // StackTraceOverflow. Dependency loop: A -> B -> C -> A -> B -> C
-        return new Promise(async resolve => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
           while (!this.source && manager.transpileJobs[id] === true) {
             // eslint-disable-next-line
             await delay(10);
           }
 
-          if (manager.transpileJobs[id] && manager.transpileJobs[id] !== true) {
-            resolve(manager.transpileJobs[id] as Promise<this>);
+          const foundTranspileJob = manager.transpileJobs[id];
+          if (foundTranspileJob !== true) {
+            try {
+              const result = await foundTranspileJob;
+              resolve(result);
+            } catch (err) {
+              reject(err);
+            }
           } else {
             resolve(this);
           }
@@ -740,6 +745,7 @@ export class TranspiledModule {
     }
 
     manager.transpileJobs[id] = true;
+
     // eslint-disable-next-line
     return (manager.transpileJobs[id] = this.doTranspile(manager)).finally(
       () => {
@@ -796,7 +802,11 @@ export class TranspiledModule {
         return {};
       }
 
-      if (this.module.path.startsWith('/node_modules')) {
+      // TODO: Never return untranspiled modules, as these can always have side-effects...
+      if (
+        this.module.path.startsWith('/node_modules') &&
+        !this.module.path.endsWith('.vue')
+      ) {
         if (process.env.NODE_ENV === 'development') {
           console.warn(
             `[WARN] Sandpack: loading an untranspiled module: ${this.module.path}`
@@ -826,7 +836,7 @@ export class TranspiledModule {
         // this state is to just hard reload everything.
         manager.clearCache();
 
-        throw new Error(`${this.module.path} hasn't been transpiled yet.`);
+        throw new Error(`${this.getId()} hasn't been transpiled yet.`);
       }
     }
 
@@ -998,7 +1008,10 @@ export class TranspiledModule {
                 throw new Error('Module has no filename');
               }
 
-              const m = manager.resolveModule(toPath, module.filename);
+              const m = manager.resolveModule({
+                path: toPath,
+                parentPath: module.filename,
+              });
               return m.path;
             }
 
@@ -1013,7 +1026,7 @@ export class TranspiledModule {
           return resolveDependency(path);
         }
 
-        const requiredTranspiledModule = manager.resolveTranspiledModule(
+        const requiredTranspiledModule = manager.resolveTranspiledModuleSync(
           path,
           localModule.path
         );
@@ -1033,7 +1046,10 @@ export class TranspiledModule {
 
       // @ts-ignore
       require.resolve = function resolve(path: string) {
-        const foundModule = manager.resolveModule(path, localModule.path);
+        const foundModule = manager.resolveModule({
+          path,
+          parentPath: localModule.path,
+        });
 
         return foundModule.path;
       };

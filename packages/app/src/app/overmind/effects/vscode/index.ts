@@ -62,6 +62,7 @@ import SandboxFsSync from './SandboxFsSync';
 import { getSelection } from './utils';
 import loadScript from './vscode-script-loader';
 import { Workbench } from './Workbench';
+import { composeMenuAppTree, MenuAppItems } from './composeMenuAppTree';
 
 export type VsCodeOptions = {
   getCurrentSandbox: () => Sandbox | null;
@@ -138,9 +139,10 @@ export class VSCodeEffect {
   private elements = {
     editor: document.createElement('div'),
     editorPart: document.createElement('div'),
-    menubar: document.createElement('div'),
     statusbar: document.createElement('div'),
   };
+
+  private menuAppItems: MenuAppItems = [];
 
   private customEditorApi: ICustomEditorApi = {
     getCustomEditor: () => null,
@@ -154,6 +156,19 @@ export class VSCodeEffect {
     OnDidActiveEditorChangeEvent
   >();
   public onDidActiveEditorChange = this.onDidActiveEditorChangeEmitter.event;
+  /**
+   * Look up the preferred (last defined) keybinding for a command.
+   * @returns {ResolvedKeybinding} The preferred keybinding or null if the command is not bound.
+   */
+  public lookupKeybinding: (
+    commandId: string
+  ) => { getLabel(): string | null } | null;
+
+  /**
+   * Extract `contextMatchesRules` method from ContextKeyService
+   * to match rules and conditionals in the editor
+   */
+  public contextMatchesRules: (rules: any | undefined) => boolean;
 
   public initialize(options: VsCodeOptions) {
     this.options = options;
@@ -286,8 +301,8 @@ export class VSCodeEffect {
     return this.elements.editor;
   }
 
-  public getMenubarElement() {
-    return this.elements.menubar;
+  public getMenuAppItems(): MenuAppItems {
+    return this.menuAppItems;
   }
 
   public getStatusbarElement() {
@@ -1029,6 +1044,9 @@ export class VSCodeEffect {
       { IInstantiationService },
       { IExtensionEnablementService },
       { IContextViewService },
+      { MenuRegistry },
+      { IKeybindingService },
+      { IContextKeyService },
     ] = [
       r('vs/workbench/services/editor/common/editorService'),
       r('vs/editor/browser/services/codeEditorService'),
@@ -1047,6 +1065,9 @@ export class VSCodeEffect {
       r('vs/platform/instantiation/common/instantiation'),
       r('vs/platform/extensionManagement/common/extensionManagement'),
       r('vs/platform/contextview/browser/contextView'),
+      r('vs/platform/actions/common/actions'),
+      r('vs/platform/keybinding/common/keybinding'),
+      r('vs/platform/contextkey/common/contextkey'),
     ];
 
     const { serviceCollection } = await new Promise<any>(resolve => {
@@ -1072,20 +1093,22 @@ export class VSCodeEffect {
         accessor.get(ICodeSandboxEditorConnectorService);
 
         const statusbarPart = accessor.get(IStatusbarService);
-        const menubarPart = accessor.get('menubar');
         const commandService = accessor.get(ICommandService);
         const extensionService = accessor.get(IExtensionService);
         const extensionEnablementService = accessor.get(
           IExtensionEnablementService
         );
+        const keybindingService = accessor.get(IKeybindingService);
+        const contextKeyService = accessor.get(IContextKeyService);
 
+        this.lookupKeybinding = id => keybindingService.lookupKeybinding(id);
+        this.contextMatchesRules = rules =>
+          contextKeyService.contextMatchesRules(rules);
         this.commandService.resolve(commandService);
         this.extensionService.resolve(extensionService);
-
         this.extensionEnablementService.resolve(extensionEnablementService);
 
         const editorPart = accessor.get(IEditorGroupsService);
-
         const codeEditorService = accessor.get(ICodeEditorService);
         const textFileService = accessor.get(ITextFileService);
         const editorService = accessor.get(IEditorService);
@@ -1114,15 +1137,13 @@ export class VSCodeEffect {
           monaco,
         };
 
-        if (process.env.NODE_ENV === 'development') {
-          // eslint-disable-next-line
-          console.log(accessor);
-        }
-
         statusbarPart.create(this.elements.statusbar);
-        menubarPart.create(this.elements.menubar);
         editorPart.create(this.elements.editorPart);
         editorPart.layout(container.offsetWidth, container.offsetHeight);
+
+        this.menuAppItems = composeMenuAppTree(id =>
+          MenuRegistry.getMenuItems(id)
+        );
 
         editorPart.parent = container;
 
@@ -1180,11 +1201,6 @@ export class VSCodeEffect {
     this.elements.editor.className = 'monaco-workbench';
     this.elements.editor.style.width = '100%';
     this.elements.editor.style.height = '100%';
-
-    this.elements.menubar.style.alignItems = 'center';
-    this.elements.menubar.style.height = '38px';
-    this.elements.menubar.style.fontSize = '0.8125rem';
-    this.elements.menubar.className = 'menubar';
 
     this.elements.statusbar.className = 'part statusbar';
     this.elements.statusbar.id = 'workbench.parts.statusbar';

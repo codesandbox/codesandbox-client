@@ -29,9 +29,9 @@ export const business = {
           available: true,
         },
         {
-          name: 'Workspace-level Permissions',
+          name: 'Team-level Permissions',
           desc:
-            'Disable the ability to fork or download all shared sandboxes in a workspace',
+            'Disable the ability to fork or download all shared sandboxes in a team',
           available: true,
         },
         {
@@ -45,7 +45,7 @@ export const business = {
           available: [false, true, true],
         },
         {
-          name: 'Multiple Team Workspaces',
+          name: 'Multiple Teams',
           desc:
             'Bring multiple teams together in a single account to collaborate',
           available: [false, true, true],
@@ -123,13 +123,13 @@ export const business = {
       name: 'Knowledge Sharing',
       features: [
         {
-          name: 'Team Workspaces',
+          name: 'Team Dashboards',
           desc:
             'View, edit, and manage public and private sandboxes with a team',
           available: true,
         },
         {
-          name: 'Workspace Templates',
+          name: 'Team Templates',
           desc: 'Start from an official template, or share your own',
           available: true,
         },
@@ -168,14 +168,3 @@ export const business = {
     personal.items.find(item => item.name === 'Platform'),
   ],
 };
-
-// {
-//   name: 'Workspace-level Permissions ',
-//   desc: 'Embed sandboxes in docs, blog posts, and websites',
-//   available: [false, false],
-// },
-// {
-//   name: 'Centralized Billing ',
-//   desc: 'A personal portfolio page highlighting your best sandboxes',
-//   available: [false, false],
-// },

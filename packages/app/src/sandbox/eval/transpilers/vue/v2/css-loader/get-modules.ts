@@ -11,16 +11,20 @@ export default async (code: string, loaderContext: LoaderContext) => {
     core = new Core();
   }
 
-  return core
-    .load(code, loaderContext.path, (dependencyPath: string) => {
-      loaderContext.addDependency(dependencyPath);
+  const { injectableSource, exportTokens } = await core.load(
+    code,
+    loaderContext.path,
+    async (dependencyPath: string) => {
+      await loaderContext.addDependency(dependencyPath);
 
       const tModule = loaderContext.resolveTranspiledModule(dependencyPath);
 
       return tModule.source ? tModule.source.compiledCode : tModule.module.code;
-    })
-    .then(({ injectableSource, exportTokens }) => ({
-      css: injectableSource,
-      exportTokens,
-    }));
+    }
+  );
+
+  return {
+    css: injectableSource,
+    exportTokens,
+  };
 };

@@ -25,15 +25,15 @@ export const TeamSettings = () => {
   const location = useLocation();
 
   if (!team || !stateUser) {
-    return <Header title="Workspace Settings" activeTeam={null} />;
+    return <Header title="Team Settings" activeTeam={null} />;
   }
 
   return (
     <>
       <Helmet>
-        <title>Workspace Settings - CodeSandbox</title>
+        <title>Team Settings - CodeSandbox</title>
       </Helmet>
-      <Header title="Workspace Settings" activeTeam={activeTeam} />
+      <Header title="Team Settings" activeTeam={activeTeam} />
       <Element
         css={css({
           height: 'calc(100vh - 140px)',

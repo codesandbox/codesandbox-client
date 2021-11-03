@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
 import {
   Element,
   List,
@@ -22,6 +23,7 @@ import {
   Input,
   IconNames,
 } from '@codesandbox/components';
+import styled from 'styled-components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
@@ -30,9 +32,6 @@ import { DashboardBaseFolder, PageTypes } from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH, NEW_FOLDER_ID } from './constants';
 import { DragItemType, useDrop } from '../utils/dnd';
-
-/** poor man's feature flag - to ship the unfinished version */
-const SHOW_DISCOVER = localStorage.SHOW_DISCOVER;
 
 const SidebarContext = React.createContext(null);
 
@@ -57,6 +56,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     avatarUrl: string;
   } | null>(null);
   const { dashboard, activeTeam, activeTeamInfo, user } = state;
+
+  const history = useHistory();
+  const isInBetaScreen = history.location.pathname === dashboardUrls.beta();
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
@@ -132,13 +134,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <List>
           <ListItem
             css={css({
-              paddingX: 0,
+              paddingLeft: '6px',
+              paddingRight: 0,
               height: 10,
               borderBottom: '1px solid',
               borderColor: 'sideBar.border',
             })}
           >
-            {activeAccount && (
+            {activeAccount ? (
               <WorkspaceSelect
                 onSelect={workspace => {
                   actions.setActiveTeam({
@@ -147,6 +150,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 }}
                 activeAccount={activeAccount}
               />
+            ) : (
+              <Stack align="center" css={{ width: '100%' }}>
+                <SkeletonTextBlock
+                  css={{ width: 26, height: 26, marginLeft: 8 }}
+                />
+                <SkeletonTextBlock
+                  css={{ width: 65, height: 12, marginLeft: 8 }}
+                />
+              </Stack>
             )}
             <Link
               css={css({ height: '100%' })}
@@ -172,88 +184,95 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="box"
             style={{ marginTop: 1 }}
           />
-          {SHOW_DISCOVER && (
-            <RowItem
-              name="Discover"
-              page="discover"
-              path={dashboardUrls.discover(activeTeam)}
-              icon="discover"
-            />
+          <RowItem
+            name="Discover"
+            page="discover"
+            path={dashboardUrls.discover(activeTeam)}
+            icon="discover"
+            badge
+          />
+          {!isInBetaScreen ? (
+            <>
+              <RowItem
+                name="My Drafts"
+                page="drafts"
+                path={dashboardUrls.drafts(activeTeam)}
+                icon="file"
+              />
+              <Menu.Divider />
+              <NestableRowItem
+                name="All Sandboxes"
+                path={dashboardUrls.allSandboxes('/', activeTeam)}
+                folderPath="/"
+                folders={[
+                  ...folders,
+                  ...(newFolderPath
+                    ? [{ path: newFolderPath, name: '', parent: null }]
+                    : []),
+                ]}
+              />
+              <RowItem
+                name="Templates"
+                page="templates"
+                path={dashboardUrls.templates(activeTeam)}
+                icon="star"
+              />
+              <RowItem
+                name="Repositories"
+                page="repos"
+                path={dashboardUrls.repos(activeTeam)}
+                icon="fork"
+              />
+              {activeTeamInfo?.joinedPilotAt && (
+                <RowItem
+                  name="Always-On"
+                  page="always-on"
+                  path={dashboardUrls.alwaysOn(activeTeam)}
+                  icon="server"
+                />
+              )}
+              <RowItem
+                name="Recently Modified"
+                page="recents"
+                path={dashboardUrls.recents(activeTeam)}
+                icon="clock"
+              />
+              <RowItem
+                name="Recently Deleted"
+                page="deleted"
+                path={dashboardUrls.deleted(activeTeam)}
+                icon="trash"
+              />
+              <Element marginTop={8}>
+                <Menu.Divider />
+              </Element>
+              <RowItem
+                name="Shared With Me"
+                page="shared"
+                path={dashboardUrls.shared(activeTeam)}
+                icon="sharing"
+              />
+              <RowItem
+                name="Likes by Me"
+                page="liked"
+                path={dashboardUrls.liked(activeTeam)}
+                icon="heart"
+              />
+            </>
+          ) : (
+            <Element marginTop={2}>
+              <Menu.Divider />
+            </Element>
           )}
-          <RowItem
-            name="My Drafts"
-            page="drafts"
-            path={dashboardUrls.drafts(activeTeam)}
-            icon="file"
-          />
-          <Menu.Divider />
-          <NestableRowItem
-            name="All Sandboxes"
-            path={dashboardUrls.allSandboxes('/', activeTeam)}
-            folderPath="/"
-            folders={[
-              ...folders,
-              ...(newFolderPath
-                ? [{ path: newFolderPath, name: '', parent: null }]
-                : []),
-            ]}
-          />
-          <RowItem
-            name="Templates"
-            page="templates"
-            path={dashboardUrls.templates(activeTeam)}
-            icon="star"
-          />
-          <RowItem
-            name="Repositories"
-            page="repos"
-            path={dashboardUrls.repos(activeTeam)}
-            icon="fork"
-          />
-          {activeTeamInfo?.joinedPilotAt && (
-            <RowItem
-              name="Always-On"
-              page="always-on"
-              path={dashboardUrls.alwaysOn(activeTeam)}
-              icon="server"
-            />
-          )}
-          <RowItem
-            name="Recently Modified"
-            page="recents"
-            path={dashboardUrls.recents(activeTeam)}
-            icon="clock"
-          />
-          <RowItem
-            name="Recently Deleted"
-            page="deleted"
-            path={dashboardUrls.deleted(activeTeam)}
-            icon="trash"
-          />
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
-          <RowItem
-            name="Shared With Me"
-            page="shared"
-            path={dashboardUrls.shared(activeTeam)}
-            icon="sharing"
-          />
-          <RowItem
-            name="Likes by Me"
-            page="liked"
-            path={dashboardUrls.liked(activeTeam)}
-            icon="heart"
-          />
         </List>
         <Element margin={4}>
           <Button
             as={RouterLink}
-            to={dashboardUrls.createWorkspace()}
+            to={dashboardUrls.createTeam()}
             variant="secondary"
           >
             <Icon name="plus" size={10} marginRight={1} />
-            Create New Workspace
+            Create a new team
           </Button>
         </Element>
       </Stack>
@@ -340,6 +359,23 @@ const isSamePath = (
   return false;
 };
 
+const Badge = styled.p`
+  border-radius: 2px;
+  background-color: ${({ theme }) => theme.colors.blues[700]};
+  color: ${({ theme }) => theme.colors.white};
+
+  width: ${({ theme }) => theme.sizes[7]}px;
+  height: ${({ theme }) => theme.sizes[3]}px;
+
+  text-align: center;
+  line-height: 1.4;
+  font-size: ${({ theme }) => theme.fontSizes[1]}px;
+  font-weight: ${({ theme }) => theme.fontWeights.medium};
+
+  position: relative;
+  top: 1px; // 👌
+`;
+
 interface RowItemProps {
   name: string;
   path: string;
@@ -348,6 +384,7 @@ interface RowItemProps {
   setFoldersVisibility?: (val: boolean) => void;
   folderPath?: string;
   style?: React.CSSProperties;
+  badge?: boolean;
 }
 
 const RowItem: React.FC<RowItemProps> = ({
@@ -357,6 +394,7 @@ const RowItem: React.FC<RowItemProps> = ({
   page,
   icon,
   setFoldersVisibility = null,
+  badge,
   ...props
 }) => {
   const accepts: Array<'sandbox' | 'folder' | 'template'> = [];
@@ -462,6 +500,16 @@ const RowItem: React.FC<RowItemProps> = ({
             <Icon name={icon} />
           </Stack>
           {name}
+          {badge && (
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Badge>New</Badge>
+            </Stack>
+          )}
         </Link>
       )}
     </ListAction>

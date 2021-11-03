@@ -46,6 +46,7 @@ export enum MenuId {
   TouchBarContext,
   ViewItemContext,
   ViewTitle,
+  Root,
 }
 
 export class Workbench {
@@ -72,6 +73,7 @@ export class Workbench {
         this.controller.getSignal('editor.toggleStatusBar')();
       },
     });
+
     this.addWorkbenchAction({
       id: 'view.preview.flip',
       label: 'Flip Preview Layout',
@@ -138,6 +140,36 @@ export class Workbench {
     });
 
     this.addWorkbenchAction({
+      id: 'codesandbox.dashboard',
+      label: 'Dashboard',
+      category: 'Root',
+      run: () => {
+        // hard link
+        window.location.pathname = '/dashboard/home';
+      },
+      keybindings: {
+        primary: KeyMod.CtrlCmd | KeyCode.Escape,
+        mac: { primary: KeyMod.CtrlCmd | KeyCode.Escape },
+      },
+    });
+
+    this.addWorkbenchAction({
+      id: 'codesandbox.homepage',
+      label: 'Homepage',
+      category: 'Root',
+      run: () => {
+        /**
+         * It creates a fake link, once the history object
+         * is used by the react router and it doesn't route to the proper place
+         */
+        const fakeLink = document.createElement('a');
+        fakeLink.href = `${window.location.origin}/?from-app=1`;
+        document.body.appendChild(fakeLink);
+        fakeLink.click();
+      },
+    });
+
+    this.addWorkbenchAction({
       id: 'view.fullscreen',
       label: 'Toggle Fullscreen',
       category: 'View',
@@ -192,12 +224,39 @@ export class Workbench {
       });
     }
 
+    this.appendMenuItem(MenuId.Root, {
+      group: '1_workspace',
+      order: 1,
+      command: {
+        id: 'codesandbox.dashboard',
+        title: 'Dashboard',
+      },
+    });
+
+    this.appendMenuItem(MenuId.Root, {
+      group: '3_open',
+      order: 1,
+      command: {
+        id: 'workbench.action.showCommands',
+        title: '&&Command Palette',
+      },
+    });
+
     this.appendMenuItem(MenuId.MenubarFileMenu, {
       group: '1_new',
       order: 1,
       command: {
         id: 'codesandbox.sandbox.new',
         title: 'New Sandbox...',
+      },
+    });
+
+    this.appendMenuItem(MenuId.Root, {
+      group: '3_support',
+      order: 1,
+      command: {
+        id: 'codesandbox.homepage',
+        title: 'Go to Homepage',
       },
     });
 
@@ -283,11 +342,6 @@ export class Workbench {
       'codesandbox.search',
       'Search',
       'https://codesandbox.io/search'
-    );
-    addBrowserNavigationCommand(
-      'codesandbox.dashboard',
-      'Dashboard',
-      'https://codesandbox.io/dashboard'
     );
     addBrowserNavigationCommand(
       'codesandbox.help.open-issue',

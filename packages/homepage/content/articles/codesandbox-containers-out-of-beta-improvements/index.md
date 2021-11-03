@@ -45,9 +45,8 @@ on CodeSandbox.
 #### Nuxt.js Examples
 
 One of the best examples we can give you for the stability of containers is the
-homepage for [Nuxt.js](https://github.com/nuxt/nuxt.js) as they have been using
-it from almost the start and have been integral in testing the resilience of our
-containers.
+homepage for [Nuxt.js](/framework/nuxt) as they have been using it from almost
+the start and have been integral in testing the resilience of our containers.
 [This is their starter example](https://codesandbox.io/s/github/nuxt/codesandbox-nuxt/tree/master?fontsize=14).
 
 ![](images/1.png)
@@ -55,13 +54,12 @@ containers.
 #### Next.js, Gatsby, Apollo Documentation
 
 Containers have also been used a lot by
-[Next.js](https://github.com/zeit/next.js),
-[Gatsby](https://github.com/gatsbyjs/gatsby) and
+[Next.js](https://github.com/zeit/next.js), [Gatsby](/framework/gatsby) and
 [Apollo](https://www.apollographql.com) for their documentation and examples.
 They have set up [GitHub](https://github.com) repositories that link to
 sandboxes to showcase how their frameworks work. If you're interested in setting
 this up for your framework, don't hesitate to shoot us an email to
-hello@codesandbox.io!
+support@codesandbox.io!
 
 Here is a
 [Gatsby](https://codesandbox.io/s/github/gatsbyjs/gatsby-starter-default/tree/master),
@@ -70,10 +68,9 @@ and [Apollo](https://codesandbox.io/s/apollo-server) example.
 
 #### Node Streaming Example
 
-Another cool example is the [Node](https://github.com/nodejs/node) video
-streaming demo, showcased [here](https://codesandbox.io/s/14n6q1yr33). It shows
-how you can stream videos using
-[`express`](https://github.com/expressjs/express).
+Another cool example is the [Node](/software/node) video streaming demo,
+showcased [here](https://codesandbox.io/s/14n6q1yr33). It shows how you can
+stream videos using [`express`](https://github.com/expressjs/express).
 
 ![](images/2.png)
 
@@ -152,10 +149,10 @@ a helpful [command line](https://nl.wikipedia.org/wiki/Command-line-interface)
 to help you generate the files.
 
 This is a big pain-point for a lot of our users, particularly in
-[Angular](https://github.com/angular/angular), so we will make it possible to
-convert any sandbox to a container sandbox in a click of a button. When you
-click the button we will create a fork of the sandbox backed by a container, so
-you can install and run whatever you run on your local machine.
+[Angular](/framework/angular), so we will make it possible to convert any
+sandbox to a container sandbox in a click of a button. When you click the button
+we will create a fork of the sandbox backed by a container, so you can install
+and run whatever you run on your local machine.
 
 #### Wake Up Containers with API Call
 

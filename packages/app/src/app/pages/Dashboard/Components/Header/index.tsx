@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { Breadcrumbs } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
@@ -38,7 +39,7 @@ export const Header = ({
   CustomFilters,
 }: Props) => {
   const location = useLocation();
-  const { modals } = useActions();
+  const { modals, openImportBetaSandboxModal } = useActions();
   const { dashboard } = useAppState();
 
   return (
@@ -87,6 +88,22 @@ export const Header = ({
           dashboard.viewMode === 'list' && (
             <Button
               onClick={() => modals.newSandboxModal.open({})}
+              variant="link"
+              css={css({
+                fontSize: 2,
+                color: 'mutedForeground',
+                padding: 0,
+                width: 'auto',
+              })}
+            >
+              + Import Repo
+            </Button>
+          )}
+
+        {location.pathname.includes(dashboardUrls.beta()) &&
+          dashboard.viewMode === 'list' && (
+            <Button
+              onClick={() => openImportBetaSandboxModal()}
               variant="link"
               css={css({
                 fontSize: 2,

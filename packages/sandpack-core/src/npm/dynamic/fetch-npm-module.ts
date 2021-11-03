@@ -3,7 +3,7 @@ import resolve from 'browser-resolve';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
 import { Module } from '../../types/module';
-import Manager, { ReadFileCallback } from '../../manager';
+import Manager from '../../manager';
 
 import { getFetchProtocol } from './fetch-protocols';
 import { getDependencyName } from '../../utils/get-dependency-name';
@@ -14,6 +14,7 @@ import { DEFAULT_EXTENSIONS } from '../../utils/extensions';
 export type Meta = {
   [path: string]: true;
 };
+
 type Metas = {
   [dependencyAndVersion: string]: Promise<Meta>;
 };
@@ -50,7 +51,7 @@ const ALIAS_REGEX = /\/\d*\.\d*\.\d*.*?(\/|$)/;
 
 /*
  * Resolve name and version from npm aliases
- * e.g. "my-react": "npm:react@16.0.0
+ * e.g. "react": "npm:preact-compat@16.0.0"
  */
 const resolveNPMAlias = (name: string, version: string): string[] => {
   const IS_ALIAS = /^npm:/;
@@ -63,12 +64,12 @@ const resolveNPMAlias = (name: string, version: string): string[] => {
   return [parts[1]!, parts[2]!];
 };
 
-async function getMeta(
+function getMeta(
   name: string,
   packageJSONPath: string | null,
   version: string,
   useFallback = false
-) {
+): Promise<Meta> {
   const [depName, depVersion] = resolveNPMAlias(name, version);
   const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
   const id = `${packageJSONPath || depName}@${depVersion}`;
@@ -87,7 +88,7 @@ async function getMeta(
   return metas[id];
 }
 
-export async function downloadDependency(
+export function downloadDependency(
   name: string,
   version: string,
   path: string
@@ -155,22 +156,18 @@ function resolvePath(
       {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
-        packageFilter: packageFilter(isFile),
+        packageFilter,
         moduleDirectory: [
           'node_modules',
           manager.envVariables.NODE_PATH,
         ].filter(Boolean),
         isFile,
         // @ts-ignore
-        readFile: async (
-          p: string,
-          c: ReadFileCallback,
-          cb: ReadFileCallback
-        ) => {
+        readFile: async (p: string, c, cb) => {
           const callback = cb || c;
 
           try {
-            const tModule = manager.resolveTranspiledModule(p, '/');
+            const tModule = await manager.resolveTranspiledModule(p, '/', []);
             tModule.initiators.add(currentTModule);
             currentTModule.dependencies.add(tModule);
             return callback(null, tModule.module.code);
@@ -191,7 +188,6 @@ function resolvePath(
             const subDepVersionVersionInfo = await getDependencyVersion(
               currentTModule,
               manager,
-              defaultExtensions,
               depName
             );
 
@@ -252,7 +248,6 @@ type DependencyVersionResult =
 async function getDependencyVersion(
   currentTModule: TranspiledModule,
   manager: Manager,
-  defaultExtensions: string[] = DEFAULT_EXTENSIONS,
   dependencyName: string
 ): Promise<DependencyVersionResult | null> {
   const { manifest } = manager;
@@ -262,7 +257,7 @@ async function getDependencyVersion(
       pathUtils.join(dependencyName, 'package.json'),
       currentTModule,
       manager,
-      defaultExtensions
+      []
     );
 
     // If the dependency is in the root we get it from the manifest, as the manifest
@@ -345,6 +340,7 @@ export default async function fetchModule(
   defaultExtensions: Array<string> = DEFAULT_EXTENSIONS
 ): Promise<Module> {
   const currentPath = currentTModule.module.path;
+
   // Get the last part of the path as dependency name for paths like
   // instantsearch.js/node_modules/lodash/sum.js
   // In this case we want to get the lodash dependency info
@@ -355,7 +351,6 @@ export default async function fetchModule(
   const versionInfo = await getDependencyVersion(
     currentTModule,
     manager,
-    defaultExtensions,
     dependencyName
   );
 
@@ -401,11 +396,12 @@ export default async function fetchModule(
     // we don't have meta to find which modules are browser modules and we still
     // need to return an empty module for browser modules.
     const isDependency = /^(\w|@\w|@-)/.test(path);
+    const fullFilePath = isDependency
+      ? pathUtils.join('/node_modules', path)
+      : pathUtils.join(currentPath, path);
 
     return {
-      path: isDependency
-        ? pathUtils.join('/node_modules', path)
-        : pathUtils.join(currentPath, path),
+      path: fullFilePath,
       code: 'module.exports = {};',
       requires: [],
       stubbed: true,

@@ -4,7 +4,7 @@ import Portal from '@codesandbox/common/lib/components/Portal';
 
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
-import { Container, Item, ItemContainer } from './elements';
+import { Container, Item, ItemContainer, Badge } from './elements';
 
 type OnContextMenu = (event: React.MouseEvent) => void;
 
@@ -13,6 +13,7 @@ interface ItemType {
   title: string;
   icon?: React.ElementType;
   action: () => boolean | void;
+  isNewFeature?: boolean;
 }
 
 export type ContextMenuItemType = ItemType | ItemType[];
@@ -192,6 +193,7 @@ export class ContextMenu extends React.PureComponent<Props, State> {
         >
           {item.icon && <item.icon />}
           {item.title}
+          {item.isNewFeature && <Badge>New</Badge>}
         </Item>
       );
     };

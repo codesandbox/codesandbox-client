@@ -5,20 +5,22 @@ import ives from '../assets/images/people/ives.png';
 import bas from '../assets/images/people/bas.png';
 import bogdan from '../assets/images/people/bogdan.png';
 import oskar from '../assets/images/people/oskar.png';
-import sara from '../assets/images/people/sara.png';
 import danny from '../assets/images/people/danny.png';
-import gareth from '../assets/images/people/gareth.png';
-import sid from '../assets/images/people/sid.jpg';
 import christian from '../assets/images/people/christian.png';
 import sanne from '../assets/images/people/sanne.png';
 import andras from '../assets/images/people/andras.png';
 import alex from '../assets/images/people/alex.jpg';
-import maurice from '../assets/images/people/maurice.jpg';
 import zeh from '../assets/images/people/zeh.png';
-import ceora from '../assets/images/people/ceora.jpg';
 import danilowoz from '../assets/images/people/danilowoz.jpg';
 import matan from '../assets/images/people/matan.png';
 import scott from '../assets/images/people/scott.png';
+import kate from '../assets/images/people/kate.jpg';
+import tamas from '../assets/images/people/tamas.png';
+import jasper from '../assets/images/people/jasper.jpg';
+import joana from '../assets/images/people/joana.jpg';
+import marco from '../assets/images/people/marco.jpg';
+import roman from '../assets/images/people/roman.jpg';
+import james from '../assets/images/people/james.jpg';
 
 const people = [
   {
@@ -46,28 +48,10 @@ const people = [
     team: 'Engineering',
   },
   {
-    name: 'Sara Vieira',
-    pic: sara,
-    color: '#F24E62',
-    team: 'Engineering',
-  },
-  {
     name: 'Danny Rutchie',
     pic: danny,
     color: '#B567EB',
     team: 'Design',
-  },
-  {
-    name: 'Gareth Wilson',
-    pic: gareth,
-    color: '#F7A239',
-    team: 'Growth',
-  },
-  {
-    name: 'Siddharth Kshetrapal',
-    pic: sid,
-    color: '#F24E62',
-    team: 'Engineering',
   },
   {
     name: 'Christian Alfoni',
@@ -94,22 +78,16 @@ const people = [
     team: 'Engineering',
   },
   {
-    name: 'Maurice Cherry',
-    pic: maurice,
-    color: '#F7A239',
-    team: 'Growth',
-  },
-  {
     name: 'Zeh Fernandes',
     pic: zeh,
     color: '#B567EB',
     team: 'Design',
   },
   {
-    name: 'Ceora Ford',
-    pic: ceora,
-    color: '#97c8d6',
-    team: 'Growth',
+    name: 'Marco Vincit',
+    pic: marco,
+    color: '#B567EB',
+    team: 'Design',
   },
   {
     name: 'Danilo Woznica',
@@ -124,11 +102,47 @@ const people = [
     team: 'Engineering',
   },
   {
-     name: 'Scott Hutcheson',
+    name: 'Scott Hutcheson',
     pic: scott,
     color: '#F24E62',
     team: 'Engineering',
-  }
+  },
+  {
+    name: 'Kate Beard',
+    pic: kate,
+    color: '#F24E62',
+    team: 'Engineering',
+  },
+  {
+    name: 'Tamas Szuromi',
+    pic: tamas,
+    color: '#F7A239',
+    team: 'Data',
+  },
+  {
+    name: 'Jasper De Moor',
+    pic: jasper,
+    color: '#F24E62',
+    team: 'Engineering',
+  },
+  {
+    name: 'Joana Telker',
+    pic: joana,
+    color: '#76D0FB',
+    team: 'Operations',
+  },
+  {
+    name: 'Roman Kuba',
+    pic: roman,
+    color: '#B567EB',
+    team: 'Engineering',
+  },
+  {
+    name: 'James Amey',
+    pic: james,
+    color: '#6200ff',
+    team: 'Support',
+  },
 ];
 
 const Peep = styled.img`
@@ -238,6 +252,7 @@ const TeamMember = ({ name, border, noHover, ...props }) => {
   return null;
 };
 
-export const getRandomTeamMembers = number => shuffle(people).splice(0, number + 2);
+export const getRandomTeamMembers = number =>
+  shuffle(people).splice(0, number + 2);
 
 export default TeamMember;

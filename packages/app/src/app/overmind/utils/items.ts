@@ -147,7 +147,7 @@ export default function getItems(
     getTemplate(currentSandbox.template).isServer;
 
   if (currentSandbox.git) {
-    const gitItems = [GITHUB_SUMMARY];
+    const gitItems = [PROJECT_SUMMARY];
 
     if (
       isServer &&

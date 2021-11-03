@@ -37,7 +37,7 @@ function getGroupToggle(
     '\u25B6 ' + omitsCount + ' stack frames were collapsed.'
   );
   omittedFrames.appendChild(text1);
-  omittedFrames.addEventListener('click', function() {
+  omittedFrames.addEventListener('click', function () {
     const hide = text1.textContent.match(/▲/);
     const list = document.getElementsByName('bundle-' + omitBundle);
     for (let index = 0; index < list.length; ++index) {
@@ -84,7 +84,7 @@ function insertBeforeBundle(
     '\u25BC ' + omitsCount + ' stack frames were expanded.'
   );
   div.appendChild(text);
-  div.addEventListener('click', function() {
+  div.addEventListener('click', function () {
     return actionElement.click();
   });
   applyStyles(div, omittedFramesExpandedStyle);
@@ -113,10 +113,7 @@ function frameDiv(
   const cleanedUrl = url.replace('webpack://', '.');
 
   if (internalUrl) {
-    applyStyles(
-      frameFunctionName,
-      Object.assign({}, functionNameStyle, depStyle)
-    );
+    applyStyles(frameFunctionName, { ...functionNameStyle, ...depStyle });
   } else {
     applyStyles(frameFunctionName, functionNameStyle);
   }
@@ -133,10 +130,10 @@ function frameDiv(
   frame.appendChild(frameLink);
 
   if (typeof onSourceClick === 'function') {
-    let handler = onSourceClick;
+    const handler = onSourceClick;
     enableTabClick(frameAnchor);
     frameAnchor.style.cursor = 'pointer';
-    frameAnchor.addEventListener('click', function() {
+    frameAnchor.addEventListener('click', function () {
       handler();
     });
   }
@@ -289,7 +286,7 @@ function createFrame(
       onSourceClick = () => {
         const manager = getCurrentManager();
         if (manager) {
-          const tModule = manager.resolveTranspiledModule(
+          const tModule = manager.resolveTranspiledModuleSync(
             sourceFileName.replace(location.origin, '').replace('file://', ''),
             '/'
           );
@@ -362,7 +359,7 @@ function createFrame(
     }
   }
 
-  return { elem: elem, hasSource: hasSource, collapseElement: collapseElement };
+  return { elem, hasSource, collapseElement };
 }
 
 export { createFrame };

@@ -19,8 +19,6 @@ export const Wrapper = ({
       >
         <Element
           css={css({
-            width: 670,
-            height: 400,
             backgroundColor: oneCol ? 'grays.800' : 'white',
             border: 1,
             borderStyle: 'solid',
@@ -34,9 +32,13 @@ export const Wrapper = ({
             display: 'grid',
             gridTemplateColumns: oneCol ? '1fr' : '50% 50%',
             overflow: 'hidden',
-            maxWidth: '80vw',
             margin: 'auto',
 
+            '@media screen and (min-width: 768px)': {
+              height: 400,
+              width: 670,
+              maxWidth: '80vw',
+            },
             '@media screen and (max-width: 779px)': {
               gridTemplateColumns: '1fr',
             },

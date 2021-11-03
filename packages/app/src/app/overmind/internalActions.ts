@@ -29,6 +29,7 @@ export const initializeNewUser = async ({
   actions,
 }: Context) => {
   actions.dashboard.getTeams();
+  actions.dashboard.getFeatureFlags();
   actions.internal.setPatronPrice();
   effects.analytics.identify('signed_in', true);
   effects.analytics.setUserId(state.user!.id, state.user!.email);
@@ -61,6 +62,7 @@ export const signIn = async (
     await actions.internal.runProviderAuth(options);
 
     state.signInModalOpen = false;
+    state.cancelOnLogin = null;
     state.pendingUser = null;
     state.user = await effects.api.getCurrentUser();
     await actions.internal.initializeNewUser();
@@ -217,6 +219,9 @@ export const runProviderAuth = (
 
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
+
+    localStorage.setItem('should-onboarding-user', 'true');
+
     popup.close();
   });
 
@@ -512,7 +517,7 @@ export const handleError = (
     };
   } else if (
     error.message.startsWith(
-      'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
+      'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact support@codesandbox.io for more server sandboxes.'
     )
   ) {
     effects.analytics.track('Patron Server Sandbox Limit Reached', {

@@ -1,42 +1,20 @@
 import { FetchProtocol, Meta } from '../fetch-npm-module';
-import { fetchWithRetries } from './utils';
+import { TarStore } from './utils/tar-store';
 
-type UnpkgMetaFiles = {
-  path: string;
-  type: 'file' | 'directory';
-  files?: UnpkgMetaFiles[];
-};
-
-function normalize(files: UnpkgMetaFiles[], fileObject: Meta = {}) {
-  for (let i = 0; i < files.length; i += 1) {
-    const { files: childFiles, type, path } = files[i];
-    if (type === 'file') {
-      const absolutePath = path;
-      fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
-    }
-
-    if (childFiles) {
-      normalize(childFiles, fileObject);
-    }
-  }
-
-  return fileObject;
+function getTarballUrl(url: string) {
+  return url.replace(/\/_pkg.tgz$/, '');
 }
 
 export class CsbFetcher implements FetchProtocol {
-  async file(name: string, version: string, path: string): Promise<string> {
-    const url = `${version.replace(/\/_pkg.tgz$/, '')}${path}`;
-    const result = await fetchWithRetries(url).then(x => x.text());
+  private tarStore = new TarStore();
 
-    return result;
+  async file(name: string, version: string, path: string): Promise<string> {
+    const url = getTarballUrl(version);
+    return this.tarStore.file(name, url, path);
   }
 
   async meta(name: string, version: string): Promise<Meta> {
-    const url = `${version.replace(/\/\.pkg.tgz$/, '')}/_csb-meta.json`;
-    const result: UnpkgMetaFiles = await fetchWithRetries(url).then(x =>
-      x.json()
-    );
-
-    return normalize(result.files!, {});
+    const url = getTarballUrl(version);
+    return this.tarStore.meta(name, url);
   }
 }

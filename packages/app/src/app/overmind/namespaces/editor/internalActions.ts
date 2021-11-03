@@ -44,6 +44,7 @@ export const initializeSandbox = async (
     actions.editor.loadCollaborators({ sandboxId: sandbox.id }),
     actions.editor.listenToSandboxChanges({ sandboxId: sandbox.id }),
     actions.internal.switchCurrentWorkspaceBySandbox({ sandbox }),
+    actions.getSandboxesLimits(),
   ]);
 };
 
@@ -186,7 +187,6 @@ export const saveCode = async (
 
     if (savedCode === null) {
       // If the savedCode is also module.code
-      effects.moduleRecover.remove(sandbox.id, module);
       effects.vscode.syncModule(module);
     }
 
@@ -402,9 +402,6 @@ export const updateModuleCode = (
   }
 
   module.code = code;
-
-  // Save the code to localStorage so we can recover in case of a crash
-  effects.moduleRecover.save(currentSandbox.id, currentSandbox.version, module);
 };
 
 export const forkSandbox = async (
@@ -495,10 +492,7 @@ export const forkSandbox = async (
       actions.server.startContainer(forkedSandbox);
     }
 
-    if (
-      state.workspace.openedWorkspaceItem === 'project-summary' ||
-      state.workspace.openedWorkspaceItem === 'github-summary'
-    ) {
+    if (state.workspace.openedWorkspaceItem === 'project-summary') {
       actions.workspace.openDefaultItem();
     }
 
@@ -515,6 +509,7 @@ export const forkSandbox = async (
     }
 
     actions.internal.currentSandboxChanged();
+    await actions.getSandboxesLimits();
   } catch (error) {
     console.error(error);
     actions.internal.handleError({

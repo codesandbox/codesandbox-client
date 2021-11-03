@@ -54,13 +54,13 @@ export default () => {
   }, [prefersReducedMotion]);
   return (
     <Layout>
-      <TitleAndMetaTags title="Team Plan - Codesandbox" />
+      <TitleAndMetaTags title="Team Plan - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
           <Title>Keep development work flowing</Title>
         </TitleWrapper>
         <Description>
-          Build better things faster with a workspace that makes code
+          Build better things faster with a team dashboard that makes code
           collaboration effortless for your entire team.
         </Description>
         <div
@@ -129,7 +129,7 @@ export default () => {
                 <img src={shareDesign} alt="Share with your team by default" />
               </ContentBlockImage>
               <h3>Share with your team by default.</h3>
-              Remove barriers to collaboration with a shared workspace. Organize
+              Remove barriers to collaboration with a team dashboard. Organize
               apps, hiring tests, prototypes, and bug repros in folders.
             </div>
 
@@ -138,7 +138,7 @@ export default () => {
                 <img src={planets} alt="Bake in best practice" />
               </ContentBlockImage>
               <h3>Bake in best practice. </h3>
-              Custom workspace templates provide starting points for your team,
+              Custom project templates provide starting points for your team,
               configured with your styles, libraries, and settings.
             </div>
 
@@ -241,16 +241,16 @@ export default () => {
 
             <div>
               <ContentBlockImage bg="151515">
-                <img src={settings} alt="Workspace settings" />
+                <img src={settings} alt="Team settings" />
               </ContentBlockImage>
-              <h3>Workspace settings</h3>
-              Set default privacy and permission settings across your workspace.
+              <h3>Team settings</h3>
+              Set default privacy and permission settings across your team.
             </div>
           </ContentBlock>
 
           <CTA
             title="Collaborate with your team"
-            subtitle="Test ideas earlier, iterate more and create better products with a shared workspace."
+            subtitle="Test ideas earlier, iterate more and create better products with a team dashboard."
             cta="Go Pro"
             link="/pricing"
           />
@@ -281,9 +281,9 @@ export default () => {
 
             <div>
               <ContentBlockImage bg="5962DF">
-                <img src={workspaces} alt="Multiple workspaces" />
+                <img src={workspaces} alt="Multiple teams" />
               </ContentBlockImage>
-              <h3>Multiple workspaces</h3>
+              <h3>Multiple teams</h3>
               Bring multiple teams together in a single account to collaborate.
             </div>
           </ContentBlock>

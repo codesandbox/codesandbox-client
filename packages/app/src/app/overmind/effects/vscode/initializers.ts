@@ -81,6 +81,7 @@ export function initializeSettings() {
       );
     }
 
+    settingsChanged = changeIfNeeded('files.autoSave', 'off');
     settingsChanged = changeIfNeeded('javascript.autoClosingTags', false);
     settingsChanged = changeIfNeeded('typescript.autoClosingTags', false);
     settingsChanged = changeIfNeeded('html.autoClosingTags', false);
@@ -96,7 +97,7 @@ export function initializeSettings() {
 
       settingsChanged = changeIfNeeded(
         'workbench.colorTheme',
-        'CodeSandbox Black'
+        'CodeSandbox Black 2021'
       );
     }
 

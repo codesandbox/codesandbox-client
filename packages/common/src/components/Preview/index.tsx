@@ -13,7 +13,7 @@ import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 import { Module, NpmRegistry, Sandbox } from '../../types';
-import track from '../../utils/analytics';
+import track, { trackWithCooldown } from '../../utils/analytics';
 import { getSandboxName } from '../../utils/get-sandbox-name';
 import { frameUrl, host } from '../../utils/url-generator';
 import { Container, Loading, StyledFrame } from './elements';
@@ -363,6 +363,10 @@ class BasePreview extends React.PureComponent<Props, State> {
             this.setState({ showScreenshot: false });
             break;
           }
+          case 'document-focus': {
+            trackWithCooldown('Preview focus', 30_000);
+            break;
+          }
           default: {
             break;
           }
@@ -625,7 +629,7 @@ class BasePreview extends React.PureComponent<Props, State> {
                 <StyledFrame
                   key="PREVIEW"
                   allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts allow-downloads"
+                  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
                   src={this.state.url}
                   ref={this.setIframeElement}
                   title={getSandboxName(sandbox)}

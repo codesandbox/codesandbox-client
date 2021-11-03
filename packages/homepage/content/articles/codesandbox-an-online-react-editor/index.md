@@ -16,10 +16,9 @@ signed in via [GitHub](https://github.com)!
 The idea of CodeSandbox started when I was on a trip to
 [St. Ives](https://en.wikipedia.org/wiki/St_Ives,_Cornwall) (hah!). I was
 working at that time on the conversion of [Catawiki](https://catawiki.com) to
-[React](https://github.com/facebook/react). While I was gone I got a lot of
-questions from other developers about React, but there was no easy way for me to
-answer them without having access to an editor where I could access the
-libraries we have.
+[React](/framework/react). While I was gone I got a lot of questions from other
+developers about React, but there was no easy way for me to answer them without
+having access to an editor where I could access the libraries we have.
 
 ## What is CodeSandbox
 
@@ -135,7 +134,7 @@ imported project will automatically be credited in the final project as
 CodeSandbox has been a great ride so far, the reactions have been incredible and
 the support has been immense. If you have any suggestions/ideas about
 CodeSandbox or the roadmap we'd love to hear them! You can access us by emailing
-hello@codesandbox.io or by direct messaging
+support@codesandbox.io or by direct messaging
 [@CompuIves](https://twitter.com/CompuIves) on Twitter, we also watch the
 comments here.
 

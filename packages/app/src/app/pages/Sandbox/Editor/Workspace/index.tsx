@@ -10,20 +10,17 @@ import { ConfigurationFiles } from './screens/ConfigurationFiles';
 import { Deployment } from './screens/Deployment/index';
 import { Explorer } from './screens/Explorer';
 import { GitHub } from './screens/GitHub';
-import { GithubSummary } from './screens/GithubSummary';
 import { Live } from './screens/Live';
 import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './screens/ProjectInfo';
 import { Server } from './screens/Server';
 import { Inspector } from './screens/Inspector';
 import { Search } from './screens/Search';
-import { SignInBanner } from './SignInBanner';
 
 const workspaceTabs = {
   project: ProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
   inspector: Inspector,
-  'github-summary': GithubSummary,
   github: GitHub,
   files: Explorer,
   search: Search,
@@ -70,7 +67,6 @@ export const WorkspaceComponent = ({ theme }) => {
           </div>
 
           {isLive && roomInfo.chatEnabled && <Chat />}
-          {!user && <SignInBanner theme={theme.vscodeTheme} />}
         </>
       </ThemeProvider>
     </Container>

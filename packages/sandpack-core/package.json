@@ -11,6 +11,8 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.14",
+    "@types/micromatch": "^4.0.2",
+    "@types/node-fetch": "^2.5.10",
     "fetch-vcr": "^3.2.0",
     "jest": "^26.4.2",
     "rimraf": "^3.0.2",
@@ -22,8 +24,12 @@
     "@codesandbox/common": "^1.0.8",
     "browser-resolve": "CompuIves/node-browser-resolve",
     "codesandbox-api": "0.0.32",
+    "fs-extra": "^9.1.0",
+    "gensync": "^1.0.0-beta.2",
     "localforage-driver-memory": "^1.0.5",
     "lodash-es": "^4.17.15",
+    "micromatch": "^4.0.4",
+    "node-fetch": "^2.6.1",
     "sandbox-hooks": "0.1.0",
     "source-map": "^0.7.3"
   }

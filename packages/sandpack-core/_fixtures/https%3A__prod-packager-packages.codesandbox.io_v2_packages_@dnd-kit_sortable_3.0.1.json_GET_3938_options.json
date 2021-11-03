@@ -1,0 +1,35 @@
+{
+  "url": "https://prod-packager-packages.codesandbox.io/v2/packages/@dnd-kit/sortable/3.0.1.json",
+  "status": 200,
+  "statusText": "OK",
+  "ok": true,
+  "headers": {
+    "date": ["Fri, 23 Apr 2021 11:13:39 GMT"],
+    "content-type": ["application/json"],
+    "content-length": ["21161"],
+    "connection": ["close"],
+    "set-cookie": [
+      "__cfduid=d3367971d55ace3b8ce1164d2ea930abe1619176419; expires=Sun, 23-May-21 11:13:39 GMT; path=/; domain=.codesandbox.io; HttpOnly; SameSite=Lax; Secure"
+    ],
+    "x-amz-id-2": [
+      "WHqHoTv5RcyxPIkm/8Aa9cpFgoP1llozKRDCKGksc+rxE0JTgerZ5nHk7+6dEdqHL3Ae8/q2CAI="
+    ],
+    "x-amz-request-id": ["7KADPK8MG2VKD5XC"],
+    "last-modified": ["Wed, 21 Apr 2021 02:04:59 GMT"],
+    "etag": ["\"ae7ded1e7feb2ac602f7f8a487483e68\""],
+    "cache-control": ["public, max-age=31536000"],
+    "content-encoding": ["gzip"],
+    "cf-cache-status": ["MISS"],
+    "accept-ranges": ["bytes"],
+    "cf-request-id": ["09a00886eb0000088b35323000000001"],
+    "expect-ct": [
+      "max-age=604800, report-uri=\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\""
+    ],
+    "vary": ["Accept-Encoding"],
+    "server": ["cloudflare"],
+    "cf-ray": ["6446a9eb09f6088b-CDG"],
+    "alt-svc": [
+      "h3-27=\":443\"; ma=86400, h3-28=\":443\"; ma=86400, h3-29=\":443\"; ma=86400"
+    ]
+  }
+}

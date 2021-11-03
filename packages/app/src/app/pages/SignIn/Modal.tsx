@@ -4,9 +4,10 @@ import {
   github as GitHubIcon,
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
-import { Element, Text } from '@codesandbox/components';
+import { Element, Text, Button as MainButton } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import history from 'app/utils/history';
+
 import { LeftSide } from './components/LeftSide';
 import { Wrapper } from './components/Wrapper';
 import { Button } from './components/Button';
@@ -27,8 +28,14 @@ export const SignInModalElement = ({
     pendingUser,
     pendingUserId,
     loadingAuth,
+    cancelOnLogin,
   } = useAppState();
-  const { signInButtonClicked, getPendingUser, setLoadingAuth } = useActions();
+  const {
+    signInButtonClicked,
+    getPendingUser,
+    setLoadingAuth,
+    toggleSignInModal,
+  } = useActions();
 
   useEffect(() => {
     if (pendingUserId) {
@@ -45,6 +52,12 @@ export const SignInModalElement = ({
     }
 
     if (redirectTo) {
+      if (redirectTo.startsWith('http')) {
+        window.location.href = redirectTo;
+
+        return null;
+      }
+
       return history.push(redirectTo.replace(location.origin, ''));
     }
     setLoadingAuth('github');
@@ -88,10 +101,10 @@ export const SignInModalElement = ({
     <Wrapper>
       <LeftSide />
       <Element padding={8}>
-        <Text weight="bold" size={23} paddingBottom={3} block>
+        <Text weight="bold" size={23} paddingBottom={1} block>
           Sign in to CodeSandbox
         </Text>
-        <Text variant="muted" size={3} paddingBottom={60} block>
+        <Text variant="muted" size={3} paddingBottom={30} block>
           Get a free account, no credit card required
         </Text>
 
@@ -103,6 +116,28 @@ export const SignInModalElement = ({
           <GoogleIcon width="20" height="20" />
           <Element css={css({ width: '100%' })}>Sign in with Google</Element>
         </Button>
+
+        {cancelOnLogin && (
+          <MainButton
+            variant="link"
+            type="button"
+            css={{
+              marginBottom: 53,
+              color: '#000',
+              '&:hover:not(:disabled)': {
+                color: '#000',
+                opacity: 0.7,
+              },
+            }}
+            onClick={() => {
+              cancelOnLogin();
+              toggleSignInModal();
+            }}
+          >
+            <Text>Continue without an account</Text>
+          </MainButton>
+        )}
+
         <Text
           variant="muted"
           align="center"

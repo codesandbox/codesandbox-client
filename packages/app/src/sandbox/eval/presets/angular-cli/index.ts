@@ -12,6 +12,7 @@ import sassTranspiler from '../../transpilers/sass';
 import rawTranspiler from '../../transpilers/raw';
 import stylusTranspiler from '../../transpilers/stylus';
 import lessTranspiler from '../../transpilers/less';
+import postcssTranspiler from '../../transpilers/postcss';
 
 let polyfillsLoaded = false;
 
@@ -19,6 +20,11 @@ async function addAngularJSONPolyfills(manager) {
   const { parsed } = manager.configurations['angular-config'];
 
   const { defaultProject } = parsed;
+
+  if (!defaultProject || !parsed.projects) {
+    return;
+  }
+
   const project = parsed.projects[defaultProject];
 
   if (project && project.architect) {
@@ -28,7 +34,9 @@ async function addAngularJSONPolyfills(manager) {
         const polyfillLocation = absolute(
           join(project.root, build.options.polyfill)
         );
-        const polyfills = manager.resolveModule(polyfillLocation, '/');
+        const polyfills = await manager.resolveModuleAsync({
+          path: polyfillLocation,
+        });
 
         await manager.transpileModules(polyfills);
         manager.evaluateModule(polyfills);
@@ -44,7 +52,9 @@ async function addAngularCLIPolyfills(manager) {
 
     if (app.root && app.polyfills) {
       const polyfillLocation = absolute(join(app.root, app.polyfills));
-      const polyfills = manager.resolveModule(polyfillLocation, '/');
+      const polyfills = await manager.resolveModuleAsync({
+        path: polyfillLocation,
+      });
 
       await manager.transpileModules(polyfills);
       manager.evaluateModule(polyfills);
@@ -56,6 +66,10 @@ async function addAngularJSONResources(manager) {
   const { parsed } = manager.configurations['angular-config'];
 
   const { defaultProject } = parsed;
+  if (!defaultProject || !parsed.projects) {
+    return;
+  }
+
   const project = parsed.projects[defaultProject];
 
   if (project && project.architect) {
@@ -163,7 +177,9 @@ export default function initialize() {
     {
       setup: async manager => {
         if (!polyfillsLoaded) {
-          const zone = manager.resolveModule('zone.js', '/');
+          const zone = await manager.resolveModuleAsync({
+            path: 'zone.js',
+          });
           await manager.transpileModules(zone);
           manager.evaluateModule(zone);
 
@@ -185,6 +201,11 @@ export default function initialize() {
     }
   );
 
+  const postcssWithConfig = {
+    transpiler: postcssTranspiler,
+    options: {},
+  };
+
   const sassWithConfig = {
     transpiler: sassTranspiler,
     options: {},
@@ -199,8 +220,9 @@ export default function initialize() {
     transpiler: stylusTranspiler,
     options: {},
   };
+
   const styles = {
-    css: [],
+    css: [postcssWithConfig],
     scss: [sassWithConfig],
     sass: [sassWithConfig],
     less: [lessWithConfig],

@@ -58,7 +58,7 @@ function buildErrorMessage(e: TModuleError) {
 
 const wrappedResolveModule = (manager, path) => {
   try {
-    return manager && manager.resolveTranspiledModule(path, '/');
+    return manager && manager.resolveTranspiledModuleSync(path, '/');
   } catch (e) {
     return null;
   }
@@ -81,7 +81,7 @@ function buildDynamicError(ref: ErrorRecord) {
   if (relevantFrame && manager) {
     const fileName = relevantFrame._originalFileName || relevantFrame.fileName;
     if (fileName) {
-      const tModule = manager.resolveTranspiledModule(
+      const tModule = manager.resolveTranspiledModuleSync(
         fileName.replace(location.origin, '').replace('file://', ''),
         '/'
       );
@@ -132,7 +132,6 @@ function buildDynamicError(ref: ErrorRecord) {
 /* eslint-disable no-underscore-dangle */
 export default function showError(ref: ErrorRecord) {
   const errorToSend = buildDynamicError(ref);
-
   if (errorToSend) {
     dispatch(
       actions.error.show(errorToSend.title, errorToSend.message, {
@@ -144,11 +143,13 @@ export default function showError(ref: ErrorRecord) {
     );
   } else {
     // Show based on error
-    actions.error.show(ref.error.name, ref.error.message, {
-      line: ref.error.lineNumber,
-      column: ref.error.columnNumber,
-      path: ref.error.fileName,
-      payload: {},
-    });
+    dispatch(
+      actions.error.show(ref.error.name, ref.error.message, {
+        line: ref.error.lineNumber,
+        column: ref.error.columnNumber,
+        path: ref.error.fileName,
+        payload: {},
+      })
+    );
   }
 }

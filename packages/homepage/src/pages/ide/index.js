@@ -56,7 +56,7 @@ export default () => {
 
   return (
     <Layout>
-      <TitleAndMetaTags title="IDE - Codesandbox" />
+      <TitleAndMetaTags title="IDE - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
           <Title>Code from anywhere</Title>

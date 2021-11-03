@@ -1,9 +1,6 @@
 import { PackageJSON } from '@codesandbox/common/lib/types';
 
-export const packageFilter = (isFile: (p: string) => boolean = () => true) => (
-  p: PackageJSON,
-  pkgLocation: string
-) => {
+export const packageFilter = (p: PackageJSON) => {
   if (p.module) {
     p.main = p.module;
   }

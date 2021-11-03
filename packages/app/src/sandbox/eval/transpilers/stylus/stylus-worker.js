@@ -1,10 +1,10 @@
-import { buildWorkerError } from '../utils/worker-error-handler';
+import { ChildHandler } from '../worker-transpiler/child-handler';
+
+const childHandler = new ChildHandler('stylus-worker');
 
 self.importScripts(
   `${process.env.CODESANDBOX_HOST || ''}/static/js/stylus.min.js`
 );
-
-self.postMessage('ready');
 
 declare var stylus: {
   render: (
@@ -14,21 +14,21 @@ declare var stylus: {
   ) => void,
 };
 
-self.addEventListener('message', event => {
-  const { code, path } = event.data;
+async function compile(data) {
+  const { code, path } = data;
 
-  // register a custom importer callback
-  stylus.render(code, { filename: path }, (err, css) => {
-    if (err) {
-      return self.postMessage({
-        type: 'error',
-        error: buildWorkerError(err),
-      });
-    }
+  const transpiledCode = await new Promise((resolve, reject) => {
+    stylus.render(code, { filename: path }, (err, css) => {
+      if (err) {
+        return reject(err);
+      }
 
-    return self.postMessage({
-      type: 'result',
-      transpiledCode: css,
+      return resolve(css);
     });
   });
-});
+
+  return { transpiledCode };
+}
+
+childHandler.registerFunction('compile', compile);
+childHandler.emitReady();

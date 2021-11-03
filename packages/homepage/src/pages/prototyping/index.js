@@ -46,7 +46,7 @@ export default () => {
   }, [prefersReducedMotion]);
   return (
     <Layout>
-      <TitleAndMetaTags title="Prototyping - Codesandbox" />
+      <TitleAndMetaTags title="Prototyping - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
           <Title>Quickly prototype ideas with code</Title>
@@ -147,7 +147,7 @@ export default () => {
               </ContentBlockImage>
               <h3>Private sandboxes</h3>
               Make sandboxes public, private, or unlisted. Per sandbox or across
-              a whole workspace.
+              a whole team.
             </div>
           </ContentBlock>
 

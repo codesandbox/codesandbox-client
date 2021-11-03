@@ -8,9 +8,14 @@ export const UserNameSelection = () => {
   const { validateUsername, finalizeSignUp } = useActions();
   const [newUsername, setNewUsername] = useState('');
   const [loadingUsername, setLoadingUserName] = useState(false);
+  const [newDisplayName, setNewDisplayName] = useState('');
 
   useEffect(() => {
     setNewUsername(pendingUser?.username);
+  }, [pendingUser]);
+
+  useEffect(() => {
+    setNewDisplayName(pendingUser?.name);
   }, [pendingUser]);
 
   return (
@@ -31,9 +36,6 @@ export const UserNameSelection = () => {
                 src={pendingUser.avatarUrl}
               />
             </Element>
-            <Text weight="bold" size={6}>
-              Please select your username
-            </Text>
             <Stack
               css={css({
                 width: 300,
@@ -44,9 +46,12 @@ export const UserNameSelection = () => {
               gap={4}
               onSubmit={e => {
                 e.preventDefault();
-                finalizeSignUp(newUsername);
+                finalizeSignUp({ username: newUsername, name: newDisplayName });
               }}
             >
+              <Text weight="bold" size={4}>
+                Please select your username
+              </Text>
               <Input
                 onBlur={async e => {
                   setLoadingUserName(true);
@@ -55,6 +60,13 @@ export const UserNameSelection = () => {
                 }}
                 value={newUsername}
                 onChange={e => setNewUsername(e.target.value)}
+              />
+              <Text weight="bold" size={4}>
+                Please select your display name
+              </Text>
+              <Input
+                value={newDisplayName}
+                onChange={e => setNewDisplayName(e.target.value)}
               />
               {!pendingUser.valid ? (
                 <Text size={3} variant="danger">

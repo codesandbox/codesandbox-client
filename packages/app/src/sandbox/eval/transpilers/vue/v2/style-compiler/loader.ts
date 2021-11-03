@@ -39,87 +39,85 @@ async function resolveCSSFile(
   return loaderContext.resolveTranspiledModuleAsync(fullPath);
 }
 
-export default function(
+export default async function (
   code: string,
   loaderContext: LoaderContext
 ): Promise<{ transpiledCode: string; sourceMap: any }> {
-  return new Promise((resolve, reject) => {
-    const query = loaderContext.options;
+  const query = loaderContext.options;
 
-    let vueOptions = loaderContext.options.__vueOptions__;
+  let vueOptions = loaderContext.options.__vueOptions__;
 
-    if (!vueOptions) {
-      vueOptions = {
-        ...loaderContext.options.vue,
-      };
-    }
+  if (!vueOptions) {
+    vueOptions = {
+      ...loaderContext.options.vue,
+    };
+  }
 
-    // TODO autoprefixer
-    const plugins = [
-      postcssImportPlugin({
-        resolve: async (id: string, root: string) => {
-          try {
-            const result = await resolveCSSFile(loaderContext, id, root);
-
-            return result.module.path;
-          } catch (e) {
-            return null;
-          }
-        },
-        load: async (filename: string) => {
-          const tModule = await loaderContext.resolveTranspiledModuleAsync(
-            filename
+  // TODO autoprefixer
+  const plugins = [
+    postcssImportPlugin({
+      resolve: async (id: string, root: string) => {
+        try {
+          const result = await resolveCSSFile(
+            loaderContext,
+            id.replace(/^~/, ''),
+            root
           );
 
-          return tModule.module.code;
-        },
-      }),
-      trim,
-    ];
+          return result.module.path;
+        } catch (e) {
+          return null;
+        }
+      },
+      load: async (filename: string) => {
+        const tModule = await loaderContext.resolveTranspiledModuleAsync(
+          filename
+        );
 
-    const options: ProcessOptions = {
-      to: loaderContext.path,
-      from: loaderContext.path,
+        return tModule.module.code;
+      },
+    }),
+    trim,
+  ];
+
+  const options: ProcessOptions = {
+    to: loaderContext.path,
+    from: loaderContext.path,
+  };
+
+  // add plugin for vue-loader scoped css rewrite
+  if (query.scoped) {
+    plugins.push(scopeId({ id: query.id }));
+  }
+
+  // source map
+  if (
+    loaderContext.sourceMap &&
+    vueOptions.cssSourceMap !== false
+    // !loaderContext.map
+  ) {
+    options.map = {
+      inline: false,
+      annotation: false,
+      // prev: loaderContext.map,
     };
+  }
 
-    // add plugin for vue-loader scoped css rewrite
-    if (query.scoped) {
-      plugins.push(scopeId({ id: query.id }));
-    }
+  // Explicitly give undefined if code is null, otherwise postcss crashses
+  const postcssResult = await postcss(plugins).process(code || '', options);
 
-    // source map
-    if (
-      loaderContext.sourceMap &&
-      vueOptions.cssSourceMap !== false
-      // !loaderContext.map
-    ) {
-      options.map = {
-        inline: false,
-        annotation: false,
-        // prev: loaderContext.map,
-      };
-    }
-
-    return (
-      postcss(plugins)
-        // Explcitly give undefined if code is null, otherwise postcss crashses
-        .process(code || '', options)
-        .then(result => {
-          if (result.messages) {
-            const messages = result.messages as any[];
-            messages.forEach(m => {
-              if (m.type === 'dependency') {
-                loaderContext.addDependency(m.file);
-              }
-            });
-          }
-
-          const map = result.map && result.map.toJSON();
-          resolve({ transpiledCode: result.css, sourceMap: map });
-
-          return null; // silence bluebird warning
-        })
-        .catch(err => reject(err))
+  if (postcssResult.messages) {
+    const messages = postcssResult.messages as any[];
+    await Promise.all(
+      messages.map(m => {
+        if (m.type === 'dependency') {
+          return loaderContext.addDependency(m.file);
+        }
+        return Promise.resolve();
+      })
     );
-  });
+  }
+
+  const map = postcssResult.map && postcssResult.map.toJSON();
+  return { transpiledCode: postcssResult.css, sourceMap: map };
 }

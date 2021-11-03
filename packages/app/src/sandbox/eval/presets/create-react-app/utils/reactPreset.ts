@@ -3,11 +3,14 @@ import _debug from '@codesandbox/common/lib/utils/debug';
 import stylesTranspiler from '../../../transpilers/style';
 import babelTranspiler from '../../../transpilers/babel';
 import jsonTranspiler from '../../../transpilers/json';
-import rawTranspiler from '../../../transpilers/raw';
-import svgrTranspiler from '../../../transpilers/svgr';
 import sassTranspiler from '../../../transpilers/sass';
-import refreshTranspiler from '../../../transpilers/react/refresh-transpiler';
-import styleProcessor from '../../../transpilers/postcss';
+import refreshTranspiler from '../../../transpilers/react-refresh/refresh-transpiler';
+import lessTranspiler from '../../../transpilers/less';
+import postcssTranspiler from '../../../transpilers/postcss';
+import svgrTranspiler from '../../../transpilers/svgr';
+import reactSvgTranspiler from '../../../transpilers/react-svg';
+import rawTranspiler from '../../../transpilers/raw';
+
 import {
   hasRefresh,
   aliases,
@@ -60,6 +63,11 @@ export const reactPreset = babelConfig => {
           refreshInitialized = isRefresh;
           preset.resetTranspilers();
 
+          preset.registerTranspiler(
+            module => /^https?:\/\/.*/.test(module.path),
+            [{ transpiler: babelTranspiler, options: {} }]
+          );
+
           if (isRefresh) {
             debug('Refresh is enabled, registering additional transpiler');
             // Add react refresh babel plugin for non-node_modules
@@ -78,7 +86,7 @@ export const reactPreset = babelConfig => {
                       ...babelConfig.config,
                       plugins: [
                         ...babelConfig.config.plugins,
-                        'react-refresh/babel',
+                        ['react-refresh/babel', { skipEnvCheck: true }],
                       ],
                     },
                   },
@@ -97,16 +105,27 @@ export const reactPreset = babelConfig => {
             [{ transpiler: babelTranspiler, options: babelConfig }]
           );
 
+          // svgr is required for the react-svg-transpiler
+          preset.addTranspiler(svgrTranspiler);
           preset.registerTranspiler(module => /\.svg$/.test(module.path), [
-            { transpiler: svgrTranspiler },
-            { transpiler: babelTranspiler, options: babelConfig },
+            { transpiler: reactSvgTranspiler },
+            { transpiler: babelTranspiler },
+          ]);
+
+          preset.registerTranspiler(module => /\.less$/.test(module.path), [
+            { transpiler: lessTranspiler },
+            { transpiler: postcssTranspiler },
+            {
+              transpiler: stylesTranspiler,
+              options: { hmrEnabled: true },
+            },
           ]);
 
           preset.registerTranspiler(
             module => /\.module\.s[c|a]ss$/.test(module.path),
             [
               { transpiler: sassTranspiler },
-              { transpiler: styleProcessor },
+              { transpiler: postcssTranspiler },
               {
                 transpiler: stylesTranspiler,
                 options: { module: true, hmrEnabled: isRefresh },
@@ -116,7 +135,7 @@ export const reactPreset = babelConfig => {
           preset.registerTranspiler(
             module => /\.module\.css$/.test(module.path),
             [
-              { transpiler: styleProcessor },
+              { transpiler: postcssTranspiler },
               {
                 transpiler: stylesTranspiler,
                 options: { module: true, hmrEnabled: isRefresh },
@@ -125,7 +144,7 @@ export const reactPreset = babelConfig => {
           );
 
           preset.registerTranspiler(module => /\.css$/.test(module.path), [
-            { transpiler: styleProcessor },
+            { transpiler: postcssTranspiler },
             {
               transpiler: stylesTranspiler,
               options: { hmrEnabled: isRefresh },
@@ -133,7 +152,7 @@ export const reactPreset = babelConfig => {
           ]);
           preset.registerTranspiler(module => /\.s[c|a]ss$/.test(module.path), [
             { transpiler: sassTranspiler },
-            { transpiler: styleProcessor },
+            { transpiler: postcssTranspiler },
             {
               transpiler: stylesTranspiler,
               options: { hmrEnabled: isRefresh },
@@ -144,12 +163,12 @@ export const reactPreset = babelConfig => {
             { transpiler: jsonTranspiler },
           ]);
 
-          preset.registerTranspiler(module => /\.md$/.test(module.path), [
-            { transpiler: base64Transpiler },
+          preset.registerTranspiler(module => /\.html$/.test(module.path), [
+            { transpiler: rawTranspiler },
           ]);
 
           preset.registerTranspiler(() => true, [
-            { transpiler: rawTranspiler },
+            { transpiler: base64Transpiler },
           ]);
 
           // Try to preload jsx-runtime

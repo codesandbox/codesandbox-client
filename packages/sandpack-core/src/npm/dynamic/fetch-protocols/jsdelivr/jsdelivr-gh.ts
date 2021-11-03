@@ -5,15 +5,24 @@ import { JSDelivrMeta, normalizeJSDelivr } from './utils';
 /**
  * Converts urls like "https://github.com/user/repo.git" to "user/repo".
  */
-const convertGitHubURLToVersion = (version: string) => {
-  const result = version.match(/https:\/\/github\.com\/(.*)$/);
-  if (result && result[1]) {
-    const repo = result[1];
-    return repo.replace(/\.git$/, '');
+const GH_RE = /^(((https:\/\/)|(git(\+(ssh|https))?:\/\/(.*@)?))(www\.)?github\.com(\/|:))?(([^\s#/]*)\/([^\s#/]*))(#(.*))?$/;
+export function convertGitHubURLToVersion(ghUrl: string) {
+  const result = ghUrl.match(GH_RE);
+  if (result && result[10]) {
+    const repo = result[10];
+    const version = result[14];
+    const cleanedRepo = repo.replace(/\.git$/, '');
+    if (version) {
+      return `${cleanedRepo}@${version}`;
+    }
+    return cleanedRepo;
   }
+  return ghUrl;
+}
 
-  return version;
-};
+export function isGithubDependency(ghUrl: string) {
+  return GH_RE.test(ghUrl);
+}
 
 export class JSDelivrGHFetcher implements FetchProtocol {
   async file(name: string, version: string, path: string): Promise<string> {

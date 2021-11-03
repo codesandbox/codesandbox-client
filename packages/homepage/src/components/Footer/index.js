@@ -4,6 +4,7 @@ import { P } from '../Typography';
 import Github from '../../assets/icons/github';
 import Twitter from '../../assets/icons/twitter';
 import Discord from '../../assets/icons/discord';
+import { OPEN_JOBS_COUNT } from '../../config/hiring';
 import { FooterWrapper, Nav, Social, Title } from './elements';
 
 const footerNavElements = [
@@ -83,8 +84,9 @@ const footerNavElements = [
         link: '/podcasts',
       },
       {
-        text: 'Careers',
+        text: 'Jobs ',
         link: '/jobs',
+        count: OPEN_JOBS_COUNT,
       },
       {
         text: 'Terms Of Use',
@@ -106,7 +108,7 @@ const footerNavElements = [
       {
         text: 'Contact Support',
         external: true,
-        link: 'mailto:hello@codesandbox.io',
+        link: 'mailto:support@codesandbox.io',
       },
       {
         text: 'Status',
@@ -125,13 +127,15 @@ const Footer = () => (
           <li>
             <Title>{menu.title}</Title>
           </li>
-          {menu.elements.map(({ text, link, external }) => (
+          {menu.elements.map(({ text, link, count = 0, external }) => (
             <li key={text}>
               <P small muted>
                 {external ? (
                   <a href={link}>{text}</a>
                 ) : (
-                  <Link to={link}>{text}</Link>
+                  <Link to={link}>
+                    {text} {count !== 0 && <span>{count}</span>}
+                  </Link>
                 )}
               </P>
             </li>

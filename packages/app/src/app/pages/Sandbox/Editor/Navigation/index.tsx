@@ -29,7 +29,6 @@ import {
 const IDS_TO_ICONS = {
   project: InfoIcon,
   'project-summary': InfoIcon,
-  'github-summary': GithubIcon,
   inspector: InspectorIcon,
   files: ExplorerIcon,
   search: SearchIcon,
@@ -46,26 +45,23 @@ type IconProps = {
   item: INavigationItem;
   isDisabled?: boolean;
   singleton: TippyProps['singleton'];
+  selected: boolean;
+  hasChanges: boolean;
+  hasConflicts: boolean;
+  isFetching: boolean;
 };
 const IconComponent: FunctionComponent<IconProps> = ({
   item: { id, name },
   isDisabled,
   singleton,
+  selected,
+  hasChanges,
+  hasConflicts,
+  isFetching,
 }) => {
   const { setWorkspaceHidden, setWorkspaceItem } = useActions().workspace;
-  const {
-    workspace: { openedWorkspaceItem, workspaceHidden },
-    git: { gitChanges, isFetching, conflicts },
-  } = useAppState();
 
   const Icon = IDS_TO_ICONS[id];
-  const selected = !workspaceHidden && id === openedWorkspaceItem;
-  const hasChanges =
-    gitChanges.added.length +
-      gitChanges.deleted.length +
-      gitChanges.modified.length >
-    0;
-  const hasConflicts = Boolean(conflicts.length);
 
   return (
     <Tooltip content={name} singleton={singleton}>
@@ -125,6 +121,18 @@ export const Navigation: FunctionComponent<Props> = ({
   const shownItems = getWorkspaceItems(state);
   const disabledItems = getDisabledItems(state);
 
+  const {
+    workspace: { openedWorkspaceItem, workspaceHidden },
+    git: { gitChanges, isFetching, conflicts },
+  } = state;
+
+  const hasChanges =
+    gitChanges.added.length +
+      gitChanges.deleted.length +
+      gitChanges.modified.length >
+    0;
+  const hasConflicts = Boolean(conflicts.length);
+
   return (
     // @ts-ignore
     <Container
@@ -142,18 +150,39 @@ export const Navigation: FunctionComponent<Props> = ({
           <>
             {!shownItems.length && !disabledItems.length ? <div /> : null}
 
-            {shownItems.map(item => (
-              <IconComponent key={item.id} item={item} singleton={singleton} />
-            ))}
+            {shownItems.map(item => {
+              const selected =
+                !workspaceHidden && item.id === openedWorkspaceItem;
 
-            {disabledItems.map(item => (
-              <IconComponent
-                key={item.id}
-                item={item}
-                singleton={singleton}
-                isDisabled
-              />
-            ))}
+              return (
+                <IconComponent
+                  hasChanges={hasChanges}
+                  hasConflicts={hasConflicts}
+                  selected={selected}
+                  isFetching={isFetching}
+                  key={item.id}
+                  item={item}
+                  singleton={singleton}
+                />
+              );
+            })}
+
+            {disabledItems.map(item => {
+              const selected =
+                !workspaceHidden && item.id === openedWorkspaceItem;
+              return (
+                <IconComponent
+                  hasChanges={hasChanges}
+                  hasConflicts={hasConflicts}
+                  selected={selected}
+                  isFetching={isFetching}
+                  key={item.id}
+                  item={item}
+                  singleton={singleton}
+                  isDisabled
+                />
+              );
+            })}
           </>
         )}
       </SingletonTooltip>

@@ -222,10 +222,14 @@ export const inviteToTeam = async (
     value,
     authorization = null,
     confirm = false,
+    triggerPlace,
+    inviteLink,
   }: {
     value: string;
     authorization?: TeamMemberAuthorization | null;
     confirm?: boolean;
+    triggerPlace: 'settings' | 'invite-modal';
+    inviteLink: string;
   }
 ) => {
   if (!state.activeTeam) return;
@@ -249,6 +253,8 @@ export const inviteToTeam = async (
 
   try {
     effects.analytics.track('Team - Add Member', {
+      place: triggerPlace,
+      inviteLink,
       dashboardVersion: 2,
       isEmail,
     });
@@ -1329,9 +1335,14 @@ export const updateTeamAvatar = async (
     teamId: string;
   }
 ) => {
-  if (!state.activeTeamInfo) return;
+  if (!state.activeTeamInfo || !state.user) return;
   const oldAvatar = state.activeTeamInfo.avatarUrl;
+  const isPersonalWorkspace =
+    state.activeTeamInfo.id === state.personalWorkspaceId;
   state.activeTeamInfo.avatarUrl = url;
+  if (isPersonalWorkspace) {
+    state.user.avatarUrl = url;
+  }
 
   effects.analytics.track('Team - Update Team Avatar', { dashboardVersion: 2 });
 
@@ -1339,6 +1350,10 @@ export const updateTeamAvatar = async (
     await effects.api.updateTeamAvatar(name, url, teamId);
   } catch (error) {
     state.activeTeamInfo.avatarUrl = oldAvatar;
+    if (isPersonalWorkspace) {
+      // @ts-ignore
+      state.user.avatarUrl = oldAvatar;
+    }
 
     actions.internal.handleError({
       message: "We weren't able to update your team avatar",
@@ -1803,7 +1818,7 @@ export const deleteAccount = async ({ state, effects }: Context) => {
     state.currentModal = 'deleteConfirmation';
   } catch {
     effects.notificationToast.error(
-      'There was a problem requesting your account deletion. Please email us at hello@codesandbox.io'
+      'There was a problem requesting your account deletion. Please email us at support@codesandbox.io'
     );
   }
 };
@@ -1821,6 +1836,23 @@ export const getSharedSandboxes = async ({ state, effects }: Context) => {
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting Sandboxes shared with you'
+    );
+  }
+};
+
+export const getBetaSandboxes = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    const data = await effects.gql.queries.sandboxesBeta({});
+
+    if (!data.me?.betaSandboxes) {
+      return;
+    }
+
+    dashboard.sandboxes[sandboxesTypes.BETA] = data.me?.betaSandboxes;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting Sandboxes shared with you - beta'
     );
   }
 };
@@ -1945,4 +1977,14 @@ export const updateAlbum = async (
   } catch (error) {
     effects.notificationToast.error('There was a problem updating album');
   }
+};
+
+export const getFeatureFlags = async ({ state, effects }: Context) => {
+  if (!state.user) return;
+  const payload = await effects.gql.queries.featureFlag({});
+  if (!payload || !payload.me) {
+    return;
+  }
+
+  state.dashboard.featureFlags = payload.me.featureFlags;
 };

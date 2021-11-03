@@ -1,45 +1,39 @@
-import transform from '@svgr/core/lib/plugins/transform';
-import { expandState } from '@svgr/core/lib/util';
-import removeStylePlugin from '@svgr/core/lib/h2x/removeStyle';
-import stripAttribute from '@svgr/core/lib/h2x/stripAttribute';
-import removeComments from '@svgr/core/lib/h2x/removeComments';
-import expandProps from '@svgr/core/lib/h2x/expandProps';
-
-import { transform as h2xTransform } from 'h2x-core';
-import h2xPluginJsx from 'h2x-plugin-jsx';
+import jsxPlugin from '@svgr/plugin-jsx';
+import { expandState } from '@svgr/core/lib/state';
+import { getPlugins, resolvePlugin } from '@svgr/core/lib/plugins';
 
 const DEFAULT_CONFIG = {
-  h2xConfig: null,
   dimensions: true,
-  expandProps: true,
+  expandProps: 'end',
   icon: false,
   native: false,
-  prettier: true,
-  prettierConfig: null,
+  typescript: false,
+  memo: false,
   ref: false,
   replaceAttrValues: null,
-  svgAttributes: null,
   svgProps: null,
-  svgo: true,
-  svgoConfig: null,
   template: null,
   titleProp: false,
+  runtimeConfig: true,
+  plugins: null,
+  namedExport: 'ReactComponent',
 };
 
-export async function svgrTransform(code: string, usedState) {
-  const config = { ...DEFAULT_CONFIG, ...{} };
-  const state = expandState(usedState);
-  let result = code;
-  const plugins = [
-    h2xPluginJsx,
-    stripAttribute('xmlns'),
-    removeComments(),
-    removeStylePlugin(),
-    expandProps('end'),
-  ];
-  // Remove null-byte character (copy/paste from Illustrator)
-  result = String(result).replace('\0', '');
-  result = h2xTransform(code, { plugins, state });
-  result = await transform(result, config, state);
-  return result;
+export async function svgrTransform(filePath: string, inputCode: string) {
+  const config = { ...DEFAULT_CONFIG };
+  const state = {
+    caller: {
+      name: '@codesandbox/svgr-loader',
+      defaultPlugins: [jsxPlugin],
+    },
+    filePath,
+  };
+  const expandedState = expandState(state);
+  const plugins = getPlugins(config, state).map(resolvePlugin);
+  let code = String(inputCode).replace('\0', '');
+  // eslint-disable-next-line no-restricted-syntax
+  for (const plugin of plugins) {
+    code = plugin(code, config, expandedState);
+  }
+  return code;
 }

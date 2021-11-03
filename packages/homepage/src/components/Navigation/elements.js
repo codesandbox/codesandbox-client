@@ -92,6 +92,13 @@ export const Wrapper = styled.div`
   justify-content: space-between;
 `;
 
+export const Jobs = styled.li`
+  display: none;
+  @media screen and (min-width: 1200px) {
+    display: block;
+  }
+`;
+
 export const UserAvatar = styled.img`
   border: 1px solid ${props => props.theme.homepage.grey};
   border-radius: 2px;
@@ -214,7 +221,6 @@ export const PopUpNav = styled.nav`
   background: #151515;
   padding-top: 1.5rem;
   padding-bottom: 4rem;
-  padding-right: 1rem;
   width: 100%;
   z-index: 3;
 `;
@@ -236,7 +242,10 @@ export const Items = styled.ul`
   list-style: none;
   margin: 0;
 
-  li {
+  li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
     padding: 0.5rem 0;
     padding-left: 1rem;
 
@@ -245,12 +254,7 @@ export const Items = styled.ul`
     }
   }
 
-  li a {
-    display: flex;
-    text-decoration: none;
-  }
-
-  span {
+  li a > span {
     font-style: normal;
     font-weight: 500;
     font-size: 1rem;
@@ -258,24 +262,6 @@ export const Items = styled.ul`
     margin-left: 1rem;
 
     color: ${props => props.theme.homepage.white};
-  }
-`;
-
-export const Pricing = styled.li`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 1rem;
-
-  a {
-    display: flex;
-    align-items: center;
-    color: ${props => props.theme.homepage.white};
-    text-decoration: none;
-    text-decoration: none;
-  }
-
-  section {
-    width: 43px;
   }
 `;
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import {
   Element,
   Stack,
@@ -29,6 +29,7 @@ export const Invite = () => {
   const { copyToClipboard } = useEffects().browser;
   const actions = useActions();
   const { activeTeam, activeTeamInfo: team } = useAppState();
+  const history = useHistory();
 
   const inviteLink = team && teamInviteLink(team.inviteToken);
 
@@ -38,11 +39,21 @@ export const Invite = () => {
 
   const [loading, setLoading] = React.useState(false);
 
+  /**
+   * Comes from "Invite members" links on the Header
+   * so this page should have a different behavior
+   */
+  const comesFromHeaderLink = /from-header/.test(history.location.search);
+
   const onSubmit = async event => {
     event.preventDefault();
     setLoading(true);
     setInviteValue('');
-    await actions.dashboard.inviteToTeam({ value: inviteValue });
+    await actions.dashboard.inviteToTeam({
+      value: inviteValue,
+      triggerPlace: 'invite-modal',
+      inviteLink,
+    });
     setLoading(false);
   };
 
@@ -58,6 +69,11 @@ export const Invite = () => {
     copyLinkTimeoutRef.current = window.setTimeout(() => {
       setLinkCopied(false);
     }, 1500);
+
+    actions.track({
+      name: 'Dashboard - Copied Team Invite URL',
+      data: { place: 'invite-modal', inviteLink },
+    });
   };
 
   const hasAddedUser = team.users.length + team.invitees.length > 1;
@@ -96,7 +112,7 @@ export const Invite = () => {
                 Invite members
               </Text>
               <Text size={3} variant="muted" align="center">
-                Add the first members to the {team.name} workspace
+                Add the first members to the {team.name} team
               </Text>
             </Stack>
 
@@ -202,7 +218,7 @@ export const Invite = () => {
                 )
               )}
             </List>
-            {hasAddedUser && (
+            {!comesFromHeaderLink && hasAddedUser && (
               <>
                 <hr
                   css={css({
@@ -221,15 +237,17 @@ export const Invite = () => {
               </>
             )}
           </Card>
-          <Link
-            as={RouterLink}
-            to={dashboardUrls.settings(activeTeam)}
-            variant="muted"
-            size={3}
-            align="center"
-          >
-            Skip for now
-          </Link>
+          {!comesFromHeaderLink && (
+            <Link
+              as={RouterLink}
+              to={dashboardUrls.settings(activeTeam)}
+              variant="muted"
+              size={3}
+              align="center"
+            >
+              Skip for now
+            </Link>
+          )}
         </Stack>
       </Element>
     </>
