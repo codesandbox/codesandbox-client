@@ -1,5 +1,5 @@
 ---
-title: Terms of Use
+title: Terms of Use-test
 lastEdited: 2017-07-20
 version: 0.8.0
 ---
