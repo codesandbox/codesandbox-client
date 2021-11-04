@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { InfoIcon } from '../Icons';
 
 export const Features = styled.section`
-  margin: 2em 13em;
+  margin: 2em auto;
   text-align: center;
+  max-width: 370px;
 
   @media screen and (max-width: 800px) {
     hr {
