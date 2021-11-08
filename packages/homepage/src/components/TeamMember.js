@@ -21,6 +21,7 @@ import joana from '../assets/images/people/joana.jpg';
 import marco from '../assets/images/people/marco.jpg';
 import roman from '../assets/images/people/roman.jpg';
 import james from '../assets/images/people/james.jpg';
+import maria from '../assets/images/people/maria.png'
 
 const people = [
   {
@@ -142,6 +143,12 @@ const people = [
     pic: james,
     color: '#6200ff',
     team: 'Support',
+  },
+  {
+    name: 'Maria Clara',
+    pic: maria,
+    color: '#272b8c',
+    team: 'Engineering'
   }
 ];
 
@@ -150,6 +157,7 @@ const Peep = styled.img`
   height: 80px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.24), 0px 8px 4px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
+  object-fit: cover;
 
   ${props => {
     if (props.border) {
