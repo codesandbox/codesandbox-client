@@ -137,6 +137,7 @@ export type CurrentUser = {
   collaboratorSandboxes: Array<Sandbox>;
   collection: Maybe<Collection>;
   collections: Array<Collection>;
+  deletionRequested: Scalars['Boolean'];
   email: Scalars['String'];
   /** Get enabled feature flags for all teams user is in */
   featureFlags: Array<FeatureFlag>;
@@ -901,7 +902,7 @@ export type RootQueryType = {
   album: Maybe<Album>;
   albums: Array<Album>;
   curatedAlbums: Array<Album>;
-  /** Get all feature flags  */
+  /** Get all feature flags */
   featureFlags: Array<FeatureFlag>;
   /** Get git repo and related sandboxes */
   git: Maybe<Git>;

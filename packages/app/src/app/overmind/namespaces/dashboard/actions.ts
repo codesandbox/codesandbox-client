@@ -1819,6 +1819,9 @@ export const undoDeleteAccount = async ({ state, effects }: Context) => {
   try {
     await effects.gql.mutations.undoDeleteAccount({});
     state.currentModal = 'undoDeleteConfirmation';
+    if (state.user) {
+      state.user.deletionRequested = false;
+    }
   } catch {
     effects.notificationToast.error(
       'There was a problem undoing your account deletion. Please email us at support@codesandbox.io'
