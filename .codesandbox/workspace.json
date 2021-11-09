@@ -1,0 +1,9 @@
+{
+    "default": {
+        "name": "Default",
+        "type": "SIDEKICK",
+        "items": [
+            { "type": "PREVIEW", "port": "3000", "isMinimized": true }
+        ]
+    }
+}
