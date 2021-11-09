@@ -1811,6 +1811,23 @@ export const setDefaultTeamMemberAuthorization = async (
 export const requestAccountClosing = ({ state }: Context) => {
   state.currentModal = 'accountClosing';
 };
+export const undoRequestAccountClosing = ({ state }: Context) => {
+  state.currentModal = 'undoAccountClosing';
+};
+
+export const undoDeleteAccount = async ({ state, effects }: Context) => {
+  try {
+    await effects.gql.mutations.undoDeleteAccount({});
+    state.currentModal = 'undoDeleteConfirmation';
+    if (state.user) {
+      state.user.deletionRequested = false;
+    }
+  } catch {
+    effects.notificationToast.error(
+      'There was a problem undoing your account deletion. Please email us at support@codesandbox.io'
+    );
+  }
+};
 
 export const deleteAccount = async ({ state, effects }: Context) => {
   try {
