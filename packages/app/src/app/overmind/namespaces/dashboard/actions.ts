@@ -1866,7 +1866,16 @@ export const getBetaSandboxes = async ({ state, effects }: Context) => {
       return;
     }
 
-    dashboard.sandboxes[sandboxesTypes.BETA] = data.me?.betaSandboxes;
+    // TEMP: remove duplicated projects and launch the default branch
+    dashboard.sandboxes[sandboxesTypes.BETA] = data.me?.betaSandboxes.filter(
+      (item, index, arr) =>
+        arr.findIndex(
+          e =>
+            e?.gitv2?.owner === item?.gitv2?.owner &&
+            e?.gitv2?.repo === item?.gitv2?.repo
+        ) === index,
+      []
+    );
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting Sandboxes shared with you - beta'

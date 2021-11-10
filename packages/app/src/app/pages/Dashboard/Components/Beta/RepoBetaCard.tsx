@@ -2,21 +2,18 @@ import React from 'react';
 import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { noop } from 'overmind';
-import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 import { CardIcon } from '../Repo/Icons';
-
-const getFullGitHubUrl = (owner: string, repo: string, branch: string) =>
-  `${protocolAndHost()}/p/github/${owner}/${repo}/${branch}`;
+import { getFullGitHubUrl } from './util';
 
 export const RepoBetaCard = ({ sandbox, ...props }) => {
-  const { owner, repo, branch } = sandbox.gitv2;
+  const { owner, repo } = sandbox.gitv2;
 
   return (
     <Stack
       direction="vertical"
       gap={2}
       onDoubleClick={() => {
-        window.location.href = getFullGitHubUrl(owner, repo, branch);
+        window.location.href = getFullGitHubUrl(owner, repo);
       }}
       onContextMenu={noop}
       {...props}
@@ -69,9 +66,6 @@ export const RepoBetaCard = ({ sandbox, ...props }) => {
             })}
           >
             {owner}/{repo}
-          </Text>
-          <Text size={3} variant="muted" weight="medium">
-            {branch}
           </Text>
         </Stack>
       </Stack>

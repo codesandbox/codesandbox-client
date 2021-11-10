@@ -11,8 +11,9 @@ import {
   protocolAndHost,
 } from '@codesandbox/common/lib/utils/url-generator';
 
+// TEMP: Launch the default branch
 const getFullGitHubUrl = (url: string) =>
-  `${protocolAndHost()}/p${gitHubToSandboxBetaUrl(url)}`;
+  `${protocolAndHost()}/p/github/${gitHubToSandboxBetaUrl(url)}`;
 
 export const ImportRepoBetaModal = () => {
   const { modals } = useAppState();
