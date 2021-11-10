@@ -24,6 +24,7 @@ import james from '../assets/images/people/james.jpg';
 import gianmarco from '../assets/images/people/gsimone.jpeg'
 import ace from '../assets/images/people/ace.jpg'
 import maria from '../assets/images/people/maria.png'
+import lena from '../assets/images/people/lena.png'
 
 const people = [
   {
@@ -163,7 +164,13 @@ const people = [
     pic: maria,
     color: '#272b8c',
     team: 'Engineering'
-  }
+  },
+  {
+    name: 'Lena Sotto Mayor',
+    pic: lena,
+    color: '#B567EB',
+    team: 'Design',
+    }
 ];
 
 const Peep = styled.img`
