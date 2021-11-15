@@ -62,7 +62,10 @@ export async function getLatestVersion(
     // to see what's the maximum satisfying version. The API call is cached for only 10s.
     try {
       const allVersions = await fetchAllVersions(dep);
-      return maxSatisfying(allVersions.versions, version);
+      return (
+        allVersions.tags[version] ||
+        maxSatisfying(allVersions.versions, version)
+      );
     } catch (e) {
       return fetchJsdelivr();
     }
