@@ -40,6 +40,7 @@ export const reactPreset = babelConfig => {
       'json',
       'web.jsx',
       'jsx',
+      'cjs',
     ],
     aliases,
     {
@@ -74,9 +75,9 @@ export const reactPreset = babelConfig => {
 
             preset.registerTranspiler(
               module =>
-                !module.path.startsWith('/node_modules') &&
-                /\.m?(t|j)sx?$/.test(module.path) &&
-                !module.path.endsWith('.d.ts'),
+                /^(?!\/node_modules\/).*\.(((m|c)?jsx?)|tsx)$/.test(
+                  module.path
+                ),
               [
                 {
                   transpiler: babelTranspiler,
@@ -99,9 +100,12 @@ export const reactPreset = babelConfig => {
           }
 
           preset.registerTranspiler(
-            module =>
-              /\.m?(t|j)sx?$/.test(module.path) &&
-              !module.path.endsWith('.d.ts'),
+            module => {
+              return (
+                /\.(m|c)?(t|j)sx?$/.test(module.path) &&
+                !module.path.endsWith('.d.ts')
+              );
+            },
             [{ transpiler: babelTranspiler, options: babelConfig }]
           );
 

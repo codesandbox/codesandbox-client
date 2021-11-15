@@ -1,10 +1,11 @@
-import resolve from 'browser-resolve';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import { ModuleNotFoundError } from 'sandpack-core/lib/resolver/errors/ModuleNotFound';
+
 import getRequireStatements from './simple-get-require-statements';
-import { packageFilter } from '../../../utils/resolve-utils';
 import { convertEsModule } from '../ast/convert-esmodule';
 import { generateCode, parseModule } from '../ast/utils';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
+import { resolve } from './utils/resolve';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -110,11 +111,9 @@ function downloadRequires(
         }
 
         try {
-          resolve.sync(foundR.path, {
+          resolve(foundR.path, {
             filename: currentPath,
             extensions: ['.js', '.json'],
-            moduleDirectory: ['node_modules'],
-            packageFilter,
           });
         } catch (err) {
           await downloadFromError({
@@ -218,22 +217,34 @@ export async function downloadPath(
   return r;
 }
 
+function extractPathFromError(err: Error | ModuleNotFoundError): string {
+  if (err instanceof ModuleNotFoundError) {
+    return err.filepath;
+  }
+
+  if (err.message.indexOf('Cannot find module') > -1) {
+    const dep = err.message.match(/Cannot find module '(.*?)'/)[1];
+    const from = err.message.match(/from '(.*?)'/)[1];
+    const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
+
+    return absolutePath;
+  }
+
+  return null;
+}
+
 export function downloadFromError(opts: {
   error: Error;
   childHandler: ChildHandler;
   loaderContextId: number;
 }) {
   const { error, childHandler, loaderContextId } = opts;
-  if (error.message.indexOf('Cannot find module') > -1) {
-    const dep = error.message.match(/Cannot find module '(.*?)'/)[1];
-    const from = error.message.match(/from '(.*?)'/)[1];
-    const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
-
-    return downloadPath(absolutePath, {
+  const moduleSpecifier = extractPathFromError(error);
+  if (moduleSpecifier) {
+    return downloadPath(moduleSpecifier, {
       childHandler,
       loaderContextId,
     });
   }
-
   return Promise.resolve();
 }

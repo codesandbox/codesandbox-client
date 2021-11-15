@@ -24,16 +24,19 @@ export default function PreactPreset() {
     }
   );
 
-  preactPreset.registerTranspiler(module => /\.m?(t|j)sx?$/.test(module.path), [
-    {
-      transpiler: babelTranspiler,
-      options: {
-        isV7: true,
-        compileNodeModulesWithEnv: true,
-        // config is derived from babelrc at packages/common/src/templates/configuration/babelrc/index.ts
+  preactPreset.registerTranspiler(
+    module => /\.(m|c)?(t|j)sx?$/.test(module.path),
+    [
+      {
+        transpiler: babelTranspiler,
+        options: {
+          isV7: true,
+          compileNodeModulesWithEnv: true,
+          // config is derived from babelrc at packages/common/src/templates/configuration/babelrc/index.ts
+        },
       },
-    },
-  ]);
+    ]
+  );
 
   // For these routes we need to enable css modules
   const cssModulesPaths = [
