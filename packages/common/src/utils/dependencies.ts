@@ -67,7 +67,7 @@ export async function getLatestVersion(
         maxSatisfying(allVersions.versions, version)
       );
     } catch (e) {
-      return fetchJsdelivr();
+      return fetchUnpkg();
     }
   }
 }
