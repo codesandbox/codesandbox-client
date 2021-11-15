@@ -43,7 +43,7 @@ const resolveVersionFromUnpkg = (
   ).then(x => x.version);
 };
 
-export async function getLatestVersion(
+async function getLatestVersion(
   dep: string,
   version: string
 ): Promise<string> {
