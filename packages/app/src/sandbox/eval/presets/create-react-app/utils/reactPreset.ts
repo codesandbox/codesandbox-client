@@ -33,6 +33,7 @@ export const reactPreset = babelConfig => {
       'mjs',
       'web.js',
       'js',
+      'cjs',
       'web.ts',
       'ts',
       'web.tsx',
@@ -68,6 +69,9 @@ export const reactPreset = babelConfig => {
             [{ transpiler: babelTranspiler, options: {} }]
           );
 
+          const isJavaScript = (p: string) =>
+            /\.(m|c)?(t|j)sx?$/.test(p) && !p.endsWith('.d.ts');
+
           if (isRefresh) {
             debug('Refresh is enabled, registering additional transpiler');
             // Add react refresh babel plugin for non-node_modules
@@ -75,8 +79,7 @@ export const reactPreset = babelConfig => {
             preset.registerTranspiler(
               module =>
                 !module.path.startsWith('/node_modules') &&
-                /\.m?(t|j)sx?$/.test(module.path) &&
-                !module.path.endsWith('.d.ts'),
+                isJavaScript(module.path),
               [
                 {
                   transpiler: babelTranspiler,
@@ -100,8 +103,8 @@ export const reactPreset = babelConfig => {
 
           preset.registerTranspiler(
             module =>
-              /\.m?(t|j)sx?$/.test(module.path) &&
-              !module.path.endsWith('.d.ts'),
+              isJavaScript(module.path) &&
+              module.path.startsWith('/node_modules'),
             [{ transpiler: babelTranspiler, options: babelConfig }]
           );
 
