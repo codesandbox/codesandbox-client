@@ -42,7 +42,7 @@ export default function initialize() {
     { transpiler: csbDynamicImportTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  preset.registerTranspiler(module => /\.(c|m)?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {

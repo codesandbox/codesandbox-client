@@ -172,7 +172,7 @@ async function addAngularCLIResources(manager: Manager) {
 export default function initialize() {
   const preset = new Preset(
     'angular-cli',
-    ['web.ts', 'ts', 'json', 'web.tsx', 'tsx', 'js'],
+    ['web.ts', 'ts', 'json', 'web.tsx', 'tsx', 'js', 'cjs'],
     {},
     {
       setup: async manager => {
@@ -251,7 +251,7 @@ export default function initialize() {
     { transpiler: csbDynamicImportTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.m?js$/.test(module.path), [
+  preset.registerTranspiler(module => /\.(m|c)?js$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
