@@ -58,8 +58,8 @@ export async function getLatestVersion(
     // If it is not an absolute version (e.g. a tag like `next`), we don't want to fetch
     // using JSDelivr, because JSDelivr caches the response for a long time. Because of this,
     // when a tag updates to a new version, people won't see that update for a long time.
-    // Unpkg does handle this nicely, but is less stable. So we default to JSDelivr, but
-    // for tags we use unpkg.
+    // Instead, we download all possible versions from JSDelivr, and we check those versions
+    // to see what's the maximum satisfying version. The API call is cached for only 10s.
     try {
       const allVersions = await fetchAllVersions(dep);
       return maxSatisfying(allVersions.versions, version);
