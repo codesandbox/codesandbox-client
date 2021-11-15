@@ -65,7 +65,7 @@ async function getLatestVersion(dep: string, version: string): Promise<string> {
 }
 
 export function isAbsoluteVersion(version: string) {
-  return /(^\d+\.\d+\.\d+(-.*)?$)|(\/)/.test(version);
+  return /(^\d+\.\d+\.\d+(-.*)?$)|(.+\/.+)/.test(version);
 }
 
 export function isValidSemver(version: string) {
