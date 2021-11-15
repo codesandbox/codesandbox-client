@@ -1,8 +1,8 @@
-import { valid } from 'semver';
+import { valid, maxSatisfying } from 'semver';
 
-async function fetchWithRetries(url: string) {
+async function fetchWithRetries<T = any>(url: string): Promise<T> {
   let err: Error;
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 2; i++) {
     try {
       // eslint-disable-next-line
       return await fetch(url).then(x => {
@@ -20,17 +20,33 @@ async function fetchWithRetries(url: string) {
   throw err;
 }
 
-export async function fetchPackageJSON(dep: string, version: string) {
+interface JsDelivrApiResult {
+  tags: {
+    [semver: string]: string;
+  };
+  versions: string[];
+}
+
+async function fetchAllVersions(dep: string): Promise<JsDelivrApiResult> {
+  return fetchWithRetries<JsDelivrApiResult>(
+    `https://data.jsdelivr.com/v1/package/npm/${dep}`
+  );
+}
+
+export async function getLatestVersion(
+  dep: string,
+  version: string
+): Promise<string> {
   const fetchJsdelivr = () =>
     fetchWithRetries(
       `https://cdn.jsdelivr.net/npm/${dep}@${encodeURIComponent(
         version
       )}/package.json`
-    );
+    ).then(x => x.version);
   const fetchUnpkg = () =>
     fetchWithRetries(
       `https://unpkg.com/${dep}@${encodeURIComponent(version)}/package.json`
-    );
+    ).then(x => x.version);
 
   if (isAbsoluteVersion(version)) {
     try {
@@ -45,7 +61,8 @@ export async function fetchPackageJSON(dep: string, version: string) {
     // Unpkg does handle this nicely, but is less stable. So we default to JSDelivr, but
     // for tags we use unpkg.
     try {
-      return await fetchUnpkg();
+      const allVersions = await fetchAllVersions(dep);
+      return maxSatisfying(allVersions.versions, version);
     } catch (e) {
       return fetchJsdelivr();
     }
@@ -70,17 +87,9 @@ export async function getAbsoluteDependency(
     return { name: depName, version: depVersion };
   }
 
-  let data;
-  if (depName === 'cerebral' && depVersion === 'latest') {
-    // Bug in JSDelivr, this returns the wrong package.json (of a beta version). So use Unpkg
-    data = await fetchWithRetries(
-      `https://unpkg.com/cerebral@${encodeURIComponent('latest')}/package.json`
-    );
-  } else {
-    data = await fetchPackageJSON(depName, depVersion);
-  }
+  const version = await getLatestVersion(depName, depVersion);
 
-  return { name: depName, version: data.version };
+  return { name: depName, version };
 }
 
 export async function getAbsoluteDependencies(dependencies: {
