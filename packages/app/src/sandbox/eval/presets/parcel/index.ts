@@ -25,6 +25,8 @@ export default function initialize() {
     'parcel',
     [
       'js',
+      'mjs',
+      'cjs',
       'jsx',
       'ts',
       'tsx',
