@@ -511,7 +511,7 @@ export const WorkspacePlanSelection: React.FC<{
               selectedPlan.billingInterval === SubscriptionInterval.Monthly ? (
                 <Text align="center">
                   Changing billing interval from Yearly to Monthly is not
-                  supported yet. Please email us at hello@codesandbox.io
+                  supported yet. Please email us at support@codesandbox.io
                 </Text>
               ) : null}
             </>

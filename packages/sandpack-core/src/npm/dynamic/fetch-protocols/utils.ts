@@ -2,7 +2,7 @@ import delay from '@codesandbox/common/lib/utils/delay';
 
 export async function fetchWithRetries(
   url: string,
-  retries = 6,
+  retries = 2,
   requestInit?: RequestInit
 ): Promise<Response> {
   const doFetch = () =>

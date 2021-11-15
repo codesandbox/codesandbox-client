@@ -40,6 +40,8 @@ import { MinimumPrivacyModal } from './MinimumPrivacyModal';
 import { GenericAlertModal } from './GenericAlertModal';
 import { AccountDeletionModal } from './AccountDeletion';
 import { AccountDeletionConfirmationModal } from './AccountDeletion/DeletedConfirmation';
+import { UndoAccountDeletionModal } from './UndoAccountDeletion';
+import { UndoAccountDeletionConfirmationModal } from './UndoAccountDeletion/UndoDeletedConfirmation';
 import { NotFoundBranchModal } from './NotFoundBranchModal';
 import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
@@ -170,8 +172,16 @@ const modals = {
     Component: AccountDeletionModal,
     width: 450,
   },
+  undoAccountClosing: {
+    Component: UndoAccountDeletionModal,
+    width: 450,
+  },
   deleteConfirmation: {
     Component: AccountDeletionConfirmationModal,
+    width: 450,
+  },
+  undoDeleteConfirmation: {
+    Component: UndoAccountDeletionConfirmationModal,
     width: 450,
   },
   notFoundBranchModal: {

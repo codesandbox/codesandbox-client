@@ -48,7 +48,7 @@ new sandboxes, so if you have created a great sandbox or have found one, please
 send us a tweet on [@codesandbox](https://twitter.com/codesandbox)!
 
 Let us know what you think! Don't hesitate to shoot us a message on
-hello@codesandbox.io or on Twitter. Big thanks to
+support@codesandbox.io or on Twitter. Big thanks to
 [Danny](https://twitter.com/druchtie), [Zeh](https://twitter.com/zehf),
 [Danilo](https://twitter.com/danilowoz),
 [Sanne](https://twitter.com/sannekalkman), [Ceora](https://twitter.com/ceeoreo_)

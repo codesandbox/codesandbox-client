@@ -1,8 +1,7 @@
 import { ThemeProvider } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { withTheme } from 'styled-components';
-import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 import { Chat } from './Chat';
 import { Container } from './elements';
@@ -11,18 +10,15 @@ import { ConfigurationFiles } from './screens/ConfigurationFiles';
 import { Deployment } from './screens/Deployment/index';
 import { Explorer } from './screens/Explorer';
 import { GitHub } from './screens/GitHub';
-import { GithubSummary } from './screens/GithubSummary';
 import { Live } from './screens/Live';
 import { NotOwnedSandboxInfo } from './screens/NotOwnedSandboxInfo';
 import { ProjectInfo } from './screens/ProjectInfo';
 import { Server } from './screens/Server';
 import { Search } from './screens/Search';
-import { SignInBanner } from './SignInBanner';
 
 const workspaceTabs = {
   project: ProjectInfo,
   'project-summary': NotOwnedSandboxInfo,
-  'github-summary': GithubSummary,
   github: GitHub,
   files: Explorer,
   search: Search,
@@ -40,28 +36,6 @@ export const WorkspaceComponent = ({ theme }) => {
     user,
     editor,
   } = useAppState();
-
-  /**
-   * A/B
-   */
-  const experimentPromise = useExperimentResult('fixed-signin-banner');
-  const [newSignInBanner, setNewSignInBanner] = useState(false);
-  useEffect(() => {
-    /* Wait for the API */
-    experimentPromise.then(experiment => {
-      if (experiment === ExperimentValues.A) {
-        /**
-         * A
-         */
-        setNewSignInBanner(false);
-      } else if (experiment === ExperimentValues.B) {
-        /**
-         * B
-         */
-        setNewSignInBanner(true);
-      }
-    });
-  }, [experimentPromise]);
 
   if (!activeTab) {
     return null;
@@ -91,9 +65,6 @@ export const WorkspaceComponent = ({ theme }) => {
           </div>
 
           {isLive && roomInfo.chatEnabled && <Chat />}
-          {!user && !newSignInBanner && (
-            <SignInBanner theme={theme.vscodeTheme} />
-          )}
         </>
       </ThemeProvider>
     </Container>

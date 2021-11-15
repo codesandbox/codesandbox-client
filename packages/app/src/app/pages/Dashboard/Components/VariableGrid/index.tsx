@@ -10,7 +10,7 @@ import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { ImportRepo } from '../Repo/ImportRepo';
 import { ImportRepoBeta } from '../Beta/ImportRepoBeta';
-import { RepoBetaCard } from '../Beta/RepoBetaCard';
+import { RepoBeta } from '../Beta';
 import { Folder } from '../Folder';
 import { Repo } from '../Repo';
 import { CommunitySandbox } from '../CommunitySandbox';
@@ -139,9 +139,7 @@ const ComponentForTypes: IComponentForTypes = {
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
   'beta-new-repo': () => <ImportRepoBeta />,
-  'beta-repo': props => (
-    <RepoBetaCard {...props.item} isScrolling={props.isScrolling} />
-  ),
+  'beta-repo': props => <RepoBeta {...props.item} />,
 };
 
 const Item = React.memo(

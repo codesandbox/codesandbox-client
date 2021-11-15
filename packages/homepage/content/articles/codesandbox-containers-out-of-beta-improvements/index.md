@@ -59,7 +59,7 @@ Containers have also been used a lot by
 They have set up [GitHub](https://github.com) repositories that link to
 sandboxes to showcase how their frameworks work. If you're interested in setting
 this up for your framework, don't hesitate to shoot us an email to
-hello@codesandbox.io!
+support@codesandbox.io!
 
 Here is a
 [Gatsby](https://codesandbox.io/s/github/gatsbyjs/gatsby-starter-default/tree/master),

@@ -3,24 +3,17 @@ import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { noop } from 'overmind';
 import { CardIcon } from '../Repo/Icons';
+import { getFullGitHubUrl } from './util';
 
-const getFullGitHubUrl = (owner: string, repo: string, branch: string) =>
-  `https://beta.codesandbox.stream/github/${owner}/${repo}/${branch}`;
-
-export const RepoBetaCard = ({
-  sandbox,
-  // interactions
-  isScrolling,
-  ...props
-}) => {
-  const { owner, repo, branch } = sandbox.gitv2;
+export const RepoBetaCard = ({ sandbox, ...props }) => {
+  const { owner, repo } = sandbox.gitv2;
 
   return (
     <Stack
       direction="vertical"
       gap={2}
       onDoubleClick={() => {
-        window.location.href = getFullGitHubUrl(owner, repo, branch);
+        window.location.href = getFullGitHubUrl(owner, repo);
       }}
       onContextMenu={noop}
       {...props}
@@ -73,9 +66,6 @@ export const RepoBetaCard = ({
             })}
           >
             {owner}/{repo}
-          </Text>
-          <Text size={3} variant="muted" weight="medium">
-            {branch}
           </Text>
         </Stack>
       </Stack>
