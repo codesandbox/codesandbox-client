@@ -60,15 +60,10 @@ export async function getLatestVersion(
     // when a tag updates to a new version, people won't see that update for a long time.
     // Instead, we download all possible versions from JSDelivr, and we check those versions
     // to see what's the maximum satisfying version. The API call is cached for only 10s.
-    try {
-      const allVersions = await fetchAllVersions(dep);
-      return (
-        allVersions.tags[version] ||
-        maxSatisfying(allVersions.versions, version)
-      );
-    } catch (e) {
-      return fetchJsdelivr();
-    }
+    const allVersions = await fetchAllVersions(dep);
+    return (
+      allVersions.tags[version] || maxSatisfying(allVersions.versions, version)
+    );
   }
 }
 
