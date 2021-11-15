@@ -1,6 +1,6 @@
 import search from 'algoliasearch';
 import { Dependency } from '@codesandbox/common/lib/types/algolia';
-import { isGreensockTrialLibrary } from './utils/greensock';
+import { getGreensockAlias } from './utils/greensock';
 
 const client = search('OFCNCOG2CU', '00383ecd8441ead30b1b0ff981c426f5');
 const NPMSearchIndex = client.initIndex('npm-search');
@@ -23,12 +23,12 @@ export default {
       return searchAlgolia(value, hits);
     }
 
-    const isGreensock = isGreensockTrialLibrary(value);
+    const greensockAlias = getGreensockAlias(value);
     let searchResults: Dependency[];
-    if (isGreensock) {
+    if (greensockAlias) {
       const [depResults, gsap] = await Promise.all([
         searchAlgolia(value, 3),
-        searchAlgolia('gsap-trial', 1),
+        searchAlgolia(greensockAlias, 1),
       ]);
       searchResults = [gsap[0], ...depResults];
     } else {

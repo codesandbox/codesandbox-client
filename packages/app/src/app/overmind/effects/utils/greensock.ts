@@ -6,32 +6,14 @@ const GREENSOCK_KEYWORDS = [
   'scrolltoplugin',
   'flip',
   'flipplugin',
-  'motionpathplugin',
-  'motionpathhelper',
-  'morphsvg',
-  'morphsvgplugin',
-  'drawsvg',
-  'drawsvgplugin',
   'draggable',
-  'inertia',
-  'inertiaplugin',
   'cssrule',
   'cssruleplugin',
   'easelplugin',
   'pixiplugin',
   'modifiersplugin',
   'textplugin',
-  'scrambletext',
-  'scrambletextplugin',
-  'splittext',
-  'physics2d',
-  'physics2dplugin',
-  'physicsprops',
-  'physicspropsplugin',
-  'custombounce',
-  'customwiggle',
   'customease',
-  'gsdevtools',
 
   'greensock',
   'gsap',
@@ -42,6 +24,35 @@ const GREENSOCK_KEYWORDS = [
   'animation',
 ];
 
-export function isGreensockTrialLibrary(name: string) {
-  return GREENSOCK_KEYWORDS.includes(name.toLocaleLowerCase());
+const GREENSOCK_MEMBER_KEYWORDS = [
+  'motionpathplugin',
+  'motionpathhelper',
+  'morphsvg',
+  'morphsvgplugin',
+  'drawsvg',
+  'drawsvgplugin',
+  'inertia',
+  'inertiaplugin',
+  'scrambletext',
+  'scrambletextplugin',
+  'splittext',
+  'physics2d',
+  'physics2dplugin',
+  'physicsprops',
+  'physicspropsplugin',
+  'custombounce',
+  'customwiggle',
+  'gsdevtools',
+];
+
+export function getGreensockAlias(name: string): string | undefined {
+  const lowercaseName = name.toLocaleLowerCase();
+  if (GREENSOCK_KEYWORDS.includes(lowercaseName)) {
+    return 'gsap';
+  }
+  if (GREENSOCK_MEMBER_KEYWORDS.includes(lowercaseName)) {
+    return 'gsap-trial';
+  }
+
+  return undefined;
 }
