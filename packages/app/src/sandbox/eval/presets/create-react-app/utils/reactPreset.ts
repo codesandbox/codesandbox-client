@@ -69,18 +69,15 @@ export const reactPreset = babelConfig => {
             [{ transpiler: babelTranspiler, options: {} }]
           );
 
-          const isJavaScript = (p: string) => {
-            return /\.(m|c)?(t|j)sx?$/.test(p) && !p.endsWith('.d.ts');
-          };
-
           if (isRefresh) {
             debug('Refresh is enabled, registering additional transpiler');
             // Add react refresh babel plugin for non-node_modules
 
             preset.registerTranspiler(
               module =>
-                !module.path.startsWith('/node_modules') &&
-                isJavaScript(module.path),
+                /^(?!\/node_modules\/).*\.(((m|c)?jsx?)|tsx)$/.test(
+                  module.path
+                ),
               [
                 {
                   transpiler: babelTranspiler,
@@ -102,9 +99,15 @@ export const reactPreset = babelConfig => {
             debug('Refresh is disabled');
           }
 
-          preset.registerTranspiler(module => isJavaScript(module.path), [
-            { transpiler: babelTranspiler, options: babelConfig },
-          ]);
+          preset.registerTranspiler(
+            module => {
+              return (
+                /\.(m|c)?(t|j)sx?$/.test(module.path) &&
+                !module.path.endsWith('.d.ts')
+              );
+            },
+            [{ transpiler: babelTranspiler, options: babelConfig }]
+          );
 
           // svgr is required for the react-svg-transpiler
           preset.addTranspiler(svgrTranspiler);
