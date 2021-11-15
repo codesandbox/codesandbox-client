@@ -33,28 +33,26 @@ async function fetchAllVersions(dep: string): Promise<JsDelivrApiResult> {
   );
 }
 
+/** Resolves version range from unpkg, use this as a fallback when jsdelivr fails */
+const resolveVersionFromUnpkg = (
+  dep: string,
+  version: string
+): Promise<string> => {
+  return fetchWithRetries(
+    `https://unpkg.com/${dep}@${encodeURIComponent(version)}/package.json`
+  ).then(x => x.version);
+};
+
 export async function getLatestVersion(
   dep: string,
   version: string
 ): Promise<string> {
-  const fetchJsdelivr = () =>
-    fetchWithRetries(
-      `https://cdn.jsdelivr.net/npm/${dep}@${encodeURIComponent(
-        version
-      )}/package.json`
-    ).then(x => x.version);
-  const fetchUnpkg = () =>
-    fetchWithRetries(
-      `https://unpkg.com/${dep}@${encodeURIComponent(version)}/package.json`
-    ).then(x => x.version);
-
+  // No need to resolve absolute versions...
   if (isAbsoluteVersion(version)) {
-    try {
-      return await fetchJsdelivr();
-    } catch (e) {
-      return fetchUnpkg();
-    }
-  } else {
+    return version;
+  }
+
+  try {
     // If it is not an absolute version (e.g. a tag like `next`), we don't want to fetch
     // using JSDelivr, because JSDelivr caches the response for a long time. Because of this,
     // when a tag updates to a new version, people won't see that update for a long time.
@@ -64,13 +62,14 @@ export async function getLatestVersion(
     return (
       allVersions.tags[version] || maxSatisfying(allVersions.versions, version)
     );
+  } catch (e) {
+    // Fallback to unpkg, it's a lot slower than jsdelivr sometimes
+    return resolveVersionFromUnpkg(dep, version);
   }
 }
 
 export function isAbsoluteVersion(version: string) {
-  const isAbsolute = /^\d+\.\d+\.\d+$/.test(version);
-
-  return isAbsolute || /\//.test(version);
+  return /(^\d+\.\d+\.\d+(-.*)?$)|(\/)/.test(version);
 }
 
 export function isValidSemver(version: string) {
