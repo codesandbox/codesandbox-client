@@ -76,9 +76,10 @@ export async function getAbsoluteDependency(
   depName: string,
   depVersion: string
 ): Promise<{ name: string; version: string }> {
-  const version = await getLatestVersion(depName, depVersion);
-
-  return { name: depName, version };
+  return {
+    name: depName,
+    version: await getLatestVersion(depName, depVersion),
+  };
 }
 
 export async function getAbsoluteDependencies(dependencies: {
