@@ -240,7 +240,7 @@ function loadAlias(pkgJson: IFoundPackageJSON, filename: string): string {
     relativeFilepath = aliasedPath;
 
     // Simply check to ensure we don't infinitely alias files due to a misconfiguration of a package/user
-    if (count > 10) {
+    if (count > 5) {
       throw new Error('Could not resolve file due to a cyclic alias');
     }
     count++;
@@ -260,6 +260,15 @@ function loadAlias(pkgJson: IFoundPackageJSON, filename: string): string {
       if (re.test(relativeFilepath)) {
         const val = aliases[aliasKey];
         aliasedPath = relativeFilepath.replace(re, val);
+        if (aliasedPath.startsWith(relativeFilepath)) {
+          const newAddition = aliasedPath.substr(relativeFilepath.length);
+          if (
+            !newAddition.includes('/') &&
+            relativeFilepath.endsWith(newAddition)
+          ) {
+            aliasedPath = relativeFilepath;
+          }
+        }
         break;
       }
     }
@@ -357,7 +366,7 @@ function* expandFile(
 ): Generator<any, string | null, any> {
   const pkg = yield* findPackageJSON(filepath, opts);
 
-  if (expandCount > 15) {
+  if (expandCount > 5) {
     throw new Error('Cyclic alias detected');
   }
 
