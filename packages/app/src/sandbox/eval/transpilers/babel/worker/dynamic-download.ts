@@ -223,10 +223,12 @@ function extractPathFromError(err: Error | ModuleNotFoundError): string {
   }
 
   if (err.message.indexOf('Cannot find module') > -1) {
-    const dep = err.message.match(/Cannot find module '(.*?)'/)[1];
-    const from = err.message.match(/from '(.*?)'/)[1];
+    const matches = err.message.match(
+      /Cannot find module '(.*?)'.*from '(.*?)'/
+    );
+    const dep = matches[1];
+    const from = matches[2];
     const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
-
     return absolutePath;
   }
 
