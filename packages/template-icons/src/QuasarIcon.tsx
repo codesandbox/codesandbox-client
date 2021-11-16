@@ -6,7 +6,7 @@ export const QuasarIcon: React.FC<ISVGIconProps> = ({ ...props }) => {
   const id = useUniqueId();
 
   return (
-    <SVGIcon {...props}>
+    <SVGIcon {...props} viewBox={"0 0 1024 1024"}>
       <g clipPath={`url(#Quasar_Clip0_${id})`}>
         <path
           id="path8860-5-4-8-2-7-1-8_21_"
@@ -52,7 +52,7 @@ export const QuasarIcon: React.FC<ISVGIconProps> = ({ ...props }) => {
       </g>
       <defs>
         <clipPath id={`Quasar_Clip0_${id}`}>
-          <rect width="32" height="32" fill="white" />
+          <rect width="1024" height="1024" fill="white" />
         </clipPath>
       </defs>
     </SVGIcon>
