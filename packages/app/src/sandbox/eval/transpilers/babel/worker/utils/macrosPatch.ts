@@ -7,7 +7,7 @@ let finalExports = function m(babel, options) {
     ...options,
     resolvePath(source, basePath) {
       return patchedResolve().sync(source, {
-        filename: basePath + '/index',
+        basePath,
       });
     },
   });
