@@ -5,7 +5,7 @@ import getRequireStatements from './simple-get-require-statements';
 import { convertEsModule } from '../ast/convert-esmodule';
 import { generateCode, parseModule } from '../ast/utils';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
-import { resolve } from './utils/resolve';
+import { patchedResolve } from './utils/resolvePatch';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -111,7 +111,7 @@ function downloadRequires(
         }
 
         try {
-          resolve(foundR.path, {
+          patchedResolve().sync(foundR.path, {
             filename: currentPath,
             extensions: ['.js', '.json'],
           });
