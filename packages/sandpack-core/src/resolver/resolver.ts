@@ -160,7 +160,10 @@ export function _processPackageJSON(
         const normalizedKey = normalizeAliasFilePath(key, pkgRoot, false);
         const normalizedValue = normalizeAliasFilePath(val, pkgRoot, false);
         aliases[normalizedKey] = normalizedValue;
-        aliases[`${normalizedKey}/*`] = `${normalizedValue}/$1`;
+
+        if (aliasFieldKey !== 'browser') {
+          aliases[`${normalizedKey}/*`] = `${normalizedValue}/$1`;
+        }
       }
     }
   }

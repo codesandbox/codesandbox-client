@@ -285,6 +285,24 @@ describe('resolve', () => {
       });
       expect(resolved).toBe('//empty.js');
     });
+
+    it('should only resolve package.browser: false if ', () => {
+      const resolved = resolveSync('util/util.js', {
+        filename: '/node_modules/readable-stream/index.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/util/util.js');
+
+      const exactResolved = resolveSync('util', {
+        filename: '/node_modules/readable-stream/index.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(exactResolved).toBe('//empty.js');
+    });
   });
 
   describe('package#alias', () => {
