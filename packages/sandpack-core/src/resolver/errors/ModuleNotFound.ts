@@ -4,7 +4,7 @@ export class ModuleNotFoundError extends Error {
   code: string = 'MODULE_NOT_FOUND';
 
   constructor(filepath: string, parent: string) {
-    super(`Cannot find module ${filepath} in ${parent}`);
+    super(`Cannot find module '${filepath}' from '${parent}'`);
     this.parent = parent;
     this.filepath = filepath;
   }

@@ -5,7 +5,7 @@ import getRequireStatements from './simple-get-require-statements';
 import { convertEsModule } from '../ast/convert-esmodule';
 import { generateCode, parseModule } from '../ast/utils';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
-import { resolve } from './utils/resolve';
+import { patchedResolve } from './utils/resolvePatch';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -111,7 +111,7 @@ function downloadRequires(
         }
 
         try {
-          resolve(foundR.path, {
+          patchedResolve().sync(foundR.path, {
             filename: currentPath,
             extensions: ['.js', '.json'],
           });
@@ -223,10 +223,12 @@ function extractPathFromError(err: Error | ModuleNotFoundError): string {
   }
 
   if (err.message.indexOf('Cannot find module') > -1) {
-    const dep = err.message.match(/Cannot find module '(.*?)'/)[1];
-    const from = err.message.match(/from '(.*?)'/)[1];
+    const matches = err.message.match(
+      /Cannot find module '(.*?)'.*from '(.*?)'/
+    );
+    const dep = matches[1];
+    const from = matches[2];
     const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
-
     return absolutePath;
   }
 

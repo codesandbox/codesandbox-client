@@ -529,7 +529,9 @@ async function compile(opts: any) {
       dependencies,
     };
   } catch (err) {
-    const isModuleNotFoundError = err.code === 'MODULE_NOT_FOUND';
+    const isModuleNotFoundError =
+      err.code === 'MODULE_NOT_FOUND' ||
+      err.message.indexOf('Cannot find module') > -1;
     if (!fsInitialized && (isModuleNotFoundError || err.code === 'EIO')) {
       // BrowserFS was needed but wasn't initialized
       await waitForFs(loaderContextId);
