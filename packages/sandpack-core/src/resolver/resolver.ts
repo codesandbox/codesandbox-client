@@ -262,7 +262,10 @@ function loadAlias(pkgJson: IFoundPackageJSON, filename: string): string {
         aliasedPath = relativeFilepath.replace(re, val);
         if (aliasedPath.startsWith(relativeFilepath)) {
           const newAddition = aliasedPath.substr(relativeFilepath.length);
-          if (relativeFilepath.endsWith(newAddition)) {
+          if (
+            !newAddition.includes('/') &&
+            relativeFilepath.endsWith(newAddition)
+          ) {
             aliasedPath = relativeFilepath;
           }
         }
