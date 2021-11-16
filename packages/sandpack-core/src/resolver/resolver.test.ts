@@ -371,7 +371,6 @@ describe('resolve', () => {
     });
 
     it('should alias package.exports globs', () => {
-      // Test path normalization as well
       const resolved = resolveSync('package-exports///components/a', {
         filename: '/foo.js',
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -381,16 +380,6 @@ describe('resolve', () => {
       expect(resolved).toBe(
         '/node_modules/package-exports/src/components/a.js'
       );
-    });
-
-    it('should alias package.exports subdirectory globs', () => {
-      const resolved = resolveSync('@zendesk/laika/esm/laika', {
-        filename: '/index.tsx',
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        isFile,
-        readFile,
-      });
-      expect(resolved).toBe('/node_modules/@zendesk/laika/esm/laika.js');
     });
 
     it('should alias package.exports object globs', () => {
