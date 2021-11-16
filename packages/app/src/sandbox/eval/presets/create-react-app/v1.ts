@@ -9,7 +9,7 @@ import { aliases, cleanUsingUnmount } from './utils';
 export default function initialize() {
   const preset = new Preset(
     'create-react-app',
-    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx', 'mjs'],
+    ['web.js', 'js', 'json', 'web.jsx', 'jsx', 'ts', 'tsx', 'mjs', 'cjs'],
     aliases,
     {
       hasDotEnv: true,
@@ -25,7 +25,7 @@ export default function initialize() {
     { transpiler: stylesTranspiler },
   ]);
 
-  preset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  preset.registerTranspiler(module => /\.(c|m)?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {
