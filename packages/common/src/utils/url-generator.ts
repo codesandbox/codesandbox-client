@@ -107,11 +107,11 @@ export const frameUrl = (
 
   const templateIsServer = isServer(sandbox.template);
 
-  if (process.env.LOCAL_SERVER) {
+  if (process.env.LOCAL_SERVER && !templateIsServer) {
     return `http://localhost:3002/${path}`;
   }
 
-  if (process.env.STAGING) {
+  if (process.env.STAGING && !templateIsServer) {
     return stagingFrameUrl(sandbox.id, path);
   }
 
