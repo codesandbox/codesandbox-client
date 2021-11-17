@@ -1,5 +1,7 @@
 import { Preset } from 'sandpack-core';
 import _debug from '@codesandbox/common/lib/utils/debug';
+import { PackageJSON } from '@codesandbox/common/lib/types';
+
 import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
@@ -10,73 +12,97 @@ import postcssTranspiler from '../../transpilers/postcss';
 import svgrTranspiler from '../../transpilers/svgr';
 import reactSvgTranspiler from '../../transpilers/react-svg';
 import rawTranspiler from '../../transpilers/raw';
-
 import {
   hasRefresh,
   aliases,
   cleanUsingUnmount,
   isMinimalReactDomVersion,
+  supportsNewReactTransform,
 } from './utils';
 import { initializeReactDevTools } from './utils/initDevTools';
 import { createRefreshEntry } from './utils/createRefreshEntry';
 import base64Transpiler from '../../transpilers/base64';
 
-const REACT_BABEL_CONFIG = {
-  isV7: true,
-  compileNodeModulesWithEnv: true,
-  config: {
-    plugins: [
-      'transform-flow-strip-types',
-      ['proposal-decorators', { legacy: true }],
-      '@babel/plugin-transform-react-jsx-source',
-      'transform-destructuring',
-      'babel-plugin-macros',
-      ['proposal-class-properties', { loose: true }],
-      ['proposal-object-rest-spread', { useBuiltIns: true }],
-      [
-        'transform-runtime',
-        {
-          corejs: false,
-          helpers: true,
-          regenerator: true,
-        },
-      ],
-      '@babel/plugin-proposal-optional-chaining',
-      '@babel/plugin-proposal-nullish-coalescing-operator',
-      'syntax-dynamic-import',
+const BASE_REACT_BABEL_PLUGINS = [
+  'transform-flow-strip-types',
+  ['proposal-decorators', { legacy: true }],
+  '@babel/plugin-transform-react-jsx-source',
+  'transform-destructuring',
+  'babel-plugin-macros',
+  ['proposal-class-properties', { loose: true }],
+  ['proposal-object-rest-spread', { useBuiltIns: true }],
+  [
+    'transform-runtime',
+    {
+      corejs: false,
+      helpers: true,
+      regenerator: true,
+    },
+  ],
+  '@babel/plugin-proposal-optional-chaining',
+  '@babel/plugin-proposal-nullish-coalescing-operator',
+  'syntax-dynamic-import',
+];
+
+const BASE_REACT_PRESETS_CONFIG = [
+  [
+    'env',
+    {
+      // This is incompatible with the official target
+      // but sandpack does not even run on ie9 so no point in doing more transforms
+      targets: '>1%, not ie 11',
+      // Users cannot override this behavior because this Babel
+      // configuration is highly tuned for ES5 support
+      ignoreBrowserslistConfig: true,
+      // If users import all core-js they're probably not concerned with
+      // bundle size. We shouldn't rely on magic to try and shrink it.
+      useBuiltIns: false,
+      // Do not transform modules to CJS
+      modules: false,
+    },
+  ],
+  'typescript',
+];
+
+const CLASSIC_REACT_BABEL_CONFIG = {
+  plugins: [...BASE_REACT_BABEL_PLUGINS],
+  presets: [
+    ...BASE_REACT_PRESETS_CONFIG,
+    [
+      'react',
+      {
+        runtime: 'classic',
+      },
     ],
-    presets: [
-      [
-        'env',
-        {
-          // This is incompatible with the official target
-          // but sandpack does not even run on ie9 so no point in doing more transforms
-          targets: '>1%, not ie 11',
-          // Users cannot override this behavior because this Babel
-          // configuration is highly tuned for ES5 support
-          ignoreBrowserslistConfig: true,
-          // If users import all core-js they're probably not concerned with
-          // bundle size. We shouldn't rely on magic to try and shrink it.
-          useBuiltIns: false,
-          // Do not transform modules to CJS
-          modules: false,
-        },
-      ],
-      [
-        'react',
-        {
-          runtime: 'automatic',
-        },
-      ],
-      'typescript',
-    ],
-  },
+  ],
 };
 
-export function reactPreset() {
+const NEW_REACT_BABEL_CONFIG = {
+  plugins: [...BASE_REACT_BABEL_PLUGINS],
+  presets: [
+    ...BASE_REACT_PRESETS_CONFIG,
+    [
+      'react',
+      {
+        runtime: 'automatic',
+      },
+    ],
+  ],
+};
+
+export async function reactPreset(pkg: PackageJSON) {
   const debug = _debug('cs:compiler:cra');
   let initialized = false;
   let refreshInitialized = false;
+
+  const newReactTransform = await supportsNewReactTransform(
+    pkg.dependencies,
+    pkg.devDependencies
+  );
+
+  const babelConfig = newReactTransform
+    ? NEW_REACT_BABEL_CONFIG
+    : CLASSIC_REACT_BABEL_CONFIG;
 
   const preset = new Preset(
     'create-react-app',
@@ -148,11 +174,11 @@ export function reactPreset() {
                 {
                   transpiler: babelTranspiler,
                   options: {
-                    ...REACT_BABEL_CONFIG,
+                    isV7: true,
                     config: {
-                      ...REACT_BABEL_CONFIG.config,
+                      ...babelConfig,
                       plugins: [
-                        ...REACT_BABEL_CONFIG.config.plugins,
+                        ...babelConfig.plugins,
                         ['react-refresh/babel', { skipEnvCheck: true }],
                       ],
                     },
@@ -172,7 +198,16 @@ export function reactPreset() {
                 !module.path.endsWith('.d.ts')
               );
             },
-            [{ transpiler: babelTranspiler, options: REACT_BABEL_CONFIG }]
+            [
+              {
+                transpiler: babelTranspiler,
+                options: {
+                  isV7: true,
+                  compileNodeModulesWithEnv: true,
+                  config: babelConfig,
+                },
+              },
+            ]
           );
 
           // svgr is required for the react-svg-transpiler

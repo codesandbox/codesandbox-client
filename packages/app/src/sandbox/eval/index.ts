@@ -34,12 +34,11 @@ export default async function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
     case esmReact.name:
     case react.name:
-      return reactPreset();
+      return reactPreset(pkg);
     case preact.name:
       if (isPreact10(pkg.dependencies, pkg.devDependencies)) {
         return preactPreset();
       }
-
       return preactPresetV8();
     case reactTs.name:
       return reactTsPreset();
@@ -47,7 +46,6 @@ export default async function getPreset(template: string, pkg: PackageJSON) {
       return reasonPreset();
     case vue.name:
       return vuePreset();
-
     case svelte.name:
       return sveltePreset();
     case angular.name:
@@ -63,6 +61,6 @@ export default async function getPreset(template: string, pkg: PackageJSON) {
     case custom.name:
       return customPreset();
     default:
-      return reactPreset();
+      return reactPreset(pkg);
   }
 }
