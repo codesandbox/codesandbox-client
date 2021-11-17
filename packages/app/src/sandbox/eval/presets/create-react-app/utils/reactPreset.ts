@@ -210,11 +210,7 @@ export const reactPreset = babelConfig => {
         const reactDom = manager.manifest.dependencies.find(
           n => n.name === 'react-dom'
         );
-        if (
-          reactDom &&
-          !manager.webpackHMR &&
-          !(await isMinimalReactDomVersion(reactDom.version, '16.8.0'))
-        ) {
+        if (reactDom && !manager.webpackHMR) {
           cleanUsingUnmount(manager);
         }
       },
