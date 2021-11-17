@@ -229,7 +229,6 @@ export const onBrowserFromPortOpened = (
       closeable: true,
       options: {
         port,
-        url: `https://${hostname}`,
       },
     });
   }
