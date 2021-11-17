@@ -55,8 +55,15 @@ export const reactPreset = babelConfig => {
         }
 
         if (!deps['@babel/core']) {
-          deps['@babel/core'] = '^7.3.1';
+          deps['@babel/core'] = '^7.3.3';
         }
+
+        if (!deps['@babel/runtime']) {
+          deps['@babel/runtime'] = '^7.3.4';
+        }
+
+        delete deps['babel-runtime'];
+        delete deps['babel-core'];
 
         return deps;
       },
