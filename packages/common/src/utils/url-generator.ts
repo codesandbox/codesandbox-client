@@ -107,7 +107,15 @@ export const frameUrl = (
 
   const templateIsServer = isServer(sandbox.template);
 
-  if (process.env.LOCAL_SERVER && !templateIsServer) {
+  if (process.env.LOCAL_SERVER) {
+    if (templateIsServer) {
+      return `${location.protocol}//${sandbox.id}${port ? `-${port}` : ''}.${
+        templateIsServer ? 'sse.' : ''
+      }${
+        process.env.STAGING_API ? 'codesandbox.stream' : 'codesandbox.io'
+      }/${path}`;
+    }
+
     return `http://localhost:3002/${path}`;
   }
 
