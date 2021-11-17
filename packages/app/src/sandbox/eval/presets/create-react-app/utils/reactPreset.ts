@@ -40,6 +40,7 @@ export const reactPreset = babelConfig => {
       'json',
       'web.jsx',
       'jsx',
+      'web.cjs',
       'cjs',
     ],
     aliases,
