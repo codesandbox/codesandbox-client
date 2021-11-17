@@ -29,7 +29,6 @@ import vue from './vue';
 import vuepress from './vuepress';
 import docusaurus from './docusaurus';
 import esmReact from './esmodule-react';
-import gsap from './gsap';
 
 export {
   adonis,
@@ -97,8 +96,7 @@ export type TemplateType =
   | 'custom'
   | 'docusaurus'
   | 'babel-repl'
-  | 'esm-react'
-  | 'gsap';
+  | 'esm-react';
 
 export default function getDefinition(theme?: TemplateType | null) {
   switch (theme) {
@@ -164,8 +162,6 @@ export default function getDefinition(theme?: TemplateType | null) {
       return unibit;
     case esmReact.name:
       return esmReact;
-    case gsap.name:
-      return gsap;
     default:
       return react;
   }

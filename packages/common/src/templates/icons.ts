@@ -11,7 +11,6 @@ import {
   DojoIcon,
   CxJSIcon,
   GatsbyIcon,
-  GSAPIcon,
   MarkoIcon,
   NextIcon,
   NuxtIcon,
@@ -48,7 +47,6 @@ import {
   nuxt,
   node,
   apollo,
-  gsap,
   nest,
   sapper,
   staticTemplate,
@@ -120,8 +118,7 @@ export default function getIcon(theme: TemplateType) {
       return QuasarIcon;
     case unibit.name:
       return UnibitIcon;
-    case gsap.name:
-      return GSAPIcon
+
     default:
       return ReactIcon;
   }
