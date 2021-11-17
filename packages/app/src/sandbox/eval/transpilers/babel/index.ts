@@ -151,10 +151,11 @@ class BabelTranspiler extends WorkerTranspiler {
           };
         }
       } catch (err) {
-        console.warn(
-          `Error occurred while trying to quickly transform '${path}'`
-        );
-        console.warn(err);
+        // We should log this to sentry or something instead, it confuses users...
+        // console.warn(
+        //   `Error occurred while trying to quickly transform '${path}'`
+        // );
+        // console.warn(err);
       }
     }
 
