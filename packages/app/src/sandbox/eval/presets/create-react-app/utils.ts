@@ -67,18 +67,10 @@ export async function supportsNewReactTransform(
   dependencies: Dependencies = {},
   devDependencies: Dependencies = {}
 ): Promise<boolean> {
-  const reactScripts =
-    dependencies['react-scripts'] || devDependencies['react-scripts'];
   const react = dependencies.react || devDependencies.react;
-
-  if (reactScripts && react) {
-    const [isReact, isReactScripts] = await Promise.all([
-      isMinimalReactVersion(react, '17.0.0'),
-      isMinimalAbsoluteVersion('react-scripts', reactScripts, '4.0.0'),
-    ]);
-    return isReact && isReactScripts;
+  if (react) {
+    return isMinimalReactVersion(react, '17.0.0');
   }
-
   return false;
 }
 
