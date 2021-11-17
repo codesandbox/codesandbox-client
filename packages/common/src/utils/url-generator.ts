@@ -119,7 +119,7 @@ export const frameUrl = (
     return `http://localhost:3002/${path}`;
   }
 
-  if (process.env.STAGING && !templateIsServer) {
+  if (process.env.STAGING) {
     return stagingFrameUrl(sandbox.id, path);
   }
 
