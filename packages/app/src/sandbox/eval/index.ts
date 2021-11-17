@@ -15,14 +15,9 @@ import {
   esmReact,
 } from '@codesandbox/common/lib/templates';
 
-import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 import { isPreact10 } from '@codesandbox/common/lib/utils/is-preact-10';
 import { PackageJSON } from '@codesandbox/common/lib/types';
-import {
-  reactPresetV1,
-  reactPresetV3,
-  reactPresetV4,
-} from './presets/create-react-app';
+import { reactPresetV3, reactPresetV4 } from './presets/create-react-app';
 import reactTsPreset from './presets/create-react-app-typescript';
 import vuePreset from './presets/vue-cli';
 import { preactPreset, preactPresetV8 } from './presets/preact-cli';
@@ -52,12 +47,7 @@ export default async function getPreset(template: string, pkg: PackageJSON) {
         return preset;
       }
 
-      if (isBabel7(pkg.dependencies, pkg.devDependencies)) {
-        return reactPresetV3();
-      }
-
-      return reactPresetV1();
-
+      return reactPresetV3();
     case preact.name:
       if (isPreact10(pkg.dependencies, pkg.devDependencies)) {
         return preactPreset();
