@@ -115,7 +115,8 @@ export function reactPreset() {
           deps['@babel/runtime'] = '^7.3.4';
         }
 
-        delete deps['babel-runtime'];
+        // Don't delete babel-runtime, some dependencies rely on it...
+        // delete deps['babel-runtime'];
         delete deps['babel-core'];
 
         return deps;
