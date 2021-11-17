@@ -20,7 +20,11 @@ const babelOptions = {
 };
 
 export default function initialize() {
-  const sveltePreset = new Preset('svelte', ['js', 'jsx', 'svelte'], {});
+  const sveltePreset = new Preset(
+    'svelte',
+    ['js', 'cjs', 'mjs', 'jsx', 'svelte'],
+    {}
+  );
 
   sveltePreset.registerTranspiler(module => /\.(m|c)?jsx?$/.test(module.path), [
     { transpiler: babelTranspiler, options: babelOptions },
