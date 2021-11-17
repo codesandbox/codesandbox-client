@@ -17,7 +17,7 @@ function transformOptions(opts: any, fs: any): any {
     filename: filename || '/index.js',
     extensions: opts.extensions
       ? opts.extensions
-      : ['.js', '.mjs', '.json', '.ts', '.tsx'],
+      : ['.js', '.cjs', '.mjs', '.json', '.ts', '.tsx'],
     moduleDirectories: ['node_modules'],
     isFile: gensync({
       sync: p => isFile(p),

@@ -763,7 +763,7 @@ export default class Manager implements IEvaluator {
     defaultExtensions?: Array<string>;
   }): Promise<Module> {
     const { path, query = '', defaultExtensions = DEFAULT_EXTENSIONS } = opts;
-    let parentPath = opts.parentPath || '/';
+    let parentPath = opts.parentPath || '/index.js';
 
     const esmoduleUrl = getESModuleUrl(parentPath, path);
     // Handle ESModule import

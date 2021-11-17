@@ -234,7 +234,7 @@ async function resolveDependencyName({
   }
 }
 
-async function installPlugin(opts) {
+async function installPlugin(opts, count = 0) {
   const { Babel, BFSRequire, name, currentPath, isV7, loaderContextId } = opts;
   const normalizedPluginName = normalizePluginName(name);
   if (Babel.availablePlugins[name]) {
@@ -281,21 +281,25 @@ async function installPlugin(opts) {
     );
 
     evaluatedPlugin = evaluatedFromPath.default || evaluatedFromPath;
-  } catch (firstError) {
-    console.warn('First time compiling ' + name + ' went wrong, got:');
-    console.warn(firstError);
+  } catch (err) {
+    if (count > 5) {
+      throw err;
+    }
+
+    console.warn('Compiling ' + name + ' went wrong, got:');
+    console.warn(err);
 
     /**
      * We assume that a file is missing in the in-memory file system, and try to download it by
      * parsing the error.
      */
     await downloadFromError({
-      error: firstError,
+      error: err,
       childHandler,
       loaderContextId,
     });
     resetCache();
-    return installPlugin(opts);
+    return installPlugin(opts, count + 1);
   }
 
   if (!evaluatedPlugin) {
@@ -311,7 +315,7 @@ async function installPlugin(opts) {
   return evaluatedPlugin;
 }
 
-async function installPreset(opts) {
+async function installPreset(opts, count = 0) {
   const { Babel, BFSRequire, name, currentPath, isV7, loaderContextId } = opts;
   const normalizedPresetName = normalizePresetName(name);
   if (Babel.availablePresets[name]) {
@@ -351,21 +355,25 @@ async function installPreset(opts) {
       Babel.availablePresets
     );
     evaluatedPreset = evaluatedFromPath.default || evaluatedFromPath;
-  } catch (firstError) {
-    console.warn('First time compiling ' + name + ' went wrong, got:');
-    console.warn(firstError);
+  } catch (err) {
+    if (count > 5) {
+      throw err;
+    }
+
+    console.warn('Compiling ' + name + ' went wrong, got:');
+    console.warn(err);
 
     /**
      * We assume that a file is missing in the in-memory file system, and try to download it by
      * parsing the error.
      */
     await downloadFromError({
-      error: firstError,
+      error: err,
       childHandler,
       loaderContextId,
     });
     resetCache();
-    return installPreset(opts);
+    return installPreset(opts, count + 1);
   }
 
   if (process.env.NODE_ENV === 'development') {
