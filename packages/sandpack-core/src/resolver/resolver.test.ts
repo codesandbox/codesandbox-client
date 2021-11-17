@@ -177,6 +177,16 @@ describe('resolve', () => {
       expect(resolved).toBe('/node_modules/package-browser/browser.js');
     });
 
+    it('should handle main => browser field', () => {
+      const resolved = resolveSync('solid-js', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/solid-js/dist/solid.cjs');
+    });
+
     it('should fall back to index.js when it cannot find package.main', () => {
       const resolved = resolveSync('package-fallback', {
         filename: '/foo.js',

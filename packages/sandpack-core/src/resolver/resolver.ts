@@ -93,12 +93,17 @@ function normalizePackageExport(filepath: string, pkgRoot: string): string {
 }
 
 type PackageExportObj = {
-  [key: string]: string | null | false;
+  [key: string]: string | null | false | PackageExportType;
 };
 
 type PackageExportArr = Array<PackageExportObj | string>;
 
-type PackageExportType = string | null | PackageExportObj | PackageExportArr;
+type PackageExportType =
+  | string
+  | null
+  | false
+  | PackageExportObj
+  | PackageExportArr;
 
 function extractPathFromExport(
   exportValue: PackageExportType,
@@ -121,9 +126,11 @@ function extractPathFromExport(
     for (const key of EXPORTS_KEYS) {
       const exportFilename = exportValue[key];
       if (exportFilename !== undefined) {
-        return typeof exportFilename === 'string'
-          ? normalizePackageExport(exportFilename, pkgRoot)
-          : false;
+        if (typeof exportFilename === 'string') {
+          return normalizePackageExport(exportFilename, pkgRoot);
+        } else {
+          return extractPathFromExport(exportFilename, pkgRoot);
+        }
       }
     }
     return false;
