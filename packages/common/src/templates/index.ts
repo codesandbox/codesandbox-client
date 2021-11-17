@@ -63,6 +63,7 @@ export {
   mdxDeck,
   quasar,
   unibit,
+  gsap
 };
 
 export type TemplateType =
