@@ -151,11 +151,13 @@ class BabelTranspiler extends WorkerTranspiler {
           };
         }
       } catch (err) {
-        // We should log this to sentry or something instead, it confuses users...
-        // console.warn(
-        //   `Error occurred while trying to quickly transform '${path}'`
-        // );
-        // console.warn(err);
+        // do not log this in production, it confuses our users
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(
+            `Error occurred while trying to quickly transform '${path}'`
+          );
+          console.warn(err);
+        }
       }
     }
 
