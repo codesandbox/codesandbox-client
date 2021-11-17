@@ -45,15 +45,20 @@ export const reactPreset = babelConfig => {
     aliases,
     {
       hasDotEnv: true,
-      processDependencies: async dependencies => {
+      processDependencies: async originalDeps => {
+        const deps = { ...originalDeps };
         if (
-          dependencies['react-dom'] &&
-          isMinimalReactDomVersion(dependencies['react-dom'], '16.9.0')
+          deps['react-dom'] &&
+          isMinimalReactDomVersion(deps['react-dom'], '16.9.0')
         ) {
-          return { ...dependencies, 'react-refresh': '0.9.0' };
+          deps['react-refresh'] = '0.9.0';
         }
 
-        return dependencies;
+        if (!deps['@babel/core']) {
+          deps['@babel/core'] = '^7.3.1';
+        }
+
+        return deps;
       },
       setup: async manager => {
         const dependencies = manager.manifest.dependencies;
