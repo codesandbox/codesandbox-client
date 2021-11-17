@@ -439,6 +439,7 @@ function getCustomConfig(
         },
         presets: ['env', 'react'],
         plugins: [
+          'transform-flow-strip-types',
           'babel-plugin-csb-rename-import',
           'transform-modules-commonjs',
           'proposal-class-properties',

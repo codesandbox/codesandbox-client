@@ -17,7 +17,7 @@ import {
 
 import { isPreact10 } from '@codesandbox/common/lib/utils/is-preact-10';
 import { PackageJSON } from '@codesandbox/common/lib/types';
-import { reactPresetV3, reactPresetV4 } from './presets/create-react-app';
+import { reactPreset } from './presets/create-react-app';
 import reactTsPreset from './presets/create-react-app-typescript';
 import vuePreset from './presets/vue-cli';
 import { preactPreset, preactPresetV8 } from './presets/preact-cli';
@@ -29,25 +29,12 @@ import cxjsPreset from './presets/cxjs';
 import reasonPreset from './presets/reason';
 import dojoPreset from './presets/dojo';
 import customPreset from './presets/custom';
-import { supportsNewReactTransform } from './presets/create-react-app/utils';
 
 export default async function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
     case esmReact.name:
     case react.name:
-      if (
-        await supportsNewReactTransform(pkg.dependencies, pkg.devDependencies)
-      ) {
-        const preset = reactPresetV4();
-
-        if (template === esmReact.name) {
-          preset.experimentalEsmSupport = true;
-        }
-
-        return preset;
-      }
-
-      return reactPresetV3();
+      return reactPreset();
     case preact.name:
       if (isPreact10(pkg.dependencies, pkg.devDependencies)) {
         return preactPreset();
@@ -76,6 +63,6 @@ export default async function getPreset(template: string, pkg: PackageJSON) {
     case custom.name:
       return customPreset();
     default:
-      return reactPresetV3();
+      return reactPreset();
   }
 }
