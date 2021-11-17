@@ -137,6 +137,16 @@ describe('resolve', () => {
       expect(resolved).toBe('/node_modules/package-main/main.js');
     });
 
+    it('should resolve a simple node_modules package.main', () => {
+      const resolved = resolveSync('simple', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/simple/entrypoint.js');
+    });
+
     it('should be able to handle packages with nested package.json files, this is kinda invalid but whatever', () => {
       const resolved = resolveSync('styled-components/macro', {
         filename: '/foo.js',

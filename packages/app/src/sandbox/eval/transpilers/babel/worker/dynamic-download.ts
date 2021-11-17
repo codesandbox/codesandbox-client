@@ -48,8 +48,6 @@ function mkDirByPathSync(
 
 interface IResolveResponse {
   found: boolean;
-  type: 'resolve-async-transpiled-module-response';
-  id: number;
   path: string;
   code: string;
 }
@@ -76,7 +74,11 @@ export const resolveAsyncModule = (
         data: {
           loaderContextId,
           path: modulePath,
-          options: { isAbsolute: true, ignoredExtensions },
+          options: {
+            // isAbsolute is very confusing, it means that we use the current module as the root
+            isAbsolute: true,
+            ignoredExtensions,
+          },
         },
       })
       .then(data => {
@@ -169,7 +171,9 @@ export async function downloadPath(
       // Maybe there was a redirect from package.json. Manager only returns the redirect,
       // if the babel worker doesn't have the package.json it enters an infinite loop.
       const r2 = await resolveAsyncModule(
-        path.join(absolutePath, 'package.json'),
+        absolutePath.endsWith('/package.json')
+          ? absolutePath
+          : path.join(absolutePath, 'package.json'),
         {
           childHandler,
           loaderContextId,

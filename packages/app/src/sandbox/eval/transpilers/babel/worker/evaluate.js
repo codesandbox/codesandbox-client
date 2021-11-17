@@ -132,8 +132,8 @@ export default function evaluate(
     const resolvedPath =
       cachedPaths[dirName][requirePath] ||
       patchedResolve().sync(requirePath, {
-        filename: path,
-        extensions: ['.js', '.json'],
+        filename: path === '/' ? '/index.js' : path,
+        extensions: ['.cjs', '.js', '.json'],
       });
 
     cachedPaths[dirName][requirePath] = resolvedPath;
@@ -204,8 +204,8 @@ export function evaluateFromPath(
   availablePresets: Object
 ) {
   const resolvedPath = patchedResolve().sync(path, {
-    filename: path,
-    extensions: ['.js', '.json'],
+    filename: currentPath,
+    extensions: ['.cjs', '.js', '.json'],
   });
 
   const code = fs.readFileSync(resolvedPath).toString();
