@@ -480,4 +480,46 @@ describe('resolve', () => {
       expect(normalizeModuleSpecifier('react//test')).toBe('react/test');
     });
   });
+
+  describe('tsconfig', () => {
+    it('should be able to resolve relative to basePath of tsconfig.json', () => {
+      const resolved = resolveSync('app', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app/index.js');
+    });
+
+    it('should be able to resolve paths that are simple aliases', () => {
+      const resolved = resolveSync('something-special', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app/something.js');
+    });
+
+    it('should be able to resolve wildcard paths with single char', () => {
+      const resolved = resolveSync('~/app_config/test', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app_config/test.js');
+    });
+
+    it('should be able to resolve wildcard paths with name', () => {
+      const resolved = resolveSync('@app/something', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app/something.js');
+    });
+  });
 });

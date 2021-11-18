@@ -7,8 +7,13 @@ import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import { ModuleNotFoundError } from './errors/ModuleNotFound';
 import { ProcessedPackageJSON, processPackageJSON } from './utils/pkg-json';
 import { isFile, FnIsFile, FnReadFile, getParentDirectories } from './utils/fs';
+import {
+  ProcessedTSConfig,
+  processTSConfig,
+  getPotentialPathsFromTSConfig,
+} from './utils/tsconfig';
 
-export type PackageCache = Map<string, any>;
+export type ResolverCache = Map<string, any>;
 
 export interface IResolveOptionsInput {
   filename: string;
@@ -16,12 +21,12 @@ export interface IResolveOptionsInput {
   isFile: FnIsFile;
   readFile: FnReadFile;
   moduleDirectories?: string[];
-  packageCache?: PackageCache;
+  packageCache?: ResolverCache;
 }
 
 interface IResolveOptions extends IResolveOptionsInput {
   moduleDirectories: string[];
-  packageCache: PackageCache;
+  packageCache: ResolverCache;
 }
 
 function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
@@ -259,6 +264,37 @@ export function normalizeModuleSpecifier(specifier: string): string {
   return normalized;
 }
 
+const TS_CONFIG_CACHE_KEY = '__root_tsconfig';
+function* getTSConfig(
+  opts: IResolveOptions
+): Generator<any, ProcessedTSConfig | false, any> {
+  const cachedConfig = opts.packageCache.get(TS_CONFIG_CACHE_KEY);
+  if (cachedConfig != null) {
+    return cachedConfig;
+  }
+
+  let config: ProcessedTSConfig | false = false;
+  try {
+    const contents = yield* opts.readFile('/tsconfig.json');
+    const processed = processTSConfig(contents);
+    if (processed) {
+      config = processed;
+    }
+  } catch (err) {
+    try {
+      const contents = yield* opts.readFile('/jsconfig.json');
+      const processed = processTSConfig(contents);
+      if (processed) {
+        config = processed;
+      }
+    } catch {
+      // do nothing
+    }
+  }
+  opts.packageCache.set(TS_CONFIG_CACHE_KEY, config);
+  return config;
+}
+
 export const resolver = gensync<
   (moduleSpecifier: string, inputOpts: IResolveOptionsInput) => string
 >(function* resolve(moduleSpecifier, inputOpts): Generator<any, string, any> {
@@ -267,6 +303,24 @@ export const resolver = gensync<
   const modulePath = yield* resolveModule(normalizedSpecifier, opts);
 
   if (modulePath[0] !== '/') {
+    // This isn't a node module, we can attempt to resolve using a tsconfig/jsconfig
+    if (!opts.filename.includes('/node_modules')) {
+      const parsedTSConfig = yield* getTSConfig(opts);
+      if (parsedTSConfig) {
+        const potentialPaths = getPotentialPathsFromTSConfig(
+          modulePath,
+          parsedTSConfig
+        );
+        for (const potentialPath of potentialPaths) {
+          try {
+            return yield* resolve(potentialPath, opts);
+          } catch {
+            // do nothing, it's probably a node_module in this case
+          }
+        }
+      }
+    }
+
     try {
       return yield* resolveNodeModule(modulePath, opts);
     } catch (e) {

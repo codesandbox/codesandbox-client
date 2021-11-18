@@ -30,6 +30,7 @@
     "micromatch": "^4.0.4",
     "node-fetch": "^2.6.1",
     "sandbox-hooks": "0.1.0",
-    "source-map": "^0.7.3"
+    "source-map": "^0.7.3",
+    "strip-json-comments": "3"
   }
 }
