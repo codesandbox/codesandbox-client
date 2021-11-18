@@ -5,7 +5,6 @@ import gensync from 'gensync';
 import {
   resolveSync,
   normalizeModuleSpecifier,
-  _processPackageJSON,
   getParentDirectories,
 } from './resolver';
 import { ModuleNotFoundError } from './errors/ModuleNotFound';
@@ -473,22 +472,6 @@ describe('resolve', () => {
       expect(normalizeModuleSpecifier('./foo.js')).toBe('./foo.js');
       expect(normalizeModuleSpecifier('react//test')).toBe('react/test');
     });
-  });
-});
-
-describe('process package.json', () => {
-  it('Should correctly process pkg.exports from @babel/runtime', () => {
-    const content = JSON.parse(
-      fs.readFileSync(
-        path.join(FIXTURE_PATH, 'node_modules/@babel/runtime/package.json'),
-        'utf-8'
-      )
-    );
-    const processedPkg = _processPackageJSON(
-      content,
-      '/node_modules/@babel/runtime'
-    );
-    expect(processedPkg).toMatchSnapshot();
   });
 });
 

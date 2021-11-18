@@ -5,13 +5,8 @@ import micromatch from 'micromatch';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import { ModuleNotFoundError } from './errors/ModuleNotFound';
-
-const EMPTY_SHIM = '//empty.js';
-
-// alias/exports/main keys, sorted from high to low priority
-const EXPORTS_KEYS = ['browser', 'development', 'default', 'require', 'import'];
-const MAIN_PKG_FIELDS = ['module', 'browser', 'main', 'jsnext:main'];
-const PKG_ALIAS_FIELDS = ['browser', 'alias'];
+import { ProcessedPackageJSON, processPackageJSON } from './utils/pkg-json';
+import { EMPTY_SHIM } from './constants';
 
 export type PackageCache = Map<string, any>;
 
@@ -50,21 +45,6 @@ export function getParentDirectories(
   return directories;
 }
 
-function normalizeAliasFilePath(
-  specifier: string,
-  pkgRoot: string,
-  // This can be set to false to fallback to returning the specifier in case it can be a node_module
-  isFilePath: boolean = true
-): string {
-  if (specifier[0] === '/') {
-    return specifier;
-  }
-  if (specifier[0] === '.' || isFilePath) {
-    return pathUtils.join(pkgRoot, specifier);
-  }
-  return specifier;
-}
-
 function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
   const normalizedModuleDirectories: Set<string> = opts.moduleDirectories
     ? new Set(
@@ -83,116 +63,6 @@ function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
   };
 }
 
-type AliasesDict = { [key: string]: string };
-interface ProcessedPackageJSON {
-  aliases: AliasesDict;
-}
-
-function normalizePackageExport(filepath: string, pkgRoot: string): string {
-  return normalizeAliasFilePath(filepath.replace(/\*/g, '$1'), pkgRoot);
-}
-
-type PackageExportObj = {
-  [key: string]: string | null | false | PackageExportType;
-};
-
-type PackageExportArr = Array<PackageExportObj | string>;
-
-type PackageExportType =
-  | string
-  | null
-  | false
-  | PackageExportObj
-  | PackageExportArr;
-
-function extractPathFromExport(
-  exportValue: PackageExportType,
-  pkgRoot: string
-): string | false {
-  if (!exportValue) {
-    return false;
-  } else if (typeof exportValue === 'string') {
-    return normalizePackageExport(exportValue, pkgRoot);
-  } else if (Array.isArray(exportValue)) {
-    const foundPaths = exportValue
-      .map(v => extractPathFromExport(v, pkgRoot))
-      .filter(Boolean);
-    if (!foundPaths.length) {
-      return false;
-    } else {
-      return foundPaths[0];
-    }
-  } else if (typeof exportValue === 'object') {
-    for (const key of EXPORTS_KEYS) {
-      const exportFilename = exportValue[key];
-      if (exportFilename !== undefined) {
-        if (typeof exportFilename === 'string') {
-          return normalizePackageExport(exportFilename, pkgRoot);
-        } else {
-          return extractPathFromExport(exportFilename, pkgRoot);
-        }
-      }
-    }
-    return false;
-  } else {
-    throw new Error(`Unsupported export type ${typeof exportValue}`);
-  }
-}
-
-export function _processPackageJSON(
-  content: any,
-  pkgRoot: string
-): ProcessedPackageJSON {
-  if (!content || typeof content !== 'object') {
-    return { aliases: {} };
-  }
-
-  const aliases: AliasesDict = {};
-  for (const mainField of MAIN_PKG_FIELDS) {
-    if (typeof content[mainField] === 'string') {
-      aliases[pkgRoot] = normalizeAliasFilePath(content[mainField], pkgRoot);
-      break;
-    }
-  }
-
-  if (content.browser === false) {
-    aliases[pkgRoot] = EMPTY_SHIM;
-  }
-
-  for (const aliasFieldKey of PKG_ALIAS_FIELDS) {
-    const aliasField = content[aliasFieldKey];
-    if (typeof aliasField === 'object') {
-      for (const key of Object.keys(aliasField)) {
-        const val = aliasField[key] || EMPTY_SHIM;
-        const normalizedKey = normalizeAliasFilePath(key, pkgRoot, false);
-        const normalizedValue = normalizeAliasFilePath(val, pkgRoot, false);
-        aliases[normalizedKey] = normalizedValue;
-
-        if (aliasFieldKey !== 'browser') {
-          aliases[`${normalizedKey}/*`] = `${normalizedValue}/$1`;
-        }
-      }
-    }
-  }
-
-  if (content.exports) {
-    if (typeof content.exports === 'string') {
-      aliases[pkgRoot] = normalizeAliasFilePath(content.exports, pkgRoot);
-    } else if (typeof content.exports === 'object') {
-      for (const exportKey of Object.keys(content.exports)) {
-        const exportValue = extractPathFromExport(
-          content.exports[exportKey],
-          pkgRoot
-        );
-        const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
-        aliases[normalizedKey] = exportValue || EMPTY_SHIM;
-      }
-    }
-  }
-
-  return { aliases };
-}
-
 interface IFoundPackageJSON {
   filepath: string;
   content: ProcessedPackageJSON;
@@ -209,7 +79,7 @@ function* loadPackageJSON(
     let packageContent = opts.packageCache.get(packageFilePath);
     if (packageContent === undefined) {
       try {
-        packageContent = _processPackageJSON(
+        packageContent = processPackageJSON(
           JSON.parse(yield* opts.readFile(packageFilePath)),
           pathUtils.dirname(packageFilePath)
         );
