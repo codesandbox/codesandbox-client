@@ -31,11 +31,28 @@ self.importScripts(
   `${process.env.CODESANDBOX_HOST || ''}/static/js/less.min.js`
 );
 
-async function workerCompile(opts) {
-  const { code, path, files } = opts;
+interface ILessCompileOptions {
+  code: string;
+  path: string;
+  files: Record<string, string>;
+  loaderContextId: number;
+}
+
+export interface ILessLoaderContext {
+  loaderContextId: number;
+  files: Record<string, string>;
+  addDependency: (path: string) => void;
+  childHandler: ChildHandler;
+}
+
+async function workerCompile(opts: ILessCompileOptions) {
+  const { code, path, files, loaderContextId } = opts;
 
   const transpilationDependencies = [];
-  const context = {
+  const context: ILessLoaderContext = {
+    files,
+    loaderContextId,
+    childHandler,
     addDependency: depPath => {
       transpilationDependencies.push({
         path: depPath,
@@ -51,7 +68,7 @@ async function workerCompile(opts) {
   const lessLibrary: LessLibrary = less;
   const { css } = await lessLibrary.render(cleanCode, {
     filename: path,
-    plugins: [FileManager(context, files)],
+    plugins: [FileManager(context)],
   });
 
   return {
