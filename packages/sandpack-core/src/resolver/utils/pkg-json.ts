@@ -48,7 +48,8 @@ export function processPackageJSON(
     }
   }
 
-  if (content.exports) {
+  // load exports if it's not the root pkg.json
+  if (content.exports && pkgRoot !== '/') {
     if (typeof content.exports === 'string') {
       aliases[pkgRoot] = normalizeAliasFilePath(content.exports, pkgRoot);
     } else if (typeof content.exports === 'object') {

@@ -455,6 +455,17 @@ describe('resolve', () => {
       });
       expect(resolved).toBe('//empty.js');
     });
+
+    it('should not load exports from the root package.json', () => {
+      expect(() =>
+        resolveSync('a-custom-export', {
+          filename: '/foo.js',
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          isFile,
+          readFile,
+        })
+      ).toThrow();
+    });
   });
 
   describe('normalize module specifier', () => {

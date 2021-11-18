@@ -30,4 +30,12 @@ describe('process package.json', () => {
     const processedPkg = processPackageJSON(content, '/node_modules/solid-js');
     expect(processedPkg).toMatchSnapshot();
   });
+
+  it('Should correctly handle root pkg.json', () => {
+    const content = JSON.parse(
+      fs.readFileSync(path.join(FIXTURE_PATH, 'package.json'), 'utf-8')
+    );
+    const processedPkg = processPackageJSON(content, '/');
+    expect(processedPkg).toMatchSnapshot();
+  });
 });

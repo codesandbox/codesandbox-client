@@ -21,6 +21,27 @@ Object {
 }
 `;
 
+exports[`process package.json Should correctly handle root pkg.json 1`] = `
+Object {
+  "aliases": Object {
+    "aliased": "foo",
+    "aliased-file": "/bar.js",
+    "aliased-file/*": "/bar.js/$1",
+    "aliased/*": "foo/$1",
+    "aliasedabsolute": "/nested",
+    "aliasedabsolute/*": "/nested/$1",
+    "aliasedfolder": "/nested",
+    "aliasedfolder/*": "/nested/$1",
+    "foo/bar": "/bar.js",
+    "foo/bar/*": "/bar.js/$1",
+    "glob/*/*": "/nested/$2",
+    "glob/*/*/*": "/nested/$2/$1",
+    "something": "/nested/test.js",
+    "something/*": "/nested/test.js/$1",
+  },
+}
+`;
+
 exports[`process package.json Should correctly process pkg.exports from @babel/runtime 1`] = `
 Object {
   "aliases": Object {
