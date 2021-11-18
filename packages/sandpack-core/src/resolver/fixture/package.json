@@ -10,6 +10,9 @@
     "foo/bar": "./bar.js",
     "glob/*/*": "./nested/$2"
   },
+  "exports": {
+    "a-custom-export": "./nested"
+  },
   "dependencies": {
     "foo": "*"
   },
