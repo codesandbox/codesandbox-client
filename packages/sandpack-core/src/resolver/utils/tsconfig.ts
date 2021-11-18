@@ -7,7 +7,7 @@ export interface ProcessedTSConfig {
 }
 
 export function processTSConfig(content: string): ProcessedTSConfig | null {
-  const parsed = JSON.parse(stripJsonComments(content));
+  const parsed = JSON.parse(stripJsonComments(content))?.compilerOptions || {};
   if (parsed.baseUrl) {
     const paths: ProcessedTSConfig['paths'] = {};
     if (parsed.paths) {
