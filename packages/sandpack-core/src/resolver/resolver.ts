@@ -21,12 +21,12 @@ export interface IResolveOptionsInput {
   isFile: FnIsFile;
   readFile: FnReadFile;
   moduleDirectories?: string[];
-  packageCache?: ResolverCache;
+  resolverCache?: ResolverCache;
 }
 
 interface IResolveOptions extends IResolveOptionsInput {
   moduleDirectories: string[];
-  packageCache: ResolverCache;
+  resolverCache: ResolverCache;
 }
 
 function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
@@ -43,7 +43,7 @@ function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
     isFile: opts.isFile,
     readFile: opts.readFile,
     moduleDirectories: [...normalizedModuleDirectories],
-    packageCache: opts.packageCache || new Map(),
+    resolverCache: opts.resolverCache || new Map(),
   };
 }
 
@@ -60,16 +60,16 @@ function* loadPackageJSON(
   const directories = getParentDirectories(filepath, rootDir);
   for (const directory of directories) {
     const packageFilePath = pathUtils.join(directory, 'package.json');
-    let packageContent = opts.packageCache.get(packageFilePath);
+    let packageContent = opts.resolverCache.get(packageFilePath);
     if (packageContent === undefined) {
       try {
         packageContent = processPackageJSON(
           JSON.parse(yield* opts.readFile(packageFilePath)),
           pathUtils.dirname(packageFilePath)
         );
-        opts.packageCache.set(packageFilePath, packageContent);
+        opts.resolverCache.set(packageFilePath, packageContent);
       } catch (err) {
-        opts.packageCache.set(packageFilePath, false);
+        opts.resolverCache.set(packageFilePath, false);
       }
     }
     if (packageContent) {
@@ -268,7 +268,7 @@ const TS_CONFIG_CACHE_KEY = '__root_tsconfig';
 function* getTSConfig(
   opts: IResolveOptions
 ): Generator<any, ProcessedTSConfig | false, any> {
-  const cachedConfig = opts.packageCache.get(TS_CONFIG_CACHE_KEY);
+  const cachedConfig = opts.resolverCache.get(TS_CONFIG_CACHE_KEY);
   if (cachedConfig != null) {
     return cachedConfig;
   }
@@ -291,7 +291,7 @@ function* getTSConfig(
       // do nothing
     }
   }
-  opts.packageCache.set(TS_CONFIG_CACHE_KEY, config);
+  opts.resolverCache.set(TS_CONFIG_CACHE_KEY, config);
   return config;
 }
 
