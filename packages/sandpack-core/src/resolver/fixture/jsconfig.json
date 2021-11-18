@@ -1,0 +1,7 @@
+{
+  "baseUrl": "src",
+  "paths": {
+    "@app/*": ["app/*"],
+    "@config/*": ["app_config/*"]
+  }
+}
