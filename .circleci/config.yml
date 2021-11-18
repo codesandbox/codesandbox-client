@@ -316,7 +316,7 @@ jobs:
       - checkout_with_cache
       - test_visual_regressions
   test-jest:
-    executor: node
+    executor: node-xlarge
     steps:
       - checkout_with_cache
       - test_jest
