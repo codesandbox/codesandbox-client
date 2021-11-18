@@ -1,17 +1,14 @@
 /* eslint-disable no-else-return */
 /* eslint-disable no-continue */
-import gensync, { Gensync } from 'gensync';
+import gensync from 'gensync';
 import micromatch from 'micromatch';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import { ModuleNotFoundError } from './errors/ModuleNotFound';
 import { ProcessedPackageJSON, processPackageJSON } from './utils/pkg-json';
-import { EMPTY_SHIM } from './constants';
+import { isFile, FnIsFile, FnReadFile, getParentDirectories } from './utils/fs';
 
 export type PackageCache = Map<string, any>;
-
-export type FnIsFile = Gensync<(filepath: string) => boolean>;
-export type FnReadFile = Gensync<(filepath: string) => string>;
 
 export interface IResolveOptionsInput {
   filename: string;
@@ -25,24 +22,6 @@ export interface IResolveOptionsInput {
 interface IResolveOptions extends IResolveOptionsInput {
   moduleDirectories: string[];
   packageCache: PackageCache;
-}
-
-export function getParentDirectories(
-  filepath: string,
-  rootDir: string = '/'
-): string[] {
-  const parts = filepath.split('/');
-  const directories = [];
-  while (parts.length > 0) {
-    const directory = parts.join('/') || '/';
-    // Test /foo vs /foo-something - /foo-something is not in rootDir
-    if (directory.length < rootDir.length || !directory.startsWith(rootDir)) {
-      break;
-    }
-    directories.push(directory);
-    parts.pop();
-  }
-  return directories;
 }
 
 function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
@@ -110,7 +89,7 @@ function resolveFile(filepath: string, dir: string): string {
   }
 }
 
-function loadAlias(pkgJson: IFoundPackageJSON, filename: string): string {
+function resolveAlias(pkgJson: IFoundPackageJSON, filename: string): string {
   const aliases = pkgJson.content.aliases;
 
   let relativeFilepath = filename;
@@ -171,7 +150,7 @@ function* resolveModule(
     isAbsoluteFilename ? filename : opts.filename,
     opts
   );
-  return loadAlias(pkgJson, filename);
+  return resolveAlias(pkgJson, filename);
 }
 
 const extractPkgSpecifierParts = (specifier: string) => {
@@ -252,7 +231,7 @@ function* expandFile(
 
   for (const ext of opts.extensions) {
     const f = filepath + ext;
-    const aliasedPath = loadAlias(pkg, f);
+    const aliasedPath = resolveAlias(pkg, f);
     if (aliasedPath === f) {
       const exists = yield* isFile(f, opts.isFile);
       if (exists) {
@@ -270,16 +249,6 @@ function* expandFile(
     }
   }
   return null;
-}
-
-function* isFile(
-  filepath: string,
-  isFileFn: FnIsFile
-): Generator<any, boolean, any> {
-  if (filepath === EMPTY_SHIM) {
-    return true;
-  }
-  return yield* isFileFn(filepath);
 }
 
 export function normalizeModuleSpecifier(specifier: string): string {

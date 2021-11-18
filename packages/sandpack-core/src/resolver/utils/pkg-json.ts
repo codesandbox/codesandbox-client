@@ -1,6 +1,6 @@
 import { normalizeAliasFilePath } from './alias';
 import { extractPathFromExport } from './exports';
-import { EMPTY_SHIM } from '../constants';
+import { EMPTY_SHIM } from './constants';
 
 // alias/exports/main keys, sorted from high to low priority
 const MAIN_PKG_FIELDS = ['module', 'browser', 'main', 'jsnext:main'];

@@ -2,11 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import gensync from 'gensync';
 
-import {
-  resolveSync,
-  normalizeModuleSpecifier,
-  getParentDirectories,
-} from './resolver';
+import { resolveSync, normalizeModuleSpecifier } from './resolver';
 import { ModuleNotFoundError } from './errors/ModuleNotFound';
 
 const FIXTURE_PATH = path.join(__dirname, 'fixture');
@@ -472,17 +468,5 @@ describe('resolve', () => {
       expect(normalizeModuleSpecifier('./foo.js')).toBe('./foo.js');
       expect(normalizeModuleSpecifier('react//test')).toBe('react/test');
     });
-  });
-});
-
-describe('get parent directories', () => {
-  it('Should return a list of all parent directories', () => {
-    const directories = getParentDirectories('/src/index');
-    expect(directories).toEqual(['/src/index', '/src', '/']);
-  });
-
-  it('Should return a list of all parent directories above the rootDir', () => {
-    const directories = getParentDirectories('/src/index', '/src');
-    expect(directories).toEqual(['/src/index', '/src']);
   });
 });
