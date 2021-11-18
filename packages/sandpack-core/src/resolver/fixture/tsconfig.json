@@ -1,9 +1,11 @@
 {
-  "baseUrl": "src",
-  "paths": {
-    "~/*": ["./*"],
-    "@app/*": ["app/*", "not_app/*"],
-    "@config/*": ["app_config/*"],
-    "something-special": ["app/something"]
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "~/*": ["./*"],
+      "@app/*": ["app/*", "not_app/*"],
+      "@config/*": ["app_config/*"],
+      "something-special": ["app/something"]
+    }
   }
 }
