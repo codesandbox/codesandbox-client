@@ -1,6 +1,6 @@
 import path from 'path';
 
-const PKG_IMPORT_RE = /^~?([@A-Za-z].*)/;
+const PKG_IMPORT_RE = /^~?([@A-Za-z\-_].*)/;
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable func-names */
@@ -32,7 +32,7 @@ export default function (loaderContext, files) {
 
         const file = files[filepath];
         if (!file) {
-          const matches = PKG_IMPORT_RE.match(importName[0]);
+          const matches = importName.match(PKG_IMPORT_RE);
           if (matches && matches[1]) {
             return this.loadFile(
               `/node_modules/${matches[1]}`,

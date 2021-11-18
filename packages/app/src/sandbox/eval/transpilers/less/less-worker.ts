@@ -5,12 +5,19 @@ import FileManager from './file-manager';
 
 const childHandler = new ChildHandler('less-worker');
 
+export interface LessLibrary {
+  render: (code: string, opts: Record<string, any>) => Promise<{ css: string }>;
+}
+
+// @ts-ignore
 self.less = {
   env: 'development',
 };
 
 // Stub window for less....
+// @ts-ignore
 self.window = self;
+// @ts-ignore
 self.window.document = {
   currentScript: { async: true },
   createElement: () => ({ appendChild: () => {} }),
@@ -23,10 +30,6 @@ self.window.document = {
 self.importScripts(
   `${process.env.CODESANDBOX_HOST || ''}/static/js/less.min.js`
 );
-
-declare var less: {
-  render: (code: string) => Promise<string>,
-};
 
 async function workerCompile(opts) {
   const { code, path, files } = opts;
@@ -44,7 +47,9 @@ async function workerCompile(opts) {
   const cleanCode = code.replace(/^\n$/gm, '');
 
   // register a custom importer callback
-  const { css } = await less.render(cleanCode, {
+  // @ts-ignore
+  const lessLibrary: LessLibrary = less;
+  const { css } = await lessLibrary.render(cleanCode, {
     filename: path,
     plugins: [FileManager(context, files)],
   });
