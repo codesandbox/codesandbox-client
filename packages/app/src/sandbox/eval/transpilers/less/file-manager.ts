@@ -55,6 +55,10 @@ export default function (ctx: ILessLoaderContext) {
         let contents = ctx.files[filepath];
         if (contents == null) {
           try {
+            if (importName[0] === '~') {
+              throw new Error('Skip resolution, it is a node_module');
+            }
+
             const resolvedModule = await resolveAsyncModule(filepath, ctx);
             contents = resolvedModule.code;
             ctx.files[filepath] = contents;
