@@ -201,7 +201,7 @@
     "react-error-overlay": "^1.0.10",
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.2.1",
-    "react-instantsearch": "^5.7.0",
+    "react-instantsearch": "^6.0.0",
     "react-loadable": "^3.3.1",
     "react-markdown": "^4.3.1",
     "react-media": "^1.9.2",
