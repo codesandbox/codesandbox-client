@@ -28,7 +28,7 @@ self.window.document = {
 
 // self.importScripts('https://cdn.jsdelivr.net/npm/less@4.1.1/dist/less.min.js');
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST || ''}/static/js/less.min.js`
+  `${process.env.CODESANDBOX_HOST || ''}/static/js/less-4.1.2.min.js`
 );
 
 interface ILessCompileOptions {
