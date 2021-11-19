@@ -45,7 +45,7 @@ export const BetaRepositoriesPage = () => {
         activeTeam={activeTeam}
         repos
         path="Beta"
-        showViewOptions
+        showViewOptions={false}
         showFilters={false}
         showSortOptions={false}
         actions={[
