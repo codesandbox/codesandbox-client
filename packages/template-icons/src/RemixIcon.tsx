@@ -3,7 +3,7 @@ import { SVGIcon, ISVGIconProps } from './SVGIcon';
 
 export const RemixIcon: React.FC<ISVGIconProps> = ({ ...props }) => {
   return (
-    <SVGIcon {...props}>
+    <SVGIcon {...props} viewBox="0 0 800 800">
       <path
         fillRule="evenodd"
         clipRule="evenodd"
