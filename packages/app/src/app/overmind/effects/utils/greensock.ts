@@ -32,6 +32,7 @@ const GREENSOCK_MEMBER_KEYWORDS = [
   'gsdevtools',
   'inertia',
   'inertiaplugin',
+  'morph',
   'morphsvg',
   'morphsvgplugin',
   'motionpathhelper',
