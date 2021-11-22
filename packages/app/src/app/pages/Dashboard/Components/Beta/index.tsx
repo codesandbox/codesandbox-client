@@ -1,15 +1,10 @@
 import React from 'react';
-import { useAppState } from 'app/overmind';
-import { RepoBetaCard } from './RepoBetaCard';
 import { RepoBetaListItem } from './RepoBetaListItem';
 import { useSelection } from '../Selection';
 import { DashboardBetaRepo } from '../../types';
 
 export const RepoBeta = ({ ...props }: DashboardBetaRepo) => {
-  const { dashboard } = useAppState();
-
-  const Component =
-    dashboard.viewMode === 'list' ? RepoBetaListItem : RepoBetaCard;
+  const Component = RepoBetaListItem;
 
   // interactions
   const { onMouseDown, onBlur } = useSelection();
