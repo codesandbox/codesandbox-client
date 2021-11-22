@@ -2,12 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import gensync from 'gensync';
 
-import {
-  resolveSync,
-  normalizeModuleSpecifier,
-  _processPackageJSON,
-  getParentDirectories,
-} from './resolver';
+import { resolveSync, normalizeModuleSpecifier } from './resolver';
 import { ModuleNotFoundError } from './errors/ModuleNotFound';
 
 const FIXTURE_PATH = path.join(__dirname, 'fixture');
@@ -460,6 +455,17 @@ describe('resolve', () => {
       });
       expect(resolved).toBe('//empty.js');
     });
+
+    it('should not load exports from the root package.json', () => {
+      expect(() =>
+        resolveSync('a-custom-export', {
+          filename: '/foo.js',
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          isFile,
+          readFile,
+        })
+      ).toThrow();
+    });
   });
 
   describe('normalize module specifier', () => {
@@ -474,32 +480,46 @@ describe('resolve', () => {
       expect(normalizeModuleSpecifier('react//test')).toBe('react/test');
     });
   });
-});
 
-describe('process package.json', () => {
-  it('Should correctly process pkg.exports from @babel/runtime', () => {
-    const content = JSON.parse(
-      fs.readFileSync(
-        path.join(FIXTURE_PATH, 'node_modules/@babel/runtime/package.json'),
-        'utf-8'
-      )
-    );
-    const processedPkg = _processPackageJSON(
-      content,
-      '/node_modules/@babel/runtime'
-    );
-    expect(processedPkg).toMatchSnapshot();
-  });
-});
+  describe('tsconfig', () => {
+    it('should be able to resolve relative to basePath of tsconfig.json', () => {
+      const resolved = resolveSync('app', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app/index.js');
+    });
 
-describe('get parent directories', () => {
-  it('Should return a list of all parent directories', () => {
-    const directories = getParentDirectories('/src/index');
-    expect(directories).toEqual(['/src/index', '/src', '/']);
-  });
+    it('should be able to resolve paths that are simple aliases', () => {
+      const resolved = resolveSync('something-special', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app/something.js');
+    });
 
-  it('Should return a list of all parent directories above the rootDir', () => {
-    const directories = getParentDirectories('/src/index', '/src');
-    expect(directories).toEqual(['/src/index', '/src']);
+    it('should be able to resolve wildcard paths with single char', () => {
+      const resolved = resolveSync('~/app_config/test', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app_config/test.js');
+    });
+
+    it('should be able to resolve wildcard paths with name', () => {
+      const resolved = resolveSync('@app/something', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app/something.js');
+    });
   });
 });

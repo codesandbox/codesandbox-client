@@ -12,7 +12,7 @@ import { endMeasure, now } from '@codesandbox/common/lib/utils/metrics';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 import ModuleNotFoundError from 'sandbox-hooks/errors/module-not-found-error';
 
-import { PackageCache, resolveAsync, resolveSync } from './resolver/resolver';
+import { ResolverCache, resolveAsync, resolveSync } from './resolver/resolver';
 import { generateBenchmarkInterface } from './utils/benchmark';
 import { Module } from './types/module';
 import {
@@ -193,7 +193,7 @@ export default class Manager implements IEvaluator {
   // All paths are resolved at least twice: during transpilation and evaluation.
   // We can improve performance by almost 2x in this scenario if we cache the lookups
   cachedPaths: { [path: string]: { [path: string]: string } };
-  resolverPackageCache: PackageCache;
+  resolverCache: ResolverCache;
 
   configurations: ParsedConfigurationFiles;
 
@@ -225,7 +225,7 @@ export default class Manager implements IEvaluator {
     this.stage = 'transpilation';
     this.version = options.versionIdentifier;
     this.esmodules = new Map();
-    this.resolverPackageCache = new Map();
+    this.resolverCache = new Map();
 
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
@@ -283,7 +283,7 @@ export default class Manager implements IEvaluator {
   // Call this whenever the file structure or modules change, so before each compilation...
   resetResolverCache() {
     this.cachedPaths = {};
-    this.resolverPackageCache = new Map();
+    this.resolverCache = new Map();
   }
 
   async evaluate(path: string, baseTModule?: TranspiledModule): Promise<any> {
@@ -830,7 +830,7 @@ export default class Manager implements IEvaluator {
           isFile: this.isFile,
           readFile: this.readFile,
           moduleDirectories: this.getModuleDirectories(),
-          packageCache: this.resolverPackageCache,
+          resolverCache: this.resolverCache,
         });
 
         endMeasure(measureKey, { silent: true, lastTime: measureStartTime });
@@ -975,7 +975,7 @@ export default class Manager implements IEvaluator {
           isFile: this.isFile,
           readFile: this.readFile,
           moduleDirectories: this.getModuleDirectories(),
-          packageCache: this.resolverPackageCache,
+          resolverCache: this.resolverCache,
         });
         endMeasure(measureKey, { silent: true, lastTime: measureStartTime });
 

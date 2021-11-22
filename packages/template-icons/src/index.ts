@@ -41,6 +41,7 @@ import { PrismaIcon } from './PrismaIcon';
 import { QuasarIcon } from './QuasarIcon';
 import { RazzleIcon } from './RazzleIcon';
 import { ReactIcon } from './ReactIcon';
+import { RemixIcon } from './RemixIcon';
 import { ReasonIcon } from './ReasonIcon';
 import { RollupIcon } from './RollupIcon';
 import { SapperIcon } from './SapperIcon';
@@ -101,6 +102,7 @@ export const ColorIcons = {
   RazzleIcon,
   ReactIcon,
   ReasonIcon,
+  RemixIcon,
   RollupIcon,
   SapperIcon,
   ServerlessIcon,
@@ -161,6 +163,7 @@ export const Icons = {
   RazzleIcon,
   ReactIcon,
   ReasonIcon,
+  RemixIcon,
   RollupIcon,
   SapperIcon,
   ServerlessIcon,
@@ -220,6 +223,7 @@ export { QuasarIcon } from './QuasarIcon';
 export { RazzleIcon } from './RazzleIcon';
 export { ReactIcon } from './ReactIcon';
 export { ReasonIcon } from './ReasonIcon';
+export { RemixIcon } from './RemixIcon';
 export { RollupIcon } from './RollupIcon';
 export { SapperIcon } from './SapperIcon';
 export { ServerlessIcon } from './ServerlessIcon';

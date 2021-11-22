@@ -1,23 +1,23 @@
-// @flow
-import type { Module } from '@codesandbox/common/lib/types';
+// import type { Module } from '@codesandbox/common/lib/types';
 
-type Suggestion = {
-  title: string,
-  action: Function,
-};
+// type Suggestion = {
+//   title: string,
+//   action: Function,
+// };
+
 const ErrorClass = Error;
 
 export default class SandboxError extends ErrorClass {
-  severity: 'error' | 'warning';
-  type: string;
-  module: Module;
-  payload: ?Object;
-  suggestions: Array<Suggestion>;
+  // severity: 'error' | 'warning';
+  // type: string;
+  // module: Module;
+  // payload: ?Object;
+  // suggestions: Array<Suggestion>;
 
-  suggestions = [];
-
-  constructor(error: ?Error) {
+  constructor(error /*: ?Error */) {
     super(error ? error.message : null);
+
+    this.suggestions = [];
 
     if (error) {
       this.fileName = error.fileName;

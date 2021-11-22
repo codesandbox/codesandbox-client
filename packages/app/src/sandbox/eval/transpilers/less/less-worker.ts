@@ -5,12 +5,19 @@ import FileManager from './file-manager';
 
 const childHandler = new ChildHandler('less-worker');
 
+export interface LessLibrary {
+  render: (code: string, opts: Record<string, any>) => Promise<{ css: string }>;
+}
+
+// @ts-ignore
 self.less = {
   env: 'development',
 };
 
 // Stub window for less....
+// @ts-ignore
 self.window = self;
+// @ts-ignore
 self.window.document = {
   currentScript: { async: true },
   createElement: () => ({ appendChild: () => {} }),
@@ -21,18 +28,31 @@ self.window.document = {
 
 // self.importScripts('https://cdn.jsdelivr.net/npm/less@4.1.1/dist/less.min.js');
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST || ''}/static/js/less.min.js`
+  `${process.env.CODESANDBOX_HOST || ''}/static/js/less-4.1.2.min.js`
 );
 
-declare var less: {
-  render: (code: string) => Promise<string>,
-};
+interface ILessCompileOptions {
+  code: string;
+  path: string;
+  files: Record<string, string>;
+  loaderContextId: number;
+}
 
-async function workerCompile(opts) {
-  const { code, path, files } = opts;
+export interface ILessLoaderContext {
+  loaderContextId: number;
+  files: Record<string, string>;
+  addDependency: (path: string) => void;
+  childHandler: ChildHandler;
+}
+
+async function workerCompile(opts: ILessCompileOptions) {
+  const { code, path, files, loaderContextId } = opts;
 
   const transpilationDependencies = [];
-  const context = {
+  const context: ILessLoaderContext = {
+    files,
+    loaderContextId,
+    childHandler,
     addDependency: depPath => {
       transpilationDependencies.push({
         path: depPath,
@@ -44,9 +64,11 @@ async function workerCompile(opts) {
   const cleanCode = code.replace(/^\n$/gm, '');
 
   // register a custom importer callback
-  const { css } = await less.render(cleanCode, {
+  // @ts-ignore
+  const lessLibrary: LessLibrary = less;
+  const { css } = await lessLibrary.render(cleanCode, {
     filename: path,
-    plugins: [FileManager(context, files)],
+    plugins: [FileManager(context)],
   });
 
   return {

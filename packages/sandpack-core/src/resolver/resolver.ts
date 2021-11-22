@@ -1,22 +1,19 @@
 /* eslint-disable no-else-return */
 /* eslint-disable no-continue */
-import gensync, { Gensync } from 'gensync';
+import gensync from 'gensync';
 import micromatch from 'micromatch';
 
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import { ModuleNotFoundError } from './errors/ModuleNotFound';
+import { ProcessedPackageJSON, processPackageJSON } from './utils/pkg-json';
+import { isFile, FnIsFile, FnReadFile, getParentDirectories } from './utils/fs';
+import {
+  ProcessedTSConfig,
+  processTSConfig,
+  getPotentialPathsFromTSConfig,
+} from './utils/tsconfig';
 
-const EMPTY_SHIM = '//empty.js';
-
-// alias/exports/main keys, sorted from high to low priority
-const EXPORTS_KEYS = ['browser', 'development', 'default', 'require', 'import'];
-const MAIN_PKG_FIELDS = ['module', 'browser', 'main', 'jsnext:main'];
-const PKG_ALIAS_FIELDS = ['browser', 'alias'];
-
-export type PackageCache = Map<string, any>;
-
-export type FnIsFile = Gensync<(filepath: string) => boolean>;
-export type FnReadFile = Gensync<(filepath: string) => string>;
+export type ResolverCache = Map<string, any>;
 
 export interface IResolveOptionsInput {
   filename: string;
@@ -24,45 +21,12 @@ export interface IResolveOptionsInput {
   isFile: FnIsFile;
   readFile: FnReadFile;
   moduleDirectories?: string[];
-  packageCache?: PackageCache;
+  resolverCache?: ResolverCache;
 }
 
 interface IResolveOptions extends IResolveOptionsInput {
   moduleDirectories: string[];
-  packageCache: PackageCache;
-}
-
-export function getParentDirectories(
-  filepath: string,
-  rootDir: string = '/'
-): string[] {
-  const parts = filepath.split('/');
-  const directories = [];
-  while (parts.length > 0) {
-    const directory = parts.join('/') || '/';
-    // Test /foo vs /foo-something - /foo-something is not in rootDir
-    if (directory.length < rootDir.length || !directory.startsWith(rootDir)) {
-      break;
-    }
-    directories.push(directory);
-    parts.pop();
-  }
-  return directories;
-}
-
-function normalizeAliasFilePath(
-  specifier: string,
-  pkgRoot: string,
-  // This can be set to false to fallback to returning the specifier in case it can be a node_module
-  isFilePath: boolean = true
-): string {
-  if (specifier[0] === '/') {
-    return specifier;
-  }
-  if (specifier[0] === '.' || isFilePath) {
-    return pathUtils.join(pkgRoot, specifier);
-  }
-  return specifier;
+  resolverCache: ResolverCache;
 }
 
 function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
@@ -79,118 +43,8 @@ function normalizeResolverOptions(opts: IResolveOptionsInput): IResolveOptions {
     isFile: opts.isFile,
     readFile: opts.readFile,
     moduleDirectories: [...normalizedModuleDirectories],
-    packageCache: opts.packageCache || new Map(),
+    resolverCache: opts.resolverCache || new Map(),
   };
-}
-
-type AliasesDict = { [key: string]: string };
-interface ProcessedPackageJSON {
-  aliases: AliasesDict;
-}
-
-function normalizePackageExport(filepath: string, pkgRoot: string): string {
-  return normalizeAliasFilePath(filepath.replace(/\*/g, '$1'), pkgRoot);
-}
-
-type PackageExportObj = {
-  [key: string]: string | null | false | PackageExportType;
-};
-
-type PackageExportArr = Array<PackageExportObj | string>;
-
-type PackageExportType =
-  | string
-  | null
-  | false
-  | PackageExportObj
-  | PackageExportArr;
-
-function extractPathFromExport(
-  exportValue: PackageExportType,
-  pkgRoot: string
-): string | false {
-  if (!exportValue) {
-    return false;
-  } else if (typeof exportValue === 'string') {
-    return normalizePackageExport(exportValue, pkgRoot);
-  } else if (Array.isArray(exportValue)) {
-    const foundPaths = exportValue
-      .map(v => extractPathFromExport(v, pkgRoot))
-      .filter(Boolean);
-    if (!foundPaths.length) {
-      return false;
-    } else {
-      return foundPaths[0];
-    }
-  } else if (typeof exportValue === 'object') {
-    for (const key of EXPORTS_KEYS) {
-      const exportFilename = exportValue[key];
-      if (exportFilename !== undefined) {
-        if (typeof exportFilename === 'string') {
-          return normalizePackageExport(exportFilename, pkgRoot);
-        } else {
-          return extractPathFromExport(exportFilename, pkgRoot);
-        }
-      }
-    }
-    return false;
-  } else {
-    throw new Error(`Unsupported export type ${typeof exportValue}`);
-  }
-}
-
-export function _processPackageJSON(
-  content: any,
-  pkgRoot: string
-): ProcessedPackageJSON {
-  if (!content || typeof content !== 'object') {
-    return { aliases: {} };
-  }
-
-  const aliases: AliasesDict = {};
-  for (const mainField of MAIN_PKG_FIELDS) {
-    if (typeof content[mainField] === 'string') {
-      aliases[pkgRoot] = normalizeAliasFilePath(content[mainField], pkgRoot);
-      break;
-    }
-  }
-
-  if (content.browser === false) {
-    aliases[pkgRoot] = EMPTY_SHIM;
-  }
-
-  for (const aliasFieldKey of PKG_ALIAS_FIELDS) {
-    const aliasField = content[aliasFieldKey];
-    if (typeof aliasField === 'object') {
-      for (const key of Object.keys(aliasField)) {
-        const val = aliasField[key] || EMPTY_SHIM;
-        const normalizedKey = normalizeAliasFilePath(key, pkgRoot, false);
-        const normalizedValue = normalizeAliasFilePath(val, pkgRoot, false);
-        aliases[normalizedKey] = normalizedValue;
-
-        if (aliasFieldKey !== 'browser') {
-          aliases[`${normalizedKey}/*`] = `${normalizedValue}/$1`;
-        }
-      }
-    }
-  }
-
-  if (content.exports) {
-    if (typeof content.exports === 'string') {
-      aliases[pkgRoot] = normalizeAliasFilePath(content.exports, pkgRoot);
-    } else if (typeof content.exports === 'object') {
-      for (const exportKey of Object.keys(content.exports)) {
-        const exportValue = extractPathFromExport(
-          content.exports[exportKey],
-          pkgRoot
-        );
-        const normalizedKey = normalizeAliasFilePath(exportKey, pkgRoot);
-        aliases[normalizedKey] = exportValue || EMPTY_SHIM;
-      }
-    }
-  }
-
-  return { aliases };
 }
 
 interface IFoundPackageJSON {
@@ -206,16 +60,16 @@ function* loadPackageJSON(
   const directories = getParentDirectories(filepath, rootDir);
   for (const directory of directories) {
     const packageFilePath = pathUtils.join(directory, 'package.json');
-    let packageContent = opts.packageCache.get(packageFilePath);
+    let packageContent = opts.resolverCache.get(packageFilePath);
     if (packageContent === undefined) {
       try {
-        packageContent = _processPackageJSON(
+        packageContent = processPackageJSON(
           JSON.parse(yield* opts.readFile(packageFilePath)),
           pathUtils.dirname(packageFilePath)
         );
-        opts.packageCache.set(packageFilePath, packageContent);
+        opts.resolverCache.set(packageFilePath, packageContent);
       } catch (err) {
-        opts.packageCache.set(packageFilePath, false);
+        opts.resolverCache.set(packageFilePath, false);
       }
     }
     if (packageContent) {
@@ -240,7 +94,7 @@ function resolveFile(filepath: string, dir: string): string {
   }
 }
 
-function loadAlias(pkgJson: IFoundPackageJSON, filename: string): string {
+function resolveAlias(pkgJson: IFoundPackageJSON, filename: string): string {
   const aliases = pkgJson.content.aliases;
 
   let relativeFilepath = filename;
@@ -301,7 +155,7 @@ function* resolveModule(
     isAbsoluteFilename ? filename : opts.filename,
     opts
   );
-  return loadAlias(pkgJson, filename);
+  return resolveAlias(pkgJson, filename);
 }
 
 const extractPkgSpecifierParts = (specifier: string) => {
@@ -382,7 +236,7 @@ function* expandFile(
 
   for (const ext of opts.extensions) {
     const f = filepath + ext;
-    const aliasedPath = loadAlias(pkg, f);
+    const aliasedPath = resolveAlias(pkg, f);
     if (aliasedPath === f) {
       const exists = yield* isFile(f, opts.isFile);
       if (exists) {
@@ -402,22 +256,43 @@ function* expandFile(
   return null;
 }
 
-function* isFile(
-  filepath: string,
-  isFileFn: FnIsFile
-): Generator<any, boolean, any> {
-  if (filepath === EMPTY_SHIM) {
-    return true;
-  }
-  return yield* isFileFn(filepath);
-}
-
 export function normalizeModuleSpecifier(specifier: string): string {
   const normalized = specifier.replace(/(\/|\\)+/g, '/');
   if (normalized.endsWith('/')) {
     return normalized.substring(0, normalized.length - 1);
   }
   return normalized;
+}
+
+const TS_CONFIG_CACHE_KEY = '__root_tsconfig';
+function* getTSConfig(
+  opts: IResolveOptions
+): Generator<any, ProcessedTSConfig | false, any> {
+  const cachedConfig = opts.resolverCache.get(TS_CONFIG_CACHE_KEY);
+  if (cachedConfig != null) {
+    return cachedConfig;
+  }
+
+  let config: ProcessedTSConfig | false = false;
+  try {
+    const contents = yield* opts.readFile('/tsconfig.json');
+    const processed = processTSConfig(contents);
+    if (processed) {
+      config = processed;
+    }
+  } catch (err) {
+    try {
+      const contents = yield* opts.readFile('/jsconfig.json');
+      const processed = processTSConfig(contents);
+      if (processed) {
+        config = processed;
+      }
+    } catch {
+      // do nothing
+    }
+  }
+  opts.resolverCache.set(TS_CONFIG_CACHE_KEY, config);
+  return config;
 }
 
 export const resolver = gensync<
@@ -428,6 +303,24 @@ export const resolver = gensync<
   const modulePath = yield* resolveModule(normalizedSpecifier, opts);
 
   if (modulePath[0] !== '/') {
+    // This isn't a node module, we can attempt to resolve using a tsconfig/jsconfig
+    if (!opts.filename.includes('/node_modules')) {
+      const parsedTSConfig = yield* getTSConfig(opts);
+      if (parsedTSConfig) {
+        const potentialPaths = getPotentialPathsFromTSConfig(
+          modulePath,
+          parsedTSConfig
+        );
+        for (const potentialPath of potentialPaths) {
+          try {
+            return yield* resolve(potentialPath, opts);
+          } catch {
+            // do nothing, it's probably a node_module in this case
+          }
+        }
+      }
+    }
+
     try {
       return yield* resolveNodeModule(modulePath, opts);
     } catch (e) {
