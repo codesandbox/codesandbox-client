@@ -17,6 +17,7 @@ import { FeathersIcon } from './FeathersIcon';
 import { GatsbyIcon } from './GatsbyIcon';
 import { GlimmerIcon } from './GlimmerIcon';
 import { GridsomeIcon } from './GridsomeIcon';
+import { GSAPIcon } from './GSAPIcon';
 import { HapiIcon } from './HapiIcon';
 import { HTML5Icon } from './HTML5Icon';
 import { HyperappIcon } from './HyperappIcon';
@@ -77,6 +78,7 @@ export const ColorIcons = {
   GitHubIcon,
   GlimmerIcon,
   GridsomeIcon,
+  GSAPIcon,
   HapiIcon,
   HTML5Icon,
   HyperappIcon,
@@ -137,6 +139,7 @@ export const Icons = {
   GitHubIcon,
   GlimmerIcon,
   GridsomeIcon,
+  GSAPIcon,
   HapiIcon,
   HTML5Icon,
   HyperappIcon,
@@ -195,6 +198,7 @@ export { FeathersIcon } from './FeathersIcon';
 export { GatsbyIcon } from './GatsbyIcon';
 export { GlimmerIcon } from './GlimmerIcon';
 export { GridsomeIcon } from './GridsomeIcon';
+export { GSAPIcon } from './GSAPIcon';
 export { HapiIcon } from './HapiIcon';
 export { HTML5Icon } from './HTML5Icon';
 export { GitHubIcon } from './GitHubIcon';

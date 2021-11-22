@@ -118,6 +118,7 @@ export default function getIcon(theme: TemplateType) {
       return QuasarIcon;
     case unibit.name:
       return UnibitIcon;
+
     default:
       return ReactIcon;
   }
