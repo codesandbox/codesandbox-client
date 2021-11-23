@@ -185,7 +185,7 @@ export default class Manager implements IEvaluator {
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: {
-    [transpiledModuleId: string]: true | Promise<TranspiledModule>;
+    [transpiledModuleId: string]: Promise<TranspiledModule>;
   };
 
   transpiledModulesByHash: { [hash: string]: TranspiledModule };
@@ -1298,14 +1298,9 @@ export default class Manager implements IEvaluator {
     this.hardReload = true;
   }
 
-  async serialize(
-    {
-      entryPath,
-      optimizeForSize,
-    }: { entryPath?: string; optimizeForSize: boolean } = {
-      optimizeForSize: true,
-    }
-  ): Promise<ManagerCache> {
+  async serialize({ entryPath }: { entryPath?: string } = {}): Promise<
+    ManagerCache
+  > {
     const serializedTModules: { [id: string]: SerializedTranspiledModule } = {};
 
     await Promise.all(
@@ -1320,9 +1315,7 @@ export default class Manager implements IEvaluator {
                 tModule.module.downloaded
               ) {
                 // Only save modules that are not precomputed
-                serializedTModules[tModule.getId()] = await tModule.serialize(
-                  optimizeForSize
-                );
+                serializedTModules[tModule.getId()] = await tModule.serialize();
               }
             }
           )
@@ -1407,7 +1400,6 @@ export default class Manager implements IEvaluator {
           // First create tModules for all the saved modules, so we have references
           Object.keys(serializedTModules).forEach(id => {
             const sTModule = serializedTModules[id];
-
             const tModule = this.addTranspiledModule(
               sTModule.module,
               sTModule.query
@@ -1418,7 +1410,6 @@ export default class Manager implements IEvaluator {
           await Promise.all(
             Object.keys(tModules).map(id => {
               const tModule = tModules[id];
-
               return tModule.load(serializedTModules[id], tModules, this);
             })
           );

@@ -21,7 +21,6 @@ import evaluate from '../runner/eval';
 import Manager, { HMRStatus } from '../manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
-import delay from '../utils/delay';
 import { getModuleUrl } from './module-url';
 
 declare const BrowserFS: any;
@@ -549,33 +548,7 @@ export class TranspiledModule {
     this.isTestFile = isTestFile;
   }
 
-  /**
-   * Transpile the module, it takes in all loaders from the default loaders +
-   * query string and passes the result from loader to loader. During transpilation
-   * dependencies can be added, these dependencies will be transpiled concurrently
-   * after the initial transpilation finished.
-   * @param {*} manager
-   */
-  async doTranspile(manager: Manager): Promise<TranspiledModule> {
-    this.hasMissingDependencies = false;
-
-    // Remove this module from the initiators of old deps, so we can populate a
-    // fresh cache
-    this.dependencies.forEach(tModule => {
-      tModule.initiators.delete(this);
-    });
-    this.transpilationDependencies.forEach(tModule => {
-      tModule.transpilationInitiators.delete(this);
-    });
-    this.childModules.forEach(tModule => {
-      tModule.dispose(manager);
-    });
-    this.dependencies.clear();
-    this.transpilationDependencies.clear();
-    this.childModules.length = 0;
-    this.errors = [];
-    this.warnings = [];
-
+  private async transpileCode(manager: Manager): Promise<TranspiledModule> {
     let code = this.module.code || '';
     let finalSourceMap = null;
 
@@ -684,6 +657,40 @@ export class TranspiledModule {
       }
     }
 
+    return this;
+  }
+
+  /**
+   * Transpile the module, it takes in all loaders from the default loaders +
+   * query string and passes the result from loader to loader. During transpilation
+   * dependencies can be added, these dependencies will be transpiled concurrently
+   * after the initial transpilation finished.
+   * @param {*} manager
+   */
+  private async _transpileModule(manager: Manager): Promise<TranspiledModule> {
+    this.hasMissingDependencies = false;
+
+    // Remove this module from the initiators of old deps, so we can populate a
+    // fresh cache
+    this.dependencies.forEach(tModule => {
+      tModule.initiators.delete(this);
+    });
+    this.transpilationDependencies.forEach(tModule => {
+      tModule.transpilationInitiators.delete(this);
+    });
+    this.childModules.forEach(tModule => {
+      tModule.dispose(manager);
+    });
+    this.dependencies.clear();
+    this.transpilationDependencies.clear();
+    this.childModules.length = 0;
+    this.errors = [];
+    this.warnings = [];
+
+    if (!this.source) {
+      await this.transpileCode(manager);
+    }
+
     await Promise.all(
       this.asyncDependencies.map(async p => {
         try {
@@ -710,48 +717,20 @@ export class TranspiledModule {
   }
 
   transpile(manager: Manager): Promise<TranspiledModule> {
-    if (this.source) {
-      return Promise.resolve(this);
-    }
-
     const id = this.getId();
-    if (manager.transpileJobs[id]) {
-      if (manager.transpileJobs[id] === true) {
-        // Is currently being transpiled, and the promise hasn't been set yet
-        // because it is working on executing the promise. This rare case only
-        // happens when we have a dependency loop, which could result in a
-        // StackTraceOverflow. Dependency loop: A -> B -> C -> A -> B -> C
-        // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve, reject) => {
-          while (!this.source && manager.transpileJobs[id] === true) {
-            // eslint-disable-next-line
-            await delay(10);
-          }
 
-          const foundTranspileJob = manager.transpileJobs[id];
-          if (foundTranspileJob !== true) {
-            try {
-              const result = await foundTranspileJob;
-              resolve(result);
-            } catch (err) {
-              reject(err);
-            }
-          } else {
-            resolve(this);
-          }
-        });
-      }
+    // @ts-ignore
+    if (manager.transpileJobs[id]) {
       return manager.transpileJobs[id] as Promise<this>;
     }
 
-    manager.transpileJobs[id] = true;
+    const transpilationJob = this._transpileModule(manager).finally(() => {
+      delete manager.transpileJobs[id];
+    });
 
-    // eslint-disable-next-line
-    return (manager.transpileJobs[id] = this.doTranspile(manager)).finally(
-      () => {
-        delete manager.transpileJobs[id];
-      }
-    );
+    manager.transpileJobs[id] = transpilationJob;
+
+    return transpilationJob;
   }
 
   logWarnings = () => {
@@ -825,7 +804,7 @@ export class TranspiledModule {
           this.query ? `?${this.hash}` : ''
         }`;
 
-        this.source = new ModuleSource(this.module.path, code, null);
+        this.source = new ModuleSource(this.module.path, code, null, true);
 
         if (initiator) {
           initiator.dependencies.add(this);
@@ -1122,9 +1101,7 @@ export class TranspiledModule {
     }
   }
 
-  async serialize(
-    optimizeForSize: boolean = true
-  ): Promise<SerializedTranspiledModule> {
+  async serialize(): Promise<SerializedTranspiledModule> {
     const sourceEqualsCompiled = Boolean(
       this.source && this.source.sourceEqualsCompiled
     );
@@ -1152,13 +1129,7 @@ export class TranspiledModule {
       source: null,
     };
 
-    const isNpmDependency = this.module.path.startsWith('/node_modules/');
-    const canOptimizeSize = sourceEqualsCompiled && optimizeForSize;
-    // Don't cache source if it didn't change, also don't cache changed source from npm
-    // dependencies as we can compile those really quickly.
-    const shouldCacheTranspiledSource = !canOptimizeSize && !isNpmDependency;
-
-    if (shouldCacheTranspiledSource) {
+    if (!sourceEqualsCompiled) {
       serializableObject.source = this.source || null;
     }
 
