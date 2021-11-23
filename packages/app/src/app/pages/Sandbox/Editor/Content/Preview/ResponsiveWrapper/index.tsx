@@ -211,7 +211,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
               (
               {Math.ceil(scale * 100) === 100
                 ? '1x'
-                : `0.${Math.ceil(scale * 100)}x`}
+                : `${(Math.ceil(scale * 100) / 100).toFixed(2)}x`}
               )
             </Text>
           </Stack>

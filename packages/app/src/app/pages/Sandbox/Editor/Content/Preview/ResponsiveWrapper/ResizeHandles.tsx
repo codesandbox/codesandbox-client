@@ -80,11 +80,11 @@ const resize = (
     );
     const width =
       'x' in initialMousePosition
-        ? initialWidth - (initialMousePosition.x - maxClientX) * (2 - scale) * 2
+        ? initialWidth - (initialMousePosition.x - maxClientX) * (1 / scale) * 2
         : resolution[0];
     const height =
       'y' in initialMousePosition
-        ? initialHeight - (initialMousePosition.y - maxClientY) * (2 - scale)
+        ? initialHeight - (initialMousePosition.y - maxClientY) * (1 / scale)
         : resolution[1];
     const positiveWidth = width > MIN_SIZE_X ? width : MIN_SIZE_X;
     const positiveHeight = height > MIN_SIZE_Y ? height : MIN_SIZE_Y;
