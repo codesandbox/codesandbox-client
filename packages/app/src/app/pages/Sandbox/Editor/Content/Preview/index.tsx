@@ -83,6 +83,7 @@ export const Preview: FunctionComponent<Props> = ({
       noPreview={!previewWindowVisible}
       onToggleProjectView={projectViewToggled}
       Wrapper={ResponsiveWrapper}
+      isResponsivePreviewResizing={preview.responsive.isResizing}
       isResponsiveModeActive={
         preview.mode === 'responsive' ||
         preview.mode === 'responsive-add-comment'

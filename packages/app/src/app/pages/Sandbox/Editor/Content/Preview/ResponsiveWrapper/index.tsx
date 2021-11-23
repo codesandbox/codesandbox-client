@@ -43,6 +43,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
     openAddPresetModal,
     setResolution,
     toggleEditPresets,
+    setIsResizing
   } = useActions().preview;
 
   const theme = useTheme();
@@ -242,6 +243,7 @@ export const ResponsiveWrapper = ({ children }: ResponsiveWrapperProps) => {
         widthAndHeightResizer={widthAndHeightResizer}
         widthResizer={widthResizer}
         heightResizer={heightResizer}
+        setIsResizing={setIsResizing}
       >
         <PreviewCommentWrapper scale={on ? scale : 1}>
           {children}

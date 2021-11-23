@@ -52,6 +52,7 @@ export type Props = {
   overlayMessage?: string;
   Wrapper?: React.FC<{ children: any }>;
   isResponsiveModeActive?: boolean;
+  isResponsivePreviewResizing?: boolean;
   isPreviewCommentModeActive?: boolean;
   toggleResponsiveMode?: () => void;
   createPreviewComment?: () => void;
@@ -638,8 +639,9 @@ class BasePreview extends React.PureComponent<Props, State> {
                     ...style,
                     zIndex: 1,
                     backgroundColor: 'white',
+                    userSelect: this.props.isResponsivePreviewResizing ? "none" : "initial",
                     pointerEvents:
-                      dragging || inactive || this.props.isResizing
+                      dragging || inactive || this.props.isResizing || this.props.isResponsivePreviewResizing
                         ? 'none'
                         : 'initial',
                   }}
