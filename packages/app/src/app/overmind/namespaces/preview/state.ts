@@ -10,6 +10,7 @@ type State = {
     presets: Presets;
     scale: number;
     resolution: [number, number];
+    isResizing: boolean;
   };
   screenshot: {
     source: string | null;
@@ -37,6 +38,7 @@ export const state: State = {
     ),
     scale: 100,
     resolution: [320, 675],
+    isResizing: false
   },
   screenshot: {
     source: null,
