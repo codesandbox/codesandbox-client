@@ -844,7 +844,7 @@ async function compile(opts: CompileOptions) {
 
     if (manager) {
       const managerState = {
-        ...(await manager.serialize({ optimizeForSize: false })),
+        ...(await manager.serialize()),
       };
       delete managerState.cachedPaths;
       managerState.entry = managerModuleToTranspile
@@ -901,7 +901,7 @@ let runningTask = null;
 async function executeTaskIfAvailable() {
   if (tasks.length) {
     runningTask = tasks.pop();
-    await compile(runningTask);
+    await compile(runningTask).catch(console.error);
     runningTask = null;
 
     executeTaskIfAvailable();
