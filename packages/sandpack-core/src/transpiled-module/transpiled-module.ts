@@ -701,7 +701,10 @@ export class TranspiledModule {
   }
 
   transpile(manager: Manager): Promise<TranspiledModule> {
-    // TODO: This also skips dependency transpilation...
+    // TODO: Rework this into
+    // - A queue that does code transpilation per module
+    // - This function triggering the code compilation of this module and all it's dependencies
+    // - awaiting all the transpilations of this queue and returning when it's all done
     if (this.source) {
       return Promise.resolve(this);
     }
