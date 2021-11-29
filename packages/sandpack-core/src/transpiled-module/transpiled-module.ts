@@ -1118,10 +1118,8 @@ export class TranspiledModule {
     };
 
     if (!sourceEqualsCompiled) {
-      if (!this.source) {
-        throw new Error(`Cannot serialize non-compiled module ${this.getId()}`);
-      }
-      serializableObject.source = this.source;
+      // source can be null if module is not transpiled, i.e. included in other transpiled module (for example .scss files)
+      serializableObject.source = this.source || null;
     }
 
     return serializableObject;
@@ -1146,10 +1144,8 @@ export class TranspiledModule {
         true
       );
     } else {
-      if (!data.source) {
-        throw new Error(`Module ${this.getId()} has no compilation cached`);
-      }
-      this.source = data.source;
+      // source can be null if module is not transpiled, i.e. included in other transpiled module (for example .scss files)
+      this.source = data.source || null;
     }
 
     const getModule = (depId: string) => {
