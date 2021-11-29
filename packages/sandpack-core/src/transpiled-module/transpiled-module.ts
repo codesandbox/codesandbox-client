@@ -651,20 +651,11 @@ export class TranspiledModule {
       this.logWarnings();
     }
 
-    const sourceEqualsCompiled = code === this.module.code;
-    const sourceURL = `//# sourceURL=${location.origin}${this.module.path}${
-      this.query ? `?${this.hash}` : ''
-    }`;
-
-    // Add the source of the file by default, this is important for source mapping
-    // errors back to their origin
-    code = `${code}\n${sourceURL}`;
-
     this.source = new ModuleSource(
       this.module.path,
       code,
       finalSourceMap,
-      sourceEqualsCompiled
+      code === this.module.code
     );
 
     if (
@@ -793,52 +784,18 @@ export class TranspiledModule {
     }: { asUMD?: boolean; force?: boolean; globals?: any } = {},
     initiator?: TranspiledModule
   ) {
+    // empty module
+    if (this.module.path === '/node_modules/empty/index.js') {
+      return {};
+    }
+
     // Just let the browser reload...
     if (manager.isReloading) {
       return {};
     }
 
     if (this.source == null) {
-      if (this.module.path === '/node_modules/empty/index.js') {
-        return {};
-      }
-
-      // TODO: Never return untranspiled modules, as these can always have side-effects...
-      if (
-        this.module.path.startsWith('/node_modules') &&
-        !this.module.path.endsWith('.vue')
-      ) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn(
-            `[WARN] Sandpack: loading an untranspiled module: ${this.module.path}`
-          );
-        }
-        // This code is probably required as a dynamic require. Since we can
-        // assume that node_modules dynamic requires are only done for node
-        // utilites we will just set the transpiled code according to how
-        // node handles that.
-
-        let code = this.module.path.endsWith('.json')
-          ? `module.exports = JSON.parse(${JSON.stringify(this.module.code)})`
-          : this.module.code;
-
-        code += `\n//# sourceURL=${location.origin}${this.module.path}${
-          this.query ? `?${this.hash}` : ''
-        }`;
-
-        this.source = new ModuleSource(this.module.path, code, null, true);
-
-        if (initiator) {
-          initiator.dependencies.add(this);
-          this.initiators.add(initiator);
-        }
-      } else {
-        // This scenario only happens when we are in an inconsistent state, the quickest way to solve
-        // this state is to just hard reload everything.
-        manager.clearCache();
-
-        throw new Error(`${this.getId()} hasn't been transpiled yet.`);
-      }
+      throw new Error(`${this.getId()} hasn't been transpiled yet.`);
     }
 
     const localModule = this.module;
@@ -1063,8 +1020,14 @@ export class TranspiledModule {
           .evaluate(path, this)
           .then(result => interopRequireWildcard(result));
 
+      const code =
+        this.source.compiledCode +
+        `\n//# sourceURL=${location.origin}${this.module.path}${
+          this.query ? `?${this.hash}` : ''
+        }`;
+
       const exports = evaluate(
-        this.source.compiledCode,
+        code,
         require,
         this.compilation,
         manager.envVariables,
