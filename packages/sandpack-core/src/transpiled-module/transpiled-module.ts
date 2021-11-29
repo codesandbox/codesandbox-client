@@ -22,6 +22,7 @@ import Manager, { HMRStatus } from '../manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 import { getModuleUrl } from './module-url';
+import delay from '../utils/delay';
 
 declare const BrowserFS: any;
 
@@ -548,7 +549,33 @@ export class TranspiledModule {
     this.isTestFile = isTestFile;
   }
 
-  private async transpileCode(manager: Manager): Promise<TranspiledModule> {
+  /**
+   * Transpile the module, it takes in all loaders from the default loaders +
+   * query string and passes the result from loader to loader. During transpilation
+   * dependencies can be added, these dependencies will be transpiled concurrently
+   * after the initial transpilation finished.
+   * @param {*} manager
+   */
+  private async _transpile(manager: Manager): Promise<TranspiledModule> {
+    this.hasMissingDependencies = false;
+
+    // Remove this module from the initiators of old deps, so we can populate a
+    // fresh cache
+    this.dependencies.forEach(tModule => {
+      tModule.initiators.delete(this);
+    });
+    this.transpilationDependencies.forEach(tModule => {
+      tModule.transpilationInitiators.delete(this);
+    });
+    this.childModules.forEach(tModule => {
+      tModule.dispose(manager);
+    });
+    this.dependencies.clear();
+    this.transpilationDependencies.clear();
+    this.childModules.length = 0;
+    this.errors = [];
+    this.warnings = [];
+
     let code = this.module.code || '';
     let finalSourceMap = null;
 
@@ -657,40 +684,6 @@ export class TranspiledModule {
       }
     }
 
-    return this;
-  }
-
-  /**
-   * Transpile the module, it takes in all loaders from the default loaders +
-   * query string and passes the result from loader to loader. During transpilation
-   * dependencies can be added, these dependencies will be transpiled concurrently
-   * after the initial transpilation finished.
-   * @param {*} manager
-   */
-  private async _transpileModule(manager: Manager): Promise<TranspiledModule> {
-    this.hasMissingDependencies = false;
-
-    // Remove this module from the initiators of old deps, so we can populate a
-    // fresh cache
-    this.dependencies.forEach(tModule => {
-      tModule.initiators.delete(this);
-    });
-    this.transpilationDependencies.forEach(tModule => {
-      tModule.transpilationInitiators.delete(this);
-    });
-    this.childModules.forEach(tModule => {
-      tModule.dispose(manager);
-    });
-    this.dependencies.clear();
-    this.transpilationDependencies.clear();
-    this.childModules.length = 0;
-    this.errors = [];
-    this.warnings = [];
-
-    if (!this.source) {
-      await this.transpileCode(manager);
-    }
-
     await Promise.all(
       this.asyncDependencies.map(async p => {
         try {
@@ -717,20 +710,49 @@ export class TranspiledModule {
   }
 
   transpile(manager: Manager): Promise<TranspiledModule> {
-    const id = this.getId();
+    // TODO: This also skips dependency transpilation...
+    if (this.source) {
+      return Promise.resolve(this);
+    }
 
-    // @ts-ignore
+    const id = this.getId();
     if (manager.transpileJobs[id]) {
+      if (manager.transpileJobs[id] === true) {
+        // Is currently being transpiled, and the promise hasn't been set yet
+        // because it is working on executing the promise. This rare case only
+        // happens when we have a dependency loop, which could result in a
+        // StackTraceOverflow. Dependency loop: A -> B -> C -> A -> B -> C
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+          while (!this.source && manager.transpileJobs[id] === true) {
+            // eslint-disable-next-line
+            await delay(10);
+          }
+
+          const foundTranspileJob = manager.transpileJobs[id];
+          if (foundTranspileJob !== true) {
+            try {
+              const result = await foundTranspileJob;
+              resolve(result);
+            } catch (err) {
+              reject(err);
+            }
+          } else {
+            resolve(this);
+          }
+        });
+      }
       return manager.transpileJobs[id] as Promise<this>;
     }
 
-    const transpilationJob = this._transpileModule(manager).finally(() => {
-      delete manager.transpileJobs[id];
-    });
+    manager.transpileJobs[id] = true;
 
-    manager.transpileJobs[id] = transpilationJob;
-
-    return transpilationJob;
+    // eslint-disable-next-line
+    return (manager.transpileJobs[id] = this._transpile(manager)).finally(
+      () => {
+        delete manager.transpileJobs[id];
+      }
+    );
   }
 
   logWarnings = () => {

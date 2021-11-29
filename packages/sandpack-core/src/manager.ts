@@ -185,7 +185,7 @@ export default class Manager implements IEvaluator {
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: {
-    [transpiledModuleId: string]: Promise<TranspiledModule>;
+    [transpiledModuleId: string]: true | Promise<TranspiledModule>;
   };
 
   transpiledModulesByHash: { [hash: string]: TranspiledModule };
