@@ -1407,7 +1407,6 @@ export default class Manager implements IEvaluator {
           // First create tModules for all the saved modules, so we have references
           Object.keys(serializedTModules).forEach(id => {
             const sTModule = serializedTModules[id];
-
             const tModule = this.addTranspiledModule(
               sTModule.module,
               sTModule.query
@@ -1418,7 +1417,6 @@ export default class Manager implements IEvaluator {
           await Promise.all(
             Object.keys(tModules).map(id => {
               const tModule = tModules[id];
-
               return tModule.load(serializedTModules[id], tModules, this);
             })
           );

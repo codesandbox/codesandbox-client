@@ -901,7 +901,7 @@ let runningTask = null;
 async function executeTaskIfAvailable() {
   if (tasks.length) {
     runningTask = tasks.pop();
-    await compile(runningTask);
+    await compile(runningTask).catch(console.error);
     runningTask = null;
 
     executeTaskIfAvailable();
