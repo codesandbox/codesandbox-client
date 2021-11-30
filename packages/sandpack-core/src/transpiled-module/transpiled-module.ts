@@ -798,7 +798,33 @@ export class TranspiledModule {
     }
 
     if (this.source == null) {
-      throw new Error(`${this.getId()} hasn't been transpiled yet.`);
+      if (
+        this.module.path.startsWith('/node_modules') &&
+        !this.module.path.endsWith('.vue')
+      ) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(
+            `[WARN] Sandpack: loading an untranspiled module: ${this.module.path}`
+          );
+        }
+
+        const code = this.module.path.endsWith('.json')
+          ? `module.exports = JSON.parse(${JSON.stringify(this.module.code)})`
+          : this.module.code;
+
+        this.source = new ModuleSource(this.module.path, code, null);
+
+        if (initiator) {
+          initiator.dependencies.add(this);
+          this.initiators.add(initiator);
+        }
+      } else {
+        // This scenario only happens when we are in an inconsistent state, the quickest way to solve
+        // this state is to just hard reload everything.
+        manager.clearCache();
+
+        throw new Error(`${this.getId()} hasn't been transpiled yet.`);
+      }
     }
 
     const localModule = this.module;
@@ -1089,7 +1115,9 @@ export class TranspiledModule {
     }
   }
 
-  async serialize(): Promise<SerializedTranspiledModule> {
+  async serialize(
+    optimizeForSize: boolean = true
+  ): Promise<SerializedTranspiledModule> {
     const sourceEqualsCompiled = Boolean(
       this.source && this.source.sourceEqualsCompiled
     );
@@ -1117,7 +1145,12 @@ export class TranspiledModule {
       source: null,
     };
 
-    if (!sourceEqualsCompiled) {
+    const isNpmDependency = this.module.path.startsWith('/node_modules/');
+    const canOptimizeSize = sourceEqualsCompiled && optimizeForSize;
+    // Don't cache source if it didn't change, also don't cache changed source from npm
+    // dependencies as we can compile those really quickly.
+    const shouldCacheTranspiledSource = !canOptimizeSize && !isNpmDependency;
+    if (shouldCacheTranspiledSource) {
       // source can be null if module is not transpiled, i.e. included in other transpiled module (for example .scss files)
       serializableObject.source = this.source || null;
     }

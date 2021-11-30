@@ -1298,9 +1298,14 @@ export default class Manager implements IEvaluator {
     this.hardReload = true;
   }
 
-  async serialize({ entryPath }: { entryPath?: string } = {}): Promise<
-    ManagerCache
-  > {
+  async serialize(
+    {
+      entryPath,
+      optimizeForSize,
+    }: { entryPath?: string; optimizeForSize: boolean } = {
+      optimizeForSize: true,
+    }
+  ): Promise<ManagerCache> {
     const serializedTModules: { [id: string]: SerializedTranspiledModule } = {};
 
     await Promise.all(
@@ -1315,7 +1320,9 @@ export default class Manager implements IEvaluator {
                 tModule.module.downloaded
               ) {
                 // Only save modules that are not precomputed
-                serializedTModules[tModule.getId()] = await tModule.serialize();
+                serializedTModules[tModule.getId()] = await tModule.serialize(
+                  optimizeForSize
+                );
               }
             }
           )
