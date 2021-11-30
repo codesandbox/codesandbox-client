@@ -59,12 +59,13 @@ export async function saveCache(
   if (!manager.id) {
     return Promise.resolve(false);
   }
-  
+
   const managerState = {
     ...(await manager.serialize({
       entryPath: managerModuleToTranspile
         ? managerModuleToTranspile.path
         : null,
+      optimizeForSize: true,
     })),
   };
 
