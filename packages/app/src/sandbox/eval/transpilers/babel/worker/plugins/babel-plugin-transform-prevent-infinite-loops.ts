@@ -11,7 +11,7 @@
 
 const MAX_ITERATIONS = 10001;
 
-module.exports = ({ types: t, template }) => {
+export default function infiniteLoopDetector({ types: t, template }) {
   // We set a global so that we can later fail the test
   // even if the error ends up being caught by the code.
   const buildGuard = template(`
@@ -51,4 +51,4 @@ module.exports = ({ types: t, template }) => {
       },
     },
   };
-};
+}

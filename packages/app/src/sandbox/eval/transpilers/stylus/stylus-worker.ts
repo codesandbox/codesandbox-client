@@ -6,12 +6,12 @@ self.importScripts(
   `${process.env.CODESANDBOX_HOST || ''}/static/js/stylus.min.js`
 );
 
-declare var stylus: {
+declare const stylus: {
   render: (
     code: string,
-    { filename: string },
-    (err, css: string) => void
-  ) => void,
+    opts: { filename: string },
+    callback: (err: Error, css: string) => void
+  ) => void;
 };
 
 async function compile(data) {

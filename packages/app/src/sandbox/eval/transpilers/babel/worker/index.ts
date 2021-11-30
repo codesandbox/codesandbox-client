@@ -7,6 +7,7 @@ self.importScripts(
 );
 
 self.process = self.BrowserFS.BFSRequire('process');
+// @ts-ignore
 self.Buffer = self.BrowserFS.BFSRequire('buffer').Buffer;
 
 loadPolyfills().then(() => {

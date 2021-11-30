@@ -10,7 +10,9 @@ import * as resolve from 'resolve';
 import getDependencyName from 'sandbox/eval/utils/get-dependency-name';
 import { join } from '@codesandbox/common/lib/utils/path';
 import patchedMacrosPlugin from './utils/macrosPatch';
-import detective from './plugins/babel-plugin-detective';
+import detective, {
+  extractMetadataFromResult,
+} from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
 import renameImport from './plugins/babel-plugin-rename-imports';
@@ -36,6 +38,8 @@ import { patchedResolve } from './utils/resolvePatch';
 import { loadBabelTypes } from './utils/babelTypes';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
 
+declare const Babel: IBabel;
+
 let fsInitialized = false;
 let fsLoading = false;
 let lastConfig = null;
@@ -54,17 +58,22 @@ self.process = {
   env: { NODE_ENV: 'development', BABEL_ENV: 'development' },
   platform: 'linux',
   argv: [],
+  // @ts-ignore
   stderr: {},
   versions: {
+    // @ts-ignore
     node: 10,
   },
 };
 // Trick Babel that we're in a commonjs env
+// @ts-ignore
 self.module = { exports: {} };
+// @ts-ignore
 const { exports } = self.module;
 self.exports = exports;
 
 // This one is called from the babel transpiler and babel-plugin-macros
+// @ts-ignore
 self.require = path => {
   if (path === 'resolve') {
     return patchedResolve();
@@ -119,6 +128,7 @@ self.require = path => {
   );
 };
 
+// @ts-ignore
 self.require.resolve = p => resolve.sync(p);
 
 async function initializeBrowserFS(loaderContextId) {
@@ -162,7 +172,7 @@ async function initializeBrowserFS(loaderContextId) {
         }
         fsLoading = false;
         fsInitialized = true;
-        resolvePromise();
+        resolvePromise(null);
         // BrowserFS is initialized and ready-to-use!
       }
     );
@@ -197,10 +207,10 @@ async function resolveDependencyName({
   isPreset = false,
   loaderContextId,
 }: {
-  name: string,
-  isV7: boolean,
-  isPreset: boolean,
-  loaderContextId: number,
+  name: string;
+  isV7: boolean;
+  isPreset?: boolean;
+  loaderContextId: number;
 }) {
   // styled-jsx/babel -> styled-jsx
   // @babel/plugin-env/package.json -> @babel/plugin-env
@@ -235,6 +245,7 @@ async function resolveDependencyName({
 }
 
 async function installPlugin(opts, count = 0) {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const { Babel, BFSRequire, name, currentPath, isV7, loaderContextId } = opts;
   const normalizedPluginName = normalizePluginName(name);
   if (Babel.availablePlugins[name]) {
@@ -311,11 +322,12 @@ async function installPlugin(opts, count = 0) {
   }
 
   Babel.availablePlugins[name] = evaluatedPlugin;
-  Babel.availablePlugins[normalizePluginName] = evaluatedPlugin;
+  Babel.availablePlugins[normalizePluginName(name)] = evaluatedPlugin;
   return evaluatedPlugin;
 }
 
 async function installPreset(opts, count = 0) {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const { Babel, BFSRequire, name, currentPath, isV7, loaderContextId } = opts;
   const normalizedPresetName = normalizePresetName(name);
   if (Babel.availablePresets[name]) {
@@ -425,7 +437,7 @@ function getCustomConfig(
   { config, codeSandboxPlugins },
   version: number,
   path: string,
-  options: Object
+  options: any
 ) {
   if (
     /^\/node_modules/.test(path) &&
@@ -518,7 +530,7 @@ async function compile(opts: any) {
       throw err;
     }
 
-    const dependencies = getDependencies(detective.metadata(result));
+    const dependencies = getDependencies(extractMetadataFromResult(result));
     if (isV7) {
       // Force push this dependency, there are cases where it isn't included out of our control.
       // https://twitter.com/vigs072/status/1103005932886343680
@@ -564,7 +576,9 @@ async function compile(opts: any) {
 
 try {
   // Rollup globals hardcoded in Babel
+  // @ts-ignore
   self.path$2 = BrowserFS.BFSRequire('path');
+  // @ts-ignore
   self.fs$1 = BrowserFS.BFSRequire('fs');
 
   self.importScripts(
@@ -835,17 +849,15 @@ export type IBabel = {
     code: string,
     config: Object
   ) => {
-    ast: Object,
-    code: string,
-  },
-  availablePlugins: { [key: string]: Function },
-  availablePresets: { [key: string]: Function },
-  registerPlugin: (name: string, plugin: Function) => void,
-  registerPreset: (name: string, preset: Function) => void,
-  version: string,
+    ast: Object;
+    code: string;
+  };
+  availablePlugins: { [key: string]: Function };
+  availablePresets: { [key: string]: Function };
+  registerPlugin: (name: string, plugin: Function) => void;
+  registerPreset: (name: string, preset: Function) => void;
+  version: string;
 };
-
-declare var Babel: IBabel;
 
 let loadedTranspilerURL = null;
 let loadedEnvURL = null;
@@ -882,7 +894,7 @@ function registerCodeSandboxPlugins() {
   }
 }
 
-function loadCustomTranspiler(babelUrl, babelEnvUrl) {
+function loadCustomTranspiler(babelUrl?: string, babelEnvUrl?: string) {
   if (babelUrl && babelUrl !== loadedTranspilerURL) {
     self.importScripts(babelUrl);
     loadedTranspilerURL = babelUrl;

@@ -28,6 +28,7 @@ type ResizeHandlesProps = {
   heightResizer: [{ y: number } | null, ({ y: number }) => void];
   setResolution: (resolution: [number, number]) => void;
   children: React.ReactNode;
+  setIsResizing: (isResizing: boolean) => void;
 };
 
 const HANDLE_OFFSET = 15;
@@ -42,6 +43,7 @@ const resize = (
     offset,
     resizer: [_, setSize],
     setResolution,
+    setIsResizing
   }: {
     resolution: [number, number];
     // Holds the actual mouse position and its offset on the 4px handle to determine
@@ -57,6 +59,7 @@ const resize = (
     scale: number;
     resizer: [{ x?: number; y?: number }, (payload: any) => void];
     setResolution: (resolution: [number, number]) => void;
+    setIsResizing: (isResizing: boolean) => void;
   }
 ) => {
   const [initialWidth, initialHeight] = resolution;
@@ -80,11 +83,11 @@ const resize = (
     );
     const width =
       'x' in initialMousePosition
-        ? initialWidth - (initialMousePosition.x - maxClientX) * (2 - scale) * 2
+        ? initialWidth - (initialMousePosition.x - maxClientX) * (1 / scale) * 2
         : resolution[0];
     const height =
       'y' in initialMousePosition
-        ? initialHeight - (initialMousePosition.y - maxClientY) * (2 - scale)
+        ? initialHeight - (initialMousePosition.y - maxClientY) * (1 / scale)
         : resolution[1];
     const positiveWidth = width > MIN_SIZE_X ? width : MIN_SIZE_X;
     const positiveHeight = height > MIN_SIZE_Y ? height : MIN_SIZE_Y;
@@ -109,6 +112,7 @@ const resize = (
     calculate(evt);
     setResolution([newSize.x, newSize.y]);
     setSize(null);
+    setIsResizing(false);
   };
 
   window.addEventListener('mousemove', mouseMoveListener);
@@ -116,6 +120,7 @@ const resize = (
 
   calculate(event);
   setSize({ ...newSize });
+  setIsResizing(true);
 };
 
 export const ResizeHandles = ({
@@ -130,6 +135,7 @@ export const ResizeHandles = ({
   widthResizer,
   heightResizer,
   children,
+  setIsResizing
 }: ResizeHandlesProps) => (
   <Styled on={on} id="styled-resize-wrapper">
     <div>
@@ -145,6 +151,7 @@ export const ResizeHandles = ({
                 initialMousePosition: { x: event.clientX, y: event.clientY },
                 resizer: widthAndHeightResizer,
                 setResolution,
+                setIsResizing
               });
             }}
             style={{
@@ -162,6 +169,7 @@ export const ResizeHandles = ({
                 initialMousePosition: { x: event.clientX },
                 resizer: widthResizer,
                 setResolution,
+                setIsResizing
               });
             }}
             style={{
@@ -181,6 +189,7 @@ export const ResizeHandles = ({
                 initialMousePosition: { y: event.clientY },
                 resizer: heightResizer,
                 setResolution,
+                setIsResizing
               });
             }}
             style={{

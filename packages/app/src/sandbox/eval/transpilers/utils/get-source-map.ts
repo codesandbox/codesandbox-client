@@ -8,7 +8,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-//@flow
 import { SourceMapConsumer } from 'source-map';
 
 /**
@@ -31,7 +30,7 @@ export class SourceMap {
   getOriginalPosition(
     line: number,
     column: number
-  ): { source: string, line: number, column: number } {
+  ): { source: string; line: number; column: number } {
     const {
       line: l,
       column: c,
@@ -53,7 +52,7 @@ export class SourceMap {
     source: string,
     line: number,
     column: number
-  ): { line: number, column: number } {
+  ): { line: number; column: number } {
     const { line: l, column: c } = this.__source_map.generatedPositionFor({
       source,
       line,
@@ -74,6 +73,7 @@ export class SourceMap {
   }
 
   getSources(): string[] {
+    // @ts-ignore should be fine...
     return this.__source_map.sources;
   }
 }

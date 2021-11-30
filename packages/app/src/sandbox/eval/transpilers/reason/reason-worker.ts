@@ -1,3 +1,4 @@
+// @ts-ignore
 self.window = self;
 
 self.importScripts(
@@ -15,6 +16,7 @@ self.addEventListener('message', ev => {
   }
 
   // eslint-disable-next-line camelcase
+  // @ts-ignore
   const { js_code } = self.ocaml.reason_compile_super_errors(code);
 
   self.postMessage({ transpiledCode: js_code });
