@@ -3,7 +3,6 @@ import * as events from 'events';
 import * as crypto from 'crypto';
 import * as util from 'util';
 import { dirname, basename } from 'path';
-import type FSType from 'fs';
 import isESModule from 'sandbox/eval/utils/is-es-module';
 import evaluateCode from 'sandpack-core/lib/runner/eval';
 import detectOldBrowser from '@codesandbox/common/lib/detect-old-browser';
@@ -21,7 +20,7 @@ export const resetCache = () => {
 };
 
 export default function evaluate(
-  fs: FSType,
+  fs: any,
   BFSRequire: Function,
   code: string,
   path = '/',
@@ -175,6 +174,7 @@ export default function evaluate(
   finalCode += `\n//# sourceURL=${location.origin}${path}`;
 
   if (transpileBeforeExec || isESModule(finalCode)) {
+    // @ts-ignore
     const { code: transpiledCode } = self.Babel.transform(finalCode, {
       presets: ['env'],
     });
@@ -196,7 +196,7 @@ export default function evaluate(
 }
 
 export function evaluateFromPath(
-  fs: FSType,
+  fs: any,
   BFSRequire: Function,
   path: string,
   currentPath: string,

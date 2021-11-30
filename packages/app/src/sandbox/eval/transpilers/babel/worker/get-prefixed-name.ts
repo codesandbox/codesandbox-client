@@ -1,4 +1,4 @@
-export function getPrefixedPresetName(preset, isV7) {
+export function getPrefixedPresetName(preset: string, isV7: boolean) {
   const [first, ...parts] = preset.split('/');
   const secondPrefix = isV7 ? '@babel/preset-' : 'babel-preset-';
   const prefixedName = preset.startsWith('@')
@@ -8,7 +8,7 @@ export function getPrefixedPresetName(preset, isV7) {
   return prefixedName;
 }
 
-export function getPrefixedPluginName(plugin, isV7) {
+export function getPrefixedPluginName(plugin: string, isV7: boolean) {
   const [first, ...parts] = plugin.split('/');
   const secondPrefix = isV7 ? '@babel/plugin-' : 'babel-plugin-';
   const prefixedName = plugin.startsWith('@')
