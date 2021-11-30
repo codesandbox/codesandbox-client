@@ -4,11 +4,13 @@ import { ChildHandler } from '../worker-transpiler/child-handler';
 const childHandler = new ChildHandler('svelte-worker');
 
 // Allow svelte to use btoa
+// @ts-ignore
 self.window = self;
 
 function getV3Code({ code, version, path }) {
-  self.importScripts([`https://unpkg.com/svelte@${version}/compiler.js`]);
+  self.importScripts(`https://unpkg.com/svelte@${version}/compiler.js`);
 
+  // @ts-ignore
   const { js, warnings } = self.svelte.compile(code, {
     filename: path,
     dev: true,
@@ -36,14 +38,13 @@ function getV3Code({ code, version, path }) {
 }
 
 function getV2Code({ code, version, path }) {
-  self.importScripts([
-    `https://unpkg.com/svelte@${version}/compiler/svelte.js`,
-  ]);
+  self.importScripts(`https://unpkg.com/svelte@${version}/compiler/svelte.js`);
 
   let error = null;
   const warnings = [];
   const {
     js: { code: compiledCode, map },
+    // @ts-ignore
   } = self.svelte.compile(code, {
     filename: path,
     dev: true,
@@ -73,12 +74,11 @@ function getV2Code({ code, version, path }) {
 }
 
 function getV1Code({ code, version, path }) {
-  self.importScripts([
-    `https://unpkg.com/svelte@${version}/compiler/svelte.js`,
-  ]);
+  self.importScripts(`https://unpkg.com/svelte@${version}/compiler/svelte.js`);
 
   let error = null;
   const warnings = [];
+  // @ts-ignore
   const { code: compiledCode, map } = self.svelte.compile(code, {
     filename: path,
     dev: true,
@@ -109,7 +109,8 @@ function getV1Code({ code, version, path }) {
 
 async function compile(data) {
   const { code, path, version } = data;
-  let versionCode = '';
+
+  let versionCode: { code: string; map: any; warnings: string[] };
 
   if (semver.satisfies(version, '1.x')) {
     versionCode = getV1Code({ code, version, path });
@@ -123,11 +124,13 @@ async function compile(data) {
     versionCode = getV3Code({ code, version, path });
   }
 
+  if (!versionCode) {
+    throw new Error('Unsupported Svelte version');
+  }
+
   const { code: compiledCode, map, warnings } = versionCode;
 
-  const withInlineSourcemap = `${compiledCode}
-    //# sourceMappingURL=${map.toUrl()}`;
-
+  const withInlineSourcemap = `${compiledCode}\n//# sourceMappingURL=${map.toUrl()}`;
   return {
     transpiledCode: withInlineSourcemap,
     warnings,
