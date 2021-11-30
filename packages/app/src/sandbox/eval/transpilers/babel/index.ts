@@ -78,7 +78,7 @@ class BabelTranspiler extends WorkerTranspiler {
           return BabelWorker();
         }
 
-        // We set these up in startup.js.
+        // We set these up in startup.ts.
         return global.babelworkers.pop();
       },
       {

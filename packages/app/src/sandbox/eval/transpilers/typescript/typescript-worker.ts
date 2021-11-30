@@ -1,23 +1,14 @@
+import type * as TypeScriptType from 'typescript';
 import getDependencies from './get-require-statements';
 import { ChildHandler } from '../worker-transpiler/child-handler';
 
 const childHandler = new ChildHandler('typescript-worker');
 
-self.importScripts([
-  'https://cdnjs.cloudflare.com/ajax/libs/typescript/3.4.1/typescript.min.js',
-]);
+self.importScripts(
+  'https://cdnjs.cloudflare.com/ajax/libs/typescript/3.4.1/typescript.min.js'
+);
 
-declare var ts: {
-  transpileModule: (
-    code: string,
-    config: Object
-  ) => {
-    diagnostics: string[],
-    outputText: string,
-    sourceMapText: string,
-  },
-  registerPlugin: (name: string, plugin: Function) => void,
-};
+declare const ts: typeof TypeScriptType;
 
 async function compile(data) {
   const { code, path, config, typescriptVersion } = data;
@@ -82,7 +73,7 @@ async function compile(data) {
     ts.ScriptKind.TS
   );
 
-  const dependencies = getDependencies(sourceFile, self.ts);
+  const dependencies = getDependencies(sourceFile, ts);
   return {
     transpiledCode: compiledCode,
     foundDependencies: dependencies.map(dependency => ({

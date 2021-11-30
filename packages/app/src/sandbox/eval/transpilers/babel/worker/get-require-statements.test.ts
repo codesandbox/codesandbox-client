@@ -1,7 +1,9 @@
 import { transform } from 'babel-standalone';
 import dynamicImportSyntax from 'babel-plugin-syntax-dynamic-import';
 
-import detective from './plugins/babel-plugin-detective';
+import detective, {
+  extractMetadataFromResult,
+} from './plugins/babel-plugin-detective';
 import getRequireStatements from './get-require-statements';
 
 describe('get-require-statements', () => {
@@ -18,7 +20,9 @@ describe('get-require-statements', () => {
       ],
     });
 
-    expect(getRequireStatements(detective.metadata(result))).toMatchSnapshot();
+    expect(
+      getRequireStatements(extractMetadataFromResult(result))
+    ).toMatchSnapshot();
   }
 
   it('can find simple requires', () => {

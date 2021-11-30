@@ -8,6 +8,7 @@ self.importScripts(
 
 async function workerCompile(opts) {
   const { code, path } = opts;
+  // @ts-ignore
   const compiled = self.CoffeeScript.compile(code, {
     filename: path,
     sourceFiles: [path],

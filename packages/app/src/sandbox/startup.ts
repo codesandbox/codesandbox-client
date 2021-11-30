@@ -1,4 +1,5 @@
 /* eslint-disable import/default */
+// @ts-ignore
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./eval/transpilers/babel/worker/index';
 /* eslint-enable import/default */
 import hookConsole from 'sandbox-hooks/console';
@@ -25,9 +26,11 @@ prefetchScript(
 );
 
 const WORKERS_TO_LOAD = process.env.SANDPACK ? 1 : 3;
+// @ts-ignore
 window.babelworkers = [];
 for (let i = 0; i < WORKERS_TO_LOAD; i++) {
   const worker = new BabelWorker();
+  // @ts-ignore
   window.babelworkers.push(worker);
 }
 

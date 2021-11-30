@@ -18,6 +18,7 @@ const withServiceWorker = !process.env.SANDPACK;
 const debug = _debug('cs:sandbox');
 
 export const SCRIPT_VERSION =
+  // @ts-ignore
   document.currentScript && document.currentScript.src;
 
 debug('Booting sandbox v2');
@@ -96,7 +97,7 @@ requirePolyfills().then(() => {
         return res.json();
       })
       .then(res => {
-        const camelized = camelizeKeys(res);
+        const camelized: any = camelizeKeys(res);
         camelized.data.npmDependencies = res.data.npm_dependencies;
 
         return camelized;

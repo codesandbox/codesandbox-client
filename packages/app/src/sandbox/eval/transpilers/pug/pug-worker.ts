@@ -13,6 +13,7 @@ async function workerCompile(opts) {
 
   // register a custom importer callback
   const transpiledCode = await new Promise((resolve, reject) => {
+    // @ts-ignore
     self.pug.render(code, { filename: path }, (err, html) => {
       if (err) {
         return reject(err);

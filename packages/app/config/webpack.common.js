@@ -98,9 +98,9 @@ module.exports = {
     ? {
         sandbox: [
           require.resolve('./polyfills'),
-          path.join(paths.sandboxSrc, 'index.js'),
+          path.join(paths.sandboxSrc, 'index.ts'),
         ],
-        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
+        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.ts'),
       }
     : APP_HOT
     ? {
@@ -116,9 +116,9 @@ module.exports = {
         ],
         sandbox: [
           require.resolve('./polyfills'),
-          path.join(paths.sandboxSrc, 'index.js'),
+          path.join(paths.sandboxSrc, 'index.ts'),
         ],
-        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
+        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.ts'),
         'watermark-button': path.join(paths.src, 'watermark-button.js'),
         banner: path.join(paths.src, 'banner.js'),
         embed: [
