@@ -63,8 +63,8 @@ function attachNodes(opts) {
   return Boolean(opts && opts.nodes);
 }
 
-module.exports = wrapListener(listener, 'detective');
+export default wrapListener(listener, 'detective');
 
-module.exports.metadata = function extractMetadataFromResult(result) {
+export function metadata(result) {
   return result.metadata.requires;
-};
+}

@@ -22,8 +22,8 @@ export default function createDetectElementResize(nonce?: string) {
     _window = this;
   }
 
-  // @ts-ignore
   var attachEvent: any =
+    // @ts-ignore
     typeof document !== 'undefined' && document.attachEvent;
 
   if (!attachEvent) {
