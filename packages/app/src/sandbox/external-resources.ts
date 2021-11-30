@@ -75,7 +75,7 @@ function waitForLoaded() {
     if (document.readyState !== 'complete') {
       window.addEventListener('load', resolve);
     } else {
-      resolve();
+      resolve(null);
     }
   });
 }
