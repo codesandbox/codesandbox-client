@@ -1,6 +1,5 @@
 /* eslint-disable */
-'use strict';
-var wrapListener = require('./wrap-listener');
+import wrapListener from './wrap-listener';
 
 function listener(path, file, opts) {
   (path.isLiteral() && path.type !== 'TemplateLiteral'
@@ -63,8 +62,8 @@ function attachNodes(opts) {
   return Boolean(opts && opts.nodes);
 }
 
-export default wrapListener(listener, 'detective');
-
-export function metadata(result) {
+export function extractMetadataFromResult(result) {
   return result.metadata.requires;
 }
+
+export default wrapListener(listener, 'detective');
