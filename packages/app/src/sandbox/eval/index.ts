@@ -33,8 +33,13 @@ import customPreset from './presets/custom';
 export default async function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
     case esmReact.name:
-    case react.name:
-      return reactPreset(pkg);
+    case react.name: {
+      const preset = await reactPreset(pkg);
+      if (template === esmReact.name) {
+        preset.experimentalEsmSupport = true;
+      }
+      return preset;
+    }
     case preact.name:
       if (isPreact10(pkg.dependencies, pkg.devDependencies)) {
         return preactPreset();
