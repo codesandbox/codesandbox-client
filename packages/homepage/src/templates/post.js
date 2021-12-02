@@ -28,7 +28,6 @@ const renderAst = new rehypeReact({
         <Sandpack
           theme="sandpack-dark"
           template="react"
-          options={{ showLineNumbers: true }}
           customSetup={{
             dependencies: { '@codesandbox/sandpack-react': 'latest' },
             files: {
@@ -74,7 +73,6 @@ export default function App() {
         <Sandpack
           theme="sandpack-dark"
           template="react"
-          options={{ showLineNumbers: true }}
           customSetup={{
             dependencies: { '@codesandbox/sandpack-react': 'latest' },
             files: {
