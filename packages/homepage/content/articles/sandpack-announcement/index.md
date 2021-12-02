@@ -34,7 +34,7 @@ Let's take a quick look at some of the examples from `sandpack-react`:
 
 [Sandpack Blog Example - CodeSandbox](https://codesandbox.io/s/sandpack-blog-example-1zevr)
 
-In this example, we render the default editor, and we specify some custom files to run, together with the `lodash` dependency. This allows you to quickly create live running code examples. These examples don’t rely on CodeSandbox; if CodeSandbox goes down, Sandpack will keep running.
+In this example, we render the default editor, and we specify some custom files to run, together with the `lodash` dependency. This allows you to quickly create live-running code examples. These examples don’t rely on CodeSandbox; if CodeSandbox goes down, Sandpack will keep running.
 
 ### Customized Editor
 
