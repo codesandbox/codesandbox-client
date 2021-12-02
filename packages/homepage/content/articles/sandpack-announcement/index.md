@@ -14,11 +14,11 @@ Today we’re very excited to announce Sandpack, the in-browser bundler that pow
 
 When CodeSandbox started, it ran all projects in the browser using a primitive bundler that runs in an iframe. As projects on CodeSandbox became more advanced, [we kept on working on this in-browser bundler to support more projects and new bundler features](https://codesandbox.io/post/creating-a-parallel-offline-extensible-browser-based-bundler-for-codesandbox). We’re now at the point that the bundler supports npm dependencies, hot module reloading, caching, and a whole lot more.
 
-At the same time, more and more people wanted to use CodeSandbox for use-cases that we haven’t thought of before. Sometimes these use cases were so different that we couldn’t make them work for CodeSandbox.
+At the same time, more and more people wanted to use CodeSandbox for use-cases that we hadn’t thought of before. Sometimes these use cases were so different that we couldn’t make them work for CodeSandbox.
 
 That’s why we decided to open source the bundler, named Sandpack. We’re giving you the power to fully customize the experience behind the live-running code, without depending on CodeSandbox. Want to build a student course with live tests? That’s possible! Want to build a no-code editor with a live preview? That’s possible too!
 
-Our main goal behind Sandpack is to give you the full power of CodeSandbox, but with the flexibility that will allow you to use it for any kind of project that you have in mind.
+Our main goal behind Sandpack is to give you the full power of CodeSandbox, but with the flexibility to use it for any project that you have in mind.
 
 So, how do you use it? Let’s take a look!
 
@@ -26,7 +26,7 @@ So, how do you use it? Let’s take a look!
 
 With this release, we export two libraries: `@codesandbox/sandpack-client` and `@codesandbox/sandpack-react`. `sandpack-client` is responsible for mounting Sandpack and communicating with it. `sandpack-react` is a wrapper library around `sandpack-client` that makes it possible to use Sandpack with React.
 
-You can use `sandpack-client` in plain JS or make your own wrapper for Vue, Svelte, Vue, or any other library, really!
+You can use `sandpack-client` in plain JS or make your own wrapper for Vue, Svelte, or any other library, really!
 
 Let's take a quick look at some of the examples from `sandpack-react`:
 
@@ -34,7 +34,7 @@ Let's take a quick look at some of the examples from `sandpack-react`:
 
 [Sandpack Blog Example - CodeSandbox](https://codesandbox.io/s/sandpack-blog-example-1zevr)
 
-In this example, we render the default editor, and we specify some custom files to run, together with the `lodash` dependency. This allows you to quickly create live running code examples. These examples don’t rely on CodeSandbox, if CodeSandbox goes down, the examples will keep running.
+In this example, we render the default editor, and we specify some custom files to run, together with the `lodash` dependency. This allows you to quickly create live running code examples. These examples don’t rely on CodeSandbox; if CodeSandbox goes down, Sandpack will keep running.
 
 ### Customized Editor
 
@@ -58,7 +58,7 @@ The new [React Docs](https://beta.reactjs.org/) is using Sandpack for its exampl
 
 ### GitLab Web Editor
 
-[GitLab](https://about.gitlab.com/) has a web editor that allows you to write code in the browser and directly commit to GitLab. Gitlab is using Sandpack to execute the code of frontend projects so you can see the live results:
+GitLab has a web editor that allows you to write code in the browser and directly commit to GitLab. Gitlab is using Sandpack to execute the code of frontend projects so you can see the live results:
 
 ![](./images/gitlab-live-preview.png)
 
@@ -70,7 +70,7 @@ The new [React Docs](https://beta.reactjs.org/) is using Sandpack for its exampl
 
 ### CodeHike
 
-[CodeHike](https://codehike.org/) is a library that allows you to create guided code walkthroughs. They use Sandpack for showing the live running code. In this case, they only use the preview of Sandpack, which is also a great use-case:
+CodeHike is a library that allows you to create guided code walkthroughs. They use Sandpack for showing the live running code. In this case, they only use the preview of Sandpack, which is also a great use-case:
 
 ![](./images/codehike.png)
 
@@ -80,8 +80,8 @@ There's really no limit on what you can use Sandpack for. If you’re using Sand
 
 ## Conclusion
 
-When we started CodeSandbox, people used it for many more things than we could imagine. With Sandpack, we’re hoping to see the same thing. Give it a try, and take a look at our [new landing page](https://sandpack.codesandbox.io/) and [docs](https://sandpack.codesandbox.io/docs) for it! You can also find out more about how it works on [Github](https://github.com/codesandbox/sandpack).
+When we started CodeSandbox, people used it for many more things than we could imagine. With Sandpack, we’re hoping to see the same thing. Give it a try, take a look at our [new landing page](https://sandpack.codesandbox.io/) and [docs](https://sandpack.codesandbox.io/docs) for it and we'd love to get your feedback on [Discord](https://discord.gg/5BpufEP7MH)! You can also find out more about how it works on [GitHub](https://github.com/codesandbox/sandpack).
 
 ### Thanks
 
-Many people have worked on building Sandpack and making it open source. Credits go to [Adewale](https://twitter.com/ace_kyd), [Alex](https://twitter.com/alexnmoldovan), [Danilo](https://twitter.com/danilowoz), [Danny](https://twitter.com/dannyruchie), [Jasper](https://twitter.com/JasperDeMoor), [Marco](https://twitter.com/marcovincit), [Maria](https://twitter.com/olarclara), [Sanne,](https://twitter.com/sannekalkman) [Tamas](https://twitter.com/metricbrew), and [Zeh](https://twitter.com/zehf) for making this happen!
+Many people have worked on building Sandpack and making it open source. Credits go to [Adewale](https://twitter.com/ace_kyd), [Alex](https://twitter.com/alexnmoldovan), [Danilo](https://twitter.com/danilowoz), [Danny](https://twitter.com/dannyruchtie), [Jasper](https://twitter.com/JasperDeMoor), [Marco](https://twitter.com/marcovincit), [Maria](https://twitter.com/olarclara), [Sanne,](https://twitter.com/sannekalkman) [Tamas](https://twitter.com/metricbrew), and [Zeh](https://twitter.com/zehf) for making this happen!
