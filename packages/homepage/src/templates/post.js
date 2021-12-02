@@ -8,7 +8,6 @@ import PageContainer from '../components/PageContainer';
 import { AuthorImage } from '../components/PostElements';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import rehypeReact from '../utils/rehype';
-import '@codesandbox/sandpack-react/dist/index.css';
 
 import {
   Article,
