@@ -1,25 +1,27 @@
+/* eslint-disable prefer-object-spread */
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-use-before-define */
-import { toH } from "hast-to-hyperscript";
+import { toH } from 'hast-to-hyperscript';
 // @ts-expect-error: hush.
-import { whitespace } from "hast-util-whitespace";
+import { whitespace } from 'hast-util-whitespace';
 
 const own = {}.hasOwnProperty;
 const tableElements = new Set([
-  "table",
-  "thead",
-  "tbody",
-  "tfoot",
-  "tr",
-  "th",
-  "td",
+  'table',
+  'thead',
+  'tbody',
+  'tfoot',
+  'tr',
+  'th',
+  'td',
 ]);
 
 /**
  * @type {import('unified').Plugin<[Options], Root, ReactElement>}
  */
 export default function rehypeReact(options) {
-  if (!options || typeof options.createElement !== "function") {
-    throw new TypeError("createElement is not a function");
+  if (!options || typeof options.createElement !== 'function') {
+    throw new TypeError('createElement is not a function');
   }
 
   const createElement = options.createElement;
@@ -32,21 +34,21 @@ export default function rehypeReact(options) {
     // @ts-expect-error: assume `name` is a known element.
     let result = toH(h, node, options.prefix);
 
-    if (node.type === "root") {
+    if (node.type === 'root') {
       // Invert <https://github.com/syntax-tree/hast-to-hyperscript/blob/d227372/index.js#L46-L56>.
       result =
         result &&
-        typeof result === "object" &&
-        "type" in result &&
-        "props" in result &&
-        result.type === "div" &&
-        (node.children.length !== 1 || node.children[0].type !== "element")
+        typeof result === 'object' &&
+        'type' in result &&
+        'props' in result &&
+        result.type === 'div' &&
+        (node.children.length !== 1 || node.children[0].type !== 'element')
           ? // `children` does exist.
             // type-coverage:ignore-next-line
             result.props.children
           : [result];
 
-      return createElement(options.Fragment || "div", {}, result);
+      return createElement(options.Fragment || 'div', {}, result);
     }
 
     return result;
@@ -66,13 +68,13 @@ export default function rehypeReact(options) {
     // See: <https://github.com/facebook/react/pull/7515>.
     // See: <https://github.com/remarkjs/remark-react/issues/64>.
     if (children && tableElements.has(name)) {
-      children = children.filter((child) => !whitespace(child));
+      children = children.filter(child => !whitespace(child));
     }
 
     if (options.components && own.call(options.components, name)) {
       const component = options.components[name];
 
-      if (options.passNode && typeof component === "function") {
+      if (options.passNode && typeof component === 'function') {
         // @ts-expect-error: `toH` passes the current node.
         // type-coverage:ignore-next-line
         props = Object.assign({ node: this }, props);
