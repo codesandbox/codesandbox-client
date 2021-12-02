@@ -18,6 +18,9 @@ At the same time, more and more people wanted to use CodeSandbox for use-cases t
 
 That’s why we decided to open source the bundler, named Sandpack. We’re giving you the power to fully customize the experience behind the live-running code, without depending on CodeSandbox. Want to build a student course with live tests? That’s possible! Want to build a no-code editor with a live preview? That’s possible too!
 
+<sandpack template="react" files='{"/App.js":{"code":"export default function App() {\n  return (\n    <div>\n      <h1>Hello Sandpack!✨</h1>\n      <p>Start editing to see some magic happen!</p>\n    </div>\n  );\n}"}}'>
+</sandpack>
+
 Our main goal behind Sandpack is to give you the full power of CodeSandbox, but with the flexibility to use it for any project that you have in mind.
 
 So, how do you use it? Let’s take a look!
@@ -31,9 +34,6 @@ You can use `sandpack-client` in plain JS or make your own wrapper for Vue, Svel
 Let's take a quick look at some of the examples from `sandpack-react`:
 
 ### Basic Editor
-
-<sandpack custom-setup='{ "dependencies": { "lodash": "latest"}}' template="react" files='{"/App.js":{"code":"import { sum } from \"lodash\";\n\nexport default function App() {\n  return <>\n    <h1>Hello Sandpack!</h1>\n    <h2>{sum([2, 3])}</h2>\n  </>\n}"}}'>
-</sandpack>
 
 [Sandpack Blog Example - CodeSandbox](https://codesandbox.io/s/sandpack-blog-example-1zevr)
 
