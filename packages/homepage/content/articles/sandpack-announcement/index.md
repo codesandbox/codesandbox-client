@@ -48,7 +48,7 @@ As you can see in the examples, you can use the base template of Sandpack to get
 
 ## Who’s using Sandpack?
 
-The ability to use live-running code opens up a lot of possibilities. Every time you can benefit from live-running code, you can use Sandpack! These are some of the projects using Sandpack for their own purpose:
+The ability to use live-running code opens up a lot of possibilities. Every time you could benefit from live-running code, you can use Sandpack! These are some of the projects using Sandpack for their own purpose:
 
 ### React Docs
 
