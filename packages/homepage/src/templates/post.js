@@ -1,14 +1,14 @@
-import { format } from "date-fns";
-import { graphql, Link } from "gatsby";
-import React from "react";
+import { format } from 'date-fns';
+import { graphql, Link } from 'gatsby';
+import React from 'react';
 
-import { Sandpack } from "@codesandbox/sandpack-react";
-import Layout from "../components/layout";
-import PageContainer from "../components/PageContainer";
-import { AuthorImage } from "../components/PostElements";
-import TitleAndMetaTags from "../components/TitleAndMetaTags";
-import rehypeReact from "../utils/rehype";
-import "@codesandbox/sandpack-react/dist/index.css";
+import { Sandpack } from '@codesandbox/sandpack-react';
+import Layout from '../components/layout';
+import PageContainer from '../components/PageContainer';
+import { AuthorImage } from '../components/PostElements';
+import TitleAndMetaTags from '../components/TitleAndMetaTags';
+import rehypeReact from '../utils/rehype';
+import '@codesandbox/sandpack-react/dist/index.css';
 
 import {
   Article,
@@ -18,8 +18,9 @@ import {
   Image,
   MetaData,
   PostContainer,
-} from "./_post.elements";
+} from './_post.elements';
 
+// eslint-disable-next-line new-cap
 const renderAst = new rehypeReact({
   createElement: React.createElement,
   components: {
@@ -30,9 +31,9 @@ const renderAst = new rehypeReact({
           template="react"
           options={{ showLineNumbers: true }}
           customSetup={{
-            dependencies: { "@codesandbox/sandpack-react": "latest" },
+            dependencies: { '@codesandbox/sandpack-react': 'latest' },
             files: {
-              "/App.js": `import { Sandpack } from "@codesandbox/sandpack-react";
+              '/App.js': `import { Sandpack } from "@codesandbox/sandpack-react";
 import "@codesandbox/sandpack-react/dist/index.css";
 
 const APP_CODE = \`
@@ -76,9 +77,9 @@ export default function App() {
           template="react"
           options={{ showLineNumbers: true }}
           customSetup={{
-            dependencies: { "@codesandbox/sandpack-react": "latest" },
+            dependencies: { '@codesandbox/sandpack-react': 'latest' },
             files: {
-              "/TranspiledCode.js": `import { useSandpack } from "@codesandbox/sandpack-react";
+              '/TranspiledCode.js': `import { useSandpack } from "@codesandbox/sandpack-react";
 
 export const TranspiledCode = () => {
   const { sandpack } = useSandpack();
@@ -101,7 +102,7 @@ export const TranspiledCode = () => {
     />
   );
 };`,
-              "/Editor.js": `import { useSandpack } from "@codesandbox/sandpack-react";
+              '/Editor.js': `import { useSandpack } from "@codesandbox/sandpack-react";
 
 export const Editor = () => {
   const { sandpack } = useSandpack();
@@ -116,7 +117,7 @@ export const Editor = () => {
     />
   );
 };`,
-              "/App.js": `import {
+              '/App.js': `import {
   SandpackLayout,
   SandpackPreview,
   SandpackProvider
@@ -193,14 +194,14 @@ export default ({
           <PostTitle>{title}</PostTitle>
 
           <MetaData>
-            {authors.map((author) => (
+            {authors.map(author => (
               <AuthorContainer key={author}>
                 {authors.length === 1 && (
                   <AuthorImage alt={author} src={photo} />
                 )}
 
                 <h4>{author}</h4>
-                <date>{format(date, "MMM / DD / YYYY")}</date>
+                <date>{format(date, 'MMM / DD / YYYY')}</date>
               </AuthorContainer>
             ))}
           </MetaData>
