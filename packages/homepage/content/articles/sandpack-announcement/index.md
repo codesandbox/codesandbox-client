@@ -18,9 +18,6 @@ At the same time, more and more people wanted to use CodeSandbox for use-cases t
 
 That’s why we decided to open source the bundler, named Sandpack. We’re giving you the power to fully customize the experience behind the live-running code, without depending on CodeSandbox. Want to build a student course with live tests? That’s possible! Want to build a no-code editor with a live preview? That’s possible too!
 
-<sandpack template="react" files='{"/App.js":{"code":"export default function App() {\n  return (\n    <div>\n      <h1>Hello Sandpack!✨</h1>\n      <p>Start editing to see some magic happen!</p>\n    </div>\n  );\n}"}}'>
-</sandpack>
-
 Our main goal behind Sandpack is to give you the full power of CodeSandbox, but with the flexibility to use it for any project that you have in mind.
 
 So, how do you use it? Let’s take a look!
@@ -35,16 +32,17 @@ Let's take a quick look at some of the examples from `sandpack-react`:
 
 ### Basic Editor
 
-[Sandpack Blog Example - CodeSandbox](https://codesandbox.io/s/sandpack-blog-example-1zevr)
-
+<br/>
+<sandpack1></sandpack1>
+<br/>
 In this example, we render the default editor, and we specify some custom files to run, together with the `lodash` dependency. This allows you to quickly create live-running code examples. These examples don’t rely on CodeSandbox; if CodeSandbox goes down, Sandpack will keep running.
 
 ### Customized Editor
 
 What if you want to make something custom? Well, we allow you to write any component that is connected to Sandpack, and you can define the layout yourself. Do you want to use a different code editor? That’s possible:
 
-[Sandpack Blog Example 2 - CodeSandbox](https://codesandbox.io/s/sandpack-blog-example-2-bppke)
-
+<sandpack2></sandpack2>
+<br/>
 Here we have a custom code editor (it’s a `textarea`), and a custom component that shows the compiled code of the current file you’re looking at. As you can see, the preview is hidden here. If we’d like to add it, just add the `<SandpackPreview />` component as well!
 
 As you can see in the examples, you can use the base template of Sandpack to get a running editor with a minimal amount of work. However, if you want to fully customize the experience, that's possible too. You can build your own devtools on top of Sandpack.
