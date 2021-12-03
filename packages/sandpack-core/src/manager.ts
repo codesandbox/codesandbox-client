@@ -164,6 +164,8 @@ export default class Manager implements IEvaluator {
     };
   };
 
+  reactDevTools: boolean;
+
   envVariables: { [envName: string]: string } = {};
   preset: Preset;
   modules: ModuleObject;
