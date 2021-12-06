@@ -14,6 +14,7 @@ import { isIOS, isAndroid } from '@codesandbox/common/lib/utils/platform';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { hasLogIn } from '@codesandbox/common/lib/utils/user';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
 import { Container, Fullscreen, Moving } from './elements';
@@ -315,6 +316,7 @@ export default class App extends React.PureComponent<
 
   content = () => {
     if (this.state.notFound) {
+      const isSignedIn = hasLogIn();
       return (
         <Centered style={{ height: '100%' }} vertical horizontal>
           <div style={{ maxWidth: 900, textAlign: 'center' }}>
@@ -323,18 +325,20 @@ export default class App extends React.PureComponent<
             </Title>
             <SubTitle style={{ marginTop: 16, lineHeight: 1.4 }} delay={0.05}>
               We could not find the sandbox you{"'"}re looking for.
-              <p style={{ marginTop: 8 }}>
-                If the sandbox is private, you might need to{' '}
-                <a
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  href={signInPageUrl()}
-                >
-                  sign in
-                </a>
-                <br />
-                and reload the page to see the sandbox.
-              </p>
+              {!isSignedIn && (
+                <p style={{ marginTop: 8 }}>
+                  If the sandbox is private, you might need to{' '}
+                  <a
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    href={signInPageUrl()}
+                  >
+                    sign in
+                  </a>
+                  <br />
+                  and reload the page to see the sandbox.
+                </p>
+              )}
             </SubTitle>
           </div>
         </Centered>
