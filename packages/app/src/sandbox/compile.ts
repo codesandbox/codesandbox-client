@@ -314,7 +314,12 @@ async function initializeManager(
   {
     hasFileResolver = false,
     customNpmRegistries = [],
-  }: { hasFileResolver?: boolean; customNpmRegistries?: NpmRegistry[] } = {}
+    reactDevTools = false,
+  }: {
+    hasFileResolver?: boolean;
+    customNpmRegistries?: NpmRegistry[];
+    reactDevTools?: boolean;
+  } = {}
 ) {
   const newManager = new Manager(
     sandboxId,
@@ -323,6 +328,7 @@ async function initializeManager(
     {
       hasFileResolver,
       versionIdentifier: SCRIPT_VERSION,
+      reactDevTools,
     }
   );
 
@@ -452,6 +458,7 @@ interface CompileOptions {
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
   clearConsoleDisabled?: boolean;
+  reactDevTools?: boolean;
 }
 
 async function compile(opts: CompileOptions) {
@@ -471,6 +478,7 @@ async function compile(opts: CompileOptions) {
     hasFileResolver = false,
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
+    reactDevTools = false,
   } = opts;
 
   if (firstLoad) {
@@ -538,6 +546,7 @@ async function compile(opts: CompileOptions) {
       (await initializeManager(sandboxId, template, modules, configurations, {
         hasFileResolver,
         customNpmRegistries,
+        reactDevTools,
       }));
 
     let dependencies: NPMDependencies = getDependencies(
@@ -605,7 +614,7 @@ async function compile(opts: CompileOptions) {
         template,
         modules,
         configurations,
-        { hasFileResolver }
+        { hasFileResolver, reactDevTools }
       );
     }
 

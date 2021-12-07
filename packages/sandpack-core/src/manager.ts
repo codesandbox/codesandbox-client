@@ -123,6 +123,7 @@ type TManagerOptions = {
    */
   hasFileResolver: boolean;
   versionIdentifier: string;
+  reactDevTools: boolean;
 };
 
 function triggerFileWatch(path: string, type: 'rename' | 'change') {
@@ -228,6 +229,7 @@ export default class Manager implements IEvaluator {
     this.version = options.versionIdentifier;
     this.esmodules = new Map();
     this.resolverCache = new Map();
+    this.reactDevTools = options.reactDevTools;
 
     /**
      * Contribute the file fetcher, which needs the manager to resolve the files
