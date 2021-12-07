@@ -1,5 +1,5 @@
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
-import resolve from 'browser-resolve';
+import gensync from 'gensync';
 import DependencyNotFoundError from 'sandbox-hooks/errors/dependency-not-found-error';
 
 import { Module } from '../../types/module';
@@ -7,9 +7,9 @@ import Manager from '../../manager';
 
 import { getFetchProtocol } from './fetch-protocols';
 import { getDependencyName } from '../../utils/get-dependency-name';
-import { packageFilter } from '../../utils/resolve-utils';
 import { TranspiledModule } from '../../transpiled-module';
 import { DEFAULT_EXTENSIONS } from '../../utils/extensions';
+import { resolveAsync } from '../../resolver/resolver';
 
 export type Meta = {
   [path: string]: true;
@@ -139,94 +139,73 @@ function resolvePath(
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
 
-  const isFile = (p: string, c?: any, cb?: any): any => {
-    const callback = cb || c;
+  const isFile = gensync({
+    sync: (p: string) =>
+      Boolean(manager.transpiledModules[p]) || Boolean(meta[p]),
+  });
 
-    const result = Boolean(manager.transpiledModules[p]) || Boolean(meta[p]);
-    if (!callback) {
-      return result;
-    }
+  const readFile = gensync({
+    sync: () => {
+      throw new Error('Sync not supported for readFile');
+    },
+    async: async (p: string): Promise<string> => {
+      try {
+        const tModule = await manager.resolveTranspiledModule(p, '/', []);
+        tModule.initiators.add(currentTModule);
+        currentTModule.dependencies.add(tModule);
+        return tModule.module.code;
+      } catch (e) {
+        const depPath = p.replace(/.*\/node_modules\//, '');
+        const depName = getDependencyName(depPath);
 
-    return callback(null, result);
-  };
+        // To prevent infinite loops we keep track of which dependencies have been requested before.
+        if (!manager.transpiledModules[p] && !meta[p]) {
+          const err = new Error('Could not find ' + p);
+          // @ts-ignore
+          err.code = 'ENOENT';
 
-  return new Promise((res, reject) => {
-    resolve(
-      path,
-      {
-        filename: currentPath,
-        extensions: defaultExtensions.map(ext => '.' + ext),
-        packageFilter,
-        moduleDirectory: [
-          'node_modules',
-          manager.envVariables.NODE_PATH,
-        ].filter(Boolean),
-        isFile,
-        // @ts-ignore
-        readFile: async (p: string, c, cb) => {
-          const callback = cb || c;
-
-          try {
-            const tModule = await manager.resolveTranspiledModule(p, '/', []);
-            tModule.initiators.add(currentTModule);
-            currentTModule.dependencies.add(tModule);
-            return callback(null, tModule.module.code);
-          } catch (e) {
-            const depPath = p.replace(/.*\/node_modules\//, '');
-            const depName = getDependencyName(depPath);
-
-            // To prevent infinite loops we keep track of which dependencies have been requested before.
-            if (!manager.transpiledModules[p] && !meta[p]) {
-              const err = new Error('Could not find ' + p);
-              // @ts-ignore
-              err.code = 'ENOENT';
-
-              return callback(err);
-            }
-
-            // eslint-disable-next-line
-            const subDepVersionVersionInfo = await getDependencyVersion(
-              currentTModule,
-              manager,
-              depName
-            );
-
-            if (subDepVersionVersionInfo) {
-              const { version: subDepVersion } = subDepVersionVersionInfo;
-              try {
-                const module = await downloadDependency(
-                  depName,
-                  subDepVersion,
-                  p
-                );
-
-                if (module) {
-                  manager.addModule(module);
-                  const tModule = manager.addTranspiledModule(module, '');
-
-                  tModule.initiators.add(currentTModule);
-                  currentTModule.dependencies.add(tModule);
-
-                  callback(null, module.code);
-                  return null;
-                }
-              } catch (er) {
-                // Let it throw the error
-              }
-            }
-
-            return callback(e);
-          }
-        },
-      },
-      (err: Error | undefined, resolvedPath: string) => {
-        if (err) {
-          return reject(err);
+          throw err;
         }
 
-        return res(resolvedPath);
+        // eslint-disable-next-line
+        const subDepVersionVersionInfo = await getDependencyVersion(
+          currentTModule,
+          manager,
+          depName
+        );
+
+        if (subDepVersionVersionInfo) {
+          const { version: subDepVersion } = subDepVersionVersionInfo;
+          try {
+            const module = await downloadDependency(depName, subDepVersion, p);
+
+            if (module) {
+              manager.addModule(module);
+              const tModule = manager.addTranspiledModule(module, '');
+
+              tModule.initiators.add(currentTModule);
+              currentTModule.dependencies.add(tModule);
+
+              return module.code;
+            }
+          } catch (er) {
+            // Let it throw the error
+          }
+        }
+
+        throw e;
       }
-    );
+    },
+  });
+
+  return resolveAsync(path, {
+    filename: currentPath,
+    extensions: defaultExtensions.map(ext => '.' + ext),
+    moduleDirectories: ['node_modules', manager.envVariables.NODE_PATH].filter(
+      Boolean
+    ),
+    isFile,
+    readFile,
   });
 }
 

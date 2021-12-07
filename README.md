@@ -265,6 +265,9 @@ Thanks goes to these wonderful people
     <td align="center"><a href="http://nullvoxpopuli.com"><img src="https://avatars.githubusercontent.com/u/199018?v=4" width="100px;" alt="NullVoxPopuli"/><br /><sub><b>NullVoxPopuli</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=NullVoxPopuli" title="Code">💻</a> <a href="#content-NullVoxPopuli" title="Content">🖋</a> <a href="#maintenance-NullVoxPopuli" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://stefanretief.com"><img src="https://avatars.githubusercontent.com/u/3196604?v=4" width="100px;" alt="Stefan Retief"/><br /><sub><b>Stefan Retief</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3AStefanRetief" title="Bug reports">🐛</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/aditya211935"><img src="https://avatars.githubusercontent.com/u/23213686?v=4" width="100px;" alt="Aditya"/><br /><sub><b>Aditya</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3Aaditya211935" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=aditya211935" title="Code">💻</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->

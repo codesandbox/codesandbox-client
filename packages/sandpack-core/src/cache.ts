@@ -113,8 +113,8 @@ export async function saveCache(
       .then(x => x.json())
       .catch(e => {
         if (process.env.NODE_ENV === 'development') {
-          console.error('Something went wrong while saving cache.');
-          console.error(e);
+          console.warn('Something went wrong while saving cache.');
+          console.warn(e);
         }
       });
   }

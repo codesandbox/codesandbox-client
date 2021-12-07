@@ -78,7 +78,7 @@ class BabelTranspiler extends WorkerTranspiler {
           return BabelWorker();
         }
 
-        // We set these up in startup.js.
+        // We set these up in startup.ts.
         return global.babelworkers.pop();
       },
       {
@@ -151,10 +151,13 @@ class BabelTranspiler extends WorkerTranspiler {
           };
         }
       } catch (err) {
-        console.warn(
-          `Error occurred while trying to quickly transform '${path}'`
-        );
-        console.warn(err);
+        // do not log this in production, it confuses our users
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(
+            `Error occurred while trying to quickly transform '${path}'`
+          );
+          console.warn(err);
+        }
       }
     }
 

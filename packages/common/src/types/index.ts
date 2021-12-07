@@ -141,6 +141,7 @@ export type CurrentUser = {
     } | null;
   };
   sendSurvey: boolean;
+  deletionRequested: boolean;
 };
 
 export type CustomTemplate = {

@@ -11,8 +11,14 @@ import { SortOptions } from '../Filters/SortOptions';
 import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid';
 import { TemplateFilter } from '../../Content/utils';
 
+export interface IAction {
+  title: string;
+  action: () => void;
+}
+
 type Props = {
   templates?: TemplateFilter[];
+  actions?: IAction[];
   path?: string;
   title?: string;
   createNewFolder?: () => void;
@@ -37,6 +43,7 @@ export const Header = ({
   showViewOptions = false,
   showSortOptions = false,
   CustomFilters,
+  actions = [],
 }: Props) => {
   const location = useLocation();
   const { modals, openImportBetaSandboxModal } = useActions();
@@ -99,6 +106,22 @@ export const Header = ({
               + Import Repo
             </Button>
           )}
+
+        {actions.map(action => (
+          <Button
+            key={action.title}
+            onClick={action.action}
+            variant="link"
+            css={css({
+              fontSize: 2,
+              color: 'mutedForeground',
+              padding: 0,
+              width: 'auto',
+            })}
+          >
+            {action.title}
+          </Button>
+        ))}
 
         {location.pathname.includes(dashboardUrls.beta()) &&
           dashboard.viewMode === 'list' && (

@@ -1,10 +1,11 @@
-import resolve from 'browser-resolve';
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
+import { ModuleNotFoundError } from 'sandpack-core/lib/resolver/errors/ModuleNotFound';
+
 import getRequireStatements from './simple-get-require-statements';
-import { packageFilter } from '../../../utils/resolve-utils';
 import { convertEsModule } from '../ast/convert-esmodule';
 import { generateCode, parseModule } from '../ast/utils';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
+import { patchedResolve } from './utils/resolvePatch';
 
 const global = getGlobal();
 const path = global.BrowserFS.BFSRequire('path');
@@ -47,8 +48,6 @@ function mkDirByPathSync(
 
 interface IResolveResponse {
   found: boolean;
-  type: 'resolve-async-transpiled-module-response';
-  id: number;
   path: string;
   code: string;
 }
@@ -75,7 +74,11 @@ export const resolveAsyncModule = (
         data: {
           loaderContextId,
           path: modulePath,
-          options: { isAbsolute: true, ignoredExtensions },
+          options: {
+            // isAbsolute is very confusing, it means that we use the current module as the root
+            isAbsolute: true,
+            ignoredExtensions,
+          },
         },
       })
       .then(data => {
@@ -110,11 +113,9 @@ function downloadRequires(
         }
 
         try {
-          resolve.sync(foundR.path, {
+          patchedResolve().sync(foundR.path, {
             filename: currentPath,
             extensions: ['.js', '.json'],
-            moduleDirectory: ['node_modules'],
-            packageFilter,
           });
         } catch (err) {
           await downloadFromError({
@@ -170,7 +171,9 @@ export async function downloadPath(
       // Maybe there was a redirect from package.json. Manager only returns the redirect,
       // if the babel worker doesn't have the package.json it enters an infinite loop.
       const r2 = await resolveAsyncModule(
-        path.join(absolutePath, 'package.json'),
+        absolutePath.endsWith('/package.json')
+          ? absolutePath
+          : path.join(absolutePath, 'package.json'),
         {
           childHandler,
           loaderContextId,
@@ -218,22 +221,36 @@ export async function downloadPath(
   return r;
 }
 
+function extractPathFromError(err: Error | ModuleNotFoundError): string {
+  if (err instanceof ModuleNotFoundError) {
+    return err.filepath;
+  }
+
+  if (err.message.indexOf('Cannot find module') > -1) {
+    const matches = err.message.match(
+      /Cannot find module '(.*?)'.*from '(.*?)'/
+    );
+    const dep = matches[1];
+    const from = matches[2];
+    const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
+    return absolutePath;
+  }
+
+  return null;
+}
+
 export function downloadFromError(opts: {
   error: Error;
   childHandler: ChildHandler;
   loaderContextId: number;
 }) {
   const { error, childHandler, loaderContextId } = opts;
-  if (error.message.indexOf('Cannot find module') > -1) {
-    const dep = error.message.match(/Cannot find module '(.*?)'/)[1];
-    const from = error.message.match(/from '(.*?)'/)[1];
-    const absolutePath = dep.startsWith('.') ? path.join(from, dep) : dep;
-
-    return downloadPath(absolutePath, {
+  const moduleSpecifier = extractPathFromError(error);
+  if (moduleSpecifier) {
+    return downloadPath(moduleSpecifier, {
       childHandler,
       loaderContextId,
     });
   }
-
   return Promise.resolve();
 }

@@ -21,6 +21,10 @@ import joana from '../assets/images/people/joana.jpg';
 import marco from '../assets/images/people/marco.jpg';
 import roman from '../assets/images/people/roman.jpg';
 import james from '../assets/images/people/james.jpg';
+import gianmarco from '../assets/images/people/gsimone.jpeg'
+import ace from '../assets/images/people/ace.jpg'
+import maria from '../assets/images/people/maria.png'
+import lena from '../assets/images/people/lena.png'
 
 const people = [
   {
@@ -142,7 +146,31 @@ const people = [
     pic: james,
     color: '#6200ff',
     team: 'Support',
-  }
+  },
+  {
+    name: 'Gianmarco Simone',
+    pic: gianmarco,
+    color: '#ddaa00',
+    team: 'Engineering',
+  },
+  {
+    name: 'Adewale Abati',
+    pic: ace,
+    color: '#008753',
+    team: 'DevRel',
+  }, 
+  {
+    name: 'Maria Clara',
+    pic: maria,
+    color: '#272b8c',
+    team: 'Engineering'
+  },
+  {
+    name: 'Lena Sotto Mayor',
+    pic: lena,
+    color: '#B567EB',
+    team: 'Design',
+    }
 ];
 
 const Peep = styled.img`
@@ -150,6 +178,7 @@ const Peep = styled.img`
   height: 80px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.24), 0px 8px 4px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
+  object-fit: cover;
 
   ${props => {
     if (props.border) {

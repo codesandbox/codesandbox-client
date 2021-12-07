@@ -217,12 +217,14 @@ interface VariableGridProps {
   items: DashboardGridItem[];
   collectionId?: string;
   page: PageTypes;
+  viewMode?: 'grid' | 'list';
 }
 
 export const VariableGrid = ({
   items,
   collectionId,
   page,
+  viewMode: propViewMode,
 }: VariableGridProps) => {
   const { dashboard } = useAppState();
 
@@ -230,7 +232,7 @@ export const VariableGrid = ({
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else viewMode = dashboard.viewMode;
+  else viewMode = propViewMode || dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
 

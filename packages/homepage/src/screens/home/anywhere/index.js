@@ -51,7 +51,7 @@ const Anywhere = () => (
         line-height: 32px;
         z-index: 2;
       `}
-      href="/blog"
+      href="/post/introducing-play-js-live/"
     >
       Learn more about play.js
     </Button>

@@ -25,6 +25,8 @@ export default function initialize() {
     'parcel',
     [
       'js',
+      'mjs',
+      'cjs',
       'jsx',
       'ts',
       'tsx',
@@ -54,7 +56,7 @@ export default function initialize() {
     { transpiler: babelTranspiler },
   ]);
 
-  parcelPreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  parcelPreset.registerTranspiler(module => /\.(m|c)?jsx?$/.test(module.path), [
     {
       transpiler: babelTranspiler,
       options: {

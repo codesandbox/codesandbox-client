@@ -104,6 +104,12 @@ const Client = Loadable(() =>
   }))
 );
 
+const VSCodeAuth = Loadable(() =>
+  import(/* webpackChunkName: 'page-client' */ './VSCodeAuth').then(module => ({
+    default: module.VSCodeAuth,
+  }))
+);
+
 const TeamInvitation = Loadable(() =>
   import(
     /* webpackChunkName: 'page-team-invitation' */ './TeamInvitation'
@@ -217,6 +223,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={Client} />
+            <Route path="/vscode/login" component={VSCodeAuth} />
             <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (

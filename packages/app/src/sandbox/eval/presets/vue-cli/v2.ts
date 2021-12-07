@@ -62,7 +62,7 @@ export default function initialize(vuePreset: Preset) {
     });
   }
 
-  vuePreset.registerTranspiler(module => /\.m?jsx?$/.test(module.path), [
+  vuePreset.registerTranspiler(module => /\.(m|c)?jsx?$/.test(module.path), [
     { transpiler: babelTranspiler },
   ]);
   vuePreset.registerTranspiler(module => /\.m?tsx?$/.test(module.path), [
