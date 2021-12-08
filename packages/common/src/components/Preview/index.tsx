@@ -459,6 +459,7 @@ class BasePreview extends React.PureComponent<Props, State> {
           previewSecret: sandbox.previewSecret,
           showScreen,
           clearConsoleDisabled: !settings.clearConsoleEnabled,
+          reactDevTools: true,
         });
       }
     }
@@ -639,9 +640,14 @@ class BasePreview extends React.PureComponent<Props, State> {
                     ...style,
                     zIndex: 1,
                     backgroundColor: 'white',
-                    userSelect: this.props.isResponsivePreviewResizing ? "none" : "initial",
+                    userSelect: this.props.isResponsivePreviewResizing
+                      ? 'none'
+                      : 'initial',
                     pointerEvents:
-                      dragging || inactive || this.props.isResizing || this.props.isResponsivePreviewResizing
+                      dragging ||
+                      inactive ||
+                      this.props.isResizing ||
+                      this.props.isResponsivePreviewResizing
                         ? 'none'
                         : 'initial',
                   }}
