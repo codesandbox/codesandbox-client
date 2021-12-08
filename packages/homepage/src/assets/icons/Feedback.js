@@ -1,26 +1,78 @@
-import React from 'react';
+import React from "react";
+import { useTheme } from "../../components/layout";
 
-const Feedback = props => (
-  <svg
-    width={32}
-    height={32}
-    fill="none"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M1.00043 10.8482C1.00014 10.8218 1 10.7955 1 10.7691C1 7.03061 3.85114 4 7.36819 4C10.8853 4 13.7364 7.03061 13.7364 10.7691C13.7364 14.5075 10.8853 17.5381 7.36819 17.5381C7.35794 17.5381 7.34769 17.5381 7.33744 17.538H1.00043V10.8482Z"
-      fill="white"
-    />
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M12.191 16.9138C13.8451 15.4464 14.8975 13.2384 14.8975 10.7692C14.8975 9.93578 14.7776 9.13211 14.5552 8.37663C15.3506 7.93942 16.2535 7.69249 17.2107 7.69249C20.4081 7.69249 23 10.4476 23 13.8462C23 13.9041 22.9992 13.9619 22.9977 14.0194V20H17.2085V19.9999C15.063 19.999 13.1904 18.7576 12.191 16.9138Z"
-      fill="white"
-    />
-  </svg>
-);
+const Feedback = (props) => {
+  const white = useTheme().homepage.white;
+
+  return (
+    <svg
+      width="40"
+      height="40"
+      viewBox="0 0 60 60"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <g clip-path="url(#clip0_9_70)">
+        <rect width="60" height="60" fill="#151515" />
+        <path
+          d="M51 25H25V45.4286H45.4286L51 51V25Z"
+          fill="#151515"
+          stroke={white}
+          stroke-width="4"
+          stroke-linecap="round"
+        />
+        <g filter="url(#filter0_d_9_70)">
+          <path d="M10 11H44V37.7143H17.2857L10 45V11Z" fill="#151515" />
+          <path
+            d="M10 11H44V37.7143H17.2857L10 45V11Z"
+            stroke={white}
+            stroke-width="4"
+            stroke-linecap="round"
+          />
+        </g>
+      </g>
+      <defs>
+        <filter
+          id="filter0_d_9_70"
+          x="-21"
+          y="-20"
+          width="100"
+          height="102.828"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
+        >
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset dx="2" dy="2" />
+          <feGaussianBlur stdDeviation="15.5" />
+          <feComposite in2="hardAlpha" operator="out" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="BackgroundImageFix"
+            result="effect1_dropShadow_9_70"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_dropShadow_9_70"
+            result="shape"
+          />
+        </filter>
+        <clipPath id="clip0_9_70">
+          <rect width="60" height="60" fill={white} />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+};
 export default Feedback;

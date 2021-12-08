@@ -1,26 +1,27 @@
 import React from "react";
 import { useTheme } from "../../components/layout";
 
-const Jobs = (props) => {
+const CodeSandbox = (props) => {
   const white = useTheme().homepage.white;
+
   return (
     <svg
-      width="60"
-      height="60"
+      width="40"
+      height="40"
       viewBox="0 0 60 60"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <path
-        d="M15 18L29.4231 18L45 18V36H15V18Z"
+      <rect
+        x="13"
+        y="13"
+        width="34"
+        height="34"
         stroke={white}
         stroke-width="4"
-        stroke-linecap="round"
       />
-      <path d="M8 42.5H52" stroke={white} stroke-width="5" />
     </svg>
   );
 };
-
-export default Jobs;
+export default CodeSandbox;
