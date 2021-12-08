@@ -1,8 +1,8 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import styled from 'styled-components';
-import { H2, P, H3 } from '../../../components/Typography';
-import { BGIcon, GHIcon, NPMIcon, OptimizedIcon } from './icons';
+import React from "react";
+import { motion } from "framer-motion";
+import styled from "styled-components";
+import { H2, P, H3 } from "../../../components/Typography";
+import { BGIcon, GHIcon, NPMIcon, OptimizedIcon } from "./icons";
 
 const container = {
   hidden: { opacity: 0 },
@@ -25,7 +25,7 @@ const Grid = styled(motion.div)`
   grid-gap: 38px;
   margin: 4rem 0;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     grid-template-columns: repeat(3, 1fr);
   }
 
@@ -39,12 +39,12 @@ const Feature = styled(motion.div)`
   align-items: center;
   flex-direction: column;
   padding: 2.5rem 2rem;
-  border: 0.5px solid #343434;
+  // border: 0.5px solid #343434;
   border-radius: 4px;
   text-align: center;
   background: #151515;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     padding: 1rem;
   }
 
@@ -89,13 +89,13 @@ const DevExperience = () => (
         margin-bottom: 80px;
       `}
     >
-      The best JavaScript dev experience
+      The best JavaScript <br /> dev experience
     </H2>
     <Grid variants={container} initial="hidden" animate="show">
       <Feature variants={item}>
         <NPMIcon />
         <H3>Supercharged with npm</H3>
-        <P muted>
+        <P muted small>
           Use private packages, or any of the 1M+ public ones, to build powerful
           apps quickly.
         </P>
@@ -103,7 +103,7 @@ const DevExperience = () => (
       <Feature variants={item}>
         <OptimizedIcon />
         <H3>Optimized for frameworks</H3>
-        <P muted>
+        <P muted small>
           Custom environments built specifically for React, Vue, Angular, and
           many more.
         </P>
@@ -111,7 +111,7 @@ const DevExperience = () => (
       <Feature variants={item}>
         <GHIcon />
         <H3>Integrated with GitHub</H3>
-        <P muted>
+        <P muted small>
           Import and run repos direct from GitHub. Or export your sandbox to a
           repo.
         </P>

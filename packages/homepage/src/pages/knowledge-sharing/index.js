@@ -1,12 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from "react";
 
-import { applyParallax } from '../../utils/parallax';
-import usePrefersReducedMotion from '../../utils/isReducedMOtion';
-import Layout from '../../components/layout';
-import TitleAndMetaTags from '../../components/TitleAndMetaTags';
-import CTA from '../../components/CTA';
-import Button from '../../components/Button';
-import { Description } from '../../components/Typography';
+import { applyParallax } from "../../utils/parallax";
+import usePrefersReducedMotion from "../../utils/isReducedMOtion";
+import Layout from "../../components/layout";
+import TitleAndMetaTags from "../../components/TitleAndMetaTags";
+import CTA from "../../components/CTA";
+import Button from "../../components/Button";
+import { Description } from "../../components/Typography";
 
 import {
   ContentBlock,
@@ -15,12 +15,12 @@ import {
   TitleWrapper,
   Wrapper,
   FeaturedImage,
-} from '../../components/LayoutComponents';
+} from "../../components/LayoutComponents";
 
-import team from './images/team-settings.png';
-import bg from './images/bg.png';
-import madetoshare from './images/madetoshare.png';
-import bg1 from './images/bg1.png';
+import team from "./images/team-settings.png";
+import bg from "./images/bg.png";
+import madetoshare from "./images/madetoshare.png";
+import bg1 from "./images/bg1.png";
 
 export default () => {
   const parallaxRef = useRef(null);
@@ -44,7 +44,9 @@ export default () => {
       <TitleAndMetaTags title="Knowledge Sharing - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Share knowledge and learn together</Title>
+          <Title>
+            Share knowledge <br /> and learn together
+          </Title>
         </TitleWrapper>
         <Description>
           Use code, apps, and templates collectively. Learn from each other and
@@ -58,7 +60,7 @@ export default () => {
             margin: 2rem 0;
           `}
         >
-          <Button cta href="https://codesandbox.io/s/">
+          <Button big href="https://codesandbox.io/s/">
             Get Started
           </Button>
         </div>
@@ -71,7 +73,7 @@ export default () => {
               height: 468px;
               padding: 0 1rem;
 
-              ${props => props.theme.breakpoints.md} {
+              ${(props) => props.theme.breakpoints.md} {
                 height: 200px;
               }
             `}
@@ -150,7 +152,7 @@ export default () => {
                 alt="made to share"
                 css={`
                   width: 60rem;
-                  ${props => props.theme.breakpoints.md} {
+                  ${(props) => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}

@@ -1,12 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from "react";
 
-import { applyParallax } from '../../utils/parallax';
-import usePrefersReducedMotion from '../../utils/isReducedMOtion';
-import Layout from '../../components/layout';
-import TitleAndMetaTags from '../../components/TitleAndMetaTags';
-import CTA from '../../components/CTA';
-import Button from '../../components/Button';
-import { Description } from '../../components/Typography';
+import { applyParallax } from "../../utils/parallax";
+import usePrefersReducedMotion from "../../utils/isReducedMOtion";
+import Layout from "../../components/layout";
+import TitleAndMetaTags from "../../components/TitleAndMetaTags";
+import CTA from "../../components/CTA";
+import Button from "../../components/Button";
+import { Description } from "../../components/Typography";
 
 import {
   ContentBlock,
@@ -16,16 +16,16 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
-} from '../../components/LayoutComponents';
+} from "../../components/LayoutComponents";
 
-import ide from './images/ide.png';
-import bg from './images/bg.png';
-import bg1 from './images/bg1.png';
+import ide from "./images/ide.png";
+import bg from "./images/bg.png";
+import bg1 from "./images/bg1.png";
 
-import repo from './images/repo.svg';
-import registry from './images/registry.svg';
-import privateImg from './images/private.svg';
-import deps from './images/deps.png';
+import repo from "./images/repo.svg";
+import registry from "./images/registry.svg";
+import privateImg from "./images/private.svg";
+import deps from "./images/deps.png";
 
 export default () => {
   const parallaxRef = useRef(null);
@@ -49,7 +49,9 @@ export default () => {
       <TitleAndMetaTags title="Prototyping - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Quickly prototype ideas with code</Title>
+          <Title>
+            Quickly prototype <br /> ideas with code
+          </Title>
         </TitleWrapper>
         <Description>
           Create real, working prototypes. Test ideas earlier, iterate more and
@@ -75,7 +77,7 @@ export default () => {
             css={`
               height: 468px;
 
-              ${props => props.theme.breakpoints.md} {
+              ${(props) => props.theme.breakpoints.md} {
                 height: 200px;
               }
             `}
@@ -166,7 +168,7 @@ export default () => {
               css={`
                 height: 468px;
 
-                ${props => props.theme.breakpoints.md} {
+                ${(props) => props.theme.breakpoints.md} {
                   height: auto;
                   padding: 2rem 0;
                 }

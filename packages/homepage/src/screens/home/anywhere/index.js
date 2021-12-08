@@ -32,7 +32,7 @@ const Anywhere = () => (
       Code from anywhere
     </H2>
     <P
-      big
+      // big
       muted
       css={`
         text-align: center;
@@ -46,9 +46,9 @@ const Anywhere = () => (
     </P>
 
     <Button
+      big
       css={`
         position: relative;
-        line-height: 32px;
         z-index: 2;
       `}
       href="/post/introducing-play-js-live/"

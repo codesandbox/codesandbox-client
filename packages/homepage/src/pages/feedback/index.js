@@ -1,12 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from "react";
 
-import { applyParallax } from '../../utils/parallax';
-import usePrefersReducedMotion from '../../utils/isReducedMOtion';
-import Layout from '../../components/layout';
-import TitleAndMetaTags from '../../components/TitleAndMetaTags';
-import CTA from '../../components/CTA';
-import Button from '../../components/Button';
-import { Description } from '../../components/Typography';
+import { applyParallax } from "../../utils/parallax";
+import usePrefersReducedMotion from "../../utils/isReducedMOtion";
+import Layout from "../../components/layout";
+import TitleAndMetaTags from "../../components/TitleAndMetaTags";
+import CTA from "../../components/CTA";
+import Button from "../../components/Button";
+import { Description } from "../../components/Typography";
 
 import {
   ContentBlock,
@@ -16,16 +16,16 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
-} from '../../components/LayoutComponents';
+} from "../../components/LayoutComponents";
 
-import ide from './images/ide.png';
-import bg from './images/bg.png';
-import bg1 from './images/bg1.png';
-import notifications from './images/notifications.png';
+import ide from "./images/ide.png";
+import bg from "./images/bg.png";
+import bg1 from "./images/bg1.png";
+import notifications from "./images/notifications.png";
 
-import comments from './images/comments.svg';
-import comments1 from './images/comments1.svg';
-import comments2 from './images/comments2.svg';
+import comments from "./images/comments.svg";
+import comments1 from "./images/comments1.svg";
+import comments2 from "./images/comments2.svg";
 
 export default () => {
   const parallaxRef = useRef(null);
@@ -49,7 +49,9 @@ export default () => {
       <TitleAndMetaTags title="Feedback - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Get better feedback from your whole team</Title>
+          <Title>
+            Get better feedback from <br /> your whole team
+          </Title>
         </TitleWrapper>
         <Description>
           Give and get feedback, on code or visuals, right in the editor. Take
@@ -63,7 +65,7 @@ export default () => {
             margin: 2rem 0;
           `}
         >
-          <Button cta href="https://codesandbox.io/s/">
+          <Button big href="https://codesandbox.io/s/">
             Get Started
           </Button>
         </div>
@@ -75,7 +77,7 @@ export default () => {
             bg={bg}
             css={`
               justify-content: flex-start;
-              ${props => props.theme.breakpoints.md} {
+              ${(props) => props.theme.breakpoints.md} {
                 margin-top: 4rem;
               }
             `}
@@ -86,7 +88,7 @@ export default () => {
               alt="Keep everyone in the loop"
               css={`
                 width: 971px;
-                ${props => props.theme.breakpoints.md} {
+                ${(props) => props.theme.breakpoints.md} {
                   margin-top: 4rem;
                 }
               `}
@@ -187,7 +189,7 @@ export default () => {
                 alt="Notifications"
                 css={`
                   width: 996px;
-                  ${props => props.theme.breakpoints.md} {
+                  ${(props) => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}

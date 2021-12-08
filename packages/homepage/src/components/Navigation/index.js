@@ -1,27 +1,27 @@
 /* eslint-disable import/no-cycle */
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link, Location } from '@reach/router';
-import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link, Location } from "@reach/router";
+import { signInPageUrl } from "@codesandbox/common/lib/utils/url-generator";
+import { ExperimentValues, useExperimentResult } from "@codesandbox/ab";
 
-import { useTheme } from '../layout';
-import Button from '../Button';
-import Logo from '../../assets/images/logo.svg';
-import SupportIcon from '../../assets/icons/Support';
-import StatusIcon from '../../assets/icons/Status';
-import DocsIcon from '../../assets/icons/Docs';
-import BlogIcon from '../../assets/icons/Blog';
-import IDEIcon from '../../assets/icons/Ide';
-import FeedbackIcon from '../../assets/icons/Feedback';
-import PrototypeIcon from '../../assets/icons/Prototype';
-import TeamsIcon from '../../assets/icons/Teams';
-import SearchIcon from '../../assets/icons/Search';
-import HighlightedICon from '../../assets/icons/Highlighted';
-import NewIcon from '../../assets/icons/New';
-import { OPEN_JOBS_COUNT } from '../../config/hiring';
-import { useLogin } from '../../hooks/useLogin';
-import { JobBadge } from '../JobBadge';
+import { useTheme } from "../layout";
+import Button from "../Button";
+import Logo from "../../assets/images/logo.svg";
+import SupportIcon from "../../assets/icons/Support";
+import StatusIcon from "../../assets/icons/Status";
+import DocsIcon from "../../assets/icons/Docs";
+import BlogIcon from "../../assets/icons/Blog";
+import IDEIcon from "../../assets/icons/Ide";
+import FeedbackIcon from "../../assets/icons/Feedback";
+import PrototypeIcon from "../../assets/icons/Prototype";
+import TeamsIcon from "../../assets/icons/Teams";
+import SearchIcon from "../../assets/icons/Search";
+import HighlightedICon from "../../assets/icons/Highlighted";
+import NewIcon from "../../assets/icons/New";
+import { OPEN_JOBS_COUNT } from "../../config/hiring";
+import { useLogin } from "../../hooks/useLogin";
+import { JobBadge } from "../JobBadge";
 import {
   Header,
   Nav,
@@ -32,22 +32,22 @@ import {
   List,
   LogIn,
   Jobs,
-} from './elements';
-import SubNav from './SubNav';
-import MobileNav from './MobileNav';
+} from "./elements";
+import SubNav from "./SubNav";
+import MobileNav from "./MobileNav";
 
 const Navigation = () => {
   const user = useLogin();
-  const [openedNav, setOpenedNav] = useState('');
+  const [openedNav, setOpenedNav] = useState("");
   const [hasOpened, setHasOpened] = useState(false);
   const muted = useTheme().homepage.muted;
 
-  const experimentPromise = useExperimentResult('homepage-header-links');
+  const experimentPromise = useExperimentResult("homepage-header-links");
   const [compactMenu, setCompactMenu] = useState(false);
 
   useEffect(() => {
     /* Wait for the API */
-    experimentPromise.then(experiment => {
+    experimentPromise.then((experiment) => {
       if (experiment === ExperimentValues.A) {
         /**
          * A
@@ -99,13 +99,13 @@ const Navigation = () => {
         >
           <motion.div
             initial={{
-              opacity: pathname === '/' ? 0 : 1,
-              y: pathname === '/' ? -20 : 0,
+              opacity: pathname === "/" ? 0 : 1,
+              y: pathname === "/" ? -20 : 0,
             }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
               duration: 0.5,
-              ease: 'easeIn',
+              ease: "easeIn",
             }}
           >
             <Header>
@@ -119,7 +119,7 @@ const Navigation = () => {
                     <List>
                       <li>
                         <button
-                          onMouseEnter={() => setOpenedNav('product')}
+                          onMouseEnter={() => setOpenedNav("product")}
                           type="button"
                         >
                           Product
@@ -128,7 +128,7 @@ const Navigation = () => {
                       </li>
                       <li>
                         <button
-                          onMouseEnter={() => setOpenedNav('explore')}
+                          onMouseEnter={() => setOpenedNav("explore")}
                           type="button"
                         >
                           Explore
@@ -137,7 +137,7 @@ const Navigation = () => {
                       </li>
                       <li>
                         <button
-                          onMouseEnter={() => setOpenedNav('resources')}
+                          onMouseEnter={() => setOpenedNav("resources")}
                           type="button"
                         >
                           Resources
@@ -146,7 +146,7 @@ const Navigation = () => {
                       </li>
                       <li>
                         <button
-                          onMouseEnter={() => setOpenedNav('support')}
+                          onMouseEnter={() => setOpenedNav("support")}
                           type="button"
                         >
                           Support
@@ -168,7 +168,7 @@ const Navigation = () => {
                           to="/jobs"
                           onMouseEnter={() => setOpenedNav(null)}
                         >
-                          Jobs{' '}
+                          Jobs{" "}
                           {OPEN_JOBS_COUNT && (
                             <JobBadge>{OPEN_JOBS_COUNT}</JobBadge>
                           )}
@@ -189,16 +189,17 @@ const Navigation = () => {
                     )}
                     <LogIn onMouseEnter={() => setOpenedNav(null)}>
                       <Button
-                        css={`
-                          background: #5962df;
-                        `}
+                        // css={`
+                        //   background: #DCFF50;
+                        //   color: #171618;
+                        // `}
                         className="button"
                         href="/s"
                       >
                         Create Sandbox
                       </Button>
                       {user && (
-                        <a style={{ display: 'flex' }} href="/dashboard">
+                        <a style={{ display: "flex" }} href="/dashboard">
                           <UserAvatar
                             className="tablet-remove"
                             src={user.avatar_url}
@@ -232,7 +233,7 @@ const Navigation = () => {
                 `}
                 transition={{
                   duration: 0.2,
-                  ease: 'easeIn',
+                  ease: "easeIn",
                 }}
               >
                 <SubNav

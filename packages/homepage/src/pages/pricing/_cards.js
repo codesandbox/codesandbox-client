@@ -1,6 +1,6 @@
-import React from 'react';
-import track from '@codesandbox/common/lib/utils/analytics';
-import { Link } from 'gatsby';
+import React from "react";
+import track from "@codesandbox/common/lib/utils/analytics";
+import { Link } from "gatsby";
 
 import {
   Card,
@@ -10,20 +10,20 @@ import {
   List,
   Button,
   CardContainer,
-} from './_elements';
+} from "./_elements";
 
 const makeLink = (product, mode) => {
-  let link = 'pro?';
-  if (product === 'personal') {
-    link += 'type=PERSONAL_PRO';
+  let link = "pro?";
+  if (product === "personal") {
+    link += "type=PERSONAL_PRO";
   } else {
-    link += 'type=TEAM_PRO';
+    link += "type=TEAM_PRO";
   }
 
-  if (mode === 'monthly') {
-    link += '&interval=MONTHLY';
+  if (mode === "monthly") {
+    link += "&interval=MONTHLY";
   } else {
-    link += '&interval=YEARLY';
+    link += "&interval=YEARLY";
   }
 
   return link;
@@ -33,7 +33,7 @@ export const TeamCards = ({ mode }) => (
   <CardContainer teams>
     <Card
       css={`
-        background: #5962df;
+        border-top: solid 10px #ac9cff;
       `}
     >
       <div>
@@ -42,13 +42,19 @@ export const TeamCards = ({ mode }) => (
             height: 155px;
           `}
         >
-          <CardTitle>Team Pro</CardTitle>
-          <Price>${mode === 'monthly' ? 30 : 24}</Price>
+          <CardTitle
+            css={`
+              color: #ac9cff;
+            `}
+          >
+            Team Pro
+          </CardTitle>
+          <Price>${mode === "monthly" ? 30 : 24}</Price>
           <PriceSubText>
-            per editor/team/billed {mode === 'monthly' ? 'monthly' : 'annually'}{' '}
+            per editor/team/billed {mode === "monthly" ? "monthly" : "annually"}{" "}
             <br />
-            or ${mode === 'annually' ? 30 : 24} per month billed{' '}
-            {mode === 'annually' ? 'monthly' : 'annually'}
+            or ${mode === "annually" ? 30 : 24} per month billed{" "}
+            {mode === "annually" ? "monthly" : "annually"}
           </PriceSubText>
         </div>
         <List>
@@ -69,18 +75,19 @@ export const TeamCards = ({ mode }) => (
       </div>
       <Button
         css={`
-          color: #5962df;
-          background: ${props => props.theme.homepage.white};
+          color: #151515;
+          background: #ac9cff;
         `}
-        onClick={() => track(`Subscribe to Pro Clicked`, { tab: 'Business' })}
-        href={makeLink('team', mode)}
+        onClick={() => track(`Subscribe to Pro Clicked`, { tab: "Business" })}
+        href={makeLink("team", mode)}
       >
         Subscribe to Pro
       </Button>
     </Card>
     <Card
       css={`
-        background: #f7a239;
+        border-top: solid 10px #dcff50;
+        transform: scale(1.05);
       `}
     >
       <div>
@@ -89,10 +96,17 @@ export const TeamCards = ({ mode }) => (
             height: 155px;
           `}
         >
-          <CardTitle>Organization</CardTitle>
-          <Price>${mode === 'monthly' ? 56 : 45}</Price>
+          <CardTitle
+            css={`
+              color: #dcff50;
+            `}
+            onCli
+          >
+            Organization
+          </CardTitle>
+          <Price>${mode === "monthly" ? 56 : 45}</Price>
           <PriceSubText>
-            per editor/billed {mode === 'monthly' ? 'monthly' : 'annually'}{' '}
+            per editor/billed {mode === "monthly" ? "monthly" : "annually"}{" "}
             <br />
             Currently in private beta
           </PriceSubText>
@@ -115,25 +129,35 @@ export const TeamCards = ({ mode }) => (
       </div>
       <Button
         css={`
-          color: #f7a239;
-          background: ${props => props.theme.homepage.white};
+          color: #151515;
+          background: #dcff50;
         `}
         onClick={() =>
-          track(`Subscribe to Organization Clicked`, { tab: 'Business' })
+          track(`Subscribe to Organization Clicked`, { tab: "Business" })
         }
         href="https://airtable.com/shrlgLSJWiX8rYqyG"
       >
         Join the waitlist
       </Button>
     </Card>
-    <Card>
+    <Card
+      css={`
+        border-top: solid 10px #00b2ff;
+      `}
+    >
       <div>
         <div
           css={`
             height: 155px;
           `}
         >
-          <CardTitle>Enterprise</CardTitle>
+          <CardTitle
+            css={`
+              color: #00b2ff;
+            `}
+          >
+            Enterprise
+          </CardTitle>
           <Price>Custom</Price>
           <PriceSubText>Tailored to your needs</PriceSubText>
         </div>
@@ -153,11 +177,11 @@ export const TeamCards = ({ mode }) => (
       </div>
       <Button
         onClick={() =>
-          track(`Subscribe to Enterprise Clicked`, { tab: 'Business' })
+          track(`Subscribe to Enterprise Clicked`, { tab: "Business" })
         }
         css={`
-          color: ${props => props.theme.homepage.blue};
-          background: ${props => props.theme.homepage.white};
+          color: #151515;
+          background: #00b2ff;
         `}
         href="mailto:support@codesandbox.io"
       >
@@ -169,7 +193,12 @@ export const TeamCards = ({ mode }) => (
 
 export const PersonalCards = ({ mode }) => (
   <CardContainer>
-    <Card dark>
+    <Card
+      dark
+      css={`
+        border-top: solid 10px #252525;
+      `}
+    >
       <div>
         <div
           css={`
@@ -201,26 +230,36 @@ export const PersonalCards = ({ mode }) => (
       </div>
       <Button
         onClick={() =>
-          track(`Subscribe to Personal Free Clicked`, { tab: 'Individual' })
+          track(`Subscribe to Personal Free Clicked`, { tab: "Individual" })
         }
         href="/s"
       >
-        Get started, it’s free{' '}
+        Get started, it’s free{" "}
       </Button>
     </Card>
-    <Card>
+    <Card
+      css={`
+        border-top: solid 10px #edffa5;
+      `}
+    >
       <div>
         <div
           css={`
             height: 155px;
           `}
         >
-          <CardTitle>Personal Pro</CardTitle>
-          <Price>${mode === 'monthly' ? 9 : 7}</Price>
+          <CardTitle
+            css={`
+              color: #edffa5;
+            `}
+          >
+            Personal Pro
+          </CardTitle>
+          <Price>${mode === "monthly" ? 9 : 7}</Price>
           <PriceSubText>
-            billed {mode === 'monthly' ? 'monthly' : 'annually'} <br />
-            or ${mode === 'annually' ? 9 : 7} per month billed{' '}
-            {mode === 'annually' ? 'monthly' : 'annually'}
+            billed {mode === "monthly" ? "monthly" : "annually"} <br />
+            or ${mode === "annually" ? 9 : 7} per month billed{" "}
+            {mode === "annually" ? "monthly" : "annually"}
           </PriceSubText>
         </div>
         <List>
@@ -241,13 +280,13 @@ export const PersonalCards = ({ mode }) => (
       </div>
       <Button
         css={`
-          color: ${props => props.theme.homepage.blue};
-          background: ${props => props.theme.homepage.white};
+          background: #edffa5;
+          color: #151515;
         `}
         onClick={() =>
-          track(`Subscribe to Personal Pro Clicked`, { tab: 'Individual' })
+          track(`Subscribe to Personal Pro Clicked`, { tab: "Individual" })
         }
-        href={makeLink('personal', mode)}
+        href={makeLink("personal", mode)}
       >
         Subscribe to Pro
       </Button>
@@ -260,14 +299,14 @@ const Cards = ({ team, mode }) => (
     {team ? <TeamCards mode={mode} /> : <PersonalCards mode={mode} />}
     <p
       css={`
-        color: ${props => props.theme.homepage.muted};
+        color: ${(props) => props.theme.homepage.muted};
         text-align: center;
         font-size: 13px;
         margin-top: 16px;
       `}
     >
       Prices listed in USD. Taxes may apply. By using CodeSandbox you agree to
-      our <Link to="legal/terms">terms</Link> and{' '}
+      our <Link to="legal/terms">terms</Link> and{" "}
       <Link to="legal/privacy">policies</Link>.
     </p>
   </>

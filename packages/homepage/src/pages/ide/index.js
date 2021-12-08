@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import Layout from '../../components/layout';
-import { applyParallax } from '../../utils/parallax';
-import usePrefersReducedMotion from '../../utils/isReducedMOtion';
-import TitleAndMetaTags from '../../components/TitleAndMetaTags';
-import Button from '../../components/Button';
-import CTA from '../../components/CTA';
-import { Description } from '../../components/Typography';
+import React, { useEffect, useRef } from "react";
+import Layout from "../../components/layout";
+import { applyParallax } from "../../utils/parallax";
+import usePrefersReducedMotion from "../../utils/isReducedMOtion";
+import TitleAndMetaTags from "../../components/TitleAndMetaTags";
+import Button from "../../components/Button";
+import CTA from "../../components/CTA";
+import { Description } from "../../components/Typography";
 
 import {
   ContentBlock,
@@ -15,22 +15,22 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
-} from '../../components/LayoutComponents';
+} from "../../components/LayoutComponents";
 
-import ide from './images/ide.png';
-import bg from './images/bg.png';
-import bg1 from './images/bg1.png';
-import bg2 from './images/bg2.png';
-import bg3 from './images/bg3.png';
-import bg4 from './images/bg4.png';
-import templates from './images/templates.png';
-import makeityours from './images/makeityours.png';
-import server from './images/server.png';
-import tests from './images/tests.png';
+import ide from "./images/ide.png";
+import bg from "./images/bg.png";
+import bg1 from "./images/bg1.png";
+import bg2 from "./images/bg2.png";
+import bg3 from "./images/bg3.png";
+import bg4 from "./images/bg4.png";
+import templates from "./images/templates.png";
+import makeityours from "./images/makeityours.png";
+import server from "./images/server.png";
+import tests from "./images/tests.png";
 
-import gh from './images/gh.svg';
-import deploy from './images/deploy.svg';
-import vscode from './images/vscode.svg';
+import gh from "./images/gh.svg";
+import deploy from "./images/deploy.svg";
+import vscode from "./images/vscode.svg";
 
 export default () => {
   const parallaxRef = useRef(null);
@@ -62,8 +62,8 @@ export default () => {
           <Title>Code from anywhere</Title>
         </TitleWrapper>
         <Description>
-          Code online with no setup in a powerful IDE that feels like it’s
-          local.
+          Code online with no setup in a powerful <br /> IDE that feels like
+          it’s local.
         </Description>
         <div
           css={`
@@ -73,7 +73,7 @@ export default () => {
             margin: 2rem 0;
           `}
         >
-          <Button cta href="https://codesandbox.io/s/">
+          <Button big href="https://codesandbox.io/s/">
             Get Started
           </Button>
         </div>
@@ -85,7 +85,7 @@ export default () => {
             css={`
               height: 468px;
 
-              ${props => props.theme.breakpoints.md} {
+              ${(props) => props.theme.breakpoints.md} {
                 height: 200px;
               }
             `}
@@ -164,7 +164,7 @@ export default () => {
               css={`
                 height: 468px;
                 justify-content: flex-end;
-                ${props => props.theme.breakpoints.md} {
+                ${(props) => props.theme.breakpoints.md} {
                   height: auto;
                 }
               `}
@@ -176,7 +176,7 @@ export default () => {
                 alt="Pair-up on Code"
                 css={`
                   width: 820px;
-                  ${props => props.theme.breakpoints.md} {
+                  ${(props) => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}
@@ -209,7 +209,7 @@ export default () => {
                 height: 468px;
                 justify-content: flex-start;
                 background-position: bottom;
-                ${props => props.theme.breakpoints.md} {
+                ${(props) => props.theme.breakpoints.md} {
                   height: auto;
                 }
               `}
@@ -221,7 +221,7 @@ export default () => {
                 alt="Terminal Access"
                 css={`
                   width: 880px;
-                  ${props => props.theme.breakpoints.md} {
+                  ${(props) => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}
@@ -255,7 +255,7 @@ export default () => {
                 height: 468px;
                 justify-content: flex-start;
 
-                ${props => props.theme.breakpoints.md} {
+                ${(props) => props.theme.breakpoints.md} {
                   height: auto;
                 }
               `}
@@ -267,7 +267,7 @@ export default () => {
                 alt="Jest tests"
                 css={`
                   width: 826px;
-                  ${props => props.theme.breakpoints.md} {
+                  ${(props) => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}
@@ -308,7 +308,7 @@ export default () => {
                 height: 468px;
                 justify-content: center;
 
-                ${props => props.theme.breakpoints.md} {
+                ${(props) => props.theme.breakpoints.md} {
                   height: auto;
                 }
               `}
@@ -320,7 +320,7 @@ export default () => {
                 alt="make it yours"
                 css={`
                   width: 55rem;
-                  ${props => props.theme.breakpoints.md} {
+                  ${(props) => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}

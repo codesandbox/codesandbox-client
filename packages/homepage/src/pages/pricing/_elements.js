@@ -1,41 +1,44 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from "styled-components";
 
 export const Card = styled.div`
   width: 100%;
   height: 735px;
 
-  background: ${props => (props.dark ? '#151515' : props.theme.homepage.blue)};
+  background: #151515;
   border-radius: 0.25rem;
-  padding: 2.5rem 1.5rem;
+  padding: 2.5rem;
   text-align: center;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     height: auto;
   }
 `;
 
 export const CardTitle = styled.h3`
   font-style: normal;
+  font-family: "TWKEverett", sans-serif;
   font-weight: 500;
   font-size: 1.4rem;
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 export const Price = styled.h6`
-  font-weight: 900;
+  font-family: "TWKEverett", sans-serif;
+  font-weight: normal;
   font-size: 36px;
   text-align: center;
   margin-bottom: 8px;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
 `;
 
 export const PriceSubText = styled.p`
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 140%;
   margin-bottom: 0;
   text-align: center;
 `;
@@ -45,13 +48,13 @@ export const List = styled.ul`
   margin: 0;
   font-style: normal;
   text-align: left;
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
-  font-size: 19px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 16px;
   line-height: 34px;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     font-size: 16px;
     line-height: 24px;
   }
@@ -60,17 +63,17 @@ export const List = styled.ul`
 export const Button = styled.a`
   height: 2.75rem;
   text-decoration: none;
-  background: ${props => props.theme.homepage.grey};
-  border-radius: 0.125rem;
+  background: ${(props) => props.theme.homepage.grey};
+  border-radius: 9999px;
   font-weight: bold;
   font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   transition: all 200ms ease;
 
-  ${props =>
+  ${(props) =>
     props.white &&
     `
     background: ${props.theme.homepage.white};
@@ -92,7 +95,7 @@ export const FeaturesTableHeader = styled.button`
   background: transparent;
   cursor: pointer;
   border: none;
-  padding: 0 20px;
+  padding: 20px;
   display: grid;
   grid-template-columns: 1fr 14rem 14rem;
   font-weight: normal;
@@ -102,19 +105,19 @@ export const FeaturesTableHeader = styled.button`
   align-items: center;
   width: 100%;
   justify-content: space-between;
-  background: #151515;
-  border-bottom: 1px #242424;
-  outline: none;
-  color: ${props => props.theme.homepage.white};
-  height: 56px;
 
-  ${props =>
+  // border-bottom: 1px #2a2a2a;
+  outline: none;
+  color: ${(props) => props.theme.homepage.white};
+  // height: 56px;
+
+  ${(props) =>
     props.team &&
     css`
       grid-template-columns: 1fr 12rem 12rem 12rem;
     `}
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     grid-template-columns: 1fr 5.625rem 3.75rem;
     font-size: 1rem;
   }
@@ -123,18 +126,17 @@ export const FeaturesTableHeader = styled.button`
 export const FeaturesTable = styled.ul`
   list-style: none;
   margin: 0;
-  padding: 0 20px;
-  background: #242424;
+  background: #151515;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     margin-left: 0 !important;
   }
 
-  ${props => props.theme.breakpoints.xl} {
+  ${(props) => props.theme.breakpoints.xl} {
     overflow: scroll;
   }
 
-  ${props =>
+  ${(props) =>
     !props.open &&
     `
     overflow: hidden;
@@ -152,8 +154,13 @@ export const FeaturesTable = styled.ul`
   li {
     display: grid;
     grid-template-columns: 1fr 14rem 14rem;
+    padding: 0 20px;
 
-    ${props =>
+    &:hover {
+      background: #1a1a1a;
+    }
+
+    ${(props) =>
       props.team &&
       css`
         grid-template-columns: 1fr 12rem 12rem 12rem;
@@ -162,26 +169,25 @@ export const FeaturesTable = styled.ul`
     margin: 0;
     position: relative;
 
-    ${props => props.theme.breakpoints.xl} {
+    ${(props) => props.theme.breakpoints.xl} {
       width: 850px;
     }
 
     > * {
-      padding: 13px 0;
+      padding: 22px 22px 22px 0;
     }
 
     :last-child {
-      padding-bottom: 80px;
+      // padding-bottom: 80px;
 
       :after {
         height: 1px;
         width: 100%;
-        content: '';
-        background: #151515;
+        content: "";
+        // background: rgba(255, 255, 255, 0.1);
         height: 1px;
         width: 100%;
-        content: '';
-        background: #151515;
+        content: "";
         display: block;
         position: absolute;
         bottom: 80px;
@@ -189,14 +195,14 @@ export const FeaturesTable = styled.ul`
     }
 
     :not(:last-child) {
-      border-bottom: 1px solid #151515;
+      // border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     > *:not(:last-child) {
-      border-right: 1px solid #151515;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    ${props =>
+    ${(props) =>
       !props.team &&
       css`
         ${props.theme.breakpoints.md} {
@@ -217,7 +223,7 @@ export const FeaturesTable = styled.ul`
         justify-content: center;
         padding: 0;
       }
-      ${props => props.theme.breakpoints.md} {
+      ${(props) => props.theme.breakpoints.md} {
         font-size: 1rem;
       }
     }
@@ -228,7 +234,7 @@ export const FeatureTitle = styled.span`
   font-style: normal;
   font-size: 19px;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   text-align: left !important;
   padding-bottom: 0.25rem;
 `;
@@ -236,7 +242,7 @@ export const FeatureTitle = styled.span`
 export const CardContainer = styled.div`
   ${({ teams, theme }) => css`
     max-width: 90%;
-    margin: auto;
+    margin: 5rem auto;
     width: 1324px;
     display: grid;
     grid-template-columns: repeat(${teams ? 3 : 2}, 416px);
@@ -276,7 +282,7 @@ export const FeaturesTitle = styled.h3`
   font-weight: bold;
   font-size: 2.25rem;
 
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   margin-bottom: 3.75rem;
   margin-top: 6rem;
 `;
@@ -285,27 +291,27 @@ export const Plan = styled(FeaturesTableHeader)`
   margin-top: 0;
   padding: 0;
   display: grid;
-  padding: 0 20px;
-  border-bottom: 1px solid #151515;
+  padding: 40px 20px;
+  // border-bottom: 1px solid #151515;
   cursor: initial;
   padding: 0.5 0rem;
   background: transparent;
-  width: calc(100% + 40px);
-  margin-left: -20px;
+  // width: calc(100% + 40px);
+  // margin-left: -20px;
 
-  ${props =>
+  ${(props) =>
     props.team &&
     css`
       grid-template-columns: 1fr 12rem 12rem 12rem;
     `}
-  ${props => props.theme.breakpoints.xl} {
+  ${(props) => props.theme.breakpoints.xl} {
     width: 890px;
   }
 `;
 
 export const TableSection = styled.div`
   margin-bottom: 128px;
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     position: relative;
     width: 120%;
     margin-left: -10%;
@@ -314,7 +320,7 @@ export const TableSection = styled.div`
 
 export const PlanName = styled.span`
   text-align: center;
-  ${props =>
+  ${(props) =>
     props.paid &&
     `
       font-weight: bold;
@@ -325,14 +331,9 @@ export const PlanName = styled.span`
 `;
 
 export const TableWrapper = styled.section`
-  border: 1px solid #242424;
-  &:first-of-type {
-    border-radius: 4px 4px 0 0;
-  }
-
-  &:last-of-type {
-    border-radius: 0 0 4px 4px;
-  }
+  margin-bottom: 10px;
+  background: #1a1a1a;
+  border-radius: 4px;
 `;
 
 export const ProductChooser = styled.div`
@@ -348,13 +349,13 @@ export const ProductChooser = styled.div`
     font-weight: 900;
     font-size: 19px;
     line-height: 23px;
-    color: ${props => props.theme.homepage.muted};
+    color: ${(props) => props.theme.homepage.muted};
     border: none;
     background-color: transparent;
     cursor: pointer;
 
     &:after {
-      content: '';
+      content: "";
       width: 100%;
       display: block;
       margin-top: 21px;
@@ -364,8 +365,8 @@ export const ProductChooser = styled.div`
       margin-right: 70px;
     }
 
-    &[aria-pressed='true'] {
-      color: ${props => props.theme.homepage.white};
+    &[aria-pressed="true"] {
+      color: ${(props) => props.theme.homepage.white};
 
       &:after {
         margin-top: 20px;

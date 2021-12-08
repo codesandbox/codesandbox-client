@@ -5,7 +5,7 @@ export const TabButton = styled.button`
   padding: 0;
   color: inherit;
   border: none;
-  font-size: 19px;
+  font-size: 18px;
   padding-bottom: 12px;
   outline: none;
   cursor: pointer;
@@ -148,8 +148,8 @@ export const Paragraph = styled.p`
   width: 604px;
   max-width: 100%;
   margin: auto;
-  font-size: 19px;
-  line-height: 23px;
+  font-size: 18px;
+  line-height: 160%;
   text-align: center;
   margin-top: 40px;
   min-height: 46px;

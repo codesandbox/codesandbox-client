@@ -1,9 +1,9 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import styled from 'styled-components';
+import React from "react";
+import { motion } from "framer-motion";
+import styled from "styled-components";
 
-import { P, H3 } from '../../../components/Typography';
-import { PrototypingIcon, KnowledgeIcon, FeedbackIcon } from './icons';
+import { P, H3 } from "../../../components/Typography";
+import { PrototypingIcon, KnowledgeIcon, FeedbackIcon } from "./icons";
 
 const container = {
   hidden: { opacity: 0 },
@@ -26,7 +26,7 @@ const Grid = styled(motion.div)`
   grid-gap: 38px;
   padding: 0 0 10rem 0;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     grid-template-columns: repeat(3, 1fr);
   }
 
@@ -40,12 +40,12 @@ const Feature = styled(motion.div)`
   align-items: center;
   flex-direction: column;
   padding: 2rem 2rem;
-  border: 0.5px solid #343434;
+  // border: 0.5px solid #343434;
   border-radius: 4px;
   text-align: center;
   background: #151515;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     padding: 1rem;
   }
 
@@ -73,7 +73,7 @@ const DevExperienceOne = () => (
       <Feature variants={item}>
         <PrototypingIcon />
         <H3>Rapid Prototyping</H3>
-        <P muted>
+        <P muted small>
           Quickly create real, working prototypes. Test ideas earlier and
           iterate more.
         </P>
@@ -82,7 +82,7 @@ const DevExperienceOne = () => (
         <KnowledgeIcon />
 
         <H3>Knowledge Sharing</H3>
-        <P muted>
+        <P muted small>
           Use code, apps, and templates collectively. Learn from each other and
           bake-in best practice.
         </P>
@@ -90,7 +90,7 @@ const DevExperienceOne = () => (
       <Feature variants={item}>
         <FeedbackIcon />
         <H3>Better Feedback</H3>
-        <P muted>
+        <P muted small>
           Give and get feedback, on code or visuals, right in the editor. Take
           action and move forward faster.
         </P>

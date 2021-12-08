@@ -1,12 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from "react";
 
-import { applyParallax } from '../../utils/parallax';
-import usePrefersReducedMotion from '../../utils/isReducedMOtion';
-import Layout from '../../components/layout';
-import TitleAndMetaTags from '../../components/TitleAndMetaTags';
-import CTA from '../../components/CTA';
-import Button from '../../components/Button';
-import { Description, H6 } from '../../components/Typography';
+import { applyParallax } from "../../utils/parallax";
+import usePrefersReducedMotion from "../../utils/isReducedMOtion";
+import Layout from "../../components/layout";
+import TitleAndMetaTags from "../../components/TitleAndMetaTags";
+import CTA from "../../components/CTA";
+import Button from "../../components/Button";
+import { Description, H6 } from "../../components/Typography";
 
 import {
   ContentBlock,
@@ -17,19 +17,19 @@ import {
   ContentBlockImage,
   FeaturedImage,
   Quote,
-} from '../../components/LayoutComponents';
+} from "../../components/LayoutComponents";
 
-import ide from './images/hero-ide-home.png';
-import npm from './images/npm.svg';
-import fast from './images/fast.svg';
-import components from './images/components.svg';
-import share from './images/share.png';
-import lock from './images/lock.svg';
-import people from './images/people.svg';
-import code from './images/code.svg';
-import roy from './images/roy.png';
-import bg from './images/bg.png';
-import bg1 from './images/bg1.png';
+import ide from "./images/hero-ide-home.png";
+import npm from "./images/npm.svg";
+import fast from "./images/fast.svg";
+import components from "./images/components.svg";
+import share from "./images/share.png";
+import lock from "./images/lock.svg";
+import people from "./images/people.svg";
+import code from "./images/code.svg";
+import roy from "./images/roy.png";
+import bg from "./images/bg.png";
+import bg1 from "./images/bg1.png";
 
 export default () => {
   const parallaxRef = useRef(null);
@@ -67,7 +67,7 @@ export default () => {
             margin: 2rem 0;
           `}
         >
-          <Button cta href="https://codesandbox.io/s/">
+          <Button href="https://codesandbox.io/s/" big>
             Get Started
           </Button>
         </div>
@@ -86,7 +86,7 @@ export default () => {
               css={`
                 width: 960px;
 
-                ${props => props.theme.breakpoints.md} {
+                ${(props) => props.theme.breakpoints.md} {
                   margin-top: 4rem;
                 }
               `}
@@ -160,7 +160,7 @@ export default () => {
               css={`
                 width: 60rem;
 
-                ${props => props.theme.breakpoints.md} {
+                ${(props) => props.theme.breakpoints.md} {
                   margin-top: 4rem;
                 }
               `}
@@ -192,7 +192,7 @@ export default () => {
               `}
             >
               “I often use CodeSandbox to create demos or try out new JavaScript
-              features or packages.”{' '}
+              features or packages.”{" "}
             </h3>
             <h4>Roy Derks, Engineering Manager, Vandebron</h4>
           </Quote>
