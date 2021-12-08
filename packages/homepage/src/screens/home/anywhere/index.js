@@ -1,11 +1,11 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
-import { H2, P } from '../../../components/Typography';
-import padIMG from '../../../assets/images/pad.png';
-import phoneIMG from '../../../assets/images/phone.png';
+import { H2, P } from "../../../components/Typography";
+import padIMG from "../../../assets/images/pad.png";
+import phoneIMG from "../../../assets/images/phone.png";
 
-import Button from '../../../components/Button';
+import Button from "../../../components/Button";
 
 const Anywhere = () => (
   <div
@@ -42,7 +42,7 @@ const Anywhere = () => (
         display: block;
       `}
     >
-      Code from anywhere with play.js by CodeSandbox
+      Code from anywhere with play.js by CodeSandbox.
     </P>
 
     <Button
@@ -53,7 +53,7 @@ const Anywhere = () => (
       `}
       href="/post/introducing-play-js-live/"
     >
-      Learn more about play.js
+      Learn more about Play.js
     </Button>
 
     <motion.div
@@ -65,7 +65,7 @@ const Anywhere = () => (
       transition={{
         delay: 0.6,
         duration: 1,
-        ease: 'easeOut',
+        ease: "easeOut",
       }}
     >
       <div

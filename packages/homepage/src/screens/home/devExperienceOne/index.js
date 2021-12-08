@@ -39,14 +39,14 @@ const Feature = styled(motion.div)`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 2rem 2rem;
+  padding: 4rem;
   // border: 0.5px solid #343434;
   border-radius: 4px;
   text-align: center;
   background: #151515;
 
   ${(props) => props.theme.breakpoints.md} {
-    padding: 1rem;
+    padding: 3rem;
   }
 
   svg,
@@ -72,7 +72,7 @@ const DevExperienceOne = () => (
     <Grid variants={container} initial="hidden" animate="show">
       <Feature variants={item}>
         <PrototypingIcon />
-        <H3>Rapid Prototyping</H3>
+        <H3>Rapid prototyping</H3>
         <P muted small>
           Quickly create real, working prototypes. Test ideas earlier and
           iterate more.
@@ -81,7 +81,7 @@ const DevExperienceOne = () => (
       <Feature variants={item}>
         <KnowledgeIcon />
 
-        <H3>Knowledge Sharing</H3>
+        <H3>Knowledge sharing</H3>
         <P muted small>
           Use code, apps, and templates collectively. Learn from each other and
           bake-in best practice.
@@ -89,7 +89,7 @@ const DevExperienceOne = () => (
       </Feature>
       <Feature variants={item}>
         <FeedbackIcon />
-        <H3>Better Feedback</H3>
+        <H3>Better feedback</H3>
         <P muted small>
           Give and get feedback, on code or visuals, right in the editor. Take
           action and move forward faster.

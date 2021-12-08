@@ -4,11 +4,10 @@ import { Link } from "gatsby";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { signInPageUrl } from "@codesandbox/common/lib/utils/url-generator";
-import Logo from "../../assets/images/logo.svg";
+import Logo from "../../assets/logo";
 import {
   MobileNav,
   LogoWrapper,
-  LogoImage,
   PopUpNav,
   Headers,
   Items,
@@ -44,8 +43,7 @@ export default () => {
     <>
       <MobileNav>
         <LogoWrapper to="/">
-          <LogoImage src={Logo} alt="CodeSandbox Logo" />
-          CodeSandbox
+          <Logo />
         </LogoWrapper>
         <div>
           {!user ? (

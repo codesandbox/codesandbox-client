@@ -137,7 +137,7 @@ const Video = () => {
               margin-bottom: 40px;
             `}
           >
-            What’s a Sandbox?
+            What’s a sandbox?
           </Title>
           <Tabs active={active} role="tablist" ref={tabListRef}>
             <Tab
@@ -150,7 +150,7 @@ const Video = () => {
                 onClick={() => setCurrentTab(1)}
                 type="button"
               >
-                No Setup
+                No setup
               </TabButton>
             </Tab>
             <Tab
@@ -189,7 +189,7 @@ const Video = () => {
                 onClick={() => setCurrentTab(4)}
                 type="button"
               >
-                Updates Live
+                Updates live
               </TabButton>
             </Tab>
             <Tab

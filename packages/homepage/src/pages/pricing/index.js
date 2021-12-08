@@ -80,14 +80,14 @@ export default () => {
           aria-pressed={product === "personal"}
           onClick={() => setProduct("personal")}
         >
-          For Individuals
+          Individuals
         </button>
         <button
           type="button"
           aria-pressed={product === "team"}
           onClick={() => setProduct("team")}
         >
-          For Businesses
+          Businesses
         </button>
       </ProductChooser>
       <ModeChooser>
@@ -111,7 +111,7 @@ export default () => {
           text-align: left;
         `}
       >
-        Compare plans & features
+        Compare
       </Title>
       <TableSection>
         {array.items.map((item) => (

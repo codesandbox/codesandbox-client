@@ -66,7 +66,7 @@ export default () => {
           `}
         >
           <Button big href="https://codesandbox.io/s/">
-            Get Started
+            Get started
           </Button>
         </div>
         <div>
@@ -201,7 +201,7 @@ export default () => {
         <CTA
           title="Start testing your ideas"
           subtitle="Get better feedback faster to validate and iterate."
-          cta="Get Started"
+          cta="Get started"
           link="/s"
         />
       </Wrapper>

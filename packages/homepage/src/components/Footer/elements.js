@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const FooterWrapper = styled.footer`
   padding-bottom: 1rem;
@@ -23,7 +23,7 @@ export const Nav = styled.section`
     text-decoration: none;
 
     &:hover {
-      color: ${props => props.theme.homepage.white};
+      color: ${(props) => props.theme.homepage.white};
     }
   }
 
@@ -41,14 +41,15 @@ export const Nav = styled.section`
       padding: 2px;
       text-align: center;
       font-weight: 500;
-      color: #fff;
+      color: #151515;
       height: 1rem;
       width: 1rem;
       display: inline-block;
-      background: #5962df;
+      background: #dcff50;
       border-radius: 50%;
       position: relative;
-      top: -0.2rem;
+      top: -0.5rem;
+      line-height: 12px;
     }
   }
 `;
@@ -60,6 +61,7 @@ export const Social = styled.ul`
   padding: 0;
   margin: 0;
   list-style: none;
+  gap: 10px;
 
   svg {
     path {
@@ -67,7 +69,7 @@ export const Social = styled.ul`
     }
 
     &:hover path {
-      fill: ${props => props.theme.homepage.white};
+      fill: ${(props) => props.theme.homepage.white};
     }
   }
 `;

@@ -7,7 +7,8 @@ import { ExperimentValues, useExperimentResult } from "@codesandbox/ab";
 
 import { useTheme } from "../layout";
 import Button from "../Button";
-import Logo from "../../assets/images/logo.svg";
+import Logo from "../../assets/logo";
+
 import SupportIcon from "../../assets/icons/Support";
 import StatusIcon from "../../assets/icons/Status";
 import DocsIcon from "../../assets/icons/Docs";
@@ -30,7 +31,6 @@ import {
   Wrapper,
   UserAvatar,
   LogoWrapper,
-  LogoImage,
   List,
   LogIn,
   Jobs,
@@ -114,8 +114,7 @@ const Navigation = () => {
               <Nav>
                 <Wrapper>
                   <LogoWrapper to="/">
-                    <LogoImage src={Logo} alt="CodeSandbox Logo" />
-                    CodeSandbox
+                    <Logo />
                   </LogoWrapper>
                   {!compactMenu && (
                     <List>

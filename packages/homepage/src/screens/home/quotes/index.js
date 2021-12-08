@@ -48,7 +48,7 @@ const Feature = styled(motion.div)`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 44px 16px;
+  padding: 4rem;
   // border: 0.572728px solid #343434;
   border-radius: 4px;
   text-align: center;

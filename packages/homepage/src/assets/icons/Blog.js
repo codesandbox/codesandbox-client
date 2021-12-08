@@ -7,6 +7,8 @@ const Blog = (props) => {
   return (
     <svg
       width="40"
+      git
+      statu
       height="40"
       viewBox="0 0 60 60"
       fill="none"

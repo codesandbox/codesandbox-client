@@ -4,6 +4,8 @@ import styled, { css } from "styled-components";
 const styles = css`
   background: #dcff50;
   border-radius: 9999px;
+  // background: #edffa5;
+  // border-radius: 4px;
   border: none;
   font-family: ${(props) => props.theme.homepage.appleFont};
   font-size: 12px;

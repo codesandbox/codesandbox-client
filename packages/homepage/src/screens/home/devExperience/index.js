@@ -38,14 +38,14 @@ const Feature = styled(motion.div)`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 2.5rem 2rem;
+  padding: 4rem;
   // border: 0.5px solid #343434;
   border-radius: 4px;
   text-align: center;
   background: #151515;
 
   ${(props) => props.theme.breakpoints.md} {
-    padding: 1rem;
+   padding: 3rem;
   }
 
   svg,
@@ -94,7 +94,9 @@ const DevExperience = () => (
     <Grid variants={container} initial="hidden" animate="show">
       <Feature variants={item}>
         <NPMIcon />
-        <H3>Supercharged with npm</H3>
+        <H3>
+          Supercharged <br /> with npm
+        </H3>
         <P muted small>
           Use private packages, or any of the 1M+ public ones, to build powerful
           apps quickly.
@@ -102,7 +104,9 @@ const DevExperience = () => (
       </Feature>
       <Feature variants={item}>
         <OptimizedIcon />
-        <H3>Optimized for frameworks</H3>
+        <H3>
+          Optimized for <br /> frameworks
+        </H3>
         <P muted small>
           Custom environments built specifically for React, Vue, Angular, and
           many more.
@@ -110,7 +114,9 @@ const DevExperience = () => (
       </Feature>
       <Feature variants={item}>
         <GHIcon />
-        <H3>Integrated with GitHub</H3>
+        <H3>
+          Integrated <br /> with GitHub
+        </H3>
         <P muted small>
           Import and run repos direct from GitHub. Or export your sandbox to a
           repo.
