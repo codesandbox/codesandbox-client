@@ -1078,6 +1078,12 @@ export class TranspiledModule {
     } catch (e) {
       e.tModule = e.tModule || transpiledModule;
 
+      console.error(
+        'Failed to evaluate ',
+        transpiledModule.getId(),
+        transpiledModule.source?.compiledCode
+      );
+
       this.resetCompilation();
 
       throw e;

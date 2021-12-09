@@ -1,5 +1,5 @@
 import { Transpiler, TranspilerResult, LoaderContext } from 'sandpack-core';
-import loader from '../';
+import loader from '../index';
 
 // This is the most advanced compiler, I wanted to get it working in sync first,
 // but will eventually move to async.
