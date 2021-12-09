@@ -5,17 +5,15 @@ import { LoaderContext } from 'sandpack-core';
 // This is a post loader that handles scoped CSS transforms.
 // Injected right before css-loader by the global pitcher (../pitch.js)
 // for any <style scoped> selection requests initiated from within vue files.
-const StylePostLoader = function (
+function StylePostLoader(
   source: string,
   loaderContext: LoaderContext
-) {
-  const inMap = undefined;
+): { transpiledCode: string } {
   const query = qs.parse(loaderContext.resourceQuery.slice(1));
-  const { code, map, errors } = compileStyle({
+  const { code, errors } = compileStyle({
     source: source as string,
     filename: loaderContext.path,
     id: `data-v-${query.id}`,
-    map: inMap,
     scoped: !!query.scoped,
     vars: !!query.vars,
     trim: true,
@@ -28,6 +26,6 @@ const StylePostLoader = function (
       transpiledCode: code,
     };
   }
-};
+}
 
 export default StylePostLoader;

@@ -90,7 +90,7 @@ export default function loader(
   // module id for scoped CSS & hot-reload
   const rawShortFilePath = path
     .relative(rootContext || process.cwd(), resourcePath)
-    .replace(/^(\.\.[\/\\])+/, '');
+    .replace(/^(\.\.[/\\])+/, '');
   const shortFilePath = rawShortFilePath.replace(/\\/g, '/') + resourceQuery;
   const id = hash(isProduction ? shortFilePath + '\n' + source : shortFilePath);
 
@@ -107,11 +107,13 @@ export default function loader(
   let scriptImport = `const script = {}`;
   if (descriptor.script || descriptor.scriptSetup) {
     try {
-      script = (descriptor as any).scriptCompiled = compileScript(descriptor, {
+      const compiledScript = compileScript(descriptor, {
         babelParserPlugins: options.babelParserPlugins,
       });
+      (descriptor as any).scriptCompiled = compiledScript;
+      script = compiledScript;
     } catch (e) {
-      loaderContext.emitError(e);
+      loaderContext.emitError(e as Error);
     }
 
     if (script) {
@@ -253,7 +255,7 @@ const ignoreList = ['id', 'index', 'src', 'type'];
 
 function attrsToQuery(attrs: SFCBlock['attrs'], langFallback?: string): string {
   let query = ``;
-  for (const name in attrs) {
+  for (const name of Object.keys(attrs)) {
     const value = attrs[name];
     if (!ignoreList.includes(name)) {
       query += `&${qs.escape(name)}=${value ? qs.escape(String(value)) : ``}`;
