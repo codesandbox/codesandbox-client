@@ -148,7 +148,7 @@ export default function initialize() {
   function registerStyleTranspilers() {
     return Object.keys(styles).forEach(type => {
       parcelPreset.registerTranspiler(
-        module => new RegExp(`\\.${type}`).test(module.path),
+        module => new RegExp(`\\.${type}$`).test(module.path),
         [...styles[type], { transpiler: stylesTranspiler }]
       );
     });
