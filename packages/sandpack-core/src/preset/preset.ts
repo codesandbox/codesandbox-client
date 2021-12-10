@@ -29,6 +29,16 @@ type LoaderDefinition = {
   transpilers: Array<TranspilerDefinition>;
 };
 
+interface IPresetOptions {
+  hasDotEnv?: boolean;
+  processDependencies?: ProcessDependenciesFunction;
+  setup?: SetupFunction;
+  preEvaluate?: LifeCycleFunction;
+  teardown?: LifeCycleFunction;
+  htmlDisabled?: boolean;
+  disableCache?: boolean;
+}
+
 /**
  * This is essentially where it all comes together. The manager is responsible for
  * doing evaluation and transpilation using the Transpiler and Loader classes.
@@ -53,6 +63,8 @@ export class Preset {
   alias: { [path: string]: string };
   // Whether this preset supports .env files
   hasDotEnv: boolean;
+
+  disableCache: boolean;
 
   /**
    * Add or remove dependencies to the existing list (or just look at them for some config changes)
@@ -81,22 +93,19 @@ export class Preset {
     name: string,
     ignoredExtensions?: Array<string>,
     alias?: { [path: string]: string },
-    {
+    options: IPresetOptions = {}
+  ) {
+    const {
       hasDotEnv,
       processDependencies,
       setup,
       teardown,
       htmlDisabled,
       preEvaluate,
-    }: {
-      hasDotEnv?: boolean;
-      processDependencies?: ProcessDependenciesFunction;
-      setup?: SetupFunction;
-      preEvaluate?: LifeCycleFunction;
-      teardown?: LifeCycleFunction;
-      htmlDisabled?: boolean;
-    } = {}
-  ) {
+      disableCache = false,
+    } = options;
+
+    this.disableCache = disableCache;
     this.loaders = [];
     this._transpilers = new Map();
     this.name = name;

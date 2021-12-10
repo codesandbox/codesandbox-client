@@ -37,6 +37,7 @@ export default function initialize() {
       '@': '{{sandboxRoot}}/src',
     },
     {
+      disableCache: true,
       setup: async (manager: Manager) => {
         const dependencies = manager.manifest.dependencies;
         const vue = dependencies.find(dep => dep.name === 'vue');

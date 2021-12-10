@@ -620,11 +620,14 @@ async function compile(opts: CompileOptions) {
 
     if (shouldReloadManager || firstLoad) {
       // Now initialize the data the manager can only use once dependencies are loaded
-
       manager.setManifest(manifest);
-      // We save the state of transpiled modules, and load it here again. Gives
-      // faster initial loads.
-      usedCache = await consumeCache(manager);
+
+      // This is a flag for presets where cache behaves incorrect
+      if (!manager.preset.disableCache) {
+        // We save the state of transpiled modules, and load it here again. Gives
+        // faster initial loads.
+        usedCache = await consumeCache(manager);
+      }
     }
 
     metrics.measure('transpilation');
@@ -804,7 +807,14 @@ async function compile(opts: CompileOptions) {
       type: 'success',
     });
 
-    saveCache(managerModuleToTranspile, manager, changedModuleCount, firstLoad);
+    if (!manager.preset.disableCache) {
+      saveCache(
+        managerModuleToTranspile,
+        manager,
+        changedModuleCount,
+        firstLoad
+      );
+    }
 
     setTimeout(async () => {
       try {
