@@ -69,12 +69,15 @@ function getMeta(
   packageJSONPath: string | null,
   version: string,
   useFallback = false
-): Promise<Meta> {
+): Promise<{ meta: Meta; fromCache: boolean }> {
   const [depName, depVersion] = resolveNPMAlias(name, version);
   const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
   const id = `${packageJSONPath || depName}@${depVersion}`;
   if (metas[id]) {
-    return metas[id];
+    return metas[id].then(x => ({
+      meta: x,
+      fromCache: true,
+    }));
   }
 
   const protocol = getFetchProtocol(depName, depVersion, useFallback);
@@ -85,7 +88,10 @@ function getMeta(
     throw e;
   });
 
-  return metas[id];
+  return metas[id].then(x => ({
+    meta: x,
+    fromCache: false,
+  }));
 }
 
 export function downloadDependency(
@@ -339,7 +345,7 @@ export default async function fetchModule(
 
   const { packageJSONPath, version } = versionInfo;
 
-  let meta: Meta;
+  let meta: { meta: Meta; fromCache: boolean };
 
   try {
     meta = await getMeta(dependencyName, packageJSONPath, version);
@@ -354,11 +360,11 @@ export default async function fetchModule(
   const normalizedCacheKey = dependencyName + rootPath;
 
   const normalizedMeta =
-    normalizedMetas[normalizedCacheKey] || prependRootPath(meta, rootPath);
+    normalizedMetas[normalizedCacheKey] || prependRootPath(meta.meta, rootPath);
 
   if (!normalizedMetas[normalizedCacheKey]) {
     normalizedMetas[normalizedCacheKey] = normalizedMeta;
-  } else {
+  } else if (!meta.fromCache) {
     combinedMetas = { ...combinedMetas, ...normalizedMeta };
   }
 
