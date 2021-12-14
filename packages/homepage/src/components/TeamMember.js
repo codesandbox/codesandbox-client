@@ -25,6 +25,7 @@ import gianmarco from '../assets/images/people/gsimone.jpeg'
 import ace from '../assets/images/people/ace.jpg'
 import maria from '../assets/images/people/maria.png'
 import lena from '../assets/images/people/lena.png'
+import ioana from '../assets/images/people/ioana.jpg'
 
 const people = [
   {
@@ -170,6 +171,12 @@ const people = [
     pic: lena,
     color: '#B567EB',
     team: 'Design',
+    },
+   {
+    name: 'Stefania Ioana Chiorean',
+    pic: ioana,
+    color: '#799900',
+    team: 'Engineering',
     }
 ];
 
