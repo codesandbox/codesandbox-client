@@ -22,11 +22,11 @@ import marco from '../assets/images/people/marco.jpg';
 import neco from '../assets/images/people/neco.png';
 import roman from '../assets/images/people/roman.jpg';
 import james from '../assets/images/people/james.jpg';
-import gianmarco from '../assets/images/people/gsimone.jpeg'
-import ace from '../assets/images/people/ace.jpg'
-import maria from '../assets/images/people/maria.png'
-import lena from '../assets/images/people/lena.png'
-import ioana from '../assets/images/people/ioana.jpg'
+import gianmarco from '../assets/images/people/gsimone.jpeg';
+import ace from '../assets/images/people/ace.jpg';
+import maria from '../assets/images/people/maria.png';
+import lena from '../assets/images/people/lena.png';
+import ioana from '../assets/images/people/ioana.jpg';
 
 const people = [
   {
@@ -141,7 +141,7 @@ const people = [
     name: 'Roman Kuba',
     pic: roman,
     color: '#B567EB',
-    team: 'Engineering'
+    team: 'Engineering',
   },
   {
     name: 'James Amey',
@@ -160,12 +160,12 @@ const people = [
     pic: ace,
     color: '#008753',
     team: 'DevRel',
-  }, 
+  },
   {
     name: 'Maria Clara',
     pic: maria,
     color: '#272b8c',
-    team: 'Engineering'
+    team: 'Engineering',
   },
   {
     name: 'Lena Sotto Mayor',
@@ -178,7 +178,13 @@ const people = [
     pic: neco,
     color: '#F24E62',
     team: 'Product',
-  }
+  },
+  {
+    name: 'Stefania Ioana Chiorean',
+    pic: ioana,
+    color: '#799900',
+    team: 'Engineering',
+  },
 ];
 
 const Peep = styled.img`
