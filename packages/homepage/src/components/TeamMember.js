@@ -25,6 +25,7 @@ import gianmarco from '../assets/images/people/gsimone.jpeg'
 import ace from '../assets/images/people/ace.jpg'
 import maria from '../assets/images/people/maria.png'
 import lena from '../assets/images/people/lena.png'
+import ioana from '../assets/images/people/ioana.jpg'
 
 const people = [
   {
