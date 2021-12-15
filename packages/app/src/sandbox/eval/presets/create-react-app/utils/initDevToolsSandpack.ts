@@ -1,6 +1,6 @@
 import { dispatch } from 'codesandbox-api';
 
-export async function initializeReactDevTools() {
+export async function initializeReactDevToolsSandpack() {
   if (!window.opener) {
     const { initialize: initializeDevTools, activate } = await import(
       /* webpackChunkName: 'react-devtools-backend' */ 'react-devtools-inline/backend'
