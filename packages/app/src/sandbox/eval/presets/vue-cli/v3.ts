@@ -56,7 +56,7 @@ export default async function initialize(vuePreset: Preset) {
 
     return Object.keys(styles).forEach(type => {
       vuePreset.registerTranspiler(
-        module => new RegExp(`\\.${type}`).test(module.path),
+        module => new RegExp(`\\.${type}$`).test(module.path),
         [
           ...styles[type],
           { transpiler: stylesTranspiler, options: { hmrEnabled: true } },

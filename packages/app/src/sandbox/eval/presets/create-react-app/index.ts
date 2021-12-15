@@ -288,7 +288,7 @@ export async function reactPreset(pkg: PackageJSON) {
         }
       },
       preEvaluate: async manager => {
-        if (manager.isFirstLoad && !process.env.SANDPACK) {
+        if (manager.isFirstLoad && manager.reactDevTools) {
           await initializeReactDevTools();
         }
 

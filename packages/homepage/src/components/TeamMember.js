@@ -19,6 +19,7 @@ import tamas from '../assets/images/people/tamas.png';
 import jasper from '../assets/images/people/jasper.jpg';
 import joana from '../assets/images/people/joana.jpg';
 import marco from '../assets/images/people/marco.jpg';
+import neco from '../assets/images/people/neco.png';
 import roman from '../assets/images/people/roman.jpg';
 import james from '../assets/images/people/james.jpg';
 import gianmarco from '../assets/images/people/gsimone.jpeg'
@@ -170,7 +171,13 @@ const people = [
     pic: lena,
     color: '#B567EB',
     team: 'Design',
-    }
+  },
+  {
+    name: 'Necoline Hubner',
+    pic: neco,
+    color: '#F24E62',
+    team: 'Product',
+  }
 ];
 
 const Peep = styled.img`
