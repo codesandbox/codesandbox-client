@@ -225,7 +225,6 @@ export default () => (
         <TeamMember name="danilo" />
         <TeamMember name="matan" />
         <TeamMember name="scott" />
-        <TeamMember name="kate" />
         <TeamMember name="tamas" />
         <TeamMember name="jasper" />
         <TeamMember name="joana" />
