@@ -1,12 +1,33 @@
 import { dispatch } from 'codesandbox-api';
+import uuid from 'uuid';
 
 export async function initializeReactDevToolsSandpack() {
   if (!window.opener) {
-    const { initialize: initializeDevTools, activate } = await import(
+    const uid = uuid.v1();
+
+    const wall = {
+      listen(listener) {
+        window.addEventListener('message', event => {
+          if (event.data.uid === uid) {
+            listener(event.data);
+          }
+        });
+      },
+      send(event, payload) {
+        window.parent.postMessage({ event, payload, uid }, '*');
+      },
+    };
+
+    const {
+      activate: activateBackend,
+      createBridge: createBackendBridge,
+      initialize: initializeBackend,
+    } = await import(
       /* webpackChunkName: 'react-devtools-backend' */ 'react-devtools-inline/backend'
     );
+
     // The dispatch needs to happen before initializing, so that the backend can already listen
-    dispatch({ type: 'activate-react-devtools' });
+    dispatch({ type: 'activate-react-devtools', uid });
 
     // @ts-ignore
     if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined') {
@@ -18,7 +39,9 @@ export async function initializeReactDevToolsSandpack() {
       }
     }
     // Call this before importing React (or any other packages that might import React).
-    initializeDevTools(window);
-    activate(window);
+    initializeBackend(window);
+    activateBackend(window, {
+      bridge: createBackendBridge(window, wall),
+    });
   }
 }
