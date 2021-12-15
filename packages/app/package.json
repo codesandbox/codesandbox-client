@@ -198,7 +198,7 @@
     "react-dnd": "^9.4.0",
     "react-dnd-html5-backend": "^9.4.0",
     "react-dom": "^16.9.0",
-    "react-error-overlay": "^1.0.10",
+    "react-error-overlay": "^2.0.0",
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.2.1",
     "react-instantsearch": "^5.7.0",
