@@ -19,7 +19,7 @@ createStyleNode(
   ${JSON.stringify(css)}
 );
 
-${webpackHMREnabled ? 'module.hot.accept()' : ''}
+// 去除 insert-css 中的 module.hot.accept()，以解决构建含有样式文件的前端项目时，HMR 功能失效问题
 `;
 
 export default function (
