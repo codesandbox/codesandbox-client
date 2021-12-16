@@ -203,7 +203,7 @@ export async function consumeCache(manager: Manager) {
 
     const cacheData = (window as any).__SANDBOX_DATA__;
     const localData: ManagerCache | undefined = await localforage.getItem(
-      manager.id
+      manager.id || ''
     );
 
     const cache = findCacheToUse(cacheData && cacheData.data, localData);
