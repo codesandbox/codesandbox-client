@@ -14,7 +14,6 @@ import zeh from '../assets/images/people/zeh.png';
 import danilowoz from '../assets/images/people/danilowoz.jpg';
 import matan from '../assets/images/people/matan.png';
 import scott from '../assets/images/people/scott.png';
-import kate from '../assets/images/people/kate.jpg';
 import tamas from '../assets/images/people/tamas.png';
 import jasper from '../assets/images/people/jasper.jpg';
 import joana from '../assets/images/people/joana.jpg';
@@ -110,12 +109,6 @@ const people = [
   {
     name: 'Scott Hutcheson',
     pic: scott,
-    color: '#F24E62',
-    team: 'Engineering',
-  },
-  {
-    name: 'Kate Beard',
-    pic: kate,
     color: '#F24E62',
     team: 'Engineering',
   },
