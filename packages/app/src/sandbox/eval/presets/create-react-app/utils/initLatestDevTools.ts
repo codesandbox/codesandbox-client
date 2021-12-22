@@ -1,7 +1,7 @@
 import { dispatch } from 'codesandbox-api';
 import uuid from 'uuid';
 
-export async function initializeReactDevToolsSandpack() {
+export async function initializeReactDevToolsLatest() {
   if (!window.opener) {
     const uid = uuid.v1();
 

@@ -314,11 +314,11 @@ async function initializeManager(
   {
     hasFileResolver = false,
     customNpmRegistries = [],
-    reactDevTools = false,
+    reactDevTools,
   }: {
     hasFileResolver?: boolean;
     customNpmRegistries?: NpmRegistry[];
-    reactDevTools?: boolean;
+    reactDevTools?: 'legacy' | 'latest';
   } = {}
 ) {
   const newManager = new Manager(
@@ -458,7 +458,7 @@ interface CompileOptions {
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
   clearConsoleDisabled?: boolean;
-  reactDevTools?: boolean;
+  reactDevTools?: 'legacy' | 'latest';
 }
 
 async function compile(opts: CompileOptions) {
@@ -478,7 +478,7 @@ async function compile(opts: CompileOptions) {
     hasFileResolver = false,
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
-    reactDevTools = false,
+    reactDevTools,
   } = opts;
 
   if (firstLoad) {

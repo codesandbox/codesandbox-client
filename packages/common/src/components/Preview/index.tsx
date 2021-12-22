@@ -459,7 +459,7 @@ class BasePreview extends React.PureComponent<Props, State> {
           previewSecret: sandbox.previewSecret,
           showScreen,
           clearConsoleDisabled: !settings.clearConsoleEnabled,
-          reactDevTools: true,
+          reactDevTools: 'legacy',
         });
       }
     }
