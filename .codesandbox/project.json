@@ -1,0 +1,32 @@
+{
+    "previews": {
+        "3000": {
+            "name": "Application",
+            "command": "yarn start:fast"
+        }
+    },
+    "tasks": {
+        "setup": {
+            "name": "Install Dependencies",
+            "command": "yarn"
+        },
+        "build-workspace": {
+            "name": "Build deps",
+            "command": "yarn build:deps"
+        },
+        "app:fast": {
+            "name": "Application (fast)",
+            "command": "yarn start:fast"
+        }
+    },
+    "setupTasks": [
+        {
+            "name": "Installing Dependencies",
+            "command": "yarn install"
+        },
+        {
+            "name": "Building Workspace",
+            "command": "yarn build:deps"
+        }
+    ]
+}
