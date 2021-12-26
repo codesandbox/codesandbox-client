@@ -23,7 +23,10 @@ interface TranspilationResult {
   transpiledCode: string;
 }
 
-const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
+// const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
+
+// 改动----无论是否是 SANDPACK，均使用 3 个线程运行 babel
+const WORKER_COUNT = 3;
 
 interface IDep {
   path: string;

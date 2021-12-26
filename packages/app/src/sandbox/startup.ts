@@ -26,7 +26,19 @@ prefetchScript(
 );
 
 // Preload first babel worker, this will ensure the worker is in the browser cache when we need it
-globalThis.babelworkers = [BabelWorker()];
+// globalThis.babelworkers = [BabelWorker()];
+
+// const WORKERS_TO_LOAD = process.env.SANDPACK ? 1 : 3;
+
+// 改动----无论是否是 SANDPACK，均使用 3 个线程运行 babel
+const WORKERS_TO_LOAD = 3;
+// @ts-ignore
+globalThis.babelworkers = [];
+for (let i = 0; i < WORKERS_TO_LOAD; i++) {
+  const worker = BabelWorker();
+  // @ts-ignore
+  globalThis.babelworkers.push(worker);
+}
 
 if (!isStandalone) {
   // Means we're in the editor
