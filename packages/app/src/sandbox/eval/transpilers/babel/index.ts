@@ -16,6 +16,7 @@ import { convertEsModule } from './ast/convert-esmodule';
 import { ESTreeAST, generateCode, parseModule } from './ast/utils';
 import { collectDependenciesFromAST } from './ast/collect-dependencies';
 import { rewriteImportMeta } from './ast/rewrite-meta';
+import replaceImportPathAliases from './replace-import-path-aliases';
 
 const MAX_WORKER_ITERS = 100;
 
@@ -162,6 +163,15 @@ class BabelTranspiler extends WorkerTranspiler {
           );
           console.warn(err);
         }
+      }
+    }
+
+    if (!isNodeModule) {
+      const { alias } = loaderContext.options.configurations.package.parsed;
+      // 如果待构建的前端项目中使用了别名，则用真实路径替换源码中的别名
+      if (alias && Object.keys(alias).length > 0) {
+        // eslint-disable-next-line no-param-reassign
+        code = replaceImportPathAliases(code, alias);
       }
     }
 
