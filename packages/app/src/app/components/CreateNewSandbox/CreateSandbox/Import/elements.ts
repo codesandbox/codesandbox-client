@@ -1,18 +1,13 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { InfoIcon } from '../Icons';
 
 export const Features = styled.section`
-  display: flex;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  padding: 0 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #242424;
+  margin: 2em auto;
+  text-align: center;
+  max-width: 370px;
 
   @media screen and (max-width: 800px) {
-    display: block;
-
     hr {
       display: none;
     }
@@ -28,32 +23,16 @@ export const Features = styled.section`
   }
 `;
 
-export const FeatureName = styled.h3`
-  font-family: Inter;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 16px;
-  padding: 0;
-  margin: 0;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-  width: 100%;
-`;
-
 export const FeatureText = styled.p`
-  font-family: Roboto;
-  font-size: 13px;
-  line-height: 17px;
-  margin-top: 0.5rem;
-  margin-bottom: 1.5rem;
+  font-family: 'Roboto';
+  font-size: 16px;
+  line-height: 1.4;
+  margin-bottom: 30px;
 
   color: #757575;
 
   small {
     display: block;
-    padding-top: 0.75rem;
     font-size: 11px;
   }
 `;
@@ -70,8 +49,6 @@ export const StyledInfoIcon = styled(InfoIcon)`
   font-size: 0.75em;
   margin-left: 0.5rem;
 `;
-
-export const Column = styled.div``;
 
 export const VerticalSeparator = styled.hr`
   height: auto;
@@ -100,59 +77,28 @@ export const Button = styled.button`
   }
 `;
 
-export const ButtonContainer = styled.div`
-  display: flex;
-  margin-top: 0.5rem;
-  float: right;
-  margin-bottom: 1rem;
-
-  button:first-child {
-    margin-right: 0.5rem;
-  }
-`;
-
-const linkStyles = css`
+export const PlaceHolderLink = styled.span`
   transition: 0.3s ease color;
 
   display: block;
   margin: 1rem 0.25rem;
   margin-left: 0.5rem;
 
-  color: rgba(255, 255, 255, 0.5);
+  color: ${props => props.theme.red};
   text-decoration: none;
-
-  font-weight: 500;
-  font-size: 13px;
-`;
-
-export const PlaceHolderLink = styled.span<{ error: string }>`
-  ${linkStyles};
-
-  ${props =>
-    props.error &&
-    css`
-      color: ${props.theme.red};
-    `}
-`;
-
-export const GitHubLink = styled.a`
-  ${linkStyles};
-  word-break: break-all;
-  s &:hover {
-    color: rgba(255, 255, 255, 0.8);
-  }
 `;
 
 export const ImportChoices = styled.div`
+  display: flex;
+  justify-content: space-around;
   transition: 0.3s ease color;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 60px;
-  padding: 0 1.5rem;
+
   font-family: Inter;
   font-size: 16px;
-  margin-bottom: 4rem;
-  color: #757575;
+  color: #fff;
+
+  border-top: 1px solid #242424;
+  padding: 2em 0;
 
   @media screen and (max-width: 800px) {
     font-size: 13px;
@@ -160,7 +106,7 @@ export const ImportChoices = styled.div`
 
   a {
     transition: 0.3s ease color;
-    color: #757575;
+    color: #fff;
     display: flex;
     align-items: center;
     text-decoration: none;

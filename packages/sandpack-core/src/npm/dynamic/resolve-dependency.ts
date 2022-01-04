@@ -149,8 +149,10 @@ export async function resolveDependencyInfo(
       let packageVersion =
         response.dependencyDependencies[packageName].resolved;
 
-      if (response.dependencyDependencies[packageName].semver.match(IS_ALIAS)) {
-        packageVersion = response.dependencyDependencies[packageName].semver;
+      // If the package is a remote module or is an alias we use the semver as the version for fetching
+      const pkgSemver = response.dependencyDependencies[packageName].semver;
+      if (pkgSemver && (pkgSemver.match(IS_ALIAS) || pkgSemver.includes('/'))) {
+        packageVersion = pkgSemver;
       }
 
       const pkgJson = await getPackageJSON(packageName, packageVersion);

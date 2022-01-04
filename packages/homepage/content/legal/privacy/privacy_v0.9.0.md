@@ -269,7 +269,7 @@ CodeSandbox B.V. in its role as data controller is a for profit company with its
 operational headquarters at Singel 542, 1017 AZ, Amsterdam, The Netherlands,
 available at +1 (650) 731-3185‬. To exercise any of the rights described above
 or in case of concerns, questions or inquiries, please email us at
-[hello@codesandbox.io](mailto:hello@codesandbox.io).
+[support@codesandbox.io](mailto:support@codesandbox.io).
 
 We promise to respond as soon as possible and in any case within fourteen (14)
 business days of your request. For account deletion or data dumps, please

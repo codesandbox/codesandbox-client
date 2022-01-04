@@ -5,7 +5,7 @@ import { exec } from 'child_process';
 
 import { loadSandboxRetry, SECOND } from './utils';
 
-const SANDBOXES = ['sass-imports'];
+const SANDBOXES = ['gpgpu-curl-noise-yq6y8', 'vx55c'];
 
 async function runTests() {
   console.log('Launching puppeteer');

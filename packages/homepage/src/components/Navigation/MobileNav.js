@@ -12,7 +12,6 @@ import {
   PopUpNav,
   Headers,
   Items,
-  Pricing,
   LinkButton,
   UserAvatar,
   IconWrapper,
@@ -20,7 +19,6 @@ import {
 import SupportIcon from '../../assets/icons/Support';
 import StatusIcon from '../../assets/icons/Status';
 import PricingIcon from '../../assets/icons/Pricing';
-// import LearnIcon from '../../assets/icons/Learn';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
 import IDEIcon from '../../assets/icons/Ide';
@@ -29,8 +27,11 @@ import PrototypeIcon from '../../assets/icons/Prototype';
 import TeamsIcon from '../../assets/icons/Teams';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
+import JobsIcon from '../../assets/icons/Jobs';
 import Button from '../Button';
 import { useLogin } from '../../hooks/useLogin';
+import { OPEN_JOBS_COUNT } from '../../config/hiring';
+import { JobBadge } from '../JobBadge';
 
 export default () => {
   const user = useLogin();
@@ -159,29 +160,10 @@ export default () => {
                   </a>
                 </li>
               </Items>
-              <Headers>Resources</Headers>
-              <Items>
-                <li>
-                  <Link to="/docs/start">
-                    <IconWrapper>
-                      <DocsIcon />
-                    </IconWrapper>
-                    <span>Documentation</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/blog">
-                    <IconWrapper>
-                      <BlogIcon />
-                    </IconWrapper>
-                    <span>Blog</span>
-                  </Link>
-                </li>
-              </Items>
               <Headers>Support</Headers>
               <Items>
                 <li>
-                  <a href="mailto:hello@codesandbox.io" title="Support">
+                  <a href="mailto:support@codesandbox.io" title="Support">
                     <IconWrapper>
                       <SupportIcon />
                     </IconWrapper>
@@ -201,28 +183,64 @@ export default () => {
                     <span>Status</span>
                   </a>
                 </li>
-                <Headers>Pricing</Headers>
-                <Pricing>
-                  <Link to="/pricing">
-                    <IconWrapper>
-                      <PricingIcon />
-                    </IconWrapper>
-                    <span>Pricing</span>
-                  </Link>
-                </Pricing>
+                <Headers>Resources</Headers>
+                <Items>
+                  <li>
+                    <Link to="/pricing">
+                      <IconWrapper>
+                        <PricingIcon />
+                      </IconWrapper>
+                      <span>Pricing</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/docs/start">
+                      <IconWrapper>
+                        <DocsIcon />
+                      </IconWrapper>
+                      <span>Documentation</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/blog">
+                      <IconWrapper>
+                        <BlogIcon />
+                      </IconWrapper>
+                      <span>Blog</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/jobs">
+                      <IconWrapper>
+                        <JobsIcon />
+                      </IconWrapper>
+                      <span>
+                        Jobs{' '}
+                        {OPEN_JOBS_COUNT && (
+                          <JobBadge>{OPEN_JOBS_COUNT}</JobBadge>
+                        )}
+                      </span>
+                    </Link>
+                  </li>
+                </Items>
               </Items>
-              <Button
+              <div
                 css={`
-                  margin-top: 4rem;
-                  display: block;
-                  padding: 6px 21px;
-                  background: #5962df;
+                  padding: 4rem 1rem 0 1rem;
                 `}
-                className="button"
-                href="/s"
               >
-                Create Sandbox
-              </Button>
+                <Button
+                  css={`
+                    display: block;
+                    padding: 6px 21px;
+                    background: #5962df;
+                  `}
+                  className="button"
+                  href="/s"
+                >
+                  Create Sandbox
+                </Button>
+              </div>
             </PopUpNav>
           </motion.div>
         ) : null}

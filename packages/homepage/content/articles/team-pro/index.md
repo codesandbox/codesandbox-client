@@ -54,7 +54,7 @@ of testing ideas, we take risky bets on unvalidated assumptions, and we don’t
 iterate because sharing and getting feedback is such a slog.
 
 We created Team Pro to remove these bottlenecks by using CodeSandbox at work
-with your entire product team. At the core is a shared workspace for your code,
+with your entire product team. At the core is a shared dashboard for your code,
 apps, and templates so that everyone can work on sandboxes together. Then we’ve
 built specific features to really get you all building faster together.
 
@@ -73,27 +73,27 @@ to create prototypes that look and feel just right.
 
 ## Share Knowledge Across Your Team
 
-In your Team Pro workspace, members can view, comment on, or edit sandboxes.
+In your Team Pro dashboard, members can view, comment on, or edit sandboxes.
 They’re shared by default, so there’s no barrier to coming together to work.
 
-You can subdivide your workspace with folders, keeping your internal apps,
-hiring challenges, prototypes, and bug reproductions organized. Workspace
-templates provide starting points for new projects that are pre-configured with
-styles, libraries, and settings. They’re a great way to bake in best practices
-and get started on new projects without any setup.
+You can subdivide your dashboard with folders, keeping your internal apps,
+hiring challenges, prototypes, and bug reproductions organized. Team templates
+provide starting points for new projects that are pre-configured with styles,
+libraries, and settings. They’re a great way to bake in best practices and get
+started on new projects without any setup.
 
 Sharing sandboxes like this provides new ways to learn from each other, as it’s
 easier for folks to demo, ask questions about, and communicate around code. The
 more you use it, a knowledge base of working example components, APIs,
 functions, and apps forms that gets more valuable over time.
 
-### Flexible Sandbox and Workspace Permissions
+### Flexible Sandbox and Team Permissions
 
 In some scenarios, though, you might not want such open access. Say you’re
 hiring and sending out coding challenges, or you’re a freelancer sharing
 in-progress client work, you can now restrict collaborators from forking or
 downloading code. And bigger teams will like our role-based permissions, which
-you can set on a per sandbox or workspace basis.
+you can set on a per sandbox or team basis.
 
 _"With Team Pro, our customer engineers have new superpowers. The ability for
 our team to collaborate on code demos and debug issues live with customers has
@@ -104,7 +104,7 @@ participant David Boskovic.
 
 ![Add comments on code or visuals](./images/previewComments.jpg)
 
-You can add an unlimited number of contributors to a workspace, so whole product
+You can add an unlimited number of contributors to a team, so whole product
 teams can join, with some folks creating and others providing feedback, sharing
 sandboxes with just a link or invite. This means a designer can provide quick UI
 feedback, a product manager can see how their spec is being built, QA can try

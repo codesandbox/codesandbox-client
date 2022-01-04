@@ -13,6 +13,8 @@ import {
 import { isIOS, isAndroid } from '@codesandbox/common/lib/utils/platform';
 import { Title } from 'app/components/Title';
 import { SubTitle } from 'app/components/SubTitle';
+import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { hasLogIn } from '@codesandbox/common/lib/utils/user';
 import Content from '../Content';
 import Sidebar from '../Sidebar';
 import { Container, Fullscreen, Moving } from './elements';
@@ -314,12 +316,31 @@ export default class App extends React.PureComponent<
 
   content = () => {
     if (this.state.notFound) {
+      const isSignedIn = hasLogIn();
       return (
-        <Centered vertical horizontal>
-          <Title delay={0.1}>Not Found</Title>
-          <SubTitle delay={0.05}>
-            We could not find the sandbox you{"'"}re looking for.
-          </SubTitle>
+        <Centered style={{ height: '100%' }} vertical horizontal>
+          <div style={{ maxWidth: 900, textAlign: 'center' }}>
+            <Title style={{ textAlign: 'center' }} delay={0.1}>
+              Not Found
+            </Title>
+            <SubTitle style={{ marginTop: 16, lineHeight: 1.4 }} delay={0.05}>
+              We could not find the sandbox you{"'"}re looking for.
+              {!isSignedIn && (
+                <p style={{ marginTop: 8 }}>
+                  If the sandbox is private, you might need to{' '}
+                  <a
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    href={signInPageUrl()}
+                  >
+                    sign in
+                  </a>
+                  <br />
+                  and reload the page to see the sandbox.
+                </p>
+              )}
+            </SubTitle>
+          </div>
         </Centered>
       );
     }
@@ -388,6 +409,14 @@ export default class App extends React.PureComponent<
   render() {
     const { sandbox } = this.state;
     const theme = getTheme(this.state.theme);
+
+    if (this.state.notFound) {
+      return (
+        <ThemeProvider theme={theme}>
+          <Fullscreen>{this.content()}</Fullscreen>
+        </ThemeProvider>
+      );
+    }
 
     return (
       <ThemeProvider theme={theme}>

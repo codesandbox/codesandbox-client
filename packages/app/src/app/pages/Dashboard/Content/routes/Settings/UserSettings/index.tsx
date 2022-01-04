@@ -30,9 +30,9 @@ export const UserSettings = () => {
   return (
     <>
       <Helmet>
-        <title>Workspace Settings - CodeSandbox</title>
+        <title>Settings - CodeSandbox</title>
       </Helmet>
-      <Header title="Workspace Settings" activeTeam={activeTeam} />
+      <Header title="Settings" activeTeam={activeTeam} />
       <Element
         css={css({
           height: 'calc(100vh - 140px)',

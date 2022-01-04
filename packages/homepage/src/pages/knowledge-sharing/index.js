@@ -64,7 +64,7 @@ export default () => {
         </div>
         <div>
           <div>
-            <Subtitle as="h2">Collaborative workspaces</Subtitle>
+            <Subtitle as="h2">Team dashboards</Subtitle>
           </div>
           <FeaturedImage
             css={`
@@ -80,7 +80,7 @@ export default () => {
             <img
               src={team}
               ref={parallaxRef}
-              alt="Collaborative workspaces"
+              alt="Team dashboards"
               css={`
                 width: 1022px;
               `}
@@ -88,14 +88,14 @@ export default () => {
           </FeaturedImage>
           <ContentBlock>
             <div>
-              <h3>Workspace templates</h3>
+              <h3>Team templates</h3>
               Provide starting points for new projects, pre-configured with
               styles, libraries, and settings to bake in best practice.
             </div>
 
             <div>
               <h3>Folders</h3>
-              Subdivide your workspace by organizing apps, hiring challenges,
+              Subdivide your dashboard by organizing apps, hiring challenges,
               prototypes, and bug repros into folders.
             </div>
 

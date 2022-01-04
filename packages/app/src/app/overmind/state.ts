@@ -57,6 +57,7 @@ type State = {
   isContributor: (username: String) => boolean;
   signInModalOpen: boolean;
   redirectOnLogin: string | null;
+  cancelOnLogin: null | (() => void);
   duplicateAccountStatus: {
     duplicate: boolean;
     provider: 'google' | 'github';
@@ -65,12 +66,20 @@ type State = {
     google: boolean;
     github: boolean;
   };
+  sandboxesLimits?: {
+    sandboxCount: number;
+    sandboxLimit: number;
+  } | null;
 };
 
 export const state: State = {
   pendingUserId: null,
   pendingUser: null,
   isFirstVisit: false,
+  /**
+   * Important, only use this to see if someone has patron, you should not check this to see if someone
+   * has pro.
+   */
   isPatron: derived(({ user }: State) =>
     Boolean(user && user.subscription && user.subscription.since)
   ),
@@ -123,6 +132,7 @@ export const state: State = {
   updateStatus: null,
   signInModalOpen: false,
   redirectOnLogin: null,
+  cancelOnLogin: null,
   duplicateAccountStatus: null,
   loadingAuth: {
     google: false,

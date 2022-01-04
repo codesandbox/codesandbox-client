@@ -13,7 +13,7 @@ import { getModulePath } from '../../sandbox/modules';
 import getTemplate from '../../templates';
 import { generateFileFromSandbox } from '../../templates/configuration/package-json';
 import { Module, NpmRegistry, Sandbox } from '../../types';
-import track from '../../utils/analytics';
+import track, { trackWithCooldown } from '../../utils/analytics';
 import { getSandboxName } from '../../utils/get-sandbox-name';
 import { frameUrl, host } from '../../utils/url-generator';
 import { Container, Loading, StyledFrame } from './elements';
@@ -52,6 +52,7 @@ export type Props = {
   overlayMessage?: string;
   Wrapper?: React.FC<{ children: any }>;
   isResponsiveModeActive?: boolean;
+  isResponsivePreviewResizing?: boolean;
   isPreviewCommentModeActive?: boolean;
   toggleResponsiveMode?: () => void;
   createPreviewComment?: () => void;
@@ -363,6 +364,10 @@ class BasePreview extends React.PureComponent<Props, State> {
             this.setState({ showScreenshot: false });
             break;
           }
+          case 'document-focus': {
+            trackWithCooldown('Preview focus', 30_000);
+            break;
+          }
           default: {
             break;
           }
@@ -454,6 +459,7 @@ class BasePreview extends React.PureComponent<Props, State> {
           previewSecret: sandbox.previewSecret,
           showScreen,
           clearConsoleDisabled: !settings.clearConsoleEnabled,
+          reactDevTools: true,
         });
       }
     }
@@ -634,8 +640,14 @@ class BasePreview extends React.PureComponent<Props, State> {
                     ...style,
                     zIndex: 1,
                     backgroundColor: 'white',
+                    userSelect: this.props.isResponsivePreviewResizing
+                      ? 'none'
+                      : 'initial',
                     pointerEvents:
-                      dragging || inactive || this.props.isResizing
+                      dragging ||
+                      inactive ||
+                      this.props.isResizing ||
+                      this.props.isResponsivePreviewResizing
                         ? 'none'
                         : 'initial',
                   }}

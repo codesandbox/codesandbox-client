@@ -984,7 +984,9 @@ export const updateWorkspaceConfig = async (
 
     if (devtoolsModule) {
       const updatedCode = JSON.stringify(
-        Object.assign(JSON.parse(devtoolsModule.code), update)
+        Object.assign(JSON.parse(devtoolsModule.code), update),
+        null,
+        2
       );
       actions.editor.codeChanged({
         moduleShortid: devtoolsModule.shortid,

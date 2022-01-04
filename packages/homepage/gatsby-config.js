@@ -28,6 +28,7 @@ module.exports = {
       options: {
         pedantic: false,
         plugins: [
+          `gatsby-remark-component`,
           `gatsby-remark-copy-linked-files`,
           {
             resolve: `gatsby-remark-images`,

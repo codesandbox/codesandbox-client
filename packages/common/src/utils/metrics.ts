@@ -17,12 +17,24 @@ if (typeof global.performance === 'undefined') {
   };
 }
 
-export function measure(key: MeasurementKey) {
+export function now(): number {
+  try {
+    return performance.now();
+  } catch (err) {
+    console.warn(err);
+    return 0;
+  }
+}
+
+export function measure(key: MeasurementKey): number {
   try {
     performance.mark(`${key}_start`);
-    runningMeasurements.set(key, performance.now());
+    const currentTime = now();
+    runningMeasurements.set(key, currentTime);
+    return currentTime;
   } catch (e) {
     console.warn(`Something went wrong while adding measure: ${e.message}`);
+    return 0;
   }
 }
 

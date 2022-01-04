@@ -180,4 +180,4 @@ Also a BIG thanks to everyone else helping out by talking about and using
 CodeSandbox, we're really amazed by your positive response and support.
 
 You can always contact us through [my Twitter](https://twitter.com/CompuIves) or
-by emailing us at hello@codesandbox.io. Don't hesitate to say hi 😃.
+by emailing us at support@codesandbox.io. Don't hesitate to say hi 😃.

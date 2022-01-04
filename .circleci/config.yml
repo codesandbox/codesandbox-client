@@ -22,6 +22,7 @@ aliases:
       - packages/sse-hooks/dist
       - packages/sandpack-core/lib
       - packages/browser-eslint-rules/lib
+      - packages/browser-dart-sass/lib
       - packages/vue3-browser-compiler/lib
       - packages/vue3-transpiler/lib
       - standalone-packages/codesandbox-browserfs/dist
@@ -56,6 +57,7 @@ aliases:
       - packages/sse-hooks/node_modules
       - packages/sandpack-core/node_modules
       - packages/browser-eslint-rules/node_modules
+      - packages/browser-dart-sass/node_modules
       - packages/vue3-browser-compiler/node_modules
       - packages/vue3-transpiler/node_modules
 
@@ -126,11 +128,11 @@ aliases:
 executors:
   node:
     docker:
-      - image: circleci/node:10.22.1
+      - image: circleci/node:10.24.1
     working_directory: ~/codesandbox-client
   node-xlarge:
     docker:
-      - image: circleci/node:10.22.1
+      - image: circleci/node:10.24.1
     resource_class: xlarge
     working_directory: ~/codesandbox-client
   node-with-puppeteer:
@@ -314,7 +316,7 @@ jobs:
       - checkout_with_cache
       - test_visual_regressions
   test-jest:
-    executor: node
+    executor: node-xlarge
     steps:
       - checkout_with_cache
       - test_jest

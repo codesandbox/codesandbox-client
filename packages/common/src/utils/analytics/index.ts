@@ -53,11 +53,7 @@ export async function setAnonymousId() {
     let anonymousUid = localStorage.getItem(ANONYMOUS_UID_KEY);
 
     if (!anonymousUid) {
-      anonymousUid = String(
-        Math.random()
-          .toString(36)
-          .substring(2)
-      );
+      anonymousUid = String(Math.random().toString(36).substring(2));
 
       localStorage.setItem(ANONYMOUS_UID_KEY, anonymousUid);
     }
@@ -103,6 +99,23 @@ export function setGroup(name: string, value: string | string[]) {
   if (!DO_NOT_TRACK_ENABLED) {
     amplitude.setGroup(name, value);
   }
+}
+
+const trackedEventsByTime: Record<string, number> = {};
+export function trackWithCooldown(
+  event: string,
+  cooldown: number,
+  data: any = {}
+) {
+  const now = Date.now();
+  if (trackedEventsByTime[event]) {
+    if (now - trackedEventsByTime[event] <= cooldown) {
+      return;
+    }
+  }
+
+  trackedEventsByTime[event] = now;
+  track(event, data);
 }
 
 export default function track(eventName, secondArg: Object = {}) {

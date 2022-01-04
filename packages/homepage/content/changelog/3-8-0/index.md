@@ -8,13 +8,13 @@ description: A new dashboard built for collaboration.
 
 ### A New Dashboard Built for Collaboration
 
-We've introduced workspaces and refreshed the design of the dashboard to make
-working with teams and more sandboxes a better experience.
+We've introduced teams and refreshed the design of the dashboard to make
+collaborating on sandboxes a better experience.
 
 #### Features
 
-1. Workspaces enable you to work on sandboxes with teams of people and keep your
-   personal projects separate
+1. Team dashboard enable you to work on sandboxes with teams of people and keep
+   your personal projects separate
 2. A new start screen that lists only the most recent stuff you're likely to
    want to dive back in to
 3. By default, new projects now go into drafts so important sandboxes are easier
@@ -34,4 +34,4 @@ working with teams and more sandboxes a better experience.
 - Fixed an issue with being unable to save all after reloading a sandbox with
   unsaved changes
 - [@jyash97](https://github.com/codesandbox/codesandbox-client/pull/4487) made
-  sure you can't invite yourself to a workspace
+  sure you can't invite yourself to a team

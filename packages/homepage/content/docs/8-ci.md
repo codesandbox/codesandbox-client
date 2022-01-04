@@ -80,7 +80,7 @@ These are all the configuration options you can set. They are all optional.
   // to generate a sandbox from the contents of that directory.
   "sandboxes": ["vanilla", "new", "/examples/todomvc"],
   // Node.js version to use for building the PR.
-  // Supported versions are '10' (10.23.0, default), '12' (12.20.0) and '14' (14.15.1).
+  // Supported versions are '10' (10.24.1, default), '12' (12.22.7), '14' (14.18.1) and '16' (16.13.0).
   "node": "14"
 }
 ```

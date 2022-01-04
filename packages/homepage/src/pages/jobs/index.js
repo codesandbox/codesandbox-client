@@ -225,16 +225,17 @@ const Careers = () => {
               We’re building a team, tool, and community that’s:
               <br />
               <br />
-              <strong>Accessible</strong> - we’re making development accessible
-              to all, building a reality where everyone can be a creator.
+              <strong>Accessible</strong> &mdash; we’re making development
+              accessible to all, building a reality where everyone can be a
+              creator.
               <br />
               <br />
-              <strong>Collaborative</strong> - providing people with the means
-              to encourage and help each other.
+              <strong>Collaborative</strong> &mdash; providing people with the
+              means to encourage and help each other.
               <br />
               <br />
-              <strong>Empowering</strong> - enabling creators to feel like they
-              can build without limits.
+              <strong>Empowering</strong> &mdash; enabling creators to feel like
+              they can build without limits.
             </TitleDescription>
           </div>
           <div
@@ -264,6 +265,51 @@ const Careers = () => {
               delivers better results than other approaches.
             </TitleDescription>
           </div>
+          <div
+            css={`
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+            `}
+          >
+            <PageTitle>Our Hiring Process</PageTitle>
+            <TitleDescription
+              css={`
+                width: 640px;
+                max-width: 80%;
+              `}
+            >
+              Meeting you is always an exciting moment for us and we would like
+              to make sure you feel comfortable when interviewing with us. The
+              steps below outline what you can expect:
+              <br />
+              <br />
+              <strong>Step 1</strong> &mdash; a 30 min informal conversation to
+              get to know each other.
+              <br />
+              <br />
+              <strong>Step 2</strong> &mdash; a 1 hour conversation to dive
+              deeper into your technical skills and explore your fit with our
+              culture.
+              <br />
+              <br />
+              <strong>Step 3</strong> &mdash; a 1 hour coding challenge or
+              assessment where you get the chance to work alongside some of your
+              potential teammates.
+              <br />
+              <br />
+              <strong>Step 4</strong> &mdash; a final conversation during which
+              we tackle any remaining questions on both sides.
+              <br />
+              <br />
+              We do every interview in pairs and with different assessors
+              because we would like you to be able to meet more members of the
+              team. It also gives us the chance to eliminate biases.
+              <br />
+              <br />
+              We are looking forward to receiving your application!
+            </TitleDescription>
+          </div>
           <PageSubtitle>Open Positions</PageSubtitle>
           {jobs != null && (
             <div>
@@ -290,13 +336,13 @@ const Careers = () => {
                       `}
                     >
                       <Job>
-                        <span
+                        <strong
                           css={`
-                            font-weight: bold;
+                            margin-right: 1rem;
                           `}
                         >
                           {title}
-                        </span>
+                        </strong>
 
                         <span
                           css={`

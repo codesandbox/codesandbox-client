@@ -220,7 +220,7 @@ export const onBrowserTabOpened = (
 
 export const onBrowserFromPortOpened = (
   { actions }: Context,
-  { hostname, main, port }: ServerPort
+  { main, port }: ServerPort
 ) => {
   if (main) {
     actions.server.onBrowserTabOpened({});
@@ -229,7 +229,6 @@ export const onBrowserFromPortOpened = (
       closeable: true,
       options: {
         port,
-        url: `https://${hostname}`,
       },
     });
   }

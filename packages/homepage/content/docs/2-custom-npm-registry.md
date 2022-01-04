@@ -9,14 +9,14 @@ description: You can use your own private npm registry if you have Team Pro.
 members. [Check out Team Pro](https://codesandbox.io/pricing).**
 
 The custom private npm registry setting makes it possible for sandboxes in your
-workspace to retrieve npm packages from your own npm registry. This setting is
-available for all Team Pro workspaces, you can access the settings
+team settings to retrieve npm packages from your own npm registry. This setting
+is available for all Team Pro accounts, you can access the settings
 [here](https://codesandbox.io/dashboard/settings/npm-registry).
 
 ## Configuration
 
 You can configure your private npm registry in your
-[Workspace Settings](https://codesandbox.io/dashboard/settings/npm-registry).
+[Team Settings](https://codesandbox.io/dashboard/settings/npm-registry).
 
 ![Configuration Form](./images/custom-npm-registry.png)
 
@@ -115,27 +115,27 @@ behind a VPN out of the box. However, we do have three solutions:
 
 **Solution 1: bypass the proxy** We can bypass the proxy on our service to let
 the browser fetch from the registry directly. This is not enabled by default for
-everyone - please [request this be turned on](mailto:hello@codesandbox.io). The
-disadvantage of this approach is that you have to share your registry auth token
-with everyone who has access to the sandbox. Also, to make this work, you need
-to add CORS headers to your registry so the browser can fetch the packages
+everyone - please [request this be turned on](mailto:support@codesandbox.io).
+The disadvantage of this approach is that you have to share your registry auth
+token with everyone who has access to the sandbox. Also, to make this work, you
+need to add CORS headers to your registry so the browser can fetch the packages
 directly from our origin.
 
 **Solution 2: whitelist the proxy** Another solution is to whitelist the IP
 range of our proxy. We make sure that we keep the same IP for our proxy. Please
-[request these details](mailto:hello@codesandbox.io).
+[request these details](mailto:support@codesandbox.io).
 
 **Solution 3: self-host the proxy** A third option is to self-host the proxy in
 your network, and letting the proxy communicate with our API server to validate
 the tokens that are sent in. We can
-[help get you setup with this](mailto:hello@codesandbox.io).
+[help get you setup with this](mailto:support@codesandbox.io).
 
 ### Can I use a .npmrc file?
 
-To make sure that credentials don't accidentally get shared with collaborators 
+To make sure that credentials don't accidentally get shared with collaborators
 of a sandbox, we don't support reading credentials from a `.npmrc` file. We
-recommend you to put the auth token in the workspace configuration instead,
-so that it's encrypted and only shared with the admin of the workspace.
+recommend you to put the auth token in the workspace configuration instead, so
+that it's encrypted and only shared with the admin of the workspace.
 
 ### Does this work with container sandboxes?
 

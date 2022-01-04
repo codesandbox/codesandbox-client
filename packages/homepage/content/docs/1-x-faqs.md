@@ -38,7 +38,7 @@ make sandboxes private or unlisted.
 There are a few possible reasons a repo might throw that error on import. The
 most common are either a lack of a `package.json` file, or the project using
 more than 500 modules (files). If you think it's something else, or you're not
-able to solve this yourself, then [get in touch](mailto:hello@codesandbox.io)
+able to solve this yourself, then [get in touch](mailto:support@codesandbox.io)
 and provide a link to the repo you're importing and we can look into this for
 you.
 
@@ -78,21 +78,20 @@ from File > Preferences > Settings in the editor.
 - The maximum file size that can be opened in the editor is 2MB. Files uploaded
   that are larger than that still exist but are linked as a static asset.
 - The maximum file upload size is 7MB. If you need this raised, please
-  [email us](mailto:hello@codesandbox.io) with your username and the typical
+  [email us](mailto:support@codesandbox.io) with your username and the typical
   type and size of files you want to upload.
 - In container sandboxes, there is a sync limit of 10 files per second and only
   files up to 2MB are synced with the editor. Files larger than that still exist
   but are not shown in the editor's file tree. You're still able to write and
-  read to and from them in your code and they can be seen and edited via
-  the terminal.
+  read to and from them in your code and they can be seen and edited via the
+  terminal.
 - Terminal commands which alter the filesystem of the container instance aren't
   synced with files shown in the editor. You'll need to refresh to see files
   updated this way.
 - Container sandboxes sleep after around 10 minutes and can be woken by opening
   the sandbox or preview in a web browser.
-- Container sandboxes have a 1GB persistent storage limit, a 1GB vCPU soft limit,
-  and a hard memory limit of 2GB.
-
+- Container sandboxes have a 1GB persistent storage limit, a 1GB vCPU soft
+  limit, and a hard memory limit of 2GB.
 
 ## I'm getting a 'Request Entity too Large' error, what should I do?
 

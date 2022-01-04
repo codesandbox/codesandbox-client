@@ -11,7 +11,7 @@ import VERSION from '@codesandbox/common/lib/version';
 import { clearErrorTransformers, dispatch, reattach } from 'codesandbox-api';
 import { flatten } from 'lodash';
 import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
-import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
+import { inject, uninject } from 'sandbox-hooks/react-error-overlay/overlay';
 import {
   consumeCache,
   deleteAPICache,
@@ -314,7 +314,12 @@ async function initializeManager(
   {
     hasFileResolver = false,
     customNpmRegistries = [],
-  }: { hasFileResolver?: boolean; customNpmRegistries?: NpmRegistry[] } = {}
+    reactDevTools = false,
+  }: {
+    hasFileResolver?: boolean;
+    customNpmRegistries?: NpmRegistry[];
+    reactDevTools?: boolean;
+  } = {}
 ) {
   const newManager = new Manager(
     sandboxId,
@@ -323,6 +328,7 @@ async function initializeManager(
     {
       hasFileResolver,
       versionIdentifier: SCRIPT_VERSION,
+      reactDevTools,
     }
   );
 
@@ -403,6 +409,24 @@ function initializeDOMMutationListener() {
   });
 }
 
+let resizePollingTimer;
+function resizePolling() {
+  clearInterval(resizePollingTimer);
+  resizePollingTimer = setInterval(sendResize, 500);
+
+  window.addEventListener('unload', () => {
+    clearInterval(resizePollingTimer);
+  });
+}
+
+function onWindowResize() {
+  window.addEventListener('resize', sendResize);
+
+  window.addEventListener('unload', () => {
+    window.removeEventListener('resize', sendResize);
+  });
+}
+
 function overrideDocumentClose() {
   const oldClose = window.document.close;
 
@@ -418,12 +442,8 @@ function overrideDocumentClose() {
 
 overrideDocumentClose();
 
-if (!process.env.SANDPACK) {
-  inject();
-}
-
 interface CompileOptions {
-  sandboxId: string;
+  sandboxId?: string | null;
   modules: { [path: string]: Module };
   customNpmRegistries?: NpmRegistry[];
   externalResources: string[];
@@ -438,6 +458,7 @@ interface CompileOptions {
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
   clearConsoleDisabled?: boolean;
+  reactDevTools?: boolean;
 }
 
 async function compile(opts: CompileOptions) {
@@ -457,6 +478,7 @@ async function compile(opts: CompileOptions) {
     hasFileResolver = false,
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
+    reactDevTools = false,
   } = opts;
 
   if (firstLoad) {
@@ -473,10 +495,10 @@ async function compile(opts: CompileOptions) {
 
   const startTime = Date.now();
   try {
+    uninject(manager && manager.webpackHMR ? true : hadError);
     inject(showErrorScreen);
     clearErrorTransformers();
     initializeErrorTransformers();
-    unmount(manager && manager.webpackHMR ? true : hadError);
   } catch (e) {
     console.error(e);
   }
@@ -524,6 +546,7 @@ async function compile(opts: CompileOptions) {
       (await initializeManager(sandboxId, template, modules, configurations, {
         hasFileResolver,
         customNpmRegistries,
+        reactDevTools,
       }));
 
     let dependencies: NPMDependencies = getDependencies(
@@ -591,7 +614,7 @@ async function compile(opts: CompileOptions) {
         template,
         modules,
         configurations,
-        { hasFileResolver }
+        { hasFileResolver, reactDevTools }
       );
     }
 
@@ -781,13 +804,7 @@ async function compile(opts: CompileOptions) {
       type: 'success',
     });
 
-    saveCache(
-      sandboxId,
-      managerModuleToTranspile,
-      manager,
-      changedModuleCount,
-      firstLoad
-    );
+    saveCache(managerModuleToTranspile, manager, changedModuleCount, firstLoad);
 
     setTimeout(async () => {
       try {
@@ -815,10 +832,6 @@ async function compile(opts: CompileOptions) {
       if (firstLoad && changedModuleCount === 0) {
         await deleteAPICache(manager.id, SCRIPT_VERSION);
       }
-    }
-
-    if (firstLoad) {
-      inject();
     }
 
     const event = new Event('error');
@@ -873,6 +886,11 @@ async function compile(opts: CompileOptions) {
     initializeDOMMutationListener();
   }
 
+  onWindowResize();
+  resizePolling();
+
+  sendResize();
+
   firstLoad = false;
 
   dispatch({ type: 'status', status: 'idle' });
@@ -892,7 +910,7 @@ let runningTask = null;
 async function executeTaskIfAvailable() {
   if (tasks.length) {
     runningTask = tasks.pop();
-    await compile(runningTask);
+    await compile(runningTask).catch(console.error);
     runningTask = null;
 
     executeTaskIfAvailable();

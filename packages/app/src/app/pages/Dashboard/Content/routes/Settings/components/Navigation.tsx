@@ -55,7 +55,7 @@ export const SettingNavigation = (props: SettingsNavigationProps) => (
     >
       <NavigationLink
         url={dashboardUrls.settings(props.teamId)}
-        label="Workspace"
+        label="Account"
       />
       {!props.isPersonal && (
         <NavigationLink

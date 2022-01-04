@@ -1,7 +1,7 @@
 module.exports = {
   preset: 'ts-jest/presets/js-with-ts',
   transformIgnorePatterns: ['/node_modules/(?!lodash-es).+\\.js$'],
-  modulePathIgnorePatterns: ['lib'],
+  modulePathIgnorePatterns: ['lib', 'fixture'],
   moduleNameMapper: {
     'hack-node-fetch': 'node-fetch',
     'node-fetch': 'fetch-vcr',

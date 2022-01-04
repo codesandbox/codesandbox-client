@@ -103,15 +103,15 @@ export const WorkspacePlanSelection: React.FC<{
 
   React.useEffect(
     function switchToWorkspaceWithAdminRights() {
-      // if type is PERSONAL_PRO, switch to personal workspace
+      // if type is PERSONAL_PRO, switch to personal account
       if (type === SubscriptionType.PersonalPro) {
         setActiveTeam({ id: personalWorkspaceId });
         return;
       }
 
-      // if you land on a workspace where you are not the admin
-      // switch workspaces to one where you are an admin
-      // if none, switch to personal workspace
+      // if you land on an account where you are not the admin
+      // switch accounts to one where you are an admin
+      // if none, switch to personal account
       if (
         activeUserAuthorization !== TeamMemberAuthorization.Admin &&
         dashboard.teams.length
@@ -148,7 +148,7 @@ export const WorkspacePlanSelection: React.FC<{
 
   React.useEffect(
     function trackingWorkspace() {
-      track('Pro - Change Workspace');
+      track('Pro - Change Team selection');
     },
     [activeWorkspace]
   );
@@ -168,7 +168,7 @@ export const WorkspacePlanSelection: React.FC<{
 
   // if there is mismatch of intent - team/personal
   // or you don't have access to upgrade
-  // open the workspace switcher on load
+  // open the account switcher on load
   const switcherDefaultOpen =
     (type === SubscriptionType.TeamPro && isPersonalWorkspace) ||
     activeUserAuthorization !== TeamMemberAuthorization.Admin;
@@ -198,7 +198,7 @@ export const WorkspacePlanSelection: React.FC<{
         <br /> Cancel at any time, effective at the end of the payment period.
       </Text>
       <Stack direction="vertical" gap={1} marginBottom={6}>
-        <Text>Workspace</Text>
+        <Text>Account</Text>
         <Stack
           css={css({
             button: {
@@ -286,7 +286,6 @@ export const WorkspacePlanSelection: React.FC<{
                       />
                       <Text size={3} maxWidth="100%">
                         {workspace.name}
-                        {workspace.id === personalWorkspaceId && ' (Personal)'}
                       </Text>
                     </Stack>
 
@@ -323,7 +322,7 @@ export const WorkspacePlanSelection: React.FC<{
                 >
                   <Icon name="plus" size={10} />
                 </Stack>
-                <Text size={3}>Create a new workspace</Text>
+                <Text size={3}>Create a new team</Text>
               </Stack>
             </Menu.List>
           </Menu>
@@ -453,7 +452,7 @@ export const WorkspacePlanSelection: React.FC<{
               },
             })}
           >
-            <Text size={3}>Workspace editors</Text>
+            <Text size={3}>Team editors</Text>
             <Stack justify="space-between">
               <Stack direction="vertical" gap={4}>
                 <Text variant="muted" size={3}>
@@ -512,7 +511,7 @@ export const WorkspacePlanSelection: React.FC<{
               selectedPlan.billingInterval === SubscriptionInterval.Monthly ? (
                 <Text align="center">
                   Changing billing interval from Yearly to Monthly is not
-                  supported yet. Please email us at hello@codesandbox.io
+                  supported yet. Please email us at support@codesandbox.io
                 </Text>
               ) : null}
             </>

@@ -10,7 +10,7 @@ import { Buttons, Container } from './elements';
 import Logo from '../../../logo.svg';
 
 export const Prompt: FunctionComponent = () => {
-  const { authToken, error, isLoadingCLI, user } = useAppState();
+  const { authToken, error, user } = useAppState();
 
   const [deepLink, setDeepLink] = useState('');
 
@@ -70,7 +70,7 @@ export const Prompt: FunctionComponent = () => {
     );
   }
 
-  if (isLoadingCLI) {
+  if (!authToken) {
     return (
       <Container>
         <img

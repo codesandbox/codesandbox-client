@@ -67,12 +67,12 @@ export const personal = {
       name: 'Knowledge Sharing',
       features: [
         {
-          name: 'Team Workspaces',
+          name: 'Team Dashboards',
           desc: 'View, edit, and manage public sandboxes with a team',
           available: true,
         },
         {
-          name: 'Workspace Templates',
+          name: 'Templates',
           desc: 'Start from an official template, or create your own',
           available: true,
         },
@@ -92,7 +92,7 @@ export const personal = {
       name: 'Feedback',
       features: [
         {
-          name: 'Unlimited Workspace Viewers ',
+          name: 'Unlimited Sandbox Viewers',
           desc: 'Add collaborators to view and comment on sandboxes for free',
           available: true,
         },
@@ -102,12 +102,12 @@ export const personal = {
           available: true,
         },
         {
-          name: 'Preview Comments ',
+          name: 'Preview Comments',
           desc: 'Add comment on the preview in the sandbox',
           available: true,
         },
         {
-          name: 'Shareable Links ',
+          name: 'Shareable Links',
           desc: 'Per sandbox URL with HTTPS support for secure project sharing',
           available: true,
         },

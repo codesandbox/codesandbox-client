@@ -40,11 +40,11 @@ directly in the editor.
 
 ### Work better together
 
-You can create a workspace, enabling you to share sandboxes with team members
-and work on them together.
+You can create a team dashboard, enabling you to share sandboxes with team
+members and work on them together.
 
-You can also make workspace templates to give everyone starter apps created
-around the libraries and components you use. You’re able to be more productive
-with consistent coding styles and conventions as part of your workflow.
+You can also make team templates to give everyone starter apps created around
+the libraries and components you use. You’re able to be more productive with
+consistent coding styles and conventions as part of your workflow.
 
 </div>

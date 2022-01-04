@@ -2,7 +2,6 @@
 /* eslint-disable no-loop-func, no-continue */
 import * as meriyah from 'meriyah';
 import * as escope from 'escope';
-import { basename } from 'path';
 import { walk } from 'estree-walker';
 import { flatten } from 'lodash-es';
 import {
@@ -22,6 +21,11 @@ import {
   generateExportGetter,
 } from './ast-node-utils';
 import { ESTreeAST } from './utils';
+
+export function generateVariableName(input: string): string {
+  const v = input.replace(/[^A-Za-z0-9]+/g, '_');
+  return v.substr(v.length - 36);
+}
 
 /**
  * Converts esmodule code to commonjs code, built to be as fast as possible
@@ -186,7 +190,7 @@ export function convertEsModule(ast: ESTreeAST): void {
       if (typeof source.value !== 'string') {
         continue;
       }
-      const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
+      const varName = getVarName(`$csb__${generateVariableName(source.value)}`);
       addNodeInImportSpace(i, generateRequireStatement(varName, source.value));
       program.body.push(generateAllExportsIterator(varName));
     } else if (statement.type === n.ExportNamedDeclaration) {
@@ -202,7 +206,9 @@ export function convertEsModule(ast: ESTreeAST): void {
         if (typeof source.value !== 'string') {
           continue;
         }
-        const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
+        const varName = getVarName(
+          `$csb__${generateVariableName(source.value)}`
+        );
 
         if (
           statement.specifiers.length === 1 &&
@@ -455,7 +461,7 @@ export function convertEsModule(ast: ESTreeAST): void {
       if (typeof source.value !== 'string') {
         continue;
       }
-      const varName = getVarName(`$csb__${basename(source.value, '.js')}`);
+      const varName = getVarName(`$csb__${generateVariableName(source.value)}`);
 
       addNodeInImportSpace(i, generateRequireStatement(varName, source.value));
 

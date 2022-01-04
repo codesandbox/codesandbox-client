@@ -4,6 +4,7 @@ import { P } from '../Typography';
 import Github from '../../assets/icons/github';
 import Twitter from '../../assets/icons/twitter';
 import Discord from '../../assets/icons/discord';
+import { OPEN_JOBS_COUNT } from '../../config/hiring';
 import { FooterWrapper, Nav, Social, Title } from './elements';
 
 const footerNavElements = [
@@ -25,6 +26,11 @@ const footerNavElements = [
       {
         text: 'Feedback',
         link: '/feedback',
+      },
+      {
+        text: 'Sandpack',
+        external: true,
+        link: 'https://sandpack.codesandbox.io/',
       },
       {
         text: 'What’s New',
@@ -85,7 +91,7 @@ const footerNavElements = [
       {
         text: 'Jobs ',
         link: '/jobs',
-        count: '2',
+        count: OPEN_JOBS_COUNT,
       },
       {
         text: 'Terms Of Use',
@@ -107,7 +113,7 @@ const footerNavElements = [
       {
         text: 'Contact Support',
         external: true,
-        link: 'mailto:hello@codesandbox.io',
+        link: 'mailto:support@codesandbox.io',
       },
       {
         text: 'Status',
@@ -126,14 +132,14 @@ const Footer = () => (
           <li>
             <Title>{menu.title}</Title>
           </li>
-          {menu.elements.map(({ text, link, count, external }) => (
+          {menu.elements.map(({ text, link, count = 0, external }) => (
             <li key={text}>
               <P small muted>
                 {external ? (
                   <a href={link}>{text}</a>
                 ) : (
                   <Link to={link}>
-                    {text} {count != null && <span>{count}</span>}
+                    {text} {count !== 0 && <span>{count}</span>}
                   </Link>
                 )}
               </P>

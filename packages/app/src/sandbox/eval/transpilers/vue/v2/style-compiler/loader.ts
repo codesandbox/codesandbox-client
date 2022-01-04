@@ -58,7 +58,11 @@ export default async function (
     postcssImportPlugin({
       resolve: async (id: string, root: string) => {
         try {
-          const result = await resolveCSSFile(loaderContext, id, root);
+          const result = await resolveCSSFile(
+            loaderContext,
+            id.replace(/^~/, ''),
+            root
+          );
 
           return result.module.path;
         } catch (e) {
@@ -99,16 +103,17 @@ export default async function (
     };
   }
 
-  // Explcitly give undefined if code is null, otherwise postcss crashses
+  // Explicitly give undefined if code is null, otherwise postcss crashses
   const postcssResult = await postcss(plugins).process(code || '', options);
 
   if (postcssResult.messages) {
     const messages = postcssResult.messages as any[];
     await Promise.all(
-      messages.map(async m => {
+      messages.map(m => {
         if (m.type === 'dependency') {
-          await loaderContext.addDependency(m.file);
+          return loaderContext.addDependency(m.file);
         }
+        return Promise.resolve();
       })
     );
   }

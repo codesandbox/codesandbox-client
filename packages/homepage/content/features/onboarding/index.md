@@ -54,7 +54,7 @@ environments until later.
 
 ### Bake-in best practices
 
-Create workspace templates which provide starting points for new projects,
+Create team templates which provide starting points for new projects,
 pre-configured with styles, libraries, and settings that work exactly how you
 need them to.
 

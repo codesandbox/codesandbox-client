@@ -15,6 +15,7 @@ import { getSyntaxInfoFromAst } from './ast/syntax-info';
 import { convertEsModule } from './ast/convert-esmodule';
 import { ESTreeAST, generateCode, parseModule } from './ast/utils';
 import { collectDependenciesFromAST } from './ast/collect-dependencies';
+import { rewriteImportMeta } from './ast/rewrite-meta';
 
 const MAX_WORKER_ITERS = 100;
 
@@ -25,11 +26,32 @@ interface TranspilationResult {
 const global = window as any;
 const WORKER_COUNT = process.env.SANDPACK ? 1 : 3;
 
+interface IDep {
+  path: string;
+  isAbsolute?: boolean;
+  isEntry?: boolean;
+  isGlob?: boolean;
+}
+
 function addCollectedDependencies(
   loaderContext: LoaderContext,
-  deps: Array<string>
+  deps: Array<IDep>
 ): Promise<Array<void>> {
-  return Promise.all(deps.map(dep => loaderContext.addDependency(dep)));
+  return Promise.all(
+    deps.map(async dep => {
+      if (dep.isGlob) {
+        loaderContext.addDependenciesInDirectory(dep.path, {
+          isAbsolute: dep.isAbsolute,
+          isEntry: dep.isEntry,
+        });
+      } else {
+        await loaderContext.addDependency(dep.path, {
+          isAbsolute: dep.isAbsolute,
+          isEntry: dep.isEntry,
+        });
+      }
+    })
+  );
 }
 
 // Right now this is in a worker, but when we're going to allow custom plugins
@@ -56,7 +78,7 @@ class BabelTranspiler extends WorkerTranspiler {
           return BabelWorker();
         }
 
-        // We set these up in startup.js.
+        // We set these up in startup.ts.
         return global.babelworkers.pop();
       },
       {
@@ -99,7 +121,15 @@ class BabelTranspiler extends WorkerTranspiler {
             // We collect requires instead of doing this in convertESModule as some modules also use require
             // Which is actually invalid but we probably don't wanna break anyone's code if it works in other bundlers...
             const deps = collectDependenciesFromAST(ast);
-            await addCollectedDependencies(loaderContext, deps);
+            await addCollectedDependencies(
+              loaderContext,
+              deps.map(d => ({
+                path: d,
+              }))
+            );
+            rewriteImportMeta(ast, {
+              url: loaderContext.url,
+            });
             endMeasure(`esconvert-${path}`, { silent: true });
             return {
               transpiledCode: generateCode(ast),
@@ -109,17 +139,25 @@ class BabelTranspiler extends WorkerTranspiler {
           // If the code is commonjs and does not contain any more jsx, we generate and return the code.
           measure(`dep-collection-${path}`);
           const deps = collectDependenciesFromAST(ast);
-          await addCollectedDependencies(loaderContext, deps);
+          await addCollectedDependencies(
+            loaderContext,
+            deps.map(d => ({
+              path: d,
+            }))
+          );
           endMeasure(`dep-collection-${path}`, { silent: true });
           return {
             transpiledCode: code,
           };
         }
       } catch (err) {
-        console.warn(
-          `Error occurred while trying to quickly transform '${path}'`
-        );
-        console.warn(err);
+        // do not log this in production, it confuses our users
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(
+            `Error occurred while trying to quickly transform '${path}'`
+          );
+          console.warn(err);
+        }
       }
     }
 
@@ -171,21 +209,7 @@ class BabelTranspiler extends WorkerTranspiler {
       loaderContext
     );
 
-    await Promise.all(
-      foundDependencies.map(async dep => {
-        if (dep.isGlob) {
-          loaderContext.addDependenciesInDirectory(dep.path, {
-            isAbsolute: dep.isAbsolute,
-            isEntry: dep.isEntry,
-          });
-        } else {
-          await loaderContext.addDependency(dep.path, {
-            isAbsolute: dep.isAbsolute,
-            isEntry: dep.isEntry,
-          });
-        }
-      })
-    );
+    await addCollectedDependencies(loaderContext, foundDependencies);
 
     return { transpiledCode };
   }

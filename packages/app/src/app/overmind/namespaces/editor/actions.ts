@@ -542,11 +542,7 @@ export const codeChanged = (
     event?: any;
   }
 ) => {
-  effects.analytics.trackOnce('Change Code');
-
-  if (!state.user) {
-    state.editor.changeCounter++;
-  }
+  effects.analytics.trackWithCooldown('Change Code', 30 * 1000);
 
   if (!state.editor.currentSandbox) {
     return;

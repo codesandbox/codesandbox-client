@@ -6,21 +6,26 @@ import bas from '../assets/images/people/bas.png';
 import bogdan from '../assets/images/people/bogdan.png';
 import oskar from '../assets/images/people/oskar.png';
 import danny from '../assets/images/people/danny.png';
-import sid from '../assets/images/people/sid.jpg';
 import christian from '../assets/images/people/christian.png';
 import sanne from '../assets/images/people/sanne.png';
 import andras from '../assets/images/people/andras.png';
 import alex from '../assets/images/people/alex.jpg';
-import maurice from '../assets/images/people/maurice.jpg';
 import zeh from '../assets/images/people/zeh.png';
-import ceora from '../assets/images/people/ceora.jpg';
 import danilowoz from '../assets/images/people/danilowoz.jpg';
 import matan from '../assets/images/people/matan.png';
 import scott from '../assets/images/people/scott.png';
-import kate from '../assets/images/people/kate.jpg';
 import tamas from '../assets/images/people/tamas.png';
 import jasper from '../assets/images/people/jasper.jpg';
 import joana from '../assets/images/people/joana.jpg';
+import marco from '../assets/images/people/marco.jpg';
+import neco from '../assets/images/people/neco.png';
+import roman from '../assets/images/people/roman.jpg';
+import james from '../assets/images/people/james.jpg';
+import gianmarco from '../assets/images/people/gsimone.jpeg';
+import ace from '../assets/images/people/ace.jpg';
+import maria from '../assets/images/people/maria.png';
+import lena from '../assets/images/people/lena.png';
+import ioana from '../assets/images/people/ioana.jpg';
 
 const people = [
   {
@@ -54,12 +59,6 @@ const people = [
     team: 'Design',
   },
   {
-    name: 'Siddharth Kshetrapal',
-    pic: sid,
-    color: '#F24E62',
-    team: 'Engineering',
-  },
-  {
     name: 'Christian Alfoni',
     pic: christian,
     color: '#F24E62',
@@ -84,22 +83,16 @@ const people = [
     team: 'Engineering',
   },
   {
-    name: 'Maurice Cherry',
-    pic: maurice,
-    color: '#F7A239',
-    team: 'Growth',
-  },
-  {
     name: 'Zeh Fernandes',
     pic: zeh,
     color: '#B567EB',
     team: 'Design',
   },
   {
-    name: 'Ceora Ford',
-    pic: ceora,
-    color: '#97c8d6',
-    team: 'Growth',
+    name: 'Marco Vincit',
+    pic: marco,
+    color: '#B567EB',
+    team: 'Design',
   },
   {
     name: 'Danilo Woznica',
@@ -116,12 +109,6 @@ const people = [
   {
     name: 'Scott Hutcheson',
     pic: scott,
-    color: '#F24E62',
-    team: 'Engineering',
-  },
-  {
-    name: 'Kate Beard',
-    pic: kate,
     color: '#F24E62',
     team: 'Engineering',
   },
@@ -143,6 +130,54 @@ const people = [
     color: '#76D0FB',
     team: 'Operations',
   },
+  {
+    name: 'Roman Kuba',
+    pic: roman,
+    color: '#B567EB',
+    team: 'Engineering',
+  },
+  {
+    name: 'James Amey',
+    pic: james,
+    color: '#6200ff',
+    team: 'Support',
+  },
+  {
+    name: 'Gianmarco Simone',
+    pic: gianmarco,
+    color: '#ddaa00',
+    team: 'Engineering',
+  },
+  {
+    name: 'Adewale Abati',
+    pic: ace,
+    color: '#008753',
+    team: 'DevRel',
+  },
+  {
+    name: 'Maria Clara',
+    pic: maria,
+    color: '#272b8c',
+    team: 'Engineering',
+  },
+  {
+    name: 'Lena Sotto Mayor',
+    pic: lena,
+    color: '#B567EB',
+    team: 'Design',
+  },
+  {
+    name: 'Necoline Hubner',
+    pic: neco,
+    color: '#F24E62',
+    team: 'Product',
+  },
+  {
+    name: 'Stefania Ioana Chiorean',
+    pic: ioana,
+    color: '#799900',
+    team: 'Engineering',
+  },
 ];
 
 const Peep = styled.img`
@@ -150,6 +185,7 @@ const Peep = styled.img`
   height: 80px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.24), 0px 8px 4px rgba(0, 0, 0, 0.12);
   border-radius: 8px;
+  object-fit: cover;
 
   ${props => {
     if (props.border) {

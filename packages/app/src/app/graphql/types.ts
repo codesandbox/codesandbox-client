@@ -132,11 +132,15 @@ export type Comment = {
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
+  betaSandboxes: Array<SandboxV2>;
   bookmarkedTemplates: Array<Template>;
   collaboratorSandboxes: Array<Sandbox>;
   collection: Maybe<Collection>;
   collections: Array<Collection>;
+  deletionRequested: Scalars['Boolean'];
   email: Scalars['String'];
+  /** Get enabled feature flags for all teams user is in */
+  featureFlags: Array<FeatureFlag>;
   id: Scalars['UUID4'];
   likedSandboxes: Array<Sandbox>;
   name: Maybe<Scalars['String']>;
@@ -199,6 +203,17 @@ export enum Direction {
   Desc = 'DESC',
 }
 
+/** A feature flag */
+export type FeatureFlag = {
+  __typename?: 'FeatureFlag';
+  description: Scalars['String'];
+  enabled: Scalars['Boolean'];
+  id: Scalars['UUID4'];
+  name: Scalars['String'];
+  teams: Array<Team>;
+};
+
+/** A v1 git object */
 export type Git = {
   __typename?: 'Git';
   baseGitSandboxes: Array<Sandbox>;
@@ -211,12 +226,41 @@ export type Git = {
   username: Maybe<Scalars['String']>;
 };
 
+/** A v1 git object */
 export type GitBaseGitSandboxesArgs = {
   teamId: Maybe<Scalars['UUID4']>;
 };
 
+/** A v1 git object */
 export type GitOriginalGitSandboxesArgs = {
   teamId: Maybe<Scalars['UUID4']>;
+};
+
+/** A git branch object specifically for v2 */
+export type GitBranch = {
+  __typename?: 'GitBranch';
+  branch: Maybe<Scalars['String']>;
+  gitRepoId: Maybe<Scalars['UUID4']>;
+  id: Maybe<Scalars['UUID4']>;
+  repoInfo: Maybe<GitRepo>;
+  sandboxId: Maybe<Scalars['ID']>;
+};
+
+/** A git repo specifically for v2 */
+export type GitRepo = {
+  __typename?: 'GitRepo';
+  branches: Array<GitBranch>;
+  id: Maybe<Scalars['UUID4']>;
+  owner: Maybe<Scalars['String']>;
+  repo: Maybe<Scalars['String']>;
+};
+
+/** A git object specifically for v2 that combines git_branch and git_repo */
+export type GitV2 = {
+  __typename?: 'GitV2';
+  branch: Maybe<Scalars['String']>;
+  owner: Maybe<Scalars['String']>;
+  repo: Maybe<Scalars['String']>;
 };
 
 export type ImageReference = {
@@ -380,6 +424,8 @@ export type RootMutationType = {
   /** Create a collection */
   createCollection: Collection;
   createComment: Comment;
+  /** Create a feature flag */
+  createFeatureFlag: FeatureFlag;
   /** Create or Update a private registry */
   createOrUpdatePrivateNpmRegistry: PrivateRegistry;
   createPreviewComment: Comment;
@@ -398,6 +444,14 @@ export type RootMutationType = {
   /** Delete sandboxes */
   deleteSandboxes: Array<Sandbox>;
   deleteWorkspace: Scalars['String'];
+  /** Disable a feature flag globally */
+  disableFeatureFlag: FeatureFlag;
+  /** Disable a feature flag for a team */
+  disableFeatureFlagForTeam: TeamsFeatureFlag;
+  /** Enable a feature flag globally */
+  enableFeatureFlag: FeatureFlag;
+  /** Enable a feature flag for a team */
+  enableFeatureFlagForTeam: TeamsFeatureFlag;
   /** Invite someone to a team */
   inviteToTeam: Team;
   /** Invite someone to a team via email */
@@ -550,6 +604,12 @@ export type RootMutationTypeCreateCommentArgs = {
   userReferences: Maybe<Array<UserReference>>;
 };
 
+export type RootMutationTypeCreateFeatureFlagArgs = {
+  description: Scalars['String'];
+  enabled: Maybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+};
+
 export type RootMutationTypeCreateOrUpdatePrivateNpmRegistryArgs = {
   authType: Maybe<AuthType>;
   enabledScopes: Array<Scalars['String']>;
@@ -606,6 +666,24 @@ export type RootMutationTypeDeleteSandboxesArgs = {
 };
 
 export type RootMutationTypeDeleteWorkspaceArgs = {
+  teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeDisableFeatureFlagArgs = {
+  name: Scalars['String'];
+};
+
+export type RootMutationTypeDisableFeatureFlagForTeamArgs = {
+  featureFlagId: Scalars['UUID4'];
+  teamId: Scalars['UUID4'];
+};
+
+export type RootMutationTypeEnableFeatureFlagArgs = {
+  name: Scalars['String'];
+};
+
+export type RootMutationTypeEnableFeatureFlagForTeamArgs = {
+  featureFlagId: Scalars['UUID4'];
   teamId: Scalars['UUID4'];
 };
 
@@ -824,8 +902,12 @@ export type RootQueryType = {
   album: Maybe<Album>;
   albums: Array<Album>;
   curatedAlbums: Array<Album>;
+  /** Get all feature flags */
+  featureFlags: Array<FeatureFlag>;
   /** Get git repo and related sandboxes */
   git: Maybe<Git>;
+  /** Get v2 git repo and all its branches */
+  gitRepoWithBranches: Maybe<GitRepo>;
   /** Get current user */
   me: Maybe<CurrentUser>;
   /** Get a sandbox */
@@ -847,6 +929,10 @@ export type RootQueryTypeGitArgs = {
   path: Scalars['String'];
   repo: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type RootQueryTypeGitRepoWithBranchesArgs = {
+  repoName: Scalars['String'];
 };
 
 export type RootQueryTypeSandboxArgs = {
@@ -930,13 +1016,14 @@ export type Sandbox = {
   description: Maybe<Scalars['String']>;
   forkCount: Scalars['Int'];
   forkedTemplate: Maybe<Template>;
-  /** If the sandbox has a git repo tied to it this will be set */
+  /** If the sandbox has a v1 git repo tied to it this will be set */
   git: Maybe<Git>;
   id: Scalars['ID'];
   insertedAt: Scalars['String'];
   invitations: Array<Invitation>;
   isFrozen: Scalars['Boolean'];
   isSse: Maybe<Scalars['Boolean']>;
+  isV2: Scalars['Boolean'];
   likeCount: Scalars['Int'];
   /** If the sandbox has been forked from a git sandbox this will be set */
   originalGit: Maybe<Git>;
@@ -964,6 +1051,21 @@ export type SandboxProtectionSettings = {
   __typename?: 'SandboxProtectionSettings';
   preventSandboxExport: Scalars['Boolean'];
   preventSandboxLeaving: Scalars['Boolean'];
+};
+
+/** A blank v2 sandbox */
+export type SandboxV2 = {
+  __typename?: 'SandboxV2';
+  alias: Maybe<Scalars['String']>;
+  authorization: Authorization;
+  collaborators: Array<Collaborator>;
+  /** If the sandbox has a v2 git tied to it this will be set */
+  gitv2: Maybe<GitV2>;
+  id: Scalars['ID'];
+  insertedAt: Scalars['String'];
+  isV2: Scalars['Boolean'];
+  removedAt: Maybe<Scalars['String']>;
+  updatedAt: Scalars['String'];
 };
 
 export type Source = {
@@ -1041,6 +1143,14 @@ export enum TeamMemberAuthorization {
   /** Permission create and edit team sandboxes (in addition to read). */
   Write = 'WRITE',
 }
+
+/** A team's feature flag */
+export type TeamsFeatureFlag = {
+  __typename?: 'TeamsFeatureFlag';
+  enabledForTeam: Scalars['Boolean'];
+  featureFlagId: Scalars['UUID4'];
+  teamId: Scalars['UUID4'];
+};
 
 /** A Template */
 export type Template = {
@@ -2188,6 +2298,14 @@ export type DeleteCurrentUserMutation = {
   __typename?: 'RootMutationType';
 } & Pick<RootMutationType, 'deleteCurrentUser'>;
 
+export type CancelDeleteCurrentUserMutationVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type CancelDeleteCurrentUserMutation = {
+  __typename?: 'RootMutationType';
+} & Pick<RootMutationType, 'cancelDeleteCurrentUser'>;
+
 export type UpdateSubscriptionBillingIntervalMutationVariables = Exact<{
   teamId: Scalars['UUID4'];
   subscriptionId: Scalars['UUID4'];
@@ -2588,6 +2706,25 @@ export type SharedWithMeSandboxesQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type SandboxesBetaQueryVariables = Exact<{ [key: string]: never }>;
+
+export type SandboxesBetaQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      betaSandboxes: Array<
+        { __typename?: 'SandboxV2' } & Pick<SandboxV2, 'id'> & {
+            gitv2: Maybe<
+              { __typename?: 'GitV2' } & Pick<
+                GitV2,
+                'branch' | 'owner' | 'repo'
+              >
+            >;
+          }
+      >;
+    }
+  >;
+};
+
 export type LikedSandboxesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type LikedSandboxesQuery = { __typename?: 'RootQueryType' } & {
@@ -2695,6 +2832,18 @@ export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
             } & SandboxFragmentDashboardFragment
         >;
       }
+  >;
+};
+
+export type FeatureFlagQueryVariables = Exact<{ [key: string]: never }>;
+
+export type FeatureFlagQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      featureFlags: Array<
+        { __typename?: 'FeatureFlag' } & Pick<FeatureFlag, 'name'>
+      >;
+    }
   >;
 };
 

@@ -24,6 +24,7 @@ import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
+import { ImportRepoBetaModal } from './Dashboard/Components/Beta/ImportRepoBetaModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import(
@@ -43,12 +44,17 @@ const DuplicateAccount = Loadable(() =>
 
 const routeDebugger = _debug('cs:app:router');
 
-const SignInAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
+const SignInAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-sign-in' */ './SignInAuth')
 );
 const SignIn = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './SignIn').then(module => ({
     default: module.SignIn,
+  }))
+);
+const SignOut = Loadable(() =>
+  import(/* webpackChunkName: 'page-sign-out' */ './SignOut').then(module => ({
+    default: module.SignOut,
   }))
 );
 const Live = Loadable(() =>
@@ -56,11 +62,11 @@ const Live = Loadable(() =>
     default: module.Live,
   }))
 );
-const VercelSignIn = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
+const VercelSignIn = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './VercelAuth')
 );
-const PreviewAuth = Loadable(() =>
-  import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
+const PreviewAuth = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
@@ -95,6 +101,12 @@ const CLI = Loadable(() =>
 const Client = Loadable(() =>
   import(/* webpackChunkName: 'page-client' */ './Client').then(module => ({
     default: module.Client,
+  }))
+);
+
+const VSCodeAuth = Loadable(() =>
+  import(/* webpackChunkName: 'page-client' */ './VSCodeAuth').then(module => ({
+    default: module.VSCodeAuth,
   }))
 );
 
@@ -200,6 +212,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:roomId" component={Live} />
             <Route path="/signin" exact component={SignIn} />
+            <Route path="/signout" exact component={SignOut} />
             <Route path="/signin/duplicate" component={DuplicateAccount} />
             <Route path="/signup/:userId" exact component={SignUp} />
             <Route path="/signin/:jwt?" component={SignInAuth} />
@@ -210,6 +223,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={Client} />
+            <Route path="/vscode/login" component={VSCodeAuth} />
             <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
@@ -225,6 +239,8 @@ const RoutesComponent: React.FC = () => {
         {modals.moveSandboxModal.isCurrent && activeTeamInfo && (
           <MoveSandboxFolderModal />
         )}
+
+        <ImportRepoBetaModal />
       </Boundary>
     </Container>
   );

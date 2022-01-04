@@ -1,6 +1,4 @@
 // eslint-disable-next-line max-classes-per-file
-import { flattenDeep } from 'lodash-es';
-
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from '@codesandbox/common/lib/utils/debug';
 import interopRequireWildcard from '@babel/runtime/helpers/interopRequireWildcard';
@@ -23,6 +21,7 @@ import evaluate from '../runner/eval';
 import Manager, { HMRStatus } from '../manager';
 import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
+import { getModuleUrl } from './module-url';
 import delay from '../utils/delay';
 
 declare const BrowserFS: any;
@@ -89,6 +88,7 @@ export type LoaderContext = {
   sourceMap: boolean;
   target: string;
   path: string;
+  url: string;
   getModules: () => Array<Module>;
   addTranspilationDependency: (
     depPath: string,
@@ -130,7 +130,7 @@ export type LoaderContext = {
   // Remaining loaders after current loader
   remainingRequests: string;
   template: string;
-  sandboxId: string | null;
+  sandboxId?: string | null;
   resourceQuery: string;
   getLoaderQuery: (module: Module) => string;
 };
@@ -521,6 +521,7 @@ export class TranspiledModule {
       target: 'web',
       _module: this,
       path: this.module.path,
+      url: this.module.url ? this.module.url : getModuleUrl(this.module.path),
       template: manager.preset.name,
       remainingRequests: '', // will be filled during transpilation
       sandboxId: manager.id,
@@ -555,7 +556,7 @@ export class TranspiledModule {
    * after the initial transpilation finished.
    * @param {*} manager
    */
-  async doTranspile(manager: Manager) {
+  private async _transpile(manager: Manager): Promise<TranspiledModule> {
     this.hasMissingDependencies = false;
 
     // Remove this module from the initiators of old deps, so we can populate a
@@ -583,14 +584,16 @@ export class TranspiledModule {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
-      requires.forEach(r => {
-        if (r.indexOf('glob:') === 0) {
-          const reGlob = r.replace('glob:', '');
-          loaderContext.addDependenciesInDirectory(reGlob);
-        } else {
-          loaderContext.addDependency(r);
-        }
-      });
+      await Promise.all(
+        requires.map(r => {
+          if (r.indexOf('glob:') === 0) {
+            const reGlob = r.replace('glob:', '');
+            loaderContext.addDependenciesInDirectory(reGlob);
+            return Promise.resolve();
+          }
+          return loaderContext.addDependency(r);
+        })
+      );
 
       // eslint-disable-next-line
       code = this.module.code;
@@ -648,20 +651,11 @@ export class TranspiledModule {
       this.logWarnings();
     }
 
-    const sourceEqualsCompiled = code === this.module.code;
-    const sourceURL = `//# sourceURL=${location.origin}${this.module.path}${
-      this.query ? `?${this.hash}` : ''
-    }`;
-
-    // Add the source of the file by default, this is important for source mapping
-    // errors back to their origin
-    code = `${code}\n${sourceURL}`;
-
     this.source = new ModuleSource(
       this.module.path,
       code,
       finalSourceMap,
-      sourceEqualsCompiled
+      code === this.module.code
     );
 
     if (
@@ -696,19 +690,21 @@ export class TranspiledModule {
 
     this.asyncDependencies = [];
 
-    await Promise.all(
-      flattenDeep([
-        ...Array.from(this.transpilationInitiators).map(t =>
-          t.transpile(manager)
-        ),
-        ...Array.from(this.dependencies).map(t => t.transpile(manager)),
-      ])
-    );
+    await Promise.all([
+      ...Array.from(this.transpilationInitiators).map(t =>
+        t.transpile(manager)
+      ),
+      ...Array.from(this.dependencies).map(t => t.transpile(manager)),
+    ]);
 
     return this;
   }
 
-  transpile(manager: Manager): Promise<this> {
+  transpile(manager: Manager): Promise<TranspiledModule> {
+    // TODO: Rework this into
+    // - A queue that does code transpilation per module
+    // - This function adds this module and all it's dependencies to that queue
+    // - await all the transpilations of this queue and returning when it's all done
     if (this.source) {
       return Promise.resolve(this);
     }
@@ -720,14 +716,21 @@ export class TranspiledModule {
         // because it is working on executing the promise. This rare case only
         // happens when we have a dependency loop, which could result in a
         // StackTraceOverflow. Dependency loop: A -> B -> C -> A -> B -> C
-        return new Promise(async resolve => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
           while (!this.source && manager.transpileJobs[id] === true) {
             // eslint-disable-next-line
             await delay(10);
           }
 
-          if (manager.transpileJobs[id] && manager.transpileJobs[id] !== true) {
-            resolve(manager.transpileJobs[id] as Promise<this>);
+          const foundTranspileJob = manager.transpileJobs[id];
+          if (foundTranspileJob !== true) {
+            try {
+              const result = await foundTranspileJob;
+              resolve(result);
+            } catch (err) {
+              reject(err);
+            }
           } else {
             resolve(this);
           }
@@ -737,8 +740,9 @@ export class TranspiledModule {
     }
 
     manager.transpileJobs[id] = true;
+
     // eslint-disable-next-line
-    return (manager.transpileJobs[id] = this.doTranspile(manager)).finally(
+    return (manager.transpileJobs[id] = this._transpile(manager)).finally(
       () => {
         delete manager.transpileJobs[id];
       }
@@ -783,17 +787,17 @@ export class TranspiledModule {
     }: { asUMD?: boolean; force?: boolean; globals?: any } = {},
     initiator?: TranspiledModule
   ) {
+    // empty module
+    if (this.module.path === '/node_modules/empty/index.js') {
+      return {};
+    }
+
     // Just let the browser reload...
     if (manager.isReloading) {
       return {};
     }
 
     if (this.source == null) {
-      if (this.module.path === '/node_modules/empty/index.js') {
-        return {};
-      }
-
-      // TODO: Never return untranspiled modules, as these can always have side-effects...
       if (
         this.module.path.startsWith('/node_modules') &&
         !this.module.path.endsWith('.vue')
@@ -803,18 +807,10 @@ export class TranspiledModule {
             `[WARN] Sandpack: loading an untranspiled module: ${this.module.path}`
           );
         }
-        // This code is probably required as a dynamic require. Since we can
-        // assume that node_modules dynamic requires are only done for node
-        // utilites we will just set the transpiled code according to how
-        // node handles that.
 
-        let code = this.module.path.endsWith('.json')
+        const code = this.module.path.endsWith('.json')
           ? `module.exports = JSON.parse(${JSON.stringify(this.module.code)})`
           : this.module.code;
-
-        code += `\n//# sourceURL=${location.origin}${this.module.path}${
-          this.query ? `?${this.hash}` : ''
-        }`;
 
         this.source = new ModuleSource(this.module.path, code, null);
 
@@ -1053,8 +1049,14 @@ export class TranspiledModule {
           .evaluate(path, this)
           .then(result => interopRequireWildcard(result));
 
+      const code =
+        this.source.compiledCode +
+        `\n//# sourceURL=${location.origin}${this.module.path}${
+          this.query ? `?${this.hash}` : ''
+        }`;
+
       const exports = evaluate(
-        this.source.compiledCode,
+        code,
         require,
         this.compilation,
         manager.envVariables,
@@ -1148,8 +1150,8 @@ export class TranspiledModule {
     // Don't cache source if it didn't change, also don't cache changed source from npm
     // dependencies as we can compile those really quickly.
     const shouldCacheTranspiledSource = !canOptimizeSize && !isNpmDependency;
-
     if (shouldCacheTranspiledSource) {
+      // source can be null if module is not transpiled, i.e. included in other transpiled module (for example .scss files)
       serializableObject.source = this.source || null;
     }
 
@@ -1175,6 +1177,7 @@ export class TranspiledModule {
         true
       );
     } else {
+      // source can be null if module is not transpiled, i.e. included in other transpiled module (for example .scss files)
       this.source = data.source || null;
     }
 

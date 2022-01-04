@@ -38,12 +38,11 @@ export const Job = styled.li`
   list-style: none;
   font-size: 19px;
   line-height: 33px;
-  height: 64px;
   color: ${props => props.theme.homepage.white};
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 4px;
+  align-items: flex-start;
+  padding: 12px 4px;
   margin: 0;
   border-bottom: 1px solid #343434;
 `;

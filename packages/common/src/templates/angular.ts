@@ -74,12 +74,18 @@ class AngularTemplate extends Template {
   getEntries(configurationFiles: ParsedConfigurationFiles): Array<string> {
     let entries = [];
 
-    if (!configurationFiles['angular-config'].generated) {
-      const { parsed } = configurationFiles['angular-config'];
-      entries = entries.concat(getAngularJSONEntries(parsed));
-    } else {
-      const { parsed } = configurationFiles['angular-cli'];
-      entries = entries.concat(getAngularCLIEntries(parsed));
+    try {
+      if (!configurationFiles['angular-config'].generated) {
+        const { parsed } = configurationFiles['angular-config'];
+        entries = entries.concat(getAngularJSONEntries(parsed));
+      } else {
+        const { parsed } = configurationFiles['angular-cli'];
+        entries = entries.concat(getAngularCLIEntries(parsed));
+      }
+    } catch (e) {
+      console.warn(
+        `${configurationFiles['angular-config'].path} is malformed: ${e.message}`
+      );
     }
 
     if (

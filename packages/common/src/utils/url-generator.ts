@@ -108,6 +108,14 @@ export const frameUrl = (
   const templateIsServer = isServer(sandbox.template);
 
   if (process.env.LOCAL_SERVER) {
+    if (templateIsServer) {
+      return `${location.protocol}//${sandbox.id}${port ? `-${port}` : ''}.${
+        templateIsServer ? 'sse.' : ''
+      }${
+        process.env.STAGING_API ? 'codesandbox.stream' : 'codesandbox.io'
+      }/${path}`;
+    }
+
     return `http://localhost:3002/${path}`;
   }
 
@@ -182,6 +190,17 @@ export const optionsToParameterizedUrl = (options: Object) => {
 
 export const gitHubToSandboxUrl = (githubUrl: string) =>
   githubUrl.replace(gitHubPrefix, '/s/github').replace(dotGit, '');
+
+export const gitHubToSandboxBetaUrl = (githubUrl: string) => {
+  const [owner, repo] = githubUrl
+    .replace(gitHubPrefix, '')
+    .replace(dotGit, '')
+    .replace(/\/tree\//, '/')
+    .split('/')
+    .filter(Boolean);
+
+  return `${owner}/${repo}`;
+};
 
 export const searchUrl = (query?: string) =>
   `/search${query ? `?query=${query}` : ''}`;

@@ -81512,17 +81512,7 @@
       configCache = {};
       this.cache = {};
     },
-    oldDataWarning: function oldDataWarning(agentsObj) {
-      if (dataTimeChecked) return;
-      dataTimeChecked = true;
-      if (process.env.BROWSERSLIST_IGNORE_OLD_DATA) return;
-      var latest = latestReleaseTime(agentsObj);
-      var halfYearAgo = Date.now() - TIME_TO_UPDATE_CANIUSE;
-
-      if (latest !== 0 && latest < halfYearAgo) {
-        console.warn('Browserslist: caniuse-lite is outdated. Please run:\n' + 'npx browserslist@latest --update-db\n' + '\n' + 'Why you should do it regularly:\n' + 'https://github.com/browserslist/browserslist#browsers-data-updating');
-      }
-    },
+    oldDataWarning: function oldDataWarning(agentsObj) {},
     currentNode: function currentNode() {
       return 'node ' + process.versions.node;
     }
