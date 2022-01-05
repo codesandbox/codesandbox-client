@@ -1,9 +1,9 @@
 import { dispatch } from 'codesandbox-api';
 
-export async function initializeReactDevTools() {
+export async function initializeReactDevToolsLegacy() {
   if (!window.opener) {
     const { initialize: initializeDevTools, activate } = await import(
-      /* webpackChunkName: 'react-devtools-backend' */ 'react-devtools-inline/backend'
+      /* webpackChunkName: 'react-devtools-backend' */ 'react-devtools-inline_legacy/backend'
     );
     // The dispatch needs to happen before initializing, so that the backend can already listen
     dispatch({ type: 'activate-react-devtools' });
