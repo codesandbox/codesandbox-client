@@ -978,6 +978,18 @@ export class TranspiledModule {
         const usedPath = manager.getPresetAliasedPath(path);
         const bfsModule = BrowserFS.BFSRequire(usedPath);
 
+        // 支持 webpack externals 功能，将部分依赖（例如 react react-dom antd 等），
+        // 通过 script 加载其对应在 cdn 上的 umd 包，
+        // 从而跳过对该依赖包的构建，提升构建速度
+        const { code: packageCodeStr } = manager.modules['/package.json'];
+        if (packageCodeStr) {
+          const packageCode = JSON.parse(packageCodeStr);
+          const externals = packageCode.externals || {};
+          if (externals[path]) {
+            return window[externals[path]];
+          }
+        }
+
         if (path === 'os') {
           const os = require('os-browserify');
           os.homedir = () => '/home/sandbox';
