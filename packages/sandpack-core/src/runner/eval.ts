@@ -26,7 +26,7 @@ export default function (
     module,
     exports,
     process,
-    global,    
+    global,
     ...globals,
   };
 
