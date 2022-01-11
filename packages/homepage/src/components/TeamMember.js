@@ -26,6 +26,7 @@ import ace from '../assets/images/people/ace.jpg';
 import maria from '../assets/images/people/maria.png';
 import lena from '../assets/images/people/lena.png';
 import ioana from '../assets/images/people/ioana.jpg';
+import artem from '../assets/images/people/artem.png';
 
 const people = [
   {
@@ -178,6 +179,12 @@ const people = [
     color: '#799900',
     team: 'Engineering',
   },
+  {
+    name: 'Artem Zakharchenko',
+    pic: artem,
+    color: '#FF6A33',
+    team: 'Engineering'
+  }
 ];
 
 const Peep = styled.img`
