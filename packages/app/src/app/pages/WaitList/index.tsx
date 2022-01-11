@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
-import { Redirect } from 'react-router-dom';
+import history from 'app/utils/history';
 
 import {
   Avatar,
@@ -17,12 +17,22 @@ import {
 import { GitHubIcon } from '../Sandbox/Editor/Workspace/screens/GitHub/Icons';
 
 export const WaitListRequest = () => {
-  const { hasLogIn, user, dashboard } = useAppState();
+  const { hasLogIn, user, dashboard, isAuthenticating } = useAppState();
   const { sandboxPageMounted } = useActions();
 
   useEffect(() => {
     sandboxPageMounted();
   }, [sandboxPageMounted]);
+
+  if (isAuthenticating) {
+    return (
+      <Wrapper>
+        <Center>
+          <Paragraph>Loading...</Paragraph>
+        </Center>
+      </Wrapper>
+    );
+  }
 
   if (!hasLogIn || !user) {
     return <SignIn />;
@@ -35,10 +45,10 @@ export const WaitListRequest = () => {
   const isFeatureFlagBeta = !!dashboard.featureFlags.find(
     e => e.name === 'beta'
   );
-
   if (isFeatureFlagBeta) {
-    // TOOD: temp dashboard URL
-    return <Redirect to="/dashboard/beta" />;
+    // TODO: temp dashboard URL
+    history.replace('/dashboard/beta');
+    return null;
   }
 
   return <SuccessStep />;
@@ -125,7 +135,7 @@ const GitHubScope: React.FC = () => {
 };
 
 /**
- * Success after submiting
+ * Success after submitting
  */
 const SuccessStep = () => {
   return (
