@@ -114,6 +114,16 @@ export const TermsAndUsage = () => {
   );
 };
 
+export const Loading = () => {
+  return (
+    <Wrapper>
+      <Center>
+        <Paragraph>Loading...</Paragraph>
+      </Center>
+    </Wrapper>
+  );
+};
+
 export const ExternalLink = styled.a`
   color: #dcff50;
   text-decoration: none;

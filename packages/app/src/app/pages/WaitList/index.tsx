@@ -12,7 +12,7 @@ import {
   SubTitle,
   Wrapper,
   TermsAndUsage,
-  ExternalLink,
+  Loading,
 } from './elements';
 import { GitHubIcon } from '../Sandbox/Editor/Workspace/screens/GitHub/Icons';
 import { Survey } from './Survey';
@@ -26,20 +26,12 @@ export const WaitListRequest = () => {
   }, [sandboxPageMounted]);
 
   if (isAuthenticating) {
-    return (
-      <Wrapper>
-        <Center>
-          <Paragraph>Loading...</Paragraph>
-        </Center>
-      </Wrapper>
-    );
+    return <Loading />;
   }
 
   if (!hasLogIn || !user) {
     return <SignIn />;
   }
-
-  return <Survey />;
 
   if (!user.integrations?.github?.email) {
     return <GitHubScope />;
@@ -54,7 +46,7 @@ export const WaitListRequest = () => {
     return null;
   }
 
-  return <SuccessStep />;
+  return <Survey email={user.email} />;
 };
 
 /**

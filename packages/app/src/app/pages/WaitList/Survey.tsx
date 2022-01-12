@@ -1,18 +1,19 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useState, useCallback } from 'react';
 import styled, { css, keyframes } from 'styled-components';
-import { Center, MainTitle, Wrapper, TermsAndUsage } from './elements';
+import { Center, MainTitle, Wrapper, TermsAndUsage, Loading } from './elements';
 import { SuccessStep } from './Success';
 
+const host = process.env.CODESANDBOX_HOST;
 const data = [
   {
-    type: 'environment',
+    type: 'requirements',
     question: 'Where do you host your code?',
     icon: true,
     options: ['GitHub', 'GitLab', 'Bitbucket'],
   },
   {
-    type: 'environment',
+    type: 'requirements',
     question: 'Where do you run your code when developing?',
     options: [
       'Docker containers using docker-compose',
@@ -30,12 +31,17 @@ const data = [
 
 const hints = 'abcdef';
 
-export const Survey = () => {
+export const Survey: React.FC<{ email: string }> = ({ email }) => {
+  const [waitListId, setWaitListId] = useState();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({
-    environment: [],
+    requirements: [],
     team_size: undefined,
+    email,
   });
+  const [state, setState] = useState<'LOADING' | 'COMPLETED' | 'UNCOMPLETED'>(
+    'LOADING'
+  );
 
   const onPickOption = useCallback(
     option => {
@@ -50,16 +56,22 @@ export const Survey = () => {
         return {
           ...prev,
           [currentStep.type]: newValue,
+          completed: step + 1 === data.length,
         };
       });
 
-      setTimeout(handleNext, 1500);
+      setTimeout(handleNext, 1000);
     },
     [step]
   );
 
   const handleNext = () => {
-    setStep(prev => prev + 1);
+    setStep(prev => {
+      const newStepValue = prev + 1;
+      setState(newStepValue >= data.length ? 'COMPLETED' : 'UNCOMPLETED');
+
+      return newStepValue;
+    });
   };
 
   useEffect(
@@ -82,11 +94,45 @@ export const Survey = () => {
     [step, onPickOption]
   );
 
+  useEffect(
+    function submit() {
+      fetch(
+        waitListId
+          ? `${host}/api/beta/waitlist/${waitListId}`
+          : `${host}/api/beta/waitlist`,
+        {
+          method: waitListId ? 'PUT' : 'POST',
+          body: JSON.stringify(answers),
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+        .then(payload => payload.json())
+        .then(payload => {
+          if (payload?.errors?.email?.includes('has already been taken')) {
+            setState('COMPLETED');
+          } else {
+            setState('UNCOMPLETED');
+            setWaitListId(payload.id);
+          }
+        })
+        .catch(e => {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn(e.message);
+          }
+        });
+    },
+    [answers, waitListId]
+  );
+
+  if (state === 'LOADING') {
+    return <Loading />;
+  }
+
   return (
     <Wrapper>
       <Center>
         <AnimatePresence>
-          {step === data.length ? (
+          {state === 'COMPLETED' ? (
             <motion.div
               key="success"
               initial={{ opacity: 0, scale: 0.8 }}
@@ -294,6 +340,7 @@ const NavLink = styled.button`
   border: 0;
   font-size: 10px;
   padding: 0;
+  cursor: pointer;
 
   &:disabled {
     opacity: 0.5;
