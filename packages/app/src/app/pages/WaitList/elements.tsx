@@ -15,6 +15,7 @@ export const Center = styled.div`
   margin: auto;
   text-align: center;
   max-width: 568px;
+  width: 100%;
 `;
 
 export const SubTitle = styled.h2`
