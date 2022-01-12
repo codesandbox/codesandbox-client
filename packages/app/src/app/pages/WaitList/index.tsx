@@ -15,6 +15,7 @@ import {
   ExternalLink,
 } from './elements';
 import { GitHubIcon } from '../Sandbox/Editor/Workspace/screens/GitHub/Icons';
+import { Survey } from './Survey';
 
 export const WaitListRequest = () => {
   const { hasLogIn, user, dashboard, isAuthenticating } = useAppState();
@@ -37,6 +38,8 @@ export const WaitListRequest = () => {
   if (!hasLogIn || !user) {
     return <SignIn />;
   }
+
+  return <Survey />;
 
   if (!user.integrations?.github?.email) {
     return <GitHubScope />;
