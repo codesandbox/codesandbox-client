@@ -10,7 +10,7 @@ const data = [
     type: 'requirements',
     question: 'Where do you host your code?',
     icon: true,
-    options: ['GitHub', 'GitLab', 'Bitbucket'],
+    options: ['GitHub', 'GitLab', 'Bitbucket', 'Other'],
   },
   {
     type: 'requirements',
