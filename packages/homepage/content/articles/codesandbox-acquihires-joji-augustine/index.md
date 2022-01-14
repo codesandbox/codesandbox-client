@@ -25,4 +25,4 @@ Although traveling or even relocation are opportunities some would never pass up
 
 CodeSandbox has always been great at “making it possible” and will continue to do so as we expand and respond to the aspirations of our team. Whilst we don't have any plans to grow very large very quickly (we love our start-up vibe), we will be growing steadily. If you consider yourself a creator intrigued by unexplored challenges, driven to disrupt and to make an impact together as a team, check out our current openings on our [careers site](https://codesandbox.io/jobs).
 
-For more details and information on the future of Anyfiddle, please check the [Anyfiddle announcement](https://anyfiddle-cloud--project-downloadable-q0fy77p1.web.app/).
+For more details and information on the future of Anyfiddle, please check the [Anyfiddle announcement](https://www.anyfiddle.com/).
