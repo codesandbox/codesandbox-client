@@ -8,7 +8,6 @@ title:
 description: Joji has worked for the past few years on Anyfiddle, an online playground for any language. He built this completely on his own and has a ton of experience when it comes to building and scaling development containers that run in the cloud. This is why he is a great addition to the team; he’ll help us scale our infrastructure and make the experience of CodeSandbox faster and faster!
 date: 2022-01-14
 ---
-
 -   [Anyfiddle](https://www.anyfiddle.com/) sunset. Users can download generated content.
 -   Joji Augustine relocates from Bangalore, IN to Amsterdam, EU.
 -   CodeSandbox continues to invest and draws in creators, the talent it’s looking for.
@@ -26,3 +25,4 @@ Although traveling or even relocation are opportunities some would never pass up
 CodeSandbox has always been great at “making it possible” and will continue to do so as we expand and respond to the aspirations of our team. Whilst we don't have any plans to grow very large very quickly (we love our start-up vibe), we will be growing steadily. If you consider yourself a creator intrigued by unexplored challenges, driven to disrupt and to make an impact together as a team, check out our current openings on our [careers site](https://codesandbox.io/jobs).
 
 For more details and information on the future of Anyfiddle, please check the [Anyfiddle announcement](https://www.anyfiddle.com/).
+
