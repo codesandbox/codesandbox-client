@@ -25,7 +25,7 @@ const data = [
   {
     type: 'team_size',
     question: 'How many people are part of your team?',
-    options: ['1 - 10', '11 - 30', '31 - 50', '50 or more'],
+    options: ['1 - 10', '11 - 50', '51 - 300', '300+'],
   },
 ];
 
