@@ -1,5 +1,5 @@
 ---
-banner: ./images/banner.gif
+banner: ./images/banner.jpg
 slug: codesandbox-acquihires-joji-augustine
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
