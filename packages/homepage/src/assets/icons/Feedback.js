@@ -13,64 +13,31 @@ const Feedback = (props) => {
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g clip-path="url(#clip0_9_70)">
-        <rect width="60" height="60" fill="#151515" />
-        <path
-          d="M51 25H25V45.4286H45.4286L51 51V25Z"
-          fill="#151515"
-          stroke={white}
-          stroke-width="4"
-          stroke-linecap="round"
-        />
-        <g filter="url(#filter0_d_9_70)">
-          <path d="M10 11H44V37.7143H17.2857L10 45V11Z" fill="#151515" />
-          <path
-            d="M10 11H44V37.7143H17.2857L10 45V11Z"
-            stroke={white}
-            stroke-width="4"
-            stroke-linecap="round"
-          />
-        </g>
-      </g>
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M53 23H23V47.4286H44.6001L53 55.8284V23ZM49 27V46.1716L46.257 43.4286H27V27H49Z"
+        fill="url(#paint0_linear_20_7)"
+      />
+      <path d="M10 11H44V37.7143H17.2857L10 45V11Z" fill="#151515" />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M8 9H46V39.7143H18.1141L8 49.8284V9ZM12 13V40.1716L16.4573 35.7143H42V13H12Z"
+        fill={white}
+      />
       <defs>
-        <filter
-          id="filter0_d_9_70"
-          x="-21"
-          y="-20"
-          width="100"
-          height="102.828"
-          filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+        <linearGradient
+          id="paint0_linear_20_7"
+          x1="46"
+          y1="33.5"
+          x2="25"
+          y2="20"
+          gradientUnits="userSpaceOnUse"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset dx="2" dy="2" />
-          <feGaussianBlur stdDeviation="15.5" />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_9_70"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_9_70"
-            result="shape"
-          />
-        </filter>
-        <clipPath id="clip0_9_70">
-          <rect width="60" height="60" fill={white} />
-        </clipPath>
+          <stop stop-color={white} />
+          <stop offset="1" stop-color={white} stop-opacity="0" />
+        </linearGradient>
       </defs>
     </svg>
   );

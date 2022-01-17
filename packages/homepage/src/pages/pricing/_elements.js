@@ -64,7 +64,7 @@ export const Button = styled.a`
   height: 2.75rem;
   text-decoration: none;
   background: ${(props) => props.theme.homepage.grey};
-  border-radius: 9999px;
+  border-radius: 4px;
   font-weight: bold;
   font-size: 1rem;
   display: flex;
