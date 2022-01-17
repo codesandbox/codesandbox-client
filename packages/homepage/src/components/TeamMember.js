@@ -27,6 +27,7 @@ import maria from '../assets/images/people/maria.png';
 import lena from '../assets/images/people/lena.png';
 import ioana from '../assets/images/people/ioana.jpg';
 import artem from '../assets/images/people/artem.png';
+import aj from '../assets/images/people/aj.jpg';
 
 const people = [
   {
@@ -183,6 +184,12 @@ const people = [
     name: 'Artem Zakharchenko',
     pic: artem,
     color: '#FF6A33',
+    team: 'Engineering'
+  },
+  {
+    name: 'AJ Foster',
+    pic: aj,
+    color: '#8c50b5',
     team: 'Engineering'
   }
 ];
