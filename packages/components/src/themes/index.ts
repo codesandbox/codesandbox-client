@@ -13,7 +13,9 @@ import shadesOfPurple from './shades-of-purple';
 import palenightItalic from './palenight-italic.json';
 import highContrast from './high-contrast.json';
 import vscodeLight from './vscode-light';
-
+import onedarkpro from './OneDark-Pro.json';
+import onedarkproFlat from './OneDark-Pro-flat.json';
+import onedarkproDarker from './OneDark-Pro-darker.json';
 export default [
   {
     name: 'CodeSandbox',
@@ -45,6 +47,24 @@ export default [
     id: 'atomDark',
     type: 'dark',
     content: atomDark,
+  },
+  {
+    name: 'One Dark Pro',
+    id: 'onedarkpro',
+    type: 'dark',
+    content: onedarkpro,
+  },
+  {
+    name: 'One Dark Pro flat',
+    id: 'onedarkproFlat',
+    type: 'dark',
+    content: onedarkproFlat,
+  },
+  {
+    name: 'One Dark Pro darker',
+    id: 'onedarkproDarker',
+    type: 'dark',
+    content: onedarkproDarker,
   },
   {
     name: 'Cobalt 2',
