@@ -16,6 +16,7 @@ import vscodeLight from './vscode-light';
 import onedarkpro from './OneDark-Pro.json';
 import onedarkproFlat from './OneDark-Pro-flat.json';
 import onedarkproDarker from './OneDark-Pro-darker.json';
+
 export default [
   {
     name: 'CodeSandbox',
