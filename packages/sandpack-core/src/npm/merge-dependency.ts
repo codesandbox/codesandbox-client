@@ -1,3 +1,4 @@
+import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import uniq from 'lodash-es/uniq';
 import * as semver from 'semver';
 
@@ -148,6 +149,20 @@ function replaceDependencyInfo(
 const intersects = (v1: string, v2: string) => {
   if (v1 === v2) {
     return true;
+  }
+
+  try {
+    // Semver doesn't see ^6.0.0-beta.8 intersecting with 6.0.0-beta.8. So we explicitly check for that case.
+    if (isAbsoluteVersion(v1) !== isAbsoluteVersion(v2)) {
+      const min1 = semver.minVersion(v1);
+      const min2 = semver.minVersion(v2);
+
+      if (min1 && min2 && min1.raw === min2.raw) {
+        return true;
+      }
+    }
+  } catch (e) {
+    // Do nothing
   }
 
   try {
