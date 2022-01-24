@@ -19,6 +19,8 @@ header {
   Origin-Agent-Cluster ?0
 }
 
+try_files {path} {path}/ /index.html?{query}
+
 # Another common task is to set up a reverse proxy:
 # reverse_proxy localhost:8080
 
