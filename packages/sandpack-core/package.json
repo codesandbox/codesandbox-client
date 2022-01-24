@@ -2,7 +2,7 @@
   "name": "sandpack-core",
   "version": "1.0.0",
   "main": "lib/index.js",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "scripts": {
     "start": "tsc --watch",
     "build": "rimraf lib && tsc",
