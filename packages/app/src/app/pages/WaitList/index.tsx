@@ -18,14 +18,20 @@ import { GitHubIcon } from '../Sandbox/Editor/Workspace/screens/GitHub/Icons';
 import { Survey } from './Survey';
 
 export const WaitListRequest = () => {
-  const { hasLogIn, user, dashboard, isAuthenticating } = useAppState();
+  const {
+    hasLogIn,
+    user,
+    dashboard,
+    isAuthenticating,
+    isLoadingGithub,
+  } = useAppState();
   const { sandboxPageMounted } = useActions();
 
   useEffect(() => {
     sandboxPageMounted();
   }, [sandboxPageMounted]);
 
-  if (isAuthenticating) {
+  if (isAuthenticating || isLoadingGithub) {
     return <Loading />;
   }
 
@@ -53,11 +59,7 @@ export const WaitListRequest = () => {
  * Sign in page: GitHub scope
  */
 const SignIn: React.FC = () => {
-  const { signInButtonClicked } = useActions();
-
-  const handleSignIn = async () => {
-    await signInButtonClicked({ provider: 'github', useExtraScopes: false });
-  };
+  const { signInGithubClicked } = useActions();
 
   return (
     <Wrapper>
@@ -85,7 +87,7 @@ const SignIn: React.FC = () => {
           CodeSandbox Projects.
         </Paragraph>
 
-        <Button type="button" onClick={handleSignIn}>
+        <Button type="button" onClick={signInGithubClicked}>
           <GitHubIcon css={{ width: 16, height: 16 }} />
           <span>Sign in to join</span>
         </Button>
@@ -100,12 +102,8 @@ const SignIn: React.FC = () => {
  * GitHub token request
  */
 const GitHubScope: React.FC = () => {
-  const { signInButtonClicked } = useActions();
+  const { signInGithubClicked } = useActions();
   const { user } = useAppState();
-
-  const handleSignIn = async () => {
-    await signInButtonClicked({ provider: 'github', useExtraScopes: false });
-  };
 
   return (
     <Wrapper>
@@ -118,7 +116,7 @@ const GitHubScope: React.FC = () => {
           CodeSandbox Projects.{' '}
         </Paragraph>
 
-        <Button type="button" onClick={handleSignIn}>
+        <Button type="button" onClick={signInGithubClicked}>
           <GitHubIcon css={{ width: 16, height: 16 }} />
           <span>Sign in to join</span>
         </Button>
