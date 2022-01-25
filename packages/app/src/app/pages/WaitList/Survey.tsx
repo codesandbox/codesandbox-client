@@ -68,7 +68,13 @@ export const Survey: React.FC<{ email: string }> = ({ email }) => {
   const handleNext = () => {
     setStep(prev => {
       const newStepValue = prev + 1;
-      setState(newStepValue >= data.length ? 'COMPLETED' : 'UNCOMPLETED');
+      const completed = newStepValue >= data.length;
+
+      if (completed) {
+        setState('COMPLETED');
+
+        return prev;
+      }
 
       return newStepValue;
     });
@@ -204,11 +210,7 @@ export const Survey: React.FC<{ email: string }> = ({ email }) => {
                   Back
                 </NavLink>
 
-                <NavLink
-                  disabled={data.length - 1 === step}
-                  onClick={handleNext}
-                  type="button"
-                >
+                <NavLink onClick={handleNext} type="button">
                   Skip
                 </NavLink>
               </NavWrapper>
