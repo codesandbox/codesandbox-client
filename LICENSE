@@ -1,4 +1,4 @@
-CodeSandbox is licensed under GPLv3, except for `packages/common` and `packages/sandpack-core`,
+CodeSandbox is licensed under GPLv3, except for `packages/common` and `packages/sandpack-core` and `packages/app/src/sandbox`,
 which are licensed under the Apache License, Version 2.0.
 
 CodeSandbox. An online code editor tailored for web application development.

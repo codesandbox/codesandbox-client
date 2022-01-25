@@ -7,7 +7,6 @@
     "url": "https://github.com/codesandbox/codesandbox-client",
     "directory": "packages/app"
   },
-  "license": "MIT",
   "scripts": {
     "build": "cross-env NODE_ENV=production NODE_OPTIONS=\"--max-old-space-size=4096\"   node scripts/build.js",
     "build:stats": "cross-env NODE_ENV=production NODE_OPTIONS=\"--max-old-space-size=4096\"   webpack --env production --config config/webpack.prod.js --json --profile --progress > stats.json && node scripts/stats",
