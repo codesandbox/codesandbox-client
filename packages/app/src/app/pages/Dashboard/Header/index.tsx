@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { Link as RouterLink ,useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   Combobox,
   ComboboxInput,
@@ -23,10 +23,9 @@ import {
 import css from '@styled-system/css';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
-import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Notifications } from 'app/components/Notifications';
-import { PlusIcon } from 'app/components/CreateNewSandbox/CreateSandbox/Icons';
+
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
 
@@ -40,13 +39,7 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const { openCreateSandboxModal } = useActions();
-    const {
-      activeTeam,
-      activeWorkspaceAuthorization,
-      personalWorkspaceId,
-      user,
-    } = useAppState();
-    const history = useHistory();
+    const { activeWorkspaceAuthorization, user } = useAppState();
 
     return (
       <Stack
@@ -87,31 +80,25 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
+          <a
+            href="/p/dashboard/"
+            css={css({
+              fontSize: '13px',
+              textAlign: 'center',
+              width: '100%',
+              display: 'block',
+              color: '#999999',
+              textDecoration: 'none',
+            })}
+          >
+            <Icon name="external" size={14} marginRight={2} />
 
-        
-        <Link  
-        as={RouterLink}
-        to={"/p/dashboard/"}
-
-        css={css({
-            fontSize:"13px",
-            textAlign:"center",
-            width: "100%",
-            display:"block", 
-            color:"#999999",
-            textDecoration: "none"
-          
-           })}>
-        <Icon name="more" size={14} marginRight={4} />
-        
-        <span>Go to Projects</span>
-
-        </Link>
-
+            <span>Go to Projects</span>
+          </a>
 
           <Button
             variant="primary"
-            css={css({ width: 'auto', paddingX: 3, marginLeft:4 })}
+            css={css({ width: 'auto', paddingX: 3, marginLeft: 4 })}
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               openCreateSandboxModal({});
