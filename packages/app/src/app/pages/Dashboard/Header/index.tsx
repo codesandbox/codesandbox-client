@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   Combobox,
   ComboboxInput,
@@ -39,7 +39,11 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const { openCreateSandboxModal } = useActions();
-    const { activeWorkspaceAuthorization, user } = useAppState();
+    const { activeWorkspaceAuthorization, user, dashboard } = useAppState();
+
+    const isFeatureFlagBeta = !!dashboard.featureFlags.find(
+      e => e.name === 'beta'
+    );
 
     return (
       <Stack
@@ -80,21 +84,38 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
-          <a
-            href="/p/dashboard/"
-            css={css({
-              fontSize: '13px',
-              textAlign: 'center',
-              width: '100%',
-              display: 'block',
-              color: '#999999',
-              textDecoration: 'none',
-            })}
-          >
-            <Icon name="external" size={14} marginRight={2} />
+          {isFeatureFlagBeta ? (
+            <a
+              href="/p/dashboard/"
+              css={css({
+                fontSize: '13px',
+                textAlign: 'center',
+                width: '100%',
+                display: 'block',
+                color: '#999999',
+                textDecoration: 'none',
+              })}
+            >
+              <Icon name="external" size={14} marginRight={2} />
 
-            <span>Go to Projects</span>
-          </a>
+              <span>Go to Projects</span>
+            </a>
+          ) : (
+            <Link
+              css={css({
+                fontSize: '13px',
+                textAlign: 'center',
+                width: '100%',
+                display: 'block',
+                color: '#999999',
+                textDecoration: 'none',
+              })}
+              href="/waitlist"
+            >
+              <Icon name="external" size={14} marginRight={2} />
+              Join the waitlist
+            </Link>
+          )}
 
           <Button
             variant="primary"
