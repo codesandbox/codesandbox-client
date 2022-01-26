@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Link as RouterLink ,useHistory, useLocation } from 'react-router-dom';
 import {
   Combobox,
   ComboboxInput,
@@ -87,28 +87,32 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
-          <Button
-            type="button"
-            variant="link"
-            onClick={() => {
-              track('Dashboard - Invite members');
 
-              /* Only for teams */
-              if (activeTeam !== personalWorkspaceId) {
-                history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
-              } else {
-                history.push(`${dashboardUrls.createTeam()}?from-header=1`);
-              }
-            }}
-            autoWidth
-          >
-            <PlusIcon css={css({ marginRight: 2, width: '.8em' })} /> Invite
-            members
-          </Button>
+        
+        <Link  
+        as={RouterLink}
+        to={"/p/dashboard/"}
+
+        css={css({
+            fontSize:"13px",
+            textAlign:"center",
+            width: "100%",
+            display:"block", 
+            color:"#999999",
+            textDecoration: "none"
+          
+           })}>
+        <Icon name="external" size={14} marginRight={4} />
+        
+        <span>Go to Projects</span>
+
+        </Link>
+
+
 
           <Button
             variant="primary"
-            css={css({ width: 'auto', paddingX: 3 })}
+            css={css({ width: 'auto', paddingX: 3, marginLeft:4 })}
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               openCreateSandboxModal({});
