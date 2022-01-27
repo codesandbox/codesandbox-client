@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css, keyframes } from "styled-components";
 
 export const TabButton = styled.button`
   background: transparent;
@@ -10,7 +10,7 @@ export const TabButton = styled.button`
   outline: none;
   cursor: pointer;
   transition: color 300ms ease;
-  ${props =>
+  ${(props) =>
     props.active &&
     css`
       color: white;
@@ -19,13 +19,13 @@ export const TabButton = styled.button`
 
 export const Tab = styled.li`
   border-bottom: 1px solid rgb(52, 52, 52);
-  color: ${props => props.theme.homepage.muted};
+  color: ${(props) => props.theme.homepage.muted};
   padding-right: 1.25rem;
   padding-left: 1.25rem;
   white-space: nowrap;
   margin-bottom: 4px;
 
-  ${props =>
+  ${(props) =>
     props.active &&
     css`
       border-color: white;
@@ -54,13 +54,13 @@ export const Tabs = styled.ul`
   /* hide scrollbar - firefox */
   scrollbar-width: none;
 
-  ${props => props.theme.breakpoints.sm} {
+  ${(props) => props.theme.breakpoints.sm} {
     max-width: 100%;
     justify-content: flex-start;
     overflow: scroll;
 
     :after {
-      content: '';
+      content: "";
       position: absolute;
       right: 0;
       display: block;
@@ -82,16 +82,16 @@ export const TabsWrapper = styled.div`
   transition-delay: 0.8s;
   height: 0;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     visibility: visible;
     opacity: 1;
     height: 280px;
   }
-  ${props => props.theme.breakpoints.xs} {
+  ${(props) => props.theme.breakpoints.xs} {
     height: 320px;
   }
 
-  ${props =>
+  ${(props) =>
     props.active &&
     css`
       visibility: visible;
@@ -114,13 +114,13 @@ export const VideoComponent = styled.video`
   opacity: 0.6;
   margin-bottom: 230px;
 
-  ${props => props.theme.breakpoints.md} {
+  ${(props) => props.theme.breakpoints.md} {
     transform: none;
     opacity: 1;
     margin-bottom: 0;
   }
 
-  ${props =>
+  ${(props) =>
     props.active &&
     css`
       opacity: 1;

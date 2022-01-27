@@ -6,6 +6,10 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap");
 
+:root {
+  color-scheme: dark;
+}
+
 html,
 body {
   text-rendering: optimizeLegibility;
