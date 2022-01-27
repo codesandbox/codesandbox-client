@@ -1,0 +1,14 @@
+{
+    "previews": {
+        "3000": {
+            "name": "Homepage",
+            "command": "yarn run start:home:fast"
+        }
+    },
+    "setupTasks": [
+        {
+            "name": "Building Workspace",
+            "command": "yarn install"
+        }
+    ]
+}
