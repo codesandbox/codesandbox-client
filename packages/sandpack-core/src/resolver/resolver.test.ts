@@ -149,7 +149,9 @@ describe('resolve', () => {
         isFile,
         readFile,
       });
-      expect(resolved).toBe('/node_modules/punycode/1.3.2/punycode.js');
+      expect(resolved).toBe(
+        '/nested_node_modules/node_modules/punycode/1.3.2/punycode.js'
+      );
     });
 
     it('should be able to handle packages with nested package.json files, this is kinda invalid but whatever', () => {
