@@ -142,6 +142,16 @@ describe('resolve', () => {
       expect(resolved).toBe('/node_modules/simple/entrypoint.js');
     });
 
+    it('should resolve a nested node_module', () => {
+      const resolved = resolveSync('punycode/1.3.2', {
+        filename: '/nested_node_modules/node_modules/url/url.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/punycode/1.3.2/punycode.js');
+    });
+
     it('should be able to handle packages with nested package.json files, this is kinda invalid but whatever', () => {
       const resolved = resolveSync('styled-components/macro', {
         filename: '/foo.js',
