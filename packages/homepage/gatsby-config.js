@@ -82,7 +82,7 @@ module.exports = {
         apiKey: 'keyJugfwdJzOyL7Aa',
         tables: [
           {
-            baseId: `app7kKUn5uIviyA1f`,
+            baseId: process.env.AIRTABLE_PRIVATE_API_KEY,
             tableName: `Table`,
             tableView: `Grid view`,
             queryName: `starters`,
