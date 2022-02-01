@@ -14,7 +14,7 @@ export default async ({
    */
   return fetch('https://sp8i0.sse.codesandbox.io/airtable', {
     method: 'POST',
-    body: {
+    body: JSON.stringify({
       feedback,
       emoji,
       sandboxId,
@@ -23,7 +23,7 @@ export default async ({
       url: window.location.pathname,
       version,
       browser,
-    },
+    }),
     headers: {
       'Content-Type': 'application/json',
     },
