@@ -56,7 +56,11 @@ export default class extends React.PureComponent {
   };
 
   getCurrentIndex = () =>
-    this.state.selectedSandbox ? sandboxes.findIndex() : -1;
+    this.state.selectedSandbox
+      ? sandboxes.findIndex(
+          sandbox => this.state.selectedSandbox.id === sandbox.id
+        )
+      : -1;
 
   closeModal = () => {
     this.setState({ selectedSandbox: undefined });
