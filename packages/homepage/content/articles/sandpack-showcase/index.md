@@ -1,6 +1,6 @@
 ---
 banner: ./images/banner.png
-slug: sandpack-announcement
+slug: sandpack-showcase
 authors: ["Adewale Abati"]
 photo: https://avatars0.githubusercontent.com/u/4003538?s=460&v=4
 title: Interactive code snippets with Sandpack - a showcase.
