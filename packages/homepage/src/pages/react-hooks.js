@@ -1,24 +1,20 @@
-import React from 'react';
-import { graphql } from 'gatsby';
-import WideSandbox from '@codesandbox/common/lib/components/WideSandbox';
-import Margin from '@codesandbox/common/lib/components/spacing/Margin';
+import React from "react";
+import WideSandbox from "@codesandbox/common/lib/components/WideSandbox";
+import Margin from "@codesandbox/common/lib/components/spacing/Margin";
 
-import TitleAndMetaTags from '../components/TitleAndMetaTags';
-import PageContainer from '../components/PageContainer';
-import { Heading2 } from '../components/headings';
+import sandboxes from "../assets/data/react-hooks-sandboxes.json";
+import TitleAndMetaTags from "../components/TitleAndMetaTags";
+import PageContainer from "../components/PageContainer";
+import { Heading2 } from "../components/headings";
 
-import Layout from '../components/layout';
-import SandboxModal from '../screens/explore/SandboxModal';
-import ShuffleWords from './_shuffleWords';
+import Layout from "../components/layout";
+import SandboxModal from "../screens/explore/SandboxModal";
+import ShuffleWords from "./_shuffleWords";
 
-import { Container, Sandboxes } from './explore/_elements';
+import { Container, Sandboxes } from "./explore/_elements";
 
 export default class extends React.PureComponent {
   state = {
-    sandboxes: this.props.data.allAirtable.edges.map(s => ({
-      ...s.node.data,
-      title: s.node.data.title,
-    })),
     renderModal: false,
   };
 
@@ -30,9 +26,9 @@ export default class extends React.PureComponent {
     this.setState({ renderModal: true });
   }
 
-  openSandbox = index => {
-    this.setState(state => {
-      const sandbox = state.sandboxes[index];
+  openSandbox = (index) => {
+    this.setState(() => {
+      const sandbox = sandboxes[index];
       const { id, title, description } = sandbox;
       return {
         selectedSandbox: {
@@ -45,11 +41,11 @@ export default class extends React.PureComponent {
     });
   };
 
-  openPreviousSandbox = currentIndex => () => {
+  openPreviousSandbox = (currentIndex) => () => {
     this.openSandbox(currentIndex - 1);
   };
 
-  openNextSandbox = currentIndex => () => {
+  openNextSandbox = (currentIndex) => () => {
     this.openSandbox(currentIndex + 1);
   };
 
@@ -61,8 +57,8 @@ export default class extends React.PureComponent {
 
   getCurrentIndex = () =>
     this.state.selectedSandbox
-      ? this.state.sandboxes.findIndex(
-          s => this.state.selectedSandbox.id === s.id
+      ? sandboxes.findIndex(
+          sandbox => this.state.selectedSandbox.id === sandbox.id
         )
       : -1;
 
@@ -71,7 +67,7 @@ export default class extends React.PureComponent {
   };
 
   render() {
-    const { sandboxes, selectedSandbox } = this.state;
+    const { selectedSandbox } = this.state;
 
     const currentIndex = this.getCurrentIndex();
 
@@ -96,7 +92,7 @@ export default class extends React.PureComponent {
                 this.openPreviousSandbox(currentIndex)
               }
               openNextSandbox={
-                currentIndex < this.state.sandboxes.length - 1 &&
+                currentIndex < sandboxes.length - 1 &&
                 currentIndex !== -1 &&
                 this.openNextSandbox(currentIndex)
               }
@@ -113,7 +109,7 @@ export default class extends React.PureComponent {
             </Heading2>
             <ShuffleWords />
             <Sandboxes>
-              {sandboxes.map(sandbox => (
+              {sandboxes.map((sandbox) => (
                 <Margin key={sandbox.id} bottom={2}>
                   <WideSandbox
                     selectSandbox={this.selectSandbox}
@@ -128,19 +124,3 @@ export default class extends React.PureComponent {
     );
   }
 }
-export const query = graphql`
-  {
-    allAirtable {
-      edges {
-        node {
-          data {
-            id
-            title
-            description
-            template
-          }
-        }
-      }
-    }
-  }
-`;

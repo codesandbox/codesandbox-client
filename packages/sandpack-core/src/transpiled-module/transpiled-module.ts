@@ -283,8 +283,8 @@ export class TranspiledModule {
     } else {
       Array.from(this.initiators)
         .filter(t => t.compilation)
-        .forEach(dep => {
-          dep.resetCompilation();
+        .forEach(initiator => {
+          initiator.resetCompilation();
         });
 
       Array.from(this.transpilationInitiators)
