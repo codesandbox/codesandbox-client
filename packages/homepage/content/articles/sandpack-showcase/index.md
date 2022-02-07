@@ -40,7 +40,7 @@ With Sandpack, you can power up your coding tutorials. [CodeAmigo](https://codea
 
 ### Guided Walkthroughs
 
-Sandpack also comes in handy for walkthroughs - showing progress through a project or step-by step-tutorials. [CodeHike](https://codehike.org/) is a library that allows you to create guided code walkthroughs - they implemented Sandpack using the `[sandpack-client](https://www.npmjs.com/package/@codesandbox/sandpack-client)` for showing the live running code in a preview.
+Sandpack also comes in handy for walkthroughs - showing progress through a project or step-by step-tutorials. [CodeHike](https://codehike.org/) is a library that allows you to create guided code walkthroughs - they implemented Sandpack using the [sandpack-client](https://sandpack.codesandbox.io/docs/advanced-usage/client) for showing the live running code in a preview.
 
 ![](./images/codehike.png)
 
@@ -60,6 +60,8 @@ GitLab uses Sandpack to execute frontend projects so you can write code, and mak
 
 ![](./images/gitlab-live-preview.png)
 
-We are really excited about the possibilities for Sandpack and there's really no limit on what you can use it for.
+If you’re using Sandpack, we’d love to know and also add to our showcase! Go ahead and share it with our [Discord community](https://discord.gg/Pr4ft3gBTx).
 
-If you’re using Sandpack, we’d love to know and also add to our showcase!
+If you're new to [Sandpack](https://github.com/codesandbox/sandpack), you can get started with the [documentation](https://sandpack.codesandbox.io/docs) and get support or start a conversation on our [discord community](https://discord.gg/Pr4ft3gBTx).
+
+We are really excited about the possibilities for Sandpack and there's really no limit on what you can use it for.
