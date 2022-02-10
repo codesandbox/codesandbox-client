@@ -143,6 +143,11 @@ const Pro = Loadable(() =>
     default: module.ProPage,
   }))
 );
+const StripeCheckout = Loadable(() =>
+  import(/* webpackChunkName: 'page-pro' */ './Pro/stripe').then(module => ({
+    default: module.StripeCheckout,
+  }))
+);
 const Curator = Loadable(() =>
   import(/* webpackChunkName: 'page-curator' */ './Curator').then(module => ({
     default: module.Curator,
@@ -227,6 +232,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
+            <Route path="/stripe" component={StripeCheckout} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={Client} />
             <Route path="/vscode/login" component={VSCodeAuth} />
