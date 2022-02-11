@@ -88,7 +88,14 @@ const NEW_REACT_BABEL_CONFIG = {
   ],
 };
 
-export async function reactPreset(pkg: PackageJSON) {
+type SelfPackageJSON = {
+  externals: Record<string, string>,
+  externalResources: string[]
+};
+
+type ProPackageJSON = PackageJSON & SelfPackageJSON;
+
+export async function reactPreset(pkg: ProPackageJSON) {
   const debug = _debug('cs:compiler:cra');
   let initialized = false;
   let refreshInitialized = false;
@@ -124,9 +131,11 @@ export async function reactPreset(pkg: PackageJSON) {
       hasDotEnv: true,
       processDependencies: async originalDeps => {
         const deps = { ...originalDeps };
+        // 采用 externals 时 dependencies 不存在 react-dom
+        // 只能从 externals 中判断是否存在 react-dom（默认版本大于 16.9.0）
         if (
-          deps['react-dom'] &&
-          isMinimalReactDomVersion(deps['react-dom'], '16.9.0')
+          (deps['react-dom'] &&
+          isMinimalReactDomVersion(deps['react-dom'], '16.9.0')) || (pkg.externals && pkg.externals['react-dom'])
         ) {
           deps['react-refresh'] = '0.9.0';
         }
@@ -147,7 +156,7 @@ export async function reactPreset(pkg: PackageJSON) {
       },
       setup: async manager => {
         const dependencies = manager.manifest.dependencies;
-        const isRefresh = await hasRefresh(dependencies);
+        const isRefresh = await hasRefresh(dependencies, pkg.externals);
 
         if (!initialized || refreshInitialized !== isRefresh) {
           initialized = true;
@@ -294,7 +303,7 @@ export async function reactPreset(pkg: PackageJSON) {
           }
         }
 
-        if (await hasRefresh(manager.manifest.dependencies)) {
+        if (await hasRefresh(manager.manifest.dependencies, pkg.externals)) {
           await createRefreshEntry(manager);
         }
       },

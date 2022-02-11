@@ -831,6 +831,7 @@ async function compile(opts: CompileOptions) {
 
       const oldHTML = document.body.innerHTML;
       metrics.measure('evaluation');
+      // 执行编译后的模块代码
       const evalled = manager.evaluateModule(managerModuleToTranspile, {
         force: isModuleView,
       });

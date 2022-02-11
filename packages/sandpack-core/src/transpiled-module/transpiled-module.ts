@@ -326,6 +326,21 @@ export class TranspiledModule {
     } = {},
     isTranspilationDep: boolean = false
   ) {
+
+    // 支持 webpack externals 功能，将部分依赖（例如 react react-dom antd 等），
+    // 通过 script 加载其对应在 cdn 上的 umd 包，
+    // 从而跳过对该依赖包的构建，提升构建速度
+    // 在此处添加模块依赖时，将 webpack externals 对应依赖排除掉，
+    // 否则该 transpiled-module 会被标记为缺少依赖的模块（即 hasMissingDependencies 为 true），影响该模块的热更新
+    const { code: packageCodeStr } = manager.modules['/package.json'];
+    if (packageCodeStr) {
+      const packageCode = JSON.parse(packageCodeStr);
+      const externals = packageCode.externals || {};
+      if (externals[depPath] && window[externals[depPath]]) {
+        return;
+      }
+    }
+    
     if (depPath.startsWith('codesandbox-api')) {
       return;
     }
@@ -671,6 +686,7 @@ export class TranspiledModule {
       if (!hasHMR) {
         manager.markHardReload();
       } else {
+        // 将 isDirty 设置为 true，表明该模块被修改
         this.resetCompilation();
       }
     }
@@ -785,6 +801,7 @@ export class TranspiledModule {
     return false;
   };
 
+  // 执行该模块代码
   evaluate(
     manager: Manager,
     {
