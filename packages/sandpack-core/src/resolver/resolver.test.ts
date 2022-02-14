@@ -142,7 +142,7 @@ describe('resolve', () => {
       expect(resolved).toBe('/node_modules/simple/entrypoint.js');
     });
 
-    it('should resolve a nested node_module', () => {
+    it('should fallback to higher level node_module in case of duplicates', () => {
       const resolved = resolveSync('punycode/1.3.2', {
         filename: '/nested_node_modules/node_modules/url/url.js',
         extensions: ['.ts', '.tsx', '.js', '.jsx'],

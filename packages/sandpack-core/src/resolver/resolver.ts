@@ -181,23 +181,37 @@ function* resolveNodeModule(
         modulesPath,
         pkgSpecifierParts.pkgName
       );
-      const pkgFilePath = pathUtils.join(rootDir, pkgSpecifierParts.filepath);
-      const pkgJson = yield* loadPackageJSON(pkgFilePath, opts, rootDir);
-      if (pkgJson) {
-        try {
-          return yield* resolver(pkgFilePath, {
-            ...opts,
-            filename: pkgJson.filepath,
-          });
-        } catch (err) {
-          if (!pkgSpecifierParts.filepath) {
-            return yield* resolver(pathUtils.join(pkgFilePath, 'index'), {
+
+      try {
+        const pkgFilePath = pathUtils.join(rootDir, pkgSpecifierParts.filepath);
+        const pkgJson = yield* loadPackageJSON(pkgFilePath, opts, rootDir);
+        if (pkgJson) {
+          try {
+            return yield* resolver(pkgFilePath, {
               ...opts,
               filename: pkgJson.filepath,
             });
+          } catch (err) {
+            if (!pkgSpecifierParts.filepath) {
+              return yield* resolver(pathUtils.join(pkgFilePath, 'index'), {
+                ...opts,
+                filename: pkgJson.filepath,
+              });
+            }
+
+            throw err;
           }
-          throw err;
         }
+      } catch (err) {
+        // Handle multiple duplicates of a node_module across the tree
+        if (directory.length > 1) {
+          return yield* resolveNodeModule(moduleSpecifier, {
+            ...opts,
+            filename: pathUtils.dirname(directory),
+          });
+        }
+
+        throw err;
       }
     }
   }
