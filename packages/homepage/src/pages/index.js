@@ -16,6 +16,11 @@ import Explore from '../screens/home/explore';
 import Video from '../screens/home/video';
 import Workspaces from '../screens/home/workspaces';
 
+
+
+import march from '../.../../assets/images/march-3rd.jpg';
+import mobileMarch from '../.../../assets/images/mobilemarch.jpg';
+
 // eslint-disable-next-line
 console.log(
   'Hi, We love curious people that dive in to see how things are working! We are always looking for talented, hard working people. Drop us a line and show us your work. We are hiring: https://codesandbox.io/jobs'
@@ -24,6 +29,28 @@ console.log(
 const Homepage = () => (
   <Layout noWrapperStyling>
     <TitleAndMetaTags />
+
+
+      <section 
+      css={`
+      margin:2.5rem auto;
+      width: 1081px;
+      max-width: 90%;
+
+      ${props => props.theme.breakpoints.md} {
+        margin:2.5rem 1rem;
+      }
+    `}
+  >
+
+  <a href='youtube.com' title='March 3rd announcement'>
+  <picture>
+    <source media="(max-width:620px)" srcset={mobileMarch}/>
+    <img src={march} alt="Flowers"  />
+  </picture>
+  </a>
+
+   </section>
 
     <section
       css={`
