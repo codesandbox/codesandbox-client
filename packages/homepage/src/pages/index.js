@@ -16,8 +16,6 @@ import Explore from '../screens/home/explore';
 import Video from '../screens/home/video';
 import Workspaces from '../screens/home/workspaces';
 
-
-
 import march from '../.../../assets/images/march-3rd.jpg';
 import mobileMarch from '../.../../assets/images/mobilemarch.jpg';
 
@@ -39,6 +37,7 @@ const Homepage = () => (
 
       ${props => props.theme.breakpoints.md} {
         margin:2.5rem 1rem;
+        max-width: 95%;
       }
     `}
   >
