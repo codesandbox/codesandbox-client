@@ -1,7 +1,7 @@
-import React from "react";
-import { useTheme } from "../../components/layout";
+import React from 'react';
+import { useTheme } from '../../components/layout';
 
-const Jobs = (props) => {
+const Jobs = props => {
   const white = useTheme().homepage.white;
   return (
     <svg
@@ -15,10 +15,10 @@ const Jobs = (props) => {
       <path
         d="M15 18L29.4231 18L45 18V36H15V18Z"
         stroke={white}
-        stroke-width="4"
-        stroke-linecap="round"
+        strokeWidth="4"
+        strokeLinecap="round"
       />
-      <path d="M8 42.5H52" stroke={white} stroke-width="5" />
+      <path d="M8 42.5H52" stroke={white} strokeWidth="5" />
     </svg>
   );
 };

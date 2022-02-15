@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 // eslint-disable-next-line import/no-cycle
-import { useTheme } from "../../components/layout";
+import { useTheme } from '../../components/layout';
 
-const Search = (props) => {
+const Search = props => {
   const white = useTheme().homepage.white;
   return (
     <svg
@@ -16,14 +16,14 @@ const Search = (props) => {
       <path
         d="M36.6984 36.6984L48.7917 48.7917"
         stroke={white}
-        stroke-width="4"
+        strokeWidth="4"
       />
       <circle
         cx="26.1167"
         cy="26.1167"
         r="15.1167"
         stroke={white}
-        stroke-width="4"
+        strokeWidth="4"
       />
     </svg>
   );

@@ -1,7 +1,7 @@
-import React from "react";
-import { useTheme } from "../../components/layout";
+import React from 'react';
+import { useTheme } from '../../components/layout';
 
-const CodeSandbox = (props) => {
+const CodeSandbox = props => {
   const white = useTheme().homepage.white;
 
   return (
@@ -19,7 +19,7 @@ const CodeSandbox = (props) => {
         width="34"
         height="34"
         stroke={white}
-        stroke-width="4"
+        strokeWidth="4"
       />
     </svg>
   );
