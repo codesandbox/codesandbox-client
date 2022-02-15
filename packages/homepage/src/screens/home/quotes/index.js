@@ -1,14 +1,14 @@
-import React from "react";
-import { motion } from "framer-motion";
-import styled from "styled-components";
-import { H2, P } from "../../../components/Typography";
+import React from 'react';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
+import { H2, P } from '../../../components/Typography';
 
-import brian from "../../../assets/images/quotes/brian.png";
-import peggy from "../../../assets/images/quotes/peggy.png";
-import apollo from "../../../assets/images/quotes/apollo.png";
-import stripe from "../../../assets/images/quotes/stripe.png";
-import jonnie from "../../../assets/images/quotes/jonnie.png";
-import react from "../../../assets/images/quotes/react.png";
+import brian from '../../../assets/images/quotes/brian.png';
+import peggy from '../../../assets/images/quotes/peggy.png';
+import apollo from '../../../assets/images/quotes/apollo.png';
+import stripe from '../../../assets/images/quotes/stripe.png';
+import jonnie from '../../../assets/images/quotes/jonnie.png';
+import react from '../../../assets/images/quotes/react.png';
 
 const container = {
   hidden: { opacity: 0 },
@@ -31,16 +31,17 @@ const Grid = styled(motion.div)`
   grid-gap: 38px;
   margin-bottom: 56px;
 
-  ${(props) => props.theme.breakpoints.md} {
+  @media screen and (max-width: 900px) {
+    grid-gap: 20px;
     grid-template-columns: repeat(3, 1fr);
   }
 
   @media screen and (max-width: 767px) {
-    grid-gap: 24px;
+    grid-gap: 1rem;
     grid-template-columns: 1fr;
   }
 
-  ${(props) => props.theme.breakpoints.sm} {
+  ${props => props.theme.breakpoints.sm} {
     grid-template-columns: 1fr;
   }
 `;
@@ -53,6 +54,10 @@ const Feature = styled(motion.div)`
   border-radius: 4px;
   text-align: center;
   background: #151515;
+
+  @media screen and (max-width: 900px) {
+    padding: 1rem;
+  }
 
   svg,
   h3 {
@@ -90,7 +95,7 @@ const Quotes = () => (
             font-weight: 400;
             min-height: 80px;
 
-            ${(props) => props.theme.breakpoints.md} {
+            ${props => props.theme.breakpoints.md} {
               min-height: 104px;
             }
           `}

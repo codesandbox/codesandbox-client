@@ -1,9 +1,9 @@
-import React from "react";
-import { motion } from "framer-motion";
-import styled from "styled-components";
+import React from 'react';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
 
-import { P, H3 } from "../../../components/Typography";
-import { PrototypingIcon, KnowledgeIcon, FeedbackIcon } from "./icons";
+import { P, H3 } from '../../../components/Typography';
+import { PrototypingIcon, KnowledgeIcon, FeedbackIcon } from './icons';
 
 const container = {
   hidden: { opacity: 0 },
@@ -26,7 +26,8 @@ const Grid = styled(motion.div)`
   grid-gap: 38px;
   padding: 0 0 10rem 0;
 
-  ${(props) => props.theme.breakpoints.md} {
+  @media screen and (max-width: 900px) {
+    grid-gap: 20px;
     grid-template-columns: repeat(3, 1fr);
   }
 
@@ -45,8 +46,8 @@ const Feature = styled(motion.div)`
   text-align: center;
   background: #151515;
 
-  ${(props) => props.theme.breakpoints.md} {
-    padding: 3rem;
+  @media screen and (max-width: 900px) {
+    padding: 1rem;
   }
 
   svg,
