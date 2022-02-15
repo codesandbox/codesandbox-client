@@ -15,7 +15,7 @@ export const Prompt: FunctionComponent = () => {
   const [deepLink, setDeepLink] = useState('');
 
   useEffect(() => {
-    const deeplinkUrl = `vscode://CodeSandbox.codesandbox/auth-completion?token=${authToken}`;
+    const deeplinkUrl = `vscode://test-pub-1.todo-ext/auth-completion?token=${authToken}`;
 
     if (authToken) {
       setDeepLink(deeplinkUrl);

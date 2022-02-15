@@ -6,6 +6,7 @@ import { isGithubDependency, JSDelivrGHFetcher } from './jsdelivr/jsdelivr-gh';
 import { isTarDependency, TarFetcher } from './tar';
 import { GistFetcher } from './gist';
 import { FetchProtocol } from '../fetch-npm-module';
+import { ProtocolTransformer } from './transformer';
 
 let contributedProtocols: ProtocolDefinition[] = [];
 
@@ -26,6 +27,17 @@ const protocols: ProtocolDefinition[] = [
   {
     protocol: new JSDelivrGHFetcher(),
     condition: (name, version) => isGithubDependency(version),
+  },
+  {
+    protocol: new ProtocolTransformer(new TarFetcher(), (name, version) => [
+      name,
+      version.replace(
+        'https://registry.npmjs.org/',
+        'https://registry.npmjs.cf/'
+      ),
+    ]),
+    condition: (name, version) =>
+      version.startsWith('https://registry.npmjs.org/'),
   },
   {
     protocol: new TarFetcher(),

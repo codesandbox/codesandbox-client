@@ -14,7 +14,6 @@ import zeh from '../assets/images/people/zeh.png';
 import danilowoz from '../assets/images/people/danilowoz.jpg';
 import matan from '../assets/images/people/matan.png';
 import scott from '../assets/images/people/scott.png';
-import kate from '../assets/images/people/kate.jpg';
 import tamas from '../assets/images/people/tamas.png';
 import jasper from '../assets/images/people/jasper.jpg';
 import joana from '../assets/images/people/joana.jpg';
@@ -22,10 +21,13 @@ import marco from '../assets/images/people/marco.jpg';
 import neco from '../assets/images/people/neco.png';
 import roman from '../assets/images/people/roman.jpg';
 import james from '../assets/images/people/james.jpg';
-import gianmarco from '../assets/images/people/gsimone.jpeg'
-import ace from '../assets/images/people/ace.jpg'
-import maria from '../assets/images/people/maria.png'
-import lena from '../assets/images/people/lena.png'
+import gianmarco from '../assets/images/people/gsimone.jpeg';
+import ace from '../assets/images/people/ace.jpg';
+import maria from '../assets/images/people/maria.png';
+import lena from '../assets/images/people/lena.png';
+import ioana from '../assets/images/people/ioana.jpg';
+import artem from '../assets/images/people/artem.png';
+import aj from '../assets/images/people/aj.jpg';
 
 const people = [
   {
@@ -113,12 +115,6 @@ const people = [
     team: 'Engineering',
   },
   {
-    name: 'Kate Beard',
-    pic: kate,
-    color: '#F24E62',
-    team: 'Engineering',
-  },
-  {
     name: 'Tamas Szuromi',
     pic: tamas,
     color: '#F7A239',
@@ -140,7 +136,7 @@ const people = [
     name: 'Roman Kuba',
     pic: roman,
     color: '#B567EB',
-    team: 'Engineering'
+    team: 'Engineering',
   },
   {
     name: 'James Amey',
@@ -159,12 +155,12 @@ const people = [
     pic: ace,
     color: '#008753',
     team: 'DevRel',
-  }, 
+  },
   {
     name: 'Maria Clara',
     pic: maria,
     color: '#272b8c',
-    team: 'Engineering'
+    team: 'Engineering',
   },
   {
     name: 'Lena Sotto Mayor',
@@ -177,6 +173,24 @@ const people = [
     pic: neco,
     color: '#F24E62',
     team: 'Product',
+  },
+  {
+    name: 'Stefania Ioana Chiorean',
+    pic: ioana,
+    color: '#799900',
+    team: 'Engineering',
+  },
+  {
+    name: 'Artem Zakharchenko',
+    pic: artem,
+    color: '#FF6A33',
+    team: 'Engineering'
+  },
+  {
+    name: 'AJ Foster',
+    pic: aj,
+    color: '#8c50b5',
+    team: 'Engineering'
   }
 ];
 

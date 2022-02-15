@@ -19,7 +19,8 @@ import {
   isMinimalReactDomVersion,
   supportsNewReactTransform,
 } from './utils';
-import { initializeReactDevTools } from './utils/initDevTools';
+import { initializeReactDevToolsLegacy } from './utils/initLegacyDevTools';
+import { initializeReactDevToolsLatest } from './utils/initLatestDevTools';
 import { createRefreshEntry } from './utils/createRefreshEntry';
 import base64Transpiler from '../../transpilers/base64';
 
@@ -289,7 +290,11 @@ export async function reactPreset(pkg: PackageJSON) {
       },
       preEvaluate: async manager => {
         if (manager.isFirstLoad && manager.reactDevTools) {
-          await initializeReactDevTools();
+          if (manager.reactDevTools === 'latest') {
+            await initializeReactDevToolsLatest();
+          } else if (manager.reactDevTools === 'legacy') {
+            await initializeReactDevToolsLegacy();
+          }
         }
 
         if (await hasRefresh(manager.manifest.dependencies)) {

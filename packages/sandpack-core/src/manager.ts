@@ -123,7 +123,7 @@ type TManagerOptions = {
    */
   hasFileResolver: boolean;
   versionIdentifier: string;
-  reactDevTools: boolean;
+  reactDevTools?: 'legacy' | 'latest';
 };
 
 function triggerFileWatch(path: string, type: 'rename' | 'change') {
@@ -165,7 +165,7 @@ export default class Manager implements IEvaluator {
     };
   };
 
-  reactDevTools: boolean;
+  reactDevTools?: 'legacy' | 'latest';
 
   envVariables: { [envName: string]: string } = {};
   preset: Preset;

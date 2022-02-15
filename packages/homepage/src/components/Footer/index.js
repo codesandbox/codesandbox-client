@@ -28,8 +28,14 @@ const footerNavElements = [
         link: "/feedback",
       },
       {
-        text: "What’s new",
-        link: "/changelog",
+        text: 'Sandpack',
+        external: true,
+        link: 'https://sandpack.codesandbox.io/',
+      },
+      {
+        text: 'What’s New',
+        link: '/changelog',
+
       },
     ],
   },
