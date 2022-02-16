@@ -46,7 +46,10 @@ const Homepage = () => (
         ${props => props.theme.breakpoints.xl}
       `}
     >
-      <a href="https://youtu.be/yebkpPITLr4" title="Get Ready for the future">
+      <a
+        href="https://twitter.com/codesandbox"
+        title="Get Ready for the future"
+      >
         <picture>
           <source media="(max-width:620px)" srcSet={mobileMarch} />
           <img src={march} alt="Get Ready for the future" />
