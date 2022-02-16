@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from "react";
-import Layout from "../../components/layout";
-import { applyParallax } from "../../utils/parallax";
-import usePrefersReducedMotion from "../../utils/isReducedMOtion";
-import TitleAndMetaTags from "../../components/TitleAndMetaTags";
-import Button from "../../components/Button";
-import CTA from "../../components/CTA";
-import { Description } from "../../components/Typography";
+import React, { useEffect, useRef } from 'react';
+import Layout from '../../components/layout';
+import { applyParallax } from '../../utils/parallax';
+import usePrefersReducedMotion from '../../utils/isReducedMOtion';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import Button from '../../components/Button';
+import CTA from '../../components/CTA';
+import { Description } from '../../components/Typography';
 
 import {
   ContentBlock,
@@ -15,22 +15,22 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
-} from "../../components/LayoutComponents";
+} from '../../components/LayoutComponents';
 
-import ide from "./images/ide.png";
-import bg from "./images/bg.png";
-import bg1 from "./images/bg1.png";
-import bg2 from "./images/bg2.png";
-import bg3 from "./images/bg3.png";
-import bg4 from "./images/bg4.png";
-import templates from "./images/templates.png";
-import makeityours from "./images/makeityours.png";
-import server from "./images/server.png";
-import tests from "./images/tests.png";
+import ide from './images/ide.png';
+import bg from './images/bg.png';
+import bg1 from './images/bg1.png';
+import bg2 from './images/bg2.png';
+import bg3 from './images/bg3.png';
+import bg4 from './images/bg4.png';
+import templates from './images/templates.png';
+import makeityours from './images/makeityours.png';
+import server from './images/server.png';
+import tests from './images/tests.png';
 
-import gh from "./images/gh.svg";
-import deploy from "./images/deploy.svg";
-import vscode from "./images/vscode.svg";
+import gh from './images/gh.svg';
+import deploy from './images/deploy.svg';
+import vscode from './images/vscode.svg';
 
 export default () => {
   const parallaxRef = useRef(null);
@@ -59,7 +59,7 @@ export default () => {
       <TitleAndMetaTags title="IDE - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Code from anywhere</Title>
+          <Title>Code from anywhere.</Title>
         </TitleWrapper>
         <Description>
           Code online with no setup in a powerful <br /> IDE that feels like
@@ -79,13 +79,15 @@ export default () => {
         </div>
         <div>
           <div>
-            <Subtitle as="h2">Fast development in the browser</Subtitle>
+            <Subtitle as="h2">
+              Fast development <br /> in the browser.
+            </Subtitle>
           </div>
           <FeaturedImage
             css={`
               height: 468px;
 
-              ${(props) => props.theme.breakpoints.md} {
+              ${props => props.theme.breakpoints.md} {
                 height: 200px;
               }
             `}
@@ -125,7 +127,9 @@ export default () => {
               margin-bottom: 56px;
             `}
           >
-            <Subtitle as="h2">Use with your fave dev tools</Subtitle>
+            <Subtitle as="h2">
+              Use with your <br /> favorite DevTools.
+            </Subtitle>
           </div>
 
           <ContentBlock>
@@ -164,7 +168,7 @@ export default () => {
               css={`
                 height: 468px;
                 justify-content: flex-end;
-                ${(props) => props.theme.breakpoints.md} {
+                ${props => props.theme.breakpoints.md} {
                   height: auto;
                 }
               `}
@@ -176,7 +180,7 @@ export default () => {
                 alt="Pair-up on Code"
                 css={`
                   width: 820px;
-                  ${(props) => props.theme.breakpoints.md} {
+                  ${props => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}
@@ -202,14 +206,14 @@ export default () => {
           </div>
           <div>
             <div>
-              <Subtitle as="h2">Work with containers</Subtitle>
+              <Subtitle as="h2">Work with containers.</Subtitle>
             </div>
             <FeaturedImage
               css={`
                 height: 468px;
                 justify-content: flex-start;
                 background-position: bottom;
-                ${(props) => props.theme.breakpoints.md} {
+                ${props => props.theme.breakpoints.md} {
                   height: auto;
                 }
               `}
@@ -221,7 +225,7 @@ export default () => {
                 alt="Terminal Access"
                 css={`
                   width: 880px;
-                  ${(props) => props.theme.breakpoints.md} {
+                  ${props => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}
@@ -248,14 +252,14 @@ export default () => {
           </div>
           <div>
             <div>
-              <Subtitle as="h2">Debug like a pro</Subtitle>
+              <Subtitle as="h2">Debug like a pro.</Subtitle>
             </div>
             <FeaturedImage
               css={`
                 height: 468px;
                 justify-content: flex-start;
 
-                ${(props) => props.theme.breakpoints.md} {
+                ${props => props.theme.breakpoints.md} {
                   height: auto;
                 }
               `}
@@ -267,7 +271,7 @@ export default () => {
                 alt="Jest tests"
                 css={`
                   width: 826px;
-                  ${(props) => props.theme.breakpoints.md} {
+                  ${props => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}
@@ -300,7 +304,7 @@ export default () => {
           </div>
           <div>
             <div>
-              <Subtitle as="h2">Make it yours</Subtitle>
+              <Subtitle as="h2">Make it yours.</Subtitle>
             </div>
 
             <FeaturedImage
@@ -308,7 +312,7 @@ export default () => {
                 height: 468px;
                 justify-content: center;
 
-                ${(props) => props.theme.breakpoints.md} {
+                ${props => props.theme.breakpoints.md} {
                   height: auto;
                 }
               `}
@@ -320,7 +324,7 @@ export default () => {
                 alt="make it yours"
                 css={`
                   width: 55rem;
-                  ${(props) => props.theme.breakpoints.md} {
+                  ${props => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}
@@ -366,7 +370,7 @@ export default () => {
       </Wrapper>
 
       <CTA
-        title="Start coding in seconds"
+        title="Start coding in seconds."
         subtitle="Code from anywhere with no project setup."
         cta="Get Started"
         link="/s"

@@ -86,7 +86,7 @@ const Quotes = () => (
         margin: 0 0 5rem 0;
       `}
     >
-      What others are saying
+      What are others saying?
     </H2>
     <Grid variants={container} initial="hidden" animate="show">
       <Feature variants={item}>

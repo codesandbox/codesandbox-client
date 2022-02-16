@@ -29,7 +29,7 @@ const Anywhere = () => (
         margin-bottom: 24px;
       `}
     >
-      Code from anywhere
+      Code from anywhere.
     </H2>
     <P
       // big

@@ -32,15 +32,21 @@ const Homepage = () => (
       css={`
         margin: 2.5rem auto;
         width: 1081px;
-        max-width: 90%;
 
         ${props => props.theme.breakpoints.md} {
           margin: 2.5rem 1rem;
-          max-width: 95%;
         }
+
+        ${props => props.theme.breakpoints.lg} {
+          margin: 2.5rem auto;
+          width: 1081px;
+          max-width: 90%;
+        }
+
+        ${props => props.theme.breakpoints.xl}
       `}
     >
-      <a href="https://youtu.be/yebkpPITLr4" title="March 3rd announcement">
+      <a href="https://youtu.be/yebkpPITLr4" title="Get Ready for the future">
         <picture>
           <source media="(max-width:620px)" srcSet={mobileMarch} />
           <img src={march} alt="Get Ready for the future" />

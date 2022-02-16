@@ -1,14 +1,14 @@
-import React, { useRef, useEffect } from "react";
-import { motion } from "framer-motion";
-import styled from "styled-components";
-import { H2, P } from "../../../components/Typography";
+import React, { useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
+import { H2, P } from '../../../components/Typography';
 
-import { applyParallax } from "../../../utils/parallax";
-import usePrefersReducedMotion from "../../../utils/isReducedMOtion";
-import dashboardIMG from "../../../assets/images/dashboard.png";
+import { applyParallax } from '../../../utils/parallax';
+import usePrefersReducedMotion from '../../../utils/isReducedMOtion';
+import dashboardIMG from '../../../assets/images/dashboard.png';
 
-import { getRandomTeamMembers } from "../../../components/TeamMember";
-import { TeamMemberRandom } from "../../../pages/jobs/_elements";
+import { getRandomTeamMembers } from '../../../components/TeamMember';
+import { TeamMemberRandom } from '../../../pages/jobs/_elements';
 
 const TeamMember = styled(TeamMemberRandom)`
   top: 0;
@@ -23,7 +23,7 @@ const share = {
 
 const transitionTwo = {
   duration: 0.6,
-  ease: "anticipate",
+  ease: 'anticipate',
   delay: 1,
 };
 
@@ -135,7 +135,7 @@ const Workspaces = () => {
           margin-bottom: 24px;
         `}
       >
-        Code collaboration <br /> made easy
+        Code collaboration <br /> made easy.
       </H2>
       <P
         muted
@@ -157,7 +157,7 @@ const Workspaces = () => {
         transition={{
           delay: 0.6,
           duration: 1,
-          ease: "easeOut",
+          ease: 'easeOut',
         }}
       >
         <img src={dashboardIMG} alt="" />

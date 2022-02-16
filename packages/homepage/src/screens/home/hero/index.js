@@ -15,7 +15,7 @@ export default () => (
       }}
     >
       <Title>
-        Where teams build <br /> faster, together
+        Where teams build <br /> faster, together.
       </Title>
       <SubTitle
         css={`
