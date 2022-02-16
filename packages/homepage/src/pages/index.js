@@ -40,10 +40,10 @@ const Homepage = () => (
         }
       `}
     >
-      <a href="youtube.com" title="March 3rd announcement">
+      <a href="https://youtu.be/yebkpPITLr4" title="March 3rd announcement">
         <picture>
           <source media="(max-width:620px)" srcSet={mobileMarch} />
-          <img src={march} alt="Flowers" />
+          <img src={march} alt="Get Ready for the future" />
         </picture>
       </a>
     </section>
