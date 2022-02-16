@@ -1,11 +1,11 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React from 'react';
+import { motion } from 'framer-motion';
 
-import { H2, P } from "../../../components/Typography";
-import padIMG from "../../../assets/images/pad.png";
-import phoneIMG from "../../../assets/images/phone.png";
+import { H2, P } from '../../../components/Typography';
+import padIMG from '../../../assets/images/pad.png';
+import phoneIMG from '../../../assets/images/phone.png';
 
-import Button from "../../../components/Button";
+import Button from '../../../components/Button';
 
 const Anywhere = () => (
   <div
@@ -65,7 +65,7 @@ const Anywhere = () => (
       transition={{
         delay: 0.6,
         duration: 1,
-        ease: "easeOut",
+        ease: 'easeOut',
       }}
     >
       <div
@@ -82,36 +82,11 @@ const Anywhere = () => (
             margin: -14rem auto 0rem -10rem;
 
             @media (max-width: 992px) {
-              margin: -8rem 0 0 0;
-            }
-
-            @media (max-width: 576px) {
-              margin: -4rem 0 0 0;
+              margin: -8rem 0 0 -4rem;
             }
           `}
         >
           <img src={padIMG} alt="Play.js" />
-
-          <iframe
-            title="Play"
-            css={`
-              position: absolute;
-              max-width: 620px;
-              max-height: 760px;
-              top: 4.2rem;
-              right: 7.4rem;
-              border: none;
-              background: #040404;
-              transform: scale(0.5, 0.5);
-
-              @media (max-width: 1440px) {
-                display: none;
-              }
-            `}
-            src="https://playdotjs.com"
-            width="100%"
-            height="100%"
-          />
 
           <div
             css={`
