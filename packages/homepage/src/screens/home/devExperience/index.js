@@ -90,7 +90,7 @@ const DevExperience = () => (
         margin-bottom: 80px;
       `}
     >
-      The best JavaScript <br /> dev experience
+      The best JavaScript <br /> dev experience.
     </H2>
     <Grid variants={container} initial="hidden" animate="show">
       <Feature variants={item}>

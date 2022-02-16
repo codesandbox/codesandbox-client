@@ -1,12 +1,12 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 
-import { applyParallax } from "../../utils/parallax";
-import usePrefersReducedMotion from "../../utils/isReducedMOtion";
-import Layout from "../../components/layout";
-import TitleAndMetaTags from "../../components/TitleAndMetaTags";
-import CTA from "../../components/CTA";
-import Button from "../../components/Button";
-import { Description } from "../../components/Typography";
+import { applyParallax } from '../../utils/parallax';
+import usePrefersReducedMotion from '../../utils/isReducedMOtion';
+import Layout from '../../components/layout';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import CTA from '../../components/CTA';
+import Button from '../../components/Button';
+import { Description } from '../../components/Typography';
 
 import {
   ContentBlock,
@@ -16,16 +16,16 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
-} from "../../components/LayoutComponents";
+} from '../../components/LayoutComponents';
 
-import ide from "./images/ide.png";
-import bg from "./images/bg.png";
-import bg1 from "./images/bg1.png";
-import notifications from "./images/notifications.png";
+import ide from './images/ide.png';
+import bg from './images/bg.png';
+import bg1 from './images/bg1.png';
+import notifications from './images/notifications.png';
 
-import comments from "./images/comments.svg";
-import comments1 from "./images/comments1.svg";
-import comments2 from "./images/comments2.svg";
+import comments from './images/comments.svg';
+import comments1 from './images/comments1.svg';
+import comments2 from './images/comments2.svg';
 
 export default () => {
   const parallaxRef = useRef(null);
@@ -50,7 +50,7 @@ export default () => {
       <Wrapper>
         <TitleWrapper>
           <Title>
-            Get better feedback from <br /> your whole team
+            Get better feedback from <br /> your whole team.
           </Title>
         </TitleWrapper>
         <Description>
@@ -71,13 +71,13 @@ export default () => {
         </div>
         <div>
           <div>
-            <Subtitle as="h2">Keep everyone in the loop</Subtitle>
+            <Subtitle as="h2">Keep everyone in the loop.</Subtitle>
           </div>
           <FeaturedImage
             bg={bg}
             css={`
               justify-content: flex-start;
-              ${(props) => props.theme.breakpoints.md} {
+              ${props => props.theme.breakpoints.md} {
                 margin-top: 4rem;
               }
             `}
@@ -88,7 +88,7 @@ export default () => {
               alt="Keep everyone in the loop"
               css={`
                 width: 971px;
-                ${(props) => props.theme.breakpoints.md} {
+                ${props => props.theme.breakpoints.md} {
                   margin-top: 4rem;
                 }
               `}
@@ -120,7 +120,7 @@ export default () => {
             `}
           >
             <Subtitle left as="h2">
-              Know the context
+              Know the context.
             </Subtitle>
           </div>
 
@@ -160,7 +160,7 @@ export default () => {
             `}
           >
             <div>
-              <Subtitle as="h2">Stay up to date</Subtitle>
+              <Subtitle as="h2">Stay up to date.</Subtitle>
               <h6
                 css={`
                   font-style: normal;
@@ -189,7 +189,7 @@ export default () => {
                 alt="Notifications"
                 css={`
                   width: 996px;
-                  ${(props) => props.theme.breakpoints.md} {
+                  ${props => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}
@@ -199,7 +199,7 @@ export default () => {
         </div>
 
         <CTA
-          title="Start testing your ideas"
+          title="Start testing your ideas."
           subtitle="Get better feedback faster to validate and iterate."
           cta="Get started"
           link="/s"

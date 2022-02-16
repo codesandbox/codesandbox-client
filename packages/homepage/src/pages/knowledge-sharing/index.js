@@ -1,12 +1,12 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 
-import { applyParallax } from "../../utils/parallax";
-import usePrefersReducedMotion from "../../utils/isReducedMOtion";
-import Layout from "../../components/layout";
-import TitleAndMetaTags from "../../components/TitleAndMetaTags";
-import CTA from "../../components/CTA";
-import Button from "../../components/Button";
-import { Description } from "../../components/Typography";
+import { applyParallax } from '../../utils/parallax';
+import usePrefersReducedMotion from '../../utils/isReducedMOtion';
+import Layout from '../../components/layout';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import CTA from '../../components/CTA';
+import Button from '../../components/Button';
+import { Description } from '../../components/Typography';
 
 import {
   ContentBlock,
@@ -15,12 +15,12 @@ import {
   TitleWrapper,
   Wrapper,
   FeaturedImage,
-} from "../../components/LayoutComponents";
+} from '../../components/LayoutComponents';
 
-import team from "./images/team-settings.png";
-import bg from "./images/bg.png";
-import madetoshare from "./images/madetoshare.png";
-import bg1 from "./images/bg1.png";
+import team from './images/team-settings.png';
+import bg from './images/bg.png';
+import madetoshare from './images/madetoshare.png';
+import bg1 from './images/bg1.png';
 
 export default () => {
   const parallaxRef = useRef(null);
@@ -45,7 +45,7 @@ export default () => {
       <Wrapper>
         <TitleWrapper>
           <Title>
-            Share knowledge <br /> and learn together
+            Share knowledge <br /> and learn together.
           </Title>
         </TitleWrapper>
         <Description>
@@ -73,7 +73,7 @@ export default () => {
               height: 468px;
               padding: 0 1rem;
 
-              ${(props) => props.theme.breakpoints.md} {
+              ${props => props.theme.breakpoints.md} {
                 height: 200px;
               }
             `}
@@ -143,7 +143,7 @@ export default () => {
           </div>
           <div>
             <div>
-              <Subtitle>Made for sharing</Subtitle>
+              <Subtitle>Made for sharing.</Subtitle>
             </div>
             <FeaturedImage bg={bg1}>
               <img
@@ -152,7 +152,7 @@ export default () => {
                 alt="made to share"
                 css={`
                   width: 60rem;
-                  ${(props) => props.theme.breakpoints.md} {
+                  ${props => props.theme.breakpoints.md} {
                     margin-top: 4rem;
                   }
                 `}
@@ -181,7 +181,7 @@ export default () => {
         </div>
 
         <CTA
-          title="Come together to create"
+          title="Come together to create."
           subtitle="Code online in real-time or asynchronously with your team."
           cta="Get Started"
           link="/s"

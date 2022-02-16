@@ -1,12 +1,12 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 
-import { applyParallax } from "../../utils/parallax";
-import usePrefersReducedMotion from "../../utils/isReducedMOtion";
-import Layout from "../../components/layout";
-import TitleAndMetaTags from "../../components/TitleAndMetaTags";
-import CTA from "../../components/CTA";
-import Button from "../../components/Button";
-import { Description } from "../../components/Typography";
+import { applyParallax } from '../../utils/parallax';
+import usePrefersReducedMotion from '../../utils/isReducedMOtion';
+import Layout from '../../components/layout';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import CTA from '../../components/CTA';
+import Button from '../../components/Button';
+import { Description } from '../../components/Typography';
 
 import {
   ContentBlock,
@@ -16,16 +16,16 @@ import {
   Wrapper,
   ContentBlockImage,
   FeaturedImage,
-} from "../../components/LayoutComponents";
+} from '../../components/LayoutComponents';
 
-import ide from "./images/ide.png";
-import bg from "./images/bg.png";
-import bg1 from "./images/bg1.png";
+import ide from './images/ide.png';
+import bg from './images/bg.png';
+import bg1 from './images/bg1.png';
 
-import repo from "./images/repo.svg";
-import registry from "./images/registry.svg";
-import privateImg from "./images/private.svg";
-import deps from "./images/deps.png";
+import repo from './images/repo.svg';
+import registry from './images/registry.svg';
+import privateImg from './images/private.svg';
+import deps from './images/deps.png';
 
 export default () => {
   const parallaxRef = useRef(null);
@@ -50,7 +50,7 @@ export default () => {
       <Wrapper>
         <TitleWrapper>
           <Title>
-            Quickly prototype <br /> ideas with code
+            Quickly prototype <br /> ideas with code.
           </Title>
         </TitleWrapper>
         <Description>
@@ -71,13 +71,15 @@ export default () => {
         </div>
         <div>
           <div>
-            <Subtitle>Keep everyone in the loop</Subtitle>
+            <Subtitle>
+              Keep everyone <br /> in the loop.
+            </Subtitle>
           </div>
           <FeaturedImage
             css={`
               height: 468px;
 
-              ${(props) => props.theme.breakpoints.md} {
+              ${props => props.theme.breakpoints.md} {
                 height: 200px;
               }
             `}
@@ -118,7 +120,7 @@ export default () => {
               margin-bottom: 56px;
             `}
           >
-            <Subtitle left>Code in public, or private</Subtitle>
+            <Subtitle left>Code in public, or private.</Subtitle>
           </div>
 
           <ContentBlock>
@@ -161,14 +163,15 @@ export default () => {
           >
             <div>
               <Subtitle>
-                Create static sites, components, <br /> or full-stack web apps
+                Create static sites, <br /> components, or full-stack <br /> web
+                apps.
               </Subtitle>
             </div>
             <FeaturedImage
               css={`
                 height: 468px;
 
-                ${(props) => props.theme.breakpoints.md} {
+                ${props => props.theme.breakpoints.md} {
                   height: auto;
                   padding: 2rem 0;
                 }
@@ -208,7 +211,7 @@ export default () => {
       </Wrapper>
 
       <CTA
-        title="Start rapid prototyping"
+        title="Start rapid prototyping."
         subtitle="With instant sandboxes that get you coding in seconds."
         cta="Get Started"
         link="/s"

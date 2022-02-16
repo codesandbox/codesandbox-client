@@ -1,13 +1,13 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState, useEffect } from "react";
-import track from "@codesandbox/common/lib/utils/analytics";
-import { motion } from "framer-motion";
-import Layout from "../../components/layout";
-import PageContainer from "../../components/PageContainer";
-import TitleAndMetaTags from "../../components/TitleAndMetaTags";
-import Switch from "../../components/Switch";
-import { P } from "../../components/Typography";
-import { Title } from "../../components/LayoutComponents";
+import React, { useState, useEffect } from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { motion } from 'framer-motion';
+import Layout from '../../components/layout';
+import PageContainer from '../../components/PageContainer';
+import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import Switch from '../../components/Switch';
+import { P } from '../../components/Typography';
+import { Title } from '../../components/LayoutComponents';
 import {
   Plan,
   PlanName,
@@ -18,44 +18,44 @@ import {
   ModeChooser,
   ProductChooser,
   TableSection,
-} from "./_elements";
-import { personal } from "./data/_personal";
-import { business } from "./data/_business";
-import Cards from "./_cards";
-import { OpenIcon, SavePersonal, SaveTeam } from "./_icons";
+} from './_elements';
+import { personal } from './data/_personal';
+import { business } from './data/_business';
+import Cards from './_cards';
+import { OpenIcon, SavePersonal, SaveTeam } from './_icons';
 
 export default () => {
   const [open, setOpen] = useState({});
-  const [mode, setMode] = useState("annually");
+  const [mode, setMode] = useState('annually');
   const [product, setProduct] = useState();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    setProduct(urlParams.get("for") === "individual" ? "personal" : "team");
+    setProduct(urlParams.get('for') === 'individual' ? 'personal' : 'team');
   }, []);
 
   useEffect(() => {
-    const array = product === "personal" ? personal : business;
+    const array = product === 'personal' ? personal : business;
     const opened = {};
 
-    array.defaultOpen.forEach((item) => {
+    array.defaultOpen.forEach(item => {
       opened[item] = true;
     });
 
     setOpen(opened);
   }, [product]);
 
-  const toggleTable = (name) => {
+  const toggleTable = name => {
     if (!open[name]) {
-      track("Plan detail opened", {
+      track('Plan detail opened', {
         category: name,
-        tab: product === "personal" ? "Individual" : "Business",
+        tab: product === 'personal' ? 'Individual' : 'Business',
       });
     }
-    setOpen((o) => ({ ...o, [name]: !o[name] }));
+    setOpen(o => ({ ...o, [name]: !o[name] }));
   };
 
-  const array = product === "personal" ? personal : business;
+  const array = product === 'personal' ? personal : business;
 
   return (
     <Layout>
@@ -71,21 +71,21 @@ export default () => {
             margin-top: 40px;
           `}
         >
-          Choose a plan that's <br /> right for you
+          Choose a plan that's <br /> right for you.
         </Title>
       </PageContainer>
       <ProductChooser>
         <button
           type="button"
-          aria-pressed={product === "personal"}
-          onClick={() => setProduct("personal")}
+          aria-pressed={product === 'personal'}
+          onClick={() => setProduct('personal')}
         >
           Individuals
         </button>
         <button
           type="button"
-          aria-pressed={product === "team"}
-          onClick={() => setProduct("team")}
+          aria-pressed={product === 'team'}
+          onClick={() => setProduct('team')}
         >
           Businesses
         </button>
@@ -93,15 +93,15 @@ export default () => {
       <ModeChooser>
         <span>Bill monthly</span>
         <Switch
-          on={mode === "annually"}
+          on={mode === 'annually'}
           onClick={() =>
-            setMode((m) => (m === "annually" ? "monthly" : "annually"))
+            setMode(m => (m === 'annually' ? 'monthly' : 'annually'))
           }
         />
         <span>Bill annually</span>
-        {product === "team" ? <SaveTeam /> : <SavePersonal />}
+        {product === 'team' ? <SaveTeam /> : <SavePersonal />}
       </ModeChooser>
-      <Cards team={product === "team"} mode={mode} />
+      <Cards team={product === 'team'} mode={mode} />
       <Title
         as="h2"
         css={`
@@ -114,10 +114,10 @@ export default () => {
         Compare
       </Title>
       <TableSection>
-        {array.items.map((item) => (
+        {array.items.map(item => (
           <TableWrapper>
             <FeaturesTableHeader
-              team={product === "team"}
+              team={product === 'team'}
               onClick={() => toggleTable(item.name)}
               css={`
                 margin-top: 0;
@@ -127,21 +127,21 @@ export default () => {
               <OpenIcon open={open[item.name]} />
             </FeaturesTableHeader>
             <FeaturesTable
-              team={product === "team"}
+              team={product === 'team'}
               as={motion.div}
               initial={{ height: 0 }}
-              animate={{ height: `${open[item.name] ? "auto" : 0}` }}
+              animate={{ height: `${open[item.name] ? 'auto' : 0}` }}
               open={open[item.name]}
             >
-              <Plan as="div" team={product === "team"}>
+              <Plan as="div" team={product === 'team'}>
                 <span />
-                {array.plans.map((plan) => (
+                {array.plans.map(plan => (
                   <PlanName style={{ color: plan.color }} paid={!plan.free}>
                     {plan.name}
                   </PlanName>
                 ))}
               </Plan>
-              {item.features.map((feature) => {
+              {item.features.map(feature => {
                 if (feature.subheading) {
                   return (
                     <>
@@ -150,16 +150,16 @@ export default () => {
                           grid-template-columns: 1fr;
                         `}
                       >
-                        {" "}
+                        {' '}
                         <FeatureTitle>{feature.subheading}</FeatureTitle>
                       </li>
-                      {feature.features.map((fea) => (
+                      {feature.features.map(fea => (
                         <li>
                           <div>
                             <FeatureTitle>{fea.name}</FeatureTitle>
                             <P muted small>
                               {fea.desc}
-                            </P>{" "}
+                            </P>{' '}
                           </div>
                           <Checks feature={fea} product={product} />
                         </li>
@@ -188,8 +188,8 @@ export default () => {
 };
 
 const Checks = ({ feature, product }) => {
-  if (typeof feature.available === "boolean") {
-    return product === "team" ? (
+  if (typeof feature.available === 'boolean') {
+    return product === 'team' ? (
       <>
         <span>✓</span>
         <span>✓</span>
@@ -203,11 +203,11 @@ const Checks = ({ feature, product }) => {
     );
   }
 
-  return feature.available.map((available) => {
-    if (typeof available === "string") {
+  return feature.available.map(available => {
+    if (typeof available === 'string') {
       return <span className="text">{available}</span>;
     }
 
-    return <span>{available ? "✓" : ""}</span>;
+    return <span>{available ? '✓' : ''}</span>;
   });
 };
