@@ -15,7 +15,7 @@ import rawTranspiler from '../../transpilers/raw';
 import {
   hasRefresh,
   aliases,
-  isMinimalReactDomVersion,
+  cleanUsingUnmount,
   supportsNewReactTransform,
 } from './utils';
 import { initializeReactDevToolsLegacy } from './utils/initLegacyDevTools';
@@ -88,14 +88,7 @@ const NEW_REACT_BABEL_CONFIG = {
   ],
 };
 
-type SelfPackageJSON = {
-  externals: Record<string, string>,
-  externalResources: string[]
-};
-
-type ProPackageJSON = PackageJSON & SelfPackageJSON;
-
-export async function reactPreset(pkg: ProPackageJSON) {
+export async function reactPreset(pkg: PackageJSON) {
   const debug = _debug('cs:compiler:cra');
   let initialized = false;
   let refreshInitialized = false;
@@ -131,14 +124,18 @@ export async function reactPreset(pkg: ProPackageJSON) {
       hasDotEnv: true,
       processDependencies: async originalDeps => {
         const deps = { ...originalDeps };
-        // 采用 externals 时 dependencies 不存在 react-dom
-        // 只能从 externals 中判断是否存在 react-dom（默认版本大于 16.9.0）
-        if (
-          (deps['react-dom'] &&
-          isMinimalReactDomVersion(deps['react-dom'], '16.9.0')) || (pkg.externals && pkg.externals['react-dom'])
-        ) {
-          deps['react-refresh'] = '0.9.0';
-        }
+        // if (
+        //   (deps['react-dom'] &&
+        //   isMinimalReactDomVersion(deps['react-dom'], '16.9.0'))
+        // ) {
+        //   deps['react-refresh'] = '0.9.0';
+        // }
+
+        // 无条件添加 react-refresh，原因：
+        // 1. create-react-app 模板的项目必然包含 react-dom
+        // 2. 采用 externals 方式使用 react-dom 的项目在 dependencies 可以不定义 react-dom 字段
+        // 3. 目前实际项目使用的 react-dom 版本必然高出 16.9.0
+        deps['react-refresh'] = '0.9.0';
 
         if (!deps['@babel/core']) {
           deps['@babel/core'] = '^7.3.3';
@@ -156,7 +153,8 @@ export async function reactPreset(pkg: ProPackageJSON) {
       },
       setup: async manager => {
         const dependencies = manager.manifest.dependencies;
-        const isRefresh = await hasRefresh(dependencies, pkg.externals);
+        const { externals } = manager.configurations.sandbox?.parsed;
+        const isRefresh = await hasRefresh(dependencies, externals);
 
         if (!initialized || refreshInitialized !== isRefresh) {
           initialized = true;
@@ -302,9 +300,15 @@ export async function reactPreset(pkg: ProPackageJSON) {
             await initializeReactDevToolsLegacy();
           }
         }
-
-        if (await hasRefresh(manager.manifest.dependencies, pkg.externals)) {
+        const dependencies = manager.manifest.dependencies;
+        const { externals } = manager.configurations.sandbox?.parsed;
+        if (await hasRefresh(dependencies, externals)) {
           await createRefreshEntry(manager);
+        }
+
+        const reactDom = dependencies.find(n => n.name === 'react-dom');
+        if (reactDom && !manager.webpackHMR) {
+          cleanUsingUnmount(manager);
         }
       },
     }
