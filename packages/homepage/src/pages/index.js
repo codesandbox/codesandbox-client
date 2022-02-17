@@ -47,7 +47,7 @@ const Homepage = () => (
       `}
     >
       <a
-        href="https://twitter.com/codesandbox"
+        href="https://www.youtube.com/watch?v=yebkpPITLr4"
         title="Get Ready for the future"
       >
         <picture>
