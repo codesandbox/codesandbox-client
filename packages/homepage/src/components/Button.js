@@ -3,15 +3,13 @@ import styled, { css } from 'styled-components';
 
 const styles = css`
   background: #dcff50;
-  // border-radius: 9999px;
-  // background: #edffa5;
-  border-radius: 4px;
+  border-radius: 3px;
   border: none;
   font-family: ${props => props.theme.homepage.appleFont};
   font-size: 12px;
-  line-height: 140%;
+  line-height: 120%;
   text-align: center;
-  padding: 6px 14px;
+  padding: 6px 16px;
   font-weight: 500;
   text-decoration: none;
   color: #151515;
@@ -26,8 +24,9 @@ const styles = css`
   ${props =>
     props.big &&
     css`
-      font-size: 14px;
-      padding: 14px 22px;
+      font-size: 16px;
+      padding: 8px 20px;
+      line-height: 24px;
     `}
 
   ${props =>
@@ -35,6 +34,7 @@ const styles = css`
     css`
       min-width: 190px;
       font-size: 16px;
+
       font-weight: 400;
       padding: 8px 24px;
     `}
