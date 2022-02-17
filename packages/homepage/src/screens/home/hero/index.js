@@ -14,14 +14,16 @@ export default () => (
         zIndex: 20,
       }}
     >
-      <Title>Where teams build faster, together</Title>
+      <Title>
+        Where teams build <br /> faster, together.
+      </Title>
       <SubTitle
         css={`
           margin-bottom: 3.7rem;
         `}
       >
-        Create, share, and get feedback with collaborative sandboxes for rapid
-        web development.
+        Create, share, and get feedback with collaborative <br /> sandboxes for
+        rapid web development.
       </SubTitle>
 
       <Content />

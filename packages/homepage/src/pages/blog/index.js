@@ -1,11 +1,11 @@
-import { graphql, Link } from 'gatsby';
+import { graphql, Link } from "gatsby";
 
-import React from 'react';
+import React from "react";
 
-import Layout from '../../components/layout';
-import PageContainer from '../../components/PageContainer';
+import Layout from "../../components/layout";
+import PageContainer from "../../components/PageContainer";
 
-import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+import TitleAndMetaTags from "../../components/TitleAndMetaTags";
 
 import {
   Posts,
@@ -19,7 +19,7 @@ import {
   Header,
   PageTitle,
   PageSubtitle,
-} from './_elements';
+} from "./_elements";
 
 const Blog = ({
   data: {
@@ -37,8 +37,8 @@ const Blog = ({
         <PageTitle>CodeSandbox Blog</PageTitle>
 
         <PageSubtitle>
-          Read all about new releases, tips, tricks, and how CodeSandbox is
-          built
+          Read all about new releases, tips, tricks, <br /> and how CodeSandbox
+          is built
         </PageSubtitle>
       </Header>
 

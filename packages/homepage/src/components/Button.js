@@ -2,25 +2,31 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const styles = css`
-  background: #5962df;
-  border-radius: 0.25rem;
+  background: #dcff50;
+  border-radius: 3px;
   border: none;
   font-family: ${props => props.theme.homepage.appleFont};
-  font-size: 0.8125em;
-  line-height: 19px;
+  font-size: 12px;
+  line-height: 120%;
   text-align: center;
-  padding: 4px 24px;
+  padding: 6px 16px;
   font-weight: 500;
   text-decoration: none;
-  color: ${props => props.theme.homepage.white} !important;
-  transition: all 200ms ease;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  color: #151515;
+  transition: transform 0.3s ease;
   display: inline-block;
+
+  span {
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
 
   ${props =>
     props.big &&
     css`
-      padding: 8px 21px;
+      font-size: 16px;
+      padding: 8px 20px;
+      line-height: 24px;
     `}
 
   ${props =>
@@ -28,6 +34,7 @@ const styles = css`
     css`
       min-width: 190px;
       font-size: 16px;
+
       font-weight: 400;
       padding: 8px 24px;
     `}
@@ -37,8 +44,12 @@ const styles = css`
   }
 
   &:hover {
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
-    transform: scale(1.05);
+    background: #edffa5;
+    // box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.24);
+    // transform: scale(1.05);
+    span {
+      transform: scale(0.98);
+    }
   }
 
   &:focus {
@@ -56,7 +67,11 @@ const Link = styled.a`
 
 export default ({ children, ...props }) =>
   props.href ? (
-    <Link {...props}>{children}</Link>
+    <Link {...props}>
+      <span>{children}</span>
+    </Link>
   ) : (
-    <Button {...props}>{children}</Button>
+    <Button {...props}>
+      <span>{children}</span>
+    </Button>
   );

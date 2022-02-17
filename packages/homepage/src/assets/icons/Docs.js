@@ -5,11 +5,40 @@ import { useTheme } from '../../components/layout';
 const Docs = props => {
   const white = useTheme().homepage.white;
   return (
-    <svg width={31} height={26} fill="none" viewBox="0 0 31 26" {...props}>
+    <svg
+      width="40"
+      height="40"
+      viewBox="0 0 60 60"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
       <path
-        fill={white}
-        d="M14.857 26V3.935C14.857-1.95 0 .257 0 1.177v21.146c11.361 0 9.396 2.24 14.857 3.677zM15.715 26V3.935c0-5.884 14.857-3.678 14.857-2.758v21.146c-11.362 0-9.397 2.24-14.857 3.677z"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M11 16H31.1504L41 25.6602V54H11V16ZM15 20V50H37V27.3398L29.5163 20H15Z"
+        fill="url(#paint0_linear_20_19)"
       />
+      <path d="M21 10H37.6667L46 18.5V44H21V10Z" fill="#151515" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M19 8V46H48V17.6831L38.5067 8H19ZM34 12H23V42H44V22H34V12ZM42.709 18H38V13.1969L42.709 18Z"
+        fill={white}
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_20_19"
+          x1="19"
+          y1="46.5"
+          x2="41"
+          y2="16"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor={white} />
+          <stop offset="1" stopColor={white} stopOpacity="0" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 };

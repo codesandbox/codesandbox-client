@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import React, { useEffect, useState, useRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 import {
   Tab,
   TabButton,
@@ -8,37 +8,32 @@ import {
   VideoComponent,
   TabsWrapper,
   Paragraph,
-} from './elements';
-import videoSrc from '../../../assets/videos/video.mp4';
-import posterSrc from '../../../assets/videos/video.png';
-import { Title } from '../hero/elements';
-import usePrefersReducedMotion from '../../../utils/isReducedMOtion';
+} from "./elements";
+import videoSrc from "../../../assets/videos/video.mp4";
+import posterSrc from "../../../assets/videos/video.png";
+import { Title } from "../hero/elements";
+import usePrefersReducedMotion from "../../../utils/isReducedMOtion";
 
 const videoTimesAndText = [
   {
     time: 0,
-    text:
-      ' A sandbox needs no setup - use a template to kickstart new projects, or start from a GitHub repo and begin coding in seconds.',
+    text: " A sandbox needs no setup - use a template to kickstart new projects, or start from a GitHub repo and begin coding in seconds.",
   },
   {
     time: 6,
-    text:
-      'A sandbox is a superfast development environment. They’re purpose-built for rapid web development in the browser.',
+    text: "A sandbox is a superfast development environment. They’re purpose-built for rapid web development in the browser.",
   },
   {
     time: 13,
-    text:
-      'A sandbox is collaborative. Like a Google Doc but for code, you can get feedback and create together, in real-time or asynchronously.',
+    text: "A sandbox is collaborative. Like a Google Doc but for code, you can get feedback and create together, in real-time or asynchronously.",
   },
   {
     time: 25,
-    text:
-      'A sandbox updates live, so you can see the effect of changes instantly, inline, as you code.',
+    text: "A sandbox updates live, so you can see the effect of changes instantly, inline, as you code.",
   },
   {
     time: 32,
-    text:
-      'A sandbox can be shared with a click. Your friends, team, or colleagues can join in, or view your creation with just a URL.',
+    text: "A sandbox can be shared with a click. Your friends, team, or colleagues can join in, or view your creation with just a URL.",
   },
 ];
 
@@ -51,7 +46,7 @@ const Video = () => {
   useEffect(() => {
     if (!prefersReducedMotion) {
       const entryObserver = new IntersectionObserver(
-        entries => {
+        (entries) => {
           if (entries[0].isIntersecting === true) {
             video.current.play();
             setActive(true);
@@ -72,14 +67,14 @@ const Video = () => {
     }
   }, [prefersReducedMotion]);
 
-  const setCurrentTab = tab => {
+  const setCurrentTab = (tab) => {
     setActiveTab(tab);
     video.current.currentTime = videoTimesAndText[tab - 1].time;
     if (!video.playing) video.current.play();
   };
 
   const activeTime = () => {
-    const times = videoTimesAndText.map(v => v.time);
+    const times = videoTimesAndText.map((v) => v.time);
     const currentTime = video.current?.currentTime;
 
     times.forEach((time, i) => {
@@ -94,10 +89,10 @@ const Video = () => {
 
   useEffect(() => {
     const videoEl = video.current;
-    videoEl.addEventListener('timeupdate', activeTime, true);
+    videoEl.addEventListener("timeupdate", activeTime, true);
 
     return () => {
-      videoEl.removeEventListener('timeupdate', activeTime, true);
+      videoEl.removeEventListener("timeupdate", activeTime, true);
     };
   }, []);
 
@@ -105,12 +100,12 @@ const Video = () => {
   useEffect(() => {
     if (!tabListRef.current) return;
     const activeTabElement = tabListRef.current.querySelector(
-      '[aria-selected=true]'
+      "[aria-selected=true]"
     );
 
     tabListRef.current.scrollTo({
       left: activeTabElement.offsetLeft - tabListRef.current.offsetLeft - 100,
-      behavior: 'smooth',
+      behavior: "smooth",
     });
   }, [activeTab]);
 
@@ -118,9 +113,10 @@ const Video = () => {
     <motion.div
       initial={{ opacity: 0, y: 140 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 1, duration: 1, ease: 'easeOut' }}
+      transition={{ delay: 1, duration: 1, ease: "easeOut" }}
       css={`
         overflow: active ? "hidden" : 'initial';
+        overflow-x: hidden;
       `}
     >
       <section
@@ -129,7 +125,7 @@ const Video = () => {
           max-width: 90%;
           margin: 0 auto;
           padding: 4rem 0 5rem 0;
-          ${props => props.theme.breakpoints.md} {
+          ${(props) => props.theme.breakpoints.md} {
             margin-top: 90px;
           }
         `}
@@ -142,7 +138,7 @@ const Video = () => {
               margin-bottom: 40px;
             `}
           >
-            What’s a Sandbox?
+            What’s a sandbox?
           </Title>
           <Tabs active={active} role="tablist" ref={tabListRef}>
             <Tab
@@ -155,7 +151,7 @@ const Video = () => {
                 onClick={() => setCurrentTab(1)}
                 type="button"
               >
-                No Setup
+                No setup
               </TabButton>
             </Tab>
             <Tab
@@ -194,7 +190,7 @@ const Video = () => {
                 onClick={() => setCurrentTab(4)}
                 type="button"
               >
-                Updates Live
+                Updates live
               </TabButton>
             </Tab>
             <Tab

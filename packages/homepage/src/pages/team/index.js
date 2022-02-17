@@ -57,7 +57,9 @@ export default () => {
       <TitleAndMetaTags title="Team Plan - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Keep development work flowing</Title>
+          <Title>
+            Keep development <br /> work flowing.
+          </Title>
         </TitleWrapper>
         <Description>
           Build better things faster with a team dashboard that makes code
@@ -249,7 +251,7 @@ export default () => {
           </ContentBlock>
 
           <CTA
-            title="Collaborate with your team"
+            title="Collaborate with your team."
             subtitle="Test ideas earlier, iterate more and create better products with a team dashboard."
             cta="Go Pro"
             link="/pricing"
@@ -290,7 +292,7 @@ export default () => {
         </div>
 
         <CTA
-          title="For large or multiple teams"
+          title="For large or multiple teams."
           subtitle="Share code, apps, and templates. Learn from each other and bake in best practice."
           cta="Get early access"
           link="https://airtable.com/shrlgLSJWiX8rYqyG"

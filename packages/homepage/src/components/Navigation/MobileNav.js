@@ -1,37 +1,40 @@
 /* eslint-disable import/no-cycle */
-import React, { useState } from 'react';
-import { Link } from 'gatsby';
+import React, { useState } from "react";
+import { Link } from "gatsby";
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import Logo from '../../assets/images/logo.svg';
+import { motion, AnimatePresence } from "framer-motion";
+import { signInPageUrl } from "@codesandbox/common/lib/utils/url-generator";
+import Logo from "../../assets/logo";
 import {
   MobileNav,
   LogoWrapper,
-  LogoImage,
   PopUpNav,
   Headers,
   Items,
   LinkButton,
   UserAvatar,
   IconWrapper,
-} from './elements';
-import SupportIcon from '../../assets/icons/Support';
-import StatusIcon from '../../assets/icons/Status';
-import PricingIcon from '../../assets/icons/Pricing';
-import DocsIcon from '../../assets/icons/Docs';
-import BlogIcon from '../../assets/icons/Blog';
-import IDEIcon from '../../assets/icons/Ide';
-import FeedbackIcon from '../../assets/icons/Feedback';
-import PrototypeIcon from '../../assets/icons/Prototype';
-import TeamsIcon from '../../assets/icons/Teams';
-import SearchIcon from '../../assets/icons/Search';
-import HighlightedICon from '../../assets/icons/Highlighted';
-import JobsIcon from '../../assets/icons/Jobs';
-import Button from '../Button';
-import { useLogin } from '../../hooks/useLogin';
-import { OPEN_JOBS_COUNT } from '../../config/hiring';
-import { JobBadge } from '../JobBadge';
+} from "./elements";
+import SupportIcon from "../../assets/icons/Support";
+import StatusIcon from "../../assets/icons/Status";
+import PricingIcon from "../../assets/icons/Pricing";
+import DocsIcon from "../../assets/icons/Docs";
+import BlogIcon from "../../assets/icons/Blog";
+// import IDEIcon from "../../assets/icons/Ide";
+import FeedbackIcon from "../../assets/icons/Feedback";
+// import PrototypeIcon from "../../assets/icons/Prototype";
+// import TeamsIcon from "../../assets/icons/Teams";
+
+import SandpackIcon from "../../assets/icons/Sandpack";
+import CodeSandboxIcon from "../../assets/icons/CodeSandbox";
+
+import SearchIcon from "../../assets/icons/Search";
+import HighlightedICon from "../../assets/icons/Highlighted";
+import JobsIcon from "../../assets/icons/Jobs";
+import Button from "../Button";
+import { useLogin } from "../../hooks/useLogin";
+import { OPEN_JOBS_COUNT } from "../../config/hiring";
+import { JobBadge } from "../JobBadge";
 
 export default () => {
   const user = useLogin();
@@ -40,8 +43,7 @@ export default () => {
     <>
       <MobileNav>
         <LogoWrapper to="/">
-          <LogoImage src={Logo} alt="CodeSandbox Logo" />
-          CodeSandbox
+          <Logo />
         </LogoWrapper>
         <div>
           {!user ? (
@@ -49,7 +51,7 @@ export default () => {
               Sign In
             </LinkButton>
           ) : (
-            <a style={{ display: 'flex' }} href="/dashboard">
+            <a style={{ display: "flex" }} href="/dashboard">
               <UserAvatar
                 className="tablet-remove"
                 src={user.avatar_url}
@@ -95,19 +97,20 @@ export default () => {
       <AnimatePresence>
         {open ? (
           <motion.div
-            animate={{ height: 'calc(100vh - 48px)' }}
+            animate={{ height: "calc(100vh - 48px)" }}
             initial={{
               height: 0,
-              overflow: 'auto',
-              position: 'relative',
+              overflow: "auto",
+              position: "relative",
               zIndex: 999,
             }}
             exit={{ height: 0 }}
-            transition={{ ease: 'easeOut', duration: 0.25 }}
+            transition={{ ease: "easeOut", duration: 0.25 }}
           >
             <PopUpNav>
               <Headers>Product</Headers>
               <Items>
+                {/*
                 <li>
                   <Link to="/ide">
                     <IconWrapper>
@@ -131,6 +134,33 @@ export default () => {
                     </IconWrapper>
                     <span>Knowledge Sharing</span>
                   </Link>
+                </li>
+                */}
+                <li>
+                  <a
+                    href="https://projects.codesandbox.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Projects"
+                  >
+                    <IconWrapper>
+                      <CodeSandboxIcon />
+                    </IconWrapper>
+                    <span>Projects</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://sandpack.codesandbox.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Sandpack"
+                  >
+                    <IconWrapper>
+                      <SandpackIcon />
+                    </IconWrapper>
+                    <span>Sandpack</span>
+                  </a>
                 </li>
                 <li>
                   <Link to="/feedback">
@@ -215,7 +245,7 @@ export default () => {
                         <JobsIcon />
                       </IconWrapper>
                       <span>
-                        Jobs{' '}
+                        Jobs{" "}
                         {OPEN_JOBS_COUNT && (
                           <JobBadge>{OPEN_JOBS_COUNT}</JobBadge>
                         )}
@@ -230,10 +260,9 @@ export default () => {
                 `}
               >
                 <Button
+                  big
                   css={`
                     display: block;
-                    padding: 6px 21px;
-                    background: #5962df;
                   `}
                   className="button"
                   href="/s"
