@@ -69,7 +69,7 @@ Plus, you can follow the [contribution guide](https://sandpack.codesandbox.io/do
 
 **Ace**: A follow up question to this @tamas (CSB Team) "can you give us any hint about what those features might be? `wink wink nudge nudge` sse? - **@plondon** 😄
 
-**Tamas**: There is no concrete plan on this but yeah probably sse would be a paid feature!
+**Tamas**: There is no concrete plan on this but yeah probably sse could be a paid feature!
 
 ### **Q7: Can I use Sandpack with other libraries? It’s only the React package that seems to be available, are there libraries for Vue etc?" - @EmmanuelOloke**
 
@@ -92,5 +92,9 @@ As we go, I'd like to ask you all to leave us with your favorite use cases of Sa
 **Ace**: Oh awesome! Thank you and have a great rest of your day!
 
 ---
+
+The goal of CodeSandbox is to make development accessible for everyone. With Sandpack we make it easier for anyone to add interactive documentation, so people can learn by doing. Next to that, we see the development of Sandpack as a great driver for traffic to our core product CodeSandbox.
+
+For Sandpack, we don’t have immediate plans to monetize it and want to make sure the core service remains free for everyone to use, but we might explore adding services on top of Sandpack in the future. This means that everything you’re using Sandpack for today, will stay free.
 
 If you have additional questions, or want to show us what you’ve built with Sandpack, you can share with us on [Twitter](https://twitter.com/codesandbox) or on our [Discord community](https://discord.gg/Pr4ft3gBTx).
