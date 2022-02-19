@@ -3,7 +3,7 @@ import { extractPathFromExport } from './exports';
 import { EMPTY_SHIM } from './constants';
 
 // alias/exports/main keys, sorted from high to low priority
-const MAIN_PKG_FIELDS = ['module', 'browser', 'main', 'jsnext:main'];
+const MAIN_PKG_FIELDS = ['browser', 'main', 'module', 'jsnext:main'];
 const PKG_ALIAS_FIELDS = ['browser', 'alias'];
 
 type AliasesDict = { [key: string]: string };
