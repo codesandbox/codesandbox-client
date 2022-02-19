@@ -332,7 +332,7 @@ export class TranspiledModule {
     // 在此处添加模块依赖时，将 webpack externals 对应依赖排除掉，
     // 否则该 transpiled-module 会被标记为缺少依赖的模块（即 hasMissingDependencies 为 true），影响该模块的热更新
     const { externals } = manager.configurations.sandbox?.parsed;
-    if (externals && externals[depPath] && window[externals[depPath]]) {
+    if (externals && externals[depPath]) {
       return;
     }
 
