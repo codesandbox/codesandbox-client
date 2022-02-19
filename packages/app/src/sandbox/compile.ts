@@ -644,9 +644,11 @@ async function compile(opts: CompileOptions) {
         text: 'Installing Dependencies',
       });
     }
-
+    const parsedSandboxJSON = configurations.sandbox.parsed;
+    const { externals = {} } = parsedSandboxJSON;
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
+      externals,
       ({ done, total, remainingDependencies }) => {
         if (!showLoadingScreen) {
           return;

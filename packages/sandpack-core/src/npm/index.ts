@@ -84,9 +84,8 @@ export type UpdateProgressFunc = (progress: {
 }) => void;
 
 export async function getDependenciesFromSources(
-  dependencies: {
-    [depName: string]: string;
-  },
+  dependencies: NPMDependencies,
+  externals: NPMDependencies,
   resolutions: { [startGlob: string]: string } | undefined,
   forceFetchDynamically: boolean,
   updateProgress: UpdateProgressFunc
@@ -135,7 +134,7 @@ export async function getDependenciesFromSources(
 
     const prebundledPromise = Promise.all(
       Object.keys(prebundledDependencies).map(depName =>
-        getPrebundledDependency(depName, depsWithNodeLibs[depName])
+        getPrebundledDependency(depName, depsWithNodeLibs[depName], externals)
           .then(d => {
             // Unfortunately we've let this through in our system, some dependencies will just be { error: string }.
             // The bug has been fixed, but dependencies have been cached, we have to filter them out and fetch them
@@ -193,6 +192,7 @@ type DependencyOpts = {
  */
 export async function loadDependencies(
   dependencies: NPMDependencies,
+  externals: NPMDependencies,
   updateProgress: UpdateProgressFunc,
   {
     disableExternalConnection = false,
@@ -214,6 +214,7 @@ export async function loadDependencies(
 
       const data = await getDependenciesFromSources(
         dependenciesWithoutTypings,
+        externals,
         resolutions,
         disableExternalConnection,
         updateProgress

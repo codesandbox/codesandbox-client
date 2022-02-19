@@ -96,9 +96,14 @@ async function requestPackager(
   }
 }
 
+const NECESSARY_DEPENDENCIES = ['react', 'react-dom'];
+
 export async function getDependency(
   depName: string,
-  depVersion: string
+  depVersion: string,
+  externals: {
+    [dependency: string]: string;
+  }
 ): Promise<ILambdaResponse> {
   let version = depVersion;
   try {
@@ -114,6 +119,19 @@ export async function getDependency(
   const normalizedVersion = normalizeVersion(version);
   const dependencyUrl = dependenciesToQuery({ [depName]: normalizedVersion });
   const fullUrl = `${BUCKET_URL}/v${VERSION}/packages/${depName}/${normalizedVersion}.json`;
+
+  if (externals[depName] && !NECESSARY_DEPENDENCIES.includes(depName)) {
+    return {
+      contents: {},
+      dependency: {
+        name: depName,
+        version: normalizedVersion
+      },
+      dependencyDependencies: {},
+      peerDependencies: {},
+      dependencyAliases: {}
+    }
+  }
 
   try {
     const bucketManifest = await callApi(fullUrl);
