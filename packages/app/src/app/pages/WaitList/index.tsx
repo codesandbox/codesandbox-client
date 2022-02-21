@@ -47,8 +47,7 @@ export const WaitListRequest = () => {
     e => e.name === 'beta'
   );
   if (isFeatureFlagBeta) {
-    // TODO: temp dashboard URL
-    history.replace('/dashboard/beta');
+    history.replace('/p/dashboard');
     return null;
   }
 
