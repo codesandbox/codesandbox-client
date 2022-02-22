@@ -5,6 +5,7 @@ import Layout from '../../components/layout';
 import PageContainer from '../../components/PageContainer';
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
+import { usePricing } from './_utils';
 import { Intro } from './_intro';
 import { Plans } from './_plans';
 import { PersonalPlan } from './_personal-plans';
@@ -18,19 +19,24 @@ const Section = styled.div`
 `;
 
 const SectionWrapper = styled.div`
+  width: 954px;
+  margin: auto;
+
   ${Section}:first-child {
     margin-top: 140px;
   }
 `;
 
 const Pricing = () => {
+  const plansPayload = usePricing();
+
   return (
     <Layout>
       <TitleAndMetaTags title="Pricing - CodeSandbox" />
 
       <SectionWrapper>
         <Section>
-          <Intro />
+          <Intro plans={plansPayload} />
         </Section>
 
         <Section>
