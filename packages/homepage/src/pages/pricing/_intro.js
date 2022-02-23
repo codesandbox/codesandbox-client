@@ -1,58 +1,25 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import { Title, SubTitle } from './_elements';
 import privateIcon from './assets/private.svg';
 import exportIcon from './assets/export.svg';
 import userIcon from './assets/user.svg';
 import { formatCurrent } from './_utils';
+import { BoxPlan, BoxPlanButton, BoxPlanPrice } from './_elements';
 
-const IntroWrapper = styled.div`
-  position: relative;
-  z-index: 1;
-`;
-
-const Caption = styled.p`
-  color: #dcff50;
-  font-size: 32px;
-  font-family: 'TWKEverett', sans-serif;
-  font-weight: 500;
-`;
-
-const GridItem = styled.div``;
-
-const Grid = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 96px;
-
-  ${GridItem} {
-    width: calc(100% / 3 - 5.4em);
-  }
-`;
-
-const Icon = styled.div`
-  background: #191919;
-  width: 48px;
-  height: 48px;
-  border-radius: 9999px;
-  display: flex;
-  margin-bottom: 24px;
-
-  img {
-    margin: auto;
-  }
-`;
-
-// {
-//   pro | team_pro {
-//     month | year {
-//       currency: string
-//       unit_amount: number
-//     }
-//   }
-// }
+/**
+ * Main component
+ */
 export const Intro = ({ plans }) => {
+  // plans: {
+  //   pro | team_pro {
+  //     month | year {
+  //       currency: string
+  //       unit_amount: number
+  //     }
+  //   }
+  // }
+
   return (
     <>
       <IntroWrapper>
@@ -105,6 +72,87 @@ export const Intro = ({ plans }) => {
   );
 };
 
+/**
+ * Elements
+ */
+const Title = styled.h1`
+  font-size: 85px;
+  letter-spacing: -0.025em;
+  line-height: 1.09;
+  font-family: ${props => props.theme.homepage.appleFont};
+  font-family: 'TWKEverett', sans-serif;
+
+  color: ${props => props.theme.homepage.white};
+  padding: 0;
+  margin: 0;
+  margin-bottom: 1.5rem;
+  font-weight: normal;
+  padding-right: 10%;
+
+  ${props => props.theme.breakpoints.md} {
+    font-size: 3rem;
+    line-height: 1.2;
+    padding-right: 0;
+  }
+
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 2rem;
+  }
+`;
+
+const SubTitle = styled.h2`
+  font-weight: normal;
+  font-size: 1.125rem;
+  line-height: 1.3;
+  color: ${props => props.theme.homepage.muted};
+  margin: 0;
+  margin-bottom: 1rem;
+
+  ${props => props.theme.breakpoints.sm} {
+    font-size: 0.875rem;
+  }
+`;
+
+const IntroWrapper = styled.div`
+  position: relative;
+  z-index: 1;
+`;
+
+const Caption = styled.p`
+  color: #dcff50;
+  font-size: 32px;
+  font-family: 'TWKEverett', sans-serif;
+  font-weight: 500;
+`;
+
+const GridItem = styled.div``;
+
+const Grid = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 96px;
+
+  ${GridItem} {
+    width: calc(100% / 3 - 5.4em);
+  }
+`;
+
+const Icon = styled.div`
+  background: #191919;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  display: flex;
+  margin-bottom: 24px;
+
+  img {
+    margin: auto;
+  }
+`;
+
+/**
+ * Plan list elements
+ */
 const PlanList = styled.div`
   display: flex;
   justify-content: space-between;
@@ -128,93 +176,6 @@ const PlanList = styled.div`
       #090909 60.35%
     );
     opacity: 1;
-  }
-`;
-
-const BoxPlan = styled.div`
-  padding: 40px 32px;
-  width: calc(100% / 2 - 12px);
-  position: relative;
-  z-index: 2;
-
-  background: #151515;
-  border-top: 32px solid #2a2a2a;
-
-  text-align: center;
-  color: #808080;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  ul {
-    list-style: none;
-    margin: 0;
-    line-height: 1;
-  }
-
-  p {
-    max-width: 215px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  > *:not(:last-child) {
-    margin-bottom: 64px;
-  }
-
-  ${({ pro }) => {
-    return (
-      pro &&
-      css`
-        background: #fff;
-        border-top: 32px solid #edffa5;
-        color: #090909;
-      `
-    );
-  }}
-`;
-
-const BoxPlanButton = styled.a`
-  display: block;
-  border-radius: 4px;
-  height: 56px;
-  width: 100%;
-
-  background: #090909;
-  color: #fff;
-
-  line-height: 56px;
-  text-decoration: none;
-  font-family: 'TWKEverett', sans-serif;
-  font-weight: 500;
-`;
-
-const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
-  return (
-    <div className={className}>
-      <p className="plan">{plan}</p>
-      <p className="price">{price}</p>
-      <p className="caption">{caption}</p>
-    </div>
-  );
-})`
-  .plan {
-    font-size: 32px;
-    font-family: 'TWKEverett', sans-serif;
-    font-weight: 500;
-    line-height: 1;
-  }
-
-  .price {
-    font-size: 64px;
-    font-family: 'TWKEverett', sans-serif;
-    font-weight: 500;
-    line-height: 1;
-  }
-
-  .caption {
-    font-size: 13px;
   }
 `;
 

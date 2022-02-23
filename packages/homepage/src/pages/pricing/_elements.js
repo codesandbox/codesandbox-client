@@ -1,10 +1,11 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import React from 'react';
 
-export const Title = styled.h1`
-  font-size: 85px;
+export const Title = styled.h2`
+  font-size: 64px;
   letter-spacing: -0.025em;
   line-height: 1.09;
-  font-family: ${props => props.theme.homepage.appleFont};
+
   font-family: 'TWKEverett', sans-serif;
 
   color: ${props => props.theme.homepage.white};
@@ -12,28 +13,102 @@ export const Title = styled.h1`
   margin: 0;
   margin-bottom: 1.5rem;
   font-weight: normal;
-  padding-right: 10%;
-
-  ${props => props.theme.breakpoints.md} {
-    font-size: 3rem;
-    line-height: 1.2;
-    padding-right: 0;
-  }
-
-  ${props => props.theme.breakpoints.sm} {
-    font-size: 2rem;
-  }
 `;
 
-export const SubTitle = styled.h2`
-  font-weight: normal;
-  font-size: 1.125rem;
-  line-height: 1.3;
-  color: ${props => props.theme.homepage.muted};
-  margin: 0;
-  margin-bottom: 1rem;
+export const BoxPlan = styled.div`
+  padding: 40px 32px;
+  width: calc(100% / 2 - 12px);
+  position: relative;
+  z-index: 2;
 
-  ${props => props.theme.breakpoints.sm} {
-    font-size: 0.875rem;
+  background: #151515;
+  border-top: 32px solid #2a2a2a;
+
+  text-align: center;
+  color: #808080;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    line-height: 1;
+  }
+
+  p {
+    max-width: 215px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  > *:not(:last-child) {
+    margin-bottom: 64px;
+  }
+
+  ${({ pro }) => {
+    return (
+      pro &&
+      css`
+        background: #fff;
+        border-top: 32px solid #edffa5;
+        color: #090909;
+      `
+    );
+  }}
+
+  ${({ personalPro }) => {
+    return (
+      personalPro &&
+      css`
+        background: #fff;
+        border-top: 32px solid #ac9cff;
+        color: #090909;
+      `
+    );
+  }}
+`;
+
+export const BoxPlanButton = styled.a`
+  display: block;
+  border-radius: 4px;
+  height: 56px;
+  width: 100%;
+
+  background: #090909;
+  color: #fff;
+
+  line-height: 56px;
+  text-decoration: none;
+  font-family: 'TWKEverett', sans-serif;
+  font-weight: 500;
+`;
+
+export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
+  return (
+    <div className={className}>
+      <p className="plan">{plan}</p>
+      <p className="price">{price}</p>
+      <p className="caption">{caption}</p>
+    </div>
+  );
+})`
+  .plan {
+    font-size: 32px;
+    font-family: 'TWKEverett', sans-serif;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .price {
+    font-size: 64px;
+    font-family: 'TWKEverett', sans-serif;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .caption {
+    font-size: 13px;
   }
 `;

@@ -2,17 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Layout from '../../components/layout';
-import PageContainer from '../../components/PageContainer';
+
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
 import { usePricing } from './_utils';
 import { Intro } from './_intro';
-import { Plans } from './_plans';
-import { PersonalPlan } from './_personal-plans';
-import { Subscribe } from './_subscribe';
-import { Testimonials } from './_testimonials';
-import { ComparePlans } from './_compare-plans';
-import { FAQ } from './_faq';
+import { PersonalPro } from './_personal-pro';
 
 const Section = styled.div`
   margin-bottom: 280px;
@@ -40,16 +35,8 @@ const Pricing = () => {
         </Section>
 
         <Section>
-          <Plans />
+          <PersonalPro plans={plansPayload} />
         </Section>
-
-        <PersonalPlan />
-
-        <Subscribe />
-
-        <Testimonials />
-        <ComparePlans />
-        <FAQ />
       </SectionWrapper>
     </Layout>
   );
