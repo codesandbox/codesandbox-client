@@ -6,13 +6,18 @@ export const Title = styled.h2`
   letter-spacing: -0.025em;
   line-height: 1.09;
 
-  font-family: 'TWKEverett', sans-serif;
-
   color: ${props => props.theme.homepage.white};
   padding: 0;
   margin: 0;
   margin-bottom: 1.5rem;
+
+  font-family: 'TWKEverett', sans-serif;
   font-weight: normal;
+
+  a {
+    text-decoration: none;
+    color: #edffa5;
+  }
 `;
 
 export const BoxPlan = styled.div`

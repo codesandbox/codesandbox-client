@@ -234,8 +234,7 @@ const TeamPro = ({ plan }) => {
         <li>Centralized billing</li>
       </ul>
 
-      {/* TODO: link */}
-      <BoxPlanButton href="/s">Upgrade to Team Pro</BoxPlanButton>
+      <BoxPlanButton href="#upgrade">Upgrade to Team Pro</BoxPlanButton>
     </BoxPlan>
   );
 };

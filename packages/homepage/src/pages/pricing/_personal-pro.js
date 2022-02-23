@@ -56,8 +56,9 @@ export const PersonalPro = ({ plans }) => {
           month-on-month.`}
             />
 
-            {/* TODO: link */}
-            <BoxPlanButton href="/s">Upgrade to Personal Pro</BoxPlanButton>
+            <BoxPlanButton href="#upgrade">
+              Upgrade to Personal Pro
+            </BoxPlanButton>
           </BoxPlan>
         )}
       </Grid>
