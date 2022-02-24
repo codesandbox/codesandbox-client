@@ -81,12 +81,10 @@ const Grid = styled.div`
     width: 1280px;
     height: 1280px;
     right: calc(-1280px / 3);
-    top: calc(-1280px / 3);
+    top: calc(-1280px / 4);
     z-index: 0;
 
-    background: radial-gradient(50% 50% at 50% 50%, #2c2554 0%, #090909 60.35%);
-
-    opacity: 1;
+    background: radial-gradient(50% 50% at 50% 50%, #2c2554 20%, #000000 100%);
   }
 `;
 
@@ -98,13 +96,20 @@ const GridItem = styled.div`
 
 const Content = styled.div`
   font-size: 24px;
+  line-height: 32px;
 
   p {
     margin-bottom: 1.8em;
+    font-weight: normal;
   }
 
   ul {
     margin-left: 1.27em;
+  }
+
+  li {
+    margin: 0;
+    font-weight: normal;
   }
 
   a {

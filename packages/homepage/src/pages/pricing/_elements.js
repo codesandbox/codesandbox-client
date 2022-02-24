@@ -3,8 +3,8 @@ import React from 'react';
 
 export const Title = styled.h2`
   font-size: 64px;
+  line-height: 64px;
   letter-spacing: -0.025em;
-  line-height: 1.09;
 
   color: ${props => props.theme.homepage.white};
   padding: 0;
@@ -46,6 +46,8 @@ export const BoxPlan = styled.div`
     max-width: 215px;
     margin-left: auto;
     margin-right: auto;
+    font-size: 16px;
+    line-height: 24px;
   }
 
   > *:not(:last-child) {
@@ -115,5 +117,6 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
 
   .caption {
     font-size: 13px;
+    line-height: 16px;
   }
 `;

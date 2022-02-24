@@ -50,7 +50,13 @@ export const Plans = () => {
   return (
     <>
       <Title
-        css={{ textAlign: 'center', maxWidth: 600, margin: '0 auto 160px' }}
+        css={{
+          textAlign: 'center',
+          maxWidth: 600,
+          margin: '0 auto 160px',
+          left: 170,
+          position: 'relative',
+        }}
       >
         Compare our plans and features
       </Title>
@@ -67,7 +73,6 @@ export const Plans = () => {
                   <>
                     <th className="free-header">
                       <p>Free</p>
-                      <a href="/s">Start using now</a>
                     </th>
                     <th className="personal">
                       <p>Personal Pro</p>
@@ -132,7 +137,11 @@ const Table = styled.table`
     text-align: center;
     border-bottom: 1px solid #373737;
     padding: 32px 0;
-    min-width: 200px;
+    min-width: 223px;
+  }
+
+  th {
+    padding: 48px 0;
   }
 
   td:first-child {

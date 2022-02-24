@@ -102,9 +102,11 @@ const Title = styled.h1`
 
 const SubTitle = styled.h2`
   font-weight: normal;
-  font-size: 1.125rem;
-  line-height: 1.3;
-  color: ${props => props.theme.homepage.muted};
+  font-size: 20px;
+  line-height: 28px;
+  color: #808080;
+  font-weight: normal;
+  letter-spacing: -0.019em;
   margin: 0;
   margin-bottom: 1rem;
 
@@ -133,12 +135,12 @@ const Grid = styled.div`
   margin-top: 96px;
 
   ${GridItem} {
-    width: calc(100% / 3 - 5.4em);
+    width: calc(100% / 3 - 3em);
   }
 `;
 
 const Icon = styled.div`
-  background: #191919;
+  background: #2a2a2a;
   width: 48px;
   height: 48px;
   border-radius: 9999px;
@@ -166,7 +168,7 @@ const PlanList = styled.div`
     position: absolute;
     width: 1280px;
     height: 1280px;
-    right: calc(-1280px / 3);
+    right: calc(-1280px / 4);
     top: calc(-1280px / 3);
     z-index: 0;
 
