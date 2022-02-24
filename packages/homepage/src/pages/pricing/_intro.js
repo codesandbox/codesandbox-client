@@ -26,48 +26,52 @@ export const Intro = ({ plans }) => {
         <Caption>CodeSandbox Pro</Caption>
         <Title>Everything you love about CodeSandbox, but make it Pro</Title>
 
-        <Grid>
-          <GridItem>
-            <Icon>
-              <img src={privateIcon} alt="private npm packages" />
-            </Icon>
-            <SubTitle>
-              Use private NPM packages and manage advanced permissions options
-            </SubTitle>
-          </GridItem>
+        <ScrollView>
+          <Grid>
+            <GridItem>
+              <Icon>
+                <img src={privateIcon} alt="private npm packages" />
+              </Icon>
+              <SubTitle>
+                Use private NPM packages and manage advanced permissions options
+              </SubTitle>
+            </GridItem>
 
-          <GridItem>
-            <Icon>
-              <img src={exportIcon} alt="storage" />
-            </Icon>
-            <SubTitle>
-              Go bigger and bolder with 500MB of storage and 30MB upload speed
-            </SubTitle>
-          </GridItem>
+            <GridItem>
+              <Icon>
+                <img src={exportIcon} alt="storage" />
+              </Icon>
+              <SubTitle>
+                Go bigger and bolder with 500MB of storage and 30MB upload speed
+              </SubTitle>
+            </GridItem>
 
-          <GridItem>
-            <Icon>
-              <img src={userIcon} alt="pricing" />
-            </Icon>
-            <SubTitle>
-              Choose between different pricing and plans to suit your needs and
-              budget
-            </SubTitle>
-          </GridItem>
-        </Grid>
+            <GridItem>
+              <Icon>
+                <img src={userIcon} alt="pricing" />
+              </Icon>
+              <SubTitle>
+                Choose between different pricing and plans to suit your needs
+                and budget
+              </SubTitle>
+            </GridItem>
+          </Grid>
+        </ScrollView>
       </IntroWrapper>
 
-      {plans && (
-        <PlanList>
-          {Object.entries(plans || {}).map(([plan, value]) => {
-            if (plan === 'team_pro') {
-              return <TeamPro plan={value} />;
-            }
+      <ScrollViewPlantList>
+        {plans && (
+          <PlanList>
+            {Object.entries(plans || {}).map(([plan, value]) => {
+              if (plan === 'team_pro') {
+                return <TeamPro plan={value} />;
+              }
 
-            return <FreeBox />;
-          })}
-        </PlanList>
-      )}
+              return <FreeBox />;
+            })}
+          </PlanList>
+        )}
+      </ScrollViewPlantList>
     </>
   );
 };
@@ -76,10 +80,7 @@ export const Intro = ({ plans }) => {
  * Elements
  */
 const Title = styled.h1`
-  font-size: 85px;
   letter-spacing: -0.025em;
-  line-height: 1.09;
-  font-family: ${props => props.theme.homepage.appleFont};
   font-family: 'TWKEverett', sans-serif;
 
   color: ${props => props.theme.homepage.white};
@@ -89,29 +90,44 @@ const Title = styled.h1`
   font-weight: normal;
   padding-right: 10%;
 
-  ${props => props.theme.breakpoints.md} {
-    font-size: 3rem;
-    line-height: 1.2;
-    padding-right: 0;
+  font-size: 40px;
+  line-height: 48px;
+
+  @media (min-width: 769px) {
+    font-size: 48px;
+    line-height: 56px;
   }
 
-  ${props => props.theme.breakpoints.sm} {
-    font-size: 2rem;
+  @media (min-width: 1025px) {
+    font-size: 72px;
+    line-height: 80px;
+  }
+
+  @media (min-width: 1445px) {
+    font-size: 85px;
+    line-height: 1.09;
   }
 `;
 
 const SubTitle = styled.h2`
   font-weight: normal;
-  font-size: 20px;
-  line-height: 28px;
   color: #808080;
   font-weight: normal;
   letter-spacing: -0.019em;
   margin: 0;
   margin-bottom: 1rem;
 
-  ${props => props.theme.breakpoints.sm} {
-    font-size: 0.875rem;
+  font-size: 13px;
+  line-height: 18px;
+
+  @media (min-width: 769px) {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  @media (min-width: 1025px) {
+    font-size: 20px;
+    line-height: 28px;
   }
 `;
 
@@ -122,17 +138,37 @@ const IntroWrapper = styled.div`
 
 const Caption = styled.p`
   color: #dcff50;
-  font-size: 32px;
   font-family: 'TWKEverett', sans-serif;
   font-weight: 500;
+
+  font-size: 24px;
+  line-height: 28px;
+
+  @media (min-width: 769px) {
+    font-size: 32px;
+    line-height: 38px;
+  }
 `;
 
-const GridItem = styled.div``;
+const ScrollView = styled.div`
+  overflow: auto;
+  margin-right: -1em;
+`;
+
+const GridItem = styled.div`
+  min-width: 200px;
+  padding-right: 1em;
+`;
 
 const Grid = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 96px;
+
+  margin-top: 62px;
+
+  @media (min-width: 376px) {
+    margin-top: 96px;
+  }
 
   ${GridItem} {
     width: calc(100% / 3 - 3em);
@@ -155,16 +191,41 @@ const Icon = styled.div`
 /**
  * Plan list elements
  */
+
+const ScrollViewPlantList = styled.div`
+  margin-right: -1em;
+  margin-left: -1em;
+
+  @media (min-width: 1025) {
+    margin: 0;
+  }
+`;
+
 const PlanList = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 132px;
   position: relative;
   z-index: 0;
 
+  margin-top: 80px;
+
+  overflow: auto;
+  scroll-snap-type: mandatory;
+  scroll-snap-points-y: repeat(300px);
+  scroll-snap-type: y mandatory;
+  padding: 0 1em;
+
+  @media (min-width: 376px) {
+    padding: 0;
+    margin-top: 132px;
+  }
+
+  @media (min-width: 1025px) {
+    overflow: visible;
+  }
+
   &:after {
     content: '';
-    display: block;
     position: absolute;
     width: 1280px;
     height: 1280px;
@@ -178,6 +239,11 @@ const PlanList = styled.div`
       #090909 60.35%
     );
     opacity: 1;
+
+    display: none;
+    @media (min-width: 1025px) {
+      display: block;
+    }
   }
 `;
 

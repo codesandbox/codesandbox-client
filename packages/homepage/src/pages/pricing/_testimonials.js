@@ -16,7 +16,12 @@ export const Testimonial = () => {
   return (
     <>
       <Title
-        css={{ textAlign: 'center', maxWidth: 967, margin: '0 auto 160px' }}
+        css={{
+          textAlign: 'center',
+          maxWidth: 967,
+          margin: '0 auto 112px',
+          '@media (min-width: 1441px)': { margin: '0 auto 160px' },
+        }}
       >
         Don't just take our word for it. Take it from our users.
       </Title>

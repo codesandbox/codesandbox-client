@@ -2,9 +2,9 @@ import styled, { css } from 'styled-components';
 import React from 'react';
 
 export const Title = styled.h2`
-  font-size: 64px;
-  line-height: 64px;
   letter-spacing: -0.025em;
+  font-size: 32px;
+  line-height: 38px;
 
   color: ${props => props.theme.homepage.white};
   padding: 0;
@@ -18,13 +18,29 @@ export const Title = styled.h2`
     text-decoration: none;
     color: #edffa5;
   }
+
+  @media (min-width: 769px) {
+    font-size: 48px;
+    line-height: 56px;
+  }
+
+  @media (min-width: 1025px) {
+    font-size: 64px;
+    line-height: 64px;
+  }
 `;
 
 export const BoxPlan = styled.div`
   padding: 40px 32px;
-  width: calc(100% / 2 - 12px);
+  width: 100%;
   position: relative;
   z-index: 2;
+  min-width: 310px;
+  margin: 0 6px;
+
+  @media (min-width: 560px) {
+    max-width: calc(100% / 2 - 12px);
+  }
 
   background: #151515;
   border-top: 32px solid #2a2a2a;
@@ -51,7 +67,11 @@ export const BoxPlan = styled.div`
   }
 
   > *:not(:last-child) {
-    margin-bottom: 64px;
+    margin-bottom: 40px;
+
+    @media (min-width: 769px) {
+      margin-bottom: 64px;
+    }
   }
 
   ${({ pro }) => {

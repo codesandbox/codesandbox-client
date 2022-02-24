@@ -16,7 +16,12 @@ export const PersonalPro = ({ plans }) => {
   // }
   return (
     <>
-      <GridItem css={{ marginBottom: 88 }}>
+      <GridItem
+        css={{
+          marginBottom: 32,
+          '@media (min-width: 769px)': { marginBottom: 88 },
+        }}
+      >
         <Title>Power users and freelancers, we got you too.</Title>
       </GridItem>
 
@@ -70,13 +75,16 @@ export const PersonalPro = ({ plans }) => {
  * Elements
  */
 const Grid = styled.div`
-  display: flex;
   position: relative;
   z-index: 0;
 
+  @media (min-width: 560px) {
+    display: flex;
+  }
+
   &:after {
     content: '';
-    display: block;
+
     position: absolute;
     width: 1280px;
     height: 1280px;
@@ -84,7 +92,12 @@ const Grid = styled.div`
     top: calc(-1280px / 4);
     z-index: 0;
 
-    background: radial-gradient(50% 50% at 50% 50%, #2c2554 20%, #000000 100%);
+    background: radial-gradient(50% 50% at 50% 50%, #2c2554 20%, #090909 100%);
+
+    display: none;
+    @media (min-width: 1025px) {
+      display: block;
+    }
   }
 `;
 
@@ -92,11 +105,21 @@ const GridItem = styled.div`
   flex: 1;
   position: relative;
   z-index: 1;
+  margin-bottom: 40px;
+
+  @media (min-width: 560px) {
+    margin-bottom: 0;
+  }
 `;
 
 const Content = styled.div`
-  font-size: 24px;
-  line-height: 32px;
+  font-size: 16px;
+  line-height: 24px;
+
+  @media (min-width: 769px) {
+    font-size: 24px;
+    line-height: 32px;
+  }
 
   p {
     margin-bottom: 1.8em;

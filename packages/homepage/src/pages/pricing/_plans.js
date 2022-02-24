@@ -53,9 +53,10 @@ export const Plans = () => {
         css={{
           textAlign: 'center',
           maxWidth: 600,
-          margin: '0 auto 160px',
+          margin: '0 auto 112px',
           '@media (min-width: 1441px)': {
             left: 170,
+            margin: '0 auto 160px',
             position: 'relative',
           },
         }}

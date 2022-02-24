@@ -17,13 +17,19 @@ const Overflow = styled.div`
 `;
 
 const Section = styled.div`
-  margin-bottom: 280px;
   position: relative;
+  margin-bottom: 172px;
+
+  @media (min-width: 769px) {
+    margin-bottom: 280px;
+  }
 `;
 
 const Container = styled.div`
-  width: 954px;
+  max-width: 954px;
   margin: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
 `;
 
 const Pricing = () => {
@@ -33,7 +39,12 @@ const Pricing = () => {
     <Layout noWrapperStyling>
       <TitleAndMetaTags title="Pricing - CodeSandbox" />
       <Overflow>
-        <Section css={{ marginTop: 140 }}>
+        <Section
+          css={{
+            marginTop: 72,
+            '@media (min-width: 376px)': { marginTop: 140 },
+          }}
+        >
           <Container>
             <Intro plans={plansPayload} />
           </Container>
@@ -48,7 +59,7 @@ const Pricing = () => {
         <Section>
           <Testimonial />
         </Section>
-
+        {/*
         <Section id="plans">
           <Container>
             <Plans />
@@ -57,10 +68,10 @@ const Pricing = () => {
 
         <Section>
           <Title css={{ textAlign: 'center', maxWidth: 710, margin: 'auto' }}>
-            {/* TODO: link */}
+
             For further inquiries, access our <a href="">FAQ</a>
           </Title>
-        </Section>
+        </Section> */}
       </Overflow>
     </Layout>
   );
