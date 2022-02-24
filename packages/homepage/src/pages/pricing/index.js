@@ -59,7 +59,7 @@ const Pricing = () => {
         <Section>
           <Testimonial />
         </Section>
-        {/*
+
         <Section id="plans">
           <Container>
             <Plans />
@@ -68,10 +68,9 @@ const Pricing = () => {
 
         <Section>
           <Title css={{ textAlign: 'center', maxWidth: 710, margin: 'auto' }}>
-
             For further inquiries, access our <a href="">FAQ</a>
           </Title>
-        </Section> */}
+        </Section>
       </Overflow>
     </Layout>
   );

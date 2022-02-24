@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import styled from 'styled-components';
 import { Title } from './_elements';
 
@@ -47,13 +48,15 @@ const plans = [
 ];
 
 export const Plans = () => {
+  const [mobilePlan, setMobilePlan] = useState('team');
+
   return (
     <>
       <Title
         css={{
           textAlign: 'center',
           maxWidth: 600,
-          margin: '0 auto 112px',
+          margin: 'auto',
           '@media (min-width: 1441px)': {
             left: 170,
             margin: '0 auto 160px',
@@ -74,16 +77,29 @@ export const Plans = () => {
                 </th>
                 {index === 0 && (
                   <>
-                    <th className="free-header">
+                    <th className="desktop free-header">
                       <p>Free</p>
                     </th>
-                    <th className="personal">
+                    <th className="desktop personal">
                       <p>Personal Pro</p>
                       <a href="#upgrade">Upgrade</a>
                     </th>
-                    <th className="team">
+                    <th className="desktop team">
                       <p>Team Pro</p>
                       <a href="#upgrade">Upgrade</a>
+                    </th>
+
+                    <th className={`mobile ${mobilePlan}`} colSpan={3}>
+                      <div className="select">
+                        <select
+                          onChange={({ target }) => setMobilePlan(target.value)}
+                          value={mobilePlan}
+                        >
+                          <option value="free">Free</option>
+                          <option value="personal">Personal Pro</option>
+                          <option value="team">Team Pro</option>
+                        </select>
+                      </div>
                     </th>
                   </>
                 )}
@@ -96,14 +112,18 @@ export const Plans = () => {
                       <h3>{item.title}</h3>
                       <p>{item.caption}</p>
                     </td>
-                    <td className="free">
+                    <td className="free desktop">
                       <CheckOrNot checked={item.free} />
                     </td>
-                    <td className="personal">
+                    <td className="personal desktop">
                       <CheckOrNot checked={item.personal} />
                     </td>
-                    <td className="team">
+                    <td className="team desktop">
                       <CheckOrNot checked={item.team} />
+                    </td>
+
+                    <td className={`mobile ${mobilePlan}`} colSpan={3}>
+                      <CheckOrNot checked={item[mobilePlan]} />
                     </td>
                   </tr>
                 );
@@ -135,16 +155,19 @@ const CheckOrNot = ({ checked }) => {
 };
 
 const Table = styled.table`
+  @media (min-width: 769px) {
+    table-layout: initial;
+  }
+
   td,
   th {
     text-align: center;
     border-bottom: 1px solid #373737;
     padding: 32px 0;
-    min-width: 223px;
-  }
 
-  th {
-    padding: 48px 0;
+    @media (min-width: 769px) {
+      min-width: 200px;
+    }
   }
 
   td:first-child {
@@ -168,14 +191,13 @@ const Table = styled.table`
 
   th {
     white-space: nowrap;
-    padding-top: 64px;
+    padding-top: 100px;
     padding-left: 12px;
     padding-right: 12px;
 
     &:first-child {
       text-align: left;
       padding-left: 0;
-      padding-top: 100px;
     }
 
     p {
@@ -212,6 +234,48 @@ const Table = styled.table`
   .no-check {
     color: #2a2a2a;
     font-size: 32px;
+  }
+
+  .desktop {
+    display: none;
+
+    @media (min-width: 650px) {
+      display: table-cell;
+    }
+  }
+
+  .mobile {
+    display: table-cell;
+
+    @media (min-width: 650px) {
+      display: none;
+    }
+  }
+
+  .select {
+    padding-right: 2em;
+    display: flex;
+    align-items: center;
+
+    &:after {
+      content: '';
+      display: inline-block;
+
+      margin-left: 1em;
+
+      width: 0;
+      height: 0;
+      border: 3px solid transparent;
+      border-top: 5px solid var(--plan, #fff);
+    }
+
+    select {
+      appearance: none;
+      background: none;
+      border: 0;
+      color: inherit;
+      text-align: right;
+    }
   }
 
   .free {
