@@ -23,7 +23,9 @@ export const Testimonial = () => {
 
       <FullSection>
         <Column>
-          <BigTitle>Digital product development, reimagined.”</BigTitle>
+          <BigTitle css={{ marginBottom: 60 }}>
+            Digital product development, reimagined.”
+          </BigTitle>
           <div>
             <TestimonialTitle>Dylan Field</TestimonialTitle>
             <TestimonialRole>Founder and CEO, Figma</TestimonialRole>
@@ -41,7 +43,7 @@ export const Testimonial = () => {
           </ImageGrid>
         </Column>
         <Column>
-          <MinorTitle>
+          <MinorTitle css={{ marginBottom: 60 }}>
             Using CodeSandbox has completely revolutionized how we ship digital
             products.”
           </MinorTitle>
@@ -54,7 +56,7 @@ export const Testimonial = () => {
         <Column>
           <Caption>as featured on Product Hunt</Caption>
 
-          <BigTitle>
+          <BigTitle css={{ marginTop: 60 }}>
             A glimpse at the future of software development now.”
           </BigTitle>
         </Column>
@@ -78,18 +80,33 @@ const Column = styled.div`
   border-bottom: 1px solid #000;
   border-right: 1px solid #000;
 
-  width: 40%;
-  height: 40vw;
-  max-height: 550px;
-  padding: 72px 112px;
+  padding: 32px;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  &:first-child,
-  &:last-child {
-    width: 60%;
+  @media (min-width: 769px) {
+    padding: 62px;
+    width: 45%;
+
+    &:first-child,
+    &:last-child {
+      width: 55%;
+    }
+  }
+
+  @media (min-width: 1255px) {
+    max-height: 550px;
+    height: 40vw;
+
+    width: 40%;
+    padding: 72px 112px;
+
+    &:first-child,
+    &:last-child {
+      width: 60%;
+    }
   }
 `;
 
@@ -97,12 +114,24 @@ const BigTitle = styled.p`
   font-family: 'TWKEverett', sans-serif;
   font-style: normal;
   font-weight: 500;
-  font-size: 64px;
-  line-height: 64px;
+  line-height: 1;
   letter-spacing: -0.03em;
-  margin: 0;
   position: relative;
-  padding-right: 26%;
+  margin: 0;
+
+  font-size: 40px;
+
+  @media (min-width: 769px) {
+    font-size: 48px;
+  }
+
+  @media (min-width: 1025px) {
+    font-size: 64px;
+  }
+
+  @media (min-width: 1441px) {
+    padding-right: 26%;
+  }
 
   &:before {
     content: '"';
@@ -112,8 +141,12 @@ const BigTitle = styled.p`
 `;
 
 const MinorTitle = styled(BigTitle)`
-  font-size: 32px;
-  line-height: 42px;
+  font-size: 18px;
+  line-height: 1.3;
+
+  @media (min-width: 769px) {
+    font-size: 32px;
+  }
 `;
 
 const Caption = styled.p`
@@ -144,6 +177,18 @@ const ImageGrid = styled.div`
   flex-wrap: wrap;
 
   > * {
-    width: 50%;
+    width: calc(100% / 2);
+  }
+
+  @media (min-width: 769px) {
+    > * {
+      width: calc(100% / 6);
+    }
+  }
+
+  @media (min-width: 769px) {
+    > * {
+      width: 50%;
+    }
   }
 `;
