@@ -23,30 +23,40 @@ export const Testimonial = () => {
 
       <FullSection>
         <Column>
-          <p>"Digital product development, reimagined.”</p>
-          <p>Dylan Field</p>
-          <p>Founder and CEO, Figma</p>
+          <BigTitle>Digital product development, reimagined.”</BigTitle>
+          <div>
+            <TestimonialTitle>Dylan Field</TestimonialTitle>
+            <TestimonialRole>Founder and CEO, Figma</TestimonialRole>
+          </div>
         </Column>
         <Column>
-          <p>Accelerating developers and product teams</p>
+          <Caption css={{ textAlign: 'center' }}>
+            Accelerating developers and product teams
+          </Caption>
 
-          {logos.map(source => (
-            <img src={source} alt="company logo" />
-          ))}
+          <ImageGrid>
+            {logos.map(source => (
+              <img src={source} alt="company logo" />
+            ))}
+          </ImageGrid>
         </Column>
         <Column>
-          <p>
-            "Using CodeSandbox has completely revolutionized how we ship digital
+          <MinorTitle>
+            Using CodeSandbox has completely revolutionized how we ship digital
             products.”
-          </p>
+          </MinorTitle>
 
-          <p>Koen Bok</p>
-          <p>Founder and CEO, Framer</p>
+          <div>
+            <TestimonialTitle>Koen Bok</TestimonialTitle>
+            <TestimonialRole>Founder and CEO, Framer</TestimonialRole>
+          </div>
         </Column>
         <Column>
-          <p>as featured on Product Hunt</p>
+          <Caption>as featured on Product Hunt</Caption>
 
-          <p>"A glimpse at the future of software development now.”</p>
+          <BigTitle>
+            A glimpse at the future of software development now.”
+          </BigTitle>
         </Column>
       </FullSection>
     </>
@@ -63,17 +73,77 @@ const FullSection = styled.div`
 `;
 
 const Column = styled.div`
+  color: #0f0e0e;
+
   border-bottom: 1px solid #000;
   border-right: 1px solid #000;
 
   width: 40%;
-
+  height: 40vw;
+  max-height: 550px;
   padding: 72px 112px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   &:first-child,
   &:last-child {
     width: 60%;
   }
+`;
 
-  color: #0f0e0e;
+const BigTitle = styled.p`
+  font-family: 'TWKEverett', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 64px;
+  line-height: 64px;
+  letter-spacing: -0.03em;
+  margin: 0;
+  position: relative;
+  padding-right: 26%;
+
+  &:before {
+    content: '"';
+    position: absolute;
+    left: -0.5em;
+  }
+`;
+
+const MinorTitle = styled(BigTitle)`
+  font-size: 32px;
+  line-height: 42px;
+`;
+
+const Caption = styled.p`
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0;
+`;
+
+const TestimonialTitle = styled.p`
+  font-family: 'TWKEverett', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: -0.01em;
+  margin: 0;
+`;
+
+const TestimonialRole = styled.p`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  margin: 0;
+`;
+
+const ImageGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+
+  > * {
+    width: 50%;
+  }
 `;
