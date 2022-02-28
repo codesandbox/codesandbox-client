@@ -31,6 +31,21 @@ import {
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 
+const PERMISSION_LEVELS = {
+  [TeamMemberAuthorization.Admin]: {
+    [TeamMemberAuthorization.Admin]: TeamMemberAuthorization.Admin,
+    [TeamMemberAuthorization.Write]: TeamMemberAuthorization.Write,
+    [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
+  },
+  [TeamMemberAuthorization.Write]: {
+    [TeamMemberAuthorization.Write]: TeamMemberAuthorization.Write,
+    [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
+  },
+  [TeamMemberAuthorization.Read]: {
+    [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
+  },
+};
+
 export const WorkspaceSettings = () => {
   const actions = useActions();
   const effects = useEffects();
@@ -153,6 +168,10 @@ export const WorkspaceSettings = () => {
   };
 
   const created = team.users.find(user => user.id === team.creatorId);
+
+  const userPermission = team.userAuthorizations.find(
+    auth => auth.userId === stateUser.id
+  );
 
   const permissionMap = {
     [TeamMemberAuthorization.Admin]: 'Admin',
@@ -531,7 +550,9 @@ export const WorkspaceSettings = () => {
                   <Icon name="caret" size={8} marginLeft={1} />
                 </Menu.Button>
                 <Menu.List>
-                  {Object.values(TeamMemberAuthorization).map(authorization => (
+                  {Object.values(
+                    PERMISSION_LEVELS[userPermission.authorization]
+                  ).map(authorization => (
                     <Menu.Item
                       key={authorization}
                       onSelect={() => setNewMemberAuthorization(authorization)}
