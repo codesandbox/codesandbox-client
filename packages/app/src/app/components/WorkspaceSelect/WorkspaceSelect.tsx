@@ -28,6 +28,8 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const { dashboard, user } = state;
     const history = useHistory();
 
+    if (!dashboard.teams || !state.personalWorkspaceId) return null;
+
     const personalWorkspace = dashboard.teams.find(
       t => t.id === state.personalWorkspaceId
     )!;
