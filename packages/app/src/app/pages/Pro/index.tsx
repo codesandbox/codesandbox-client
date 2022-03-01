@@ -12,9 +12,9 @@ export const ProPage = () => {
     pageMounted();
   }, [pageMounted]);
 
-  if (!activeTeamInfo?.subscription) return null;
+  if (!activeTeamInfo === undefined) return <p>Loading...</p>;
 
-  if (activeTeamInfo?.subscription.paymentProvider === 'PADDLE') {
+  if (activeTeamInfo?.subscription?.paymentProvider === 'PADDLE') {
     return <ProLegacy />;
   }
 
