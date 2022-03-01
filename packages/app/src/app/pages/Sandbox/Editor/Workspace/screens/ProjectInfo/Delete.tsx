@@ -13,7 +13,7 @@ const links = [
     Icon: GithubIcon,
   },
   {
-    href: 'https://discord.gg/5BpufEP7MH',
+    href: 'https://discord.gg/Pr4ft3gBTx',
     Icon: DiscordIcon,
   },
 ];
