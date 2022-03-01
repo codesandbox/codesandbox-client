@@ -443,6 +443,15 @@ export class Workbench {
       },
     });
 
+    this.appendMenuItem(MenuId.MenubarHelpMenu, {
+      group: '3_social',
+      order: 3,
+      command: {
+        id: 'codesandbox.help.discord',
+        title: 'Get Help on &&Discord',
+      },
+    });
+
     if (
       this.controller.getState().editor.currentSandbox?.featureFlags.comments
     ) {
