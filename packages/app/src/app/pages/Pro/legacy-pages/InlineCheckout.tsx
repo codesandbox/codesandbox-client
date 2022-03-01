@@ -3,7 +3,7 @@ import { Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { useScript } from 'app/hooks';
-import { PADDLE_VENDOR_ID } from '../plans';
+import { PADDLE_VENDOR_ID } from './plans';
 
 export const InlineCheckout: React.FC = () => {
   const { updateSummary, paddleInitialised } = useActions().pro;

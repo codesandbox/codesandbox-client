@@ -193,6 +193,7 @@ export const currentTeamInfoFragment = gql`
       billingInterval
       updateBillingUrl
       nextBillDate
+      paymentProvider
       cancelAt
     }
   }
