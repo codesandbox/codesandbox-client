@@ -15,7 +15,7 @@ import {
   SubscriptionOrigin,
 } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { plans } from '../plans';
+import { plans } from './plans';
 
 const prettyPermissions = {
   ADMIN: 'Admin',
