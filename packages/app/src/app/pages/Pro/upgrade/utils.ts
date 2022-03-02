@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 
+export type WorkspaceType = 'pro' | 'team_pro';
+export type Interval = 'month' | 'year';
 type Price = { currency: string; unit_amount: number };
-type Pricing = Record<'pro' | 'team_pro', Record<'month' | 'year', Price>>;
+type Pricing = Record<WorkspaceType, Record<Interval, Price>>;
 
 export const usePricing = (): Pricing | null => {
   const [data, setData] = useState<Pricing>(null);
