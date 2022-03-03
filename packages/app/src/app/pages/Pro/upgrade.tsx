@@ -26,6 +26,7 @@ import {
   GlobalFonts,
   Title,
 } from './upgrade/elements';
+import { Switcher } from './upgrade/Switcher';
 
 const COLOR_SCHEMA: Record<WorkspaceType, string> = {
   pro: '#AC9CFF',
@@ -65,12 +66,6 @@ export const ProUpgrade = () => {
 
     return (((month - yearByMonth) * 100) / month).toFixed(0);
   };
-
-  /**
-   * Users's on the team
-   */
-  const members = state.activeTeamInfo.users.length;
-  const memberLabel = `${members} member${members > 1 ? 's' : ''}`;
 
   const workspaceTypeLabel =
     workspaceType === 'pro' ? 'Upgrade to Personal Pro' : 'Upgrade to Team Pro';
@@ -131,11 +126,12 @@ export const ProUpgrade = () => {
             width: '100%',
             maxWidth: '713px',
             margin: 'auto',
-            padding: '0 1em',
+            padding: '24px 1em',
           })}
         >
           <Element css={{ width: '100%' }}>
-            {state.activeTeamInfo && (
+            <Switcher />
+            {/* {state.activeTeamInfo && (
               <WorkspaceSelect
                 activeAccount={state.activeTeamInfo}
                 onSelect={workspace => {
@@ -144,9 +140,9 @@ export const ProUpgrade = () => {
                   });
                 }}
               />
-            )}
+            )} */}
 
-            <Caption>{memberLabel}</Caption>
+            {/* <Caption>{memberLabel}</Caption>
 
             {state.activeTeamInfo.users.map((user, index) => {
               if (index > 2) return null;
@@ -159,9 +155,9 @@ export const ProUpgrade = () => {
                   key={user.id}
                 />
               );
-            })}
+            })} */}
 
-            {seats - 3 > 0 ? seats - 3 : null}
+            {/* {seats - 3 > 0 ? seats - 3 : null} */}
 
             <Title style={{ color: COLOR_SCHEMA[workspaceType] }}>
               {workspaceTypeLabel}
@@ -177,7 +173,7 @@ export const ProUpgrade = () => {
               >
                 <Stack justify="space-between">
                   <p>Annual</p>
-                  <p>save {savePercent()}%</p>
+                  <p className="discount">save {savePercent()}%</p>
                 </Stack>
                 <h3 className="price">{summary.year.price}</h3>
                 <p style={{ width: 140 }}>

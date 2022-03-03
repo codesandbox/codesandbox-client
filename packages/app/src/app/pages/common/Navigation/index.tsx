@@ -98,6 +98,8 @@ export const NavigationComponent = ({ title, match }: Props) => {
                       padding: 0,
                       height: 'auto',
                       border: 'none',
+                      borderRadius: '100%',
+                      marginTop: 1,
                     })}
                   >
                     <Avatar
