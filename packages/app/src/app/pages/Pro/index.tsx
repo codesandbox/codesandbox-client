@@ -69,7 +69,7 @@ export const ProPage: React.FC = () => {
           fontFamily: 'Lato, sans-serif',
         })}
       >
-        <Navigation title="CodeSandbox Pro" />
+        <Navigation title="Pro" />
         {getContent()}
       </Stack>
     </ThemeProvider>
