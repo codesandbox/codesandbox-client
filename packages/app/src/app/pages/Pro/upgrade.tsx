@@ -243,7 +243,6 @@ export const ProUpgrade = () => {
               </Button>
             </Stack>
 
-            {blockButton && 'TODO: why disabled'}
             <Summary>
               <p>
                 {summary[interval].price} x {seatsLabel} ={' '}

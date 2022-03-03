@@ -1,11 +1,12 @@
 import React from 'react';
-import { useAppState } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import styled from 'styled-components';
-import { Stack, Avatar } from '@codesandbox/components';
+import { Stack, Avatar, Menu } from '@codesandbox/components';
 
 export const Switcher = () => {
+  const { setActiveTeam } = useActions();
   const { dashboard, activeTeamInfo, personalWorkspaceId } = useAppState();
 
   if (!dashboard.teams || !personalWorkspaceId) return null;
@@ -28,20 +29,32 @@ export const Switcher = () => {
 
   return (
     <Stack justify="space-between" align="center">
-      <Stack>
-        <TeamAvatar
-          size="bigger"
-          avatar={activeTeamInfo?.avatarUrl}
-          name={activeTeamInfo.name}
-        />
+      <Menu>
+        <Stack as={Menu.Button}>
+          <TeamAvatar
+            size="bigger"
+            avatar={activeTeamInfo?.avatarUrl}
+            name={activeTeamInfo.name}
+          />
 
-        <Stack css={{ marginLeft: 24, marginTop: -6 }} direction="vertical">
-          <Title>{activeTeamInfo.name}</Title>
-          <Caption>
-            {isPersonalWorkspace ? 'personal team' : memberLabel}
-          </Caption>
+          <Stack css={{ marginLeft: 24, marginTop: -6 }} direction="vertical">
+            <Title>{activeTeamInfo.name}</Title>
+            <Caption>
+              {isPersonalWorkspace ? 'personal team' : memberLabel}
+            </Caption>
+          </Stack>
         </Stack>
-      </Stack>
+        <Menu.List>
+          {workspaces.map(workspace => (
+            <Menu.Item
+              onSelect={() => setActiveTeam(workspace)}
+              key={workspace.id}
+            >
+              {workspace.name}
+            </Menu.Item>
+          ))}
+        </Menu.List>
+      </Menu>
 
       <Stack>
         {!isPersonalWorkspace && (
@@ -73,6 +86,18 @@ const Title = styled.p`
   font-size: 32px;
   line-height: 42px;
   margin: 0;
+  position: relative;
+
+  color: #fff;
+
+  &:after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: calc(50% - 4px);
+    border: 5px solid transparent;
+    border-top: 7px solid white;
+  }
 `;
 
 const Caption = styled.p`
@@ -81,6 +106,7 @@ const Caption = styled.p`
   font-size: 16px;
   line-height: 24px;
   margin: 0;
+  text-align: left;
 
   color: #808080;
 `;
