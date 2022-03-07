@@ -1,10 +1,13 @@
-import styled from 'styled-components';
-import TeamMember from '../../components/TeamMember';
+import styled from "styled-components";
+import TeamMember from "../../components/TeamMember";
 
 export const PageTitle = styled.h1`
-  font-weight: 900;
+  font-family: "TWKEverett", sans-serif;
+  font-weight: normal;
   font-size: 48px;
-  color: ${props => props.theme.homepage.white};
+  line-height: 120%;
+  letter-spacing: -0.0125em;
+  color: ${(props) => props.theme.homepage.white};
   margin-bottom: 40px;
 
   @media screen and (max-width: 900px) {
@@ -15,8 +18,8 @@ export const PageTitle = styled.h1`
 
 export const PageSubtitle = styled.h2`
   font-size: 23px;
-  line-height: 1.5;
-  color: ${props => props.theme.homepage.white};
+  line-height: 120%;
+  color: ${(props) => props.theme.homepage.white};
   font-weight: bold;
   margin-bottom: 24px;
 `;
@@ -25,7 +28,7 @@ export const TitleDescription = styled.p`
   font-weight: 400;
   font-size: 18px;
   line-height: 1.5;
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   margin-bottom: 120px;
 
   @media screen and (max-width: 900px) {
@@ -38,7 +41,7 @@ export const Job = styled.li`
   list-style: none;
   font-size: 19px;
   line-height: 33px;
-  color: ${props => props.theme.homepage.white};
+  color: ${(props) => props.theme.homepage.white};
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -101,7 +104,7 @@ export const ImageGallery = styled.div`
   }
 `;
 
-export const TeamMemberRandom = styled(TeamMember).attrs(props => ({
+export const TeamMemberRandom = styled(TeamMember).attrs((props) => ({
   border: true,
   noHover: true,
   ...props,

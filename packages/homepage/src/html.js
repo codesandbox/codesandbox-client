@@ -10,6 +10,8 @@ export default function HTML(props) {
       <head>
         <meta charSet="utf-8" />
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />
+
+        <link href="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt; &lt;style&gt; svg { background: transparent; } path { fill: black; } @media (prefers-color-scheme: dark)  { path { fill: white; } } &lt;/style&gt; &lt;path fill-rule='evenodd' clip-rule='evenodd' d='M81.8182 18.1818V81.8182H18.1818V18.1818H81.8182ZM10 90V10H90V90H10Z'/&gt;&#10;&lt;/svg&gt;" rel="icon"/>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"

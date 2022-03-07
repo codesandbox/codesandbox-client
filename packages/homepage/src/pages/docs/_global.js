@@ -1,4 +1,4 @@
-import { createGlobalStyle, css } from 'styled-components';
+import { createGlobalStyle, css } from "styled-components";
 
 export const Global = createGlobalStyle`
   body {
@@ -229,7 +229,7 @@ export const FAQStyle = css`
     }
 
     &:after {
-      content: '';
+      content: "";
       height: 14px;
       width: 9px;
       background-image: url('data:image/svg+xml,%3Csvg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M6.67512e-07 7.00014L9 1.03507e-06L9 14L6.67512e-07 7.00014Z" fill="%23343434"/%3E%3C/svg%3E%0A');

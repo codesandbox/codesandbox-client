@@ -141,7 +141,8 @@ function resolvePath(
   currentTModule: TranspiledModule,
   manager: Manager,
   defaultExtensions: Array<string> = DEFAULT_EXTENSIONS,
-  meta: Meta = {}
+  meta: Meta = {},
+  ignoreDepNameVersion: string = ''
 ): Promise<string> {
   const currentPath = currentTModule.module.path;
 
@@ -165,7 +166,10 @@ function resolvePath(
         const depName = getDependencyName(depPath);
 
         // To prevent infinite loops we keep track of which dependencies have been requested before.
-        if (!manager.transpiledModules[p] && !meta[p]) {
+        if (
+          (!manager.transpiledModules[p] && !meta[p]) ||
+          ignoreDepNameVersion === depName
+        ) {
           const err = new Error('Could not find ' + p);
           // @ts-ignore
           err.code = 'ENOENT';
@@ -238,11 +242,14 @@ async function getDependencyVersion(
   const { manifest } = manager;
 
   try {
+    const filepath = pathUtils.join(dependencyName, 'package.json');
     const foundPackageJSONPath = await resolvePath(
-      pathUtils.join(dependencyName, 'package.json'),
+      filepath,
       currentTModule,
       manager,
-      []
+      [],
+      {},
+      dependencyName
     );
 
     // If the dependency is in the root we get it from the manifest, as the manifest

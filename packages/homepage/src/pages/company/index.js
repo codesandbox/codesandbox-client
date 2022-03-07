@@ -186,7 +186,7 @@ export default () => (
               display: block;
               margin-top: 40px;
               text-decoration: none;
-              color: #0971f1;
+              color: rgb(237, 255, 165);
               font-weight: 700;
             `}
           >
@@ -239,6 +239,7 @@ export default () => (
         <TeamMember name="ioana" />
         <TeamMember name="artem" />
         <TeamMember name="aj" />
+        <TeamMember name="joji" />
 
         <Link
           to={`/jobs`}
@@ -398,7 +399,7 @@ export default () => (
               display: block;
               margin: 40px;
               text-decoration: none;
-              color: #0971f1;
+              color: rgb(237, 255, 165);
               font-weight: 700;
             `}
           >

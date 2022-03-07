@@ -47,7 +47,7 @@ export default () => {
       <TitleAndMetaTags title="Enterprise Plan - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Accelerate innovation</Title>
+          <Title>Accelerate innovation.</Title>
         </TitleWrapper>
         <Description>
           Move faster and innovate more with better code collaboration. Combined
@@ -69,7 +69,7 @@ export default () => {
           <div>
             <Subtitle>
               <H6>Collaboration</H6>
-              Build in the open
+              Build in the open.
             </Subtitle>
           </div>
           <FeaturedImage bg={bg}>
@@ -109,7 +109,7 @@ export default () => {
           <div>
             <Subtitle center>
               <H6 center>Prototyping</H6>
-              Share design system knowledge
+              Share design <br /> system knowledge.
             </Subtitle>
           </div>
 
@@ -196,7 +196,7 @@ export default () => {
         </div>
 
         <CTA
-          title="Custom deploy options & support"
+          title="Custom deploy options & support."
           subtitle="Get the security and support your organization needs."
           cta="Contact us"
           link="mailto:support@codesandbox.io"

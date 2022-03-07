@@ -7,15 +7,17 @@ import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 import { useTheme } from '../layout';
 import Button from '../Button';
-import Logo from '../../assets/images/logo.svg';
+import Logo from '../../assets/logo';
+
 import SupportIcon from '../../assets/icons/Support';
 import StatusIcon from '../../assets/icons/Status';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
-import IDEIcon from '../../assets/icons/Ide';
+// import IDEIcon from "../../assets/icons/Ide";
 import FeedbackIcon from '../../assets/icons/Feedback';
-import PrototypeIcon from '../../assets/icons/Prototype';
-import TeamsIcon from '../../assets/icons/Teams';
+// import PrototypeIcon from "../../assets/icons/Prototype";
+// import TeamsIcon from "../../assets/icons/Teams";
+import SandpackIcon from '../../assets/icons/Sandpack';
 import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
 import NewIcon from '../../assets/icons/New';
@@ -28,7 +30,6 @@ import {
   Wrapper,
   UserAvatar,
   LogoWrapper,
-  LogoImage,
   List,
   LogIn,
   Jobs,
@@ -112,8 +113,7 @@ const Navigation = () => {
               <Nav>
                 <Wrapper>
                   <LogoWrapper to="/">
-                    <LogoImage src={Logo} alt="CodeSandbox Logo" />
-                    CodeSandbox
+                    <Logo />
                   </LogoWrapper>
                   {!compactMenu && (
                     <List>
@@ -189,9 +189,10 @@ const Navigation = () => {
                     )}
                     <LogIn onMouseEnter={() => setOpenedNav(null)}>
                       <Button
-                        css={`
-                          background: #5962df;
-                        `}
+                        // css={`
+                        //   background: #DCFF50;
+                        //   color: #171618;
+                        // `}
                         className="button"
                         href="/s"
                       >
@@ -272,9 +273,7 @@ const Navigation = () => {
                         </a>
                       ),
                       Label: () => (
-                        <a href="mailto:support@codesandbox.io">
-                          Contact Support
-                        </a>
+                        <a href="mailto:support@codesandbox.io">Contact</a>
                       ),
                     },
                     {
@@ -305,30 +304,53 @@ const Navigation = () => {
                   hasOpened={hasOpened}
                   name="product"
                   components={[
+                    // {
+                    //   Icon: () => (
+                    //     <Link to="/ide">
+                    //       <IDEIcon />
+                    //     </Link>
+                    //   ),
+                    //   Label: () => <Link to="/ide">Coding</Link>,
+                    // },
+                    // {
+                    //   Icon: () => (
+                    //     <Link to="/prototyping">
+                    //       <PrototypeIcon />
+                    //     </Link>
+                    //   ),
+                    //   Label: () => <Link to="/prototyping">Prototyping</Link>,
+                    // },
+                    // {
+                    //   Icon: () => (
+                    //     <Link to="/knowledge-sharing/">
+                    //       <TeamsIcon />
+                    //     </Link>
+                    //   ),
+                    //   Label: () => (
+                    //     <Link to="/knowledge-sharing/">Knowledge Sharing</Link>
+                    //   ),
+                    // },
+
                     {
                       Icon: () => (
-                        <Link to="/ide">
-                          <IDEIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/ide">Coding</Link>,
-                    },
-                    {
-                      Icon: () => (
-                        <Link to="/prototyping">
-                          <PrototypeIcon />
-                        </Link>
-                      ),
-                      Label: () => <Link to="/prototyping">Prototyping</Link>,
-                    },
-                    {
-                      Icon: () => (
-                        <Link to="/knowledge-sharing/">
-                          <TeamsIcon />
-                        </Link>
+                        <a
+                          href="https://sandpack.codesandbox.io/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Sandpack"
+                        >
+                          <SandpackIcon />
+                        </a>
                       ),
                       Label: () => (
-                        <Link to="/knowledge-sharing/">Knowledge Sharing</Link>
+                        <a
+                          href="https://sandpack.codesandbox.io/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Sandpack"
+                        >
+                          Sandpack
+                        </a>
                       ),
                     },
                     {
@@ -345,7 +367,7 @@ const Navigation = () => {
                           <NewIcon />
                         </Link>
                       ),
-                      Label: () => <Link to="/changelog">What's New</Link>,
+                      Label: () => <Link to="/changelog">What's new</Link>,
                     },
                   ]}
                 />
@@ -360,9 +382,7 @@ const Navigation = () => {
                           <HighlightedICon />
                         </Link>
                       ),
-                      Label: () => (
-                        <Link to="/explore">Featured Sandboxes</Link>
-                      ),
+                      Label: () => <Link to="/explore">Featured</Link>,
                     },
                     {
                       Icon: () => (
@@ -370,7 +390,7 @@ const Navigation = () => {
                           <SearchIcon />
                         </a>
                       ),
-                      Label: () => <a href="/search">Search Sandboxes</a>,
+                      Label: () => <a href="/search">Search</a>,
                     },
                   ]}
                 />

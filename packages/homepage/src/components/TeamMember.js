@@ -28,6 +28,7 @@ import lena from '../assets/images/people/lena.png';
 import ioana from '../assets/images/people/ioana.jpg';
 import artem from '../assets/images/people/artem.png';
 import aj from '../assets/images/people/aj.jpg';
+import joji from '../assets/images/people/joji.png';
 
 const people = [
   {
@@ -184,14 +185,20 @@ const people = [
     name: 'Artem Zakharchenko',
     pic: artem,
     color: '#FF6A33',
-    team: 'Engineering'
+    team: 'Engineering',
   },
   {
     name: 'AJ Foster',
     pic: aj,
     color: '#8c50b5',
-    team: 'Engineering'
-  }
+    team: 'Engineering',
+  },
+  {
+    name: 'Joji Augustine',
+    pic: joji,
+    color: '#008900',
+    team: 'Engineering',
+  },
 ];
 
 const Peep = styled.img`

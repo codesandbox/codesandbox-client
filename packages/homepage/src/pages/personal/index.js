@@ -53,7 +53,7 @@ export default () => {
       <TitleAndMetaTags title="Personal Plan - CodeSandbox" />
       <Wrapper>
         <TitleWrapper>
-          <Title>Experiment and learn without setup hassle</Title>
+          <Title>Experiment and learn without setup hassle.</Title>
         </TitleWrapper>
         <Description>
           Go straight to coding with instant sandboxes for rapid web
@@ -67,7 +67,7 @@ export default () => {
             margin: 2rem 0;
           `}
         >
-          <Button cta href="https://codesandbox.io/s/">
+          <Button href="https://codesandbox.io/s/" big>
             Get Started
           </Button>
         </div>
@@ -241,7 +241,7 @@ export default () => {
         </div>
 
         <CTA
-          title="For power-users & freelancers
+          title="For power-users & freelancers.
           "
           subtitle="Keep work private, get more space and higher upload limits.
           "

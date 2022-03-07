@@ -26,9 +26,9 @@ import { UserMenu } from 'app/pages/common/UserMenu';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Notifications } from 'app/components/Notifications';
-import { PlusIcon } from 'app/components/CreateNewSandbox/CreateSandbox/Icons';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { PlusIcon } from 'app/components/CreateNewSandbox/CreateSandbox/Icons';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -108,7 +108,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
 
           <Button
             variant="primary"
-            css={css({ width: 'auto', paddingX: 3 })}
+            css={css({ width: 'auto', paddingX: 3, marginLeft: 4 })}
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               openCreateSandboxModal({});

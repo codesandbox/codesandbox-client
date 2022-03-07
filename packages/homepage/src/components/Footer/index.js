@@ -20,7 +20,7 @@ const footerNavElements = [
         link: '/prototyping',
       },
       {
-        text: 'Knowledge Sharing',
+        text: 'Knowledge sharing',
         link: '/knowledge-sharing',
       },
       {
@@ -28,12 +28,7 @@ const footerNavElements = [
         link: '/feedback',
       },
       {
-        text: 'Sandpack',
-        external: true,
-        link: 'https://sandpack.codesandbox.io/',
-      },
-      {
-        text: 'What’s New',
+        text: 'What’s new',
         link: '/changelog',
       },
     ],
@@ -42,12 +37,12 @@ const footerNavElements = [
     title: 'Explore',
     elements: [
       {
-        text: 'Featured Sandboxes',
+        text: 'Featured sandboxes',
         link: '/explore',
       },
       {
         external: true,
-        text: 'Search Sandboxes',
+        text: 'Search sandboxes',
         link: '/search',
       },
     ],
@@ -94,11 +89,11 @@ const footerNavElements = [
         count: OPEN_JOBS_COUNT,
       },
       {
-        text: 'Terms Of Use',
+        text: 'Terms of use',
         link: '/legal/terms',
       },
       {
-        text: 'Privacy Policy',
+        text: 'Privacy policy',
         link: '/legal/privacy',
       },
     ],
@@ -111,7 +106,7 @@ const footerNavElements = [
         link: '/docs',
       },
       {
-        text: 'Contact Support',
+        text: 'Contact support',
         external: true,
         link: 'mailto:support@codesandbox.io',
       },
@@ -175,7 +170,7 @@ const Footer = () => (
         text-align: center;
       `}
     >
-      Copyright © {new Date().getFullYear()} CodeSandbox BV
+      Copyright © {new Date().getFullYear()} CodeSandbox BV.
     </P>
   </FooterWrapper>
 );

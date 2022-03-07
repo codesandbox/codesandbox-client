@@ -31,9 +31,9 @@ const SwitchInput = styled.input({
   left: -100,
 });
 
-const SwitchContainer = styled.div(({ theme }) => ({
+const SwitchContainer = styled.div(() => ({
   'input:checked + [data-component=SwitchBackground]': {
-    backgroundColor: theme.homepage.blue,
+    backgroundColor: `#7B61FF`,
   },
   'input:checked + [data-component=SwitchBackground] [data-component=SwitchToggle]': {
     left: 20,
