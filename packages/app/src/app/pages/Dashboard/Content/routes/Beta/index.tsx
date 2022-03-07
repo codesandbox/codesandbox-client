@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { sortBy } from 'lodash-es';
 import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
@@ -18,13 +19,19 @@ export const BetaRepositoriesPage = () => {
   }, [actions.dashboard]);
 
   const items: DashboardGridItem[] = sandboxes.BETA
-    ? [
+    ? ([
         { type: 'beta-new-repo' },
-        ...sandboxes.BETA.map(sandbox => ({
-          type: 'beta-repo' as const,
-          sandbox,
-        })),
-      ]
+        ...sortBy(
+          sandboxes.BETA.map(sandbox => ({
+            type: 'beta-repo' as const,
+            sandbox,
+          })),
+          s => {
+            const repoName = `${s.sandbox.gitv2.owner}/${s.sandbox.gitv2.repo}`.toLocaleLowerCase();
+            return repoName;
+          }
+        ),
+      ].filter(Boolean) as DashboardGridItem[])
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const pageType: PageTypes = 'repos';
@@ -32,16 +39,25 @@ export const BetaRepositoriesPage = () => {
   return (
     <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>
       <Helmet>
-        <title>Beta repositories - CodeSandbox</title>
+        <title>Beta Repositories - CodeSandbox</title>
       </Helmet>
       <Header
         activeTeam={activeTeam}
         repos
         path="Beta"
+        showViewOptions={false}
         showFilters={false}
         showSortOptions={false}
+        actions={[
+          {
+            title: '+ Import Repository',
+            action: () => {
+              actions.openImportBetaSandboxModal();
+            },
+          },
+        ]}
       />
-      <VariableGrid page={pageType} items={items} />
+      <VariableGrid viewMode="list" page={pageType} items={items} />
     </SelectionProvider>
   );
 };

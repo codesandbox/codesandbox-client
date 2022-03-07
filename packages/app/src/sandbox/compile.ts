@@ -314,7 +314,12 @@ async function initializeManager(
   {
     hasFileResolver = false,
     customNpmRegistries = [],
-  }: { hasFileResolver?: boolean; customNpmRegistries?: NpmRegistry[] } = {}
+    reactDevTools,
+  }: {
+    hasFileResolver?: boolean;
+    customNpmRegistries?: NpmRegistry[];
+    reactDevTools?: 'legacy' | 'latest';
+  } = {}
 ) {
   const newManager = new Manager(
     sandboxId,
@@ -323,6 +328,7 @@ async function initializeManager(
     {
       hasFileResolver,
       versionIdentifier: SCRIPT_VERSION,
+      reactDevTools,
     }
   );
 
@@ -403,6 +409,24 @@ function initializeDOMMutationListener() {
   });
 }
 
+let resizePollingTimer;
+function resizePolling() {
+  clearInterval(resizePollingTimer);
+  resizePollingTimer = setInterval(sendResize, 500);
+
+  window.addEventListener('unload', () => {
+    clearInterval(resizePollingTimer);
+  });
+}
+
+function onWindowResize() {
+  window.addEventListener('resize', sendResize);
+
+  window.addEventListener('unload', () => {
+    window.removeEventListener('resize', sendResize);
+  });
+}
+
 function overrideDocumentClose() {
   const oldClose = window.document.close;
 
@@ -434,6 +458,7 @@ interface CompileOptions {
   hasFileResolver?: boolean;
   disableDependencyPreprocessing?: boolean;
   clearConsoleDisabled?: boolean;
+  reactDevTools?: 'legacy' | 'latest';
 }
 
 async function compile(opts: CompileOptions) {
@@ -453,6 +478,7 @@ async function compile(opts: CompileOptions) {
     hasFileResolver = false,
     disableDependencyPreprocessing = false,
     clearConsoleDisabled = false,
+    reactDevTools,
   } = opts;
 
   if (firstLoad) {
@@ -520,6 +546,7 @@ async function compile(opts: CompileOptions) {
       (await initializeManager(sandboxId, template, modules, configurations, {
         hasFileResolver,
         customNpmRegistries,
+        reactDevTools,
       }));
 
     let dependencies: NPMDependencies = getDependencies(
@@ -587,7 +614,7 @@ async function compile(opts: CompileOptions) {
         template,
         modules,
         configurations,
-        { hasFileResolver }
+        { hasFileResolver, reactDevTools }
       );
     }
 
@@ -859,6 +886,11 @@ async function compile(opts: CompileOptions) {
     initializeDOMMutationListener();
   }
 
+  onWindowResize();
+  resizePolling();
+
+  sendResize();
+
   firstLoad = false;
 
   dispatch({ type: 'status', status: 'idle' });
@@ -878,7 +910,7 @@ let runningTask = null;
 async function executeTaskIfAvailable() {
   if (tasks.length) {
     runningTask = tasks.pop();
-    await compile(runningTask);
+    await compile(runningTask).catch(console.error);
     runningTask = null;
 
     executeTaskIfAvailable();

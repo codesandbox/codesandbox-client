@@ -31,12 +31,6 @@ export const PROJECT_SUMMARY: INavigationItem = {
   hasCustomHeader: true,
 };
 
-export const GITHUB_SUMMARY: INavigationItem = {
-  id: 'github-summary',
-  name: 'GitHub Info',
-  hasCustomHeader: true,
-};
-
 export const SEARCH: INavigationItem = {
   id: 'search',
   name: 'Search',
@@ -142,7 +136,7 @@ export default function getItems(
     getTemplate(currentSandbox.template).isServer;
 
   if (currentSandbox.git) {
-    const gitItems = [GITHUB_SUMMARY];
+    const gitItems = [PROJECT_SUMMARY];
 
     if (
       isServer &&

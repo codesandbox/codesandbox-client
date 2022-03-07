@@ -1,13 +1,13 @@
-require('dotenv').config();
+require("dotenv").config();
 
 module.exports = {
   siteMetadata: {
     title: `CodeSandbox`,
-    siteUrl: 'https://codesandbox.io',
+    siteUrl: "https://codesandbox.io",
   },
   plugins: [
-    'gatsby-transformer-sharp',
-    'gatsby-plugin-sharp',
+    "gatsby-transformer-sharp",
+    "gatsby-plugin-sharp",
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -16,9 +16,9 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-source-filesystem',
+      resolve: "gatsby-source-filesystem",
       options: {
-        name: 'content',
+        name: "content",
         path: `${__dirname}/content/`,
       },
     },
@@ -28,6 +28,7 @@ module.exports = {
       options: {
         pedantic: false,
         plugins: [
+          `gatsby-remark-component`,
           `gatsby-remark-copy-linked-files`,
           {
             resolve: `gatsby-remark-images`,
@@ -37,14 +38,14 @@ module.exports = {
             },
           },
           { resolve: require.resolve(`./plugins/remark-sections`) },
-          'gatsby-remark-autolink-headers',
+          "gatsby-remark-autolink-headers",
           `gatsby-remark-prismjs`,
           `gatsby-remark-embedder`,
         ],
       },
     },
     {
-      resolve: 'gatsby-plugin-react-svg',
+      resolve: "gatsby-plugin-react-svg",
       options: {
         rule: {
           include: /screens/, // See below to configure properly
@@ -52,41 +53,27 @@ module.exports = {
       },
     },
     {
-      resolve: 'gatsby-plugin-nprogress',
+      resolve: "gatsby-plugin-nprogress",
       options: {
-        color: '#40A9F3',
+        color: "#40A9F3",
       },
     },
     `gatsby-plugin-twitter`,
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-remove-trailing-slashes`,
-    { resolve: `gatsby-plugin-sitemap`, options: { exclude: ['/index2'] } },
+    { resolve: `gatsby-plugin-sitemap`, options: { exclude: ["/index2"] } },
     {
       resolve: `gatsby-plugin-google-tagmanager`,
       options: {
-        id: 'GTM-T3L6RFK',
+        id: "GTM-T3L6RFK",
       },
     },
     {
       resolve: `gatsby-plugin-google-fonts`,
       options: {
-        fonts: ['open sans:400', 'roboto:400i,400'],
-        display: 'swap',
-      },
-    },
-    {
-      resolve: `gatsby-source-airtable`,
-      options: {
-        apiKey: 'keyJugfwdJzOyL7Aa',
-        tables: [
-          {
-            baseId: `app7kKUn5uIviyA1f`,
-            tableName: `Table`,
-            tableView: `Grid view`,
-            queryName: `starters`,
-          },
-        ],
+        fonts: ["open sans:400", "roboto:400i,400"],
+        display: "swap",
       },
     },
   ],

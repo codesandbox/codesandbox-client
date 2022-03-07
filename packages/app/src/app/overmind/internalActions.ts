@@ -219,6 +219,9 @@ export const runProviderAuth = (
 
   effects.browser.waitForMessage('signup').then((data: any) => {
     state.pendingUserId = data.id;
+
+    localStorage.setItem('should-onboarding-user', 'true');
+
     popup.close();
   });
 
@@ -514,7 +517,7 @@ export const handleError = (
     };
   } else if (
     error.message.startsWith(
-      'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact hello@codesandbox.io for more server sandboxes.'
+      'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact support@codesandbox.io for more server sandboxes.'
     )
   ) {
     effects.analytics.track('Patron Server Sandbox Limit Reached', {

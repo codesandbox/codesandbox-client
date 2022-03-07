@@ -28,6 +28,11 @@ const footerNavElements = [
         link: '/feedback',
       },
       {
+        text: 'Sandpack',
+        external: true,
+        link: 'https://sandpack.codesandbox.io/',
+      },
+      {
         text: 'What’s New',
         link: '/changelog',
       },
@@ -108,7 +113,7 @@ const footerNavElements = [
       {
         text: 'Contact Support',
         external: true,
-        link: 'mailto:hello@codesandbox.io',
+        link: 'mailto:support@codesandbox.io',
       },
       {
         text: 'Status',

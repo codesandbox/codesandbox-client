@@ -66,12 +66,20 @@ type State = {
     google: boolean;
     github: boolean;
   };
+  sandboxesLimits?: {
+    sandboxCount: number;
+    sandboxLimit: number;
+  } | null;
 };
 
 export const state: State = {
   pendingUserId: null,
   pendingUser: null,
   isFirstVisit: false,
+  /**
+   * Important, only use this to see if someone has patron, you should not check this to see if someone
+   * has pro.
+   */
   isPatron: derived(({ user }: State) =>
     Boolean(user && user.subscription && user.subscription.since)
   ),

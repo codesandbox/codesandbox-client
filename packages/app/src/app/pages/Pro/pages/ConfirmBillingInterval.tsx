@@ -32,7 +32,7 @@ export const ConfirmBillingInterval: React.FC = () => {
       });
     } catch {
       notificationToast.error(
-        'There was a problem updating your billing interval. Please email us at hello@codesandbox.io'
+        'There was a problem updating your billing interval. Please email us at support@codesandbox.io'
       );
     }
   };

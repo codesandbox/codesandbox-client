@@ -225,12 +225,21 @@ export default () => (
         <TeamMember name="danilo" />
         <TeamMember name="matan" />
         <TeamMember name="scott" />
-        <TeamMember name="kate" />
         <TeamMember name="tamas" />
         <TeamMember name="jasper" />
         <TeamMember name="joana" />
         <TeamMember name="roman" />
         <TeamMember name="marco" />
+        <TeamMember name="james" />
+        <TeamMember name="gianmarco" />
+        <TeamMember name="adewale" />
+        <TeamMember name="maria" />
+        <TeamMember name="lena" />
+        <TeamMember name="necoline" />
+        <TeamMember name="ioana" />
+        <TeamMember name="artem" />
+        <TeamMember name="aj" />
+
         <Link
           to={`/jobs`}
           css={`

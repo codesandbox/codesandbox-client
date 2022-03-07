@@ -125,6 +125,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                     }
                     name={team.name}
                     size="small"
+                    style={{ overflow: 'hidden' }}
                   />
                   <Stack align="center">
                     <Text css={css({ width: '100%' })} size={3}>

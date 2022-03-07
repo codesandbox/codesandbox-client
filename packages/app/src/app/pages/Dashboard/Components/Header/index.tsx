@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { Breadcrumbs } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
@@ -10,8 +11,14 @@ import { SortOptions } from '../Filters/SortOptions';
 import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid';
 import { TemplateFilter } from '../../Content/utils';
 
+export interface IAction {
+  title: string;
+  action: () => void;
+}
+
 type Props = {
   templates?: TemplateFilter[];
+  actions?: IAction[];
   path?: string;
   title?: string;
   createNewFolder?: () => void;
@@ -36,9 +43,10 @@ export const Header = ({
   showViewOptions = false,
   showSortOptions = false,
   CustomFilters,
+  actions = [],
 }: Props) => {
   const location = useLocation();
-  const { modals } = useActions();
+  const { modals, openImportBetaSandboxModal } = useActions();
   const { dashboard } = useAppState();
 
   return (
@@ -87,6 +95,38 @@ export const Header = ({
           dashboard.viewMode === 'list' && (
             <Button
               onClick={() => modals.newSandboxModal.open({})}
+              variant="link"
+              css={css({
+                fontSize: 2,
+                color: 'mutedForeground',
+                padding: 0,
+                width: 'auto',
+              })}
+            >
+              + Import Repo
+            </Button>
+          )}
+
+        {actions.map(action => (
+          <Button
+            key={action.title}
+            onClick={action.action}
+            variant="link"
+            css={css({
+              fontSize: 2,
+              color: 'mutedForeground',
+              padding: 0,
+              width: 'auto',
+            })}
+          >
+            {action.title}
+          </Button>
+        ))}
+
+        {location.pathname.includes(dashboardUrls.beta()) &&
+          dashboard.viewMode === 'list' && (
+            <Button
+              onClick={() => openImportBetaSandboxModal()}
               variant="link"
               css={css({
                 fontSize: 2,

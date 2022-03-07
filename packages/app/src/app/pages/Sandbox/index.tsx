@@ -8,6 +8,7 @@ import { Helmet } from 'react-helmet';
 
 import { Editor } from './Editor';
 import { GitHubError } from './GitHubError';
+import { OnBoarding } from './OnBoarding';
 
 interface Props {
   showNewSandboxModal?: boolean;
@@ -158,6 +159,7 @@ export const Sandbox = React.memo<Props>(
         <Helmet>
           <title>{getTitle()} - CodeSandbox</title>
         </Helmet>
+        <OnBoarding />
         <Editor showNewSandboxModal={showNewSandboxModal} />
       </>
     );

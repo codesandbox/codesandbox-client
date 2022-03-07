@@ -42,6 +42,10 @@ const SANDBOXES = [
   'circle-svg', // svgs don't render properly if you use document.createElement
   'vue-3-basics-program-easily', // vue w/ custom html
   'scss-mixins',
+  'vue-2-css-module-vuzkt',
+  'scss-bulma-ikgrv',
+  //  'gpgpu-curl-noise-yq6y8', // leva (based on stitches)
+  'vx55c', // react stitches
 ];
 
 // Logic for parallelizing the tests

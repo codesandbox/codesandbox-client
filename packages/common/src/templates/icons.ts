@@ -21,6 +21,7 @@ import {
   MDXDeckIcon,
   GridsomeIcon,
   QuasarIcon,
+  RemixIcon,
   SapperIcon,
   JavaScriptIcon,
   VuePressIcon,
@@ -58,6 +59,7 @@ import {
   unibit,
   docusaurus,
   TemplateType,
+  remix,
 } from '.';
 
 export default function getIcon(theme: TemplateType) {
@@ -118,6 +120,9 @@ export default function getIcon(theme: TemplateType) {
       return QuasarIcon;
     case unibit.name:
       return UnibitIcon;
+    case remix.name:
+      return RemixIcon;
+
     default:
       return ReactIcon;
   }

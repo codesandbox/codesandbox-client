@@ -47,37 +47,46 @@ export const Collaborators: FunctionComponent<{
   renderButton: (any) => JSX.Element;
 }> = ({ renderButton }) => {
   const [onboardingVisibility, setOnboardingVisibility] = useState(false);
-  const experimentPromise = useExperimentResult('share-onboarding');
+  const [newOnboardingActive, setNewOnboardingActive] = useState(false);
 
+  /**
+   * Experiment
+   */
+  const experimentPromise = useExperimentResult('signup-onboarding');
   useEffect(() => {
-    let timer;
-
+    /* Wait for the API */
     experimentPromise.then(experiment => {
       if (experiment === ExperimentValues.A) {
         /**
          * A
          */
-        setOnboardingVisibility(false);
+        setNewOnboardingActive(false);
       } else if (experiment === ExperimentValues.B) {
         /**
          * B
          */
-        if (!localStorage.getItem(LOCAL_STORAGE_KEY)) {
-          /**
-           * There're some many things happening in the UI
-           * So, it waits 1s to show up the onboarding
-           */
-          timer = setTimeout(() => {
-            setOnboardingVisibility(true);
-          }, 1000);
-        }
+        setNewOnboardingActive(true);
       }
     });
+  }, [experimentPromise]);
+
+  useEffect(() => {
+    let timer;
+
+    if (!localStorage.getItem(LOCAL_STORAGE_KEY) && !newOnboardingActive) {
+      /**
+       * There're some many things happening in the UI
+       * So, it waits 1s to show up the onboarding
+       */
+      timer = setTimeout(() => {
+        setOnboardingVisibility(true);
+      }, 1000);
+    }
 
     return () => {
       clearTimeout(timer);
     };
-  }, [experimentPromise]);
+  }, []);
 
   const onCloseOnboarding = () => {
     setOnboardingVisibility(false);

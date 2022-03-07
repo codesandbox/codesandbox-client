@@ -63,7 +63,7 @@
     ],
     "jsx-a11y/label-has-for": "off",
     "no-bitwise": "off",
-    "arrow-body-style": ["error", "as-needed"],
+    "arrow-body-style": "off",
     "no-restricted-globals": "off",
     "no-restricted-syntax": "off",
     "lines-between-class-members": [

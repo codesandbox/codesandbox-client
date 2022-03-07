@@ -75,8 +75,6 @@ function getDependencyList(
 }
 
 class ReasonTranspiler extends Transpiler {
-  worker: Worker;
-
   constructor() {
     super('reason-loader');
   }

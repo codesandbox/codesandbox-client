@@ -654,4 +654,10 @@ export default {
   removeUserSetting(id: string): Promise<SettingsSync> {
     return api.delete(`/users/current_user/editor_settings`);
   },
+  sandboxesLimits() {
+    return api.get<{
+      sandboxCount: number;
+      sandboxLimit: number;
+    }>(`/sandboxes/limits`);
+  },
 };

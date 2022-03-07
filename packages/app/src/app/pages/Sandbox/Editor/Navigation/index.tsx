@@ -28,7 +28,6 @@ import {
 const IDS_TO_ICONS = {
   project: InfoIcon,
   'project-summary': InfoIcon,
-  'github-summary': GithubIcon,
   files: ExplorerIcon,
   search: SearchIcon,
   github: GithubIcon,

@@ -3,6 +3,7 @@ import path from 'path';
 import gensync from 'gensync';
 
 import { resolveSync, normalizeModuleSpecifier } from './resolver';
+import { ModuleNotFoundError } from './errors/ModuleNotFound';
 
 const FIXTURE_PATH = path.join(__dirname, 'fixture');
 
@@ -27,7 +28,7 @@ const readFiles = (
   return files;
 };
 
-describe('resolver', () => {
+describe('resolve', () => {
   const files: Map<string, string> = readFiles(
     FIXTURE_PATH,
     FIXTURE_PATH,
@@ -95,6 +96,19 @@ describe('resolver', () => {
       });
       expect(resolved).toBe('/nested/index.js');
     });
+
+    it('should throw a module not found error if not found', () => {
+      expect(() => {
+        resolveSync('/nestedeeeee', {
+          filename: '/nested/test.js',
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          isFile,
+          readFile,
+        });
+      }).toThrowError(
+        new ModuleNotFoundError('/nestedeeeee', '/nested/test.js')
+      );
+    });
   });
 
   describe('node modules', () => {
@@ -118,6 +132,26 @@ describe('resolver', () => {
       expect(resolved).toBe('/node_modules/package-main/main.js');
     });
 
+    it('should resolve a simple node_modules package.main', () => {
+      const resolved = resolveSync('simple', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/simple/entrypoint.js');
+    });
+
+    it('should be able to handle packages with nested package.json files, this is kinda invalid but whatever', () => {
+      const resolved = resolveSync('styled-components/macro', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/styled-components/dist/macro.js');
+    });
+
     it('should resolve a node_modules package.module', () => {
       const resolved = resolveSync('package-module', {
         filename: '/foo.js',
@@ -136,6 +170,16 @@ describe('resolver', () => {
         readFile,
       });
       expect(resolved).toBe('/node_modules/package-browser/browser.js');
+    });
+
+    it('should handle main => browser field', () => {
+      const resolved = resolveSync('solid-js', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/solid-js/dist/solid.cjs');
     });
 
     it('should fall back to index.js when it cannot find package.main', () => {
@@ -188,6 +232,19 @@ describe('resolver', () => {
         readFile,
       });
       expect(resolved).toBe('/node_modules/@scope/pkg/foo/bar.js');
+    });
+
+    it('should throw a module not found error if not found', () => {
+      expect(() => {
+        resolveSync('unknown-module/test.js', {
+          filename: '/nested/test.js',
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          isFile,
+          readFile,
+        });
+      }).toThrowError(
+        new ModuleNotFoundError('unknown-module/test.js', '/nested/test.js')
+      );
     });
   });
 
@@ -242,6 +299,24 @@ describe('resolver', () => {
         readFile,
       });
       expect(resolved).toBe('//empty.js');
+    });
+
+    it('should only resolve package.browser: false if ', () => {
+      const resolved = resolveSync('util/util.js', {
+        filename: '/node_modules/readable-stream/index.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/util/util.js');
+
+      const exactResolved = resolveSync('util', {
+        filename: '/node_modules/readable-stream/index.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(exactResolved).toBe('//empty.js');
     });
   });
 
@@ -329,6 +404,7 @@ describe('resolver', () => {
     });
 
     it('should alias package.exports globs', () => {
+      // Test path normalization as well
       const resolved = resolveSync('package-exports///components/a', {
         filename: '/foo.js',
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -338,6 +414,16 @@ describe('resolver', () => {
       expect(resolved).toBe(
         '/node_modules/package-exports/src/components/a.js'
       );
+    });
+
+    it('should alias package.exports subdirectory globs', () => {
+      const resolved = resolveSync('@zendesk/laika/esm/laika', {
+        filename: '/index.tsx',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/node_modules/@zendesk/laika/esm/laika.js');
     });
 
     it('should alias package.exports object globs', () => {
@@ -369,6 +455,17 @@ describe('resolver', () => {
       });
       expect(resolved).toBe('//empty.js');
     });
+
+    it('should not load exports from the root package.json', () => {
+      expect(() =>
+        resolveSync('a-custom-export', {
+          filename: '/foo.js',
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          isFile,
+          readFile,
+        })
+      ).toThrow();
+    });
   });
 
   describe('normalize module specifier', () => {
@@ -381,6 +478,48 @@ describe('resolver', () => {
       );
       expect(normalizeModuleSpecifier('./foo.js')).toBe('./foo.js');
       expect(normalizeModuleSpecifier('react//test')).toBe('react/test');
+    });
+  });
+
+  describe('tsconfig', () => {
+    it('should be able to resolve relative to basePath of tsconfig.json', () => {
+      const resolved = resolveSync('app', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app/index.js');
+    });
+
+    it('should be able to resolve paths that are simple aliases', () => {
+      const resolved = resolveSync('something-special', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app/something.js');
+    });
+
+    it('should be able to resolve wildcard paths with single char', () => {
+      const resolved = resolveSync('~/app_config/test', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app_config/test.js');
+    });
+
+    it('should be able to resolve wildcard paths with name', () => {
+      const resolved = resolveSync('@app/something', {
+        filename: '/foo.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe('/src/app/something.js');
     });
   });
 });

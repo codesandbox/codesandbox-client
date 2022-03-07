@@ -52,6 +52,12 @@ export const SignInModalElement = ({
     }
 
     if (redirectTo) {
+      if (redirectTo.startsWith('http')) {
+        window.location.href = redirectTo;
+
+        return null;
+      }
+
       return history.push(redirectTo.replace(location.origin, ''));
     }
     setLoadingAuth('github');

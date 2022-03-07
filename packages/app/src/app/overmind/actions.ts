@@ -412,6 +412,7 @@ export const signOutClicked = async ({ state, effects, actions }: Context) => {
     'signedInDev=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   state.hasLogIn = false;
   state.user = null;
+  state.sandboxesLimits = null;
   effects.browser.reload();
 };
 
@@ -615,4 +616,10 @@ export const setLoadingAuth = async (
   provider: 'google' | 'github'
 ) => {
   state.loadingAuth[provider] = !state.loadingAuth[provider];
+};
+
+export const getSandboxesLimits = async ({ effects, state }: Context) => {
+  const limits = await effects.api.sandboxesLimits();
+
+  state.sandboxesLimits = limits;
 };

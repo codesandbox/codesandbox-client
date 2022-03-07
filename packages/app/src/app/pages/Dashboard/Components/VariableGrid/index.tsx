@@ -10,7 +10,7 @@ import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { ImportRepo } from '../Repo/ImportRepo';
 import { ImportRepoBeta } from '../Beta/ImportRepoBeta';
-import { RepoBetaCard } from '../Beta/RepoBetaCard';
+import { RepoBeta } from '../Beta';
 import { Folder } from '../Folder';
 import { Repo } from '../Repo';
 import { CommunitySandbox } from '../CommunitySandbox';
@@ -139,9 +139,7 @@ const ComponentForTypes: IComponentForTypes = {
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
   'beta-new-repo': () => <ImportRepoBeta />,
-  'beta-repo': props => (
-    <RepoBetaCard {...props.item} isScrolling={props.isScrolling} />
-  ),
+  'beta-repo': props => <RepoBeta {...props.item} />,
 };
 
 const Item = React.memo(
@@ -219,12 +217,14 @@ interface VariableGridProps {
   items: DashboardGridItem[];
   collectionId?: string;
   page: PageTypes;
+  viewMode?: 'grid' | 'list';
 }
 
 export const VariableGrid = ({
   items,
   collectionId,
   page,
+  viewMode: propViewMode,
 }: VariableGridProps) => {
   const { dashboard } = useAppState();
 
@@ -232,7 +232,7 @@ export const VariableGrid = ({
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
-  else viewMode = dashboard.viewMode;
+  else viewMode = propViewMode || dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
 
