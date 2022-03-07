@@ -13,7 +13,7 @@ const links = [
     Icon: GithubIcon,
   },
   {
-    href: 'https://discord.gg/Pr4ft3gBTx',
+    href: 'https://discord.gg/C6vfhW3H6e',
     Icon: DiscordIcon,
   },
 ];
@@ -56,6 +56,7 @@ export const Delete: FunctionComponent = () => {
 
       <Element marginBottom={3} paddingX={2}>
         <Stack>
+          <p>Need help? ICons</p>
           {links.map(({ href, Icon }) => (
             <Link
               css={css({ color: 'sideBar.border' })}

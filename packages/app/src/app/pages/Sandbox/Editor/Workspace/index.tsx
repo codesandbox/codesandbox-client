@@ -63,8 +63,8 @@ export const WorkspaceComponent = ({ theme }) => {
           >
             {editor.currentSandbox && <Component />}
           </div>
-
           {isLive && roomInfo.chatEnabled && <Chat />}
+          Need help? ICons
         </>
       </ThemeProvider>
     </Container>

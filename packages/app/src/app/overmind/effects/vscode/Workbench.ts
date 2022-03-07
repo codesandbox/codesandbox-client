@@ -361,7 +361,7 @@ export class Workbench {
     addBrowserNavigationCommand(
       'codesandbox.help.discord',
       'Join our discord server',
-      'https://discord.gg/Pr4ft3gBTx'
+      'https://discord.gg/C6vfhW3H6e'
     );
 
     this.addWorkbenchAction({

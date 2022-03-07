@@ -121,7 +121,7 @@ When we started CodeSandbox, people used it for many more things than we could
 imagine. With Sandpack, we’re hoping to see the same thing. Give it a try, take
 a look at our [new landing page](https://sandpack.codesandbox.io/) and
 [docs](https://sandpack.codesandbox.io/docs) for it and we'd love to get your
-feedback on [Discord](https://discord.gg/Pr4ft3gBTx)! You can also find out more
+feedback on [Discord](https://discord.gg/C6vfhW3H6e)! You can also find out more
 about how it works on [GitHub](https://github.com/codesandbox/sandpack).
 
 ### Thanks
