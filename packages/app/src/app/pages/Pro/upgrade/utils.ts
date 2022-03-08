@@ -45,35 +45,44 @@ export const formatCurrent = ({ currency, unit_amount }: Price) => {
   return formatter.format(unit_amount / 100);
 };
 
-export const createCheckout = async ({
-  team_id,
-  recurring_interval,
-}: Record<'team_id' | 'recurring_interval', string>) => {
+export const useCreateCheckout = () => {
+  const [loading, setLoading] = useState(false);
   const devToken = localStorage.devJwt;
 
-  try {
-    const data = await fetch('/api/v1/checkout', {
-      method: 'POST',
-      body: JSON.stringify({
-        success_path: '/checkout_success',
-        cancel_path: '/checkout_failure',
-        team_id,
-        recurring_interval,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: devToken ? `Bearer ${devToken}` : undefined,
-      },
-    });
+  const createCheckout = async ({
+    team_id,
+    recurring_interval,
+  }: Record<'team_id' | 'recurring_interval', string>) => {
+    try {
+      setLoading(true);
 
-    const payload = await data.json();
+      const data = await fetch('/api/v1/checkout', {
+        method: 'POST',
+        body: JSON.stringify({
+          success_path: '/checkout_success',
+          cancel_path: '/checkout_failure',
+          team_id,
+          recurring_interval,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: devToken ? `Bearer ${devToken}` : undefined,
+        },
+      });
 
-    if (payload.stripe_checkout_url) {
-      window.open(payload.stripe_checkout_url);
-    } else {
-      throw Error(payload);
+      const payload = await data.json();
+
+      setLoading(false);
+
+      if (payload.stripe_checkout_url) {
+        window.location.href = payload.stripe_checkout_url;
+      } else {
+        throw Error(payload);
+      }
+    } catch (err) {
+      console.error(err);
     }
-  } catch (err) {
-    console.error(err);
-  }
+  };
+
+  return { loading, createCheckout };
 };

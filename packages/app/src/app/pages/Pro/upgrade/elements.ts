@@ -14,7 +14,7 @@ export const PlanTitle = styled.h1`
   font-size: 48px;
   line-height: 56px;
   letter-spacing: -0.018em;
-  transition: all 0.2s ease;
+  transition: all 0.6s ease;
 `;
 
 export const UpgradeButton = styled.button`
@@ -27,13 +27,14 @@ export const UpgradeButton = styled.button`
 
   text-decoration: none;
   color: #151515;
-  transition: transform 0.3s ease;
+  transition: background 0.6s ease;
   font-size: 16px;
   line-height: 24px;
 
   display: inline-block;
   width: calc(100% / 2 - 6px);
   box-sizing: border-box;
+  cursor: pointer;
 
   &:disabled {
     opacity: 0.4;
@@ -107,7 +108,6 @@ export const Caption = styled.p`
 export const BoxPlaceholder = styled.div`
   background: #191919;
   border: 1px solid #2a2a2a;
-  margin-bottom: 24px;
   height: 80px;
   display: flex;
 

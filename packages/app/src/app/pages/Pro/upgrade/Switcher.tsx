@@ -16,6 +16,7 @@ import {
   CurrentTeamInfoFragmentFragment,
   SubscriptionType,
   TeamFragmentDashboardFragment,
+  TeamMemberAuthorization,
 } from 'app/graphql/types';
 import { Caption } from './elements';
 
@@ -25,12 +26,14 @@ export const Switcher: React.FC<{
   workspaceType: 'pro' | 'team_pro';
   activeTeamInfo: CurrentTeamInfoFragmentFragment;
   personalWorkspaceId: string;
+  userId: string;
 }> = ({
   workspaces,
   workspaceType,
   setActiveTeam,
   personalWorkspaceId,
   activeTeamInfo,
+  userId,
 }) => {
   const history = useHistory();
 
@@ -43,7 +46,7 @@ export const Switcher: React.FC<{
   return (
     <Stack justify="space-between" align="center">
       <Menu>
-        <Stack as={Menu.Button} css={{ padding: 0 }}>
+        <Stack as={Menu.Button} css={{ padding: 0, height: 'auto' }}>
           <TeamAvatar
             size="bigger"
             avatar={activeTeamInfo?.avatarUrl}
@@ -63,9 +66,9 @@ export const Switcher: React.FC<{
             <Caption
               css={{
                 margin: 0,
-                marginTop: 8,
                 height: 40,
                 lineHeight: '40px',
+                paddingTop: 8,
                 paddingLeft: 24,
                 color: '#999999',
               }}
@@ -74,24 +77,27 @@ export const Switcher: React.FC<{
             </Caption>
 
             {workspaces.map(workspace => {
-              const onSelect = () => {
-                setActiveTeam(workspace);
+              if (!workspace) return null;
 
-                return { CLOSE_MENU: true };
-              };
               const seats = workspace.users.length;
               const seatsLabel = `${seats} member${seats > 1 ? 's' : ''}`;
+
+              const isAdmin =
+                workspace.userAuthorizations.find(
+                  team => team.userId === userId
+                ).authorization === TeamMemberAuthorization.Admin;
               const isPro = [
                 SubscriptionType.TeamPro,
                 SubscriptionType.PersonalPro,
               ].includes(workspace.subscription?.type);
+              const disabled = !isAdmin || isPro;
 
               return (
                 <MenuItem
-                  onSelect={onSelect}
+                  onSelect={() => setActiveTeam(workspace)}
                   key={workspace.id}
-                  disabled={isPro}
-                  style={{ opacity: isPro ? 0.5 : 1 }}
+                  disabled={disabled}
+                  style={{ opacity: disabled ? 0.5 : 1 }}
                 >
                   <Stack css={{ padding: '12px 24px' }} align="center">
                     <TeamAvatar
@@ -227,9 +233,24 @@ const WorkspaceSeats = styled.div`
 const MenuList = styled(Menu.List)`
   &[data-reach-menu-list][data-component='MenuList'] {
     background-color: #373737;
-    border-color: #373737;
-    margin-top: 20px;
+    margin-top: 36px;
     margin-left: -4px;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+
+    &:before {
+      content: '';
+      border: 15px solid transparent;
+      border-bottom: 15px solid #373737;
+      display: block;
+      width: 0;
+      height: 0;
+      position: absolute;
+      left: 50%;
+      top: -30px;
+      transform: translateX(-50%);
+    }
   }
 `;
 
@@ -238,7 +259,7 @@ const MenuItem = styled(Menu.Item)`
     padding: 0;
 
     &[data-selected] {
-      background-color: ${({ theme }) => theme.colors.grays[500]};
+      background-color: #484848;
     }
   }
 `;

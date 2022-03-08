@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import deepmerge from 'deepmerge';
 import css from '@styled-system/css';
 import {
@@ -264,13 +264,7 @@ const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
   }
 );
 
-const MenuItem = (
-  props: ReachMenu.MenuItemProps & {
-    as?: any;
-    disabled?: boolean;
-    style?: CSSProperties;
-  }
-) => {
+const MenuItem = (props: any) => {
   if (props.disabled) {
     return <Element data-component="MenuItem" {...props} />;
   }
