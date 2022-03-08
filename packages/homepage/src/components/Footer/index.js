@@ -158,7 +158,7 @@ const Footer = () => (
         </a>
       </li>
       <li>
-        <a title="Join our Discord Server" href="https://discord.gg/5BpufEP7MH">
+        <a title="Join our Discord Server" href="https://discord.gg/C6vfhW3H6e">
           <Discord />
         </a>
       </li>
