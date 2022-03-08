@@ -1,36 +1,49 @@
 import React from 'react';
-import { useAppState, useActions } from 'app/overmind';
-import { sortBy } from 'lodash-es';
+import { useHistory } from 'react-router-dom';
+
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import styled from 'styled-components';
-import { Stack, Avatar, Menu } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  Stack,
+  Avatar,
+  Menu,
+  Icon,
+  Element,
+  Text,
+} from '@codesandbox/components';
+import {
+  CurrentTeamInfoFragmentFragment,
+  SubscriptionType,
+  TeamFragmentDashboardFragment,
+} from 'app/graphql/types';
+import { Caption } from './elements';
 
-export const Switcher = () => {
-  const { setActiveTeam } = useActions();
-  const { dashboard, activeTeamInfo, personalWorkspaceId } = useAppState();
+export const Switcher: React.FC<{
+  workspaces: TeamFragmentDashboardFragment[];
+  setActiveTeam: (payload?: { id: string }) => Promise<void>;
+  workspaceType: 'pro' | 'team_pro';
+  activeTeamInfo: CurrentTeamInfoFragmentFragment;
+  personalWorkspaceId: string;
+}> = ({
+  workspaces,
+  workspaceType,
+  setActiveTeam,
+  personalWorkspaceId,
+  activeTeamInfo,
+}) => {
+  const history = useHistory();
 
-  if (!dashboard.teams || !personalWorkspaceId) return null;
-
-  const personalWorkspace = dashboard.teams.find(
-    t => t.id === personalWorkspaceId
-  )!;
-
-  const workspaces = [
-    personalWorkspace,
-    ...sortBy(
-      dashboard.teams.filter(t => t.id !== personalWorkspaceId),
-      t => t.name.toLowerCase()
-    ),
-  ];
+  if (!workspaces || workspaces.length === 0) return null;
 
   const members = activeTeamInfo.users.length;
   const memberLabel = `${members} member${members > 1 ? 's' : ''}`;
-  const isPersonalWorkspace = activeTeamInfo.id === personalWorkspaceId;
+  const isPersonalWorkspace = workspaceType === 'pro';
 
   return (
     <Stack justify="space-between" align="center">
       <Menu>
-        <Stack as={Menu.Button}>
+        <Stack as={Menu.Button} css={{ padding: 0 }}>
           <TeamAvatar
             size="bigger"
             avatar={activeTeamInfo?.avatarUrl}
@@ -38,22 +51,107 @@ export const Switcher = () => {
           />
 
           <Stack css={{ marginLeft: 24, marginTop: -6 }} direction="vertical">
-            <Title>{activeTeamInfo.name}</Title>
-            <Caption>
+            <WorkspaceName>{activeTeamInfo.name}</WorkspaceName>
+            <WorkspaceType>
               {isPersonalWorkspace ? 'personal team' : memberLabel}
-            </Caption>
+            </WorkspaceType>
           </Stack>
         </Stack>
-        <Menu.List>
-          {workspaces.map(workspace => (
-            <Menu.Item
-              onSelect={() => setActiveTeam(workspace)}
-              key={workspace.id}
+
+        <MenuList>
+          <Element css={{ minWidth: 290 }}>
+            <Caption
+              css={{
+                margin: 0,
+                marginTop: 8,
+                height: 40,
+                lineHeight: '40px',
+                paddingLeft: 24,
+                color: '#999999',
+              }}
             >
-              {workspace.name}
-            </Menu.Item>
-          ))}
-        </Menu.List>
+              Select team to upgrade
+            </Caption>
+
+            {workspaces.map(workspace => {
+              const onSelect = () => {
+                setActiveTeam(workspace);
+
+                return { CLOSE_MENU: true };
+              };
+              const seats = workspace.users.length;
+              const seatsLabel = `${seats} member${seats > 1 ? 's' : ''}`;
+              const isPro = [
+                SubscriptionType.TeamPro,
+                SubscriptionType.PersonalPro,
+              ].includes(workspace.subscription?.type);
+
+              return (
+                <MenuItem
+                  onSelect={onSelect}
+                  key={workspace.id}
+                  disabled={isPro}
+                  style={{ opacity: isPro ? 0.5 : 1 }}
+                >
+                  <Stack css={{ padding: '12px 24px' }} align="center">
+                    <TeamAvatar
+                      size="small"
+                      avatar={workspace.avatarUrl}
+                      name={workspace.name}
+                    />
+
+                    <Stack
+                      direction="vertical"
+                      css={{ flex: 1, marginLeft: 19 }}
+                    >
+                      <Stack>
+                        <Text size={4}>{workspace.name}</Text>
+                        {isPro && <ProBadge>Pro</ProBadge>}
+                      </Stack>
+
+                      <Text size={3}>
+                        {workspace.id === personalWorkspaceId
+                          ? 'personal team'
+                          : seatsLabel}
+                      </Text>
+                    </Stack>
+
+                    {workspace.id === activeTeamInfo.id && (
+                      <Icon css={{ marginLeft: 16 }} name="simpleCheck" />
+                    )}
+                  </Stack>
+                </MenuItem>
+              );
+            })}
+
+            <MenuItem onSelect={() => history.push(dashboardUrls.createTeam())}>
+              <Stack
+                css={{
+                  marginTop: 12,
+                  padding: 24,
+                  borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+                }}
+                align="center"
+              >
+                <Stack
+                  justify="center"
+                  align="center"
+                  css={{
+                    border: '1px solid #C5C5C5',
+                    width: 24,
+                    height: 24,
+                  }}
+                >
+                  <Icon name="plus" size={14} />
+                </Stack>
+
+                <Text size={4} css={{ marginLeft: 19 }}>
+                  Create a new team
+                </Text>
+              </Stack>
+            </MenuItem>
+          </Element>
+        </MenuList>
       </Menu>
 
       <Stack>
@@ -68,9 +166,9 @@ export const Switcher = () => {
             })}
 
             {members - 3 > 0 && (
-              <AvatarCounter>
+              <WorkspaceSeats>
                 <span>{members - 3}</span>
-              </AvatarCounter>
+              </WorkspaceSeats>
             )}
           </>
         )}
@@ -79,7 +177,7 @@ export const Switcher = () => {
   );
 };
 
-const Title = styled.p`
+const WorkspaceName = styled.p`
   font-family: 'TWKEverett', sans-serif;
   font-style: normal;
   font-weight: 500;
@@ -100,7 +198,7 @@ const Title = styled.p`
   }
 `;
 
-const Caption = styled.p`
+const WorkspaceType = styled.p`
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -111,7 +209,7 @@ const Caption = styled.p`
   color: #808080;
 `;
 
-const AvatarCounter = styled.div`
+const WorkspaceSeats = styled.div`
   background: #373737;
   border: 1 solid #2a2a2a;
   width: 32px;
@@ -124,4 +222,38 @@ const AvatarCounter = styled.div`
     margin: auto;
     font-size: 12px;
   }
+`;
+
+const MenuList = styled(Menu.List)`
+  &[data-reach-menu-list][data-component='MenuList'] {
+    background-color: #373737;
+    border-color: #373737;
+    margin-top: 20px;
+    margin-left: -4px;
+  }
+`;
+
+const MenuItem = styled(Menu.Item)`
+  &[data-reach-menu-item][data-component='MenuItem'] {
+    padding: 0;
+
+    &[data-selected] {
+      background-color: ${({ theme }) => theme.colors.grays[500]};
+    }
+  }
+`;
+
+const ProBadge = styled.p`
+  border-radius: 2px;
+  background-color: rgba(229, 229, 229, 0.1);
+  color: #c5c5c5;
+
+  width: 35px;
+  height: 18px;
+
+  text-align: center;
+  line-height: 18px;
+  font-size: 13px;
+
+  margin: 0 0 0 8px;
 `;

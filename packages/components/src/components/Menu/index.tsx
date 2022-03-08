@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import deepmerge from 'deepmerge';
 import css from '@styled-system/css';
 import {
@@ -264,9 +264,21 @@ const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
   }
 );
 
-const MenuItem = props => (
-  <Element as={ReachMenu.MenuItem} data-component="MenuItem" {...props} />
-);
+const MenuItem = (
+  props: ReachMenu.MenuItemProps & {
+    as?: any;
+    disabled?: boolean;
+    style?: CSSProperties;
+  }
+) => {
+  if (props.disabled) {
+    return <Element data-component="MenuItem" {...props} />;
+  }
+
+  return (
+    <Element as={ReachMenu.MenuItem} data-component="MenuItem" {...props} />
+  );
+};
 
 type MenuLinkProps = {
   to?: string;

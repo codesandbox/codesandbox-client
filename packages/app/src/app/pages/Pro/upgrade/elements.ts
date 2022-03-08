@@ -8,7 +8,7 @@ export const GlobalFonts = createGlobalStyle`
   }
 `;
 
-export const Title = styled.h1`
+export const PlanTitle = styled.h1`
   font-family: 'TWKEverett', sans-serif;
   font-weight: 500;
   font-size: 48px;
@@ -17,7 +17,7 @@ export const Title = styled.h1`
   transition: all 0.2s ease;
 `;
 
-export const Button = styled.button`
+export const UpgradeButton = styled.button`
   border-radius: 3px;
   border: none;
   padding: 8px 20px;
@@ -49,7 +49,7 @@ export const Button = styled.button`
   }
 `;
 
-export const PlanButton = styled.button`
+export const SwitchPlan = styled.button`
   background: #191919;
   border: 1px solid #2a2a2a;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);

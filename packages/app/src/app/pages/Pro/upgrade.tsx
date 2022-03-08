@@ -9,6 +9,7 @@ import {
 import { Helmet } from 'react-helmet';
 import { Navigation } from 'app/pages/common/Navigation';
 import css from '@styled-system/css';
+import { sortBy } from 'lodash-es';
 import {
   usePricing,
   formatCurrent,
@@ -16,17 +17,17 @@ import {
   WorkspaceType,
   Interval,
 } from './upgrade/utils';
-import { WorkspaceSelect } from '../../components/WorkspaceSelect';
 import {
-  Button,
+  UpgradeButton,
   Caption,
   Summary,
   BoxPlaceholder,
-  PlanButton,
+  SwitchPlan,
   GlobalFonts,
-  Title,
+  PlanTitle,
 } from './upgrade/elements';
 import { Switcher } from './upgrade/Switcher';
+import { SubscriptionType, TeamMemberAuthorization } from '../../graphql/types';
 
 const COLOR_SCHEMA: Record<WorkspaceType, string> = {
   pro: '#AC9CFF',
@@ -34,9 +35,18 @@ const COLOR_SCHEMA: Record<WorkspaceType, string> = {
 };
 
 export const ProUpgrade = () => {
-  const { pageMounted } = useActions().pro;
-  const { setActiveTeam } = useActions();
-  const state = useAppState();
+  const {
+    pro: { pageMounted },
+    setActiveTeam,
+  } = useActions();
+  const {
+    activeTeamInfo,
+    dashboard,
+    hasLoadedApp,
+    isLoggedIn,
+    personalWorkspaceId,
+    user,
+  } = useAppState();
   const pricing = usePricing();
 
   const [interval, setIntervalType] = useState<Interval>('month');
@@ -45,39 +55,45 @@ export const ProUpgrade = () => {
     pageMounted();
   }, [pageMounted]);
 
-  if (!state.hasLoadedApp || !state.isLoggedIn || !pricing) return null;
-
-  const workspaceType =
-    (state.activeTeamInfo.id === state.personalWorkspaceId
-      ? 'pro'
-      : 'team_pro') ?? 'pro';
-
-  const usersPermission = state.activeTeamInfo.userAuthorizations.find(
-    item => item.userId === state.user.id
-  );
-
-  const blockButton =
-    usersPermission?.authorization !== 'ADMIN' ||
-    !!state.activeTeamInfo?.subscription?.type;
-
-  const savePercent = () => {
-    const yearByMonth = pricing[workspaceType].year.unit_amount / 12;
-    const month = pricing[workspaceType].month.unit_amount;
-
-    return (((month - yearByMonth) * 100) / month).toFixed(0);
-  };
-
-  const workspaceTypeLabel =
-    workspaceType === 'pro' ? 'Upgrade to Personal Pro' : 'Upgrade to Team Pro';
+  if (!hasLoadedApp || !isLoggedIn || !pricing) return null;
 
   /**
-   * Paid members
+   * Workspace
    */
-  const seats = state.activeTeamInfo.userAuthorizations.filter(
+  const personalWorkspace = dashboard.teams.find(team => {
+    return team.id === personalWorkspaceId;
+  })!;
+  const workspaceType =
+    (activeTeamInfo.id === personalWorkspaceId ? 'pro' : 'team_pro') ?? 'pro';
+  const workspacesList = [
+    personalWorkspace,
+    ...sortBy(
+      dashboard.teams.filter(team => team.id !== personalWorkspaceId),
+      team => team.name.toLowerCase()
+    ),
+  ];
+
+  /**
+   * Members
+   */
+  const usersPermission = activeTeamInfo.userAuthorizations.find(item => {
+    return item.userId === user.id;
+  });
+
+  const isPro = [
+    SubscriptionType.TeamPro,
+    SubscriptionType.PersonalPro,
+  ].includes(activeTeamInfo?.subscription?.type);
+  const isAdmin =
+    usersPermission?.authorization === TeamMemberAuthorization.Admin;
+
+  const paidMembers = activeTeamInfo.userAuthorizations.filter(
     ({ authorization }) =>
-      authorization === 'ADMIN' || authorization === 'WRITE'
-  ).length;
-  const seatsLabel = `${seats} member${seats > 1 ? 's' : ''}`;
+      [TeamMemberAuthorization.Admin, TeamMemberAuthorization.Write].includes(
+        authorization
+      )
+  );
+  const amountPaidMember = paidMembers.length;
 
   const summary = {
     year: {
@@ -86,7 +102,8 @@ export const ProUpgrade = () => {
         unit_amount: pricing[workspaceType].year.unit_amount / 12,
       }),
       total: formatCurrent({
-        unit_amount: (pricing[workspaceType].year.unit_amount / 12) * seats,
+        unit_amount:
+          (pricing[workspaceType].year.unit_amount / 12) * amountPaidMember,
         currency: pricing[workspaceType].year.currency,
       }),
       label: 'per month, billed annually',
@@ -94,11 +111,19 @@ export const ProUpgrade = () => {
     month: {
       price: formatCurrent(pricing[workspaceType].month),
       total: formatCurrent({
-        unit_amount: pricing[workspaceType].month.unit_amount * seats,
+        unit_amount:
+          pricing[workspaceType].month.unit_amount * amountPaidMember,
         currency: pricing[workspaceType].month.currency,
       }),
       label: 'per month',
     },
+  };
+
+  const savePercent = () => {
+    const yearByMonth = pricing[workspaceType].year.unit_amount / 12;
+    const month = pricing[workspaceType].month.unit_amount;
+
+    return (((month - yearByMonth) * 100) / month).toFixed(0);
   };
 
   return (
@@ -130,43 +155,24 @@ export const ProUpgrade = () => {
           })}
         >
           <Element css={{ width: '100%' }}>
-            <Switcher />
-            {/* {state.activeTeamInfo && (
-              <WorkspaceSelect
-                activeAccount={state.activeTeamInfo}
-                onSelect={workspace => {
-                  setActiveTeam({
-                    id: workspace.id,
-                  });
-                }}
-              />
-            )} */}
+            <Switcher
+              workspaceType={workspaceType}
+              workspaces={workspacesList}
+              setActiveTeam={setActiveTeam}
+              personalWorkspaceId={personalWorkspaceId}
+              activeTeamInfo={activeTeamInfo}
+            />
 
-            {/* <Caption>{memberLabel}</Caption>
-
-            {state.activeTeamInfo.users.map((user, index) => {
-              if (index > 2) return null;
-
-              return (
-                <img
-                  style={{ width: 50 }}
-                  src={user.avatarUrl}
-                  alt={user.username}
-                  key={user.id}
-                />
-              );
-            })} */}
-
-            {/* {seats - 3 > 0 ? seats - 3 : null} */}
-
-            <Title style={{ color: COLOR_SCHEMA[workspaceType] }}>
-              {workspaceTypeLabel}
-            </Title>
+            <PlanTitle style={{ color: COLOR_SCHEMA[workspaceType] }}>
+              {workspaceType === 'pro'
+                ? 'Upgrade to Personal Pro'
+                : 'Upgrade to Team Pro'}
+            </PlanTitle>
 
             <Caption>Payment plan</Caption>
 
             <Stack justify="space-between" css={{ marginBottom: 24 }}>
-              <PlanButton
+              <SwitchPlan
                 type="button"
                 onClick={() => setIntervalType('year')}
                 className={interval === 'year' ? 'active' : ''}
@@ -179,9 +185,9 @@ export const ProUpgrade = () => {
                 <p style={{ width: 140 }}>
                   per editor per month, billed annually
                 </p>
-              </PlanButton>
+              </SwitchPlan>
 
-              <PlanButton
+              <SwitchPlan
                 type="button"
                 onClick={() => setIntervalType('month')}
                 className={interval === 'month' ? 'active' : ''}
@@ -191,7 +197,7 @@ export const ProUpgrade = () => {
                 <p className="caption" style={{ width: 100 }}>
                   {summary.month.label}
                 </p>
-              </PlanButton>
+              </SwitchPlan>
             </Stack>
 
             {workspaceType === 'team_pro' && (
@@ -220,7 +226,7 @@ export const ProUpgrade = () => {
                 </Caption>
 
                 <BoxPlaceholder>
-                  <span>{seats}</span>
+                  <span>{amountPaidMember}</span>
                 </BoxPlaceholder>
               </>
             )}
@@ -228,24 +234,28 @@ export const ProUpgrade = () => {
             <Stack direction="horizontal">
               <Element css={{ flex: 1 }} />
 
-              <Button
+              <UpgradeButton
                 style={{ backgroundColor: COLOR_SCHEMA[workspaceType] }}
                 type="button"
                 onClick={() =>
                   createCheckout({
-                    team_id: state.activeTeamInfo.id,
+                    team_id: activeTeamInfo.id,
                     recurring_interval: interval as string,
                   })
                 }
-                disabled={blockButton}
+                disabled={!isAdmin || isPro}
               >
-                {workspaceTypeLabel}
-              </Button>
+                {workspaceType === 'pro'
+                  ? 'Upgrade to Personal Pro'
+                  : 'Upgrade to Team Pro'}
+              </UpgradeButton>
             </Stack>
 
             <Summary>
               <p>
-                {summary[interval].price} x {seatsLabel} ={' '}
+                {summary[interval].price} x{' '}
+                {`${amountPaidMember} member${amountPaidMember > 1 ? 's' : ''}`}{' '}
+                ={' '}
                 <span>
                   {summary[interval].total} {summary[interval].label}
                 </span>
