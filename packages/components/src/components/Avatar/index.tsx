@@ -32,7 +32,7 @@ export const AvatarImage = styled.img(
     height: '100%',
     width: '100%',
     boxSizing: 'border-box',
-    borderRadius: 'small',
+    borderRadius: '100%',
     border: '1px solid',
     borderColor: 'avatar.border',
     backgroundColor: 'avatar.border', // fallback for loading image,
@@ -43,7 +43,7 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   css({
     backgroundColor: 'blues.700',
     color: 'white',
-    borderRadius: 'small',
+    borderRadius: '100%',
     paddingX: 2,
     border: '1px solid',
     borderColor: 'sideBar.background', // merge with the background

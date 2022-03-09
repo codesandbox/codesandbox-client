@@ -264,9 +264,15 @@ const MenuList = React.forwardRef<HTMLDivElement, MenuListProps>(
   }
 );
 
-const MenuItem = props => (
-  <Element as={ReachMenu.MenuItem} data-component="MenuItem" {...props} />
-);
+const MenuItem = (props: any) => {
+  if (props.disabled) {
+    return <Element data-component="MenuItem" {...props} />;
+  }
+
+  return (
+    <Element as={ReachMenu.MenuItem} data-component="MenuItem" {...props} />
+  );
+};
 
 type MenuLinkProps = {
   to?: string;
