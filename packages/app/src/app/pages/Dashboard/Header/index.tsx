@@ -23,6 +23,7 @@ import {
 import css from '@styled-system/css';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Notifications } from 'app/components/Notifications';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
@@ -39,7 +40,13 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const { openCreateSandboxModal } = useActions();
-    const { activeWorkspaceAuthorization, user } = useAppState();
+    const {
+      activeTeam,
+      activeWorkspaceAuthorization,
+      personalWorkspaceId,
+      user,
+    } = useAppState();
+    const history = useHistory();
 
     return (
       <Stack
@@ -92,25 +99,34 @@ export const Header: React.FC<HeaderProps> = React.memo(
                 textDecoration: 'none',
               })}
             >
-              <Icon name="external" size={14} marginRight={2} />
+              <Icon
+                name="external"
+                size={14}
+                marginRight={2}
+                css={{ top: 1, position: 'relative' }}
+              />
 
               <span>Go to Projects</span>
             </a>
           ) : (
-            <Link
-              css={css({
-                fontSize: '13px',
-                textAlign: 'center',
-                width: '100%',
-                display: 'block',
-                color: '#999999',
-                textDecoration: 'none',
-              })}
-              href="/waitlist"
+            <Button
+              type="button"
+              variant="link"
+              onClick={() => {
+                track('Dashboard - Invite members');
+
+                /* Only for teams */
+                if (activeTeam !== personalWorkspaceId) {
+                  history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
+                } else {
+                  history.push(`${dashboardUrls.createTeam()}?from-header=1`);
+                }
+              }}
+              autoWidth
             >
-              <Icon name="external" size={14} marginRight={2} />
-              Join the waitlist
-            </Link>
+              <PlusIcon css={css({ marginRight: 2, width: '.8em' })} /> Invite
+              members
+            </Button>
           )}
 
           <Button
