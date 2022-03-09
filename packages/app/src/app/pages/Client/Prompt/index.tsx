@@ -6,8 +6,8 @@ import { Title } from 'app/components/Title';
 import { useAppState } from 'app/overmind';
 
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
+import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Buttons, Container } from './elements';
-import Logo from '../../../logo.svg';
 
 export const Prompt: FunctionComponent = () => {
   const { authToken, error, user } = useAppState();
@@ -21,12 +21,7 @@ export const Prompt: FunctionComponent = () => {
   if (error) {
     return (
       <Container>
-        <img
-          src={Logo}
-          width="32"
-          alt="CodeSandbox Logo"
-          style={{ paddingBottom: 32 }}
-        />
+        <LogoFull style={{ paddingBottom: 32 }} />
 
         <Title>An error occured:</Title>
         <SubTitle>{error}</SubTitle>
@@ -52,12 +47,7 @@ export const Prompt: FunctionComponent = () => {
   if (!user?.username) {
     return (
       <Container>
-        <img
-          src={Logo}
-          width="32"
-          alt="CodeSandbox Logo"
-          style={{ paddingBottom: 32 }}
-        />
+        <LogoFull style={{ paddingBottom: 32 }} />
         <Title>
           Welcome to <br />
           CodeSandbox!
@@ -73,12 +63,7 @@ export const Prompt: FunctionComponent = () => {
   if (!authToken) {
     return (
       <Container>
-        <img
-          src={Logo}
-          width="32"
-          alt="CodeSandbox Logo"
-          style={{ paddingBottom: 32 }}
-        />
+        <LogoFull style={{ paddingBottom: 32 }} />
         <SubTitle>Fetching authorization key...</SubTitle>
       </Container>
     );
@@ -86,12 +71,7 @@ export const Prompt: FunctionComponent = () => {
 
   return (
     <Container>
-      <img
-        src={Logo}
-        width="32"
-        alt="CodeSandbox Logo"
-        style={{ paddingBottom: 32 }}
-      />
+      <LogoFull style={{ paddingBottom: 32 }} />
 
       <Title style={{ paddingBottom: 4 }}>
         Hello <br />

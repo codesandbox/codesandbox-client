@@ -38,8 +38,8 @@ export const WaitListRequest = () => {
   }
 
   if (user.betaAccess) {
-    // TODO: temp dashboard URL
     history.replace('/dashboard/beta');
+    
     return null;
   }
 

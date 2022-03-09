@@ -25,9 +25,9 @@ import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
 
 import { Notifications } from 'app/components/Notifications';
-
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { PlusIcon } from 'app/components/CreateNewSandbox/CreateSandbox/Icons';
 
 interface HeaderProps {
   onSidebarToggle: () => void;

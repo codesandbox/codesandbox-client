@@ -1,48 +1,190 @@
 import React from 'react';
 
 export const PrototypingIcon = props => (
-  <svg width={112} height={112} fill="none" viewBox="0 0 112 80" {...props}>
-    <circle cx="60.3343" cy="26.1829" r="9.48661" fill="white" />
+  <svg
+    width="100"
+    height="100"
+    viewBox="0 0 100 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect
+      x="40.501"
+      y="53.6451"
+      width="20.5169"
+      height="20.5169"
+      transform="rotate(30 40.501 53.6451)"
+      stroke="white"
+      strokeWidth="4"
+    />
     <path
-      d="M24.0367 22.5939L42.9676 41.5248L17.1076 48.4539L24.0367 22.5939Z"
-      fill="white"
+      d="M30.4051 21.9436L41.9581 41.2127L19.4941 40.842L30.4051 21.9436Z"
+      stroke="white"
+      strokeWidth="4"
     />
     <rect
-      x="47.2549"
-      y="46.2944"
-      width="18.9732"
-      height="18.9732"
-      transform="rotate(15 47.2549 46.2944)"
-      fill="white"
+      x="67.1158"
+      y="27.9779"
+      width="21.758"
+      height="21.758"
+      rx="10.879"
+      transform="rotate(30 67.1158 27.9779)"
+      stroke="white"
+      strokeWidth="4"
     />
   </svg>
 );
 
 export const FeedbackIcon = props => (
-  <svg width={112} height={112} fill="none" viewBox="0 0 112 80" {...props}>
+  <svg
+    width="100"
+    height="100"
+    viewBox="0 0 100 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
     <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M10.0018 36.047C10.0006 35.9637 10 35.8803 10 35.7967C10 26.2834 17.7121 18.5713 27.2254 18.5713C36.7387 18.5713 44.4508 26.2834 44.4508 35.7967C44.4508 45.31 36.7387 53.0221 27.2254 53.0221C27.1885 53.0221 27.1517 53.022 27.1149 53.0218H10.0018V36.047Z"
-      fill="white"
+      d="M76.125 43.5H43.625V69.0357H69.1607L76.125 76V43.5Z"
+      fill="#151515"
+      stroke="white"
+      strokeWidth="4"
+      strokeLinecap="round"
     />
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M40.2715 51.4335C44.7459 47.6993 47.5928 42.0806 47.5928 35.7969C47.5928 33.676 47.2685 31.6308 46.6667 29.7083C48.818 28.5958 51.2603 27.9675 53.8494 27.9675C62.4979 27.9675 69.5088 34.9785 69.5088 43.627C69.5088 43.7833 69.5065 43.9391 69.502 44.0944V59.2868H53.8425V59.2865C48.0396 59.284 42.9747 56.1251 40.2715 51.4335Z"
-      fill="white"
-    />
+    <g filter="url(#filter0_d_15_197)">
+      <path
+        d="M24.875 26H67.375V59.3929H33.9821L24.875 68.5V26Z"
+        fill="#151515"
+      />
+      <path
+        d="M24.875 26H67.375V59.3929H33.9821L24.875 68.5V26Z"
+        stroke="white"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_15_197"
+        x="4.875"
+        y="6"
+        width="86.5"
+        height="89.3284"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="2" />
+        <feGaussianBlur stdDeviation="10" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_15_197"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_15_197"
+          result="shape"
+        />
+      </filter>
+    </defs>
   </svg>
 );
 
 export const KnowledgeIcon = props => (
-  <svg width={112} height={112} fill="none" viewBox="0 0 112 80" {...props}>
-    <path
-      fillRule="evenodd"
-      clipRule="evenodd"
-      d="M28.6552 50.3537C33.691 50.3537 37.7861 45.4876 37.8956 39.8872C38.1117 39.5893 38.2603 39.2064 38.3029 38.7788C38.3664 38.1407 38.179 37.5502 37.8398 37.1659C37.5774 32.0277 36.2689 26.5609 30.8734 25.905L30.8115 25.8975C29.2469 25.7069 25.6877 25.2733 24.9581 27.4331C20.034 26.8345 19.4216 32.0814 19.3873 36.4157C18.8182 36.7708 18.5218 37.6004 18.7078 38.4623C18.8186 38.9759 19.0797 39.4039 19.4125 39.6811C19.424 45.3677 23.5577 50.3537 28.6552 50.3537ZM31.4021 68.8245C31.3973 64.168 31.3918 58.8698 36.0808 55.9082C33.1232 50.9421 7.45119 52.8417 14.1059 69.2682H31.4024L31.4024 69.1523L31.4021 68.8245ZM73.203 50.4064C68.0944 50.4352 63.9252 45.4588 63.8934 39.7625C63.8918 39.4774 63.8921 39.1884 63.8947 38.8963C63.6264 38.5985 63.4321 38.1863 63.3669 37.7132C63.2583 36.9244 63.5397 36.192 64.0328 35.8285C64.4458 31.1519 65.9537 26.593 70.8466 25.9707L70.9085 25.9628C72.4732 25.7634 76.0328 25.3096 76.775 27.4653C82.2075 26.7743 82.4286 33.2259 82.4038 37.7204C82.8106 38.1206 83.015 38.8058 82.8874 39.5282C82.8085 39.975 82.6154 40.3631 82.3569 40.6486C81.941 45.9242 78.0131 50.3793 73.203 50.4064ZM67.9078 69.2677C69.8297 61.5389 64.0641 55.7423 62.1422 55.7423C64.854 51.189 89.384 54.2068 83.2825 69.2677H67.9078ZM60.2144 44.4958C61.2294 42.6712 62.0882 40.276 62.0882 37.8502C62.0882 31.7318 58.2812 26.7719 53.585 26.7719C51.9035 26.7719 50.3359 27.4078 49.0163 28.5051C48.4383 28.2713 47.7997 28.0743 47.0943 27.9217C44.0239 27.5122 40.9416 31.9298 40.2097 37.7886C39.4779 43.6473 41.3737 48.7288 44.4441 49.1383C44.8366 48.9495 45.2339 48.7642 45.6323 48.5785C47.0781 50.0591 48.9014 50.9422 50.883 50.9422C52.6437 50.9422 54.2795 50.2449 55.6364 49.0508C57.7031 49.2056 60.2546 49.3347 61.3343 48.2492C61.7288 47.8526 61.2714 47.0812 60.8149 46.3114C60.399 45.6101 59.9839 44.9101 60.2144 44.4958ZM65.7938 69.2719L35.1082 69.2719C35.1082 69.2719 32.5202 53.6013 50.2661 53.9915C68.012 54.3816 65.7938 69.2719 65.7938 69.2719Z"
-      fill="white"
+  <svg
+    width="100"
+    height="100"
+    viewBox="0 0 100 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <circle
+      cx="62.7922"
+      cy="38.1365"
+      r="8.57356"
+      stroke="white"
+      strokeWidth="4"
+      strokeLinecap="square"
     />
+    <path
+      d="M78.6524 70.9989C78.6524 62.2395 71.5515 55.1386 62.7921 55.1386C54.0327 55.1386 46.9318 62.2395 46.9318 70.9989"
+      stroke="white"
+      strokeWidth="4"
+      strokeLinecap="square"
+    />
+    <path
+      d="M42.8826 55.7143C32.5667 55.7143 24.1426 63.8137 23.6224 74.0003C23.5942 74.5519 24.0446 75 24.5969 75H61.1684C61.7206 75 62.1711 74.5519 62.1429 74.0003C61.6227 63.8137 53.1985 55.7143 42.8826 55.7143Z"
+      fill="#151515"
+    />
+    <g filter="url(#filter0_d_15_202)">
+      <circle
+        cx="42.8828"
+        cy="37.7143"
+        r="10.8571"
+        fill="#151515"
+        stroke="white"
+        strokeWidth="4"
+        strokeLinecap="square"
+      />
+      <path
+        d="M62.1684 75C62.1684 64.3488 53.5338 55.7143 42.8826 55.7143C32.2314 55.7143 23.5969 64.3488 23.5969 75"
+        stroke="white"
+        strokeWidth="4"
+        strokeLinecap="square"
+      />
+    </g>
+    <defs>
+      <filter
+        id="filter0_d_15_202"
+        x="3.59692"
+        y="6.85715"
+        width="82.5714"
+        height="92.1429"
+        filterUnits="userSpaceOnUse"
+        colorInterpolationFilters="sRGB"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+        <feColorMatrix
+          in="SourceAlpha"
+          type="matrix"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          result="hardAlpha"
+        />
+        <feOffset dx="2" dy="2" />
+        <feGaussianBlur stdDeviation="10" />
+        <feComposite in2="hardAlpha" operator="out" />
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 0 0.0823529 0 0 0 1 0"
+        />
+        <feBlend
+          mode="normal"
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_15_202"
+        />
+        <feBlend
+          mode="normal"
+          in="SourceGraphic"
+          in2="effect1_dropShadow_15_202"
+          result="shape"
+        />
+      </filter>
+    </defs>
   </svg>
 );
 

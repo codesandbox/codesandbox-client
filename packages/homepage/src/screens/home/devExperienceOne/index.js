@@ -26,7 +26,8 @@ const Grid = styled(motion.div)`
   grid-gap: 38px;
   padding: 0 0 10rem 0;
 
-  ${props => props.theme.breakpoints.md} {
+  @media screen and (max-width: 900px) {
+    grid-gap: 20px;
     grid-template-columns: repeat(3, 1fr);
   }
 
@@ -39,13 +40,13 @@ const Feature = styled(motion.div)`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 2rem 2rem;
-  border: 0.5px solid #343434;
+  padding: 4rem;
+  // border: 0.5px solid #343434;
   border-radius: 4px;
   text-align: center;
   background: #151515;
 
-  ${props => props.theme.breakpoints.md} {
+  @media screen and (max-width: 900px) {
     padding: 1rem;
   }
 
@@ -72,8 +73,8 @@ const DevExperienceOne = () => (
     <Grid variants={container} initial="hidden" animate="show">
       <Feature variants={item}>
         <PrototypingIcon />
-        <H3>Rapid Prototyping</H3>
-        <P muted>
+        <H3>Rapid prototyping</H3>
+        <P muted small>
           Quickly create real, working prototypes. Test ideas earlier and
           iterate more.
         </P>
@@ -81,16 +82,16 @@ const DevExperienceOne = () => (
       <Feature variants={item}>
         <KnowledgeIcon />
 
-        <H3>Knowledge Sharing</H3>
-        <P muted>
+        <H3>Knowledge sharing</H3>
+        <P muted small>
           Use code, apps, and templates collectively. Learn from each other and
           bake-in best practice.
         </P>
       </Feature>
       <Feature variants={item}>
         <FeedbackIcon />
-        <H3>Better Feedback</H3>
-        <P muted>
+        <H3>Better feedback</H3>
+        <P muted small>
           Give and get feedback, on code or visuals, right in the editor. Take
           action and move forward faster.
         </P>
