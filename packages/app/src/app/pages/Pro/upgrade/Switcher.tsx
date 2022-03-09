@@ -1,9 +1,7 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import styled from 'styled-components';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import {
   Stack,
   Avatar,
@@ -27,6 +25,7 @@ export const Switcher: React.FC<{
   activeTeamInfo: CurrentTeamInfoFragmentFragment;
   personalWorkspaceId: string;
   userId: string;
+  openCreateTeamModal: () => void;
 }> = ({
   workspaces,
   workspaceType,
@@ -34,9 +33,8 @@ export const Switcher: React.FC<{
   personalWorkspaceId,
   activeTeamInfo,
   userId,
+  openCreateTeamModal,
 }) => {
-  const history = useHistory();
-
   if (!workspaces || workspaces.length === 0) return null;
 
   const members = activeTeamInfo.users.length;
@@ -130,7 +128,7 @@ export const Switcher: React.FC<{
               );
             })}
 
-            <MenuItem onSelect={() => history.push(dashboardUrls.createTeam())}>
+            <MenuItem onSelect={openCreateTeamModal}>
               <Stack
                 css={{
                   marginTop: 12,

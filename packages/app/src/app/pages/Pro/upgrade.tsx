@@ -39,6 +39,7 @@ export const ProUpgrade = () => {
   const {
     pro: { pageMounted },
     setActiveTeam,
+    openCreateTeamModal,
   } = useActions();
   const {
     activeTeamInfo,
@@ -172,6 +173,7 @@ export const ProUpgrade = () => {
               personalWorkspaceId={personalWorkspaceId}
               activeTeamInfo={activeTeamInfo}
               userId={user.id}
+              openCreateTeamModal={openCreateTeamModal}
             />
 
             <PlanTitle style={{ color: COLOR_SCHEMA[workspaceType] }}>

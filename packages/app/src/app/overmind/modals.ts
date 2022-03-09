@@ -13,6 +13,8 @@ export const forkFrozenModal = {
   result: 'fork' as 'fork' | 'cancel' | 'unfreeze',
 };
 
+export const createTeamModal = {};
+
 export const newSandboxModal: {
   state: { collectionId?: null | string; initialTab?: 'Import' | null };
   result: undefined;
