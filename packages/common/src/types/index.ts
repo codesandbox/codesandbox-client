@@ -130,6 +130,7 @@ export type CurrentUser = {
   };
   curatorAt: string;
   badges: Badge[];
+  betaAccess: boolean;
   provider: 'github' | 'google';
   integrations: {
     zeit: {

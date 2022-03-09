@@ -87,24 +87,47 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
-          <Button
-            type="button"
-            variant="link"
-            onClick={() => {
-              track('Dashboard - Invite members');
+          {user?.betaAccess ? (
+            <a
+              href="/p/dashboard/"
+              css={css({
+                fontSize: '13px',
+                textAlign: 'center',
+                width: '100%',
+                display: 'block',
+                color: '#999999',
+                textDecoration: 'none',
+              })}
+            >
+              <Icon
+                name="external"
+                size={14}
+                marginRight={2}
+                css={{ top: 1, position: 'relative' }}
+              />
 
-              /* Only for teams */
-              if (activeTeam !== personalWorkspaceId) {
-                history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
-              } else {
-                history.push(`${dashboardUrls.createTeam()}?from-header=1`);
-              }
-            }}
-            autoWidth
-          >
-            <PlusIcon css={css({ marginRight: 2, width: '.8em' })} /> Invite
-            members
-          </Button>
+              <span>Go to Projects</span>
+            </a>
+          ) : (
+            <Button
+              type="button"
+              variant="link"
+              onClick={() => {
+                track('Dashboard - Invite members');
+
+                /* Only for teams */
+                if (activeTeam !== personalWorkspaceId) {
+                  history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
+                } else {
+                  history.push(`${dashboardUrls.createTeam()}?from-header=1`);
+                }
+              }}
+              autoWidth
+            >
+              <PlusIcon css={css({ marginRight: 2, width: '.8em' })} /> Invite
+              members
+            </Button>
+          )}
 
           <Button
             variant="primary"

@@ -73,6 +73,31 @@ export type Bookmarked = {
 /** A team or the current user */
 export type BookmarkEntity = Team | User;
 
+export type Branch = {
+  __typename?: 'Branch';
+  connections: Array<Connection>;
+  id: Scalars['String'];
+  lastAccessedAt: Maybe<Scalars['String']>;
+  lastCommit: Maybe<LastCommit>;
+  name: Scalars['String'];
+  owner: Maybe<User>;
+  poolSize: Scalars['Int'];
+  project: Project;
+  pullRequests: Array<PullRequest>;
+};
+
+export type BranchConnections = {
+  __typename?: 'BranchConnections';
+  branchId: Scalars['String'];
+  connections: Array<Connection>;
+};
+
+export type BranchLastCommit = {
+  __typename?: 'BranchLastCommit';
+  branchId: Scalars['String'];
+  lastCommit: LastCommit;
+};
+
 export type CodeReference = {
   anchor: Scalars['Int'];
   code: Scalars['String'];
@@ -130,8 +155,17 @@ export type Comment = {
   user: User;
 };
 
+export type Connection = {
+  __typename?: 'Connection';
+  appId: Scalars['String'];
+  clientId: Scalars['String'];
+  timestamp: Scalars['String'];
+  user: User;
+};
+
 export type CurrentUser = {
   __typename?: 'CurrentUser';
+  betaAccess: Scalars['Boolean'];
   betaSandboxes: Array<SandboxV2>;
   bookmarkedTemplates: Array<Template>;
   collaboratorSandboxes: Array<Sandbox>;
@@ -141,6 +175,18 @@ export type CurrentUser = {
   email: Scalars['String'];
   /** Get enabled feature flags for all teams user is in */
   featureFlags: Array<FeatureFlag>;
+  /** Get all of the current user's GitHub organizations */
+  githubOrganizations: Maybe<Array<GithubOrganization>>;
+  /** GitHub profile information for the current user */
+  githubProfile: GithubProfile;
+  /**
+   * Get GitHub repositories owned by the current user.
+   *
+   * If either `page` or `perPage` are specified, then a single page of results will be returned.
+   * If neither argument is given, then all results will be returned. Note that this still requires
+   * paginated requests to the GitHub API, but the server will concatenate the results.
+   */
+  githubRepos: Array<GithubRepo>;
   id: Scalars['UUID4'];
   likedSandboxes: Array<Sandbox>;
   name: Maybe<Scalars['String']>;
@@ -148,6 +194,7 @@ export type CurrentUser = {
   notifications: Array<Notification>;
   personalWorkspaceId: Scalars['UUID4'];
   provider: ProviderName;
+  recentBranches: Array<Branch>;
   recentlyAccessedSandboxes: Array<Sandbox>;
   recentlyUsedTemplates: Array<Template>;
   sandboxes: Array<Sandbox>;
@@ -167,10 +214,19 @@ export type CurrentUserCollectionsArgs = {
   teamId: Maybe<Scalars['ID']>;
 };
 
+export type CurrentUserGithubReposArgs = {
+  page: Maybe<Scalars['Int']>;
+  perPage: Maybe<Scalars['Int']>;
+};
+
 export type CurrentUserNotificationsArgs = {
   limit: Maybe<Scalars['Int']>;
   orderBy: Maybe<OrderBy>;
   type: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type CurrentUserRecentBranchesArgs = {
+  limit?: Maybe<Scalars['Int']>;
 };
 
 export type CurrentUserRecentlyAccessedSandboxesArgs = {
@@ -202,6 +258,17 @@ export enum Direction {
   Asc = 'ASC',
   Desc = 'DESC',
 }
+
+export type Environment = {
+  __typename?: 'Environment';
+  description: Scalars['String'];
+  id: Scalars['UUID4'];
+  limitCpu: Scalars['Int'];
+  limitMemory: Scalars['String'];
+  limitStorage: Scalars['String'];
+  name: Scalars['String'];
+  order: Scalars['Int'];
+};
 
 /** A feature flag */
 export type FeatureFlag = {
@@ -246,6 +313,54 @@ export type GitBranch = {
   sandboxId: Maybe<Scalars['ID']>;
 };
 
+/**
+ * Organization as it appears on GitHub (intersection of Open API `simple-user` and
+ * `organization-simple`)
+ */
+export type GithubOrganization = {
+  __typename?: 'GithubOrganization';
+  /** URL for organization image */
+  avatarUrl: Scalars['String'];
+  /** Optional organization description */
+  description: Maybe<Scalars['String']>;
+  /** Integer ID */
+  id: Scalars['ID'];
+  /** Organization name */
+  login: Scalars['String'];
+};
+
+/** User profile for an authenticated user */
+export type GithubProfile = {
+  __typename?: 'GithubProfile';
+  /** URL for user profile image */
+  avatarUrl: Scalars['String'];
+  /** Integer ID */
+  id: Scalars['ID'];
+  /** GitHub username */
+  login: Scalars['String'];
+  /** Real name */
+  name: Maybe<Scalars['String']>;
+};
+
+/** Details about a repository as it appears on GitHub (Open API `respository`) */
+export type GithubRepo = {
+  __typename?: 'GithubRepo';
+  /** Full repository name, e.g. owner/name */
+  fullName: Scalars['String'];
+  /** Integer ID */
+  id: Scalars['ID'];
+  /** Short repository name */
+  name: Scalars['String'];
+  /** Owning user or organization */
+  owner: GithubOrganization;
+  /** ISO 8601 datetime */
+  updatedAt: Scalars['String'];
+};
+
+export enum GitProvider {
+  Github = 'GITHUB',
+}
+
 /** A git repo specifically for v2 */
 export type GitRepo = {
   __typename?: 'GitRepo';
@@ -286,6 +401,13 @@ export type Invitation = {
   id: Maybe<Scalars['ID']>;
   sandbox: Sandbox;
   token: Scalars['String'];
+};
+
+export type LastCommit = {
+  __typename?: 'LastCommit';
+  message: Maybe<Scalars['String']>;
+  timestamp: Scalars['String'];
+  user: Maybe<User>;
 };
 
 export type MemberAuthorization = {
@@ -350,6 +472,19 @@ export type PrivateRegistry = {
   teamId: Scalars['UUID4'];
 };
 
+export type Project = {
+  __typename?: 'Project';
+  availableEnvironments: Array<Environment>;
+  branches: Array<Branch>;
+  defaultBranch: Branch;
+  environment: Maybe<Environment>;
+  owner: Scalars['String'];
+  private: Scalars['Boolean'];
+  pullRequests: Array<PullRequest>;
+  repo: Scalars['String'];
+  teams: Array<Team>;
+};
+
 export type ProSubscription = {
   __typename?: 'ProSubscription';
   billingInterval: Maybe<SubscriptionInterval>;
@@ -370,6 +505,22 @@ export enum ProviderName {
   Github = 'GITHUB',
   Google = 'GOOGLE',
 }
+
+export type PullRequest = {
+  __typename?: 'PullRequest';
+  creator: Maybe<User>;
+  creatorUsername: Scalars['String'];
+  draft: Scalars['Boolean'];
+  number: Scalars['Int'];
+  prClosedAt: Maybe<Scalars['DateTime']>;
+  prCreatedAt: Maybe<Scalars['DateTime']>;
+  prMergedAt: Maybe<Scalars['DateTime']>;
+  prUpdatedAt: Scalars['DateTime'];
+  sourceBranch: Branch;
+  state: Scalars['String'];
+  targetBranch: Branch;
+  title: Scalars['String'];
+};
 
 export type Reference = {
   __typename?: 'Reference';
@@ -514,6 +665,7 @@ export type RootMutationType = {
   updateNotificationPreferences: NotificationPreferences;
   /** Update notification read status */
   updateNotificationReadStatus: Notification;
+  updateProjectEnvironment: Project;
   /** update subscription details (not billing details) */
   updateSubscription: ProSubscription;
   updateSubscriptionBillingInterval: ProSubscription;
@@ -885,6 +1037,13 @@ export type RootMutationTypeUpdateNotificationReadStatusArgs = {
   read: Scalars['Boolean'];
 };
 
+export type RootMutationTypeUpdateProjectEnvironmentArgs = {
+  environmentId: Maybe<Scalars['UUID4']>;
+  gitProvider?: Maybe<GitProvider>;
+  owner: Scalars['String'];
+  repo: Scalars['String'];
+};
+
 export type RootMutationTypeUpdateSubscriptionArgs = {
   quantity: Maybe<Scalars['Int']>;
   subscriptionId: Scalars['UUID4'];
@@ -904,12 +1063,24 @@ export type RootQueryType = {
   curatedAlbums: Array<Album>;
   /** Get all feature flags */
   featureFlags: Array<FeatureFlag>;
-  /** Get git repo and related sandboxes */
+  /** Get git repo and related V1 sandboxes */
   git: Maybe<Git>;
   /** Get v2 git repo and all its branches */
   gitRepoWithBranches: Maybe<GitRepo>;
+  /**
+   * Get repositories owned by a GitHub organization.
+   *
+   * If either `page` or `perPage` are specified, then a single page of results will be returned.
+   * If neither argument is given, then all results will be returned. Note that this still requires
+   * paginated requests to the GitHub API, but the server will concatenate the results.
+   */
+  githubOrganizationRepos: Maybe<Array<GithubRepo>>;
+  /** Get a repository as it appears on GitHub */
+  githubRepo: Maybe<GithubRepo>;
   /** Get current user */
   me: Maybe<CurrentUser>;
+  /** Get a V2 project by git details */
+  project: Maybe<Project>;
   /** Get a sandbox */
   sandbox: Maybe<Sandbox>;
   /** A team from an invite token */
@@ -935,6 +1106,23 @@ export type RootQueryTypeGitRepoWithBranchesArgs = {
   repoName: Scalars['String'];
 };
 
+export type RootQueryTypeGithubOrganizationReposArgs = {
+  organization: Scalars['String'];
+  page: Maybe<Scalars['Int']>;
+  perPage: Maybe<Scalars['Int']>;
+};
+
+export type RootQueryTypeGithubRepoArgs = {
+  owner: Scalars['String'];
+  repo: Scalars['String'];
+};
+
+export type RootQueryTypeProjectArgs = {
+  gitProvider?: Maybe<GitProvider>;
+  owner: Scalars['String'];
+  repo: Scalars['String'];
+};
+
 export type RootQueryTypeSandboxArgs = {
   sandboxId: Scalars['ID'];
 };
@@ -954,6 +1142,10 @@ export type RootSubscriptionType = {
   invitationChanged: Invitation;
   invitationCreated: Invitation;
   invitationRemoved: Invitation;
+  /** Receive updates if a new commit is made via the CSB ui. Omitting branchId subscribes to all branches in the project. */
+  projectCommits: BranchLastCommit;
+  /** Receive updates if users (dis)connect to a branch. Omitting branchId subscribes to all branches in the project. */
+  projectConnections: BranchConnections;
   sandboxChanged: Sandbox;
 };
 
@@ -991,6 +1183,18 @@ export type RootSubscriptionTypeInvitationCreatedArgs = {
 
 export type RootSubscriptionTypeInvitationRemovedArgs = {
   sandboxId: Scalars['ID'];
+};
+
+export type RootSubscriptionTypeProjectCommitsArgs = {
+  branchId: Maybe<Scalars['String']>;
+  owner: Scalars['String'];
+  repo: Scalars['String'];
+};
+
+export type RootSubscriptionTypeProjectConnectionsArgs = {
+  branchId: Maybe<Scalars['String']>;
+  owner: Scalars['String'];
+  repo: Scalars['String'];
 };
 
 export type RootSubscriptionTypeSandboxChangedArgs = {
@@ -1112,6 +1316,7 @@ export type Team = {
   joinedPilotAt: Maybe<Scalars['DateTime']>;
   name: Scalars['String'];
   privateRegistry: Maybe<PrivateRegistry>;
+  projects: Array<Project>;
   sandboxes: Array<Sandbox>;
   settings: Maybe<WorkspaceSandboxSettings>;
   subscription: Maybe<ProSubscription>;
@@ -2706,25 +2911,6 @@ export type SharedWithMeSandboxesQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
-export type SandboxesBetaQueryVariables = Exact<{ [key: string]: never }>;
-
-export type SandboxesBetaQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      betaSandboxes: Array<
-        { __typename?: 'SandboxV2' } & Pick<SandboxV2, 'id'> & {
-            gitv2: Maybe<
-              { __typename?: 'GitV2' } & Pick<
-                GitV2,
-                'branch' | 'owner' | 'repo'
-              >
-            >;
-          }
-      >;
-    }
-  >;
-};
-
 export type LikedSandboxesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type LikedSandboxesQuery = { __typename?: 'RootQueryType' } & {
@@ -2832,18 +3018,6 @@ export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
             } & SandboxFragmentDashboardFragment
         >;
       }
-  >;
-};
-
-export type FeatureFlagQueryVariables = Exact<{ [key: string]: never }>;
-
-export type FeatureFlagQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      featureFlags: Array<
-        { __typename?: 'FeatureFlag' } & Pick<FeatureFlag, 'name'>
-      >;
-    }
   >;
 };
 
