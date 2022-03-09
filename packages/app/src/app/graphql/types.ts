@@ -84,6 +84,7 @@ export type Branch = {
   poolSize: Scalars['Int'];
   project: Project;
   pullRequests: Array<PullRequest>;
+  status: Maybe<Status>;
 };
 
 export type BranchConnections = {
@@ -96,6 +97,12 @@ export type BranchLastCommit = {
   __typename?: 'BranchLastCommit';
   branchId: Scalars['String'];
   lastCommit: LastCommit;
+};
+
+export type BranchStatus = {
+  __typename?: 'BranchStatus';
+  branchId: Scalars['String'];
+  status: Status;
 };
 
 export type CodeReference = {
@@ -159,6 +166,7 @@ export type Connection = {
   __typename?: 'Connection';
   appId: Scalars['String'];
   clientId: Scalars['String'];
+  color: Scalars['String'];
   timestamp: Scalars['String'];
   user: User;
 };
@@ -412,7 +420,9 @@ export type Invitation = {
 
 export type LastCommit = {
   __typename?: 'LastCommit';
+  color: Scalars['String'];
   message: Maybe<Scalars['String']>;
+  sha: Scalars['String'];
   timestamp: Scalars['String'];
   user: Maybe<User>;
 };
@@ -484,7 +494,7 @@ export type Project = {
   availableEnvironments: Array<Environment>;
   branches: Array<Branch>;
   defaultBranch: Branch;
-  description: Scalars['String'];
+  description: Maybe<Scalars['String']>;
   environment: Maybe<Environment>;
   owner: Scalars['String'];
   private: Scalars['Boolean'];
@@ -1155,6 +1165,8 @@ export type RootSubscriptionType = {
   projectCommits: BranchLastCommit;
   /** Receive updates if users (dis)connect to a branch. Omitting branchId subscribes to all branches in the project. */
   projectConnections: BranchConnections;
+  /** Receive updates when the status of a branch changes. Omitting branchId subscribes to all branches in the project. */
+  projectStatus: BranchStatus;
   sandboxChanged: Sandbox;
 };
 
@@ -1201,6 +1213,12 @@ export type RootSubscriptionTypeProjectCommitsArgs = {
 };
 
 export type RootSubscriptionTypeProjectConnectionsArgs = {
+  branchId: Maybe<Scalars['String']>;
+  owner: Scalars['String'];
+  repo: Scalars['String'];
+};
+
+export type RootSubscriptionTypeProjectStatusArgs = {
   branchId: Maybe<Scalars['String']>;
   owner: Scalars['String'];
   repo: Scalars['String'];
@@ -1285,6 +1303,20 @@ export type Source = {
   __typename?: 'Source';
   id: Maybe<Scalars['UUID4']>;
   template: Maybe<Scalars['String']>;
+};
+
+export type Status = {
+  __typename?: 'Status';
+  hasChanges: Scalars['Boolean'];
+  hasConflicts: Scalars['Boolean'];
+  remote: StatusCommitCounts;
+  target: StatusCommitCounts;
+};
+
+export type StatusCommitCounts = {
+  __typename?: 'StatusCommitCounts';
+  ahead: Scalars['Int'];
+  behind: Scalars['Int'];
 };
 
 export enum SubscriptionInterval {
@@ -2926,25 +2958,6 @@ export type SharedWithMeSandboxesQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
-export type SandboxesBetaQueryVariables = Exact<{ [key: string]: never }>;
-
-export type SandboxesBetaQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      betaSandboxes: Array<
-        { __typename?: 'SandboxV2' } & Pick<SandboxV2, 'id'> & {
-            gitv2: Maybe<
-              { __typename?: 'GitV2' } & Pick<
-                GitV2,
-                'branch' | 'owner' | 'repo'
-              >
-            >;
-          }
-      >;
-    }
-  >;
-};
-
 export type LikedSandboxesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type LikedSandboxesQuery = { __typename?: 'RootQueryType' } & {
@@ -3052,18 +3065,6 @@ export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
             } & SandboxFragmentDashboardFragment
         >;
       }
-  >;
-};
-
-export type FeatureFlagQueryVariables = Exact<{ [key: string]: never }>;
-
-export type FeatureFlagQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      featureFlags: Array<
-        { __typename?: 'FeatureFlag' } & Pick<FeatureFlag, 'name'>
-      >;
-    }
   >;
 };
 

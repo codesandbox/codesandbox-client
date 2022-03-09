@@ -18,13 +18,7 @@ import { GitHubIcon } from '../Sandbox/Editor/Workspace/screens/GitHub/Icons';
 import { Survey } from './Survey';
 
 export const WaitListRequest = () => {
-  const {
-    hasLogIn,
-    user,
-    dashboard,
-    isAuthenticating,
-    isLoadingGithub,
-  } = useAppState();
+  const { hasLogIn, user, isAuthenticating, isLoadingGithub } = useAppState();
   const { sandboxPageMounted } = useActions();
 
   useEffect(() => {
@@ -43,11 +37,9 @@ export const WaitListRequest = () => {
     return <GitHubScope />;
   }
 
-  const isFeatureFlagBeta = !!dashboard.featureFlags.find(
-    e => e.name === 'beta'
-  );
-  if (isFeatureFlagBeta) {
-    history.replace('/p/dashboard');
+  if (user.betaAccess) {
+    history.replace('/dashboard/beta');
+
     return null;
   }
 

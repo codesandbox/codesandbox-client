@@ -39,9 +39,7 @@ export const changeSandboxesInState = (
         [key in SandboxTypes]: NonNullable<typeof dashboard.sandboxes[key]>;
       };
 
-      if (type === 'BETA') {
-        // do nothing
-      } else if (type === 'REPOS') {
+      if (type === 'REPOS') {
         Object.keys(sandboxStructure.REPOS).forEach(repoName => {
           const repoSandboxes = sandboxStructure.REPOS[repoName];
           if (!repoSandboxes.sandboxes) {
@@ -118,9 +116,7 @@ export const deleteSandboxesFromState = (
         [key in SandboxTypes]: NonNullable<typeof dashboard.sandboxes[key]>;
       };
 
-      if (type === 'BETA') {
-        // do nothing
-      } else if (type === 'ALL') {
+      if (type === 'ALL') {
         const folderNames = Object.keys(sandboxStructure[type]);
         folderNames.forEach(folderName => {
           if (!sandboxStructure.ALL[folderName]) {

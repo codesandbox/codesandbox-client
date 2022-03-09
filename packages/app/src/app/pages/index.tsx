@@ -24,7 +24,6 @@ import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
 import { Sandbox } from './Sandbox';
-import { ImportRepoBetaModal } from './Dashboard/Components/Beta/ImportRepoBetaModal';
 
 const MoveSandboxFolderModal = Loadable(() =>
   import(
@@ -246,8 +245,6 @@ const RoutesComponent: React.FC = () => {
         {modals.moveSandboxModal.isCurrent && activeTeamInfo && (
           <MoveSandboxFolderModal />
         )}
-
-        <ImportRepoBetaModal />
       </Boundary>
     </Container>
   );

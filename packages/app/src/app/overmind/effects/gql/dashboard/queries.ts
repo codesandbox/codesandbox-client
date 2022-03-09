@@ -45,10 +45,6 @@ import {
   SharedWithMeSandboxesQueryVariables,
   CuratedAlbumsQuery,
   CuratedAlbumsQueryVariables,
-  SandboxesBetaQuery,
-  SandboxesBetaQueryVariables,
-  FeatureFlagQuery,
-  FeatureFlagQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -340,24 +336,6 @@ export const sharedWithmeSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
-export const sandboxesBeta: Query<
-  SandboxesBetaQuery,
-  SandboxesBetaQueryVariables
-> = gql`
-  query SandboxesBeta {
-    me {
-      betaSandboxes {
-        id
-        gitv2 {
-          branch
-          owner
-          repo
-        }
-      }
-    }
-  }
-`;
-
 export const likedSandboxes: Query<
   LikedSandboxesQuery,
   LikedSandboxesQueryVariables
@@ -470,17 +448,4 @@ export const curatedAlbums: Query<
     }
   }
   ${sandboxFragmentDashboard}
-`;
-
-export const featureFlag: Query<
-  FeatureFlagQuery,
-  FeatureFlagQueryVariables
-> = gql`
-  query FeatureFlag {
-    me {
-      featureFlags {
-        name
-      }
-    }
-  }
 `;

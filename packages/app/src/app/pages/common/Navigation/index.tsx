@@ -8,6 +8,7 @@ import {
   Text,
   Link,
 } from '@codesandbox/components';
+import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import {
   Link as LinkBase,
   withRouter,
@@ -16,7 +17,6 @@ import {
 import css from '@styled-system/css';
 
 import { UserMenu } from '../UserMenu';
-import { Logo } from './Icons';
 
 type Props = {
   title?: string;
@@ -55,7 +55,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
         >
           <Stack gap={4} align="center">
             <Link css={css({ display: 'flex' })} to={link} as={LinkBase}>
-              <Logo />
+              <LogoFull />
             </Link>
             <Text
               size={3}
@@ -66,7 +66,7 @@ export const NavigationComponent = ({ title, match }: Props) => {
                 },
               })}
             >
-              CodeSandbox - {title}
+              {title}
             </Text>
           </Stack>
           {!isAuthenticating ? (
