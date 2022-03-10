@@ -6,7 +6,6 @@ import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
 import { Navigation } from 'app/pages/common/Navigation';
-import { NewTeam } from 'app/pages/common/NewTeam';
 
 import { WorkspacePlanSelection } from './legacy-pages/WorkspacePlanSelection';
 import { InlineCheckout } from './legacy-pages/InlineCheckout';
@@ -32,14 +31,8 @@ export const ProLegacy: React.FC = () => {
       );
     }
 
-    const searchParams = new URLSearchParams(window.location.search);
-    const interval = searchParams.get('interval');
-
     return (
       <Switch>
-        <Route path={`/pro/create-workspace`}>
-          <NewTeam redirectTo={`/pro?interval=${interval}`} />
-        </Route>
         <Route path={'/pro/success'}>
           <PaymentSuccess />
         </Route>
