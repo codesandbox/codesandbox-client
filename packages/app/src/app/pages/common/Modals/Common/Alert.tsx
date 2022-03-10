@@ -25,8 +25,7 @@ export const Alert: FunctionComponent<Props> = ({
   ...props
 }) => (
   <Element
-    padding={4}
-    paddingTop={6}
+    padding={6}
     css={css({
       maxHeight: '70vh',
       overflow: 'auto',
@@ -34,7 +33,7 @@ export const Alert: FunctionComponent<Props> = ({
     {...props}
   >
     {title && (
-      <Text weight="bold" block size={4} paddingBottom={2}>
+      <Text weight="bold" block size={6} paddingBottom={2}>
         {title}
       </Text>
     )}

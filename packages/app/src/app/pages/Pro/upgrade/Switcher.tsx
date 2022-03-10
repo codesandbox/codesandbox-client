@@ -189,7 +189,7 @@ const WorkspaceName = styled.p`
   line-height: 42px;
   margin: 0;
   position: relative;
-
+  text-align: left;
   color: #fff;
 
   &:after {

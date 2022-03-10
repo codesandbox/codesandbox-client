@@ -13,19 +13,19 @@ import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-ge
 import css from '@styled-system/css';
 import history from 'app/utils/history';
 
-export const NewTeamModal: React.FC<{ redirectTo?: string }> = ({
-  redirectTo,
-}) => {
-  const { modals } = useAppState();
+export const NewTeamModal: React.FC = () => {
+  const { modals, dashboard } = useAppState();
   const {
     dashboard: { createTeam },
     modals: modalsActions,
   } = useActions();
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
 
   const onSubmit = async event => {
     event.preventDefault();
     const teamName = event.target.name.value;
+
     if (teamName && teamName.trim()) {
       event.target.name.setCustomValidity('');
       setLoading(true);
@@ -35,7 +35,9 @@ export const NewTeamModal: React.FC<{ redirectTo?: string }> = ({
           pilot: location.search.includes('pilot'),
         });
         setLoading(false);
-        history.push(redirectTo || dashboardUrls.teamInvite());
+        history.push(dashboardUrls.settings());
+
+        modalsActions.createTeamModal.close();
       } catch {
         setLoading(false);
       }
@@ -44,12 +46,16 @@ export const NewTeamModal: React.FC<{ redirectTo?: string }> = ({
 
   const handleInput = e => {
     const { value } = e.target;
+    setName(value.trim());
+
     if (value && value.trim()) {
       e.target.setCustomValidity('');
     } else {
       e.target.setCustomValidity('Team name is required.');
     }
   };
+
+  const error = Boolean(dashboard.teams.find(team => team.name === name));
 
   return (
     <ThemeProvider>
@@ -60,23 +66,19 @@ export const NewTeamModal: React.FC<{ redirectTo?: string }> = ({
       >
         <Element
           css={css({
-            minHeight: 200,
-            maxWidth: 528,
             backgroundColor: 'grays.800',
             border: '1px solid',
             borderColor: 'grays.600',
             borderRadius: 'medium',
-            paddingX: [6, '96px', '96px'],
-            paddingTop: 10,
-            paddingBottom: '68px',
+            padding: 6,
           })}
         >
           <Stack direction="vertical" gap={7}>
             <Stack direction="vertical" gap={4}>
-              <Text size={6} weight="bold" align="center">
+              <Text size={6} weight="bold">
                 Create a team
               </Text>
-              <Text size={3} variant="muted" align="center">
+              <Text size={3} variant="muted">
                 Collaborate on code with friends or co-workers. Manage and work
                 on sandboxes together.
               </Text>
@@ -92,14 +94,31 @@ export const NewTeamModal: React.FC<{ redirectTo?: string }> = ({
                 onChange={handleInput}
                 css={css({ height: 8 })}
               />
-              <Button
-                loading={loading}
-                disabled={loading}
-                type="submit"
-                css={css({ height: 8, fontSize: 3 })}
-              >
-                Create Team
-              </Button>
+
+              {error && (
+                <Text size={2} variant="danger">
+                  Name already taken, please choose a new name.
+                </Text>
+              )}
+
+              <Stack gap={2} marginTop={4} align="center" justify="flex-end">
+                <Button
+                  variant="secondary"
+                  autoWidth
+                  onClick={modalsActions.createTeamModal.close}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  autoWidth
+                  loading={loading}
+                  disabled={loading || error}
+                  type="submit"
+                >
+                  Create Team
+                </Button>
+              </Stack>
             </Stack>
           </Stack>
         </Element>

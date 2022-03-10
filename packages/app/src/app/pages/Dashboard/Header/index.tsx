@@ -117,9 +117,9 @@ export const Header: React.FC<HeaderProps> = React.memo(
 
                 /* Only for teams */
                 if (activeTeam !== personalWorkspaceId) {
-                  history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
+                  history.push(dashboardUrls.settings());
                 } else {
-                  history.push(`${dashboardUrls.createTeam()}?from-header=1`);
+                  openCreateSandboxModal();
                 }
               }}
               autoWidth
