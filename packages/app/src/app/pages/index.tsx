@@ -33,14 +33,6 @@ const MoveSandboxFolderModal = Loadable(() =>
   }))
 );
 
-const NewTeamModal = Loadable(() =>
-  import(
-    /* webpackChunkName: 'move-sandbox-modal' */ './common/Modals/NewTeamModal'
-  ).then(module => ({
-    default: module.NewTeamModal,
-  }))
-);
-
 const DuplicateAccount = Loadable(() =>
   import(
     /* webpackChunkName: 'move-sandbox-modal' */ './DuplicateAccount'
@@ -253,7 +245,6 @@ const RoutesComponent: React.FC = () => {
         {modals.moveSandboxModal.isCurrent && activeTeamInfo && (
           <MoveSandboxFolderModal />
         )}
-        <NewTeamModal />
       </Boundary>
     </Container>
   );

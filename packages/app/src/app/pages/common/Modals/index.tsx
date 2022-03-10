@@ -45,6 +45,7 @@ import { UndoAccountDeletionConfirmationModal } from './UndoAccountDeletion/Undo
 import { NotFoundBranchModal } from './NotFoundBranchModal';
 import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
+import { NewTeamModal } from './NewTeamModal';
 
 const modals = {
   preferences: {
@@ -187,6 +188,10 @@ const modals = {
   notFoundBranchModal: {
     Component: NotFoundBranchModal,
     width: 450,
+  },
+  newTeam: {
+    Component: NewTeamModal,
+    width: 400,
   },
 };
 
