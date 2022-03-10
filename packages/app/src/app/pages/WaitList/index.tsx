@@ -39,7 +39,7 @@ export const WaitListRequest = () => {
 
   if (user.betaAccess) {
     history.replace('/dashboard/beta');
-    
+
     return null;
   }
 
