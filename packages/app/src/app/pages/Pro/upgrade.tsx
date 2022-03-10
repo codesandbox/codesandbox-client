@@ -223,8 +223,8 @@ export const ProUpgrade = () => {
                 >
                   <Caption css={{ paddingTop: 24 }}>
                     <Element css={{ display: 'flex', alignItems: 'center' }}>
-                      Team members
-                      <Tooltip label="Current number of team members. You can  always add or remove team members in the team settings.">
+                      Paid seats
+                      <Tooltip label="The amount of paid seats is automatically calculated by the amount of admin and editors per team.">
                         <Element css={{ display: 'block', marginLeft: '.5em' }}>
                           <svg
                             width="12"
@@ -272,7 +272,9 @@ export const ProUpgrade = () => {
             <Summary>
               <p>
                 {summary[interval].price} x{' '}
-                {`${amountPaidMember} member${amountPaidMember > 1 ? 's' : ''}`}{' '}
+                {`${amountPaidMember} paid seat${
+                  amountPaidMember > 1 ? 's' : ''
+                }`}{' '}
                 ={' '}
                 <span>
                   {summary[interval].total} {summary[interval].label}
