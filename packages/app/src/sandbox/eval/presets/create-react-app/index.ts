@@ -16,6 +16,7 @@ import {
   hasRefresh,
   aliases,
   cleanUsingUnmount,
+  isMinimalReactDomVersion,
   supportsNewReactTransform,
 } from './utils';
 import { initializeReactDevToolsLegacy } from './utils/initLegacyDevTools';
@@ -124,18 +125,12 @@ export async function reactPreset(pkg: PackageJSON) {
       hasDotEnv: true,
       processDependencies: async originalDeps => {
         const deps = { ...originalDeps };
-        // if (
-        //   (deps['react-dom'] &&
-        //   isMinimalReactDomVersion(deps['react-dom'], '16.9.0'))
-        // ) {
-        //   deps['react-refresh'] = '0.9.0';
-        // }
-
-        // 无条件添加 react-refresh，原因：
-        // 1. create-react-app 模板的项目必然包含 react-dom
-        // 2. 采用 externals 方式使用 react-dom 的项目在 dependencies 可以不定义 react-dom 字段
-        // 3. 目前实际项目使用的 react-dom 版本必然高出 16.9.0
-        deps['react-refresh'] = '0.9.0';
+        if (
+          deps['react-dom'] &&
+          isMinimalReactDomVersion(deps['react-dom'], '16.9.0')
+        ) {
+          deps['react-refresh'] = '0.9.0';
+        }
 
         if (!deps['@babel/core']) {
           deps['@babel/core'] = '^7.3.3';
@@ -153,8 +148,7 @@ export async function reactPreset(pkg: PackageJSON) {
       },
       setup: async manager => {
         const dependencies = manager.manifest.dependencies;
-        const { externals } = manager.configurations.sandbox?.parsed;
-        const isRefresh = await hasRefresh(dependencies, externals);
+        const isRefresh = await hasRefresh(dependencies);
 
         if (!initialized || refreshInitialized !== isRefresh) {
           initialized = true;
@@ -300,13 +294,14 @@ export async function reactPreset(pkg: PackageJSON) {
             await initializeReactDevToolsLegacy();
           }
         }
-        const dependencies = manager.manifest.dependencies;
-        const { externals } = manager.configurations.sandbox?.parsed;
-        if (await hasRefresh(dependencies, externals)) {
+
+        if (await hasRefresh(manager.manifest.dependencies)) {
           await createRefreshEntry(manager);
         }
 
-        const reactDom = dependencies.find(n => n.name === 'react-dom');
+        const reactDom = manager.manifest.dependencies.find(
+          n => n.name === 'react-dom'
+        );
         if (reactDom && !manager.webpackHMR) {
           cleanUsingUnmount(manager);
         }

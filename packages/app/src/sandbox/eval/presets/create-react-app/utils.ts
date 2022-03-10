@@ -49,17 +49,10 @@ export async function isMinimalAbsoluteVersion(
  * Decide whether React Refresh hot module reloading strategy is supported by React
  */
 export async function hasRefresh(
-  dependencies: { name: string; version: string }[],
-  externals: Record<string, string>
+  dependencies: { name: string; version: string }[]
 ) {
   const hasReactRefresh = dependencies.find(n => n.name === 'react-refresh');
   if (hasReactRefresh) {
-    // 采用 externals 时 dependencies 不存在 react-dom
-    // 只能从 externals 中判断是否存在 react-dom（默认版本大于 16.9.0）
-    if (externals && externals['react-dom']) {
-      return true;
-    }
-
     const reactDom = dependencies.find(dep => dep.name === 'react-dom');
 
     if (reactDom) {
