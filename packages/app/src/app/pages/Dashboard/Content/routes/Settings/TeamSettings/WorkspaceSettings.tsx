@@ -41,9 +41,7 @@ const PERMISSION_LEVELS = {
     [TeamMemberAuthorization.Write]: TeamMemberAuthorization.Write,
     [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
   },
-  [TeamMemberAuthorization.Read]: {
-    [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
-  },
+  [TeamMemberAuthorization.Read]: {},
 };
 
 export const WorkspaceSettings = () => {
@@ -178,6 +176,11 @@ export const WorkspaceSettings = () => {
     [TeamMemberAuthorization.Write]: 'Editor',
     [TeamMemberAuthorization.Read]: 'Viewer',
   };
+
+  const permissionValues = Object.values(
+    PERMISSION_LEVELS[userPermission.authorization]
+  );
+  const hasEnoughPermission = permissionValues.length > 0;
 
   return (
     <>
@@ -532,7 +535,8 @@ export const WorkspaceSettings = () => {
               onInputValueChange={val => setInviteValue(val)}
               style={{ paddingRight: 80 }}
             />
-            {team?.subscription?.type === SubscriptionType.TeamPro ? (
+            {hasEnoughPermission &&
+            team?.subscription?.type === SubscriptionType.TeamPro ? (
               <Menu>
                 <Menu.Button
                   css={css({
@@ -550,9 +554,7 @@ export const WorkspaceSettings = () => {
                   <Icon name="caret" size={8} marginLeft={1} />
                 </Menu.Button>
                 <Menu.List>
-                  {Object.values(
-                    PERMISSION_LEVELS[userPermission.authorization]
-                  ).map(authorization => (
+                  {permissionValues.map(authorization => (
                     <Menu.Item
                       key={authorization}
                       onSelect={() => setNewMemberAuthorization(authorization)}
@@ -669,16 +671,20 @@ export const WorkspaceSettings = () => {
         <MemberList
           getPermission={() => 'PENDING'}
           getPermissionOptions={() => []}
-          getActions={user => [
-            {
-              label: 'Revoke Invitation',
-              onSelect: () =>
-                actions.dashboard.revokeTeamInvitation({
-                  teamId: team.id,
-                  userId: user.id,
-                }),
-            },
-          ]}
+          getActions={user =>
+            hasEnoughPermission
+              ? [
+                  {
+                    label: 'Revoke Invitation',
+                    onSelect: () =>
+                      actions.dashboard.revokeTeamInvitation({
+                        teamId: team.id,
+                        userId: user.id,
+                      }),
+                  },
+                ]
+              : []
+          }
           users={sortBy(team.invitees, 'username')}
         />
       </div>
