@@ -102,10 +102,10 @@ export const Jobs = styled.li`
 
 export const UserAvatar = styled.img`
   border: 1px solid ${props => props.theme.homepage.grey};
-  border-radius: 2px;
   width: 24px;
   height: 24px;
   margin-left: 0.5rem;
+  border-radius: 99999px;
 `;
 
 export const LogoWrapper = styled(Link)`

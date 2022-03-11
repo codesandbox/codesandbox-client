@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import privateIcon from './assets/private.svg';
 import exportIcon from './assets/export.svg';
-import userIcon from './assets/user.svg';
+import priceIcon from './assets/price.svg';
 import { formatCurrent } from './_utils';
 import { BoxPlan, BoxPlanButton, BoxPlanPrice } from './_elements';
 
@@ -24,7 +24,7 @@ export const Intro = ({ plans }) => {
     <>
       <IntroWrapper>
         <Caption>CodeSandbox Pro</Caption>
-        <Title>Everything you love about CodeSandbox, but make it Pro</Title>
+        <Title>Everything you love about CodeSandbox, but make it Pro.</Title>
 
         <ScrollView>
           <Grid>
@@ -48,7 +48,7 @@ export const Intro = ({ plans }) => {
 
             <GridItem>
               <Icon>
-                <img src={userIcon} alt="pricing" />
+                <img src={priceIcon} alt="pricing" />
               </Icon>
               <SubTitle>
                 Choose between different pricing and plans to suit your needs
@@ -86,7 +86,7 @@ const Title = styled.h1`
   color: ${props => props.theme.homepage.white};
   padding: 0;
   margin: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   font-weight: normal;
 
   font-size: 40px;
@@ -114,20 +114,10 @@ const SubTitle = styled.h2`
   font-weight: normal;
   letter-spacing: -0.019em;
   margin: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 
-  font-size: 13px;
-  line-height: 18px;
-
-  @media (min-width: 769px) {
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  @media (min-width: 1025px) {
-    font-size: 20px;
-    line-height: 28px;
-  }
+  font-size: 16px;
+  line-height: 24px;
 `;
 
 const IntroWrapper = styled.div`
@@ -151,12 +141,14 @@ const Caption = styled.p`
 
 const ScrollView = styled.div`
   overflow: auto;
+  margin-left: -1em;
   margin-right: -1em;
 `;
 
 const GridItem = styled.div`
   min-width: 200px;
-  padding-right: 1em;
+  padding-right: calc(48px - 1em);
+  padding-left: 1em;
 `;
 
 const Grid = styled.div`
@@ -166,24 +158,29 @@ const Grid = styled.div`
   margin-top: 62px;
 
   @media (min-width: 376px) {
+    margin-top: 72px;
+  }
+
+  @media (min-width: 769px) {
     margin-top: 96px;
   }
 
   ${GridItem} {
-    width: calc(100% / 3 - 3em);
+    width: calc(100% / 3);
   }
 `;
 
 const Icon = styled.div`
   background: #2a2a2a;
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   border-radius: 9999px;
   display: flex;
   margin-bottom: 24px;
 
   img {
     margin: auto;
+    height: 22px;
   }
 `;
 

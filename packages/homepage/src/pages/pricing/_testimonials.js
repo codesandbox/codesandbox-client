@@ -28,9 +28,7 @@ export const Testimonial = () => {
 
       <FullSection>
         <Column>
-          <BigTitle css={{ marginBottom: 60 }}>
-            CodeSandbox continues to amaze me every day.”
-          </BigTitle>
+          <BigTitle>CodeSandbox continues to amaze me every day.”</BigTitle>
           <div>
             <TestimonialTitle>Peggy Rayzis</TestimonialTitle>
             <TestimonialRole>
@@ -93,8 +91,9 @@ const Column = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
 
-  @media (min-width: 769px) {
+  @media (min-width: 768px) {
     padding: 62px;
     width: 45%;
 
@@ -126,6 +125,7 @@ const BigTitle = styled.p`
   letter-spacing: -0.03em;
   position: relative;
   margin: 0;
+  margin-bottom: 60px;
 
   font-size: 40px;
 

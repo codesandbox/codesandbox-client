@@ -13,9 +13,9 @@ import { useEffect, useState } from 'react';
 export const usePricing = () => {
   const [data, setData] = useState(null);
   const fetchData = async () => {
-    const BASE =
-      process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
     try {
+      const BASE =
+        process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
       const payload = await fetch(`${BASE}/api/v1/prices`).then(x => x.json());
 
       setData(payload);

@@ -42,7 +42,7 @@ const Pricing = () => {
         <Section
           css={{
             marginTop: 72,
-            '@media (min-width: 376px)': { marginTop: 140 },
+            '@media (min-width: 769px)': { marginTop: 140 },
           }}
         >
           <Container>
