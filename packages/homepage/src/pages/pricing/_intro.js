@@ -245,8 +245,8 @@ const PlanList = styled.div`
 
 const FreeBox = () => {
   return (
-    <BoxPlan>
-      <p>For learning and experimenting.</p>
+    <BoxPlan href="/s">
+      <p>For learning and experimenting</p>
 
       <BoxPlanPrice plan="Free" price="$0" caption="forever" />
       <ul>
@@ -273,8 +273,8 @@ const TeamPro = ({ plan }) => {
   if (!plan) return null;
 
   return (
-    <BoxPlan pro>
-      <p>Collaborate with your team Unlimited editor seats.</p>
+    <BoxPlan href="#upgrade" pro>
+      <p>Collaborate with your team Unlimited editor seats</p>
 
       <BoxPlanPrice
         plan="Team Pro"
@@ -298,7 +298,7 @@ const TeamPro = ({ plan }) => {
         <li>Centralized billing</li>
       </ul>
 
-      <BoxPlanButton href="#upgrade">Upgrade to Team Pro</BoxPlanButton>
+      <BoxPlanButton>Upgrade to Team Pro</BoxPlanButton>
     </BoxPlan>
   );
 };

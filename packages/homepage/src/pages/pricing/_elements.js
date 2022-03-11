@@ -30,13 +30,14 @@ export const Title = styled.h2`
   }
 `;
 
-export const BoxPlan = styled.div`
+export const BoxPlan = styled.a`
   padding: 40px 32px;
   width: 100%;
   position: relative;
   z-index: 2;
   min-width: 310px;
   margin: 0 6px;
+  text-decoration: none;
 
   @media (min-width: 560px) {
     max-width: calc(100% / 2 - 12px);
@@ -51,6 +52,11 @@ export const BoxPlan = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: translateY(-8px);
+  }
 
   ul {
     list-style: none;
@@ -97,7 +103,7 @@ export const BoxPlan = styled.div`
   }}
 `;
 
-export const BoxPlanButton = styled.a`
+export const BoxPlanButton = styled.div`
   display: block;
   border-radius: 4px;
   height: 56px;
@@ -110,6 +116,12 @@ export const BoxPlanButton = styled.a`
   text-decoration: none;
   font-family: 'TWKEverett', sans-serif;
   font-weight: 500;
+
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgb(55, 55, 55);
+  }
 `;
 
 export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {

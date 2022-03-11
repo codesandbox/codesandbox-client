@@ -14,6 +14,21 @@ export const PersonalPro = ({ plans }) => {
   //     }
   //   }
   // }
+  const scrollTo = event => {
+    event.preventDefault();
+
+    const element = document.querySelector('#plans');
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - 120;
+
+    if (element) {
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   return (
     <>
       <GridItem
@@ -38,10 +53,17 @@ export const PersonalPro = ({ plans }) => {
               <li>Stricter sandbox permissions</li>
             </ul>
 
-            <a href="#plans">
-              <img src={arrowForwardIcon} alt="scroll to plans" />
+            <CompareLink
+              href="#plans"
+              onClick={scrollTo}
+              css={{
+                display: 'none',
+                '@media (min-width: 560px)': { display: 'flex' },
+              }}
+            >
+              <img src={arrowForwardIcon} width="16" alt="scroll to plans" />
               <span>Compare our plans</span>
-            </a>
+            </CompareLink>
           </Content>
         </GridItem>
 
@@ -66,6 +88,20 @@ export const PersonalPro = ({ plans }) => {
             </BoxPlanButton>
           </BoxPlan>
         )}
+
+        <CompareLink
+          href="#plans"
+          onClick={scrollTo}
+          css={{
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            '@media (min-width: 560px)': { display: 'none' },
+          }}
+        >
+          <img src={arrowForwardIcon} width="16" alt="scroll to plans" />
+          <span>Compare our plans</span>
+        </CompareLink>
       </Grid>
     </>
   );
@@ -134,15 +170,28 @@ const Content = styled.div`
     margin: 0;
     font-weight: normal;
   }
+`;
 
-  a {
-    color: #ac9cff;
-    text-decoration: none;
-    margin-top: 2.6em;
-    display: flex;
+const CompareLink = styled.a`
+  color: #ac9cff;
+  text-decoration: none;
+  margin-top: 2.6em;
+  display: flex;
 
-    img {
-      margin-right: 0.4em;
-    }
+  font-size: 16px;
+  line-height: 24px;
+
+  @media (min-width: 769px) {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  &:hover img {
+    transform: translateY(4px);
+  }
+
+  img {
+    transition: all 0.2s ease;
+    margin-right: 0.4em;
   }
 `;
