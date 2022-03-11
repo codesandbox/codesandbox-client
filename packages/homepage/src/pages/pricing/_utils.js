@@ -15,10 +15,13 @@ export const usePricing = () => {
   const fetchData = async () => {
     const BASE =
       process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
+    try {
+      const payload = await fetch(`${BASE}/api/v1/prices`).then(x => x.json());
 
-    const payload = await fetch(`${BASE}/api/v1/prices`).then(x => x.json());
-
-    setData(payload);
+      setData(payload);
+    } catch {
+      //
+    }
   };
 
   useEffect(() => {

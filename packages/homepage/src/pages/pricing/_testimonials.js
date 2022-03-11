@@ -29,11 +29,13 @@ export const Testimonial = () => {
       <FullSection>
         <Column>
           <BigTitle css={{ marginBottom: 60 }}>
-            Digital product development, reimagined.”
+            CodeSandbox continues to amaze me every day.”
           </BigTitle>
           <div>
-            <TestimonialTitle>Dylan Field</TestimonialTitle>
-            <TestimonialRole>Founder and CEO, Figma</TestimonialRole>
+            <TestimonialTitle>Peggy Rayzis</TestimonialTitle>
+            <TestimonialRole>
+              Engineering Manager, Apollo GraphQL
+            </TestimonialRole>
           </div>
         </Column>
         <Column>
@@ -49,21 +51,22 @@ export const Testimonial = () => {
         </Column>
         <Column>
           <MinorTitle css={{ marginBottom: 60 }}>
-            Using CodeSandbox has completely revolutionized how we ship digital
-            products.”
+            It's dramatically improved my experience of sharing ideas.”
           </MinorTitle>
 
           <div>
-            <TestimonialTitle>Koen Bok</TestimonialTitle>
-            <TestimonialRole>Founder and CEO, Framer</TestimonialRole>
+            <TestimonialTitle>Brian Vaughn</TestimonialTitle>
+            <TestimonialRole>
+              Software Engineer, React Core Team
+            </TestimonialRole>
           </div>
         </Column>
         <Column>
-          <Caption>as featured on Product Hunt</Caption>
-
-          <BigTitle css={{ marginTop: 60 }}>
-            A glimpse at the future of software development now.”
-          </BigTitle>
+          <BigTitle>It feels much more like my local environment.”</BigTitle>
+          <div>
+            <TestimonialTitle>Jonnie Hallman</TestimonialTitle>
+            <TestimonialRole>Designer Developer, Stripe</TestimonialRole>
+          </div>
         </Column>
       </FullSection>
     </>
@@ -135,7 +138,7 @@ const BigTitle = styled.p`
   }
 
   @media (min-width: 1441px) {
-    padding-right: 26%;
+    padding-right: 23%;
   }
 
   &:before {
