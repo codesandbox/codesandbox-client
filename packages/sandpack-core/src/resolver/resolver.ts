@@ -345,6 +345,19 @@ export const resolver = gensync<
   let foundFile = yield* expandFile(modulePath, opts);
   if (!foundFile) {
     foundFile = yield* expandFile(pathUtils.join(modulePath, 'index'), opts);
+
+    // In case alias adds an extension, we retry the entire resolution with an added /index
+    // This is mostly a hack I guess, but it works for now, so many edge-cases
+    if (!foundFile) {
+      try {
+        const parts = moduleSpecifier.split('/');
+        if (!parts.length || !parts[parts.length - 1].startsWith('index')) {
+          foundFile = yield* resolve(moduleSpecifier + '/index', opts);
+        }
+      } catch (err) {
+        // should throw ModuleNotFound for original specifier, not new one
+      }
+    }
   }
 
   if (!foundFile) {
