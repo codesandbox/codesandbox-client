@@ -427,14 +427,18 @@ const FeatureListTitle = styled.h3`
 
 const FeatureList = styled.ul`
   @media (min-width: 769px) {
-    column-count: 2;
-    column-fill: balance;
-    column-gap: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 `;
 
 const FeatureListItem = styled.li`
   margin-bottom: 32px;
+
+  @media (min-width: 769px) {
+    width: calc(100% / 2 - 3em);
+  }
 
   .feature-item__title {
     font-family: 'TWKEverett', sans-serif;
