@@ -5,6 +5,47 @@ import { Title } from './_elements';
 
 const plans = [
   {
+    section: 'Prototyping',
+    body: [
+      {
+        title: 'Unlimited Sandboxes',
+        caption:
+          "Create as many sandboxes as you'd like and manage their permissions",
+        free: 'Only public',
+        personal: 'Public and private',
+        team: 'Public and private',
+      },
+      {
+        title: 'Public NPM packages',
+        caption: 'Use any of the 1M+ public packages on npm in your sandboxes',
+        free: true,
+        personal: true,
+        team: true,
+      },
+      {
+        title: 'Private NPM packages',
+        caption: 'Use private npm packages from your own custom registry',
+        free: false,
+        personal: true,
+        team: true,
+      },
+      {
+        title: 'Private GitHub repositories',
+        caption: 'Import and sync private repositories from Github',
+        free: false,
+        personal: true,
+        team: true,
+      },
+      {
+        title: 'Static file hosting',
+        caption: 'All static files served via CDN',
+        free: '20MB total,<br/> 7MB upload',
+        personal: '500MB/user,<br/> 30MB upload',
+        team: '500MB/user,<br/> 30MB upload',
+      },
+    ],
+  },
+  {
     section: 'Privacy',
     body: [
       {
@@ -58,9 +99,7 @@ export const Plans = () => {
           maxWidth: 600,
           margin: 'auto',
           '@media (min-width: 1441px)': {
-            left: 170,
-            margin: '0 auto 160px',
-            position: 'relative',
+            margin: '0 auto 20px',
           },
         }}
       >
@@ -140,7 +179,7 @@ export const Plans = () => {
  * Elements
  */
 const CheckOrNot = ({ checked }) => {
-  if (checked) {
+  if (checked === true) {
     return (
       <svg width="23" height="17" viewBox="0 0 23 17">
         <path
@@ -148,6 +187,13 @@ const CheckOrNot = ({ checked }) => {
           fill="currentColor"
         />
       </svg>
+    );
+  }
+
+  if (typeof checked === 'string') {
+    return (
+      // eslint-disable-next-line react/no-danger
+      <span className="text" dangerouslySetInnerHTML={{ __html: checked }} />
     );
   }
 
@@ -163,29 +209,42 @@ const Table = styled.table`
   th {
     text-align: center;
     border-bottom: 1px solid #373737;
-    padding: 32px 0;
+    padding: 24px 0;
 
     @media (min-width: 769px) {
+      padding: 32px 0;
       min-width: 200px;
     }
   }
 
   td:first-child {
     text-align: left;
-    color: #e5e5e5;
 
     p {
-      font-size: 16px;
-      line-height: 24px;
       margin: 0;
+      font-size: 13px;
+      line-height: 18px;
+      color: #999999;
+
+      @media (min-width: 769px) {
+        font-size: 16px;
+        line-height: 24px;
+      }
     }
 
     h3 {
       font-family: 'TWKEverett', sans-serif;
       font-style: normal;
       font-weight: 500;
-      font-size: 24px;
-      line-height: 32px;
+      color: #fff;
+
+      font-size: 16px;
+      line-height: 20px;
+
+      @media (min-width: 769px) {
+        line-height: 32px;
+        font-size: 24px;
+      }
     }
   }
 
@@ -226,14 +285,29 @@ const Table = styled.table`
   }
   .feature {
     color: #c5c5c5;
-    font-size: 32px;
+    font-size: 18px;
     font-family: 'TWKEverett', sans-serif;
     font-weight: normal;
+    color: #fff;
+
+    @media (min-width: 769px) {
+      font-size: 32px;
+    }
   }
 
   .no-check {
     color: #2a2a2a;
     font-size: 32px;
+  }
+
+  .text {
+    font-size: 13px;
+    line-height: 18px;
+
+    @media (min-width: 769px) {
+      font-size: 20px;
+      line-height: 28px;
+    }
   }
 
   .desktop {

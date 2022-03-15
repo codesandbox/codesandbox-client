@@ -9,6 +9,7 @@ import framer from './assets/framer.png';
 import microsoft from './assets/microsoft.png';
 import shopify from './assets/shopify.png';
 import stripe from './assets/stripe.png';
+import quote from './assets/quote.svg';
 
 const logos = [microsoft, shopify, atlassian, stripe, framer, algolia];
 
@@ -84,9 +85,8 @@ const Column = styled.div`
   color: #0f0e0e;
 
   border-bottom: 1px solid #000;
-  border-right: 1px solid #000;
 
-  padding: 32px;
+  padding: 48px;
 
   display: flex;
   flex-direction: column;
@@ -96,6 +96,7 @@ const Column = styled.div`
   @media (min-width: 768px) {
     padding: 62px;
     width: 45%;
+    border-right: 1px solid #000;
 
     &:first-child,
     &:last-child {
@@ -121,7 +122,7 @@ const BigTitle = styled.p`
   font-family: 'TWKEverett', sans-serif;
   font-style: normal;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.1;
   letter-spacing: -0.03em;
   position: relative;
   margin: 0;
@@ -142,14 +143,19 @@ const BigTitle = styled.p`
   }
 
   &:before {
-    content: '"';
+    content: '';
+    background: url(${quote}) center center;
+    background-size: cover;
+    width: 0.36em;
+    height: 0.26em;
     position: absolute;
     left: -0.5em;
+    top: 0.17em;
   }
 `;
 
 const MinorTitle = styled(BigTitle)`
-  font-size: 18px;
+  font-size: 24px;
   line-height: 1.3;
 
   @media (min-width: 769px) {
@@ -158,26 +164,38 @@ const MinorTitle = styled(BigTitle)`
 `;
 
 const Caption = styled.p`
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 13px;
   margin: 0;
+
+  @media (min-width: 769px) {
+    font-size: 16px;
+    line-height: 24px;
+  }
 `;
 
 const TestimonialTitle = styled.p`
   font-family: 'TWKEverett', sans-serif;
   font-weight: 500;
-  font-size: 24px;
-  line-height: 28px;
   letter-spacing: -0.01em;
   margin: 0;
+  font-size: 18px;
+
+  @media (min-width: 769px) {
+    font-size: 24px;
+    line-height: 28px;
+  }
 `;
 
 const TestimonialRole = styled.p`
   font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
   letter-spacing: -0.01em;
   margin: 0;
+  font-size: 13px;
+
+  @media (min-width: 769px) {
+    font-size: 16px;
+    line-height: 24px;
+  }
 `;
 
 const ImageGrid = styled.div`

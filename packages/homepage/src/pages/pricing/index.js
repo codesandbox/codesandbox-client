@@ -11,6 +11,7 @@ import { PersonalPro } from './_personal-pro';
 import { Plans } from './_plans';
 import { Testimonial } from './_testimonials';
 import { Title } from './_elements';
+import chevronRight from './assets/chevronRight.svg';
 
 const Overflow = styled.div`
   overflow: hidden;
@@ -30,6 +31,25 @@ const Container = styled.div`
   margin: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+`;
+
+const FAQLink = styled(Title)`
+  color: #dcff50;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+
+  @media (min-width: 769px) {
+    font-size: 32px;
+  }
+
+  img {
+    margin-left: 0.3em;
+  }
 `;
 
 const Pricing = () => {
@@ -67,9 +87,13 @@ const Pricing = () => {
         </Section>
 
         <Section>
-          <Title css={{ textAlign: 'center', maxWidth: 710, margin: 'auto' }}>
-            For further inquiries, access our <a href="">FAQ</a>
-          </Title>
+          <Title css={{ textAlign: 'center' }}>Still have questions?</Title>
+
+          {/* TODO */}
+          <FAQLink as="a" href="/faq" target="_blank">
+            Read our FAQ
+            <img src={chevronRight} alt="link to" />
+          </FAQLink>
         </Section>
       </Overflow>
     </Layout>
