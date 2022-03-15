@@ -52,14 +52,15 @@ export const SignInModalElement = ({
     }
 
     if (redirectTo) {
-      if (redirectTo.startsWith('http')) {
-        window.location.href = redirectTo;
+      if (redirectTo.startsWith('https')) {
+        window.location.replace(redirectTo);
 
         return null;
       }
 
       return history.push(redirectTo.replace(location.origin, ''));
     }
+
     setLoadingAuth('github');
 
     return null;
@@ -74,8 +75,15 @@ export const SignInModalElement = ({
     }
 
     if (redirectTo) {
+      if (redirectTo.startsWith('https')) {
+        window.location.replace(redirectTo);
+
+        return null;
+      }
+
       return history.push(redirectTo.replace(location.origin, ''));
     }
+
     setLoadingAuth('google');
 
     return null;
