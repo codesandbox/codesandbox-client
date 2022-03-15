@@ -31,7 +31,9 @@ export const Title = styled.h2`
 `;
 
 export const BoxPlan = styled.a`
-  padding: 40px 32px;
+  scroll-snap-align: start center;
+
+  padding: 20px 12px;
   width: 100%;
   position: relative;
   z-index: 2;
@@ -41,6 +43,7 @@ export const BoxPlan = styled.a`
 
   @media (min-width: 560px) {
     max-width: calc(100% / 2 - 12px);
+    padding: 40px 32px;
   }
 
   background: #151515;
@@ -54,8 +57,10 @@ export const BoxPlan = styled.a`
   justify-content: space-between;
   transition: transform 0.3s ease-in-out;
 
-  &:hover {
-    transform: translateY(-8px);
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-8px);
+    }
   }
 
   ul {
@@ -73,7 +78,7 @@ export const BoxPlan = styled.a`
   }
 
   > *:not(:last-child) {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 
     @media (min-width: 769px) {
       margin-bottom: 64px;
@@ -119,8 +124,10 @@ export const BoxPlanButton = styled.div`
 
   transition: background 0.2s ease;
 
-  &:hover {
-    background: rgb(55, 55, 55);
+  @media (hover: hover) {
+    &:hover {
+      background: rgb(55, 55, 55);
+    }
   }
 `;
 

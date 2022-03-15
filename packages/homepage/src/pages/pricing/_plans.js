@@ -49,27 +49,7 @@ const plans = [
     ],
   },
   {
-    section: 'Privacy',
-    body: [
-      {
-        title: 'Private NPMs',
-        caption:
-          'Everyone in a single account for easier team management & billing',
-        free: false,
-        personal: false,
-        team: true,
-      },
-      {
-        title: 'Sandbox-level permissions',
-        caption: 'Disable the ability to fork or download a shared sandbox',
-        free: false,
-        personal: true,
-        team: true,
-      },
-    ],
-  },
-  {
-    section: 'Features',
+    section: 'Admin & Security',
     body: [
       {
         title: 'Dashboard',
@@ -80,9 +60,89 @@ const plans = [
         team: true,
       },
       {
-        title: 'Centralized Billing',
+        title: 'Sandbox-level permissions',
+        caption: 'Manage your sandbox permissions and privacy settings',
+        free: false,
+        personal: true,
+        team: true,
+      },
+      {
+        title: 'Team-level permissions',
+        caption:
+          'Disable the ability to fork or download all shared sandboxes in a team',
+        free: false,
+        personal: false,
+        team: true,
+      },
+      {
+        title: 'Centralized billing',
         caption:
           'Everyone in a single account for easier team management & billing',
+        free: false,
+        personal: false,
+        team: true,
+      },
+    ],
+  },
+  {
+    section: 'Collaboration',
+    body: [
+      {
+        title: 'Collaborative editing ',
+        caption:
+          'Work on code and edit sandboxes with multiple people real-time',
+        free: true,
+        personal: true,
+        team: true,
+      },
+      {
+        title: 'Classroom mode',
+        caption: 'Use Classroom Mode to control who can make edits or watch',
+        free: true,
+        personal: true,
+        team: true,
+      },
+      {
+        title: 'Public profile',
+        caption: 'A personal portfolio page highlighting your best sandboxes',
+        free: true,
+        personal: true,
+        team: true,
+      },
+      {
+        title: 'In-editor chat',
+        caption: 'Chat with collaborators about the code in real time',
+        free: true,
+        personal: true,
+        team: true,
+      },
+      {
+        title: 'Code comments',
+        caption: 'Add comments about a sandbox or specific code lines',
+        free: false,
+        personal: false,
+        team: true,
+      },
+      {
+        title: 'Preview comments',
+        caption:
+          'Comment directly in the sandbox preview, no need to open the editor',
+        free: false,
+        personal: false,
+        team: true,
+      },
+      {
+        title: 'Team dashboards',
+        caption:
+          'Easy access to all team members work for editing, collaborating and managing ',
+        free: false,
+        personal: false,
+        team: true,
+      },
+      {
+        title: 'Team templates',
+        caption:
+          'Share your official template with your team members and establish workflow patterns',
         free: false,
         personal: false,
         team: true,
@@ -376,22 +436,11 @@ const FeatureList = styled.ul`
 const FeatureListItem = styled.li`
   margin-bottom: 32px;
 
-  &:hover {
-    .feature-item__title {
-      color: #fff;
-    }
-
-    .feature-item__caption {
-      opacity: 1;
-      height: auto;
-    }
-  }
-
   .feature-item__title {
     font-family: 'TWKEverett', sans-serif;
     font-weight: 500;
 
-    color: #999999;
+    color: #fff;
     margin: 0;
 
     font-size: 18px;
@@ -410,8 +459,6 @@ const FeatureListItem = styled.li`
     line-height: 24px;
     color: #808080;
     margin: 0;
-    opacity: 0;
-    height: 0;
   }
 `;
 
@@ -455,6 +502,7 @@ const Table = styled.table`
 
       font-size: 16px;
       line-height: 20px;
+      margin-bottom: 5px;
 
       @media (min-width: 769px) {
         line-height: 32px;
@@ -544,7 +592,7 @@ const Table = styled.table`
       margin-top: -10px;
 
       @media (min-width: 769px) {
-        width: 25%;
+        width: 32%;
         padding: 10px 0;
         margin-top: -10px;
       }
@@ -610,6 +658,8 @@ const Table = styled.table`
       border: 0;
       color: inherit;
       text-align: right;
+
+      font-family: 'TWKEverett', sans-serif;
     }
   }
 

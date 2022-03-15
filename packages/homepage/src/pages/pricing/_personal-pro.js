@@ -128,11 +128,19 @@ const Grid = styled.div`
     top: calc(-1280px / 4);
     z-index: 0;
 
-    background: radial-gradient(50% 50% at 50% 50%, #2c2554 20%, #090909 100%);
-
+    background: radial-gradient(50% 50% at 50% 50%, #7b61ff 20%, #090909 100%);
+    opacity: 0.2;
     display: none;
+    transition: all 1s ease;
+
     @media (min-width: 1025px) {
       display: block;
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover:after {
+      opacity: 0.8;
     }
   }
 `;
@@ -186,8 +194,10 @@ const CompareLink = styled.a`
     line-height: 32px;
   }
 
-  &:hover img {
-    transform: translateY(4px);
+  @media (hover: hover) {
+    &:hover img {
+      transform: translateY(4px);
+    }
   }
 
   img {

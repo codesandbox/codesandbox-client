@@ -203,12 +203,11 @@ const PlanList = styled.div`
   position: relative;
   z-index: 0;
 
-  margin-top: 80px;
+  scroll-snap-type: x mandatory;
+  overflow-x: scroll;
+  scroll-behavior: smooth;
 
-  overflow: auto;
-  scroll-snap-type: mandatory;
-  scroll-snap-points-y: repeat(300px);
-  scroll-snap-type: y mandatory;
+  margin-top: 80px;
   padding: 0 1em;
 
   @media (min-width: 376px) {
@@ -223,22 +222,29 @@ const PlanList = styled.div`
   &:after {
     content: '';
     position: absolute;
-    width: 1280px;
-    height: 1280px;
-    right: calc(-1280px / 4);
-    top: calc(-1280px / 3);
+    width: 1000px;
+    height: 1000px;
+    right: calc(-1000px / 6);
+    top: calc(-1000px / 6);
     z-index: 0;
 
     background: radial-gradient(
       50% 50% at 50% 50%,
-      rgba(237, 255, 165, 0.3) 0%,
-      #090909 60.35%
+      rgba(237, 255, 165, 1) 20%,
+      rgba(237, 255, 165, 0) 100%
     );
-    opacity: 1;
+    opacity: 0.3;
+    transition: all 1s ease;
 
     display: none;
     @media (min-width: 1025px) {
       display: block;
+    }
+  }
+
+  @media (hover: hover) {
+    &:hover:after {
+      opacity: 0.5;
     }
   }
 `;
