@@ -51,8 +51,8 @@ const Homepage = () => (
         title="Experience the future of web development."
       >
         <picture>
-          <source media="(max-width:620px)" srcSet={csbpBig} />
-          <img src={csbpMobile} alt="Experience the future of web development." />
+          <source media="(max-width:620px)" srcSet={csbpMobile} />
+          <img src={csbpBig} alt="Experience the future of web development." />
         </picture>
       </a>
     </section>
