@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Title } from './_elements';
 
+/**
+ * DATA
+ */
 const plans = [
   {
     section: 'Prototyping',
@@ -88,6 +91,123 @@ const plans = [
   },
 ];
 
+const featureList = [
+  {
+    title: 'CodeSandbox CI',
+    caption: 'A GitHub integration that auto-builds from pull requests',
+  },
+  {
+    title: 'VS Code powered editor',
+    caption: 'Leverage the power and familiarity of VS Code',
+  },
+  {
+    title: 'Hot module reloading',
+    caption: 'See changes as you make them',
+  },
+  {
+    title: 'Keybindings & quick actions',
+    caption: 'Perform common tasks speedily',
+  },
+  {
+    title: 'Console',
+    caption:
+      'View logging and console output to see loading progress and debug issues',
+  },
+  {
+    title: 'Presentation mode',
+    caption: 'Hide distracting editor elements for demos and screenshots',
+  },
+  {
+    title: 'Custom themes',
+    caption: 'Tweak theme styles with support for all VS Code themes',
+  },
+  {
+    title: 'Type acquisition',
+    caption: 'Typings automatically downloaded for every dependency',
+  },
+  {
+    title: 'Vim mode',
+    caption: 'Vim emulation in the editor, powered by the VSCodeVim extension',
+  },
+  {
+    title: 'External resources',
+    caption: 'Automatically include external resources, like CSS or JS files',
+  },
+  {
+    title: 'Session Restore',
+    caption: 'Recover un-saved changes between sessions',
+  },
+  {
+    title: 'Prettier',
+    caption: 'Code gets prettified on save according to preferences',
+  },
+  {
+    title: 'ESLint',
+    caption: 'Code is linted automatically',
+  },
+
+  {
+    title: 'Emmet',
+    caption:
+      ' Expand abbreviations with Emmet.io in all JS, HTML, and CSS files',
+  },
+  {
+    title: 'Configuration UI',
+    caption:
+      ' Expand abbreviations with Emmet.io in aEdit config files for npm, Prettier, Netlify, Vercel, TypeScript, and JavaScriptll JS, HTML, and CSS files',
+  },
+  {
+    title: 'Export Zip',
+    caption: ' Download your sandbox as a zip',
+  },
+  {
+    title: 'Server control panel',
+    caption: ' Restart the sandbox or server',
+  },
+  {
+    title: 'Multiple ports',
+    caption: ' Container apps can listen on one or more ports simultaneously',
+  },
+  {
+    title: 'Secrets',
+    caption:
+      ' Hide sensitive information in your app and access them via environment variables',
+  },
+  {
+    title: 'Test viewer',
+    caption: ' Showing test results alongside your code',
+  },
+  {
+    title: 'Problem viewer',
+    caption: ' See errors clearly with our user-friendly overlay',
+  },
+  {
+    title: 'React DevTools',
+    caption: ' Integration of React’s own DevTools into the editor',
+  },
+  {
+    title: 'Terminal',
+    caption: ' Run scripts and commands from a terminal',
+  },
+  {
+    title: 'GitHub import & export',
+    caption:
+      ' Import and sync public repos, export, create commits, and open PRs',
+  },
+  {
+    title: 'Vercel and Netlify deploy',
+    caption:
+      ' Deploy a production version of your sandbox to Vercel or Netlify',
+  },
+  {
+    title: 'Define API',
+    caption: ' Programmatically create sandboxes via an API',
+  },
+];
+
+/**
+ * Main component
+ */
 export const Plans = () => {
   const [mobilePlan, setMobilePlan] = useState('team');
 
@@ -116,19 +236,22 @@ export const Plans = () => {
                 </th>
                 {index === 0 && (
                   <>
-                    <th className="desktop free-header">
+                    <th className="column__desktop free-header">
                       <p>Free</p>
                     </th>
-                    <th className="desktop personal">
+                    <th className="column__desktop plan__personal">
                       <p>Personal Pro</p>
                       <a href="#upgrade">Upgrade</a>
                     </th>
-                    <th className="desktop team">
+                    <th className="column__desktop plan__team">
                       <p>Team Pro</p>
                       <a href="#upgrade">Upgrade</a>
                     </th>
 
-                    <th className={`mobile ${mobilePlan}`} colSpan={3}>
+                    <th
+                      className={`column__mobile plan__${mobilePlan}`}
+                      colSpan={3}
+                    >
                       <div className="select">
                         <select
                           onChange={({ target }) => setMobilePlan(target.value)}
@@ -151,18 +274,21 @@ export const Plans = () => {
                       <h3>{item.title}</h3>
                       <p>{item.caption}</p>
                     </td>
-                    <td className="free desktop">
-                      <CheckOrNot checked={item.free} />
+                    <td className="plan__free column__desktop">
+                      <CheckOrNot option={item.free} />
                     </td>
-                    <td className="personal desktop">
-                      <CheckOrNot checked={item.personal} />
+                    <td className="plan__personal column__desktop">
+                      <CheckOrNot option={item.personal} />
                     </td>
-                    <td className="team desktop">
-                      <CheckOrNot checked={item.team} />
+                    <td className="plan__team column__desktop">
+                      <CheckOrNot option={item.team} />
                     </td>
 
-                    <td className={`mobile ${mobilePlan}`} colSpan={3}>
-                      <CheckOrNot checked={item[mobilePlan]} />
+                    <td
+                      className={`column__mobile plan__${mobilePlan}`}
+                      colSpan={3}
+                    >
+                      <CheckOrNot option={item[mobilePlan]} />
                     </td>
                   </tr>
                 );
@@ -171,6 +297,21 @@ export const Plans = () => {
           );
         })}
       </Table>
+
+      <FeatureListTitle>
+        plus all our standard platform features
+      </FeatureListTitle>
+
+      <FeatureList>
+        {featureList.map(({ title, caption }) => {
+          return (
+            <FeatureListItem key={title}>
+              <h2 className="feature-item__title">{title}</h2>
+              <p className="feature-item__caption">{caption}</p>
+            </FeatureListItem>
+          );
+        })}
+      </FeatureList>
     </>
   );
 };
@@ -178,8 +319,8 @@ export const Plans = () => {
 /**
  * Elements
  */
-const CheckOrNot = ({ checked }) => {
-  if (checked === true) {
+const CheckOrNot = ({ option }) => {
+  if (option === true) {
     return (
       <svg width="23" height="17" viewBox="0 0 23 17">
         <path
@@ -190,15 +331,81 @@ const CheckOrNot = ({ checked }) => {
     );
   }
 
-  if (typeof checked === 'string') {
+  if (typeof option === 'string') {
     return (
-      // eslint-disable-next-line react/no-danger
-      <span className="text" dangerouslySetInnerHTML={{ __html: checked }} />
+      <span
+        className="checked__text"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: option }}
+      />
     );
   }
 
-  return <span className="no-check">&times;</span>;
+  return <span className="checked__no-check">&times;</span>;
 };
+
+const FeatureListTitle = styled.h3`
+  font-size: 18px;
+  font-family: 'TWKEverett', sans-serif;
+  font-weight: normal;
+  color: #fff;
+  margin: 60px 0 40px;
+
+  @media (min-width: 769px) {
+    margin: 120px 0 48px;
+    font-size: 32px;
+  }
+`;
+
+const FeatureList = styled.ul`
+  @media (min-width: 769px) {
+    column-count: 2;
+    column-fill: balance;
+    column-gap: 50px;
+  }
+`;
+
+const FeatureListItem = styled.li`
+  margin-bottom: 32px;
+
+  &:hover {
+    .feature-item__title {
+      color: #fff;
+    }
+
+    .feature-item__caption {
+      opacity: 1;
+      height: auto;
+    }
+  }
+
+  .feature-item__title {
+    font-family: 'TWKEverett', sans-serif;
+    font-weight: 500;
+
+    color: #999999;
+    margin: 0;
+
+    font-size: 18px;
+    line-height: 24px;
+    transition: all 0.3s ease;
+
+    @media (min-width: 769px) {
+      font-size: 24px;
+      line-height: 28px;
+    }
+  }
+
+  .feature-item__caption {
+    transition: all 0.3s ease;
+    font-size: 16px;
+    line-height: 24px;
+    color: #808080;
+    margin: 0;
+    opacity: 0;
+    height: 0;
+  }
+`;
 
 const Table = styled.table`
   @media (min-width: 769px) {
@@ -283,8 +490,8 @@ const Table = styled.table`
       color: var(--plan, #c5c5c5);
     }
   }
+
   .feature {
-    color: #c5c5c5;
     font-size: 18px;
     font-family: 'TWKEverett', sans-serif;
     font-weight: normal;
@@ -295,12 +502,12 @@ const Table = styled.table`
     }
   }
 
-  .no-check {
+  .checked__no-check {
     color: #2a2a2a;
     font-size: 32px;
   }
 
-  .text {
+  .checked__text {
     font-size: 13px;
     line-height: 18px;
 
@@ -310,7 +517,7 @@ const Table = styled.table`
     }
   }
 
-  .desktop {
+  .column__desktop {
     display: none;
 
     @media (min-width: 650px) {
@@ -318,7 +525,7 @@ const Table = styled.table`
     }
   }
 
-  .mobile {
+  .column__mobile {
     display: table-cell;
 
     @media (min-width: 650px) {
@@ -352,17 +559,17 @@ const Table = styled.table`
     }
   }
 
-  .free {
+  .plan__free {
     color: #c5c5c5;
   }
 
-  .personal {
+  .plan__personal {
     --plan: #ac9cff;
 
     color: var(--plan);
   }
 
-  .team {
+  .plan__team {
     --plan: #edffa5;
 
     color: var(--plan);
