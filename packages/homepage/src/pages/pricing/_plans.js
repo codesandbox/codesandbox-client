@@ -217,9 +217,9 @@ export const Plans = () => {
         css={{
           textAlign: 'center',
           maxWidth: 600,
-          margin: 'auto',
+          margin: '0 auto 80px',
           '@media (min-width: 1441px)': {
-            margin: '0 auto 20px',
+            margin: '0 auto 120px',
           },
         }}
       >
@@ -231,9 +231,17 @@ export const Plans = () => {
           return (
             <React.Fragment key={section}>
               <tr>
-                <th className="feature" colSpan={index === 0 ? 1 : 4}>
-                  {section}
+                <th
+                  className={`table__feature-header ${
+                    index === 0
+                      ? 'table__feature-header--first'
+                      : 'table__feature-header--body'
+                  }`}
+                  colSpan={index === 0 ? 1 : 4}
+                >
+                  <span>{section}</span>
                 </th>
+
                 {index === 0 && (
                   <>
                     <th className="column__desktop free-header">
@@ -252,7 +260,7 @@ export const Plans = () => {
                       className={`column__mobile plan__${mobilePlan}`}
                       colSpan={3}
                     >
-                      <div className="select">
+                      <div className="plan-selector">
                         <select
                           onChange={({ target }) => setMobilePlan(target.value)}
                           value={mobilePlan}
@@ -457,9 +465,11 @@ const Table = styled.table`
 
   th {
     white-space: nowrap;
-    padding-top: 100px;
     padding-left: 12px;
     padding-right: 12px;
+    position: sticky;
+    top: 0px;
+    background: #090909;
 
     &:first-child {
       text-align: left;
@@ -471,6 +481,10 @@ const Table = styled.table`
       font-weight: normal;
       font-size: 24px;
       color: var(--plan, #808080);
+
+      &:only-child {
+        margin: 0;
+      }
     }
 
     a {
@@ -491,7 +505,7 @@ const Table = styled.table`
     }
   }
 
-  .feature {
+  .table__feature-header {
     font-size: 18px;
     font-family: 'TWKEverett', sans-serif;
     font-weight: normal;
@@ -499,6 +513,41 @@ const Table = styled.table`
 
     @media (min-width: 769px) {
       font-size: 32px;
+    }
+  }
+
+  .table__feature-header--first {
+  }
+
+  .table__feature-header--body {
+    background: none;
+    padding-top: 60px;
+    top: -37px;
+
+    @media (min-width: 769px) {
+      padding-top: 120px;
+      padding-bottom: 47px;
+      top: -60px;
+    }
+
+    span {
+      background: linear-gradient(
+        180deg,
+        rgba(9, 9, 9, 0.1) 0%,
+        rgba(9, 9, 9, 1) 5%
+      );
+      width: 50%;
+      display: block;
+      pointer-events: none;
+
+      padding: 10px 0;
+      margin-top: -10px;
+
+      @media (min-width: 769px) {
+        width: 25%;
+        padding: 10px 0;
+        margin-top: -10px;
+      }
     }
   }
 
@@ -533,10 +582,12 @@ const Table = styled.table`
     }
   }
 
-  .select {
-    padding-right: 2em;
+  .plan-selector {
+    padding-right: 1em;
     display: flex;
     align-items: center;
+    outline: 0;
+    position: relative;
 
     &:after {
       content: '';
@@ -548,6 +599,9 @@ const Table = styled.table`
       height: 0;
       border: 3px solid transparent;
       border-top: 5px solid var(--plan, #fff);
+      position: absolute;
+      top: 10px;
+      right: 0;
     }
 
     select {

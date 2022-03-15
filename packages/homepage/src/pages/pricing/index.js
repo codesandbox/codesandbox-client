@@ -79,23 +79,23 @@ const Pricing = () => {
         <Section>
           <Testimonial />
         </Section>
-
-        <Section id="plans">
-          <Container>
-            <Plans />
-          </Container>
-        </Section>
-
-        <Section>
-          <Title css={{ textAlign: 'center' }}>Still have questions?</Title>
-
-          {/* TODO */}
-          <FAQLink as="a" href="/faq" target="_blank">
-            Read our FAQ
-            <img src={chevronRight} alt="link to" />
-          </FAQLink>
-        </Section>
       </Overflow>
+
+      <Section id="plans">
+        <Container>
+          <Plans />
+        </Container>
+      </Section>
+
+      <Section>
+        <Title css={{ textAlign: 'center' }}>Still have questions?</Title>
+
+        {/* TODO */}
+        <FAQLink as="a" href="/faq" target="_blank">
+          Read our FAQ
+          <img src={chevronRight} alt="link to" />
+        </FAQLink>
+      </Section>
     </Layout>
   );
 };
