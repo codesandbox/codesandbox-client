@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import privateIcon from './assets/private.svg';
 import exportIcon from './assets/export.svg';
-import userIcon from './assets/user.svg';
+import priceIcon from './assets/price.svg';
 import { formatCurrent } from './_utils';
 import { BoxPlan, BoxPlanButton, BoxPlanPrice } from './_elements';
 
@@ -24,7 +24,7 @@ export const Intro = ({ plans }) => {
     <>
       <IntroWrapper>
         <Caption>CodeSandbox Pro</Caption>
-        <Title>Everything you love about CodeSandbox, but make it Pro</Title>
+        <Title>Everything you love about CodeSandbox, but make it Pro.</Title>
 
         <ScrollView>
           <Grid>
@@ -48,7 +48,7 @@ export const Intro = ({ plans }) => {
 
             <GridItem>
               <Icon>
-                <img src={userIcon} alt="pricing" />
+                <img src={priceIcon} alt="pricing" />
               </Icon>
               <SubTitle>
                 Choose between different pricing and plans to suit your needs
@@ -86,7 +86,7 @@ const Title = styled.h1`
   color: ${props => props.theme.homepage.white};
   padding: 0;
   margin: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   font-weight: normal;
 
   font-size: 40px;
@@ -114,20 +114,10 @@ const SubTitle = styled.h2`
   font-weight: normal;
   letter-spacing: -0.019em;
   margin: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 
-  font-size: 13px;
-  line-height: 18px;
-
-  @media (min-width: 769px) {
-    font-size: 16px;
-    line-height: 24px;
-  }
-
-  @media (min-width: 1025px) {
-    font-size: 20px;
-    line-height: 28px;
-  }
+  font-size: 16px;
+  line-height: 24px;
 `;
 
 const IntroWrapper = styled.div`
@@ -151,12 +141,14 @@ const Caption = styled.p`
 
 const ScrollView = styled.div`
   overflow: auto;
+  margin-left: -1em;
   margin-right: -1em;
 `;
 
 const GridItem = styled.div`
   min-width: 200px;
-  padding-right: 1em;
+  padding-right: calc(48px - 1em);
+  padding-left: 1em;
 `;
 
 const Grid = styled.div`
@@ -166,24 +158,29 @@ const Grid = styled.div`
   margin-top: 62px;
 
   @media (min-width: 376px) {
+    margin-top: 72px;
+  }
+
+  @media (min-width: 769px) {
     margin-top: 96px;
   }
 
   ${GridItem} {
-    width: calc(100% / 3 - 3em);
+    width: calc(100% / 3);
   }
 `;
 
 const Icon = styled.div`
   background: #2a2a2a;
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   border-radius: 9999px;
   display: flex;
   margin-bottom: 24px;
 
   img {
     margin: auto;
+    height: 22px;
   }
 `;
 
@@ -206,12 +203,11 @@ const PlanList = styled.div`
   position: relative;
   z-index: 0;
 
-  margin-top: 80px;
+  scroll-snap-type: x mandatory;
+  overflow-x: scroll;
+  scroll-behavior: smooth;
 
-  overflow: auto;
-  scroll-snap-type: mandatory;
-  scroll-snap-points-y: repeat(300px);
-  scroll-snap-type: y mandatory;
+  margin-top: 80px;
   padding: 0 1em;
 
   @media (min-width: 376px) {
@@ -226,30 +222,37 @@ const PlanList = styled.div`
   &:after {
     content: '';
     position: absolute;
-    width: 1280px;
-    height: 1280px;
-    right: calc(-1280px / 4);
-    top: calc(-1280px / 3);
+    width: 1000px;
+    height: 1000px;
+    right: calc(-1000px / 6);
+    top: calc(-1000px / 6);
     z-index: 0;
 
     background: radial-gradient(
       50% 50% at 50% 50%,
-      rgba(237, 255, 165, 0.3) 0%,
-      #090909 60.35%
+      rgba(237, 255, 165, 1) 20%,
+      rgba(237, 255, 165, 0) 100%
     );
-    opacity: 1;
+    opacity: 0.3;
+    transition: all 1s ease;
 
     display: none;
     @media (min-width: 1025px) {
       display: block;
     }
   }
+
+  @media (hover: hover) {
+    &:hover:after {
+      opacity: 0.5;
+    }
+  }
 `;
 
 const FreeBox = () => {
   return (
-    <BoxPlan>
-      <p>For learning and experimenting.</p>
+    <BoxPlan href="/s">
+      <p>For learning and experimenting</p>
 
       <BoxPlanPrice plan="Free" price="$0" caption="forever" />
       <ul>
@@ -276,8 +279,8 @@ const TeamPro = ({ plan }) => {
   if (!plan) return null;
 
   return (
-    <BoxPlan pro>
-      <p>Collaborate with your team Unlimited editor seats.</p>
+    <BoxPlan href="#upgrade" pro>
+      <p>Collaborate with your team Unlimited editor seats</p>
 
       <BoxPlanPrice
         plan="Team Pro"
@@ -301,7 +304,7 @@ const TeamPro = ({ plan }) => {
         <li>Centralized billing</li>
       </ul>
 
-      <BoxPlanButton href="#upgrade">Upgrade to Team Pro</BoxPlanButton>
+      <BoxPlanButton>Upgrade to Team Pro</BoxPlanButton>
     </BoxPlan>
   );
 };

@@ -9,6 +9,7 @@ import framer from './assets/framer.png';
 import microsoft from './assets/microsoft.png';
 import shopify from './assets/shopify.png';
 import stripe from './assets/stripe.png';
+import quote from './assets/quote.svg';
 
 const logos = [microsoft, shopify, atlassian, stripe, framer, algolia];
 
@@ -28,12 +29,12 @@ export const Testimonial = () => {
 
       <FullSection>
         <Column>
-          <BigTitle css={{ marginBottom: 60 }}>
-            Digital product development, reimagined.”
-          </BigTitle>
+          <BigTitle>CodeSandbox continues to amaze me every day.”</BigTitle>
           <div>
-            <TestimonialTitle>Dylan Field</TestimonialTitle>
-            <TestimonialRole>Founder and CEO, Figma</TestimonialRole>
+            <TestimonialTitle>Peggy Rayzis</TestimonialTitle>
+            <TestimonialRole>
+              Engineering Manager, Apollo GraphQL
+            </TestimonialRole>
           </div>
         </Column>
         <Column>
@@ -49,21 +50,22 @@ export const Testimonial = () => {
         </Column>
         <Column>
           <MinorTitle css={{ marginBottom: 60 }}>
-            Using CodeSandbox has completely revolutionized how we ship digital
-            products.”
+            It's dramatically improved my experience of sharing ideas.”
           </MinorTitle>
 
           <div>
-            <TestimonialTitle>Koen Bok</TestimonialTitle>
-            <TestimonialRole>Founder and CEO, Framer</TestimonialRole>
+            <TestimonialTitle>Brian Vaughn</TestimonialTitle>
+            <TestimonialRole>
+              Software Engineer, React Core Team
+            </TestimonialRole>
           </div>
         </Column>
         <Column>
-          <Caption>as featured on Product Hunt</Caption>
-
-          <BigTitle css={{ marginTop: 60 }}>
-            A glimpse at the future of software development now.”
-          </BigTitle>
+          <BigTitle>It feels much more like my local environment.”</BigTitle>
+          <div>
+            <TestimonialTitle>Jonnie Hallman</TestimonialTitle>
+            <TestimonialRole>Designer Developer, Stripe</TestimonialRole>
+          </div>
         </Column>
       </FullSection>
     </>
@@ -83,17 +85,18 @@ const Column = styled.div`
   color: #0f0e0e;
 
   border-bottom: 1px solid #000;
-  border-right: 1px solid #000;
 
-  padding: 32px;
+  padding: 48px;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
 
-  @media (min-width: 769px) {
+  @media (min-width: 768px) {
     padding: 62px;
     width: 45%;
+    border-right: 1px solid #000;
 
     &:first-child,
     &:last-child {
@@ -119,10 +122,11 @@ const BigTitle = styled.p`
   font-family: 'TWKEverett', sans-serif;
   font-style: normal;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.1;
   letter-spacing: -0.03em;
   position: relative;
   margin: 0;
+  margin-bottom: 60px;
 
   font-size: 40px;
 
@@ -135,18 +139,23 @@ const BigTitle = styled.p`
   }
 
   @media (min-width: 1441px) {
-    padding-right: 26%;
+    padding-right: 23%;
   }
 
   &:before {
-    content: '"';
+    content: '';
+    background: url(${quote}) center center;
+    background-size: cover;
+    width: 0.36em;
+    height: 0.26em;
     position: absolute;
     left: -0.5em;
+    top: 0.17em;
   }
 `;
 
 const MinorTitle = styled(BigTitle)`
-  font-size: 18px;
+  font-size: 24px;
   line-height: 1.3;
 
   @media (min-width: 769px) {
@@ -155,26 +164,38 @@ const MinorTitle = styled(BigTitle)`
 `;
 
 const Caption = styled.p`
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 13px;
   margin: 0;
+
+  @media (min-width: 769px) {
+    font-size: 16px;
+    line-height: 24px;
+  }
 `;
 
 const TestimonialTitle = styled.p`
   font-family: 'TWKEverett', sans-serif;
   font-weight: 500;
-  font-size: 24px;
-  line-height: 28px;
   letter-spacing: -0.01em;
   margin: 0;
+  font-size: 18px;
+
+  @media (min-width: 769px) {
+    font-size: 24px;
+    line-height: 28px;
+  }
 `;
 
 const TestimonialRole = styled.p`
   font-weight: 500;
-  font-size: 16px;
-  line-height: 24px;
   letter-spacing: -0.01em;
   margin: 0;
+  font-size: 13px;
+
+  @media (min-width: 769px) {
+    font-size: 16px;
+    line-height: 24px;
+  }
 `;
 
 const ImageGrid = styled.div`

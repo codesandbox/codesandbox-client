@@ -3,14 +3,18 @@ import { useEffect, useState } from 'react';
 export const useLogin = () => {
   const [user, setUser] = useState(null);
   const fetchCurrentUser = async () => {
-    const BASE =
-      process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
+    try {
+      const BASE =
+        process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
 
-    const { data } = await fetch(BASE + '/api/v1/users/current').then(x =>
-      x.json()
-    );
+      const { data } = await fetch(BASE + '/api/v1/users/current').then(x =>
+        x.json()
+      );
 
-    setUser(data);
+      setUser(data);
+    } catch {
+      //
+    }
   };
 
   useEffect(() => {
