@@ -16,8 +16,8 @@ import Explore from '../screens/home/explore';
 import Video from '../screens/home/video';
 import Workspaces from '../screens/home/workspaces';
 
-import csbp-big from '../assets/images/csbp-big.jpg';
-import csbp-mobile from '../assets/images/csbp-mobile.jpg';
+import csbpBig from '../assets/images/csbp-big.jpg';
+import csbpMobile from '../assets/images/csbp-mobile.jpg';
 
 // eslint-disable-next-line
 console.log(
@@ -51,8 +51,8 @@ const Homepage = () => (
         title="Experience the future of web development."
       >
         <picture>
-          <source media="(max-width:620px)" srcSet={mobileMarch} />
-          <img src={march} alt="Experience the future of web development." />
+          <source media="(max-width:620px)" srcSet={csbpBig} />
+          <img src={csbpMobile} alt="Experience the future of web development." />
         </picture>
       </a>
     </section>
