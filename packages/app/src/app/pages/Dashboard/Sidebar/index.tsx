@@ -258,7 +258,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <Menu.Divider />
           </Element>
 
-          {user?.betaAccess ? (
+          {!user?.betaAccess ? (
             <RowItem
               name="Go to Projects"
               page="external"
@@ -270,7 +270,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <RowItem
               name="Join Projects Beta"
               page="external"
-              path="/waitlist"
+              path="/projects"
               icon="external"
               badge
             />
