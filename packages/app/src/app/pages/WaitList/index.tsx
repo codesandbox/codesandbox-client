@@ -30,7 +30,9 @@ export const WaitListRequest = () => {
   }
 
   if (!hasLogIn || !user) {
-    return <SignIn />;
+    history.push(`/signin?continue=/waitlist`);
+
+    return null;
   }
 
   if (!user.integrations?.github?.email) {
@@ -38,55 +40,12 @@ export const WaitListRequest = () => {
   }
 
   if (user.betaAccess) {
-    history.replace('/dashboard/beta');
+    window.location.replace('/p/dashboard');
 
     return null;
   }
 
   return <Survey email={user.email} />;
-};
-
-/**
- * Sign in page: GitHub scope
- */
-const SignIn: React.FC = () => {
-  const { signInGithubClicked } = useActions();
-
-  return (
-    <Wrapper>
-      <Center>
-        <svg
-          width="50"
-          height="50"
-          viewBox="0 0 50 50"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ marginBottom: 40 }}
-        >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M0 50H50V0H0V50ZM44.8864 44.8864V5.11364H5.11364V44.8864H44.8864Z"
-            fill="white"
-          />
-        </svg>
-
-        <MainTitle>Join the waitlist</MainTitle>
-
-        <Paragraph>
-          Access is limited to a small group of testers during the Beta of
-          CodeSandbox Projects.
-        </Paragraph>
-
-        <Button type="button" onClick={signInGithubClicked}>
-          <GitHubIcon css={{ width: 16, height: 16 }} />
-          <span>Sign in to join</span>
-        </Button>
-      </Center>
-
-      <TermsAndUsage />
-    </Wrapper>
-  );
 };
 
 /**
