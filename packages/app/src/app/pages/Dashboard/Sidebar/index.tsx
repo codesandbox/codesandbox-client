@@ -253,7 +253,42 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.liked(activeTeam)}
             icon="heart"
           />
+          {user?.betaAccess ? (
+            <RowItem
+              name="Go to Projects"
+              page="external"
+              path="/p/dashboard"
+              icon="external"
+            />
+          ) : (
+            <Element
+              margin={4}
+              padding={4}
+              css={{ backgroundColor: '#242424' }}
+            >
+              <Text marginBottom={1} css={{ display: 'block' }}>
+                CodeSandbox Projects
+              </Text>
+              <Text
+                variant="muted"
+                size={3}
+                marginBottom={4}
+                css={{ display: 'block' }}
+              >
+                Experience the future of web development and build projects
+                anywhere and anytime with your team.
+              </Text>
+              <Button
+                as="a"
+                href="https://projects.codesandbox.io"
+                variant="primary"
+              >
+                Get access
+              </Button>
+            </Element>
+          )}
         </List>
+
         <Element margin={4}>
           <Button
             as={RouterLink}
@@ -454,7 +489,7 @@ const RowItem: React.FC<RowItemProps> = ({
     >
       {props.children || (
         <Link
-          as={RouterLink}
+          as={page === 'external' ? 'a' : RouterLink}
           to={linkTo}
           style={linkStyles}
           onKeyDown={event => {

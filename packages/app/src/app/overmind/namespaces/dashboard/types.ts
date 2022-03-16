@@ -12,7 +12,8 @@ export type PageTypes =
   | 'shared'
   | 'liked'
   | 'always-on'
-  | 'discover';
+  | 'discover'
+  | 'external';
 
 export type OrderBy = {
   field: string;
