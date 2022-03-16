@@ -79,43 +79,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
-          {user?.betaAccess ? (
-            <a
-              href="/p/dashboard/"
-              css={css({
-                fontSize: '13px',
-                textAlign: 'center',
-                width: '100%',
-                display: 'block',
-                color: '#999999',
-                textDecoration: 'none',
-              })}
-            >
-              <Icon
-                name="external"
-                size={14}
-                marginRight={2}
-                css={{ top: 1, position: 'relative' }}
-              />
-
-              <span>Go to Projects</span>
-            </a>
-          ) : (
-            <Link
-              css={css({
-                fontSize: '13px',
-                textAlign: 'center',
-                width: '100%',
-                display: 'block',
-                color: '#999999',
-                textDecoration: 'none',
-              })}
-              href="/waitlist"
-            >
-              <Icon name="external" size={14} marginRight={2} />
-              Join Projects
-            </Link>
-          )}
+       
 
           <Button
             variant="primary"

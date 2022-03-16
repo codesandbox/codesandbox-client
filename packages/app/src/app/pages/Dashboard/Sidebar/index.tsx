@@ -254,7 +254,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="heart"
           />
 
-        <Element marginTop={8}>
+          <Element marginTop={8}>
             <Menu.Divider />
           </Element>
 
