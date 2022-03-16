@@ -23,6 +23,7 @@ import {
   Input,
   IconNames,
 } from '@codesandbox/components';
+import styled from 'styled-components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
@@ -185,7 +186,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             page="discover"
             path={dashboardUrls.discover(activeTeam)}
             icon="discover"
-            badge
           />
 
           <RowItem
@@ -253,40 +253,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.liked(activeTeam)}
             icon="heart"
           />
+
+          <Menu.Divider />
+
           {user?.betaAccess ? (
             <RowItem
               name="Go to Projects"
               page="external"
               path="/p/dashboard"
               icon="external"
+              badge
             />
           ) : (
-            <Element
-              margin={4}
-              padding={4}
-              css={{ backgroundColor: '#242424' }}
-            >
-              <Text marginBottom={1} css={{ display: 'block' }}>
-                CodeSandbox Projects
-              </Text>
-              <Text
-                variant="muted"
-                size={3}
-                marginBottom={4}
-                css={{ display: 'block' }}
-              >
-                Experience the future of web development and build projects
-                anywhere and anytime with your team.
-              </Text>
-              <Button
-                as="a"
-                href="https://projects.codesandbox.io"
-                variant="primary"
-              >
-                Get access
-              </Button>
-            </Element>
+            <RowItem
+            name="Join Projects Beta"
+            page="external"
+            path="/Projects"
+            icon="external"
+            badge
+          />
+
           )}
+
+          
         </List>
 
         <Element margin={4}>
@@ -345,6 +334,26 @@ const linkStyles = {
   paddingRight: 8,
   flexShrink: 0,
 };
+
+
+const Badge = styled.p`
+  border-radius: 2px;
+  background-color: ${({ theme }) => theme.colors.blues[700]};
+  color: ${({ theme }) => theme.colors.white};
+
+  width: ${({ theme }) => theme.sizes[7]}px;
+  height: ${({ theme }) => theme.sizes[3]}px;
+
+  text-align: center;
+  line-height: 1.4;
+  font-size: ${({ theme }) => theme.fontSizes[1]}px;
+  font-weight: ${({ theme }) => theme.fontWeights.medium};
+
+  position: relative;
+  top: 1px; // 👌
+`;
+
+
 
 const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
@@ -507,6 +516,18 @@ const RowItem: React.FC<RowItemProps> = ({
             <Icon name={icon} />
           </Stack>
           {name}
+          
+          {badge && (
+            <Stack
+              as="span"
+              css={css({ width: 10 })}
+              align="center"
+              justify="center"
+            >
+              <Badge>New</Badge>
+            </Stack>
+          )}
+
         </Link>
       )}
     </ListAction>
