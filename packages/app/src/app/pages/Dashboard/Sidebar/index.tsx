@@ -23,7 +23,6 @@ import {
   Input,
   IconNames,
 } from '@codesandbox/components';
-import styled from 'styled-components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
@@ -349,23 +348,6 @@ const isSamePath = (
   return false;
 };
 
-const Badge = styled.p`
-  border-radius: 2px;
-  background-color: ${({ theme }) => theme.colors.blues[700]};
-  color: ${({ theme }) => theme.colors.white};
-
-  width: ${({ theme }) => theme.sizes[7]}px;
-  height: ${({ theme }) => theme.sizes[3]}px;
-
-  text-align: center;
-  line-height: 1.4;
-  font-size: ${({ theme }) => theme.fontSizes[1]}px;
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-
-  position: relative;
-  top: 1px; // 👌
-`;
-
 interface RowItemProps {
   name: string;
   path: string;
@@ -490,16 +472,6 @@ const RowItem: React.FC<RowItemProps> = ({
             <Icon name={icon} />
           </Stack>
           {name}
-          {badge && (
-            <Stack
-              as="span"
-              css={css({ width: 10 })}
-              align="center"
-              justify="center"
-            >
-              <Badge>New</Badge>
-            </Stack>
-          )}
         </Link>
       )}
     </ListAction>
