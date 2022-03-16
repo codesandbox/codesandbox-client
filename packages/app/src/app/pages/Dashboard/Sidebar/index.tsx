@@ -268,16 +268,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
           ) : (
             <RowItem
-            name="Join Projects Beta"
-            page="external"
-            path="/Projects"
-            icon="external"
-            badge
-          />
-
+              name="Join Projects Beta"
+              page="external"
+              path="/waitlist"
+              icon="external"
+              badge
+            />
           )}
-
-          
         </List>
 
         <Element margin={4}>
@@ -337,7 +334,6 @@ const linkStyles = {
   flexShrink: 0,
 };
 
-
 const Badge = styled.p`
   border-radius: 2px;
   background-color: ${({ theme }) => theme.colors.blues[700]};
@@ -347,15 +343,13 @@ const Badge = styled.p`
   height: ${({ theme }) => theme.sizes[3]}px;
 
   text-align: center;
-  line-height: 1.4;
+  line-height: 1.3;
   font-size: ${({ theme }) => theme.fontSizes[1]}px;
   font-weight: ${({ theme }) => theme.fontWeights.medium};
 
   position: relative;
   top: 1px; // 👌
 `;
-
-
 
 const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
@@ -500,13 +494,15 @@ const RowItem: React.FC<RowItemProps> = ({
     >
       {props.children || (
         <Link
-          as={page === 'external' ? 'a' : RouterLink}
-          to={linkTo}
-          style={linkStyles}
-          onKeyDown={event => {
-            if (event.keyCode === ENTER) {
-              history.push(linkTo, { focus: 'FIRST_ITEM' });
-            }
+          {...{
+            ...(page === 'external' ? { href: linkTo } : { to: linkTo }),
+            as: page === 'external' ? 'a' : RouterLink,
+            style: linkStyles,
+            onKeyDown: event => {
+              if (event.keyCode === ENTER) {
+                history.push(linkTo, { focus: 'FIRST_ITEM' });
+              }
+            },
           }}
         >
           <Stack
@@ -518,7 +514,6 @@ const RowItem: React.FC<RowItemProps> = ({
             <Icon name={icon} />
           </Stack>
           {name}
-          
           {badge && (
             <Stack
               as="span"
@@ -529,7 +524,6 @@ const RowItem: React.FC<RowItemProps> = ({
               <Badge>New</Badge>
             </Stack>
           )}
-
         </Link>
       )}
     </ListAction>
