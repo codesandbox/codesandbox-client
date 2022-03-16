@@ -254,7 +254,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="heart"
           />
 
-          <Menu.Divider />
+        <Element marginTop={8}>
+            <Menu.Divider />
+          </Element>
 
           {user?.betaAccess ? (
             <RowItem
