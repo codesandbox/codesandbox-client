@@ -263,7 +263,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               name="Go to Projects"
               page="external"
               path="/p/dashboard"
-              icon="external"
+              icon="projects"
               badge
             />
           ) : (
@@ -271,7 +271,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               name="Join Projects Beta"
               page="external"
               path="/projects"
-              icon="external"
+              icon="projects"
               badge
             />
           )}
