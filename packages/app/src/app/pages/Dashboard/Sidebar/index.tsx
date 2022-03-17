@@ -186,7 +186,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             page="discover"
             path={dashboardUrls.discover(activeTeam)}
             icon="discover"
-            badge
           />
 
           <RowItem
@@ -254,7 +253,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.liked(activeTeam)}
             icon="heart"
           />
+
+          <Element marginTop={8}>
+            <Menu.Divider />
+          </Element>
+
+          {user?.betaAccess ? (
+            <RowItem
+              name="Go to Projects"
+              page="external"
+              path="/p/dashboard"
+              icon="external"
+              badge
+            />
+          ) : (
+            <RowItem
+              name="Join Projects Beta"
+              page="external"
+              path="/projects"
+              icon="external"
+              badge
+            />
+          )}
         </List>
+
         <Element margin={4}>
           <Button
             as={RouterLink}
@@ -312,6 +334,23 @@ const linkStyles = {
   flexShrink: 0,
 };
 
+const Badge = styled.p`
+  border-radius: 2px;
+  background-color: ${({ theme }) => theme.colors.blues[700]};
+  color: ${({ theme }) => theme.colors.white};
+
+  width: ${({ theme }) => theme.sizes[7]}px;
+  height: ${({ theme }) => theme.sizes[3]}px;
+
+  text-align: center;
+  line-height: 1.3;
+  font-size: ${({ theme }) => theme.fontSizes[1]}px;
+  font-weight: ${({ theme }) => theme.fontWeights.medium};
+
+  position: relative;
+  top: 1px; // 👌
+`;
+
 const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
   'home',
@@ -348,23 +387,6 @@ const isSamePath = (
 
   return false;
 };
-
-const Badge = styled.p`
-  border-radius: 2px;
-  background-color: ${({ theme }) => theme.colors.blues[700]};
-  color: ${({ theme }) => theme.colors.white};
-
-  width: ${({ theme }) => theme.sizes[7]}px;
-  height: ${({ theme }) => theme.sizes[3]}px;
-
-  text-align: center;
-  line-height: 1.4;
-  font-size: ${({ theme }) => theme.fontSizes[1]}px;
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-
-  position: relative;
-  top: 1px; // 👌
-`;
 
 interface RowItemProps {
   name: string;
@@ -472,13 +494,15 @@ const RowItem: React.FC<RowItemProps> = ({
     >
       {props.children || (
         <Link
-          as={RouterLink}
-          to={linkTo}
-          style={linkStyles}
-          onKeyDown={event => {
-            if (event.keyCode === ENTER) {
-              history.push(linkTo, { focus: 'FIRST_ITEM' });
-            }
+          {...{
+            ...(page === 'external' ? { href: linkTo } : { to: linkTo }),
+            as: page === 'external' ? 'a' : RouterLink,
+            style: linkStyles,
+            onKeyDown: event => {
+              if (event.keyCode === ENTER) {
+                history.push(linkTo, { focus: 'FIRST_ITEM' });
+              }
+            },
           }}
         >
           <Stack

@@ -23,12 +23,10 @@ import {
 import css from '@styled-system/css';
 import LogoIcon from '@codesandbox/common/lib/components/Logo';
 import { UserMenu } from 'app/pages/common/UserMenu';
-import track from '@codesandbox/common/lib/utils/analytics';
 
 import { Notifications } from 'app/components/Notifications';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import { PlusIcon } from 'app/components/CreateNewSandbox/CreateSandbox/Icons';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -40,13 +38,7 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const { openCreateSandboxModal } = useActions();
-    const {
-      activeTeam,
-      activeWorkspaceAuthorization,
-      personalWorkspaceId,
-      user,
-    } = useAppState();
-    const history = useHistory();
+    const { activeWorkspaceAuthorization, user } = useAppState();
 
     return (
       <Stack
@@ -87,48 +79,6 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
-          {user?.betaAccess ? (
-            <a
-              href="/p/dashboard/"
-              css={css({
-                fontSize: '13px',
-                textAlign: 'center',
-                width: '100%',
-                display: 'block',
-                color: '#999999',
-                textDecoration: 'none',
-              })}
-            >
-              <Icon
-                name="external"
-                size={14}
-                marginRight={2}
-                css={{ top: 1, position: 'relative' }}
-              />
-
-              <span>Go to Projects</span>
-            </a>
-          ) : (
-            <Button
-              type="button"
-              variant="link"
-              onClick={() => {
-                track('Dashboard - Invite members');
-
-                /* Only for teams */
-                if (activeTeam !== personalWorkspaceId) {
-                  history.push(`${dashboardUrls.teamInvite()}?from-header=1`);
-                } else {
-                  history.push(`${dashboardUrls.createTeam()}?from-header=1`);
-                }
-              }}
-              autoWidth
-            >
-              <PlusIcon css={css({ marginRight: 2, width: '.8em' })} /> Invite
-              members
-            </Button>
-          )}
-
           <Button
             variant="primary"
             css={css({ width: 'auto', paddingX: 3, marginLeft: 4 })}
