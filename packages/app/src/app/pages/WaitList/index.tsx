@@ -30,7 +30,7 @@ export const WaitListRequest = () => {
   }
 
   if (!hasLogIn || !user) {
-    history.push(`/signin?continue=/waitlist`);
+    history.push(`/signin?continue=/waitlist&v2=true`);
 
     return null;
   }
