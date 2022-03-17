@@ -229,8 +229,8 @@ Sincerely,
 [Matan Kushner](https://twitter.com/matchai),
 [Necoline Hubner](https://twitter.com/necolinehubner),
 [Oskar van Eeden](https://twitter.com/EedenOskar),
-[Roman Kuba,](https://twitter.com/codebryo)
+[Roman Kuba](https://twitter.com/codebryo),
 [Sanne Kalkman](https://twitter.com/sannekalkman),
 [Scott Hutcheson](https://twitter.com/SMHutcheson),
-[Tamas Szurom](https://twitter.com/metricbrew)i,
+[Tamas Szuromi](https://twitter.com/metricbrew),
 [Zeh Fernandes](https://twitter.com/zehf)
