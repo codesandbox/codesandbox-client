@@ -71,7 +71,7 @@
     "np": "^5.2.1",
     "postinstall-postinstall": "^2.1.0",
     "rimraf": "^3.0.0",
-    "simple-git": "^2.17.0",
+    "simple-git": "^3.3.0",
     "storybook-addon-styled-component-theme": "^1.3.0",
     "typescript": "4.0.3"
   },
