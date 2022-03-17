@@ -215,14 +215,14 @@ Sincerely,
 [Danilo Woznica](https://twitter.com/danilowoz),
 [Danny Ruchtie](https://twitter.com/DannyRuchtie)
 
-[Gianmarco Simone,](https://twitter.com/ggsimm)
+[Gianmarco Simone](https://twitter.com/ggsimm),
 [Ioana Chiorean](https://twitter.com/ioana_cis),
 [Ives van Hoorne](https://twitter.com/CompuIves),
 [James Amey](https://twitter.com/JamesAmeyUK),
 [Jasper de Moor](https://twitter.com/JasperDeMoor),
 [Joana Telker](https://twitter.com/JoanaTelker),
 [Joji Augustine](https://twitter.com/joji_augustine),
-[Julien Leclercq](https://github.com/julien-leclercq),[ Kate Beard](http://www.twitter.com/sbinlondon),
+[Julien Leclercq](https://github.com/julien-leclercq),[Kate Beard](http://www.twitter.com/sbinlondon),
 [Lena Sotto Mayor](https://twitter.com/lenasottomayor),
 [Marco Vincit](https://twitter.com/marcovincit),
 [Maria Clara Santana](https://twitter.com/olarclara),
