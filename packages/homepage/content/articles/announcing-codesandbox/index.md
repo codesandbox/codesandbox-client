@@ -86,10 +86,152 @@ suggestion, you can click “Fork”, make your change, and share a link to the 
 branch with those changes. If you’re happy with the changes, you can merge that
 into the existing PR. All of this can be done within a minute.
 
-Vscode
+### Works with VSCode (with more to come)
+
+We, and many others, are used to working in VSCode. That’s why we made sure to
+integrate directly with it! You can open any branch directly in VSCode, and you
+can use all the extensions and keybindings that you’ve already configured. On
+top of this, all editors can collaborate seamlessly, so someone can use the
+online editor to follow you in VSCode.
 
 <video autoplay loop muted playsinline width="100%">
   <source src="./images/vscode.mp4" type="video/mp4">
 </video>
 
-git/fork
+This is possible because **we created CodeSandbox Projects with an open API**,
+and we will open source this API later this year. CodeSandbox Projects' API
+allows you to implement your own features into CodeSandbox. You can add custom
+panes for toggling feature flags, state debugging, performance monitoring,
+really anything else you can think of. For example, you could create a Postman
+devtool to test API calls more easily.
+
+This opens the door to future CodeSandbox integrations in all your favorite
+tools: Vim, IntelliJ IDEA, SublimeText, Nova, etc, and in extension this will
+enable seamless collaboration between other supported editors like VSCode.
+
+### Tailored for your project
+
+Just like with CodeSandbox, we’ve built CodeSandbox to integrate directly with
+your project in an opinionated way. This doesn’t only make you faster as a
+developer, it makes development more accessible for others who are getting
+introduced to coding.
+
+One example of this is the inspector. For React projects, you can use the
+inspector to see exactly where a component is rendered in the code. If you
+quickly need to change the copy or styling of a button, you can just click on
+the button, and change the code in the editor.
+
+<video autoplay loop muted playsinline width="100%">
+  <source src="./images/inspector.mp4" type="video/mp4">
+</video>
+
+We have more tooling like this coming up, we’re doing everything to make you
+faster when developing, and to make development itself more accessible and
+collaborative.
+
+### Develop on the go on your iPad/iPhone with a native app
+
+Taking full advantage of the extensibility of CodeSandbox Projects' API, we
+didn’t stop at integrating VSCode. Last year we announced that we’ve acquired
+Play.js, and since then Carlos has been implementing the API into CodeSandbox
+for iOS.
+
+<video autoplay loop muted playsinline width="100%">
+  <source src="./images/ios.mp4" type="video/mp4">
+</video>
+
+This means that you can pick up where you left off, or develop from scratch from
+an iPad or iPhone, with all the functionality that you would expect from a
+development environment. It’s never been possible before to do full web
+development natively from an iPad, so we are super excited to see what people
+will build purely from their iPad!
+
+### Open source first
+
+Open source is very important for CodeSandbox, we started as an open source
+project and we’ll open source a big part of Projects too.
+
+Because of this, we’ve had the goal to make it native to open source from the
+start. Currently, contributing to open source is not very easy. You have to make
+a fork, clone that repo, set the upstream, create a new branch, make your
+changes, create a commit and then push that to your repo to open a pull request.
+And even then, you need to know how to set up the environment.
+
+It’s been our goal to make this much easier, and that’s why we built CodeSandbox
+in such a way that you can open any open source branch in CodeSandbox, press
+“Fork”, and we’ll handle the forking, the branching and setting the upstream for
+you. You can focus on making the contribution, and pressing “Open PR”!
+
+Also, because every branch has a shared development environment, you can share a
+link to a branch on CodeSandbox with anyone! As long as they have read access,
+they will be able to see a running version of the branch and explore the code.
+
+For example, here’s the main branch of Excalidraw, live running the branch:
+https://codesandbox.io/p/github/excalidraw/excalidraw.
+
+If you’re an open source maintainer, and you want to have your repository on
+CodeSandbox, let us know and we can add you to the waitlist!
+
+## What's next?
+
+We’re still actively working on CodeSandbox Projects, and there’s still a ton
+that we want to build. In the meantime we want more people to use this, though.
+This is why we started a waitlist. To get access to CodeSandbox Projects, you
+can apply to the waitlist here: https://projects.codesandbox.io.
+
+### What will happen with sandboxes?
+
+We see projects on CodeSandbox as something different than sandboxes. With
+sandboxes, you can prototype different ideas and share examples without source
+control. Whereas with projects, you work on bigger, well, projects! Projects are
+always connected to source control.
+
+Sandboxes and projects will live next to each other, and you will get a way to
+convert a sandbox to a project in the future. In the longer term, we’re going to
+move sandboxes to the new editor as well, so you have a single experience both
+for sandboxes and projects.
+
+## Thank you
+
+This has been the biggest project at CodeSandbox so far. When we started with
+CodeSandbox Projects, we were a team of 12 people, now we’re a team of 30
+people. We’ve worked super hard to get to this point, and we’re so excited that
+we can finally share it with the world!
+
+We know these are some hard times in the world. We still wanted to put our work
+out. We’re hoping for better days ahead, and we’ll try to help as much as
+possible from our side.
+
+Sincerely,
+
+[Adewale Abati](https://twitter.com/Ace_KYD),
+[AJ Foster](https://twitter.com/Austin_J_Foster),
+[Alex Moldovan](https://twitter.com/alexnmoldovan),
+[András Bácsai](https://twitter.com/andrasbacsai),
+[Artem Zakharchenko](https://twitter.com/kettanaito),
+[Bas Buursma](https://twitter.com/bazzjuh),
+[Bogdan Luca](https://twitter.com/lucabogdan),
+[Carlos Vidal](https://twitter.com/nakiostudio),
+[Christian Alfoni](https://github.com/christianalfoni),
+[Danilo Woznica](https://twitter.com/danilowoz),
+[Danny Ruchtie](https://twitter.com/DannyRuchtie)
+
+[Gianmarco Simone,](https://twitter.com/ggsimm)
+[Ioana Chiorean](https://twitter.com/ioana_cis),
+[Ives van Hoorne](https://twitter.com/CompuIves),
+[James Amey](https://twitter.com/JamesAmeyUK),
+[Jasper de Moor](https://twitter.com/JasperDeMoor),
+[Joana Telker](https://twitter.com/JoanaTelker),
+[Joji Augustine](https://twitter.com/joji_augustine),
+[Julien Leclercq](https://github.com/julien-leclercq),[ Kate Beard](http://www.twitter.com/sbinlondon),
+[Lena Sotto Mayor](https://twitter.com/lenasottomayor),
+[Marco Vincit](https://twitter.com/marcovincit),
+[Maria Clara Santana](https://twitter.com/olarclara),
+[Matan Kushner](https://twitter.com/matchai),
+[Necoline Hubner](https://twitter.com/necolinehubner),
+[Oskar van Eeden](https://twitter.com/EedenOskar),
+[Roman Kuba,](https://twitter.com/codebryo)
+[Sanne Kalkman](https://twitter.com/sannekalkman),
+[Scott Hutcheson](https://twitter.com/SMHutcheson),
+[Tamas Szurom](https://twitter.com/metricbrew)i,
+[Zeh Fernandes](https://twitter.com/zehf)
