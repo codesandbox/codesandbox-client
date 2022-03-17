@@ -167,6 +167,10 @@ Also, because every branch has a shared development environment, you can share a
 link to a branch on CodeSandbox with anyone! As long as they have read access,
 they will be able to see a running version of the branch and explore the code.
 
+<video autoplay loop muted playsinline width="100%">
+  <source src="./images/readme.mp4" type="video/mp4">
+</video>
+
 For example, here’s the main branch of Excalidraw, live running the branch:
 https://codesandbox.io/p/github/excalidraw/excalidraw.
 
