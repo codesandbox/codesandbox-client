@@ -1,10 +1,12 @@
 ---
 banner: ./images/intro.jpeg
-slug: announcing-codesandbox
+slug: announcing-codesandbox-projects
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
-title: Announcing CodeSandbox
-description: TODO
+title: Announcing CodeSandbox Projects
+description:
+  We're super excited to announce CodeSandbox Projects, a rewrite of CodeSandbox
+  from the ground up.
 date: 2022-03-17
 ---
 
