@@ -52,23 +52,14 @@ export const SignInModalElement = ({
     }
 
     if (redirectTo) {
-<<<<<<< HEAD
-      if (redirectTo.startsWith('http')) {
-        window.location.href = redirectTo;
-=======
       if (redirectTo.startsWith('https')) {
         window.location.replace(redirectTo);
->>>>>>> master
 
         return null;
       }
 
       return history.push(redirectTo.replace(location.origin, ''));
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> master
     setLoadingAuth('github');
 
     return null;
@@ -83,10 +74,6 @@ export const SignInModalElement = ({
     }
 
     if (redirectTo) {
-<<<<<<< HEAD
-      return history.push(redirectTo.replace(location.origin, ''));
-    }
-=======
       if (redirectTo.startsWith('https')) {
         window.location.replace(redirectTo);
 
@@ -96,7 +83,6 @@ export const SignInModalElement = ({
       return history.push(redirectTo.replace(location.origin, ''));
     }
 
->>>>>>> master
     setLoadingAuth('google');
 
     return null;

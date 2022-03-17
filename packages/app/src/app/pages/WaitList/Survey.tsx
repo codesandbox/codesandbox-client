@@ -1,10 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useState, useCallback } from 'react';
 import styled, { css, keyframes } from 'styled-components';
-<<<<<<< HEAD
-=======
 import track from '@codesandbox/common/lib/utils/analytics';
->>>>>>> master
 import { Center, MainTitle, Wrapper, TermsAndUsage, Loading } from './elements';
 import { SuccessStep } from './Success';
 
@@ -76,10 +73,7 @@ export const Survey: React.FC<{ email: string }> = ({ email }) => {
 
       if (completed) {
         setState('COMPLETED');
-<<<<<<< HEAD
-=======
         track('Waitlist - completed waitlist survey');
->>>>>>> master
 
         return prev;
       }
@@ -110,13 +104,10 @@ export const Survey: React.FC<{ email: string }> = ({ email }) => {
 
   useEffect(
     function submit() {
-<<<<<<< HEAD
-=======
       if (!waitListId) {
         track('Waitlist - joined projects waitlist');
       }
 
->>>>>>> master
       fetch(
         waitListId
           ? `${host}/api/beta/waitlist/${waitListId}`

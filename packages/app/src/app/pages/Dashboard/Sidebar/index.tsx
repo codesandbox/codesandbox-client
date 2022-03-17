@@ -186,10 +186,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             page="discover"
             path={dashboardUrls.discover(activeTeam)}
             icon="discover"
-<<<<<<< HEAD
-=======
-            badge
->>>>>>> master
           />
 
           <RowItem
@@ -257,7 +253,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.liked(activeTeam)}
             icon="heart"
           />
-<<<<<<< HEAD
 
           <Element marginTop={8}>
             <Menu.Divider />
@@ -282,9 +277,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </List>
 
-=======
-        </List>
->>>>>>> master
         <Element margin={4}>
           <Button
             as={RouterLink}
@@ -342,7 +334,6 @@ const linkStyles = {
   flexShrink: 0,
 };
 
-<<<<<<< HEAD
 const Badge = styled.p`
   border-radius: 2px;
   background-color: ${({ theme }) => theme.colors.blues[700]};
@@ -360,8 +351,6 @@ const Badge = styled.p`
   top: 1px; // 👌
 `;
 
-=======
->>>>>>> master
 const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
   'home',
@@ -399,26 +388,6 @@ const isSamePath = (
   return false;
 };
 
-<<<<<<< HEAD
-=======
-const Badge = styled.p`
-  border-radius: 2px;
-  background-color: ${({ theme }) => theme.colors.blues[700]};
-  color: ${({ theme }) => theme.colors.white};
-
-  width: ${({ theme }) => theme.sizes[7]}px;
-  height: ${({ theme }) => theme.sizes[3]}px;
-
-  text-align: center;
-  line-height: 1.4;
-  font-size: ${({ theme }) => theme.fontSizes[1]}px;
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-
-  position: relative;
-  top: 1px; // 👌
-`;
-
->>>>>>> master
 interface RowItemProps {
   name: string;
   path: string;
@@ -525,7 +494,6 @@ const RowItem: React.FC<RowItemProps> = ({
     >
       {props.children || (
         <Link
-<<<<<<< HEAD
           {...{
             ...(page === 'external' ? { href: linkTo } : { to: linkTo }),
             as: page === 'external' ? 'a' : RouterLink,
@@ -535,15 +503,6 @@ const RowItem: React.FC<RowItemProps> = ({
                 history.push(linkTo, { focus: 'FIRST_ITEM' });
               }
             },
-=======
-          as={RouterLink}
-          to={linkTo}
-          style={linkStyles}
-          onKeyDown={event => {
-            if (event.keyCode === ENTER) {
-              history.push(linkTo, { focus: 'FIRST_ITEM' });
-            }
->>>>>>> master
           }}
         >
           <Stack

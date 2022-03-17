@@ -478,8 +478,6 @@ describe('resolve', () => {
         })
       ).toThrow();
     });
-<<<<<<< HEAD
-=======
 
     it('should not fail on wildcard *.js and folder references', () => {
       const resolved = resolveSync('./test', {
@@ -492,7 +490,6 @@ describe('resolve', () => {
         '/node_modules/package-exports/src/utils/test/index.js'
       );
     });
->>>>>>> master
   });
 
   describe('normalize module specifier', () => {
