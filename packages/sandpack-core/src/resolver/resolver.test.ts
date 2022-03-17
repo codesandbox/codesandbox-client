@@ -478,6 +478,21 @@ describe('resolve', () => {
         })
       ).toThrow();
     });
+<<<<<<< HEAD
+=======
+
+    it('should not fail on wildcard *.js and folder references', () => {
+      const resolved = resolveSync('./test', {
+        filename: '/node_modules/package-exports/src/utils/path.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe(
+        '/node_modules/package-exports/src/utils/test/index.js'
+      );
+    });
+>>>>>>> master
   });
 
   describe('normalize module specifier', () => {

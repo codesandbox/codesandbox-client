@@ -12,8 +12,12 @@ export type PageTypes =
   | 'shared'
   | 'liked'
   | 'always-on'
+<<<<<<< HEAD
   | 'discover'
   | 'external';
+=======
+  | 'discover';
+>>>>>>> master
 
 export type OrderBy = {
   field: string;

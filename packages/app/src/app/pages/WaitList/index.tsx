@@ -30,7 +30,13 @@ export const WaitListRequest = () => {
   }
 
   if (!hasLogIn || !user) {
+<<<<<<< HEAD
     return <SignIn />;
+=======
+    history.push(`/signin?continue=/waitlist`);
+
+    return null;
+>>>>>>> master
   }
 
   if (!user.integrations?.github?.email) {
@@ -38,8 +44,13 @@ export const WaitListRequest = () => {
   }
 
   if (user.betaAccess) {
+<<<<<<< HEAD
     history.replace('/dashboard/beta');
     
+=======
+    window.location.replace('/p/dashboard');
+
+>>>>>>> master
     return null;
   }
 
@@ -47,6 +58,7 @@ export const WaitListRequest = () => {
 };
 
 /**
+<<<<<<< HEAD
  * Sign in page: GitHub scope
  */
 const SignIn: React.FC = () => {
@@ -90,6 +102,8 @@ const SignIn: React.FC = () => {
 };
 
 /**
+=======
+>>>>>>> master
  * GitHub token request
  */
 const GitHubScope: React.FC = () => {
