@@ -125,9 +125,8 @@ the button, and change the code in the editor.
   <source src="./images/inspector.mp4" type="video/mp4">
 </video>
 
-We have more tooling like this coming up, we’re doing everything to make you
-faster when developing, and to make development itself more accessible and
-collaborative.
+We have more tooling like this coming up, focused on making you faster when
+developing, and to make development itself more accessible and collaborative.
 
 ### Develop on the go on your iPad/iPhone with a native app
 
