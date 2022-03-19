@@ -310,8 +310,16 @@ function* getTSConfig(
 }
 
 export const resolver = gensync<
-  (moduleSpecifier: string, inputOpts: IResolveOptionsInput) => string
->(function* resolve(moduleSpecifier, inputOpts): Generator<any, string, any> {
+  (
+    moduleSpecifier: string,
+    inputOpts: IResolveOptionsInput,
+    skipIndexExpansion?: boolean
+  ) => string
+>(function* resolve(
+  moduleSpecifier,
+  inputOpts,
+  skipIndexExpansion = false
+): Generator<any, string, any> {
   const normalizedSpecifier = normalizeModuleSpecifier(moduleSpecifier);
   const opts = normalizeResolverOptions(inputOpts);
   const modulePath = yield* resolveModule(normalizedSpecifier, opts);
@@ -343,7 +351,7 @@ export const resolver = gensync<
   }
 
   let foundFile = yield* expandFile(modulePath, opts);
-  if (!foundFile) {
+  if (!foundFile && !skipIndexExpansion) {
     foundFile = yield* expandFile(pathUtils.join(modulePath, 'index'), opts);
 
     // In case alias adds an extension, we retry the entire resolution with an added /index
@@ -352,7 +360,7 @@ export const resolver = gensync<
       try {
         const parts = moduleSpecifier.split('/');
         if (!parts.length || !parts[parts.length - 1].startsWith('index')) {
-          foundFile = yield* resolve(moduleSpecifier + '/index', opts);
+          foundFile = yield* resolve(moduleSpecifier + '/index', opts, true);
         }
       } catch (err) {
         // should throw ModuleNotFound for original specifier, not new one
