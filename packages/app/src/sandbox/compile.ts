@@ -826,6 +826,8 @@ async function compile(opts: CompileOptions) {
       }
 
       metrics.measure('external-resources');
+      // 等待 js/css 资源完全加载后才会 resolve（通过 window 的 load 事件--页面所有资源包括图片加载完成触发）
+      // 详细逻辑请查看 handleExternalResources 函数中的 waitForLoaded
       await handleExternalResources(externalResources);
       metrics.endMeasure('external-resources', {
         displayName: 'External Resources',

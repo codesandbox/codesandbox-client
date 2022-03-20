@@ -317,6 +317,7 @@ export class TranspiledModule {
     );
   }
 
+  // 添加对被 externals 依赖的特殊处理
   async addDependency(
     manager: Manager,
     depPath: string,
@@ -326,11 +327,9 @@ export class TranspiledModule {
     } = {},
     isTranspilationDep: boolean = false
   ) {
-    // 支持 webpack externals 功能，将部分依赖（例如 react react-dom antd 等），
-    // 通过 script 加载其对应在 cdn 上的 umd 包，
-    // 从而跳过对该依赖包的构建，提升构建速度
-    // 在此处添加模块依赖时，将 webpack externals 对应依赖排除掉，
-    // 否则该 transpiled-module 会被标记为缺少依赖的模块（即 hasMissingDependencies 为 true），影响该模块的热更新
+    // 被 externals 的依赖直接跳过编译，
+    // 即在编译某个模块过程中添加该模块的依赖时，将被 externals 的依赖排除掉，
+    // 阻断进一步对该依赖的编译
     const { externals } = manager.configurations.sandbox?.parsed;
     if (externals && externals[depPath]) {
       return;
@@ -981,6 +980,7 @@ export class TranspiledModule {
     const transpiledModule = this;
 
     try {
+      // 针对 externals 依赖的特殊处理
       // eslint-disable-next-line no-inner-declarations
       function require(path: string): any {
         if (path === '') {
@@ -990,9 +990,7 @@ export class TranspiledModule {
         const usedPath = manager.getPresetAliasedPath(path);
         const bfsModule = BrowserFS.BFSRequire(usedPath);
 
-        // 支持 webpack externals 功能，将部分依赖（例如 react react-dom antd 等），
-        // 通过 script 加载其对应在 cdn 上的 umd 包，
-        // 从而跳过对该依赖包的构建，提升构建速度
+        // 如果是被 externals 的依赖，直接从 window 对象获取返回即可
         const { externals } = manager.configurations.sandbox?.parsed;
         if (externals && externals[path] && window[externals[path]]) {
           return window[externals[path]];

@@ -186,6 +186,8 @@ export function ignoreNextCache() {
   }
 }
 
+// 通过 localforage 从浏览器数据存储中（indexDB/localStorage 等）读取上次构建应用的编译结果，
+// 从而减少二次构建时间
 export async function consumeCache(manager: Manager) {
   if (!manager.id) {
     return false;
