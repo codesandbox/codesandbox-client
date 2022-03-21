@@ -523,69 +523,71 @@ export const WorkspaceSettings = () => {
           Members
         </Text>
 
-        <Stack
-          as="form"
-          onSubmit={inviteLoading ? undefined : onInviteSubmit}
-          css={{ display: 'flex', flexGrow: 1, maxWidth: 480 }}
-        >
-          <div style={{ position: 'relative', width: '100%' }}>
-            <UserSearchInput
-              inputValue={inviteValue}
-              allowSelf={false}
-              onInputValueChange={val => setInviteValue(val)}
-              style={{ paddingRight: 80 }}
-            />
-            {hasEnoughPermission &&
-            team?.subscription?.type === SubscriptionType.TeamPro ? (
-              <Menu>
-                <Menu.Button
-                  css={css({
-                    fontSize: 3,
-                    fontWeight: 'normal',
-                    paddingX: 0,
-                    position: 'absolute',
-                    top: 0,
-                    right: 2,
-                  })}
-                >
-                  <Text variant="muted">
-                    {permissionMap[newMemberAuthorization]}
-                  </Text>
-                  <Icon name="caret" size={8} marginLeft={1} />
-                </Menu.Button>
-                <Menu.List>
-                  {permissionValues.map(authorization => (
-                    <Menu.Item
-                      key={authorization}
-                      onSelect={() => setNewMemberAuthorization(authorization)}
-                      style={{ display: 'flex', alignItems: 'center' }}
-                    >
-                      <Text style={{ width: '100%' }}>
-                        {permissionMap[authorization]}
-                      </Text>
-                      {newMemberAuthorization === authorization && (
-                        <Icon
-                          style={{}}
-                          name="simpleCheck"
-                          size={12}
-                          marginLeft={1}
-                        />
-                      )}
-                    </Menu.Item>
-                  ))}
-                </Menu.List>
-              </Menu>
-            ) : null}
-          </div>
-
-          <Button
-            type="submit"
-            loading={inviteLoading}
-            style={{ width: 'auto', marginLeft: 8 }}
+        {hasEnoughPermission && (
+          <Stack
+            as="form"
+            onSubmit={inviteLoading ? undefined : onInviteSubmit}
+            css={{ display: 'flex', flexGrow: 1, maxWidth: 480 }}
           >
-            Add Member
-          </Button>
-          {activeWorkspaceAuthorization !== TeamMemberAuthorization.Read && (
+            <div style={{ position: 'relative', width: '100%' }}>
+              <UserSearchInput
+                inputValue={inviteValue}
+                allowSelf={false}
+                onInputValueChange={val => setInviteValue(val)}
+                style={{ paddingRight: 80 }}
+              />
+              {team?.subscription?.type === SubscriptionType.TeamPro ? (
+                <Menu>
+                  <Menu.Button
+                    css={css({
+                      fontSize: 3,
+                      fontWeight: 'normal',
+                      paddingX: 0,
+                      position: 'absolute',
+                      top: 0,
+                      right: 2,
+                    })}
+                  >
+                    <Text variant="muted">
+                      {permissionMap[newMemberAuthorization]}
+                    </Text>
+                    <Icon name="caret" size={8} marginLeft={1} />
+                  </Menu.Button>
+                  <Menu.List>
+                    {permissionValues.map(authorization => (
+                      <Menu.Item
+                        key={authorization}
+                        onSelect={() =>
+                          setNewMemberAuthorization(authorization)
+                        }
+                        style={{ display: 'flex', alignItems: 'center' }}
+                      >
+                        <Text style={{ width: '100%' }}>
+                          {permissionMap[authorization]}
+                        </Text>
+                        {newMemberAuthorization === authorization && (
+                          <Icon
+                            style={{}}
+                            name="simpleCheck"
+                            size={12}
+                            marginLeft={1}
+                          />
+                        )}
+                      </Menu.Item>
+                    ))}
+                  </Menu.List>
+                </Menu>
+              ) : null}
+            </div>
+
+            <Button
+              type="submit"
+              loading={inviteLoading}
+              style={{ width: 'auto', marginLeft: 8 }}
+            >
+              Add Member
+            </Button>
+
             <Button
               variant="secondary"
               onClick={onCopyInviteUrl}
@@ -593,9 +595,10 @@ export const WorkspaceSettings = () => {
             >
               Copy Invite URL
             </Button>
-          )}
-        </Stack>
+          </Stack>
+        )}
       </Stack>
+
       <div>
         <MemberList
           getPermission={user => getAuthorization(user, team)}
