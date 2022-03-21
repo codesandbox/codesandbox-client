@@ -162,14 +162,16 @@ export const Switcher: React.FC<{
         {!isPersonalWorkspace && (
           <>
             {activeTeamInfo.users.map((user, index) => {
-              if (index > 2) return null;
+              if (index > (activeTeamInfo.users.length > 4 ? 2 : 3)) {
+                return null;
+              }
 
               return (
                 <Avatar css={{ marginLeft: 4 }} user={user} key={user.id} />
               );
             })}
 
-            {members - 3 > 0 && (
+            {members - 3 > 1 && (
               <WorkspaceSeats>
                 <span>{members - 3}</span>
               </WorkspaceSeats>
