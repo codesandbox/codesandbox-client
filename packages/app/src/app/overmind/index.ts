@@ -19,7 +19,6 @@ import * as explore from './namespaces/explore';
 import * as files from './namespaces/files';
 import * as git from './namespaces/git';
 import * as live from './namespaces/live';
-import * as patron from './namespaces/patron';
 import * as preferences from './namespaces/preferences';
 import * as profile from './namespaces/profile';
 import * as server from './namespaces/server';
@@ -38,7 +37,6 @@ export const config = merge(
   namespaced({
     preferences,
     userNotifications,
-    patron,
     editor,
     live,
     workspace,

@@ -1,7 +1,6 @@
 import {
   curatorUrl,
   dashboardUrl,
-  patronUrl,
   profileUrl,
   searchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
@@ -34,7 +33,6 @@ export const UserMenu: FunctionComponent & {
   const personalWorkspace = teams.find(
     workspace => workspace.id === personalWorkspaceId
   )!;
-  const showPatron = personalWorkspace?.subscription?.origin === 'PATRON';
   const showBecomePro = !personalWorkspace?.subscription;
   const showManageSubscription = personalWorkspace?.subscription;
 
@@ -87,15 +85,6 @@ export const UserMenu: FunctionComponent & {
               <Stack align="center" gap={1}>
                 <Icon name="curator" size={24} />
                 <Text>Curator Dashboard</Text>
-              </Stack>
-            </Menu.Link>
-          )}
-
-          {showPatron && (
-            <Menu.Link to={patronUrl()}>
-              <Stack align="center" gap={1}>
-                <Icon name="patron" size={24} />
-                <Text>Patron Page</Text>
               </Stack>
             </Menu.Link>
           )}

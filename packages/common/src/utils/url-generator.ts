@@ -193,7 +193,6 @@ export const gitHubToSandboxUrl = (githubUrl: string) =>
 
 export const searchUrl = (query?: string) =>
   `/search${query ? `?query=${query}` : ''}`;
-export const patronUrl = () => `/patron`;
 export const curatorUrl = () => `/curator`;
 export const tosUrl = () => `/legal/terms`;
 export const privacyUrl = () => `/legal/privacy`;

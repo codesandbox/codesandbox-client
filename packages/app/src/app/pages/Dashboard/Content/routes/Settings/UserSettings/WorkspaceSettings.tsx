@@ -334,26 +334,44 @@ export const WorkspaceSettings = () => {
             </Text>
             {activeSubscription ? (
               <div>
-                {['LEGACY', 'PATRON'].includes(activeSubscription.origin) ? (
-                  <Stack direction="vertical" gap={2}>
-                    <Button
-                      autoWidth
-                      variant="link"
-                      css={css({
-                        height: 'auto',
-                        fontSize: 3,
-                        color: 'button.background',
-                        padding: 0,
-                      })}
-                      onClick={() => {
-                        actions.modalOpened({
-                          modal: 'preferences',
-                          itemId: 'paymentInfo',
-                        });
-                      }}
-                    >
-                      Update payment information
-                    </Button>
+                <Stack direction="vertical" gap={2}>
+                  <Link
+                    size={3}
+                    variant="active"
+                    href={activeSubscription.updateBillingUrl}
+                    css={css({ fontWeight: 'medium' })}
+                  >
+                    Update payment information
+                  </Link>
+                  <Link
+                    size={3}
+                    variant="active"
+                    href="/pro"
+                    css={css({ fontWeight: 'medium' })}
+                  >
+                    Change billing interval
+                  </Link>
+                  {activeSubscription.cancelAt ? (
+                    <Text size={3} css={css({ color: 'orange' })}>
+                      Your subscription expires on{' '}
+                      {format(new Date(activeSubscription.cancelAt), 'PP')}.{' '}
+                      <Button
+                        autoWidth
+                        variant="link"
+                        css={css({
+                          color: 'inherit',
+                          padding: 0,
+                          textDecoration: 'underline',
+                          fontSize: 3,
+                        })}
+                        onClick={() =>
+                          actions.pro.reactivateWorkspaceSubscription()
+                        }
+                      >
+                        Reactivate
+                      </Button>
+                    </Text>
+                  ) : (
                     <Button
                       autoWidth
                       variant="link"
@@ -363,68 +381,12 @@ export const WorkspaceSettings = () => {
                         color: 'errorForeground',
                         padding: 0,
                       })}
-                      onClick={() => actions.patron.cancelSubscriptionClicked()}
+                      onClick={() => actions.pro.cancelWorkspaceSubscription()}
                     >
-                      Downgrade plan
+                      Cancel subscription
                     </Button>
-                  </Stack>
-                ) : (
-                  <Stack direction="vertical" gap={2}>
-                    <Link
-                      size={3}
-                      variant="active"
-                      href={activeSubscription.updateBillingUrl}
-                      css={css({ fontWeight: 'medium' })}
-                    >
-                      Update payment information
-                    </Link>
-                    <Link
-                      size={3}
-                      variant="active"
-                      href="/pro"
-                      css={css({ fontWeight: 'medium' })}
-                    >
-                      Change billing interval
-                    </Link>
-                    {activeSubscription.cancelAt ? (
-                      <Text size={3} css={css({ color: 'orange' })}>
-                        Your subscription expires on{' '}
-                        {format(new Date(activeSubscription.cancelAt), 'PP')}.{' '}
-                        <Button
-                          autoWidth
-                          variant="link"
-                          css={css({
-                            color: 'inherit',
-                            padding: 0,
-                            textDecoration: 'underline',
-                            fontSize: 3,
-                          })}
-                          onClick={() =>
-                            actions.pro.reactivateWorkspaceSubscription()
-                          }
-                        >
-                          Reactivate
-                        </Button>
-                      </Text>
-                    ) : (
-                      <Button
-                        autoWidth
-                        variant="link"
-                        css={css({
-                          height: 'auto',
-                          fontSize: 3,
-                          color: 'errorForeground',
-                          padding: 0,
-                        })}
-                        onClick={() =>
-                          actions.pro.cancelWorkspaceSubscription()
-                        }
-                      >
-                        Cancel subscription
-                      </Button>
-                    )}
-                  </Stack>
-                )}
+                  )}
+                </Stack>
               </div>
             ) : null}
           </Stack>

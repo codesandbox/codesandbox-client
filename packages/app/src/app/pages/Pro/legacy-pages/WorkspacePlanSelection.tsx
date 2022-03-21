@@ -33,12 +33,11 @@ export const WorkspacePlanSelection: React.FC<{
     activeTeamInfo,
     dashboard,
     pro: { selectedPlan },
+    isPatron,
   } = useAppState();
   const {
     setActiveTeam,
-    modalOpened,
     pro: { setStep, updateSelectedPlan, updateSeats },
-    patron: { cancelSubscriptionClicked },
     openCreateTeamModal,
   } = useActions();
 
@@ -359,7 +358,7 @@ export const WorkspacePlanSelection: React.FC<{
             </Text>
           </Stack>
 
-          {user.subscription.plan === 'patron' ? (
+          {isPatron && (
             <Text variant="muted">
               Thank you for being an early supporter of CodeSandbox. As a
               patron, you can access all Personal Pro features. You can{' '}
@@ -367,32 +366,6 @@ export const WorkspacePlanSelection: React.FC<{
                 modify your contribution
               </Link>{' '}
               at any time.
-            </Text>
-          ) : (
-            <Text variant="muted">
-              You can{' '}
-              <Link
-                variant="active"
-                onClick={e => {
-                  e.preventDefault();
-                  modalOpened({
-                    modal: 'preferences',
-                    itemId: 'paymentInfo',
-                  });
-                }}
-              >
-                update your payment details
-              </Link>{' '}
-              or{' '}
-              <Link
-                variant="active"
-                onClick={e => {
-                  e.preventDefault();
-                  cancelSubscriptionClicked();
-                }}
-              >
-                cancel your subscription.
-              </Link>
             </Text>
           )}
         </Stack>
