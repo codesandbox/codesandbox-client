@@ -5,7 +5,7 @@ import { useAppState, useEffects } from 'app/overmind';
 
 export const SubscriptionSettings = () => {
   const { api } = useEffects();
-  const { activeTeam } = useAppState();
+  const { activeTeam, activeTeamInfo } = useAppState();
 
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +22,9 @@ export const SubscriptionSettings = () => {
 
   return (
     <div>
+      <pre>{JSON.stringify(activeTeamInfo.subscription, null, 2)}</pre>
+      <br />
+
       <Button variant="secondary" onClick={createCustomerPortal}>
         {loading ? 'Loading...' : 'Manage my subscription'}
       </Button>

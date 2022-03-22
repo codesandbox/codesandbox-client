@@ -5,7 +5,10 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, BrowserRouter, Switch, useLocation } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
-import { SubscriptionType } from 'app/graphql/types';
+import {
+  SubscriptionPaymentProvider,
+  SubscriptionStatus,
+} from 'app/graphql/types';
 import { Header } from '../../../../Components/Header';
 import { GRID_MAX_WIDTH, GUTTER } from '../../../../Components/VariableGrid';
 import { SettingNavigation } from '../components/Navigation';
@@ -25,9 +28,13 @@ export const UserSettings = () => {
 
   const location = useLocation();
 
-  const showSubscription =
-    activeTeamInfo?.subscription?.type === SubscriptionType.PersonalPro &&
-    activeTeamInfo?.subscription?.paymentProvider === 'STRIPE';
+  const stripeProvider =
+    activeTeamInfo.subscription.paymentProvider ===
+    SubscriptionPaymentProvider.Stripe;
+  const activePlan = [
+    SubscriptionStatus.Active,
+    SubscriptionStatus.Paused,
+  ].includes(activeTeamInfo?.subscription?.status);
 
   if (!user) {
     return <Header title="Settings" activeTeam={activeTeam} />;
@@ -56,13 +63,15 @@ export const UserSettings = () => {
           })}
         >
           <SettingNavigation
-            isPersonal
+            activePlan={activePlan}
+            admin
+            personal
+            stripe={stripeProvider}
             teamId={activeTeam}
-            showSubscription={showSubscription}
           />
           <BrowserRouter>
             <Switch location={location}>
-              {showSubscription && (
+              {stripeProvider && activePlan && (
                 <Route
                   component={SubscriptionSettings}
                   path={dashboardUrls.subscription()}

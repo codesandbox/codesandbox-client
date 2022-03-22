@@ -15,7 +15,11 @@ import {
   useLocation,
 } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
-import { SubscriptionType, TeamMemberAuthorization } from 'app/graphql/types';
+import {
+  SubscriptionStatus,
+  TeamMemberAuthorization,
+  SubscriptionPaymentProvider,
+} from 'app/graphql/types';
 import { SettingNavigation } from '../components/Navigation';
 import { PermissionSettings } from '../components/PermissionSettings';
 import { WorkspaceSettings } from './WorkspaceSettings';
@@ -30,17 +34,19 @@ export const TeamSettings = () => {
     return <Header title="Team Settings" activeTeam={null} />;
   }
 
-  const isPro = activeTeamInfo?.subscription?.type === SubscriptionType.TeamPro;
+  const activePlan = [
+    SubscriptionStatus.Active,
+    SubscriptionStatus.Paused,
+  ].includes(activeTeamInfo?.subscription?.status);
   const usersPermission = activeTeamInfo.userAuthorizations.find(item => {
     return item.userId === user.id;
   });
-  const isAdmin =
-    usersPermission?.authorization === TeamMemberAuthorization.Admin;
 
-  const showSubscription =
-    isPro &&
-    isAdmin &&
-    activeTeamInfo?.subscription?.paymentProvider === 'STRIPE';
+  const admin =
+    usersPermission?.authorization === TeamMemberAuthorization.Admin;
+  const stripe =
+    activeTeamInfo?.subscription?.paymentProvider ===
+    SubscriptionPaymentProvider.Stripe;
 
   return (
     <>
@@ -65,13 +71,15 @@ export const TeamSettings = () => {
           })}
         >
           <SettingNavigation
-            isPersonal={false}
+            activePlan={activePlan}
+            admin={admin}
+            personal={false}
+            stripe={stripe}
             teamId={activeTeam}
-            showSubscription={showSubscription}
           />
           <BrowserRouter>
             <RouterSwitch location={location}>
-              {showSubscription && (
+              {admin && stripe && activePlan && (
                 <Route
                   component={SubscriptionSettings}
                   path={dashboardUrls.subscription()}

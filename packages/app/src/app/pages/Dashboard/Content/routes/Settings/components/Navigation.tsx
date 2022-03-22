@@ -36,46 +36,62 @@ const NavigationLink = (props: NavigationLinkProps) => (
 
 type SettingsNavigationProps = {
   teamId: string;
-  isPersonal: boolean;
-  showSubscription: boolean;
-  css?: any;
-  style?: React.CSSProperties;
+  personal: boolean;
+  activePlan: boolean;
+  admin: boolean;
+  stripe: boolean;
 };
 
 export const SettingNavigation = ({
   teamId,
-  isPersonal,
-  showSubscription,
+  personal,
+  activePlan,
+  admin,
+  stripe,
   ...props
-}: SettingsNavigationProps) => (
-  <Stack direction="vertical" {...props}>
-    <Stack
-      css={css({
-        width: '100%',
-        borderStyle: 'solid',
-        borderWidth: 0,
-        borderBottomWidth: 1,
-        borderColor: 'grays.500',
-      })}
-      gap={6}
-    >
-      <NavigationLink url={dashboardUrls.settings(teamId)} label="Account" />
-      {!isPersonal && (
-        <NavigationLink
-          url={dashboardUrls.registrySettings(teamId)}
-          label="NPM Registry"
-        />
-      )}
-      <NavigationLink
-        url={dashboardUrls.permissionSettings(teamId)}
-        label="Permissions"
-      />
-      {showSubscription && (
+}: SettingsNavigationProps) => {
+  function renderUpgradeTab(): JSX.Element {
+    if (!admin) return null;
+
+    if (activePlan) {
+      if (!stripe) return null;
+
+      return (
         <NavigationLink
           url={dashboardUrls.subscription(teamId)}
           label="Subscription"
         />
-      )}
+      );
+    }
+
+    return <NavigationLink url="/pro" label="Upgrade" />;
+  }
+
+  return (
+    <Stack direction="vertical" {...props}>
+      <Stack
+        css={css({
+          width: '100%',
+          borderStyle: 'solid',
+          borderWidth: 0,
+          borderBottomWidth: 1,
+          borderColor: 'grays.500',
+        })}
+        gap={6}
+      >
+        <NavigationLink url={dashboardUrls.settings(teamId)} label="Account" />
+        {!personal && (
+          <NavigationLink
+            url={dashboardUrls.registrySettings(teamId)}
+            label="NPM Registry"
+          />
+        )}
+        <NavigationLink
+          url={dashboardUrls.permissionSettings(teamId)}
+          label="Permissions"
+        />
+        {renderUpgradeTab()}
+      </Stack>
     </Stack>
-  </Stack>
-);
+  );
+};
