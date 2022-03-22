@@ -21,7 +21,7 @@ import { Caption } from './elements';
 export const Switcher: React.FC<{
   workspaces: TeamFragmentDashboardFragment[];
   setActiveTeam: (payload?: { id: string }) => Promise<void>;
-  workspaceType: 'pro' | 'team_pro';
+  workspaceType: 'pro' | 'teamPro';
   activeTeamInfo: CurrentTeamInfoFragmentFragment;
   personalWorkspaceId: string;
   userId: string;

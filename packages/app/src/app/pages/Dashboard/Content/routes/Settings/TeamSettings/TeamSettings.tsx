@@ -15,18 +15,32 @@ import {
   useLocation,
 } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { SubscriptionType, TeamMemberAuthorization } from 'app/graphql/types';
 import { SettingNavigation } from '../components/Navigation';
 import { PermissionSettings } from '../components/PermissionSettings';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { RegistrySettings } from './RegistrySettings';
+import { SubscriptionSettings } from '../components/SubscriptionSettings';
 
 export const TeamSettings = () => {
-  const { user: stateUser, activeTeam, activeTeamInfo: team } = useAppState();
+  const { user, activeTeam, activeTeamInfo } = useAppState();
   const location = useLocation();
 
-  if (!team || !stateUser) {
+  if (!activeTeamInfo || !user) {
     return <Header title="Team Settings" activeTeam={null} />;
   }
+
+  const isPro = activeTeamInfo?.subscription?.type === SubscriptionType.TeamPro;
+  const usersPermission = activeTeamInfo.userAuthorizations.find(item => {
+    return item.userId === user.id;
+  });
+  const isAdmin =
+    usersPermission?.authorization === TeamMemberAuthorization.Admin;
+
+  const showSubscription =
+    isPro &&
+    isAdmin &&
+    activeTeamInfo?.subscription?.paymentProvider === 'STRIPE';
 
   return (
     <>
@@ -50,9 +64,19 @@ export const TeamSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          <SettingNavigation isPersonal={false} teamId={activeTeam} />
+          <SettingNavigation
+            isPersonal={false}
+            teamId={activeTeam}
+            showSubscription={showSubscription}
+          />
           <BrowserRouter>
             <RouterSwitch location={location}>
+              {showSubscription && (
+                <Route
+                  component={SubscriptionSettings}
+                  path={dashboardUrls.subscription()}
+                />
+              )}
               <Route
                 component={RegistrySettings}
                 path={dashboardUrls.registrySettings()}

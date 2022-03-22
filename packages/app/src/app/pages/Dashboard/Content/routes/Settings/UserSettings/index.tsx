@@ -5,14 +5,16 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, BrowserRouter, Switch, useLocation } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
+import { SubscriptionType } from 'app/graphql/types';
 import { Header } from '../../../../Components/Header';
 import { GRID_MAX_WIDTH, GUTTER } from '../../../../Components/VariableGrid';
 import { SettingNavigation } from '../components/Navigation';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { PermissionSettings } from '../components/PermissionSettings';
+import { SubscriptionSettings } from '../components/SubscriptionSettings';
 
 export const UserSettings = () => {
-  const { user, activeTeam } = useAppState();
+  const { user, activeTeam, activeTeamInfo } = useAppState();
   const {
     dashboard: { dashboardMounted },
   } = useActions();
@@ -22,6 +24,10 @@ export const UserSettings = () => {
   }, [dashboardMounted]);
 
   const location = useLocation();
+
+  const showSubscription =
+    activeTeamInfo?.subscription?.type === SubscriptionType.PersonalPro &&
+    activeTeamInfo?.subscription?.paymentProvider === 'STRIPE';
 
   if (!user) {
     return <Header title="Settings" activeTeam={activeTeam} />;
@@ -49,9 +55,19 @@ export const UserSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          <SettingNavigation isPersonal teamId={activeTeam} />
+          <SettingNavigation
+            isPersonal
+            teamId={activeTeam}
+            showSubscription={showSubscription}
+          />
           <BrowserRouter>
             <Switch location={location}>
+              {showSubscription && (
+                <Route
+                  component={SubscriptionSettings}
+                  path={dashboardUrls.subscription()}
+                />
+              )}
               <Route
                 component={PermissionSettings}
                 path={dashboardUrls.permissionSettings()}

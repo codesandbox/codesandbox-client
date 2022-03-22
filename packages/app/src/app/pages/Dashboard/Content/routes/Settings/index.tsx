@@ -10,15 +10,8 @@ import { UserSettings } from './UserSettings';
 export const Settings = () => {
   const { activeTeam, personalWorkspaceId } = useAppState();
 
-  const getComponent = () => {
-    if (activeTeam === personalWorkspaceId) {
-      return UserSettings;
-    }
-
-    return TeamSettings;
-  };
-
-  const Component = getComponent();
+  const Component =
+    activeTeam === personalWorkspaceId ? UserSettings : TeamSettings;
 
   return (
     <Element css={css({ width: '100%', maxWidth: 1280 })} marginY={10}>

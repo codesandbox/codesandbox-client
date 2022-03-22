@@ -12,7 +12,6 @@ import css from '@styled-system/css';
 import { sortBy } from 'lodash-es';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  usePricing,
   formatCurrent,
   useCreateCheckout,
   WorkspaceType,
@@ -32,7 +31,7 @@ import { SubscriptionType, TeamMemberAuthorization } from '../../graphql/types';
 
 const COLOR_SCHEMA: Record<WorkspaceType, string> = {
   pro: '#AC9CFF',
-  team_pro: '#EDFFA5',
+  teamPro: '#EDFFA5',
 };
 
 export const ProUpgrade = () => {
@@ -48,8 +47,9 @@ export const ProUpgrade = () => {
     isLoggedIn,
     personalWorkspaceId,
     user,
+    pro: { prices },
   } = useAppState();
-  const pricing = usePricing();
+
   const { loading, createCheckout } = useCreateCheckout();
 
   const [interval, setIntervalType] = useState<Interval>('month');
@@ -58,7 +58,7 @@ export const ProUpgrade = () => {
     pageMounted();
   }, [pageMounted]);
 
-  if (!hasLoadedApp || !isLoggedIn || !pricing) return null;
+  if (!hasLoadedApp || !isLoggedIn || !prices) return null;
 
   /**
    * Workspace
@@ -67,7 +67,8 @@ export const ProUpgrade = () => {
     return team.id === personalWorkspaceId;
   })!;
   const workspaceType =
-    (activeTeamInfo.id === personalWorkspaceId ? 'pro' : 'team_pro') ?? 'pro';
+    (activeTeamInfo.id === personalWorkspaceId ? 'pro' : 'teamPro') ?? 'pro';
+
   const workspacesList = [
     personalWorkspace,
     ...sortBy(
@@ -101,30 +102,29 @@ export const ProUpgrade = () => {
   const summary = {
     year: {
       price: formatCurrent({
-        currency: pricing[workspaceType].year.currency,
-        unit_amount: pricing[workspaceType].year.unit_amount / 12,
+        currency: prices[workspaceType].year.currency,
+        unitAmount: prices[workspaceType].year.unitAmount / 12,
       }),
       total: formatCurrent({
-        unit_amount:
-          (pricing[workspaceType].year.unit_amount / 12) * amountPaidMember,
-        currency: pricing[workspaceType].year.currency,
+        unitAmount:
+          (prices[workspaceType].year.unitAmount / 12) * amountPaidMember,
+        currency: prices[workspaceType].year.currency,
       }),
       label: 'per month, billed annually',
     },
     month: {
-      price: formatCurrent(pricing[workspaceType].month),
+      price: formatCurrent(prices[workspaceType].month),
       total: formatCurrent({
-        unit_amount:
-          pricing[workspaceType].month.unit_amount * amountPaidMember,
-        currency: pricing[workspaceType].month.currency,
+        unitAmount: prices[workspaceType].month.unitAmount * amountPaidMember,
+        currency: prices[workspaceType].month.currency,
       }),
       label: 'per month',
     },
   };
 
   const savePercent = () => {
-    const yearByMonth = pricing[workspaceType].year.unit_amount / 12;
-    const month = pricing[workspaceType].month.unit_amount;
+    const yearByMonth = prices[workspaceType].year.unitAmount / 12;
+    const month = prices[workspaceType].month.unitAmount;
 
     return (((month - yearByMonth) * 100) / month).toFixed(0);
   };
@@ -214,7 +214,7 @@ export const ProUpgrade = () => {
             </Stack>
 
             <AnimatePresence>
-              {workspaceType === 'team_pro' && (
+              {workspaceType === 'teamPro' && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
@@ -281,7 +281,7 @@ export const ProUpgrade = () => {
                 </span>
               </p>
               <small>
-                Prices listed {pricing.pro.year.currency}. Taxes may apply.
+                Prices listed {prices.pro.year.currency}. Taxes may apply.
               </small>
             </Summary>
           </Element>

@@ -37,11 +37,17 @@ const NavigationLink = (props: NavigationLinkProps) => (
 type SettingsNavigationProps = {
   teamId: string;
   isPersonal: boolean;
+  showSubscription: boolean;
   css?: any;
   style?: React.CSSProperties;
 };
 
-export const SettingNavigation = (props: SettingsNavigationProps) => (
+export const SettingNavigation = ({
+  teamId,
+  isPersonal,
+  showSubscription,
+  ...props
+}: SettingsNavigationProps) => (
   <Stack direction="vertical" {...props}>
     <Stack
       css={css({
@@ -53,20 +59,23 @@ export const SettingNavigation = (props: SettingsNavigationProps) => (
       })}
       gap={6}
     >
-      <NavigationLink
-        url={dashboardUrls.settings(props.teamId)}
-        label="Account"
-      />
-      {!props.isPersonal && (
+      <NavigationLink url={dashboardUrls.settings(teamId)} label="Account" />
+      {!isPersonal && (
         <NavigationLink
-          url={dashboardUrls.registrySettings(props.teamId)}
+          url={dashboardUrls.registrySettings(teamId)}
           label="NPM Registry"
         />
       )}
       <NavigationLink
-        url={dashboardUrls.permissionSettings(props.teamId)}
+        url={dashboardUrls.permissionSettings(teamId)}
         label="Permissions"
       />
+      {showSubscription && (
+        <NavigationLink
+          url={dashboardUrls.subscription(teamId)}
+          label="Subscription"
+        />
+      )}
     </Stack>
   </Stack>
 );
