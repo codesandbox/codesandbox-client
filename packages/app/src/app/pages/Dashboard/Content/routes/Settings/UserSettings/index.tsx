@@ -31,10 +31,8 @@ export const UserSettings = () => {
   const stripeProvider =
     activeTeamInfo.subscription.paymentProvider ===
     SubscriptionPaymentProvider.Stripe;
-  const activePlan = [
-    SubscriptionStatus.Active,
-    SubscriptionStatus.Paused,
-  ].includes(activeTeamInfo?.subscription?.status);
+  const activePlan =
+    activeTeamInfo?.subscription?.status === SubscriptionStatus.Active;
 
   if (!user) {
     return <Header title="Settings" activeTeam={activeTeam} />;

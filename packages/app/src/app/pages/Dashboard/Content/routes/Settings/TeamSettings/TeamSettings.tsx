@@ -34,10 +34,8 @@ export const TeamSettings = () => {
     return <Header title="Team Settings" activeTeam={null} />;
   }
 
-  const activePlan = [
-    SubscriptionStatus.Active,
-    SubscriptionStatus.Paused,
-  ].includes(activeTeamInfo?.subscription?.status);
+  const activePlan =
+    activeTeamInfo?.subscription?.status === SubscriptionStatus.Active;
   const usersPermission = activeTeamInfo.userAuthorizations.find(item => {
     return item.userId === user.id;
   });
