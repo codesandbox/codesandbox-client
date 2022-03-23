@@ -5,68 +5,58 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
 
 type NavigationLinkProps = {
-  label: string;
-  url: string;
+  url?: string;
+  onClick?: () => void;
 };
 
-const NavigationLink = (props: NavigationLinkProps) => (
-  <Link
-    as={RouterLink}
-    to={props.url}
-    css={css({
-      transition: 'color',
-      transitionDuration: theme => theme.speeds[2],
-      display: 'inline-flex',
-      alignItems: 'center',
-      height: 10,
-      color: 'grays.400',
-      textDecoration: 'none',
-      '&:hover': {
-        color: 'white',
-      },
-    })}
-    // @ts-ignore NavLink Prop
-    exact
-    // @ts-ignore NavLink Prop
-    activeStyle={{ color: 'white' }}
-  >
-    {props.label}
-  </Link>
-);
+const NavigationLink: React.FC<NavigationLinkProps> = ({
+  url,
+  onClick,
+  children,
+}) => {
+  const as = url ? RouterLink : 'button';
+
+  return (
+    <Link
+      as={as}
+      to={url}
+      css={css({
+        transition: 'color',
+        transitionDuration: theme => theme.speeds[2],
+        display: 'inline-flex',
+        alignItems: 'center',
+        height: 10,
+        color: 'grays.400',
+        textDecoration: 'none',
+        background: 'none',
+        border: 0,
+        cursor: 'pointer',
+        font: 'inherit',
+        '&:hover': {
+          color: 'white',
+        },
+      })}
+      // @ts-ignore NavLink Prop
+      exact
+      // @ts-ignore NavLink Prop
+      activeStyle={{ color: 'white' }}
+      onClick={onClick}
+    >
+      {children}
+    </Link>
+  );
+};
 
 type SettingsNavigationProps = {
   teamId: string;
   personal: boolean;
-  activePlan: boolean;
-  admin: boolean;
-  stripe: boolean;
 };
 
 export const SettingNavigation = ({
   teamId,
   personal,
-  activePlan,
-  admin,
-  stripe,
   ...props
 }: SettingsNavigationProps) => {
-  function renderUpgradeTab(): JSX.Element {
-    if (!admin) return null;
-
-    if (activePlan) {
-      if (!stripe) return null;
-
-      return (
-        <NavigationLink
-          url={dashboardUrls.subscription(teamId)}
-          label="Subscription"
-        />
-      );
-    }
-
-    return <NavigationLink url="/pro" label="Upgrade" />;
-  }
-
   return (
     <Stack direction="vertical" {...props}>
       <Stack
@@ -79,18 +69,17 @@ export const SettingNavigation = ({
         })}
         gap={6}
       >
-        <NavigationLink url={dashboardUrls.settings(teamId)} label="Account" />
+        <NavigationLink url={dashboardUrls.settings(teamId)}>
+          Account
+        </NavigationLink>
         {!personal && (
-          <NavigationLink
-            url={dashboardUrls.registrySettings(teamId)}
-            label="NPM Registry"
-          />
+          <NavigationLink url={dashboardUrls.registrySettings(teamId)}>
+            NPM Registry
+          </NavigationLink>
         )}
-        <NavigationLink
-          url={dashboardUrls.permissionSettings(teamId)}
-          label="Permissions"
-        />
-        {renderUpgradeTab()}
+        <NavigationLink url={dashboardUrls.permissionSettings(teamId)}>
+          Permissions
+        </NavigationLink>
       </Stack>
     </Stack>
   );

@@ -5,19 +5,15 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, BrowserRouter, Switch, useLocation } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
-import {
-  SubscriptionPaymentProvider,
-  SubscriptionStatus,
-} from 'app/graphql/types';
+
 import { Header } from '../../../../Components/Header';
 import { GRID_MAX_WIDTH, GUTTER } from '../../../../Components/VariableGrid';
 import { SettingNavigation } from '../components/Navigation';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { PermissionSettings } from '../components/PermissionSettings';
-import { SubscriptionSettings } from '../components/SubscriptionSettings';
 
 export const UserSettings = () => {
-  const { user, activeTeam, activeTeamInfo } = useAppState();
+  const { user, activeTeam } = useAppState();
   const {
     dashboard: { dashboardMounted },
   } = useActions();
@@ -27,12 +23,6 @@ export const UserSettings = () => {
   }, [dashboardMounted]);
 
   const location = useLocation();
-
-  const stripeProvider =
-    activeTeamInfo.subscription.paymentProvider ===
-    SubscriptionPaymentProvider.Stripe;
-  const activePlan =
-    activeTeamInfo?.subscription?.status === SubscriptionStatus.Active;
 
   if (!user) {
     return <Header title="Settings" activeTeam={activeTeam} />;
@@ -60,21 +50,9 @@ export const UserSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          <SettingNavigation
-            activePlan={activePlan}
-            admin
-            personal
-            stripe={stripeProvider}
-            teamId={activeTeam}
-          />
+          <SettingNavigation personal teamId={activeTeam} />
           <BrowserRouter>
             <Switch location={location}>
-              {stripeProvider && activePlan && (
-                <Route
-                  component={SubscriptionSettings}
-                  path={dashboardUrls.subscription()}
-                />
-              )}
               <Route
                 component={PermissionSettings}
                 path={dashboardUrls.permissionSettings()}

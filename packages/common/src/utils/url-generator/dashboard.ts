@@ -58,12 +58,6 @@ export const registrySettings = (teamId?: string | null) =>
     teamId
   );
 
-export const subscription = (teamId?: string | null) =>
-  appendTeamIdQueryParam(
-    `${DASHBOARD_URL_PREFIX}/settings/subscription`,
-    teamId
-  );
-
 export const permissionSettings = (teamId?: string | null) =>
   appendTeamIdQueryParam(
     `${DASHBOARD_URL_PREFIX}/settings/permissions`,

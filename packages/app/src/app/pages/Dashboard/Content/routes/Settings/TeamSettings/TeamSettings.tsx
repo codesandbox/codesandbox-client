@@ -24,7 +24,6 @@ import { SettingNavigation } from '../components/Navigation';
 import { PermissionSettings } from '../components/PermissionSettings';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { RegistrySettings } from './RegistrySettings';
-import { SubscriptionSettings } from '../components/SubscriptionSettings';
 
 export const TeamSettings = () => {
   const { user, activeTeam, activeTeamInfo } = useAppState();
@@ -77,12 +76,6 @@ export const TeamSettings = () => {
           />
           <BrowserRouter>
             <RouterSwitch location={location}>
-              {admin && stripe && activePlan && (
-                <Route
-                  component={SubscriptionSettings}
-                  path={dashboardUrls.subscription()}
-                />
-              )}
               <Route
                 component={RegistrySettings}
                 path={dashboardUrls.registrySettings()}
