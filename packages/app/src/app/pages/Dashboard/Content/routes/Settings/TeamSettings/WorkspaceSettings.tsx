@@ -28,7 +28,7 @@ import {
 } from 'app/graphql/types';
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
-import { ManageSubscription } from '../components/ManageSubscription';
+import { ManageSubscription } from './ManageSubscription';
 
 export const WorkspaceSettings = () => {
   const actions = useActions();

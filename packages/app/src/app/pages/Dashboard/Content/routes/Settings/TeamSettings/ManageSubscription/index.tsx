@@ -10,7 +10,7 @@ import {
 
 import { Stack, Text } from '@codesandbox/components';
 
-import { Card } from '..';
+import { Card } from '../../components';
 import { Upgrade } from './upgrade';
 import { Pilot } from './pilot';
 import { Paddle } from './paddle';

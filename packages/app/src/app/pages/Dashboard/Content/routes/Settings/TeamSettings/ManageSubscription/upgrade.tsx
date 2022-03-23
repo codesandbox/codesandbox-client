@@ -3,7 +3,7 @@ import React from 'react';
 import css from '@styled-system/css';
 import { Button, Stack, Text } from '@codesandbox/components';
 
-import { Card } from '..';
+import { Card } from '../../components';
 
 export const Upgrade = () => {
   return (
