@@ -23,11 +23,14 @@ import {
   Summary,
   BoxPlaceholder,
   SwitchPlan,
-  GlobalFonts,
   PlanTitle,
 } from './upgrade/elements';
 import { Switcher } from './upgrade/Switcher';
-import { SubscriptionType, TeamMemberAuthorization } from '../../graphql/types';
+import {
+  SubscriptionPaymentProvider,
+  SubscriptionType,
+  TeamMemberAuthorization,
+} from '../../graphql/types';
 
 const COLOR_SCHEMA: Record<WorkspaceType, string> = {
   pro: '#AC9CFF',
@@ -98,6 +101,10 @@ export const ProUpgrade = () => {
       )
   );
   const amountPaidMember = paidMembers.length;
+  const hasAnotherPaymentProvider = dashboard.teams.some(
+    team =>
+      team.subscription.paymentProvider !== SubscriptionPaymentProvider.Stripe
+  );
 
   const summary = {
     year: {
@@ -139,7 +146,6 @@ export const ProUpgrade = () => {
 
   return (
     <ThemeProvider>
-      <GlobalFonts />
       <Helmet>
         <title>Pro - CodeSandbox</title>
       </Helmet>
@@ -166,6 +172,12 @@ export const ProUpgrade = () => {
           })}
         >
           <Element css={{ width: '100%' }}>
+            {hasAnotherPaymentProvider && (
+              <p>
+                You're seeing this because you have multiple providers <br />
+              </p>
+            )}
+
             <Switcher
               workspaceType={workspaceType}
               workspaces={workspacesList}
@@ -255,7 +267,6 @@ export const ProUpgrade = () => {
               <Element css={{ flex: 1 }} />
 
               <UpgradeButton
-                style={{ backgroundColor: COLOR_SCHEMA[workspaceType] }}
                 type="button"
                 onClick={() =>
                   createCheckout({

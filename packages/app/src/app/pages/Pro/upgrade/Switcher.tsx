@@ -184,7 +184,6 @@ export const Switcher: React.FC<{
 };
 
 const WorkspaceName = styled.p`
-  font-family: 'TWKEverett', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 32px;
