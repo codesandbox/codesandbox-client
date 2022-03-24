@@ -51,6 +51,7 @@ export const Invite = () => {
     setInviteValue('');
     await actions.dashboard.inviteToTeam({
       value: inviteValue,
+      authorization: team.settings.defaultAuthorization,
       triggerPlace: 'invite-modal',
       inviteLink,
     });
