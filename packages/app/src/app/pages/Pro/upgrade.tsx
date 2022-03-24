@@ -174,7 +174,7 @@ export const ProUpgrade = () => {
           <Element css={{ width: '100%' }}>
             {hasAnotherPaymentProvider && (
               <p>
-                You're seeing this because you have multiple providers <br />
+                You are seeing this because you have multiple providers <br />
               </p>
             )}
 

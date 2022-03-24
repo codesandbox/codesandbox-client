@@ -1,7 +1,7 @@
 import { Element, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useAppState, useActions } from 'app/overmind';
-import React, { useEffect } from 'react';
+import { useAppState } from 'app/overmind';
+import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, BrowserRouter, Switch, useLocation } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
@@ -13,20 +13,8 @@ import { WorkspaceSettings } from './WorkspaceSettings';
 import { PermissionSettings } from '../components/PermissionSettings';
 
 export const UserSettings = () => {
-  const { user, activeTeam } = useAppState();
-  const {
-    dashboard: { dashboardMounted },
-  } = useActions();
-
-  useEffect(() => {
-    dashboardMounted();
-  }, [dashboardMounted]);
-
+  const { activeTeam } = useAppState();
   const location = useLocation();
-
-  if (!user) {
-    return <Header title="Settings" activeTeam={activeTeam} />;
-  }
 
   return (
     <>

@@ -1,14 +1,66 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import { useAppState } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { Element } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useLocation, useHistory } from 'react-router-dom';
 
+import { Header } from '../../../Components/Header';
 import { TeamSettings } from './TeamSettings';
 import { UserSettings } from './UserSettings';
 
 export const Settings = () => {
-  const { activeTeam, personalWorkspaceId } = useAppState();
+  const {
+    activeTeam,
+    user,
+    activeTeamInfo,
+    personalWorkspaceId,
+  } = useAppState();
+  const { notificationToast } = useEffects();
+  const {
+    dashboard: { dashboardMounted },
+  } = useActions();
+  const location = useLocation();
+  const history = useHistory();
+
+  useEffect(() => {
+    dashboardMounted();
+  }, [dashboardMounted]);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+
+    if (activeTeamInfo?.name && personalWorkspaceId) {
+      const isPersonalTeam = activeTeam === personalWorkspaceId;
+
+      if (queryParams.has('success_upgrade')) {
+        const successMessage = isPersonalTeam
+          ? 'Your personal team was successfully upgraded to Personal Pro'
+          : `"${activeTeamInfo.name}" was successfully upgraded to Team Pro`;
+
+        notificationToast.success(successMessage);
+        queryParams.delete('success_upgrade');
+      } else if (queryParams.has('error_upgrade')) {
+        const errorMessage = isPersonalTeam
+          ? 'Something went wrong when upgrading to Personal Pro'
+          : `Something went wrong when upgrading "${activeTeamInfo.name}" to Team Pro`;
+
+        notificationToast.error(errorMessage);
+        queryParams.delete('error_upgrade');
+      }
+
+      history.replace({ search: queryParams.toString() });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTeamInfo, activeTeam, personalWorkspaceId]);
+
+  if (!user || !activeTeamInfo) {
+    return (
+      <Element css={css({ width: '100%', maxWidth: 1280 })} marginY={10}>
+        <Header title="Team Settings" activeTeam={activeTeam} />
+      </Element>
+    );
+  }
 
   const Component =
     activeTeam === personalWorkspaceId ? UserSettings : TeamSettings;

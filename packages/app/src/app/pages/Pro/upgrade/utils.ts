@@ -27,8 +27,8 @@ export const useCreateCheckout = () => {
       setLoading(true);
 
       const payload = await api.stripeCreateCheckout({
-        success_path: '/checkout_success',
-        cancel_path: '/checkout_failure',
+        success_path: '/dashboard/settings?success_upgrade=true',
+        cancel_path: '/dashboard/settings?error_upgrade=true',
         team_id,
         recurring_interval,
       });

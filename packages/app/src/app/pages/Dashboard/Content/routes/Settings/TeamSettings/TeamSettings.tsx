@@ -15,35 +15,15 @@ import {
   useLocation,
 } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
-import {
-  SubscriptionStatus,
-  TeamMemberAuthorization,
-  SubscriptionPaymentProvider,
-} from 'app/graphql/types';
+
 import { SettingNavigation } from '../components/Navigation';
 import { PermissionSettings } from '../components/PermissionSettings';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { RegistrySettings } from './RegistrySettings';
 
 export const TeamSettings = () => {
-  const { user, activeTeam, activeTeamInfo } = useAppState();
+  const { activeTeam } = useAppState();
   const location = useLocation();
-
-  if (!activeTeamInfo || !user) {
-    return <Header title="Team Settings" activeTeam={null} />;
-  }
-
-  const activePlan =
-    activeTeamInfo?.subscription?.status === SubscriptionStatus.Active;
-  const usersPermission = activeTeamInfo.userAuthorizations.find(item => {
-    return item.userId === user.id;
-  });
-
-  const admin =
-    usersPermission?.authorization === TeamMemberAuthorization.Admin;
-  const stripe =
-    activeTeamInfo?.subscription?.paymentProvider ===
-    SubscriptionPaymentProvider.Stripe;
 
   return (
     <>
@@ -67,13 +47,7 @@ export const TeamSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          <SettingNavigation
-            activePlan={activePlan}
-            admin={admin}
-            personal={false}
-            stripe={stripe}
-            teamId={activeTeam}
-          />
+          <SettingNavigation personal={false} teamId={activeTeam} />
           <BrowserRouter>
             <RouterSwitch location={location}>
               <Route
