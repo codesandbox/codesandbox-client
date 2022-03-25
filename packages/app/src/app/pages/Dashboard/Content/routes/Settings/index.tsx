@@ -36,16 +36,14 @@ export const Settings = () => {
       if (queryParams.has('success_upgrade')) {
         const successMessage = isPersonalTeam
           ? 'Your personal team was successfully upgraded to Personal Pro'
-          : `"${activeTeamInfo.name}" was successfully upgraded to Team Pro`;
+          : `<strong>${activeTeamInfo.name}</strong> was successfully upgraded to Team Pro`;
 
         notificationToast.success(successMessage);
         queryParams.delete('success_upgrade');
       } else if (queryParams.has('error_upgrade')) {
-        const errorMessage = isPersonalTeam
-          ? 'Something went wrong when upgrading to Personal Pro'
-          : `Something went wrong when upgrading "${activeTeamInfo.name}" to Team Pro`;
-
-        notificationToast.error(errorMessage);
+        notificationToast.error(
+          'Something went wrong in the subscription proccess. Try again later.'
+        );
         queryParams.delete('error_upgrade');
       }
 
