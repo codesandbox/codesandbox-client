@@ -4,10 +4,10 @@ import configurations from './configuration';
 
 export default new Template(
   'nuxt',
-  'Nuxt.js',
+  'Nuxt 2',
   'https://nuxtjs.org/',
   'github/nuxt/codesandbox-nuxt',
-  decorateSelector(() => '#3B8070'),
+  decorateSelector(() => '#00DC82'),
   {
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
