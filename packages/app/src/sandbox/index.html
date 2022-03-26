@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,15 +29,17 @@ path {
       type="text/javascript"></script>
 
     <script>
-    window.process = BrowserFS.BFSRequire('process');
-    window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
-    // 修改 domain，以便让外部页面和 iframe 页面在同一个域名下，主要目的是为了直接监听 iframe 页面的事件
-    document.domain = window.location.hostname.split('.').slice(-2).join('.');
-  </script>
+      window.process = BrowserFS.BFSRequire('process');
+      window.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+      try {
+        // 修改 domain，以便让外部页面和 iframe 页面在同一个域名下，主要目的是为了直接监听 iframe 页面的事件
+        document.domain = window.location.hostname.split('.').slice(-2).join('.');
+      } catch (error) {
+        //
+      }
+    </script>
   </head>
-
   <body>
     <div id="csb-loading-screen"></div>
   </body>
-
 </html>
