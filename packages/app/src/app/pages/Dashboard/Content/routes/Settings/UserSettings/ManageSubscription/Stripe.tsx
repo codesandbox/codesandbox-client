@@ -4,7 +4,7 @@ import { useEffects, useAppState } from 'app/overmind';
 
 import css from '@styled-system/css';
 
-export const StripePlan = () => {
+export const Stripe = () => {
   const { api } = useEffects();
   const { activeTeam } = useAppState();
   const [loading, setLoading] = useState(false);

@@ -1,14 +1,19 @@
 import React from 'react';
-import { Button, Stack } from '@codesandbox/components';
-import { useActions } from 'app/overmind';
+import { Button, Stack, Text } from '@codesandbox/components';
+import { useActions, useAppState } from 'app/overmind';
 
 import css from '@styled-system/css';
 
-export const PatronPlan = () => {
+export const Patron = () => {
+  const { user } = useAppState();
   const actions = useActions();
 
   return (
     <Stack direction="vertical" gap={2}>
+      <Text size={3} variant="muted">
+        USD {user?.subscription?.amount}{' '}
+      </Text>
+
       <Button
         autoWidth
         variant="link"
@@ -27,6 +32,7 @@ export const PatronPlan = () => {
       >
         Update payment information
       </Button>
+
       <Button
         autoWidth
         variant="link"

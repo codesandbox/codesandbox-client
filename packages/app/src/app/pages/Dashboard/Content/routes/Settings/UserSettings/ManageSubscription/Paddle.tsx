@@ -1,18 +1,53 @@
 import React from 'react';
 import { format } from 'date-fns';
-import css from '@styled-system/css';
-import { Button, Stack, Text, Link } from '@codesandbox/components';
-
+import {
+  Stack,
+  Text,
+  Tooltip,
+  Icon,
+  Button,
+  Link,
+} from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
+import css from '@styled-system/css';
 
-export const PaddlePlan = () => {
+export const Paddle = () => {
   const { activeTeamInfo } = useAppState();
   const actions = useActions();
 
   const activeSubscription = activeTeamInfo?.subscription;
 
+  if (activeTeamInfo?.subscription.cancelAt) {
+    return null;
+  }
+
   return (
-    <Stack direction="vertical" gap={2}>
+    <>
+      <Tooltip
+        label={`Next invoice of ${activeTeamInfo?.subscription.currency} ${(
+          (activeTeamInfo?.subscription.quantity *
+            activeTeamInfo?.subscription.unitPrice) /
+          100
+        ).toFixed(2)} (excl. tax) scheduled for ${format(
+          new Date(activeTeamInfo?.subscription.nextBillDate),
+          'PP'
+        )}`}
+      >
+        <Stack align="center" gap={1}>
+          <Text size={3} variant="muted">
+            Next invoice: {activeTeamInfo?.subscription.currency}{' '}
+            {(
+              (activeTeamInfo?.subscription.quantity *
+                activeTeamInfo?.subscription.unitPrice) /
+              100
+            ).toFixed(2)}{' '}
+          </Text>
+          <Text variant="muted">
+            <Icon name="info" size={12} />
+          </Text>
+        </Stack>
+      </Tooltip>
+
       <Link
         size={3}
         variant="active"
@@ -62,6 +97,6 @@ export const PaddlePlan = () => {
           Cancel subscription
         </Button>
       )}
-    </Stack>
+    </>
   );
 };

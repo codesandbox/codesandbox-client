@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Button,
-  Grid,
   Stack,
   Text,
   Tooltip,
@@ -69,13 +68,8 @@ export const WorkspaceSettings = () => {
   }
 
   return (
-    <Grid
-      columnGap={4}
-      css={css({
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-      })}
-    >
-      <Card>
+    <Stack gap={4}>
+      <Card style={{ flex: 2 }}>
         {editing ? (
           <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
             <Stack gap={4}>
@@ -318,6 +312,6 @@ export const WorkspaceSettings = () => {
       </Card>
 
       <ManageSubscription />
-    </Grid>
+    </Stack>
   );
 };
