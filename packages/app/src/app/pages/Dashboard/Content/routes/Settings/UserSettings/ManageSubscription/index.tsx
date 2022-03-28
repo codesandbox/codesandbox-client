@@ -34,7 +34,7 @@ export const ManageSubscription = () => {
 
   const renderDetailsContent = () => {
     if (isPatron) return <Patron />;
-    if (true) return <Paddle />;
+    if (isPaddle) return <Paddle />;
     if (isStripe) return <Stripe />;
 
     return null;

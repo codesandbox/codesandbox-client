@@ -1,24 +1,51 @@
 import React from 'react';
 
+import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Button, Stack, Text } from '@codesandbox/components';
 
 import { Card } from '../../components';
 
+const List = styled(Stack)`
+  padding-left: 1em;
+  margin: 0;
+
+  ${Text} {
+    list-style: disc;
+    display: list-item;
+  }
+`;
+
 export const Upgrade = () => {
   return (
-    <Card style={{ backgroundColor: 'white' }}>
+    <Card
+      css={{
+        backgroundColor: 'white',
+        minWidth: 350,
+        flex: 1,
+        borderTop: '6px solid #EDFFA5',
+      }}
+    >
       <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
         <Text size={6} weight="bold">
-          Go Pro
+          Upgrade to Personal Pro
         </Text>
-        <Stack direction="vertical" gap={1}>
-          <Text size={3}>+ Work in private</Text>
-          <Text size={3}>+ Private NPM packages</Text>
-          <Text size={3}>+ Flexible permissions</Text>
-          <Text size={3}>+ Centralized billing</Text>
-        </Stack>
-        <Button as="a" href="/pro" marginTop={2}>
+        <List direction="vertical" gap={1} as="ul">
+          <Text as="li" size={3}>
+            Advanced privacy settings
+          </Text>
+          <Text as="li" size={3}>
+            Private NPM packages
+          </Text>
+          <Text as="li" size={3}>
+            Unlimited editor seats
+          </Text>
+          <Text as="li" size={3}>
+            Centralized billing
+          </Text>
+        </List>
+
+        <Button as="a" href="/pro" marginTop={2} variant="secondary">
           Upgrade to Pro
         </Button>
       </Stack>

@@ -5,7 +5,6 @@ import { sortBy } from 'lodash-es';
 import {
   Button,
   Element,
-  Grid,
   Stack,
   Text,
   Input,
@@ -85,8 +84,10 @@ export const WorkspaceSettings = () => {
     TeamMemberAuthorization
   >(team?.settings.defaultAuthorization);
 
-  const numberOfEditors = team.userAuthorizations.filter(
-    member => member.authorization !== TeamMemberAuthorization.Read
+  const numberOfEditors = team.userAuthorizations.filter(({ authorization }) =>
+    [TeamMemberAuthorization.Admin, TeamMemberAuthorization.Write].includes(
+      authorization
+    )
   ).length;
 
   // A team can have unused seats in their subscription
@@ -161,13 +162,8 @@ export const WorkspaceSettings = () => {
 
   return (
     <>
-      <Grid
-        columnGap={4}
-        css={css({
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        })}
-      >
-        <Card>
+      <Stack gap={4}>
+        <Card css={{ flex: 2 }}>
           {editing ? (
             <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
               <Stack gap={4}>
@@ -300,7 +296,8 @@ export const WorkspaceSettings = () => {
             </Stack>
           )}
         </Card>
-        <Card>
+
+        <Card css={{ minWidth: 350, flex: 1 }}>
           <Stack direction="vertical" gap={4}>
             <Text size={6} weight="bold">
               {team.users.length}{' '}
@@ -312,7 +309,7 @@ export const WorkspaceSettings = () => {
                 <>
                   <Text size={3} variant="muted">
                     {numberOfEditors}{' '}
-                    {numberOfEditors > 1 ? 'Editors' : 'Editor'} on your plan
+                    {numberOfEditors > 1 ? 'Editors' : 'Editor'}
                   </Text>
                   {numberOfUnusedSeats > 0 ? (
                     <Text size={3} variant="muted">
@@ -351,7 +348,8 @@ export const WorkspaceSettings = () => {
         </Card>
 
         <ManageSubscription />
-      </Grid>
+      </Stack>
+
       <Stack align="center" justify="space-between" gap={2}>
         <Text
           css={css({

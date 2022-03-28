@@ -4,6 +4,7 @@ import css from '@styled-system/css';
 
 interface AlertProps {
   message: string;
+  upgrade: boolean;
   cta?: {
     label: string;
     href: string;
@@ -14,7 +15,7 @@ interface AlertProps {
 export const Alert = (props: AlertProps) => (
   <Stack
     css={css({
-      backgroundColor: 'grays.600',
+      backgroundColor: props.upgrade ? 'white' : 'grays.600',
       borderRadius: 'medium',
       height: 9,
       paddingX: 3,
@@ -22,8 +23,12 @@ export const Alert = (props: AlertProps) => (
     gap={4}
     align="center"
   >
-    <Icon size={16} name="info" />
-    <Text css={css({ width: '100%' })} color="white" weight="medium" size={2}>
+    {!props.upgrade && <Icon size={16} name="info" />}
+    <Text
+      css={css({ width: '100%', color: props.upgrade ? '#151515' : 'white' })}
+      weight="medium"
+      size={2}
+    >
       {props.message}
     </Text>
 

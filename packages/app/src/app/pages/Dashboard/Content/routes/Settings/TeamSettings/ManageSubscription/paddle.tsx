@@ -61,7 +61,7 @@ export const Paddle = () => {
       </Link>
 
       {team.subscription.cancelAt ? (
-        <Text size={3} css={css({ color: 'orange' })}>
+        <Text size={3} css={css({ color: '#F7CC66' })}>
           Your subscription expires on{' '}
           {format(new Date(team.subscription.cancelAt), 'PP')}.{' '}
           <Button
@@ -75,7 +75,7 @@ export const Paddle = () => {
             })}
             onClick={() => actions.pro.reactivateWorkspaceSubscription()}
           >
-            Reactivate
+            Reactivate subscription
           </Button>
         </Text>
       ) : (

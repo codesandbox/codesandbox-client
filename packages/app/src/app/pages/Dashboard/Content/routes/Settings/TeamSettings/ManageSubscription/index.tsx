@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAppState } from 'app/overmind';
 import {
-  SubscriptionType,
   SubscriptionStatus,
   TeamMemberAuthorization,
   SubscriptionOrigin,
@@ -27,6 +26,12 @@ export const ManageSubscription = () => {
     return <Upgrade />;
   }
 
+  const paidMembers = team.userAuthorizations.filter(({ authorization }) =>
+    [TeamMemberAuthorization.Admin, TeamMemberAuthorization.Write].includes(
+      authorization
+    )
+  );
+
   const renderProvider = () => {
     if (team.subscription.origin === SubscriptionOrigin.Pilot) {
       return <Pilot />;
@@ -48,20 +53,20 @@ export const ManageSubscription = () => {
   };
 
   return (
-    <div>
-      {team?.subscription?.type === SubscriptionType.TeamPro && (
-        <Card>
-          <Stack direction="vertical" gap={2}>
-            <Stack direction="vertical" gap={4}>
-              <Text size={6} weight="bold" maxWidth="100%">
-                Invoice details
-              </Text>
+    <Card css={{ minWidth: 350, flex: 1 }}>
+      <Stack direction="vertical" gap={2}>
+        <Stack direction="vertical" gap={4}>
+          <Text size={6} weight="bold" maxWidth="100%">
+            Team Pro
+          </Text>
 
-              {renderProvider()}
-            </Stack>
-          </Stack>
-        </Card>
-      )}
-    </div>
+          <Text variant="muted" size={3}>{`${paidMembers.length} paid seat${
+            paidMembers.length > 1 ? 's' : ''
+          }`}</Text>
+
+          {renderProvider()}
+        </Stack>
+      </Stack>
+    </Card>
   );
 };
