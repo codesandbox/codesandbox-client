@@ -9,7 +9,7 @@ type State = {
   summary: PaymentSummary | null;
   paymentPreview: PaymentPreview | null;
   updatingSubscription: boolean;
-  prices: Pricing;
+  prices: Pricing | null;
 };
 
 export const state: State = {
