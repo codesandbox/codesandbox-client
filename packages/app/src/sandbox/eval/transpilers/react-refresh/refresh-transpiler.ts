@@ -23,7 +23,7 @@ const enqueueUpdate = debounce(() => {
 }, 30);
 
 function isReactRefreshBoundary(moduleExports) {
-  if (Object.keys(Refresh).length === 0) {
+  if (Object.keys(RefreshRuntime).length === 0) {
     return false;
   }
 
