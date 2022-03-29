@@ -17,6 +17,7 @@ export const UpgradeButton = styled(Button)`
 
   display: inline-block;
   width: calc(100% / 2 - 6px);
+  color: #151515;
 
   &:disabled {
     opacity: 0.4;
@@ -54,6 +55,7 @@ export const SwitchPlan = styled.button`
     padding: 4px 8px;
     background: rgba(229, 229, 229, 0.1);
     border-radius: 20px;
+    transition: background 0.2s ease;
   }
 
   .price {
@@ -62,6 +64,12 @@ export const SwitchPlan = styled.button`
     line-height: 42px;
     margin-top: 18px;
     margin-bottom: 4px;
+
+    span {
+      color: #434343;
+      transition: color 0.2s ease;
+      text-decoration: line-through;
+    }
   }
 
   &.active {
@@ -70,7 +78,11 @@ export const SwitchPlan = styled.button`
     color: #090909;
 
     .discount {
-      background: none;
+      background: #dbdbde;
+    }
+
+    .price span {
+      color: #c5c5c5;
     }
   }
 `;

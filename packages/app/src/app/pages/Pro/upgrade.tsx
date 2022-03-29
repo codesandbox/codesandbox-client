@@ -5,6 +5,8 @@ import {
   Stack,
   Element,
   Tooltip,
+  Text,
+  Icon,
 } from '@codesandbox/components';
 import { Helmet } from 'react-helmet';
 import { Navigation } from 'app/pages/common/Navigation';
@@ -149,8 +151,7 @@ export const ProUpgrade = () => {
       <Helmet>
         <title>Pro - CodeSandbox</title>
       </Helmet>
-      <Stack
-        direction="vertical"
+      <Element
         css={css({
           backgroundColor: 'grays.900',
           color: 'white',
@@ -158,26 +159,38 @@ export const ProUpgrade = () => {
           minHeight: '100vh',
         })}
       >
-        <Navigation title="CodeSandbox Pro" />
+        <Navigation showActions={false} />
+
+        {hasAnotherPaymentProvider && (
+          <Text
+            size={3}
+            variant="muted"
+            css={css({
+              width: '100%',
+              maxWidth: '713px',
+              margin: '0 auto',
+              display: 'flex',
+              padding: '24px 1em',
+              alignItems: 'center',
+            })}
+          >
+            <Icon name="info" style={{ marginRight: '.5em' }} />
+            CodeSandbox is migrating to a new payment provider. Previous active
+            subscriptions will not be affected.
+          </Text>
+        )}
 
         <Stack
           justify="center"
           align="center"
           css={css({
-            height: '100%',
             width: '100%',
             maxWidth: '713px',
-            margin: 'auto',
+            margin: '0 auto',
             padding: '24px 1em',
           })}
         >
           <Element css={{ width: '100%' }}>
-            {hasAnotherPaymentProvider && (
-              <p>
-                You are seeing this because you have multiple providers <br />
-              </p>
-            )}
-
             <Switcher
               workspaceType={workspaceType}
               workspaces={workspacesList}
@@ -188,7 +201,7 @@ export const ProUpgrade = () => {
               openCreateTeamModal={openCreateTeamModal}
             />
 
-            <PlanTitle style={{ color: COLOR_SCHEMA[workspaceType] }}>
+            <PlanTitle>
               {workspaceType === 'pro'
                 ? 'Upgrade to Personal Pro'
                 : 'Upgrade to Team Pro'}
@@ -206,7 +219,10 @@ export const ProUpgrade = () => {
                   <p>Annual</p>
                   <p className="discount">save {savePercent()}%</p>
                 </Stack>
-                <h3 className="price">{summary.year.price}</h3>
+                <h3 className="price">
+                  {summary.year.price}{' '}
+                  <span>{formatCurrent(prices[workspaceType].month)}</span>
+                </h3>
                 <p style={{ width: 140 }}>
                   per editor per month, billed annually
                 </p>
@@ -267,6 +283,7 @@ export const ProUpgrade = () => {
               <Element css={{ flex: 1 }} />
 
               <UpgradeButton
+                style={{ background: COLOR_SCHEMA[workspaceType] }}
                 type="button"
                 onClick={() =>
                   createCheckout({
@@ -297,7 +314,7 @@ export const ProUpgrade = () => {
             </Summary>
           </Element>
         </Stack>
-      </Stack>
+      </Element>
     </ThemeProvider>
   );
 };
