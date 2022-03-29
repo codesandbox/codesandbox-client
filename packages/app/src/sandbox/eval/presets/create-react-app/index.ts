@@ -15,7 +15,6 @@ import rawTranspiler from '../../transpilers/raw';
 import {
   hasRefresh,
   aliases,
-  cleanUsingUnmount,
   isMinimalReactDomVersion,
   supportsNewReactTransform,
 } from './utils';
@@ -299,13 +298,6 @@ export async function reactPreset(pkg: PackageJSON) {
 
         if (await hasRefresh(manager.manifest.dependencies)) {
           await createRefreshEntry(manager);
-        }
-
-        const reactDom = manager.manifest.dependencies.find(
-          n => n.name === 'react-dom'
-        );
-        if (reactDom && !manager.webpackHMR) {
-          cleanUsingUnmount(manager);
         }
       },
     }
