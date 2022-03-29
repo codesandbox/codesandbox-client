@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Stack, Element, Button } from '@codesandbox/components';
+import { Stack, Button } from '@codesandbox/components';
 import { CrossIcon } from './icons/CrossIcon';
 
 export const NotificationContainer = styled.div`
@@ -10,20 +10,21 @@ export const NotificationContainer = styled.div`
 `;
 
 export const StyledCrossIcon = styled(CrossIcon)`
-  transition: 0.3s ease color;
-  cursor: pointer;
+  ${({ theme }) => css`
+    transition: 0.3s ease color;
+    cursor: pointer;
+    color: ${theme.colors.grays[500]};
 
-  &:hover {
-    path {
-      opacity: 0.4;
+    &:hover {
+      color: ${theme.colors.grays[400]};
     }
-  }
+  `}
 `;
 
 export const InnerWrapper = styled(Stack)`
   ${({ theme }) => css`
     width: 100%;
-    border: 1px solid ${theme.colors.grays[600]};
+    border: 1px solid ${theme.colors.grays[500]};
     background: ${theme.colors.grays[700]};
     border-top-right-radius: ${theme.radii.medium}px;
     border-bottom-right-radius: ${theme.radii.medium}px;
@@ -41,15 +42,6 @@ export const Container = styled(Stack)`
     width: 450px;
     overflow: hidden;
   `}
-`;
-
-export const ColorLine = styled(Element)<{ bg: string }>`
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  background-color: ${props => props.bg};
-  width: 4px;
 `;
 
 export const TertiaryButton = styled(Button)`
