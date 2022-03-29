@@ -160,10 +160,13 @@ export const WorkspaceSettings = () => {
     [TeamMemberAuthorization.Read]: 'Viewer',
   };
 
+  const isAdmin =
+    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+
   return (
     <>
       <Stack gap={4}>
-        <Card css={{ flex: 2 }}>
+        <Card css={{ flex: isAdmin ? 1 : 2 }}>
           {editing ? (
             <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
               <Stack gap={4}>
