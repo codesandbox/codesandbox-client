@@ -13,7 +13,7 @@ import SupportIcon from '../../assets/icons/Support';
 import StatusIcon from '../../assets/icons/Status';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
-// import IDEIcon from "../../assets/icons/Ide";
+import CodeSandbox from '../../assets/icons/CodeSandbox';
 import FeedbackIcon from '../../assets/icons/Feedback';
 // import PrototypeIcon from "../../assets/icons/Prototype";
 // import TeamsIcon from "../../assets/icons/Teams";
@@ -304,33 +304,28 @@ const Navigation = () => {
                   hasOpened={hasOpened}
                   name="product"
                   components={[
-                    // {
-                    //   Icon: () => (
-                    //     <Link to="/ide">
-                    //       <IDEIcon />
-                    //     </Link>
-                    //   ),
-                    //   Label: () => <Link to="/ide">Coding</Link>,
-                    // },
-                    // {
-                    //   Icon: () => (
-                    //     <Link to="/prototyping">
-                    //       <PrototypeIcon />
-                    //     </Link>
-                    //   ),
-                    //   Label: () => <Link to="/prototyping">Prototyping</Link>,
-                    // },
-                    // {
-                    //   Icon: () => (
-                    //     <Link to="/knowledge-sharing/">
-                    //       <TeamsIcon />
-                    //     </Link>
-                    //   ),
-                    //   Label: () => (
-                    //     <Link to="/knowledge-sharing/">Knowledge Sharing</Link>
-                    //   ),
-                    // },
-
+                    {
+                      Icon: () => (
+                        <a
+                          href="https://projects.codesandbox.io/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Projects"
+                        >
+                          <CodeSandbox />
+                        </a>
+                      ),
+                      Label: () => (
+                        <a
+                          href="https://projects.codesandbox.io/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Projects"
+                        >
+                          Projects
+                        </a>
+                      ),
+                    },
                     {
                       Icon: () => (
                         <a

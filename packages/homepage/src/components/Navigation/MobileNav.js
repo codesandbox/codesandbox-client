@@ -20,7 +20,7 @@ import StatusIcon from '../../assets/icons/Status';
 import PricingIcon from '../../assets/icons/Pricing';
 import DocsIcon from '../../assets/icons/Docs';
 import BlogIcon from '../../assets/icons/Blog';
-// import IDEIcon from "../../assets/icons/Ide";
+import CodeSandbox from '../../assets/icons/CodeSandbox';
 import FeedbackIcon from '../../assets/icons/Feedback';
 // import PrototypeIcon from "../../assets/icons/Prototype";
 // import TeamsIcon from "../../assets/icons/Teams";
@@ -109,32 +109,20 @@ export default () => {
             <PopUpNav>
               <Headers>Product</Headers>
               <Items>
-                {/*
                 <li>
-                  <Link to="/ide">
+                  <a
+                    href="https://projects.codesandbox.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Projects"
+                  >
                     <IconWrapper>
-                      <IDEIcon />
+                      <CodeSandbox />
                     </IconWrapper>
-                    <span>Coding</span>
-                  </Link>
+                    <span>Projects</span>
+                  </a>
                 </li>
-                <li>
-                  <Link to="/prototyping">
-                    <IconWrapper>
-                      <PrototypeIcon />
-                    </IconWrapper>
-                    <span>Prototyping</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/knowledge-sharing">
-                    <IconWrapper>
-                      <TeamsIcon />
-                    </IconWrapper>
-                    <span>Knowledge Sharing</span>
-                  </Link>
-                </li>
-                */}
+
                 <li>
                   <a
                     href="https://sandpack.codesandbox.io/"

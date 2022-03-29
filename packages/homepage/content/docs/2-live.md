@@ -18,10 +18,10 @@ about your changes. It's like Google Docs, but for coding.
 
 All sandboxes are live by default, you can invite contributors to join the
 sandbox using the share button from the top bar in the editor. In addition, if
-you go to the Live tab from the activity bar, you can get a Live URL to share
-with guests (non-members of the sandbox) so they can temporarily join the
-session. Guest editors can only make edits to the sandbox while they are in the
-live session, they cannot do this when just viewing the sandbox.
+you go to the Live tab from the activity bar, you can get a Live URL to share with
+other CodeSandbox users (they will not need to be members of the Sandbox). 
+Live editors can only make edits to the sandbox while they are in the
+session, they cannot do this when just viewing the sandbox.
 
 Invited editors can simultaneously edit, create, rename and update files and
 code, as well as add and remove dependencies. You can also see which file other

@@ -258,6 +258,19 @@ describe('resolve', () => {
         new ModuleNotFoundError('unknown-module/test.js', '/nested/test.js')
       );
     });
+
+    it('should handle instantsearch.js index palooza', () => {
+      expect(() => {
+        resolveSync('instantsearch.js/es/widgets', {
+          filename: '/foo.js',
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          isFile,
+          readFile,
+        });
+      }).toThrow(
+        `Cannot find module 'instantsearch.js/es/widgets' from '/foo.js'`
+      );
+    });
   });
 
   describe('package#browser', () => {
@@ -469,14 +482,26 @@ describe('resolve', () => {
     });
 
     it('should not load exports from the root package.json', () => {
-      expect(() =>
+      expect(() => {
         resolveSync('a-custom-export', {
           filename: '/foo.js',
           extensions: ['.ts', '.tsx', '.js', '.jsx'],
           isFile,
           readFile,
-        })
-      ).toThrow();
+        });
+      }).toThrow();
+    });
+
+    it('should not fail on wildcard *.js and folder references', () => {
+      const resolved = resolveSync('./test', {
+        filename: '/node_modules/package-exports/src/utils/path.js',
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        isFile,
+        readFile,
+      });
+      expect(resolved).toBe(
+        '/node_modules/package-exports/src/utils/test/index.js'
+      );
     });
   });
 
