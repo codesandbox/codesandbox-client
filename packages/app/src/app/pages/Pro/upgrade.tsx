@@ -13,6 +13,7 @@ import { Navigation } from 'app/pages/common/Navigation';
 import css from '@styled-system/css';
 import { sortBy } from 'lodash-es';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import {
   formatCurrent,
   useCreateCheckout,
@@ -54,6 +55,7 @@ export const ProUpgrade = () => {
     user,
     pro: { prices },
   } = useAppState();
+  const location = useLocation();
 
   const { loading, createCheckout } = useCreateCheckout();
 
@@ -62,6 +64,24 @@ export const ProUpgrade = () => {
   useEffect(() => {
     pageMounted();
   }, [pageMounted]);
+
+  useEffect(() => {
+    const personal = location.search.includes('personal');
+    const team = location.search.includes('team');
+
+    console.log(team, dashboard);
+
+    if (personal) {
+      setActiveTeam({ id: personalWorkspaceId });
+    } else if (team) {
+      setActiveTeam({
+        id: dashboard?.teams?.find(
+          ({ id, subscription }) =>
+            id !== personalWorkspaceId && subscription === null
+        )?.id,
+      });
+    }
+  }, [hasLoadedApp, location, setActiveTeam, personalWorkspaceId, dashboard]);
 
   if (!hasLoadedApp || !isLoggedIn || !prices) return null;
 

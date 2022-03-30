@@ -68,7 +68,7 @@ export const PersonalPro = ({ plans }) => {
         </GridItem>
 
         {plans && (
-          <BoxPlan personalPro>
+          <BoxPlan personalPro href="/pro?type=personal">
             <p>Exclusive for personal teams 1 editor</p>
 
             <BoxPlanPrice
@@ -83,9 +83,7 @@ export const PersonalPro = ({ plans }) => {
           month-on-month.`}
             />
 
-            <BoxPlanButton href="#upgrade">
-              Upgrade to Personal Pro
-            </BoxPlanButton>
+            <BoxPlanButton>Upgrade to Personal Pro</BoxPlanButton>
           </BoxPlan>
         )}
 

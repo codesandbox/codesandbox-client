@@ -1,7 +1,6 @@
 import {
   curatorUrl,
   dashboardUrl,
-  patronUrl,
   profileUrl,
   searchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
@@ -19,11 +18,7 @@ export const UserMenu: FunctionComponent & {
     signOutClicked,
     files: { gotUploadedFiles },
   } = useActions();
-  const {
-    user,
-    personalWorkspaceId,
-    dashboard: { teams },
-  } = useAppState();
+  const { user, activeTeamInfo, activeTeam } = useAppState();
 
   if (!user) {
     return null;
@@ -31,12 +26,8 @@ export const UserMenu: FunctionComponent & {
 
   const showCurator = user.curatorAt;
 
-  const personalWorkspace = teams.find(
-    workspace => workspace.id === personalWorkspaceId
-  )!;
-  const showPatron = personalWorkspace?.subscription?.origin === 'PATRON';
-  const showBecomePro = !personalWorkspace?.subscription;
-  const showManageSubscription = personalWorkspace?.subscription;
+  const showBecomePro = !activeTeamInfo?.subscription;
+  const showManageSubscription = activeTeamInfo?.subscription;
 
   return (
     <Element>
@@ -91,17 +82,8 @@ export const UserMenu: FunctionComponent & {
             </Menu.Link>
           )}
 
-          {showPatron && (
-            <Menu.Link to={patronUrl()}>
-              <Stack align="center" gap={1}>
-                <Icon name="patron" size={24} />
-                <Text>Patron Page</Text>
-              </Stack>
-            </Menu.Link>
-          )}
-
           {showBecomePro && (
-            <Menu.Link href="/pricing">
+            <Menu.Link href="/pro">
               <Stack align="center" gap={1}>
                 <Icon name="proBadge" size={24} />
                 <Text>Upgrade to Pro</Text>
@@ -112,9 +94,7 @@ export const UserMenu: FunctionComponent & {
           <Menu.Divider />
 
           {showManageSubscription && (
-            <Menu.Link
-              href={`/dashboard/settings?workspace=${personalWorkspaceId}`}
-            >
+            <Menu.Link href={`/dashboard/settings?workspace=${activeTeam}`}>
               <Stack align="center" gap={1}>
                 <Icon name="proBadge" size={24} />
                 <Text>Manage Subscription</Text>

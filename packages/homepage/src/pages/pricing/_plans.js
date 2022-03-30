@@ -309,11 +309,11 @@ export const Plans = () => {
                     </th>
                     <th className="column__desktop plan__personal">
                       <p>Personal Pro</p>
-                      <a href="#upgrade">Upgrade</a>
+                      <a href="/pro?type=personal">Upgrade</a>
                     </th>
                     <th className="column__desktop plan__team">
                       <p>Team Pro</p>
-                      <a href="#upgrade">Upgrade</a>
+                      <a href="/pro?type=team">Upgrade</a>
                     </th>
 
                     <th
@@ -562,6 +562,7 @@ const Table = styled.table`
     font-family: 'TWKEverett', sans-serif;
     font-weight: normal;
     color: #fff;
+    pointer-events: none;
 
     @media (min-width: 769px) {
       font-size: 32px;
