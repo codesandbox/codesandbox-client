@@ -36,7 +36,6 @@ const PERMISSION_LEVELS = {
     [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
   },
   [TeamMemberAuthorization.Write]: {
-    [TeamMemberAuthorization.Write]: TeamMemberAuthorization.Write,
     [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
   },
   [TeamMemberAuthorization.Read]: {},

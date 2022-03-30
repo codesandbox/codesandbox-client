@@ -279,7 +279,7 @@ const TeamPro = ({ plan }) => {
   if (!plan) return null;
 
   return (
-    <BoxPlan href="#upgrade" pro>
+    <BoxPlan href="/pro" pro>
       <p>Collaborate with your team Unlimited editor seats</p>
 
       <BoxPlanPrice

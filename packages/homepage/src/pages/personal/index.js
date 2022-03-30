@@ -198,10 +198,7 @@ export default () => {
           </Quote>
 
           <div>
-            <Subtitle>
-              <H6 center>from $7 per month</H6>
-              Go Pro
-            </Subtitle>
+            <Subtitle>Go Pro</Subtitle>
           </div>
 
           <ContentBlock>
@@ -246,7 +243,7 @@ export default () => {
           subtitle="Keep work private, get more space and higher upload limits.
           "
           cta="Go Pro"
-          link="/pricing/?for=individual"
+          link="/pricing"
         />
       </Wrapper>
     </Layout>

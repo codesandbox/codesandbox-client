@@ -70,9 +70,12 @@ export const Permissions: FunctionComponent = () => {
               You can change privacy of a sandbox as a Pro.{' '}
               <Link
                 href="/pro"
-                css={{ textDecoration: 'underline !important' }}
+                css={{
+                  textDecoration: 'underline !important',
+                  color: '#ffffff',
+                }}
               >
-                Become a Pro
+                Upgrade to Pro
               </Link>
             </Text>
           ) : null}
