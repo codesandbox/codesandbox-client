@@ -57,7 +57,7 @@ export const ProUpgrade = () => {
 
   const { loading, createCheckout } = useCreateCheckout();
 
-  const [interval, setIntervalType] = useState<Interval>('month');
+  const [interval, setIntervalType] = useState<Interval>('year');
 
   useEffect(() => {
     pageMounted();
