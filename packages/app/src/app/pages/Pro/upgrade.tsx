@@ -69,8 +69,6 @@ export const ProUpgrade = () => {
     const personal = location.search.includes('personal');
     const team = location.search.includes('team');
 
-    console.log(team, dashboard);
-
     if (personal) {
       setActiveTeam({ id: personalWorkspaceId });
     } else if (team) {
@@ -125,7 +123,7 @@ export const ProUpgrade = () => {
   const amountPaidMember = paidMembers.length;
   const hasAnotherPaymentProvider = dashboard.teams.some(
     team =>
-      team.subscription.paymentProvider !== SubscriptionPaymentProvider.Stripe
+      team.subscription?.paymentProvider !== SubscriptionPaymentProvider.Stripe
   );
 
   const summary = {
