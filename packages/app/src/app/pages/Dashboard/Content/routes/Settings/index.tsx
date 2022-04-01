@@ -40,11 +40,6 @@ export const Settings = () => {
 
         notificationToast.success(successMessage);
         queryParams.delete('success_upgrade');
-      } else if (queryParams.has('error_upgrade')) {
-        notificationToast.error(
-          'Something went wrong in the subscription proccess. Try again later.'
-        );
-        queryParams.delete('error_upgrade');
       }
 
       history.replace({ search: queryParams.toString() });
