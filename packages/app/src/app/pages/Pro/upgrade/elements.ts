@@ -1,7 +1,16 @@
 import { Button } from '@codesandbox/components';
-import styled from 'styled-components';
+import styled, { createGlobalStyle, css } from 'styled-components';
+
+export const GlobalFonts = createGlobalStyle`
+  @font-face {
+    font-family: "TWKEverett";
+    src: url("/static/fonts/TWKEverett-Medium-web.woff") format("woff"),
+      url("/static/fonts/TWKEverett-Medium-web.ttf") format("ttf");
+  }
+`;
 
 export const PlanTitle = styled.h1`
+  font-family: 'TWKEverett', sans-serif;
   font-weight: 500;
   font-size: 48px;
   line-height: 56px;
@@ -9,7 +18,9 @@ export const PlanTitle = styled.h1`
   transition: all 0.6s ease;
 `;
 
-export const UpgradeButton = styled(Button)`
+export const UpgradeButton = styled(Button)<{
+  planType: 'teamPro' | 'pro' | 'none';
+}>`
   height: auto;
 
   font-size: 16px;
@@ -18,6 +29,30 @@ export const UpgradeButton = styled(Button)`
   display: inline-block;
   width: calc(100% / 2 - 6px);
   color: #151515;
+
+  ${({ planType }) => {
+    if (planType === 'pro') {
+      return css`
+        background: #ac9cff;
+
+        &:hover {
+          background: ##7b61ff;
+        }
+      `;
+    }
+
+    if (planType === 'teamPro') {
+      return css`
+        background: #edffa5;
+
+        &:hover {
+          background: #dcff50;
+        }
+      `;
+    }
+
+    return css``;
+  }}
 
   &:disabled {
     opacity: 0.4;
@@ -64,6 +99,7 @@ export const SwitchPlan = styled.button`
     line-height: 42px;
     margin-top: 18px;
     margin-bottom: 4px;
+    font-family: 'TWKEverett', sans-serif;
 
     span {
       color: #434343;

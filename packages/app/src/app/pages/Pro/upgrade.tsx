@@ -6,7 +6,6 @@ import {
   Element,
   Tooltip,
   Text,
-  Icon,
 } from '@codesandbox/components';
 import { Helmet } from 'react-helmet';
 import { Navigation } from 'app/pages/common/Navigation';
@@ -248,7 +247,7 @@ export const ProUpgrade = () => {
 
                 <Stack gap={3}>
                   <UpgradeButton
-                    style={{ background: COLOR_SCHEMA[workspaceType] }}
+                    planType={workspaceType}
                     type="button"
                     onClick={createCustomerPortal}
                     disabled={!isAdmin}
@@ -259,6 +258,7 @@ export const ProUpgrade = () => {
                   </UpgradeButton>
 
                   <UpgradeButton
+                    planType="none"
                     onClick={() => {
                       history.push(dashboardUrls.settings());
                     }}
@@ -357,6 +357,7 @@ export const ProUpgrade = () => {
                   <Element css={{ flex: 1 }} />
 
                   <UpgradeButton
+                    planType={workspaceType}
                     style={{ background: COLOR_SCHEMA[workspaceType] }}
                     type="button"
                     onClick={() =>
