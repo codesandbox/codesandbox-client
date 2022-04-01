@@ -1,24 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Stack, Link } from '@codesandbox/components';
-import { useEffects, useAppState } from 'app/overmind';
+import { useAppState } from 'app/overmind';
 
 import css from '@styled-system/css';
+import { useCreateCustomerPortal } from 'app/pages/Pro/upgrade/utils';
 
 export const Stripe = () => {
-  const { api } = useEffects();
   const { activeTeam } = useAppState();
-  const [loading, setLoading] = useState(false);
-
-  const createCustomerPortal = async () => {
-    setLoading(true);
-    const payload = await api.stripeCustomerPortal(activeTeam);
-
-    if (payload.stripeCustomerPortalUrl) {
-      window.location.href = payload.stripeCustomerPortalUrl;
-    }
-
-    setLoading(false);
-  };
+  const [loading, createCustomerPortal] = useCreateCustomerPortal(activeTeam);
 
   return (
     <Stack direction="vertical" gap={2}>

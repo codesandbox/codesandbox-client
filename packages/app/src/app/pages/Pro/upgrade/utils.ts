@@ -15,7 +15,10 @@ export const formatCurrent = ({ currency, unitAmount }: Price) => {
   return formatter.format(unitAmount / 100);
 };
 
-export const useCreateCheckout = () => {
+export const useCreateCheckout = (): [
+  boolean,
+  (arg: Record<'team_id' | 'recurring_interval', string>) => void
+] => {
   const [loading, setLoading] = useState(false);
   const { api } = useEffects();
 
@@ -43,5 +46,25 @@ export const useCreateCheckout = () => {
     }
   };
 
-  return { loading, createCheckout };
+  return [loading, createCheckout];
+};
+
+export const useCreateCustomerPortal = (
+  activeTeam: string
+): [boolean, () => void] => {
+  const [loading, setLoading] = useState(false);
+  const { api } = useEffects();
+
+  const createCustomerPortal = async () => {
+    setLoading(true);
+    const payload = await api.stripeCustomerPortal(activeTeam);
+
+    if (payload.stripeCustomerPortalUrl) {
+      window.location.href = payload.stripeCustomerPortalUrl;
+    }
+
+    setLoading(false);
+  };
+
+  return [loading, createCustomerPortal];
 };
