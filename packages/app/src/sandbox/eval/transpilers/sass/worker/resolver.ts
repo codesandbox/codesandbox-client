@@ -9,7 +9,7 @@ export function getPathVariations(filename: string) {
   const hasExtension = !!pathUtils.extname(filename);
   const extensions = hasExtension
     ? ['']
-    : POTENTIAL_EXTENSIONS.map(ext => `.${ext}`);
+    : POTENTIAL_EXTENSIONS.map(ext => '.' + ext);
   const pathVariations = [];
 
   // eslint-disable-next-line no-unused-vars
