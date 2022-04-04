@@ -181,6 +181,7 @@ export const ProUpgrade = () => {
           color: 'white',
           width: '100%',
           minHeight: '100vh',
+          fontFamily: "'Inter', sans-serif",
         })}
       >
         <Navigation showActions={false} />

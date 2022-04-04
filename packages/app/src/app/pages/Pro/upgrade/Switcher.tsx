@@ -43,7 +43,11 @@ export const Switcher: React.FC<{
   const isPersonalWorkspace = workspaceType === 'pro';
 
   return (
-    <Stack justify="space-between" align="center">
+    <Stack
+      justify="space-between"
+      align="center"
+      css={{ fontFamily: "'Inter', sans-serif" }}
+    >
       <Menu>
         <Stack as={Menu.Button} css={{ padding: 0, height: 'auto' }}>
           <TeamAvatar
