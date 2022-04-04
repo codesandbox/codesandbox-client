@@ -7,7 +7,10 @@ import { Card } from '.';
 const MAX_TRIES = 20;
 
 export const ProcessingPayment = () => {
-  const { getActiveTeamInfo } = useActions();
+  const {
+    getActiveTeamInfo,
+    dashboard: { getTeams },
+  } = useActions();
   const [counter, setCounter] = useState(-1);
   const { notificationToast } = useEffects();
 
@@ -17,6 +20,7 @@ export const ProcessingPayment = () => {
     if (counter < MAX_TRIES) {
       timer = setInterval(() => {
         getActiveTeamInfo();
+        getTeams();
         setCounter(prev => prev + 1);
       }, 1000);
     } else {
@@ -26,7 +30,7 @@ export const ProcessingPayment = () => {
     }
 
     return () => clearInterval(timer);
-  }, [counter, getActiveTeamInfo, notificationToast]);
+  }, [counter, getActiveTeamInfo, getTeams, notificationToast]);
 
   return (
     <Card>
