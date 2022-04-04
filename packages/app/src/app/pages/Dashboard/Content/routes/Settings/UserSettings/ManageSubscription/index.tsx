@@ -1,21 +1,30 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAppState } from 'app/overmind';
 import {
   SubscriptionStatus,
   SubscriptionOrigin,
   SubscriptionPaymentProvider,
 } from 'app/graphql/types';
-
+import { useLocation, useHistory } from 'react-router-dom';
 import { Stack, Text } from '@codesandbox/components';
+
 import { Patron } from './Patron';
 import { Stripe } from './Stripe';
 import { Paddle } from './Paddle';
 import { Upgrade } from './upgrade';
 
 import { Card } from '../../components';
+import { ProcessingPayment } from '../../components/ProcessingPayment';
 
 export const ManageSubscription = () => {
   const { activeTeamInfo, user } = useAppState();
+  const location = useLocation();
+  const history = useHistory();
+
+  const queryParams = useMemo(() => new URLSearchParams(location.search), [
+    location,
+  ]);
+  const [paymentPending] = useState(queryParams.has('payment_pending'));
 
   const activeSubscription =
     activeTeamInfo?.subscription?.status === SubscriptionStatus.Active;
@@ -40,9 +49,20 @@ export const ManageSubscription = () => {
     return null;
   };
 
+  useEffect(() => {
+    if (paymentPending) {
+      queryParams.delete('payment_pending');
+      history.replace({ search: queryParams.toString() });
+    }
+  }, [paymentPending, queryParams, history]);
+
+  if (paymentPending) {
+    return <ProcessingPayment />;
+  }
+
   if (activeSubscription) {
     return (
-      <Card css={{ minWidth: 350, flex: 1 }}>
+      <Card>
         <Stack direction="vertical" gap={2}>
           <Stack direction="vertical" gap={2}>
             <Text size={6} weight="bold" maxWidth="100%">
