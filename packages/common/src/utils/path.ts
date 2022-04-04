@@ -136,7 +136,7 @@ function assertPath(path) {
   }
 }
 
-export function extname(path) {
+export function extname(path: string): string {
   assertPath(path);
   let startDot = -1;
   let startPart = 0;
