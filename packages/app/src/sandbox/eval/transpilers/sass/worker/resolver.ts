@@ -1,7 +1,7 @@
 import * as pathUtils from '@codesandbox/common/lib/utils/path';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
 
-// Extensions without `.`
+// Extensions without `.`, resolver expects it like this
 const POTENTIAL_EXTENSIONS = ['scss', 'sass', 'css'];
 
 // Re-implementation of sass.js's `getPathVariations`, dart-sass does not implement this and we have some extra logic on top
