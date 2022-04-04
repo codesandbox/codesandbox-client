@@ -686,9 +686,9 @@ export default {
       recurring_interval,
     });
   },
-  stripeCustomerPortal(teamId: string) {
+  stripeCustomerPortal(teamId: string, return_path: string) {
     return api.get<{ stripeCustomerPortalUrl: string }>(
-      `/teams/${teamId}/customer_portal`
+      `/teams/${teamId}/customer_portal?return_path=${return_path}`
     );
   },
 };

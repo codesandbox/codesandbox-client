@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useEffects } from 'app/overmind';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
 export type WorkspaceType = 'pro' | 'teamPro';
 export type Interval = 'month' | 'year';
@@ -15,7 +16,10 @@ export const formatCurrent = ({ currency, unitAmount }: Price) => {
   return formatter.format(unitAmount / 100);
 };
 
-export const useCreateCheckout = () => {
+export const useCreateCheckout = (): [
+  boolean,
+  (arg: Record<'team_id' | 'recurring_interval', string>) => void
+] => {
   const [loading, setLoading] = useState(false);
   const { api } = useEffects();
 
@@ -27,8 +31,8 @@ export const useCreateCheckout = () => {
       setLoading(true);
 
       const payload = await api.stripeCreateCheckout({
-        success_path: '/dashboard/settings?success_upgrade=true',
-        cancel_path: '/dashboard/settings?error_upgrade=true',
+        success_path: '/dashboard/settings?payment_pending=true',
+        cancel_path: '/pro',
         team_id,
         recurring_interval,
       });
@@ -43,5 +47,28 @@ export const useCreateCheckout = () => {
     }
   };
 
-  return { loading, createCheckout };
+  return [loading, createCheckout];
+};
+
+export const useCreateCustomerPortal = (
+  activeTeam: string
+): [boolean, () => void] => {
+  const [loading, setLoading] = useState(false);
+  const { api } = useEffects();
+
+  const createCustomerPortal = async () => {
+    setLoading(true);
+    const payload = await api.stripeCustomerPortal(
+      activeTeam,
+      dashboard.settings(activeTeam)
+    );
+
+    if (payload.stripeCustomerPortalUrl) {
+      window.location.href = payload.stripeCustomerPortalUrl;
+    }
+
+    setLoading(false);
+  };
+
+  return [loading, createCustomerPortal];
 };

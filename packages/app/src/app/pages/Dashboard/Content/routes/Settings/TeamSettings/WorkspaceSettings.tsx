@@ -185,8 +185,19 @@ export const WorkspaceSettings = () => {
 
   return (
     <>
-      <Stack gap={4}>
-        <Card css={{ flex: isAdmin ? 1 : 2 }}>
+      <Element
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1em',
+
+          '@media (min-width: 768px)': {
+            display: 'grid',
+            'grid-template-columns': 'repeat(3, 1fr)',
+          },
+        }}
+      >
+        <Card css={{ 'grid-column': isAdmin ? 'auto' : '1/3' }}>
           {editing ? (
             <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
               <Stack gap={4}>
@@ -320,7 +331,7 @@ export const WorkspaceSettings = () => {
           )}
         </Card>
 
-        <Card css={{ minWidth: 350, flex: 1 }}>
+        <Card>
           <Stack direction="vertical" gap={4}>
             <Text size={6} weight="bold">
               {team.users.length}{' '}
@@ -371,7 +382,7 @@ export const WorkspaceSettings = () => {
         </Card>
 
         <ManageSubscription />
-      </Stack>
+      </Element>
 
       <Stack align="center" justify="space-between" gap={2}>
         <Text

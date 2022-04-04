@@ -9,6 +9,7 @@ import {
   Icon,
   Element,
   Text,
+  Tooltip,
 } from '@codesandbox/components';
 import {
   CurrentTeamInfoFragmentFragment,
@@ -42,7 +43,11 @@ export const Switcher: React.FC<{
   const isPersonalWorkspace = workspaceType === 'pro';
 
   return (
-    <Stack justify="space-between" align="center">
+    <Stack
+      justify="space-between"
+      align="center"
+      css={{ fontFamily: "'Inter', sans-serif" }}
+    >
       <Menu>
         <Stack as={Menu.Button} css={{ padding: 0, height: 'auto' }}>
           <TeamAvatar
@@ -52,7 +57,9 @@ export const Switcher: React.FC<{
           />
 
           <Stack css={{ marginLeft: 24, marginTop: -6 }} direction="vertical">
-            <WorkspaceName>{activeTeamInfo.name}</WorkspaceName>
+            <WorkspaceName>
+              <span>{activeTeamInfo.name}</span>
+            </WorkspaceName>
             <WorkspaceType>
               {isPersonalWorkspace ? 'personal team' : memberLabel}
             </WorkspaceType>
@@ -167,13 +174,39 @@ export const Switcher: React.FC<{
               }
 
               return (
-                <Avatar css={{ marginLeft: 4 }} user={user} key={user.id} />
+                <Tooltip label={user.username} key={user.id}>
+                  <div>
+                    <Avatar css={{ marginLeft: 4 }} user={user} />
+                  </div>
+                </Tooltip>
               );
             })}
 
             {members - 3 > 1 && (
               <WorkspaceSeats>
                 <span>{members - 3}</span>
+
+                <Dialog>
+                  <Stack
+                    direction="vertical"
+                    gap={3}
+                    align="flex-start"
+                    css={{
+                      overflow: 'auto',
+                      height: '100%',
+                      padding: '8px 12px',
+                    }}
+                  >
+                    {activeTeamInfo.users.slice(0, members - 3).map(user => {
+                      return (
+                        <Stack key={user.id} gap={3}>
+                          <Avatar user={user} key={user.id} />
+                          <Text variant="muted">{user.username}</Text>
+                        </Stack>
+                      );
+                    })}
+                  </Stack>
+                </Dialog>
               </WorkspaceSeats>
             )}
           </>
@@ -183,7 +216,31 @@ export const Switcher: React.FC<{
   );
 };
 
+const Dialog = styled.div`
+  position: absolute;
+  top: 40px;
+  height: 148px;
+
+  background: #373737;
+
+  border: 1px solid #2a2a2a;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.15);
+
+  display: none;
+
+  &:before {
+    content: '';
+    height: 10px;
+    width: 100%;
+    position: absolute;
+    top: -10px;
+    display: block;
+  }
+`;
+
 const WorkspaceName = styled.p`
+  font-family: 'TWKEverett', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 32px;
@@ -192,6 +249,18 @@ const WorkspaceName = styled.p`
   position: relative;
   text-align: left;
   color: #fff;
+
+  & span::-moz-selection {
+    -webkit-text-stroke: 1px #fff;
+    color: transparent;
+    background: transparent;
+  }
+
+  & span::selection {
+    -webkit-text-stroke: 1px #fff;
+    color: transparent;
+    background: transparent;
+  }
 
   &:after {
     content: '';
@@ -222,6 +291,11 @@ const WorkspaceSeats = styled.div`
   border-radius: 32px;
   display: flex;
   margin-left: 4px;
+  position: relative;
+
+  &:hover ${Dialog} {
+    display: block;
+  }
 
   span {
     margin: auto;
