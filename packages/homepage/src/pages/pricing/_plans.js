@@ -366,7 +366,7 @@ export const Plans = () => {
         })}
       </Table>
 
-      <FeatureListTitle>
+      <FeatureListTitle css={{ color: '#c5c5c5' }}>
         plus all our standard platform features
       </FeatureListTitle>
 
@@ -662,7 +662,7 @@ const Table = styled.table`
       background: none;
       border: 0;
       color: inherit;
-      text-align: right;
+      text-align: center;
 
       font-family: 'TWKEverett', sans-serif;
     }

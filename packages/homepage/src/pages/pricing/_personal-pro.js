@@ -116,26 +116,6 @@ const Grid = styled.div`
     display: flex;
   }
 
-  &:after {
-    content: '';
-
-    position: absolute;
-    width: 1280px;
-    height: 1280px;
-    right: calc(-1280px / 3);
-    top: calc(-1280px / 4);
-    z-index: 0;
-
-    background: radial-gradient(50% 50% at 50% 50%, #7b61ff 20%, #090909 100%);
-    opacity: 0.2;
-    display: none;
-    transition: all 1s ease;
-
-    @media (min-width: 1025px) {
-      display: block;
-    }
-  }
-
   @media (hover: hover) {
     &:hover:after {
       opacity: 0.8;

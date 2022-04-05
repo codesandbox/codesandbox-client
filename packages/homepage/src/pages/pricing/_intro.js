@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 
 import privateIcon from './assets/private.svg';
@@ -19,6 +19,12 @@ export const Intro = ({ plans }) => {
   //     }
   //   }
   // }
+
+  const scrollViewRef = useCallback(node => {
+    if (node) {
+      node.scroll(window.innerWidth, 0);
+    }
+  }, []);
 
   return (
     <>
@@ -61,7 +67,7 @@ export const Intro = ({ plans }) => {
 
       <ScrollViewPlantList>
         {plans && (
-          <PlanList>
+          <PlanList ref={scrollViewRef}>
             {Object.entries(plans || {}).map(([plan, value]) => {
               if (plan === 'team_pro') {
                 return <TeamPro plan={value} />;
@@ -217,29 +223,6 @@ const PlanList = styled.div`
 
   @media (min-width: 1025px) {
     overflow: visible;
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    width: 1000px;
-    height: 1000px;
-    right: calc(-1000px / 6);
-    top: calc(-1000px / 6);
-    z-index: 0;
-
-    background: radial-gradient(
-      50% 50% at 50% 50%,
-      rgba(237, 255, 165, 1) 20%,
-      rgba(237, 255, 165, 0) 100%
-    );
-    opacity: 0.3;
-    transition: all 1s ease;
-
-    display: none;
-    @media (min-width: 1025px) {
-      display: block;
-    }
   }
 
   @media (hover: hover) {
