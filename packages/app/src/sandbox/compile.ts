@@ -40,7 +40,7 @@ import {
 import defaultBoilerplates from './boilerplates/default-boilerplates';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import getPreset from './eval';
-import handleExternalResources from './external-resources';
+import handleExternalResources, { handleEvaluateScript } from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
@@ -839,6 +839,11 @@ async function compile(opts: CompileOptions) {
       // 等待 js/css 资源完全加载后才会 resolve（通过 window 的 load 事件--页面所有资源包括图片加载完成触发）
       // 详细逻辑请查看 handleExternalResources 函数中的 waitForLoaded
       await handleExternalResources(externalResources);
+
+      // 将外部 js 代码添加到 head 中
+      if (parsedSandboxJSON.evaluateJavaScript && typeof parsedSandboxJSON.evaluateJavaScript === "string") {
+        handleEvaluateScript(parsedSandboxJSON.evaluateJavaScript);
+      }
       metrics.endMeasure('external-resources', {
         displayName: 'External Resources',
       });

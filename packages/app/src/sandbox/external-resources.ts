@@ -55,6 +55,25 @@ function addJS(resource: string) {
   return script;
 }
 
+// 将外部 js 代码添加到 head 中
+export function handleEvaluateScript(code: string) {
+  const script = document.createElement('script');
+  script.type = "text/javascript";
+  try {
+    // IE浏览器认为script是特殊元素,不能再访问子节点
+    script.appendChild(document.createTextNode(`
+      try {
+        ${code}
+      } catch (error) {
+        //
+      }
+    `));
+  } catch (e) {
+    script.text = code;
+  }
+  document.head.appendChild(script);
+}
+
 export function resourceIsCss(resource: string): boolean {
   const match = resource.match(/\.([^.]*)$/);
 
