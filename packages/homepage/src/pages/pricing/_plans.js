@@ -366,7 +366,7 @@ export const Plans = () => {
         })}
       </Table>
 
-      <FeatureListTitle css={{ color: '#c5c5c5' }}>
+      <FeatureListTitle css={{ color: '#E5E5E5', fontSize: 24 }}>
         plus all our standard platform features
       </FeatureListTitle>
 
@@ -435,6 +435,7 @@ const FeatureList = styled.ul`
 
 const FeatureListItem = styled.li`
   margin-bottom: 32px;
+  padding-left: 12px;
 
   @media (min-width: 769px) {
     width: calc(100% / 2 - 3em);
@@ -444,12 +445,13 @@ const FeatureListItem = styled.li`
     font-family: 'TWKEverett', sans-serif;
     font-weight: 500;
 
-    color: #fff;
+    color: #c5c5c5;
     margin: 0;
 
     font-size: 18px;
     line-height: 24px;
     transition: all 0.3s ease;
+    margin-bottom: 8px;
 
     @media (min-width: 769px) {
       font-size: 24px;
@@ -485,6 +487,11 @@ const Table = styled.table`
 
   td:first-child {
     text-align: left;
+    min-width: 160px;
+
+    @media (min-width: 769px) {
+      min-width: auto;
+    }
 
     p {
       margin: 0;
@@ -554,6 +561,10 @@ const Table = styled.table`
       border: 1px solid #373737;
 
       color: var(--plan, #c5c5c5);
+
+      &:hover {
+        background-color: #2a2a2a;
+      }
     }
   }
 
@@ -605,7 +616,7 @@ const Table = styled.table`
   }
 
   .checked__no-check {
-    color: #2a2a2a;
+    color: #373737;
     font-size: 32px;
   }
 
@@ -660,6 +671,7 @@ const Table = styled.table`
     select {
       appearance: none;
       background: none;
+      outline: none;
       border: 0;
       color: inherit;
       text-align: center;

@@ -33,7 +33,7 @@ export const Title = styled.h2`
 export const BoxPlan = styled.a`
   scroll-snap-align: start center;
 
-  padding: 20px 12px;
+  padding: 24px;
   width: 100%;
   position: relative;
   z-index: 2;
@@ -41,13 +41,8 @@ export const BoxPlan = styled.a`
   margin: 0 6px;
   text-decoration: none;
 
-  @media (min-width: 560px) {
-    max-width: calc(100% / 2 - 12px);
-    padding: 40px 32px;
-  }
-
   background: #151515;
-  border-top: 32px solid #2a2a2a;
+  border-top: 24px solid #2a2a2a;
 
   text-align: center;
   color: #808080;
@@ -56,6 +51,12 @@ export const BoxPlan = styled.a`
   flex-direction: column;
   justify-content: space-between;
   transition: transform 0.3s ease-in-out;
+
+  @media (min-width: 769px) {
+    max-width: calc(100% / 2 - 12px);
+    padding: 40px 32px;
+    border-top-width: 32px;
+  }
 
   @media (hover: hover) {
     &:hover {
@@ -69,12 +70,23 @@ export const BoxPlan = styled.a`
     line-height: 1;
   }
 
-  p {
-    max-width: 215px;
+  p,
+  li {
+    max-width: 220px;
     margin-left: auto;
     margin-right: auto;
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 24px;
+
+    @media (min-width: 769px) {
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+
+  li {
+    margin-bottom: 0.3em;
   }
 
   > *:not(:last-child) {
@@ -90,7 +102,7 @@ export const BoxPlan = styled.a`
       pro &&
       css`
         background: #fff;
-        border-top: 32px solid #edffa5;
+        border-top-color: #edffa5;
         color: #090909;
       `
     );
@@ -101,7 +113,7 @@ export const BoxPlan = styled.a`
       personalPro &&
       css`
         background: #fff;
-        border-top: 32px solid #ac9cff;
+        border-top-color: #ac9cff;
         color: #090909;
       `
     );
@@ -145,13 +157,22 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
     font-family: 'TWKEverett', sans-serif;
     font-weight: 500;
     line-height: 1;
+    margin-bottom: 8px;
+
+    @media (min-width: 769px) {
+      margin-bottom: 1.0875rem;
+    }
   }
 
   .price {
-    font-size: 64px;
     font-family: 'TWKEverett', sans-serif;
     font-weight: 500;
     line-height: 1;
+    font-size: 56px;
+
+    @media (min-width: 769px) {
+      font-size: 64px;
+    }
   }
 
   .caption {

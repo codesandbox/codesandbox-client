@@ -152,8 +152,8 @@ const ScrollView = styled.div`
 `;
 
 const GridItem = styled.div`
-  min-width: 200px;
-  padding-right: calc(48px - 1em);
+  min-width: 220px;
+  padding-right: calc(40px - 1em);
   padding-left: 1em;
 `;
 
