@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { formatCurrent } from './_utils';
@@ -14,6 +14,8 @@ export const PersonalPro = ({ plans }) => {
   //     }
   //   }
   // }
+  const [hover, setHover] = useState(false);
+
   const scrollTo = event => {
     event.preventDefault();
 
@@ -67,8 +69,15 @@ export const PersonalPro = ({ plans }) => {
           </Content>
         </GridItem>
 
+        <Gradient className={hover ? 'hover' : ''} />
+
         {plans && (
-          <BoxPlan personalPro href="/pro?type=personal">
+          <BoxPlan
+            personalPro
+            href="/pro?type=personal"
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+          >
             <p>Exclusive for personal teams 1 editor</p>
 
             <BoxPlanPrice
@@ -108,32 +117,33 @@ export const PersonalPro = ({ plans }) => {
 /**
  * Elements
  */
+const Gradient = styled.div`
+  position: absolute;
+  width: 1280px;
+  height: 1280px;
+  right: -40%;
+  top: -50%;
+
+  background: radial-gradient(50% 50% at 50% 50%, #2c2554 0%, #000000 100%);
+  opacity: 0.6;
+  transition: opacity 0.8s ease;
+
+  &.hover {
+    transition: opacity 0.4s ease-in;
+    opacity: 1;
+  }
+
+  @media (max-width: 769px) {
+    display: none;
+  }
+`;
+
 const Grid = styled.div`
   position: relative;
   z-index: 0;
 
   @media (min-width: 560px) {
     display: flex;
-  }
-
-  &:after {
-    content: '';
-
-    position: absolute;
-    width: 1280px;
-    height: 1280px;
-    right: calc(-1280px / 3);
-    top: calc(-1280px / 4);
-    z-index: 0;
-
-    background: radial-gradient(50% 50% at 50% 50%, #7b61ff 20%, #090909 100%);
-    opacity: 0.2;
-    display: none;
-    transition: all 1s ease;
-
-    @media (min-width: 1025px) {
-      display: block;
-    }
   }
 
   @media (hover: hover) {

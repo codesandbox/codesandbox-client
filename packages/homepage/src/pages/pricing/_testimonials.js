@@ -215,6 +215,7 @@ const ImageGrid = styled.div`
   @media (min-width: 769px) {
     > * {
       width: 50%;
+      max-width: 232px;
     }
   }
 `;

@@ -49,6 +49,10 @@ const FAQLink = styled(Title)`
 
   img {
     margin-left: 0.3em;
+    transition: transform 0.2s ease;
+  }
+  &:hover img {
+    transform: translateX(0.1em);
   }
 `;
 
