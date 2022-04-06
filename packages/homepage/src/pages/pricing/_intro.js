@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import privateIcon from './assets/private.svg';
@@ -19,6 +19,8 @@ export const Intro = ({ plans }) => {
   //     }
   //   }
   // }
+
+  const [hover, setHover] = useState(false);
 
   const scrollViewRef = useCallback(node => {
     if (node) {
@@ -66,11 +68,18 @@ export const Intro = ({ plans }) => {
       </IntroWrapper>
 
       <ScrollViewPlantList>
+        <Gradient className={hover ? 'hover' : ''} />
         {plans && (
           <PlanList ref={scrollViewRef}>
             {Object.entries(plans || {}).map(([plan, value]) => {
               if (plan === 'team_pro') {
-                return <TeamPro plan={value} />;
+                return (
+                  <TeamPro
+                    plan={value}
+                    onMouseEnter={() => setHover(true)}
+                    onMouseLeave={() => setHover(false)}
+                  />
+                );
               }
 
               return <FreeBox />;
@@ -85,6 +94,31 @@ export const Intro = ({ plans }) => {
 /**
  * Elements
  */
+const Gradient = styled.div`
+  position: absolute;
+  width: 1280px;
+  height: 1280px;
+  right: -40%;
+  top: -50%;
+
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(237, 255, 165, 0.7) 0%,
+    #000000 60.35%
+  );
+  opacity: 0.6;
+  transition: opacity 0.8s ease;
+
+  &.hover {
+    transition: opacity 0.4s ease-in;
+    opacity: 1;
+  }
+
+  @media (max-width: 769px) {
+    display: none;
+  }
+`;
+
 const Title = styled.h1`
   letter-spacing: -0.025em;
   font-family: 'TWKEverett', sans-serif;
@@ -197,6 +231,7 @@ const Icon = styled.div`
 const ScrollViewPlantList = styled.div`
   margin-right: -1em;
   margin-left: -1em;
+  position: relative;
 
   @media (min-width: 1025) {
     margin: 0;
@@ -258,11 +293,11 @@ const FreeBox = () => {
   );
 };
 
-const TeamPro = ({ plan }) => {
+const TeamPro = ({ plan, ...props }) => {
   if (!plan) return null;
 
   return (
-    <BoxPlan href="/pro?type=team" pro>
+    <BoxPlan href="/pro?type=team" pro {...props}>
       <p>Collaborate with your team Unlimited editor seats</p>
 
       <BoxPlanPrice
