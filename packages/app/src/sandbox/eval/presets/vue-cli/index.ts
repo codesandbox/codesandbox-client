@@ -63,9 +63,8 @@ export default function initialize() {
         try {
           const vueModule = await manager.resolveTranspiledModule('vue', '/');
 
-          if (!vueModule.source) {
-            await vueModule.transpile(manager);
-          }
+          await vueModule.transpileTree(manager);
+
           const Vue = vueModule.evaluate(manager);
 
           if (Vue) {
