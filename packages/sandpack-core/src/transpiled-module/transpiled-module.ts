@@ -23,6 +23,7 @@ import HMR from './hmr';
 import { splitQueryFromPath } from './utils/query-path';
 import { getModuleUrl } from './module-url';
 import delay from '../utils/delay';
+import { CustomSet } from './CustomSet';
 
 declare const BrowserFS: any;
 
@@ -163,11 +164,11 @@ export class TranspiledModule {
   errors: Array<ModuleError>;
   warnings: Array<ModuleWarning>;
   compilation: Compilation | null = null;
-  initiators: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
-  dependencies: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
+  initiators: CustomSet<TranspiledModule>; // eslint-disable-line no-use-before-define
+  dependencies: CustomSet<TranspiledModule>; // eslint-disable-line no-use-before-define
   asyncDependencies: Array<Promise<TranspiledModule>>; // eslint-disable-line no-use-before-define
-  transpilationDependencies: Set<TranspiledModule>;
-  transpilationInitiators: Set<TranspiledModule>;
+  transpilationDependencies: CustomSet<TranspiledModule>;
+  transpilationInitiators: CustomSet<TranspiledModule>;
 
   // Unique identifier
   hash: string;
@@ -196,11 +197,11 @@ export class TranspiledModule {
     this.errors = [];
     this.warnings = [];
     this.childModules = [];
-    this.transpilationDependencies = new Set();
-    this.dependencies = new Set();
+    this.transpilationDependencies = new CustomSet();
+    this.dependencies = new CustomSet();
     this.asyncDependencies = [];
-    this.transpilationInitiators = new Set();
-    this.initiators = new Set();
+    this.transpilationInitiators = new CustomSet();
+    this.initiators = new CustomSet();
     this.isEntry = false;
     this.isTestFile = false;
 
@@ -220,7 +221,7 @@ export class TranspiledModule {
     this.reset();
 
     // Reset parents
-    this.initiators.forEach(tModule => {
+    this.initiators.values().forEach(tModule => {
       tModule.resetTranspilation();
     });
 
@@ -251,7 +252,8 @@ export class TranspiledModule {
   }
 
   resetTranspilation() {
-    Array.from(this.transpilationInitiators)
+    this.transpilationInitiators
+      .values()
       .filter(t => t.source)
       .forEach(dep => {
         dep.resetTranspilation();
@@ -263,7 +265,7 @@ export class TranspiledModule {
     this.errors = [];
     this.warnings = [];
 
-    Array.from(this.dependencies).forEach(t => {
+    this.dependencies.values().forEach(t => {
       t.initiators.delete(this);
     });
     // Don't do it for transpilation dependencies, since those cannot be traced back since we also reset transpilation of them.
@@ -281,13 +283,15 @@ export class TranspiledModule {
     if (this.hmrConfig && this.hmrConfig.isHot()) {
       this.hmrConfig.setDirty(true);
     } else {
-      Array.from(this.initiators)
+      this.initiators
+        .values()
         .filter(t => t.compilation)
         .forEach(initiator => {
           initiator.resetCompilation();
         });
 
-      Array.from(this.transpilationInitiators)
+      this.transpilationInitiators
+        .values()
         .filter(t => t.compilation)
         .forEach(dep => {
           dep.resetCompilation();
@@ -296,7 +300,8 @@ export class TranspiledModule {
       // If this is an entry we want all direct entries to be reset as well.
       // Entries generally have side effects
       if (this.isEntry) {
-        Array.from(this.dependencies)
+        this.dependencies
+          .values()
           .filter(t => t.compilation && t.isEntry)
           .forEach(dep => {
             dep.resetCompilation();
@@ -313,7 +318,7 @@ export class TranspiledModule {
     return (
       !this.source &&
       !this.isTestFile &&
-      !(this.initiators.size === 0 && this.transpilationInitiators.size > 0)
+      !(this.initiators.size() === 0 && this.transpilationInitiators.size() > 0)
     );
   }
 
@@ -561,15 +566,16 @@ export class TranspiledModule {
 
     // Remove this module from the initiators of old deps, so we can populate a
     // fresh cache
-    this.dependencies.forEach(tModule => {
+    this.dependencies.values().forEach(tModule => {
       tModule.initiators.delete(this);
     });
-    this.transpilationDependencies.forEach(tModule => {
+    this.transpilationDependencies.values().forEach(tModule => {
       tModule.transpilationInitiators.delete(this);
     });
     this.childModules.forEach(tModule => {
       tModule.dispose(manager);
     });
+
     this.dependencies.clear();
     this.transpilationDependencies.clear();
     this.childModules.length = 0;
@@ -691,10 +697,8 @@ export class TranspiledModule {
     this.asyncDependencies = [];
 
     await Promise.all([
-      ...Array.from(this.transpilationInitiators).map(t =>
-        t.transpile(manager)
-      ),
-      ...Array.from(this.dependencies).map(t => t.transpile(manager)),
+      ...this.transpilationInitiators.values().map(t => t.transpile(manager)),
+      ...this.dependencies.values().map(t => t.transpile(manager)),
     ]);
 
     return this;
@@ -947,7 +951,8 @@ export class TranspiledModule {
             this.hmrConfig = this.hmrConfig || new HMR();
 
             // We have to bubble up, so reset compilation of parents
-            Array.from(this.initiators)
+            this.initiators
+              .values()
               .filter(t => t.compilation)
               .forEach(dep => {
                 dep.resetCompilation();
@@ -1093,8 +1098,8 @@ export class TranspiledModule {
 
   postTranspile(manager: Manager) {
     if (
-      this.initiators.size === 0 &&
-      this.transpilationInitiators.size === 0 &&
+      this.initiators.size() === 0 &&
+      this.transpilationInitiators.size() === 0 &&
       !this.isEntry &&
       !manager.isFirstLoad &&
       // Don't delete stubbed modules, they are here for a reason, most probably
@@ -1128,6 +1133,7 @@ export class TranspiledModule {
     const sourceEqualsCompiled = Boolean(
       this.source && this.source.sourceEqualsCompiled
     );
+
     const serializableObject: SerializedTranspiledModule = {
       query: this.query,
       module: this.module,
@@ -1136,14 +1142,16 @@ export class TranspiledModule {
 
       sourceEqualsCompiled,
       childModules: this.childModules.map(m => m.getId()),
-      dependencies: Array.from(this.dependencies).map(m => m.getId()),
-      initiators: Array.from(this.initiators).map(m => m.getId()),
-      transpilationDependencies: Array.from(
-        this.transpilationDependencies
-      ).map(m => m.getId()),
-      transpilationInitiators: Array.from(this.transpilationInitiators).map(m =>
-        m.getId()
-      ),
+      dependencies: this.dependencies.values().map(m => {
+        return m.getId();
+      }),
+      initiators: this.initiators.values().map(m => m.getId()),
+      transpilationDependencies: this.transpilationDependencies
+        .values()
+        .map(m => m.getId()),
+      transpilationInitiators: this.transpilationInitiators
+        .values()
+        .map(m => m.getId()),
       asyncDependencies: await Promise.all(
         Array.from(this.asyncDependencies).map(m => m.then(x => x.getId()))
       ),

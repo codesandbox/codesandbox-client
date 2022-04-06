@@ -626,11 +626,13 @@ export default class Manager implements IEvaluator {
   }
 
   verifyTreeTranspiled() {
-    return Promise.all(
-      this.getTranspiledModules()
-        .filter(tModule => tModule.shouldTranspile())
-        .map(tModule => tModule.transpile(this))
-    );
+    const promises = [];
+    for (const tModule of this.getTranspiledModules()) {
+      if (tModule.shouldTranspile()) {
+        promises.push(tModule.transpile(this));
+      }
+    }
+    return Promise.all(promises);
   }
 
   clearCompiledCache() {
