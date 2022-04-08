@@ -18,7 +18,6 @@ import {
   formatCurrent,
   useCreateCheckout,
   useCreateCustomerPortal,
-  WorkspaceType,
   Interval,
 } from './upgrade/utils';
 import {
@@ -35,11 +34,6 @@ import {
   SubscriptionType,
   TeamMemberAuthorization,
 } from '../../graphql/types';
-
-const COLOR_SCHEMA: Record<WorkspaceType, string> = {
-  pro: '#AC9CFF',
-  teamPro: '#EDFFA5',
-};
 
 export const ProUpgrade = () => {
   const {
@@ -143,7 +137,10 @@ export const ProUpgrade = () => {
           (prices[workspaceType].year.unitAmount / 12) * amountPaidMember,
         currency: prices[workspaceType].year.currency,
       }),
-      label: 'per month, billed annually',
+      label: `per month, ${formatCurrent({
+        unitAmount: prices[workspaceType].year.unitAmount * amountPaidMember,
+        currency: prices[workspaceType].year.currency,
+      })} annually`,
     },
     month: {
       price: formatCurrent(prices[workspaceType].month),
@@ -255,7 +252,7 @@ export const ProUpgrade = () => {
                   >
                     {loadingCustomerPortal
                       ? 'Loading...'
-                      : 'Manage subscription'}
+                      : 'Proceed to checkout'}
                   </UpgradeButton>
 
                   <UpgradeButton
@@ -287,14 +284,14 @@ export const ProUpgrade = () => {
                     className={interval === 'year' ? 'active' : ''}
                   >
                     <Stack justify="space-between">
-                      <p>Annual</p>
+                      <p className="period">Annual</p>
                       <p className="discount">save {savePercent()}%</p>
                     </Stack>
                     <h3 className="price">
                       {summary.year.price}{' '}
                       <span>{formatCurrent(prices[workspaceType].month)}</span>
                     </h3>
-                    <p style={{ width: 140 }}>
+                    <p className="caption">
                       per editor per month, billed annually
                     </p>
                   </SwitchPlan>
@@ -304,11 +301,9 @@ export const ProUpgrade = () => {
                     onClick={() => setIntervalType('month')}
                     className={interval === 'month' ? 'active' : ''}
                   >
-                    <p>Monthly</p>
+                    <p className="period">Monthly</p>
                     <h3 className="price">{summary.month.price}</h3>
-                    <p className="caption" style={{ width: 100 }}>
-                      {summary.month.label}
-                    </p>
+                    <p className="caption">{summary.month.label}</p>
                   </SwitchPlan>
                 </Stack>
 
@@ -359,7 +354,6 @@ export const ProUpgrade = () => {
 
                   <UpgradeButton
                     planType={workspaceType}
-                    style={{ background: COLOR_SCHEMA[workspaceType] }}
                     type="button"
                     onClick={() =>
                       createCheckout({

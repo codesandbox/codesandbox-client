@@ -36,7 +36,7 @@ export const UpgradeButton = styled(Button)<{
         background: #ac9cff;
 
         &:hover {
-          background: ##7b61ff;
+          background: #7b61ff !important;
         }
       `;
     }
@@ -46,7 +46,7 @@ export const UpgradeButton = styled(Button)<{
         background: #edffa5;
 
         &:hover {
-          background: #dcff50;
+          background: #dcff50 !important;
         }
       `;
     }
@@ -91,6 +91,16 @@ export const SwitchPlan = styled.button`
     background: rgba(229, 229, 229, 0.1);
     border-radius: 20px;
     transition: background 0.2s ease;
+  }
+
+  .period {
+    height: 24px;
+    line-height: 24px;
+  }
+
+  .caption {
+    height: 32px;
+    width: 140px;
   }
 
   .price {
@@ -150,7 +160,7 @@ export const Summary = styled.div`
   margin-top: 24px;
 
   p {
-    margin: 0;
+    margin: 0 0 4px 0;
   }
 
   span {

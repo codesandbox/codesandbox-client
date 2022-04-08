@@ -306,24 +306,11 @@ const WorkspaceSeats = styled.div`
 const MenuList = styled(Menu.List)`
   &[data-reach-menu-list][data-component='MenuList'] {
     background-color: #373737;
-    margin-top: 36px;
-    margin-left: -4px;
+    margin-top: 10px;
+    margin-left: -2px;
     border: 0;
     border-radius: 0;
     overflow: visible;
-
-    &:before {
-      content: '';
-      border: 15px solid transparent;
-      border-bottom: 15px solid #373737;
-      display: block;
-      width: 0;
-      height: 0;
-      position: absolute;
-      left: 50%;
-      top: -30px;
-      transform: translateX(-50%);
-    }
   }
 `;
 
