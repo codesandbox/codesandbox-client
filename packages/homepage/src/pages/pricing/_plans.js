@@ -518,7 +518,7 @@ const Table = styled.table`
       margin-bottom: 5px;
 
       @media (min-width: 769px) {
-        line-height: 28px;
+        line-height: 32px;
         font-size: 24px;
       }
     }
@@ -542,6 +542,7 @@ const Table = styled.table`
       font-weight: normal;
       font-size: 24px;
       color: var(--plan, #808080);
+      margin-bottom: 12px;
 
       &:only-child {
         margin: 0;
@@ -593,7 +594,7 @@ const Table = styled.table`
     @media (min-width: 769px) {
       padding-top: 120px;
       padding-bottom: 47px;
-      top: -60px;
+      top: -62px;
     }
 
     span {

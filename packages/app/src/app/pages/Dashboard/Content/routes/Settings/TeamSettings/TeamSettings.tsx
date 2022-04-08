@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useAppState } from 'app/overmind';
-import { Element, Stack } from '@codesandbox/components';
+import { Element, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import {
@@ -22,7 +22,7 @@ import { WorkspaceSettings } from './WorkspaceSettings';
 import { RegistrySettings } from './RegistrySettings';
 
 export const TeamSettings = () => {
-  const { activeTeam } = useAppState();
+  const { activeTeam, activeTeamInfo } = useAppState();
   const location = useLocation();
 
   return (
@@ -48,22 +48,27 @@ export const TeamSettings = () => {
           })}
         >
           <SettingNavigation personal={false} teamId={activeTeam} />
-          <BrowserRouter>
-            <RouterSwitch location={location}>
-              <Route
-                component={RegistrySettings}
-                path={dashboardUrls.registrySettings()}
-              />
-              <Route
-                component={PermissionSettings}
-                path={dashboardUrls.permissionSettings()}
-              />
-              <Route
-                component={WorkspaceSettings}
-                path={dashboardUrls.settings()}
-              />
-            </RouterSwitch>
-          </BrowserRouter>
+
+          {activeTeam === activeTeamInfo.id ? (
+            <BrowserRouter>
+              <RouterSwitch location={location}>
+                <Route
+                  component={RegistrySettings}
+                  path={dashboardUrls.registrySettings()}
+                />
+                <Route
+                  component={PermissionSettings}
+                  path={dashboardUrls.permissionSettings()}
+                />
+                <Route
+                  component={WorkspaceSettings}
+                  path={dashboardUrls.settings()}
+                />
+              </RouterSwitch>
+            </BrowserRouter>
+          ) : (
+            <Text>Loading...</Text>
+          )}
         </Stack>
       </Element>
     </>

@@ -72,7 +72,7 @@ export const BoxPlan = styled.a`
 
   p,
   li {
-    max-width: 220px;
+    max-width: 185px;
     margin-left: auto;
     margin-right: auto;
     font-size: 13px;
@@ -80,6 +80,7 @@ export const BoxPlan = styled.a`
     margin-bottom: 0;
 
     @media (min-width: 769px) {
+      max-width: 220px;
       font-size: 16px;
       line-height: 24px;
     }

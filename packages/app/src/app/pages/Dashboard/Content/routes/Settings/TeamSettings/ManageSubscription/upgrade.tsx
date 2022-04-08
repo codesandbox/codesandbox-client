@@ -25,6 +25,8 @@ export const Upgrade = () => {
         textDecoration: 'none',
         backgroundColor: 'white',
         borderTop: '6px solid #EDFFA5',
+        padding: 24,
+        borderRadius: 4,
       }}
     >
       <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>

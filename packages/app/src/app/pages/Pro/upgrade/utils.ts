@@ -37,12 +37,11 @@ export const useCreateCheckout = (): [
         recurring_interval,
       });
 
-      setLoading(false);
-
       if (payload.stripeCheckoutUrl) {
         window.location.href = payload.stripeCheckoutUrl;
       }
     } catch (err) {
+      setLoading(false);
       console.error(err);
     }
   };
@@ -57,17 +56,20 @@ export const useCreateCustomerPortal = (
   const { api } = useEffects();
 
   const createCustomerPortal = async () => {
-    setLoading(true);
-    const payload = await api.stripeCustomerPortal(
-      activeTeam,
-      dashboard.settings(activeTeam)
-    );
+    try {
+      setLoading(true);
+      const payload = await api.stripeCustomerPortal(
+        activeTeam,
+        dashboard.settings(activeTeam)
+      );
 
-    if (payload.stripeCustomerPortalUrl) {
-      window.location.href = payload.stripeCustomerPortalUrl;
+      if (payload.stripeCustomerPortalUrl) {
+        window.location.href = payload.stripeCustomerPortalUrl;
+      }
+    } catch (err) {
+      setLoading(false);
+      console.error(err);
     }
-
-    setLoading(false);
   };
 
   return [loading, createCustomerPortal];

@@ -1,4 +1,4 @@
-import { Element, Stack } from '@codesandbox/components';
+import { Element, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useAppState } from 'app/overmind';
 import React from 'react';
@@ -13,7 +13,7 @@ import { WorkspaceSettings } from './WorkspaceSettings';
 import { PermissionSettings } from '../components/PermissionSettings';
 
 export const UserSettings = () => {
-  const { activeTeam } = useAppState();
+  const { activeTeam, activeTeamInfo } = useAppState();
   const location = useLocation();
 
   return (
@@ -39,18 +39,23 @@ export const UserSettings = () => {
           })}
         >
           <SettingNavigation personal teamId={activeTeam} />
-          <BrowserRouter>
-            <Switch location={location}>
-              <Route
-                component={PermissionSettings}
-                path={dashboardUrls.permissionSettings()}
-              />
-              <Route
-                component={WorkspaceSettings}
-                path={dashboardUrls.settings()}
-              />
-            </Switch>
-          </BrowserRouter>
+
+          {activeTeam === activeTeamInfo.id ? (
+            <BrowserRouter>
+              <Switch location={location}>
+                <Route
+                  component={PermissionSettings}
+                  path={dashboardUrls.permissionSettings()}
+                />
+                <Route
+                  component={WorkspaceSettings}
+                  path={dashboardUrls.settings()}
+                />
+              </Switch>
+            </BrowserRouter>
+          ) : (
+            <Text>Loading...</Text>
+          )}
         </Stack>
       </Element>
     </>
