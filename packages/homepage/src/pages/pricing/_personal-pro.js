@@ -124,8 +124,8 @@ const Gradient = styled.div`
   right: -40%;
   top: -50%;
 
-  background: radial-gradient(50% 50% at 50% 50%, #2c2554 0%, #000000 100%);
-  opacity: 0.6;
+  background: radial-gradient(50% 50% at 50% 50%, #403870 0%, #090909 100%);
+  opacity: 0.8;
   transition: opacity 0.8s ease;
 
   &.hover {

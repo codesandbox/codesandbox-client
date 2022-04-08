@@ -103,8 +103,22 @@ const Gradient = styled.div`
 
   background: radial-gradient(
     50% 50% at 50% 50%,
-    rgba(237, 255, 165, 0.7) 0%,
-    #000000 60.35%
+    hsl(72deg 100% 82%) 0%,
+    hsl(72deg 69% 76%) 3%,
+    hsl(72deg 50% 71%) 6%,
+    hsl(72deg 38% 65%) 9%,
+    hsl(72deg 30% 59%) 12%,
+    hsl(72deg 23% 54%) 15%,
+    hsl(72deg 20% 48%) 19%,
+    hsl(72deg 19% 43%) 22%,
+    hsl(71deg 19% 38%) 26%,
+    hsl(71deg 18% 32%) 30%,
+    hsl(71deg 17% 27%) 34%,
+    hsl(71deg 16% 23%) 39%,
+    hsl(71deg 15% 18%) 44%,
+    hsl(70deg 13% 13%) 51%,
+    hsl(69deg 9% 9%) 59%,
+    hsl(0deg 0% 4%) 77%
   );
   opacity: 0.6;
   transition: opacity 0.8s ease;

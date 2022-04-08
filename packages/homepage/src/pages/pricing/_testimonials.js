@@ -38,7 +38,7 @@ export const Testimonial = () => {
           </div>
         </Column>
         <Column>
-          <Caption css={{ textAlign: 'center' }}>
+          <Caption css={{ textAlign: 'center', marginBottom: 16 }}>
             Accelerating developers and product teams
           </Caption>
 
@@ -179,6 +179,7 @@ const TestimonialTitle = styled.p`
   letter-spacing: -0.01em;
   margin: 0;
   font-size: 18px;
+  margin-bottom: 2px;
 
   @media (min-width: 769px) {
     font-size: 24px;
@@ -187,7 +188,7 @@ const TestimonialTitle = styled.p`
 `;
 
 const TestimonialRole = styled.p`
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.01em;
   margin: 0;
   font-size: 13px;
