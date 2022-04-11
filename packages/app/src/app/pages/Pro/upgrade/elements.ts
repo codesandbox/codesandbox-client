@@ -12,10 +12,17 @@ export const GlobalFonts = createGlobalStyle`
 export const PlanTitle = styled.h1`
   font-family: 'TWKEverett', sans-serif;
   font-weight: 500;
-  font-size: 48px;
-  line-height: 56px;
   letter-spacing: -0.018em;
   transition: all 0.6s ease;
+
+  font-size: 24px;
+  margin-top: 32px;
+
+  @media (min-width: 720px) {
+    font-size: 48px;
+    line-height: 56px;
+    margin-top: 0;
+  }
 `;
 
 export const UpgradeButton = styled(Button)<{
@@ -27,8 +34,11 @@ export const UpgradeButton = styled(Button)<{
   line-height: 48px;
 
   display: inline-block;
-  width: calc(100% / 2 - 6px);
   color: #151515;
+
+  @media (min-width: 720px) {
+    width: calc(100% / 2 - 6px);
+  }
 
   ${({ planType }) => {
     if (planType === 'pro') {
@@ -76,11 +86,17 @@ export const SwitchPlan = styled.button`
   line-height: 16px;
 
   padding: 24px;
-  width: calc(100% / 2 - 6px);
   box-sizing: border-box;
 
   cursor: pointer;
   transition: all 0.2s ease;
+  width: 100%;
+  margin-bottom: 8px;
+
+  @media (min-width: 720px) {
+    width: calc(100% / 2 - 6px);
+    margin-bottom: 0;
+  }
 
   * {
     margin: 0;
@@ -155,9 +171,13 @@ export const BoxPlaceholder = styled.div`
 `;
 
 export const Summary = styled.div`
-  text-align: right;
+  text-align: center;
   color: #808080;
   margin-top: 24px;
+
+  @media (min-width: 720px) {
+    text-align: right;
+  }
 
   p {
     margin: 0 0 4px 0;
@@ -165,6 +185,11 @@ export const Summary = styled.div`
 
   span {
     color: #fff;
+    display: block;
+
+    @media (min-width: 720px) {
+      display: inline;
+    }
   }
 
   small {
