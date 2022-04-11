@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppState } from 'app/overmind';
 import {
   SubscriptionStatus,
@@ -21,10 +21,17 @@ export const ManageSubscription = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const queryParams = useMemo(() => new URLSearchParams(location.search), [
-    location,
-  ]);
-  const [paymentPending] = useState(queryParams.has('payment_pending'));
+  const [paymentPending, setPaymentPending] = useState(false);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+
+    if (queryParams.has('payment_pending')) {
+      setPaymentPending(true);
+      queryParams.delete('payment_pending');
+      history.replace({ search: queryParams.toString() });
+    }
+  }, [location, history]);
 
   const activeSubscription =
     activeTeamInfo?.subscription?.status === SubscriptionStatus.Active;
@@ -49,41 +56,34 @@ export const ManageSubscription = () => {
     return null;
   };
 
-  useEffect(() => {
+  if (!activeSubscription) {
     if (paymentPending) {
-      queryParams.delete('payment_pending');
-      history.replace({ search: queryParams.toString() });
+      return <ProcessingPayment />;
     }
-  }, [paymentPending, queryParams, history]);
 
-  if (paymentPending) {
-    return <ProcessingPayment />;
+    return <Upgrade />;
   }
 
-  if (activeSubscription) {
-    return (
-      <Card>
+  return (
+    <Card>
+      <Stack direction="vertical" gap={2}>
         <Stack direction="vertical" gap={2}>
-          <Stack direction="vertical" gap={2}>
-            <Text size={6} weight="bold" maxWidth="100%">
-              Personal Pro
-            </Text>
+          <Text size={6} weight="bold" maxWidth="100%">
+            Personal Pro
+          </Text>
 
-            <Text size={3} maxWidth="100%" variant="muted">
-              Invoices are sent to
-            </Text>
-            <Text size={3} maxWidth="100%" variant="muted">
-              {user.email}
-            </Text>
+          <Text size={3} maxWidth="100%" variant="muted">
+            Invoices are sent to
+          </Text>
+          <Text size={3} maxWidth="100%" variant="muted">
+            {user.email}
+          </Text>
 
-            <Stack direction="vertical" gap={2} marginTop={4}>
-              {renderDetailsContent()}
-            </Stack>
+          <Stack direction="vertical" gap={2} marginTop={4}>
+            {renderDetailsContent()}
           </Stack>
         </Stack>
-      </Card>
-    );
-  }
-
-  return <Upgrade />;
+      </Stack>
+    </Card>
+  );
 };
