@@ -40,7 +40,9 @@ import {
 import defaultBoilerplates from './boilerplates/default-boilerplates';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import getPreset from './eval';
-import handleExternalResources, { handleEvaluateScript } from './external-resources';
+import handleExternalResources, {
+  handleEvaluateScript,
+} from './external-resources';
 import setScreen, { resetScreen } from './status-screen';
 import { showRunOnClick } from './status-screen/run-on-click';
 import { SCRIPT_VERSION } from '.';
@@ -539,7 +541,6 @@ interface CompileOptions {
 
 async function compile(opts: CompileOptions) {
   const {
-    sandboxId,
     modules,
     externalResources,
     customNpmRegistries = [],
@@ -557,6 +558,8 @@ async function compile(opts: CompileOptions) {
     reactDevTools,
     teamId,
   } = opts;
+
+  let { sandboxId } = opts;
 
   if (firstLoad) {
     // Clear the console on first load, but don't clear the console on HMR updates
@@ -615,6 +618,9 @@ async function compile(opts: CompileOptions) {
     }
 
     const parsedPackageJSON = configurations.package.parsed;
+    const parsedSandboxJSON = configurations.sandbox.parsed;
+
+    sandboxId = opts.sandboxId || parsedSandboxJSON.sandboxId;
 
     dispatch({ type: 'status', status: 'installing-dependencies' });
 
@@ -644,7 +650,6 @@ async function compile(opts: CompileOptions) {
         text: 'Installing Dependencies',
       });
     }
-    const parsedSandboxJSON = configurations.sandbox.parsed;
     const { externals = {} } = parsedSandboxJSON;
     const { manifest, isNewCombination } = await loadDependencies(
       dependencies,
@@ -841,7 +846,10 @@ async function compile(opts: CompileOptions) {
       await handleExternalResources(externalResources);
 
       // 将外部 js 代码添加到 head 中
-      if (parsedSandboxJSON.evaluateJavaScript && typeof parsedSandboxJSON.evaluateJavaScript === "string") {
+      if (
+        parsedSandboxJSON.evaluateJavaScript &&
+        typeof parsedSandboxJSON.evaluateJavaScript === 'string'
+      ) {
         handleEvaluateScript(parsedSandboxJSON.evaluateJavaScript);
       }
       metrics.endMeasure('external-resources', {
