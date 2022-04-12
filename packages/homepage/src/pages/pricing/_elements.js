@@ -41,8 +41,8 @@ export const BoxPlan = styled.a`
   margin: 0 6px;
   text-decoration: none;
 
-  background: #151515;
-  border-top: 24px solid #2a2a2a;
+  background: #242424;
+  border-top: 24px solid #373737;
 
   text-align: center;
   color: #808080;
@@ -72,14 +72,15 @@ export const BoxPlan = styled.a`
 
   p,
   li {
-    max-width: 220px;
+    max-width: 185px;
     margin-left: auto;
     margin-right: auto;
-    font-size: 14px;
-    line-height: 20px;
-    margin-bottom: 24px;
+    font-size: 13px;
+    line-height: 18px;
+    margin-bottom: 0;
 
     @media (min-width: 769px) {
+      max-width: 220px;
       font-size: 16px;
       line-height: 24px;
     }
@@ -90,7 +91,7 @@ export const BoxPlan = styled.a`
   }
 
   > *:not(:last-child) {
-    margin-bottom: 20px;
+    margin-bottom: 32px;
 
     @media (min-width: 769px) {
       margin-bottom: 64px;
@@ -153,13 +154,14 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
   );
 })`
   .plan {
-    font-size: 32px;
+    font-size: 28px;
     font-family: 'TWKEverett', sans-serif;
     font-weight: 500;
     line-height: 1;
     margin-bottom: 8px;
 
     @media (min-width: 769px) {
+      font-size: 32px;
       margin-bottom: 1.0875rem;
     }
   }
@@ -168,15 +170,24 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
     font-family: 'TWKEverett', sans-serif;
     font-weight: 500;
     line-height: 1;
-    font-size: 56px;
+    font-size: 48px;
+    margin-bottom: 8px;
 
     @media (min-width: 769px) {
+      margin-bottom: 12px;
+      font-size: 56px;
       font-size: 64px;
     }
   }
 
   .caption {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 16px;
+    max-width: 200px;
+
+    @media (min-width: 769px) {
+      max-width: 220px;
+      font-size: 13px;
+    }
   }
 `;

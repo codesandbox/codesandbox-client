@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppState } from 'app/overmind';
 import {
   SubscriptionStatus,
@@ -21,18 +21,17 @@ export const ManageSubscription = () => {
   const location = useLocation();
   const history = useHistory();
   const { activeTeamInfo: team, activeWorkspaceAuthorization } = useAppState();
-
-  const queryParams = useMemo(() => new URLSearchParams(location.search), [
-    location,
-  ]);
-  const [paymentPending] = useState(queryParams.has('payment_pending'));
+  const [paymentPending, setPaymentPending] = useState(false);
 
   useEffect(() => {
-    if (paymentPending) {
+    const queryParams = new URLSearchParams(location.search);
+
+    if (queryParams.has('payment_pending')) {
+      setPaymentPending(true);
       queryParams.delete('payment_pending');
       history.replace({ search: queryParams.toString() });
     }
-  }, [paymentPending, queryParams, history]);
+  }, [location, history]);
 
   if (activeWorkspaceAuthorization !== TeamMemberAuthorization.Admin) {
     return null;

@@ -342,6 +342,7 @@ export const Plans = () => {
                       <h3>{item.title}</h3>
                       <p>{item.caption}</p>
                     </td>
+
                     <td className="plan__free column__desktop">
                       <CheckOrNot option={item.free} />
                     </td>
@@ -447,13 +448,15 @@ const FeatureListItem = styled.li`
 
     color: #c5c5c5;
     margin: 0;
+    list-style-color: #c5c5c5;
 
     font-size: 18px;
     line-height: 24px;
     transition: all 0.3s ease;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 
     @media (min-width: 769px) {
+      margin-bottom: 8px;
       font-size: 24px;
       line-height: 28px;
     }
@@ -470,7 +473,7 @@ const FeatureListItem = styled.li`
 
 const Table = styled.table`
   @media (min-width: 769px) {
-    table-layout: initial;
+    table-layout: fixed;
   }
 
   td,
@@ -481,16 +484,15 @@ const Table = styled.table`
 
     @media (min-width: 769px) {
       padding: 32px 0;
-      min-width: 200px;
     }
   }
 
   td:first-child {
     text-align: left;
-    min-width: 160px;
+    width: 50%;
 
     @media (min-width: 769px) {
-      min-width: auto;
+      max-width: 0;
     }
 
     p {
@@ -540,6 +542,7 @@ const Table = styled.table`
       font-weight: normal;
       font-size: 24px;
       color: var(--plan, #808080);
+      margin-bottom: 12px;
 
       &:only-child {
         margin: 0;
@@ -551,7 +554,7 @@ const Table = styled.table`
       font-size: 16px;
       height: 40px;
       padding: 0 16px;
-      line-height: 40px;
+      line-height: 37px;
       white-space: nowrap;
       text-decoration: none;
       text-align: center;
@@ -591,7 +594,7 @@ const Table = styled.table`
     @media (min-width: 769px) {
       padding-top: 120px;
       padding-bottom: 47px;
-      top: -60px;
+      top: -62px;
     }
 
     span {
@@ -625,8 +628,8 @@ const Table = styled.table`
     line-height: 18px;
 
     @media (min-width: 769px) {
-      font-size: 20px;
-      line-height: 28px;
+      font-size: 16px;
+      line-height: 24px;
     }
   }
 
@@ -675,6 +678,7 @@ const Table = styled.table`
       border: 0;
       color: inherit;
       text-align: center;
+      margin: auto;
 
       font-family: 'TWKEverett', sans-serif;
     }

@@ -7,7 +7,6 @@ import { useCreateCustomerPortal } from '../../../../../../Pro/upgrade/utils';
 
 export const Stripe = () => {
   const { activeTeam } = useAppState();
-
   const [loading, createCustomerPortal] = useCreateCustomerPortal(activeTeam);
 
   return (

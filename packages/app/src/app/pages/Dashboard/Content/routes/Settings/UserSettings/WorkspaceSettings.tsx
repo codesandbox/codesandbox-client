@@ -179,7 +179,7 @@ export const WorkspaceSettings = () => {
                 css={{ width: 'calc(100% - 64px)' }}
               >
                 <Stack justify="space-between">
-                  <Text size={6} weight="bold" maxWidth="100%" variant="muted">
+                  <Text size={6} weight="bold" maxWidth="100%" variant="body">
                     {user.username}
                   </Text>
                   <IconButton
@@ -280,7 +280,7 @@ export const WorkspaceSettings = () => {
               css={{ width: 'calc(100% - 64px)' }}
             >
               <Stack justify="space-between">
-                <Text size={6} weight="bold" maxWidth="100%" variant="muted">
+                <Text size={6} weight="bold" maxWidth="100%" variant="body">
                   {user.username}
                 </Text>
                 <IconButton

@@ -165,7 +165,14 @@ export const Switcher: React.FC<{
         </MenuList>
       </Menu>
 
-      <Stack>
+      <Stack
+        css={{
+          display: 'none',
+          '@media (min-width: 720px)': {
+            display: 'flex',
+          },
+        }}
+      >
         {!isPersonalWorkspace && (
           <>
             {activeTeamInfo.users.map((user, index) => {
@@ -243,12 +250,18 @@ const WorkspaceName = styled.p`
   font-family: 'TWKEverett', sans-serif;
   font-style: normal;
   font-weight: 500;
-  font-size: 32px;
-  line-height: 42px;
+
   margin: 0;
   position: relative;
   text-align: left;
   color: #fff;
+
+  font-size: 24px;
+
+  @media (min-width: 720px) {
+    font-size: 32px;
+    line-height: 42px;
+  }
 
   & span::-moz-selection {
     -webkit-text-stroke: 1px #fff;
@@ -306,24 +319,11 @@ const WorkspaceSeats = styled.div`
 const MenuList = styled(Menu.List)`
   &[data-reach-menu-list][data-component='MenuList'] {
     background-color: #373737;
-    margin-top: 36px;
-    margin-left: -4px;
+    margin-top: 10px;
+    margin-left: -2px;
     border: 0;
     border-radius: 0;
     overflow: visible;
-
-    &:before {
-      content: '';
-      border: 15px solid transparent;
-      border-bottom: 15px solid #373737;
-      display: block;
-      width: 0;
-      height: 0;
-      position: absolute;
-      left: 50%;
-      top: -30px;
-      transform: translateX(-50%);
-    }
   }
 `;
 

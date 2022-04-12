@@ -12,6 +12,7 @@ export const ProcessingPayment = () => {
     dashboard: { getTeams },
   } = useActions();
   const [counter, setCounter] = useState(-1);
+  const [loading, setLoading] = useState('...');
   const { notificationToast } = useEffects();
 
   useEffect(() => {
@@ -32,11 +33,25 @@ export const ProcessingPayment = () => {
     return () => clearInterval(timer);
   }, [counter, getActiveTeamInfo, getTeams, notificationToast]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(prev => {
+        if (prev.length === 3) {
+          return '';
+        }
+
+        return prev + '.';
+      });
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   return (
     <Card>
       <Stack direction="vertical" gap={2}>
         <Text size={6} weight="bold" maxWidth="100%">
-          Processing...
+          Processing{loading}
         </Text>
 
         <Text size={3} variant="muted">
