@@ -35,9 +35,11 @@ export const UpgradeButton = styled(Button)<{
 
   display: inline-block;
   color: #151515;
+  margin-bottom: 8px;
 
   @media (min-width: 720px) {
     width: calc(100% / 2 - 6px);
+    margin-bottom: 0;
   }
 
   ${({ planType }) => {

@@ -241,12 +241,18 @@ export const ProUpgrade = () => {
                     : 'You have an active Team Pro subscription.'}
                 </PlanTitle>
 
-                <Stack gap={3}>
+                <Stack
+                  gap={3}
+                  css={{
+                    display: 'block',
+                    '@media (min-width: 720px)': { display: 'flex' },
+                  }}
+                >
                   <UpgradeButton
                     planType={workspaceType}
                     type="button"
                     onClick={createCustomerPortal}
-                    disabled={!isAdmin}
+                    disabled={!isAdmin || loadingCustomerPortal}
                   >
                     {loadingCustomerPortal
                       ? 'Loading...'
@@ -371,7 +377,7 @@ export const ProUpgrade = () => {
                         recurring_interval: interval as string,
                       })
                     }
-                    disabled={!isAdmin || isPro}
+                    disabled={!isAdmin || isPro || loadingCheckout}
                   >
                     {loadingCheckout ? 'Loading...' : 'Proceed to checkout'}
                   </UpgradeButton>

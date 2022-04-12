@@ -21,7 +21,7 @@ export const Stripe = () => {
         {loading ? 'Loading...' : 'Manage subscription'}
       </Link>
 
-      {team.subscription.cancelAt && (
+      {!loading && team.subscription.cancelAt && (
         <Text size={3} css={css({ color: '#F7CC66' })}>
           Your subscription expires on{' '}
           {format(new Date(team.subscription.cancelAt), 'PP')}.{' '}
@@ -36,7 +36,7 @@ export const Stripe = () => {
             })}
             onClick={createCustomerPortal}
           >
-            {loading ? 'Loading...' : 'Reactivate subscription'}
+            Reactivate subscription
           </Button>
         </Text>
       )}
