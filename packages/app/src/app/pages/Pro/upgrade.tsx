@@ -90,7 +90,7 @@ export const ProUpgrade = () => {
     return team.id === personalWorkspaceId;
   })!;
   const workspaceType =
-    (activeTeamInfo.id === personalWorkspaceId ? 'pro' : 'teamPro') ?? 'pro';
+    (activeTeamInfo?.id === personalWorkspaceId ? 'pro' : 'teamPro') ?? 'pro';
 
   const workspacesList = [
     personalWorkspace,
