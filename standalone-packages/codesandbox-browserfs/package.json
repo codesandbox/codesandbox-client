@@ -114,7 +114,7 @@
     "install-dependencies": "yarn"
   },
   "dependencies": {
-    "async": "~2.6.1",
+    "async": "~3.2.2",
     "events": "^3.0.0",
     "gitignore-parser": "^0.0.2",
     "pako": "~1.0.6"
