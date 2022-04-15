@@ -119,6 +119,12 @@ function build(previousSizeMap) {
       process.env.NODE_ENV === 'production' ? 'production' : 'development'
     } build...`
   );
+
+  const { SANDBOX_ONLY } = process.env;
+  if (SANDBOX_ONLY) {
+    delete config.devtool;
+  }
+
   let compiler = webpack(config);
   const start = Date.now();
   compiler.run((err, stats) => {
@@ -134,6 +140,9 @@ function build(previousSizeMap) {
         chunks: false,
         colors: true,
       })
+      `Built ${stats.hasWarnings() ? 'with warnings ' : ''}in ${
+        took / 1000
+      }s.`
     );
 
     const info = stats.toJson();
