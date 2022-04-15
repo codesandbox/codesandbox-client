@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+console.log('test......', process.env.AIRTABLE_PRIVATE_API_KEY)
+
 module.exports = {
   siteMetadata: {
     title: `CodeSandbox`,
@@ -66,7 +68,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-google-tagmanager`,
       options: {
-        id: "GTM-T3L6RFK",
+        id: "process.env.AIRTABLE_PRIVATE_API_KEY",
       },
     },
     {
