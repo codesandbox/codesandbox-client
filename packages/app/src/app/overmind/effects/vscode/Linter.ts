@@ -114,6 +114,7 @@ export class Linter {
       }
       if (kind[1] === 'less') return 'less';
       if (kind[1] === 'md') return 'markdown';
+      if (kind[1] === 'cljs') return 'clojurescript';
       if (/jsx?$/.test(kind[1])) return 'javascript';
       if (/tsx?$/.test(kind[1])) return 'typescript';
     }
