@@ -5,6 +5,22 @@ const g = typeof window === 'undefined' ? self : window;
 
 const hasGlobalDeclaration = /^const global/m;
 
+const V8_VERSION = getV8Version();
+function getV8Version(): string {
+  const userAgent = navigator?.userAgent;
+  if (userAgent) {
+    let match = userAgent.match(/Edge\/(\d+)/);
+    // @ts-ignore
+    if (!match || match[1] >= 74) {
+      match = userAgent.match(/Chrome\/(\d+)/);
+      if (match) {
+        return match[1];
+      }
+    }
+  }
+  return '0';
+}
+
 /* eslint-disable no-unused-vars */
 export default function (
   code: string,
