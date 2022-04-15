@@ -79,16 +79,36 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <SearchInputGroup />
 
         <Stack align="center" gap={2}>
-          <Button
-            variant="primary"
-            css={css({ width: 'auto', paddingX: 3, marginLeft: 4 })}
-            disabled={activeWorkspaceAuthorization === 'READ'}
-            onClick={() => {
-              openCreateSandboxModal({});
-            }}
-          >
-            Create Sandbox
-          </Button>
+        {isFeatureFlagBeta ? (
+            <a
+              href="/p/dashboard/"
+              css={css({
+                fontSize: '13px',
+                textAlign: 'center',
+                width: '100%',
+                display: 'block',
+                color: '#999999',
+                textDecoration: 'none',
+              })}
+            >
+               <span>Go to Projects</span>
+            </a>
+          ) : (
+            <Link
+              css={css({
+                fontSize: '13px',
+                textAlign: 'center',
+                width: '100%',
+                display: 'block',
+                color: '#999999',
+                textDecoration: 'none',
+              })}
+              href="/waitlist"
+            >
+              <Icon name="external" size={14} marginRight={2} />
+              Join the waitlist
+            </Link>
+          )}
 
           {user && <Notifications />}
 
@@ -108,9 +128,11 @@ export const Header: React.FC<HeaderProps> = React.memo(
 );
 
 const SearchInputGroup = () => {
-  const { activeTeam } = useAppState();
+  const { activeWorkspaceAuthorization, user, dashboard } = useAppState();
 
-  const history = useHistory();
+    const isFeatureFlagBeta = !!dashboard.featureFlags.find(
+      e => e.name === 'beta'
+    );
   const location = useLocation();
 
   const [query, setQuery] = useState(

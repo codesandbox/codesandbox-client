@@ -1,3 +1,0 @@
-ISO9660 has a limit of 7 nested directories.
-RockRidge has a hacky way of getting around it.
-This file is to test that this functionality does not break.
