@@ -254,7 +254,7 @@ const WorkspaceName = styled.p`
   margin: 0;
   position: relative;
   text-align: left;
-  color: #fff;
+  color: #e5e5e5;
 
   font-size: 24px;
 
@@ -264,13 +264,13 @@ const WorkspaceName = styled.p`
   }
 
   & span::-moz-selection {
-    -webkit-text-stroke: 1px #fff;
+    -webkit-text-stroke: 1px #e5e5e5;
     color: transparent;
     background: transparent;
   }
 
   & span::selection {
-    -webkit-text-stroke: 1px #fff;
+    -webkit-text-stroke: 1px #e5e5e5;
     color: transparent;
     background: transparent;
   }
