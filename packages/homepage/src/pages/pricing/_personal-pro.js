@@ -89,7 +89,7 @@ export const PersonalPro = ({ plans }) => {
               caption={`per month, billed annually or ${formatCurrent(
                 plans.pro.month
               )}
-          month-on-month.`}
+              per month.`}
             />
 
             <BoxPlanButton>Upgrade to Personal Pro</BoxPlanButton>

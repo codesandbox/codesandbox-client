@@ -148,7 +148,7 @@ export const ProUpgrade = () => {
         unitAmount: prices[workspaceType].month.unitAmount * amountPaidMember,
         currency: prices[workspaceType].month.currency,
       }),
-      label: 'per month',
+      label: 'per editor per month',
     },
   };
 
