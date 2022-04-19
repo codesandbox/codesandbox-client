@@ -26,6 +26,7 @@ import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
+import { PilotPaymentModal } from './PilotPaymentModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
@@ -51,6 +52,10 @@ const modals = {
   preferences: {
     Component: PreferencesModal,
     width: 900,
+  },
+  pilotPayment: {
+    Component: PilotPaymentModal,
+    width: 600,
   },
   newSandbox: {
     Component: CreateSandbox,

@@ -375,10 +375,8 @@ export const WorkspacePlanSelection: React.FC<{
                 variant="active"
                 onClick={e => {
                   e.preventDefault();
-                  modalOpened({
-                    modal: 'preferences',
-                    itemId: 'paymentInfo',
-                  });
+
+                  modalOpened({ modal: 'pilotPayment' });
                 }}
               >
                 update your payment details
