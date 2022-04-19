@@ -345,7 +345,7 @@ async function initializeManager(
       options.scopeWhitelist = registry.enabledScopes;
     }
 
-    if (!registry.proxyEnabled) {
+    if (registry.proxyEnabled) {
       // With our custom proxy on the server we want to handle downloading
       // the tarball. So we proxy it.
       options.provideTarballUrl = (name: string, version: string) =>
