@@ -23,7 +23,10 @@ import { NpmRegistry } from '@codesandbox/common/lib/types';
 import { Manager, TranspiledModule } from 'sandpack-core';
 
 import { loadDependencies, NPMDependencies } from 'sandpack-core/lib/npm';
-import { NpmRegistryFetcher } from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
+import {
+  NpmRegistryFetcher,
+  NpmRegistryOpts,
+} from 'sandpack-core/lib/npm/dynamic/fetch-protocols/npm-registry';
 import {
   evalBoilerplates,
   findBoilerplate,
@@ -336,15 +339,22 @@ async function initializeManager(
   customNpmRegistries.forEach(registry => {
     const cleanUrl = registry.registryUrl.replace(/\/$/, '');
 
-    const options = registry.limitToScopes
-      ? {
-          scopeWhitelist: registry.enabledScopes,
-          // With our custom proxy on the server we want to handle downloading
-          // the tarball. So we proxy it.
-          provideTarballUrl: (name: string, version: string) =>
-            `${cleanUrl}/${name.replace('/', '%2f')}/${version}`,
-        }
-      : {};
+    const options: NpmRegistryOpts = {};
+
+    if (registry.limitToScopes) {
+      options.scopeWhitelist = registry.enabledScopes;
+    }
+
+    if (!registry.proxyEnabled) {
+      // With our custom proxy on the server we want to handle downloading
+      // the tarball. So we proxy it.
+      options.provideTarballUrl = (name: string, version: string) =>
+        `${cleanUrl}/${name.replace('/', '%2f')}/${version}`;
+    }
+
+    if (registry.registryAuthToken) {
+      options.authToken = registry.registryAuthToken;
+    }
 
     const protocol = new NpmRegistryFetcher(cleanUrl, options);
 
