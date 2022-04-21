@@ -358,6 +358,8 @@ export type NpmRegistry = {
   enabledScopes: string[];
   limitToScopes: boolean;
   registryUrl: string;
+  proxyEnabled?: boolean;
+  registryAuthToken?: string;
 };
 
 export enum CommentsFilterOption {
