@@ -4,7 +4,14 @@ import configurations from './configuration';
 
 class SolidTemplate extends Template {
   getEntries(configurationFiles: ParsedConfigurationFiles) {
-    return super.getEntries(configurationFiles);
+    const entries = super.getEntries(configurationFiles);
+    entries.push(
+      '/src/index.tsx',
+      '/src/index.jsx',
+      '/src/App.tsx',
+      '/src/App.jsx'
+    );
+    return entries;
   }
 
   getHTMLEntries(): Array<string> {
@@ -27,6 +34,11 @@ export default new SolidTemplate(
     distDir: 'dist',
     main: true,
     popular: true,
-    mainFile: ['/src/main.js', '/src/main.ts'],
+    mainFile: [
+      '/src/index.tsx',
+      '/src/index.jsx',
+      '/src/App.tsx',
+      '/src/App.jsx',
+    ],
   }
 );
