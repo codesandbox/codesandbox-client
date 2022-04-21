@@ -8,7 +8,6 @@ import sassTranspiler from '../../transpilers/sass';
 import rawTranspiler from '../../transpilers/raw';
 import stylusTranspiler from '../../transpilers/stylus';
 import lessTranspiler from '../../transpilers/less';
-import tsTranspiler from '../../transpilers/typescript';
 import coffeeTranspiler from '../../transpilers/coffee';
 import noopTranspiler from '../../transpilers/noop';
 
@@ -46,6 +45,18 @@ export default function initialize() {
           deps['@babel/core'] = '^7.15.8';
         }
 
+        if (!deps['@babel/plugin-syntax-dynamic-import']) {
+          deps['@babel/plugin-syntax-dynamic-import'] = '^7.8.3';
+        }
+
+        if (!deps['@babel/runtime']) {
+          deps['@babel/runtime'] = '^7.17.9';
+        }
+
+        if (!deps['@babel/preset-typescript']) {
+          deps['@babel/preset-typescript'] = '^7.16.7';
+        }
+
         // No babel 6 support
         delete deps['babel-core'];
 
@@ -56,27 +67,21 @@ export default function initialize() {
 
   solidPreset.registerTranspiler(module => /\.coffee$/.test(module.path), [
     { transpiler: coffeeTranspiler },
-    { transpiler: babelTranspiler },
+    { transpiler: babelTranspiler, options: { isV7: true } },
   ]);
 
-  solidPreset.registerTranspiler(module => /\.(m|c)?jsx?$/.test(module.path), [
-    {
-      transpiler: babelTranspiler,
-      options: {
-        dynamicCSSModules: true,
+  solidPreset.registerTranspiler(
+    module => /\.(m|c)?(t|j)sx?$/.test(module.path),
+    [
+      {
+        transpiler: babelTranspiler,
+        options: {
+          isV7: true,
+          dynamicCSSModules: true,
+        },
       },
-    },
-  ]);
-
-  solidPreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
-    { transpiler: tsTranspiler },
-    {
-      transpiler: babelTranspiler,
-      options: {
-        dynamicCSSModules: true,
-      },
-    },
-  ]);
+    ]
+  );
 
   solidPreset.registerTranspiler(module => /\.css$/.test(module.path), [
     { transpiler: postcssTranspiler },
