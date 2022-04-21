@@ -13,6 +13,7 @@ import {
   custom,
   reason,
   esmReact,
+  solid,
 } from '@codesandbox/common/lib/templates';
 
 import { isPreact10 } from '@codesandbox/common/lib/utils/is-preact-10';
@@ -29,6 +30,7 @@ import cxjsPreset from './presets/cxjs';
 import reasonPreset from './presets/reason';
 import dojoPreset from './presets/dojo';
 import customPreset from './presets/custom';
+import solidPreset from './presets/solid';
 
 export default async function getPreset(template: string, pkg: PackageJSON) {
   switch (template) {
@@ -63,6 +65,8 @@ export default async function getPreset(template: string, pkg: PackageJSON) {
       return cxjsPreset();
     case dojo.name:
       return dojoPreset();
+    case solid.name:
+      return solidPreset();
     case custom.name:
       return customPreset();
     default:
