@@ -95,13 +95,18 @@ export default {
   },
   storage: {
     get(key: string): unknown | null {
-      const value = localStorage.getItem(key);
+      try {
+        const value = localStorage.getItem(key);
 
-      if (value) {
-        return JSON.parse(value);
+        if (value) {
+          return JSON.parse(value);
+        }
+
+        return null;
+      } catch (err) {
+        console.error(err);
+        return null;
       }
-
-      return null;
     },
     set(key: string, value: any) {
       localStorage.setItem(key, JSON.stringify(value));

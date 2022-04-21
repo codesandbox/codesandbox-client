@@ -7,6 +7,7 @@ import {
 import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 
 import { ProfileImage } from './elements';
 
@@ -18,7 +19,12 @@ export const UserMenu: FunctionComponent & {
     signOutClicked,
     files: { gotUploadedFiles },
   } = useActions();
-  const { user, activeTeamInfo, activeTeam } = useAppState();
+  const {
+    user,
+    activeTeamInfo,
+    activeTeam,
+    activeWorkspaceAuthorization,
+  } = useAppState();
 
   if (!user) {
     return null;
@@ -27,7 +33,9 @@ export const UserMenu: FunctionComponent & {
   const showCurator = user.curatorAt;
 
   const showBecomePro = !activeTeamInfo?.subscription;
-  const showManageSubscription = activeTeamInfo?.subscription;
+  const showManageSubscription =
+    activeTeamInfo?.subscription &&
+    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
 
   return (
     <Element>

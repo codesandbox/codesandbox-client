@@ -17,11 +17,12 @@ export const PlanTitle = styled.h1`
 
   font-size: 24px;
   margin-top: 32px;
+  color: #e5e5e5;
+  margin-top: 40px;
 
   @media (min-width: 720px) {
     font-size: 48px;
     line-height: 56px;
-    margin-top: 0;
   }
 `;
 
@@ -47,6 +48,7 @@ export const UpgradeButton = styled(Button)<{
       return css`
         background: #ac9cff;
 
+        &:focus,
         &:hover {
           background: #7b61ff !important;
         }
@@ -57,6 +59,7 @@ export const UpgradeButton = styled(Button)<{
       return css`
         background: #edffa5;
 
+        &:focus,
         &:hover {
           background: #dcff50 !important;
         }

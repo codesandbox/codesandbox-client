@@ -323,7 +323,7 @@ const TeamPro = ({ plan, ...props }) => {
         caption={`per editor per month, billed annually or ${formatCurrent(
           plan.month
         )}
-          month-on-month.`}
+        per month.`}
       />
 
       <ul>
