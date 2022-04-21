@@ -257,7 +257,7 @@ const config: ConfigurationFile = {
     if (template === 'solid') {
       return JSON.stringify(
         {
-          presets: ['env', 'solid'],
+          presets: ['env', 'typescript', 'babel-preset-solid'],
           plugins: [
             '@babel/plugin-syntax-dynamic-import',
             'solid-refresh/babel',
