@@ -27,6 +27,7 @@ import {
   VuePressIcon,
   UnibitIcon,
   DocusaurusIcon,
+  SolidIcon,
 } from 'template-icons';
 
 import {
@@ -60,6 +61,7 @@ import {
   docusaurus,
   TemplateType,
   remix,
+  solid,
 } from '.';
 
 export default function getIcon(theme: TemplateType) {
@@ -122,6 +124,8 @@ export default function getIcon(theme: TemplateType) {
       return UnibitIcon;
     case remix.name:
       return RemixIcon;
+    case solid.name:
+      return SolidIcon;
 
     default:
       return ReactIcon;
