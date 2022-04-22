@@ -285,6 +285,7 @@ const DEFAULT_RULES = {
     'warn',
     {
       allowAllCaps: true,
+      allowNamespace: true,
       ignore: [],
     },
   ],
