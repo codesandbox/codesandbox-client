@@ -14,8 +14,8 @@ import { sortBy } from 'lodash-es';
 import { AnimatePresence, motion } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation, useHistory } from 'react-router-dom';
+import { formatCurrency } from 'app/utils/currency';
 import {
-  formatCurrent,
   useCreateCheckout,
   useCreateCustomerPortal,
   Interval,
@@ -128,24 +128,26 @@ export const ProUpgrade = () => {
 
   const summary = {
     year: {
-      price: formatCurrent({
+      price: formatCurrency({
         currency: prices[workspaceType].year.currency,
-        unitAmount: prices[workspaceType].year.unitAmount / 12,
+        amount: prices[workspaceType].year.unitAmount / 12,
       }),
-      total: formatCurrent({
-        unitAmount:
-          (prices[workspaceType].year.unitAmount / 12) * amountPaidMember,
+      total: formatCurrency({
+        amount: (prices[workspaceType].year.unitAmount / 12) * amountPaidMember,
         currency: prices[workspaceType].year.currency,
       }),
-      label: `per month, ${formatCurrent({
-        unitAmount: prices[workspaceType].year.unitAmount * amountPaidMember,
+      label: `per month, ${formatCurrency({
+        amount: prices[workspaceType].year.unitAmount * amountPaidMember,
         currency: prices[workspaceType].year.currency,
       })} annually`,
     },
     month: {
-      price: formatCurrent(prices[workspaceType].month),
-      total: formatCurrent({
-        unitAmount: prices[workspaceType].month.unitAmount * amountPaidMember,
+      price: formatCurrency({
+        amount: prices[workspaceType].month.unitAmount,
+        currency: prices[workspaceType].month.currency,
+      }),
+      total: formatCurrency({
+        amount: prices[workspaceType].month.unitAmount * amountPaidMember,
         currency: prices[workspaceType].month.currency,
       }),
       label: 'per editor per month',
@@ -299,7 +301,12 @@ export const ProUpgrade = () => {
                     </Stack>
                     <h3 className="price">
                       {summary.year.price}{' '}
-                      <span>{formatCurrent(prices[workspaceType].month)}</span>
+                      <span>
+                        {formatCurrency({
+                          amount: prices[workspaceType].month.unitAmount,
+                          currency: prices[workspaceType].month.currency,
+                        })}
+                      </span>
                     </h3>
                     <p className="caption">
                       per editor per month, billed annually

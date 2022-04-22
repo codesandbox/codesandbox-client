@@ -31,7 +31,7 @@ export const usePricing = () => {
   return data;
 };
 
-export const formatCurrent = ({ currency, unit_amount }) => {
+export const formatCurrency = ({ currency, unit_amount }) => {
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     minimumFractionDigits: 0,

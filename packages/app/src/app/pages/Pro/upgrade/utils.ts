@@ -4,17 +4,6 @@ import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
 export type WorkspaceType = 'pro' | 'teamPro';
 export type Interval = 'month' | 'year';
-type Price = { currency: string; unitAmount: number };
-
-export const formatCurrent = ({ currency, unitAmount }: Price) => {
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-    currency,
-  });
-  return formatter.format(unitAmount / 100);
-};
 
 export const useCreateCheckout = (): [
   boolean,
