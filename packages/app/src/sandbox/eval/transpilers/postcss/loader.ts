@@ -1,9 +1,16 @@
 import postcss, { ProcessOptions } from 'postcss';
 import postcssImportPlugin from 'postcss-import';
+import postcssUrlPlugin from 'postcss-url';
 import { join } from 'path';
 import { isDependencyPath } from 'sandbox/eval/utils/is-dependency-path';
 
 import { LoaderContext, TranspiledModule } from 'sandpack-core';
+import hash from 'hash-sum';
+import { getBase64FromContent } from '../base64';
+
+export const generateId = () => {
+  return `$csb__${hash(`${Date.now()}-${Math.random() * 1000}`)}`;
+};
 
 async function resolveCSSFile(
   loaderContext: LoaderContext,
@@ -36,10 +43,22 @@ async function resolveCSSFile(
   return loaderContext.resolveTranspiledModuleAsync(fullPath);
 }
 
+function getPackageName(filepath: string): string {
+  const parts = filepath.split('/');
+  parts.shift();
+  parts.shift();
+  if (parts[0][0] === '@') {
+    return `${parts[0]}/${parts[1]}`;
+  }
+  return parts[0];
+}
+
 export default async function (
   code: string,
   loaderContext: LoaderContext
 ): Promise<{ transpiledCode: string; sourceMap: any }> {
+  // map hash to url
+  const collectedUrls: Map<string, string> = new Map();
   const plugins = [
     postcssImportPlugin({
       resolve: async (id: string, root: string) => {
@@ -57,6 +76,17 @@ export default async function (
         );
 
         return tModule.module.code;
+      },
+    }),
+    postcssUrlPlugin({
+      url: url => {
+        if (url.absolutePath && !url.url.startsWith('data')) {
+          const id = generateId();
+          collectedUrls.set(id, url.absolutePath);
+          return `${id}${url.search ?? ''}${url.hash ?? ''}`;
+        }
+
+        return url.url;
       },
     }),
   ];
@@ -86,7 +116,50 @@ export default async function (
     );
   }
 
+  let transpiledCode = result.css;
   const map = result.map && result.map.toJSON();
 
-  return { transpiledCode: result.css, sourceMap: map };
+  async function _loadModule(filepath: string): Promise<string> {
+    // We load straight from the unpkg link if it's a node_module
+    if (filepath.startsWith('/node_modules')) {
+      const packageName = getPackageName(filepath);
+      const packageRoot = `/node_modules/${packageName}`;
+      const pkgJsonModule = await loaderContext.resolveTranspiledModuleAsync(
+        `${packageRoot}/package.json`,
+        {
+          isAbsolute: true,
+        }
+      );
+      const pkgVersion = JSON.parse(pkgJsonModule.module.code).version;
+      const remainingPath = filepath.replace(packageRoot, '');
+      return `https://unpkg.com/${packageName}@${pkgVersion}/${remainingPath}`;
+    }
+
+    // We load from a base64 string
+    const module = await loaderContext.resolveTranspiledModuleAsync(filepath, {
+      isAbsolute: true,
+    });
+    return getBase64FromContent(module.module.code, module.module.path);
+  }
+
+  const loadCache: Map<string, Promise<string>> = new Map();
+  function loadModule(filepath: string): Promise<string> {
+    let promise: Promise<string> = loadCache.get(filepath);
+    if (!promise) {
+      promise = _loadModule(filepath);
+      loadCache.set(filepath, promise);
+    }
+    return promise;
+  }
+
+  await Promise.all(
+    Array.from(collectedUrls.entries()).map(async ([hashKey, filepath]) => {
+      const fullUrl = await loadModule(filepath);
+      transpiledCode = transpiledCode.replace(hashKey, fullUrl);
+    })
+  );
+
+  // console.log(loaderContext.path, collectedUrls);
+
+  return { transpiledCode, sourceMap: map };
 }

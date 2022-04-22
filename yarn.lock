@@ -5747,6 +5747,14 @@
   resolved "https://registry.yarnpkg.com/@types/phoenix/-/phoenix-1.4.0.tgz#e8414a225c6c7e310cd6e2db5a2156fbbbf862dd"
   integrity sha512-bsuR5rj81NxgJ1w+Z5mgHlcIFBJKa2ChtbFbd1xDXxNJaBqYocAL53vsQ9T/CIZOSEs4A3WK7VMvzOOsG5cbJQ==
 
+"@types/postcss-url@8.0.2":
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/@types/postcss-url/-/postcss-url-8.0.2.tgz#739be2912bb123f69d71cb690a45178d89d76930"
+  integrity sha512-5eMpnD6C02ZerfE/Omk1C/P+agin6jm8OBVP/7mQmRijhqJTPK9CR2k6p2Qi+9ux1ZDeVW/xYerxQqt2DqBrEg==
+  dependencies:
+    "@types/node" "*"
+    postcss "7.x.x"
+
 "@types/prettier@^1.19.0":
   version "1.19.1"
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-1.19.1.tgz#33509849f8e679e4add158959fdb086440e9553f"
@@ -11613,6 +11621,11 @@ csstype@^3.0.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.3.tgz#2b410bbeba38ba9633353aff34b05d9755d065f8"
   integrity sha512-jPl+wbWPOWJ7SXsWyqGRk3lGecbar0Cb0OvZF/r/ZU011R4YqiRehgkQ9p4eQfo9DSDLqLL3wHwfxeJiuIsNag==
 
+cuint@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/cuint/-/cuint-0.2.2.tgz#408086d409550c2631155619e9fa7bcadc3b991b"
+  integrity sha1-QICG1AlVDCYxFVYZ6fp7ytw7mRs=
+
 currently-unhandled@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/currently-unhandled/-/currently-unhandled-0.4.1.tgz#988df33feab191ef799a61369dd76c17adf957ea"
@@ -13598,7 +13611,7 @@ esprima@^4.0.0, esprima@^4.0.1, esprima@~4.0.0:
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
   integrity sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==
 
-esquery@1.0.1, esquery@^1.0.0, esquery@^1.0.1:
+esquery@^1.0.0, esquery@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.0.1.tgz#406c51658b1f5991a5f9b62b1dc25b00e3e5c708"
   integrity sha512-SmiyZ5zIWH9VM+SRUReLS5Q8a7GxtRdxEBVZpm98rJM7Sb+A9DVCndXfkeFUd3byderg+EbDkfnevfCwynWaNA==
@@ -22467,6 +22480,11 @@ mime@^2.0.3, mime@^2.2.0, mime@^2.4.2, mime@^2.4.4:
   resolved "https://registry.yarnpkg.com/mime/-/mime-2.4.4.tgz#bd7b91135fc6b01cde3e9bae33d659b63d8857e5"
   integrity sha512-LRxmNwziLPT828z+4YkNzloCFC2YM4wrB99k+AV5ZbEyfGNWfG8SO1FUXLmLDBSo89NrJZ4DIWeLjy1CHGhMGA==
 
+mime@^2.3.1:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-2.6.0.tgz#a2a682a95cd4d0cb1d6257e28f83da7e35800367"
+  integrity sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==
+
 mimer@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/mimer/-/mimer-0.3.2.tgz#0b83aabdf48eaacfd2e093ed4c0ed3d38eda8073"
@@ -25121,6 +25139,11 @@ physical-cpu-count@^2.0.0:
   resolved "https://registry.yarnpkg.com/physical-cpu-count/-/physical-cpu-count-2.0.0.tgz#18de2f97e4bf7a9551ad7511942b5496f7aba660"
   integrity sha1-GN4vl+S/epVRrXURlCtUlverpmA=
 
+picocolors@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-0.2.1.tgz#570670f793646851d1ba135996962abad587859f"
+  integrity sha512-cMlDqaLEqfSaW8Z7N5Jw+lyIW869EzT73/F5lhtY9cLGoVxSXznfgfXMO0Z5K0o0Q2TkTXq+0KFsdnSe3jDViA==
+
 picomatch@^2.0.4, picomatch@^2.0.5, picomatch@^2.2.1, picomatch@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.2.2.tgz#21f333e9b6b8eaff02468f5146ea406d345f4dad"
@@ -26070,6 +26093,17 @@ postcss-unique-selectors@^4.0.1:
     postcss "^7.0.0"
     uniqs "^2.0.0"
 
+postcss-url@8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/postcss-url/-/postcss-url-8.0.0.tgz#7b10059bd12929cdbb1971c60f61a0e5af86b4ca"
+  integrity sha512-E2cbOQ5aii2zNHh8F6fk1cxls7QVFZjLPSrqvmiza8OuXLzIpErij8BDS5Y3STPfJgpIMNCPEr8JlKQWEoozUw==
+  dependencies:
+    mime "^2.3.1"
+    minimatch "^3.0.4"
+    mkdirp "^0.5.0"
+    postcss "^7.0.2"
+    xxhashjs "^0.2.1"
+
 postcss-value-parser@^3.0.0, postcss-value-parser@^3.2.3, postcss-value-parser@^3.3.0, postcss-value-parser@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/postcss-value-parser/-/postcss-value-parser-3.3.1.tgz#9ff822547e2893213cf1c30efa51ac5fd1ba8281"
@@ -26105,6 +26139,14 @@ postcss@7.0.14:
     chalk "^2.4.2"
     source-map "^0.6.1"
     supports-color "^6.1.0"
+
+postcss@7.x.x:
+  version "7.0.39"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-7.0.39.tgz#9624375d965630e2e1f2c02a935c82a59cb48309"
+  integrity sha512-yioayjNbHn6z1/Bywyb2Y4s3yvDAeXGOyxqD+LnVOinq6Mdmd++SW2wUNVzavyyHxd6+DxzWGIuosg6P1Rj8uA==
+  dependencies:
+    picocolors "^0.2.1"
+    source-map "^0.6.1"
 
 postcss@^5.2.12:
   version "5.2.18"
@@ -34300,6 +34342,13 @@ xtend@~3.0.0:
 xterm@3.7.0:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/xterm/-/xterm-3.7.0.tgz#b3eb1335dc04b92abe361711731d3b661e13db17"
+
+xxhashjs@^0.2.1:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/xxhashjs/-/xxhashjs-0.2.2.tgz#8a6251567621a1c46a5ae204da0249c7f8caa9d8"
+  integrity sha512-AkTuIuVTET12tpsVIQo+ZU6f/qDmKuRUcjaqR+OIvm+aCBsZ95i7UVY5WJ9TMsSaZ0DA2WxoZ4acu0sPH+OKAw==
+  dependencies:
+    cuint "^0.2.2"
 
 y18n@^3.2.1:
   version "3.2.1"

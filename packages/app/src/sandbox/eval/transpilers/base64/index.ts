@@ -27,22 +27,30 @@ async function createDataUri(blob: Blob): Promise<string> {
   });
 }
 
+export async function getBase64FromContent(
+  code: string,
+  filepath: string
+): Promise<string> {
+  let uri: string = '#';
+  if (typeof code === 'string' && isUrl(code)) {
+    uri = code;
+  } else {
+    const blob: Blob =
+      typeof code === 'string'
+        ? new Blob([code], { type: getMimeType(filepath) })
+        : code;
+    uri = await createDataUri(blob);
+  }
+  return uri;
+}
+
 class Base64Transpiler extends Transpiler {
   constructor() {
     super('base64-loader');
   }
 
   async doTranspilation(code: string, loaderContext: LoaderContext) {
-    let uri: string = '#';
-    if (typeof code === 'string' && isUrl(code)) {
-      uri = code;
-    } else {
-      const blob: Blob =
-        typeof code === 'string'
-          ? new Blob([code], { type: getMimeType(loaderContext.path) })
-          : code;
-      uri = await createDataUri(blob);
-    }
+    const uri = await getBase64FromContent(code, loaderContext.path);
 
     return {
       transpiledCode: `module.exports = "${uri}"`,
