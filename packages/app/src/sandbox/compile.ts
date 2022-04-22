@@ -345,6 +345,10 @@ async function initializeManager(
       options.scopeWhitelist = registry.enabledScopes;
     }
 
+    // In case the API is not including the field yet
+    if (typeof registry.proxyEnabled === 'undefined') {
+      registry.proxyEnabled = true;
+    }
     if (registry.proxyEnabled) {
       // With our custom proxy on the server we want to handle downloading
       // the tarball. So we proxy it.
