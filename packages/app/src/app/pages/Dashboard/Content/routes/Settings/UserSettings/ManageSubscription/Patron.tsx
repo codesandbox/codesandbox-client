@@ -24,10 +24,7 @@ export const Patron = () => {
           padding: 0,
         })}
         onClick={() => {
-          actions.modalOpened({
-            modal: 'preferences',
-            itemId: 'paymentInfo',
-          });
+          actions.modalOpened({ modal: 'pilotPayment' });
         }}
       >
         Update payment information

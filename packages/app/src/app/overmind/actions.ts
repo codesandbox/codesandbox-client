@@ -241,7 +241,8 @@ type ModalName =
   | 'liveSessionEnded'
   | 'sandboxPicker'
   | 'minimumPrivacy'
-  | 'addMemberToWorkspace';
+  | 'addMemberToWorkspace'
+  | 'pilotPayment';
 
 export const modalOpened = (
   { state, effects }: Context,
