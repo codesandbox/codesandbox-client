@@ -140,7 +140,8 @@ executors:
       - image: codesandbox/node-puppeteer
     working_directory: ~/codesandbox-client
   docker_machine:
-    machine: true
+    machine:
+      image: ubuntu-2004:202201-02
     working_directory: ~/codesandbox-client
 
 ################################
