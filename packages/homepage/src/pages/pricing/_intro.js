@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import privateIcon from './assets/private.svg';
 import exportIcon from './assets/export.svg';
 import priceIcon from './assets/price.svg';
-import { formatCurrent } from './_utils';
+import { formatCurrency } from './_utils';
 import { BoxPlan, BoxPlanButton, BoxPlanPrice } from './_elements';
 
 /**
@@ -316,11 +316,11 @@ const TeamPro = ({ plan, ...props }) => {
 
       <BoxPlanPrice
         plan="Team Pro"
-        price={formatCurrent({
+        price={formatCurrency({
           currency: plan.year.currency,
           unit_amount: plan.year.unit_amount / 12,
         })}
-        caption={`per editor per month, billed annually or ${formatCurrent(
+        caption={`per editor per month, billed annually or ${formatCurrency(
           plan.month
         )}
         per month.`}

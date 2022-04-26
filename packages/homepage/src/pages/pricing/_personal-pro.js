@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import { formatCurrent } from './_utils';
+import { formatCurrency } from './_utils';
 import { Title, BoxPlan, BoxPlanButton, BoxPlanPrice } from './_elements';
 import arrowForwardIcon from './assets/arrowForward.svg';
 
@@ -82,11 +82,11 @@ export const PersonalPro = ({ plans }) => {
 
             <BoxPlanPrice
               plan="Personal Pro"
-              price={formatCurrent({
+              price={formatCurrency({
                 currency: plans.pro.year.currency,
                 unit_amount: plans.pro.year.unit_amount / 12,
               })}
-              caption={`per month, billed annually or ${formatCurrent(
+              caption={`per month, billed annually or ${formatCurrency(
                 plans.pro.month
               )}
               per month.`}
