@@ -147,7 +147,7 @@ export const onSSEMessage = (
           status: NotificationStatus.ERROR,
         });
         effects.executor.closeExecutor();
-      } else {
+      } else if (!error.includes('is larger than maximum size')) {
         effects.notificationToast.add({
           title: `Container Warning`,
           message: error,

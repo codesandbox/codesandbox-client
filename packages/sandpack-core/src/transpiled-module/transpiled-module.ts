@@ -749,6 +749,13 @@ export class TranspiledModule {
     );
   }
 
+  /** Transpile current module and ensure the surrounding tree (dependencies and initiators) are also transpiled */
+  async transpileTree(manager: Manager): Promise<TranspiledModule> {
+    await this.transpile(manager);
+    await manager.verifyTreeTranspiled();
+    return this;
+  }
+
   logWarnings = () => {
     if (this.warnings.length) {
       this.warnings.forEach(warning => {

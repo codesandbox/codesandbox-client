@@ -52,11 +52,17 @@ const SANDBOXES = [
 const PARALLEL_NODES = Number.parseInt(process.env.CIRCLE_NODE_TOTAL, 10) || 1;
 const PARALLEL_INDEX = Number.parseInt(process.env.CIRCLE_NODE_INDEX, 10) || 0;
 
+const TIMEOUT = 60;
+const ATTEMPTS = 2;
 const batchSize = Math.floor(SANDBOXES.length / PARALLEL_NODES);
 const sandboxesToTest = SANDBOXES.slice(
   batchSize * PARALLEL_INDEX,
   batchSize * (PARALLEL_INDEX + 1)
 );
+
+const ms = secs => {
+  return secs * SECOND;
+};
 
 describe('sandboxes', () => {
   let browser = puppeteer.launch({
@@ -69,13 +75,15 @@ describe('sandboxes', () => {
   sandboxesToTest.forEach(sandbox => {
     const id = sandbox.id || sandbox;
     const threshold = sandbox.threshold || 0.01;
+    const loadTimeout = ms(TIMEOUT);
+    const testTimeout = loadTimeout * ATTEMPTS + ms(20);
 
     it(
       `loads the sandbox '${id}'`,
       async () => {
         browser = await browser;
 
-        const page = await loadSandboxRetry(browser, id, 45 * SECOND, 2);
+        const page = await loadSandboxRetry(browser, id, loadTimeout, ATTEMPTS);
 
         const screenshot = await page.screenshot();
 
@@ -88,7 +96,7 @@ describe('sandboxes', () => {
 
         await page.close();
       },
-      65 * SECOND
+      testTimeout
     );
   });
 });

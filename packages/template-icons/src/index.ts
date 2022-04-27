@@ -56,6 +56,7 @@ import { UnibitIcon } from './UnibitIcon';
 import { VueIcon } from './VueIcon';
 import { VuePressIcon } from './VuePressIcon';
 import { WebAssemblyIcon } from './WebAssemblyIcon';
+import { SolidIcon } from './SolidIcon';
 
 export const ColorIcons = {
   AdonisIcon,
@@ -116,6 +117,7 @@ export const ColorIcons = {
   VueIcon,
   VuePressIcon,
   WebAssemblyIcon,
+  SolidIcon,
 };
 
 export const Icons = {
@@ -177,6 +179,7 @@ export const Icons = {
   VueIcon,
   VuePressIcon,
   WebAssemblyIcon,
+  SolidIcon,
 };
 
 export { AdonisIcon } from './AdonisIcon';
@@ -237,3 +240,4 @@ export { UnibitIcon } from './UnibitIcon';
 export { VueIcon } from './VueIcon';
 export { VuePressIcon } from './VuePressIcon';
 export { WebAssemblyIcon } from './WebAssemblyIcon';
+export { SolidIcon } from './SolidIcon';
