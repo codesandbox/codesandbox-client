@@ -80,7 +80,7 @@ export const MemberPaymentConfirmation: React.FC<{ title: string }> = ({
 
         <Stack>
           <Text size={3} block marginTop={4} marginLeft={6}>
-            Discounts or prorated charges may applied.
+            Discounts or prorated charges may apply.
           </Text>
         </Stack>
       </Text>
