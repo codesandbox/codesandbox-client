@@ -539,8 +539,14 @@ export const setActiveTeam = async (
   actions.internal.trackCurrentTeams();
 };
 
-export const getActiveTeamInfo = async ({ state, effects }: Context) => {
-  if (!state.activeTeam) return null;
+export const getActiveTeamInfo = async ({
+  state,
+  effects,
+  actions,
+}: Context) => {
+  if (!state.activeTeam) {
+    await actions.internal.setActiveTeamFromUrlOrStore();
+  }
 
   const team = await effects.gql.queries.getTeam({
     teamId: state.activeTeam,

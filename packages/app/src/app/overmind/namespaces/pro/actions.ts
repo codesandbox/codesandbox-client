@@ -3,8 +3,10 @@ import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { Step, Plan, PaymentSummary, PaymentPreview } from './types';
 
-export const pageMounted = withLoadApp(async ({ effects, state }) => {
+export const pageMounted = withLoadApp(async ({ effects, state, actions }) => {
   state.pro.prices = await effects.api.prices();
+
+  actions.getActiveTeamInfo();
 });
 
 export const setStep = ({ state }: Context, step: Step) => {
