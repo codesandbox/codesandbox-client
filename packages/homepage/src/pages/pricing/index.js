@@ -11,7 +11,6 @@ import { PersonalPro } from './_personal-pro';
 import { Plans } from './_plans';
 import { Testimonial } from './_testimonials';
 import { Title } from './_elements';
-import chevronRight from './assets/chevronRight.svg';
 
 const Overflow = styled.div`
   overflow: hidden;
@@ -94,10 +93,8 @@ const Pricing = () => {
       <Section>
         <Title css={{ textAlign: 'center' }}>Still have questions?</Title>
 
-        {/* TODO */}
-        <FAQLink as="a" href="/faq" target="_blank">
-          Read our FAQ
-          <img src={chevronRight} alt="link to" />
+        <FAQLink as="a" href="mailto:support@codesandbox.io" target="_blank">
+          Contact support
         </FAQLink>
       </Section>
     </Layout>
