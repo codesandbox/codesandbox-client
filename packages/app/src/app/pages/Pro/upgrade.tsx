@@ -123,7 +123,7 @@ export const ProUpgrade = () => {
   const amountPaidMember = paidMembers.length;
   const hasAnotherPaymentProvider = dashboard.teams.some(
     team =>
-      team.subscription?.paymentProvider !== SubscriptionPaymentProvider.Stripe
+      team.subscription?.paymentProvider === SubscriptionPaymentProvider.Paddle
   );
 
   const summary = {
