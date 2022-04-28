@@ -81,7 +81,7 @@ export const ProUpgrade = () => {
     }
   }, [hasLoadedApp, location, setActiveTeam, personalWorkspaceId, dashboard]);
 
-  if (!hasLoadedApp || !isLoggedIn || !prices) return null;
+  if (!hasLoadedApp || !isLoggedIn || !prices || !activeTeamInfo) return null;
 
   /**
    * Workspace
@@ -103,7 +103,7 @@ export const ProUpgrade = () => {
   /**
    * Members
    */
-  const usersPermission = activeTeamInfo.userAuthorizations.find(item => {
+  const usersPermission = activeTeamInfo?.userAuthorizations.find(item => {
     return item.userId === user.id;
   });
 
@@ -114,7 +114,7 @@ export const ProUpgrade = () => {
   const isAdmin =
     usersPermission?.authorization === TeamMemberAuthorization.Admin;
 
-  const paidMembers = activeTeamInfo.userAuthorizations.filter(
+  const paidMembers = activeTeamInfo?.userAuthorizations.filter(
     ({ authorization }) =>
       [TeamMemberAuthorization.Admin, TeamMemberAuthorization.Write].includes(
         authorization
