@@ -1,6 +1,11 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Link as RouterLink } from 'react-router-dom';
+import {
+  Link as RouterLink,
+  Route,
+  Switch,
+  withRouter,
+} from 'react-router-dom';
 import {
   Stack,
   Text,
@@ -12,10 +17,7 @@ import {
   ThemeProvider,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import {
-  dashboard,
-  sandboxUrl,
-} from '@codesandbox/common/lib/utils/url-generator';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
@@ -39,11 +41,41 @@ import {
   TRENDING_SANDBOXES_ALBUM,
   banner,
 } from './constants';
+import { AlbumView } from './AlbumView';
 
 const today = new Date();
 const SEED = today.getDate() + today.getMonth() + today.getFullYear();
 
-export const Discover = () => {
+export const Discover = withRouter(({ history }) => {
+  return (
+    <ThemeProvider>
+      <Element
+        css={{ width: '100%', '#selection-container': { overflowY: 'auto' } }}
+      >
+        <Helmet>
+          <title>Discover - CodeSandbox</title>
+        </Helmet>
+        <Header />
+        <Element
+          css={css({
+            width: '100%',
+            height: '100%',
+            margin: '0 auto',
+            display: 'flex',
+            justifyContent: 'center',
+          })}
+        >
+          <Switch>
+            <Route path="/discover/:id" component={AlbumView} />
+            <Route path="/discover" component={AlbumList} />
+          </Switch>
+        </Element>
+      </Element>
+    </ThemeProvider>
+  );
+});
+
+export const AlbumList = () => {
   const {
     activeTeam,
     dashboard: { sandboxes, curatedAlbums },
@@ -91,49 +123,38 @@ export const Discover = () => {
   }, [curatedAlbums]);
 
   return (
-    <ThemeProvider>
+    <SelectionProvider
+      interactive={false}
+      activeTeamId={activeTeam}
+      page="discover"
+      items={selectionItems}
+    >
       <Element
-        css={{ width: '100%', '#selection-container': { overflowY: 'auto' } }}
+        css={css({
+          marginX: 'auto',
+          width: `calc(100% - ${2 * GUTTER}px)`,
+          maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
+          paddingY: 0,
+          userSelect: 'none',
+        })}
       >
-        <Helmet>
-          <title>Discover - CodeSandbox</title>
-        </Helmet>
-        <Header />
+        <Banner />
 
-        <SelectionProvider
-          interactive={false}
-          activeTeamId={activeTeam}
-          page="discover"
-          items={selectionItems}
-        >
-          <Element
-            css={css({
-              marginX: 'auto',
-              width: `calc(100% - ${2 * GUTTER}px)`,
-              maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-              paddingY: 0,
-              userSelect: 'none',
-            })}
-          >
-            <Banner />
+        <Stack direction="vertical" gap={16}>
+          {/* <FeaturedSandboxes /> */}
 
-            <Stack direction="vertical" gap={16}>
-              {/* <FeaturedSandboxes /> */}
+          {randomAlbums.map(album => (
+            <Album
+              key={album.id}
+              album={album}
+              showMore={album.sandboxes.length > 3}
+            />
+          ))}
 
-              {randomAlbums.map(album => (
-                <Album
-                  key={album.id}
-                  album={album}
-                  showMore={album.sandboxes.length > 3}
-                />
-              ))}
-
-              <TrendingSandboxes />
-            </Stack>
-          </Element>
-        </SelectionProvider>
+          <TrendingSandboxes />
+        </Stack>
       </Element>
-    </ThemeProvider>
+    </SelectionProvider>
   );
 };
 
@@ -332,14 +353,12 @@ export const FeaturedSandbox = ({ sandbox }) => {
 type AlbumTypes = { album: DashboardAlbum; showMore: boolean };
 const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
   const {
-    activeTeam,
     dashboard: { sandboxes },
   } = useAppState();
 
   const likedSandboxIds = (sandboxes.LIKED || []).map(sandbox => sandbox.id);
 
   if (album.sandboxes.length === 0) return null;
-
   return (
     <Stack key={album.id} direction="vertical" gap={6}>
       <Stack justify="space-between" align="flex-end">
@@ -349,7 +368,7 @@ const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
         {showMore && (
           <Link
             as={RouterLink}
-            to={dashboard.discover(activeTeam, album.id)}
+            to={`/discover/${album.id}`}
             size={4}
             variant="muted"
           >

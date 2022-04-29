@@ -13,7 +13,7 @@ import {
 } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardCommunitySandbox } from 'app/pages/Dashboard/types';
 
-export const Album = ({ match }) => {
+export const AlbumView = ({ match }) => {
   const {
     activeTeam,
     dashboard: { sandboxes, curatedAlbums },
