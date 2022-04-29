@@ -33,11 +33,12 @@ import {
   DashboardAlbum,
 } from 'app/pages/Dashboard/types';
 import { shuffleSeed } from './utils';
+import { Header } from './Header';
 import {
   FEATURED_SANDBOXES_ALBUM,
   TRENDING_SANDBOXES_ALBUM,
   banner,
-} from './contants';
+} from './constants';
 
 const today = new Date();
 const SEED = today.getDate() + today.getMonth() + today.getFullYear();
@@ -97,6 +98,8 @@ export const Discover = () => {
         <Helmet>
           <title>Discover - CodeSandbox</title>
         </Helmet>
+        <Header />
+
         <SelectionProvider
           interactive={false}
           activeTeamId={activeTeam}
