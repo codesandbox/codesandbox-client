@@ -43,7 +43,7 @@ export const Pro = styled(Text).attrs({ size: 1, weight: 'bold' })(
   css({
     backgroundColor: 'blues.700',
     color: 'white',
-    borderRadius: '100%',
+    borderRadius: 'small',
     paddingX: 2,
     border: '1px solid',
     borderColor: 'sideBar.background', // merge with the background
