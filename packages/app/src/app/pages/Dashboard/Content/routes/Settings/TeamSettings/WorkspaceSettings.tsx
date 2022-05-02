@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import { useAppState, useActions, useEffects } from 'app/overmind';
 import { sortBy } from 'lodash-es';
-import { format } from 'date-fns';
+
 import {
   Button,
   Element,
-  Grid,
   Stack,
   Text,
-  Link,
   Input,
   Textarea,
   IconButton,
   Menu,
   Icon,
-  Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
@@ -30,6 +27,7 @@ import {
 } from 'app/graphql/types';
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
+import { ManageSubscription } from './ManageSubscription';
 
 const PERMISSION_LEVELS = {
   [TeamMemberAuthorization.Admin]: {
@@ -38,7 +36,6 @@ const PERMISSION_LEVELS = {
     [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
   },
   [TeamMemberAuthorization.Write]: {
-    [TeamMemberAuthorization.Write]: TeamMemberAuthorization.Write,
     [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
   },
   [TeamMemberAuthorization.Read]: {},
@@ -99,8 +96,10 @@ export const WorkspaceSettings = () => {
     TeamMemberAuthorization
   >(team?.settings.defaultAuthorization);
 
-  const numberOfEditors = team.userAuthorizations.filter(
-    member => member.authorization !== TeamMemberAuthorization.Read
+  const numberOfEditors = team.userAuthorizations.filter(({ authorization }) =>
+    [TeamMemberAuthorization.Admin, TeamMemberAuthorization.Write].includes(
+      authorization
+    )
   ).length;
 
   // A team can have unused seats in their subscription
@@ -177,6 +176,8 @@ export const WorkspaceSettings = () => {
     [TeamMemberAuthorization.Read]: 'Viewer',
   };
 
+  const isAdmin =
+    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
   const permissionValues = Object.values(
     PERMISSION_LEVELS[userPermission.authorization]
   );
@@ -184,13 +185,19 @@ export const WorkspaceSettings = () => {
 
   return (
     <>
-      <Grid
-        columnGap={4}
-        css={css({
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        })}
+      <Element
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1em',
+
+          '@media (min-width: 768px)': {
+            display: 'grid',
+            'grid-template-columns': 'repeat(3, 1fr)',
+          },
+        }}
       >
-        <Card>
+        <Card css={{ 'grid-column': isAdmin ? 'auto' : '1/3' }}>
           {editing ? (
             <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
               <Stack gap={4}>
@@ -323,6 +330,7 @@ export const WorkspaceSettings = () => {
             </Stack>
           )}
         </Card>
+
         <Card>
           <Stack direction="vertical" gap={4}>
             <Text size={6} weight="bold">
@@ -335,7 +343,7 @@ export const WorkspaceSettings = () => {
                 <>
                   <Text size={3} variant="muted">
                     {numberOfEditors}{' '}
-                    {numberOfEditors > 1 ? 'Editors' : 'Editor'} on your plan
+                    {numberOfEditors > 1 ? 'Editors' : 'Editor'}
                   </Text>
                   {numberOfUnusedSeats > 0 ? (
                     <Text size={3} variant="muted">
@@ -372,146 +380,10 @@ export const WorkspaceSettings = () => {
             </Stack>
           </Stack>
         </Card>
-        {activeWorkspaceAuthorization === TeamMemberAuthorization.Admin ? (
-          <div>
-            {team?.subscription?.type === SubscriptionType.TeamPro ? (
-              <Card>
-                <Stack direction="vertical" gap={2}>
-                  <Stack direction="vertical" gap={4}>
-                    <Text size={6} weight="bold" maxWidth="100%">
-                      Invoice details
-                    </Text>
-                    {team.subscription.origin === 'PILOT' ? (
-                      <Stack direction="vertical" gap={2}>
-                        <Text size={3} variant="muted">
-                          Pilot
-                        </Text>
-                        <Link
-                          size={3}
-                          variant="active"
-                          href="/pro"
-                          target="_blank"
-                          css={css({ fontWeight: 'medium' })}
-                        >
-                          Upgrade to Team Pro
-                        </Link>
-                      </Stack>
-                    ) : (
-                      <Stack direction="vertical" gap={2}>
-                        {!team.subscription.cancelAt ? (
-                          <Tooltip
-                            label={`Next invoice of ${
-                              team.subscription.currency
-                            } ${(
-                              (team.subscription.quantity *
-                                team.subscription.unitPrice) /
-                              100
-                            ).toFixed(2)} (excl. tax) scheduled for ${format(
-                              new Date(team.subscription.nextBillDate),
-                              'PP'
-                            )}`}
-                          >
-                            <Stack align="center" gap={1}>
-                              <Text size={3} variant="muted">
-                                Next invoice: {team.subscription.currency}{' '}
-                                {(
-                                  (team.subscription.quantity *
-                                    team.subscription.unitPrice) /
-                                  100
-                                ).toFixed(2)}{' '}
-                              </Text>
-                              <Text variant="muted">
-                                <Icon name="info" size={12} />
-                              </Text>
-                            </Stack>
-                          </Tooltip>
-                        ) : null}
 
-                        <Link
-                          size={3}
-                          variant="active"
-                          href={team.subscription.updateBillingUrl}
-                          css={css({ fontWeight: 'medium' })}
-                        >
-                          Update payment information
-                        </Link>
-                        <Link
-                          size={3}
-                          variant="active"
-                          href="/pro"
-                          css={css({ fontWeight: 'medium' })}
-                        >
-                          Change billing interval
-                        </Link>
-                        {team.subscription.cancelAt ? (
-                          <Text size={3} css={css({ color: 'orange' })}>
-                            Your subscription expires on{' '}
-                            {format(new Date(team.subscription.cancelAt), 'PP')}
-                            .{' '}
-                            <Button
-                              autoWidth
-                              variant="link"
-                              disabled={loading}
-                              css={css({
-                                color: 'inherit',
-                                padding: 0,
-                                textDecoration: 'underline',
-                                fontSize: 3,
-                              })}
-                              onClick={() =>
-                                actions.pro.reactivateWorkspaceSubscription()
-                              }
-                            >
-                              Reactivate
-                            </Button>
-                          </Text>
-                        ) : (
-                          <Button
-                            autoWidth
-                            variant="link"
-                            css={css({
-                              height: 'auto',
-                              fontSize: 3,
-                              color: 'errorForeground',
-                              padding: 0,
-                            })}
-                            onClick={() =>
-                              actions.pro.cancelWorkspaceSubscription()
-                            }
-                          >
-                            Cancel subscription
-                          </Button>
-                        )}
-                      </Stack>
-                    )}
-                  </Stack>
-                </Stack>
-              </Card>
-            ) : (
-              <Card style={{ backgroundColor: 'white' }}>
-                <Stack
-                  direction="vertical"
-                  gap={4}
-                  css={css({ color: 'grays.800' })}
-                >
-                  <Text size={6} weight="bold">
-                    Go Pro
-                  </Text>
-                  <Stack direction="vertical" gap={1}>
-                    <Text size={3}>+ Work in private</Text>
-                    <Text size={3}>+ Private NPM packages</Text>
-                    <Text size={3}>+ Flexible permissions</Text>
-                    <Text size={3}>+ Centralized billing</Text>
-                  </Stack>
-                  <Button as="a" href="/pro" marginTop={2}>
-                    Upgrade to Pro
-                  </Button>
-                </Stack>
-              </Card>
-            )}
-          </div>
-        ) : null}
-      </Grid>
+        <ManageSubscription />
+      </Element>
+
       <Stack align="center" justify="space-between" gap={2}>
         <Text
           css={css({

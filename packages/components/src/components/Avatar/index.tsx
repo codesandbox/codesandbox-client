@@ -32,7 +32,7 @@ export const AvatarImage = styled.img(
     height: '100%',
     width: '100%',
     boxSizing: 'border-box',
-    borderRadius: 'small',
+    borderRadius: '100%',
     border: '1px solid',
     borderColor: 'avatar.border',
     backgroundColor: 'avatar.border', // fallback for loading image,

@@ -1,8 +1,10 @@
 import { Element, Stack, Text } from '@codesandbox/components';
 import React, { FunctionComponent, useEffect } from 'react';
+import css from '@styled-system/css';
 
 import { SubscribeForm } from 'app/components/SubscribeForm';
 import { useAppState, useActions } from 'app/overmind';
+import { Alert } from '../Common/Alert';
 
 import { Card } from './Card';
 
@@ -58,7 +60,7 @@ const Body: FunctionComponent = () => {
   );
 };
 
-export const PaymentInfo: FunctionComponent = () => {
+export const PilotPaymentModal: FunctionComponent = () => {
   const { paymentDetailsRequested } = useActions().preferences;
 
   useEffect(() => {
@@ -66,12 +68,23 @@ export const PaymentInfo: FunctionComponent = () => {
   }, [paymentDetailsRequested]);
 
   return (
-    <Element>
-      <Text block marginBottom={6} size={4} weight="bold">
-        Payment Info
-      </Text>
+    <Stack css={css({ fontFamily: "'Inter', sans-serif" })}>
+      <Alert
+        css={css({
+          height: 482,
+          width: '100%',
+          padding: 6,
+          '*': { boxSizing: 'border-box' },
+        })}
+      >
+        <Element>
+          <Text block marginBottom={6} size={4} weight="bold">
+            Payment Info
+          </Text>
 
-      <Body />
-    </Element>
+          <Body />
+        </Element>
+      </Alert>
+    </Stack>
   );
 };

@@ -16,7 +16,6 @@ import { All } from './routes/All';
 import { Repositories } from './routes/Repositories';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
-import { NewTeam } from './routes/Settings/NewTeam';
 import { Discover } from './routes/Discover';
 import { Album } from './routes/Discover/Album';
 import { Curate } from './routes/Discover/Curate';
@@ -71,7 +70,6 @@ export const Content = withRouter(({ history }) => {
         {/* old dashboard - redirects: */}
         <Route path="/dashboard/trash" component={Deleted} />
         <Route path="/dashboard/sandboxes/:path*" component={All} />
-        <Route path="/dashboard/teams/new" component={NewTeam} />
         <Redirect to={dashboardUrls.home(activeTeam)} />
       </Switch>
     </Element>

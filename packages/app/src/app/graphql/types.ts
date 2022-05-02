@@ -84,6 +84,7 @@ export type Branch = {
   poolSize: Scalars['Int'];
   project: Project;
   pullRequests: Array<PullRequest>;
+  status: Maybe<Status>;
 };
 
 export type BranchConnections = {
@@ -96,6 +97,12 @@ export type BranchLastCommit = {
   __typename?: 'BranchLastCommit';
   branchId: Scalars['String'];
   lastCommit: LastCommit;
+};
+
+export type BranchStatus = {
+  __typename?: 'BranchStatus';
+  branchId: Scalars['String'];
+  status: Status;
 };
 
 export type CodeReference = {
@@ -159,6 +166,7 @@ export type Connection = {
   __typename?: 'Connection';
   appId: Scalars['String'];
   clientId: Scalars['String'];
+  color: Scalars['String'];
   timestamp: Scalars['String'];
   user: User;
 };
@@ -345,6 +353,8 @@ export type GithubProfile = {
 /** Details about a repository as it appears on GitHub (Open API `respository`) */
 export type GithubRepo = {
   __typename?: 'GithubRepo';
+  /** Current users's access to the GitHub repo */
+  authorization: GithubRepoAuthorization;
   /** Full repository name, e.g. owner/name */
   fullName: Scalars['String'];
   /** Integer ID */
@@ -356,6 +366,11 @@ export type GithubRepo = {
   /** ISO 8601 datetime */
   updatedAt: Scalars['String'];
 };
+
+export enum GithubRepoAuthorization {
+  Read = 'READ',
+  Write = 'WRITE',
+}
 
 export enum GitProvider {
   Github = 'GITHUB',
@@ -405,7 +420,9 @@ export type Invitation = {
 
 export type LastCommit = {
   __typename?: 'LastCommit';
+  color: Scalars['String'];
   message: Maybe<Scalars['String']>;
+  sha: Scalars['String'];
   timestamp: Scalars['String'];
   user: Maybe<User>;
 };
@@ -477,6 +494,7 @@ export type Project = {
   availableEnvironments: Array<Environment>;
   branches: Array<Branch>;
   defaultBranch: Branch;
+  description: Maybe<Scalars['String']>;
   environment: Maybe<Environment>;
   owner: Scalars['String'];
   private: Scalars['Boolean'];
@@ -493,6 +511,7 @@ export type ProSubscription = {
   id: Maybe<Scalars['UUID4']>;
   nextBillDate: Maybe<Scalars['DateTime']>;
   origin: Maybe<SubscriptionOrigin>;
+  paymentProvider: Maybe<SubscriptionPaymentProvider>;
   quantity: Maybe<Scalars['Int']>;
   status: SubscriptionStatus;
   type: SubscriptionType;
@@ -1146,6 +1165,8 @@ export type RootSubscriptionType = {
   projectCommits: BranchLastCommit;
   /** Receive updates if users (dis)connect to a branch. Omitting branchId subscribes to all branches in the project. */
   projectConnections: BranchConnections;
+  /** Receive updates when the status of a branch changes. Omitting branchId subscribes to all branches in the project. */
+  projectStatus: BranchStatus;
   sandboxChanged: Sandbox;
 };
 
@@ -1192,6 +1213,12 @@ export type RootSubscriptionTypeProjectCommitsArgs = {
 };
 
 export type RootSubscriptionTypeProjectConnectionsArgs = {
+  branchId: Maybe<Scalars['String']>;
+  owner: Scalars['String'];
+  repo: Scalars['String'];
+};
+
+export type RootSubscriptionTypeProjectStatusArgs = {
   branchId: Maybe<Scalars['String']>;
   owner: Scalars['String'];
   repo: Scalars['String'];
@@ -1278,6 +1305,20 @@ export type Source = {
   template: Maybe<Scalars['String']>;
 };
 
+export type Status = {
+  __typename?: 'Status';
+  hasChanges: Scalars['Boolean'];
+  hasConflicts: Scalars['Boolean'];
+  remote: StatusCommitCounts;
+  target: StatusCommitCounts;
+};
+
+export type StatusCommitCounts = {
+  __typename?: 'StatusCommitCounts';
+  ahead: Scalars['Int'];
+  behind: Scalars['Int'];
+};
+
 export enum SubscriptionInterval {
   Monthly = 'MONTHLY',
   Yearly = 'YEARLY',
@@ -1287,6 +1328,11 @@ export enum SubscriptionOrigin {
   Legacy = 'LEGACY',
   Patron = 'PATRON',
   Pilot = 'PILOT',
+}
+
+export enum SubscriptionPaymentProvider {
+  Paddle = 'PADDLE',
+  Stripe = 'STRIPE',
 }
 
 export enum SubscriptionStatus {
@@ -2075,7 +2121,7 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'ProSubscription' } & Pick<
         ProSubscription,
-        'origin' | 'type'
+        'origin' | 'type' | 'paymentProvider'
       >
     >;
   };
@@ -2124,6 +2170,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'billingInterval'
         | 'updateBillingUrl'
         | 'nextBillDate'
+        | 'paymentProvider'
         | 'cancelAt'
       >
     >;

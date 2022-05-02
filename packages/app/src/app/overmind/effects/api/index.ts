@@ -660,4 +660,35 @@ export default {
       sandboxLimit: number;
     }>(`/sandboxes/limits`);
   },
+  prices() {
+    type Pricing = Record<
+      'pro' | 'teamPro',
+      Record<'month' | 'year', { currency: string; unitAmount: number }>
+    >;
+
+    return api.get<Pricing>(`/prices`);
+  },
+  stripeCreateCheckout({
+    success_path,
+    cancel_path,
+    team_id,
+    recurring_interval,
+  }: {
+    success_path: string;
+    cancel_path: string;
+    team_id: string;
+    recurring_interval: string;
+  }) {
+    return api.post<{ stripeCheckoutUrl: string }>(`/checkout`, {
+      success_path,
+      cancel_path,
+      team_id,
+      recurring_interval,
+    });
+  },
+  stripeCustomerPortal(teamId: string, return_path: string) {
+    return api.get<{ stripeCustomerPortalUrl: string }>(
+      `/teams/${teamId}/customer_portal?return_path=${return_path}`
+    );
+  },
 };

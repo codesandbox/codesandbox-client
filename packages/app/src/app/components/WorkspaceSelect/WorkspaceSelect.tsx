@@ -1,7 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { useAppState } from 'app/overmind';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import { useActions, useAppState } from 'app/overmind';
 import { Text, Menu, Stack, Icon, Tooltip } from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
 import css from '@styled-system/css';
@@ -25,7 +23,9 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
   ({ activeAccount, disabled, onSelect }) => {
     const state = useAppState();
     const { dashboard, user } = state;
-    const history = useHistory();
+    const { openCreateTeamModal } = useActions();
+
+    if (!dashboard.teams || !state.personalWorkspaceId) return null;
 
     const personalWorkspace = dashboard.teams.find(
       t => t.id === state.personalWorkspaceId
@@ -136,7 +136,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   marginLeft: '1px',
                 })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() => history.push(dashboardUrls.createTeam())}
+                onSelect={openCreateTeamModal}
               >
                 <Stack
                   justify="center"

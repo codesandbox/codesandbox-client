@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useAppState } from 'app/overmind';
-import { Element, Stack } from '@codesandbox/components';
+import { Element, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import {
@@ -15,18 +15,15 @@ import {
   useLocation,
 } from 'react-router-dom';
 import * as dashboardUrls from '@codesandbox/common/lib/utils/url-generator/dashboard';
+
 import { SettingNavigation } from '../components/Navigation';
 import { PermissionSettings } from '../components/PermissionSettings';
 import { WorkspaceSettings } from './WorkspaceSettings';
 import { RegistrySettings } from './RegistrySettings';
 
 export const TeamSettings = () => {
-  const { user: stateUser, activeTeam, activeTeamInfo: team } = useAppState();
+  const { activeTeam, activeTeamInfo } = useAppState();
   const location = useLocation();
-
-  if (!team || !stateUser) {
-    return <Header title="Team Settings" activeTeam={null} />;
-  }
 
   return (
     <>
@@ -50,23 +47,28 @@ export const TeamSettings = () => {
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
           })}
         >
-          <SettingNavigation isPersonal={false} teamId={activeTeam} />
-          <BrowserRouter>
-            <RouterSwitch location={location}>
-              <Route
-                component={RegistrySettings}
-                path={dashboardUrls.registrySettings()}
-              />
-              <Route
-                component={PermissionSettings}
-                path={dashboardUrls.permissionSettings()}
-              />
-              <Route
-                component={WorkspaceSettings}
-                path={dashboardUrls.settings()}
-              />
-            </RouterSwitch>
-          </BrowserRouter>
+          <SettingNavigation personal={false} teamId={activeTeam} />
+
+          {activeTeam === activeTeamInfo.id ? (
+            <BrowserRouter>
+              <RouterSwitch location={location}>
+                <Route
+                  component={RegistrySettings}
+                  path={dashboardUrls.registrySettings()}
+                />
+                <Route
+                  component={PermissionSettings}
+                  path={dashboardUrls.permissionSettings()}
+                />
+                <Route
+                  component={WorkspaceSettings}
+                  path={dashboardUrls.settings()}
+                />
+              </RouterSwitch>
+            </BrowserRouter>
+          ) : (
+            <Text>Loading...</Text>
+          )}
         </Stack>
       </Element>
     </>

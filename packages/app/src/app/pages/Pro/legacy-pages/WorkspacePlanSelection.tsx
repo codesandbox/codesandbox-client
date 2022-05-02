@@ -1,7 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { sortBy } from 'lodash-es';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Stack, Text, Menu, Icon, Button, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
@@ -15,7 +15,7 @@ import {
   SubscriptionOrigin,
 } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { plans } from '../plans';
+import { plans } from './plans';
 
 const prettyPermissions = {
   ADMIN: 'Admin',
@@ -39,10 +39,11 @@ export const WorkspacePlanSelection: React.FC<{
     modalOpened,
     pro: { setStep, updateSelectedPlan, updateSeats },
     patron: { cancelSubscriptionClicked },
+    openCreateTeamModal,
   } = useActions();
 
   const location = useLocation();
-  const history = useHistory();
+
   const searchParams = new URLSearchParams(location.search);
   const type = searchParams.get('type') as SubscriptionType;
   const interval = searchParams.get('interval') as SubscriptionInterval;
@@ -304,11 +305,7 @@ export const WorkspacePlanSelection: React.FC<{
                 gap={2}
                 css={css({ height: 10, textAlign: 'left' })}
                 style={{ paddingLeft: 8 }}
-                onSelect={() =>
-                  history.push(
-                    `/pro/create-workspace?interval=${billingInterval}`
-                  )
-                }
+                onSelect={openCreateTeamModal}
               >
                 <Stack
                   justify="center"
@@ -378,10 +375,8 @@ export const WorkspacePlanSelection: React.FC<{
                 variant="active"
                 onClick={e => {
                   e.preventDefault();
-                  modalOpened({
-                    modal: 'preferences',
-                    itemId: 'paymentInfo',
-                  });
+
+                  modalOpened({ modal: 'pilotPayment' });
                 }}
               >
                 update your payment details

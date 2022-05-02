@@ -20,9 +20,14 @@ import { UserMenu } from '../UserMenu';
 
 type Props = {
   title?: string;
+  showActions?: boolean;
 } & RouteComponentProps;
 
-export const NavigationComponent = ({ title, match }: Props) => {
+export const NavigationComponent = ({
+  title,
+  match,
+  showActions = true,
+}: Props) => {
   const { signInClicked, openCreateSandboxModal } = useActions();
   const { isLoggedIn, isAuthenticating, user } = useAppState();
   const link = isLoggedIn ? '/dashboard' : '/';
@@ -80,15 +85,17 @@ export const NavigationComponent = ({ title, match }: Props) => {
                   Sign In
                 </Button>
               ) : null}
-              <Button
-                variant="primary"
-                css={css({ width: 'auto', paddingX: 3 })}
-                onClick={() => {
-                  openCreateSandboxModal({});
-                }}
-              >
-                Create Sandbox
-              </Button>
+              {showActions && (
+                <Button
+                  variant="primary"
+                  css={css({ width: 'auto', paddingX: 3 })}
+                  onClick={() => {
+                    openCreateSandboxModal({});
+                  }}
+                >
+                  Create Sandbox
+                </Button>
+              )}
               {isLoggedIn ? (
                 <UserMenu>
                   <Button
@@ -98,6 +105,8 @@ export const NavigationComponent = ({ title, match }: Props) => {
                       padding: 0,
                       height: 'auto',
                       border: 'none',
+                      borderRadius: '100%',
+                      marginTop: 1,
                     })}
                   >
                     <Avatar

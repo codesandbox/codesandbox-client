@@ -61,7 +61,9 @@ export const PermissionSettings = () => {
 
   return (
     <Stack direction="vertical" gap={6}>
-      {alert && <Alert message={alert.message} cta={alert.cta} />}
+      {alert && (
+        <Alert upgrade={!isTeamPro} message={alert.message} cta={alert.cta} />
+      )}
       <Grid columnGap={12}>
         <Column span={[12, 12, 6]}>
           <MinimumPrivacy disabled={Boolean(alert)} />
@@ -115,11 +117,9 @@ const MinimumPrivacy = ({ disabled }: { disabled: boolean }) => {
       justify="space-between"
       gap={114}
       css={css({
-        backgroundColor: 'grays.800',
-        paddingY: 8,
-        paddingX: 6,
+        padding: 6,
         border: '1px solid',
-        borderColor: 'grays.500',
+        borderColor: 'grays.600',
         borderRadius: 'medium',
         opacity: disabled ? 0.4 : 1,
       })}
@@ -224,11 +224,9 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
       justify="space-between"
       gap={114}
       css={css({
-        backgroundColor: 'grays.800',
-        paddingY: 8,
-        paddingX: 6,
+        padding: 6,
         border: '1px solid',
-        borderColor: 'grays.500',
+        borderColor: 'grays.600',
         borderRadius: 'medium',
         opacity: disabled ? 0.4 : 1,
       })}

@@ -278,11 +278,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </List>
 
         <Element margin={4}>
-          <Button
-            as={RouterLink}
-            to={dashboardUrls.createTeam()}
-            variant="secondary"
-          >
+          <Button onClick={actions.openCreateTeamModal} variant="secondary">
             <Icon name="plus" size={10} marginRight={1} />
             Create a new team
           </Button>
