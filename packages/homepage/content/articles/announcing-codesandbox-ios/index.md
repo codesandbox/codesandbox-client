@@ -1,7 +1,7 @@
 banner: ./images/banner.png
 slug: introducing-codesandbox-ios
 authors: ['Necoline Hubner']
-photo: 
+photo: https://avatars.githubusercontent.com/u/20410256?s=400&u=320136b3c19477e45debac674c72ce783409898f&v=4
 title: The iOS Release You Have Been Waiting For
 description: CodeSandbox for iOS lets you take your projects and sandboxes with you wherever you go. Using an iPhone or iPad, you can now access our new cloud development platform in the comfort of a native iOS IDE..
 
