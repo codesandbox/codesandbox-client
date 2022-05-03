@@ -17,6 +17,7 @@ When building **CodeSandbox Projects**, we set out to create a cloud development
 
 **CodeSandbox for iOS** combines the crisp and ergonomic feel of a native IDE with the power and efficiencies of cloud development.
 ![sandboxes and projects](./images/sandboxes-projects.png)
+
 On iOS, keep up with ongoing project work with:
 
 **Smart Dashboards**
