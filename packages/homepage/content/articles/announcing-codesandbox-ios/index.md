@@ -53,9 +53,10 @@ Great ideas don’t always come to you while you are sitting at your desk. With 
 
 ## Get started now
 
-<a 
+<a style="margin-bottom: 50px; display: block;" 
+  target="_blank"
   href="https://apps.apple.com/us/app/play-js-javascript-ide/id1423330822">
-  ![anytime, anywhere](./images/anytime-anywhere.png)
+  <img src="./images/anytime-anywhere.png" alt="anytime, anywhere" />
 </a>
 
 Right now, **CodeSandbox Projects** is in Beta. You can sign up to the waitlist [here](https://codesandbox.io/ios). You can also jump in and explore your Sandboxes [on the app](https://apps.apple.com/us/app/play-js-javascript-ide/id1423330822) in the meantime. Once you are in, you can simply import your projects or add a template project, invite your team members and get coding. 
