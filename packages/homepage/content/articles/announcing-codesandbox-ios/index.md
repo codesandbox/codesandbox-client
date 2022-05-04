@@ -13,6 +13,7 @@ date: 2022-05-04
 ![sandboxes and projects](./images/sandboxes-projects.png)
 
 
+
 When building **CodeSandbox Projects**, we set out to create a cloud development platform with the familiar speed and experience of CodeSandbox, yet also deeply integrated with your favorite tooling, and working on projects of any size. **Projects** is currently in [beta](https://projects.codesandbox.io/) and we are now ready to expand the experience to the mobile world.
 
 
@@ -23,6 +24,7 @@ When building **CodeSandbox Projects**, we set out to create a cloud development
 <video autoplay loop muted playsinline width="100%">
   <source src="./images/iOS-Intro.mp4" type="video/mp4">
 </video>
+
 
 
 On iOS, keep up with ongoing project work with:
@@ -55,6 +57,8 @@ Great ideas don’t always come to you while you are sitting at your desk. With 
   href="https://apps.apple.com/us/app/play-js/id1423330822">
   ![anytime, anywhere](./images/anytime-anywhere.png)
 </a>
+
+
 
 
 Right now, **CodeSandbox Projects** is in Beta. You can sign up to the waitlist [here](https://codesandbox.io/ios). You can also jump in and explore your Sandboxes [on the app](https://apps.apple.com/us/app/play-js/id1423330822) in the meantime. Once you are in, you can simply import your projects or add a template project, invite your team members and get coding. 
