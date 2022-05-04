@@ -17,6 +17,10 @@
     "app:fast": {
       "name": "Application (fast)",
       "command": "yarn start:fast"
+    },
+    "app:home:fast": {
+      "name": "Application home (fast)",
+      "command": "yarn start:home:fast"
     }
   },
   "setupTasks": [
