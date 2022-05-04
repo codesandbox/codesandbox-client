@@ -58,7 +58,7 @@ Great ideas don’t always come to you while you are sitting at your desk. With 
   ![anytime, anywhere](./images/anytime-anywhere.png)
 </a>
 
-
+<p></p>
 
 
 Right now, **CodeSandbox Projects** is in Beta. You can sign up to the waitlist [here](https://codesandbox.io/ios). You can also jump in and explore your Sandboxes [on the app](https://apps.apple.com/us/app/play-js/id1423330822) in the meantime. Once you are in, you can simply import your projects or add a template project, invite your team members and get coding. 
