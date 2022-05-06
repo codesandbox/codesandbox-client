@@ -67,7 +67,7 @@ export async function initializeBrowserFS({
     };
   } = {};
 
-  return new Promise(resolve => {
+  return new Promise<void>(resolve => {
     const config = { ...BROWSER_FS_CONFIG };
     let currentSandboxFs = {};
 
@@ -129,12 +129,12 @@ export async function initializeBrowserFS({
         // Resolve after 3s, if it doesn't resolve, vscode won't be able to resolve the ext host
         // and it won't try to reconnect.
         const timeout = setTimeout(() => {
-          resolve(undefined);
+          resolve();
         }, 3000);
 
         const callResolve = () => {
           clearTimeout(timeout);
-          resolve(undefined);
+          resolve();
         };
 
         self.addEventListener('message', evt => {
@@ -234,7 +234,7 @@ export async function initializeBrowserFS({
           $data: {},
         });
       } else {
-        resolve(undefined);
+        resolve();
       }
     });
   });
