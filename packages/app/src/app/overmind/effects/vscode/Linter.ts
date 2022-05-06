@@ -7,7 +7,9 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8]
 import { getCurrentModelPath } from './utils';
 
 const requireAMDModule = paths =>
-  new Promise(resolve => (window as any).require(paths, () => resolve()));
+  new Promise(resolve =>
+    (window as any).require(paths, () => resolve(undefined))
+  );
 
 export class Linter {
   private worker: LinterWorker;

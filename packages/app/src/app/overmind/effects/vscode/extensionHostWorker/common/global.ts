@@ -45,6 +45,6 @@ export function initializeAll() {
     loadBrowserFS();
     initializeGlobals();
 
-    resolve();
+    resolve(undefined);
   });
 }

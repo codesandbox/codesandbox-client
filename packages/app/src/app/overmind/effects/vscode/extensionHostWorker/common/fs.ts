@@ -129,12 +129,12 @@ export async function initializeBrowserFS({
         // Resolve after 3s, if it doesn't resolve, vscode won't be able to resolve the ext host
         // and it won't try to reconnect.
         const timeout = setTimeout(() => {
-          resolve();
+          resolve(undefined);
         }, 3000);
 
         const callResolve = () => {
           clearTimeout(timeout);
-          resolve();
+          resolve(undefined);
         };
 
         self.addEventListener('message', evt => {
@@ -234,7 +234,7 @@ export async function initializeBrowserFS({
           $data: {},
         });
       } else {
-        resolve();
+        resolve(undefined);
       }
     });
   });
