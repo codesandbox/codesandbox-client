@@ -1,5 +1,5 @@
 const requireAMDModule = paths =>
-  new Promise(resolve => (window as any).require(paths, () => resolve()));
+  new Promise<void>(resolve => (window as any).require(paths, () => resolve()));
 
 export default async (title: string, monaco) => {
   if (title == null) return 'javascript';

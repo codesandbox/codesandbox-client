@@ -67,7 +67,7 @@ export async function initializeBrowserFS({
     };
   } = {};
 
-  return new Promise(resolve => {
+  return new Promise<void>(resolve => {
     const config = { ...BROWSER_FS_CONFIG };
     let currentSandboxFs = {};
 
