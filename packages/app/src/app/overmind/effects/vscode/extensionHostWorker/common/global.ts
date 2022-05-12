@@ -40,7 +40,7 @@ export const initializeGlobals = () => {
 
 export function initializeAll() {
   // eslint-disable-next-line no-async-promise-executor
-  return new Promise<void>(async resolve => {
+  return new Promise(async resolve => {
     await initializePolyfills();
     loadBrowserFS();
     initializeGlobals();
