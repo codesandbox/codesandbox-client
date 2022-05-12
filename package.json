@@ -106,7 +106,7 @@
     "overmind-devtools": "^26.0.2",
     "prettier": "2.1.1",
     "pretty-quick": "^3.0.0",
-    "typescript": "4.1.2",
+    "typescript": "4.0.3",
     "username": "^5.1.0"
   },
   "resolutions": {

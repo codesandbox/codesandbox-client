@@ -40,7 +40,7 @@ expect.extend({
 expect.addSnapshotSerializer = addSerializer;
 
 function addScript(src: string) {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.setAttribute('src', src);
     document.body.appendChild(s);
