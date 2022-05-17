@@ -10,6 +10,9 @@ import microsoft from './assets/microsoft.png';
 import shopify from './assets/shopify.png';
 import stripe from './assets/stripe.png';
 import quote from './assets/quote.svg';
+import peggy from './assets/Peggy.jpg';
+import brian from './assets/Brian.jpg';
+import joonie from './assets/Joonie.jpg';
 
 const logos = [microsoft, shopify, atlassian, stripe, framer, algolia];
 
@@ -30,12 +33,15 @@ export const Testimonial = () => {
       <FullSection>
         <Column>
           <BigTitle>CodeSandbox continues to amaze me every day.”</BigTitle>
-          <div>
-            <TestimonialTitle>Peggy Rayzis</TestimonialTitle>
-            <TestimonialRole>
-              Engineering Manager, Apollo GraphQL
-            </TestimonialRole>
-          </div>
+          <AvatarHolder>
+            <img src={peggy} alt="Peggy Rayzis" />
+            <div>
+              <TestimonialTitle>Peggy Rayzis</TestimonialTitle>
+              <TestimonialRole>
+                Engineering Manager, Apollo GraphQL
+              </TestimonialRole>
+            </div>
+          </AvatarHolder>
         </Column>
         <Column>
           <Caption css={{ textAlign: 'center', marginBottom: 16 }}>
@@ -53,19 +59,25 @@ export const Testimonial = () => {
             It's dramatically improved my experience of sharing ideas.”
           </MinorTitle>
 
-          <div>
-            <TestimonialTitle>Brian Vaughn</TestimonialTitle>
-            <TestimonialRole>
-              Software Engineer, React Core Team
-            </TestimonialRole>
-          </div>
+          <AvatarHolder>
+            <img src={brian} alt="Brian Vaughn" />
+            <div>
+              <TestimonialTitle>Brian Vaughn</TestimonialTitle>
+              <TestimonialRole>
+                Software Engineer, React Core Team
+              </TestimonialRole>
+            </div>
+          </AvatarHolder>
         </Column>
         <Column>
           <BigTitle>It feels much more like my local environment.”</BigTitle>
-          <div>
-            <TestimonialTitle>Jonnie Hallman</TestimonialTitle>
-            <TestimonialRole>Designer Developer, Stripe</TestimonialRole>
-          </div>
+          <AvatarHolder>
+            <img src={joonie} alt="Jonnie Hallman" />
+            <div>
+              <TestimonialTitle>Jonnie Hallman</TestimonialTitle>
+              <TestimonialRole>Designer Developer, Stripe</TestimonialRole>
+            </div>
+          </AvatarHolder>
         </Column>
       </FullSection>
     </>
@@ -75,6 +87,17 @@ export const Testimonial = () => {
 /**
  * Elements
  */
+const AvatarHolder = styled.div`
+  display: flex;
+  align-items: center;
+
+  img {
+    margin-right: 16px;
+    width: 48px;
+    height: 48px;
+  }
+`;
+
 const FullSection = styled.div`
   background: #fff;
   display: flex;
