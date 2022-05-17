@@ -67,7 +67,7 @@ export const Switcher: React.FC<{
         </Stack>
 
         <MenuList>
-          <Element css={{ minWidth: 290 }}>
+          <Element css={{ minWidth: 290, maxHeight: 600, overflow: 'auto' }}>
             <Caption
               css={{
                 margin: 0,
