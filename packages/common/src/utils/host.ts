@@ -1,6 +1,10 @@
 const IS_LOCAL_SERVER = Boolean(JSON.stringify(process.env.LOCAL_SERVER));
 
 export default () => {
+  if ('CODESANDBOX_HOST' in process.env) {
+    return `https://${process.env.CODESANDBOX_HOST.replace('$PORT', '3000')}`;
+  }
+
   if ('SANDPACK' in process.env) {
     return '';
   }

@@ -337,7 +337,7 @@ function run(port) {
     });
     http
       .createServer(function (req, res) {
-        if (req.url === '/' || req.url.endsWith('.html')) {
+        if (req.url === '/' || req.url === '/?' || req.url.endsWith('.html')) {
           proxy.web(req, res, {
             target: 'http://localhost:3000/frame.html',
             ignorePath: true,

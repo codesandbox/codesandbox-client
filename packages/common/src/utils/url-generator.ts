@@ -2,7 +2,8 @@ import { Sandbox, SandboxUrlSourceData } from '../types';
 import { isServer } from '../templates/helpers/is-server';
 import * as dashboard from './url-generator/dashboard';
 
-export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
+export const gitHubRepoPattern =
+  /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
 const dotGit = /(\.git)$/;
 
@@ -84,9 +85,8 @@ export const embedUrl = (sandbox: Sandbox) => {
 };
 
 const stagingFrameUrl = (shortid: string, path: string) => {
-  const stagingHost = (process.env.CODESANDBOX_HOST
-    ? process.env.CODESANDBOX_HOST
-    : ''
+  const stagingHost = (
+    process.env.CODESANDBOX_HOST ? process.env.CODESANDBOX_HOST : ''
   ).split('//')[1];
   const segments = stagingHost.split('.');
   const first = segments.shift();
@@ -106,6 +106,13 @@ export const frameUrl = (
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   const templateIsServer = isServer(sandbox.template);
+
+  if (process.env.CODESANDBOX_HOST_V2) {
+    return `https://${process.env.CODESANDBOX_HOST_V2.replace(
+      '$PORT',
+      '3002'
+    )}/${path}`;
+  }
 
   if (process.env.LOCAL_SERVER) {
     if (templateIsServer) {

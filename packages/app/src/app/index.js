@@ -72,7 +72,8 @@ const overmind = createOvermind(config, {
   devtools:
     (window.opener && window.opener !== window) ||
     !window.chrome ||
-    location.search.includes('noDevtools')
+    location.search.includes('noDevtools') ||
+    process.env.CODESANDBOX_HOST
       ? false
       : 'localhost:3031',
   name:

@@ -44,6 +44,9 @@ export default Object.keys(process.env)
       'process.env.NODE_ENV': NODE_ENV,
       'process.env.STAGING_API': STAGING_API,
       'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
+      'process.env.CODESANDBOX_HOST_V2': JSON.stringify(
+        process.env.CODESANDBOX_HOST
+      ),
       'process.env.LOCAL_SERVER': Boolean(LOCAL_SERVER),
       'process.env.STAGING': 'STAGING_BRANCH' in process.env,
       'process.env.VSCODE': Boolean(JSON.stringify(process.env.VSCODE)),
