@@ -76,7 +76,7 @@ const CollaboratorHead = (props: ICollaboratorHeadProps) => (
           content: " ' '",
           position: 'absolute',
           display: 'block',
-          borderRadius: 2,
+          borderRadius: '100%',
           top: 0,
           width: '100%',
           height: '100%',
