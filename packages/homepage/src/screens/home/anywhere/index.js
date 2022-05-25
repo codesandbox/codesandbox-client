@@ -42,11 +42,7 @@ const Anywhere = () => (
         display: block;
       `}
     >
-      Code from anywhere with CodeSandbox for iOS <br />(
-      <a href="/post/introducing-play-js-live/" target="_blank">
-        previously play.js
-      </a>
-      ).
+      Experience the future of web development and build projects with the first cloud IDE for iOS.
     </P>
 
     <Button
