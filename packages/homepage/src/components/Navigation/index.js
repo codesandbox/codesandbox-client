@@ -329,6 +329,28 @@ const Navigation = () => {
                     {
                       Icon: () => (
                         <a
+                          href="https://codesandbox.io/ios"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="CodeSandbox for iOS"
+                        >
+                          <CodeSandbox />
+                        </a>
+                      ),
+                      Label: () => (
+                        <a
+                          href="https://codesandbox.io/ios"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="CodeSandbox for iOS"
+                        >
+                          CodeSandbox for iOS
+                        </a>
+                      ),
+                    },
+                    {
+                      Icon: () => (
+                        <a
                           href="https://sandpack.codesandbox.io/"
                           target="_blank"
                           rel="noopener noreferrer"
