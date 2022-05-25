@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, Location } from '@reach/router';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { ExperimentValues, useExperimentResult } from '@codesandbox/ab';
 
 import { useTheme } from '../layout';
 import Button from '../Button';
@@ -42,26 +41,6 @@ const Navigation = () => {
   const [openedNav, setOpenedNav] = useState('');
   const [hasOpened, setHasOpened] = useState(false);
   const muted = useTheme().homepage.muted;
-
-  const experimentPromise = useExperimentResult('homepage-header-links');
-  const [compactMenu, setCompactMenu] = useState(false);
-
-  useEffect(() => {
-    /* Wait for the API */
-    experimentPromise.then(experiment => {
-      if (experiment === ExperimentValues.A) {
-        /**
-         * A
-         */
-        setCompactMenu(false);
-      } else if (experiment === ExperimentValues.B) {
-        /**
-         * B
-         */
-        setCompactMenu(true);
-      }
-    });
-  }, [experimentPromise]);
 
   const DownButton = () => (
     <svg
@@ -115,67 +94,64 @@ const Navigation = () => {
                   <LogoWrapper to="/">
                     <Logo />
                   </LogoWrapper>
-                  {!compactMenu && (
-                    <List>
-                      <li>
-                        <button
-                          onMouseEnter={() => setOpenedNav('product')}
-                          type="button"
-                        >
-                          Product
-                          <DownButton />
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onMouseEnter={() => setOpenedNav('explore')}
-                          type="button"
-                        >
-                          Explore
-                          <DownButton />
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onMouseEnter={() => setOpenedNav('resources')}
-                          type="button"
-                        >
-                          Resources
-                          <DownButton />
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          onMouseEnter={() => setOpenedNav('support')}
-                          type="button"
-                        >
-                          Support
-                          <DownButton />
-                        </button>
-                      </li>
 
-                      <li>
-                        <Link
-                          to="/pricing"
-                          onMouseEnter={() => setOpenedNav(null)}
-                        >
-                          Pricing
-                        </Link>
-                      </li>
+                  <List>
+                    <li>
+                      <button
+                        onMouseEnter={() => setOpenedNav('product')}
+                        type="button"
+                      >
+                        Product
+                        <DownButton />
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onMouseEnter={() => setOpenedNav('explore')}
+                        type="button"
+                      >
+                        Explore
+                        <DownButton />
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onMouseEnter={() => setOpenedNav('resources')}
+                        type="button"
+                      >
+                        Resources
+                        <DownButton />
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onMouseEnter={() => setOpenedNav('support')}
+                        type="button"
+                      >
+                        Support
+                        <DownButton />
+                      </button>
+                    </li>
 
-                      <Jobs>
-                        <Link
-                          to="/jobs"
-                          onMouseEnter={() => setOpenedNav(null)}
-                        >
-                          Jobs{' '}
-                          {OPEN_JOBS_COUNT && (
-                            <JobBadge>{OPEN_JOBS_COUNT}</JobBadge>
-                          )}
-                        </Link>
-                      </Jobs>
-                    </List>
-                  )}
+                    <li>
+                      <Link
+                        to="/pricing"
+                        onMouseEnter={() => setOpenedNav(null)}
+                      >
+                        Pricing
+                      </Link>
+                    </li>
+
+                    <Jobs>
+                      <Link to="/jobs" onMouseEnter={() => setOpenedNav(null)}>
+                        Jobs{' '}
+                        {OPEN_JOBS_COUNT && (
+                          <JobBadge>{OPEN_JOBS_COUNT}</JobBadge>
+                        )}
+                      </Link>
+                    </Jobs>
+                  </List>
+
                   <List>
                     {!user && (
                       <li className="tablet-remove">
