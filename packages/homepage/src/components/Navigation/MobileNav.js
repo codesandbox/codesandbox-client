@@ -125,6 +125,20 @@ export default () => {
 
                 <li>
                   <a
+                    href="https://codesandbox.io/ios"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="CodeSandbox for iOS"
+                  >
+                    <IconWrapper>
+                      <CodeSandbox />
+                    </IconWrapper>
+                    <span>CodeSandbox for iOS</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a
                     href="https://sandpack.codesandbox.io/"
                     target="_blank"
                     rel="noopener noreferrer"

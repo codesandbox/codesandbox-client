@@ -42,7 +42,7 @@ const Anywhere = () => (
         display: block;
       `}
     >
-      Code from anywhere with play.js by CodeSandbox.
+      Experience the future of web development and build projects with the first cloud IDE for iOS.
     </P>
 
     <Button
@@ -51,9 +51,9 @@ const Anywhere = () => (
         position: relative;
         z-index: 2;
       `}
-      href="/post/introducing-play-js-live/"
+      href="/ios"
     >
-      Learn more about Play.js
+      Learn more about CodeSandbox for iOS
     </Button>
 
     <motion.div
