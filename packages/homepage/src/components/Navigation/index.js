@@ -21,6 +21,7 @@ import SearchIcon from '../../assets/icons/Search';
 import HighlightedICon from '../../assets/icons/Highlighted';
 import NewIcon from '../../assets/icons/New';
 import { OPEN_JOBS_COUNT } from '../../config/hiring';
+import { CHANGELOG_LOCATION } from '../../config/externalResources';
 import { useLogin } from '../../hooks/useLogin';
 import { JobBadge } from '../JobBadge';
 import {
@@ -356,11 +357,25 @@ const Navigation = () => {
                     },
                     {
                       Icon: () => (
-                        <Link to="/changelog">
+                        <a
+                          href={CHANGELOG_LOCATION}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="What's new"
+                        >
                           <NewIcon />
-                        </Link>
+                        </a>
                       ),
-                      Label: () => <Link to="/changelog">What's new</Link>,
+                      Label: () => (
+                        <a
+                          href={CHANGELOG_LOCATION}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="What's new"
+                        >
+                          What's new
+                        </a>
+                      ),
                     },
                   ]}
                 />
