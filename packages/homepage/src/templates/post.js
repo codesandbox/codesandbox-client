@@ -32,7 +32,6 @@ const renderAst = new rehypeReact({
             dependencies: { '@codesandbox/sandpack-react': 'latest' },
             files: {
               '/App.js': `import { Sandpack } from "@codesandbox/sandpack-react";
-import "@codesandbox/sandpack-react/dist/index.css";
 
 const APP_CODE = \`
 import { sum } from 'lodash';
@@ -119,7 +118,6 @@ export const Editor = () => {
   SandpackPreview,
   SandpackProvider
 } from "@codesandbox/sandpack-react";
-import "@codesandbox/sandpack-react/dist/index.css";
 import { Editor } from "./Editor";
 import { TranspiledCode } from "./TranspiledCode";
 
