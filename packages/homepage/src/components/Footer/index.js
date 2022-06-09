@@ -5,6 +5,7 @@ import Github from '../../assets/icons/github';
 import Twitter from '../../assets/icons/twitter';
 import Discord from '../../assets/icons/discord';
 import { OPEN_JOBS_COUNT } from '../../config/hiring';
+import { CHANGELOG_LOCATION } from '../../config/externalResources';
 import { FooterWrapper, Nav, Social, Title } from './elements';
 
 const footerNavElements = [
@@ -29,7 +30,8 @@ const footerNavElements = [
       },
       {
         text: 'What’s new',
-        link: '/changelog',
+        external: true,
+        link: CHANGELOG_LOCATION,
       },
     ],
   },
