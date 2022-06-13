@@ -135,6 +135,7 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
   // if this user is not part of this workspace,
   // they should not be able to fork inside the workspace
   const inActiveWorkspace =
+    !state.activeTeam ||
     state.editor.currentSandbox.team?.id === state.activeTeam;
   const preventForkInsideWorkspace =
     state.activeWorkspaceAuthorization === 'READ' || !inActiveWorkspace;
@@ -147,24 +148,23 @@ export const ForkButton: React.FC<ForkButtonProps> = props => {
 
   return (
     <Stack>
-      {preventForkInsideWorkspace ? null : (
-        <Button
-          onClick={() => props.forkClicked()}
-          loading={state.editor.isForkingSandbox}
-          variant={props.variant}
-          css={
-            otherWorkspaces.length
-              ? {
-                  width: 'calc(100% - 26px)',
-                  borderTopRightRadius: 0,
-                  borderBottomRightRadius: 0,
-                }
-              : {}
-          }
-        >
-          <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
-        </Button>
-      )}
+      <Button
+        onClick={() => props.forkClicked()}
+        loading={state.editor.isForkingSandbox}
+        variant={props.variant}
+        css={
+          otherWorkspaces.length
+            ? {
+                width: 'calc(100% - 26px)',
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+              }
+            : {}
+        }
+      >
+        <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
+      </Button>
+
       {otherWorkspaces.length ? (
         <Tooltip
           label={

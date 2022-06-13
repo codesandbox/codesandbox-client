@@ -181,7 +181,7 @@ export const Actions = () => {
         <TooltipButton
           tooltip={
             permissions.preventSandboxLeaving
-              ? 'You don not have permission to fork this sandbox'
+              ? 'You do not have permission to fork this sandbox'
               : null
           }
           loading={isForkingSandbox}

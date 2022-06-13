@@ -68,6 +68,7 @@ export const signIn = async (
     actions.refetchSandboxInfo();
     state.hasLogIn = true;
     state.isAuthenticating = false;
+    actions.getActiveTeamInfo();
   } catch (error) {
     actions.internal.handleError({
       message: 'Could not authenticate',
