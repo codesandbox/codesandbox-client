@@ -30,9 +30,9 @@ const renderAst = new rehypeReact({
           template="react"
           customSetup={{
             dependencies: { '@codesandbox/sandpack-react': 'latest' },
-            files: {
-              '/App.js': `import { Sandpack } from "@codesandbox/sandpack-react";
-import "@codesandbox/sandpack-react/dist/index.css";
+          }}
+          files={{
+            '/App.js': `import { Sandpack } from "@codesandbox/sandpack-react";
 
 const APP_CODE = \`
 import { sum } from 'lodash';
@@ -51,11 +51,11 @@ export default function App() {
       customSetup={{
         dependencies: {
           lodash: "latest"
-        },
-        files: {
-          "/App.js": {
-            code: APP_CODE
-          }
+        }
+      }}
+      files={{
+        "/App.js": {
+          code: APP_CODE
         }
       }}
       template="react"
@@ -63,7 +63,6 @@ export default function App() {
   );
 }
 `,
-            },
           }}
         />
       );
@@ -75,14 +74,15 @@ export default function App() {
           template="react"
           customSetup={{
             dependencies: { '@codesandbox/sandpack-react': 'latest' },
-            files: {
-              '/TranspiledCode.js': `import { useSandpack } from "@codesandbox/sandpack-react";
+          }}
+          files={{
+            '/TranspiledCode.js': `import { useSandpack } from "@codesandbox/sandpack-react";
 
 export const TranspiledCode = () => {
   const { sandpack } = useSandpack();
 
   if (
-    !sandpack.bundlerState?.transpiledModules[sandpack.activePath + ":"]?.source
+    !sandpack.bundlerState?.transpiledModules[sandpack.activeFile + ":"]?.source
       ?.compiledCode
   ) {
     return null;
@@ -92,14 +92,14 @@ export const TranspiledCode = () => {
     <textarea
       style={{ width: "100%", height: "100%", minHeight: 300 }}
       value={
-        sandpack.bundlerState.transpiledModules[sandpack.activePath + ":"]
+        sandpack.bundlerState.transpiledModules[sandpack.activeFile + ":"]
           .source.compiledCode
       }
       readOnly
     />
   );
 };`,
-              '/Editor.js': `import { useSandpack } from "@codesandbox/sandpack-react";
+            '/Editor.js': `import { useSandpack } from "@codesandbox/sandpack-react";
 
 export const Editor = () => {
   const { sandpack } = useSandpack();
@@ -107,19 +107,18 @@ export const Editor = () => {
   return (
     <textarea
       style={{ width: "100%", height: "100%", minHeight: 300 }}
-      value={sandpack.files[sandpack.activePath].code}
+      value={sandpack.files[sandpack.activeFile].code}
       onChange={(e) => {
         sandpack.updateCurrentFile(e.target.value);
       }}
     />
   );
 };`,
-              '/App.js': `import {
+            '/App.js': `import {
   SandpackLayout,
   SandpackPreview,
   SandpackProvider
 } from "@codesandbox/sandpack-react";
-import "@codesandbox/sandpack-react/dist/index.css";
 import { Editor } from "./Editor";
 import { TranspiledCode } from "./TranspiledCode";
 
@@ -140,11 +139,11 @@ export default function App() {
       customSetup={{
         dependencies: {
           lodash: "latest"
-        },
-        files: {
-          "/App.js": {
-            code: APP_CODE
-          }
+        }
+      }} 
+      files={{
+        "/App.js": {
+          code: APP_CODE
         }
       }}
       template="react"
@@ -152,12 +151,11 @@ export default function App() {
       <SandpackLayout>
         <Editor />
         <TranspiledCode />
-        {/* <SandpackPreview /> */}
+        <SandpackPreview />
       </SandpackLayout>
     </SandpackProvider>
   );
 }`,
-            },
           }}
         />
       );
