@@ -26,7 +26,7 @@ const renderAst = new rehypeReact({
     sandpack1: () => {
       return (
         <Sandpack
-          theme="dark"
+          theme="sandpack-dark"
           template="react"
           customSetup={{
             dependencies: { '@codesandbox/sandpack-react': 'latest' },
@@ -70,7 +70,7 @@ export default function App() {
     sandpack2: () => {
       return (
         <Sandpack
-          theme="dark"
+          theme="sandpack-dark"
           template="react"
           customSetup={{
             dependencies: { '@codesandbox/sandpack-react': 'latest' },

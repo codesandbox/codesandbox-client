@@ -27387,6 +27387,7 @@ react-dev-utils@^9.0.0:
     text-table "0.2.0"
 
 react-devtools-inline@4.4.0, "react-devtools-inline_legacy@npm:react-devtools-inline@4.4.0":
+  name react-devtools-inline_legacy
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/react-devtools-inline/-/react-devtools-inline-4.4.0.tgz#e032a6eb17a9977b682306f84b46e683adf4bf68"
   integrity sha512-ES0GolSrKO8wsKbsEkVeiR/ZAaHQTY4zDh1UW8DImVmm8oaGLl3ijJDvSGe+qDRKPZdPRnDtWWnSvvrgxXdThQ==
