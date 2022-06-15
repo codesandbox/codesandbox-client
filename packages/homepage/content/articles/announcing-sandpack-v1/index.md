@@ -65,7 +65,6 @@ created a new set of themes, icons, design tokens, and components from scratch.
 All themes are available now on `@codesandbox/sandpack-themes`, so which means
 that you’re able now to contribute to Sandpack and create your favorite theme.
 
-[https://sandpack.codesandbox.io/theme](https://sandpack.codesandbox.io/theme)
 
 <video autoplay loop muted playsinline width="100%">
   <source src="./images/themes.mp4" type="video/mp4">
