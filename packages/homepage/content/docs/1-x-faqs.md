@@ -133,5 +133,7 @@ resolve it. For example:
 ## How do I cancel my Pro or Patron plan?
 
 For Pro users, you can downgrade your plan on the
-[Settings page](https://codesandbox.io/dashboard/settings). For legacy Patron users, you can cancel
-your subscription on the [Patron page](https://codesandbox.io/patron).
+[Settings page](https://codesandbox.io/dashboard/settings). 
+
+If you're on one of our legacy Patron plans you can cancel
+your subscription on the [Patron page](https://codesandbox.io/patron). 
