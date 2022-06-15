@@ -1654,6 +1654,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "B2D1",
+      "name": "B2D1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36991862?v=4",
+      "profile": "http://baobangdong.cn",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
