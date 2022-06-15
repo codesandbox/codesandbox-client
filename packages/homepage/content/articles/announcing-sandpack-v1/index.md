@@ -3,12 +3,12 @@ banner: ./images/banner.png
 slug: announcing-sandpack-v1
 authors: ['Danilo Woznica']
 photo: https://avatars.githubusercontent.com/u/4838076?s=400&u=4a6e83e27f793352a773920255ec23af710dc3aa&v=4
-title: Announcing Sandpack v1
-description: TODO
+title: 'Sandpack v1: a fresh design and a new accessible API'
+description: Today, we are proud to announce the first major release of Sandpack V1 - A toolkit for creating in-browser live coding.
 date: 2022-06-16
 ---
 
-Since we announced Sandpack, we didn't stop a minute. We've been working hard alongside the community to improve it and make it even better. And to be honest, we're amazed how the community embraced Sandpack. As a result, many projects can now empower their users and provide a better code experience in their own project and website.
+Since we [announced Sandpack](https://codesandbox.io/post/sandpack-announcement), we didn't stop a minute. We've been working hard alongside the community to improve it and make it even better. And to be honest, we're amazed how the community embraced Sandpack. As a result, many projects can now empower their users and provide a better code experience in their own project and website.
 
 But today, we'd like to introduce a new step in the Sandpack journey. We listened to you, and we're very excited to introduce a major release of Sandpack, which takes into account many feature requests, a complete redesign, and a ton of improvements in the API.
 
@@ -30,7 +30,36 @@ So, at the first look, all the breaking changes introduced in this major version
 
 ### What's new?
 
+#### A new design, from scratch
+
+We challenge ourselves to come up with a solution that could fit in different layouts and contexts, but still be accessible and customizable. As a result, we created a new set of themes, icons, design tokens, and components from scratch.
+
 TODO
+
+
+#### Bring your favorite theme to Sandpack
+
+All themes are available now on `@codesandbox/sandpack-themes`, so which means that you’re able now to contribute to Sandpack and create your favorite theme.
+
+[https://sandpack.codesandbox.io/theme](https://sandpack.codesandbox.io/theme)
+
+TODO
+
+
+#### Sandpack file explorer
+
+We listened to you, and now Sandpack has a new component to navigate, open and close files, empowering your sandboxes and examples. 
+
+TODO
+
+**And much more:**
+
+- SSR: syntax-highlight on the server, dedupe styles, and lighweither output;
+- New API: it fixes many inconsistencies, and improves the discoverability of some options;
+- Improve error message descriptions;
+- Support React 18;
+
+Check out the Migration guide and get more info: [https://sandpack.codesandbox.io/docs/releases/v1](https://sandpack.codesandbox.io/docs/releases/v1)
 
 ### What's next?
 
