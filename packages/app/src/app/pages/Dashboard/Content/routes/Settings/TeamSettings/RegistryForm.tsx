@@ -214,7 +214,7 @@ export const RegistryForm = ({
                     onChange={() => {
                       setProxyEnabled(s => !s);
                     }}
-                    on={isLimitedToScopes}
+                    on={proxyEnabled}
                     disabled={disabled}
                   />
                 </CustomFormField>
