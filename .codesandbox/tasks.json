@@ -1,10 +1,4 @@
 {
-  "previews": {
-    "3000": {
-      "name": "Application",
-      "command": "yarn start:fast"
-    }
-  },
   "tasks": {
     "setup": {
       "name": "Install Dependencies",
@@ -16,11 +10,13 @@
     },
     "app:fast": {
       "name": "Application (fast)",
-      "command": "yarn start:fast"
+      "command": "yarn start:fast",
+      "runAtStart": true
     },
     "app:home:fast": {
       "name": "Application home (fast)",
-      "command": "yarn start:home:fast"
+      "command": "yarn start:home:fast",
+      "runAtStart": true
     }
   },
   "setupTasks": [
