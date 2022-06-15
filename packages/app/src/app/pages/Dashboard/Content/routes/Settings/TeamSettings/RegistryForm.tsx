@@ -193,25 +193,6 @@ export const RegistryForm = ({
                 </Select>
               </CustomFormField>
 
-              <div>
-                <CustomFormField
-                  direction="horizontal"
-                  label="Use the server proxy to access registry (requires CORS setup)"
-                >
-                  <Switch
-                    onChange={() => {
-                      setProxyEnabled(s => !s);
-                    }}
-                    on={isLimitedToScopes}
-                    disabled={disabled}
-                  />
-                </CustomFormField>
-                <Text size={3} variant="muted">
-                  Disabling the proxy will allow you to use the registry behind
-                  a VPN, but will expose the auth token to the browser.
-                </Text>
-              </div>
-
               <PresetComponent
                 registryType={registryType}
                 registryUrl={registryUrl}
@@ -223,6 +204,26 @@ export const RegistryForm = ({
                 setAuthKey={setAuthKey}
                 disabled={disabled}
               />
+
+              <div>
+                <CustomFormField
+                  direction="horizontal"
+                  label="Use the server proxy to access registry"
+                >
+                  <Switch
+                    onChange={() => {
+                      setProxyEnabled(s => !s);
+                    }}
+                    on={isLimitedToScopes}
+                    disabled={disabled}
+                  />
+                </CustomFormField>
+                <Text size={3} variant="muted">
+                  Disabling the proxy will allow you to use the registry behind
+                  a VPN, but will expose the auth token to the browser and
+                  require a CORS setup.
+                </Text>
+              </div>
             </Stack>
             <Stack
               align="center"
