@@ -130,9 +130,9 @@ the code from being automatically executed enabling you to edit your code to
 resolve it. For example:
 [https://codesandbox.io/s/new?runonclick=1](https://codesandbox.io/s/new?runonclick=1)
 
-## How do I cancel my Pro or Patron plan?
+## How do I cancel my Personal Pro, Team Pro or Patron plan?
 
-For Pro users, you can downgrade your plan on the
+For Pro users, once you've logged in you can downgrade your plan on the
 [Settings page](https://codesandbox.io/dashboard/settings). 
 
 If you're on one of our legacy Patron plans you can cancel
