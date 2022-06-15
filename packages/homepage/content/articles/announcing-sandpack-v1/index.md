@@ -4,22 +4,22 @@ slug: announcing-sandpack-v1
 authors: ['Danilo Woznica']
 photo: https://avatars.githubusercontent.com/u/4838076?s=400&u=4a6e83e27f793352a773920255ec23af710dc3aa&v=4
 title: 'Sandpack v1: a fresh design and a new accessible API'
-description: Today, we are proud to announce the first major release of Sandpack V1 - A toolkit for creating in-browser live coding.
-date: 2022-06-16
+description: Today, we are proud to announce the first major release of Sandpack v1 - A toolkit for creating in-browser live coding.
+date: 2022-06-15
 ---
 
 Since we [announced Sandpack](https://codesandbox.io/post/sandpack-announcement), we didn't stop a minute. We've been working hard alongside the community to improve it and make it even better. And to be honest, we're amazed how the community embraced Sandpack. As a result, many projects can now empower their users and provide a better code experience in their own project and website.
 
 But today, we'd like to introduce a new step in the Sandpack journey. We listened to you, and we're very excited to introduce a major release of Sandpack, which takes into account many feature requests, a complete redesign, and a ton of improvements in the API.
 
-### **What is Sandpack?**
+### What is Sandpack?
 
 Sandpack is a component toolkit that makes it possible to have interactive, live-running code editing experiences in the browser. It is the in-browser bundler that powers CodeSandbox that is now open source.
 
 With Sandpack's live coding environment, you get:
 
-- A full editor experience with syntax highlighting.
-- An advanced preview that takes advantage of npm dependency support, hot module reloading, etc.
+- A full editor experience with syntax highlighting;
+- An advanced preview that takes advantage of npm dependency support, hot module reloading, etc;
 - One click away from opening your code snippets directly in CodeSandbox.
 
 ### One step back
@@ -54,7 +54,7 @@ TODO
 
 **And much more:**
 
-- SSR: syntax-highlight on the server, dedupe styles, and lighweither output;
+- SSR: syntax-highlight on the server, dedupe styles, and a more lightweight output;
 - New API: it fixes many inconsistencies, and improves the discoverability of some options;
 - Improve error message descriptions;
 - Support React 18;
