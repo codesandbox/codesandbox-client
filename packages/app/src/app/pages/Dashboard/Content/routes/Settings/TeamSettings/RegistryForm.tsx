@@ -10,6 +10,7 @@ import {
   Icon,
   Link,
   Tooltip,
+  Switch,
 } from '@codesandbox/components';
 import {
   AuthType,
@@ -94,6 +95,9 @@ export const RegistryForm = ({
   const [scopes, setScopes] = React.useState<string[]>(
     registry?.enabledScopes || []
   );
+  const [proxyEnabled, setProxyEnabled] = React.useState(
+    registry?.proxyEnabled
+  );
 
   const addScope = () => {
     setScopes(oldScopes => [...oldScopes, '']);
@@ -118,7 +122,7 @@ export const RegistryForm = ({
     enabledScopes: scopes.filter(s => s !== ''),
     registryAuthType: authenticationType,
     registryUrl,
-    proxyEnabled: true,
+    proxyEnabled,
   });
 
   // We make sure to always show one input field
@@ -241,6 +245,25 @@ export const RegistryForm = ({
                   load performance.
                 </Text>
               </div> */}
+
+              <div>
+                <CustomFormField
+                  direction="horizontal"
+                  label="Use the server proxy to access registry (requires CORS setup)"
+                >
+                  <Switch
+                    onChange={() => {
+                      setProxyEnabled(s => !s);
+                    }}
+                    on={isLimitedToScopes}
+                    disabled={disabled}
+                  />
+                </CustomFormField>
+                <Text size={3} variant="muted">
+                  Disabling the proxy will allow you to use the registry behind
+                  a VPN, but will expose the auth token to the browser.
+                </Text>
+              </div>
 
               {isLimitedToScopes && (
                 <CustomFormField label="Enabled Scopes">
