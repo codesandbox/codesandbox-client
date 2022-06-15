@@ -132,7 +132,7 @@ resolve it. For example:
 
 ## How do I cancel my Personal Pro, Team Pro or Patron plan?
 
-For Pro users, once you've logged in you can downgrade your plan on the
+For Team Pro & Personal Pro users, once you've logged in you can downgrade your plan on the
 [Settings page](https://codesandbox.io/dashboard/settings). 
 
 If you're on one of our legacy Patron plans you can cancel
