@@ -6,10 +6,7 @@ description: Embed a sandbox in docs, blog posts, Medium, and other websites.
 
 ## What is an Embed?
 
-An embed enables you to include a sandbox in your documentation, blog post, or
-website using an iframe, or anywhere with Embedly support, like Medium, Reddit,
-Trello, and Notion. You can show just the code, the preview, or both at the same
-time.
+This is my change.
 
 CodeSandbox has a separate application for the embed. This application is
 specifically built to be as small as possible. If you replace `s` in the URL of
