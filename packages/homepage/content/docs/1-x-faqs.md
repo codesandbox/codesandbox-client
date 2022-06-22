@@ -49,8 +49,8 @@ instead using a default script. If you need to control the scripts, then we
 recommend using a container sandbox.
 
 ## Can I change the Node version used in a container sandbox?
-
-Yes. Container sandboxes run Node v14.18.1 (LTS) by default. However, you can
+Yes. Container sandboxes that are created after May 10 2021 run Node v14.18.1 (LTS) by default.
+For backwards compatibility the older sandboxes are on Node v10. However, you can
 specify a `node` value to alter the version in `sandbox.config.json`, which will
 be used instead. For further details, see [configuration](/docs/configuration).
 
