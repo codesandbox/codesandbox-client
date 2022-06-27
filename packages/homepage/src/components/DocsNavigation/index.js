@@ -2,16 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Link, Location } from '@reach/router';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Button from '../Button';
-import Logo from '../../assets/images/logo.svg';
 import { Global } from '../../pages/docs/_global';
 import { useLogin } from '../../hooks/useLogin';
+import Logo from '../../assets/logo';
 import {
   Header,
   Nav,
   Wrapper,
   UserAvatar,
   LogoWrapper,
-  LogoImage,
   List,
   SearchWrapper,
   Search,
@@ -55,7 +54,7 @@ const DocsNavigation = () => {
                 }}
               >
                 <LogoWrapper to="/">
-                  <LogoImage src={Logo} alt="CodeSandbox Logo" />
+                  <Logo />
                 </LogoWrapper>
                 <List className="hide-m">
                   <li>
