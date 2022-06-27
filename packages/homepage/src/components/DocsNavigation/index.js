@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link, Location } from '@reach/router';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 import Button from '../Button';
+import Logo from '../../assets/logo';
 import { Global } from '../../pages/docs/_global';
 import { useLogin } from '../../hooks/useLogin';
-import Logo from '../../assets/logo';
 import {
   Header,
   Nav,
