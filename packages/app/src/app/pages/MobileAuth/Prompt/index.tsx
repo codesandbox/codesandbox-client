@@ -101,7 +101,7 @@ export const Prompt: FunctionComponent = () => {
           href={deepLink}
           style={{ fontSize: 16, height: 40, width: '100%', marginTop: '1rem' }}
         >
-          Open play.js
+          Open CodeSandbox for iOS
         </Button>
       </Buttons>
     </Container>
