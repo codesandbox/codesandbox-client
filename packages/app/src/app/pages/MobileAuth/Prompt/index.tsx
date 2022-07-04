@@ -3,16 +3,22 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
-import { useAppState } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Buttons, Container } from './elements';
 
 export const Prompt: FunctionComponent = () => {
-  const { authToken, error, user } = useAppState();
+  const { authToken, error, user, isLoggedIn } = useAppState();
 
   const [deepLink, setDeepLink] = useState('');
+  const actions = useActions();
+  useEffect(() => {
+    if (isLoggedIn) {
+      actions.cliMounted();
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     setDeepLink(`codesandbox://auth-completion/?nonce=${authToken}`);

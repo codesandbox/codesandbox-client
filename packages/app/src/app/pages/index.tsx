@@ -97,10 +97,12 @@ const CLI = Loadable(() =>
   }))
 );
 
-const Client = Loadable(() =>
-  import(/* webpackChunkName: 'page-client' */ './Client').then(module => ({
-    default: module.Client,
-  }))
+const MobileAuth = Loadable(() =>
+  import(/* webpackChunkName: 'page-mobile-auth' */ './MobileAuth').then(
+    module => ({
+      default: module.MobileAuth,
+    })
+  )
 );
 
 const VSCodeAuth = Loadable(() =>
@@ -227,7 +229,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
-            <Route path="/client/login" component={Client} />
+            <Route path="/client/login" component={MobileAuth} />
             <Route path="/vscode/login" component={VSCodeAuth} />
             <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
