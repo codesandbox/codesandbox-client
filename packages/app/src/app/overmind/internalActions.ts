@@ -164,9 +164,12 @@ export const addNotification = (
 
 export const authorize = async ({ state, effects }: Context) => {
   try {
+    state.isLoadingAuthToken = true;
     state.authToken = await effects.api.getAuthToken();
   } catch (error) {
     state.editor.error = error.message;
+  } finally {
+    state.isLoadingAuthToken = false;
   }
 };
 export const runProviderAuth = (

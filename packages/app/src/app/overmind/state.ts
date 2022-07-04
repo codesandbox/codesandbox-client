@@ -28,6 +28,7 @@ type State = {
   hasLoadedApp: boolean;
   isAuthenticating: boolean;
   authToken: string | null;
+  isLoadingAuthToken: boolean;
   error: string | null;
   contributors: string[];
   user: CurrentUser | null;
@@ -97,6 +98,7 @@ export const state: State = {
   hasLoadedApp: false,
   isAuthenticating: true,
   authToken: null,
+  isLoadingAuthToken: false,
   error: null,
   user: null,
   activeWorkspaceAuthorization: derived(

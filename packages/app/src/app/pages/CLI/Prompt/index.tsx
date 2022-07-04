@@ -10,13 +10,20 @@ import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Buttons, Container, TokenInput } from './elements';
 
 export const Prompt: FunctionComponent = () => {
-  const { authToken, error, isLoadingCLI, user, isLoggedIn } = useAppState();
+  const {
+    authToken,
+    isLoadingAuthToken,
+    error,
+    isLoadingCLI,
+    user,
+    isLoggedIn,
+  } = useAppState();
   const tokenInputRef = useRef<HTMLInputElement>(null);
 
   const actions = useActions();
   useEffect(() => {
-    if (isLoggedIn) {
-      actions.cliMounted();
+    if (isLoggedIn && !authToken && !isLoadingAuthToken) {
+      actions.internal.authorize();
     }
   }, [isLoggedIn]);
 
