@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import css from '@styled-system/css';
 import { withTheme } from 'styled-components';
-import { useActions } from 'app/overmind';
 import { Element, ThemeProvider } from '@codesandbox/components';
 
+import { useActions } from 'app/overmind';
 import { Container } from './elements';
 import { Prompt } from './Prompt';
 

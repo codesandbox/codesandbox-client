@@ -3,16 +3,28 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
-import { useAppState } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Buttons, Container } from './elements';
 
 export const Prompt: FunctionComponent = () => {
-  const { authToken, error, user } = useAppState();
+  const {
+    authToken,
+    isLoadingAuthToken,
+    error,
+    user,
+    isLoggedIn,
+  } = useAppState();
 
   const [deepLink, setDeepLink] = useState('');
+  const actions = useActions();
+  useEffect(() => {
+    if (isLoggedIn && !authToken && !isLoadingAuthToken) {
+      actions.internal.authorize();
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     setDeepLink(`codesandbox://auth-completion/?nonce=${authToken}`);
@@ -89,7 +101,7 @@ export const Prompt: FunctionComponent = () => {
           href={deepLink}
           style={{ fontSize: 16, height: 40, width: '100%', marginTop: '1rem' }}
         >
-          Open play.js
+          Open CodeSandbox for iOS
         </Button>
       </Buttons>
     </Container>

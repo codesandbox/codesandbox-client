@@ -1,17 +1,31 @@
 import { Button } from '@codesandbox/components';
-import React, { FunctionComponent, useRef } from 'react';
+import React, { FunctionComponent, useEffect, useRef } from 'react';
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
-import { useAppState } from 'app/overmind';
+import { useActions, useAppState } from 'app/overmind';
 
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Buttons, Container, TokenInput } from './elements';
 
 export const Prompt: FunctionComponent = () => {
-  const { authToken, error, isLoadingCLI, user } = useAppState();
+  const {
+    authToken,
+    isLoadingAuthToken,
+    error,
+    isLoadingCLI,
+    user,
+    isLoggedIn,
+  } = useAppState();
   const tokenInputRef = useRef<HTMLInputElement>(null);
+
+  const actions = useActions();
+  useEffect(() => {
+    if (isLoggedIn && !authToken && !isLoadingAuthToken) {
+      actions.internal.authorize();
+    }
+  }, [isLoggedIn]);
 
   if (error) {
     return (
