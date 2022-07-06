@@ -234,7 +234,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
     if (this.scopeWhitelist) {
       return this.scopeWhitelist.some(scope => {
         const [scopeName] = name.split('/');
-        return name === scopeName;
+        return scopeName === scope;
       });
     }
 
