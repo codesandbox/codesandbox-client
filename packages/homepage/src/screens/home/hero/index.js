@@ -14,6 +14,21 @@ export default () => (
         zIndex: 20,
       }}
     >
+      <Title
+        as="div"
+        css={`
+          font-size: 38px;
+          font-family: Inter;
+          margin-bottom: 20px;
+          @media only screen and (max-width: 576px) {
+            font-size: 26px;
+            margin-bottom: 10px;
+          }
+        `}
+      >
+        CodeSandbox
+      </Title>
+
       <Title>
         Where teams build <br /> faster, together.
       </Title>

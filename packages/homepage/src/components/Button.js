@@ -2,14 +2,14 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const styles = css`
-  background: #dcff50;
-  border-radius: 3px;
+  background: #eaff96;
+  border-radius: 4px;
   border: none;
   font-family: ${props => props.theme.homepage.appleFont};
   font-size: 12px;
-  line-height: 120%;
+  line-height: 100%;
   text-align: center;
-  padding: 6px 16px;
+  padding: 8px;
   font-weight: 500;
   text-decoration: none;
   color: #151515;
@@ -25,8 +25,9 @@ const styles = css`
     props.big &&
     css`
       font-size: 16px;
-      padding: 8px 20px;
-      line-height: 24px;
+      padding: 12px;
+      border-radius: 4px;
+      line-height: 100%;
     `}
 
   ${props =>

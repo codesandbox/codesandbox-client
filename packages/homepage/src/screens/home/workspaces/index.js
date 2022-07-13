@@ -60,6 +60,18 @@ const Workspaces = () => {
         }
       `}
     >
+      <motion.div
+        initial={{ opacity: 0, y: 140 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: 0.6,
+          duration: 1,
+          ease: 'easeOut',
+        }}
+      >
+        <img src={dashboardIMG} alt="" />
+      </motion.div>
+
       <motion.div animate={share} transition={transitionTwo}>
         <TeamMember
           css={`
@@ -151,17 +163,6 @@ const Workspaces = () => {
         A link is all you need to hop into a sandbox <br /> and keep development
         work flowing.
       </P>
-      <motion.div
-        initial={{ opacity: 0, y: 140 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          delay: 0.6,
-          duration: 1,
-          ease: 'easeOut',
-        }}
-      >
-        <img src={dashboardIMG} alt="" />
-      </motion.div>
     </div>
   );
 };

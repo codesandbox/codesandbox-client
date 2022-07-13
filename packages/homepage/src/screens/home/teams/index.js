@@ -1,14 +1,12 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React from 'react';
+import { motion } from 'framer-motion';
+import stripe from '../../../assets/images/stripe.svg';
+import microsoft from '../../../assets/images/microsoft.svg';
+import atlassian from '../../../assets/images/atlassian.svg';
+import shopify from '../../../assets/images/shopify.svg';
+import algolia from '../../../assets/images/Algolia.svg';
 
-import stripe from "../../../assets/images/stripe.svg";
-import microsoft from "../../../assets/images/microsoft.svg";
-import atlassian from "../../../assets/images/atlassian.svg";
-import shopify from "../../../assets/images/shopify.svg";
-import algolia from "../../../assets/images/Algolia.svg";
-
-import { List } from "./elements";
-import { P } from "../../../components/Typography";
+import { List } from './elements';
 
 const Teams = () => (
   <motion.div
@@ -16,22 +14,22 @@ const Teams = () => (
     animate={{ opacity: 1 }}
     transition={{
       duration: 1,
-      ease: "easeIn",
+      ease: 'easeIn',
     }}
     css={`
       margin: 0 auto;
-      padding: 2rem 0;
+      // padding: 2rem 0;
     `}
   >
-    <P
+    {/* <P
       css={`
         text-align: center;
       `}
       muted
     >
       Accelerating developers and product teams.
-    </P>
-    <List>
+    </P> */}
+    <List css={{ marginBottom: '6rem' }}>
       <li>
         <a
           href="https://www.stripe.com/"
