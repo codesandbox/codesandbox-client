@@ -5,7 +5,6 @@ import microsoft from '../../../assets/images/microsoft.svg';
 import atlassian from '../../../assets/images/atlassian.svg';
 import shopify from '../../../assets/images/shopify.svg';
 import algolia from '../../../assets/images/Algolia.svg';
-
 import { List } from './elements';
 
 const Teams = () => (

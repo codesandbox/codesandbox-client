@@ -12,7 +12,6 @@ import Anywhere from '../screens/home/anywhere';
 import Explore from '../screens/home/explore';
 import Video from '../screens/home/video';
 import Workspaces from '../screens/home/workspaces';
-
 import csbpBig from '../assets/images/csbp-big.png';
 import csbpMobile from '../assets/images/csbp-mobile.png';
 
