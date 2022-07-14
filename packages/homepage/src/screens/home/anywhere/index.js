@@ -70,6 +70,7 @@ const Anywhere = () => (
     <P
       muted
       as="a"
+      target="_blank"
       css={`
         position: relative;
         z-index: 2;
