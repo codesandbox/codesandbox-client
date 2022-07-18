@@ -29,6 +29,7 @@ import ioana from '../assets/images/people/ioana.jpg';
 import artem from '../assets/images/people/artem.png';
 import aj from '../assets/images/people/aj.jpg';
 import joji from '../assets/images/people/joji.png';
+import david from '../assets/images/people/david.jpg';
 
 const people = [
   {
@@ -197,6 +198,12 @@ const people = [
     name: 'Joji Augustine',
     pic: joji,
     color: '#008900',
+    team: 'Engineering',
+  },
+  {
+    name: 'David Hollins',
+    pic: david,
+    color: '#F24E62',
     team: 'Engineering',
   },
 ];
