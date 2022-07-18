@@ -14,12 +14,14 @@ const Anywhere = () => (
     <div
       css={`
         font-size: 38px;
+        letter-spacing: -0.05em;
         font-family: Inter;
         margin-top: 30px;
         margin-bottom: 20px;
+        font-weight: 500;
         @media only screen and (max-width: 576px) {
           font-size: 26px;
-          margin-bottom: 10px;
+          margin-bottom: 10.5px;
         }
       `}
     >
