@@ -1,5 +1,5 @@
 ---
-banner: ./cover.jpg
+banner: ./cover.jpeg
 slug: open-beta
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
