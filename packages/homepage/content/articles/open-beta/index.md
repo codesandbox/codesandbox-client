@@ -21,6 +21,7 @@ If you want to dive right into the editor, we have a couple example projects you
 - [Vite & React](https://codesandbox.io/p/github/codesandbox/codesandbox-template-vite-react/main?file=%2FREADME.md)
 - [Next.js](https://codesandbox.io/p/github/codesandbox/codesandbox-template-next.js/main)
 - [Nuxt.js](https://codesandbox.io/p/github/codesandbox/codesandbox-template-nuxt/main)
+- [Remix](https://codesandbox.io/p/github/codesandbox/codesandbox-template-remix)
 
 We’ll share more templates and examples over the upcoming weeks.
 
@@ -100,3 +101,4 @@ As shared at the start of the blog post, here are some examples to check out, or
 - [Vite & React](https://codesandbox.io/p/github/codesandbox/codesandbox-template-vite-react/main?file=%2FREADME.md)
 - [Next.js](https://codesandbox.io/p/github/codesandbox/codesandbox-template-next.js/main)
 - [Nuxt.js](https://codesandbox.io/p/github/codesandbox/codesandbox-template-nuxt/main)
+- [Remix](https://codesandbox.io/p/github/codesandbox/codesandbox-template-remix)
