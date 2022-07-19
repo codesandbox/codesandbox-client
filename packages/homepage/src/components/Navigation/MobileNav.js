@@ -212,7 +212,7 @@ export default () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/docs/start">
+                    <Link to="/docs" target="_blank">
                       <IconWrapper>
                         <DocsIcon />
                       </IconWrapper>

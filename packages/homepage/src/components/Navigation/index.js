@@ -220,7 +220,7 @@ const Navigation = () => {
                   components={[
                     {
                       Icon: () => (
-                        <Link to="/docs/start" title="Documentation">
+                        <Link to="/docs" title="Documentation" target="_blank">
                           <DocsIcon />
                         </Link>
                       ),
