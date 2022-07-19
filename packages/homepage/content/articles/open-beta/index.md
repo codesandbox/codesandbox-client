@@ -31,13 +31,17 @@ So, what have we worked on in the meantime? A ton! In this post, we’ll share t
 
 We haven’t been sitting still with infrastructure upgrades! We have fully deployed our Firecracker infrastructure for all projects. What does this mean? Forks will happen within 2 seconds, and you no longer have to worry about branches shutting down.
 
-![Instant forking](./instant-forking-3.gif)
+<video autoplay loop muted playsinline width="100%">
+  <source src="./images/instant-forking-3.mp4" type="video/mp4">
+</video>
 
 ### How does this work**?**
 
 [Firecracker](https://firecracker-microvm.github.io/) enables us to save the memory of a running VM to disk, and we can start new VMs from that memory file. Those new VMs will continue where the last VM left off.
 
-![Flow](./flow.gif)
+<video autoplay loop muted playsinline width="100%">
+  <source src="./images/flow.mp4" type="video/mp4">
+</video>
 
 This means that every time you press “Fork” **you will get an *exact* copy of the development environment**, with running dev servers ready to respond to requests! This is great in case you want to experiment with some changes and don’t want to make changes to the existing environment.
 
@@ -71,7 +75,9 @@ We’ve also added Nix support which allows you to configure the installed tooli
 
 One big advantage of having a development environment per branch is that you can use them to easily review PRs without disrupting your own environment! To make this easier we’ve created a GitHub App that adds a link to a running development environment for every PR.
 
-![Create PR](./csb-create-pr.gif)
+<video autoplay loop muted playsinline width="100%">
+  <source src="./images/csb-create-pr.mp4" type="video/mp4">
+</video>
 
 Using this app allows you to review a PR with a running dev server by just clicking a link. It also allows you to quickly try out some changes in the PR itself, without having to check out the branch locally!
 
