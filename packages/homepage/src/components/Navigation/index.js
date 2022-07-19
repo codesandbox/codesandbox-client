@@ -224,12 +224,17 @@ const Navigation = () => {
                           href="https://codesandbox.io/docs"
                           title="Documentation"
                           target="_blank"
+                          rel="noreferrer"
                         >
                           <DocsIcon />
                         </a>
                       ),
                       Label: () => (
-                        <a href="https://codesandbox.io/docs" target="_blank">
+                        <a
+                          href="https://codesandbox.io/docs"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           Documentation
                         </a>
                       ),

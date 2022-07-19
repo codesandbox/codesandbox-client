@@ -7,6 +7,7 @@ import usePrefersReducedMotion from '../../../utils/isReducedMOtion';
 import dashboardIMG from '../../../assets/images/dashboard.png';
 import { getRandomTeamMembers } from '../../../components/TeamMember';
 import { TeamMemberRandom } from '../../../pages/jobs/_elements';
+
 const TeamMember = styled(TeamMemberRandom)`
   top: 0;
   width: 56px;

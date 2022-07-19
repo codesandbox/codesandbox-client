@@ -73,6 +73,7 @@ const Anywhere = () => (
       muted
       as="a"
       target="_blank"
+      rel="noreferrer"
       css={`
         position: relative;
         z-index: 2;
@@ -95,7 +96,7 @@ const Anywhere = () => (
         duration: 1,
         ease: 'easeOut',
       }}
-    ></motion.div>
+    />
   </div>
 );
 
