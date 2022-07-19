@@ -52,7 +52,7 @@ To contribute you can make your change press “Open PR”. CodeSandbox will han
 
 **Here’s an example of Sandpack running on CodeSandbox Projects:**
 
-![Sandpack project](./sandpack-1.jpeg)
+[![Sandpack project](./sandpack-1.jpeg)](https://codesandbox.io/p/github/codesandbox/sandpack/main?file=%2FREADME.md)
 
 [https://codesandbox.io/p/github/codesandbox/sandpack](https://codesandbox.io/p/github/codesandbox/sandpack/main?file=%2FREADME.md)
 
@@ -93,3 +93,10 @@ Over time, Projects will be unified with sandboxes. This way, you can start with
 Thanks to everyone who has tested CodeSandbox Projects so far, your feedback was tremendously useful and really helped us shape the product. Also a big thanks to the whole CodeSandbox team who worked hard on this release, it’s been a lot of hard work to get this off the ground.
 
 We have a very full roadmap that we’re eager to share. We’re actively incorporating your feedback, so send us an email or [join our Discord community](https://discord.gg/C6vfhW3H6e) to help shape the roadmap!
+
+As shared at the start of the blog post, here are some examples to check out, or you can [go to the dashboard](https://codesandbox.io/p/dashboard) to import an existing GitHub project!
+
+- [Deno](https://codesandbox.io/p/github/codesandbox/codesandbox-template-deno-server/main?file=%2FREADME.md)
+- [Vite & React](https://codesandbox.io/p/github/codesandbox/codesandbox-template-vite-react/main?file=%2FREADME.md)
+- [Next.js](https://codesandbox.io/p/github/codesandbox/codesandbox-template-next.js/main)
+- [Nuxt.js](https://codesandbox.io/p/github/codesandbox/codesandbox-template-nuxt/main)
