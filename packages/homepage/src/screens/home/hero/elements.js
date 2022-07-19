@@ -28,7 +28,7 @@ export const HeroWrapper = styled.div`
 export const Title = styled.h1`
   font-size: 64px;
   letter-spacing: -0.025em;
-  line-height: 120%;
+  line-height: 100%;
   font-family: ${props => props.theme.homepage.appleFont};
   font-family: 'TWKEverett', sans-serif;
 

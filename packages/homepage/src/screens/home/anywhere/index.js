@@ -1,35 +1,58 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-
 import { H2, P } from '../../../components/Typography';
 import padIMG from '../../../assets/images/pad.png';
-import phoneIMG from '../../../assets/images/phone.png';
-
-import Button from '../../../components/Button';
 
 const Anywhere = () => (
   <div
     css={`
-      padding: 0 0 30rem 0;
-      margin-bottom: 10rem;
       text-align: center;
-      @media screen and (max-width: 992px) {
-        margin-bottom: 4rem;
-        padding: 0 0 10rem 0;
-      }
-
-      @media (max-width: 576px) {
-        padding: 0 0 0 0;
-      }
     `}
   >
-    <H2
+    <img src={padIMG} alt="CodeSandbox for iOS" />
+
+    <div
       css={`
-        text-align: center;
-        margin-bottom: 24px;
+        font-size: 38px;
+        letter-spacing: -0.05em;
+        font-family: Inter;
+        margin-top: 30px;
+        margin-bottom: 20px;
+        font-weight: 500;
+        @media only screen and (max-width: 576px) {
+          font-size: 26px;
+          margin-bottom: 10.5px;
+        }
       `}
     >
-      Code from anywhere.
+      CodeSandbox{' '}
+      <span
+        css={`
+          font-size: 38px;
+          font-family: Inter;
+          margin-bottom: 20px;
+          font-weight: 300;
+          @media only screen and (max-width: 576px) {
+            font-size: 26px;
+            margin-bottom: 10px;
+          }
+        `}
+      >
+        for iOS
+      </span>{' '}
+    </div>
+
+    <H2
+      css={`
+        font-size: 104px;
+        margin-bottom: 24px;
+        @media only screen and (max-width: 576px) {
+          font-size: 56px;
+          margin-bottom: 10px;
+        }
+      `}
+    >
+      Anywhere, <br /> anytime.
     </H2>
     <P
       // big
@@ -38,23 +61,29 @@ const Anywhere = () => (
         text-align: center;
         margin: auto;
         margin-bottom: 2rem;
-        max-width: 650px;
+        max-width: 500px;
         display: block;
       `}
     >
-      Experience the future of web development and build projects with the first cloud IDE for iOS.
+      Experience the future of web development and build projects with the first
+      cloud IDE for iOS.
     </P>
 
-    <Button
-      big
+    <P
+      muted
+      as="a"
+      target="_blank"
+      rel="noreferrer"
       css={`
         position: relative;
         z-index: 2;
+        color: #e3ff73;
+        text-decoration: none;
       `}
       href="/ios"
     >
-      Learn more about CodeSandbox for iOS
-    </Button>
+      Learn more
+    </P>
 
     <motion.div
       css={`
@@ -67,54 +96,7 @@ const Anywhere = () => (
         duration: 1,
         ease: 'easeOut',
       }}
-    >
-      <div
-        css={`
-          margin: 6rem 4rem 0 7rem;
-          max-height: 320px;
-          max-width: 1024px;
-          display: block;
-        `}
-      >
-        <div
-          css={`
-            position: relative;
-            margin: -14rem auto 0rem -10rem;
-
-            @media (max-width: 992px) {
-              margin: -8rem 0 0 -4rem;
-            }
-          `}
-        >
-          <img src={padIMG} alt="Play.js" />
-
-          <div
-            css={`
-              position: absolute;
-
-              top: 16rem;
-              right: 4rem;
-
-              width: 100%;
-              height: 100%;
-              max-width: 340px;
-              max-height: 480px;
-
-              @media (max-width: 1023px) {
-                display: none;
-              }
-
-              @media (max-width: 1200px) {
-                top: 12rem;
-                right: 0rem;
-              }
-            `}
-          >
-            <img src={phoneIMG} alt="" />
-          </div>
-        </div>
-      </div>
-    </motion.div>
+    />
   </div>
 );
 

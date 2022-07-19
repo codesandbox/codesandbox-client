@@ -127,7 +127,7 @@ export const BoxPlanButton = styled.div`
   height: 56px;
   width: 100%;
 
-  background: #090909;
+  background: #161616;
   color: #fff;
 
   line-height: 56px;

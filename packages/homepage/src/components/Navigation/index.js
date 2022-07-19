@@ -220,12 +220,23 @@ const Navigation = () => {
                   components={[
                     {
                       Icon: () => (
-                        <Link to="/docs/start" title="Documentation">
+                        <a
+                          href="https://codesandbox.io/docs"
+                          title="Documentation"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           <DocsIcon />
-                        </Link>
+                        </a>
                       ),
                       Label: () => (
-                        <a href="https://codesandbox.io/docs">Documentation</a>
+                        <a
+                          href="https://codesandbox.io/docs"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Documentation
+                        </a>
                       ),
                     },
                     {
