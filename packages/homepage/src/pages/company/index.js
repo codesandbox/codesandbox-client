@@ -241,6 +241,7 @@ export default () => (
         <TeamMember name="aj" />
         <TeamMember name="joji" />
         <TeamMember name="david" />
+        <TeamMember name="tristan" />
 
         <Link
           to={`/jobs`}

@@ -34,9 +34,11 @@ export default function HTML(props) {
           name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no"
         />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
         <link
-          rel="preload"
-          href="https://codesandbox.io/static/fonts/inter/inter.css"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap"
+          rel="stylesheet"
         />
         {props.headComponents}
       </head>

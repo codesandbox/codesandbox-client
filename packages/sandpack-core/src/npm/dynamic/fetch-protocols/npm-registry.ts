@@ -232,7 +232,10 @@ export class NpmRegistryFetcher implements FetchProtocol {
 
   public condition = (name: string, version: string): boolean => {
     if (this.scopeWhitelist) {
-      return this.scopeWhitelist.some(scope => name.startsWith(scope));
+      return this.scopeWhitelist.some(scope => {
+        const [scopeName] = name.split('/');
+        return scopeName === scope;
+      });
     }
 
     return true;

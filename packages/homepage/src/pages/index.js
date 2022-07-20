@@ -1,10 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React from 'react';
-
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
-
 import Layout, { WRAPPER_STYLING } from '../components/layout';
-
 import Hero from '../screens/home/hero';
 import DevExperienceOne from '../screens/home/devExperienceOne';
 import DevExperience from '../screens/home/devExperience';
@@ -15,9 +12,8 @@ import Anywhere from '../screens/home/anywhere';
 import Explore from '../screens/home/explore';
 import Video from '../screens/home/video';
 import Workspaces from '../screens/home/workspaces';
-
-import csbpBig from '../assets/images/csbp-big.jpg';
-import csbpMobile from '../assets/images/csbp-mobile.jpg';
+import csbpBig from '../assets/images/csbp-big.png';
+import csbpMobile from '../assets/images/csbp-mobile.png';
 
 // eslint-disable-next-line
 console.log(
@@ -48,11 +44,17 @@ const Homepage = () => (
     >
       <a
         href="https://projects.codesandbox.io/"
+        target="_blank"
+        rel="noreferrer"
         title="Experience the future of web development."
       >
         <picture>
           <source media="(max-width:620px)" srcSet={csbpMobile} />
-          <img src={csbpBig} alt="Experience the future of web development." />
+          <img
+            src={csbpBig}
+            alt="Experience the future of web development."
+            style={{ borderRadius: '4px' }}
+          />
         </picture>
       </a>
     </section>

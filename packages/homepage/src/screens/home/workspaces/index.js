@@ -2,11 +2,9 @@ import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { H2, P } from '../../../components/Typography';
-
 import { applyParallax } from '../../../utils/parallax';
 import usePrefersReducedMotion from '../../../utils/isReducedMOtion';
 import dashboardIMG from '../../../assets/images/dashboard.png';
-
 import { getRandomTeamMembers } from '../../../components/TeamMember';
 import { TeamMemberRandom } from '../../../pages/jobs/_elements';
 
@@ -54,12 +52,25 @@ const Workspaces = () => {
     <div
       css={`
         padding: 0rem 0 0 0;
+        margin-top: 150px;
 
         @media screen and (max-width: 1023px) {
           padding-top: 0px;
         }
       `}
     >
+      <motion.div
+        initial={{ opacity: 0, y: 140 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: 0.6,
+          duration: 1,
+          ease: 'easeOut',
+        }}
+      >
+        <img src={dashboardIMG} alt="" />
+      </motion.div>
+
       <motion.div animate={share} transition={transitionTwo}>
         <TeamMember
           css={`
@@ -151,17 +162,6 @@ const Workspaces = () => {
         A link is all you need to hop into a sandbox <br /> and keep development
         work flowing.
       </P>
-      <motion.div
-        initial={{ opacity: 0, y: 140 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          delay: 0.6,
-          duration: 1,
-          ease: 'easeOut',
-        }}
-      >
-        <img src={dashboardIMG} alt="" />
-      </motion.div>
     </div>
   );
 };

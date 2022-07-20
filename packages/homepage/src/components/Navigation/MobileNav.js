@@ -212,12 +212,16 @@ export default () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/docs/start">
+                    <a
+                      href="https://codesandbox.io/docs"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       <IconWrapper>
                         <DocsIcon />
                       </IconWrapper>
                       <span>Documentation</span>
-                    </Link>
+                    </a>
                   </li>
                   <li>
                     <Link to="/blog">
