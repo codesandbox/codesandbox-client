@@ -30,6 +30,7 @@ import artem from '../assets/images/people/artem.png';
 import aj from '../assets/images/people/aj.jpg';
 import joji from '../assets/images/people/joji.png';
 import tristan from '../assets/images/people/tristan.jpg';
+import david from '../assets/images/people/david.jpg';
 
 const people = [
   {
@@ -203,6 +204,12 @@ const people = [
   {
     name: 'Tristan Dubbeld',
     pic: tristan,
+    color: '#F24E62',
+    team: 'Engineering',
+  },
+  {
+    name: 'David Hollins',
+    pic: david,
     color: '#F24E62',
     team: 'Engineering',
   },
