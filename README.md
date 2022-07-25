@@ -269,6 +269,7 @@ Thanks goes to these wonderful people
     <td align="center"><a href="https://stefanretief.com"><img src="https://avatars.githubusercontent.com/u/3196604?v=4" width="100px;" alt="Stefan Retief"/><br /><sub><b>Stefan Retief</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3AStefanRetief" title="Bug reports">🐛</a></td>
   </tr>
   <tr>
+        <td align="center"><a href="http://joshellis.co.uk"><img src="https://avatars.githubusercontent.com/u/37798644?v=4" width="100px;" alt="Josh"/><br /><sub><b>Josh</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=joshuaellis" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/aditya211935"><img src="https://avatars.githubusercontent.com/u/23213686?v=4" width="100px;" alt="Aditya"/><br /><sub><b>Aditya</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/issues?q=author%3Aaditya211935" title="Bug reports">🐛</a> <a href="https://github.com/codesandbox/codesandbox-client/commits?author=aditya211935" title="Code">💻</a></td>
     <td align="center"><a href="http://baobangdong.cn"><img src="https://avatars.githubusercontent.com/u/36991862?v=4" width="100px;" alt="B2D1"/><br /><sub><b>B2D1</b></sub></a><br /><a href="https://github.com/codesandbox/codesandbox-client/commits?author=B2D1" title="Documentation">📖</a></td>
   </tr>
