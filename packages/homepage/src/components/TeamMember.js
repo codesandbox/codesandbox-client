@@ -31,6 +31,7 @@ import aj from '../assets/images/people/aj.jpg';
 import joji from '../assets/images/people/joji.png';
 import tristan from '../assets/images/people/tristan.jpg';
 import david from '../assets/images/people/david.jpg';
+import farrell from '../assets/images/people/farrellt.jpg';
 
 const people = [
   {
@@ -212,6 +213,12 @@ const people = [
     pic: david,
     color: '#F24E62',
     team: 'Engineering',
+  },
+  {
+    name: 'Farrell Tatam',
+    pic: farrell,
+    color: '#2986CC',
+    team: 'Operations',
   },
 ];
 
