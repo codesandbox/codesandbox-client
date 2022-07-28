@@ -19,8 +19,8 @@ export const CSBProjectGitHubRepository = ({
   repo;
 }) => {
   const origin = process.env.STAGING_API
-    ? 'codesandbox.stream'
-    : 'codesandbox.io';
+    ? 'https://codesandbox.stream'
+    : 'https://codesandbox.io';
 
   return `${origin}/p/${owner}/${repo}?create=true`;
 };
