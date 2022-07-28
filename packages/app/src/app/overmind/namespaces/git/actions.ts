@@ -170,7 +170,8 @@ export const createRepoClicked = async ({
     state.git.isExported = true;
     state.currentModal = null;
 
-    effects.router.updateSandboxUrl({ git });
+    // Redirect to CodeSandbox Projects
+    window.location.href = `${window.location.origin}}/p/${git.username}/${git.repo}`;
   } catch (error) {
     actions.internal.handleError({
       error,
