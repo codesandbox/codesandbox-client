@@ -11,6 +11,20 @@ const sandboxHost = {
   'https://codesandbox.stream': 'https://codesandbox.dev',
 };
 
+export const CSBProjectGitHubRepository = ({
+  owner,
+  repo,
+}: {
+  owner: string;
+  repo;
+}) => {
+  const origin = process.env.STAGING_API
+    ? 'codesandbox.stream'
+    : 'codesandbox.io';
+
+  return `${origin}/p/${owner}/${repo}?create=true`;
+};
+
 const buildEncodedUri = (
   strings: TemplateStringsArray,
   ...values: Array<string>
