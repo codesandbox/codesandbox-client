@@ -127,6 +127,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
       method: 'get',
       headers,
       mode: 'cors',
+      credentials: 'include',
     };
   }
 
@@ -230,11 +231,13 @@ export class NpmRegistryFetcher implements FetchProtocol {
     return this.tarStore.meta(name, tarball, this.getRequestInit());
   }
 
-  public condition = (name: string, version: string): boolean => {
+  public condition = (packageName: string, version: string): boolean => {
     if (this.scopeWhitelist) {
       return this.scopeWhitelist.some(scope => {
-        const [scopeName] = name.split('/');
-        return scopeName === scope;
+        const [scopePackageName] = packageName.split('/');
+        const [scopeWhitelist] = scope.split('/');
+
+        return scopeWhitelist === scopePackageName;
       });
     }
 
