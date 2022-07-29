@@ -22,7 +22,7 @@ export const CSBProjectGitHubRepository = ({
     ? 'https://codesandbox.stream'
     : 'https://codesandbox.io';
 
-  return `${origin}/p/${owner}/${repo}?create=true`;
+  return `${origin}/p/github/${owner}/${repo}?create=true`;
 };
 
 const buildEncodedUri = (
