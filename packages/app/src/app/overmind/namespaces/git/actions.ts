@@ -15,6 +15,7 @@ import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { NotificationStatus } from '@codesandbox/notifications/lib/state';
 import { Context } from 'app/overmind';
 import { debounce, pipe } from 'overmind';
+import { CSBProjectGitHubRepository } from '@codesandbox/common/lib/utils/url-generator';
 
 import * as internalActions from './internalActions';
 import { createDiff } from './utils';
@@ -170,7 +171,11 @@ export const createRepoClicked = async ({
     state.git.isExported = true;
     state.currentModal = null;
 
-    effects.router.updateSandboxUrl({ git });
+    // Redirect to CodeSandbox Projects
+    window.location.href = CSBProjectGitHubRepository({
+      owner: git.username,
+      repo: git.repo,
+    });
   } catch (error) {
     actions.internal.handleError({
       error,
