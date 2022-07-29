@@ -231,13 +231,11 @@ export class NpmRegistryFetcher implements FetchProtocol {
     return this.tarStore.meta(name, tarball, this.getRequestInit());
   }
 
-  public condition = (packageName: string, version: string): boolean => {
+  public condition = (name: string, version: string): boolean => {
     if (this.scopeWhitelist) {
       return this.scopeWhitelist.some(scope => {
-        const [scopePackageName] = packageName.split('/');
-        const [scopeWhitelist] = scope.split('/');
-
-        return scopeWhitelist === scopePackageName;
+        const [scopeName] = name.split('/');
+        return scopeName === scope;
       });
     }
 
