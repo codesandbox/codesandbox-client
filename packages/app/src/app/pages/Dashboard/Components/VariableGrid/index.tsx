@@ -80,6 +80,7 @@ interface IComponentForTypes {
 const ComponentForTypes: IComponentForTypes = {
   sandbox: React.memo(props => (
     <Sandbox
+      key={props.item.name}
       page={props.page}
       item={props.item}
       isScrolling={props.isScrolling}
@@ -92,7 +93,7 @@ const ComponentForTypes: IComponentForTypes = {
       isScrolling={props.isScrolling}
     />
   )),
-  folder: props => <Folder {...props.item} />,
+  folder: props => <Folder key={props.item.name} {...props.item} />,
   repo: props => <Repo {...props.item} isScrolling={props.isScrolling} />,
   'new-folder': props => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
