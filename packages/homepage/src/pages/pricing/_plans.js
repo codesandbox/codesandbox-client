@@ -29,7 +29,7 @@ const plans = [
         title: 'Private NPM packages',
         caption: 'Use private npm packages from your own custom registry',
         free: false,
-        personal: true,
+        personal: false,
         team: true,
       },
       {
