@@ -80,7 +80,7 @@ interface IComponentForTypes {
 const ComponentForTypes: IComponentForTypes = {
   sandbox: React.memo(props => (
     <Sandbox
-      key={props.item.name}
+      key={props.item.sandbox.id}
       page={props.page}
       item={props.item}
       isScrolling={props.isScrolling}
