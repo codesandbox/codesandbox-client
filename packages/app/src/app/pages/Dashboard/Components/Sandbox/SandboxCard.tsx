@@ -247,7 +247,7 @@ export const SandboxCard = ({
     <Stack
       direction="vertical"
       onClick={onClick}
-      onDoubleClick={onDoubleClick}
+      onDoubleClick={editing ? undefined : onDoubleClick}
       onBlur={onBlur}
       onContextMenu={onContextMenu}
       {...props}
