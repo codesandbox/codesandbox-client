@@ -164,8 +164,7 @@ export const signInPageUrl = (redirectTo?: string) => {
 };
 
 export const signInUrl = (extraScopes: boolean = false) =>
-  '/auth/github' +
-  (extraScopes ? '?scope=user:email,public_repo,workflow' : '');
+  '/auth/github' + (extraScopes ? '?scope=user:email,repo,workflow' : '');
 export const signInVercelUrl = () => '/auth/vercel';
 
 export const profileUrl = (username: string) => `/u/${username}`;
