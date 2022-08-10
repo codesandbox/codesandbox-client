@@ -530,7 +530,7 @@ const Table = styled.table`
     padding-right: 12px;
     position: sticky;
     top: 0px;
-    background: #161616;
+    background: #030303;
 
     &:first-child {
       text-align: left;
