@@ -50,7 +50,7 @@ export const CreateRepo = () => {
           >
             open the GitHub import
           </Link>
-          . This will open the GitHub repo in the more powerful{' '}
+          . This will open the GitHub repo in the new{' '}
           <a
             href="https://projects.codesandbox.io"
             rel="noreferrer"
