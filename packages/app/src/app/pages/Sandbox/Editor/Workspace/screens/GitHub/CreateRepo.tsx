@@ -50,7 +50,15 @@ export const CreateRepo = () => {
           >
             open the GitHub import
           </Link>
-          .
+          . This will open the GitHub repo in the more powerful{' '}
+          <a
+            href="https://projects.codesandbox.io"
+            rel="noreferrer"
+            target="_blank"
+          >
+            CodeSandbox (Projects) editor
+          </a>{' '}
+          which is built for GitHub repos.
         </Text>
         {!isAllModulesSynced && (
           <Text marginBottom={2} block variant="danger">
