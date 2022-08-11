@@ -5,6 +5,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import {
   VariableGrid,
   GUTTER,
+  GRID_MAX_WIDTH,
 } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
@@ -20,7 +21,7 @@ const BannerProjects = styled.a`
   display: block;
 
   width: calc(100% - ${2 * GUTTER}px);
-  max-width: GRID_MAX_WIDTH - 2 * GUTTER;
+  max-width: ${GRID_MAX_WIDTH - 2 * GUTTER}px;
   margin: 0 auto ${GUTTER}px;
 
   img {
