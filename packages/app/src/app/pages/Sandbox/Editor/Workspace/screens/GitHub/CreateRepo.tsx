@@ -40,7 +40,7 @@ export const CreateRepo = () => {
       defaultOpen={!currentSandbox.originalGit}
     >
       <Element paddingX={2}>
-        <Text variant="muted" marginBottom={4} block>
+        <Text variant="muted" marginBottom={2} block>
           Export the content of this sandbox to a new GitHub repository,
           allowing you to commit changes made on CodeSandbox to GitHub. If you
           want to rather import an existing repository,{' '}
@@ -51,6 +51,17 @@ export const CreateRepo = () => {
             open the GitHub import
           </Link>
           .
+        </Text>
+        <Text variant="muted" marginBottom={4} block>
+          This will open the GitHub repo in the new{' '}
+          <a
+            href="https://projects.codesandbox.io?utm_source=editor"
+            rel="noreferrer"
+            target="_blank"
+          >
+            CodeSandbox (Projects) editor
+          </a>{' '}
+          which is built for GitHub repos.
         </Text>
         {!isAllModulesSynced && (
           <Text marginBottom={2} block variant="danger">
