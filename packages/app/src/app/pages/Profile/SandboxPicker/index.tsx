@@ -114,7 +114,7 @@ export const SandboxPicker: React.FC<{ closeModal?: () => void }> = ({
             })}
           >
             {collectionsInPath.map(collection => (
-              <Column key={collection.path} data-column>
+              <Column key={`${collection.path}${collection.name}`} data-column>
                 <FolderCard
                   collection={collection}
                   onClick={() => setPath(collection.path)}

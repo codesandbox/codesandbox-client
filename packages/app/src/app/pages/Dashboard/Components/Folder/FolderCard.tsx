@@ -31,7 +31,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
     direction="vertical"
     gap={2}
     onClick={onClick}
-    onDoubleClick={onDoubleClick}
+    onDoubleClick={editing ? undefined : onDoubleClick}
     onContextMenu={onContextMenu}
     {...props}
     css={css({

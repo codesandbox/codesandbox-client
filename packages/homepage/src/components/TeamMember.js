@@ -5,15 +5,11 @@ import ives from '../assets/images/people/ives.png';
 import bas from '../assets/images/people/bas.png';
 import bogdan from '../assets/images/people/bogdan.png';
 import oskar from '../assets/images/people/oskar.png';
-import danny from '../assets/images/people/danny.png';
 import christian from '../assets/images/people/christian.png';
 import sanne from '../assets/images/people/sanne.png';
-import andras from '../assets/images/people/andras.png';
 import alex from '../assets/images/people/alex.jpg';
 import zeh from '../assets/images/people/zeh.png';
 import danilowoz from '../assets/images/people/danilowoz.jpg';
-import matan from '../assets/images/people/matan.png';
-import scott from '../assets/images/people/scott.png';
 import tamas from '../assets/images/people/tamas.png';
 import jasper from '../assets/images/people/jasper.jpg';
 import joana from '../assets/images/people/joana.jpg';
@@ -59,12 +55,6 @@ const people = [
     team: 'Engineering',
   },
   {
-    name: 'Danny Rutchie',
-    pic: danny,
-    color: '#B567EB',
-    team: 'Design',
-  },
-  {
     name: 'Christian Alfoni',
     pic: christian,
     color: '#F24E62',
@@ -73,12 +63,6 @@ const people = [
   {
     name: 'Sanne Kalkman',
     pic: sanne,
-    color: '#F24E62',
-    team: 'Engineering',
-  },
-  {
-    name: 'András Bácsai',
-    pic: andras,
     color: '#F24E62',
     team: 'Engineering',
   },
@@ -103,18 +87,6 @@ const people = [
   {
     name: 'Danilo Woznica',
     pic: danilowoz,
-    color: '#F24E62',
-    team: 'Engineering',
-  },
-  {
-    name: 'Matan Kushner',
-    pic: matan,
-    color: '#F24E62',
-    team: 'Engineering',
-  },
-  {
-    name: 'Scott Hutcheson',
-    pic: scott,
     color: '#F24E62',
     team: 'Engineering',
   },

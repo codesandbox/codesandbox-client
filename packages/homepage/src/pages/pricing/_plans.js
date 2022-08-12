@@ -29,7 +29,7 @@ const plans = [
         title: 'Private NPM packages',
         caption: 'Use private npm packages from your own custom registry',
         free: false,
-        personal: true,
+        personal: false,
         team: true,
       },
       {
@@ -530,7 +530,7 @@ const Table = styled.table`
     padding-right: 12px;
     position: sticky;
     top: 0px;
-    background: #161616;
+    background: #030303;
 
     &:first-child {
       text-align: left;
