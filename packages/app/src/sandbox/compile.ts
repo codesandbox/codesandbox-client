@@ -913,7 +913,10 @@ async function compile(opts: CompileOptions) {
   if (typeof (window as any).__puppeteer__ === 'function') {
     setTimeout(() => {
       // Give everything some time to evaluate
-      (window as any).__puppeteer__('done');
+      (window as any).__puppeteer__({
+        type: 'done',
+        compilatonError: hadError,
+      });
     }, 100);
   }
 }
