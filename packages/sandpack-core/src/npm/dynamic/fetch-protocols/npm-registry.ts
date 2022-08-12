@@ -131,7 +131,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
       method: 'get',
       headers,
       mode: 'cors',
-      credentials: this.proxyEnabled ? 'include' : 'same-origin',
+      credentials: this.proxyEnabled ? 'include' : undefined,
     };
   }
 
