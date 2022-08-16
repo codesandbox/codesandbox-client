@@ -78,7 +78,7 @@ export async function initialize(dsn: string) {
             ? hint.originalException
             : hint.originalException?.message || exception.value;
 
-        if (!(event instanceof Error) && 'error' in event) {
+        if (!(hint.originalException instanceof Error) && 'error' in event) {
           return null;
         }
 
@@ -117,7 +117,7 @@ export async function initialize(dsn: string) {
         if (
           customError &&
           errorMessage.startsWith('Non-Error exception captured') &&
-          exception.mechanism.handled
+          (exception.mechanism.handled || 'error' in event)
         ) {
           // This is an error coming from the sandbox, return with no error.
           return null;
