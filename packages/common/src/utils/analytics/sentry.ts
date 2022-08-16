@@ -78,6 +78,10 @@ export async function initialize(dsn: string) {
             ? hint.originalException
             : hint.originalException?.message || exception.value;
 
+        if (!(event instanceof Error) && 'error' in event) {
+          return null;
+        }
+
         if (typeof errorMessage !== 'string') {
           errorMessage = '';
         }
