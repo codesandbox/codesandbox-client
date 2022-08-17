@@ -73,6 +73,14 @@ export async function initialize(dsn: string) {
         const exceptionFrame = exception?.stacktrace?.frames?.[0];
         const filename = exceptionFrame?.filename;
 
+        if (
+          !(hint.originalException instanceof Error) &&
+          typeof hint.originalException === 'object' &&
+          'error' in hint.originalException
+        ) {
+          return null;
+        }
+
         let errorMessage =
           typeof hint.originalException === 'string'
             ? hint.originalException
