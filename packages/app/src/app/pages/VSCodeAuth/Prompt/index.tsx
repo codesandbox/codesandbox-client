@@ -1,10 +1,12 @@
-import { Button } from '@codesandbox/components';
 import React, {
   FunctionComponent,
   useCallback,
   useEffect,
   useMemo,
 } from 'react';
+import { Button } from '@codesandbox/components';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { useLocation } from 'react-router-dom';
 import { openUrl, UnsupportedProtocolError } from 'protocol-handlers';
 
@@ -58,11 +60,35 @@ export const Prompt: FunctionComponent = () => {
 
     openUrl(vscodeUrl).catch(openVsCodeError => {
       if (openVsCodeError instanceof UnsupportedProtocolError) {
-        /**
-         * @todo Handle the error: IDE is not installed.
-         * Show a notification.
-         */
+        notificationState.addNotification({
+          status: NotificationStatus.WARNING,
+          message: 'Visual Studio Insiders is not installed',
+          actions: {
+            primary: {
+              label: 'Install',
+              run: () => {
+                window.open(
+                  'https://code.visualstudio.com/insiders/',
+                  '_blank',
+                  'noopener,noreferrer'
+                );
+              },
+            },
+          },
+        });
+        return;
       }
+
+      notificationState.addNotification({
+        status: NotificationStatus.ERROR,
+        message: 'Failed to launch Visual Studio Code',
+        actions: {
+          primary: {
+            label: 'Try again',
+            run: () => openInVsCode(),
+          },
+        },
+      });
     });
   }, [vscodeUrl, authToken]);
 
