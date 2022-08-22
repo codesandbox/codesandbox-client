@@ -1,5 +1,12 @@
 import { Button } from '@codesandbox/components';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
+import { useLocation } from 'react-router-dom';
+import { openUrl, UnsupportedProtocolError } from 'protocol-handlers';
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
@@ -17,8 +24,12 @@ export const Prompt: FunctionComponent = () => {
     user,
     isLoggedIn,
   } = useAppState();
+  const location = useLocation();
+  const query = useMemo(() => new URLSearchParams(location.search), [
+    location.search,
+  ]);
+  const isInsiders = query.get('insiders') === 'true';
 
-  const [deepLink, setDeepLink] = useState('');
   const actions = useActions();
   useEffect(() => {
     if (isLoggedIn && !authToken && !isLoadingAuthToken) {
@@ -26,14 +37,37 @@ export const Prompt: FunctionComponent = () => {
     }
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    const deeplinkUrl = `vscode://CodeSandbox-io.codesandbox-projects/auth-completion?token=${authToken}`;
+  const vscodeUrl = useMemo(() => {
+    const url = new URL(
+      '/auth-completion',
+      'vscode://CodeSandbox-io.codesandbox-projects'
+    );
+    url.searchParams.set('token', authToken);
 
-    if (authToken) {
-      setDeepLink(deeplinkUrl);
-      window.open(deeplinkUrl);
+    if (isInsiders) {
+      url.protocol = 'vscode-insiders://';
     }
-  }, [authToken]);
+
+    return url;
+  }, [authToken, isInsiders]);
+
+  const openInVsCode = useCallback(() => {
+    if (!authToken) {
+      return;
+    }
+
+    openUrl(vscodeUrl).catch(openVsCodeError => {
+      if (openVsCodeError instanceof UnsupportedProtocolError) {
+        /**
+         * @todo Handle the error: IDE is not installed.
+         * Show a notification.
+         */
+      }
+    });
+  }, [vscodeUrl, authToken]);
+
+  // Attempt to open VS Code when the page mounts.
+  useEffect(() => openInVsCode(), [openInVsCode]);
 
   if (error) {
     return (
@@ -103,10 +137,12 @@ export const Prompt: FunctionComponent = () => {
         <Button
           as="a"
           autoWidth
-          href={deepLink}
+          href={vscodeUrl.href}
           style={{ fontSize: 16, height: 40, width: '100%', marginTop: '1rem' }}
         >
-          Open VSCode
+          {isInsiders
+            ? 'Open Visual Studio Code Insiders'
+            : 'Open Visual Studio Code'}
         </Button>
       </Buttons>
     </Container>
