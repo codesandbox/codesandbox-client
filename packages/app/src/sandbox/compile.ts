@@ -339,7 +339,7 @@ async function initializeManager(
   customNpmRegistries.forEach(registry => {
     const cleanUrl = registry.registryUrl.replace(/\/$/, '');
 
-    const options: NpmRegistryOpts = {};
+    const options: NpmRegistryOpts = { proxyEnabled: registry.proxyEnabled };
 
     if (registry.limitToScopes) {
       options.scopeWhitelist = registry.enabledScopes;
