@@ -72,6 +72,8 @@ export type NpmRegistryOpts = {
    * Allows you to overwrite the tarball url if you have a custom location for it.
    */
   provideTarballUrl?: TarbalUrlTransformer;
+
+  proxyEnabled?: boolean;
 };
 
 export class NpmRegistryFetcher implements FetchProtocol {
@@ -86,12 +88,14 @@ export class NpmRegistryFetcher implements FetchProtocol {
   private scopeWhitelist: string[] | undefined;
   private authToken: string | undefined;
   private provideTarballUrl?: TarbalUrlTransformer;
+  private proxyEnabled?: boolean = false;
 
   constructor(private registryLocation: string, config: NpmRegistryOpts) {
     this.proxyUrl = config.proxyUrl;
     this.scopeWhitelist = config.scopeWhitelist;
     this.authToken = config.authToken;
     this.provideTarballUrl = config.provideTarballUrl;
+    this.proxyEnabled = config.proxyEnabled;
   }
 
   private getProxiedUrl(url: string) {
@@ -127,7 +131,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
       method: 'get',
       headers,
       mode: 'cors',
-      credentials: 'include',
+      credentials: this.proxyEnabled ? 'include' : 'same-origin',
     };
   }
 
