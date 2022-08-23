@@ -41,8 +41,8 @@ export const Prompt: FunctionComponent = () => {
 
   const vscodeUrl = useMemo(() => {
     const url = new URL(
-      '/auth-completion',
-      'vscode://CodeSandbox-io.codesandbox-projects'
+      'auth-completion',
+      'vscode://CodeSandbox-io.codesandbox-projects/'
     );
     url.searchParams.set('token', authToken);
 
