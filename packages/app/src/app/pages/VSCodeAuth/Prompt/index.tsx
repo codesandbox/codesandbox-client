@@ -161,10 +161,9 @@ export const Prompt: FunctionComponent = () => {
 
       <Buttons>
         <Button
-          as="a"
           autoWidth
-          href={vscodeUrl.href}
           style={{ fontSize: 16, height: 40, width: '100%', marginTop: '1rem' }}
+          onClick={openInVsCode}
         >
           {isInsiders
             ? 'Open Visual Studio Code Insiders'
