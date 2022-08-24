@@ -296,7 +296,9 @@ a VM extremely fast. Looking back at the steps, the new timings are:
 3. Copy the memory files + disk (~800ms)
 4. Start new VM from those files (~400ms)
 
-Which gives us clone timings that are well below two seconds!
+Which gives us clone timings that are well below two seconds! Here's a fork of
+Vite (you can try for yourself
+[here](http://codesandbox.io/p/github/codesandbox/codesandbox-template-vite-react/main?file=%2FREADME.md)):
 
 <video autoplay loop muted width="100%">
   <source src="./images/V2Fork.mp4" type="video/mp4">
