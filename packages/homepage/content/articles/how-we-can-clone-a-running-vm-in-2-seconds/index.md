@@ -304,8 +304,8 @@ Vite (you can try for yourself
   <source src="./images/V2Fork.mp4" type="video/mp4">
 </video>
 
-The total timings can be seen below. There is more happening than only the clone
-itself, but it shows that the total time is still within 2 seconds:
+The total timings can be seen below. Note that there is more happening than the
+clone itself, but the total time is still below 2 seconds:
 
 ![Trace timings from Honeycomb](./images/trace-timings.png)
 
