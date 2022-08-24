@@ -29,8 +29,9 @@ browser. Whenever you would look at a sandbox, _you_ would execute the code so
 that _we_ wouldn’t have to. Besides being cheap, this was also fast because we
 had full control over how the code was bundled. Forks were fast:
 
-[Video of Forking in v1, making a change in a sandbox, pressing fork and making
-a change in the new sandbox]
+<video autoplay loop muted width="100%">
+  <source src="./images/V1fork.mp4" type="video/mp4">
+</video>
 
 However, there was a downside to this approach: we were limited to the code that
 we could run in the browser. If you wanted to run a big project that requires
@@ -106,12 +107,18 @@ Also, resuming is fast. Firecracker will only read the memory that the VM needs
 to start (as the memory is `mmap`ed), which results in resume timings within
 ~200-300ms.
 
-Here’s a video where we resume a VM from hibernation:
+Here’s a timing comparison for starting our own editor (a Next.js project) with
+different types of caching:
 
-[VM resuming from hibernation. Maybe show a curl to show how fast a VM starts]
+| Type of cache available   | Time to running preview |
+| ------------------------- | ----------------------- |
+| No caches (fresh start)   | 132.2s                  |
+| Preinstalled node_modules | 48.4s                   |
+| Preinstalled build cache  | 22.2s                   |
+| Memory snapshots          | 0.6s                    |
 
 > There’s a catch to it as well. Saving a memory snapshot actually takes a
-> while, which I’ll get to later.
+> while, which I'll cover in this post.
 
 I’m very excited about this. It gives the feeling that the VM is always running,
 even though it’s not taking resources. We use this a lot: every branch on
@@ -291,8 +298,12 @@ a VM extremely fast. Looking back at the steps, the new timings are:
 
 Which gives us clone timings that are well below two seconds!
 
-The total timings can be seen below—there is more happening than only the clone
-itself, but it shows that we can clone a VM within 2 seconds:
+<video autoplay loop muted width="100%">
+  <source src="./images/V2Fork.mp4" type="video/mp4">
+</video>
+
+The total timings can be seen below. There is more happening than only the clone
+itself, but it shows that the total time is still within 2 seconds:
 
 ![Trace timings from Honeycomb](./images/trace-timings.png)
 
@@ -301,15 +312,16 @@ GraphQL service with 20 microservices, or a single node server. We can
 consistently resume and clone VMs within 2 seconds. No need to wait for a
 development server to boot.
 
-Here’s an example where I go to our own repo running the editor, fork the `main`
+Here’s an example where I go to our own repo (running Next.js), fork the `main`
 branch (which copies the VM), and make a change:
 
 <video controls muted width="100%">
   <source src="./images/FullFlow.mp4" type="video/mp4">
 </video>
 
-Here’s another example where we run this flow:
-https://twitter.com/CompuIves/status/1554800977798381571
+We also have
+[a Linear integration](https://twitter.com/CompuIves/status/1554800977798381571)
+that integrates with this.
 
 We have tested this flow a lot with different development environments. I
 thought it would be very interesting if we can try cloning more than only
@@ -349,6 +361,11 @@ discussed yet:
   works
 - How to handle network and IP duplicates on cloned VMs
 - Turning a Dockerfile into a rootfs for the MicroVM (quickly)
+
+There are also still improvements we can do to improve the speed of cloning. We
+still do many API calls sequentially, and the speed of our filesystem (`xfs`)
+can be improved. Currently it gets fragmented quickly, due to many random
+writes.
 
 Over the upcoming months we’ll write more about this. If you have any questions
 related to this, don’t hesitate to
