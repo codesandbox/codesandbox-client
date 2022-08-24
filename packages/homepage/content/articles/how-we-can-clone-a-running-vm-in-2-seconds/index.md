@@ -52,7 +52,7 @@ exciting recent developments in this field. Amazon created Firecracker to power
 AWS Lambda and AWS Fargate, and nowadays it’s used by companies like
 [Fly.io](http://fly.io/) and CodeSandbox. It’s written in Rust, and the code is
 very readable. If you’re interested in how it works, you should definitely check
-[their repo](https://github.com/firecracker-microvm/firecracker) !
+[their repo](https://github.com/firecracker-microvm/firecracker)!
 
 Firecracker spawns a MicroVM instead of a VM. MicroVMs are more lightweight:
 instead of waiting for 5 seconds for a “normal” VM to boot, you will get a
