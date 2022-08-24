@@ -1,5 +1,14 @@
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 import { Button } from '@codesandbox/components';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
+import { useLocation } from 'react-router-dom';
+import { openUrl, UnsupportedProtocolError } from 'protocol-handlers';
 
 import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
@@ -17,8 +26,12 @@ export const Prompt: FunctionComponent = () => {
     user,
     isLoggedIn,
   } = useAppState();
+  const location = useLocation();
+  const query = useMemo(() => new URLSearchParams(location.search), [
+    location.search,
+  ]);
+  const isInsiders = query.get('insiders') === 'true';
 
-  const [deepLink, setDeepLink] = useState('');
   const actions = useActions();
   useEffect(() => {
     if (isLoggedIn && !authToken && !isLoadingAuthToken) {
@@ -26,14 +39,61 @@ export const Prompt: FunctionComponent = () => {
     }
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    const deeplinkUrl = `vscode://CodeSandbox-io.codesandbox-projects/auth-completion?token=${authToken}`;
+  const vscodeUrl = useMemo(() => {
+    const url = new URL(
+      'auth-completion',
+      'vscode://CodeSandbox-io.codesandbox-projects/'
+    );
+    url.searchParams.set('token', authToken);
 
-    if (authToken) {
-      setDeepLink(deeplinkUrl);
-      window.open(deeplinkUrl);
+    if (isInsiders) {
+      url.protocol = 'vscode-insiders://';
     }
-  }, [authToken]);
+
+    return url;
+  }, [authToken, isInsiders]);
+
+  const openInVsCode = useCallback(() => {
+    if (!authToken) {
+      return;
+    }
+
+    openUrl(vscodeUrl).catch(openVsCodeError => {
+      if (openVsCodeError instanceof UnsupportedProtocolError) {
+        notificationState.addNotification({
+          status: NotificationStatus.WARNING,
+          message: 'Visual Studio Insiders is not installed',
+          actions: {
+            primary: {
+              label: 'Install',
+              run: () => {
+                window.open(
+                  'https://code.visualstudio.com/insiders/',
+                  '_blank',
+                  'noopener,noreferrer'
+                );
+              },
+            },
+          },
+        });
+        return;
+      }
+
+      notificationState.addNotification({
+        status: NotificationStatus.ERROR,
+        message: 'Failed to launch Visual Studio Code',
+        actions: {
+          primary: {
+            label: 'Try again',
+            run: () => openInVsCode(),
+          },
+        },
+      });
+    });
+  }, [vscodeUrl, authToken]);
+
+  // Attempt to open VS Code when the page mounts.
+  useEffect(() => openInVsCode(), [openInVsCode]);
 
   if (error) {
     return (
@@ -101,12 +161,13 @@ export const Prompt: FunctionComponent = () => {
 
       <Buttons>
         <Button
-          as="a"
           autoWidth
-          href={deepLink}
           style={{ fontSize: 16, height: 40, width: '100%', marginTop: '1rem' }}
+          onClick={openInVsCode}
         >
-          Open VSCode
+          {isInsiders
+            ? 'Open Visual Studio Code Insiders'
+            : 'Open Visual Studio Code'}
         </Button>
       </Buttons>
     </Container>

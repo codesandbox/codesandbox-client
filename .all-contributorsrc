@@ -1672,6 +1672,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "kettanaito",
+      "name": "Artem",
+      "avatar_url": "https://github.com/kettanaito.png",
+      "profile": "https://github.com/kettanaito",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
