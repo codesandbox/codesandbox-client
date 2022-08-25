@@ -292,7 +292,7 @@ export const signInButtonClicked = async (
   { actions, state }: Context,
   options: {
     useExtraScopes?: boolean;
-    provider: 'google' | 'github';
+    provider: 'apple' | 'google' | 'github';
   }
 ) => {
   const { useExtraScopes, provider } = options || {};
@@ -398,6 +398,10 @@ export const signInGithubClicked = async ({ state, actions }: Context) => {
 
 export const signInGoogleClicked = async ({ actions }: Context) => {
   await actions.internal.signIn({ provider: 'google' });
+};
+
+export const signInAppleClicked = async ({ actions }: Context) => {
+  await actions.internal.signIn({ provider: 'apple' });
 };
 
 export const signOutClicked = async ({ state, effects, actions }: Context) => {
@@ -620,7 +624,7 @@ export const finalizeSignUp = async (
 
 export const setLoadingAuth = async (
   { state }: Context,
-  provider: 'google' | 'github'
+  provider: 'apple' | 'google' | 'github'
 ) => {
   state.loadingAuth[provider] = !state.loadingAuth[provider];
 };

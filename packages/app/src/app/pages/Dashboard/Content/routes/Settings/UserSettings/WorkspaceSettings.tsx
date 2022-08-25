@@ -9,6 +9,7 @@ import {
   Element,
 } from '@codesandbox/components';
 import {
+  AppleIcon,
   github as GitHubIcon,
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
@@ -87,11 +88,11 @@ export const WorkspaceSettings = () => {
               <Element css={css({ position: 'relative', height: 56 })}>
                 <Element css={css({ position: 'relative', height: 56 })}>
                   <Tooltip
-                    label={`
-                      Account managed by ${
-                        user.provider === 'google' ? 'Google' : 'GitHub'
-                      }
-                      `}
+                    label={`Account managed by ${
+                      { apple: 'Apple', google: 'Google', github: 'GitHub' }[
+                        user.provider
+                      ]
+                    }`}
                   >
                     <Stack
                       align="center"
@@ -110,10 +111,14 @@ export const WorkspaceSettings = () => {
                         borderColor: 'sideBar.border',
                       })}
                     >
-                      {user.provider === 'google' ? (
+                      {user.provider === 'google' && (
                         <GoogleIcon width="12" height="12" />
-                      ) : (
+                      )}
+                      {user.provider === 'github' && (
                         <GitHubIcon width="12" height="12" />
+                      )}
+                      {user.provider === 'apple' && (
+                        <AppleIcon width="12" height="12" />
                       )}
                     </Stack>
                   </Tooltip>
@@ -241,11 +246,11 @@ export const WorkspaceSettings = () => {
           <Stack gap={4}>
             <div style={{ position: 'relative', height: 56 }}>
               <Tooltip
-                label={`
-                      Account managed by ${
-                        user.provider === 'google' ? 'Google' : 'GitHub'
-                      }
-                      `}
+                label={`Account managed by ${
+                  { apple: 'Apple', google: 'Google', github: 'GitHub' }[
+                    user.provider
+                  ]
+                }`}
               >
                 <Stack
                   align="center"
@@ -264,10 +269,14 @@ export const WorkspaceSettings = () => {
                     borderColor: 'sideBar.border',
                   })}
                 >
-                  {user.provider === 'google' ? (
+                  {user.provider === 'google' && (
                     <GoogleIcon width="12" height="12" />
-                  ) : (
+                  )}
+                  {user.provider === 'github' && (
                     <GitHubIcon width="12" height="12" />
+                  )}
+                  {user.provider === 'apple' && (
+                    <AppleIcon width="12" height="12" />
                   )}
                 </Stack>
               </Tooltip>
