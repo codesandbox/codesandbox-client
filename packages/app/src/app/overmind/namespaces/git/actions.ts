@@ -192,6 +192,9 @@ export const importFromGithub = async (
   actions.modalClosed();
   state.currentModal = 'exportGithub';
   try {
+    effects.analytics.track('Import GitHub Repo', {
+      sandboxUrl,
+    });
     await actions.editor.forkExternalSandbox({
       sandboxId: sandboxUrl.replace('/s/', ''),
     });
