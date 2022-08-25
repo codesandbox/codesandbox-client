@@ -92,9 +92,6 @@ export const Prompt: FunctionComponent = () => {
     });
   }, [vscodeUrl, authToken]);
 
-  // Attempt to open VS Code when the page mounts.
-  useEffect(() => openInVsCode(), [openInVsCode]);
-
   if (error) {
     return (
       <Container>
