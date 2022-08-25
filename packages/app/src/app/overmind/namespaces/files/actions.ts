@@ -8,6 +8,7 @@ import { Directory, Module, UploadFile } from '@codesandbox/common/lib/types';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Context } from 'app/overmind';
+import { RecoverData } from 'app/overmind/effects/moduleRecover';
 import { withOwnedSandbox } from 'app/overmind/factories';
 import { createOptimisticModule } from 'app/overmind/utils/common';
 import { INormalizedModules } from 'codesandbox-import-util-types';
@@ -20,6 +21,64 @@ import {
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
+
+export const applyRecover = (
+  { state, effects, actions }: Context,
+  recoveredList: Array<{
+    module: Module;
+    recoverData: RecoverData;
+  }>
+) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+
+  effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+  recoveredList.forEach(({ recoverData, module }) => {
+    actions.editor.codeChanged({
+      moduleShortid: module.shortid,
+      code: recoverData.code,
+    });
+    effects.vscode.setModuleCode(module);
+  });
+
+  effects.analytics.track('Files Recovered', {
+    fileCount: recoveredList.length,
+  });
+};
+
+export const createRecoverDiffs = (
+  { state, effects, actions }: Context,
+  recoveredList: Array<{
+    module: Module;
+    recoverData: RecoverData;
+  }>
+) => {
+  const sandbox = state.editor.currentSandbox;
+  if (!sandbox) {
+    return;
+  }
+  effects.moduleRecover.clearSandbox(sandbox.id);
+  recoveredList.forEach(({ recoverData, module }) => {
+    const oldCode = module.code;
+    actions.editor.codeChanged({
+      moduleShortid: module.shortid,
+      code: recoverData.code,
+    });
+    effects.vscode.openDiff(sandbox.id, module, oldCode);
+  });
+
+  effects.analytics.track('Files Recovered', {
+    fileCount: recoveredList.length,
+  });
+};
+
+export const discardRecover = ({ effects, state }: Context) => {
+  if (!state.editor.currentSandbox) {
+    return;
+  }
+  effects.moduleRecover.clearSandbox(state.editor.currentSandbox.id);
+};
 
 export const moduleRenamed = withOwnedSandbox(
   async (
