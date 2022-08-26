@@ -262,7 +262,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <RowItem
               name="Go to Projects"
               page="external"
-              path="/p/dashboard"
+              path="/p/dashboard?from=sidebar"
               icon="projects"
               badge
             />
