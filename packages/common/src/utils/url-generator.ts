@@ -206,6 +206,9 @@ export const optionsToParameterizedUrl = (options: Object) => {
 export const gitHubToSandboxUrl = (githubUrl: string) =>
   githubUrl.replace(gitHubPrefix, '/s/github').replace(dotGit, '');
 
+export const gitHubToProjectsUrl = (githubUrl: string) =>
+  githubUrl.replace(gitHubPrefix, '/p/github').replace(dotGit, '');
+
 export const searchUrl = (query?: string) =>
   `/search${query ? `?query=${query}` : ''}`;
 export const patronUrl = () => `/patron`;

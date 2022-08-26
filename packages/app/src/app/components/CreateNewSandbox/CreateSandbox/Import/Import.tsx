@@ -2,6 +2,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import {
   gitHubRepoPattern,
   gitHubToSandboxUrl,
+  gitHubToProjectsUrl,
   protocolAndHost,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Icon, Input, Stack } from '@codesandbox/components';
@@ -24,7 +25,7 @@ import {
 } from './elements';
 
 const getFullGitHubUrl = (url: string) =>
-  `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
+  `${protocolAndHost()}${gitHubToProjectsUrl(url) + '?create=true'}`;
 
 export const ImportFromGithub = () => {
   const actions = useActions();
@@ -88,6 +89,20 @@ export const ImportFromGithub = () => {
           autoWidth
           css={{ fontSize: 11, marginLeft: '.5em' }}
           disabled={!transformedUrl}
+          onClick={() => {
+            window.open(gitHubToProjectsUrl(url) + '?create=true', '_blank');
+          }}
+        >
+          Import to Projects
+        </Button>
+      </Stack>
+
+      <FeatureText>
+        <Button
+          autoWidth
+          css={{ fontSize: 11, marginBottom: '12px' }}
+          disabled={!transformedUrl}
+          variant="link"
           onClick={async () => {
             try {
               await actions.git.importFromGithub(gitHubToSandboxUrl(url));
@@ -97,16 +112,19 @@ export const ImportFromGithub = () => {
             }
           }}
         >
-          Import and Fork
+          Import and Fork as repository sandbox
         </Button>
-      </Stack>
-
-      <FeatureText>
+        <IconLink
+          style={{ display: 'inline' }}
+          href="/docs/importing#import-from-github"
+        >
+          <StyledInfoIcon />
+        </IconLink>
         <small>
           {error ? (
             <PlaceHolderLink>{error}</PlaceHolderLink>
           ) : (
-            'Tip: you can also link to specific directories, commits and branches here.'
+            'Tip: CodeSandbox Projects is a new experience with built-in source control, perfect for building projects of any size.'
           )}
         </small>
       </FeatureText>
@@ -129,11 +147,10 @@ export const Import = () => {
         <GitHubIcon css={{ width: 69, height: 69 }} />
 
         <FeatureText css={{ marginTop: '25px' }}>
-          Enter the URL to your GitHub repository to import it as a repository
-          sandbox.
+          Enter the URL to your GitHub repository to import
           <IconLink
             style={{ display: 'inline' }}
-            href="/docs/importing#import-from-github"
+            href="/docs/projects/learn/introduction/about-projects"
           >
             <StyledInfoIcon />
           </IconLink>
