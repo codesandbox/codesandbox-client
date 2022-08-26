@@ -131,7 +131,7 @@ export type CurrentUser = {
   curatorAt: string;
   badges: Badge[];
   betaAccess: boolean;
-  provider: 'github' | 'google';
+  provider: 'github' | 'google' | 'apple';
   integrations: {
     zeit: {
       token: string;
