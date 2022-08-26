@@ -101,7 +101,7 @@ export const Home = () => {
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      <BannerProjects href="https://codesandbox.io/p/dashboard">
+      <BannerProjects href="https://codesandbox.io/p/dashboard?from=banner">
         <img
           src="/static/img/projects-banner.png"
           alt="The CodeSandbox flow, for any project of any size. Try now"
