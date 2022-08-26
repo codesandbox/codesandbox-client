@@ -98,6 +98,29 @@ export const SignInModalElement = ({
     return null;
   };
 
+  const handleAppleSignIn = async () => {
+    setLoadingAuth('apple');
+    await signInButtonClicked({ provider: 'apple' });
+
+    if (onSignIn) {
+      return onSignIn();
+    }
+
+    if (redirectTo) {
+      if (redirectTo.startsWith('https')) {
+        window.location.replace(redirectTo);
+
+        return null;
+      }
+
+      return history.push(redirectTo.replace(location.origin, ''));
+    }
+
+    setLoadingAuth('apple');
+
+    return null;
+  };
+
   if (duplicateAccountStatus) {
     return (
       <Wrapper oneCol>
@@ -214,6 +237,10 @@ export const SignInModalElement = ({
             <GoogleIcon width="20" height="20" />
             <Element css={css({ width: '100%' })}>Sign in with Google</Element>
           </ButtonV2>
+          <ButtonV2 css={{ background: 'white' }} onClick={handleAppleSignIn}>
+            <GoogleIcon width="20" height="20" />
+            <Element css={css({ width: '100%' })}>Sign in with Apple</Element>
+          </ButtonV2>
         </Stack>
       </Stack>
     );
@@ -238,7 +265,10 @@ export const SignInModalElement = ({
           <GoogleIcon width="20" height="20" />
           <Element css={css({ width: '100%' })}>Sign in with Google</Element>
         </Button>
-
+        <Button css={{ background: 'white' }} onClick={handleAppleSignIn}>
+          <GoogleIcon width="20" height="20" />
+          <Element css={css({ width: '100%' })}>Sign in with Apple</Element>
+        </Button>
         {cancelOnLogin && (
           <MainButton
             variant="link"

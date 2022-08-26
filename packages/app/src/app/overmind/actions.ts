@@ -292,7 +292,7 @@ export const signInButtonClicked = async (
   { actions, state }: Context,
   options: {
     useExtraScopes?: boolean;
-    provider: 'google' | 'github';
+    provider: 'google' | 'github' | 'apple';
   }
 ) => {
   const { useExtraScopes, provider } = options || {};
@@ -620,7 +620,7 @@ export const finalizeSignUp = async (
 
 export const setLoadingAuth = async (
   { state }: Context,
-  provider: 'google' | 'github'
+  provider: 'google' | 'github' | 'apple'
 ) => {
   state.loadingAuth[provider] = !state.loadingAuth[provider];
 };

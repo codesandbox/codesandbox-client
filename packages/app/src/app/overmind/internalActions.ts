@@ -51,7 +51,7 @@ export const signIn = async (
   { state, effects, actions }: Context,
   options: {
     useExtraScopes?: boolean;
-    provider: 'google' | 'github';
+    provider: 'google' | 'github' | 'apple';
   }
 ) => {
   effects.analytics.track('Sign In', {
@@ -177,7 +177,7 @@ export const runProviderAuth = (
   {
     provider,
     useExtraScopes,
-  }: { useExtraScopes?: boolean; provider?: 'github' | 'google' }
+  }: { useExtraScopes?: boolean; provider?: 'github' | 'google' | 'apple' }
 ) => {
   const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
 
