@@ -216,9 +216,11 @@ export default class TestRunner {
       '.test.js',
       '.test.ts',
       '.test.tsx',
+      '.test.jsx',
       '.spec.js',
       '.spec.ts',
       '.spec.tsx',
+      '.spec.jsx',
     ];
 
     if (
