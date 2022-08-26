@@ -561,6 +561,7 @@ export default class TestRunner {
         return this.sendMessage(messages.ADD_TEST, {
           testName,
           path: testPath,
+          mode: message.mode,
         });
       }
       default: {
