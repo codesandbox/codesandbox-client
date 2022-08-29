@@ -28,6 +28,7 @@ import joji from '../assets/images/people/joji.png';
 import tristan from '../assets/images/people/tristan.jpg';
 import david from '../assets/images/people/david.jpg';
 import farrell from '../assets/images/people/farrellt.jpg';
+import mihai from '../assets/images/people/mihai.jpg';
 
 const people = [
   {
@@ -191,6 +192,12 @@ const people = [
     pic: farrell,
     color: '#2986CC',
     team: 'Operations',
+  },
+  {
+    name: 'Mihai Popa',
+    pic: mihai,
+    color: '#16bf97',
+    team: 'Engineering',
   },
 ];
 
