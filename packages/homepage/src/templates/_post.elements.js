@@ -86,19 +86,28 @@ export const PostContainer = styled.div`
       }
     }
 
+    p:has(img) {
+      margin-top: 4rem;
+      margin-bottom: 4rem;
+    }
+
     img {
       display: block;
-      margin: 20px -2rem;
+      margin: 2rem -2rem;
       height: auto;
       width: inherit;
       max-width: calc(100% + 4rem);
     }
 
     .gatsby-resp-image-link {
-      margin: 20px -2rem;
+      margin: 2rem -2rem;
       height: auto;
       width: inherit;
       max-width: calc(100% + 4rem);
+    }
+
+    .gatsby-resp-image-wrapper a:hover {
+      border-color: transparent;
     }
 
     figcaption {

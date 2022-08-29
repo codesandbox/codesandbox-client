@@ -171,7 +171,7 @@ Together, you would have to wait ~10s, which is faster than waiting for all dev
 servers to start, but it's still too slow if you want to quickly test some
 changes.
 
-Just the fact that this works is incredible—cloning VMs is actually a
+Just the fact that this works is incredible — cloning VMs is actually a
 possibility! However, we need to seriously cut down on serialisation time.
 
 ## Saving snapshots faster
@@ -242,7 +242,7 @@ change:
 
 ![Timings of saving snapshot, showing that after Aug 1 it reduces from 4s to 50ms](./images/save-snapshot-timings-invert.png)
 
-With this change, we went from ~8-12s of saving snapshots to ~30-100ms!
+With this change, we went from ~8-12s of saving snapshots to **~30-100ms**!
 
 ## Getting the clone time down to milliseconds
 
