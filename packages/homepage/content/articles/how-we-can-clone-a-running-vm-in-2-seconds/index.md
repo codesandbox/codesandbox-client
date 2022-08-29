@@ -390,9 +390,10 @@ I want to give a huge thanks to the:
   [amazing blog](https://fly.io/blog/). Also big thanks for sharing the source
   of their `init` used in the VMs as reference.
 
-We're super excited about being able to empower development teams to save time
-and improve how they collaborate! If you haven't tried CodeSandbox Projects yet,
-[import/create a repo](https://codesandbox.io/p/dashboard) (it's free!)
+If you haven't tried CodeSandbox Projects yet and don't want for dev servers to
+start anymore, you can
+[import/create a repo](https://codesandbox.io/p/dashboard). It's free too (the
+VMs contribute here too!).
 
 If you want to learn more about CodeSandbox Projects, you can visit
 projects.codesandbox.io or directly import/create your repo here:
