@@ -88,7 +88,17 @@ export const PostContainer = styled.div`
 
     img {
       display: block;
-      margin: 20px auto;
+      margin: 20px -2rem;
+      height: auto;
+      width: inherit;
+      max-width: calc(100% + 4rem);
+    }
+
+    .gatsby-resp-image-link {
+      margin: 20px -2rem;
+      height: auto;
+      width: inherit;
+      max-width: calc(100% + 4rem);
     }
 
     figcaption {
@@ -109,9 +119,6 @@ export const PostContainer = styled.div`
     }
 
     font-weight: 400;
-    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-      font-weight: 300;
-    }
   `};
 `;
 
