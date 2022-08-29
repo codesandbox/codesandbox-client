@@ -3,11 +3,48 @@ import styled, { css } from 'styled-components';
 export const PostContainer = styled.div`
   ${({ theme }) => css`
     color: ${props => props.theme.homepage.white};
-    font-size: 1.125rem;
-    line-height: 1.7rem;
+    font-size: 17px;
     font-weight: 300;
-    color: rgba(255, 255, 255, 0.75);
+    color: #c5c5c5;
     padding: 0;
+
+    li {
+      line-height: 1.75rem;
+    }
+
+    p {
+      line-height: 1.75rem;
+    }
+
+    img {
+      margin-top: 0 !important;
+    }
+
+    blockquote {
+      border-radius: 6px;
+      background-color: #2a2a2a90;
+      color: #999 !important;
+      margin: 0;
+      padding: 1.5rem 1.75rem;
+      p {
+        margin-bottom: 0;
+      }
+      margin-bottom: 1.5rem;
+    }
+
+    code {
+      background-color: #2a2a2a90;
+      border: 1px solid #373737;
+      border-radius: 0.375rem;
+      font-family: Native, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        Liberation Mono, Courier New, monospace;
+      font-size: 0.9em;
+      padding: 2px 0.25em;
+    }
+
+    video {
+      margin-bottom: 2rem;
+    }
 
     h2,
     h3,
