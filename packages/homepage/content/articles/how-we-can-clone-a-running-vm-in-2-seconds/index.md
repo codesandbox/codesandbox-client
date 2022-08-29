@@ -392,8 +392,8 @@ I want to give a huge thanks to the:
 
 If you haven't tried CodeSandbox yet and don't want to wait for dev servers to
 start anymore, you can
-[import/create a repo](https://codesandbox.io/p/dashboard). It's free too (the
-VMs contribute here too!).
+[import/create a repo](https://codesandbox.io/p/dashboard). It's free too (a
+post on how we can enable this coming too).
 
 If you want to learn more about CodeSandbox Projects, you can visit
 [projects.codesandbox.io](https://projects.codesandbox.io) or directly
