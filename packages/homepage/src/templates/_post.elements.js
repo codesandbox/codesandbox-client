@@ -23,7 +23,7 @@ export const PostContainer = styled.div`
     blockquote {
       border-radius: 6px;
       background-color: #2a2a2a90;
-      color: #999 !important;
+      color: #c5c5c5 !important;
       margin: 0;
       padding: 1.5rem 1.75rem;
       p {
@@ -59,7 +59,7 @@ export const PostContainer = styled.div`
     h2 {
       margin: 4rem 0 2rem 0;
       font-size: 2rem;
-      letter-spacing: -1px;
+      letter-spacing: -0.01em;
     }
 
     h3 {

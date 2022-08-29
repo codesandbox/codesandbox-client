@@ -291,10 +291,10 @@ for our memory snapshots. It reduced our copy times from several seconds to
 By applying copy-on-write and shared `mmap`ing of the memory file, we can clone
 a VM extremely fast. Looking back at the steps, the new timings are:
 
-1. Pause the VM (~16ms)
-2. Save snapshot (~100ms)
-3. Copy the memory files + disk (~800ms)
-4. Start new VM from those files (~400ms)
+1. Pause the VM **(~16ms)**
+2. Save snapshot **(~100ms)**
+3. Copy the memory files + disk **(~800ms)**
+4. Start new VM from those files **(~400ms)**
 
 Which gives us clone timings that are well below two seconds! Here's a fork of
 Vite (you can try for yourself
@@ -382,9 +382,9 @@ review (or run end-to-end tests).
 
 I want to give a huge thanks to the:
 
-- Firecracker Team: for supporting us on our queries and thinking with us about
-  possible solutions when it comes to running Firecracker and cloning a VM
-- Fly.io Team: by sharing their learnings with us directly and through their
+- **Firecracker Team**: for supporting us on our queries and thinking with us
+  about possible solutions when it comes to running Firecracker and cloning a VM
+- **Fly.io Team**: by sharing their learnings with us directly and through their
   [amazing blog](https://fly.io/blog/). Also big thanks for sharing the source
   of their `init` used in the VMs as reference.
 
