@@ -216,9 +216,11 @@ export default class TestRunner {
       '.test.js',
       '.test.ts',
       '.test.tsx',
+      '.test.jsx',
       '.spec.js',
       '.spec.ts',
       '.spec.tsx',
+      '.spec.jsx',
     ];
 
     if (
@@ -559,6 +561,7 @@ export default class TestRunner {
         return this.sendMessage(messages.ADD_TEST, {
           testName,
           path: testPath,
+          mode: message.mode,
         });
       }
       default: {
