@@ -162,8 +162,10 @@ takes 8 seconds to snapshot), and copying a memory snapshot takes the same time.
 
 So if you're looking at a sandbox and press fork, we would have to:
 
-1 Pause the VM (~16ms) 2 Save the snapshot (~4s) 3 Copy the memory files + disk
-(~6s) 4 Start a new VM from those files (~300ms)
+1. Pause the VM **(~16ms)**
+2. Save the snapshot **(~4s)**
+3. Copy the memory files + disk **(~6s)**
+4. Start a new VM from those files **(~300ms)**
 
 Together, you would have to wait ~10s, which is faster than waiting for all dev
 servers to start, but it's still too slow if you want to quickly test some
