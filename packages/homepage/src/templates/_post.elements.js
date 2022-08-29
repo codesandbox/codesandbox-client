@@ -3,8 +3,8 @@ import styled, { css } from 'styled-components';
 export const PostContainer = styled.div`
   ${({ theme }) => css`
     color: ${props => props.theme.homepage.white};
-    font-size: 1.1rem;
-    line-height: 1.6rem;
+    font-size: 1.125rem;
+    line-height: 1.7rem;
     font-weight: 300;
     color: rgba(255, 255, 255, 0.75);
     padding: 0;
