@@ -124,7 +124,7 @@ export const ImportFromGithub = () => {
           {error ? (
             <PlaceHolderLink>{error}</PlaceHolderLink>
           ) : (
-            'Tip: CodeSandbox Projects is a new experience with built-in source control, perfect for building projects of any size.'
+            'Tip: CodeSandbox Projects is a new experience with built-in source control and support for VSCode, perfect for building projects of any size.'
           )}
         </small>
       </FeatureText>
