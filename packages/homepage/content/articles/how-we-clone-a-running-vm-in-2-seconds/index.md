@@ -43,11 +43,11 @@ experience for bigger projects?
 
 ## Firecracker to the rescue
 
-Virtual machines haven't had a great rep. They're seen as slow, expensive,
-bloated and outdated. And I used to think the same, but a lot has changed over
-the past few years. VMs power most of the cloud (yes, even serverless
-functions!), so many great minds have been working on making VMs faster and
-lightweight. And well... they've really outdone themselves.
+Virtual machines are often seen as slow, expensive, bloated and outdated. And I
+used to think the same, but a lot has changed over the past few years. VMs power
+most of the cloud (yes, even serverless functions!), so many great minds have
+been working on making VMs faster and lightweight. And well... they've really
+outdone themselves.
 
 [Firecracker](https://firecracker-microvm.github.io/) is one of the most
 exciting recent developments in this field. Amazon created Firecracker to power
