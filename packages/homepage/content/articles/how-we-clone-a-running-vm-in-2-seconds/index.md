@@ -5,7 +5,7 @@ authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
 title: How we clone a running VM in 2 seconds
 description: Or... how to clone a running Minecraft server
-date: 2022-08-30
+date: 2022-09-01
 ---
 
 **At CodeSandbox we run your development project and turn it into a link you can
@@ -14,6 +14,9 @@ they can click “fork” and get an exact copy of that environment within 2 sec
 so they can easily contribute back. Give it a try with
 [this example](https://codesandbox.io/p/github/codesandbox/codesandbox-template-vite-react/main),
 or import your GitHub repo [here](https://codesandbox.io/p/dashboard)!**
+
+**Inside this post we describe how we make it possible to get a running
+environment in 2 seconds.**
 
 ## The challenge: spinning up a development environment in two seconds
 
@@ -24,10 +27,10 @@ to.
 
 In the past, we've enabled this experience by running all your code in your
 browser. Whenever you would look at a sandbox, you would execute the code. This
-was fast because we had full control over how the code was bundled. Forks were
+was fast, because we had full control over how the code was bundled. Forks were
 fast:
 
-<video autoplay loop muted width="100%">
+<video style="border-radius:4px"  autoplay loop muted width="100%">
   <source src="./images/V1fork.mp4" type="video/mp4">
 </video>
 
@@ -40,10 +43,11 @@ experience for bigger projects?
 
 ## Firecracker to the rescue
 
-Virtual machines… haven't had a great rep. They're often seen as slow,
-expensive, bloated and outdated. And yes, this used to be the case. However, VMs
-still power most of the cloud (yes, even serverless functions!), so many great
-minds have been working on making VMs more lightweight.
+Virtual machines haven't had a great rep. They're seen as slow, expensive,
+bloated and outdated. And I used to think the same, but a lot has changed over
+the past few years. VMs power most of the cloud (yes, even serverless
+functions!), so many great minds have been working on making VMs faster and
+lightweight. And well... they've really outdone themselves.
 
 [Firecracker](https://firecracker-microvm.github.io/) is one of the most
 exciting recent developments in this field. Amazon created Firecracker to power
@@ -150,8 +154,15 @@ off. You can start a server with an internal in-memory counter, up it a couple
 of times, press fork, and it will continue counting where it left off in the new
 VM.
 
-[Video of a node server with a counter (viewcount), and fork it live. Link it
-too.]
+<video style="border-radius:4px" autoplay loop muted width="100%">
+  <source src="./images/MemoryCounter.mp4" type="video/mp4">
+</video>
+
+You can play with it
+[here](https://codesandbox.io/p/github/codesandbox/node-counter-demo/main). And
+we're showing the preview here too, kind of like a view count:
+
+<iframe style="width:100%;height:200px;border:0;border-radius:4px;margin-bottom:2rem;" src="https://13gise-8080.preview.csb.app/"></iframe>
 
 However, the challenge lies in speed. Memory snapshot files are big, spanning
 multiple GBs. Saving a memory snapshot takes 1 second per gigabyte (so an 8GB VM
@@ -299,7 +310,7 @@ Which gives us clone timings that are well below two seconds! Here's a fork of
 Vite (you can try for yourself
 [here](http://codesandbox.io/p/github/codesandbox/codesandbox-template-vite-react/main?file=%2FREADME.md)):
 
-<video autoplay loop muted width="100%">
+<video style="border-radius:4px"  autoplay loop muted width="100%">
   <source src="./images/V2Fork.mp4" type="video/mp4">
 </video>
 
@@ -313,10 +324,10 @@ GraphQL service with 20 microservices, or a single node server. We can
 consistently resume and clone VMs within 2 seconds. No need to wait for a
 development server to boot.
 
-Here's an example where I go to our own repo (running Next.js), fork the `main`
-branch (which copies the VM), and make a change:
+Here's an example where I go to our own repo (running our editor backed by
+Next.js), fork the `main` branch (which copies the VM), and make a change:
 
-<video controls muted width="100%">
+<video style="border-radius:4px"  controls muted width="100%">
   <source src="./images/FullFlow.mp4" type="video/mp4">
 </video>
 
@@ -380,7 +391,8 @@ review (or run end-to-end tests).
 I want to give a huge thanks to the:
 
 - **Firecracker Team**: for supporting us on our queries and thinking with us
-  about possible solutions when it comes to running Firecracker and cloning a VM
+  about possible solutions when it comes to running Firecracker and cloning a
+  VM.
 - **Fly.io Team**: by sharing their learnings with us directly and through their
   [amazing blog](https://fly.io/blog/). Also big thanks for sharing the source
   of their `init` used in the VMs as reference.
@@ -390,8 +402,7 @@ start anymore, [import/create a repo](https://codesandbox.io/p/dashboard). It's
 free too (we’re working on a post explaining how we can enable this).
 
 If you want to learn more about CodeSandbox Projects, you can visit
-[projects.codesandbox.io](https://projects.codesandbox.io) or directly
-import/create your repo here: https://codesandbox.io/p/dashboard.
+[projects.codesandbox.io](https://projects.codesandbox.io)!
 
 We'll be on [@codesandbox](https://twitter.com/codesandbox/) on Twitter when we
 create a new technical post!
