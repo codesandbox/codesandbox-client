@@ -1,21 +1,19 @@
 ---
 banner: ./images/banner.png
-slug: how-we-can-clone-a-running-vm-in-2-seconds
+slug: how-we-clone-a-running-vm-in-2-seconds
 authors: ['Ives van Hoorne']
 photo: https://avatars0.githubusercontent.com/u/587016?s=460&v=4
-title: How we can clone a running VM in 2 seconds
-description:
-  We upgraded our npm support to be 99.98% cheaper and 2,000% faster using
-  serverless.
+title: How we clone a running VM in 2 seconds
+description: Or... how to clone a running Minecraft server
 date: 2022-08-30
 ---
 
-At CodeSandbox we run your development project and turn it into a link you can
+**At CodeSandbox we run your development project and turn it into a link you can
 share with anyone. People visiting this link can not only see your running code,
 they can click “fork” and get an exact copy of that environment within 2 seconds
-so they can easily contribute back to your masterpiece. Give it a try with
+so they can easily contribute back. Give it a try with
 [this example](https://codesandbox.io/p/github/codesandbox/codesandbox-template-vite-react/main),
-or import your GitHub repo [here](https://codesandbox.io/p/dashboard)!
+or import your GitHub repo [here](https://codesandbox.io/p/dashboard)!**
 
 ## The challenge: spinning up a development environment in two seconds
 
@@ -25,16 +23,16 @@ only that, you should be able to press fork and play with it whenever you want
 to.
 
 In the past, we've enabled this experience by running all your code in your
-browser. Whenever you would look at a sandbox, _you_ would execute the code so
-that _we_ wouldn't have to. Besides being cheap, this was also fast because we
-had full control over how the code was bundled. Forks were fast:
+browser. Whenever you would look at a sandbox, you would execute the code. This
+was fast because we had full control over how the code was bundled. Forks were
+fast:
 
 <video autoplay loop muted width="100%">
   <source src="./images/V1fork.mp4" type="video/mp4">
 </video>
 
-However, there was a downside to this approach: we were limited to the code that
-we could run in the browser. If you wanted to run a big project that requires
+However, there was a catch to this approach: we were limited to the code that we
+could run in the browser. If you wanted to run a big project that requires
 Docker, it wouldn't work.
 
 So for the past few years, we've been asking ourselves: how can we enable this
@@ -120,12 +118,11 @@ different types of caching:
 > There's a catch to it as well. Saving a memory snapshot actually takes a
 > while, which I'll cover in this post.
 
-I'm very excited about this. It gives the feeling that the VM is always running,
-even though it's not taking resources. We use this a lot: every branch on
-CodeSandbox is a new development environment. You don't have to remember to roll
-back migrations or install dependencies when switching branches, because it's a
-fresh environment for every branch. We can enable this thanks to memory
-snapshotting.
+I'm stoked about this. It gives the feeling that the VM is always running, even
+though it's not taking resources. We use this a lot: every branch on CodeSandbox
+is a new development environment. You don't have to remember to roll back
+migrations or install dependencies when switching branches, because it's a fresh
+environment for every branch. We can enable this thanks to memory snapshotting.
 
 We also use this to host some internal tooling cheaply. When a webhook request
 comes in, we wake the microservice, let it respond, and after 5 minutes it
@@ -342,9 +339,7 @@ To do this, I've created a VM that runs two Docker containers:
 
 Let's see!
 
-<video controls muted width="100%">
-  <source src="./images/MinecraftServer.mp4" type="video/mp4">
-</video>
+https://youtu.be/9VEiaP8tORQ
 
 In this video, I've created a structure in a Minecraft server. Then cloned that
 Minecraft server, connected to it, and verified that the structure was there.
@@ -368,11 +363,11 @@ discussed yet:
 
 There are also still improvements we can do to improve the speed of cloning. We
 still do many API calls sequentially, and the speed of our filesystem (`xfs`)
-can be improved. Currently it gets fragmented quickly, due to many random
-writes.
+can be improved. Currently files inside `xfs` get fragmented quickly, due to
+many random writes.
 
 Over the upcoming months we'll write more about this. If you have any questions
-related to this, don't hesitate to
+or suggestions related to this, don't hesitate to
 [send me a message on Twitter](https://twitter.com/CompuIves).
 
 ## Conclusion
@@ -391,9 +386,8 @@ I want to give a huge thanks to the:
   of their `init` used in the VMs as reference.
 
 If you haven't tried CodeSandbox yet and don't want to wait for dev servers to
-start anymore, you can
-[import/create a repo](https://codesandbox.io/p/dashboard). It's free too (a
-post on how we can enable this coming too).
+start anymore, [import/create a repo](https://codesandbox.io/p/dashboard). It's
+free too (we’re working on a post explaining how we can enable this).
 
 If you want to learn more about CodeSandbox Projects, you can visit
 [projects.codesandbox.io](https://projects.codesandbox.io) or directly
