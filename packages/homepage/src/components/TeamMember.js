@@ -29,6 +29,7 @@ import tristan from '../assets/images/people/tristan.jpg';
 import david from '../assets/images/people/david.jpg';
 import farrell from '../assets/images/people/farrellt.jpg';
 import mihai from '../assets/images/people/mihai.jpg';
+import filipe from '../assets/images/people/filipe.jpg';
 
 const people = [
   {
@@ -198,6 +199,12 @@ const people = [
     pic: mihai,
     color: '#16bf97',
     team: 'Engineering',
+  },
+  {
+    name: 'Filipe Lima',
+    pic: filipe,
+    color: '#24be9d',
+    team: 'Marketing',
   },
 ];
 
