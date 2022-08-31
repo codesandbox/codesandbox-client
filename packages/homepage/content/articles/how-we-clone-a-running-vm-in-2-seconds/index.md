@@ -160,7 +160,7 @@ VM.
 
 You can play with it
 [here](https://codesandbox.io/p/github/codesandbox/node-counter-demo/main). And
-we're showing the preview here too, kind of like a view count:
+this is the running server of that VM, kind of like a view count:
 
 <iframe style="width:100%;height:200px;border:0;border-radius:4px;margin-bottom:2rem;" src="https://13gise-8080.preview.csb.app/"></iframe>
 
