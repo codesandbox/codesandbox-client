@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 export const PostContainer = styled.div`
-  ${({ theme }) => css`
+  ${() => css`
     color: ${props => props.theme.homepage.white};
     font-size: 17px;
     font-weight: 300;
@@ -116,7 +116,7 @@ export const PostContainer = styled.div`
     }
 
     a {
-      color: ${theme.shySecondary};
+      color: #e3ff73;
       text-decoration: none;
       border-bottom: 1px solid rgba(255, 255, 255, 0);
       transition: all 100ms ease-in 0s;
@@ -124,7 +124,7 @@ export const PostContainer = styled.div`
 
     a:hover {
       border-bottom: 1px solid;
-      border-color: ${theme.shySecondary};
+      border-color: #e3ff73;
     }
 
     font-weight: 400;

@@ -14,7 +14,7 @@ export const theme = {
     primaryText: '#7F694C',
     lightText: '#F2F2F2',
     secondary: '#40A9F3',
-    shySecondary: '#E3FF73',
+    shySecondary: '#66b9f4',
     darkBlue: '#1081D0',
     white: '#E0E0E0',
     gray: '#C0C0C0',
