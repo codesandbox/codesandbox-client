@@ -424,6 +424,8 @@ p {
   padding-right: 0;
   padding-top: 0;
   margin-bottom: 1.0875rem;
+  letter-spacing: 0;
+  text-rendering: optimizeLegibility;
 }
 
 figure {

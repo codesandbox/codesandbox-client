@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Header = styled.section`
   text-align: center;
@@ -17,7 +17,7 @@ export const Header = styled.section`
 `;
 
 export const PageTitle = styled.h1`
-  font-family: "TWKEverett", sans-serif;
+  font-family: 'TWKEverett', sans-serif;
   font-size: 2.5rem;
   line-height: 120%;
   font-weight: normal;
@@ -103,7 +103,7 @@ export const Thumbnail = styled.img`
 export const Posts = styled.article``;
 
 export const Title = styled.h2`
-font-family: "TWKEverett", sans-serif;
+  font-family: 'TWKEverett', sans-serif;
   color: #fff;
   margin: 0 0 0.5rem 0;
   font-size: 23px;
