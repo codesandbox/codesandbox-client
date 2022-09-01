@@ -15,8 +15,8 @@ so they can easily contribute back. Give it a try with
 [this example](https://codesandbox.io/p/github/codesandbox/codesandbox-template-vite-react/main),
 or import your GitHub repo [here](https://codesandbox.io/p/dashboard)!**
 
-**Inside this post we describe how we make it possible to get a running
-environment in 2 seconds.**
+**So how can we spin up a cloned environment in 2 seconds? That's exactly what
+I'll be talking about here!**
 
 ## The challenge: spinning up a development environment in two seconds
 
