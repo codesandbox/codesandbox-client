@@ -11,12 +11,18 @@
     "app:fast": {
       "name": "Application (fast)",
       "command": "yarn start:fast",
-      "runAtStart": true
+      "runAtStart": true,
+      "preview": {
+        "port": 3000
+      }
     },
     "app:home:fast": {
       "name": "Application home (fast)",
       "command": "yarn start:home:fast",
-      "runAtStart": true
+      "runAtStart": true,
+      "preview": {
+        "port": 8000
+      }
     }
   },
   "setupTasks": [
