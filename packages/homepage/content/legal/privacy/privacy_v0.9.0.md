@@ -100,12 +100,11 @@ Cookies. CodeSandbox uses tracking, functional and analytical cookies because it
 enables many convenient features that may save you some time. We use tracking
 cookies to gather a unique view count of sandboxes and to match a sandbox to
 users without an account. We allow some of our service providers such as Google
-Analytics, Amplitude, Algolia and Vero to store cookies on your device. We
-assume you know what cookies are and how to prevent third parties from
-installing cookies on your device. If not, your browser settings allow you to
-disable cookies and control acceptance levels. Please reach out to us via
-details below if you are in doubt or seek assistance in understanding and
-changing browser settings.
+Analytics, Amplitude, and Algolia to store cookies on your device. We assume you
+know what cookies are and how to prevent third parties from installing cookies
+on your device. If not, your browser settings allow you to disable cookies and
+control acceptance levels. Please reach out to us via details below if you are
+in doubt or seek assistance in understanding and changing browser settings.
 
 Tracking. We track user behavior and register events such as whether a user has
 created a template or interacted with an embed to measure the effectiveness of
@@ -197,6 +196,9 @@ Syntax: (Company Name (“a.k.a.”), Location, Purpose, Link)
   [https://stripe.com/privacy-center/legal](https://stripe.com/privacy-center/legal);
 - The Rocket Science Group LLC (“Mailchimp”). United States. Email Service
   Provider. [https://mailchimp.com/gdpr/](https://mailchimp.com/gdpr/).
+- Carry Technologies, Inc. dba Hightouch (Hightouch). United States. Data
+  Integration Provider.
+  [https://hightouch.com/privacy-policy/](https://hightouch.com/privacy-policy/).
 
 Your personal data may be transferred, stored and processed in the European
 Economic Area (“EEA”), United States (“US”) or any other country in which our
