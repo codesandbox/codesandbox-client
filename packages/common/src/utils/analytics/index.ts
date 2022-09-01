@@ -8,7 +8,6 @@ import {
   getHashedUserId,
   isAllowedEvent,
 } from './utils';
-import * as vero from './vero';
 
 if (process.env.NODE_ENV === 'production') {
   setTimeout(() => {
@@ -57,8 +56,6 @@ export async function setAnonymousId() {
 
       localStorage.setItem(ANONYMOUS_UID_KEY, anonymousUid);
     }
-
-    vero.setAnonymousUserId(anonymousUid);
   }
 }
 
@@ -68,7 +65,6 @@ export async function setUserId(userId: string, email: string) {
 
     amplitude.setUserId(hashedId);
     sentry.setUserId(hashedId);
-    vero.setUserId(hashedId, email);
   }
 }
 
@@ -87,7 +83,6 @@ export function trackPageview() {
     };
 
     amplitude.track('pageview', data);
-    vero.trackPageview();
     google.trackPageView();
   }
 }
@@ -127,7 +122,6 @@ export default function track(eventName, secondArg: Object = {}) {
     };
     amplitude.track(eventName, data);
     google.track(eventName, data);
-    vero.track(eventName, data);
     sentry.logBreadcrumb({
       type: 'analytics',
       message: eventName,
