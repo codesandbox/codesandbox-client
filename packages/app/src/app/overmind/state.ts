@@ -61,9 +61,10 @@ type State = {
   cancelOnLogin: null | (() => void);
   duplicateAccountStatus: {
     duplicate: boolean;
-    provider: 'google' | 'github';
+    provider: 'apple' | 'google' | 'github';
   } | null;
   loadingAuth: {
+    apple: boolean;
     google: boolean;
     github: boolean;
   };
@@ -137,6 +138,7 @@ export const state: State = {
   cancelOnLogin: null,
   duplicateAccountStatus: null,
   loadingAuth: {
+    apple: false,
     google: false,
     github: false,
   },

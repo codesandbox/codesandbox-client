@@ -2,6 +2,7 @@ import React from 'react';
 import { Stack, Element, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
+  AppleIcon,
   github as GitHubIcon,
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
@@ -11,7 +12,7 @@ import { Button } from 'app/pages/SignIn/components/Button';
 export const DuplicateAccount = ({
   provider,
 }: {
-  provider: 'google' | 'github';
+  provider: 'apple' | 'google' | 'github';
 }) => {
   const { loadingAuth } = useAppState();
   const { signInButtonClicked, setLoadingAuth } = useActions();
@@ -28,6 +29,14 @@ export const DuplicateAccount = ({
     setLoadingAuth('google');
     await signInButtonClicked({ provider: 'google' });
     setLoadingAuth('google');
+
+    return null;
+  };
+
+  const handleAppleSignIn = async () => {
+    setLoadingAuth('apple');
+    await signInButtonClicked({ provider: 'apple' });
+    setLoadingAuth('apple');
 
     return null;
   };
@@ -49,7 +58,8 @@ export const DuplicateAccount = ({
           marginBottom={8}
         >
           We found an existing account, please sign in with{' '}
-          {provider === 'github' ? 'GitHub' : 'Google'} instead.
+          {{ apple: 'Apple', google: 'Google', github: 'GitHub' }[provider]}{' '}
+          instead.
         </Text>
         <Stack
           justify="center"
@@ -84,6 +94,12 @@ export const DuplicateAccount = ({
               <Element css={css({ width: '100%' })}>
                 Sign in with Google
               </Element>
+            </Button>
+          ) : null}
+          {provider === 'apple' ? (
+            <Button loading={loadingAuth.apple} onClick={handleAppleSignIn}>
+              <AppleIcon width="16" height="16" css={css({ marginRight: 2 })} />
+              <Element css={css({ width: '100%' })}>Sign in with Apple</Element>
             </Button>
           ) : null}
         </Stack>

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import {
+  AppleIcon,
   github as GitHubIcon,
   GoogleIcon,
 } from '@codesandbox/components/lib/components/Icon/icons';
@@ -94,6 +95,29 @@ export const SignInModalElement = ({
     }
 
     setLoadingAuth('google');
+
+    return null;
+  };
+
+  const handleAppleSignIn = async () => {
+    setLoadingAuth('apple');
+    await signInButtonClicked({ provider: 'apple' });
+
+    if (onSignIn) {
+      return onSignIn();
+    }
+
+    if (redirectTo) {
+      if (redirectTo.startsWith('https')) {
+        window.location.replace(redirectTo);
+
+        return null;
+      }
+
+      return history.push(redirectTo.replace(location.origin, ''));
+    }
+
+    setLoadingAuth('apple');
 
     return null;
   };
@@ -214,6 +238,10 @@ export const SignInModalElement = ({
             <GoogleIcon width="20" height="20" />
             <Element css={css({ width: '100%' })}>Sign in with Google</Element>
           </ButtonV2>
+          <ButtonV2 css={{ background: 'white' }} onClick={handleAppleSignIn}>
+            <AppleIcon width="20" height="20" />
+            <Element css={css({ width: '100%' })}>Sign in with Apple</Element>
+          </ButtonV2>
         </Stack>
       </Stack>
     );
@@ -237,6 +265,10 @@ export const SignInModalElement = ({
         <Button loading={loadingAuth.google} onClick={handleGoogleSignIn}>
           <GoogleIcon width="20" height="20" />
           <Element css={css({ width: '100%' })}>Sign in with Google</Element>
+        </Button>
+        <Button loading={loadingAuth.apple} onClick={handleAppleSignIn}>
+          <AppleIcon width="20" height="20" />
+          <Element css={css({ width: '100%' })}>Sign in with Apple</Element>
         </Button>
 
         {cancelOnLogin && (

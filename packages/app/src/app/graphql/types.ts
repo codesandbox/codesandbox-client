@@ -521,6 +521,7 @@ export type ProSubscription = {
 
 /** The oAuth provider used to create the account */
 export enum ProviderName {
+  Apple = 'APPLE',
   Github = 'GITHUB',
   Google = 'GOOGLE',
 }
