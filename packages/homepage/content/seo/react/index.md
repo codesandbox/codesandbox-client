@@ -280,5 +280,5 @@ other libraries to build a full-stack app and keeping up with a fast development
 pace.
 
 To learn more about React, we recommend checking out our
-[React c](https://codesandbox.io/s/new)[ode samples](https://codesandbox.io/s/new)
+[React code samples](https://codesandbox.io/examples/package/react)
 and [React’s own documentation](https://reactjs.org/docs/getting-started.html).
