@@ -21,7 +21,8 @@
       "command": "yarn start:home:fast",
       "runAtStart": true,
       "preview": {
-        "port": 8000
+        "port": 8000,
+        "prLink": "redirect"
       }
     }
   },
