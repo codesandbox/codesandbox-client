@@ -326,7 +326,7 @@ development server to boot.
 Here's an example where I go to our own repo (running our editor backed by
 Next.js), fork the `main` branch (which copies the VM), and make a change:
 
-<video style="border-radius:4px"  controls muted width="100%">
+<video style="border-radius:4px" autoplay controls muted width="100%">
   <source src="./images/FullFlow.mp4" type="video/mp4">
 </video>
 
