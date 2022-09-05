@@ -57,6 +57,7 @@ import { VueIcon } from './VueIcon';
 import { VuePressIcon } from './VuePressIcon';
 import { WebAssemblyIcon } from './WebAssemblyIcon';
 import { SolidIcon } from './SolidIcon';
+import { SanityIcon } from './SanityIcon';
 
 export const ColorIcons = {
   AdonisIcon,
@@ -118,6 +119,7 @@ export const ColorIcons = {
   VuePressIcon,
   WebAssemblyIcon,
   SolidIcon,
+  SanityIcon,
 };
 
 export const Icons = {
@@ -180,6 +182,7 @@ export const Icons = {
   VuePressIcon,
   WebAssemblyIcon,
   SolidIcon,
+  SanityIcon,
 };
 
 export { AdonisIcon } from './AdonisIcon';
@@ -241,3 +244,4 @@ export { VueIcon } from './VueIcon';
 export { VuePressIcon } from './VuePressIcon';
 export { WebAssemblyIcon } from './WebAssemblyIcon';
 export { SolidIcon } from './SolidIcon';
+export { SanityIcon } from './SanityIcon';
