@@ -26,6 +26,7 @@ import { LiveVersionMismatch } from './LiveSessionVersionMismatch';
 import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
+import { RecoverFilesModal } from './RecoverFilesModal';
 import { PilotPaymentModal } from './PilotPaymentModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
@@ -71,6 +72,10 @@ const modals = {
   },
   deleteWorkspace: {
     Component: DeleteWorkspace,
+    width: 400,
+  },
+  recoveredFiles: {
+    Component: RecoverFilesModal,
     width: 400,
   },
   teamInvite: {

@@ -187,6 +187,7 @@ export const saveCode = async (
 
     if (savedCode === null) {
       // If the savedCode is also module.code
+      effects.moduleRecover.remove(sandbox.id, module);
       effects.vscode.syncModule(module);
     }
 
@@ -402,6 +403,8 @@ export const updateModuleCode = (
   }
 
   module.code = code;
+  // Save the code to localStorage so we can recover in case of a crash
+  effects.moduleRecover.save(currentSandbox.id, currentSandbox.version, module);
 };
 
 export const forkSandbox = async (

@@ -352,6 +352,15 @@ export const sandboxChanged = withLoadApp<{
 
   await actions.editor.internal.initializeSandbox(sandbox);
 
+  // We only recover files at this point if we are not live. When live we recover them
+  // when the module_state is received
+  if (
+    !state.live.isLive &&
+    hasPermission(sandbox.authorization, 'write_code')
+  ) {
+    actions.files.internal.recoverFiles();
+  }
+
   if (state.editor.currentModule.id) {
     effects.vscode.openModule(state.editor.currentModule);
   } else {
@@ -657,6 +666,7 @@ export const saveClicked = withOwnedSandbox(
               state.editor.modulesByPath,
               module
             );
+            effects.moduleRecover.remove(sandbox.id, module);
           } else {
             // We might not have the module, as it was created by the server. In
             // this case we put it in. There is an edge case here where the user
