@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Stack, Button, Text, Icon } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
@@ -26,6 +27,10 @@ export const AlwaysOn = () => {
     getPage(sandboxesTypes.ALWAYS_ON);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
+
+  React.useEffect(() => {
+    track('Sidebar - See Always-on');
+  }, []);
 
   const items: DashboardGridItem[] = sandboxes.ALWAYS_ON
     ? sandboxes.ALWAYS_ON.map(sandbox => ({

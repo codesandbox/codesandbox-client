@@ -2,6 +2,7 @@ import Fullscreen from '@codesandbox/common/lib/components/flex/Fullscreen';
 import getTemplateDefinition from '@codesandbox/common/lib/templates';
 import codesandbox from '@codesandbox/common/lib/themes/codesandbox.json';
 import VERSION from '@codesandbox/common/lib/version';
+import track from '@codesandbox/common/lib/utils/analytics';
 import {
   ThemeProvider as ComponentsThemeProvider,
   Element,
@@ -100,6 +101,12 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
   const { statusBar } = state.editor;
 
   const templateDef = sandbox && getTemplateDefinition(sandbox.template);
+
+  React.useEffect(() => {
+    if (sandbox && sandbox.alwaysOn) {
+      track('Editor - Load Always-on');
+    }
+  }, []);
 
   const getTopOffset = () => {
     if (state.preferences.settings.zenMode) {
