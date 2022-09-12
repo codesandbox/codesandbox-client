@@ -118,7 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {...props}
         css={css({
           borderRight: '1px solid',
-          borderColor: 'transparent',
+          borderColor: 'sideBar.border',
           backgroundColor: 'sideBar.background',
           width: SIDEBAR_WIDTH,
           flexShrink: 0,
@@ -134,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               paddingLeft: '6px',
               paddingRight: 0,
               height: 10,
-              backgroundColor: '#191919',
+              backgroundColor: 'sideBar.TeamSwitcherBackground',
             })}
           >
             {activeAccount ? (
