@@ -375,6 +375,8 @@ const Thumbnail = ({
           borderRadius: 4,
           backgroundColor: '#343434',
           borderColor: '#343434',
+          padding: 2,
+          boxSizing: 'border-box',
         }}
       >
         <TemplateIcon width="24" height="24" />
