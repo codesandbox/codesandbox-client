@@ -1,5 +1,8 @@
 import dot from 'dot-object';
-import { colors as tokens } from '../design-language/colors';
+import {
+  colors as tokens,
+  colorsV2 as tokensV2,
+} from '../design-language/colors';
 
 /*
   we use dot to convert objects to vscode dot notation
@@ -10,11 +13,11 @@ import { colors as tokens } from '../design-language/colors';
 */
 
 const colors = {
-  contrastBorder: tokens.grays[600],
+  contrastBorder: null,
   contrastActiveBorder: null,
   errorForeground: tokens.reds[500],
-  focusBorder: tokens.grays[600],
-  foreground: tokens.grays[200],
+  focusBorder: tokensV2.purple[600],
+  foreground: tokensV2.gray[100],
   activityBar: {
     background: tokens.grays[700],
     border: tokens.grays[600],
@@ -23,13 +26,13 @@ const colors = {
     background: tokens.grays[500],
   },
   button: {
-    background: tokens.blues[600],
-    foreground: tokens.white,
+    background: tokensV2.yellowish[500],
+    foreground: tokensV2.black[800],
     border: tokens.blues[600],
   },
   dropdown: {
     background: tokens.grays[700],
-    border: tokens.grays[600],
+    border: null,
     foreground: tokens.white,
   },
   editor: {
@@ -129,13 +132,13 @@ const colors = {
     prominentHoverBackground: tokens.grays[600],
   },
   input: {
-    background: tokens.grays[600],
-    foreground: tokens.white,
-    border: tokens.grays[500],
-    placeholderForeground: tokens.grays[300],
+    background: tokensV2.black[500],
+    foreground: tokensV2.gray[200],
+    border: null,
+    placeholderForeground: tokensV2.gray[800],
   },
   inputOption: {
-    activeBorder: tokens.grays[400],
+    activeBorder: tokensV2.purple[600],
   },
   inputValidation: {
     infoForeground: null,
@@ -163,8 +166,8 @@ const colors = {
     focusForeground: null,
   },
   menu: {
-    background: tokens.grays[700],
-    selectionBackground: tokens.grays[600],
+    background: tokensV2.black[800],
+    selectionBackground: tokensV2.black[800],
   },
   peekView: {
     border: tokens.grays[500],
@@ -207,18 +210,18 @@ const colors = {
     foreground: tokens.white,
   },
   sideBar: {
-    background: tokens.grays[700],
-    hoverBackground: tokens.grays[600],
-    border: tokens.grays[600],
-    foreground: tokens.grays[200],
+    background: tokensV2.black[800],
+    hoverBackground: tokensV2.black[600],
+    border: null,
+    foreground: tokensV2.gray[200],
   },
   sideBarSectionHeader: {
     background: tokens.grays[700],
-    foreground: tokens.white,
+    foreground: tokensV2.gray[200],
     border: tokens.grays[600],
   },
   sideBarTitle: {
-    foreground: tokens.white,
+    foreground: tokensV2.gray[200],
   },
   statusBar: {
     background: tokens.grays[600],

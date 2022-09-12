@@ -73,7 +73,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
     newTitle,
     sandboxTitle,
   }) => (
-    <Stack justify="space-between" marginLeft={4}>
+    <Stack justify="space-between" marginLeft={5} marginRight={2}>
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input
@@ -182,20 +182,14 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
     }
 
     return (
-      <div style={{ margin: '0 16px' }}>
+      <div>
         <Stack
+          marginLeft={5}
           as={Text}
           align="center"
-          gap={1}
+          gap={4}
           size={3}
           variant="muted"
-          css={css({
-            '> *:not(:last-child):after': {
-              content: `'•'`,
-              marginLeft: 1,
-              fontSize: 1,
-            },
-          })}
         >
           {footer.map(item => item)}
         </Stack>
@@ -257,7 +251,7 @@ export const SandboxCard = ({
         height: 240,
         backgroundColor: 'grays.700',
         border: '1px solid',
-        borderColor: selected ? 'blues.600' : 'grays.600',
+        borderColor: selected ? 'purple' : 'transparent',
         borderRadius: 'medium',
         overflow: 'hidden',
         transition: 'box-shadow ease-in-out',
@@ -279,7 +273,7 @@ export const SandboxCard = ({
       <Stack
         direction="vertical"
         justify="space-between"
-        css={css({ flexGrow: 1, paddingY: 4 })}
+        css={css({ flexGrow: 1, paddingY: 5 })}
       >
         <SandboxTitle
           originalGit={sandbox.originalGit}
@@ -350,7 +344,7 @@ const Thumbnail = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          height: '144px',
+          height: '120px',
           backgroundColor: '#242424',
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
@@ -373,17 +367,17 @@ const Thumbnail = ({
       <div
         style={{
           position: 'absolute',
-          top: 2,
-          right: 2,
-          width: 16,
-          height: 16,
+          top: 6,
+          right: 6,
+          width: 24,
+          height: 24,
           border: '3px solid',
-          borderRadius: 2,
+          borderRadius: 4,
           backgroundColor: '#343434',
           borderColor: '#343434',
         }}
       >
-        <TemplateIcon width="16" height="16" />
+        <TemplateIcon width="24" height="24" />
       </div>
     </>
   );
@@ -402,7 +396,7 @@ export const SkeletonCard = () => (
       overflow: 'hidden',
     })}
   >
-    <SkeletonText css={{ width: '100%', height: 144, borderRadius: 0 }} />
+    <SkeletonText css={{ width: '100%', height: 120, borderRadius: 0 }} />
     <Stack direction="vertical" gap={2} marginX={4}>
       <SkeletonText css={{ width: 120 }} />
       <SkeletonText css={{ width: 180 }} />
