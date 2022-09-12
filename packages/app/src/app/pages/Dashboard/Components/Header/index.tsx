@@ -57,14 +57,11 @@ export const Header = ({
         width: `calc(100% - ${2 * GUTTER}px)`,
         maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
         marginX: 'auto',
-        borderStyle: 'solid',
-        borderWidth: 0,
-        borderBottomWidth: 1,
-        borderColor: 'grays.500',
+        borderStyle: 'none',
       })}
     >
       {title ? (
-        <Text marginBottom={1} block weight="bold" size={5}>
+        <Text marginBottom={1} block size={5}>
           {title}
         </Text>
       ) : (

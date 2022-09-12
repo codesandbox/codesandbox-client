@@ -118,7 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {...props}
         css={css({
           borderRight: '1px solid',
-          borderColor: 'sideBar.border',
+          borderColor: 'transparent',
           backgroundColor: 'sideBar.background',
           width: SIDEBAR_WIDTH,
           flexShrink: 0,
@@ -134,8 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               paddingLeft: '6px',
               paddingRight: 0,
               height: 10,
-              borderBottom: '1px solid',
-              borderColor: 'sideBar.border',
+              backgroundColor: '#191919',
             })}
           >
             {activeAccount ? (
@@ -743,8 +742,8 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
             <Element as="span" css={css({ width: 4, flexShrink: 0 })} />
           )}
 
-          <Stack align="center" gap={2} css={{ width: 'calc(100% - 28px)' }}>
-            <Icon name="folder" size={24} css={css({ flexShrink: 0 })} />
+          <Stack align="center" gap={4} css={{ width: 'calc(100% - 28px)' }}>
+            <Icon name="folder" size={16} css={css({ flexShrink: 0 })} />
 
             {isRenaming || isNewFolder ? (
               <form onSubmit={onSubmit}>

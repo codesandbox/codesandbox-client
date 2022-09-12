@@ -74,9 +74,7 @@ export const MenuStyles = createGlobalStyle(
     },
     '[data-component=MenuDivider]': {
       margin: 0,
-      border: 'none',
-      borderBottom: '1px solid',
-      borderColor: 'menuList.border',
+      border: 'transparent',
     },
   }),
   styledcss`

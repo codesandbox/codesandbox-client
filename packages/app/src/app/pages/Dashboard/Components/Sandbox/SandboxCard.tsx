@@ -369,17 +369,15 @@ const Thumbnail = ({
           position: 'absolute',
           top: 6,
           right: 6,
-          width: 24,
-          height: 24,
-          border: '3px solid',
+          width: 18,
+          height: 18,
           borderRadius: 4,
           backgroundColor: '#343434',
           borderColor: '#343434',
-          padding: 2,
-          boxSizing: 'border-box',
+          padding: 4,
         }}
       >
-        <TemplateIcon width="24" height="24" />
+        <TemplateIcon width="18" height="18" />
       </div>
     </>
   );

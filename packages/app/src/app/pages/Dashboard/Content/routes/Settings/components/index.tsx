@@ -10,7 +10,7 @@ export const Card = props => (
       padding: 6,
       background: '#191919',
       border: '1px solid',
-      borderColor: 'grays.600',
+      borderColor: 'transparent',
       borderRadius: 'medium',
       ...(props.css || {}),
     })}

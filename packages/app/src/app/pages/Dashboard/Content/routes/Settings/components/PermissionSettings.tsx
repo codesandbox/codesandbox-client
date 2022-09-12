@@ -119,7 +119,7 @@ const MinimumPrivacy = ({ disabled }: { disabled: boolean }) => {
       css={css({
         padding: 6,
         border: '1px solid',
-        borderColor: 'grays.600',
+        borderColor: 'transparent',
         borderRadius: 'medium',
         opacity: disabled ? 0.4 : 1,
       })}
@@ -226,7 +226,7 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
       css={css({
         padding: 6,
         border: '1px solid',
-        borderColor: 'grays.600',
+        borderColor: 'transparent',
         borderRadius: 'medium',
         opacity: disabled ? 0.4 : 1,
       })}

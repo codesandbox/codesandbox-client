@@ -214,6 +214,7 @@ const colors = {
     hoverBackground: tokensV2.black[600],
     border: null,
     foreground: tokensV2.gray[200],
+    switcherBackground: tokensV2.black[600],
   },
   sideBarSectionHeader: {
     background: tokens.grays[700],
