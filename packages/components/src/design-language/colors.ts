@@ -7,7 +7,7 @@ export const colors = {
     400: '#757575',
     500: '#343434',
     600: '#242424',
-    700: '#151515',
+    700: '#191919',
     800: '#111111',
     900: '#040404',
   },
@@ -24,7 +24,7 @@ export const colors = {
     500: '#E1270E', // Red
   },
   green: '#5BC266',
-  purple: '#BF5AF2',
+  purple: '#AC9CFF',
   yellow: '#FBCC43',
   orange: '#f69935',
 };
