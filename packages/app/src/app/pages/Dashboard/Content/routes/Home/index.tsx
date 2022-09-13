@@ -2,7 +2,11 @@ import React, { useEffect } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
-import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
+import {
+  VariableGrid,
+  GUTTER,
+  GRID_MAX_WIDTH,
+} from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { Helmet } from 'react-helmet';
@@ -11,6 +15,19 @@ import {
   DashboardTemplate,
   PageTypes,
 } from 'app/pages/Dashboard/types';
+import styled from 'styled-components';
+
+const BannerProjects = styled.a`
+  display: block;
+
+  width: calc(100% - ${2 * GUTTER}px);
+  max-width: ${GRID_MAX_WIDTH - 2 * GUTTER}px;
+  margin: 0 auto ${GUTTER}px;
+
+  img {
+    width: 100%;
+  }
+`;
 
 export const Home = () => {
   const {
@@ -84,6 +101,12 @@ export const Home = () => {
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
+      <BannerProjects href="https://codesandbox.io/p/dashboard?from=banner">
+        <img
+          src="/static/img/projects-banner.png"
+          alt="The CodeSandbox flow, for any project of any size. Try now"
+        />
+      </BannerProjects>
       <Header title="Home" activeTeam={activeTeam} showViewOptions />
       <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
