@@ -15,7 +15,6 @@ import {
   ListItem,
   Link,
   Text,
-  Menu,
   Stack,
   Icon,
   IconButton,
@@ -193,7 +192,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
           />
-          <Menu.Divider />
           <NestableRowItem
             name="All Sandboxes"
             path={dashboardUrls.allSandboxes('/', activeTeam)}
@@ -237,9 +235,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
           />
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
+          <Element marginTop={8} />
           <RowItem
             name="Shared With Me"
             page="shared"
@@ -253,9 +249,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="heart"
           />
 
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
+          <Element marginTop={8} />
 
           {user?.betaAccess ? (
             <RowItem
