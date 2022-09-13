@@ -70,7 +70,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
         </Link>
         <IconButton
           name="menu"
-          size={18}
+          size={16}
           title="Menu"
           onClick={onSidebarToggle}
           css={css({ display: ['block', 'block', 'none'] })}
