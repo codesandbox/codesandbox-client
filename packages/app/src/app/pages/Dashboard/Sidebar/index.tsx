@@ -164,7 +164,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <IconButton
                 name="gear"
-                size={8}
+                size={16}
                 title="Settings"
                 css={css({
                   width: 8,
@@ -743,8 +743,25 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
             <Element as="span" css={css({ width: 4, flexShrink: 0 })} />
           )}
 
-          <Stack align="center" gap={2} css={{ width: 'calc(100% - 28px)' }}>
-            <Icon name="folder" size={24} css={css({ flexShrink: 0 })} />
+          <Stack
+            align="center"
+            gap={2}
+            css={{
+              paddingLeft: 0,
+              paddingRight: 0,
+              marginRight: '0!important',
+            }}
+          >
+            <Stack
+              justify="center"
+              align="center"
+              css={{
+                width: 24,
+                marginRight: '8px!important',
+              }}
+            >
+              <Icon name="folder" size={16} css={css({ flexShrink: 0 })} />
+            </Stack>
 
             {isRenaming || isNewFolder ? (
               <form onSubmit={onSubmit}>
