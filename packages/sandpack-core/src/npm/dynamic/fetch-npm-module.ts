@@ -40,6 +40,7 @@ function prependRootPath(meta: Meta, rootPath: string): Meta {
 export interface FetchProtocol {
   file(name: string, version: string, path: string): Promise<string>;
   meta(name: string, version: string): Promise<Meta>;
+  massFiles?(name: string, version: string): Promise<Array<Module>>;
 }
 
 export function setCombinedMetas(givenCombinedMetas: Meta) {
@@ -92,6 +93,33 @@ function getMeta(
     meta: x,
     fromCache: false,
   }));
+}
+
+const downloadedAllDependencies = new Set<string>();
+/**
+ * If the protocol supports it, download all all files of the dependency
+ * at once. It's an optimization.
+ */
+export async function downloadAllDependencyFiles(
+  name: string,
+  version: string
+): Promise<Module[] | null> {
+  if (downloadedAllDependencies.has(`${name}@${version}`)) {
+    return null;
+  }
+
+  downloadedAllDependencies.add(`${name}@${version}`);
+
+  const [depName, depVersion] = resolveNPMAlias(name, version);
+  const nameWithoutAlias = depName.replace(ALIAS_REGEX, '');
+  const protocol = getFetchProtocol(depName, depVersion);
+
+  if (protocol.massFiles) {
+    // If the protocol supports returning many files at once, we opt for that instead.
+    return protocol.massFiles(nameWithoutAlias, depVersion);
+  }
+
+  return null;
 }
 
 export function downloadDependency(

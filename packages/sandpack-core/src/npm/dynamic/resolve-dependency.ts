@@ -2,7 +2,10 @@ import minimatch from 'minimatch';
 import * as semver from 'semver';
 
 import { ILambdaResponse } from '../merge-dependency';
-import { downloadDependency } from './fetch-npm-module';
+import {
+  downloadAllDependencyFiles,
+  downloadDependency,
+} from './fetch-npm-module';
 import { IParsedResolution } from './resolutions';
 
 export async function getPackageJSON(dep: string, version: string) {
@@ -143,6 +146,15 @@ export async function resolveDependencyInfo(
       content: packageJSONCode,
     },
   };
+
+  const allFiles = await downloadAllDependencyFiles(dep, version);
+  if (allFiles) {
+    allFiles.forEach(file => {
+      response.contents[`/node_modules/${dep}${file.path}`] = {
+        content: file.code,
+      };
+    });
+  }
 
   await Promise.all(
     Object.keys(response.dependencyDependencies).map(async packageName => {

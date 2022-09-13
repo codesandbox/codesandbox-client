@@ -1,4 +1,5 @@
 import { satisfies, valid } from 'semver';
+import { Module } from '../../../types/module';
 import { FetchProtocol, Meta } from '../fetch-npm-module';
 import { fetchWithRetries } from './utils';
 import { TarStore } from './utils/tar-store';
@@ -233,6 +234,17 @@ export class NpmRegistryFetcher implements FetchProtocol {
       versionInfo.dist.tarball
     );
     return this.tarStore.meta(name, tarball, this.getRequestInit());
+  }
+
+  public async massFiles(name: string, version: string): Promise<Module[]> {
+    const versionInfo = await this.getVersionInfo(name, version);
+
+    const tarball = this.getTarballUrl(
+      name,
+      versionInfo.version,
+      versionInfo.dist.tarball
+    );
+    return this.tarStore.massFiles(name, tarball, this.getRequestInit());
   }
 
   public condition = (name: string, version: string): boolean => {

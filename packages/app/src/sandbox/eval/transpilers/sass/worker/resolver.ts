@@ -45,9 +45,10 @@ export function getPossibleSassPaths(
   return directories.map(directory => pathUtils.join(directory, filepath));
 }
 
-async function resolveAsyncModule(opts: {
+export async function resolveAsyncModule(opts: {
   path: string;
   options: {
+    isAbsolute: boolean;
     ignoredExtensions: typeof POTENTIAL_EXTENSIONS;
   };
   loaderContextId: number;
@@ -91,6 +92,7 @@ function existsPromise(opts: {
           const resolvedModule = await resolveAsyncModule({
             path: filepath,
             options: {
+              isAbsolute: filepath.startsWith('/'),
               ignoredExtensions: POTENTIAL_EXTENSIONS,
             },
             loaderContextId,
@@ -103,49 +105,25 @@ function existsPromise(opts: {
             return;
           }
 
+          try {
+            fs.mkdirSync(pathUtils.dirname(resolvedModule.path), {
+              recursive: true,
+            });
+          } catch (e) {
+            /* noop */
+          }
+          try {
+            fs.writeFileSync(resolvedModule.path, resolvedModule.code);
+          } catch (e) {
+            /* noop */
+          }
+
           r(resolvedModule.path);
         } catch (e) {
           r(false);
         }
       } else {
         r(filepath);
-      }
-    });
-  });
-}
-
-/**
- * Return and stop as soon as one promise returns a truthy value
- */
-function firstTrue<T>(promises: Array<Promise<T | false>>): Promise<T> {
-  if (!promises.length) {
-    return Promise.reject(new Error('No promises supplied'));
-  }
-
-  return new Promise((resolvePromise, rejectPromise) => {
-    let resolved: boolean = false;
-    let firstError: any;
-
-    Promise.all(
-      promises.map(promise =>
-        promise.then(
-          result => {
-            if (result && !resolved) {
-              resolved = true;
-              resolvePromise(result);
-            }
-          },
-          err => {
-            firstError = firstError || err;
-          }
-        )
-      )
-    ).then(() => {
-      if (!resolved) {
-        const err =
-          firstError ||
-          new Error('None of the promises returned a truthy value');
-        rejectPromise(err);
       }
     });
   });
@@ -163,17 +141,36 @@ async function resolvePotentialPath(opts: {
     const pathVariations = getPathVariations(
       pathUtils.basename(potentialPath)
     ).map(variation => pathUtils.join(pathDirName, variation));
-    const foundFilePath = await firstTrue<string>(
-      pathVariations.map(path =>
-        existsPromise({ fs, filepath: path, loaderContextId, childHandler })
-      )
-    );
 
-    if (!foundFilePath) {
-      return null;
+    // Try the first one first, that's often the right one and this way we don't spam
+    // the main thread.
+    const firstPath = pathVariations.shift();
+    const firstFoundFilePath = await existsPromise({
+      fs,
+      filepath: firstPath,
+      loaderContextId,
+      childHandler,
+    });
+
+    if (firstFoundFilePath) {
+      return firstPath;
     }
 
-    return foundFilePath;
+    for (const path of pathVariations) {
+      // eslint-disable-next-line no-await-in-loop
+      const result = await existsPromise({
+        fs,
+        filepath: path,
+        loaderContextId,
+        childHandler,
+      });
+
+      if (result) {
+        return path;
+      }
+    }
+
+    return null;
   } catch (err) {
     return null;
   }
@@ -198,7 +195,7 @@ interface ISassResolverOptions {
   includePaths?: Array<string>;
   env?: any;
   fs: any;
-  resolutionCache: { [k: string]: string };
+  resolutionCache: { [k: string]: Promise<string> };
   loaderContextId: number;
   childHandler: ChildHandler;
 }
@@ -249,15 +246,16 @@ export async function resolveSassUrl(opts: ISassResolverOptions) {
       return resolutionCache[potentialPath];
     }
 
-    // eslint-disable-next-line no-await-in-loop
-    const resolvedPath = await resolvePotentialPath({
+    resolutionCache[potentialPath] = resolvePotentialPath({
       fs,
       potentialPath,
       loaderContextId,
       childHandler,
     });
+
+    // eslint-disable-next-line no-await-in-loop
+    const resolvedPath = await resolutionCache[potentialPath];
     if (resolvedPath) {
-      resolutionCache[potentialPath] = resolvedPath;
       return resolvedPath;
     }
   }
