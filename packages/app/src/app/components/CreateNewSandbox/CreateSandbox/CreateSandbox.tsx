@@ -1,8 +1,7 @@
-import { Element, Stack, ThemeProvider } from '@codesandbox/components';
+import { Stack, ThemeProvider } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useActions, useEffects, useAppState } from 'app/overmind';
-import latestChangelog from 'homepage/content/changelog';
-import React, { useEffect, useState } from 'react';
+import { useActions, useAppState } from 'app/overmind';
+import React, { useEffect } from 'react';
 import { useTabState } from 'reakit/Tab';
 
 import { Create } from './Create';
@@ -18,15 +17,12 @@ import {
 import { Explore } from './Explore';
 import {
   CodeSandboxIcon,
-  NewIcon,
   PlusIcon,
   StarIcon,
   UploadIcon,
   BackIcon,
 } from './Icons';
 import { Import } from './Import';
-import { New } from './New';
-import { getInfoFromMarkdown } from './utils/getInfoFromMarkdown';
 import { Welcome } from './Welcome';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
@@ -39,10 +35,8 @@ interface CreateSandboxProps {
 
 export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
   const { isFirstVisit, hasLogIn } = useAppState();
-  const { browser } = useEffects();
   const actions = useActions();
 
-  const [newChangelogToSee, setNewChangelogToSee] = useState(false);
   const tab = useTabState({
     orientation: 'vertical',
     selectedId:
@@ -51,7 +45,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
         ? 'Welcome'
         : 'Create'),
   });
-  const [info, setInfo] = useState(null);
 
   useEffect(() => {
     if (location.pathname.includes('/repositories')) {
@@ -59,16 +52,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    const infoData = getInfoFromMarkdown(latestChangelog);
-    setInfo(infoData);
-    const key = 'last_changelog_viewed_create_sandbox_modal';
-    if (browser.storage.get(key) !== infoData.title) {
-      setNewChangelogToSee(true);
-    }
-    browser.storage.set(key, infoData.title);
-  }, [browser.storage]);
 
   const dashboardButtonAttrs = () => {
     if (location.pathname.includes('/dashboard')) {
@@ -107,24 +90,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
             </DashboardButton>
           )}
           <Tabs {...tab} aria-label="My tabs">
-            <Tab {...tab} stopId="New">
-              {newChangelogToSee ? (
-                <Element
-                  css={css({
-                    width: '5px',
-                    height: '5px',
-                    left: 29,
-                    top: 0,
-                    transform: 'translateY(100%)',
-                    borderRadius: '50%',
-                    position: 'absolute',
-                    backgroundColor: 'reds.500',
-                  })}
-                />
-              ) : null}
-              <NewIcon scale={0.5} />
-              What{"'"}s new
-            </Tab>
             {isFirstVisit ? (
               <Tab {...tab} stopId="Welcome">
                 <CodeSandboxIcon scale={0.5} />
@@ -189,19 +154,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
                 </MobileTabs>
 
                 <Create collectionId={props.collectionId} />
-              </div>
-            )
-          }
-        </TabContent>
-        <TabContent {...tab} stopId="New">
-          {rProps =>
-            !rProps.hidden && (
-              <div {...rProps}>
-                <New
-                  latestChangelog={latestChangelog}
-                  info={info}
-                  goToTab={() => tab.select('Create')}
-                />
               </div>
             )
           }
