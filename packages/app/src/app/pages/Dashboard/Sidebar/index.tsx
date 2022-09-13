@@ -118,7 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {...props}
         css={css({
           borderRight: '1px solid',
-          borderColor: 'sideBar.border',
+          borderColor: 'transparent',
           backgroundColor: 'sideBar.background',
           width: SIDEBAR_WIDTH,
           flexShrink: 0,
@@ -134,8 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               paddingLeft: '6px',
               paddingRight: 0,
               height: 10,
-              borderBottom: '1px solid',
-              borderColor: 'sideBar.border',
+              backgroundColor: 'sideBar.hoverBackground',
             })}
           >
             {activeAccount ? (
