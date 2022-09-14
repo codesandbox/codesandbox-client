@@ -10,6 +10,7 @@ export type PageTypes =
   | 'sandboxes'
   | 'legacy-repos'
   | 'open-source-repos'
+  | 'v2-repos'
   | 'shared'
   | 'liked'
   | 'always-on'
