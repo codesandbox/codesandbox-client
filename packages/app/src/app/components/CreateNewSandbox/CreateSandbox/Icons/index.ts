@@ -1,5 +1,4 @@
 export { CLIIcon } from './CLIIcon';
-export { CodeSandboxIcon } from './CodeSandboxIcon';
 export { GiftIcon } from './GiftIcon';
 export { GitHubIcon } from './GitHubIcon';
 export { PlusIcon } from './PlusIcon';
