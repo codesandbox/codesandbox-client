@@ -252,14 +252,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
             name="Open source"
             page="open-source-repos"
             path={dashboardUrls.openSourceRepos(activeTeam)}
-            icon="link"
+            icon="link" // Temp icon.
+          />
+
+          <RowItem
+            name="All repositories"
+            page="v2-repos"
+            path={dashboardUrls.v2Repos(activeTeam)}
+            icon="projects" // Temp icon.
           />
 
           <RowItem
             name="Legacy Repositories"
             page="legacy-repos"
             path={dashboardUrls.legacyRepos(activeTeam)}
-            icon="fork"
+            icon="fork" // Temp icon.
           />
 
           <Menu.Divider />
