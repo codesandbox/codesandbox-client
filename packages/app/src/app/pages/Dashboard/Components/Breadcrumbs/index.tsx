@@ -62,7 +62,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
                 as={LinkBase}
                 to={
                   repos
-                    ? dashboard.repos(activeTeam)
+                    ? link
                     : dashboard.allSandboxes('/' + partPath, activeTeam)
                 }
                 variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
