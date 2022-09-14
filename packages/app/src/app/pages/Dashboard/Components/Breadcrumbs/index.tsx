@@ -6,7 +6,7 @@ import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 interface BreadcrumbProps {
   path: string;
   activeTeam: string;
-  repos?: 'legacy' | 'open-source';
+  repos?: 'legacy' | 'open-source' | 'v2';
   albumId?: string;
 }
 
@@ -21,6 +21,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     link = {
       'open-source': dashboard.openSourceRepos(activeTeam),
       legacy: dashboard.legacyRepos(activeTeam),
+      v2: dashboard.v2Repos(activeTeam),
     }[repos];
   } else if (albumId) link = dashboard.discover(activeTeam);
 
@@ -29,6 +30,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     prefix = {
       'open-source': 'Open source',
       legacy: 'Legacy repositories',
+      v2: 'All repositories',
     }[repos];
   } else if (albumId) prefix = 'Discover';
 
