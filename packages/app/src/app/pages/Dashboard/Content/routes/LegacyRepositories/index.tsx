@@ -68,7 +68,7 @@ export const LegacyRepositoriesPage = () => {
       ? getPossibleTemplates(possibleTemplates)
       : [];
 
-  const pageType: PageTypes = 'repos';
+  const pageType: PageTypes = 'legacy-repos';
 
   return (
     <SelectionProvider
