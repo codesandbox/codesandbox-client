@@ -25,8 +25,8 @@ export const LegacyRepositoriesPage = () => {
   } = useAppState();
 
   React.useEffect(() => {
-    const p = home ? null : param;
-    actions.dashboard.getReposByPath(p);
+    const path = home ? null : param;
+    actions.dashboard.getReposByPath(path);
   }, [param, actions.dashboard, activeTeam, home]);
 
   const activeSandboxes =
