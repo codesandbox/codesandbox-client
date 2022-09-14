@@ -81,7 +81,7 @@ export const LegacyRepositoriesPage = () => {
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        repos
+        repos="legacy"
         path={param}
         templates={templates}
         showViewOptions

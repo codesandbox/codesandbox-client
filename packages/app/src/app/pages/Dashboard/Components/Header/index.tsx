@@ -24,7 +24,7 @@ type Props = {
   showFilters?: boolean;
   showViewOptions?: boolean;
   showSortOptions?: boolean;
-  repos?: boolean;
+  repos?: 'legacy' | 'open-source';
   albumId?: string;
   activeTeam: string;
   CustomFilters?: React.ReactElement;
