@@ -16,14 +16,12 @@ import {
 } from './elements';
 import { Explore } from './Explore';
 import {
-  CodeSandboxIcon,
   PlusIcon,
   StarIcon,
   UploadIcon,
   BackIcon,
 } from './Icons';
 import { Import } from './Import';
-import { Welcome } from './Welcome';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -34,16 +32,12 @@ interface CreateSandboxProps {
 }
 
 export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
-  const { isFirstVisit, hasLogIn } = useAppState();
+  const { hasLogIn } = useAppState();
   const actions = useActions();
 
   const tab = useTabState({
     orientation: 'vertical',
-    selectedId:
-      props.initialTab ||
-      (isFirstVisit && !(window.screen.availWidth < 800)
-        ? 'Welcome'
-        : 'Create'),
+    selectedId: props.initialTab || 'Create',
   });
 
   useEffect(() => {
@@ -90,12 +84,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
             </DashboardButton>
           )}
           <Tabs {...tab} aria-label="My tabs">
-            {isFirstVisit ? (
-              <Tab {...tab} stopId="Welcome">
-                <CodeSandboxIcon scale={0.5} />
-                Welcome
-              </Tab>
-            ) : null}
             <Tab {...tab} stopId="Create">
               <PlusIcon scale={0.5} />
               Create Sandbox
@@ -110,17 +98,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
             </Tab>
           </Tabs>
         </Stack>
-        {isFirstVisit ? (
-          <TabContent {...tab} stopId="Welcome">
-            {rProps =>
-              !rProps.hidden && (
-                <div {...rProps}>
-                  <Welcome goToTab={() => tab.select('Create')} />
-                </div>
-              )
-            }
-          </TabContent>
-        ) : null}
         <TabContent {...tab} stopId="Create">
           {rProps =>
             !rProps.hidden && (
