@@ -20,12 +20,6 @@ import { Import } from './Import';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
-interface CreateSandboxProps {
-  collectionId?: string;
-  initialTab?: 'import';
-  isModal?: boolean;
-}
-
 interface PanelProps {
   tab: TabStateReturn;
   id: string;
@@ -50,45 +44,48 @@ const Panel = ({ tab, id, children }: PanelProps) => {
   );
 };
 
-export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
+interface CreateSandboxProps {
+  collectionId?: string;
+  initialTab?: 'import';
+  isModal?: boolean;
+}
+
+export const CreateSandbox: React.FC<CreateSandboxProps> = ({
+  collectionId,
+  initialTab,
+  isModal,
+}) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
 
   const tab = useTabState({
     orientation: 'vertical',
-    selectedId: props.initialTab || 'create',
+    selectedId: initialTab || 'create',
   });
 
   useEffect(() => {
+    /* ❗️ TODO: We can probably take this out of the useEffect and put it into the useTabState selectedId */
     if (location.pathname.includes('/repositories')) {
       tab.select('Import');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const dashboardButtonAttrs = () => {
-    if (location.pathname.includes('/dashboard')) {
-      return {
+  const dashboardButtonAttrs = location.pathname.includes('/dashboard')
+    ? {
+        onClick: actions.modals.newSandboxModal.close,
+      }
+    : {
+        to: '/dashboard',
         onClick: actions.modals.newSandboxModal.close,
       };
-    }
-    return {
-      to: '/dashboard',
-      onClick: actions.modals.newSandboxModal.close,
-    };
-  };
 
   return (
     <ThemeProvider>
-      <Container {...props}>
-        <Stack
-          css={css({
-            paddingBottom: 4,
-          })}
-          direction="vertical"
-        >
+      <Container>
+        <Stack direction="vertical">
           {hasLogIn ? (
-            <DashboardButton {...dashboardButtonAttrs()}>
+            <DashboardButton {...dashboardButtonAttrs}>
               <Stack align="center" justify="center">
                 <BackIcon />
               </Stack>
@@ -139,19 +136,18 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
           </Tabs>
         </Stack>
         <Panel tab={tab} id="create">
+          {/**
+           * ❗️ TODO: Update MobileTabs (because they aren't anymore) and move close button
+           * higher up in the tree.
+           */}
           <MobileTabs>
-            {props.isModal ? (
+            {/* ❗️ TODO: Figure out when it isn't a modal */}
+            {isModal ? (
               <CloseModal
                 type="button"
                 onClick={() => actions.modals.newSandboxModal.close()}
               >
-                <svg
-                  width={10}
-                  height={10}
-                  fill="none"
-                  viewBox="0 0 10 10"
-                  {...props}
-                >
+                <svg width={10} height={10} fill="none" viewBox="0 0 10 10">
                   <path
                     fill="#fff"
                     d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
@@ -161,22 +157,17 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
             ) : null}
           </MobileTabs>
 
-          <Create collectionId={props.collectionId} />
+          <Create collectionId={collectionId} />
         </Panel>
         <Panel tab={tab} id="import">
           <MobileTabs>
-            {props.isModal ? (
+            {/* ❗️ TODO: Figure out when it isn't a modal */}
+            {isModal ? (
               <CloseModal
                 type="button"
                 onClick={() => actions.modals.newSandboxModal.close()}
               >
-                <svg
-                  width={10}
-                  height={10}
-                  fill="none"
-                  viewBox="0 0 10 10"
-                  {...props}
-                >
+                <svg width={10} height={10} fill="none" viewBox="0 0 10 10">
                   <path
                     fill="#fff"
                     d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
@@ -188,7 +179,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
           <Import />
         </Panel>
         <Panel tab={tab} id="explore">
-          <Explore collectionId={props.collectionId} />
+          <Explore collectionId={collectionId} />
         </Panel>
         <Panel tab={tab} id="my-templates">
           My templates
