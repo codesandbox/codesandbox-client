@@ -258,23 +258,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <Menu.Divider />
           </Element>
 
-          {user?.betaAccess ? (
-            <RowItem
-              name="Go to Projects"
-              page="external"
-              path="/p/dashboard?from=sidebar"
-              icon="projects"
-              badge
-            />
-          ) : (
-            <RowItem
-              name="Join Projects Beta"
-              page="external"
-              path="/projects"
-              icon="projects"
-              badge
-            />
-          )}
+          <RowItem
+            name="Go to Projects"
+            page="external"
+            path="/p/dashboard?from=sidebar"
+            icon="projects"
+            badge
+          />
         </List>
 
         <Element margin={4}>
