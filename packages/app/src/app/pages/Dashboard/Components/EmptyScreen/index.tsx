@@ -40,7 +40,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
     );
   }
 
-  if (page === 'repos') {
+  if (page === 'legacy-repos') {
     return (
       <Stack justify="center" align="center" marginTop={120}>
         <Stack
@@ -56,6 +56,29 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
           <Stack direction="vertical" align="center" gap={1}>
             <Text variant="muted" align="center">
               Uh oh, you haven’t imported any repositories.
+            </Text>
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  if (page === 'open-source-repos') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Stack
+          direction="vertical"
+          align="center"
+          gap={8}
+          css={{ width: 500, height: '100vh', userSelect: 'none' }}
+        >
+          <Stack align="center" css={{ width: 220 }}>
+            <ImportRepo />
+          </Stack>
+
+          <Stack direction="vertical" align="center" gap={1}>
+            <Text variant="muted" align="center">
+              Uh oh, you don’t have any open source contributions.
             </Text>
           </Stack>
         </Stack>
