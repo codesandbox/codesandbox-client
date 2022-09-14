@@ -13,7 +13,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
-export const RepositoriesPage = () => {
+export const LegacyRepositoriesPage = () => {
   const params = useParams<{ path: string }>();
   const items = useFilteredItems(params);
   const param = params.path || '';
@@ -93,4 +93,4 @@ export const RepositoriesPage = () => {
   );
 };
 
-export const Repositories = React.memo(RepositoriesPage);
+export const LegacyRepositories = React.memo(LegacyRepositoriesPage);

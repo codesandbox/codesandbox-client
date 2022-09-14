@@ -13,7 +13,7 @@ import { Shared } from './routes/Shared';
 import { Liked } from './routes/Liked';
 import { AlwaysOn } from './routes/AlwaysOn';
 import { All } from './routes/All';
-import { Repositories } from './routes/Repositories';
+import { LegacyRepositories } from './routes/LegacyRepositories';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
 import { Discover } from './routes/Discover';
@@ -57,7 +57,7 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/templates" component={Templates} />
         <Route
           path="/dashboard/repositories/legacy/:path*"
-          component={Repositories}
+          component={LegacyRepositories}
         />
         <Route path="/dashboard/always-on" component={AlwaysOn} />
         <Route path="/dashboard/recent" component={Recent} />
