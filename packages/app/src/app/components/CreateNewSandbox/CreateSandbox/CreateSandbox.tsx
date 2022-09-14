@@ -15,12 +15,7 @@ import {
   DashboardButton,
 } from './elements';
 import { Explore } from './Explore';
-import {
-  PlusIcon,
-  StarIcon,
-  UploadIcon,
-  BackIcon,
-} from './Icons';
+import { PlusIcon, StarIcon, UploadIcon, BackIcon } from './Icons';
 import { Import } from './Import';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
@@ -83,7 +78,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
               Sign in
             </DashboardButton>
           )}
-          <Tabs {...tab} aria-label="My tabs">
+          <Tabs {...tab} aria-label="Create new">
             <Tab {...tab} stopId="create">
               <PlusIcon scale={0.5} />
               Create Sandbox
@@ -99,74 +94,66 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
           </Tabs>
         </Stack>
         <TabContent {...tab} stopId="create">
-          {rProps =>
-            !rProps.hidden && (
-              <div {...rProps}>
-                <MobileTabs>
-                  {props.isModal ? (
-                    <CloseModal
-                      type="button"
-                      onClick={() => actions.modals.newSandboxModal.close()}
+          {tab.currentId === 'create' ? (
+            <>
+              <MobileTabs>
+                {props.isModal ? (
+                  <CloseModal
+                    type="button"
+                    onClick={() => actions.modals.newSandboxModal.close()}
+                  >
+                    <svg
+                      width={10}
+                      height={10}
+                      fill="none"
+                      viewBox="0 0 10 10"
+                      {...props}
                     >
-                      <svg
-                        width={10}
-                        height={10}
-                        fill="none"
-                        viewBox="0 0 10 10"
-                        {...props}
-                      >
-                        <path
-                          fill="#fff"
-                          d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
-                        />
-                      </svg>
-                    </CloseModal>
-                  ) : null}
-                </MobileTabs>
+                      <path
+                        fill="#fff"
+                        d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
+                      />
+                    </svg>
+                  </CloseModal>
+                ) : null}
+              </MobileTabs>
 
-                <Create collectionId={props.collectionId} />
-              </div>
-            )
-          }
+              <Create collectionId={props.collectionId} />
+            </>
+          ) : null}
         </TabContent>
         <TabContent {...tab} stopId="import">
-          {rProps =>
-            !rProps.hidden && (
-              <div {...rProps}>
-                <MobileTabs>
-                  {props.isModal ? (
-                    <CloseModal
-                      type="button"
-                      onClick={() => actions.modals.newSandboxModal.close()}
+          {tab.currentId === 'import' ? (
+            <>
+              <MobileTabs>
+                {props.isModal ? (
+                  <CloseModal
+                    type="button"
+                    onClick={() => actions.modals.newSandboxModal.close()}
+                  >
+                    <svg
+                      width={10}
+                      height={10}
+                      fill="none"
+                      viewBox="0 0 10 10"
+                      {...props}
                     >
-                      <svg
-                        width={10}
-                        height={10}
-                        fill="none"
-                        viewBox="0 0 10 10"
-                        {...props}
-                      >
-                        <path
-                          fill="#fff"
-                          d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
-                        />
-                      </svg>
-                    </CloseModal>
-                  ) : null}
-                </MobileTabs>
-                <Import />
-              </div>
-            )
-          }
+                      <path
+                        fill="#fff"
+                        d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
+                      />
+                    </svg>
+                  </CloseModal>
+                ) : null}
+              </MobileTabs>
+              <Import />
+            </>
+          ) : null}
         </TabContent>
         <TabContent {...tab} stopId="explore">
-          {rProps =>
-            !rProps.hidden && (
-              <div {...rProps}>
-                <Explore collectionId={props.collectionId} />
-              </div>
-            )
-          }
+          {tab.currentId === 'explore' ? (
+            <Explore collectionId={props.collectionId} />
+          ) : null}
         </TabContent>
       </Container>
     </ThemeProvider>
