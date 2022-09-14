@@ -14,9 +14,6 @@
       "runAtStart": true,
       "preview": {
         "port": 3000
-      },
-      "restartOn": {
-        "files": ["yarn.lock", "packages/app/scripts/*"]
       }
     },
     "app:home:fast": {

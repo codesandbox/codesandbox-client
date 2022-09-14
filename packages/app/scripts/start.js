@@ -226,7 +226,12 @@ function addMiddleware(devServer, index) {
   if (process.env.LOCAL_SERVER) {
     devServer.use(
       cors({
-        origin: true,
+        origin: [
+          'http://localhost:3000',
+          'http://localhost:3002',
+          'http://localhost:8000',
+          'http://localhost:8001',
+        ],
         credentials: true,
       })
     );
@@ -286,9 +291,9 @@ function runDevServer(port, protocol, index) {
     host: process.env.LOCAL_SERVER
       ? 'localhost'
       : process.env.DEV_DOMAIN || 'codesandbox.test',
-    disableHostCheck:
-      Boolean(process.env.CSB) ||
-      !(process.env.LOCAL_SERVER || process.env.CODESANDBOX_HOST),
+    disableHostCheck: !(
+      process.env.LOCAL_SERVER || process.env.CODESANDBOX_HOST
+    ),
     contentBase: false,
     clientLogLevel: 'warning',
     overlay: true,

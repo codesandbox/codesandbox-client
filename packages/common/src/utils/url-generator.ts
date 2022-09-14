@@ -34,35 +34,7 @@ const buildEncodedUri = (
     .map((value, i) => `${encodeURIComponent(value)}${strings[i + 1]}`)
     .join('');
 
-const REGEX = /(?<id>\w{5,6})-(?<port>\d{1,5})\.(?<hostname>.*)/;
-function getCodeSandboxDevHost(port: number): string | undefined {
-  if (typeof window === 'undefined') {
-    // eslint-disable-next-line global-require
-    const hostname = require('os').hostname();
-
-    return `${hostname}-${port}.preview.csb.app`;
-  }
-
-  const currentUrl = location.host;
-  const currentMatch = currentUrl.match(REGEX);
-
-  if (!currentMatch?.groups) {
-    return undefined;
-  }
-  const { id, hostname } = currentMatch.groups;
-
-  if (!id || !port || !hostname) {
-    return undefined;
-  }
-
-  return `${id}-${port}.${hostname}`;
-}
-
 export const host = () => {
-  if (process.env.CSB && getCodeSandboxDevHost(3000)) {
-    return getCodeSandboxDevHost(3000);
-  }
-
   if (process.env.NODE_ENV === 'production') {
     return process.env.CODESANDBOX_HOST.split('//')[1];
   }

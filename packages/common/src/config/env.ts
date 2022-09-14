@@ -42,10 +42,6 @@ export default Object.keys(process.env)
     },
     {
       'process.env.NODE_ENV': NODE_ENV,
-      'process.env.CSB': Boolean(process.env.CSB || false),
-      'process.env.ENDPOINT': JSON.stringify(
-        process.env.ENDPOINT || 'codesandbox.io'
-      ),
       'process.env.STAGING_API': STAGING_API,
       'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
       'process.env.LOCAL_SERVER': Boolean(LOCAL_SERVER),
