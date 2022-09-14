@@ -27,7 +27,7 @@ export const COLUMN_MEDIA_THRESHOLD = 1600;
 
 interface CreateSandboxProps {
   collectionId?: string;
-  initialTab?: 'Import';
+  initialTab?: 'import';
   isModal?: boolean;
 }
 
@@ -37,7 +37,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
 
   const tab = useTabState({
     orientation: 'vertical',
-    selectedId: props.initialTab || 'Create',
+    selectedId: props.initialTab || 'create',
   });
 
   useEffect(() => {
@@ -84,21 +84,21 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
             </DashboardButton>
           )}
           <Tabs {...tab} aria-label="My tabs">
-            <Tab {...tab} stopId="Create">
+            <Tab {...tab} stopId="create">
               <PlusIcon scale={0.5} />
               Create Sandbox
             </Tab>
-            <Tab {...tab} stopId="Explore">
-              <StarIcon scale={0.5} />
-              Explore Templates
-            </Tab>
-            <Tab {...tab} stopId="Import">
+            <Tab {...tab} stopId="import">
               <UploadIcon scale={0.5} />
               Import Project
             </Tab>
+            <Tab {...tab} stopId="explore">
+              <StarIcon scale={0.5} />
+              Explore Templates
+            </Tab>
           </Tabs>
         </Stack>
-        <TabContent {...tab} stopId="Create">
+        <TabContent {...tab} stopId="create">
           {rProps =>
             !rProps.hidden && (
               <div {...rProps}>
@@ -129,16 +129,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
             )
           }
         </TabContent>
-        <TabContent {...tab} stopId="Explore">
-          {rProps =>
-            !rProps.hidden && (
-              <div {...rProps}>
-                <Explore collectionId={props.collectionId} />
-              </div>
-            )
-          }
-        </TabContent>
-        <TabContent {...tab} stopId="Import">
+        <TabContent {...tab} stopId="import">
           {rProps =>
             !rProps.hidden && (
               <div {...rProps}>
@@ -164,6 +155,15 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
                   ) : null}
                 </MobileTabs>
                 <Import />
+              </div>
+            )
+          }
+        </TabContent>
+        <TabContent {...tab} stopId="explore">
+          {rProps =>
+            !rProps.hidden && (
+              <div {...rProps}>
+                <Explore collectionId={props.collectionId} />
               </div>
             )
           }
