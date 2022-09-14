@@ -212,12 +212,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.templates(activeTeam)}
             icon="star"
           />
-          <RowItem
-            name="Repositories"
-            page="repos"
-            path={dashboardUrls.repos(activeTeam)}
-            icon="fork"
-          />
           {activeTeamInfo?.joinedPilotAt && (
             <RowItem
               name="Always-On"
@@ -238,9 +232,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
           />
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
+          <Menu.Divider />
           <RowItem
             name="Shared With Me"
             page="shared"
@@ -254,9 +246,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="heart"
           />
 
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
+          <Menu.Divider />
+
+          <RowItem
+            name="Repositories"
+            page="repos"
+            path={dashboardUrls.repos(activeTeam)}
+            icon="fork"
+          />
+
+          <Menu.Divider />
 
           <RowItem
             name="Go to Projects"
