@@ -9,6 +9,7 @@ export type PageTypes =
   | 'drafts'
   | 'sandboxes'
   | 'legacy-repos'
+  | 'open-source-repos'
   | 'shared'
   | 'liked'
   | 'always-on'
