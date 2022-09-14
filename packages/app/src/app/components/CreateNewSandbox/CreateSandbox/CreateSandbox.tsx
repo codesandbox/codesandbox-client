@@ -126,12 +126,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
             !rProps.hidden && (
               <div {...rProps}>
                 <MobileTabs>
-                  <Tab {...tab} className="active" stopId="Create">
-                    Create Sandbox
-                  </Tab>
-                  <Tab {...tab} stopId="Import">
-                    Import Project
-                  </Tab>
                   {props.isModal ? (
                     <CloseModal
                       type="button"
@@ -172,12 +166,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
             !rProps.hidden && (
               <div {...rProps}>
                 <MobileTabs>
-                  <Tab {...tab} stopId="Create">
-                    Create Sandbox
-                  </Tab>
-                  <Tab className="active" {...tab} stopId="Import">
-                    Import Project
-                  </Tab>
                   {props.isModal ? (
                     <CloseModal
                       type="button"
