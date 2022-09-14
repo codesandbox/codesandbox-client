@@ -578,7 +578,7 @@ export const openCreateSandboxModal = (
   { actions }: Context,
   props: {
     collectionId?: string;
-    initialTab?: 'Import';
+    initialTab?: 'import';
   }
 ) => {
   actions.modals.newSandboxModal.open(props);

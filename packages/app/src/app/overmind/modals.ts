@@ -14,7 +14,7 @@ export const forkFrozenModal = {
 };
 
 export const newSandboxModal: {
-  state: { collectionId?: null | string; initialTab?: 'Import' | null };
+  state: { collectionId?: null | string; initialTab?: 'import' | null };
   result: undefined;
 } = {
   state: { collectionId: null, initialTab: null },

@@ -46,7 +46,7 @@ export const CreateRepo = () => {
           want to rather import an existing repository,{' '}
           <Link
             css={{ color: 'white' }}
-            onClick={() => openCreateSandboxModal({ initialTab: 'Import' })}
+            onClick={() => openCreateSandboxModal({ initialTab: 'import' })}
           >
             open the GitHub import
           </Link>
