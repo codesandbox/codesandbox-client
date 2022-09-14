@@ -40,7 +40,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
     );
   }
 
-  if (page === 'legacy-repos') {
+  if (page === 'legacy-repos' || page === 'v2-repos') {
     return (
       <Stack justify="center" align="center" marginTop={120}>
         <Stack
