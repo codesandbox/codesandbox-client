@@ -31,6 +31,12 @@ export const repos = (teamId?: string | null) =>
 export const legacyRepos = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories/legacy`, teamId);
 
+export const openSourceRepos = (teamId?: string | null) =>
+  appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/repositories/open-source`,
+    teamId
+  );
+
 export const alwaysOn = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/always-on`, teamId);
 
