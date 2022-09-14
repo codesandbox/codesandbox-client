@@ -1,8 +1,8 @@
 import { Stack, ThemeProvider } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useActions, useAppState } from 'app/overmind';
-import React, { useEffect } from 'react';
-import { useTabState } from 'reakit/Tab';
+import React, { ReactNode, useEffect } from 'react';
+import { TabStateReturn, useTabState } from 'reakit/Tab';
 
 import { Create } from './Create';
 import {
@@ -15,7 +15,7 @@ import {
   DashboardButton,
 } from './elements';
 import { Explore } from './Explore';
-import { PlusIcon, StarIcon, UploadIcon, BackIcon } from './Icons';
+import { BackIcon } from './Icons';
 import { Import } from './Import';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
@@ -25,6 +25,30 @@ interface CreateSandboxProps {
   initialTab?: 'import';
   isModal?: boolean;
 }
+
+interface PanelProps {
+  tab: TabStateReturn;
+  id: string;
+  children: ReactNode;
+}
+
+/**
+ * The Panel component handles the conditional rendering of the actual panel content. This is
+ * done with render props as per the Reakit docs.
+ */
+const Panel = ({ tab, id, children }: PanelProps) => {
+  return (
+    <TabContent {...tab} stopId={id}>
+      {({ hidden, ...rest }) =>
+        hidden ? null : (
+          <div hidden={hidden} {...rest}>
+            {children}
+          </div>
+        )
+      }
+    </TabContent>
+  );
+};
 
 export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
   const { hasLogIn } = useAppState();
@@ -80,81 +104,119 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = props => {
           )}
           <Tabs {...tab} aria-label="Create new">
             <Tab {...tab} stopId="create">
-              <PlusIcon scale={0.5} />
               Create Sandbox
             </Tab>
             <Tab {...tab} stopId="import">
-              <UploadIcon scale={0.5} />
               Import Project
             </Tab>
-            <Tab {...tab} stopId="explore">
-              <StarIcon scale={0.5} />
-              Explore Templates
+            <Tab {...tab} stopId="my-templates">
+              My templates
+            </Tab>
+            <Tab {...tab} stopId="csb-templates">
+              CodeSandbox templates
+            </Tab>
+            <Tab {...tab} stopId="react-essentials">
+              React essentials
+            </Tab>
+            <Tab {...tab} stopId="vue-essentials">
+              Vue essentials
+            </Tab>
+            <Tab {...tab} stopId="angular-essentials">
+              Angular essentials
+            </Tab>
+            <Tab {...tab} stopId="ui-frameworks">
+              UI frameworks
+            </Tab>
+            <Tab {...tab} stopId="component-libraries">
+              Component libraries
+            </Tab>
+            <Tab {...tab} stopId="starters">
+              Web App and API Starters
+            </Tab>
+            <Tab {...tab} stopId="databases">
+              Databases
             </Tab>
           </Tabs>
         </Stack>
-        <TabContent {...tab} stopId="create">
-          {tab.currentId === 'create' ? (
-            <>
-              <MobileTabs>
-                {props.isModal ? (
-                  <CloseModal
-                    type="button"
-                    onClick={() => actions.modals.newSandboxModal.close()}
-                  >
-                    <svg
-                      width={10}
-                      height={10}
-                      fill="none"
-                      viewBox="0 0 10 10"
-                      {...props}
-                    >
-                      <path
-                        fill="#fff"
-                        d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
-                      />
-                    </svg>
-                  </CloseModal>
-                ) : null}
-              </MobileTabs>
+        <Panel tab={tab} id="create">
+          <MobileTabs>
+            {props.isModal ? (
+              <CloseModal
+                type="button"
+                onClick={() => actions.modals.newSandboxModal.close()}
+              >
+                <svg
+                  width={10}
+                  height={10}
+                  fill="none"
+                  viewBox="0 0 10 10"
+                  {...props}
+                >
+                  <path
+                    fill="#fff"
+                    d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
+                  />
+                </svg>
+              </CloseModal>
+            ) : null}
+          </MobileTabs>
 
-              <Create collectionId={props.collectionId} />
-            </>
-          ) : null}
-        </TabContent>
-        <TabContent {...tab} stopId="import">
-          {tab.currentId === 'import' ? (
-            <>
-              <MobileTabs>
-                {props.isModal ? (
-                  <CloseModal
-                    type="button"
-                    onClick={() => actions.modals.newSandboxModal.close()}
-                  >
-                    <svg
-                      width={10}
-                      height={10}
-                      fill="none"
-                      viewBox="0 0 10 10"
-                      {...props}
-                    >
-                      <path
-                        fill="#fff"
-                        d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
-                      />
-                    </svg>
-                  </CloseModal>
-                ) : null}
-              </MobileTabs>
-              <Import />
-            </>
-          ) : null}
-        </TabContent>
-        <TabContent {...tab} stopId="explore">
-          {tab.currentId === 'explore' ? (
-            <Explore collectionId={props.collectionId} />
-          ) : null}
-        </TabContent>
+          <Create collectionId={props.collectionId} />
+        </Panel>
+        <Panel tab={tab} id="import">
+          <MobileTabs>
+            {props.isModal ? (
+              <CloseModal
+                type="button"
+                onClick={() => actions.modals.newSandboxModal.close()}
+              >
+                <svg
+                  width={10}
+                  height={10}
+                  fill="none"
+                  viewBox="0 0 10 10"
+                  {...props}
+                >
+                  <path
+                    fill="#fff"
+                    d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
+                  />
+                </svg>
+              </CloseModal>
+            ) : null}
+          </MobileTabs>
+          <Import />
+        </Panel>
+        <Panel tab={tab} id="explore">
+          <Explore collectionId={props.collectionId} />
+        </Panel>
+        <Panel tab={tab} id="my-templates">
+          My templates
+        </Panel>
+        <Panel tab={tab} id="csb-templates">
+          CodeSandbox templates
+        </Panel>
+        <Panel tab={tab} id="react-essentials">
+          React essentials
+        </Panel>
+        <Panel tab={tab} id="vue-essentials">
+          Vue essentials
+        </Panel>
+        <Panel tab={tab} id="angular-essentials">
+          Angular essentials
+        </Panel>
+        <Panel tab={tab} id="ui-frameworks">
+          UI frameworks
+        </Panel>
+        <Panel tab={tab} id="component-libraries">
+          Component libraries
+        </Panel>
+        <Panel tab={tab} id="starters">
+          Web App and API Starters
+        </Panel>
+        <Panel tab={tab} id="databases">
+          Databases
+        </Panel>
       </Container>
     </ThemeProvider>
   );
