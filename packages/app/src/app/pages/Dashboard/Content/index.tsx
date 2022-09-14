@@ -20,6 +20,7 @@ import { Discover } from './routes/Discover';
 import { Album } from './routes/Discover/Album';
 import { Curate } from './routes/Discover/Curate';
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
+import { OpenSourceRepositories } from './routes/OpenSourceRepositories';
 
 export const Content = withRouter(({ history }) => {
   const { dashboard } = useActions();
@@ -58,6 +59,10 @@ export const Content = withRouter(({ history }) => {
         <Route
           path="/dashboard/repositories/legacy/:path*"
           component={LegacyRepositories}
+        />
+        <Route
+          path="/dashboard/repositories/open-source/:path*"
+          component={OpenSourceRepositories}
         />
         <Route path="/dashboard/always-on" component={AlwaysOn} />
         <Route path="/dashboard/recent" component={Recent} />

@@ -249,8 +249,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <Menu.Divider />
 
           <RowItem
-            name="Repositories"
-            page="repos"
+            name="Open source"
+            page="open-source-repos"
+            path={dashboardUrls.openSourceRepos(activeTeam)}
+            icon="link"
+          />
+
+          <RowItem
+            name="Legacy Repositories"
+            page="legacy-repos"
             path={dashboardUrls.legacyRepos(activeTeam)}
             icon="fork"
           />
