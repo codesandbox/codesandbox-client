@@ -263,7 +263,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
 
           <RowItem
-            name="Legacy Repositories"
+            name="Legacy repositories"
             page="legacy-repos"
             path={dashboardUrls.legacyRepos(activeTeam)}
             icon="fork" // Temp icon.
