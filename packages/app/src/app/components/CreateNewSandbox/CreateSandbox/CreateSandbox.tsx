@@ -1,5 +1,4 @@
 import { Stack, ThemeProvider } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { useActions, useAppState } from 'app/overmind';
 import React, { ReactNode, useEffect } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
