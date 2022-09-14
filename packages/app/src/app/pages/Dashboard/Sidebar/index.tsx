@@ -251,7 +251,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <RowItem
             name="Repositories"
             page="repos"
-            path={dashboardUrls.repos(activeTeam)}
+            path={dashboardUrls.legacyRepos(activeTeam)}
             icon="fork"
           />
 

@@ -28,6 +28,9 @@ export const drafts = (teamId?: string | null) =>
 export const repos = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories`, teamId);
 
+export const legacyRepos = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories/legacy`, teamId);
+
 export const alwaysOn = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/always-on`, teamId);
 

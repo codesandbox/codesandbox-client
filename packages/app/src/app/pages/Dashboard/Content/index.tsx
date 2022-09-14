@@ -55,7 +55,10 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/drafts" component={Drafts} />
         <Route path="/dashboard/all/:path*" component={All} />
         <Route path="/dashboard/templates" component={Templates} />
-        <Route path="/dashboard/repositories/:path*" component={Repositories} />
+        <Route
+          path="/dashboard/repositories/legacy/:path*"
+          component={Repositories}
+        />
         <Route path="/dashboard/always-on" component={AlwaysOn} />
         <Route path="/dashboard/recent" component={Recent} />
         <Route path="/dashboard/deleted" component={Deleted} />
