@@ -13,13 +13,15 @@ import { Shared } from './routes/Shared';
 import { Liked } from './routes/Liked';
 import { AlwaysOn } from './routes/AlwaysOn';
 import { All } from './routes/All';
-import { Repositories } from './routes/Repositories';
+import { LegacyRepositories } from './routes/LegacyRepositories';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
 import { Discover } from './routes/Discover';
 import { Album } from './routes/Discover/Album';
 import { Curate } from './routes/Discover/Curate';
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
+import { OpenSourceRepositories } from './routes/OpenSourceRepositories';
+import { RepositoriesPage } from './routes/Repositories';
 
 export const Content = withRouter(({ history }) => {
   const { dashboard } = useActions();
@@ -55,7 +57,18 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/drafts" component={Drafts} />
         <Route path="/dashboard/all/:path*" component={All} />
         <Route path="/dashboard/templates" component={Templates} />
-        <Route path="/dashboard/repositories/:path*" component={Repositories} />
+        <Route
+          path="/dashboard/repositories/open-source/:path*"
+          component={OpenSourceRepositories}
+        />
+        <Route
+          path="/dashboard/repositories/all/:path*"
+          component={RepositoriesPage}
+        />
+        <Route
+          path="/dashboard/repositories/legacy/:path*"
+          component={LegacyRepositories}
+        />
         <Route path="/dashboard/always-on" component={AlwaysOn} />
         <Route path="/dashboard/recent" component={Recent} />
         <Route path="/dashboard/deleted" component={Deleted} />

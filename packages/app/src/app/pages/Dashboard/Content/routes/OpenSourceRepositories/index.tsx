@@ -7,7 +7,7 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 
-export const RepositoriesPage = () => {
+export const OpenSourceRepositoriesPage = () => {
   const params = useParams<{ path: string }>();
   const param = params.path || '';
   const home = !param || param === '/';
@@ -19,7 +19,7 @@ export const RepositoriesPage = () => {
     actions.dashboard.getReposByPath(p);
   }, [param, actions.dashboard, activeTeam, home]);
 
-  const pageType: PageTypes = 'v2-repos';
+  const pageType: PageTypes = 'open-source-repos';
 
   const itemsToShow = (): DashboardGridItem[] => [];
 
@@ -34,7 +34,7 @@ export const RepositoriesPage = () => {
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        repos="v2"
+        repos="open-source"
         path={param}
         showViewOptions
         showFilters={Boolean(param)}
@@ -45,4 +45,4 @@ export const RepositoriesPage = () => {
   );
 };
 
-export const Repositories = React.memo(RepositoriesPage);
+export const OpenSourceRepositories = React.memo(OpenSourceRepositoriesPage);
