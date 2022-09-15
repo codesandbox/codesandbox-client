@@ -67,7 +67,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
         </Link>
         <IconButton
           name="menu"
-          size={18}
+          size={16}
           title="Menu"
           onClick={onSidebarToggle}
           css={css({ display: ['block', 'block', 'none'] })}
@@ -95,7 +95,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
               variant="secondary"
               css={css({ size: 26 })}
             >
-              <Icon name="more" size={12} title="User actions" />
+              <Icon name="more" size={16} title="User actions" />
             </Button>
           </UserMenu>
         </Stack>
