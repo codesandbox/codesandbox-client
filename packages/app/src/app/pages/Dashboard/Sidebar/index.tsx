@@ -19,7 +19,6 @@ import {
   Stack,
   Icon,
   IconButton,
-  Button,
   Input,
   IconNames,
 } from '@codesandbox/components';
@@ -175,18 +174,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </Link>
           </ListItem>
           <RowItem
-            name="Home"
+            name="Recent"
             page="home"
             path={dashboardUrls.home(activeTeam)}
             icon="box"
             style={{ marginTop: 1 }}
           />
-          <RowItem
-            name="Discover"
-            page="discover"
-            path={dashboardUrls.discover(activeTeam)}
-            icon="discover"
-          />
+
+          <Menu.Divider />
 
           <RowItem
             name="My Drafts"
@@ -194,9 +189,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
           />
-          <Menu.Divider />
+
           <NestableRowItem
-            name="All Sandboxes"
+            name="Sandboxes"
             path={dashboardUrls.allSandboxes('/', activeTeam)}
             folderPath="/"
             folders={[
@@ -220,32 +215,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon="server"
             />
           )}
-          <RowItem
+          {/* <RowItem
             name="Recently Modified"
             page="recents"
             path={dashboardUrls.recents(activeTeam)}
             icon="clock"
-          />
+          /> */}
           <RowItem
-            name="Recently Deleted"
+            name="Archive"
             page="deleted"
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
           />
-          <Menu.Divider />
-          <RowItem
-            name="Shared With Me"
-            page="shared"
-            path={dashboardUrls.shared(activeTeam)}
-            icon="sharing"
-          />
-          <RowItem
-            name="Likes by Me"
-            page="liked"
-            path={dashboardUrls.liked(activeTeam)}
-            icon="heart"
-          />
-
           <Menu.Divider />
 
           <RowItem
@@ -272,20 +253,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <Menu.Divider />
 
           <RowItem
-            name="Go to Projects"
+            name="Discover"
+            page="discover"
+            path={dashboardUrls.discover(activeTeam)}
+            icon="discover"
+          />
+          <RowItem
+            name="Shared With Me"
+            page="shared"
+            path={dashboardUrls.shared(activeTeam)}
+            icon="sharing"
+          />
+          <RowItem
+            name="Likes"
+            page="liked"
+            path={dashboardUrls.liked(activeTeam)}
+            icon="heart"
+          />
+          <RowItem
+            name="Documentation"
             page="external"
-            path="/p/dashboard?from=sidebar"
-            icon="projects"
-            badge
+            path="https://codesandbox.io/docs"
+            icon="file"
           />
         </List>
-
-        <Element margin={4}>
-          <Button onClick={actions.openCreateTeamModal} variant="secondary">
-            <Icon name="plus" size={10} marginRight={1} />
-            Create a new team
-          </Button>
-        </Element>
       </Stack>
       <AnimatePresence>
         {visible && (
@@ -494,7 +485,9 @@ const RowItem: React.FC<RowItemProps> = ({
       {props.children || (
         <Link
           {...{
-            ...(page === 'external' ? { href: linkTo } : { to: linkTo }),
+            ...(page === 'external'
+              ? { href: linkTo, target: '_blank' }
+              : { to: linkTo }),
             as: page === 'external' ? 'a' : RouterLink,
             style: linkStyles,
             onKeyDown: event => {
