@@ -184,7 +184,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <Menu.Divider />
 
           <RowItem
-            name="My Drafts"
+            name="My drafts"
             page="drafts"
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
