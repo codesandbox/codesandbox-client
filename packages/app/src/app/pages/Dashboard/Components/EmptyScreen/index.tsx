@@ -1,6 +1,5 @@
 import React from 'react';
 import { Stack, Text, Button, Icon } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { useActions } from 'app/overmind';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { PageTypes } from '../../types';
@@ -15,9 +14,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
   collectionId,
   page,
 }) => {
-  const { openCreateSandboxModal, modalOpened } = useActions();
-
-  const onClick = () => openCreateSandboxModal({ collectionId });
+  const { modalOpened } = useActions();
 
   if (page === 'search') {
     return (
