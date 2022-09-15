@@ -38,23 +38,22 @@ export const MenuStyles = createGlobalStyle(
       display: 'none',
     },
     '[data-reach-menu-list][data-component=MenuList]': {
-      minWidth: 100,
+      minWidth: 200,
       backgroundColor: 'menuList.background',
-      borderRadius: 3,
-      boxShadow: 2,
+
+      boxShadow: 1,
       overflow: 'hidden',
-      border: '1px solid',
-      borderColor: 'menuList.border',
+      border: 'none',
       ':focus': { outline: 'none' },
       transform: 'translateY(4px)',
       // override reach ui styles
-      padding: 0,
+      padding: '4px 0',
     },
     '[data-reach-menu-item][data-component=MenuItem], [data-reach-menu-item][data-component=MenuLink]': {
       fontSize: 2,
       paddingY: 2,
-      paddingX: 2,
-      cursor: 'pointer',
+      paddingX: 3,
+      cursor: 'default',
       outline: 'none',
       color: 'menuList.foreground',
       '&[data-selected], :hover': {

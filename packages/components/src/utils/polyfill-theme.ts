@@ -200,11 +200,11 @@ const polyfillTheme = vsCodeTheme => {
       border: uiColors.sideBar.border,
     },
     menuList: {
-      background: uiColors.sideBar.background,
-      foreground: uiColors.sideBar.foreground,
-      border: uiColors.sideBar.border,
-      hoverBackground: uiColors.sideBar.border,
-      hoverForeground: designLanguage.colors.white,
+      background: designLanguage.colorsV2.black[400],
+      foreground: designLanguage.colorsV2.gray[500],
+      border: designLanguage.colorsV2.black[100],
+      hoverBackground: designLanguage.colorsV2.black[100],
+      hoverForeground: designLanguage.colorsV2.gray[500],
     },
   };
 

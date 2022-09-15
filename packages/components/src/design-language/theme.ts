@@ -1,11 +1,11 @@
-import { colors } from './colors';
+import { colors, colorsV2 } from './colors';
 import { fontSizes, fontWeights } from './typography';
 
 const theme = {
   colors,
+  colorsV2,
   fontSizes,
   fontWeights,
-
   // we use a 4 point grid
   // 0 - 0
   // 1 - 4
