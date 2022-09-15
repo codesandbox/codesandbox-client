@@ -749,7 +749,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
             css={{
               paddingLeft: 0,
               paddingRight: 0,
-              marginRight: '0!important',
+              marginRight: '0',
             }}
           >
             <Stack
@@ -757,7 +757,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
               align="center"
               css={{
                 width: 24,
-                marginRight: '8px!important',
+                marginRight: '8px',
               }}
             >
               <Icon name="folder" size={16} css={css({ flexShrink: 0 })} />

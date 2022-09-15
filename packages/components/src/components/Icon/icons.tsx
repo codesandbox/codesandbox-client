@@ -758,6 +758,7 @@ export const dashboard = props => (
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
+      fill="transparent"
     />
   </Element>
 );
