@@ -50,7 +50,6 @@ export const Header: React.FC<HeaderProps> = React.memo(
           boxSizing: 'border-box',
           fontFamily: 'Inter, sans-serif',
           height: 12,
-          backgroundColor: 'transparent',
           color: 'titleBar.activeForeground',
         })}
       >
