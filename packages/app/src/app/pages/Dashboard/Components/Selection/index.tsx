@@ -309,7 +309,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       let url: string;
       if (selectedId.startsWith('/')) {
         // means its a folder
-        url = dashboardUrls.allSandboxes(selectedId, activeTeamId);
+        url = dashboardUrls.sandboxes(selectedId, activeTeamId);
       } else {
         const selectedItem = sandboxes.find(
           item => item.sandbox.id === selectedId

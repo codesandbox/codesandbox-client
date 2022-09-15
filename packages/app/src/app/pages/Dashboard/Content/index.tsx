@@ -12,7 +12,7 @@ import { Recent } from './routes/Recent';
 import { Shared } from './routes/Shared';
 import { Liked } from './routes/Liked';
 import { AlwaysOn } from './routes/AlwaysOn';
-import { All } from './routes/All';
+import { Sandboxes } from './routes/Sandboxes';
 import { LegacyRepositories } from './routes/LegacyRepositories';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
@@ -55,7 +55,7 @@ export const Content = withRouter(({ history }) => {
       <Switch>
         <Route path="/dashboard/home" component={Home} />
         <Route path="/dashboard/drafts" component={Drafts} />
-        <Route path="/dashboard/all/:path*" component={All} />
+        <Route path="/dashboard/sandboxes/:path*" component={Sandboxes} />
         <Route path="/dashboard/templates" component={Templates} />
         <Route
           path="/dashboard/repositories/open-source/:path*"
@@ -81,9 +81,11 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/discover" component={Discover} />
         <Route path="/dashboard/settings" component={Settings} />
         {/* old dashboard - redirects: */}
-        <Route path="/dashboard/deleted" component={Archive} />
-        <Route path="/dashboard/trash" component={Archive} />
-        <Route path="/dashboard/sandboxes/:path*" component={All} />
+        <Redirect from="/dashboard/deleted" to="/dashboard/archive" />
+        <Redirect
+          from="/dashboard/all/:path*"
+          to="/dashboard/sandboxes/:path*"
+        />
         <Redirect to={dashboardUrls.home(activeTeam)} />
       </Switch>
     </Element>

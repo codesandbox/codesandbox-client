@@ -192,7 +192,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           <NestableRowItem
             name="Sandboxes"
-            path={dashboardUrls.allSandboxes('/', activeTeam)}
+            path={dashboardUrls.sandboxes('/', activeTeam)}
             folderPath="/"
             folders={[
               ...folders,
@@ -215,7 +215,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon="server"
             />
           )}
-          {/* <RowItem
+          {/* 
+          TODO: Remove when the home page is renamed
+          <RowItem
             name="Recently Modified"
             page="recents"
             path={dashboardUrls.recents(activeTeam)}
@@ -435,7 +437,7 @@ const RowItem: React.FC<RowItemProps> = ({
    * We open All Sandboxes instantly because that's the root
    * and you can't drop anything in it
    */
-  const HOVER_THRESHOLD = name === 'All Sandboxes' ? 0 : 500; // ms
+  const HOVER_THRESHOLD = folderPath === '/' ? 0 : 500; // ms
   const isOverCache = React.useRef(false);
 
   React.useEffect(() => {
@@ -556,7 +558,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   let hasNewNestedFolder = false;
   if (newFolderPath !== null) {
     const newFolderParent = newFolderPath.replace(`/${NEW_FOLDER_ID}`, '');
-    if (name === 'All Sandboxes') {
+    if (folderPath === '/') {
       hasNewNestedFolder = true;
     } else if (newFolderParent.length && folderPath.includes(newFolderParent)) {
       hasNewNestedFolder = true;
@@ -564,7 +566,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   }
 
   const location = useLocation();
-  const currentFolderLocationPath = dashboardUrls.allSandboxes(folderPath);
+  const currentFolderLocationPath = dashboardUrls.sandboxes(folderPath);
   React.useEffect(() => {
     // Auto open folder in the sidebar if it's opened
     const pathName = location.pathname;
@@ -593,7 +595,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   };
 
   let subFolders: DashboardBaseFolder[];
-  if (name === 'All Sandboxes') {
+  if (folderPath === '/') {
     subFolders = folders.filter(folder => {
       if (folder.path === newFolderPath) {
         return newFolderPath.replace(`/${NEW_FOLDER_ID}`, '') === '';
@@ -670,7 +672,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
 
       if (currentFolderLocationPath === location.pathname) {
         // if this directory is opened
-        history.push(dashboardUrls.allSandboxes(newPath, state.activeTeam));
+        history.push(dashboardUrls.sandboxes(newPath, state.activeTeam));
       }
     }
 
@@ -685,7 +687,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     onSubmit();
   };
 
-  const folderUrl = dashboardUrls.allSandboxes(folderPath, state.activeTeam);
+  const folderUrl = dashboardUrls.sandboxes(folderPath, state.activeTeam);
 
   return (
     <>
@@ -779,10 +781,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 <NestableRowItem
                   key={folder.path}
                   name={folder.name}
-                  path={dashboardUrls.allSandboxes(
-                    folder.path,
-                    state.activeTeam
-                  )}
+                  path={dashboardUrls.sandboxes(folder.path, state.activeTeam)}
                   folderPath={folder.path}
                   folders={folders}
                 />

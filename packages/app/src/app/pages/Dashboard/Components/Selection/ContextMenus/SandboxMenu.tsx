@@ -432,5 +432,5 @@ const getFolderUrl = (
     return dashboard.drafts(activeTeamId);
   }
 
-  return dashboard.allSandboxes(path || '/', activeTeamId);
+  return dashboard.sandboxes(path || '/', activeTeamId);
 };

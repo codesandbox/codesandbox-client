@@ -63,7 +63,7 @@ export const Folder = (folderItem: DashboardFolder) => {
 
   const history = useHistory();
   const onDoubleClick = event => {
-    const url = dashboardUrls.allSandboxes(path, activeTeamId);
+    const url = dashboardUrls.sandboxes(path, activeTeamId);
 
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
