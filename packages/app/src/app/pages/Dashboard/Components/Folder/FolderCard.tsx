@@ -79,7 +79,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
       gap={1}
       css={{ flexGrow: 1, textAlign: 'center' }}
     >
-      <Stack paddingBottom={4}>
+      <Stack paddingBottom={4} aria-hidden="true">
         <svg width={28} height={25} fill="none" viewBox="0 0 28 25">
           <path
             d="M10.4905 0.827509V1.26154V1.26187V1.5C10.4903 1.5 10.4902 1.5 10.49 1.5L10.4905 0.827509ZM10.4905 0.827509V0.5M10.4905 0.827509V0.5M10.4905 0.5C10.6805 0.499842 10.8639 0.571406 11.0049 0.700817L10.4905 0.5ZM13.3242 4.18416L13.6109 4.4471H14H26.5V23.5H1.5V1.5H10.3969L13.3242 4.18416ZM1.26645 1.5H1.26709C1.26688 1.5 1.26666 1.5 1.26645 1.5ZM10.3293 1.43802C10.3291 1.4379 10.329 1.43779 10.3289 1.43768L10.3291 1.43787L10.3293 1.43802Z"
