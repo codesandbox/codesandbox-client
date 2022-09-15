@@ -29,6 +29,9 @@ const colors = {
     foreground: tokensV2.black[800],
     border: tokens.blues[600],
   },
+  card: {
+    background: tokensV2.black[600],
+  },
   dropdown: {
     background: tokens.grays[700],
     border: null,

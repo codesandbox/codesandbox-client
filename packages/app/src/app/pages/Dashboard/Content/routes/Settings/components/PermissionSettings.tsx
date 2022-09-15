@@ -118,7 +118,7 @@ const MinimumPrivacy = ({ disabled }: { disabled: boolean }) => {
       gap={114}
       css={css({
         padding: 6,
-        backgroundColor: '',
+        backgroundColor: 'card.background',
         border: '1px solid',
         borderColor: 'transparent',
         borderRadius: 'medium',
@@ -227,7 +227,8 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
       css={css({
         padding: 6,
         border: '1px solid',
-        borderColor: 'grays.600',
+        backgroundColor: '#191919' /* change to tokensV2.gray[600] */,
+        borderColor: 'transparent',
         borderRadius: 'medium',
         opacity: disabled ? 0.4 : 1,
       })}

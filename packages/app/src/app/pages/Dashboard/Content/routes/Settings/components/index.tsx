@@ -8,9 +8,9 @@ export const Card = props => (
     css={css({
       minHeight: 200,
       padding: 6,
-      background: '#191919',
+      background: 'card.background',
       border: '1px solid',
-      borderColor: 'grays.600',
+      borderColor: 'transparent',
       borderRadius: 'medium',
       ...(props.css || {}),
     })}
