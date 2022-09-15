@@ -99,11 +99,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             </DashboardButton>
           )}
           <Tabs {...tab} aria-label="Create new">
-            <Tab {...tab} stopId="create">
-              Create Sandbox
+            <Tab {...tab} stopId="quickstart">
+              Quickstart
             </Tab>
             <Tab {...tab} stopId="import">
-              Import Project
+              Import from GitHub
             </Tab>
             <Tab {...tab} stopId="my-templates">
               My templates
@@ -134,7 +134,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             </Tab>
           </Tabs>
         </Stack>
-        <Panel tab={tab} id="create">
+        <Panel tab={tab} id="quickstart">
           {/**
            * ❗️ TODO: Update MobileTabs (because they aren't anymore) and move close button
            * higher up in the tree.
