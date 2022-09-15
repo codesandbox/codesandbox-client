@@ -17,7 +17,6 @@ export const NewSandbox: React.FC<NewSandboxProps> = props => {
       variant="link"
       onClick={onClick}
       css={css({
-        width: 240,
         height: 240,
         fontSize: 3,
         backgroundColor: 'grays.700',

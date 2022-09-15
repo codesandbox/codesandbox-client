@@ -170,7 +170,6 @@ const SearchInputGroup = () => {
           onChange={onChange}
           onKeyPress={handleEnter}
           placeholder="Search"
-          css={{ borderRadius: 4 }}
         />
         {SHOW_COMMUNITY_SEARCH && query.length >= 2 && (
           <ComboboxPopover

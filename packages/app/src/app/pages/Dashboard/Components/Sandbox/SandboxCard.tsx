@@ -85,7 +85,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           />
         </form>
       ) : (
-        <Stack gap={1}>
+        <Stack gap={2} align="center">
           {prNumber ? (
             <Link
               title="Open pull request on GitHub"
@@ -123,7 +123,6 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: '-6px',
           }}
           css={css({ color: 'mutedForeground' })}
         >
@@ -135,7 +134,6 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           size={9}
           title="Sandbox Actions"
           onClick={onContextMenu}
-          style={{ marginTop: '-6px' }}
         />
       )}
     </Stack>
