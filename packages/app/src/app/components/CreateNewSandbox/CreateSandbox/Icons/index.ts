@@ -6,5 +6,4 @@ export { PlusIcon } from './PlusIcon';
 export { InfoIcon } from './InfoIcon';
 export { StarIcon } from './StarIcon';
 export { UploadIcon } from './UploadIcon';
-export { NewIcon } from './NewIcon';
 export { BackIcon } from './BackIcon';
