@@ -264,8 +264,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="fork" // Temp icon.
           />
 
-          <Menu.Divider />
-
           <RowItem
             name="Go to Projects"
             page="external"
