@@ -212,12 +212,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.templates(activeTeam)}
             icon="star"
           />
-          <RowItem
-            name="Repositories"
-            page="repos"
-            path={dashboardUrls.repos(activeTeam)}
-            icon="fork"
-          />
           {activeTeamInfo?.joinedPilotAt && (
             <RowItem
               name="Always-On"
@@ -238,9 +232,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
           />
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
+          <Menu.Divider />
           <RowItem
             name="Shared With Me"
             page="shared"
@@ -254,27 +246,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="heart"
           />
 
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
+          <Menu.Divider />
 
-          {user?.betaAccess ? (
-            <RowItem
-              name="Go to Projects"
-              page="external"
-              path="/p/dashboard?from=sidebar"
-              icon="projects"
-              badge
-            />
-          ) : (
-            <RowItem
-              name="Join Projects Beta"
-              page="external"
-              path="/projects"
-              icon="projects"
-              badge
-            />
-          )}
+          <RowItem
+            name="Open source"
+            page="open-source-repos"
+            path={dashboardUrls.openSourceRepos(activeTeam)}
+            icon="link" // Temp icon.
+          />
+
+          <RowItem
+            name="All repositories"
+            page="v2-repos"
+            path={dashboardUrls.v2Repos(activeTeam)}
+            icon="projects" // Temp icon.
+          />
+
+          <RowItem
+            name="Legacy repositories"
+            page="legacy-repos"
+            path={dashboardUrls.legacyRepos(activeTeam)}
+            icon="fork" // Temp icon.
+          />
+
+          <Menu.Divider />
+
+          <RowItem
+            name="Go to Projects"
+            page="external"
+            path="/p/dashboard?from=sidebar"
+            icon="projects"
+            badge
+          />
         </List>
 
         <Element margin={4}>
