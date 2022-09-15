@@ -223,8 +223,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           /> */}
           <RowItem
             name="Archive"
-            page="deleted"
-            path={dashboardUrls.deleted(activeTeam)}
+            page="archive"
+            path={dashboardUrls.archive(activeTeam)}
             icon="trash"
           />
           <Menu.Divider />

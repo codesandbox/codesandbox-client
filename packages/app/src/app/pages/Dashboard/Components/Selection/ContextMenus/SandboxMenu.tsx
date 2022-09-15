@@ -76,7 +76,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
     );
   }, [item, user, activeTeam]);
 
-  if (location.pathname.includes('deleted')) {
+  if (location.pathname.includes('archive')) {
     if (activeWorkspaceAuthorization === 'READ') return null;
 
     return (

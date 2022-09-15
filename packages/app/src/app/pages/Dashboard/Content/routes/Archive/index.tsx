@@ -9,7 +9,7 @@ import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
 import { getPossibleTemplates } from '../../utils';
 
-export const Deleted = () => {
+export const Archive = () => {
   const {
     activeTeam,
     dashboard: { deletedSandboxesByTime, getFilteredSandboxes, sandboxes },
@@ -56,15 +56,15 @@ export const Deleted = () => {
         { type: 'skeleton-row' },
       ];
 
-  const pageType: PageTypes = 'deleted';
+  const pageType: PageTypes = 'archive';
 
   return (
     <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
-        <title>Deleted Sandboxes - CodeSandbox</title>
+        <title>Archived Sandboxes - CodeSandbox</title>
       </Helmet>
       <Header
-        title="Recently Deleted"
+        title="Archive"
         activeTeam={activeTeam}
         showFilters
         showSortOptions

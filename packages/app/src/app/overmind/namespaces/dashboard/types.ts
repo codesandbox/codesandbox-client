@@ -4,7 +4,7 @@ export type PageTypes =
   | 'search'
   | 'home'
   | 'recents'
-  | 'deleted'
+  | 'archive'
   | 'templates'
   | 'drafts'
   | 'sandboxes'

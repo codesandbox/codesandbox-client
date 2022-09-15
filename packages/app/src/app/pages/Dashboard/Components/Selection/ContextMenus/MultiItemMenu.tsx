@@ -252,7 +252,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
 
   let options: MenuAction[] = [];
 
-  if (page === 'deleted') {
+  if (page === 'archive') {
     options = [RECOVER, DIVIDER, PERMANENTLY_DELETE];
   } else if (folders.length) {
     options = [DELETE];
