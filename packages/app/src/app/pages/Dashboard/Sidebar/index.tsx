@@ -15,7 +15,6 @@ import {
   ListItem,
   Link,
   Text,
-  Menu,
   Stack,
   Icon,
   IconButton,
@@ -118,7 +117,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {...props}
         css={css({
           borderRight: '1px solid',
-          borderColor: 'sideBar.border',
+          borderColor: 'transparent',
           backgroundColor: 'sideBar.background',
           width: SIDEBAR_WIDTH,
           flexShrink: 0,
@@ -134,8 +133,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               paddingLeft: '6px',
               paddingRight: 0,
               height: 10,
-              borderBottom: '1px solid',
-              borderColor: 'sideBar.border',
+              backgroundColor: 'sideBar.hoverBackground',
             })}
           >
             {activeAccount ? (
@@ -194,7 +192,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
           />
-          <Menu.Divider />
           <NestableRowItem
             name="All Sandboxes"
             path={dashboardUrls.allSandboxes('/', activeTeam)}
@@ -232,7 +229,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.deleted(activeTeam)}
             icon="trash"
           />
-          <Menu.Divider />
+          <Element marginTop={8} />
           <RowItem
             name="Shared With Me"
             page="shared"
@@ -245,9 +242,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.liked(activeTeam)}
             icon="heart"
           />
-
-          <Menu.Divider />
-
+          <Element marginTop={8} />
           <RowItem
             name="Open source"
             page="open-source-repos"
@@ -268,8 +263,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.legacyRepos(activeTeam)}
             icon="fork" // Temp icon.
           />
-
-          <Menu.Divider />
 
           <RowItem
             name="Go to Projects"
