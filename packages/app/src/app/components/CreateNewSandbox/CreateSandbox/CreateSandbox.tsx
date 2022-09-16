@@ -33,11 +33,7 @@ const Panel = ({ tab, id, children }: PanelProps) => {
   return (
     <TabContent {...tab} stopId={id}>
       {({ hidden, ...rest }) =>
-        hidden ? null : (
-          <div hidden={hidden} {...rest}>
-            {children}
-          </div>
-        )
+        hidden ? null : <div {...rest}>{children}</div>
       }
     </TabContent>
   );
