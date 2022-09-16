@@ -14,7 +14,6 @@ import {
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import history from 'app/utils/history';
-import { MainTitle, Paragraph } from './components/v2';
 
 import { Wrapper } from './components/Wrapper';
 import { Button } from './components/Button';
@@ -26,13 +25,11 @@ import '../WaitList/fonts/index.css';
 type SignInModalElementProps = {
   redirectTo?: string;
   onSignIn?: () => void;
-  v2Style?: boolean;
 };
 
 export const SignInModalElement = ({
   redirectTo,
   onSignIn,
-  v2Style,
 }: SignInModalElementProps) => {
   const {
     duplicateAccountStatus,
@@ -138,35 +135,6 @@ export const SignInModalElement = ({
     );
   }
 
-  if (v2Style) {
-    return (
-      <Stack
-        padding={8}
-        direction="vertical"
-        gap={3}
-        css={{ textAlign: 'center' }}
-      >
-        <MainTitle>Welcome to CodeSandbox.</MainTitle>
-        <Paragraph>Start building today, easy as never before.</Paragraph>
-
-        <Stack direction="vertical" gap={3} css={{ margin: '20px auto' }}>
-          <Button onClick={handleSignIn}>
-            <GitHubIcon />
-            <Element>Sign in with GitHub</Element>
-          </Button>
-          <Button css={{ background: 'white' }} onClick={handleGoogleSignIn}>
-            <GoogleIcon />
-            <Element>Sign in with Google</Element>
-          </Button>
-          <Button css={{ background: 'white' }} onClick={handleAppleSignIn}>
-            <AppleIcon />
-            <Element>Sign in with Apple</Element>
-          </Button>
-        </Stack>
-      </Stack>
-    );
-  }
-
   return (
     <Wrapper>
       <Stack
@@ -177,27 +145,67 @@ export const SignInModalElement = ({
         gap={3}
         css={{ textAlign: 'center' }}
       >
-        <CodeSandboxIcon />
-        <Text weight="bold" size={23} paddingBottom={1} block>
-          Welcome to CodeSandbox.
+        <CodeSandboxIcon width={56} height={56} />
+        <Text
+          as="h2"
+          weight="medium"
+          align="center"
+          css={{
+            fontSize: 32,
+            fontFamily: 'Inter, sans-serif',
+            margin: 0,
+            letterSpacing: '-.025em',
+          }}
+          block
+        >
+          Sign in to CodeSandbox
         </Text>
-        <Text variant="muted" size={3} paddingBottom={30} block>
-          Get a free account, no credit card required
+        <Text
+          as="p"
+          variant="muted"
+          size={3}
+          css={{
+            fontSize: 13,
+            fontFamily: 'Inter, sans-serif',
+            marginBottom: '40px!important',
+            margin: 0,
+          }}
+          block
+        >
+          Create, share, and get feedback with collaborative code.
         </Text>
-
         <Button loading={loadingAuth.github} onClick={handleSignIn}>
           <GitHubIcon />
           <Element>Sign in with GitHub</Element>
         </Button>
-        <Button loading={loadingAuth.google} onClick={handleGoogleSignIn}>
+        <Text
+          variant="muted"
+          size={3}
+          css={{
+            fontSize: 13,
+
+            margin: 0,
+          }}
+          block
+        >
+          -
+        </Text>
+        <Button
+          loading={loadingAuth.google}
+          onClick={handleGoogleSignIn}
+          secondary
+        >
           <GoogleIcon />
           <Element>Sign in with Google</Element>
         </Button>
-        <Button loading={loadingAuth.apple} onClick={handleAppleSignIn}>
+        <Button
+          loading={loadingAuth.apple}
+          onClick={handleAppleSignIn}
+          secondary
+        >
           <AppleIcon />
           <Element>Sign in with Apple</Element>
         </Button>
-
         {cancelOnLogin && (
           <MainButton
             variant="link"
@@ -218,7 +226,6 @@ export const SignInModalElement = ({
             <Text>Continue without an account</Text>
           </MainButton>
         )}
-
         <Text
           variant="muted"
           align="center"

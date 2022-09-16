@@ -31,10 +31,11 @@ export const Wrapper = ({
 
             overflow: 'hidden',
             margin: 'auto',
+            paddingY: 4,
 
             '@media screen and (min-width: 768px)': {
-              height: 400,
-              width: 670,
+              // height: 400,
+              width: 600,
               maxWidth: '80vw',
             },
           })}
