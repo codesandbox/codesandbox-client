@@ -93,7 +93,7 @@ const getFolderName = (sandbox: Sandbox) => {
   if (sandbox.collection) {
     const base = basename(sandbox.collection.path);
 
-    return base || 'All Sandboxes';
+    return base || 'Sandboxes';
   }
 
   return 'Drafts';

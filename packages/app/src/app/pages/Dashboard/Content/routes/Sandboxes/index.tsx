@@ -10,7 +10,7 @@ import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
-export const AllPage = () => {
+export const SandboxesPage = () => {
   const [level, setLevel] = React.useState(0);
   const [creating, setCreating] = React.useState(false);
   const params = useParams<{ path: string }>();
@@ -34,7 +34,7 @@ export const AllPage = () => {
       setLocalTeam(activeTeam);
 
       if (params) {
-        history.push(dashboard.allSandboxes('/', activeTeam));
+        history.push(dashboard.sandboxes('/', activeTeam));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,4 +106,4 @@ export const AllPage = () => {
   );
 };
 
-export const All = React.memo(AllPage);
+export const Sandboxes = React.memo(SandboxesPage);
