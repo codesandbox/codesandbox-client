@@ -45,6 +45,9 @@ export const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
           cursor: 'default',
           backgroundColor: 'list.hoverBackground',
         },
+        ':focus-visible': {
+          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+        },
         width: '100%',
         height: 64,
         borderBottom: '1px solid',
@@ -112,20 +115,19 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
       }}
       onContextMenu={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
       direction="vertical"
-      gap={2}
       css={css({
         position: 'relative',
         width: '100%',
         height: 240,
         backgroundColor: 'grays.700',
-        border: '1px solid',
-        borderColor: 'grays.600',
         borderRadius: 'medium',
-        overflow: 'hidden',
-        transition: 'box-shadow ease-in-out',
+        transition: 'background ease-in-out',
         transitionDuration: theme => theme.speeds[4],
         ':hover, :focus, :focus-within': {
-          boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+          backgroundColor: 'card.backgroundHover',
+        },
+        ':focus-visible': {
+          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
         },
       })}
     >
@@ -133,13 +135,8 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
         justify="center"
         align="center"
         css={css({
-          height: 160,
-          backgroundColor: 'grays.700',
-          borderBottom: '1px solid',
-          borderColor: 'grays.600',
-          borderRadius: 'medium',
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
+          height: 120,
+          backgroundColor: 'rgba(255, 255,255,0.05)',
         })}
       >
         <svg width={64} height={64} fill="none">
@@ -149,29 +146,40 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
           />
         </svg>
       </Stack>
+
       <Stack
         justify="space-between"
-        align="center"
-        marginLeft={4}
+        direction="vertical"
+        marginLeft={5}
+        marginRight={2}
         css={css({
-          minHeight: 26,
+          flexGrow: 1,
+          paddingBottom: 5,
+          paddingTop: 4,
         })}
       >
-        <Stack gap={1} align="center">
-          <Text size={3} weight="medium">
-            master
-          </Text>
-        </Stack>
-        <IconButton
-          name="more"
-          size={9}
-          title="Sandbox actions"
-          // @ts-ignore
-          onClick={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
-        />
-      </Stack>
+        <Stack
+          justify="space-between"
+          align="center"
+          css={css({
+            minHeight: 26,
+          })}
+        >
+          <Stack gap={1} align="center">
+            <Text size={3} weight="medium">
+              master
+            </Text>
+          </Stack>
 
-      <Stack marginX={4} gap={1} align="center">
+          <IconButton
+            name="more"
+            size={9}
+            title="Sandbox actions"
+            // @ts-ignore
+            onClick={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
+          />
+        </Stack>
+
         <Stack gap={1} align="center">
           <Text size={3} variant="muted">
             {repo.owner}
