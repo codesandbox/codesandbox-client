@@ -173,8 +173,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </ListItem>
           <RowItem
             name="Recent"
-            page="home"
-            path={dashboardUrls.home(activeTeam)}
+            page="recent"
+            path={dashboardUrls.recent(activeTeam)}
             icon="box"
             style={{ marginTop: 1 }}
           />
@@ -211,14 +211,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon="server"
             />
           )}
-          {/* 
-          TODO: Remove when the home page is renamed
-          <RowItem
-            name="Recently Modified"
-            page="recents"
-            path={dashboardUrls.recents(activeTeam)}
-            icon="clock"
-          /> */}
           <RowItem
             name="Archive"
             page="archive"
@@ -340,10 +332,9 @@ const Badge = styled.p`
   top: 1px; // 👌
 `;
 
-const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents', 'always-on'];
+const canNotAcceptSandboxes: PageTypes[] = ['recent', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
-  'home',
-  'recents',
+  'recent',
   'drafts',
   'templates',
   'always-on',

@@ -5,7 +5,6 @@ import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { uniq } from 'lodash-es';
 import {
-  Direction,
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
@@ -292,46 +291,6 @@ export const inviteToTeam = async (
       errorMessageExists
         ? e.response.errors[0].message
         : `There was a problem inviting ${value} to your workspace`
-    );
-  }
-};
-
-export const getRecentSandboxes = async ({ state, effects }: Context) => {
-  const { dashboard } = state;
-  try {
-    let sandboxes;
-
-    if (state.activeTeam) {
-      const data = await effects.gql.queries.recentTeamSandboxes({
-        teamId: state.activeTeam,
-        limit: 200,
-        orderField: dashboard.orderBy.field,
-        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-      });
-
-      if (!data.me?.team?.sandboxes) {
-        return;
-      }
-
-      sandboxes = data.me.team.sandboxes;
-    } else {
-      const data = await effects.gql.queries.recentPersonalSandboxes({
-        limit: 200,
-        orderField: dashboard.orderBy.field,
-        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-      });
-
-      if (!data?.me?.sandboxes) {
-        return;
-      }
-
-      sandboxes = data.me.sandboxes;
-    }
-
-    dashboard.sandboxes[sandboxesTypes.RECENT] = sandboxes;
-  } catch (error) {
-    effects.notificationToast.error(
-      'There was a problem getting your recent Sandboxes'
     );
   }
 };
@@ -628,7 +587,7 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
       return;
     }
 
-    dashboard.sandboxes.RECENT_HOME = result.me.recentlyAccessedSandboxes;
+    dashboard.sandboxes.RECENT = result.me.recentlyAccessedSandboxes;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -1016,9 +975,6 @@ export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
 
   switch (page) {
     case sandboxesTypes.RECENT:
-      dashboard.getRecentSandboxes();
-      break;
-    case sandboxesTypes.HOME:
       dashboard.getStartPageSandboxes();
       break;
     case sandboxesTypes.DELETED:
