@@ -38,7 +38,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
       width: '100%',
       height: 240,
       backgroundColor: 'grays.700',
-      border: '1px solid',
+      border: 'transparent',
       borderRadius: 'medium',
       overflow: 'hidden',
       // drop ssarget
@@ -57,32 +57,38 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
     })}
   >
     <Stack
-      as="div"
+      justify="right"
+      paddingTop={5}
+      paddingX={5}
+      css={{ position: 'absolute', width: '100%' }}
+    >
+      {!isNewFolder ? (
+        <IconButton
+          name="more"
+          size={9}
+          title="Folder actions"
+          onClick={onContextMenu}
+        />
+      ) : null}
+    </Stack>
+
+    <Stack
       justify="center"
       align="center"
-      ref={thumbnailRef}
-      css={css({
-        height: 160,
-        borderStyle: 'solid',
-        borderWidth: 0,
-        borderBottomWidth: 1,
-        borderColor: 'grays.500',
-        backgroundColor: 'grays.600',
-      })}
+      direction="vertical"
+      gap={1}
+      css={{ flexGrow: 1, textAlign: 'center' }}
     >
-      <svg width={56} height={49} fill="none" viewBox="0 0 56 49">
-        <path
-          fill="#6CC7F6"
-          d="M20.721 0H1.591A1.59 1.59 0 000 1.59v45.82C0 48.287.712 49 1.59 49h52.82A1.59 1.59 0 0056 47.41V7.607a1.59 1.59 0 00-1.59-1.59H28L21.788.41A1.59 1.59 0 0020.72 0z"
-        />
-      </svg>
-    </Stack>
-    <Stack
-      justify="space-between"
-      align="center"
-      marginLeft={4}
-      css={{ minHeight: 26 }}
-    >
+      <Stack paddingBottom={4} aria-hidden="true">
+        <svg width={28} height={25} fill="none" viewBox="0 0 28 25">
+          <path
+            d="M10.4905 0.827509V1.26154V1.26187V1.5C10.4903 1.5 10.4902 1.5 10.49 1.5L10.4905 0.827509ZM10.4905 0.827509V0.5M10.4905 0.827509V0.5M10.4905 0.5C10.6805 0.499842 10.8639 0.571406 11.0049 0.700817L10.4905 0.5ZM13.3242 4.18416L13.6109 4.4471H14H26.5V23.5H1.5V1.5H10.3969L13.3242 4.18416ZM1.26645 1.5H1.26709C1.26688 1.5 1.26666 1.5 1.26645 1.5ZM10.3293 1.43802C10.3291 1.4379 10.329 1.43779 10.3289 1.43768L10.3291 1.43787L10.3293 1.43802Z"
+            stroke="#00B2FF"
+            strokeWidth="2"
+          />
+        </svg>
+      </Stack>
+
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input
@@ -95,27 +101,19 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
           />
         </form>
       ) : (
-        <Text size={3} weight="medium">
+        <Text size={4} css={{ minHeight: 26 }}>
           {name}
         </Text>
       )}
       {!isNewFolder ? (
-        <IconButton
-          name="more"
-          size={9}
-          title="Folder actions"
-          onClick={onContextMenu}
-        />
+        <Stack>
+          <Text size={3} block variant="muted">
+            {numberOfSandboxes || 0}{' '}
+            {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
+          </Text>
+        </Stack>
       ) : null}
     </Stack>
-    {!isNewFolder ? (
-      <Stack marginLeft={4}>
-        <Text size={3} block variant="muted">
-          {numberOfSandboxes || 0}{' '}
-          {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
-        </Text>
-      </Stack>
-    ) : null}
   </Stack>
 );
 

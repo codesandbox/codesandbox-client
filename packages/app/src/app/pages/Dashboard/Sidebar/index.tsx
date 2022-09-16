@@ -15,7 +15,6 @@ import {
   ListItem,
   Link,
   Text,
-  Menu,
   Stack,
   Icon,
   IconButton,
@@ -117,7 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {...props}
         css={css({
           borderRight: '1px solid',
-          borderColor: 'sideBar.border',
+          borderColor: 'transparent',
           backgroundColor: 'sideBar.background',
           width: SIDEBAR_WIDTH,
           flexShrink: 0,
@@ -133,8 +132,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               paddingLeft: '6px',
               paddingRight: 0,
               height: 10,
-              borderBottom: '1px solid',
-              borderColor: 'sideBar.border',
+              backgroundColor: 'sideBar.hoverBackground',
             })}
           >
             {activeAccount ? (
@@ -163,7 +161,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <IconButton
                 name="gear"
-                size={8}
+                size={16}
                 title="Settings"
                 css={css({
                   width: 8,
@@ -180,8 +178,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="box"
             style={{ marginTop: 1 }}
           />
-
-          <Menu.Divider />
 
           <RowItem
             name="My drafts"
@@ -229,7 +225,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.archive(activeTeam)}
             icon="trash"
           />
-          <Menu.Divider />
 
           <RowItem
             name="Open source"
@@ -252,7 +247,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="fork" // Temp icon.
           />
 
-          <Menu.Divider />
+          <Element marginTop={8} />
 
           <RowItem
             name="Discover"
@@ -260,6 +255,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.discover(activeTeam)}
             icon="discover"
           />
+
           <RowItem
             name="Shared With Me"
             page="shared"
@@ -272,6 +268,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.liked(activeTeam)}
             icon="heart"
           />
+
           <RowItem
             name="Documentation"
             page="external"
@@ -741,8 +738,25 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
             <Element as="span" css={css({ width: 4, flexShrink: 0 })} />
           )}
 
-          <Stack align="center" gap={2} css={{ width: 'calc(100% - 28px)' }}>
-            <Icon name="folder" size={24} css={css({ flexShrink: 0 })} />
+          <Stack
+            align="center"
+            gap={2}
+            css={{
+              paddingLeft: 0,
+              paddingRight: 0,
+              marginRight: '0',
+            }}
+          >
+            <Stack
+              justify="center"
+              align="center"
+              css={{
+                width: 24,
+                marginRight: '8px',
+              }}
+            >
+              <Icon name="folder" size={16} css={css({ flexShrink: 0 })} />
+            </Stack>
 
             {isRenaming || isNewFolder ? (
               <form onSubmit={onSubmit}>

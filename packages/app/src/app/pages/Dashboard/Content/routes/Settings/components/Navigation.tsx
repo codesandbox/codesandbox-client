@@ -65,7 +65,7 @@ export const SettingNavigation = ({
           borderStyle: 'solid',
           borderWidth: 0,
           borderBottomWidth: 1,
-          borderColor: 'grays.500',
+          borderColor: 'transparent',
         })}
         gap={6}
       >

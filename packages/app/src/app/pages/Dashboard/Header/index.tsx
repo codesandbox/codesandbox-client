@@ -50,10 +50,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
           boxSizing: 'border-box',
           fontFamily: 'Inter, sans-serif',
           height: 12,
-          backgroundColor: 'titleBar.activeBackground',
           color: 'titleBar.activeForeground',
-          borderBottom: '1px solid',
-          borderColor: 'titleBar.border',
         })}
       >
         <Link
@@ -70,7 +67,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
         </Link>
         <IconButton
           name="menu"
-          size={18}
+          size={16}
           title="Menu"
           onClick={onSidebarToggle}
           css={css({ display: ['block', 'block', 'none'] })}
@@ -98,7 +95,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
               variant="secondary"
               css={css({ size: 26 })}
             >
-              <Icon name="more" size={12} title="User actions" />
+              <Icon name="more" size={16} title="User actions" />
             </Button>
           </UserMenu>
         </Stack>
@@ -151,7 +148,7 @@ const SearchInputGroup = () => {
     <Stack
       css={css({
         flexGrow: 1,
-        maxWidth: 480,
+        maxWidth: 280,
         display: ['none', 'none', 'block'],
         position: 'relative',
       })}
@@ -172,7 +169,7 @@ const SearchInputGroup = () => {
           value={query}
           onChange={onChange}
           onKeyPress={handleEnter}
-          placeholder="Search all sandboxes"
+          placeholder="Search"
         />
         {SHOW_COMMUNITY_SEARCH && query.length >= 2 && (
           <ComboboxPopover
