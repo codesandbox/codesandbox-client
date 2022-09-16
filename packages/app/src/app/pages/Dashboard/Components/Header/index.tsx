@@ -24,7 +24,7 @@ type Props = {
   showFilters?: boolean;
   showViewOptions?: boolean;
   showSortOptions?: boolean;
-  repos?: boolean;
+  repos?: 'legacy' | 'open-source' | 'v2';
   albumId?: string;
   activeTeam: string;
   CustomFilters?: React.ReactElement;
@@ -57,10 +57,6 @@ export const Header = ({
         width: `calc(100% - ${2 * GUTTER}px)`,
         maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
         marginX: 'auto',
-        borderStyle: 'solid',
-        borderWidth: 0,
-        borderBottomWidth: 1,
-        borderColor: 'grays.500',
       })}
     >
       {title ? (
@@ -76,7 +72,7 @@ export const Header = ({
         />
       )}
       <Stack gap={4} align="center">
-        {location.pathname.includes('/all') && (
+        {location.pathname.includes('/sandboxes') && (
           <Button
             onClick={createNewFolder}
             variant="link"

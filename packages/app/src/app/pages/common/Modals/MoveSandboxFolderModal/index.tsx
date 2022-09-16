@@ -135,9 +135,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
                   ) : (
                     <>
                       {`Move to ${
-                        path === null
-                          ? 'Drafts'
-                          : basename(path) || 'All Sandboxes'
+                        path === null ? 'Drafts' : basename(path) || 'Sandboxes'
                       }`}
 
                       <ChevronRight />

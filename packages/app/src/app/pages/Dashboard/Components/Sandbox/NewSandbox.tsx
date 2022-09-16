@@ -21,9 +21,10 @@ export const NewSandbox: React.FC<NewSandboxProps> = props => {
         fontSize: 3,
         backgroundColor: 'grays.700',
         border: '1px solid',
-        borderColor: 'grays.600',
+        borderColor: 'transparent',
         borderRadius: 'medium',
         transition: 'all ease-in',
+        fontWeight: 'normal',
         transitionDuration: theme => theme.speeds[2],
         ':hover, :focus, :focus-within': {
           boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
@@ -31,8 +32,8 @@ export const NewSandbox: React.FC<NewSandboxProps> = props => {
       })}
     >
       <Stack direction="vertical" align="center" gap={4}>
-        <Icon name="plusInCircle" size={24} />
-        <Text>New Sandbox</Text>
+        <Icon name="plus" size={32} />
+        <Text>New</Text>
       </Stack>
     </Button>
   );

@@ -1,7 +1,8 @@
 import delay from '@codesandbox/common/lib/utils/delay';
 
-import { resolveSassUrl } from './resolver';
+import { resolveAsyncModule, resolveSassUrl } from './resolver';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
+import { getModulesFromMainThread } from '../../utils/fs';
 
 // @ts-ignore
 self.window = self;
@@ -16,6 +17,7 @@ async function fetchSassLibrary() {
 }
 
 let fsInitialized = false;
+let fsLoading = false;
 const childHandler = new ChildHandler('sass-worker');
 
 interface ISassCompileOptions {
@@ -25,8 +27,10 @@ interface ISassCompileOptions {
   loaderContextId: number;
 }
 
-async function initFS() {
-  if (!fsInitialized) {
+async function initFS(loaderContextId: number) {
+  if (!fsLoading && !fsInitialized) {
+    await initializeBrowserFS(loaderContextId);
+  } else if (!fsInitialized) {
     while (!fsInitialized) {
       await delay(50); // eslint-disable-line
     }
@@ -38,7 +42,7 @@ async function compileSass(opts: ISassCompileOptions) {
 
   const Sass = await fetchSassLibrary();
 
-  await initFS();
+  await initFS(loaderContextId);
 
   // @ts-ignore
   // eslint-disable-next-line
@@ -54,8 +58,24 @@ async function compileSass(opts: ISassCompileOptions) {
     if (!foundFileCache[filepath]) {
       foundFileCache[filepath] = new Promise(
         (promiseResolve, promiseReject) => {
-          fs.readFile(filepath, {}, (error, data) => {
+          fs.readFile(filepath, {}, async (error, data) => {
             if (error) {
+              // Try to download it
+              const module = await resolveAsyncModule({
+                path: filepath,
+                loaderContextId: opts.loaderContextId,
+                childHandler,
+                options: {
+                  isAbsolute: false,
+                  ignoredExtensions: ['.sass', '.css', '.scss'],
+                },
+              });
+
+              if (module) {
+                promiseResolve(module.code);
+                return;
+              }
+
               promiseReject(error);
               return;
             }
@@ -146,24 +166,56 @@ async function compileSass(opts: ISassCompileOptions) {
   };
 }
 
-async function initializeBrowserFS() {
-  await new Promise(res => {
+async function initializeBrowserFS(loaderContextId: number) {
+  fsLoading = true;
+
+  const modules = await getModulesFromMainThread({
+    childHandler,
+    loaderContextId,
+  });
+
+  const tModules = {};
+  modules.forEach(module => {
+    tModules[module.path] = { module };
+  });
+
+  const bfsWrapper = {
+    getTranspiledModules: () => tModules,
+    addModule: () => {},
+    removeModule: () => {},
+    moveModule: () => {},
+    updateModule: () => {},
+  };
+
+  return new Promise(resolvePromise => {
     // @ts-ignore
-    // eslint-disable-next-line
     BrowserFS.configure(
       {
-        fs: 'WorkerFS',
-        options: { worker: self },
+        fs: 'OverlayFS',
+        options: {
+          writable: { fs: 'InMemory' },
+          readable: {
+            fs: 'CodeSandboxFS',
+            options: {
+              manager: bfsWrapper,
+            },
+          },
+        },
       },
-      () => {
-        res(null);
+      err => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        fsLoading = false;
+        fsInitialized = true;
+        resolvePromise(null);
+        // BrowserFS is initialized and ready-to-use!
       }
     );
   });
-
-  fsInitialized = true;
 }
 
 childHandler.registerFunction('compile', compileSass);
-childHandler.registerFSInitializer(initializeBrowserFS);
+childHandler.registerFSInitializer(() => {});
 childHandler.emitReady();

@@ -1,5 +1,5 @@
 export const DASHBOARD_URL_PREFIX = '/dashboard';
-export const ALL_SANDBOXES_URL_PREFIX = `${DASHBOARD_URL_PREFIX}/all`;
+export const ALL_SANDBOXES_URL_PREFIX = `${DASHBOARD_URL_PREFIX}/sandboxes`;
 
 function appendTeamIdQueryParam(url: string, teamId?: string | null) {
   if (teamId) {
@@ -16,7 +16,7 @@ function sanitizePath(path: string) {
     .join('/');
 }
 
-export const allSandboxes = (path: string, teamId?: string | null) =>
+export const sandboxes = (path: string, teamId?: string | null) =>
   appendTeamIdQueryParam(
     `${ALL_SANDBOXES_URL_PREFIX}${sanitizePath(path)}`,
     teamId
@@ -25,8 +25,17 @@ export const allSandboxes = (path: string, teamId?: string | null) =>
 export const drafts = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/drafts`, teamId);
 
-export const repos = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories`, teamId);
+export const openSourceRepos = (teamId?: string | null) =>
+  appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/repositories/open-source`,
+    teamId
+  );
+
+export const v2Repos = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories/all`, teamId);
+
+export const legacyRepos = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories/legacy`, teamId);
 
 export const alwaysOn = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/always-on`, teamId);
@@ -37,8 +46,8 @@ export const templates = (teamId?: string | null) =>
 export const recents = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/recent`, teamId);
 
-export const deleted = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/deleted`, teamId);
+export const archive = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/archive`, teamId);
 
 export const shared = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/shared`, teamId);

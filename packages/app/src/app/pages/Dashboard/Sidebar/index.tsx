@@ -15,11 +15,9 @@ import {
   ListItem,
   Link,
   Text,
-  Menu,
   Stack,
   Icon,
   IconButton,
-  Button,
   Input,
   IconNames,
 } from '@codesandbox/components';
@@ -118,7 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {...props}
         css={css({
           borderRight: '1px solid',
-          borderColor: 'sideBar.border',
+          borderColor: 'transparent',
           backgroundColor: 'sideBar.background',
           width: SIDEBAR_WIDTH,
           flexShrink: 0,
@@ -134,8 +132,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               paddingLeft: '6px',
               paddingRight: 0,
               height: 10,
-              borderBottom: '1px solid',
-              borderColor: 'sideBar.border',
+              backgroundColor: 'sideBar.hoverBackground',
             })}
           >
             {activeAccount ? (
@@ -164,7 +161,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <IconButton
                 name="gear"
-                size={8}
+                size={16}
                 title="Settings"
                 css={css({
                   width: 8,
@@ -175,29 +172,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </Link>
           </ListItem>
           <RowItem
-            name="Home"
+            name="Recent"
             page="home"
             path={dashboardUrls.home(activeTeam)}
             icon="box"
             style={{ marginTop: 1 }}
           />
-          <RowItem
-            name="Discover"
-            page="discover"
-            path={dashboardUrls.discover(activeTeam)}
-            icon="discover"
-          />
 
           <RowItem
-            name="My Drafts"
+            name="My drafts"
             page="drafts"
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
           />
-          <Menu.Divider />
+
           <NestableRowItem
-            name="All Sandboxes"
-            path={dashboardUrls.allSandboxes('/', activeTeam)}
+            name="Sandboxes"
+            path={dashboardUrls.sandboxes('/', activeTeam)}
             folderPath="/"
             folders={[
               ...folders,
@@ -212,12 +203,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.templates(activeTeam)}
             icon="star"
           />
-          <RowItem
-            name="Repositories"
-            page="repos"
-            path={dashboardUrls.repos(activeTeam)}
-            icon="fork"
-          />
           {activeTeamInfo?.joinedPilotAt && (
             <RowItem
               name="Always-On"
@@ -226,21 +211,51 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon="server"
             />
           )}
+          {/* 
+          TODO: Remove when the home page is renamed
           <RowItem
             name="Recently Modified"
             page="recents"
             path={dashboardUrls.recents(activeTeam)}
             icon="clock"
-          />
+          /> */}
           <RowItem
-            name="Recently Deleted"
-            page="deleted"
-            path={dashboardUrls.deleted(activeTeam)}
+            name="Archive"
+            page="archive"
+            path={dashboardUrls.archive(activeTeam)}
             icon="trash"
           />
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
+
+          <RowItem
+            name="Open source"
+            page="open-source-repos"
+            path={dashboardUrls.openSourceRepos(activeTeam)}
+            icon="link" // Temp icon.
+          />
+
+          <RowItem
+            name="All repositories"
+            page="v2-repos"
+            path={dashboardUrls.v2Repos(activeTeam)}
+            icon="projects" // Temp icon.
+          />
+
+          <RowItem
+            name="Legacy repositories"
+            page="legacy-repos"
+            path={dashboardUrls.legacyRepos(activeTeam)}
+            icon="fork" // Temp icon.
+          />
+
+          <Element marginTop={8} />
+
+          <RowItem
+            name="Discover"
+            page="discover"
+            path={dashboardUrls.discover(activeTeam)}
+            icon="discover"
+          />
+
           <RowItem
             name="Shared With Me"
             page="shared"
@@ -248,41 +263,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="sharing"
           />
           <RowItem
-            name="Likes by Me"
+            name="Likes"
             page="liked"
             path={dashboardUrls.liked(activeTeam)}
             icon="heart"
           />
 
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
-
-          {user?.betaAccess ? (
-            <RowItem
-              name="Go to Projects"
-              page="external"
-              path="/p/dashboard?from=sidebar"
-              icon="projects"
-              badge
-            />
-          ) : (
-            <RowItem
-              name="Join Projects Beta"
-              page="external"
-              path="/projects"
-              icon="projects"
-              badge
-            />
-          )}
+          <RowItem
+            name="Documentation"
+            page="external"
+            path="https://codesandbox.io/docs"
+            icon="file"
+          />
         </List>
-
-        <Element margin={4}>
-          <Button onClick={actions.openCreateTeamModal} variant="secondary">
-            <Icon name="plus" size={10} marginRight={1} />
-            Create a new team
-          </Button>
-        </Element>
       </Stack>
       <AnimatePresence>
         {visible && (
@@ -441,7 +434,7 @@ const RowItem: React.FC<RowItemProps> = ({
    * We open All Sandboxes instantly because that's the root
    * and you can't drop anything in it
    */
-  const HOVER_THRESHOLD = name === 'All Sandboxes' ? 0 : 500; // ms
+  const HOVER_THRESHOLD = folderPath === '/' ? 0 : 500; // ms
   const isOverCache = React.useRef(false);
 
   React.useEffect(() => {
@@ -491,7 +484,9 @@ const RowItem: React.FC<RowItemProps> = ({
       {props.children || (
         <Link
           {...{
-            ...(page === 'external' ? { href: linkTo } : { to: linkTo }),
+            ...(page === 'external'
+              ? { href: linkTo, target: '_blank' }
+              : { to: linkTo }),
             as: page === 'external' ? 'a' : RouterLink,
             style: linkStyles,
             onKeyDown: event => {
@@ -560,7 +555,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   let hasNewNestedFolder = false;
   if (newFolderPath !== null) {
     const newFolderParent = newFolderPath.replace(`/${NEW_FOLDER_ID}`, '');
-    if (name === 'All Sandboxes') {
+    if (folderPath === '/') {
       hasNewNestedFolder = true;
     } else if (newFolderParent.length && folderPath.includes(newFolderParent)) {
       hasNewNestedFolder = true;
@@ -568,7 +563,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   }
 
   const location = useLocation();
-  const currentFolderLocationPath = dashboardUrls.allSandboxes(folderPath);
+  const currentFolderLocationPath = dashboardUrls.sandboxes(folderPath);
   React.useEffect(() => {
     // Auto open folder in the sidebar if it's opened
     const pathName = location.pathname;
@@ -597,7 +592,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   };
 
   let subFolders: DashboardBaseFolder[];
-  if (name === 'All Sandboxes') {
+  if (folderPath === '/') {
     subFolders = folders.filter(folder => {
       if (folder.path === newFolderPath) {
         return newFolderPath.replace(`/${NEW_FOLDER_ID}`, '') === '';
@@ -674,7 +669,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
 
       if (currentFolderLocationPath === location.pathname) {
         // if this directory is opened
-        history.push(dashboardUrls.allSandboxes(newPath, state.activeTeam));
+        history.push(dashboardUrls.sandboxes(newPath, state.activeTeam));
       }
     }
 
@@ -689,7 +684,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     onSubmit();
   };
 
-  const folderUrl = dashboardUrls.allSandboxes(folderPath, state.activeTeam);
+  const folderUrl = dashboardUrls.sandboxes(folderPath, state.activeTeam);
 
   return (
     <>
@@ -743,8 +738,25 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
             <Element as="span" css={css({ width: 4, flexShrink: 0 })} />
           )}
 
-          <Stack align="center" gap={2} css={{ width: 'calc(100% - 28px)' }}>
-            <Icon name="folder" size={24} css={css({ flexShrink: 0 })} />
+          <Stack
+            align="center"
+            gap={2}
+            css={{
+              paddingLeft: 0,
+              paddingRight: 0,
+              marginRight: '0',
+            }}
+          >
+            <Stack
+              justify="center"
+              align="center"
+              css={{
+                width: 24,
+                marginRight: '8px',
+              }}
+            >
+              <Icon name="folder" size={16} css={css({ flexShrink: 0 })} />
+            </Stack>
 
             {isRenaming || isNewFolder ? (
               <form onSubmit={onSubmit}>
@@ -783,10 +795,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 <NestableRowItem
                   key={folder.path}
                   name={folder.name}
-                  path={dashboardUrls.allSandboxes(
-                    folder.path,
-                    state.activeTeam
-                  )}
+                  path={dashboardUrls.sandboxes(folder.path, state.activeTeam)}
                   folderPath={folder.path}
                   folders={folders}
                 />
