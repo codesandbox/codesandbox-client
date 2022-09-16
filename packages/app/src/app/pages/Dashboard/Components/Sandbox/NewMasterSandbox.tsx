@@ -45,6 +45,9 @@ export const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
           cursor: 'default',
           backgroundColor: 'list.hoverBackground',
         },
+        ':focus-visible': {
+          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+        },
         width: '100%',
         height: 64,
         borderBottom: '1px solid',
@@ -118,11 +121,13 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
         height: 240,
         backgroundColor: 'grays.700',
         borderRadius: 'medium',
-        overflow: 'hidden',
         transition: 'background ease-in-out',
         transitionDuration: theme => theme.speeds[4],
         ':hover, :focus, :focus-within': {
           backgroundColor: 'card.backgroundHover',
+        },
+        ':focus-visible': {
+          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
         },
       })}
     >

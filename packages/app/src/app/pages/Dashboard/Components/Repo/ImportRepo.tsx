@@ -22,6 +22,9 @@ export const ImportRepo = () => {
         ':hover, :focus, :focus-within': {
           backgroundColor: 'card.backgroundHover',
         },
+        ':focus-visible': {
+          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+        },
       })}
     >
       <Stack direction="vertical" align="center" gap={4}>
