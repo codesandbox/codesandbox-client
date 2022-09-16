@@ -71,7 +71,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
         onClick: actions.modals.newSandboxModal.close,
       }
     : {
-        to: '/dashboard',
+        to: '/dashboard/recent',
         onClick: actions.modals.newSandboxModal.close,
       };
 
