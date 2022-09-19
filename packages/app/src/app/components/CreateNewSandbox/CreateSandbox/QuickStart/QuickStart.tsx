@@ -10,11 +10,11 @@ import { PersonalTemplates } from './PersonalTemplates';
 import { SearchBox } from '../SearchBox';
 import { getTemplateInfosFromAPI } from '../utils/api';
 
-interface CreateProps {
+interface QuickStartProps {
   collectionId?: string;
 }
 
-export const Create: React.FC<CreateProps> = ({ collectionId }) => {
+export const QuickStart: React.FC<QuickStartProps> = ({ collectionId }) => {
   const state = useAppState();
   const actions = useActions();
   const [filter, setFilter] = React.useState('');
@@ -24,6 +24,7 @@ export const Create: React.FC<CreateProps> = ({ collectionId }) => {
     track('Create Sandbox Tab Open', { tab: 'create' });
   }, []);
 
+  // ❗️ HERE (these are here to stay, move them up probably)
   useEffect(() => {
     getTemplateInfosFromAPI('/api/v1/sandboxes/templates/official').then(x => {
       setOfficialTemplates(x);

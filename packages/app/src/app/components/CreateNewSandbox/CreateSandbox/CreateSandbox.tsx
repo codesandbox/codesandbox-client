@@ -3,7 +3,7 @@ import { useActions, useAppState } from 'app/overmind';
 import React, { ReactNode } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
 
-import { Create } from './Create';
+import { QuickStart } from './QuickStart';
 import {
   CloseModal,
   Container,
@@ -147,7 +147,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             ) : null}
           </MobileTabs>
 
-          <Create collectionId={collectionId} />
+          <QuickStart collectionId={collectionId} />
         </Panel>
 
         <Panel tab={tab} id="import">

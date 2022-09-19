@@ -91,6 +91,7 @@ export const PersonalTemplates = ({
 
   const allTemplateInfos: ITemplateInfo[] = [
     ...personalTemplateInfos,
+    // ❗️ Official templates
     ...officialTemplateInfos,
   ];
 
