@@ -17,7 +17,7 @@ import {
 import { Explore } from './Explore';
 import { BackIcon } from './Icons';
 import { Import } from './Import';
-// import { Essentials } from './Essentials';
+import { Essentials } from './Essentials';
 // import { TemplateFragment } from 'app/graphql/types';
 import { getTemplateInfosFromAPI } from './utils/api';
 import { ITemplateInfo } from './TemplateList';
@@ -170,28 +170,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             {essentialState.state === 'error' ? (
               <div>{essentialState.error}</div>
             ) : null}
-
-            {/* <Tab {...tab} stopId="react-essentials">
-              React essentials
-            </Tab>
-            <Tab {...tab} stopId="vue-essentials">
-              Vue essentials
-            </Tab>
-            <Tab {...tab} stopId="angular-essentials">
-              Angular essentials
-            </Tab>
-            <Tab {...tab} stopId="ui-frameworks">
-              UI frameworks
-            </Tab>
-            <Tab {...tab} stopId="component-libraries">
-              Component libraries
-            </Tab>
-            <Tab {...tab} stopId="starters">
-              Web App and API Starters
-            </Tab>
-            <Tab {...tab} stopId="databases">
-              Databases
-            </Tab> */}
           </Tabs>
         </Stack>
 
@@ -253,68 +231,21 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
           CodeSandbox templates
         </Panel>
 
-        <Panel tab={tab} id="react-essentials">
-          React essentials
-          {/* <Essentials
-            title="React essentials"
-            templates={essentials.react}
-            requestTemplates={getEssentials}
-          /> */}
-        </Panel>
-
-        <Panel tab={tab} id="vue-essentials">
-          Vue essentials
-          {/* <Essentials
-            title="Vue essentials"
-            templates={essentials.vue}
-            requestTemplates={getEssentials}
-          /> */}
-        </Panel>
-
-        <Panel tab={tab} id="angular-essentials">
-          Angular essentials
-          {/* <Essentials
-            title="Angular essentials"
-            templates={essentials.angular}
-            requestTemplates={getEssentials}
-          /> */}
-        </Panel>
-
-        <Panel tab={tab} id="ui-frameworks">
-          UI frameworks
-          {/* <Essentials
-            title="UI frameworks"
-            templates={essentials.ui}
-            requestTemplates={getEssentials}
-          /> */}
-        </Panel>
-
-        <Panel tab={tab} id="component-libraries">
-          Component libraries
-          {/* <Essentials
-            title="Component libraries"
-            templates={essentials.component}
-            requestTemplates={getEssentials}
-          /> */}
-        </Panel>
-
-        <Panel tab={tab} id="starters">
-          Web App and API Starters
-          {/* <Essentials
-            title="Web App and API Starters"
-            templates={essentials.app}
-            requestTemplates={getEssentials}
-          /> */}
-        </Panel>
-
-        <Panel tab={tab} id="databases">
-          Databases
-          {/* <Essentials
-            title="Databases"
-            templates={essentials.databases}
-            requestTemplates={getEssentials}
-          /> */}
-        </Panel>
+        {essentialState.state === 'success'
+          ? essentialState.essentials.map(essential => (
+              <Panel
+                key={essential.key}
+                tab={tab}
+                id={slugify(essential.title)}
+              >
+                {essential.title}
+                <Essentials
+                  title={essential.title}
+                  templates={essential.templates}
+                />
+              </Panel>
+            ))
+          : null}
       </Container>
     </ThemeProvider>
   );
