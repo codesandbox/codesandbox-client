@@ -1,7 +1,8 @@
 import { Stack, ThemeProvider } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
+import slugify from '@codesandbox/common/lib/utils/slugify';
 
 import { QuickStart } from './QuickStart';
 import {
@@ -16,6 +17,10 @@ import {
 import { Explore } from './Explore';
 import { BackIcon } from './Icons';
 import { Import } from './Import';
+// import { Essentials } from './Essentials';
+// import { TemplateFragment } from 'app/graphql/types';
+import { getTemplateInfosFromAPI } from './utils/api';
+import { ITemplateInfo } from './TemplateList';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -45,6 +50,19 @@ interface CreateSandboxProps {
   isModal?: boolean;
 }
 
+type EssentialsState =
+  | {
+      state: 'loading';
+    }
+  | {
+      state: 'success';
+      essentials: ITemplateInfo[];
+    }
+  | {
+      state: 'error';
+      error: string;
+    };
+
 export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   collectionId,
   initialTab,
@@ -55,10 +73,38 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const isRepositoriesPage = location.pathname.includes('/repositories');
   const isDashboardPage = location.pathname.includes('/dashboard');
 
+  const [essentialState, setEssentialState] = useState<EssentialsState>({
+    state: 'loading',
+  });
+
   const tab = useTabState({
     orientation: 'vertical',
     selectedId: initialTab || isRepositoriesPage ? 'import' : 'create',
   });
+
+  useEffect(() => {
+    async function getEssentials() {
+      try {
+        const result = await getTemplateInfosFromAPI(
+          '/api/v1/sandboxes/templates/explore'
+        );
+
+        setEssentialState({
+          state: 'success',
+          essentials: result,
+        });
+      } catch {
+        setEssentialState({
+          state: 'error',
+          error: 'Something went wrong fetching templates.',
+        });
+      }
+    }
+
+    if (essentialState.state === 'loading') {
+      getEssentials();
+    }
+  }, [essentialState.state]);
 
   const dashboardButtonAttrs = isDashboardPage
     ? {
@@ -92,16 +138,40 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             <Tab {...tab} stopId="quickstart">
               Quickstart
             </Tab>
+
             <Tab {...tab} stopId="import">
               Import from GitHub
             </Tab>
+
             <Tab {...tab} stopId="my-templates">
               My templates
             </Tab>
+
             <Tab {...tab} stopId="csb-templates">
               CodeSandbox templates
             </Tab>
-            <Tab {...tab} stopId="react-essentials">
+
+            {essentialState.state === 'success'
+              ? essentialState.essentials.map(essential => (
+                  <Tab
+                    key={essential.key}
+                    {...tab}
+                    stopId={slugify(essential.title)}
+                  >
+                    {essential.title}
+                  </Tab>
+                ))
+              : null}
+
+            {essentialState.state === 'loading' ? (
+              <div>loading usefull templates</div>
+            ) : null}
+
+            {essentialState.state === 'error' ? (
+              <div>{essentialState.error}</div>
+            ) : null}
+
+            {/* <Tab {...tab} stopId="react-essentials">
               React essentials
             </Tab>
             <Tab {...tab} stopId="vue-essentials">
@@ -121,7 +191,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             </Tab>
             <Tab {...tab} stopId="databases">
               Databases
-            </Tab>
+            </Tab> */}
           </Tabs>
         </Stack>
 
@@ -185,30 +255,65 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
         <Panel tab={tab} id="react-essentials">
           React essentials
+          {/* <Essentials
+            title="React essentials"
+            templates={essentials.react}
+            requestTemplates={getEssentials}
+          /> */}
         </Panel>
 
         <Panel tab={tab} id="vue-essentials">
           Vue essentials
+          {/* <Essentials
+            title="Vue essentials"
+            templates={essentials.vue}
+            requestTemplates={getEssentials}
+          /> */}
         </Panel>
 
         <Panel tab={tab} id="angular-essentials">
           Angular essentials
+          {/* <Essentials
+            title="Angular essentials"
+            templates={essentials.angular}
+            requestTemplates={getEssentials}
+          /> */}
         </Panel>
 
         <Panel tab={tab} id="ui-frameworks">
           UI frameworks
+          {/* <Essentials
+            title="UI frameworks"
+            templates={essentials.ui}
+            requestTemplates={getEssentials}
+          /> */}
         </Panel>
 
         <Panel tab={tab} id="component-libraries">
           Component libraries
+          {/* <Essentials
+            title="Component libraries"
+            templates={essentials.component}
+            requestTemplates={getEssentials}
+          /> */}
         </Panel>
 
         <Panel tab={tab} id="starters">
           Web App and API Starters
+          {/* <Essentials
+            title="Web App and API Starters"
+            templates={essentials.app}
+            requestTemplates={getEssentials}
+          /> */}
         </Panel>
 
         <Panel tab={tab} id="databases">
           Databases
+          {/* <Essentials
+            title="Databases"
+            templates={essentials.databases}
+            requestTemplates={getEssentials}
+          /> */}
         </Panel>
       </Container>
     </ThemeProvider>
