@@ -31,6 +31,7 @@ const colors = {
   },
   card: {
     background: tokensV2.black[600],
+    backgroundHover: tokensV2.black[400],
   },
   dropdown: {
     background: tokens.grays[700],

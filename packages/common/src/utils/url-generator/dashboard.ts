@@ -1,5 +1,5 @@
 export const DASHBOARD_URL_PREFIX = '/dashboard';
-export const ALL_SANDBOXES_URL_PREFIX = `${DASHBOARD_URL_PREFIX}/all`;
+export const ALL_SANDBOXES_URL_PREFIX = `${DASHBOARD_URL_PREFIX}/sandboxes`;
 
 function appendTeamIdQueryParam(url: string, teamId?: string | null) {
   if (teamId) {
@@ -16,7 +16,7 @@ function sanitizePath(path: string) {
     .join('/');
 }
 
-export const allSandboxes = (path: string, teamId?: string | null) =>
+export const sandboxes = (path: string, teamId?: string | null) =>
   appendTeamIdQueryParam(
     `${ALL_SANDBOXES_URL_PREFIX}${sanitizePath(path)}`,
     teamId
@@ -46,8 +46,8 @@ export const templates = (teamId?: string | null) =>
 export const recents = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/recent`, teamId);
 
-export const deleted = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/deleted`, teamId);
+export const archive = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/archive`, teamId);
 
 export const shared = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/shared`, teamId);

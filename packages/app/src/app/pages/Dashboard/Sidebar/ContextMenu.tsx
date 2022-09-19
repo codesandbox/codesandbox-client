@@ -51,7 +51,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
         </Stack>
       </MenuItem>
     );
-  } else if (folder.name === 'All Sandboxes') {
+  } else if (folder.path === '/') {
     menuOptions = (
       <MenuItem onSelect={() => setNewFolderPath(`/${NEW_FOLDER_ID}`)}>
         New folder
@@ -71,7 +71,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
             deleteFolder({ path: folder.path });
 
             const isCurrentlyOpened =
-              dashboardUrls.allSandboxes(folder.path) === location.pathname;
+              dashboardUrls.sandboxes(folder.path) === location.pathname;
 
             if (isCurrentlyOpened) {
               // navigate out of folder when it's deleted
@@ -79,9 +79,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
                 .split('/')
                 .slice(0, -1)
                 .join('/');
-              history.push(
-                dashboardUrls.allSandboxes(parentFolder, activeTeam)
-              );
+              history.push(dashboardUrls.sandboxes(parentFolder, activeTeam));
             }
 
             track('Dashboard - Delete folder', {

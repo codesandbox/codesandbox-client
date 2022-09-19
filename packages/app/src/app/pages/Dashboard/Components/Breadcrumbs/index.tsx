@@ -16,7 +16,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   repos,
   albumId,
 }) => {
-  let link = dashboard.allSandboxes('/', activeTeam);
+  let link = dashboard.sandboxes('/', activeTeam);
   if (repos) {
     link = {
       'open-source': dashboard.openSourceRepos(activeTeam),
@@ -25,7 +25,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     }[repos];
   } else if (albumId) link = dashboard.discover(activeTeam);
 
-  let prefix = 'All Sandboxes';
+  let prefix = 'Sandboxes';
   if (repos) {
     prefix = {
       'open-source': 'Open source',
@@ -61,9 +61,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
                 key={currentPath}
                 as={LinkBase}
                 to={
-                  repos
-                    ? link
-                    : dashboard.allSandboxes('/' + partPath, activeTeam)
+                  repos ? link : dashboard.sandboxes('/' + partPath, activeTeam)
                 }
                 variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
               >

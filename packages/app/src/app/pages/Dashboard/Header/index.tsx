@@ -132,7 +132,7 @@ const SearchInputGroup = () => {
 
     if (event.target.value.length >= 2) debouncedSearch(event.target.value);
     if (!event.target.value) {
-      history.push(dashboardUrls.allSandboxes('/', activeTeam));
+      history.push(dashboardUrls.sandboxes('/', activeTeam));
     }
   };
 

@@ -32,7 +32,7 @@ export const Folder = (folderItem: DashboardFolder) => {
   /* View logic */
 
   let viewMode: string;
-  if (location.pathname.includes('deleted')) viewMode = 'list';
+  if (location.pathname.includes('archive')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
   const Component = viewMode === 'list' ? FolderListItem : FolderCard;
@@ -63,7 +63,7 @@ export const Folder = (folderItem: DashboardFolder) => {
 
   const history = useHistory();
   const onDoubleClick = event => {
-    const url = dashboardUrls.allSandboxes(path, activeTeamId);
+    const url = dashboardUrls.sandboxes(path, activeTeamId);
 
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
