@@ -1,4 +1,4 @@
-import { Stack, ThemeProvider } from '@codesandbox/components';
+import { Stack, SkeletonText, ThemeProvider } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
@@ -18,10 +18,9 @@ import { Explore } from './Explore';
 import { BackIcon } from './Icons';
 import { Import } from './Import';
 import { Essentials } from './Essentials';
-// import { TemplateFragment } from 'app/graphql/types';
 import { getTemplateInfosFromAPI } from './utils/api';
 import { ITemplateInfo } from './TemplateList';
-import { MyTemplates } from './MyTemplates';
+import { TeamTemplates } from './TeamTemplates';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -69,10 +68,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   initialTab,
   isModal,
 }) => {
-  const { hasLogIn } = useAppState();
+  const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
+
   const isRepositoriesPage = location.pathname.includes('/repositories');
   const isDashboardPage = location.pathname.includes('/dashboard');
+  const isUser = user.username === activeTeamInfo.name;
 
   const [essentialState, setEssentialState] = useState<EssentialsState>({
     state: 'loading',
@@ -97,7 +98,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
       } catch {
         setEssentialState({
           state: 'error',
-          error: 'Something went wrong fetching templates.',
+          error: 'Something went wrong when fetching more templates, sorry!',
         });
       }
     }
@@ -144,8 +145,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               Import from GitHub
             </Tab>
 
-            <Tab {...tab} stopId="my-templates">
-              My templates
+            <Tab {...tab} stopId="team-templates">
+              {`${isUser ? 'My' : 'Team'} templates`}
             </Tab>
 
             <Tab {...tab} stopId="csb-templates">
@@ -165,7 +166,17 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               : null}
 
             {essentialState.state === 'loading' ? (
-              <div>loading usefull templates</div>
+              <div>
+                <div>todo skeleton</div>
+                <SkeletonText css={{ width: 100 }} />
+                <div>todo skeleton</div>
+                <SkeletonText css={{ width: 120 }} />
+                <div>todo skeleton</div>
+                <SkeletonText css={{ width: 120 }} />
+                <div>todo skeleton</div>
+                <SkeletonText css={{ width: 140 }} />
+                <SkeletonText css={{ width: 90 }} />
+              </div>
             ) : null}
 
             {essentialState.state === 'error' ? (
@@ -224,8 +235,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
           <Explore collectionId={collectionId} />
         </Panel>
 
-        <Panel tab={tab} id="my-templates">
-          <MyTemplates />
+        <Panel tab={tab} id="team-templates">
+          <TeamTemplates isUser={isUser} teamId={activeTeamInfo.id} />
         </Panel>
 
         <Panel tab={tab} id="csb-templates">
