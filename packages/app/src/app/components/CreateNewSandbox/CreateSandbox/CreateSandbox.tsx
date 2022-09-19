@@ -21,6 +21,7 @@ import { Essentials } from './Essentials';
 // import { TemplateFragment } from 'app/graphql/types';
 import { getTemplateInfosFromAPI } from './utils/api';
 import { ITemplateInfo } from './TemplateList';
+import { MyTemplates } from './MyTemplates';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -224,7 +225,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
         </Panel>
 
         <Panel tab={tab} id="my-templates">
-          My templates
+          <MyTemplates />
         </Panel>
 
         <Panel tab={tab} id="csb-templates">
