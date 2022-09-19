@@ -72,7 +72,7 @@ export const Header = ({
         />
       )}
       <Stack gap={4} align="center">
-        {location.pathname.includes('/all') && (
+        {location.pathname.includes('/sandboxes') && (
           <Button
             onClick={createNewFolder}
             variant="link"

@@ -87,7 +87,7 @@ class SandboxesItemComponent extends React.Component<
 
             const disabledMessage =
               teamId == null
-                ? "It's currently not possible to move sandboxes to 'All Sandboxes' in a personal account"
+                ? "It's currently not possible to move sandboxes to 'Sandboxes' in a personal account"
                 : null;
 
             return (

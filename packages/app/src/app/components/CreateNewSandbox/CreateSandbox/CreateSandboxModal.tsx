@@ -32,7 +32,7 @@ function getImplicitCollectionIdFromFolder(
   return collection;
 }
 
-const collectionPathRegex = /^.*dashboard\/all/;
+const collectionPathRegex = /^.*dashboard\/sandboxes/;
 export const CreateSandboxModal = () => {
   const { modals, dashboard } = useAppState();
   const { modals: modalsActions } = useActions();

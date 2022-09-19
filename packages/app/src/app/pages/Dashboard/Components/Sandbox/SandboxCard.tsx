@@ -85,7 +85,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           />
         </form>
       ) : (
-        <Stack gap={1}>
+        <Stack gap={2} align="center">
           {prNumber ? (
             <Link
               title="Open pull request on GitHub"
@@ -123,7 +123,6 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: '-6px',
           }}
           css={css({ color: 'mutedForeground' })}
         >
@@ -135,7 +134,6 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           size={9}
           title="Sandbox Actions"
           onClick={onContextMenu}
-          style={{ marginTop: '-6px' }}
         />
       )}
     </Stack>
@@ -254,11 +252,14 @@ export const SandboxCard = ({
         borderColor: selected ? 'purple' : 'transparent',
         borderRadius: 'medium',
         overflow: 'hidden',
-        transition: 'box-shadow ease-in-out',
+        transition: 'background ease-in-out',
         transitionDuration: theme => theme.speeds[4],
         opacity,
         ':hover, :focus, :focus-within': {
-          boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+          backgroundColor: 'card.backgroundHover',
+        },
+        ':focus-visible': {
+          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
         },
       })}
     >
