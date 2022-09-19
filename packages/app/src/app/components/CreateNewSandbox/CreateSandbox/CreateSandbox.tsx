@@ -21,6 +21,7 @@ import { Essentials } from './Essentials';
 import { getTemplateInfosFromAPI } from './utils/api';
 import { ITemplateInfo } from './TemplateList';
 import { TeamTemplates } from './TeamTemplates';
+import { CodeSandboxTemplates } from './CodeSandboxTemplates';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -240,7 +241,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
         </Panel>
 
         <Panel tab={tab} id="csb-templates">
-          CodeSandbox templates
+          <CodeSandboxTemplates />
         </Panel>
 
         {essentialState.state === 'success'
