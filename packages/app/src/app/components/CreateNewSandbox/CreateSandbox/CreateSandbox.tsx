@@ -1,6 +1,6 @@
 import { Stack, ThemeProvider } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
 
 import { Create } from './Create';
@@ -52,21 +52,15 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 }) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
+  const isRepositoriesPage = location.pathname.includes('/repositories');
+  const isDashboardPage = location.pathname.includes('/dashboard');
 
   const tab = useTabState({
     orientation: 'vertical',
-    selectedId: initialTab || 'create',
+    selectedId: initialTab || isRepositoriesPage ? 'import' : 'create',
   });
 
-  useEffect(() => {
-    /* ❗️ TODO: We can probably take this out of the useEffect and put it into the useTabState selectedId */
-    if (location.pathname.includes('/repositories')) {
-      tab.select('Import');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const dashboardButtonAttrs = location.pathname.includes('/dashboard')
+  const dashboardButtonAttrs = isDashboardPage
     ? {
         onClick: actions.modals.newSandboxModal.close,
       }
@@ -130,6 +124,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             </Tab>
           </Tabs>
         </Stack>
+
         <Panel tab={tab} id="quickstart">
           {/**
            * ❗️ TODO: Update MobileTabs (because they aren't anymore) and move close button
@@ -154,6 +149,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
           <Create collectionId={collectionId} />
         </Panel>
+
         <Panel tab={tab} id="import">
           <MobileTabs>
             {/* ❗️ TODO: Figure out when it isn't a modal */}
@@ -171,35 +167,46 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               </CloseModal>
             ) : null}
           </MobileTabs>
+
           <Import />
         </Panel>
+
         <Panel tab={tab} id="explore">
           <Explore collectionId={collectionId} />
         </Panel>
+
         <Panel tab={tab} id="my-templates">
           My templates
         </Panel>
+
         <Panel tab={tab} id="csb-templates">
           CodeSandbox templates
         </Panel>
+
         <Panel tab={tab} id="react-essentials">
           React essentials
         </Panel>
+
         <Panel tab={tab} id="vue-essentials">
           Vue essentials
         </Panel>
+
         <Panel tab={tab} id="angular-essentials">
           Angular essentials
         </Panel>
+
         <Panel tab={tab} id="ui-frameworks">
           UI frameworks
         </Panel>
+
         <Panel tab={tab} id="component-libraries">
           Component libraries
         </Panel>
+
         <Panel tab={tab} id="starters">
           Web App and API Starters
         </Panel>
+
         <Panel tab={tab} id="databases">
           Databases
         </Panel>
