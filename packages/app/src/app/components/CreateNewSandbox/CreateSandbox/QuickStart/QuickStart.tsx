@@ -4,10 +4,10 @@ import { useAppState, useActions } from 'app/overmind';
 import { LinkButton } from 'app/components/LinkButton';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from '../elements';
-import { CenteredMessage, SearchWrapper } from './elements';
+import { CenteredMessage /* , SearchWrapper */ } from './elements';
 
 import { PersonalTemplates } from './PersonalTemplates';
-import { SearchBox } from '../SearchBox';
+// import { SearchBox } from '../SearchBox';
 import { getTemplateInfosFromAPI } from '../utils/api';
 
 interface QuickStartProps {
@@ -17,8 +17,8 @@ interface QuickStartProps {
 export const QuickStart: React.FC<QuickStartProps> = ({ collectionId }) => {
   const state = useAppState();
   const actions = useActions();
-  const [filter, setFilter] = React.useState('');
-  const [officialTemplateInfos, setOfficialTemplates] = React.useState([]);
+  // const [filter, setFilter] = React.useState('');
+  const [officialTemplates, setOfficialTemplates] = React.useState([]);
 
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: 'create' });
@@ -34,16 +34,18 @@ export const QuickStart: React.FC<QuickStartProps> = ({ collectionId }) => {
   return (
     <>
       <Header>
-        <span>Create Sandbox</span>
-        <SearchWrapper>
+        <span>Start from a template</span>
+        {/* ❗️ Header and Searlch will be moved to CreateSandbox */}
+        {/* <SearchWrapper>
           <SearchBox
             onChange={evt => setFilter(evt.target.value)}
             value={filter}
             placeholder="Filter Templates"
           />
-        </SearchWrapper>
+        </SearchWrapper> */}
       </Header>
       <Scrollable>
+        {/* ❗️ TODO: Login should be moved UP probably */}
         {!state.hasLogIn && (
           <CenteredMessage>
             <div>
@@ -56,9 +58,9 @@ export const QuickStart: React.FC<QuickStartProps> = ({ collectionId }) => {
         )}
 
         <PersonalTemplates
-          filter={filter}
+          // filter={filter}
           hasLogIn={state.hasLogIn}
-          officialTemplateInfos={officialTemplateInfos}
+          officialTemplates={officialTemplates}
           collectionId={collectionId}
         />
       </Scrollable>

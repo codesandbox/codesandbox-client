@@ -25,6 +25,7 @@ export interface ITemplateInfo {
 }
 
 export interface ITemplateListProps {
+  // ❗️ TODO: rename to templates
   templateInfos: ITemplateInfo[];
   forkOnOpen?: boolean;
   columnCount?: number;
