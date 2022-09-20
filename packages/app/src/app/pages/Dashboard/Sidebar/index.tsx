@@ -185,7 +185,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
           />
-
           <NestableRowItem
             name="Sandboxes"
             path={dashboardUrls.sandboxes('/', activeTeam)}
