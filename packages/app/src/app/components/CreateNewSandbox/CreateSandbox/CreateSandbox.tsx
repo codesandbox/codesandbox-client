@@ -170,15 +170,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
             {essentialState.state === 'loading' ? (
               <div>
-                <div>todo skeleton</div>
+                <div>todo skeletons</div>
                 <SkeletonText css={{ width: 100 }} />
-                <div>todo skeleton</div>
-                <SkeletonText css={{ width: 120 }} />
-                <div>todo skeleton</div>
-                <SkeletonText css={{ width: 120 }} />
-                <div>todo skeleton</div>
-                <SkeletonText css={{ width: 140 }} />
-                <SkeletonText css={{ width: 90 }} />
               </div>
             ) : null}
 

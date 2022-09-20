@@ -4,10 +4,9 @@ import { useAppState, useActions } from 'app/overmind';
 import { LinkButton } from 'app/components/LinkButton';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from '../elements';
-import { CenteredMessage /* , SearchWrapper */ } from './elements';
+import { CenteredMessage } from './elements';
 
 import { PersonalTemplates } from './PersonalTemplates';
-// import { SearchBox } from '../SearchBox';
 import { getTemplateInfosFromAPI } from '../utils/api';
 
 interface QuickStartProps {
@@ -15,9 +14,8 @@ interface QuickStartProps {
 }
 
 export const QuickStart: React.FC<QuickStartProps> = ({ collectionId }) => {
-  const state = useAppState();
+  const { hasLogIn } = useAppState();
   const actions = useActions();
-  // const [filter, setFilter] = React.useState('');
   const [officialTemplates, setOfficialTemplates] = React.useState([]);
 
   useEffect(() => {
@@ -33,20 +31,13 @@ export const QuickStart: React.FC<QuickStartProps> = ({ collectionId }) => {
 
   return (
     <>
+      {/* ❗️ TODO: Move header to CreateSandbox component */}
       <Header>
         <span>Start from a template</span>
-        {/* ❗️ Header and search will be moved to CreateSandbox */}
-        {/* <SearchWrapper>
-          <SearchBox
-            onChange={evt => setFilter(evt.target.value)}
-            value={filter}
-            placeholder="Filter Templates"
-          />
-        </SearchWrapper> */}
       </Header>
       <Scrollable>
         {/* ❗️ TODO: This message should be moved UP probably */}
-        {!state.hasLogIn && (
+        {!hasLogIn && (
           <CenteredMessage>
             <div>
               <LinkButton onClick={() => actions.signInClicked()}>
@@ -57,9 +48,8 @@ export const QuickStart: React.FC<QuickStartProps> = ({ collectionId }) => {
           </CenteredMessage>
         )}
 
+        {/* ❗️ TODO: Rename to official templates or move component content to this component */}
         <PersonalTemplates
-          // filter={filter}
-          hasLogIn={state.hasLogIn}
           officialTemplates={officialTemplates}
           collectionId={collectionId}
         />
