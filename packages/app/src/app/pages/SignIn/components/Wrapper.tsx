@@ -19,28 +19,24 @@ export const Wrapper = ({
       >
         <Element
           css={css({
-            backgroundColor: oneCol ? 'grays.800' : 'white',
-            border: 1,
-            borderStyle: 'solid',
-            borderColor: 'grays.500',
+            backgroundColor: '#1D1D1D',
+
             boxSizing: 'border-box',
             boxShadow: '2',
-            borderRadius: 8,
+            borderRadius: '4px',
             boxSixing: 'border-box',
 
-            color: oneCol ? 'white' : 'grays.800',
-            display: 'grid',
-            gridTemplateColumns: oneCol ? '1fr' : '50% 50%',
+            color: '#D6D6D6',
+            textAlign: 'center',
+
             overflow: 'hidden',
             margin: 'auto',
+            paddingY: 4,
 
             '@media screen and (min-width: 768px)': {
-              height: 400,
-              width: 670,
+              // height: 400,
+              width: 600,
               maxWidth: '80vw',
-            },
-            '@media screen and (max-width: 779px)': {
-              gridTemplateColumns: '1fr',
             },
           })}
         >

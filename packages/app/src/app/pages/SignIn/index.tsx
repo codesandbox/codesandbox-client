@@ -7,13 +7,11 @@ import { Element, Stack, ThemeProvider } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { Navigation } from '../common/Navigation';
 import { SignInModalElement } from './Modal';
-import { TermsAndUsage } from './components/v2';
 
 export const SignIn = () => {
   const state = useAppState();
   const { genericPageMounted } = useActions();
   const redirectTo = new URL(location.href).searchParams.get('continue');
-  const v2Style = new URL(location.href).searchParams.get('v2');
 
   useEffect(() => {
     genericPageMounted();
@@ -27,13 +25,13 @@ export const SignIn = () => {
     <ThemeProvider>
       <Element
         css={css({
-          backgroundColor: v2Style ? '#0f0e0e' : 'sideBar.background',
+          backgroundColor: 'sideBar.background',
           minHeight: '100vh',
           fontFamily: 'Inter, sans-serif',
           overflow: 'hidden',
         })}
       >
-        {!v2Style && <Navigation title="Sign In" />}
+        <Navigation title="Sign In" />
         <Stack
           css={css({
             width: '100vw',
@@ -43,12 +41,8 @@ export const SignIn = () => {
           align="center"
           justify="center"
         >
-          <SignInModalElement v2Style={!!v2Style} redirectTo={redirectTo} />
+          <SignInModalElement redirectTo={redirectTo} />
         </Stack>
-
-        <Element css={{ marginTop: -156 }}>
-          <TermsAndUsage />
-        </Element>
       </Element>
     </ThemeProvider>
   );
