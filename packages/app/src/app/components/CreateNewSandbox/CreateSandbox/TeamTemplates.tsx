@@ -27,8 +27,6 @@ export const TeamTemplates = ({ isUser, teamId }) => {
      */
     variables: {},
     fetchPolicy: 'cache-and-network',
-    // ❗️ TODO: Figure out what to do when user is not signed in by not rendering this tab maybe?
-    // skip: !hasLogIn,
   });
 
   const templates = isUser

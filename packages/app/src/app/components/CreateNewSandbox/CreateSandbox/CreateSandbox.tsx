@@ -74,7 +74,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const isRepositoriesPage = location.pathname.includes('/repositories');
   const isDashboardPage = location.pathname.includes('/dashboard');
-  const isUser = user.username === activeTeamInfo.name;
+  const isUser = user?.username === activeTeamInfo?.name;
 
   const [essentialState, setEssentialState] = useState<EssentialsState>({
     state: 'loading',
@@ -146,9 +146,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               Import from GitHub
             </Tab>
 
-            <Tab {...tab} stopId="team-templates">
-              {`${isUser ? 'My' : 'Team'} templates`}
-            </Tab>
+            {hasLogIn ? (
+              <Tab {...tab} stopId="team-templates">
+                {`${isUser ? 'My' : 'Team'} templates`}
+              </Tab>
+            ) : null}
 
             <Tab {...tab} stopId="csb-templates">
               CodeSandbox templates
@@ -236,9 +238,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
           <Explore collectionId={collectionId} />
         </Panel>
 
-        <Panel tab={tab} id="team-templates">
-          <TeamTemplates isUser={isUser} teamId={activeTeamInfo.id} />
-        </Panel>
+        {hasLogIn ? (
+          <Panel tab={tab} id="team-templates">
+            <TeamTemplates isUser={isUser} teamId={activeTeamInfo.id} />
+          </Panel>
+        ) : null}
 
         <Panel tab={tab} id="csb-templates">
           <CodeSandboxTemplates />

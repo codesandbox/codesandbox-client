@@ -35,7 +35,7 @@ export const QuickStart: React.FC<QuickStartProps> = ({ collectionId }) => {
     <>
       <Header>
         <span>Start from a template</span>
-        {/* ❗️ Header and Searlch will be moved to CreateSandbox */}
+        {/* ❗️ Header and search will be moved to CreateSandbox */}
         {/* <SearchWrapper>
           <SearchBox
             onChange={evt => setFilter(evt.target.value)}
@@ -45,7 +45,7 @@ export const QuickStart: React.FC<QuickStartProps> = ({ collectionId }) => {
         </SearchWrapper> */}
       </Header>
       <Scrollable>
-        {/* ❗️ TODO: Login should be moved UP probably */}
+        {/* ❗️ TODO: This message should be moved UP probably */}
         {!state.hasLogIn && (
           <CenteredMessage>
             <div>
