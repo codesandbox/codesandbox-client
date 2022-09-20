@@ -59,13 +59,13 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const actions = useActions();
   const essentialState = useEssentialTemplates();
 
-  const isRepositoriesPage = location.pathname.includes('/repositories');
+  const isSyncedSandboxesPage = location.pathname.includes('/synced-sandboxes');
   const isDashboardPage = location.pathname.includes('/dashboard');
   const isUser = user?.username === activeTeamInfo?.name;
 
   const tab = useTabState({
     orientation: 'vertical',
-    selectedId: initialTab || isRepositoriesPage ? 'import' : 'create',
+    selectedId: initialTab || isSyncedSandboxesPage ? 'import' : 'create',
   });
 
   const dashboardButtonAttrs = isDashboardPage
