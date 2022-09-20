@@ -37,7 +37,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
     );
   }
 
-  if (page === 'legacy-repos' || page === 'v2-repos') {
+  if (page === 'repositories') {
     return (
       <Stack justify="center" align="center" marginTop={120}>
         <Stack
@@ -60,7 +60,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
     );
   }
 
-  if (page === 'open-source-repos') {
+  if (page === 'my-contributions') {
     return (
       <Stack justify="center" align="center" marginTop={120}>
         <Stack
@@ -76,6 +76,29 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
           <Stack direction="vertical" align="center" gap={1}>
             <Text variant="muted" align="center">
               Uh oh, you don’t have any open source contributions.
+            </Text>
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  if (page === 'synced-sandboxes') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Stack
+          direction="vertical"
+          align="center"
+          gap={8}
+          css={{ width: 500, height: '100vh', userSelect: 'none' }}
+        >
+          <Stack align="center" css={{ width: 220 }}>
+            <NewSandbox collectionId={collectionId} />
+          </Stack>
+
+          <Stack direction="vertical" align="center" gap={1}>
+            <Text variant="muted" align="center">
+              Uh oh, you haven’t created any synced sandboxes yet!
             </Text>
           </Stack>
         </Stack>

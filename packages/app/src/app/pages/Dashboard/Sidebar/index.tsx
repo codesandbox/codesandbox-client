@@ -178,12 +178,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="box"
             style={{ marginTop: 1 }}
           />
-
+          <Element marginTop={4} />
+          <RowItem
+            name="My contributions"
+            page="my-contributions"
+            path={dashboardUrls.myContributions(activeTeam)}
+            icon="link" // Temp icon.
+          />
+          <RowItem
+            name="All repositories"
+            page="repositories"
+            path={dashboardUrls.repositories(activeTeam)}
+            icon="projects" // Temp icon.
+          />
+          <Element marginTop={4} />
           <RowItem
             name="My drafts"
             page="drafts"
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
+          />
+          <RowItem
+            name="Templates"
+            page="templates"
+            path={dashboardUrls.templates(activeTeam)}
+            icon="star"
           />
           <NestableRowItem
             name="Sandboxes"
@@ -195,12 +214,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 ? [{ path: newFolderPath, name: '', parent: null }]
                 : []),
             ]}
-          />
-          <RowItem
-            name="Templates"
-            page="templates"
-            path={dashboardUrls.templates(activeTeam)}
-            icon="star"
           />
           {activeTeamInfo?.joinedPilotAt && (
             <RowItem
@@ -218,43 +231,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.recents(activeTeam)}
             icon="clock"
           /> */}
+
+          <RowItem
+            name="Synced Sandboxes"
+            page="synced-sandboxes"
+            path={dashboardUrls.syncedSandboxes(activeTeam)}
+            icon="fork" // Temp icon.
+          />
           <RowItem
             name="Archive"
             page="archive"
             path={dashboardUrls.archive(activeTeam)}
             icon="trash"
           />
-
-          <RowItem
-            name="Open source"
-            page="open-source-repos"
-            path={dashboardUrls.openSourceRepos(activeTeam)}
-            icon="link" // Temp icon.
-          />
-
-          <RowItem
-            name="All repositories"
-            page="v2-repos"
-            path={dashboardUrls.v2Repos(activeTeam)}
-            icon="projects" // Temp icon.
-          />
-
-          <RowItem
-            name="Legacy repositories"
-            page="legacy-repos"
-            path={dashboardUrls.legacyRepos(activeTeam)}
-            icon="fork" // Temp icon.
-          />
-
           <Element marginTop={8} />
-
           <RowItem
             name="Discover"
             page="discover"
             path={dashboardUrls.discover(activeTeam)}
             icon="discover"
           />
-
           <RowItem
             name="Shared With Me"
             page="shared"
@@ -267,7 +263,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.liked(activeTeam)}
             icon="heart"
           />
-
           <RowItem
             name="Documentation"
             page="external"

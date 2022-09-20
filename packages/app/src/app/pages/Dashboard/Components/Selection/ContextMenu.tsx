@@ -92,7 +92,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
 
   let menu: React.ReactNode;
   if (selectedItems.length === 0) {
-    if (['v2-repos', 'open-source-repos', 'legacy-repos'].includes(page))
+    if (['repositories', 'my-contributions', 'synced-sandboxes'].includes(page))
       return null;
     menu = (
       <ContainerMenu

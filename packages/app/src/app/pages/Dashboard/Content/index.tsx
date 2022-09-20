@@ -13,14 +13,14 @@ import { Shared } from './routes/Shared';
 import { Liked } from './routes/Liked';
 import { AlwaysOn } from './routes/AlwaysOn';
 import { Sandboxes } from './routes/Sandboxes';
-import { LegacyRepositories } from './routes/LegacyRepositories';
+import { SyncedSandboxes } from './routes/SyncedSandboxes';
 import { Search } from './routes/Search';
 import { Settings } from './routes/Settings';
 import { Discover } from './routes/Discover';
 import { Album } from './routes/Discover/Album';
 import { Curate } from './routes/Discover/Curate';
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
-import { OpenSourceRepositories } from './routes/OpenSourceRepositories';
+import { MyContributions } from './routes/MyContributions';
 import { RepositoriesPage } from './routes/Repositories';
 
 export const Content = withRouter(({ history }) => {
@@ -58,16 +58,16 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/sandboxes/:path*" component={Sandboxes} />
         <Route path="/dashboard/templates" component={Templates} />
         <Route
-          path="/dashboard/repositories/open-source/:path*"
-          component={OpenSourceRepositories}
+          path="/dashboard/my-contributions/:path*"
+          component={MyContributions}
         />
         <Route
-          path="/dashboard/repositories/all/:path*"
+          path="/dashboard/repositories/:path*"
           component={RepositoriesPage}
         />
         <Route
-          path="/dashboard/repositories/legacy/:path*"
-          component={LegacyRepositories}
+          path="/dashboard/synced-sandboxes/:path*"
+          component={SyncedSandboxes}
         />
         <Route path="/dashboard/always-on" component={AlwaysOn} />
         <Route path="/dashboard/recent" component={Recent} />
