@@ -7,6 +7,7 @@ type Props = {
   children: React.ReactNode;
   loading?: boolean;
   onClick: () => void;
+  secondary?: boolean;
 };
 
 export const Button = ({ children, secondary, loading, ...props }: Props) => (
