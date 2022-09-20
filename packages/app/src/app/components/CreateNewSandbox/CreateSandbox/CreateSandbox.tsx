@@ -233,7 +233,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
         {hasLogIn ? (
           <Panel tab={tab} id="team-templates">
-            <TeamTemplates isUser={isUser} teamId={activeTeamInfo.id} />
+            <TeamTemplates isUser={isUser} teamId={activeTeamInfo?.id} />
           </Panel>
         ) : null}
 
