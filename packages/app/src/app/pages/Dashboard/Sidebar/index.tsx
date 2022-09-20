@@ -179,6 +179,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
             style={{ marginTop: 1 }}
           />
           <Element marginTop={4} />
+          <Element paddingX={5} paddingY={1}>
+            <Text variant="muted" size={2}>
+              Repositories
+            </Text>
+          </Element>
           <RowItem
             name="My contributions"
             page="my-contributions"
@@ -192,6 +197,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="projects" // Temp icon.
           />
           <Element marginTop={4} />
+          <Element paddingX={5} paddingY={1}>
+            <Text variant="muted" size={2}>
+              Sandboxes
+            </Text>
+          </Element>
           <RowItem
             name="My drafts"
             page="drafts"
