@@ -62,6 +62,8 @@ export type State = {
     older: Sandbox[];
   };
   curatedAlbums: DashboardAlbum[];
+  // TODO: fix unknown
+  contributions: unknown[] | null;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -173,4 +175,5 @@ export const state: State = {
       return orderedSandboxes;
     }
   ),
+  contributions: null,
 };

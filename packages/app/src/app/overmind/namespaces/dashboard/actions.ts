@@ -1934,3 +1934,33 @@ export const updateAlbum = async (
     effects.notificationToast.error('There was a problem updating album');
   }
 };
+
+export const getContributionBranches = async ({ state, effects }: Context) =>
+  // eslint-disable-next-line consistent-return
+  {
+    const { dashboard } = state;
+    try {
+      let contributionBranches: unknown[] = [];
+      dashboard.contributions = null;
+
+      const contributionsData = await effects.gql.queries.get();
+      if (
+        !contributionsData ||
+        !contributionsData.me ||
+        !contributionsData.me.recentBranches
+      ) {
+        return;
+      }
+      contributionBranches = contributionsData.me.team.recentBranches;
+
+      if (!contributionBranches) {
+        return;
+      }
+
+      dashboard.contributions = contributionBranches;
+    } catch (error) {
+      effects.notificationToast.error(
+        'There was a problem getting your open source contributions'
+      );
+    }
+  };
