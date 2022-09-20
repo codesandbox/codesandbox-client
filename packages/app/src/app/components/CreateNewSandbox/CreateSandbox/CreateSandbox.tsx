@@ -1,6 +1,6 @@
 import { Stack, SkeletonText, ThemeProvider } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 
@@ -18,10 +18,9 @@ import { Explore } from './Explore';
 import { BackIcon } from './Icons';
 import { Import } from './Import';
 import { Essentials } from './Essentials';
-import { getTemplateInfosFromAPI } from './utils/api';
-import { ITemplateInfo } from './TemplateList';
 import { TeamTemplates } from './TeamTemplates';
 import { CodeSandboxTemplates } from './CodeSandboxTemplates';
+import { useEssentialTemplates } from './useEssentialTemplates';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -51,19 +50,6 @@ interface CreateSandboxProps {
   isModal?: boolean;
 }
 
-type EssentialsState =
-  | {
-      state: 'loading';
-    }
-  | {
-      state: 'success';
-      essentials: ITemplateInfo[];
-    }
-  | {
-      state: 'error';
-      error: string;
-    };
-
 export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   collectionId,
   initialTab,
@@ -71,43 +57,16 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 }) => {
   const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
+  const essentialState = useEssentialTemplates();
 
   const isRepositoriesPage = location.pathname.includes('/repositories');
   const isDashboardPage = location.pathname.includes('/dashboard');
   const isUser = user?.username === activeTeamInfo?.name;
 
-  const [essentialState, setEssentialState] = useState<EssentialsState>({
-    state: 'loading',
-  });
-
   const tab = useTabState({
     orientation: 'vertical',
     selectedId: initialTab || isRepositoriesPage ? 'import' : 'create',
   });
-
-  useEffect(() => {
-    async function getEssentials() {
-      try {
-        const result = await getTemplateInfosFromAPI(
-          '/api/v1/sandboxes/templates/explore'
-        );
-
-        setEssentialState({
-          state: 'success',
-          essentials: result,
-        });
-      } catch {
-        setEssentialState({
-          state: 'error',
-          error: 'Something went wrong when fetching more templates, sorry!',
-        });
-      }
-    }
-
-    if (essentialState.state === 'loading') {
-      getEssentials();
-    }
-  }, [essentialState.state]);
 
   const dashboardButtonAttrs = isDashboardPage
     ? {
