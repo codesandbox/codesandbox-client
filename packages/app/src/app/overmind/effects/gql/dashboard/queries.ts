@@ -459,14 +459,22 @@ export const getContributionBranches: Query<
   query ContributionBranches {
     me {
       recentBranches(contribution: true, limit: 1000) {
-        owner
+        id
         name
-        permission
-        private
-
-        parent {
+        owner {
           name
-          owner
+          username
+          personalWorkspaceId
+        }
+        project {
+          repository {
+            ... on GitHubRepository {
+              parent {
+                name
+                owner
+              }
+            }
+          }
         }
       }
     }

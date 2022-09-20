@@ -1943,7 +1943,9 @@ export const getContributionBranches = async ({ state, effects }: Context) =>
       let contributionBranches: unknown[] = [];
       dashboard.contributions = null;
 
-      const contributionsData = await effects.gql.queries.get();
+      const contributionsData = await effects.gql.queries.getContributionBranches(
+        {}
+      );
       if (
         !contributionsData ||
         !contributionsData.me ||
@@ -1951,7 +1953,7 @@ export const getContributionBranches = async ({ state, effects }: Context) =>
       ) {
         return;
       }
-      contributionBranches = contributionsData.me.team.recentBranches;
+      contributionBranches = contributionsData.me.recentBranches;
 
       if (!contributionBranches) {
         return;
