@@ -15,7 +15,12 @@ function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
   return data.me.teams.find(team => team.id === teamId).templates;
 }
 
-export const TeamTemplates = ({ isUser, teamId }) => {
+interface TeamTemplatesProps {
+  isUser: boolean;
+  teamId: string;
+}
+
+export const TeamTemplates = ({ isUser, teamId }: TeamTemplatesProps) => {
   const { data, error } = useQuery<
     ListPersonalTemplatesQuery,
     ListPersonalTemplatesQueryVariables
@@ -51,9 +56,13 @@ export const TeamTemplates = ({ isUser, teamId }) => {
 
   return (
     <div>
-      {templates.map(template => (
-        <div key={template.id}>{template.sandbox.title}</div>
-      ))}
+      {templates.length > 0 ? (
+        templates.map(template => (
+          <div key={template.id}>{template.sandbox.title}</div>
+        ))
+      ) : (
+        <div>No templates yet!</div>
+      )}
     </div>
   );
 };

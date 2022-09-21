@@ -67,6 +67,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const isSyncedSandboxesPage = location.pathname.includes('/synced-sandboxes');
   const isUser = user?.username === activeTeamInfo?.name;
 
+  /**
+   * Checking for user because user is undefined when landing on /s/, even though
+   * hasLogIn is true.
+   */
+  const showTeamTemplates = hasLogIn && user;
+
   const tab = useTabState({
     orientation: 'vertical',
     selectedId: initialTab || isSyncedSandboxesPage ? 'import' : 'quickstart',
@@ -113,7 +119,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               </div>
             ) : null}
 
-            {/* ❗️ TODO: Figure out when it isn't a modal */}
+            {/* isModal is undefined on /s/ page */}
             {isModal ? (
               <button
                 type="button"
@@ -126,8 +132,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
           <ModalBody>
             <ModalSidebar>
-              {/* ❗️ TODO: Instead of conditionally rendering we should show hide the tabs to makes sure state is persisted */}
-              {/* Template info and Repo info can ble conditionally rendered though */}
               {viewState === 'initial' ? (
                 <Stack direction="vertical">
                   <Tabs {...tab} aria-label="Create new">
@@ -139,7 +143,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       Import from GitHub
                     </Tab>
 
-                    {hasLogIn ? (
+                    {showTeamTemplates ? (
                       <Tab {...tab} stopId="team-templates">
                         {`${isUser ? 'My' : 'Team'} templates`}
                       </Tab>
@@ -198,11 +202,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <Explore collectionId={collectionId} />
                   </Panel>
 
-                  {hasLogIn ? (
+                  {showTeamTemplates ? (
                     <Panel tab={tab} id="team-templates">
                       <TeamTemplates
                         isUser={isUser}
-                        teamId={activeTeamInfo?.id}
+                        teamId={activeTeamInfo.id}
                       />
                     </Panel>
                   ) : null}
