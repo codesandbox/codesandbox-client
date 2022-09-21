@@ -45,6 +45,8 @@ import {
   SharedWithMeSandboxesQueryVariables,
   CuratedAlbumsQuery,
   CuratedAlbumsQueryVariables,
+  ContributionBranchesQuery,
+  ContributionBranchesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -448,4 +450,27 @@ export const curatedAlbums: Query<
     }
   }
   ${sandboxFragmentDashboard}
+`;
+
+export const getContributionBranches: Query<
+  ContributionBranchesQuery,
+  ContributionBranchesQueryVariables
+> = gql`
+  query ContributionBranches {
+    me {
+      recentBranches(contribution: true, limit: 1000) {
+        id
+        contribution
+        name
+        project {
+          repository {
+            ... on GitHubRepository {
+              name
+              owner
+            }
+          }
+        }
+      }
+    }
+  }
 `;

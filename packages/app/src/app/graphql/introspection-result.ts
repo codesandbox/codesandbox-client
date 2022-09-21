@@ -26,6 +26,15 @@ const result: IntrospectionResultData = {
       },
       {
         kind: 'UNION',
+        name: 'Repository',
+        possibleTypes: [
+          {
+            name: 'GitHubRepository',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
         name: 'ReferenceMetadata',
         possibleTypes: [
           {
@@ -39,6 +48,15 @@ const result: IntrospectionResultData = {
           },
           {
             name: 'UserReferenceMetadata',
+          },
+        ],
+      },
+      {
+        kind: 'UNION',
+        name: 'RepositoryEvent',
+        possibleTypes: [
+          {
+            name: 'InstallationEvent',
           },
         ],
       },

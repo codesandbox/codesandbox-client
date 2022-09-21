@@ -10,18 +10,25 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 export const MyContributionsPage = () => {
   const params = useParams<{ path: string }>();
   const param = params.path || '';
-  const home = !param || param === '/';
   const actions = useActions();
-  const { activeTeam } = useAppState();
+  const {
+    activeTeam,
+    dashboard: { contributions },
+  } = useAppState();
 
   React.useEffect(() => {
-    const p = home ? null : param;
-    actions.dashboard.getReposByPath(p);
-  }, [param, actions.dashboard, activeTeam, home]);
+    actions.dashboard.getContributionBranches();
+  }, [actions.dashboard]);
 
   const pageType: PageTypes = 'my-contributions';
 
-  const itemsToShow = (): DashboardGridItem[] => [];
+  const itemsToShow = (): DashboardGridItem[] => {
+    if (contributions === null) {
+      return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
+    }
+
+    return contributions;
+  };
 
   return (
     <SelectionProvider
