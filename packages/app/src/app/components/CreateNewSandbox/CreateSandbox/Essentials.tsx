@@ -1,6 +1,10 @@
-import track from '@codesandbox/common/lib/utils/analytics';
-import { TemplateFragment } from 'app/graphql/types';
 import React, { useEffect } from 'react';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { Element } from '@codesandbox/components';
+
+import { TemplateFragment } from 'app/graphql/types';
+import { TemplateCard } from './TemplateCard';
+import { TemplateGrid } from './elements';
 
 interface EssentialsProps {
   title: string;
@@ -19,22 +23,22 @@ export const Essentials = ({
 
   return (
     <div>
-      <h2>{title}</h2>
-      <div>
+      <Element as="h2" css={{ margin: 0 }}>
+        {title}
+      </Element>
+      <TemplateGrid>
         {templates.length > 0 ? (
           templates.map(template => (
-            <button
+            <TemplateCard
               key={template.id}
-              type="button"
-              onClick={() => selectTemplate(template)}
-            >
-              {template.sandbox.title}
-            </button>
+              template={template}
+              selectTemplate={selectTemplate}
+            />
           ))
         ) : (
           <div>No templates for this category.</div>
         )}
-      </div>
+      </TemplateGrid>
     </div>
   );
 };

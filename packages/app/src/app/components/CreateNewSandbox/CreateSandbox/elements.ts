@@ -8,9 +8,8 @@ export const Container = styled.div`
   max-width: 1200px;
   // height: 496px;
   overflow: hidden;
-  border: 1px solid #242424;
   border-radius: 4px;
-  background-color: #242424;
+  background-color: #151515;
   color: #fff;
 
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.24);
@@ -33,12 +32,6 @@ export const ModalLayout = styled.div`
   flex-wrap: wrap;
 `;
 
-export const ModalHeader = styled.div`
-  display: flex;
-  width: 100%;
-  padding: 24px;
-`;
-
 export const HeaderInformation = styled.div`
   flex-grow: 1;
 `;
@@ -51,25 +44,20 @@ export const ModalBody = styled.div`
 
 export const ModalSidebar = styled.div`
   width: 224px;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-bottom: 24px;
+  flex-shrink: 0;
+  padding: 0px 24px 24px;
 `;
 
 export const ModalContent = styled.div`
   flex-grow: 1;
-  padding-left: 24px;
-  padding-right: 24px;
+  padding: 0 24px;
 `;
 
 export const Tabs = styled(TabList)`
   display: flex;
   flex-direction: column;
-  background: #242424;
-  padding: 1rem 0;
-  width: 176px;
-  min-width: 176px;
 
+  // TODO: Mobile styles
   @media screen and (max-width: 800px) {
     display: none;
   }
@@ -98,45 +86,35 @@ export const DashboardButton = styled(Button).attrs({
 `;
 
 export const Tab = styled(BaseTab)`
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  margin-bottom: 0.5rem;
+  text-align: left;
+  padding: 8px 0;
+  margin-bottom: 4px;
+
   border: none;
   background: transparent;
-  color: white;
+  color: #999999;
   font-family: 'Inter', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 16px;
   cursor: pointer;
 
   &[aria-selected='true'],
   :hover {
-    background: #151515;
+    color: #e5e5e5;
   }
 
   &:focus {
     outline: none;
   }
-
-  svg {
-    margin-right: 0.5rem;
-  }
 `;
 
 export const TabContent = styled(TabPanel)`
-  display: grid;
-  grid-template-rows: min-content auto;
-  background: #151515;
   max-height: 496px;
   width: 100%;
-  border-left: 1px solid #040404;
   height: 100%;
-
   outline: none;
 
   @media screen and (max-width: 800px) {
-    grid-template-rows: 50px auto;
     max-height: 100%;
   }
 `;
@@ -196,10 +174,16 @@ export const MobileTabs = styled.div`
   }
 `;
 
-export const CloseModal = styled.button`
-  background: transparent;
+export const TemplateButton = styled.button`
+  background: #1d1d1d;
   border: none;
-  position: absolute;
-  right: 16px;
-  top: 13px;
+  text-align: left;
+  padding: 24px 24px 20px;
+  color: #e5e5e5;
+`;
+
+export const TemplateGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 `;

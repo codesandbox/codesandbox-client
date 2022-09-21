@@ -1,4 +1,10 @@
-import { Stack, SkeletonText, ThemeProvider } from '@codesandbox/components';
+import {
+  Stack,
+  Element,
+  IconButton,
+  SkeletonText,
+  ThemeProvider,
+} from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import React, { ReactNode, useState } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
@@ -14,7 +20,6 @@ import {
   TabContent,
   Tabs,
   ModalLayout,
-  ModalHeader,
   HeaderInformation,
   ModalContent,
   ModalSidebar,
@@ -93,7 +98,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     <ThemeProvider>
       <Container>
         <ModalLayout>
-          <ModalHeader>
+          <Stack
+            gap={4}
+            align="center"
+            css={{ width: '100%', padding: '24px' }}
+          >
             <HeaderInformation>
               {viewState === 'initial' ? (
                 <div>New</div>
@@ -121,14 +130,15 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
             {/* isModal is undefined on /s/ page */}
             {isModal ? (
-              <button
-                type="button"
+              // TODO: IconButton doesn't have aria label or visuallyhidden text (reads floating label too late)
+              <IconButton
+                name="cross"
+                size={16}
+                title="Close modal"
                 onClick={() => actions.modals.newSandboxModal.close()}
-              >
-                Close button
-              </button>
+              />
             ) : null}
-          </ModalHeader>
+          </Stack>
 
           <ModalBody>
             <ModalSidebar>
@@ -142,6 +152,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <Tab {...tab} stopId="import">
                       Import from GitHub
                     </Tab>
+
+                    <Element css={{ height: '24px' }} />
 
                     {showTeamTemplates ? (
                       <Tab {...tab} stopId="team-templates">

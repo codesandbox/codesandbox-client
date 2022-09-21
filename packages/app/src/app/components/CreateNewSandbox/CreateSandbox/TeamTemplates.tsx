@@ -7,6 +7,8 @@ import {
 } from 'app/graphql/types';
 import { LIST_PERSONAL_TEMPLATES } from '../queries';
 import { Loader } from './Loader';
+import { TemplateGrid } from './elements';
+import { TemplateCard } from './TemplateCard';
 
 function getUserTemplates(data: ListPersonalTemplatesQuery) {
   return data.me.templates;
@@ -61,20 +63,18 @@ export const TeamTemplates = ({
     : getTeamTemplates(data, teamId);
 
   return (
-    <div>
+    <TemplateGrid>
       {templates.length > 0 ? (
         templates.map(template => (
-          <button
+          <TemplateCard
             key={template.id}
-            type="button"
-            onClick={() => selectTemplate(template)}
-          >
-            {template.sandbox.title}
-          </button>
+            template={template}
+            selectTemplate={selectTemplate}
+          />
         ))
       ) : (
         <div>No templates yet!</div>
       )}
-    </div>
+    </TemplateGrid>
   );
 };
