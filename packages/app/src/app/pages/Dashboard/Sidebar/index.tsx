@@ -188,13 +188,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             name="My contributions"
             page="my-contributions"
             path={dashboardUrls.myContributions(activeTeam)}
-            icon="link" // Temp icon.
+            icon="contribution"
           />
           <RowItem
             name="All repositories"
             page="repositories"
             path={dashboardUrls.repositories(activeTeam)}
-            icon="projects" // Temp icon.
+            icon="tagSelfClosing"
           />
           <Element marginTop={4} />
           <Element paddingX={5} paddingY={1}>
@@ -237,7 +237,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             name="Synced Sandboxes"
             page="synced-sandboxes"
             path={dashboardUrls.syncedSandboxes(activeTeam)}
-            icon="fork" // Temp icon.
+            icon="sync"
           />
           <RowItem
             name="Archive"

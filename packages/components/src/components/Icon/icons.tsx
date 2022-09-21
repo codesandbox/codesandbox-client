@@ -990,3 +990,78 @@ export const projects = props => (
     />
   </Element>
 );
+
+export const contribution = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M8.525 11.5H11.5C12.4917 11.5 13.3229 11.1646 13.9937 10.4938C14.6646 9.82292 15 8.99167 15 8C15 7.00833 14.6646 6.17708 13.9937 5.50625C13.3229 4.83542 12.4917 4.5 11.5 4.5H8.525V5.55H11.5C12.2 5.55 12.7833 5.78333 13.25 6.25C13.7167 6.71667 13.95 7.3 13.95 8C13.95 8.7 13.7167 9.28333 13.25 9.75C12.7833 10.2167 12.2 10.45 11.5 10.45H8.525V11.5ZM10.7125 8.525V7.475H5.2875V8.525H10.7125ZM7.475 11.5V10.45H4.5C3.8 10.45 3.21667 10.2167 2.75 9.75C2.28333 9.28333 2.05 8.7 2.05 8C2.05 7.3 2.28333 6.71667 2.75 6.25C3.21667 5.78333 3.8 5.55 4.5 5.55H7.475V4.5H4.5C3.50833 4.5 2.67708 4.83542 2.00625 5.50625C1.33542 6.17708 1 7.00833 1 8C1 8.99167 1.33542 9.82292 2.00625 10.4938C2.67708 11.1646 3.50833 11.5 4.5 11.5H7.475Z"
+      fill="currentColor"
+    />
+  </Element>
+);
+
+export const tagSelfClosing = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M5.66675 12.6667L1.00008 8.00002L5.66675 3.33336"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10.3333 3.33331L14.9999 7.99998L10.3333 12.6666"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10.2751 2.71082L5.40015 13.8872"
+      stroke="currentColor"
+      strokeWidth="0.821449"
+      strokeLinecap="round"
+    />
+  </Element>
+);
+
+export const sync = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M14 2.33337H11.1666C10.8905 2.33337 10.6666 2.55723 10.6666 2.83337V5.66671"
+      stroke="currentColor"
+      strokeLinecap="round"
+    />
+    <path
+      d="M2.00004 13.6666L4.83337 13.6666C5.10952 13.6666 5.33337 13.4428 5.33337 13.1666L5.33337 10.3333"
+      stroke="currentColor"
+      strokeLinecap="round"
+    />
+    <path
+      d="M8 2C4.68629 2 2 4.68629 2 8C2 10.0946 3.07333 11.9385 4.7 13.0118"
+      stroke="currentColor"
+      strokeLinecap="round"
+    />
+    <path
+      d="M8 14C11.3137 14 14 11.3138 14 8.00005C14 5.82119 12.8386 3.91359 11.1011 2.86255"
+      stroke="currentColor"
+      strokeLinecap="round"
+    />
+  </Element>
+);
