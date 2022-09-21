@@ -1,4 +1,7 @@
-import { SidebarCollectionDashboardFragment as Collection } from 'app/graphql/types';
+import {
+  RecentlyAccessedBranchesQuery,
+  SidebarCollectionDashboardFragment as Collection,
+} from 'app/graphql/types';
 
 export type PageTypes =
   | 'search'
@@ -41,3 +44,5 @@ export enum sandboxesTypes {
   ALWAYS_ON = 'ALWAYS_ON',
   DISCOVER = 'DISCOVER',
 }
+
+export type RepositoryBranch = RecentlyAccessedBranchesQuery['me']['recentBranches'][number];

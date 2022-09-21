@@ -10,6 +10,7 @@ import {
 import {
   PageTypes as PT,
   DELETE_ME_COLLECTION,
+  RepositoryBranch,
 } from 'app/overmind/namespaces/dashboard/types';
 
 export type DashboardBaseFolder = {
@@ -140,6 +141,11 @@ export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
   >;
 };
 
+export type DashboardBranch = {
+  type: 'branch';
+  branch: RepositoryBranch;
+};
+
 export type PageTypes = PT;
 
 export type DashboardGridItem =
@@ -158,4 +164,5 @@ export type DashboardGridItem =
   | DashboardRepoSandbox
   | DashboardBlankRowFill
   | DashboardSkeleton
-  | DashboardCommunitySandbox;
+  | DashboardCommunitySandbox
+  | DashboardBranch;

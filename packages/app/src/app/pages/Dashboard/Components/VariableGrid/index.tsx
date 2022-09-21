@@ -28,6 +28,7 @@ import {
   DashboardNewRepo,
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
+  DashboardBranch,
   PageTypes,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
@@ -75,6 +76,7 @@ interface IComponentForTypes {
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
+  branch: React.FC<DecoratedItemProps<DashboardBranch>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -133,6 +135,7 @@ const ComponentForTypes: IComponentForTypes = {
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
+  branch: ({ item }) => <Text>{item.branch.name}</Text>,
 };
 
 const Item = React.memo(

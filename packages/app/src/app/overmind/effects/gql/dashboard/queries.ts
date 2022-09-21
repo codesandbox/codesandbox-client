@@ -45,6 +45,8 @@ import {
   SharedWithMeSandboxesQueryVariables,
   CuratedAlbumsQuery,
   CuratedAlbumsQueryVariables,
+  RecentlyAccessedBranchesQuery,
+  RecentlyAccessedBranchesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -320,6 +322,29 @@ export const recentlyAccessedSandboxes: Query<
     }
   }
   ${sandboxFragmentDashboard}
+`;
+
+export const recentlyAccessedBranches: Query<
+  RecentlyAccessedBranchesQuery,
+  RecentlyAccessedBranchesQueryVariables
+> = gql`
+  query RecentlyAccessedBranches($limit: Int!) {
+    me {
+      recentBranches(limit: $limit, contribution: false) {
+        id
+        name
+        lastAccessedAt
+        project {
+          repository {
+            ... on GitHubRepository {
+              name
+              owner
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 
 export const sharedWithmeSandboxes: Query<

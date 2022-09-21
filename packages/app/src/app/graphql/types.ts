@@ -76,6 +76,7 @@ export type BookmarkEntity = Team | User;
 export type Branch = {
   __typename?: 'Branch';
   connections: Array<Connection>;
+  contribution: Scalars['Boolean'];
   id: Scalars['String'];
   lastAccessedAt: Maybe<Scalars['String']>;
   lastCommit: Maybe<LastCommit>;
@@ -85,6 +86,8 @@ export type Branch = {
   project: Project;
   pullRequests: Array<PullRequest>;
   status: Maybe<Status>;
+  /** Whether or not this branch exists on GitHub. Deduced from local information, so not guaranteed 100% accurate. */
+  upstream: Scalars['Boolean'];
 };
 
 export type BranchConnections = {
@@ -168,12 +171,14 @@ export type Connection = {
   clientId: Scalars['String'];
   color: Scalars['String'];
   timestamp: Scalars['String'];
-  user: User;
+  user: Maybe<User>;
 };
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
+  /** @deprecated Deprecated for open beta */
   betaAccess: Scalars['Boolean'];
+  /** @deprecated Use teams and projects instead */
   betaSandboxes: Array<SandboxV2>;
   bookmarkedTemplates: Array<Template>;
   collaboratorSandboxes: Array<Sandbox>;
@@ -186,7 +191,7 @@ export type CurrentUser = {
   /** Get all of the current user's GitHub organizations */
   githubOrganizations: Maybe<Array<GithubOrganization>>;
   /** GitHub profile information for the current user */
-  githubProfile: GithubProfile;
+  githubProfile: Maybe<GithubProfile>;
   /**
    * Get GitHub repositories owned by the current user.
    *
@@ -203,6 +208,7 @@ export type CurrentUser = {
   personalWorkspaceId: Scalars['UUID4'];
   provider: ProviderName;
   recentBranches: Array<Branch>;
+  recentProjects: Array<Project>;
   recentlyAccessedSandboxes: Array<Sandbox>;
   recentlyUsedTemplates: Array<Template>;
   sandboxes: Array<Sandbox>;
@@ -234,6 +240,11 @@ export type CurrentUserNotificationsArgs = {
 };
 
 export type CurrentUserRecentBranchesArgs = {
+  contribution?: Maybe<Scalars['Boolean']>;
+  limit?: Maybe<Scalars['Int']>;
+};
+
+export type CurrentUserRecentProjectsArgs = {
   limit?: Maybe<Scalars['Int']>;
 };
 
@@ -254,7 +265,7 @@ export type CurrentUserSandboxesArgs = {
 };
 
 export type CurrentUserTeamArgs = {
-  id: Scalars['UUID4'];
+  id: Maybe<Scalars['UUID4']>;
 };
 
 export type CurrentUserTemplatesArgs = {
@@ -311,16 +322,6 @@ export type GitOriginalGitSandboxesArgs = {
   teamId: Maybe<Scalars['UUID4']>;
 };
 
-/** A git branch object specifically for v2 */
-export type GitBranch = {
-  __typename?: 'GitBranch';
-  branch: Maybe<Scalars['String']>;
-  gitRepoId: Maybe<Scalars['UUID4']>;
-  id: Maybe<Scalars['UUID4']>;
-  repoInfo: Maybe<GitRepo>;
-  sandboxId: Maybe<Scalars['ID']>;
-};
-
 /**
  * Organization as it appears on GitHub (intersection of Open API `simple-user` and
  * `organization-simple`)
@@ -337,7 +338,21 @@ export type GithubOrganization = {
   login: Scalars['String'];
 };
 
-/** User profile for an authenticated user */
+/** Current user's permission to the parent resource */
+export enum GithubPermission {
+  Admin = 'ADMIN',
+  None = 'NONE',
+  Read = 'READ',
+  Write = 'WRITE',
+}
+
+/**
+ * User profile for an authenticated user.
+ *
+ * This field can be used to determine if a user has explicitly connected their GH account, since it
+ * will be null unless we have a GitHub token. Just having created an account with GitHub is not
+ * enough to populate this field.
+ */
 export type GithubProfile = {
   __typename?: 'GithubProfile';
   /** URL for user profile image */
@@ -348,9 +363,11 @@ export type GithubProfile = {
   login: Scalars['String'];
   /** Real name */
   name: Maybe<Scalars['String']>;
+  /** List of OAuth scopes the user has granted */
+  scopes: Array<Scalars['String']>;
 };
 
-/** Details about a repository as it appears on GitHub (Open API `respository`) */
+/** Details about a repository as it appears on GitHub (Open API `repository`) */
 export type GithubRepo = {
   __typename?: 'GithubRepo';
   /** Current users's access to the GitHub repo */
@@ -372,18 +389,46 @@ export enum GithubRepoAuthorization {
   Write = 'WRITE',
 }
 
+/** Repository as it appears on GitHub */
+export type GitHubRepository = {
+  __typename?: 'GitHubRepository';
+  /** Whether the repository can be forked; may be disabled in the GitHub repository settings */
+  allowForking: Scalars['Boolean'];
+  /** Whether the repository is archived (and therefore read-only) */
+  archived: Scalars['Boolean'];
+  /** Original creation date of the repository */
+  createdAt: Scalars['DateTime'];
+  /** Default branch, for example `main` */
+  defaultBranch: Scalars['String'];
+  /** Optional description of the repository */
+  description: Maybe<Scalars['String']>;
+  /** Whether the repository is a fork of another repository */
+  fork: Scalars['Boolean'];
+  /** Integer ID assigned by GitHub */
+  id: Scalars['Int'];
+  /** Whether the repository is configured as a template repository */
+  isTemplate: Scalars['Boolean'];
+  /** Name of the repository, not including the owner */
+  name: Scalars['String'];
+  /** Login name of the owning user or organization */
+  owner: Scalars['String'];
+  /** Direct ascendant repository, if this repository is a fork */
+  parent: Maybe<GitHubRepository>;
+  /** Current user's permission to the repository; `none` if unavailable */
+  permission: GithubPermission;
+  /** Whether the repository is private to a user or organization */
+  private: Scalars['Boolean'];
+  /** Time of the most recent push to any branch on the repository */
+  pushedAt: Scalars['DateTime'];
+  /** Original ascendant repository, if this repository is a fork; may be the same as the parent */
+  source: Maybe<GitHubRepository>;
+  /** Time of the most recent change to the repository's metadata */
+  updatedAt: Scalars['DateTime'];
+};
+
 export enum GitProvider {
   Github = 'GITHUB',
 }
-
-/** A git repo specifically for v2 */
-export type GitRepo = {
-  __typename?: 'GitRepo';
-  branches: Array<GitBranch>;
-  id: Maybe<Scalars['UUID4']>;
-  owner: Maybe<Scalars['String']>;
-  repo: Maybe<Scalars['String']>;
-};
 
 /** A git object specifically for v2 that combines git_branch and git_repo */
 export type GitV2 = {
@@ -407,6 +452,17 @@ export type ImageReferenceMetadata = {
   uploadId: Scalars['UUID4'];
   url: Scalars['String'];
 };
+
+/** GitHub webhook event about the status of a GitHub App installation. */
+export type InstallationEvent = {
+  __typename?: 'InstallationEvent';
+  action: InstallationEventAction;
+  event: Scalars['String'];
+};
+
+export enum InstallationEventAction {
+  Created = 'CREATED',
+}
 
 /** An invitation to a sandbox */
 export type Invitation = {
@@ -491,15 +547,24 @@ export type PrivateRegistry = {
 
 export type Project = {
   __typename?: 'Project';
+  appInstalled: Scalars['Boolean'];
   availableEnvironments: Array<Environment>;
   branches: Array<Branch>;
+  connections: Array<Connection>;
   defaultBranch: Branch;
+  /** @deprecated Use repository->description instead */
   description: Maybe<Scalars['String']>;
   environment: Maybe<Environment>;
+  lastAccessedAt: Maybe<Scalars['String']>;
+  lastCommit: Maybe<LastCommit>;
+  /** @deprecated Use repository->owner instead */
   owner: Scalars['String'];
+  /** @deprecated Use repository->private instead */
   private: Scalars['Boolean'];
   pullRequests: Array<PullRequest>;
+  /** @deprecated Use repository->name instead */
   repo: Scalars['String'];
+  repository: Repository;
   teams: Array<Team>;
 };
 
@@ -536,8 +601,10 @@ export type PullRequest = {
   prCreatedAt: Maybe<Scalars['DateTime']>;
   prMergedAt: Maybe<Scalars['DateTime']>;
   prUpdatedAt: Scalars['DateTime'];
+  /** @deprecated This field is deprecated. We cannot guarantee subfields will resolve properly */
   sourceBranch: Branch;
   state: Scalars['String'];
+  /** @deprecated This field is deprecated. We cannot guarantee subfields will resolve properly */
   targetBranch: Branch;
   title: Scalars['String'];
 };
@@ -562,6 +629,12 @@ export enum RegistryType {
   Github = 'GITHUB',
   Npm = 'NPM',
 }
+
+/** Repository as seen on one of our git providers */
+export type Repository = GitHubRepository;
+
+/** GitHub webhook event about a repository. */
+export type RepositoryEvent = InstallationEvent;
 
 export type RootMutationType = {
   __typename?: 'RootMutationType';
@@ -623,6 +696,8 @@ export type RootMutationType = {
   enableFeatureFlag: FeatureFlag;
   /** Enable a feature flag for a team */
   enableFeatureFlagForTeam: TeamsFeatureFlag;
+  /** Enable beta-access for team and all members */
+  enableTeamBetaAccess: Team;
   /** Invite someone to a team */
   inviteToTeam: Team;
   /** Invite someone to a team via email */
@@ -859,6 +934,10 @@ export type RootMutationTypeEnableFeatureFlagForTeamArgs = {
   teamId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeEnableTeamBetaAccessArgs = {
+  teamId: Scalars['UUID4'];
+};
+
 export type RootMutationTypeInviteToTeamArgs = {
   authorization: Maybe<TeamMemberAuthorization>;
   teamId: Scalars['UUID4'];
@@ -1085,8 +1164,6 @@ export type RootQueryType = {
   featureFlags: Array<FeatureFlag>;
   /** Get git repo and related V1 sandboxes */
   git: Maybe<Git>;
-  /** Get v2 git repo and all its branches */
-  gitRepoWithBranches: Maybe<GitRepo>;
   /**
    * Get repositories owned by a GitHub organization.
    *
@@ -1122,10 +1199,6 @@ export type RootQueryTypeGitArgs = {
   username: Scalars['String'];
 };
 
-export type RootQueryTypeGitRepoWithBranchesArgs = {
-  repoName: Scalars['String'];
-};
-
 export type RootQueryTypeGithubOrganizationReposArgs = {
   organization: Scalars['String'];
   page: Maybe<Scalars['Int']>;
@@ -1159,6 +1232,13 @@ export type RootSubscriptionType = {
   commentAdded: Comment;
   commentChanged: Comment;
   commentRemoved: Comment;
+  /**
+   * Receive updates when the GitHub App sends events via webhook.
+   *
+   * Note that this subscription will only work for repositories with the GitHub App installed,
+   * except for the App installation event itself.
+   */
+  githubEvents: RepositoryEvent;
   invitationChanged: Invitation;
   invitationCreated: Invitation;
   invitationRemoved: Invitation;
@@ -1193,6 +1273,11 @@ export type RootSubscriptionTypeCommentChangedArgs = {
 
 export type RootSubscriptionTypeCommentRemovedArgs = {
   sandboxId: Scalars['ID'];
+};
+
+export type RootSubscriptionTypeGithubEventsArgs = {
+  owner: Scalars['String'];
+  repo: Scalars['String'];
 };
 
 export type RootSubscriptionTypeInvitationChangedArgs = {
@@ -1339,8 +1424,11 @@ export enum SubscriptionPaymentProvider {
 export enum SubscriptionStatus {
   Active = 'ACTIVE',
   Cancelled = 'CANCELLED',
+  IncompleteExpired = 'INCOMPLETE_EXPIRED',
   Paused = 'PAUSED',
+  Trialing = 'TRIALING',
   Unknown = 'UNKNOWN',
+  Unpaid = 'UNPAID',
 }
 
 export enum SubscriptionType {
@@ -1351,6 +1439,8 @@ export enum SubscriptionType {
 export type Team = {
   __typename?: 'Team';
   avatarUrl: Maybe<Scalars['String']>;
+  /** @deprecated Deprecated for open beta */
+  beta: Scalars['Boolean'];
   bookmarkedTemplates: Array<Template>;
   collections: Array<Collection>;
   creatorId: Maybe<Scalars['UUID4']>;
@@ -1376,6 +1466,10 @@ export type TeamDraftsArgs = {
   authorId: Maybe<Scalars['UUID4']>;
   limit: Maybe<Scalars['Int']>;
   orderBy: Maybe<OrderBy>;
+};
+
+export type TeamProjectsArgs = {
+  syncData?: Maybe<Scalars['Boolean']>;
 };
 
 export type TeamSandboxesArgs = {
@@ -2940,6 +3034,30 @@ export type RecentlyAccessedSandboxesQuery = {
     { __typename?: 'CurrentUser' } & {
       recentlyAccessedSandboxes: Array<
         { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
+      >;
+    }
+  >;
+};
+
+export type RecentlyAccessedBranchesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+}>;
+
+export type RecentlyAccessedBranchesQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      recentBranches: Array<
+        { __typename?: 'Branch' } & Pick<
+          Branch,
+          'id' | 'name' | 'lastAccessedAt'
+        > & {
+            project: { __typename?: 'Project' } & {
+              repository: { __typename?: 'GitHubRepository' } & Pick<
+                GitHubRepository,
+                'name' | 'owner'
+              >;
+            };
+          }
       >;
     }
   >;

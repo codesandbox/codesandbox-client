@@ -11,13 +11,14 @@ import { sortBy } from 'lodash-es';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import { derived } from 'overmind';
 
-import { DELETE_ME_COLLECTION, OrderBy } from './types';
+import { DELETE_ME_COLLECTION, OrderBy, RepositoryBranch } from './types';
 
 export type DashboardSandboxStructure = {
   DRAFTS: Sandbox[] | null;
   TEMPLATES: Template[] | null;
   DELETED: Sandbox[] | null;
-  RECENT: Sandbox[] | null;
+  RECENT_SANDBOXES: Sandbox[] | null;
+  RECENT_BRANCHES: RepositoryBranch[] | null;
   SEARCH: Sandbox[] | null;
   TEMPLATE_HOME: Template[] | null;
   SHARED: Sandbox[] | null;
@@ -70,7 +71,8 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   DELETED: null,
   SHARED: null,
   LIKED: null,
-  RECENT: null,
+  RECENT_BRANCHES: null,
+  RECENT_SANDBOXES: null,
   SEARCH: null,
   TEMPLATE_HOME: null,
   ALL: null,

@@ -565,6 +565,7 @@ export const getTemplateSandboxes = async ({ state, effects }: Context) => {
 export const getStartPageSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
+    // TODO: Cleanup
     const usedTemplates = await effects.gql.queries.listPersonalTemplates({
       teamId: state.activeTeam,
     });
@@ -578,16 +579,21 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
       5
     );
 
-    const result = await effects.gql.queries.recentlyAccessedSandboxes({
+    const sandboxesResult = await effects.gql.queries.recentlyAccessedSandboxes(
+      {
+        limit: 12,
+        teamId: state.activeTeam,
+      }
+    );
+
+    const branchesResult = await effects.gql.queries.recentlyAccessedBranches({
       limit: 12,
-      teamId: state.activeTeam,
     });
 
-    if (result?.me?.recentlyAccessedSandboxes == null) {
-      return;
-    }
-
-    dashboard.sandboxes.RECENT = result.me.recentlyAccessedSandboxes;
+    dashboard.sandboxes.RECENT_SANDBOXES =
+      sandboxesResult?.me?.recentlyAccessedSandboxes || [];
+    dashboard.sandboxes.RECENT_BRANCHES =
+      branchesResult?.me?.recentBranches || [];
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'

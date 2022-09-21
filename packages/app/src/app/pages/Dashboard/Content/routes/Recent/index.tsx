@@ -5,16 +5,12 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Helmet } from 'react-helmet';
-import {
-  DashboardGridItem,
-  DashboardTemplate,
-  PageTypes,
-} from 'app/pages/Dashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 
 export const Recent = () => {
   const {
     activeTeam,
-    dashboard: { viewMode, sandboxes },
+    dashboard: { sandboxes },
   } = useAppState();
   const {
     dashboard: { getPage },
@@ -25,55 +21,33 @@ export const Recent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTeam]);
 
-  const templates: DashboardGridItem[] = (sandboxes.TEMPLATE_HOME || []).map(
-    (template, i) => {
-      const { sandbox, ...templateValues } = template;
+  const dataIsLoading =
+    sandboxes.RECENT_BRANCHES === null || sandboxes.RECENT_SANDBOXES === null;
 
-      const dashboardTemplate: DashboardTemplate = {
-        type: 'template' as 'template',
-        sandbox,
-        template: templateValues,
-        autoFork: true,
-        noDrag: true,
-        optional: i >= 3,
-      };
-
-      return dashboardTemplate;
-    }
-  );
-
-  // Make sure that a new row starts for the next item
-  templates.push({ type: 'blank-row-fill' });
-
-  const items: DashboardGridItem[] = sandboxes.RECENT
+  const items: DashboardGridItem[] = dataIsLoading
     ? [
-        {
-          type: 'header',
-          title: 'Recently Used Templates',
-          ...(viewMode === 'list'
-            ? {
-                showMoreLink: '/s',
-                showMoreLabel: '+ New Sandbox',
-              }
-            : {}),
-        },
-        { type: 'new-sandbox' },
-        ...templates,
-        {
-          type: 'header',
-          title: 'Recently Viewed Sandboxes',
-        },
-        ...(sandboxes.RECENT || []).map(sandbox => ({
-          type: 'sandbox' as 'sandbox',
-          sandbox,
-        })),
+        { type: 'skeleton-row' },
+        { type: 'skeleton-row' },
+        { type: 'skeleton-row' },
       ]
     : [
-        { type: 'header', title: 'Recently Used Templates' },
-        { type: 'skeleton-row' },
-        { type: 'header', title: 'Recently Viewed Sandboxes' },
-        { type: 'skeleton-row' },
-      ];
+        ...(sandboxes.RECENT_SANDBOXES || []).map(sandbox => ({
+          type: 'sandbox' as const,
+          sandbox,
+        })),
+        ...(sandboxes.RECENT_BRANCHES || []).map(branch => ({
+          type: 'branch' as const,
+          branch,
+        })),
+      ].sort((a, b) => {
+        // TODO: Update when sandboxes get a lastAccessedAt field
+        const dateA =
+          a.type === 'branch' ? a.branch.lastAccessedAt : a.sandbox.updatedAt;
+        const dateB =
+          b.type === 'branch' ? b.branch.lastAccessedAt : b.sandbox.updatedAt;
+
+        return new Date(dateA) < new Date(dateB) ? 1 : -1;
+      });
 
   const pageType: PageTypes = 'recent';
   return (
@@ -81,7 +55,11 @@ export const Recent = () => {
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      <Header title="Recent" activeTeam={activeTeam} showViewOptions />
+      <Header
+        title="Pick up where you left off"
+        activeTeam={activeTeam}
+        showViewOptions
+      />
       <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
   );
