@@ -7,22 +7,17 @@ import {
   Text,
   ListAction,
   IconButton,
-  SkeletonText,
   Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { BranchDetails } from './types';
 
 export const BranchListItem = ({
   branchName,
-  branchLocation,
   BranchIcon,
+  repository,
   onClick,
-}: {
-  branchName: string;
-  branchLocation: string;
-  BranchIcon: JSX.Element;
-  onClick: (e: React.MouseEvent | React.KeyboardEvent) => void;
-}) => (
+}: BranchDetails) => (
   <ListAction
     align="center"
     onClick={onClick}
@@ -52,7 +47,6 @@ export const BranchListItem = ({
       >
         <Stack gap={4} align="center" marginLeft={2}>
           {BranchIcon}
-          {/* <Icon aria-hidden color="#EDFFA5" name="contribution" size={16} /> */}
           <Element css={{ overflow: 'hidden' }}>
             <Tooltip label={branchName}>
               <Text size={3} weight="medium" maxWidth="100%">
@@ -63,8 +57,8 @@ export const BranchListItem = ({
         </Stack>
       </Column>
       <Column span={[0, 3, 3]} as={Stack} align="center">
-        <Text size={3} variant={'muted'} maxWidth="100%">
-          {branchLocation}
+        <Text size={3} variant="muted" maxWidth="100%">
+          {repository.owner}/{repository.name}
         </Text>
       </Column>
     </Grid>
@@ -75,25 +69,4 @@ export const BranchListItem = ({
       onClick={() => ({})}
     />
   </ListAction>
-);
-
-export const SkeletonListItem = () => (
-  <Stack
-    paddingX={2}
-    align="center"
-    justify="space-between"
-    css={css({
-      height: 64,
-      paddingX: 2,
-      borderBottom: '1px solid',
-      borderBottomColor: 'grays.600',
-    })}
-  >
-    <Stack align="center" gap={4}>
-      <SkeletonText css={{ height: 32, width: 32 }} />
-      <SkeletonText css={{ width: 120 }} />
-    </Stack>
-    <SkeletonText css={{ width: 120 }} />
-    <SkeletonText css={{ width: 120 }} />
-  </Stack>
 );
