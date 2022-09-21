@@ -462,20 +462,11 @@ export const getContributionBranches: Query<
         id
         contribution
         name
-        owner {
-          name
-          username
-          personalWorkspaceId
-        }
         project {
           repository {
             ... on GitHubRepository {
               name
               owner
-              parent {
-                name
-                owner
-              }
             }
           }
         }

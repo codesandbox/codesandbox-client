@@ -3175,24 +3175,11 @@ export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
           Branch,
           'id' | 'contribution' | 'name'
         > & {
-            owner: Maybe<
-              { __typename?: 'User' } & Pick<
-                User,
-                'name' | 'username' | 'personalWorkspaceId'
-              >
-            >;
             project: { __typename?: 'Project' } & {
               repository: { __typename?: 'GitHubRepository' } & Pick<
                 GitHubRepository,
                 'name' | 'owner'
-              > & {
-                  parent: Maybe<
-                    { __typename?: 'GitHubRepository' } & Pick<
-                      GitHubRepository,
-                      'name' | 'owner'
-                    >
-                  >;
-                };
+              >;
             };
           }
       >;

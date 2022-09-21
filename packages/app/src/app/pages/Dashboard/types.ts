@@ -6,6 +6,7 @@ import {
   Album,
   User,
   Maybe,
+  ContributionBranchesQuery,
 } from 'app/graphql/types';
 import {
   PageTypes as PT,
@@ -134,7 +135,9 @@ export type DashboardCommunitySandbox = {
 
 export type DashboardContributionBranch = {
   type: 'contribution-branch';
-  branch: unknown;
+  branch: NonNullable<
+    ContributionBranchesQuery['me']
+  >['recentBranches'][number];
 };
 
 export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
