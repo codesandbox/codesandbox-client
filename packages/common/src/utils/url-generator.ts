@@ -124,7 +124,7 @@ export const v2BranchUrl = (branchDetails: {
     project: { repository },
   } = branchDetails;
   return `${v2EditorUrl()}github/${repository.owner}/${
-    repository.owner
+    repository.name
   }/${branchName}`;
 };
 
