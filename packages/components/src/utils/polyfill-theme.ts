@@ -190,9 +190,12 @@ const polyfillTheme = vsCodeTheme => {
       foreground: uiColors.foreground,
     },
     switch: {
-      backgroundOff: uiColors.input.background,
+      backgroundOff: designLanguage.colorsV2.black[100],
       backgroundOn: uiColors.button.background,
       toggle: designLanguage.colors.white,
+      toggleOn: uiColors?.switch?.toggleOn
+        ? uiColors.switch.toggleOn
+        : designLanguage.colors.white,
     },
     dialog: {
       background: uiColors.quickInput.background,
