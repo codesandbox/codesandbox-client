@@ -1,5 +1,11 @@
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
-import { Icon, ListAction, Stack, Text } from '@codesandbox/components';
+import {
+  Icon,
+  ListAction,
+  Stack,
+  Text,
+  Tooltip,
+} from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 import React from 'react';
 import { css } from '@styled-system/css';
@@ -75,19 +81,22 @@ export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
           direction="vertical"
           gap={10}
         >
-          <Text
-            css={css({
-              color: '#E5E5E5',
-              flex: 1,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            })}
-            weight="medium"
-            size={13}
-          >
-            {name}
-          </Text>
+          {/** TODO: refine Tooltip, delay or wrap around the whole element? */}
+          <Tooltip label={name}>
+            <Text
+              css={css({
+                color: '#E5E5E5',
+                flex: 1,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              })}
+              weight="medium"
+              size={13}
+            >
+              {name}
+            </Text>
+          </Tooltip>
           <Stack gap={2}>
             {/** TODO: replace with correct icon */}
             <Icon color="#EDFFA5" name="contribution" size={16} />
