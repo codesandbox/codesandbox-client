@@ -11,9 +11,8 @@ const BranchIcon = (
   <Icon aria-hidden color="#EDFFA5" name="contribution" size={16} />
 );
 
-export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
-  branch,
-}) => {
+export type BranchProps = DashboardContributionBranch;
+export const Branch: React.FC<BranchProps> = ({ branch }) => {
   const {
     dashboard: { viewMode },
   } = useAppState();
