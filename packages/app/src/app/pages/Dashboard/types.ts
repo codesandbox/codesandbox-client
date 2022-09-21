@@ -143,7 +143,9 @@ export type DashboardContributionBranch = {
 
 export type DashboardV2Repository = {
   type: 'v2-repo';
-  repo: NonNullable<V2RepositoriesQuery['me']['team']['projects'][number]>;
+  repo: NonNullable<
+    NonNullable<V2RepositoriesQuery['me']>['team']
+  >['projects'][number];
 };
 
 export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {

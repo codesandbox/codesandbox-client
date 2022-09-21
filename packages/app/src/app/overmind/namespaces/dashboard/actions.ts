@@ -1970,7 +1970,7 @@ export const getV2Repositories = async ({ state, effects }: Context) => {
       teamId: activeTeam,
     });
     const v2Repositories = repositoriesData?.me?.team?.projects;
-    if (!v2Repositories.length) {
+    if (!v2Repositories?.length) {
       return;
     }
 
