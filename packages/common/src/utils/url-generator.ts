@@ -100,6 +100,8 @@ const sandboxGitUrl = (git: {
 
 export const editorUrl = () => `/s/`;
 
+export const v2EditorUrl = () => `/p/`;
+
 export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
   if (sandboxDetails.git) {
     const { git } = sandboxDetails;
@@ -112,6 +114,20 @@ export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
 
   return `${editorUrl()}${sandboxDetails.id}`;
 };
+
+export const v2BranchUrl = (branchDetails: {
+  name: string;
+  project: { repository: { owner: string; name: string } };
+}) => {
+  const {
+    name: branchName,
+    project: { repository },
+  } = branchDetails;
+  return `${v2EditorUrl()}github/${repository.owner}/${
+    repository.owner
+  }/${branchName}`;
+};
+
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
     const { git } = sandbox;
