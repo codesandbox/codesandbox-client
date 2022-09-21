@@ -3163,6 +3163,43 @@ export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type ContributionBranchesQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      recentBranches: Array<
+        { __typename?: 'Branch' } & Pick<
+          Branch,
+          'id' | 'contribution' | 'name'
+        > & {
+            owner: Maybe<
+              { __typename?: 'User' } & Pick<
+                User,
+                'name' | 'username' | 'personalWorkspaceId'
+              >
+            >;
+            project: { __typename?: 'Project' } & {
+              repository: { __typename?: 'GitHubRepository' } & Pick<
+                GitHubRepository,
+                'name' | 'owner'
+              > & {
+                  parent: Maybe<
+                    { __typename?: 'GitHubRepository' } & Pick<
+                      GitHubRepository,
+                      'name' | 'owner'
+                    >
+                  >;
+                };
+            };
+          }
+      >;
+    }
+  >;
+};
+
 export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<
   Notification,
   'id' | 'type' | 'data' | 'insertedAt' | 'read'
@@ -3318,17 +3355,6 @@ export type TeamFragment = { __typename?: 'Team' } & Pick<
       { __typename?: 'User' } & Pick<
         User,
         'id' | 'name' | 'username' | 'avatarUrl'
-      >
-    >;
-  };
-
-export type GitHubRepositoryFragment = {
-  __typename?: 'GitHubRepository';
-} & Pick<GitHubRepository, 'owner' | 'name' | 'permission' | 'private'> & {
-    parent: Maybe<
-      { __typename?: 'GitHubRepository' } & Pick<
-        GitHubRepository,
-        'name' | 'owner'
       >
     >;
   };
@@ -3499,26 +3525,6 @@ export type DeletedSandboxesQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       sandboxes: Array<{ __typename?: 'Sandbox' } & SandboxFragment>;
-    }
-  >;
-};
-
-export type ContributionBranchesQueryVariables = Exact<{
-  [key: string]: never;
-}>;
-
-export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      recentBranches: Array<
-        { __typename?: 'Branch' } & Pick<Branch, 'name' | 'id'> & {
-            project: { __typename?: 'Project' } & {
-              repository: {
-                __typename?: 'GitHubRepository';
-              } & GitHubRepositoryFragment;
-            };
-          }
-      >;
     }
   >;
 };

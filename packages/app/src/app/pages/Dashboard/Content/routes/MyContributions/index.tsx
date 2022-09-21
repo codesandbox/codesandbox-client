@@ -27,7 +27,7 @@ export const MyContributionsPage = () => {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
 
-    return (contributions as unknown) as DashboardGridItem[];
+    return contributions;
   };
 
   return (

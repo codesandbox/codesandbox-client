@@ -80,20 +80,6 @@ const TEAM_FRAGMENT = gql`
   }
 `;
 
-const REPOSITORY_FRAGMENT = gql`
-  fragment GitHubRepository on GitHubRepository {
-    owner
-    name
-    permission
-    private
-
-    parent {
-      name
-      owner
-    }
-  }
-`;
-
 export const TEAMS_QUERY = gql`
   query TeamsSidebar {
     me {
@@ -270,23 +256,6 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
     }
   }
   ${SANDBOX_FRAGMENT}
-`;
-
-export const CONTRIBUTION_BRANCHES_QUERY = gql`
-  query ContributionBranches {
-    me {
-      recentBranches(contribution: true, limit: 1000) {
-        name
-        id
-        project {
-          repository {
-            ...GitHubRepository
-          }
-        }
-      }
-    }
-    ${REPOSITORY_FRAGMENT}
-  }
 `;
 
 export function addSandboxesToFolder(

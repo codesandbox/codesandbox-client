@@ -1959,7 +1959,10 @@ export const getContributionBranches = async ({ state, effects }: Context) =>
         return;
       }
 
-      dashboard.contributions = contributionBranches;
+      dashboard.contributions = contributionBranches.map(b => ({
+        type: 'contribution-branch',
+        branch: b,
+      }));
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your open source contributions'

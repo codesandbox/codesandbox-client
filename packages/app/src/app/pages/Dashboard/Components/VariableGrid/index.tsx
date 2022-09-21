@@ -29,8 +29,10 @@ import {
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
   PageTypes,
+  DashboardContributionBranch,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
+import { ContributionBranch } from '../ContributionBranch';
 
 export const GRID_MAX_WIDTH = 1900;
 export const MAX_COLUMN_COUNT = 6;
@@ -75,6 +77,9 @@ interface IComponentForTypes {
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
+  'contribution-branch': React.FC<
+    DecoratedItemProps<DashboardContributionBranch>
+  >;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -133,6 +138,9 @@ const ComponentForTypes: IComponentForTypes = {
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
+  'contribution-branch': ({ item }) => {
+    return <ContributionBranch {...item} />;
+  },
 };
 
 const Item = React.memo(
@@ -220,7 +228,6 @@ export const VariableGrid = ({
   viewMode: propViewMode,
 }: VariableGridProps) => {
   const { dashboard } = useAppState();
-
   const location = useLocation();
 
   let viewMode: 'grid' | 'list';

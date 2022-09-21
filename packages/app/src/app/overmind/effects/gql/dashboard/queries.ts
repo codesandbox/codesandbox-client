@@ -460,6 +460,7 @@ export const getContributionBranches: Query<
     me {
       recentBranches(contribution: true, limit: 1000) {
         id
+        contribution
         name
         owner {
           name
@@ -469,6 +470,8 @@ export const getContributionBranches: Query<
         project {
           repository {
             ... on GitHubRepository {
+              name
+              owner
               parent {
                 name
                 owner

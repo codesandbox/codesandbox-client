@@ -132,6 +132,11 @@ export type DashboardCommunitySandbox = {
   } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
 };
 
+export type DashboardContributionBranch = {
+  type: 'contribution-branch';
+  branch: unknown;
+};
+
 export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
   sandboxes: Array<
     SandboxFragmentDashboardFragment & {
@@ -158,4 +163,5 @@ export type DashboardGridItem =
   | DashboardRepoSandbox
   | DashboardBlankRowFill
   | DashboardSkeleton
-  | DashboardCommunitySandbox;
+  | DashboardCommunitySandbox
+  | DashboardContributionBranch;
