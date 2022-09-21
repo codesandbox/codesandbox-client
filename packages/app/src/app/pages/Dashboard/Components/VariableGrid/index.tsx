@@ -29,9 +29,11 @@ import {
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
   PageTypes,
+  DashboardV2Repository,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
 import { Branch, BranchProps } from '../Branch';
+import { V2Repository } from '../V2Repository';
 
 export const GRID_MAX_WIDTH = 1900;
 export const MAX_COLUMN_COUNT = 6;
@@ -77,6 +79,7 @@ interface IComponentForTypes {
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
   'contribution-branch': React.FC<DecoratedItemProps<BranchProps>>;
+  'v2-repo': React.FC<DecoratedItemProps<DashboardV2Repository>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -138,6 +141,7 @@ const ComponentForTypes: IComponentForTypes = {
   'contribution-branch': ({ item }) => {
     return <Branch {...item} />;
   },
+  'v2-repo': ({ item }) => <V2Repository {...item} />,
 };
 
 const Item = React.memo(
