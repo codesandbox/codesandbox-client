@@ -29,10 +29,6 @@ export const TeamTemplates = ({ isUser, teamId }) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const templates = isUser
-    ? getUserTemplates(data)
-    : getTeamTemplates(data, teamId);
-
   if (error) {
     return (
       <p>
@@ -43,10 +39,15 @@ export const TeamTemplates = ({ isUser, teamId }) => {
   }
 
   // Instead of checking the loading var we check this. Apollo sets the loading
-  // var to true even if we still have cached data that we can use.
+  // var to true even if we still have cached data that we can use. We  also need to
+  // check if `data.me` isnt undefined before getting templates.
   if (typeof data?.me === 'undefined') {
     return <Loader />;
   }
+
+  const templates = isUser
+    ? getUserTemplates(data)
+    : getTeamTemplates(data, teamId);
 
   return (
     <div>
