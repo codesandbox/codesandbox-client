@@ -43,6 +43,12 @@ export const HeaderInformation = styled.div`
   flex-grow: 1;
 `;
 
+export const ModalBody = styled.div`
+  display: flex;
+  flex-grow: 1;
+  flex-wrap: nowrap;
+`;
+
 export const ModalSidebar = styled.div`
   width: 224px;
   padding-left: 24px;

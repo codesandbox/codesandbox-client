@@ -16,6 +16,7 @@ import {
   HeaderInformation,
   ModalContent,
   ModalSidebar,
+  ModalBody,
 } from './elements';
 import { Explore } from './Explore';
 import { Import } from './Import';
@@ -117,110 +118,112 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             ) : null}
           </ModalHeader>
 
-          <ModalSidebar>
-            {viewState === 'initial' ? (
-              <Stack direction="vertical">
-                <Tabs {...tab} aria-label="Create new">
-                  <Tab {...tab} stopId="quickstart">
-                    Quickstart
-                  </Tab>
+          <ModalBody>
+            <ModalSidebar>
+              {viewState === 'initial' ? (
+                <Stack direction="vertical">
+                  <Tabs {...tab} aria-label="Create new">
+                    <Tab {...tab} stopId="quickstart">
+                      Quickstart
+                    </Tab>
 
-                  <Tab {...tab} stopId="import">
-                    Import from GitHub
-                  </Tab>
+                    <Tab {...tab} stopId="import">
+                      Import from GitHub
+                    </Tab>
+
+                    {hasLogIn ? (
+                      <Tab {...tab} stopId="team-templates">
+                        {`${isUser ? 'My' : 'Team'} templates`}
+                      </Tab>
+                    ) : null}
+
+                    <Tab {...tab} stopId="csb-templates">
+                      CodeSandbox templates
+                    </Tab>
+
+                    {essentialState.state === 'success'
+                      ? essentialState.essentials.map(essential => (
+                          <Tab
+                            key={essential.key}
+                            {...tab}
+                            stopId={slugify(essential.title)}
+                          >
+                            {essential.title}
+                          </Tab>
+                        ))
+                      : null}
+
+                    {essentialState.state === 'loading' ? (
+                      <div>
+                        <div>todo skeletons</div>
+                        <SkeletonText css={{ width: 100 }} />
+                      </div>
+                    ) : null}
+
+                    {essentialState.state === 'error' ? (
+                      <div>{essentialState.error}</div>
+                    ) : null}
+                  </Tabs>
+                </Stack>
+              ) : null}
+
+              {viewState === 'fromTemplate' ? <div>Template info</div> : null}
+              {viewState === 'fork' ? <div>Repo info</div> : null}
+            </ModalSidebar>
+
+            <ModalContent>
+              {viewState === 'initial' ? (
+                <>
+                  <Panel tab={tab} id="quickstart">
+                    <QuickStart collectionId={collectionId} />
+                  </Panel>
+
+                  <Panel tab={tab} id="import">
+                    <Import />
+                  </Panel>
+
+                  <Panel tab={tab} id="explore">
+                    <Explore collectionId={collectionId} />
+                  </Panel>
 
                   {hasLogIn ? (
-                    <Tab {...tab} stopId="team-templates">
-                      {`${isUser ? 'My' : 'Team'} templates`}
-                    </Tab>
+                    <Panel tab={tab} id="team-templates">
+                      <TeamTemplates
+                        isUser={isUser}
+                        teamId={activeTeamInfo?.id}
+                      />
+                    </Panel>
                   ) : null}
 
-                  <Tab {...tab} stopId="csb-templates">
-                    CodeSandbox templates
-                  </Tab>
+                  <Panel tab={tab} id="csb-templates">
+                    <CodeSandboxTemplates />
+                  </Panel>
 
                   {essentialState.state === 'success'
                     ? essentialState.essentials.map(essential => (
-                        <Tab
+                        <Panel
                           key={essential.key}
-                          {...tab}
-                          stopId={slugify(essential.title)}
+                          tab={tab}
+                          id={slugify(essential.title)}
                         >
                           {essential.title}
-                        </Tab>
+                          <Essentials
+                            title={essential.title}
+                            templates={essential.templates}
+                          />
+                        </Panel>
                       ))
                     : null}
+                </>
+              ) : null}
 
-                  {essentialState.state === 'loading' ? (
-                    <div>
-                      <div>todo skeletons</div>
-                      <SkeletonText css={{ width: 100 }} />
-                    </div>
-                  ) : null}
+              {viewState === 'fromTemplate' ? (
+                <div>Template form fields</div>
+              ) : null}
 
-                  {essentialState.state === 'error' ? (
-                    <div>{essentialState.error}</div>
-                  ) : null}
-                </Tabs>
-              </Stack>
-            ) : null}
-
-            {viewState === 'fromTemplate' ? <div>Template info</div> : null}
-            {viewState === 'fork' ? <div>Repo info</div> : null}
-          </ModalSidebar>
-
-          <ModalContent>
-            {viewState === 'initial' ? (
-              <>
-                <Panel tab={tab} id="quickstart">
-                  <QuickStart collectionId={collectionId} />
-                </Panel>
-
-                <Panel tab={tab} id="import">
-                  <Import />
-                </Panel>
-
-                <Panel tab={tab} id="explore">
-                  <Explore collectionId={collectionId} />
-                </Panel>
-
-                {hasLogIn ? (
-                  <Panel tab={tab} id="team-templates">
-                    <TeamTemplates
-                      isUser={isUser}
-                      teamId={activeTeamInfo?.id}
-                    />
-                  </Panel>
-                ) : null}
-
-                <Panel tab={tab} id="csb-templates">
-                  <CodeSandboxTemplates />
-                </Panel>
-
-                {essentialState.state === 'success'
-                  ? essentialState.essentials.map(essential => (
-                      <Panel
-                        key={essential.key}
-                        tab={tab}
-                        id={slugify(essential.title)}
-                      >
-                        {essential.title}
-                        <Essentials
-                          title={essential.title}
-                          templates={essential.templates}
-                        />
-                      </Panel>
-                    ))
-                  : null}
-              </>
-            ) : null}
-
-            {viewState === 'fromTemplate' ? (
-              <div>Template form fields</div>
-            ) : null}
-
-            {viewState === 'fork' ? <div>Repo fork form fields</div> : null}
-          </ModalContent>
+              {viewState === 'fork' ? <div>Repo fork form fields</div> : null}
+            </ModalContent>
+          </ModalBody>
         </ModalLayout>
       </Container>
     </ThemeProvider>

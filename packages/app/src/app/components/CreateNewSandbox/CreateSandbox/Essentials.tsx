@@ -12,13 +12,23 @@ export const Essentials = ({ title, templates }: EssentialsProps) => {
     track('Create Sandbox Tab Open', { tab: title });
   }, [title]);
 
+  const selectTemplate = (id: TemplateFragment['id']) => {
+    console.log('id', id);
+  };
+
   return (
     <div>
       <h2>{title}</h2>
       <div>
         {templates.length > 0 ? (
           templates.map(template => (
-            <div key={template.id}>{template.sandbox.title}</div>
+            <button
+              key={template.id}
+              type="button"
+              onClick={() => selectTemplate(template.id)}
+            >
+              {template.sandbox.title}
+            </button>
           ))
         ) : (
           <div>No templates for this category.</div>
