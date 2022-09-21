@@ -3,10 +3,10 @@ import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
 import { Button } from '@codesandbox/components';
 
 export const Container = styled.div`
-  display: flex;
+  // display: flex;
   min-width: 870px;
   max-width: 1200px;
-  height: 496px;
+  // height: 496px;
   overflow: hidden;
   border: 1px solid #242424;
   border-radius: 4px;
@@ -26,6 +26,34 @@ export const Container = styled.div`
       padding-bottom: 40px;
     }
   }
+`;
+
+export const ModalLayout = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+export const ModalHeader = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 24px;
+`;
+
+export const HeaderInformation = styled.div`
+  flex-grow: 1;
+`;
+
+export const ModalSidebar = styled.div`
+  width: 224px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 24px;
+`;
+
+export const ModalContent = styled.div`
+  flex-grow: 1;
+  padding-left: 24px;
+  padding-right: 24px;
 `;
 
 export const Tabs = styled(TabList)`
