@@ -18,18 +18,23 @@ export const TemplateCard = ({
     template.sandbox?.source?.template
   );
 
+  const sandboxTitle = template.sandbox?.title;
+  const teamName = template.sandbox?.collection?.team?.name;
+
   return (
     <TemplateButton type="button" onClick={() => selectTemplate(template)}>
       <Stack direction="vertical" gap={4}>
         <UserIcon />
         <Stack direction="vertical" gap={1}>
           <Element as="span" css={{ textOverflow: 'ellipsis ' }}>
-            {template.sandbox?.title}
+            {sandboxTitle}
           </Element>
-          <span>
-            <VisuallyHidden>by </VisuallyHidden>
-            {template.sandbox?.collection?.team?.name}
-          </span>
+          {teamName ? (
+            <span>
+              <VisuallyHidden>by </VisuallyHidden>
+              {teamName}
+            </span>
+          ) : null}
         </Stack>
       </Stack>
     </TemplateButton>
