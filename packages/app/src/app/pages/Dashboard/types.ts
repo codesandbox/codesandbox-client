@@ -7,6 +7,7 @@ import {
   User,
   Maybe,
   ContributionBranchesQuery,
+  V2RepositoriesQuery,
 } from 'app/graphql/types';
 import {
   PageTypes as PT,
@@ -140,6 +141,11 @@ export type DashboardContributionBranch = {
   >['recentBranches'][number];
 };
 
+export type DashboardV2Repository = {
+  type: 'v2-repo';
+  repo: NonNullable<V2RepositoriesQuery['me']['team']['projects'][number]>;
+};
+
 export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
   sandboxes: Array<
     SandboxFragmentDashboardFragment & {
@@ -167,4 +173,5 @@ export type DashboardGridItem =
   | DashboardBlankRowFill
   | DashboardSkeleton
   | DashboardCommunitySandbox
-  | DashboardContributionBranch;
+  | DashboardContributionBranch
+  | DashboardV2Repository;

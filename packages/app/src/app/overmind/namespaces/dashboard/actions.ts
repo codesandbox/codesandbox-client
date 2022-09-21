@@ -1960,3 +1960,27 @@ export const getContributionBranches = async ({ state, effects }: Context) =>
       );
     }
   };
+
+export const getV2Repositories = async ({ state, effects }: Context) => {
+  const { activeTeam, dashboard } = state;
+  try {
+    dashboard.v2Repositories = null;
+
+    const repositoriesData = await effects.gql.queries.getV2Repositories({
+      teamId: activeTeam,
+    });
+    const v2Repositories = repositoriesData?.me?.team?.projects;
+    if (!v2Repositories.length) {
+      return;
+    }
+
+    dashboard.v2Repositories = v2Repositories.map(r => ({
+      type: 'v2-repo',
+      repo: r,
+    }));
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your open repositories'
+    );
+  }
+};

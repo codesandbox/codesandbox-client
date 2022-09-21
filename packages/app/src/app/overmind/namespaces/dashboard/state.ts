@@ -8,6 +8,7 @@ import {
 import {
   DashboardAlbum,
   DashboardContributionBranch,
+  DashboardV2Repository,
 } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
@@ -65,8 +66,8 @@ export type State = {
     older: Sandbox[];
   };
   curatedAlbums: DashboardAlbum[];
-  // TODO: fix unknown
   contributions: DashboardContributionBranch[] | null;
+  v2Repositories: DashboardV2Repository[] | null;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -179,4 +180,5 @@ export const state: State = {
     }
   ),
   contributions: null,
+  v2Repositories: null,
 };
