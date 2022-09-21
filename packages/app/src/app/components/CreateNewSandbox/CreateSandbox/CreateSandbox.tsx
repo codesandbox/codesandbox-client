@@ -207,6 +207,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       <TeamTemplates
                         isUser={isUser}
                         teamId={activeTeamInfo.id}
+                        selectTemplate={selectTemplate}
                       />
                     </Panel>
                   ) : null}

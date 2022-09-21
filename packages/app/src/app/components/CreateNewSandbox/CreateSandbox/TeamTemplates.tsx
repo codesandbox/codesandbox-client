@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import {
   ListPersonalTemplatesQuery,
   ListPersonalTemplatesQueryVariables,
+  TemplateFragment,
 } from 'app/graphql/types';
 import { LIST_PERSONAL_TEMPLATES } from '../queries';
 import { Loader } from './Loader';
@@ -18,9 +19,14 @@ function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
 interface TeamTemplatesProps {
   isUser: boolean;
   teamId: string;
+  selectTemplate: (template: TemplateFragment) => void;
 }
 
-export const TeamTemplates = ({ isUser, teamId }: TeamTemplatesProps) => {
+export const TeamTemplates = ({
+  isUser,
+  teamId,
+  selectTemplate,
+}: TeamTemplatesProps) => {
   const { data, error } = useQuery<
     ListPersonalTemplatesQuery,
     ListPersonalTemplatesQueryVariables
@@ -58,7 +64,13 @@ export const TeamTemplates = ({ isUser, teamId }: TeamTemplatesProps) => {
     <div>
       {templates.length > 0 ? (
         templates.map(template => (
-          <div key={template.id}>{template.sandbox.title}</div>
+          <button
+            key={template.id}
+            type="button"
+            onClick={() => selectTemplate(template)}
+          >
+            {template.sandbox.title}
+          </button>
         ))
       ) : (
         <div>No templates yet!</div>
