@@ -35,6 +35,8 @@ export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
           cursor: 'pointer', // Revisit cursor.
           position: 'relative',
           overflow: 'hidden',
+          height: 240,
+          width: '100%',
           borderRadius: '4px',
           opacity: 0.8,
           transition: 'opacity ease-in-out',
@@ -75,6 +77,10 @@ export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
           <Text
             css={css({
               color: '#E5E5E5',
+              flex: 1,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             })}
             weight="medium"
             size={13}
@@ -83,7 +89,7 @@ export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
           </Text>
           <Stack gap={2}>
             {/** TODO: replace with correct icon */}
-            <Icon color="#EDFFA5" name="fork" size={12} />
+            <Icon color="#EDFFA5" name="contribution" size={16} />
             <Text
               css={css({
                 color: '#808080',
