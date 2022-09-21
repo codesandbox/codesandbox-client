@@ -236,6 +236,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               {viewState === 'fromTemplate' ? (
                 <div>
                   Template form fields for {selectedTemplate.sandbox.title}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setViewState('initial');
+                    }}
+                  >
+                    Cancel
+                  </button>
                 </div>
               ) : null}
 
