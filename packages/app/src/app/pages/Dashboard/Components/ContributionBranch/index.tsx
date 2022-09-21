@@ -18,11 +18,11 @@ export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
   const {
     dashboard: { viewMode },
   } = useAppState();
-  const { name, project } = branch;
-  const url = v2BranchUrl({ name, project });
   const history = useHistory();
-
+  const { name, project } = branch;
   const { repository } = project;
+
+  const url = v2BranchUrl({ name, project });
 
   const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     // TODO: add analytics
@@ -33,12 +33,14 @@ export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
     }
   };
 
+  const ariaLabel = `Open branch ${name} from ${repository.name} by ${repository.owner} in the editor`;
+
   if (viewMode === 'grid') {
     return (
       <Stack
-        aria-label={`Open branch ${name} from ${repository.name} by ${repository.owner} in the editor`}
+        aria-label={ariaLabel}
         css={css({
-          cursor: 'pointer', // Revisit cursor.
+          cursor: 'pointer', // TODO: revisit cursor.
           position: 'relative',
           overflow: 'hidden',
           height: 240,
@@ -98,7 +100,6 @@ export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
             </Text>
           </Tooltip>
           <Stack gap={2}>
-            {/** TODO: replace with correct icon */}
             <Icon color="#EDFFA5" name="contribution" size={16} />
             <Text
               css={css({
