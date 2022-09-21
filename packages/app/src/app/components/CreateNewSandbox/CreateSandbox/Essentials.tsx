@@ -5,16 +5,17 @@ import React, { useEffect } from 'react';
 interface EssentialsProps {
   title: string;
   templates: TemplateFragment[];
+  selectTemplate: (template: TemplateFragment) => void;
 }
 
-export const Essentials = ({ title, templates }: EssentialsProps) => {
+export const Essentials = ({
+  title,
+  templates,
+  selectTemplate,
+}: EssentialsProps) => {
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: title });
   }, [title]);
-
-  const selectTemplate = (id: TemplateFragment['id']) => {
-    console.log('id', id);
-  };
 
   return (
     <div>
@@ -25,7 +26,7 @@ export const Essentials = ({ title, templates }: EssentialsProps) => {
             <button
               key={template.id}
               type="button"
-              onClick={() => selectTemplate(template.id)}
+              onClick={() => selectTemplate(template)}
             >
               {template.sandbox.title}
             </button>

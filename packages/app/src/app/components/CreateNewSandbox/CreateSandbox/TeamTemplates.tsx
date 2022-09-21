@@ -51,7 +51,7 @@ export const TeamTemplates = ({ isUser, teamId }) => {
   return (
     <div>
       {templates.map(template => (
-        <div>{template.sandbox.title}</div>
+        <div key={template.id}>{template.sandbox.title}</div>
       ))}
     </div>
   );

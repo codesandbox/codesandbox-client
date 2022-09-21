@@ -4,6 +4,8 @@ import React, { ReactNode, useState } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import slugify from '@codesandbox/common/lib/utils/slugify';
+import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
+import { TemplateFragment } from 'app/graphql/types';
 
 import { QuickStart } from './QuickStart';
 import {
@@ -73,9 +75,13 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const [viewState, setViewState] = useState<
     'initial' | 'fromTemplate' | 'fork' /* | 'search' */
   >('initial');
+  // ❗️ We could combine viewState with selectedtemplate to limit the amout of states.
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
 
-  // ❗️ TODO: Determine which template is selected for template info view
-  // const [selectedTemplate, setSelectedTemplate] = useState();
+  const selectTemplate = (template: TemplateFragment) => {
+    setSelectedTemplate(template);
+    setViewState('fromTemplate');
+  };
 
   return (
     <ThemeProvider>
@@ -120,6 +126,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
           <ModalBody>
             <ModalSidebar>
+              {/* ❗️ TODO: Instead of conditionally rendering we should show hide the tabs to makes sure state is persisted */}
+              {/* Template info and Repo info can ble conditionally rendered though */}
               {viewState === 'initial' ? (
                 <Stack direction="vertical">
                   <Tabs {...tab} aria-label="Create new">
@@ -167,7 +175,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                 </Stack>
               ) : null}
 
-              {viewState === 'fromTemplate' ? <div>Template info</div> : null}
+              {viewState === 'fromTemplate' ? (
+                <div>
+                  <TemplateInfo template={selectedTemplate} />
+                </div>
+              ) : null}
               {viewState === 'fork' ? <div>Repo info</div> : null}
             </ModalSidebar>
 
@@ -206,10 +218,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           tab={tab}
                           id={slugify(essential.title)}
                         >
-                          {essential.title}
                           <Essentials
                             title={essential.title}
                             templates={essential.templates}
+                            selectTemplate={selectTemplate}
                           />
                         </Panel>
                       ))
@@ -218,7 +230,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               ) : null}
 
               {viewState === 'fromTemplate' ? (
-                <div>Template form fields</div>
+                <div>
+                  Template form fields for {selectedTemplate.sandbox.title}
+                </div>
               ) : null}
 
               {viewState === 'fork' ? <div>Repo fork form fields</div> : null}
@@ -227,5 +241,25 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
         </ModalLayout>
       </Container>
     </ThemeProvider>
+  );
+};
+
+interface TemplateInfoProps {
+  template: TemplateFragment;
+}
+
+const TemplateInfo = ({ template }: TemplateInfoProps) => {
+  const { UserIcon } = getTemplateIcon(
+    template.iconUrl,
+    template.sandbox?.source?.template
+  );
+
+  return (
+    <Stack direction="vertical">
+      <UserIcon />
+      <span>{template.sandbox.title}</span>
+      <span>{template.sandbox.collection?.team?.name}</span>
+      <p>{template.sandbox.description}</p>
+    </Stack>
   );
 };
