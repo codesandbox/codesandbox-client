@@ -4,7 +4,6 @@ import { Element } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
-import { Home } from './routes/Home';
 import { Templates } from './routes/Templates';
 import { Archive } from './routes/Archive';
 import { Drafts } from './routes/Drafts';
@@ -53,7 +52,7 @@ export const Content = withRouter(({ history }) => {
       })}
     >
       <Switch>
-        <Route path="/dashboard/home" component={Home} />
+        <Route path="/dashboard/recent" component={Recent} />
         <Route path="/dashboard/drafts" component={Drafts} />
         <Route path="/dashboard/sandboxes/:path*" component={Sandboxes} />
         <Route path="/dashboard/templates" component={Templates} />
@@ -70,7 +69,6 @@ export const Content = withRouter(({ history }) => {
           component={SyncedSandboxes}
         />
         <Route path="/dashboard/always-on" component={AlwaysOn} />
-        <Route path="/dashboard/recent" component={Recent} />
         <Route path="/dashboard/archive" component={Archive} />
         <Route path="/dashboard/shared" component={Shared} />
         <Route path="/dashboard/liked" component={Liked} />
@@ -82,11 +80,12 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/settings" component={Settings} />
         {/* old dashboard - redirects: */}
         <Redirect from="/dashboard/deleted" to="/dashboard/archive" />
+        <Redirect from="/dashboard/home" to="/dashboard/recent" />
         <Redirect
           from="/dashboard/all/:path*"
           to="/dashboard/sandboxes/:path*"
         />
-        <Redirect to={dashboardUrls.home(activeTeam)} />
+        <Redirect to={dashboardUrls.recent(activeTeam)} />
       </Switch>
     </Element>
   );

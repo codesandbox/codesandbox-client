@@ -40,7 +40,7 @@ export const alwaysOn = (teamId?: string | null) =>
 export const templates = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/templates`, teamId);
 
-export const recents = (teamId?: string | null) =>
+export const recent = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/recent`, teamId);
 
 export const archive = (teamId?: string | null) =>
@@ -51,9 +51,6 @@ export const shared = (teamId?: string | null) =>
 
 export const liked = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/liked`, teamId);
-
-export const home = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/home`, teamId);
 
 export const settings = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings`, teamId);

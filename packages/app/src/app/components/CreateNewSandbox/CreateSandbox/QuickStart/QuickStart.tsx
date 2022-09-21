@@ -4,26 +4,25 @@ import { useAppState, useActions } from 'app/overmind';
 import { LinkButton } from 'app/components/LinkButton';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from '../elements';
-import { CenteredMessage, SearchWrapper } from './elements';
+import { CenteredMessage } from './elements';
 
 import { PersonalTemplates } from './PersonalTemplates';
-import { SearchBox } from '../SearchBox';
 import { getTemplateInfosFromAPI } from '../utils/api';
 
-interface CreateProps {
+interface QuickStartProps {
   collectionId?: string;
 }
 
-export const Create: React.FC<CreateProps> = ({ collectionId }) => {
-  const state = useAppState();
+export const QuickStart: React.FC<QuickStartProps> = ({ collectionId }) => {
+  const { hasLogIn } = useAppState();
   const actions = useActions();
-  const [filter, setFilter] = React.useState('');
-  const [officialTemplateInfos, setOfficialTemplates] = React.useState([]);
+  const [officialTemplates, setOfficialTemplates] = React.useState([]);
 
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: 'create' });
   }, []);
 
+  // ❗️ HERE (these are here to stay, move them up probably)
   useEffect(() => {
     getTemplateInfosFromAPI('/api/v1/sandboxes/templates/official').then(x => {
       setOfficialTemplates(x);
@@ -32,18 +31,13 @@ export const Create: React.FC<CreateProps> = ({ collectionId }) => {
 
   return (
     <>
+      {/* ❗️ TODO: Move header to CreateSandbox component */}
       <Header>
-        <span>Create Sandbox</span>
-        <SearchWrapper>
-          <SearchBox
-            onChange={evt => setFilter(evt.target.value)}
-            value={filter}
-            placeholder="Filter Templates"
-          />
-        </SearchWrapper>
+        <span>Start from a template</span>
       </Header>
       <Scrollable>
-        {!state.hasLogIn && (
+        {/* ❗️ TODO: This message should be moved UP probably */}
+        {!hasLogIn && (
           <CenteredMessage>
             <div>
               <LinkButton onClick={() => actions.signInClicked()}>
@@ -54,10 +48,9 @@ export const Create: React.FC<CreateProps> = ({ collectionId }) => {
           </CenteredMessage>
         )}
 
+        {/* ❗️ TODO: Rename to official templates or move component content to this component */}
         <PersonalTemplates
-          filter={filter}
-          hasLogIn={state.hasLogIn}
-          officialTemplateInfos={officialTemplateInfos}
+          officialTemplates={officialTemplates}
           collectionId={collectionId}
         />
       </Scrollable>
