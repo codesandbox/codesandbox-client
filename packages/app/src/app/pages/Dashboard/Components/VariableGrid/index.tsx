@@ -35,8 +35,8 @@ import { Branch, BranchProps } from '../Branch';
 
 export const GRID_MAX_WIDTH = 1900;
 export const MAX_COLUMN_COUNT = 6;
-export const GUTTER = 36;
-const ITEM_MIN_WIDTH = 220;
+export const GUTTER = 16;
+const ITEM_MIN_WIDTH = 280;
 const ITEM_HEIGHT_GRID = 240;
 const ITEM_HEIGHT_LIST = 64;
 const HEADER_HEIGHT = 64;
@@ -162,7 +162,8 @@ const Item = React.memo(
 
     // we calculate width by making enough room for gutters between
     // each item + on the 2 ends
-    const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
+    // 10px space to the browser edge
+    const spaceReqiuredForGutters = GUTTER * (columnCount + 1) + 10;
     const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
     const numberOfItems = columnCount;
     const eachItemWidth = spaceLeftForItems / numberOfItems;
