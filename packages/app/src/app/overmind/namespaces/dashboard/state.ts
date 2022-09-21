@@ -6,8 +6,6 @@ import {
   TeamFragmentDashboardFragment,
 } from 'app/graphql/types';
 import { DashboardAlbum } from 'app/pages/Dashboard/types';
-import isSameDay from 'date-fns/isSameDay';
-import isSameMonth from 'date-fns/isSameMonth';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -22,7 +20,6 @@ export type DashboardSandboxStructure = {
   RECENT: Sandbox[] | null;
   SEARCH: Sandbox[] | null;
   TEMPLATE_HOME: Template[] | null;
-  RECENT_HOME: Sandbox[] | null;
   SHARED: Sandbox[] | null;
   LIKED: Sandbox[] | null;
   ALL: {
@@ -60,12 +57,6 @@ export type State = {
   getFilteredSandboxes: (
     sandboxes: Array<Sandbox | Repo | Template['sandbox']>
   ) => Sandbox[];
-  recentSandboxesByTime: {
-    day: Sandbox[];
-    week: Sandbox[];
-    month: Sandbox[];
-    older: Sandbox[];
-  };
   deletedSandboxesByTime: {
     week: Sandbox[];
     older: Sandbox[];
@@ -82,7 +73,6 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   RECENT: null,
   SEARCH: null,
   TEMPLATE_HOME: null,
-  RECENT_HOME: null,
   ALL: null,
   REPOS: null,
   ALWAYS_ON: null,
@@ -97,54 +87,6 @@ export const state: State = {
     npmRegistry: null,
   },
   curatedAlbums: [],
-  recentSandboxesByTime: derived(({ sandboxes }: State) => {
-    const recentSandboxes = sandboxes.RECENT;
-
-    const base: {
-      day: Sandbox[];
-      week: Sandbox[];
-      month: Sandbox[];
-      older: Sandbox[];
-    } = {
-      day: [],
-      week: [],
-      month: [],
-      older: [],
-    };
-    if (!recentSandboxes) {
-      return base;
-    }
-
-    const noTemplateSandboxes = recentSandboxes.filter(s => !s.customTemplate);
-    const timeSandboxes = noTemplateSandboxes.reduce(
-      (accumulator, currentValue) => {
-        if (!currentValue.updatedAt) return accumulator;
-        const date = zonedTimeToUtc(currentValue.updatedAt, 'Etc/UTC');
-        if (isSameDay(date, new Date())) {
-          accumulator.day.push(currentValue);
-
-          return accumulator;
-        }
-        if (isSameWeek(date, new Date())) {
-          accumulator.week.push(currentValue);
-
-          return accumulator;
-        }
-        if (isSameMonth(date, new Date())) {
-          accumulator.month.push(currentValue);
-
-          return accumulator;
-        }
-
-        accumulator.older.push(currentValue);
-
-        return accumulator;
-      },
-      base
-    );
-
-    return timeSandboxes;
-  }),
   deletedSandboxesByTime: derived(({ sandboxes }: State) => {
     const deletedSandboxes = sandboxes.DELETED;
     if (!deletedSandboxes)
