@@ -3187,6 +3187,30 @@ export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type V2RepositoriesQueryVariables = Exact<{
+  teamId: Scalars['UUID4'];
+}>;
+
+export type V2RepositoriesQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      team: Maybe<
+        { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
+            projects: Array<
+              { __typename?: 'Project' } & {
+                branches: Array<{ __typename?: 'Branch' } & Pick<Branch, 'id'>>;
+                repository: { __typename?: 'GitHubRepository' } & Pick<
+                  GitHubRepository,
+                  'owner' | 'name'
+                >;
+              }
+            >;
+          }
+      >;
+    }
+  >;
+};
+
 export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<
   Notification,
   'id' | 'type' | 'data' | 'insertedAt' | 'read'

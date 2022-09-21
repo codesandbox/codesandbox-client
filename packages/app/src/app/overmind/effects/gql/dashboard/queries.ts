@@ -47,6 +47,8 @@ import {
   CuratedAlbumsQueryVariables,
   ContributionBranchesQuery,
   ContributionBranchesQueryVariables,
+  V2RepositoriesQuery,
+  V2RepositoriesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -467,6 +469,31 @@ export const getContributionBranches: Query<
             ... on GitHubRepository {
               name
               owner
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const getV2Repositories: Query<
+  V2RepositoriesQuery,
+  V2RepositoriesQueryVariables
+> = gql`
+  query V2Repositories($teamId: UUID4!) {
+    me {
+      team(id: $teamId) {
+        id
+        name
+        projects {
+          branches {
+            id
+          }
+          repository {
+            ... on GitHubRepository {
+              owner
+              name
             }
           }
         }
