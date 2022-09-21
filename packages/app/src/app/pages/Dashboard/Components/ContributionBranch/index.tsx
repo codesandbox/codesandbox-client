@@ -1,16 +1,15 @@
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
-import {
-  Icon,
-  ListAction,
-  Stack,
-  Text,
-  Tooltip,
-} from '@codesandbox/components';
+import { Icon, Stack, Text, Tooltip } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 import React from 'react';
 import { css } from '@styled-system/css';
 import { useHistory } from 'react-router-dom';
 import { DashboardContributionBranch } from '../../types';
+import { BranchListItem } from './BranchListItem';
+
+const BranchIcon = (
+  <Icon aria-hidden color="#EDFFA5" name="contribution" size={16} />
+);
 
 export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
   branch,
@@ -115,5 +114,12 @@ export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
     );
   }
 
-  return <ListAction />;
+  return (
+    <BranchListItem
+      branchName={name}
+      branchLocation={`${repository.owner}/${repository.name}`}
+      BranchIcon={BranchIcon}
+      onClick={handleClick}
+    />
+  );
 };
