@@ -11,6 +11,7 @@ import {
   TeamMemberAuthorization,
   CreateOrUpdateNpmRegistryMutationVariables,
   DeleteNpmRegistryMutationVariables,
+  ContributionBranchesQuery,
 } from 'app/graphql/types';
 import { getDecoratedCollection } from './utils';
 import { OrderBy, sandboxesTypes } from './types';
@@ -1940,7 +1941,9 @@ export const getContributionBranches = async ({ state, effects }: Context) =>
   {
     const { dashboard } = state;
     try {
-      let contributionBranches: unknown[] = [];
+      let contributionBranches: NonNullable<
+        ContributionBranchesQuery['me']
+      >['recentBranches'][number][] = [];
       dashboard.contributions = null;
 
       const contributionsData = await effects.gql.queries.getContributionBranches(
