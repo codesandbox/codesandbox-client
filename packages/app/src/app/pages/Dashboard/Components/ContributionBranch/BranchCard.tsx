@@ -1,5 +1,11 @@
 import React from 'react';
-import { Icon, Stack, Text, Tooltip } from '@codesandbox/components';
+import {
+  Icon,
+  IconButton,
+  Stack,
+  Text,
+  Tooltip,
+} from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { BranchDetails } from './types';
 
@@ -57,21 +63,29 @@ export const BranchCard: React.FC<BranchDetails> = ({
         direction="vertical"
         gap={10}
       >
-        <Tooltip label={branchName}>
-          <Text
-            css={css({
-              color: '#E5E5E5',
-              flex: 1,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            })}
-            weight="medium"
-            size={13}
-          >
-            {branchName}
-          </Text>
-        </Tooltip>
+        <Stack align="center" justify="space-between">
+          <Tooltip label={branchName}>
+            <Text
+              css={css({
+                color: '#E5E5E5',
+                flex: 1,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              })}
+              weight="medium"
+              size={13}
+            >
+              {branchName}
+            </Text>
+          </Tooltip>
+          <IconButton
+            name="more"
+            size={9}
+            title="Branch actions"
+            onClick={() => ({})}
+          />
+        </Stack>
         <Stack gap={2}>
           <Icon color="#EDFFA5" name="contribution" size={16} />
           <Text
