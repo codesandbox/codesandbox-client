@@ -38,6 +38,7 @@ export const ContributionBranch: React.FC<DashboardContributionBranch> = ({
           height: 240,
           width: '100%',
           borderRadius: '4px',
+          background: '#191919',
           opacity: 0.8,
           transition: 'opacity ease-in-out',
           transitionDuration: theme => theme.speeds[4],
