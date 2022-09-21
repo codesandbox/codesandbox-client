@@ -1,9 +1,10 @@
-import { Stack, ThemeProvider } from '@codesandbox/components';
+import { Stack, SkeletonText, ThemeProvider } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
+import slugify from '@codesandbox/common/lib/utils/slugify';
 
-import { Create } from './Create';
+import { QuickStart } from './QuickStart';
 import {
   CloseModal,
   Container,
@@ -16,6 +17,10 @@ import {
 import { Explore } from './Explore';
 import { BackIcon } from './Icons';
 import { Import } from './Import';
+import { Essentials } from './Essentials';
+import { TeamTemplates } from './TeamTemplates';
+import { CodeSandboxTemplates } from './CodeSandboxTemplates';
+import { useEssentialTemplates } from './useEssentialTemplates';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -50,23 +55,20 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   initialTab,
   isModal,
 }) => {
-  const { hasLogIn } = useAppState();
+  const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
+  const essentialState = useEssentialTemplates();
+
+  const isSyncedSandboxesPage = location.pathname.includes('/synced-sandboxes');
+  const isDashboardPage = location.pathname.includes('/dashboard');
+  const isUser = user?.username === activeTeamInfo?.name;
 
   const tab = useTabState({
     orientation: 'vertical',
-    selectedId: initialTab || 'create',
+    selectedId: initialTab || isSyncedSandboxesPage ? 'import' : 'create',
   });
 
-  useEffect(() => {
-    /* ❗️ TODO: We can probably take this out of the useEffect and put it into the useTabState selectedId */
-    if (location.pathname.includes('/repositories')) {
-      tab.select('Import');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const dashboardButtonAttrs = location.pathname.includes('/dashboard')
+  const dashboardButtonAttrs = isDashboardPage
     ? {
         onClick: actions.modals.newSandboxModal.close,
       }
@@ -98,65 +100,46 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             <Tab {...tab} stopId="quickstart">
               Quickstart
             </Tab>
+
             <Tab {...tab} stopId="import">
               Import from GitHub
             </Tab>
-            <Tab {...tab} stopId="my-templates">
-              My templates
-            </Tab>
+
+            {hasLogIn ? (
+              <Tab {...tab} stopId="team-templates">
+                {`${isUser ? 'My' : 'Team'} templates`}
+              </Tab>
+            ) : null}
+
             <Tab {...tab} stopId="csb-templates">
               CodeSandbox templates
             </Tab>
-            <Tab {...tab} stopId="react-essentials">
-              React essentials
-            </Tab>
-            <Tab {...tab} stopId="vue-essentials">
-              Vue essentials
-            </Tab>
-            <Tab {...tab} stopId="angular-essentials">
-              Angular essentials
-            </Tab>
-            <Tab {...tab} stopId="ui-frameworks">
-              UI frameworks
-            </Tab>
-            <Tab {...tab} stopId="component-libraries">
-              Component libraries
-            </Tab>
-            <Tab {...tab} stopId="starters">
-              Web App and API Starters
-            </Tab>
-            <Tab {...tab} stopId="databases">
-              Databases
-            </Tab>
-            <Tab {...tab} stopId="my-templates">
-              My templates
-            </Tab>
-            <Tab {...tab} stopId="csb-templates">
-              CodeSandbox templates
-            </Tab>
-            <Tab {...tab} stopId="react-essentials">
-              React essentials
-            </Tab>
-            <Tab {...tab} stopId="vue-essentials">
-              Vue essentials
-            </Tab>
-            <Tab {...tab} stopId="angular-essentials">
-              Angular essentials
-            </Tab>
-            <Tab {...tab} stopId="ui-frameworks">
-              UI frameworks
-            </Tab>
-            <Tab {...tab} stopId="component-libraries">
-              Component libraries
-            </Tab>
-            <Tab {...tab} stopId="starters">
-              Web App and API Starters
-            </Tab>
-            <Tab {...tab} stopId="databases">
-              Databases
-            </Tab>
+
+            {essentialState.state === 'success'
+              ? essentialState.essentials.map(essential => (
+                  <Tab
+                    key={essential.key}
+                    {...tab}
+                    stopId={slugify(essential.title)}
+                  >
+                    {essential.title}
+                  </Tab>
+                ))
+              : null}
+
+            {essentialState.state === 'loading' ? (
+              <div>
+                <div>todo skeletons</div>
+                <SkeletonText css={{ width: 100 }} />
+              </div>
+            ) : null}
+
+            {essentialState.state === 'error' ? (
+              <div>{essentialState.error}</div>
+            ) : null}
           </Tabs>
         </Stack>
+
         <Panel tab={tab} id="quickstart">
           {/**
            * ❗️ TODO: Update MobileTabs (because they aren't anymore) and move close button
@@ -179,8 +162,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             ) : null}
           </MobileTabs>
 
-          <Create collectionId={collectionId} />
+          <QuickStart collectionId={collectionId} />
         </Panel>
+
         <Panel tab={tab} id="import">
           <MobileTabs>
             {/* ❗️ TODO: Figure out when it isn't a modal */}
@@ -198,38 +182,39 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               </CloseModal>
             ) : null}
           </MobileTabs>
+
           <Import />
         </Panel>
+
         <Panel tab={tab} id="explore">
           <Explore collectionId={collectionId} />
         </Panel>
-        <Panel tab={tab} id="my-templates">
-          My templates
-        </Panel>
+
+        {hasLogIn ? (
+          <Panel tab={tab} id="team-templates">
+            <TeamTemplates isUser={isUser} teamId={activeTeamInfo?.id} />
+          </Panel>
+        ) : null}
+
         <Panel tab={tab} id="csb-templates">
-          CodeSandbox templates
+          <CodeSandboxTemplates />
         </Panel>
-        <Panel tab={tab} id="react-essentials">
-          React essentials
-        </Panel>
-        <Panel tab={tab} id="vue-essentials">
-          Vue essentials
-        </Panel>
-        <Panel tab={tab} id="angular-essentials">
-          Angular essentials
-        </Panel>
-        <Panel tab={tab} id="ui-frameworks">
-          UI frameworks
-        </Panel>
-        <Panel tab={tab} id="component-libraries">
-          Component libraries
-        </Panel>
-        <Panel tab={tab} id="starters">
-          Web App and API Starters
-        </Panel>
-        <Panel tab={tab} id="databases">
-          Databases
-        </Panel>
+
+        {essentialState.state === 'success'
+          ? essentialState.essentials.map(essential => (
+              <Panel
+                key={essential.key}
+                tab={tab}
+                id={slugify(essential.title)}
+              >
+                {essential.title}
+                <Essentials
+                  title={essential.title}
+                  templates={essential.templates}
+                />
+              </Panel>
+            ))
+          : null}
       </Container>
     </ThemeProvider>
   );
