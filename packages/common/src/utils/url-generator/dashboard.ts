@@ -25,17 +25,14 @@ export const sandboxes = (path: string, teamId?: string | null) =>
 export const drafts = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/drafts`, teamId);
 
-export const openSourceRepos = (teamId?: string | null) =>
-  appendTeamIdQueryParam(
-    `${DASHBOARD_URL_PREFIX}/repositories/open-source`,
-    teamId
-  );
+export const myContributions = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/my-contributions`, teamId);
 
-export const v2Repos = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories/all`, teamId);
+export const repositories = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories`, teamId);
 
-export const legacyRepos = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories/legacy`, teamId);
+export const syncedSandboxes = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/synced-sandboxes`, teamId);
 
 export const alwaysOn = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/always-on`, teamId);

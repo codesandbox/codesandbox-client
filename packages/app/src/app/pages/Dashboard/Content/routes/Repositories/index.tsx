@@ -19,7 +19,7 @@ export const RepositoriesPage = () => {
     actions.dashboard.getReposByPath(p);
   }, [param, actions.dashboard, activeTeam, home]);
 
-  const pageType: PageTypes = 'v2-repos';
+  const pageType: PageTypes = 'repositories';
 
   const itemsToShow = (): DashboardGridItem[] => [];
 
@@ -34,7 +34,7 @@ export const RepositoriesPage = () => {
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        repos="v2"
+        repos="repositories"
         path={param}
         showViewOptions
         showFilters={Boolean(param)}

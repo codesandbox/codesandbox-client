@@ -13,7 +13,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
-export const LegacyRepositoriesPage = () => {
+export const SyncedSandboxesPage = () => {
   const params = useParams<{ path: string }>();
   const items = useFilteredItems(params);
   const param = params.path || '';
@@ -68,7 +68,7 @@ export const LegacyRepositoriesPage = () => {
       ? getPossibleTemplates(possibleTemplates)
       : [];
 
-  const pageType: PageTypes = 'legacy-repos';
+  const pageType: PageTypes = 'synced-sandboxes';
 
   return (
     <SelectionProvider
@@ -80,8 +80,8 @@ export const LegacyRepositoriesPage = () => {
         <title>{param || 'Dashboard'} - CodeSandbox</title>
       </Helmet>
       <Header
+        title="Synced sandboxes"
         activeTeam={activeTeam}
-        repos="legacy"
         path={param}
         templates={templates}
         showViewOptions
@@ -93,4 +93,4 @@ export const LegacyRepositoriesPage = () => {
   );
 };
 
-export const LegacyRepositories = React.memo(LegacyRepositoriesPage);
+export const SyncedSandboxes = React.memo(SyncedSandboxesPage);

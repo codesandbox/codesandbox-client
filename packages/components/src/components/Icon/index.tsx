@@ -27,6 +27,7 @@ export const Icon: React.FC<IconProps> = ({
       width={size}
       height={size}
       css={{ flexShrink: 0, ...css }}
+      aria-hidden
       {...props}
     />
   );
