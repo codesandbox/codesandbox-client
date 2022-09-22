@@ -213,3 +213,20 @@ export const npmRegistryFragment = gql`
     teamId
   }
 `;
+
+export const branchFragment = gql`
+  fragment branch on Branch {
+    id
+    name
+    contribution
+    lastAccessedAt
+    project {
+      repository {
+        ... on GitHubRepository {
+          name
+          owner
+        }
+      }
+    }
+  }
+`;

@@ -4,10 +4,10 @@ import {
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
+  BranchFragment as Branch,
 } from 'app/graphql/types';
 import {
   DashboardAlbum,
-  DashboardContributionBranch,
   DashboardV2Repository,
 } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
@@ -21,7 +21,8 @@ export type DashboardSandboxStructure = {
   DRAFTS: Sandbox[] | null;
   TEMPLATES: Template[] | null;
   DELETED: Sandbox[] | null;
-  RECENT: Sandbox[] | null;
+  RECENT_SANDBOXES: Sandbox[] | null;
+  RECENT_BRANCHES: Branch[] | null;
   SEARCH: Sandbox[] | null;
   TEMPLATE_HOME: Template[] | null;
   SHARED: Sandbox[] | null;
@@ -66,7 +67,7 @@ export type State = {
     older: Sandbox[];
   };
   curatedAlbums: DashboardAlbum[];
-  contributions: DashboardContributionBranch[] | null;
+  contributions: Branch[] | null;
   v2Repositories: DashboardV2Repository[] | null;
 };
 
@@ -76,7 +77,8 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   DELETED: null,
   SHARED: null,
   LIKED: null,
-  RECENT: null,
+  RECENT_BRANCHES: null,
+  RECENT_SANDBOXES: null,
   SEARCH: null,
   TEMPLATE_HOME: null,
   ALL: null,

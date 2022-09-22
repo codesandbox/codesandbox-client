@@ -1,8 +1,6 @@
-import { GitHubRepository } from 'app/graphql/types';
+import { BranchFragment as Branch } from 'app/graphql/types';
 
-export type BranchDetails = {
-  branchName: string;
-  repository: Pick<GitHubRepository, 'owner' | 'name'>;
-  BranchIcon: JSX.Element;
+export type BranchProps = {
+  branch: Branch;
   onClick: (e: React.MouseEvent | React.KeyboardEvent) => void;
 };

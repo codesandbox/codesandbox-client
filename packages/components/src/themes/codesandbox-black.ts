@@ -14,7 +14,7 @@ import {
 const colors = {
   contrastBorder: null,
   contrastActiveBorder: null,
-  errorForeground: tokens.reds[500],
+  errorForeground: tokensV2.red[800],
   focusBorder: tokensV2.purple[600],
   foreground: tokensV2.gray[100],
   activityBar: {
@@ -28,6 +28,9 @@ const colors = {
     background: tokensV2.yellowish[500],
     foreground: tokensV2.black[800],
     border: tokens.blues[600],
+  },
+  switch: {
+    toggleOn: tokensV2.black[600],
   },
   card: {
     background: tokensV2.black[600],
