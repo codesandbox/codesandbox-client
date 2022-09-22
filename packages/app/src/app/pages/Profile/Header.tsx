@@ -90,7 +90,8 @@ export const Header: React.FC = () => {
             openCreateSandboxModal({});
           }}
         >
-          Create Sandbox
+          <Icon name="plus" size={20} title="Create New" css={css({ paddingRight: 2})}/>
+             New
         </Button>
 
         {user && <Notifications />}

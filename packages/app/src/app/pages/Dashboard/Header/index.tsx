@@ -60,9 +60,10 @@ export const Header: React.FC<HeaderProps> = React.memo(
         >
           <LogoIcon
             style={{
-              marginLeft: -6, // Logo positioning tweak
+              marginLeft: -6,
+              marginTop: 2, // Logo positioning tweak
             }}
-            height={24}
+            height={18}
           />
         </Link>
         <IconButton
@@ -84,7 +85,8 @@ export const Header: React.FC<HeaderProps> = React.memo(
               openCreateSandboxModal({});
             }}
           >
-            Create Sandbox
+             <Icon name="plus" size={20} title="Create new" css={css({ paddingRight: 2})}/>
+             New
           </Button>
 
           {user && <Notifications />}
