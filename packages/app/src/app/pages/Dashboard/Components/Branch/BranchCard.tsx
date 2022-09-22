@@ -53,7 +53,7 @@ export const BranchCard: React.FC<BranchDetails> = ({
         align="center"
         justify="center"
       >
-        <Icon aria-hidden color="#808080" name="fork" size={40} />
+        <Icon aria-hidden color="#808080" name="branch" size={40} />
       </Stack>
       <Stack
         css={css({
