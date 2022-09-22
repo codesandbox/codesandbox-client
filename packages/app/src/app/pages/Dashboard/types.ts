@@ -2,6 +2,7 @@ import {
   SandboxFragmentDashboardFragment,
   TemplateFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
+  BranchFragmentFragment,
   Sandbox,
   Album,
   User,
@@ -10,7 +11,6 @@ import {
 import {
   PageTypes as PT,
   DELETE_ME_COLLECTION,
-  RepositoryBranch,
 } from 'app/overmind/namespaces/dashboard/types';
 
 export type DashboardBaseFolder = {
@@ -143,7 +143,7 @@ export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
 
 export type DashboardBranch = {
   type: 'branch';
-  branch: RepositoryBranch;
+  branch: BranchFragmentFragment;
 };
 
 export type PageTypes = PT;

@@ -47,6 +47,8 @@ import {
   CuratedAlbumsQueryVariables,
   RecentlyAccessedBranchesQuery,
   RecentlyAccessedBranchesQueryVariables,
+  ContributionBranchesQuery,
+  ContributionBranchesQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -58,6 +60,7 @@ import {
   currentTeamInfoFragment,
   npmRegistryFragment,
   teamFragmentDashboard,
+  branchFragment,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -331,20 +334,11 @@ export const recentlyAccessedBranches: Query<
   query RecentlyAccessedBranches($limit: Int!) {
     me {
       recentBranches(limit: $limit, contribution: false) {
-        id
-        name
-        lastAccessedAt
-        project {
-          repository {
-            ... on GitHubRepository {
-              name
-              owner
-            }
-          }
-        }
+        ...branchFragment
       }
     }
   }
+  ${branchFragment}
 `;
 
 export const sharedWithmeSandboxes: Query<
@@ -476,24 +470,15 @@ export const curatedAlbums: Query<
 `;
 
 export const getContributionBranches: Query<
-  RecentlyAccessedBranchesQuery,
-  RecentlyAccessedBranchesQueryVariables
+  ContributionBranchesQuery,
+  ContributionBranchesQueryVariables
 > = gql`
   query ContributionBranches {
     me {
       recentBranches(contribution: true, limit: 1000) {
-        id
-        contribution
-        name
-        project {
-          repository {
-            ... on GitHubRepository {
-              name
-              owner
-            }
-          }
-        }
+        ...branchFragment
       }
     }
   }
+  ${branchFragment}
 `;

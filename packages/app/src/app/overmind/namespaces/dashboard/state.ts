@@ -4,6 +4,7 @@ import {
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
+  BranchFragmentFragment as Branch,
 } from 'app/graphql/types';
 import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
@@ -11,14 +12,14 @@ import { sortBy } from 'lodash-es';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import { derived } from 'overmind';
 
-import { DELETE_ME_COLLECTION, OrderBy, RepositoryBranch } from './types';
+import { DELETE_ME_COLLECTION, OrderBy } from './types';
 
 export type DashboardSandboxStructure = {
   DRAFTS: Sandbox[] | null;
   TEMPLATES: Template[] | null;
   DELETED: Sandbox[] | null;
   RECENT_SANDBOXES: Sandbox[] | null;
-  RECENT_BRANCHES: RepositoryBranch[] | null;
+  RECENT_BRANCHES: Branch[] | null;
   SEARCH: Sandbox[] | null;
   TEMPLATE_HOME: Template[] | null;
   SHARED: Sandbox[] | null;
@@ -63,8 +64,7 @@ export type State = {
     older: Sandbox[];
   };
   curatedAlbums: DashboardAlbum[];
-  // TODO: fix unknown
-  contributions: RepositoryBranch[] | null;
+  contributions: Branch[] | null;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
