@@ -78,7 +78,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
    */
   const showTeamTemplates = hasLogIn && user;
 
-  const tab = useTabState({
+  const tabState = useTabState({
     orientation: 'vertical',
     selectedId: initialTab || isSyncedSandboxesPage ? 'import' : 'quickstart',
   });
@@ -144,24 +144,24 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             <ModalSidebar>
               {viewState === 'initial' ? (
                 <Stack direction="vertical">
-                  <Tabs {...tab} aria-label="Create new">
-                    <Tab {...tab} stopId="quickstart">
+                  <Tabs {...tabState} aria-label="Create new">
+                    <Tab {...tabState} stopId="quickstart">
                       Quickstart
                     </Tab>
 
-                    <Tab {...tab} stopId="import">
+                    <Tab {...tabState} stopId="import">
                       Import from GitHub
                     </Tab>
 
                     <Element css={{ height: '24px' }} />
 
                     {showTeamTemplates ? (
-                      <Tab {...tab} stopId="team-templates">
+                      <Tab {...tabState} stopId="team-templates">
                         {`${isUser ? 'My' : 'Team'} templates`}
                       </Tab>
                     ) : null}
 
-                    <Tab {...tab} stopId="csb-templates">
+                    <Tab {...tabState} stopId="csb-templates">
                       CodeSandbox templates
                     </Tab>
 
@@ -169,7 +169,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       ? essentialState.essentials.map(essential => (
                           <Tab
                             key={essential.key}
-                            {...tab}
+                            {...tabState}
                             stopId={slugify(essential.title)}
                           >
                             {essential.title}
@@ -202,20 +202,20 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             <ModalContent>
               {viewState === 'initial' ? (
                 <>
-                  <Panel tab={tab} id="quickstart">
+                  <Panel tab={tabState} id="quickstart">
                     <QuickStart collectionId={collectionId} />
                   </Panel>
 
-                  <Panel tab={tab} id="import">
+                  <Panel tab={tabState} id="import">
                     <Import />
                   </Panel>
 
-                  <Panel tab={tab} id="explore">
+                  <Panel tab={tabState} id="explore">
                     <Explore collectionId={collectionId} />
                   </Panel>
 
                   {showTeamTemplates ? (
-                    <Panel tab={tab} id="team-templates">
+                    <Panel tab={tabState} id="team-templates">
                       <TeamTemplates
                         isUser={isUser}
                         teamId={activeTeamInfo.id}
@@ -224,7 +224,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     </Panel>
                   ) : null}
 
-                  <Panel tab={tab} id="csb-templates">
+                  <Panel tab={tabState} id="csb-templates">
                     <CodeSandboxTemplates />
                   </Panel>
 
@@ -232,7 +232,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     ? essentialState.essentials.map(essential => (
                         <Panel
                           key={essential.key}
-                          tab={tab}
+                          tab={tabState}
                           id={slugify(essential.title)}
                         >
                           <Essentials
