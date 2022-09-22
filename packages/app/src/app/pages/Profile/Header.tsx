@@ -32,18 +32,17 @@ export const Header: React.FC = () => {
         boxSizing: 'border-box',
         fontFamily: 'Inter, sans-serif',
         minHeight: 12,
-        backgroundColor: 'titleBar.activeBackground',
-        color: 'titleBar.activeForeground',
-        borderBottom: '1px solid',
-        borderColor: 'titleBar.border',
+        backgroundColor: 'sideBar.background',
+        color: 'sideBar.foreground',
       })}
     >
       <Link href="/?from-app=1">
         <LogoIcon
           style={{
-            marginLeft: -6, // Logo positioning tweak
+            marginLeft: -6, 
+            marginTop: 2// Logo positioning tweak
           }}
-          height={24}
+          height={18}
         />
       </Link>
 
@@ -59,10 +58,10 @@ export const Header: React.FC = () => {
         />
         <Input
           type="text"
-          placeholder="Search sandboxes"
+          placeholder="Search"
           css={css({
             paddingLeft: 7,
-            width: [0, 360, 480],
+            width: [0, 280, 280],
           })}
           value={searchQuery}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
