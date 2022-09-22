@@ -27,7 +27,10 @@ export const MyContributionsPage = () => {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
 
-    return contributions;
+    return contributions.map(branch => ({
+      type: 'branch',
+      branch,
+    }));
   };
 
   return (

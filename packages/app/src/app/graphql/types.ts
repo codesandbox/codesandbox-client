@@ -2284,6 +2284,18 @@ export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
   | 'teamId'
 >;
 
+export type BranchFragment = { __typename?: 'Branch' } & Pick<
+  Branch,
+  'id' | 'name' | 'contribution' | 'lastAccessedAt'
+> & {
+    project: { __typename?: 'Project' } & {
+      repository: { __typename?: 'GitHubRepository' } & Pick<
+        GitHubRepository,
+        'name' | 'owner'
+      >;
+    };
+  };
+
 export type _CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
   pilot: Maybe<Scalars['Boolean']>;
@@ -3039,6 +3051,18 @@ export type RecentlyAccessedSandboxesQuery = {
   >;
 };
 
+export type RecentlyAccessedBranchesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+}>;
+
+export type RecentlyAccessedBranchesQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      recentBranches: Array<{ __typename?: 'Branch' } & BranchFragment>;
+    }
+  >;
+};
+
 export type SharedWithMeSandboxesQueryVariables = Exact<{
   [key: string]: never;
 }>;
@@ -3170,19 +3194,7 @@ export type ContributionBranchesQueryVariables = Exact<{
 export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
-      recentBranches: Array<
-        { __typename?: 'Branch' } & Pick<
-          Branch,
-          'id' | 'contribution' | 'name'
-        > & {
-            project: { __typename?: 'Project' } & {
-              repository: { __typename?: 'GitHubRepository' } & Pick<
-                GitHubRepository,
-                'name' | 'owner'
-              >;
-            };
-          }
-      >;
+      recentBranches: Array<{ __typename?: 'Branch' } & BranchFragment>;
     }
   >;
 };

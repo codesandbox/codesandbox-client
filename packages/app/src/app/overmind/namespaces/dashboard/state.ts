@@ -4,11 +4,9 @@ import {
   TemplateFragmentDashboardFragment as Template,
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
+  BranchFragment as Branch,
 } from 'app/graphql/types';
-import {
-  DashboardAlbum,
-  DashboardContributionBranch,
-} from 'app/pages/Dashboard/types';
+import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -20,7 +18,8 @@ export type DashboardSandboxStructure = {
   DRAFTS: Sandbox[] | null;
   TEMPLATES: Template[] | null;
   DELETED: Sandbox[] | null;
-  RECENT: Sandbox[] | null;
+  RECENT_SANDBOXES: Sandbox[] | null;
+  RECENT_BRANCHES: Branch[] | null;
   SEARCH: Sandbox[] | null;
   TEMPLATE_HOME: Template[] | null;
   SHARED: Sandbox[] | null;
@@ -65,8 +64,7 @@ export type State = {
     older: Sandbox[];
   };
   curatedAlbums: DashboardAlbum[];
-  // TODO: fix unknown
-  contributions: DashboardContributionBranch[] | null;
+  contributions: Branch[] | null;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -75,7 +73,8 @@ export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
   DELETED: null,
   SHARED: null,
   LIKED: null,
-  RECENT: null,
+  RECENT_BRANCHES: null,
+  RECENT_SANDBOXES: null,
   SEARCH: null,
   TEMPLATE_HOME: null,
   ALL: null,

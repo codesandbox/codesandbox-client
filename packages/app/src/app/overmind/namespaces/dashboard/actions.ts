@@ -565,6 +565,11 @@ export const getTemplateSandboxes = async ({ state, effects }: Context) => {
 export const getStartPageSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
+    /**
+     * For now we decided to NOT show the templates on the home page
+     * But I would keep this code as it is referenced in a lot of places and (TEMPLATE_HOME)
+     * and we might bring it back later on.
+     
     const usedTemplates = await effects.gql.queries.listPersonalTemplates({
       teamId: state.activeTeam,
     });
@@ -577,17 +582,23 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
       0,
       5
     );
+    */
 
-    const result = await effects.gql.queries.recentlyAccessedSandboxes({
+    const sandboxesResult = await effects.gql.queries.recentlyAccessedSandboxes(
+      {
+        limit: 12,
+        teamId: state.activeTeam,
+      }
+    );
+
+    const branchesResult = await effects.gql.queries.recentlyAccessedBranches({
       limit: 12,
-      teamId: state.activeTeam,
     });
 
-    if (result?.me?.recentlyAccessedSandboxes == null) {
-      return;
-    }
-
-    dashboard.sandboxes.RECENT = result.me.recentlyAccessedSandboxes;
+    dashboard.sandboxes.RECENT_SANDBOXES =
+      sandboxesResult?.me?.recentlyAccessedSandboxes || [];
+    dashboard.sandboxes.RECENT_BRANCHES =
+      branchesResult?.me?.recentBranches || [];
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -1935,28 +1946,23 @@ export const updateAlbum = async (
   }
 };
 
-export const getContributionBranches = async ({ state, effects }: Context) =>
-  // eslint-disable-next-line consistent-return
-  {
-    const { dashboard } = state;
-    try {
-      dashboard.contributions = null;
+export const getContributionBranches = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    dashboard.contributions = null;
 
-      const contributionsData = await effects.gql.queries.getContributionBranches(
-        {}
-      );
-      const contributionBranches = contributionsData?.me?.recentBranches;
-      if (!contributionBranches?.length) {
-        return;
-      }
-
-      dashboard.contributions = contributionBranches.map(b => ({
-        type: 'contribution-branch',
-        branch: b,
-      }));
-    } catch (error) {
-      effects.notificationToast.error(
-        'There was a problem getting your open source contributions'
-      );
+    const contributionsData = await effects.gql.queries.getContributionBranches(
+      {}
+    );
+    const contributionBranches = contributionsData?.me?.recentBranches;
+    if (!contributionBranches?.length) {
+      return;
     }
-  };
+
+    dashboard.contributions = contributionBranches;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your open source contributions'
+    );
+  }
+};

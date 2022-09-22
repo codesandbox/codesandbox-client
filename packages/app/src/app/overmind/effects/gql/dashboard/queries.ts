@@ -45,6 +45,8 @@ import {
   SharedWithMeSandboxesQueryVariables,
   CuratedAlbumsQuery,
   CuratedAlbumsQueryVariables,
+  RecentlyAccessedBranchesQuery,
+  RecentlyAccessedBranchesQueryVariables,
   ContributionBranchesQuery,
   ContributionBranchesQueryVariables,
 } from 'app/graphql/types';
@@ -58,6 +60,7 @@ import {
   currentTeamInfoFragment,
   npmRegistryFragment,
   teamFragmentDashboard,
+  branchFragment,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -324,6 +327,20 @@ export const recentlyAccessedSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
+export const recentlyAccessedBranches: Query<
+  RecentlyAccessedBranchesQuery,
+  RecentlyAccessedBranchesQueryVariables
+> = gql`
+  query RecentlyAccessedBranches($limit: Int!) {
+    me {
+      recentBranches(limit: $limit) {
+        ...branch
+      }
+    }
+  }
+  ${branchFragment}
+`;
+
 export const sharedWithmeSandboxes: Query<
   SharedWithMeSandboxesQuery,
   SharedWithMeSandboxesQueryVariables
@@ -459,18 +476,9 @@ export const getContributionBranches: Query<
   query ContributionBranches {
     me {
       recentBranches(contribution: true, limit: 1000) {
-        id
-        contribution
-        name
-        project {
-          repository {
-            ... on GitHubRepository {
-              name
-              owner
-            }
-          }
-        }
+        ...branch
       }
     }
   }
+  ${branchFragment}
 `;

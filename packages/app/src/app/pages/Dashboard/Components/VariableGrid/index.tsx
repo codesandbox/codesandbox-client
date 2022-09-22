@@ -28,10 +28,11 @@ import {
   DashboardNewRepo,
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
+  DashboardBranch,
   PageTypes,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
-import { Branch, BranchProps } from '../Branch';
+import { Branch } from '../Branch';
 
 export const GRID_MAX_WIDTH = 1900;
 export const MAX_COLUMN_COUNT = 6;
@@ -76,7 +77,7 @@ interface IComponentForTypes {
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
-  'contribution-branch': React.FC<DecoratedItemProps<BranchProps>>;
+  branch: React.FC<DecoratedItemProps<DashboardBranch>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -135,9 +136,7 @@ const ComponentForTypes: IComponentForTypes = {
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
-  'contribution-branch': ({ item }) => {
-    return <Branch {...item} />;
-  },
+  branch: ({ item }) => <Branch {...item} />,
 };
 
 const Item = React.memo(
