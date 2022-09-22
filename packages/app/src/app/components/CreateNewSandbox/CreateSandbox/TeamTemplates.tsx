@@ -3,9 +3,12 @@ import { useQuery } from '@apollo/react-hooks';
 import {
   ListPersonalTemplatesQuery,
   ListPersonalTemplatesQueryVariables,
+  TemplateFragment,
 } from 'app/graphql/types';
 import { LIST_PERSONAL_TEMPLATES } from '../queries';
 import { Loader } from './Loader';
+import { TemplateGrid } from './elements';
+import { TemplateCard } from './TemplateCard';
 
 function getUserTemplates(data: ListPersonalTemplatesQuery) {
   return data.me.templates;
@@ -15,7 +18,17 @@ function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
   return data.me.teams.find(team => team.id === teamId).templates;
 }
 
-export const TeamTemplates = ({ isUser, teamId }) => {
+interface TeamTemplatesProps {
+  isUser: boolean;
+  teamId: string;
+  onSelectTemplate: (template: TemplateFragment) => void;
+}
+
+export const TeamTemplates = ({
+  isUser,
+  teamId,
+  onSelectTemplate,
+}: TeamTemplatesProps) => {
   const { data, error } = useQuery<
     ListPersonalTemplatesQuery,
     ListPersonalTemplatesQueryVariables
@@ -29,10 +42,6 @@ export const TeamTemplates = ({ isUser, teamId }) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const templates = isUser
-    ? getUserTemplates(data)
-    : getTeamTemplates(data, teamId);
-
   if (error) {
     return (
       <p>
@@ -43,16 +52,29 @@ export const TeamTemplates = ({ isUser, teamId }) => {
   }
 
   // Instead of checking the loading var we check this. Apollo sets the loading
-  // var to true even if we still have cached data that we can use.
+  // var to true even if we still have cached data that we can use. We  also need to
+  // check if `data.me` isnt undefined before getting templates.
   if (typeof data?.me === 'undefined') {
     return <Loader />;
   }
 
+  const templates = isUser
+    ? getUserTemplates(data)
+    : getTeamTemplates(data, teamId);
+
   return (
-    <div>
-      {templates.map(template => (
-        <div>{template.sandbox.title}</div>
-      ))}
-    </div>
+    <TemplateGrid>
+      {templates.length > 0 ? (
+        templates.map(template => (
+          <TemplateCard
+            key={template.id}
+            template={template}
+            onSelectTemplate={onSelectTemplate}
+          />
+        ))
+      ) : (
+        <div>No templates yet!</div>
+      )}
+    </TemplateGrid>
   );
 };

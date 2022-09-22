@@ -1,21 +1,31 @@
-import { Stack, SkeletonText, ThemeProvider } from '@codesandbox/components';
+import {
+  Stack,
+  Element,
+  IconButton,
+  SkeletonText,
+  ThemeProvider,
+} from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
+import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import slugify from '@codesandbox/common/lib/utils/slugify';
+import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
+import { TemplateFragment } from 'app/graphql/types';
 
 import { QuickStart } from './QuickStart';
 import {
-  CloseModal,
   Container,
-  MobileTabs,
   Tab,
   TabContent,
   Tabs,
-  DashboardButton,
+  ModalLayout,
+  HeaderInformation,
+  ModalContent,
+  ModalSidebar,
+  ModalBody,
 } from './elements';
 import { Explore } from './Explore';
-import { BackIcon } from './Icons';
 import { Import } from './Import';
 import { Essentials } from './Essentials';
 import { TeamTemplates } from './TeamTemplates';
@@ -60,162 +70,221 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const essentialState = useEssentialTemplates();
 
   const isSyncedSandboxesPage = location.pathname.includes('/synced-sandboxes');
-  const isDashboardPage = location.pathname.includes('/dashboard');
   const isUser = user?.username === activeTeamInfo?.name;
 
-  const tab = useTabState({
+  /**
+   * Checking for user because user is undefined when landing on /s/, even though
+   * hasLogIn is true.
+   */
+  const showTeamTemplates = hasLogIn && user;
+
+  const tabState = useTabState({
     orientation: 'vertical',
-    selectedId: initialTab || isSyncedSandboxesPage ? 'import' : 'create',
+    selectedId: initialTab || isSyncedSandboxesPage ? 'import' : 'quickstart',
   });
 
-  const dashboardButtonAttrs = isDashboardPage
-    ? {
-        onClick: actions.modals.newSandboxModal.close,
-      }
-    : {
-        to: '/dashboard/recent',
-        onClick: actions.modals.newSandboxModal.close,
-      };
+  const [viewState, setViewState] = useState<
+    'initial' | 'fromTemplate' | 'fork' /* | 'search' */
+  >('initial');
+  // ❗️ We could combine viewState with selectedtemplate to limit the amout of states.
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
+
+  const selectTemplate = (template: TemplateFragment) => {
+    setSelectedTemplate(template);
+    setViewState('fromTemplate');
+  };
 
   return (
     <ThemeProvider>
       <Container>
-        <Stack direction="vertical">
-          {hasLogIn ? (
-            <DashboardButton {...dashboardButtonAttrs}>
-              <Stack align="center" justify="center">
-                <BackIcon />
-              </Stack>
-              Back to Dashboard
-            </DashboardButton>
-          ) : (
-            <DashboardButton onClick={() => actions.signInClicked()}>
-              <Stack align="center" justify="center">
-                <BackIcon />
-              </Stack>
-              Sign in
-            </DashboardButton>
-          )}
-          <Tabs {...tab} aria-label="Create new">
-            <Tab {...tab} stopId="quickstart">
-              Quickstart
-            </Tab>
-
-            <Tab {...tab} stopId="import">
-              Import from GitHub
-            </Tab>
-
-            {hasLogIn ? (
-              <Tab {...tab} stopId="team-templates">
-                {`${isUser ? 'My' : 'Team'} templates`}
-              </Tab>
-            ) : null}
-
-            <Tab {...tab} stopId="csb-templates">
-              CodeSandbox templates
-            </Tab>
-
-            {essentialState.state === 'success'
-              ? essentialState.essentials.map(essential => (
-                  <Tab
-                    key={essential.key}
-                    {...tab}
-                    stopId={slugify(essential.title)}
+        <ModalLayout>
+          <Stack
+            gap={4}
+            align="center"
+            css={{ width: '100%', padding: '24px' }}
+          >
+            <HeaderInformation>
+              {viewState === 'initial' ? (
+                <div>New</div>
+              ) : (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setViewState('initial');
+                    }}
                   >
-                    {essential.title}
-                  </Tab>
-                ))
-              : null}
+                    <VisuallyHidden>Back to overview</VisuallyHidden>
+                    ArrowLeft
+                  </button>
+                </div>
+              )}
+            </HeaderInformation>
 
-            {essentialState.state === 'loading' ? (
+            {viewState === 'initial' ? (
               <div>
-                <div>todo skeletons</div>
-                <SkeletonText css={{ width: 100 }} />
+                {/* ❗️ TODO: Search */}
+                search
               </div>
             ) : null}
 
-            {essentialState.state === 'error' ? (
-              <div>{essentialState.error}</div>
-            ) : null}
-          </Tabs>
-        </Stack>
-
-        <Panel tab={tab} id="quickstart">
-          {/**
-           * ❗️ TODO: Update MobileTabs (because they aren't anymore) and move close button
-           * higher up in the tree.
-           */}
-          <MobileTabs>
-            {/* ❗️ TODO: Figure out when it isn't a modal */}
+            {/* isModal is undefined on /s/ page */}
             {isModal ? (
-              <CloseModal
-                type="button"
+              // TODO: IconButton doesn't have aria label or visuallyhidden text (reads floating label too late)
+              <IconButton
+                name="cross"
+                size={16}
+                title="Close modal"
                 onClick={() => actions.modals.newSandboxModal.close()}
-              >
-                <svg width={10} height={10} fill="none" viewBox="0 0 10 10">
-                  <path
-                    fill="#fff"
-                    d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
-                  />
-                </svg>
-              </CloseModal>
+              />
             ) : null}
-          </MobileTabs>
+          </Stack>
 
-          <QuickStart collectionId={collectionId} />
-        </Panel>
+          <ModalBody>
+            <ModalSidebar>
+              {viewState === 'initial' ? (
+                <Stack direction="vertical">
+                  <Tabs {...tabState} aria-label="Create new">
+                    <Tab {...tabState} stopId="quickstart">
+                      Quickstart
+                    </Tab>
 
-        <Panel tab={tab} id="import">
-          <MobileTabs>
-            {/* ❗️ TODO: Figure out when it isn't a modal */}
-            {isModal ? (
-              <CloseModal
-                type="button"
-                onClick={() => actions.modals.newSandboxModal.close()}
-              >
-                <svg width={10} height={10} fill="none" viewBox="0 0 10 10">
-                  <path
-                    fill="#fff"
-                    d="M10 .91L9.09 0 5 4.09.91 0 0 .91 4.09 5 0 9.09l.91.91L5 5.91 9.09 10l.91-.91L5.91 5 10 .91z"
-                  />
-                </svg>
-              </CloseModal>
-            ) : null}
-          </MobileTabs>
+                    <Tab {...tabState} stopId="import">
+                      Import from GitHub
+                    </Tab>
 
-          <Import />
-        </Panel>
+                    <Element css={{ height: '24px' }} />
 
-        <Panel tab={tab} id="explore">
-          <Explore collectionId={collectionId} />
-        </Panel>
+                    {showTeamTemplates ? (
+                      <Tab {...tabState} stopId="team-templates">
+                        {`${isUser ? 'My' : 'Team'} templates`}
+                      </Tab>
+                    ) : null}
 
-        {hasLogIn ? (
-          <Panel tab={tab} id="team-templates">
-            <TeamTemplates isUser={isUser} teamId={activeTeamInfo?.id} />
-          </Panel>
-        ) : null}
+                    <Tab {...tabState} stopId="csb-templates">
+                      CodeSandbox templates
+                    </Tab>
 
-        <Panel tab={tab} id="csb-templates">
-          <CodeSandboxTemplates />
-        </Panel>
+                    {essentialState.state === 'success'
+                      ? essentialState.essentials.map(essential => (
+                          <Tab
+                            key={essential.key}
+                            {...tabState}
+                            stopId={slugify(essential.title)}
+                          >
+                            {essential.title}
+                          </Tab>
+                        ))
+                      : null}
 
-        {essentialState.state === 'success'
-          ? essentialState.essentials.map(essential => (
-              <Panel
-                key={essential.key}
-                tab={tab}
-                id={slugify(essential.title)}
-              >
-                {essential.title}
-                <Essentials
-                  title={essential.title}
-                  templates={essential.templates}
-                />
-              </Panel>
-            ))
-          : null}
+                    {essentialState.state === 'loading' ? (
+                      <div>
+                        <div>todo skeletons</div>
+                        <SkeletonText css={{ width: 100 }} />
+                      </div>
+                    ) : null}
+
+                    {essentialState.state === 'error' ? (
+                      <div>{essentialState.error}</div>
+                    ) : null}
+                  </Tabs>
+                </Stack>
+              ) : null}
+
+              {viewState === 'fromTemplate' ? (
+                <div>
+                  <TemplateInfo template={selectedTemplate} />
+                </div>
+              ) : null}
+              {viewState === 'fork' ? <div>Repo info</div> : null}
+            </ModalSidebar>
+
+            <ModalContent>
+              {viewState === 'initial' ? (
+                <>
+                  <Panel tab={tabState} id="quickstart">
+                    <QuickStart collectionId={collectionId} />
+                  </Panel>
+
+                  <Panel tab={tabState} id="import">
+                    <Import />
+                  </Panel>
+
+                  <Panel tab={tabState} id="explore">
+                    <Explore collectionId={collectionId} />
+                  </Panel>
+
+                  {showTeamTemplates ? (
+                    <Panel tab={tabState} id="team-templates">
+                      <TeamTemplates
+                        isUser={isUser}
+                        teamId={activeTeamInfo.id}
+                        onSelectTemplate={selectTemplate}
+                      />
+                    </Panel>
+                  ) : null}
+
+                  <Panel tab={tabState} id="csb-templates">
+                    <CodeSandboxTemplates />
+                  </Panel>
+
+                  {essentialState.state === 'success'
+                    ? essentialState.essentials.map(essential => (
+                        <Panel
+                          key={essential.key}
+                          tab={tabState}
+                          id={slugify(essential.title)}
+                        >
+                          <Essentials
+                            title={essential.title}
+                            templates={essential.templates}
+                            onSelectTemplate={selectTemplate}
+                          />
+                        </Panel>
+                      ))
+                    : null}
+                </>
+              ) : null}
+
+              {viewState === 'fromTemplate' ? (
+                <div>
+                  Template form fields for {selectedTemplate.sandbox.title}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setViewState('initial');
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : null}
+
+              {viewState === 'fork' ? <div>Repo fork form fields</div> : null}
+            </ModalContent>
+          </ModalBody>
+        </ModalLayout>
       </Container>
     </ThemeProvider>
+  );
+};
+
+interface TemplateInfoProps {
+  template: TemplateFragment;
+}
+
+const TemplateInfo = ({ template }: TemplateInfoProps) => {
+  const { UserIcon } = getTemplateIcon(
+    template.iconUrl,
+    template.sandbox?.source?.template
+  );
+
+  return (
+    <Stack direction="vertical">
+      <UserIcon />
+      <span>{template.sandbox.title}</span>
+      <span>{template.sandbox.collection?.team?.name}</span>
+      <p>{template.sandbox.description}</p>
+    </Stack>
   );
 };
