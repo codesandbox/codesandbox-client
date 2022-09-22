@@ -3,10 +3,9 @@ import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
 import { Button } from '@codesandbox/components';
 
 export const Container = styled.div`
-  // display: flex;
+  // TODO: Proper height, width and responsive styles
   min-width: 870px;
   max-width: 1200px;
-  // height: 496px;
   overflow: hidden;
   border-radius: 4px;
   background-color: #151515;
