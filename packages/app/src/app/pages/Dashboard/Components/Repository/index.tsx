@@ -12,14 +12,14 @@ import {
 import { css } from '@styled-system/css';
 
 import { useAppState } from 'app/overmind';
-import { DashboardV2Repository } from '../../types';
+import { DashboardRepository } from '../../types';
 
-export const V2Repository: React.FC<DashboardV2Repository> = ({ repo }) => {
-  const { branches, repository } = repo;
+export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
+  const { branches, repository: providerRepository } = repository;
   const {
     dashboard: { viewMode },
   } = useAppState();
-  const ariaLabel = `View branches from repository ${repository.name} by ${repository.owner}`;
+  const ariaLabel = `View branches from repository ${providerRepository.name} by ${providerRepository.owner}`;
   const branchesLabel = `${branches.length} ${
     branches.length === 1 ? 'branch' : 'branches'
   }`;
@@ -78,7 +78,7 @@ export const V2Repository: React.FC<DashboardV2Repository> = ({ repo }) => {
               })}
               size={16}
             >
-              {repository.owner}/{repository.name}
+              {providerRepository.owner}/{providerRepository.name}
             </Text>
             <Text
               css={css({
@@ -128,7 +128,7 @@ export const V2Repository: React.FC<DashboardV2Repository> = ({ repo }) => {
               <Icon aria-hidden color="#808080" name="pr" size={16} />
               <Element css={{ overflow: 'hidden' }}>
                 <Text size={3} weight="medium" maxWidth="100%">
-                  {repository.owner}/{repository.name}
+                  {providerRepository.owner}/{providerRepository.name}
                 </Text>
               </Element>
             </Stack>

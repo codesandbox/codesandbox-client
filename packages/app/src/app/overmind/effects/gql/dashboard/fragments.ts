@@ -230,3 +230,17 @@ export const branchFragment = gql`
     }
   }
 `;
+
+export const projectFragment = gql`
+  fragment project on Project {
+    branches {
+      id
+    }
+    repository {
+      ... on GitHubRepository {
+        owner
+        name
+      }
+    }
+  }
+`;

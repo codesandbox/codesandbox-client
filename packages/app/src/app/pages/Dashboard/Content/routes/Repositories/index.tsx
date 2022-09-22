@@ -13,21 +13,24 @@ export const RepositoriesPage = () => {
   const actions = useActions();
   const {
     activeTeam,
-    dashboard: { v2Repositories },
+    dashboard: { repositories },
   } = useAppState();
 
   React.useEffect(() => {
-    actions.dashboard.getV2Repositories();
+    actions.dashboard.getRepositoriesByTeam();
   }, [activeTeam, actions.dashboard]);
 
   const pageType: PageTypes = 'repositories';
 
   const itemsToShow = (): DashboardGridItem[] => {
-    if (v2Repositories === null) {
+    if (repositories === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
 
-    return v2Repositories;
+    return repositories.map(repository => ({
+      type: 'repository',
+      repository,
+    }));
   };
 
   return (

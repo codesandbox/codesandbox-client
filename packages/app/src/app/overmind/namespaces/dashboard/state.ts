@@ -5,11 +5,9 @@ import {
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
   BranchFragment as Branch,
+  ProjectFragment as Repository,
 } from 'app/graphql/types';
-import {
-  DashboardAlbum,
-  DashboardV2Repository,
-} from 'app/pages/Dashboard/types';
+import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -68,7 +66,8 @@ export type State = {
   };
   curatedAlbums: DashboardAlbum[];
   contributions: Branch[] | null;
-  v2Repositories: DashboardV2Repository[] | null;
+  /** v2 repositories (formerly projects) */
+  repositories: Repository[] | null;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -182,5 +181,5 @@ export const state: State = {
     }
   ),
   contributions: null,
-  v2Repositories: null,
+  repositories: null,
 };

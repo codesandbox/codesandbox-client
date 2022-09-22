@@ -49,8 +49,8 @@ import {
   RecentlyAccessedBranchesQueryVariables,
   ContributionBranchesQuery,
   ContributionBranchesQueryVariables,
-  V2RepositoriesQuery,
-  V2RepositoriesQueryVariables,
+  RepositoriesByTeamQuery,
+  RepositoriesByTeamQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -63,6 +63,7 @@ import {
   npmRegistryFragment,
   teamFragmentDashboard,
   branchFragment,
+  projectFragment,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -485,27 +486,20 @@ export const getContributionBranches: Query<
   ${branchFragment}
 `;
 
-export const getV2Repositories: Query<
-  V2RepositoriesQuery,
-  V2RepositoriesQueryVariables
+export const getRepositoriesByTeam: Query<
+  RepositoriesByTeamQuery,
+  RepositoriesByTeamQueryVariables
 > = gql`
-  query V2Repositories($teamId: UUID4!) {
+  query RepositoriesByTeam($teamId: UUID4!) {
     me {
       team(id: $teamId) {
         id
         name
         projects {
-          branches {
-            id
-          }
-          repository {
-            ... on GitHubRepository {
-              owner
-              name
-            }
-          }
+          ...project
         }
       }
     }
   }
+  ${projectFragment}
 `;

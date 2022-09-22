@@ -3,11 +3,11 @@ import {
   TemplateFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
   BranchFragment as Branch,
+  ProjectFragment as Repository,
   Sandbox,
   Album,
   User,
   Maybe,
-  V2RepositoriesQuery,
 } from 'app/graphql/types';
 import {
   PageTypes as PT,
@@ -134,13 +134,6 @@ export type DashboardCommunitySandbox = {
   } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
 };
 
-export type DashboardV2Repository = {
-  type: 'v2-repo';
-  repo: NonNullable<
-    NonNullable<V2RepositoriesQuery['me']>['team']
-  >['projects'][number];
-};
-
 export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
   sandboxes: Array<
     SandboxFragmentDashboardFragment & {
@@ -152,6 +145,11 @@ export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
 export type DashboardBranch = {
   type: 'branch';
   branch: Branch;
+};
+
+export type DashboardRepository = {
+  type: 'repository';
+  repository: Repository;
 };
 
 export type PageTypes = PT;
@@ -174,4 +172,4 @@ export type DashboardGridItem =
   | DashboardSkeleton
   | DashboardCommunitySandbox
   | DashboardBranch
-  | DashboardV2Repository;
+  | DashboardRepository;

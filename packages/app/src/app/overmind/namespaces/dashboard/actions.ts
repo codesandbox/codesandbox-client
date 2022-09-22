@@ -1967,12 +1967,12 @@ export const getContributionBranches = async ({ state, effects }: Context) => {
   }
 };
 
-export const getV2Repositories = async ({ state, effects }: Context) => {
+export const getRepositoriesByTeam = async ({ state, effects }: Context) => {
   const { activeTeam, dashboard } = state;
   try {
-    dashboard.v2Repositories = null;
+    dashboard.repositories = null;
 
-    const repositoriesData = await effects.gql.queries.getV2Repositories({
+    const repositoriesData = await effects.gql.queries.getRepositoriesByTeam({
       teamId: activeTeam,
     });
     const v2Repositories = repositoriesData?.me?.team?.projects;
@@ -1980,10 +1980,7 @@ export const getV2Repositories = async ({ state, effects }: Context) => {
       return;
     }
 
-    dashboard.v2Repositories = v2Repositories.map(r => ({
-      type: 'v2-repo',
-      repo: r,
-    }));
+    dashboard.repositories = v2Repositories;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your open repositories'
