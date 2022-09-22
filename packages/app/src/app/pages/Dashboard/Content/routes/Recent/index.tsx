@@ -48,9 +48,9 @@ export const Recent = () => {
             b.type === 'branch' ? b.branch.lastAccessedAt : b.sandbox.updatedAt;
 
           return new Date(dateA) < new Date(dateB) ? 1 : -1;
-          // Merge the two data sources and show only the first 24 most recent entries
+          // Merge the two data sources and show only the first 12 most recent entries
         })
-        .slice(0, 24);
+        .slice(0, 12);
 
   const pageType: PageTypes = 'recent';
   return (
