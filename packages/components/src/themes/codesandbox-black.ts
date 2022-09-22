@@ -223,11 +223,11 @@ const colors = {
   },
   sideBarSectionHeader: {
     background: tokens.grays[700],
-    foreground: tokensV2.gray[200],
+    foreground: tokensV2.gray[800],
     border: tokens.grays[600],
   },
   sideBarTitle: {
-    foreground: tokensV2.gray[200],
+    foreground: tokensV2.gray[600],
   },
   statusBar: {
     background: tokens.grays[600],
@@ -1813,3 +1813,4 @@ const theme = {
 };
 
 export default theme;
+
