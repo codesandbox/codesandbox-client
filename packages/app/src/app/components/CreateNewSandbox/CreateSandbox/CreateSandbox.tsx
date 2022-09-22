@@ -219,7 +219,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       <TeamTemplates
                         isUser={isUser}
                         teamId={activeTeamInfo.id}
-                        selectTemplate={selectTemplate}
+                        onSelectTemplate={selectTemplate}
                       />
                     </Panel>
                   ) : null}
@@ -238,7 +238,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           <Essentials
                             title={essential.title}
                             templates={essential.templates}
-                            selectTemplate={selectTemplate}
+                            onSelectTemplate={selectTemplate}
                           />
                         </Panel>
                       ))

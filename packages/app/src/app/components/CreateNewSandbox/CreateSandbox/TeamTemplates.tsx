@@ -21,13 +21,13 @@ function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
 interface TeamTemplatesProps {
   isUser: boolean;
   teamId: string;
-  selectTemplate: (template: TemplateFragment) => void;
+  onSelectTemplate: (template: TemplateFragment) => void;
 }
 
 export const TeamTemplates = ({
   isUser,
   teamId,
-  selectTemplate,
+  onSelectTemplate,
 }: TeamTemplatesProps) => {
   const { data, error } = useQuery<
     ListPersonalTemplatesQuery,
@@ -69,7 +69,7 @@ export const TeamTemplates = ({
           <TemplateCard
             key={template.id}
             template={template}
-            selectTemplate={selectTemplate}
+            onSelectTemplate={onSelectTemplate}
           />
         ))
       ) : (

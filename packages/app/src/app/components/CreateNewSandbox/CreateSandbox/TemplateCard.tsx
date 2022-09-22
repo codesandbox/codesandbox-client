@@ -6,13 +6,15 @@ import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { TemplateButton } from './elements';
 
+interface TemplateCardProps {
+  template: TemplateFragment;
+  onSelectTemplate: (template: TemplateFragment) => void;
+}
+
 export const TemplateCard = ({
   template,
-  selectTemplate,
-}: {
-  template: TemplateFragment;
-  selectTemplate: (template: TemplateFragment) => void;
-}) => {
+  onSelectTemplate,
+}: TemplateCardProps) => {
   const { UserIcon } = getTemplateIcon(
     template.iconUrl,
     template.sandbox?.source?.template
@@ -22,7 +24,7 @@ export const TemplateCard = ({
   const teamName = template.sandbox?.collection?.team?.name;
 
   return (
-    <TemplateButton type="button" onClick={() => selectTemplate(template)}>
+    <TemplateButton type="button" onClick={() => onSelectTemplate(template)}>
       <Stack direction="vertical" gap={4}>
         <UserIcon />
         <Stack direction="vertical" gap={1}>

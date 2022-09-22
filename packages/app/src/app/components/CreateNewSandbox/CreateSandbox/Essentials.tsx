@@ -9,13 +9,13 @@ import { TemplateGrid } from './elements';
 interface EssentialsProps {
   title: string;
   templates: TemplateFragment[];
-  selectTemplate: (template: TemplateFragment) => void;
+  onSelectTemplate: (template: TemplateFragment) => void;
 }
 
 export const Essentials = ({
   title,
   templates,
-  selectTemplate,
+  onSelectTemplate,
 }: EssentialsProps) => {
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: title });
@@ -32,7 +32,7 @@ export const Essentials = ({
             <TemplateCard
               key={template.id}
               template={template}
-              selectTemplate={selectTemplate}
+              onSelectTemplate={onSelectTemplate}
             />
           ))
         ) : (
