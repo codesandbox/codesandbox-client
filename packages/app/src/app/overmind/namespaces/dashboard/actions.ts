@@ -565,7 +565,11 @@ export const getTemplateSandboxes = async ({ state, effects }: Context) => {
 export const getStartPageSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
-    // TODO: Cleanup
+    /**
+     * For now we decided to NOT show the templates on the home page
+     * But I would keep this code as it is referenced in a lot of places and (TEMPLATE_HOME)
+     * and we might bring it back later on.
+     
     const usedTemplates = await effects.gql.queries.listPersonalTemplates({
       teamId: state.activeTeam,
     });
@@ -578,6 +582,7 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
       0,
       5
     );
+    */
 
     const sandboxesResult = await effects.gql.queries.recentlyAccessedSandboxes(
       {
