@@ -6,7 +6,6 @@ import {
   Album,
   User,
   Maybe,
-  ContributionBranchesQuery,
 } from 'app/graphql/types';
 import {
   PageTypes as PT,
@@ -134,13 +133,6 @@ export type DashboardCommunitySandbox = {
   } & Pick<Sandbox, 'forkCount' | 'likeCount'>;
 };
 
-export type DashboardContributionBranch = {
-  type: 'contribution-branch';
-  branch: NonNullable<
-    ContributionBranchesQuery['me']
-  >['recentBranches'][number];
-};
-
 export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
   sandboxes: Array<
     SandboxFragmentDashboardFragment & {
@@ -173,5 +165,4 @@ export type DashboardGridItem =
   | DashboardBlankRowFill
   | DashboardSkeleton
   | DashboardCommunitySandbox
-  | DashboardBranch
-  | DashboardContributionBranch;
+  | DashboardBranch;

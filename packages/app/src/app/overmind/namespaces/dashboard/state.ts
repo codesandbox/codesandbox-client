@@ -5,10 +5,7 @@ import {
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
 } from 'app/graphql/types';
-import {
-  DashboardAlbum,
-  DashboardContributionBranch,
-} from 'app/pages/Dashboard/types';
+import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
 import { sortBy } from 'lodash-es';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -67,7 +64,7 @@ export type State = {
   };
   curatedAlbums: DashboardAlbum[];
   // TODO: fix unknown
-  contributions: DashboardContributionBranch[] | null;
+  contributions: RepositoryBranch[] | null;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {

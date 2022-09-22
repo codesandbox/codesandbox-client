@@ -1941,28 +1941,23 @@ export const updateAlbum = async (
   }
 };
 
-export const getContributionBranches = async ({ state, effects }: Context) =>
-  // eslint-disable-next-line consistent-return
-  {
-    const { dashboard } = state;
-    try {
-      dashboard.contributions = null;
+export const getContributionBranches = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    dashboard.contributions = null;
 
-      const contributionsData = await effects.gql.queries.getContributionBranches(
-        {}
-      );
-      const contributionBranches = contributionsData?.me?.recentBranches;
-      if (!contributionBranches?.length) {
-        return;
-      }
-
-      dashboard.contributions = contributionBranches.map(b => ({
-        type: 'contribution-branch',
-        branch: b,
-      }));
-    } catch (error) {
-      effects.notificationToast.error(
-        'There was a problem getting your open source contributions'
-      );
+    const contributionsData = await effects.gql.queries.getContributionBranches(
+      { limit: 1000 }
+    );
+    const contributionBranches = contributionsData?.me?.recentBranches;
+    if (!contributionBranches?.length) {
+      return;
     }
-  };
+
+    dashboard.contributions = contributionBranches;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your open source contributions'
+    );
+  }
+};
