@@ -474,3 +474,26 @@ export const curatedAlbums: Query<
   }
   ${sandboxFragmentDashboard}
 `;
+
+export const getContributionBranches: Query<
+  RecentlyAccessedBranchesQuery,
+  RecentlyAccessedBranchesQueryVariables
+> = gql`
+  query ContributionBranches {
+    me {
+      recentBranches(contribution: true, limit: 1000) {
+        id
+        contribution
+        name
+        project {
+          repository {
+            ... on GitHubRepository {
+              name
+              owner
+            }
+          }
+        }
+      }
+    }
+  }
+`;

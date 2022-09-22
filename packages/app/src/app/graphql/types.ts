@@ -3187,6 +3187,30 @@ export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type ContributionBranchesQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      recentBranches: Array<
+        { __typename?: 'Branch' } & Pick<
+          Branch,
+          'id' | 'contribution' | 'name'
+        > & {
+            project: { __typename?: 'Project' } & {
+              repository: { __typename?: 'GitHubRepository' } & Pick<
+                GitHubRepository,
+                'name' | 'owner'
+              >;
+            };
+          }
+      >;
+    }
+  >;
+};
+
 export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<
   Notification,
   'id' | 'type' | 'data' | 'insertedAt' | 'read'
