@@ -333,7 +333,7 @@ export const recentlyAccessedBranches: Query<
 > = gql`
   query RecentlyAccessedBranches($limit: Int!) {
     me {
-      recentBranches(limit: $limit, contribution: false) {
+      recentBranches(limit: $limit) {
         ...branch
       }
     }
