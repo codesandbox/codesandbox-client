@@ -51,7 +51,7 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
         align="center"
         justify="center"
       >
-        <Icon aria-hidden color="#808080" name="branch" size={40} />
+        <Icon color="#808080" name="branch" size={40} />
       </Stack>
       <Stack
         css={css({
