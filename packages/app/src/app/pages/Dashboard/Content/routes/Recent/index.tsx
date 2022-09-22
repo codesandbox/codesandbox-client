@@ -39,15 +39,18 @@ export const Recent = () => {
           type: 'branch' as const,
           branch,
         })),
-      ].sort((a, b) => {
-        // TODO: Update when sandboxes get a lastAccessedAt field
-        const dateA =
-          a.type === 'branch' ? a.branch.lastAccessedAt : a.sandbox.updatedAt;
-        const dateB =
-          b.type === 'branch' ? b.branch.lastAccessedAt : b.sandbox.updatedAt;
+      ]
+        .sort((a, b) => {
+          // TODO: Update when sandboxes get a lastAccessedAt field
+          const dateA =
+            a.type === 'branch' ? a.branch.lastAccessedAt : a.sandbox.updatedAt;
+          const dateB =
+            b.type === 'branch' ? b.branch.lastAccessedAt : b.sandbox.updatedAt;
 
-        return new Date(dateA) < new Date(dateB) ? 1 : -1;
-      });
+          return new Date(dateA) < new Date(dateB) ? 1 : -1;
+          // Merge the two data sources and show only the first 24 most recent entries
+        })
+        .slice(0, 24);
 
   const pageType: PageTypes = 'recent';
   return (
