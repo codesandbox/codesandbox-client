@@ -39,6 +39,10 @@ export const changeSandboxesInState = (
         [key in SandboxTypes]: NonNullable<typeof dashboard.sandboxes[key]>;
       };
 
+      if (type === 'RECENT_BRANCHES') {
+        return;
+      }
+
       if (type === 'REPOS') {
         Object.keys(sandboxStructure.REPOS).forEach(repoName => {
           const repoSandboxes = sandboxStructure.REPOS[repoName];
@@ -147,7 +151,7 @@ export const deleteSandboxesFromState = (
             repoSandbox.sandboxes = newSandboxes;
           }
         });
-      } else {
+      } else if (type !== 'RECENT_BRANCHES') {
         const newSandboxes = sandboxStructure[type].filter(sandboxFilter);
         if (newSandboxes.length !== sandboxStructure[type].length) {
           dashboard.sandboxes[type] = newSandboxes;
