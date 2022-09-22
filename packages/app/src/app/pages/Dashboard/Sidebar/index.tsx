@@ -194,7 +194,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             name="All repositories"
             page="repositories"
             path={dashboardUrls.repositories(activeTeam)}
-            icon="tagSelfClosing"
+            icon="repository"
           />
           <Element marginTop={4} />
           <Element paddingX={5} paddingY={1}>
@@ -268,7 +268,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             name="Documentation"
             page="external"
             path="https://codesandbox.io/docs"
-            icon="file"
+            icon="documentation"
           />
         </List>
       </Stack>
