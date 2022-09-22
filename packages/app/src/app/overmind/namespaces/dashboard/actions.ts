@@ -1966,3 +1966,24 @@ export const getContributionBranches = async ({ state, effects }: Context) => {
     );
   }
 };
+
+export const getRepositoriesByTeam = async ({ state, effects }: Context) => {
+  const { activeTeam, dashboard } = state;
+  try {
+    dashboard.repositories = null;
+
+    const repositoriesData = await effects.gql.queries.getRepositoriesByTeam({
+      teamId: activeTeam,
+    });
+    const v2Repositories = repositoriesData?.me?.team?.projects;
+    if (!v2Repositories?.length) {
+      return;
+    }
+
+    dashboard.repositories = v2Repositories;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your open repositories'
+    );
+  }
+};

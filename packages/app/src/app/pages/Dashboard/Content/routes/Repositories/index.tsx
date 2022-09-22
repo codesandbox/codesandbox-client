@@ -10,18 +10,28 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
   const param = params.path || '';
-  const home = !param || param === '/';
   const actions = useActions();
-  const { activeTeam } = useAppState();
+  const {
+    activeTeam,
+    dashboard: { repositories },
+  } = useAppState();
 
   React.useEffect(() => {
-    const p = home ? null : param;
-    actions.dashboard.getReposByPath(p);
-  }, [param, actions.dashboard, activeTeam, home]);
+    actions.dashboard.getRepositoriesByTeam();
+  }, [activeTeam, actions.dashboard]);
 
   const pageType: PageTypes = 'repositories';
 
-  const itemsToShow = (): DashboardGridItem[] => [];
+  const itemsToShow = (): DashboardGridItem[] => {
+    if (repositories === null) {
+      return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
+    }
+
+    return repositories.map(repository => ({
+      type: 'repository',
+      repository,
+    }));
+  };
 
   return (
     <SelectionProvider

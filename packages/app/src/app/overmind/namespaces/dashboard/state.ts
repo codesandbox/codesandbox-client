@@ -5,6 +5,7 @@ import {
   NpmRegistryFragment,
   TeamFragmentDashboardFragment,
   BranchFragment as Branch,
+  ProjectFragment as Repository,
 } from 'app/graphql/types';
 import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
@@ -65,6 +66,8 @@ export type State = {
   };
   curatedAlbums: DashboardAlbum[];
   contributions: Branch[] | null;
+  /** v2 repositories (formerly projects) */
+  repositories: Repository[] | null;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -178,4 +181,5 @@ export const state: State = {
     }
   ),
   contributions: null,
+  repositories: null,
 };

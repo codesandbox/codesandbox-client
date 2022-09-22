@@ -2296,6 +2296,14 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
     };
   };
 
+export type ProjectFragment = { __typename?: 'Project' } & {
+  branches: Array<{ __typename?: 'Branch' } & Pick<Branch, 'id'>>;
+  repository: { __typename?: 'GitHubRepository' } & Pick<
+    GitHubRepository,
+    'owner' | 'name'
+  >;
+};
+
 export type _CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
   pilot: Maybe<Scalars['Boolean']>;
@@ -3195,6 +3203,22 @@ export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       recentBranches: Array<{ __typename?: 'Branch' } & BranchFragment>;
+    }
+  >;
+};
+
+export type RepositoriesByTeamQueryVariables = Exact<{
+  teamId: Scalars['UUID4'];
+}>;
+
+export type RepositoriesByTeamQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      team: Maybe<
+        { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
+            projects: Array<{ __typename?: 'Project' } & ProjectFragment>;
+          }
+      >;
     }
   >;
 };
