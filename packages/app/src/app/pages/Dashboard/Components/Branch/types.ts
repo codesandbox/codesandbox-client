@@ -1,8 +1,6 @@
-import { GitHubRepository } from 'app/graphql/types';
+import { RepositoryBranch } from 'app/overmind/namespaces/dashboard/types';
 
-export type BranchDetails = {
-  branchName: string;
-  repository: Pick<GitHubRepository, 'owner' | 'name'>;
-  BranchIcon: JSX.Element;
+export type BranchProps = {
+  branch: RepositoryBranch;
   onClick: (e: React.MouseEvent | React.KeyboardEvent) => void;
 };

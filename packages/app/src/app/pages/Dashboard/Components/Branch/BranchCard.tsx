@@ -7,13 +7,11 @@ import {
   Tooltip,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-import { BranchDetails } from './types';
+import { BranchProps } from './types';
 
-export const BranchCard: React.FC<BranchDetails> = ({
-  onClick,
-  branchName,
-  repository,
-}) => {
+export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
+  const { name: branchName, project, contribution } = branch;
+  const { repository } = project;
   const ariaLabel = `Open branch ${branchName} from ${repository.name} by ${repository.owner} in the editor`;
 
   return (
@@ -87,7 +85,9 @@ export const BranchCard: React.FC<BranchDetails> = ({
           />
         </Stack>
         <Stack gap={2}>
-          <Icon color="#EDFFA5" name="contribution" size={16} />
+          {contribution && (
+            <Icon color="#EDFFA5" name="contribution" size={16} />
+          )}
           <Text
             css={css({
               color: '#808080',
