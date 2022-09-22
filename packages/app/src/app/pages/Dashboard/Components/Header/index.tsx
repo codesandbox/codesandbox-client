@@ -60,7 +60,7 @@ export const Header = ({
       })}
     >
       {title ? (
-        <Text marginBottom={1} block weight="bold" size={5}>
+        <Text marginBottom={1} block weight="regular" size={6}>
           {title}
         </Text>
       ) : (
