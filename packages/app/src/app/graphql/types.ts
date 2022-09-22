@@ -2284,7 +2284,7 @@ export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
   | 'teamId'
 >;
 
-export type BranchFragmentFragment = { __typename?: 'Branch' } & Pick<
+export type BranchFragment = { __typename?: 'Branch' } & Pick<
   Branch,
   'id' | 'name' | 'contribution' | 'lastAccessedAt'
 > & {
@@ -3058,7 +3058,7 @@ export type RecentlyAccessedBranchesQueryVariables = Exact<{
 export type RecentlyAccessedBranchesQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
-      recentBranches: Array<{ __typename?: 'Branch' } & BranchFragmentFragment>;
+      recentBranches: Array<{ __typename?: 'Branch' } & BranchFragment>;
     }
   >;
 };
@@ -3194,7 +3194,7 @@ export type ContributionBranchesQueryVariables = Exact<{
 export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
-      recentBranches: Array<{ __typename?: 'Branch' } & BranchFragmentFragment>;
+      recentBranches: Array<{ __typename?: 'Branch' } & BranchFragment>;
     }
   >;
 };

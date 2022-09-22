@@ -1,4 +1,4 @@
-import { BranchFragmentFragment as Branch } from 'app/graphql/types';
+import { BranchFragment as Branch } from 'app/graphql/types';
 
 export type BranchProps = {
   branch: Branch;

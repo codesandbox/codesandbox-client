@@ -334,7 +334,7 @@ export const recentlyAccessedBranches: Query<
   query RecentlyAccessedBranches($limit: Int!) {
     me {
       recentBranches(limit: $limit, contribution: false) {
-        ...branchFragment
+        ...branch
       }
     }
   }
@@ -476,7 +476,7 @@ export const getContributionBranches: Query<
   query ContributionBranches {
     me {
       recentBranches(contribution: true, limit: 1000) {
-        ...branchFragment
+        ...branch
       }
     }
   }

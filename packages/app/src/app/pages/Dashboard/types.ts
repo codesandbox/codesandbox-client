@@ -2,7 +2,7 @@ import {
   SandboxFragmentDashboardFragment,
   TemplateFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
-  BranchFragmentFragment,
+  BranchFragment as Branch,
   Sandbox,
   Album,
   User,
@@ -143,7 +143,7 @@ export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
 
 export type DashboardBranch = {
   type: 'branch';
-  branch: BranchFragmentFragment;
+  branch: Branch;
 };
 
 export type PageTypes = PT;

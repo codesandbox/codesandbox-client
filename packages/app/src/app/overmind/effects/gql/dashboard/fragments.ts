@@ -215,7 +215,7 @@ export const npmRegistryFragment = gql`
 `;
 
 export const branchFragment = gql`
-  fragment branchFragment on Branch {
+  fragment branch on Branch {
     id
     name
     contribution
