@@ -9,7 +9,13 @@ import {
 import { css } from '@styled-system/css';
 import { BranchProps } from './types';
 
-export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
+export const BranchCard: React.FC<BranchProps> = ({
+  onClick,
+  onContextMenu,
+  branch,
+  selected,
+  ...props
+}) => {
   const { name: branchName, project, contribution } = branch;
   const { repository } = project;
   const ariaLabel = `Open branch ${branchName} from ${repository.name} by ${repository.owner} in the editor`;
@@ -24,8 +30,9 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
         height: 240,
         width: '100%',
         borderRadius: '4px',
-        border: '1px solid transparent',
-        backgroundColor: 'card.background',
+        border: '1px solid',
+        borderColor: selected ? 'focusBorder' : 'transparent',
+        backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
         transition: 'background ease-in-out',
         transitionDuration: theme => theme.speeds[2],
         outline: 'none',
@@ -38,10 +45,12 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
       })}
       direction="vertical"
       onClick={onClick}
+      onContextMenu={onContextMenu}
       onKeyDown={e => e.key === 'Enter' && onClick(e)}
       tabIndex={0}
       // TODO: refine semantics when/if the context menu gets implemented.
       role="link"
+      {...props}
     >
       <Stack
         css={css({

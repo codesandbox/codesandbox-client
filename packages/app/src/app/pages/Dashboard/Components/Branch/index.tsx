@@ -3,6 +3,7 @@ import { useAppState } from 'app/overmind';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { DashboardBranch } from '../../types';
+import { useSelection } from '../Selection';
 import { BranchCard } from './BranchCard';
 import { BranchListItem } from './BranchListItem';
 
@@ -11,6 +12,7 @@ export const Branch: React.FC<DashboardBranch> = ({ branch }) => {
     dashboard: { viewMode },
   } = useAppState();
   const history = useHistory();
+  const { selectedIds, onRightClick, onMenuEvent } = useSelection();
   const { name, project } = branch;
 
   const url = v2BranchUrl({ name, project });
@@ -24,9 +26,21 @@ export const Branch: React.FC<DashboardBranch> = ({ branch }) => {
     }
   };
 
+  const handleContextMenu = event => {
+    event.preventDefault();
+
+    if (event.type === 'contextmenu') onRightClick(event, branch.id);
+    else onMenuEvent(event, branch.id);
+  };
+
+  const selected = selectedIds.includes(branch.id);
+
   const props = {
     branch,
     onClick: handleClick,
+    onContextMenu: handleContextMenu,
+    'data-selection-id': branch.id,
+    selected,
   };
 
   return {
