@@ -129,8 +129,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <List>
           <ListItem
             css={css({
-              paddingLeft: '6px',
+              marginTop: 6,
+              paddingLeft: 2,
               paddingRight: 0,
+              borderRadius: 2,
               height: 10,
               backgroundColor: 'sideBar.hoverBackground',
             })}
@@ -175,12 +177,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             name="Recent"
             page="recent"
             path={dashboardUrls.recent(activeTeam)}
-            icon="box"
+            icon="clock"
             style={{ marginTop: 1 }}
           />
           <Element marginTop={4} />
           <Element paddingX={5} paddingY={1}>
-            <Text variant="muted" size={2}>
+            <Text
+              variant="muted"
+              size={2}
+              css={css({ color: 'sideBarSectionHeader.foreground' })}
+            >
               Repositories
             </Text>
           </Element>
@@ -198,7 +204,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
           <Element marginTop={4} />
           <Element paddingX={5} paddingY={1}>
-            <Text variant="muted" size={2}>
+            <Text
+              variant="muted"
+              size={2}
+              css={css({ color: 'sideBarSectionHeader.foreground' })}
+            >
               Sandboxes
             </Text>
           </Element>
@@ -243,7 +253,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             name="Archive"
             page="archive"
             path={dashboardUrls.archive(activeTeam)}
-            icon="trash"
+            icon="archive"
           />
           <Element marginTop={8} />
           <RowItem
@@ -458,8 +468,8 @@ const RowItem: React.FC<RowItemProps> = ({
             opacity: isDragging && !canDrop ? 0.25 : 1,
             color:
               isCurrentLink || (isDragging && canDrop)
-                ? 'list.hoverForeground'
-                : 'list.foreground',
+                ? 'sideBar.foreground'
+                : 'sideBarTitle.foreground',
             backgroundColor:
               canDrop && isOver ? 'list.hoverBackground' : 'transparent',
             transition: 'all ease-in',
@@ -800,3 +810,4 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     </>
   );
 };
+
