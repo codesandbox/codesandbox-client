@@ -104,13 +104,7 @@ export const Header = ({
                 width: 'auto',
               })}
             >
-              <Icon
-                name="plus"
-                size={20}
-                title="New"
-                css={css({ paddingRight: 2 })}
-              />
-              Import Repo
+              + Import Repo
             </Button>
           )}
 
