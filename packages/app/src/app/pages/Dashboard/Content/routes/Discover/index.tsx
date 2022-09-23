@@ -9,6 +9,7 @@ import {
   Column,
   Link,
   Avatar,
+  Icon,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
@@ -154,13 +155,13 @@ const Banner = () => (
     })}
   >
     <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
-      <Text size={4} marginBottom={2}>
+      <Text size={3}>
         {banner.label}
       </Text>
-      <Text size={9} weight="bold" marginBottom={1}>
+      <Text size={32} weight="regular" marginTop={2}>
         {banner.title}
       </Text>
-      <Text size={5} css={{ opacity: 0.5 }}>
+      <Text size={4} marginTop={2} css={{ opacity: 0.6 }}>
         {banner.subtitle}
       </Text>
     </Stack>
@@ -337,7 +338,7 @@ const Album: React.FC<AlbumTypes> = ({ album, showMore = false }) => {
   return (
     <Stack key={album.id} direction="vertical" gap={6}>
       <Stack justify="space-between" align="flex-end">
-        <Text size={6} weight="bold">
+        <Text size={5} weight="regular">
           {album.title}
         </Text>
         {showMore && (
@@ -429,7 +430,7 @@ const TrendingSandboxes = () => {
 
   return (
     <Stack direction="vertical" gap={6} css={css({ marginTop: '100px' })}>
-      <Text size={6} weight="bold">
+      <Text size={5} weight="regular">
         {trendingSandboxesAlbum.title}
       </Text>
 

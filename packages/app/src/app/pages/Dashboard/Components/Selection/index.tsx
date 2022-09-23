@@ -608,7 +608,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         id="selection-container"
         onContextMenu={onContainerContextMenu}
         css={css({
-          paddingTop: 8,
+          paddingTop: 10,
           paddingBottom: 8,
           width: '100%',
           height: '100%',
