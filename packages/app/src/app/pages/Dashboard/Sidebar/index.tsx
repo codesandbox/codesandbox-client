@@ -473,7 +473,7 @@ const RowItem: React.FC<RowItemProps> = ({
             backgroundColor:
               canDrop && isOver ? 'list.hoverBackground' : 'transparent',
             transition: 'all ease-in',
-            transitionDuration: theme => theme.speeds[4],
+            transitionDuration: theme => theme.speeds[1],
             a: {
               ':focus': {
                 // focus state is handled by ListAction:focus-within
@@ -734,7 +734,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 svg: {
                   transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
                   transition: 'transform ease-in-out',
-                  transitionDuration: theme => theme.speeds[2],
+                  transitionDuration: theme => theme.speeds[1],
                 },
               })}
             />

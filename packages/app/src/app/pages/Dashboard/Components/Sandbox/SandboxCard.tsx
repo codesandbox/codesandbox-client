@@ -247,19 +247,19 @@ export const SandboxCard = ({
         position: 'relative',
         width: '100%',
         height: 240,
-        backgroundColor: 'grays.700',
+        backgroundColor: 'card.background',
         border: '1px solid',
-        borderColor: selected ? 'purple' : 'transparent',
+        borderColor: selected ? 'focusBorder' : 'transparent',
         borderRadius: 'medium',
         overflow: 'hidden',
         transition: 'background ease-in-out',
-        transitionDuration: theme => theme.speeds[4],
+        transitionDuration: theme => theme.speeds[2],
         opacity,
-        ':hover, :focus, :focus-within': {
+        ':hover': {
           backgroundColor: 'card.backgroundHover',
         },
         ':focus-visible': {
-          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+          borderColor: 'focusBorder',
         },
       })}
     >

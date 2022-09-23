@@ -37,25 +37,25 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
     css={css({
       width: '100%',
       height: 240,
-      backgroundColor: 'grays.700',
-      border: 'transparent',
+      backgroundColor: 'card.background',
+      border: '1px solid transparent',
       borderRadius: 'medium',
       overflow: 'hidden',
       // drop ssarget
       borderColor: getBorderColor(selected, showDropStyles),
       transition: 'background ease-in-out',
-      transitionDuration: theme => theme.speeds[4],
+      transitionDuration: theme => theme.speeds[2],
       boxShadow: theme =>
         showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
 
       // drag state,
       opacity,
 
-      ':hover, :focus, :focus-within': {
+      ':hover': {
         backgroundColor: 'card.backgroundHover',
       },
       ':focus-visible': {
-        boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+        borderColor: 'focusBorder',
       },
     })}
   >
@@ -120,7 +120,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
 );
 
 const getBorderColor = (selected: boolean, showDropStyles: boolean) => {
-  if (selected) return 'blues.600';
+  if (selected) return 'focusBorder';
   if (showDropStyles) return 'grays.400';
-  return 'grays.500';
+  return 'transparent';
 };

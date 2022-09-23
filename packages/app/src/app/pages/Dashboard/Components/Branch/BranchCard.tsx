@@ -24,16 +24,16 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
         height: 240,
         width: '100%',
         borderRadius: '4px',
-        background: '#191919',
-        opacity: 0.8,
-        transition: 'opacity ease-in-out',
-        transitionDuration: theme => theme.speeds[4],
-        ':hover, :focus, :focus-within': {
-          // This is not the official transition.
-          opacity: 1,
+        border: '1px solid transparent',
+        backgroundColor: 'card.background',
+        transition: 'background ease-in-out',
+        transitionDuration: theme => theme.speeds[2],
+        outline: 'none',
+        ':hover': {
+          backgroundColor: 'card.backgroundHover',
         },
         ':focus-visible': {
-          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+          borderColor: 'focusBorder',
         },
       })}
       direction="vertical"
@@ -55,7 +55,6 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
       </Stack>
       <Stack
         css={css({
-          backgroundColor: 'grays.700',
           padding: 6,
         })}
         direction="vertical"
