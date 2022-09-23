@@ -1,12 +1,11 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Avatar, Button, Stack } from '@codesandbox/components';
+import { Avatar, Button, Icon, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
 import { Notifications } from 'app/components/Notifications';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Icon } from '@codesandbox/components';
 
 import {
   EmbedIcon,
@@ -208,8 +207,13 @@ export const Actions = () => {
         }}
         disabled={activeWorkspaceAuthorization === 'READ'}
       >
-        <Icon name="plus" size={20} title="Create new" css={css({ paddingRight: 2})}/>
-          New
+        <Icon
+          name="plus"
+          size={20}
+          title="Create new"
+          css={css({ paddingRight: 2 })}
+        />
+        New
       </Button>
 
       {hasLogIn && <Notifications />}
