@@ -55,10 +55,13 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
       </Stack>
       <Stack
         css={css({
-          padding: 6,
+          paddingY: 5,
+          paddingLeft: 5,
+          paddingRight: 2,
+          justifyContent: 'space-between',
+          height: '100%',
         })}
         direction="vertical"
-        gap={10}
       >
         <Stack align="center" justify="space-between">
           <Tooltip label={branchName}>

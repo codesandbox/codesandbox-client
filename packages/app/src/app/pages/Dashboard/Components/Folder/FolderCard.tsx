@@ -61,8 +61,8 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
   >
     <Stack
       justify="right"
-      paddingTop={5}
-      paddingX={5}
+      paddingTop={4}
+      paddingX={4}
       css={{ position: 'absolute', width: '100%' }}
     >
       {!isNewFolder ? (
@@ -80,6 +80,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
       align="center"
       direction="vertical"
       gap={1}
+      paddingX={4}
       css={{ flexGrow: 1, textAlign: 'center' }}
     >
       <Stack paddingBottom={4} aria-hidden="true">
