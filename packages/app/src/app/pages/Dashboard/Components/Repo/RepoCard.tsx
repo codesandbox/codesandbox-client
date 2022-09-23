@@ -33,7 +33,7 @@ export const RepoCard = ({
       css={css({
         width: '100%',
         height: 240,
-        backgroundColor: 'card.background',
+        backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
         border: '1px solid',
         borderRadius: 'medium',
         overflow: 'hidden',

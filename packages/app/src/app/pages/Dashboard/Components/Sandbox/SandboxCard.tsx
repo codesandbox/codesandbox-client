@@ -247,7 +247,7 @@ export const SandboxCard = ({
         position: 'relative',
         width: '100%',
         height: 240,
-        backgroundColor: 'card.background',
+        backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
         border: '1px solid',
         borderColor: selected ? 'focusBorder' : 'transparent',
         borderRadius: 'medium',

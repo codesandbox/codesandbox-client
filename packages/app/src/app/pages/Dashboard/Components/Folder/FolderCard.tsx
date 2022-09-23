@@ -37,7 +37,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
     css={css({
       width: '100%',
       height: 240,
-      backgroundColor: 'card.background',
+      backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
       border: '1px solid transparent',
       borderRadius: 'medium',
       overflow: 'hidden',
@@ -81,7 +81,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
       direction="vertical"
       gap={1}
       paddingX={4}
-      css={{ flexGrow: 1, textAlign: 'center' }}
+      css={{ flexGrow: 1 }}
     >
       <Stack paddingBottom={4} aria-hidden="true">
         <svg width={32} height={32} fill="none" viewBox="0 0 32 32">
@@ -104,7 +104,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
           />
         </form>
       ) : (
-        <Text size={4} css={{ minHeight: 26 }}>
+        <Text size={4} css={{ minHeight: 26, textAlign: 'center' }}>
           {name}
         </Text>
       )}
