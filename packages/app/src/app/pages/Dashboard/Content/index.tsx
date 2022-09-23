@@ -21,7 +21,6 @@ import { Curate } from './routes/Discover/Curate';
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
 import { MyContributions } from './routes/MyContributions';
 import { RepositoriesPage } from './routes/Repositories';
-import { RepositoryBranchesPage } from './routes/RepositoryBranches';
 
 export const Content = withRouter(({ history }) => {
   const { dashboard } = useActions();
@@ -62,13 +61,8 @@ export const Content = withRouter(({ history }) => {
           component={MyContributions}
         />
         <Route
-          exact
-          path="/dashboard/repositories"
+          path="/dashboard/repositories/:path*"
           component={RepositoriesPage}
-        />
-        <Route
-          path="/dashboard/repositories/:provider/:owner/:name"
-          component={RepositoryBranchesPage}
         />
         <Route
           path="/dashboard/synced-sandboxes/:path*"

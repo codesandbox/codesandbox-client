@@ -6,7 +6,7 @@ import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 export interface BreadcrumbProps {
   path: string;
   activeTeam: string;
-  nestedPageType?: 'repository-branches' | 'synced-sandboxes';
+  nestedPageType?: 'repositories' | 'synced-sandboxes';
   albumId?: string;
 }
 
@@ -19,7 +19,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   let link = dashboard.sandboxes('/', activeTeam);
   if (nestedPageType) {
     link = {
-      'repository-branches': dashboard.repositories(activeTeam),
+      repositories: dashboard.repositories(activeTeam),
       'synced-sandboxes': dashboard.syncedSandboxes(activeTeam),
     }[nestedPageType];
   } else if (albumId) link = dashboard.discover(activeTeam);
@@ -28,7 +28,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   if (nestedPageType) {
     prefix = {
       'synced-sandboxes': 'Synced sandboxes',
-      'repository-branches': 'All repositories',
+      repositories: 'All repositories',
     }[nestedPageType];
   } else if (albumId) prefix = 'Discover';
 
@@ -70,7 +70,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
             </Link>
           );
         })}
-      {path && nestedPageType === 'repository-branches' && <span>{path}</span>}
+      {path && nestedPageType === 'repositories' && <span>{path}</span>}
     </Text>
   );
 };

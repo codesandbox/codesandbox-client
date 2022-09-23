@@ -234,7 +234,7 @@ export const branchFragment = gql`
 export const projectFragment = gql`
   fragment project on Project {
     branches {
-      id
+      ...branch
     }
     repository {
       ... on GitHubRepository {
@@ -243,4 +243,5 @@ export const projectFragment = gql`
       }
     }
   }
+  ${branchFragment}
 `;

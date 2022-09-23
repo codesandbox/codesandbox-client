@@ -2297,7 +2297,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
   };
 
 export type ProjectFragment = { __typename?: 'Project' } & {
-  branches: Array<{ __typename?: 'Branch' } & Pick<Branch, 'id'>>;
+  branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
   repository: { __typename?: 'GitHubRepository' } & Pick<
     GitHubRepository,
     'owner' | 'name'

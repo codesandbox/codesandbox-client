@@ -9,7 +9,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
-  const param = params.path || '';
+  const path = params.path ?? '';
   const actions = useActions();
   const {
     activeTeam,
@@ -27,6 +27,22 @@ export const RepositoriesPage = () => {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
 
+    if (path) {
+      const [, owner, name] = path.split('/');
+      const currentRepository = repositories.find(
+        r => r.repository.owner === owner && r.repository.name === name
+      );
+
+      if (!currentRepository) {
+        return [];
+      }
+
+      return currentRepository.branches.map(branch => ({
+        type: 'branch',
+        branch,
+      }));
+    }
+
     return repositories.map(repository => ({
       type: 'repository',
       repository,
@@ -40,15 +56,13 @@ export const RepositoriesPage = () => {
       items={itemsToShow()}
     >
       <Helmet>
-        <title>{param || 'Dashboard'} - CodeSandbox</title>
+        <title>{path || 'Dashboard'} - CodeSandbox</title>
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        path={param}
+        path={path}
         showViewOptions
-        showFilters={Boolean(param)}
-        showSortOptions={Boolean(param)}
-        title="All repositories"
+        nestedPageType={pageType}
       />
       <VariableGrid page={pageType} items={itemsToShow()} />
     </SelectionProvider>
