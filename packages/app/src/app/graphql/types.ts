@@ -3209,6 +3209,7 @@ export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
 
 export type RepositoriesByTeamQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
+  syncData: Maybe<Scalars['Boolean']>;
 }>;
 
 export type RepositoriesByTeamQuery = { __typename?: 'RootQueryType' } & {

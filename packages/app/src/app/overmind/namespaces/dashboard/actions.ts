@@ -1972,15 +1972,35 @@ export const getRepositoriesByTeam = async ({ state, effects }: Context) => {
   try {
     dashboard.repositories = null;
 
-    const repositoriesData = await effects.gql.queries.getRepositoriesByTeam({
-      teamId: activeTeam,
-    });
-    const v2Repositories = repositoriesData?.me?.team?.projects;
-    if (!v2Repositories?.length) {
+    // First fetch data without syncing with GitHub
+    // to decrease waiting time.
+    const unsyncedRepositoriesData = await effects.gql.queries.getRepositoriesByTeam(
+      {
+        teamId: activeTeam,
+        syncData: false,
+      }
+    );
+    const unsyncedRepositories = unsyncedRepositoriesData?.me?.team?.projects;
+    if (!unsyncedRepositories?.length) {
       return;
     }
 
-    dashboard.repositories = v2Repositories;
+    dashboard.repositories = unsyncedRepositories;
+
+    // Then fetch data synced with GitHub to make sure
+    // what we show is up-to-date.
+    const syncedRepositoriesData = await effects.gql.queries.getRepositoriesByTeam(
+      {
+        teamId: activeTeam,
+        syncData: true,
+      }
+    );
+    const syncedRepositories = syncedRepositoriesData?.me?.team?.projects;
+    if (!syncedRepositories?.length) {
+      return;
+    }
+
+    dashboard.repositories = syncedRepositories;
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your open repositories'

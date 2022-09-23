@@ -490,12 +490,12 @@ export const getRepositoriesByTeam: Query<
   RepositoriesByTeamQuery,
   RepositoriesByTeamQueryVariables
 > = gql`
-  query RepositoriesByTeam($teamId: UUID4!) {
+  query RepositoriesByTeam($teamId: UUID4!, $syncData: Boolean) {
     me {
       team(id: $teamId) {
         id
         name
-        projects {
+        projects(syncData: $syncData) {
           ...project
         }
       }
