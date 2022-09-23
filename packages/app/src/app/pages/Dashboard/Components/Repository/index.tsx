@@ -79,7 +79,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
           onClick={() => ({})}
         />
         <Stack align="center" direction="vertical" gap={6}>
-          <Icon aria-hidden color="#808080" name="pr" size={24} />
+          <Icon aria-hidden color="#808080" name="git" size={24} />
           <Stack align="center" direction="vertical" gap={2}>
             <Text
               css={css({
@@ -135,7 +135,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
             }}
           >
             <Stack gap={4} align="center" marginLeft={2}>
-              <Icon aria-hidden color="#808080" name="pr" size={16} />
+              <Icon aria-hidden color="#808080" name="git" size={16} />
               <Element css={{ overflow: 'hidden' }}>
                 <Text size={3} weight="medium" maxWidth="100%">
                   {providerRepository.owner}/{providerRepository.name}
