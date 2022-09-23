@@ -18,6 +18,12 @@ import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
 
+const mapSandboxEventToPageType: Partial<Record<PageTypes, string>> = {
+  recent: 'Dashboard - Open Sandbox from Recent',
+  drafts: 'Dashboard - Open Sandbox from My Drafts',
+  sandboxes: 'Dashboard - Open Sandbox from Sandboxes',
+};
+
 const PrivacyIcons = {
   0: () => null,
   1: () => <Icon name="link" size={12} />,
@@ -158,37 +164,43 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const history = useHistory();
   const onDoubleClick = event => {
-    // can't open deleted items, they don't exist anymore
+    // Can't open deleted items, they don't exist anymore
     if (location.pathname.includes('archive')) {
       onContextMenu(event);
       return;
     }
 
+    const sandboxEvent = !autoFork ? mapSandboxEventToPageType[page] : null;
+
     // Templates in Home should fork, everything else opens
     if (event.ctrlKey || event.metaKey) {
       if (autoFork) {
+        track('Dashboard - Recent template forked', {
+          source: 'Home',
+          dashboardVersion: 2,
+        });
         actions.editor.forkExternalSandbox({
           sandboxId: sandbox.id,
           openInNewWindow: true,
         });
       } else {
+        track(sandboxEvent, {
+          codesandbox: 'V1',
+          event_source: 'UI',
+        });
         window.open(url, '_blank');
       }
-      track('Dashboard - Recent template forked', {
-        source: 'Home',
-        dashboardVersion: 2,
-      });
     } else if (autoFork) {
       actions.editor.forkExternalSandbox({
         sandboxId: sandbox.id,
       });
     } else {
+      track(sandboxEvent, {
+        codesandbox: 'V1',
+        event_source: 'UI',
+      });
       history.push(url);
     }
-    track('Dashboard - Recent sandbox opened', {
-      source: 'Home',
-      dashboardVersion: 2,
-    });
   };
 
   /* Edit logic */
