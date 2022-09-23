@@ -42,7 +42,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
         {prefix} {path && ' / '}
       </Link>
       {path &&
-        nestedPageType === 'synced-sandboxes' &&
+        nestedPageType !== 'repositories' &&
         path.split('/').map((currentPath, i, arr) => {
           const partPath = path
             .split('/')
