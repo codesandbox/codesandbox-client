@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
 import { Button } from '@codesandbox/components';
 
@@ -185,4 +185,32 @@ export const TemplateGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
+`;
+
+export const SelectContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+`;
+
+export const inputStyles = css`
+  height: 32px;
+  padding: 8px 16px;
+  background-color: #2a2a2a;
+  color: #e5e5e5;
+  border: none;
+  border-radius: 2px;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 500;
+`;
+
+export const StyledInput = styled.input`
+  ${inputStyles}
+`;
+
+export const StyledLabel = styled.label`
+  color: #999999;
+  font-size: 12px;
+  line-height: 16px;
 `;

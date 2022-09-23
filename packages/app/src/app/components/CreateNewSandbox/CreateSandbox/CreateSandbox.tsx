@@ -31,6 +31,7 @@ import { Essentials } from './Essentials';
 import { TeamTemplates } from './TeamTemplates';
 import { CodeSandboxTemplates } from './CodeSandboxTemplates';
 import { useEssentialTemplates } from './useEssentialTemplates';
+import { FromTemplate } from './FromTemplate';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -247,17 +248,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               ) : null}
 
               {viewState === 'fromTemplate' ? (
-                <div>
-                  Template form fields for {selectedTemplate.sandbox.title}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setViewState('initial');
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
+                <FromTemplate
+                  onCancel={() => {
+                    setViewState('initial');
+                  }}
+                />
               ) : null}
 
               {viewState === 'fork' ? <div>Repo fork form fields</div> : null}
