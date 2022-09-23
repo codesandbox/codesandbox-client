@@ -3,33 +3,33 @@ import { Text, Link } from '@codesandbox/components';
 import { Link as LinkBase } from 'react-router-dom';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
-interface BreadcrumbProps {
+export interface BreadcrumbProps {
   path: string;
   activeTeam: string;
-  repos?: 'contributions' | 'repositories';
+  nestedPageType?: 'repositories' | 'synced-sandboxes';
   albumId?: string;
 }
 
 export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   path,
   activeTeam,
-  repos,
+  nestedPageType,
   albumId,
 }) => {
   let link = dashboard.sandboxes('/', activeTeam);
-  if (repos) {
+  if (nestedPageType) {
     link = {
-      contributions: dashboard.myContributions(activeTeam),
       repositories: dashboard.repositories(activeTeam),
-    }[repos];
+      'synced-sandboxes': dashboard.syncedSandboxes(activeTeam),
+    }[nestedPageType];
   } else if (albumId) link = dashboard.discover(activeTeam);
 
   let prefix = 'Sandboxes';
-  if (repos) {
+  if (nestedPageType) {
     prefix = {
-      contributions: 'My contributions',
+      'synced-sandboxes': 'Synced sandboxes',
       repositories: 'All repositories',
-    }[repos];
+    }[nestedPageType];
   } else if (albumId) prefix = 'Discover';
 
   return (
@@ -41,33 +41,36 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
       >
         {prefix} {path && ' / '}
       </Link>
-      {path
-        ? path.split('/').map((currentPath, i, arr) => {
-            const partPath = path
-              .split('/')
-              .slice(0, i + 1)
-              .join('/');
+      {path &&
+        nestedPageType !== 'repositories' &&
+        path.split('/').map((currentPath, i, arr) => {
+          const partPath = path
+            .split('/')
+            .slice(0, i + 1)
+            .join('/');
 
-            const isCurrent = i + 1 === arr.length;
+          const isCurrent = i + 1 === arr.length;
 
-            if (isCurrent) {
-              return currentPath;
-            }
+          if (isCurrent) {
+            return currentPath;
+          }
 
-            return (
-              <Link
-                key={currentPath}
-                as={LinkBase}
-                to={
-                  repos ? link : dashboard.sandboxes('/' + partPath, activeTeam)
-                }
-                variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
-              >
-                {currentPath} {i < path.split('/').length - 1 && '/ '}
-              </Link>
-            );
-          })
-        : null}
+          return (
+            <Link
+              key={currentPath}
+              as={LinkBase}
+              to={
+                nestedPageType
+                  ? link
+                  : dashboard.sandboxes('/' + partPath, activeTeam)
+              }
+              variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
+            >
+              {currentPath} {i < path.split('/').length - 1 && '/ '}
+            </Link>
+          );
+        })}
+      {path && nestedPageType === 'repositories' && <span>{path}</span>}
     </Text>
   );
 };

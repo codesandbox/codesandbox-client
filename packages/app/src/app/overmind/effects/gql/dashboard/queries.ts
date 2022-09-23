@@ -502,4 +502,5 @@ export const getRepositoriesByTeam: Query<
     }
   }
   ${projectFragment}
+  ${branchFragment}
 `;

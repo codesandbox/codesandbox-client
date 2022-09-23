@@ -91,6 +91,10 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
           <Text
             css={css({
               color: '#808080',
+              flex: 1,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             })}
             size={13}
           >
