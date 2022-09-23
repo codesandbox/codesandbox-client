@@ -234,6 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <NestableRowItem
             name="Sandboxes"
             path={dashboardUrls.sandboxes('/', activeTeam)}
+            page="sandboxes"
             folderPath="/"
             folders={[
               ...folders,
@@ -393,6 +394,17 @@ const isSamePath = (
   return false;
 };
 
+const mapSidebarItemEventToPageType: Partial<Record<PageTypes, string>> = {
+  recent: 'Dashboard - View Recent',
+  'my-contributions': 'Dashboard - View My Contributions',
+  repositories: 'Dashboard - View Repositories',
+  drafts: 'Dashboard - View Drafts',
+  templates: 'Dashboard - View Templates',
+  'synced-sandboxes': 'Dashboard - View Synced Sandboxes',
+  archive: 'Dashboard - View Archive',
+  sandboxes: 'Dashboard - View Sandboxes',
+};
+
 interface RowItemProps {
   name: string;
   path: string;
@@ -404,7 +416,6 @@ interface RowItemProps {
   badge?: boolean;
   nestingLevel?: number;
 }
-
 const RowItem: React.FC<RowItemProps> = ({
   name,
   path,
@@ -512,6 +523,17 @@ const RowItem: React.FC<RowItemProps> = ({
                 history.push(linkTo, { focus: 'FIRST_ITEM' });
               }
             },
+            onClick: () => {
+              const event = mapSidebarItemEventToPageType[page];
+              if (event) {
+                track(mapSidebarItemEventToPageType[page], {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+              }
+
+              return false;
+            },
           }}
         >
           <Stack
@@ -543,12 +565,14 @@ interface NestableRowItemProps {
   name: string;
   folderPath: string;
   path: string;
+  page: PageTypes;
   folders: DashboardBaseFolder[];
 }
 
 const NestableRowItem: React.FC<NestableRowItemProps> = ({
   name,
   path,
+  page,
   folderPath,
   folders,
 }) => {
@@ -717,7 +741,17 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
       >
         <Link
           to={folderUrl}
-          onClick={() => history.push(folderUrl)}
+          onClick={() => {
+            const event = mapSidebarItemEventToPageType[page];
+            if (event) {
+              track(mapSidebarItemEventToPageType[page], {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+            }
+            history.push(folderUrl);
+            return false;
+          }}
           onContextMenu={onContextMenu}
           onKeyDown={event => {
             if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
@@ -811,6 +845,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
               .sort(a => 1)
               .map(folder => (
                 <NestableRowItem
+                  page={page}
                   key={folder.path}
                   name={folder.name}
                   path={dashboardUrls.sandboxes(folder.path, state.activeTeam)}
