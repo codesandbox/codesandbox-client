@@ -44,7 +44,7 @@ export const RepositoriesPage = () => {
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        repos="repositories"
+        nestedPageType="repositories"
         path={param}
         showViewOptions
         showFilters={Boolean(param)}

@@ -44,7 +44,7 @@ export const MyContributionsPage = () => {
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        repos="contributions"
+        title="My contributions"
         path={param}
         showViewOptions
         showFilters={Boolean(param)}

@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { Breadcrumbs } from '../Breadcrumbs';
+import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
 import { SortOptions } from '../Filters/SortOptions';
@@ -24,7 +24,7 @@ type Props = {
   showFilters?: boolean;
   showViewOptions?: boolean;
   showSortOptions?: boolean;
-  repos?: 'contributions' | 'repositories';
+  nestedPageType?: BreadcrumbProps['nestedPageType'];
   albumId?: string;
   activeTeam: string;
   CustomFilters?: React.ReactElement;
@@ -33,7 +33,7 @@ type Props = {
 export const Header = ({
   createNewFolder,
   templates,
-  repos,
+  nestedPageType,
   albumId,
   path,
   title,
@@ -65,7 +65,7 @@ export const Header = ({
         </Text>
       ) : (
         <Breadcrumbs
-          repos={repos}
+          nestedPageType={nestedPageType}
           activeTeam={activeTeam}
           path={path}
           albumId={albumId}

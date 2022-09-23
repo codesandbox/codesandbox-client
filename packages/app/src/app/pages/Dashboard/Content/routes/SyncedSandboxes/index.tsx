@@ -36,6 +36,7 @@ export const SyncedSandboxesPage = () => {
     if (sandboxes.REPOS === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
+
     if (home) {
       return viewMode === 'grid' && items.length
         ? [{ type: 'new-repo' }, ...items]
@@ -80,13 +81,13 @@ export const SyncedSandboxesPage = () => {
         <title>{param || 'Dashboard'} - CodeSandbox</title>
       </Helmet>
       <Header
-        title="Synced sandboxes"
         activeTeam={activeTeam}
         path={param}
         templates={templates}
         showViewOptions
         showFilters={Boolean(param)}
         showSortOptions={Boolean(param)}
+        nestedPageType={pageType}
       />
       <VariableGrid page={pageType} items={itemsToShow()} />
     </SelectionProvider>

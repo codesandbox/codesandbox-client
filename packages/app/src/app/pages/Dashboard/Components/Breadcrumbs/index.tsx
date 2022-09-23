@@ -3,33 +3,33 @@ import { Text, Link } from '@codesandbox/components';
 import { Link as LinkBase } from 'react-router-dom';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
-interface BreadcrumbProps {
+export interface BreadcrumbProps {
   path: string;
   activeTeam: string;
-  repos?: 'contributions' | 'repositories';
+  nestedPageType?: 'repositories' | 'synced-sandboxes';
   albumId?: string;
 }
 
 export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   path,
   activeTeam,
-  repos,
+  nestedPageType,
   albumId,
 }) => {
   let link = dashboard.sandboxes('/', activeTeam);
-  if (repos) {
+  if (nestedPageType) {
     link = {
-      contributions: dashboard.myContributions(activeTeam),
       repositories: dashboard.repositories(activeTeam),
-    }[repos];
+      'synced-sandboxes': dashboard.syncedSandboxes(activeTeam),
+    }[nestedPageType];
   } else if (albumId) link = dashboard.discover(activeTeam);
 
   let prefix = 'Sandboxes';
-  if (repos) {
+  if (nestedPageType) {
     prefix = {
-      contributions: 'My contributions',
+      'synced-sandboxes': 'Synced sandboxes',
       repositories: 'All repositories',
-    }[repos];
+    }[nestedPageType];
   } else if (albumId) prefix = 'Discover';
 
   return (
@@ -59,7 +59,9 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
                 key={currentPath}
                 as={LinkBase}
                 to={
-                  repos ? link : dashboard.sandboxes('/' + partPath, activeTeam)
+                  nestedPageType
+                    ? link
+                    : dashboard.sandboxes('/' + partPath, activeTeam)
                 }
                 variant={i < path.split('/').length - 1 ? 'muted' : 'body'}
               >

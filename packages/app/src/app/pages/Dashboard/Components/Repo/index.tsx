@@ -30,7 +30,7 @@ export const Repo = ({ name = '', path = null, ...props }: DashboardRepo) => {
   const history = useHistory();
   const onDoubleClick = event => {
     // TODO: map repo type to url
-    const url = '/dashboard/repositories/legacy' + path;
+    const url = '/dashboard/synced-sandboxes' + path;
     if (event.ctrlKey || event.metaKey) {
       window.open(url, '_blank');
     } else {
