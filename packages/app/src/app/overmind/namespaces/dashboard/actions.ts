@@ -2003,7 +2003,34 @@ export const getRepositoriesByTeam = async ({ state, effects }: Context) => {
     dashboard.repositories = syncedRepositories;
   } catch (error) {
     effects.notificationToast.error(
-      'There was a problem getting your open repositories'
+      'There was a problem getting your repositories'
+    );
+  }
+};
+
+// If the repository page is accessed directly, we can use this
+// to avoid fetching all repos.
+export const getRepositoryByDetails = async (
+  { state, effects }: Context,
+  { owner, name }: { owner: string; name: string }
+) => {
+  const { dashboard } = state;
+  try {
+    dashboard.repositories = null;
+
+    const repositoryData = await effects.gql.queries.getRepositoryByDetails({
+      owner,
+      name,
+    });
+    const repository = repositoryData?.project;
+    if (!repository) {
+      return;
+    }
+
+    dashboard.repositories = [repository];
+  } catch (error) {
+    effects.notificationToast.error(
+      `There was a problem getting repository ${name} from ${owner}`
     );
   }
 };

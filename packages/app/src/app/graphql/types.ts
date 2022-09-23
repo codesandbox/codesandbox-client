@@ -3224,6 +3224,15 @@ export type RepositoriesByTeamQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type RepositoryByDetailsQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+export type RepositoryByDetailsQuery = { __typename?: 'RootQueryType' } & {
+  project: Maybe<{ __typename?: 'Project' } & ProjectFragment>;
+};
+
 export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<
   Notification,
   'id' | 'type' | 'data' | 'insertedAt' | 'read'

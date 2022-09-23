@@ -51,6 +51,8 @@ import {
   ContributionBranchesQueryVariables,
   RepositoriesByTeamQuery,
   RepositoriesByTeamQueryVariables,
+  RepositoryByDetailsQuery,
+  RepositoryByDetailsQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -499,6 +501,19 @@ export const getRepositoriesByTeam: Query<
           ...project
         }
       }
+    }
+  }
+  ${projectFragment}
+  ${branchFragment}
+`;
+
+export const getRepositoryByDetails: Query<
+  RepositoryByDetailsQuery,
+  RepositoryByDetailsQueryVariables
+> = gql`
+  query RepositoryByDetails($owner: String!, $name: String!) {
+    project(gitProvider: GITHUB, owner: $owner, repo: $name) {
+      ...project
     }
   }
   ${projectFragment}

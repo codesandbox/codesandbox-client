@@ -17,8 +17,18 @@ export const RepositoriesPage = () => {
   } = useAppState();
 
   React.useEffect(() => {
-    actions.dashboard.getRepositoriesByTeam();
-  }, [activeTeam, actions.dashboard]);
+    // If no repositories were fetched yet and the user tries
+    // to directly access a repository, we should fetch said
+    // repository only.
+    if (repositories === null) {
+      if (path) {
+        const [, owner, name] = path.split('/');
+        actions.dashboard.getRepositoryByDetails({ owner, name });
+      } else {
+        actions.dashboard.getRepositoriesByTeam();
+      }
+    }
+  }, [path]);
 
   const pageType: PageTypes = 'repositories';
 
