@@ -50,7 +50,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
           border: '1px solid transparent',
           backgroundColor: 'card.background',
           transition: 'background ease-in-out',
-          padding: 6,
+          padding: 4,
           outline: 'none',
 
           transitionDuration: theme => theme.speeds[2],
