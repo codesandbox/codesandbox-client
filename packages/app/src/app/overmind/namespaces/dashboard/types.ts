@@ -10,6 +10,7 @@ export type PageTypes =
   | 'synced-sandboxes'
   | 'my-contributions'
   | 'repositories'
+  | 'repository-branches'
   | 'shared'
   | 'liked'
   | 'always-on'

@@ -7,9 +7,12 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 
-export const RepositoriesPage = () => {
-  const params = useParams<{ path: string }>();
-  const param = params.path || '';
+export const RepositoryBranchesPage = () => {
+  const params = useParams<{
+    provider: 'github';
+    owner: string;
+    name: string;
+  }>();
   const actions = useActions();
   const {
     activeTeam,
@@ -20,7 +23,7 @@ export const RepositoriesPage = () => {
     actions.dashboard.getRepositoriesByTeam();
   }, [activeTeam, actions.dashboard]);
 
-  const pageType: PageTypes = 'repositories';
+  const pageType: PageTypes = 'repository-branches';
 
   const itemsToShow = (): DashboardGridItem[] => {
     if (repositories === null) {
@@ -40,19 +43,20 @@ export const RepositoriesPage = () => {
       items={itemsToShow()}
     >
       <Helmet>
-        <title>{param || 'Dashboard'} - CodeSandbox</title>
+        <title>
+          {params.owner}/{params.name} - CodeSandbox
+        </title>
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        path={param}
+        nestedPageType={pageType}
+        path={`${params.owner}/${params.name}`}
         showViewOptions
-        showFilters={Boolean(param)}
-        showSortOptions={Boolean(param)}
-        title="All repositories"
       />
-      <VariableGrid page={pageType} items={itemsToShow()} />
+      foo.
+      <VariableGrid page={pageType} items={[]} />
     </SelectionProvider>
   );
 };
 
-export const Repositories = React.memo(RepositoriesPage);
+export const Repositories = React.memo(RepositoryBranchesPage);
