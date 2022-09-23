@@ -172,7 +172,9 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
       return;
     }
 
-    const sandboxEvent = !autoFork ? mapSandboxEventToPageType[page] : null;
+    const sandboxAnalyticsEvent = !autoFork
+      ? mapSandboxEventToPageType[page]
+      : null;
 
     // Templates in Home should fork, everything else opens
     if (event.ctrlKey || event.metaKey) {
@@ -186,7 +188,9 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
           openInNewWindow: true,
         });
       } else {
-        trackImprovedDashboardEvent(sandboxEvent);
+        if (sandboxAnalyticsEvent) {
+          trackImprovedDashboardEvent(sandboxAnalyticsEvent);
+        }
         window.open(url, '_blank');
       }
     } else if (autoFork) {
@@ -194,7 +198,9 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
         sandboxId: sandbox.id,
       });
     } else {
-      trackImprovedDashboardEvent(sandboxEvent);
+      if (sandboxAnalyticsEvent) {
+        trackImprovedDashboardEvent(sandboxAnalyticsEvent);
+      }
       history.push(url);
     }
   };
