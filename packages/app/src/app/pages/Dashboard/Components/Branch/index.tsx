@@ -1,5 +1,5 @@
-import track from '@codesandbox/common/lib/utils/analytics';
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analytics';
 import { useAppState } from 'app/overmind';
 import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
 import React from 'react';
@@ -35,7 +35,7 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
   };
 
   const handleClick = () => {
-    track(mapBranchEventToPageType[page], {
+    trackImprovedDashboardEvent(mapBranchEventToPageType[page], {
       codesandbox: 'V1',
       event_source: 'UI',
     });

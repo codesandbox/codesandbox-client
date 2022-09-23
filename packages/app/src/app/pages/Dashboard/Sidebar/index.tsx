@@ -6,7 +6,9 @@ import { useAppState, useActions } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import track from '@codesandbox/common/lib/utils/analytics';
+import track, {
+  trackImprovedDashboardEvent,
+} from '@codesandbox/common/lib/utils/analytics';
 import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
 import {
   Element,
@@ -526,10 +528,9 @@ const RowItem: React.FC<RowItemProps> = ({
             onClick: () => {
               const event = mapSidebarItemEventToPageType[page];
               if (event) {
-                track(mapSidebarItemEventToPageType[page], {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
+                trackImprovedDashboardEvent(
+                  mapSidebarItemEventToPageType[page]
+                );
               }
 
               return false;
@@ -744,10 +745,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
           onClick={() => {
             const event = mapSidebarItemEventToPageType[page];
             if (event) {
-              track(mapSidebarItemEventToPageType[page], {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
+              trackImprovedDashboardEvent(mapSidebarItemEventToPageType[page]);
             }
             history.push(folderUrl);
             return false;

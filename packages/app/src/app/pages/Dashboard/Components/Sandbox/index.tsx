@@ -7,7 +7,9 @@ import { zonedTimeToUtc } from 'date-fns-tz';
 import { useActions, useAppState } from 'app/overmind';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import track from '@codesandbox/common/lib/utils/analytics';
+import track, {
+  trackImprovedDashboardEvent,
+} from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
 import { SandboxCard, SkeletonCard } from './SandboxCard';
@@ -184,10 +186,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
           openInNewWindow: true,
         });
       } else {
-        track(sandboxEvent, {
-          codesandbox: 'V1',
-          event_source: 'UI',
-        });
+        trackImprovedDashboardEvent(sandboxEvent);
         window.open(url, '_blank');
       }
     } else if (autoFork) {
@@ -195,10 +194,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
         sandboxId: sandbox.id,
       });
     } else {
-      track(sandboxEvent, {
-        codesandbox: 'V1',
-        event_source: 'UI',
-      });
+      trackImprovedDashboardEvent(sandboxEvent);
       history.push(url);
     }
   };
