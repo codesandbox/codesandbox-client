@@ -10,8 +10,8 @@ import {
   Text,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-
 import { useAppState } from 'app/overmind';
+import { useHistory } from 'react-router-dom';
 import { DashboardRepository } from '../../types';
 
 export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
@@ -23,8 +23,18 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
   const branchesLabel = `${branches.length} ${
     branches.length === 1 ? 'branch' : 'branches'
   }`;
-  // TODO: handle selecting a repository
-  const handleClick = (_: React.MouseEvent | React.KeyboardEvent) => ({});
+  const history = useHistory();
+
+  // TODO: replace with double click action when/if implemeting the context menu
+  const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
+    // TODO: add analytics
+    const url = `/dashboard/repositories/github/${providerRepository.owner}/${providerRepository.name}`;
+    if (e.ctrlKey || e.metaKey) {
+      window.open(url, '_blank');
+    } else {
+      history.push(url);
+    }
+  };
 
   if (viewMode === 'grid') {
     return (
