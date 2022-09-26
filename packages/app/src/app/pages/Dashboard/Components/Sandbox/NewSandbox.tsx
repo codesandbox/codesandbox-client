@@ -19,18 +19,18 @@ export const NewSandbox: React.FC<NewSandboxProps> = props => {
       css={css({
         height: 240,
         fontSize: 3,
-        backgroundColor: 'grays.700',
+        backgroundColor: 'card.background',
         border: '1px solid',
         borderColor: 'transparent',
         borderRadius: 'medium',
         transition: 'background ease-in',
         fontWeight: 'normal',
-        transitionDuration: theme => theme.speeds[4],
-        ':hover, :focus, :focus-within': {
+        transitionDuration: theme => theme.speeds[2],
+        ':hover': {
           backgroundColor: 'card.backgroundHover',
         },
         ':focus-visible': {
-          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+          borderColor: 'focusBorder',
         },
       })}
     >

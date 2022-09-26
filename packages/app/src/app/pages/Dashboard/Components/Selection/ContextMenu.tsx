@@ -8,6 +8,7 @@ import {
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
   PageTypes,
+  DashboardBranch,
 } from '../../types';
 import {
   MultiMenu,
@@ -18,6 +19,7 @@ import {
   ContainerMenu,
   CommunitySandboxMenu,
 } from './ContextMenus';
+import { BranchMenu } from './ContextMenus/BranchMenu';
 
 interface IMenuProps {
   visible: boolean;
@@ -36,6 +38,7 @@ interface IContextMenuProps extends IMenuProps {
   sandboxes: Array<DashboardSandbox | DashboardTemplate>;
   folders: Array<DashboardFolder>;
   repos?: Array<DashboardRepo>;
+  branches: Array<DashboardBranch>;
   setRenaming: null | ((value: boolean) => void);
   createNewFolder: () => void;
   createNewSandbox: (() => void) | null;
@@ -49,6 +52,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   selectedIds,
   sandboxes,
   folders,
+  branches,
   repos,
   setRenaming,
   createNewFolder,
@@ -64,6 +68,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     | DashboardRepo
     | DashboardNewMasterBranch
     | DashboardCommunitySandbox
+    | DashboardBranch
   > = selectedIds.map(id => {
     if (id.startsWith('/')) {
       if (repos && repos.length) {
@@ -86,6 +91,12 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
       const folder = folders.find(f => f.path === id);
       return { type: 'folder', ...folder };
     }
+
+    const branch = branches.find(b => b.branch.id === id);
+    if (branch) {
+      return branch;
+    }
+
     const sandbox = sandboxes.find(s => s.sandbox.id === id);
     return sandbox;
   });
@@ -100,8 +111,22 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
         createNewFolder={createNewFolder}
       />
     );
+  } else if (selectedItems[0].type === 'branch') {
+    menu = <BranchMenu branch={selectedItems[0].branch} />;
   } else if (selectedItems.length > 1) {
-    menu = <MultiMenu page={page} selectedItems={selectedItems} />;
+    menu = (
+      <MultiMenu
+        page={page}
+        selectedItems={
+          selectedItems as Array<
+            | DashboardFolder
+            | DashboardSandbox
+            | DashboardTemplate
+            | DashboardCommunitySandbox
+          >
+        }
+      />
+    );
   } else if (
     selectedItems[0] &&
     (selectedItems[0].type === 'sandbox' ||

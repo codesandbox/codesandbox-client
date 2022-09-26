@@ -231,19 +231,33 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     onSubmit();
   }, [onSubmit]);
 
-  const interactionProps = {
-    tabIndex: 0, // make div focusable
-    style: {
-      outline: 'none',
-    }, // we handle outline with border
-    selected,
-    onClick,
-    onMouseDown,
-    onDoubleClick,
-    onContextMenu,
-    onBlur,
-    'data-selection-id': sandbox.id,
-  };
+  const interactionProps =
+    page === 'recent'
+      ? {
+          selected,
+          as: 'a',
+          href: url,
+          style: {
+            outline: 'none',
+            textDecoration: 'none',
+          },
+          onBlur,
+          onContextMenu,
+        }
+      : {
+          tabIndex: 0, // make div focusable
+          style: {
+            outline: 'none',
+          }, // we handle outline with border
+          selected,
+          onClick,
+          onMouseDown,
+          onDoubleClick,
+          onContextMenu,
+          onBlur,
+          // Recent page does not support selection
+          'data-selection-id': sandbox.id,
+        };
 
   const sandboxProps = {
     autoFork,
