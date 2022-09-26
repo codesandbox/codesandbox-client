@@ -40,13 +40,6 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch }) => {
           Open on GitHub
         </MenuItem>
       )}
-      <MenuItem
-        onSelect={() => {
-          /* TODO: Decide if we bring the functionality from v2 */
-        }}
-      >
-        Open in VS Code
-      </MenuItem>
       <Menu.Divider />
       <MenuItem
         onSelect={() => {
