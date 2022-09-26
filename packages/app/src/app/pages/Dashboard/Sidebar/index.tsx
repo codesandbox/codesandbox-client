@@ -126,14 +126,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
           ...props.css,
         })}
       >
-        <List>
+        <List
+          css={css({
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            paddingBottom: 4,
+          })}
+        >
           <ListItem
             css={css({
               marginTop: 6,
               paddingLeft: 2,
               paddingRight: 0,
               borderRadius: 2,
-              height: 10,
+              minHeight: 10,
               backgroundColor: 'sideBar.hoverBackground',
             })}
           >
@@ -255,7 +262,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.archive(activeTeam)}
             icon="archive"
           />
-          <Element marginTop={8} />
+          <Element
+            marginTop={4}
+            css={css({
+              flex: 1, // This pushes the bottom links all the way down
+            })}
+          />
           <RowItem
             name="Discover"
             page="discover"
@@ -390,12 +402,14 @@ interface RowItemProps {
   folderPath?: string;
   style?: React.CSSProperties;
   badge?: boolean;
+  nestingLevel?: number;
 }
 
 const RowItem: React.FC<RowItemProps> = ({
   name,
   path,
   folderPath = path,
+  nestingLevel = 0,
   page,
   icon,
   setFoldersVisibility = null,
@@ -463,7 +477,7 @@ const RowItem: React.FC<RowItemProps> = ({
       css={css(
         merge(
           {
-            height: 10,
+            minHeight: nestingLevel ? 8 : 10,
             paddingX: 0,
             opacity: isDragging && !canDrop ? 0.25 : 1,
             color:
@@ -698,7 +712,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
         folderPath={folderPath}
         page="sandboxes"
         icon="folder"
-        style={{ height: nestingLevel ? 8 : 10 }}
+        nestingLevel={nestingLevel}
         setFoldersVisibility={setFoldersVisibility}
       >
         <Link
