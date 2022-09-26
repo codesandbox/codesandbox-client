@@ -79,7 +79,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
           onClick={() => ({})}
         />
         <Stack align="center" direction="vertical" gap={6}>
-          <Icon color="#808080" name="github" size={24} />
+          <Icon color="#999" name="git" size={24} />
           <Stack align="center" direction="vertical" gap={2}>
             <Text
               css={css({
@@ -124,9 +124,9 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
           },
         })}
       >
-        <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={2}>
+        <Grid css={{ width: 'calc(100% - 26px - 8px)' }} >
           <Column
-            span={[12, 7, 7]}
+            span={[12, 5, 5]}
             css={{
               display: 'block',
               overflow: 'hidden',
@@ -135,7 +135,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
             }}
           >
             <Stack gap={4} align="center" marginLeft={2}>
-              <Icon color="#808080" name="github" size={16} />
+              <Icon color="#999" name="git" size={16} width="32px"/>
               <Element css={{ overflow: 'hidden' }}>
                 <Text size={3} weight="medium" maxWidth="100%">
                   {providerRepository.owner}/{providerRepository.name}
@@ -143,7 +143,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
               </Element>
             </Stack>
           </Column>
-          <Column span={[0, 3, 3]} as={Stack} align="center">
+          <Column span={[0, 4, 4]} as={Stack} align="center">
             <Text size={3} variant="muted" maxWidth="100%">
               {branchesLabel}
             </Text>

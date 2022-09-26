@@ -65,9 +65,9 @@ export const SandboxListItem = ({
       },
     })}
   >
-    <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={2}>
+    <Grid css={{ width: 'calc(100% - 26px - 8px)' }} >
       <Column
-        span={[12, 7, 7]}
+        span={[12, 5, 5]}
         css={{
           display: 'block',
           overflow: 'hidden',
@@ -88,8 +88,6 @@ export const SandboxListItem = ({
               backgroundSize: 'cover',
               backgroundPosition: 'center center',
               backgroundRepeat: 'no-repeat',
-              border: '1px solid',
-              borderColor: 'grays.500',
               backgroundColor: 'grays.700',
               flexShrink: 0,
               position: 'relative',
@@ -145,7 +143,7 @@ export const SandboxListItem = ({
           </Element>
         </Stack>
       </Column>
-      <Column span={[0, 3, 3]} as={Stack} align="center">
+      <Column span={[0, 4, 4]} as={Stack} align="center">
         {sandbox.removedAt ? (
           <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
@@ -159,13 +157,13 @@ export const SandboxListItem = ({
         ) : (
           <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
             <Text css={css({ display: ['none', 'none', 'inline'] })}>
-              Updated
+              updated
             </Text>{' '}
             {lastUpdated}
           </Text>
         )}
       </Column>
-      <Column span={[0, 2, 2]} as={Stack} align="center">
+      <Column span={[0, 3, 3]} as={Stack} align="center">
         <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
           {sandboxLocation}
         </Text>
