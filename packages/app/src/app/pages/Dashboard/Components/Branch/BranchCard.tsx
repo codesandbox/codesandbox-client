@@ -10,9 +10,9 @@ import { css } from '@styled-system/css';
 import { BranchProps } from './types';
 
 export const BranchCard: React.FC<BranchProps> = ({
-  onClick,
   onContextMenu,
   branch,
+  branchUrl,
   selected,
   ...props
 }) => {
@@ -22,9 +22,9 @@ export const BranchCard: React.FC<BranchProps> = ({
 
   return (
     <Stack
+      as="a"
       aria-label={ariaLabel}
       css={css({
-        cursor: 'pointer', // TODO: revisit cursor.
         position: 'relative',
         overflow: 'hidden',
         height: 240,
@@ -35,6 +35,7 @@ export const BranchCard: React.FC<BranchProps> = ({
         backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
         transition: 'background ease-in-out',
         transitionDuration: theme => theme.speeds[2],
+        textDecoration: 'none',
         outline: 'none',
         ':hover': {
           backgroundColor: 'card.backgroundHover',
@@ -44,12 +45,8 @@ export const BranchCard: React.FC<BranchProps> = ({
         },
       })}
       direction="vertical"
-      onClick={onClick}
+      href={branchUrl}
       onContextMenu={onContextMenu}
-      onKeyDown={e => e.key === 'Enter' && onClick(e)}
-      tabIndex={0}
-      // TODO: refine semantics when/if the context menu gets implemented.
-      role="link"
       {...props}
     >
       <Stack
@@ -92,7 +89,10 @@ export const BranchCard: React.FC<BranchProps> = ({
             name="more"
             size={9}
             title="Branch actions"
-            onClick={() => ({})}
+            onClick={evt => {
+              evt.stopPropagation();
+              onContextMenu(evt);
+            }}
           />
         </Stack>
         <Stack gap={2}>

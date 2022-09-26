@@ -112,7 +112,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
       />
     );
   } else if (selectedItems[0].type === 'branch') {
-    menu = <BranchMenu />;
+    menu = <BranchMenu branch={selectedItems[0].branch} />;
   } else if (selectedItems.length > 1) {
     menu = <MultiMenu page={page} selectedItems={selectedItems} />;
   } else if (

@@ -1,7 +1,6 @@
 import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useAppState } from 'app/overmind';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { DashboardBranch } from '../../types';
 import { useSelection } from '../Selection';
 import { BranchCard } from './BranchCard';
@@ -11,20 +10,10 @@ export const Branch: React.FC<DashboardBranch> = ({ branch }) => {
   const {
     dashboard: { viewMode },
   } = useAppState();
-  const history = useHistory();
   const { selectedIds, onRightClick, onMenuEvent } = useSelection();
   const { name, project } = branch;
 
-  const url = v2BranchUrl({ name, project });
-
-  const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
-    // TODO: add analytics
-    if (e.metaKey) {
-      window.open(url, '_blank');
-    } else {
-      history.push(url);
-    }
-  };
+  const branchUrl = v2BranchUrl({ name, project });
 
   const handleContextMenu = event => {
     event.preventDefault();
@@ -37,9 +26,9 @@ export const Branch: React.FC<DashboardBranch> = ({ branch }) => {
 
   const props = {
     branch,
-    onClick: handleClick,
+    branchUrl,
     onContextMenu: handleContextMenu,
-    'data-selection-id': branch.id,
+    // 'data-selection-id': branch.id,
     selected,
   };
 
