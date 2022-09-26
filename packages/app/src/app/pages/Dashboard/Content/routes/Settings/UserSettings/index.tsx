@@ -26,7 +26,7 @@ export const UserSettings = () => {
         css={css({
           height: 'calc(100vh - 140px)',
           overflowY: 'scroll',
-          paddingY: 10,
+          paddingY: 6,
         })}
       >
         <Stack
@@ -54,7 +54,7 @@ export const UserSettings = () => {
               </Switch>
             </BrowserRouter>
           ) : (
-            <Text>Loading...</Text>
+            <Text css={css({color: 'sideBarSectionHeader.foreground'})} >Loading...</Text>
           )}
         </Stack>
       </Element>

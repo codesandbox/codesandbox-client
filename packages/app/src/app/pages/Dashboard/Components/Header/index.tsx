@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
-import { Stack, Text, Button } from '@codesandbox/components';
+import { Stack, Text, Button, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
@@ -60,7 +60,7 @@ export const Header = ({
       })}
     >
       {title ? (
-        <Text marginBottom={1} block weight="regular" size={6}>
+        <Text marginBottom={1} marginTop={-2} block weight="regular" size={6} >
           {title}
         </Text>
       ) : (
@@ -83,7 +83,13 @@ export const Header = ({
               width: 'auto',
             })}
           >
-            + New Folder
+            <Icon
+              name="plus"
+              size={20}
+              title="New"
+              css={css({ paddingRight: 2 })}
+            />
+        New Folder
           </Button>
         )}
         {location.pathname.includes('/repositories') &&
