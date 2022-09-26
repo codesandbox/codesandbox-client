@@ -10,11 +10,11 @@ export const DeleteProfileSandboxModal: FunctionComponent = () => {
 
   return (
     <Alert
-      title="Delete Sandbox"
-      description="Are you sure you want to delete this sandbox?"
+      title="Archive Sandbox"
+      description="Are you sure you want to archive this sandbox?"
       onCancel={modalClosed}
       onPrimaryAction={sandboxDeleted}
-      confirmMessage="Delete"
+      confirmMessage="Archive"
       type="danger"
     />
   );

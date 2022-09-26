@@ -164,7 +164,7 @@ class FolderEntry extends React.Component<Props, State> {
             },
           },
           {
-            title: 'Delete Folder',
+            title: 'Archive Folder',
             icon: TrashIcon,
             color: theme.red.darken(0.2)(),
             action: () => {
