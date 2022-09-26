@@ -9,25 +9,33 @@ import {
 import { css } from '@styled-system/css';
 import { BranchProps } from './types';
 
-export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
+export const BranchCard: React.FC<BranchProps> = ({
+  onContextMenu,
+  branch,
+  branchUrl,
+  selected,
+  ...props
+}) => {
   const { name: branchName, project, contribution } = branch;
   const { repository } = project;
   const ariaLabel = `Open branch ${branchName} from ${repository.name} by ${repository.owner} in the editor`;
 
   return (
     <Stack
+      as="a"
       aria-label={ariaLabel}
       css={css({
-        cursor: 'pointer', // TODO: revisit cursor.
         position: 'relative',
         overflow: 'hidden',
         height: 240,
         width: '100%',
         borderRadius: '4px',
-        border: '1px solid transparent',
-        backgroundColor: 'card.background',
+        border: '1px solid',
+        borderColor: selected ? 'focusBorder' : 'transparent',
+        backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
         transition: 'background ease-in-out',
         transitionDuration: theme => theme.speeds[2],
+        textDecoration: 'none',
         outline: 'none',
         ':hover': {
           backgroundColor: 'card.backgroundHover',
@@ -37,11 +45,9 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
         },
       })}
       direction="vertical"
-      onClick={onClick}
-      onKeyDown={e => e.key === 'Enter' && onClick(e)}
-      tabIndex={0}
-      // TODO: refine semantics when/if the context menu gets implemented.
-      role="link"
+      href={branchUrl}
+      onContextMenu={onContextMenu}
+      {...props}
     >
       <Stack
         css={css({
@@ -83,7 +89,10 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
             name="more"
             size={9}
             title="Branch actions"
-            onClick={() => ({})}
+            onClick={evt => {
+              evt.stopPropagation();
+              onContextMenu(evt);
+            }}
           />
         </Stack>
         <Stack gap={2}>
