@@ -120,7 +120,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
 );
 
 const getBorderColor = (selected: boolean, showDropStyles: boolean) => {
-  if (selected) return 'blues.600';
+  if (selected) return 'purple';
   if (showDropStyles) return 'grays.400';
   return 'grays.500';
 };

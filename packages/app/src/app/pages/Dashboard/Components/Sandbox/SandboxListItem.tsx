@@ -57,11 +57,11 @@ export const SandboxListItem = ({
       borderBottom: '1px solid',
       borderBottomColor: 'grays.600',
       overflow: 'hidden',
-      backgroundColor: selected ? 'blues.600' : 'transparent',
+      backgroundColor: selected ? 'purpleOpaque' : 'transparent',
       color: selected ? 'white' : 'inherit',
       ':hover, :focus, :focus-within': {
         cursor: 'default',
-        backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
+        backgroundColor: selected ? 'purpleOpaque' : 'list.hoverBackground',
       },
     })}
   >

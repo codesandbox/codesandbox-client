@@ -25,6 +25,7 @@ export const colors = {
   },
   green: '#5BC266',
   purple: '#AC9CFF',
+  purpleOpaque: '#AC9CFF60',
   yellow: '#FBCC43',
   orange: '#f69935',
 };

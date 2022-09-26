@@ -31,7 +31,7 @@ export const RepoListItem = ({
       {...props}
       css={css({
         paddingX: 0,
-        backgroundColor: selected ? 'blues.600' : 'inherit',
+        backgroundColor: selected ? 'purpleOpaque' : 'inherit',
         color: selected ? 'white' : 'inherit',
         width: '100%',
         height: 64,
@@ -39,7 +39,7 @@ export const RepoListItem = ({
         borderBottomColor: 'grays.600',
         ':hover, :focus, :focus-within': {
           cursor: 'default',
-          backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
+          backgroundColor: selected ? 'purpleOpaque' : 'list.hoverBackground',
         },
       })}
     >
