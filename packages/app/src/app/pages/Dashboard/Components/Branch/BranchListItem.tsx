@@ -23,7 +23,6 @@ export const BranchListItem = ({
   return (
     <ListAction
       align="center"
-      onContextMenu={onContextMenu}
       css={css({
         paddingX: 0,
         height: 64,
@@ -47,6 +46,7 @@ export const BranchListItem = ({
           textDecoration: 'none',
         }}
         href={branchUrl}
+        onContextMenu={onContextMenu}
       >
         <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={2}>
           <Column

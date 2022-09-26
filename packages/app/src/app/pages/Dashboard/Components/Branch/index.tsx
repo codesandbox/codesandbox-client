@@ -28,8 +28,11 @@ export const Branch: React.FC<DashboardBranch> = ({ branch }) => {
     branch,
     branchUrl,
     onContextMenu: handleContextMenu,
-    // 'data-selection-id': branch.id,
     selected,
+    /**
+     * If we ever need selection for branch entries, `data-selection-id` must be set
+     * 'data-selection-id': branch.id,
+     */
   };
 
   return {

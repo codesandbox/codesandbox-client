@@ -114,7 +114,19 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   } else if (selectedItems[0].type === 'branch') {
     menu = <BranchMenu branch={selectedItems[0].branch} />;
   } else if (selectedItems.length > 1) {
-    menu = <MultiMenu page={page} selectedItems={selectedItems} />;
+    menu = (
+      <MultiMenu
+        page={page}
+        selectedItems={
+          selectedItems as Array<
+            | DashboardFolder
+            | DashboardSandbox
+            | DashboardTemplate
+            | DashboardCommunitySandbox
+          >
+        }
+      />
+    );
   } else if (
     selectedItems[0] &&
     (selectedItems[0].type === 'sandbox' ||
