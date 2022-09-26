@@ -58,7 +58,7 @@ export const RepoCard = ({
         css={{ flexGrow: 1, textAlign: 'center', wordBreak: 'break-all' }}
       >
         <Stack paddingBottom={4} aria-hidden="true" css={{ minHeight: 40 }}>
-          <Icon name="git" size={16} title="repository" color="#999"/>
+          <Icon name="git" size={24} title="repository" color="#999"/>
         </Stack>
 
         <Text
