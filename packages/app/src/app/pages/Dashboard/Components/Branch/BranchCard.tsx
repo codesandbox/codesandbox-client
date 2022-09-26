@@ -9,39 +9,45 @@ import {
 import { css } from '@styled-system/css';
 import { BranchProps } from './types';
 
-export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
+export const BranchCard: React.FC<BranchProps> = ({
+  onContextMenu,
+  branch,
+  branchUrl,
+  selected,
+  ...props
+}) => {
   const { name: branchName, project, contribution } = branch;
   const { repository } = project;
   const ariaLabel = `Open branch ${branchName} from ${repository.name} by ${repository.owner} in the editor`;
 
   return (
     <Stack
+      as="a"
       aria-label={ariaLabel}
       css={css({
-        cursor: 'pointer', // TODO: revisit cursor.
         position: 'relative',
         overflow: 'hidden',
         height: 240,
         width: '100%',
         borderRadius: '4px',
-        background: '#191919',
-        opacity: 0.8,
-        transition: 'opacity ease-in-out',
-        transitionDuration: theme => theme.speeds[4],
-        ':hover, :focus, :focus-within': {
-          // This is not the official transition.
-          opacity: 1,
+        border: '1px solid',
+        borderColor: selected ? 'focusBorder' : 'transparent',
+        backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
+        transition: 'background ease-in-out',
+        transitionDuration: theme => theme.speeds[2],
+        textDecoration: 'none',
+        outline: 'none',
+        ':hover': {
+          backgroundColor: 'card.backgroundHover',
         },
         ':focus-visible': {
-          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+          borderColor: 'focusBorder',
         },
       })}
       direction="vertical"
-      onClick={onClick}
-      onKeyDown={e => e.key === 'Enter' && onClick(e)}
-      tabIndex={0}
-      // TODO: refine semantics when/if the context menu gets implemented.
-      role="link"
+      href={branchUrl}
+      onContextMenu={onContextMenu}
+      {...props}
     >
       <Stack
         css={css({
@@ -55,11 +61,13 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
       </Stack>
       <Stack
         css={css({
-          backgroundColor: 'grays.700',
-          padding: 6,
+          paddingY: 5,
+          paddingLeft: 5,
+          paddingRight: 2,
+          justifyContent: 'space-between',
+          height: '100%',
         })}
         direction="vertical"
-        gap={10}
       >
         <Stack align="center" justify="space-between">
           <Tooltip label={branchName}>
@@ -81,7 +89,10 @@ export const BranchCard: React.FC<BranchProps> = ({ onClick, branch }) => {
             name="more"
             size={9}
             title="Branch actions"
-            onClick={() => ({})}
+            onClick={evt => {
+              evt.stopPropagation();
+              onContextMenu(evt);
+            }}
           />
         </Stack>
         <Stack gap={2}>

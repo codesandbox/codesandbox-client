@@ -18,8 +18,8 @@ export interface SandboxItemComponentProps {
 
   isScrolling: boolean;
   selected: boolean;
-  onClick: (evt: React.MouseEvent) => void;
-  onDoubleClick: (evt: React.MouseEvent) => void;
+  onClick?: (evt: React.MouseEvent) => void;
+  onDoubleClick?: (evt: React.MouseEvent) => void;
   onBlur: (evt: React.FocusEvent) => void;
   onContextMenu: (evt: React.MouseEvent) => void;
 

@@ -27,6 +27,7 @@ import {
   DashboardRepo,
   DashboardCommunitySandbox,
   PageTypes,
+  DashboardBranch,
 } from '../../types';
 import { DndDropType } from '../../utils/dnd';
 
@@ -104,16 +105,19 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'template' ||
       item.type === 'folder' ||
       item.type === 'repo' ||
-      item.type === 'community-sandbox'
+      item.type === 'community-sandbox' ||
+      item.type === 'branch'
   ) as Array<
     | DashboardSandbox
     | DashboardTemplate
     | DashboardFolder
     | DashboardRepo
     | DashboardCommunitySandbox
+    | DashboardBranch
   >;
 
   const selectionItems = possibleItems.map(item => {
+    if (item.type === 'branch') return item.branch.id;
     if (item.type === 'folder') return item.path;
     if (item.type === 'repo') return item.name;
     return item.sandbox.id;
@@ -128,6 +132,9 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'template' ||
       item.type === 'community-sandbox'
   ) as Array<DashboardSandbox | DashboardTemplate>;
+  const branches = (items || []).filter(
+    item => item.type === 'branch'
+  ) as DashboardBranch[];
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const actions = useActions();
@@ -608,7 +615,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         id="selection-container"
         onContextMenu={onContainerContextMenu}
         css={css({
-          paddingTop: 8,
+          paddingTop: 10,
           paddingBottom: 8,
           width: '100%',
           height: '100%',
@@ -635,7 +642,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
             position: 'absolute',
             background: '#6CC7F640', // blues.300 with 25% opacity
             border: '1px solid',
-            borderColor: 'blues.600',
+            borderColor: 'focusBorder',
             pointerEvents: 'none', // disable selection
           })}
           style={{
@@ -662,6 +669,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         selectedIds={selectedIds}
         sandboxes={sandboxes || []}
         folders={folders || []}
+        branches={branches || []}
         setRenaming={setRenaming}
         page={page}
         createNewFolder={createNewFolder}

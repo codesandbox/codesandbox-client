@@ -69,7 +69,12 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
               };
             }
 
-            const sandbox = sandboxes.find(s => s.sandbox.id === id)!.sandbox;
+            const dashboardEntry = sandboxes.find(s => s.sandbox.id === id);
+            if (!dashboardEntry?.sandbox) {
+              return null;
+            }
+
+            const sandbox = dashboardEntry.sandbox;
 
             let screenshotUrl = sandbox.screenshotUrl;
             // We set a fallback thumbnail in the API which is used for
@@ -91,6 +96,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
               Icon: TemplateIcon,
             };
           })
+          .filter(Boolean)
           .slice(0, 4),
       [folders, sandboxes, selectedIds, selectionItems]
     );

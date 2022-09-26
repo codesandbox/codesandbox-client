@@ -119,15 +119,15 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
         position: 'relative',
         width: '100%',
         height: 240,
-        backgroundColor: 'grays.700',
+        backgroundColor: 'card.background',
         borderRadius: 'medium',
         transition: 'background ease-in-out',
-        transitionDuration: theme => theme.speeds[4],
-        ':hover, :focus, :focus-within': {
+        transitionDuration: theme => theme.speeds[2],
+        ':hover': {
           backgroundColor: 'card.backgroundHover',
         },
         ':focus-visible': {
-          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+          borderColor: 'focusBorder',
         },
       })}
     >

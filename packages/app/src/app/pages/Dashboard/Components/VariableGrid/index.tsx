@@ -107,7 +107,7 @@ const ComponentForTypes: IComponentForTypes = {
   'new-master-branch': props => <NewMasterSandbox {...props.item} />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
-      <Text block weight="bold" css={css({ userSelect: 'none' })}>
+      <Text block weight="regular" css={css({ userSelect: 'none' })}>
         {item.title}
       </Text>
       {item.showMoreLink

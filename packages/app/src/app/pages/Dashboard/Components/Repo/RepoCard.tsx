@@ -33,18 +33,18 @@ export const RepoCard = ({
       css={css({
         width: '100%',
         height: 240,
-        backgroundColor: 'grays.700',
+        backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
         border: '1px solid',
         borderRadius: 'medium',
         overflow: 'hidden',
         transition: 'background ease-in',
-        transitionDuration: theme => theme.speeds[4],
-        borderColor: selected ? 'purple' : 'transparent',
-        '&:hover, :focus, :focus-within': {
+        transitionDuration: theme => theme.speeds[2],
+        borderColor: selected ? 'focusBorder' : 'transparent',
+        '&:hover': {
           backgroundColor: 'card.backgroundHover',
         },
         ':focus-visible': {
-          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+          borderColor: 'focusBorder',
         },
       })}
     >
