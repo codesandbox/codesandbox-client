@@ -73,7 +73,7 @@ export const SandboxListItem = ({
       onContextMenu={onContextMenu}
       {...props}
     >
-      <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={2}>
+      <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
         <Column
           span={[12, 5, 5]}
           css={{
@@ -96,8 +96,6 @@ export const SandboxListItem = ({
                 backgroundSize: 'cover',
                 backgroundPosition: 'center center',
                 backgroundRepeat: 'no-repeat',
-                border: '1px solid',
-                borderColor: 'grays.500',
                 backgroundColor: 'grays.700',
                 flexShrink: 0,
                 position: 'relative',
@@ -161,7 +159,7 @@ export const SandboxListItem = ({
               maxWidth="100%"
             >
               <Text css={css({ display: ['none', 'none', 'inline'] })}>
-                Archived
+                archived
               </Text>{' '}
               {formatDistanceToNow(
                 new Date(sandbox.removedAt.replace(/ /g, 'T'))
