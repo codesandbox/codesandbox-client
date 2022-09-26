@@ -392,7 +392,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete Template
+              Archive Template
             </MenuItem>
           ) : (
             <MenuItem
@@ -403,7 +403,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete Sandbox
+              Archive Sandbox
             </MenuItem>
           )}
         </>

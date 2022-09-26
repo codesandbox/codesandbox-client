@@ -15,15 +15,16 @@ export const ImportRepo = () => {
       css={css({
         height: 240,
         fontSize: 3,
-        backgroundColor: 'grays.700',
+        backgroundColor: 'card.background',
+        border: '1px solid transparent',
         borderRadius: 'medium',
-        transition: 'background ease-in',
+        transition: 'all ease-in',
         transitionDuration: theme => theme.speeds[2],
-        ':hover, :focus, :focus-within': {
+        ':hover': {
           backgroundColor: 'card.backgroundHover',
         },
         ':focus-visible': {
-          boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+          borderColor: 'focusBorder',
         },
       })}
     >

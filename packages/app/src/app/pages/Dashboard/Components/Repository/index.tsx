@@ -47,17 +47,18 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
           height: 240,
           width: '100%',
           borderRadius: '4px',
-          background: '#191919',
+          border: '1px solid transparent',
+          backgroundColor: 'card.background',
           transition: 'background ease-in-out',
-          padding: 6,
+          padding: 4,
+          outline: 'none',
 
-          transitionDuration: theme => theme.speeds[4],
-          ':hover, :focus, :focus-within': {
-            // This is not the official transition.
-            backgroundColor: '#252525',
+          transitionDuration: theme => theme.speeds[2],
+          ':hover': {
+            backgroundColor: 'card.backgroundHover',
           },
           ':focus-visible': {
-            boxShadow: '0 0 2px 1px rgba(255, 255, 255, 0.4)',
+            borderColor: 'focusBorder',
           },
         })}
         direction="vertical"
