@@ -350,8 +350,6 @@ const Thumbnail = ({
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          borderBottom: '1px solid',
-          borderColor: '#242424',
           [screenshotToUse
             ? 'backgroundImage'
             : null]: `url(${screenshotToUse})`,

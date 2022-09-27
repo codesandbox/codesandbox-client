@@ -12,8 +12,8 @@ const Wrapper = styled.button`
   justify-content: space-between;
   align-items: center;
 
-  background: ${({ theme }) => theme.colors.blues[600]};
-  color: ${({ theme }) => theme.colors.white};
+  background: ${({ theme }) => theme.colorsV2.yellowish[500]};
+  color: ${({ theme }) => theme.colors.black};
 
   cursor: pointer;
   border: 0;
@@ -28,7 +28,7 @@ const Wrapper = styled.button`
         rgba(255, 255, 255, 0.05),
         rgba(255, 255, 255, 0.05)
       ),
-      ${({ theme }) => theme.colors.blues[600]};
+      ${({ theme }) => theme.colorsV2.yellowish[500]};
   }
 
   * {

@@ -142,6 +142,7 @@ const colors = {
     foreground: tokensV2.gray[200],
     border: null,
     placeholderForeground: tokensV2.gray[800],
+    foregroundReverse: tokensV2.black[600],
   },
   inputOption: {
     activeBorder: tokensV2.purple[600],

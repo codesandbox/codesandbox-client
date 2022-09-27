@@ -36,7 +36,7 @@ export const FolderListItem = ({
 }: FolderItemComponentProps) => {
   let backgroundColor = 'inherit';
   if (selected) {
-    backgroundColor = 'blues.600';
+    backgroundColor = 'purpleOpaque';
   } else if (showDropStyles) {
     backgroundColor = 'list.hoverBackground';
   }
@@ -53,7 +53,7 @@ export const FolderListItem = ({
         color: selected ? 'white' : 'inherit',
         ':hover, :focus, :focus-within': {
           cursor: 'default',
-          backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
+          backgroundColor: selected ? 'purpleOpaque' : 'list.hoverBackground',
         },
         width: '100%',
         height: 64,

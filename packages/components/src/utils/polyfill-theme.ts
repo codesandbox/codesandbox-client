@@ -77,6 +77,10 @@ const polyfillTheme = vsCodeTheme => {
   uiColors.input = {
     background: uiColors.input.background || uiColors.sideBar.border,
     foreground: uiColors.input.foreground || uiColors.sideBar.foreground,
+    foregroundReverse:
+      uiColors.input.foregroundReverse ||
+      uiColors.input.foreground ||
+      uiColors.sideBar.foreground,
     border: uiColors.input.border || uiColors.sideBar.border,
     placeholderForeground:
       uiColors.input.placeholderForeground ||
