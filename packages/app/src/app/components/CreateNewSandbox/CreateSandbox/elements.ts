@@ -6,12 +6,13 @@ export const Container = styled.div`
   // TODO: Proper height, width and responsive styles
   min-width: 870px;
   max-width: 1200px;
+  height: 550px;
   overflow: hidden;
   border-radius: 4px;
   background-color: #151515;
-  color: #fff;
-
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.24);
+  color: #e5e5e5;
+  display: flex;
+  flex-direction: column;
 
   @media screen and (max-width: 800px) {
     max-width: 100%;
@@ -26,25 +27,21 @@ export const Container = styled.div`
   }
 `;
 
-export const ModalLayout = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
 export const HeaderInformation = styled.div`
   flex-grow: 1;
 `;
 
 export const ModalBody = styled.div`
   display: flex;
-  flex-grow: 1;
-  flex-wrap: nowrap;
+  flex: 1;
+  overflow: hidden;
 `;
 
 export const ModalSidebar = styled.div`
   width: 224px;
   flex-shrink: 0;
   padding: 0px 24px 24px;
+  overflow: auto;
 `;
 
 export const ModalContent = styled.div`
@@ -108,7 +105,6 @@ export const Tab = styled(BaseTab)`
 `;
 
 export const TabContent = styled(TabPanel)`
-  max-height: 496px;
   width: 100%;
   height: 100%;
   outline: none;
@@ -196,6 +192,8 @@ export const TemplateGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px 10px;
+  overflow: auto;
+  padding-bottom: 8px;
 `;
 
 export const SelectContainer = styled.div`

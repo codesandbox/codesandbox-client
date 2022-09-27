@@ -22,7 +22,7 @@ export const TemplateCategoryList = ({
   }, [title]);
 
   return (
-    <Stack direction="vertical" gap={6}>
+    <Stack direction="vertical" css={{ height: '100%' }} gap={6}>
       <Text
         as="h2"
         size={4}
