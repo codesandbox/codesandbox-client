@@ -1,8 +1,7 @@
 import React from 'react';
-import { Stack, ListAction, Text, Grid, Column } from '@codesandbox/components';
+import { Icon, Stack, ListAction, Text, Grid, Column } from '@codesandbox/components';
 import { noop } from 'overmind';
 import css from '@styled-system/css';
-import { ListIcon } from './Icons';
 
 export const RepoListItem = ({
   name,
@@ -54,7 +53,7 @@ export const RepoListItem = ({
                 height: 32,
               })}
             >
-              <ListIcon />
+              <Icon name="git" size={16} width={32} title="repository" color="#999"/>
             </Stack>
             <Stack justify="space-between" align="center">
               <Text size={3} weight="medium">

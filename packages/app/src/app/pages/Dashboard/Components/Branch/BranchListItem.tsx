@@ -48,9 +48,9 @@ export const BranchListItem = ({
         href={branchUrl}
         onContextMenu={onContextMenu}
       >
-        <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={2}>
+        <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
           <Column
-            span={[12, 7, 7]}
+           span={[12, 5, 5]}
             css={{
               display: 'block',
               overflow: 'hidden',
@@ -60,9 +60,9 @@ export const BranchListItem = ({
           >
             <Stack gap={4} align="center" marginLeft={2}>
               {contribution ? (
-                <Icon color="#EDFFA5" name="contribution" size={16} />
+                <Icon color="#EDFFA5" name="contribution" size={16} width="32px" />
               ) : (
-                <Icon name="branch" size={16} />
+                <Icon name="branch" color="#999" size={16} width="32px" />
               )}
 
               <Element css={{ overflow: 'hidden' }}>
@@ -74,7 +74,7 @@ export const BranchListItem = ({
               </Element>
             </Stack>
           </Column>
-          <Column span={[0, 3, 3]} as={Stack} align="center">
+          <Column span={[0, 4, 4]} as={Stack} align="center">
             <Text size={3} variant="muted" maxWidth="100%">
               {repository.owner}/{repository.name}
             </Text>
