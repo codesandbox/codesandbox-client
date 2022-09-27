@@ -1557,7 +1557,13 @@ export type TemplateFragment = { __typename?: 'Template' } & Pick<
     sandbox: Maybe<
       { __typename?: 'Sandbox' } & Pick<
         Sandbox,
-        'id' | 'alias' | 'title' | 'description' | 'insertedAt' | 'updatedAt'
+        | 'id'
+        | 'alias'
+        | 'title'
+        | 'description'
+        | 'insertedAt'
+        | 'updatedAt'
+        | 'isV2'
       > & {
           collection: Maybe<
             { __typename?: 'Collection' } & {

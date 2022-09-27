@@ -30,7 +30,7 @@ const TEMPLATE_FRAGMENT = gql`
       description
       insertedAt
       updatedAt
-
+      isV2
       collection {
         team {
           name

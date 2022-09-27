@@ -13,7 +13,6 @@ import slugify from '@codesandbox/common/lib/utils/slugify';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
 
-import { QuickStart } from './QuickStart';
 import {
   Container,
   Tab,
@@ -25,15 +24,25 @@ import {
   ModalSidebar,
   ModalBody,
 } from './elements';
-import { Explore } from './Explore';
 import { Import } from './Import';
-import { Essentials } from './Essentials';
+import { TemplateCategoryList } from './TemplateCategoryList';
 import { TeamTemplates } from './TeamTemplates';
-import { CodeSandboxTemplates } from './CodeSandboxTemplates';
 import { useEssentialTemplates } from './useEssentialTemplates';
 import { FromTemplate } from './FromTemplate';
+import { useOfficialTemplates } from './useOfficialTemplates';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
+
+const QUICK_START_IDS = [
+  'new',
+  'vue',
+  'vanilla',
+  'angular',
+  'rjk9n4zj7m', // static
+  'remix',
+  'uo1h0', // next
+  'svelte',
+];
 
 interface PanelProps {
   tab: TabStateReturn;
@@ -69,6 +78,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
   const essentialState = useEssentialTemplates();
+  const officialTemplatesData = useOfficialTemplates();
+
+  const officialTemplates =
+    officialTemplatesData.state === 'ready'
+      ? officialTemplatesData.templates
+      : [];
 
   const isSyncedSandboxesPage = location.pathname.includes('/synced-sandboxes');
   const isUser = user?.username === activeTeamInfo?.name;
@@ -162,8 +177,16 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       </Tab>
                     ) : null}
 
-                    <Tab {...tabState} stopId="csb-templates">
-                      CodeSandbox templates
+                    <Tab {...tabState} stopId="cloud-templates">
+                      Cloud templates (beta)
+                    </Tab>
+
+                    <Tab {...tabState} stopId="official-templates">
+                      Official templates
+                    </Tab>
+
+                    <Tab {...tabState} stopId="popular-templates">
+                      Most popular
                     </Tab>
 
                     {essentialState.state === 'success'
@@ -179,10 +202,22 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       : null}
 
                     {essentialState.state === 'loading' ? (
-                      <div>
-                        <div>todo skeletons</div>
+                      <Stack
+                        direction="vertical"
+                        css={{ marginTop: 6 }}
+                        gap={5}
+                      >
                         <SkeletonText css={{ width: 100 }} />
-                      </div>
+                        <SkeletonText css={{ width: 90 }} />
+                        <SkeletonText css={{ width: 110 }} />
+                        <SkeletonText css={{ width: 90 }} />
+                        <SkeletonText css={{ width: 130 }} />
+                        <SkeletonText css={{ width: 140 }} />
+                        <SkeletonText css={{ width: 80 }} />
+                        <SkeletonText css={{ width: 90 }} />
+                        <SkeletonText css={{ width: 90 }} />
+                        <SkeletonText css={{ width: 70 }} />
+                      </Stack>
                     ) : null}
 
                     {essentialState.state === 'error' ? (
@@ -204,15 +239,17 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               {viewState === 'initial' ? (
                 <>
                   <Panel tab={tabState} id="quickstart">
-                    <QuickStart collectionId={collectionId} />
+                    <TemplateCategoryList
+                      title="Start from a template"
+                      templates={officialTemplates.filter(template =>
+                        QUICK_START_IDS.includes(template.sandbox.id)
+                      )}
+                      onSelectTemplate={selectTemplate}
+                    />
                   </Panel>
 
                   <Panel tab={tabState} id="import">
                     <Import />
-                  </Panel>
-
-                  <Panel tab={tabState} id="explore">
-                    <Explore collectionId={collectionId} />
                   </Panel>
 
                   {showTeamTemplates ? (
@@ -225,8 +262,31 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     </Panel>
                   ) : null}
 
-                  <Panel tab={tabState} id="csb-templates">
-                    <CodeSandboxTemplates />
+                  <Panel tab={tabState} id="cloud-templates">
+                    <TemplateCategoryList
+                      title="Cloud templates (beta)"
+                      templates={officialTemplates.filter(
+                        template => template.sandbox.isV2
+                      )}
+                      onSelectTemplate={selectTemplate}
+                    />
+                  </Panel>
+
+                  <Panel tab={tabState} id="official-templates">
+                    <TemplateCategoryList
+                      title="Official templates"
+                      templates={officialTemplates}
+                      onSelectTemplate={selectTemplate}
+                    />
+                  </Panel>
+
+                  <Panel tab={tabState} id="popular-templates">
+                    <TemplateCategoryList
+                      title="Most popular"
+                      /* TODO: Figure out criteria for popular */
+                      templates={[]}
+                      onSelectTemplate={selectTemplate}
+                    />
                   </Panel>
 
                   {essentialState.state === 'success'
@@ -236,7 +296,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           tab={tabState}
                           id={slugify(essential.title)}
                         >
-                          <Essentials
+                          <TemplateCategoryList
                             title={essential.title}
                             templates={essential.templates}
                             onSelectTemplate={selectTemplate}

@@ -7,8 +7,7 @@ import {
 } from 'app/graphql/types';
 import { LIST_PERSONAL_TEMPLATES } from '../queries';
 import { Loader } from './Loader';
-import { TemplateGrid } from './elements';
-import { TemplateCard } from './TemplateCard';
+import { TemplateCategoryList } from './TemplateCategoryList';
 
 function getUserTemplates(data: ListPersonalTemplatesQuery) {
   return data.me.templates;
@@ -16,6 +15,10 @@ function getUserTemplates(data: ListPersonalTemplatesQuery) {
 
 function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
   return data.me.teams.find(team => team.id === teamId).templates;
+}
+
+function getTeamName(data: ListPersonalTemplatesQuery, teamId: string): string {
+  return data.me.teams.find(team => team.id === teamId)?.name || 'Team';
 }
 
 interface TeamTemplatesProps {
@@ -62,19 +65,13 @@ export const TeamTemplates = ({
     ? getUserTemplates(data)
     : getTeamTemplates(data, teamId);
 
+  const teamName = isUser ? 'Personal' : getTeamName(data, teamId);
+
   return (
-    <TemplateGrid>
-      {templates.length > 0 ? (
-        templates.map(template => (
-          <TemplateCard
-            key={template.id}
-            template={template}
-            onSelectTemplate={onSelectTemplate}
-          />
-        ))
-      ) : (
-        <div>No templates yet!</div>
-      )}
-    </TemplateGrid>
+    <TemplateCategoryList
+      title={`${teamName} templates`}
+      templates={templates}
+      onSelectTemplate={onSelectTemplate}
+    />
   );
 };
