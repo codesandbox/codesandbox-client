@@ -175,16 +175,27 @@ export const MobileTabs = styled.div`
 
 export const TemplateButton = styled.button`
   background: #1d1d1d;
-  border: none;
+  border: 1px solid transparent;
   text-align: left;
-  padding: 24px 24px 20px;
+  padding: 24px;
+  border-radius: 2px;
   color: #e5e5e5;
+  transition: background ${props => props.theme.speeds[2]} ease-out;
+  outline: none;
+
+  &:hover {
+    background: #292929;
+  }
+
+  &:focus-visible {
+    border-color: ${props => props.theme.colors.purple};
+  }
 `;
 
 export const TemplateGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 8px 10px;
 `;
 
 export const SelectContainer = styled.div`

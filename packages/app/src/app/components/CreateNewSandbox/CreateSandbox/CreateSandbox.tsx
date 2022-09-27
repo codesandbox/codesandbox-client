@@ -105,6 +105,20 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   // ❗️ We could combine viewState with selectedtemplate to limit the amout of states.
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
 
+  const createFromTemplate = (template: TemplateFragment) => {
+    const { sandbox } = template;
+
+    actions.editor.forkExternalSandbox({
+      sandboxId: sandbox.id,
+      openInNewWindow: false, // TODO: Implement Cmd+Click?
+      body: {
+        collectionId,
+      },
+    });
+
+    actions.modals.newSandboxModal.close();
+  };
+
   const selectTemplate = (template: TemplateFragment) => {
     setSelectedTemplate(template);
     setViewState('fromTemplate');
@@ -244,7 +258,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       templates={officialTemplates.filter(template =>
                         QUICK_START_IDS.includes(template.sandbox.id)
                       )}
-                      onSelectTemplate={selectTemplate}
+                      onSelectTemplate={createFromTemplate}
                     />
                   </Panel>
 
