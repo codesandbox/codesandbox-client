@@ -56,7 +56,7 @@ export const Switcher: React.FC<{
             name={activeTeamInfo.name}
           />
 
-          <Stack css={{ marginLeft: 24, marginTop: -6 }} direction="vertical">
+          <Stack css={{ marginLeft: 24}} direction="vertical">
             <WorkspaceName>
               <span>{activeTeamInfo.name}</span>
             </WorkspaceName>
@@ -148,12 +148,12 @@ export const Switcher: React.FC<{
                   justify="center"
                   align="center"
                   css={{
-                    border: '1px solid #C5C5C5',
                     width: 24,
                     height: 24,
+                    backgroundColor: '#252525',
                   }}
                 >
-                  <Icon name="plus" size={14} />
+                  <Icon name="plus" size={16} />
                 </Stack>
 
                 <Text size={4} css={{ marginLeft: 19 }}>
@@ -257,11 +257,6 @@ const WorkspaceName = styled.p`
   color: #e5e5e5;
 
   font-size: 24px;
-
-  @media (min-width: 720px) {
-    font-size: 32px;
-    line-height: 42px;
-  }
 
   & span::-moz-selection {
     -webkit-text-stroke: 1px #e5e5e5;
