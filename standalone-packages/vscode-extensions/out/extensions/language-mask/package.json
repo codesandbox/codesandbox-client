@@ -1,0 +1,35 @@
+{
+	"name": "language-mask",
+	"version": "0.0.2",
+	"engines": {
+		"vscode": ">=1.0.0"
+	},
+	"publisher": "alexkit",
+	"contributes": {
+		"languages": [
+			{
+				"id": "mask",
+				"aliases": [
+					"Mask",
+					"mask"
+				],
+				"extensions": [
+					".mask"
+				],
+				"configuration": "./mask-language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "mask",
+				"scopeName": "source.mask",
+				"path": "./syntaxes/mask.tmLanguage"
+			}
+		]
+	},
+	"__metadata": {
+		"id": "03a54d70-5e4b-4031-9f23-127edc8932e7",
+		"publisherId": "ae93020b-45f9-45c0-bae1-830032f1e501",
+		"publisherDisplayName": "alex.kit"
+	}
+}
