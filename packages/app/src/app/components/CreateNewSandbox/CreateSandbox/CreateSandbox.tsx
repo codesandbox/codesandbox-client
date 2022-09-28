@@ -34,13 +34,14 @@ export const COLUMN_MEDIA_THRESHOLD = 1600;
 
 const QUICK_START_IDS = [
   'new',
-  'vue',
-  'vanilla',
-  'angular',
   'rjk9n4zj7m', // static
-  'remix',
-  'uo1h0', // next
+  'vanilla', // TODO: Replace with cloud blank
+  'uo1h0', // TODO: Replace with cloud next
+  'remix', // TODO: Replace with cloud remix
+  'zqxk0lw813', // TODO: Replace with cloud nuxt
+  'angular',
   'svelte',
+  'vue',
 ];
 
 interface PanelProps {
@@ -84,6 +85,13 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
       ? officialTemplatesData.templates
       : [];
 
+  const quickStartTemplates =
+    officialTemplatesData.state === 'ready'
+      ? QUICK_START_IDS.map(id =>
+          officialTemplates.find(t => t.sandbox.id === id)
+        )
+      : [];
+
   const isSyncedSandboxesPage = location.pathname.includes('/synced-sandboxes');
   const isUser = user?.username === activeTeamInfo?.name;
 
@@ -109,7 +117,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
-      openInNewWindow: false, // TODO: Implement Cmd+Click?
+      openInNewWindow: false,
       body: {
         collectionId,
       },
@@ -193,10 +201,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     Official templates
                   </Tab>
 
-                  <Tab {...tabState} stopId="popular-templates">
-                    Most popular
-                  </Tab>
-
                   {essentialState.state === 'success'
                     ? essentialState.essentials.map(essential => (
                         <Tab
@@ -245,9 +249,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                 <Panel tab={tabState} id="quickstart">
                   <TemplateCategoryList
                     title="Start from a template"
-                    templates={officialTemplates.filter(template =>
-                      QUICK_START_IDS.includes(template.sandbox.id)
-                    )}
+                    templates={quickStartTemplates}
                     onSelectTemplate={createFromTemplate}
                   />
                 </Panel>
@@ -280,15 +282,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <TemplateCategoryList
                     title="Official templates"
                     templates={officialTemplates}
-                    onSelectTemplate={selectTemplate}
-                  />
-                </Panel>
-
-                <Panel tab={tabState} id="popular-templates">
-                  <TemplateCategoryList
-                    title="Most popular"
-                    /* TODO: Figure out criteria for popular */
-                    templates={[]}
                     onSelectTemplate={selectTemplate}
                   />
                 </Panel>
