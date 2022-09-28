@@ -5,15 +5,18 @@ import { Text, Stack } from '@codesandbox/components';
 import { TemplateFragment } from 'app/graphql/types';
 import { TemplateCard } from './TemplateCard';
 import { TemplateGrid } from './elements';
+import { CloudBetaBadge } from './CloudBetaBadge';
 
 interface TemplateCategoryListProps {
   title: string;
+  showBetaTag?: boolean;
   templates: TemplateFragment[];
   onSelectTemplate: (template: TemplateFragment) => void;
 }
 
 export const TemplateCategoryList = ({
   title,
+  showBetaTag,
   templates,
   onSelectTemplate,
 }: TemplateCategoryListProps) => {
@@ -23,18 +26,20 @@ export const TemplateCategoryList = ({
 
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={6}>
-      <Text
-        as="h2"
-        size={4}
-        css={{
-          fontWeight: 500,
-          lineHeight: 1.5,
-          margin: 0,
-          marginTop: 4,
-        }}
-      >
-        {title}
-      </Text>
+      <Stack css={{ alignItems: 'center' }} gap={2}>
+        <Text
+          as="h2"
+          size={4}
+          css={{
+            fontWeight: 500,
+            lineHeight: 1.5,
+            margin: 0,
+          }}
+        >
+          {title}
+        </Text>
+        {showBetaTag && <CloudBetaBadge hideIcon />}
+      </Stack>
       <TemplateGrid>
         {templates.length > 0 ? (
           templates.map(template => (

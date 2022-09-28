@@ -1,11 +1,11 @@
 import React from 'react';
-import { Stack, Text, Icon } from '@codesandbox/components';
+import { Stack, Text } from '@codesandbox/components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
-import { css } from '@styled-system/css';
 import { TemplateButton } from './elements';
+import { CloudBetaBadge } from './CloudBetaBadge';
 
 interface TemplateCardProps {
   template: TemplateFragment;
@@ -32,21 +32,7 @@ export const TemplateCard = ({
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
           <UserIcon />
-          {isV2 && (
-            <Stack
-              css={css({
-                alignItems: 'center',
-                padding: '6px 10px',
-                background: '#2e2e2e',
-                color: 'purple',
-                borderRadius: '999px',
-              })}
-              gap={2}
-            >
-              <Icon size={12} name="cloud" />
-              <Text size={1}>Beta</Text>
-            </Stack>
-          )}
+          {isV2 && <CloudBetaBadge />}
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text

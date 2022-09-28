@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import {
   ListPersonalTemplatesQuery,
@@ -6,8 +5,18 @@ import {
   TemplateFragment,
 } from 'app/graphql/types';
 import { LIST_PERSONAL_TEMPLATES } from '../queries';
-import { Loader } from './Loader';
-import { TemplateCategoryList } from './TemplateCategoryList';
+
+type State =
+  | { state: 'loading' }
+  | {
+      state: 'ready';
+      recentTemplates: TemplateFragment[];
+      teamTemplates: TemplateFragment[];
+    }
+  | {
+      state: 'error';
+      error: string;
+    };
 
 function getUserTemplates(data: ListPersonalTemplatesQuery) {
   return data.me.templates;
@@ -17,21 +26,15 @@ function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
   return data.me.teams.find(team => team.id === teamId).templates;
 }
 
-function getTeamName(data: ListPersonalTemplatesQuery, teamId: string): string {
-  return data.me.teams.find(team => team.id === teamId)?.name || 'Team';
-}
-
-interface TeamTemplatesProps {
+type UseTeamTemplatesParams = {
   isUser: boolean;
   teamId: string;
-  onSelectTemplate: (template: TemplateFragment) => void;
-}
+};
 
-export const TeamTemplates = ({
+export const useTeamTemplates = ({
   isUser,
   teamId,
-  onSelectTemplate,
-}: TeamTemplatesProps) => {
+}: UseTeamTemplatesParams): State => {
   const { data, error } = useQuery<
     ListPersonalTemplatesQuery,
     ListPersonalTemplatesQueryVariables
@@ -46,32 +49,28 @@ export const TeamTemplates = ({
   });
 
   if (error) {
-    return (
-      <p>
-        Something went wrong while fetching your templates, please try again in
-        a minute.
-      </p>
-    );
+    return {
+      state: 'error',
+      error: error.message,
+    };
   }
 
   // Instead of checking the loading var we check this. Apollo sets the loading
   // var to true even if we still have cached data that we can use. We  also need to
   // check if `data.me` isnt undefined before getting templates.
   if (typeof data?.me === 'undefined') {
-    return <Loader />;
+    return {
+      state: 'loading',
+    };
   }
 
-  const templates = isUser
+  const teamTemplates = isUser
     ? getUserTemplates(data)
     : getTeamTemplates(data, teamId);
 
-  const teamName = isUser ? 'Personal' : getTeamName(data, teamId);
-
-  return (
-    <TemplateCategoryList
-      title={`${teamName} templates`}
-      templates={templates}
-      onSelectTemplate={onSelectTemplate}
-    />
-  );
+  return {
+    state: 'ready',
+    recentTemplates: data.me.recentlyUsedTemplates,
+    teamTemplates,
+  };
 };

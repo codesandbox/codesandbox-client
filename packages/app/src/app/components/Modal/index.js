@@ -18,6 +18,7 @@ const GlobalStyles = createGlobalStyle`
   transition-property: opacity, transform;
   opacity: 0;
   transform: scale(0.9) translateY(5px);
+  overflow-y: hidden;
 }
 
 .ReactModal__Overlay {

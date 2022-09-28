@@ -25,10 +25,11 @@ import {
 } from './elements';
 import { Import } from './Import';
 import { TemplateCategoryList } from './TemplateCategoryList';
-import { TeamTemplates } from './TeamTemplates';
 import { useEssentialTemplates } from './useEssentialTemplates';
 import { FromTemplate } from './FromTemplate';
 import { useOfficialTemplates } from './useOfficialTemplates';
+import { useTeamTemplates } from './useTeamTemplates';
+import { CloudBetaBadge } from './CloudBetaBadge';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -39,9 +40,9 @@ const QUICK_START_IDS = [
   'uo1h0', // TODO: Replace with cloud next
   'remix', // TODO: Replace with cloud remix
   'zqxk0lw813', // TODO: Replace with cloud nuxt
-  'angular',
-  'svelte',
   'vue',
+  'svelte',
+  'angular',
 ];
 
 interface PanelProps {
@@ -77,21 +78,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 }) => {
   const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
-  const essentialState = useEssentialTemplates();
-  const officialTemplatesData = useOfficialTemplates();
-
-  const officialTemplates =
-    officialTemplatesData.state === 'ready'
-      ? officialTemplatesData.templates
-      : [];
-
-  const quickStartTemplates =
-    officialTemplatesData.state === 'ready'
-      ? QUICK_START_IDS.map(id =>
-          officialTemplates.find(t => t.sandbox.id === id)
-        )
-      : [];
-
   const isSyncedSandboxesPage = location.pathname.includes('/synced-sandboxes');
   const isUser = user?.username === activeTeamInfo?.name;
 
@@ -100,6 +86,47 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
    * hasLogIn is true.
    */
   const showTeamTemplates = hasLogIn && user;
+
+  const essentialState = useEssentialTemplates();
+  const officialTemplatesData = useOfficialTemplates();
+  const teamTemplatesData = useTeamTemplates({
+    isUser,
+    teamId: activeTeamInfo.id,
+  });
+
+  const officialTemplates =
+    officialTemplatesData.state === 'ready'
+      ? officialTemplatesData.templates
+      : [];
+
+  /**
+   * For the quick start we show:
+   *  - 3 most recently used templates (if they exist)
+   *  - 6 to 9 templates selected from the official list, ensuring the total number
+   * of unique templates is 9 (recent + official)
+   */
+  const recentlyUsedTemplates =
+    teamTemplatesData.state === 'ready'
+      ? teamTemplatesData.recentTemplates.slice(0, 3)
+      : [];
+
+  const quickStartOfficialTemplates =
+    officialTemplatesData.state === 'ready'
+      ? QUICK_START_IDS.map(
+          id =>
+            // If the template is already in recently used, don't add it twice
+            !recentlyUsedTemplates.find(t => t.sandbox.id === id) &&
+            officialTemplates.find(t => t.sandbox.id === id)
+        ).filter(Boolean)
+      : [];
+
+  const quickStartTemplates = [
+    ...recentlyUsedTemplates,
+    ...quickStartOfficialTemplates,
+  ].slice(0, 9);
+
+  const teamTemplates =
+    teamTemplatesData.state === 'ready' ? teamTemplatesData.teamTemplates : [];
 
   const tabState = useTabState({
     orientation: 'vertical',
@@ -194,7 +221,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   ) : null}
 
                   <Tab {...tabState} stopId="cloud-templates">
-                    Cloud templates (beta)
+                    <Stack gap={2}>
+                      <span>Cloud templates</span>
+                      <CloudBetaBadge hideIcon />
+                    </Stack>
                   </Tab>
 
                   <Tab {...tabState} stopId="official-templates">
@@ -260,9 +290,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                 {showTeamTemplates ? (
                   <Panel tab={tabState} id="team-templates">
-                    <TeamTemplates
-                      isUser={isUser}
-                      teamId={activeTeamInfo.id}
+                    <TemplateCategoryList
+                      title={`${isUser ? 'My' : activeTeamInfo.name} templates`}
+                      templates={teamTemplates}
                       onSelectTemplate={selectTemplate}
                     />
                   </Panel>
@@ -270,7 +300,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                 <Panel tab={tabState} id="cloud-templates">
                   <TemplateCategoryList
-                    title="Cloud templates (beta)"
+                    title="Cloud templates"
+                    showBetaTag
                     templates={officialTemplates.filter(
                       template => template.sandbox.isV2
                     )}
