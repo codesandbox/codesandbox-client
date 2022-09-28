@@ -54,8 +54,8 @@ export const RepoCard = ({
         align="center"
         direction="vertical"
         gap={1}
-        paddingX={5}
-        css={{ flexGrow: 1, textAlign: 'center', wordBreak: 'break-all' }}
+        paddingX={8}
+        css={{ flexGrow: 1, textAlign: 'center', wordBreak: 'break-word' }}
       >
         <Stack paddingBottom={4} aria-hidden="true" css={{ minHeight: 40 }}>
           <Icon name="github" size={24} title="Synced sandbox" color="#999" />
