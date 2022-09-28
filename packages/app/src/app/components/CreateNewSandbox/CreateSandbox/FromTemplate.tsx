@@ -10,7 +10,15 @@ import {
 
 import { SelectContainer, StyledInput, StyledLabel } from './elements';
 
-export const FromTemplate = ({ onCancel }) => {
+export interface FromTemplateProps {
+  onCancel: () => void;
+  onSubmit: () => void;
+}
+
+export const FromTemplate: React.FC<FromTemplateProps> = ({
+  onCancel,
+  onSubmit,
+}) => {
   const { hasLogIn, user, dashboard, activeTeam } = useAppState();
 
   // TODO: Set generated name as default value if we can / need
@@ -29,6 +37,7 @@ export const FromTemplate = ({ onCancel }) => {
         css={{ width: '100%' }}
         onSubmit={e => {
           e.preventDefault();
+          onSubmit(); // TODO: Pass params
         }}
       >
         <Stack direction="vertical" gap={6}>
@@ -86,8 +95,6 @@ export const FromTemplate = ({ onCancel }) => {
           >
             Cancel
           </Button>
-
-          {/* TODO: Submit */}
           <Button type="submit" variant="primary" css={{ width: 'auto' }}>
             Create Sandbox
           </Button>

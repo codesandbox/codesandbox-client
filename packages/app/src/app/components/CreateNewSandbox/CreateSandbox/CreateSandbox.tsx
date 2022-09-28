@@ -283,7 +283,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <TemplateCategoryList
                     title="Start from a template"
                     templates={quickStartTemplates}
-                    onSelectTemplate={createFromTemplate}
+                    onSelectTemplate={selectTemplate}
                   />
                 </Panel>
 
@@ -342,6 +342,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               <FromTemplate
                 onCancel={() => {
                   setViewState('initial');
+                }}
+                onSubmit={() => {
+                  createFromTemplate(selectedTemplate);
                 }}
               />
             ) : null}
