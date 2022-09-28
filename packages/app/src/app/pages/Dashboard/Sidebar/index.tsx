@@ -405,9 +405,13 @@ const MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE: Partial<Record<
   repositories: 'Dashboard - View Repositories',
   drafts: 'Dashboard - View Drafts',
   templates: 'Dashboard - View Templates',
+  sandboxes: 'Dashboard - View Sandboxes',
+  'always-on': 'Dashboard - View Always-On',
   'synced-sandboxes': 'Dashboard - View Synced Sandboxes',
   archive: 'Dashboard - View Archive',
-  sandboxes: 'Dashboard - View Sandboxes',
+  discover: 'Dashboard - View Discover',
+  shared: 'Dashboard - View Shared',
+  liked: 'Dashboard - View Liked',
 };
 
 interface RowItemProps {
