@@ -26,7 +26,7 @@ export const Item = styled.div`
   top: ${props => props.top}px;
   left: 0;
   right: 0;
-  height: ${ITEM_HEIGHT + 2}px;
+  height: ${ITEM_HEIGHT - 2}px;
   line-height: ${ITEM_HEIGHT - 2}px;
   margin: 1px 1rem;
   padding: 0 1rem;
