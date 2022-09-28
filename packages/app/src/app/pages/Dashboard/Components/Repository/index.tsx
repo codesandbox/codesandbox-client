@@ -99,6 +99,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
               css={css({
                 color: '#808080',
                 textAlign: 'center',
+                paddingTop: 2,
               })}
               size={13}
             >
