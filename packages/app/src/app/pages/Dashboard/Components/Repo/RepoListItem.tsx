@@ -1,5 +1,12 @@
 import React from 'react';
-import { Icon, Stack, ListAction, Text, Grid, Column } from '@codesandbox/components';
+import {
+  Icon,
+  Stack,
+  ListAction,
+  Text,
+  Grid,
+  Column,
+} from '@codesandbox/components';
 import { noop } from 'overmind';
 import css from '@styled-system/css';
 
@@ -53,7 +60,13 @@ export const RepoListItem = ({
                 height: 32,
               })}
             >
-              <Icon name="git" size={16} width={32} title="repository" color="#999"/>
+              <Icon
+                name="github"
+                size={16}
+                width={32}
+                title="Synced sandbox"
+                color="#999"
+              />
             </Stack>
             <Stack justify="space-between" align="center">
               <Text size={3} weight="medium">
@@ -63,9 +76,21 @@ export const RepoListItem = ({
             </Stack>
           </Stack>
         </Column>
-        <Column span={[0, 4, 4]} as={Stack} align="center">
-          <Text size={3} weight="medium" variant="muted">
-            {props.owner}
+        <Column span={[0, 6, 1]} as={Stack} align="center">
+          <Text
+            size={3}
+            paddingX={4}
+            paddingY={2}
+            css={{
+              color: '#C2C2C2',
+              backgroundColor: '#1D1D1D',
+              borderRadius: 99,
+              ':hover, :focus, :focus-within': {
+                backgroundColor: '#303030',
+              },
+            }}
+          >
+            Synced
           </Text>
         </Column>
         <Column span={[0, 3, 3]} as={Stack} align="center">

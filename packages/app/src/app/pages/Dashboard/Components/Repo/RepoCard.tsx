@@ -58,7 +58,7 @@ export const RepoCard = ({
         css={{ flexGrow: 1, textAlign: 'center', wordBreak: 'break-all' }}
       >
         <Stack paddingBottom={4} aria-hidden="true" css={{ minHeight: 40 }}>
-          <Icon name="git" size={24} title="repository" color="#999"/>
+          <Icon name="github" size={24} title="Synced sandbox" color="#999" />
         </Stack>
 
         <Text
@@ -76,10 +76,18 @@ export const RepoCard = ({
         >
           {props.owner}/{name}
         </Text>
-        <Stack>
-          <Text size={3} variant="muted">
-            {/* TODO: Show the number of branches */}
-            {props.branch}
+        <Stack paddingTop={2}>
+          <Text
+            size={3}
+            paddingX={4}
+            paddingY={2}
+            css={{
+              color: '#C2C2C2',
+              backgroundColor: '#303030',
+              borderRadius: 99,
+            }}
+          >
+            Synced
           </Text>
         </Stack>
       </Stack>
