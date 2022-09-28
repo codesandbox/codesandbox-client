@@ -110,6 +110,7 @@ export const PreferencesModal: FunctionComponent = () => {
           height: 482,
           width: '100%',
           padding: 6,
+          marginTop: 52,
           '*': { boxSizing: 'border-box' },
         })}
       >

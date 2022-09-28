@@ -78,7 +78,7 @@ export const PilotPaymentModal: FunctionComponent = () => {
         })}
       >
         <Element>
-          <Text block marginBottom={6} size={4} weight="bold">
+          <Text block marginBottom={6} size={4} weight="regular">
             Payment Info
           </Text>
 

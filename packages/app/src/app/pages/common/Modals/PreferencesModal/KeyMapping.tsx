@@ -5,7 +5,7 @@ import { VSCodePlaceholder } from './VSCodePlaceholder';
 
 export const KeyMapping: FunctionComponent = () => (
   <>
-    <Text block marginBottom={6} size={4} weight="bold">
+    <Text block marginBottom={6} size={4} weight="regular">
       Key Bindings
     </Text>
 

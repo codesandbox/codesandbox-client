@@ -8,7 +8,7 @@ import { VimModeSettings } from './VimModeSettings';
 
 export const Editor: React.FC = () => (
   <>
-    <Text block marginBottom={6} size={4} weight="bold">
+    <Text block marginBottom={6} size={4} weight="regular">
       Editor
     </Text>
 

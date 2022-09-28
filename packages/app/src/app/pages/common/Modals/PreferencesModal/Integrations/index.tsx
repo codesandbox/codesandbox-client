@@ -8,7 +8,7 @@ import { Container } from './elements';
 
 export const Integrations: FunctionComponent = () => (
   <div>
-    <Text block marginBottom={6} size={4} weight="bold">
+    <Text block marginBottom={6} size={4} weight="regular">
       Integrations
     </Text>
 
