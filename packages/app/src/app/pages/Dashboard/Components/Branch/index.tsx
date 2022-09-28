@@ -8,7 +8,7 @@ import { useSelection } from '../Selection';
 import { BranchCard } from './BranchCard';
 import { BranchListItem } from './BranchListItem';
 
-const mapBranchEventToPageType: Partial<Record<PageTypes, string>> = {
+const MAP_BRANCH_EVENT_TO_PAGE_TYPE: Partial<Record<PageTypes, string>> = {
   'my-contributions':
     'Dashboard - Open Contribution Branch from My Contributions',
   repositories: 'Dashboard - Open Branch from Repository',
@@ -35,10 +35,7 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
   };
 
   const handleClick = () => {
-    trackImprovedDashboardEvent(mapBranchEventToPageType[page], {
-      codesandbox: 'V1',
-      event_source: 'UI',
-    });
+    trackImprovedDashboardEvent(MAP_BRANCH_EVENT_TO_PAGE_TYPE[page]);
   };
 
   const selected = selectedIds.includes(branch.id);

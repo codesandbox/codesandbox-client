@@ -396,7 +396,10 @@ const isSamePath = (
   return false;
 };
 
-const mapSidebarItemEventToPageType: Partial<Record<PageTypes, string>> = {
+const MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE: Partial<Record<
+  PageTypes,
+  string
+>> = {
   recent: 'Dashboard - View Recent',
   'my-contributions': 'Dashboard - View My Contributions',
   repositories: 'Dashboard - View Repositories',
@@ -526,10 +529,10 @@ const RowItem: React.FC<RowItemProps> = ({
               }
             },
             onClick: () => {
-              const event = mapSidebarItemEventToPageType[page];
+              const event = MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page];
               if (event) {
                 trackImprovedDashboardEvent(
-                  mapSidebarItemEventToPageType[page]
+                  MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page]
                 );
               }
 
@@ -743,9 +746,11 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
         <Link
           to={folderUrl}
           onClick={() => {
-            const event = mapSidebarItemEventToPageType[page];
+            const event = MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page];
             if (event) {
-              trackImprovedDashboardEvent(mapSidebarItemEventToPageType[page]);
+              trackImprovedDashboardEvent(
+                MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page]
+              );
             }
             history.push(folderUrl);
             return false;

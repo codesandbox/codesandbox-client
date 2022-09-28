@@ -20,7 +20,7 @@ import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
 import { SandboxItemComponentProps } from './types';
 import { useDrag } from '../../utils/dnd';
 
-const mapSandboxEventToPageType: Partial<Record<PageTypes, string>> = {
+const MAP_SANDBOX_EVENT_TO_PAGE_TYPE: Partial<Record<PageTypes, string>> = {
   recent: 'Dashboard - Open Sandbox from Recent',
   drafts: 'Dashboard - Open Sandbox from My Drafts',
   sandboxes: 'Dashboard - Open Sandbox from Sandboxes',
@@ -173,7 +173,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     }
 
     const sandboxAnalyticsEvent = !autoFork
-      ? mapSandboxEventToPageType[page]
+      ? MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]
       : null;
 
     // Templates in Home should fork, everything else opens
