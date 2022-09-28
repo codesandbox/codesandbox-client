@@ -1,4 +1,5 @@
 import {
+  Text,
   Stack,
   Element,
   IconButton,
@@ -91,7 +92,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const officialTemplatesData = useOfficialTemplates();
   const teamTemplatesData = useTeamTemplates({
     isUser,
-    teamId: activeTeamInfo.id,
+    teamId: activeTeamInfo?.id,
   });
 
   const officialTemplates =
@@ -164,7 +165,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
         <Stack gap={4} align="center" css={{ width: '100%', padding: '24px' }}>
           <HeaderInformation>
             {viewState === 'initial' ? (
-              <div>New</div>
+              <Text size={4} variant="muted">
+                New
+              </Text>
             ) : (
               <div>
                 <button
@@ -205,7 +208,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               <Stack direction="vertical">
                 <Tabs {...tabState} aria-label="Create new">
                   <Tab {...tabState} stopId="quickstart">
-                    Quickstart
+                    Quick start
                   </Tab>
 
                   <Tab {...tabState} stopId="import">

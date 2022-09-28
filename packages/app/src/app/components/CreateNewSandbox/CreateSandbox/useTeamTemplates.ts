@@ -28,7 +28,7 @@ function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
 
 type UseTeamTemplatesParams = {
   isUser: boolean;
-  teamId: string;
+  teamId?: string;
 };
 
 export const useTeamTemplates = ({
@@ -64,9 +64,8 @@ export const useTeamTemplates = ({
     };
   }
 
-  const teamTemplates = isUser
-    ? getUserTemplates(data)
-    : getTeamTemplates(data, teamId);
+  const teamTemplates =
+    isUser || !teamId ? getUserTemplates(data) : getTeamTemplates(data, teamId);
 
   return {
     state: 'ready',
