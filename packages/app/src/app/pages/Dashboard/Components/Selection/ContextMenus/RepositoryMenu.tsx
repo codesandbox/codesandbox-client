@@ -1,10 +1,7 @@
 import React from 'react';
 import { Menu } from '@codesandbox/components';
 import { ProjectFragment as Repository } from 'app/graphql/types';
-import {
-  //   githubRepoUrl,
-  dashboard,
-} from '@codesandbox/common/lib/utils/url-generator';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useHistory } from 'react-router-dom';
 import { Context, MenuItem } from '../ContextMenu';
 
@@ -23,13 +20,6 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
     name: providerRepository.name,
   });
   const githubUrl = `https://github.com/${providerRepository.owner}/${providerRepository.name}`;
-  //   TODO: fix this githubRepoUrl
-  //   const githubUrl = githubRepoUrl({
-  //     branch: ?
-  //     repo: providerRepository.name,
-  //     username: providerRepository.owner,
-  //     path: '',
-  //   });
 
   return (
     <Menu.ContextMenu
