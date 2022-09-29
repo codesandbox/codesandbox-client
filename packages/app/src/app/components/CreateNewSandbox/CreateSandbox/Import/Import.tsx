@@ -1,36 +1,42 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import {
   gitHubRepoPattern,
-  gitHubToSandboxUrl,
   gitHubToProjectsUrl,
   protocolAndHost,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { Button, Icon, Input, Stack } from '@codesandbox/components';
-import Tooltip from '@codesandbox/common/lib/components/Tooltip';
+import {
+  Button,
+  Element,
+  Input,
+  Stack,
+  Text,
+  Link,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
-import { useActions, useEffects } from 'app/overmind';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { Header } from '../elements';
-import { GitHubIcon } from '../Icons';
 import { DownloadIcon } from '../Icons/DownloadIcon';
 import { TerminalIcon } from '../Icons/TerminalIcon';
-import {
-  FeatureText,
-  Features,
-  IconLink,
-  ImportChoices,
-  PlaceHolderLink,
-  StyledInfoIcon,
-} from './elements';
+
+const documentationLinkStyles = css({
+  display: 'flex',
+  gap: 2,
+  alignItems: 'center',
+  fontSize: 12,
+  color: '#808080',
+  textDecoration: 'none',
+  transition: '0.3s ease color',
+
+  '&:hover, &:focus': {
+    color: 'white',
+  },
+});
 
 const getFullGitHubUrl = (url: string) =>
   `${protocolAndHost()}${gitHubToProjectsUrl(url) + '?create=true'}`;
 
 export const ImportFromGithub = () => {
-  const actions = useActions();
-  const effects = useEffects();
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('Lorem ipsum');
   const [transformedUrl, setTransformedUrl] = useState('');
   const [url, setUrl] = useState('');
 
@@ -54,80 +60,42 @@ export const ImportFromGithub = () => {
     <form>
       <Stack>
         <Input
+          css={css({
+            fontSize: 13,
+            paddingY: 1,
+            paddingX: 4,
+          })}
           value={url}
           onChange={updateUrl}
           type="text"
-          placeholder="GitHub Repository URL..."
+          placeholder="GitHub Repository URL"
         />
-
-        {transformedUrl && (
-          <Stack
-            css={css({
-              borderWidth: '1px',
-              borderColor: 'grays.500',
-              borderRadius: 2,
-              marginLeft: '.5em',
-            })}
-          >
-            <Tooltip content={transformedUrl.replace(/^https?:\/\//, '')}>
-              <Button
-                autoWidth
-                css={css({
-                  border: 0,
-                  borderRadius: 0,
-                  backgroundColor: 'grays.500',
-                })}
-                onClick={() => effects.browser.copyToClipboard(transformedUrl)}
-              >
-                <Icon name="link" size={10} />
-              </Button>
-            </Tooltip>
-          </Stack>
-        )}
 
         <Button
           autoWidth
-          css={{ fontSize: 11, marginLeft: '.5em' }}
+          css={{ fontSize: 13, marginLeft: '.5em' }}
           disabled={!transformedUrl}
           onClick={() => {
             window.open(gitHubToProjectsUrl(url) + '?create=true', '_blank');
           }}
         >
-          Import to Projects
+          Import
         </Button>
       </Stack>
 
-      <FeatureText>
-        <Button
-          autoWidth
-          css={{ fontSize: 11, marginBottom: '12px' }}
-          disabled={!transformedUrl}
-          variant="link"
-          onClick={async () => {
-            try {
-              await actions.git.importFromGithub(gitHubToSandboxUrl(url));
-              actions.modals.newSandboxModal.close();
-            } catch {
-              // Were not able to import, probably private repo
-            }
-          }}
+      {error ? (
+        <Text
+          as="small"
+          css={css({
+            display: 'block',
+            marginTop: 2,
+            color: 'errorForeground',
+            fontSize: 12,
+          })}
         >
-          Import and Fork as repository sandbox
-        </Button>
-        <IconLink
-          style={{ display: 'inline' }}
-          href="/docs/importing#import-from-github"
-        >
-          <StyledInfoIcon />
-        </IconLink>
-        <small>
-          {error ? (
-            <PlaceHolderLink>{error}</PlaceHolderLink>
-          ) : (
-            'Tip: CodeSandbox Projects is a new experience with built-in source control and support for VSCode, perfect for building projects of any size.'
-          )}
-        </small>
-      </FeatureText>
+          {error}
+        </Text>
+      ) : null}
     </form>
   );
 };
@@ -138,37 +106,50 @@ export const Import = () => {
   }, []);
 
   return (
-    <>
-      <Header>
-        <span>Import from GitHub</span>
-      </Header>
+    <Stack
+      direction="vertical"
+      gap={7}
+      css={{ width: '100%', height: '100%', paddingBottom: '24px' }}
+    >
+      <Element
+        as="header"
+        css={css({
+          marginBottom: 8,
+        })}
+      >
+        <Text
+          as="h2"
+          css={{
+            fontSize: '16px',
+            fontWeight: 500,
+            margin: 0,
+            lineHeight: 1.5,
+          }}
+        >
+          Enter the GitHub repository URL to import
+        </Text>
+      </Element>
 
-      <Features>
-        <GitHubIcon css={{ width: 69, height: 69 }} />
+      <ImportFromGithub />
 
-        <FeatureText css={{ marginTop: '25px' }}>
-          Enter the URL to your GitHub repository to import
-          <IconLink
-            style={{ display: 'inline' }}
-            href="/docs/projects/learn/introduction/about-projects"
-          >
-            <StyledInfoIcon />
-          </IconLink>
-        </FeatureText>
-
-        <ImportFromGithub />
-      </Features>
-
-      <ImportChoices>
-        <a href="/docs/importing#export-with-cli">
+      <Stack
+        css={css({
+          flexDirection: 'row',
+          gap: 6,
+        })}
+      >
+        <Link
+          css={documentationLinkStyles}
+          href="/docs/importing#export-with-cli"
+        >
           <TerminalIcon />
           CLI Documentation
-        </a>
-        <a href="/docs/importing#define-api">
+        </Link>
+        <Link css={documentationLinkStyles} href="/docs/importing#define-api">
           <DownloadIcon />
           API Documentation
-        </a>
-      </ImportChoices>
-    </>
+        </Link>
+      </Stack>
+    </Stack>
   );
 };
