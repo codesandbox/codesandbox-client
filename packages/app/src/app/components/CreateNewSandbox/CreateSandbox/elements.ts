@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
-import { Button } from '@codesandbox/components';
+import { Button, Select } from '@codesandbox/components';
 
 export const Container = styled.div`
   // TODO: Proper height, width and responsive styles
@@ -196,26 +196,35 @@ export const TemplateGrid = styled.div`
   padding-bottom: 8px;
 `;
 
-export const SelectContainer = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: row;
-`;
-
 export const inputStyles = css`
+  font-family: inherit;
   height: 32px;
   padding: 8px 16px;
   background-color: #2a2a2a;
-  color: #e5e5e5;
+  color: #999999;
   border: none;
   border-radius: 2px;
   font-size: 13px;
   line-height: 16px;
   font-weight: 500;
+  &:hover {
+    color: #e5e5e5;
+  }
+  &:focus {
+    color: #e5e5e5;
+  }
 `;
 
 export const StyledInput = styled.input`
   ${inputStyles}
+`;
+
+// Select component places the content with a fixed padding if it has an icon
+// !important here will overule that setting since the new select is bigger
+export const StyledSelect = styled(Select)`
+  ${inputStyles}
+  height: 48px;
+  padding-left: 44px !important;
 `;
 
 export const StyledLabel = styled.label`

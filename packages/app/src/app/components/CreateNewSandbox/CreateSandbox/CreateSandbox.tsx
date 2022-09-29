@@ -9,7 +9,6 @@ import {
 import { useActions, useAppState } from 'app/overmind';
 import React, { ReactNode, useState } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
-import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
@@ -169,17 +168,15 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                 New
               </Text>
             ) : (
-              <div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setViewState('initial');
-                  }}
-                >
-                  <VisuallyHidden>Back to overview</VisuallyHidden>
-                  ArrowLeft
-                </button>
-              </div>
+              // TODO: add aria-label based on title to IconButton?
+              <IconButton
+                name="backArrow"
+                size={16}
+                title="Back to overview"
+                onClick={() => {
+                  setViewState('initial');
+                }}
+              />
             )}
           </HeaderInformation>
 
@@ -269,9 +266,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             ) : null}
 
             {viewState === 'fromTemplate' ? (
-              <div>
-                <TemplateInfo template={selectedTemplate} />
-              </div>
+              <TemplateInfo template={selectedTemplate} />
             ) : null}
             {viewState === 'fork' ? <div>Repo info</div> : null}
           </ModalSidebar>
@@ -340,6 +335,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
             {viewState === 'fromTemplate' ? (
               <FromTemplate
+                isV2={selectedTemplate.sandbox.isV2}
                 onCancel={() => {
                   setViewState('initial');
                 }}
@@ -368,11 +364,17 @@ const TemplateInfo = ({ template }: TemplateInfoProps) => {
   );
 
   return (
-    <Stack direction="vertical">
+    <Stack direction="vertical" gap={6}>
       <UserIcon />
-      <span>{template.sandbox.title}</span>
-      <span>{template.sandbox.collection?.team?.name}</span>
-      <p>{template.sandbox.description}</p>
+      <Stack direction="vertical">
+        <Text size={3}>{template.sandbox.title}</Text>
+        <Text size={2} css={{ color: '#808080' }}>
+          {template.sandbox.collection?.team?.name}
+        </Text>
+      </Stack>
+      <Text size={2} css={{ color: '#808080' }}>
+        {template.sandbox.description}
+      </Text>
     </Stack>
   );
 };
