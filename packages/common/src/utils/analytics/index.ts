@@ -113,7 +113,18 @@ export function trackWithCooldown(
   track(event, data);
 }
 
-export default function track(eventName, secondArg: Object = {}) {
+export function trackImprovedDashboardEvent(
+  eventName: string,
+  extraInfo: Object = {}
+) {
+  track(eventName, {
+    ...extraInfo,
+    codesandbox: 'V1',
+    event_source: 'UI',
+  });
+}
+
+export default function track(eventName: string, secondArg: Object = {}) {
   if (!DO_NOT_TRACK_ENABLED && isAllowedEvent(eventName, secondArg)) {
     const data = {
       ...secondArg,

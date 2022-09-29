@@ -139,7 +139,7 @@ const ComponentForTypes: IComponentForTypes = {
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
-  branch: ({ item }) => <Branch {...item} />,
+  branch: ({ item, page }) => <Branch page={page} {...item} />,
   repository: ({ item }) => <Repository {...item} />,
 };
 

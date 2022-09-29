@@ -6,7 +6,9 @@ import { useAppState, useActions } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import track from '@codesandbox/common/lib/utils/analytics';
+import track, {
+  trackImprovedDashboardEvent,
+} from '@codesandbox/common/lib/utils/analytics';
 import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
 import {
   Element,
@@ -234,6 +236,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <NestableRowItem
             name="Sandboxes"
             path={dashboardUrls.sandboxes('/', activeTeam)}
+            page="sandboxes"
             folderPath="/"
             folders={[
               ...folders,
@@ -393,6 +396,24 @@ const isSamePath = (
   return false;
 };
 
+const MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE: Partial<Record<
+  PageTypes,
+  string
+>> = {
+  recent: 'Dashboard - View Recent',
+  'my-contributions': 'Dashboard - View My Contributions',
+  repositories: 'Dashboard - View Repositories',
+  drafts: 'Dashboard - View Drafts',
+  templates: 'Dashboard - View Templates',
+  sandboxes: 'Dashboard - View Sandboxes',
+  'always-on': 'Dashboard - View Always-On',
+  'synced-sandboxes': 'Dashboard - View Synced Sandboxes',
+  archive: 'Dashboard - View Archive',
+  discover: 'Dashboard - View Discover',
+  shared: 'Dashboard - View Shared',
+  liked: 'Dashboard - View Liked',
+};
+
 interface RowItemProps {
   name: string;
   path: string;
@@ -404,7 +425,6 @@ interface RowItemProps {
   badge?: boolean;
   nestingLevel?: number;
 }
-
 const RowItem: React.FC<RowItemProps> = ({
   name,
   path,
@@ -512,6 +532,16 @@ const RowItem: React.FC<RowItemProps> = ({
                 history.push(linkTo, { focus: 'FIRST_ITEM' });
               }
             },
+            onClick: () => {
+              const event = MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page];
+              if (event) {
+                trackImprovedDashboardEvent(
+                  MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page]
+                );
+              }
+
+              return false;
+            },
           }}
         >
           <Stack
@@ -543,12 +573,14 @@ interface NestableRowItemProps {
   name: string;
   folderPath: string;
   path: string;
+  page: PageTypes;
   folders: DashboardBaseFolder[];
 }
 
 const NestableRowItem: React.FC<NestableRowItemProps> = ({
   name,
   path,
+  page,
   folderPath,
   folders,
 }) => {
@@ -717,7 +749,16 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
       >
         <Link
           to={folderUrl}
-          onClick={() => history.push(folderUrl)}
+          onClick={() => {
+            const event = MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page];
+            if (event) {
+              trackImprovedDashboardEvent(
+                MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page]
+              );
+            }
+            history.push(folderUrl);
+            return false;
+          }}
           onContextMenu={onContextMenu}
           onKeyDown={event => {
             if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
@@ -811,6 +852,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
               .sort(a => 1)
               .map(folder => (
                 <NestableRowItem
+                  page={page}
                   key={folder.path}
                   name={folder.name}
                   path={dashboardUrls.sandboxes(folder.path, state.activeTeam)}

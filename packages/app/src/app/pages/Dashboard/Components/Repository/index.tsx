@@ -12,6 +12,7 @@ import {
 import { css } from '@styled-system/css';
 import { useAppState } from 'app/overmind';
 import { useHistory } from 'react-router-dom';
+import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analytics';
 import { DashboardRepository } from '../../types';
 
 export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
@@ -27,7 +28,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
 
   // TODO: replace with double click action when/if implemeting the context menu
   const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
-    // TODO: add analytics
+    trackImprovedDashboardEvent('Dashboard - Open Repository');
     const url = `/dashboard/repositories/github/${providerRepository.owner}/${providerRepository.name}`;
     if (e.ctrlKey || e.metaKey) {
       window.open(url, '_blank');
