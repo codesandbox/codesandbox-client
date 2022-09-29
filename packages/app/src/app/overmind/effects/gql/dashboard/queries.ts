@@ -324,7 +324,6 @@ export const recentlyAccessedSandboxes: Query<
     me {
       recentlyAccessedSandboxes(limit: $limit, teamId: $teamId) {
         ...sandboxFragmentDashboard
-        lastAccessedAt
       }
     }
   }

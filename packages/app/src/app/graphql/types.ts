@@ -2122,6 +2122,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'alias'
   | 'title'
   | 'description'
+  | 'lastAccessedAt'
   | 'insertedAt'
   | 'updatedAt'
   | 'removedAt'
@@ -3057,8 +3058,7 @@ export type RecentlyAccessedSandboxesQuery = {
   me: Maybe<
     { __typename?: 'CurrentUser' } & {
       recentlyAccessedSandboxes: Array<
-        { __typename?: 'Sandbox' } & Pick<Sandbox, 'lastAccessedAt'> &
-          SandboxFragmentDashboardFragment
+        { __typename?: 'Sandbox' } & SandboxFragmentDashboardFragment
       >;
     }
   >;

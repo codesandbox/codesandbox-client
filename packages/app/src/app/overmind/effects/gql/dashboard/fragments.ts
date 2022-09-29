@@ -6,6 +6,7 @@ export const sandboxFragmentDashboard = gql`
     alias
     title
     description
+    lastAccessedAt
     insertedAt
     updatedAt
     removedAt
