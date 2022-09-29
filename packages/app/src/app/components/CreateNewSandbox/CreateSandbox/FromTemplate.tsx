@@ -11,11 +11,12 @@ import {
 
 import { StyledInput, StyledLabel, StyledSelect } from './elements';
 import { CloudBetaBadge } from './CloudBetaBadge';
+import { CreateSandboxParams } from './types';
 
 export interface FromTemplateProps {
   isV2: boolean;
   onCancel: () => void;
-  onSubmit: (params: { name: string; githubOwner: string }) => void;
+  onSubmit: (params: CreateSandboxParams) => void;
 }
 
 export const FromTemplate: React.FC<FromTemplateProps> = ({
@@ -28,7 +29,7 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
   // TODO: Set generated name as default value if we can / need
   // otherwise tell the user if empty we generate a name
   const [sandboxName, setSandboxName] = useState<string>();
-  const [createGitRepo, setCreateGitRepo] = useState<boolean>(false);
+  const [createRepo, setCreateRepo] = useState<boolean>(false);
   const [selectedTeam, setSelectedTeam] = useState<string>(activeTeam);
 
   return (
@@ -65,7 +66,8 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
           e.preventDefault();
           onSubmit({
             name: sandboxName,
-            githubOwner: createGitRepo ? selectedTeam : null,
+            createRepo,
+            githubOwner: selectedTeam,
           });
         }}
       >
@@ -93,9 +95,9 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
           <Checkbox
             id="sb-repo"
             onChange={e => {
-              setCreateGitRepo(e.target.checked);
+              setCreateRepo(e.target.checked);
             }}
-            checked={createGitRepo}
+            checked={createRepo}
             label={
               <StyledLabel
                 css={{
@@ -112,7 +114,7 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
             disabled={!hasLogIn || !user || !dashboard.teams}
           />
 
-          {createGitRepo ? (
+          {createRepo ? (
             <StyledSelect
               icon={() => <Icon css={{ marginLeft: 8 }} name="github" />}
               onChange={e => {

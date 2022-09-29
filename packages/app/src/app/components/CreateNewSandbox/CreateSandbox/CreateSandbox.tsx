@@ -30,6 +30,7 @@ import { FromTemplate } from './FromTemplate';
 import { useOfficialTemplates } from './useOfficialTemplates';
 import { useTeamTemplates } from './useTeamTemplates';
 import { CloudBetaBadge } from './CloudBetaBadge';
+import { CreateSandboxParams } from './types';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -139,13 +140,17 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   // ❗️ We could combine viewState with selectedtemplate to limit the amout of states.
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
 
-  const createFromTemplate = (template: TemplateFragment) => {
+  const createFromTemplate = (
+    template: TemplateFragment,
+    { name }: CreateSandboxParams
+  ) => {
     const { sandbox } = template;
 
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
       openInNewWindow: false,
       body: {
+        alias: name,
         collectionId,
       },
     });
@@ -170,9 +175,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             ) : (
               // TODO: add aria-label based on title to IconButton?
               <IconButton
-                name="backArrow"
+                name="arrowDown"
                 size={16}
                 title="Back to overview"
+                css={{
+                  transform: 'rotate(90deg)',
+                }}
                 onClick={() => {
                   setViewState('initial');
                 }}
@@ -339,8 +347,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                 onCancel={() => {
                   setViewState('initial');
                 }}
-                onSubmit={() => {
-                  createFromTemplate(selectedTemplate);
+                onSubmit={params => {
+                  createFromTemplate(selectedTemplate, params);
                 }}
               />
             ) : null}
