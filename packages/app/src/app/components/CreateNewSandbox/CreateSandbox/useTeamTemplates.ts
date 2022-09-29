@@ -23,7 +23,7 @@ function getUserTemplates(data: ListPersonalTemplatesQuery) {
 }
 
 function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
-  return data.me.teams.find(team => team.id === teamId).templates;
+  return data.me.teams.find(team => team.id === teamId)?.templates || [];
 }
 
 type UseTeamTemplatesParams = {
