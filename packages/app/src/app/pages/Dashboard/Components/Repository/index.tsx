@@ -51,7 +51,10 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
           border: '1px solid transparent',
           backgroundColor: 'card.background',
           transition: 'background ease-in-out',
-          padding: 4,
+          paddingRight: 8,
+          paddingLeft: 8,
+          paddingTop: 4,
+          paddingBottom: 4,
           outline: 'none',
 
           transitionDuration: theme => theme.speeds[2],
@@ -81,12 +84,13 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
           onClick={() => ({})}
         />
         <Stack align="center" direction="vertical" gap={6}>
-          <Icon color="#999" name="git" size={24} />
+          <Icon color="#999" name="repository" size={24} />
           <Stack align="center" direction="vertical" gap={2}>
             <Text
               css={css({
                 color: '#E5E5E5',
                 textAlign: 'center',
+                minHeight: 42,
               })}
               size={16}
             >
@@ -96,6 +100,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
               css={css({
                 color: '#808080',
                 textAlign: 'center',
+                paddingTop: 2,
               })}
               size={13}
             >
@@ -126,7 +131,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
           },
         })}
       >
-        <Grid css={{ width: 'calc(100% - 26px - 8px)' }} >
+        <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
           <Column
             span={[12, 5, 5]}
             css={{
@@ -137,7 +142,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
             }}
           >
             <Stack gap={4} align="center" marginLeft={2}>
-              <Icon color="#999" name="git" size={16} width="32px"/>
+              <Icon color="#999" name="repository" size={16} width="32px" />
               <Element css={{ overflow: 'hidden' }}>
                 <Text size={3} weight="medium" maxWidth="100%">
                   {providerRepository.owner}/{providerRepository.name}
