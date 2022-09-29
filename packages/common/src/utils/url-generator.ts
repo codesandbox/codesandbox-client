@@ -115,6 +115,14 @@ export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
   return `${editorUrl()}${sandboxDetails.id}`;
 };
 
+export const sandboxV2Url = (sandboxDetails: SandboxUrlSourceData) => {
+  if (sandboxDetails.alias) {
+    return `${v2EditorUrl()}sandbox/${sandboxDetails.alias}`;
+  }
+
+  return `${v2EditorUrl()}sandbox/${sandboxDetails.id}`;
+};
+
 export const v2BranchUrl = (branchDetails: {
   name: string;
   project: { repository: { owner: string; name: string } };
