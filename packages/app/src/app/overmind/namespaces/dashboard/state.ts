@@ -15,11 +15,13 @@ import { derived } from 'overmind';
 
 import { DELETE_ME_COLLECTION, OrderBy } from './types';
 
+export type RecentSandbox = Sandbox & { lastAccessedAt: string };
+
 export type DashboardSandboxStructure = {
   DRAFTS: Sandbox[] | null;
   TEMPLATES: Template[] | null;
   DELETED: Sandbox[] | null;
-  RECENT_SANDBOXES: Sandbox[] | null;
+  RECENT_SANDBOXES: RecentSandbox[] | null;
   RECENT_BRANCHES: Branch[] | null;
   SEARCH: Sandbox[] | null;
   TEMPLATE_HOME: Template[] | null;
