@@ -15,6 +15,7 @@ import { RepositoryProps } from './types';
 export const RepositoryListItem: React.FC<RepositoryProps> = ({
   labels,
   repository,
+  selected,
   onContextMenu,
   ...props
 }) => {
@@ -27,10 +28,11 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
         borderBottom: '1px solid',
         borderBottomColor: 'grays.600',
         overflow: 'hidden',
-        backgroundColor: 'transparent',
-        color: 'inherit',
+        backgroundColor: selected ? 'purpleOpaque' : 'transparent',
+        color: selected ? 'white' : 'inherit',
         ':hover, :focus, :focus-within': {
-          backgroundColor: 'list.hoverBackground',
+          cursor: 'default',
+          backgroundColor: selected ? 'purpleOpaque' : 'list.hoverBackground',
         },
       })}
     >
