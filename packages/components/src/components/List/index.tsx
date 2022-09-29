@@ -47,7 +47,7 @@ export const SidebarListItem = styled(Stack).attrs({
   align: 'center',
 })(
   css({
-    minHeight: 9,
+    minHeight: 8,
     marginLeft: 2,
     color: 'list.foreground',
     borderRadius: 2,

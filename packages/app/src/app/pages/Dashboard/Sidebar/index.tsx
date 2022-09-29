@@ -267,7 +267,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="archive"
           />
           <Element
-            marginTop={4}
+            marginTop={8}
             css={css({
               flex: 1, // This pushes the bottom links all the way down
             })}
