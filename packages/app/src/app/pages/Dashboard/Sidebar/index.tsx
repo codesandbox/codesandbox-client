@@ -13,8 +13,8 @@ import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
 import {
   Element,
   List,
-  ListAction,
-  ListItem,
+  SidebarListAction,
+  SidebarListItem,
   Link,
   Text,
   Stack,
@@ -136,12 +136,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             paddingBottom: 4,
           })}
         >
-          <ListItem
+          <SidebarListItem
             css={css({
-              marginTop: 6,
+              marginTop: 4,
               paddingLeft: 2,
               paddingRight: 0,
               borderRadius: 2,
+              marginLeft: 2,
               minHeight: 10,
               backgroundColor: 'sideBar.hoverBackground',
             })}
@@ -181,16 +182,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 })}
               />
             </Link>
-          </ListItem>
+          </SidebarListItem>
           <RowItem
             name="Recent"
             page="recent"
             path={dashboardUrls.recent(activeTeam)}
             icon="clock"
-            style={{ marginTop: 1 }}
+            style={{ marginTop: 4 }}
           />
           <Element marginTop={4} />
-          <Element paddingX={5} paddingY={1}>
+          <Element paddingX={5} paddingY={2}>
             <Text
               variant="muted"
               size={2}
@@ -212,7 +213,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="repository"
           />
           <Element marginTop={4} />
-          <Element paddingX={5} paddingY={1}>
+          <Element paddingX={5} paddingY={2}>
             <Text
               variant="muted"
               size={2}
@@ -490,14 +491,14 @@ const RowItem: React.FC<RowItemProps> = ({
   }, [isOver, setFoldersVisibility, HOVER_THRESHOLD]);
 
   return (
-    <ListAction
+    <SidebarListAction
       ref={dropRef}
       align="center"
       onClick={onSidebarToggle}
       css={css(
         merge(
           {
-            minHeight: nestingLevel ? 8 : 10,
+            minHeight: nestingLevel ? 8 : 9,
             paddingX: 0,
             opacity: isDragging && !canDrop ? 0.25 : 1,
             color:
@@ -510,7 +511,7 @@ const RowItem: React.FC<RowItemProps> = ({
             transitionDuration: theme => theme.speeds[1],
             a: {
               ':focus': {
-                // focus state is handled by ListAction:focus-within
+                // focus state is handled by SidebarListAction:focus-within
                 outline: 'none',
               },
             },
@@ -565,7 +566,7 @@ const RowItem: React.FC<RowItemProps> = ({
           )}
         </Link>
       )}
-    </ListAction>
+    </SidebarListAction>
   );
 };
 

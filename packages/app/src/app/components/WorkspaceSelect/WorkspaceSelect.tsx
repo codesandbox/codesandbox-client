@@ -52,13 +52,13 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             <Stack
               as={Menu.Button}
               disabled={disabled}
-              justify="space-between"
+              justify="flex-start"
+              gap={2}
               align="center"
               css={css({
                 width: '100%',
                 height: '100%',
-                paddingLeft: 2,
-                borderRadius: 0,
+                marginLeft: -2,
                 '&:hover': {
                   backgroundColor: 'grays.600',
                 },
@@ -78,7 +78,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 </Text>
               </Stack>
 
-              <Icon name="caret" size={8} />
+              <Icon name="chevronDown" size={8} />
             </Stack>
 
             <Menu.List

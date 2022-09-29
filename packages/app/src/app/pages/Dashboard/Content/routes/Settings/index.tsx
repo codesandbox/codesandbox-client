@@ -26,7 +26,7 @@ export const Settings = () => {
 
   if (!user || !activeTeamInfo) {
     return (
-      <Element css={css({ width: '100%', maxWidth: 1280 })} marginY={10}>
+      <Element css={css({ width: '100%', maxWidth: 1280 })}>
         <Header title="Team Settings" activeTeam={activeTeam} />
       </Element>
     );
@@ -36,7 +36,7 @@ export const Settings = () => {
     activeTeam === personalWorkspaceId ? UserSettings : TeamSettings;
 
   return (
-    <Element css={css({ width: '100%', maxWidth: 1280 })} marginY={10}>
+    <Element css={css({ width: '100%', maxWidth: 1280 })} marginY={7}>
       <Component />
     </Element>
   );
