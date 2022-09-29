@@ -15,10 +15,34 @@ export const RepositoriesPage = () => {
     activeTeam,
     dashboard: { repositories },
   } = useAppState();
+  const pathRef = React.useRef<string>(null);
 
   React.useEffect(() => {
-    actions.dashboard.getRepositoriesByTeam();
-  }, [activeTeam, actions.dashboard]);
+    // If no repositories were fetched yet and the user tries
+    // to directly access a repository, we should fetch said
+    // repository only.
+    if (repositories === null) {
+      if (path) {
+        const [, owner, name] = path.split('/');
+        actions.dashboard.getRepositoryByDetails({ owner, name });
+      } else {
+        actions.dashboard.getRepositoriesByTeam();
+      }
+    }
+
+    // If the current view is the list of the repositories
+    // and the previous view was a repo and only that repo
+    // was fetched, get all repositories of that team.
+    if (
+      path === '' &&
+      pathRef.current?.startsWith('github') &&
+      repositories.length === 1
+    ) {
+      actions.dashboard.getRepositoriesByTeam();
+    }
+
+    pathRef.current = path;
+  }, [path]);
 
   const pageType: PageTypes = 'repositories';
 
