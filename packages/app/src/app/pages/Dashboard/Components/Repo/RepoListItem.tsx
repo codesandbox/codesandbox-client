@@ -85,9 +85,6 @@ export const RepoListItem = ({
               color: '#C2C2C2',
               backgroundColor: '#1D1D1D',
               borderRadius: 99,
-              ':hover, :focus, :focus-within': {
-                backgroundColor: '#303030',
-              },
             }}
           >
             Synced
