@@ -133,7 +133,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             display: 'flex',
             flexDirection: 'column',
             height: '100%',
-            paddingBottom: 4,
+            paddingBottom: 6,
           })}
         >
           <SidebarListItem
@@ -144,7 +144,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
               borderRadius: 2,
               marginLeft: 2,
               minHeight: 10,
-              backgroundColor: 'sideBar.hoverBackground',
             })}
           >
             {activeAccount ? (
@@ -188,10 +187,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             page="recent"
             path={dashboardUrls.recent(activeTeam)}
             icon="clock"
-            style={{ marginTop: 4 }}
+            style={{ marginTop: 8 }}
           />
           <Element marginTop={4} />
-          <Element paddingX={5} paddingY={2}>
+          <Element paddingX={7} paddingY={2}>
             <Text
               variant="muted"
               size={2}
@@ -213,7 +212,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="repository"
           />
           <Element marginTop={4} />
-          <Element paddingX={5} paddingY={2}>
+          <Element paddingX={7} paddingY={2}>
             <Text
               variant="muted"
               size={2}

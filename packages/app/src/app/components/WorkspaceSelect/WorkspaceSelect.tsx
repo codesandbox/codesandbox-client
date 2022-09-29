@@ -52,13 +52,12 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             <Stack
               as={Menu.Button}
               disabled={disabled}
-              justify="flex-start"
-              gap={2}
+              justify="space-between"
               align="center"
               css={css({
                 width: '100%',
                 height: '100%',
-                marginLeft: -2,
+                marginLeft: 0,
                 '&:hover': {
                   backgroundColor: 'grays.600',
                 },
@@ -73,7 +72,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                     name={activeAccount.name}
                   />
                 </Stack>
-                <Text size={4} weight="normal" maxWidth={140}>
+                <Text size={14} weight="normal" maxWidth={140}>
                   {activeAccount.name}
                 </Text>
               </Stack>
