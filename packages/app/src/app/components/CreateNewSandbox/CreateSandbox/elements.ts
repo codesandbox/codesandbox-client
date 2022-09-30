@@ -1,17 +1,18 @@
 import styled, { css } from 'styled-components';
 import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
-import { Button } from '@codesandbox/components';
+import { Button, Select } from '@codesandbox/components';
 
 export const Container = styled.div`
   // TODO: Proper height, width and responsive styles
   min-width: 870px;
   max-width: 1200px;
+  height: 550px;
   overflow: hidden;
   border-radius: 4px;
   background-color: #151515;
-  color: #fff;
-
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.24);
+  color: #e5e5e5;
+  display: flex;
+  flex-direction: column;
 
   @media screen and (max-width: 800px) {
     max-width: 100%;
@@ -26,25 +27,21 @@ export const Container = styled.div`
   }
 `;
 
-export const ModalLayout = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
 export const HeaderInformation = styled.div`
   flex-grow: 1;
 `;
 
 export const ModalBody = styled.div`
   display: flex;
-  flex-grow: 1;
-  flex-wrap: nowrap;
+  flex: 1;
+  overflow: hidden;
 `;
 
 export const ModalSidebar = styled.div`
   width: 224px;
   flex-shrink: 0;
   padding: 0px 24px 24px;
+  overflow: auto;
 `;
 
 export const ModalContent = styled.div`
@@ -108,7 +105,6 @@ export const Tab = styled(BaseTab)`
 `;
 
 export const TabContent = styled(TabPanel)`
-  max-height: 496px;
   width: 100%;
   height: 100%;
   outline: none;
@@ -175,38 +171,60 @@ export const MobileTabs = styled.div`
 
 export const TemplateButton = styled.button`
   background: #1d1d1d;
-  border: none;
+  border: 1px solid transparent;
   text-align: left;
-  padding: 24px 24px 20px;
+  padding: 24px;
+  border-radius: 2px;
   color: #e5e5e5;
+  transition: background ${props => props.theme.speeds[2]} ease-out;
+  outline: none;
+
+  &:hover {
+    background: #292929;
+  }
+
+  &:focus-visible {
+    border-color: ${props => props.theme.colors.purple};
+  }
 `;
 
 export const TemplateGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-`;
-
-export const SelectContainer = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: row;
+  gap: 8px 10px;
+  overflow: auto;
+  padding-bottom: 8px;
 `;
 
 export const inputStyles = css`
+  font-family: inherit;
   height: 32px;
   padding: 8px 16px;
   background-color: #2a2a2a;
-  color: #e5e5e5;
+  color: #999999;
   border: none;
   border-radius: 2px;
   font-size: 13px;
   line-height: 16px;
   font-weight: 500;
+  &:hover {
+    color: #e5e5e5;
+  }
+  &:focus {
+    color: #e5e5e5;
+  }
 `;
 
 export const StyledInput = styled.input`
   ${inputStyles}
+`;
+
+// Select component places the content with a fixed padding if it has an icon
+// !important here will overule that setting since the new select is bigger
+export const StyledSelect = styled(Select)`
+  ${inputStyles}
+  height: 48px;
+  padding-left: 44px !important;
 `;
 
 export const StyledLabel = styled.label`

@@ -713,12 +713,13 @@ export const forkExternalSandbox = async (
   }: {
     sandboxId: string;
     openInNewWindow?: boolean;
-    body?: { collectionId: string };
+    body?: { collectionId: string; alias?: string };
   }
 ) => {
   effects.analytics.track('Fork Sandbox', { type: 'external' });
 
-  const usedBody: { collectionId?: string; teamId?: string } = body || {};
+  const usedBody: { collectionId?: string; alias?: string; teamId?: string } =
+    body || {};
   if (state.activeTeam) {
     usedBody.teamId = state.activeTeam;
   }

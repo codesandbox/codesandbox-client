@@ -12,6 +12,7 @@ interface IExploreTemplate {
     updated_at: string;
     author: { username: string } | null;
     environment: TemplateType;
+    v2?: boolean;
     custom_template: {
       id: string;
       icon_url: string;
@@ -55,6 +56,7 @@ const mapAPIResponseToTemplateInfo = (
         template: sandbox.environment,
       },
       collection: sandbox.collection,
+      isV2: sandbox.v2,
       git: sandbox.git && {
         id: sandbox.git.id,
         username: sandbox.git.username,
