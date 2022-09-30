@@ -75,7 +75,7 @@ export const MoveSandboxFolderModal: FunctionComponent = () => {
           gap={6}
           direction="vertical"
         >
-          <Text size={6} weight="bold">
+          <Text size={6} weight="regular">
             Move {modals.moveSandboxModal.sandboxIds.length}{' '}
             {modals.moveSandboxModal.sandboxIds.length > 1 ? 'items' : 'item'}
           </Text>

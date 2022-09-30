@@ -62,7 +62,7 @@ export const PreferencesSync: FunctionComponent = () => {
   return (
     <>
       <Stack justify="space-between" align="baseline">
-        <Text block marginBottom={6} size={4} weight="bold">
+        <Text block marginBottom={6} size={4} weight="regular">
           Preferences Profiles
         </Text>
         {settingsSync.settings?.length ? (

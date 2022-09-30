@@ -17,23 +17,17 @@ export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
   const { itemIdChanged } = useActions().preferences;
 
   return (
-    <Element
-      css={css({
-        backgroundColor: 'sideBar.background',
-        borderWidth: 1,
-        borderRightStyle: 'solid',
-        borderColor: 'sideBar.border',
-        width: 244,
-      })}
-      paddingBottom={8}
-    >
+    <Element css={css({ width: 244 })} paddingBottom={8}>
       <Text
         block
         paddingBottom={6}
         paddingLeft={5}
         paddingTop={6}
         size={4}
-        weight="bold"
+        weight="regular"
+        css={css({
+          color: 'sideBarSectionHeader.foreground',
+        })}
       >
         Preferences
       </Text>
@@ -42,23 +36,38 @@ export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
         {menuItems.map(({ Icon, id, title }) => (
           <Stack
             align="center"
+            as="button"
             css={css({
-              transition: '0.3s ease all',
+              width: '100%',
+              appearance: 'none',
+              fontFamily: 'inherit',
+              textAlign: 'left',
+              background: 'transparent',
+              transition: 'all ease-in-out',
+              transitionDuration: theme => theme.speeds[2],
+              outline: 'none',
               fontSize: 3,
               paddingX: 5,
-              paddingY: 2,
+              paddingY: 3,
               cursor: 'pointer',
               lineHeight: 1,
-              color: itemId === id ? 'list.hoverForeground' : 'mutedForeground',
+              border: '1px solid transparent',
+              color:
+                itemId === id
+                  ? 'list.hoverForeground'
+                  : 'sideBarSectionHeader.foreground',
               '&:hover': {
                 backgroundColor: 'list.hoverBackground',
                 color: 'list.hoverForeground',
+              },
+              '&:focus-visible': {
+                borderColor: 'focusBorder',
               },
             })}
             key={title}
             onClick={() => itemIdChanged(id)}
           >
-            <Element marginRight={3}>
+            <Element marginRight={4}>
               <Icon />
             </Element>
 

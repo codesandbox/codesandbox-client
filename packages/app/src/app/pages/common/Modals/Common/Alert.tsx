@@ -33,7 +33,7 @@ export const Alert: FunctionComponent<Props> = ({
     {...props}
   >
     {title && (
-      <Text weight="bold" block size={6} paddingBottom={2}>
+      <Text weight="regular" block size={5} paddingBottom={4}>
         {title}
       </Text>
     )}
