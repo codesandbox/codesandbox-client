@@ -10,7 +10,7 @@ description:
 date: 2022-09-30
 ---
 
-At CodeSandbox, we are excited for Hacktoberfest and all the value that open
+At CodeSandbox, we are excited for [Hacktoberfest](https://hacktoberfest.com/) and all the value that open
 source contributions generate at this time of the year for exciting open source
 projects, the maintainers and contributors.
 
