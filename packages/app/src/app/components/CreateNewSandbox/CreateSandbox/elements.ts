@@ -135,16 +135,6 @@ export const Legend = styled.span`
   line-height: 19px;
 `;
 
-export const SubHeader = styled.h2`
-  font-family: Inter;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 19px;
-  margin: 1rem 1.5rem;
-  margin-top: 24px;
-`;
-
 export const Grid = styled.div<{ columnCount: number }>`
   display: grid;
   margin: 0 1.5rem;
@@ -178,6 +168,7 @@ export const TemplateButton = styled.button`
   color: #e5e5e5;
   transition: background ${props => props.theme.speeds[2]} ease-out;
   outline: none;
+  max-width: 235px;
 
   &:hover {
     background: #292929;

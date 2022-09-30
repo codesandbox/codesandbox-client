@@ -32,6 +32,7 @@ import { useTeamTemplates } from './useTeamTemplates';
 import { CloudBetaBadge } from './CloudBetaBadge';
 import { CreateSandboxParams } from './types';
 import { SearchBox } from './SearchBox';
+import { SearchResults } from './SearchResults';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -81,6 +82,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
   const isSyncedSandboxesPage = location.pathname.includes('/synced-sandboxes');
+  const defaultSelectedTab =
+    initialTab || isSyncedSandboxesPage ? 'import' : 'quickstart';
   const isUser = user?.username === activeTeamInfo?.name;
 
   /**
@@ -132,14 +135,15 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const tabState = useTabState({
     orientation: 'vertical',
-    selectedId: initialTab || isSyncedSandboxesPage ? 'import' : 'quickstart',
+    selectedId: defaultSelectedTab,
   });
 
   const [viewState, setViewState] = useState<
-    'initial' | 'fromTemplate' | 'fork' /* | 'search' */
+    'initial' | 'fromTemplate' | 'fork'
   >('initial');
   // ❗️ We could combine viewState with selectedtemplate to limit the amout of states.
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const createFromTemplate = (
     template: TemplateFragment,
@@ -189,7 +193,23 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             )}
           </HeaderInformation>
 
-          {viewState === 'initial' ? <SearchBox /> : null}
+          {viewState === 'initial' ? (
+            <SearchBox
+              value={searchQuery}
+              onChange={e => {
+                const query = e.target.value;
+                if (query) {
+                  // Reset tab panel when typing in the search query box
+                  tabState.select(null);
+                } else {
+                  // Restore the default tab when search query is removed
+                  tabState.select(defaultSelectedTab);
+                }
+
+                setSearchQuery(query);
+              }}
+            />
+          ) : null}
 
           {/* isModal is undefined on /s/ page */}
           {isModal ? (
@@ -207,7 +227,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
           <ModalSidebar>
             {viewState === 'initial' ? (
               <Stack direction="vertical">
-                <Tabs {...tabState} aria-label="Create new">
+                <Tabs
+                  {...tabState}
+                  // TODO: Any click on the tabs will reset the search query
+                  onClick={() => setSearchQuery('')}
+                  aria-label="Create new"
+                >
                   <Tab {...tabState} stopId="quickstart">
                     Quick start
                   </Tab>
@@ -276,66 +301,74 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
           </ModalSidebar>
 
           <ModalContent>
-            {viewState === 'initial' ? (
-              <>
-                <Panel tab={tabState} id="quickstart">
-                  <TemplateCategoryList
-                    title="Start from a template"
-                    templates={quickStartTemplates}
-                    onSelectTemplate={selectTemplate}
-                  />
-                </Panel>
-
-                <Panel tab={tabState} id="import">
-                  <Import />
-                </Panel>
-
-                {showTeamTemplates ? (
-                  <Panel tab={tabState} id="team-templates">
+            {viewState === 'initial' &&
+              (searchQuery ? (
+                <SearchResults
+                  search={searchQuery}
+                  onSelectTemplate={selectTemplate}
+                />
+              ) : (
+                <>
+                  <Panel tab={tabState} id="quickstart">
                     <TemplateCategoryList
-                      title={`${isUser ? 'My' : activeTeamInfo.name} templates`}
-                      templates={teamTemplates}
+                      title="Start from a template"
+                      templates={quickStartTemplates}
                       onSelectTemplate={selectTemplate}
                     />
                   </Panel>
-                ) : null}
 
-                <Panel tab={tabState} id="cloud-templates">
-                  <TemplateCategoryList
-                    title="Cloud templates"
-                    showBetaTag
-                    templates={officialTemplates.filter(
-                      template => template.sandbox.isV2
-                    )}
-                    onSelectTemplate={selectTemplate}
-                  />
-                </Panel>
+                  <Panel tab={tabState} id="import">
+                    <Import />
+                  </Panel>
 
-                <Panel tab={tabState} id="official-templates">
-                  <TemplateCategoryList
-                    title="Official templates"
-                    templates={officialTemplates}
-                    onSelectTemplate={selectTemplate}
-                  />
-                </Panel>
+                  {showTeamTemplates ? (
+                    <Panel tab={tabState} id="team-templates">
+                      <TemplateCategoryList
+                        title={`${
+                          isUser ? 'My' : activeTeamInfo.name
+                        } templates`}
+                        templates={teamTemplates}
+                        onSelectTemplate={selectTemplate}
+                      />
+                    </Panel>
+                  ) : null}
 
-                {essentialState.state === 'success'
-                  ? essentialState.essentials.map(essential => (
-                      <Panel
-                        key={essential.key}
-                        tab={tabState}
-                        id={slugify(essential.title)}
-                      >
-                        <TemplateCategoryList
-                          title={essential.title}
-                          templates={essential.templates}
-                          onSelectTemplate={selectTemplate}
-                        />
-                      </Panel>
-                    ))
-                  : null}
-              </>
-            ) : null}
+                  <Panel tab={tabState} id="cloud-templates">
+                    <TemplateCategoryList
+                      title="Cloud templates"
+                      showBetaTag
+                      templates={officialTemplates.filter(
+                        template => template.sandbox.isV2
+                      )}
+                      onSelectTemplate={selectTemplate}
+                    />
+                  </Panel>
+
+                  <Panel tab={tabState} id="official-templates">
+                    <TemplateCategoryList
+                      title="Official templates"
+                      templates={officialTemplates}
+                      onSelectTemplate={selectTemplate}
+                    />
+                  </Panel>
+
+                  {essentialState.state === 'success'
+                    ? essentialState.essentials.map(essential => (
+                        <Panel
+                          key={essential.key}
+                          tab={tabState}
+                          id={slugify(essential.title)}
+                        >
+                          <TemplateCategoryList
+                            title={essential.title}
+                            templates={essential.templates}
+                            onSelectTemplate={selectTemplate}
+                          />
+                        </Panel>
+                      ))
+                    : null}
+                </>
+              ))}
 
             {viewState === 'fromTemplate' ? (
               <FromTemplate
