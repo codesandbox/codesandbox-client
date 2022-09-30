@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ITemplateInfo } from './TemplateList';
+import { TemplateInfo } from './types';
 import { getTemplateInfosFromAPI } from './utils/api';
 
 type EssentialsState =
@@ -8,7 +8,7 @@ type EssentialsState =
     }
   | {
       state: 'success';
-      essentials: ITemplateInfo[];
+      essentials: TemplateInfo[];
     }
   | {
       state: 'error';
