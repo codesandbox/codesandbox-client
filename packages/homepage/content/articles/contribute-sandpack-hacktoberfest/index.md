@@ -22,7 +22,7 @@ Sandpack and would love your contributions.
 Our key goal is empowering developers to include custom live coding experiences
 on the web, regardless of your website layout or level of design or expertise.
 To be able to do this, we have provided plenty of options under
-`@codesandbox/sandpack-themes`, and we want to offer even more options from the
+[`@codesandbox/sandpack-themes`](https://sandpack.codesandbox.io/docs/getting-started/themes), and we want to offer even more options from the
 community.
 
 So, how can you contribute to new themes?
