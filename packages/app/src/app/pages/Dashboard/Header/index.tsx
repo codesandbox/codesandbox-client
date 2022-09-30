@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
         >
           <LogoIcon
             style={{
-              marginLeft: -6,
+              marginLeft: 0,
               marginTop: 2, // Logo positioning tweak
             }}
             height={18}
@@ -79,14 +79,19 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <Stack align="center" gap={2}>
           <Button
             variant="primary"
-            css={css({ width: 'auto', paddingX: 3, marginLeft: 4 })}
+            css={css({ width: 'auto', paddingX: 3 })}
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               openCreateSandboxModal({});
             }}
           >
-             <Icon name="plus" size={20} title="Create new" css={css({ paddingRight: 2})}/>
-             New
+            <Icon
+              name="plus"
+              size={20}
+              title="Create new"
+              css={css({ paddingRight: 2 })}
+            />
+            New
           </Button>
 
           {user && <Notifications />}
@@ -150,9 +155,12 @@ const SearchInputGroup = () => {
     <Stack
       css={css({
         flexGrow: 1,
-        maxWidth: 280,
+        minWidth: 280,
+        width: 320,
         display: ['none', 'none', 'block'],
-        position: 'relative',
+        position: 'absolute',
+        left: '50%',
+        transform: 'translateX(-50%)',
       })}
     >
       <Combobox
@@ -172,6 +180,10 @@ const SearchInputGroup = () => {
           onChange={onChange}
           onKeyPress={handleEnter}
           placeholder="Search"
+          icon="search"
+          css={css({
+            background: 'transparent',
+          })}
         />
         {SHOW_COMMUNITY_SEARCH && query.length >= 2 && (
           <ComboboxPopover
