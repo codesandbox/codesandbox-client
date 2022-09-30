@@ -2,6 +2,7 @@ import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React from 'react';
+import { useGithubRepo } from './useGithubRepo';
 import { getOwnerAndNameFromInput } from './utils';
 
 type UrlState = {
@@ -10,11 +11,17 @@ type UrlState = {
   error: string | null;
 };
 
-const Step1: React.FC = () => {
+export const Import: React.FC = () => {
   const [url, setUrl] = React.useState<UrlState>({
     raw: '',
     parsed: null,
     error: null,
+  });
+  const [shouldFetch, setShouldFetch] = React.useState(false);
+  const githubRepo = useGithubRepo({
+    owner: url.parsed?.owner,
+    name: url.parsed?.name,
+    shouldFetch,
   });
 
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,6 +49,7 @@ const Step1: React.FC = () => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShouldFetch(true);
   };
 
   return (
@@ -70,11 +78,11 @@ const Step1: React.FC = () => {
             required
           />
           <Button disabled={Boolean(url.error)} type="submit" autoWidth>
-            Import
+            {githubRepo.state === 'loading' ? 'Importing...' : 'Import'}
           </Button>
         </Stack>
         <Element aria-atomic="true" id="form-error" role="alert">
-          {url.error ? (
+          {url.error || githubRepo.state === 'error' ? (
             <Text
               as="small"
               css={css({
@@ -85,18 +93,11 @@ const Step1: React.FC = () => {
               })}
             >
               {url.error}
+              {githubRepo.state === 'error' && githubRepo.error}
             </Text>
           ) : null}
         </Element>
       </form>
-    </Stack>
-  );
-};
-
-export const Import: React.FC = () => {
-  return (
-    <Stack direction="vertical" css={{ width: '100%', height: '100%' }}>
-      <Step1 />
     </Stack>
   );
 };
