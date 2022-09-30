@@ -36,13 +36,22 @@ export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
         {menuItems.map(({ Icon, id, title }) => (
           <Stack
             align="center"
+            as="button"
             css={css({
-              transition: '0.3s ease all',
+              width: '100%',
+              appearance: 'none',
+              fontFamily: 'inherit',
+              textAlign: 'left',
+              background: 'transparent',
+              transition: 'all ease-in-out',
+              transitionDuration: theme => theme.speeds[2],
+              outline: 'none',
               fontSize: 3,
               paddingX: 5,
               paddingY: 3,
               cursor: 'pointer',
               lineHeight: 1,
+              border: '1px solid transparent',
               color:
                 itemId === id
                   ? 'list.hoverForeground'
@@ -50,6 +59,9 @@ export const SideNavigation: FunctionComponent<Props> = ({ menuItems }) => {
               '&:hover': {
                 backgroundColor: 'list.hoverBackground',
                 color: 'list.hoverForeground',
+              },
+              '&:focus-visible': {
+                borderColor: 'focusBorder',
               },
             })}
             key={title}
