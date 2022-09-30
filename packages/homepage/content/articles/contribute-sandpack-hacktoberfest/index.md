@@ -5,7 +5,7 @@ authors: ['Adewale Abati']
 photo: https://avatars0.githubusercontent.com/u/4003538?s=460&v=4
 title: Contribute to Sandpack in Hacktoberfest
 description:
-  Empower developers with custom live coding experiences by contributing  new
+  Empower developers with custom live coding experiences by contributing new
   themes to Sandpack .
 date: 2022-09-30
 ---
