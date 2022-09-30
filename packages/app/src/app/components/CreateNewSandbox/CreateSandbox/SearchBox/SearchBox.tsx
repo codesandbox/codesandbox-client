@@ -1,7 +1,7 @@
 import React from 'react';
 import useKey from 'react-use/lib/useKey';
 import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { SearchElement, InputWrapper } from './elements';
+import { SearchElement } from './elements';
 
 type SearchProps = {
   value: string;
@@ -12,7 +12,7 @@ type SearchProps = {
 export const SearchBox = ({
   value,
   onChange,
-  placeholder = 'Search',
+  placeholder = 'Search Templates',
 }: SearchProps) => {
   const inputEl = React.useRef<HTMLInputElement>();
 
@@ -40,17 +40,16 @@ export const SearchBox = ({
         e.preventDefault();
       }}
     >
-      <InputWrapper>
-        <SearchElement
-          id="filter-templates"
-          placeholder={placeholder}
-          ref={inputEl}
-          value={value}
-          onChange={onChange}
-          onKeyDown={handleEsc}
-          type="search"
-        />
-      </InputWrapper>
+      <SearchElement
+        id="filter-templates"
+        autoComplete="false"
+        placeholder={placeholder}
+        ref={inputEl}
+        value={value}
+        onChange={onChange}
+        onKeyDown={handleEsc}
+        type="search"
+      />
     </form>
   );
 };

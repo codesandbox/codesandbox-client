@@ -31,6 +31,7 @@ import { useOfficialTemplates } from './useOfficialTemplates';
 import { useTeamTemplates } from './useTeamTemplates';
 import { CloudBetaBadge } from './CloudBetaBadge';
 import { CreateSandboxParams } from './types';
+import { SearchBox } from './SearchBox';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -188,12 +189,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             )}
           </HeaderInformation>
 
-          {viewState === 'initial' ? (
-            <div>
-              {/* ❗️ TODO: Search */}
-              search
-            </div>
-          ) : null}
+          {viewState === 'initial' ? <SearchBox /> : null}
 
           {/* isModal is undefined on /s/ page */}
           {isModal ? (
