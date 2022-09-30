@@ -21,7 +21,7 @@ export const TemplateCard = ({
     template.sandbox?.source?.template
   );
 
-  const sandboxTitle = template.sandbox?.title;
+  const sandboxTitle = template.sandbox?.title || template.sandbox?.alias;
   const isV2 = template.sandbox?.isV2;
   const teamName = template.sandbox?.collection?.team?.name;
 
