@@ -1,155 +1,100 @@
-import track from '@codesandbox/common/lib/utils/analytics';
-import {
-  gitHubRepoPattern,
-  gitHubToProjectsUrl,
-  protocolAndHost,
-} from '@codesandbox/common/lib/utils/url-generator';
-import {
-  Button,
-  Element,
-  Input,
-  Stack,
-  Text,
-  Link,
-} from '@codesandbox/components';
+import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
+import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 
-import { DownloadIcon } from '../Icons/DownloadIcon';
-import { TerminalIcon } from '../Icons/TerminalIcon';
-
-const documentationLinkStyles = css({
-  display: 'flex',
-  gap: 2,
-  alignItems: 'center',
-  fontSize: 12,
-  color: '#808080',
-  textDecoration: 'none',
-  transition: '0.3s ease color',
-
-  '&:hover, &:focus': {
-    color: 'white',
-  },
-});
-
-const getFullGitHubUrl = (url: string) =>
-  `${protocolAndHost()}${gitHubToProjectsUrl(url) + '?create=true'}`;
-
-export const ImportFromGithub = () => {
-  const [error, setError] = useState('Lorem ipsum');
-  const [transformedUrl, setTransformedUrl] = useState('');
-  const [url, setUrl] = useState('');
-
-  const updateUrl = useCallback(({ target: { value: newUrl } }) => {
-    if (!newUrl) {
-      setError(null);
-      setTransformedUrl('');
-      setUrl(newUrl);
-    } else if (!gitHubRepoPattern.test(newUrl)) {
-      setError('The URL provided is not valid.');
-      setTransformedUrl('');
-      setUrl(newUrl);
-    } else {
-      setError(null);
-      setTransformedUrl(getFullGitHubUrl(newUrl.trim()));
-      setUrl(newUrl);
-    }
-  }, []);
-
-  return (
-    <form>
-      <Stack>
-        <Input
-          css={css({
-            fontSize: 13,
-            paddingY: 1,
-            paddingX: 4,
-          })}
-          value={url}
-          onChange={updateUrl}
-          type="text"
-          placeholder="GitHub Repository URL"
-        />
-
-        <Button
-          autoWidth
-          css={{ fontSize: 13, marginLeft: '.5em' }}
-          disabled={!transformedUrl}
-          onClick={() => {
-            window.open(gitHubToProjectsUrl(url) + '?create=true', '_blank');
-          }}
-        >
-          Import
-        </Button>
-      </Stack>
-
-      {error ? (
-        <Text
-          as="small"
-          css={css({
-            display: 'block',
-            marginTop: 2,
-            color: 'errorForeground',
-            fontSize: 12,
-          })}
-        >
-          {error}
-        </Text>
-      ) : null}
-    </form>
-  );
+type UrlState = {
+  raw: string;
+  parsed: string | null;
+  error: string | null;
 };
 
-export const Import = () => {
-  useEffect(() => {
-    track('Create Sandbox Tab Open', { tab: 'import' });
-  }, []);
+const Step1: React.FC = () => {
+  const [url, setUrl] = React.useState<UrlState>({
+    raw: '',
+    parsed: null,
+    error: null,
+  });
+
+  const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (!value) {
+      setUrl({ raw: value, parsed: null, error: null });
+    } else if (!gitHubRepoPattern.test(value)) {
+      setUrl({
+        raw: value,
+        parsed: null,
+        error: 'The URL provided is not valid.',
+      });
+    } else {
+      setUrl({
+        raw: value,
+        parsed: getFullGitHubUrl(value.trim()),
+        error: null,
+      });
+    }
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
 
   return (
-    <Stack
-      direction="vertical"
-      gap={7}
-      css={{ width: '100%', height: '100%', paddingBottom: '24px' }}
-    >
-      <Element
-        as="header"
-        css={css({
-          marginBottom: 8,
-        })}
+    <Stack direction="vertical" gap={4}>
+      <Text
+        as="h2"
+        id="form-title"
+        css={{
+          fontSize: '16px',
+          fontWeight: 500,
+          margin: 0,
+          lineHeight: 1.5,
+        }}
       >
-        <Text
-          as="h2"
-          css={{
-            fontSize: '16px',
-            fontWeight: 500,
-            margin: 0,
-            lineHeight: 1.5,
-          }}
-        >
-          Enter the GitHub repository URL to import
-        </Text>
-      </Element>
-
-      <ImportFromGithub />
-
-      <Stack
-        css={css({
-          flexDirection: 'row',
-          gap: 6,
-        })}
-      >
-        <Link
-          css={documentationLinkStyles}
-          href="/docs/importing#export-with-cli"
-        >
-          <TerminalIcon />
-          CLI Documentation
-        </Link>
-        <Link css={documentationLinkStyles} href="/docs/importing#define-api">
-          <DownloadIcon />
-          API Documentation
-        </Link>
-      </Stack>
+        Enter the GitHub repository URL to import
+      </Text>
+      <form onSubmit={handleFormSubmit}>
+        <Stack gap={2}>
+          <Input
+            aria-describedby="form-title form-error"
+            aria-invalid={Boolean(url.error)}
+            onChange={handleUrlInputChange}
+            placeholder="GitHub Repository URL"
+            type="text"
+            value={url.raw}
+            required
+          />
+          <Button disabled={Boolean(url.error)} type="submit" autoWidth>
+            Import
+          </Button>
+        </Stack>
+        <Element aria-atomic="true" id="form-error" role="alert">
+          {url.error ? (
+            <Text
+              as="small"
+              css={css({
+                display: 'block',
+                marginTop: 2,
+                color: 'errorForeground',
+                fontSize: 12,
+              })}
+            >
+              {url.error}
+            </Text>
+          ) : null}
+        </Element>
+      </form>
     </Stack>
   );
 };
+
+export const Import: React.FC = () => {
+  return (
+    <Stack direction="vertical" css={{ width: '100%', height: '100%' }}>
+      <Step1 />
+    </Stack>
+  );
+};
+function getFullGitHubUrl(arg0: string): string {
+  throw new Error('Function not implemented.');
+}
