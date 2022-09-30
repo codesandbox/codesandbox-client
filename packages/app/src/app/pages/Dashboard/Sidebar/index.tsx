@@ -138,12 +138,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         >
           <SidebarListItem
             css={css({
-              marginTop: 4,
+              marginTop: 6,
               paddingLeft: 2,
               paddingRight: 0,
               borderRadius: 2,
               marginLeft: 2,
-              minHeight: 10,
+              minHeight: 8,
             })}
           >
             {activeAccount ? (
