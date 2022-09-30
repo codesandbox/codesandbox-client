@@ -2,10 +2,11 @@ import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React from 'react';
+import { getOwnerAndNameFromInput } from './utils';
 
 type UrlState = {
   raw: string;
-  parsed: string | null;
+  parsed: { owner: string; name: string } | null;
   error: string | null;
 };
 
@@ -27,9 +28,13 @@ const Step1: React.FC = () => {
         error: 'The URL provided is not valid.',
       });
     } else {
+      const { owner, name } = getOwnerAndNameFromInput(value.trim());
       setUrl({
         raw: value,
-        parsed: getFullGitHubUrl(value.trim()),
+        parsed: {
+          owner,
+          name,
+        },
         error: null,
       });
     }
@@ -95,6 +100,3 @@ export const Import: React.FC = () => {
     </Stack>
   );
 };
-function getFullGitHubUrl(arg0: string): string {
-  throw new Error('Function not implemented.');
-}
