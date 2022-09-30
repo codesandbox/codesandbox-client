@@ -5,7 +5,7 @@ import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { TemplateButton } from './elements';
-import { CloudBetaBadge } from './CloudBetaBadge';
+import { CloudBetaBadge } from '../../CloudBetaBadge';
 
 interface TemplateCardProps {
   template: TemplateFragment;

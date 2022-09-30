@@ -10,7 +10,7 @@ import {
 } from '@codesandbox/components';
 
 import { StyledInput, StyledLabel, StyledSelect } from './elements';
-import { CloudBetaBadge } from './CloudBetaBadge';
+import { CloudBetaBadge } from '../../CloudBetaBadge';
 import { CreateSandboxParams } from './types';
 
 export interface FromTemplateProps {
