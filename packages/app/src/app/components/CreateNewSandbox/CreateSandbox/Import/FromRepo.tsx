@@ -58,6 +58,18 @@ export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
         <Stack direction="vertical" gap={6}>
           <Stack direction="vertical" gap={2}>
             <Input
+              css={{
+                fontFamily: 'inherit',
+                height: '48px',
+                padding: '8px 16px',
+                backgroundColor: '#2a2a2a',
+                color: '#e5e5e5',
+                border: 'none',
+                borderRadius: '2px',
+                fontSize: '13px',
+                lineHeight: '16px',
+                fontWeight: 500,
+              }}
               autoFocus
               id="repo-name"
               type="text"
@@ -69,10 +81,14 @@ export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
             />
           </Stack>
 
-          <Label>
-            <Text as="span">Git organization</Text>
+          <Label css={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Text as="span" size={2} css={{ color: '#808080' }}>
+              Git organization
+            </Text>
             <StyledSelect
-              id="repo-gh-org"
+              css={{
+                color: '#e5e5e5',
+              }}
               icon={() => <Icon css={{ marginLeft: 8 }} name="github" />}
               onChange={e => {
                 setSelectedTeam(e.target.value);
@@ -86,10 +102,14 @@ export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
             </StyledSelect>
           </Label>
 
-          <Label>
-            <Text as="span">Privacy settings</Text>
+          <Label css={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Text as="span" size={2} css={{ color: '#808080' }}>
+              Privacy settings
+            </Text>
             <StyledSelect
-              id="repo-privacy"
+              css={{
+                color: '#e5e5e5',
+              }}
               icon={() => <Icon css={{ marginLeft: 8 }} name="lock" />}
               onChange={e => {
                 setSelectedTeam(e.target.value);
