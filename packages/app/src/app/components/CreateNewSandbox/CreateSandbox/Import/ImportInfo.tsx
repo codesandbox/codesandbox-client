@@ -4,7 +4,6 @@ import {
   v2DraftBranchUrl,
   v2RepoUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-// import { GithubRepoAuthorization } from 'app/graphql/types';
 import { GithubRepoToImport } from './types';
 
 export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
@@ -33,7 +32,6 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
         </Text>
       </Stack>
 
-      {/* {githubRepo.authorization !== GithubRepoAuthorization.Write && ( */}
       <Stack direction="vertical" gap={4}>
         <Text size={2} css={{ color: '#808080' }}>
           You don&lsquo;t have write access to this repository.
@@ -43,10 +41,8 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
           fork the repository to experiment freely.
         </Text>
       </Stack>
-      {/* )} */}
 
       <Stack direction="vertical" gap={4}>
-        {/* {githubRepo.authorization !== GithubRepoAuthorization.Write && ( */}
         <Link
           css={{ color: '#808080', display: 'flex', gap: '8px' }}
           href={v2DraftBranchUrl(githubRepo.owner.login, githubRepo.name)}
@@ -56,7 +52,6 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
             Create contribution branch
           </Text>
         </Link>
-        {/* )} */}
 
         <Link
           css={{ color: '#808080', display: 'flex', gap: '8px' }}
