@@ -37,10 +37,10 @@ export const COLUMN_MEDIA_THRESHOLD = 1600;
 const QUICK_START_IDS = [
   'new',
   'rjk9n4zj7m', // static v1
-  'k8dsq1', // static v2 or blank?
+  'k8dsq1', // blank v2
   'fxis37', // next v2
   'prp60l', // remix v2
-  '371lz2', // vue v2 (should be nuxt?)
+  '6xxu1m', // nuxt (TODO: move it to v2 and make it official)
   'vue',
   'svelte',
   'angular',
