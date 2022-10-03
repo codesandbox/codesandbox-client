@@ -1,10 +1,38 @@
 import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { getOwnerAndNameFromInput } from './utils';
+
+const UnauthenticatedImport: React.FC = () => {
+  const actions = useActions();
+
+  return (
+    <Stack direction="vertical" gap={8}>
+      <Text as="h2" css={{ margin: 0 }} size={4} weight="medium">
+        Import from GitHub
+      </Text>
+      <Stack direction="vertical" gap={4}>
+        <Text id="unauthenticated-label" css={{ color: '#999999' }} size={3}>
+          You need to sign in to import repositories from GitHub.
+        </Text>
+        <Button
+          aria-describedby="unauthenticated-label"
+          css={{
+            width: '132px',
+          }}
+          onClick={() => actions.signInClicked()}
+          variant="primary"
+        >
+          Sign in
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
 
 type UrlState = {
   raw: string;
@@ -16,6 +44,8 @@ type ImportProps = {
   onRepoSelect: (repo: GithubRepoToImport) => void;
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
+  const { hasLogIn } = useAppState();
+
   const [url, setUrl] = React.useState<UrlState>({
     raw: '',
     parsed: null,
@@ -56,6 +86,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     e.preventDefault();
     setShouldFetch(true);
   };
+
+  if (!hasLogIn) {
+    return <UnauthenticatedImport />;
+  }
 
   return (
     <Stack direction="vertical" gap={4}>
