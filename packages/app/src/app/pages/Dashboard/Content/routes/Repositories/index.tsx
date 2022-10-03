@@ -86,6 +86,7 @@ export const RepositoriesPage = () => {
         activeTeam={activeTeam}
         path={path}
         showViewOptions
+        showBetaBadge
         nestedPageType={pageType}
       />
       <VariableGrid page={pageType} items={itemsToShow()} />

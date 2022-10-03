@@ -87,7 +87,7 @@ export const ShowcaseSandbox = () => {
               <Button
                 as="a"
                 autoWidth
-                href={sandboxUrl({ id: showcasedSandbox.id })}
+                href={sandboxUrl(showcasedSandbox)}
                 variant="secondary"
               >
                 Open sandbox

@@ -5,7 +5,7 @@ import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { TemplateButton } from './elements';
-import { CloudBetaBadge } from './CloudBetaBadge';
+import { CloudBetaBadge } from '../../CloudBetaBadge';
 
 interface TemplateCardProps {
   template: TemplateFragment;
@@ -21,7 +21,7 @@ export const TemplateCard = ({
     template.sandbox?.source?.template
   );
 
-  const sandboxTitle = template.sandbox?.title;
+  const sandboxTitle = template.sandbox?.title || template.sandbox?.alias;
   const isV2 = template.sandbox?.isV2;
   const teamName = template.sandbox?.collection?.team?.name;
 
