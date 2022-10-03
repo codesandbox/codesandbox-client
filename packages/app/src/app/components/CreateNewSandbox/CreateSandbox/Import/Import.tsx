@@ -2,6 +2,7 @@ import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import React from 'react';
+import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { getOwnerAndNameFromInput } from './utils';
 
@@ -11,7 +12,10 @@ type UrlState = {
   error: string | null;
 };
 
-export const Import: React.FC = () => {
+type ImportProps = {
+  onRepoSelect: (repo: GithubRepoToImport) => void;
+};
+export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const [url, setUrl] = React.useState<UrlState>({
     raw: '',
     parsed: null,
@@ -22,6 +26,7 @@ export const Import: React.FC = () => {
     owner: url.parsed?.owner,
     name: url.parsed?.name,
     shouldFetch,
+    onCompleted: onRepoSelect,
   });
 
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

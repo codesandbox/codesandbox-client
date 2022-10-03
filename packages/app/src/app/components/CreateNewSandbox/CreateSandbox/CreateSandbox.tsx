@@ -11,7 +11,7 @@ import React, { ReactNode, useState } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-import { TemplateFragment } from 'app/graphql/types';
+import { GithubRepoAuthorization, TemplateFragment } from 'app/graphql/types';
 
 import {
   Container,
@@ -31,6 +31,9 @@ import { useOfficialTemplates } from './useOfficialTemplates';
 import { useTeamTemplates } from './useTeamTemplates';
 import { CloudBetaBadge } from './CloudBetaBadge';
 import { CreateSandboxParams } from './types';
+import { GithubRepoToImport } from './Import/types';
+import { ImportInfo } from './Import/ImportInfo';
+import { FromRepo } from './Import/FromRepo';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -136,9 +139,22 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const [viewState, setViewState] = useState<
     'initial' | 'fromTemplate' | 'fork' /* | 'search' */
-  >('initial');
-  // ❗️ We could combine viewState with selectedtemplate to limit the amout of states.
+  >('fork');
+  // ❗️ We could combine viewState with selectedtemplate to limit the amount of states.
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
+  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>({
+    name: 'climbr',
+    fullName: 'olarclara/climbr',
+    updatedAt: '2022-08-12T10:27:12Z',
+    authorization: GithubRepoAuthorization.Write,
+    owner: {
+      id: '24959348',
+      login: 'olarclara',
+      avatarUrl: 'https://avatars.githubusercontent.com/u/24959348?v=4',
+      __typename: 'GithubOrganization',
+    },
+    __typename: 'GithubRepo',
+  });
 
   const createFromTemplate = (
     template: TemplateFragment,
@@ -161,6 +177,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const selectTemplate = (template: TemplateFragment) => {
     setSelectedTemplate(template);
     setViewState('fromTemplate');
+  };
+
+  const selectGithubRepo = (repo: GithubRepoToImport) => {
+    setSelectedRepo(repo);
+    setViewState('fork');
   };
 
   return (
@@ -276,7 +297,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             {viewState === 'fromTemplate' ? (
               <TemplateInfo template={selectedTemplate} />
             ) : null}
-            {viewState === 'fork' ? <div>Repo info</div> : null}
+            {viewState === 'fork' ? (
+              <ImportInfo githubRepo={selectedRepo} />
+            ) : null}
           </ModalSidebar>
 
           <ModalContent>
@@ -291,7 +314,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                 </Panel>
 
                 <Panel tab={tabState} id="import">
-                  <Import />
+                  <Import onRepoSelect={selectGithubRepo} />
                 </Panel>
 
                 {showTeamTemplates ? (
@@ -353,7 +376,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               />
             ) : null}
 
-            {viewState === 'fork' ? <div>Repo fork form fields</div> : null}
+            {viewState === 'fork' ? (
+              <FromRepo githubRepo={selectedRepo} />
+            ) : null}
           </ModalContent>
         </ModalBody>
       </Container>

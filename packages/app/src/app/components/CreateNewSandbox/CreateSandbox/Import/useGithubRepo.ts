@@ -4,13 +4,14 @@ import {
   GetGithubRepoQueryVariables,
 } from 'app/graphql/types';
 import { GET_GITHUB_REPO } from '../../queries';
+import { GithubRepoToImport } from './types';
 
 type State =
   | { state: 'idle' }
   | { state: 'loading' }
   | {
       state: 'ready';
-      data: NonNullable<GetGithubRepoQuery['githubRepo']>;
+      data: GithubRepoToImport;
     }
   | {
       state: 'error';
@@ -19,11 +20,13 @@ type State =
 export const useGithubRepo = ({
   owner,
   name,
+  onCompleted,
   shouldFetch,
 }: {
   owner?: string;
   name?: string;
   shouldFetch: boolean;
+  onCompleted: (data: GithubRepoToImport) => void;
 }): State => {
   const { data, error } = useQuery<
     GetGithubRepoQuery,
@@ -32,6 +35,7 @@ export const useGithubRepo = ({
     fetchPolicy: 'cache-and-network',
     variables: { owner, name },
     skip: !shouldFetch,
+    onCompleted: response => onCompleted(response.githubRepo),
   });
 
   if (!shouldFetch) {
