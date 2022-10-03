@@ -21,7 +21,7 @@ export const SyncedSandboxesPage = () => {
   const actions = useActions();
   const {
     activeTeam,
-    dashboard: { sandboxes, viewMode },
+    dashboard: { sandboxes },
   } = useAppState();
 
   React.useEffect(() => {
@@ -38,9 +38,7 @@ export const SyncedSandboxesPage = () => {
     }
 
     if (home) {
-      return viewMode === 'grid' && items.length
-        ? [{ type: 'new-repo' }, ...items]
-        : items;
+      return items;
     }
 
     if (sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes) {
