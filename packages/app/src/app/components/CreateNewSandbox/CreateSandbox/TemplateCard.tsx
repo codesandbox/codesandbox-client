@@ -38,7 +38,11 @@ export const TemplateCard = ({
           <Text
             size={3}
             variant="body"
-            css={{ fontWeight: 500, textOverflow: 'ellipsis' }}
+            css={{
+              fontWeight: 500,
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+            }}
           >
             {sandboxTitle}
           </Text>
