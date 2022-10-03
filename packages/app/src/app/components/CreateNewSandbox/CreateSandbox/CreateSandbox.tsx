@@ -11,7 +11,7 @@ import React, { ReactNode, useState } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-import { GithubRepoAuthorization, TemplateFragment } from 'app/graphql/types';
+import { TemplateFragment } from 'app/graphql/types';
 
 import {
   Container,
@@ -139,22 +139,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const [viewState, setViewState] = useState<
     'initial' | 'fromTemplate' | 'fork' /* | 'search' */
-  >('fork');
+  >('initial');
   // ❗️ We could combine viewState with selectedtemplate to limit the amount of states.
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
-  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>({
-    name: 'climbr',
-    fullName: 'olarclara/climbr',
-    updatedAt: '2022-08-12T10:27:12Z',
-    authorization: GithubRepoAuthorization.Write,
-    owner: {
-      id: '24959348',
-      login: 'olarclara',
-      avatarUrl: 'https://avatars.githubusercontent.com/u/24959348?v=4',
-      __typename: 'GithubOrganization',
-    },
-    __typename: 'GithubRepo',
-  });
+  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>();
 
   const createFromTemplate = (
     template: TemplateFragment,

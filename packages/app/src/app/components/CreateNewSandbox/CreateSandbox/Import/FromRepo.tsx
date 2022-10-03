@@ -16,7 +16,7 @@ import { StyledSelect } from '../elements';
 export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
   githubRepo,
 }) => {
-  const { hasLogIn, user, dashboard, activeTeam } = useAppState();
+  const { user, dashboard, activeTeam } = useAppState();
 
   const [repoName, setRepoName] = useState<string>(githubRepo.name);
   const [selectedTeam, setSelectedTeam] = useState<string>(activeTeam);
@@ -94,7 +94,7 @@ export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
                 setSelectedTeam(e.target.value);
               }}
               value={selectedTeam}
-              disabled={!hasLogIn || !user || !dashboard.teams}
+              disabled={!user || !dashboard.teams}
             >
               {dashboard.teams.map(team => (
                 <option key={team.id}>{team.name}</option>
