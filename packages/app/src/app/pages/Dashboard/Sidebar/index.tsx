@@ -234,7 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="star"
           />
           <NestableRowItem
-            name="Sandboxes"
+            name="All sandboxes"
             path={dashboardUrls.sandboxes('/', activeTeam)}
             page="sandboxes"
             folderPath="/"
@@ -254,7 +254,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
           )}
           <RowItem
-            name="Synced Sandboxes"
+            name="Synced"
             page="synced-sandboxes"
             path={dashboardUrls.syncedSandboxes(activeTeam)}
             icon="sync"
