@@ -330,10 +330,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         const selectedItem = sandboxes.find(
           item => item.sandbox.id === selectedId
         );
-        url = sandboxUrl({
-          id: selectedItem.sandbox.id,
-          alias: selectedItem.sandbox.alias,
-        });
+        url = sandboxUrl(selectedItem.sandbox);
       }
 
       if (event.ctrlKey || event.metaKey) {

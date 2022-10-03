@@ -5,7 +5,7 @@ import { Text, Stack } from '@codesandbox/components';
 import { TemplateFragment } from 'app/graphql/types';
 import { TemplateCard } from './TemplateCard';
 import { TemplateGrid } from './elements';
-import { CloudBetaBadge } from './CloudBetaBadge';
+import { CloudBetaBadge } from '../../CloudBetaBadge';
 
 interface TemplateCategoryListProps {
   title: string;

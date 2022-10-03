@@ -1,1 +1,0 @@
-export { PersonalTemplates } from './PersonalTemplates';

@@ -1,5 +1,5 @@
 import { TemplateType } from '@codesandbox/common/lib/templates';
-import { ITemplateInfo } from '../TemplateList';
+import { TemplateInfo } from '../types';
 
 interface IExploreTemplate {
   title: string;
@@ -36,7 +36,7 @@ interface IExploreTemplate {
 
 const mapAPIResponseToTemplateInfo = (
   exploreTemplate: IExploreTemplate
-): ITemplateInfo => ({
+): TemplateInfo => ({
   key: exploreTemplate.title,
   title: exploreTemplate.title,
   templates: exploreTemplate.sandboxes.map(sandbox => ({
@@ -69,9 +69,7 @@ const mapAPIResponseToTemplateInfo = (
   })),
 });
 
-export const getTemplateInfosFromAPI = (
-  url: string
-): Promise<ITemplateInfo[]> =>
+export const getTemplateInfosFromAPI = (url: string): Promise<TemplateInfo[]> =>
   fetch(url)
     .then(res => res.json())
     .then((body: IExploreTemplate[]) => body.map(mapAPIResponseToTemplateInfo));

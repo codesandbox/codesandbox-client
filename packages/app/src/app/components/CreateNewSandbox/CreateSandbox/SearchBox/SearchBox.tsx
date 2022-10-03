@@ -12,7 +12,7 @@ type SearchProps = {
 export const SearchBox = ({
   value,
   onChange,
-  placeholder = 'Search',
+  placeholder = 'Search Templates',
 }: SearchProps) => {
   const inputEl = React.useRef<HTMLInputElement>();
 
@@ -43,6 +43,8 @@ export const SearchBox = ({
       <InputWrapper>
         <SearchElement
           id="filter-templates"
+          aria-label="search templates"
+          autoComplete="false"
           placeholder={placeholder}
           ref={inputEl}
           value={value}

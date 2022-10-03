@@ -37,10 +37,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const history = useHistory();
   const location = useLocation();
 
-  const url = sandboxUrl({
-    id: sandbox.id,
-    alias: sandbox.alias,
-  });
+  const url = sandboxUrl(sandbox);
 
   const folderUrl = getFolderUrl(item, activeTeam);
 

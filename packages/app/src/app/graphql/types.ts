@@ -2153,6 +2153,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'viewCount'
   | 'likeCount'
   | 'alwaysOn'
+  | 'isV2'
   | 'authorId'
   | 'teamId'
 > & {

@@ -135,16 +135,6 @@ export const Legend = styled.span`
   line-height: 19px;
 `;
 
-export const SubHeader = styled.h2`
-  font-family: Inter;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 19px;
-  margin: 1rem 1.5rem;
-  margin-top: 24px;
-`;
-
 export const Grid = styled.div<{ columnCount: number }>`
   display: grid;
   margin: 0 1.5rem;
@@ -190,7 +180,7 @@ export const TemplateButton = styled.button`
 
 export const TemplateGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px 10px;
   overflow: auto;
   padding-bottom: 8px;

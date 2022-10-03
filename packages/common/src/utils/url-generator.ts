@@ -108,19 +108,15 @@ export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
     return `${editorUrl()}${sandboxGitUrl(git)}`;
   }
 
+  const baseUrl = sandboxDetails.isV2
+    ? `${v2EditorUrl()}sandbox/`
+    : editorUrl();
+
   if (sandboxDetails.alias) {
-    return `${editorUrl()}${sandboxDetails.alias}`;
+    return `${baseUrl}${sandboxDetails.alias}`;
   }
 
-  return `${editorUrl()}${sandboxDetails.id}`;
-};
-
-export const sandboxV2Url = (sandboxDetails: SandboxUrlSourceData) => {
-  if (sandboxDetails.alias) {
-    return `${v2EditorUrl()}sandbox/${sandboxDetails.alias}`;
-  }
-
-  return `${v2EditorUrl()}sandbox/${sandboxDetails.id}`;
+  return `${baseUrl}${sandboxDetails.id}`;
 };
 
 export const v2BranchUrl = (branchDetails: {
