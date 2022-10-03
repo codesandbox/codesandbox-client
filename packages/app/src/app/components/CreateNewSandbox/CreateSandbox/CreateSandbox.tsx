@@ -7,7 +7,7 @@ import {
   ThemeProvider,
 } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
@@ -145,6 +145,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  useEffect(() => {
+    if (searchQuery && tabState.selectedId) {
+      setSearchQuery('');
+    }
+  }, [tabState.selectedId]);
+
   const createFromTemplate = (
     template: TemplateFragment,
     { name }: CreateSandboxParams
@@ -227,12 +233,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
           <ModalSidebar>
             {viewState === 'initial' ? (
               <Stack direction="vertical">
-                <Tabs
-                  {...tabState}
-                  // TODO: Any click on the tabs will reset the search query
-                  onClick={() => setSearchQuery('')}
-                  aria-label="Create new"
-                >
+                <Tabs {...tabState} aria-label="Create new">
                   <Tab {...tabState} stopId="quickstart">
                     Quick start
                   </Tab>
