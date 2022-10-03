@@ -3,10 +3,9 @@ import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
 import { Button, Select } from '@codesandbox/components';
 
 export const Container = styled.div`
-  // TODO: Proper height, width and responsive styles
   min-width: 870px;
-  max-width: 1200px;
-  height: 550px;
+  max-width: 950px;
+  height: 500px;
   overflow: hidden;
   border-radius: 4px;
   background-color: #151515;
@@ -38,7 +37,7 @@ export const ModalBody = styled.div`
 `;
 
 export const ModalSidebar = styled.div`
-  width: 224px;
+  width: 176px;
   flex-shrink: 0;
   padding: 0px 24px 24px;
   overflow: auto;
@@ -54,7 +53,7 @@ export const Tabs = styled(TabList)`
   flex-direction: column;
 
   // TODO: Mobile styles
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 950px) {
     display: none;
   }
 `;
@@ -163,7 +162,7 @@ export const TemplateButton = styled.button`
   background: #1d1d1d;
   border: 1px solid transparent;
   text-align: left;
-  padding: 24px;
+  padding: 16px;
   border-radius: 2px;
   color: #e5e5e5;
   transition: background ${props => props.theme.speeds[2]} ease-out;
