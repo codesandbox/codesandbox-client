@@ -84,9 +84,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 }) => {
   const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
-  const isSyncedSandboxesPage = location.pathname.includes('/synced-sandboxes');
+  const isUnderRepositoriesSection =
+    location.pathname.includes('/my-contributions') ||
+    location.pathname.includes('/repositories');
   const defaultSelectedTab =
-    initialTab || isSyncedSandboxesPage ? 'import' : 'quickstart';
+    initialTab || isUnderRepositoriesSection ? 'import' : 'quickstart';
   const isUser = user?.username === activeTeamInfo?.name;
 
   /**
