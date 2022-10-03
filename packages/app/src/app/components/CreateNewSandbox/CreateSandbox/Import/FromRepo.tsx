@@ -9,8 +9,8 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { GithubRepoToImport } from './types';
-import { CloudBetaBadge } from '../CloudBetaBadge';
 import { StyledSelect } from '../elements';
 
 export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
