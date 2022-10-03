@@ -1,5 +1,9 @@
 import React from 'react';
 import { Element, Icon, Link, Stack, Text } from '@codesandbox/components';
+import {
+  v2DraftBranchUrl,
+  v2RepoUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 // import { GithubRepoAuthorization } from 'app/graphql/types';
 import { GithubRepoToImport } from './types';
 
@@ -43,7 +47,10 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
 
       <Stack direction="vertical" gap={4}>
         {/* {githubRepo.authorization !== GithubRepoAuthorization.Write && ( */}
-        <Link css={{ color: '#808080', display: 'flex', gap: '8px' }}>
+        <Link
+          css={{ color: '#808080', display: 'flex', gap: '8px' }}
+          href={v2DraftBranchUrl(githubRepo.owner.login, githubRepo.name)}
+        >
           <Icon aria-hidden name="contribution" />
           <Text as="span" size={2}>
             Create contribution branch
@@ -51,13 +58,20 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
         </Link>
         {/* )} */}
 
-        <Link css={{ color: '#808080', display: 'flex', gap: '8px' }}>
+        <Link
+          css={{ color: '#808080', display: 'flex', gap: '8px' }}
+          href={v2RepoUrl(githubRepo.owner.login, githubRepo.name)}
+        >
           <Icon aria-hidden name="eye" />
           <Text as="span" size={2}>
             View project
           </Text>
         </Link>
-        <Link css={{ color: '#808080', display: 'flex', gap: '8px' }}>
+        <Link
+          css={{ color: '#808080', display: 'flex', gap: '8px' }}
+          href="https://codesandbox.io/docs/projects/learn/getting-started/open-source"
+          target="_blank"
+        >
           <Icon aria-hidden name="file" />
           <Text as="span" size={2}>
             Learn more
