@@ -101,25 +101,6 @@ export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
               ))}
             </StyledSelect>
           </Label>
-
-          <Label css={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <Text as="span" size={2} css={{ color: '#808080' }}>
-              Privacy settings
-            </Text>
-            <StyledSelect
-              css={{
-                color: '#e5e5e5',
-              }}
-              icon={() => <Icon css={{ marginLeft: 8 }} name="lock" />}
-              onChange={e => {
-                setSelectedTeam(e.target.value);
-              }}
-              value={selectedTeam}
-            >
-              <option key="public">Public</option>
-              <option value="private">Private</option>
-            </StyledSelect>
-          </Label>
         </Stack>
 
         <Stack css={{ justifyContent: 'flex-end' }}>
