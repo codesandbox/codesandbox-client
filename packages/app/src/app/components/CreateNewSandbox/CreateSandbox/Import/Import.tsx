@@ -1,10 +1,12 @@
 import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { GithubRepoAuthorization } from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
+import { useImportAndRedirect } from './useImportAndRedirect';
 import { getOwnerAndNameFromInput } from './utils';
 
 const UnauthenticatedImport: React.FC = () => {
@@ -44,7 +46,8 @@ type ImportProps = {
   onRepoSelect: (repo: GithubRepoToImport) => void;
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
-  const { hasLogIn } = useAppState();
+  const { hasLogIn, activeTeam } = useAppState();
+  const importAndRedirect = useImportAndRedirect();
 
   const [url, setUrl] = React.useState<UrlState>({
     raw: '',
@@ -56,7 +59,13 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     owner: url.parsed?.owner,
     name: url.parsed?.name,
     shouldFetch,
-    onCompleted: onRepoSelect,
+    onCompleted: repo => {
+      if (repo.authorization === GithubRepoAuthorization.Write) {
+        importAndRedirect(repo.owner.login, repo.name, activeTeam);
+      } else {
+        onRepoSelect(repo);
+      }
+    },
   });
 
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
