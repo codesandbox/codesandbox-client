@@ -47,6 +47,7 @@ export const MyContributionsPage = () => {
         title="My contributions"
         path={param}
         showViewOptions
+        showBetaBadge
         showFilters={Boolean(param)}
         showSortOptions={Boolean(param)}
       />

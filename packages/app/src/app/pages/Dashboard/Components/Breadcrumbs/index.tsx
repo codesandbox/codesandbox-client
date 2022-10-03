@@ -33,7 +33,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   } else if (albumId) prefix = 'Discover';
 
   return (
-    <Text marginBottom={1} marginTop={-2} block weight="regular" size={6} paddingRight={4} >
+    <Text block size={6}>
       <Link
         to={link}
         as={LinkBase}
