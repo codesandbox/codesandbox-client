@@ -168,7 +168,6 @@ export const TemplateButton = styled.button`
   color: #e5e5e5;
   transition: background ${props => props.theme.speeds[2]} ease-out;
   outline: none;
-  max-width: 235px;
 
   &:hover {
     background: #292929;
@@ -181,7 +180,7 @@ export const TemplateButton = styled.button`
 
 export const TemplateGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px 10px;
   overflow: auto;
   padding-bottom: 8px;
