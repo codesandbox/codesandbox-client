@@ -29,7 +29,7 @@ import { useEssentialTemplates } from './useEssentialTemplates';
 import { FromTemplate } from './FromTemplate';
 import { useOfficialTemplates } from './useOfficialTemplates';
 import { useTeamTemplates } from './useTeamTemplates';
-import { CloudBetaBadge } from './CloudBetaBadge';
+import { CloudBetaBadge } from '../../CloudBetaBadge';
 import { CreateSandboxParams } from './types';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;

@@ -18,7 +18,7 @@ export const CommunitySandboxMenu: React.FC<MenuProps> = ({ item }) => {
 
   const { sandbox } = item;
   const history = useHistory();
-  const url = sandboxUrl({ id: sandbox.id, alias: sandbox.alias });
+  const url = sandboxUrl(sandbox);
 
   return (
     <Menu.ContextMenu

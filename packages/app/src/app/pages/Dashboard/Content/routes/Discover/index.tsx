@@ -210,7 +210,7 @@ export const FeaturedSandbox = ({ sandbox }) => {
     dashboard: { likeCommunitySandbox, unlikeSandbox },
   } = useActions();
 
-  const url = sandboxUrl({ id: sandbox.id, alias: sandbox.alias });
+  const url = sandboxUrl(sandbox);
   const likedSandboxIds = (sandboxes.LIKED || []).map(s => s.id);
   const liked = likedSandboxIds.includes(sandbox.id);
 

@@ -1,9 +1,6 @@
 import { GitInfo } from '@codesandbox/common/lib/types';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
-import {
-  sandboxUrl,
-  sandboxV2Url,
-} from '@codesandbox/common/lib/utils/url-generator';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import history from '../../utils/history';
 
 export default new (class RouterEffect {
@@ -11,12 +8,14 @@ export default new (class RouterEffect {
     id,
     alias,
     git,
+    isV2,
   }: {
     id?: string | null;
     alias?: string | null;
     git?: GitInfo | null;
+    isV2?: boolean;
   }) {
-    window.history.replaceState({}, '', sandboxUrl({ id, alias, git }));
+    window.history.replaceState({}, '', sandboxUrl({ id, alias, git, isV2 }));
   }
 
   updateSandboxUrl(
@@ -33,13 +32,7 @@ export default new (class RouterEffect {
     },
     { openInNewWindow = false }: { openInNewWindow?: boolean } = {}
   ) {
-    const url = v2
-      ? sandboxV2Url({ id, alias })
-      : sandboxUrl({
-          id,
-          alias,
-          git,
-        });
+    const url = sandboxUrl({ id, alias, isV2: v2 });
 
     if (openInNewWindow) {
       window.open(url, '_blank');

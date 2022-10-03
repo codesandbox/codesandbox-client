@@ -165,7 +165,7 @@ export const SandboxCard: React.FC<{
     // we use on click instead of anchor tag so that safari renders
     // the html5 drag thumbnail instead of text
     if (isTargetInMenu(event)) return;
-    const url = sandboxUrl({ id: sandbox.id });
+    const url = sandboxUrl(sandbox);
     if (event.ctrlKey || event.metaKey) window.open(url, '_blank');
     else window.open(url);
   };
@@ -194,7 +194,7 @@ export const SandboxCard: React.FC<{
       });
     } else if (event.keyCode === ENTER) {
       event.preventDefault();
-      window.location.href = sandboxUrl({ id: sandbox.id });
+      window.location.href = sandboxUrl(sandbox);
     }
   };
 
