@@ -9,6 +9,17 @@ type SearchProps = {
   placeholder?: string;
 };
 
+// The event is bound to the Window by default that's the correct
+// behavior since we should move the focus to the search box when
+// the user presses the slash key. But the callback from useKey
+// uses `KeyboardEvent` which doesn't have the expected target
+// interface since it might originate from different elements.
+// This is a workaround to check later if the event is triggered
+// from an input and prevent moving the focus to the search box.
+type KeyboardEventWithTarget = KeyboardEvent & {
+  target: Window | HTMLInputElement;
+};
+
 export const SearchBox = ({
   value,
   onChange,
@@ -16,8 +27,13 @@ export const SearchBox = ({
 }: SearchProps) => {
   const inputEl = React.useRef<HTMLInputElement>();
 
-  useKey('/', () => {
-    if (inputEl.current) {
+  useKey('/', _e => {
+    const e = (_e as unknown) as KeyboardEventWithTarget;
+
+    // Do not trigger if the key event originates from
+    // an input. This allows users to type / in the GH
+    // url input.
+    if (inputEl.current && 'type' in e.target && e.target.type !== 'text') {
       requestAnimationFrame(() => {
         inputEl.current.focus();
       });
