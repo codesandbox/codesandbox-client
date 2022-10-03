@@ -34,6 +34,9 @@ export const MenuStyles = createGlobalStyle(
       fontFamily: 'Inter, sans-serif',
       fontWeight: 400,
     },
+    '[data-reach-menu] > div': {
+      borderRadius: 4,
+    },
     '[data-reach-menu][hidden],[data-reach-menu-popover][hidden]': {
       display: 'none',
     },
