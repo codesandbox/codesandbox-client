@@ -46,3 +46,22 @@ export const SearchElement = styled.input`
     color: #757575;
   }
 `;
+
+export const InputWrapper = styled.div`
+  position: relative;
+  &:focus-within {
+    :before {
+      background-image: url("data:image/svg+xml,%3Csvg width='13' height='12' viewBox='0 0 13 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1.20227' y='0.375' width='11.2083' height='11.25' rx='0.375' stroke='white' stroke-width='0.75'/%3E%3Cpath d='M8.00501 2.71875H7.37219L5.4386 9.90234H6.07141L8.00501 2.71875Z' fill='white'/%3E%3C/svg%3E%0A");
+    }
+  }
+  &::before {
+    content: '';
+    background-image: url("data:image/svg+xml,%3Csvg width='13' height='12' viewBox='0 0 13 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1.20227' y='0.375' width='11.2083' height='11.25' rx='0.375' stroke='%23757575' stroke-width='0.75'/%3E%3Cpath d='M8.00501 2.71875H7.37219L5.4386 9.90234H6.07141L8.00501 2.71875Z' fill='%23757575'/%3E%3C/svg%3E%0A");
+    width: 13px;
+    height: 13px;
+    top: 8px;
+    right: 0.5rem;
+    position: absolute;
+    background-repeat: no-repeat;
+  }
+`;
