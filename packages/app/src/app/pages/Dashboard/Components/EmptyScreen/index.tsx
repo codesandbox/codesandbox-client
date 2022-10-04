@@ -182,38 +182,42 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
               that.
             </Text>
           </Stack>
-          <Stack direction="horizontal" gap={1}>
-            <Button
-              onClick={() => {
-                openCreateSandboxModal({ initialTab: 'import' });
-              }}
-              variant="secondary"
-              css={css({
-                height: 'auto',
-                padding: '16px 32px',
-              })}
-              autoWidth
-            >
-              <Stack gap={5} align="center">
-                <Icon name="github" size={20} />
-                <Text size={16} css={css({ lineHeight: '24px' })}>
-                  Import from GitHub
-                </Text>
+          <Media query="(max-width: 960px)">
+            {match => (
+              <Stack direction={match ? 'vertical' : 'horizontal'} gap={1}>
+                <Button
+                  onClick={() => {
+                    openCreateSandboxModal({ initialTab: 'import' });
+                  }}
+                  variant="secondary"
+                  css={css({
+                    height: 'auto',
+                    padding: '16px 32px',
+                  })}
+                  autoWidth={!match}
+                >
+                  <Stack gap={5} align="center">
+                    <Icon name="github" size={20} />
+                    <Text size={16} css={css({ lineHeight: '24px' })}>
+                      Import from GitHub
+                    </Text>
+                  </Stack>
+                </Button>
+                {/* ❗️ TODO: Insert right link */}
+                <Button
+                  variant="link"
+                  css={css({
+                    height: 'auto',
+                    padding: '16px 32px',
+                    fontSize: '16px',
+                  })}
+                  autoWidth={!match}
+                >
+                  Learn more
+                </Button>
               </Stack>
-            </Button>
-            {/* ❗️ TODO: Insert right link */}
-            <Button
-              variant="link"
-              css={css({
-                height: 'auto',
-                padding: '16px 32px',
-                fontSize: '16px',
-              })}
-              autoWidth
-            >
-              Learn more
-            </Button>
-          </Stack>
+            )}
+          </Media>
         </Stack>
       </Stack>
     );
