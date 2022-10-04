@@ -43,7 +43,7 @@ export const Notifications = () => {
               top: '2px',
             })}
           >
-            <Icon name="bell" size={11} title="Notifications" />
+            <Icon name="bell" size={16} title="Notifications" />
             {unreadCount > 0 ? (
               <>
                 <Element

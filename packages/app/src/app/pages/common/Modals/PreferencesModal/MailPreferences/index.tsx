@@ -17,7 +17,7 @@ export const MailPreferences: FunctionComponent = () => {
 
   return (
     <>
-      <Text block marginBottom={6} size={4} weight="bold">
+      <Text block marginBottom={6} size={4} weight="regular">
         Email me when...
       </Text>
 

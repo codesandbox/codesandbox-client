@@ -27,6 +27,8 @@ import {
   DashboardRepo,
   DashboardCommunitySandbox,
   PageTypes,
+  DashboardBranch,
+  DashboardRepository,
 } from '../../types';
 import { DndDropType } from '../../utils/dnd';
 
@@ -104,16 +106,24 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'template' ||
       item.type === 'folder' ||
       item.type === 'repo' ||
-      item.type === 'community-sandbox'
+      item.type === 'community-sandbox' ||
+      item.type === 'branch'
   ) as Array<
     | DashboardSandbox
     | DashboardTemplate
     | DashboardFolder
     | DashboardRepo
     | DashboardCommunitySandbox
+    | DashboardBranch
+    | DashboardRepository
   >;
 
   const selectionItems = possibleItems.map(item => {
+    if (item.type === 'branch') return item.branch.id;
+    if (item.type === 'repository') {
+      const { repository: providerRepository } = item.repository;
+      return `${providerRepository.owner}-${providerRepository.name}`;
+    }
     if (item.type === 'folder') return item.path;
     if (item.type === 'repo') return item.name;
     return item.sandbox.id;
@@ -128,6 +138,12 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'template' ||
       item.type === 'community-sandbox'
   ) as Array<DashboardSandbox | DashboardTemplate>;
+  const branches = (items || []).filter(
+    item => item.type === 'branch'
+  ) as DashboardBranch[];
+  const repositories = (items || []).filter(
+    item => item.type === 'repository'
+  ) as DashboardRepository[];
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const actions = useActions();
@@ -263,7 +279,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   let viewMode: 'grid' | 'list';
   const location = useLocation();
 
-  if (location.pathname.includes('deleted')) viewMode = 'list';
+  if (location.pathname.includes('archive')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
   const history = useHistory();
@@ -309,15 +325,12 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       let url: string;
       if (selectedId.startsWith('/')) {
         // means its a folder
-        url = dashboardUrls.allSandboxes(selectedId, activeTeamId);
+        url = dashboardUrls.sandboxes(selectedId, activeTeamId);
       } else {
         const selectedItem = sandboxes.find(
           item => item.sandbox.id === selectedId
         );
-        url = sandboxUrl({
-          id: selectedItem.sandbox.id,
-          alias: selectedItem.sandbox.alias,
-        });
+        url = sandboxUrl(selectedItem.sandbox);
       }
 
       if (event.ctrlKey || event.metaKey) {
@@ -419,7 +432,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     }
 
     if (sandboxIds.length) {
-      if (dropPage === 'deleted') {
+      if (dropPage === 'archive') {
         actions.dashboard.deleteSandbox({ ids: sandboxIds });
       } else if (dropPage === 'templates') {
         actions.dashboard.makeTemplates({ sandboxIds });
@@ -434,7 +447,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           collectionPath: dropResult.path,
           deleteFromCurrentPath:
             page === 'sandboxes' ||
-            page === 'deleted' ||
+            page === 'archive' ||
             page === 'templates' ||
             page === 'drafts',
         });
@@ -442,7 +455,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     }
 
     if (folderPaths.length) {
-      if (dropResult.path === 'deleted') {
+      if (dropResult.path === 'archive') {
         folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
       } else if (dropResult.path === 'templates') {
         // folders can't be dropped into templates
@@ -608,7 +621,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         id="selection-container"
         onContextMenu={onContainerContextMenu}
         css={css({
-          paddingTop: 10,
+          paddingTop: 8,
           paddingBottom: 8,
           width: '100%',
           height: '100%',
@@ -635,7 +648,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
             position: 'absolute',
             background: '#6CC7F640', // blues.300 with 25% opacity
             border: '1px solid',
-            borderColor: 'blues.600',
+            borderColor: 'focusBorder',
             pointerEvents: 'none', // disable selection
           })}
           style={{
@@ -662,6 +675,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         selectedIds={selectedIds}
         sandboxes={sandboxes || []}
         folders={folders || []}
+        branches={branches || []}
+        repositories={repositories || []}
         setRenaming={setRenaming}
         page={page}
         createNewFolder={createNewFolder}

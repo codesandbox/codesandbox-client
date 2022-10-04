@@ -77,6 +77,10 @@ const polyfillTheme = vsCodeTheme => {
   uiColors.input = {
     background: uiColors.input.background || uiColors.sideBar.border,
     foreground: uiColors.input.foreground || uiColors.sideBar.foreground,
+    foregroundReverse:
+      uiColors.input.foregroundReverse ||
+      uiColors.input.foreground ||
+      uiColors.sideBar.foreground,
     border: uiColors.input.border || uiColors.sideBar.border,
     placeholderForeground:
       uiColors.input.placeholderForeground ||
@@ -190,9 +194,12 @@ const polyfillTheme = vsCodeTheme => {
       foreground: uiColors.foreground,
     },
     switch: {
-      backgroundOff: uiColors.input.background,
+      backgroundOff: designLanguage.colorsV2.black[100],
       backgroundOn: uiColors.button.background,
       toggle: designLanguage.colors.white,
+      toggleOn: uiColors?.switch?.toggleOn
+        ? uiColors.switch.toggleOn
+        : designLanguage.colors.white,
     },
     dialog: {
       background: uiColors.quickInput.background,
@@ -200,11 +207,11 @@ const polyfillTheme = vsCodeTheme => {
       border: uiColors.sideBar.border,
     },
     menuList: {
-      background: uiColors.sideBar.background,
-      foreground: uiColors.sideBar.foreground,
-      border: uiColors.sideBar.border,
-      hoverBackground: uiColors.sideBar.border,
-      hoverForeground: designLanguage.colors.white,
+      background: designLanguage.colorsV2.black[400],
+      foreground: designLanguage.colorsV2.gray[500],
+      border: designLanguage.colorsV2.black[100],
+      hoverBackground: designLanguage.colorsV2.black[100],
+      hoverForeground: designLanguage.colorsV2.gray[500],
     },
   };
 

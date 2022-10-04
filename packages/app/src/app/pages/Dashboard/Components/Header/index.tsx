@@ -1,9 +1,10 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
-import { Stack, Text, Button } from '@codesandbox/components';
+import { Stack, Text, Button, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { Breadcrumbs } from '../Breadcrumbs';
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
+import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
 import { SortOptions } from '../Filters/SortOptions';
@@ -24,7 +25,8 @@ type Props = {
   showFilters?: boolean;
   showViewOptions?: boolean;
   showSortOptions?: boolean;
-  repos?: boolean;
+  showBetaBadge?: boolean;
+  nestedPageType?: BreadcrumbProps['nestedPageType'];
   albumId?: string;
   activeTeam: string;
   CustomFilters?: React.ReactElement;
@@ -33,7 +35,7 @@ type Props = {
 export const Header = ({
   createNewFolder,
   templates,
-  repos,
+  nestedPageType,
   albumId,
   path,
   title,
@@ -41,6 +43,7 @@ export const Header = ({
   showFilters = false,
   showViewOptions = false,
   showSortOptions = false,
+  showBetaBadge = false,
   CustomFilters,
   actions = [],
 }: Props) => {
@@ -57,26 +60,23 @@ export const Header = ({
         width: `calc(100% - ${2 * GUTTER}px)`,
         maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
         marginX: 'auto',
-        borderStyle: 'solid',
-        borderWidth: 0,
-        borderBottomWidth: 1,
-        borderColor: 'grays.500',
       })}
     >
-      {title ? (
-        <Text marginBottom={1} block weight="bold" size={5}>
-          {title}
-        </Text>
-      ) : (
-        <Breadcrumbs
-          repos={repos}
-          activeTeam={activeTeam}
-          path={path}
-          albumId={albumId}
-        />
-      )}
+      <Stack align="center" marginBottom={1} marginTop={-2} gap={2}>
+        {title ? (
+          <Text size={6}>{title}</Text>
+        ) : (
+          <Breadcrumbs
+            nestedPageType={nestedPageType}
+            activeTeam={activeTeam}
+            path={path}
+            albumId={albumId}
+          />
+        )}
+        {showBetaBadge && <CloudBetaBadge />}
+      </Stack>
       <Stack gap={4} align="center">
-        {location.pathname.includes('/all') && (
+        {location.pathname.includes('/sandboxes') && (
           <Button
             onClick={createNewFolder}
             variant="link"
@@ -87,7 +87,13 @@ export const Header = ({
               width: 'auto',
             })}
           >
-            + New Folder
+            <Icon
+              name="plus"
+              size={20}
+              title="New"
+              css={css({ paddingRight: 2 })}
+            />
+            New Folder
           </Button>
         )}
         {location.pathname.includes('/repositories') &&

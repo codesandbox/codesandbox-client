@@ -86,7 +86,8 @@ export const RegistrySettings = () => {
         css={css({
           padding: 6,
           border: '1px solid',
-          borderColor: 'grays.600',
+          backgroundColor: 'card.background',
+          borderColor: 'transparent',
           borderRadius: 'medium',
           position: 'relative',
           opacity: alert ? 0.4 : 1,

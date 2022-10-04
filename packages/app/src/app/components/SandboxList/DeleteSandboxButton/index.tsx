@@ -13,7 +13,7 @@ export const DeleteSandboxButton: FunctionComponent<Props> = ({ id }) => {
   const { deleteSandboxClicked } = useActions().profile;
 
   return (
-    <Tooltip content="Delete Sandbox">
+    <Tooltip content="Archive Sandbox">
       <Button onClick={() => deleteSandboxClicked(id)}>
         <DeleteIcon />
       </Button>

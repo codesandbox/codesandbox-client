@@ -37,10 +37,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const history = useHistory();
   const location = useLocation();
 
-  const url = sandboxUrl({
-    id: sandbox.id,
-    alias: sandbox.alias,
-  });
+  const url = sandboxUrl(sandbox);
 
   const folderUrl = getFolderUrl(item, activeTeam);
 
@@ -76,7 +73,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
     );
   }, [item, user, activeTeam]);
 
-  if (location.pathname.includes('deleted')) {
+  if (location.pathname.includes('archive')) {
     if (activeWorkspaceAuthorization === 'READ') return null;
 
     return (
@@ -392,7 +389,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete Template
+              Archive Template
             </MenuItem>
           ) : (
             <MenuItem
@@ -403,7 +400,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Delete Sandbox
+              Archive Sandbox
             </MenuItem>
           )}
         </>
@@ -432,5 +429,5 @@ const getFolderUrl = (
     return dashboard.drafts(activeTeamId);
   }
 
-  return dashboard.allSandboxes(path || '/', activeTeamId);
+  return dashboard.sandboxes(path || '/', activeTeamId);
 };

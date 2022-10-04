@@ -15,19 +15,21 @@ export const ImportRepo = () => {
       css={css({
         height: 240,
         fontSize: 3,
-        backgroundColor: 'grays.700',
-        border: '1px solid',
-        borderColor: 'grays.600',
+        backgroundColor: 'card.background',
+        border: '1px solid transparent',
         borderRadius: 'medium',
         transition: 'all ease-in',
         transitionDuration: theme => theme.speeds[2],
-        ':hover, :focus, :focus-within': {
-          boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+        ':hover': {
+          backgroundColor: 'card.backgroundHover',
+        },
+        ':focus-visible': {
+          borderColor: 'focusBorder',
         },
       })}
     >
       <Stack direction="vertical" align="center" gap={4}>
-        <Icon name="plusInCircle" size={24} />
+        <Icon name="plus" size={32} />
         <Text>Import Repository</Text>
       </Stack>
     </Button>

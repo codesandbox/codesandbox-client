@@ -45,6 +45,14 @@ import {
   SharedWithMeSandboxesQueryVariables,
   CuratedAlbumsQuery,
   CuratedAlbumsQueryVariables,
+  RecentlyAccessedBranchesQuery,
+  RecentlyAccessedBranchesQueryVariables,
+  ContributionBranchesQuery,
+  ContributionBranchesQueryVariables,
+  RepositoriesByTeamQuery,
+  RepositoriesByTeamQueryVariables,
+  RepositoryByDetailsQuery,
+  RepositoryByDetailsQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -56,6 +64,8 @@ import {
   currentTeamInfoFragment,
   npmRegistryFragment,
   teamFragmentDashboard,
+  branchFragment,
+  projectFragment,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -322,6 +332,20 @@ export const recentlyAccessedSandboxes: Query<
   ${sandboxFragmentDashboard}
 `;
 
+export const recentlyAccessedBranches: Query<
+  RecentlyAccessedBranchesQuery,
+  RecentlyAccessedBranchesQueryVariables
+> = gql`
+  query RecentlyAccessedBranches($limit: Int!) {
+    me {
+      recentBranches(limit: $limit) {
+        ...branch
+      }
+    }
+  }
+  ${branchFragment}
+`;
+
 export const sharedWithmeSandboxes: Query<
   SharedWithMeSandboxesQuery,
   SharedWithMeSandboxesQueryVariables
@@ -448,4 +472,50 @@ export const curatedAlbums: Query<
     }
   }
   ${sandboxFragmentDashboard}
+`;
+
+export const getContributionBranches: Query<
+  ContributionBranchesQuery,
+  ContributionBranchesQueryVariables
+> = gql`
+  query ContributionBranches {
+    me {
+      recentBranches(contribution: true, limit: 1000) {
+        ...branch
+      }
+    }
+  }
+  ${branchFragment}
+`;
+
+export const getRepositoriesByTeam: Query<
+  RepositoriesByTeamQuery,
+  RepositoriesByTeamQueryVariables
+> = gql`
+  query RepositoriesByTeam($teamId: UUID4!, $syncData: Boolean) {
+    me {
+      team(id: $teamId) {
+        id
+        name
+        projects(syncData: $syncData) {
+          ...project
+        }
+      }
+    }
+  }
+  ${projectFragment}
+  ${branchFragment}
+`;
+
+export const getRepositoryByDetails: Query<
+  RepositoryByDetailsQuery,
+  RepositoryByDetailsQueryVariables
+> = gql`
+  query RepositoryByDetails($owner: String!, $name: String!) {
+    project(gitProvider: GITHUB, owner: $owner, repo: $name) {
+      ...project
+    }
+  }
+  ${projectFragment}
+  ${branchFragment}
 `;

@@ -36,10 +36,10 @@ export const Drafts = () => {
   return (
     <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
-        <title>Drafts - CodeSandbox</title>
+        <title>My drafts - CodeSandbox</title>
       </Helmet>
       <Header
-        title="Drafts"
+        title="My drafts"
         activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
         showViewOptions

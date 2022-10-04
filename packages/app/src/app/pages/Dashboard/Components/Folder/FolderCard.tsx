@@ -37,52 +37,61 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
     css={css({
       width: '100%',
       height: 240,
-      backgroundColor: 'grays.700',
-      border: '1px solid',
+      backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
+      border: '1px solid transparent',
       borderRadius: 'medium',
       overflow: 'hidden',
       // drop ssarget
       borderColor: getBorderColor(selected, showDropStyles),
-      transition: 'box-shadow ease-in-out',
-      transitionDuration: theme => theme.speeds[4],
+      transition: 'background ease-in-out',
+      transitionDuration: theme => theme.speeds[2],
       boxShadow: theme =>
         showDropStyles ? '0 4px 16px 0 ' + theme.colors.grays[900] : null,
 
       // drag state,
       opacity,
 
-      ':hover, :focus, :focus-within': {
-        boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+      ':hover': {
+        backgroundColor: 'card.backgroundHover',
+      },
+      ':focus-visible': {
+        borderColor: 'focusBorder',
       },
     })}
   >
     <Stack
-      as="div"
+      justify="right"
+      paddingTop={4}
+      paddingX={4}
+      css={{ position: 'absolute', width: '100%' }}
+    >
+      {!isNewFolder ? (
+        <IconButton
+          name="more"
+          size={9}
+          title="Folder actions"
+          onClick={onContextMenu}
+        />
+      ) : null}
+    </Stack>
+
+    <Stack
       justify="center"
       align="center"
-      ref={thumbnailRef}
-      css={css({
-        height: 160,
-        borderStyle: 'solid',
-        borderWidth: 0,
-        borderBottomWidth: 1,
-        borderColor: 'grays.500',
-        backgroundColor: 'grays.600',
-      })}
+      direction="vertical"
+      gap={1}
+      paddingX={4}
+      css={{ flexGrow: 1 }}
     >
-      <svg width={56} height={49} fill="none" viewBox="0 0 56 49">
-        <path
-          fill="#6CC7F6"
-          d="M20.721 0H1.591A1.59 1.59 0 000 1.59v45.82C0 48.287.712 49 1.59 49h52.82A1.59 1.59 0 0056 47.41V7.607a1.59 1.59 0 00-1.59-1.59H28L21.788.41A1.59 1.59 0 0020.72 0z"
-        />
-      </svg>
-    </Stack>
-    <Stack
-      justify="space-between"
-      align="center"
-      marginLeft={4}
-      css={{ minHeight: 26 }}
-    >
+      <Stack paddingBottom={4} aria-hidden="true">
+        <svg width={32} height={32} fill="none" viewBox="0 0 32 32">
+          <path
+            d="M11.1537 5.63921L11.4196 5.21576L11.1537 5.63921ZM15.5117 8.37552L15.2458 8.79897L15.5117 8.37552ZM6.66602 27.1663H25.3327V26.1663H6.66602V27.1663ZM29.8327 22.6663V12.6817H28.8327V22.6663H29.8327ZM25.3327 8.18173H16.5752V9.18173H25.3327V8.18173ZM15.7776 7.95207L11.4196 5.21576L10.8878 6.06266L15.2458 8.79897L15.7776 7.95207ZM10.0902 4.83301H4.66602V5.83301H10.0902V4.83301ZM2.16602 7.33301V22.6663H3.16602V7.33301H2.16602ZM4.66602 4.83301C3.2853 4.83301 2.16602 5.9523 2.16602 7.33301H3.16602C3.16602 6.50458 3.83759 5.83301 4.66602 5.83301V4.83301ZM11.4196 5.21576C11.0213 4.96567 10.5605 4.83301 10.0902 4.83301V5.83301C10.3724 5.83301 10.6488 5.91261 10.8878 6.06266L11.4196 5.21576ZM16.5752 8.18173C16.293 8.18173 16.0165 8.10213 15.7776 7.95207L15.2458 8.79897C15.6441 9.04906 16.1049 9.18173 16.5752 9.18173V8.18173ZM29.8327 12.6817C29.8327 10.1964 27.818 8.18173 25.3327 8.18173V9.18173C27.2657 9.18173 28.8327 10.7487 28.8327 12.6817H29.8327ZM25.3327 27.1663C27.818 27.1663 29.8327 25.1516 29.8327 22.6663H28.8327C28.8327 24.5993 27.2657 26.1663 25.3327 26.1663V27.1663ZM6.66602 26.1663C4.73302 26.1663 3.16602 24.5993 3.16602 22.6663H2.16602C2.16602 25.1516 4.18073 27.1663 6.66602 27.1663V26.1663Z"
+            fill="#E3FF73"
+          />
+        </svg>
+      </Stack>
+
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input
@@ -95,32 +104,24 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
           />
         </form>
       ) : (
-        <Text size={3} weight="medium">
+        <Text size={4} css={{ minHeight: 26, textAlign: 'center' }}>
           {name}
         </Text>
       )}
       {!isNewFolder ? (
-        <IconButton
-          name="more"
-          size={9}
-          title="Folder actions"
-          onClick={onContextMenu}
-        />
+        <Stack>
+          <Text size={3} block variant="muted">
+            {numberOfSandboxes || 0}{' '}
+            {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
+          </Text>
+        </Stack>
       ) : null}
     </Stack>
-    {!isNewFolder ? (
-      <Stack marginLeft={4}>
-        <Text size={3} block variant="muted">
-          {numberOfSandboxes || 0}{' '}
-          {numberOfSandboxes === 1 ? 'sandbox' : 'sandboxes'}
-        </Text>
-      </Stack>
-    ) : null}
   </Stack>
 );
 
 const getBorderColor = (selected: boolean, showDropStyles: boolean) => {
-  if (selected) return 'blues.600';
+  if (selected) return 'focusBorder';
   if (showDropStyles) return 'grays.400';
-  return 'grays.500';
+  return 'transparent';
 };

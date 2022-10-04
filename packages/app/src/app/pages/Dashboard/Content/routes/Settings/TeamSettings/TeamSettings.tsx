@@ -35,7 +35,7 @@ export const TeamSettings = () => {
         css={css({
           height: 'calc(100vh - 140px)',
           overflowY: 'scroll',
-          paddingY: 10,
+          paddingY: 6,
         })}
       >
         <Stack
@@ -67,7 +67,7 @@ export const TeamSettings = () => {
               </RouterSwitch>
             </BrowserRouter>
           ) : (
-            <Text>Loading...</Text>
+            <Text css={css({color: 'sideBarSectionHeader.foreground'})}>Loading...</Text>
           )}
         </Stack>
       </Element>

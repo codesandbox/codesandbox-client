@@ -38,7 +38,7 @@ export const AppMenu: React.FC = () => {
           type="button"
           onClick={() => track('Editor - Click Menubar')}
         >
-          <Icon width={14} height={10} name="menu" />
+          <Icon width={16} height={16} name="menu" />
         </MenuHandler>
 
         <Menu.List data-menu={APP_MENU_ID}>

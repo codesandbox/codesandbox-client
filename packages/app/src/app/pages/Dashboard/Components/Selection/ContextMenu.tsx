@@ -8,6 +8,8 @@ import {
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
   PageTypes,
+  DashboardBranch,
+  DashboardRepository,
 } from '../../types';
 import {
   MultiMenu,
@@ -18,6 +20,8 @@ import {
   ContainerMenu,
   CommunitySandboxMenu,
 } from './ContextMenus';
+import { BranchMenu } from './ContextMenus/BranchMenu';
+import { RepositoryMenu } from './ContextMenus/RepositoryMenu';
 
 interface IMenuProps {
   visible: boolean;
@@ -36,6 +40,8 @@ interface IContextMenuProps extends IMenuProps {
   sandboxes: Array<DashboardSandbox | DashboardTemplate>;
   folders: Array<DashboardFolder>;
   repos?: Array<DashboardRepo>;
+  branches: Array<DashboardBranch>;
+  repositories: Array<DashboardRepository>;
   setRenaming: null | ((value: boolean) => void);
   createNewFolder: () => void;
   createNewSandbox: (() => void) | null;
@@ -49,6 +55,8 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   selectedIds,
   sandboxes,
   folders,
+  branches,
+  repositories, // v2 repositories, formerly known as projects.
   repos,
   setRenaming,
   createNewFolder,
@@ -64,6 +72,8 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     | DashboardRepo
     | DashboardNewMasterBranch
     | DashboardCommunitySandbox
+    | DashboardBranch
+    | DashboardRepository
   > = selectedIds.map(id => {
     if (id.startsWith('/')) {
       if (repos && repos.length) {
@@ -86,21 +96,53 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
       const folder = folders.find(f => f.path === id);
       return { type: 'folder', ...folder };
     }
+
+    const branch = branches.find(b => b.branch.id === id);
+    if (branch) {
+      return branch;
+    }
+
+    const repository = repositories.find(r => {
+      const { repository: providerRepository } = r.repository;
+      const rId = `${providerRepository.owner}-${providerRepository.name}`;
+      return rId === id;
+    });
+    if (repository) {
+      return repository;
+    }
+
     const sandbox = sandboxes.find(s => s.sandbox.id === id);
     return sandbox;
   });
 
   let menu: React.ReactNode;
   if (selectedItems.length === 0) {
-    if (page === 'repos') return null;
+    if (['repositories', 'my-contributions', 'synced-sandboxes'].includes(page))
+      return null;
     menu = (
       <ContainerMenu
         createNewSandbox={createNewSandbox}
         createNewFolder={createNewFolder}
       />
     );
+  } else if (selectedItems[0].type === 'branch') {
+    menu = <BranchMenu branch={selectedItems[0].branch} />;
+  } else if (selectedItems[0].type === 'repository') {
+    menu = <RepositoryMenu repository={selectedItems[0].repository} />;
   } else if (selectedItems.length > 1) {
-    menu = <MultiMenu page={page} selectedItems={selectedItems} />;
+    menu = (
+      <MultiMenu
+        page={page}
+        selectedItems={
+          selectedItems as Array<
+            | DashboardFolder
+            | DashboardSandbox
+            | DashboardTemplate
+            | DashboardCommunitySandbox
+          >
+        }
+      />
+    );
   } else if (
     selectedItems[0] &&
     (selectedItems[0].type === 'sandbox' ||

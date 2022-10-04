@@ -4,71 +4,74 @@ import { useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
-import {
-  DashboardGridItem,
-  DashboardRepoSandbox,
-  PageTypes,
-} from 'app/pages/Dashboard/types';
+import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { getPossibleTemplates } from '../../utils';
-import { useFilteredItems } from './useFilteredItems';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
-  const items = useFilteredItems(params);
-  const param = params.path || '';
-  const home = !param || param === '/';
+  const path = params.path ?? '';
   const actions = useActions();
   const {
     activeTeam,
-    dashboard: { sandboxes, viewMode },
+    dashboard: { repositories },
   } = useAppState();
+  const pathRef = React.useRef<string>(null);
 
   React.useEffect(() => {
-    const p = home ? null : param;
-    actions.dashboard.getReposByPath(p);
-  }, [param, actions.dashboard, activeTeam, home]);
+    // If no repositories were fetched yet and the user tries
+    // to directly access a repository, we should fetch said
+    // repository only.
+    if (repositories === null) {
+      if (path) {
+        const [, owner, name] = path.split('/');
+        actions.dashboard.getRepositoryByDetails({ owner, name });
+      } else {
+        actions.dashboard.getRepositoriesByTeam();
+      }
+    }
 
-  const activeSandboxes =
-    (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
+    // If the current view is the list of the repositories
+    // and the previous view was a repo and only that repo
+    // was fetched, get all repositories of that team.
+    if (
+      path === '' &&
+      pathRef.current?.startsWith('github') &&
+      repositories.length === 1
+    ) {
+      actions.dashboard.getRepositoriesByTeam();
+    }
+
+    pathRef.current = path;
+  }, [path]);
+
+  const pageType: PageTypes = 'repositories';
 
   const itemsToShow = (): DashboardGridItem[] => {
-    if (sandboxes.REPOS === null) {
+    if (repositories === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
-    if (home) {
-      return viewMode === 'grid' && items.length
-        ? [{ type: 'new-repo' }, ...items]
-        : items;
+
+    if (path) {
+      const [, owner, name] = path.split('/');
+      const currentRepository = repositories.find(
+        r => r.repository.owner === owner && r.repository.name === name
+      );
+
+      if (!currentRepository) {
+        return [];
+      }
+
+      return currentRepository.branches.map(branch => ({
+        type: 'branch',
+        branch,
+      }));
     }
 
-    if (sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes) {
-      return [
-        {
-          type: 'new-master-branch',
-          repo: {
-            owner: sandboxes.REPOS[param].owner,
-            name: sandboxes.REPOS[param].name,
-            branch: sandboxes.REPOS[param].branch,
-          },
-        },
-        ...items,
-      ];
-    }
-
-    return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
+    return repositories.map(repository => ({
+      type: 'repository',
+      repository,
+    }));
   };
-
-  const possibleTemplates = itemsToShow()
-    .filter((s: DashboardRepoSandbox) => s.sandbox)
-    .map((s: DashboardRepoSandbox) => s.sandbox);
-
-  const templates =
-    activeSandboxes.length && param && items[0] && items[0].type === 'sandbox'
-      ? getPossibleTemplates(possibleTemplates)
-      : [];
-
-  const pageType: PageTypes = 'repos';
 
   return (
     <SelectionProvider
@@ -77,16 +80,14 @@ export const RepositoriesPage = () => {
       items={itemsToShow()}
     >
       <Helmet>
-        <title>{param || 'Dashboard'} - CodeSandbox</title>
+        <title>{path || 'Dashboard'} - CodeSandbox</title>
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        repos
-        path={param}
-        templates={templates}
+        path={path}
         showViewOptions
-        showFilters={Boolean(param)}
-        showSortOptions={Boolean(param)}
+        showBetaBadge
+        nestedPageType={pageType}
       />
       <VariableGrid page={pageType} items={itemsToShow()} />
     </SelectionProvider>

@@ -5,7 +5,6 @@ import { withLoadApp } from 'app/overmind/factories';
 import downloadZip from 'app/overmind/effects/zip/create-zip';
 import { uniq } from 'lodash-es';
 import {
-  Direction,
   TemplateFragmentDashboardFragment,
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
@@ -296,46 +295,6 @@ export const inviteToTeam = async (
   }
 };
 
-export const getRecentSandboxes = async ({ state, effects }: Context) => {
-  const { dashboard } = state;
-  try {
-    let sandboxes;
-
-    if (state.activeTeam) {
-      const data = await effects.gql.queries.recentTeamSandboxes({
-        teamId: state.activeTeam,
-        limit: 200,
-        orderField: dashboard.orderBy.field,
-        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-      });
-
-      if (!data.me?.team?.sandboxes) {
-        return;
-      }
-
-      sandboxes = data.me.team.sandboxes;
-    } else {
-      const data = await effects.gql.queries.recentPersonalSandboxes({
-        limit: 200,
-        orderField: dashboard.orderBy.field,
-        orderDirection: dashboard.orderBy.order.toUpperCase() as Direction,
-      });
-
-      if (!data?.me?.sandboxes) {
-        return;
-      }
-
-      sandboxes = data.me.sandboxes;
-    }
-
-    dashboard.sandboxes[sandboxesTypes.RECENT] = sandboxes;
-  } catch (error) {
-    effects.notificationToast.error(
-      'There was a problem getting your recent Sandboxes'
-    );
-  }
-};
-
 export const getAllFolders = async ({ state, effects }: Context) => {
   try {
     const data = await effects.gql.queries.getCollections({
@@ -606,6 +565,11 @@ export const getTemplateSandboxes = async ({ state, effects }: Context) => {
 export const getStartPageSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
   try {
+    /**
+     * For now we decided to NOT show the templates on the home page
+     * But I would keep this code as it is referenced in a lot of places and (TEMPLATE_HOME)
+     * and we might bring it back later on.
+     
     const usedTemplates = await effects.gql.queries.listPersonalTemplates({
       teamId: state.activeTeam,
     });
@@ -618,17 +582,23 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
       0,
       5
     );
+    */
 
-    const result = await effects.gql.queries.recentlyAccessedSandboxes({
+    const sandboxesResult = await effects.gql.queries.recentlyAccessedSandboxes(
+      {
+        limit: 12,
+        teamId: state.activeTeam,
+      }
+    );
+
+    const branchesResult = await effects.gql.queries.recentlyAccessedBranches({
       limit: 12,
-      teamId: state.activeTeam,
     });
 
-    if (result?.me?.recentlyAccessedSandboxes == null) {
-      return;
-    }
-
-    dashboard.sandboxes.RECENT_HOME = result.me.recentlyAccessedSandboxes;
+    dashboard.sandboxes.RECENT_SANDBOXES =
+      sandboxesResult?.me?.recentlyAccessedSandboxes || [];
+    dashboard.sandboxes.RECENT_BRANCHES =
+      branchesResult?.me?.recentBranches || [];
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
@@ -1016,9 +986,6 @@ export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
 
   switch (page) {
     case sandboxesTypes.RECENT:
-      dashboard.getRecentSandboxes();
-      break;
-    case sandboxesTypes.HOME:
       dashboard.getStartPageSandboxes();
       break;
     case sandboxesTypes.DELETED:
@@ -1976,5 +1943,94 @@ export const updateAlbum = async (
     });
   } catch (error) {
     effects.notificationToast.error('There was a problem updating album');
+  }
+};
+
+export const getContributionBranches = async ({ state, effects }: Context) => {
+  const { dashboard } = state;
+  try {
+    dashboard.contributions = null;
+
+    const contributionsData = await effects.gql.queries.getContributionBranches(
+      {}
+    );
+    const contributionBranches = contributionsData?.me?.recentBranches;
+    if (!contributionBranches) {
+      return;
+    }
+
+    dashboard.contributions = contributionBranches;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your open source contributions'
+    );
+  }
+};
+
+export const getRepositoriesByTeam = async ({ state, effects }: Context) => {
+  const { activeTeam, dashboard } = state;
+  try {
+    dashboard.repositories = null;
+
+    // First fetch data without syncing with GitHub
+    // to decrease waiting time.
+    const unsyncedRepositoriesData = await effects.gql.queries.getRepositoriesByTeam(
+      {
+        teamId: activeTeam,
+        syncData: false,
+      }
+    );
+    const unsyncedRepositories = unsyncedRepositoriesData?.me?.team?.projects;
+    if (!unsyncedRepositories) {
+      return;
+    }
+
+    dashboard.repositories = unsyncedRepositories;
+
+    // Then fetch data synced with GitHub to make sure
+    // what we show is up-to-date.
+    const syncedRepositoriesData = await effects.gql.queries.getRepositoriesByTeam(
+      {
+        teamId: activeTeam,
+        syncData: true,
+      }
+    );
+    const syncedRepositories = syncedRepositoriesData?.me?.team?.projects;
+    if (!syncedRepositories) {
+      return;
+    }
+
+    dashboard.repositories = syncedRepositories;
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting your repositories'
+    );
+  }
+};
+
+// If the repository page is accessed directly, we can use this
+// to avoid fetching all repos.
+export const getRepositoryByDetails = async (
+  { state, effects }: Context,
+  { owner, name }: { owner: string; name: string }
+) => {
+  const { dashboard } = state;
+  try {
+    dashboard.repositories = null;
+
+    const repositoryData = await effects.gql.queries.getRepositoryByDetails({
+      owner,
+      name,
+    });
+    const repository = repositoryData?.project;
+    if (!repository) {
+      return;
+    }
+
+    dashboard.repositories = [repository];
+  } catch (error) {
+    effects.notificationToast.error(
+      `There was a problem getting repository ${name} from ${owner}`
+    );
   }
 };

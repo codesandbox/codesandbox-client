@@ -12,6 +12,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { SandboxItemComponentProps } from './types';
 
 const useImageLoaded = (url: string) => {
@@ -73,7 +74,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
     newTitle,
     sandboxTitle,
   }) => (
-    <Stack justify="space-between" marginLeft={4}>
+    <Stack justify="space-between" marginLeft={5} marginRight={2}>
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input
@@ -85,7 +86,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           />
         </form>
       ) : (
-        <Stack gap={1}>
+        <Stack gap={2} align="center">
           {prNumber ? (
             <Link
               title="Open pull request on GitHub"
@@ -123,7 +124,6 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: '-6px',
           }}
           css={css({ color: 'mutedForeground' })}
         >
@@ -135,7 +135,6 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           size={9}
           title="Sandbox Actions"
           onClick={onContextMenu}
-          style={{ marginTop: '-6px' }}
         />
       )}
     </Stack>
@@ -182,20 +181,14 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
     }
 
     return (
-      <div style={{ margin: '0 16px' }}>
+      <div>
         <Stack
+          marginLeft={5}
           as={Text}
           align="center"
-          gap={1}
+          gap={4}
           size={3}
           variant="muted"
-          css={css({
-            '> *:not(:last-child):after': {
-              content: `'•'`,
-              marginLeft: 1,
-              fontSize: 1,
-            },
-          })}
         >
           {footer.map(item => item)}
         </Stack>
@@ -255,16 +248,19 @@ export const SandboxCard = ({
         position: 'relative',
         width: '100%',
         height: 240,
-        backgroundColor: 'grays.700',
+        backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
         border: '1px solid',
-        borderColor: selected ? 'blues.600' : 'grays.600',
+        borderColor: selected ? 'focusBorder' : 'transparent',
         borderRadius: 'medium',
         overflow: 'hidden',
-        transition: 'box-shadow ease-in-out',
-        transitionDuration: theme => theme.speeds[4],
+        transition: 'background ease-in-out',
+        transitionDuration: theme => theme.speeds[2],
         opacity,
-        ':hover, :focus, :focus-within': {
-          boxShadow: theme => '0 4px 16px 0 ' + theme.colors.grays[900],
+        ':hover': {
+          backgroundColor: 'card.backgroundHover',
+        },
+        ':focus-visible': {
+          borderColor: 'focusBorder',
         },
       })}
     >
@@ -274,12 +270,13 @@ export const SandboxCard = ({
         TemplateIcon={TemplateIcon}
         screenshotUrl={screenshotUrl}
         screenshotOutdated={sandbox.screenshotOutdated}
+        showBetaBadge={sandbox.isV2}
       />
 
       <Stack
         direction="vertical"
         justify="space-between"
-        css={css({ flexGrow: 1, paddingY: 4 })}
+        css={css({ flexGrow: 1, paddingY: 5 })}
       >
         <SandboxTitle
           originalGit={sandbox.originalGit}
@@ -312,6 +309,7 @@ const Thumbnail = ({
   sandboxId,
   thumbnailRef,
   TemplateIcon,
+  showBetaBadge,
   screenshotUrl,
   screenshotOutdated,
 }) => {
@@ -350,13 +348,11 @@ const Thumbnail = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          height: '144px',
+          height: '120px',
           backgroundColor: '#242424',
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          borderBottom: '1px solid',
-          borderColor: '#242424',
           [screenshotToUse
             ? 'backgroundImage'
             : null]: `url(${screenshotToUse})`,
@@ -370,21 +366,21 @@ const Thumbnail = ({
           />
         )}
       </div>
-      <div
-        style={{
-          position: 'absolute',
-          top: 2,
-          right: 2,
-          width: 16,
-          height: 16,
-          border: '3px solid',
-          borderRadius: 2,
-          backgroundColor: '#343434',
-          borderColor: '#343434',
-        }}
-      >
-        <TemplateIcon width="16" height="16" />
-      </div>
+      <Stack gap={1} css={{ position: 'absolute', top: 6, right: 6 }}>
+        {showBetaBadge && <CloudBetaBadge />}
+        <div
+          style={{
+            width: 18,
+            height: 18,
+            borderRadius: 4,
+            backgroundColor: '#343434',
+            borderColor: '#343434',
+            padding: 3,
+          }}
+        >
+          <TemplateIcon width="18" height="18" />
+        </div>
+      </Stack>
     </>
   );
 };
@@ -402,7 +398,7 @@ export const SkeletonCard = () => (
       overflow: 'hidden',
     })}
   >
-    <SkeletonText css={{ width: '100%', height: 144, borderRadius: 0 }} />
+    <SkeletonText css={{ width: '100%', height: 120, borderRadius: 0 }} />
     <Stack direction="vertical" gap={2} marginX={4}>
       <SkeletonText css={{ width: 120 }} />
       <SkeletonText css={{ width: 180 }} />

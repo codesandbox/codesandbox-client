@@ -149,7 +149,7 @@ export const ContextMenu = () => {
           </Menu.Item>
           <Menu.Divider />
           <Menu.Item onSelect={() => deleteSandboxClicked(sandboxId)}>
-            Delete sandbox
+            Archive sandbox
           </Menu.Item>
         </>
       )}

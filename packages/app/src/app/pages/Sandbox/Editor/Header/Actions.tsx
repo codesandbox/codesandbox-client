@@ -1,5 +1,5 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
-import { Avatar, Button, Stack } from '@codesandbox/components';
+import { Avatar, Button, Icon, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
@@ -207,7 +207,13 @@ export const Actions = () => {
         }}
         disabled={activeWorkspaceAuthorization === 'READ'}
       >
-        Create Sandbox
+        <Icon
+          name="plus"
+          size={20}
+          title="Create new"
+          css={css({ paddingRight: 2 })}
+        />
+        New
       </Button>
 
       {hasLogIn && <Notifications />}

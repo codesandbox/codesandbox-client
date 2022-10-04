@@ -112,12 +112,9 @@ export const NotificationsContent = props => {
   return (
     <Element
       css={css({
-        backgroundColor: 'sideBar.background',
+        backgroundColor: 'menuList.background',
         fontFamily: 'Inter',
         width: 321,
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: 'sideBar.border',
       })}
       {...props}
     >
@@ -126,13 +123,11 @@ export const NotificationsContent = props => {
         css={css({
           display: 'grid',
           gridTemplateColumns: '1fr 60px',
-          borderWidth: 0,
-          borderBottomWidth: 1,
-          borderStyle: 'solid',
-          borderColor: 'sideBar.border',
         })}
       >
-        <Text weight="bold">Notifications</Text>
+        <Text weight="regular" size={4}>
+          Notifications
+        </Text>
         <Element>
           {userNotifications.notifications ? <Filters /> : null}
         </Element>

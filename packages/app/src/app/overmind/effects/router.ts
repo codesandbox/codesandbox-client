@@ -8,12 +8,14 @@ export default new (class RouterEffect {
     id,
     alias,
     git,
+    isV2,
   }: {
     id?: string | null;
     alias?: string | null;
     git?: GitInfo | null;
+    isV2?: boolean;
   }) {
-    window.history.replaceState({}, '', sandboxUrl({ id, alias, git }));
+    window.history.replaceState({}, '', sandboxUrl({ id, alias, git, isV2 }));
   }
 
   updateSandboxUrl(
@@ -21,18 +23,16 @@ export default new (class RouterEffect {
       id,
       alias,
       git,
+      v2,
     }: {
       id?: string | null;
       alias?: string | null;
       git?: GitInfo | null;
+      v2?: boolean;
     },
     { openInNewWindow = false }: { openInNewWindow?: boolean } = {}
   ) {
-    const url = sandboxUrl({
-      id,
-      alias,
-      git,
-    });
+    const url = sandboxUrl({ id, alias, isV2: v2 });
 
     if (openInNewWindow) {
       window.open(url, '_blank');

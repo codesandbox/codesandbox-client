@@ -66,6 +66,10 @@ export const SandboxCard: React.FC<ISandboxCardProps> = ({
       title={title}
     >
       <Icon color={color}>
+        {/**
+         * ❗️ It seems that official is never set on this component anymore, so the
+         * UserIcon is always rendered.
+         */}
         {official && OfficialIcon ? <OfficialIcon /> : <UserIcon />}
       </Icon>
       <Details>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Stack, Text, Button, Icon } from '@codesandbox/components';
-import css from '@styled-system/css';
 import { useActions } from 'app/overmind';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { PageTypes } from '../../types';
@@ -15,9 +14,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
   collectionId,
   page,
 }) => {
-  const { openCreateSandboxModal, modalOpened } = useActions();
-
-  const onClick = () => openCreateSandboxModal({ collectionId });
+  const { modalOpened } = useActions();
 
   if (page === 'search') {
     return (
@@ -29,18 +26,18 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
     );
   }
 
-  if (page === 'deleted') {
+  if (page === 'archive') {
     return (
       <Stack justify="center" align="center" marginTop={120}>
         <Text variant="muted">
-          There are no deleted sandboxes yet! Drag sandboxes or templates to
-          this page to delete them.
+          There are no archived sandboxes yet! Drag sandboxes or templates to
+          this page to archive them.
         </Text>
       </Stack>
     );
   }
 
-  if (page === 'repos') {
+  if (page === 'repositories') {
     return (
       <Stack justify="center" align="center" marginTop={120}>
         <Stack
@@ -56,6 +53,52 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
           <Stack direction="vertical" align="center" gap={1}>
             <Text variant="muted" align="center">
               Uh oh, you haven’t imported any repositories.
+            </Text>
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  if (page === 'my-contributions') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Stack
+          direction="vertical"
+          align="center"
+          gap={8}
+          css={{ width: 500, height: '100vh', userSelect: 'none' }}
+        >
+          <Stack align="center" css={{ width: 220 }}>
+            <ImportRepo />
+          </Stack>
+
+          <Stack direction="vertical" align="center" gap={1}>
+            <Text variant="muted" align="center">
+              Uh oh, you don’t have any open source contributions.
+            </Text>
+          </Stack>
+        </Stack>
+      </Stack>
+    );
+  }
+
+  if (page === 'synced-sandboxes') {
+    return (
+      <Stack justify="center" align="center" marginTop={120}>
+        <Stack
+          direction="vertical"
+          align="center"
+          gap={8}
+          css={{ width: 500, height: '100vh', userSelect: 'none' }}
+        >
+          <Stack align="center" css={{ width: 220 }}>
+            <NewSandbox collectionId={collectionId} />
+          </Stack>
+
+          <Stack direction="vertical" align="center" gap={1}>
+            <Text variant="muted" align="center">
+              Uh oh, you haven’t created any synced sandboxes yet!
             </Text>
           </Stack>
         </Stack>
@@ -167,22 +210,6 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
           <Text variant="muted" align="center">
             Uh oh, you haven’t created any sandboxes in this folder yet!
           </Text>
-          <Stack align="center" gap={1}>
-            <Text variant="muted">Start with a</Text>
-            <Button
-              variant="link"
-              onClick={onClick}
-              css={css({
-                color: 'blues.600',
-                fontSize: 'inherit',
-                fontWeight: 'inherit',
-                width: 'fit-content',
-                padding: 0,
-              })}
-            >
-              template
-            </Button>
-          </Stack>
         </Stack>
       </Stack>
     </Stack>

@@ -21,7 +21,7 @@ export const PlanTitle = styled.h1`
   margin-top: 40px;
 
   @media (min-width: 720px) {
-    font-size: 48px;
+    font-size: 40px;
     line-height: 56px;
   }
 `;

@@ -171,7 +171,7 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
     return <Text size={6}>Joining Team...</Text>;
   }
 
-  return <Redirect to={dashboard.home(team.id)} />;
+  return <Redirect to={dashboard.recent(team.id)} />;
 };
 
 export const TeamInvitation: React.FC<{

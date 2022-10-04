@@ -6,20 +6,20 @@ import { useAppState, useActions } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
-import track from '@codesandbox/common/lib/utils/analytics';
+import track, {
+  trackImprovedDashboardEvent,
+} from '@codesandbox/common/lib/utils/analytics';
 import { SkeletonTextBlock } from 'app/pages/Sandbox/Editor/Skeleton/elements';
 import {
   Element,
   List,
-  ListAction,
-  ListItem,
+  SidebarListAction,
+  SidebarListItem,
   Link,
   Text,
-  Menu,
   Stack,
   Icon,
   IconButton,
-  Button,
   Input,
   IconNames,
 } from '@codesandbox/components';
@@ -118,7 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {...props}
         css={css({
           borderRight: '1px solid',
-          borderColor: 'sideBar.border',
+          borderColor: 'transparent',
           backgroundColor: 'sideBar.background',
           width: SIDEBAR_WIDTH,
           flexShrink: 0,
@@ -128,14 +128,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
           ...props.css,
         })}
       >
-        <List>
-          <ListItem
+        <List
+          css={css({
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            paddingBottom: 6,
+          })}
+        >
+          <SidebarListItem
             css={css({
-              paddingLeft: '6px',
+              marginTop: 6,
+              paddingLeft: 2,
               paddingRight: 0,
-              height: 10,
-              borderBottom: '1px solid',
-              borderColor: 'sideBar.border',
+              borderRadius: 2,
+              marginLeft: 2,
+              minHeight: 8,
             })}
           >
             {activeAccount ? (
@@ -164,7 +172,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <IconButton
                 name="gear"
-                size={8}
+                size={16}
                 title="Settings"
                 css={css({
                   width: 8,
@@ -173,38 +181,51 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 })}
               />
             </Link>
-          </ListItem>
+          </SidebarListItem>
           <RowItem
-            name="Home"
-            page="home"
-            path={dashboardUrls.home(activeTeam)}
-            icon="box"
-            style={{ marginTop: 1 }}
+            name="Recent"
+            page="recent"
+            path={dashboardUrls.recent(activeTeam)}
+            icon="clock"
+            style={{ marginTop: 8 }}
+          />
+          <Element marginTop={4} />
+          <Element paddingX={7} paddingY={2}>
+            <Text
+              variant="muted"
+              size={2}
+              css={css({ color: 'sideBarSectionHeader.foreground' })}
+            >
+              Repositories
+            </Text>
+          </Element>
+          <RowItem
+            name="My contributions"
+            page="my-contributions"
+            path={dashboardUrls.myContributions(activeTeam)}
+            icon="contribution"
           />
           <RowItem
-            name="Discover"
-            page="discover"
-            path={dashboardUrls.discover(activeTeam)}
-            icon="discover"
+            name="All repositories"
+            page="repositories"
+            path={dashboardUrls.repositories(activeTeam)}
+            icon="repository"
           />
-
+          <Element marginTop={4} />
+          <Element paddingX={7} paddingY={2}>
+            <Text
+              variant="muted"
+              size={2}
+              css={css({ color: 'sideBarSectionHeader.foreground' })}
+            >
+              Sandboxes
+            </Text>
+          </Element>
           <RowItem
-            name="My Drafts"
+            name="My drafts"
             page="drafts"
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
-          />
-          <Menu.Divider />
-          <NestableRowItem
-            name="All Sandboxes"
-            path={dashboardUrls.allSandboxes('/', activeTeam)}
-            folderPath="/"
-            folders={[
-              ...folders,
-              ...(newFolderPath
-                ? [{ path: newFolderPath, name: '', parent: null }]
-                : []),
-            ]}
           />
           <RowItem
             name="Templates"
@@ -212,11 +233,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.templates(activeTeam)}
             icon="star"
           />
-          <RowItem
-            name="Repositories"
-            page="repos"
-            path={dashboardUrls.repos(activeTeam)}
-            icon="fork"
+          <NestableRowItem
+            name="Sandboxes"
+            path={dashboardUrls.sandboxes('/', activeTeam)}
+            page="sandboxes"
+            folderPath="/"
+            folders={[
+              ...folders,
+              ...(newFolderPath
+                ? [{ path: newFolderPath, name: '', parent: null }]
+                : []),
+            ]}
           />
           {activeTeamInfo?.joinedPilotAt && (
             <RowItem
@@ -227,20 +254,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
           )}
           <RowItem
-            name="Recently Modified"
-            page="recents"
-            path={dashboardUrls.recents(activeTeam)}
-            icon="clock"
+            name="Synced Sandboxes"
+            page="synced-sandboxes"
+            path={dashboardUrls.syncedSandboxes(activeTeam)}
+            icon="sync"
           />
           <RowItem
-            name="Recently Deleted"
-            page="deleted"
-            path={dashboardUrls.deleted(activeTeam)}
-            icon="trash"
+            name="Archive"
+            page="archive"
+            path={dashboardUrls.archive(activeTeam)}
+            icon="archive"
           />
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
+          <Element
+            marginTop={8}
+            css={css({
+              flex: 1, // This pushes the bottom links all the way down
+            })}
+          />
+          <RowItem
+            name="Discover"
+            page="discover"
+            path={dashboardUrls.discover(activeTeam)}
+            icon="discover"
+          />
           <RowItem
             name="Shared With Me"
             page="shared"
@@ -248,41 +284,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="sharing"
           />
           <RowItem
-            name="Likes by Me"
+            name="Likes"
             page="liked"
             path={dashboardUrls.liked(activeTeam)}
             icon="heart"
           />
-
-          <Element marginTop={8}>
-            <Menu.Divider />
-          </Element>
-
-          {user?.betaAccess ? (
-            <RowItem
-              name="Go to Projects"
-              page="external"
-              path="/p/dashboard?from=sidebar"
-              icon="projects"
-              badge
-            />
-          ) : (
-            <RowItem
-              name="Join Projects Beta"
-              page="external"
-              path="/projects"
-              icon="projects"
-              badge
-            />
-          )}
+          <RowItem
+            name="Documentation"
+            page="external"
+            path="https://codesandbox.io/docs"
+            icon="documentation"
+          />
         </List>
-
-        <Element margin={4}>
-          <Button onClick={actions.openCreateTeamModal} variant="secondary">
-            <Icon name="plus" size={10} marginRight={1} />
-            Create a new team
-          </Button>
-        </Element>
       </Stack>
       <AnimatePresence>
         {visible && (
@@ -347,10 +360,9 @@ const Badge = styled.p`
   top: 1px; // 👌
 `;
 
-const canNotAcceptSandboxes: PageTypes[] = ['home', 'recents', 'always-on'];
+const canNotAcceptSandboxes: PageTypes[] = ['recent', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
-  'home',
-  'recents',
+  'recent',
   'drafts',
   'templates',
   'always-on',
@@ -384,6 +396,24 @@ const isSamePath = (
   return false;
 };
 
+const MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE: Partial<Record<
+  PageTypes,
+  string
+>> = {
+  recent: 'Dashboard - View Recent',
+  'my-contributions': 'Dashboard - View My Contributions',
+  repositories: 'Dashboard - View Repositories',
+  drafts: 'Dashboard - View Drafts',
+  templates: 'Dashboard - View Templates',
+  sandboxes: 'Dashboard - View Sandboxes',
+  'always-on': 'Dashboard - View Always-On',
+  'synced-sandboxes': 'Dashboard - View Synced Sandboxes',
+  archive: 'Dashboard - View Archive',
+  discover: 'Dashboard - View Discover',
+  shared: 'Dashboard - View Shared',
+  liked: 'Dashboard - View Liked',
+};
+
 interface RowItemProps {
   name: string;
   path: string;
@@ -393,12 +423,13 @@ interface RowItemProps {
   folderPath?: string;
   style?: React.CSSProperties;
   badge?: boolean;
+  nestingLevel?: number;
 }
-
 const RowItem: React.FC<RowItemProps> = ({
   name,
   path,
   folderPath = path,
+  nestingLevel = 0,
   page,
   icon,
   setFoldersVisibility = null,
@@ -441,7 +472,7 @@ const RowItem: React.FC<RowItemProps> = ({
    * We open All Sandboxes instantly because that's the root
    * and you can't drop anything in it
    */
-  const HOVER_THRESHOLD = name === 'All Sandboxes' ? 0 : 500; // ms
+  const HOVER_THRESHOLD = folderPath === '/' ? 0 : 500; // ms
   const isOverCache = React.useRef(false);
 
   React.useEffect(() => {
@@ -459,27 +490,27 @@ const RowItem: React.FC<RowItemProps> = ({
   }, [isOver, setFoldersVisibility, HOVER_THRESHOLD]);
 
   return (
-    <ListAction
+    <SidebarListAction
       ref={dropRef}
       align="center"
       onClick={onSidebarToggle}
       css={css(
         merge(
           {
-            height: 10,
+            minHeight: nestingLevel ? 8 : 9,
             paddingX: 0,
             opacity: isDragging && !canDrop ? 0.25 : 1,
             color:
               isCurrentLink || (isDragging && canDrop)
-                ? 'list.hoverForeground'
-                : 'list.foreground',
+                ? 'sideBar.foreground'
+                : 'sideBarTitle.foreground',
             backgroundColor:
               canDrop && isOver ? 'list.hoverBackground' : 'transparent',
             transition: 'all ease-in',
-            transitionDuration: theme => theme.speeds[4],
+            transitionDuration: theme => theme.speeds[1],
             a: {
               ':focus': {
-                // focus state is handled by ListAction:focus-within
+                // focus state is handled by SidebarListAction:focus-within
                 outline: 'none',
               },
             },
@@ -491,13 +522,25 @@ const RowItem: React.FC<RowItemProps> = ({
       {props.children || (
         <Link
           {...{
-            ...(page === 'external' ? { href: linkTo } : { to: linkTo }),
+            ...(page === 'external'
+              ? { href: linkTo, target: '_blank' }
+              : { to: linkTo }),
             as: page === 'external' ? 'a' : RouterLink,
             style: linkStyles,
             onKeyDown: event => {
               if (event.keyCode === ENTER) {
                 history.push(linkTo, { focus: 'FIRST_ITEM' });
               }
+            },
+            onClick: () => {
+              const event = MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page];
+              if (event) {
+                trackImprovedDashboardEvent(
+                  MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page]
+                );
+              }
+
+              return false;
             },
           }}
         >
@@ -522,7 +565,7 @@ const RowItem: React.FC<RowItemProps> = ({
           )}
         </Link>
       )}
-    </ListAction>
+    </SidebarListAction>
   );
 };
 
@@ -530,12 +573,14 @@ interface NestableRowItemProps {
   name: string;
   folderPath: string;
   path: string;
+  page: PageTypes;
   folders: DashboardBaseFolder[];
 }
 
 const NestableRowItem: React.FC<NestableRowItemProps> = ({
   name,
   path,
+  page,
   folderPath,
   folders,
 }) => {
@@ -560,7 +605,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   let hasNewNestedFolder = false;
   if (newFolderPath !== null) {
     const newFolderParent = newFolderPath.replace(`/${NEW_FOLDER_ID}`, '');
-    if (name === 'All Sandboxes') {
+    if (folderPath === '/') {
       hasNewNestedFolder = true;
     } else if (newFolderParent.length && folderPath.includes(newFolderParent)) {
       hasNewNestedFolder = true;
@@ -568,7 +613,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   }
 
   const location = useLocation();
-  const currentFolderLocationPath = dashboardUrls.allSandboxes(folderPath);
+  const currentFolderLocationPath = dashboardUrls.sandboxes(folderPath);
   React.useEffect(() => {
     // Auto open folder in the sidebar if it's opened
     const pathName = location.pathname;
@@ -597,7 +642,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
   };
 
   let subFolders: DashboardBaseFolder[];
-  if (name === 'All Sandboxes') {
+  if (folderPath === '/') {
     subFolders = folders.filter(folder => {
       if (folder.path === newFolderPath) {
         return newFolderPath.replace(`/${NEW_FOLDER_ID}`, '') === '';
@@ -674,7 +719,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
 
       if (currentFolderLocationPath === location.pathname) {
         // if this directory is opened
-        history.push(dashboardUrls.allSandboxes(newPath, state.activeTeam));
+        history.push(dashboardUrls.sandboxes(newPath, state.activeTeam));
       }
     }
 
@@ -689,7 +734,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
     onSubmit();
   };
 
-  const folderUrl = dashboardUrls.allSandboxes(folderPath, state.activeTeam);
+  const folderUrl = dashboardUrls.sandboxes(folderPath, state.activeTeam);
 
   return (
     <>
@@ -699,12 +744,21 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
         folderPath={folderPath}
         page="sandboxes"
         icon="folder"
-        style={{ height: nestingLevel ? 8 : 10 }}
+        nestingLevel={nestingLevel}
         setFoldersVisibility={setFoldersVisibility}
       >
         <Link
           to={folderUrl}
-          onClick={() => history.push(folderUrl)}
+          onClick={() => {
+            const event = MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page];
+            if (event) {
+              trackImprovedDashboardEvent(
+                MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page]
+              );
+            }
+            history.push(folderUrl);
+            return false;
+          }}
           onContextMenu={onContextMenu}
           onKeyDown={event => {
             if (event.keyCode === ENTER && !isRenaming && !isNewFolder) {
@@ -735,7 +789,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 svg: {
                   transform: foldersVisible ? 'rotate(0deg)' : 'rotate(-90deg)',
                   transition: 'transform ease-in-out',
-                  transitionDuration: theme => theme.speeds[2],
+                  transitionDuration: theme => theme.speeds[1],
                 },
               })}
             />
@@ -743,8 +797,25 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
             <Element as="span" css={css({ width: 4, flexShrink: 0 })} />
           )}
 
-          <Stack align="center" gap={2} css={{ width: 'calc(100% - 28px)' }}>
-            <Icon name="folder" size={24} css={css({ flexShrink: 0 })} />
+          <Stack
+            align="center"
+            gap={2}
+            css={{
+              paddingLeft: 0,
+              paddingRight: 0,
+              marginRight: '0',
+            }}
+          >
+            <Stack
+              justify="center"
+              align="center"
+              css={{
+                width: 24,
+                marginRight: '8px',
+              }}
+            >
+              <Icon name="folder" size={16} css={css({ flexShrink: 0 })} />
+            </Stack>
 
             {isRenaming || isNewFolder ? (
               <form onSubmit={onSubmit}>
@@ -781,12 +852,10 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
               .sort(a => 1)
               .map(folder => (
                 <NestableRowItem
+                  page={page}
                   key={folder.path}
                   name={folder.name}
-                  path={dashboardUrls.allSandboxes(
-                    folder.path,
-                    state.activeTeam
-                  )}
+                  path={dashboardUrls.sandboxes(folder.path, state.activeTeam)}
                   folderPath={folder.path}
                   folders={folders}
                 />

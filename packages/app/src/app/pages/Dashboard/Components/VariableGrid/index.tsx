@@ -8,7 +8,6 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
-import { ImportRepo } from '../Repo/ImportRepo';
 import { Folder } from '../Folder';
 import { Repo } from '../Repo';
 import { CommunitySandbox } from '../CommunitySandbox';
@@ -25,17 +24,20 @@ import {
   DashboardSkeleton,
   DashboardNewFolder,
   DashboardRepo,
-  DashboardNewRepo,
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
+  DashboardBranch,
+  DashboardRepository,
   PageTypes,
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
+import { Branch } from '../Branch';
+import { Repository } from '../Repository';
 
 export const GRID_MAX_WIDTH = 1900;
 export const MAX_COLUMN_COUNT = 6;
-export const GUTTER = 36;
-const ITEM_MIN_WIDTH = 220;
+export const GUTTER = 16;
+const ITEM_MIN_WIDTH = 280;
 const ITEM_HEIGHT_GRID = 240;
 const ITEM_HEIGHT_LIST = 64;
 const HEADER_HEIGHT = 64;
@@ -68,13 +70,14 @@ interface IComponentForTypes {
   repo: React.FC<DecoratedItemProps<DashboardRepo>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
   'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
-  'new-repo': React.FC<DecoratedItemProps<DashboardNewRepo>>;
   'new-master-branch': React.FC<DecoratedItemProps<DashboardNewMasterBranch>>;
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
+  branch: React.FC<DecoratedItemProps<DashboardBranch>>;
+  repository: React.FC<DecoratedItemProps<DashboardRepository>>;
 }
 
 const ComponentForTypes: IComponentForTypes = {
@@ -97,11 +100,10 @@ const ComponentForTypes: IComponentForTypes = {
   repo: props => <Repo {...props.item} isScrolling={props.isScrolling} />,
   'new-folder': props => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
-  'new-repo': () => <ImportRepo />,
   'new-master-branch': props => <NewMasterSandbox {...props.item} />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
-      <Text block weight="bold" css={css({ userSelect: 'none' })}>
+      <Text block weight="regular" css={css({ userSelect: 'none' })}>
         {item.title}
       </Text>
       {item.showMoreLink
@@ -133,6 +135,8 @@ const ComponentForTypes: IComponentForTypes = {
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
+  branch: ({ item, page }) => <Branch page={page} {...item} />,
+  repository: ({ item }) => <Repository {...item} />,
 };
 
 const Item = React.memo(
@@ -157,7 +161,8 @@ const Item = React.memo(
 
     // we calculate width by making enough room for gutters between
     // each item + on the 2 ends
-    const spaceReqiuredForGutters = GUTTER * (columnCount + 1);
+    // 10px space to the browser edge
+    const spaceReqiuredForGutters = GUTTER * (columnCount + 1) + 10;
     const spaceLeftForItems = totalWidth - spaceReqiuredForGutters;
     const numberOfItems = columnCount;
     const eachItemWidth = spaceLeftForItems / numberOfItems;
@@ -220,11 +225,10 @@ export const VariableGrid = ({
   viewMode: propViewMode,
 }: VariableGridProps) => {
   const { dashboard } = useAppState();
-
   const location = useLocation();
 
   let viewMode: 'grid' | 'list';
-  if (location.pathname.includes('deleted')) viewMode = 'list';
+  if (location.pathname.includes('archive')) viewMode = 'list';
   else viewMode = propViewMode || dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;

@@ -2,6 +2,8 @@ import {
   SandboxFragmentDashboardFragment,
   TemplateFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
+  BranchFragment as Branch,
+  ProjectFragment as Repository,
   Sandbox,
   Album,
   User,
@@ -81,10 +83,6 @@ export type DashboardNewSandbox = {
   type: 'new-sandbox';
 };
 
-export type DashboardNewRepo = {
-  type: 'new-repo';
-};
-
 export type DashboardSkeletonRow = {
   type: 'skeleton-row';
 };
@@ -140,6 +138,16 @@ export type DashboardAlbum = Pick<Album, 'id' | 'title'> & {
   >;
 };
 
+export type DashboardBranch = {
+  type: 'branch';
+  branch: Branch;
+};
+
+export type DashboardRepository = {
+  type: 'repository';
+  repository: Repository;
+};
+
 export type PageTypes = PT;
 
 export type DashboardGridItem =
@@ -150,7 +158,6 @@ export type DashboardGridItem =
   | DashboardHeaderLink
   | DashboardNewFolder
   | DashboardNewSandbox
-  | DashboardNewRepo
   | DashboardSkeletonRow
   | DashboardNewMasterBranch
   | DashboardBlank
@@ -158,4 +165,6 @@ export type DashboardGridItem =
   | DashboardRepoSandbox
   | DashboardBlankRowFill
   | DashboardSkeleton
-  | DashboardCommunitySandbox;
+  | DashboardCommunitySandbox
+  | DashboardBranch
+  | DashboardRepository;

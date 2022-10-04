@@ -1,8 +1,14 @@
 import React from 'react';
-import { Stack, ListAction, Text, Grid, Column } from '@codesandbox/components';
+import {
+  Icon,
+  Stack,
+  ListAction,
+  Text,
+  Grid,
+  Column,
+} from '@codesandbox/components';
 import { noop } from 'overmind';
 import css from '@styled-system/css';
-import { ListIcon } from './Icons';
 
 export const RepoListItem = ({
   name,
@@ -31,7 +37,7 @@ export const RepoListItem = ({
       {...props}
       css={css({
         paddingX: 0,
-        backgroundColor: selected ? 'blues.600' : 'inherit',
+        backgroundColor: selected ? 'purpleOpaque' : 'inherit',
         color: selected ? 'white' : 'inherit',
         width: '100%',
         height: 64,
@@ -39,7 +45,7 @@ export const RepoListItem = ({
         borderBottomColor: 'grays.600',
         ':hover, :focus, :focus-within': {
           cursor: 'default',
-          backgroundColor: selected ? 'blues.600' : 'list.hoverBackground',
+          backgroundColor: selected ? 'purpleOpaque' : 'list.hoverBackground',
         },
       })}
     >
@@ -54,7 +60,13 @@ export const RepoListItem = ({
                 height: 32,
               })}
             >
-              <ListIcon />
+              <Icon
+                name="github"
+                size={16}
+                width={32}
+                title="Synced sandbox"
+                color="#999"
+              />
             </Stack>
             <Stack justify="space-between" align="center">
               <Text size={3} weight="medium">
@@ -64,9 +76,18 @@ export const RepoListItem = ({
             </Stack>
           </Stack>
         </Column>
-        <Column span={[0, 4, 4]} as={Stack} align="center">
-          <Text size={3} weight="medium" variant="muted">
-            {props.owner}
+        <Column span={[0, 6, 1]} as={Stack} align="center">
+          <Text
+            size={3}
+            paddingX={4}
+            paddingY={2}
+            css={{
+              color: '#C2C2C2',
+              backgroundColor: '#1D1D1D',
+              borderRadius: 99,
+            }}
+          >
+            Synced
           </Text>
         </Column>
         <Column span={[0, 3, 3]} as={Stack} align="center">

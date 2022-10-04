@@ -1,19 +1,18 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
-import { Button } from '@codesandbox/components';
+import { Button, Select } from '@codesandbox/components';
 
 export const Container = styled.div`
-  display: flex;
+  // TODO: Proper height, width and responsive styles
   min-width: 870px;
   max-width: 1200px;
-  height: 496px;
+  height: 550px;
   overflow: hidden;
-  border: 1px solid #242424;
   border-radius: 4px;
-  background-color: #242424;
-  color: #fff;
-
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.24);
+  background-color: #151515;
+  color: #e5e5e5;
+  display: flex;
+  flex-direction: column;
 
   @media screen and (max-width: 800px) {
     max-width: 100%;
@@ -28,14 +27,33 @@ export const Container = styled.div`
   }
 `;
 
+export const HeaderInformation = styled.div`
+  flex-grow: 1;
+`;
+
+export const ModalBody = styled.div`
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+`;
+
+export const ModalSidebar = styled.div`
+  width: 224px;
+  flex-shrink: 0;
+  padding: 0px 24px 24px;
+  overflow: auto;
+`;
+
+export const ModalContent = styled.div`
+  flex-grow: 1;
+  padding: 0 24px;
+`;
+
 export const Tabs = styled(TabList)`
   display: flex;
   flex-direction: column;
-  background: #242424;
-  padding: 1rem 0;
-  width: 176px;
-  min-width: 176px;
 
+  // TODO: Mobile styles
   @media screen and (max-width: 800px) {
     display: none;
   }
@@ -64,45 +82,34 @@ export const DashboardButton = styled(Button).attrs({
 `;
 
 export const Tab = styled(BaseTab)`
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  margin-bottom: 0.5rem;
+  text-align: left;
+  padding: 8px 0;
+  margin-bottom: 4px;
+
   border: none;
   background: transparent;
-  color: white;
+  color: #999999;
   font-family: 'Inter', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 16px;
   cursor: pointer;
 
   &[aria-selected='true'],
   :hover {
-    background: #151515;
+    color: #e5e5e5;
   }
 
   &:focus {
     outline: none;
   }
-
-  svg {
-    margin-right: 0.5rem;
-  }
 `;
 
 export const TabContent = styled(TabPanel)`
-  display: grid;
-  grid-template-rows: min-content auto;
-  background: #151515;
-  max-height: 496px;
   width: 100%;
-  border-left: 1px solid #040404;
   height: 100%;
-
   outline: none;
 
   @media screen and (max-width: 800px) {
-    grid-template-rows: 50px auto;
     max-height: 100%;
   }
 `;
@@ -126,16 +133,6 @@ export const Legend = styled.span`
   color: #757575;
   font-size: 16px;
   line-height: 19px;
-`;
-
-export const SubHeader = styled.h2`
-  font-family: Inter;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 19px;
-  margin: 1rem 1.5rem;
-  margin-top: 24px;
 `;
 
 export const Grid = styled.div<{ columnCount: number }>`
@@ -162,10 +159,66 @@ export const MobileTabs = styled.div`
   }
 `;
 
-export const CloseModal = styled.button`
-  background: transparent;
+export const TemplateButton = styled.button`
+  background: #1d1d1d;
+  border: 1px solid transparent;
+  text-align: left;
+  padding: 24px;
+  border-radius: 2px;
+  color: #e5e5e5;
+  transition: background ${props => props.theme.speeds[2]} ease-out;
+  outline: none;
+
+  &:hover {
+    background: #292929;
+  }
+
+  &:focus-visible {
+    border-color: ${props => props.theme.colors.purple};
+  }
+`;
+
+export const TemplateGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 10px;
+  overflow: auto;
+  padding-bottom: 8px;
+`;
+
+export const inputStyles = css`
+  font-family: inherit;
+  height: 32px;
+  padding: 8px 16px;
+  background-color: #2a2a2a;
+  color: #999999;
   border: none;
-  position: absolute;
-  right: 16px;
-  top: 13px;
+  border-radius: 2px;
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 500;
+  &:hover {
+    color: #e5e5e5;
+  }
+  &:focus {
+    color: #e5e5e5;
+  }
+`;
+
+export const StyledInput = styled.input`
+  ${inputStyles}
+`;
+
+// Select component places the content with a fixed padding if it has an icon
+// !important here will overule that setting since the new select is bigger
+export const StyledSelect = styled(Select)`
+  ${inputStyles}
+  height: 48px;
+  padding-left: 44px !important;
+`;
+
+export const StyledLabel = styled.label`
+  color: #999999;
+  font-size: 12px;
+  line-height: 16px;
 `;

@@ -795,6 +795,7 @@ export type SandboxUrlSourceData = {
   id?: string | null;
   alias?: string | null;
   git?: GitInfo | null;
+  isV2?: boolean;
 };
 
 export type DevToolsTabPosition = {

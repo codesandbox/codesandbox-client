@@ -35,7 +35,7 @@ export const Liked = () => {
         <title>Liked Sandboxes - CodeSandbox</title>
       </Helmet>
       <Header
-        title="Liked Sandboxes"
+        title="Liked sandboxes"
         activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.LIKED)}
         showViewOptions

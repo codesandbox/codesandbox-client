@@ -225,7 +225,7 @@ export const ProUpgrade = () => {
             padding: '24px 1em',
           })}
         >
-          <Element css={{ width: '100%' }}>
+          <Element css={{ width: '100%', paddingTop:'24px' }}>
             <Switcher
               workspaceType={workspaceType}
               workspaces={workspacesList}

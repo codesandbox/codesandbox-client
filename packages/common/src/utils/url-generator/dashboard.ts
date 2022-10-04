@@ -1,5 +1,5 @@
 export const DASHBOARD_URL_PREFIX = '/dashboard';
-export const ALL_SANDBOXES_URL_PREFIX = `${DASHBOARD_URL_PREFIX}/all`;
+export const ALL_SANDBOXES_URL_PREFIX = `${DASHBOARD_URL_PREFIX}/sandboxes`;
 
 function appendTeamIdQueryParam(url: string, teamId?: string | null) {
   if (teamId) {
@@ -16,7 +16,7 @@ function sanitizePath(path: string) {
     .join('/');
 }
 
-export const allSandboxes = (path: string, teamId?: string | null) =>
+export const sandboxes = (path: string, teamId?: string | null) =>
   appendTeamIdQueryParam(
     `${ALL_SANDBOXES_URL_PREFIX}${sanitizePath(path)}`,
     teamId
@@ -25,8 +25,28 @@ export const allSandboxes = (path: string, teamId?: string | null) =>
 export const drafts = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/drafts`, teamId);
 
-export const repos = (teamId?: string | null) =>
+export const myContributions = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/my-contributions`, teamId);
+
+export const repositories = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories`, teamId);
+
+export const repository = ({
+  owner,
+  name,
+  teamId,
+}: {
+  owner: string;
+  name: string;
+  teamId?: string | null;
+}) =>
+  appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/repositories/github/${owner}/${name}`,
+    teamId
+  );
+
+export const syncedSandboxes = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/synced-sandboxes`, teamId);
 
 export const alwaysOn = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/always-on`, teamId);
@@ -34,20 +54,17 @@ export const alwaysOn = (teamId?: string | null) =>
 export const templates = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/templates`, teamId);
 
-export const recents = (teamId?: string | null) =>
+export const recent = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/recent`, teamId);
 
-export const deleted = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/deleted`, teamId);
+export const archive = (teamId?: string | null) =>
+  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/archive`, teamId);
 
 export const shared = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/shared`, teamId);
 
 export const liked = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/liked`, teamId);
-
-export const home = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/home`, teamId);
 
 export const settings = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/settings`, teamId);

@@ -16,6 +16,7 @@ export const sandboxFragmentDashboard = gql`
     viewCount
     likeCount
     alwaysOn
+    isV2
 
     source {
       template
@@ -212,4 +213,36 @@ export const npmRegistryFragment = gql`
     registryUrl
     teamId
   }
+`;
+
+export const branchFragment = gql`
+  fragment branch on Branch {
+    id
+    name
+    contribution
+    lastAccessedAt
+    project {
+      repository {
+        ... on GitHubRepository {
+          name
+          owner
+        }
+      }
+    }
+  }
+`;
+
+export const projectFragment = gql`
+  fragment project on Project {
+    branches {
+      ...branch
+    }
+    repository {
+      ... on GitHubRepository {
+        owner
+        name
+      }
+    }
+  }
+  ${branchFragment}
 `;
