@@ -16,7 +16,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
   collectionId,
   page,
 }) => {
-  const { modalOpened } = useActions();
+  const { modalOpened, openCreateSandboxModal } = useActions();
 
   if (page === 'search') {
     return (
@@ -106,6 +106,9 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
           </Stack>
           <Stack direction="horizontal" gap={1}>
             <Button
+              onClick={() => {
+                openCreateSandboxModal({ initialTab: 'import' });
+              }}
               variant="secondary"
               css={css({
                 height: 'auto',
