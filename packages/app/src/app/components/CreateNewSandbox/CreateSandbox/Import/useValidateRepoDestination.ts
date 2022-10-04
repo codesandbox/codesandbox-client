@@ -7,6 +7,8 @@ export type State =
   | { state: 'validating' }
   | {
       state: 'valid';
+      owner: string;
+      name: string;
     }
   | {
       state: 'invalid';
@@ -33,7 +35,12 @@ export const useValidateRepoDestination: ValidateRepoDestination = (
       if (!res.valid) {
         throw Error(res.message ?? 'Invalid repository name or organization');
       }
-      setState({ state: 'valid' });
+
+      setState({
+        state: 'valid',
+        owner: destination.split('/')[0],
+        name: destination.split('/')[1],
+      });
     } catch (error) {
       setState({ state: 'invalid', error: error.message });
     }
