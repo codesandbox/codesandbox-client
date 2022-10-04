@@ -21,7 +21,7 @@ export const Preview: React.FC = () => {
 
   return (
     <div>
-      <Text block marginBottom={6} size={4} weight="bold">
+      <Text block marginBottom={6} size={4} weight="regular">
         Preview
       </Text>
 

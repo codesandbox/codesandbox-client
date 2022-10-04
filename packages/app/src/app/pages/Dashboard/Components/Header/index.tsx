@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Stack, Text, Button, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
@@ -24,6 +25,7 @@ type Props = {
   showFilters?: boolean;
   showViewOptions?: boolean;
   showSortOptions?: boolean;
+  showBetaBadge?: boolean;
   nestedPageType?: BreadcrumbProps['nestedPageType'];
   albumId?: string;
   activeTeam: string;
@@ -41,6 +43,7 @@ export const Header = ({
   showFilters = false,
   showViewOptions = false,
   showSortOptions = false,
+  showBetaBadge = false,
   CustomFilters,
   actions = [],
 }: Props) => {
@@ -59,18 +62,19 @@ export const Header = ({
         marginX: 'auto',
       })}
     >
-      {title ? (
-        <Text marginBottom={1} marginTop={-2} block weight="regular" size={6} >
-          {title}
-        </Text>
-      ) : (
-        <Breadcrumbs
-          nestedPageType={nestedPageType}
-          activeTeam={activeTeam}
-          path={path}
-          albumId={albumId}
-        />
-      )}
+      <Stack align="center" marginBottom={1} marginTop={-2} gap={2}>
+        {title ? (
+          <Text size={6}>{title}</Text>
+        ) : (
+          <Breadcrumbs
+            nestedPageType={nestedPageType}
+            activeTeam={activeTeam}
+            path={path}
+            albumId={albumId}
+          />
+        )}
+        {showBetaBadge && <CloudBetaBadge />}
+      </Stack>
       <Stack gap={4} align="center">
         {location.pathname.includes('/sandboxes') && (
           <Button
@@ -89,7 +93,7 @@ export const Header = ({
               title="New"
               css={css({ paddingRight: 2 })}
             />
-        New Folder
+            New Folder
           </Button>
         )}
         {location.pathname.includes('/repositories') &&

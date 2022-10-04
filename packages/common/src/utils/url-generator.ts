@@ -108,11 +108,15 @@ export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
     return `${editorUrl()}${sandboxGitUrl(git)}`;
   }
 
+  const baseUrl = sandboxDetails.isV2
+    ? `${v2EditorUrl()}sandbox/`
+    : editorUrl();
+
   if (sandboxDetails.alias) {
-    return `${editorUrl()}${sandboxDetails.alias}`;
+    return `${baseUrl}${sandboxDetails.alias}`;
   }
 
-  return `${editorUrl()}${sandboxDetails.id}`;
+  return `${baseUrl}${sandboxDetails.id}`;
 };
 
 export const v2BranchUrl = (branchDetails: {
@@ -290,7 +294,24 @@ export function getSandboxId() {
 
   return result;
 }
+
 export const teamInviteLink = (inviteToken: string) =>
   `${protocolAndHost()}/invite/${inviteToken}`;
 
 export { dashboard };
+
+export const v2DefaultBranchUrl = (
+  owner: string,
+  name: string,
+  qsObject: Record<string, string> = {}
+) => {
+  const searchParams = new URLSearchParams({
+    ...qsObject,
+  });
+
+  return `${v2EditorUrl()}github/${owner}/${name}?${searchParams.toString()}`;
+};
+
+export const v2DraftBranchUrl = (owner: string, name: string) => {
+  return `${v2DefaultBranchUrl(owner, name, { create: 'true' })}`;
+};

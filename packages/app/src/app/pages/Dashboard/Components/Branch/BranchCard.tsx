@@ -5,8 +5,10 @@ import {
   Stack,
   Text,
   Tooltip,
+  Element,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { BranchProps } from './types';
 
 export const BranchCard: React.FC<BranchProps> = ({
@@ -53,11 +55,15 @@ export const BranchCard: React.FC<BranchProps> = ({
         css={css({
           backgroundColor: 'rgba(229, 229, 229, 0.04)',
           paddingY: 10,
+          position: 'relative',
         })}
         align="center"
         justify="center"
       >
         <Icon color="#808080" name="branch" size={40} />
+        <Element css={{ position: 'absolute', top: 6, right: 6 }}>
+          <CloudBetaBadge />
+        </Element>
       </Stack>
       <Stack
         css={css({

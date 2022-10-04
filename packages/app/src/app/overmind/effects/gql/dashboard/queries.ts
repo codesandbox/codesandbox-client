@@ -51,6 +51,8 @@ import {
   ContributionBranchesQueryVariables,
   RepositoriesByTeamQuery,
   RepositoriesByTeamQueryVariables,
+  RepositoryByDetailsQuery,
+  RepositoryByDetailsQueryVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -490,15 +492,28 @@ export const getRepositoriesByTeam: Query<
   RepositoriesByTeamQuery,
   RepositoriesByTeamQueryVariables
 > = gql`
-  query RepositoriesByTeam($teamId: UUID4!) {
+  query RepositoriesByTeam($teamId: UUID4!, $syncData: Boolean) {
     me {
       team(id: $teamId) {
         id
         name
-        projects {
+        projects(syncData: $syncData) {
           ...project
         }
       }
+    }
+  }
+  ${projectFragment}
+  ${branchFragment}
+`;
+
+export const getRepositoryByDetails: Query<
+  RepositoryByDetailsQuery,
+  RepositoryByDetailsQueryVariables
+> = gql`
+  query RepositoryByDetails($owner: String!, $name: String!) {
+    project(gitProvider: GITHUB, owner: $owner, repo: $name) {
+      ...project
     }
   }
   ${projectFragment}

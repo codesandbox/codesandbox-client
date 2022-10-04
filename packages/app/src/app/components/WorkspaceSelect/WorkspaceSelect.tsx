@@ -57,8 +57,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               css={css({
                 width: '100%',
                 height: '100%',
-                paddingLeft: 2,
-                borderRadius: 0,
+                marginLeft: 0,
                 '&:hover': {
                   backgroundColor: 'grays.600',
                 },
@@ -73,12 +72,12 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                     name={activeAccount.name}
                   />
                 </Stack>
-                <Text size={4} weight="normal" maxWidth={140}>
+                <Text size={14} weight="normal" maxWidth={140}>
                   {activeAccount.name}
                 </Text>
               </Stack>
 
-              <Icon name="caret" size={8} />
+              <Icon name="chevronDown" size={8} />
             </Stack>
 
             <Menu.List

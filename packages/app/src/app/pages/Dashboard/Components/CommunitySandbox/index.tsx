@@ -30,7 +30,7 @@ export const CommunitySandbox = ({
   const title = sandbox.title || sandbox.alias || sandbox.id;
   const forkCount = sandbox.forkCount;
   const likeCount = sandbox.likeCount;
-  const url = sandboxUrl({ id: sandbox.id, alias: sandbox.alias });
+  const url = sandboxUrl(sandbox);
   const author = sandbox.author;
   const liked = sandbox.liked;
 

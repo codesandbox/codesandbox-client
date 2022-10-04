@@ -75,6 +75,7 @@ export const Checkbox: FunctionComponent<ICheckboxProps> = ({
   checked,
   id,
   label,
+  disabled,
   ...props
 }) => {
   const inputId = useId(id);
@@ -85,9 +86,14 @@ export const Checkbox: FunctionComponent<ICheckboxProps> = ({
         id={inputId}
         name={inputId}
         type="checkbox"
+        disabled={disabled}
         {...props}
       />
-      <Label as="label" htmlFor={inputId}>
+      <Label
+        css={disabled ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
+        as="label"
+        htmlFor={inputId}
+      >
         {label}
       </Label>
     </Element>

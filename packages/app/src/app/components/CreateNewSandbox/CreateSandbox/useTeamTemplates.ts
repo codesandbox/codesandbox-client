@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import {
   ListPersonalTemplatesQuery,
@@ -6,29 +5,36 @@ import {
   TemplateFragment,
 } from 'app/graphql/types';
 import { LIST_PERSONAL_TEMPLATES } from '../queries';
-import { Loader } from './Loader';
-import { TemplateGrid } from './elements';
-import { TemplateCard } from './TemplateCard';
+
+type State =
+  | { state: 'loading' }
+  | {
+      state: 'ready';
+      recentTemplates: TemplateFragment[];
+      teamTemplates: TemplateFragment[];
+    }
+  | {
+      state: 'error';
+      error: string;
+    };
 
 function getUserTemplates(data: ListPersonalTemplatesQuery) {
   return data.me.templates;
 }
 
 function getTeamTemplates(data: ListPersonalTemplatesQuery, teamId: string) {
-  return data.me.teams.find(team => team.id === teamId).templates;
+  return data.me.teams.find(team => team.id === teamId)?.templates || [];
 }
 
-interface TeamTemplatesProps {
+type UseTeamTemplatesParams = {
   isUser: boolean;
-  teamId: string;
-  onSelectTemplate: (template: TemplateFragment) => void;
-}
+  teamId?: string;
+};
 
-export const TeamTemplates = ({
+export const useTeamTemplates = ({
   isUser,
   teamId,
-  onSelectTemplate,
-}: TeamTemplatesProps) => {
+}: UseTeamTemplatesParams): State => {
   const { data, error } = useQuery<
     ListPersonalTemplatesQuery,
     ListPersonalTemplatesQueryVariables
@@ -43,38 +49,27 @@ export const TeamTemplates = ({
   });
 
   if (error) {
-    return (
-      <p>
-        Something went wrong while fetching your templates, please try again in
-        a minute.
-      </p>
-    );
+    return {
+      state: 'error',
+      error: error.message,
+    };
   }
 
   // Instead of checking the loading var we check this. Apollo sets the loading
   // var to true even if we still have cached data that we can use. We  also need to
   // check if `data.me` isnt undefined before getting templates.
   if (typeof data?.me === 'undefined') {
-    return <Loader />;
+    return {
+      state: 'loading',
+    };
   }
 
-  const templates = isUser
-    ? getUserTemplates(data)
-    : getTeamTemplates(data, teamId);
+  const teamTemplates =
+    isUser || !teamId ? getUserTemplates(data) : getTeamTemplates(data, teamId);
 
-  return (
-    <TemplateGrid>
-      {templates.length > 0 ? (
-        templates.map(template => (
-          <TemplateCard
-            key={template.id}
-            template={template}
-            onSelectTemplate={onSelectTemplate}
-          />
-        ))
-      ) : (
-        <div>No templates yet!</div>
-      )}
-    </TemplateGrid>
-  );
+  return {
+    state: 'ready',
+    recentTemplates: data.me.recentlyUsedTemplates,
+    teamTemplates,
+  };
 };

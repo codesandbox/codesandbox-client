@@ -112,7 +112,7 @@ export const Dashboard: FunctionComponent = () => {
               css={css({
                 width: '100%',
                 height: 'calc(100vh - 48px)',
-                paddingLeft: [0, 0, SIDEBAR_WIDTH],
+                paddingLeft: [0, 0, SIDEBAR_WIDTH + 24],
               })}
             >
               <Content />

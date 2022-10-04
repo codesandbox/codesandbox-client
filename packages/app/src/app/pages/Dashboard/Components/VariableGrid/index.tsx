@@ -8,7 +8,6 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
-import { ImportRepo } from '../Repo/ImportRepo';
 import { Folder } from '../Folder';
 import { Repo } from '../Repo';
 import { CommunitySandbox } from '../CommunitySandbox';
@@ -25,7 +24,6 @@ import {
   DashboardSkeleton,
   DashboardNewFolder,
   DashboardRepo,
-  DashboardNewRepo,
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
   DashboardBranch,
@@ -36,10 +34,10 @@ import { CreateFolder } from '../Folder/CreateFolder';
 import { Branch } from '../Branch';
 import { Repository } from '../Repository';
 
-export const GRID_MAX_WIDTH = 1900;
-export const MAX_COLUMN_COUNT = 6;
+export const GRID_MAX_WIDTH = 3840;
+export const MAX_COLUMN_COUNT = 10;
 export const GUTTER = 16;
-const ITEM_MIN_WIDTH = 280;
+const ITEM_MIN_WIDTH = 260;
 const ITEM_HEIGHT_GRID = 240;
 const ITEM_HEIGHT_LIST = 64;
 const HEADER_HEIGHT = 64;
@@ -72,7 +70,6 @@ interface IComponentForTypes {
   repo: React.FC<DecoratedItemProps<DashboardRepo>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
   'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
-  'new-repo': React.FC<DecoratedItemProps<DashboardNewRepo>>;
   'new-master-branch': React.FC<DecoratedItemProps<DashboardNewMasterBranch>>;
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
@@ -103,7 +100,6 @@ const ComponentForTypes: IComponentForTypes = {
   repo: props => <Repo {...props.item} isScrolling={props.isScrolling} />,
   'new-folder': props => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
-  'new-repo': () => <ImportRepo />,
   'new-master-branch': props => <NewMasterSandbox {...props.item} />,
   header: ({ item }) => (
     <Stack justify="space-between" align="center">

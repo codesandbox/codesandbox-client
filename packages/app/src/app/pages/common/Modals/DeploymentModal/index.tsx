@@ -35,7 +35,13 @@ export const DeploymentModal: FunctionComponent = () => {
     >
       {url ? (
         <Element marginBottom={4}>
-          <Text weight="bold" block size={4} align="center" paddingBottom={4}>
+          <Text
+            weight="regular"
+            block
+            size={4}
+            align="center"
+            paddingBottom={4}
+          >
             Deployed!
           </Text>
           <Link variant="muted" block size={3} align="center" href={url}>

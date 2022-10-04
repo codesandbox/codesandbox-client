@@ -28,6 +28,7 @@ import {
   DashboardCommunitySandbox,
   PageTypes,
   DashboardBranch,
+  DashboardRepository,
 } from '../../types';
 import { DndDropType } from '../../utils/dnd';
 
@@ -114,10 +115,15 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     | DashboardRepo
     | DashboardCommunitySandbox
     | DashboardBranch
+    | DashboardRepository
   >;
 
   const selectionItems = possibleItems.map(item => {
     if (item.type === 'branch') return item.branch.id;
+    if (item.type === 'repository') {
+      const { repository: providerRepository } = item.repository;
+      return `${providerRepository.owner}-${providerRepository.name}`;
+    }
     if (item.type === 'folder') return item.path;
     if (item.type === 'repo') return item.name;
     return item.sandbox.id;
@@ -135,6 +141,9 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const branches = (items || []).filter(
     item => item.type === 'branch'
   ) as DashboardBranch[];
+  const repositories = (items || []).filter(
+    item => item.type === 'repository'
+  ) as DashboardRepository[];
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const actions = useActions();
@@ -321,10 +330,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         const selectedItem = sandboxes.find(
           item => item.sandbox.id === selectedId
         );
-        url = sandboxUrl({
-          id: selectedItem.sandbox.id,
-          alias: selectedItem.sandbox.alias,
-        });
+        url = sandboxUrl(selectedItem.sandbox);
       }
 
       if (event.ctrlKey || event.metaKey) {
@@ -615,7 +621,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         id="selection-container"
         onContextMenu={onContainerContextMenu}
         css={css({
-          paddingTop: 10,
+          paddingTop: 8,
           paddingBottom: 8,
           width: '100%',
           height: '100%',
@@ -670,6 +676,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         sandboxes={sandboxes || []}
         folders={folders || []}
         branches={branches || []}
+        repositories={repositories || []}
         setRenaming={setRenaming}
         page={page}
         createNewFolder={createNewFolder}

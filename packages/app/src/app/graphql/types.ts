@@ -1561,7 +1561,13 @@ export type TemplateFragment = { __typename?: 'Template' } & Pick<
     sandbox: Maybe<
       { __typename?: 'Sandbox' } & Pick<
         Sandbox,
-        'id' | 'alias' | 'title' | 'description' | 'insertedAt' | 'updatedAt'
+        | 'id'
+        | 'alias'
+        | 'title'
+        | 'description'
+        | 'insertedAt'
+        | 'updatedAt'
+        | 'isV2'
       > & {
           collection: Maybe<
             { __typename?: 'Collection' } & {
@@ -1648,6 +1654,25 @@ export type ListPersonalBookmarkedTemplatesQuery = {
         { __typename?: 'Template' } & TemplateFragment
       >;
     }
+  >;
+};
+
+export type GetGithubRepoQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
+  githubRepo: Maybe<
+    { __typename?: 'GithubRepo' } & Pick<
+      GithubRepo,
+      'name' | 'fullName' | 'updatedAt' | 'authorization'
+    > & {
+        owner: { __typename?: 'GithubOrganization' } & Pick<
+          GithubOrganization,
+          'id' | 'login' | 'avatarUrl'
+        >;
+      }
   >;
 };
 
@@ -2133,6 +2158,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'viewCount'
   | 'likeCount'
   | 'alwaysOn'
+  | 'isV2'
   | 'authorId'
   | 'teamId'
 > & {
@@ -3214,6 +3240,7 @@ export type ContributionBranchesQuery = { __typename?: 'RootQueryType' } & {
 
 export type RepositoriesByTeamQueryVariables = Exact<{
   teamId: Scalars['UUID4'];
+  syncData: Maybe<Scalars['Boolean']>;
 }>;
 
 export type RepositoriesByTeamQuery = { __typename?: 'RootQueryType' } & {
@@ -3226,6 +3253,15 @@ export type RepositoriesByTeamQuery = { __typename?: 'RootQueryType' } & {
       >;
     }
   >;
+};
+
+export type RepositoryByDetailsQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+export type RepositoryByDetailsQuery = { __typename?: 'RootQueryType' } & {
+  project: Maybe<{ __typename?: 'Project' } & ProjectFragment>;
 };
 
 export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<

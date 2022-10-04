@@ -12,6 +12,7 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { SandboxItemComponentProps } from './types';
 
 const useImageLoaded = (url: string) => {
@@ -269,6 +270,7 @@ export const SandboxCard = ({
         TemplateIcon={TemplateIcon}
         screenshotUrl={screenshotUrl}
         screenshotOutdated={sandbox.screenshotOutdated}
+        showBetaBadge={sandbox.isV2}
       />
 
       <Stack
@@ -307,6 +309,7 @@ const Thumbnail = ({
   sandboxId,
   thumbnailRef,
   TemplateIcon,
+  showBetaBadge,
   screenshotUrl,
   screenshotOutdated,
 }) => {
@@ -363,21 +366,21 @@ const Thumbnail = ({
           />
         )}
       </div>
-      <div
-        style={{
-          position: 'absolute',
-          top: 6,
-          right: 6,
-          width: 18,
-          height: 18,
-          borderRadius: 4,
-          backgroundColor: '#343434',
-          borderColor: '#343434',
-          padding: 4,
-        }}
-      >
-        <TemplateIcon width="18" height="18" />
-      </div>
+      <Stack gap={1} css={{ position: 'absolute', top: 6, right: 6 }}>
+        {showBetaBadge && <CloudBetaBadge />}
+        <div
+          style={{
+            width: 18,
+            height: 18,
+            borderRadius: 4,
+            backgroundColor: '#343434',
+            borderColor: '#343434',
+            padding: 3,
+          }}
+        >
+          <TemplateIcon width="18" height="18" />
+        </div>
+      </Stack>
     </>
   );
 };

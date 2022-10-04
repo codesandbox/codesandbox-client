@@ -1,31 +1,54 @@
 import React, { useEffect } from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Element } from '@codesandbox/components';
+import { Text, Stack } from '@codesandbox/components';
+import { css } from '@styled-system/css';
 
 import { TemplateFragment } from 'app/graphql/types';
 import { TemplateCard } from './TemplateCard';
 import { TemplateGrid } from './elements';
+import { CloudBetaBadge } from '../../CloudBetaBadge';
 
-interface EssentialsProps {
+interface TemplateCategoryListProps {
   title: string;
+  showBetaTag?: boolean;
   templates: TemplateFragment[];
   onSelectTemplate: (template: TemplateFragment) => void;
 }
 
-export const Essentials = ({
+export const TemplateCategoryList = ({
   title,
+  showBetaTag,
   templates,
   onSelectTemplate,
-}: EssentialsProps) => {
+}: TemplateCategoryListProps) => {
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: title });
   }, [title]);
 
   return (
-    <div>
-      <Element as="h2" css={{ margin: 0 }}>
-        {title}
-      </Element>
+    <Stack direction="vertical" css={{ height: '100%' }} gap={6}>
+      <Stack
+        css={css({
+          alignItems: 'center',
+          '@media screen and (max-width: 950px)': {
+            display: 'none',
+          },
+        })}
+        gap={2}
+      >
+        <Text
+          as="h2"
+          size={4}
+          css={{
+            fontWeight: 500,
+            lineHeight: 1.5,
+            margin: 0,
+          }}
+        >
+          {title}
+        </Text>
+        {showBetaTag && <CloudBetaBadge hideIcon />}
+      </Stack>
       <TemplateGrid>
         {templates.length > 0 ? (
           templates.map(template => (
@@ -39,6 +62,6 @@ export const Essentials = ({
           <div>No templates for this category.</div>
         )}
       </TemplateGrid>
-    </div>
+    </Stack>
   );
 };

@@ -17,6 +17,7 @@ export const sandboxFragmentDashboard = gql`
     viewCount
     likeCount
     alwaysOn
+    isV2
 
     source {
       template

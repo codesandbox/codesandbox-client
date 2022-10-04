@@ -6,37 +6,82 @@ import {
   Checkbox,
   Icon,
   Button,
+  Text,
 } from '@codesandbox/components';
 
-import { SelectContainer, StyledInput, StyledLabel } from './elements';
+import { StyledInput, StyledSelect } from './elements';
+import { CloudBetaBadge } from '../../CloudBetaBadge';
+import { CreateSandboxParams } from './types';
 
-export const FromTemplate = ({ onCancel }) => {
+export interface FromTemplateProps {
+  isV2: boolean;
+  onCancel: () => void;
+  onSubmit: (params: CreateSandboxParams) => void;
+}
+
+export const FromTemplate: React.FC<FromTemplateProps> = ({
+  isV2,
+  onCancel,
+  onSubmit,
+}) => {
   const { hasLogIn, user, dashboard, activeTeam } = useAppState();
 
   // TODO: Set generated name as default value if we can / need
   // otherwise tell the user if empty we generate a name
   const [sandboxName, setSandboxName] = useState<string>();
-  const [createGitRepo, setCreateGitRepo] = useState<boolean>(false);
+
+  const createRepo = false;
+  // TODO: Enable when checkbox is active again
+  // const [createRepo, setCreateRepo] = useState<boolean>(false);
   const [selectedTeam, setSelectedTeam] = useState<string>(activeTeam);
 
   return (
-    <Stack direction="vertical" gap={7} css={{ width: '100%' }}>
-      <Element as="h2" css={{ fontSize: '16px', margin: 0 }}>
-        New from template
-      </Element>
+    <Stack
+      direction="vertical"
+      gap={7}
+      css={{ width: '100%', height: '100%', paddingBottom: '24px' }}
+    >
+      <Stack css={{ justifyContent: 'space-between' }}>
+        <Text
+          as="h2"
+          css={{
+            fontSize: '16px',
+            fontWeight: 500,
+            margin: 0,
+            lineHeight: 1.5,
+          }}
+        >
+          New from template
+        </Text>
+        {isV2 && <CloudBetaBadge />}
+      </Stack>
 
-      <form
-        css={{ width: '100%' }}
+      <Element
+        as="form"
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          height: '100%',
+          justifyContent: 'space-between',
+        }}
         onSubmit={e => {
           e.preventDefault();
+          onSubmit({
+            name: sandboxName,
+            createRepo,
+            githubOwner: selectedTeam,
+          });
         }}
       >
         <Stack direction="vertical" gap={6}>
           <Stack direction="vertical" gap={2}>
-            <StyledLabel htmlFor="sb-name">Sandbox name</StyledLabel>
             <StyledInput
+              autoFocus
               id="sb-name"
               type="text"
+              aria-label="Sandbox name"
+              placeholder="Sandbox name"
               value={sandboxName}
               onChange={e => setSandboxName(e.target.value)}
               aria-describedBy="name-desc"
@@ -51,48 +96,57 @@ export const FromTemplate = ({ onCancel }) => {
           </Stack>
 
           <Checkbox
-            onChange={e => {
-              setCreateGitRepo(e.target.checked);
-            }}
-            checked={createGitRepo}
-            label="Create Git repository"
-            disabled={!hasLogIn || !user || !dashboard.teams}
+            id="sb-repo"
+            disabled
+            checked={createRepo}
+            label={
+              <Text
+                css={{
+                  fontSize: 13,
+                  display: 'block',
+                  marginTop: 2,
+                  marginLeft: 4,
+                  color: '#999999',
+                  lineHeight: '16px',
+                }}
+              >
+                Create git repository (coming soon)
+              </Text>
+            }
           />
 
-          {createGitRepo ? (
-            <SelectContainer>
-              <Icon name="github" />
-              <select
-                value={selectedTeam}
-                onChange={e => {
-                  setSelectedTeam(e.target.value);
-                }}
-                disabled={!hasLogIn || !user || !dashboard.teams}
-              >
-                {dashboard.teams.map(team => (
-                  <option key={team.id}>{team.name}</option>
-                ))}
-              </select>
-            </SelectContainer>
+          {createRepo ? (
+            <StyledSelect
+              icon={() => <Icon css={{ marginLeft: 8 }} name="github" />}
+              onChange={e => {
+                setSelectedTeam(e.target.value);
+              }}
+              value={selectedTeam}
+              disabled={!hasLogIn || !user || !dashboard.teams}
+            >
+              {dashboard.teams.map(team => (
+                <option key={team.id}>{team.name}</option>
+              ))}
+            </StyledSelect>
           ) : null}
         </Stack>
 
-        <Stack gap={2}>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={onCancel}
-            css={{ width: 'auto' }}
-          >
-            Cancel
-          </Button>
-
-          {/* TODO: Submit */}
-          <Button type="submit" variant="primary" css={{ width: 'auto' }}>
-            Create Sandbox
-          </Button>
+        <Stack css={{ justifyContent: 'flex-end' }}>
+          <Stack gap={2}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onCancel}
+              css={{ width: 'auto' }}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" variant="primary" css={{ width: 'auto' }}>
+              Create Sandbox
+            </Button>
+          </Stack>
         </Stack>
-      </form>
+      </Element>
     </Stack>
   );
 };

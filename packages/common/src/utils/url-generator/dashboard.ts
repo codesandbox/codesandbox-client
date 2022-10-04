@@ -31,6 +31,20 @@ export const myContributions = (teamId?: string | null) =>
 export const repositories = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/repositories`, teamId);
 
+export const repository = ({
+  owner,
+  name,
+  teamId,
+}: {
+  owner: string;
+  name: string;
+  teamId?: string | null;
+}) =>
+  appendTeamIdQueryParam(
+    `${DASHBOARD_URL_PREFIX}/repositories/github/${owner}/${name}`,
+    teamId
+  );
+
 export const syncedSandboxes = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/synced-sandboxes`, teamId);
 
