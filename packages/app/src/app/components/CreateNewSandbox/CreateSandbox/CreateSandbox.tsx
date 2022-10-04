@@ -169,6 +169,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     actions.modals.newSandboxModal.close();
   };
 
+  const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
+  const mobileScreenSize = mediaQuery.matches;
+
   const selectTemplate = (template: TemplateFragment) => {
     setSelectedTemplate(template);
     setViewState('fromTemplate');
@@ -182,8 +185,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
           align="center"
           css={{
             width: '100%',
-            padding: '24px',
-            '@media screen and (max-width: 950px)': { padding: '16px' },
+            padding: mobileScreenSize ? '16px' : '24px',
           }}
         >
           <HeaderInformation>
@@ -281,7 +283,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       ))
                     : null}
 
-                  {essentialState.state === 'loading' ? (
+                  {!mobileScreenSize && essentialState.state === 'loading' ? (
                     <Stack direction="vertical" css={{ marginTop: 6 }} gap={5}>
                       <SkeletonText css={{ width: 100 }} />
                       <SkeletonText css={{ width: 90 }} />
