@@ -300,7 +300,7 @@ export const teamInviteLink = (inviteToken: string) =>
 
 export { dashboard };
 
-export const v2RepoUrl = (
+export const v2DefaultBranchUrl = (
   owner: string,
   name: string,
   qsObject: Record<string, string> = {}
@@ -313,5 +313,5 @@ export const v2RepoUrl = (
 };
 
 export const v2DraftBranchUrl = (owner: string, name: string) => {
-  return `${v2RepoUrl(owner, name, { create: 'true' })}`;
+  return `${v2DefaultBranchUrl(owner, name, { create: 'true' })}`;
 };

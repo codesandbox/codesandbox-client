@@ -2,7 +2,7 @@ import React from 'react';
 import { Element, Icon, Link, Stack, Text } from '@codesandbox/components';
 import {
   v2DraftBranchUrl,
-  v2RepoUrl,
+  v2DefaultBranchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { GithubRepoToImport } from './types';
 
@@ -47,7 +47,7 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
           css={{ color: '#808080', display: 'flex', gap: '8px' }}
           href={v2DraftBranchUrl(githubRepo.owner.login, githubRepo.name)}
         >
-          <Icon aria-hidden name="contribution" />
+          <Icon name="contribution" />
           <Text as="span" size={2}>
             Create contribution branch
           </Text>
@@ -55,9 +55,9 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
 
         <Link
           css={{ color: '#808080', display: 'flex', gap: '8px' }}
-          href={v2RepoUrl(githubRepo.owner.login, githubRepo.name)}
+          href={v2DefaultBranchUrl(githubRepo.owner.login, githubRepo.name)}
         >
-          <Icon aria-hidden name="eye" />
+          <Icon name="eye" />
           <Text as="span" size={2}>
             View project
           </Text>
@@ -67,7 +67,7 @@ export const ImportInfo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
           href="https://codesandbox.io/docs/projects/learn/getting-started/open-source"
           target="_blank"
         >
-          <Icon aria-hidden name="file" />
+          <Icon name="file" />
           <Text as="span" size={2}>
             Learn more
           </Text>
