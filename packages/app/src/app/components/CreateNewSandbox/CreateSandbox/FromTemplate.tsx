@@ -9,7 +9,7 @@ import {
   Text,
 } from '@codesandbox/components';
 
-import { StyledInput, StyledLabel, StyledSelect } from './elements';
+import { StyledInput, StyledSelect } from './elements';
 import { CloudBetaBadge } from '../../CloudBetaBadge';
 import { CreateSandboxParams } from './types';
 
@@ -29,7 +29,10 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
   // TODO: Set generated name as default value if we can / need
   // otherwise tell the user if empty we generate a name
   const [sandboxName, setSandboxName] = useState<string>();
-  const [createRepo, setCreateRepo] = useState<boolean>(false);
+
+  const createRepo = false;
+  // TODO: Enable when checkbox is active again
+  // const [createRepo, setCreateRepo] = useState<boolean>(false);
   const [selectedTeam, setSelectedTeam] = useState<string>(activeTeam);
 
   return (
@@ -94,24 +97,22 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
 
           <Checkbox
             id="sb-repo"
-            onChange={e => {
-              setCreateRepo(e.target.checked);
-            }}
+            disabled
             checked={createRepo}
             label={
-              <StyledLabel
+              <Text
                 css={{
                   fontSize: 13,
                   display: 'block',
                   marginTop: 2,
                   marginLeft: 4,
+                  color: '#999999',
+                  lineHeight: '16px',
                 }}
-                htmlFor="sb-repo"
               >
-                Create git repository
-              </StyledLabel>
+                Create git repository (coming soon)
+              </Text>
             }
-            disabled={!hasLogIn || !user || !dashboard.teams}
           />
 
           {createRepo ? (

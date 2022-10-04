@@ -215,9 +215,3 @@ export const StyledSelect = styled(Select)`
   height: 48px;
   padding-left: 44px !important;
 `;
-
-export const StyledLabel = styled.label`
-  color: #999999;
-  font-size: 12px;
-  line-height: 16px;
-`;
