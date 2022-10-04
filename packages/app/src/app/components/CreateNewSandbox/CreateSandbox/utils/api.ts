@@ -93,10 +93,14 @@ export const importRepository: ImportRepositoryFn = ({
   name,
   csbTeamId,
 }) => {
+  // Get the authentication token from local storage if it exists.
+  const token = localStorage.getItem('devJwt');
+
   return fetch(`/api/beta/import/github/${owner}/${name}`, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      authorization: token ? `Bearer ${token}` : '',
     },
     method: 'POST',
     body: JSON.stringify({
