@@ -73,3 +73,46 @@ export const getTemplateInfosFromAPI = (url: string): Promise<TemplateInfo[]> =>
   fetch(url)
     .then(res => res.json())
     .then((body: IExploreTemplate[]) => body.map(mapAPIResponseToTemplateInfo));
+
+interface PartialImportedRepository {
+  default_branch: string;
+  is_v2: true;
+  owner: string;
+  repo: string;
+  repo_private: boolean;
+}
+
+export type ImportRepositoryFn = (_: {
+  owner: string;
+  name: string;
+  csbTeamId: string;
+}) => Promise<PartialImportedRepository>;
+
+export const importRepository: ImportRepositoryFn = ({
+  owner,
+  name,
+  csbTeamId,
+}) => {
+  // Get the authentication token from local storage if it exists.
+  const token = localStorage.getItem('devJwt');
+
+  return fetch(`/api/beta/import/github/${owner}/${name}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: token ? `Bearer ${token}` : '',
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      team_id: csbTeamId,
+    }),
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw Error(res.statusText);
+      }
+
+      return res;
+    })
+    .then(res => res.json());
+};
