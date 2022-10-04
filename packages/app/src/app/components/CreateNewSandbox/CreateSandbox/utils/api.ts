@@ -102,5 +102,13 @@ export const importRepository: ImportRepositoryFn = ({
     body: JSON.stringify({
       team_id: csbTeamId,
     }),
-  }).then(res => res.json());
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw Error(res.statusText);
+      }
+
+      return res;
+    })
+    .then(res => res.json());
 };
