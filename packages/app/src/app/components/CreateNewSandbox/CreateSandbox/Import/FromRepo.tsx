@@ -1,5 +1,5 @@
 import { useAppState } from 'app/overmind';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Button,
   Element,
@@ -13,6 +13,7 @@ import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { GithubRepoToImport } from './types';
 import { StyledSelect } from '../elements';
 import { useGithubOrganizations } from './useGithubOrganizations';
+import { useValidateRepoDestination } from './useValidateRepoDestination';
 
 export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
   githubRepo,
@@ -20,8 +21,13 @@ export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
   const { activeTeam } = useAppState();
   const githubOrganizations = useGithubOrganizations();
 
-  const [repoName, setRepoName] = useState<string>(githubRepo.name);
-  const [selectedOrg, setSelectedOrg] = useState<string>(activeTeam);
+  const [repoName, setRepoName] = React.useState<string>(githubRepo.name);
+  const [selectedOrg, setSelectedOrg] = React.useState<string>(activeTeam);
+
+  const destinationValidation = useValidateRepoDestination(
+    selectedOrg,
+    repoName
+  );
 
   React.useEffect(() => {
     setSelectedOrg(
@@ -124,7 +130,12 @@ export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
             >
               Cancel
             </Button>
-            <Button type="submit" variant="primary" css={{ width: 'auto' }}>
+            <Button
+              disabled={destinationValidation.state !== 'valid'}
+              type="submit"
+              variant="primary"
+              css={{ width: 'auto' }}
+            >
               Create repository
             </Button>
           </Stack>

@@ -116,3 +116,31 @@ export const importRepository: ImportRepositoryFn = ({
     })
     .then(res => res.json());
 };
+
+export type ValidateRepositoryDestinationFn = (
+  destination: string
+) => Promise<{ valid: boolean; message?: string }>;
+
+/**
+ * @param destination In the format of `owner/repo`
+ */
+export const validateRepositoryDestination: ValidateRepositoryDestinationFn = destination => {
+  // Get the authentication token from local storage if it exists.
+  const token = localStorage.getItem('devJwt');
+
+  return fetch(`/api/beta/repos/validate/github/${destination}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw Error(res.statusText);
+      }
+
+      return res;
+    })
+    .then(res => res.json());
+};
