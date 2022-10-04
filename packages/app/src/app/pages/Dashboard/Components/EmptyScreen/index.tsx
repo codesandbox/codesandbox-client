@@ -97,7 +97,8 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
                     </Text>
                   </Stack>
                 </Button>
-                <Button
+                {/* ❗️ This button will be uncommented later */}
+                {/* <Button
                   onClick={() => {
                     // TODO: start from template
                     openCreateSandboxModal({ initialTab: 'import' });
@@ -112,7 +113,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
                   <Text size={16} css={css({ lineHeight: '24px' })}>
                     Start from a template
                   </Text>
-                </Button>
+                </Button> */}
                 {/* ❗️ TODO: Insert right link */}
                 <Button
                   variant="link"
