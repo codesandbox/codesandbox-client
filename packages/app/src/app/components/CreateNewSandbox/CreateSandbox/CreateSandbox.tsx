@@ -90,6 +90,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const defaultSelectedTab =
     initialTab || isUnderRepositoriesSection ? 'import' : 'quickstart';
   const isUser = user?.username === activeTeamInfo?.name;
+  const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
+  const mobileScreenSize = mediaQuery.matches;
 
   /**
    * Checking for user because user is undefined when landing on /s/, even though
@@ -139,7 +141,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     teamTemplatesData.state === 'ready' ? teamTemplatesData.teamTemplates : [];
 
   const tabState = useTabState({
-    orientation: 'vertical',
+    orientation: mobileScreenSize ? 'horizontal' : 'vertical',
     selectedId: defaultSelectedTab,
   });
 
@@ -189,7 +191,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   return (
     <ThemeProvider>
       <Container>
-        <Stack gap={4} align="center" css={{ width: '100%', padding: '24px' }}>
+        <Stack
+          gap={4}
+          align="center"
+          css={{
+            width: '100%',
+            padding: mobileScreenSize ? '16px' : '24px',
+          }}
+        >
           <HeaderInformation>
             {viewState === 'initial' ? (
               <Text size={4} variant="muted">
@@ -285,7 +294,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       ))
                     : null}
 
-                  {essentialState.state === 'loading' ? (
+                  {!mobileScreenSize && essentialState.state === 'loading' ? (
                     <Stack direction="vertical" css={{ marginTop: 6 }} gap={5}>
                       <SkeletonText css={{ width: 100 }} />
                       <SkeletonText css={{ width: 90 }} />
