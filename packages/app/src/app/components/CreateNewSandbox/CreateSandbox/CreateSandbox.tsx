@@ -177,7 +177,15 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   return (
     <ThemeProvider>
       <Container>
-        <Stack gap={4} align="center" css={{ width: '100%', padding: '24px' }}>
+        <Stack
+          gap={4}
+          align="center"
+          css={{
+            width: '100%',
+            padding: '24px',
+            '@media screen and (max-width: 950px)': { padding: '16px' },
+          }}
+        >
           <HeaderInformation>
             {viewState === 'initial' ? (
               <Text size={4} variant="muted">

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Text, Stack } from '@codesandbox/components';
+import { css } from '@styled-system/css';
 
 import { TemplateFragment } from 'app/graphql/types';
 import { TemplateCard } from './TemplateCard';
@@ -26,7 +27,15 @@ export const TemplateCategoryList = ({
 
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={6}>
-      <Stack css={{ alignItems: 'center' }} gap={2}>
+      <Stack
+        css={css({
+          alignItems: 'center',
+          '@media screen and (max-width: 950px)': {
+            display: 'none',
+          },
+        })}
+        gap={2}
+      >
         <Text
           as="h2"
           size={4}

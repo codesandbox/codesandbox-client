@@ -20,6 +20,16 @@ const GlobalStyles = createGlobalStyle`
   transform: scale(0.9) translateY(5px);
   overflow-y: hidden;
   width: 950px; 
+  
+  @media screen and (max-width: 950px) {
+    width: 95%;
+  }
+  
+  @media screen and (max-width: 756px) {
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+  }
 }
 
 .ReactModal__Overlay {
