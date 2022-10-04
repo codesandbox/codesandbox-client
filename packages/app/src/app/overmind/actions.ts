@@ -516,7 +516,13 @@ export const setActiveTeam = async (
 
   state.activeTeam = id;
   effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
-  state.dashboard.sandboxes = DEFAULT_DASHBOARD_SANDBOXES;
+
+  // Clear sandboxes and repositories
+  state.dashboard.sandboxes = {
+    ...DEFAULT_DASHBOARD_SANDBOXES,
+  };
+  state.dashboard.contributions = null;
+  state.dashboard.repositories = null;
 
   actions.internal.replaceWorkspaceParameterInUrl();
 

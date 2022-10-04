@@ -48,6 +48,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSidebarToggle,
   ...props
 }) => {
+  const history = useHistory();
   const state = useAppState();
   const actions = useActions();
   const [activeAccount, setActiveAccount] = useState<{
@@ -55,7 +56,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
     name: string;
     avatarUrl: string;
   } | null>(null);
-  const { dashboard, activeTeam, activeTeamInfo, user } = state;
+  const {
+    dashboard,
+    activeTeam,
+    activeTeamInfo,
+    user,
+    personalWorkspaceId,
+  } = state;
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
@@ -65,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     if (state.activeTeam) {
       const team = dashboard.teams.find(({ id }) => id === state.activeTeam);
       if (team) {
-        const isPersonalWorkspace = team.id === state.personalWorkspaceId;
+        const isPersonalWorkspace = team.id === personalWorkspaceId;
         setActiveAccount({
           id: team.id,
           name: team.name,
@@ -152,6 +159,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   actions.setActiveTeam({
                     id: workspace.id,
                   });
+
+                  history.replace(dashboardUrls.recent(workspace.id));
                 }}
                 activeAccount={activeAccount}
               />
@@ -199,12 +208,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
               Repositories
             </Text>
           </Element>
-          <RowItem
-            name="My contributions"
-            page="my-contributions"
-            path={dashboardUrls.myContributions(activeTeam)}
-            icon="contribution"
-          />
+          {activeTeam === personalWorkspaceId && (
+            <RowItem
+              name="My contributions"
+              page="my-contributions"
+              path={dashboardUrls.myContributions(activeTeam)}
+              icon="contribution"
+            />
+          )}
           <RowItem
             name="All repositories"
             page="repositories"
