@@ -13,24 +13,21 @@ import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { GithubRepoToImport } from './types';
 import { StyledSelect } from '../elements';
 import { useGithubOrganizations } from './useGithubOrganizations';
-import { isEqual } from 'lodash-es';
 
 export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
   githubRepo,
 }) => {
-  const { user, dashboard, activeTeam } = useAppState();
+  const { activeTeam } = useAppState();
   const githubOrganizations = useGithubOrganizations();
-  const organizationsRef = React.useRef([]);
 
   const [repoName, setRepoName] = useState<string>(githubRepo.name);
   const [selectedOrg, setSelectedOrg] = useState<string>(activeTeam);
 
   React.useEffect(() => {
-    console.log('effect is running');
     setSelectedOrg(
       'data' in githubOrganizations ? githubOrganizations.data[0].login : ''
     );
-  }, [githubOrganizations]);
+  }, [githubOrganizations.state]);
 
   return (
     <Stack
@@ -108,7 +105,9 @@ export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
                 value={selectedOrg}
               >
                 {githubOrganizations.data.map(org => (
-                  <option key={org.id} value={org.login}>{org.login}</option>
+                  <option key={org.id} value={org.login}>
+                    {org.login}
+                  </option>
                 ))}
               </StyledSelect>
             ) : null}
