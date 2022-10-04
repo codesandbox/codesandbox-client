@@ -49,6 +49,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const importAndRedirect = useImportAndRedirect();
 
+  const [isImporting, setIsImporting] = React.useState(false);
   const [url, setUrl] = React.useState<UrlState>({
     raw: '',
     parsed: null,
@@ -59,9 +60,11 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     owner: url.parsed?.owner,
     name: url.parsed?.name,
     shouldFetch,
-    onCompleted: repo => {
+    onCompleted: async repo => {
       if (repo.authorization === GithubRepoAuthorization.Write) {
-        importAndRedirect(repo.owner.login, repo.name, activeTeam);
+        setIsImporting(true);
+        await importAndRedirect(repo.owner.login, repo.name, activeTeam);
+        setIsImporting(false);
       } else {
         onRepoSelect(repo);
       }
@@ -100,6 +103,8 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     return <UnauthenticatedImport />;
   }
 
+  const isLoading = githubRepo.state === 'loading' || isImporting;
+
   return (
     <Stack direction="vertical" gap={4}>
       <Text
@@ -125,8 +130,12 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             value={url.raw}
             required
           />
-          <Button disabled={Boolean(url.error)} type="submit" autoWidth>
-            {githubRepo.state === 'loading' ? 'Importing...' : 'Import'}
+          <Button
+            disabled={Boolean(url.error) || isLoading}
+            type="submit"
+            autoWidth
+          >
+            {isLoading ? 'Importing...' : 'Import'}
           </Button>
         </Stack>
         <Element aria-atomic="true" id="form-error" role="alert">
