@@ -129,6 +129,22 @@ export const LIST_BOOKMARKED_TEMPLATES_QUERY = gql`
   ${TEMPLATE_FRAGMENT}
 `;
 
+export const GET_GITHUB_REPO = gql`
+  query GetGithubRepo($owner: String!, $name: String!) {
+    githubRepo(owner: $owner, repo: $name) {
+      name
+      fullName
+      updatedAt
+      authorization
+      owner {
+        id
+        login
+        avatarUrl
+      }
+    }
+  }
+`;
+
 export const MAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
   mutation MakeSandboxesTemplate($sandboxIds: [ID!]!) {
     makeSandboxesTemplates(sandboxIds: $sandboxIds) {

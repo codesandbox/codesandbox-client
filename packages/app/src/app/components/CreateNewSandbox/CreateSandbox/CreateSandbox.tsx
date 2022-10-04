@@ -33,6 +33,9 @@ import { CloudBetaBadge } from '../../CloudBetaBadge';
 import { CreateSandboxParams } from './types';
 import { SearchBox } from './SearchBox';
 import { SearchResults } from './SearchResults';
+import { GithubRepoToImport } from './Import/types';
+import { ImportInfo } from './Import/ImportInfo';
+import { FromRepo } from './Import/FromRepo';
 
 export const COLUMN_MEDIA_THRESHOLD = 1600;
 
@@ -81,9 +84,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 }) => {
   const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
-  const isSyncedSandboxesPage = location.pathname.includes('/synced-sandboxes');
+  const isUnderRepositoriesSection =
+    location.pathname.includes('/my-contributions') ||
+    location.pathname.includes('/repositories');
   const defaultSelectedTab =
-    initialTab || isSyncedSandboxesPage ? 'import' : 'quickstart';
+    initialTab || isUnderRepositoriesSection ? 'import' : 'quickstart';
   const isUser = user?.username === activeTeamInfo?.name;
 
   /**
@@ -141,8 +146,10 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const [viewState, setViewState] = useState<
     'initial' | 'fromTemplate' | 'fork'
   >('initial');
-  // ❗️ We could combine viewState with selectedtemplate to limit the amout of states.
+  // ❗️ We could combine viewState with selectedTemplate
+  // and selectedRepo to limit the amount of states.
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
+  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>();
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
@@ -172,6 +179,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const selectTemplate = (template: TemplateFragment) => {
     setSelectedTemplate(template);
     setViewState('fromTemplate');
+  };
+
+  const selectGithubRepo = (repo: GithubRepoToImport) => {
+    setSelectedRepo(repo);
+    setViewState('fork');
   };
 
   return (
@@ -298,7 +310,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             {viewState === 'fromTemplate' ? (
               <TemplateInfo template={selectedTemplate} />
             ) : null}
-            {viewState === 'fork' ? <div>Repo info</div> : null}
+            {viewState === 'fork' ? (
+              <ImportInfo githubRepo={selectedRepo} />
+            ) : null}
           </ModalSidebar>
 
           <ModalContent>
@@ -319,7 +333,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   </Panel>
 
                   <Panel tab={tabState} id="import">
-                    <Import />
+                    <Import onRepoSelect={selectGithubRepo} />
                   </Panel>
 
                   {showTeamTemplates ? (
@@ -383,7 +397,9 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               />
             ) : null}
 
-            {viewState === 'fork' ? <div>Repo fork form fields</div> : null}
+            {viewState === 'fork' ? (
+              <FromRepo githubRepo={selectedRepo} />
+            ) : null}
           </ModalContent>
         </ModalBody>
       </Container>

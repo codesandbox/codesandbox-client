@@ -294,7 +294,24 @@ export function getSandboxId() {
 
   return result;
 }
+
 export const teamInviteLink = (inviteToken: string) =>
   `${protocolAndHost()}/invite/${inviteToken}`;
 
 export { dashboard };
+
+export const v2DefaultBranchUrl = (
+  owner: string,
+  name: string,
+  qsObject: Record<string, string> = {}
+) => {
+  const searchParams = new URLSearchParams({
+    ...qsObject,
+  });
+
+  return `${v2EditorUrl()}github/${owner}/${name}?${searchParams.toString()}`;
+};
+
+export const v2DraftBranchUrl = (owner: string, name: string) => {
+  return `${v2DefaultBranchUrl(owner, name, { create: 'true' })}`;
+};

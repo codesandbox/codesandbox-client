@@ -1653,6 +1653,25 @@ export type ListPersonalBookmarkedTemplatesQuery = {
   >;
 };
 
+export type GetGithubRepoQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
+  githubRepo: Maybe<
+    { __typename?: 'GithubRepo' } & Pick<
+      GithubRepo,
+      'name' | 'fullName' | 'updatedAt' | 'authorization'
+    > & {
+        owner: { __typename?: 'GithubOrganization' } & Pick<
+          GithubOrganization,
+          'id' | 'login' | 'avatarUrl'
+        >;
+      }
+  >;
+};
+
 export type MakeSandboxesTemplateMutationVariables = Exact<{
   sandboxIds: Array<Scalars['ID']>;
 }>;
