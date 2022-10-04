@@ -79,7 +79,14 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
           as="img"
           src="/static/img/contributions-branch.png"
           alt=""
-          css={{ display: 'block', width: 259, height: 221 }}
+          css={{
+            display: 'block',
+            width: 259,
+            height: 221,
+            '@media screen and (max-width: 1000px)': {
+              display: 'none',
+            },
+          }}
         />
         <Stack gap={8} direction="vertical" justify="space-between">
           <Stack gap={4} direction="vertical" css={{ maxWidth: '674px' }}>
