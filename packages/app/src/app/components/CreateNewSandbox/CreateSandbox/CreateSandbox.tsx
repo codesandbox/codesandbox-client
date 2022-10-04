@@ -11,7 +11,7 @@ import React, { ReactNode, useState, useEffect } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-import { TemplateFragment } from 'app/graphql/types';
+import { GithubRepoAuthorization, TemplateFragment } from 'app/graphql/types';
 
 import {
   Container,
@@ -147,11 +147,23 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   const [viewState, setViewState] = useState<
     'initial' | 'fromTemplate' | 'fork'
-  >('initial');
+  >('fork');
   // ❗️ We could combine viewState with selectedTemplate
   // and selectedRepo to limit the amount of states.
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
-  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>();
+  const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>({
+    __typename: 'GithubRepo',
+    authorization: GithubRepoAuthorization.Read,
+    fullName: 'facebook/react',
+    name: 'react',
+    owner: {
+      __typename: 'GithubOrganization',
+      avatarUrl: 'https://avatars.githubusercontent.com/u/69631?v=4',
+      id: '69631',
+      login: 'facebook',
+    },
+    updatedAt: '2022-10-04T15:29:15Z',
+  });
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
