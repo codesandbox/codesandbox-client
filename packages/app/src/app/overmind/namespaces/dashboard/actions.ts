@@ -1955,7 +1955,7 @@ export const getContributionBranches = async ({ state, effects }: Context) => {
       {}
     );
     const contributionBranches = contributionsData?.me?.recentBranches;
-    if (!contributionBranches?.length) {
+    if (!contributionBranches) {
       return;
     }
 
@@ -1981,7 +1981,7 @@ export const getRepositoriesByTeam = async ({ state, effects }: Context) => {
       }
     );
     const unsyncedRepositories = unsyncedRepositoriesData?.me?.team?.projects;
-    if (!unsyncedRepositories?.length) {
+    if (!unsyncedRepositories) {
       return;
     }
 
@@ -1996,7 +1996,7 @@ export const getRepositoriesByTeam = async ({ state, effects }: Context) => {
       }
     );
     const syncedRepositories = syncedRepositoriesData?.me?.team?.projects;
-    if (!syncedRepositories?.length) {
+    if (!syncedRepositories) {
       return;
     }
 
