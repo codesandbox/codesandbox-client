@@ -85,6 +85,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const defaultSelectedTab =
     initialTab || isSyncedSandboxesPage ? 'import' : 'quickstart';
   const isUser = user?.username === activeTeamInfo?.name;
+  const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
+  const mobileScreenSize = mediaQuery.matches;
 
   /**
    * Checking for user because user is undefined when landing on /s/, even though
@@ -134,7 +136,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     teamTemplatesData.state === 'ready' ? teamTemplatesData.teamTemplates : [];
 
   const tabState = useTabState({
-    orientation: 'vertical',
+    orientation: mobileScreenSize ? 'horizontal' : 'vertical',
     selectedId: defaultSelectedTab,
   });
 
@@ -168,9 +170,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
     actions.modals.newSandboxModal.close();
   };
-
-  const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
-  const mobileScreenSize = mediaQuery.matches;
 
   const selectTemplate = (template: TemplateFragment) => {
     setSelectedTemplate(template);
