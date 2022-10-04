@@ -14,15 +14,16 @@ import { GithubRepoToImport } from './types';
 import { StyledSelect } from '../elements';
 import { useGithubOrganizations } from './useGithubOrganizations';
 import { useValidateRepoDestination } from './useValidateRepoDestination';
+import { getGihubOrgMatchingCsbTeam } from './utils';
 
 export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
   githubRepo,
 }) => {
-  const { activeTeam } = useAppState();
+  const { activeTeamInfo } = useAppState();
   const githubOrganizations = useGithubOrganizations();
 
   const [repoName, setRepoName] = React.useState<string>(githubRepo.name);
-  const [selectedOrg, setSelectedOrg] = React.useState<string>(activeTeam);
+  const [selectedOrg, setSelectedOrg] = React.useState<string>('');
 
   const destinationValidation = useValidateRepoDestination(
     selectedOrg,
@@ -31,9 +32,14 @@ export const FromRepo: React.FC<{ githubRepo: GithubRepoToImport }> = ({
 
   React.useEffect(() => {
     setSelectedOrg(
-      'data' in githubOrganizations ? githubOrganizations.data[0].login : ''
+      'data' in githubOrganizations
+        ? getGihubOrgMatchingCsbTeam(
+            activeTeamInfo.name,
+            githubOrganizations.data
+          ).login
+        : ''
     );
-  }, [githubOrganizations.state]);
+  }, [activeTeamInfo, githubOrganizations.state]);
 
   return (
     <Stack
