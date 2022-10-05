@@ -10,23 +10,15 @@ jobs:
   install:
     name: Install
     runs-on: ubuntu-latest
-    container: node:10
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Locate yarn Cache
-        id: location-yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Fetch yarn Cache
-        uses: actions/cache@v3
-        id: yarn-cache
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          path: ${{ steps.location-yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
 
       - name: Fetch Deps Cache
         uses: actions/cache@v3
@@ -62,24 +54,17 @@ jobs:
 
   build-prod:
     name: Build
+    needs: install
     runs-on: ubuntu-latest
-    container: node:10
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Locate yarn Cache
-        id: location-yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Fetch yarn Cache
-        uses: actions/cache@v3
-        id: yarn-cache
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          path: ${{ steps.location-yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
 
       - name: Fetch Deps Cache
         uses: actions/cache@v3
