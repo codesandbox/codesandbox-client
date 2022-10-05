@@ -40,9 +40,8 @@ export const TemplateCard = ({
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text
-            size={3}
-            variant="body"
             css={{
+              fontSize: '14px',
               fontWeight: 500,
               textOverflow: 'ellipsis',
               overflow: 'hidden',
@@ -52,7 +51,7 @@ export const TemplateCard = ({
             {sandboxTitle}
           </Text>
 
-          <Text size={2} css={{ color: '#808080' }}>
+          <Text size={2} css={{ color: '#999' }}>
             <VisuallyHidden>by </VisuallyHidden>
             {teamName || 'CodeSandbox'}
           </Text>

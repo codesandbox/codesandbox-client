@@ -67,7 +67,7 @@ export const Tab = styled(BaseTab)`
   background: transparent;
   color: #999999;
   font-family: 'Inter', sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 16px;
   cursor: pointer;
   white-space: nowrap;
@@ -108,14 +108,14 @@ export const TemplateButton = styled.button`
   background: #1d1d1d;
   border: 1px solid transparent;
   text-align: left;
-  padding: 16px;
+  padding: 24px;
   border-radius: 2px;
   color: #e5e5e5;
   transition: background ${props => props.theme.speeds[2]} ease-out;
   outline: none;
 
   &:hover {
-    background: #292929;
+    background: #252525;
   }
 
   &:focus-visible {
@@ -126,9 +126,9 @@ export const TemplateButton = styled.button`
 export const TemplateGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px 10px;
+  gap: 8px;
   overflow: auto;
-  padding-bottom: 8px;
+  padding-bottom: 32px;
 
   @media screen and (max-width: 756px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));

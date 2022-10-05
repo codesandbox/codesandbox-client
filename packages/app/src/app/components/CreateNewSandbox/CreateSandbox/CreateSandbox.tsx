@@ -360,7 +360,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Panel tab={tabState} id="cloud-templates">
                     <TemplateCategoryList
                       title="Cloud templates"
-                      showBetaTag
                       templates={officialTemplates.filter(
                         template => template.sandbox.isV2
                       )}
@@ -435,12 +434,14 @@ const TemplateInfo = ({ template }: TemplateInfoProps) => {
     <Stack direction="vertical" gap={6}>
       <UserIcon />
       <Stack direction="vertical">
-        <Text size={3}>{template.sandbox.title}</Text>
-        <Text size={2} css={{ color: '#808080' }}>
+        <Text size={3} weight={500}>
+          {template.sandbox.title}
+        </Text>
+        <Text size={2} css={{ color: '#999', marginTop: '4px' }}>
           {template.sandbox.collection?.team?.name}
         </Text>
       </Stack>
-      <Text size={2} css={{ color: '#808080' }}>
+      <Text size={2} css={{ color: '#999', lineHeight: '1.4' }}>
         {template.sandbox.description}
       </Text>
     </Stack>

@@ -106,7 +106,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const isLoading = githubRepo.state === 'loading' || isImporting;
 
   return (
-    <Stack direction="vertical" gap={4}>
+    <Stack direction="vertical" gap={6}>
       <Text
         as="h2"
         id="form-title"
@@ -129,11 +129,13 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             type="text"
             value={url.raw}
             required
+            css={{ height: '32px' }}
           />
           <Button
             disabled={Boolean(url.error) || isLoading}
             type="submit"
             autoWidth
+            css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
           >
             {isLoading ? 'Importing...' : 'Import'}
           </Button>
