@@ -18,7 +18,7 @@ export const NewBranchCard: React.FC<{ owner: string; repoName: string }> = ({
         textDecoration: 'none',
         fontSize: 3,
         fontWeight: 'normal',
-        color: '#e5e5e5',
+        color: '#999',
         height: 240,
         outline: 'none',
         backgroundColor: 'card.background',
