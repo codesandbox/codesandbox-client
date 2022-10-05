@@ -114,7 +114,7 @@ jobs:
 
       - name: Build for Production
         run: |
-          yarn install
+          yarn install --frozen-lockfile
           yarn build:prod
           find packages/homepage/public -name "*.js" -type f -delete
           find packages/homepage/public -name "*.json" -type f -delete
@@ -162,7 +162,7 @@ jobs:
 
       - name: Build for Production
         run: |
-          yarn install
+          yarn install --frozen-lockfile
           yarn lint
 
   typecheck:
@@ -207,5 +207,5 @@ jobs:
 
       - name: Build for Production
         run: |
-          yarn install
+          yarn install --frozen-lockfile
           yarn typecheck
