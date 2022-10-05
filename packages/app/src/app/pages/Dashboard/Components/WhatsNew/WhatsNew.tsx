@@ -1,5 +1,6 @@
 import React from 'react';
 import css from '@styled-system/css';
+import Media from 'react-media';
 
 import {
   Text,
@@ -18,90 +19,108 @@ interface WhatsNewProps {
 
 export const WhatsNew = ({ onClose }: WhatsNewProps) => {
   return (
-    <>
-      <Element paddingBottom={80}>
-        <Stack
-          direction="horizontal"
-          justify="space-between"
-          css={css({ padding: '24px' })}
-        >
-          <Text variant="muted" size={13} css={css({ lineHeight: '16px' })}>
-            What&apos;s new
-          </Text>
-          <IconButton
-            name="cross"
-            size={16}
-            title="Close modal"
-            onClick={onClose}
-          />
-        </Stack>
-      </Element>
+    <Media query="(max-width: 549px)">
+      {matchSmall => (
+        <Media query="(min-width: 550px) and (max-width: 689px)">
+          {matchMedium => (
+            <>
+              <Element paddingBottom={matchSmall ? 20 : 80}>
+                <Stack
+                  direction="horizontal"
+                  justify="space-between"
+                  css={css({ padding: '24px' })}
+                >
+                  <Text
+                    variant="muted"
+                    size={13}
+                    css={css({ lineHeight: '16px' })}
+                  >
+                    What&apos;s new
+                  </Text>
+                  <IconButton
+                    name="cross"
+                    size={16}
+                    title="Close modal"
+                    onClick={onClose}
+                  />
+                </Stack>
+              </Element>
 
-      <Element paddingX={48} paddingBottom={56}>
-        <Stack direction="vertical" gap={6}>
-          <Text
-            size={12}
-            weight="500"
-            css={css({
-              lineHeight: '20px',
-              alignSelf: 'flex-start',
-              backgroundColor: '#EDFFA5',
-              color: '#0E0E0E',
-              padding: '0px 6px',
-              borderRadius: '3px',
-            })}
-          >
-            New
-          </Text>
-          <Text
-            as="h2"
-            size={64}
-            weight="500"
-            css={css({
-              margin: 0,
-              fontFamily: 'Everett, sans-serif',
-              lineHeight: '64px',
-              letterSpacing: '-0.03em',
-            })}
-          >
-            Introducing a unified CodeSandbox experience.
-          </Text>
-        </Stack>
-      </Element>
+              <Element
+                paddingX={matchSmall ? 24 : 48}
+                paddingBottom={matchSmall ? 44 : 56}
+              >
+                <Stack direction="vertical" gap={6}>
+                  <Text
+                    size={12}
+                    weight="500"
+                    css={css({
+                      lineHeight: '20px',
+                      alignSelf: 'flex-start',
+                      backgroundColor: '#EDFFA5',
+                      color: '#0E0E0E',
+                      padding: '0px 6px',
+                      borderRadius: '3px',
+                    })}
+                  >
+                    New
+                  </Text>
+                  <Text
+                    as="h2"
+                    size={matchSmall ? 44 : 64}
+                    weight="500"
+                    css={css({
+                      margin: 0,
+                      fontFamily: 'Everett, sans-serif',
+                      lineHeight: matchSmall ? '44px' : '64px',
+                      letterSpacing: '-0.03em',
+                    })}
+                  >
+                    Introducing a unified CodeSandbox experience.
+                  </Text>
+                </Stack>
+              </Element>
 
-      <Element paddingX={48} paddingBottom={56}>
-        <Grid columnGap={5}>
-          <Column span={3}>
-            <Topic icon="repository">
-              Projects is now <Text weight="700">Repositories</Text>: an
-              improved git workflow powered by the cloud.
-            </Topic>
-          </Column>
+              <Element
+                paddingX={matchSmall ? 24 : 48}
+                paddingBottom={matchSmall ? 44 : 56}
+              >
+                <Grid columnGap={5}>
+                  <Column span={matchSmall || matchMedium ? 6 : 3}>
+                    <Topic icon="repository">
+                      Projects is now <Text weight="700">Repositories</Text>: an
+                      improved git workflow powered by the cloud.
+                    </Topic>
+                  </Column>
 
-          <Column span={3}>
-            <Topic icon="dashboard">
-              Supercharge your development workflow with our{' '}
-              <Text weight="700">new dashboard</Text>.
-            </Topic>
-          </Column>
+                  <Column span={matchSmall || matchMedium ? 6 : 3}>
+                    <Topic icon="dashboard">
+                      Supercharge your development workflow with our{' '}
+                      <Text weight="700">new dashboard</Text>.
+                    </Topic>
+                  </Column>
 
-          <Column span={3}>
-            <Topic icon="cloud">
-              Go limitless with our{' '}
-              <Text weight="700">Cloud Beta Sandboxes</Text>, powered by fast
-              micro VMs.
-            </Topic>
-          </Column>
+                  <Column span={matchSmall || matchMedium ? 6 : 3}>
+                    <Topic icon="cloud">
+                      Go limitless with our{' '}
+                      <Text weight="700">Cloud Beta Sandboxes</Text>, powered by
+                      fast micro VMs.
+                    </Topic>
+                  </Column>
 
-          <Column span={3}>
-            <Topic icon="tagSelfClosing">
-              Use our <Text weight="700">new editor</Text> or work right from VS
-              Code or our iOS app.
-            </Topic>
-          </Column>
-        </Grid>
-      </Element>
-    </>
+                  <Column span={matchSmall || matchMedium ? 6 : 3}>
+                    <Topic icon="tagSelfClosing">
+                      Use our <Text weight="700">new editor</Text> or work right
+                      from VS Code or our iOS app.
+                    </Topic>
+                  </Column>
+                </Grid>
+              </Element>
+            </>
+          )}
+        </Media>
+      )}
+    </Media>
   );
 };
 
