@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  install:
+    name: Install
+    runs-on: ubuntu-latest
+    container: node:10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Locate yarn Cache
+        id: location-yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Fetch yarn Cache
+        uses: actions/cache@v3
+        id: yarn-cache
+        with:
+          path: ${{ steps.location-yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Fetch Deps Cache
+        uses: actions/cache@v3
+        id: deps-cache
+        with:
+          path: |
+            packages/codesandbox-api/dist
+            packages/common/lib
+            packages/components/lib
+            packages/deps/dist
+            packages/executors/dist
+            packages/node-services/lib
+            packages/notifications/lib
+            packages/template-icons/lib
+            packages/sse-hooks/dist
+            packages/sandpack-core/lib
+            packages/browser-eslint-rules/lib
+            packages/browser-dart-sass/lib
+            packages/vue3-browser-compiler/lib
+            packages/vue3-transpiler/lib
+            standalone-packages/codesandbox-browserfs/dist
+            standalone-packages/codesandbox-browserfs/build
+            standalone-packages/vscode-textmate/out
+          key: ${{ runner.os }}-deps-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      - name: Install and Build Deps
+        run: |
+          yarn install
+          yarn build:deps
