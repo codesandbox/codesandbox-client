@@ -45,7 +45,7 @@ const QUICK_START_IDS = [
   'k8dsq1', // blank v2
   'fxis37', // next v2
   'prp60l', // remix v2
-  '6xxu1m', // nuxt (TODO: move it to v2 and make it official)
+  '6xxu1m', // nuxt v2
   'vue',
   'svelte',
   'angular',
