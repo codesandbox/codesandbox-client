@@ -48,7 +48,6 @@ jobs:
 
       - name: Install and Build Deps
         run: |
-          cp .yarnclean.ci .yarnclean
           yarn install --frozen-lockfile
           yarn build:deps
 
