@@ -24,19 +24,12 @@ export const WhatsNew = ({ onClose }: WhatsNewProps) => {
         <Media query="(min-width: 550px) and (max-width: 689px)">
           {matchMedium => (
             <>
-              <Element paddingBottom={matchSmall ? 20 : 80}>
+              <Element paddingBottom={matchSmall ? 20 : 56}>
                 <Stack
                   direction="horizontal"
-                  justify="space-between"
+                  justify="flex-end"
                   css={css({ padding: '24px' })}
                 >
-                  <Text
-                    variant="muted"
-                    size={13}
-                    css={css({ lineHeight: '16px' })}
-                  >
-                    What&apos;s new
-                  </Text>
                   <IconButton
                     name="cross"
                     size={16}
