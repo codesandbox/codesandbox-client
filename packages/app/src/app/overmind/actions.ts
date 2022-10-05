@@ -249,7 +249,8 @@ type ModalName =
   | 'sandboxPicker'
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
-  | 'pilotPayment';
+  | 'pilotPayment'
+  | 'whatsNew';
 
 export const modalOpened = (
   { state, effects }: Context,
