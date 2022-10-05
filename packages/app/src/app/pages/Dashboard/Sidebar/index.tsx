@@ -760,6 +760,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
       >
         <Link
           to={folderUrl}
+          title={name}
           onClick={() => {
             const event = MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE[page];
             if (event) {
@@ -815,13 +816,14 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
               paddingLeft: 0,
               paddingRight: 0,
               marginRight: '0',
+              width: '96%',
             }}
           >
             <Stack
               justify="center"
               align="center"
               css={{
-                width: 24,
+                padding: '0 4px',
                 marginRight: '8px',
               }}
             >
