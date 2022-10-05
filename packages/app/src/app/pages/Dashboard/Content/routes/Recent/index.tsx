@@ -58,11 +58,7 @@ export const Recent = () => {
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      <Header
-        title="Pick up where you left off"
-        activeTeam={activeTeam}
-        showViewOptions
-      />
+      <Header title="Recent" activeTeam={activeTeam} showViewOptions />
       <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
   );
