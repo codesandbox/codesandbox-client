@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
-import { useAppState, useActions, useEffects } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
@@ -16,7 +16,6 @@ export const RepositoriesPage = () => {
     activeTeam,
     dashboard: { repositories },
   } = useAppState();
-  const { browser } = useEffects();
   const pathRef = React.useRef<string>(null);
 
   React.useEffect(() => {
@@ -48,11 +47,7 @@ export const RepositoriesPage = () => {
 
   const pageType: PageTypes = 'repositories';
 
-  const isNotificationDismissed = browser.storage.get(
-    'notificationDismissed'
-  )?.[pageType];
-
-  const itemsToShow = (): DashboardGridItem[] => {
+  const getItemsToShow = (): DashboardGridItem[] => {
     if (repositories === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
@@ -79,11 +74,13 @@ export const RepositoriesPage = () => {
     }));
   };
 
+  const itemsToShow = getItemsToShow();
+
   return (
     <SelectionProvider
       page={pageType}
       activeTeamId={activeTeam}
-      items={itemsToShow()}
+      items={itemsToShow}
     >
       <Helmet>
         <title>{path || 'Dashboard'} - CodeSandbox</title>
@@ -95,14 +92,12 @@ export const RepositoriesPage = () => {
         showBetaBadge
         nestedPageType={pageType}
       />
-      {!isNotificationDismissed ? (
-        <Notification pageType={pageType}>
-          {itemsToShow().length === 0
-            ? 'CodeSandbox Projects is now Repositories: an improved git workflow powered by the cloud. '
-            : 'Your CodeSandbox Projects repositories now live here. Repository sandboxes are now listed under Synced sandboxes. You can find your contribution branches on My contributions inside your personal team.'}
-        </Notification>
-      ) : null}
-      <VariableGrid page={pageType} items={itemsToShow()} />
+      <Notification pageType={pageType}>
+        {itemsToShow.length === 0
+          ? 'CodeSandbox Projects is now Repositories: an improved git workflow powered by the cloud. '
+          : 'Your CodeSandbox Projects repositories now live here. Repository sandboxes are now listed under Synced sandboxes. You can find your contribution branches on My contributions inside your personal team.'}
+      </Notification>
+      <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
   );
 };

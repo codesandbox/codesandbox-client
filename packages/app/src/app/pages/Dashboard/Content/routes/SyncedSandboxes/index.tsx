@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
-import { useAppState, useActions, useEffects } from 'app/overmind';
+import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import {
@@ -24,7 +24,6 @@ export const SyncedSandboxesPage = () => {
     activeTeam,
     dashboard: { sandboxes },
   } = useAppState();
-  const { browser } = useEffects();
 
   React.useEffect(() => {
     const path = home ? null : param;
@@ -34,7 +33,7 @@ export const SyncedSandboxesPage = () => {
   const activeSandboxes =
     (sandboxes.REPOS && Object.values(sandboxes.REPOS)) || [];
 
-  const itemsToShow = (): DashboardGridItem[] => {
+  const getItemsToShow = (): DashboardGridItem[] => {
     if (sandboxes.REPOS === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
@@ -60,7 +59,9 @@ export const SyncedSandboxesPage = () => {
     return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
   };
 
-  const possibleTemplates = itemsToShow()
+  const itemsToShow = getItemsToShow();
+
+  const possibleTemplates = itemsToShow
     .filter((s: DashboardRepoSandbox) => s.sandbox)
     .map((s: DashboardRepoSandbox) => s.sandbox);
 
@@ -71,15 +72,11 @@ export const SyncedSandboxesPage = () => {
 
   const pageType: PageTypes = 'synced-sandboxes';
 
-  const isNotificationDismissed = browser.storage.get(
-    'notificationDismissed'
-  )?.[pageType];
-
   return (
     <SelectionProvider
       page={pageType}
       activeTeamId={activeTeam}
-      items={itemsToShow()}
+      items={itemsToShow}
     >
       <Helmet>
         <title>{param || 'Dashboard'} - CodeSandbox</title>
@@ -93,13 +90,11 @@ export const SyncedSandboxesPage = () => {
         showSortOptions={Boolean(param)}
         nestedPageType={pageType}
       />
-      {!isNotificationDismissed ? (
-        <Notification pageType={pageType}>
-          Repository sandboxes are now called Synced sandboxes. New imported
-          repositories will be listed under All repositories.
-        </Notification>
-      ) : null}
-      <VariableGrid page={pageType} items={itemsToShow()} />
+      <Notification pageType={pageType}>
+        Repository sandboxes are now called Synced sandboxes. New imported
+        repositories will be listed under All repositories.
+      </Notification>
+      <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
   );
 };

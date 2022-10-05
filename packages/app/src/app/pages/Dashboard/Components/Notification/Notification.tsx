@@ -13,8 +13,10 @@ interface NotificationProps {
 }
 
 export const Notification = ({ children, pageType }: NotificationProps) => {
-  const [isShown, setIsShown] = useState(true);
   const { browser } = useEffects();
+  const [isShown, setIsShown] = useState(() => {
+    return !browser.storage.get('notificationDismissed')?.[pageType];
+  });
 
   const dismissNotification = () => {
     // Get previously dismissed notifications
