@@ -119,7 +119,13 @@ export const Header = ({
               width: 'auto',
             })}
           >
-            + Import repo
+            <Icon
+              name="plus"
+              size={20}
+              title="Import repo"
+              css={css({ paddingRight: 2 })}
+            />
+            Import repo
           </Button>
         )}
 
@@ -131,6 +137,8 @@ export const Header = ({
               href={v2DraftBranchUrl(selectedRepo.owner, selectedRepo.name)}
               variant="link"
               css={css({
+                display: 'flex',
+                alignItems: 'center',
                 textDecoration: 'none',
                 fontSize: 2,
                 padding: 2,
@@ -143,7 +151,13 @@ export const Header = ({
                 },
               })}
             >
-              + Create branch
+              <Icon
+                name="plus"
+                size={20}
+                title="Create branch"
+                css={css({ paddingRight: 2 })}
+              />
+              Create branch
             </Button>
           )}
 
