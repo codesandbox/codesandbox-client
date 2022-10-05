@@ -41,11 +41,14 @@ export const Recent = () => {
         })),
       ]
         .sort((a, b) => {
-          // TODO: Update when sandboxes get a lastAccessedAt field
           const dateA =
-            a.type === 'branch' ? a.branch.lastAccessedAt : a.sandbox.updatedAt;
+            a.type === 'branch'
+              ? a.branch.lastAccessedAt
+              : a.sandbox.lastAccessedAt;
           const dateB =
-            b.type === 'branch' ? b.branch.lastAccessedAt : b.sandbox.updatedAt;
+            b.type === 'branch'
+              ? b.branch.lastAccessedAt
+              : b.sandbox.lastAccessedAt;
 
           return new Date(dateA) < new Date(dateB) ? 1 : -1;
           // Merge the two data sources and show only the first 12 most recent entries
