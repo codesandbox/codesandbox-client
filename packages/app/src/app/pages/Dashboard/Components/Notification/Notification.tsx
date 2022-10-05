@@ -43,6 +43,7 @@ export const Notification = ({ children, pageType }: NotificationProps) => {
           marginLeft: 'auto',
           marginRight: 'auto',
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '4px',
         }}
       >
         <Stack gap={4} align="center">
