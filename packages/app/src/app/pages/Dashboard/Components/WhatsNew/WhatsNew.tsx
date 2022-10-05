@@ -87,7 +87,7 @@ export const WhatsNew = ({ onClose }: WhatsNewProps) => {
                   </Column>
 
                   <Column span={matchSmall || matchMedium ? 6 : 3}>
-                    <Topic icon="dashboard">
+                    <Topic icon="grid">
                       Supercharge your development workflow with our{' '}
                       <Text weight="700">new dashboard</Text>.
                     </Topic>
