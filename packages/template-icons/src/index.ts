@@ -1,7 +1,9 @@
 import { AdonisIcon } from './AdonisIcon';
 import { AngularIcon } from './AngularIcon';
 import { ApolloIcon } from './ApolloIcon';
+import { AstroIcon } from './AstroIcon';
 import { AureliaIcon } from './AureliaIcon';
+import { BlankIcon } from './BlankIcon';
 import { CordovaIcon } from './CordovaIcon';
 import { CxJSIcon } from './CxJSIcon';
 import { CycleJSIcon } from './CycleJSIcon';
@@ -63,7 +65,9 @@ export const ColorIcons = {
   AdonisIcon,
   AngularIcon,
   ApolloIcon,
+  AstroIcon,
   AureliaIcon,
+  BlankIcon,
   CordovaIcon,
   CxJSIcon,
   CycleJSIcon,
@@ -126,7 +130,9 @@ export const Icons = {
   AdonisIcon,
   AngularIcon,
   ApolloIcon,
+  AstroIcon,
   AureliaIcon,
+  BlankIcon,
   CordovaIcon,
   CxJSIcon,
   CycleJSIcon,
@@ -188,7 +194,9 @@ export const Icons = {
 export { AdonisIcon } from './AdonisIcon';
 export { AngularIcon } from './AngularIcon';
 export { ApolloIcon } from './ApolloIcon';
+export { AstroIcon } from './AstroIcon';
 export { AureliaIcon } from './AureliaIcon';
+export { BlankIcon } from './BlankIcon';
 export { CordovaIcon } from './CordovaIcon';
 export { CxJSIcon } from './CxJSIcon';
 export { CycleJSIcon } from './CycleJSIcon';
