@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
 import { orderBy } from 'lodash-es';
 import { join, dirname } from 'path';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ESC, ENTER } from '@codesandbox/common/lib/utils/keycodes';
@@ -32,6 +32,7 @@ import { DashboardBaseFolder, PageTypes } from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH, NEW_FOLDER_ID } from './constants';
 import { DragItemType, useDrop } from '../utils/dnd';
+import { NotificationIndicator } from '../Components/Notification/NotificationIndicator';
 
 const SidebarContext = React.createContext(null);
 
@@ -453,6 +454,16 @@ const RowItem: React.FC<RowItemProps> = ({
     accepts.push('sandbox');
   }
   if (!canNotAcceptFolders.includes(page)) accepts.push('folder');
+  const { browser } = useEffects();
+
+  const isPageWithNotification =
+    page === 'my-contributions' ||
+    page === 'repositories' ||
+    page === 'synced-sandboxes';
+
+  const isNotificationDismissed = browser.storage.get(
+    'notificationDismissed'
+  )?.[page];
 
   const usedPath = folderPath || path;
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
@@ -574,6 +585,18 @@ const RowItem: React.FC<RowItemProps> = ({
               <Badge>New</Badge>
             </Stack>
           )}
+
+          {isPageWithNotification && !isNotificationDismissed ? (
+            <Element
+              css={{
+                flexGrow: 1,
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <NotificationIndicator />
+            </Element>
+          ) : null}
         </Link>
       )}
     </SidebarListAction>

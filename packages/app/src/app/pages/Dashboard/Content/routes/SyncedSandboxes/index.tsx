@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import {
@@ -10,6 +10,7 @@ import {
   PageTypes,
 } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -23,6 +24,7 @@ export const SyncedSandboxesPage = () => {
     activeTeam,
     dashboard: { sandboxes },
   } = useAppState();
+  const { browser } = useEffects();
 
   React.useEffect(() => {
     const path = home ? null : param;
@@ -69,6 +71,10 @@ export const SyncedSandboxesPage = () => {
 
   const pageType: PageTypes = 'synced-sandboxes';
 
+  const isNotificationDismissed = browser.storage.get(
+    'notificationDismissed'
+  )?.[pageType];
+
   return (
     <SelectionProvider
       page={pageType}
@@ -87,6 +93,12 @@ export const SyncedSandboxesPage = () => {
         showSortOptions={Boolean(param)}
         nestedPageType={pageType}
       />
+      {!isNotificationDismissed ? (
+        <Notification pageType={pageType}>
+          Repository sandboxes are now called Synced sandboxes. New imported
+          repositories will be listed under All repositories.
+        </Notification>
+      ) : null}
       <VariableGrid page={pageType} items={itemsToShow()} />
     </SelectionProvider>
   );

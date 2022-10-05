@@ -1,11 +1,12 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -15,6 +16,7 @@ export const RepositoriesPage = () => {
     activeTeam,
     dashboard: { repositories },
   } = useAppState();
+  const { browser } = useEffects();
   const pathRef = React.useRef<string>(null);
 
   React.useEffect(() => {
@@ -45,6 +47,10 @@ export const RepositoriesPage = () => {
   }, [path]);
 
   const pageType: PageTypes = 'repositories';
+
+  const isNotificationDismissed = browser.storage.get(
+    'notificationDismissed'
+  )?.[pageType];
 
   const itemsToShow = (): DashboardGridItem[] => {
     if (repositories === null) {
@@ -89,6 +95,13 @@ export const RepositoriesPage = () => {
         showBetaBadge
         nestedPageType={pageType}
       />
+      {!isNotificationDismissed ? (
+        <Notification pageType={pageType}>
+          {itemsToShow().length === 0
+            ? 'CodeSandbox Projects is now Repositories: an improved git workflow powered by the cloud. '
+            : 'Your CodeSandbox Projects repositories now live here. Repository sandboxes are now listed under Synced sandboxes. You can find your contribution branches on My contributions inside your personal team.'}
+        </Notification>
+      ) : null}
       <VariableGrid page={pageType} items={itemsToShow()} />
     </SelectionProvider>
   );
