@@ -103,8 +103,8 @@ export const WhatsNew = ({ onClose }: WhatsNewProps) => {
 
                   <Column span={matchSmall || matchMedium ? 6 : 3}>
                     <Topic icon="tagSelfClosing">
-                      Use our <Text weight="700">new editor</Text> or work right
-                      from VS Code or our iOS app.
+                      Use our <Text weight="700">new editor</Text>, work
+                      straight from VS Code or through our native iOS app.
                     </Topic>
                   </Column>
                 </Grid>
