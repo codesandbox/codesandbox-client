@@ -394,7 +394,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <TemplateCategoryList
                       title="Start from a template"
                       templates={quickStartTemplates}
-                      onSelectTemplate={selectTemplate}
+                      onSelectTemplate={template => {
+                        track('Create New - Fork Quickstart template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                        });
+
+                        selectTemplate(template);
+                      }}
                     />
                   </Panel>
 
@@ -409,7 +416,16 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           isUser ? 'My' : activeTeamInfo.name
                         } templates`}
                         templates={teamTemplates}
-                        onSelectTemplate={selectTemplate}
+                        onSelectTemplate={template => {
+                          track(
+                            `Create New - Fork ${
+                              isUser ? 'my' : 'team'
+                            } template`,
+                            { codesandbox: 'V1', event_source: 'UI' }
+                          );
+
+                          selectTemplate(template);
+                        }}
                       />
                     </Panel>
                   ) : null}
@@ -421,7 +437,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                       templates={officialTemplates.filter(
                         template => template.sandbox.isV2
                       )}
-                      onSelectTemplate={selectTemplate}
+                      onSelectTemplate={template => {
+                        track('Create New - Fork Cloud template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                        });
+
+                        selectTemplate(template);
+                      }}
                     />
                   </Panel>
 
@@ -429,7 +452,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <TemplateCategoryList
                       title="Official templates"
                       templates={officialTemplates}
-                      onSelectTemplate={selectTemplate}
+                      onSelectTemplate={template => {
+                        track('Create New - Fork Official template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                        });
+
+                        selectTemplate(template);
+                      }}
                     />
                   </Panel>
 
@@ -443,7 +473,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           <TemplateCategoryList
                             title={essential.title}
                             templates={essential.templates}
-                            onSelectTemplate={selectTemplate}
+                            onSelectTemplate={template => {
+                              track('Create New - Fork Essential template', {
+                                codesandbox: 'V1',
+                                event_source: 'UI',
+                              });
+
+                              selectTemplate(template);
+                            }}
                           />
                         </Panel>
                       ))
