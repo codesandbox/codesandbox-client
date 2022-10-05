@@ -93,9 +93,9 @@ export const SyncedSandboxesPage = () => {
       />
       <Notification pageType={pageType}>
         Repository sandboxes are now called{' '}
-        <Text css={{ color: '#fff' }}>Synced sandboxes</Text>. New imported
+        <Text css={{ color: '#EBEBEB' }}>Synced sandboxes</Text>. New imported
         repositories will be listed under{' '}
-        <Text css={{ color: '#fff' }}>All repositories</Text>.
+        <Text css={{ color: '#EBEBEB' }}>All repositories</Text>.
       </Notification>
       <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
