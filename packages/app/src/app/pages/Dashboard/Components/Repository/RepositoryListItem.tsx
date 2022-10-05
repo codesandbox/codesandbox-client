@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { css } from '@styled-system/css';
 import {
   Element,
   Column,
@@ -9,7 +11,6 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { css } from '@styled-system/css';
 import { RepositoryProps } from './types';
 
 export const RepositoryListItem: React.FC<RepositoryProps> = ({
@@ -38,7 +39,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
     >
       <Element
         aria-label={labels.repository}
-        as="a"
+        as={Link}
         css={{
           display: 'flex',
           alignItems: 'center',
@@ -46,7 +47,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
           width: '100%',
           textDecoration: 'none',
         }}
-        href={repository.url}
+        to={repository.url}
         onContextMenu={onContextMenu}
         {...props}
       >
