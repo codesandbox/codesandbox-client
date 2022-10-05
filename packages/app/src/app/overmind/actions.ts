@@ -249,7 +249,8 @@ type ModalName =
   | 'sandboxPicker'
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
-  | 'pilotPayment';
+  | 'pilotPayment'
+  | 'whatsNew';
 
 export const modalOpened = (
   { state, effects }: Context,
@@ -516,7 +517,11 @@ export const setActiveTeam = async (
 
   state.activeTeam = id;
   effects.browser.storage.set(TEAM_ID_LOCAL_STORAGE, id);
-  state.dashboard.sandboxes = DEFAULT_DASHBOARD_SANDBOXES;
+
+  // reset dashboard data on team change
+  state.dashboard.sandboxes = { ...DEFAULT_DASHBOARD_SANDBOXES };
+  state.dashboard.repositories = null;
+  state.dashboard.contributions = null;
 
   actions.internal.replaceWorkspaceParameterInUrl();
 

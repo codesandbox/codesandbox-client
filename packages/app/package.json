@@ -228,6 +228,7 @@
     "shelljs": "^0.7.8",
     "store": "^2.0.12",
     "string-replace-loader": "^2.1.1",
+    "string-similarity": "^4.0.4",
     "styled-components": "^5.2.0",
     "subworkers": "^1.0.1",
     "svg-react-loader": "^0.4.4",

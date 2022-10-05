@@ -1,3 +1,6 @@
+import { findBestMatch } from 'string-similarity';
+import { State } from './useGithubOrganizations';
+
 export const getOwnerAndNameFromInput = (githubUrl: string) => {
   // Will match the following:
   // git@github.com:{owner}/{name}
@@ -15,4 +18,15 @@ export const getOwnerAndNameFromInput = (githubUrl: string) => {
   const nameParts = name?.split('/') || [];
 
   return { owner, name: nameParts[0] };
+};
+
+export const getGihubOrgMatchingCsbTeam = (
+  teamName: string,
+  orgs: Extract<State, { state: 'ready' }>['data']
+) => {
+  const match = findBestMatch(
+    teamName,
+    orgs.map(org => org.login)
+  );
+  return orgs.find(org => org.login === match.bestMatch.target) || orgs[0];
 };

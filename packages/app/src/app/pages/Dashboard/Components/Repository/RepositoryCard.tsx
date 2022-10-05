@@ -1,6 +1,7 @@
 import React from 'react';
-import { Icon, IconButton, Stack, Text } from '@codesandbox/components';
+import { Link } from 'react-router-dom';
 import { css } from '@styled-system/css';
+import { Icon, IconButton, Stack, Text } from '@codesandbox/components';
 import { RepositoryProps } from './types';
 
 export const RepositoryCard: React.FC<RepositoryProps> = ({
@@ -12,7 +13,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
 }) => {
   return (
     <Stack
-      as="a"
+      as={Link}
       aria-label={labels.repository}
       css={css({
         cursor: 'pointer', // TODO: revisit cursor.
@@ -41,7 +42,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
       })}
       direction="vertical"
       gap={4}
-      href={repository.url}
+      to={repository.url}
       onContextMenu={onContextMenu}
       {...props}
     >
