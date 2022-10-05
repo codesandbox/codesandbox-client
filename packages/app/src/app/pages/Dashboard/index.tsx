@@ -13,18 +13,22 @@ import {
 } from '@codesandbox/components';
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
+import Modal from 'app/components/Modal';
 
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
+import { WhatsNew } from './Components/WhatsNew/WhatsNew';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
 });
 
+const COLUMN_MEDIA_THRESHOLD = 1600;
+
 export const Dashboard: FunctionComponent = () => {
-  const { hasLogIn } = useAppState();
+  const { hasLogIn, modals } = useAppState();
   const actions = useActions();
 
   // only used for mobile
@@ -34,6 +38,13 @@ export const Dashboard: FunctionComponent = () => {
     [setSidebarVisibility]
   );
   const theme = useTheme() as any;
+
+  useEffect(() => {
+    // ❗️ TODO:
+    // if no localstorage set
+    actions.modals.whatsNew.open();
+    // else do nothing
+  }, [actions.modals.whatsNew]);
 
   const location = useLocation();
   useEffect(() => {
@@ -50,6 +61,16 @@ export const Dashboard: FunctionComponent = () => {
   return (
     <ThemeProvider>
       <GlobalStyles />
+
+      <Modal
+        isOpen={modals.whatsNew.isCurrent}
+        onClose={() => actions.modals.whatsNew.close()}
+        width={window.outerWidth > COLUMN_MEDIA_THRESHOLD ? 1200 : 950}
+        fullWidth={window.screen.availWidth < 800}
+      >
+        <WhatsNew />
+      </Modal>
+
       <DndProvider backend={Backend}>
         <Stack
           direction="vertical"
