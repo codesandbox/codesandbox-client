@@ -233,13 +233,9 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
           gap={8}
           css={{ width: 500, height: '100vh', userSelect: 'none' }}
         >
-          <Stack align="center" css={{ width: 220 }}>
-            <NewSandbox collectionId={collectionId} />
-          </Stack>
-
           <Stack direction="vertical" align="center" gap={1}>
             <Text variant="muted" align="center">
-              Uh oh, you haven’t created any synced sandboxes yet!
+              You don’t have any synced sandboxes.
             </Text>
           </Stack>
         </Stack>
