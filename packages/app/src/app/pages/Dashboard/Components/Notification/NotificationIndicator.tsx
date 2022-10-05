@@ -8,6 +8,7 @@ export const NotificationIndicator = () => (
       height: 5,
       backgroundColor: '#EDFFA5',
       borderRadius: '100%',
+      flexShrink: 0,
     }}
   />
 );

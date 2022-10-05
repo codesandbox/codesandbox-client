@@ -7,6 +7,7 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
+import { Text } from '@codesandbox/components';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -93,9 +94,21 @@ export const RepositoriesPage = () => {
         nestedPageType={pageType}
       />
       <Notification pageType={pageType}>
-        {itemsToShow.length === 0
-          ? 'CodeSandbox Projects is now Repositories: an improved git workflow powered by the cloud. '
-          : 'Your CodeSandbox Projects repositories now live here. Repository sandboxes are now listed under Synced sandboxes. You can find your contribution branches on My contributions inside your personal team.'}
+        {itemsToShow.length === 0 ? (
+          <Text>
+            CodeSandbox Projects is now Repositories: an improved git workflow
+            powered by the cloud.
+          </Text>
+        ) : (
+          <Text>
+            Your CodeSandbox Projects repositories now live here. Repository
+            sandboxes are now listed under{' '}
+            <Text css={{ color: '#fff' }}>Synced sandboxes</Text>. You can find
+            your contribution branches on{' '}
+            <Text css={{ color: '#fff' }}>My contributions</Text> inside your
+            personal team.
+          </Text>
+        )}
       </Notification>
       <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>

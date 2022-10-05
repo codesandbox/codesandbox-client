@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
+import { Text } from '@codesandbox/components';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import {
@@ -91,8 +92,10 @@ export const SyncedSandboxesPage = () => {
         nestedPageType={pageType}
       />
       <Notification pageType={pageType}>
-        Repository sandboxes are now called Synced sandboxes. New imported
-        repositories will be listed under All repositories.
+        Repository sandboxes are now called{' '}
+        <Text css={{ color: '#fff' }}>Synced sandboxes</Text>. New imported
+        repositories will be listed under{' '}
+        <Text css={{ color: '#fff' }}>All repositories</Text>.
       </Notification>
       <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
