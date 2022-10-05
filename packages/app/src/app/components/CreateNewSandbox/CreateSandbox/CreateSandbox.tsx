@@ -12,6 +12,7 @@ import { TabStateReturn, useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import {
   Container,
@@ -255,30 +256,80 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             {viewState === 'initial' ? (
               <Stack direction="vertical">
                 <Tabs {...tabState} aria-label="Create new">
-                  <Tab {...tabState} stopId="quickstart">
+                  <Tab
+                    {...tabState}
+                    onClick={() => {
+                      track('Create New - Click Quick Start', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                    }}
+                    stopId="quickstart"
+                  >
                     Quick start
                   </Tab>
 
-                  <Tab {...tabState} stopId="import">
+                  <Tab
+                    {...tabState}
+                    onClick={() => {
+                      track('Create New - Click Import from Github', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                    }}
+                    stopId="import"
+                  >
                     Import from GitHub
                   </Tab>
 
                   <Element css={{ height: '24px' }} />
 
                   {showTeamTemplates ? (
-                    <Tab {...tabState} stopId="team-templates">
+                    <Tab
+                      {...tabState}
+                      onClick={() => {
+                        track(
+                          `Create New - Click ${
+                            isUser ? 'My' : 'Team'
+                          } Templates`,
+                          {
+                            codesandbox: 'V1',
+                            event_source: 'UI',
+                          }
+                        );
+                      }}
+                      stopId="team-templates"
+                    >
                       {`${isUser ? 'My' : 'Team'} templates`}
                     </Tab>
                   ) : null}
 
-                  <Tab {...tabState} stopId="cloud-templates">
+                  <Tab
+                    {...tabState}
+                    onClick={() => {
+                      track('Create New - Click Cloud templates', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                    }}
+                    stopId="cloud-templates"
+                  >
                     <Stack gap={2}>
                       <span>Cloud templates</span>
                       <CloudBetaBadge hideIcon />
                     </Stack>
                   </Tab>
 
-                  <Tab {...tabState} stopId="official-templates">
+                  <Tab
+                    {...tabState}
+                    onClick={() => {
+                      track('Create New - Click Official Templates', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                    }}
+                    stopId="official-templates"
+                  >
                     Official templates
                   </Tab>
 
@@ -288,6 +339,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           key={essential.key}
                           {...tabState}
                           stopId={slugify(essential.title)}
+                          onClick={() => {
+                            track(`Create New - Click ${essential.title}`, {
+                              codesandbox: 'V1',
+                              event_source: 'UI',
+                            });
+                          }}
                         >
                           {essential.title}
                         </Tab>
