@@ -4,7 +4,7 @@ import { Redirect, useLocation } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Media from 'react-media';
 import Backend from 'react-dnd-html5-backend';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import {
   ThemeProvider,
   Stack,
@@ -26,10 +26,12 @@ const GlobalStyles = createGlobalStyle({
 });
 
 const COLUMN_MEDIA_THRESHOLD = 1600;
+const wnoct22 = 'wnoct22'; // = whats new oct 22
 
 export const Dashboard: FunctionComponent = () => {
   const { hasLogIn, modals } = useAppState();
   const actions = useActions();
+  const { browser } = useEffects();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -40,11 +42,17 @@ export const Dashboard: FunctionComponent = () => {
   const theme = useTheme() as any;
 
   useEffect(() => {
-    // ❗️ TODO:
-    // if no localstorage set
-    actions.modals.whatsNew.open();
-    // else do nothing
-  }, [actions.modals.whatsNew]);
+    const isModalDismissed = browser.storage.get(wnoct22);
+
+    if (!isModalDismissed && !modals.whatsNew.isCurrent) {
+      actions.modals.whatsNew.open();
+    }
+  }, [browser.storage, modals.whatsNew.isCurrent, actions.modals.whatsNew]);
+
+  const handleWhatsNewModalClose = () => {
+    browser.storage.set(wnoct22, true);
+    actions.modals.whatsNew.close();
+  };
 
   const location = useLocation();
   useEffect(() => {
@@ -64,11 +72,11 @@ export const Dashboard: FunctionComponent = () => {
 
       <Modal
         isOpen={modals.whatsNew.isCurrent}
-        onClose={() => actions.modals.whatsNew.close()}
+        onClose={handleWhatsNewModalClose}
         width={window.outerWidth > COLUMN_MEDIA_THRESHOLD ? 1200 : 950}
         fullWidth={window.screen.availWidth < 800}
       >
-        <WhatsNew />
+        <WhatsNew onClose={handleWhatsNewModalClose} />
       </Modal>
 
       <DndProvider backend={Backend}>

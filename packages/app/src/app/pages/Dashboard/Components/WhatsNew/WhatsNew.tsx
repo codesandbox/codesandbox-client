@@ -11,11 +11,12 @@ import {
   Link,
   IconButton,
 } from '@codesandbox/components';
-import { useActions } from 'app/overmind';
 
-export const WhatsNew = () => {
-  const { modals: modalsActions } = useActions();
+interface WhatsNewProps {
+  onClose: () => void;
+}
 
+export const WhatsNew = ({ onClose }: WhatsNewProps) => {
   return (
     <>
       <Element paddingBottom={80}>
@@ -31,7 +32,7 @@ export const WhatsNew = () => {
             name="cross"
             size={16}
             title="Close modal"
-            onClick={() => modalsActions.whatsNew.close()}
+            onClick={onClose}
           />
         </Stack>
       </Element>
