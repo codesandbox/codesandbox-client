@@ -25,8 +25,8 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
         borderColor: selected ? 'focusBorder' : 'transparent',
         backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
         transition: 'background ease-in-out',
-        paddingRight: 8,
-        paddingLeft: 8,
+        paddingRight: 4,
+        paddingLeft: 4,
         paddingTop: 4,
         paddingBottom: 4,
         outline: 'none',
@@ -67,6 +67,8 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               color: '#E5E5E5',
               textAlign: 'center',
               minHeight: 42,
+              paddingLeft: 4,
+              paddingRight: 4,
             })}
             size={16}
           >

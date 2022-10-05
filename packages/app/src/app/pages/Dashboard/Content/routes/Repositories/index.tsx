@@ -13,7 +13,7 @@ export const RepositoriesPage = () => {
   const actions = useActions();
   const {
     activeTeam,
-    dashboard: { repositories },
+    dashboard: { repositories, viewMode },
   } = useAppState();
   const pathRef = React.useRef<string>(null);
 
@@ -45,6 +45,7 @@ export const RepositoriesPage = () => {
   }, [path]);
 
   const pageType: PageTypes = 'repositories';
+  let selectedRepo: { owner: string; name: string } | undefined;
 
   const itemsToShow = (): DashboardGridItem[] => {
     if (repositories === null) {
@@ -61,16 +62,38 @@ export const RepositoriesPage = () => {
         return [];
       }
 
-      return currentRepository.branches.map(branch => ({
-        type: 'branch',
-        branch,
-      }));
+      selectedRepo = {
+        owner,
+        name,
+      };
+
+      const branchItems: DashboardGridItem[] = currentRepository.branches.map(
+        branch => ({
+          type: 'branch',
+          branch,
+        })
+      );
+
+      if (viewMode === 'grid') {
+        branchItems.unshift({
+          type: 'new-branch',
+          repo: { owner, name },
+        });
+      }
+
+      return branchItems;
     }
 
-    return repositories.map(repository => ({
-      type: 'repository',
+    const repoItems: DashboardGridItem[] = repositories.map(repository => ({
+      type: 'repository' as const,
       repository,
     }));
+
+    if (viewMode === 'grid') {
+      repoItems.unshift({ type: 'import-repository' });
+    }
+
+    return repoItems;
   };
 
   return (
@@ -88,6 +111,7 @@ export const RepositoriesPage = () => {
         showViewOptions
         showBetaBadge
         nestedPageType={pageType}
+        selectedRepo={selectedRepo}
       />
       <VariableGrid page={pageType} items={itemsToShow()} />
     </SelectionProvider>
