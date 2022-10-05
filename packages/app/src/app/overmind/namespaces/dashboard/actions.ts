@@ -593,6 +593,7 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
 
     const branchesResult = await effects.gql.queries.recentlyAccessedBranches({
       limit: 12,
+      teamId: state.activeTeam,
     });
 
     dashboard.sandboxes.RECENT_SANDBOXES =
