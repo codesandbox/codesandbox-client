@@ -407,7 +407,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             ) : null}
 
             {viewState === 'fork' ? (
-              <FromRepo githubRepo={selectedRepo} />
+              <FromRepo
+                repository={selectedRepo}
+                onCancel={() => {
+                  setViewState('initial');
+                }}
+              />
             ) : null}
           </ModalContent>
         </ModalBody>

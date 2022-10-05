@@ -145,6 +145,36 @@ export const GET_GITHUB_REPO = gql`
   }
 `;
 
+const PROFILE_FRAGMENT = gql`
+  fragment Profile on GithubProfile {
+    id
+    login
+  }
+`;
+
+const ORGANIZATION_FRAGMENT = gql`
+  fragment Organization on GithubOrganization {
+    id
+    login
+  }
+`;
+
+export const GET_GITHUB_ORGANIZATIONS = gql`
+  query GetGithubOrganizations {
+    me {
+      githubProfile {
+        ...Profile
+      }
+      githubOrganizations {
+        ...Organization
+      }
+    }
+  }
+
+  ${PROFILE_FRAGMENT}
+  ${ORGANIZATION_FRAGMENT}
+`;
+
 export const MAKE_SANDBOXES_TEMPLATE_MUTATION = gql`
   mutation MakeSandboxesTemplate($sandboxIds: [ID!]!) {
     makeSandboxesTemplates(sandboxIds: $sandboxIds) {
