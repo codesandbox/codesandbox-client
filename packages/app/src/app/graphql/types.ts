@@ -580,8 +580,6 @@ export type ProSubscription = {
   paymentProvider: Maybe<SubscriptionPaymentProvider>;
   quantity: Maybe<Scalars['Int']>;
   status: SubscriptionStatus;
-  trialEnd: Maybe<Scalars['DateTime']>;
-  trialStart: Maybe<Scalars['DateTime']>;
   type: SubscriptionType;
   unitPrice: Maybe<Scalars['Int']>;
   updateBillingUrl: Maybe<Scalars['String']>;
