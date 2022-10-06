@@ -45,6 +45,10 @@ export const SearchElement = styled.input`
   &:-ms-input-placeholder {
     color: #757575;
   }
+
+  @media screen and (max-width: 370px) {
+    width: auto;
+  }
 `;
 
 export const InputWrapper = styled.div`

@@ -104,6 +104,7 @@ export interface ButtonProps
   variant?: 'primary' | 'secondary' | 'link' | 'danger';
   loading?: boolean;
   href?: string;
+  rel?: string; // Only use when using href and as="a"
   to?: string;
   as?: any;
   target?: any;

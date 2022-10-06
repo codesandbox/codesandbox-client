@@ -336,9 +336,9 @@ export const recentlyAccessedBranches: Query<
   RecentlyAccessedBranchesQuery,
   RecentlyAccessedBranchesQueryVariables
 > = gql`
-  query RecentlyAccessedBranches($limit: Int!) {
+  query RecentlyAccessedBranches($limit: Int!, $teamId: UUID4) {
     me {
-      recentBranches(limit: $limit) {
+      recentBranches(limit: $limit, teamId: $teamId) {
         ...branch
       }
     }

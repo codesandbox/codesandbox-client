@@ -12,6 +12,7 @@ import { TabStateReturn, useTabState } from 'reakit/Tab';
 import slugify from '@codesandbox/common/lib/utils/slugify';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import {
   Container,
@@ -42,13 +43,14 @@ export const COLUMN_MEDIA_THRESHOLD = 1600;
 const QUICK_START_IDS = [
   'new',
   'rjk9n4zj7m', // static v1
-  'k8dsq1', // blank v2
+  'vue',
   'fxis37', // next v2
   'prp60l', // remix v2
-  '6xxu1m', // nuxt (TODO: move it to v2 and make it official)
-  'vue',
-  'svelte',
+  'k8dsq1', // blank v2
+  // '6xxu1m', // nuxt v2
+  'vanilla',
   'angular',
+  'react-ts',
 ];
 
 interface PanelProps {
@@ -90,6 +92,8 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const defaultSelectedTab =
     initialTab || isUnderRepositoriesSection ? 'import' : 'quickstart';
   const isUser = user?.username === activeTeamInfo?.name;
+  const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
+  const mobileScreenSize = mediaQuery.matches;
 
   /**
    * Checking for user because user is undefined when landing on /s/, even though
@@ -139,7 +143,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     teamTemplatesData.state === 'ready' ? teamTemplatesData.teamTemplates : [];
 
   const tabState = useTabState({
-    orientation: 'vertical',
+    orientation: mobileScreenSize ? 'horizontal' : 'vertical',
     selectedId: defaultSelectedTab,
   });
 
@@ -148,7 +152,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   >('initial');
   // ❗️ We could combine viewState with selectedTemplate
   // and selectedRepo to limit the amount of states.
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
+  const [selectedTemplate] = useState<TemplateFragment>();
   const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>();
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -177,8 +181,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   };
 
   const selectTemplate = (template: TemplateFragment) => {
-    setSelectedTemplate(template);
-    setViewState('fromTemplate');
+    createFromTemplate(template, {});
+
+    // Temporarily disable the second screen until we have more functionality on it
+    // setSelectedTemplate(template);
+    // setViewState('fromTemplate');
   };
 
   const selectGithubRepo = (repo: GithubRepoToImport) => {
@@ -189,7 +196,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   return (
     <ThemeProvider>
       <Container>
-        <Stack gap={4} align="center" css={{ width: '100%', padding: '24px' }}>
+        <Stack
+          gap={4}
+          align="center"
+          css={{
+            width: '100%',
+            padding: mobileScreenSize ? '16px' : '24px',
+          }}
+        >
           <HeaderInformation>
             {viewState === 'initial' ? (
               <Text size={4} variant="muted">
@@ -246,30 +260,80 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             {viewState === 'initial' ? (
               <Stack direction="vertical">
                 <Tabs {...tabState} aria-label="Create new">
-                  <Tab {...tabState} stopId="quickstart">
+                  <Tab
+                    {...tabState}
+                    onClick={() => {
+                      track('Create New - Click Quick Start', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                    }}
+                    stopId="quickstart"
+                  >
                     Quick start
                   </Tab>
 
-                  <Tab {...tabState} stopId="import">
+                  <Tab
+                    {...tabState}
+                    onClick={() => {
+                      track('Create New - Click Import from Github', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                    }}
+                    stopId="import"
+                  >
                     Import from GitHub
                   </Tab>
 
                   <Element css={{ height: '24px' }} />
 
                   {showTeamTemplates ? (
-                    <Tab {...tabState} stopId="team-templates">
+                    <Tab
+                      {...tabState}
+                      onClick={() => {
+                        track(
+                          `Create New - Click ${
+                            isUser ? 'My' : 'Team'
+                          } Templates`,
+                          {
+                            codesandbox: 'V1',
+                            event_source: 'UI',
+                          }
+                        );
+                      }}
+                      stopId="team-templates"
+                    >
                       {`${isUser ? 'My' : 'Team'} templates`}
                     </Tab>
                   ) : null}
 
-                  <Tab {...tabState} stopId="cloud-templates">
+                  <Tab
+                    {...tabState}
+                    onClick={() => {
+                      track('Create New - Click Cloud templates', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                    }}
+                    stopId="cloud-templates"
+                  >
                     <Stack gap={2}>
                       <span>Cloud templates</span>
                       <CloudBetaBadge hideIcon />
                     </Stack>
                   </Tab>
 
-                  <Tab {...tabState} stopId="official-templates">
+                  <Tab
+                    {...tabState}
+                    onClick={() => {
+                      track('Create New - Click Official Templates', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+                    }}
+                    stopId="official-templates"
+                  >
                     Official templates
                   </Tab>
 
@@ -279,13 +343,19 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           key={essential.key}
                           {...tabState}
                           stopId={slugify(essential.title)}
+                          onClick={() => {
+                            track(`Create New - Click ${essential.title}`, {
+                              codesandbox: 'V1',
+                              event_source: 'UI',
+                            });
+                          }}
                         >
                           {essential.title}
                         </Tab>
                       ))
                     : null}
 
-                  {essentialState.state === 'loading' ? (
+                  {!mobileScreenSize && essentialState.state === 'loading' ? (
                     <Stack direction="vertical" css={{ marginTop: 6 }} gap={5}>
                       <SkeletonText css={{ width: 100 }} />
                       <SkeletonText css={{ width: 90 }} />
@@ -328,7 +398,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <TemplateCategoryList
                       title="Start from a template"
                       templates={quickStartTemplates}
-                      onSelectTemplate={selectTemplate}
+                      onSelectTemplate={template => {
+                        track('Create New - Fork Quickstart template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                        });
+
+                        selectTemplate(template);
+                      }}
                     />
                   </Panel>
 
@@ -343,7 +420,16 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           isUser ? 'My' : activeTeamInfo.name
                         } templates`}
                         templates={teamTemplates}
-                        onSelectTemplate={selectTemplate}
+                        onSelectTemplate={template => {
+                          track(
+                            `Create New - Fork ${
+                              isUser ? 'my' : 'team'
+                            } template`,
+                            { codesandbox: 'V1', event_source: 'UI' }
+                          );
+
+                          selectTemplate(template);
+                        }}
                       />
                     </Panel>
                   ) : null}
@@ -351,11 +437,17 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Panel tab={tabState} id="cloud-templates">
                     <TemplateCategoryList
                       title="Cloud templates"
-                      showBetaTag
                       templates={officialTemplates.filter(
                         template => template.sandbox.isV2
                       )}
-                      onSelectTemplate={selectTemplate}
+                      onSelectTemplate={template => {
+                        track('Create New - Fork Cloud template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                        });
+
+                        selectTemplate(template);
+                      }}
                     />
                   </Panel>
 
@@ -363,7 +455,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <TemplateCategoryList
                       title="Official templates"
                       templates={officialTemplates}
-                      onSelectTemplate={selectTemplate}
+                      onSelectTemplate={template => {
+                        track('Create New - Fork Official template', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                        });
+
+                        selectTemplate(template);
+                      }}
                     />
                   </Panel>
 
@@ -377,7 +476,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           <TemplateCategoryList
                             title={essential.title}
                             templates={essential.templates}
-                            onSelectTemplate={selectTemplate}
+                            onSelectTemplate={template => {
+                              track('Create New - Fork Essential template', {
+                                codesandbox: 'V1',
+                                event_source: 'UI',
+                              });
+
+                              selectTemplate(template);
+                            }}
                           />
                         </Panel>
                       ))
@@ -398,7 +504,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             ) : null}
 
             {viewState === 'fork' ? (
-              <FromRepo githubRepo={selectedRepo} />
+              <FromRepo
+                repository={selectedRepo}
+                onCancel={() => {
+                  setViewState('initial');
+                }}
+              />
             ) : null}
           </ModalContent>
         </ModalBody>
@@ -421,12 +532,14 @@ const TemplateInfo = ({ template }: TemplateInfoProps) => {
     <Stack direction="vertical" gap={6}>
       <UserIcon />
       <Stack direction="vertical">
-        <Text size={3}>{template.sandbox.title}</Text>
-        <Text size={2} css={{ color: '#808080' }}>
+        <Text size={3} weight="500">
+          {template.sandbox.title}
+        </Text>
+        <Text size={2} css={{ color: '#999', marginTop: '4px' }}>
           {template.sandbox.collection?.team?.name}
         </Text>
       </Stack>
-      <Text size={2} css={{ color: '#808080' }}>
+      <Text size={2} css={{ color: '#999', lineHeight: '1.4' }}>
         {template.sandbox.description}
       </Text>
     </Stack>

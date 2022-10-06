@@ -26,7 +26,11 @@ export const TemplateCard = ({
   const teamName = template.sandbox?.collection?.team?.name;
 
   return (
-    <TemplateButton type="button" onClick={() => onSelectTemplate(template)}>
+    <TemplateButton
+      title={sandboxTitle}
+      type="button"
+      onClick={() => onSelectTemplate(template)}
+    >
       <Stack css={{ height: '100%' }} direction="vertical" gap={4}>
         <Stack
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
@@ -36,18 +40,18 @@ export const TemplateCard = ({
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text
-            size={3}
-            variant="body"
             css={{
+              fontSize: '14px',
               fontWeight: 500,
               textOverflow: 'ellipsis',
               overflow: 'hidden',
+              whiteSpace: 'nowrap',
             }}
           >
             {sandboxTitle}
           </Text>
 
-          <Text size={2} css={{ color: '#808080' }}>
+          <Text size={2} css={{ color: '#999' }}>
             <VisuallyHidden>by </VisuallyHidden>
             {teamName || 'CodeSandbox'}
           </Text>

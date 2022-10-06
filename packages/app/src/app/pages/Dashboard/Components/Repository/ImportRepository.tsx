@@ -1,24 +1,31 @@
 import React from 'react';
 import { useActions } from 'app/overmind';
-import { Stack, Text, Button, Icon } from '@codesandbox/components';
+import { Stack, Text, Icon, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-export const ImportRepo = () => {
+export const ImportRepositoryCard: React.FC = () => {
   const { openCreateSandboxModal } = useActions();
 
-  const onClick = () => openCreateSandboxModal({});
-
   return (
-    <Button
-      variant="link"
-      onClick={onClick}
+    <Element
+      as="button"
+      onClick={() => openCreateSandboxModal({ initialTab: 'import' })}
       css={css({
-        height: 240,
+        display: 'flex',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
         fontSize: 3,
+        fontFamily: 'inherit',
+        fontWeight: 'normal',
+        color: '#999',
+        height: 240,
+        outline: 'none',
         backgroundColor: 'card.background',
-        border: '1px solid transparent',
+        border: '1px solid',
+        borderColor: 'transparent',
         borderRadius: 'medium',
-        transition: 'all ease-in',
+        transition: 'background ease-in',
         transitionDuration: theme => theme.speeds[2],
         ':hover': {
           backgroundColor: 'card.backgroundHover',
@@ -30,8 +37,8 @@ export const ImportRepo = () => {
     >
       <Stack direction="vertical" align="center" gap={4}>
         <Icon name="plus" size={32} />
-        <Text>Import Repository</Text>
+        <Text>Import repository</Text>
       </Stack>
-    </Button>
+    </Element>
   );
 };

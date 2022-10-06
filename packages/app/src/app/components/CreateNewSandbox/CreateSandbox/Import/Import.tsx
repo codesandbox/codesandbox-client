@@ -1,10 +1,13 @@
+import track from '@codesandbox/common/lib/utils/analytics';
 import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { GithubRepoAuthorization } from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
+import { useImportAndRedirect } from './useImportAndRedirect';
 import { getOwnerAndNameFromInput } from './utils';
 
 const UnauthenticatedImport: React.FC = () => {
@@ -44,8 +47,10 @@ type ImportProps = {
   onRepoSelect: (repo: GithubRepoToImport) => void;
 };
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
-  const { hasLogIn } = useAppState();
+  const { hasLogIn, activeTeam } = useAppState();
+  const importAndRedirect = useImportAndRedirect();
 
+  const [isImporting, setIsImporting] = React.useState(false);
   const [url, setUrl] = React.useState<UrlState>({
     raw: '',
     parsed: null,
@@ -56,7 +61,15 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     owner: url.parsed?.owner,
     name: url.parsed?.name,
     shouldFetch,
-    onCompleted: onRepoSelect,
+    onCompleted: async repo => {
+      if (repo.authorization === GithubRepoAuthorization.Write) {
+        setIsImporting(true);
+        await importAndRedirect(repo.owner.login, repo.name, activeTeam);
+        setIsImporting(false);
+      } else {
+        onRepoSelect(repo);
+      }
+    },
   });
 
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,6 +97,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    track('Create New - Import Repo', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
     setShouldFetch(true);
   };
 
@@ -91,8 +108,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     return <UnauthenticatedImport />;
   }
 
+  const isLoading = githubRepo.state === 'loading' || isImporting;
+
   return (
-    <Stack direction="vertical" gap={4}>
+    <Stack direction="vertical" gap={6}>
       <Text
         as="h2"
         id="form-title"
@@ -115,9 +134,15 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             type="text"
             value={url.raw}
             required
+            css={{ height: '32px' }}
           />
-          <Button disabled={Boolean(url.error)} type="submit" autoWidth>
-            {githubRepo.state === 'loading' ? 'Importing...' : 'Import'}
+          <Button
+            disabled={Boolean(url.error) || isLoading}
+            type="submit"
+            autoWidth
+            css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
+          >
+            {isLoading ? 'Importing...' : 'Import'}
           </Button>
         </Stack>
         <Element aria-atomic="true" id="form-error" role="alert">

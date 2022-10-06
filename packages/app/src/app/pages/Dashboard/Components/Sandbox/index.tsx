@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory, Link } from 'react-router-dom';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -246,8 +246,8 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     page === 'recent'
       ? {
           selected,
-          as: 'a',
-          href: url,
+          as: Link,
+          to: url,
           style: {
             outline: 'none',
             textDecoration: 'none',

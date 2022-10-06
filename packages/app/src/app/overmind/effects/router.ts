@@ -36,6 +36,8 @@ export default new (class RouterEffect {
 
     if (openInNewWindow) {
       window.open(url, '_blank');
+    } else if (v2) {
+      window.location.href = url;
     } else {
       history.push(url);
     }
