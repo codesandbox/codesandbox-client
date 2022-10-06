@@ -209,6 +209,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
                   </Stack>
                 </Button>
                 <Button
+                  as="a"
                   variant="link"
                   css={css({
                     height: 'auto',
