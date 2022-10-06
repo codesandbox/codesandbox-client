@@ -50,7 +50,7 @@ export const Notification = ({ children, pageType }: NotificationProps) => {
       >
         <Stack gap={4} align="center">
           <NotificationIndicator />
-          <Text size={12} variant="muted" css={css({ lineHeight: '16px' })}>
+          <Text size={12} css={css({ lineHeight: '16px', color: '#C2C2C2' })}>
             {children}
           </Text>
           <Element

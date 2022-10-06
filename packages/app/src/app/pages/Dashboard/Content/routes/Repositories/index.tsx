@@ -103,9 +103,9 @@ export const RepositoriesPage = () => {
           <Text>
             Your CodeSandbox Projects repositories now live here. Repository
             sandboxes are now listed under{' '}
-            <Text css={{ color: '#fff' }}>Synced sandboxes</Text>. You can find
-            your contribution branches on{' '}
-            <Text css={{ color: '#fff' }}>My contributions</Text> inside your
+            <Text css={{ color: '#EBEBEB' }}>Synced sandboxes</Text>. You can
+            find your contribution branches on{' '}
+            <Text css={{ color: '#EBEBEB' }}>My contributions</Text> inside your
             personal team.
           </Text>
         )}
