@@ -116,3 +116,75 @@ export const importRepository: ImportRepositoryFn = ({
     })
     .then(res => res.json());
 };
+
+export type ValidateRepositoryDestinationFn = (
+  destination: string
+) => Promise<{ valid: boolean; message?: string }>;
+
+/**
+ * @param destination In the format of `owner/repo`
+ */
+export const validateRepositoryDestination: ValidateRepositoryDestinationFn = destination => {
+  // Get the authentication token from local storage if it exists.
+  const token = localStorage.getItem('devJwt');
+
+  return fetch(`/api/beta/repos/validate/github/${destination}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw Error(res.statusText);
+      }
+
+      return res;
+    })
+    .then(res => res.json());
+};
+
+type Source = {
+  owner: string;
+  name: string;
+};
+type Destination = {
+  organization?: string;
+  name: string;
+  teamId: string;
+};
+type ForkRepositoryFn = (_: {
+  source: Source;
+  destination: Destination;
+}) => Promise<PartialImportedRepository>;
+export const forkRepository: ForkRepositoryFn = ({ source, destination }) => {
+  // Get the authentication token from local storage if it exists.
+  const token = localStorage.getItem('devJwt');
+
+  let body: Record<string, string> = {
+    name: destination.name,
+    team_id: destination.teamId,
+  };
+  if (destination.organization) {
+    body = { ...body, organization: destination.organization };
+  }
+
+  return fetch(`/api/beta/fork/github/${source.owner}/${source.name}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: token ? `Bearer ${token}` : '',
+    },
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw Error(res.statusText);
+      }
+
+      return res;
+    })
+    .then(res => res.json());
+};

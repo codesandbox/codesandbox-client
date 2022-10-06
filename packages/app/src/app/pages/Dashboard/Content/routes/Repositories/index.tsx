@@ -6,6 +6,8 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
+import { Text } from '@codesandbox/components';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -46,7 +48,7 @@ export const RepositoriesPage = () => {
 
   const pageType: PageTypes = 'repositories';
 
-  const itemsToShow = (): DashboardGridItem[] => {
+  const getItemsToShow = (): DashboardGridItem[] => {
     if (repositories === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
@@ -73,11 +75,13 @@ export const RepositoriesPage = () => {
     }));
   };
 
+  const itemsToShow = getItemsToShow();
+
   return (
     <SelectionProvider
       page={pageType}
       activeTeamId={activeTeam}
-      items={itemsToShow()}
+      items={itemsToShow}
     >
       <Helmet>
         <title>{path || 'Dashboard'} - CodeSandbox</title>
@@ -89,7 +93,24 @@ export const RepositoriesPage = () => {
         showBetaBadge
         nestedPageType={pageType}
       />
-      <VariableGrid page={pageType} items={itemsToShow()} />
+      <Notification pageType={pageType}>
+        {itemsToShow.length === 0 ? (
+          <Text>
+            CodeSandbox Projects is now Repositories: an improved git workflow
+            powered by the cloud.
+          </Text>
+        ) : (
+          <Text>
+            Your CodeSandbox Projects repositories now live here. Repository
+            sandboxes are now listed under{' '}
+            <Text css={{ color: '#EBEBEB' }}>Synced sandboxes</Text>. You can
+            find your contribution branches on{' '}
+            <Text css={{ color: '#EBEBEB' }}>My contributions</Text> inside your
+            personal team.
+          </Text>
+        )}
+      </Notification>
+      <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
   );
 };

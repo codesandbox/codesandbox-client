@@ -1678,6 +1678,31 @@ export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type ProfileFragment = { __typename?: 'GithubProfile' } & Pick<
+  GithubProfile,
+  'id' | 'login'
+>;
+
+export type OrganizationFragment = { __typename?: 'GithubOrganization' } & Pick<
+  GithubOrganization,
+  'id' | 'login'
+>;
+
+export type GetGithubOrganizationsQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GetGithubOrganizationsQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      githubProfile: Maybe<{ __typename?: 'GithubProfile' } & ProfileFragment>;
+      githubOrganizations: Maybe<
+        Array<{ __typename?: 'GithubOrganization' } & OrganizationFragment>
+      >;
+    }
+  >;
+};
+
 export type MakeSandboxesTemplateMutationVariables = Exact<{
   sandboxIds: Array<Scalars['ID']>;
 }>;
@@ -2149,6 +2174,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'alias'
   | 'title'
   | 'description'
+  | 'lastAccessedAt'
   | 'insertedAt'
   | 'updatedAt'
   | 'removedAt'

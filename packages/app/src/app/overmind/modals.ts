@@ -55,3 +55,5 @@ export const alertModal: {
 export const extensionInstalledModal = {
   result: true,
 };
+
+export const whatsNew = {};
