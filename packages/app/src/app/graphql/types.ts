@@ -2173,6 +2173,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'alias'
   | 'title'
   | 'description'
+  | 'lastAccessedAt'
   | 'insertedAt'
   | 'updatedAt'
   | 'removedAt'

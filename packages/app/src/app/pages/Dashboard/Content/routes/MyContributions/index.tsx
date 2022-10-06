@@ -6,6 +6,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
 
 export const MyContributionsPage = () => {
   const params = useParams<{ path: string }>();
@@ -22,7 +23,7 @@ export const MyContributionsPage = () => {
 
   const pageType: PageTypes = 'my-contributions';
 
-  const itemsToShow = (): DashboardGridItem[] => {
+  const getItemsToShow = (): DashboardGridItem[] => {
     if (contributions === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
@@ -33,11 +34,13 @@ export const MyContributionsPage = () => {
     }));
   };
 
+  const itemsToShow = getItemsToShow();
+
   return (
     <SelectionProvider
       page={pageType}
       activeTeamId={activeTeam}
-      items={itemsToShow()}
+      items={itemsToShow}
     >
       <Helmet>
         <title>{param || 'Dashboard'} - CodeSandbox</title>
@@ -51,7 +54,12 @@ export const MyContributionsPage = () => {
         showFilters={Boolean(param)}
         showSortOptions={Boolean(param)}
       />
-      <VariableGrid page={pageType} items={itemsToShow()} />
+      <Notification pageType={pageType}>
+        {itemsToShow.length === 0
+          ? 'Introducing contribution branches: the easiest way of contributing to open source.'
+          : 'Your contribution branches now live here, so you can manage your contributions easily.'}
+      </Notification>
+      <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
   );
 };
