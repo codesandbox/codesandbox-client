@@ -127,7 +127,17 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Fork Template
         </MenuItem>
       ) : null}
-      <MenuItem onSelect={() => history.push(url)}>Open {label}</MenuItem>
+      <MenuItem
+        onSelect={() => {
+          if (sandbox.isV2) {
+            window.location.href = url;
+          } else {
+            history.push(url);
+          }
+        }}
+      >
+        Open {label}
+      </MenuItem>
       <MenuItem
         onSelect={() => {
           window.open(`https://codesandbox.io${url}`, '_blank');
