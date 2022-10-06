@@ -151,7 +151,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   >('initial');
   // ❗️ We could combine viewState with selectedTemplate
   // and selectedRepo to limit the amount of states.
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateFragment>();
+  const [selectedTemplate] = useState<TemplateFragment>();
   const [selectedRepo, setSelectedRepo] = useState<GithubRepoToImport>();
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -180,8 +180,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   };
 
   const selectTemplate = (template: TemplateFragment) => {
-    setSelectedTemplate(template);
-    setViewState('fromTemplate');
+    createFromTemplate(template, {});
+
+    // Temporarily disable the second screen until we have more functionality on it
+    // setSelectedTemplate(template);
+    // setViewState('fromTemplate');
   };
 
   const selectGithubRepo = (repo: GithubRepoToImport) => {

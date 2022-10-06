@@ -3,7 +3,7 @@ import { TemplateFragment } from 'app/graphql/types';
 export type CreateSandboxParams = {
   name?: string;
   githubOwner?: string;
-  createRepo: boolean;
+  createRepo?: boolean;
 };
 
 export interface TemplateInfo {
