@@ -434,7 +434,7 @@ const TemplateInfo = ({ template }: TemplateInfoProps) => {
     <Stack direction="vertical" gap={6}>
       <UserIcon />
       <Stack direction="vertical">
-        <Text size={3} weight={500}>
+        <Text size={3} weight="500">
           {template.sandbox.title}
         </Text>
         <Text size={2} css={{ color: '#999', marginTop: '4px' }}>
