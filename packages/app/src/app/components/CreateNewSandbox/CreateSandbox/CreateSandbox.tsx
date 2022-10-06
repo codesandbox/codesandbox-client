@@ -44,9 +44,9 @@ const QUICK_START_IDS = [
   'new',
   'rjk9n4zj7m', // static v1
   'vue',
-  'k8dsq1', // blank v2
   'fxis37', // next v2
   'prp60l', // remix v2
+  'k8dsq1', // blank v2
   // '6xxu1m', // nuxt v2
   'vanilla',
   'angular',
