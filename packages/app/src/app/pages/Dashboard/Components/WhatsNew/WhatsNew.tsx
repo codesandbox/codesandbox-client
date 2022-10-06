@@ -145,7 +145,7 @@ const Topic = ({ children, icon, linkTo }: TopicProps) => (
       <Icon color="#EDFFA5" name={icon} />
     </Element>
     <Stack direction="vertical" gap={2}>
-      <Text weight="400" size={13} css={css({ lineHeight: '16px' })}>
+      <Text weight="400" size={13} css={css({ lineHeight: '19px' })}>
         {children}
       </Text>
       <Link
