@@ -43,8 +43,7 @@ const Homepage = () => (
       `}
     >
       <a
-        href="https://projects.codesandbox.io/"
-        target="_blank"
+        href="https://codesandbox.io/post/a-unified-codesandbox-experience"
         rel="noreferrer"
         title="Experience the future of web development."
       >
