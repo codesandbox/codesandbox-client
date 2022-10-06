@@ -91,7 +91,7 @@ export const RepositoriesPage = () => {
       repository,
     }));
 
-    if (viewMode === 'grid') {
+    if (viewMode === 'grid' && repoItems.length > 0) {
       repoItems.unshift({ type: 'import-repository' });
     }
 
