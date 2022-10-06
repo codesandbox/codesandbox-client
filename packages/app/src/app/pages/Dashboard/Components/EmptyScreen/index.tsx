@@ -218,6 +218,8 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
                   autoWidth={!match}
                   // ❗️ TODO: Insert right link
                   href="https://codesandbox.io/post/a-unified-codesandbox-experience"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Learn more
                 </Button>
