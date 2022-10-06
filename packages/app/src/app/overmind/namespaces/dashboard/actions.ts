@@ -12,7 +12,7 @@ import {
   CreateOrUpdateNpmRegistryMutationVariables,
   DeleteNpmRegistryMutationVariables,
 } from 'app/graphql/types';
-import { getDecoratedCollection } from './utils';
+import { getDecoratedCollection, sortByNameAscending } from './utils';
 import { OrderBy, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
 
@@ -1986,7 +1986,7 @@ export const getRepositoriesByTeam = async ({ state, effects }: Context) => {
       return;
     }
 
-    dashboard.repositories = unsyncedRepositories;
+    dashboard.repositories = unsyncedRepositories.sort(sortByNameAscending);
 
     // Then fetch data synced with GitHub to make sure
     // what we show is up-to-date.
@@ -2001,7 +2001,7 @@ export const getRepositoriesByTeam = async ({ state, effects }: Context) => {
       return;
     }
 
-    dashboard.repositories = syncedRepositories;
+    dashboard.repositories = syncedRepositories.sort(sortByNameAscending);
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting your repositories'
