@@ -5,7 +5,6 @@ import {
   githubRepoUrl,
   v2BranchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { useHistory } from 'react-router-dom';
 import { Context, MenuItem } from '../ContextMenu';
 
 type BranchMenuProps = {
@@ -13,7 +12,6 @@ type BranchMenuProps = {
 };
 export const BranchMenu: React.FC<BranchMenuProps> = ({ branch }) => {
   const { visible, setVisibility, position } = React.useContext(Context);
-  const history = useHistory();
 
   const { name, project, contribution } = branch;
   const branchUrl = v2BranchUrl({ name, project });
@@ -31,7 +29,13 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch }) => {
       position={position}
       style={{ width: 120 }}
     >
-      <MenuItem onSelect={() => history.push(branchUrl)}>Open branch</MenuItem>
+      <MenuItem
+        onSelect={() => {
+          window.location.href = branchUrl;
+        }}
+      >
+        Open branch
+      </MenuItem>
       <MenuItem onSelect={() => window.open(branchUrl, '_blank')}>
         Open branch in a new tab
       </MenuItem>

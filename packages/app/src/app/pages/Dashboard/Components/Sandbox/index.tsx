@@ -198,7 +198,11 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
       if (sandboxAnalyticsEvent) {
         trackImprovedDashboardEvent(sandboxAnalyticsEvent);
       }
-      history.push(url);
+      if (sandbox.isV2) {
+        window.location.href = url;
+      } else {
+        history.push(url);
+      }
     }
   };
 
