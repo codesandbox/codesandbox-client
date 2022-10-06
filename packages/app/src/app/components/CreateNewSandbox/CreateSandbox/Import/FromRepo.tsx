@@ -1,5 +1,5 @@
 import { useAppState } from 'app/overmind';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Element,
@@ -11,6 +11,7 @@ import {
   Text,
 } from '@codesandbox/components';
 import styled, { keyframes } from 'styled-components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { GithubRepoToImport } from './types';
 import { StyledSelect } from '../elements';
@@ -63,6 +64,11 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
       return;
     }
 
+    track('Create New - Create fork', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+
     setIsForking(true);
     await forkAndRedirect({
       source: { owner: repository.owner.login, name: repository.name },
@@ -78,7 +84,14 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
     setIsForking(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    track('Create New - View create fork', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+  }, []);
+
+  useEffect(() => {
     setSelectedOrg(
       'data' in githubOrganizations
         ? getGihubOrgMatchingCsbTeam(
@@ -109,7 +122,6 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
         </Text>
         <CloudBetaBadge />
       </Stack>
-
       <Element
         as="form"
         css={{

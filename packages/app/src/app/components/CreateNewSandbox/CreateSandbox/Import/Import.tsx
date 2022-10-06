@@ -1,3 +1,4 @@
+import track from '@codesandbox/common/lib/utils/analytics';
 import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -96,6 +97,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    track('Create New - Import Repo', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
     setShouldFetch(true);
   };
 
