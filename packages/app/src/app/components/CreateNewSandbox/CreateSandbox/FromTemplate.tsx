@@ -91,7 +91,7 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
               id="name-desc"
               css={{ color: '#999999', fontSize: '12px' }}
             >
-              Leaving the field empty will generate a random name.
+              Leaving this field empty will generate a random name.
             </Element>
           </Stack>
 
@@ -141,7 +141,11 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
             >
               Cancel
             </Button>
-            <Button type="submit" variant="primary" css={{ width: 'auto' }}>
+            <Button
+              type="submit"
+              variant="primary"
+              css={{ width: 'auto', paddingRight: 24, paddingLeft: 24 }}
+            >
               Create Sandbox
             </Button>
           </Stack>
