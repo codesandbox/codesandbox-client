@@ -242,6 +242,7 @@ export type CurrentUserNotificationsArgs = {
 export type CurrentUserRecentBranchesArgs = {
   contribution: Maybe<Scalars['Boolean']>;
   limit?: Maybe<Scalars['Int']>;
+  teamId: Maybe<Scalars['UUID4']>;
 };
 
 export type CurrentUserRecentProjectsArgs = {
@@ -3118,6 +3119,7 @@ export type RecentlyAccessedSandboxesQuery = {
 
 export type RecentlyAccessedBranchesQueryVariables = Exact<{
   limit: Scalars['Int'];
+  teamId: Maybe<Scalars['UUID4']>;
 }>;
 
 export type RecentlyAccessedBranchesQuery = { __typename?: 'RootQueryType' } & {
