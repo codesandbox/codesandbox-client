@@ -40,14 +40,15 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch }) => {
           Open on GitHub
         </MenuItem>
       )}
+      {/* TODO: Implement remove branch <Menu.Divider />
       <Menu.Divider />
       <MenuItem
         onSelect={() => {
-          /* TODO: Implement remove branch */
+
         }}
       >
         Remove from CodeSandbox
-      </MenuItem>
+      </MenuItem> */}
     </Menu.ContextMenu>
   );
 };
