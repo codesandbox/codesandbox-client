@@ -148,6 +148,10 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const selected = selectedIds.includes(sandbox.id);
   const isDragging = isAnythingDragging && selected;
 
+  const sandboxAnalyticsEvent = !autoFork
+    ? MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]
+    : null;
+
   const onClick = event => {
     onSelectionClick(event, sandbox.id);
   };
@@ -168,10 +172,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
       onContextMenu(event);
       return;
     }
-
-    const sandboxAnalyticsEvent = !autoFork
-      ? MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]
-      : null;
 
     // Templates in Home should fork, everything else opens
     if (event.ctrlKey || event.metaKey) {
@@ -246,32 +246,35 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     onSubmit();
   }, [onSubmit]);
 
+  const baseInteractions = {
+    selected,
+    onBlur,
+    onContextMenu,
+  };
   const interactionProps =
     page === 'recent'
       ? {
-          selected,
-          as: Link,
-          to: url,
+          ...baseInteractions,
+          as: sandbox.isV2 ? 'a' : Link,
+          to: sandbox.isV2 ? undefined : url,
+          href: sandbox.isV2 ? url : undefined,
+          onClick: () => {
+            if (sandboxAnalyticsEvent) {
+              trackImprovedDashboardEvent(sandboxAnalyticsEvent);
+            }
+          },
           style: {
             outline: 'none',
             textDecoration: 'none',
           },
-          onBlur,
-          onContextMenu,
         }
       : {
-          tabIndex: 0, // make div focusable
-          style: {
-            outline: 'none',
-          }, // we handle outline with border
-          selected,
+          ...baseInteractions,
+          // Recent page does not support selection
+          'data-selection-id': sandbox.id,
           onClick,
           onMouseDown,
           onDoubleClick,
-          onContextMenu,
-          onBlur,
-          // Recent page does not support selection
-          'data-selection-id': sandbox.id,
         };
 
   const sandboxProps = {
