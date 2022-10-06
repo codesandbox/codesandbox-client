@@ -114,8 +114,8 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
                     Start from a template
                   </Text>
                 </Button> */}
-                {/* ❗️ TODO: Insert right link */}
                 <Button
+                  as="a"
                   variant="link"
                   css={css({
                     height: 'auto',
@@ -123,6 +123,10 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
                     fontSize: '16px',
                   })}
                   autoWidth={!match}
+                  // ❗️ TODO: Insert right link
+                  href="https://codesandbox.io/post/a-unified-codesandbox-experience"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Learn more
                 </Button>
@@ -204,7 +208,6 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
                     </Text>
                   </Stack>
                 </Button>
-                {/* ❗️ TODO: Insert right link */}
                 <Button
                   variant="link"
                   css={css({
@@ -213,6 +216,8 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
                     fontSize: '16px',
                   })}
                   autoWidth={!match}
+                  // ❗️ TODO: Insert right link
+                  href="https://codesandbox.io/post/a-unified-codesandbox-experience"
                 >
                   Learn more
                 </Button>
