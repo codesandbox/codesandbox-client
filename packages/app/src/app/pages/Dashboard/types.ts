@@ -143,9 +143,21 @@ export type DashboardBranch = {
   branch: Branch;
 };
 
+export type DashboardNewBranch = {
+  type: 'new-branch';
+  repo: {
+    owner: string;
+    name: string;
+  };
+};
+
 export type DashboardRepository = {
   type: 'repository';
   repository: Repository;
+};
+
+export type DashboardImportRepository = {
+  type: 'import-repository';
 };
 
 export type PageTypes = PT;
@@ -167,4 +179,6 @@ export type DashboardGridItem =
   | DashboardSkeleton
   | DashboardCommunitySandbox
   | DashboardBranch
-  | DashboardRepository;
+  | DashboardNewBranch
+  | DashboardRepository
+  | DashboardImportRepository;

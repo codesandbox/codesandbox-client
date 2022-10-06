@@ -4,6 +4,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { Stack, Text, Button, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
+import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
@@ -30,6 +31,7 @@ type Props = {
   albumId?: string;
   activeTeam: string;
   CustomFilters?: React.ReactElement;
+  selectedRepo?: { owner: string; name: string };
 };
 
 export const Header = ({
@@ -46,10 +48,18 @@ export const Header = ({
   showBetaBadge = false,
   CustomFilters,
   actions = [],
+  selectedRepo,
 }: Props) => {
   const location = useLocation();
   const { modals } = useActions();
   const { dashboard } = useAppState();
+
+  const repositoriesListPage =
+    location.pathname.includes('/repositories') &&
+    !location.pathname.includes('/repositories/github');
+  const repositoryBranchesPage = location.pathname.includes(
+    '/repositories/github'
+  );
 
   return (
     <Stack
@@ -96,19 +106,58 @@ export const Header = ({
             New Folder
           </Button>
         )}
-        {location.pathname.includes('/repositories') &&
-          dashboard.viewMode === 'list' && (
+        {repositoriesListPage && dashboard.viewMode === 'list' && (
+          <Button
+            onClick={() =>
+              modals.newSandboxModal.open({ initialTab: 'import' })
+            }
+            variant="link"
+            css={css({
+              fontSize: 2,
+              color: 'mutedForeground',
+              padding: 0,
+              width: 'auto',
+            })}
+          >
+            <Icon
+              name="plus"
+              size={20}
+              title="Import repo"
+              css={css({ paddingRight: 2 })}
+            />
+            Import repo
+          </Button>
+        )}
+
+        {repositoryBranchesPage &&
+          dashboard.viewMode === 'list' &&
+          selectedRepo && (
             <Button
-              onClick={() => modals.newSandboxModal.open({})}
+              as="a"
+              href={v2DraftBranchUrl(selectedRepo.owner, selectedRepo.name)}
               variant="link"
               css={css({
+                display: 'flex',
+                alignItems: 'center',
+                textDecoration: 'none',
                 fontSize: 2,
+                padding: 2,
                 color: 'mutedForeground',
-                padding: 0,
                 width: 'auto',
+                transition: `color ease-in`,
+                transitionDuration: theme => theme.speeds[2],
+                '&:hover': {
+                  color: '#e5e5e5',
+                },
               })}
             >
-              + Import Repo
+              <Icon
+                name="plus"
+                size={20}
+                title="Create branch"
+                css={css({ paddingRight: 2 })}
+              />
+              Create branch
             </Button>
           )}
 
