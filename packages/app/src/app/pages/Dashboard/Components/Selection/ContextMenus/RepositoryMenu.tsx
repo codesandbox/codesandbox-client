@@ -38,14 +38,14 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
         Open on GitHub
       </MenuItem>
 
+      {/* TODO: Implement remove repository
       <Menu.Divider />
       <MenuItem
         onSelect={() => {
-          /* TODO: Implement remove repository */
         }}
       >
         Remove from CodeSandbox
-      </MenuItem>
+      </MenuItem> */}
     </Menu.ContextMenu>
   );
 };
