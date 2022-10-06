@@ -80,21 +80,33 @@ export const WhatsNew = ({ onClose }: WhatsNewProps) => {
               >
                 <Grid columnGap={5}>
                   <Column span={matchSmall || matchMedium ? 6 : 3}>
-                    <Topic icon="repository">
+                    <Topic
+                      // ❗️ TODO: Insert right link
+                      linkTo="https://codesandbox.io/post/a-unified-codesandbox-experience"
+                      icon="repository"
+                    >
                       Projects is now <Text weight="700">Repositories</Text>: an
                       improved git workflow powered by the cloud.
                     </Topic>
                   </Column>
 
                   <Column span={matchSmall || matchMedium ? 6 : 3}>
-                    <Topic icon="grid">
+                    <Topic
+                      // ❗️ TODO: Insert right link
+                      linkTo="https://codesandbox.io/post/a-unified-codesandbox-experience"
+                      icon="grid"
+                    >
                       Supercharge your development workflow with our{' '}
                       <Text weight="700">new dashboard</Text>.
                     </Topic>
                   </Column>
 
                   <Column span={matchSmall || matchMedium ? 6 : 3}>
-                    <Topic icon="cloud">
+                    <Topic
+                      // ❗️ TODO: Insert right link
+                      linkTo="https://codesandbox.io/post/a-unified-codesandbox-experience"
+                      icon="cloud"
+                    >
                       Go limitless with our{' '}
                       <Text weight="700">Cloud Beta Sandboxes</Text>, powered by
                       fast micro VMs.
@@ -102,7 +114,11 @@ export const WhatsNew = ({ onClose }: WhatsNewProps) => {
                   </Column>
 
                   <Column span={matchSmall || matchMedium ? 6 : 3}>
-                    <Topic icon="tagSelfClosing">
+                    <Topic
+                      // ❗️ TODO: Insert right link
+                      linkTo="https://codesandbox.io/post/a-unified-codesandbox-experience"
+                      icon="tagSelfClosing"
+                    >
                       Use our <Text weight="700">new editor</Text>, work
                       straight from VS Code or through our native iOS app.
                     </Topic>
@@ -120,8 +136,7 @@ export const WhatsNew = ({ onClose }: WhatsNewProps) => {
 interface TopicProps {
   children: React.ReactNode[];
   icon: React.ComponentProps<typeof Icon>['name'];
-  // ❗️ TODO: Link
-  linkTo?: string;
+  linkTo: string;
 }
 
 const Topic = ({ children, icon, linkTo }: TopicProps) => (
@@ -133,8 +148,13 @@ const Topic = ({ children, icon, linkTo }: TopicProps) => (
       <Text weight="400" size={13} css={css({ lineHeight: '16px' })}>
         {children}
       </Text>
-      {/* ❗️ TODO: Link to the right page */}
-      <Link variant="muted" size={12} css={css({ lineHeight: '16px' })}>
+      <Link
+        href={linkTo}
+        target="_blank"
+        variant="muted"
+        size={12}
+        css={css({ lineHeight: '16px' })}
+      >
         Learn more
       </Link>
     </Stack>
