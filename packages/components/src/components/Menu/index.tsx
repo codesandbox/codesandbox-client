@@ -302,7 +302,13 @@ const MenuLink: React.FunctionComponent<MenuLinkProps> = ({
     );
   }
   return (
-    <ReachMenu.MenuLink data-component="MenuLink" href={href} title={title}>
+    <ReachMenu.MenuLink
+      data-component="MenuLink"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={title}
+    >
       {children}
     </ReachMenu.MenuLink>
   );
