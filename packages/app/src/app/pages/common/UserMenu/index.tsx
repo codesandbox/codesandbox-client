@@ -3,6 +3,7 @@ import {
   dashboardUrl,
   profileUrl,
   searchUrl,
+  docsUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
@@ -67,7 +68,7 @@ export const UserMenu: FunctionComponent & {
             </Stack>
           </Menu.Link>
 
-          <Menu.Link href="/docs">
+          <Menu.Link href={docsUrl()}>
             <Stack align="center" gap={2}>
               <Icon name="documentation" size={16} />
               <Text>Documentation</Text>
@@ -91,7 +92,7 @@ export const UserMenu: FunctionComponent & {
           )}
 
           {showBecomePro && (
-            <Menu.Link href="/pro">
+            <Menu.Link to="/pro">
               <Stack align="center" gap={2}>
                 <Icon name="proBadge" size={16} />
                 <Text>Upgrade to Pro</Text>
@@ -102,7 +103,7 @@ export const UserMenu: FunctionComponent & {
           <Menu.Divider />
 
           {showManageSubscription && (
-            <Menu.Link href={`/dashboard/settings?workspace=${activeTeam}`}>
+            <Menu.Link to={`/dashboard/settings?workspace=${activeTeam}`}>
               <Stack align="center" gap={2}>
                 <Icon name="proBadge" size={16} />
                 <Text>Subscription</Text>
