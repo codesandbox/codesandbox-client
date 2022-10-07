@@ -13,6 +13,7 @@ import { createModals } from './factories';
 import * as modals from './modals';
 import * as comments from './namespaces/comments';
 import * as dashboard from './namespaces/dashboard';
+import * as sidebar from './namespaces/sidebar';
 import * as deployment from './namespaces/deployment';
 import * as editor from './namespaces/editor';
 import * as explore from './namespaces/explore';
@@ -43,6 +44,7 @@ export const config = merge(
     live,
     workspace,
     dashboard,
+    sidebar,
     deployment,
     files,
     git,

@@ -580,6 +580,8 @@ export type ProSubscription = {
   paymentProvider: Maybe<SubscriptionPaymentProvider>;
   quantity: Maybe<Scalars['Int']>;
   status: SubscriptionStatus;
+  trialEnd: Maybe<Scalars['DateTime']>;
+  trialStart: Maybe<Scalars['DateTime']>;
   type: SubscriptionType;
   unitPrice: Maybe<Scalars['Int']>;
   updateBillingUrl: Maybe<Scalars['String']>;
@@ -3389,6 +3391,60 @@ export type RecentNotificationsQuery = { __typename?: 'RootQueryType' } & {
     { __typename?: 'CurrentUser' } & {
       notifications: Array<
         { __typename?: 'Notification' } & RecentNotificationFragment
+      >;
+    }
+  >;
+};
+
+export type SidebarSyncedSandboxFragmentFragment = {
+  __typename?: 'Sandbox';
+} & Pick<Sandbox, 'id'>;
+
+export type SidebarCollectionFragmentFragment = {
+  __typename?: 'Collection';
+} & Pick<Collection, 'id' | 'path'>;
+
+export type SidebarTemplateFragmentFragment = {
+  __typename?: 'Template';
+} & Pick<Template, 'id'>;
+
+export type PersonalSidebarDataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PersonalSidebarDataQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      sandboxes: Array<
+        { __typename?: 'Sandbox' } & SidebarSyncedSandboxFragmentFragment
+      >;
+      collections: Array<
+        { __typename?: 'Collection' } & SidebarCollectionFragmentFragment
+      >;
+      templates: Array<
+        { __typename?: 'Template' } & SidebarTemplateFragmentFragment
+      >;
+    }
+  >;
+};
+
+export type TeamSidebarDataQueryVariables = Exact<{
+  id: Scalars['UUID4'];
+}>;
+
+export type TeamSidebarDataQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      team: Maybe<
+        { __typename?: 'Team' } & {
+          sandboxes: Array<
+            { __typename?: 'Sandbox' } & SidebarSyncedSandboxFragmentFragment
+          >;
+          collections: Array<
+            { __typename?: 'Collection' } & SidebarCollectionFragmentFragment
+          >;
+          templates: Array<
+            { __typename?: 'Template' } & SidebarTemplateFragmentFragment
+          >;
+        }
       >;
     }
   >;
