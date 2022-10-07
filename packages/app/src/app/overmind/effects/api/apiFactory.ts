@@ -3,11 +3,11 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { camelizeKeys, decamelizeKeys } from 'humps';
 
 const API_ROOT = '/api';
-const API_ROOT_V1 = `${API_ROOT}/v1`;
-const API_ROOT_V2 = `${API_ROOT}/beta`;
 
+// If the path starts with `/beta`, do not append
+// `/v1` to the api root url.
 const getBaseApi = (path: string) =>
-  path.startsWith('/beta') ? API_ROOT_V2 : API_ROOT_V1;
+  path.startsWith('/beta') ? API_ROOT : `${API_ROOT}/v1`;
 
 export type ApiError = AxiosError<
   { errors: string[] } | { error: string } | any
