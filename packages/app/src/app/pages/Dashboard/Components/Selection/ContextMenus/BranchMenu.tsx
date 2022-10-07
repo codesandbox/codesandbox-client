@@ -4,7 +4,9 @@ import { BranchFragment as Branch } from 'app/graphql/types';
 import {
   githubRepoUrl,
   v2BranchUrl,
+  dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { useHistory } from 'react-router-dom';
 import { Context, MenuItem } from '../ContextMenu';
 
 type BranchMenuProps = {
@@ -15,12 +17,19 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch }) => {
 
   const { name, project, contribution } = branch;
   const branchUrl = v2BranchUrl({ name, project });
+
+  const { name: repoName, owner } = project.repository;
+
   const githubUrl = githubRepoUrl({
     branch: name,
-    repo: project.repository.name,
-    username: project.repository.owner,
+    repo: repoName,
+    username: owner,
     path: '',
   });
+
+  const repoUrl = dashboard.repository({ owner, name: repoName });
+
+  const history = useHistory();
 
   return (
     <Menu.ContextMenu
@@ -44,6 +53,9 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch }) => {
           Open on GitHub
         </MenuItem>
       )}
+      <MenuItem onSelect={() => history.push(repoUrl)}>
+        Open repository
+      </MenuItem>
       {/* TODO: Implement remove branch <Menu.Divider />
       <Menu.Divider />
       <MenuItem
