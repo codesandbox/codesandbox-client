@@ -70,6 +70,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   }, [actions.dashboard, state.activeTeam]);
 
   React.useEffect(() => {
+    actions.sidebar.getSidebarData(
+      state.activeTeam !== personalWorkspaceId ? state.activeTeam : undefined
+    );
+  }, [state.activeTeam, personalWorkspaceId, actions.sidebar]);
+
+  React.useEffect(() => {
     if (state.activeTeam) {
       const team = dashboard.teams.find(({ id }) => id === state.activeTeam);
       if (team) {
@@ -84,6 +90,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
 
+  // ❗️ TODO: Replace dashboard.allCollections this with state.sidebar.collections
+  // that way we can get rid of dashboard state and actions later.
   const folders =
     (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||
     [];
@@ -239,12 +247,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
           />
-          <RowItem
-            name="Templates"
-            page="templates"
-            path={dashboardUrls.templates(activeTeam)}
-            icon="star"
-          />
+
+          {state.sidebar.templates ? (
+            <RowItem
+              name="Templates"
+              page="templates"
+              path={dashboardUrls.templates(activeTeam)}
+              icon="star"
+            />
+          ) : null}
+
           <NestableRowItem
             name="All sandboxes"
             path={dashboardUrls.sandboxes('/', activeTeam)}
@@ -265,12 +277,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon="server"
             />
           )}
-          <RowItem
-            name="Synced"
-            page="synced-sandboxes"
-            path={dashboardUrls.syncedSandboxes(activeTeam)}
-            icon="sync"
-          />
+
+          {state.sidebar.syncedSandboxes.length > 0 ? (
+            <RowItem
+              name="Synced"
+              page="synced-sandboxes"
+              path={dashboardUrls.syncedSandboxes(activeTeam)}
+              icon="sync"
+            />
+          ) : null}
+
           <RowItem
             name="Archive"
             page="archive"
