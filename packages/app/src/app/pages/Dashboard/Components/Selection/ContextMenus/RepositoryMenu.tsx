@@ -1,7 +1,10 @@
 import React from 'react';
 import { Menu } from '@codesandbox/components';
 import { ProjectFragment as Repository } from 'app/graphql/types';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  dashboard,
+  v2DraftBranchUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { useHistory } from 'react-router-dom';
 import { Context, MenuItem } from '../ContextMenu';
 
@@ -19,6 +22,11 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
     owner: providerRepository.owner,
     name: providerRepository.name,
   });
+  const branchFromDefaultUrl = v2DraftBranchUrl(
+    providerRepository.owner,
+    providerRepository.name
+  );
+
   const githubUrl = `https://github.com/${providerRepository.owner}/${providerRepository.name}`;
 
   return (
@@ -36,6 +44,10 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
       </MenuItem>
       <MenuItem onSelect={() => window.open(githubUrl, '_blank')}>
         Open on GitHub
+      </MenuItem>
+      <Menu.Divider />
+      <MenuItem onSelect={() => window.open(branchFromDefaultUrl, '_blank')}>
+        Create branch
       </MenuItem>
 
       {/* TODO: Implement remove repository

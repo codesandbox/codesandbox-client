@@ -141,7 +141,6 @@ export const Header = ({
                 alignItems: 'center',
                 textDecoration: 'none',
                 fontSize: 2,
-                padding: 2,
                 color: 'mutedForeground',
                 width: 'auto',
                 transition: `color ease-in`,
