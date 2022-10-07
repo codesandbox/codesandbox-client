@@ -13,6 +13,7 @@ interface TemplateCategoryListProps {
   showBetaTag?: boolean;
   templates: TemplateFragment[];
   onSelectTemplate: (template: TemplateFragment) => void;
+  onOpenTemplate: (template: TemplateFragment) => void;
 }
 
 export const TemplateCategoryList = ({
@@ -20,6 +21,7 @@ export const TemplateCategoryList = ({
   showBetaTag,
   templates,
   onSelectTemplate,
+  onOpenTemplate,
 }: TemplateCategoryListProps) => {
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: title });
@@ -56,6 +58,7 @@ export const TemplateCategoryList = ({
               key={template.id}
               template={template}
               onSelectTemplate={onSelectTemplate}
+              onOpenTemplate={onOpenTemplate}
             />
           ))
         ) : (

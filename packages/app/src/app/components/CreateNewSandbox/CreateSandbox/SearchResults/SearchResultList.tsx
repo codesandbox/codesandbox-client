@@ -8,6 +8,7 @@ import { TemplateCard } from '../TemplateCard';
 
 type ResultsProps = InfiniteHitsProvided<AlgoliaSandboxHit> & {
   onSelectTemplate: (template: TemplateFragment) => void;
+  onOpenTemplate: (template: TemplateFragment) => void;
 };
 
 const Results = (props: ResultsProps) => {
@@ -68,6 +69,7 @@ const Results = (props: ResultsProps) => {
           key={template.id}
           template={template}
           onSelectTemplate={props.onSelectTemplate}
+          onOpenTemplate={props.onOpenTemplate}
         />
       ))}
       <div
