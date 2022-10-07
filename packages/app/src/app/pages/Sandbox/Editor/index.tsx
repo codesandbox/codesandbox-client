@@ -7,7 +7,7 @@ import {
   Element,
   Stack,
 } from '@codesandbox/components';
-import { CreateSandbox } from 'app/components/CreateNewSandbox/CreateSandbox';
+import { CreateSandbox } from 'app/components/CreateSandbox';
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
 import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';

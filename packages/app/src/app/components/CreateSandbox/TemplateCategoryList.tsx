@@ -2,11 +2,10 @@ import React, { useEffect } from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Text, Stack } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { TemplateFragment } from 'app/graphql/types';
 import { TemplateCard } from './TemplateCard';
 import { TemplateGrid } from './elements';
-import { CloudBetaBadge } from '../../CloudBetaBadge';
 
 interface TemplateCategoryListProps {
   title: string;

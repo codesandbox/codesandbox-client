@@ -6,6 +6,7 @@ import {
   SkeletonText,
   ThemeProvider,
 } from '@codesandbox/components';
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { useActions, useAppState } from 'app/overmind';
 import React, { ReactNode, useState, useEffect } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
@@ -31,7 +32,6 @@ import { useEssentialTemplates } from './useEssentialTemplates';
 import { FromTemplate } from './FromTemplate';
 import { useOfficialTemplates } from './useOfficialTemplates';
 import { useTeamTemplates } from './useTeamTemplates';
-import { CloudBetaBadge } from '../../CloudBetaBadge';
 import { CreateSandboxParams } from './types';
 import { SearchBox } from './SearchBox';
 import { SearchResults } from './SearchResults';

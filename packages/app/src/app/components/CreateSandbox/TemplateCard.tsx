@@ -1,11 +1,10 @@
 import React from 'react';
 import { Stack, Text } from '@codesandbox/components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { TemplateButton } from './elements';
-import { CloudBetaBadge } from '../../CloudBetaBadge';
 
 interface TemplateCardProps {
   template: TemplateFragment;

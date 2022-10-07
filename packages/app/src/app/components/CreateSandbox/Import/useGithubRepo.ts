@@ -3,7 +3,7 @@ import {
   GetGithubRepoQuery,
   GetGithubRepoQueryVariables,
 } from 'app/graphql/types';
-import { GET_GITHUB_REPO } from '../../queries';
+import { GET_GITHUB_REPO } from '../queries';
 import { GithubRepoToImport } from './types';
 
 type State =

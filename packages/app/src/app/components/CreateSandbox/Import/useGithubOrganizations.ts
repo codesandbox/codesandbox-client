@@ -5,7 +5,7 @@ import {
   ProfileFragment,
   OrganizationFragment,
 } from 'app/graphql/types';
-import { GET_GITHUB_ORGANIZATIONS } from '../../queries';
+import { GET_GITHUB_ORGANIZATIONS } from '../queries';
 
 export type State =
   | { state: 'loading' }

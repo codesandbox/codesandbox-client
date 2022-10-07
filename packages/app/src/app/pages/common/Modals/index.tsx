@@ -3,7 +3,7 @@ import { ThemeProvider } from '@codesandbox/components';
 import {
   COLUMN_MEDIA_THRESHOLD,
   CreateSandbox,
-} from 'app/components/CreateNewSandbox/CreateSandbox';
+} from 'app/components/CreateSandbox';
 import { useLocation } from 'react-router-dom';
 import Modal from 'app/components/Modal';
 import { useAppState, useActions } from 'app/overmind';

@@ -4,7 +4,7 @@ import {
   ListPersonalTemplatesQueryVariables,
   TemplateFragment,
 } from 'app/graphql/types';
-import { LIST_PERSONAL_TEMPLATES } from '../queries';
+import { LIST_PERSONAL_TEMPLATES } from './queries';
 
 type State =
   | { state: 'loading' }
