@@ -1,4 +1,5 @@
 import { useAppState } from 'app/overmind';
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import React, { useState } from 'react';
 import {
   Stack,
@@ -10,7 +11,6 @@ import {
 } from '@codesandbox/components';
 
 import { StyledInput, StyledSelect } from './elements';
-import { CloudBetaBadge } from '../../CloudBetaBadge';
 import { CreateSandboxParams } from './types';
 
 export interface FromTemplateProps {

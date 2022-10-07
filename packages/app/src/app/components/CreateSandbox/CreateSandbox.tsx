@@ -6,6 +6,7 @@ import {
   SkeletonText,
   ThemeProvider,
 } from '@codesandbox/components';
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { useActions, useAppState } from 'app/overmind';
 import React, { ReactNode, useState, useEffect } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
@@ -13,6 +14,7 @@ import slugify from '@codesandbox/common/lib/utils/slugify';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import {
   Container,
@@ -30,7 +32,6 @@ import { useEssentialTemplates } from './useEssentialTemplates';
 import { FromTemplate } from './FromTemplate';
 import { useOfficialTemplates } from './useOfficialTemplates';
 import { useTeamTemplates } from './useTeamTemplates';
-import { CloudBetaBadge } from '../../CloudBetaBadge';
 import { CreateSandboxParams } from './types';
 import { SearchBox } from './SearchBox';
 import { SearchResults } from './SearchResults';
@@ -186,6 +187,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     // Temporarily disable the second screen until we have more functionality on it
     // setSelectedTemplate(template);
     // setViewState('fromTemplate');
+  };
+
+  const openTemplate = (template: TemplateFragment) => {
+    const { sandbox } = template;
+    const url = sandboxUrl(sandbox);
+    window.open(url, '_blank');
   };
 
   const selectGithubRepo = (repo: GithubRepoToImport) => {
@@ -391,6 +398,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                 <SearchResults
                   search={searchQuery}
                   onSelectTemplate={selectTemplate}
+                  onOpenTemplate={openTemplate}
                 />
               ) : (
                 <>
@@ -406,6 +414,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                         selectTemplate(template);
                       }}
+                      onOpenTemplate={openTemplate}
                     />
                   </Panel>
 
@@ -430,6 +439,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                           selectTemplate(template);
                         }}
+                        onOpenTemplate={openTemplate}
                       />
                     </Panel>
                   ) : null}
@@ -448,6 +458,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                         selectTemplate(template);
                       }}
+                      onOpenTemplate={openTemplate}
                     />
                   </Panel>
 
@@ -463,6 +474,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                         selectTemplate(template);
                       }}
+                      onOpenTemplate={openTemplate}
                     />
                   </Panel>
 
@@ -484,6 +496,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                               selectTemplate(template);
                             }}
+                            onOpenTemplate={openTemplate}
                           />
                         </Panel>
                       ))

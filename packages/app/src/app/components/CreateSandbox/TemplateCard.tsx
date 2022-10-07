@@ -1,20 +1,21 @@
 import React from 'react';
 import { Stack, Text } from '@codesandbox/components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { TemplateButton } from './elements';
-import { CloudBetaBadge } from '../../CloudBetaBadge';
 
 interface TemplateCardProps {
   template: TemplateFragment;
   onSelectTemplate: (template: TemplateFragment) => void;
+  onOpenTemplate: (template: TemplateFragment) => void;
 }
 
 export const TemplateCard = ({
   template,
   onSelectTemplate,
+  onOpenTemplate,
 }: TemplateCardProps) => {
   const { UserIcon } = getTemplateIcon(
     template.iconUrl,
@@ -29,7 +30,23 @@ export const TemplateCard = ({
     <TemplateButton
       title={sandboxTitle}
       type="button"
-      onClick={() => onSelectTemplate(template)}
+      onClick={evt => {
+        if (evt.metaKey || evt.ctrlKey) {
+          onOpenTemplate(template);
+        } else {
+          onSelectTemplate(template);
+        }
+      }}
+      onKeyDown={evt => {
+        if (evt.key === 'Enter') {
+          evt.preventDefault();
+          if (evt.metaKey || evt.ctrlKey) {
+            onOpenTemplate(template);
+          } else {
+            onSelectTemplate(template);
+          }
+        }
+      }}
     >
       <Stack css={{ height: '100%' }} direction="vertical" gap={4}>
         <Stack

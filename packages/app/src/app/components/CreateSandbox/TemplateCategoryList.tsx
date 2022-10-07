@@ -2,17 +2,17 @@ import React, { useEffect } from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Text, Stack } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-
+import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { TemplateFragment } from 'app/graphql/types';
 import { TemplateCard } from './TemplateCard';
 import { TemplateGrid } from './elements';
-import { CloudBetaBadge } from '../../CloudBetaBadge';
 
 interface TemplateCategoryListProps {
   title: string;
   showBetaTag?: boolean;
   templates: TemplateFragment[];
   onSelectTemplate: (template: TemplateFragment) => void;
+  onOpenTemplate: (template: TemplateFragment) => void;
 }
 
 export const TemplateCategoryList = ({
@@ -20,6 +20,7 @@ export const TemplateCategoryList = ({
   showBetaTag,
   templates,
   onSelectTemplate,
+  onOpenTemplate,
 }: TemplateCategoryListProps) => {
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: title });
@@ -56,6 +57,7 @@ export const TemplateCategoryList = ({
               key={template.id}
               template={template}
               onSelectTemplate={onSelectTemplate}
+              onOpenTemplate={onOpenTemplate}
             />
           ))
         ) : (

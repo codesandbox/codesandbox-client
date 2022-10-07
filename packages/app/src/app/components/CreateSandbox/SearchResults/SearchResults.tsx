@@ -27,9 +27,11 @@ const GlobalSearchStyles = createGlobalStyle`
 export const SearchResults = ({
   search,
   onSelectTemplate,
+  onOpenTemplate,
 }: {
   search: string;
   onSelectTemplate: (template: TemplateFragment) => void;
+  onOpenTemplate: (template: TemplateFragment) => void;
 }) => (
   <>
     <GlobalSearchStyles />
@@ -67,7 +69,10 @@ export const SearchResults = ({
         </Text>
 
         <LoadingIndicator />
-        <SearchResultList onSelectTemplate={onSelectTemplate} />
+        <SearchResultList
+          onSelectTemplate={onSelectTemplate}
+          onOpenTemplate={onOpenTemplate}
+        />
       </Stack>
     </InstantSearch>
   </>
