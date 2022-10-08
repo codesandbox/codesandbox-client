@@ -1,8 +1,4 @@
-import type {
-  SidebarCollectionFragmentFragment,
-  SidebarSyncedSandboxFragmentFragment,
-  SidebarTemplateFragmentFragment,
-} from 'app/graphql/types';
+import type { SidebarCollectionFragmentFragment } from 'app/graphql/types';
 
 /**
  * SidebarState, required to be named just State. Can be an interface instead
@@ -11,16 +7,16 @@ import type {
  * ❗️ TODO: Add sidebar notification indicator state
  */
 export interface State {
-  syncedSandboxes: Array<SidebarSyncedSandboxFragmentFragment> | null;
+  hasSyncedSandboxes: boolean | null;
+  hasTemplates: boolean | null;
   collections: Array<SidebarCollectionFragmentFragment> | null;
-  templates: Array<SidebarTemplateFragmentFragment> | null;
 }
 
 /**
  * Default state for the sidebar
  */
 export const state: State = {
-  syncedSandboxes: null,
+  hasSyncedSandboxes: null,
+  hasTemplates: null,
   collections: null,
-  templates: null,
 };

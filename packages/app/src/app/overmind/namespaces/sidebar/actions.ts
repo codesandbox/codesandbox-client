@@ -15,31 +15,33 @@ export const getSidebarData = async (
        */
       const {
         me: {
-          team: { sandboxes, ...restData },
+          team: { sandboxes, templates, collections },
         },
       } = await queries.getTeamSidebarData({ id: teamId });
 
+      const hasSyncedSandboxes = sandboxes?.length > 0;
+      const hasTemplates = templates?.length > 0;
+
       state.sidebar = {
-        /**
-         * Renaming sandboxes to syncedSandboxes
-         */
-        syncedSandboxes: sandboxes,
-        ...restData,
+        hasSyncedSandboxes,
+        hasTemplates,
+        collections,
       };
     } else {
       /**
        * Fetch data for the user
        */
       const {
-        me: { sandboxes, ...restData },
+        me: { sandboxes, templates, collections },
       } = await queries.getPersonalSidebarData();
 
+      const hasSyncedSandboxes = sandboxes?.length > 0;
+      const hasTemplates = templates?.length > 0;
+
       state.sidebar = {
-        /**
-         * Renaming sandboxes to syncedSandboxes
-         */
-        syncedSandboxes: sandboxes,
-        ...restData,
+        hasSyncedSandboxes,
+        hasTemplates,
+        collections,
       };
     }
   } catch {

@@ -248,7 +248,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="file"
           />
 
-          {state.sidebar.templates ? (
+          {state.sidebar.hasTemplates ? (
             <RowItem
               name="Templates"
               page="templates"
@@ -278,7 +278,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
           )}
 
-          {state.sidebar.syncedSandboxes.length > 0 ? (
+          {state.sidebar.hasSyncedSandboxes ? (
             <RowItem
               name="Synced"
               page="synced-sandboxes"
