@@ -15,7 +15,7 @@ export const getSidebarData = async (
        */
       const {
         me: {
-          team: { sandboxes, templates, collections },
+          team: { sandboxes, templates },
         },
       } = await queries.getTeamSidebarData({ id: teamId });
 
@@ -25,14 +25,13 @@ export const getSidebarData = async (
       state.sidebar = {
         hasSyncedSandboxes,
         hasTemplates,
-        collections,
       };
     } else {
       /**
        * Fetch data for the user
        */
       const {
-        me: { sandboxes, templates, collections },
+        me: { sandboxes, templates },
       } = await queries.getPersonalSidebarData();
 
       const hasSyncedSandboxes = sandboxes?.length > 0;
@@ -41,7 +40,6 @@ export const getSidebarData = async (
       state.sidebar = {
         hasSyncedSandboxes,
         hasTemplates,
-        collections,
       };
     }
   } catch {

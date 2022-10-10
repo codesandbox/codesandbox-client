@@ -3400,10 +3400,6 @@ export type SidebarSyncedSandboxFragmentFragment = {
   __typename?: 'Sandbox';
 } & Pick<Sandbox, 'id'>;
 
-export type SidebarCollectionFragmentFragment = {
-  __typename?: 'Collection';
-} & Pick<Collection, 'id' | 'path'>;
-
 export type SidebarTemplateFragmentFragment = {
   __typename?: 'Template';
 } & Pick<Template, 'id'>;
@@ -3415,9 +3411,6 @@ export type PersonalSidebarDataQuery = { __typename?: 'RootQueryType' } & {
     { __typename?: 'CurrentUser' } & {
       sandboxes: Array<
         { __typename?: 'Sandbox' } & SidebarSyncedSandboxFragmentFragment
-      >;
-      collections: Array<
-        { __typename?: 'Collection' } & SidebarCollectionFragmentFragment
       >;
       templates: Array<
         { __typename?: 'Template' } & SidebarTemplateFragmentFragment
@@ -3437,9 +3430,6 @@ export type TeamSidebarDataQuery = { __typename?: 'RootQueryType' } & {
         { __typename?: 'Team' } & {
           sandboxes: Array<
             { __typename?: 'Sandbox' } & SidebarSyncedSandboxFragmentFragment
-          >;
-          collections: Array<
-            { __typename?: 'Collection' } & SidebarCollectionFragmentFragment
           >;
           templates: Array<
             { __typename?: 'Template' } & SidebarTemplateFragmentFragment

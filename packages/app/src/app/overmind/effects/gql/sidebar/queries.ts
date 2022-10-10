@@ -7,7 +7,6 @@ import {
 } from 'app/graphql/types';
 
 import {
-  sidebarCollectionFragment,
   sidebarSyncedSandboxFragment,
   sidebarTemplateFragment,
 } from './fragments';
@@ -21,21 +20,14 @@ export const getPersonalSidebarData: Query<
       sandboxes(hasOriginalGit: true) {
         ...sidebarSyncedSandboxFragment
       }
-      collections {
-        ...sidebarCollectionFragment
-      }
       templates {
         ...sidebarTemplateFragment
       }
     }
   }
   ${sidebarSyncedSandboxFragment}
-  ${sidebarCollectionFragment}
   ${sidebarTemplateFragment}
 `;
-/**
- * 👆 fragments might actually be a bit too much for this
- */
 
 export const getTeamSidebarData: Query<
   TeamSidebarDataQuery,
@@ -47,9 +39,6 @@ export const getTeamSidebarData: Query<
         sandboxes(hasOriginalGit: true) {
           ...sidebarSyncedSandboxFragment
         }
-        collections {
-          ...sidebarCollectionFragment
-        }
         templates {
           ...sidebarTemplateFragment
         }
@@ -57,9 +46,5 @@ export const getTeamSidebarData: Query<
     }
   }
   ${sidebarSyncedSandboxFragment}
-  ${sidebarCollectionFragment}
   ${sidebarTemplateFragment}
 `;
-/**
- * 👆 fragments might actually be a bit too much for this
- */

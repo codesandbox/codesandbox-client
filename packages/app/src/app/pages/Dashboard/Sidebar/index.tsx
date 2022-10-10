@@ -66,10 +66,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   } = state;
 
   React.useEffect(() => {
+    // Used to fetch collections
     actions.dashboard.getAllFolders();
   }, [actions.dashboard, state.activeTeam]);
 
   React.useEffect(() => {
+    // Used to check for templates and synced sandboxes
     actions.sidebar.getSidebarData(
       state.activeTeam !== personalWorkspaceId ? state.activeTeam : undefined
     );
@@ -90,8 +92,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
 
-  // ❗️ TODO: Replace dashboard.allCollections this with state.sidebar.collections
-  // that way we can get rid of dashboard state and actions later.
   const folders =
     (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||
     [];

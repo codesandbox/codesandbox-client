@@ -6,13 +6,6 @@ export const sidebarSyncedSandboxFragment = gql`
   }
 `;
 
-export const sidebarCollectionFragment = gql`
-  fragment sidebarCollectionFragment on Collection {
-    id
-    path
-  }
-`;
-
 export const sidebarTemplateFragment = gql`
   fragment sidebarTemplateFragment on Template {
     id
