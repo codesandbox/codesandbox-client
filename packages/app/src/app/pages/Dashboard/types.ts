@@ -54,7 +54,7 @@ export type DashboardFolder = DELETE_ME_COLLECTION &
   };
 
 export type DashboardSyncedSandbox = {
-  type: 'repo';
+  type: 'synced-sandbox';
   path?: string;
   lastEdited?: Date;
   branch: string;

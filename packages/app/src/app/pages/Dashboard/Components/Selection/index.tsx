@@ -105,7 +105,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'sandbox' ||
       item.type === 'template' ||
       item.type === 'folder' ||
-      item.type === 'repo' ||
+      item.type === 'synced-sandbox' ||
       item.type === 'community-sandbox' ||
       item.type === 'branch'
   ) as Array<
@@ -125,7 +125,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       return `${providerRepository.owner}-${providerRepository.name}`;
     }
     if (item.type === 'folder') return item.path;
-    if (item.type === 'repo') return item.name;
+    if (item.type === 'synced-sandbox') return item.name;
     return item.sandbox.id;
   });
 

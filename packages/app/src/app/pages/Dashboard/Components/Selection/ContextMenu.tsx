@@ -154,7 +154,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     menu = <SandboxMenu item={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
-  } else if (selectedItems[0].type === 'repo') {
+  } else if (selectedItems[0].type === 'synced-sandbox') {
     menu = <RepoMenu repo={selectedItems[0]} />;
   } else if (selectedItems[0].type === 'new-master-branch') {
     menu = <MasterMenu repo={selectedItems[0].repo} />;

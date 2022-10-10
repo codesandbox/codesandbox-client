@@ -27,7 +27,7 @@ export const useFilteredItems = (params: Params) => {
     if (param) {
       setItems(
         sandboxesForPath.map(sandbox => ({
-          type: 'sandbox' as 'sandbox',
+          type: 'sandbox' as const,
           noDrag: true,
           sandbox,
         }))
@@ -37,7 +37,7 @@ export const useFilteredItems = (params: Params) => {
         repos
           .sort((a, b) => compareDesc(a.lastEdited, b.lastEdited))
           .map(repo => ({
-            type: 'repo' as 'repo',
+            type: 'synced-sandbox' as const,
             noDrag: true,
             ...repo,
           }))
