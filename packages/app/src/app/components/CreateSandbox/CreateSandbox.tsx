@@ -426,7 +426,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <Panel tab={tabState} id="team-templates">
                       <TemplateCategoryList
                         title={`${
-                          isUser ? 'My' : activeTeamInfo.name
+                          isUser ? 'My' : activeTeamInfo?.name || 'Team'
                         } templates`}
                         templates={teamTemplates}
                         onSelectTemplate={template => {
