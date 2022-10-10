@@ -2101,31 +2101,42 @@ export const removeBranchFromRepository = async (
   branch: BranchToRemove
 ) => {
   const { actions, effects, state } = context;
-  const { id, owner, repoName, name } = branch;
+  const { id, owner, repoName, name, page } = branch;
 
   state.dashboard.removingBranch = { id };
 
   try {
     await effects.api.removeBranchFromRepository(owner, repoName, name);
 
-    // First, manually remove the data from the state.
-    state.dashboard.repositories = state.dashboard.repositories.reduce(
-      (acc, repo) => {
-        if (
-          repo.repository.owner === owner &&
-          repo.repository.name === repoName
-        ) {
-          repo.branches = repo.branches.filter(b => b.id !== id);
-          acc.push(repo);
-        } else {
-          acc.push(repo);
-        }
-        return acc;
-      },
-      [] as Repository[]
-    );
-    // Then sync in the background.
-    actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
+    if (page === 'repositories') {
+      // First, manually remove the data from the state.
+      state.dashboard.repositories = state.dashboard.repositories.reduce(
+        (acc, repo) => {
+          if (
+            repo.repository.owner === owner &&
+            repo.repository.name === repoName
+          ) {
+            repo.branches = repo.branches.filter(b => b.id !== id);
+            acc.push(repo);
+          } else {
+            acc.push(repo);
+          }
+          return acc;
+        },
+        [] as Repository[]
+      );
+      // Then sync in the background.
+      actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
+    }
+
+    if (page === 'recent') {
+      // First, manually remove the data from the state.
+      state.dashboard.sandboxes.RECENT_BRANCHES = state.dashboard.sandboxes.RECENT_BRANCHES.filter(
+        b => b.id !== id
+      );
+      // Then sync in the background.
+      actions.dashboard.getStartPageSandboxes();
+    }
   } catch (error) {
     effects.notificationToast.error(
       `Failed to remove branch ${name} from ${owner}/${repoName}`
