@@ -4,7 +4,7 @@ import {
   DashboardSandbox,
   DashboardTemplate,
   DashboardFolder,
-  DashboardRepo,
+  DashboardSyncedSandbox,
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
   PageTypes,
@@ -39,7 +39,7 @@ interface IContextMenuProps extends IMenuProps {
   selectedIds: string[];
   sandboxes: Array<DashboardSandbox | DashboardTemplate>;
   folders: Array<DashboardFolder>;
-  repos?: Array<DashboardRepo>;
+  repos?: Array<DashboardSyncedSandbox>;
   branches: Array<DashboardBranch>;
   repositories: Array<DashboardRepository>;
   setRenaming: null | ((value: boolean) => void);
@@ -69,7 +69,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     | DashboardFolder
     | DashboardSandbox
     | DashboardTemplate
-    | DashboardRepo
+    | DashboardSyncedSandbox
     | DashboardNewMasterBranch
     | DashboardCommunitySandbox
     | DashboardBranch

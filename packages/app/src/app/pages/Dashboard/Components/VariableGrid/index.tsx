@@ -23,7 +23,7 @@ import {
   DashboardBlank,
   DashboardSkeleton,
   DashboardNewFolder,
-  DashboardRepo,
+  DashboardSyncedSandbox,
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
   DashboardBranch,
@@ -72,7 +72,7 @@ interface IComponentForTypes {
   sandbox: React.FC<DecoratedItemProps<DashboardSandbox>>;
   template: React.FC<DecoratedItemProps<DashboardTemplate>>;
   folder: React.FC<DecoratedItemProps<DashboardFolder>>;
-  repo: React.FC<DecoratedItemProps<DashboardRepo>>;
+  repo: React.FC<DecoratedItemProps<DashboardSyncedSandbox>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
   'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
   'new-master-branch': React.FC<DecoratedItemProps<DashboardNewMasterBranch>>;

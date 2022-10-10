@@ -6,10 +6,10 @@ import {
   githubRepoUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Context, MenuItem } from '../ContextMenu';
-import { DashboardRepo } from '../../../types';
+import { DashboardSyncedSandbox } from '../../../types';
 
 type RepoMenuProps = {
-  repo: DashboardRepo;
+  repo: DashboardSyncedSandbox;
 };
 
 export const RepoMenu = ({ repo }: RepoMenuProps) => {

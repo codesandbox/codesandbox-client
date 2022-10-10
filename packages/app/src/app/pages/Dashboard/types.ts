@@ -53,7 +53,7 @@ export type DashboardFolder = DELETE_ME_COLLECTION &
     type: 'folder';
   };
 
-export type DashboardRepo = {
+export type DashboardSyncedSandbox = {
   type: 'repo';
   path?: string;
   lastEdited?: Date;
@@ -177,7 +177,7 @@ export type DashboardGridItem =
   | DashboardSkeletonRow
   | DashboardNewMasterBranch
   | DashboardBlank
-  | DashboardRepo
+  | DashboardSyncedSandbox
   | DashboardRepoSandbox
   | DashboardBlankRowFill
   | DashboardSkeleton

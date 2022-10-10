@@ -7,7 +7,7 @@ import {
   DashboardSandbox,
   DashboardTemplate,
   DashboardFolder,
-  DashboardRepo,
+  DashboardSyncedSandbox,
   DashboardNewMasterBranch,
   DashboardCommunitySandbox,
   PageTypes,
@@ -18,7 +18,7 @@ interface IMultiMenuProps {
     | DashboardSandbox
     | DashboardTemplate
     | DashboardFolder
-    | DashboardRepo
+    | DashboardSyncedSandbox
     | DashboardNewMasterBranch
     | DashboardCommunitySandbox
   >;

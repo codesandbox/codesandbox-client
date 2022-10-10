@@ -24,7 +24,7 @@ import {
   DashboardSandbox,
   DashboardFolder,
   DashboardGridItem,
-  DashboardRepo,
+  DashboardSyncedSandbox,
   DashboardCommunitySandbox,
   PageTypes,
   DashboardBranch,
@@ -112,7 +112,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     | DashboardSandbox
     | DashboardTemplate
     | DashboardFolder
-    | DashboardRepo
+    | DashboardSyncedSandbox
     | DashboardCommunitySandbox
     | DashboardBranch
     | DashboardRepository
