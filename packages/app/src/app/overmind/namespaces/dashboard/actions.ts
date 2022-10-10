@@ -11,6 +11,7 @@ import {
   TeamMemberAuthorization,
   CreateOrUpdateNpmRegistryMutationVariables,
   DeleteNpmRegistryMutationVariables,
+  ProjectFragment as Repository,
 } from 'app/graphql/types';
 import { getDecoratedCollection, sortByNameAscending } from './utils';
 import { OrderBy, PageTypes, sandboxesTypes } from './types';
@@ -2099,13 +2100,32 @@ export const removeBranchFromRepository = async (
   context: Context,
   branch: BranchToRemove
 ) => {
-  const { effects, state } = context;
+  const { actions, effects, state } = context;
   const { id, owner, repoName, name } = branch;
 
   state.dashboard.removingBranch = { id };
 
   try {
-    // await effects.api.removeBranchFromRepository(owner, repoName, name);
+    await effects.api.removeBranchFromRepository(owner, repoName, name);
+
+    // First, manually remove the data from the state.
+    state.dashboard.repositories = state.dashboard.repositories.reduce(
+      (acc, repo) => {
+        if (
+          repo.repository.owner === owner &&
+          repo.repository.name === repoName
+        ) {
+          repo.branches = repo.branches.filter(b => b.id !== id);
+          acc.push(repo);
+        } else {
+          acc.push(repo);
+        }
+        return acc;
+      },
+      [] as Repository[]
+    );
+    // Then sync in the background.
+    actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
   } catch (error) {
     effects.notificationToast.error(
       `Failed to remove branch ${name} from ${owner}/${repoName}`

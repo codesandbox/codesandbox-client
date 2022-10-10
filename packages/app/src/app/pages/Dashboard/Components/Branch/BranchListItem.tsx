@@ -16,6 +16,8 @@ import { BranchProps } from './types';
 export const BranchListItem = ({
   branch,
   branchUrl,
+  selected,
+  isBeingRemoved,
   onContextMenu,
 }: BranchProps) => {
   const { name: branchName, project, contribution } = branch;
@@ -29,10 +31,18 @@ export const BranchListItem = ({
         borderBottom: '1px solid',
         borderBottomColor: 'grays.600',
         overflow: 'hidden',
-        backgroundColor: 'transparent',
-        color: 'inherit',
+        backgroundColor:
+          selected && !isBeingRemoved ? 'purpleOpaque' : 'transparent',
+        color: selected && !isBeingRemoved ? 'white' : 'inherit',
+        transition: 'background ease-in-out, opacity ease-in-out',
+        opacity: isBeingRemoved ? 0.5 : 1,
+        pointerEvents: isBeingRemoved ? 'none' : 'all',
         ':hover, :focus, :focus-within': {
-          backgroundColor: 'list.hoverBackground',
+          cursor: 'default',
+          backgroundColor:
+            selected && !isBeingRemoved
+              ? 'purpleOpaque'
+              : 'list.hoverBackground',
         },
       })}
     >
@@ -45,12 +55,12 @@ export const BranchListItem = ({
           width: '100%',
           textDecoration: 'none',
         }}
-        href={branchUrl}
+        href={isBeingRemoved ? undefined : branchUrl}
         onContextMenu={onContextMenu}
       >
         <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
           <Column
-           span={[12, 5, 5]}
+            span={[12, 5, 5]}
             css={{
               display: 'block',
               overflow: 'hidden',
@@ -60,7 +70,12 @@ export const BranchListItem = ({
           >
             <Stack gap={4} align="center" marginLeft={2}>
               {contribution ? (
-                <Icon color="#EDFFA5" name="contribution" size={16} width="32px" />
+                <Icon
+                  color="#EDFFA5"
+                  name="contribution"
+                  size={16}
+                  width="32px"
+                />
               ) : (
                 <Icon name="branch" color="#999" size={16} width="32px" />
               )}
