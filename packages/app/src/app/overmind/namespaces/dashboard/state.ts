@@ -192,4 +192,5 @@ export const state: State = {
   repositories: null,
   starredRepos: [],
   removingRepository: null,
+  removingBranch: null,
 };
