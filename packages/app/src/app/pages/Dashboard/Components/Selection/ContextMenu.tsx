@@ -116,7 +116,8 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   });
 
   let menu: React.ReactNode;
-  if (selectedItems.length === 0) {
+
+  if (selectedItems.length === 0 || selectedItems[0] === undefined) {
     if (['repositories', 'my-contributions', 'synced-sandboxes'].includes(page))
       return null;
     menu = (
