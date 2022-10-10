@@ -90,10 +90,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
 
-  // ❗️ TODO: Replace dashboard.allCollections this with state.sidebar.collections
-  // that way we can get rid of dashboard state and actions later.
   const folders =
-    (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||
+    (state.sidebar.collections || []).filter(folder => folder.path !== '/') ||
     [];
 
   // context menu for folders
@@ -627,6 +625,7 @@ interface NestableRowItemProps {
   folders: DashboardBaseFolder[];
 }
 
+// Lets move this to its own file
 const NestableRowItem: React.FC<NestableRowItemProps> = ({
   name,
   path,

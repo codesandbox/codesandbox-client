@@ -10,6 +10,7 @@ export const sidebarCollectionFragment = gql`
   fragment sidebarCollectionFragment on Collection {
     id
     path
+    sandboxCount
   }
 `;
 

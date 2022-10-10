@@ -1,4 +1,19 @@
+import { SidebarCollectionFragmentFragment } from 'app/graphql/types';
 import { Context } from 'app/overmind';
+import { getDecoratedCollection } from '../dashboard/utils';
+
+const decorateCollections = (
+  collections: Array<SidebarCollectionFragmentFragment>
+) =>
+  collections.map(collection => {
+    const decorated = getDecoratedCollection(collection);
+
+    return {
+      path: decorated.path,
+      parent: decorated.parent,
+      name: decorated.name,
+    };
+  });
 
 export const getSidebarData = async (
   { state, effects }: Context,
@@ -21,11 +36,12 @@ export const getSidebarData = async (
 
       const hasSyncedSandboxes = sandboxes?.length > 0;
       const hasTemplates = templates?.length > 0;
+      const decoratedCollections = decorateCollections(collections);
 
       state.sidebar = {
         hasSyncedSandboxes,
         hasTemplates,
-        collections,
+        collections: decoratedCollections,
       };
     } else {
       /**
@@ -37,11 +53,12 @@ export const getSidebarData = async (
 
       const hasSyncedSandboxes = sandboxes?.length > 0;
       const hasTemplates = templates?.length > 0;
+      const decoratedCollections = decorateCollections(collections);
 
       state.sidebar = {
         hasSyncedSandboxes,
         hasTemplates,
-        collections,
+        collections: decoratedCollections,
       };
     }
   } catch {

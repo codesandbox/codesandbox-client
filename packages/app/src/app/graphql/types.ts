@@ -3402,7 +3402,7 @@ export type SidebarSyncedSandboxFragmentFragment = {
 
 export type SidebarCollectionFragmentFragment = {
   __typename?: 'Collection';
-} & Pick<Collection, 'id' | 'path'>;
+} & Pick<Collection, 'id' | 'path' | 'sandboxCount'>;
 
 export type SidebarTemplateFragmentFragment = {
   __typename?: 'Template';
