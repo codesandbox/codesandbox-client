@@ -12,7 +12,7 @@ type RepoMenuProps = {
   repo: DashboardSyncedSandbox;
 };
 
-export const RepoMenu = ({ repo }: RepoMenuProps) => {
+export const SyncedSandboxMenu = ({ repo }: RepoMenuProps) => {
   const effects = useEffects();
   const { visible, setVisibility, position } = React.useContext(Context);
   return (
