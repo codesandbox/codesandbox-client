@@ -20,7 +20,7 @@ type BranchProps = DashboardBranch & {
 };
 export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
   const {
-    dashboard: { viewMode },
+    dashboard: { removingBranch, viewMode },
   } = useAppState();
   const { selectedIds, onRightClick, onMenuEvent } = useSelection();
   const { name, project } = branch;
@@ -38,14 +38,13 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
     trackImprovedDashboardEvent(MAP_BRANCH_EVENT_TO_PAGE_TYPE[page]);
   };
 
-  const selected = selectedIds.includes(branch.id);
-
   const props = {
     branch,
     branchUrl,
+    selected: selectedIds.includes(branch.id),
+    isBeingRemoved: removingBranch?.id === branch.id,
     onContextMenu: handleContextMenu,
     onClick: handleClick,
-    selected,
     /**
      * If we ever need selection for branch entries, `data-selection-id` must be set
      * 'data-selection-id': branch.id,

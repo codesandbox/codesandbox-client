@@ -13,7 +13,7 @@ import {
   DeleteNpmRegistryMutationVariables,
 } from 'app/graphql/types';
 import { getDecoratedCollection, sortByNameAscending } from './utils';
-import { OrderBy, sandboxesTypes } from './types';
+import { OrderBy, PageTypes, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
 
 export const internal = internalActions;
@@ -1968,10 +1968,19 @@ export const getContributionBranches = async ({ state, effects }: Context) => {
   }
 };
 
-export const getRepositoriesByTeam = async ({ state, effects }: Context) => {
+type RepositoriesActionOptions = {
+  bypassLoading: boolean;
+};
+export const getRepositoriesByTeam = async (
+  { state, effects }: Context,
+  options?: RepositoriesActionOptions
+) => {
   const { activeTeam, dashboard } = state;
+  const { bypassLoading = false } = options ?? {};
   try {
-    dashboard.repositories = null;
+    if (!bypassLoading) {
+      dashboard.repositories = null;
+    }
 
     // First fetch data without syncing with GitHub
     // to decrease waiting time.
@@ -2079,4 +2088,61 @@ export const unstarRepo = (
     `CSB/EXPERIMENTAL_STARRED/${activeTeam}`,
     dashboard.starredRepos
   );
+type BranchToRemove = {
+  owner: string;
+  repoName: string;
+  name: string;
+  id: string;
+  page: PageTypes;
+};
+export const removeBranchFromRepository = async (
+  context: Context,
+  branch: BranchToRemove
+) => {
+  const { effects, state } = context;
+  const { id, owner, repoName, name } = branch;
+
+  state.dashboard.removingBranch = { id };
+
+  try {
+    // await effects.api.removeBranchFromRepository(owner, repoName, name);
+  } catch (error) {
+    effects.notificationToast.error(
+      `Failed to remove branch ${name} from ${owner}/${repoName}`
+    );
+  } finally {
+    state.dashboard.removingBranch = null;
+  }
+};
+
+type ProjectToRemove = {
+  owner: string;
+  name: string;
+  teamId: string;
+};
+export const removeRepositoryFromTeam = async (
+  context: Context,
+  project: ProjectToRemove
+) => {
+  const { actions, state, effects } = context;
+  const { owner, name, teamId } = project;
+
+  state.dashboard.removingRepository = { owner, name };
+
+  try {
+    await effects.api.removeRepositoryFromTeam(owner, name, teamId);
+
+    // First, manually remove the data from the state.
+    state.dashboard.repositories = state.dashboard.repositories.filter(
+      r => r.repository.owner !== owner || r.repository.name !== name
+    );
+    // Then sync in the background.
+    actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
+  } catch (error) {
+    effects.notificationToast.error(
+      `Failed to remove project ${owner}/${name}`
+    );
+  } finally {
+    state.dashboard.removingRepository = null;
+  }
 };

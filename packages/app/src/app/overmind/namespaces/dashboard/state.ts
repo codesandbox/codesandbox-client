@@ -69,6 +69,13 @@ export type State = {
   /** v2 repositories (formerly projects) */
   repositories: Repository[] | null;
   starredRepos: Array<{ owner: string; name: string }>;
+  /**
+   * Use these variables to track if items are being removed. This way
+   * we don't have to manipulate the state directly to let the components
+   * know what to render.
+   */
+  removingRepository: { owner: string; name: string } | null;
+  removingBranch: { id: string } | null;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -184,4 +191,5 @@ export const state: State = {
   contributions: null,
   repositories: null,
   starredRepos: [],
+  removingRepository: null,
 };

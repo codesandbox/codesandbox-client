@@ -18,6 +18,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
   repository,
   selected,
   onContextMenu,
+  isBeingRemoved,
   ...props
 }) => {
   return (
@@ -29,11 +30,18 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
         borderBottom: '1px solid',
         borderBottomColor: 'grays.600',
         overflow: 'hidden',
-        backgroundColor: selected ? 'purpleOpaque' : 'transparent',
-        color: selected ? 'white' : 'inherit',
+        backgroundColor:
+          selected && !isBeingRemoved ? 'purpleOpaque' : 'transparent',
+        color: selected && !isBeingRemoved ? 'white' : 'inherit',
+        transition: 'background ease-in-out, opacity ease-in-out',
+        opacity: isBeingRemoved ? 0.5 : 1,
+        pointerEvents: isBeingRemoved ? 'none' : 'all',
         ':hover, :focus, :focus-within': {
           cursor: 'default',
-          backgroundColor: selected ? 'purpleOpaque' : 'list.hoverBackground',
+          backgroundColor:
+            selected && !isBeingRemoved
+              ? 'purpleOpaque'
+              : 'list.hoverBackground',
         },
       })}
     >
@@ -47,7 +55,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
           width: '100%',
           textDecoration: 'none',
         }}
-        to={repository.url}
+        to={isBeingRemoved ? undefined : repository.url}
         onContextMenu={onContextMenu}
         {...props}
       >
