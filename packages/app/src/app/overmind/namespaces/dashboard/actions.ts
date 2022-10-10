@@ -2110,8 +2110,8 @@ export const removeBranchFromRepository = async (
 
     if (page === 'repositories') {
       // First, manually remove the data from the state.
-      state.dashboard.repositories = state.dashboard.repositories.reduce(
-        (acc, repo) => {
+      state.dashboard.repositories =
+        state.dashboard.repositories?.reduce((acc, repo) => {
           if (
             repo.repository.owner === owner &&
             repo.repository.name === repoName
@@ -2122,18 +2122,16 @@ export const removeBranchFromRepository = async (
             acc.push(repo);
           }
           return acc;
-        },
-        [] as Repository[]
-      );
+        }, [] as Repository[]) ?? [];
       // Then sync in the background.
       actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
     }
 
     if (page === 'recent') {
       // First, manually remove the data from the state.
-      state.dashboard.sandboxes.RECENT_BRANCHES = state.dashboard.sandboxes.RECENT_BRANCHES.filter(
-        b => b.id !== id
-      );
+      state.dashboard.sandboxes.RECENT_BRANCHES =
+        state.dashboard.sandboxes.RECENT_BRANCHES?.filter(b => b.id !== id) ??
+        [];
       // Then sync in the background.
       actions.dashboard.getStartPageSandboxes();
     }
@@ -2164,9 +2162,10 @@ export const removeRepositoryFromTeam = async (
     await effects.api.removeRepositoryFromTeam(owner, name, teamId);
 
     // First, manually remove the data from the state.
-    state.dashboard.repositories = state.dashboard.repositories.filter(
-      r => r.repository.owner !== owner || r.repository.name !== name
-    );
+    state.dashboard.repositories =
+      state.dashboard.repositories?.filter(
+        r => r.repository.owner !== owner || r.repository.name !== name
+      ) ?? [];
     // Then sync in the background.
     actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
   } catch (error) {

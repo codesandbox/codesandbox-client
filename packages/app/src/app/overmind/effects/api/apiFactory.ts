@@ -85,7 +85,7 @@ export default (config: ApiConfig) => {
       return axios
         .request(
           Object.assign(requestConfig, {
-            url: getBaseApi(requestConfig.url) + requestConfig.url,
+            url: getBaseApi(requestConfig.url ?? '') + requestConfig.url,
             data: requestConfig.data ? camelizeKeys(requestConfig.data) : null,
             headers: createHeaders(config.provideJwtToken),
           })
