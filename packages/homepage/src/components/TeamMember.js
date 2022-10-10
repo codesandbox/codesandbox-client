@@ -30,6 +30,7 @@ import david from '../assets/images/people/david.jpg';
 import farrell from '../assets/images/people/farrellt.jpg';
 import mihai from '../assets/images/people/mihai.jpg';
 import filipe from '../assets/images/people/filipe.jpg';
+import jk from '../assets/images/people/jk.jpeg';
 
 const people = [
   {
@@ -205,6 +206,12 @@ const people = [
     pic: filipe,
     color: '#24be9d',
     team: 'Marketing',
+  },
+  {
+    name: 'Jaya Krishna Namburu',
+    pic: jk,
+    color: '#F24E62',
+    team: 'Engineering',
   },
 ];
 
