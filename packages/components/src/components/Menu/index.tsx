@@ -74,6 +74,11 @@ export const MenuStyles = createGlobalStyle(
       // override reach ui styles
       font: 'inherit',
     },
+    '[data-component="MenuItem"][disabled]': {
+      paddingY: 2,
+      paddingX: 3,
+      cursor: 'not-allowed',
+    },
     '[data-component=MenuDivider]': {
       margin: 0,
       border: 'none',
