@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Menu } from '@codesandbox/components';
 import { ProjectFragment as Repository } from 'app/graphql/types';
 import {
@@ -6,6 +6,7 @@ import {
   v2DraftBranchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useHistory } from 'react-router-dom';
+import { useActions, useAppState } from 'app/overmind';
 import { Context, MenuItem } from '../ContextMenu';
 
 type RepositoryMenuProps = {
@@ -16,6 +17,12 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
 }) => {
   const { visible, setVisibility, position } = React.useContext(Context);
   const history = useHistory();
+  const state = useAppState();
+  const actions = useActions();
+
+  const [experimentalMode] = useState(() => {
+    return window.localStorage.getItem('CSB_DEBUG') === 'ENABLED';
+  });
 
   const { repository: providerRepository } = repository;
   const repositoryUrl = dashboard.repository({
@@ -25,6 +32,12 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
   const branchFromDefaultUrl = v2DraftBranchUrl(
     providerRepository.owner,
     providerRepository.name
+  );
+
+  const repositoryIsStarred = state.dashboard.starredRepos.find(
+    repo =>
+      repo.owner === providerRepository.owner &&
+      repo.name === providerRepository.name
   );
 
   const githubUrl = `https://github.com/${providerRepository.owner}/${providerRepository.name}`;
@@ -49,6 +62,20 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
       <MenuItem onSelect={() => window.open(branchFromDefaultUrl, '_blank')}>
         Create branch
       </MenuItem>
+
+      {experimentalMode && (
+        <MenuItem
+          onSelect={() => {
+            if (repositoryIsStarred) {
+              actions.dashboard.unstarRepo(providerRepository);
+            } else {
+              actions.dashboard.starRepo(providerRepository);
+            }
+          }}
+        >
+          {repositoryIsStarred ? 'Unstar repository' : 'Star repository'}
+        </MenuItem>
+      )}
 
       {/* TODO: Implement remove repository
       <Menu.Divider />

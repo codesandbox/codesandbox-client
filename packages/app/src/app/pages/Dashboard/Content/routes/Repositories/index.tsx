@@ -134,6 +134,7 @@ export const RepositoriesPage = () => {
           </Text>
         )}
       </Notification>
+
       <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
   );
