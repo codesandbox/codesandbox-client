@@ -64,6 +64,7 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
       <Menu.Divider />
       {/** TODO: disabled state */}
       <MenuItem
+        disabled={removingBranch}
         onSelect={() =>
           !removingBranch &&
           removeBranchFromRepository({

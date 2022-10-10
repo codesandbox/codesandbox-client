@@ -15,7 +15,10 @@ type RepositoryMenuProps = {
 export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
   repository,
 }) => {
-  const { activeTeam } = useAppState();
+  const {
+    activeTeam,
+    dashboard: { removingRepository },
+  } = useAppState();
   const { removeRepositoryFromTeam } = useActions().dashboard;
   const { visible, setVisibility, position } = React.useContext(Context);
   const history = useHistory();
@@ -81,7 +84,9 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
 
       <Menu.Divider />
       <MenuItem
+        disabled={removingRepository}
         onSelect={() =>
+          !removingRepository &&
           removeRepositoryFromTeam({
             owner: providerRepository.owner,
             name: providerRepository.name,
