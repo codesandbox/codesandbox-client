@@ -67,6 +67,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   React.useEffect(() => {
     actions.dashboard.getAllFolders();
+    actions.dashboard.getStarredRepos();
   }, [actions.dashboard, state.activeTeam]);
 
   React.useEffect(() => {
@@ -223,6 +224,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.repositories(activeTeam)}
             icon="repository"
           />
+          {dashboard.starredRepos.map(repo => (
+            <RowItem
+              name={repo.name}
+              page="repositories"
+              path={dashboardUrls.repository(repo)}
+              icon="star"
+              nestingLevel={1}
+              style={{
+                whiteSpace: 'nowrap',
+              }}
+            />
+          ))}
           <Element marginTop={4} />
           <Element paddingX={7} paddingY={2}>
             <Text

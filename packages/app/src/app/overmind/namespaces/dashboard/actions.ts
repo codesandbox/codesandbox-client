@@ -2035,3 +2035,48 @@ export const getRepositoryByDetails = async (
     );
   }
 };
+
+export const getStarredRepos = ({ state, effects }: Context) => {
+  const { dashboard, activeTeam } = state;
+
+  const persistedStarredRepos = effects.browser.storage.get(
+    `CSB/EXPERIMENTAL_STARRED/${activeTeam}`
+  ) as Array<{ owner: string; name: string }>;
+
+  dashboard.starredRepos = persistedStarredRepos ?? [];
+};
+
+export const starRepo = (
+  { state, effects }: Context,
+  { owner, name }: { owner: string; name: string }
+) => {
+  const { dashboard, activeTeam } = state;
+
+  const existingRepo = dashboard.starredRepos.find(
+    repo => repo.owner === owner && repo.name === name
+  );
+  if (existingRepo) {
+    return;
+  }
+
+  dashboard.starredRepos.push({ owner, name });
+  effects.browser.storage.set(
+    `CSB/EXPERIMENTAL_STARRED/${activeTeam}`,
+    dashboard.starredRepos
+  );
+};
+
+export const unstarRepo = (
+  { state, effects }: Context,
+  { owner, name }: { owner: string; name: string }
+) => {
+  const { dashboard, activeTeam } = state;
+
+  dashboard.starredRepos = dashboard.starredRepos.filter(
+    repo => repo.owner !== owner || repo.name !== name
+  );
+  effects.browser.storage.set(
+    `CSB/EXPERIMENTAL_STARRED/${activeTeam}`,
+    dashboard.starredRepos
+  );
+};

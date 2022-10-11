@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Stack, Text, Button, Icon } from '@codesandbox/components';
@@ -51,7 +51,7 @@ export const Header = ({
   selectedRepo,
 }: Props) => {
   const location = useLocation();
-  const { modals } = useActions();
+  const { modals, dashboard: dashboardActions } = useActions();
   const { dashboard } = useAppState();
 
   const repositoriesListPage =
@@ -60,6 +60,17 @@ export const Header = ({
   const repositoryBranchesPage = location.pathname.includes(
     '/repositories/github'
   );
+
+  const [experimentalMode] = useState(() => {
+    return window.localStorage.getItem('CSB_DEBUG') === 'ENABLED';
+  });
+
+  const selectedRepoIsStarred =
+    selectedRepo &&
+    dashboard.starredRepos.some(
+      repo =>
+        repo.owner === selectedRepo.owner && repo.name === selectedRepo.name
+    );
 
   return (
     <Stack
@@ -126,6 +137,33 @@ export const Header = ({
               css={css({ paddingRight: 2 })}
             />
             Import repo
+          </Button>
+        )}
+
+        {repositoryBranchesPage && selectedRepo && experimentalMode && (
+          <Button
+            css={css({
+              fontSize: 2,
+              color: 'mutedForeground',
+              padding: 0,
+              width: 'auto',
+            })}
+            onClick={() => {
+              if (selectedRepoIsStarred) {
+                dashboardActions.unstarRepo(selectedRepo);
+              } else {
+                dashboardActions.starRepo(selectedRepo);
+              }
+            }}
+            variant="link"
+          >
+            <Icon
+              name="star"
+              size={20}
+              title="Star repo"
+              css={css({ paddingRight: 2 })}
+            />
+            {selectedRepoIsStarred ? 'Unstar' : 'Star'}
           </Button>
         )}
 

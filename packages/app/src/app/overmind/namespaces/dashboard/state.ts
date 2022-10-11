@@ -68,6 +68,7 @@ export type State = {
   contributions: Branch[] | null;
   /** v2 repositories (formerly projects) */
   repositories: Repository[] | null;
+  starredRepos: Array<{ owner: string; name: string }>;
 };
 
 export const DEFAULT_DASHBOARD_SANDBOXES: DashboardSandboxStructure = {
@@ -182,4 +183,5 @@ export const state: State = {
   ),
   contributions: null,
   repositories: null,
+  starredRepos: [],
 };
