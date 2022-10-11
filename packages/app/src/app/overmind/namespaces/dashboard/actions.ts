@@ -11,7 +11,6 @@ import {
   TeamMemberAuthorization,
   CreateOrUpdateNpmRegistryMutationVariables,
   DeleteNpmRegistryMutationVariables,
-  ProjectFragment as Repository,
 } from 'app/graphql/types';
 import { getDecoratedCollection, sortByNameAscending } from './utils';
 import { OrderBy, PageTypes, sandboxesTypes } from './types';
@@ -1978,25 +1977,29 @@ export const getRepositoriesByTeam = async (
 ) => {
   const { activeTeam, dashboard } = state;
   const { bypassLoading = false } = options ?? {};
+
+  // If we should bypass the loading state, we don't need to make two
+  // queries (synced and unsynced) since the loading time won't be
+  // perceived by the user.
   try {
     if (!bypassLoading) {
       dashboard.repositories = null;
-    }
 
-    // First fetch data without syncing with GitHub
-    // to decrease waiting time.
-    const unsyncedRepositoriesData = await effects.gql.queries.getRepositoriesByTeam(
-      {
-        teamId: activeTeam,
-        syncData: false,
+      // First fetch data without syncing with GitHub
+      // to decrease waiting time.
+      const unsyncedRepositoriesData = await effects.gql.queries.getRepositoriesByTeam(
+        {
+          teamId: activeTeam,
+          syncData: false,
+        }
+      );
+      const unsyncedRepositories = unsyncedRepositoriesData?.me?.team?.projects;
+      if (!unsyncedRepositories) {
+        return;
       }
-    );
-    const unsyncedRepositories = unsyncedRepositoriesData?.me?.team?.projects;
-    if (!unsyncedRepositories) {
-      return;
-    }
 
-    dashboard.repositories = unsyncedRepositories.sort(sortByNameAscending);
+      dashboard.repositories = unsyncedRepositories.sort(sortByNameAscending);
+    }
 
     // Then fetch data synced with GitHub to make sure
     // what we show is up-to-date.
@@ -2109,20 +2112,15 @@ export const removeBranchFromRepository = async (
     await effects.api.removeBranchFromRepository(owner, repoName, name);
 
     if (page === 'repositories') {
-      // First, manually remove the data from the state.
-      state.dashboard.repositories =
-        state.dashboard.repositories?.reduce((acc, repo) => {
-          if (
-            repo.repository.owner === owner &&
-            repo.repository.name === repoName
-          ) {
-            repo.branches = repo.branches.filter(b => b.id !== id);
-            acc.push(repo);
-          } else {
-            acc.push(repo);
-          }
-          return acc;
-        }, [] as Repository[]) ?? [];
+      const repository = state.dashboard.repositories?.find(
+        r => r.repository.owner === owner && r.repository.name === repoName
+      );
+
+      if (repository) {
+        // Manually remove the data from the state.
+        repository.branches = repository.branches.filter(b => b.id !== id);
+      }
+
       // Then sync in the background.
       actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
     }
@@ -2132,6 +2130,7 @@ export const removeBranchFromRepository = async (
       state.dashboard.sandboxes.RECENT_BRANCHES =
         state.dashboard.sandboxes.RECENT_BRANCHES?.filter(b => b.id !== id) ??
         [];
+
       // Then sync in the background.
       actions.dashboard.getStartPageSandboxes();
     }
