@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Menu } from '@codesandbox/components';
 import { ProjectFragment as Repository } from 'app/graphql/types';
 import {
   dashboard,
   v2DraftBranchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { useHistory } from 'react-router-dom';
 import { useActions, useAppState } from 'app/overmind';
 import { Context, MenuItem } from '../ContextMenu';
 
@@ -15,6 +15,11 @@ type RepositoryMenuProps = {
 export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
   repository,
 }) => {
+  const {
+    activeTeam,
+    dashboard: { removingRepository },
+  } = useAppState();
+  const { removeRepositoryFromTeam } = useActions().dashboard;
   const { visible, setVisibility, position } = React.useContext(Context);
   const history = useHistory();
   const state = useAppState();
@@ -77,14 +82,20 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
         </MenuItem>
       )}
 
-      {/* TODO: Implement remove repository
       <Menu.Divider />
       <MenuItem
-        onSelect={() => {
-        }}
+        disabled={removingRepository}
+        onSelect={() =>
+          !removingRepository &&
+          removeRepositoryFromTeam({
+            owner: providerRepository.owner,
+            name: providerRepository.name,
+            teamId: activeTeam,
+          })
+        }
       >
         Remove from CodeSandbox
-      </MenuItem> */}
+      </MenuItem>
     </Menu.ContextMenu>
   );
 };

@@ -127,7 +127,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
       />
     );
   } else if (selectedItems[0].type === 'branch') {
-    menu = <BranchMenu branch={selectedItems[0].branch} />;
+    menu = <BranchMenu branch={selectedItems[0].branch} page={page} />;
   } else if (selectedItems[0].type === 'repository') {
     menu = <RepositoryMenu repository={selectedItems[0].repository} />;
   } else if (selectedItems.length > 1) {

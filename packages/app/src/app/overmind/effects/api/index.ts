@@ -691,4 +691,10 @@ export default {
       `/teams/${teamId}/customer_portal?return_path=${return_path}`
     );
   },
+  removeBranchFromRepository(owner: string, repo: string, branch: string) {
+    return api.delete(`/beta/sandboxes/github/${owner}/${repo}/${branch}`);
+  },
+  removeRepositoryFromTeam(owner: string, repo: string, teamId: string) {
+    return api.delete(`/beta/repos/link/github/${owner}/${repo}/${teamId}`);
+  },
 };

@@ -9,6 +9,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
   repository,
   selected,
   onContextMenu,
+  isBeingRemoved,
   ...props
 }) => {
   return (
@@ -21,16 +22,15 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
         overflow: 'hidden',
         height: 240,
         width: '100%',
+        padding: 4,
         borderRadius: '4px',
         border: '1px solid',
         borderColor: selected ? 'focusBorder' : 'transparent',
         backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
-        transition: 'background ease-in-out',
-        paddingRight: 4,
-        paddingLeft: 4,
-        paddingTop: 4,
-        paddingBottom: 4,
         outline: 'none',
+        opacity: isBeingRemoved ? 0.5 : 1,
+        pointerEvents: isBeingRemoved ? 'none' : 'all',
+        transition: 'background ease-in-out, opacity ease-in-out',
         transitionDuration: theme => theme.speeds[2],
         textDecoration: 'none',
         ':hover': {
@@ -42,7 +42,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
       })}
       direction="vertical"
       gap={4}
-      to={repository.url}
+      to={isBeingRemoved ? undefined : repository.url}
       onContextMenu={onContextMenu}
       {...props}
     >

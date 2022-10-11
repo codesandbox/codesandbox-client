@@ -7,15 +7,20 @@ import {
   dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useHistory } from 'react-router-dom';
+import { useActions, useAppState } from 'app/overmind';
+import { PageTypes } from 'app/pages/Dashboard/types';
 import { Context, MenuItem } from '../ContextMenu';
 
 type BranchMenuProps = {
   branch: Branch;
+  page: PageTypes;
 };
-export const BranchMenu: React.FC<BranchMenuProps> = ({ branch }) => {
+export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
+  const { removeBranchFromRepository } = useActions().dashboard;
+  const { removingBranch } = useAppState().dashboard;
   const { visible, setVisibility, position } = React.useContext(Context);
 
-  const { name, project, contribution } = branch;
+  const { id, name, project, contribution } = branch;
   const branchUrl = v2BranchUrl({ name, project });
 
   const { name: repoName, owner } = project.repository;
@@ -56,15 +61,22 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch }) => {
       <MenuItem onSelect={() => history.push(repoUrl)}>
         Open repository
       </MenuItem>
-      {/* TODO: Implement remove branch <Menu.Divider />
       <Menu.Divider />
       <MenuItem
-        onSelect={() => {
-
-        }}
+        disabled={removingBranch}
+        onSelect={() =>
+          !removingBranch &&
+          removeBranchFromRepository({
+            id,
+            owner,
+            repoName,
+            name,
+            page,
+          })
+        }
       >
         Remove from CodeSandbox
-      </MenuItem> */}
+      </MenuItem>
     </Menu.ContextMenu>
   );
 };

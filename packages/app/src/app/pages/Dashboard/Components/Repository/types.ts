@@ -11,4 +11,5 @@ export type RepositoryProps = {
   onContextMenu: (evt: React.MouseEvent) => void;
   onClick: (evt: React.MouseEvent) => void;
   selected: boolean;
+  isBeingRemoved: boolean;
 };
