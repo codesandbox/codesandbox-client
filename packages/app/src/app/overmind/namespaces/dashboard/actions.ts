@@ -2092,6 +2092,8 @@ export const unstarRepo = (
     `CSB/EXPERIMENTAL_STARRED/${activeTeam}`,
     dashboard.starredRepos
   );
+};
+
 type BranchToRemove = {
   owner: string;
   repoName: string;
