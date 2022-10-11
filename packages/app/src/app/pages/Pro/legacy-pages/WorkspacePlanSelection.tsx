@@ -538,7 +538,8 @@ const PlanCard: React.FC<{
   plan: Plan;
   billingInterval: Plan['billingInterval'];
   setBillingInterval: (billingInterval: Plan['billingInterval']) => void;
-  currentSubscription: ProSubscription | null;
+  // Omitting new trialEnd and trialStart
+  currentSubscription: Omit<ProSubscription, 'trialEnd' | 'trialStart'> | null;
 }> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
   const isSelected = plan.billingInterval === billingInterval;
   const isCurrent =

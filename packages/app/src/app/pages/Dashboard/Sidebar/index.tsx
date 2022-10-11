@@ -66,9 +66,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
   } = state;
 
   React.useEffect(() => {
+    // Used to fetch collections
     actions.dashboard.getAllFolders();
     actions.dashboard.getStarredRepos();
   }, [actions.dashboard, state.activeTeam]);
+
+  React.useEffect(() => {
+    // Used to check for templates and synced sandboxes
+    actions.sidebar.getSidebarData(
+      state.activeTeam !== personalWorkspaceId ? state.activeTeam : undefined
+    );
+  }, [state.activeTeam, personalWorkspaceId, actions.sidebar]);
 
   React.useEffect(() => {
     if (state.activeTeam) {
@@ -252,12 +260,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.drafts(activeTeam)}
             icon="file"
           />
-          <RowItem
-            name="Templates"
-            page="templates"
-            path={dashboardUrls.templates(activeTeam)}
-            icon="star"
-          />
+
+          {state.sidebar.hasTemplates ? (
+            <RowItem
+              name="Templates"
+              page="templates"
+              path={dashboardUrls.templates(activeTeam)}
+              icon="star"
+            />
+          ) : null}
+
           <NestableRowItem
             name="All sandboxes"
             path={dashboardUrls.sandboxes('/', activeTeam)}
@@ -278,12 +290,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon="server"
             />
           )}
-          <RowItem
-            name="Synced"
-            page="synced-sandboxes"
-            path={dashboardUrls.syncedSandboxes(activeTeam)}
-            icon="sync"
-          />
+
+          {state.sidebar.hasSyncedSandboxes ? (
+            <RowItem
+              name="Synced"
+              page="synced-sandboxes"
+              path={dashboardUrls.syncedSandboxes(activeTeam)}
+              icon="sync"
+            />
+          ) : null}
+
           <RowItem
             name="Archive"
             page="archive"
