@@ -98,9 +98,9 @@ export const BoxPlan = styled.a`
     }
   }
 
-  ${({ pro }) => {
+  ${({ teamPro }) => {
     return (
-      pro &&
+      teamPro &&
       css`
         background: #fff;
         border-top-color: #edffa5;
@@ -115,6 +115,17 @@ export const BoxPlan = styled.a`
       css`
         background: #fff;
         border-top-color: #ac9cff;
+        color: #090909;
+      `
+    );
+  }}
+
+${({ orgCustom }) => {
+    return (
+      orgCustom &&
+      css`
+        background: #fff;
+        border-top-color: #e1e1e1;
         color: #090909;
       `
     );
@@ -175,7 +186,6 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
 
     @media (min-width: 769px) {
       margin-bottom: 12px;
-      font-size: 56px;
       font-size: 64px;
     }
   }
@@ -190,4 +200,28 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
       font-size: 13px;
     }
   }
+
+  ${({ customPrice }) => {
+    return (
+      customPrice &&
+      css`
+        margin-top: -24px; // Visually align with the other cards.
+
+        .plan {
+          margin-bottom: 0;
+
+          @media (min-width: 769px) {
+            margin-bottom: 0;
+          }
+        }
+
+        .price {
+          @media (min-width: 769px) {
+            font-size: 48px;
+            line-height: 68px;
+          }
+        }
+      `
+    );
+  }}
 `;

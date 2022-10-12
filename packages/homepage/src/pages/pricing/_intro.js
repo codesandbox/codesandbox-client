@@ -37,11 +37,14 @@ export const Intro = ({ plans }) => {
         {plans && (
           <PlanList ref={scrollViewRef}>
             <TeamFree />
-            <TeamPro
-              plan={plans.team_pro}
-              onMouseEnter={() => setHover(true)}
-              onMouseLeave={() => setHover(false)}
-            />
+            {plans.team_pro ? (
+              <TeamPro
+                plan={plans.team_pro}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
+              />
+            ) : null}
+            <OrgCustom />
           </PlanList>
         )}
       </ScrollViewPlansList>
@@ -214,8 +217,8 @@ const TeamPro = ({ plan, ...props }) => {
   if (!plan) return null;
 
   return (
-    <BoxPlan href="/pro?type=team" pro {...props}>
-      <p>Collaborate with your team Unlimited editor seats</p>
+    <BoxPlan href="/pro?type=team" teamPro {...props}>
+      <p>For small teams focused on collaboration</p>
 
       <BoxPlanPrice
         plan="Team Pro"
@@ -246,6 +249,36 @@ const TeamPro = ({ plan, ...props }) => {
       </ul>
 
       <BoxPlanButton>Upgrade to Team Pro</BoxPlanButton>
+    </BoxPlan>
+  );
+};
+
+const OrgCustom = props => {
+  return (
+    <BoxPlan href="#" orgCustom {...props}>
+      <p>For companies that want to go beyond</p>
+
+      <BoxPlanPrice
+        plan="Organization"
+        price="Custom"
+        caption="tailor-made plan with more flexibility."
+        customPrice
+      />
+
+      <ul>
+        <li>All Team Pro features, plus:</li>
+        <li>Unlimited editors</li>
+        <li>Bulk pricing for seats</li>
+        <li>Custom VM SpecsCustom support</li>
+        <li>Shared Slack channel</li>
+        <li>Customer success manager </li>
+
+        {/* Visually aligned */}
+        <br />
+        <br />
+      </ul>
+
+      <BoxPlanButton>Contact us</BoxPlanButton>
     </BoxPlan>
   );
 };
