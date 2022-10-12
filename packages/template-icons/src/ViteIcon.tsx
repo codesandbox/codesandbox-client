@@ -2,7 +2,7 @@ import React from 'react';
 import { SVGIcon, ISVGIconProps } from './SVGIcon';
 
 export const ViteIcon: React.FC<ISVGIconProps> = ({ ...props }) => (
-  <SVGIcon {...props} viewBox="0 0 256 257">
+  <SVGIcon {...props} viewBox="0 0 256 256">
     <defs>
       <linearGradient
         id="IconifyId1813088fe1fbc01fb466"

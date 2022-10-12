@@ -2,7 +2,7 @@ import React from 'react';
 import { SVGIcon, ISVGIconProps } from './SVGIcon';
 
 export const AstroIcon: React.FC<ISVGIconProps> = ({ ...props }) => (
-  <SVGIcon {...props} viewBox="0 0 1281 1280">
+  <SVGIcon {...props} viewBox="0 0 1280 1280">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
