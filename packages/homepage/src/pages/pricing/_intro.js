@@ -36,28 +36,31 @@ export const Intro = ({ plans }) => {
         </Title>
       </IntroWrapper>
 
-      <ScrollViewPlansList>
-        <Gradient className={hover ? 'hover' : ''} />
-        {plans && (
-          <PlanList ref={scrollViewRef}>
-            <TeamFree />
-            {plans.team_pro ? (
-              <TeamPro
-                plan={plans.team_pro}
-                onMouseEnter={() => setHover(true)}
-                onMouseLeave={() => setHover(false)}
-              />
-            ) : null}
-            <OrgCustom />
-          </PlanList>
-        )}
-      </ScrollViewPlansList>
+      <PlansWrapper>
+        <PlansTitle>Team and Business Plans</PlansTitle>
+        <ScrollViewPlansList>
+          <Gradient className={hover ? 'hover' : ''} />
+          {plans && (
+            <PlanList ref={scrollViewRef}>
+              <TeamFree />
+              {plans.team_pro ? (
+                <TeamPro
+                  plan={plans.team_pro}
+                  onMouseEnter={() => setHover(true)}
+                  onMouseLeave={() => setHover(false)}
+                />
+              ) : null}
+              <OrgCustom />
+            </PlanList>
+          )}
+        </ScrollViewPlansList>
+      </PlansWrapper>
     </>
   );
 };
 
 /**
- * Elements
+ * Hero elements
  */
 const IntroWrapper = styled.div`
   position: relative;
@@ -109,32 +112,16 @@ const Title = styled.h1`
 /**
  * Plan list elements
  */
-
 const Gradient = styled.div`
   position: absolute;
   width: 1280px;
   height: 1280px;
   right: -40%;
   top: -50%;
-
   background: radial-gradient(
-    50% 50% at 50% 50%,
-    hsl(72deg 100% 82%) 0%,
-    hsl(72deg 69% 76%) 3%,
-    hsl(72deg 50% 71%) 6%,
-    hsl(72deg 38% 65%) 9%,
-    hsl(72deg 30% 59%) 12%,
-    hsl(72deg 23% 54%) 15%,
-    hsl(72deg 20% 48%) 19%,
-    hsl(72deg 19% 43%) 22%,
-    hsl(71deg 19% 38%) 26%,
-    hsl(71deg 18% 32%) 30%,
-    hsl(71deg 17% 27%) 34%,
-    hsl(71deg 16% 23%) 39%,
-    hsl(71deg 15% 18%) 44%,
-    hsl(70deg 13% 13%) 51%,
-    hsl(69deg 9% 9%) 59%,
-    hsl(0deg 0% 4%) 77%
+    61.76% 61.76% at 50% 38.24%,
+    #ac9cff 0%,
+    #000000 60.35%
   );
   opacity: 0.6;
   transition: opacity 0.8s ease;
@@ -144,9 +131,30 @@ const Gradient = styled.div`
     opacity: 1;
   }
 
-  @media (max-width: 769px) {
+  @media (max-width: 768px) {
     display: none;
   }
+`;
+
+const PlansWrapper = styled.div`
+  margin-top: 100px; // TODO: verify if spacing is correct
+
+  @media (min-width: 769px) {
+    margin-top: 150px;
+  }
+`;
+
+const PlansTitle = styled.h2`
+  position: relative;
+  z-index: 1;
+
+  color: #ffffff;
+
+  font-family: 'TWKEverett', sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 42px;
+  letter-spacing: -0.01em;
 `;
 
 const ScrollViewPlansList = styled.div`
@@ -154,7 +162,7 @@ const ScrollViewPlansList = styled.div`
   margin-left: -1em;
   position: relative;
 
-  @media (min-width: 1025) {
+  @media (min-width: 1025px) {
     margin: 0;
   }
 `;
@@ -169,12 +177,12 @@ const PlanList = styled.div`
   overflow-x: scroll;
   scroll-behavior: smooth;
 
-  margin-top: 80px;
+  margin-top: 80px; // TODO: verify if spacing is correct
   padding: 0 1em;
 
   @media (min-width: 376px) {
     padding: 0;
-    margin-top: 132px;
+    margin-top: 100px;
   }
 
   @media (min-width: 1025px) {
