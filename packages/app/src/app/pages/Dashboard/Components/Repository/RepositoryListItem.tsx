@@ -10,6 +10,7 @@ import {
   ListAction,
   Stack,
   Text,
+  SkeletonText,
 } from '@codesandbox/components';
 import { RepositoryProps } from './types';
 
@@ -89,3 +90,27 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
     </ListAction>
   );
 };
+
+export const RepositoryListItemSkeleton: React.FC = () => (
+  <Stack>
+    <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
+      <Column
+        span={[12, 5, 5]}
+        css={{
+          display: 'block',
+          overflow: 'hidden',
+          paddingBottom: 4,
+          paddingTop: 4,
+        }}
+      >
+        <Stack gap={4} align="center" marginLeft={2}>
+          <Icon color="#999" name="repository" size={16} width="32px" />
+          <SkeletonText />
+        </Stack>
+      </Column>
+      <Column span={[0, 4, 4]} as={Stack} align="center">
+        <SkeletonText />
+      </Column>
+    </Grid>
+  </Stack>
+);
