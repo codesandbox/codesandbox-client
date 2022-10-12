@@ -14,8 +14,13 @@ const UnauthenticatedImport: React.FC = () => {
   const actions = useActions();
 
   return (
-    <Stack direction="vertical" gap={8}>
-      <Text as="h2" css={{ margin: 0 }} size={4} weight="medium">
+    <Stack direction="vertical" gap={4}>
+      <Text
+        as="h2"
+        css={{ margin: 0, lineHeight: '24px' }}
+        size={4}
+        weight="medium"
+      >
         Import from GitHub
       </Text>
       <Stack direction="vertical" gap={4}>

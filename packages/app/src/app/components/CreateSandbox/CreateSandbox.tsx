@@ -459,6 +459,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         selectTemplate(template);
                       }}
                       onOpenTemplate={openTemplate}
+                      isCloudTemplateList
                     />
                   </Panel>
 
