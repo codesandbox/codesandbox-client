@@ -3,7 +3,7 @@ import { Stack, Text, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { noop } from 'overmind';
 
-export const RepoCard = ({
+export const SyncedSandboxCard = ({
   name,
   path,
   // interactions

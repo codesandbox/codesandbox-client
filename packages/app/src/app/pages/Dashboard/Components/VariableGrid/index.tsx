@@ -9,7 +9,7 @@ import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
-import { Repo } from '../Repo';
+import { SyncedSandbox } from '../SyncedSandbox';
 import { CommunitySandbox } from '../CommunitySandbox';
 import { EmptyScreen } from '../EmptyScreen';
 import {
@@ -104,7 +104,9 @@ const ComponentForTypes: IComponentForTypes = {
     />
   )),
   folder: props => <Folder key={props.item.name} {...props.item} />,
-  repo: props => <Repo {...props.item} isScrolling={props.isScrolling} />,
+  repo: props => (
+    <SyncedSandbox {...props.item} isScrolling={props.isScrolling} />
+  ),
   'new-folder': props => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
   'new-master-branch': props => <NewMasterSandbox {...props.item} />,
