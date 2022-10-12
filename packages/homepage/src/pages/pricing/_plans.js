@@ -71,6 +71,57 @@ const team_plans = [
   },
 ];
 
+const personal_plans = [
+  {
+    body: [
+      {
+        title: 'Users',
+        caption: 'All Personal plans are limited to 1 user.',
+        personal_free: '1',
+        personal_pro: '1',
+      },
+      {
+        title: 'Unlimited Sandboxes',
+        caption:
+          'Create as many sandboxes as you like and manage their permissions.',
+        personal_free: 'Only public',
+        personal_pro: 'Public and private',
+      },
+      {
+        title: 'Unlimited Repositories',
+        caption:
+          'Import as many repos as you like. Repos allow developing projects connected to Git.',
+        personal_free: 'Only public',
+        personal_pro: 'Public and private',
+      },
+      {
+        title: 'VM Specs',
+        caption: 'The specs of the VM that will run your repositories.',
+        personal_free: '4GB RAM<br/>2 vCPUs<br/>4GB Disk',
+        personal_pro: '6GB RAM<br/>4 vCPUs<br/>12GB Disk',
+      },
+      {
+        title: 'Public NPM packages',
+        caption: 'Use any of the 1M+ public packages on npm in your sandboxes',
+        personal_free: true,
+        personal_pro: true,
+      },
+      {
+        title: 'Private NPM packages',
+        caption: 'Use private npm packages from your own custom registry',
+        personal_free: false,
+        personal_pro: true,
+      },
+      {
+        title: 'Static file hosting',
+        caption: 'All static files served via CDN.',
+        personal_free: '20MB total,<br/> 7MB upload',
+        personal_pro: '500MB/user,<br/> 30MB upload',
+      },
+    ],
+  },
+];
+
 const featureList = [
   {
     title: 'CodeSandbox CI',
@@ -258,8 +309,8 @@ export const Plans = () => {
                             value={mobilePlan}
                           >
                             <option value="team-free">Free</option>
-                            <option value="team-pro">Personal Pro</option>
-                            <option value="org-custom">Team Pro</option>
+                            <option value="team-pro">Team</option>
+                            <option value="org-custom">Organization</option>
                           </select>
                         </div>
                       </th>
@@ -309,7 +360,7 @@ export const Plans = () => {
       <TableSection>
         <TableTitle>Personal Plans</TableTitle>
         <Table>
-          {team_plans.map(({ section, body }, index) => {
+          {personal_plans.map(({ section, body }, index) => {
             return (
               <React.Fragment key={section}>
                 <tr>
@@ -326,16 +377,12 @@ export const Plans = () => {
 
                   {index === 0 && (
                     <>
-                      <th className="column__desktop plan__team-free">
+                      <th className="column__desktop plan__personal-free">
                         <p>Free</p>
                       </th>
-                      <th className="column__desktop plan__team-pro">
-                        <p>Team</p>
+                      <th className="column__desktop plan__personal-pro">
+                        <p>Personal Pro</p>
                         <a href="/pro?type=personal">Upgrade</a>
-                      </th>
-                      <th className="column__desktop plan__org-custom">
-                        <p>Organization</p>
-                        <a href="#">Contact us</a>
                       </th>
 
                       <th
@@ -349,9 +396,8 @@ export const Plans = () => {
                             }
                             value={mobilePlan}
                           >
-                            <option value="team-free">Free</option>
-                            <option value="team-pro">Personal Pro</option>
-                            <option value="org-custom">Team Pro</option>
+                            <option value="personal-free">Free</option>
+                            <option value="personal-pro">Personal Pro</option>
                           </select>
                         </div>
                       </th>
@@ -373,14 +419,11 @@ export const Plans = () => {
                         />
                       </td>
 
-                      <td className="plan__team-free column__desktop">
-                        <CheckOrNot option={item.team_free} />
+                      <td className="plan__personal-free column__desktop">
+                        <CheckOrNot option={item.personal_free} />
                       </td>
-                      <td className="plan__team-pro column__desktop">
-                        <CheckOrNot option={item.team_pro} />
-                      </td>
-                      <td className="plan__org-custom column__desktop">
-                        <CheckOrNot option={item.org_custom} />
+                      <td className="plan__personal-pro column__desktop">
+                        <CheckOrNot option={item.personal_pro} />
                       </td>
 
                       <td
@@ -750,7 +793,8 @@ const Table = styled.table`
     }
   }
 
-  .plan__team-free {
+  .plan__team-free,
+  .plan__personal-free {
     --plan: #808080;
 
     color: var(--plan);
@@ -764,6 +808,12 @@ const Table = styled.table`
 
   .plan__org-custom {
     --plan: #ffffff;
+
+    color: var(--plan);
+  }
+
+  .plan__personal-pro {
+    --plan: #ac9cff;
 
     color: var(--plan);
   }
