@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+import usePrefersReducedMotion from '../../utils/isReducedMOtion';
 
 import {
   BoxPlan,
@@ -21,14 +23,31 @@ export const Intro = ({ plans }) => {
   //     }
   //   }
   // }
+  const shouldReduceMotion = usePrefersReducedMotion();
 
-  const [hover, setHover] = useState(false);
+  const [teamHover, setTeamHover] = useState(false);
+  const [personalHover, setPersonalHover] = useState(false);
 
   const scrollViewRef = useCallback(node => {
     if (node) {
       node.scroll(window.innerWidth, 0);
     }
   }, []);
+
+  const scrollTo = event => {
+    event.preventDefault();
+
+    const element = document.querySelector('#plans');
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - 120;
+
+    if (element) {
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: shouldReduceMotion ? 'auto' : 'smooth',
+      });
+    }
+  };
 
   return (
     <>
@@ -41,28 +60,59 @@ export const Intro = ({ plans }) => {
         </Title>
       </IntroWrapper>
 
-      <PlansWrapper>
-        <PlansTitle>Team and Business Plans</PlansTitle>
-        <ScrollViewPlansList>
-          <Gradient className={hover ? 'hover' : ''} />
-          {plans && (
-            <PlanList ref={scrollViewRef}>
-              <TeamFree />
-              {plans.team_pro ? (
-                <TeamPro
-                  plan={plans.team_pro}
-                  onMouseEnter={() => setHover(true)}
-                  onMouseLeave={() => setHover(false)}
+      {plans && (
+        <>
+          <PlansWrapper>
+            <PlansTitle>Team and Business Plans</PlansTitle>
+            <ScrollViewPlansList>
+              <Gradient className={teamHover ? 'hover' : ''} teamSection />
+              <PlanList ref={scrollViewRef}>
+                <TeamFree />
+                {plans.team_pro ? (
+                  <TeamPro
+                    plan={plans.team_pro}
+                    onMouseEnter={() => setTeamHover(true)}
+                    onMouseLeave={() => setTeamHover(false)}
+                  />
+                ) : null}
+                <OrgCustom
+                  // TODO: verify if another effect should be applied.
+                  onMouseEnter={() => setTeamHover(true)}
+                  onMouseLeave={() => setTeamHover(false)}
                 />
-              ) : null}
-              <OrgCustom />
-            </PlanList>
-          )}
-        </ScrollViewPlansList>
-        <ComparePlansLinkWrapper>
-          <ComparePlansLink />
-        </ComparePlansLinkWrapper>
-      </PlansWrapper>
+              </PlanList>
+            </ScrollViewPlansList>
+            <ComparePlansLinkWrapper>
+              <ComparePlansLink scrollTo={scrollTo} />
+            </ComparePlansLinkWrapper>
+          </PlansWrapper>
+
+          <PlansWrapper>
+            <PlansTitle>Personal Plans</PlansTitle>
+            <ScrollViewPlansList>
+              <Gradient
+                className={personalHover ? 'hover' : ''}
+                personalSection
+              />
+              {plans && (
+                <PlanList ref={scrollViewRef}>
+                  <PersonalFree />
+                  {plans.pro ? (
+                    <PersonalPro
+                      plan={plans.pro}
+                      onMouseEnter={() => setPersonalHover(true)}
+                      onMouseLeave={() => setPersonalHover(false)}
+                    />
+                  ) : null}
+                </PlanList>
+              )}
+            </ScrollViewPlansList>
+            <ComparePlansLinkWrapper>
+              <ComparePlansLink scrollTo={scrollTo} />
+            </ComparePlansLinkWrapper>
+          </PlansWrapper>
+        </>
+      )}
     </>
   );
 };
@@ -126,11 +176,11 @@ const Gradient = styled.div`
   height: 1280px;
   right: -40%;
   top: -50%;
-  background: radial-gradient(
+  /* background: radial-gradient(
     61.76% 61.76% at 50% 38.24%,
     #ac9cff 0%,
     #000000 60.35%
-  );
+  ); */
   opacity: 0.6;
   transition: opacity 0.8s ease;
 
@@ -142,6 +192,46 @@ const Gradient = styled.div`
   @media (max-width: 768px) {
     display: none;
   }
+
+  ${({ teamSection }) => {
+    return (
+      teamSection &&
+      css`
+        background: radial-gradient(
+          61.76% 61.76% at 50% 38.24%,
+          #ac9cff 0%,
+          #000000 60.35%
+        );
+      `
+    );
+  }}
+
+  ${({ personalSection }) => {
+    return (
+      personalSection &&
+      css`
+        background: radial-gradient(
+          50% 50% at 50% 50%,
+          hsl(72deg 100% 82%) 0%,
+          hsl(72deg 69% 76%) 3%,
+          hsl(72deg 50% 71%) 6%,
+          hsl(72deg 38% 65%) 9%,
+          hsl(72deg 30% 59%) 12%,
+          hsl(72deg 23% 54%) 15%,
+          hsl(72deg 20% 48%) 19%,
+          hsl(72deg 19% 43%) 22%,
+          hsl(71deg 19% 38%) 26%,
+          hsl(71deg 18% 32%) 30%,
+          hsl(71deg 17% 27%) 34%,
+          hsl(71deg 16% 23%) 39%,
+          hsl(71deg 15% 18%) 44%,
+          hsl(70deg 13% 13%) 51%,
+          hsl(69deg 9% 9%) 59%,
+          hsl(0deg 0% 4%) 77%
+        );
+      `
+    );
+  }}
 `;
 
 const PlansWrapper = styled.div`
@@ -309,6 +399,70 @@ const OrgCustom = props => {
       </ul>
 
       <BoxPlanButton>Contact us</BoxPlanButton>
+    </BoxPlan>
+  );
+};
+
+const PersonalFree = () => {
+  return (
+    <BoxPlan href="/s">
+      <p>For learning and experimenting</p>
+
+      <BoxPlanPrice plan="Free" price="$0" caption="forever" />
+
+      <ul>
+        <li>Free for individuals</li>
+        <li>All platform features</li>
+        <li>Unlimited public sandboxes</li>
+        <li>Unlimited public repositories</li>
+        <li>Personal dashboard</li>
+
+        {/* Visually aligned */}
+        <br />
+        <br />
+
+        <li>4GB RAM</li>
+        <li>2vCPUs</li>
+        <li>4GB Disk</li>
+      </ul>
+
+      <BoxPlanButton href="/s">Start using now</BoxPlanButton>
+    </BoxPlan>
+  );
+};
+
+const PersonalPro = ({ plan, ...props }) => {
+  return (
+    <BoxPlan personalPro href="/pro?type=personal" {...props}>
+      <p>Exclusive for personal teams 1 editor</p>
+
+      <BoxPlanPrice
+        plan="Personal Pro"
+        price={formatCurrency({
+          currency: plan.year.currency,
+          unit_amount: plan.year.unit_amount / 12,
+        })}
+        caption={`per month, billed annually or ${formatCurrency(plan.month)}
+      per month.`}
+      />
+
+      <ul>
+        <li>All free features, plus:</li>
+        <li>Unlimited private sandboxes</li>
+        <li>Unlimited private repositories</li>
+        <li>Private NPM packages</li>
+        <li>Advanced permissions</li>
+
+        {/* Visually aligned */}
+        <br />
+        <br />
+
+        <li>6GB RAM</li>
+        <li>24vCPUs</li>
+        <li>12GB Disk</li>
+      </ul>
+
+      <BoxPlanButton>Upgrade to Personal Pro</BoxPlanButton>
     </BoxPlan>
   );
 };

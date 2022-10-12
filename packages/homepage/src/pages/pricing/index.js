@@ -7,7 +7,6 @@ import TitleAndMetaTags from '../../components/TitleAndMetaTags';
 
 import { usePricing } from './_utils';
 import { Intro } from './_intro';
-import { PersonalPro } from './_personal-pro';
 import { Plans } from './_plans';
 import { Testimonial } from './_testimonials';
 import { Title } from './_elements';
@@ -70,12 +69,6 @@ const Pricing = () => {
         >
           <Container>
             <Intro plans={plansPayload} />
-          </Container>
-        </Section>
-
-        <Section>
-          <Container>
-            <PersonalPro plans={plansPayload} />
           </Container>
         </Section>
 

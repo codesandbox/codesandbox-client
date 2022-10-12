@@ -122,7 +122,7 @@ export const BoxPlan = styled.a`
     );
   }}
 
-${({ orgCustom }) => {
+  ${({ orgCustom }) => {
     return (
       orgCustom &&
       css`
