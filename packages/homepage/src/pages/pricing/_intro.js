@@ -32,26 +32,19 @@ export const Intro = ({ plans }) => {
         <Title>Everything you love about CodeSandbox, but make it Pro.</Title>
       </IntroWrapper>
 
-      <ScrollViewPlantList>
+      <ScrollViewPlansList>
         <Gradient className={hover ? 'hover' : ''} />
         {plans && (
           <PlanList ref={scrollViewRef}>
-            {Object.entries(plans || {}).map(([plan, value]) => {
-              if (plan === 'team_pro') {
-                return (
-                  <TeamPro
-                    plan={value}
-                    onMouseEnter={() => setHover(true)}
-                    onMouseLeave={() => setHover(false)}
-                  />
-                );
-              }
-
-              return <FreeBox />;
-            })}
+            <FreeBox />
+            <TeamPro
+              plan={plans.team_pro}
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
+            />
           </PlanList>
         )}
-      </ScrollViewPlantList>
+      </ScrollViewPlansList>
     </>
   );
 };
@@ -59,6 +52,58 @@ export const Intro = ({ plans }) => {
 /**
  * Elements
  */
+const IntroWrapper = styled.div`
+  position: relative;
+  z-index: 1;
+`;
+
+const Caption = styled.p`
+  color: #dcff50;
+  font-family: 'TWKEverett', sans-serif;
+  font-weight: 500;
+
+  font-size: 24px;
+  line-height: 28px;
+
+  @media (min-width: 769px) {
+    font-size: 32px;
+    line-height: 38px;
+  }
+`;
+
+const Title = styled.h1`
+  letter-spacing: -0.025em;
+  font-family: 'TWKEverett', sans-serif;
+
+  color: ${props => props.theme.homepage.white};
+  padding: 0;
+  margin: 0;
+  margin-bottom: 0;
+  font-weight: normal;
+
+  font-size: 40px;
+  line-height: 48px;
+
+  @media (min-width: 769px) {
+    font-size: 48px;
+    line-height: 56px;
+  }
+
+  @media (min-width: 1025px) {
+    font-size: 72px;
+    line-height: 80px;
+  }
+
+  @media (min-width: 1445px) {
+    font-size: 85px;
+    line-height: 1.09;
+  }
+`;
+
+/**
+ * Plan list elements
+ */
+
 const Gradient = styled.div`
   position: absolute;
   width: 1280px;
@@ -98,59 +143,7 @@ const Gradient = styled.div`
   }
 `;
 
-const Title = styled.h1`
-  letter-spacing: -0.025em;
-  font-family: 'TWKEverett', sans-serif;
-
-  color: ${props => props.theme.homepage.white};
-  padding: 0;
-  margin: 0;
-  margin-bottom: 0;
-  font-weight: normal;
-
-  font-size: 40px;
-  line-height: 48px;
-
-  @media (min-width: 769px) {
-    font-size: 48px;
-    line-height: 56px;
-  }
-
-  @media (min-width: 1025px) {
-    font-size: 72px;
-    line-height: 80px;
-  }
-
-  @media (min-width: 1445px) {
-    font-size: 85px;
-    line-height: 1.09;
-  }
-`;
-
-const IntroWrapper = styled.div`
-  position: relative;
-  z-index: 1;
-`;
-
-const Caption = styled.p`
-  color: #dcff50;
-  font-family: 'TWKEverett', sans-serif;
-  font-weight: 500;
-
-  font-size: 24px;
-  line-height: 28px;
-
-  @media (min-width: 769px) {
-    font-size: 32px;
-    line-height: 38px;
-  }
-`;
-
-/**
- * Plan list elements
- */
-
-const ScrollViewPlantList = styled.div`
+const ScrollViewPlansList = styled.div`
   margin-right: -1em;
   margin-left: -1em;
   position: relative;
