@@ -34,7 +34,7 @@ import {
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
 import { Branch } from '../Branch';
-import { Repository } from '../Repository';
+import { Repository, SkeletonRepository } from '../Repository';
 import { NewBranchCard } from '../Branch/NewBranch';
 import { ImportRepositoryCard } from '../Repository/ImportRepository';
 
@@ -78,7 +78,8 @@ interface IComponentForTypes {
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
-  skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
+  'default-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
+  'repository-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
   branch: React.FC<DecoratedItemProps<DashboardBranch>>;
   'new-branch': React.FC<DecoratedItemProps<DashboardNewBranch>>;
@@ -137,7 +138,8 @@ const ComponentForTypes: IComponentForTypes = {
     </Link>
   ),
   blank: () => <div />,
-  skeleton: () => <SkeletonSandbox />,
+  'default-skeleton': () => <SkeletonSandbox />,
+  'repository-skeleton': () => <SkeletonRepository />,
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
@@ -328,8 +330,13 @@ export const VariableGrid = ({
               viewMode?: 'list' | 'grid';
             }
           > = [];
-          const blankItem = { type: 'blank' as 'blank' };
-          const skeletonItem = { type: 'skeleton' as 'skeleton' };
+          const blankItem = { type: 'blank' as const };
+          const skeletonItem = {
+            type:
+              page === 'repositories'
+                ? ('repository-skeleton' as const)
+                : ('default-skeleton' as const),
+          };
 
           items.forEach((item, index) => {
             if (

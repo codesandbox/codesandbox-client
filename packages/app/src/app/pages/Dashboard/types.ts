@@ -105,7 +105,7 @@ export type DashboardBlankRowFill = {
 };
 
 export type DashboardSkeleton = {
-  type: 'skeleton';
+  type: 'default-skeleton' | 'repository-skeleton';
 };
 
 export type DashboardNewMasterBranch = {
