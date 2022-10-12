@@ -1,8 +1,14 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAppState } from 'app/overmind';
-import { SyncedSandboxCard } from './SyncedSandboxCard';
-import { SyncedSandboxListItem } from './SyncedSandboxListItem';
+import {
+  SyncedSandboxCard,
+  SyncedSandboxCardSkeleton,
+} from './SyncedSandboxCard';
+import {
+  SyncedSandboxListItem,
+  SyncedSandboxListItemSkeleton,
+} from './SyncedSandboxListItem';
 import { useSelection } from '../Selection';
 import { DashboardRepo } from '../../types';
 
@@ -71,4 +77,13 @@ export const SyncedSandbox = ({
   };
 
   return <Component {...folderProps} {...interactionProps} {...props} />;
+};
+
+export const SkeletonSyncedSandbox: React.FC = () => {
+  const { viewMode } = useAppState().dashboard;
+
+  return {
+    list: <SyncedSandboxListItemSkeleton />,
+    grid: <SyncedSandboxCardSkeleton />,
+  }[viewMode];
 };
