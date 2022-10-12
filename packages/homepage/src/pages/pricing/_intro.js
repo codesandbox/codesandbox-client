@@ -1,11 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
-import privateIcon from './assets/private.svg';
-import exportIcon from './assets/export.svg';
-import priceIcon from './assets/price.svg';
-import { formatCurrency } from './_utils';
 import { BoxPlan, BoxPlanButton, BoxPlanPrice } from './_elements';
+import { formatCurrency } from './_utils';
 
 /**
  * Main component
@@ -33,38 +30,6 @@ export const Intro = ({ plans }) => {
       <IntroWrapper>
         <Caption>CodeSandbox Pro</Caption>
         <Title>Everything you love about CodeSandbox, but make it Pro.</Title>
-
-        <ScrollView>
-          <Grid>
-            <GridItem>
-              <Icon>
-                <img src={privateIcon} alt="private npm packages" />
-              </Icon>
-              <SubTitle>
-                Use private NPM packages and manage advanced permissions options
-              </SubTitle>
-            </GridItem>
-
-            <GridItem>
-              <Icon>
-                <img src={exportIcon} alt="storage" />
-              </Icon>
-              <SubTitle>
-                Go bigger and bolder with 500MB of storage and 30MB upload speed
-              </SubTitle>
-            </GridItem>
-
-            <GridItem>
-              <Icon>
-                <img src={priceIcon} alt="pricing" />
-              </Icon>
-              <SubTitle>
-                Choose between different pricing and plans to suit your needs
-                and budget
-              </SubTitle>
-            </GridItem>
-          </Grid>
-        </ScrollView>
       </IntroWrapper>
 
       <ScrollViewPlantList>
@@ -162,18 +127,6 @@ const Title = styled.h1`
   }
 `;
 
-const SubTitle = styled.h2`
-  font-weight: normal;
-  color: #808080;
-  font-weight: normal;
-  letter-spacing: -0.019em;
-  margin: 0;
-  margin-bottom: 0;
-
-  font-size: 16px;
-  line-height: 24px;
-`;
-
 const IntroWrapper = styled.div`
   position: relative;
   z-index: 1;
@@ -190,51 +143,6 @@ const Caption = styled.p`
   @media (min-width: 769px) {
     font-size: 32px;
     line-height: 38px;
-  }
-`;
-
-const ScrollView = styled.div`
-  overflow: auto;
-  margin-left: -1em;
-  margin-right: -1em;
-`;
-
-const GridItem = styled.div`
-  min-width: 220px;
-  padding-right: calc(40px - 1em);
-  padding-left: 1em;
-`;
-
-const Grid = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  margin-top: 62px;
-
-  @media (min-width: 376px) {
-    margin-top: 72px;
-  }
-
-  @media (min-width: 769px) {
-    margin-top: 96px;
-  }
-
-  ${GridItem} {
-    width: calc(100% / 3);
-  }
-`;
-
-const Icon = styled.div`
-  background: #2a2a2a;
-  width: 56px;
-  height: 56px;
-  border-radius: 9999px;
-  display: flex;
-  margin-bottom: 24px;
-
-  img {
-    margin: auto;
-    height: 22px;
   }
 `;
 
