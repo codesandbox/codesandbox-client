@@ -9,7 +9,7 @@ import { Sandbox, SkeletonSandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
-import { SyncedSandbox } from '../SyncedSandbox';
+import { SkeletonSyncedSandbox, SyncedSandbox } from '../SyncedSandbox';
 import { CommunitySandbox } from '../CommunitySandbox';
 import { EmptyScreen } from '../EmptyScreen';
 import {
@@ -80,6 +80,7 @@ interface IComponentForTypes {
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   'default-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'repository-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
+  'synced-sandbox-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
   branch: React.FC<DecoratedItemProps<DashboardBranch>>;
   'new-branch': React.FC<DecoratedItemProps<DashboardNewBranch>>;
@@ -142,6 +143,7 @@ const ComponentForTypes: IComponentForTypes = {
   blank: () => <div />,
   'default-skeleton': () => <SkeletonSandbox />,
   'repository-skeleton': () => <SkeletonRepository />,
+  'synced-sandbox-skeleton': () => <SkeletonSyncedSandbox />,
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
@@ -333,12 +335,12 @@ export const VariableGrid = ({
             }
           > = [];
           const blankItem = { type: 'blank' as const };
-          const skeletonItem = {
-            type:
-              page === 'repositories'
-                ? ('repository-skeleton' as const)
-                : ('default-skeleton' as const),
-          };
+          const skeletonItemType: DashboardSkeleton['type'] =
+            {
+              repositories: 'repository-skeleton',
+              'synced-sandboxes': 'synced-sandbox-skeleton',
+            }[page] ?? 'default-skeleton';
+          const skeletonItem = { type: skeletonItemType };
 
           items.forEach((item, index) => {
             if (
