@@ -1,6 +1,8 @@
 import styled, { css } from 'styled-components';
 import React from 'react';
 
+import doubleArrowDown from './assets/doubleArrowDown.svg';
+
 export const Title = styled.h2`
   letter-spacing: -0.025em;
   font-size: 32px;
@@ -224,4 +226,34 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
       `
     );
   }}
+`;
+
+export const ComparePlansLink = styled(({ scrollTo, ...props }) => {
+  return (
+    <a href="#plans" onClick={scrollTo} {...props}>
+      <img src={doubleArrowDown} width="16" alt="" />
+      Compare plans
+    </a>
+  );
+})`
+  display: flex;
+  text-decoration: none;
+
+  color: #edffa5;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: -0.019em;
+
+  img {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    margin-right: 0.4em;
+  }
+
+  @media (hover: hover) {
+    &:hover img {
+      transform: translateY(4px);
+    }
+  }
 `;

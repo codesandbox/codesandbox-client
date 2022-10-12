@@ -1,7 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
-import { BoxPlan, BoxPlanButton, BoxPlanPrice } from './_elements';
+import {
+  BoxPlan,
+  BoxPlanButton,
+  BoxPlanPrice,
+  ComparePlansLink,
+} from './_elements';
 import { formatCurrency } from './_utils';
 
 /**
@@ -54,6 +59,9 @@ export const Intro = ({ plans }) => {
             </PlanList>
           )}
         </ScrollViewPlansList>
+        <ComparePlansLinkWrapper>
+          <ComparePlansLink />
+        </ComparePlansLinkWrapper>
       </PlansWrapper>
     </>
   );
@@ -147,6 +155,7 @@ const PlansWrapper = styled.div`
 const PlansTitle = styled.h2`
   position: relative;
   z-index: 1;
+  margin-bottom: 0;
 
   color: #ffffff;
 
@@ -194,6 +203,16 @@ const PlanList = styled.div`
       opacity: 0.5;
     }
   }
+`;
+
+const ComparePlansLinkWrapper = styled.div`
+  position: relative;
+  z-index: 1;
+  margin-top: 100px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const TeamFree = () => {
