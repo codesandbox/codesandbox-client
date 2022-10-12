@@ -28,8 +28,12 @@ export const Intro = ({ plans }) => {
   return (
     <>
       <IntroWrapper>
-        <Caption>CodeSandbox Pro</Caption>
-        <Title>Everything you love about CodeSandbox, but make it Pro.</Title>
+        <Caption>Pricing</Caption>
+        <Title>
+          Free to learn and experiment.
+          <br />
+          Pay as you grow.
+        </Title>
       </IntroWrapper>
 
       <ScrollViewPlansList>
@@ -65,17 +69,18 @@ const Caption = styled.p`
   font-family: 'TWKEverett', sans-serif;
   font-weight: 500;
 
+  letter-spacing: -0.01em;
   font-size: 24px;
+  font-weight: 500;
   line-height: 28px;
 
   @media (min-width: 769px) {
     font-size: 32px;
-    line-height: 38px;
+    line-height: 42px;
   }
 `;
 
 const Title = styled.h1`
-  letter-spacing: -0.025em;
   font-family: 'TWKEverett', sans-serif;
 
   color: ${props => props.theme.homepage.white};
@@ -84,6 +89,7 @@ const Title = styled.h1`
   margin-bottom: 0;
   font-weight: normal;
 
+  letter-spacing: -0.025em;
   font-size: 40px;
   line-height: 48px;
 
@@ -93,13 +99,10 @@ const Title = styled.h1`
   }
 
   @media (min-width: 1025px) {
-    font-size: 72px;
-    line-height: 80px;
-  }
-
-  @media (min-width: 1445px) {
-    font-size: 85px;
-    line-height: 1.09;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+    font-size: 64px;
+    line-height: 1.45;
   }
 `;
 
