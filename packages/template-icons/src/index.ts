@@ -58,11 +58,14 @@ import { VuePressIcon } from './VuePressIcon';
 import { WebAssemblyIcon } from './WebAssemblyIcon';
 import { SolidIcon } from './SolidIcon';
 import { SanityIcon } from './SanityIcon';
+import { AstroIcon } from './AstroIcon';
+import { ViteIcon } from './ViteIcon';
 
 export const ColorIcons = {
   AdonisIcon,
   AngularIcon,
   ApolloIcon,
+  AstroIcon,
   AureliaIcon,
   CordovaIcon,
   CxJSIcon,
@@ -120,12 +123,14 @@ export const ColorIcons = {
   WebAssemblyIcon,
   SolidIcon,
   SanityIcon,
+  ViteIcon,
 };
 
 export const Icons = {
   AdonisIcon,
   AngularIcon,
   ApolloIcon,
+  AstroIcon,
   AureliaIcon,
   CordovaIcon,
   CxJSIcon,
@@ -183,11 +188,13 @@ export const Icons = {
   WebAssemblyIcon,
   SolidIcon,
   SanityIcon,
+  ViteIcon,
 };
 
 export { AdonisIcon } from './AdonisIcon';
 export { AngularIcon } from './AngularIcon';
 export { ApolloIcon } from './ApolloIcon';
+export { AstroIcon } from './AstroIcon';
 export { AureliaIcon } from './AureliaIcon';
 export { CordovaIcon } from './CordovaIcon';
 export { CxJSIcon } from './CxJSIcon';
@@ -245,3 +252,4 @@ export { VuePressIcon } from './VuePressIcon';
 export { WebAssemblyIcon } from './WebAssemblyIcon';
 export { SolidIcon } from './SolidIcon';
 export { SanityIcon } from './SanityIcon';
+export { ViteIcon } from './ViteIcon';
