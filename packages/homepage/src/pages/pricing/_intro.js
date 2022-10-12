@@ -7,6 +7,7 @@ import {
   BoxPlan,
   BoxPlanButton,
   BoxPlanPrice,
+  Caption,
   ComparePlansLink,
 } from './_elements';
 import { formatCurrency } from './_utils';
@@ -52,7 +53,13 @@ export const Intro = ({ plans }) => {
   return (
     <>
       <IntroWrapper>
-        <Caption>Pricing</Caption>
+        <Caption
+          css={{
+            color: '#dcff50',
+          }}
+        >
+          Pricing
+        </Caption>
         <Title>
           Free to learn and experiment.
           <br />
@@ -123,22 +130,6 @@ export const Intro = ({ plans }) => {
 const IntroWrapper = styled.div`
   position: relative;
   z-index: 1;
-`;
-
-const Caption = styled.p`
-  color: #dcff50;
-  font-family: 'TWKEverett', sans-serif;
-  font-weight: 500;
-
-  letter-spacing: -0.01em;
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 28px;
-
-  @media (min-width: 769px) {
-    font-size: 32px;
-    line-height: 42px;
-  }
 `;
 
 const Title = styled.h1`

@@ -20,7 +20,7 @@ const Section = styled.div`
   margin-bottom: 172px;
 
   @media (min-width: 769px) {
-    margin-bottom: 280px;
+    margin-bottom: 150px;
   }
 `;
 
@@ -71,16 +71,16 @@ const Pricing = () => {
             <Intro plans={plansPayload} />
           </Container>
         </Section>
-
-        <Section>
-          <Testimonial />
-        </Section>
       </Overflow>
 
       <Section id="plans">
         <Container>
           <Plans />
         </Container>
+      </Section>
+
+      <Section>
+        <Testimonial />
       </Section>
 
       <Section>

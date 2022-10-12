@@ -32,6 +32,21 @@ export const Title = styled.h2`
   }
 `;
 
+export const Caption = styled.p`
+  font-family: 'TWKEverett', sans-serif;
+  font-weight: 500;
+
+  letter-spacing: -0.01em;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 28px;
+
+  @media (min-width: 769px) {
+    font-size: 32px;
+    line-height: 42px;
+  }
+`;
+
 export const BoxPlan = styled.a`
   scroll-snap-align: start center;
 

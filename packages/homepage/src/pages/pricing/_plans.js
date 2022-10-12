@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import styled from 'styled-components';
-import { Title } from './_elements';
+import { Caption, Title } from './_elements';
 
 /**
  * DATA
@@ -273,6 +273,14 @@ export const Plans = () => {
 
   return (
     <>
+      <Caption
+        css={{
+          textAlign: 'center',
+          marginBottom: '30px',
+        }}
+      >
+        Compare plans
+      </Caption>
       <Title
         css={{
           textAlign: 'center',
@@ -283,7 +291,7 @@ export const Plans = () => {
           },
         }}
       >
-        Compare our plans and features
+        Choose the right plan for you.
       </Title>
 
       <Table>
