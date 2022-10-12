@@ -188,11 +188,8 @@ const TeamFree = () => {
       <p>For learning and experimenting</p>
 
       <BoxPlanPrice plan="Free" price="$0" caption="forever" />
-      <ul>
-        {/* Visually aligned */}
-        <br />
-        <br />
 
+      <ul>
         <li>5 editors</li>
         <li>20 public sandboxes</li>
         <li>3 public repositories</li>
@@ -233,13 +230,19 @@ const TeamPro = ({ plan, ...props }) => {
       />
 
       <ul>
-        <li>All free features, plus:</li>
-        <li>Private sandboxes</li>
-        <li>Private GitHub repos</li>
+        <li>20 editors</li>
+        <li>Unlimited sandboxes</li>
+        <li>Unlimited repositories</li>
         <li>Private NPM packages</li>
         <li>Advanced permissions</li>
-        <li>Unlimited viewers and editors</li>
-        <li>Centralized billing</li>
+
+        {/* Visually aligned */}
+        <br />
+        <br />
+
+        <li>6GB RAM</li>
+        <li>24vCPUs</li>
+        <li>12GB Disk</li>
       </ul>
 
       <BoxPlanButton>Upgrade to Team Pro</BoxPlanButton>
