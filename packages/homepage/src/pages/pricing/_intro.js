@@ -36,7 +36,7 @@ export const Intro = ({ plans }) => {
         <Gradient className={hover ? 'hover' : ''} />
         {plans && (
           <PlanList ref={scrollViewRef}>
-            <FreeBox />
+            <TeamFree />
             <TeamPro
               plan={plans.team_pro}
               onMouseEnter={() => setHover(true)}
@@ -182,7 +182,7 @@ const PlanList = styled.div`
   }
 `;
 
-const FreeBox = () => {
+const TeamFree = () => {
   return (
     <BoxPlan href="/s">
       <p>For learning and experimenting</p>
@@ -193,14 +193,19 @@ const FreeBox = () => {
         <br />
         <br />
 
-        <li>Free for individuals</li>
-        <li>All Platform features</li>
-        <li>Public sandboxes</li>
-        <li>Personal dashboard</li>
+        <li>5 editors</li>
+        <li>20 public sandboxes</li>
+        <li>3 public repositories</li>
+        <li>All platform features</li>
+        <li>Team dashboard</li>
 
         {/* Visually aligned */}
         <br />
         <br />
+
+        <li>4GB RAM</li>
+        <li>2vCPUs</li>
+        <li>4GB Disk</li>
       </ul>
 
       <BoxPlanButton href="/s">Start using now</BoxPlanButton>
