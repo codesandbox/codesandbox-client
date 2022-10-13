@@ -52,7 +52,7 @@ const Results = (props: ResultsProps) => {
       insertedAt: new Date(hit.inserted_at).toString(),
       updatedAt: new Date(hit.updated_at).toString(),
       author: hit.author,
-      isV2: false,
+      isV2: hit.custom_template.v2,
       source: {
         template: hit.template,
       },
