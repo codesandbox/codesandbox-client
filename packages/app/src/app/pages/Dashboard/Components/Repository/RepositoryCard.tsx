@@ -1,13 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { css } from '@styled-system/css';
-import {
-  Icon,
-  IconButton,
-  SkeletonText,
-  Stack,
-  Text,
-} from '@codesandbox/components';
+import { Icon, IconButton, Stack, Text } from '@codesandbox/components';
 import { RepositoryProps } from './types';
 
 export const RepositoryCard: React.FC<RepositoryProps> = ({
@@ -94,20 +88,3 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
     </Stack>
   );
 };
-
-export const RepositoryCardSkeleton: React.FC = () => (
-  <Stack
-    direction="vertical"
-    gap={4}
-    css={css({
-      width: '100%',
-      height: 240,
-      border: '1px solid',
-      borderColor: 'grays.600',
-      borderRadius: '4px',
-      overflow: 'hidden',
-    })}
-  >
-    <SkeletonText css={{ width: '100%', height: '100%' }} />
-  </Stack>
-);

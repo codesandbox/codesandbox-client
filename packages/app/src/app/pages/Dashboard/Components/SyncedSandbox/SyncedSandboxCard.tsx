@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Text, Icon, SkeletonText } from '@codesandbox/components';
+import { Stack, Text, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { noop } from 'overmind';
 
@@ -94,20 +94,3 @@ export const SyncedSandboxCard = ({
     </Stack>
   );
 };
-
-export const SyncedSandboxCardSkeleton: React.FC = () => (
-  <Stack
-    direction="vertical"
-    gap={4}
-    css={css({
-      width: '100%',
-      height: 240,
-      border: '1px solid',
-      borderColor: 'grays.600',
-      borderRadius: '4px',
-      overflow: 'hidden',
-    })}
-  >
-    <SkeletonText css={{ width: '100%', height: '100%' }} />
-  </Stack>
-);

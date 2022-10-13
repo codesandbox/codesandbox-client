@@ -3,11 +3,8 @@ import { useAppState } from 'app/overmind';
 import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { DashboardRepository } from '../../types';
-import { RepositoryCard, RepositoryCardSkeleton } from './RepositoryCard';
-import {
-  RepositoryListItem,
-  RepositoryListItemSkeleton,
-} from './RepositoryListItem';
+import { RepositoryCard } from './RepositoryCard';
+import { RepositoryListItem } from './RepositoryListItem';
 import { RepositoryProps } from './types';
 import { useSelection } from '../Selection';
 
@@ -54,14 +51,5 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
   return {
     grid: <RepositoryCard {...props} />,
     list: <RepositoryListItem {...props} />,
-  }[viewMode];
-};
-
-export const SkeletonRepository: React.FC = () => {
-  const { viewMode } = useAppState().dashboard;
-
-  return {
-    list: <RepositoryListItemSkeleton />,
-    grid: <RepositoryCardSkeleton />,
   }[viewMode];
 };

@@ -9,7 +9,6 @@ import {
   Input,
   ListAction,
   IconButton,
-  SkeletonText,
   Tooltip,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -193,25 +192,4 @@ export const SandboxListItem = ({
       />
     </Element>
   </ListAction>
-);
-
-export const SkeletonListItem = () => (
-  <Stack
-    paddingX={2}
-    align="center"
-    justify="space-between"
-    css={css({
-      height: 64,
-      paddingX: 2,
-      borderBottom: '1px solid',
-      borderBottomColor: 'grays.600',
-    })}
-  >
-    <Stack align="center" gap={4}>
-      <SkeletonText css={{ height: 32, width: 32 }} />
-      <SkeletonText css={{ width: 120 }} />
-    </Stack>
-    <SkeletonText css={{ width: 120 }} />
-    <SkeletonText css={{ width: 120 }} />
-  </Stack>
 );

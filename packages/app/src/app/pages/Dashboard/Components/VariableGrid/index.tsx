@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useParams } from 'react-router-dom';
 import { useAppState } from 'app/overmind';
 import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -154,6 +154,17 @@ const ComponentForTypes: IComponentForTypes = {
   'import-repository': () => <ImportRepositoryCard />,
 };
 
+const getSkeletonForPage = (
+  page: PageTypes,
+  path: string
+): DashboardSkeleton['type'] => {
+  if ((page === 'synced-sandboxes' || page === 'repositories') && !path) {
+    return 'solid-skeleton';
+  }
+
+  return 'default-skeleton';
+};
+
 const Item = React.memo(
   ({ data, rowIndex, columnIndex, style, isScrolling }: WindowItemProps) => {
     const { columnCount, filledItems, containerWidth, viewMode, page } = data;
@@ -241,6 +252,8 @@ export const VariableGrid = ({
 }: VariableGridProps) => {
   const { dashboard } = useAppState();
   const location = useLocation();
+  const params = useParams<{ path: string }>();
+  const path = params.path ?? '';
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('archive')) viewMode = 'list';
@@ -334,11 +347,7 @@ export const VariableGrid = ({
             }
           > = [];
           const blankItem = { type: 'blank' as const };
-          const skeletonItem = {
-            type: ['repositories', 'synced-sandboxes'].includes(page)
-              ? 'solid-skeleton'
-              : 'default-skeleton',
-          };
+          const skeletonItem = { type: getSkeletonForPage(page, path) };
 
           items.forEach((item, index) => {
             if (
