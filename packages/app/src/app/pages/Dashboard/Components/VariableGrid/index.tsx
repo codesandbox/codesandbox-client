@@ -5,11 +5,11 @@ import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { Sandbox, SkeletonSandbox } from '../Sandbox';
+import { Sandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
-import { SkeletonSyncedSandbox, SyncedSandbox } from '../SyncedSandbox';
+import { SyncedSandbox } from '../SyncedSandbox';
 import { CommunitySandbox } from '../CommunitySandbox';
 import { EmptyScreen } from '../EmptyScreen';
 import {
@@ -34,9 +34,10 @@ import {
 } from '../../types';
 import { CreateFolder } from '../Folder/CreateFolder';
 import { Branch } from '../Branch';
-import { Repository, SkeletonRepository } from '../Repository';
+import { Repository } from '../Repository';
 import { NewBranchCard } from '../Branch/NewBranch';
 import { ImportRepositoryCard } from '../Repository/ImportRepository';
+import { DefaultSkeleton, SolidSkeleton } from '../Skeleton';
 
 export const GRID_MAX_WIDTH = 3840;
 export const MAX_COLUMN_COUNT = 10;
@@ -79,8 +80,7 @@ interface IComponentForTypes {
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
   'default-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
-  'repository-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
-  'synced-sandbox-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
+  'solid-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
   branch: React.FC<DecoratedItemProps<DashboardBranch>>;
   'new-branch': React.FC<DecoratedItemProps<DashboardNewBranch>>;
@@ -141,9 +141,8 @@ const ComponentForTypes: IComponentForTypes = {
     </Link>
   ),
   blank: () => <div />,
-  'default-skeleton': () => <SkeletonSandbox />,
-  'repository-skeleton': () => <SkeletonRepository />,
-  'synced-sandbox-skeleton': () => <SkeletonSyncedSandbox />,
+  'default-skeleton': () => <DefaultSkeleton />,
+  'solid-skeleton': () => <SolidSkeleton />,
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
@@ -335,12 +334,11 @@ export const VariableGrid = ({
             }
           > = [];
           const blankItem = { type: 'blank' as const };
-          const skeletonItemType: DashboardSkeleton['type'] =
-            {
-              repositories: 'repository-skeleton',
-              'synced-sandboxes': 'synced-sandbox-skeleton',
-            }[page] ?? 'default-skeleton';
-          const skeletonItem = { type: skeletonItemType };
+          const skeletonItem = {
+            type: ['repositories', 'synced-sandboxes'].includes(page)
+              ? 'solid-skeleton'
+              : 'default-skeleton',
+          };
 
           items.forEach((item, index) => {
             if (
