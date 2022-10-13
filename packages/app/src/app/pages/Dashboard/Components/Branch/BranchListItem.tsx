@@ -44,6 +44,9 @@ export const BranchListItem = ({
               ? 'purpleOpaque'
               : 'list.hoverBackground',
         },
+        ':has(button:hover)': {
+          backgroundColor: 'transparent',
+        },
       })}
     >
       <Element
@@ -96,8 +99,9 @@ export const BranchListItem = ({
           </Column>
         </Grid>
         <IconButton
+          variant="square"
           name="more"
-          size={9}
+          size={14}
           title="Branch actions"
           onClick={evt => {
             evt.stopPropagation();
