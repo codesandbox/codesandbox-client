@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Button, Text, Stack } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { useAppState, useActions } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
 import { TemplateCard } from './TemplateCard';
@@ -52,7 +51,6 @@ export const TemplateCategoryList = ({
         >
           {title}
         </Text>
-        {isCloudTemplateList && <CloudBetaBadge hideIcon />}
       </Stack>
       {!hasLogIn && isCloudTemplateList ? (
         <Stack direction="vertical" gap={4}>
