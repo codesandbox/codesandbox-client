@@ -295,6 +295,9 @@ export function getSandboxId() {
   return result;
 }
 
+export const docsUrl = (path: string = '') =>
+  `https://codesandbox.io/docs${path}`;
+
 export const teamInviteLink = (inviteToken: string) =>
   `${protocolAndHost()}/invite/${inviteToken}`;
 

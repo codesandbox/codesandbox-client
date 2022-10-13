@@ -2,7 +2,12 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { camelizeKeys, decamelizeKeys } from 'humps';
 
-export const API_ROOT = '/api/v1';
+const API_ROOT = '/api';
+
+// If the path starts with `/beta`, do not append
+// `/v1` to the api root url.
+const getBaseApi = (path: string) =>
+  path.startsWith('/beta') ? API_ROOT : `${API_ROOT}/v1`;
 
 export type ApiError = AxiosError<
   { errors: string[] } | { error: string } | any
@@ -41,7 +46,7 @@ export default (config: ApiConfig) => {
   const api: Api = {
     get(path, params, options) {
       return axios
-        .get(API_ROOT + path, {
+        .get(getBaseApi(path) + path, {
           params,
           headers: createHeaders(config.provideJwtToken),
         })
@@ -49,28 +54,28 @@ export default (config: ApiConfig) => {
     },
     post(path, body, options) {
       return axios
-        .post(API_ROOT + path, decamelizeKeys(body), {
+        .post(getBaseApi(path) + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
     patch(path, body, options) {
       return axios
-        .patch(API_ROOT + path, decamelizeKeys(body), {
+        .patch(getBaseApi(path) + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
     put(path, body, options) {
       return axios
-        .put(API_ROOT + path, decamelizeKeys(body), {
+        .put(getBaseApi(path) + path, decamelizeKeys(body), {
           headers: createHeaders(config.provideJwtToken),
         })
         .then(response => handleResponse(response, options));
     },
     delete(path, params, options) {
       return axios
-        .delete(API_ROOT + path, {
+        .delete(getBaseApi(path) + path, {
           params,
           headers: createHeaders(config.provideJwtToken),
         })
@@ -80,7 +85,7 @@ export default (config: ApiConfig) => {
       return axios
         .request(
           Object.assign(requestConfig, {
-            url: API_ROOT + requestConfig.url,
+            url: getBaseApi(requestConfig.url ?? '') + requestConfig.url,
             data: requestConfig.data ? camelizeKeys(requestConfig.data) : null,
             headers: createHeaders(config.provideJwtToken),
           })

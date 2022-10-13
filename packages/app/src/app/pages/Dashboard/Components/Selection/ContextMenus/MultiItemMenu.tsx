@@ -220,7 +220,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
     ? [{ label: 'Export Items', fn: exportItems }]
     : [];
 
-  const DELETE = { label: 'Delete Items', fn: deleteItems };
+  const DELETE = { label: 'Archive Items', fn: deleteItems };
   const RECOVER = {
     label: 'Recover Sandboxes',
     fn: () => {

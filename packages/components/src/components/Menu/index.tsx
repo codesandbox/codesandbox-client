@@ -34,6 +34,9 @@ export const MenuStyles = createGlobalStyle(
       fontFamily: 'Inter, sans-serif',
       fontWeight: 400,
     },
+    '[data-reach-menu] > div': {
+      borderRadius: 4,
+    },
     '[data-reach-menu][hidden],[data-reach-menu-popover][hidden]': {
       display: 'none',
     },
@@ -70,6 +73,11 @@ export const MenuStyles = createGlobalStyle(
       },
       // override reach ui styles
       font: 'inherit',
+    },
+    '[data-component="MenuItem"][disabled]': {
+      paddingY: 2,
+      paddingX: 3,
+      cursor: 'not-allowed',
     },
     '[data-component=MenuDivider]': {
       margin: 0,
@@ -299,7 +307,13 @@ const MenuLink: React.FunctionComponent<MenuLinkProps> = ({
     );
   }
   return (
-    <ReachMenu.MenuLink data-component="MenuLink" href={href} title={title}>
+    <ReachMenu.MenuLink
+      data-component="MenuLink"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={title}
+    >
       {children}
     </ReachMenu.MenuLink>
   );

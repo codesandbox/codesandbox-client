@@ -22,7 +22,7 @@
     "app:home:fast": {
       "name": "Application home (fast)",
       "command": "yarn start:home:fast",
-      "runAtStart": true,
+      "runAtStart": false,
       "preview": {
         "port": 8000,
         "prLink": "redirect"

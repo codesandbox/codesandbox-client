@@ -79,19 +79,13 @@ export const Header: React.FC<HeaderProps> = React.memo(
         <Stack align="center" gap={2}>
           <Button
             variant="primary"
-            css={css({ width: 'auto', paddingX: 3 })}
+            css={css({ width: 'auto', paddingX: 4 })}
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               openCreateSandboxModal({});
             }}
           >
-            <Icon
-              name="plus"
-              size={20}
-              title="Create new"
-              css={css({ paddingRight: 2 })}
-            />
-            New
+            Create
           </Button>
 
           {user && <Notifications />}

@@ -24,7 +24,7 @@ import {
   UserSandbox,
   SettingsSync,
 } from '@codesandbox/common/lib/types';
-import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateNewSandbox/queries';
+import { LIST_PERSONAL_TEMPLATES } from 'app/components/CreateSandbox/queries';
 import { client } from 'app/graphql/client';
 import { PendingUserType } from 'app/overmind/state';
 
@@ -690,5 +690,11 @@ export default {
     return api.get<{ stripeCustomerPortalUrl: string }>(
       `/teams/${teamId}/customer_portal?return_path=${return_path}`
     );
+  },
+  removeBranchFromRepository(owner: string, repo: string, branch: string) {
+    return api.delete(`/beta/sandboxes/github/${owner}/${repo}/${branch}`);
+  },
+  removeRepositoryFromTeam(owner: string, repo: string, teamId: string) {
+    return api.delete(`/beta/repos/link/github/${owner}/${repo}/${teamId}`);
   },
 };

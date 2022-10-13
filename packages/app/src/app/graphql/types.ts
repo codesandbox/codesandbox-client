@@ -240,8 +240,9 @@ export type CurrentUserNotificationsArgs = {
 };
 
 export type CurrentUserRecentBranchesArgs = {
-  contribution?: Maybe<Scalars['Boolean']>;
+  contribution: Maybe<Scalars['Boolean']>;
   limit?: Maybe<Scalars['Int']>;
+  teamId: Maybe<Scalars['UUID4']>;
 };
 
 export type CurrentUserRecentProjectsArgs = {
@@ -579,6 +580,8 @@ export type ProSubscription = {
   paymentProvider: Maybe<SubscriptionPaymentProvider>;
   quantity: Maybe<Scalars['Int']>;
   status: SubscriptionStatus;
+  trialEnd: Maybe<Scalars['DateTime']>;
+  trialStart: Maybe<Scalars['DateTime']>;
   type: SubscriptionType;
   unitPrice: Maybe<Scalars['Int']>;
   updateBillingUrl: Maybe<Scalars['String']>;
@@ -1341,8 +1344,10 @@ export type Sandbox = {
   isFrozen: Scalars['Boolean'];
   isSse: Maybe<Scalars['Boolean']>;
   isV2: Scalars['Boolean'];
+  /** Depending on the context, this may be the last access of the current user or the aggregate last access for all users */
+  lastAccessedAt: Scalars['DateTime'];
   likeCount: Scalars['Int'];
-  /** If the sandbox has been forked from a git sandbox this will be set */
+  /** If the sandbox has been made into a git sandbox, then this will be set */
   originalGit: Maybe<Git>;
   permissions: Maybe<SandboxProtectionSettings>;
   /** If a PR has been opened on the sandbox, this will be set to the PR number */
@@ -1503,12 +1508,15 @@ export type Template = {
   __typename?: 'Template';
   bookmarked: Maybe<Array<Maybe<Bookmarked>>>;
   color: Maybe<Scalars['String']>;
+  /** @deprecated This field is deprecated and will always be null. Query sandbox > description instead */
   description: Maybe<Scalars['String']>;
   iconUrl: Maybe<Scalars['String']>;
   id: Maybe<Scalars['UUID4']>;
   insertedAt: Maybe<Scalars['String']>;
+  official: Scalars['Boolean'];
   published: Maybe<Scalars['Boolean']>;
   sandbox: Maybe<Sandbox>;
+  /** @deprecated This field is deprecated and will always be null. Query sandbox > title instead */
   title: Maybe<Scalars['String']>;
   updatedAt: Maybe<Scalars['String']>;
 };
@@ -1669,6 +1677,31 @@ export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
           'id' | 'login' | 'avatarUrl'
         >;
       }
+  >;
+};
+
+export type ProfileFragment = { __typename?: 'GithubProfile' } & Pick<
+  GithubProfile,
+  'id' | 'login'
+>;
+
+export type OrganizationFragment = { __typename?: 'GithubOrganization' } & Pick<
+  GithubOrganization,
+  'id' | 'login'
+>;
+
+export type GetGithubOrganizationsQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GetGithubOrganizationsQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      githubProfile: Maybe<{ __typename?: 'GithubProfile' } & ProfileFragment>;
+      githubOrganizations: Maybe<
+        Array<{ __typename?: 'GithubOrganization' } & OrganizationFragment>
+      >;
+    }
   >;
 };
 
@@ -2143,6 +2176,7 @@ export type SandboxFragmentDashboardFragment = {
   | 'alias'
   | 'title'
   | 'description'
+  | 'lastAccessedAt'
   | 'insertedAt'
   | 'updatedAt'
   | 'removedAt'
@@ -3087,6 +3121,7 @@ export type RecentlyAccessedSandboxesQuery = {
 
 export type RecentlyAccessedBranchesQueryVariables = Exact<{
   limit: Scalars['Int'];
+  teamId: Maybe<Scalars['UUID4']>;
 }>;
 
 export type RecentlyAccessedBranchesQuery = { __typename?: 'RootQueryType' } & {
@@ -3356,6 +3391,50 @@ export type RecentNotificationsQuery = { __typename?: 'RootQueryType' } & {
     { __typename?: 'CurrentUser' } & {
       notifications: Array<
         { __typename?: 'Notification' } & RecentNotificationFragment
+      >;
+    }
+  >;
+};
+
+export type SidebarSyncedSandboxFragmentFragment = {
+  __typename?: 'Sandbox';
+} & Pick<Sandbox, 'id'>;
+
+export type SidebarTemplateFragmentFragment = {
+  __typename?: 'Template';
+} & Pick<Template, 'id'>;
+
+export type PersonalSidebarDataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PersonalSidebarDataQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      sandboxes: Array<
+        { __typename?: 'Sandbox' } & SidebarSyncedSandboxFragmentFragment
+      >;
+      templates: Array<
+        { __typename?: 'Template' } & SidebarTemplateFragmentFragment
+      >;
+    }
+  >;
+};
+
+export type TeamSidebarDataQueryVariables = Exact<{
+  id: Scalars['UUID4'];
+}>;
+
+export type TeamSidebarDataQuery = { __typename?: 'RootQueryType' } & {
+  me: Maybe<
+    { __typename?: 'CurrentUser' } & {
+      team: Maybe<
+        { __typename?: 'Team' } & {
+          sandboxes: Array<
+            { __typename?: 'Sandbox' } & SidebarSyncedSandboxFragmentFragment
+          >;
+          templates: Array<
+            { __typename?: 'Template' } & SidebarTemplateFragmentFragment
+          >;
+        }
       >;
     }
   >;

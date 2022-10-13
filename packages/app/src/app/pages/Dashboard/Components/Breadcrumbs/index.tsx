@@ -24,7 +24,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     }[nestedPageType];
   } else if (albumId) link = dashboard.discover(activeTeam);
 
-  let prefix = 'Sandboxes';
+  let prefix = 'All sandboxes';
   if (nestedPageType) {
     prefix = {
       'synced-sandboxes': 'Synced sandboxes',

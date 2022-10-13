@@ -1,6 +1,7 @@
 import React from 'react';
-import { Icon, IconButton, Stack, Text } from '@codesandbox/components';
+import { Link } from 'react-router-dom';
 import { css } from '@styled-system/css';
+import { Icon, IconButton, Stack, Text } from '@codesandbox/components';
 import { RepositoryProps } from './types';
 
 export const RepositoryCard: React.FC<RepositoryProps> = ({
@@ -8,11 +9,12 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
   repository,
   selected,
   onContextMenu,
+  isBeingRemoved,
   ...props
 }) => {
   return (
     <Stack
-      as="a"
+      as={Link}
       aria-label={labels.repository}
       css={css({
         cursor: 'pointer', // TODO: revisit cursor.
@@ -20,16 +22,15 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
         overflow: 'hidden',
         height: 240,
         width: '100%',
+        padding: 4,
         borderRadius: '4px',
         border: '1px solid',
         borderColor: selected ? 'focusBorder' : 'transparent',
         backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
-        transition: 'background ease-in-out',
-        paddingRight: 8,
-        paddingLeft: 8,
-        paddingTop: 4,
-        paddingBottom: 4,
         outline: 'none',
+        opacity: isBeingRemoved ? 0.5 : 1,
+        pointerEvents: isBeingRemoved ? 'none' : 'all',
+        transition: 'background ease-in-out, opacity ease-in-out',
         transitionDuration: theme => theme.speeds[2],
         textDecoration: 'none',
         ':hover': {
@@ -41,7 +42,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
       })}
       direction="vertical"
       gap={4}
-      href={repository.url}
+      to={isBeingRemoved ? undefined : repository.url}
       onContextMenu={onContextMenu}
       {...props}
     >
@@ -67,6 +68,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               color: '#E5E5E5',
               textAlign: 'center',
               minHeight: 42,
+              paddingX: 6,
             })}
             size={16}
           >

@@ -12,7 +12,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
   const { branches, repository: providerRepository } = repository;
   const {
     activeTeam,
-    dashboard: { viewMode },
+    dashboard: { viewMode, removingRepository },
   } = useAppState();
   const { selectedIds, onRightClick, onMenuEvent } = useSelection();
   const repositoryId = `${providerRepository.owner}-${providerRepository.name}`;
@@ -29,8 +29,6 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
     else onMenuEvent(event, repositoryId);
   };
 
-  const selected = selectedIds.includes(repositoryId);
-
   const props: RepositoryProps = {
     repository: {
       owner: providerRepository.owner,
@@ -43,9 +41,12 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
         branches.length === 1 ? 'branch' : 'branches'
       }`,
     },
-    selected,
+    selected: selectedIds.includes(repositoryId),
     onClick: () => trackImprovedDashboardEvent('Dashboard - Open Repository'),
     onContextMenu: handleContextMenu,
+    isBeingRemoved:
+      removingRepository?.owner === providerRepository.owner &&
+      removingRepository?.name === providerRepository.name,
   };
 
   return {

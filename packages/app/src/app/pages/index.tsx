@@ -11,7 +11,7 @@ import { Loadable } from 'app/utils/Loadable';
 import React, { useEffect } from 'react';
 import { SignInModal } from 'app/components/SignInModal';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
-import { CreateSandboxModal } from 'app/components/CreateNewSandbox/CreateSandbox/CreateSandboxModal';
+import { CreateSandboxModal } from 'app/components/CreateSandbox/CreateSandboxModal';
 import { initializeExperimentStore } from '@codesandbox/ab';
 import {
   getExperimentUserId,

@@ -526,6 +526,17 @@ export const handleError = (
     effects.analytics.track('Patron Server Sandbox Limit Reached', {
       errorMessage: error.message,
     });
+  } else if (
+    error.message.startsWith(
+      'You need to be signed in to fork a server template.'
+    )
+  ) {
+    notificationActions.primary = {
+      label: 'Sign in',
+      run: () => {
+        state.signInModalOpen = true;
+      },
+    };
   }
 
   effects.notificationToast.add({

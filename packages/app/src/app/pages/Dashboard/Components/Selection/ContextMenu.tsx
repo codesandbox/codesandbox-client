@@ -116,7 +116,8 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   });
 
   let menu: React.ReactNode;
-  if (selectedItems.length === 0) {
+
+  if (selectedItems.length === 0 || selectedItems[0] === undefined) {
     if (['repositories', 'my-contributions', 'synced-sandboxes'].includes(page))
       return null;
     menu = (
@@ -126,7 +127,7 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
       />
     );
   } else if (selectedItems[0].type === 'branch') {
-    menu = <BranchMenu branch={selectedItems[0].branch} />;
+    menu = <BranchMenu branch={selectedItems[0].branch} page={page} />;
   } else if (selectedItems[0].type === 'repository') {
     menu = <RepositoryMenu repository={selectedItems[0].repository} />;
   } else if (selectedItems.length > 1) {

@@ -5,17 +5,16 @@ import {
   Stack,
   Text,
   Tooltip,
-  Element,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
-import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { BranchProps } from './types';
 
 export const BranchCard: React.FC<BranchProps> = ({
-  onContextMenu,
   branch,
   branchUrl,
+  isBeingRemoved,
   selected,
+  onContextMenu,
   ...props
 }) => {
   const { name: branchName, project, contribution } = branch;
@@ -35,7 +34,9 @@ export const BranchCard: React.FC<BranchProps> = ({
         border: '1px solid',
         borderColor: selected ? 'focusBorder' : 'transparent',
         backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
-        transition: 'background ease-in-out',
+        opacity: isBeingRemoved ? 0.5 : 1,
+        pointerEvents: isBeingRemoved ? 'none' : 'all',
+        transition: 'background ease-in-out, opacity ease-in-out',
         transitionDuration: theme => theme.speeds[2],
         textDecoration: 'none',
         outline: 'none',
@@ -47,23 +48,20 @@ export const BranchCard: React.FC<BranchProps> = ({
         },
       })}
       direction="vertical"
-      href={branchUrl}
+      href={isBeingRemoved ? undefined : branchUrl}
       onContextMenu={onContextMenu}
       {...props}
     >
       <Stack
         css={css({
           backgroundColor: 'rgba(229, 229, 229, 0.04)',
-          paddingY: 10,
+          paddingY: 11,
           position: 'relative',
         })}
         align="center"
         justify="center"
       >
-        <Icon color="#808080" name="branch" size={40} />
-        <Element css={{ position: 'absolute', top: 6, right: 6 }}>
-          <CloudBetaBadge />
-        </Element>
+        <Icon color="#808080" name="branch" size={32} />
       </Stack>
       <Stack
         css={css({
