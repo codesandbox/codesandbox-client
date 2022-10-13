@@ -321,7 +321,7 @@ const TeamFree = () => {
         <li>4GB Disk</li>
       </ul>
 
-      <BoxPlanButton href="/s">Start using now</BoxPlanButton>
+      <BoxPlanButton href="/s">Start coding now</BoxPlanButton>
     </BoxPlan>
   );
 };
@@ -357,7 +357,7 @@ const TeamPro = ({ plan, ...props }) => {
         <br />
 
         <li>6GB RAM</li>
-        <li>24vCPUs</li>
+        <li>4vCPUs</li>
         <li>12GB Disk</li>
       </ul>
 
@@ -369,7 +369,7 @@ const TeamPro = ({ plan, ...props }) => {
 const OrgCustom = props => {
   return (
     <BoxPlan
-      href="mailto:support@codesandbox.io?subject=Organization plan&body=!Fill or remove before merging!"
+      href="mailto:support@codesandbox.io?subject=Organization plan"
       target="_blank"
       rel="noopener noreferrer"
       orgCustom
@@ -388,7 +388,8 @@ const OrgCustom = props => {
         <li>All Team Pro features, plus:</li>
         <li>Unlimited editors</li>
         <li>Bulk pricing for seats</li>
-        <li>Custom VM SpecsCustom support</li>
+        <li>Custom VM Specs</li>
+        <li>Custom support</li>
         <li>Shared Slack channel</li>
         <li>Customer success manager </li>
 
@@ -425,7 +426,7 @@ const PersonalFree = () => {
         <li>4GB Disk</li>
       </ul>
 
-      <BoxPlanButton href="/s">Start using now</BoxPlanButton>
+      <BoxPlanButton href="/s">Start coding now</BoxPlanButton>
     </BoxPlan>
   );
 };
@@ -433,7 +434,7 @@ const PersonalFree = () => {
 const PersonalPro = ({ plan, ...props }) => {
   return (
     <BoxPlan personalPro href="/pro?type=personal" {...props}>
-      <p>Exclusive for personal teams 1 editor</p>
+      <p>For power users and freelancers</p>
 
       <BoxPlanPrice
         plan="Personal Pro"
@@ -446,10 +447,9 @@ const PersonalPro = ({ plan, ...props }) => {
       />
 
       <ul>
-        <li>All free features, plus:</li>
+        <li>All Free features, plus:</li>
         <li>Unlimited private sandboxes</li>
         <li>Unlimited private repositories</li>
-        <li>Private NPM packages</li>
         <li>Advanced permissions</li>
 
         {/* Visually aligned */}
@@ -457,7 +457,7 @@ const PersonalPro = ({ plan, ...props }) => {
         <br />
 
         <li>6GB RAM</li>
-        <li>24vCPUs</li>
+        <li>4vCPUs</li>
         <li>12GB Disk</li>
       </ul>
 

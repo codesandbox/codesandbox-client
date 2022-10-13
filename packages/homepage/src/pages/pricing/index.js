@@ -130,7 +130,7 @@ const Pricing = () => {
               </FAQLabel>
               <FAQLink
                 as="a"
-                href="mailto:support@codesandbox.io?subject=Education and Open Source plan&body=!Fill or remove before merging!"
+                href="mailto:support@codesandbox.io?subject=Education and Open Source plan&body=Hi,%0D%0A%0D%0AI'm using CodeSandbox for [describe usage] but I'm running into some limits. [Describe limits]. My username is [username]. Can you update my plan?%0D%0A%0D%0AThanks!"
                 target="_blank"
               >
                 Request access
@@ -139,12 +139,12 @@ const Pricing = () => {
             </FAQGridItem>
             <FAQGridItem>
               <FAQLabel>
-                If you have specific needs, we’ll work on finding a solution
+                If you have specific needs, we will work on finding a solution
                 that works for you.
               </FAQLabel>
               <FAQLink
                 as="a"
-                href="mailto:support@codesandbox.io?subject=Custom solutions&body=!Fill or remove before merging!"
+                href="mailto:support@codesandbox.io?subject=Custom solutions"
                 target="_blank"
               >
                 Contact us

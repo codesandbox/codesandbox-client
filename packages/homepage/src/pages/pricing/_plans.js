@@ -52,14 +52,14 @@ const team_plans = [
         team_pro: true,
         org_custom: true,
       },
-      {
-        title: 'Password-protected<br />previews',
-        caption:
-          'Protect who can view your dev server preview and give users outside your team access with a password.',
-        team_free: false,
-        team_pro: { value: true, label: '(Coming soon)' },
-        org_custom: { value: true, label: '(Coming soon)' },
-      },
+      //      {
+      //        title: 'Password-protected<br />previews',
+      //        caption:
+      //          'Protect who can view your dev server preview and give users outside your team access with a password.',
+      //        team_free: false,
+      //        team_pro: { value: true, label: '(Coming soon)' },
+      //        org_custom: { value: true, label: '(Coming soon)' },
+      //      },
       {
         title: 'Static file hosting',
         caption: 'All static files served via CDN.',
@@ -110,7 +110,7 @@ const personal_plans = [
         title: 'Private NPM packages',
         caption: 'Use private npm packages from your own custom registry',
         personal_free: false,
-        personal_pro: true,
+        personal_pro: false,
       },
       {
         title: 'Static file hosting',
@@ -290,13 +290,13 @@ export const Plans = () => {
                         <p>Free</p>
                       </th>
                       <th className="column__desktop plan__team-pro">
-                        <p>Team</p>
+                        <p>Team Pro</p>
                         <a href="/pro?type=team">Upgrade</a>
                       </th>
                       <th className="column__desktop plan__org-custom">
                         <p>Organization</p>
                         <a
-                          href="mailto:support@codesandbox.io?subject=Organization plan&body=!Fill or remove before merging!"
+                          href="mailto:support@codesandbox.io?subject=Organization plan"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
