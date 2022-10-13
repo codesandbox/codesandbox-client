@@ -130,7 +130,7 @@ const Pricing = () => {
               </FAQLabel>
               <FAQLink
                 as="a"
-                href="mailto:support@codesandbox.io"
+                href="mailto:support@codesandbox.io?subject=Education and Open Source plan&body=!Fill or remove before merging!"
                 target="_blank"
               >
                 Request access
@@ -144,7 +144,7 @@ const Pricing = () => {
               </FAQLabel>
               <FAQLink
                 as="a"
-                href="mailto:support@codesandbox.io"
+                href="mailto:support@codesandbox.io?subject=Custom solutions&body=!Fill or remove before merging!"
                 target="_blank"
               >
                 Contact us

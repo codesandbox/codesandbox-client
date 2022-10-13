@@ -263,7 +263,7 @@ const PlanList = styled.div`
   display: flex;
   justify-content: space-between;
   position: relative;
-  z-index: 0;
+  z-index: 1;
 
   scroll-snap-type: x mandatory;
   overflow-x: scroll;
@@ -370,6 +370,8 @@ const OrgCustom = props => {
   return (
     <BoxPlan
       href="mailto:support@codesandbox.io?subject=Organization plan&body=!Fill or remove before merging!"
+      target="_blank"
+      rel="noopener noreferrer"
       orgCustom
       {...props}
     >

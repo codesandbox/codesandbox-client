@@ -240,7 +240,8 @@ const featureList = [
  * Main component
  */
 export const Plans = () => {
-  const [mobilePlan, setMobilePlan] = useState('team');
+  const [mobileTeamPlan, setMobileTeamPlan] = useState('team-pro');
+  const [mobilePersonalPlan, setMobilePersonalPlan] = useState('personal-pro');
 
   return (
     <>
@@ -290,23 +291,29 @@ export const Plans = () => {
                       </th>
                       <th className="column__desktop plan__team-pro">
                         <p>Team</p>
-                        <a href="/pro?type=personal">Upgrade</a>
+                        <a href="/pro?type=team">Upgrade</a>
                       </th>
                       <th className="column__desktop plan__org-custom">
                         <p>Organization</p>
-                        <a href="#">Contact us</a>
+                        <a
+                          href="mailto:support@codesandbox.io?subject=Organization plan&body=!Fill or remove before merging!"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Contact us
+                        </a>
                       </th>
 
                       <th
-                        className={`column__mobile plan__${mobilePlan}`}
+                        className={`column__mobile plan__${mobileTeamPlan}`}
                         colSpan={3}
                       >
                         <div className="plan-selector">
                           <select
                             onChange={({ target }) =>
-                              setMobilePlan(target.value)
+                              setMobileTeamPlan(target.value)
                             }
-                            value={mobilePlan}
+                            value={mobileTeamPlan}
                           >
                             <option value="team-free">Free</option>
                             <option value="team-pro">Team</option>
@@ -343,10 +350,12 @@ export const Plans = () => {
                       </td>
 
                       <td
-                        className={`column__mobile plan__${mobilePlan}`}
+                        className={`column__mobile plan__${mobileTeamPlan}`}
                         colSpan={3}
                       >
-                        <CheckOrNot option={item[mobilePlan]} />
+                        <CheckOrNot
+                          option={item[mobileTeamPlan.replace('-', '_')]}
+                        />
                       </td>
                     </tr>
                   );
@@ -386,15 +395,15 @@ export const Plans = () => {
                       </th>
 
                       <th
-                        className={`column__mobile plan__${mobilePlan}`}
+                        className={`column__mobile plan__${mobilePersonalPlan}`}
                         colSpan={3}
                       >
                         <div className="plan-selector">
                           <select
                             onChange={({ target }) =>
-                              setMobilePlan(target.value)
+                              setMobilePersonalPlan(target.value)
                             }
-                            value={mobilePlan}
+                            value={mobilePersonalPlan}
                           >
                             <option value="personal-free">Free</option>
                             <option value="personal-pro">Personal Pro</option>
@@ -427,10 +436,12 @@ export const Plans = () => {
                       </td>
 
                       <td
-                        className={`column__mobile plan__${mobilePlan}`}
+                        className={`column__mobile plan__${mobilePersonalPlan}`}
                         colSpan={3}
                       >
-                        <CheckOrNot option={item[mobilePlan]} />
+                        <CheckOrNot
+                          option={item[mobilePersonalPlan.replace('-', '_')]}
+                        />
                       </td>
                     </tr>
                   );
