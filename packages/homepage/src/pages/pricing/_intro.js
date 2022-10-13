@@ -35,10 +35,10 @@ export const Intro = ({ plans }) => {
     }
   }, []);
 
-  const scrollTo = event => {
+  const scrollTo = (event, elementId) => {
     event.preventDefault();
 
-    const element = document.querySelector('#plans');
+    const element = document.querySelector(elementId);
     const elementPosition = element.getBoundingClientRect().top;
     const offsetPosition = elementPosition + window.pageYOffset - 120;
 
@@ -90,7 +90,7 @@ export const Intro = ({ plans }) => {
               </PlanList>
             </ScrollViewPlansList>
             <ComparePlansLinkWrapper>
-              <ComparePlansLink scrollTo={scrollTo} />
+              <ComparePlansLink scrollTo={e => scrollTo(e, '#team-plans')} />
             </ComparePlansLinkWrapper>
           </PlansWrapper>
 
@@ -115,7 +115,9 @@ export const Intro = ({ plans }) => {
               )}
             </ScrollViewPlansList>
             <ComparePlansLinkWrapper>
-              <ComparePlansLink scrollTo={scrollTo} />
+              <ComparePlansLink
+                scrollTo={e => scrollTo(e, '#personal-plans')}
+              />
             </ComparePlansLinkWrapper>
           </PlansWrapper>
         </>
@@ -366,7 +368,11 @@ const TeamPro = ({ plan, ...props }) => {
 
 const OrgCustom = props => {
   return (
-    <BoxPlan href="#" orgCustom {...props}>
+    <BoxPlan
+      href="mailto:support@codesandbox.io?subject=Organization plan&body=!Fill or remove before merging!"
+      orgCustom
+      {...props}
+    >
       <p>For companies that want to go beyond</p>
 
       <BoxPlanPrice

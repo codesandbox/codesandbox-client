@@ -109,7 +109,7 @@ const Pricing = () => {
         </Section>
       </Overflow>
 
-      <Section id="plans">
+      <Section>
         <Container>
           <Plans />
         </Container>

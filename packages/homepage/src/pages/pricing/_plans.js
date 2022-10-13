@@ -265,7 +265,7 @@ export const Plans = () => {
         Choose the right plan for you.
       </Title>
 
-      <TableSection>
+      <TableSection id="team-plans">
         <TableTitle>Team and Business Plans</TableTitle>
         <Table>
           {team_plans.map(({ section, body }, index) => {
@@ -357,7 +357,7 @@ export const Plans = () => {
         </Table>
       </TableSection>
 
-      <TableSection>
+      <TableSection id="personal-plans">
         <TableTitle>Personal Plans</TableTitle>
         <Table>
           {personal_plans.map(({ section, body }, index) => {
