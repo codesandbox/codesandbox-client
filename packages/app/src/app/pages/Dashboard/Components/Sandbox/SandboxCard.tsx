@@ -131,8 +131,12 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
         </div>
       ) : (
         <IconButton
+          css={{
+            borderRadius: '2px',
+            cursor: 'default',
+          }}
           name="more"
-          size={9}
+          size={14}
           title="Sandbox Actions"
           onClick={onContextMenu}
         />
@@ -258,6 +262,9 @@ export const SandboxCard = ({
         opacity,
         ':hover': {
           backgroundColor: 'card.backgroundHover',
+        },
+        ':has(button:hover)': {
+          backgroundColor: 'card.background',
         },
         ':focus-visible': {
           borderColor: 'focusBorder',

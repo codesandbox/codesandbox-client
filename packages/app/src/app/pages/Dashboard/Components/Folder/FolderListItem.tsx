@@ -56,6 +56,9 @@ export const FolderListItem = ({
           cursor: 'default',
           backgroundColor: selected ? 'purpleOpaque' : 'list.hoverBackground',
         },
+        ':has(button:hover)': {
+          backgroundColor: 'transparent',
+        },
         width: '100%',
         height: 64,
         borderBottom: '1px solid',
@@ -73,7 +76,13 @@ export const FolderListItem = ({
                 height: 32,
               })}
             >
-              <Icon name="folder" size={24} width={32} title="folder" color="#E3FF73" />
+              <Icon
+                name="folder"
+                size={24}
+                width={32}
+                title="folder"
+                color="#E3FF73"
+              />
             </Stack>
             <Stack justify="space-between" align="center">
               {editing ? (
@@ -109,8 +118,12 @@ export const FolderListItem = ({
       </Grid>
       {!isNewFolder ? (
         <IconButton
+          css={{
+            borderRadius: '2px',
+            cursor: 'default',
+          }}
           name="more"
-          size={9}
+          size={14}
           title="Sandbox actions"
           onClick={onContextMenu}
         />

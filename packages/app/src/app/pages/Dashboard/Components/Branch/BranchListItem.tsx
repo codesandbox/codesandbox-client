@@ -34,6 +34,9 @@ export const BranchListItem = ({
         ':hover, :focus, :focus-within': {
           backgroundColor: 'list.hoverBackground',
         },
+        ':has(button:hover)': {
+          backgroundColor: 'transparent',
+        },
       })}
     >
       <Element
@@ -50,7 +53,7 @@ export const BranchListItem = ({
       >
         <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
           <Column
-           span={[12, 5, 5]}
+            span={[12, 5, 5]}
             css={{
               display: 'block',
               overflow: 'hidden',
@@ -60,7 +63,12 @@ export const BranchListItem = ({
           >
             <Stack gap={4} align="center" marginLeft={2}>
               {contribution ? (
-                <Icon color="#EDFFA5" name="contribution" size={16} width="32px" />
+                <Icon
+                  color="#EDFFA5"
+                  name="contribution"
+                  size={16}
+                  width="32px"
+                />
               ) : (
                 <Icon name="branch" color="#999" size={16} width="32px" />
               )}
@@ -81,8 +89,12 @@ export const BranchListItem = ({
           </Column>
         </Grid>
         <IconButton
+          css={{
+            borderRadius: '2px',
+            cursor: 'default',
+          }}
           name="more"
-          size={9}
+          size={14}
           title="Branch actions"
           onClick={evt => {
             evt.stopPropagation();

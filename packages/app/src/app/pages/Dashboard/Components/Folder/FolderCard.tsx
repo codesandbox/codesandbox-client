@@ -54,6 +54,9 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
       ':hover': {
         backgroundColor: 'card.backgroundHover',
       },
+      ':has(button:hover)': {
+        backgroundColor: 'card.background',
+      },
       ':focus-visible': {
         borderColor: 'focusBorder',
       },
@@ -67,8 +70,12 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
     >
       {!isNewFolder ? (
         <IconButton
+          css={{
+            borderRadius: '2px',
+            cursor: 'default',
+          }}
           name="more"
-          size={9}
+          size={14}
           title="Folder actions"
           onClick={onContextMenu}
         />
