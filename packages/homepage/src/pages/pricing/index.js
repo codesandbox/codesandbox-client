@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Layout from '../../components/layout';
-
 import TitleAndMetaTags from '../../components/TitleAndMetaTags';
+
+import chevronRight from './assets/chevronRight.svg';
 
 import { usePricing } from './_utils';
 import { Intro } from './_intro';
@@ -29,6 +30,41 @@ const Container = styled.div`
   margin: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+`;
+
+const FAQGridItem = styled.div`
+  width: 100%;
+  max-width: 384px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const FAQGrid = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 62px;
+
+  @media (min-width: 376px) {
+    margin-top: 72px;
+  }
+
+  @media (min-width: 769px) {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 96px;
+  }
+`;
+
+const FAQLabel = styled.p`
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  color: #808080;
 `;
 
 const FAQLink = styled(Title)`
@@ -84,11 +120,39 @@ const Pricing = () => {
       </Section>
 
       <Section>
-        <Title css={{ textAlign: 'center' }}>Still have questions?</Title>
-
-        <FAQLink as="a" href="mailto:support@codesandbox.io" target="_blank">
-          Contact support
-        </FAQLink>
+        <Container>
+          <Title css={{ textAlign: 'center' }}>Can't find what you need?</Title>
+          <FAQGrid>
+            <FAQGridItem>
+              <FAQLabel>
+                We can provide more flexible free plans for educators and open
+                source contributors.
+              </FAQLabel>
+              <FAQLink
+                as="a"
+                href="mailto:support@codesandbox.io"
+                target="_blank"
+              >
+                Request access
+                <img src={chevronRight} width="16" alt="" />
+              </FAQLink>
+            </FAQGridItem>
+            <FAQGridItem>
+              <FAQLabel>
+                If you have specific needs, we’ll work on finding a solution
+                that works for you.
+              </FAQLabel>
+              <FAQLink
+                as="a"
+                href="mailto:support@codesandbox.io"
+                target="_blank"
+              >
+                Contact us
+                <img src={chevronRight} width="16" alt="" />
+              </FAQLink>
+            </FAQGridItem>
+          </FAQGrid>
+        </Container>
       </Section>
     </Layout>
   );
