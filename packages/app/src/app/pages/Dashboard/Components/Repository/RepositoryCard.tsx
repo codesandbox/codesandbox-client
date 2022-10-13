@@ -53,9 +53,8 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
         css={css({
           marginLeft: 'auto',
           marginRight: 0,
-          borderRadius: '2px',
-          cursor: 'default',
         })}
+        variant="square"
         name="more"
         size={14}
         title="Repository actions"

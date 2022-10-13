@@ -90,10 +90,7 @@ export const BranchCard: React.FC<BranchProps> = ({
             </Text>
           </Tooltip>
           <IconButton
-            css={{
-              borderRadius: '2px',
-              cursor: 'default',
-            }}
+            variant="square"
             name="more"
             size={14}
             title="Branch actions"

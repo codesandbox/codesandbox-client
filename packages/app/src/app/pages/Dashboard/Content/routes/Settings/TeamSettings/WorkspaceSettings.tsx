@@ -311,6 +311,7 @@ export const WorkspaceSettings = () => {
                   {activeWorkspaceAuthorization ===
                     TeamMemberAuthorization.Admin && (
                     <IconButton
+                      variant="square"
                       name="edit"
                       size={12}
                       title="Edit team"

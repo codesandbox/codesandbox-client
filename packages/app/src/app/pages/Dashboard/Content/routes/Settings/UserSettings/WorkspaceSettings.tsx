@@ -189,6 +189,7 @@ export const WorkspaceSettings = () => {
                   </Text>
                   <IconButton
                     name="edit"
+                    variant="square"
                     size={12}
                     title="Edit team"
                     onClick={() => setEditing(false)}
@@ -294,6 +295,7 @@ export const WorkspaceSettings = () => {
                 </Text>
                 <IconButton
                   name="edit"
+                  variant="square"
                   size={12}
                   title="Edit team"
                   onClick={() => setEditing(true)}

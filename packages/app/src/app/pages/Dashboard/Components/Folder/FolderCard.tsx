@@ -70,10 +70,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
     >
       {!isNewFolder ? (
         <IconButton
-          css={{
-            borderRadius: '2px',
-            cursor: 'default',
-          }}
+          variant="square"
           name="more"
           size={14}
           title="Folder actions"

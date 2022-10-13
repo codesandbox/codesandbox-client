@@ -89,10 +89,7 @@ export const BranchListItem = ({
           </Column>
         </Grid>
         <IconButton
-          css={{
-            borderRadius: '2px',
-            cursor: 'default',
-          }}
+          variant="square"
           name="more"
           size={14}
           title="Branch actions"

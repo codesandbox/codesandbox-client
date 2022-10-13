@@ -80,10 +80,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
           </Column>
         </Grid>
         <IconButton
-          css={css({
-            borderRadius: '2px',
-            cursor: 'default',
-          })}
+          variant="square"
           name="more"
           size={14}
           title="Repository actions"

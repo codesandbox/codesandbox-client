@@ -220,10 +220,14 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               // TODO: add aria-label based on title to IconButton?
               <IconButton
                 name="arrowDown"
+                variant="square"
                 size={16}
                 title="Back to overview"
                 css={{
                   transform: 'rotate(90deg)',
+                  '&:active:not(:disabled)': {
+                    transform: 'rotate(90deg)',
+                  },
                 }}
                 onClick={() => {
                   setViewState('initial');
@@ -255,6 +259,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             // TODO: IconButton doesn't have aria label or visuallyhidden text (reads floating label too late)
             <IconButton
               name="cross"
+              variant="square"
               size={16}
               title="Close modal"
               onClick={() => actions.modals.newSandboxModal.close()}

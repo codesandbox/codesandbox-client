@@ -36,6 +36,7 @@ export const SortOptions: FunctionComponent = React.memo(() => {
         <IconButton
           name="arrowDown"
           size={11}
+          variant="square"
           title="Reverse sort direction"
           onClick={toggleSort}
           css={{ transform: `rotate(${order === 'desc' ? 0 : 180}deg)` }}

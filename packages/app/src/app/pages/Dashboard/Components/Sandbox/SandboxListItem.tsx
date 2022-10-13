@@ -189,11 +189,8 @@ export const SandboxListItem = ({
         </Column>
       </Grid>
       <IconButton
-        css={{
-          borderRadius: '2px',
-          cursor: 'default',
-        }}
         name="more"
+        variant="square"
         size={14}
         title="Sandbox actions"
         onClick={onContextMenu}

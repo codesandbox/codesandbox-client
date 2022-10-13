@@ -58,6 +58,7 @@ export const Notification = ({ children, pageType }: NotificationProps) => {
           >
             <IconButton
               name="cross"
+              variant="round"
               title="Dismiss notification"
               onClick={dismissNotification}
             />
