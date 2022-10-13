@@ -1,6 +1,8 @@
 import styled, { css } from 'styled-components';
 import React from 'react';
 
+import doubleArrowDown from './assets/doubleArrowDown.svg';
+
 export const Title = styled.h2`
   letter-spacing: -0.025em;
   font-size: 32px;
@@ -27,6 +29,21 @@ export const Title = styled.h2`
   @media (min-width: 1025px) {
     font-size: 64px;
     line-height: 64px;
+  }
+`;
+
+export const Caption = styled.p`
+  font-family: 'TWKEverett', sans-serif;
+  font-weight: 500;
+
+  letter-spacing: -0.01em;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 28px;
+
+  @media (min-width: 769px) {
+    font-size: 32px;
+    line-height: 42px;
   }
 `;
 
@@ -98,9 +115,9 @@ export const BoxPlan = styled.a`
     }
   }
 
-  ${({ pro }) => {
+  ${({ teamPro }) => {
     return (
-      pro &&
+      teamPro &&
       css`
         background: #fff;
         border-top-color: #edffa5;
@@ -115,6 +132,17 @@ export const BoxPlan = styled.a`
       css`
         background: #fff;
         border-top-color: #ac9cff;
+        color: #090909;
+      `
+    );
+  }}
+
+  ${({ orgCustom }) => {
+    return (
+      orgCustom &&
+      css`
+        background: #fff;
+        border-top-color: #e1e1e1;
         color: #090909;
       `
     );
@@ -175,7 +203,6 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
 
     @media (min-width: 769px) {
       margin-bottom: 12px;
-      font-size: 56px;
       font-size: 64px;
     }
   }
@@ -188,6 +215,60 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
     @media (min-width: 769px) {
       max-width: 220px;
       font-size: 13px;
+    }
+  }
+
+  ${({ customPrice }) => {
+    return (
+      customPrice &&
+      css`
+        margin-top: -24px; // Visually align with the other cards.
+
+        .plan {
+          margin-bottom: 0;
+
+          @media (min-width: 769px) {
+            margin-bottom: 0;
+          }
+        }
+
+        .price {
+          @media (min-width: 769px) {
+            font-size: 48px;
+            line-height: 68px;
+          }
+        }
+      `
+    );
+  }}
+`;
+
+export const ComparePlansLink = styled(({ scrollTo, ...props }) => {
+  return (
+    <a href="#plans" onClick={scrollTo} {...props}>
+      <img src={doubleArrowDown} width="16" alt="" />
+      Compare plans
+    </a>
+  );
+})`
+  display: flex;
+  text-decoration: none;
+
+  color: #edffa5;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: -0.019em;
+
+  img {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    margin-right: 0.4em;
+  }
+
+  @media (hover: hover) {
+    &:hover img {
+      transform: translateY(4px);
     }
   }
 `;
