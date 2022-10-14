@@ -1,6 +1,6 @@
 import {
-  UnmakeSandboxesTemplateMutation,
-  UnmakeSandboxesTemplateMutationVariables,
+  _UnmakeSandboxesTemplateMutation,
+  _UnmakeSandboxesTemplateMutationVariables,
   RenameFolderMutation,
   DeleteFolderMutation,
   DeleteFolderMutationVariables,
@@ -35,8 +35,8 @@ import {
   _CreateTeamMutationVariables,
   _RenameSandboxMutation,
   _RenameSandboxMutationVariables,
-  MakeSandboxesTemplateMutation,
-  MakeSandboxesTemplateMutationVariables,
+  _MakeSandboxesTemplateMutation,
+  _MakeSandboxesTemplateMutationVariables,
   CreateFolderMutation,
   CreateFolderMutationVariables,
   SetTeamNameMutation,
@@ -335,8 +335,8 @@ export const setTeamDescription: Query<
 `;
 
 export const unmakeSandboxesTemplate: Query<
-  UnmakeSandboxesTemplateMutation,
-  UnmakeSandboxesTemplateMutationVariables
+  _UnmakeSandboxesTemplateMutation,
+  _UnmakeSandboxesTemplateMutationVariables
 > = gql`
   mutation _UnmakeSandboxesTemplate($sandboxIds: [ID!]!) {
     unmakeSandboxesTemplates(sandboxIds: $sandboxIds) {
@@ -346,8 +346,8 @@ export const unmakeSandboxesTemplate: Query<
 `;
 
 export const makeSandboxesTemplate: Query<
-  MakeSandboxesTemplateMutation,
-  MakeSandboxesTemplateMutationVariables
+  _MakeSandboxesTemplateMutation,
+  _MakeSandboxesTemplateMutationVariables
 > = gql`
   mutation _MakeSandboxesTemplate($sandboxIds: [ID!]!) {
     makeSandboxesTemplates(sandboxIds: $sandboxIds) {
