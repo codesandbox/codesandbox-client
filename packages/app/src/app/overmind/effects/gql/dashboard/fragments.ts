@@ -242,6 +242,7 @@ export const projectFragment = gql`
       ... on GitHubRepository {
         owner
         name
+        defaultBranch
       }
     }
   }

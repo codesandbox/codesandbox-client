@@ -4,9 +4,11 @@ import { Menu } from '@codesandbox/components';
 import { ProjectFragment as Repository } from 'app/graphql/types';
 import {
   dashboard,
+  v2DefaultBranchUrl,
   v2DraftBranchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useActions, useAppState } from 'app/overmind';
+import { quotes } from 'app/utils/quotes';
 import { Context, MenuItem } from '../ContextMenu';
 
 type RepositoryMenuProps = {
@@ -38,6 +40,10 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
     providerRepository.owner,
     providerRepository.name
   );
+  const defaultBranchUrl = v2DefaultBranchUrl(
+    providerRepository.owner,
+    providerRepository.name
+  );
 
   const repositoryIsStarred = state.dashboard.starredRepos.find(
     repo =>
@@ -54,18 +60,27 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
       position={position}
       style={{ width: 120 }}
     >
-      <MenuItem onSelect={() => history.push(repositoryUrl)}>
-        Open repository
+      <MenuItem
+        onSelect={() => {
+          window.location.href = defaultBranchUrl;
+        }}
+      >
+        Open {quotes(providerRepository.defaultBranch)} branch
       </MenuItem>
-      <MenuItem onSelect={() => window.open(repositoryUrl, '_blank')}>
-        Open repository in a new tab
+      <MenuItem onSelect={() => window.open(defaultBranchUrl, '_blank')}>
+        Open {quotes(providerRepository.defaultBranch)} in a new tab
       </MenuItem>
       <MenuItem onSelect={() => window.open(githubUrl, '_blank')}>
         Open on GitHub
       </MenuItem>
+
       <Menu.Divider />
+
       <MenuItem onSelect={() => window.open(branchFromDefaultUrl, '_blank')}>
         Create branch
+      </MenuItem>
+      <MenuItem onSelect={() => history.push(repositoryUrl)}>
+        See all branches
       </MenuItem>
 
       {experimentalMode && (
