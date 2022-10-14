@@ -24,7 +24,14 @@ export const TemplateCard = ({
 
   const sandboxTitle = template.sandbox?.title || template.sandbox?.alias;
   const isV2 = template.sandbox?.isV2;
-  const teamName = template.sandbox?.collection?.team?.name;
+  const teamName = template.sandbox?.collection?.team?.name; // Search is different
+
+  if (!teamName) {
+    console.log('template', template);
+  }
+  const authorName = template.sandbox?.author?.username;
+
+  // console.log('teamName', teamName);
 
   return (
     <TemplateButton
@@ -70,7 +77,7 @@ export const TemplateCard = ({
 
           <Text size={2} css={{ color: '#999' }}>
             <VisuallyHidden>by </VisuallyHidden>
-            {teamName || 'CodeSandbox'}
+            {teamName || authorName || 'CodeSandbox'}
           </Text>
         </Stack>
       </Stack>
