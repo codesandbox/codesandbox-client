@@ -529,6 +529,9 @@ export const handleError = (
   } else if (
     error.message.startsWith(
       'You need to be signed in to fork a server template.'
+    ) ||
+    error.message.startsWith(
+      'You need to be signed in to fork a cloud sandbox.'
     )
   ) {
     notificationActions.primary = {
