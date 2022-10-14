@@ -1,151 +1,122 @@
 import React, { useState } from 'react';
 
 import styled from 'styled-components';
-import { Title } from './_elements';
+import { Caption, Title } from './_elements';
 
 /**
  * DATA
  */
-const plans = [
+const team_plans = [
   {
-    section: 'Prototyping',
     body: [
       {
-        title: 'Unlimited Sandboxes',
+        title: 'Editors',
+        caption: 'Maximum number of editors in a team.',
+        team_free: '5',
+        team_pro: '20',
+        org_custom: 'Unlimited',
+      },
+      {
+        title: 'Sandboxes',
+        caption: 'Maximum number of sandboxes a team can create.',
+        team_free: '20 (only public)',
+        team_pro: 'Unlimited public and<br/>private',
+        org_custom: 'Unlimited public and<br/>private',
+      },
+      {
+        title: 'Repositories',
         caption:
-          "Create as many sandboxes as you'd like and manage their permissions",
-        free: 'Only public',
-        personal: 'Public and private',
-        team: 'Public and private',
+          'Maximum number of repos a team can create. Repos allow developing projects connected to Git.',
+        team_free: '3 (only public)',
+        team_pro: 'Unlimited public and<br/>private',
+        org_custom: 'Unlimited public and<br/>private',
+      },
+      {
+        title: 'VM Specs',
+        caption: 'The specs of the VM that will run your repositories.',
+        team_free: '4GB RAM<br/>2 vCPUs<br/>4GB Disk',
+        team_pro: '6GB RAM<br/>4 vCPUs<br/>12GB Disk',
+        org_custom: 'Custom',
       },
       {
         title: 'Public NPM packages',
         caption: 'Use any of the 1M+ public packages on npm in your sandboxes',
-        free: true,
-        personal: true,
-        team: true,
+        team_free: true,
+        team_pro: true,
+        org_custom: true,
       },
       {
         title: 'Private NPM packages',
         caption: 'Use private npm packages from your own custom registry',
-        free: false,
-        personal: false,
-        team: true,
+        team_free: false,
+        team_pro: true,
+        org_custom: true,
+      },
+      //      {
+      //        title: 'Password-protected<br />previews',
+      //        caption:
+      //          'Protect who can view your dev server preview and give users outside your team access with a password.',
+      //        team_free: false,
+      //        team_pro: { value: true, label: '(Coming soon)' },
+      //        org_custom: { value: true, label: '(Coming soon)' },
+      //      },
+      {
+        title: 'Static file hosting',
+        caption: 'All static files served via CDN.',
+        team_free: '20MB total,<br/> 7MB upload',
+        team_pro: '500MB/user,<br/> 30MB upload',
+        org_custom: 'Custom',
+      },
+    ],
+  },
+];
+
+const personal_plans = [
+  {
+    body: [
+      {
+        title: 'Users',
+        caption: 'All Personal plans are limited to 1 user.',
+        personal_free: '1',
+        personal_pro: '1',
       },
       {
-        title: 'Private GitHub repositories',
-        caption: 'Import and sync private repositories from Github',
-        free: false,
-        personal: true,
-        team: true,
+        title: 'Unlimited Sandboxes',
+        caption:
+          'Create as many sandboxes as you like and manage their permissions.',
+        personal_free: 'Only public',
+        personal_pro: 'Public and private',
+      },
+      {
+        title: 'Unlimited Repositories',
+        caption:
+          'Import as many repos as you like. Repos allow developing projects connected to Git.',
+        personal_free: 'Only public',
+        personal_pro: 'Public and private',
+      },
+      {
+        title: 'VM Specs',
+        caption: 'The specs of the VM that will run your repositories.',
+        personal_free: '4GB RAM<br/>2 vCPUs<br/>4GB Disk',
+        personal_pro: '6GB RAM<br/>4 vCPUs<br/>12GB Disk',
+      },
+      {
+        title: 'Public NPM packages',
+        caption: 'Use any of the 1M+ public packages on npm in your sandboxes',
+        personal_free: true,
+        personal_pro: true,
+      },
+      {
+        title: 'Private NPM packages',
+        caption: 'Use private npm packages from your own custom registry',
+        personal_free: false,
+        personal_pro: false,
       },
       {
         title: 'Static file hosting',
-        caption: 'All static files served via CDN',
-        free: '20MB total,<br/> 7MB upload',
-        personal: '500MB/user,<br/> 30MB upload',
-        team: '500MB/user,<br/> 30MB upload',
-      },
-    ],
-  },
-  {
-    section: 'Admin & Security',
-    body: [
-      {
-        title: 'Dashboard',
-        caption:
-          'Organize sandboxes and templates. Search, sort, or modify sandboxes at once',
-        free: true,
-        personal: true,
-        team: true,
-      },
-      {
-        title: 'Sandbox-level permissions',
-        caption: 'Manage your sandbox permissions and privacy settings',
-        free: false,
-        personal: true,
-        team: true,
-      },
-      {
-        title: 'Team-level permissions',
-        caption:
-          'Disable the ability to fork or download all shared sandboxes in a team',
-        free: false,
-        personal: false,
-        team: true,
-      },
-      {
-        title: 'Centralized billing',
-        caption:
-          'Everyone in a single account for easier team management & billing',
-        free: false,
-        personal: false,
-        team: true,
-      },
-    ],
-  },
-  {
-    section: 'Collaboration',
-    body: [
-      {
-        title: 'Collaborative editing ',
-        caption:
-          'Work on code and edit sandboxes with multiple people real-time',
-        free: true,
-        personal: true,
-        team: true,
-      },
-      {
-        title: 'Classroom mode',
-        caption: 'Use Classroom Mode to control who can make edits or watch',
-        free: true,
-        personal: true,
-        team: true,
-      },
-      {
-        title: 'Public profile',
-        caption: 'A personal portfolio page highlighting your best sandboxes',
-        free: true,
-        personal: true,
-        team: true,
-      },
-      {
-        title: 'In-editor chat',
-        caption: 'Chat with collaborators about the code in real time',
-        free: true,
-        personal: true,
-        team: true,
-      },
-      {
-        title: 'Code comments',
-        caption: 'Add comments about a sandbox or specific code lines',
-        free: false,
-        personal: false,
-        team: true,
-      },
-      {
-        title: 'Preview comments',
-        caption:
-          'Comment directly in the sandbox preview, no need to open the editor',
-        free: false,
-        personal: false,
-        team: true,
-      },
-      {
-        title: 'Team dashboards',
-        caption:
-          'Easy access to all team members work for editing, collaborating and managing ',
-        free: false,
-        personal: false,
-        team: true,
-      },
-      {
-        title: 'Team templates',
-        caption:
-          'Share your official template with your team members and establish workflow patterns',
-        free: false,
-        personal: false,
-        team: true,
+        caption: 'All static files served via CDN.',
+        personal_free: '20MB total,<br/> 7MB upload',
+        personal_pro: '500MB/user,<br/> 30MB upload',
       },
     ],
   },
@@ -269,10 +240,19 @@ const featureList = [
  * Main component
  */
 export const Plans = () => {
-  const [mobilePlan, setMobilePlan] = useState('team');
+  const [mobileTeamPlan, setMobileTeamPlan] = useState('team-pro');
+  const [mobilePersonalPlan, setMobilePersonalPlan] = useState('personal-pro');
 
   return (
     <>
+      <Caption
+        css={{
+          textAlign: 'center',
+          marginBottom: '30px',
+        }}
+      >
+        Compare plans
+      </Caption>
       <Title
         css={{
           textAlign: 'center',
@@ -283,89 +263,194 @@ export const Plans = () => {
           },
         }}
       >
-        Compare our plans and features
+        Choose the right plan for you.
       </Title>
 
-      <Table>
-        {plans.map(({ section, body }, index) => {
-          return (
-            <React.Fragment key={section}>
-              <tr>
-                <th
-                  className={`table__feature-header ${
-                    index === 0
-                      ? 'table__feature-header--first'
-                      : 'table__feature-header--body'
-                  }`}
-                  colSpan={index === 0 ? 1 : 4}
-                >
-                  <span>{section}</span>
-                </th>
+      <TableSection id="team-plans">
+        <TableTitle>Team and Business Plans</TableTitle>
+        <Table>
+          {team_plans.map(({ section, body }, index) => {
+            return (
+              <React.Fragment key={section}>
+                <tr>
+                  <th
+                    className={`table__feature-header ${
+                      index === 0
+                        ? 'table__feature-header--first'
+                        : 'table__feature-header--body'
+                    }`}
+                    colSpan={index === 0 ? 1 : 4}
+                  >
+                    <span>{section}</span>
+                  </th>
 
-                {index === 0 && (
-                  <>
-                    <th className="column__desktop free-header">
-                      <p>Free</p>
-                    </th>
-                    <th className="column__desktop plan__personal">
-                      <p>Personal Pro</p>
-                      <a href="/pro?type=personal">Upgrade</a>
-                    </th>
-                    <th className="column__desktop plan__team">
-                      <p>Team Pro</p>
-                      <a href="/pro?type=team">Upgrade</a>
-                    </th>
-
-                    <th
-                      className={`column__mobile plan__${mobilePlan}`}
-                      colSpan={3}
-                    >
-                      <div className="plan-selector">
-                        <select
-                          onChange={({ target }) => setMobilePlan(target.value)}
-                          value={mobilePlan}
+                  {index === 0 && (
+                    <>
+                      <th className="column__desktop plan__team-free">
+                        <p>Free</p>
+                      </th>
+                      <th className="column__desktop plan__team-pro">
+                        <p>Team Pro</p>
+                        <a href="/pro?type=team">Upgrade</a>
+                      </th>
+                      <th className="column__desktop plan__org-custom">
+                        <p>Organization</p>
+                        <a
+                          href="mailto:support@codesandbox.io?subject=Organization plan"
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
-                          <option value="free">Free</option>
-                          <option value="personal">Personal Pro</option>
-                          <option value="team">Team Pro</option>
-                        </select>
-                      </div>
-                    </th>
-                  </>
-                )}
-              </tr>
+                          Contact us
+                        </a>
+                      </th>
 
-              {body.map(item => {
-                return (
-                  <tr>
-                    <td>
-                      <h3>{item.title}</h3>
-                      <p>{item.caption}</p>
-                    </td>
+                      <th
+                        className={`column__mobile plan__${mobileTeamPlan}`}
+                        colSpan={3}
+                      >
+                        <div className="plan-selector">
+                          <select
+                            onChange={({ target }) =>
+                              setMobileTeamPlan(target.value)
+                            }
+                            value={mobileTeamPlan}
+                          >
+                            <option value="team-free">Free</option>
+                            <option value="team-pro">Team</option>
+                            <option value="org-custom">Organization</option>
+                          </select>
+                        </div>
+                      </th>
+                    </>
+                  )}
+                </tr>
 
-                    <td className="plan__free column__desktop">
-                      <CheckOrNot option={item.free} />
-                    </td>
-                    <td className="plan__personal column__desktop">
-                      <CheckOrNot option={item.personal} />
-                    </td>
-                    <td className="plan__team column__desktop">
-                      <CheckOrNot option={item.team} />
-                    </td>
+                {body.map(item => {
+                  return (
+                    <tr>
+                      <td>
+                        <h3
+                          // eslint-disable-next-line react/no-danger
+                          dangerouslySetInnerHTML={{ __html: item.title }}
+                        />
+                        <p
+                          // eslint-disable-next-line react/no-danger
+                          dangerouslySetInnerHTML={{ __html: item.caption }}
+                        />
+                      </td>
 
-                    <td
-                      className={`column__mobile plan__${mobilePlan}`}
-                      colSpan={3}
-                    >
-                      <CheckOrNot option={item[mobilePlan]} />
-                    </td>
-                  </tr>
-                );
-              })}
-            </React.Fragment>
-          );
-        })}
-      </Table>
+                      <td className="plan__team-free column__desktop">
+                        <CheckOrNot option={item.team_free} />
+                      </td>
+                      <td className="plan__team-pro column__desktop">
+                        <CheckOrNot option={item.team_pro} />
+                      </td>
+                      <td className="plan__org-custom column__desktop">
+                        <CheckOrNot option={item.org_custom} />
+                      </td>
+
+                      <td
+                        className={`column__mobile plan__${mobileTeamPlan}`}
+                        colSpan={3}
+                      >
+                        <CheckOrNot
+                          option={item[mobileTeamPlan.replace('-', '_')]}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </React.Fragment>
+            );
+          })}
+        </Table>
+      </TableSection>
+
+      <TableSection id="personal-plans">
+        <TableTitle>Personal Plans</TableTitle>
+        <Table>
+          {personal_plans.map(({ section, body }, index) => {
+            return (
+              <React.Fragment key={section}>
+                <tr>
+                  <th
+                    className={`table__feature-header ${
+                      index === 0
+                        ? 'table__feature-header--first'
+                        : 'table__feature-header--body'
+                    }`}
+                    colSpan={index === 0 ? 1 : 4}
+                  >
+                    <span>{section}</span>
+                  </th>
+
+                  {index === 0 && (
+                    <>
+                      <th className="column__desktop plan__personal-free">
+                        <p>Free</p>
+                      </th>
+                      <th className="column__desktop plan__personal-pro">
+                        <p>Personal Pro</p>
+                        <a href="/pro?type=personal">Upgrade</a>
+                      </th>
+
+                      <th
+                        className={`column__mobile plan__${mobilePersonalPlan}`}
+                        colSpan={3}
+                      >
+                        <div className="plan-selector">
+                          <select
+                            onChange={({ target }) =>
+                              setMobilePersonalPlan(target.value)
+                            }
+                            value={mobilePersonalPlan}
+                          >
+                            <option value="personal-free">Free</option>
+                            <option value="personal-pro">Personal Pro</option>
+                          </select>
+                        </div>
+                      </th>
+                    </>
+                  )}
+                </tr>
+
+                {body.map(item => {
+                  return (
+                    <tr>
+                      <td>
+                        <h3
+                          // eslint-disable-next-line react/no-danger
+                          dangerouslySetInnerHTML={{ __html: item.title }}
+                        />
+                        <p
+                          // eslint-disable-next-line react/no-danger
+                          dangerouslySetInnerHTML={{ __html: item.caption }}
+                        />
+                      </td>
+
+                      <td className="plan__personal-free column__desktop">
+                        <CheckOrNot option={item.personal_free} />
+                      </td>
+                      <td className="plan__personal-pro column__desktop">
+                        <CheckOrNot option={item.personal_pro} />
+                      </td>
+
+                      <td
+                        className={`column__mobile plan__${mobilePersonalPlan}`}
+                        colSpan={3}
+                      >
+                        <CheckOrNot
+                          option={item[mobilePersonalPlan.replace('-', '_')]}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </React.Fragment>
+            );
+          })}
+        </Table>
+      </TableSection>
 
       <FeatureListTitle css={{ color: '#E5E5E5', fontSize: 24 }}>
         plus all our standard platform features
@@ -407,6 +492,28 @@ const CheckOrNot = ({ option }) => {
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: option }}
       />
+    );
+  }
+
+  if (typeof option === 'object') {
+    return (
+      <TDWithDetails>
+        {option.value === true ? (
+          <svg width="23" height="17" viewBox="0 0 23 17">
+            <path
+              d="M0.860795 8.5L8.58807 16.1818L22.7699 2.04545L20.9972 0.272726L8.58807 12.6364L2.58807 6.72727L0.860795 8.5Z"
+              fill="currentColor"
+            />
+          </svg>
+        ) : (
+          <span className="checked__no-check">&times;</span>
+        )}
+        <span
+          className="checked__text"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: option.label }}
+        />
+      </TDWithDetails>
     );
   }
 
@@ -469,6 +576,19 @@ const FeatureListItem = styled.li`
     color: #808080;
     margin: 0;
   }
+`;
+
+const TableSection = styled.section`
+  margin-bottom: 160px;
+  position: relative;
+`;
+
+const TableTitle = styled.h3`
+  font-family: 'TWKEverett', sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 42px;
+  letter-spacing: -0.01em;
 `;
 
 const Table = styled.table`
@@ -684,19 +804,36 @@ const Table = styled.table`
     }
   }
 
-  .plan__free {
-    color: #c5c5c5;
-  }
-
-  .plan__personal {
-    --plan: #ac9cff;
+  .plan__team-free,
+  .plan__personal-free {
+    --plan: #808080;
 
     color: var(--plan);
   }
 
-  .plan__team {
+  .plan__team-pro {
     --plan: #edffa5;
 
     color: var(--plan);
   }
+
+  .plan__org-custom {
+    --plan: #ffffff;
+
+    color: var(--plan);
+  }
+
+  .plan__personal-pro {
+    --plan: #ac9cff;
+
+    color: var(--plan);
+  }
+`;
+
+const TDWithDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 `;

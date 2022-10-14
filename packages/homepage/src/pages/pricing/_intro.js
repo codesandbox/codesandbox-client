@@ -1,11 +1,16 @@
 import React, { useCallback, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import privateIcon from './assets/private.svg';
-import exportIcon from './assets/export.svg';
-import priceIcon from './assets/price.svg';
+import usePrefersReducedMotion from '../../utils/isReducedMOtion';
+
+import {
+  BoxPlan,
+  BoxPlanButton,
+  BoxPlanPrice,
+  Caption,
+  ComparePlansLink,
+} from './_elements';
 import { formatCurrency } from './_utils';
-import { BoxPlan, BoxPlanButton, BoxPlanPrice } from './_elements';
 
 /**
  * Main component
@@ -19,8 +24,10 @@ export const Intro = ({ plans }) => {
   //     }
   //   }
   // }
+  const shouldReduceMotion = usePrefersReducedMotion();
 
-  const [hover, setHover] = useState(false);
+  const [teamHover, setTeamHover] = useState(false);
+  const [personalHover, setPersonalHover] = useState(false);
 
   const scrollViewRef = useCallback(node => {
     if (node) {
@@ -28,113 +35,106 @@ export const Intro = ({ plans }) => {
     }
   }, []);
 
+  const scrollTo = (event, elementId) => {
+    event.preventDefault();
+
+    const element = document.querySelector(elementId);
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - 120;
+
+    if (element) {
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: shouldReduceMotion ? 'auto' : 'smooth',
+      });
+    }
+  };
+
   return (
     <>
       <IntroWrapper>
-        <Caption>CodeSandbox Pro</Caption>
-        <Title>Everything you love about CodeSandbox, but make it Pro.</Title>
-
-        <ScrollView>
-          <Grid>
-            <GridItem>
-              <Icon>
-                <img src={privateIcon} alt="private npm packages" />
-              </Icon>
-              <SubTitle>
-                Use private NPM packages and manage advanced permissions options
-              </SubTitle>
-            </GridItem>
-
-            <GridItem>
-              <Icon>
-                <img src={exportIcon} alt="storage" />
-              </Icon>
-              <SubTitle>
-                Go bigger and bolder with 500MB of storage and 30MB upload speed
-              </SubTitle>
-            </GridItem>
-
-            <GridItem>
-              <Icon>
-                <img src={priceIcon} alt="pricing" />
-              </Icon>
-              <SubTitle>
-                Choose between different pricing and plans to suit your needs
-                and budget
-              </SubTitle>
-            </GridItem>
-          </Grid>
-        </ScrollView>
+        <Caption
+          css={{
+            color: '#dcff50',
+          }}
+        >
+          Pricing
+        </Caption>
+        <Title>
+          Free to learn and experiment.
+          <br />
+          Pay as you grow.
+        </Title>
       </IntroWrapper>
 
-      <ScrollViewPlantList>
-        <Gradient className={hover ? 'hover' : ''} />
-        {plans && (
-          <PlanList ref={scrollViewRef}>
-            {Object.entries(plans || {}).map(([plan, value]) => {
-              if (plan === 'team_pro') {
-                return (
+      {plans && (
+        <>
+          <PlansWrapper>
+            <PlansTitle>Team and Business Plans</PlansTitle>
+            <ScrollViewPlansList>
+              <Gradient className={teamHover ? 'hover' : ''} teamSection />
+              <PlanList ref={scrollViewRef}>
+                <TeamFree />
+                {plans.team_pro ? (
                   <TeamPro
-                    plan={value}
-                    onMouseEnter={() => setHover(true)}
-                    onMouseLeave={() => setHover(false)}
+                    plan={plans.team_pro}
+                    onMouseEnter={() => setTeamHover(true)}
+                    onMouseLeave={() => setTeamHover(false)}
                   />
-                );
-              }
+                ) : null}
+                <OrgCustom
+                  // TODO: verify if another effect should be applied.
+                  onMouseEnter={() => setTeamHover(true)}
+                  onMouseLeave={() => setTeamHover(false)}
+                />
+              </PlanList>
+            </ScrollViewPlansList>
+            <ComparePlansLinkWrapper>
+              <ComparePlansLink scrollTo={e => scrollTo(e, '#team-plans')} />
+            </ComparePlansLinkWrapper>
+          </PlansWrapper>
 
-              return <FreeBox />;
-            })}
-          </PlanList>
-        )}
-      </ScrollViewPlantList>
+          <PlansWrapper>
+            <PlansTitle>Personal Plans</PlansTitle>
+            <ScrollViewPlansList>
+              <Gradient
+                className={personalHover ? 'hover' : ''}
+                personalSection
+              />
+              {plans && (
+                <PlanList ref={scrollViewRef}>
+                  <PersonalFree />
+                  {plans.pro ? (
+                    <PersonalPro
+                      plan={plans.pro}
+                      onMouseEnter={() => setPersonalHover(true)}
+                      onMouseLeave={() => setPersonalHover(false)}
+                    />
+                  ) : null}
+                </PlanList>
+              )}
+            </ScrollViewPlansList>
+            <ComparePlansLinkWrapper>
+              <ComparePlansLink
+                scrollTo={e => scrollTo(e, '#personal-plans')}
+              />
+            </ComparePlansLinkWrapper>
+          </PlansWrapper>
+        </>
+      )}
     </>
   );
 };
 
 /**
- * Elements
+ * Hero elements
  */
-const Gradient = styled.div`
-  position: absolute;
-  width: 1280px;
-  height: 1280px;
-  right: -40%;
-  top: -50%;
-
-  background: radial-gradient(
-    50% 50% at 50% 50%,
-    hsl(72deg 100% 82%) 0%,
-    hsl(72deg 69% 76%) 3%,
-    hsl(72deg 50% 71%) 6%,
-    hsl(72deg 38% 65%) 9%,
-    hsl(72deg 30% 59%) 12%,
-    hsl(72deg 23% 54%) 15%,
-    hsl(72deg 20% 48%) 19%,
-    hsl(72deg 19% 43%) 22%,
-    hsl(71deg 19% 38%) 26%,
-    hsl(71deg 18% 32%) 30%,
-    hsl(71deg 17% 27%) 34%,
-    hsl(71deg 16% 23%) 39%,
-    hsl(71deg 15% 18%) 44%,
-    hsl(70deg 13% 13%) 51%,
-    hsl(69deg 9% 9%) 59%,
-    hsl(0deg 0% 4%) 77%
-  );
-  opacity: 0.6;
-  transition: opacity 0.8s ease;
-
-  &.hover {
-    transition: opacity 0.4s ease-in;
-    opacity: 1;
-  }
-
-  @media (max-width: 769px) {
-    display: none;
-  }
+const IntroWrapper = styled.div`
+  position: relative;
+  z-index: 1;
 `;
 
 const Title = styled.h1`
-  letter-spacing: -0.025em;
   font-family: 'TWKEverett', sans-serif;
 
   color: ${props => props.theme.homepage.white};
@@ -143,6 +143,7 @@ const Title = styled.h1`
   margin-bottom: 0;
   font-weight: normal;
 
+  letter-spacing: -0.025em;
   font-size: 40px;
   line-height: 48px;
 
@@ -152,102 +153,108 @@ const Title = styled.h1`
   }
 
   @media (min-width: 1025px) {
-    font-size: 72px;
-    line-height: 80px;
-  }
-
-  @media (min-width: 1445px) {
-    font-size: 85px;
-    line-height: 1.09;
-  }
-`;
-
-const SubTitle = styled.h2`
-  font-weight: normal;
-  color: #808080;
-  font-weight: normal;
-  letter-spacing: -0.019em;
-  margin: 0;
-  margin-bottom: 0;
-
-  font-size: 16px;
-  line-height: 24px;
-`;
-
-const IntroWrapper = styled.div`
-  position: relative;
-  z-index: 1;
-`;
-
-const Caption = styled.p`
-  color: #dcff50;
-  font-family: 'TWKEverett', sans-serif;
-  font-weight: 500;
-
-  font-size: 24px;
-  line-height: 28px;
-
-  @media (min-width: 769px) {
-    font-size: 32px;
-    line-height: 38px;
-  }
-`;
-
-const ScrollView = styled.div`
-  overflow: auto;
-  margin-left: -1em;
-  margin-right: -1em;
-`;
-
-const GridItem = styled.div`
-  min-width: 220px;
-  padding-right: calc(40px - 1em);
-  padding-left: 1em;
-`;
-
-const Grid = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  margin-top: 62px;
-
-  @media (min-width: 376px) {
-    margin-top: 72px;
-  }
-
-  @media (min-width: 769px) {
-    margin-top: 96px;
-  }
-
-  ${GridItem} {
-    width: calc(100% / 3);
-  }
-`;
-
-const Icon = styled.div`
-  background: #2a2a2a;
-  width: 56px;
-  height: 56px;
-  border-radius: 9999px;
-  display: flex;
-  margin-bottom: 24px;
-
-  img {
-    margin: auto;
-    height: 22px;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+    font-size: 64px;
+    line-height: 1.45;
   }
 `;
 
 /**
  * Plan list elements
  */
+const Gradient = styled.div`
+  position: absolute;
+  width: 1280px;
+  height: 1280px;
+  right: -40%;
+  top: -50%;
+  /* background: radial-gradient(
+    61.76% 61.76% at 50% 38.24%,
+    #ac9cff 0%,
+    #000000 60.35%
+  ); */
+  opacity: 0.6;
+  transition: opacity 0.8s ease;
 
-const ScrollViewPlantList = styled.div`
+  &.hover {
+    transition: opacity 0.4s ease-in;
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  ${({ teamSection }) => {
+    return (
+      teamSection &&
+      css`
+        background: radial-gradient(
+          61.76% 61.76% at 50% 38.24%,
+          #ac9cff 0%,
+          #000000 60.35%
+        );
+      `
+    );
+  }}
+
+  ${({ personalSection }) => {
+    return (
+      personalSection &&
+      css`
+        background: radial-gradient(
+          50% 50% at 50% 50%,
+          hsl(72deg 100% 82%) 0%,
+          hsl(72deg 69% 76%) 3%,
+          hsl(72deg 50% 71%) 6%,
+          hsl(72deg 38% 65%) 9%,
+          hsl(72deg 30% 59%) 12%,
+          hsl(72deg 23% 54%) 15%,
+          hsl(72deg 20% 48%) 19%,
+          hsl(72deg 19% 43%) 22%,
+          hsl(71deg 19% 38%) 26%,
+          hsl(71deg 18% 32%) 30%,
+          hsl(71deg 17% 27%) 34%,
+          hsl(71deg 16% 23%) 39%,
+          hsl(71deg 15% 18%) 44%,
+          hsl(70deg 13% 13%) 51%,
+          hsl(69deg 9% 9%) 59%,
+          hsl(0deg 0% 4%) 77%
+        );
+      `
+    );
+  }}
+`;
+
+const PlansWrapper = styled.div`
+  margin-top: 100px; // TODO: verify if spacing is correct
+
+  @media (min-width: 769px) {
+    margin-top: 150px;
+  }
+`;
+
+const PlansTitle = styled.h2`
+  position: relative;
+  z-index: 1;
+  margin-bottom: 0;
+
+  color: #ffffff;
+
+  font-family: 'TWKEverett', sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 42px;
+  letter-spacing: -0.01em;
+`;
+
+const ScrollViewPlansList = styled.div`
   margin-right: -1em;
   margin-left: -1em;
   position: relative;
 
-  @media (min-width: 1025) {
+  @media (min-width: 1025px) {
     margin: 0;
   }
 `;
@@ -256,18 +263,18 @@ const PlanList = styled.div`
   display: flex;
   justify-content: space-between;
   position: relative;
-  z-index: 0;
+  z-index: 1;
 
   scroll-snap-type: x mandatory;
   overflow-x: scroll;
   scroll-behavior: smooth;
 
-  margin-top: 80px;
+  margin-top: 80px; // TODO: verify if spacing is correct
   padding: 0 1em;
 
   @media (min-width: 376px) {
     padding: 0;
-    margin-top: 132px;
+    margin-top: 100px;
   }
 
   @media (min-width: 1025px) {
@@ -281,28 +288,40 @@ const PlanList = styled.div`
   }
 `;
 
-const FreeBox = () => {
+const ComparePlansLinkWrapper = styled.div`
+  position: relative;
+  z-index: 1;
+  margin-top: 100px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const TeamFree = () => {
   return (
     <BoxPlan href="/s">
       <p>For learning and experimenting</p>
 
       <BoxPlanPrice plan="Free" price="$0" caption="forever" />
+
       <ul>
-        {/* Visually aligned */}
-        <br />
-        <br />
-
-        <li>Free for individuals</li>
-        <li>All Platform features</li>
-        <li>Public sandboxes</li>
-        <li>Personal dashboard</li>
+        <li>5 editors</li>
+        <li>20 public sandboxes</li>
+        <li>3 public repositories</li>
+        <li>All platform features</li>
+        <li>Team dashboard</li>
 
         {/* Visually aligned */}
         <br />
         <br />
+
+        <li>4GB RAM</li>
+        <li>2vCPUs</li>
+        <li>4GB Disk</li>
       </ul>
 
-      <BoxPlanButton href="/s">Start using now</BoxPlanButton>
+      <BoxPlanButton href="/s">Start coding now</BoxPlanButton>
     </BoxPlan>
   );
 };
@@ -311,8 +330,8 @@ const TeamPro = ({ plan, ...props }) => {
   if (!plan) return null;
 
   return (
-    <BoxPlan href="/pro?type=team" pro {...props}>
-      <p>Collaborate with your team Unlimited editor seats</p>
+    <BoxPlan href="/pro?type=team" teamPro {...props}>
+      <p>For small teams focused on collaboration</p>
 
       <BoxPlanPrice
         plan="Team Pro"
@@ -327,16 +346,122 @@ const TeamPro = ({ plan, ...props }) => {
       />
 
       <ul>
-        <li>All free features, plus:</li>
-        <li>Private sandboxes</li>
-        <li>Private GitHub repos</li>
+        <li>20 editors</li>
+        <li>Unlimited sandboxes</li>
+        <li>Unlimited repositories</li>
         <li>Private NPM packages</li>
         <li>Advanced permissions</li>
-        <li>Unlimited viewers and editors</li>
-        <li>Centralized billing</li>
+
+        {/* Visually aligned */}
+        <br />
+        <br />
+
+        <li>6GB RAM</li>
+        <li>4vCPUs</li>
+        <li>12GB Disk</li>
       </ul>
 
       <BoxPlanButton>Upgrade to Team Pro</BoxPlanButton>
+    </BoxPlan>
+  );
+};
+
+const OrgCustom = props => {
+  return (
+    <BoxPlan
+      href="mailto:support@codesandbox.io?subject=Organization plan"
+      target="_blank"
+      rel="noopener noreferrer"
+      orgCustom
+      {...props}
+    >
+      <p>For companies that want to go beyond</p>
+
+      <BoxPlanPrice
+        plan="Organization"
+        price="Custom"
+        caption="tailor-made plan with more flexibility."
+        customPrice
+      />
+
+      <ul>
+        <li>All Team Pro features, plus:</li>
+        <li>Unlimited editors</li>
+        <li>Bulk pricing for seats</li>
+        <li>Custom VM Specs</li>
+        <li>Custom support</li>
+        <li>Shared Slack channel</li>
+        <li>Customer success manager </li>
+
+        {/* Visually aligned */}
+        <br />
+        <br />
+      </ul>
+
+      <BoxPlanButton>Contact us</BoxPlanButton>
+    </BoxPlan>
+  );
+};
+
+const PersonalFree = () => {
+  return (
+    <BoxPlan href="/s">
+      <p>For learning and experimenting</p>
+
+      <BoxPlanPrice plan="Free" price="$0" caption="forever" />
+
+      <ul>
+        <li>Free for individuals</li>
+        <li>All platform features</li>
+        <li>Unlimited public sandboxes</li>
+        <li>Unlimited public repositories</li>
+        <li>Personal dashboard</li>
+
+        {/* Visually aligned */}
+        <br />
+        <br />
+
+        <li>4GB RAM</li>
+        <li>2vCPUs</li>
+        <li>4GB Disk</li>
+      </ul>
+
+      <BoxPlanButton href="/s">Start coding now</BoxPlanButton>
+    </BoxPlan>
+  );
+};
+
+const PersonalPro = ({ plan, ...props }) => {
+  return (
+    <BoxPlan personalPro href="/pro?type=personal" {...props}>
+      <p>For power users and freelancers</p>
+
+      <BoxPlanPrice
+        plan="Personal Pro"
+        price={formatCurrency({
+          currency: plan.year.currency,
+          unit_amount: plan.year.unit_amount / 12,
+        })}
+        caption={`per month, billed annually or ${formatCurrency(plan.month)}
+      per month.`}
+      />
+
+      <ul>
+        <li>All Free features, plus:</li>
+        <li>Unlimited private sandboxes</li>
+        <li>Unlimited private repositories</li>
+        <li>Advanced permissions</li>
+
+        {/* Visually aligned */}
+        <br />
+        <br />
+
+        <li>6GB RAM</li>
+        <li>4vCPUs</li>
+        <li>12GB Disk</li>
+      </ul>
+
+      <BoxPlanButton>Upgrade to Personal Pro</BoxPlanButton>
     </BoxPlan>
   );
 };

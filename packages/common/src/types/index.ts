@@ -152,6 +152,7 @@ export type CustomTemplate = {
   published?: boolean;
   title: string;
   url: string | null;
+  v2: boolean | null;
 };
 
 export type GitInfo = {

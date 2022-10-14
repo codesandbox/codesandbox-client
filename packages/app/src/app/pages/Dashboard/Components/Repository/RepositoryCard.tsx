@@ -36,6 +36,9 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
         ':hover': {
           backgroundColor: 'card.backgroundHover',
         },
+        ':has(button:hover)': {
+          backgroundColor: 'card.background',
+        },
         ':focus-visible': {
           borderColor: 'focusBorder',
         },
@@ -51,8 +54,9 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
           marginLeft: 'auto',
           marginRight: 0,
         })}
+        variant="square"
         name="more"
-        size={9}
+        size={14}
         title="Repository actions"
         onClick={evt => {
           evt.stopPropagation();

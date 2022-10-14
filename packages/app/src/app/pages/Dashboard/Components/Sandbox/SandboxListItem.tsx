@@ -58,6 +58,9 @@ export const SandboxListItem = ({
         cursor: 'default',
         backgroundColor: selected ? 'purpleOpaque' : 'list.hoverBackground',
       },
+      ':has(button:hover)': {
+        backgroundColor: 'transparent',
+      },
     })}
   >
     <Element
@@ -187,7 +190,8 @@ export const SandboxListItem = ({
       </Grid>
       <IconButton
         name="more"
-        size={9}
+        variant="square"
+        size={14}
         title="Sandbox actions"
         onClick={onContextMenu}
       />

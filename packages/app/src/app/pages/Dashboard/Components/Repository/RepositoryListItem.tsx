@@ -43,6 +43,9 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
               ? 'purpleOpaque'
               : 'list.hoverBackground',
         },
+        ':has(button:hover)': {
+          backgroundColor: 'transparent',
+        },
       })}
     >
       <Element
@@ -85,8 +88,9 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
           </Column>
         </Grid>
         <IconButton
+          variant="square"
           name="more"
-          size={9}
+          size={14}
           title="Repository actions"
           onClick={evt => {
             evt.stopPropagation();

@@ -12,12 +12,15 @@ type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   title: string;
   /** Size of the icon, the button is set to 26x26 */
   size?: number;
+  /** Variant - square or round */
+  variant?: 'square' | 'round';
 };
 
 export const IconButton: React.FC<IconButtonProps> = ({
   name,
   title,
   size,
+  variant = 'round',
   css = {},
   ...props
 }) => (
@@ -29,7 +32,9 @@ export const IconButton: React.FC<IconButtonProps> = ({
         {
           width: '26px', // same width as (height of the button)
           paddingX: 0,
-          borderRadius: '50%',
+          borderRadius: variant === 'round' ? '50%' : '2px',
+          // Round variant is legacy, so keeps cursor pointer for backwards compat in the editor
+          cursor: variant === 'round' ? 'pointer' : 'default',
           ':hover:not(:disabled)': {
             backgroundColor: 'secondaryButton.background',
           },

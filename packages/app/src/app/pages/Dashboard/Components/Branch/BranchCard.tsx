@@ -43,6 +43,9 @@ export const BranchCard: React.FC<BranchProps> = ({
         ':hover': {
           backgroundColor: 'card.backgroundHover',
         },
+        ':has(button:hover)': {
+          backgroundColor: 'card.background',
+        },
         ':focus-visible': {
           borderColor: 'focusBorder',
         },
@@ -90,8 +93,9 @@ export const BranchCard: React.FC<BranchProps> = ({
             </Text>
           </Tooltip>
           <IconButton
+            variant="square"
             name="more"
-            size={9}
+            size={14}
             title="Branch actions"
             onClick={evt => {
               evt.stopPropagation();
