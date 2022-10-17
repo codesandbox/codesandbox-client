@@ -7,6 +7,7 @@ import { useAppState, useActions } from 'app/overmind';
 import Fuse from 'fuse.js';
 import React, { useEffect } from 'react';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
+import type { ProjectFragment as Repository } from 'app/graphql/types';
 
 const useSearchedSandboxes = (query: string) => {
   const state = useAppState();
@@ -43,7 +44,19 @@ export const searchIndex = (dashboard: any) => {
     }))
     .filter(f => f.title);
 
-  return new Fuse([...sandboxes, ...folders], {
+  const repositories = dashboard.repositories?.map((repo: Repository) => {
+    return {
+      title: repo.repository.name,
+      /**
+       * Due to the lack of description we add the owner so we can at least
+       * include that in the search query.
+       */
+      description: repo.repository.owner,
+      ...repo,
+    };
+  });
+
+  return new Fuse([...sandboxes, ...folders, ...(repositories || [])], {
     threshold: 0.1,
     distance: 1000,
     keys: [
@@ -60,14 +73,24 @@ export const useGetItems = ({ query, getFilteredSandboxes }) => {
   const foundResults: Array<
     SandboxFragmentDashboardFragment | SidebarCollectionDashboardFragment
   > = useSearchedSandboxes(query) || [];
+
   // @ts-ignore
   const sandboxesInSearch = foundResults.filter(s => !s.path);
   // @ts-ignore
   const foldersInSearch = foundResults.filter(s => s.path);
+  // @ts-ignore
+  const repositoriesInSearch = foundResults.filter(s => s.repository);
+
   const filteredSandboxes: SandboxFragmentDashboardFragment[] = getFilteredSandboxes(
     sandboxesInSearch
   );
-  const orderedSandboxes = [...foldersInSearch, ...filteredSandboxes];
+
+  const orderedSandboxes = [
+    ...foldersInSearch,
+    ...filteredSandboxes,
+    ...repositoriesInSearch,
+  ];
+
   // @ts-ignore
   const items: DashboardGridItem[] =
     foundResults != null
@@ -77,6 +100,19 @@ export const useGetItems = ({ query, getFilteredSandboxes }) => {
             return {
               type: 'folder',
               ...found,
+            };
+          }
+
+          // @ts-ignore
+          if (found.repository) {
+            return {
+              type: 'repository',
+              repository: {
+                // @ts-ignore
+                branches: found.branches,
+                // @ts-ignore
+                repository: found.repository,
+              },
             };
           }
 

@@ -1000,6 +1000,7 @@ export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
       break;
     case sandboxesTypes.SEARCH:
       dashboard.getSearchSandboxes();
+      dashboard.getRepositoriesByTeam({ bypassLoading: true });
       break;
     case sandboxesTypes.ALWAYS_ON:
       dashboard.getAlwaysOnSandboxes();
