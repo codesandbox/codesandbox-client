@@ -9,10 +9,13 @@ import {
   User,
   Maybe,
 } from 'app/graphql/types';
+import { Context } from 'app/overmind';
 import {
   PageTypes as PT,
   DELETE_ME_COLLECTION,
 } from 'app/overmind/namespaces/dashboard/types';
+
+export type ViewMode = Context['state']['dashboard']['viewMode'];
 
 export type DashboardBaseFolder = {
   name: string;
@@ -106,6 +109,7 @@ export type DashboardBlankRowFill = {
 
 export type DashboardSkeleton = {
   type: 'default-skeleton' | 'solid-skeleton';
+  viewMode: ViewMode;
 };
 
 export type DashboardNewMasterBranch = {

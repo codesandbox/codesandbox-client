@@ -1,9 +1,8 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import css from '@styled-system/css';
 
-import { useAppState } from 'app/overmind';
 import { SkeletonText, Stack } from '@codesandbox/components';
+import { ViewMode } from '../../types';
 
 const DefaultSkeletonCard = () => (
   <Stack
@@ -47,16 +46,11 @@ const DefaultSkeletonListItem = () => (
   </Stack>
 );
 
-export const DefaultSkeleton = () => {
-  const { dashboard } = useAppState();
-  const location = useLocation();
-
-  let viewMode;
-  if (location.pathname.includes('archive')) viewMode = 'list';
-  else viewMode = dashboard.viewMode;
-
-  if (viewMode === 'list') {
-    return <DefaultSkeletonListItem />;
-  }
-  return <DefaultSkeletonCard />;
+export const DefaultSkeleton: React.FC<{ viewMode: ViewMode }> = ({
+  viewMode,
+}) => {
+  return {
+    list: <DefaultSkeletonListItem />,
+    grid: <DefaultSkeletonCard />,
+  }[viewMode];
 };

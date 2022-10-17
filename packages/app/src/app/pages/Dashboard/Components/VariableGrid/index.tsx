@@ -141,8 +141,10 @@ const ComponentForTypes: IComponentForTypes = {
     </Link>
   ),
   blank: () => <div />,
-  'default-skeleton': () => <DefaultSkeleton />,
-  'solid-skeleton': () => <SolidSkeleton />,
+  'default-skeleton': ({ item }) => (
+    <DefaultSkeleton viewMode={item.viewMode} />
+  ),
+  'solid-skeleton': ({ item }) => <SolidSkeleton viewMode={item.viewMode} />,
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
@@ -347,7 +349,10 @@ export const VariableGrid = ({
             }
           > = [];
           const blankItem = { type: 'blank' as const };
-          const skeletonItem = { type: getSkeletonForPage(page, path) };
+          const skeletonItem = {
+            type: getSkeletonForPage(page, path),
+            viewMode,
+          };
 
           items.forEach((item, index) => {
             if (

@@ -2,7 +2,7 @@ import React from 'react';
 import css from '@styled-system/css';
 
 import { Column, Grid, SkeletonText, Stack } from '@codesandbox/components';
-import { useAppState } from 'app/overmind';
+import { ViewMode } from '../../types';
 
 export const SolidCardSkeleton: React.FC = () => (
   <Stack
@@ -49,9 +49,9 @@ export const SolidListItemSkeleton: React.FC = () => (
   </Stack>
 );
 
-export const SolidSkeleton: React.FC = () => {
-  const { viewMode } = useAppState().dashboard;
-
+export const SolidSkeleton: React.FC<{ viewMode: ViewMode }> = ({
+  viewMode,
+}) => {
   return {
     list: <SolidListItemSkeleton />,
     grid: <SolidCardSkeleton />,
