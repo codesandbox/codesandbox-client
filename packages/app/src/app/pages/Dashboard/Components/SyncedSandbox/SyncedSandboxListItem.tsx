@@ -10,7 +10,7 @@ import {
 import { noop } from 'overmind';
 import css from '@styled-system/css';
 
-export const RepoListItem = ({
+export const SyncedSandboxListItem = ({
   name,
   path,
   // interactions
