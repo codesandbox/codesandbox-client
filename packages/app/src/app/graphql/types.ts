@@ -186,7 +186,7 @@ export type CurrentUser = {
   collections: Array<Collection>;
   deletionRequested: Scalars['Boolean'];
   email: Scalars['String'];
-  /** Get enabled feature flags for all teams user is in */
+  /** @deprecated Field no longer supported */
   featureFlags: Array<FeatureFlag>;
   /** Get all of the current user's GitHub organizations */
   githubOrganizations: Maybe<Array<GithubOrganization>>;
@@ -297,6 +297,7 @@ export type FeatureFlag = {
   enabled: Scalars['Boolean'];
   id: Scalars['UUID4'];
   name: Scalars['String'];
+  /** @deprecated Field no longer supported */
   teams: Array<Team>;
 };
 
@@ -596,9 +597,11 @@ export enum ProviderName {
 
 export type PullRequest = {
   __typename?: 'PullRequest';
+  baseRepository: Repository;
   creator: Maybe<User>;
   creatorUsername: Scalars['String'];
   draft: Scalars['Boolean'];
+  htmlUrl: Scalars['String'];
   number: Scalars['Int'];
   prClosedAt: Maybe<Scalars['DateTime']>;
   prCreatedAt: Maybe<Scalars['DateTime']>;
@@ -671,7 +674,7 @@ export type RootMutationType = {
   /** Create a collection */
   createCollection: Collection;
   createComment: Comment;
-  /** Create a feature flag */
+  /** @deprecated Field no longer supported */
   createFeatureFlag: FeatureFlag;
   /** Create or Update a private registry */
   createOrUpdatePrivateNpmRegistry: PrivateRegistry;
@@ -691,13 +694,13 @@ export type RootMutationType = {
   /** Delete sandboxes */
   deleteSandboxes: Array<Sandbox>;
   deleteWorkspace: Scalars['String'];
-  /** Disable a feature flag globally */
+  /** @deprecated Field no longer supported */
   disableFeatureFlag: FeatureFlag;
-  /** Disable a feature flag for a team */
+  /** @deprecated Field no longer supported */
   disableFeatureFlagForTeam: TeamsFeatureFlag;
-  /** Enable a feature flag globally */
+  /** @deprecated Field no longer supported */
   enableFeatureFlag: FeatureFlag;
-  /** Enable a feature flag for a team */
+  /** @deprecated Field no longer supported */
   enableFeatureFlagForTeam: TeamsFeatureFlag;
   /** Enable beta-access for team and all members */
   enableTeamBetaAccess: Team;
@@ -1163,7 +1166,7 @@ export type RootQueryType = {
   album: Maybe<Album>;
   albums: Array<Album>;
   curatedAlbums: Array<Album>;
-  /** Get all feature flags */
+  /** @deprecated Field no longer supported */
   featureFlags: Array<FeatureFlag>;
   /** Get git repo and related V1 sandboxes */
   git: Maybe<Git>;
@@ -1621,46 +1624,6 @@ export type ListPersonalTemplatesQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
-export type ListTemplatesQueryVariables = Exact<{
-  showAll: Maybe<Scalars['Boolean']>;
-}>;
-
-export type ListTemplatesQuery = { __typename?: 'RootQueryType' } & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      templates: Array<{ __typename?: 'Template' } & TemplateFragment>;
-      teams: Array<
-        { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
-            templates: Array<{ __typename?: 'Template' } & TemplateFragment>;
-          }
-      >;
-    }
-  >;
-};
-
-export type ListPersonalBookmarkedTemplatesQueryVariables = Exact<{
-  [key: string]: never;
-}>;
-
-export type ListPersonalBookmarkedTemplatesQuery = {
-  __typename?: 'RootQueryType';
-} & {
-  me: Maybe<
-    { __typename?: 'CurrentUser' } & {
-      teams: Array<
-        { __typename?: 'Team' } & Pick<Team, 'id' | 'name'> & {
-            bookmarkedTemplates: Array<
-              { __typename?: 'Template' } & TemplateFragment
-            >;
-          }
-      >;
-      bookmarkedTemplates: Array<
-        { __typename?: 'Template' } & TemplateFragment
-      >;
-    }
-  >;
-};
-
 export type GetGithubRepoQueryVariables = Exact<{
   owner: Scalars['String'];
   name: Scalars['String'];
@@ -1702,30 +1665,6 @@ export type GetGithubOrganizationsQuery = { __typename?: 'RootQueryType' } & {
         Array<{ __typename?: 'GithubOrganization' } & OrganizationFragment>
       >;
     }
-  >;
-};
-
-export type MakeSandboxesTemplateMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
-}>;
-
-export type MakeSandboxesTemplateMutation = {
-  __typename?: 'RootMutationType';
-} & {
-  makeSandboxesTemplates: Array<
-    { __typename?: 'Template' } & Pick<Template, 'id'>
-  >;
-};
-
-export type UnmakeSandboxesTemplateMutationVariables = Exact<{
-  sandboxIds: Array<Scalars['ID']>;
-}>;
-
-export type UnmakeSandboxesTemplateMutation = {
-  __typename?: 'RootMutationType';
-} & {
-  unmakeSandboxesTemplates: Array<
-    { __typename?: 'Template' } & Pick<Template, 'id'>
   >;
 };
 
@@ -2360,7 +2299,7 @@ export type ProjectFragment = { __typename?: 'Project' } & {
   branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
   repository: { __typename?: 'GitHubRepository' } & Pick<
     GitHubRepository,
-    'owner' | 'name'
+    'owner' | 'name' | 'defaultBranch'
   >;
 };
 
