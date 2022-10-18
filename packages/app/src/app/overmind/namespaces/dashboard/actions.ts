@@ -564,6 +564,7 @@ export const getTemplateSandboxes = async ({ state, effects }: Context) => {
 
 export const getStartPageSandboxes = async ({ state, effects }: Context) => {
   const { dashboard } = state;
+
   try {
     /**
      * For now we decided to NOT show the templates on the home page
@@ -573,11 +574,9 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
     const usedTemplates = await effects.gql.queries.listPersonalTemplates({
       teamId: state.activeTeam,
     });
-
     if (!usedTemplates || !usedTemplates.me) {
       return;
     }
-
     dashboard.sandboxes.TEMPLATE_HOME = usedTemplates.me.recentlyUsedTemplates.slice(
       0,
       5
@@ -601,6 +600,8 @@ export const getStartPageSandboxes = async ({ state, effects }: Context) => {
     dashboard.sandboxes.RECENT_BRANCHES =
       branchesResult?.me?.recentBranches || [];
   } catch (error) {
+    dashboard.sandboxes.RECENT_SANDBOXES = [];
+    dashboard.sandboxes.RECENT_BRANCHES = [];
     effects.notificationToast.error(
       'There was a problem getting your sandboxes'
     );
