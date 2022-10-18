@@ -5,18 +5,26 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppState, useActions } from 'app/overmind';
+import { useControls } from 'leva';
 
 export const SignInModal = () => {
   const { toggleSignInModal } = useActions();
   const { redirectOnLogin, signInModalOpen, user } = useAppState();
+  const [{ showSignInModal }, set] = useControls(() => ({
+    showSignInModal: false,
+  }));
 
   const closeModal = useCallback(
     event => {
       if (event.keyCode === ESC && signInModalOpen) {
         toggleSignInModal();
       }
+
+      if (event.keyCode === ESC && showSignInModal) {
+        set({ showSignInModal: false });
+      }
     },
-    [toggleSignInModal, signInModalOpen]
+    [toggleSignInModal, signInModalOpen, showSignInModal]
   );
 
   useEffect(() => {
@@ -24,7 +32,7 @@ export const SignInModal = () => {
     return () => document.removeEventListener('keydown', closeModal, false);
   }, [closeModal]);
 
-  if (!signInModalOpen || user) {
+  if (!showSignInModal && (!signInModalOpen || user)) {
     return null;
   }
 
