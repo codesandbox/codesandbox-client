@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from 'react';
+import React, { InputHTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { Stack } from '@codesandbox/components';
 import { Label } from './Label';
@@ -11,6 +11,7 @@ const StyledInput = styled.input`
   color: #e5e5e5;
   line-height: 24px;
   border: none;
+  border-radius: 2px;
 
   &:hover {
     box-shadow: 0 0 0 2px #e5e5e51a;
@@ -21,7 +22,7 @@ const StyledInput = styled.input`
   }
 `;
 
-interface InputTextProps extends HTMLAttributes<HTMLInputElement> {
+interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label: string;
   name: string;

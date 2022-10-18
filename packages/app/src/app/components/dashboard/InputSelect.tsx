@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from 'react';
+import React, { SelectHTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { Icon, Stack } from '@codesandbox/components';
 import { Label } from './Label';
@@ -19,6 +19,7 @@ const StyledSelect = styled.select`
   color: #e5e5e5;
   line-height: 24px;
   border: none;
+  border-radius: 2px;
 
   &:hover {
     box-shadow: 0 0 0 2px #e5e5e51a;
@@ -41,7 +42,7 @@ const DropdownIcon = styled.div`
   padding-right: 16px;
 `;
 
-interface InputSelectProps extends HTMLAttributes<HTMLSelectElement> {
+interface InputSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   id: string;
   label: string;
   name: string;
