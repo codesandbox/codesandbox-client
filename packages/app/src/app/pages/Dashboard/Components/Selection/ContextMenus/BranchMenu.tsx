@@ -75,7 +75,7 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
           })
         }
       >
-        Remove from CodeSandbox
+        Remove branch from CodeSandbox
       </MenuItem>
     </Menu.ContextMenu>
   );
