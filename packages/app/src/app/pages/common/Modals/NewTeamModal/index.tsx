@@ -11,7 +11,9 @@ type TeamStep = 'info' | 'members' | 'subscription';
 
 export const NewTeamModal: React.FC = () => {
   const actions = useActions();
-  const [currentStep, setCurrentStep] = React.useState<TeamStep>('info');
+  const [currentStep, setCurrentStep] = React.useState<TeamStep>(
+    'subscription'
+  );
 
   return (
     <Stack
