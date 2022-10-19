@@ -158,10 +158,6 @@ export const inputStyles = css`
   }
 `;
 
-export const StyledInput = styled.input`
-  ${inputStyles}
-`;
-
 // Select component places the content with a fixed padding if it has an icon
 // !important here will overule that setting since the new select is bigger
 export const StyledSelect = styled(Select)`

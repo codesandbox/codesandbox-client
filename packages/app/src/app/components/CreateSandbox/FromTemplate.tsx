@@ -10,8 +10,9 @@ import {
   Text,
 } from '@codesandbox/components';
 
-import { StyledInput, StyledSelect } from './elements';
+import { StyledSelect } from './elements';
 import { CreateSandboxParams } from './types';
+import { InputText } from '../dashboard/InputText';
 
 export interface FromTemplateProps {
   isV2: boolean;
@@ -76,15 +77,15 @@ export const FromTemplate: React.FC<FromTemplateProps> = ({
       >
         <Stack direction="vertical" gap={6}>
           <Stack direction="vertical" gap={2}>
-            <StyledInput
+            <InputText
               autoFocus
               id="sb-name"
+              name="sb-name"
               type="text"
-              aria-label="Sandbox name"
-              placeholder="Sandbox name"
+              label="Sandbox name"
               value={sandboxName}
               onChange={e => setSandboxName(e.target.value)}
-              aria-describedBy="name-desc"
+              aria-describedby="name-desc"
             />
             <Element
               as="span"
