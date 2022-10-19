@@ -62,7 +62,9 @@ export const InputSelect = ({
       <RelativeWrapper>
         <StyledSelect name={name} id={id} {...restProps}>
           {options.map(option => (
-            <option value={option.value}>{option.label}</option>
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
           ))}
         </StyledSelect>
         <DropdownIcon>
