@@ -1,15 +1,20 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAppState } from 'app/overmind';
-import { RepoCard } from './RepoCard';
-import { RepoListItem } from './RepoListItem';
+import { SyncedSandboxCard } from './SyncedSandboxCard';
+import { SyncedSandboxListItem } from './SyncedSandboxListItem';
 import { useSelection } from '../Selection';
 import { DashboardRepo } from '../../types';
 
-export const Repo = ({ name = '', path = null, ...props }: DashboardRepo) => {
+export const SyncedSandbox = ({
+  name = '',
+  path = null,
+  ...props
+}: DashboardRepo) => {
   const { dashboard } = useAppState();
 
-  const Component = dashboard.viewMode === 'list' ? RepoListItem : RepoCard;
+  const Component =
+    dashboard.viewMode === 'list' ? SyncedSandboxListItem : SyncedSandboxCard;
 
   // interactions
   const {

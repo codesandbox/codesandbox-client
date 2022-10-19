@@ -12,8 +12,8 @@ import track, {
 } from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
-import { SandboxCard, SkeletonCard } from './SandboxCard';
-import { SandboxListItem, SkeletonListItem } from './SandboxListItem';
+import { SandboxCard } from './SandboxCard';
+import { SandboxListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
 import { useSelection } from '../Selection';
 import { DashboardSandbox, DashboardTemplate, PageTypes } from '../../types';
@@ -337,18 +337,3 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 };
 
 export const Sandbox = GenericSandbox;
-
-export const SkeletonSandbox = () => {
-  const { dashboard } = useAppState();
-
-  const location = useLocation();
-
-  let viewMode;
-  if (location.pathname.includes('archive')) viewMode = 'list';
-  else viewMode = dashboard.viewMode;
-
-  if (viewMode === 'list') {
-    return <SkeletonListItem />;
-  }
-  return <SkeletonCard />;
-};

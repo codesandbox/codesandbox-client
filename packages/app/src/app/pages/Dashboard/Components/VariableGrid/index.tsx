@@ -1,15 +1,15 @@
 import React from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useParams } from 'react-router-dom';
 import { useAppState } from 'app/overmind';
 import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { Sandbox, SkeletonSandbox } from '../Sandbox';
+import { Sandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
-import { Repo } from '../Repo';
+import { SyncedSandbox } from '../SyncedSandbox';
 import { CommunitySandbox } from '../CommunitySandbox';
 import { EmptyScreen } from '../EmptyScreen';
 import {
@@ -37,6 +37,7 @@ import { Branch } from '../Branch';
 import { Repository } from '../Repository';
 import { NewBranchCard } from '../Branch/NewBranch';
 import { ImportRepositoryCard } from '../Repository/ImportRepository';
+import { DefaultSkeleton, SolidSkeleton } from '../Skeleton';
 
 export const GRID_MAX_WIDTH = 3840;
 export const MAX_COLUMN_COUNT = 10;
@@ -78,7 +79,8 @@ interface IComponentForTypes {
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
-  skeleton: React.FC<DecoratedItemProps<DashboardSkeleton>>;
+  'default-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
+  'solid-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
   branch: React.FC<DecoratedItemProps<DashboardBranch>>;
   'new-branch': React.FC<DecoratedItemProps<DashboardNewBranch>>;
@@ -103,7 +105,9 @@ const ComponentForTypes: IComponentForTypes = {
     />
   )),
   folder: props => <Folder key={props.item.name} {...props.item} />,
-  repo: props => <Repo {...props.item} isScrolling={props.isScrolling} />,
+  repo: props => (
+    <SyncedSandbox {...props.item} isScrolling={props.isScrolling} />
+  ),
   'new-folder': props => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
   'new-master-branch': props => <NewMasterSandbox {...props.item} />,
@@ -137,7 +141,10 @@ const ComponentForTypes: IComponentForTypes = {
     </Link>
   ),
   blank: () => <div />,
-  skeleton: () => <SkeletonSandbox />,
+  'default-skeleton': ({ item }) => (
+    <DefaultSkeleton viewMode={item.viewMode} />
+  ),
+  'solid-skeleton': ({ item }) => <SolidSkeleton viewMode={item.viewMode} />,
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
   )),
@@ -147,6 +154,17 @@ const ComponentForTypes: IComponentForTypes = {
     <NewBranchCard owner={item.repo.owner} repoName={item.repo.name} />
   ),
   'import-repository': () => <ImportRepositoryCard />,
+};
+
+const getSkeletonForPage = (
+  page: PageTypes,
+  path: string
+): DashboardSkeleton['type'] => {
+  if ((page === 'synced-sandboxes' || page === 'repositories') && !path) {
+    return 'solid-skeleton';
+  }
+
+  return 'default-skeleton';
 };
 
 const Item = React.memo(
@@ -236,6 +254,8 @@ export const VariableGrid = ({
 }: VariableGridProps) => {
   const { dashboard } = useAppState();
   const location = useLocation();
+  const params = useParams<{ path: string }>();
+  const path = params.path ?? '';
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('archive')) viewMode = 'list';
@@ -328,8 +348,11 @@ export const VariableGrid = ({
               viewMode?: 'list' | 'grid';
             }
           > = [];
-          const blankItem = { type: 'blank' as 'blank' };
-          const skeletonItem = { type: 'skeleton' as 'skeleton' };
+          const blankItem = { type: 'blank' as const };
+          const skeletonItem = {
+            type: getSkeletonForPage(page, path),
+            viewMode,
+          };
 
           items.forEach((item, index) => {
             if (
