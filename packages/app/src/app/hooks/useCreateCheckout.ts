@@ -34,7 +34,7 @@ export const useCreateCheckout = (): [
     } catch (err) {
       setStatus({
         status: 'error',
-        error: err?.message ?? 'Failed to create checkout link.',
+        error: err?.message ?? 'Failed to create checkout link',
       });
     }
   };

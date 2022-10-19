@@ -5,6 +5,8 @@ import { Button, Icon, Stack, Text } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { formatCurrency } from 'app/utils/currency';
+import { useCreateCheckout } from 'app/hooks';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 
 type Feature = {
   key: string;
@@ -41,16 +43,28 @@ const pricingLabel = (
 };
 
 export const TeamSubscription: React.FC = () => {
-  const { activeTeamInfo, pro } = useAppState();
-  const actions = useActions();
+  const { activeTeamInfo, user, pro } = useAppState();
+  const {
+    pro: { pageMounted },
+    modalClosed,
+  } = useActions();
+  const [checkout, createCheckout] = useCreateCheckout();
 
   React.useEffect(() => {
-    actions.pro.getPrices();
-  }, []);
+    pageMounted();
+  }, [pageMounted]);
 
   // Only teams that never had a subscription are elligible for
   // the 14-day free trial.
   const isElligibleForTrial = activeTeamInfo.subscription === null;
+  const usersPermission = activeTeamInfo?.userAuthorizations.find(item => {
+    return item.userId === user.id;
+  });
+  const isAdmin =
+    usersPermission?.authorization === TeamMemberAuthorization.Admin;
+
+  const checkoutBtnDisabled =
+    !isElligibleForTrial || !isAdmin || checkout.status === 'loading';
 
   return (
     <Stack
@@ -128,16 +142,36 @@ export const TeamSubscription: React.FC = () => {
           ))}
         </Stack>
         <Stack css={{ width: '100%' }} direction="vertical" gap={4}>
-          <Button
-            css={css({
-              height: '32px',
-            })}
-          >
-            {isElligibleForTrial
-              ? 'Start 14 day free trial'
-              : 'Proceed to checkout'}
-          </Button>
-          <Button onClick={() => actions.modalClosed()} variant="link">
+          <Stack direction="vertical" align="center" gap={1}>
+            <Button
+              css={css({
+                height: '32px',
+              })}
+              onClick={() => {
+                if (checkoutBtnDisabled) {
+                  return;
+                }
+
+                createCheckout({
+                  team_id: activeTeamInfo.id,
+                  recurring_interval: 'month' as string,
+                });
+              }}
+              loading={checkout.status === 'loading'}
+              disabled={checkoutBtnDisabled}
+              type="button"
+            >
+              {isElligibleForTrial
+                ? 'Start 14 day free trial'
+                : 'Proceed to checkout'}
+            </Button>
+            {checkout.status === 'error' && (
+              <Text variant="danger" size={2}>
+                {checkout.error}. Please try again.
+              </Text>
+            )}
+          </Stack>
+          <Button onClick={modalClosed} variant="link">
             Continue with free plan
           </Button>
         </Stack>
