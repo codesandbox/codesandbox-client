@@ -3,13 +3,7 @@ import { Element, ThemeProvider } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const Wrapper = ({
-  children,
-  oneCol,
-}: {
-  children: React.ReactNode;
-  oneCol?: boolean;
-}) => (
+export const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <ThemeProvider>
     <AnimatePresence>
       <motion.div
@@ -24,20 +18,11 @@ export const Wrapper = ({
             boxSizing: 'border-box',
             boxShadow: '2',
             borderRadius: '4px',
-            boxSixing: 'border-box',
 
             color: '#D6D6D6',
-            textAlign: 'center',
 
             overflow: 'hidden',
             margin: 'auto',
-            paddingY: 4,
-
-            '@media screen and (min-width: 768px)': {
-              // height: 400,
-              width: 600,
-              maxWidth: '80vw',
-            },
           })}
         >
           {children}

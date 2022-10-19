@@ -121,18 +121,20 @@ export const SignInModalElement = ({
 
   if (duplicateAccountStatus) {
     return (
-      <Wrapper oneCol>
+      <Wrapper>
         <DuplicateAccount provider={duplicateAccountStatus.provider} />
       </Wrapper>
     );
   }
 
-  if (pendingUser) {
-    return (
-      <Wrapper oneCol>
-        <UserNameSelection />
-      </Wrapper>
-    );
+  /**
+   * 🚧 Utility to debug Trial Onboarding Questions
+   */
+  const TOQ_DEBUG = window.localStorage.getItem('TOQ_DEBUG') === 'ENABLED';
+
+  // 🚧 Remove || TOQ_DEBUG
+  if (pendingUser || TOQ_DEBUG) {
+    return <UserNameSelection />;
   }
 
   return (
