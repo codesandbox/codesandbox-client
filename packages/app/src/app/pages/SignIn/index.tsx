@@ -17,7 +17,13 @@ export const SignIn = () => {
     genericPageMounted();
   }, [genericPageMounted]);
 
-  if (state.hasLogIn && !redirectTo) {
+  /**
+   * 🚧 Utility to debug Trial Onboarding Questions
+   */
+  const TOQ_DEBUG = window.localStorage.getItem('TOQ_DEBUG') === 'ENABLED';
+
+  // 🚧 Remove && !TOQ_DEBUG
+  if (state.hasLogIn && !redirectTo && !TOQ_DEBUG) {
     return <Redirect to={dashboardUrl()} />;
   }
 
@@ -37,10 +43,13 @@ export const SignIn = () => {
             width: '100vw',
             height: '100%',
             marginBottom: 100,
+            padding: '16px',
           })}
           align="center"
           justify="center"
         >
+          {/* TODO: Maybe we should work with routes and redirects here instead of a modal  */}
+          {/* https://v5.reactrouter.com/web/guides/philosophy/nested-routes */}
           <SignInModalElement redirectTo={redirectTo} />
         </Stack>
       </Element>
