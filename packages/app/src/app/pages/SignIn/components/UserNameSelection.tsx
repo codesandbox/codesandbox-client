@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Element, Text, Stack, Button } from '@codesandbox/components';
+import { Element, Text, Stack } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import { InputText } from 'app/components/dashboard/InputText';
 import { InputSelect } from 'app/components/dashboard/InputSelect';
+import { Button } from 'app/components/dashboard/Button';
 
 const roleOptions = [
   { value: 'frontend', label: 'Frontend developer' },
@@ -25,15 +26,7 @@ const usageOptions = [
 ];
 
 export const UserNameSelection = () => {
-  // const { pendingUser } = useAppState();
-  const pendingUser = {
-    avatarUrl: 'https://avatars.githubusercontent.com/u/7533849?v=4',
-    username: 'tristandubbeld',
-    name: 'Tristan Dubbeld',
-    id: 'id',
-    valid: true,
-  };
-
+  const { pendingUser } = useAppState();
   const { validateUsername, finalizeSignUp } = useActions();
   const [newUsername, setNewUsername] = useState(pendingUser?.username || '');
   const [newDisplayName, setNewDisplayName] = useState(pendingUser?.name || '');
@@ -41,7 +34,11 @@ export const UserNameSelection = () => {
   const firstName = pendingUser?.name.split(' ')[0];
 
   return (
-    <Stack direction="vertical" gap={4}>
+    <Stack
+      direction="vertical"
+      gap={4}
+      css={{ width: '100%', maxWidth: '370px' }}
+    >
       <Stack direction="vertical" gap={6} align="center">
         <Element
           as="img"
@@ -57,7 +54,9 @@ export const UserNameSelection = () => {
           as="h1"
           size={32}
           weight="500"
+          align="center"
           css={{
+            margin: 0,
             color: '#ffffff',
             fontFamily: 'Everett, sans-serif',
             lineHeight: '42px',
@@ -70,55 +69,56 @@ export const UserNameSelection = () => {
       <Stack
         as="form"
         direction="vertical"
-        gap={4}
+        gap={6}
         onSubmit={e => {
           e.preventDefault();
           finalizeSignUp({ username: newUsername, name: newDisplayName });
         }}
       >
-        <InputText
-          id="username"
-          name="username"
-          label="Username"
-          // TODO: Instead of onBlur we can debounce onchange
-          onBlur={async e => {
-            setLoadingUserName(true);
-            await validateUsername(e.target.value);
-            setLoadingUserName(false);
-          }}
-          value={newUsername}
-          onChange={e => setNewUsername(e.target.value)}
-        />
+        <Stack direction="vertical" gap={4}>
+          <InputText
+            id="username"
+            name="username"
+            label="Username"
+            // TODO: Instead of onBlur we can debounce onchange
+            onBlur={async e => {
+              setLoadingUserName(true);
+              await validateUsername(e.target.value);
+              setLoadingUserName(false);
+            }}
+            value={newUsername}
+            onChange={e => setNewUsername(e.target.value)}
+          />
 
-        <InputText
-          id="displayname"
-          name="displayname"
-          label="Display name"
-          value={newDisplayName}
-          onChange={e => setNewDisplayName(e.target.value)}
-        />
+          <InputText
+            id="displayname"
+            name="displayname"
+            label="Display name"
+            value={newDisplayName}
+            onChange={e => setNewDisplayName(e.target.value)}
+          />
 
-        <InputSelect
-          id="role"
-          name="role"
-          label="What best describes your role?"
-          options={roleOptions}
-        />
+          <InputSelect
+            id="role"
+            name="role"
+            label="What best describes your role?"
+            options={roleOptions}
+          />
 
-        <InputSelect
-          id="usage"
-          name="usage"
-          label="How do you plan to use CodeSandbox?"
-          options={usageOptions}
-        />
+          <InputSelect
+            id="usage"
+            name="usage"
+            label="How do you plan to use CodeSandbox?"
+            options={usageOptions}
+          />
 
-        {/* TODO: Move this to the username InputText */}
-        {!pendingUser.valid ? (
-          <Text size={3} variant="danger">
-            Sorry, that username is already taken.
-          </Text>
-        ) : null}
-
+          {/* TODO: Move this to the username InputText */}
+          {!pendingUser.valid ? (
+            <Text size={3} variant="danger">
+              Sorry, that username is already taken.
+            </Text>
+          ) : null}
+        </Stack>
         <Button type="submit" disabled={loadingUsername || !pendingUser.valid}>
           {loadingUsername ? 'Checking username...' : 'Create account'}
         </Button>
