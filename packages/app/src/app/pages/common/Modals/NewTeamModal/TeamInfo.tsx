@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useActions, useAppState } from 'app/overmind';
-import { Stack, Text, Input, Button, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { Stack, Text, Input, Button, Link } from '@codesandbox/components';
 
-export const TeamInfo: React.FC<{ onTeamCreation: () => void }> = ({
-  onTeamCreation,
+export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
+  onComplete,
 }) => {
   const { dashboard } = useAppState();
   const actions = useActions();
@@ -24,7 +24,7 @@ export const TeamInfo: React.FC<{ onTeamCreation: () => void }> = ({
           pilot: location.search.includes('pilot'),
         });
         setLoading(false);
-        onTeamCreation();
+        onComplete();
       } catch {
         setLoading(false);
       }
@@ -45,20 +45,8 @@ export const TeamInfo: React.FC<{ onTeamCreation: () => void }> = ({
   const error = Boolean(dashboard.teams.find(team => team.name === name));
 
   return (
-    <Stack
-      css={css({
-        alignItems: 'center',
-      })}
-      direction="vertical"
-      gap={5}
-    >
-      <Stack
-        css={css({
-          alignItems: 'center',
-        })}
-        direction="vertical"
-        gap={2}
-      >
+    <Stack align="center" direction="vertical" gap={5}>
+      <Stack align="center" direction="vertical" gap={2}>
         <Text
           as="h2"
           css={css({

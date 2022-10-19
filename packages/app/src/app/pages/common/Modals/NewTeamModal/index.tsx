@@ -25,9 +25,9 @@ export const NewTeamModal: React.FC = () => {
       <Stack
         css={css({
           padding: 6,
-          justifyContent: 'space-between',
-          alignItems: 'center',
         })}
+        align="center"
+        justify="space-between"
       >
         <Text
           css={css({
@@ -48,14 +48,14 @@ export const NewTeamModal: React.FC = () => {
       <Stack
         css={css({
           flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
         })}
+        align="center"
         direction="vertical"
+        justify="center"
       >
         {
           {
-            info: <TeamInfo onTeamCreation={() => setCurrentStep('members')} />,
+            info: <TeamInfo onComplete={() => setCurrentStep('members')} />,
             members: (
               <TeamMembers onComplete={() => setCurrentStep('subscription')} />
             ),
