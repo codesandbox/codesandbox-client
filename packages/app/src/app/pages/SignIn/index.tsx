@@ -47,8 +47,6 @@ export const SignInPage = () => {
           align="center"
           justify="center"
         >
-          {/* TODO: Maybe we should work with routes and redirects here instead of a modal  */}
-          {/* https://v5.reactrouter.com/web/guides/philosophy/nested-routes */}
           <SignIn redirectTo={redirectTo} />
         </Stack>
       </Element>
