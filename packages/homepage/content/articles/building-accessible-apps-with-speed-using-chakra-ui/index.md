@@ -1,6 +1,6 @@
 ---
 banner: ./images/building-accessible-apps-with-speed-using-chakra-ui.png
-slug: introducing-the-codesandbox-github-app
+slug: building-accessible-apps-with-speed-using-chakra-ui
 authors: ['Filipe Lima']
 photo: https://avatars.githubusercontent.com/u/45261568?v=4
 title: Building accessible apps with speed using Chakra UI
