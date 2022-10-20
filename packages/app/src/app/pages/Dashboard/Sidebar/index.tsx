@@ -186,6 +186,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
             icon="clock"
             style={{ marginTop: 8 }}
           />
+          <RowItem
+            name="Discover"
+            page="discover"
+            path={dashboardUrls.discover(activeTeam)}
+            icon="discover"
+          />
+          {activeTeam === personalWorkspaceId && (
+            <RowItem
+              name="Shared With Me"
+              page="shared"
+              path={dashboardUrls.shared(activeTeam)}
+              icon="sharing"
+            />
+          )}
+          {activeTeam === personalWorkspaceId && (
+            <RowItem
+              name="Likes"
+              page="liked"
+              path={dashboardUrls.liked(activeTeam)}
+              icon="heart"
+            />
+          )}
           <Element marginTop={4} />
           <Element paddingX={7} paddingY={2}>
             <Text
@@ -284,36 +306,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.archive(activeTeam)}
             icon="archive"
           />
-          <Element
-            marginTop={8}
-            css={{
-              flex: 1, // This pushes the bottom links all the way down
-            }}
-          />
-          <RowItem
-            name="Discover"
-            page="discover"
-            path={dashboardUrls.discover(activeTeam)}
-            icon="discover"
-          />
-          <RowItem
-            name="Shared With Me"
-            page="shared"
-            path={dashboardUrls.shared(activeTeam)}
-            icon="sharing"
-          />
-          <RowItem
-            name="Likes"
-            page="liked"
-            path={dashboardUrls.liked(activeTeam)}
-            icon="heart"
-          />
-          <RowItem
-            name="Documentation"
-            page="external"
-            path="https://codesandbox.io/docs"
-            icon="documentation"
-          />
+          <Element marginTop={4} />
         </List>
       </Stack>
       <AnimatePresence>

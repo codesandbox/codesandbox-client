@@ -163,16 +163,7 @@ export const getTeams = async ({ state, effects }: Context) => {
     return;
   }
 
-  state.dashboard.teams = teams.me.workspaces.map(team => {
-    if (team.id === teams.me.personalWorkspaceId) {
-      return {
-        ...team,
-        name: 'Personal',
-      };
-    }
-
-    return team;
-  });
+  state.dashboard.teams = teams.me.workspaces;
   state.personalWorkspaceId = teams.me.personalWorkspaceId;
 };
 

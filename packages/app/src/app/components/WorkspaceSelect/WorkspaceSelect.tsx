@@ -63,7 +63,9 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   size={16}
                   maxWidth={activeTeamInfo.subscription ? 172 : 132}
                 >
-                  {activeTeamInfo.name}
+                  {activeTeamInfo.id === personalWorkspace.id
+                    ? 'Personal'
+                    : activeTeamInfo.name}
                 </Text>
 
                 {!activeTeamInfo.subscription && (
@@ -102,7 +104,9 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   />
                   <Stack align="center" gap={1}>
                     <Text css={{ width: '100%' }} size={3}>
-                      {team.name}
+                      {team.id === personalWorkspace.id
+                        ? 'Personal'
+                        : team.name}
                     </Text>
 
                     {!team.subscription && <Badge color="accent">Free</Badge>}
