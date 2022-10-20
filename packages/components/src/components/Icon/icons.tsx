@@ -1170,3 +1170,19 @@ export const grid = props => (
     </g>
   </Element>
 );
+
+export const npm = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M0 11.875h2V8.312h1v3.563h1v-4.75H0v4.75Zm5-4.75v5.938h2v-1.188h2v-4.75H5Zm3 3.563H7V8.312h1v2.376Zm2 1.187v-4.75h6v4.75h-1V8.312h-1v3.563h-1V8.312h-1v3.563h-2Z"
+      fill="currentColor"
+    />
+  </Element>
+);

@@ -15,11 +15,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation, useHistory } from 'react-router-dom';
 import { formatCurrency } from 'app/utils/currency';
-import {
-  useCreateCheckout,
-  useCreateCustomerPortal,
-  Interval,
-} from './upgrade/utils';
+import { useCreateCheckout } from 'app/hooks';
+import { useCreateCustomerPortal, Interval } from './upgrade/utils';
 import {
   UpgradeButton,
   Caption,
@@ -54,7 +51,7 @@ export const ProUpgrade = () => {
   const location = useLocation();
   const history = useHistory();
 
-  const [loadingCheckout, createCheckout] = useCreateCheckout();
+  const [checkout, createCheckout] = useCreateCheckout();
   const [loadingCustomerPortal, createCustomerPortal] = useCreateCustomerPortal(
     activeTeam
   );
@@ -225,7 +222,7 @@ export const ProUpgrade = () => {
             padding: '24px 1em',
           })}
         >
-          <Element css={{ width: '100%', paddingTop:'24px' }}>
+          <Element css={{ width: '100%', paddingTop: '24px' }}>
             <Switcher
               workspaceType={workspaceType}
               workspaces={workspacesList}
@@ -366,15 +363,19 @@ export const ProUpgrade = () => {
                   )}
                 </AnimatePresence>
 
-                <Stack direction="horizontal" css={{ marginTop: 24 }}>
-                  <Element
-                    css={{
-                      flex: 1,
-                      display: 'none',
-                      '@media (min-width: 720px)': { display: 'block' },
-                    }}
-                  />
+                <Stack
+                  direction="vertical"
+                  css={{
+                    width: '100%',
+                    marginTop: 24,
+                    alignItems: 'flex-start',
 
+                    '@media screen and (min-width: 720px)': {
+                      alignItems: 'flex-end',
+                    },
+                  }}
+                  gap={1}
+                >
                   <UpgradeButton
                     planType={workspaceType}
                     type="button"
@@ -384,10 +385,19 @@ export const ProUpgrade = () => {
                         recurring_interval: interval as string,
                       })
                     }
-                    disabled={!isAdmin || isPro || loadingCheckout}
+                    disabled={
+                      !isAdmin || isPro || checkout.status === 'loading'
+                    }
                   >
-                    {loadingCheckout ? 'Loading...' : 'Proceed to checkout'}
+                    {checkout.status === 'loading'
+                      ? 'Loading...'
+                      : 'Proceed to checkout'}
                   </UpgradeButton>
+                  {checkout.status === 'error' && (
+                    <Text variant="danger">
+                      {checkout.error}. Please try again.
+                    </Text>
+                  )}
                 </Stack>
 
                 <Summary>
