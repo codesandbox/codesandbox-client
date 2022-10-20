@@ -51,31 +51,13 @@ export const SignInModalElement = ({
     }
   }, [getPendingUser, pendingUserId]);
 
-  const handleSignIn = async () => {
-    setLoadingAuth('github');
-    await signInButtonClicked({ provider: 'github', useExtraScopes: false });
+  const handleSignIn = async (provider: 'github' | 'google' | 'apple') => {
+    setLoadingAuth(provider);
 
-    if (onSignIn) {
-      return onSignIn();
-    }
-
-    if (redirectTo) {
-      if (redirectTo.startsWith('https')) {
-        window.location.replace(redirectTo);
-
-        return null;
-      }
-
-      return history.push(redirectTo.replace(location.origin, ''));
-    }
-    setLoadingAuth('github');
-
-    return null;
-  };
-
-  const handleGoogleSignIn = async () => {
-    setLoadingAuth('google');
-    await signInButtonClicked({ provider: 'google' });
+    await signInButtonClicked({
+      provider,
+      useExtraScopes: provider === 'github' ? false : undefined,
+    });
 
     if (onSignIn) {
       return onSignIn();
@@ -91,32 +73,7 @@ export const SignInModalElement = ({
       return history.push(redirectTo.replace(location.origin, ''));
     }
 
-    setLoadingAuth('google');
-
-    return null;
-  };
-
-  const handleAppleSignIn = async () => {
-    setLoadingAuth('apple');
-    await signInButtonClicked({ provider: 'apple' });
-
-    if (onSignIn) {
-      return onSignIn();
-    }
-
-    if (redirectTo) {
-      if (redirectTo.startsWith('https')) {
-        window.location.replace(redirectTo);
-
-        return null;
-      }
-
-      return history.push(redirectTo.replace(location.origin, ''));
-    }
-
-    setLoadingAuth('apple');
-
-    return null;
+    setLoadingAuth(provider);
   };
 
   if (duplicateAccountStatus) {
@@ -176,7 +133,10 @@ export const SignInModalElement = ({
         >
           Create, share, and get feedback with collaborative code.
         </Text>
-        <Button loading={loadingAuth.github} onClick={handleSignIn}>
+        <Button
+          loading={loadingAuth.github}
+          onClick={() => handleSignIn('github')}
+        >
           <GitHubIcon />
           <Element>Sign in with GitHub</Element>
         </Button>
@@ -185,7 +145,6 @@ export const SignInModalElement = ({
           size={3}
           css={{
             fontSize: 13,
-
             margin: 0,
           }}
           block
@@ -194,7 +153,7 @@ export const SignInModalElement = ({
         </Text>
         <Button
           loading={loadingAuth.google}
-          onClick={handleGoogleSignIn}
+          onClick={() => handleSignIn('google')}
           secondary
         >
           <GoogleIcon />
@@ -202,7 +161,7 @@ export const SignInModalElement = ({
         </Button>
         <Button
           loading={loadingAuth.apple}
-          onClick={handleAppleSignIn}
+          onClick={() => handleSignIn('apple')}
           secondary
         >
           <AppleIcon />
