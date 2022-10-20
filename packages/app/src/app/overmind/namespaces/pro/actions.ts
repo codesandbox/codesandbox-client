@@ -3,6 +3,14 @@ import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { Step, Plan, PaymentSummary, PaymentPreview } from './types';
 
+export const getPrices = async ({ state, effects }: Context) => {
+  try {
+    state.pro.prices = await effects.api.prices();
+  } catch (err) {
+    // Fail silently.
+  }
+};
+
 export const pageMounted = withLoadApp(async ({ effects, state, actions }) => {
   state.pro.prices = await effects.api.prices();
 
