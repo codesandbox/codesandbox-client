@@ -25,7 +25,7 @@ const usageOptions = [
   { value: 'other', label: 'Other' },
 ];
 
-export const UserNameSelection = () => {
+export const Onboarding = () => {
   /**
    * 🚧 Utility to debug Trial Onboarding Questions
    */
@@ -58,7 +58,12 @@ export const UserNameSelection = () => {
     <Stack
       direction="vertical"
       gap={4}
-      css={{ width: '100%', maxWidth: '370px' }}
+      css={{
+        width: '100%',
+        maxWidth: '370px',
+        alignSelf: 'center',
+        paddingBottom: '24px',
+      }}
     >
       <Stack direction="vertical" gap={6} align="center">
         <Element

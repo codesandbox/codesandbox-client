@@ -1,6 +1,6 @@
 import React from 'react';
-import { Element, ThemeProvider } from '@codesandbox/components';
 import { css } from '@styled-system/css';
+import { Element, ThemeProvider } from '@codesandbox/components';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const Wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -13,16 +13,16 @@ export const Wrapper = ({ children }: { children: React.ReactNode }) => (
       >
         <Element
           css={css({
-            backgroundColor: '#1D1D1D',
-
             boxSizing: 'border-box',
-            boxShadow: '2',
+            backgroundColor: '#1D1D1D',
             borderRadius: '4px',
-
-            color: '#D6D6D6',
-
             overflow: 'hidden',
             margin: 'auto',
+            padding: '24px',
+            width: '100%',
+
+            // With tokens
+            boxShadow: '2',
           })}
         >
           {children}

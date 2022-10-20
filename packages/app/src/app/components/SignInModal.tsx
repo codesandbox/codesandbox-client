@@ -47,6 +47,13 @@ export const SignInModal = () => {
               bottom: 0,
               zIndex: 9999,
               background: 'rgba(0, 0, 0, 0.75)',
+
+              // OutsideClickHandler styles
+              // can't use styled(OutsideClickHandler)
+              '> div': {
+                flexGrow: 1,
+                maxWidth: '720px',
+              },
             }}
           >
             <OutsideClickHandler onOutsideClick={toggleSignInModal}>
