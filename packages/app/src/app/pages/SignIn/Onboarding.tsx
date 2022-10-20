@@ -129,6 +129,7 @@ export const Onboarding = () => {
             name="role"
             label="What best describes your role?"
             options={roleOptions}
+            placeholder="Please select an option"
           />
 
           <InputSelect
@@ -136,6 +137,7 @@ export const Onboarding = () => {
             name="usage"
             label="How do you plan to use CodeSandbox?"
             options={usageOptions}
+            placeholder="Please select an option"
           />
 
           {/* TODO: Move this to the username InputText */}

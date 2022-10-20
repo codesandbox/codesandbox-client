@@ -54,13 +54,29 @@ export const InputSelect = ({
   label,
   name,
   options,
+  placeholder,
   ...restProps
 }: InputSelectProps) => {
   return (
     <Stack gap={2} direction="vertical">
       <Label htmlFor={id}>{label}</Label>
       <RelativeWrapper>
-        <StyledSelect name={name} id={id} {...restProps}>
+        <StyledSelect
+          name={name}
+          id={id}
+          /**
+           * When a placeholder is set it should use it as a default value. Unless it has a value
+           * prop, but we need TODO implement that later.
+           */
+          defaultValue={placeholder ? '' : undefined}
+          {...restProps}
+        >
+          {placeholder ? (
+            <option value="" disabled>
+              {placeholder}
+            </option>
+          ) : null}
+
           {options.map(option => (
             <option key={option.value} value={option.value}>
               {option.label}
