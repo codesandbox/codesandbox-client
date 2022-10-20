@@ -23,7 +23,6 @@ import {
   Input,
   IconNames,
 } from '@codesandbox/components';
-import styled from 'styled-components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
@@ -287,9 +286,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
           <Element
             marginTop={8}
-            css={css({
+            css={{
               flex: 1, // This pushes the bottom links all the way down
-            })}
+            }}
           />
           <RowItem
             name="Discover"
@@ -363,23 +362,6 @@ const linkStyles = {
   flexShrink: 0,
 };
 
-const Badge = styled.p`
-  border-radius: 2px;
-  background-color: ${({ theme }) => theme.colors.blues[700]};
-  color: ${({ theme }) => theme.colors.white};
-
-  width: ${({ theme }) => theme.sizes[7]}px;
-  height: ${({ theme }) => theme.sizes[3]}px;
-
-  text-align: center;
-  line-height: 1.3;
-  font-size: ${({ theme }) => theme.fontSizes[1]}px;
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-
-  position: relative;
-  top: 1px; // 👌
-`;
-
 const canNotAcceptSandboxes: PageTypes[] = ['recent', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
   'recent',
@@ -442,7 +424,6 @@ interface RowItemProps {
   setFoldersVisibility?: (val: boolean) => void;
   folderPath?: string;
   style?: React.CSSProperties;
-  badge?: boolean;
   nestingLevel?: number;
 }
 const RowItem: React.FC<RowItemProps> = ({
@@ -453,7 +434,6 @@ const RowItem: React.FC<RowItemProps> = ({
   page,
   icon,
   setFoldersVisibility = null,
-  badge,
   ...props
 }) => {
   const accepts: Array<'sandbox' | 'folder' | 'template'> = [];
@@ -576,23 +556,13 @@ const RowItem: React.FC<RowItemProps> = ({
         >
           <Stack
             as="span"
-            css={css({ width: 10 })}
+            css={{ width: '40px' }}
             align="center"
             justify="center"
           >
             <Icon name={icon} />
           </Stack>
           {name}
-          {badge && (
-            <Stack
-              as="span"
-              css={css({ width: 10 })}
-              align="center"
-              justify="center"
-            >
-              <Badge>New</Badge>
-            </Stack>
-          )}
 
           {isPageWithNotification && !isNotificationDismissed ? (
             <Element
@@ -858,7 +828,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 marginRight: '8px',
               }}
             >
-              <Icon name="folder" size={16} css={css({ flexShrink: 0 })} />
+              <Icon name="folder" size={16} />
             </Stack>
 
             {isRenaming || isNewFolder ? (
@@ -871,7 +841,6 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                   onChange={onChange}
                   onKeyDown={onInputKeyDown}
                   onBlur={onInputBlur}
-                  css={css({ fontSize: 4 })}
                 />
               </form>
             ) : (
