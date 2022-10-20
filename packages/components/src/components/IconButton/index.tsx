@@ -14,6 +14,8 @@ type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: number;
   /** Variant - square or round */
   variant?: 'square' | 'round';
+  /** Not ideal, but should work when we move to prism */
+  as?: any;
 };
 
 export const IconButton: React.FC<IconButtonProps> = ({

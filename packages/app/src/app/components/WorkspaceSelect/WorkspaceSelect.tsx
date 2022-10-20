@@ -2,27 +2,19 @@ import React from 'react';
 import { useActions, useAppState } from 'app/overmind';
 import { Text, Menu, Stack, Icon, Tooltip } from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
-import css from '@styled-system/css';
 import { TeamAvatar } from 'app/components/TeamAvatar';
-import { SubscriptionType } from 'app/graphql/types';
-import { MenuItem, Badge } from './elements';
-
-type Team = {
-  id: string;
-  name: string;
-  avatarUrl: string | null;
-};
+import { Badge } from 'app/components/Badge';
+import { MenuItem } from './elements';
 
 interface WorkspaceSelectProps {
-  activeAccount: Team;
   disabled?: boolean;
-  onSelect: (account: Team) => void;
+  onSelect: (teamId: string) => void;
 }
 
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
-  ({ activeAccount, disabled, onSelect }) => {
+  ({ disabled, onSelect }) => {
     const state = useAppState();
-    const { dashboard, user } = state;
+    const { dashboard, user, activeTeamInfo } = state;
     const { openCreateTeamModal } = useActions();
 
     if (!dashboard.teams || !state.personalWorkspaceId) return null;
@@ -47,46 +39,48 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             : null
         }
       >
-        <Stack css={css({ width: '100%', height: '100%' })}>
+        <Stack css={{ flex: 1, height: '100%' }}>
           <Menu>
             <Stack
               as={Menu.Button}
               disabled={disabled}
               justify="space-between"
               align="center"
-              css={css({
+              css={{
                 width: '100%',
                 height: '100%',
                 marginLeft: 0,
+                cursor: 'default',
+                color: '#C2C2C2',
+                borderRadius: '2px 0 0 2px',
                 '&:hover': {
-                  backgroundColor: 'grays.600',
+                  backgroundColor: '#242424',
                 },
-              })}
+              }}
             >
-              <Stack gap={2} as="span" align="center">
-                <Stack as="span" align="center" justify="center">
-                  <TeamAvatar
-                    avatar={
-                      state.activeTeamInfo?.avatarUrl || activeAccount.avatarUrl
-                    }
-                    name={activeAccount.name}
-                  />
-                </Stack>
-                <Text size={14} weight="normal" maxWidth={140}>
-                  {activeAccount.name}
+              <Stack align="center" gap={1} css={{ paddingRight: 4 }}>
+                <Text
+                  size={16}
+                  maxWidth={activeTeamInfo.subscription ? 172 : 132}
+                >
+                  {activeTeamInfo.name}
                 </Text>
+
+                {!activeTeamInfo.subscription && (
+                  <Badge color="accent">Free</Badge>
+                )}
               </Stack>
 
               <Icon name="chevronDown" size={8} />
             </Stack>
 
             <Menu.List
-              css={css({
+              css={{
                 width: '100%',
                 marginTop: -2,
-                backgroundColor: 'grays.600',
-              })}
-              style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
+                backgroundColor: '#242424',
+                borderColor: '#343434',
+              }}
             >
               {workspaces.map(team => (
                 <MenuItem
@@ -94,13 +88,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   key={team.id}
                   align="center"
                   gap={2}
-                  onSelect={() =>
-                    onSelect({
-                      name: team.name,
-                      id: team.id,
-                      avatarUrl: team.avatarUrl,
-                    })
-                  }
+                  onSelect={() => onSelect(team.id)}
                 >
                   <TeamAvatar
                     avatar={
@@ -112,15 +100,12 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                     size="small"
                     style={{ overflow: 'hidden' }}
                   />
-                  <Stack align="center">
-                    <Text css={css({ width: '100%' })} size={3}>
+                  <Stack align="center" gap={1}>
+                    <Text css={{ width: '100%' }} size={3}>
                       {team.name}
                     </Text>
 
-                    {[
-                      SubscriptionType.TeamPro,
-                      SubscriptionType.PersonalPro,
-                    ].includes(team.subscription?.type) && <Badge>Pro</Badge>}
+                    {!team.subscription && <Badge color="accent">Free</Badge>}
                   </Stack>
                 </MenuItem>
               ))}
@@ -129,23 +114,22 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 as={Menu.Item}
                 align="center"
                 gap={2}
-                css={css({
-                  height: 10,
+                css={{
+                  height: 40,
                   textAlign: 'left',
-                  marginLeft: '1px',
-                })}
-                style={{ paddingLeft: 8 }}
+                  paddingLeft: 12,
+                }}
                 onSelect={openCreateTeamModal}
               >
                 <Stack
                   justify="center"
                   align="center"
-                  css={css({
-                    size: 6,
-                    borderRadius: 'small',
-                    border: '1px solid',
-                    borderColor: 'grays.500',
-                  })}
+                  css={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: '2px',
+                    border: '1px solid #999',
+                  }}
                 >
                   <Icon name="plus" size={10} />
                 </Stack>

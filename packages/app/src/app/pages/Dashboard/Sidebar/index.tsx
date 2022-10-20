@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
 import { orderBy } from 'lodash-es';
 import { join, dirname } from 'path';
@@ -52,18 +52,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const history = useHistory();
   const state = useAppState();
   const actions = useActions();
-  const [activeAccount, setActiveAccount] = useState<{
-    id: string;
-    name: string;
-    avatarUrl: string;
-  } | null>(null);
-  const {
-    dashboard,
-    activeTeam,
-    activeTeamInfo,
-    user,
-    personalWorkspaceId,
-  } = state;
+
+  const { dashboard, activeTeam, activeTeamInfo, personalWorkspaceId } = state;
 
   React.useEffect(() => {
     // Used to fetch collections
@@ -77,21 +67,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       state.activeTeam !== personalWorkspaceId ? state.activeTeam : undefined
     );
   }, [state.activeTeam, personalWorkspaceId, actions.sidebar]);
-
-  React.useEffect(() => {
-    if (state.activeTeam) {
-      const team = dashboard.teams.find(({ id }) => id === state.activeTeam);
-      if (team) {
-        const isPersonalWorkspace = team.id === personalWorkspaceId;
-        setActiveAccount({
-          id: team.id,
-          name: team.name,
-          avatarUrl:
-            isPersonalWorkspace && user ? user.avatarUrl : team.avatarUrl,
-        });
-      }
-    }
-  }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
 
   const folders =
     (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||
@@ -163,16 +138,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
               minHeight: 8,
             })}
           >
-            {activeAccount ? (
+            {activeTeam ? (
               <WorkspaceSelect
-                onSelect={workspace => {
+                onSelect={teamId => {
                   actions.setActiveTeam({
-                    id: workspace.id,
+                    id: teamId,
                   });
 
-                  history.replace(dashboardUrls.recent(workspace.id));
+                  history.replace(dashboardUrls.recent(teamId));
                 }}
-                activeAccount={activeAccount}
               />
             ) : (
               <Stack align="center" css={{ width: '100%' }}>
@@ -185,20 +159,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </Stack>
             )}
             <Link
-              css={css({ height: '100%' })}
+              css={{
+                height: '32px',
+                width: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#C2C2C2',
+                transition: 'all 0.1s ease-in',
+                borderRadius: '0 2px 2px 0',
+                '&:hover': {
+                  background: '#242424',
+                  color: '#fff',
+                },
+              }}
               as={RouterLink}
               to={dashboardUrls.settings(state.activeTeam)}
+              title="Settings"
             >
-              <IconButton
-                name="gear"
-                size={16}
-                title="Settings"
-                css={css({
-                  width: 8,
-                  height: '100%',
-                  borderRadius: 0,
-                })}
-              />
+              <Icon name="gear" size={16} />
             </Link>
           </SidebarListItem>
           <RowItem
