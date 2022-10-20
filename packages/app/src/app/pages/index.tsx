@@ -48,7 +48,7 @@ const SignInAuth = Loadable(
 );
 const SignIn = Loadable(() =>
   import(/* webpackChunkName: 'page-sign-in' */ './SignIn').then(module => ({
-    default: module.SignIn,
+    default: module.SignInPage,
   }))
 );
 const SignOut = Loadable(() =>

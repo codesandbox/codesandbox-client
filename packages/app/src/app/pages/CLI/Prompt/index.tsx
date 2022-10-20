@@ -5,7 +5,7 @@ import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
 import { useActions, useAppState } from 'app/overmind';
 
-import { SignInModalElement } from 'app/pages/SignIn/Modal';
+import { SignIn } from 'app/pages/SignIn/SignIn';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Buttons, Container, TokenInput } from './elements';
 
@@ -66,7 +66,7 @@ export const Prompt: FunctionComponent = () => {
           You need to sign in to use the CLI.
         </SubTitle>
 
-        <SignInModalElement />
+        <SignIn />
       </Container>
     );
   }
