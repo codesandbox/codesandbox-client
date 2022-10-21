@@ -95,6 +95,7 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
             owner,
             name: repoName,
             teamId: activeTeam,
+            page,
           })
         }
       >
