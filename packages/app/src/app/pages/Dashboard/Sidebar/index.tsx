@@ -137,8 +137,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               minHeight: 8,
             })}
           >
-            {dashboard.teams.length > 0 ? (
+            {dashboard.teams.length > 0 && activeTeamInfo ? (
               <WorkspaceSelect
+                selectedTeamId={activeTeam}
                 onSelect={teamId => {
                   actions.setActiveTeam({
                     id: teamId,

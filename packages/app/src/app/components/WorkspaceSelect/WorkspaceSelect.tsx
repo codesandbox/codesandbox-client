@@ -9,12 +9,13 @@ import { MenuItem } from './elements';
 interface WorkspaceSelectProps {
   disabled?: boolean;
   onSelect: (teamId: string) => void;
+  selectedTeamId: string;
 }
 
 export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
-  ({ disabled, onSelect }) => {
+  ({ disabled, onSelect, selectedTeamId }) => {
     const state = useAppState();
-    const { dashboard, user, activeTeamInfo } = state;
+    const { dashboard, user } = state;
     const { openCreateTeamModal } = useActions();
 
     if (dashboard.teams.length === 0 || !state.personalWorkspaceId) return null;
@@ -22,6 +23,9 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const personalWorkspace = dashboard.teams.find(
       t => t.id === state.personalWorkspaceId
     )!;
+
+    const selectedTeam = dashboard.teams.find(t => t.id === selectedTeamId);
+    const isPersonalTeam = selectedTeamId === state.personalWorkspaceId;
 
     const workspaces = [
       personalWorkspace,
@@ -61,14 +65,12 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               <Stack align="center" gap={1} css={{ paddingRight: 4 }}>
                 <Text
                   size={16}
-                  maxWidth={activeTeamInfo.subscription ? 172 : 132}
+                  maxWidth={selectedTeam.subscription ? 172 : 132}
                 >
-                  {activeTeamInfo.id === personalWorkspace.id
-                    ? 'Personal'
-                    : activeTeamInfo.name}
+                  {isPersonalTeam ? 'Personal' : selectedTeam.name}
                 </Text>
 
-                {!activeTeamInfo.subscription && (
+                {!selectedTeam.subscription && (
                   <Badge color="accent">Free</Badge>
                 )}
               </Stack>
@@ -104,7 +106,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   />
                   <Stack align="center" gap={1}>
                     <Text css={{ width: '100%' }} size={3}>
-                      {team.id === personalWorkspace.id
+                      {team.id === state.personalWorkspaceId
                         ? 'Personal'
                         : team.name}
                     </Text>
