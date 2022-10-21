@@ -1,7 +1,9 @@
 import React from 'react';
 import css from '@styled-system/css';
 import { IconButton, Stack, Element, Text } from '@codesandbox/components';
-import { useActions } from 'app/overmind';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useActions, useAppState } from 'app/overmind';
+import history from 'app/utils/history';
 
 import { TeamInfo } from './TeamInfo';
 import { TeamMembers } from './TeamMembers';
@@ -11,7 +13,22 @@ type TeamStep = 'info' | 'members' | 'subscription';
 
 export const NewTeamModal: React.FC = () => {
   const actions = useActions();
+  const { activeTeam } = useAppState();
   const [currentStep, setCurrentStep] = React.useState<TeamStep>('info');
+
+  const handleModalClose = () => {
+    actions.modalClosed();
+
+    // If the user is still at the first step, no Team
+    // has been created and closing the modal should
+    // not perform any further actions. Else, the user
+    // must be redirected to the  recent page where the
+    // UI to create/import sandboxes or repositories
+    // will be displayed.
+    if (currentStep !== 'info') {
+      history.push(dashboard.recent(activeTeam));
+    }
+  };
 
   return (
     <Stack
@@ -36,7 +53,7 @@ export const NewTeamModal: React.FC = () => {
             variant="square"
             size={16}
             title="Close modal"
-            onClick={() => actions.modalClosed()}
+            onClick={handleModalClose}
           />
         </Stack>
       </Element>
