@@ -15,7 +15,30 @@ import { formatCurrency } from './_utils';
 /**
  * Main component
  */
-export const Intro = ({ plans }) => {
+export const Intro = ({
+  plans = {
+    team_pro: {
+      month: {
+        currency: '$',
+        unit_amount: 5,
+      },
+      year: {
+        currency: '$',
+        unit_amount: 5,
+      },
+    },
+    pro: {
+      month: {
+        currency: '$',
+        unit_amount: 5,
+      },
+      year: {
+        currency: '$',
+        unit_amount: 5,
+      },
+    },
+  },
+}) => {
   // plans: {
   //   pro | team_pro {
   //     month | year {
@@ -24,6 +47,7 @@ export const Intro = ({ plans }) => {
   //     }
   //   }
   // }
+
   const shouldReduceMotion = usePrefersReducedMotion();
 
   const [teamHover, setTeamHover] = useState(false);
@@ -145,18 +169,16 @@ const Title = styled.h1`
 
   letter-spacing: -0.025em;
   font-size: 40px;
-  line-height: 48px;
+  line-height: 1.1;
 
   @media (min-width: 769px) {
     font-size: 48px;
-    line-height: 56px;
   }
 
   @media (min-width: 1025px) {
     letter-spacing: -0.03em;
     font-weight: 500;
     font-size: 64px;
-    line-height: 1.45;
   }
 `;
 
@@ -192,7 +214,7 @@ const Gradient = styled.div`
       css`
         background: radial-gradient(
           61.76% 61.76% at 50% 38.24%,
-          #ac9cff 0%,
+          #edffa5 0%,
           #000000 60.35%
         );
       `
@@ -204,23 +226,9 @@ const Gradient = styled.div`
       personalSection &&
       css`
         background: radial-gradient(
-          50% 50% at 50% 50%,
-          hsl(72deg 100% 82%) 0%,
-          hsl(72deg 69% 76%) 3%,
-          hsl(72deg 50% 71%) 6%,
-          hsl(72deg 38% 65%) 9%,
-          hsl(72deg 30% 59%) 12%,
-          hsl(72deg 23% 54%) 15%,
-          hsl(72deg 20% 48%) 19%,
-          hsl(72deg 19% 43%) 22%,
-          hsl(71deg 19% 38%) 26%,
-          hsl(71deg 18% 32%) 30%,
-          hsl(71deg 17% 27%) 34%,
-          hsl(71deg 16% 23%) 39%,
-          hsl(71deg 15% 18%) 44%,
-          hsl(70deg 13% 13%) 51%,
-          hsl(69deg 9% 9%) 59%,
-          hsl(0deg 0% 4%) 77%
+          61.76% 61.76% at 50% 38.24%,
+          #ac9cff 0%,
+          #000000 60.35%
         );
       `
     );
@@ -369,7 +377,7 @@ const TeamPro = ({ plan, ...props }) => {
 const OrgCustom = props => {
   return (
     <BoxPlan
-      href="mailto:support@codesandbox.io?subject=Organization plan"
+      href="https://codesandbox.typeform.com/organization"
       target="_blank"
       rel="noopener noreferrer"
       orgCustom
@@ -386,7 +394,7 @@ const OrgCustom = props => {
 
       <ul>
         <li>All Team Pro features, plus:</li>
-        <li>Unlimited editors</li>
+        <li>20+ editors (no limit)</li>
         <li>Bulk pricing for seats</li>
         <li>Custom VM Specs</li>
         <li>Custom support</li>
