@@ -17,7 +17,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
     const { dashboard, user, activeTeamInfo } = state;
     const { openCreateTeamModal } = useActions();
 
-    if (!dashboard.teams || !state.personalWorkspaceId) return null;
+    if (dashboard.teams.length === 0 || !state.personalWorkspaceId) return null;
 
     const personalWorkspace = dashboard.teams.find(
       t => t.id === state.personalWorkspaceId

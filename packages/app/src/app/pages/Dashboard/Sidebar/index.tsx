@@ -137,7 +137,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               minHeight: 8,
             })}
           >
-            {activeTeam ? (
+            {dashboard.teams.length > 0 ? (
               <WorkspaceSelect
                 onSelect={teamId => {
                   actions.setActiveTeam({
@@ -153,7 +153,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   css={{ width: 26, height: 26, marginLeft: 8 }}
                 />
                 <SkeletonTextBlock
-                  css={{ width: 65, height: 12, marginLeft: 8 }}
+                  css={{ width: 120, height: 12, marginLeft: 8 }}
                 />
               </Stack>
             )}
