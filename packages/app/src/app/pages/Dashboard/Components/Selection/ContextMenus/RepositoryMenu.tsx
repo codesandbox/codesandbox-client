@@ -9,13 +9,16 @@ import {
 } from '@codesandbox/common/lib/utils/url-generator';
 import { useActions, useAppState } from 'app/overmind';
 import { quotes } from 'app/utils/quotes';
+import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Context, MenuItem } from '../ContextMenu';
 
 type RepositoryMenuProps = {
   repository: Repository;
+  page: PageTypes;
 };
 export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
   repository,
+  page,
 }) => {
   const {
     activeTeam,
@@ -106,10 +109,11 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
             owner: providerRepository.owner,
             name: providerRepository.name,
             teamId: activeTeam,
+            page,
           })
         }
       >
-        Remove from CodeSandbox
+        Remove repository from CodeSandbox
       </MenuItem>
     </Menu.ContextMenu>
   );
