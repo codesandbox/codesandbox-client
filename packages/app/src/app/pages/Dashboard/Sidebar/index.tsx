@@ -14,7 +14,6 @@ import {
   Element,
   List,
   SidebarListAction,
-  SidebarListItem,
   Link,
   Text,
   Stack,
@@ -106,86 +105,72 @@ export const Sidebar: React.FC<SidebarProps> = ({
           left: visible ? 0 : -1 * SIDEBAR_WIDTH,
           transition: { duration: visible ? 0.2 : 0.15 },
         }}
+        gap={6}
         {...props}
         css={css({
-          borderRight: '1px solid',
-          borderColor: 'transparent',
-          backgroundColor: 'sideBar.background',
           width: SIDEBAR_WIDTH,
-          flexShrink: 0,
           zIndex: 3,
-          overflowY: 'auto',
-          overflowX: 'hidden',
+          paddingTop: '23px',
           ...props.css,
         })}
       >
+        <Stack direction="horizontal">
+          {dashboard.teams.length > 0 && activeTeamInfo ? (
+            <WorkspaceSelect
+              selectedTeamId={activeTeam}
+              onSelect={teamId => {
+                actions.setActiveTeam({
+                  id: teamId,
+                });
+
+                history.replace(dashboardUrls.recent(teamId));
+              }}
+            />
+          ) : (
+            <Stack align="center" css={{ width: '100%', paddingLeft: '28px' }}>
+              <SkeletonTextBlock
+                css={{ width: 120, height: 12, marginLeft: 8 }}
+              />
+            </Stack>
+          )}
+          <Link
+            css={{
+              height: '36px',
+              width: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#C2C2C2',
+              transition: 'all 0.1s ease-in',
+              borderRadius: '0 2px 2px 0',
+              '&:hover': {
+                background: '#242424',
+                color: '#fff',
+              },
+            }}
+            as={RouterLink}
+            to={dashboardUrls.settings(state.activeTeam)}
+            title="Settings"
+          >
+            <Icon name="gear" size={16} />
+          </Link>
+        </Stack>
+
         <List
-          css={css({
+          css={{
             display: 'flex',
             flexDirection: 'column',
+            flex: 1,
             height: '100%',
-            paddingBottom: 6,
-          })}
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}
         >
-          <SidebarListItem
-            css={css({
-              marginTop: 6,
-              paddingLeft: 2,
-              paddingRight: 0,
-              borderRadius: 2,
-              marginLeft: 2,
-              minHeight: 8,
-            })}
-          >
-            {dashboard.teams.length > 0 && activeTeamInfo ? (
-              <WorkspaceSelect
-                selectedTeamId={activeTeam}
-                onSelect={teamId => {
-                  actions.setActiveTeam({
-                    id: teamId,
-                  });
-
-                  history.replace(dashboardUrls.recent(teamId));
-                }}
-              />
-            ) : (
-              <Stack align="center" css={{ width: '100%' }}>
-                <SkeletonTextBlock
-                  css={{ width: 26, height: 26, marginLeft: 8 }}
-                />
-                <SkeletonTextBlock
-                  css={{ width: 120, height: 12, marginLeft: 8 }}
-                />
-              </Stack>
-            )}
-            <Link
-              css={{
-                height: '32px',
-                width: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#C2C2C2',
-                transition: 'all 0.1s ease-in',
-                borderRadius: '0 2px 2px 0',
-                '&:hover': {
-                  background: '#242424',
-                  color: '#fff',
-                },
-              }}
-              as={RouterLink}
-              to={dashboardUrls.settings(state.activeTeam)}
-              title="Settings"
-            >
-              <Icon name="gear" size={16} />
-            </Link>
-          </SidebarListItem>
           <RowItem
             name="Recent"
             page="recent"
             path={dashboardUrls.recent(activeTeam)}
             icon="clock"
-            style={{ marginTop: 8 }}
           />
           <RowItem
             name="Discover"
@@ -307,7 +292,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.archive(activeTeam)}
             icon="archive"
           />
-          <Element marginTop={4} />
+          <Element marginTop={3} />
         </List>
       </Stack>
       <AnimatePresence>

@@ -52,10 +52,10 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               align="center"
               css={{
                 width: '100%',
-                height: '100%',
-                marginLeft: 0,
                 cursor: 'default',
                 color: '#C2C2C2',
+                paddingLeft: '28px',
+                height: '36px',
                 borderRadius: '2px 0 0 2px',
                 '&:hover': {
                   backgroundColor: '#242424',
@@ -65,7 +65,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               <Stack align="center" gap={1} css={{ paddingRight: 4 }}>
                 <Text
                   size={16}
-                  maxWidth={selectedTeam.subscription ? 172 : 132}
+                  maxWidth={selectedTeam.subscription ? 166 : 126}
                 >
                   {isPersonalTeam ? 'Personal' : selectedTeam.name}
                 </Text>
@@ -81,7 +81,9 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
             <Menu.List
               css={{
                 width: '100%',
-                marginTop: -2,
+                marginLeft: 7,
+                marginTop: 4,
+                borderRadius: '2px',
                 backgroundColor: '#242424',
                 borderColor: '#343434',
               }}
@@ -104,7 +106,12 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                     size="small"
                     style={{ overflow: 'hidden' }}
                   />
-                  <Stack align="center" gap={1}>
+                  <Stack
+                    align="center"
+                    justify="space-between"
+                    css={{ flex: 1 }}
+                    gap={1}
+                  >
                     <Text css={{ width: '100%' }} size={3}>
                       {team.id === state.personalWorkspaceId
                         ? 'Personal'
@@ -121,9 +128,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 align="center"
                 gap={2}
                 css={{
-                  height: 40,
                   textAlign: 'left',
-                  paddingLeft: 12,
                 }}
                 onSelect={openCreateTeamModal}
               >
