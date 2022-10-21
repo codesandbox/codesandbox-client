@@ -95,6 +95,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setNewFolderPath,
   };
 
+  const isPersonalSpace = activeTeam === personalWorkspaceId;
+
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
       <Stack
@@ -178,7 +180,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.discover(activeTeam)}
             icon="discover"
           />
-          {activeTeam === personalWorkspaceId && (
+          {isPersonalSpace && (
             <RowItem
               name="Shared With Me"
               page="shared"
@@ -186,7 +188,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               icon="sharing"
             />
           )}
-          {activeTeam === personalWorkspaceId && (
+          {isPersonalSpace && (
             <RowItem
               name="Likes"
               page="liked"
@@ -204,7 +206,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               Repositories
             </Text>
           </Element>
-          {activeTeam === personalWorkspaceId && (
+          {isPersonalSpace && (
             <RowItem
               name="My contributions"
               page="my-contributions"
@@ -294,6 +296,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
           <Element marginTop={3} />
         </List>
+        {!activeTeamInfo?.subscription && !isPersonalSpace && (
+          <Stack
+            css={{ padding: '24px', paddingTop: 0, alignItems: 'flex-start' }}
+            direction="vertical"
+            gap={2}
+          >
+            <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
+              Upgrade to Team PRO for the full CodeSandbox Experience.
+            </Text>
+            <Link
+              as={RouterLink}
+              to="/pro"
+              title="Upgrade to Team PRO"
+              css={{
+                fontSize: '12px',
+                fontWeight: 500,
+                color: '#EDFFA5',
+                textDecoration: 'none',
+              }}
+            >
+              Upgrade now
+            </Link>
+          </Stack>
+        )}
       </Stack>
       <AnimatePresence>
         {visible && (

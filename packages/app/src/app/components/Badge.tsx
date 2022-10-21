@@ -20,7 +20,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
       backgroundColor: color === 'accent' ? '#653FFD80' : '#2e2e2e',
       color: color === 'accent' ? '#fff' : 'inherit',
-      fontSize: 11, // No text variant for it?
+      fontSize: 11,
       lineHeight: 16,
     }}
     gap={2}
