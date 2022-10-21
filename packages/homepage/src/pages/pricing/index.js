@@ -130,7 +130,7 @@ const Pricing = () => {
               </FAQLabel>
               <FAQLink
                 as="a"
-                href="mailto:support@codesandbox.io?subject=Education and Open Source plan&body=Hi,%0D%0A%0D%0AI'm using CodeSandbox for [describe usage] but I'm running into some limits. [Describe limits]. My username is [username]. Can you update my plan?%0D%0A%0D%0AThanks!"
+                href="mailto:support@codesandbox.io?subject=Open source and education plans"
                 target="_blank"
               >
                 Request access
