@@ -6,6 +6,7 @@ import usePrefersReducedMotion from '../../utils/isReducedMOtion';
 import {
   BoxPlan,
   BoxPlanButton,
+  BoxPlanList,
   BoxPlanPrice,
   Caption,
   ComparePlansLink,
@@ -313,7 +314,7 @@ const TeamFree = () => {
 
       <BoxPlanPrice plan="Free" price="$0" caption="forever" />
 
-      <ul>
+      <BoxPlanList>
         <li>5 editors</li>
         <li>20 public sandboxes</li>
         <li>3 public repositories</li>
@@ -327,7 +328,7 @@ const TeamFree = () => {
         <li>4GB RAM</li>
         <li>2vCPUs</li>
         <li>4GB Disk</li>
-      </ul>
+      </BoxPlanList>
 
       <BoxPlanButton href="/s">Start coding now</BoxPlanButton>
     </BoxPlan>
@@ -353,7 +354,7 @@ const TeamPro = ({ plan, ...props }) => {
         per month.`}
       />
 
-      <ul>
+      <BoxPlanList>
         <li>20 editors</li>
         <li>Unlimited sandboxes</li>
         <li>Unlimited repositories</li>
@@ -367,7 +368,7 @@ const TeamPro = ({ plan, ...props }) => {
         <li>6GB RAM</li>
         <li>4vCPUs</li>
         <li>12GB Disk</li>
-      </ul>
+      </BoxPlanList>
 
       <BoxPlanButton>Upgrade to Team Pro</BoxPlanButton>
     </BoxPlan>
@@ -392,7 +393,7 @@ const OrgCustom = props => {
         customPrice
       />
 
-      <ul>
+      <BoxPlanList>
         <li>All Team Pro features, plus:</li>
         <li>20+ editors (no limit)</li>
         <li>Bulk pricing for seats</li>
@@ -400,11 +401,7 @@ const OrgCustom = props => {
         <li>Custom support</li>
         <li>Shared Slack channel</li>
         <li>Customer success manager </li>
-
-        {/* Visually aligned */}
-        <br />
-        <br />
-      </ul>
+      </BoxPlanList>
 
       <BoxPlanButton>Contact us</BoxPlanButton>
     </BoxPlan>
@@ -418,7 +415,7 @@ const PersonalFree = () => {
 
       <BoxPlanPrice plan="Free" price="$0" caption="forever" />
 
-      <ul>
+      <BoxPlanList>
         <li>Free for individuals</li>
         <li>All platform features</li>
         <li>Unlimited public sandboxes</li>
@@ -432,7 +429,7 @@ const PersonalFree = () => {
         <li>4GB RAM</li>
         <li>2vCPUs</li>
         <li>4GB Disk</li>
-      </ul>
+      </BoxPlanList>
 
       <BoxPlanButton href="/s">Start coding now</BoxPlanButton>
     </BoxPlan>
@@ -454,7 +451,7 @@ const PersonalPro = ({ plan, ...props }) => {
       per month.`}
       />
 
-      <ul>
+      <BoxPlanList>
         <li>All Free features, plus:</li>
         <li>Unlimited private sandboxes</li>
         <li>Unlimited private repositories</li>
@@ -463,11 +460,13 @@ const PersonalPro = ({ plan, ...props }) => {
         {/* Visually aligned */}
         <br />
         <br />
+        <br />
+        <br />
 
         <li>6GB RAM</li>
         <li>4vCPUs</li>
         <li>12GB Disk</li>
-      </ul>
+      </BoxPlanList>
 
       <BoxPlanButton>Upgrade to Personal Pro</BoxPlanButton>
     </BoxPlan>
