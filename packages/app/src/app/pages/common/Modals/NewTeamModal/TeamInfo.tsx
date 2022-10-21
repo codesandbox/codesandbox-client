@@ -132,7 +132,7 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
           css={{
             color: '#999999',
           }}
-          to="https://codesandbox.io/docs/learn/introduction/workspace"
+          href="https://codesandbox.io/docs/learn/introduction/workspace"
           target="_blank"
           rel="noreferrer"
         >
