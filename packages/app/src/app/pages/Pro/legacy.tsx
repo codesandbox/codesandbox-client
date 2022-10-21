@@ -11,7 +11,7 @@ import { WorkspacePlanSelection } from './legacy-pages/WorkspacePlanSelection';
 import { InlineCheckout } from './legacy-pages/InlineCheckout';
 import { ConfirmBillingInterval } from './legacy-pages/ConfirmBillingInterval';
 import { PaymentSuccess } from './legacy-pages/PaymentSuccess';
-import { SignInModalElement } from '../SignIn/Modal';
+import { SignIn } from '../SignIn/SignIn';
 
 export const ProLegacy: React.FC = () => {
   const { pageMounted } = useActions().pro;
@@ -23,10 +23,15 @@ export const ProLegacy: React.FC = () => {
 
   const getContent = () => {
     if (!hasLoadedApp) return null;
+    /**
+     * Probably never reaching this code, ProLegacy component is used
+     * in ProPage but only renders when isPaddle or isPatron. Since you
+     * have to be logged in for those you're never not logged in here?
+     */
     if (!isLoggedIn) {
       return (
         <div style={{ marginTop: 120 }}>
-          <SignInModalElement />
+          <SignIn />
         </div>
       );
     }

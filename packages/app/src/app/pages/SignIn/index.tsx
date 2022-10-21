@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
+import { css } from '@styled-system/css';
 
 import { useAppState, useActions } from 'app/overmind';
 import { dashboardUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Element, Stack, ThemeProvider } from '@codesandbox/components';
-import { css } from '@styled-system/css';
-import { Navigation } from '../common/Navigation';
-import { SignInModalElement } from './Modal';
 
-export const SignIn = () => {
+import { SignIn } from './SignIn';
+
+export const SignInPage = () => {
   const state = useAppState();
   const { genericPageMounted } = useActions();
   const redirectTo = new URL(location.href).searchParams.get('continue');
@@ -17,7 +17,13 @@ export const SignIn = () => {
     genericPageMounted();
   }, [genericPageMounted]);
 
-  if (state.hasLogIn && !redirectTo) {
+  /**
+   * 🚧 Utility to debug Trial Onboarding Questions
+   */
+  const TOQ_DEBUG = window.localStorage.getItem('TOQ_DEBUG') === 'ENABLED';
+
+  // 🚧 Remove && !TOQ_DEBUG
+  if (state.hasLogIn && !redirectTo && !TOQ_DEBUG) {
     return <Redirect to={dashboardUrl()} />;
   }
 
@@ -31,17 +37,17 @@ export const SignIn = () => {
           overflow: 'hidden',
         })}
       >
-        <Navigation title="Sign In" />
         <Stack
           css={css({
             width: '100vw',
             height: '100%',
             marginBottom: 100,
+            padding: '16px',
           })}
           align="center"
           justify="center"
         >
-          <SignInModalElement redirectTo={redirectTo} />
+          <SignIn redirectTo={redirectTo} />
         </Stack>
       </Element>
     </ThemeProvider>

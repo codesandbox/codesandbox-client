@@ -11,7 +11,8 @@
     {
       "files": ["*.tsx"],
       "rules": {
-        "import/no-default-export": 1
+        "import/no-default-export": 1,
+        "consistent-return": "off"
       }
     }
   ]
