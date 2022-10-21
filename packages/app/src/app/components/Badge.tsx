@@ -6,6 +6,7 @@ export interface BadgeProps {
   icon?: IconNames;
 }
 
+// TODO: Move to component system
 export const Badge: React.FC<BadgeProps> = ({
   color = 'neutral',
   icon,
@@ -14,7 +15,7 @@ export const Badge: React.FC<BadgeProps> = ({
   <Stack
     css={{
       alignItems: 'center',
-      padding: '1px 6px',
+      padding: icon ? '4px 8px' : '1px 6px',
 
       borderRadius: '999px',
 
@@ -23,9 +24,9 @@ export const Badge: React.FC<BadgeProps> = ({
       fontSize: 11,
       lineHeight: 16,
     }}
-    gap={2}
+    gap={1}
   >
-    {icon && <Icon name={icon} />}
+    {icon && <Icon size={12} name={icon} />}
     <Text>{children}</Text>
   </Stack>
 );
