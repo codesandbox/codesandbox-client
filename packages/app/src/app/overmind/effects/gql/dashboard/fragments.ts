@@ -225,6 +225,7 @@ export const branchFragment = gql`
     project {
       repository {
         ... on GitHubRepository {
+          defaultBranch
           name
           owner
         }
