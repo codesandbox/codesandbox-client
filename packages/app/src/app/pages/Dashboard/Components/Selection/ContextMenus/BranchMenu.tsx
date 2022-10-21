@@ -69,7 +69,7 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
       <MenuItem onSelect={() => history.push(repoUrl)}>
         Open repository
       </MenuItem>
-      <Menu.Divider />
+      {(canRemoveBranch || !contribution) && <Menu.Divider />}
       {canRemoveBranch && (
         <MenuItem
           disabled={removingBranch}
@@ -87,20 +87,22 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
           Remove branch from CodeSandbox
         </MenuItem>
       )}
-      <MenuItem
-        disabled={removingRepository}
-        onSelect={() =>
-          !removingRepository &&
-          removeRepositoryFromTeam({
-            owner,
-            name: repoName,
-            teamId: activeTeam,
-            page,
-          })
-        }
-      >
-        Remove repository from CodeSandbox
-      </MenuItem>
+      {!contribution && (
+        <MenuItem
+          disabled={removingRepository}
+          onSelect={() =>
+            !removingRepository &&
+            removeRepositoryFromTeam({
+              owner,
+              name: repoName,
+              teamId: activeTeam,
+              page,
+            })
+          }
+        >
+          Remove repository from CodeSandbox
+        </MenuItem>
+      )}
     </Menu.ContextMenu>
   );
 };
