@@ -3,7 +3,7 @@ import { Element, Text, Stack } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import { InputText } from 'app/components/dashboard/InputText';
 import { InputSelect } from 'app/components/dashboard/InputSelect';
-import { Button } from 'app/components/dashboard/Button';
+import { StyledButton } from 'app/components/dashboard/Button';
 
 const roleOptions = [
   { value: 'frontend', label: 'Frontend developer' },
@@ -147,9 +147,12 @@ export const Onboarding = () => {
             </Text>
           ) : null}
         </Stack>
-        <Button type="submit" disabled={loadingUsername || !pendingUser.valid}>
+        <StyledButton
+          type="submit"
+          disabled={loadingUsername || !pendingUser.valid}
+        >
           {loadingUsername ? 'Checking username...' : 'Create account'}
-        </Button>
+        </StyledButton>
       </Stack>
     </Stack>
   );
