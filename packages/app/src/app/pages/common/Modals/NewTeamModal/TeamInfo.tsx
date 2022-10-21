@@ -129,11 +129,12 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
       </Stack>
       <Element paddingTop={10}>
         <Link
-          css={css({
+          css={{
             color: '#999999',
-          })}
-          to="#"
+          }}
+          to="https://codesandbox.io/docs/learn/introduction/workspace"
           target="_blank"
+          rel="noreferrer"
         >
           <Stack gap={3} justify="center">
             <Text size={2}>More about teams and workspaces</Text>
