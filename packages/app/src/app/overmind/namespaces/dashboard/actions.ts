@@ -2115,27 +2115,32 @@ export const removeBranchFromRepository = async (
   try {
     await effects.api.removeBranchFromRepository(owner, repoName, name);
 
+    // Manually remove the data from the state based on the
+    // current page. Then sync in the background.
     if (page === 'repositories') {
       const repository = state.dashboard.repositories?.find(
         r => r.repository.owner === owner && r.repository.name === repoName
       );
 
       if (repository) {
-        // Manually remove the data from the state.
         repository.branches = repository.branches.filter(b => b.id !== id);
       }
 
-      // Then sync in the background.
       actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
     }
 
+    if (page === 'my-contributions') {
+      state.dashboard.contributions =
+        state.dashboard.contributions?.filter(b => b.id !== id) ?? [];
+
+      actions.dashboard.getContributionBranches();
+    }
+
     if (page === 'recent') {
-      // First, manually remove the data from the state.
       state.dashboard.sandboxes.RECENT_BRANCHES =
         state.dashboard.sandboxes.RECENT_BRANCHES?.filter(b => b.id !== id) ??
         [];
 
-      // Then sync in the background.
       actions.dashboard.getStartPageSandboxes();
     }
   } catch (error) {
