@@ -2151,26 +2151,40 @@ type ProjectToRemove = {
   owner: string;
   name: string;
   teamId: string;
+  page: PageTypes;
 };
 export const removeRepositoryFromTeam = async (
   context: Context,
   project: ProjectToRemove
 ) => {
   const { actions, state, effects } = context;
-  const { owner, name, teamId } = project;
+  const { owner, name, teamId, page } = project;
 
   state.dashboard.removingRepository = { owner, name };
 
   try {
     await effects.api.removeRepositoryFromTeam(owner, name, teamId);
 
-    // First, manually remove the data from the state.
-    state.dashboard.repositories =
-      state.dashboard.repositories?.filter(
-        r => r.repository.owner !== owner || r.repository.name !== name
-      ) ?? [];
-    // Then sync in the background.
-    actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
+    if (page === 'recent') {
+      // First, manually remove the data from the state.
+      state.dashboard.sandboxes.RECENT_BRANCHES =
+        state.dashboard.sandboxes.RECENT_BRANCHES?.filter(b => {
+          const branchRepo = b.project.repository;
+
+          return branchRepo.owner === owner && branchRepo.name === name;
+        }) ?? [];
+
+      // Then sync in the background.
+      actions.dashboard.getStartPageSandboxes();
+    } else {
+      // First, manually remove the data from the state.
+      state.dashboard.repositories =
+        state.dashboard.repositories?.filter(
+          r => r.repository.owner !== owner || r.repository.name !== name
+        ) ?? [];
+      // Then sync in the background.
+      actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
+    }
   } catch (error) {
     effects.notificationToast.error(
       `Failed to remove project ${owner}/${name}`
