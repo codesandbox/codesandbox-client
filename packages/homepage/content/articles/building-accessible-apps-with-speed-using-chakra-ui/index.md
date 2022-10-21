@@ -8,13 +8,13 @@ description: See why Chakra UI and CodeSandbox are a perfect match for building 
 date: 2022-10-20
 ---
 
-**In case you missed our recent [live stream](https://www.youtube.com/watch?v=XVJ7N4_bp28) with Chakra UI, here is a short recap of the highlights. Learn more about Chakra UI [here](https://chakra-ui.com/) and build faster right from [CodeSandbox](https://codesandbox.io/s/).**
+**In case you missed our recent [live stream](https://www.youtube.com/watch?v=XVJ7N4_bp28) with Chakra UI, here is a short recap of the highlights. Learn more about [Chakra UI](https://chakra-ui.com/) and build faster right from [CodeSandbox](https://codesandbox.io/s/).**
 
 Chakra UI has been gaining a lot of momentum in the community. One of the key benefits of Chakra is that it allows you to create apps quickly. And if you've used CodeSandbox, you probably know that one of our main goals is helping you code anything in record time.
 
 That's why this chat between [Adewale Abati](https://twitter.com/Ace_KYD), Developer Advocate at CodeSandbox, and [Lazar Nikolov](https://twitter.com/NikolovLazar), core member at Chakra UI, was a perfect match for any developer wanting to learn how to build accessible apps quickly.
 
-Check out the final repo for this project [here](https://codesandbox.io/p/github/nikolovlazar/codesandbox-template-next.js/draft/magical-moon) and keep reading for some more details about Chakra UI and CodeSandbox, as well as the full-length video tutorial.
+Check out [the final repo for this project](https://codesandbox.io/p/github/nikolovlazar/codesandbox-template-next.js/draft/magical-moon) and keep reading for some more details about Chakra UI and CodeSandbox, as well as the full-length video tutorial.
 
 ## Why Chakra UI?
 
@@ -52,4 +52,4 @@ Developing this chat interface was a really fun project and an excellent way to 
 
 We really appreciate all the amazing work Adewale Abati, and Lazar Nikolov put into this tutorial! And our huge thanks to everyone that joined our session.
 
-You can check out the demo of the final result of this project [here](https://codesandbox.io/p/github/nikolovlazar/codesandbox-template-next.js/draft/magical-moon)—and remember that you can branch/fork it to keep experimenting with Chakra UI, right from CodeSandbox.
+You can check out the [demo of the final result on CodeSandbox](https://codesandbox.io/p/github/nikolovlazar/codesandbox-template-next.js/draft/magical-moon)—and remember that you can branch/fork that repo to keep experimenting with Chakra UI right from our cloud development environment.
