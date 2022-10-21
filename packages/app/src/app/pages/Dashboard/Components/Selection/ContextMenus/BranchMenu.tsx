@@ -23,7 +23,7 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
   const { id, name, project, contribution } = branch;
   const branchUrl = v2BranchUrl({ name, project });
 
-  const { name: repoName, owner } = project.repository;
+  const { name: repoName, owner, defaultBranch } = project.repository;
 
   const githubUrl = githubRepoUrl({
     branch: name,
@@ -35,6 +35,8 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
   const repoUrl = dashboard.repository({ owner, name: repoName });
 
   const history = useHistory();
+
+  const canRemoveBranch = name !== defaultBranch;
 
   return (
     <Menu.ContextMenu
@@ -61,22 +63,26 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
       <MenuItem onSelect={() => history.push(repoUrl)}>
         Open repository
       </MenuItem>
-      <Menu.Divider />
-      <MenuItem
-        disabled={removingBranch}
-        onSelect={() =>
-          !removingBranch &&
-          removeBranchFromRepository({
-            id,
-            owner,
-            repoName,
-            name,
-            page,
-          })
-        }
-      >
-        Remove branch from CodeSandbox
-      </MenuItem>
+      {canRemoveBranch && (
+        <>
+          <Menu.Divider />
+          <MenuItem
+            disabled={removingBranch}
+            onSelect={() =>
+              !removingBranch &&
+              removeBranchFromRepository({
+                id,
+                owner,
+                repoName,
+                name,
+                page,
+              })
+            }
+          >
+            Remove branch from CodeSandbox
+          </MenuItem>
+        </>
+      )}
     </Menu.ContextMenu>
   );
 };
