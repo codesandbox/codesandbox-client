@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Button as ButtonComponent } from '@codesandbox/components';
 
-export const Button = styled(ButtonComponent)`
+export const StyledButton = styled(ButtonComponent)`
   height: auto;
   padding-top: 8px;
   padding-bottom: 8px;

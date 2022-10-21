@@ -1,11 +1,7 @@
 import React, { SelectHTMLAttributes } from 'react';
 import styled from 'styled-components';
-import { Icon, Stack } from '@codesandbox/components';
+import { Element, Icon, Stack } from '@codesandbox/components';
 import { Label } from './Label';
-
-const RelativeWrapper = styled.div`
-  position: relative;
-`;
 
 const StyledSelect = styled.select`
   box-sizing: border-box;
@@ -60,7 +56,7 @@ export const InputSelect = ({
   return (
     <Stack gap={2} direction="vertical">
       <Label htmlFor={id}>{label}</Label>
-      <RelativeWrapper>
+      <Element css={{ position: 'relative' }}>
         <StyledSelect
           name={name}
           id={id}
@@ -86,7 +82,7 @@ export const InputSelect = ({
         <DropdownIcon>
           <Icon name="caret" size={8} />
         </DropdownIcon>
-      </RelativeWrapper>
+      </Element>
     </Stack>
   );
 };
