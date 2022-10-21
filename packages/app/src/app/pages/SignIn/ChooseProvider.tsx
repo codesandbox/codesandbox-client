@@ -166,8 +166,21 @@ export const ChooseProvider = ({
         })}
       >
         By continuing, you agree to CodeSandbox{' '}
-        <a href="https://codesandbox.io/legal/terms">Terms of Service</a>,{' '}
-        <a href="https://codesandbox.io/legal/privacy">Privacy Policy</a>
+        <a
+          href="https://codesandbox.io/legal/terms"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Terms of Service
+        </a>
+        ,{' '}
+        <a
+          href="https://codesandbox.io/legal/privacy"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Privacy Policy
+        </a>
       </Text>
     </Stack>
   );
