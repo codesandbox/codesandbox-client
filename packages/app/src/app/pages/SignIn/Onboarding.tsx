@@ -5,7 +5,7 @@ import { InputText } from 'app/components/dashboard/InputText';
 import { InputSelect } from 'app/components/dashboard/InputSelect';
 import { StyledButton } from 'app/components/dashboard/Button';
 
-const roleOptions = [
+const ROLE_OPTIONS = [
   { value: 'frontend', label: 'Frontend developer' },
   { value: 'backend', label: 'Backend developer' },
   { value: 'fullstack', label: 'Fullstack developer' },
@@ -16,7 +16,7 @@ const roleOptions = [
   { value: 'other', label: 'Other' },
 ];
 
-const usageOptions = [
+const USAGE_OPTIONS = [
   { value: 'freelance-or-client', label: 'Freelance or client work' },
   { value: 'startup', label: 'Startup' },
   { value: 'enterprise', label: 'Enterprise' },
@@ -128,7 +128,7 @@ export const Onboarding = () => {
             id="role"
             name="role"
             label="What best describes your role?"
-            options={roleOptions}
+            options={ROLE_OPTIONS}
             placeholder="Please select an option"
           />
 
@@ -136,7 +136,7 @@ export const Onboarding = () => {
             id="usage"
             name="usage"
             label="How do you plan to use CodeSandbox?"
-            options={usageOptions}
+            options={USAGE_OPTIONS}
             placeholder="Please select an option"
           />
 
