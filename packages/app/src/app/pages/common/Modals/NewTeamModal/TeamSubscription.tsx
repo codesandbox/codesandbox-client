@@ -1,7 +1,9 @@
 import React from 'react';
 import css from '@styled-system/css';
 
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Icon, Stack, Text } from '@codesandbox/components';
+import history from 'app/utils/history';
 import { useActions, useAppState } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { formatCurrency } from 'app/utils/currency';
@@ -53,6 +55,11 @@ export const TeamSubscription: React.FC = () => {
   React.useEffect(() => {
     pageMounted();
   }, [pageMounted]);
+
+  const handleDismiss = () => {
+    modalClosed();
+    history.push(dashboard.recent(activeTeamInfo.id));
+  };
 
   // Only teams that never had a subscription are elligible for
   // the 14-day free trial.
@@ -155,6 +162,8 @@ export const TeamSubscription: React.FC = () => {
                 createCheckout({
                   team_id: activeTeamInfo.id,
                   recurring_interval: 'month' as string,
+                  success_path: dashboard.recent(activeTeamInfo.id),
+                  cancel_path: dashboard.recent(activeTeamInfo.id),
                 });
               }}
               loading={checkout.status === 'loading'}
@@ -171,7 +180,7 @@ export const TeamSubscription: React.FC = () => {
               </Text>
             )}
           </Stack>
-          <Button onClick={modalClosed} variant="link">
+          <Button onClick={handleDismiss} variant="link">
             Continue with free plan
           </Button>
         </Stack>
