@@ -1,6 +1,6 @@
 import React from 'react';
 import css from '@styled-system/css';
-import { IconButton, Stack, Text } from '@codesandbox/components';
+import { IconButton, Stack, Element, Text } from '@codesandbox/components';
 import { useActions } from 'app/overmind';
 
 import { TeamInfo } from './TeamInfo';
@@ -16,35 +16,30 @@ export const NewTeamModal: React.FC = () => {
   return (
     <Stack
       css={css({
-        height: '80vh',
         maxHeight: '640px',
         overflow: 'hidden',
       })}
       direction="vertical"
     >
-      <Stack
-        css={css({
-          padding: 6,
-        })}
-        align="center"
-        justify="space-between"
-      >
-        <Text
-          css={css({
-            color: '#808080',
-          })}
-          size={3}
-        >
-          New team
-        </Text>
-        <IconButton
-          name="cross"
-          variant="square"
-          size={16}
-          title="Close modal"
-          onClick={() => actions.modalClosed()}
-        />
-      </Stack>
+      <Element padding={6}>
+        <Stack align="center" justify="space-between">
+          <Text
+            css={css({
+              color: '#808080',
+            })}
+            size={3}
+          >
+            New team
+          </Text>
+          <IconButton
+            name="cross"
+            variant="square"
+            size={16}
+            title="Close modal"
+            onClick={() => actions.modalClosed()}
+          />
+        </Stack>
+      </Element>
       <Stack
         css={css({
           flex: 1,
