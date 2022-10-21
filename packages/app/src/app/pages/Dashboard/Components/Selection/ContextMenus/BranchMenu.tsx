@@ -16,8 +16,14 @@ type BranchMenuProps = {
   page: PageTypes;
 };
 export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
-  const { removeBranchFromRepository } = useActions().dashboard;
-  const { removingBranch } = useAppState().dashboard;
+  const {
+    removeBranchFromRepository,
+    removeRepositoryFromTeam,
+  } = useActions().dashboard;
+  const {
+    activeTeam,
+    dashboard: { removingBranch, removingRepository },
+  } = useAppState();
   const { visible, setVisibility, position } = React.useContext(Context);
 
   const { id, name, project, contribution } = branch;
@@ -63,26 +69,37 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
       <MenuItem onSelect={() => history.push(repoUrl)}>
         Open repository
       </MenuItem>
+      <Menu.Divider />
       {canRemoveBranch && (
-        <>
-          <Menu.Divider />
-          <MenuItem
-            disabled={removingBranch}
-            onSelect={() =>
-              !removingBranch &&
-              removeBranchFromRepository({
-                id,
-                owner,
-                repoName,
-                name,
-                page,
-              })
-            }
-          >
-            Remove branch from CodeSandbox
-          </MenuItem>
-        </>
+        <MenuItem
+          disabled={removingBranch}
+          onSelect={() =>
+            !removingBranch &&
+            removeBranchFromRepository({
+              id,
+              owner,
+              repoName,
+              name,
+              page,
+            })
+          }
+        >
+          Remove branch from CodeSandbox
+        </MenuItem>
       )}
+      <MenuItem
+        disabled={removingRepository}
+        onSelect={() =>
+          !removingRepository &&
+          removeRepositoryFromTeam({
+            owner,
+            name: repoName,
+            teamId: activeTeam,
+          })
+        }
+      >
+        Remove repository from CodeSandbox
+      </MenuItem>
     </Menu.ContextMenu>
   );
 };
