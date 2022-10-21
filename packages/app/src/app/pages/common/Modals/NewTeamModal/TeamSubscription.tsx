@@ -1,6 +1,7 @@
 import React from 'react';
 import css from '@styled-system/css';
 
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Icon, Stack, Text } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
@@ -155,6 +156,8 @@ export const TeamSubscription: React.FC = () => {
                 createCheckout({
                   team_id: activeTeamInfo.id,
                   recurring_interval: 'month' as string,
+                  success_path: dashboard.recent(activeTeamInfo.id),
+                  cancel_path: dashboard.recent(activeTeamInfo.id),
                 });
               }}
               loading={checkout.status === 'loading'}
