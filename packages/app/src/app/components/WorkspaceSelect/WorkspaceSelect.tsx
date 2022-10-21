@@ -4,7 +4,6 @@ import { Text, Menu, Stack, Icon, Tooltip } from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { Badge } from 'app/components/Badge';
-import { MenuItem } from './elements';
 
 interface WorkspaceSelectProps {
   disabled?: boolean;
@@ -85,15 +84,15 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 marginTop: 4,
                 borderRadius: '2px',
                 backgroundColor: '#242424',
-                borderColor: '#343434',
               }}
             >
               {workspaces.map(team => (
-                <MenuItem
+                <Stack
                   as={Menu.Item}
                   key={team.id}
                   align="center"
                   gap={2}
+                  css={{ borderBottom: '1px solid #343434' }}
                   onSelect={() => onSelect(team.id)}
                 >
                   <TeamAvatar
@@ -120,7 +119,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
 
                     {!team.subscription && <Badge color="accent">Free</Badge>}
                   </Stack>
-                </MenuItem>
+                </Stack>
               ))}
 
               <Stack
