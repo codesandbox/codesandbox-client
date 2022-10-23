@@ -70,7 +70,7 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
       </Element>
       <Stack align="center" direction="vertical" gap={2}>
         <Text
-          as="h1"
+          as="h2"
           size={32}
           weight="500"
           align="center"
