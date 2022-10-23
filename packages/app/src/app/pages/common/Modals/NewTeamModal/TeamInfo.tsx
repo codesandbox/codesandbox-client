@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useActions, useAppState } from 'app/overmind';
 import css from '@styled-system/css';
-import { Stack, Text, Input, Button, Link } from '@codesandbox/components';
+import { Stack, Text, Link, Element, Icon } from '@codesandbox/components';
+import { InputText } from 'app/components/dashboard/InputText';
+import { StyledButton } from 'app/components/dashboard/Button';
 
 export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
   onComplete,
@@ -45,37 +47,70 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
   const error = Boolean(dashboard.teams.find(team => team.name === name));
 
   return (
-    <Stack align="center" direction="vertical" gap={5}>
+    <Stack
+      align="center"
+      direction="vertical"
+      gap={6}
+      css={{
+        paddingTop: '60px',
+        paddingBottom: '48px',
+        maxWidth: '370px',
+        width: '100%',
+      }}
+    >
+      <Element
+        css={{ backgroundColor: '#252525', borderRadius: '4px' }}
+        padding={6}
+      >
+        <Icon
+          name="camera"
+          size={16}
+          css={{ color: '#C2C2C2', display: 'block' }}
+        />
+      </Element>
       <Stack align="center" direction="vertical" gap={2}>
         <Text
-          as="h2"
-          css={css({
+          as="h1"
+          size={32}
+          weight="500"
+          align="center"
+          css={{
+            margin: 0,
+            color: '#ffffff',
             fontFamily: 'Everett, sans-serif',
-            margin: '0',
-          })}
-          size={8}
+            lineHeight: '42px',
+            letterSpacing: '-0.01em',
+          }}
         >
           Create team
         </Text>
         <Text
           as="p"
+          size={13}
           css={css({
             color: '#999999',
             margin: '0',
+            lineHeight: '16px',
           })}
         >
           Teams are the best way of collaborating in CodeSandbox.
         </Text>
       </Stack>
-      <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={6}>
-        <Input
+      <Stack
+        as="form"
+        onSubmit={onSubmit}
+        direction="vertical"
+        gap={6}
+        css={{ width: '100%' }}
+      >
+        <InputText
+          label="Team name"
+          id="teamname"
           name="name"
-          type="text"
-          placeholder="Team name"
-          autoFocus
           required
+          autoFocus
           onChange={handleInput}
-          css={css({ height: 8 })}
+          value={name}
         />
 
         {error && (
@@ -84,24 +119,29 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
           </Text>
         )}
 
-        <Button
-          autoWidth
+        <StyledButton
           loading={loading}
           disabled={loading || error}
           type="submit"
         >
           Create Team
-        </Button>
-        <Link
-          css={css({
-            color: '#999999',
-          })}
-          to="#"
-          target="_blank"
-        >
-          <Text size={2}>More about teams and workspaces</Text>
-        </Link>
+        </StyledButton>
       </Stack>
+      <Element paddingTop={10}>
+        <Link
+          css={{
+            color: '#999999',
+          }}
+          href="https://codesandbox.io/docs/learn/introduction/workspace"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Stack gap={3} justify="center">
+            <Text size={2}>More about teams and workspaces</Text>
+            <Icon name="external" size={16} />
+          </Stack>
+        </Link>
+      </Element>
     </Stack>
   );
 };
