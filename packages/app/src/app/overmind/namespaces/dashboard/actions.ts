@@ -259,7 +259,7 @@ export const inviteToTeam = async (
     });
     let data: any | null = null;
     if (isEmail) {
-      const emailInvited = await effects.gql.mutations.inviteToTeamVieEmail({
+      const emailInvited = await effects.gql.mutations.inviteToTeamViaEmail({
         teamId: state.activeTeam,
         email: value,
         authorization,
