@@ -56,12 +56,19 @@ export const Recent = () => {
         .slice(0, 12);
 
   const pageType: PageTypes = 'recent';
+  const isEmpty = !dataIsLoading && items.length === 0;
+
   return (
     <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      <Header title="Recent" activeTeam={activeTeam} showViewOptions />
+      <Header
+        title={isEmpty ? "Let's start building" : 'Recent'}
+        activeTeam={activeTeam}
+        loading={dataIsLoading}
+        showViewOptions
+      />
       <VariableGrid page={pageType} items={items} />
     </SelectionProvider>
   );
