@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom';
 import { orderBy } from 'lodash-es';
 import { join, dirname } from 'path';
@@ -14,7 +14,6 @@ import {
   Element,
   List,
   SidebarListAction,
-  SidebarListItem,
   Link,
   Text,
   Stack,
@@ -23,7 +22,6 @@ import {
   Input,
   IconNames,
 } from '@codesandbox/components';
-import styled from 'styled-components';
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
@@ -52,18 +50,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const history = useHistory();
   const state = useAppState();
   const actions = useActions();
-  const [activeAccount, setActiveAccount] = useState<{
-    id: string;
-    name: string;
-    avatarUrl: string;
-  } | null>(null);
-  const {
-    dashboard,
-    activeTeam,
-    activeTeamInfo,
-    user,
-    personalWorkspaceId,
-  } = state;
+
+  const { dashboard, activeTeam, activeTeamInfo, personalWorkspaceId } = state;
 
   React.useEffect(() => {
     // Used to fetch collections
@@ -77,21 +65,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       state.activeTeam !== personalWorkspaceId ? state.activeTeam : undefined
     );
   }, [state.activeTeam, personalWorkspaceId, actions.sidebar]);
-
-  React.useEffect(() => {
-    if (state.activeTeam) {
-      const team = dashboard.teams.find(({ id }) => id === state.activeTeam);
-      if (team) {
-        const isPersonalWorkspace = team.id === personalWorkspaceId;
-        setActiveAccount({
-          id: team.id,
-          name: team.name,
-          avatarUrl:
-            isPersonalWorkspace && user ? user.avatarUrl : team.avatarUrl,
-        });
-      }
-    }
-  }, [state.activeTeam, state.activeTeamInfo, dashboard.teams]);
 
   const folders =
     (dashboard.allCollections || []).filter(folder => folder.path !== '/') ||
@@ -122,6 +95,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setNewFolderPath,
   };
 
+  const isPersonalSpace = activeTeam === personalWorkspaceId;
+
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
       <Stack
@@ -132,82 +107,95 @@ export const Sidebar: React.FC<SidebarProps> = ({
           left: visible ? 0 : -1 * SIDEBAR_WIDTH,
           transition: { duration: visible ? 0.2 : 0.15 },
         }}
+        gap={6}
         {...props}
         css={css({
-          borderRight: '1px solid',
-          borderColor: 'transparent',
-          backgroundColor: 'sideBar.background',
           width: SIDEBAR_WIDTH,
-          flexShrink: 0,
           zIndex: 3,
-          overflowY: 'auto',
-          overflowX: 'hidden',
+          paddingTop: '23px',
           ...props.css,
         })}
       >
+        <Stack direction="horizontal">
+          {dashboard.teams.length > 0 && activeTeamInfo ? (
+            <WorkspaceSelect
+              selectedTeamId={activeTeam}
+              onSelect={teamId => {
+                actions.setActiveTeam({
+                  id: teamId,
+                });
+
+                history.replace(dashboardUrls.recent(teamId));
+              }}
+            />
+          ) : (
+            <Stack align="center" css={{ width: '100%', paddingLeft: '28px' }}>
+              <SkeletonTextBlock
+                css={{ width: 120, height: 12, marginLeft: 8 }}
+              />
+            </Stack>
+          )}
+          <Link
+            css={{
+              height: '36px',
+              width: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#C2C2C2',
+              transition: 'all 0.1s ease-in',
+              borderRadius: '0 2px 2px 0',
+              '&:hover': {
+                background: '#242424',
+                color: '#fff',
+              },
+            }}
+            as={RouterLink}
+            to={dashboardUrls.settings(state.activeTeam)}
+            title="Settings"
+          >
+            <Icon name="gear" size={16} />
+          </Link>
+        </Stack>
+
         <List
-          css={css({
+          css={{
             display: 'flex',
             flexDirection: 'column',
+            flex: 1,
             height: '100%',
-            paddingBottom: 6,
-          })}
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}
         >
-          <SidebarListItem
-            css={css({
-              marginTop: 6,
-              paddingLeft: 2,
-              paddingRight: 0,
-              borderRadius: 2,
-              marginLeft: 2,
-              minHeight: 8,
-            })}
-          >
-            {activeAccount ? (
-              <WorkspaceSelect
-                onSelect={workspace => {
-                  actions.setActiveTeam({
-                    id: workspace.id,
-                  });
-
-                  history.replace(dashboardUrls.recent(workspace.id));
-                }}
-                activeAccount={activeAccount}
-              />
-            ) : (
-              <Stack align="center" css={{ width: '100%' }}>
-                <SkeletonTextBlock
-                  css={{ width: 26, height: 26, marginLeft: 8 }}
-                />
-                <SkeletonTextBlock
-                  css={{ width: 65, height: 12, marginLeft: 8 }}
-                />
-              </Stack>
-            )}
-            <Link
-              css={css({ height: '100%' })}
-              as={RouterLink}
-              to={dashboardUrls.settings(state.activeTeam)}
-            >
-              <IconButton
-                name="gear"
-                size={16}
-                title="Settings"
-                css={css({
-                  width: 8,
-                  height: '100%',
-                  borderRadius: 0,
-                })}
-              />
-            </Link>
-          </SidebarListItem>
           <RowItem
             name="Recent"
             page="recent"
             path={dashboardUrls.recent(activeTeam)}
             icon="clock"
-            style={{ marginTop: 8 }}
           />
+          <RowItem
+            name="Discover"
+            page="discover"
+            path={dashboardUrls.discover(activeTeam)}
+            icon="discover"
+          />
+          {isPersonalSpace && (
+            <RowItem
+              name="Shared With Me"
+              page="shared"
+              path={dashboardUrls.shared(activeTeam)}
+              icon="sharing"
+            />
+          )}
+          {isPersonalSpace && (
+            <RowItem
+              name="Likes"
+              page="liked"
+              path={dashboardUrls.liked(activeTeam)}
+              icon="heart"
+            />
+          )}
           <Element marginTop={4} />
           <Element paddingX={7} paddingY={2}>
             <Text
@@ -218,7 +206,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               Repositories
             </Text>
           </Element>
-          {activeTeam === personalWorkspaceId && (
+          {isPersonalSpace && (
             <RowItem
               name="My contributions"
               page="my-contributions"
@@ -306,37 +294,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
             path={dashboardUrls.archive(activeTeam)}
             icon="archive"
           />
-          <Element
-            marginTop={8}
-            css={css({
-              flex: 1, // This pushes the bottom links all the way down
-            })}
-          />
-          <RowItem
-            name="Discover"
-            page="discover"
-            path={dashboardUrls.discover(activeTeam)}
-            icon="discover"
-          />
-          <RowItem
-            name="Shared With Me"
-            page="shared"
-            path={dashboardUrls.shared(activeTeam)}
-            icon="sharing"
-          />
-          <RowItem
-            name="Likes"
-            page="liked"
-            path={dashboardUrls.liked(activeTeam)}
-            icon="heart"
-          />
-          <RowItem
-            name="Documentation"
-            page="external"
-            path="https://codesandbox.io/docs"
-            icon="documentation"
-          />
+          <Element marginTop={3} />
         </List>
+        {!activeTeamInfo?.subscription && !isPersonalSpace && (
+          <Stack
+            css={{ padding: '24px', paddingTop: 0, alignItems: 'flex-start' }}
+            direction="vertical"
+            gap={2}
+          >
+            <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
+              Upgrade to Team PRO for the full CodeSandbox Experience.
+            </Text>
+            <Link
+              as={RouterLink}
+              to="/pro"
+              title="Upgrade to Team PRO"
+              css={{
+                fontSize: '12px',
+                fontWeight: 500,
+                color: '#EDFFA5',
+                textDecoration: 'none',
+              }}
+            >
+              Upgrade now
+            </Link>
+          </Stack>
+        )}
       </Stack>
       <AnimatePresence>
         {visible && (
@@ -383,23 +366,6 @@ const linkStyles = {
   paddingRight: 8,
   flexShrink: 0,
 };
-
-const Badge = styled.p`
-  border-radius: 2px;
-  background-color: ${({ theme }) => theme.colors.blues[700]};
-  color: ${({ theme }) => theme.colors.white};
-
-  width: ${({ theme }) => theme.sizes[7]}px;
-  height: ${({ theme }) => theme.sizes[3]}px;
-
-  text-align: center;
-  line-height: 1.3;
-  font-size: ${({ theme }) => theme.fontSizes[1]}px;
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-
-  position: relative;
-  top: 1px; // 👌
-`;
 
 const canNotAcceptSandboxes: PageTypes[] = ['recent', 'always-on'];
 const canNotAcceptFolders: PageTypes[] = [
@@ -463,7 +429,6 @@ interface RowItemProps {
   setFoldersVisibility?: (val: boolean) => void;
   folderPath?: string;
   style?: React.CSSProperties;
-  badge?: boolean;
   nestingLevel?: number;
 }
 const RowItem: React.FC<RowItemProps> = ({
@@ -474,7 +439,6 @@ const RowItem: React.FC<RowItemProps> = ({
   page,
   icon,
   setFoldersVisibility = null,
-  badge,
   ...props
 }) => {
   const accepts: Array<'sandbox' | 'folder' | 'template'> = [];
@@ -597,23 +561,13 @@ const RowItem: React.FC<RowItemProps> = ({
         >
           <Stack
             as="span"
-            css={css({ width: 10 })}
+            css={{ width: '40px' }}
             align="center"
             justify="center"
           >
             <Icon name={icon} />
           </Stack>
           {name}
-          {badge && (
-            <Stack
-              as="span"
-              css={css({ width: 10 })}
-              align="center"
-              justify="center"
-            >
-              <Badge>New</Badge>
-            </Stack>
-          )}
 
           {isPageWithNotification && !isNotificationDismissed ? (
             <Element
@@ -879,7 +833,7 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                 marginRight: '8px',
               }}
             >
-              <Icon name="folder" size={16} css={css({ flexShrink: 0 })} />
+              <Icon name="folder" size={16} />
             </Stack>
 
             {isRenaming || isNewFolder ? (
@@ -892,7 +846,6 @@ const NestableRowItem: React.FC<NestableRowItemProps> = ({
                   onChange={onChange}
                   onKeyDown={onInputKeyDown}
                   onBlur={onInputBlur}
-                  css={css({ fontSize: 4 })}
                 />
               </form>
             ) : (
