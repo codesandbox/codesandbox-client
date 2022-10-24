@@ -6,6 +6,7 @@ import { useActions } from 'app/overmind';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { PageTypes } from '../../types';
 import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid';
+import { TemplatesRow } from '../TemplatesRow';
 
 interface EmptyScreenProps {
   collectionId?: string;
@@ -336,6 +337,14 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
           </Stack>
         </Stack>
       </Stack>
+    );
+  }
+
+  if (page === 'recent') {
+    return (
+      <Element marginTop={32}>
+        <TemplatesRow />
+      </Element>
     );
   }
 
