@@ -16,6 +16,7 @@ export const Badge: React.FC<BadgeProps> = ({
     css={{
       alignItems: 'center',
       padding: icon ? '4px 8px' : '1px 6px',
+      userSelect: 'none',
 
       borderRadius: '999px',
 
