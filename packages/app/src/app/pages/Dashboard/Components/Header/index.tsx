@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
-import { Stack, Text, Button, Icon, Badge } from '@codesandbox/components';
+import {
+  Badge,
+  Stack,
+  Text,
+  Button,
+  Icon,
+  SkeletonText,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
@@ -31,6 +38,7 @@ type Props = {
   activeTeam: string;
   CustomFilters?: React.ReactElement;
   selectedRepo?: { owner: string; name: string };
+  loading?: boolean;
 };
 
 export const Header = ({
@@ -48,6 +56,7 @@ export const Header = ({
   CustomFilters,
   actions = [],
   selectedRepo,
+  loading = false,
 }: Props) => {
   const location = useLocation();
   const { modals, dashboard: dashboardActions } = useActions();
@@ -83,17 +92,23 @@ export const Header = ({
       })}
     >
       <Stack align="center" marginBottom={1} marginTop={-2} gap={2}>
-        {title ? (
-          <Text size={6}>{title}</Text>
+        {loading ? (
+          <SkeletonText css={css({ height: 6 })} />
         ) : (
-          <Breadcrumbs
-            nestedPageType={nestedPageType}
-            activeTeam={activeTeam}
-            path={path}
-            albumId={albumId}
-          />
+          <>
+            {title ? (
+              <Text size={6}>{title}</Text>
+            ) : (
+              <Breadcrumbs
+                nestedPageType={nestedPageType}
+                activeTeam={activeTeam}
+                path={path}
+                albumId={albumId}
+              />
+            )}
+            {showBetaBadge && <Badge icon="cloud">Beta</Badge>}
+          </>
         )}
-        {showBetaBadge && <Badge icon="cloud">Beta</Badge>}
       </Stack>
       <Stack gap={4} align="center">
         {location.pathname.includes('/sandboxes') && (
