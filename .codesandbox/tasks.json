@@ -27,6 +27,10 @@
         "port": 8000,
         "prLink": "redirect"
       }
+    },
+    "storybook": {
+      "name": "Run storybook",
+      "command": "cd packages/components && yarn start:storybook"
     }
   },
   "setupTasks": [

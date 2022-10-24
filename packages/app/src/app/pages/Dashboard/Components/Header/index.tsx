@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
-import { Stack, Text, Button, Icon } from '@codesandbox/components';
+import { Stack, Text, Button, Icon, Badge } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
@@ -94,7 +93,7 @@ export const Header = ({
             albumId={albumId}
           />
         )}
-        {showBetaBadge && <CloudBetaBadge />}
+        {showBetaBadge && <Badge icon="cloud">Beta</Badge>}
       </Stack>
       <Stack gap={4} align="center">
         {location.pathname.includes('/sandboxes') && (

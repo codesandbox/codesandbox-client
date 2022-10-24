@@ -1,9 +1,15 @@
 import React from 'react';
 import { useActions, useAppState } from 'app/overmind';
-import { Text, Menu, Stack, Icon, Tooltip } from '@codesandbox/components';
+import {
+  Badge,
+  Text,
+  Menu,
+  Stack,
+  Icon,
+  Tooltip,
+} from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
-import { Badge } from 'app/components/Badge';
 
 interface WorkspaceSelectProps {
   disabled?: boolean;
