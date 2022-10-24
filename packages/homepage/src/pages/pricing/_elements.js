@@ -64,9 +64,6 @@ export const BoxPlan = styled.a`
   text-align: center;
   color: #808080;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   transition: transform 0.3s ease-in-out;
 
   @media (min-width: 769px) {
@@ -97,7 +94,7 @@ export const BoxPlan = styled.a`
     margin-bottom: 0;
 
     @media (min-width: 769px) {
-      max-width: 220px;
+      max-width: 225px;
       font-size: 16px;
       line-height: 24px;
     }
@@ -199,6 +196,7 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
     font-weight: 500;
     line-height: 1;
     font-size: 48px;
+    height: 64px;
     margin-bottom: 8px;
 
     @media (min-width: 769px) {
@@ -209,6 +207,7 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
 
   .caption {
     font-size: 12px;
+    height: 32px;
     line-height: 16px;
     max-width: 200px;
 
@@ -222,17 +221,9 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
     return (
       customPrice &&
       css`
-        margin-top: -24px; // Visually align with the other cards.
-
-        .plan {
-          margin-bottom: 0;
-
-          @media (min-width: 769px) {
-            margin-bottom: 0;
-          }
-        }
-
         .price {
+          max-width: 220px;
+
           @media (min-width: 769px) {
             font-size: 48px;
             line-height: 68px;
@@ -241,6 +232,14 @@ export const BoxPlanPrice = styled(({ plan, price, caption, className }) => {
       `
     );
   }}
+`;
+
+export const BoxPlanList = styled.ul`
+  height: 210px;
+
+  @media (min-width: 769px) {
+    height: 258px;
+  }
 `;
 
 export const ComparePlansLink = styled(({ scrollTo, ...props }) => {

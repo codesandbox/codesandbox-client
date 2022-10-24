@@ -14,7 +14,7 @@ const team_plans = [
         caption: 'Maximum number of editors in a team.',
         team_free: '5',
         team_pro: '20',
-        org_custom: 'Unlimited',
+        org_custom: '20+ (no limit)',
       },
       {
         title: 'Sandboxes',
@@ -296,7 +296,7 @@ export const Plans = () => {
                       <th className="column__desktop plan__org-custom">
                         <p>Organization</p>
                         <a
-                          href="mailto:support@codesandbox.io?subject=Organization plan"
+                          href="https://codesandbox.typeform.com/organization"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
