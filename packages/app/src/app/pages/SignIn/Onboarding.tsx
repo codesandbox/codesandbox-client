@@ -114,7 +114,15 @@ export const Onboarding = () => {
             }}
             value={newUsername}
             onChange={e => setNewUsername(e.target.value)}
+            required
+            isInvalid={pendingUser.valid === false}
           />
+
+          {!pendingUser.valid ? (
+            <Text size={3} variant="danger">
+              Sorry, that username is already taken.
+            </Text>
+          ) : null}
 
           <InputText
             id="displayname"
@@ -122,6 +130,7 @@ export const Onboarding = () => {
             label="Display name"
             value={newDisplayName}
             onChange={e => setNewDisplayName(e.target.value)}
+            required
           />
 
           <InputSelect
@@ -130,6 +139,7 @@ export const Onboarding = () => {
             label="What best describes your role?"
             options={ROLE_OPTIONS}
             placeholder="Please select an option"
+            required
           />
 
           <InputSelect
@@ -138,14 +148,8 @@ export const Onboarding = () => {
             label="How do you plan to use CodeSandbox?"
             options={USAGE_OPTIONS}
             placeholder="Please select an option"
+            required
           />
-
-          {/* TODO: Move this to the username InputText */}
-          {!pendingUser.valid ? (
-            <Text size={3} variant="danger">
-              Sorry, that username is already taken.
-            </Text>
-          ) : null}
         </Stack>
         <StyledButton
           type="submit"
