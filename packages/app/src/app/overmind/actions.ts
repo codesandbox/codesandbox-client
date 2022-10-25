@@ -12,6 +12,7 @@ import * as internalActions from './internalActions';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
+import { FinalizeSignUpOptions } from './effects/api/types';
 
 export const internal = internalActions;
 
@@ -603,15 +604,10 @@ export const validateUsername = async (
   state.pendingUser.valid = validity.available;
 };
 
+type SignUpOptions = Omit<FinalizeSignUpOptions, 'id'>;
 export const finalizeSignUp = async (
   { effects, actions, state }: Context,
-  {
-    username,
-    name,
-  }: {
-    username: string;
-    name: string;
-  }
+  { username, name, role, usage }: SignUpOptions
 ) => {
   if (!state.pendingUser) return;
   try {
@@ -619,6 +615,8 @@ export const finalizeSignUp = async (
       id: state.pendingUser.id,
       username,
       name,
+      role,
+      usage,
     });
     window.postMessage(
       {

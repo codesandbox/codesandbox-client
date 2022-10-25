@@ -33,3 +33,11 @@ export type SandboxAPIResponse = Omit<Sandbox, 'environmentVariables'> & {
   modules: IModuleAPIResponse[];
   directories: IDirectoryAPIResponse[];
 };
+
+export type FinalizeSignUpOptions = {
+  id: string;
+  name: string;
+  username: string;
+  role: string;
+  usage: string;
+};
