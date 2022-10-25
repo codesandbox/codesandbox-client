@@ -121,8 +121,8 @@ export const Onboarding = () => {
             }}
             value={newUsername}
             onChange={e => setNewUsername(e.target.value)}
-            required
             isInvalid={pendingUser.valid === false}
+            required
           />
 
           {!pendingUser.valid ? (
