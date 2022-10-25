@@ -122,11 +122,13 @@ export const Onboarding = () => {
             value={newUsername}
             onChange={e => setNewUsername(e.target.value)}
             isInvalid={pendingUser.valid === false}
+            aria-invalid={!pendingUser.valid ? true : undefined}
+            aria-describedby={!pendingUser.valid ? 'user-error' : undefined}
             required
           />
 
           {!pendingUser.valid ? (
-            <Text size={3} variant="danger">
+            <Text size={3} variant="danger" id="user-error">
               Sorry, that username is already taken.
             </Text>
           ) : null}
