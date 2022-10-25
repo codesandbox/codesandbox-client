@@ -1,51 +1,82 @@
 import React, { FormEvent, useState } from 'react';
 import { Button, Stack, Text } from '@codesandbox/components';
-import { useAppState } from 'app/overmind';
+import { useAppState, useEffects } from 'app/overmind';
 import { StyledButton } from 'app/components/dashboard/Button';
 import { Textarea } from 'app/components/dashboard/Textarea';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 
-// function validateEmail(email: string) {
-//   // Test for "anything@anything.anything" and check for
-//   // multiple @ signs.
-//   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-// }
+function validateEmail(email: string) {
+  // Test for "anything@anything.anything" and check for
+  // multiple @ signs.
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function formatInvalidEmails(invalidEmails: string[]) {
+  const isSingleEmail = invalidEmails.length === 1;
+
+  if (isSingleEmail) {
+    return `${invalidEmails[0]}.`;
+  }
+
+  return invalidEmails.map((invalidEmail, index, arr) => {
+    const isFirstEmail = index === 0;
+    const isLastEmail = arr.length - 1 === index;
+
+    return `${
+      isLastEmail
+        ? ` and ${invalidEmail}.`
+        : `${isFirstEmail ? '' : ', '}${invalidEmail}`
+    }`;
+  });
+}
 
 export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
   onComplete,
 }) => {
   const { activeTeamInfo } = useAppState();
+  const { gql } = useEffects();
   const [addressesString, setAddressesString] = useState<string>();
-  const [invalidEmails /* , setInvalidEmails */] = useState<string[]>();
+  const [invalidEmails, setInvalidEmails] = useState<string[]>();
+  const [inviteError, setInviteError] = useState<string>();
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setInviteError(null);
 
-    /**
-     * Submitting emails is a work in progress. We're not sure if we
-     * can invite as many users at the same time.
-     */
+    // Remove spaces (and other whitespace) and split email addresses
+    const emails = addressesString.replace(/\s/g, '').split(',');
 
-    // Remove spaces and split email addresses
-    // const emails = addressesString.replace(' ', '').split(',');
+    // Validate emails
+    const invalid = emails.filter(email => {
+      const isValidEmail = validateEmail(email);
 
-    // // Validate emails
-    // const invalid = emails.filter(email => {
-    //   const isValidEmail = validateEmail(email);
+      // Return when the email is not valid
+      return !isValidEmail;
+    });
 
-    //   // Return when the email is not valid
-    //   return !isValidEmail;
-    // });
+    if (invalid.length === 0) {
+      setInvalidEmails(null);
 
-    // if (invalid.length === 0) {
-    //   // Send invites
-    //   emails.forEach(email => {
-    //     // send invite
-    //     // TODO: WIP
-    //   });
-    // } else {
-    //   // Set error with invalid
-    //   setInvalidEmails(invalid);
-    // }
+      // Invite via email
+      try {
+        await gql.mutations.inviteToTeamViaEmail({
+          teamId: activeTeamInfo.id,
+          email: addressesString,
+          authorization: TeamMemberAuthorization.Write,
+        });
+      } catch (error) {
+        // ❗️ TODO: Validate if this works!
+        // Copied logic from inviteToTeam function in dashboard/actions.ts
+        const message =
+          error?.response?.errors?.[0]?.message ||
+          'There was a problem sending the invitations.';
+
+        setInviteError(message);
+      }
+    } else {
+      // Set error with invalid
+      setInvalidEmails(invalid);
+    }
   };
 
   return (
@@ -96,17 +127,20 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
         />
         {invalidEmails?.length > 0 ? (
           <Text size={2} variant="danger">
-            There seems to be an error in the following addresses, please
-            review:{' '}
-            {invalidEmails.map((invalidEmail, index, arr) => {
-              const isLastEmail = arr.length - 1 === index;
-              return `${invalidEmail}${isLastEmail ? '.' : ', '}`;
-            })}
+            {invalidEmails.length > 1
+              ? 'There seem to be errors in some email addresses, '
+              : 'Email is invalid, '}
+            please review: {formatInvalidEmails(invalidEmails)}
           </Text>
         ) : null}
-        <StyledButton type="submit" disabled>
-          Invite members
-        </StyledButton>
+
+        {inviteError ? (
+          <Text size={2} variant="danger">
+            {inviteError}
+          </Text>
+        ) : null}
+
+        <StyledButton type="submit">Invite members</StyledButton>
       </Stack>
       <Button onClick={onComplete} variant="link">
         Skip
