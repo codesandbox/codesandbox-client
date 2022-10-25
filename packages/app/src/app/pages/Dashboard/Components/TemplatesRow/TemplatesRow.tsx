@@ -88,19 +88,32 @@ export const TemplatesRow: React.FC = () => {
                 actions.openCreateSandboxModal({ initialTab: 'import' })
               }
             >
-              <Stack justify="center" direction="vertical" gap={4}>
-                <GitHubIcon />
-                <Text
+              <Stack
+                css={{
+                  height: '100%',
+                }}
+                direction="vertical"
+                gap={4}
+              >
+                <GitHubIcon size={32} />
+                <Stack
+                  align="center"
                   css={{
-                    fontSize: '14px',
-                    fontWeight: 500,
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
+                    flex: 1,
                   }}
                 >
-                  Open from GitHub
-                </Text>
+                  <Text
+                    css={{
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Open from GitHub
+                  </Text>
+                </Stack>
               </Stack>
             </TemplateButton>
             <TemplateButton
