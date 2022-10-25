@@ -27,7 +27,7 @@ const GlobalStyles = createGlobalStyle({
 });
 
 const COLUMN_MEDIA_THRESHOLD = 1600;
-const wnoct22 = 'wnoct22'; // = whats new oct 22
+const WNOCT22 = 'WNOCT22'; // = whats new oct 22
 
 export const Dashboard: FunctionComponent = () => {
   const { hasLogIn, modals } = useAppState();
@@ -52,9 +52,9 @@ export const Dashboard: FunctionComponent = () => {
       // Remove the new user flag
       browser.storage.remove(NUOCT22);
       // Dismiss the whats new flag
-      browser.storage.set(wnoct22, true);
+      browser.storage.set(WNOCT22, true);
     } else {
-      const isWhatsNewModalDismissed = browser.storage.get(wnoct22);
+      const isWhatsNewModalDismissed = browser.storage.get(WNOCT22);
 
       if (!isWhatsNewModalDismissed && !modals.whatsNew.isCurrent) {
         // For existing users we show the whats new modal
@@ -64,7 +64,7 @@ export const Dashboard: FunctionComponent = () => {
   }, [browser.storage, modals.whatsNew.isCurrent, actions]);
 
   const handleWhatsNewModalClose = () => {
-    browser.storage.set(wnoct22, true);
+    browser.storage.set(WNOCT22, true);
     actions.modals.whatsNew.close();
   };
 
