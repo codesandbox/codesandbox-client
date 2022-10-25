@@ -20,6 +20,7 @@ import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
 import { WhatsNew } from './Components/WhatsNew/WhatsNew';
+import { NUOCT22 } from '../SignIn/Onboarding';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
@@ -42,12 +43,25 @@ export const Dashboard: FunctionComponent = () => {
   const theme = useTheme() as any;
 
   useEffect(() => {
-    const isModalDismissed = browser.storage.get(wnoct22);
+    const isNewUser = browser.storage.get(NUOCT22);
 
-    if (!isModalDismissed && !modals.whatsNew.isCurrent) {
-      actions.modals.whatsNew.open();
+    if (isNewUser) {
+      // Open the create team modal for newly signed up users
+      actions.openCreateTeamModal();
+
+      // Remove the new user flag
+      browser.storage.remove(NUOCT22);
+      // Dismiss the whats new flag
+      browser.storage.set(wnoct22, true);
+    } else {
+      const isWhatsNewModalDismissed = browser.storage.get(wnoct22);
+
+      if (!isWhatsNewModalDismissed && !modals.whatsNew.isCurrent) {
+        // For existing users we show the whats new modal
+        actions.modals.whatsNew.open();
+      }
     }
-  }, [browser.storage, modals.whatsNew.isCurrent, actions.modals.whatsNew]);
+  }, [browser.storage, modals.whatsNew.isCurrent, actions]);
 
   const handleWhatsNewModalClose = () => {
     browser.storage.set(wnoct22, true);

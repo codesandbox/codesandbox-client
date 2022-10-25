@@ -22,8 +22,20 @@ export const SignIn = ({ redirectTo, onSignIn }: SignInProps) => {
     }
   }, [getPendingUser, pendingUserId]);
 
-  if (duplicateAccountStatus) {
-    return <DuplicateAccount provider={duplicateAccountStatus.provider} />;
+  /**
+   * 🚧 Utility to debug Duplicate Account
+   */
+  const DA_DEBUG = window.localStorage.getItem('DA_DEBUG') === 'ENABLED';
+
+  // 🚧 Remove || DA_DEBUG
+  if (duplicateAccountStatus || DA_DEBUG) {
+    // 🚧 Remove
+    return DA_DEBUG ? (
+      <DuplicateAccount provider={'google'} />
+    ) : (
+      // 🚧 Keep this (return)
+      <DuplicateAccount provider={duplicateAccountStatus.provider} />
+    );
   }
 
   /**

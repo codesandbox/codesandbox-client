@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Element, Text, Stack } from '@codesandbox/components';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { InputText } from 'app/components/dashboard/InputText';
 import { InputSelect } from 'app/components/dashboard/InputSelect';
 import { StyledButton } from 'app/components/dashboard/Button';
@@ -25,6 +25,8 @@ const USAGE_OPTIONS = [
   { value: 'other', label: 'Other' },
 ];
 
+export const NUOCT22 = 'NUOCT22'; // = new user oct 22
+
 export const Onboarding = () => {
   /**
    * 🚧 Utility to debug Trial Onboarding Questions
@@ -48,11 +50,16 @@ export const Onboarding = () => {
     };
   }
 
+  const { browser } = useEffects();
   const { validateUsername, finalizeSignUp } = useActions();
   const [newUsername, setNewUsername] = useState(pendingUser?.username || '');
   const [newDisplayName, setNewDisplayName] = useState(pendingUser?.name || '');
   const [loadingUsername, setLoadingUserName] = useState(false);
   const firstName = pendingUser?.name.split(' ')[0];
+
+  // Set flag to make sure we show the create team modal and not the
+  // what's new modal after signup.
+  browser.storage.set(NUOCT22, true);
 
   return (
     <Stack
@@ -114,7 +121,17 @@ export const Onboarding = () => {
             }}
             value={newUsername}
             onChange={e => setNewUsername(e.target.value)}
+            isInvalid={pendingUser.valid === false}
+            aria-invalid={!pendingUser.valid ? true : undefined}
+            aria-describedby={!pendingUser.valid ? 'user-error' : undefined}
+            required
           />
+
+          {!pendingUser.valid ? (
+            <Text size={3} variant="danger" id="user-error">
+              Sorry, that username is already taken.
+            </Text>
+          ) : null}
 
           <InputText
             id="displayname"
@@ -122,6 +139,7 @@ export const Onboarding = () => {
             label="Display name"
             value={newDisplayName}
             onChange={e => setNewDisplayName(e.target.value)}
+            required
           />
 
           <InputSelect
@@ -130,6 +148,7 @@ export const Onboarding = () => {
             label="What best describes your role?"
             options={ROLE_OPTIONS}
             placeholder="Please select an option"
+            required
           />
 
           <InputSelect
@@ -138,14 +157,8 @@ export const Onboarding = () => {
             label="How do you plan to use CodeSandbox?"
             options={USAGE_OPTIONS}
             placeholder="Please select an option"
+            required
           />
-
-          {/* TODO: Move this to the username InputText */}
-          {!pendingUser.valid ? (
-            <Text size={3} variant="danger">
-              Sorry, that username is already taken.
-            </Text>
-          ) : null}
         </Stack>
         <StyledButton
           type="submit"
