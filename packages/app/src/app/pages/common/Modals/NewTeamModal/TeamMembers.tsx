@@ -64,6 +64,8 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
           email: addressesString,
           authorization: TeamMemberAuthorization.Write,
         });
+
+        onComplete();
       } catch (error) {
         // ❗️ TODO: Validate if this works!
         // Copied logic from inviteToTeam function in dashboard/actions.ts
