@@ -1,15 +1,42 @@
 import React from 'react';
 import css from '@styled-system/css';
 import { Icon, SkeletonText, Stack, Text } from '@codesandbox/components';
+import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOfficialTemplates } from 'app/components/CreateSandbox/useOfficialTemplates';
 import { TemplateCard } from 'app/components/CreateSandbox/TemplateCard';
 import { TemplateButton } from 'app/components/CreateSandbox/elements';
 import { GitHubIcon } from 'app/components/CreateSandbox/Icons';
+import { useActions, useAppState } from 'app/overmind';
+import { TemplateFragment } from 'app/graphql/types';
 import { GUTTER } from '../VariableGrid';
 import { TemplatesGrid } from './elements';
 
 export const TemplatesRow: React.FC = () => {
   const officialTemplates = useOfficialTemplates();
+  const actions = useActions();
+  const { dashboard } = useAppState();
+
+  const collection = dashboard.allCollections.find(c => c.path === '/');
+
+  const handleOpenTemplate = (template: TemplateFragment) => {
+    const { sandbox } = template;
+    const url = sandboxUrl(sandbox);
+    window.open(url, '_blank');
+  };
+
+  const handleSelectTemplate = (template: TemplateFragment) => {
+    const { sandbox } = template;
+
+    actions.editor.forkExternalSandbox({
+      sandboxId: sandbox.id,
+      openInNewWindow: false,
+      body: {
+        collectionId: collection?.id,
+      },
+    });
+
+    actions.modals.newSandboxModal.close();
+  };
 
   return (
     <Stack
@@ -39,7 +66,7 @@ export const TemplatesRow: React.FC = () => {
               key={`templates-skeleton-${i}`}
               css={css({
                 width: '100%',
-                height: '124px',
+                height: '116px',
               })}
             />
           ))}
@@ -52,19 +79,16 @@ export const TemplatesRow: React.FC = () => {
                 <TemplateCard
                   key={template.id}
                   template={template}
-                  onOpenTemplate={() => alert('open')}
-                  onSelectTemplate={() => alert('select')}
+                  onOpenTemplate={handleOpenTemplate}
+                  onSelectTemplate={handleSelectTemplate}
                 />
               ))}
-            <TemplateButton>
-              <Stack
-                css={{
-                  height: '124px',
-                }}
-                justify="center"
-                direction="vertical"
-                gap={4}
-              >
+            <TemplateButton
+              onClick={() =>
+                actions.openCreateSandboxModal({ initialTab: 'import' })
+              }
+            >
+              <Stack justify="center" direction="vertical" gap={4}>
                 <GitHubIcon />
                 <Text
                   css={{
@@ -79,8 +103,13 @@ export const TemplatesRow: React.FC = () => {
                 </Text>
               </Stack>
             </TemplateButton>
-            <TemplateButton>
-              <Icon name="plus" size={32} />
+            <TemplateButton
+              aria-label="Open create sandbox modal"
+              onClick={() => actions.openCreateSandboxModal()}
+            >
+              <Stack align="center" justify="center">
+                <Icon name="plus" size={32} />
+              </Stack>
             </TemplateButton>
           </>
         )}
