@@ -14,6 +14,8 @@ coverage
 build
 www
 .deliver
+lib/
+dist/
 
 # misc
 .DS_Store

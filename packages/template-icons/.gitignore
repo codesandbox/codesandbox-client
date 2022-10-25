@@ -10,7 +10,6 @@ node_modules
 /.ssh
 dist
 .cache
-/lib
 
 # Ignored Files
 .DS_STORE
