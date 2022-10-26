@@ -20,7 +20,7 @@ type BranchProps = DashboardBranch & {
 };
 export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
   const {
-    dashboard: { removingBranch, viewMode },
+    dashboard: { removingBranch, removingRepository, viewMode },
   } = useAppState();
   const { selectedIds, onRightClick, onMenuEvent } = useSelection();
   const { name, project } = branch;
@@ -38,11 +38,16 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
     trackImprovedDashboardEvent(MAP_BRANCH_EVENT_TO_PAGE_TYPE[page]);
   };
 
+  const isParentRepositoryBeingRemoved =
+    removingRepository?.owner === project.repository.owner &&
+    removingRepository?.name === project.repository.name;
+
   const props = {
     branch,
     branchUrl,
     selected: selectedIds.includes(branch.id),
-    isBeingRemoved: removingBranch?.id === branch.id,
+    isBeingRemoved:
+      removingBranch?.id === branch.id || isParentRepositoryBeingRemoved,
     onContextMenu: handleContextMenu,
     onClick: handleClick,
     /**
