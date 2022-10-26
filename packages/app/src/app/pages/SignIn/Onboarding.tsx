@@ -54,6 +54,8 @@ export const Onboarding = () => {
   const { validateUsername, finalizeSignUp } = useActions();
   const [newUsername, setNewUsername] = useState(pendingUser?.username || '');
   const [newDisplayName, setNewDisplayName] = useState(pendingUser?.name || '');
+  const [role, setRole] = useState('');
+  const [usage, setUsage] = useState('');
   const [loadingUsername, setLoadingUserName] = useState(false);
   const firstName = pendingUser?.name.split(' ')[0];
 
@@ -105,7 +107,13 @@ export const Onboarding = () => {
         gap={6}
         onSubmit={e => {
           e.preventDefault();
-          finalizeSignUp({ username: newUsername, name: newDisplayName });
+
+          finalizeSignUp({
+            username: newUsername,
+            name: newDisplayName,
+            role,
+            usage,
+          });
         }}
       >
         <Stack direction="vertical" gap={4}>
@@ -148,6 +156,8 @@ export const Onboarding = () => {
             label="What best describes your role?"
             options={ROLE_OPTIONS}
             placeholder="Please select an option"
+            value={role}
+            onChange={e => setRole(e.target.value)}
             required
           />
 
@@ -157,6 +167,8 @@ export const Onboarding = () => {
             label="How do you plan to use CodeSandbox?"
             options={USAGE_OPTIONS}
             placeholder="Please select an option"
+            value={usage}
+            onChange={e => setUsage(e.target.value)}
             required
           />
         </Stack>

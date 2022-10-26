@@ -39,6 +39,7 @@ import {
   IModuleAPIResponse,
   SandboxAPIResponse,
   AvatarAPIResponse,
+  FinalizeSignUpOptions,
 } from './types';
 
 let api: Api;
@@ -488,20 +489,8 @@ export default {
   validateUsername(username: string): Promise<{ available: boolean }> {
     return api.get('/users/available/' + username);
   },
-  finalizeSignUp({
-    username,
-    id,
-    name,
-  }: {
-    username: string;
-    id: string;
-    name: string;
-  }): Promise<void> {
-    return api.post('/users/finalize', {
-      username,
-      id,
-      name,
-    });
+  finalizeSignUp(options: FinalizeSignUpOptions): Promise<void> {
+    return api.post('/users/finalize', options);
   },
   updateShowcasedSandbox(username: string, sandboxId: string) {
     return api.patch(`/users/${username}`, {
