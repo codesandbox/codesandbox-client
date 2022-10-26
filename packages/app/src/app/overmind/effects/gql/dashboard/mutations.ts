@@ -272,7 +272,7 @@ export const inviteToTeam: Query<
   ${currentTeamInfoFragment}
 `;
 
-export const inviteToTeamVieEmail: Query<
+export const inviteToTeamViaEmail: Query<
   _InviteToTeamViaEmailMutation,
   _InviteToTeamViaEmailMutationVariables
 > = gql`
