@@ -1,9 +1,15 @@
 import React from 'react';
 import { useActions, useAppState } from 'app/overmind';
-import { Text, Menu, Stack, Icon, Tooltip } from '@codesandbox/components';
+import {
+  Badge,
+  Text,
+  Menu,
+  Stack,
+  Icon,
+  Tooltip,
+} from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
-import { Badge } from 'app/components/Badge';
 
 interface WorkspaceSelectProps {
   disabled?: boolean;
@@ -64,12 +70,12 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               <Stack align="center" gap={1} css={{ paddingRight: 4 }}>
                 <Text
                   size={16}
-                  maxWidth={selectedTeam.subscription ? 166 : 126}
+                  maxWidth={selectedTeam?.subscription ? 166 : 126}
                 >
-                  {isPersonalTeam ? 'Personal' : selectedTeam.name}
+                  {isPersonalTeam ? 'Personal' : selectedTeam?.name}
                 </Text>
 
-                {!selectedTeam.subscription && (
+                {!selectedTeam?.subscription && (
                   <Badge color="accent">Free</Badge>
                 )}
               </Stack>

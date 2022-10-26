@@ -2,11 +2,10 @@ import * as React from 'react';
 
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Link as RouterLink } from 'react-router-dom';
-import { Text, Link, Stack } from '@codesandbox/components';
+import { Text, Link, Stack, Badge } from '@codesandbox/components';
 import Tooltip, {
   SingletonTooltip,
 } from '@codesandbox/common/lib/components/Tooltip';
-import { Badge } from 'app/components/Badge';
 
 const UpgradeToolTip: React.FC = () => (
   <Stack>

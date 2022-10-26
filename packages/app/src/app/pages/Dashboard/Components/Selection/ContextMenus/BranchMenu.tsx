@@ -16,14 +16,20 @@ type BranchMenuProps = {
   page: PageTypes;
 };
 export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
-  const { removeBranchFromRepository } = useActions().dashboard;
-  const { removingBranch } = useAppState().dashboard;
+  const {
+    removeBranchFromRepository,
+    removeRepositoryFromTeam,
+  } = useActions().dashboard;
+  const {
+    activeTeam,
+    dashboard: { removingBranch, removingRepository },
+  } = useAppState();
   const { visible, setVisibility, position } = React.useContext(Context);
 
   const { id, name, project, contribution } = branch;
   const branchUrl = v2BranchUrl({ name, project });
 
-  const { name: repoName, owner } = project.repository;
+  const { name: repoName, owner, defaultBranch } = project.repository;
 
   const githubUrl = githubRepoUrl({
     branch: name,
@@ -35,6 +41,8 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
   const repoUrl = dashboard.repository({ owner, name: repoName });
 
   const history = useHistory();
+
+  const canRemoveBranch = name !== defaultBranch;
 
   return (
     <Menu.ContextMenu
@@ -61,22 +69,40 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
       <MenuItem onSelect={() => history.push(repoUrl)}>
         Open repository
       </MenuItem>
-      <Menu.Divider />
-      <MenuItem
-        disabled={removingBranch}
-        onSelect={() =>
-          !removingBranch &&
-          removeBranchFromRepository({
-            id,
-            owner,
-            repoName,
-            name,
-            page,
-          })
-        }
-      >
-        Remove from CodeSandbox
-      </MenuItem>
+      {(canRemoveBranch || !contribution) && <Menu.Divider />}
+      {canRemoveBranch && (
+        <MenuItem
+          disabled={removingBranch}
+          onSelect={() =>
+            !removingBranch &&
+            removeBranchFromRepository({
+              id,
+              owner,
+              repoName,
+              name,
+              page,
+            })
+          }
+        >
+          Remove branch from CodeSandbox
+        </MenuItem>
+      )}
+      {!contribution && (
+        <MenuItem
+          disabled={removingRepository}
+          onSelect={() =>
+            !removingRepository &&
+            removeRepositoryFromTeam({
+              owner,
+              name: repoName,
+              teamId: activeTeam,
+              page,
+            })
+          }
+        >
+          Remove repository from CodeSandbox
+        </MenuItem>
+      )}
     </Menu.ContextMenu>
   );
 };

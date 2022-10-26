@@ -17,7 +17,10 @@ import { isAbsoluteVersion } from '@codesandbox/common/lib/utils/dependencies';
 import { getTextOperation } from '@codesandbox/common/lib/utils/diff';
 import { convertTypeToStatus } from '@codesandbox/common/lib/utils/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
-import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  sandboxUrl,
+  signInPageUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
 import {
   Authorization,
@@ -300,6 +303,17 @@ export const sandboxChanged = withLoadApp<{
   try {
     const params = state.activeTeam ? { teamId: state.activeTeam } : undefined;
     const sandbox = await effects.api.getSandbox(newId, params);
+
+    // Failsafe, in case someone types in the URL to load a v2 sandbox in v1
+    if (sandbox.v2) {
+      const sandboxV2Url = sandboxUrl({
+        id: sandbox.id,
+        alias: sandbox.alias,
+        isV2: true,
+      });
+
+      window.location.href = sandboxV2Url;
+    }
 
     actions.internal.setCurrentSandbox(sandbox);
   } catch (error) {

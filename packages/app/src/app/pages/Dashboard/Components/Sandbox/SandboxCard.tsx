@@ -1,6 +1,7 @@
 import React from 'react';
 import { RepoFragmentDashboardFragment } from 'app/graphql/types';
 import {
+  Badge,
   Stack,
   Text,
   Input,
@@ -11,7 +12,6 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
-import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { SandboxItemComponentProps } from './types';
 
 const useImageLoaded = (url: string) => {
@@ -370,7 +370,7 @@ const Thumbnail = ({
         )}
       </div>
       <Stack gap={1} css={{ position: 'absolute', top: 6, right: 6 }}>
-        {showBetaBadge && <CloudBetaBadge />}
+        {showBetaBadge && <Badge icon="cloud">Beta</Badge>}
         <div
           style={{
             width: 18,

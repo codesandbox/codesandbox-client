@@ -2290,7 +2290,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
     project: { __typename?: 'Project' } & {
       repository: { __typename?: 'GitHubRepository' } & Pick<
         GitHubRepository,
-        'name' | 'owner'
+        'defaultBranch' | 'name' | 'owner'
       >;
     };
   };

@@ -1,7 +1,6 @@
 import React from 'react';
-import { Stack, Text } from '@codesandbox/components';
+import { Badge, Stack, Text } from '@codesandbox/components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
-import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { TemplateButton } from './elements';
@@ -53,7 +52,7 @@ export const TemplateCard = ({
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
           <UserIcon />
-          {isV2 && <CloudBetaBadge />}
+          {isV2 && <Badge icon="cloud">Beta</Badge>}
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text

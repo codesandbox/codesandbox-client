@@ -1,6 +1,7 @@
 import { useAppState } from 'app/overmind';
 import React, { useEffect } from 'react';
 import {
+  Badge,
   Button,
   Element,
   Icon,
@@ -12,7 +13,6 @@ import {
 } from '@codesandbox/components';
 import styled, { keyframes } from 'styled-components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { GithubRepoToImport } from './types';
 import { StyledSelect } from '../elements';
 import { useGithubOrganizations } from './useGithubOrganizations';
@@ -120,7 +120,7 @@ export const FromRepo: React.FC<FromRepoProps> = ({ repository, onCancel }) => {
         >
           Create new fork
         </Text>
-        <CloudBetaBadge />
+        <Badge icon="cloud">Beta</Badge>
       </Stack>
       <Element
         as="form"
