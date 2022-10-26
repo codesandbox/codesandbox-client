@@ -129,7 +129,9 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
   } else if (selectedItems[0].type === 'branch') {
     menu = <BranchMenu branch={selectedItems[0].branch} page={page} />;
   } else if (selectedItems[0].type === 'repository') {
-    menu = <RepositoryMenu repository={selectedItems[0].repository} />;
+    menu = (
+      <RepositoryMenu repository={selectedItems[0].repository} page={page} />
+    );
   } else if (selectedItems.length > 1) {
     menu = (
       <MultiMenu
