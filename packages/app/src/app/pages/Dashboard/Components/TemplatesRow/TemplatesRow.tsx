@@ -14,9 +14,9 @@ import { TemplatesGrid } from './elements';
 export const TemplatesRow: React.FC = () => {
   const officialTemplates = useOfficialTemplates();
   const actions = useActions();
-  const { dashboard } = useAppState();
+  const { activeTeam, dashboard } = useAppState();
 
-  const collection = dashboard.allCollections.find(c => c.path === '/');
+  const collection = dashboard.allCollections?.find(c => c.path === '/');
 
   const handleOpenTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
@@ -37,6 +37,10 @@ export const TemplatesRow: React.FC = () => {
 
     actions.modals.newSandboxModal.close();
   };
+
+  React.useEffect(() => {
+    actions.dashboard.getAllFolders();
+  }, [actions.dashboard, activeTeam]);
 
   return (
     <Stack
