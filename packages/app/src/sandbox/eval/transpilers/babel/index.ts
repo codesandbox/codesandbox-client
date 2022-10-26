@@ -8,7 +8,6 @@ import { transform as transformSucrase } from 'csb-sucrase';
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index';
 
 import delay from '@codesandbox/common/lib/utils/delay';
-import { endMeasure, measure } from '@codesandbox/common/lib/utils/metrics';
 import { LoaderContext, Manager } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler/transpiler';
 import getBabelConfig from './babel-parser';
@@ -107,17 +106,10 @@ class BabelTranspiler extends WorkerTranspiler {
     // node_modules to commonjs and collecting deps
     if (loaderContext.options.simpleRequire || isNodeModule) {
       try {
-        const start = Date.now();
         const result = transformSucrase(code, {
           transforms: ['dep-collector', 'imports', 'flow', 'jsx'],
         });
-        const took = Date.now() - start;
-        console.log('Sucrase transform: %s ms', took);
 
-        if (took > 1) {
-          console.log({code, path: loaderContext.url})
-        }
-        
         await addCollectedDependencies(
           loaderContext,
           Array.from(result.dependencies).map(d => ({
