@@ -128,6 +128,9 @@ export type CurrentUser = {
   experiments: {
     [key: string]: boolean;
   };
+  metadata: {
+    [key: string]: string;
+  };
   curatorAt: string;
   badges: Badge[];
   betaAccess: boolean;
