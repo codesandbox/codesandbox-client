@@ -5,6 +5,6 @@ export const TemplatesGrid = styled.div`
   overflow: hidden;
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   grid-auto-rows: 1fr;
 `;
