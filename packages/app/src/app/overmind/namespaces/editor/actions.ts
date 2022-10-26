@@ -304,6 +304,7 @@ export const sandboxChanged = withLoadApp<{
     const params = state.activeTeam ? { teamId: state.activeTeam } : undefined;
     const sandbox = await effects.api.getSandbox(newId, params);
 
+    // Failsafe, in case someone types in the URL to load a v2 sandbox in v1
     if (sandbox.v2) {
       const sandboxV2Url = sandboxUrl({
         id: sandbox.id,
