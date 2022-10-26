@@ -1,12 +1,13 @@
 import React from 'react';
-import { Icon, IconNames, Stack, Text } from '@codesandbox/components';
+import { Icon, IconNames } from '../Icon';
+import { Stack } from '../Stack';
+import { Text } from '../Text';
 
 export interface BadgeProps {
   color?: 'accent' | 'neutral';
   icon?: IconNames;
 }
 
-// TODO: Move to component system
 export const Badge: React.FC<BadgeProps> = ({
   color = 'neutral',
   icon,
@@ -23,7 +24,6 @@ export const Badge: React.FC<BadgeProps> = ({
       backgroundColor: color === 'accent' ? '#653FFD80' : '#2e2e2e',
       color: color === 'accent' ? '#fff' : 'inherit',
       fontSize: 11,
-      lineHeight: 16,
     }}
     gap={1}
   >

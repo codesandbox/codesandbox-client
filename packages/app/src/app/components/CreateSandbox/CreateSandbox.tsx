@@ -1,4 +1,5 @@
 import {
+  Badge,
   Text,
   Stack,
   Element,
@@ -6,7 +7,6 @@ import {
   SkeletonText,
   ThemeProvider,
 } from '@codesandbox/components';
-import { CloudBetaBadge } from 'app/components/CloudBetaBadge';
 import { useActions, useAppState } from 'app/overmind';
 import React, { ReactNode, useState, useEffect } from 'react';
 import { TabStateReturn, useTabState } from 'reakit/Tab';
@@ -333,7 +333,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   >
                     <Stack gap={2}>
                       <span>Cloud templates</span>
-                      <CloudBetaBadge hideIcon />
+                      <Badge>Beta</Badge>
                     </Stack>
                   </Tab>
 
