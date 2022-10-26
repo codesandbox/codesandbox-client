@@ -56,7 +56,7 @@ export const TemplatesRow: React.FC = () => {
         weight="400"
         size={4}
       >
-        Pick up where you left off
+        Start from a template or import from Github
       </Text>
       <TemplatesGrid>
         {officialTemplates.state === 'loading' &&
