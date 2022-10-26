@@ -405,6 +405,7 @@ export type Sandbox = {
   alias: string | null;
   title: string | null;
   description: string;
+  v2: boolean;
   viewCount: number;
   likeCount: number;
   forkCount: number;
