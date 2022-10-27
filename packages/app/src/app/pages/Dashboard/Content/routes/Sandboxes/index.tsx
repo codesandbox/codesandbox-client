@@ -1,12 +1,11 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -14,7 +13,6 @@ export const SandboxesPage = () => {
   const [level, setLevel] = React.useState(0);
   const [creating, setCreating] = React.useState(false);
   const params = useParams<{ path: string }>();
-  const history = useHistory();
   const currentPath = decodeURIComponent(params.path || '');
   const cleanParam = currentPath.split(' ').join('{}');
   const items = useFilteredItems(currentPath, cleanParam, level);
@@ -23,22 +21,6 @@ export const SandboxesPage = () => {
     dashboard: { allCollections, sandboxes },
     activeTeam,
   } = useAppState();
-  const [localTeam, setLocalTeam] = React.useState(activeTeam);
-
-  React.useEffect(() => {
-    actions.dashboard.getAllFolders();
-  }, [actions.dashboard, activeTeam]);
-
-  React.useEffect(() => {
-    if (localTeam !== activeTeam) {
-      setLocalTeam(activeTeam);
-
-      if (params) {
-        history.push(dashboard.sandboxes('/', activeTeam));
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTeam]);
 
   React.useEffect(() => {
     if (!currentPath || currentPath === '/') {

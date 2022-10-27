@@ -41,7 +41,7 @@ export const ManageSubscription = () => {
   // we skip the payment processing/upgrade to pro screen.
   if (
     ![SubscriptionStatus.Active, SubscriptionStatus.Trialing].includes(
-      team.subscription.status
+      team.subscription?.status
     )
   ) {
     if (paymentPending) {
@@ -58,7 +58,7 @@ export const ManageSubscription = () => {
   );
 
   const renderProvider = () => {
-    if (team.subscription.origin === SubscriptionOrigin.Pilot) {
+    if (team.subscription?.origin === SubscriptionOrigin.Pilot) {
       return <Pilot />;
     }
 
