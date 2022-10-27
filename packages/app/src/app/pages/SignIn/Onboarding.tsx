@@ -62,11 +62,11 @@ export const Onboarding = () => {
   if (pathname.includes('/invite')) {
     // Set flag to neither show the create team modal and the
     // what's new modal.
-    browser.storage.set(NUOCT22, false);
+    browser.storage.set(NUOCT22, 'invite');
   } else {
     // Set flag to make sure we show the create team modal and
     // not the what's new modal after signup.
-    browser.storage.set(NUOCT22, true);
+    browser.storage.set(NUOCT22, 'signup');
   }
 
   return (

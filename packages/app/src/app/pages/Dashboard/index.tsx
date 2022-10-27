@@ -43,10 +43,10 @@ export const Dashboard: FunctionComponent = () => {
   const theme = useTheme() as any;
 
   useEffect(() => {
-    const isNewUser = browser.storage.get(NUOCT22);
+    const newUser = browser.storage.get(NUOCT22);
 
-    if (isNewUser || isNewUser === false) {
-      if (isNewUser) {
+    if (newUser) {
+      if (newUser === 'signup') {
         // Open the create team modal for newly signed up users
         // not coming from a team invite page.
         actions.openCreateTeamModal();
