@@ -1550,60 +1550,6 @@ export const setTeamMinimumPrivacy = async (
   }
 };
 
-export const changeSandboxAlwaysOn = async (
-  { state, actions, effects }: Context,
-  {
-    sandboxId,
-    alwaysOn,
-  }: {
-    sandboxId: string;
-    alwaysOn: boolean;
-  }
-) => {
-  effects.analytics.track('Sandbox - Always On', {
-    alwaysOn,
-    source: 'dashboard',
-    dashboardVersion: 2,
-  });
-
-  // optimistic update
-  const {
-    changedSandboxes,
-  } = actions.dashboard.internal.changeSandboxesInState({
-    sandboxIds: [sandboxId],
-    sandboxMutation: sandbox => ({ ...sandbox, alwaysOn }),
-  });
-
-  // optimisically remove from always on
-  if (!alwaysOn && state.dashboard.sandboxes.ALWAYS_ON) {
-    state.dashboard.sandboxes.ALWAYS_ON = state.dashboard.sandboxes.ALWAYS_ON.filter(
-      sandbox => sandbox.id !== sandboxId
-    );
-  }
-
-  try {
-    await effects.gql.mutations.changeSandboxAlwaysOn({ sandboxId, alwaysOn });
-  } catch (error) {
-    changedSandboxes.forEach(oldSandbox =>
-      actions.dashboard.internal.changeSandboxesInState({
-        sandboxIds: [oldSandbox.id],
-        sandboxMutation: sandbox => ({
-          ...sandbox,
-          alwaysOn: oldSandbox.alwaysOn,
-        }),
-      })
-    );
-
-    // this is odd to handle it in the action
-    // TODO: we need a cleaner way to read graphql errors
-    const message = error.response?.errors[0]?.message;
-
-    actions.internal.handleError({
-      message: 'We were not able to update Always-On for this sandbox',
-      error: { name: 'Always on', message },
-    });
-  }
-};
 
 export const setWorkspaceSandboxSettings = async (
   { state, effects }: Context,

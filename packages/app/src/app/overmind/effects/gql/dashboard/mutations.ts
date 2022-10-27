@@ -456,18 +456,6 @@ export const setTeamMinimumPrivacy: Query<
   }
 `;
 
-export const changeSandboxAlwaysOn: Query<
-  SetSandboxAlwaysOnMutation,
-  SetSandboxAlwaysOnMutationVariables
-> = gql`
-  mutation setSandboxAlwaysOn($sandboxId: ID!, $alwaysOn: Boolean!) {
-    setSandboxAlwaysOn(sandboxId: $sandboxId, alwaysOn: $alwaysOn) {
-      ...sandboxFragmentDashboard
-    }
-  }
-  ${sandboxFragmentDashboard}
-`;
-
 export const setWorkspaceSandboxSettings: Query<
   SetWorkspaceSandboxSettingsMutation,
   SetWorkspaceSandboxSettingsMutationVariables

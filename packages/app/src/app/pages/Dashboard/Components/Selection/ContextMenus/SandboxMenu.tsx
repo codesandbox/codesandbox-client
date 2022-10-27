@@ -283,33 +283,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             Freeze {label}
           </MenuItem>
         ))}
-      {hasAccess &&
-        activeTeamInfo?.joinedPilotAt &&
-        activeWorkspaceAuthorization !== 'READ' &&
-        getTemplate(sandbox.source.template as TemplateType).isServer &&
-        (sandbox.alwaysOn ? (
-          <MenuItem
-            onSelect={() => {
-              actions.dashboard.changeSandboxAlwaysOn({
-                sandboxId: sandbox.id,
-                alwaysOn: false,
-              });
-            }}
-          >
-            Disable {'"Always-on"'}
-          </MenuItem>
-        ) : (
-          <MenuItem
-            onSelect={() => {
-              actions.dashboard.changeSandboxAlwaysOn({
-                sandboxId: sandbox.id,
-                alwaysOn: true,
-              });
-            }}
-          >
-            Enable {'"Always-on"'}
-          </MenuItem>
-        ))}
+      
       {hasAccess &&
         (isTemplate ? (
           <MenuItem

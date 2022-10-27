@@ -32,6 +32,4 @@ export interface SandboxItemComponentProps {
 
   thumbnailRef: React.Ref<HTMLDivElement>;
   opacity: number;
-
-  alwaysOn: boolean;
 }
