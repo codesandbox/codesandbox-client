@@ -159,7 +159,14 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 css={{
                   textAlign: 'left',
                 }}
-                onSelect={openCreateTeamModal}
+                onSelect={() => {
+                  track('Workspace Selector - Create Team', {
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                  });
+
+                  openCreateTeamModal();
+                }}
               >
                 <Stack
                   justify="center"
