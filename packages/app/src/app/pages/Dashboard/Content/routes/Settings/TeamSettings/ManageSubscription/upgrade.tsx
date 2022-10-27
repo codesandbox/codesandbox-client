@@ -1,5 +1,4 @@
 import React from 'react';
-
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Button, Stack, Text } from '@codesandbox/components';
@@ -19,8 +18,6 @@ const List = styled(Stack)`
 export const Upgrade = () => {
   return (
     <Card
-      as="a"
-      href="/pro"
       css={{
         textDecoration: 'none',
         backgroundColor: 'white',
@@ -48,7 +45,7 @@ export const Upgrade = () => {
           </Text>
         </List>
 
-        <Button type="button" marginTop={2} variant="secondary">
+        <Button as="a" href="/pro" marginTop={2} variant="secondary">
           Upgrade to Pro
         </Button>
       </Stack>

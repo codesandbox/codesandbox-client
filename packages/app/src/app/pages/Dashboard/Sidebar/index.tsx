@@ -57,7 +57,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     // Used to fetch collections
     actions.dashboard.getAllFolders();
     actions.dashboard.getStarredRepos();
-  }, [actions.dashboard, state.activeTeam]);
+  }, [state.activeTeam]);
 
   React.useEffect(() => {
     // Used to check for templates and synced sandboxes
