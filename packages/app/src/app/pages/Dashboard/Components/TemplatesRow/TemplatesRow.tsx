@@ -17,8 +17,6 @@ export const TemplatesRow: React.FC = () => {
   const actions = useActions();
   const { dashboard } = useAppState();
 
-  const collection = dashboard.allCollections.find(c => c.path === '/');
-
   const handleOpenTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
     const url = sandboxUrl(sandbox);
@@ -27,6 +25,7 @@ export const TemplatesRow: React.FC = () => {
 
   const handleSelectTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
+    const collection = dashboard.allCollections?.find(c => c.path === '/');
 
     track('Recent - open template from empty state', {
       codesandbox: 'V1',
