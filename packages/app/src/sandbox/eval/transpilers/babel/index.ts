@@ -1,21 +1,16 @@
 /* eslint-enable import/default */
 import { isBabel7 } from '@codesandbox/common/lib/utils/is-babel-7';
 import { isUrl } from '@codesandbox/common/lib/utils/is-url';
+import { transform as transformSucrase } from 'csb-sucrase';
 
 /* eslint-disable import/default */
 // @ts-ignore
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index';
 
 import delay from '@codesandbox/common/lib/utils/delay';
-import { endMeasure, measure } from '@codesandbox/common/lib/utils/metrics';
 import { LoaderContext, Manager } from 'sandpack-core';
 import WorkerTranspiler from '../worker-transpiler/transpiler';
 import getBabelConfig from './babel-parser';
-import { getSyntaxInfoFromAst } from './ast/syntax-info';
-import { convertEsModule } from './ast/convert-esmodule';
-import { ESTreeAST, generateCode, parseModule } from './ast/utils';
-import { collectDependenciesFromAST } from './ast/collect-dependencies';
-import { rewriteImportMeta } from './ast/rewrite-meta';
 
 const MAX_WORKER_ITERS = 100;
 
@@ -111,45 +106,20 @@ class BabelTranspiler extends WorkerTranspiler {
     // node_modules to commonjs and collecting deps
     if (loaderContext.options.simpleRequire || isNodeModule) {
       try {
-        const ast: ESTreeAST = parseModule(code);
-        const syntaxInfo = getSyntaxInfoFromAst(ast);
-        if (!syntaxInfo.jsx) {
-          // If the code is ESM we transform it to commonjs and return it
-          if (syntaxInfo.esm) {
-            measure(`esconvert-${path}`);
-            convertEsModule(ast);
-            // We collect requires instead of doing this in convertESModule as some modules also use require
-            // Which is actually invalid but we probably don't wanna break anyone's code if it works in other bundlers...
-            const deps = collectDependenciesFromAST(ast);
-            await addCollectedDependencies(
-              loaderContext,
-              deps.map(d => ({
-                path: d,
-              }))
-            );
-            rewriteImportMeta(ast, {
-              url: loaderContext.url,
-            });
-            endMeasure(`esconvert-${path}`, { silent: true });
-            return {
-              transpiledCode: generateCode(ast),
-            };
-          }
+        const result = transformSucrase(code, {
+          transforms: ['dep-collector', 'imports', 'flow', 'jsx'],
+        });
 
-          // If the code is commonjs and does not contain any more jsx, we generate and return the code.
-          measure(`dep-collection-${path}`);
-          const deps = collectDependenciesFromAST(ast);
-          await addCollectedDependencies(
-            loaderContext,
-            deps.map(d => ({
-              path: d,
-            }))
-          );
-          endMeasure(`dep-collection-${path}`, { silent: true });
-          return {
-            transpiledCode: code,
-          };
-        }
+        await addCollectedDependencies(
+          loaderContext,
+          Array.from(result.dependencies).map(d => ({
+            path: d,
+          }))
+        );
+
+        return {
+          transpiledCode: result.code,
+        };
       } catch (err) {
         // do not log this in production, it confuses our users
         if (process.env.NODE_ENV === 'development') {
