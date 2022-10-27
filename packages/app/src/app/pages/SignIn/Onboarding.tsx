@@ -5,6 +5,7 @@ import { useAppState, useActions, useEffects } from 'app/overmind';
 import { InputText } from 'app/components/dashboard/InputText';
 import { InputSelect } from 'app/components/dashboard/InputSelect';
 import { StyledButton } from 'app/components/dashboard/Button';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 const ROLE_OPTIONS = [
   { value: 'frontend', label: 'Frontend developer' },
@@ -112,7 +113,10 @@ export const Onboarding = () => {
         gap={6}
         onSubmit={e => {
           e.preventDefault();
-
+          track('Create Account - Finalize SignUp', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
           finalizeSignUp({
             username: newUsername,
             name: newDisplayName,
@@ -133,7 +137,13 @@ export const Onboarding = () => {
               setLoadingUserName(false);
             }}
             value={newUsername}
-            onChange={e => setNewUsername(e.target.value)}
+            onChange={e => {
+              track('Create Account - Set Username', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+              setNewUsername(e.target.value);
+            }}
             isInvalid={pendingUser.valid === false}
             aria-invalid={!pendingUser.valid ? true : undefined}
             aria-describedby={!pendingUser.valid ? 'user-error' : undefined}
@@ -151,7 +161,13 @@ export const Onboarding = () => {
             name="displayname"
             label="Display name"
             value={newDisplayName}
-            onChange={e => setNewDisplayName(e.target.value)}
+            onChange={e => {
+              track('Create Account - Set Display Name', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+              setNewDisplayName(e.target.value);
+            }}
             required
           />
 
@@ -162,7 +178,13 @@ export const Onboarding = () => {
             options={ROLE_OPTIONS}
             placeholder="Please select an option"
             value={role}
-            onChange={e => setRole(e.target.value)}
+            onChange={e => {
+              track('Create Account - Set Role', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+              setRole(e.target.value);
+            }}
             required
           />
 
@@ -173,7 +195,13 @@ export const Onboarding = () => {
             options={USAGE_OPTIONS}
             placeholder="Please select an option"
             value={usage}
-            onChange={e => setUsage(e.target.value)}
+            onChange={e => {
+              track('Create Account - Set Usage', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+              setUsage(e.target.value);
+            }}
             required
           />
         </Stack>
