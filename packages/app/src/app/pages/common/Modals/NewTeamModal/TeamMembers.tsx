@@ -44,7 +44,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
     e.preventDefault();
     setInviteError(null);
 
-    // Remove spaces (and other whitespace) and split email addresses
+    // Split email addresses
     const emails = addressesString.split(',').map(email => {
       const spaceRegex = /\s/g;
 
