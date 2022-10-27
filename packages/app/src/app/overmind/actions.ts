@@ -528,13 +528,7 @@ export const setActiveTeam = async (
 
   if (state.activeTeamInfo?.id !== id) {
     try {
-      const teamInfo = await actions.getActiveTeamInfo();
-      if (teamInfo) {
-        effects.analytics.track('Team - Change Active Team', {
-          newTeamId: id,
-          newTeamName: teamInfo.name,
-        });
-      }
+      await actions.getActiveTeamInfo();
     } catch (e) {
       let personalWorkspaceId = state.personalWorkspaceId;
       if (!personalWorkspaceId) {

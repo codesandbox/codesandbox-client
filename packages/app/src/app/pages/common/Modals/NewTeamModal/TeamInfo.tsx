@@ -4,6 +4,7 @@ import css from '@styled-system/css';
 import { Stack, Text, Link, Element, Icon } from '@codesandbox/components';
 import { InputText } from 'app/components/dashboard/InputText';
 import { StyledButton } from 'app/components/dashboard/Button';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
   onComplete,
@@ -18,6 +19,11 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
     const teamName = event.target.name.value;
 
     if (teamName && teamName.trim()) {
+      track('New Team - Create Team', {
+        codesandbox: 'V1',
+        event_source: 'UI',
+      });
+
       event.target.name.setCustomValidity('');
       setLoading(true);
       try {
@@ -135,6 +141,12 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
           href="https://codesandbox.io/docs/learn/introduction/workspace"
           target="_blank"
           rel="noreferrer"
+          onClick={() => {
+            track('New Team - Learn More', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+          }}
         >
           <Stack gap={3} justify="center">
             <Text size={2}>More about teams and workspaces</Text>

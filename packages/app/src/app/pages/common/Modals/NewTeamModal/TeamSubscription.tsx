@@ -9,6 +9,7 @@ import { TeamAvatar } from 'app/components/TeamAvatar';
 import { formatCurrency } from 'app/utils/currency';
 import { useCreateCheckout } from 'app/hooks';
 import { TeamMemberAuthorization } from 'app/graphql/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 type Feature = {
   key: string;
@@ -55,6 +56,13 @@ export const TeamSubscription: React.FC = () => {
   React.useEffect(() => {
     pageMounted();
   }, [pageMounted]);
+
+  React.useEffect(() => {
+    track('New Team - View Team Pro Trial CTA', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+  }, []);
 
   const handleDismiss = () => {
     modalClosed();
@@ -159,6 +167,11 @@ export const TeamSubscription: React.FC = () => {
                   return;
                 }
 
+                track('New Team - Start Trial', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+
                 createCheckout({
                   team_id: activeTeamInfo.id,
                   recurring_interval: 'month' as string,
@@ -180,7 +193,16 @@ export const TeamSubscription: React.FC = () => {
               </Text>
             )}
           </Stack>
-          <Button onClick={handleDismiss} variant="link">
+          <Button
+            onClick={() => {
+              track('New Team - Skip trial', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+              handleDismiss();
+            }}
+            variant="link"
+          >
             Continue with free plan
           </Button>
         </Stack>

@@ -8,6 +8,7 @@ import { TemplateButton } from 'app/components/CreateSandbox/elements';
 import { GitHubIcon } from 'app/components/CreateSandbox/Icons';
 import { useActions, useAppState } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { GUTTER } from '../VariableGrid';
 import { TemplatesGrid } from './elements';
 
@@ -26,6 +27,11 @@ export const TemplatesRow: React.FC = () => {
 
   const handleSelectTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
+
+    track('Recent - open template from empty state', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
 
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
@@ -84,9 +90,13 @@ export const TemplatesRow: React.FC = () => {
                 />
               ))}
             <TemplateButton
-              onClick={() =>
-                actions.openCreateSandboxModal({ initialTab: 'import' })
-              }
+              onClick={() => {
+                track('Recent - import repo from empty state', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+                actions.openCreateSandboxModal({ initialTab: 'import' });
+              }}
             >
               <Stack
                 css={{
@@ -118,7 +128,13 @@ export const TemplatesRow: React.FC = () => {
             </TemplateButton>
             <TemplateButton
               aria-label="Open create sandbox modal"
-              onClick={() => actions.openCreateSandboxModal()}
+              onClick={() => {
+                track('Recent - open import modal from empty state', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
+                actions.openCreateSandboxModal();
+              }}
             >
               <Stack align="center" justify="center">
                 <Icon name="plus" size={32} />

@@ -10,6 +10,7 @@ import {
 } from '@codesandbox/components';
 import { sortBy } from 'lodash-es';
 import { TeamAvatar } from 'app/components/TeamAvatar';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 interface WorkspaceSelectProps {
   disabled?: boolean;
@@ -40,6 +41,22 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
       ),
     ];
 
+    // The <Menu /> component doesn't have a callback like `onOpenChange`
+    // that we find in Radix. The "appropriate" solution would be to use
+    // a render callback to tell if the menu is expanded or not. Since
+    // our current implementation does not support render callbacks,
+    // the easiest solution is to check for the `aria-expanded` attr
+    // on the menu button.
+    const trackOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+      const isExpanded = e.currentTarget?.getAttribute('aria-expanded');
+      if (JSON.parse(isExpanded) === true) {
+        track('Workspace Selector - open menu', {
+          codesandbox: 'V1',
+          event_source: 'UI',
+        });
+      }
+    };
+
     return (
       <Tooltip
         label={
@@ -66,6 +83,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   backgroundColor: '#242424',
                 },
               }}
+              onClick={trackOpen}
             >
               <Stack align="center" gap={1} css={{ paddingRight: 4 }}>
                 <Text
@@ -99,7 +117,13 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   align="center"
                   gap={2}
                   css={{ borderBottom: '1px solid #343434' }}
-                  onSelect={() => onSelect(team.id)}
+                  onSelect={() => {
+                    track('Workspace Selector - Change Active Team', {
+                      codesandbox: 'V1',
+                      event_source: 'UI',
+                    });
+                    onSelect(team.id);
+                  }}
                 >
                   <TeamAvatar
                     avatar={
@@ -135,7 +159,14 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 css={{
                   textAlign: 'left',
                 }}
-                onSelect={openCreateTeamModal}
+                onSelect={() => {
+                  track('Workspace Selector - Create Team', {
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                  });
+
+                  openCreateTeamModal();
+                }}
               >
                 <Stack
                   justify="center"

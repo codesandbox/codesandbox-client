@@ -5,6 +5,7 @@ import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useActions, useAppState } from 'app/overmind';
 import history from 'app/utils/history';
 
+import track from '@codesandbox/common/lib/utils/analytics';
 import { TeamInfo } from './TeamInfo';
 import { TeamMembers } from './TeamMembers';
 import { TeamSubscription } from './TeamSubscription';
@@ -29,6 +30,13 @@ export const NewTeamModal: React.FC = () => {
       history.push(dashboard.recent(activeTeam));
     }
   };
+
+  React.useEffect(() => {
+    track('New Team - View Modal', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+  }, []);
 
   return (
     <Stack

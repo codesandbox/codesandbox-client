@@ -4,6 +4,7 @@ import { useAppState, useEffects } from 'app/overmind';
 import { StyledButton } from 'app/components/dashboard/Button';
 import { Textarea } from 'app/components/dashboard/Textarea';
 import { TeamMemberAuthorization } from 'app/graphql/types';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 function validateEmail(email: string) {
   // Test for "anything@anything.anything" and check for
@@ -56,6 +57,11 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
 
     if (invalid.length === 0) {
       setInvalidEmails(null);
+
+      track('New Team - Invite Members', {
+        codesandbox: 'V1',
+        event_source: 'UI',
+      });
 
       // Invite via email
       try {
@@ -144,7 +150,16 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
 
         <StyledButton type="submit">Invite members</StyledButton>
       </Stack>
-      <Button onClick={onComplete} variant="link">
+      <Button
+        onClick={() => {
+          track('New Team - Skip Team Invite', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+          onComplete();
+        }}
+        variant="link"
+      >
         Skip
       </Button>
     </Stack>
