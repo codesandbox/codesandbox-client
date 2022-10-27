@@ -117,7 +117,13 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                   align="center"
                   gap={2}
                   css={{ borderBottom: '1px solid #343434' }}
-                  onSelect={() => onSelect(team.id)}
+                  onSelect={() => {
+                    track('Workspace Selector - Change Active Team', {
+                      codesandbox: 'V1',
+                      event_source: 'UI',
+                    });
+                    onSelect(team.id);
+                  }}
                 >
                   <TeamAvatar
                     avatar={
