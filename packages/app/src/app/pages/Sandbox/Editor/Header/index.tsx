@@ -34,7 +34,7 @@ export const Header = () => {
     >
       <Stack align="center">
         <AppMenu />
-        {activeTeamInfo && (
+        {activeTeamInfo && personalWorkspaceId && (
           <WorkspaceName
             name={
               activeTeamInfo.id === personalWorkspaceId
