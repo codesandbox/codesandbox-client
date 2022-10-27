@@ -315,7 +315,7 @@ const TeamFree = () => {
       <BoxPlanPrice plan="Free" price="$0" caption="forever" />
 
       <BoxPlanList>
-        <li>5 editors</li>
+        <li>Up to 5 editors</li>
         <li>20 public sandboxes</li>
         <li>3 public repositories</li>
         <li>All platform features</li>
@@ -355,7 +355,7 @@ const TeamPro = ({ plan, ...props }) => {
       />
 
       <BoxPlanList>
-        <li>20 editors</li>
+        <li>Up to 20 editors</li>
         <li>Unlimited sandboxes</li>
         <li>Unlimited repositories</li>
         <li>Private NPM packages</li>

@@ -11,9 +11,9 @@ const team_plans = [
     body: [
       {
         title: 'Editors',
-        caption: 'Maximum number of editors in a team.',
-        team_free: '5',
-        team_pro: '20',
+        caption: 'Number of editors in a team.',
+        team_free: 'Up to 5',
+        team_pro: 'Up to 20',
         org_custom: '20+ (no limit)',
       },
       {
