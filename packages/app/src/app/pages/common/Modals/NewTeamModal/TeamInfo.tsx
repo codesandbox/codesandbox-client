@@ -19,6 +19,11 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
     const teamName = event.target.name.value;
 
     if (teamName && teamName.trim()) {
+      track('New Team - Create Team', {
+        codesandbox: 'V1',
+        event_source: 'UI',
+      });
+
       event.target.name.setCustomValidity('');
       setLoading(true);
       try {
