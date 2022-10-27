@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Element, Text, Stack } from '@codesandbox/components';
 import { useAppState, useActions, useEffects } from 'app/overmind';
 import { InputText } from 'app/components/dashboard/InputText';
@@ -50,6 +51,7 @@ export const Onboarding = () => {
     };
   }
 
+  const { pathname } = useLocation();
   const { browser } = useEffects();
   const { validateUsername, finalizeSignUp } = useActions();
   const [newUsername, setNewUsername] = useState(pendingUser?.username || '');
@@ -57,9 +59,15 @@ export const Onboarding = () => {
   const [loadingUsername, setLoadingUserName] = useState(false);
   const firstName = pendingUser?.name.split(' ')[0];
 
-  // Set flag to make sure we show the create team modal and not the
-  // what's new modal after signup.
-  browser.storage.set(NUOCT22, true);
+  if (pathname.includes('/invite')) {
+    // Set flag to neither show the create team modal and the
+    // what's new modal.
+    browser.storage.set(NUOCT22, false);
+  } else {
+    // Set flag to make sure we show the create team modal and
+    // not the what's new modal after signup.
+    browser.storage.set(NUOCT22, true);
+  }
 
   return (
     <Stack

@@ -45,13 +45,14 @@ export const Dashboard: FunctionComponent = () => {
   useEffect(() => {
     const isNewUser = browser.storage.get(NUOCT22);
 
-    if (isNewUser) {
-      // Open the create team modal for newly signed up users
-      actions.openCreateTeamModal();
+    if (isNewUser || isNewUser === false) {
+      if (isNewUser) {
+        // Open the create team modal for newly signed up users
+        // not coming from a team invite page.
+        actions.openCreateTeamModal();
+      }
 
-      // Remove the new user flag
       browser.storage.remove(NUOCT22);
-      // Dismiss the whats new flag
       browser.storage.set(wnoct22, true);
     } else {
       const isWhatsNewModalDismissed = browser.storage.get(wnoct22);
