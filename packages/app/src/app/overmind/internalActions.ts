@@ -570,6 +570,11 @@ export const identifyCurrentUser = async ({ state, effects }: Context) => {
   if (user) {
     effects.analytics.identify('pilot', user.experiments.inPilot);
     effects.browser.storage.set('pilot', user.experiments.inPilot);
+    Object.entries(user.metadata).forEach(([key, value]) => {
+      if (value) {
+        effects.analytics.identify(key, value);
+      }
+    });
 
     const profileData = await effects.api.getProfile(user.username);
     effects.analytics.identify('sandboxCount', profileData.sandboxCount);

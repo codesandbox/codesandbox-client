@@ -1,9 +1,11 @@
 import React, { useEffect, useCallback } from 'react';
-import { ESC } from '@codesandbox/common/lib/utils/keycodes';
-import { ThemeProvider, Stack } from '@codesandbox/components';
 import OutsideClickHandler from 'react-outside-click-handler';
-import { SignInModalElement } from 'app/pages/SignIn/Modal';
 import { motion, AnimatePresence } from 'framer-motion';
+import { css } from '@styled-system/css';
+
+import { ESC } from '@codesandbox/common/lib/utils/keycodes';
+import { ThemeProvider, Stack, Element } from '@codesandbox/components';
+import { SignIn } from 'app/pages/SignIn/SignIn';
 import { useAppState, useActions } from 'app/overmind';
 
 export const SignInModal = () => {
@@ -47,10 +49,35 @@ export const SignInModal = () => {
               bottom: 0,
               zIndex: 9999,
               background: 'rgba(0, 0, 0, 0.75)',
+
+              // OutsideClickHandler styles
+              // can't use styled(OutsideClickHandler)
+              '> div': {
+                flexGrow: 1,
+                maxWidth: '720px',
+              },
             }}
           >
             <OutsideClickHandler onOutsideClick={toggleSignInModal}>
-              <SignInModalElement redirectTo={redirectOnLogin} />
+              <Element
+                css={css({
+                  boxSizing: 'border-box',
+                  backgroundColor: '#1D1D1D',
+                  borderRadius: '4px',
+                  overflow: 'hidden',
+                  margin: 'auto',
+                  padding: '24px',
+                  width: '100%',
+
+                  // With tokens
+                  boxShadow: '2',
+                })}
+              >
+                <Stack direction="vertical" gap={64}>
+                  {/* <Element paddingBottom={6}>Welcome</Element> */}
+                  <SignIn redirectTo={redirectOnLogin} />
+                </Stack>
+              </Element>
             </OutsideClickHandler>
           </Stack>
         </motion.div>

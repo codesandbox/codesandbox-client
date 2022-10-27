@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Tab as BaseTab, TabList, TabPanel } from 'reakit/Tab';
 import { Select } from '@codesandbox/components';
 
@@ -139,7 +139,11 @@ export const TemplateGrid = styled.div`
   }
 `;
 
-export const inputStyles = css`
+// Select component places the content with a fixed padding if it has an icon
+// !important here will overule that setting since the new select is bigger
+export const StyledSelect = styled(Select)`
+  height: 48px;
+  padding-left: 44px !important;
   font-family: inherit;
   height: 32px;
   padding: 8px 16px;
@@ -156,16 +160,4 @@ export const inputStyles = css`
   &:focus {
     color: #e5e5e5;
   }
-`;
-
-export const StyledInput = styled.input`
-  ${inputStyles}
-`;
-
-// Select component places the content with a fixed padding if it has an icon
-// !important here will overule that setting since the new select is bigger
-export const StyledSelect = styled(Select)`
-  ${inputStyles}
-  height: 48px;
-  padding-left: 44px !important;
 `;

@@ -1,89 +1,88 @@
-import React, { useState } from 'react';
-import { useActions, useAppState } from 'app/overmind';
-import { Stack, Text, Input, Button } from '@codesandbox/components';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import React from 'react';
 import css from '@styled-system/css';
+import { IconButton, Stack, Element, Text } from '@codesandbox/components';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useActions, useAppState } from 'app/overmind';
 import history from 'app/utils/history';
-import { Alert } from '../Common/Alert';
+
+import track from '@codesandbox/common/lib/utils/analytics';
+import { TeamInfo } from './TeamInfo';
+import { TeamMembers } from './TeamMembers';
+import { TeamSubscription } from './TeamSubscription';
+
+type TeamStep = 'info' | 'members' | 'subscription';
 
 export const NewTeamModal: React.FC = () => {
-  const { dashboard } = useAppState();
   const actions = useActions();
-  const [loading, setLoading] = useState(false);
-  const [name, setName] = useState('');
+  const { activeTeam } = useAppState();
+  const [currentStep, setCurrentStep] = React.useState<TeamStep>('info');
 
-  const onSubmit = async event => {
-    event.preventDefault();
-    const teamName = event.target.name.value;
+  const handleModalClose = () => {
+    actions.modalClosed();
 
-    if (teamName && teamName.trim()) {
-      event.target.name.setCustomValidity('');
-      setLoading(true);
-      try {
-        await actions.dashboard.createTeam({
-          teamName,
-          pilot: location.search.includes('pilot'),
-        });
-        setLoading(false);
-        history.push(dashboardUrls.settings());
-
-        actions.modalClosed();
-      } catch {
-        setLoading(false);
-      }
+    // If the user is still at the first step, no Team
+    // has been created and closing the modal should
+    // not perform any further actions. Else, the user
+    // must be redirected to the  recent page where the
+    // UI to create/import sandboxes or repositories
+    // will be displayed.
+    if (currentStep !== 'info') {
+      history.push(dashboard.recent(activeTeam));
     }
   };
 
-  const handleInput = e => {
-    const { value } = e.target;
-    setName(value.trim());
-
-    if (value && value.trim()) {
-      e.target.setCustomValidity('');
-    } else {
-      e.target.setCustomValidity('Team name is required.');
-    }
-  };
-
-  const error = Boolean(dashboard.teams.find(team => team.name === name));
+  React.useEffect(() => {
+    track('New Team - View Modal', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+  }, []);
 
   return (
-    <Alert
-      title="Create a team"
-      description="Collaborate on code with friends or co-workers. Manage and work on sandboxes together."
+    <Stack
+      css={css({
+        maxHeight: '640px',
+        overflow: 'hidden',
+      })}
+      direction="vertical"
     >
-      <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
-        <Input
-          name="name"
-          type="text"
-          placeholder="Team name"
-          autoFocus
-          required
-          onChange={handleInput}
-          css={css({ height: 8 })}
-        />
-
-        {error && (
-          <Text size={2} variant="danger">
-            Name already taken, please choose a new name.
-          </Text>
-        )}
-
-        <Stack gap={2} marginTop={4} align="center" justify="flex-end">
-          <Button variant="secondary" autoWidth onClick={actions.modalClosed}>
-            Cancel
-          </Button>
-
-          <Button
-            autoWidth
-            loading={loading}
-            disabled={loading || error}
-            type="submit"
+      <Element padding={6}>
+        <Stack align="center" justify="space-between">
+          <Text
+            css={css({
+              color: '#808080',
+            })}
+            size={3}
           >
-            Create Team
-          </Button>
+            New team
+          </Text>
+          <IconButton
+            name="cross"
+            variant="square"
+            size={16}
+            title="Close modal"
+            onClick={handleModalClose}
+          />
         </Stack>
+      </Element>
+      <Stack
+        css={css({
+          flex: 1,
+        })}
+        align="center"
+        direction="vertical"
+        justify="center"
+      >
+        {
+          {
+            info: <TeamInfo onComplete={() => setCurrentStep('members')} />,
+            members: (
+              <TeamMembers onComplete={() => setCurrentStep('subscription')} />
+            ),
+            subscription: <TeamSubscription />,
+          }[currentStep]
+        }
       </Stack>
-    </Alert>
+    </Stack>
   );
 };

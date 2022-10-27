@@ -37,7 +37,13 @@ export const ManageSubscription = () => {
     return null;
   }
 
-  if (team?.subscription?.status !== SubscriptionStatus.Active) {
+  // If the subscription is active or the team/user is still in the trial period
+  // we skip the payment processing/upgrade to pro screen.
+  if (
+    ![SubscriptionStatus.Active, SubscriptionStatus.Trialing].includes(
+      team.subscription?.status
+    )
+  ) {
     if (paymentPending) {
       return <ProcessingPayment />;
     }
@@ -52,7 +58,7 @@ export const ManageSubscription = () => {
   );
 
   const renderProvider = () => {
-    if (team.subscription.origin === SubscriptionOrigin.Pilot) {
+    if (team.subscription?.origin === SubscriptionOrigin.Pilot) {
       return <Pilot />;
     }
 

@@ -14,7 +14,7 @@ import { SubTitle } from 'app/components/SubTitle';
 import { Title } from 'app/components/Title';
 import { useActions, useAppState } from 'app/overmind';
 
-import { SignInModalElement } from 'app/pages/SignIn/Modal';
+import { SignIn } from 'app/pages/SignIn/SignIn';
 import { LogoFull } from '@codesandbox/common/lib/components/Logo';
 import { Buttons, Container } from './elements';
 
@@ -129,7 +129,7 @@ export const Prompt: FunctionComponent = () => {
 
         <SubTitle style={{ paddingBottom: 16 }}>You need to sign in.</SubTitle>
 
-        <SignInModalElement />
+        <SignIn />
       </Container>
     );
   }
