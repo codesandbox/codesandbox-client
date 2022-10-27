@@ -17,12 +17,9 @@ const ROLE_OPTIONS = [
 ];
 
 const USAGE_OPTIONS = [
-  { value: 'freelance-or-client', label: 'Freelance or client work' },
-  { value: 'startup', label: 'Startup' },
-  { value: 'enterprise', label: 'Enterprise' },
-  { value: 'hobby', label: 'Hobby or fun' },
+  { value: 'work', label: 'Work' },
+  { value: 'personal', label: 'Personal' },
   { value: 'education', label: 'Education' },
-  { value: 'other', label: 'Other' },
 ];
 
 export const NUOCT22 = 'NUOCT22'; // = new user oct 22
