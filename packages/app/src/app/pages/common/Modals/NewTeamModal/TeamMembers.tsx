@@ -54,7 +54,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
       }
       if (spaceRegex.test(email.charAt(email.length - 1))) {
         // remove space from end
-        return email.substring(0, email.length);
+        return email.substring(0, email.length - 1);
       }
 
       return email;
