@@ -13,7 +13,6 @@ export const joinTeamMutation = gql`
     redeemTeamInviteToken(inviteToken: $inviteToken) {
       id
       name
-      joinedPilotAt
     }
   }
 `;

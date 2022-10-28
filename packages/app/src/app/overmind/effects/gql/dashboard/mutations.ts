@@ -96,8 +96,8 @@ export const createTeam: Query<
   _CreateTeamMutation,
   _CreateTeamMutationVariables
 > = gql`
-  mutation _CreateTeam($name: String!, $pilot: Boolean) {
-    createTeam(name: $name, pilot: $pilot) {
+  mutation _CreateTeam($name: String!) {
+    createTeam(name: $name) {
       ...teamFragmentDashboard
     }
   }

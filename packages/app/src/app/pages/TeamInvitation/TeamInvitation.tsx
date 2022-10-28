@@ -135,7 +135,6 @@ const JoinTeam = ({ inviteToken }: { inviteToken: string }) => {
   const [loading, setLoading] = React.useState(true);
   const [team, setTeam] = React.useState<{
     id: string;
-    joinedPilotAt: string | null;
   } | null>(null);
   const [error, setError] = React.useState<Error | null>(null);
 

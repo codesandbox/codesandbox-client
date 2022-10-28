@@ -60,7 +60,7 @@ const Body: FunctionComponent = () => {
   );
 };
 
-export const PilotPaymentModal: FunctionComponent = () => {
+export const LegacyPaymentModal: FunctionComponent = () => {
   const { paymentDetailsRequested } = useActions().preferences;
 
   useEffect(() => {

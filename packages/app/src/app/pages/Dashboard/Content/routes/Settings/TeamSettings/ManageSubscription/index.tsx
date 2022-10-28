@@ -3,7 +3,6 @@ import { useAppState } from 'app/overmind';
 import {
   SubscriptionStatus,
   TeamMemberAuthorization,
-  SubscriptionOrigin,
   SubscriptionPaymentProvider,
 } from 'app/graphql/types';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -12,7 +11,6 @@ import { Stack, Text } from '@codesandbox/components';
 
 import { Card } from '../../components';
 import { Upgrade } from './upgrade';
-import { Pilot } from './pilot';
 import { Paddle } from './paddle';
 import { Stripe } from './stripe';
 import { ProcessingPayment } from '../../components/ProcessingPayment';
@@ -58,10 +56,6 @@ export const ManageSubscription = () => {
   );
 
   const renderProvider = () => {
-    if (team.subscription?.origin === SubscriptionOrigin.Pilot) {
-      return <Pilot />;
-    }
-
     if (
       team?.subscription?.paymentProvider === SubscriptionPaymentProvider.Paddle
     ) {

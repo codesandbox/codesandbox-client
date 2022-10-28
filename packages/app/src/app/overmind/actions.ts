@@ -250,7 +250,7 @@ type ModalName =
   | 'sandboxPicker'
   | 'minimumPrivacy'
   | 'addMemberToWorkspace'
-  | 'pilotPayment'
+  | 'legacyPayment'
   | 'whatsNew';
 
 export const modalOpened = (
