@@ -48,9 +48,6 @@ export const repository = ({
 export const syncedSandboxes = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/synced-sandboxes`, teamId);
 
-export const alwaysOn = (teamId?: string | null) =>
-  appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/always-on`, teamId);
-
 export const templates = (teamId?: string | null) =>
   appendTeamIdQueryParam(`${DASHBOARD_URL_PREFIX}/templates`, teamId);
 

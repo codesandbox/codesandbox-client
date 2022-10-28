@@ -1464,6 +1464,7 @@ export type Team = {
   projects: Array<Project>;
   sandboxes: Array<Sandbox>;
   settings: Maybe<WorkspaceSandboxSettings>;
+  shortid: Scalars['String'];
   subscription: Maybe<ProSubscription>;
   templates: Array<Template>;
   userAuthorizations: Array<UserAuthorization>;
@@ -2587,17 +2588,6 @@ export type SetTeamMinimumPrivacyMutation = {
     WorkspaceSandboxSettings,
     'minimumPrivacy'
   >;
-};
-
-export type SetSandboxAlwaysOnMutationVariables = Exact<{
-  sandboxId: Scalars['ID'];
-  alwaysOn: Scalars['Boolean'];
-}>;
-
-export type SetSandboxAlwaysOnMutation = { __typename?: 'RootMutationType' } & {
-  setSandboxAlwaysOn: {
-    __typename?: 'Sandbox';
-  } & SandboxFragmentDashboardFragment;
 };
 
 export type SetWorkspaceSandboxSettingsMutationVariables = Exact<{

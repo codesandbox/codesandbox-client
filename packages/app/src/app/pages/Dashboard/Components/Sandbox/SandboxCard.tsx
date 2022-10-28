@@ -143,10 +143,10 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
 
 type SandboxStatsProps = Pick<
   SandboxItemComponentProps,
-  'noDrag' | 'viewCount' | 'sandboxLocation' | 'lastUpdated' | 'alwaysOn'
+  'noDrag' | 'viewCount' | 'sandboxLocation' | 'lastUpdated'
 >;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
-  ({ noDrag, viewCount, sandboxLocation, lastUpdated, alwaysOn }) => {
+  ({ noDrag, viewCount, sandboxLocation, lastUpdated }) => {
     const views = (
       <Stack align="center" key="views">
         <Icon style={{ marginRight: 4, minWidth: 14 }} name="eye" size={14} />{' '}
@@ -166,19 +166,11 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
       </Text>
     );
 
-    const alwaysOnText = (
-      <Text key="always-on" css={css({ color: 'green' })}>
-        Always-On
-      </Text>
-    );
-
-    let footer = [];
-
-    if (alwaysOn) {
-      footer = [sandboxLocationText, alwaysOnText];
-    } else {
-      footer = [views, noDrag ? null : lastUpdatedText, sandboxLocationText];
-    }
+    const footer = [
+      views,
+      noDrag ? null : lastUpdatedText,
+      sandboxLocationText,
+    ];
 
     return (
       <div>
@@ -208,7 +200,6 @@ export const SandboxCard = ({
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
-  alwaysOn,
   // interactions
   isScrolling,
   selected,
@@ -301,7 +292,6 @@ export const SandboxCard = ({
           lastUpdated={lastUpdated}
           viewCount={viewCount}
           sandboxLocation={sandboxLocation}
-          alwaysOn={alwaysOn}
         />
       </Stack>
     </Stack>

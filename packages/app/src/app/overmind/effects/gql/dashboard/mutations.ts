@@ -51,8 +51,6 @@ import {
   DeleteWorkspaceMutationVariables,
   SetTeamMinimumPrivacyMutation,
   SetTeamMinimumPrivacyMutationVariables,
-  SetSandboxAlwaysOnMutation,
-  SetSandboxAlwaysOnMutationVariables,
   SetWorkspaceSandboxSettingsMutation,
   SetWorkspaceSandboxSettingsMutationVariables,
   SetPreventSandboxesLeavingWorkspaceMutation,
@@ -454,18 +452,6 @@ export const setTeamMinimumPrivacy: Query<
       minimumPrivacy
     }
   }
-`;
-
-export const changeSandboxAlwaysOn: Query<
-  SetSandboxAlwaysOnMutation,
-  SetSandboxAlwaysOnMutationVariables
-> = gql`
-  mutation setSandboxAlwaysOn($sandboxId: ID!, $alwaysOn: Boolean!) {
-    setSandboxAlwaysOn(sandboxId: $sandboxId, alwaysOn: $alwaysOn) {
-      ...sandboxFragmentDashboard
-    }
-  }
-  ${sandboxFragmentDashboard}
 `;
 
 export const setWorkspaceSandboxSettings: Query<

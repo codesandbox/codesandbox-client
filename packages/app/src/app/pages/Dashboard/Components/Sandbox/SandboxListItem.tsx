@@ -23,7 +23,6 @@ export const SandboxListItem = ({
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
-  alwaysOn,
   // interactions
   selected,
   onClick,
@@ -112,21 +111,6 @@ export const SandboxListItem = ({
                   : null]: `url(${screenshotUrl})`,
               }}
             >
-              {alwaysOn && (
-                <Tooltip label="Always-On">
-                  <span
-                    css={css({
-                      backgroundColor: 'green',
-                      width: 3,
-                      height: 3,
-                      position: 'absolute',
-                      right: '-6px',
-                      bottom: '-4px',
-                      borderRadius: '50%',
-                    })}
-                  />
-                </Tooltip>
-              )}
               {screenshotUrl ? null : <TemplateIcon width="16" height="16" />}
             </Stack>
             <Element css={{ overflow: 'hidden' }}>
