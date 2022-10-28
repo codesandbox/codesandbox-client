@@ -13,10 +13,6 @@ export const Content = styled(Centered)`
   margin: 5rem auto auto;
 `;
 
-export const Wrapper = styled.div`
-  margin-top: 10%;
-`;
-
 export const Label = styled.label`
   text-align: left;
   width: 100%;

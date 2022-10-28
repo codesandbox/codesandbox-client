@@ -228,7 +228,7 @@ export const ProfileCard = () => {
   );
 };
 
-export const Bio: React.FC<{
+const Bio: React.FC<{
   bio: Profile['bio'];
   setBio: (bio: Profile['bio']) => void;
   editing: boolean;
