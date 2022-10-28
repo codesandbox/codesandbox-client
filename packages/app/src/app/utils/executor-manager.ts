@@ -56,7 +56,7 @@ function getModulesToSend(sandbox: Sandbox): IFiles {
  * This manager is responsible for instantiating the right executor (based on the sandbox) and making it globally available.
  * Until we run Overmind as our state management we'll have to put this as a singleton for now.
  */
-export class ExecutorsManager {
+class ExecutorsManager {
   executor: IExecutor | null = null;
 
   async initializeExecutor(sandbox: Sandbox) {

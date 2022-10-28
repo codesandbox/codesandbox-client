@@ -14,7 +14,7 @@ import { StyledSelect } from './elements';
 import { CreateSandboxParams } from './types';
 import { InputText } from '../dashboard/InputText';
 
-export interface FromTemplateProps {
+interface FromTemplateProps {
   isV2: boolean;
   onCancel: () => void;
   onSubmit: (params: CreateSandboxParams) => void;

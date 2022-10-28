@@ -103,7 +103,7 @@ export type DashboardBlank = {
 /**
  * Try to fill the row with blanks until it's filled
  */
-export type DashboardBlankRowFill = {
+type DashboardBlankRowFill = {
   type: 'blank-row-fill';
 };
 

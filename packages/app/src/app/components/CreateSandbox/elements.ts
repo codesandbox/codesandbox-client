@@ -93,17 +93,6 @@ export const TabContent = styled(TabPanel)`
   outline: none;
 `;
 
-export const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 1rem;
-  margin: 1.5rem 1.5rem 0 1.5rem;
-  border-bottom: 1px solid #242424;
-  font-size: 19px;
-  line-height: 24px;
-`;
-
 export const TemplateButton = styled.button`
   background: #1d1d1d;
   border: 1px solid transparent;
