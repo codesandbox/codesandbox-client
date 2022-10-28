@@ -36,7 +36,7 @@ const regexCasesMap = {
 const getKeyByValue = (object: typeof regexCasesMap, value: RegExp) =>
   Object.keys(object).find(key => object[key] === value);
 
-export function getMode(title: string = '') {
+function getMode(title: string = '') {
   // Remove Ignore
   const removeIgnoreTitle = title.split('ignore')[0].toLowerCase();
 
