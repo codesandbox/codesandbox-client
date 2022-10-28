@@ -2,7 +2,6 @@ import React from 'react';
 import { useAppState, useEffects, useActions } from 'app/overmind';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Menu, Tooltip } from '@codesandbox/components';
-import getTemplate, { TemplateType } from '@codesandbox/common/lib/templates';
 
 import {
   sandboxUrl,
@@ -283,7 +282,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             Freeze {label}
           </MenuItem>
         ))}
-      
+
       {hasAccess &&
         (isTemplate ? (
           <MenuItem
