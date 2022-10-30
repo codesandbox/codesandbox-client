@@ -1,8 +1,9 @@
 import { getGlobal } from '@codesandbox/common/lib/utils/global';
 import { ModuleNotFoundError } from 'sandpack-core/lib/resolver/errors/ModuleNotFound';
-import { transform as transformSucrase } from 'csb-sucrase';
 
 import getRequireStatements from './simple-get-require-statements';
+import { convertEsModule } from '../ast/convert-esmodule';
+import { generateCode, parseModule } from '../ast/utils';
 import { ChildHandler } from '../../worker-transpiler/child-handler';
 import { patchedResolve } from './utils/resolvePatch';
 
@@ -203,10 +204,9 @@ export async function downloadPath(
 
   let code = r.code;
   try {
-    const transformed = transformSucrase(code, {
-      transforms: ['imports', 'flow'],
-    });
-    code = transformed.code;
+    const ast = parseModule(r.code);
+    convertEsModule(ast);
+    code = generateCode(ast);
   } catch (err) {
     console.warn(err);
   }
