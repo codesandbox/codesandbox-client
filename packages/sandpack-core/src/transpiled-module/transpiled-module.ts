@@ -1051,17 +1051,10 @@ export class TranspiledModule {
       const usedGlobals = globals || {};
       usedGlobals.__dirname = pathUtils.dirname(this.module.path);
       usedGlobals.__filename = this.module.path;
-      const self = this;
-      // eslint-disable-next-line no-inner-declarations
-      function $csbImport(path: string) {
-        return manager
-          .evaluate(path, self)
+      usedGlobals.$csbImport = (path: string) =>
+        manager
+          .evaluate(path, this)
           .then(result => interopRequireWildcard(result));
-      }
-      $csbImport.meta = {
-        url: this.module.url ? this.module.url : `file://${this.module.path}`,
-      };
-      usedGlobals.$csbImport = $csbImport;
 
       const code =
         this.source.compiledCode +
