@@ -129,11 +129,6 @@ const CliInstructions = Loadable(() =>
     /* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'
   ).then(module => ({ default: module.CLIInstructions }))
 );
-const Patron = Loadable(() =>
-  import(/* webpackChunkName: 'page-patron' */ './Patron').then(module => ({
-    default: module.Patron,
-  }))
-);
 const SignUp = Loadable(() =>
   import(/* webpackChunkName: 'page-signup' */ './SignUp').then(module => ({
     default: module.SignUp,
@@ -221,7 +216,6 @@ const RoutesComponent: React.FC = () => {
             <Route path="/u/:username" component={Profile} />
             <Route path="/u2/:username" component={Profile} />
             <Route path="/search" component={Search} />
-            <Route path="/patron" component={Patron} />
             <Route path="/pro" component={Pro} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/client/login" component={MobileAuth} />
