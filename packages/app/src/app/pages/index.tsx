@@ -23,6 +23,7 @@ import { Modals } from './common/Modals';
 import { DevAuthPage } from './DevAuth';
 import { Container, Content } from './elements';
 import { Dashboard } from './Dashboard';
+import { Discover } from './Discover';
 import { Sandbox } from './Sandbox';
 
 const MoveSandboxFolderModal = Loadable(() =>
@@ -205,6 +206,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/phew" component={Phew} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/new-dashboard" component={Dashboard} />
+            <Route path="/discover" component={Discover} />
             <Route path="/curator" component={Curator} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/live/:roomId" component={Live} />
