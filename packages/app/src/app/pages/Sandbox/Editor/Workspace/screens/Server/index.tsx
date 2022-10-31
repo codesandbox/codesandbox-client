@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from 'react';
 import { Collapsible, Element } from '@codesandbox/components';
-import { AlwaysOn } from './AlwaysOn';
 import { Control } from './Control';
 import { EnvVars } from './EnvVars';
 import { Ports } from './Ports';
@@ -13,7 +12,6 @@ export const Server: FunctionComponent = () => (
       <Element marginBottom={5} paddingY={2} paddingX={1}>
         <Status />
       </Element>
-      <AlwaysOn />
     </Collapsible>
     <Tasks />
     <Ports />

@@ -1,8 +1,7 @@
 import React from 'react';
 import { Container, Sides, Side } from './elements';
 
-export interface ICubeComponentProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface ICubeComponentProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: number;
 }
 

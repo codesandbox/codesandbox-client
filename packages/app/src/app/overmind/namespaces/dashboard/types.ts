@@ -12,7 +12,6 @@ export type PageTypes =
   | 'repositories'
   | 'shared'
   | 'liked'
-  | 'always-on'
   | 'discover'
   | 'external';
 

@@ -10,7 +10,6 @@ import { Drafts } from './routes/Drafts';
 import { Recent } from './routes/Recent';
 import { Shared } from './routes/Shared';
 import { Liked } from './routes/Liked';
-import { AlwaysOn } from './routes/AlwaysOn';
 import { Sandboxes } from './routes/Sandboxes';
 import { SyncedSandboxes } from './routes/SyncedSandboxes';
 import { Search } from './routes/Search';
@@ -68,7 +67,6 @@ export const Content = withRouter(({ history }) => {
           path="/dashboard/synced-sandboxes/:path*"
           component={SyncedSandboxes}
         />
-        <Route path="/dashboard/always-on" component={AlwaysOn} />
         <Route path="/dashboard/archive" component={Archive} />
         <Route path="/dashboard/shared" component={Shared} />
         <Route path="/dashboard/liked" component={Liked} />
@@ -85,6 +83,7 @@ export const Content = withRouter(({ history }) => {
           from="/dashboard/all/:path*"
           to="/dashboard/sandboxes/:path*"
         />
+        <Redirect from="/dashboard/always-on" to="/dashboard/recent" />
         <Redirect to={dashboardUrls.recent(activeTeam)} />
       </Switch>
     </Element>

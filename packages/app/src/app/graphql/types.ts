@@ -1464,6 +1464,7 @@ export type Team = {
   projects: Array<Project>;
   sandboxes: Array<Sandbox>;
   settings: Maybe<WorkspaceSandboxSettings>;
+  shortid: Scalars['String'];
   subscription: Maybe<ProSubscription>;
   templates: Array<Template>;
   userAuthorizations: Array<UserAuthorization>;
@@ -2186,7 +2187,7 @@ export type TemplateFragmentDashboardFragment = {
 
 export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
   Team,
-  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl' | 'joinedPilotAt'
+  'id' | 'name' | 'description' | 'creatorId' | 'avatarUrl'
 > & {
     settings: Maybe<
       { __typename?: 'WorkspaceSandboxSettings' } & Pick<
@@ -2222,13 +2223,7 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
 
 export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
   Team,
-  | 'id'
-  | 'creatorId'
-  | 'description'
-  | 'inviteToken'
-  | 'joinedPilotAt'
-  | 'name'
-  | 'avatarUrl'
+  'id' | 'creatorId' | 'description' | 'inviteToken' | 'name' | 'avatarUrl'
 > & {
     users: Array<
       { __typename?: 'User' } & Pick<User, 'id' | 'avatarUrl' | 'username'>
@@ -2305,7 +2300,6 @@ export type ProjectFragment = { __typename?: 'Project' } & {
 
 export type _CreateTeamMutationVariables = Exact<{
   name: Scalars['String'];
-  pilot: Maybe<Scalars['Boolean']>;
 }>;
 
 export type _CreateTeamMutation = { __typename?: 'RootMutationType' } & {
@@ -2587,17 +2581,6 @@ export type SetTeamMinimumPrivacyMutation = {
     WorkspaceSandboxSettings,
     'minimumPrivacy'
   >;
-};
-
-export type SetSandboxAlwaysOnMutationVariables = Exact<{
-  sandboxId: Scalars['ID'];
-  alwaysOn: Scalars['Boolean'];
-}>;
-
-export type SetSandboxAlwaysOnMutation = { __typename?: 'RootMutationType' } & {
-  setSandboxAlwaysOn: {
-    __typename?: 'Sandbox';
-  } & SandboxFragmentDashboardFragment;
 };
 
 export type SetWorkspaceSandboxSettingsMutationVariables = Exact<{
@@ -3767,8 +3750,5 @@ export type JoinTeamByTokenMutationVariables = Exact<{
 }>;
 
 export type JoinTeamByTokenMutation = { __typename?: 'RootMutationType' } & {
-  redeemTeamInviteToken: { __typename?: 'Team' } & Pick<
-    Team,
-    'id' | 'name' | 'joinedPilotAt'
-  >;
+  redeemTeamInviteToken: { __typename?: 'Team' } & Pick<Team, 'id' | 'name'>;
 };

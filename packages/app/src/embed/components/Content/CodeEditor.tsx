@@ -65,7 +65,7 @@ type State = {
   showConfigUI: boolean;
 };
 
-export class CodeEditorComponent extends React.PureComponent<
+class CodeEditorComponent extends React.PureComponent<
   Props & {
     editor?: 'vscode' | 'monaco' | 'codemirror';
     style?: React.CSSProperties;

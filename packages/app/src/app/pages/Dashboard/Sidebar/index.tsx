@@ -270,14 +270,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 : []),
             ]}
           />
-          {activeTeamInfo?.joinedPilotAt && (
-            <RowItem
-              name="Always-On"
-              page="always-on"
-              path={dashboardUrls.alwaysOn(activeTeam)}
-              icon="server"
-            />
-          )}
 
           {state.sidebar.hasSyncedSandboxes ? (
             <RowItem
@@ -367,13 +359,8 @@ const linkStyles = {
   flexShrink: 0,
 };
 
-const canNotAcceptSandboxes: PageTypes[] = ['recent', 'always-on'];
-const canNotAcceptFolders: PageTypes[] = [
-  'recent',
-  'drafts',
-  'templates',
-  'always-on',
-];
+const canNotAcceptSandboxes: PageTypes[] = ['recent'];
+const canNotAcceptFolders: PageTypes[] = ['recent', 'drafts', 'templates'];
 
 const isSamePath = (
   draggedItem: DragItemType,
@@ -413,7 +400,6 @@ const MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE: Partial<Record<
   drafts: 'Dashboard - View Drafts',
   templates: 'Dashboard - View Templates',
   sandboxes: 'Dashboard - View Sandboxes',
-  'always-on': 'Dashboard - View Always-On',
   'synced-sandboxes': 'Dashboard - View Synced Sandboxes',
   archive: 'Dashboard - View Archive',
   discover: 'Dashboard - View Discover',

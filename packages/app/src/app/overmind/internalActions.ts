@@ -7,7 +7,6 @@ import {
   TabType,
 } from '@codesandbox/common/lib/types';
 import history from 'app/utils/history';
-import { patronUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationMessage } from '@codesandbox/notifications/lib/state';
 import { NotificationStatus } from '@codesandbox/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
@@ -492,32 +491,6 @@ export const handleError = (
         state.signInModalOpen = true;
       },
     };
-  } else if (error.message.startsWith('You reached the maximum of')) {
-    effects.analytics.track('Non-Patron Sandbox Limit Reached', {
-      errorMessage: error.message,
-    });
-
-    notificationActions.primary = {
-      label: 'Open Patron Page',
-      run: () => {
-        window.open(patronUrl(), '_blank');
-      },
-    };
-  } else if (
-    error.message.startsWith(
-      'You reached the limit of server sandboxes, you can create more server sandboxes as a patron.'
-    )
-  ) {
-    effects.analytics.track('Non-Patron Server Sandbox Limit Reached', {
-      errorMessage: error.message,
-    });
-
-    notificationActions.primary = {
-      label: 'Open Patron Page',
-      run: () => {
-        window.open(patronUrl(), '_blank');
-      },
-    };
   } else if (
     error.message.startsWith(
       'You reached the limit of server sandboxes, we will increase the limit in the future. Please contact support@codesandbox.io for more server sandboxes.'
@@ -568,8 +541,6 @@ export const trackCurrentTeams = async ({ effects, state }: Context) => {
 export const identifyCurrentUser = async ({ state, effects }: Context) => {
   const user = state.user;
   if (user) {
-    effects.analytics.identify('pilot', user.experiments.inPilot);
-    effects.browser.storage.set('pilot', user.experiments.inPilot);
     Object.entries(user.metadata).forEach(([key, value]) => {
       if (value) {
         effects.analytics.identify(key, value);

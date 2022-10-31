@@ -24,7 +24,7 @@ export const Patron = () => {
           padding: 0,
         })}
         onClick={() => {
-          actions.modalOpened({ modal: 'pilotPayment' });
+          actions.modalOpened({ modal: 'legacyPayment' });
         }}
       >
         Update payment information

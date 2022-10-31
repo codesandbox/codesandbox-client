@@ -27,7 +27,7 @@ import { NetlifyLogs } from './NetlifyLogs';
 import { PickSandboxModal } from './PickSandboxModal';
 import { PreferencesModal } from './PreferencesModal';
 import { RecoverFilesModal } from './RecoverFilesModal';
-import { PilotPaymentModal } from './PilotPaymentModal';
+import { LegacyPaymentModal } from './LegacyPaymentModal';
 import { SandboxPickerModal } from './SandboxPickerModal';
 import { SearchDependenciesModal } from './SearchDependenciesModal';
 import { SelectSandboxModal } from './SelectSandboxModal';
@@ -54,8 +54,8 @@ const modals = {
     Component: PreferencesModal,
     width: 900,
   },
-  pilotPayment: {
-    Component: PilotPaymentModal,
+  legacyPayment: {
+    Component: LegacyPaymentModal,
     width: 600,
   },
   newSandbox: {

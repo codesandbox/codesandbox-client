@@ -1,6 +1,6 @@
 import React from 'react';
 
-export interface IOpagueLogoProps extends React.SVGAttributes<SVGElement> {
+interface IOpagueLogoProps extends React.SVGAttributes<SVGElement> {
   width: number;
   height: number;
 }

@@ -1,1 +1,0 @@
-export { HeaderSearchBar } from './HeaderSearchBar';

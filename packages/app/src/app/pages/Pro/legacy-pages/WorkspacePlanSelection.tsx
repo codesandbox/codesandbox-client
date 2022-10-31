@@ -12,7 +12,6 @@ import {
   ProSubscription,
   SubscriptionType,
   SubscriptionInterval,
-  SubscriptionOrigin,
 } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { plans } from './plans';
@@ -163,9 +162,6 @@ export const WorkspacePlanSelection: React.FC<{
 
   const isLegacyPersonalPro = isPersonalWorkspace && user.subscription;
   const currentSubscription = activeTeamInfo?.subscription;
-  const isTeamProPilot =
-    currentSubscription &&
-    currentSubscription.origin === SubscriptionOrigin.Pilot;
 
   // if there is mismatch of intent - team/personal
   // or you don't have access to upgrade
@@ -359,40 +355,29 @@ export const WorkspacePlanSelection: React.FC<{
             </Text>
           </Stack>
 
-          {user.subscription.plan === 'patron' ? (
-            <Text variant="muted">
-              Thank you for being an early supporter of CodeSandbox. As a
-              patron, you can access all Personal Pro features. You can{' '}
-              <Link variant="active" href="/patron">
-                modify your contribution
-              </Link>{' '}
-              at any time.
-            </Text>
-          ) : (
-            <Text variant="muted">
-              You can{' '}
-              <Link
-                variant="active"
-                onClick={e => {
-                  e.preventDefault();
+          <Text variant="muted">
+            You can{' '}
+            <Link
+              variant="active"
+              onClick={e => {
+                e.preventDefault();
 
-                  modalOpened({ modal: 'pilotPayment' });
-                }}
-              >
-                update your payment details
-              </Link>{' '}
-              or{' '}
-              <Link
-                variant="active"
-                onClick={e => {
-                  e.preventDefault();
-                  cancelSubscriptionClicked();
-                }}
-              >
-                cancel your subscription.
-              </Link>
-            </Text>
-          )}
+                modalOpened({ modal: 'legacyPayment' });
+              }}
+            >
+              update your payment details
+            </Link>{' '}
+            or{' '}
+            <Link
+              variant="active"
+              onClick={e => {
+                e.preventDefault();
+                cancelSubscriptionClicked();
+              }}
+            >
+              cancel your subscription.
+            </Link>
+          </Text>
         </Stack>
       ) : (
         <Stack direction="vertical" gap={6}>
@@ -477,7 +462,7 @@ export const WorkspacePlanSelection: React.FC<{
             </Stack>
           </Stack>
 
-          {currentSubscription && !isTeamProPilot ? (
+          {currentSubscription ? (
             <>
               <Button
                 loading={loading}
@@ -543,8 +528,7 @@ const PlanCard: React.FC<{
 }> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
   const isSelected = plan.billingInterval === billingInterval;
   const isCurrent =
-    plan.billingInterval === currentSubscription?.billingInterval &&
-    currentSubscription?.origin !== SubscriptionOrigin.Pilot;
+    plan.billingInterval === currentSubscription?.billingInterval;
 
   return (
     <Stack
