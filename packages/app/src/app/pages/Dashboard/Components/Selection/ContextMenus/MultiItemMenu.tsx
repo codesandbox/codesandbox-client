@@ -193,32 +193,34 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
               });
             },
           },
-          sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) && {
-            label: 'Prevent Export as .zip',
-            fn: () => {
-              actions.dashboard.setPreventSandboxesExport({
-                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                preventSandboxExport: true,
-              });
+          sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) &&
+            sandboxes.every(s => !s.sandbox.isV2) && {
+              label: 'Prevent Export as .zip',
+              fn: () => {
+                actions.dashboard.setPreventSandboxesExport({
+                  sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+                  preventSandboxExport: true,
+                });
+              },
             },
-          },
-          sandboxes.some(s => s.sandbox.permissions.preventSandboxExport) && {
-            label: 'Allow Export as .zip',
-            fn: () => {
-              actions.dashboard.setPreventSandboxesExport({
-                sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
-                preventSandboxExport: false,
-              });
+          sandboxes.some(s => s.sandbox.permissions.preventSandboxExport) &&
+            sandboxes.every(s => !s.sandbox.isV2) && {
+              label: 'Allow Export as .zip',
+              fn: () => {
+                actions.dashboard.setPreventSandboxesExport({
+                  sandboxIds: sandboxes.map(sandbox => sandbox.sandbox.id),
+                  preventSandboxExport: false,
+                });
+              },
             },
-          },
         ].filter(Boolean)
       : [];
 
-  const EXPORT = sandboxes.some(
-    s => !s.sandbox.permissions.preventSandboxExport
-  )
-    ? [{ label: 'Export Items', fn: exportItems }]
-    : [];
+  const EXPORT =
+    sandboxes.some(s => !s.sandbox.permissions.preventSandboxExport) &&
+    sandboxes.every(s => !s.sandbox.isV2)
+      ? [{ label: 'Export Items', fn: exportItems }]
+      : [];
 
   const DELETE = { label: 'Archive Items', fn: deleteItems };
   const RECOVER = {
