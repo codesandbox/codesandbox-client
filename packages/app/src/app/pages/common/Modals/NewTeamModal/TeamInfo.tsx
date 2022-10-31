@@ -29,7 +29,6 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
       try {
         await actions.dashboard.createTeam({
           teamName,
-          pilot: location.search.includes('pilot'),
         });
         setLoading(false);
         onComplete();

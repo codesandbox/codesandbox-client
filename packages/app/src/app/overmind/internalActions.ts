@@ -568,8 +568,6 @@ export const trackCurrentTeams = async ({ effects, state }: Context) => {
 export const identifyCurrentUser = async ({ state, effects }: Context) => {
   const user = state.user;
   if (user) {
-    effects.analytics.identify('pilot', user.experiments.inPilot);
-    effects.browser.storage.set('pilot', user.experiments.inPilot);
     Object.entries(user.metadata).forEach(([key, value]) => {
       if (value) {
         effects.analytics.identify(key, value);

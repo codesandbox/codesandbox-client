@@ -12,7 +12,6 @@ import {
   ProSubscription,
   SubscriptionType,
   SubscriptionInterval,
-  SubscriptionOrigin,
 } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { plans } from './plans';
@@ -163,9 +162,6 @@ export const WorkspacePlanSelection: React.FC<{
 
   const isLegacyPersonalPro = isPersonalWorkspace && user.subscription;
   const currentSubscription = activeTeamInfo?.subscription;
-  const isTeamProPilot =
-    currentSubscription &&
-    currentSubscription.origin === SubscriptionOrigin.Pilot;
 
   // if there is mismatch of intent - team/personal
   // or you don't have access to upgrade
@@ -376,7 +372,7 @@ export const WorkspacePlanSelection: React.FC<{
                 onClick={e => {
                   e.preventDefault();
 
-                  modalOpened({ modal: 'pilotPayment' });
+                  modalOpened({ modal: 'legacyPayment' });
                 }}
               >
                 update your payment details
@@ -477,7 +473,7 @@ export const WorkspacePlanSelection: React.FC<{
             </Stack>
           </Stack>
 
-          {currentSubscription && !isTeamProPilot ? (
+          {currentSubscription ? (
             <>
               <Button
                 loading={loading}
@@ -543,8 +539,7 @@ const PlanCard: React.FC<{
 }> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
   const isSelected = plan.billingInterval === billingInterval;
   const isCurrent =
-    plan.billingInterval === currentSubscription?.billingInterval &&
-    currentSubscription?.origin !== SubscriptionOrigin.Pilot;
+    plan.billingInterval === currentSubscription?.billingInterval;
 
   return (
     <Stack

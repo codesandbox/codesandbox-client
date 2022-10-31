@@ -104,7 +104,7 @@ export const ChangeSubscription: FunctionComponent = () => {
           onClick={(event: MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
 
-            modalOpened({ modal: 'pilotPayment' });
+            modalOpened({ modal: 'legacyPayment' });
           }}
         >
           user preferences

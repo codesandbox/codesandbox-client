@@ -1075,17 +1075,14 @@ export const createTeam = async (
   { effects, actions, state }: Context,
   {
     teamName,
-    pilot = false,
   }: {
     teamName: string;
-    pilot?: boolean;
   }
 ) => {
   try {
     effects.analytics.track('Team - Create Team', { dashboardVersion: 2 });
     const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
       name: teamName,
-      pilot,
     });
     state.dashboard.teams = [...state.dashboard.teams, newTeam];
     actions.setActiveTeam({ id: newTeam.id });
@@ -1549,7 +1546,6 @@ export const setTeamMinimumPrivacy = async (
     );
   }
 };
-
 
 export const setWorkspaceSandboxSettings = async (
   { state, effects }: Context,

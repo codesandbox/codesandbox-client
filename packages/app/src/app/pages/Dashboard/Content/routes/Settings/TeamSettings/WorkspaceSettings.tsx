@@ -22,7 +22,6 @@ import {
   TeamMemberAuthorization,
   SubscriptionType,
   SubscriptionInterval,
-  SubscriptionOrigin,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
 import { Card } from '../components';
@@ -115,13 +114,10 @@ export const WorkspaceSettings = () => {
   // throw them a confirmation modal
   const confirmNewMemberAddition =
     team?.subscription &&
-    team?.subscription.origin !== SubscriptionOrigin.Pilot &&
     numberOfUnusedSeats === 0 &&
     newMemberAuthorization !== TeamMemberAuthorization.Read;
   const confirmMemberRoleChange =
-    team?.subscription &&
-    team?.subscription.origin !== SubscriptionOrigin.Pilot &&
-    numberOfUnusedSeats === 0;
+    team?.subscription && numberOfUnusedSeats === 0;
 
   const onInviteSubmit = async event => {
     event.preventDefault();

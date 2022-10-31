@@ -119,7 +119,6 @@ export const teamFragmentDashboard = gql`
     description
     creatorId
     avatarUrl
-    joinedPilotAt
     settings {
       minimumPrivacy
     }
@@ -157,7 +156,6 @@ export const currentTeamInfoFragment = gql`
     creatorId
     description
     inviteToken
-    joinedPilotAt
     name
     avatarUrl
 
