@@ -113,8 +113,6 @@ export const Discover = () => {
           <Banner />
 
           <Stack direction="vertical" gap={16}>
-            {/* <FeaturedSandboxes /> */}
-
             {randomAlbums.map(album => (
               <Album
                 key={album.id}
@@ -122,7 +120,6 @@ export const Discover = () => {
                 showMore={album.sandboxes.length > 3}
               />
             ))}
-
             <TrendingSandboxes />
           </Stack>
         </Element>
@@ -154,7 +151,6 @@ const Banner = () => (
     })}
   >
     <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
-      <Text size={3}>{banner.label}</Text>
       <Text size={32} weight="regular" marginTop={2}>
         {banner.title}
       </Text>
@@ -175,32 +171,6 @@ const Banner = () => (
     />
   </Stack>
 );
-
-// const FeaturedSandboxes = () => {
-//   const {
-//     dashboard: { curatedAlbums },
-//   } = useAppState();
-
-//   const featuredSandboxesAlbum = curatedAlbums.find(
-//     album => album.id === FEATURED_SANDBOXES_ALBUM
-//   );
-
-//   return (
-//     <Grid
-//       rowGap={6}
-//       columnGap={6}
-//       css={{
-//         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-//         height: 'max(60vh, 528px)',
-//         overflow: 'hidden',
-//       }}
-//     >
-//       {featuredSandboxesAlbum?.sandboxes.slice(0, 3).map(sandbox => (
-//         <FeaturedSandbox key={sandbox.id} sandbox={sandbox} />
-//       ))}
-//     </Grid>
-//   );
-// };
 
 export const FeaturedSandbox = ({ sandbox }) => {
   const {
