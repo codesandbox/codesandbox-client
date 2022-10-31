@@ -5,8 +5,6 @@ import { DuplicateAccount } from './components/DuplicateAccount';
 import { ChooseProvider } from './ChooseProvider';
 import { Onboarding } from './Onboarding';
 
-import '../WaitList/fonts/index.css';
-
 interface SignInProps {
   redirectTo?: string;
   onSignIn?: () => void;

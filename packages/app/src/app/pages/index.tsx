@@ -149,11 +149,6 @@ const Curator = Loadable(() =>
     default: module.Curator,
   }))
 );
-const WaitListRequest = Loadable(() =>
-  import(/* webpackChunkName: 'page-curator' */ './WaitList').then(module => ({
-    default: module.WaitListRequest,
-  }))
-);
 
 // @ts-ignore
 const CodeSadbox = () => this[`💥`].kaboom();
@@ -237,7 +232,6 @@ const RoutesComponent: React.FC = () => {
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
             <Route path="/codesadbox" component={CodeSadbox} />
-            <Route path="/waitlist" component={WaitListRequest} />
             <Route component={NotFound} />
           </Switch>
         </Content>
