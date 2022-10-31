@@ -190,25 +190,27 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </MenuItem>
       ) : null}
 
-      <Tooltip
-        label={
-          preventSandboxExport
-            ? 'You do not have permission to export this sandbox'
-            : null
-        }
-      >
-        <div>
-          <MenuItem
-            data-disabled={preventSandboxExport ? true : null}
-            onSelect={() => {
-              if (preventSandboxExport) return;
-              actions.dashboard.downloadSandboxes([sandbox.id]);
-            }}
-          >
-            Export {label}
-          </MenuItem>
-        </div>
-      </Tooltip>
+      {!sandbox.isV2 && (
+        <Tooltip
+          label={
+            preventSandboxExport
+              ? 'You do not have permission to export this sandbox'
+              : null
+          }
+        >
+          <div>
+            <MenuItem
+              data-disabled={preventSandboxExport ? true : null}
+              onSelect={() => {
+                if (preventSandboxExport) return;
+                actions.dashboard.downloadSandboxes([sandbox.id]);
+              }}
+            >
+              Export {label}
+            </MenuItem>
+          </div>
+        </Tooltip>
+      )}
 
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && isPro ? (
         <>
@@ -358,8 +360,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             Prevent Leaving Workspace
           </MenuItem>
         ))}
-
-      {hasAccess &&
+      {!sandbox.isV2 &&
+        hasAccess &&
         isPro &&
         activeWorkspaceAuthorization === 'ADMIN' &&
         (sandbox.permissions.preventSandboxExport ? (
