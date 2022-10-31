@@ -226,6 +226,7 @@ const RoutesComponent: React.FC = () => {
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
             <Route path="/codesadbox" component={CodeSadbox} />
+            <Redirect from="/patron" to="/pro" />
             <Route component={NotFound} />
           </Switch>
         </Content>
