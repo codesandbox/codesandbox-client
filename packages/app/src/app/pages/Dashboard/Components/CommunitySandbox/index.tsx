@@ -62,6 +62,7 @@ export const CommunitySandbox = ({
   const onContextMenu = React.useCallback(
     event => {
       event.preventDefault();
+      event.stopPropagation();
       if (event.type === 'contextmenu') onRightClick(event, sandbox.id);
       else onMenuEvent(event, sandbox.id);
     },
