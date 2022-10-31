@@ -1,5 +1,3 @@
-import { Button } from './components/Button';
-
 import React from 'react';
 import { Button as MainButton, Stack, Text } from '@codesandbox/components';
 import {
@@ -10,6 +8,8 @@ import {
 } from '@codesandbox/components/lib/components/Icon/icons';
 import { useActions, useAppState } from 'app/overmind';
 import history from 'app/utils/history';
+
+import { Button } from './components/Button';
 
 type ChooseProviderProps = {
   redirectTo?: string;
