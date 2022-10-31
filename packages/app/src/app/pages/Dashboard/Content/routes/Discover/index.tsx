@@ -151,7 +151,6 @@ const Banner = () => (
     })}
   >
     <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
-      <Text size={3}>{banner.label}</Text>
       <Text size={32} weight="regular" marginTop={2}>
         {banner.title}
       </Text>
