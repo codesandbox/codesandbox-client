@@ -6,6 +6,9 @@
     "strictNullChecks": true,
     "skipLibCheck": true
   },
-  "include": ["./src/app/overmind/**/*.ts"],
+  "include": [
+    "./src/app/overmind/**/*.ts",
+    "./src/app/hooks/useDismissible.ts"
+  ],
   "exclude": ["codesandbox-browserfs/*"]
 }
