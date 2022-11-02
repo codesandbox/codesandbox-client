@@ -1,4 +1,8 @@
 export const getDaysUntil = (target: Date): number | null => {
+  if (!target) {
+    return null;
+  }
+
   const now = new Date();
 
   if (now > target) {

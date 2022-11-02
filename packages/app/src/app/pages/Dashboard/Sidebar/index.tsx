@@ -37,9 +37,11 @@ import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH, NEW_FOLDER_ID } from './constants';
 import { DragItemType, useDrop } from '../utils/dnd';
 import { NotificationIndicator } from '../Components/Notification/NotificationIndicator';
-import { AdminUpgradeToPro } from './BottomMessages/AdminUpgradeToPro';
-import { UserUpgradeToPro } from './BottomMessages/UserUpgradeToPro';
-import { AdminTrialExpiring } from './BottomMessages/AdminTrialExpiring';
+import { AdminUpgradeToTeamPro } from './BottomMessages/AdminUpgradeToTeamPro';
+import { UserUpgradeToTeamPro } from './BottomMessages/UserUpgradeToTeamPro';
+import { TrialExpiring } from './BottomMessages/TrialExpiring';
+import { UpgradeToPersonalPro } from './BottomMessages/UpgradeToPersonalPro';
+import { AdminStartTrial } from './BottomMessages/AdminStartTrial';
 
 const SidebarContext = React.createContext(null);
 
@@ -126,17 +128,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
     subscription?.type === SubscriptionType.TeamPro &&
     subscription?.status === SubscriptionStatus.Trialing;
 
+  const eligibleToStartTrial = isTeamAdmin && !subscription;
+
   const isTeamFree = isTeamSpace && !hasActiveSubscription;
-  // const isPersonalFree = isPersonalSpace && !hasActiveSubscription;
+  const isPersonalFree = isPersonalSpace && !hasActiveSubscription;
 
   const isTeamFreeAdmin = isTeamFree && isTeamAdmin;
   const isTeamFreeUser = isTeamFree && !isTeamAdmin;
-
   const isTeamTrial = isTeamSpace && hasActiveTrial;
-  const isTeamTrialAdmin = isTeamTrial && isTeamAdmin;
 
   const trialDaysLeft = isTeamTrial
-    ? getDaysUntil(subscription.trialEnd)
+    ? getDaysUntil(subscription?.trialEnd)
     : null;
 
   return (
@@ -333,13 +335,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && (
           <Element css={{ padding: '24px', paddingTop: 0 }}>
-            {isTeamFreeAdmin && <AdminUpgradeToPro />}
-            {isTeamFreeUser && <UserUpgradeToPro />}
-            {isTeamTrialAdmin &&
-              trialDaysLeft !== null &&
-              trialDaysLeft <= 5 && (
-                <AdminTrialExpiring daysLeft={trialDaysLeft} />
-              )}
+            {isTeamFreeAdmin && eligibleToStartTrial && <AdminStartTrial />}
+            {isTeamFreeAdmin && !eligibleToStartTrial && (
+              <AdminUpgradeToTeamPro />
+            )}
+            {isTeamFreeUser && <UserUpgradeToTeamPro />}
+            {isPersonalFree && <UpgradeToPersonalPro />}
+            {isTeamTrial && trialDaysLeft !== null && trialDaysLeft <= 5 && (
+              <TrialExpiring daysLeft={trialDaysLeft} isAdmin={isTeamAdmin} />
+            )}
           </Element>
         )}
       </Stack>
