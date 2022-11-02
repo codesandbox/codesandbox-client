@@ -121,23 +121,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
     isTeamSpace &&
     activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
 
+  // There are different statuses for a subscription,
+  // but only ACTIVE and TRIALING should be considered an active TeamPro subscription
   const hasActiveSubscription =
     subscription?.status === SubscriptionStatus.Active ||
     subscription?.status === SubscriptionStatus.Trialing;
-  const hasActiveTrial =
+
+  // Trial is only available for TeamPro
+  const hasActiveTeamProTrial =
+    isTeamSpace &&
     subscription?.type === SubscriptionType.TeamPro &&
     subscription?.status === SubscriptionStatus.Trialing;
 
+  // Only team admin can start a trial, if there was not subscription on this team before
   const eligibleToStartTrial = isTeamAdmin && !subscription;
 
+  // If no active subscription, flag as personal/team free to show CTA to upgrade
   const isTeamFree = isTeamSpace && !hasActiveSubscription;
   const isPersonalFree = isPersonalSpace && !hasActiveSubscription;
 
+  // Only team admin can upgrade to TeamPro, team users will get a static non-CTA message
   const isTeamFreeAdmin = isTeamFree && isTeamAdmin;
   const isTeamFreeUser = isTeamFree && !isTeamAdmin;
-  const isTeamTrial = isTeamSpace && hasActiveTrial;
 
-  const trialDaysLeft = isTeamTrial
+  // Compute number of days left for TeamPro trial
+  const trialDaysLeft = hasActiveTeamProTrial
     ? getDaysUntil(subscription?.trialEnd)
     : null;
 
@@ -341,9 +349,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
             {isTeamFreeUser && <UserUpgradeToTeamPro />}
             {isPersonalFree && <UpgradeToPersonalPro />}
-            {isTeamTrial && trialDaysLeft !== null && trialDaysLeft <= 5 && (
-              <TrialExpiring daysLeft={trialDaysLeft} isAdmin={isTeamAdmin} />
-            )}
+            {hasActiveTeamProTrial &&
+              trialDaysLeft !== null &&
+              trialDaysLeft <= 5 && (
+                <TrialExpiring daysLeft={trialDaysLeft} isAdmin={isTeamAdmin} />
+              )}
           </Element>
         )}
       </Stack>
