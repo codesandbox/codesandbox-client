@@ -32,7 +32,7 @@ sourced.
   the CLI to upload a CodeSandbox project from your command line
   
 ## Documentation
-You can find our documentation on our [website](https://codesandbox.io/docs/start)
+You can find our documentation on our [website](https://codesandbox.io/docs/learn/introduction/overview)
 
 ## Contributors ✨
 
