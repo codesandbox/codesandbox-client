@@ -196,6 +196,8 @@ export const currentTeamInfoFragment = gql`
       nextBillDate
       paymentProvider
       cancelAt
+      trialStart
+      trialEnd
     }
   }
 `;

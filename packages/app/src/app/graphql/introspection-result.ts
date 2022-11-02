@@ -1,4 +1,4 @@
-interface IntrospectionResultData {
+export interface IntrospectionResultData {
   __schema: {
     types: {
       kind: string;

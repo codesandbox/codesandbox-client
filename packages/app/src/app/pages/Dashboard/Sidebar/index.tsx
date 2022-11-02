@@ -25,12 +25,21 @@ import {
 import css from '@styled-system/css';
 import merge from 'deepmerge';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
+import {
+  SubscriptionStatus,
+  SubscriptionType,
+  TeamMemberAuthorization,
+} from 'app/graphql/types';
+import { getDaysUntil } from 'app/utils/dateTime';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder, PageTypes } from '../types';
 import { Position } from '../Components/Selection';
 import { SIDEBAR_WIDTH, NEW_FOLDER_ID } from './constants';
 import { DragItemType, useDrop } from '../utils/dnd';
 import { NotificationIndicator } from '../Components/Notification/NotificationIndicator';
+import { AdminUpgradeToPro } from './BottomMessages/AdminUpgradeToPro';
+import { UserUpgradeToPro } from './BottomMessages/UserUpgradeToPro';
+import { AdminTrialExpiring } from './BottomMessages/AdminTrialExpiring';
 
 const SidebarContext = React.createContext(null);
 
@@ -51,7 +60,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const state = useAppState();
   const actions = useActions();
 
-  const { dashboard, activeTeam, activeTeamInfo, personalWorkspaceId } = state;
+  const {
+    dashboard,
+    activeTeam,
+    activeTeamInfo,
+    personalWorkspaceId,
+    activeWorkspaceAuthorization,
+  } = state;
 
   React.useEffect(() => {
     // Used to fetch collections
@@ -95,7 +110,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setNewFolderPath,
   };
 
+  const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
+
+  const subscription = activeTeamInfo?.subscription;
   const isPersonalSpace = activeTeam === personalWorkspaceId;
+  const isTeamSpace = !isPersonalSpace;
+  const isTeamAdmin =
+    isTeamSpace &&
+    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+
+  const hasActiveSubscription =
+    subscription?.status === SubscriptionStatus.Active ||
+    subscription?.status === SubscriptionStatus.Trialing;
+  const hasActiveTrial =
+    subscription?.type === SubscriptionType.TeamPro &&
+    subscription?.status === SubscriptionStatus.Trialing;
+
+  const isTeamFree = isTeamSpace && !hasActiveSubscription;
+  // const isPersonalFree = isPersonalSpace && !hasActiveSubscription;
+
+  const isTeamFreeAdmin = isTeamFree && isTeamAdmin;
+  const isTeamFreeUser = isTeamFree && !isTeamAdmin;
+
+  const isTeamTrial = isTeamSpace && hasActiveTrial;
+  const isTeamTrialAdmin = isTeamTrial && isTeamAdmin;
+
+  const trialDaysLeft = isTeamTrial
+    ? getDaysUntil(subscription.trialEnd)
+    : null;
 
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
@@ -117,7 +159,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         })}
       >
         <Stack direction="horizontal">
-          {dashboard.teams.length > 0 && activeTeamInfo ? (
+          {teamDataLoaded ? (
             <WorkspaceSelect
               selectedTeamId={activeTeam}
               onSelect={teamId => {
@@ -288,29 +330,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
           <Element marginTop={3} />
         </List>
-        {!activeTeamInfo?.subscription && !isPersonalSpace && (
-          <Stack
-            css={{ padding: '24px', paddingTop: 0, alignItems: 'flex-start' }}
-            direction="vertical"
-            gap={2}
-          >
-            <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
-              Upgrade to Team PRO for the full CodeSandbox Experience.
-            </Text>
-            <Link
-              as={RouterLink}
-              to="/pro"
-              title="Upgrade to Team PRO"
-              css={{
-                fontSize: '12px',
-                fontWeight: 500,
-                color: '#EDFFA5',
-                textDecoration: 'none',
-              }}
-            >
-              Upgrade now
-            </Link>
-          </Stack>
+
+        {teamDataLoaded && (
+          <Element css={{ padding: '24px', paddingTop: 0 }}>
+            {isTeamFreeAdmin && <AdminUpgradeToPro />}
+            {isTeamFreeUser && <UserUpgradeToPro />}
+            {isTeamTrialAdmin &&
+              trialDaysLeft !== null &&
+              trialDaysLeft <= 5 && (
+                <AdminTrialExpiring daysLeft={trialDaysLeft} />
+              )}
+          </Element>
         )}
       </Stack>
       <AnimatePresence>
