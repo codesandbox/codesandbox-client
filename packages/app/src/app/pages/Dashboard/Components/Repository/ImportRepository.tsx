@@ -3,7 +3,9 @@ import { useActions } from 'app/overmind';
 import { Stack, Text, Icon, Element } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-export const ImportRepositoryCard: React.FC = () => {
+export const ImportRepositoryCard: React.FC<{ isDisabled?: boolean }> = ({
+  isDisabled,
+}) => {
   const { openCreateSandboxModal } = useActions();
 
   return (
@@ -18,7 +20,7 @@ export const ImportRepositoryCard: React.FC = () => {
         fontSize: 3,
         fontFamily: 'inherit',
         fontWeight: 'normal',
-        color: '#999',
+        color: isDisabled ? '#999999' : '#808080',
         height: 240,
         outline: 'none',
         backgroundColor: 'card.background',
@@ -27,15 +29,21 @@ export const ImportRepositoryCard: React.FC = () => {
         borderRadius: 'medium',
         transition: 'background ease-in',
         transitionDuration: theme => theme.speeds[2],
-        ':hover': {
+        ':not([disabled]):hover': {
           backgroundColor: 'card.backgroundHover',
         },
         ':focus-visible': {
           borderColor: 'focusBorder',
         },
       })}
+      disabled={isDisabled}
     >
-      <Stack direction="vertical" align="center" gap={4}>
+      <Stack
+        direction="vertical"
+        align="center"
+        gap={4}
+        css={isDisabled ? { opacity: 0.4 } : undefined}
+      >
         <Icon name="plus" size={32} />
         <Text>Import repository</Text>
       </Stack>

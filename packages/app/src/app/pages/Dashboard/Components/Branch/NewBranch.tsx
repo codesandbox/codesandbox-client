@@ -3,14 +3,15 @@ import { Stack, Text, Element, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-export const NewBranchCard: React.FC<{ owner: string; repoName: string }> = ({
-  owner,
-  repoName,
-}) => {
+export const NewBranchCard: React.FC<{
+  owner: string;
+  repoName: string;
+  isDisabled?: boolean;
+}> = ({ owner, repoName, isDisabled }) => {
   return (
     <Element
-      as="a"
-      href={v2DraftBranchUrl(owner, repoName)}
+      as={isDisabled ? undefined : 'a'}
+      href={isDisabled ? undefined : v2DraftBranchUrl(owner, repoName)}
       css={css({
         display: 'flex',
         alignItems: 'center',
@@ -18,7 +19,7 @@ export const NewBranchCard: React.FC<{ owner: string; repoName: string }> = ({
         textDecoration: 'none',
         fontSize: 3,
         fontWeight: 'normal',
-        color: '#999',
+        color: isDisabled ? '#999999' : '#808080',
         height: 240,
         outline: 'none',
         backgroundColor: 'card.background',
@@ -27,15 +28,22 @@ export const NewBranchCard: React.FC<{ owner: string; repoName: string }> = ({
         borderRadius: 'medium',
         transition: 'background ease-in',
         transitionDuration: theme => theme.speeds[2],
-        ':hover': {
-          backgroundColor: 'card.backgroundHover',
-        },
+        ':hover': isDisabled
+          ? undefined
+          : {
+              backgroundColor: 'card.backgroundHover',
+            },
         ':focus-visible': {
           borderColor: 'focusBorder',
         },
       })}
     >
-      <Stack direction="vertical" align="center" gap={4}>
+      <Stack
+        direction="vertical"
+        align="center"
+        gap={4}
+        css={isDisabled ? { opacity: 0.4 } : undefined}
+      >
         <Icon name="plus" size={32} />
         <Text>Create branch</Text>
       </Stack>
