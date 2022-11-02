@@ -123,6 +123,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   // There are different statuses for a subscription,
   // but only ACTIVE and TRIALING should be considered an active TeamPro subscription
+  // TODO: This might change based on how we use other statuses in the subscription (eg: PAUSED)
   const hasActiveSubscription =
     subscription?.status === SubscriptionStatus.Active ||
     subscription?.status === SubscriptionStatus.Trialing;
