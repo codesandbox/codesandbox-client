@@ -17,7 +17,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
   selected,
   onContextMenu,
   isBeingRemoved,
-  isViewOnly = true,
+  isViewOnly,
   ...props
 }) => {
   return (

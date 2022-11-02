@@ -221,7 +221,7 @@ export const SandboxCard = ({
   onInputKeyDown,
   onSubmit,
   onInputBlur,
-  isViewOnly = true,
+  isViewOnly,
   // drag preview
   thumbnailRef,
   opacity,

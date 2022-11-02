@@ -37,7 +37,7 @@ export const NewMasterSandbox = (props: NewMasterSandboxProps) => {
 
 export const NewMasterSandboxListItem = ({
   repo,
-  isViewOnly = true, // 🚧
+  isViewOnly,
 }: NewMasterSandboxProps) => {
   const { onRightClick } = useSelection();
   return (
@@ -118,7 +118,7 @@ export const NewMasterSandboxListItem = ({
 
 export const NewMasterSandboxCard = ({
   repo,
-  isViewOnly = true, // 🚧
+  isViewOnly,
 }: NewMasterSandboxProps) => {
   const { onRightClick } = useSelection();
   return (

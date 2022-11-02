@@ -17,7 +17,7 @@ export const BranchCard: React.FC<BranchProps> = ({
   isBeingRemoved,
   selected,
   onContextMenu,
-  isViewOnly = true,
+  isViewOnly,
   ...props
 }) => {
   const { name: branchName, project, contribution } = branch;
