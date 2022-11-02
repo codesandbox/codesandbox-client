@@ -61,8 +61,8 @@ export const NewMasterSandboxListItem = ({
         borderBottomColor: 'grays.600',
       })}
     >
-      <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
-        <Column span={[11, 4, 4]}>
+      <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={4}>
+        <Column span={[10, 5, 4]}>
           <Stack gap={4} align="center" marginLeft={2}>
             <Stack
               as="div"
@@ -78,29 +78,29 @@ export const NewMasterSandboxListItem = ({
               <Icon color="#999" name="github" size={24} />
             </Stack>
             <Stack justify="space-between" align="center">
-              <Text size={3} weight="medium">
+              <Text
+                size={3}
+                weight="medium"
+                css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+              >
                 {repo.name}
               </Text>
             </Stack>
           </Stack>
         </Column>
-        {/* ❗️ TODO properly */}
-        <Column span={[1, 3, 1]}>
+        <Column span={[0, 2, 2]}>
           {isViewOnly ? (
-            <Element>
+            <Stack align="center">
               <Badge color="accent" isPadded>
                 View only
               </Badge>
-            </Element>
+            </Stack>
           ) : null}
         </Column>
         <Column span={[0, 4, 4]} as={Stack} align="center">
           <Text size={3} block variant="muted">
             {repo.owner}
           </Text>
-        </Column>
-        <Column span={[0, 3, 3]} as={Stack} align="center">
-          {/* empty column to align with sandbox list items */}
         </Column>
       </Grid>
       <IconButton
