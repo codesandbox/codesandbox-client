@@ -5,6 +5,8 @@ import {
   Stack,
   Text,
   Tooltip,
+  Element,
+  Badge,
 } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { BranchProps } from './types';
@@ -15,6 +17,7 @@ export const BranchCard: React.FC<BranchProps> = ({
   isBeingRemoved,
   selected,
   onContextMenu,
+  isViewOnly = true,
   ...props
 }) => {
   const { name: branchName, project, contribution } = branch;
@@ -57,7 +60,7 @@ export const BranchCard: React.FC<BranchProps> = ({
     >
       <Stack
         css={css({
-          backgroundColor: 'rgba(229, 229, 229, 0.04)',
+          backgroundColor: isViewOnly ? '#252525' : '#161616',
           paddingY: 11,
           position: 'relative',
         })}
@@ -66,6 +69,13 @@ export const BranchCard: React.FC<BranchProps> = ({
       >
         <Icon color="#808080" name="branch" size={32} />
       </Stack>
+      {isViewOnly ? (
+        <Element css={{ position: 'absolute', top: 8, left: 8 }}>
+          <Badge color="accent" isPadded>
+            View only
+          </Badge>
+        </Element>
+      ) : null}
       <Stack
         css={css({
           paddingY: 5,
@@ -80,7 +90,7 @@ export const BranchCard: React.FC<BranchProps> = ({
           <Tooltip label={branchName}>
             <Text
               css={css({
-                color: '#E5E5E5',
+                color: isViewOnly ? '#999999' : '#E5E5E5',
                 flex: 1,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
