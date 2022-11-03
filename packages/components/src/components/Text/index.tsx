@@ -16,6 +16,11 @@ const overflowStyles = {
   whiteSpace: 'nowrap',
 };
 
+const fontFamilies = {
+  inter: 'Inter, sans-serif',
+  everett: 'Everett, sans-serif',
+};
+
 export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: number;
   align?: string;
@@ -26,6 +31,8 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: 'body' | 'muted' | 'danger' | 'active';
   dateTime?: string;
   lineHeight?: string;
+  color?: string;
+  fontFamily?: 'inter' | 'everett';
 }
 
 export const Text = styled(Element).attrs(p => ({
@@ -40,6 +47,8 @@ export const Text = styled(Element).attrs(p => ({
     variant = 'body',
     maxWidth,
     lineHeight,
+    color,
+    fontFamily,
     ...props
   }) =>
     css({
@@ -49,8 +58,9 @@ export const Text = styled(Element).attrs(p => ({
       lineHeight: lineHeight || 'normal',
       fontStyle: fontStyle || null, // from theme.fontWeights
       display: block || maxWidth ? 'block' : 'inline',
-      color: variants[variant],
+      color: color || variants[variant],
       maxWidth,
+      fontFamily: fontFamilies[fontFamily],
       ...(maxWidth ? overflowStyles : {}),
     })
 );
