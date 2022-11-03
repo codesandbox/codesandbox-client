@@ -56,7 +56,7 @@ export const Switcher: React.FC<{
             name={activeTeamInfo.name}
           />
 
-          <Stack css={{ marginLeft: 24}} direction="vertical">
+          <Stack css={{ marginLeft: 24 }} direction="vertical">
             <WorkspaceName>
               <span>{activeTeamInfo.name}</span>
             </WorkspaceName>

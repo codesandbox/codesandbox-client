@@ -9,6 +9,7 @@ import {
 } from '@codesandbox/components';
 import { Helmet } from 'react-helmet';
 import { Navigation } from 'app/pages/common/Navigation';
+import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import css from '@styled-system/css';
 import { sortBy } from 'lodash-es';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -16,7 +17,6 @@ import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-ge
 import { useLocation, useHistory } from 'react-router-dom';
 import { formatCurrency } from 'app/utils/currency';
 import { useCreateCheckout } from 'app/hooks';
-import { useCreateCustomerPortal, Interval } from './upgrade/utils';
 import {
   UpgradeButton,
   Caption,
@@ -24,13 +24,15 @@ import {
   BoxPlaceholder,
   SwitchPlan,
   PlanTitle,
-} from './upgrade/elements';
-import { Switcher } from './upgrade/Switcher';
+} from './components/elements';
+import { Switcher } from './components/Switcher';
 import {
   SubscriptionPaymentProvider,
   SubscriptionType,
   TeamMemberAuthorization,
 } from '../../graphql/types';
+
+type Interval = 'month' | 'year';
 
 export const ProUpgrade = () => {
   const {

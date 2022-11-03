@@ -7,8 +7,8 @@ import {
 import { useHistory } from 'react-router-dom';
 import { signInPageUrl } from '@codesandbox/common/lib/utils/url-generator';
 
-import { ProLegacy } from './legacy';
-import { ProUpgrade } from './upgrade';
+import { ProLegacy } from './Legacy';
+import { ProUpgrade } from './Upgrade';
 
 export const ProPage: React.FC = () => {
   const { pageMounted } = useActions().pro;

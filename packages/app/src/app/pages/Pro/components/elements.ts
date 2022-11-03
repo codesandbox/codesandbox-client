@@ -1,16 +1,8 @@
 import { Button } from '@codesandbox/components';
-import styled, { createGlobalStyle, css } from 'styled-components';
-
-export const GlobalFonts = createGlobalStyle`
-  @font-face {
-    font-family: "TWKEverett";
-    src: url("/static/fonts/TWKEverett-Medium-web.woff") format("woff"),
-      url("/static/fonts/TWKEverett-Medium-web.ttf") format("ttf");
-  }
-`;
+import styled, { css } from 'styled-components';
 
 export const PlanTitle = styled.h1`
-  font-family: 'TWKEverett', sans-serif;
+  font-family: 'Everett', sans-serif;
   font-weight: 500;
   letter-spacing: -0.018em;
   transition: all 0.6s ease;
