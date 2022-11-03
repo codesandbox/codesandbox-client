@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Stack, Element, Text } from '@codesandbox/components';
+import { Stack, Element, Text, ButtonProps } from '@codesandbox/components';
 
 import { NotificationToast } from './Toasts';
 import { NotificationStatus } from '../state';
@@ -39,11 +39,9 @@ export interface IColors {
   [NotificationStatus.NOTICE]: string;
 }
 
-export type IButtonType = React.ComponentType<{
-  style?: React.CSSProperties;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  variant: 'primary' | 'secondary' | 'link' | 'danger';
-}>;
+export type IButtonType = React.ComponentType<
+  Pick<ButtonProps, 'style' | 'onClick' | 'variant'>
+>;
 
 export type Props = {
   toast: NotificationToast;
