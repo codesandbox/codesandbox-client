@@ -51,7 +51,7 @@ Let's take a quick look at some of the examples from `sandpack-react`:
 ### Basic Editor
 
 <br/>
-<sandpack1></sandpack1>
+<sandpack-post-example1></sandpack-post-example1>
 <br/>
 In this example, we render the default editor, and we specify some custom files to run, together with the `lodash` dependency. This allows you to quickly create live-running code examples. These examples don’t rely on CodeSandbox; if CodeSandbox goes down, Sandpack will keep running.
 
@@ -61,10 +61,11 @@ What if you want to make something custom? Well, we allow you to write any
 component that is connected to Sandpack, and you can define the layout yourself.
 Do you want to use a different code editor? That’s possible:
 
-<sandpack2></sandpack2> <br/> Here we have a custom code editor (it’s a
-`textarea`), and a custom component that shows the compiled code of the current
-file you’re looking at. As you can see, the preview is hidden here. If we’d like
-to add it, just add the `<SandpackPreview />` component as well!
+<sandpack-post-example2></sandpack-post-example2> <br/> Here we have a custom
+code editor (it’s a `textarea`), and a custom component that shows the compiled
+code of the current file you’re looking at. As you can see, the preview is
+hidden here. If we’d like to add it, just add the `<SandpackPreview />`
+component as well!
 
 As you can see in the examples, you can use the base template of Sandpack to get
 a running editor with a minimal amount of work. However, if you want to fully

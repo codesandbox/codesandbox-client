@@ -1427,7 +1427,7 @@
     "@codemirror/text" "^0.19.0"
     "@codemirror/view" "^0.19.44"
 
-"@codemirror/commands@^0.19.5":
+"@codemirror/commands@^0.19.6":
   version "0.19.8"
   resolved "https://registry.yarnpkg.com/@codemirror/commands/-/commands-0.19.8.tgz#1f99c1a8bf200d17c4d6997379099459f3678107"
   integrity sha512-65LIMSGUGGpY3oH6mzV46YWRrgao6NmfJ+AuC7jNz3K5NPnH6GCV1H5I6SwOFyVbkiygGyd0EFwrWqywTBD1aw==
@@ -1448,7 +1448,7 @@
     "@codemirror/text" "^0.19.0"
     "@codemirror/view" "^0.19.0"
 
-"@codemirror/gutter@^0.19.4", "@codemirror/gutter@^0.19.5":
+"@codemirror/gutter@^0.19.4", "@codemirror/gutter@^0.19.9":
   version "0.19.9"
   resolved "https://registry.yarnpkg.com/@codemirror/gutter/-/gutter-0.19.9.tgz#bbb69f4d49570d9c1b3f3df5d134980c516cd42b"
   integrity sha512-PFrtmilahin1g6uL27aG5tM/rqR9DZzZYZsIrCXA5Uc2OFTFqx4owuhoU9hqfYxHp5ovfvBwQ+txFzqS4vog6Q==
@@ -1488,7 +1488,7 @@
     "@codemirror/state" "^0.19.0"
     "@lezer/css" "^0.15.2"
 
-"@codemirror/lang-html@^0.19.3":
+"@codemirror/lang-html@^0.19.4":
   version "0.19.4"
   resolved "https://registry.yarnpkg.com/@codemirror/lang-html/-/lang-html-0.19.4.tgz#e6eec28462f18842a0e108732a214a7416b5e333"
   integrity sha512-GpiEikNuCBeFnS+/TJSeanwqaOfNm8Kkp9WpVNEPZCLyW1mAMCuFJu/3xlWYeWc778Hc3vJqGn3bn+cLNubgCA==
@@ -1515,7 +1515,7 @@
     "@codemirror/view" "^0.19.0"
     "@lezer/javascript" "^0.15.1"
 
-"@codemirror/language@^0.19.0", "@codemirror/language@^0.19.4":
+"@codemirror/language@^0.19.0", "@codemirror/language@^0.19.7":
   version "0.19.10"
   resolved "https://registry.yarnpkg.com/@codemirror/language/-/language-0.19.10.tgz#c3d1330fa5de778c6b6b5177af5572a3d9d596b5"
   integrity sha512-yA0DZ3RYn2CqAAGW62VrU8c4YxscMQn45y/I9sjBlqB1e2OTQLg4CCkMBuMSLXk4xaqjlsgazeOQWaJQOKfV8Q==
@@ -1564,7 +1564,7 @@
   dependencies:
     "@codemirror/state" "^0.19.0"
 
-"@codemirror/state@^0.19.0", "@codemirror/state@^0.19.2", "@codemirror/state@^0.19.3", "@codemirror/state@^0.19.4", "@codemirror/state@^0.19.5", "@codemirror/state@^0.19.9":
+"@codemirror/state@^0.19.0", "@codemirror/state@^0.19.2", "@codemirror/state@^0.19.3", "@codemirror/state@^0.19.4", "@codemirror/state@^0.19.6", "@codemirror/state@^0.19.9":
   version "0.19.9"
   resolved "https://registry.yarnpkg.com/@codemirror/state/-/state-0.19.9.tgz#b797f9fbc204d6dc7975485e231693c09001b0dd"
   integrity sha512-psOzDolKTZkx4CgUqhBQ8T8gBc0xN5z4gzed109aF6x7D7umpDRoimacI/O6d9UGuyl4eYuDCZmDFr2Rq7aGOw==
@@ -1584,7 +1584,7 @@
     "@codemirror/state" "^0.19.0"
     "@codemirror/view" "^0.19.0"
 
-"@codemirror/view@^0.19.0", "@codemirror/view@^0.19.16", "@codemirror/view@^0.19.22", "@codemirror/view@^0.19.23", "@codemirror/view@^0.19.39", "@codemirror/view@^0.19.44":
+"@codemirror/view@^0.19.0", "@codemirror/view@^0.19.22", "@codemirror/view@^0.19.23", "@codemirror/view@^0.19.32", "@codemirror/view@^0.19.39", "@codemirror/view@^0.19.44":
   version "0.19.48"
   resolved "https://registry.yarnpkg.com/@codemirror/view/-/view-0.19.48.tgz#1c657e2b0f8ed896ac6448d6e2215ab115e2a0fc"
   integrity sha512-0eg7D2Nz4S8/caetCTz61rK0tkHI17V/d15Jy0kLOT8dTLGGNJUponDnW28h2B6bERmPlVHKh8MJIr5OCp1nGw==
@@ -1602,37 +1602,47 @@
   dependencies:
     react "^16.9.0"
 
-"@codesandbox/sandpack-client@^0.9.13":
-  version "0.9.13"
-  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-client/-/sandpack-client-0.9.13.tgz#db9220dc262b85f0ce4e090675195e1bebcd9a06"
-  integrity sha512-2kuB53BGsMm7nJ7mxN1rCZA/DKwB9F6utN33kKNMGfG1Hp3iLGdADk75EgkJho61AWT7Rhrjxf45nlC4+8rX2w==
+"@codesandbox/sandpack-client@^1.12.1":
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-client/-/sandpack-client-1.12.1.tgz#fa3b66ecb08547c47e1cdf6248f5004bf5be68fb"
+  integrity sha512-p79Sk41hrp5ojeHbgTU/JWNS3UcRJKewq+oRD6O6g3MzlhUnE+xO94ui79Td4aeU4fq0jGHeLHIHCW04WMK4Yg==
   dependencies:
     codesandbox-import-utils "^1.2.3"
     lodash.isequal "^4.5.0"
 
-"@codesandbox/sandpack-react@^0.9.7":
-  version "0.9.14"
-  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-react/-/sandpack-react-0.9.14.tgz#24553c16c22e275e0f430990bafafbb142fa7834"
-  integrity sha512-QoumwgGRgWj24g5xVw4gLdpUXz6Isy/ueYoJTIBu8bGEs24Du3HVMJ8M1RqG5NzpUBjxioCZCsS2CwhMsSqd3Q==
+"@codesandbox/sandpack-react@^1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-react/-/sandpack-react-1.17.0.tgz#4d4f97319dc302388421d7df2639fa722c7f801a"
+  integrity sha512-8GzX/of2oOg22txbSApN6K3dPzwPs0n6ipoyXWRxS1cmXoxTId9Qzw/NmEx2seoXSvC0ItwrzzNIZPRFeZOJ3g==
   dependencies:
     "@code-hike/classer" "^0.0.0-aa6efee"
     "@codemirror/closebrackets" "^0.19.0"
-    "@codemirror/commands" "^0.19.5"
+    "@codemirror/commands" "^0.19.6"
     "@codemirror/comment" "^0.19.0"
-    "@codemirror/gutter" "^0.19.5"
+    "@codemirror/gutter" "^0.19.9"
     "@codemirror/highlight" "^0.19.6"
     "@codemirror/history" "^0.19.0"
     "@codemirror/lang-css" "^0.19.3"
-    "@codemirror/lang-html" "^0.19.3"
+    "@codemirror/lang-html" "^0.19.4"
     "@codemirror/lang-javascript" "^0.19.3"
-    "@codemirror/language" "^0.19.4"
+    "@codemirror/language" "^0.19.7"
     "@codemirror/matchbrackets" "^0.19.3"
-    "@codemirror/state" "^0.19.5"
-    "@codemirror/view" "^0.19.16"
-    "@codesandbox/sandpack-client" "^0.9.13"
+    "@codemirror/state" "^0.19.6"
+    "@codemirror/view" "^0.19.32"
+    "@codesandbox/sandpack-client" "^1.12.1"
     "@react-hook/intersection-observer" "^3.1.1"
+    "@stitches/core" "^1.2.6"
+    clean-set "^1.1.2"
     codesandbox-import-util-types "^2.2.3"
-    codesandbox-import-utils "^2.2.3"
+    lodash.isequal "^4.5.0"
+    lz-string "^1.4.4"
+    react-devtools-inline "4.4.0"
+    react-is "^17.0.2"
+
+"@codesandbox/sandpack-themes@^1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-themes/-/sandpack-themes-1.17.0.tgz#5d24eb62eee5c35da494e0f2ed1cefee918bbceb"
+  integrity sha512-Y/1c2Gzzsosj/K9akbKh2Z1xAhKby9p77fvs0lvldRVZ41cv3ryldMy0QKup7G+O2QDuruNzJ/B9MamEYbPxMw==
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
@@ -4674,6 +4684,11 @@
   integrity sha512-MZPUxrmFubI36XS1DI3qmI0YdN1gks62JtFZvxR67ljjSNCeK6U08Zx4msEWOXuofgqUt6zPHSi1H9fbjR/NRA==
   dependencies:
     "@sinonjs/commons" "^1.7.0"
+
+"@stitches/core@^1.2.6":
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/@stitches/core/-/core-1.2.8.tgz#dce3b8fdc764fbc6dbea30c83b73bfb52cf96173"
+  integrity sha512-Gfkvwk9o9kE9r9XNBmJRfV8zONvXThnm1tcuojL04Uy5uRyqg93DC83lDebl0rocZCfKSjUv+fWYtMQmEDJldg==
 
 "@storybook/addon-a11y@^5.1.11", "@storybook/addon-a11y@^5.3.18":
   version "5.3.18"
@@ -10056,6 +10071,11 @@ clean-css@^4.2.1:
   dependencies:
     source-map "~0.6.0"
 
+clean-set@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/clean-set/-/clean-set-1.1.2.tgz#76d8bf238c3e27827bfa73073ecdfdc767187070"
+  integrity sha512-cA8uCj0qSoG9e0kevyOWXwPaELRPVg5Pxp6WskLMwerx257Zfnh8Nl0JBH59d7wQzij2CK7qEfJQK3RjuKKIug==
+
 clean-stack@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-2.2.0.tgz#ee8472dbb129e727b31e8a10a427dee9dfe4008b"
@@ -10323,15 +10343,6 @@ codesandbox-import-utils@^2.1.9, codesandbox-import-utils@^2.2.2:
   integrity sha512-1fgtBq+WiUEN49qmVS1086pLFG5KZIhbrtf7IuJWTUGU1FIgu9DXxwmp2snEA9asFUhCx/dtzeWbMPxJRewQ7Q==
   dependencies:
     codesandbox-import-util-types "^2.2.1"
-    istextorbinary "^2.2.1"
-    lz-string "^1.4.4"
-
-codesandbox-import-utils@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-2.2.3.tgz#f7b4801245b381cb8c90fe245e336624e19b6c84"
-  integrity sha512-ymtmcgZKU27U+nM2qUb21aO8Ut/u2S9s6KorOgG81weP+NA0UZkaHKlaRqbLJ9h4i/4FLvwmEXYAnTjNmp6ogg==
-  dependencies:
-    codesandbox-import-util-types "^2.2.3"
     istextorbinary "^2.2.1"
     lz-string "^1.4.4"
 
@@ -27573,6 +27584,14 @@ react-dev-utils@^9.0.0:
     strip-ansi "5.2.0"
     text-table "0.2.0"
 
+react-devtools-inline@4.4.0, "react-devtools-inline_legacy@npm:react-devtools-inline@4.4.0":
+  name react-devtools-inline_legacy
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/react-devtools-inline/-/react-devtools-inline-4.4.0.tgz#e032a6eb17a9977b682306f84b46e683adf4bf68"
+  integrity sha512-ES0GolSrKO8wsKbsEkVeiR/ZAaHQTY4zDh1UW8DImVmm8oaGLl3ijJDvSGe+qDRKPZdPRnDtWWnSvvrgxXdThQ==
+  dependencies:
+    es6-symbol "^3"
+
 react-devtools-inline@^4.22.0:
   version "4.22.1"
   resolved "https://registry.yarnpkg.com/react-devtools-inline/-/react-devtools-inline-4.22.1.tgz#339ef44279317de10ebafcf12e3e48b9f0c24481"
@@ -27580,13 +27599,6 @@ react-devtools-inline@^4.22.0:
   dependencies:
     source-map-js "^0.6.2"
     sourcemap-codec "^1.4.8"
-
-"react-devtools-inline_legacy@npm:react-devtools-inline@4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/react-devtools-inline/-/react-devtools-inline-4.4.0.tgz#e032a6eb17a9977b682306f84b46e683adf4bf68"
-  integrity sha512-ES0GolSrKO8wsKbsEkVeiR/ZAaHQTY4zDh1UW8DImVmm8oaGLl3ijJDvSGe+qDRKPZdPRnDtWWnSvvrgxXdThQ==
-  dependencies:
-    es6-symbol "^3"
 
 react-dnd-html5-backend@^9.4.0:
   version "9.4.0"
@@ -27829,6 +27841,11 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-is@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
+  integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
 react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
