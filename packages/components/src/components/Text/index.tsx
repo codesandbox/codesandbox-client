@@ -25,6 +25,7 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   maxWidth?: number | string;
   variant?: 'body' | 'muted' | 'danger' | 'active';
   dateTime?: string;
+  lineHeight?: string;
 }
 
 export const Text = styled(Element).attrs(p => ({
@@ -38,13 +39,14 @@ export const Text = styled(Element).attrs(p => ({
     block,
     variant = 'body',
     maxWidth,
+    lineHeight,
     ...props
   }) =>
     css({
       fontSize: size || 'inherit', // from theme.fontSizes
       textAlign: align || 'left',
       fontWeight: weight || null, // from theme.fontWeights
-      lineHeight: 'normal',
+      lineHeight: lineHeight || 'normal',
       fontStyle: fontStyle || null, // from theme.fontWeights
       display: block || maxWidth ? 'block' : 'inline',
       color: variants[variant],

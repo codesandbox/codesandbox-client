@@ -51,7 +51,6 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100%;
     height: 100%;
     font-size: 16px;
-    width: 400px;
     margin: 0;
     background-color: ${({ theme }: { theme: Theme }) =>
       theme.colors.sideBar.background};
