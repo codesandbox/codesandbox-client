@@ -1,7 +1,7 @@
 // Based on https://usehooks.com/useScript/
 import { useEffect, useState } from 'react';
 
-const cachedScripts = [];
+const cachedScripts: Array<string> = [];
 
 export const useScript = (src: string) => {
   const [state, setState] = useState({
