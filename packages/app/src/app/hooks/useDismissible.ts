@@ -10,16 +10,17 @@ type DismissibleKeys =
 
 type Dismissibles = Partial<Record<DismissibleKeys, true>>;
 
-export const useDismissible = () => {
+export const useDismissible = (key: DismissibleKeys) => {
   const { browser } = useEffects();
+
   const dismissibles = browser.storage.get<Dismissibles>('DISMISSIBLES');
+  const isDismissed = dismissibles?.[key] === true;
 
-  const isDismissed = (key: DismissibleKeys) => {
-    return dismissibles?.[key] === true;
-  };
-
-  const dismiss = (key: DismissibleKeys) => {
-    const prevDismissibles = dismissibles || {};
+  const dismiss = () => {
+    // Getting the dismissibles again to make sure other instances aren't
+    // overwritten after the hook initialised.
+    const prevDismissibles =
+      browser.storage.get<Dismissibles>('DISMISSIBLES') || {};
 
     browser.storage.set('DISMISSIBLES', {
       ...prevDismissibles,
@@ -27,5 +28,5 @@ export const useDismissible = () => {
     });
   };
 
-  return { isDismissed, dismiss };
+  return [isDismissed, dismiss];
 };
