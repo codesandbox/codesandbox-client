@@ -1,103 +1,60 @@
-import React, { FormEvent, useState } from 'react';
-import { Button, Stack, Text } from '@codesandbox/components';
-import { useAppState, useEffects } from 'app/overmind';
+import React, { useState } from 'react';
+import {
+  Avatar,
+  Button,
+  IconButton,
+  Label,
+  List,
+  ListItem,
+  Stack,
+  Text,
+  Input,
+} from '@codesandbox/components';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { StyledButton } from 'app/components/dashboard/Button';
-import { Textarea } from 'app/components/dashboard/Textarea';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
-
-function validateEmail(email: string) {
-  // Test for "anything@anything.anything" and check for
-  // multiple @ signs.
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function formatInvalidEmails(invalidEmails: string[]) {
-  const isSingleEmail = invalidEmails.length === 1;
-
-  if (isSingleEmail) {
-    return `${invalidEmails[0]}.`;
-  }
-
-  return invalidEmails.map((invalidEmail, index, arr) => {
-    const isFirstEmail = index === 0;
-    const isLastEmail = arr.length - 1 === index;
-
-    return `${
-      isLastEmail
-        ? ` and ${invalidEmail}.`
-        : `${isFirstEmail ? '' : ', '}${invalidEmail}`
-    }`;
-  });
-}
+import { UserSearchInput } from 'app/components/UserSearchInput';
+import { sortBy } from 'lodash-es';
+import { css } from 'styled-components';
+import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 
 export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
   onComplete,
 }) => {
   const { activeTeamInfo } = useAppState();
-  const { gql } = useEffects();
-  const [addressesString, setAddressesString] = useState<string>();
-  const [invalidEmails, setInvalidEmails] = useState<string[]>();
-  const [inviteError, setInviteError] = useState<string>();
+  const actions = useActions();
+  const { copyToClipboard } = useEffects().browser;
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setInviteError(null);
+  const inviteLink = teamInviteLink(activeTeamInfo.inviteToken);
+  const [inviteValue, setInviteValue] = useState<string>('');
+  const [linkCopied, setLinkCopied] = React.useState(false);
+  const copyLinkTimeoutRef = React.useRef<number>();
 
-    // Split email addresses
-    const emails = addressesString.split(',').map(email => {
-      const spaceRegex = /\s/g;
+  const copyLink = () => {
+    copyToClipboard(inviteLink);
+    setLinkCopied(true);
 
-      if (spaceRegex.test(email.charAt(0))) {
-        // remove space from start
-        return email.substring(1);
-      }
-      if (spaceRegex.test(email.charAt(email.length - 1))) {
-        // remove space from end
-        return email.substring(0, email.length - 1);
-      }
-
-      return email;
-    });
-
-    // Validate emails
-    const invalid = emails.filter(email => {
-      const isValidEmail = validateEmail(email);
-
-      // Return when the email is not valid
-      return !isValidEmail;
-    });
-
-    if (invalid.length === 0) {
-      setInvalidEmails(null);
-
-      track('New Team - Invite Members', {
-        codesandbox: 'V1',
-        event_source: 'UI',
-      });
-
-      // Invite via email
-      try {
-        await gql.mutations.inviteToTeamViaEmail({
-          teamId: activeTeamInfo.id,
-          email: addressesString,
-          authorization: TeamMemberAuthorization.Write,
-        });
-
-        onComplete();
-      } catch (error) {
-        // ❗️ TODO: Validate if this works!
-        // Copied logic from inviteToTeam function in dashboard/actions.ts
-        const message =
-          error?.response?.errors?.[0]?.message ||
-          'There was a problem sending the invitations.';
-
-        setInviteError(message);
-      }
-    } else {
-      // Set error with invalid
-      setInvalidEmails(invalid);
+    if (copyLinkTimeoutRef.current) {
+      window.clearTimeout(copyLinkTimeoutRef.current);
     }
+    copyLinkTimeoutRef.current = window.setTimeout(() => {
+      setLinkCopied(false);
+    }, 1500);
+  };
+
+  const [loading, setLoading] = React.useState(false);
+  const onSubmit = async event => {
+    event.preventDefault();
+    setLoading(true);
+    setInviteValue('');
+    await actions.dashboard.inviteToTeam({
+      value: inviteValue,
+      authorization: TeamMemberAuthorization.Write,
+      triggerPlace: 'invite-modal',
+      inviteLink: location.href,
+    });
+    setLoading(false);
   };
 
   return (
@@ -127,41 +84,102 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
       >
         {activeTeamInfo.name}
       </Text>
-      <Stack
-        as="form"
-        onSubmit={handleSubmit}
-        direction="vertical"
-        gap={6}
-        css={{ width: '100%' }}
-      >
-        <Textarea
-          label="Invite team members (Insert emails separated by a comma)"
-          name="members"
-          id="member"
-          autoFocus
-          required
-          rows={3}
-          value={addressesString}
-          onChange={e => {
-            setAddressesString(e.target.value);
+      <Stack direction="vertical" gap={6} css={{ width: '100%' }}>
+        <Label style={{ fontSize: 12, marginBottom: 8, color: '#C2C2C2' }}>
+          Invite team members
+        </Label>
+        <Stack as="form" onSubmit={onSubmit} gap={2}>
+          <UserSearchInput
+            inputValue={inviteValue}
+            onInputValueChange={val => {
+              setInviteValue(val);
+            }}
+          />
+          <Button
+            type="submit"
+            variant="secondary"
+            css={{ width: 120 }}
+            loading={loading}
+          >
+            Send Invite
+          </Button>
+        </Stack>
+
+        <List>
+          {sortBy(activeTeamInfo.users, u => u.username.toLowerCase()).map(
+            user => (
+              <ListItem
+                key={user.username}
+                align="center"
+                justify="space-between"
+                css={css({ height: 48, paddingX: 0 })}
+              >
+                <Stack gap={2} align="center">
+                  <Avatar user={user} />
+                  <Text size={3}>{user.username}</Text>
+                </Stack>
+
+                <Text variant="muted" size={3}>
+                  {user.id === activeTeamInfo.creatorId ? 'Admin' : 'Member'}
+                </Text>
+              </ListItem>
+            )
+          )}
+
+          {sortBy(activeTeamInfo.invitees, u => u.username.toLowerCase()).map(
+            user => (
+              <ListItem
+                key={user.username}
+                align="center"
+                justify="space-between"
+                css={css({ height: 48, paddingX: 0 })}
+              >
+                <Stack
+                  css={css({ flex: 1, width: '100%' })}
+                  gap={2}
+                  align="center"
+                >
+                  <Avatar user={user} />
+                  <Text size={3}>{user.username}</Text>
+                </Stack>
+
+                <Text variant="muted" size={3}>
+                  Pending...
+                </Text>
+
+                <IconButton
+                  title="Revoke Invitation"
+                  css={css({ marginLeft: 1 })}
+                  size={7}
+                  name="cross"
+                  onClick={() => {
+                    actions.dashboard.revokeTeamInvitation({
+                      teamId: activeTeamInfo.id,
+                      userId: user.id,
+                    });
+                  }}
+                />
+              </ListItem>
+            )
+          )}
+        </List>
+
+        <Label style={{ fontSize: 12, marginBottom: 8, color: '#C2C2C2' }}>
+          Copy team invite link
+        </Label>
+        <Stack gap={2}>
+          <Input value={inviteLink} />
+          <Button onClick={copyLink} css={{ width: 120 }} variant="secondary">
+            {linkCopied ? 'Link Copied!' : 'Copy Invite Link'}
+          </Button>
+        </Stack>
+        <StyledButton
+          onClick={() => {
+            onComplete();
           }}
-        />
-        {invalidEmails?.length > 0 ? (
-          <Text size={2} variant="danger">
-            {invalidEmails.length > 1
-              ? 'There seem to be errors in some email addresses, '
-              : 'Email is invalid, '}
-            please review: {formatInvalidEmails(invalidEmails)}
-          </Text>
-        ) : null}
-
-        {inviteError ? (
-          <Text size={2} variant="danger">
-            {inviteError}
-          </Text>
-        ) : null}
-
-        <StyledButton type="submit">Invite members</StyledButton>
+        >
+          Next
+        </StyledButton>
       </Stack>
       <Button
         onClick={() => {
