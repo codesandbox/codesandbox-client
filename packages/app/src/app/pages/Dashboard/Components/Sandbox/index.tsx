@@ -285,8 +285,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     lastUpdated,
     viewCount,
     sandbox,
-    isTemplate: type === 'template',
-    alwaysOn: sandbox.alwaysOn,
     TemplateIcon,
     PrivacyIcon,
     screenshotUrl,
