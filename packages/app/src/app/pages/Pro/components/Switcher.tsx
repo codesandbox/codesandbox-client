@@ -138,7 +138,6 @@ export const Switcher: React.FC<{
                             ? 'Personal'
                             : workspace.name}
                         </Text>
-                        {!isPro && <Badge color="accent">Free</Badge>}
                       </Stack>
 
                       <Text size={3}>
@@ -148,9 +147,7 @@ export const Switcher: React.FC<{
                       </Text>
                     </Stack>
 
-                    {workspace.id === activeTeamInfo.id && (
-                      <Icon css={{ marginLeft: 16 }} name="simpleCheck" />
-                    )}
+                    {!isPro && <Badge color="accent">Free</Badge>}
                   </Stack>
                 </MenuItem>
               );
