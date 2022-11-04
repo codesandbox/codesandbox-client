@@ -42,6 +42,10 @@ export const Switcher: React.FC<{
   const members = activeTeamInfo.users.length;
   const memberLabel = `${members} member${members > 1 ? 's' : ''}`;
   const isPersonalWorkspace = workspaceType === 'pro';
+  const isFreeWorkspace = ![
+    SubscriptionType.TeamPro,
+    SubscriptionType.PersonalPro,
+  ].includes(activeTeamInfo.subscription?.type);
 
   return (
     <Stack
@@ -58,9 +62,21 @@ export const Switcher: React.FC<{
           />
 
           <Stack css={{ marginLeft: 24 }} direction="vertical">
-            <WorkspaceName>
-              <span>{activeTeamInfo.name}</span>
-            </WorkspaceName>
+            <WorkspaceNameWrapper align="center" gap={1}>
+              <WorkspaceName>
+                <span>{activeTeamInfo.name}</span>
+              </WorkspaceName>
+              {isFreeWorkspace && (
+                <Badge
+                  color="accent"
+                  css={{
+                    height: 'fit-content',
+                  }}
+                >
+                  Free
+                </Badge>
+              )}
+            </WorkspaceNameWrapper>
             <WorkspaceType>
               {isPersonalWorkspace ? 'personal team' : memberLabel}
             </WorkspaceType>
@@ -247,17 +263,30 @@ const Dialog = styled.div`
   }
 `;
 
+const WorkspaceNameWrapper = styled(Stack)`
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: calc(50% - 4px);
+    border: 5px solid transparent;
+    border-top: 7px solid white;
+  }
+`;
+
 const WorkspaceName = styled.p`
-  font-family: 'Everett', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
+  font-size: 28px;
   font-weight: 500;
+  line-height: 36px;
+  letter-spacing: -0.01em;
 
   margin: 0;
-  position: relative;
   text-align: left;
   color: #e5e5e5;
-
-  font-size: 24px;
 
   & span::-moz-selection {
     -webkit-text-stroke: 1px #e5e5e5;
@@ -269,15 +298,6 @@ const WorkspaceName = styled.p`
     -webkit-text-stroke: 1px #e5e5e5;
     color: transparent;
     background: transparent;
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    right: -20px;
-    top: calc(50% - 4px);
-    border: 5px solid transparent;
-    border-top: 7px solid white;
   }
 `;
 
