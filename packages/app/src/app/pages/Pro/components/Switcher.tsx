@@ -78,7 +78,7 @@ export const Switcher: React.FC<{
               )}
             </WorkspaceNameWrapper>
             <WorkspaceType>
-              {isPersonalWorkspace ? 'personal team' : memberLabel}
+              {isPersonalWorkspace ? 'Personal' : memberLabel}
             </WorkspaceType>
           </Stack>
         </Stack>
@@ -133,14 +133,18 @@ export const Switcher: React.FC<{
                       css={{ flex: 1, marginLeft: 19 }}
                     >
                       <Stack gap={1}>
-                        <Text size={4}>{workspace.name}</Text>
+                        <Text size={4}>
+                          {workspace.id === personalWorkspaceId
+                            ? 'Personal'
+                            : workspace.name}
+                        </Text>
                         {!isPro && <Badge color="accent">Free</Badge>}
                       </Stack>
 
                       <Text size={3}>
-                        {workspace.id === personalWorkspaceId
-                          ? 'personal team'
-                          : seatsLabel}
+                        {workspace.id !== personalWorkspaceId
+                          ? seatsLabel
+                          : null}
                       </Text>
                     </Stack>
 
