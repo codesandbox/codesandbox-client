@@ -62,7 +62,7 @@ export const Switcher: React.FC<{
           />
 
           <Stack css={{ marginLeft: 24 }} direction="vertical">
-            <WorkspaceNameWrapper align="center" gap={1}>
+            <Stack align="center" gap={1}>
               <WorkspaceName>
                 <span>{activeTeamInfo.name}</span>
               </WorkspaceName>
@@ -76,7 +76,8 @@ export const Switcher: React.FC<{
                   Free
                 </Badge>
               )}
-            </WorkspaceNameWrapper>
+              <Icon css={{ color: '#fff' }} name="chevronDown" size={8} />
+            </Stack>
             <WorkspaceType>
               {isPersonalWorkspace ? 'Personal' : memberLabel}
             </WorkspaceType>
@@ -261,19 +262,6 @@ const Dialog = styled.div`
     position: absolute;
     top: -10px;
     display: block;
-  }
-`;
-
-const WorkspaceNameWrapper = styled(Stack)`
-  position: relative;
-
-  &:after {
-    content: '';
-    position: absolute;
-    right: -20px;
-    top: calc(50% - 4px);
-    border: 5px solid transparent;
-    border-top: 7px solid white;
   }
 `;
 
