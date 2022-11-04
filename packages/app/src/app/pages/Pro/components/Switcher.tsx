@@ -248,7 +248,7 @@ const Dialog = styled.div`
 `;
 
 const WorkspaceName = styled.p`
-  font-family: 'TWKEverett', sans-serif;
+  font-family: 'Everett', sans-serif;
   font-style: normal;
   font-weight: 500;
 

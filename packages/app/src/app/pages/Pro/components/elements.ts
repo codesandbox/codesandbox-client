@@ -122,7 +122,7 @@ export const SwitchPlan = styled.button`
     line-height: 42px;
     margin-top: 18px;
     margin-bottom: 4px;
-    font-family: 'TWKEverett', sans-serif;
+    font-family: 'Everett', sans-serif;
 
     span {
       color: #434343;
