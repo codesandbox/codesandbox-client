@@ -6,7 +6,7 @@ import { SyncedSandboxListItem } from './SyncedSandboxListItem';
 import { useSelection } from '../Selection';
 import { DashboardSyncedSandbox } from '../../types';
 
-export const Repo = ({
+export const SyncedSandbox = ({
   name = '',
   path = null,
   ...props
