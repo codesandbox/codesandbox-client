@@ -91,11 +91,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
           {user && <Notifications />}
 
           <UserMenu>
-            <Button
-              as={UserMenu.Button}
-              variant="secondary"
-              css={css({ size: 26 })}
-            >
+            <Button as={UserMenu.Button} variant="secondary" css={{ size: 26 }}>
               <Icon name="more" size={16} title="User actions" />
             </Button>
           </UserMenu>
