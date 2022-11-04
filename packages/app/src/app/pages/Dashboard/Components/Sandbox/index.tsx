@@ -69,7 +69,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const { dashboard, activeWorkspaceAuthorization } = useAppState();
   const actions = useActions();
 
-  const { sandbox, type } = item;
+  const { sandbox } = item;
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
