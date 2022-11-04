@@ -3,6 +3,7 @@ import React from 'react';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import styled from 'styled-components';
 import {
+  Badge,
   Stack,
   Avatar,
   Menu,
@@ -115,9 +116,9 @@ export const Switcher: React.FC<{
                       direction="vertical"
                       css={{ flex: 1, marginLeft: 19 }}
                     >
-                      <Stack>
+                      <Stack gap={1}>
                         <Text size={4}>{workspace.name}</Text>
-                        {isPro && <ProBadge>Pro</ProBadge>}
+                        {!isPro && <Badge color="accent">Free</Badge>}
                       </Stack>
 
                       <Text size={3}>
@@ -330,19 +331,4 @@ const MenuItem = styled(Menu.Item)`
       background-color: #484848;
     }
   }
-`;
-
-const ProBadge = styled.p`
-  border-radius: 2px;
-  background-color: rgba(229, 229, 229, 0.1);
-  color: #c5c5c5;
-
-  width: 35px;
-  height: 18px;
-
-  text-align: center;
-  line-height: 18px;
-  font-size: 13px;
-
-  margin: 0 0 0 8px;
 `;
