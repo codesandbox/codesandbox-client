@@ -89,7 +89,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           {prNumber ? (
             <Link
               title="Open pull request on GitHub"
-              css={css({ display: 'flex' })}
+              css={{ display: 'flex' }}
               href={`https://github.com/${originalGit.username}/${originalGit.repo}/pull/${prNumber}`}
               target="_blank"
             >
@@ -235,28 +235,28 @@ export const SandboxCard = ({
       onBlur={onBlur}
       onContextMenu={onContextMenu}
       {...props}
-      css={css({
+      css={{
         position: 'relative',
         width: '100%',
         height: 240,
-        backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
+        backgroundColor: selected ? '#292929' : '#1D1D1D',
         border: '1px solid',
-        borderColor: selected ? 'focusBorder' : 'transparent',
-        borderRadius: 'medium',
+        borderColor: selected ? '#242424' : 'transparent',
+        borderRadius: '4px',
         overflow: 'hidden',
         transition: 'background ease-in-out',
-        transitionDuration: theme => theme.speeds[2],
+        transitionDuration: '100ms',
         opacity,
         ':hover': {
-          backgroundColor: 'card.backgroundHover',
+          backgroundColor: '#292929',
         },
         ':has(button:hover)': {
-          backgroundColor: 'card.background',
+          backgroundColor: '#1D1D1D',
         },
         ':focus-visible': {
-          borderColor: 'focusBorder',
+          borderColor: '#242424',
         },
-      })}
+      }}
     >
       <Thumbnail
         sandboxId={sandbox.id}
