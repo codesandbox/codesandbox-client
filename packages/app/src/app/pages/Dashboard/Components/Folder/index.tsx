@@ -124,7 +124,7 @@ export const Folder = (folderItem: DashboardFolder) => {
 
   const dragProps = {
     ref: dragRef,
-    onDragStart: event => onDragStart(event, path),
+    onDragStart: event => onDragStart(event, path, 'folder'),
   };
 
   React.useEffect(() => {

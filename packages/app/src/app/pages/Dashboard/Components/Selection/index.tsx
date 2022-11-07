@@ -55,7 +55,8 @@ interface SelectionContext {
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => void;
   onDragStart: (
     event: React.MouseEvent<HTMLDivElement>,
-    itemId: string
+    itemId: string,
+    draggableType?: 'sandbox' | 'folder'
   ) => void;
   onDrop: (droppedResult: any) => void;
   thumbnailRef: React.Ref<HTMLDivElement> | null;
@@ -413,8 +414,12 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   };
 
   const onDragStart = React.useCallback(
-    (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
-      analytics.track('Dashboard - On drag start');
+    (
+      event: React.MouseEvent<HTMLDivElement>,
+      itemId: string,
+      draggableType?: 'sandbox' | 'folder'
+    ) => {
+      analytics.track('Dashboard - On drag start', { type: draggableType });
       // if the dragged sandbox isn't selected. select it alone
       setSelectedIds(s => (s.includes(itemId) ? s : [itemId]));
     },
