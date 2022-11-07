@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Element, SkipNav } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
@@ -148,6 +148,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const actions = useActions();
   const { dashboard, activeTeam } = useAppState();
+  const { analytics } = useEffects();
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
     if (event.ctrlKey || event.metaKey) {
@@ -413,6 +414,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
 
   const onDragStart = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
+      analytics.track('Dashboard - On drag start');
       // if the dragged sandbox isn't selected. select it alone
       setSelectedIds(s => (s.includes(itemId) ? s : [itemId]));
     },
