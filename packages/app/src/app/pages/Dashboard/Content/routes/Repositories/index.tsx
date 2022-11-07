@@ -117,13 +117,15 @@ export const RepositoriesPage = () => {
         nestedPageType={pageType}
         selectedRepo={selectedRepo}
       />
-      <Notification pageType={pageType}>
-        {itemsToShow.length === 0 ? (
+      {itemsToShow.length === 0 ? (
+        <Notification pageType={pageType}>
           <Text>
             CodeSandbox Projects is now Repositories: an improved git workflow
             powered by the cloud.
           </Text>
-        ) : (
+        </Notification>
+      ) : (
+        <Notification pageType={pageType}>
           <Text>
             Your CodeSandbox Projects repositories now live here. Repository
             sandboxes are now listed under{' '}
@@ -132,8 +134,8 @@ export const RepositoriesPage = () => {
             <Text css={{ color: '#EBEBEB' }}>My contributions</Text> inside your
             personal team.
           </Text>
-        )}
-      </Notification>
+        </Notification>
+      )}
 
       <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
