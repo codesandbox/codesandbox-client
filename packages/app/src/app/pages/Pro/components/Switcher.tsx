@@ -66,16 +66,7 @@ export const Switcher: React.FC<{
               <WorkspaceName>
                 <span>{activeTeamInfo.name}</span>
               </WorkspaceName>
-              {isFreeWorkspace && (
-                <Badge
-                  color="accent"
-                  css={{
-                    height: 'fit-content',
-                  }}
-                >
-                  Free
-                </Badge>
-              )}
+              {isFreeWorkspace && <Badge color="accent">Free</Badge>}
               <Icon css={{ color: '#fff' }} name="chevronDown" size={8} />
             </Stack>
             <WorkspaceType>
