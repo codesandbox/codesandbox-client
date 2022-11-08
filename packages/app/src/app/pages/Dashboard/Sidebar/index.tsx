@@ -346,7 +346,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {hasActiveTeamProTrial &&
               trialDaysLeft !== null &&
               trialDaysLeft <= END_OF_TRIAL_DAYS_NOTIFICATION && (
-                <TrialExpiring daysLeft={trialDaysLeft} isAdmin={isTeamAdmin} />
+                <TrialExpiring
+                  activeTeam={activeTeam}
+                  daysLeft={trialDaysLeft}
+                  isAdmin={isTeamAdmin}
+                />
               )}
           </Element>
         )}
