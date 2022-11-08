@@ -216,6 +216,18 @@ export async function reactPreset(pkg: PackageJSON) {
             { transpiler: babelTranspiler },
           ]);
 
+          preset.registerTranspiler(
+            module => /\.module\.less$/.test(module.path),
+            [
+              { transpiler: lessTranspiler },
+              { transpiler: postcssTranspiler },
+              {
+                transpiler: stylesTranspiler,
+                options: { module: true, hmrEnabled: isRefresh },
+              },
+            ]
+          );
+
           preset.registerTranspiler(module => /\.less$/.test(module.path), [
             { transpiler: lessTranspiler },
             { transpiler: postcssTranspiler },
