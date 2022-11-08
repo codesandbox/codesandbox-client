@@ -3,6 +3,7 @@ import React from 'react';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import styled from 'styled-components';
 import {
+  Badge,
   Stack,
   Avatar,
   Menu,
@@ -41,6 +42,10 @@ export const Switcher: React.FC<{
   const members = activeTeamInfo.users.length;
   const memberLabel = `${members} member${members > 1 ? 's' : ''}`;
   const isPersonalWorkspace = workspaceType === 'pro';
+  const isFreeWorkspace = ![
+    SubscriptionType.TeamPro,
+    SubscriptionType.PersonalPro,
+  ].includes(activeTeamInfo.subscription?.type);
 
   return (
     <Stack
@@ -56,12 +61,16 @@ export const Switcher: React.FC<{
             name={activeTeamInfo.name}
           />
 
-          <Stack css={{ marginLeft: 24}} direction="vertical">
-            <WorkspaceName>
-              <span>{activeTeamInfo.name}</span>
-            </WorkspaceName>
+          <Stack css={{ marginLeft: 24 }} direction="vertical">
+            <Stack align="center" gap={1}>
+              <WorkspaceName>
+                <span>{activeTeamInfo.name}</span>
+              </WorkspaceName>
+              {isFreeWorkspace && <Badge color="accent">Free</Badge>}
+              <Icon css={{ color: '#fff' }} name="chevronDown" size={8} />
+            </Stack>
             <WorkspaceType>
-              {isPersonalWorkspace ? 'personal team' : memberLabel}
+              {isPersonalWorkspace ? 'Personal' : memberLabel}
             </WorkspaceType>
           </Stack>
         </Stack>
@@ -102,7 +111,7 @@ export const Switcher: React.FC<{
                   onSelect={() => setActiveTeam(workspace)}
                   key={workspace.id}
                   disabled={disabled}
-                  style={{ opacity: disabled ? 0.5 : 1 }}
+                  style={{ opacity: disabled ? 0.5 : 1, padding: 0 }}
                 >
                   <Stack css={{ padding: '12px 24px' }} align="center">
                     <TeamAvatar
@@ -115,21 +124,22 @@ export const Switcher: React.FC<{
                       direction="vertical"
                       css={{ flex: 1, marginLeft: 19 }}
                     >
-                      <Stack>
-                        <Text size={4}>{workspace.name}</Text>
-                        {isPro && <ProBadge>Pro</ProBadge>}
+                      <Stack gap={1}>
+                        <Text size={4}>
+                          {workspace.id === personalWorkspaceId
+                            ? 'Personal'
+                            : workspace.name}
+                        </Text>
                       </Stack>
 
                       <Text size={3}>
-                        {workspace.id === personalWorkspaceId
-                          ? 'personal team'
-                          : seatsLabel}
+                        {workspace.id !== personalWorkspaceId
+                          ? seatsLabel
+                          : null}
                       </Text>
                     </Stack>
 
-                    {workspace.id === activeTeamInfo.id && (
-                      <Icon css={{ marginLeft: 16 }} name="simpleCheck" />
-                    )}
+                    {!isPro && <Badge color="accent">Free</Badge>}
                   </Stack>
                 </MenuItem>
               );
@@ -247,16 +257,16 @@ const Dialog = styled.div`
 `;
 
 const WorkspaceName = styled.p`
-  font-family: 'TWKEverett', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
+  font-size: 28px;
   font-weight: 500;
+  line-height: 36px;
+  letter-spacing: -0.01em;
 
   margin: 0;
-  position: relative;
   text-align: left;
   color: #e5e5e5;
-
-  font-size: 24px;
 
   & span::-moz-selection {
     -webkit-text-stroke: 1px #e5e5e5;
@@ -268,15 +278,6 @@ const WorkspaceName = styled.p`
     -webkit-text-stroke: 1px #e5e5e5;
     color: transparent;
     background: transparent;
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    right: -20px;
-    top: calc(50% - 4px);
-    border: 5px solid transparent;
-    border-top: 7px solid white;
   }
 `;
 
@@ -330,19 +331,4 @@ const MenuItem = styled(Menu.Item)`
       background-color: #484848;
     }
   }
-`;
-
-const ProBadge = styled.p`
-  border-radius: 2px;
-  background-color: rgba(229, 229, 229, 0.1);
-  color: #c5c5c5;
-
-  width: 35px;
-  height: 18px;
-
-  text-align: center;
-  line-height: 18px;
-  font-size: 13px;
-
-  margin: 0 0 0 8px;
 `;

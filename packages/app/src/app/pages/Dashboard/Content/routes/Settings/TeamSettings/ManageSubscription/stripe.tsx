@@ -1,10 +1,9 @@
 import React from 'react';
+import { format } from 'date-fns';
+import css from '@styled-system/css';
 import { Stack, Text, Link, Button } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
-import { format } from 'date-fns';
-
-import css from '@styled-system/css';
-import { useCreateCustomerPortal } from 'app/pages/Pro/upgrade/utils';
+import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 
 export const Stripe = () => {
   const { activeTeam, activeTeamInfo: team } = useAppState();

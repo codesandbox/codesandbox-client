@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack, Text, Button } from '@codesandbox/components';
-import { useCreateCustomerPortal } from 'app/pages/Pro/upgrade/utils';
+import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 
 export const TrialExpiring: React.FC<{
   activeTeam: string;
