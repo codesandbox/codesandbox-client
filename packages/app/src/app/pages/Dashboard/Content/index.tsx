@@ -4,6 +4,7 @@ import { Element } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
+import { SubscriptionType } from 'app/graphql/types';
 import { Templates } from './routes/Templates';
 import { Archive } from './routes/Archive';
 import { Drafts } from './routes/Drafts';
@@ -20,10 +21,17 @@ import { Curate } from './routes/Discover/Curate';
 import { CommunitySearch } from './routes/Discover/CommunitySearch';
 import { MyContributions } from './routes/MyContributions';
 import { RepositoriesPage } from './routes/Repositories';
+import { UpgradeBanner } from '../Components/UpgradeBanner/UpgradeBanner';
+import { GRID_MAX_WIDTH, GUTTER } from '../Components/VariableGrid';
 
 export const Content = withRouter(({ history }) => {
   const { dashboard } = useActions();
-  const { activeTeam } = useAppState();
+  const { activeTeamInfo } = useAppState();
+
+  const isPro = [
+    SubscriptionType.PersonalPro,
+    SubscriptionType.TeamPro,
+  ].includes(activeTeamInfo?.subscription?.type);
 
   useEffect(() => {
     dashboard.dashboardMounted();
@@ -47,9 +55,21 @@ export const Content = withRouter(({ history }) => {
         height: '100%',
         margin: '0 auto',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
       })}
     >
+      {!isPro && (
+        <Element
+          css={{
+            width: `calc(100% - ${2 * GUTTER}px)`,
+            maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
+            margin: '24px auto 0',
+          }}
+        >
+          <UpgradeBanner />
+        </Element>
+      )}
       <Switch>
         <Route path="/dashboard/recent" component={Recent} />
         <Route path="/dashboard/drafts" component={Drafts} />
@@ -84,7 +104,7 @@ export const Content = withRouter(({ history }) => {
           to="/dashboard/sandboxes/:path*"
         />
         <Redirect from="/dashboard/always-on" to="/dashboard/recent" />
-        <Redirect to={dashboardUrls.recent(activeTeam)} />
+        <Redirect to={dashboardUrls.recent(activeTeamInfo?.id)} />
       </Switch>
     </Element>
   );
