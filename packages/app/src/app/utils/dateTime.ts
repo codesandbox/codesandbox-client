@@ -1,11 +1,12 @@
-export const getDaysUntil = (target: Date): number | null => {
+export const getDaysUntil = (target: string | null): number | null => {
   if (!target) {
     return null;
   }
 
   const now = new Date();
+  const targetDate = new Date(target);
 
-  if (now > target) {
+  if (now > targetDate) {
     return null;
   }
 
@@ -13,9 +14,9 @@ export const getDaysUntil = (target: Date): number | null => {
 
   const nowOnlyDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const targetOnlyDay = new Date(
-    target.getFullYear(),
-    target.getMonth(),
-    target.getDate()
+    targetDate.getFullYear(),
+    targetDate.getMonth(),
+    targetDate.getDate()
   );
 
   return (targetOnlyDay.getTime() - nowOnlyDay.getTime()) / dayInMiliseconds;
