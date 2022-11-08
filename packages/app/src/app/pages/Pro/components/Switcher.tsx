@@ -111,7 +111,7 @@ export const Switcher: React.FC<{
                   onSelect={() => setActiveTeam(workspace)}
                   key={workspace.id}
                   disabled={disabled}
-                  style={{ opacity: disabled ? 0.5 : 1 }}
+                  style={{ opacity: disabled ? 0.5 : 1, padding: 0 }}
                 >
                   <Stack css={{ padding: '12px 24px' }} align="center">
                     <TeamAvatar
