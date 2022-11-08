@@ -304,7 +304,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     ? {}
     : {
         ref: dragRef,
-        onDragStart: event => onDragStart(event, sandbox.id),
+        onDragStart: event => onDragStart(event, sandbox.id, 'sandbox'),
       };
 
   React.useEffect(() => {

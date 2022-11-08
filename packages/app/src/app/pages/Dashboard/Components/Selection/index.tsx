@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { useAppState, useActions } from 'app/overmind';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Element, SkipNav } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
@@ -55,7 +55,8 @@ interface SelectionContext {
   onBlur: (event: React.FocusEvent<HTMLDivElement>) => void;
   onDragStart: (
     event: React.MouseEvent<HTMLDivElement>,
-    itemId: string
+    itemId: string,
+    draggableType?: 'sandbox' | 'folder'
   ) => void;
   onDrop: (droppedResult: any) => void;
   thumbnailRef: React.Ref<HTMLDivElement> | null;
@@ -148,6 +149,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const actions = useActions();
   const { dashboard, activeTeam } = useAppState();
+  const { analytics } = useEffects();
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
     if (event.ctrlKey || event.metaKey) {
@@ -412,7 +414,12 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   };
 
   const onDragStart = React.useCallback(
-    (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
+    (
+      event: React.MouseEvent<HTMLDivElement>,
+      itemId: string,
+      draggableType?: 'sandbox' | 'folder'
+    ) => {
+      analytics.track('Dashboard - On drag start', { type: draggableType });
       // if the dragged sandbox isn't selected. select it alone
       setSelectedIds(s => (s.includes(itemId) ? s : [itemId]));
     },
