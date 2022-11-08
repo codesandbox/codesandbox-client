@@ -115,19 +115,15 @@ export const Dashboard: FunctionComponent = () => {
             >
               {match =>
                 match ? (
-                  <Sidebar
+                  <Element
                     id="mobile-sidebar"
                     css={css({ display: ['block', 'block', 'none'] })}
-                    visible={sidebarVisible}
-                    onSidebarToggle={onSidebarToggle}
-                    style={{
-                      // We set sidebar as absolute so that content can
-                      // take 100% width, this helps us enable dragging
-                      // sandboxes onto the sidebar more freely.
-                      position: 'absolute',
-                      height: 'calc(100% - 48px)',
-                    }}
-                  />
+                  >
+                    <Sidebar
+                      visible={sidebarVisible}
+                      onSidebarToggle={onSidebarToggle}
+                    />
+                  </Element>
                 ) : (
                   <Element
                     id="desktop-sidebar"
@@ -137,13 +133,6 @@ export const Dashboard: FunctionComponent = () => {
                       visible
                       onSidebarToggle={() => {
                         /* do nothing */
-                      }}
-                      style={{
-                        // We set sidebar as absolute so that content can
-                        // take 100% width, this helps us enable dragging
-                        // sandboxes onto the sidebar more freely.
-                        position: 'absolute',
-                        height: 'calc(100% - 48px)',
                       }}
                     />
                   </Element>
