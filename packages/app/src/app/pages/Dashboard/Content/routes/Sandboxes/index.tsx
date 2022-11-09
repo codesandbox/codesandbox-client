@@ -102,8 +102,10 @@ export const SandboxesPage = () => {
                 {isEligibleForTrial ? 'Start free trial' : 'Upgrade now'}
               </MessageStripe.Action>
             ) : (
-              // ❗️ TODO: Confirm that this link should go to /pricing
-              <MessageStripe.Action as={Link} to="/pricing">
+              <MessageStripe.Action
+                as="a"
+                to="https://codesandbox.io/docs/learn/plan-billing/trials"
+              >
                 Learn more
               </MessageStripe.Action>
             )}
