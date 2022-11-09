@@ -1,89 +1,113 @@
 import React from 'react';
+import styled from 'styled-components';
 import {
   Banner,
   Button,
   Column,
-  Icon,
   Grid,
+  Icon,
+  IconNames,
+  Link,
   Stack,
   Text,
 } from '@codesandbox/components';
 
+const StyledTitle = styled(Text)`
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.019em;
+  margin: 0;
+`;
+
+// When flex wraps and the list of features is shown
+// above the call to action.
+const WRAP_WIDTH = '1332px';
+
+type Feature = {
+  icon: IconNames;
+  label: string;
+};
+const FEATURES: Feature[] = [
+  {
+    icon: 'profile',
+    label: 'Up to 20 editors',
+  },
+  {
+    icon: 'npm',
+    label: 'Private NPM packages',
+  },
+  {
+    icon: 'sandbox',
+    label: 'Unlimited sandboxes',
+  },
+  {
+    icon: 'lock',
+    label: 'Advanced privacy settings',
+  },
+  {
+    icon: 'repository',
+    label: 'Unlimited repositories',
+  },
+  {
+    icon: 'server',
+    label: '6GB RAM, 12GB Disk, 4 vCPUs',
+  },
+];
+
 export const UpgradeBanner: React.FC = () => {
   return (
-    <Banner>
-      <Stack gap={2} justify="space-between">
-        <Stack direction="vertical" gap={8} justify="space-between">
-          <Text fontFamily="everett" size={24}>
-            <Text color="#EDFFA5" weight="600" block>
-              Upgrade to <Text css={{ textTransform: 'uppercase' }}>pro</Text>
-            </Text>
-            <Text block>Enjoy the full CodeSandbox experience.</Text>
-          </Text>
-          <Button autoWidth>Learn more</Button>
-        </Stack>
-        <Stack align="flex-end">
-          <Grid
-            as="ul"
-            columnGap={3}
-            rowGap={3}
+    <Banner onDismiss={() => {}}>
+      <StyledTitle color="#EDFFA5" weight="600" block>
+        Upgrade to <span css={{ textTransform: 'uppercase' }}>pro</span>
+      </StyledTitle>
+      <Stack
+        css={{
+          flexWrap: 'wrap',
+        }}
+        justify="space-between"
+      >
+        <Stack direction="vertical" justify="space-between">
+          <StyledTitle block>
+            Enjoy the full CodeSandbox experience.
+          </StyledTitle>
+          <Stack
+            align="center"
             css={{
-              color: '#EBEBEB',
-              margin: 0,
-              padding: 0,
-              listStyleType: 'none',
+              [`@media screen and (max-width: ${WRAP_WIDTH})`]: {
+                marginTop: '24px',
+              },
             }}
+            gap={6}
           >
-            <Column as="li" span={6}>
-              <Stack gap={4}>
-                <Icon name="profile" />
-                <Text size={13} lineHeight="16px">
-                  Up to 20 editors
-                </Text>
-              </Stack>
-            </Column>
-            <Column as="li" span={6}>
-              <Stack gap={4}>
-                <Icon name="profile" />
-                <Text size={13} lineHeight="16px">
-                  Private NPM packages
-                </Text>
-              </Stack>
-            </Column>
-            <Column as="li" span={6}>
-              <Stack gap={4}>
-                <Icon name="profile" />
-                <Text size={13} lineHeight="16px">
-                  Unlimited sandboxes
-                </Text>
-              </Stack>
-            </Column>
-            <Column as="li" span={6}>
-              <Stack gap={4}>
-                <Icon name="profile" />
-                <Text size={13} lineHeight="16px">
-                  Advanced privacy settings
-                </Text>
-              </Stack>
-            </Column>
-            <Column as="li" span={6}>
-              <Stack gap={4}>
-                <Icon name="profile" />
-                <Text size={13} lineHeight="16px">
-                  Unlimited repositories
-                </Text>
-              </Stack>
-            </Column>
-            <Column as="li" span={6}>
-              <Stack gap={4}>
-                <Icon name="profile" />
-                <Text size={13} lineHeight="16px">
-                  6GB RAM, 12GB Disk, 4 vCPUs
-                </Text>
-              </Stack>
-            </Column>
-          </Grid>
+            <Button autoWidth>Upgrade now</Button>
+            <Link>
+              <Text color="#999999" size={3}>
+                Learn more
+              </Text>
+            </Link>
+          </Stack>
         </Stack>
+        <Grid
+          as="ul"
+          css={{
+            listStyle: 'none',
+            margin: 0,
+            padding: 0,
+
+            [`@media screen and (max-width: ${WRAP_WIDTH})`]: {
+              marginTop: '24px',
+            },
+          }}
+        >
+          {FEATURES.map(f => (
+            <Column key={f.icon} as="li" span={[12, 12, 6]}>
+              <Stack css={{ color: '#EBEBEB' }} gap={4}>
+                <Icon css={{ flexShrink: 0 }} name={f.icon} />
+                <Text size={3}>{f.label}</Text>
+              </Stack>
+            </Column>
+          ))}
+        </Grid>
       </Stack>
     </Banner>
   );
