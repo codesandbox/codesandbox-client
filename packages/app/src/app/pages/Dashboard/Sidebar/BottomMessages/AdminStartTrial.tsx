@@ -3,11 +3,13 @@ import React from 'react';
 import { useCreateCheckout } from 'app/hooks';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useActions } from 'app/overmind';
 
 export const AdminStartTrial: React.FC<{ activeTeam: string }> = ({
   activeTeam,
 }) => {
   const [checkout, createCheckout] = useCreateCheckout();
+  const { modalOpened } = useActions();
 
   return (
     <Stack align="flex-start" direction="vertical" gap={2}>
@@ -17,7 +19,24 @@ export const AdminStartTrial: React.FC<{ activeTeam: string }> = ({
       {checkout.status === 'error' ? (
         <Text variant="danger" css={{ fontWeight: 400, fontSize: 12 }}>
           An error ocurred while trying to load the trial subscription. Please
-          try again later and report the issue if it persists.
+          try again later and{' '}
+          <Button
+            variant="link"
+            css={{
+              color: 'inherit',
+              textDecoration: 'underline',
+              padding: '0',
+              display: 'inline',
+              width: 'auto',
+              height: 'auto',
+            }}
+            onClick={() => {
+              modalOpened({ modal: 'feedback' });
+            }}
+          >
+            report the issue
+          </Button>{' '}
+          if it persists.
         </Text>
       ) : (
         <Button
