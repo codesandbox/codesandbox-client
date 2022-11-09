@@ -1,7 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
+import { Element, MessageStripe } from '@codesandbox/components';
+import { SubscriptionStatus, TeamMemberAuthorization } from 'app/graphql/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
@@ -20,7 +22,29 @@ export const SandboxesPage = () => {
   const {
     dashboard: { allCollections, sandboxes },
     activeTeam,
+    activeTeamInfo,
+    personalWorkspaceId,
+    activeWorkspaceAuthorization,
   } = useAppState();
+
+  const subscription = activeTeamInfo?.subscription;
+
+  // 🚧 TODO: hasMaxSandboxes property (or something like it) is something that will
+  // be returned from an API. Can be implemented when ready.
+  const hasMaxSandboxes = true;
+
+  // ❗️hook maken hiervoor?
+  const isPersonalSpace = activeTeam === personalWorkspaceId;
+  const isTeamAdmin =
+    !isPersonalSpace &&
+    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+
+  const hasActiveSubscription =
+    subscription?.status === SubscriptionStatus.Active ||
+    subscription?.status === SubscriptionStatus.Trialing;
+
+  const hasPastSubscription = subscription?.status;
+  const isEligibleForTrial = !isPersonalSpace && !hasPastSubscription;
 
   React.useEffect(() => {
     if (!currentPath || currentPath === '/') {
@@ -79,6 +103,26 @@ export const SandboxesPage = () => {
         showFilters={Boolean(currentPath)}
         showSortOptions={Boolean(currentPath)}
       />
+
+      {!hasActiveSubscription && hasMaxSandboxes ? (
+        <Element paddingX={4} paddingY={2}>
+          <MessageStripe justify="space-between">
+            Free teams are limited to 20 public sandboxes. Upgrade for unlimited
+            sandboxes.
+            {isTeamAdmin ? (
+              <MessageStripe.Action as={Link} to="/pro">
+                {isEligibleForTrial ? 'Start free trial' : 'Upgrade now'}
+              </MessageStripe.Action>
+            ) : (
+              // ❗️ TODO: Confirm that this link should go to /pricing
+              <MessageStripe.Action as={Link} to="/pricing">
+                Learn more
+              </MessageStripe.Action>
+            )}
+          </MessageStripe>
+        </Element>
+      ) : null}
+
       <VariableGrid
         page={pageType}
         collectionId={currentCollection?.id}
