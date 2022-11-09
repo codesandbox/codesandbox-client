@@ -57,6 +57,22 @@ const variantStyles = {
       background: theme => theme.colors.dangerButton.hoverBackground,
     },
   },
+  light: {
+    backgroundColor: '#FFFFFF',
+    color: '#0E0E0E',
+
+    ':hover': {
+      backgroundColor: '#E0E0E0', // three up in the gray scale (gray[400])
+    },
+  },
+  dark: {
+    backgroundColor: '#0E0E0E',
+    color: '#FFFFFF',
+
+    ':hover': {
+      backgroundColor: '#252525', // three down in the black scale (black[500])
+    },
+  },
 };
 
 const commonStyles = {
@@ -101,7 +117,7 @@ const commonStyles = {
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     IElementProps {
-  variant?: 'primary' | 'secondary' | 'link' | 'danger';
+  variant?: 'primary' | 'secondary' | 'link' | 'danger' | 'light' | 'dark';
   loading?: boolean;
   href?: string;
   rel?: string; // Only use when using href and as="a"

@@ -69,7 +69,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const { dashboard, activeWorkspaceAuthorization } = useAppState();
   const actions = useActions();
 
-  const { sandbox, type } = item;
+  const { sandbox } = item;
 
   const sandboxTitle = sandbox.title || sandbox.alias || sandbox.id;
 
@@ -285,8 +285,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     lastUpdated,
     viewCount,
     sandbox,
-    isTemplate: type === 'template',
-    alwaysOn: sandbox.alwaysOn,
     TemplateIcon,
     PrivacyIcon,
     screenshotUrl,
@@ -306,7 +304,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     ? {}
     : {
         ref: dragRef,
-        onDragStart: event => onDragStart(event, sandbox.id),
+        onDragStart: event => onDragStart(event, sandbox.id, 'sandbox'),
       };
 
   React.useEffect(() => {

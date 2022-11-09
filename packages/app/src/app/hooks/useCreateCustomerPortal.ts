@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { useEffects } from 'app/overmind';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
-export type WorkspaceType = 'pro' | 'teamPro';
-export type Interval = 'month' | 'year';
-
 export const useCreateCustomerPortal = (
   activeTeam: string
 ): [boolean, () => void] => {

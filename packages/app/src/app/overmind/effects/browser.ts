@@ -91,15 +91,15 @@ export default {
     });
   },
   reload() {
-    location.reload(true);
+    location.reload();
   },
   storage: {
-    get(key: string): unknown | null {
+    get<T = unknown>(key: string): T | null {
       try {
         const value = localStorage.getItem(key);
 
         if (value) {
-          return JSON.parse(value);
+          return JSON.parse(value) as T;
         }
 
         return null;

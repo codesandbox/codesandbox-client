@@ -4,7 +4,7 @@ import { useAppState } from 'app/overmind';
 import { format } from 'date-fns';
 
 import css from '@styled-system/css';
-import { useCreateCustomerPortal } from '../../../../../../Pro/upgrade/utils';
+import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 
 export const Stripe = () => {
   const { activeTeam, activeTeamInfo: team } = useAppState();
