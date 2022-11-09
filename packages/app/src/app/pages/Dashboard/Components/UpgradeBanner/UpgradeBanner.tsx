@@ -23,8 +23,8 @@ const StyledTitle = styled(Text)`
   margin: 0;
 `;
 
-// When flex wraps and the list of features is shown
-// above the call to action.
+// When flex wraps and the list of features is
+// shown below the call to action.
 const WRAP_WIDTH = 1332;
 
 type Feature = {
@@ -59,10 +59,12 @@ const FEATURES: Feature[] = [
 ];
 
 type UpgradeBannerProps = {
+  elligibleForTrial: boolean;
   isAdmin: boolean;
   teamId: string;
 };
 export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
+  elligibleForTrial,
   isAdmin,
   teamId,
 }) => {
@@ -136,7 +138,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
                     type="button"
                     autoWidth
                   >
-                    Upgrade now
+                    {elligibleForTrial ? 'Start trial' : 'Upgrade now'}
                   </Button>
                   <Link
                     href="/docs/learn/introduction/workspace#team-workspace"

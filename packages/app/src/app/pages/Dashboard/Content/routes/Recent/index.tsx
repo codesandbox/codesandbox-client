@@ -12,13 +12,18 @@ import { Helmet } from 'react-helmet';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { Element } from '@codesandbox/components';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
-import { SubscriptionType, TeamMemberAuthorization } from 'app/graphql/types';
+import {
+  SubscriptionStatus,
+  SubscriptionType,
+  TeamMemberAuthorization,
+} from 'app/graphql/types';
 
 export const Recent = () => {
   const {
     activeTeamInfo,
     activeWorkspaceAuthorization,
     dashboard: { sandboxes },
+    personalWorkspaceId,
   } = useAppState();
   const {
     dashboard: { getPage },
@@ -34,10 +39,18 @@ export const Recent = () => {
   const dataIsLoading =
     sandboxes.RECENT_BRANCHES === null || sandboxes.RECENT_SANDBOXES === null;
 
-  const isPro = [
-    SubscriptionType.PersonalPro,
-    SubscriptionType.TeamPro,
-  ].includes(activeTeamInfo?.subscription?.type);
+  const subscriptionType = activeTeamInfo?.subscription?.type;
+  const subscriptionStatus = activeTeamInfo?.subscription?.status;
+
+  const isPro =
+    subscriptionType === SubscriptionType.TeamPro &&
+    [SubscriptionStatus.Active, SubscriptionStatus.Trialing].includes(
+      subscriptionStatus
+    );
+
+  const isPersonalWorkspace = personalWorkspaceId === activeTeamId;
+  const elligibleForTrial =
+    !isPersonalWorkspace && !activeTeamInfo?.subscription;
 
   const items: DashboardGridItem[] = dataIsLoading
     ? [
@@ -91,6 +104,7 @@ export const Recent = () => {
           }}
         >
           <UpgradeBanner
+            elligibleForTrial={elligibleForTrial}
             isAdmin={
               activeWorkspaceAuthorization === TeamMemberAuthorization.Admin
             }
