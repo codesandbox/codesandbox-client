@@ -12,7 +12,7 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
-import { useCreateCheckout } from 'app/hooks';
+import { useCreateCheckout, useDismissible } from 'app/hooks';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 
@@ -67,11 +67,27 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
   teamId,
 }) => {
   const [checkout, createCheckout] = useCreateCheckout();
+  const [isBannerDismissed, dismissBanner] = useDismissible(
+    'DASHBOARD_RECENT_UPGRADE'
+  );
+
+  if (isBannerDismissed) {
+    return null;
+  }
 
   const checkoutBtnDisabled = !isAdmin || checkout.status === 'loading';
 
   return (
-    <Banner onDismiss={() => {}}>
+    <Banner
+      onDismiss={() => {
+        track('Banner - Upgrade Now - Dismiss', {
+          codesandbox: 'V1',
+          event_source: 'UI',
+        });
+
+        dismissBanner();
+      }}
+    >
       <Element css={{ overflow: 'hidden' }}>
         <StyledTitle color="#EDFFA5" weight="600" block>
           Upgrade to <span css={{ textTransform: 'uppercase' }}>pro</span>
@@ -103,7 +119,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
                         return;
                       }
 
-                      track('Banner - Upgrade now', {
+                      track('Banner - Upgrade now - Checkout', {
                         codesandbox: 'V1',
                         event_source: 'UI',
                       });
@@ -158,6 +174,8 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
             {FEATURES.map(f => (
               <Column
                 css={{
+                  // Manually defining the columns width to ensure that the
+                  // columns have visual alignment on multiple breakpoints.
                   gridColumnEnd: 'span 12',
 
                   '@media screen and (min-width: 576px) and (max-width: 885px)': {
@@ -178,7 +196,6 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
                 }}
                 key={f.icon}
                 as="li"
-                // span={[12, 12, 6]}
               >
                 <Stack css={{ color: '#EBEBEB' }} gap={4}>
                   <Icon css={{ flexShrink: 0 }} name={f.icon} />
