@@ -105,49 +105,62 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
               Enjoy the full CodeSandbox experience.
             </StyledTitle>
             <Stack
-              align="center"
               css={{
                 [`@media screen and (max-width: ${WRAP_WIDTH}px)`]: {
                   marginTop: '24px',
                 },
               }}
-              gap={6}
+              direction="vertical"
             >
               {isAdmin ? (
                 <>
-                  <Button
-                    onClick={() => {
-                      if (checkoutBtnDisabled) {
-                        return;
-                      }
+                  <Stack align="center" gap={6}>
+                    <Button
+                      aria-describedby="checkout-error"
+                      onClick={() => {
+                        if (checkoutBtnDisabled) {
+                          return;
+                        }
 
-                      track('Banner - Upgrade now - Checkout', {
-                        codesandbox: 'V1',
-                        event_source: 'UI',
-                      });
+                        track('Banner - Upgrade now - Checkout', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                        });
 
-                      createCheckout({
-                        team_id: teamId,
-                        recurring_interval: 'month',
-                        success_path: dashboard.recent(teamId),
-                        cancel_path: dashboard.recent(teamId),
-                      });
-                    }}
-                    loading={checkout.status === 'loading'}
-                    disabled={checkoutBtnDisabled}
-                    type="button"
-                    autoWidth
-                  >
-                    {elligibleForTrial ? 'Start trial' : 'Upgrade now'}
-                  </Button>
-                  <Link
-                    href="/docs/learn/introduction/workspace#team-workspace"
-                    target="_blank"
-                  >
-                    <Text color="#999999" size={3}>
-                      Learn more
+                        createCheckout({
+                          team_id: teamId,
+                          recurring_interval: 'month',
+                          success_path: dashboard.recent(teamId),
+                          cancel_path: dashboard.recent(teamId),
+                        });
+                      }}
+                      loading={checkout.status === 'loading'}
+                      disabled={checkoutBtnDisabled}
+                      type="button"
+                      autoWidth
+                    >
+                      {elligibleForTrial ? 'Start trial' : 'Upgrade now'}
+                    </Button>
+
+                    <Link
+                      href="/docs/learn/introduction/workspace#team-workspace"
+                      target="_blank"
+                    >
+                      <Text color="#999999" size={3}>
+                        Learn more
+                      </Text>
+                    </Link>
+                  </Stack>
+                  {checkout.status === 'error' && (
+                    <Text
+                      css={{ marginTop: '8px' }}
+                      id="checkout-error"
+                      size={2}
+                      variant="danger"
+                    >
+                      {checkout.error}. Please try again.
                     </Text>
-                  </Link>
+                  )}
                 </>
               ) : (
                 <Button
