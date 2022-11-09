@@ -33,7 +33,7 @@ import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
 
-const END_OF_TRIAL_DAYS_NOTIFICATION = 5;
+const END_OF_TRIAL_DAYS_NOTIFICATION = 14;
 
 interface SidebarProps {
   visible: boolean;
@@ -337,7 +337,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && showBottomMessage && (
           <Element css={{ margin: '24px', paddingTop: 0 }}>
-            {isTeamFreeAdmin && eligibleToStartTrial && <AdminStartTrial />}
+            {isTeamFreeAdmin && eligibleToStartTrial && (
+              <AdminStartTrial activeTeam={activeTeam} />
+            )}
             {isTeamFreeAdmin && !eligibleToStartTrial && (
               <AdminUpgradeToTeamPro />
             )}
