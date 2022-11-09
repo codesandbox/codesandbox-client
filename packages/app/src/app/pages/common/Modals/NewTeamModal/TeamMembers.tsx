@@ -133,7 +133,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
       gap={4}
       css={{
         paddingTop: '60px',
-        paddingBottom: '48px',
+        paddingBottom: '32px',
         maxWidth: '370px',
         width: '100%',
       }}
@@ -207,7 +207,11 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
         style={{ marginTop: 24 }}
         variant="link"
       >
-        <Icon size={12} style={{ marginRight: 8 }} name="link" />
+        <Icon
+          size={12}
+          style={{ marginRight: 8 }}
+          name={linkCopied ? 'check' : 'link'}
+        />
         {linkCopied ? 'Link Copied!' : 'Copy Invite URL'}
       </Button>
     </Stack>
