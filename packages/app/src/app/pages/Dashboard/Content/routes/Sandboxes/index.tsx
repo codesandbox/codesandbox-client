@@ -26,7 +26,7 @@ export const SandboxesPage = () => {
 
   // 🚧 TODO: hasMaxSandboxes property (or something like it) is something that will
   // be returned from an API. Can be implemented when ready.
-  const hasMaxSandboxes = true;
+  const hasMaxSandboxes = false;
 
   const {
     isTeamAdmin,
