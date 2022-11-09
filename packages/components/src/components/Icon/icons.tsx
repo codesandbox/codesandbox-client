@@ -1214,3 +1214,19 @@ export const camera = props => (
     />
   </Element>
 );
+
+export const sandbox = props => (
+  <svg
+    width="16"
+    height="16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M14 4.7 8.017 7.997a.034.034 0 0 1-.034 0L2 4.701M8 8v6.666m5.99-3.328-5.982 3.326a.017.017 0 0 1-.016 0L2.01 11.34A.021.021 0 0 1 2 11.32V4.708c0-.008.004-.015.01-.019l5.982-3.353a.017.017 0 0 1 .016 0L13.99 4.69c.006.004.01.011.01.019v6.612a.021.021 0 0 1-.01.019Z"
+      stroke="currentColor"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
