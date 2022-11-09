@@ -33,7 +33,7 @@ import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
 
-const END_OF_TRIAL_DAYS_NOTIFICATION = 14;
+const END_OF_TRIAL_DAYS_NOTIFICATION = 5;
 
 interface SidebarProps {
   visible: boolean;

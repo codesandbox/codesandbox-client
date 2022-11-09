@@ -16,8 +16,8 @@ export const AdminStartTrial: React.FC<{ activeTeam: string }> = ({
       </Text>
       {checkout.status === 'error' ? (
         <Text variant="danger" css={{ fontWeight: 400, fontSize: 12 }}>
-          An error ocurred while trying to load the payment gateway. Please try
-          again later.
+          An error ocurred while trying to load the trial subscription. Please
+          try again later and report the issue if it persists.
         </Text>
       ) : (
         <Button
