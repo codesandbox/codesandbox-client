@@ -5841,10 +5841,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-helmet@^5.0.11":
-  version "5.0.11"
-  resolved "https://registry.yarnpkg.com/@types/react-helmet/-/react-helmet-5.0.11.tgz#d2642af4658e7b97accb46ea8b00d6dc614c99fa"
-  integrity sha512-id9DjHp/+Cm+x3etN+EWs5OP76PPpz8jXw+iN9xcXltssF0KHNjAzlan///ASXegEewaItlw5FhFnoLxRUJQ9g==
+"@types/react-helmet@^6.1.0":
+  version "6.1.5"
+  resolved "https://registry.yarnpkg.com/@types/react-helmet/-/react-helmet-6.1.5.tgz#35f89a6b1646ee2bc342a33a9a6c8777933f9083"
+  integrity sha512-/ICuy7OHZxR0YCAZLNg9r7I9aijWUWvxaPR6uTuyxe8tAj5RL4Sw1+R6NhXUtOsarkGYPmaHdBDvuXh2DIN/uA==
   dependencies:
     "@types/react" "*"
 
@@ -13807,7 +13807,7 @@ esprima@^4.0.0, esprima@^4.0.1, esprima@~4.0.0:
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
   integrity sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==
 
-esquery@^1.0.0, esquery@^1.0.1:
+esquery@1.0.1, esquery@^1.0.0, esquery@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.0.1.tgz#406c51658b1f5991a5f9b62b1dc25b00e3e5c708"
   integrity sha512-SmiyZ5zIWH9VM+SRUReLS5Q8a7GxtRdxEBVZpm98rJM7Sb+A9DVCndXfkeFUd3byderg+EbDkfnevfCwynWaNA==
