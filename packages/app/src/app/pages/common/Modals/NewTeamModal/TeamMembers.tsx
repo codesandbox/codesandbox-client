@@ -1,6 +1,6 @@
 import React, { FormEvent, useState } from 'react';
 import { Button, Icon, Stack, Text } from '@codesandbox/components';
-import { useAppState, useEffects } from 'app/overmind';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { StyledButton } from 'app/components/dashboard/Button';
 import { Textarea } from 'app/components/dashboard/Textarea';
 import { TeamMemberAuthorization } from 'app/graphql/types';
@@ -36,6 +36,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
   onComplete,
 }) => {
   const { activeTeamInfo } = useAppState();
+  const actions = useActions();
   const { gql } = useEffects();
   const { copyToClipboard } = useEffects().browser;
   const [addressesString, setAddressesString] = useState<string>();
@@ -54,6 +55,12 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
     if (copyLinkTimeoutRef.current) {
       window.clearTimeout(copyLinkTimeoutRef.current);
     }
+
+    actions.track({
+      name: 'Dashboard - Copied Team Invite URL',
+      data: { place: 'modal', inviteLink },
+    });
+
     copyLinkTimeoutRef.current = window.setTimeout(() => {
       setLinkCopied(false);
     }, 1500);
