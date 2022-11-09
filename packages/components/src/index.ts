@@ -32,6 +32,8 @@ export * from './components/TagInput';
 export * from './components/Tags';
 export * from './components/Tags/Tag';
 export * from './components/Tooltip';
+export * from './components/Banner/Banner';
+export * from './components/MessageStripe/MessageStripe';
 
 // layout
 export * from './components/Grid';
