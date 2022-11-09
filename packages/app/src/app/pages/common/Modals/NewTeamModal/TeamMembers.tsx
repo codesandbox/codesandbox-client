@@ -44,7 +44,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
   const [inviteError, setInviteError] = useState<string>();
   const [linkCopied, setLinkCopied] = React.useState(false);
 
-  const copyLinkTimeoutRef = React.useRef<number>();
+  const copyLinkTimeoutRef = React.useRef<ReturnType<typeof setTimeout>>();
 
   const inviteLink = teamInviteLink(activeTeamInfo.inviteToken);
 
@@ -53,7 +53,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
     setLinkCopied(true);
 
     if (copyLinkTimeoutRef.current) {
-      window.clearTimeout(copyLinkTimeoutRef.current);
+      clearTimeout(copyLinkTimeoutRef.current);
     }
 
     actions.track({
@@ -61,7 +61,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
       data: { place: 'modal', inviteLink },
     });
 
-    copyLinkTimeoutRef.current = window.setTimeout(() => {
+    copyLinkTimeoutRef.current = setTimeout(() => {
       setLinkCopied(false);
     }, 1500);
   };
