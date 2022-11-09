@@ -3,11 +3,11 @@ import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Element, MessageStripe } from '@codesandbox/components';
-import { SubscriptionStatus, TeamMemberAuthorization } from 'app/graphql/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
+import { useSubscription } from 'app/hooks/useSubscription';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -22,29 +22,17 @@ export const SandboxesPage = () => {
   const {
     dashboard: { allCollections, sandboxes },
     activeTeam,
-    activeTeamInfo,
-    personalWorkspaceId,
-    activeWorkspaceAuthorization,
   } = useAppState();
-
-  const subscription = activeTeamInfo?.subscription;
 
   // 🚧 TODO: hasMaxSandboxes property (or something like it) is something that will
   // be returned from an API. Can be implemented when ready.
   const hasMaxSandboxes = true;
 
-  // ❗️hook maken hiervoor?
-  const isPersonalSpace = activeTeam === personalWorkspaceId;
-  const isTeamAdmin =
-    !isPersonalSpace &&
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
-
-  const hasActiveSubscription =
-    subscription?.status === SubscriptionStatus.Active ||
-    subscription?.status === SubscriptionStatus.Trialing;
-
-  const hasPastSubscription = subscription?.status;
-  const isEligibleForTrial = !isPersonalSpace && !hasPastSubscription;
+  const {
+    isTeamAdmin,
+    hasActiveSubscription,
+    isEligibleForTrial,
+  } = useSubscription();
 
   React.useEffect(() => {
     if (!currentPath || currentPath === '/') {
