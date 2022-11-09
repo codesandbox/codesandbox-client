@@ -210,7 +210,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
         <Icon
           size={12}
           style={{ marginRight: 8 }}
-          name={linkCopied ? 'check' : 'link'}
+          name={linkCopied ? 'simpleCheck' : 'link'}
         />
         {linkCopied ? 'Link Copied!' : 'Copy Invite URL'}
       </Button>
