@@ -4,6 +4,7 @@ import {
   Banner,
   Button,
   Column,
+  Element,
   Grid,
   Icon,
   IconNames,
@@ -11,6 +12,9 @@ import {
   Stack,
   Text,
 } from '@codesandbox/components';
+import { useCreateCheckout } from 'app/hooks';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 const StyledTitle = styled(Text)`
   font-size: 24px;
@@ -21,7 +25,7 @@ const StyledTitle = styled(Text)`
 
 // When flex wraps and the list of features is shown
 // above the call to action.
-const WRAP_WIDTH = '1332px';
+const WRAP_WIDTH = 1332;
 
 type Feature = {
   icon: IconNames;
@@ -54,61 +58,137 @@ const FEATURES: Feature[] = [
   },
 ];
 
-export const UpgradeBanner: React.FC = () => {
+type UpgradeBannerProps = {
+  isAdmin: boolean;
+  teamId: string;
+};
+export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
+  isAdmin,
+  teamId,
+}) => {
+  const [checkout, createCheckout] = useCreateCheckout();
+
+  const checkoutBtnDisabled = !isAdmin || checkout.status === 'loading';
+
   return (
     <Banner onDismiss={() => {}}>
-      <StyledTitle color="#EDFFA5" weight="600" block>
-        Upgrade to <span css={{ textTransform: 'uppercase' }}>pro</span>
-      </StyledTitle>
-      <Stack
-        css={{
-          flexWrap: 'wrap',
-        }}
-        justify="space-between"
-      >
-        <Stack direction="vertical" justify="space-between">
-          <StyledTitle block>
-            Enjoy the full CodeSandbox experience.
-          </StyledTitle>
-          <Stack
-            align="center"
+      <Element css={{ overflow: 'hidden' }}>
+        <StyledTitle color="#EDFFA5" weight="600" block>
+          Upgrade to <span css={{ textTransform: 'uppercase' }}>pro</span>
+        </StyledTitle>
+        <Stack
+          css={{
+            flexWrap: 'wrap',
+          }}
+          justify="space-between"
+        >
+          <Stack direction="vertical" justify="space-between">
+            <StyledTitle block>
+              Enjoy the full CodeSandbox experience.
+            </StyledTitle>
+            <Stack
+              align="center"
+              css={{
+                [`@media screen and (max-width: ${WRAP_WIDTH}px)`]: {
+                  marginTop: '24px',
+                },
+              }}
+              gap={6}
+            >
+              {isAdmin ? (
+                <>
+                  <Button
+                    onClick={() => {
+                      if (checkoutBtnDisabled) {
+                        return;
+                      }
+
+                      track('Banner - Upgrade now', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      });
+
+                      createCheckout({
+                        team_id: teamId,
+                        recurring_interval: 'month',
+                        success_path: dashboard.recent(teamId),
+                        cancel_path: dashboard.recent(teamId),
+                      });
+                    }}
+                    loading={checkout.status === 'loading'}
+                    disabled={checkoutBtnDisabled}
+                    type="button"
+                    autoWidth
+                  >
+                    Upgrade now
+                  </Button>
+                  <Link
+                    href="/docs/learn/introduction/workspace#team-workspace"
+                    target="_blank"
+                  >
+                    <Text color="#999999" size={3}>
+                      Learn more
+                    </Text>
+                  </Link>
+                </>
+              ) : (
+                <Button
+                  href="/docs/learn/introduction/workspace#team-workspace"
+                  target="_blank"
+                  autoWidth
+                >
+                  Learn more
+                </Button>
+              )}
+            </Stack>
+          </Stack>
+          <Grid
+            as="ul"
             css={{
-              [`@media screen and (max-width: ${WRAP_WIDTH})`]: {
+              listStyle: 'none',
+              margin: '0 24px 0 0',
+              padding: 0,
+
+              [`@media screen and (max-width: ${WRAP_WIDTH}px)`]: {
                 marginTop: '24px',
               },
             }}
-            gap={6}
+            columnGap={3}
           >
-            <Button autoWidth>Upgrade now</Button>
-            <Link>
-              <Text color="#999999" size={3}>
-                Learn more
-              </Text>
-            </Link>
-          </Stack>
-        </Stack>
-        <Grid
-          as="ul"
-          css={{
-            listStyle: 'none',
-            margin: 0,
-            padding: 0,
+            {FEATURES.map(f => (
+              <Column
+                css={{
+                  gridColumnEnd: 'span 12',
 
-            [`@media screen and (max-width: ${WRAP_WIDTH})`]: {
-              marginTop: '24px',
-            },
-          }}
-        >
-          {FEATURES.map(f => (
-            <Column key={f.icon} as="li" span={[12, 12, 6]}>
-              <Stack css={{ color: '#EBEBEB' }} gap={4}>
-                <Icon css={{ flexShrink: 0 }} name={f.icon} />
-                <Text size={3}>{f.label}</Text>
-              </Stack>
-            </Column>
-          ))}
-        </Grid>
-      </Stack>
+                  '@media screen and (min-width: 576px) and (max-width: 885px)': {
+                    gridColumnEnd: 'span 6',
+                  },
+
+                  '@media screen and (min-width: 886px)': {
+                    gridColumnEnd: 'span 6',
+                  },
+
+                  '@media screen and (min-width: 1024px)': {
+                    gridColumnEnd: 'span 4',
+                  },
+
+                  [`@media screen and (min-width: ${WRAP_WIDTH + 1}px)`]: {
+                    gridColumnEnd: 'span 6',
+                  },
+                }}
+                key={f.icon}
+                as="li"
+                // span={[12, 12, 6]}
+              >
+                <Stack css={{ color: '#EBEBEB' }} gap={4}>
+                  <Icon css={{ flexShrink: 0 }} name={f.icon} />
+                  <Text size={3}>{f.label}</Text>
+                </Stack>
+              </Column>
+            ))}
+          </Grid>
+        </Stack>
+      </Element>
     </Banner>
   );
 };
