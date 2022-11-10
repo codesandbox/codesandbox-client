@@ -14,7 +14,7 @@ export const AdminStartTrial: React.FC<{ activeTeam: string }> = ({
   return (
     <Stack align="flex-start" direction="vertical" gap={2}>
       <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
-        Upgrade to Team PRO for the full Codesandbox Experience.
+        Upgrade to Team PRO for the full CodeSandbox Experience.
       </Text>
       {checkout.status === 'error' ? (
         <Text variant="danger" css={{ fontWeight: 400, fontSize: 12 }}>
