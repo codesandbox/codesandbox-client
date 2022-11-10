@@ -8,7 +8,7 @@ import { useActions, useAppState } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { formatCurrency } from 'app/utils/currency';
 import { useCreateCheckout } from 'app/hooks';
-import { TeamMemberAuthorization } from 'app/graphql/types';
+import { useSubscription } from 'app/hooks/useSubscription';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 type Feature = {
@@ -46,7 +46,7 @@ const pricingLabel = (
 };
 
 export const TeamSubscription: React.FC = () => {
-  const { activeTeamInfo, user, pro } = useAppState();
+  const { activeTeamInfo, pro } = useAppState();
   const {
     pro: { pageMounted },
     modalClosed,
@@ -69,17 +69,10 @@ export const TeamSubscription: React.FC = () => {
     history.push(dashboard.recent(activeTeamInfo.id));
   };
 
-  // Only teams that never had a subscription are elligible for
-  // the 14-day free trial.
-  const isEligibleForTrial = activeTeamInfo.subscription === null;
-  const usersPermission = activeTeamInfo?.userAuthorizations.find(item => {
-    return item.userId === user.id;
-  });
-  const isAdmin =
-    usersPermission?.authorization === TeamMemberAuthorization.Admin;
+  const { isEligibleForTrial, isTeamAdmin } = useSubscription();
 
-  const checkoutBtnDisabled =
-    !isEligibleForTrial || !isAdmin || checkout.status === 'loading';
+  const isCheckoutDisabled =
+    !isEligibleForTrial || !isTeamAdmin || checkout.status === 'loading';
 
   return (
     <Stack
@@ -163,7 +156,7 @@ export const TeamSubscription: React.FC = () => {
                 height: '32px',
               })}
               onClick={() => {
-                if (checkoutBtnDisabled) {
+                if (isCheckoutDisabled) {
                   return;
                 }
 
@@ -180,7 +173,7 @@ export const TeamSubscription: React.FC = () => {
                 });
               }}
               loading={checkout.status === 'loading'}
-              disabled={checkoutBtnDisabled}
+              disabled={isCheckoutDisabled}
               type="button"
             >
               {isEligibleForTrial

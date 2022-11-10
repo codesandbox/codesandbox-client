@@ -15,6 +15,7 @@ import {
 import { useCreateCheckout, useDismissible } from 'app/hooks';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { useSubscription } from 'app/hooks/useSubscription';
 
 const StyledTitle = styled(Text)`
   font-size: 24px;
@@ -59,25 +60,20 @@ const FEATURES: Feature[] = [
 ];
 
 type UpgradeBannerProps = {
-  eligibleForTrial: boolean;
-  isAdmin: boolean;
   teamId: string;
 };
-export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
-  eligibleForTrial,
-  isAdmin,
-  teamId,
-}) => {
+export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
   const [checkout, createCheckout] = useCreateCheckout();
   const [isBannerDismissed, dismissBanner] = useDismissible(
     'DASHBOARD_RECENT_UPGRADE'
   );
+  const { isTeamAdmin, isEligibleForTrial } = useSubscription();
 
   if (isBannerDismissed) {
     return null;
   }
 
-  const checkoutBtnDisabled = !isAdmin || checkout.status === 'loading';
+  const checkoutBtnDisabled = !isTeamAdmin || checkout.status === 'loading';
 
   return (
     <Banner
@@ -112,7 +108,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
               }}
               direction="vertical"
             >
-              {isAdmin ? (
+              {isTeamAdmin ? (
                 <>
                   <Stack align="center" gap={6}>
                     <Button
@@ -139,7 +135,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
                       type="button"
                       autoWidth
                     >
-                      {eligibleForTrial ? 'Start trial' : 'Upgrade now'}
+                      {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
                     </Button>
 
                     <Link

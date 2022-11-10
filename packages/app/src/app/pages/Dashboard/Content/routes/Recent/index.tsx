@@ -12,18 +12,12 @@ import { Helmet } from 'react-helmet';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { Element } from '@codesandbox/components';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
-import {
-  SubscriptionStatus,
-  SubscriptionType,
-  TeamMemberAuthorization,
-} from 'app/graphql/types';
+import { useSubscription } from 'app/hooks/useSubscription';
 
 export const Recent = () => {
   const {
     activeTeamInfo,
-    activeWorkspaceAuthorization,
     dashboard: { sandboxes },
-    personalWorkspaceId,
   } = useAppState();
   const {
     dashboard: { getPage },
@@ -39,18 +33,7 @@ export const Recent = () => {
   const dataIsLoading =
     sandboxes.RECENT_BRANCHES === null || sandboxes.RECENT_SANDBOXES === null;
 
-  const subscriptionType = activeTeamInfo?.subscription?.type;
-  const subscriptionStatus = activeTeamInfo?.subscription?.status;
-
-  const isPro =
-    subscriptionType === SubscriptionType.TeamPro &&
-    [SubscriptionStatus.Active, SubscriptionStatus.Trialing].includes(
-      subscriptionStatus
-    );
-
-  const isPersonalWorkspace = personalWorkspaceId === activeTeamId;
-  const eligibleForTrial =
-    !isPersonalWorkspace && !activeTeamInfo?.subscription;
+  const { hasActiveSubscription } = useSubscription();
 
   const items: DashboardGridItem[] = dataIsLoading
     ? [
@@ -95,7 +78,7 @@ export const Recent = () => {
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      {!isPro && (
+      {!hasActiveSubscription && (
         <Element
           css={{
             width: `calc(100% - ${2 * GUTTER}px)`,
@@ -103,13 +86,7 @@ export const Recent = () => {
             margin: '0 auto 28px',
           }}
         >
-          <UpgradeBanner
-            eligibleForTrial={eligibleForTrial}
-            isAdmin={
-              activeWorkspaceAuthorization === TeamMemberAuthorization.Admin
-            }
-            teamId={activeTeamId}
-          />
+          <UpgradeBanner teamId={activeTeamId} />
         </Element>
       )}
       <Header
