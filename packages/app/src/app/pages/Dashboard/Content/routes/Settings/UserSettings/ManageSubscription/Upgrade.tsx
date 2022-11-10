@@ -1,8 +1,7 @@
 import React from 'react';
-
 import styled from 'styled-components';
 import css from '@styled-system/css';
-import { Button, Stack, Text } from '@codesandbox/components';
+import { Link, Stack, Text } from '@codesandbox/components';
 
 import { Card } from '../../components';
 
@@ -19,18 +18,14 @@ const List = styled(Stack)`
 export const Upgrade = () => {
   return (
     <Card
-      as="a"
-      href="/pro"
       css={{
-        textDecoration: 'none',
         backgroundColor: 'white',
-        borderTop: '6px solid #AC9CFF',
         padding: 24,
         borderRadius: 4,
       }}
     >
       <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
-        <Text size={6} weight="bold">
+        <Text size={4} weight="bold">
           Upgrade to Personal Pro
         </Text>
         <List direction="vertical" gap={1} as="ul">
@@ -48,9 +43,25 @@ export const Upgrade = () => {
           </Text>
         </List>
 
-        <Button type="button" marginTop={2} variant="secondary">
+        <Link
+          href="/pro"
+          css={{
+            color: 'white',
+            fontSize: '12px',
+            background: '#644ED7',
+            padding: '8px',
+            textDecoration: 'none',
+            textAlign: 'center',
+            borderRadius: '4px',
+            transition: 'background 0.1s ease-out',
+
+            ':hover': {
+              background: '#644ED7DD',
+            },
+          }}
+        >
           Upgrade to Pro
-        </Button>
+        </Link>
       </Stack>
     </Card>
   );

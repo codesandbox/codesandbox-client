@@ -1,10 +1,11 @@
 import React from 'react';
-import { Element } from '@codesandbox/components';
+import { Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const Card = props => (
-  <Element
+  <Stack
     {...props}
+    direction="vertical"
     css={css({
       minHeight: 200,
       padding: 6,

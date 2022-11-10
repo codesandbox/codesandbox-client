@@ -11,7 +11,7 @@ import { Stack, Text } from '@codesandbox/components';
 import { Patron } from './Patron';
 import { Stripe } from './Stripe';
 import { Paddle } from './Paddle';
-import { Upgrade } from './upgrade';
+import { Upgrade } from './Upgrade';
 
 import { Card } from '../../components';
 import { ProcessingPayment } from '../../components/ProcessingPayment';
@@ -48,14 +48,6 @@ export const ManageSubscription = () => {
     activeTeamInfo?.subscription?.paymentProvider ===
     SubscriptionPaymentProvider.Stripe;
 
-  const renderDetailsContent = () => {
-    if (isPatron) return <Patron />;
-    if (isPaddle) return <Paddle />;
-    if (isStripe) return <Stripe />;
-
-    return null;
-  };
-
   if (!activeSubscription) {
     if (paymentPending) {
       return <ProcessingPayment />;
@@ -64,11 +56,24 @@ export const ManageSubscription = () => {
     return <Upgrade />;
   }
 
+  const renderDetailsContent = () => {
+    if (isPatron) return <Patron />;
+    if (isPaddle) return <Paddle />;
+    if (isStripe) return <Stripe />;
+
+    return null;
+  };
+
   return (
     <Card>
-      <Stack direction="vertical" gap={2}>
-        <Stack direction="vertical" gap={2}>
-          <Text size={6} weight="bold" maxWidth="100%">
+      <Stack
+        direction="vertical"
+        gap={2}
+        justify="space-between"
+        css={{ flexGrow: 1 }}
+      >
+        <Stack direction="vertical" gap={1}>
+          <Text size={4} weight="bold" maxWidth="100%">
             Personal Pro
           </Text>
 
@@ -78,10 +83,9 @@ export const ManageSubscription = () => {
           <Text size={3} maxWidth="100%" variant="muted">
             {user.email}
           </Text>
-
-          <Stack direction="vertical" gap={2} marginTop={4}>
-            {renderDetailsContent()}
-          </Stack>
+        </Stack>
+        <Stack direction="vertical" gap={2}>
+          {renderDetailsContent()}
         </Stack>
       </Stack>
     </Card>

@@ -19,7 +19,7 @@ export const UserSettings = () => {
   return (
     <>
       <Helmet>
-        <title>Settings - CodeSandbox</title>
+        <title>Personal Settings - CodeSandbox</title>
       </Helmet>
       <Header title="Settings" activeTeam={activeTeam} />
       <Element
@@ -54,7 +54,9 @@ export const UserSettings = () => {
               </Switch>
             </BrowserRouter>
           ) : (
-            <Text css={css({color: 'sideBarSectionHeader.foreground'})} >Loading...</Text>
+            <Text css={css({ color: 'sideBarSectionHeader.foreground' })}>
+              Loading...
+            </Text>
           )}
         </Stack>
       </Element>

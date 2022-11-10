@@ -7,6 +7,7 @@ import {
   Tooltip,
   IconButton,
   Element,
+  Badge,
 } from '@codesandbox/components';
 import {
   AppleIcon,
@@ -16,6 +17,7 @@ import {
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 
+import { useSubscription } from 'app/hooks/useSubscription';
 import { Header } from '../../../../Components/Header';
 import { Card } from '../components';
 import { ManageSubscription } from './ManageSubscription';
@@ -23,6 +25,7 @@ import { ManageSubscription } from './ManageSubscription';
 export const WorkspaceSettings = () => {
   const { user, activeTeam } = useAppState();
   const actions = useActions();
+  const { hasActiveSubscription } = useSubscription();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -178,13 +181,9 @@ export const WorkspaceSettings = () => {
                 </label>
               </Element>
 
-              <Stack
-                direction="vertical"
-                gap={2}
-                css={{ width: 'calc(100% - 64px)' }}
-              >
+              <Stack direction="vertical" css={{ width: 'calc(100% - 64px)' }}>
                 <Stack justify="space-between">
-                  <Text size={6} weight="bold" maxWidth="100%" variant="body">
+                  <Text size={4} weight="bold" maxWidth="100%" variant="body">
                     {user.username}
                   </Text>
                   <IconButton
@@ -195,51 +194,11 @@ export const WorkspaceSettings = () => {
                     onClick={() => setEditing(false)}
                   />
                 </Stack>
-                <Text size={3} maxWidth="100%">
-                  {user.name}
-                </Text>
-                <Text size={3} maxWidth="100%" variant="muted">
-                  {user.email}
-                </Text>
-                <Button
-                  variant="link"
-                  autoWidth
-                  css={css({
-                    height: 'auto',
-                    fontSize: 3,
-                    color: 'button.background',
-                    padding: 0,
-                  })}
-                  onClick={() => {
-                    if (user.deletionRequested) {
-                      actions.dashboard.undoRequestAccountClosing();
-                    } else {
-                      actions.dashboard.requestAccountClosing();
-                    }
-                  }}
-                >
-                  {user.deletionRequested
-                    ? 'Undo Account Deletion'
-                    : 'Request Account Deletion'}
-                </Button>
-                <Stack justify="flex-start" gap={1}>
-                  <Button
-                    variant="link"
-                    css={{ width: 100 }}
-                    disabled={loading}
-                    onClick={() => setEditing(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    css={{ width: 100 }}
-                    disabled={loading}
-                    loading={loading}
-                  >
-                    Save
-                  </Button>
-                </Stack>
+                {!hasActiveSubscription && (
+                  <Stack>
+                    <Badge color="accent">Free</Badge>
+                  </Stack>
+                )}
               </Stack>
             </Stack>
           </Stack>
@@ -284,13 +243,9 @@ export const WorkspaceSettings = () => {
               <Avatar user={user} css={css({ size: 14 })} />
             </div>
 
-            <Stack
-              direction="vertical"
-              gap={2}
-              css={{ width: 'calc(100% - 64px)' }}
-            >
+            <Stack direction="vertical" css={{ width: 'calc(100% - 64px)' }}>
               <Stack justify="space-between">
-                <Text size={6} weight="bold" maxWidth="100%" variant="body">
+                <Text size={4} weight="bold" maxWidth="100%" variant="body">
                   {user.username}
                 </Text>
                 <IconButton
@@ -301,36 +256,74 @@ export const WorkspaceSettings = () => {
                   onClick={() => setEditing(true)}
                 />
               </Stack>
-              <Text size={3} maxWidth="100%">
-                {user.name}
-              </Text>
-              <Text size={3} maxWidth="100%" variant="muted">
-                {user.email}
-              </Text>
-              <Button
-                variant="link"
-                autoWidth
-                css={css({
-                  height: 'auto',
-                  fontSize: 3,
-                  color: 'button.background',
-                  padding: 0,
-                })}
-                onClick={() => {
-                  if (user.deletionRequested) {
-                    actions.dashboard.undoRequestAccountClosing();
-                  } else {
-                    actions.dashboard.requestAccountClosing();
-                  }
-                }}
-              >
-                {user.deletionRequested
-                  ? 'Undo Account Deletion'
-                  : 'Request Account Deletion'}
-              </Button>
+              {!hasActiveSubscription && (
+                <Stack>
+                  <Badge color="accent">Free</Badge>
+                </Stack>
+              )}
             </Stack>
           </Stack>
         )}
+        <Stack
+          direction="vertical"
+          justify="space-between"
+          gap={1}
+          css={{ paddingTop: '16px', flexGrow: 1 }}
+        >
+          <Stack direction="vertical" gap={1}>
+            <Text size={3} maxWidth="100%" variant="muted">
+              {user.name}
+            </Text>
+            <Text size={3} maxWidth="100%" variant="muted">
+              {user.email}
+            </Text>
+          </Stack>
+          <Button
+            variant="link"
+            autoWidth
+            css={css({
+              height: 'auto',
+              fontSize: '13px',
+              color: user.deletionRequested
+                ? 'button.background'
+                : 'errorForeground',
+              padding: '8px 0',
+            })}
+            onClick={() => {
+              if (user.deletionRequested) {
+                actions.dashboard.undoRequestAccountClosing();
+              } else {
+                actions.dashboard.requestAccountClosing();
+              }
+            }}
+          >
+            {user.deletionRequested
+              ? 'Undo Account Deletion'
+              : 'Request Account Deletion'}
+          </Button>
+        </Stack>
+        {editing ? (
+          <Element css={{ position: 'relative' }}>
+            <Stack gap={1} css={{ position: 'absolute', right: 0, bottom: 0 }}>
+              <Button
+                variant="link"
+                css={{ width: 100 }}
+                disabled={loading}
+                onClick={() => setEditing(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                css={{ width: 100 }}
+                disabled={loading}
+                loading={loading}
+              >
+                Save
+              </Button>
+            </Stack>
+          </Element>
+        ) : null}
       </Card>
 
       <ManageSubscription />
