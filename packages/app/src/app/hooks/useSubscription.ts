@@ -38,7 +38,9 @@ export const useSubscription = () => {
     activeTeamInfo?.subscription?.status === SubscriptionStatus.Active ||
     activeTeamInfo?.subscription?.status === SubscriptionStatus.Trialing;
 
-  const hasPastSubscription = Boolean(activeTeamInfo?.subscription?.status);
+  const hasPastOrActiveSubscription = Boolean(
+    activeTeamInfo?.subscription?.status
+  );
 
   /**
    * Trial states
@@ -48,7 +50,7 @@ export const useSubscription = () => {
     activeTeamInfo?.subscription?.type === SubscriptionType.TeamPro &&
     activeTeamInfo?.subscription?.status === SubscriptionStatus.Trialing;
 
-  const isEligibleForTrial = !isPersonalSpace && !hasPastSubscription;
+  const isEligibleForTrial = !isPersonalSpace && !hasPastOrActiveSubscription;
 
   return {
     subscription: activeTeamInfo?.subscription,
@@ -57,7 +59,7 @@ export const useSubscription = () => {
     isTeamAdmin,
     hasActiveSubscription,
     hasActiveTeamTrial,
-    hasPastSubscription,
+    hasPastOrActiveSubscription,
     isEligibleForTrial,
   };
 };
