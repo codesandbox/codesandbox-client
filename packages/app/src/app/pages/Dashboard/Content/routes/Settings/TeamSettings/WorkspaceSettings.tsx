@@ -12,6 +12,8 @@ import {
   IconButton,
   Menu,
   Icon,
+  Badge,
+  MessageStripe,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
@@ -24,6 +26,8 @@ import {
   SubscriptionInterval,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
+import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
@@ -52,6 +56,9 @@ export const WorkspaceSettings = () => {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
+
+  const { hasActiveSubscription } = useSubscription();
+  const { isTeamAdmin } = useWorkspaceAuthorization();
 
   const getFile = async avatar => {
     const url = await new Promise((resolve, reject) => {
@@ -299,13 +306,12 @@ export const WorkspaceSettings = () => {
                 avatar={team.avatarUrl}
                 size="bigger"
               />
-              <Stack direction="vertical" gap={2} css={{ width: '100%' }}>
+              <Stack direction="vertical" css={{ width: '100%' }}>
                 <Stack justify="space-between">
-                  <Text size={6} weight="bold" css={{ wordBreak: 'break-all' }}>
+                  <Text size={4} weight="bold" css={{ wordBreak: 'break-all' }}>
                     {team.name}
                   </Text>
-                  {activeWorkspaceAuthorization ===
-                    TeamMemberAuthorization.Admin && (
+                  {isTeamAdmin && (
                     <IconButton
                       variant="square"
                       name="edit"
@@ -315,12 +321,14 @@ export const WorkspaceSettings = () => {
                     />
                   )}
                 </Stack>
-                <Text size={3}>
-                  {team?.subscription?.type === SubscriptionType.TeamPro
-                    ? 'Team Pro'
-                    : 'Team (Free)'}
-                </Text>
-                <Text size={3} variant="muted">
+
+                <Stack>
+                  {hasActiveSubscription ? null : (
+                    <Badge color="accent">Free</Badge>
+                  )}
+                </Stack>
+
+                <Text size={3} css={{ marginTop: '8px' }} variant="muted">
                   {team.description}
                 </Text>
               </Stack>
@@ -329,52 +337,56 @@ export const WorkspaceSettings = () => {
         </Card>
 
         <Card>
-          <Stack direction="vertical" gap={4}>
-            <Text size={6} weight="bold">
-              {team.users.length}{' '}
-              {team.users.length === 1 ? 'member' : 'members'}
-            </Text>
-            <Stack direction="vertical" gap={2}>
-              {activeWorkspaceAuthorization ===
-                TeamMemberAuthorization.Admin && (
-                <>
-                  <Text size={3} variant="muted">
-                    {numberOfEditors}{' '}
-                    {numberOfEditors > 1 ? 'Editors' : 'Editor'}
-                  </Text>
-                  {numberOfUnusedSeats > 0 ? (
+          <Stack
+            direction="vertical"
+            justify="space-between"
+            css={{ height: '100%' }}
+          >
+            <Stack direction="vertical" gap={4}>
+              <Text size={4} weight="bold">
+                {team.users.length}{' '}
+                {team.users.length === 1 ? 'member' : 'members'}
+              </Text>
+              <Stack direction="vertical" gap={1}>
+                {isTeamAdmin && (
+                  <>
                     <Text size={3} variant="muted">
-                      + {numberOfUnusedSeats} unused editor{' '}
-                      {numberOfUnusedSeats > 1 ? 'seats' : 'seat'}
+                      {numberOfEditors}{' '}
+                      {numberOfEditors > 1 ? 'Editors' : 'Editor'}
                     </Text>
-                  ) : null}
-                </>
-              )}
-              {created && (
-                <Text size={3} variant="muted">
-                  Created by {created.username}
-                </Text>
-              )}
-              {activeWorkspaceAuthorization ===
-                TeamMemberAuthorization.Admin && (
-                <Button
-                  autoWidth
-                  variant="link"
-                  disabled={loading}
-                  css={css({
-                    height: 'auto',
-                    fontSize: 3,
-                    color: 'errorForeground',
-                    padding: 0,
-                  })}
-                  onClick={() =>
-                    actions.modalOpened({ modal: 'deleteWorkspace' })
-                  }
-                >
-                  Delete Team
-                </Button>
-              )}
+                    {numberOfUnusedSeats > 0 ? (
+                      <Text size={3} variant="muted">
+                        + {numberOfUnusedSeats} unused editor{' '}
+                        {numberOfUnusedSeats > 1 ? 'seats' : 'seat'}
+                      </Text>
+                    ) : null}
+                  </>
+                )}
+                {created && (
+                  <Text size={3} variant="muted">
+                    Created by {created.username}
+                  </Text>
+                )}
+              </Stack>
             </Stack>
+            {isTeamAdmin && (
+              <Button
+                autoWidth
+                variant="link"
+                disabled={loading}
+                css={css({
+                  height: 'auto',
+                  fontSize: 3,
+                  color: 'errorForeground',
+                  padding: 0,
+                })}
+                onClick={() =>
+                  actions.modalOpened({ modal: 'deleteWorkspace' })
+                }
+              >
+                Delete Team
+              </Button>
+            )}
           </Stack>
         </Card>
 
@@ -467,6 +479,18 @@ export const WorkspaceSettings = () => {
           </Stack>
         )}
       </Stack>
+
+      <MessageStripe justify="space-between">
+        You are no longer in a PRO team. Free teams are limited to 5 editor
+        seats. Some permissions might have changed.
+        <IconButton name="cross" title="Dismiss" />
+      </MessageStripe>
+
+      <MessageStripe justify="space-between">
+        You&apos;ve reached the maximum amount of free editor seats. Upgrade for
+        more.
+        <MessageStripe.Action>Upgrade now</MessageStripe.Action>
+      </MessageStripe>
 
       <div>
         <MemberList

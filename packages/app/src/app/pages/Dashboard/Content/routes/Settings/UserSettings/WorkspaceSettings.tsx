@@ -278,29 +278,31 @@ export const WorkspaceSettings = () => {
               {user.email}
             </Text>
           </Stack>
-          <Button
-            variant="link"
-            autoWidth
-            css={css({
-              height: 'auto',
-              fontSize: '13px',
-              color: user.deletionRequested
-                ? 'button.background'
-                : 'errorForeground',
-              padding: '8px 0',
-            })}
-            onClick={() => {
-              if (user.deletionRequested) {
-                actions.dashboard.undoRequestAccountClosing();
-              } else {
-                actions.dashboard.requestAccountClosing();
-              }
-            }}
-          >
-            {user.deletionRequested
-              ? 'Undo Account Deletion'
-              : 'Request Account Deletion'}
-          </Button>
+          {editing ? null : (
+            <Button
+              variant="link"
+              autoWidth
+              css={css({
+                height: 'auto',
+                fontSize: '13px',
+                color: user.deletionRequested
+                  ? 'button.background'
+                  : 'errorForeground',
+                padding: '8px 0',
+              })}
+              onClick={() => {
+                if (user.deletionRequested) {
+                  actions.dashboard.undoRequestAccountClosing();
+                } else {
+                  actions.dashboard.requestAccountClosing();
+                }
+              }}
+            >
+              {user.deletionRequested
+                ? 'Undo Account Deletion'
+                : 'Request Account Deletion'}
+            </Button>
+          )}
         </Stack>
         {editing ? (
           <Element css={{ position: 'relative' }}>

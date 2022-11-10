@@ -70,7 +70,7 @@ export const ManageSubscription = () => {
         direction="vertical"
         gap={2}
         justify="space-between"
-        css={{ flexGrow: 1 }}
+        css={{ height: '100%' }}
       >
         <Stack direction="vertical" gap={1}>
           <Text size={4} weight="bold" maxWidth="100%">

@@ -50,7 +50,7 @@ export const ProcessingPayment = () => {
   return (
     <Card>
       <Stack direction="vertical" gap={2}>
-        <Text size={6} weight="bold" maxWidth="100%">
+        <Text size={4} weight="bold" maxWidth="100%">
           Processing{loading}
         </Text>
 

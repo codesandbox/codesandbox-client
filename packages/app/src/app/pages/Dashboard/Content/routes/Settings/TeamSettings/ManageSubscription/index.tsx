@@ -73,18 +73,23 @@ export const ManageSubscription = () => {
 
   return (
     <Card>
-      <Stack direction="vertical" gap={2}>
+      <Stack
+        direction="vertical"
+        gap={2}
+        justify="space-between"
+        css={{ height: '100%' }}
+      >
         <Stack direction="vertical" gap={4}>
-          <Text size={6} weight="bold" maxWidth="100%">
+          <Text size={4} weight="bold" maxWidth="100%">
             Team Pro
           </Text>
 
           <Text variant="muted" size={3}>{`${paidMembers.length} paid seat${
             paidMembers.length > 1 ? 's' : ''
           }`}</Text>
-
-          {renderProvider()}
         </Stack>
+
+        {renderProvider()}
       </Stack>
     </Card>
   );
