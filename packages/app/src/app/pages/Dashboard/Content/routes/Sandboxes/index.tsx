@@ -105,6 +105,8 @@ export const SandboxesPage = () => {
               <MessageStripe.Action
                 as="a"
                 to="https://codesandbox.io/docs/learn/plan-billing/trials"
+                target="_blank"
+                rel="noreferrer"
               >
                 Learn more
               </MessageStripe.Action>
