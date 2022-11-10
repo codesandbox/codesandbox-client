@@ -47,6 +47,7 @@ export const Content = withRouter(({ history }) => {
         height: '100%',
         margin: '0 auto',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
       })}
     >
