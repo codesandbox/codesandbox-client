@@ -3,6 +3,7 @@ import { graphql, Link } from 'gatsby';
 import React from 'react';
 
 import { Sandpack } from '@codesandbox/sandpack-react';
+import { sandpackDark } from '@codesandbox/sandpack-themes';
 import Layout from '../components/layout';
 import PageContainer from '../components/PageContainer';
 import { AuthorImage } from '../components/PostElements';
@@ -23,10 +24,10 @@ import {
 const renderAst = new rehypeReact({
   createElement: React.createElement,
   components: {
-    sandpack1: () => {
+    'sandpack-post-example1': () => {
       return (
         <Sandpack
-          theme="sandpack-dark"
+          theme={sandpackDark}
           template="react"
           customSetup={{
             dependencies: { '@codesandbox/sandpack-react': 'latest' },
@@ -67,10 +68,10 @@ export default function App() {
         />
       );
     },
-    sandpack2: () => {
+    'sandpack-post-example2': () => {
       return (
         <Sandpack
-          theme="sandpack-dark"
+          theme={sandpackDark}
           template="react"
           customSetup={{
             dependencies: { '@codesandbox/sandpack-react': 'latest' },

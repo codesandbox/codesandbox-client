@@ -28,8 +28,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-@import 'https://cdn.jsdelivr.net/npm/@codesandbox/sandpack-react@latest/dist/index.css';
-
 @media screen and (-webkit-max-device-pixel-ratio: 1.3),
   (max-resolution: 120dpi) {
   html,

@@ -48,7 +48,7 @@
     "build:embed": "lerna run build:embed --scope app --stream && gulp",
     "build:prod": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" lerna run build  --scope homepage --stream && lerna run build --scope app --stream && lerna run copy-assets --scope app --stream",
     "commit": "concurrently \"yarn typecheck\" \"yarn lint\" && git commit -m",
-    "postinstall": "yarn lerna run install-dependencies --stream --concurrency 1 && opencollective postinstall",
+    "postinstall": "yarn lerna run install-dependencies --stream --concurrency 1 && opencollective postinstall && patch-package",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "lint": "lerna run lint --stream",
@@ -82,7 +82,9 @@
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
-    "opencollective": "^1.0.3"
+    "opencollective": "^1.0.3",
+    "patch-package": "^6.5.0",
+    "postinstall-postinstall": "^2.1.0"
   },
   "devDependencies": {
     "all-contributors-cli": "^6.9.2",
@@ -96,9 +98,9 @@
     "eslint-loader": "^1.7.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.6.1",
-    "eslint-plugin-react_editor": "npm:eslint-plugin-react@7.29.4",
     "eslint-plugin-react": "~7.21.2",
     "eslint-plugin-react-hooks": "^4.1.0",
+    "eslint-plugin-react_editor": "npm:eslint-plugin-react@7.29.4",
     "gulp": "^3.9.1",
     "husky": "^4.3.0",
     "lerna": "^3.16.4",
