@@ -15,6 +15,7 @@ import {
 import css from '@styled-system/css';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { getDaysUntil } from 'app/utils/dateTime';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useSubscription } from 'app/hooks/useSubscription';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
@@ -91,10 +92,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
 
   const {
-    subscription,
     isPersonalSpace,
     isTeamSpace,
     isTeamAdmin,
+  } = useWorkspaceAuthorization();
+
+  const {
+    subscription,
     hasActiveSubscription,
     hasActiveTeamTrial,
     isEligibleForTrial,

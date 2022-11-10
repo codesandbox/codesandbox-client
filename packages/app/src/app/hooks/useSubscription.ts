@@ -1,31 +1,10 @@
-import {
-  SubscriptionStatus,
-  SubscriptionType,
-  TeamMemberAuthorization,
-} from 'app/graphql/types';
+import { SubscriptionStatus, SubscriptionType } from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
+import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 
 export const useSubscription = () => {
-  const {
-    activeTeam,
-    activeTeamInfo,
-    personalWorkspaceId,
-    activeWorkspaceAuthorization,
-  } = useAppState();
-
-  /**
-   * Personal states
-   */
-  const isPersonalSpace = activeTeam === personalWorkspaceId;
-
-  /**
-   * Team states
-   */
-  const isTeamSpace = !isPersonalSpace;
-
-  const isTeamAdmin =
-    isTeamSpace &&
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+  const { activeTeamInfo } = useAppState();
+  const { isTeamSpace } = useWorkspaceAuthorization();
 
   /**
    * Subscription states
@@ -45,18 +24,16 @@ export const useSubscription = () => {
   /**
    * Trial states
    */
+
   const hasActiveTeamTrial =
     isTeamSpace &&
     activeTeamInfo?.subscription?.type === SubscriptionType.TeamPro &&
     activeTeamInfo?.subscription?.status === SubscriptionStatus.Trialing;
 
-  const isEligibleForTrial = !isPersonalSpace && !hasPastOrActiveSubscription;
+  const isEligibleForTrial = isTeamSpace && !hasPastOrActiveSubscription;
 
   return {
     subscription: activeTeamInfo?.subscription,
-    isPersonalSpace,
-    isTeamSpace: !isPersonalSpace,
-    isTeamAdmin,
     hasActiveSubscription,
     hasActiveTeamTrial,
     hasPastOrActiveSubscription,

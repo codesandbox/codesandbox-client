@@ -8,6 +8,7 @@ import { useActions, useAppState } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { formatCurrency } from 'app/utils/currency';
 import { useCreateCheckout } from 'app/hooks';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useSubscription } from 'app/hooks/useSubscription';
 import track from '@codesandbox/common/lib/utils/analytics';
 
@@ -69,7 +70,8 @@ export const TeamSubscription: React.FC = () => {
     history.push(dashboard.recent(activeTeamInfo.id));
   };
 
-  const { isEligibleForTrial, isTeamAdmin } = useSubscription();
+  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isEligibleForTrial } = useSubscription();
 
   const isCheckoutDisabled =
     !isEligibleForTrial || !isTeamAdmin || checkout.status === 'loading';

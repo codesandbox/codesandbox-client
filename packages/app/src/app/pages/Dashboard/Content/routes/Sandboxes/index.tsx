@@ -7,6 +7,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useSubscription } from 'app/hooks/useSubscription';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
@@ -28,11 +29,8 @@ export const SandboxesPage = () => {
   // be returned from an API. Can be implemented when ready.
   const hasMaxSandboxes = false;
 
-  const {
-    isTeamAdmin,
-    hasActiveSubscription,
-    isEligibleForTrial,
-  } = useSubscription();
+  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { hasActiveSubscription, isEligibleForTrial } = useSubscription();
 
   React.useEffect(() => {
     if (!currentPath || currentPath === '/') {
