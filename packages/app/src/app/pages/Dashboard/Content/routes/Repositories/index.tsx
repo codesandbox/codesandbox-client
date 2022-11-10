@@ -50,7 +50,7 @@ export const RepositoriesPage = () => {
 
   // 🚧 TODO: hasMaxRepositories property (or something like it) is something that will
   // be returned from an API. Can be implemented when ready.
-  const hasMaxRepositories = true;
+  const hasMaxRepositories = false;
 
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { hasActiveSubscription, isEligibleForTrial } = useSubscription();
