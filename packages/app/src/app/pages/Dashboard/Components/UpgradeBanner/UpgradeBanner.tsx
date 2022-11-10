@@ -59,12 +59,12 @@ const FEATURES: Feature[] = [
 ];
 
 type UpgradeBannerProps = {
-  elligibleForTrial: boolean;
+  eligibleForTrial: boolean;
   isAdmin: boolean;
   teamId: string;
 };
 export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
-  elligibleForTrial,
+  eligibleForTrial,
   isAdmin,
   teamId,
 }) => {
@@ -139,7 +139,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({
                       type="button"
                       autoWidth
                     >
-                      {elligibleForTrial ? 'Start trial' : 'Upgrade now'}
+                      {eligibleForTrial ? 'Start trial' : 'Upgrade now'}
                     </Button>
 
                     <Link

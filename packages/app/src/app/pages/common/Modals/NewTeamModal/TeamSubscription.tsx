@@ -71,7 +71,7 @@ export const TeamSubscription: React.FC = () => {
 
   // Only teams that never had a subscription are elligible for
   // the 14-day free trial.
-  const isElligibleForTrial = activeTeamInfo.subscription === null;
+  const isEligibleForTrial = activeTeamInfo.subscription === null;
   const usersPermission = activeTeamInfo?.userAuthorizations.find(item => {
     return item.userId === user.id;
   });
@@ -79,7 +79,7 @@ export const TeamSubscription: React.FC = () => {
     usersPermission?.authorization === TeamMemberAuthorization.Admin;
 
   const checkoutBtnDisabled =
-    !isElligibleForTrial || !isAdmin || checkout.status === 'loading';
+    !isEligibleForTrial || !isAdmin || checkout.status === 'loading';
 
   return (
     <Stack
@@ -121,7 +121,7 @@ export const TeamSubscription: React.FC = () => {
             }}
             size={8}
           >
-            {isElligibleForTrial
+            {isEligibleForTrial
               ? 'Try Team Pro for free'
               : 'Upgrade to Team Pro'}
           </Text>
@@ -183,7 +183,7 @@ export const TeamSubscription: React.FC = () => {
               disabled={checkoutBtnDisabled}
               type="button"
             >
-              {isElligibleForTrial
+              {isEligibleForTrial
                 ? 'Start 14 day free trial'
                 : 'Proceed to checkout'}
             </Button>
@@ -207,7 +207,7 @@ export const TeamSubscription: React.FC = () => {
           </Button>
         </Stack>
       </Stack>
-      {isElligibleForTrial ? (
+      {isEligibleForTrial ? (
         <Stack
           css={css({
             width: '100%',

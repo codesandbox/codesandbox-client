@@ -49,7 +49,7 @@ export const Recent = () => {
     );
 
   const isPersonalWorkspace = personalWorkspaceId === activeTeamId;
-  const elligibleForTrial =
+  const eligibleForTrial =
     !isPersonalWorkspace && !activeTeamInfo?.subscription;
 
   const items: DashboardGridItem[] = dataIsLoading
@@ -104,7 +104,7 @@ export const Recent = () => {
           }}
         >
           <UpgradeBanner
-            elligibleForTrial={elligibleForTrial}
+            eligibleForTrial={eligibleForTrial}
             isAdmin={
               activeWorkspaceAuthorization === TeamMemberAuthorization.Admin
             }
