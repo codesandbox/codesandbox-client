@@ -35,18 +35,26 @@ export class JSDelivrGHFetcher implements FetchProtocol {
   }
 
   async meta(name: string, version: string): Promise<Meta> {
-    // First get latest sha from GitHub API
+    // Split the repo and requested version
+    const [repo, repoVersion] = convertGitHubURLToVersion(version).split('@');
+
+    // Fetch repo meta from GitHub
+    // If the version is not specified, we use the default_branch from the repo meta
+    let metaBranch = repoVersion;
+    if (!metaBranch) {
+      metaBranch = await fetch(`https://api.github.com/repos/${repo}`)
+        .then(x => x.json())
+        .then(x => x.default_branch);
+    }
+
+    // We get the sha of the requested version
     const sha = await fetch(
-      `https://api.github.com/repos/${convertGitHubURLToVersion(
-        version
-      )}/commits/master`
+      `https://api.github.com/repos/${repo}/commits/${metaBranch}`
     )
       .then(x => x.json())
       .then(x => x.sha);
 
-    const url = `https://data.jsdelivr.com/v1/package/gh/${convertGitHubURLToVersion(
-      version
-    )}@${sha}/flat`;
+    const url = `https://data.jsdelivr.com/v1/package/gh/${repo}@${sha}/flat`;
 
     const result: JSDelivrMeta = await fetchWithRetries(url).then(x =>
       x.json()
