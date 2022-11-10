@@ -19,14 +19,14 @@ export const MessageAction = ({
   ...buttonProps
 }: MessageActionProps) => {
   return (
-    <div>
+    <Element as="div" css={{ flexShrink: 0 }}>
       <Button
         variant={({ trial: 'light', warning: 'dark' } as const)[variant]}
         {...buttonProps}
       >
         {children}
       </Button>
-    </div>
+    </Element>
   );
 };
 
@@ -76,6 +76,7 @@ const MessageStripe = ({
       css={{
         backgroundColor: backgroundVariants[variant],
         color: colorVariants[variant],
+        borderRadius: '4px',
       }}
     >
       <Stack direction="horizontal" justify={justify} align="center" gap={2}>

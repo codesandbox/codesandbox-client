@@ -14,12 +14,8 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
-import {
-  SubscriptionStatus,
-  SubscriptionType,
-  TeamMemberAuthorization,
-} from 'app/graphql/types';
 import { getDaysUntil } from 'app/utils/dateTime';
+import { useSubscription } from 'app/hooks/useSubscription';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -48,13 +44,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const state = useAppState();
   const actions = useActions();
 
-  const {
-    dashboard,
-    activeTeam,
-    activeTeamInfo,
-    personalWorkspaceId,
-    activeWorkspaceAuthorization,
-  } = state;
+  const { dashboard, activeTeam, activeTeamInfo, personalWorkspaceId } = state;
 
   React.useEffect(() => {
     // Used to fetch collections
@@ -100,48 +90,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const teamDataLoaded = dashboard.teams.length > 0 && activeTeamInfo;
 
-  const subscription = activeTeamInfo?.subscription;
-  const isPersonalSpace = activeTeam === personalWorkspaceId;
-  const isTeamSpace = !isPersonalSpace;
-  const isTeamAdmin =
-    isTeamSpace &&
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
-
-  // There are different statuses for a subscription,
-  // but only ACTIVE and TRIALING should be considered an active TeamPro subscription
-  // TODO: This might change based on how we use other statuses in the subscription (eg: PAUSED)
-  const hasActiveSubscription =
-    subscription?.status === SubscriptionStatus.Active ||
-    subscription?.status === SubscriptionStatus.Trialing;
-
-  // Trial is only available for TeamPro
-  const hasActiveTeamProTrial =
-    isTeamSpace &&
-    subscription?.type === SubscriptionType.TeamPro &&
-    subscription?.status === SubscriptionStatus.Trialing;
-
-  // Only team admin can start a trial, if there was not subscription on this team before
-  const eligibleToStartTrial = isTeamAdmin && !subscription;
-
-  // If no active subscription, flag as personal/team free to show CTA to upgrade
-  const isTeamFree = isTeamSpace && !hasActiveSubscription;
-  const isPersonalFree = isPersonalSpace && !hasActiveSubscription;
-
-  // Only team admin can upgrade to TeamPro, team users will get a static non-CTA message
-  const isTeamFreeAdmin = isTeamFree && isTeamAdmin;
-  const isTeamFreeUser = isTeamFree && !isTeamAdmin;
+  const {
+    subscription,
+    isPersonalSpace,
+    isTeamSpace,
+    isTeamAdmin,
+    hasActiveSubscription,
+    hasActiveTeamTrial,
+    isEligibleForTrial,
+  } = useSubscription();
 
   // Compute number of days left for TeamPro trial
-  const trialDaysLeft = hasActiveTeamProTrial
+  const trialDaysLeft = hasActiveTeamTrial
     ? getDaysUntil(subscription?.trialEnd)
     : null;
 
   const showBottomMessage =
-    isTeamFree ||
-    isPersonalFree ||
-    (hasActiveTeamProTrial &&
-      trialDaysLeft !== null &&
-      trialDaysLeft <= END_OF_TRIAL_DAYS_NOTIFICATION);
+    !hasActiveSubscription ||
+    (trialDaysLeft !== null && trialDaysLeft <= END_OF_TRIAL_DAYS_NOTIFICATION);
 
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
@@ -337,13 +303,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {teamDataLoaded && showBottomMessage && (
           <Element css={{ margin: '24px', paddingTop: 0 }}>
-            {isTeamFreeAdmin && eligibleToStartTrial && <AdminStartTrial />}
-            {isTeamFreeAdmin && !eligibleToStartTrial && (
-              <AdminUpgradeToTeamPro />
-            )}
-            {isTeamFreeUser && <UserUpgradeToTeamPro />}
-            {isPersonalFree && <UpgradeToPersonalPro />}
-            {hasActiveTeamProTrial &&
+            {isTeamAdmin &&
+              (isEligibleForTrial ? (
+                <AdminStartTrial />
+              ) : (
+                <AdminUpgradeToTeamPro />
+              ))}
+
+            {isTeamSpace && !hasActiveSubscription && !isTeamAdmin ? (
+              <UserUpgradeToTeamPro />
+            ) : null}
+
+            {isPersonalSpace && !hasActiveSubscription ? (
+              <UpgradeToPersonalPro />
+            ) : null}
+
+            {hasActiveTeamTrial &&
               trialDaysLeft !== null &&
               trialDaysLeft <= END_OF_TRIAL_DAYS_NOTIFICATION && (
                 <TrialExpiring
