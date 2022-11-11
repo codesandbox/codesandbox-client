@@ -8,7 +8,9 @@ import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 
 export const Stripe = () => {
   const { activeTeam, activeTeamInfo: team } = useAppState();
-  const [loading, createCustomerPortal] = useCreateCustomerPortal(activeTeam);
+  const [loading, createCustomerPortal] = useCreateCustomerPortal({
+    team_id: activeTeam,
+  });
 
   return (
     <Stack direction="vertical" gap={2}>
