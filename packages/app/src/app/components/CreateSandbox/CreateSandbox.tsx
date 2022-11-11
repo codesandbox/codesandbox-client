@@ -97,12 +97,6 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const mediaQuery = window.matchMedia('screen and (max-width: 950px)');
   const mobileScreenSize = mediaQuery.matches;
 
-  /**
-   * Checking for user because user is undefined when landing on /s/, even though
-   * hasLogIn is true.
-   */
-  const showTeamTemplates = hasLogIn && user;
-
   const essentialState = useEssentialTemplates();
   const officialTemplatesData = useOfficialTemplates();
   const teamTemplatesData = useTeamTemplates({
@@ -114,6 +108,16 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
     officialTemplatesData.state === 'ready'
       ? officialTemplatesData.templates
       : [];
+
+  /**
+   * Checking for user because user is undefined when landing on /s/, even though
+   * hasLogIn is true. Only show the team/my templates if the list is populated.
+   */
+  const showTeamTemplates =
+    hasLogIn &&
+    user &&
+    teamTemplatesData.state === 'ready' &&
+    teamTemplatesData.teamTemplates.length > 0;
 
   /**
    * For the quick start we show:

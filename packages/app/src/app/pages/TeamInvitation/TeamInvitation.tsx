@@ -119,11 +119,9 @@ const TeamSignIn = ({ inviteToken }: { inviteToken: string }) => {
             Join <b>{data.teamByToken.name}</b> on CodeSandbox
           </>
         }
-        description="Please sign in to GitHub to continue"
+        description="Please sign in to continue"
         action={
-          <Button onClick={() => actions.signInClicked()}>
-            Sign in to GitHub
-          </Button>
+          <Button onClick={() => actions.signInClicked()}>Sign in</Button>
         }
       />
     </>
