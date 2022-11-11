@@ -22,7 +22,6 @@ import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
-  SubscriptionType,
   SubscriptionInterval,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
@@ -32,7 +31,7 @@ import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
 
-const PERMISSION_LEVELS = {
+const INVITE_ROLES_MAP = {
   [TeamMemberAuthorization.Admin]: {
     [TeamMemberAuthorization.Admin]: TeamMemberAuthorization.Admin,
     [TeamMemberAuthorization.Write]: TeamMemberAuthorization.Write,
@@ -44,21 +43,26 @@ const PERMISSION_LEVELS = {
   [TeamMemberAuthorization.Read]: {},
 };
 
+const PERMISSION_TEXT_MAP = {
+  [TeamMemberAuthorization.Admin]: 'Admin',
+  [TeamMemberAuthorization.Write]: 'Editor',
+  [TeamMemberAuthorization.Read]: 'Viewer',
+};
+
 export const WorkspaceSettings = () => {
   const actions = useActions();
   const effects = useEffects();
-  const {
-    user: stateUser,
-    activeTeamInfo: team,
-    activeWorkspaceAuthorization,
-  } = useAppState();
+  const { user: stateUser, activeTeamInfo: team } = useAppState();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
 
   const { hasActiveSubscription } = useSubscription();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
+
+  const rolesThatUserCanInvite = Object.values(INVITE_ROLES_MAP[userRole]);
+  const canInviteOtherMembers = isTeamAdmin || isTeamEditor;
 
   const getFile = async avatar => {
     const url = await new Promise((resolve, reject) => {
@@ -98,9 +102,13 @@ export const WorkspaceSettings = () => {
   const [inviteValue, setInviteValue] = useState('');
   const [inviteLoading, setInviteLoading] = useState(false);
 
+  const defaultRole =
+    rolesThatUserCanInvite[team?.settings.defaultAuthorization] ||
+    TeamMemberAuthorization.Read;
+
   const [newMemberAuthorization, setNewMemberAuthorization] = React.useState<
     TeamMemberAuthorization
-  >(team?.settings.defaultAuthorization);
+  >(defaultRole);
 
   const numberOfEditors = team.userAuthorizations.filter(({ authorization }) =>
     [TeamMemberAuthorization.Admin, TeamMemberAuthorization.Write].includes(
@@ -120,11 +128,11 @@ export const WorkspaceSettings = () => {
   // if the user is going to be charged for adding a member
   // throw them a confirmation modal
   const confirmNewMemberAddition =
-    team?.subscription &&
+    hasActiveSubscription &&
     numberOfUnusedSeats === 0 &&
     newMemberAuthorization !== TeamMemberAuthorization.Read;
   const confirmMemberRoleChange =
-    team?.subscription && numberOfUnusedSeats === 0;
+    hasActiveSubscription && numberOfUnusedSeats === 0;
 
   const onInviteSubmit = async event => {
     event.preventDefault();
@@ -169,23 +177,6 @@ export const WorkspaceSettings = () => {
 
   const created = team.users.find(user => user.id === team.creatorId);
 
-  const userPermission = team.userAuthorizations.find(
-    auth => auth.userId === stateUser.id
-  );
-
-  const permissionMap = {
-    [TeamMemberAuthorization.Admin]: 'Admin',
-    [TeamMemberAuthorization.Write]: 'Editor',
-    [TeamMemberAuthorization.Read]: 'Viewer',
-  };
-
-  const isAdmin =
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
-  const permissionValues = Object.values(
-    PERMISSION_LEVELS[userPermission.authorization]
-  );
-  const hasEnoughPermission = permissionValues.length > 0;
-
   return (
     <>
       <Element
@@ -200,7 +191,7 @@ export const WorkspaceSettings = () => {
           },
         }}
       >
-        <Card css={{ 'grid-column': isAdmin ? 'auto' : '1/3' }}>
+        <Card css={{ 'grid-column': isTeamAdmin ? 'auto' : '1/3' }}>
           {editing ? (
             <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
               <Stack gap={4}>
@@ -404,7 +395,7 @@ export const WorkspaceSettings = () => {
           Members
         </Text>
 
-        {hasEnoughPermission && (
+        {canInviteOtherMembers && (
           <Stack
             as="form"
             onSubmit={inviteLoading ? undefined : onInviteSubmit}
@@ -417,48 +408,45 @@ export const WorkspaceSettings = () => {
                 onInputValueChange={val => setInviteValue(val)}
                 style={{ paddingRight: 80 }}
               />
-              {team?.subscription?.type === SubscriptionType.TeamPro ? (
-                <Menu>
-                  <Menu.Button
-                    css={css({
-                      fontSize: 3,
-                      fontWeight: 'normal',
-                      paddingX: 0,
-                      position: 'absolute',
-                      top: 0,
-                      right: 2,
-                    })}
-                  >
-                    <Text variant="muted">
-                      {permissionMap[newMemberAuthorization]}
-                    </Text>
-                    <Icon name="caret" size={8} marginLeft={1} />
-                  </Menu.Button>
-                  <Menu.List>
-                    {permissionValues.map(authorization => (
-                      <Menu.Item
-                        key={authorization}
-                        onSelect={() =>
-                          setNewMemberAuthorization(authorization)
-                        }
-                        style={{ display: 'flex', alignItems: 'center' }}
-                      >
-                        <Text style={{ width: '100%' }}>
-                          {permissionMap[authorization]}
-                        </Text>
-                        {newMemberAuthorization === authorization && (
-                          <Icon
-                            style={{}}
-                            name="simpleCheck"
-                            size={12}
-                            marginLeft={1}
-                          />
-                        )}
-                      </Menu.Item>
-                    ))}
-                  </Menu.List>
-                </Menu>
-              ) : null}
+
+              <Menu>
+                <Menu.Button
+                  css={css({
+                    fontSize: 3,
+                    fontWeight: 'normal',
+                    paddingX: 0,
+                    position: 'absolute',
+                    top: 0,
+                    right: 2,
+                  })}
+                >
+                  <Text variant="muted">
+                    {PERMISSION_TEXT_MAP[newMemberAuthorization]}
+                  </Text>
+                  <Icon name="caret" size={8} marginLeft={1} />
+                </Menu.Button>
+                <Menu.List>
+                  {rolesThatUserCanInvite.map(authorization => (
+                    <Menu.Item
+                      key={authorization}
+                      onSelect={() => setNewMemberAuthorization(authorization)}
+                      style={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      <Text style={{ width: '100%' }}>
+                        {PERMISSION_TEXT_MAP[authorization]}
+                      </Text>
+                      {newMemberAuthorization === authorization && (
+                        <Icon
+                          style={{}}
+                          name="simpleCheck"
+                          size={12}
+                          marginLeft={1}
+                        />
+                      )}
+                    </Menu.Item>
+                  ))}
+                </Menu.List>
+              </Menu>
             </div>
 
             <Button
@@ -496,16 +484,13 @@ export const WorkspaceSettings = () => {
         <MemberList
           getPermission={user => getAuthorization(user, team)}
           getPermissionOptions={user => {
-            const yourAuthorization = activeWorkspaceAuthorization;
-
             // if changing the role will lead to extra seats, we want to
             // confirm any payment changes if required
             const confirmChange =
               confirmMemberRoleChange &&
               getAuthorization(user, team) === TeamMemberAuthorization.Read;
 
-            return yourAuthorization === TeamMemberAuthorization.Admin &&
-              user.id !== stateUser.id
+            return isTeamAdmin && user.id !== stateUser.id
               ? [
                   {
                     label: 'Admin',
@@ -541,7 +526,6 @@ export const WorkspaceSettings = () => {
           }}
           getActions={user => {
             const you = stateUser.id === user.id;
-            const yourAuthorization = activeWorkspaceAuthorization;
 
             const options = [];
 
@@ -552,7 +536,7 @@ export const WorkspaceSettings = () => {
               });
             }
 
-            if (!you && yourAuthorization === TeamMemberAuthorization.Admin) {
+            if (!you && isTeamAdmin) {
               options.push({
                 label: 'Remove Member',
                 onSelect: () => actions.dashboard.removeFromTeam(user.id),
@@ -568,7 +552,7 @@ export const WorkspaceSettings = () => {
           getPermission={() => 'PENDING'}
           getPermissionOptions={() => []}
           getActions={user =>
-            hasEnoughPermission
+            canInviteOtherMembers
               ? [
                   {
                     label: 'Revoke Invitation',
