@@ -15,6 +15,9 @@ import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 import Modal from 'app/components/Modal';
 
+import { PaymentPending } from 'app/components/StripeMessages';
+import { useSubscription } from 'app/hooks/useSubscription';
+import { SubscriptionStatus } from 'app/graphql/types';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
@@ -31,8 +34,9 @@ const wnoct22 = 'wnoct22'; // = whats new oct 22
 
 export const Dashboard: FunctionComponent = () => {
   const { hasLogIn, modals } = useAppState();
-  const actions = useActions();
   const { browser } = useEffects();
+  const actions = useActions();
+  const { subscription } = useSubscription();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -106,6 +110,15 @@ export const Dashboard: FunctionComponent = () => {
           })}
         >
           <SkipNav.Link />
+          {subscription.status === SubscriptionStatus.Unpaid && (
+            <Element
+              css={{
+                paddingBottom: '8px', // Using padding because the margin will get overridden to 0
+              }}
+            >
+              <PaymentPending />
+            </Element>
+          )}
           <Header onSidebarToggle={onSidebarToggle} />
           <Stack css={{ flexGrow: 1 }}>
             <Media
