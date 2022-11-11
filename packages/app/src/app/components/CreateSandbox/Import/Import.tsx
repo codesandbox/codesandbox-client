@@ -1,8 +1,16 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
-import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
+import {
+  Button,
+  Link,
+  Element,
+  Input,
+  Stack,
+  Text,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
+import { useSubscription } from 'app/hooks/useSubscription';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
 import { GithubRepoToImport } from './types';
@@ -54,19 +62,32 @@ type ImportProps = {
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const importAndRedirect = useImportAndRedirect();
+  const { hasActiveSubscription } = useSubscription();
 
   const [isImporting, setIsImporting] = React.useState(false);
+  const [shouldFetch, setShouldFetch] = React.useState(false);
+  const [
+    privateRepoFreeAccountError,
+    setPrivateRepoFreeAccountError,
+  ] = React.useState<string | undefined>(undefined);
   const [url, setUrl] = React.useState<UrlState>({
     raw: '',
     parsed: null,
     error: null,
   });
-  const [shouldFetch, setShouldFetch] = React.useState(false);
+
   const githubRepo = useGithubRepo({
     owner: url.parsed?.owner,
     name: url.parsed?.name,
     shouldFetch,
     onCompleted: async repo => {
+      setShouldFetch(false);
+
+      if (repo.private && !hasActiveSubscription) {
+        setPrivateRepoFreeAccountError(url.raw);
+        return;
+      }
+
       if (repo.authorization === GithubRepoAuthorization.Write) {
         setIsImporting(true);
         await importAndRedirect(repo.owner.login, repo.name, activeTeam);
@@ -114,6 +135,8 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   }
 
   const isLoading = githubRepo.state === 'loading' || isImporting;
+  const limitImportBasedOnSubscription =
+    privateRepoFreeAccountError === url.raw;
 
   return (
     <Stack direction="vertical" gap={6}>
@@ -151,7 +174,9 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           </Button>
         </Stack>
         <Element aria-atomic="true" id="form-error" role="alert">
-          {url.error || githubRepo.state === 'error' ? (
+          {url.error ||
+          githubRepo.state === 'error' ||
+          limitImportBasedOnSubscription ? (
             <Text
               as="small"
               css={css({
@@ -163,6 +188,19 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             >
               {url.error}
               {githubRepo.state === 'error' && githubRepo.error}
+              {limitImportBasedOnSubscription && (
+                <>
+                  The free plan only allows public repos. For private
+                  repositories,{' '}
+                  <Link color="#FFFFFF" href="/pro">
+                    upgrade to{' '}
+                    <Element as="span" css={{ textTransform: 'uppercase' }}>
+                      pro
+                    </Element>
+                    .
+                  </Link>
+                </>
+              )}
             </Text>
           ) : null}
         </Element>
