@@ -306,8 +306,8 @@ export const WorkspaceSettings = () => {
                 avatar={team.avatarUrl}
                 size="bigger"
               />
-              <Stack direction="vertical" css={{ width: '100%' }}>
-                <Stack justify="space-between">
+              <Stack direction="vertical" css={{ width: '100%' }} gap={1}>
+                <Stack justify="space-between" align="center">
                   <Text size={4} weight="bold" css={{ wordBreak: 'break-all' }}>
                     {team.name}
                   </Text>

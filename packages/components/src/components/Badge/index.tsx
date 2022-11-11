@@ -21,7 +21,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
       borderRadius: '999px',
 
-      backgroundColor: color === 'accent' ? '#653FFD80' : '#2e2e2e',
+      backgroundColor: color === 'accent' ? '#644ED7' : '#2e2e2e',
       color: color === 'accent' ? '#fff' : 'inherit',
       fontSize: 11,
     }}

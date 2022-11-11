@@ -8,6 +8,8 @@ import {
 import { useLocation, useHistory } from 'react-router-dom';
 import { Stack, Text } from '@codesandbox/components';
 
+import { useCreateCheckout } from 'app/hooks';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { Patron } from './Patron';
 import { Stripe } from './Stripe';
 import { Paddle } from './Paddle';
@@ -18,6 +20,7 @@ import { ProcessingPayment } from '../../components/ProcessingPayment';
 
 export const ManageSubscription = () => {
   const { activeTeamInfo, user } = useAppState();
+  const [checkout, createCheckout] = useCreateCheckout();
   const location = useLocation();
   const history = useHistory();
 
@@ -53,7 +56,19 @@ export const ManageSubscription = () => {
       return <ProcessingPayment />;
     }
 
-    return <Upgrade />;
+    return (
+      <Upgrade
+        loading={checkout.status === 'loading'}
+        onUpgrade={() => {
+          createCheckout({
+            team_id: activeTeamInfo.id,
+            recurring_interval: 'month',
+            success_path: dashboard.recent(activeTeamInfo.id),
+            cancel_path: dashboard.settings(activeTeamInfo.id),
+          });
+        }}
+      />
+    );
   }
 
   const renderDetailsContent = () => {
