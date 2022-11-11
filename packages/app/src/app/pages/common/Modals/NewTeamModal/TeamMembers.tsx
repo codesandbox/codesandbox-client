@@ -1,10 +1,11 @@
 import React, { FormEvent, useState } from 'react';
-import { Button, Stack, Text } from '@codesandbox/components';
-import { useAppState, useEffects } from 'app/overmind';
+import { Button, Icon, Stack, Text } from '@codesandbox/components';
+import { useActions, useAppState, useEffects } from 'app/overmind';
 import { StyledButton } from 'app/components/dashboard/Button';
 import { Textarea } from 'app/components/dashboard/Textarea';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 
 function validateEmail(email: string) {
   // Test for "anything@anything.anything" and check for
@@ -35,10 +36,35 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
   onComplete,
 }) => {
   const { activeTeamInfo } = useAppState();
+  const actions = useActions();
   const { gql } = useEffects();
+  const { copyToClipboard } = useEffects().browser;
   const [addressesString, setAddressesString] = useState<string>();
   const [invalidEmails, setInvalidEmails] = useState<string[]>();
   const [inviteError, setInviteError] = useState<string>();
+  const [linkCopied, setLinkCopied] = React.useState(false);
+
+  const copyLinkTimeoutRef = React.useRef<ReturnType<typeof setTimeout>>();
+
+  const inviteLink = teamInviteLink(activeTeamInfo.inviteToken);
+
+  const copyTeamInviteLink = () => {
+    copyToClipboard(inviteLink);
+    setLinkCopied(true);
+
+    if (copyLinkTimeoutRef.current) {
+      clearTimeout(copyLinkTimeoutRef.current);
+    }
+
+    actions.track({
+      name: 'Dashboard - Copied Team Invite URL',
+      data: { place: 'modal', inviteLink },
+    });
+
+    copyLinkTimeoutRef.current = setTimeout(() => {
+      setLinkCopied(false);
+    }, 1500);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -104,10 +130,10 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
     <Stack
       align="center"
       direction="vertical"
-      gap={6}
+      gap={4}
       css={{
         paddingTop: '60px',
-        paddingBottom: '48px',
+        paddingBottom: '32px',
         maxWidth: '370px',
         width: '100%',
       }}
@@ -174,6 +200,19 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
         variant="link"
       >
         Skip
+      </Button>
+
+      <Button
+        onClick={copyTeamInviteLink}
+        style={{ marginTop: 24 }}
+        variant="link"
+      >
+        <Icon
+          size={12}
+          style={{ marginRight: 8 }}
+          name={linkCopied ? 'simpleCheck' : 'link'}
+        />
+        {linkCopied ? 'Link Copied!' : 'Copy Invite URL'}
       </Button>
     </Stack>
   );

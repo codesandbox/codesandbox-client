@@ -309,7 +309,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <Element css={{ margin: '24px', paddingTop: 0 }}>
             {isTeamAdmin &&
               (isEligibleForTrial ? (
-                <AdminStartTrial />
+                <AdminStartTrial activeTeam={activeTeam} />
               ) : (
                 <AdminUpgradeToTeamPro />
               ))}
