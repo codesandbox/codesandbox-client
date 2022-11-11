@@ -1,13 +1,15 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
-import { Text } from '@codesandbox/components';
+import { Text, Element, MessageStripe } from '@codesandbox/components';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useSubscription } from 'app/hooks/useSubscription';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -45,6 +47,13 @@ export const RepositoriesPage = () => {
 
     pathRef.current = path;
   }, [path]);
+
+  // 🚧 TODO: hasMaxRepositories property (or something like it) is something that will
+  // be returned from an API. Can be implemented when ready.
+  const hasMaxRepositories = false;
+
+  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { hasActiveSubscription, isEligibleForTrial } = useSubscription();
 
   const pageType: PageTypes = 'repositories';
   let selectedRepo: { owner: string; name: string } | undefined;
@@ -117,6 +126,28 @@ export const RepositoriesPage = () => {
         nestedPageType={pageType}
         selectedRepo={selectedRepo}
       />
+
+      {!hasActiveSubscription && hasMaxRepositories ? (
+        <Element paddingX={4} paddingY={2}>
+          <MessageStripe justify="space-between">
+            Free teams are limited to 3 public repositories. Upgrade for
+            unlimited repositories.
+            {isTeamAdmin ? (
+              <MessageStripe.Action as={Link} to="/pro">
+                {isEligibleForTrial ? 'Start free trial' : 'Upgrade now'}
+              </MessageStripe.Action>
+            ) : (
+              <MessageStripe.Action
+                as="a"
+                href="https://codesandbox.io/docs/learn/plan-billing/trials"
+              >
+                Learn more
+              </MessageStripe.Action>
+            )}
+          </MessageStripe>
+        </Element>
+      ) : null}
+
       {itemsToShow.length === 0 ? (
         <Notification pageType={pageType}>
           <Text>
