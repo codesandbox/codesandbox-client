@@ -56,10 +56,11 @@ export const useSubscription = () => {
     !hasActiveSubscription &&
     numberOfEditors > activeTeamInfo?.limits.maxEditors;
 
-  const isPatron = [
-    SubscriptionOrigin.Legacy,
-    SubscriptionOrigin.Patron,
-  ].includes(activeTeamInfo?.subscription?.origin);
+  const isPatron = activeTeamInfo?.subscription?.origin
+    ? [SubscriptionOrigin.Legacy, SubscriptionOrigin.Patron].includes(
+        activeTeamInfo.subscription.origin
+      )
+    : false;
   const isPaddle =
     activeTeamInfo?.subscription?.paymentProvider ===
     SubscriptionPaymentProvider.Paddle;
