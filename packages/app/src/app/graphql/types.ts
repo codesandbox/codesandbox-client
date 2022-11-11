@@ -2290,6 +2290,22 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'trialEnd'
       >
     >;
+    limits: { __typename?: 'TeamLimits' } & Pick<
+      TeamLimits,
+      | 'maxEditors'
+      | 'maxPrivateProjects'
+      | 'maxPrivateSandboxes'
+      | 'maxPublicProjects'
+      | 'maxPublicSandboxes'
+    >;
+    usage: { __typename?: 'TeamUsage' } & Pick<
+      TeamUsage,
+      | 'editorsQuantity'
+      | 'privateProjectsQuantity'
+      | 'privateSandboxesQuantity'
+      | 'publicProjectsQuantity'
+      | 'publicSandboxesQuantity'
+    >;
   };
 
 export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
