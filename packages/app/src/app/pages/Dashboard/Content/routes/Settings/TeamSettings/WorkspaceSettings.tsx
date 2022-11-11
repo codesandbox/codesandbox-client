@@ -32,15 +32,14 @@ import { MemberList, User } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
 
 const INVITE_ROLES_MAP = {
-  [TeamMemberAuthorization.Admin]: {
-    [TeamMemberAuthorization.Admin]: TeamMemberAuthorization.Admin,
-    [TeamMemberAuthorization.Write]: TeamMemberAuthorization.Write,
-    [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
-  },
-  [TeamMemberAuthorization.Write]: {
-    [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
-  },
-  [TeamMemberAuthorization.Read]: {},
+  [TeamMemberAuthorization.Admin]: [
+    TeamMemberAuthorization.Admin,
+    TeamMemberAuthorization.Write,
+    TeamMemberAuthorization.Read,
+  ],
+  [TeamMemberAuthorization.Write]: [TeamMemberAuthorization.Read],
+
+  [TeamMemberAuthorization.Read]: [],
 };
 
 const PERMISSION_TEXT_MAP = {
@@ -61,7 +60,7 @@ export const WorkspaceSettings = () => {
   const { hasActiveSubscription } = useSubscription();
   const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
 
-  const rolesThatUserCanInvite = Object.values(INVITE_ROLES_MAP[userRole]);
+  const rolesThatUserCanInvite = INVITE_ROLES_MAP[userRole];
   const canInviteOtherMembers = isTeamAdmin || isTeamEditor;
 
   const getFile = async avatar => {
@@ -102,9 +101,11 @@ export const WorkspaceSettings = () => {
   const [inviteValue, setInviteValue] = useState('');
   const [inviteLoading, setInviteLoading] = useState(false);
 
-  const defaultRole =
-    rolesThatUserCanInvite[team?.settings.defaultAuthorization] ||
-    TeamMemberAuthorization.Read;
+  const defaultRole = rolesThatUserCanInvite.includes(
+    team?.settings.defaultAuthorization
+  )
+    ? team?.settings.defaultAuthorization
+    : TeamMemberAuthorization.Read;
 
   const [newMemberAuthorization, setNewMemberAuthorization] = React.useState<
     TeamMemberAuthorization
