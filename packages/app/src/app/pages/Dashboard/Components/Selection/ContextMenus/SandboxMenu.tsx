@@ -29,6 +29,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
     browser: { copyToClipboard },
   } = useEffects();
   const { sandbox, type } = item;
+  // TODO: Get isViewOnly from item 🚧
+  const isViewOnly = false;
   const isTemplate = type === 'template';
 
   const { visible, setVisibility, position } = React.useContext(Context);
@@ -171,6 +173,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               openInNewWindow: true,
             });
           }}
+          disabled={isViewOnly}
         >
           Fork Sandbox
         </MenuItem>
@@ -234,6 +237,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 1,
                 })
               }
+              disabled={isViewOnly}
             >
               Make {label} Unlisted
             </MenuItem>
@@ -246,6 +250,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 2,
                 })
               }
+              disabled={isViewOnly}
             >
               Make {label} Private
             </MenuItem>
@@ -255,7 +260,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
         <>
           <Menu.Divider />
-          <MenuItem onSelect={() => setRenaming(true)}>Rename {label}</MenuItem>
+          <MenuItem onSelect={() => setRenaming(true)} disabled={isViewOnly}>
+            Rename {label}
+          </MenuItem>
         </>
       )}
       {hasAccess &&
@@ -269,6 +276,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 isFrozen: false,
               });
             }}
+            disabled={isViewOnly}
           >
             Unfreeze {label}
           </MenuItem>
@@ -280,6 +288,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 isFrozen: true,
               });
             }}
+            disabled={isViewOnly}
           >
             Freeze {label}
           </MenuItem>
@@ -293,6 +302,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 templateIds: [sandbox.id],
               });
             }}
+            disabled={isViewOnly}
           >
             Convert to Sandbox
           </MenuItem>
@@ -303,6 +313,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 sandboxIds: [sandbox.id],
               });
             }}
+            disabled={isViewOnly}
           >
             Make Sandbox a Template
           </MenuItem>

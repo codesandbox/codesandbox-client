@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { css } from '@styled-system/css';
 import {
   Element,
+  Badge,
   Column,
   Grid,
   Icon,
@@ -19,6 +20,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
   selected,
   onContextMenu,
   isBeingRemoved,
+  isViewOnly,
   ...props
 }) => {
   return (
@@ -62,9 +64,9 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
         onContextMenu={onContextMenu}
         {...props}
       >
-        <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
+        <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={4}>
           <Column
-            span={[12, 5, 5]}
+            span={[10, 5, 4]}
             css={{
               display: 'block',
               overflow: 'hidden',
@@ -75,13 +77,27 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
             <Stack gap={4} align="center" marginLeft={2}>
               <Icon color="#999" name="repository" size={16} width="32px" />
               <Element css={{ overflow: 'hidden' }}>
-                <Text size={3} weight="medium" maxWidth="100%">
+                <Text
+                  size={3}
+                  weight="medium"
+                  maxWidth="100%"
+                  css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+                >
                   {repository.owner}/{repository.name}
                 </Text>
               </Element>
             </Stack>
           </Column>
-          <Column span={[0, 4, 4]} as={Stack} align="center">
+          <Column span={[0, 2, 2]}>
+            {isViewOnly ? (
+              <Stack align="center">
+                <Badge color="accent" isPadded>
+                  View only
+                </Badge>
+              </Stack>
+            ) : null}
+          </Column>
+          <Column span={[0, 5, 6]} as={Stack} align="center">
             <Text size={3} variant="muted" maxWidth="100%">
               {labels.branches}
             </Text>

@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Icon,
   Stack,
+  Badge,
   ListAction,
   Text,
   Grid,
@@ -19,6 +20,7 @@ export const SyncedSandboxListItem = ({
   onDoubleClick,
   onContextMenu,
   isScrolling,
+  isViewOnly,
   ...props
 }) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
@@ -49,8 +51,8 @@ export const SyncedSandboxListItem = ({
         },
       })}
     >
-      <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
-        <Column span={[12, 5, 5]}>
+      <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={4}>
+        <Column span={[10, 5, 4]}>
           <Stack gap={4} align="center" marginLeft={2}>
             <Stack
               as="div"
@@ -69,26 +71,30 @@ export const SyncedSandboxListItem = ({
               />
             </Stack>
             <Stack justify="space-between" align="center">
-              <Text size={3} weight="medium">
+              <Text
+                size={3}
+                weight="medium"
+                css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+              >
                 {name}
                 {props.branch !== 'master' ? `:${props.branch}` : ''}
               </Text>
             </Stack>
           </Stack>
         </Column>
-        <Column span={[0, 6, 1]} as={Stack} align="center">
-          <Text
-            size={3}
-            paddingX={4}
-            paddingY={2}
-            css={{
-              color: '#C2C2C2',
-              backgroundColor: '#1D1D1D',
-              borderRadius: 99,
-            }}
-          >
-            Synced
-          </Text>
+        <Column span={[0, 2, 2]}>
+          {isViewOnly ? (
+            <Stack align="center">
+              <Badge color="accent" isPadded>
+                View only
+              </Badge>
+            </Stack>
+          ) : null}
+        </Column>
+        <Column span={[0, 5, 2]} as={Stack} align="center">
+          <Stack align="center">
+            <Badge isPadded>Synced</Badge>
+          </Stack>
         </Column>
         <Column span={[0, 3, 3]} as={Stack} align="center">
           {/* empty column to align with sandbox list items */}
