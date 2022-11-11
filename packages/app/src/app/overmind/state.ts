@@ -68,6 +68,10 @@ type State = {
     google: boolean;
     github: boolean;
   };
+  /**
+   * Limits used for anonymous users and keeping track of their
+   * anonymous sandboxes
+   */
   sandboxesLimits?: {
     sandboxCount: number;
     sandboxLimit: number;

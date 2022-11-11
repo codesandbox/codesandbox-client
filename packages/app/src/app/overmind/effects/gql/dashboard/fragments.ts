@@ -199,6 +199,22 @@ export const currentTeamInfoFragment = gql`
       trialStart
       trialEnd
     }
+
+    limits {
+      maxEditors
+      maxPrivateProjects
+      maxPrivateSandboxes
+      maxPublicProjects
+      maxPublicSandboxes
+    }
+
+    usage {
+      editorsQuantity
+      privateProjectsQuantity
+      privateSandboxesQuantity
+      publicProjectsQuantity
+      publicSandboxesQuantity
+    }
   }
 `;
 
