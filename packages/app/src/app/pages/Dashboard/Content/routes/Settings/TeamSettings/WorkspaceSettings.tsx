@@ -39,7 +39,7 @@ const INVITE_ROLES_MAP = {
   ],
   [TeamMemberAuthorization.Write]: [TeamMemberAuthorization.Read],
 
-  [TeamMemberAuthorization.Read]: [],
+  [TeamMemberAuthorization.Read]: [] as TeamMemberAuthorization[],
 };
 
 const PERMISSION_TEXT_MAP = {
@@ -57,7 +57,7 @@ export const WorkspaceSettings = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
 
-  const { hasActiveSubscription } = useSubscription();
+  const { hasActiveSubscription, numberOfSeats } = useSubscription();
   const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
 
   const rolesThatUserCanInvite = INVITE_ROLES_MAP[userRole];
@@ -111,19 +111,13 @@ export const WorkspaceSettings = () => {
     TeamMemberAuthorization
   >(defaultRole);
 
-  const numberOfEditors = team.userAuthorizations.filter(({ authorization }) =>
-    [TeamMemberAuthorization.Admin, TeamMemberAuthorization.Write].includes(
-      authorization
-    )
-  ).length;
-
   // A team can have unused seats in their subscription
   // if they have already paid for X editors for the YEARLY plan
   // then removed some members from the team
   const numberOfUnusedSeats =
     team.subscription &&
     team.subscription.billingInterval === SubscriptionInterval.Yearly
-      ? team.subscription.quantity - numberOfEditors
+      ? team.subscription.quantity - numberOfSeats
       : 0;
 
   // if the user is going to be charged for adding a member
@@ -343,8 +337,7 @@ export const WorkspaceSettings = () => {
                 {isTeamAdmin && (
                   <>
                     <Text size={3} variant="muted">
-                      {numberOfEditors}{' '}
-                      {numberOfEditors > 1 ? 'Editors' : 'Editor'}
+                      {numberOfSeats} {numberOfSeats > 1 ? 'Editors' : 'Editor'}
                     </Text>
                     {numberOfUnusedSeats > 0 ? (
                       <Text size={3} variant="muted">
@@ -437,12 +430,7 @@ export const WorkspaceSettings = () => {
                         {PERMISSION_TEXT_MAP[authorization]}
                       </Text>
                       {newMemberAuthorization === authorization && (
-                        <Icon
-                          style={{}}
-                          name="simpleCheck"
-                          size={12}
-                          marginLeft={1}
-                        />
+                        <Icon name="simpleCheck" size={12} marginLeft={1} />
                       )}
                     </Menu.Item>
                   ))}

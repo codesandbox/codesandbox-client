@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useAppState } from 'app/overmind';
-import {
-  SubscriptionStatus,
-  SubscriptionOrigin,
-  SubscriptionPaymentProvider,
-} from 'app/graphql/types';
 import { useLocation, useHistory } from 'react-router-dom';
 import { Stack, Text } from '@codesandbox/components';
 
 import { useCreateCheckout } from 'app/hooks';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useSubscription } from 'app/hooks/useSubscription';
 import { Patron } from './Patron';
 import { Stripe } from './Stripe';
 import { Paddle } from './Paddle';
@@ -20,6 +16,12 @@ import { ProcessingPayment } from '../../components/ProcessingPayment';
 
 export const ManageSubscription = () => {
   const { activeTeamInfo, user } = useAppState();
+  const {
+    hasActiveSubscription,
+    isPaddle,
+    isPatron,
+    isStripe,
+  } = useSubscription();
   const [checkout, createCheckout] = useCreateCheckout();
   const location = useLocation();
   const history = useHistory();
@@ -36,22 +38,7 @@ export const ManageSubscription = () => {
     }
   }, [location, history]);
 
-  const activeSubscription =
-    activeTeamInfo?.subscription?.status === SubscriptionStatus.Active;
-
-  const isPatron = [
-    SubscriptionOrigin.Legacy,
-    SubscriptionOrigin.Patron,
-  ].includes(activeTeamInfo?.subscription?.origin);
-  const isPaddle =
-    activeTeamInfo?.subscription?.paymentProvider ===
-    SubscriptionPaymentProvider.Paddle;
-
-  const isStripe =
-    activeTeamInfo?.subscription?.paymentProvider ===
-    SubscriptionPaymentProvider.Stripe;
-
-  if (!activeSubscription) {
+  if (!hasActiveSubscription) {
     if (paymentPending) {
       return <ProcessingPayment />;
     }
