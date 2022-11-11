@@ -38,13 +38,23 @@ export const useSubscription = () => {
 
   const isEligibleForTrial = isTeamSpace && !hasPastOrActiveSubscription;
 
-  const numberOfSeats = isTeamSpace
+  const numberOfEditors = isTeamSpace
     ? activeTeamInfo?.userAuthorizations?.filter(
         ({ authorization }) =>
           authorization === TeamMemberAuthorization.Admin ||
           authorization === TeamMemberAuthorization.Write
       ).length
     : 1; // Personal
+
+  const numberOfSeats = activeTeamInfo?.subscription?.quantity || 1;
+
+  const hasMaxNumberOfEditors =
+    !hasActiveSubscription &&
+    numberOfEditors === activeTeamInfo?.limits.maxEditors;
+
+  const numberOfEditorsIsOverTheLimit =
+    !hasActiveSubscription &&
+    numberOfEditors > activeTeamInfo?.limits.maxEditors;
 
   const isPatron = [
     SubscriptionOrigin.Legacy,
@@ -65,6 +75,9 @@ export const useSubscription = () => {
     hasPastOrActiveSubscription,
     isEligibleForTrial,
     numberOfSeats,
+    numberOfEditors,
+    hasMaxNumberOfEditors,
+    numberOfEditorsIsOverTheLimit,
     isPatron,
     isPaddle,
     isStripe,

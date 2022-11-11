@@ -22,7 +22,6 @@ import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
-  SubscriptionInterval,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
 import { useSubscription } from 'app/hooks/useSubscription';
@@ -57,7 +56,13 @@ export const WorkspaceSettings = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
 
-  const { hasActiveSubscription, numberOfSeats } = useSubscription();
+  const {
+    hasActiveSubscription,
+    numberOfSeats,
+    numberOfEditors,
+    hasMaxNumberOfEditors,
+    numberOfEditorsIsOverTheLimit,
+  } = useSubscription();
   const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
 
   const rolesThatUserCanInvite = INVITE_ROLES_MAP[userRole];
@@ -114,11 +119,7 @@ export const WorkspaceSettings = () => {
   // A team can have unused seats in their subscription
   // if they have already paid for X editors for the YEARLY plan
   // then removed some members from the team
-  const numberOfUnusedSeats =
-    team.subscription &&
-    team.subscription.billingInterval === SubscriptionInterval.Yearly
-      ? team.subscription.quantity - numberOfSeats
-      : 0;
+  const numberOfUnusedSeats = numberOfSeats - numberOfEditors;
 
   // if the user is going to be charged for adding a member
   // throw them a confirmation modal
@@ -337,7 +338,8 @@ export const WorkspaceSettings = () => {
                 {isTeamAdmin && (
                   <>
                     <Text size={3} variant="muted">
-                      {numberOfSeats} {numberOfSeats > 1 ? 'Editors' : 'Editor'}
+                      {numberOfEditors}{' '}
+                      {numberOfEditors > 1 ? 'Editors' : 'Editor'}
                     </Text>
                     {numberOfUnusedSeats > 0 ? (
                       <Text size={3} variant="muted">
@@ -457,17 +459,20 @@ export const WorkspaceSettings = () => {
         )}
       </Stack>
 
-      <MessageStripe justify="space-between">
-        You are no longer in a PRO team. Free teams are limited to 5 editor
-        seats. Some permissions might have changed.
-        <IconButton name="cross" title="Dismiss" />
-      </MessageStripe>
+      {isTeamAdmin && numberOfEditorsIsOverTheLimit && (
+        <MessageStripe justify="space-between">
+          You are no longer in a PRO team. Free teams are limited to 5 editor
+          seats. Some permissions might have changed.
+        </MessageStripe>
+      )}
 
-      <MessageStripe justify="space-between">
-        You&apos;ve reached the maximum amount of free editor seats. Upgrade for
-        more.
-        <MessageStripe.Action>Upgrade now</MessageStripe.Action>
-      </MessageStripe>
+      {isTeamAdmin && hasMaxNumberOfEditors && (
+        <MessageStripe justify="space-between">
+          You&apos;ve reached the maximum amount of free editor seats. Upgrade
+          for more.
+          <MessageStripe.Action>Upgrade now</MessageStripe.Action>
+        </MessageStripe>
+      )}
 
       <div>
         <MemberList
