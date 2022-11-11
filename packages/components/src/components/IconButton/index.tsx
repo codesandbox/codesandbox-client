@@ -4,6 +4,7 @@ import deepmerge from 'deepmerge';
 import { Button } from '../Button';
 import { Icon, IconNames } from '../Icon';
 import { Tooltip } from '../Tooltip';
+import { IElementProps } from '../Element';
 
 type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** name of the icon */
@@ -16,6 +17,8 @@ type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'square' | 'round';
   /** Not ideal, but should work when we move to prism */
   as?: any;
+  /** Any custom css necessary */
+  css?: IElementProps['css'];
 };
 
 export const IconButton: React.FC<IconButtonProps> = ({
