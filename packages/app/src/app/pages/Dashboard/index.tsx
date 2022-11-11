@@ -110,7 +110,7 @@ export const Dashboard: FunctionComponent = () => {
           })}
         >
           <SkipNav.Link />
-          {subscription.status === SubscriptionStatus.Unpaid && (
+          {subscription?.status === SubscriptionStatus.Unpaid && (
             <Element
               css={{
                 paddingBottom: '8px', // Using padding because the margin will get overridden to 0
