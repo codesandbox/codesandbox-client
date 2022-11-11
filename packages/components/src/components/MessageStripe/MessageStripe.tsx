@@ -30,12 +30,12 @@ export const MessageAction = ({
   );
 };
 
-const backgroundVariants = {
+const backgroundVariants: Record<Variant, string> = {
   trial: '#644ED7',
   warning: '#F7CC66',
 };
 
-const colorVariants = {
+const colorVariants: Record<Variant, string> = {
   trial: 'inherit',
   warning: '#0E0E0E',
 };
@@ -76,7 +76,6 @@ const MessageStripe = ({
       css={{
         backgroundColor: backgroundVariants[variant],
         color: colorVariants[variant],
-        borderRadius: '4px',
       }}
     >
       <Stack direction="horizontal" justify={justify} align="center" gap={2}>
