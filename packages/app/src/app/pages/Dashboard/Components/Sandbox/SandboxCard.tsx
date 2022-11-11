@@ -9,6 +9,7 @@ import {
   IconButton,
   Link,
   Tooltip,
+  Element,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
@@ -44,6 +45,7 @@ type SandboxTitleProps = {
   isFrozen: boolean;
   prNumber?: number;
   originalGit?: RepoFragmentDashboardFragment['originalGit'];
+  isViewOnly?: boolean;
 } & Pick<
   SandboxItemComponentProps,
   | 'editing'
@@ -72,6 +74,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
     PrivacyIcon,
     newTitle,
     sandboxTitle,
+    isViewOnly,
   }) => (
     <Stack justify="space-between" marginLeft={5} marginRight={2}>
       {editing ? (
@@ -105,7 +108,11 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           )}
 
           <PrivacyIcon />
-          <Text size={3} weight="medium">
+          <Text
+            size={3}
+            weight="medium"
+            css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+          >
             {sandboxTitle}
           </Text>
         </Stack>
@@ -214,6 +221,7 @@ export const SandboxCard = ({
   onInputKeyDown,
   onSubmit,
   onInputBlur,
+  isViewOnly,
   // drag preview
   thumbnailRef,
   opacity,
@@ -258,6 +266,14 @@ export const SandboxCard = ({
         },
       }}
     >
+      {isViewOnly ? (
+        <Element css={{ position: 'absolute', top: 8, left: 8 }}>
+          <Badge color="accent" isPadded>
+            View only
+          </Badge>
+        </Element>
+      ) : null}
+
       <Thumbnail
         sandboxId={sandbox.id}
         thumbnailRef={thumbnailRef}
@@ -286,6 +302,7 @@ export const SandboxCard = ({
           PrivacyIcon={PrivacyIcon}
           newTitle={newTitle}
           sandboxTitle={sandboxTitle}
+          isViewOnly={isViewOnly}
         />
         <SandboxStats
           noDrag={noDrag}
@@ -359,7 +376,7 @@ const Thumbnail = ({
           />
         )}
       </div>
-      <Stack gap={1} css={{ position: 'absolute', top: 6, right: 6 }}>
+      <Stack gap={1} css={{ position: 'absolute', top: 8, right: 8 }}>
         {showBetaBadge && <Badge icon="cloud">Beta</Badge>}
         <div
           style={{

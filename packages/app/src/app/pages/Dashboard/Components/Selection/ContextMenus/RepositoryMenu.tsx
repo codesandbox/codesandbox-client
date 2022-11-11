@@ -35,6 +35,9 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
   });
 
   const { repository: providerRepository } = repository;
+  // TODO: Get isViewOnly from repository 🚧
+  const isViewOnly = false;
+
   const repositoryUrl = dashboard.repository({
     owner: providerRepository.owner,
     name: providerRepository.name,
@@ -79,7 +82,10 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
 
       <Menu.Divider />
 
-      <MenuItem onSelect={() => window.open(branchFromDefaultUrl, '_blank')}>
+      <MenuItem
+        onSelect={() => window.open(branchFromDefaultUrl, '_blank')}
+        disabled={isViewOnly}
+      >
         Create branch
       </MenuItem>
       <MenuItem onSelect={() => history.push(repositoryUrl)}>

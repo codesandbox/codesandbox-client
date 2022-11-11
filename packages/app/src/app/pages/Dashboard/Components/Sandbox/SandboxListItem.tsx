@@ -5,6 +5,7 @@ import {
   Column,
   Stack,
   Element,
+  Badge,
   Text,
   Input,
   ListAction,
@@ -36,6 +37,7 @@ export const SandboxListItem = ({
   onInputKeyDown,
   onSubmit,
   onInputBlur,
+  isViewOnly,
   // drag preview
   thumbnailRef,
   opacity,
@@ -74,9 +76,9 @@ export const SandboxListItem = ({
       onContextMenu={onContextMenu}
       {...props}
     >
-      <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
+      <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={4}>
         <Column
-          span={[12, 5, 5]}
+          span={[10, 5, 4]}
           css={{
             display: 'block',
             overflow: 'hidden',
@@ -128,7 +130,12 @@ export const SandboxListItem = ({
                 <Tooltip label={sandboxTitle}>
                   <Stack gap={1} align="center">
                     <PrivacyIcon />
-                    <Text size={3} weight="medium" maxWidth="100%">
+                    <Text
+                      size={3}
+                      weight="medium"
+                      maxWidth="100%"
+                      css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+                    >
                       {sandboxTitle}
                     </Text>
                   </Stack>
@@ -137,7 +144,17 @@ export const SandboxListItem = ({
             </Element>
           </Stack>
         </Column>
-        <Column span={[0, 4, 4]} as={Stack} align="center">
+        {/* Column span 0 on mobile because the Grid is bugged */}
+        <Column span={[0, 2, 2]}>
+          {isViewOnly ? (
+            <Stack align="center">
+              <Badge color="accent" isPadded>
+                View only
+              </Badge>
+            </Stack>
+          ) : null}
+        </Column>
+        <Column span={[0, 3, 3]} as={Stack} align="center">
           {sandbox.removedAt ? (
             <Text
               size={3}
@@ -165,7 +182,7 @@ export const SandboxListItem = ({
             </Text>
           )}
         </Column>
-        <Column span={[0, 3, 3]} as={Stack} align="center">
+        <Column span={[0, 2, 3]} as={Stack} align="center">
           <Text size={3} variant={selected ? 'body' : 'muted'} maxWidth="100%">
             {sandboxLocation}
           </Text>
