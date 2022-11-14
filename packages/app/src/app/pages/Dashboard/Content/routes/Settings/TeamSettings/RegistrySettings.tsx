@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, MessageStripe, Stack } from '@codesandbox/components';
+import { Text, Button, MessageStripe, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { Link } from 'react-router-dom';
 
@@ -60,7 +60,10 @@ export const RegistrySettings = () => {
     <Stack direction="vertical" gap={6}>
       {hasActiveSubscription ? null : (
         <MessageStripe justify="space-between">
-          You need a Team Pro subscription to set a custom NPM Registry.
+          <span>
+            You need a <Text weight="bold">Team Pro subscription</Text> to set a
+            custom npm Registry.
+          </span>
           {isTeamAdmin ? (
             <MessageStripe.Action as={Link} to="/pro">
               Upgrade now
@@ -69,6 +72,8 @@ export const RegistrySettings = () => {
             <MessageStripe.Action
               as="a"
               href="https://codesandbox.io/docs/learn/plan-billing/trials"
+              target="_blank"
+              rel="noreferrer"
             >
               Learn more
             </MessageStripe.Action>
@@ -101,7 +106,7 @@ export const RegistrySettings = () => {
             onSubmit={onSubmit}
             isSubmitting={submitting}
             registry={state.dashboard.workspaceSettings.npmRegistry}
-            disabled={Boolean(!hasActiveSubscription || !isTeamAdmin)}
+            disabled={!hasActiveSubscription || !isTeamAdmin}
           />
         )}
       </Stack>
