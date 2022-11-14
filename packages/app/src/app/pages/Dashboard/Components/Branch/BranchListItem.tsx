@@ -4,6 +4,7 @@ import {
   Column,
   Stack,
   Element,
+  Badge,
   Text,
   ListAction,
   IconButton,
@@ -19,6 +20,7 @@ export const BranchListItem = ({
   selected,
   isBeingRemoved,
   onContextMenu,
+  isViewOnly,
 }: BranchProps) => {
   const { name: branchName, project, contribution } = branch;
   const { repository } = project;
@@ -61,9 +63,9 @@ export const BranchListItem = ({
         href={isBeingRemoved ? undefined : branchUrl}
         onContextMenu={onContextMenu}
       >
-        <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
+        <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={4}>
           <Column
-            span={[12, 5, 5]}
+            span={[10, 5, 4]}
             css={{
               display: 'block',
               overflow: 'hidden',
@@ -85,14 +87,28 @@ export const BranchListItem = ({
 
               <Element css={{ overflow: 'hidden' }}>
                 <Tooltip label={branchName}>
-                  <Text size={3} weight="medium" maxWidth="100%">
+                  <Text
+                    size={3}
+                    weight="medium"
+                    maxWidth="100%"
+                    css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+                  >
                     {branchName}
                   </Text>
                 </Tooltip>
               </Element>
             </Stack>
           </Column>
-          <Column span={[0, 4, 4]} as={Stack} align="center">
+          <Column span={[0, 2, 2]}>
+            {isViewOnly ? (
+              <Stack align="center">
+                <Badge color="accent" isPadded>
+                  View only
+                </Badge>
+              </Stack>
+            ) : null}
+          </Column>
+          <Column span={[0, 5, 6]} as={Stack} align="center">
             <Text size={3} variant="muted" maxWidth="100%">
               {repository.owner}/{repository.name}
             </Text>

@@ -56,9 +56,10 @@ export const ProUpgrade = () => {
   const history = useHistory();
 
   const [checkout, createCheckout] = useCreateCheckout();
-  const [loadingCustomerPortal, createCustomerPortal] = useCreateCustomerPortal(
-    activeTeam
-  );
+  const [
+    loadingCustomerPortal,
+    createCustomerPortal,
+  ] = useCreateCustomerPortal({ team_id: activeTeam });
 
   const [interval, setIntervalType] = useState<Interval>('year');
 

@@ -1,7 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { css } from '@styled-system/css';
-import { Icon, IconButton, Stack, Text } from '@codesandbox/components';
+import {
+  Icon,
+  IconButton,
+  Stack,
+  Text,
+  Element,
+  Badge,
+} from '@codesandbox/components';
 import { RepositoryProps } from './types';
 
 export const RepositoryCard: React.FC<RepositoryProps> = ({
@@ -10,6 +17,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
   selected,
   onContextMenu,
   isBeingRemoved,
+  isViewOnly,
   ...props
 }) => {
   return (
@@ -49,6 +57,13 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
       onContextMenu={onContextMenu}
       {...props}
     >
+      {isViewOnly ? (
+        <Element css={{ position: 'absolute', top: 24, left: 24 }}>
+          <Badge color="accent" isPadded>
+            View only
+          </Badge>
+        </Element>
+      ) : null}
       <IconButton
         css={css({
           marginLeft: 'auto',
@@ -69,7 +84,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
         <Stack align="center" direction="vertical" gap={2}>
           <Text
             css={css({
-              color: '#E5E5E5',
+              color: isViewOnly ? '#999999' : '#E5E5E5',
               textAlign: 'center',
               minHeight: 42,
               paddingX: 6,

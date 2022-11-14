@@ -8,6 +8,7 @@ import {
   Stack,
 } from '@codesandbox/components';
 import { CreateSandbox } from 'app/components/CreateSandbox';
+import { PaymentPending } from 'app/components/StripeMessages';
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
 import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
@@ -16,6 +17,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
 
+import { SubscriptionStatus } from 'app/graphql/types';
 import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
@@ -132,6 +134,8 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
         {state.preferences.settings.zenMode ? null : (
           <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
             {!state.hasLogIn && <FixedSignInBanner />}
+            {state.activeTeamInfo?.subscription?.status ===
+              SubscriptionStatus.Unpaid && <PaymentPending />}
             <Header />
           </ComponentsThemeProvider>
         )}

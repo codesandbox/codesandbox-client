@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Element,
   Stack,
   Text,
   Icon,
@@ -7,6 +8,7 @@ import {
   Column,
   Grid,
   ListAction,
+  Badge,
 } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 import css from '@styled-system/css';
@@ -18,6 +20,7 @@ export interface NewMasterSandboxProps {
     name: string;
     branch: string;
   };
+  isViewOnly?: boolean;
 }
 
 export const NewMasterSandbox = (props: NewMasterSandboxProps) => {
@@ -32,7 +35,10 @@ export const NewMasterSandbox = (props: NewMasterSandboxProps) => {
   return <NewMasterSandboxListItem {...props} />;
 };
 
-export const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
+export const NewMasterSandboxListItem = ({
+  repo,
+  isViewOnly,
+}: NewMasterSandboxProps) => {
   const { onRightClick } = useSelection();
   return (
     <ListAction
@@ -55,8 +61,8 @@ export const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
         borderBottomColor: 'grays.600',
       })}
     >
-      <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
-        <Column span={[12, 5, 5]}>
+      <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={4}>
+        <Column span={[10, 5, 4]}>
           <Stack gap={4} align="center" marginLeft={2}>
             <Stack
               as="div"
@@ -72,19 +78,29 @@ export const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
               <Icon color="#999" name="github" size={24} />
             </Stack>
             <Stack justify="space-between" align="center">
-              <Text size={3} weight="medium">
+              <Text
+                size={3}
+                weight="medium"
+                css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+              >
                 {repo.name}
               </Text>
             </Stack>
           </Stack>
         </Column>
+        <Column span={[0, 2, 2]}>
+          {isViewOnly ? (
+            <Stack align="center">
+              <Badge color="accent" isPadded>
+                View only
+              </Badge>
+            </Stack>
+          ) : null}
+        </Column>
         <Column span={[0, 4, 4]} as={Stack} align="center">
           <Text size={3} block variant="muted">
             {repo.owner}
           </Text>
-        </Column>
-        <Column span={[0, 3, 3]} as={Stack} align="center">
-          {/* empty column to align with sandbox list items */}
         </Column>
       </Grid>
       <IconButton
@@ -100,7 +116,10 @@ export const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
   );
 };
 
-export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
+export const NewMasterSandboxCard = ({
+  repo,
+  isViewOnly,
+}: NewMasterSandboxProps) => {
   const { onRightClick } = useSelection();
   return (
     <Stack
@@ -125,6 +144,13 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
         },
       })}
     >
+      {isViewOnly ? (
+        <Element css={{ position: 'absolute', top: 8, left: 8 }}>
+          <Badge color="accent" isPadded>
+            View only
+          </Badge>
+        </Element>
+      ) : null}
       <Stack
         justify="center"
         align="center"
@@ -156,7 +182,11 @@ export const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
           })}
         >
           <Stack gap={1} align="center">
-            <Text size={3} weight="medium">
+            <Text
+              size={3}
+              weight="medium"
+              css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+            >
               master
             </Text>
           </Stack>
