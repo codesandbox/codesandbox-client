@@ -1,4 +1,10 @@
-import { SubscriptionStatus, SubscriptionType } from 'app/graphql/types';
+import {
+  SubscriptionOrigin,
+  SubscriptionPaymentProvider,
+  SubscriptionStatus,
+  SubscriptionType,
+  TeamMemberAuthorization,
+} from 'app/graphql/types';
 import { useAppState } from 'app/overmind';
 import { useWorkspaceAuthorization } from './useWorkspaceAuthorization';
 
@@ -32,11 +38,53 @@ export const useSubscription = () => {
 
   const isEligibleForTrial = isTeamSpace && !hasPastOrActiveSubscription;
 
+  const numberOfEditors = isTeamSpace
+    ? activeTeamInfo?.userAuthorizations?.filter(
+        ({ authorization }) =>
+          authorization === TeamMemberAuthorization.Admin ||
+          authorization === TeamMemberAuthorization.Write
+      ).length
+    : 1; // Personal
+
+  const numberOfSeats = activeTeamInfo?.subscription?.quantity || 1;
+
+  const hasMaxNumberOfEditors =
+    !hasActiveSubscription &&
+    numberOfEditors &&
+    activeTeamInfo?.limits?.maxEditors &&
+    numberOfEditors === activeTeamInfo?.limits?.maxEditors;
+
+  const numberOfEditorsIsOverTheLimit =
+    !hasActiveSubscription &&
+    numberOfEditors &&
+    activeTeamInfo?.limits?.maxEditors &&
+    numberOfEditors > activeTeamInfo?.limits?.maxEditors;
+
+  const isPatron = activeTeamInfo?.subscription?.origin
+    ? [SubscriptionOrigin.Legacy, SubscriptionOrigin.Patron].includes(
+        activeTeamInfo.subscription.origin
+      )
+    : false;
+  const isPaddle =
+    activeTeamInfo?.subscription?.paymentProvider ===
+    SubscriptionPaymentProvider.Paddle;
+
+  const isStripe =
+    activeTeamInfo?.subscription?.paymentProvider ===
+    SubscriptionPaymentProvider.Stripe;
+
   return {
     subscription: activeTeamInfo?.subscription,
     hasActiveSubscription,
     hasActiveTeamTrial,
     hasPastOrActiveSubscription,
     isEligibleForTrial,
+    numberOfSeats,
+    numberOfEditors,
+    hasMaxNumberOfEditors,
+    numberOfEditorsIsOverTheLimit,
+    isPatron,
+    isPaddle,
+    isStripe,
   };
 };
