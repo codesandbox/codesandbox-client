@@ -78,13 +78,22 @@ export const useSubscription = () => {
     activeTeamInfo?.limits?.maxEditors &&
     numberOfEditors > activeTeamInfo?.limits?.maxEditors;
 
+  const publicProjectsQuantity = activeTeamInfo?.usage?.publicProjectsQuantity;
+  const maxPublicProjects = activeTeamInfo?.limits?.maxPublicProjects;
+
   const hasMaxPublicRepositories =
-    activeTeamInfo?.usage?.publicProjectsQuantity >=
-    activeTeamInfo?.limits?.maxPublicProjects;
+    publicProjectsQuantity &&
+    maxPublicProjects &&
+    publicProjectsQuantity >= maxPublicProjects;
+
+  const publicSandboxesQuantity =
+    activeTeamInfo?.usage?.publicSandboxesQuantity;
+  const maxPublicSandboxes = activeTeamInfo?.limits?.maxPublicSandboxes;
 
   const hasMaxPublicSandboxes =
-    activeTeamInfo?.usage?.publicSandboxesQuantity >=
-    activeTeamInfo?.limits?.maxPublicSandboxes;
+    publicSandboxesQuantity &&
+    maxPublicSandboxes &&
+    publicSandboxesQuantity >= maxPublicSandboxes;
 
   return {
     subscription: activeTeamInfo?.subscription,
