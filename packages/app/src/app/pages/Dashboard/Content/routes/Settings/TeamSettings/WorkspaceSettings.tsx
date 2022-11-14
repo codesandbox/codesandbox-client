@@ -41,7 +41,7 @@ const INVITE_ROLES_MAP = {
   [TeamMemberAuthorization.Read]: [] as TeamMemberAuthorization[],
 };
 
-const PERMISSION_TEXT_MAP = {
+const ROLES_TEXT_MAP = {
   [TeamMemberAuthorization.Admin]: 'Admin',
   [TeamMemberAuthorization.Write]: 'Editor',
   [TeamMemberAuthorization.Read]: 'Viewer',
@@ -50,7 +50,7 @@ const PERMISSION_TEXT_MAP = {
 export const WorkspaceSettings = () => {
   const actions = useActions();
   const effects = useEffects();
-  const { user: stateUser, activeTeamInfo: team } = useAppState();
+  const { user: currentUser, activeTeamInfo: team } = useAppState();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -64,9 +64,15 @@ export const WorkspaceSettings = () => {
     numberOfEditorsIsOverTheLimit,
   } = useSubscription();
   const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
-
-  const rolesThatUserCanInvite = INVITE_ROLES_MAP[userRole];
   const canInviteOtherMembers = isTeamAdmin || isTeamEditor;
+
+  // We use `role` as the common term when referring to: `admin`, `editor` or `viewer`
+  // But away from the team settings page and on the BE, the term `authorization` is used
+  const rolesThatUserCanInvite =
+    hasMaxNumberOfEditors || numberOfEditorsIsOverTheLimit
+      ? // If team has reached the limit, only allow viewer roles to be invited
+        [TeamMemberAuthorization.Read]
+      : INVITE_ROLES_MAP[userRole];
 
   const getFile = async avatar => {
     const url = await new Promise((resolve, reject) => {
@@ -106,15 +112,15 @@ export const WorkspaceSettings = () => {
   const [inviteValue, setInviteValue] = useState('');
   const [inviteLoading, setInviteLoading] = useState(false);
 
-  const defaultRole = rolesThatUserCanInvite.includes(
+  const defaultRoleToInvite = rolesThatUserCanInvite.includes(
     team?.settings.defaultAuthorization
   )
     ? team?.settings.defaultAuthorization
     : TeamMemberAuthorization.Read;
 
-  const [newMemberAuthorization, setNewMemberAuthorization] = React.useState<
+  const [newMemberRole, setNewMemberRole] = React.useState<
     TeamMemberAuthorization
-  >(defaultRole);
+  >(defaultRoleToInvite);
 
   // A team can have unused seats in their subscription
   // if they have already paid for X editors for the YEARLY plan
@@ -126,7 +132,7 @@ export const WorkspaceSettings = () => {
   const confirmNewMemberAddition =
     hasActiveSubscription &&
     numberOfUnusedSeats === 0 &&
-    newMemberAuthorization !== TeamMemberAuthorization.Read;
+    newMemberRole !== TeamMemberAuthorization.Read;
   const confirmMemberRoleChange =
     hasActiveSubscription && numberOfUnusedSeats === 0;
 
@@ -138,7 +144,7 @@ export const WorkspaceSettings = () => {
 
     await actions.dashboard.inviteToTeam({
       value: inviteValue,
-      authorization: newMemberAuthorization,
+      authorization: newMemberRole,
       confirm: confirmNewMemberAddition,
       triggerPlace: 'settings',
       inviteLink,
@@ -146,7 +152,7 @@ export const WorkspaceSettings = () => {
     setInviteLoading(false);
   };
 
-  if (!team || !stateUser) {
+  if (!team || !currentUser) {
     return <Header title="Team Settings" activeTeam={null} />;
   }
 
@@ -416,22 +422,20 @@ export const WorkspaceSettings = () => {
                     right: 2,
                   })}
                 >
-                  <Text variant="muted">
-                    {PERMISSION_TEXT_MAP[newMemberAuthorization]}
-                  </Text>
+                  <Text variant="muted">{ROLES_TEXT_MAP[newMemberRole]}</Text>
                   <Icon name="caret" size={8} marginLeft={1} />
                 </Menu.Button>
                 <Menu.List>
-                  {rolesThatUserCanInvite.map(authorization => (
+                  {rolesThatUserCanInvite.map(role => (
                     <Menu.Item
-                      key={authorization}
-                      onSelect={() => setNewMemberAuthorization(authorization)}
+                      key={role}
+                      onSelect={() => setNewMemberRole(role)}
                       style={{ display: 'flex', alignItems: 'center' }}
                     >
                       <Text style={{ width: '100%' }}>
-                        {PERMISSION_TEXT_MAP[authorization]}
+                        {ROLES_TEXT_MAP[role]}
                       </Text>
-                      {newMemberAuthorization === authorization && (
+                      {newMemberRole === role && (
                         <Icon name="simpleCheck" size={12} marginLeft={1} />
                       )}
                     </Menu.Item>
@@ -461,8 +465,8 @@ export const WorkspaceSettings = () => {
 
       {isTeamAdmin && numberOfEditorsIsOverTheLimit && (
         <MessageStripe justify="space-between">
-          You are no longer in a PRO team. Free teams are limited to 5 editor
-          seats. Some permissions might have changed.
+          Free teams are limited to 5 editor seats. Some permissions might have
+          changed.
         </MessageStripe>
       )}
 
@@ -470,21 +474,20 @@ export const WorkspaceSettings = () => {
         <MessageStripe justify="space-between">
           You&apos;ve reached the maximum amount of free editor seats. Upgrade
           for more.
-          <MessageStripe.Action>Upgrade now</MessageStripe.Action>
         </MessageStripe>
       )}
 
       <div>
         <MemberList
-          getPermission={user => getAuthorization(user, team)}
+          getPermission={user => getRole(user, team)}
           getPermissionOptions={user => {
             // if changing the role will lead to extra seats, we want to
             // confirm any payment changes if required
             const confirmChange =
               confirmMemberRoleChange &&
-              getAuthorization(user, team) === TeamMemberAuthorization.Read;
+              getRole(user, team) === TeamMemberAuthorization.Read;
 
-            return isTeamAdmin && user.id !== stateUser.id
+            return isTeamAdmin && user.id !== currentUser.id
               ? [
                   {
                     label: 'Admin',
@@ -519,7 +522,7 @@ export const WorkspaceSettings = () => {
               : [];
           }}
           getActions={user => {
-            const you = stateUser.id === user.id;
+            const you = currentUser.id === user.id;
 
             const options = [];
 
@@ -566,13 +569,12 @@ export const WorkspaceSettings = () => {
   );
 };
 
-const getAuthorization = (
+const getRole = (
   user: User,
   team: CurrentTeamInfoFragmentFragment
 ): TeamMemberAuthorization => {
-  const authorization = team.userAuthorizations.find(
-    auth => auth.userId === user.id
-  ).authorization;
+  const role = team.userAuthorizations.find(auth => auth.userId === user.id)
+    .authorization;
 
-  return authorization;
+  return role;
 };

@@ -50,11 +50,13 @@ export const useSubscription = () => {
 
   const hasMaxNumberOfEditors =
     !hasActiveSubscription &&
-    numberOfEditors === activeTeamInfo?.limits.maxEditors;
+    numberOfEditors &&
+    numberOfEditors === activeTeamInfo?.limits?.maxEditors;
 
   const numberOfEditorsIsOverTheLimit =
     !hasActiveSubscription &&
-    numberOfEditors > activeTeamInfo?.limits.maxEditors;
+    numberOfEditors &&
+    numberOfEditors > activeTeamInfo?.limits?.maxEditors;
 
   const isPatron = activeTeamInfo?.subscription?.origin
     ? [SubscriptionOrigin.Legacy, SubscriptionOrigin.Patron].includes(
