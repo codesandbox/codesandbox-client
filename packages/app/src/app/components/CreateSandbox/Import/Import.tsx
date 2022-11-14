@@ -1,5 +1,8 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  gitHubRepoPattern,
+  dashboard,
+} from '@codesandbox/common/lib/utils/url-generator';
 
 import {
   Button,
@@ -72,6 +75,8 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
   const checkout = useGetCheckoutURL({
     team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
+    success_path: dashboard.recent(activeTeam),
+    cancel_path: dashboard.recent(activeTeam),
   });
 
   const checkoutURL = React.useMemo(() => {
