@@ -89,6 +89,8 @@ export const RepositoriesPage = () => {
         branchItems.unshift({
           type: 'new-branch',
           repo: { owner, name },
+          disabled:
+            !hasActiveSubscription && currentRepository.repository.private,
         });
       }
 
@@ -101,7 +103,10 @@ export const RepositoriesPage = () => {
     }));
 
     if (viewMode === 'grid' && repoItems.length > 0) {
-      repoItems.unshift({ type: 'import-repository' });
+      repoItems.unshift({
+        type: 'import-repository',
+        disabled: !hasActiveSubscription && hasMaxRepositories,
+      });
     }
 
     return repoItems;
