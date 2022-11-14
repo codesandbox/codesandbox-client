@@ -244,6 +244,7 @@ export const branchFragment = gql`
           defaultBranch
           name
           owner
+          private
         }
       }
     }
@@ -260,6 +261,7 @@ export const projectFragment = gql`
         owner
         name
         defaultBranch
+        private
       }
     }
   }
