@@ -65,7 +65,10 @@ type ImportProps = {
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const importAndRedirect = useImportAndRedirect();
-  const { hasActiveSubscription } = useSubscription();
+  const {
+    hasActiveSubscription,
+    hasPastOrActiveSubscription,
+  } = useSubscription();
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
   const checkout = useGetCheckoutURL({
     team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
@@ -79,8 +82,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
       return '/pro';
     }
 
-    return '/docs';
-  }, [checkout, isTeamAdmin, isPersonalSpace]);
+    return hasPastOrActiveSubscription
+      ? '/docs/learn/introduction/workspace#managing-teams-and-subscriptions'
+      : '/docs/learn/plan-billing/trials';
+  }, [checkout, hasPastOrActiveSubscription, isTeamAdmin, isPersonalSpace]);
   const [isImporting, setIsImporting] = React.useState(false);
   const [shouldFetch, setShouldFetch] = React.useState(false);
   const [
