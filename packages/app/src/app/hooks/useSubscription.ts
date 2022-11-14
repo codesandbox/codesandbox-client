@@ -27,6 +27,20 @@ export const useSubscription = () => {
     activeTeamInfo?.subscription?.status
   );
 
+  const isPatron = activeTeamInfo?.subscription?.origin
+    ? [SubscriptionOrigin.Legacy, SubscriptionOrigin.Patron].includes(
+        activeTeamInfo.subscription.origin
+      )
+    : false;
+
+  const isPaddle =
+    activeTeamInfo?.subscription?.paymentProvider ===
+    SubscriptionPaymentProvider.Paddle;
+
+  const isStripe =
+    activeTeamInfo?.subscription?.paymentProvider ===
+    SubscriptionPaymentProvider.Stripe;
+
   /**
    * Trial states
    */
@@ -46,6 +60,10 @@ export const useSubscription = () => {
       ).length
     : 1; // Personal
 
+  /**
+   * Usage states
+   */
+
   const numberOfSeats = activeTeamInfo?.subscription?.quantity || 1;
 
   const hasMaxNumberOfEditors =
@@ -60,18 +78,13 @@ export const useSubscription = () => {
     activeTeamInfo?.limits?.maxEditors &&
     numberOfEditors > activeTeamInfo?.limits?.maxEditors;
 
-  const isPatron = activeTeamInfo?.subscription?.origin
-    ? [SubscriptionOrigin.Legacy, SubscriptionOrigin.Patron].includes(
-        activeTeamInfo.subscription.origin
-      )
-    : false;
-  const isPaddle =
-    activeTeamInfo?.subscription?.paymentProvider ===
-    SubscriptionPaymentProvider.Paddle;
+  const hasMaxPublicRepositories =
+    activeTeamInfo?.usage?.publicProjectsQuantity >=
+    activeTeamInfo?.limits?.maxPublicProjects;
 
-  const isStripe =
-    activeTeamInfo?.subscription?.paymentProvider ===
-    SubscriptionPaymentProvider.Stripe;
+  const hasMaxPublicSandboxes =
+    activeTeamInfo?.usage?.publicSandboxesQuantity >=
+    activeTeamInfo?.limits?.maxPublicSandboxes;
 
   return {
     subscription: activeTeamInfo?.subscription,
@@ -86,5 +99,7 @@ export const useSubscription = () => {
     isPatron,
     isPaddle,
     isStripe,
+    hasMaxPublicRepositories,
+    hasMaxPublicSandboxes,
   };
 };
