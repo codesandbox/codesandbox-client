@@ -48,12 +48,12 @@ export const RepositoriesPage = () => {
     pathRef.current = path;
   }, [path]);
 
-  // 🚧 TODO: hasMaxRepositories property (or something like it) is something that will
-  // be returned from an API. Can be implemented when ready.
-  const hasMaxRepositories = false;
-
   const { isTeamAdmin } = useWorkspaceAuthorization();
-  const { hasActiveSubscription, isEligibleForTrial } = useSubscription();
+  const {
+    hasActiveSubscription,
+    isEligibleForTrial,
+    hasMaxPublicRepositories,
+  } = useSubscription();
 
   const pageType: PageTypes = 'repositories';
   let selectedRepo: { owner: string; name: string } | undefined;
@@ -127,7 +127,7 @@ export const RepositoriesPage = () => {
         selectedRepo={selectedRepo}
       />
 
-      {!hasActiveSubscription && hasMaxRepositories ? (
+      {!hasActiveSubscription && hasMaxPublicRepositories ? (
         <Element paddingX={4} paddingY={2}>
           <MessageStripe justify="space-between">
             Free teams are limited to 3 public repositories. Upgrade for
