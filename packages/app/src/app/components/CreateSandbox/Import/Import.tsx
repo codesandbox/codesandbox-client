@@ -1,18 +1,21 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
+
 import {
   Button,
-  Link,
   Element,
   Input,
+  Link,
   Stack,
   Text,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
 import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { useImportAndRedirect } from './useImportAndRedirect';
@@ -63,7 +66,21 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const importAndRedirect = useImportAndRedirect();
   const { hasActiveSubscription } = useSubscription();
+  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const checkout = useGetCheckoutURL({
+    team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
+  });
 
+  const checkoutURL = React.useMemo(() => {
+    if (isTeamAdmin || isPersonalSpace) {
+      if (checkout.state === 'READY') {
+        return checkout.url;
+      }
+      return '/pro';
+    }
+
+    return '/docs';
+  }, [checkout, isTeamAdmin, isPersonalSpace]);
   const [isImporting, setIsImporting] = React.useState(false);
   const [shouldFetch, setShouldFetch] = React.useState(false);
   const [
@@ -192,7 +209,13 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
                 <>
                   The free plan only allows public repos. For private
                   repositories,{' '}
-                  <Link color="#FFFFFF" href="/pro">
+                  <Link
+                    css={{
+                      padding: 0,
+                    }}
+                    color="#FFFFFF"
+                    href={checkoutURL}
+                  >
                     upgrade to{' '}
                     <Element as="span" css={{ textTransform: 'uppercase' }}>
                       pro
