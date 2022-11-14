@@ -526,7 +526,7 @@ const PlanCard: React.FC<{
   // Omitting new trialEnd and trialStart
   currentSubscription: Omit<
     ProSubscription,
-    'trialEnd' | 'trialStart' | 'cancelAtPeriodEnd'
+    'trialEnd' | 'trialStart' | 'cancelAtPeriodEnd' | 'active'
   > | null;
 }> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
   const isSelected = plan.billingInterval === billingInterval;
