@@ -27,6 +27,20 @@ export const useSubscription = () => {
     activeTeamInfo?.subscription?.status
   );
 
+  const isPatron = activeTeamInfo?.subscription?.origin
+    ? [SubscriptionOrigin.Legacy, SubscriptionOrigin.Patron].includes(
+        activeTeamInfo.subscription.origin
+      )
+    : false;
+
+  const isPaddle =
+    activeTeamInfo?.subscription?.paymentProvider ===
+    SubscriptionPaymentProvider.Paddle;
+
+  const isStripe =
+    activeTeamInfo?.subscription?.paymentProvider ===
+    SubscriptionPaymentProvider.Stripe;
+
   /**
    * Trial states
    */
@@ -46,6 +60,10 @@ export const useSubscription = () => {
       ).length
     : 1; // Personal
 
+  /**
+   * Usage states
+   */
+
   const numberOfSeats = activeTeamInfo?.subscription?.quantity || 1;
 
   const hasMaxNumberOfEditors =
@@ -60,18 +78,22 @@ export const useSubscription = () => {
     activeTeamInfo?.limits?.maxEditors &&
     numberOfEditors > activeTeamInfo?.limits?.maxEditors;
 
-  const isPatron = activeTeamInfo?.subscription?.origin
-    ? [SubscriptionOrigin.Legacy, SubscriptionOrigin.Patron].includes(
-        activeTeamInfo.subscription.origin
-      )
-    : false;
-  const isPaddle =
-    activeTeamInfo?.subscription?.paymentProvider ===
-    SubscriptionPaymentProvider.Paddle;
+  const publicProjectsQuantity = activeTeamInfo?.usage?.publicProjectsQuantity;
+  const maxPublicProjects = activeTeamInfo?.limits?.maxPublicProjects;
 
-  const isStripe =
-    activeTeamInfo?.subscription?.paymentProvider ===
-    SubscriptionPaymentProvider.Stripe;
+  const hasMaxPublicRepositories =
+    publicProjectsQuantity &&
+    maxPublicProjects &&
+    publicProjectsQuantity >= maxPublicProjects;
+
+  const publicSandboxesQuantity =
+    activeTeamInfo?.usage?.publicSandboxesQuantity;
+  const maxPublicSandboxes = activeTeamInfo?.limits?.maxPublicSandboxes;
+
+  const hasMaxPublicSandboxes =
+    publicSandboxesQuantity &&
+    maxPublicSandboxes &&
+    publicSandboxesQuantity >= maxPublicSandboxes;
 
   return {
     subscription: activeTeamInfo?.subscription,
@@ -86,5 +108,7 @@ export const useSubscription = () => {
     isPatron,
     isPaddle,
     isStripe,
+    hasMaxPublicRepositories,
+    hasMaxPublicSandboxes,
   };
 };
