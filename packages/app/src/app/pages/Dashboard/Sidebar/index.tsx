@@ -33,7 +33,7 @@ import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
 
-const END_OF_TRIAL_DAYS_NOTIFICATION = 5;
+const END_OF_TRIAL_DAYS_NOTIFICATION = 14;
 
 interface SidebarProps {
   visible: boolean;
@@ -350,6 +350,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               trialDaysLeft <= END_OF_TRIAL_DAYS_NOTIFICATION && (
                 <TrialExpiring
                   activeTeam={activeTeam}
+                  cancelAtPeriodEnd={subscription?.cancelAtPeriodEnd}
                   daysLeft={trialDaysLeft}
                   isAdmin={isTeamAdmin}
                 />
