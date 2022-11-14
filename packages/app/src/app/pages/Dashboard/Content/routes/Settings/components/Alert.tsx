@@ -4,7 +4,7 @@ import css from '@styled-system/css';
 
 interface AlertProps {
   message: string;
-  upgrade: boolean;
+  upgrade?: boolean;
   cta?: {
     label: string;
     href: string;

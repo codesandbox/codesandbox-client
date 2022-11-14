@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
@@ -9,68 +10,68 @@ import {
   Icon,
   Select,
   Switch,
+  MessageStripe,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { TeamMemberAuthorization, SubscriptionType } from 'app/graphql/types';
+import { TeamMemberAuthorization } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
-
+import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Alert } from './Alert';
 
 export const PermissionSettings = () => {
-  const {
-    activeTeamInfo,
-    personalWorkspaceId,
-    activeWorkspaceAuthorization,
-  } = useAppState();
-
-  // different scenarios
-  const isPersonalWorkspace = activeTeamInfo.id === personalWorkspaceId;
-  const isTeamPro =
-    activeTeamInfo?.subscription?.type === SubscriptionType.TeamPro;
-  const isPersonalPro =
-    activeTeamInfo?.subscription?.type === SubscriptionType.PersonalPro;
-  const isAdmin =
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
-
-  let alert: {
-    message: string;
-    cta?: { label: string; href: string; onClick?: () => void };
-  } | null = null;
-
   const proTracking = () =>
     track('Dashboard - Permissions panel - Clicked on Pro upgrade');
 
-  if (isPersonalWorkspace) {
-    if (!isPersonalPro) {
-      alert = {
-        message: 'Upgrade to Pro to change sandbox permissions.',
-        cta: { label: 'Upgrade to Pro', href: '/pro', onClick: proTracking },
-      };
-    }
-  } else if (!isTeamPro) {
-    alert = {
-      message:
-        'You need a Team Pro subscription to change sandbox permissions.',
-      cta: { label: 'Upgrade to Pro', href: '/pro', onClick: proTracking },
-    };
-  } else if (!isAdmin) {
-    alert = {
-      message: 'Please contact your admin to change sandbox permissions.',
-    };
-  }
+  const { hasActiveSubscription } = useSubscription();
+  const {
+    isTeamSpace,
+    isTeamAdmin,
+    isPersonalSpace,
+  } = useWorkspaceAuthorization();
 
   return (
     <Stack direction="vertical" gap={6}>
-      {alert && (
-        <Alert upgrade={!isTeamPro} message={alert.message} cta={alert.cta} />
+      {hasActiveSubscription ? null : (
+        <MessageStripe justify="space-between">
+          <span>
+            You need a{' '}
+            <Text weight="bold">
+              {isTeamSpace ? 'Team Pro' : 'Pro'} subscription
+            </Text>{' '}
+            to change sandbox permissions.
+          </span>
+          {isTeamAdmin || isPersonalSpace ? (
+            <MessageStripe.Action as={Link} to="/pro" onClick={proTracking}>
+              Upgrade now
+            </MessageStripe.Action>
+          ) : (
+            <MessageStripe.Action
+              as="a"
+              href="https://codesandbox.io/docs/learn/plan-billing/trials"
+              target="_blank"
+              rel="noreferrer"
+              onClick={proTracking}
+            >
+              Learn more
+            </MessageStripe.Action>
+          )}
+        </MessageStripe>
       )}
+
+      {hasActiveSubscription && isTeamSpace && !isTeamAdmin ? (
+        <Alert message="Please contact your admin to change sandbox permissions." />
+      ) : null}
+
       <Grid columnGap={12}>
         <Column span={[12, 12, 6]}>
-          <MinimumPrivacy disabled={Boolean(alert)} />
+          <MinimumPrivacy disabled={!hasActiveSubscription || !isTeamAdmin} />
         </Column>
-        {!isPersonalWorkspace && (
+        {!isPersonalSpace && (
           <Column span={[12, 12, 6]}>
-            <SandboxSecurity disabled={Boolean(alert)} />
+            <SandboxSecurity
+              disabled={!hasActiveSubscription || !isTeamAdmin}
+            />
           </Column>
         )}
       </Grid>
