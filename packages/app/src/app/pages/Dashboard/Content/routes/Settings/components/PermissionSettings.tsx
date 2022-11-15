@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
@@ -43,7 +42,7 @@ export const PermissionSettings = () => {
             to change sandbox permissions.
           </span>
           {isTeamAdmin || isPersonalSpace ? (
-            <MessageStripe.Action as={Link} to="/pro" onClick={proTracking}>
+            <MessageStripe.Action as="a" href="/pro" onClick={proTracking}>
               Upgrade now
             </MessageStripe.Action>
           ) : (

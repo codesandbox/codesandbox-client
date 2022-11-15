@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Text, Button, MessageStripe, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { Link } from 'react-router-dom';
 
 import { useActions, useAppState } from 'app/overmind';
 import { useSubscription } from 'app/hooks/useSubscription';
@@ -64,7 +63,7 @@ export const RegistrySettings = () => {
             custom npm Registry.
           </span>
           {isTeamAdmin ? (
-            <MessageStripe.Action as={Link} to="/pro">
+            <MessageStripe.Action as="a" href="/pro">
               Upgrade now
             </MessageStripe.Action>
           ) : (
