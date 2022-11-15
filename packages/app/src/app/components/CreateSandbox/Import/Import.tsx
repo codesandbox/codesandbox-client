@@ -1,17 +1,16 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import {
-  gitHubRepoPattern,
-  dashboard,
-} from '@codesandbox/common/lib/utils/url-generator';
+import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 
 import {
   Button,
   Element,
   Input,
   Link,
+  MessageStripe,
   Stack,
   Text,
 } from '@codesandbox/components';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
 import { useSubscription } from 'app/hooks/useSubscription';
@@ -56,6 +55,11 @@ const UnauthenticatedImport: React.FC = () => {
   );
 };
 
+const getEventName = (isEligibleForTrial: boolean) =>
+  isEligibleForTrial
+    ? 'Limit banner: import - Start Trial'
+    : 'Limit banner: import - Upgrade';
+
 type UrlState = {
   raw: string;
   parsed: { owner: string; name: string } | null;
@@ -68,15 +72,19 @@ type ImportProps = {
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const importAndRedirect = useImportAndRedirect();
+  const { pathname } = useLocation();
+  const { modals: modalsActions } = useActions();
+
   const {
     hasActiveSubscription,
-    hasPastOrActiveSubscription,
+    hasMaxPublicRepositories,
+    isEligibleForTrial,
   } = useSubscription();
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
   const checkout = useGetCheckoutURL({
     team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
-    success_path: dashboard.recent(activeTeam),
-    cancel_path: dashboard.recent(activeTeam),
+    success_path: pathname,
+    cancel_path: pathname,
   });
 
   const checkoutURL = React.useMemo(() => {
@@ -87,10 +95,10 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
       return '/pro';
     }
 
-    return hasPastOrActiveSubscription
-      ? '/docs/learn/introduction/workspace#managing-teams-and-subscriptions'
-      : '/docs/learn/plan-billing/trials';
-  }, [checkout, hasPastOrActiveSubscription, isTeamAdmin, isPersonalSpace]);
+    return isEligibleForTrial
+      ? '/docs/learn/plan-billing/trials'
+      : '/docs/learn/introduction/workspace#managing-teams-and-subscriptions';
+  }, [checkout, isEligibleForTrial, isTeamAdmin, isPersonalSpace]);
   const [isImporting, setIsImporting] = React.useState(false);
   const [shouldFetch, setShouldFetch] = React.useState(false);
   const [
@@ -150,6 +158,11 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (hasMaxPublicRepositories) {
+      return;
+    }
+
     track('Create New - Import Repo', {
       codesandbox: 'V1',
       event_source: 'UI',
@@ -166,7 +179,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     privateRepoFreeAccountError === url.raw;
 
   return (
-    <Stack direction="vertical" gap={6}>
+    <Stack direction="vertical" gap={4}>
       <Text
         as="h2"
         id="form-title"
@@ -179,23 +192,63 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
       >
         Enter the GitHub repository URL to import
       </Text>
-      <form onSubmit={handleFormSubmit}>
+      {hasMaxPublicRepositories ? (
+        <MessageStripe justify="space-between">
+          You&apos;ve reached the maximum amount of free repositories. Upgrade
+          for more.
+          <MessageStripe.Action
+            {...(checkoutURL.startsWith('https')
+              ? {
+                  as: 'a',
+                  href: checkoutURL,
+                }
+              : {
+                  as: RouterLink,
+                  to: checkoutURL,
+                })}
+            onClick={() => {
+              if (checkoutURL.startsWith('/pro')) {
+                modalsActions.newSandboxModal.close();
+              }
+
+              track(getEventName(isEligibleForTrial), {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+            }}
+          >
+            {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
+          </MessageStripe.Action>
+        </MessageStripe>
+      ) : null}
+      <Element
+        as="form"
+        css={{
+          opacity: hasMaxPublicRepositories ? 0.4 : 1,
+          pointerEvents: hasMaxPublicRepositories ? 'none' : 'initial',
+        }}
+        onSubmit={handleFormSubmit}
+      >
         <Stack gap={2}>
           <Input
+            aria-disabled={hasMaxPublicRepositories}
             aria-describedby="form-title form-error"
             aria-invalid={Boolean(url.error)}
-            onChange={handleUrlInputChange}
+            css={{ height: '32px' }}
             placeholder="GitHub Repository URL"
+            tabIndex={hasMaxPublicRepositories ? -1 : 0}
             type="text"
             value={url.raw}
+            onChange={handleUrlInputChange}
             required
-            css={{ height: '32px' }}
           />
           <Button
+            css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
+            aria-disabled={hasMaxPublicRepositories}
             disabled={Boolean(url.error) || isLoading}
+            tabIndex={hasMaxPublicRepositories ? -1 : 0}
             type="submit"
             autoWidth
-            css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
           >
             {isLoading ? 'Importing...' : 'Import'}
           </Button>
@@ -237,7 +290,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             </Text>
           ) : null}
         </Element>
-      </form>
+      </Element>
     </Stack>
   );
 };
