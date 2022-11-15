@@ -31,11 +31,11 @@ export const PrivateRepoFreeTeam: React.FC = () => {
         <MessageStripe.Action
           {...(checkout.state === 'READY'
             ? {
-                // as: 'a',
+                as: 'a',
                 href: checkout.url,
               }
             : {
-                // as: Link,
+                as: Link,
                 to: '/pro',
               })}
           onClick={() => {
