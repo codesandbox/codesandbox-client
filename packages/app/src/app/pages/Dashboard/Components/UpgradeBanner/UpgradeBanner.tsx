@@ -175,6 +175,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                 </>
               ) : (
                 <Button
+                  as="a"
                   href="/docs/learn/introduction/workspace#team-workspace"
                   target="_blank"
                   autoWidth
