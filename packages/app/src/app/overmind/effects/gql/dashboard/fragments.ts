@@ -196,7 +196,6 @@ export const currentTeamInfoFragment = gql`
       nextBillDate
       paymentProvider
       cancelAt
-      cancelAtPeriodEnd
       trialStart
       trialEnd
     }
