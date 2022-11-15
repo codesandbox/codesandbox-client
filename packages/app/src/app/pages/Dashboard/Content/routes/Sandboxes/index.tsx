@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Element, MessageStripe } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
@@ -110,6 +111,17 @@ export const SandboxesPage = () => {
               <MessageStripe.Action
                 as={Link}
                 to={checkout.state === 'READY' ? checkout.url : '/pro'}
+                onClick={() =>
+                  isEligibleForTrial
+                    ? track('Limit banner: sandboxes - Start Trial', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      })
+                    : track('Limit banner: sandboxes - Upgrade', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      })
+                }
               >
                 {isEligibleForTrial ? 'Start free trial' : 'Upgrade now'}
               </MessageStripe.Action>
@@ -119,6 +131,12 @@ export const SandboxesPage = () => {
                 href="https://codesandbox.io/docs/learn/plan-billing/trials"
                 target="_blank"
                 rel="noreferrer"
+                onClick={() => {
+                  track('Limit banner: sandboxes - Learn More', {
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                  });
+                }}
               >
                 Learn more
               </MessageStripe.Action>

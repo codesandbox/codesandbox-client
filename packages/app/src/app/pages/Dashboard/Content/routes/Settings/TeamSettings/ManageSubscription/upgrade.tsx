@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Button, Stack, Text } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -64,6 +65,12 @@ export const Upgrade = () => {
           href={checkout.state === 'READY' ? checkout.url : '/pro'}
           marginTop={2}
           variant="trial"
+          onClick={() => {
+            track('Team Settings - Upgrade', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+          }}
         >
           Upgrade to Pro
         </Button>

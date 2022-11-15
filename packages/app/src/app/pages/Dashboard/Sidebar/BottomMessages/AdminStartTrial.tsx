@@ -44,7 +44,7 @@ export const AdminStartTrial: React.FC<{ activeTeam: string }> = ({
           variant="link"
           loading={checkout.status === 'loading'}
           onClick={() => {
-            track('Existing Team - Start Trial', {
+            track('Side banner - Start Trial', {
               codesandbox: 'V1',
               event_source: 'UI',
             });
