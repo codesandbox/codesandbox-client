@@ -27,6 +27,11 @@ export const useCreateCheckout = (): [
     success_path = dashboard.settings(team_id) + '&payment_pending=true',
     cancel_path = '/pro',
   }: CheckoutOptions) => {
+    if (!team_id) {
+      setStatus({ status: 'idle' });
+      return;
+    }
+
     try {
       setStatus({ status: 'loading' });
 
