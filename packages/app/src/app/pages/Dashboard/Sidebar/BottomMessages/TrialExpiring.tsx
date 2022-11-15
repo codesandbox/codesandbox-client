@@ -8,7 +8,9 @@ export const TrialExpiring: React.FC<{
   isAdmin: boolean;
   cancelAtPeriodEnd: boolean;
 }> = ({ daysLeft, isAdmin, activeTeam, cancelAtPeriodEnd }) => {
-  const [loading, createCustomerPortal] = useCreateCustomerPortal(activeTeam);
+  const [loading, createCustomerPortal] = useCreateCustomerPortal({
+    team_id: activeTeam,
+  });
 
   return (
     <Stack align="flex-start" direction="vertical" gap={2}>

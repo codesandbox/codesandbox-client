@@ -5,6 +5,7 @@ export * from './components/ThemeProvider';
 // atoms
 export * from './components/Avatar';
 export * from './components/Badge';
+export * from './components/Banner';
 export * from './components/Button';
 export * from './components/Checkbox';
 export * from './components/Icon';
@@ -32,6 +33,8 @@ export * from './components/TagInput';
 export * from './components/Tags';
 export * from './components/Tags/Tag';
 export * from './components/Tooltip';
+export * from './components/Banner/Banner';
+export * from './components/MessageStripe/MessageStripe';
 
 // layout
 export * from './components/Grid';

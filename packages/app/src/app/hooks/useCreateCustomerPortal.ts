@@ -2,9 +2,15 @@ import { useState } from 'react';
 import { useEffects } from 'app/overmind';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
-export const useCreateCustomerPortal = (
-  activeTeam: string
-): [boolean, () => void] => {
+type CheckoutOptions = {
+  team_id: string;
+  return_path?: string;
+};
+
+export const useCreateCustomerPortal = ({
+  team_id,
+  return_path,
+}: CheckoutOptions): [boolean, () => void] => {
   const [loading, setLoading] = useState(false);
   const { api } = useEffects();
 
@@ -12,8 +18,8 @@ export const useCreateCustomerPortal = (
     try {
       setLoading(true);
       const payload = await api.stripeCustomerPortal(
-        activeTeam,
-        dashboard.settings(activeTeam)
+        team_id,
+        return_path ?? dashboard.settings(team_id)
       );
 
       if (payload.stripeCustomerPortalUrl) {

@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Button, Stack, Text } from '@codesandbox/components';
-
 import { Card } from '../../components';
 
 const List = styled(Stack)`
@@ -15,19 +14,18 @@ const List = styled(Stack)`
   }
 `;
 
-export const Upgrade = () => {
+export const Upgrade: React.FC<{
+  loading: boolean;
+  onUpgrade: () => void;
+}> = ({ loading, onUpgrade }) => {
   return (
     <Card
       css={{
-        textDecoration: 'none',
         backgroundColor: 'white',
-        borderTop: '6px solid #EDFFA5',
-        padding: 24,
-        borderRadius: 4,
       }}
     >
       <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
-        <Text size={6} weight="bold">
+        <Text size={4} weight="bold">
           Upgrade to Team Pro
         </Text>
         <List direction="vertical" gap={1} as="ul">
@@ -45,7 +43,7 @@ export const Upgrade = () => {
           </Text>
         </List>
 
-        <Button as="a" href="/pro" marginTop={2} variant="secondary">
+        <Button loading={loading} onClick={onUpgrade} variant="trial">
           Upgrade to Pro
         </Button>
       </Stack>

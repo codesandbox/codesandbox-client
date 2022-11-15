@@ -6,12 +6,12 @@ import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 export const NewBranchCard: React.FC<{
   owner: string;
   repoName: string;
-  isDisabled?: boolean;
-}> = ({ owner, repoName, isDisabled }) => {
+  disabled?: boolean;
+}> = ({ owner, repoName, disabled }) => {
   return (
     <Element
-      as={isDisabled ? undefined : 'a'}
-      href={isDisabled ? undefined : v2DraftBranchUrl(owner, repoName)}
+      as={disabled ? undefined : 'a'}
+      href={disabled ? undefined : v2DraftBranchUrl(owner, repoName)}
       css={css({
         display: 'flex',
         alignItems: 'center',
@@ -19,7 +19,7 @@ export const NewBranchCard: React.FC<{
         textDecoration: 'none',
         fontSize: 3,
         fontWeight: 'normal',
-        color: isDisabled ? '#999999' : '#808080',
+        color: disabled ? '#999999' : '#808080',
         height: 240,
         outline: 'none',
         backgroundColor: 'card.background',
@@ -28,7 +28,7 @@ export const NewBranchCard: React.FC<{
         borderRadius: 'medium',
         transition: 'background ease-in',
         transitionDuration: theme => theme.speeds[2],
-        ':hover': isDisabled
+        ':hover': disabled
           ? undefined
           : {
               backgroundColor: 'card.backgroundHover',
@@ -42,7 +42,7 @@ export const NewBranchCard: React.FC<{
         direction="vertical"
         align="center"
         gap={4}
-        css={isDisabled ? { opacity: 0.4 } : undefined}
+        css={disabled ? { opacity: 0.4 } : undefined}
       >
         <Icon name="plus" size={32} />
         <Text>Create branch</Text>

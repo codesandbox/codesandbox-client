@@ -200,6 +200,22 @@ export const currentTeamInfoFragment = gql`
       trialStart
       trialEnd
     }
+
+    limits {
+      maxEditors
+      maxPrivateProjects
+      maxPrivateSandboxes
+      maxPublicProjects
+      maxPublicSandboxes
+    }
+
+    usage {
+      editorsQuantity
+      privateProjectsQuantity
+      privateSandboxesQuantity
+      publicProjectsQuantity
+      publicSandboxesQuantity
+    }
   }
 `;
 
@@ -229,6 +245,7 @@ export const branchFragment = gql`
           defaultBranch
           name
           owner
+          private
         }
       }
     }
@@ -245,6 +262,7 @@ export const projectFragment = gql`
         owner
         name
         defaultBranch
+        private
       }
     }
   }

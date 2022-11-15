@@ -359,6 +359,12 @@ module.exports = {
           name: 'static/media/[name].[hash:8].[ext]',
         },
       },
+      // https://github.com/gaearon/react-hot-loader/issues/1311
+      {
+        test: /\.js$/,
+        include: /node_modules\/react-dom/,
+        use: ['react-hot-loader/webpack'],
+      },
     ],
 
     noParse: [

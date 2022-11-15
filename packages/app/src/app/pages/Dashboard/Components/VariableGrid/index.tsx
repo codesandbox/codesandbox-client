@@ -151,9 +151,13 @@ const ComponentForTypes: IComponentForTypes = {
   branch: ({ item, page }) => <Branch page={page} {...item} />,
   repository: ({ item }) => <Repository {...item} />,
   'new-branch': ({ item }) => (
-    <NewBranchCard owner={item.repo.owner} repoName={item.repo.name} />
+    <NewBranchCard
+      owner={item.repo.owner}
+      repoName={item.repo.name}
+      disabled={item.disabled}
+    />
   ),
-  'import-repository': () => <ImportRepositoryCard />,
+  'import-repository': ({ item }) => <ImportRepositoryCard {...item} />,
 };
 
 const getSkeletonForPage = (

@@ -69,7 +69,7 @@ export const TemplateCard = ({
 
           <Text size={2} css={{ color: '#999' }}>
             <VisuallyHidden>by </VisuallyHidden>
-            {teamName || 'CodeSandbox'}
+            {teamName || 'GitHub'}
           </Text>
         </Stack>
       </Stack>

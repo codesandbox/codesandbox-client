@@ -382,6 +382,8 @@ export type GithubRepo = {
   name: Scalars['String'];
   /** Owning user or organization */
   owner: GithubOrganization;
+  /** Whether the repository is marked as private */
+  private: Scalars['Boolean'];
   /** ISO 8601 datetime */
   updatedAt: Scalars['String'];
 };
@@ -572,6 +574,7 @@ export type Project = {
 
 export type ProSubscription = {
   __typename?: 'ProSubscription';
+  active: Scalars['Boolean'];
   billingInterval: Maybe<SubscriptionInterval>;
   cancelAt: Maybe<Scalars['DateTime']>;
   cancelAtPeriodEnd: Scalars['Boolean'];
@@ -2291,6 +2294,22 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'trialEnd'
       >
     >;
+    limits: { __typename?: 'TeamLimits' } & Pick<
+      TeamLimits,
+      | 'maxEditors'
+      | 'maxPrivateProjects'
+      | 'maxPrivateSandboxes'
+      | 'maxPublicProjects'
+      | 'maxPublicSandboxes'
+    >;
+    usage: { __typename?: 'TeamUsage' } & Pick<
+      TeamUsage,
+      | 'editorsQuantity'
+      | 'privateProjectsQuantity'
+      | 'privateSandboxesQuantity'
+      | 'publicProjectsQuantity'
+      | 'publicSandboxesQuantity'
+    >;
   };
 
 export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
@@ -2313,7 +2332,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
     project: { __typename?: 'Project' } & {
       repository: { __typename?: 'GitHubRepository' } & Pick<
         GitHubRepository,
-        'defaultBranch' | 'name' | 'owner'
+        'defaultBranch' | 'name' | 'owner' | 'private'
       >;
     };
   };
@@ -2322,7 +2341,7 @@ export type ProjectFragment = { __typename?: 'Project' } & {
   branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
   repository: { __typename?: 'GitHubRepository' } & Pick<
     GitHubRepository,
-    'owner' | 'name' | 'defaultBranch'
+    'owner' | 'name' | 'defaultBranch' | 'private'
   >;
 };
 
