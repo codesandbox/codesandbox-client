@@ -1,18 +1,31 @@
 import React, { useEffect } from 'react';
 import { Button, Stack } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 
 import { useActions, useAppState } from 'app/overmind';
-import { SubscriptionType } from 'app/graphql/types';
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useSubscription } from 'app/hooks/useSubscription';
 import { CreateRegistryParams, RegistryForm } from './RegistryForm';
 import { Alert } from '../components/Alert';
 
 export const RegistrySettings = () => {
   const actions = useActions();
-  const state = useAppState();
+  const { activeTeam, dashboard } = useAppState();
   const [loading, setLoading] = React.useState(true);
   const [submitting, setSubmitting] = React.useState(false);
   const [resetting, setResetting] = React.useState(false);
+  const { hasActiveSubscription } = useSubscription();
+  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const checkout = useGetCheckoutURL({
+    team_id:
+      (isTeamAdmin || isPersonalSpace) && !hasActiveSubscription
+        ? activeTeam
+        : undefined,
+    success_path: dashboardUrls.registrySettings(activeTeam),
+    cancel_path: dashboardUrls.registrySettings(activeTeam),
+  });
 
   React.useEffect(() => {
     if (resetting) {
@@ -34,7 +47,7 @@ export const RegistrySettings = () => {
     }
     // We need to add "activeTeam"
     // eslint-disable-next-line
-  }, [setLoading, actions.dashboard, state.activeTeam]);
+  }, [setLoading, actions.dashboard, activeTeam]);
 
   useEffect(() => {
     loadCurrentNpmRegistry();
@@ -57,12 +70,15 @@ export const RegistrySettings = () => {
     };
   } | null = null;
 
-  if (state.activeTeamInfo?.subscription?.type !== SubscriptionType.TeamPro) {
+  if (!hasActiveSubscription && isTeamAdmin) {
     alert = {
       message: 'You need a Team Pro subscription to set a custom npm registry.',
-      cta: { label: 'Upgrade to Pro', href: '/pro' },
+      cta: {
+        label: 'Upgrade to Pro',
+        href: checkout.state === 'READY' ? checkout.url : '/pro',
+      },
     };
-  } else if (state.activeWorkspaceAuthorization !== 'ADMIN') {
+  } else if (!isTeamAdmin) {
     alert = {
       message: 'Please contact your admin to set a custom npm registry.',
     };
@@ -74,10 +90,7 @@ export const RegistrySettings = () => {
     <Stack direction="vertical" gap={6}>
       {alert && (
         <Alert
-          upgrade={
-            state.activeTeamInfo?.subscription?.type !==
-            SubscriptionType.TeamPro
-          }
+          upgrade={!hasActiveSubscription}
           message={alert.message}
           cta={alert.cta}
         />
@@ -101,7 +114,7 @@ export const RegistrySettings = () => {
             }}
             onSubmit={onSubmit}
             isSubmitting={submitting}
-            registry={state.dashboard.workspaceSettings.npmRegistry}
+            registry={dashboard.workspaceSettings.npmRegistry}
             disabled={Boolean(alert)}
           />
         )}
