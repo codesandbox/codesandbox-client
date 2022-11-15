@@ -148,7 +148,11 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                     </Button>
 
                     <Link
-                      href="/docs/learn/introduction/workspace#team-workspace"
+                      href={
+                        isEligibleForTrial
+                          ? '/docs/learn/plan-billing/trials'
+                          : 'docs/learn/introduction/workspace#managing-teams-and-subscriptions'
+                      }
                       target="_blank"
                       onClick={() => {
                         track('Home Banner - Learn More', {
@@ -176,7 +180,11 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
               ) : (
                 <Button
                   as="a"
-                  href="/docs/learn/introduction/workspace#team-workspace"
+                  href={
+                    isEligibleForTrial
+                      ? '/docs/learn/plan-billing/trials'
+                      : 'docs/learn/introduction/workspace#managing-teams-and-subscriptions'
+                  }
                   target="_blank"
                   autoWidth
                 >
