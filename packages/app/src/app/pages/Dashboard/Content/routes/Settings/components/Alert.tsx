@@ -41,6 +41,10 @@ export const Alert = (props: AlertProps) => (
           minWidth: 'fit-content',
           fontWeight: 'medium',
           paddingRight: 1,
+
+          '&:hover': {
+            color: 'blues.600',
+          },
         })}
         target="_blank"
         rel="noreferrer noopener"
