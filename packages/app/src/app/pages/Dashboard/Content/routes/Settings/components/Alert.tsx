@@ -9,13 +9,14 @@ interface AlertProps {
     label: string;
     href: string;
     onClick?: () => void;
+    newTab?: boolean;
   };
 }
 
-export const Alert = (props: AlertProps) => (
+export const Alert: React.FC<AlertProps> = ({ message, upgrade, cta }) => (
   <Stack
     css={css({
-      backgroundColor: props.upgrade ? 'white' : 'grays.600',
+      backgroundColor: upgrade ? 'white' : 'grays.600',
       borderRadius: 'medium',
       height: 9,
       paddingX: 3,
@@ -23,16 +24,16 @@ export const Alert = (props: AlertProps) => (
     gap={4}
     align="center"
   >
-    {!props.upgrade && <Icon size={16} name="info" />}
+    {!upgrade && <Icon size={16} name="info" />}
     <Text
-      css={css({ width: '100%', color: props.upgrade ? '#151515' : 'white' })}
+      css={css({ width: '100%', color: upgrade ? '#151515' : 'white' })}
       weight="medium"
       size={2}
     >
-      {props.message}
+      {message}
     </Text>
 
-    {props.cta && (
+    {cta && (
       <Link
         size={2}
         css={css({
@@ -42,16 +43,20 @@ export const Alert = (props: AlertProps) => (
           fontWeight: 'medium',
           paddingRight: 1,
 
-          '&:hover': {
+          '&:hover, &:focus, &:active': {
             color: 'blues.600',
           },
         })}
-        target="_blank"
-        rel="noreferrer noopener"
-        href={props.cta.href}
-        onClick={props.cta.onClick}
+        {...(cta.newTab
+          ? {
+              target: '_blank',
+              rel: 'noreferrer noopener',
+            }
+          : {})}
+        href={cta.href}
+        onClick={cta.onClick}
       >
-        {props.cta.label}
+        {cta.label}
       </Link>
     )}
   </Stack>
