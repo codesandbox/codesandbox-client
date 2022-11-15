@@ -7,7 +7,8 @@ export const TrialExpiring: React.FC<{
   activeTeam: string;
   daysLeft: number;
   isAdmin: boolean;
-}> = ({ daysLeft, isAdmin, activeTeam }) => {
+  cancelAtPeriodEnd: boolean;
+}> = ({ daysLeft, isAdmin, activeTeam, cancelAtPeriodEnd }) => {
   const [loading, createCustomerPortal] = useCreateCustomerPortal({
     team_id: activeTeam,
   });
@@ -20,8 +21,14 @@ export const TrialExpiring: React.FC<{
         {daysLeft > 1 && <>{daysLeft} days left on your trial.</>}
       </Text>
       <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
-        After this period, your Team Pro subscription will be automatically
-        renewed.
+        {cancelAtPeriodEnd ? (
+          <>After this period, your Team will be migrated to the Free plan.</>
+        ) : (
+          <>
+            After this period, your Team Pro subscription will be automatically
+            renewed.
+          </>
+        )}
       </Text>
       {isAdmin && (
         <Button

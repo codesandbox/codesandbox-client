@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import {
   Button,
@@ -15,6 +14,7 @@ import {
 import css from '@styled-system/css';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
+
 import { useSubscription } from 'app/hooks/useSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Alert } from './Alert';
@@ -42,7 +42,7 @@ export const PermissionSettings = () => {
             to change sandbox permissions.
           </span>
           {isTeamAdmin || isPersonalSpace ? (
-            <MessageStripe.Action as={Link} to="/pro" onClick={proTracking}>
+            <MessageStripe.Action as="a" href="/pro" onClick={proTracking}>
               Upgrade now
             </MessageStripe.Action>
           ) : (

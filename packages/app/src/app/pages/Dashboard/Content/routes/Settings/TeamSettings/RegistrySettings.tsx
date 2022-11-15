@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Text, Button, MessageStripe, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
-import { Link } from 'react-router-dom';
 
 import { useActions, useAppState } from 'app/overmind';
 import { useSubscription } from 'app/hooks/useSubscription';
@@ -11,10 +10,12 @@ import { Alert } from '../components/Alert';
 
 export const RegistrySettings = () => {
   const actions = useActions();
-  const state = useAppState();
+  const { activeTeam, dashboard } = useAppState();
   const [loading, setLoading] = React.useState(true);
   const [submitting, setSubmitting] = React.useState(false);
   const [resetting, setResetting] = React.useState(false);
+  const { hasActiveSubscription } = useSubscription();
+  const { isTeamAdmin } = useWorkspaceAuthorization();
 
   React.useEffect(() => {
     if (resetting) {
@@ -36,7 +37,7 @@ export const RegistrySettings = () => {
     }
     // We need to add "activeTeam"
     // eslint-disable-next-line
-  }, [setLoading, actions.dashboard, state.activeTeam]);
+  }, [setLoading, actions.dashboard, activeTeam]);
 
   useEffect(() => {
     loadCurrentNpmRegistry();
@@ -51,9 +52,6 @@ export const RegistrySettings = () => {
     }
   };
 
-  const { hasActiveSubscription } = useSubscription();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
-
   if (loading) return null;
 
   return (
@@ -65,7 +63,7 @@ export const RegistrySettings = () => {
             custom npm Registry.
           </span>
           {isTeamAdmin ? (
-            <MessageStripe.Action as={Link} to="/pro">
+            <MessageStripe.Action as="a" href="/pro">
               Upgrade now
             </MessageStripe.Action>
           ) : (
@@ -105,7 +103,7 @@ export const RegistrySettings = () => {
             }}
             onSubmit={onSubmit}
             isSubmitting={submitting}
-            registry={state.dashboard.workspaceSettings.npmRegistry}
+            registry={dashboard.workspaceSettings.npmRegistry}
             disabled={!hasActiveSubscription || !isTeamAdmin}
           />
         )}

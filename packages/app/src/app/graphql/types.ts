@@ -382,6 +382,8 @@ export type GithubRepo = {
   name: Scalars['String'];
   /** Owning user or organization */
   owner: GithubOrganization;
+  /** Whether the repository is marked as private */
+  private: Scalars['Boolean'];
   /** ISO 8601 datetime */
   updatedAt: Scalars['String'];
 };
@@ -572,6 +574,7 @@ export type Project = {
 
 export type ProSubscription = {
   __typename?: 'ProSubscription';
+  active: Scalars['Boolean'];
   billingInterval: Maybe<SubscriptionInterval>;
   cancelAt: Maybe<Scalars['DateTime']>;
   cancelAtPeriodEnd: Scalars['Boolean'];
@@ -1659,7 +1662,7 @@ export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
   githubRepo: Maybe<
     { __typename?: 'GithubRepo' } & Pick<
       GithubRepo,
-      'name' | 'fullName' | 'updatedAt' | 'authorization'
+      'name' | 'fullName' | 'updatedAt' | 'authorization' | 'private'
     > & {
         owner: { __typename?: 'GithubOrganization' } & Pick<
           GithubOrganization,
@@ -2286,6 +2289,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'nextBillDate'
         | 'paymentProvider'
         | 'cancelAt'
+        | 'cancelAtPeriodEnd'
         | 'trialStart'
         | 'trialEnd'
       >
@@ -2328,7 +2332,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
     project: { __typename?: 'Project' } & {
       repository: { __typename?: 'GitHubRepository' } & Pick<
         GitHubRepository,
-        'defaultBranch' | 'name' | 'owner'
+        'defaultBranch' | 'name' | 'owner' | 'private'
       >;
     };
   };
@@ -2337,7 +2341,7 @@ export type ProjectFragment = { __typename?: 'Project' } & {
   branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
   repository: { __typename?: 'GitHubRepository' } & Pick<
     GitHubRepository,
-    'owner' | 'name' | 'defaultBranch'
+    'owner' | 'name' | 'defaultBranch' | 'private'
   >;
 };
 
