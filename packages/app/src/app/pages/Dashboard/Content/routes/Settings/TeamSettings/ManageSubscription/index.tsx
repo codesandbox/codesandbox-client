@@ -6,6 +6,7 @@ import { Stack, Text } from '@codesandbox/components';
 
 import { useCreateCheckout } from 'app/hooks';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useSubscription } from 'app/hooks/useSubscription';
 import { Card } from '../../components';
@@ -54,6 +55,11 @@ export const ManageSubscription = () => {
       <Upgrade
         loading={checkout.status === 'loading'}
         onUpgrade={() => {
+          track('Team Settings - Upgrade', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+
           createCheckout({
             team_id: team.id,
             recurring_interval: 'month',
