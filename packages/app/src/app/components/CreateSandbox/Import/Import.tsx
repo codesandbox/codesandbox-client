@@ -222,12 +222,15 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
         </MessageStripe>
       ) : null}
       <Element
-        as="form"
-        css={{
-          opacity: hasMaxPublicRepositories ? 0.4 : 1,
-          pointerEvents: hasMaxPublicRepositories ? 'none' : 'initial',
-        }}
-        onSubmit={handleFormSubmit}
+        {...(hasMaxPublicRepositories
+          ? {
+              as: 'div',
+              css: {
+                opacity: hasMaxPublicRepositories ? 0.4 : 1,
+                pointerEvents: hasMaxPublicRepositories ? 'none' : 'initial',
+              },
+            }
+          : { as: 'form', onSubmit: handleFormSubmit })}
       >
         <Stack gap={2}>
           <Input
