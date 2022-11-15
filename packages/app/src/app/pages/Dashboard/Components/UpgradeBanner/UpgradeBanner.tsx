@@ -80,7 +80,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
   return (
     <Banner
       onDismiss={() => {
-        track('Banner - Upgrade Now - Dismiss', {
+        track('Home Banner - Dismiss', {
           codesandbox: 'V1',
           event_source: 'UI',
         });
@@ -120,10 +120,17 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                           return;
                         }
 
-                        track('Banner - Upgrade now - Checkout', {
-                          codesandbox: 'V1',
-                          event_source: 'UI',
-                        });
+                        if (isEligibleForTrial) {
+                          track('Home Banner - Start trial', {
+                            codesandbox: 'V1',
+                            event_source: 'UI',
+                          });
+                        } else {
+                          track('Home Banner - Upgrade', {
+                            codesandbox: 'V1',
+                            event_source: 'UI',
+                          });
+                        }
 
                         createCheckout({
                           team_id: teamId,
@@ -143,6 +150,12 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                     <Link
                       href="/docs/learn/introduction/workspace#team-workspace"
                       target="_blank"
+                      onClick={() => {
+                        track('Home Banner - Learn More', {
+                          codesandbox: 'V1',
+                          event_source: 'UI',
+                        });
+                      }}
                     >
                       <Text color="#999999" size={3}>
                         Learn more
