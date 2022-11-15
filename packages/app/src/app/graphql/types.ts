@@ -577,7 +577,6 @@ export type ProSubscription = {
   active: Scalars['Boolean'];
   billingInterval: Maybe<SubscriptionInterval>;
   cancelAt: Maybe<Scalars['DateTime']>;
-  cancelAtPeriodEnd: Scalars['Boolean'];
   currency: Maybe<Scalars['String']>;
   id: Maybe<Scalars['UUID4']>;
   nextBillDate: Maybe<Scalars['DateTime']>;
@@ -1463,7 +1462,6 @@ export type Team = {
   inviteToken: Scalars['String'];
   invitees: Array<User>;
   joinedPilotAt: Maybe<Scalars['DateTime']>;
-  limits: TeamLimits;
   name: Scalars['String'];
   privateRegistry: Maybe<PrivateRegistry>;
   projects: Array<Project>;
@@ -1472,7 +1470,6 @@ export type Team = {
   shortid: Scalars['String'];
   subscription: Maybe<ProSubscription>;
   templates: Array<Template>;
-  usage: TeamUsage;
   userAuthorizations: Array<UserAuthorization>;
   users: Array<User>;
 };
@@ -1496,19 +1493,6 @@ export type TeamSandboxesArgs = {
   showDeleted: Maybe<Scalars['Boolean']>;
 };
 
-export type TeamSubscriptionArgs = {
-  includeCancelled?: Maybe<Scalars['Boolean']>;
-};
-
-export type TeamLimits = {
-  __typename?: 'TeamLimits';
-  maxEditors: Maybe<Scalars['Int']>;
-  maxPrivateProjects: Maybe<Scalars['Int']>;
-  maxPrivateSandboxes: Maybe<Scalars['Int']>;
-  maxPublicProjects: Maybe<Scalars['Int']>;
-  maxPublicSandboxes: Maybe<Scalars['Int']>;
-};
-
 export enum TeamMemberAuthorization {
   /** Permission to add/remove users and change permissions (in addition to write and read). */
   Admin = 'ADMIN',
@@ -1524,15 +1508,6 @@ export type TeamsFeatureFlag = {
   enabledForTeam: Scalars['Boolean'];
   featureFlagId: Scalars['UUID4'];
   teamId: Scalars['UUID4'];
-};
-
-export type TeamUsage = {
-  __typename?: 'TeamUsage';
-  editorsQuantity: Scalars['Int'];
-  privateProjectsQuantity: Scalars['Int'];
-  privateSandboxesQuantity: Scalars['Int'];
-  publicProjectsQuantity: Scalars['Int'];
-  publicSandboxesQuantity: Scalars['Int'];
 };
 
 /** A Template */
@@ -2289,7 +2264,6 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'nextBillDate'
         | 'paymentProvider'
         | 'cancelAt'
-        | 'cancelAtPeriodEnd'
         | 'trialStart'
         | 'trialEnd'
       >
