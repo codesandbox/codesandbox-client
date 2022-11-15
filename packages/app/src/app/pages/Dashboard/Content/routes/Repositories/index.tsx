@@ -157,8 +157,15 @@ export const RepositoriesPage = () => {
             unlimited repositories.
             {isTeamAdmin ? (
               <MessageStripe.Action
-                as={Link}
-                to={checkout.state === 'READY' ? checkout.url : '/pro'}
+                {...(checkout.state === 'READY'
+                  ? {
+                      as: 'a',
+                      href: checkout.url,
+                    }
+                  : {
+                      as: Link,
+                      to: '/pro',
+                    })}
                 onClick={() =>
                   isEligibleForTrial
                     ? track('Limit banner: repos - Start Trial', {
