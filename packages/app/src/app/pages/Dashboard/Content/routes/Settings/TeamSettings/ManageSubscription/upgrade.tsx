@@ -25,7 +25,7 @@ const List = styled(Stack)`
 export const Upgrade = () => {
   const { activeTeam } = useAppState();
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
-  const { hasActiveSubscription } = useSubscription();
+  const { hasActiveSubscription, isEligibleForTrial } = useSubscription();
   const checkout = useGetCheckoutURL({
     team_id:
       (isTeamAdmin || isPersonalSpace) && !hasActiveSubscription
@@ -72,7 +72,7 @@ export const Upgrade = () => {
             });
           }}
         >
-          Upgrade to Pro
+          {isEligibleForTrial ? 'Start trial' : 'Upgrade to Pro'}
         </Button>
       </Stack>
     </Card>
