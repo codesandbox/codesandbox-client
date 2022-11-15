@@ -8,7 +8,8 @@ import { useActions, useAppState } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import { formatCurrency } from 'app/utils/currency';
 import { useCreateCheckout } from 'app/hooks';
-import { TeamMemberAuthorization } from 'app/graphql/types';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useSubscription } from 'app/hooks/useSubscription';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 type Feature = {
@@ -46,7 +47,7 @@ const pricingLabel = (
 };
 
 export const TeamSubscription: React.FC = () => {
-  const { activeTeamInfo, user, pro } = useAppState();
+  const { activeTeamInfo, pro } = useAppState();
   const {
     pro: { pageMounted },
     modalClosed,
@@ -69,17 +70,11 @@ export const TeamSubscription: React.FC = () => {
     history.push(dashboard.recent(activeTeamInfo.id));
   };
 
-  // Only teams that never had a subscription are elligible for
-  // the 14-day free trial.
-  const isElligibleForTrial = activeTeamInfo.subscription === null;
-  const usersPermission = activeTeamInfo?.userAuthorizations.find(item => {
-    return item.userId === user.id;
-  });
-  const isAdmin =
-    usersPermission?.authorization === TeamMemberAuthorization.Admin;
+  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isEligibleForTrial } = useSubscription();
 
-  const checkoutBtnDisabled =
-    !isElligibleForTrial || !isAdmin || checkout.status === 'loading';
+  const isCheckoutDisabled =
+    !isEligibleForTrial || !isTeamAdmin || checkout.status === 'loading';
 
   return (
     <Stack
@@ -121,7 +116,7 @@ export const TeamSubscription: React.FC = () => {
             }}
             size={8}
           >
-            {isElligibleForTrial
+            {isEligibleForTrial
               ? 'Try Team Pro for free'
               : 'Upgrade to Team Pro'}
           </Text>
@@ -163,7 +158,7 @@ export const TeamSubscription: React.FC = () => {
                 height: '32px',
               })}
               onClick={() => {
-                if (checkoutBtnDisabled) {
+                if (isCheckoutDisabled) {
                   return;
                 }
 
@@ -180,10 +175,10 @@ export const TeamSubscription: React.FC = () => {
                 });
               }}
               loading={checkout.status === 'loading'}
-              disabled={checkoutBtnDisabled}
+              disabled={isCheckoutDisabled}
               type="button"
             >
-              {isElligibleForTrial
+              {isEligibleForTrial
                 ? 'Start 14 day free trial'
                 : 'Proceed to checkout'}
             </Button>
@@ -207,7 +202,7 @@ export const TeamSubscription: React.FC = () => {
           </Button>
         </Stack>
       </Stack>
-      {isElligibleForTrial ? (
+      {isEligibleForTrial ? (
         <Stack
           css={css({
             width: '100%',

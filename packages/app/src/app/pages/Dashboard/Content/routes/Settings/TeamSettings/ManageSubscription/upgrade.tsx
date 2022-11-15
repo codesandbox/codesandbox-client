@@ -2,6 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Button, Stack, Text } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+import track from '@codesandbox/common/lib/utils/analytics';
+
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useAppState } from 'app/overmind';
+import { useSubscription } from 'app/hooks/useSubscription';
 
 import { Card } from '../../components';
 
@@ -16,18 +23,26 @@ const List = styled(Stack)`
 `;
 
 export const Upgrade = () => {
+  const { activeTeam } = useAppState();
+  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { hasActiveSubscription, isEligibleForTrial } = useSubscription();
+  const checkout = useGetCheckoutURL({
+    team_id:
+      (isTeamAdmin || isPersonalSpace) && !hasActiveSubscription
+        ? activeTeam
+        : undefined,
+    success_path: dashboardUrls.settings(activeTeam),
+    cancel_path: dashboardUrls.settings(activeTeam),
+  });
+
   return (
     <Card
       css={{
-        textDecoration: 'none',
         backgroundColor: 'white',
-        borderTop: '6px solid #EDFFA5',
-        padding: 24,
-        borderRadius: 4,
       }}
     >
       <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
-        <Text size={6} weight="bold">
+        <Text size={4} weight="bold">
           Upgrade to Team Pro
         </Text>
         <List direction="vertical" gap={1} as="ul">
@@ -45,8 +60,19 @@ export const Upgrade = () => {
           </Text>
         </List>
 
-        <Button as="a" href="/pro" marginTop={2} variant="secondary">
-          Upgrade to Pro
+        <Button
+          as="a"
+          href={checkout.state === 'READY' ? checkout.url : '/pro'}
+          marginTop={2}
+          variant="trial"
+          onClick={() => {
+            track('Team Settings - Upgrade', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+          }}
+        >
+          {isEligibleForTrial ? 'Start trial' : 'Upgrade to Pro'}
         </Button>
       </Stack>
     </Card>

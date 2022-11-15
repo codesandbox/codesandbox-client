@@ -80,6 +80,7 @@ export const GET_GITHUB_REPO = gql`
       fullName
       updatedAt
       authorization
+      private
       owner {
         id
         login

@@ -1,13 +1,18 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useParams } from 'react-router-dom';
+import { /* Link, */ useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
+// import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+// import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
-import { Text } from '@codesandbox/components';
+import { Text /* , Element, MessageStripe */ } from '@codesandbox/components';
+// import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useSubscription } from 'app/hooks/useSubscription';
+// import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -46,8 +51,26 @@ export const RepositoriesPage = () => {
     pathRef.current = path;
   }, [path]);
 
+  // const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const {
+    hasActiveSubscription,
+    // isEligibleForTrial,
+    // hasMaxPublicRepositories,
+  } = useSubscription();
+
+  // const checkout = useGetCheckoutURL({
+  //   team_id:
+  //     (isTeamAdmin || isPersonalSpace) && !hasActiveSubscription
+  //       ? activeTeam
+  //       : undefined,
+  //   success_path: dashboardUrls.registrySettings(activeTeam),
+  //   cancel_path: dashboardUrls.registrySettings(activeTeam),
+  // });
+
   const pageType: PageTypes = 'repositories';
-  let selectedRepo: { owner: string; name: string } | undefined;
+  let selectedRepo:
+    | { owner: string; name: string; private: boolean }
+    | undefined;
 
   const getItemsToShow = (): DashboardGridItem[] => {
     if (repositories === null) {
@@ -67,6 +90,7 @@ export const RepositoriesPage = () => {
       selectedRepo = {
         owner,
         name,
+        private: currentRepository.repository.private,
       };
 
       const branchItems: DashboardGridItem[] = currentRepository.branches.map(
@@ -80,6 +104,7 @@ export const RepositoriesPage = () => {
         branchItems.unshift({
           type: 'new-branch',
           repo: { owner, name },
+          disabled: !hasActiveSubscription && selectedRepo.private,
         });
       }
 
@@ -92,13 +117,20 @@ export const RepositoriesPage = () => {
     }));
 
     if (viewMode === 'grid' && repoItems.length > 0) {
-      repoItems.unshift({ type: 'import-repository' });
+      repoItems.unshift({
+        type: 'import-repository',
+        // disabled: !hasActiveSubscription && hasMaxPublicRepositories,
+      });
     }
 
     return repoItems;
   };
 
   const itemsToShow = getItemsToShow();
+  const readOnly = !hasActiveSubscription && selectedRepo?.private;
+  // const readOnly = !hasActiveSubscription
+  //   ? selectedRepo?.private || hasMaxPublicRepositories
+  //   : false;
 
   return (
     <SelectionProvider
@@ -116,7 +148,57 @@ export const RepositoriesPage = () => {
         showBetaBadge
         nestedPageType={pageType}
         selectedRepo={selectedRepo}
+        readOnly={readOnly}
       />
+
+      {/* {!hasActiveSubscription && hasMaxPublicRepositories ? (
+        <Element paddingX={4} paddingY={2}>
+          <MessageStripe justify="space-between">
+            Free teams are limited to 3 public repositories. Upgrade for
+            unlimited repositories.
+            {isTeamAdmin ? (
+              <MessageStripe.Action
+                {...(checkout.state === 'READY'
+                  ? {
+                      as: 'a',
+                      href: checkout.url,
+                    }
+                  : {
+                      as: Link,
+                      to: '/pro',
+                    })}
+                onClick={() =>
+                  isEligibleForTrial
+                    ? track('Limit banner: repos - Start Trial', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      })
+                    : track('Limit banner: repos - Upgrade', {
+                        codesandbox: 'V1',
+                        event_source: 'UI',
+                      })
+                }
+              >
+                {isEligibleForTrial ? 'Start free trial' : 'Upgrade now'}
+              </MessageStripe.Action>
+            ) : (
+              <MessageStripe.Action
+                as="a"
+                href="https://codesandbox.io/docs/learn/plan-billing/trials"
+                onClick={() => {
+                  track('Limit banner: repos - Learn More', {
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                  });
+                }}
+              >
+                Learn more
+              </MessageStripe.Action>
+            )}
+          </MessageStripe>
+        </Element>
+      ) : null} */}
+
       {itemsToShow.length === 0 ? (
         <Notification pageType={pageType}>
           <Text>

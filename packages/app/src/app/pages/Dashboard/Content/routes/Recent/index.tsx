@@ -2,27 +2,38 @@ import React, { useEffect } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
-import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
+import {
+  GRID_MAX_WIDTH,
+  GUTTER,
+  VariableGrid,
+} from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Helmet } from 'react-helmet';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
+import { Element } from '@codesandbox/components';
+import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
+import { useSubscription } from 'app/hooks/useSubscription';
 
 export const Recent = () => {
   const {
-    activeTeam,
+    activeTeamInfo,
     dashboard: { sandboxes },
   } = useAppState();
   const {
     dashboard: { getPage },
   } = useActions();
 
+  const activeTeamId = activeTeamInfo?.id;
+
   useEffect(() => {
     getPage(sandboxesTypes.RECENT);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTeam]);
+  }, [activeTeamId]);
 
   const dataIsLoading =
     sandboxes.RECENT_BRANCHES === null || sandboxes.RECENT_SANDBOXES === null;
+
+  const { hasActiveSubscription } = useSubscription();
 
   const items: DashboardGridItem[] = dataIsLoading
     ? [
@@ -59,13 +70,28 @@ export const Recent = () => {
   const isEmpty = !dataIsLoading && items.length === 0;
 
   return (
-    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
+    <SelectionProvider
+      activeTeamId={activeTeamId}
+      page={pageType}
+      items={items}
+    >
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
+      {!hasActiveSubscription && (
+        <Element
+          css={{
+            width: `calc(100% - ${2 * GUTTER}px)`,
+            maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
+            margin: '0 auto 28px',
+          }}
+        >
+          <UpgradeBanner teamId={activeTeamId} />
+        </Element>
+      )}
       <Header
         title={isEmpty ? "Let's start building" : 'Recent'}
-        activeTeam={activeTeam}
+        activeTeam={activeTeamId}
         loading={dataIsLoading}
         showViewOptions
       />

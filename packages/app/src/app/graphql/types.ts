@@ -382,6 +382,8 @@ export type GithubRepo = {
   name: Scalars['String'];
   /** Owning user or organization */
   owner: GithubOrganization;
+  /** Whether the repository is marked as private */
+  private: Scalars['Boolean'];
   /** ISO 8601 datetime */
   updatedAt: Scalars['String'];
 };
@@ -572,8 +574,10 @@ export type Project = {
 
 export type ProSubscription = {
   __typename?: 'ProSubscription';
+  active: Scalars['Boolean'];
   billingInterval: Maybe<SubscriptionInterval>;
   cancelAt: Maybe<Scalars['DateTime']>;
+  cancelAtPeriodEnd: Scalars['Boolean'];
   currency: Maybe<Scalars['String']>;
   id: Maybe<Scalars['UUID4']>;
   nextBillDate: Maybe<Scalars['DateTime']>;
@@ -1459,6 +1463,7 @@ export type Team = {
   inviteToken: Scalars['String'];
   invitees: Array<User>;
   joinedPilotAt: Maybe<Scalars['DateTime']>;
+  limits: TeamLimits;
   name: Scalars['String'];
   privateRegistry: Maybe<PrivateRegistry>;
   projects: Array<Project>;
@@ -1467,6 +1472,7 @@ export type Team = {
   shortid: Scalars['String'];
   subscription: Maybe<ProSubscription>;
   templates: Array<Template>;
+  usage: TeamUsage;
   userAuthorizations: Array<UserAuthorization>;
   users: Array<User>;
 };
@@ -1490,6 +1496,19 @@ export type TeamSandboxesArgs = {
   showDeleted: Maybe<Scalars['Boolean']>;
 };
 
+export type TeamSubscriptionArgs = {
+  includeCancelled?: Maybe<Scalars['Boolean']>;
+};
+
+export type TeamLimits = {
+  __typename?: 'TeamLimits';
+  maxEditors: Maybe<Scalars['Int']>;
+  maxPrivateProjects: Maybe<Scalars['Int']>;
+  maxPrivateSandboxes: Maybe<Scalars['Int']>;
+  maxPublicProjects: Maybe<Scalars['Int']>;
+  maxPublicSandboxes: Maybe<Scalars['Int']>;
+};
+
 export enum TeamMemberAuthorization {
   /** Permission to add/remove users and change permissions (in addition to write and read). */
   Admin = 'ADMIN',
@@ -1505,6 +1524,15 @@ export type TeamsFeatureFlag = {
   enabledForTeam: Scalars['Boolean'];
   featureFlagId: Scalars['UUID4'];
   teamId: Scalars['UUID4'];
+};
+
+export type TeamUsage = {
+  __typename?: 'TeamUsage';
+  editorsQuantity: Scalars['Int'];
+  privateProjectsQuantity: Scalars['Int'];
+  privateSandboxesQuantity: Scalars['Int'];
+  publicProjectsQuantity: Scalars['Int'];
+  publicSandboxesQuantity: Scalars['Int'];
 };
 
 /** A Template */
@@ -1634,7 +1662,7 @@ export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
   githubRepo: Maybe<
     { __typename?: 'GithubRepo' } & Pick<
       GithubRepo,
-      'name' | 'fullName' | 'updatedAt' | 'authorization'
+      'name' | 'fullName' | 'updatedAt' | 'authorization' | 'private'
     > & {
         owner: { __typename?: 'GithubOrganization' } & Pick<
           GithubOrganization,
@@ -2261,9 +2289,26 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'nextBillDate'
         | 'paymentProvider'
         | 'cancelAt'
+        | 'cancelAtPeriodEnd'
         | 'trialStart'
         | 'trialEnd'
       >
+    >;
+    limits: { __typename?: 'TeamLimits' } & Pick<
+      TeamLimits,
+      | 'maxEditors'
+      | 'maxPrivateProjects'
+      | 'maxPrivateSandboxes'
+      | 'maxPublicProjects'
+      | 'maxPublicSandboxes'
+    >;
+    usage: { __typename?: 'TeamUsage' } & Pick<
+      TeamUsage,
+      | 'editorsQuantity'
+      | 'privateProjectsQuantity'
+      | 'privateSandboxesQuantity'
+      | 'publicProjectsQuantity'
+      | 'publicSandboxesQuantity'
     >;
   };
 
@@ -2287,7 +2332,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
     project: { __typename?: 'Project' } & {
       repository: { __typename?: 'GitHubRepository' } & Pick<
         GitHubRepository,
-        'defaultBranch' | 'name' | 'owner'
+        'defaultBranch' | 'name' | 'owner' | 'private'
       >;
     };
   };
@@ -2296,7 +2341,7 @@ export type ProjectFragment = { __typename?: 'Project' } & {
   branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
   repository: { __typename?: 'GitHubRepository' } & Pick<
     GitHubRepository,
-    'owner' | 'name' | 'defaultBranch'
+    'owner' | 'name' | 'defaultBranch' | 'private'
   >;
 };
 

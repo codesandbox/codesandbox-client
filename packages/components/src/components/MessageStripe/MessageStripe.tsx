@@ -4,6 +4,7 @@ import { Element } from '../Element';
 import { Stack } from '../Stack';
 import { Button } from '../Button';
 import { Text } from '../Text';
+import { IconButton } from '../IconButton';
 
 type Variant = 'trial' | 'warning';
 
@@ -19,23 +20,23 @@ export const MessageAction = ({
   ...buttonProps
 }: MessageActionProps) => {
   return (
-    <div>
+    <Element as="div" css={{ flexShrink: 0 }}>
       <Button
         variant={({ trial: 'light', warning: 'dark' } as const)[variant]}
         {...buttonProps}
       >
         {children}
       </Button>
-    </div>
+    </Element>
   );
 };
 
-const backgroundVariants = {
+const backgroundVariants: Record<Variant, string> = {
   trial: '#644ED7',
   warning: '#F7CC66',
 };
 
-const colorVariants = {
+const colorVariants: Record<Variant, string> = {
   trial: 'inherit',
   warning: '#0E0E0E',
 };
@@ -44,12 +45,14 @@ interface MessageStripeProps {
   children: React.ReactNode;
   variant?: Variant;
   justify?: 'center' | 'space-between';
+  onDismiss?: () => void;
 }
 
 const MessageStripe = ({
   children,
   variant = 'trial',
   justify = 'center',
+  onDismiss,
 }: MessageStripeProps) => {
   let hasAction: boolean;
 
@@ -73,13 +76,27 @@ const MessageStripe = ({
     <Element
       paddingY={hasAction ? 2 : 3}
       paddingX={4}
+      paddingRight={onDismiss ? 11 : undefined}
       css={{
         backgroundColor: backgroundVariants[variant],
         color: colorVariants[variant],
+        position: 'relative',
+        borderRadius: '4px',
       }}
     >
       <Stack direction="horizontal" justify={justify} align="center" gap={2}>
         {augmentedChildren}
+
+        {onDismiss ? (
+          <Element css={{ position: 'absolute', right: '16px' }}>
+            <IconButton
+              onClick={onDismiss}
+              css={{ color: variant === 'trial' ? '#F5F5F5' : '#0E0E0E' }}
+              name="cross"
+              title="Dismiss"
+            />
+          </Element>
+        ) : null}
       </Stack>
     </Element>
   );

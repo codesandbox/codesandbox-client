@@ -1,20 +1,19 @@
+import { useState } from 'react';
 import { useEffects } from 'app/overmind';
 
 /**
  * Localstorage keys used for dismissible modals and banners.
  */
-type DismissibleKeys =
-  // TODO - Any key in this type should refer to a dismissible item. Right
-  // now there are none yet.
-  'TODO';
+type DismissibleKeys = 'DASHBOARD_RECENT_UPGRADE';
 
 type Dismissibles = Partial<Record<DismissibleKeys, true>>;
 
-export const useDismissible = (key: DismissibleKeys) => {
+export const useDismissible = (key: DismissibleKeys): [boolean, () => void] => {
   const { browser } = useEffects();
-
-  const dismissibles = browser.storage.get<Dismissibles>('DISMISSIBLES');
-  const isDismissed = dismissibles?.[key] === true;
+  const [isDismissed, setIsDismissed] = useState(() => {
+    const dismissibles = browser.storage.get<Dismissibles>('DISMISSIBLES');
+    return dismissibles?.[key] === true;
+  });
 
   const dismiss = () => {
     // Getting the dismissibles again to make sure other instances aren't
@@ -26,6 +25,7 @@ export const useDismissible = (key: DismissibleKeys) => {
       ...prevDismissibles,
       [key]: true,
     });
+    setIsDismissed(true);
   };
 
   return [isDismissed, dismiss];

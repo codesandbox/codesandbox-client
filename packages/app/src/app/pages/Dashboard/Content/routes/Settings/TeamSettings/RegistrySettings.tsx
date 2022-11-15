@@ -1,18 +1,21 @@
 import React, { useEffect } from 'react';
-import { Button, Stack } from '@codesandbox/components';
+import { Text, Button, MessageStripe, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 import { useActions, useAppState } from 'app/overmind';
-import { SubscriptionType } from 'app/graphql/types';
+import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { CreateRegistryParams, RegistryForm } from './RegistryForm';
 import { Alert } from '../components/Alert';
 
 export const RegistrySettings = () => {
   const actions = useActions();
-  const state = useAppState();
+  const { activeTeam, dashboard } = useAppState();
   const [loading, setLoading] = React.useState(true);
   const [submitting, setSubmitting] = React.useState(false);
   const [resetting, setResetting] = React.useState(false);
+  const { hasActiveSubscription } = useSubscription();
+  const { isTeamAdmin } = useWorkspaceAuthorization();
 
   React.useEffect(() => {
     if (resetting) {
@@ -34,7 +37,7 @@ export const RegistrySettings = () => {
     }
     // We need to add "activeTeam"
     // eslint-disable-next-line
-  }, [setLoading, actions.dashboard, state.activeTeam]);
+  }, [setLoading, actions.dashboard, activeTeam]);
 
   useEffect(() => {
     loadCurrentNpmRegistry();
@@ -49,39 +52,37 @@ export const RegistrySettings = () => {
     }
   };
 
-  let alert: {
-    message: string;
-    cta?: {
-      label: string;
-      href: string;
-    };
-  } | null = null;
-
-  if (state.activeTeamInfo?.subscription?.type !== SubscriptionType.TeamPro) {
-    alert = {
-      message: 'You need a Team Pro subscription to set a custom npm registry.',
-      cta: { label: 'Upgrade to Pro', href: '/pro' },
-    };
-  } else if (state.activeWorkspaceAuthorization !== 'ADMIN') {
-    alert = {
-      message: 'Please contact your admin to set a custom npm registry.',
-    };
-  }
-
   if (loading) return null;
 
   return (
     <Stack direction="vertical" gap={6}>
-      {alert && (
-        <Alert
-          upgrade={
-            state.activeTeamInfo?.subscription?.type !==
-            SubscriptionType.TeamPro
-          }
-          message={alert.message}
-          cta={alert.cta}
-        />
+      {hasActiveSubscription ? null : (
+        <MessageStripe justify="space-between">
+          <span>
+            You need a <Text weight="bold">Team Pro subscription</Text> to set a
+            custom npm Registry.
+          </span>
+          {isTeamAdmin ? (
+            <MessageStripe.Action as="a" href="/pro">
+              Upgrade now
+            </MessageStripe.Action>
+          ) : (
+            <MessageStripe.Action
+              as="a"
+              href="https://codesandbox.io/docs/learn/plan-billing/trials"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Learn more
+            </MessageStripe.Action>
+          )}
+        </MessageStripe>
       )}
+
+      {hasActiveSubscription && !isTeamAdmin ? (
+        <Alert message="Please contact your admin to set a custom npm registry." />
+      ) : null}
+
       <Stack
         css={css({
           padding: 6,
@@ -90,8 +91,9 @@ export const RegistrySettings = () => {
           borderColor: 'transparent',
           borderRadius: 'medium',
           position: 'relative',
-          opacity: alert ? 0.4 : 1,
-          pointerEvents: alert ? 'none' : 'all',
+          opacity: !hasActiveSubscription || !isTeamAdmin ? 0.4 : 1,
+          pointerEvents:
+            !hasActiveSubscription || !isTeamAdmin ? 'none' : 'all',
         })}
       >
         {!resetting && (
@@ -101,13 +103,13 @@ export const RegistrySettings = () => {
             }}
             onSubmit={onSubmit}
             isSubmitting={submitting}
-            registry={state.dashboard.workspaceSettings.npmRegistry}
-            disabled={Boolean(alert)}
+            registry={dashboard.workspaceSettings.npmRegistry}
+            disabled={!hasActiveSubscription || !isTeamAdmin}
           />
         )}
       </Stack>
 
-      {!alert && (
+      {hasActiveSubscription && isTeamAdmin ? (
         <Stack justify="center" align="center">
           <Button
             variant="link"
@@ -126,7 +128,7 @@ export const RegistrySettings = () => {
             Reset Registry
           </Button>
         </Stack>
-      )}
+      ) : null}
     </Stack>
   );
 };

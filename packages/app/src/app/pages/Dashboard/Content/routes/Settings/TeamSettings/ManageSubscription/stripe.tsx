@@ -1,42 +1,47 @@
 import React from 'react';
 import { format } from 'date-fns';
-import css from '@styled-system/css';
-import { Stack, Text, Link, Button } from '@codesandbox/components';
+import { Stack, Text, Link } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState } from 'app/overmind';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 
-export const Stripe = () => {
+export const Stripe: React.FC<{ hasActiveTrial: boolean }> = ({
+  hasActiveTrial,
+}) => {
   const { activeTeam, activeTeamInfo: team } = useAppState();
-  const [loading, createCustomerPortal] = useCreateCustomerPortal(activeTeam);
+  const [loading, createCustomerPortal] = useCreateCustomerPortal({
+    team_id: activeTeam,
+  });
+
+  const ctaText = hasActiveTrial ? 'Cancel trial' : 'Manage subscription';
 
   return (
     <Stack direction="vertical" gap={2}>
       <Link
-        onClick={createCustomerPortal}
+        onClick={() => {
+          if (hasActiveTrial) {
+            track('Team Settings - Cancel trial', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+          } else {
+            track('Team Settings - Manage Subscription', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+          }
+          createCustomerPortal();
+        }}
         size={3}
         variant="active"
-        css={css({ fontWeight: 'medium' })}
       >
-        {loading ? 'Loading...' : 'Manage subscription'}
+        {loading ? 'Loading...' : ctaText}
       </Link>
 
       {!loading && team.subscription.cancelAt && (
-        <Text size={3} css={css({ color: '#F7CC66' })}>
+        <Text size={3} css={{ color: '#F7CC66' }}>
           Your subscription expires on{' '}
           {format(new Date(team.subscription.cancelAt), 'PP')}.{' '}
-          <Button
-            autoWidth
-            variant="link"
-            css={css({
-              color: 'inherit',
-              padding: 0,
-              textDecoration: 'underline',
-              fontSize: 3,
-            })}
-            onClick={createCustomerPortal}
-          >
-            Reactivate subscription
-          </Button>
         </Text>
       )}
     </Stack>

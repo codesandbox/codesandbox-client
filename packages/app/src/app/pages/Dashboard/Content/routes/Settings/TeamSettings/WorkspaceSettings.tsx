@@ -12,6 +12,8 @@ import {
   IconButton,
   Menu,
   Icon,
+  Badge,
+  MessageStripe,
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
@@ -20,38 +22,57 @@ import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
-  SubscriptionType,
-  SubscriptionInterval,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
+import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
 
-const PERMISSION_LEVELS = {
-  [TeamMemberAuthorization.Admin]: {
-    [TeamMemberAuthorization.Admin]: TeamMemberAuthorization.Admin,
-    [TeamMemberAuthorization.Write]: TeamMemberAuthorization.Write,
-    [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
-  },
-  [TeamMemberAuthorization.Write]: {
-    [TeamMemberAuthorization.Read]: TeamMemberAuthorization.Read,
-  },
-  [TeamMemberAuthorization.Read]: {},
+const INVITE_ROLES_MAP = {
+  [TeamMemberAuthorization.Admin]: [
+    TeamMemberAuthorization.Admin,
+    TeamMemberAuthorization.Write,
+    TeamMemberAuthorization.Read,
+  ],
+  [TeamMemberAuthorization.Write]: [TeamMemberAuthorization.Read],
+
+  [TeamMemberAuthorization.Read]: [] as TeamMemberAuthorization[],
+};
+
+const ROLES_TEXT_MAP = {
+  [TeamMemberAuthorization.Admin]: 'Admin',
+  [TeamMemberAuthorization.Write]: 'Editor',
+  [TeamMemberAuthorization.Read]: 'Viewer',
 };
 
 export const WorkspaceSettings = () => {
   const actions = useActions();
   const effects = useEffects();
-  const {
-    user: stateUser,
-    activeTeamInfo: team,
-    activeWorkspaceAuthorization,
-  } = useAppState();
+  const { user: currentUser, activeTeamInfo: team } = useAppState();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
+
+  const {
+    hasActiveSubscription,
+    numberOfSeats,
+    numberOfEditors,
+    hasMaxNumberOfEditors,
+    numberOfEditorsIsOverTheLimit,
+  } = useSubscription();
+  const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
+  const canInviteOtherMembers = isTeamAdmin || isTeamEditor;
+
+  // We use `role` as the common term when referring to: `admin`, `editor` or `viewer`
+  // But away from the team settings page and on the BE, the term `authorization` is used
+  const rolesThatUserCanInvite =
+    hasMaxNumberOfEditors || numberOfEditorsIsOverTheLimit
+      ? // If team has reached the limit, only allow viewer roles to be invited
+        [TeamMemberAuthorization.Read]
+      : INVITE_ROLES_MAP[userRole];
 
   const getFile = async avatar => {
     const url = await new Promise((resolve, reject) => {
@@ -91,33 +112,29 @@ export const WorkspaceSettings = () => {
   const [inviteValue, setInviteValue] = useState('');
   const [inviteLoading, setInviteLoading] = useState(false);
 
-  const [newMemberAuthorization, setNewMemberAuthorization] = React.useState<
-    TeamMemberAuthorization
-  >(team?.settings.defaultAuthorization);
+  const defaultRoleToInvite = rolesThatUserCanInvite.includes(
+    team?.settings.defaultAuthorization
+  )
+    ? team?.settings.defaultAuthorization
+    : TeamMemberAuthorization.Read;
 
-  const numberOfEditors = team.userAuthorizations.filter(({ authorization }) =>
-    [TeamMemberAuthorization.Admin, TeamMemberAuthorization.Write].includes(
-      authorization
-    )
-  ).length;
+  const [newMemberRole, setNewMemberRole] = React.useState<
+    TeamMemberAuthorization
+  >(defaultRoleToInvite);
 
   // A team can have unused seats in their subscription
   // if they have already paid for X editors for the YEARLY plan
   // then removed some members from the team
-  const numberOfUnusedSeats =
-    team.subscription &&
-    team.subscription.billingInterval === SubscriptionInterval.Yearly
-      ? team.subscription.quantity - numberOfEditors
-      : 0;
+  const numberOfUnusedSeats = numberOfSeats - numberOfEditors;
 
   // if the user is going to be charged for adding a member
   // throw them a confirmation modal
   const confirmNewMemberAddition =
-    team?.subscription &&
+    hasActiveSubscription &&
     numberOfUnusedSeats === 0 &&
-    newMemberAuthorization !== TeamMemberAuthorization.Read;
+    newMemberRole !== TeamMemberAuthorization.Read;
   const confirmMemberRoleChange =
-    team?.subscription && numberOfUnusedSeats === 0;
+    hasActiveSubscription && numberOfUnusedSeats === 0;
 
   const onInviteSubmit = async event => {
     event.preventDefault();
@@ -127,7 +144,7 @@ export const WorkspaceSettings = () => {
 
     await actions.dashboard.inviteToTeam({
       value: inviteValue,
-      authorization: newMemberAuthorization,
+      authorization: newMemberRole,
       confirm: confirmNewMemberAddition,
       triggerPlace: 'settings',
       inviteLink,
@@ -135,7 +152,7 @@ export const WorkspaceSettings = () => {
     setInviteLoading(false);
   };
 
-  if (!team || !stateUser) {
+  if (!team || !currentUser) {
     return <Header title="Team Settings" activeTeam={null} />;
   }
 
@@ -161,23 +178,8 @@ export const WorkspaceSettings = () => {
   };
 
   const created = team.users.find(user => user.id === team.creatorId);
-
-  const userPermission = team.userAuthorizations.find(
-    auth => auth.userId === stateUser.id
-  );
-
-  const permissionMap = {
-    [TeamMemberAuthorization.Admin]: 'Admin',
-    [TeamMemberAuthorization.Write]: 'Editor',
-    [TeamMemberAuthorization.Read]: 'Viewer',
-  };
-
-  const isAdmin =
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
-  const permissionValues = Object.values(
-    PERMISSION_LEVELS[userPermission.authorization]
-  );
-  const hasEnoughPermission = permissionValues.length > 0;
+  const canConvertViewersToEditors =
+    !hasMaxNumberOfEditors && !numberOfEditorsIsOverTheLimit;
 
   return (
     <>
@@ -193,7 +195,7 @@ export const WorkspaceSettings = () => {
           },
         }}
       >
-        <Card css={{ 'grid-column': isAdmin ? 'auto' : '1/3' }}>
+        <Card css={{ 'grid-column': isTeamAdmin ? 'auto' : '1/3' }}>
           {editing ? (
             <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
               <Stack gap={4}>
@@ -299,13 +301,12 @@ export const WorkspaceSettings = () => {
                 avatar={team.avatarUrl}
                 size="bigger"
               />
-              <Stack direction="vertical" gap={2} css={{ width: '100%' }}>
-                <Stack justify="space-between">
-                  <Text size={6} weight="bold" css={{ wordBreak: 'break-all' }}>
+              <Stack direction="vertical" css={{ width: '100%' }} gap={1}>
+                <Stack justify="space-between" align="center">
+                  <Text size={4} weight="bold" css={{ wordBreak: 'break-all' }}>
                     {team.name}
                   </Text>
-                  {activeWorkspaceAuthorization ===
-                    TeamMemberAuthorization.Admin && (
+                  {isTeamAdmin && (
                     <IconButton
                       variant="square"
                       name="edit"
@@ -315,12 +316,14 @@ export const WorkspaceSettings = () => {
                     />
                   )}
                 </Stack>
-                <Text size={3}>
-                  {team?.subscription?.type === SubscriptionType.TeamPro
-                    ? 'Team Pro'
-                    : 'Team (Free)'}
-                </Text>
-                <Text size={3} variant="muted">
+
+                <Stack>
+                  {hasActiveSubscription ? null : (
+                    <Badge color="accent">Free</Badge>
+                  )}
+                </Stack>
+
+                <Text size={3} css={{ marginTop: '8px' }} variant="muted">
                   {team.description}
                 </Text>
               </Stack>
@@ -329,58 +332,61 @@ export const WorkspaceSettings = () => {
         </Card>
 
         <Card>
-          <Stack direction="vertical" gap={4}>
-            <Text size={6} weight="bold">
-              {team.users.length}{' '}
-              {team.users.length === 1 ? 'member' : 'members'}
-            </Text>
-            <Stack direction="vertical" gap={2}>
-              {activeWorkspaceAuthorization ===
-                TeamMemberAuthorization.Admin && (
-                <>
-                  <Text size={3} variant="muted">
-                    {numberOfEditors}{' '}
-                    {numberOfEditors > 1 ? 'Editors' : 'Editor'}
-                  </Text>
-                  {numberOfUnusedSeats > 0 ? (
+          <Stack
+            direction="vertical"
+            justify="space-between"
+            css={{ height: '100%' }}
+          >
+            <Stack direction="vertical" gap={4}>
+              <Text size={4} weight="bold">
+                {team.users.length}{' '}
+                {team.users.length === 1 ? 'member' : 'members'}
+              </Text>
+              <Stack direction="vertical" gap={1}>
+                {isTeamAdmin && (
+                  <>
                     <Text size={3} variant="muted">
-                      + {numberOfUnusedSeats} unused editor{' '}
-                      {numberOfUnusedSeats > 1 ? 'seats' : 'seat'}
+                      {numberOfEditors}{' '}
+                      {numberOfEditors > 1 ? 'Editors' : 'Editor'}
                     </Text>
-                  ) : null}
-                </>
-              )}
-              {created && (
-                <Text size={3} variant="muted">
-                  Created by {created.username}
-                </Text>
-              )}
-              {activeWorkspaceAuthorization ===
-                TeamMemberAuthorization.Admin && (
-                <Button
-                  autoWidth
-                  variant="link"
-                  disabled={loading}
-                  css={css({
-                    height: 'auto',
-                    fontSize: 3,
-                    color: 'errorForeground',
-                    padding: 0,
-                  })}
-                  onClick={() =>
-                    actions.modalOpened({ modal: 'deleteWorkspace' })
-                  }
-                >
-                  Delete Team
-                </Button>
-              )}
+                    {numberOfUnusedSeats > 0 ? (
+                      <Text size={3} variant="muted">
+                        + {numberOfUnusedSeats} unused editor{' '}
+                        {numberOfUnusedSeats > 1 ? 'seats' : 'seat'}
+                      </Text>
+                    ) : null}
+                  </>
+                )}
+                {created && (
+                  <Text size={3} variant="muted">
+                    Created by {created.username}
+                  </Text>
+                )}
+              </Stack>
             </Stack>
+            {isTeamAdmin && (
+              <Button
+                autoWidth
+                variant="link"
+                disabled={loading}
+                css={css({
+                  height: 'auto',
+                  fontSize: 3,
+                  color: 'errorForeground',
+                  padding: 0,
+                })}
+                onClick={() =>
+                  actions.modalOpened({ modal: 'deleteWorkspace' })
+                }
+              >
+                Delete Team
+              </Button>
+            )}
           </Stack>
         </Card>
 
         <ManageSubscription />
       </Element>
-
       <Stack align="center" justify="space-between" gap={2}>
         <Text
           css={css({
@@ -392,7 +398,7 @@ export const WorkspaceSettings = () => {
           Members
         </Text>
 
-        {hasEnoughPermission && (
+        {canInviteOtherMembers && (
           <Stack
             as="form"
             onSubmit={inviteLoading ? undefined : onInviteSubmit}
@@ -405,48 +411,38 @@ export const WorkspaceSettings = () => {
                 onInputValueChange={val => setInviteValue(val)}
                 style={{ paddingRight: 80 }}
               />
-              {team?.subscription?.type === SubscriptionType.TeamPro ? (
-                <Menu>
-                  <Menu.Button
-                    css={css({
-                      fontSize: 3,
-                      fontWeight: 'normal',
-                      paddingX: 0,
-                      position: 'absolute',
-                      top: 0,
-                      right: 2,
-                    })}
-                  >
-                    <Text variant="muted">
-                      {permissionMap[newMemberAuthorization]}
-                    </Text>
-                    <Icon name="caret" size={8} marginLeft={1} />
-                  </Menu.Button>
-                  <Menu.List>
-                    {permissionValues.map(authorization => (
-                      <Menu.Item
-                        key={authorization}
-                        onSelect={() =>
-                          setNewMemberAuthorization(authorization)
-                        }
-                        style={{ display: 'flex', alignItems: 'center' }}
-                      >
-                        <Text style={{ width: '100%' }}>
-                          {permissionMap[authorization]}
-                        </Text>
-                        {newMemberAuthorization === authorization && (
-                          <Icon
-                            style={{}}
-                            name="simpleCheck"
-                            size={12}
-                            marginLeft={1}
-                          />
-                        )}
-                      </Menu.Item>
-                    ))}
-                  </Menu.List>
-                </Menu>
-              ) : null}
+
+              <Menu>
+                <Menu.Button
+                  css={css({
+                    fontSize: 3,
+                    fontWeight: 'normal',
+                    paddingX: 0,
+                    position: 'absolute',
+                    top: 0,
+                    right: 2,
+                  })}
+                >
+                  <Text variant="muted">{ROLES_TEXT_MAP[newMemberRole]}</Text>
+                  <Icon name="caret" size={8} marginLeft={1} />
+                </Menu.Button>
+                <Menu.List>
+                  {rolesThatUserCanInvite.map(role => (
+                    <Menu.Item
+                      key={role}
+                      onSelect={() => setNewMemberRole(role)}
+                      style={{ display: 'flex', alignItems: 'center' }}
+                    >
+                      <Text style={{ width: '100%' }}>
+                        {ROLES_TEXT_MAP[role]}
+                      </Text>
+                      {newMemberRole === role && (
+                        <Icon name="simpleCheck" size={12} marginLeft={1} />
+                      )}
+                    </Menu.Item>
+                  ))}
+                </Menu.List>
+              </Menu>
             </div>
 
             <Button
@@ -467,21 +463,34 @@ export const WorkspaceSettings = () => {
           </Stack>
         )}
       </Stack>
+      {isTeamAdmin && numberOfEditorsIsOverTheLimit && (
+        <MessageStripe justify="space-between">
+          Free teams are limited to 5 editor seats. Some permissions might have
+          changed.
+        </MessageStripe>
+      )}
+      {isTeamAdmin && hasMaxNumberOfEditors && (
+        <MessageStripe justify="space-between">
+          You&apos;ve reached the maximum amount of free editor seats. Upgrade
+          for more.
+        </MessageStripe>
+      )}
 
       <div>
         <MemberList
-          getPermission={user => getAuthorization(user, team)}
+          getPermission={user => getRole(user, team)}
           getPermissionOptions={user => {
-            const yourAuthorization = activeWorkspaceAuthorization;
+            const userRoleIsViewer =
+              getRole(user, team) === TeamMemberAuthorization.Read;
 
             // if changing the role will lead to extra seats, we want to
             // confirm any payment changes if required
-            const confirmChange =
-              confirmMemberRoleChange &&
-              getAuthorization(user, team) === TeamMemberAuthorization.Read;
+            const confirmChange = confirmMemberRoleChange && userRoleIsViewer;
 
-            return yourAuthorization === TeamMemberAuthorization.Admin &&
-              user.id !== stateUser.id
+            return isTeamAdmin &&
+              user.id !== currentUser.id &&
+              (!userRoleIsViewer ||
+                (userRoleIsViewer && canConvertViewersToEditors))
               ? [
                   {
                     label: 'Admin',
@@ -516,8 +525,7 @@ export const WorkspaceSettings = () => {
               : [];
           }}
           getActions={user => {
-            const you = stateUser.id === user.id;
-            const yourAuthorization = activeWorkspaceAuthorization;
+            const you = currentUser.id === user.id;
 
             const options = [];
 
@@ -528,7 +536,7 @@ export const WorkspaceSettings = () => {
               });
             }
 
-            if (!you && yourAuthorization === TeamMemberAuthorization.Admin) {
+            if (!you && isTeamAdmin) {
               options.push({
                 label: 'Remove Member',
                 onSelect: () => actions.dashboard.removeFromTeam(user.id),
@@ -544,7 +552,7 @@ export const WorkspaceSettings = () => {
           getPermission={() => 'PENDING'}
           getPermissionOptions={() => []}
           getActions={user =>
-            hasEnoughPermission
+            canInviteOtherMembers
               ? [
                   {
                     label: 'Revoke Invitation',
@@ -564,13 +572,12 @@ export const WorkspaceSettings = () => {
   );
 };
 
-const getAuthorization = (
+const getRole = (
   user: User,
   team: CurrentTeamInfoFragmentFragment
 ): TeamMemberAuthorization => {
-  const authorization = team.userAuthorizations.find(
-    auth => auth.userId === user.id
-  ).authorization;
+  const role = team.userAuthorizations.find(auth => auth.userId === user.id)
+    .authorization;
 
-  return authorization;
+  return role;
 };
