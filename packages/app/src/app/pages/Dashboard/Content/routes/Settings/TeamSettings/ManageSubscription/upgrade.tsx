@@ -2,6 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import css from '@styled-system/css';
 import { Button, Stack, Text } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
+
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useAppState } from 'app/overmind';
+import { useSubscription } from 'app/hooks/useSubscription';
+
 import { Card } from '../../components';
 
 const List = styled(Stack)`
@@ -14,10 +21,19 @@ const List = styled(Stack)`
   }
 `;
 
-export const Upgrade: React.FC<{
-  loading: boolean;
-  onUpgrade: () => void;
-}> = ({ loading, onUpgrade }) => {
+export const Upgrade = () => {
+  const { activeTeam } = useAppState();
+  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { hasActiveSubscription } = useSubscription();
+  const checkout = useGetCheckoutURL({
+    team_id:
+      (isTeamAdmin || isPersonalSpace) && !hasActiveSubscription
+        ? activeTeam
+        : undefined,
+    success_path: dashboardUrls.settings(activeTeam),
+    cancel_path: dashboardUrls.settings(activeTeam),
+  });
+
   return (
     <Card
       css={{
@@ -43,7 +59,12 @@ export const Upgrade: React.FC<{
           </Text>
         </List>
 
-        <Button loading={loading} onClick={onUpgrade} variant="trial">
+        <Button
+          as="a"
+          href={checkout.state === 'READY' ? checkout.url : '/pro'}
+          marginTop={2}
+          variant="secondary"
+        >
           Upgrade to Pro
         </Button>
       </Stack>

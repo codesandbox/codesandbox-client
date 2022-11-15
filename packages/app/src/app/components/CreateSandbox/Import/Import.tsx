@@ -1,10 +1,24 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
-import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
+import {
+  gitHubRepoPattern,
+  dashboard,
+} from '@codesandbox/common/lib/utils/url-generator';
+
+import {
+  Button,
+  Element,
+  Input,
+  Link,
+  Stack,
+  Text,
+} from '@codesandbox/components';
 import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
+import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { useImportAndRedirect } from './useImportAndRedirect';
@@ -54,19 +68,53 @@ type ImportProps = {
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const importAndRedirect = useImportAndRedirect();
+  const {
+    hasActiveSubscription,
+    hasPastOrActiveSubscription,
+  } = useSubscription();
+  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const checkout = useGetCheckoutURL({
+    team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
+    success_path: dashboard.recent(activeTeam),
+    cancel_path: dashboard.recent(activeTeam),
+  });
 
+  const checkoutURL = React.useMemo(() => {
+    if (isTeamAdmin || isPersonalSpace) {
+      if (checkout.state === 'READY') {
+        return checkout.url;
+      }
+      return '/pro';
+    }
+
+    return hasPastOrActiveSubscription
+      ? '/docs/learn/introduction/workspace#managing-teams-and-subscriptions'
+      : '/docs/learn/plan-billing/trials';
+  }, [checkout, hasPastOrActiveSubscription, isTeamAdmin, isPersonalSpace]);
   const [isImporting, setIsImporting] = React.useState(false);
+  const [shouldFetch, setShouldFetch] = React.useState(false);
+  const [
+    privateRepoFreeAccountError,
+    setPrivateRepoFreeAccountError,
+  ] = React.useState<string | undefined>(undefined);
   const [url, setUrl] = React.useState<UrlState>({
     raw: '',
     parsed: null,
     error: null,
   });
-  const [shouldFetch, setShouldFetch] = React.useState(false);
+
   const githubRepo = useGithubRepo({
     owner: url.parsed?.owner,
     name: url.parsed?.name,
     shouldFetch,
     onCompleted: async repo => {
+      setShouldFetch(false);
+
+      if (repo.private && !hasActiveSubscription) {
+        setPrivateRepoFreeAccountError(url.raw);
+        return;
+      }
+
       if (repo.authorization === GithubRepoAuthorization.Write) {
         setIsImporting(true);
         await importAndRedirect(repo.owner.login, repo.name, activeTeam);
@@ -114,6 +162,8 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   }
 
   const isLoading = githubRepo.state === 'loading' || isImporting;
+  const limitImportBasedOnSubscription =
+    privateRepoFreeAccountError === url.raw;
 
   return (
     <Stack direction="vertical" gap={6}>
@@ -151,7 +201,9 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
           </Button>
         </Stack>
         <Element aria-atomic="true" id="form-error" role="alert">
-          {url.error || githubRepo.state === 'error' ? (
+          {url.error ||
+          githubRepo.state === 'error' ||
+          limitImportBasedOnSubscription ? (
             <Text
               as="small"
               css={css({
@@ -163,6 +215,25 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             >
               {url.error}
               {githubRepo.state === 'error' && githubRepo.error}
+              {limitImportBasedOnSubscription && (
+                <>
+                  The free plan only allows public repos. For private
+                  repositories,{' '}
+                  <Link
+                    css={{
+                      padding: 0,
+                    }}
+                    color="#FFFFFF"
+                    href={checkoutURL}
+                  >
+                    upgrade to{' '}
+                    <Element as="span" css={{ textTransform: 'uppercase' }}>
+                      pro
+                    </Element>
+                    .
+                  </Link>
+                </>
+              )}
             </Text>
           ) : null}
         </Element>

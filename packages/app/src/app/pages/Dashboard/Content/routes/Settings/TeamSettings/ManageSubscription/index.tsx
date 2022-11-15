@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useAppState } from 'app/overmind';
 import { useLocation, useHistory } from 'react-router-dom';
 
 import { Stack, Text } from '@codesandbox/components';
 
-import { useCreateCheckout } from 'app/hooks';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useSubscription } from 'app/hooks/useSubscription';
 import { Card } from '../../components';
@@ -17,8 +14,6 @@ import { ProcessingPayment } from '../../components/ProcessingPayment';
 export const ManageSubscription = () => {
   const location = useLocation();
   const history = useHistory();
-  const [checkout, createCheckout] = useCreateCheckout();
-  const { activeTeamInfo: team } = useAppState();
   const {
     hasActiveSubscription,
     hasActiveTeamTrial,
@@ -52,19 +47,7 @@ export const ManageSubscription = () => {
       return <ProcessingPayment />;
     }
 
-    return (
-      <Upgrade
-        loading={checkout.status === 'loading'}
-        onUpgrade={() => {
-          createCheckout({
-            team_id: team.id,
-            recurring_interval: 'month',
-            success_path: dashboard.recent(team.id),
-            cancel_path: dashboard.settings(team.id),
-          });
-        }}
-      />
-    );
+    return <Upgrade />;
   }
 
   const renderProvider = () => {

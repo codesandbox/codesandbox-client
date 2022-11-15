@@ -3,12 +3,14 @@ import { Helmet } from 'react-helmet';
 import { Link, useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
 import { Element, MessageStripe } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useSubscription } from 'app/hooks/useSubscription';
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -25,12 +27,21 @@ export const SandboxesPage = () => {
     activeTeam,
   } = useAppState();
 
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
   const {
     hasActiveSubscription,
     isEligibleForTrial,
     hasMaxPublicSandboxes,
   } = useSubscription();
+
+  const checkout = useGetCheckoutURL({
+    team_id:
+      (isTeamAdmin || isPersonalSpace) && !hasActiveSubscription
+        ? activeTeam
+        : undefined,
+    success_path: dashboardUrls.registrySettings(activeTeam),
+    cancel_path: dashboardUrls.registrySettings(activeTeam),
+  });
 
   React.useEffect(() => {
     if (!currentPath || currentPath === '/') {
@@ -96,7 +107,10 @@ export const SandboxesPage = () => {
             Free teams are limited to 20 public sandboxes. Upgrade for unlimited
             sandboxes.
             {isTeamAdmin ? (
-              <MessageStripe.Action as={Link} to="/pro">
+              <MessageStripe.Action
+                as={Link}
+                to={checkout.state === 'READY' ? checkout.url : '/pro'}
+              >
                 {isEligibleForTrial ? 'Start free trial' : 'Upgrade now'}
               </MessageStripe.Action>
             ) : (

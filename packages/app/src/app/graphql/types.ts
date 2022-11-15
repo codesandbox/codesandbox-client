@@ -1662,7 +1662,7 @@ export type GetGithubRepoQuery = { __typename?: 'RootQueryType' } & {
   githubRepo: Maybe<
     { __typename?: 'GithubRepo' } & Pick<
       GithubRepo,
-      'name' | 'fullName' | 'updatedAt' | 'authorization'
+      'name' | 'fullName' | 'updatedAt' | 'authorization' | 'private'
     > & {
         owner: { __typename?: 'GithubOrganization' } & Pick<
           GithubOrganization,
