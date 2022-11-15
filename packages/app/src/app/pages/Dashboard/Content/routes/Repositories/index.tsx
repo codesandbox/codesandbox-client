@@ -107,7 +107,7 @@ export const RepositoriesPage = () => {
     if (viewMode === 'grid' && repoItems.length > 0) {
       repoItems.unshift({
         type: 'import-repository',
-        disabled: !hasActiveSubscription && hasMaxRepositories,
+        disabled: !hasActiveSubscription && hasMaxPublicRepositories,
       });
     }
 
@@ -116,7 +116,7 @@ export const RepositoriesPage = () => {
 
   const itemsToShow = getItemsToShow();
   const readOnly = !hasActiveSubscription
-    ? selectedRepo?.private || hasMaxRepositories
+    ? selectedRepo?.private || hasMaxPublicRepositories
     : false;
 
   return (
