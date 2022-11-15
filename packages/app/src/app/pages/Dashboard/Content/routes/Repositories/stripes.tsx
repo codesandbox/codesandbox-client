@@ -8,6 +8,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useAppState } from 'app/overmind';
 
+const getEventName = (isEligibleForTrial: boolean) =>
+  isEligibleForTrial
+    ? 'Limit banner: repos - Start Trial'
+    : 'Limit banner: repos - Upgrade';
+
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useSubscription();
@@ -39,13 +44,13 @@ export const PrivateRepoFreeTeam: React.FC = () => {
                 to: '/pro',
               })}
           onClick={() => {
-            track('Limit banner: repos - Learn More', {
+            track(getEventName(isEligibleForTrial), {
               codesandbox: 'V1',
               event_source: 'UI',
             });
           }}
         >
-          {isEligibleForTrial ? 'Learn more' : 'Upgrade now'}
+          {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
         </MessageStripe.Action>
       )}
     </MessageStripe>
@@ -79,18 +84,13 @@ export const MaxPublicReposFreeTeam: React.FC = () => {
                 to: '/pro',
               })}
           onClick={() =>
-            isEligibleForTrial
-              ? track('Limit banner: repos - Start Trial', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                })
-              : track('Limit banner: repos - Upgrade', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                })
+            track(getEventName(isEligibleForTrial), {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            })
           }
         >
-          {isEligibleForTrial ? 'Start free trial' : 'Upgrade now'}
+          {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
         </MessageStripe.Action>
       ) : (
         <MessageStripe.Action
