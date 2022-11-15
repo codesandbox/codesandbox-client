@@ -2,6 +2,7 @@ import React from 'react';
 import { useAppState } from 'app/overmind';
 import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analytics';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
+import { useSubscription } from 'app/hooks/useSubscription';
 import { DashboardRepository } from '../../types';
 import { RepositoryCard } from './RepositoryCard';
 import { RepositoryListItem } from './RepositoryListItem';
@@ -29,6 +30,11 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
     else onMenuEvent(event, repositoryId);
   };
 
+  const { hasActiveSubscription } = useSubscription();
+
+  const isPrivate = providerRepository?.private;
+  const isViewOnly = !hasActiveSubscription && isPrivate;
+
   const props: RepositoryProps = {
     repository: {
       owner: providerRepository.owner,
@@ -47,6 +53,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
     isBeingRemoved:
       removingRepository?.owner === providerRepository.owner &&
       removingRepository?.name === providerRepository.name,
+    isViewOnly,
   };
 
   return {

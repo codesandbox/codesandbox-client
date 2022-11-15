@@ -39,6 +39,7 @@ type Props = {
   CustomFilters?: React.ReactElement;
   selectedRepo?: { owner: string; name: string };
   loading?: boolean;
+  readOnly?: boolean;
 };
 
 export const Header = ({
@@ -57,6 +58,7 @@ export const Header = ({
   actions = [],
   selectedRepo,
   loading = false,
+  readOnly = false,
 }: Props) => {
   const location = useLocation();
   const { modals, dashboard: dashboardActions } = useActions();
@@ -134,7 +136,7 @@ export const Header = ({
         {repositoriesListPage && dashboard.viewMode === 'list' && (
           <Button
             onClick={() =>
-              modals.newSandboxModal.open({ initialTab: 'import' })
+              !readOnly && modals.newSandboxModal.open({ initialTab: 'import' })
             }
             variant="link"
             css={css({
@@ -143,6 +145,7 @@ export const Header = ({
               padding: 0,
               width: 'auto',
             })}
+            disabled={readOnly}
           >
             <Icon
               name="plus"
@@ -185,7 +188,7 @@ export const Header = ({
           dashboard.viewMode === 'list' &&
           selectedRepo && (
             <Button
-              as="a"
+              as={readOnly ? undefined : 'a'}
               href={v2DraftBranchUrl(selectedRepo.owner, selectedRepo.name)}
               variant="link"
               css={css({
@@ -201,6 +204,7 @@ export const Header = ({
                   color: '#e5e5e5',
                 },
               })}
+              disabled={readOnly}
             >
               <Icon
                 name="plus"

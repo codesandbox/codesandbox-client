@@ -196,6 +196,7 @@ export const currentTeamInfoFragment = gql`
       nextBillDate
       paymentProvider
       cancelAt
+      cancelAtPeriodEnd
       trialStart
       trialEnd
     }
@@ -244,6 +245,7 @@ export const branchFragment = gql`
           defaultBranch
           name
           owner
+          private
         }
       }
     }
@@ -260,6 +262,7 @@ export const projectFragment = gql`
         owner
         name
         defaultBranch
+        private
       }
     }
   }

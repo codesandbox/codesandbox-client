@@ -27,12 +27,12 @@ export const SandboxesPage = () => {
     activeTeam,
   } = useAppState();
 
-  // 🚧 TODO: hasMaxSandboxes property (or something like it) is something that will
-  // be returned from an API. Can be implemented when ready.
-  const hasMaxSandboxes = false;
-
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
-  const { hasActiveSubscription, isEligibleForTrial } = useSubscription();
+  const {
+    hasActiveSubscription,
+    isEligibleForTrial,
+    hasMaxPublicSandboxes,
+  } = useSubscription();
 
   const checkout = useGetCheckoutURL({
     team_id:
@@ -101,7 +101,7 @@ export const SandboxesPage = () => {
         showSortOptions={Boolean(currentPath)}
       />
 
-      {!hasActiveSubscription && hasMaxSandboxes ? (
+      {!hasActiveSubscription && hasMaxPublicSandboxes ? (
         <Element paddingX={4} paddingY={2}>
           <MessageStripe justify="space-between">
             Free teams are limited to 20 public sandboxes. Upgrade for unlimited

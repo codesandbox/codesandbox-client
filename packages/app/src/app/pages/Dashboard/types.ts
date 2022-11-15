@@ -153,6 +153,7 @@ export type DashboardNewBranch = {
     owner: string;
     name: string;
   };
+  disabled?: boolean;
 };
 
 export type DashboardRepository = {
@@ -162,6 +163,7 @@ export type DashboardRepository = {
 
 export type DashboardImportRepository = {
   type: 'import-repository';
+  disabled?: boolean;
 };
 
 export type PageTypes = PT;

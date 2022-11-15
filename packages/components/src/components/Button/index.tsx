@@ -73,6 +73,14 @@ const variantStyles = {
       backgroundColor: '#252525', // three down in the black scale (black[500])
     },
   },
+  trial: {
+    backgroundColor: '#644ED7',
+    color: '#FFFFFF',
+
+    ':hover': {
+      backgroundColor: '#7B61FF',
+    },
+  },
 };
 
 const commonStyles = {
@@ -117,7 +125,14 @@ const commonStyles = {
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     IElementProps {
-  variant?: 'primary' | 'secondary' | 'link' | 'danger' | 'light' | 'dark';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'link'
+    | 'danger'
+    | 'light'
+    | 'dark'
+    | 'trial';
   loading?: boolean;
   href?: string;
   rel?: string; // Only use when using href and as="a"

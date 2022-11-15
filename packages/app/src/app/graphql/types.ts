@@ -2289,6 +2289,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'nextBillDate'
         | 'paymentProvider'
         | 'cancelAt'
+        | 'cancelAtPeriodEnd'
         | 'trialStart'
         | 'trialEnd'
       >
@@ -2331,7 +2332,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
     project: { __typename?: 'Project' } & {
       repository: { __typename?: 'GitHubRepository' } & Pick<
         GitHubRepository,
-        'defaultBranch' | 'name' | 'owner'
+        'defaultBranch' | 'name' | 'owner' | 'private'
       >;
     };
   };
@@ -2340,7 +2341,7 @@ export type ProjectFragment = { __typename?: 'Project' } & {
   branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
   repository: { __typename?: 'GitHubRepository' } & Pick<
     GitHubRepository,
-    'owner' | 'name' | 'defaultBranch'
+    'owner' | 'name' | 'defaultBranch' | 'private'
   >;
 };
 

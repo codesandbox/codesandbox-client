@@ -8,6 +8,7 @@ import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useAppState } from 'app/overmind';
 import { useSubscription } from 'app/hooks/useSubscription';
+
 import { Card } from '../../components';
 
 const List = styled(Stack)`
@@ -36,15 +37,11 @@ export const Upgrade = () => {
   return (
     <Card
       css={{
-        textDecoration: 'none',
         backgroundColor: 'white',
-        borderTop: '6px solid #EDFFA5',
-        padding: 24,
-        borderRadius: 4,
       }}
     >
       <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
-        <Text size={6} weight="bold">
+        <Text size={4} weight="bold">
           Upgrade to Team Pro
         </Text>
         <List direction="vertical" gap={1} as="ul">

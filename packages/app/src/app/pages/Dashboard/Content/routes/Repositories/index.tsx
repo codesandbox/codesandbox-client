@@ -50,12 +50,12 @@ export const RepositoriesPage = () => {
     pathRef.current = path;
   }, [path]);
 
-  // 🚧 TODO: hasMaxRepositories property (or something like it) is something that will
-  // be returned from an API. Can be implemented when ready.
-  const hasMaxRepositories = false;
-
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
-  const { hasActiveSubscription, isEligibleForTrial } = useSubscription();
+  const {
+    hasActiveSubscription,
+    isEligibleForTrial,
+    hasMaxPublicRepositories,
+  } = useSubscription();
 
   const checkout = useGetCheckoutURL({
     team_id:
@@ -67,7 +67,9 @@ export const RepositoriesPage = () => {
   });
 
   const pageType: PageTypes = 'repositories';
-  let selectedRepo: { owner: string; name: string } | undefined;
+  let selectedRepo:
+    | { owner: string; name: string; private: boolean }
+    | undefined;
 
   const getItemsToShow = (): DashboardGridItem[] => {
     if (repositories === null) {
@@ -87,6 +89,7 @@ export const RepositoriesPage = () => {
       selectedRepo = {
         owner,
         name,
+        private: currentRepository.repository.private,
       };
 
       const branchItems: DashboardGridItem[] = currentRepository.branches.map(
@@ -100,6 +103,7 @@ export const RepositoriesPage = () => {
         branchItems.unshift({
           type: 'new-branch',
           repo: { owner, name },
+          disabled: !hasActiveSubscription && selectedRepo.private,
         });
       }
 
@@ -112,13 +116,19 @@ export const RepositoriesPage = () => {
     }));
 
     if (viewMode === 'grid' && repoItems.length > 0) {
-      repoItems.unshift({ type: 'import-repository' });
+      repoItems.unshift({
+        type: 'import-repository',
+        disabled: !hasActiveSubscription && hasMaxPublicRepositories,
+      });
     }
 
     return repoItems;
   };
 
   const itemsToShow = getItemsToShow();
+  const readOnly = !hasActiveSubscription
+    ? selectedRepo?.private || hasMaxPublicRepositories
+    : false;
 
   return (
     <SelectionProvider
@@ -136,9 +146,10 @@ export const RepositoriesPage = () => {
         showBetaBadge
         nestedPageType={pageType}
         selectedRepo={selectedRepo}
+        readOnly={readOnly}
       />
 
-      {!hasActiveSubscription && hasMaxRepositories ? (
+      {!hasActiveSubscription && hasMaxPublicRepositories ? (
         <Element paddingX={4} paddingY={2}>
           <MessageStripe justify="space-between">
             Free teams are limited to 3 public repositories. Upgrade for

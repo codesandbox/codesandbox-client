@@ -427,6 +427,10 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   );
 
   const onDrop = async (dropResult: DndDropType) => {
+    analytics.track('Dashboard - On drop', {
+      isSamePath: dropResult.isSamePath,
+    });
+
     if (dropResult.isSamePath) return;
 
     const sandboxIds = selectedIds.filter(isSandboxId);

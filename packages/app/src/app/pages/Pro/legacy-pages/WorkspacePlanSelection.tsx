@@ -523,7 +523,7 @@ const PlanCard: React.FC<{
   plan: Plan;
   billingInterval: Plan['billingInterval'];
   setBillingInterval: (billingInterval: Plan['billingInterval']) => void;
-  // Omitting new trialEnd and trialStart
+  // Omitting new trialEnd, trialStart, cancelAtPeriodEnd and active
   currentSubscription: Omit<
     ProSubscription,
     'trialEnd' | 'trialStart' | 'cancelAtPeriodEnd' | 'active'

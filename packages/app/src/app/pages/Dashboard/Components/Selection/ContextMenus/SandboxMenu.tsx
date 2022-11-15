@@ -7,6 +7,7 @@ import {
   sandboxUrl,
   dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { useSubscription } from 'app/hooks/useSubscription';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
@@ -19,12 +20,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   setRenaming,
 }) => {
   const actions = useActions();
-  const {
-    user,
-    activeTeam,
-    activeTeamInfo,
-    activeWorkspaceAuthorization,
-  } = useAppState();
+  const { user, activeTeam, activeWorkspaceAuthorization } = useAppState();
+  const { hasActiveSubscription } = useSubscription();
   const {
     browser: { copyToClipboard },
   } = useEffects();
@@ -43,8 +40,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'Template' : 'Sandbox';
-
-  const isPro = activeTeamInfo?.subscription;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
@@ -214,7 +209,9 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </Tooltip>
       )}
 
-      {hasAccess && activeWorkspaceAuthorization !== 'READ' && isPro ? (
+      {hasAccess &&
+      activeWorkspaceAuthorization !== 'READ' &&
+      hasActiveSubscription ? (
         <>
           <Menu.Divider />
           {sandbox.privacy !== 0 && (
@@ -319,7 +316,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           </MenuItem>
         ))}
       {hasAccess &&
-        isPro &&
+        hasActiveSubscription &&
         activeWorkspaceAuthorization === 'ADMIN' &&
         (sandbox.permissions.preventSandboxLeaving ? (
           <MenuItem
@@ -346,7 +343,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         ))}
       {!sandbox.isV2 &&
         hasAccess &&
-        isPro &&
+        hasActiveSubscription &&
         activeWorkspaceAuthorization === 'ADMIN' &&
         (sandbox.permissions.preventSandboxExport ? (
           <MenuItem
