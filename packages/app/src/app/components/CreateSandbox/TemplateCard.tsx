@@ -3,6 +3,7 @@ import { Badge, Stack, Text } from '@codesandbox/components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
+import { useAppState } from 'app/overmind';
 import { TemplateButton } from './elements';
 
 interface TemplateCardProps {
@@ -16,6 +17,7 @@ export const TemplateCard = ({
   onSelectTemplate,
   onOpenTemplate,
 }: TemplateCardProps) => {
+  const { isLoggedIn } = useAppState();
   const { UserIcon } = getTemplateIcon(
     template.iconUrl,
     template.sandbox?.source?.template
@@ -30,7 +32,7 @@ export const TemplateCard = ({
       title={sandboxTitle}
       type="button"
       onClick={evt => {
-        if (evt.metaKey || evt.ctrlKey) {
+        if (evt.metaKey || evt.ctrlKey || !isLoggedIn) {
           onOpenTemplate(template);
         } else {
           onSelectTemplate(template);
