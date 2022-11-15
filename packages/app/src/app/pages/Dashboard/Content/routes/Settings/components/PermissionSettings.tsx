@@ -10,50 +10,72 @@ import {
   Select,
   Switch,
 } from '@codesandbox/components';
+import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import { TeamMemberAuthorization, SubscriptionType } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useSubscription } from 'app/hooks/useSubscription';
 import { Alert } from './Alert';
 
 export const PermissionSettings = () => {
-  const {
-    activeTeamInfo,
-    personalWorkspaceId,
-    activeWorkspaceAuthorization,
-  } = useAppState();
+  const { activeTeam } = useAppState();
+  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { hasActiveSubscription, subscription } = useSubscription();
+  const checkout = useGetCheckoutURL({
+    team_id:
+      (isTeamAdmin || isPersonalSpace) && !hasActiveSubscription
+        ? activeTeam
+        : undefined,
+    success_path: dashboardUrls.permissionSettings(activeTeam),
+    cancel_path: dashboardUrls.permissionSettings(activeTeam),
+  });
 
   // different scenarios
-  const isPersonalWorkspace = activeTeamInfo.id === personalWorkspaceId;
-  const isTeamPro =
-    activeTeamInfo?.subscription?.type === SubscriptionType.TeamPro;
-  const isPersonalPro =
-    activeTeamInfo?.subscription?.type === SubscriptionType.PersonalPro;
-  const isAdmin =
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+  const isTeamPro = subscription?.type === SubscriptionType.TeamPro;
+  const isPersonalPro = subscription?.type === SubscriptionType.PersonalPro;
 
   let alert: {
     message: string;
-    cta?: { label: string; href: string; onClick?: () => void };
+    cta?: {
+      label: string;
+      href: string;
+      onClick?: () => void;
+      newTab?: boolean;
+    };
   } | null = null;
 
   const proTracking = () =>
     track('Dashboard - Permissions panel - Clicked on Pro upgrade');
 
-  if (isPersonalWorkspace) {
+  const upgradeUrl = checkout.state === 'READY' ? checkout.url : '/pro';
+
+  if (isPersonalSpace) {
     if (!isPersonalPro) {
       alert = {
         message: 'Upgrade to Pro to change sandbox permissions.',
-        cta: { label: 'Upgrade to Pro', href: '/pro', onClick: proTracking },
+        cta: {
+          label: 'Upgrade to Pro',
+          href: upgradeUrl,
+          onClick: proTracking,
+          newTab: false,
+        },
       };
     }
   } else if (!isTeamPro) {
     alert = {
       message:
         'You need a Team Pro subscription to change sandbox permissions.',
-      cta: { label: 'Upgrade to Pro', href: '/pro', onClick: proTracking },
+      cta: {
+        label: 'Upgrade to Pro',
+        href: upgradeUrl,
+        onClick: proTracking,
+        newTab: false,
+      },
     };
-  } else if (!isAdmin) {
+  } else if (!isTeamAdmin) {
     alert = {
       message: 'Please contact your admin to change sandbox permissions.',
     };
@@ -68,7 +90,7 @@ export const PermissionSettings = () => {
         <Column span={[12, 12, 6]}>
           <MinimumPrivacy disabled={Boolean(alert)} />
         </Column>
-        {!isPersonalWorkspace && (
+        {!isPersonalSpace && (
           <Column span={[12, 12, 6]}>
             <SandboxSecurity disabled={Boolean(alert)} />
           </Column>
