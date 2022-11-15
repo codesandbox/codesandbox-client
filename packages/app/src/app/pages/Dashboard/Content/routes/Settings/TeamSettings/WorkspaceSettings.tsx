@@ -178,6 +178,8 @@ export const WorkspaceSettings = () => {
   };
 
   const created = team.users.find(user => user.id === team.creatorId);
+  const canConvertViewersToEditors =
+    !hasMaxNumberOfEditors && !numberOfEditorsIsOverTheLimit;
 
   return (
     <>
@@ -385,7 +387,6 @@ export const WorkspaceSettings = () => {
 
         <ManageSubscription />
       </Element>
-
       <Stack align="center" justify="space-between" gap={2}>
         <Text
           css={css({
@@ -462,14 +463,12 @@ export const WorkspaceSettings = () => {
           </Stack>
         )}
       </Stack>
-
       {isTeamAdmin && numberOfEditorsIsOverTheLimit && (
         <MessageStripe justify="space-between">
           Free teams are limited to 5 editor seats. Some permissions might have
           changed.
         </MessageStripe>
       )}
-
       {isTeamAdmin && hasMaxNumberOfEditors && (
         <MessageStripe justify="space-between">
           You&apos;ve reached the maximum amount of free editor seats. Upgrade
@@ -481,13 +480,17 @@ export const WorkspaceSettings = () => {
         <MemberList
           getPermission={user => getRole(user, team)}
           getPermissionOptions={user => {
-            // if changing the role will lead to extra seats, we want to
-            // confirm any payment changes if required
-            const confirmChange =
-              confirmMemberRoleChange &&
+            const userRoleIsViewer =
               getRole(user, team) === TeamMemberAuthorization.Read;
 
-            return isTeamAdmin && user.id !== currentUser.id
+            // if changing the role will lead to extra seats, we want to
+            // confirm any payment changes if required
+            const confirmChange = confirmMemberRoleChange && userRoleIsViewer;
+
+            return isTeamAdmin &&
+              user.id !== currentUser.id &&
+              (!userRoleIsViewer ||
+                (userRoleIsViewer && canConvertViewersToEditors))
               ? [
                   {
                     label: 'Admin',
