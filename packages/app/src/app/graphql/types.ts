@@ -2289,6 +2289,7 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
         | 'nextBillDate'
         | 'paymentProvider'
         | 'cancelAt'
+        | 'cancelAtPeriodEnd'
         | 'trialStart'
         | 'trialEnd'
       >
