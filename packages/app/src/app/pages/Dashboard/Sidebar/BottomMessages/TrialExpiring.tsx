@@ -1,6 +1,7 @@
 import React from 'react';
 import { Stack, Text, Button } from '@codesandbox/components';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 export const TrialExpiring: React.FC<{
   activeTeam: string;
@@ -34,7 +35,14 @@ export const TrialExpiring: React.FC<{
             textDecoration: 'none',
             padding: '4px 0',
           }}
-          onClick={createCustomerPortal}
+          onClick={() => {
+            track('Side banner - Manage Subscription', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+
+            createCustomerPortal();
+          }}
         >
           Manage subscription
         </Button>
