@@ -21,9 +21,11 @@ export const ManageSubscription = () => {
   const { activeTeamInfo: team } = useAppState();
   const {
     hasActiveSubscription,
+    hasActiveTeamTrial,
     numberOfSeats,
     isPaddle,
     isStripe,
+    subscription,
   } = useSubscription();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
@@ -71,7 +73,9 @@ export const ManageSubscription = () => {
     }
 
     if (isStripe) {
-      return <Stripe />;
+      return (
+        <Stripe hasActiveTrial={hasActiveTeamTrial && !subscription.cancelAt} />
+      );
     }
 
     return null;
@@ -87,12 +91,22 @@ export const ManageSubscription = () => {
       >
         <Stack direction="vertical" gap={4}>
           <Text size={4} weight="bold" maxWidth="100%">
-            Team Pro
+            Team Pro {hasActiveTeamTrial ? 'trial' : ''}
           </Text>
 
-          <Text variant="muted" size={3}>{`${numberOfSeats} paid seat${
-            numberOfSeats > 1 ? 's' : ''
-          }`}</Text>
+          <Stack direction="vertical" gap={1}>
+            <Text variant="muted" size={3}>{`${numberOfSeats} paid seat${
+              numberOfSeats > 1 ? 's' : ''
+            }`}</Text>
+
+            {/* TODO: the logic for figuring out a canceled vs an active trial should be revisited */}
+            {hasActiveTeamTrial && !subscription.cancelAt ? (
+              <Text variant="muted" size={3}>
+                Your free trial ends on{' '}
+                {printLocalDateFormat(subscription.trialEnd)}
+              </Text>
+            ) : null}
+          </Stack>
         </Stack>
 
         {renderProvider()}
@@ -100,3 +114,6 @@ export const ManageSubscription = () => {
     </Card>
   );
 };
+
+const printLocalDateFormat = (date: string) =>
+  new Date(date).toLocaleDateString();
