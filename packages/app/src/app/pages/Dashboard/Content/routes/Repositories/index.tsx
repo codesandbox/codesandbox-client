@@ -55,7 +55,7 @@ export const RepositoriesPage = () => {
   const {
     hasActiveSubscription,
     // isEligibleForTrial,
-    hasMaxPublicRepositories,
+    // hasMaxPublicRepositories,
   } = useSubscription();
 
   // const checkout = useGetCheckoutURL({
@@ -119,7 +119,7 @@ export const RepositoriesPage = () => {
     if (viewMode === 'grid' && repoItems.length > 0) {
       repoItems.unshift({
         type: 'import-repository',
-        disabled: !hasActiveSubscription && hasMaxPublicRepositories,
+        // disabled: !hasActiveSubscription && hasMaxPublicRepositories,
       });
     }
 
@@ -127,9 +127,10 @@ export const RepositoriesPage = () => {
   };
 
   const itemsToShow = getItemsToShow();
-  const readOnly = !hasActiveSubscription
-    ? selectedRepo?.private || hasMaxPublicRepositories
-    : false;
+  const readOnly = !hasActiveSubscription && selectedRepo?.private;
+  // const readOnly = !hasActiveSubscription
+  //   ? selectedRepo?.private || hasMaxPublicRepositories
+  //   : false;
 
   return (
     <SelectionProvider
