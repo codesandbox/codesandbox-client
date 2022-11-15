@@ -56,7 +56,9 @@ export const RepositoriesPage = () => {
   } = useSubscription();
 
   const pageType: PageTypes = 'repositories';
-  let selectedRepo: { owner: string; name: string } | undefined;
+  let selectedRepo:
+    | { owner: string; name: string; private: boolean }
+    | undefined;
 
   const getItemsToShow = (): DashboardGridItem[] => {
     if (repositories === null) {
@@ -76,6 +78,7 @@ export const RepositoriesPage = () => {
       selectedRepo = {
         owner,
         name,
+        private: currentRepository.repository.private,
       };
 
       const branchItems: DashboardGridItem[] = currentRepository.branches.map(
@@ -89,8 +92,7 @@ export const RepositoriesPage = () => {
         branchItems.unshift({
           type: 'new-branch',
           repo: { owner, name },
-          disabled:
-            !hasActiveSubscription && currentRepository.repository.private,
+          disabled: !hasActiveSubscription && selectedRepo.private,
         });
       }
 
@@ -113,6 +115,9 @@ export const RepositoriesPage = () => {
   };
 
   const itemsToShow = getItemsToShow();
+  const readOnly = !hasActiveSubscription
+    ? selectedRepo?.private || hasMaxRepositories
+    : false;
 
   return (
     <SelectionProvider
@@ -130,6 +135,7 @@ export const RepositoriesPage = () => {
         showBetaBadge
         nestedPageType={pageType}
         selectedRepo={selectedRepo}
+        readOnly={readOnly}
       />
 
       {!hasActiveSubscription && hasMaxPublicRepositories ? (
