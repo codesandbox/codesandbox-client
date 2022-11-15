@@ -63,7 +63,7 @@ export const Upgrade = () => {
           as="a"
           href={checkout.state === 'READY' ? checkout.url : '/pro'}
           marginTop={2}
-          variant="secondary"
+          variant="trial"
         >
           Upgrade to Pro
         </Button>
