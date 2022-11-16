@@ -28,7 +28,7 @@ const getEventName = (
 export const MaxPublicRepos: React.FC = () => {
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useSubscription();
-  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isTeamAdmin } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
   const { modals } = useActions();
 
@@ -37,12 +37,6 @@ export const MaxPublicRepos: React.FC = () => {
     success_path: pathname,
     cancel_path: pathname,
   });
-
-  // Personal worksaces don't have a limit
-  // for public repositories.
-  if (isPersonalSpace) {
-    return null;
-  }
 
   return (
     <MessageStripe justify="space-between">
