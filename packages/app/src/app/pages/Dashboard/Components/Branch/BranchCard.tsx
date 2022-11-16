@@ -71,9 +71,7 @@ export const BranchCard: React.FC<BranchProps> = ({
       </Stack>
       {isViewOnly ? (
         <Element css={{ position: 'absolute', top: 8, left: 8 }}>
-          <Badge color="accent" isPadded>
-            View only
-          </Badge>
+          <Badge variant="trial">View only</Badge>
         </Element>
       ) : null}
       <Stack

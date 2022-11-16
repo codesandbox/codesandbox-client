@@ -319,7 +319,7 @@ export const WorkspaceSettings = () => {
 
                 <Stack>
                   {hasActiveSubscription ? null : (
-                    <Badge color="accent">Free</Badge>
+                    <Badge variant="trial">Free</Badge>
                   )}
                 </Stack>
 

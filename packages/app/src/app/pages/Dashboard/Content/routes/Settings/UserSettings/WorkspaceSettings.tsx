@@ -196,7 +196,7 @@ export const WorkspaceSettings = () => {
                 </Stack>
                 {!hasActiveSubscription && (
                   <Stack>
-                    <Badge color="accent">Free</Badge>
+                    <Badge variant="trial">Free</Badge>
                   </Stack>
                 )}
               </Stack>
@@ -258,7 +258,7 @@ export const WorkspaceSettings = () => {
               </Stack>
               {!hasActiveSubscription && (
                 <Stack>
-                  <Badge color="accent">Free</Badge>
+                  <Badge variant="trial">Free</Badge>
                 </Stack>
               )}
             </Stack>

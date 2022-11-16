@@ -91,9 +91,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
           <Column span={[0, 2, 2]}>
             {isViewOnly ? (
               <Stack align="center">
-                <Badge color="accent" isPadded>
-                  View only
-                </Badge>
+                <Badge variant="trial">View only</Badge>
               </Stack>
             ) : null}
           </Column>

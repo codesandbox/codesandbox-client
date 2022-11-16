@@ -94,7 +94,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                 </Text>
 
                 {!selectedTeam?.subscription && (
-                  <Badge color="accent">Free</Badge>
+                  <Badge variant="trial">Free</Badge>
                 )}
               </Stack>
 
@@ -147,7 +147,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                         : team.name}
                     </Text>
 
-                    {!team.subscription && <Badge color="accent">Free</Badge>}
+                    {!team.subscription && <Badge variant="trial">Free</Badge>}
                   </Stack>
                 </Stack>
               ))}

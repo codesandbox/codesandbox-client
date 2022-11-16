@@ -10,10 +10,10 @@ export default {
 export const Examples = () => (
   <Stack align="flex-start" gap={2} direction="vertical">
     <Badge>Neutral</Badge>
-    <Badge color="accent">Accent</Badge>
+    <Badge variant="trial">Free</Badge>
     <Badge icon="bell">With icon</Badge>
-    <Badge icon="bell" color="accent">
-      Accent with icon
+    <Badge icon="bell" variant="trial">
+      Free with icon
     </Badge>
   </Stack>
 );

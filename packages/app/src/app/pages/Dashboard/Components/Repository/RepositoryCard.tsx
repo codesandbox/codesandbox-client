@@ -58,10 +58,8 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
       {...props}
     >
       {isViewOnly ? (
-        <Element css={{ position: 'absolute', top: 24, left: 24 }}>
-          <Badge color="accent" isPadded>
-            View only
-          </Badge>
+        <Element css={{ position: 'absolute', top: 20, left: 20 }}>
+          <Badge variant="trial">View only</Badge>
         </Element>
       ) : null}
       <IconButton
