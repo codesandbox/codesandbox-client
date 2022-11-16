@@ -151,7 +151,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                       href={
                         isEligibleForTrial
                           ? '/docs/learn/plan-billing/trials'
-                          : 'docs/learn/introduction/workspace#managing-teams-and-subscriptions'
+                          : '/docs/learn/introduction/workspace#managing-teams-and-subscriptions'
                       }
                       target="_blank"
                       onClick={() => {
