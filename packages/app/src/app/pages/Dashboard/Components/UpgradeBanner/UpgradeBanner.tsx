@@ -148,11 +148,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                     </Button>
 
                     <Link
-                      href={
-                        isEligibleForTrial
-                          ? '/docs/learn/plan-billing/trials'
-                          : '/docs/learn/introduction/workspace#managing-teams-and-subscriptions'
-                      }
+                      href="/pricing"
                       target="_blank"
                       onClick={() => {
                         track('Home Banner - Learn More', {
