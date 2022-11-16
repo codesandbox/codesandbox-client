@@ -85,7 +85,7 @@ export const Recent = () => {
           css={{
             width: `calc(100% - ${2 * GUTTER}px)`,
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-            margin: '0 auto 28px',
+            margin: '0 auto 48px',
           }}
         >
           <UpgradeBanner teamId={activeTeamId} />
