@@ -17,12 +17,7 @@ import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useSubscription } from 'app/hooks/useSubscription';
-
-const DOCS_URLS = {
-  trial: '/docs/learn/plan-billing/trials',
-  non_trial:
-    '/docs/learn/introduction/workspace#managing-teams-and-subscriptions',
-};
+import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 
 const StyledTitle = styled(Text)`
   font-size: 24px;
@@ -183,7 +178,9 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                 <Button
                   as="a"
                   href={
-                    isEligibleForTrial ? DOCS_URLS.trial : DOCS_URLS.non_trial
+                    isEligibleForTrial
+                      ? SUBSCRIPTION_DOCS_URLS.teams.trial
+                      : SUBSCRIPTION_DOCS_URLS.teams.non_trial
                   }
                   target="_blank"
                   autoWidth
