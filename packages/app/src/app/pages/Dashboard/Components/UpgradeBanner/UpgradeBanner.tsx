@@ -18,6 +18,12 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useSubscription } from 'app/hooks/useSubscription';
 
+const DOCS_URLS = {
+  trial: '/docs/learn/plan-billing/trials',
+  non_trial:
+    '/docs/learn/introduction/workspace#managing-teams-and-subscriptions',
+};
+
 const StyledTitle = styled(Text)`
   font-size: 24px;
   line-height: 32px;
@@ -148,11 +154,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                     </Button>
 
                     <Link
-                      href={
-                        isEligibleForTrial
-                          ? '/docs/learn/plan-billing/trials'
-                          : 'docs/learn/introduction/workspace#managing-teams-and-subscriptions'
-                      }
+                      href="/pricing"
                       target="_blank"
                       onClick={() => {
                         track('Home Banner - Learn More', {
@@ -181,9 +183,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                 <Button
                   as="a"
                   href={
-                    isEligibleForTrial
-                      ? '/docs/learn/plan-billing/trials'
-                      : 'docs/learn/introduction/workspace#managing-teams-and-subscriptions'
+                    isEligibleForTrial ? DOCS_URLS.trial : DOCS_URLS.non_trial
                   }
                   target="_blank"
                   autoWidth
