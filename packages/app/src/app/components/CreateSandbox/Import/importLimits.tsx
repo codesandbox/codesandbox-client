@@ -4,6 +4,7 @@ import {
   Link as StyledLink,
   MessageStripe,
 } from '@codesandbox/components';
+import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useSubscription } from 'app/hooks/useSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -32,16 +33,22 @@ export const MaxPublicRepos: React.FC = () => {
   const { modals } = useActions();
 
   const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
+    team_id: isTeamAdmin ? activeTeam : undefined,
     success_path: pathname,
     cancel_path: pathname,
   });
 
+  // Personal worksaces don't have a limit
+  // for public repositories.
+  if (isPersonalSpace) {
+    return null;
+  }
+
   return (
-    <MessageStripe justify={isTeamAdmin ? 'space-between' : 'center'}>
+    <MessageStripe justify="space-between">
       You&apos;ve reached the maximum amount of free repositories. Upgrade for
       more.
-      {isTeamAdmin && (
+      {isTeamAdmin ? (
         <MessageStripe.Action
           {...(checkout.state === 'READY'
             ? {
@@ -68,6 +75,18 @@ export const MaxPublicRepos: React.FC = () => {
           }}
         >
           {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
+        </MessageStripe.Action>
+      ) : (
+        <MessageStripe.Action
+          as="a"
+          href={
+            isEligibleForTrial
+              ? SUBSCRIPTION_DOCS_URLS.teams.trial
+              : SUBSCRIPTION_DOCS_URLS.teams.non_trial
+          }
+          target="_blank"
+        >
+          Learn more
         </MessageStripe.Action>
       )}
     </MessageStripe>
