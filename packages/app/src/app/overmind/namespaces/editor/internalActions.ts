@@ -439,7 +439,10 @@ export const forkSandbox = async (
     return;
   }
 
-  effects.analytics.track('Fork Sandbox');
+  effects.analytics.track('Fork Sandbox', {
+    template: sandbox.customTemplate?.title,
+    sandboxId: sandbox.id,
+  });
 
   try {
     state.editor.isForkingSandbox = true;
