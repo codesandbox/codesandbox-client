@@ -88,13 +88,13 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
               <Stack align="center" gap={1} css={{ paddingRight: 4 }}>
                 <Text
                   size={16}
-                  maxWidth={selectedTeam?.subscription ? 166 : 126}
+                  maxWidth={selectedTeam?.subscription ? 163 : 123}
                 >
                   {isPersonalTeam ? 'Personal' : selectedTeam?.name}
                 </Text>
 
                 {!selectedTeam?.subscription && (
-                  <Badge color="accent">Free</Badge>
+                  <Badge variant="trial">Free</Badge>
                 )}
               </Stack>
 
@@ -147,7 +147,7 @@ export const WorkspaceSelect: React.FC<WorkspaceSelectProps> = React.memo(
                         : team.name}
                     </Text>
 
-                    {!team.subscription && <Badge color="accent">Free</Badge>}
+                    {!team.subscription && <Badge variant="trial">Free</Badge>}
                   </Stack>
                 </Stack>
               ))}

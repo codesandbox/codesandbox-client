@@ -4,40 +4,32 @@ import { Stack } from '../Stack';
 import { Text } from '../Text';
 
 export interface BadgeProps {
-  color?: 'accent' | 'neutral';
+  variant?: 'trial' | 'neutral';
   icon?: IconNames;
   isPadded?: boolean;
 }
 
 export const Badge: React.FC<BadgeProps> = ({
-  color = 'neutral',
+  variant = 'neutral',
   icon,
-  isPadded,
   children,
 }) => {
-  let padding = '1px 6px';
-
-  if (isPadded) {
-    padding = '8px 12px';
-  } else if (icon) {
-    padding = '4px 8px';
-  }
-
   return (
     <Stack
       css={{
         alignItems: 'center',
-        padding,
+        padding: '2px 8px',
         userSelect: 'none',
         borderRadius: '999px',
-        backgroundColor: color === 'accent' ? '#644ED7' : '#2e2e2e',
-        color: color === 'accent' ? '#fff' : 'inherit',
-        fontSize: 11,
+        backgroundColor: variant === 'trial' ? '#644ED7' : '#2e2e2e',
+        color: variant === 'trial' ? '#fff' : 'inherit',
       }}
       gap={1}
     >
       {icon && <Icon size={12} name={icon} />}
-      <Text>{children}</Text>
+      <Text size={12} lineHeight="16px">
+        {children}
+      </Text>
     </Stack>
   );
 };

@@ -85,15 +85,13 @@ export const SyncedSandboxListItem = ({
         <Column span={[0, 2, 2]}>
           {isViewOnly ? (
             <Stack align="center">
-              <Badge color="accent" isPadded>
-                View only
-              </Badge>
+              <Badge variant="trial">View only</Badge>
             </Stack>
           ) : null}
         </Column>
         <Column span={[0, 5, 2]} as={Stack} align="center">
           <Stack align="center">
-            <Badge isPadded>Synced</Badge>
+            <Badge>Synced</Badge>
           </Stack>
         </Column>
         <Column span={[0, 3, 3]} as={Stack} align="center">

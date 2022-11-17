@@ -1,5 +1,4 @@
 import {
-  Badge,
   Text,
   Stack,
   Element,
@@ -335,10 +334,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     }}
                     stopId="cloud-templates"
                   >
-                    <Stack gap={2}>
-                      <span>Cloud templates</span>
-                      <Badge>Beta</Badge>
-                    </Stack>
+                    Cloud templates (Beta)
                   </Tab>
 
                   <Tab

@@ -40,7 +40,7 @@ const UpgradeToolTip: React.FC = () => (
             </Stack>
           }
         >
-          <Badge color="accent">Free</Badge>
+          <Badge variant="trial">Free</Badge>
         </Tooltip>
       )}
     </SingletonTooltip>

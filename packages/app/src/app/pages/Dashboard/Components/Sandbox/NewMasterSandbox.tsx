@@ -91,9 +91,7 @@ export const NewMasterSandboxListItem = ({
         <Column span={[0, 2, 2]}>
           {isViewOnly ? (
             <Stack align="center">
-              <Badge color="accent" isPadded>
-                View only
-              </Badge>
+              <Badge variant="trial">View only</Badge>
             </Stack>
           ) : null}
         </Column>
@@ -146,9 +144,7 @@ export const NewMasterSandboxCard = ({
     >
       {isViewOnly ? (
         <Element css={{ position: 'absolute', top: 8, left: 8 }}>
-          <Badge color="accent" isPadded>
-            View only
-          </Badge>
+          <Badge variant="trial">View only</Badge>
         </Element>
       ) : null}
       <Stack

@@ -268,9 +268,7 @@ export const SandboxCard = ({
     >
       {isViewOnly ? (
         <Element css={{ position: 'absolute', top: 8, left: 8 }}>
-          <Badge color="accent" isPadded>
-            View only
-          </Badge>
+          <Badge variant="trial">View only</Badge>
         </Element>
       ) : null}
 
@@ -380,15 +378,15 @@ const Thumbnail = ({
         {showBetaBadge && <Badge icon="cloud">Beta</Badge>}
         <div
           style={{
-            width: 18,
-            height: 18,
+            width: 16,
+            height: 16,
             borderRadius: 4,
             backgroundColor: '#343434',
             borderColor: '#343434',
-            padding: 3,
+            padding: 2,
           }}
         >
-          <TemplateIcon width="18" height="18" />
+          <TemplateIcon width="16" height="16" />
         </div>
       </Stack>
     </>
