@@ -483,6 +483,7 @@ export type Sandbox = {
     preventSandboxLeaving: boolean;
     preventSandboxExport: boolean;
   };
+  freePlanEditingRestricted: boolean;
 };
 
 export type PrettierConfig = {
