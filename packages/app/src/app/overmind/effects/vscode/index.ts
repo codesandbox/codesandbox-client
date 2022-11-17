@@ -233,22 +233,9 @@ export class VSCodeEffect {
             return false;
           }
 
-          return (
-            (state.editor.currentSandbox &&
-              Boolean(state.editor.currentSandbox.git)) ||
-            !state.live.isLive ||
-            state.live.roomInfo?.mode === 'open' ||
-            (state.live.roomInfo?.mode === 'classroom' &&
-              state.live.isCurrentEditor)
-          );
-
-          // (state.editor.currentSandbox && Boolean(state.editor.currentSandbox.git))
           const hasGitInfo = Boolean(state.editor.currentSandbox?.git);
-          // !state.live.isLive
           const isNotLive = !state.live.isLive;
-          // state.live.roomInfo?.mode === 'open'
           const isOpenRoom = state.live.roomInfo?.mode === 'open';
-          // (state.live.roomInfo?.mode === 'classroom' && state.live.isCurrentEditor),
           const isClassroomAndCurrentEditor =
             state.live.roomInfo?.mode === 'classroom' &&
             state.live.isCurrentEditor;
