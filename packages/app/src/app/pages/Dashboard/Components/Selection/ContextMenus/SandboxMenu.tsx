@@ -26,8 +26,6 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
     browser: { copyToClipboard },
   } = useEffects();
   const { sandbox, type } = item;
-  // TODO: Get isViewOnly from item 🚧
-  const isViewOnly = false;
   const isTemplate = type === 'template';
 
   const { visible, setVisibility, position } = React.useContext(Context);
@@ -40,6 +38,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'Template' : 'Sandbox';
+  const isViewOnly = !hasActiveSubscription && sandbox.privacy !== 0;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
