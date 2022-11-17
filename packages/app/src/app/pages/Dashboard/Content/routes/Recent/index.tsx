@@ -13,6 +13,7 @@ import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { Element } from '@codesandbox/components';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 
 export const Recent = () => {
   const {
@@ -34,6 +35,7 @@ export const Recent = () => {
     sandboxes.RECENT_BRANCHES === null || sandboxes.RECENT_SANDBOXES === null;
 
   const { hasActiveSubscription } = useSubscription();
+  const { isPersonalSpace } = useWorkspaceAuthorization();
 
   const items: DashboardGridItem[] = dataIsLoading
     ? [
@@ -78,12 +80,12 @@ export const Recent = () => {
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      {!hasActiveSubscription && (
+      {!hasActiveSubscription && !isPersonalSpace && (
         <Element
           css={{
             width: `calc(100% - ${2 * GUTTER}px)`,
             maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-            margin: '0 auto 28px',
+            margin: '0 auto 48px',
           }}
         >
           <UpgradeBanner teamId={activeTeamId} />
