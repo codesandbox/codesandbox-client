@@ -8,7 +8,10 @@ import {
   Stack,
 } from '@codesandbox/components';
 import { CreateSandbox } from 'app/components/CreateSandbox';
-import { PaymentPending } from 'app/components/StripeMessages';
+import {
+  FreeViewOnlyStripe,
+  PaymentPending,
+} from 'app/components/StripeMessages';
 import VisuallyHidden from '@reach/visually-hidden';
 import css from '@styled-system/css';
 import { useActions, useReaction, useEffects, useAppState } from 'app/overmind';
@@ -134,8 +137,13 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
         {state.preferences.settings.zenMode ? null : (
           <ComponentsThemeProvider theme={localState.theme.vscodeTheme}>
             {!state.hasLogIn && <FixedSignInBanner />}
+
             {state.activeTeamInfo?.subscription?.status ===
               SubscriptionStatus.Unpaid && <PaymentPending />}
+
+            {state.editor?.currentSandbox?.freePlanEditingRestricted ? (
+              <FreeViewOnlyStripe />
+            ) : null}
             <Header />
           </ComponentsThemeProvider>
         )}
