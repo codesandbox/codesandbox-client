@@ -404,7 +404,11 @@ export default class App extends React.PureComponent<
       return (
         <SandpackProvider
           files={sandpackFiles}
-          customSetup={{ environment: sandbox.template, entry: sandbox.entry }}
+          customSetup={{
+            environment: sandbox.template,
+            entry: sandbox.entry,
+            dependencies: sandbox.npmDependencies,
+          }}
           options={{
             activeFile: activeFilePath.path,
             visibleFiles: [activeFilePath.path],
