@@ -7,12 +7,13 @@ import { TemplateGrid } from '../elements';
 import { TemplateCard } from '../TemplateCard';
 
 type ResultsProps = InfiniteHitsProvided<AlgoliaSandboxHit> & {
+  disableTemplates?: boolean;
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
 };
 
 const Results = (props: ResultsProps) => {
-  const { hits } = props;
+  const { disableTemplates, hits } = props;
   const bottomDetectionEl = React.useRef<HTMLDivElement>();
 
   useEffect(() => {
@@ -67,6 +68,7 @@ const Results = (props: ResultsProps) => {
       {templates.map(template => (
         <TemplateCard
           key={template.id}
+          disabled={disableTemplates}
           template={template}
           onSelectTemplate={props.onSelectTemplate}
           onOpenTemplate={props.onOpenTemplate}
