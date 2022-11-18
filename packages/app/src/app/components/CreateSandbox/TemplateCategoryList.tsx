@@ -42,6 +42,8 @@ export const TemplateCategoryList = ({
     track('Create Sandbox Tab Open', { tab: title });
   }, [title]);
 
+  const limitNewSandboxes = !hasActiveSubscription && hasMaxPublicSandboxes;
+
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={4}>
       <Stack
@@ -65,7 +67,7 @@ export const TemplateCategoryList = ({
           {title}
         </Text>
       </Stack>
-      {!hasActiveSubscription && hasMaxPublicSandboxes ? (
+      {limitNewSandboxes ? (
         <MaxPublicSandboxes
           checkoutUrl={checkoutUrl}
           isEligibleForTrial={isEligibleForTrial}
@@ -94,6 +96,7 @@ export const TemplateCategoryList = ({
           templates.map(template => (
             <TemplateCard
               key={template.id}
+              disabled={limitNewSandboxes}
               template={template}
               onSelectTemplate={onSelectTemplate}
               onOpenTemplate={onOpenTemplate}
