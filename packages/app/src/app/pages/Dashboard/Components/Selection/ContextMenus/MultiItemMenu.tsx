@@ -102,7 +102,8 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
       preventSandboxLeaving: Boolean(
         [...sandboxes, ...templates].find(
           s => s.sandbox.permissions.preventSandboxLeaving
-        )
+        ) ||
+          (!hasActiveSubscription && hasMaxPublicSandboxes)
       ),
     });
   };
@@ -263,43 +264,27 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   } else if (sandboxes.length && templates.length) {
     options = [...PRIVACY_ITEMS, ...EXPORT, MOVE_ITEMS, DIVIDER, DELETE];
   } else if (templates.length) {
-    options =
-      hasActiveSubscription && !hasMaxPublicSandboxes
-        ? [
-            ...PRIVACY_ITEMS,
-            ...EXPORT,
-            MOVE_ITEMS,
-            CONVERT_TO_SANDBOX,
-            DIVIDER,
-            DELETE,
-          ]
-        : [...PRIVACY_ITEMS, ...EXPORT, CONVERT_TO_SANDBOX, DIVIDER, DELETE];
+    options = [
+      ...PRIVACY_ITEMS,
+      ...EXPORT,
+      MOVE_ITEMS,
+      CONVERT_TO_SANDBOX,
+      DIVIDER,
+      DELETE,
+    ];
   } else if (sandboxes.length) {
-    options =
-      hasActiveSubscription && !hasMaxPublicSandboxes
-        ? [
-            ...PRIVACY_ITEMS,
-            ...EXPORT,
-            DIVIDER,
-            ...FROZEN_ITEMS,
-            DIVIDER,
-            MOVE_ITEMS,
-            CONVERT_TO_TEMPLATE,
-            ...PROTECTED_SANDBOXES_ITEMS,
-            DIVIDER,
-            DELETE,
-          ]
-        : [
-            ...PRIVACY_ITEMS,
-            ...EXPORT,
-            DIVIDER,
-            ...FROZEN_ITEMS,
-            DIVIDER,
-            CONVERT_TO_TEMPLATE,
-            ...PROTECTED_SANDBOXES_ITEMS,
-            DIVIDER,
-            DELETE,
-          ];
+    options = [
+      ...PRIVACY_ITEMS,
+      ...EXPORT,
+      DIVIDER,
+      ...FROZEN_ITEMS,
+      DIVIDER,
+      MOVE_ITEMS,
+      CONVERT_TO_TEMPLATE,
+      ...PROTECTED_SANDBOXES_ITEMS,
+      DIVIDER,
+      DELETE,
+    ];
   }
 
   return options.length > 0 ? (
