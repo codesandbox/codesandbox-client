@@ -421,6 +421,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
             {viewState === 'initial' &&
               (searchQuery ? (
                 <SearchResults
+                  checkoutUrl={checkoutUrl}
                   search={searchQuery}
                   onSelectTemplate={selectTemplate}
                   onOpenTemplate={openTemplate}
