@@ -407,7 +407,9 @@ export default class App extends React.PureComponent<
           customSetup={{
             environment: sandbox.template,
             entry: sandbox.entry,
-            dependencies: sandbox.npmDependencies,
+            dependencies: sandpackFiles['/package.json']
+              ? undefined
+              : sandbox.npmDependencies,
           }}
           options={{
             activeFile: activeFilePath.path,
