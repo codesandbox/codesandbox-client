@@ -6,6 +6,7 @@ import type { Module, Sandbox } from '@codesandbox/common/lib/types';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
+import { Sandpack } from '@codesandbox/sandpack-react';
 import {
   findCurrentModule,
   findMainModule,
@@ -363,6 +364,8 @@ export default class App extends React.PureComponent<
       isInProjectView,
       runOnClick,
     } = this.state;
+
+    return <Sandpack />;
 
     return (
       <ThemeProvider

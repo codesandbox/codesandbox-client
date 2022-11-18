@@ -80,6 +80,7 @@
     "@codesandbox/common": "^1.0.8",
     "@codesandbox/components": "^0.0.3",
     "@codesandbox/executors": "^0.1.0",
+    "@codesanbdox/sandpack-react": "npm:@codesandbox/sandpack-react@1.17.0",
     "@emmetio/codemirror-plugin": "^0.3.5",
     "@reach/combobox": "0.10.3",
     "@sentry/webpack-plugin": "^1.8.0",
