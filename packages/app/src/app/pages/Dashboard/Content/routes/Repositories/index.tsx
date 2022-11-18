@@ -133,15 +133,6 @@ export const RepositoriesPage = () => {
         readOnly={readOnly}
       />
 
-      {readOnly && (
-        <Element paddingX={4} paddingY={2}>
-          {selectedRepo?.private && <PrivateRepoFreeTeam />}
-          {hasMaxPublicRepositories && !selectedRepo && (
-            <MaxPublicReposFreeTeam />
-          )}
-        </Element>
-      )}
-
       {itemsToShow.length === 0 ? (
         <Notification pageType={pageType}>
           <Text>
@@ -160,6 +151,15 @@ export const RepositoriesPage = () => {
             personal team.
           </Text>
         </Notification>
+      )}
+
+      {readOnly && (
+        <Element paddingX={4} paddingY={2}>
+          {selectedRepo?.private && <PrivateRepoFreeTeam />}
+          {hasMaxPublicRepositories && !selectedRepo && (
+            <MaxPublicReposFreeTeam />
+          )}
+        </Element>
       )}
 
       <VariableGrid page={pageType} items={itemsToShow} />
