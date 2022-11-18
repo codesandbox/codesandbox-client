@@ -95,6 +95,7 @@ export const SearchResults = ({
 
           <LoadingIndicator />
           <SearchResultList
+            disableTemplates={limitNewSandboxes}
             onSelectTemplate={onSelectTemplate}
             onOpenTemplate={onOpenTemplate}
           />
