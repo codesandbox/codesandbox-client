@@ -7,12 +7,14 @@ import { useAppState } from 'app/overmind';
 import { TemplateButton } from './elements';
 
 interface TemplateCardProps {
+  disabled?: boolean;
   template: TemplateFragment;
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
 }
 
 export const TemplateCard = ({
+  disabled,
   template,
   onSelectTemplate,
   onOpenTemplate,
@@ -32,6 +34,10 @@ export const TemplateCard = ({
       title={sandboxTitle}
       type="button"
       onClick={evt => {
+        if (disabled) {
+          return;
+        }
+
         if (evt.metaKey || evt.ctrlKey || !isLoggedIn) {
           onOpenTemplate(template);
         } else {
@@ -39,6 +45,10 @@ export const TemplateCard = ({
         }
       }}
       onKeyDown={evt => {
+        if (disabled) {
+          return;
+        }
+
         if (evt.key === 'Enter') {
           evt.preventDefault();
           if (evt.metaKey || evt.ctrlKey) {
@@ -48,6 +58,7 @@ export const TemplateCard = ({
           }
         }
       }}
+      disabled={disabled}
     >
       <Stack css={{ height: '100%' }} direction="vertical" gap={4}>
         <Stack
