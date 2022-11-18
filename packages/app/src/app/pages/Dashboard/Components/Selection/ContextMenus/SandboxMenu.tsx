@@ -21,7 +21,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 }) => {
   const actions = useActions();
   const { user, activeTeam, activeWorkspaceAuthorization } = useAppState();
-  const { hasActiveSubscription } = useSubscription();
+  const { hasActiveSubscription, hasMaxPublicSandboxes } = useSubscription();
   const {
     browser: { copyToClipboard },
   } = useEffects();
@@ -172,7 +172,10 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           Fork Sandbox
         </MenuItem>
       ) : null}
-      {isOwner && activeWorkspaceAuthorization !== 'READ' ? (
+      {isOwner &&
+      activeWorkspaceAuthorization !== 'READ' &&
+      hasActiveSubscription &&
+      !hasMaxPublicSandboxes ? (
         <MenuItem
           onSelect={() => {
             actions.modals.moveSandboxModal.open({
