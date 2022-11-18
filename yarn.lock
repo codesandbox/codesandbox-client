@@ -1595,7 +1595,22 @@
     style-mod "^4.0.0"
     w3c-keyname "^2.2.4"
 
-"@codesanbdox/sandpack-react@npm:@codesandbox/sandpack-react@1.17.0", "@codesandbox/sandpack-react@^1.17.0":
+"@codesandbox/ab@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@codesandbox/ab/-/ab-1.0.5.tgz#77cd3bbf1cdbcc4fe348ded85b593a6fb894543f"
+  integrity sha512-/4b1CnX99GdhzjLewXaxuHb4CriCfRIpBqBCFm6ogAeHHQ0oWUlq3EmRW/CXs88+1oFSQPoMSr3v8OyUoUdDAg==
+  dependencies:
+    react "^16.9.0"
+
+"@codesandbox/sandpack-client@^1.12.1":
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-client/-/sandpack-client-1.12.1.tgz#fa3b66ecb08547c47e1cdf6248f5004bf5be68fb"
+  integrity sha512-p79Sk41hrp5ojeHbgTU/JWNS3UcRJKewq+oRD6O6g3MzlhUnE+xO94ui79Td4aeU4fq0jGHeLHIHCW04WMK4Yg==
+  dependencies:
+    codesandbox-import-utils "^1.2.3"
+    lodash.isequal "^4.5.0"
+
+"@codesandbox/sandpack-react@1.17.0", "@codesandbox/sandpack-react@^1.17.0":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-react/-/sandpack-react-1.17.0.tgz#4d4f97319dc302388421d7df2639fa722c7f801a"
   integrity sha512-8GzX/of2oOg22txbSApN6K3dPzwPs0n6ipoyXWRxS1cmXoxTId9Qzw/NmEx2seoXSvC0ItwrzzNIZPRFeZOJ3g==
@@ -1623,21 +1638,6 @@
     lz-string "^1.4.4"
     react-devtools-inline "4.4.0"
     react-is "^17.0.2"
-
-"@codesandbox/ab@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@codesandbox/ab/-/ab-1.0.5.tgz#77cd3bbf1cdbcc4fe348ded85b593a6fb894543f"
-  integrity sha512-/4b1CnX99GdhzjLewXaxuHb4CriCfRIpBqBCFm6ogAeHHQ0oWUlq3EmRW/CXs88+1oFSQPoMSr3v8OyUoUdDAg==
-  dependencies:
-    react "^16.9.0"
-
-"@codesandbox/sandpack-client@^1.12.1":
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-client/-/sandpack-client-1.12.1.tgz#fa3b66ecb08547c47e1cdf6248f5004bf5be68fb"
-  integrity sha512-p79Sk41hrp5ojeHbgTU/JWNS3UcRJKewq+oRD6O6g3MzlhUnE+xO94ui79Td4aeU4fq0jGHeLHIHCW04WMK4Yg==
-  dependencies:
-    codesandbox-import-utils "^1.2.3"
-    lodash.isequal "^4.5.0"
 
 "@codesandbox/sandpack-themes@^1.17.0":
   version "1.17.0"
