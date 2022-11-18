@@ -40,8 +40,8 @@ export const SandboxesPage = () => {
       (isTeamAdmin || isPersonalSpace) && !hasActiveSubscription
         ? activeTeam
         : undefined,
-    success_path: dashboardUrls.registrySettings(activeTeam),
-    cancel_path: dashboardUrls.registrySettings(activeTeam),
+    success_path: dashboardUrls.sandboxes(activeTeam),
+    cancel_path: dashboardUrls.sandboxes(activeTeam),
   });
 
   React.useEffect(() => {
