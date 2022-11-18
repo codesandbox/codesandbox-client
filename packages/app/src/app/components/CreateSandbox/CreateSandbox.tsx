@@ -15,6 +15,10 @@ import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useSubscription } from 'app/hooks/useSubscription';
+import { useLocation } from 'react-router-dom';
 import {
   Container,
   Tab,
@@ -87,6 +91,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 }) => {
   const { hasLogIn, activeTeamInfo, user } = useAppState();
   const actions = useActions();
+  const { pathname } = useLocation();
   const isUnderRepositoriesSection =
     location.pathname.includes('/my-contributions') ||
     location.pathname.includes('/repositories');
@@ -166,6 +171,20 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
       setSearchQuery('');
     }
   }, [tabState.selectedId]);
+
+  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { hasActiveSubscription, hasMaxPublicSandboxes } = useSubscription();
+
+  const checkout = useGetCheckoutURL({
+    team_id:
+      isTeamAdmin && !hasActiveSubscription && hasMaxPublicSandboxes
+        ? activeTeamInfo?.id
+        : undefined,
+    success_path: pathname,
+    cancel_path: pathname,
+  });
+
+  const checkoutUrl = checkout.state === 'READY' ? checkout.url : undefined;
 
   const createFromTemplate = (
     template: TemplateFragment,
@@ -411,6 +430,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Panel tab={tabState} id="quickstart">
                     <TemplateCategoryList
                       title="Start from a template"
+                      checkoutUrl={checkoutUrl}
                       templates={quickStartTemplates}
                       onSelectTemplate={template => {
                         track('Create New - Fork Quickstart template', {
@@ -434,6 +454,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         title={`${
                           isUser ? 'My' : activeTeamInfo?.name || 'Team'
                         } templates`}
+                        checkoutUrl={checkoutUrl}
                         templates={teamTemplates}
                         onSelectTemplate={template => {
                           track(
@@ -453,6 +474,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Panel tab={tabState} id="cloud-templates">
                     <TemplateCategoryList
                       title="Cloud templates"
+                      checkoutUrl={checkoutUrl}
                       templates={officialTemplates.filter(
                         template => template.sandbox.isV2
                       )}
@@ -472,6 +494,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                   <Panel tab={tabState} id="official-templates">
                     <TemplateCategoryList
                       title="Official templates"
+                      checkoutUrl={checkoutUrl}
                       templates={officialTemplates}
                       onSelectTemplate={template => {
                         track('Create New - Fork Official template', {
@@ -494,6 +517,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                         >
                           <TemplateCategoryList
                             title={essential.title}
+                            checkoutUrl={checkoutUrl}
                             templates={essential.templates}
                             onSelectTemplate={template => {
                               track('Create New - Fork Essential template', {
