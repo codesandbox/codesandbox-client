@@ -9,7 +9,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
 import { Text, Element } from '@codesandbox/components';
 import { useSubscription } from 'app/hooks/useSubscription';
-import { /* MaxPublicReposFreeTeam, */ PrivateRepoFreeTeam } from './stripes';
+import { MaxPublicReposFreeTeam, PrivateRepoFreeTeam } from './stripes';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -48,10 +48,7 @@ export const RepositoriesPage = () => {
     pathRef.current = path;
   }, [path]);
 
-  const {
-    hasActiveSubscription,
-    // hasMaxPublicRepositories,
-  } = useSubscription();
+  const { hasActiveSubscription, hasMaxPublicRepositories } = useSubscription();
 
   const pageType: PageTypes = 'repositories';
   let selectedRepo:
@@ -105,7 +102,7 @@ export const RepositoriesPage = () => {
     if (viewMode === 'grid' && repoItems.length > 0) {
       repoItems.unshift({
         type: 'import-repository',
-        // disabled: !hasActiveSubscription && hasMaxPublicRepositories,
+        disabled: !hasActiveSubscription && hasMaxPublicRepositories,
       });
     }
 
@@ -113,10 +110,9 @@ export const RepositoriesPage = () => {
   };
 
   const itemsToShow = getItemsToShow();
-  const readOnly = !hasActiveSubscription && selectedRepo?.private;
-  // const readOnly = !hasActiveSubscription
-  //   ? selectedRepo?.private || hasMaxPublicRepositories
-  //   : false;
+  const readOnly =
+    !hasActiveSubscription &&
+    (selectedRepo?.private || hasMaxPublicRepositories);
 
   return (
     <SelectionProvider
@@ -137,13 +133,6 @@ export const RepositoriesPage = () => {
         readOnly={readOnly}
       />
 
-      {readOnly && (
-        <Element paddingX={4} paddingY={2}>
-          {selectedRepo?.private && <PrivateRepoFreeTeam />}
-          {/* {(hasMaxPublicRepositories && !selectedRepo) && <MaxPublicReposFreeTeam />} */}
-        </Element>
-      )}
-
       {itemsToShow.length === 0 ? (
         <Notification pageType={pageType}>
           <Text>
@@ -162,6 +151,15 @@ export const RepositoriesPage = () => {
             personal team.
           </Text>
         </Notification>
+      )}
+
+      {readOnly && (
+        <Element paddingX={4} paddingY={2}>
+          {selectedRepo?.private && <PrivateRepoFreeTeam />}
+          {hasMaxPublicRepositories && !selectedRepo && (
+            <MaxPublicReposFreeTeam />
+          )}
+        </Element>
       )}
 
       <VariableGrid page={pageType} items={itemsToShow} />
