@@ -28,7 +28,7 @@ export const SandboxesPage = () => {
     activeTeam,
   } = useAppState();
 
-  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
+  const { isTeamAdmin } = useWorkspaceAuthorization();
   const {
     hasActiveSubscription,
     isEligibleForTrial,
@@ -36,10 +36,7 @@ export const SandboxesPage = () => {
   } = useSubscription();
 
   const checkout = useGetCheckoutURL({
-    team_id:
-      (isTeamAdmin || isPersonalSpace) && !hasActiveSubscription
-        ? activeTeam
-        : undefined,
+    team_id: isTeamAdmin && !hasActiveSubscription ? activeTeam : undefined,
     success_path: dashboardUrls.sandboxes(activeTeam),
     cancel_path: dashboardUrls.sandboxes(activeTeam),
   });
