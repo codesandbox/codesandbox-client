@@ -103,12 +103,16 @@ export const TemplateButton = styled.button`
   transition: background ${props => props.theme.speeds[2]} ease-out;
   outline: none;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: #252525;
   }
 
   &:focus-visible {
     border-color: ${props => props.theme.colors.purple};
+  }
+
+  &:disabled {
+    opacity: 0.4;
   }
 `;
 

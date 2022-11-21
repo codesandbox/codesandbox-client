@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useAppState, useActions, useEffects } from 'app/overmind';
+import { useSubscription } from 'app/hooks/useSubscription';
 import { Element, SkipNav } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
@@ -150,6 +151,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const actions = useActions();
   const { dashboard, activeTeam } = useAppState();
   const { analytics } = useEffects();
+  const { hasActiveSubscription, hasMaxPublicSandboxes } = useSubscription();
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
     if (event.ctrlKey || event.metaKey) {
@@ -453,6 +455,10 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           collectionPath: activeTeam ? null : '/',
         });
       } else if (dropPage === 'sandboxes') {
+        if (!hasActiveSubscription && hasMaxPublicSandboxes) {
+          return;
+        }
+
         actions.dashboard.addSandboxesToFolder({
           sandboxIds,
           collectionPath: dropResult.path,

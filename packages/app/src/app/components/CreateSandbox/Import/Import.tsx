@@ -1,28 +1,17 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import {
-  gitHubRepoPattern,
-  dashboard,
-} from '@codesandbox/common/lib/utils/url-generator';
-
-import {
-  Button,
-  Element,
-  Input,
-  Link,
-  Stack,
-  Text,
-} from '@codesandbox/components';
+import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
+import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
 import { useSubscription } from 'app/hooks/useSubscription';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { useImportAndRedirect } from './useImportAndRedirect';
 import { getOwnerAndNameFromInput } from './utils';
+import { MaxPublicRepos, PrivateRepoFreeTeam } from './importLimits';
 
 const UnauthenticatedImport: React.FC = () => {
   const actions = useActions();
@@ -68,29 +57,9 @@ type ImportProps = {
 export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const importAndRedirect = useImportAndRedirect();
-  const {
-    hasActiveSubscription,
-    hasPastOrActiveSubscription,
-  } = useSubscription();
-  const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
-  const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin || isPersonalSpace ? activeTeam : undefined,
-    success_path: dashboard.recent(activeTeam),
-    cancel_path: dashboard.recent(activeTeam),
-  });
 
-  const checkoutURL = React.useMemo(() => {
-    if (isTeamAdmin || isPersonalSpace) {
-      if (checkout.state === 'READY') {
-        return checkout.url;
-      }
-      return '/pro';
-    }
+  const { hasActiveSubscription, hasMaxPublicRepositories } = useSubscription();
 
-    return hasPastOrActiveSubscription
-      ? '/docs/learn/introduction/workspace#managing-teams-and-subscriptions'
-      : '/docs/learn/plan-billing/trials';
-  }, [checkout, hasPastOrActiveSubscription, isTeamAdmin, isPersonalSpace]);
   const [isImporting, setIsImporting] = React.useState(false);
   const [shouldFetch, setShouldFetch] = React.useState(false);
   const [
@@ -150,6 +119,11 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (hasMaxPublicRepositories) {
+      return;
+    }
+
     track('Create New - Import Repo', {
       codesandbox: 'V1',
       event_source: 'UI',
@@ -166,7 +140,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     privateRepoFreeAccountError === url.raw;
 
   return (
-    <Stack direction="vertical" gap={6}>
+    <Stack direction="vertical" gap={4}>
       <Text
         as="h2"
         id="form-title"
@@ -179,23 +153,38 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
       >
         Enter the GitHub repository URL to import
       </Text>
-      <form onSubmit={handleFormSubmit}>
+      {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
+      <Element
+        {...(hasMaxPublicRepositories
+          ? {
+              as: 'div',
+              css: {
+                opacity: hasMaxPublicRepositories ? 0.4 : 1,
+                pointerEvents: hasMaxPublicRepositories ? 'none' : 'initial',
+              },
+            }
+          : { as: 'form', onSubmit: handleFormSubmit })}
+      >
         <Stack gap={2}>
           <Input
+            aria-disabled={hasMaxPublicRepositories}
             aria-describedby="form-title form-error"
             aria-invalid={Boolean(url.error)}
-            onChange={handleUrlInputChange}
+            css={{ height: '32px' }}
             placeholder="GitHub Repository URL"
+            tabIndex={hasMaxPublicRepositories ? -1 : 0}
             type="text"
             value={url.raw}
+            onChange={handleUrlInputChange}
             required
-            css={{ height: '32px' }}
           />
           <Button
+            css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
+            aria-disabled={hasMaxPublicRepositories}
             disabled={Boolean(url.error) || isLoading}
+            tabIndex={hasMaxPublicRepositories ? -1 : 0}
             type="submit"
             autoWidth
-            css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
           >
             {isLoading ? 'Importing...' : 'Import'}
           </Button>
@@ -215,29 +204,11 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             >
               {url.error}
               {githubRepo.state === 'error' && githubRepo.error}
-              {limitImportBasedOnSubscription && (
-                <>
-                  The free plan only allows public repos. For private
-                  repositories,{' '}
-                  <Link
-                    css={{
-                      padding: 0,
-                    }}
-                    color="#FFFFFF"
-                    href={checkoutURL}
-                  >
-                    upgrade to{' '}
-                    <Element as="span" css={{ textTransform: 'uppercase' }}>
-                      pro
-                    </Element>
-                    .
-                  </Link>
-                </>
-              )}
+              {limitImportBasedOnSubscription && <PrivateRepoFreeTeam />}
             </Text>
           ) : null}
         </Element>
-      </form>
+      </Element>
     </Stack>
   );
 };

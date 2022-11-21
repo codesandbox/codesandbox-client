@@ -82,6 +82,7 @@ export const useSubscription = () => {
   const maxPublicProjects = activeTeamInfo?.limits?.maxPublicProjects;
 
   const hasMaxPublicRepositories =
+    isTeamSpace &&
     publicProjectsQuantity &&
     maxPublicProjects &&
     publicProjectsQuantity >= maxPublicProjects;

@@ -21,7 +21,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 }) => {
   const actions = useActions();
   const { user, activeTeam, activeWorkspaceAuthorization } = useAppState();
-  const { hasActiveSubscription } = useSubscription();
+  const { hasActiveSubscription, hasMaxPublicSandboxes } = useSubscription();
   const {
     browser: { copyToClipboard },
   } = useEffects();
@@ -178,7 +178,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.modals.moveSandboxModal.open({
               sandboxIds: [item.sandbox.id],
               preventSandboxLeaving:
-                item.sandbox.permissions.preventSandboxLeaving,
+                item.sandbox.permissions.preventSandboxLeaving ||
+                (!hasActiveSubscription && hasMaxPublicSandboxes),
             });
           }}
         >
