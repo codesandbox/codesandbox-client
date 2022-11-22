@@ -2,7 +2,7 @@ import React from 'react';
 import css from '@styled-system/css';
 
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
-import { Button, Icon, Stack, Text } from '@codesandbox/components';
+import { Button, Stack, Text } from '@codesandbox/components';
 import history from 'app/utils/history';
 import { useActions, useAppState } from 'app/overmind';
 import { TeamAvatar } from 'app/components/TeamAvatar';
@@ -15,22 +15,37 @@ import track from '@codesandbox/common/lib/utils/analytics';
 type Feature = {
   key: string;
   label: string;
-  icon: React.ComponentProps<typeof Icon>['name'];
 };
-const FEATURES: Feature[] = [
-  { key: 'editors', label: 'Up to 20 editors', icon: 'profile' },
+
+const FREE_FEATURES: Feature[] = [
+  { key: 'editors', label: 'Up to 5 editors' },
   {
-    key: 'limit',
-    label: 'Unlimited sandboxes and repositories',
-    icon: 'CodeSandboxIcon',
+    key: 'limit_sandboxes',
+    label: '20 public sandboxes',
   },
-  { key: 'npm', label: 'Private NPM packages', icon: 'npm' },
   {
-    key: 'privacy',
-    label: 'Private repositories and advanced permissions',
-    icon: 'lock',
+    key: 'limit_repositories',
+    label: '3 public repositories',
   },
-  { key: 'vm', label: '6GB RAM, 12GB Disk, 4 vCPUs', icon: 'server' },
+  { key: 'npm', label: 'Public NPM packages' },
+  { key: 'vm_mem', label: '4GB RAM' },
+  { key: 'vm_cpu', label: '2vCPUs' },
+  { key: 'vm_disk', label: '4GB Disk' },
+];
+const PRO_FEATURES: Feature[] = [
+  { key: 'editors', label: 'Up to 20 editors' },
+  {
+    key: 'limit_sandboxes',
+    label: 'Unlimited private sandboxes',
+  },
+  {
+    key: 'limit_repositories',
+    label: 'Unlimited private repositories',
+  },
+  { key: 'npm', label: 'Private NPM packages' },
+  { key: 'vm_mem', label: '6GB RAM' },
+  { key: 'vm_cpu', label: '4vCPUs' },
+  { key: 'vm_disk', label: '12GB Disk' },
 ];
 
 const pricingLabel = (
@@ -87,7 +102,7 @@ export const TeamSubscription: React.FC = () => {
     >
       <Stack
         css={css({
-          width: '396px',
+          width: '510px',
           flex: 1,
         })}
         align="center"
@@ -121,37 +136,33 @@ export const TeamSubscription: React.FC = () => {
               : 'Upgrade to Team Pro'}
           </Text>
         </Stack>
+
         <Stack
-          as="ul"
           css={css({
-            width: '100%',
-            margin: 0,
-            padding: 2,
-            listStyle: 'none',
-            background: '#161616',
-            borderRadius: '4px',
+            width: '510px',
+            flex: 1,
           })}
-          direction="vertical"
-          gap={1}
+          gap={2}
         >
-          {FEATURES.map(feature => (
-            <Stack
-              key={feature.key}
-              as="li"
-              css={css({
-                color: '#C2C2C2',
-                paddingX: 4,
-                paddingY: 3,
-              })}
-              align="center"
-              gap={3}
-            >
-              <Icon name={feature.icon} />
-              <Text size={3}>{feature.label}</Text>
-            </Stack>
-          ))}
+          <FeatureList
+            title="Free Plan"
+            features={FREE_FEATURES}
+            background="#1c1c1c"
+            textColor="#c2c2c2"
+          />
+          <FeatureList
+            title="Team Pro"
+            features={PRO_FEATURES}
+            background="white"
+            textColor="#0E0E0E"
+          />
         </Stack>
-        <Stack css={{ width: '100%' }} direction="vertical" gap={4}>
+
+        <Stack
+          css={{ width: '100%', paddingBottom: 12 }}
+          direction="vertical"
+          gap={4}
+        >
           <Stack direction="vertical" align="center" gap={1}>
             <Button
               css={css({
@@ -225,3 +236,56 @@ export const TeamSubscription: React.FC = () => {
     </Stack>
   );
 };
+
+const FeatureList = ({
+  features,
+  background,
+  textColor,
+  title,
+}: {
+  features: Feature[];
+  background: string;
+  textColor: string;
+  title: string;
+}) => (
+  <Stack
+    css={css({
+      color: textColor,
+      width: '100%',
+      background,
+      borderRadius: '4px',
+    })}
+    direction="vertical"
+    gap={2}
+  >
+    <Text css={css({ paddingX: 6, paddingTop: 6, fontWeight: 'medium' })}>
+      {title}
+    </Text>
+    <Stack
+      as="ul"
+      css={css({
+        margin: 0,
+        padding: 2,
+        width: '100%',
+        listStyle: 'none',
+      })}
+      direction="vertical"
+      gap={1}
+    >
+      {features.map(feature => (
+        <Stack
+          key={feature.key}
+          as="li"
+          css={css({
+            paddingX: 4,
+            paddingY: 2,
+          })}
+          align="center"
+          gap={3}
+        >
+          <Text size={3}>{feature.label}</Text>
+        </Stack>
+      ))}
+    </Stack>
+  </Stack>
+);

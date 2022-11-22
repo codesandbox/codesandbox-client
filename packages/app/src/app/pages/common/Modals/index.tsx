@@ -201,6 +201,7 @@ const modals = {
   },
   newTeam: {
     Component: NewTeamModal,
+    top: 15,
     width: 724,
   },
 };

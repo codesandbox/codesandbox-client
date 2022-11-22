@@ -41,7 +41,7 @@ export const NewTeamModal: React.FC = () => {
   return (
     <Stack
       css={css({
-        maxHeight: '640px',
+        maxHeight: '700px',
         overflow: 'hidden',
       })}
       direction="vertical"
@@ -75,9 +75,11 @@ export const NewTeamModal: React.FC = () => {
       >
         {
           {
-            info: <TeamInfo onComplete={() => setCurrentStep('members')} />,
+            info: <TeamSubscription />,
+            //  <TeamInfo onComplete={() => setCurrentStep('members')} />,
             members: (
-              <TeamMembers onComplete={() => setCurrentStep('subscription')} />
+              <TeamSubscription />
+              // <TeamMembers onComplete={() => setCurrentStep('subscription')} />
             ),
             subscription: <TeamSubscription />,
           }[currentStep]
