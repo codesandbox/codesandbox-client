@@ -13,7 +13,7 @@ export const Banner = ({ children, onDismiss }: BannerProps) => {
     <Element
       css={{
         position: 'relative',
-        padding: [4, 6, 8],
+        padding: [7, 8, 8],
         backgroundColor: '#252525',
         borderRadius: '4px',
       }}

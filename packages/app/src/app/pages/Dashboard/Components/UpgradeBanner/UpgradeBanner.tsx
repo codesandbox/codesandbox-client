@@ -28,7 +28,7 @@ const StyledTitle = styled(Text)`
 
 // When flex wraps and the list of features is
 // shown below the call to action.
-const WRAP_WIDTH = 1332;
+const WRAP_WIDTH = 1320;
 
 type Feature = {
   icon: IconNames;
@@ -45,7 +45,7 @@ const FEATURES: Feature[] = [
   },
   {
     icon: 'sandbox',
-    label: 'Unlimited sandboxes',
+    label: 'Unlimited private sandboxes',
   },
   {
     icon: 'lock',
@@ -53,7 +53,7 @@ const FEATURES: Feature[] = [
   },
   {
     icon: 'repository',
-    label: 'Unlimited repositories',
+    label: 'Unlimited private repositories',
   },
   {
     icon: 'server',
@@ -90,8 +90,8 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
       }}
     >
       <Element css={{ overflow: 'hidden' }}>
-        <StyledTitle color="#EDFFA5" weight="600" block>
-          Upgrade to <span css={{ textTransform: 'uppercase' }}>pro</span>
+        <StyledTitle color="#EDFFA5" weight="500" block>
+          Upgrade to Pro
         </StyledTitle>
         <Stack
           css={{
@@ -143,7 +143,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                       loading={checkout.status === 'loading'}
                       disabled={checkoutBtnDisabled}
                       type="button"
-                      autoWidth
+                      css={{ width: '120px' }}
                     >
                       {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
                     </Button>
@@ -198,10 +198,11 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
               padding: 0,
 
               [`@media screen and (max-width: ${WRAP_WIDTH}px)`]: {
-                marginTop: '24px',
+                marginTop: '40px',
               },
             }}
-            columnGap={3}
+            columnGap={8}
+            rowGap={4}
           >
             {FEATURES.map(f => (
               <Column
@@ -222,14 +223,14 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                     gridColumnEnd: 'span 4',
                   },
 
-                  [`@media screen and (min-width: ${WRAP_WIDTH + 1}px)`]: {
+                  [`@media screen and (min-width: ${WRAP_WIDTH}px)`]: {
                     gridColumnEnd: 'span 6',
                   },
                 }}
                 key={f.icon}
                 as="li"
               >
-                <Stack css={{ color: '#EBEBEB' }} gap={4}>
+                <Stack css={{ color: '#999' }} gap={3}>
                   <Icon css={{ flexShrink: 0 }} name={f.icon} />
                   <Text size={3}>{f.label}</Text>
                 </Stack>
