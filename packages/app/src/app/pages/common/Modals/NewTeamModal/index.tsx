@@ -41,7 +41,7 @@ export const NewTeamModal: React.FC = () => {
   return (
     <Stack
       css={css({
-        maxHeight: '640px',
+        maxHeight: '700px',
         overflow: 'hidden',
       })}
       direction="vertical"
