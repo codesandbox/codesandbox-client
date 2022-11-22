@@ -29,6 +29,7 @@ const GlobalSearchStyles = createGlobalStyle`
 
 export const SearchResults = ({
   checkoutUrl,
+  isInCollection,
   search,
   onSelectTemplate,
   onOpenTemplate,
@@ -36,18 +37,15 @@ export const SearchResults = ({
   // Receiving as prop to avoid fetching the checkout
   // url every time the templates list re-renders.
   checkoutUrl: string | undefined;
+  isInCollection: boolean;
   search: string;
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
 }) => {
-  const {
-    hasActiveSubscription,
-    hasMaxPublicSandboxes,
-    isEligibleForTrial,
-  } = useSubscription();
+  const { hasMaxPublicSandboxes, isEligibleForTrial } = useSubscription();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
-  const limitNewSandboxes = !hasActiveSubscription && hasMaxPublicSandboxes;
+  const limitNewSandboxes = isInCollection && hasMaxPublicSandboxes;
 
   return (
     <>

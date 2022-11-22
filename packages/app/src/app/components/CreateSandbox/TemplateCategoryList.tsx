@@ -16,6 +16,7 @@ interface TemplateCategoryListProps {
   // url every time the templates list re-renders.
   checkoutUrl: string | undefined;
   isCloudTemplateList?: boolean;
+  isInCollection: boolean;
   templates: TemplateFragment[];
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
@@ -25,24 +26,21 @@ export const TemplateCategoryList = ({
   title,
   checkoutUrl,
   isCloudTemplateList,
+  isInCollection,
   templates,
   onSelectTemplate,
   onOpenTemplate,
 }: TemplateCategoryListProps) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
-  const {
-    hasActiveSubscription,
-    hasMaxPublicSandboxes,
-    isEligibleForTrial,
-  } = useSubscription();
+  const { hasMaxPublicSandboxes, isEligibleForTrial } = useSubscription();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
   useEffect(() => {
     track('Create Sandbox Tab Open', { tab: title });
   }, [title]);
 
-  const limitNewSandboxes = !hasActiveSubscription && hasMaxPublicSandboxes;
+  const limitNewSandboxes = isInCollection && hasMaxPublicSandboxes;
 
   return (
     <Stack direction="vertical" css={{ height: '100%' }} gap={4}>

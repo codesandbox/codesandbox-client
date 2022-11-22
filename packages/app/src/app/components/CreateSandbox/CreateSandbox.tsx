@@ -422,6 +422,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
               (searchQuery ? (
                 <SearchResults
                   checkoutUrl={checkoutUrl}
+                  isInCollection={Boolean(collectionId)}
                   search={searchQuery}
                   onSelectTemplate={selectTemplate}
                   onOpenTemplate={openTemplate}
@@ -432,6 +433,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <TemplateCategoryList
                       title="Start from a template"
                       checkoutUrl={checkoutUrl}
+                      isInCollection={Boolean(collectionId)}
                       templates={quickStartTemplates}
                       onSelectTemplate={template => {
                         track('Create New - Fork Quickstart template', {
@@ -456,6 +458,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           isUser ? 'My' : activeTeamInfo?.name || 'Team'
                         } templates`}
                         checkoutUrl={checkoutUrl}
+                        isInCollection={Boolean(collectionId)}
                         templates={teamTemplates}
                         onSelectTemplate={template => {
                           track(
@@ -476,6 +479,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <TemplateCategoryList
                       title="Cloud templates"
                       checkoutUrl={checkoutUrl}
+                      isInCollection={Boolean(collectionId)}
                       templates={officialTemplates.filter(
                         template => template.sandbox.isV2
                       )}
@@ -496,6 +500,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     <TemplateCategoryList
                       title="Official templates"
                       checkoutUrl={checkoutUrl}
+                      isInCollection={Boolean(collectionId)}
                       templates={officialTemplates}
                       onSelectTemplate={template => {
                         track('Create New - Fork Official template', {
@@ -519,6 +524,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                           <TemplateCategoryList
                             title={essential.title}
                             checkoutUrl={checkoutUrl}
+                            isInCollection={Boolean(collectionId)}
                             templates={essential.templates}
                             onSelectTemplate={template => {
                               track('Create New - Fork Essential template', {
