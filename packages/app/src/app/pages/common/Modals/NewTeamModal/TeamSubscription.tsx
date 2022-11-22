@@ -15,6 +15,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 type Feature = {
   key: string;
   label: string;
+  pill?: string;
 };
 
 const FREE_FEATURES: Feature[] = [
@@ -43,9 +44,9 @@ const PRO_FEATURES: Feature[] = [
     label: 'Unlimited private repositories',
   },
   { key: 'npm', label: 'Private NPM packages' },
-  { key: 'vm_mem', label: '6GB RAM' },
-  { key: 'vm_cpu', label: '4vCPUs' },
-  { key: 'vm_disk', label: '12GB Disk' },
+  { key: 'vm_mem', label: '6GB RAM', pill: '1.5x capacity' },
+  { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
+  { key: 'vm_disk', label: '12GB Disk', pill: '3x storage' },
 ];
 
 const pricingLabel = (
@@ -279,11 +280,28 @@ const FeatureList = ({
           css={css({
             paddingX: 4,
             paddingY: 2,
+            width: '100%',
           })}
           align="center"
+          justify="space-between"
           gap={3}
         >
           <Text size={3}>{feature.label}</Text>
+
+          {feature.pill && (
+            <Text
+              css={css({
+                color: 'black',
+                background: '#EDFFA5',
+                padding: '1px 6px 0px',
+                borderRadius: 100,
+                fontWeight: 'medium',
+              })}
+              size={2}
+            >
+              {feature.pill}
+            </Text>
+          )}
         </Stack>
       ))}
     </Stack>
