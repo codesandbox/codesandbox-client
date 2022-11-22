@@ -75,7 +75,7 @@ export const SandboxesPage = () => {
       activeTeamId={activeTeam}
       createNewFolder={() => setCreating(true)}
       createNewSandbox={
-        currentCollection && hasActiveSubscription && !hasMaxPublicSandboxes
+        currentCollection && !hasMaxPublicSandboxes
           ? () => {
               actions.modals.newSandboxModal.open({
                 collectionId: currentCollection.id,
