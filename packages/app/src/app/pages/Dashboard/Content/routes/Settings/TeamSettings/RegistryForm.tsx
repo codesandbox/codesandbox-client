@@ -151,9 +151,7 @@ export const RegistryForm = ({
           >
             <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
               <Stack gap={2} align="center">
-                <Text weight="bold" size={4}>
-                  Registry
-                </Text>
+                <Text size={4}>Registry</Text>
 
                 <Link
                   href="https://codesandbox.io/docs/custom-npm-registry"
@@ -243,9 +241,7 @@ export const RegistryForm = ({
               />
             </Stack>
             <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
-              <Text weight="bold" size={4}>
-                Scopes
-              </Text>
+              <Text size={4}>Scopes</Text>
 
               {/* <div>
                 <CustomFormField

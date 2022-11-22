@@ -183,7 +183,7 @@ export const WorkspaceSettings = () => {
 
               <Stack direction="vertical" css={{ width: 'calc(100% - 64px)' }}>
                 <Stack justify="space-between">
-                  <Text size={4} weight="bold" maxWidth="100%" variant="body">
+                  <Text size={4} weight="normal" maxWidth="100%" variant="body">
                     {user.username}
                   </Text>
                   <IconButton
@@ -245,7 +245,7 @@ export const WorkspaceSettings = () => {
 
             <Stack direction="vertical" css={{ width: 'calc(100% - 64px)' }}>
               <Stack justify="space-between">
-                <Text size={4} weight="bold" maxWidth="100%" variant="body">
+                <Text size={4} weight="normal" maxWidth="100%" variant="body">
                   {user.username}
                 </Text>
                 <IconButton
@@ -299,8 +299,8 @@ export const WorkspaceSettings = () => {
               }}
             >
               {user.deletionRequested
-                ? 'Undo Account Deletion'
-                : 'Request Account Deletion'}
+                ? 'Undo account deletion'
+                : 'Request account deletion'}
             </Button>
           )}
         </Stack>

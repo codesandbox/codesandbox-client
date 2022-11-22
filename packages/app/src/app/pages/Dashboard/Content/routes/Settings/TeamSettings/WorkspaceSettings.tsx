@@ -303,7 +303,7 @@ export const WorkspaceSettings = () => {
               />
               <Stack direction="vertical" css={{ width: '100%' }} gap={1}>
                 <Stack justify="space-between" align="center">
-                  <Text size={4} weight="bold" css={{ wordBreak: 'break-all' }}>
+                  <Text size={4} css={{ wordBreak: 'break-all' }}>
                     {team.name}
                   </Text>
                   {isTeamAdmin && (
@@ -338,7 +338,7 @@ export const WorkspaceSettings = () => {
             css={{ height: '100%' }}
           >
             <Stack direction="vertical" gap={4}>
-              <Text size={4} weight="bold">
+              <Text size={4}>
                 {team.users.length}{' '}
                 {team.users.length === 1 ? 'member' : 'members'}
               </Text>
@@ -379,7 +379,7 @@ export const WorkspaceSettings = () => {
                   actions.modalOpened({ modal: 'deleteWorkspace' })
                 }
               >
-                Delete Team
+                Delete team
               </Button>
             )}
           </Stack>

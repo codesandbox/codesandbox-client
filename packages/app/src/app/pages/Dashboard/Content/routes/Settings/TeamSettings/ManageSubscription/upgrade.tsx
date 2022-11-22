@@ -42,9 +42,7 @@ export const Upgrade = () => {
       }}
     >
       <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
-        <Text size={4} weight="bold">
-          Upgrade to Team Pro
-        </Text>
+        <Text size={4}>Upgrade to Team Pro</Text>
         <List direction="vertical" gap={1} as="ul">
           <Text as="li" size={3}>
             Advanced privacy settings
