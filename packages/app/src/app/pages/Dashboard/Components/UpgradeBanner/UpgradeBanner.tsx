@@ -232,7 +232,6 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                 }}
                 key={f.icon}
                 as="li"
-                gap={1}
               >
                 <Stack css={{ color: '#999' }} gap={3}>
                   <Icon css={{ flexShrink: 0 }} name={f.icon} />
