@@ -75,11 +75,9 @@ export const NewTeamModal: React.FC = () => {
       >
         {
           {
-            info: <TeamSubscription />,
-            //  <TeamInfo onComplete={() => setCurrentStep('members')} />,
+            info: <TeamInfo onComplete={() => setCurrentStep('members')} />,
             members: (
-              <TeamSubscription />
-              // <TeamMembers onComplete={() => setCurrentStep('subscription')} />
+              <TeamMembers onComplete={() => setCurrentStep('subscription')} />
             ),
             subscription: <TeamSubscription />,
           }[currentStep]
