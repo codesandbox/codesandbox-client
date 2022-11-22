@@ -5,7 +5,6 @@ import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Stack, Text } from '@codesandbox/components';
 import history from 'app/utils/history';
 import { useActions, useAppState } from 'app/overmind';
-import { TeamAvatar } from 'app/components/TeamAvatar';
 import { formatCurrency } from 'app/utils/currency';
 import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -112,10 +111,6 @@ export const TeamSubscription: React.FC = () => {
       >
         <Stack direction="vertical" gap={3}>
           <Stack align="center" justify="center" gap={3}>
-            <TeamAvatar
-              avatar={activeTeamInfo.avatarUrl}
-              name={activeTeamInfo.name}
-            />
             <Text as="p" size={3}>
               {activeTeamInfo.name}
             </Text>
@@ -168,6 +163,7 @@ export const TeamSubscription: React.FC = () => {
             <Button
               css={css({
                 height: '32px',
+                maxWidth: '370px',
               })}
               onClick={() => {
                 if (isCheckoutDisabled) {
