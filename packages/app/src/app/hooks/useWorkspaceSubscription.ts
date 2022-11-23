@@ -12,42 +12,15 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   const { isTeamSpace } = useWorkspaceAuthorization();
 
   if (!activeTeamInfo) {
-    return {
-      subscription: undefined,
-      numberOfSeats: undefined,
-      isPro: undefined,
-      isFree: undefined,
-      isEligibleForTrial: undefined,
-      hasActiveTeamTrial: undefined,
-      isPatron: undefined,
-      isPaddle: undefined,
-      isStripe: undefined,
-    };
+    return NO_WORKSPACE;
   }
 
   const subscription = activeTeamInfo.subscription;
 
   if (!subscription) {
-    return {
-      subscription: null,
-      numberOfSeats: 0,
-      isPro: false,
-      isFree: true,
-      isEligibleForTrial: true,
-      hasActiveTeamTrial: false,
-      isPatron: false,
-      isPaddle: false,
-      isStripe: false,
-    };
+    return NO_SUBSCRIPTION;
   }
 
-  /**
-   * Subscription states
-   */
-
-  // There are different statuses for a subscription, but only ACTIVE and TRIALING
-  // should be considered an active TeamPro subscription.
-  // TODO: This might change based on how we use other statuses in the subscription (eg: PAUSED)
   const isPro =
     subscription.status === SubscriptionStatus.Active ||
     subscription.status === SubscriptionStatus.Trialing;
@@ -69,7 +42,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     subscription.paymentProvider === SubscriptionPaymentProvider.Stripe;
 
   return {
-    subscription: activeTeamInfo?.subscription,
+    subscription,
     numberOfSeats,
     isPro,
     isFree,
@@ -81,31 +54,33 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
   };
 };
 
+const NO_WORKSPACE = {
+  subscription: undefined,
+  numberOfSeats: undefined,
+  isPro: undefined,
+  isFree: undefined,
+  isEligibleForTrial: undefined,
+  hasActiveTeamTrial: undefined,
+  isPatron: undefined,
+  isPaddle: undefined,
+  isStripe: undefined,
+};
+
+const NO_SUBSCRIPTION = {
+  subscription: null,
+  numberOfSeats: 0,
+  isPro: false,
+  isFree: true,
+  isEligibleForTrial: true,
+  hasActiveTeamTrial: false,
+  isPatron: false,
+  isPaddle: false,
+  isStripe: false,
+};
+
 export type WorkspaceSubscriptionReturn =
-  | {
-      // No workspace selected
-      subscription: undefined;
-      numberOfSeats: undefined;
-      isPro: undefined;
-      isFree: undefined;
-      isEligibleForTrial: undefined;
-      hasActiveTeamTrial: undefined;
-      isPatron: undefined;
-      isPaddle: undefined;
-      isStripe: undefined;
-    }
-  | {
-      // No subscription for workspace
-      subscription: null;
-      numberOfSeats: 0;
-      isPro: false;
-      isFree: true;
-      isEligibleForTrial: true;
-      hasActiveTeamTrial: false;
-      isPatron: false;
-      isPaddle: false;
-      isStripe: false;
-    }
+  | typeof NO_WORKSPACE
+  | typeof NO_SUBSCRIPTION
   | {
       subscription: {
         cancelAt?: string;

@@ -30,28 +30,27 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     : 1; // Personal
 
   const hasMaxNumberOfEditors =
-    isFree && limits && numberOfEditors === limits.maxEditors;
+    isFree === true && numberOfEditors === limits.maxEditors;
 
   const numberOfEditorsIsOverTheLimit =
-    isFree &&
-    limits &&
+    isFree === true &&
     limits.maxEditors !== null &&
     numberOfEditors > limits.maxEditors;
 
-  const publicProjectsQuantity = usage?.publicProjectsQuantity;
-  const maxPublicProjects = limits?.maxPublicProjects;
+  const publicProjectsQuantity = usage.publicProjectsQuantity;
+  const maxPublicProjects = limits.maxPublicProjects;
 
   const hasMaxPublicRepositories =
-    publicProjectsQuantity &&
-    maxPublicProjects &&
+    isFree === true &&
+    maxPublicProjects !== null &&
     publicProjectsQuantity >= maxPublicProjects;
 
-  const publicSandboxesQuantity = usage?.publicSandboxesQuantity;
-  const maxPublicSandboxes = limits?.maxPublicSandboxes;
+  const publicSandboxesQuantity = usage.publicSandboxesQuantity;
+  const maxPublicSandboxes = limits.maxPublicSandboxes;
 
   const hasMaxPublicSandboxes =
-    publicSandboxesQuantity &&
-    maxPublicSandboxes &&
+    isFree === true &&
+    maxPublicSandboxes !== null &&
     publicSandboxesQuantity >= maxPublicSandboxes;
 
   return {
