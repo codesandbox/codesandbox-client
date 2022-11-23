@@ -28,7 +28,7 @@ import {
   TeamMemberAuthorization,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { MAX_PRO_EDITORS, useSubscription } from 'app/hooks/useSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import track from '@codesandbox/common/lib/utils/analytics';
@@ -475,6 +475,10 @@ export const WorkspaceSettings = () => {
           </Stack>
         )}
       </Stack>
+
+      {/**
+       * Limit free plan amount of editors.
+       */}
       {isTeamAdmin && (numberOfEditorsIsOverTheLimit || hasMaxNumberOfEditors) && (
         <MessageStripe justify="space-between">
           <span>
@@ -513,6 +517,27 @@ export const WorkspaceSettings = () => {
           </MessageStripe.Action>
         </MessageStripe>
       )}
+
+      {/**
+       * Soft limit for pro teams.
+       */}
+      {isTeamAdmin && numberOfEditors > MAX_PRO_EDITORS ? (
+        <MessageStripe justify="space-between">
+          <span>
+            You have over {MAX_PRO_EDITORS} editors. Upgrade to the Enterprise
+            plan for more benefits.
+          </span>
+          <MessageStripe.Action
+            as="a"
+            href="/pricing"
+            onClick={() =>
+              track('Limit banner - team editors - Custom plan contact')
+            }
+          >
+            Contact us
+          </MessageStripe.Action>
+        </MessageStripe>
+      ) : null}
 
       <div>
         <MemberList
