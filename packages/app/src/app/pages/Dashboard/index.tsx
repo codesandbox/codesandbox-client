@@ -13,7 +13,6 @@ import {
 } from '@codesandbox/components';
 import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
-import Modal from 'app/components/Modal';
 
 import { PaymentPending } from 'app/components/StripeMessages';
 import { useSubscription } from 'app/hooks/useSubscription';
@@ -22,18 +21,14 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
-import { WhatsNew } from './Components/WhatsNew/WhatsNew';
 import { NUOCT22 } from '../SignIn/Onboarding';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
 });
 
-const COLUMN_MEDIA_THRESHOLD = 1600;
-const wnoct22 = 'wnoct22'; // = whats new oct 22
-
 export const Dashboard: FunctionComponent = () => {
-  const { hasLogIn, modals } = useAppState();
+  const { hasLogIn } = useAppState();
   const { browser } = useEffects();
   const actions = useActions();
   const { subscription } = useSubscription();
@@ -49,29 +44,13 @@ export const Dashboard: FunctionComponent = () => {
   useEffect(() => {
     const newUser = browser.storage.get(NUOCT22);
 
-    if (newUser) {
-      if (newUser === 'signup') {
-        // Open the create team modal for newly signed up users
-        // not coming from a team invite page.
-        actions.openCreateTeamModal();
-      }
-
+    if (newUser && newUser === 'signup') {
+      // Open the create team modal for newly signed up users
+      // not coming from a team invite page.
+      actions.openCreateTeamModal();
       browser.storage.remove(NUOCT22);
-      browser.storage.set(wnoct22, true);
-    } else {
-      const isWhatsNewModalDismissed = browser.storage.get(wnoct22);
-
-      if (!isWhatsNewModalDismissed && !modals.whatsNew.isCurrent) {
-        // For existing users we show the whats new modal
-        actions.modals.whatsNew.open();
-      }
     }
-  }, [browser.storage, modals.whatsNew.isCurrent, actions]);
-
-  const handleWhatsNewModalClose = () => {
-    browser.storage.set(wnoct22, true);
-    actions.modals.whatsNew.close();
-  };
+  }, [browser.storage, actions]);
 
   const location = useLocation();
   useEffect(() => {
@@ -88,15 +67,6 @@ export const Dashboard: FunctionComponent = () => {
   return (
     <ThemeProvider>
       <GlobalStyles />
-
-      <Modal
-        isOpen={modals.whatsNew.isCurrent}
-        onClose={handleWhatsNewModalClose}
-        width={window.outerWidth > COLUMN_MEDIA_THRESHOLD ? 1200 : 950}
-        fullWidth={window.screen.availWidth < 800}
-      >
-        <WhatsNew onClose={handleWhatsNewModalClose} />
-      </Modal>
 
       <DndProvider backend={Backend}>
         <Stack

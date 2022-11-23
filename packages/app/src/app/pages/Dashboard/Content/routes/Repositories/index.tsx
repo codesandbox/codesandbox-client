@@ -6,8 +6,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
-import { Text, Element } from '@codesandbox/components';
+import { Element } from '@codesandbox/components';
 import { useSubscription } from 'app/hooks/useSubscription';
 import { MaxPublicReposFreeTeam, PrivateRepoFreeTeam } from './stripes';
 
@@ -132,26 +131,6 @@ export const RepositoriesPage = () => {
         selectedRepo={selectedRepo}
         readOnly={readOnly}
       />
-
-      {itemsToShow.length === 0 ? (
-        <Notification pageType={pageType}>
-          <Text>
-            CodeSandbox Projects is now Repositories: an improved git workflow
-            powered by the cloud.
-          </Text>
-        </Notification>
-      ) : (
-        <Notification pageType={pageType}>
-          <Text>
-            Your CodeSandbox Projects repositories now live here. Repository
-            sandboxes are now listed under{' '}
-            <Text css={{ color: '#EBEBEB' }}>Synced sandboxes</Text>. You can
-            find your contribution branches on{' '}
-            <Text css={{ color: '#EBEBEB' }}>My contributions</Text> inside your
-            personal team.
-          </Text>
-        </Notification>
-      )}
 
       {readOnly && (
         <Element paddingX={4} paddingY={2}>
