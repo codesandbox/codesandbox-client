@@ -3,6 +3,7 @@ import { MessageStripe } from '@codesandbox/components';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { useActions } from 'app/overmind';
+import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 
 const getEventName = (isEligibleForTrial: boolean) =>
   isEligibleForTrial
@@ -52,6 +53,13 @@ export const MaxPublicSandboxes: React.FC<MaxPublicReposProps> = ({
         </MessageStripe.Action>
       ) : (
         <MessageStripe.Action
+          as="a"
+          href={
+            isEligibleForTrial
+              ? SUBSCRIPTION_DOCS_URLS.teams.trial
+              : SUBSCRIPTION_DOCS_URLS.teams.non_trial
+          }
+          target="_blank"
           onClick={() =>
             track('Limit banner: create sandbox - Learn more', EVENT_PROPS)
           }
