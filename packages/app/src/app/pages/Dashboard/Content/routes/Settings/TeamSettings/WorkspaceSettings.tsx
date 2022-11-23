@@ -524,7 +524,7 @@ export const WorkspaceSettings = () => {
       {isTeamAdmin && numberOfEditors > MAX_PRO_EDITORS ? (
         <MessageStripe justify="space-between">
           <span>
-            You have over {MAX_PRO_EDITORS} editors. Upgrade to the Enterprise
+            You have over {MAX_PRO_EDITORS} editors. Upgrade to the Organization
             plan for more benefits.
           </span>
           <MessageStripe.Action
