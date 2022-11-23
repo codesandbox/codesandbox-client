@@ -521,7 +521,7 @@ export const WorkspaceSettings = () => {
       {/**
        * Soft limit for pro teams.
        */}
-      {isTeamAdmin && numberOfEditors > MAX_PRO_EDITORS ? (
+      {numberOfEditors > MAX_PRO_EDITORS && (
         <MessageStripe justify="space-between">
           <span>
             You have over {MAX_PRO_EDITORS} editors. Upgrade to the Organization
@@ -529,15 +529,16 @@ export const WorkspaceSettings = () => {
           </span>
           <MessageStripe.Action
             as="a"
-            href="/pricing"
+            href="https://codesandbox.typeform.com/organization"
             onClick={() =>
               track('Limit banner - team editors - Custom plan contact')
             }
+            target="_blank"
           >
             Contact us
           </MessageStripe.Action>
         </MessageStripe>
-      ) : null}
+      )}
 
       <div>
         <MemberList
