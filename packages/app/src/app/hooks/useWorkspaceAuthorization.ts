@@ -18,7 +18,7 @@ export const useWorkspaceAuthorization = () => {
    * Team states
    */
 
-  const isTeamSpace = !isPersonalSpace;
+  const isTeamSpace = activeTeam && !isPersonalSpace;
 
   const isTeamAdmin =
     isTeamSpace &&
