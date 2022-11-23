@@ -6,7 +6,6 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
 
 export const MyContributionsPage = () => {
   const params = useParams<{ path: string }>();
@@ -54,11 +53,6 @@ export const MyContributionsPage = () => {
         showFilters={Boolean(param)}
         showSortOptions={Boolean(param)}
       />
-      <Notification pageType={pageType}>
-        {itemsToShow.length === 0
-          ? 'Introducing contribution branches: the easiest way of contributing to open source.'
-          : 'Your contribution branches now live here, so you can manage your contributions easily.'}
-      </Notification>
       <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
   );

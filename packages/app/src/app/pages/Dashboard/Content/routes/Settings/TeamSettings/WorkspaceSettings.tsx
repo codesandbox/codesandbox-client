@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { useAppState, useActions, useEffects } from 'app/overmind';
 import { sortBy } from 'lodash-es';
 
@@ -18,14 +19,19 @@ import {
 import css from '@styled-system/css';
 import { UserSearchInput } from 'app/components/UserSearchInput';
 import { Header } from 'app/pages/Dashboard/Components/Header';
-import { teamInviteLink } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  dashboard,
+  teamInviteLink,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { MAX_PRO_EDITORS, useSubscription } from 'app/hooks/useSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
@@ -58,12 +64,18 @@ export const WorkspaceSettings = () => {
 
   const {
     hasActiveSubscription,
+    isEligibleForTrial,
     numberOfSeats,
     numberOfEditors,
     hasMaxNumberOfEditors,
     numberOfEditorsIsOverTheLimit,
   } = useSubscription();
   const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
+  const checkout = useGetCheckoutURL({
+    team_id: isTeamAdmin ? team?.id : undefined,
+    cancel_path: dashboard.settings(team?.id),
+  });
+
   const canInviteOtherMembers = isTeamAdmin || isTeamEditor;
 
   // We use `role` as the common term when referring to: `admin`, `editor` or `viewer`
@@ -463,16 +475,68 @@ export const WorkspaceSettings = () => {
           </Stack>
         )}
       </Stack>
-      {isTeamAdmin && numberOfEditorsIsOverTheLimit && (
+
+      {/**
+       * Limit free plan amount of editors.
+       */}
+      {isTeamAdmin && (numberOfEditorsIsOverTheLimit || hasMaxNumberOfEditors) && (
         <MessageStripe justify="space-between">
-          Free teams are limited to 5 editor seats. Some permissions might have
-          changed.
+          <span>
+            {numberOfEditorsIsOverTheLimit && (
+              <>
+                Free teams are limited to 5 editor seats. Some permissions might
+                have changed.
+              </>
+            )}
+            {hasMaxNumberOfEditors && (
+              <>
+                You&apos;ve reached the maximum amount of free editor seats.
+                Upgrade for more.
+              </>
+            )}
+          </span>
+          <MessageStripe.Action
+            {...(checkout.state === 'READY'
+              ? {
+                  as: 'a',
+                  href: checkout.url,
+                }
+              : {
+                  as: RouterLink,
+                  to: '/pro',
+                })}
+            onClick={() =>
+              track(
+                isEligibleForTrial
+                  ? 'Limit banner: team editors - Start Trial'
+                  : 'Limit banner: team editors - Upgrade'
+              )
+            }
+          >
+            {isEligibleForTrial ? 'Start trial' : 'Upgrade now'}
+          </MessageStripe.Action>
         </MessageStripe>
       )}
-      {isTeamAdmin && hasMaxNumberOfEditors && (
+
+      {/**
+       * Soft limit for pro teams.
+       */}
+      {numberOfEditors > MAX_PRO_EDITORS && (
         <MessageStripe justify="space-between">
-          You&apos;ve reached the maximum amount of free editor seats. Upgrade
-          for more.
+          <span>
+            You have over {MAX_PRO_EDITORS} editors. Upgrade to the Organization
+            plan for more benefits.
+          </span>
+          <MessageStripe.Action
+            as="a"
+            href="https://codesandbox.typeform.com/organization"
+            onClick={() =>
+              track('Limit banner - team editors - Custom plan contact')
+            }
+            target="_blank"
+          >
+            Contact us
+          </MessageStripe.Action>
         </MessageStripe>
       )}
 

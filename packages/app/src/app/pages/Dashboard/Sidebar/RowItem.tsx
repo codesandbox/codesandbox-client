@@ -3,10 +3,8 @@ import {
   Link,
   SidebarListAction,
   Stack,
-  Element,
   Icon,
 } from '@codesandbox/components';
-import { useEffects } from 'app/overmind';
 import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
 import React from 'react';
 import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
@@ -19,7 +17,6 @@ import {
   MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE,
   linkStyles,
 } from './utils';
-import { NotificationIndicator } from '../Components/Notification/NotificationIndicator';
 
 const canNotAcceptSandboxes: PageTypes[] = ['recent'];
 const canNotAcceptFolders: PageTypes[] = ['recent', 'drafts', 'templates'];
@@ -78,16 +75,6 @@ export const RowItem: React.FC<RowItemProps> = ({
     accepts.push('sandbox');
   }
   if (!canNotAcceptFolders.includes(page)) accepts.push('folder');
-  const { browser } = useEffects();
-
-  const isPageWithNotification =
-    page === 'my-contributions' ||
-    page === 'repositories' ||
-    page === 'synced-sandboxes';
-
-  const isNotificationDismissed = browser.storage.get(
-    'notificationDismissed'
-  )?.[page];
 
   const usedPath = folderPath || path;
   const [{ canDrop, isOver, isDragging }, dropRef] = useDrop({
@@ -194,18 +181,6 @@ export const RowItem: React.FC<RowItemProps> = ({
             <Icon name={icon} />
           </Stack>
           {name}
-
-          {isPageWithNotification && !isNotificationDismissed ? (
-            <Element
-              css={{
-                flexGrow: 1,
-                display: 'flex',
-                justifyContent: 'flex-end',
-              }}
-            >
-              <NotificationIndicator />
-            </Element>
-          ) : null}
         </Link>
       )}
     </SidebarListAction>

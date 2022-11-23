@@ -2,7 +2,6 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
-import { Text } from '@codesandbox/components';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import {
@@ -11,7 +10,6 @@ import {
   PageTypes,
 } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { Notification } from 'app/pages/Dashboard/Components/Notification/Notification';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -91,12 +89,6 @@ export const SyncedSandboxesPage = () => {
         showSortOptions={Boolean(param)}
         nestedPageType={pageType}
       />
-      <Notification pageType={pageType}>
-        Repository sandboxes are now called{' '}
-        <Text css={{ color: '#EBEBEB' }}>Synced sandboxes</Text>. New imported
-        repositories will be listed under{' '}
-        <Text css={{ color: '#EBEBEB' }}>All repositories</Text>.
-      </Notification>
       <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
   );
