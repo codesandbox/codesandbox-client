@@ -16,7 +16,7 @@ import css from '@styled-system/css';
 import { WorkspaceSelect } from 'app/components/WorkspaceSelect';
 import { getDaysUntil } from 'app/utils/dateTime';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { ContextMenu } from './ContextMenu';
 import { DashboardBaseFolder } from '../types';
 import { Position } from '../Components/Selection';
@@ -99,10 +99,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const {
     subscription,
-    hasActiveSubscription,
+    isFree,
     hasActiveTeamTrial,
     isEligibleForTrial,
-  } = useSubscription();
+  } = useWorkspaceSubscription();
 
   // Compute number of days left for TeamPro trial
   const trialDaysLeft = hasActiveTeamTrial
@@ -110,7 +110,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     : null;
 
   const showBottomMessage =
-    !hasActiveSubscription ||
+    isFree ||
     (trialDaysLeft !== null && trialDaysLeft <= END_OF_TRIAL_DAYS_NOTIFICATION);
 
   return (
@@ -314,13 +314,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <AdminUpgradeToTeamPro />
               ))}
 
-            {isTeamSpace && !hasActiveSubscription && !isTeamAdmin ? (
+            {isTeamSpace && isFree && !isTeamAdmin ? (
               <UserUpgradeToTeamPro />
             ) : null}
 
-            {isPersonalSpace && !hasActiveSubscription ? (
-              <UpgradeToPersonalPro />
-            ) : null}
+            {isPersonalSpace && isFree ? <UpgradeToPersonalPro /> : null}
 
             {hasActiveTeamTrial &&
               trialDaysLeft !== null &&

@@ -9,8 +9,9 @@ import { connectStateResults } from 'react-instantsearch-dom';
 import { createGlobalStyle } from 'styled-components';
 import { Text, Stack } from '@codesandbox/components';
 import { TemplateFragment } from 'app/graphql/types';
-import { useSubscription } from 'app/hooks/useSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { SearchResultList } from './SearchResultList';
 import { Loader } from '../Loader';
 import { MaxPublicSandboxes } from '../stripes';
@@ -42,7 +43,8 @@ export const SearchResults = ({
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
 }) => {
-  const { hasMaxPublicSandboxes, isEligibleForTrial } = useSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
   const limitNewSandboxes = isInCollection && hasMaxPublicSandboxes;

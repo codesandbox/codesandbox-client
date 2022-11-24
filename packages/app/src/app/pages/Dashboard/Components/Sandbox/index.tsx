@@ -12,7 +12,7 @@ import track, {
 } from '@codesandbox/common/lib/utils/analytics';
 import { Icon } from '@codesandbox/components';
 import { formatNumber } from '@codesandbox/components/lib/components/Stats';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { SandboxCard } from './SandboxCard';
 import { SandboxListItem } from './SandboxListItem';
 import { getTemplateIcon } from './TemplateIcon';
@@ -69,7 +69,7 @@ function getFolderName(item: GenericSandboxProps['item']): string | undefined {
 const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const { dashboard, activeWorkspaceAuthorization } = useAppState();
   const actions = useActions();
-  const { hasActiveSubscription } = useSubscription();
+  const { isFree } = useWorkspaceSubscription();
 
   const { sandbox } = item;
 
@@ -149,7 +149,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const selected = selectedIds.includes(sandbox.id);
   const isDragging = isAnythingDragging && selected;
-  const isViewOnly = !hasActiveSubscription && sandbox.privacy !== 0;
+  const isViewOnly = isFree && sandbox.privacy !== 0;
 
   const sandboxAnalyticsEvent = !autoFork
     ? MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]

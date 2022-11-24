@@ -5,7 +5,7 @@ import { Stack, Text } from '@codesandbox/components';
 
 import { useCreateCheckout } from 'app/hooks';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Patron } from './Patron';
 import { Stripe } from './Stripe';
 import { Paddle } from './Paddle';
@@ -16,12 +16,7 @@ import { ProcessingPayment } from '../../components/ProcessingPayment';
 
 export const ManageSubscription = () => {
   const { activeTeamInfo, user } = useAppState();
-  const {
-    hasActiveSubscription,
-    isPaddle,
-    isPatron,
-    isStripe,
-  } = useSubscription();
+  const { isFree, isPaddle, isPatron, isStripe } = useWorkspaceSubscription();
   const [checkout, createCheckout] = useCreateCheckout();
   const location = useLocation();
   const history = useHistory();
@@ -38,7 +33,7 @@ export const ManageSubscription = () => {
     }
   }, [location, history]);
 
-  if (!hasActiveSubscription) {
+  if (isFree) {
     if (paymentPending) {
       return <ProcessingPayment />;
     }

@@ -8,8 +8,8 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useAppState } from 'app/overmind';
-import { useSubscription } from 'app/hooks/useSubscription';
 
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Card } from '../../components';
 
 const List = styled(Stack)`
@@ -25,12 +25,10 @@ const List = styled(Stack)`
 export const Upgrade = () => {
   const { activeTeam } = useAppState();
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
-  const { hasActiveSubscription, isEligibleForTrial } = useSubscription();
+  const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
   const checkout = useGetCheckoutURL({
     team_id:
-      (isTeamAdmin || isPersonalSpace) && !hasActiveSubscription
-        ? activeTeam
-        : undefined,
+      (isTeamAdmin || isPersonalSpace) && isFree ? activeTeam : undefined,
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: dashboardUrls.settings(activeTeam),
   });

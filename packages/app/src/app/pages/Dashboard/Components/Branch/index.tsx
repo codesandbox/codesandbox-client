@@ -3,7 +3,7 @@ import { trackImprovedDashboardEvent } from '@codesandbox/common/lib/utils/analy
 import { useAppState } from 'app/overmind';
 import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
 import React from 'react';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { DashboardBranch } from '../../types';
 import { useSelection } from '../Selection';
 import { BranchCard } from './BranchCard';
@@ -43,10 +43,10 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
     removingRepository?.owner === project.repository.owner &&
     removingRepository?.name === project.repository.name;
 
-  const { hasActiveSubscription } = useSubscription();
+  const { isFree } = useWorkspaceSubscription();
 
   const isPrivate = branch?.project?.repository?.private;
-  const isViewOnly = !hasActiveSubscription && isPrivate;
+  const isViewOnly = isFree && isPrivate;
 
   const props = {
     branch,

@@ -15,15 +15,15 @@ import css from '@styled-system/css';
 import { TeamMemberAuthorization } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-import { useSubscription } from 'app/hooks/useSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Alert } from './Alert';
 
 export const PermissionSettings = () => {
   const proTracking = () =>
     track('Dashboard - Permissions panel - Clicked on Pro upgrade');
 
-  const { hasActiveSubscription } = useSubscription();
+  const { isFree, isPro } = useWorkspaceSubscription();
   const {
     isTeamSpace,
     isTeamAdmin,
@@ -32,7 +32,7 @@ export const PermissionSettings = () => {
 
   return (
     <Stack direction="vertical" gap={6}>
-      {hasActiveSubscription ? null : (
+      {isFree ? (
         <MessageStripe justify="space-between">
           <span>
             You need a{' '}
@@ -57,21 +57,19 @@ export const PermissionSettings = () => {
             </MessageStripe.Action>
           )}
         </MessageStripe>
-      )}
+      ) : null}
 
-      {hasActiveSubscription && isTeamSpace && !isTeamAdmin ? (
+      {isPro && isTeamSpace && !isTeamAdmin ? (
         <Alert message="Please contact your admin to change sandbox permissions." />
       ) : null}
 
       <Grid columnGap={12}>
         <Column span={[12, 12, 6]}>
-          <MinimumPrivacy disabled={!hasActiveSubscription || !isTeamAdmin} />
+          <MinimumPrivacy disabled={isFree || !isTeamAdmin} />
         </Column>
         {!isPersonalSpace && (
           <Column span={[12, 12, 6]}>
-            <SandboxSecurity
-              disabled={!hasActiveSubscription || !isTeamAdmin}
-            />
+            <SandboxSecurity disabled={isFree || !isTeamAdmin} />
           </Column>
         )}
       </Grid>

@@ -2,7 +2,8 @@ import React from 'react';
 import { useEffects, useActions, useAppState } from 'app/overmind';
 import { Menu } from '@codesandbox/components';
 import { SubscriptionType } from 'app/graphql/types';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Context, MenuItem } from '../ContextMenu';
 import {
   DashboardSandbox,
@@ -38,7 +39,8 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
   const actions = useActions();
   const { notificationToast } = useEffects();
   const { visible, setVisibility, position } = React.useContext(Context);
-  const { hasActiveSubscription, hasMaxPublicSandboxes } = useSubscription();
+  const { isFree } = useWorkspaceSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   /*
     sandbox options - export, make template, delete
@@ -103,7 +105,7 @@ export const MultiMenu = ({ selectedItems, page }: IMultiMenuProps) => {
         [...sandboxes, ...templates].find(
           s => s.sandbox.permissions.preventSandboxLeaving
         ) ||
-          (!hasActiveSubscription && hasMaxPublicSandboxes)
+          (isFree && hasMaxPublicSandboxes)
       ),
     });
   };

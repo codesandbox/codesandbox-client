@@ -1,7 +1,7 @@
 import { MessageStripe } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -15,7 +15,7 @@ const getEventName = (isEligibleForTrial: boolean) =>
 
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { activeTeam } = useAppState();
-  const { isEligibleForTrial } = useSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
 
@@ -59,7 +59,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
 
 export const MaxPublicReposFreeTeam: React.FC = () => {
   const { activeTeam } = useAppState();
-  const { isEligibleForTrial } = useSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
 
   const checkout = useGetCheckoutURL({

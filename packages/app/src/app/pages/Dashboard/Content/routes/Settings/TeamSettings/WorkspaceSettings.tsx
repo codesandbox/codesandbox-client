@@ -28,10 +28,12 @@ import {
   TeamMemberAuthorization,
   CurrentTeamInfoFragmentFragment,
 } from 'app/graphql/types';
-import { MAX_PRO_EDITORS, useSubscription } from 'app/hooks/useSubscription';
+import { MAX_PRO_EDITORS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
@@ -63,13 +65,16 @@ export const WorkspaceSettings = () => {
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
 
   const {
-    hasActiveSubscription,
+    isPro,
+    isFree,
     isEligibleForTrial,
     numberOfSeats,
+  } = useWorkspaceSubscription();
+  const {
     numberOfEditors,
     hasMaxNumberOfEditors,
     numberOfEditorsIsOverTheLimit,
-  } = useSubscription();
+  } = useWorkspaceLimits();
   const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
   const checkout = useGetCheckoutURL({
     team_id: isTeamAdmin ? team?.id : undefined,
@@ -142,11 +147,10 @@ export const WorkspaceSettings = () => {
   // if the user is going to be charged for adding a member
   // throw them a confirmation modal
   const confirmNewMemberAddition =
-    hasActiveSubscription &&
+    isPro &&
     numberOfUnusedSeats === 0 &&
     newMemberRole !== TeamMemberAuthorization.Read;
-  const confirmMemberRoleChange =
-    hasActiveSubscription && numberOfUnusedSeats === 0;
+  const confirmMemberRoleChange = isPro && numberOfUnusedSeats === 0;
 
   const onInviteSubmit = async event => {
     event.preventDefault();
@@ -330,9 +334,7 @@ export const WorkspaceSettings = () => {
                 </Stack>
 
                 <Stack>
-                  {hasActiveSubscription ? null : (
-                    <Badge variant="trial">Free</Badge>
-                  )}
+                  {isFree ? <Badge variant="trial">Free</Badge> : null}
                 </Stack>
 
                 <Text size={3} css={{ marginTop: '8px' }} variant="muted">

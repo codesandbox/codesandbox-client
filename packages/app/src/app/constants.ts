@@ -8,3 +8,9 @@ export const SUBSCRIPTION_DOCS_URLS = {
       '/docs/learn/introduction/workspace#managing-teams-and-subscriptions',
   },
 };
+
+// Soft limit of maximum amount of pro
+// editor a team can have. Above this,
+// we should prompt CTAs to enable
+// custom pricing.
+export const MAX_PRO_EDITORS = 20;

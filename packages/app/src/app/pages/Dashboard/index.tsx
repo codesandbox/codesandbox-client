@@ -15,7 +15,7 @@ import { createGlobalStyle, useTheme } from 'styled-components';
 import css from '@styled-system/css';
 
 import { PaymentPending } from 'app/components/StripeMessages';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
@@ -31,7 +31,7 @@ export const Dashboard: FunctionComponent = () => {
   const { hasLogIn } = useAppState();
   const { browser } = useEffects();
   const actions = useActions();
-  const { subscription } = useSubscription();
+  const { subscription } = useWorkspaceSubscription();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
