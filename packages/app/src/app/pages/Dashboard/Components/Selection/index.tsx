@@ -285,7 +285,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   let viewMode: 'grid' | 'list';
   const location = useLocation();
 
-  if (location.pathname.includes('archive')) viewMode = 'list';
+  if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
   const history = useHistory();
@@ -447,7 +447,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     }
 
     if (sandboxIds.length) {
-      if (dropPage === 'archive') {
+      if (dropPage === 'deleted') {
         actions.dashboard.deleteSandbox({ ids: sandboxIds });
       } else if (dropPage === 'templates') {
         actions.dashboard.makeTemplates({ sandboxIds });
@@ -466,7 +466,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           collectionPath: dropResult.path,
           deleteFromCurrentPath:
             page === 'sandboxes' ||
-            page === 'archive' ||
+            page === 'deleted' ||
             page === 'templates' ||
             page === 'drafts',
         });
@@ -474,7 +474,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     }
 
     if (folderPaths.length) {
-      if (dropResult.path === 'archive') {
+      if (dropResult.path === 'deleted') {
         folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
       } else if (dropResult.path === 'templates') {
         // folders can't be dropped into templates

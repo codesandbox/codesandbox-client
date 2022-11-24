@@ -39,7 +39,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 
   const folderUrl = getFolderUrl(item, activeTeam);
 
-  const label = isTemplate ? 'Template' : 'Sandbox';
+  const label = isTemplate ? 'template' : 'sandbox';
   const isViewOnly = isFree && sandbox.privacy !== 0;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
@@ -70,7 +70,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
     );
   }, [item, user, activeTeam]);
 
-  if (location.pathname.includes('archive')) {
+  if (location.pathname.includes('deleted')) {
     if (activeWorkspaceAuthorization === 'READ') return null;
 
     return (
@@ -85,7 +85,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.dashboard.recoverSandboxes([sandbox.id]);
           }}
         >
-          Recover Sandbox
+          Recover sandbox
         </MenuItem>
         <MenuItem
           onSelect={() => {
@@ -93,7 +93,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             setVisibility(false);
           }}
         >
-          Delete Permanently
+          Delete permanently
         </MenuItem>
       </Menu.ContextMenu>
     );
@@ -121,7 +121,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             });
           }}
         >
-          Fork Template
+          Fork template
         </MenuItem>
       ) : null}
       <MenuItem
@@ -140,14 +140,14 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           window.open(`https://codesandbox.io${url}`, '_blank');
         }}
       >
-        Open {label} in New Tab
+        Open {label} in new tab
       </MenuItem>
       <MenuItem
         onSelect={() => {
           copyToClipboard(`https://codesandbox.io${url}`);
         }}
       >
-        Copy {label} Link
+        Copy {label} link
       </MenuItem>
       {isOwner && folderUrl !== location.pathname ? (
         <MenuItem
@@ -155,7 +155,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             history.push(folderUrl, { sandboxId: sandbox.id });
           }}
         >
-          Show in Folder
+          Show in folder
         </MenuItem>
       ) : null}
 
@@ -171,7 +171,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           }}
           disabled={isViewOnly}
         >
-          Fork Sandbox
+          Fork sandbox
         </MenuItem>
       ) : null}
       {isOwner && activeWorkspaceAuthorization !== 'READ' ? (
@@ -185,7 +185,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             });
           }}
         >
-          Move to Folder
+          Move to folder
         </MenuItem>
       ) : null}
 
@@ -223,7 +223,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 })
               }
             >
-              Make {label} Public
+              Make {label} public
             </MenuItem>
           )}
           {sandbox.privacy !== 1 && (
@@ -236,7 +236,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               }
               disabled={isViewOnly}
             >
-              Make {label} Unlisted
+              Make {label} unlisted
             </MenuItem>
           )}
           {sandbox.privacy !== 2 && (
@@ -249,7 +249,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               }
               disabled={isViewOnly}
             >
-              Make {label} Private
+              Make {label} private
             </MenuItem>
           )}
         </>
@@ -301,7 +301,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
             disabled={isViewOnly}
           >
-            Convert to Sandbox
+            Convert to sandbox
           </MenuItem>
         ) : (
           <MenuItem
@@ -312,7 +312,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             }}
             disabled={isViewOnly}
           >
-            Make Sandbox a Template
+            Make sandbox a template
           </MenuItem>
         ))}
       {hasAccess &&
@@ -327,7 +327,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Allow Leaving Workspace
+            Allow leaving workspace
           </MenuItem>
         ) : (
           <MenuItem
@@ -338,7 +338,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Prevent Leaving Workspace
+            Prevent leaving workspace
           </MenuItem>
         ))}
       {!sandbox.isV2 &&
@@ -354,7 +354,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Allow Export as .zip
+            Allow export as .zip
           </MenuItem>
         ) : (
           <MenuItem
@@ -365,7 +365,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               });
             }}
           >
-            Prevent Export as .zip
+            Prevent export as .zip
           </MenuItem>
         ))}
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
@@ -382,7 +382,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Archive Template
+              Delete template
             </MenuItem>
           ) : (
             <MenuItem
@@ -393,7 +393,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 setVisibility(false);
               }}
             >
-              Archive Sandbox
+              Delete sandbox
             </MenuItem>
           )}
         </>
@@ -404,7 +404,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
             actions.dashboard.unlikeSandbox(sandbox.id);
           }}
         >
-          Unlike Sandbox
+          Unlike sandbox
         </MenuItem>
       )}
     </Menu.ContextMenu>

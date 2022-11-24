@@ -14,7 +14,7 @@ export const MAP_SIDEBAR_ITEM_EVENT_TO_PAGE_TYPE: Partial<Record<
   templates: 'Dashboard - View Templates',
   sandboxes: 'Dashboard - View Sandboxes',
   'synced-sandboxes': 'Dashboard - View Synced Sandboxes',
-  archive: 'Dashboard - View Archive',
+  deleted: 'Dashboard - View Recently deleted',
   discover: 'Dashboard - View Discover',
   shared: 'Dashboard - View Shared',
   liked: 'Dashboard - View Liked',

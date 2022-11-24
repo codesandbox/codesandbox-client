@@ -54,7 +54,7 @@ export const FolderMenu = ({ folder, setRenaming }: FolderMenuProps) => {
           });
         }}
       >
-        Archive folder
+        Delete folder
       </MenuItem>
     </Menu.ContextMenu>
   );
