@@ -181,7 +181,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               sandboxIds: [item.sandbox.id],
               preventSandboxLeaving:
                 item.sandbox.permissions.preventSandboxLeaving ||
-                (isFree && hasMaxPublicSandboxes),
+                hasMaxPublicSandboxes,
             });
           }}
         >
