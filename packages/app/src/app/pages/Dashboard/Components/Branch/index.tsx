@@ -46,7 +46,7 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
   const { isFree } = useWorkspaceSubscription();
 
   const isPrivate = branch?.project?.repository?.private;
-  const isViewOnly = isFree && isPrivate;
+  const isViewOnly = isFree && isPrivate && page === 'recent';
 
   const props = {
     branch,
