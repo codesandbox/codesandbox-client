@@ -7,7 +7,8 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { MaxPublicReposFreeTeam, PrivateRepoFreeTeam } from './stripes';
 
 export const RepositoriesPage = () => {
@@ -47,7 +48,8 @@ export const RepositoriesPage = () => {
     pathRef.current = path;
   }, [path]);
 
-  const { hasActiveSubscription, hasMaxPublicRepositories } = useSubscription();
+  const { isFree } = useWorkspaceSubscription();
+  const { hasMaxPublicRepositories } = useWorkspaceLimits();
 
   const pageType: PageTypes = 'repositories';
   let selectedRepo:
@@ -86,7 +88,7 @@ export const RepositoriesPage = () => {
         branchItems.unshift({
           type: 'new-branch',
           repo: { owner, name },
-          disabled: !hasActiveSubscription && selectedRepo.private,
+          disabled: isFree && selectedRepo.private,
         });
       }
 
@@ -101,7 +103,7 @@ export const RepositoriesPage = () => {
     if (viewMode === 'grid' && repoItems.length > 0) {
       repoItems.unshift({
         type: 'import-repository',
-        disabled: !hasActiveSubscription && hasMaxPublicRepositories,
+        disabled: isFree && hasMaxPublicRepositories,
       });
     }
 
@@ -110,8 +112,7 @@ export const RepositoriesPage = () => {
 
   const itemsToShow = getItemsToShow();
   const readOnly =
-    !hasActiveSubscription &&
-    (selectedRepo?.private || hasMaxPublicRepositories);
+    isFree && (selectedRepo?.private || hasMaxPublicRepositories);
 
   return (
     <SelectionProvider

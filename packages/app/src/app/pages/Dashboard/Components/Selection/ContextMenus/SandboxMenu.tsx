@@ -7,7 +7,8 @@ import {
   sandboxUrl,
   dashboard,
 } from '@codesandbox/common/lib/utils/url-generator';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Context, MenuItem } from '../ContextMenu';
 import { DashboardSandbox, DashboardTemplate } from '../../../types';
 
@@ -21,7 +22,8 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
 }) => {
   const actions = useActions();
   const { user, activeTeam, activeWorkspaceAuthorization } = useAppState();
-  const { hasActiveSubscription, hasMaxPublicSandboxes } = useSubscription();
+  const { isFree, isPro } = useWorkspaceSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
   const {
     browser: { copyToClipboard },
   } = useEffects();
@@ -38,7 +40,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'Template' : 'Sandbox';
-  const isViewOnly = !hasActiveSubscription && sandbox.privacy !== 0;
+  const isViewOnly = isFree && sandbox.privacy !== 0;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
@@ -179,7 +181,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               sandboxIds: [item.sandbox.id],
               preventSandboxLeaving:
                 item.sandbox.permissions.preventSandboxLeaving ||
-                (!hasActiveSubscription && hasMaxPublicSandboxes),
+                hasMaxPublicSandboxes,
             });
           }}
         >
@@ -209,9 +211,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         </Tooltip>
       )}
 
-      {hasAccess &&
-      activeWorkspaceAuthorization !== 'READ' &&
-      hasActiveSubscription ? (
+      {hasAccess && activeWorkspaceAuthorization !== 'READ' && isPro ? (
         <>
           <Menu.Divider />
           {sandbox.privacy !== 0 && (
@@ -316,7 +316,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
           </MenuItem>
         ))}
       {hasAccess &&
-        hasActiveSubscription &&
+        isPro &&
         activeWorkspaceAuthorization === 'ADMIN' &&
         (sandbox.permissions.preventSandboxLeaving ? (
           <MenuItem
@@ -343,7 +343,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
         ))}
       {!sandbox.isV2 &&
         hasAccess &&
-        hasActiveSubscription &&
+        isPro &&
         activeWorkspaceAuthorization === 'ADMIN' &&
         (sandbox.permissions.preventSandboxExport ? (
           <MenuItem

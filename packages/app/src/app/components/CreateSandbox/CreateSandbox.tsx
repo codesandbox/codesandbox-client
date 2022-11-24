@@ -17,8 +17,8 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useSubscription } from 'app/hooks/useSubscription';
 import { useLocation } from 'react-router-dom';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import {
   Container,
   Tab,
@@ -173,13 +173,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   }, [tabState.selectedId]);
 
   const { isTeamAdmin } = useWorkspaceAuthorization();
-  const { hasActiveSubscription, hasMaxPublicSandboxes } = useSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   const checkout = useGetCheckoutURL({
     team_id:
-      isTeamAdmin && !hasActiveSubscription && hasMaxPublicSandboxes
-        ? activeTeamInfo?.id
-        : undefined,
+      isTeamAdmin && hasMaxPublicSandboxes ? activeTeamInfo?.id : undefined,
     success_path: pathname,
     cancel_path: pathname,
   });

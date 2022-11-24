@@ -16,8 +16,8 @@ import { useCreateCheckout, useDismissible } from 'app/hooks';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useSubscription } from 'app/hooks/useSubscription';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 const StyledTitle = styled(Text)`
   font-size: 24px;
@@ -70,7 +70,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
     'DASHBOARD_RECENT_UPGRADE'
   );
   const { isTeamAdmin } = useWorkspaceAuthorization();
-  const { isEligibleForTrial } = useSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
 
   if (isBannerDismissed) {
     return null;
