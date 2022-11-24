@@ -63,7 +63,7 @@ In this example, we imported [this GitHub repo](https://codesandbox.io/p/github/
 
 Right after importing, we get to the editor. On the left, you’ll see the file tree, search and git controls. There’s also a dock at the bottom, which is where you’ll find some useful DevTools like access to previews, tasks, tests and the terminal.
 
-![CodeSandbox for iOS left sidebar](./images/ipad-ide-left-sidebar.png)
+![CodeSandbox for iOS left sidebar](./images/ipad-ide-sidebar.png)
 
 All this navigation becomes very intuitive thanks to the command palette. Open it with `⌘ + K`. This shows us some suggested actions such as file search, opening previews or changing branches.
 
@@ -73,7 +73,7 @@ To make it easier to work on our code, let’s open a preview. It’s as simple 
 
 The preview will appear on the right side of your screen and you can drag it to resize as needed. In our example, by taking a quick look at our preview, we can see that my website is missing the hero component. Let’s fix that.
 
-![CodeSandbox for iOS left sidebar](./images/ipad-ide-missing-hero.png)
+![Missing hero on the website](./images/ipad-ide-missing-hero.png)
 
 The first step is to create a new branch. Again using the command palette, simply type “branch” and choose “Branch from main”. CodeSandbox will immediately run this branch on an entirely new cloud instance that is created in seconds.
 
@@ -85,13 +85,13 @@ We just have to scroll a bit to get to the section we’re looking for—the lay
 
 As you start typing, the built-in IntelliSense automatically displays autocomplete suggestions with matching components.
 
-![CodeSandbox for iOS left sidebar](./images/ipad-ide-intellisense.png)
+![CodeSandbox for iOS IntelliSense](./images/ipad-ide-intellisense.png)
 
 Let’s take the suggestion. The preview updates immediately and we see that the hero component is now showing up as expected.
 
 However, there seems to be a problem with the copy of the `Hero` component, which I can find by navigating to `src/components/Hero.astro`.
 
-![CodeSandbox for iOS left sidebar](./images/ipad-ide-hero-copy-problem.png)
+![Problem with the hero copy](./images/ipad-ide-hero-copy-problem.png)
 
 This seems like a question for someone from the Marketing team. But, instead of going back and forth with screenshots and Slack messages, what if I can bring that colleague to make this change directly on my code?
 
@@ -100,7 +100,7 @@ One of the truly unique aspects of CodeSandbox for iOS is that it is fully colla
 
 Everything you need is a link to your branch, which you can get by tapping on the ellipsis on the top right, choosing “Share” and copying the URL. In my case, I’ve shared it with Filipe, a colleague from the Marketing team.
 
-![CodeSandbox for iOS left sidebar](./images/ipad-ide-share.png)
+![CodeSandbox for iOS share modal](./images/ipad-ide-share.png)
 
 Because CodeSandbox provides seamless collaboration between any device, Filipe can open my PR on the editor of his choice: the CodeSandbox web editor, CodeSandbox for iOS or even VS Code, using the [CodeSandbox VS Code extension](https://marketplace.visualstudio.com/items?itemName=CodeSandbox-io.codesandbox-projects).
 
@@ -125,7 +125,7 @@ Previews show you every preview you have started, allowing you to easily switch 
 
 [Tasks](https://codesandbox.io/docs/learn/repositories/task) are one of the most powerful CodeSandbox features, essentially allowing you to run any command with a tap. In our example, CodeSandbox automatically detects some tasks of the Astro repo such as `build`, `dev`, `format`, `format:eslint` and `format:prettier`. You can easily add new tasks for tests, database servers and more—take a look at our [tutorial](https://codesandbox.io/docs/learn/repositories/task).
 
-![CodeSandbox for iOS left sidebar](./images/ipad-ide-tasks.png)
+![CodeSandbox for iOS tasks](./images/ipad-ide-tasks.png)
 
 Finally, you can create terminals and run commands for anything else you might need.
 
