@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Input } from '@codesandbox/components';
-import { RegistryType } from 'app/graphql/types';
+import { AuthType, RegistryType } from 'app/graphql/types';
 import { RegistryPresetProps } from '.';
 import { CustomFormField } from '../RegistryForm';
 
@@ -9,9 +9,11 @@ export const NpmRegistryPreset = ({
   authKey,
   setAuthKey,
   setRegistryType,
+  setAuthenticationType,
 }: RegistryPresetProps) => {
   React.useEffect(() => {
     setRegistryType(RegistryType.Npm);
+    setAuthenticationType(AuthType.Bearer);
   }, [setRegistryType]);
 
   return (

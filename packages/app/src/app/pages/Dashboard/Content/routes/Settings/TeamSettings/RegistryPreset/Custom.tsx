@@ -17,6 +17,7 @@ export const CustomRegistryPreset = ({
 }: RegistryPresetProps) => {
   React.useEffect(() => {
     setRegistryType(RegistryType.Custom);
+    setAuthenticationType(AuthType.Basic);
   }, [setRegistryType]);
 
   return (
