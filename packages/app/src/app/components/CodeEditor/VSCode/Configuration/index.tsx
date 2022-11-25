@@ -28,7 +28,7 @@ type Props = EditorProps & {
   theme: any;
 };
 
-export class ConfigurationComponent
+class ConfigurationComponent
   extends React.PureComponent<Props>
   implements Editor {
   disposeInitializer: Function;

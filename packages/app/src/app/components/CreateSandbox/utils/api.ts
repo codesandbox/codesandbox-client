@@ -82,7 +82,7 @@ interface PartialImportedRepository {
   repo_private: boolean;
 }
 
-export type ImportRepositoryFn = (_: {
+type ImportRepositoryFn = (_: {
   owner: string;
   name: string;
   csbTeamId: string;
@@ -117,7 +117,7 @@ export const importRepository: ImportRepositoryFn = ({
     .then(res => res.json());
 };
 
-export type ValidateRepositoryDestinationFn = (
+type ValidateRepositoryDestinationFn = (
   destination: string
 ) => Promise<{ valid: boolean; message?: string }>;
 

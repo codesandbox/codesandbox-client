@@ -64,12 +64,3 @@ export const IconContainer = styled(Stack)<{
     `}
   `
 );
-
-export const Separator = styled.hr`
-  width: calc(100% - 20px);
-  height: 1px;
-  background-color: ${props => props.theme.colors.sideBar.border};
-  margin: 0.25rem 0;
-  outline: none;
-  border: none;
-`;
