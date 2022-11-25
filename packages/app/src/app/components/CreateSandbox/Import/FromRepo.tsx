@@ -34,7 +34,7 @@ const rotate = keyframes`
   }
 `;
 
-export const StyledSpinner = styled.span`
+const StyledSpinner = styled.span`
   display: inline-block;
   animation: ${rotate} 2s linear infinite;
 `;

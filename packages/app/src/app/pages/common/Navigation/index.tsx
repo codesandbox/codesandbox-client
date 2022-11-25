@@ -23,11 +23,7 @@ type Props = {
   showActions?: boolean;
 } & RouteComponentProps;
 
-export const NavigationComponent = ({
-  title,
-  match,
-  showActions = true,
-}: Props) => {
+const NavigationComponent = ({ title, match, showActions = true }: Props) => {
   const { signInClicked, openCreateSandboxModal } = useActions();
   const { isLoggedIn, isAuthenticating, user } = useAppState();
   const link = isLoggedIn ? '/dashboard' : '/';
