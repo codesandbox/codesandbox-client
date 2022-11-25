@@ -156,7 +156,7 @@ class FolderEntry extends React.Component<Props, State> {
       ? []
       : [
           {
-            title: 'Rename Folder',
+            title: 'Rename folder',
             icon: RenameIcon,
             action: () => {
               this.setState({ renamingDirectory: true });
@@ -164,7 +164,7 @@ class FolderEntry extends React.Component<Props, State> {
             },
           },
           {
-            title: 'Archive Folder',
+            title: 'Delete folder',
             icon: TrashIcon,
             color: theme.red.darken(0.2)(),
             action: () => {
@@ -222,7 +222,7 @@ class FolderEntry extends React.Component<Props, State> {
 
     if (allowCreate) {
       menuItems.unshift({
-        title: 'Create Folder',
+        title: 'Create folder',
         icon: AddFolderIcon,
         action: () => {
           this.setState({ creatingDirectory: true, open: true });

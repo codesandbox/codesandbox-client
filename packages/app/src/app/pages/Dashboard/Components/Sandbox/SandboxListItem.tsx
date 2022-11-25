@@ -160,7 +160,7 @@ export const SandboxListItem = ({
               maxWidth="100%"
             >
               <Text css={css({ display: ['none', 'none', 'inline'] })}>
-                archived
+                deleted
               </Text>{' '}
               {formatDistanceToNow(
                 new Date(sandbox.removedAt.replace(/ /g, 'T'))

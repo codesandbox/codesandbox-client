@@ -262,7 +262,7 @@ export const VariableGrid = ({
   const path = params.path ?? '';
 
   let viewMode: 'grid' | 'list';
-  if (location.pathname.includes('archive')) viewMode = 'list';
+  if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = propViewMode || dashboard.viewMode;
 
   const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;

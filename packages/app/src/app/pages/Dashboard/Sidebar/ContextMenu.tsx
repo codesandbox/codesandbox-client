@@ -88,7 +88,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
             });
           }}
         >
-          Archive folder
+          Delete folder
         </MenuItem>
       </>
     );

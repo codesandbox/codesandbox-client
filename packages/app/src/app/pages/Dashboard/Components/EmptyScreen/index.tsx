@@ -29,12 +29,12 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
     );
   }
 
-  if (page === 'archive') {
+  if (page === 'deleted') {
     return (
       <Stack justify="center" align="center" marginTop={120}>
         <Text variant="muted">
-          There are no archived sandboxes yet! Drag sandboxes or templates to
-          this page to archive them.
+          There are no deleted sandboxes yet! Drag sandboxes or templates to
+          this page to delete them.
         </Text>
       </Stack>
     );

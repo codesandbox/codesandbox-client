@@ -118,7 +118,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   /* View logic */
   let viewMode: string;
 
-  if (location.pathname.includes('archive')) viewMode = 'list';
+  if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
   const Component: React.FC<SandboxItemComponentProps> =
@@ -171,7 +171,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const history = useHistory();
   const onDoubleClick = event => {
     // Can't open deleted items, they don't exist anymore
-    if (location.pathname.includes('archive')) {
+    if (location.pathname.includes('deleted')) {
       onContextMenu(event);
       return;
     }

@@ -32,7 +32,7 @@ export const Folder = (folderItem: DashboardFolder) => {
   /* View logic */
 
   let viewMode: string;
-  if (location.pathname.includes('archive')) viewMode = 'list';
+  if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
   const Component = viewMode === 'list' ? FolderListItem : FolderCard;
