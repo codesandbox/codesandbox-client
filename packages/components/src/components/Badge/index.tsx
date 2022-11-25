@@ -4,10 +4,16 @@ import { Stack } from '../Stack';
 import { Text } from '../Text';
 
 export interface BadgeProps {
-  variant?: 'trial' | 'neutral';
+  variant?: 'trial' | 'neutral' | 'highlight';
   icon?: IconNames;
   isPadded?: boolean;
 }
+
+const variantBackgrounds = {
+  trial: '#644ed7',
+  neutral: '#2e2e2e',
+  highlight: '#edffa5',
+};
 
 export const Badge: React.FC<BadgeProps> = ({
   variant = 'neutral',
@@ -21,7 +27,7 @@ export const Badge: React.FC<BadgeProps> = ({
         padding: '2px 8px',
         userSelect: 'none',
         borderRadius: '999px',
-        backgroundColor: variant === 'trial' ? '#644ED7' : '#2e2e2e',
+        backgroundColor: variantBackgrounds[variant],
         color: variant === 'trial' ? '#fff' : 'inherit',
       }}
       gap={1}
