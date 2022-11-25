@@ -14,7 +14,7 @@ import { useAppState } from 'app/overmind';
 import css from '@styled-system/css';
 import { useSelection } from '../Selection';
 
-export interface NewMasterSandboxProps {
+interface NewMasterSandboxProps {
   repo: {
     owner: string;
     name: string;
@@ -35,7 +35,7 @@ export const NewMasterSandbox = (props: NewMasterSandboxProps) => {
   return <NewMasterSandboxListItem {...props} />;
 };
 
-export const NewMasterSandboxListItem = ({
+const NewMasterSandboxListItem = ({
   repo,
   isViewOnly,
 }: NewMasterSandboxProps) => {
@@ -114,10 +114,7 @@ export const NewMasterSandboxListItem = ({
   );
 };
 
-export const NewMasterSandboxCard = ({
-  repo,
-  isViewOnly,
-}: NewMasterSandboxProps) => {
+const NewMasterSandboxCard = ({ repo, isViewOnly }: NewMasterSandboxProps) => {
   const { onRightClick } = useSelection();
   return (
     <Stack

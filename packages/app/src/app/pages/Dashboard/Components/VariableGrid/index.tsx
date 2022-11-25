@@ -40,7 +40,7 @@ import { ImportRepositoryCard } from '../Repository/ImportRepository';
 import { DefaultSkeleton, SolidSkeleton } from '../Skeleton';
 
 export const GRID_MAX_WIDTH = 3840;
-export const MAX_COLUMN_COUNT = 10;
+const MAX_COLUMN_COUNT = 10;
 export const GUTTER = 16;
 const ITEM_MIN_WIDTH = 260;
 const ITEM_HEIGHT_GRID = 240;
