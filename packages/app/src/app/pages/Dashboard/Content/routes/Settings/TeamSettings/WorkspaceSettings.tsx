@@ -27,6 +27,7 @@ import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
   CurrentTeamInfoFragmentFragment,
+  SubscriptionOrigin,
 } from 'app/graphql/types';
 import { MAX_PRO_EDITORS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
@@ -69,6 +70,7 @@ export const WorkspaceSettings = () => {
     isFree,
     isEligibleForTrial,
     numberOfSeats,
+    subscription,
   } = useWorkspaceSubscription();
   const {
     numberOfEditors,
@@ -76,6 +78,7 @@ export const WorkspaceSettings = () => {
     numberOfEditorsIsOverTheLimit,
   } = useWorkspaceLimits();
   const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
+
   const checkout = useGetCheckoutURL({
     team_id: isTeamAdmin ? team?.id : undefined,
     cancel_path: dashboard.settings(team?.id),
@@ -523,24 +526,25 @@ export const WorkspaceSettings = () => {
       {/**
        * Soft limit for pro teams.
        */}
-      {numberOfEditors > MAX_PRO_EDITORS && (
-        <MessageStripe justify="space-between">
-          <span>
-            You have over {MAX_PRO_EDITORS} editors. Upgrade to the Organization
-            plan for more benefits.
-          </span>
-          <MessageStripe.Action
-            as="a"
-            href="https://codesandbox.typeform.com/organization"
-            onClick={() =>
-              track('Limit banner - team editors - Custom plan contact')
-            }
-            target="_blank"
-          >
-            Contact us
-          </MessageStripe.Action>
-        </MessageStripe>
-      )}
+      {numberOfEditors > MAX_PRO_EDITORS &&
+        subscription.origin !== SubscriptionOrigin.Pilot && (
+          <MessageStripe justify="space-between">
+            <span>
+              You have over {MAX_PRO_EDITORS} editors. Upgrade to the
+              Organization plan for more benefits.
+            </span>
+            <MessageStripe.Action
+              as="a"
+              href="https://codesandbox.typeform.com/organization"
+              onClick={() =>
+                track('Limit banner - team editors - Custom plan contact')
+              }
+              target="_blank"
+            >
+              Contact us
+            </MessageStripe.Action>
+          </MessageStripe>
+        )}
 
       <div>
         <MemberList

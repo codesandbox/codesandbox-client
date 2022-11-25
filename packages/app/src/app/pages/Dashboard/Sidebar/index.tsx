@@ -297,10 +297,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           ) : null}
 
           <RowItem
-            name="Archive"
-            page="archive"
-            path={dashboardUrls.archive(activeTeam)}
-            icon="archive"
+            name="Recently deleted"
+            page="deleted"
+            path={dashboardUrls.deleted(activeTeam)}
+            icon="trash"
           />
           <Element marginTop={3} />
         </List>
