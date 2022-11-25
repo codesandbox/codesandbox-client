@@ -19,7 +19,7 @@ export type DndDropType = {
   isSamePath: boolean;
 };
 
-export type CollectionReturn = {
+type CollectionReturn = {
   canDrop: boolean;
   isOver: boolean;
   isDragging: boolean;

@@ -12,13 +12,7 @@ import { DevToolProps } from '..';
 import { Container, Messages, inspectorTheme, FilterInput } from './elements';
 import { ConsoleInput } from './Input';
 
-export type IMessage = {
-  type: 'message' | 'command' | 'return';
-  logType: 'log' | 'warn' | 'info' | 'error';
-  arguments: any[];
-};
-
-export type StyledProps = DevToolProps & {
+type StyledProps = DevToolProps & {
   theme: typeof theme & { light: boolean };
 };
 
@@ -241,7 +235,8 @@ class ConsoleComponent extends React.PureComponent<StyledProps, State> {
               paddingTop: 60,
             }}
           >
-            In browser logging is disabled, you can enable it in sandbox.config.json.
+            In browser logging is disabled, you can enable it in
+            sandbox.config.json.
           </span>
         ) : (
           <>

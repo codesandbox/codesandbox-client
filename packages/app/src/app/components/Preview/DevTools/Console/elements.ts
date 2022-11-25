@@ -25,14 +25,6 @@ export const Messages = styled.div`
   }
 `;
 
-export const IconContainer = styled.div`
-  display: inline-flex;
-  padding: 0.5rem 0;
-  width: 24px;
-  align-items: center;
-  justify-content: center;
-`;
-
 export const FilterInput = styled.input`
   transition: 0.4s ease all;
   background-color: ${props =>

@@ -8,9 +8,8 @@ import { Status, IViews } from '..';
 import { Actions, Container, Tabs } from './elements';
 import { DraggableTab, PaneTab, TabProps } from './Tab';
 import { TabDropZone, TabDropZoneProps } from './TabDropZone';
-// import { AddTab } from './AddTab';
 
-export interface Props {
+interface Props {
   hidden: boolean;
   currentPaneIndex: number;
   owned: boolean;
@@ -97,8 +96,6 @@ export const DevToolTabs = ({
             />
           );
         })}
-
-        {/* <AddTab /> */}
 
         {moveTab && (
           <TypedTabDropZone

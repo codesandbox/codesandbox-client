@@ -2,8 +2,6 @@
 import styled from 'styled-components';
 import fadeIn from '@codesandbox/common/lib/utils/animation/fade-in';
 
-export const PADDING = 32;
-
 export const Container = styled.div`
   ${fadeIn(0)};
   background-color: ${props => props.theme.colors.sideBar.background};

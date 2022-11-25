@@ -18,7 +18,7 @@ import { SortOptions } from '../Filters/SortOptions';
 import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid';
 import { TemplateFilter } from '../../Content/utils';
 
-export interface IAction {
+interface IAction {
   title: string;
   action: () => void;
 }

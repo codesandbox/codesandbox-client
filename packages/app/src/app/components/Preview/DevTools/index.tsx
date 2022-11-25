@@ -41,7 +41,7 @@ export interface IViews {
   [id: string]: IViewType;
 }
 
-export interface IViewAction {
+interface IViewAction {
   title: string;
   onClick: () => void;
   Icon: React.ComponentType<any>;
