@@ -40,15 +40,17 @@ Importing from GitHub is great for working on branches and reviewing pull reques
 
 One key advantage of doing this on CodeSandbox for iOS is that you won’t have to configure anything—every branch and PR runs on the cloud, so all the dependencies of your repo are installed for you, which means you can focus 100% on coding.
 
-<video autoplay loop muted playsinline width="100%">
+
+<video autoplay loop muted playsinline controls width="100%">
   <source src="./videos/ipad-ide-import-repo.mp4" type="video/mp4">
 </video>
+
 
 Sandboxes are great to play around with code. They ship with everything you need to quickly prototype an idea and share it to get feedback.
 
 CodeSandbox provides templates for all sorts of web technologies and packages (such as React, Next.js, Vue.js, Next.js, Remix, Angular, Astro, Gatsby, Svelte, and many more). So you can just choose a technology to create a sandbox and build on top of it to learn, experiment, and create a cool demo.
 
-<video autoplay loop muted playsinline width="100%">
+<video autoplay loop muted playsinline  controls  width="100%">
   <source src="./videos/ipad-ide-sandboxes.mp4" type="video/mp4">
 </video>
 
@@ -106,7 +108,7 @@ Because CodeSandbox provides seamless collaboration between any device, Filipe c
 
 I will see Filipe’s avatar pop up when he joins and, by tapping on it, I will follow him around the code and see the fix being made in real-time.
 
-<video autoplay loop muted playsinline width="100%">
+<video autoplay loop muted playsinline  controls  width="100%">
   <source src="./videos/ipad-ide-collaboration.mp4" type="video/mp4">
 </video>
 
@@ -138,7 +140,7 @@ Simply reveal the panel from the left side of your screen to bring up the sideba
 
 This brings you directly to GitHub with everything pre-filled. You only need one final tap to open the PR, and it’s done!
 
-<video autoplay loop muted playsinline width="100%">
+<video autoplay loop muted playsinline  controls  width="100%">
   <source src="./videos/ipad-ide-pull-request.mp4" type="video/mp4">
 </video>
 
