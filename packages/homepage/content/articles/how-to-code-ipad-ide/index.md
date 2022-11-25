@@ -4,8 +4,8 @@ slug: how-to-code-your-app-using-the-codesandbox-ipad-ide
 authors: ['Carlos Vidal']
 photo: https://avatars.githubusercontent.com/u/1814571?v=4
 title: How to code your app using the CodeSandbox iPad IDE
-description: Learn how you can save hours every week reviewing PRs with the CodeSandbox GitHub App.
-date: 2022-11-24
+description: In this in-depth tutorial, we showcase the developer experience of the CodeSandbox iPad IDE. 
+date: 2022-11-25
 ---
 
 In the last few years, mobile devices like the iPad have become really powerful. With a long-lasting battery, a great screen, top-notch performance and 5G connectivity, the iPad provides an excellent alternative to laptops for those wanting to get work done while on the go.
