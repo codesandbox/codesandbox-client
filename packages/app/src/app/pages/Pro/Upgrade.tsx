@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { useAppState, useActions } from 'app/overmind';
 import {
   ThemeProvider,
@@ -8,17 +10,25 @@ import {
   Tooltip,
   Icon,
   Text,
+  Grid,
+  Badge,
+  Button,
 } from '@codesandbox/components';
 import { Helmet } from 'react-helmet';
 import { Navigation } from 'app/pages/common/Navigation';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
-import css from '@styled-system/css';
 import { sortBy } from 'lodash-es';
 import { AnimatePresence, motion } from 'framer-motion';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation, useHistory, Link as RouterLink } from 'react-router-dom';
 import { formatCurrency } from 'app/utils/currency';
 import { useCreateCheckout } from 'app/hooks';
+import {
+  Feature,
+  FREE_FEATURES,
+  ORG_FEATURES,
+  PRO_FEATURES,
+} from 'app/constants';
 import {
   UpgradeButton,
   Caption,
@@ -35,6 +45,115 @@ import {
 } from '../../graphql/types';
 
 type Interval = 'month' | 'year';
+
+const StyledCard = styled.div<{ isHighlighted?: boolean }>`
+  min-width: 222px;
+  flex-grow: 0;
+  padding: 24px;
+  font-size: 13px;
+
+  ${props =>
+    props.isHighlighted
+      ? `
+    background-color: #FFFFFF;
+    color: #0E0E0E;
+    `
+      : `
+    background-color: #252525;
+    color: #999999;
+  `}
+
+  @media (min-width: 887px) {
+    width: 320px;
+  }
+`;
+
+interface SubscriptionCardProps {
+  children: React.ReactNode;
+  features: Feature[];
+  cta?: { text: string; href: string; variant: 'highlight' | 'dark' | 'light' };
+  isHighlighted?: boolean;
+}
+
+const SubscriptionCard = ({
+  children,
+  features,
+  cta,
+  isHighlighted,
+}: SubscriptionCardProps) => {
+  return (
+    <StyledCard
+      isHighlighted={isHighlighted}
+      as={Stack}
+      gap={9}
+      direction="vertical"
+    >
+      {children}
+      <Stack
+        as="ul"
+        direction="vertical"
+        gap={1}
+        // Reset ul styles
+        css={{
+          margin: 0,
+          padding: 0,
+          listStyle: 'none',
+        }}
+      >
+        {features.map(feature => (
+          <Stack as="li" justify="space-between" align="center">
+            <Text key={feature.key} css={{ padding: '8px 0' }}>
+              {feature.label}
+            </Text>
+            {feature.pill ? (
+              <Badge variant="highlight">{feature.pill}</Badge>
+            ) : null}
+          </Stack>
+        ))}
+      </Stack>
+      {cta ? (
+        <StyledSubscriptionLink href={cta.href} variant={cta.variant}>
+          {cta.text}
+        </StyledSubscriptionLink>
+      ) : (
+        <Element css={{ height: '48px' }} />
+      )}
+    </StyledCard>
+  );
+};
+
+const subLinkBackgrounds = {
+  highlight: '#0E0E0E',
+  dark: '#323232',
+  light: '#EBEBEB',
+};
+
+const subLinkColors = {
+  highlight: '#FFFFFF',
+  dark: '#FFFFFF',
+  light: '#0E0E0E',
+};
+
+const StyledSubscriptionLink = styled.a<{
+  variant: 'highlight' | 'dark' | 'light';
+}>`
+  padding: 12px 20px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  border-radius: 4px;
+  text-decoration: none;
+
+  ${props => `
+    background-color: ${subLinkBackgrounds[props.variant]};
+    color: ${subLinkColors[props.variant]};
+  `}
+
+  &:focus {
+    outline: 1px solid #ac9cff;
+  }
+`;
 
 export const ProUpgrade = () => {
   const {
@@ -169,13 +288,13 @@ export const ProUpgrade = () => {
         <title>Pro - CodeSandbox</title>
       </Helmet>
       <Element
-        css={css({
-          backgroundColor: 'grays.900',
-          color: 'white',
+        css={{
+          backgroundColor: '#0E0E0E',
+          color: '#E5E5E5',
           width: '100%',
           minHeight: '100vh',
-          fontFamily: "'Inter', sans-serif",
-        })}
+          fontFamily: 'Inter, sans-serif',
+        }}
       >
         <Navigation showActions={false} />
 
@@ -183,7 +302,7 @@ export const ProUpgrade = () => {
           <Text
             size={3}
             variant="muted"
-            css={css({
+            css={{
               width: '100%',
               maxWidth: '713px',
               margin: '0 auto',
@@ -198,7 +317,7 @@ export const ProUpgrade = () => {
                   marginRight: '.5em',
                 },
               },
-            })}
+            }}
           >
             <svg
               width="16"
@@ -217,17 +336,8 @@ export const ProUpgrade = () => {
           </Text>
         )}
 
-        <Stack
-          justify="center"
-          align="center"
-          css={css({
-            width: '100%',
-            maxWidth: '713px',
-            margin: '0 auto',
-            padding: '24px 1em',
-          })}
-        >
-          <Element css={{ width: '100%', paddingTop: '24px' }}>
+        <Stack gap={10} direction="vertical">
+          <Stack gap={3} direction="vertical" align="center">
             <Switcher
               workspaceType={workspaceType}
               workspaces={workspacesList}
@@ -237,207 +347,274 @@ export const ProUpgrade = () => {
               userId={user.id}
               openCreateTeamModal={openCreateTeamModal}
             />
-            {isPro ? (
-              <>
-                <PlanTitle>
-                  {workspaceType === 'pro'
-                    ? 'You have an active Personal Pro subscription.'
-                    : 'You have an active Team Pro subscription.'}
-                </PlanTitle>
 
-                <Stack
-                  gap={3}
-                  css={{
-                    display: 'block',
-                    '@media (min-width: 720px)': { display: 'flex' },
-                  }}
-                >
-                  <UpgradeButton
-                    planType={workspaceType}
-                    type="button"
-                    onClick={createCustomerPortal}
-                    disabled={!isAdmin || loadingCustomerPortal}
-                  >
-                    {loadingCustomerPortal
-                      ? 'Loading...'
-                      : 'Manage subscription'}
-                  </UpgradeButton>
+            <Text
+              as="h1"
+              fontFamily="everett"
+              size={48}
+              weight="500"
+              align="center"
+              lineHeight="56px"
+              margin={0}
+            >
+              {isPro
+                ? 'You have an active Pro subscription.'
+                : 'Upgrade for Pro features'}
+            </Text>
+          </Stack>
 
-                  <UpgradeButton
-                    planType="none"
-                    onClick={() => {
-                      history.push(dashboardUrls.settings());
-                    }}
-                    style={{ color: '#fff' }}
-                    variant="secondary"
-                  >
-                    Go to team settings
-                  </UpgradeButton>
-                </Stack>
-              </>
-            ) : (
-              <>
-                <PlanTitle>
-                  {workspaceType === 'pro'
-                    ? 'Upgrade to Personal Pro'
-                    : 'Upgrade to Team Pro'}
-                </PlanTitle>
+          <Stack
+            gap={2}
+            justify="center"
+            css={{
+              '@media (max-width: 888px)': {
+                // The only way to change the stack styles responsively
+                // with CSS rules only.
+                display: 'block',
+                '& > *:not(:last-child)': {
+                  marginRight: 0,
+                  marginBottom: '8px',
+                },
+              },
+            }}
+          >
+            <SubscriptionCard features={FREE_FEATURES}>
+              <Text color="#C2C2C2" size={16} weight="500">
+                Free plan
+              </Text>
+              <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
+                <Text aria-hidden size={32} weight="400">
+                  $0
+                </Text>
+                <VisuallyHidden>Zero dollar</VisuallyHidden>
+                <Text>forever</Text>
+              </Stack>
+            </SubscriptionCard>
 
-                <Caption>Payment plan</Caption>
+            <SubscriptionCard
+              features={PRO_FEATURES}
+              cta={{
+                text: 'Proceed to checkout',
+                href: '#',
+                variant: 'highlight',
+              }}
+              isHighlighted
+            >
+              <Text size={16} weight="500">
+                Team Pro
+              </Text>
+              <Stack gap={1} direction="vertical">
+                <Text aria-hidden size={32} weight="500">
+                  $15
+                </Text>
+                <VisuallyHidden>Fifteen dollars</VisuallyHidden>
+                <Text>
+                  per editor per month, billed anually, or $18 per month.
+                </Text>
+              </Stack>
+            </SubscriptionCard>
 
-                <Stack
-                  justify="space-between"
-                  css={{
-                    display: 'block',
-                    '@media (min-width: 720px)': { display: 'flex' },
-                  }}
-                >
-                  <SwitchPlan
-                    type="button"
-                    onClick={() => setIntervalType('year')}
-                    className={interval === 'year' ? 'active' : ''}
-                  >
-                    <Stack justify="space-between">
-                      <p className="period">Annual</p>
-                      <p className="discount">save {savePercent()}%</p>
-                    </Stack>
-                    <h3 className="price">
-                      {summary.year.price}{' '}
-                      <span>
-                        {formatCurrency({
-                          amount: prices[workspaceType].month.unitAmount,
-                          currency: prices[workspaceType].month.currency,
-                        })}
-                      </span>
-                    </h3>
-                    <p className="caption">
-                      per editor per month, billed annually
-                    </p>
-                  </SwitchPlan>
-
-                  <SwitchPlan
-                    type="button"
-                    onClick={() => setIntervalType('month')}
-                    className={interval === 'month' ? 'active' : ''}
-                  >
-                    <p className="period">Monthly</p>
-                    <h3 className="price">{summary.month.price}</h3>
-                    <p className="caption">{summary.month.label}</p>
-                  </SwitchPlan>
-                </Stack>
-
-                <AnimatePresence>
-                  {workspaceType === 'teamPro' && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      style={{ overflow: 'hidden' }}
-                    >
-                      <Stack justify="space-between">
-                        <Caption css={{ paddingTop: 24 }}>
-                          <Element
-                            css={{ display: 'flex', alignItems: 'center' }}
-                          >
-                            Paid seats
-                            <Tooltip label="The amount of paid seats is automatically calculated by the amount of admin and editors per team.">
-                              <Element
-                                css={{ display: 'block', marginLeft: '.5em' }}
-                              >
-                                <svg
-                                  width="12"
-                                  height="12"
-                                  viewBox="0 0 12 12"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  style={{ display: 'block' }}
-                                >
-                                  <path
-                                    d="M6 10.625C3.44568 10.625 1.375 8.55432 1.375 6C1.375 3.44568 3.44568 1.375 6 1.375C8.55432 1.375 10.625 3.44568 10.625 6C10.625 8.55432 8.55432 10.625 6 10.625ZM0.625 6C0.625 8.96853 3.03147 11.375 6 11.375C8.96853 11.375 11.375 8.96853 11.375 6C11.375 3.03147 8.96853 0.625002 6 0.625002C3.03147 0.625002 0.625 3.03147 0.625 6ZM6 8.875C6.20711 8.875 6.375 8.70711 6.375 8.5V6C6.375 5.79289 6.20711 5.625 6 5.625C5.79289 5.625 5.625 5.79289 5.625 6V8.5C5.625 8.70711 5.79289 8.875 6 8.875ZM6 4.5C6.2071 4.5 6.375 4.33211 6.375 4.125L6.375 4.0625C6.375 3.8554 6.20711 3.6875 6 3.6875C5.7929 3.6875 5.625 3.85539 5.625 4.0625L5.625 4.125C5.625 4.3321 5.79289 4.5 6 4.5Z"
-                                    fill="#C5C5C5"
-                                  />
-                                </svg>
-                              </Element>
-                            </Tooltip>
-                          </Element>
-                        </Caption>
-
-                        <Caption css={{ paddingTop: 24 }}>
-                          <StyledLink
-                            as={RouterLink}
-                            to={dashboardUrls.settings(activeTeam)}
-                          >
-                            <Stack gap={2}>
-                              <span>Go to team settings</span>
-                              <Icon name="external" size={16} />
-                            </Stack>
-                          </StyledLink>
-                        </Caption>
-                      </Stack>
-
-                      <BoxPlaceholder>
-                        <span>{amountPaidMember}</span>
-                      </BoxPlaceholder>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <Stack
-                  direction="vertical"
-                  css={{
-                    width: '100%',
-                    marginTop: 24,
-                    alignItems: 'flex-start',
-
-                    '@media screen and (min-width: 720px)': {
-                      alignItems: 'flex-end',
-                    },
-                  }}
-                  gap={1}
-                >
-                  <UpgradeButton
-                    planType={workspaceType}
-                    type="button"
-                    onClick={() =>
-                      createCheckout({
-                        team_id: activeTeamInfo.id,
-                        recurring_interval: interval as string,
-                      })
-                    }
-                    disabled={
-                      !isAdmin || isPro || checkout.status === 'loading'
-                    }
-                  >
-                    {checkout.status === 'loading'
-                      ? 'Loading...'
-                      : 'Proceed to checkout'}
-                  </UpgradeButton>
-                  {checkout.status === 'error' && (
-                    <Text variant="danger">
-                      {checkout.error}. Please try again.
-                    </Text>
-                  )}
-                </Stack>
-
-                <Summary>
-                  <p>
-                    {summary[interval].price} x{' '}
-                    {`${amountPaidMember} paid seat${
-                      amountPaidMember > 1 ? 's' : ''
-                    }`}{' '}
-                    ={' '}
-                    <span>
-                      {summary[interval].total} {summary[interval].label}
-                    </span>
-                  </p>
-                  <small>
-                    Prices listed {prices.pro.year.currency}. Taxes may apply.
-                  </small>
-                </Summary>
-              </>
-            )}
-          </Element>
+            <SubscriptionCard
+              features={ORG_FEATURES}
+              cta={{
+                text: 'Contact us',
+                href: '#',
+                variant: 'dark',
+              }}
+            >
+              <Text color="#C2C2C2" size={16} weight="500">
+                Organization
+              </Text>
+              <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
+                <Text aria-hidden size={32} weight="400">
+                  custom
+                </Text>
+                <Text>
+                  <div>tailor-made plan.</div>
+                  <div>bulk pricing for seats.</div>
+                </Text>
+              </Stack>
+            </SubscriptionCard>
+          </Stack>
         </Stack>
+
+        {isPro ? (
+          <Stack
+            gap={3}
+            css={{
+              display: 'block',
+              '@media (min-width: 720px)': { display: 'flex' },
+            }}
+          >
+            <UpgradeButton
+              planType={workspaceType}
+              type="button"
+              onClick={createCustomerPortal}
+              disabled={!isAdmin || loadingCustomerPortal}
+            >
+              {loadingCustomerPortal ? 'Loading...' : 'Manage subscription'}
+            </UpgradeButton>
+
+            <UpgradeButton
+              planType="none"
+              onClick={() => {
+                history.push(dashboardUrls.settings());
+              }}
+              style={{ color: '#fff' }}
+              variant="secondary"
+            >
+              Go to team settings
+            </UpgradeButton>
+          </Stack>
+        ) : (
+          <>
+            <Caption>Payment plan</Caption>
+
+            <Stack
+              justify="space-between"
+              css={{
+                display: 'block',
+                '@media (min-width: 720px)': { display: 'flex' },
+              }}
+            >
+              <SwitchPlan
+                type="button"
+                onClick={() => setIntervalType('year')}
+                className={interval === 'year' ? 'active' : ''}
+              >
+                <Stack justify="space-between">
+                  <p className="period">Annual</p>
+                  <p className="discount">save {savePercent()}%</p>
+                </Stack>
+                <h3 className="price">
+                  {summary.year.price}{' '}
+                  <span>
+                    {formatCurrency({
+                      amount: prices[workspaceType].month.unitAmount,
+                      currency: prices[workspaceType].month.currency,
+                    })}
+                  </span>
+                </h3>
+                <p className="caption">per editor per month, billed annually</p>
+              </SwitchPlan>
+
+              <SwitchPlan
+                type="button"
+                onClick={() => setIntervalType('month')}
+                className={interval === 'month' ? 'active' : ''}
+              >
+                <p className="period">Monthly</p>
+                <h3 className="price">{summary.month.price}</h3>
+                <p className="caption">{summary.month.label}</p>
+              </SwitchPlan>
+            </Stack>
+
+            <AnimatePresence>
+              {workspaceType === 'teamPro' && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <Stack justify="space-between">
+                    <Caption css={{ paddingTop: 24 }}>
+                      <Element css={{ display: 'flex', alignItems: 'center' }}>
+                        Paid seats
+                        <Tooltip label="The amount of paid seats is automatically calculated by the amount of admin and editors per team.">
+                          <Element
+                            css={{ display: 'block', marginLeft: '.5em' }}
+                          >
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 12 12"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              style={{ display: 'block' }}
+                            >
+                              <path
+                                d="M6 10.625C3.44568 10.625 1.375 8.55432 1.375 6C1.375 3.44568 3.44568 1.375 6 1.375C8.55432 1.375 10.625 3.44568 10.625 6C10.625 8.55432 8.55432 10.625 6 10.625ZM0.625 6C0.625 8.96853 3.03147 11.375 6 11.375C8.96853 11.375 11.375 8.96853 11.375 6C11.375 3.03147 8.96853 0.625002 6 0.625002C3.03147 0.625002 0.625 3.03147 0.625 6ZM6 8.875C6.20711 8.875 6.375 8.70711 6.375 8.5V6C6.375 5.79289 6.20711 5.625 6 5.625C5.79289 5.625 5.625 5.79289 5.625 6V8.5C5.625 8.70711 5.79289 8.875 6 8.875ZM6 4.5C6.2071 4.5 6.375 4.33211 6.375 4.125L6.375 4.0625C6.375 3.8554 6.20711 3.6875 6 3.6875C5.7929 3.6875 5.625 3.85539 5.625 4.0625L5.625 4.125C5.625 4.3321 5.79289 4.5 6 4.5Z"
+                                fill="#C5C5C5"
+                              />
+                            </svg>
+                          </Element>
+                        </Tooltip>
+                      </Element>
+                    </Caption>
+
+                    <Caption css={{ paddingTop: 24 }}>
+                      <StyledLink
+                        as={RouterLink}
+                        to={dashboardUrls.settings(activeTeam)}
+                      >
+                        <Stack gap={2}>
+                          <span>Go to team settings</span>
+                          <Icon name="external" size={16} />
+                        </Stack>
+                      </StyledLink>
+                    </Caption>
+                  </Stack>
+
+                  <BoxPlaceholder>
+                    <span>{amountPaidMember}</span>
+                  </BoxPlaceholder>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <Stack
+              direction="vertical"
+              css={{
+                width: '100%',
+                marginTop: 24,
+                alignItems: 'flex-start',
+
+                '@media screen and (min-width: 720px)': {
+                  alignItems: 'flex-end',
+                },
+              }}
+              gap={1}
+            >
+              <UpgradeButton
+                planType={workspaceType}
+                type="button"
+                onClick={() =>
+                  createCheckout({
+                    team_id: activeTeamInfo.id,
+                    recurring_interval: interval as string,
+                  })
+                }
+                disabled={!isAdmin || isPro || checkout.status === 'loading'}
+              >
+                {checkout.status === 'loading'
+                  ? 'Loading...'
+                  : 'Proceed to checkout'}
+              </UpgradeButton>
+              {checkout.status === 'error' && (
+                <Text variant="danger">
+                  {checkout.error}. Please try again.
+                </Text>
+              )}
+            </Stack>
+
+            <Summary>
+              <p>
+                {summary[interval].price} x{' '}
+                {`${amountPaidMember} paid seat${
+                  amountPaidMember > 1 ? 's' : ''
+                }`}{' '}
+                ={' '}
+                <span>
+                  {summary[interval].total} {summary[interval].label}
+                </span>
+              </p>
+              <small>
+                Prices listed {prices.pro.year.currency}. Taxes may apply.
+              </small>
+            </Summary>
+          </>
+        )}
       </Element>
     </ThemeProvider>
   );

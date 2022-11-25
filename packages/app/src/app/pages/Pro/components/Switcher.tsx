@@ -20,6 +20,35 @@ import {
 } from 'app/graphql/types';
 import { Caption } from './elements';
 
+const StyledMenuButton = styled(Menu.Button)`
+  height: auto;
+  padding: 8px 12px;
+  color: #ebebeb;
+
+  // Turned off the transition as it was causing a weird
+  // flicker when focussing the button
+  transition: none;
+
+  &:hover,
+  &:focus {
+    color: #ffffff;
+    background-color: #252525;
+  }
+
+  &:focus {
+    outline: 1px solid #ac9cff;
+  }
+`;
+
+const MenuTrigger = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Stack gap={2} as={StyledMenuButton}>
+      {children}
+      <Icon css={{ color: '#fff' }} name="chevronDown" size={8} />
+    </Stack>
+  );
+};
+
 export const Switcher: React.FC<{
   workspaces: TeamFragmentDashboardFragment[];
   setActiveTeam: (payload?: { id: string }) => Promise<void>;
@@ -37,8 +66,10 @@ export const Switcher: React.FC<{
   userId,
   openCreateTeamModal,
 }) => {
+  // move this check up, shouldn't happen
   if (!workspaces || workspaces.length === 0) return null;
 
+  // 🚮
   const members = activeTeamInfo.users.length;
   const memberLabel = `${members} member${members > 1 ? 's' : ''}`;
   const isPersonalWorkspace = workspaceType === 'pro';
@@ -48,188 +79,105 @@ export const Switcher: React.FC<{
   ].includes(activeTeamInfo.subscription?.type);
 
   return (
-    <Stack
-      justify="space-between"
-      align="center"
-      css={{ fontFamily: "'Inter', sans-serif" }}
-    >
-      <Menu>
-        <Stack as={Menu.Button} css={{ padding: 0, height: 'auto' }}>
-          <TeamAvatar
-            size="bigger"
-            avatar={activeTeamInfo?.avatarUrl}
-            name={activeTeamInfo.name}
-          />
+    <Menu>
+      <MenuTrigger>
+        <Text>{activeTeamInfo.name}</Text>
+        {isFreeWorkspace ? <Badge variant="trial">Free</Badge> : null}
+      </MenuTrigger>
 
-          <Stack css={{ marginLeft: 24 }} direction="vertical">
-            <Stack align="center" gap={1}>
-              <WorkspaceName>
-                <span>{activeTeamInfo.name}</span>
-              </WorkspaceName>
-              {isFreeWorkspace && <Badge variant="trial">Free</Badge>}
-              <Icon css={{ color: '#fff' }} name="chevronDown" size={8} />
-            </Stack>
-            <WorkspaceType>
-              {isPersonalWorkspace ? 'Personal' : memberLabel}
-            </WorkspaceType>
-          </Stack>
-        </Stack>
+      <MenuList>
+        <Element css={{ minWidth: 290, maxHeight: 600, overflow: 'auto' }}>
+          <Caption
+            css={{
+              margin: 0,
+              height: 40,
+              lineHeight: '40px',
+              paddingTop: 8,
+              paddingLeft: 24,
+              color: '#999999',
+            }}
+          >
+            Select team to upgrade
+          </Caption>
 
-        <MenuList>
-          <Element css={{ minWidth: 290, maxHeight: 600, overflow: 'auto' }}>
-            <Caption
-              css={{
-                margin: 0,
-                height: 40,
-                lineHeight: '40px',
-                paddingTop: 8,
-                paddingLeft: 24,
-                color: '#999999',
-              }}
-            >
-              Select team to upgrade
-            </Caption>
+          {workspaces.map(workspace => {
+            if (!workspace) return null;
 
-            {workspaces.map(workspace => {
-              if (!workspace) return null;
+            const seats = workspace.users.length;
+            const seatsLabel = `${seats} member${seats > 1 ? 's' : ''}`;
 
-              const seats = workspace.users.length;
-              const seatsLabel = `${seats} member${seats > 1 ? 's' : ''}`;
+            const isAdmin =
+              workspace.userAuthorizations.find(team => team.userId === userId)
+                .authorization === TeamMemberAuthorization.Admin;
+            const isPro = [
+              SubscriptionType.TeamPro,
+              SubscriptionType.PersonalPro,
+            ].includes(workspace.subscription?.type);
+            const disabled = !isAdmin || isPro;
 
-              const isAdmin =
-                workspace.userAuthorizations.find(
-                  team => team.userId === userId
-                ).authorization === TeamMemberAuthorization.Admin;
-              const isPro = [
-                SubscriptionType.TeamPro,
-                SubscriptionType.PersonalPro,
-              ].includes(workspace.subscription?.type);
-              const disabled = !isAdmin || isPro;
+            return (
+              <MenuItem
+                onSelect={() => setActiveTeam(workspace)}
+                key={workspace.id}
+                disabled={disabled}
+                style={{ opacity: disabled ? 0.5 : 1, padding: 0 }}
+              >
+                <Stack css={{ padding: '12px 24px' }} align="center">
+                  <TeamAvatar
+                    size="small"
+                    avatar={workspace.avatarUrl}
+                    name={workspace.name}
+                  />
 
-              return (
-                <MenuItem
-                  onSelect={() => setActiveTeam(workspace)}
-                  key={workspace.id}
-                  disabled={disabled}
-                  style={{ opacity: disabled ? 0.5 : 1, padding: 0 }}
-                >
-                  <Stack css={{ padding: '12px 24px' }} align="center">
-                    <TeamAvatar
-                      size="small"
-                      avatar={workspace.avatarUrl}
-                      name={workspace.name}
-                    />
-
-                    <Stack
-                      direction="vertical"
-                      css={{ flex: 1, marginLeft: 19 }}
-                    >
-                      <Stack gap={1}>
-                        <Text size={4}>
-                          {workspace.id === personalWorkspaceId
-                            ? 'Personal'
-                            : workspace.name}
-                        </Text>
-                      </Stack>
-
-                      <Text size={3}>
-                        {workspace.id !== personalWorkspaceId
-                          ? seatsLabel
-                          : null}
+                  <Stack direction="vertical" css={{ flex: 1, marginLeft: 19 }}>
+                    <Stack gap={1}>
+                      <Text size={4}>
+                        {workspace.id === personalWorkspaceId
+                          ? 'Personal'
+                          : workspace.name}
                       </Text>
                     </Stack>
 
-                    {!isPro && <Badge variant="trial">Free</Badge>}
+                    <Text size={3}>
+                      {workspace.id !== personalWorkspaceId ? seatsLabel : null}
+                    </Text>
                   </Stack>
-                </MenuItem>
-              );
-            })}
 
-            <MenuItem onSelect={openCreateTeamModal}>
-              <Stack
-                css={{
-                  marginTop: 12,
-                  padding: 24,
-                  borderTop: '1px solid rgba(255, 255, 255, 0.2)',
-                }}
-                align="center"
-              >
-                <Stack
-                  justify="center"
-                  align="center"
-                  css={{
-                    width: 24,
-                    height: 24,
-                    backgroundColor: '#252525',
-                  }}
-                >
-                  <Icon name="plus" size={16} />
+                  {!isPro && <Badge variant="trial">Free</Badge>}
                 </Stack>
+              </MenuItem>
+            );
+          })}
 
-                <Text size={4} css={{ marginLeft: 19 }}>
-                  Create a new team
-                </Text>
+          <MenuItem onSelect={openCreateTeamModal}>
+            <Stack
+              css={{
+                marginTop: 12,
+                padding: 24,
+                borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+              }}
+              align="center"
+            >
+              <Stack
+                justify="center"
+                align="center"
+                css={{
+                  width: 24,
+                  height: 24,
+                  backgroundColor: '#252525',
+                }}
+              >
+                <Icon name="plus" size={16} />
               </Stack>
-            </MenuItem>
-          </Element>
-        </MenuList>
-      </Menu>
 
-      <Stack
-        css={{
-          display: 'none',
-          '@media (min-width: 720px)': {
-            display: 'flex',
-          },
-        }}
-      >
-        {!isPersonalWorkspace && (
-          <>
-            {activeTeamInfo.users.map((user, index) => {
-              if (index > (activeTeamInfo.users.length > 4 ? 2 : 3)) {
-                return null;
-              }
-
-              return (
-                <Tooltip label={user.username} key={user.id}>
-                  <div>
-                    <Avatar css={{ marginLeft: 4 }} user={user} />
-                  </div>
-                </Tooltip>
-              );
-            })}
-
-            {members - 3 > 1 && (
-              <WorkspaceSeats>
-                <span>{members - 3}</span>
-
-                <Dialog>
-                  <Stack
-                    direction="vertical"
-                    gap={3}
-                    align="flex-start"
-                    css={{
-                      overflow: 'auto',
-                      height: '100%',
-                      padding: '8px 12px',
-                    }}
-                  >
-                    {activeTeamInfo.users.slice(0, members - 3).map(user => {
-                      return (
-                        <Stack key={user.id} gap={3}>
-                          <Avatar user={user} key={user.id} />
-                          <Text variant="muted">{user.username}</Text>
-                        </Stack>
-                      );
-                    })}
-                  </Stack>
-                </Dialog>
-              </WorkspaceSeats>
-            )}
-          </>
-        )}
-      </Stack>
-    </Stack>
+              <Text size={4} css={{ marginLeft: 19 }}>
+                Create a new team
+              </Text>
+            </Stack>
+          </MenuItem>
+        </Element>
+      </MenuList>
+    </Menu>
   );
 };
 
