@@ -8,3 +8,57 @@ export const SUBSCRIPTION_DOCS_URLS = {
       '/docs/learn/introduction/workspace#managing-teams-and-subscriptions',
   },
 };
+
+export interface Feature {
+  key: string;
+  label: string;
+  pill?: string;
+}
+
+export const FREE_FEATURES: Feature[] = [
+  { key: 'editors', label: 'Up to 5 editors' },
+  {
+    key: 'limit_sandboxes',
+    label: '20 public sandboxes',
+  },
+  {
+    key: 'limit_repositories',
+    label: '3 public repositories',
+  },
+  { key: 'npm', label: 'Public NPM packages' },
+  { key: 'vm_mem', label: '4GB RAM' },
+  { key: 'vm_cpu', label: '2vCPUs' },
+  { key: 'vm_disk', label: '4GB Disk' },
+];
+
+export const PRO_FEATURES: Feature[] = [
+  { key: 'editors', label: 'Up to 20 editors' },
+  {
+    key: 'limit_sandboxes',
+    label: 'Unlimited private sandboxes',
+  },
+  {
+    key: 'limit_repositories',
+    label: 'Unlimited private repositories',
+  },
+  { key: 'npm', label: 'Private NPM packages' },
+  { key: 'vm_mem', label: '6GB RAM', pill: '1.5x capacity' },
+  { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
+  { key: 'vm_disk', label: '12GB Disk', pill: '3x storage' },
+];
+
+export const ORG_FEATURES: Feature[] = [
+  { key: 'editors', label: 'No editor limit' },
+  {
+    key: 'limit_sandboxes',
+    label: 'Unlimited private sandboxes',
+  },
+  {
+    key: 'limit_repositories',
+    label: 'Unlimited private repositories',
+  },
+  { key: 'npm', label: 'Private NPM packages' },
+  { key: 'vm_mem', label: 'Custom VM Specs' },
+  { key: 'vm_cpu', label: '+ Custom support and Slack channel' },
+  { key: 'vm_disk', label: '+ Customer success manager' },
+];
