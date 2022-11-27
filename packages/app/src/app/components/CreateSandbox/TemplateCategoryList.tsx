@@ -4,8 +4,9 @@ import { Button, Text, Stack } from '@codesandbox/components';
 import { css } from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
-import { useSubscription } from 'app/hooks/useSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { TemplateCard } from './TemplateCard';
 import { TemplateGrid } from './elements';
 import { MaxPublicSandboxes } from './stripes';
@@ -33,7 +34,8 @@ export const TemplateCategoryList = ({
 }: TemplateCategoryListProps) => {
   const { hasLogIn } = useAppState();
   const actions = useActions();
-  const { hasMaxPublicSandboxes, isEligibleForTrial } = useSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
   useEffect(() => {

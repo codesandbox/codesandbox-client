@@ -116,6 +116,16 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
       return 5.5 * 16 + 2;
     }
 
+    // Has MessageStripe
+    if (
+      state.activeTeamInfo?.subscription?.status ===
+        SubscriptionStatus.Unpaid ||
+      state.editor?.currentSandbox?.freePlanEditingRestricted
+    ) {
+      // Header height + MessageStripe
+      return 3 * 16 + 42;
+    }
+
     // Header height
     return 3 * 16;
   };

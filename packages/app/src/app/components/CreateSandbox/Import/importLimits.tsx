@@ -6,7 +6,7 @@ import {
 } from '@codesandbox/components';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
@@ -27,7 +27,7 @@ const getEventName = (
 
 export const MaxPublicRepos: React.FC = () => {
   const { activeTeam } = useAppState();
-  const { isEligibleForTrial } = useSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
   const { modals } = useActions();
@@ -89,7 +89,7 @@ export const MaxPublicRepos: React.FC = () => {
 
 export const PrivateRepoFreeTeam: React.FC = () => {
   const { activeTeam } = useAppState();
-  const { isEligibleForTrial } = useSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
   const { pathname } = useLocation();
   const { modals } = useActions();

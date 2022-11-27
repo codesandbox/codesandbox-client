@@ -30,7 +30,7 @@ const workspaceTabs = {
   comments: Comments,
 };
 
-export const WorkspaceComponent = ({ theme }) => {
+const WorkspaceComponent = ({ theme }) => {
   const {
     live: { isLive, roomInfo },
     workspace: { openedWorkspaceItem: activeTab },

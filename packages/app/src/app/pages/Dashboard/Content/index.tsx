@@ -5,7 +5,7 @@ import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-ge
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { Templates } from './routes/Templates';
-import { Archive } from './routes/Archive';
+import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
 import { Recent } from './routes/Recent';
 import { Shared } from './routes/Shared';
@@ -67,7 +67,7 @@ export const Content = withRouter(({ history }) => {
           path="/dashboard/synced-sandboxes/:path*"
           component={SyncedSandboxes}
         />
-        <Route path="/dashboard/archive" component={Archive} />
+        <Route path="/dashboard/deleted" component={Deleted} />
         <Route path="/dashboard/shared" component={Shared} />
         <Route path="/dashboard/liked" component={Liked} />
         <Route path="/dashboard/search" component={Search} />
@@ -77,7 +77,7 @@ export const Content = withRouter(({ history }) => {
         <Route path="/dashboard/discover" component={Discover} />
         <Route path="/dashboard/settings" component={Settings} />
         {/* old dashboard - redirects: */}
-        <Redirect from="/dashboard/deleted" to="/dashboard/archive" />
+        <Redirect from="/dashboard/archive" to="/dashboard/deleted" />
         <Redirect from="/dashboard/home" to="/dashboard/recent" />
         <Redirect
           from="/dashboard/all/:path*"

@@ -62,3 +62,9 @@ export const ORG_FEATURES: Feature[] = [
   { key: 'vm_cpu', label: '+ Custom support and Slack channel' },
   { key: 'vm_disk', label: '+ Customer success manager' },
 ];
+
+// Soft limit of maximum amount of pro
+// editor a team can have. Above this,
+// we should prompt CTAs to enable
+// custom pricing.
+export const MAX_PRO_EDITORS = 20;

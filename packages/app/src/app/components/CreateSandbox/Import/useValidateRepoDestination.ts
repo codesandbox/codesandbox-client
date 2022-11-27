@@ -2,7 +2,7 @@ import { debounce } from 'lodash-es';
 import React from 'react';
 import { validateRepositoryDestination } from '../utils/api';
 
-export type State =
+type State =
   | { state: 'idle' }
   | { state: 'validating' }
   | {

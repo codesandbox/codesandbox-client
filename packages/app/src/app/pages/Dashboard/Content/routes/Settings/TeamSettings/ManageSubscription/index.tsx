@@ -4,7 +4,7 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { Stack, Text } from '@codesandbox/components';
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Card } from '../../components';
 import { Upgrade } from './upgrade';
 import { Paddle } from './paddle';
@@ -15,13 +15,13 @@ export const ManageSubscription = () => {
   const location = useLocation();
   const history = useHistory();
   const {
-    hasActiveSubscription,
+    isFree,
     hasActiveTeamTrial,
     numberOfSeats,
     isPaddle,
     isStripe,
     subscription,
-  } = useSubscription();
+  } = useWorkspaceSubscription();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
   const [paymentPending, setPaymentPending] = useState(false);
@@ -42,7 +42,7 @@ export const ManageSubscription = () => {
 
   // If the subscription is active or the team/user is still in the trial period
   // we skip the payment processing/upgrade to pro screen.
-  if (!hasActiveSubscription) {
+  if (isFree) {
     if (paymentPending) {
       return <ProcessingPayment />;
     }
