@@ -1,16 +1,11 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { Button, IconButton, Stack, Text } from '@codesandbox/components';
+import { TEAM_FREE_LIMITS } from 'app/constants';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
 import styled from 'styled-components';
-
-// const LIMITS = [
-//   '-3 editor seats',
-//   '25 sandboxes will be restricted',
-//   '7 repositories will be restricted',
-// ];
 
 const StyledListItem = styled('li')`
   font-weight: 500;
@@ -20,14 +15,63 @@ const StyledListItem = styled('li')`
 `;
 
 export const SubscriptionCancellationModal: React.FC = () => {
-  const { activeTeam } = useAppState();
+  const { activeTeamInfo } = useAppState();
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { modalClosed } = useActions();
   const [loadingCustomerPortal, createCustomerPortal] = useCreateCustomerPortal(
     {
-      team_id: isTeamAdmin ? activeTeam : undefined,
+      team_id: isTeamAdmin ? activeTeamInfo?.id : undefined,
     }
   );
+  // TO DO: if we need this info more often, extract
+  // to a custom useWorkspaceUsage similar to
+  // useWorkspaceLimits.
+  const teamUsage = activeTeamInfo?.usage;
+
+  const getEditorsLabel = () => {
+    if (teamUsage && teamUsage.editorsQuantity > TEAM_FREE_LIMITS.editors) {
+      const lostSeats = teamUsage.editorsQuantity - TEAM_FREE_LIMITS.editors;
+      return `-${lostSeats} editor seat${lostSeats === 1 ? '' : 's'}`;
+    }
+
+    return `Limited to ${TEAM_FREE_LIMITS.editors} editors seats`;
+  };
+
+  // Private sandboxes are a Pro feature only. If the
+  // team downgrades, these will become restricted.
+  // Public sandboxes do not get restricted on
+  // downgrading but are limited to a certain amount
+  // if the team does not have an active subscription.
+  const getSandboxesLabel = () => {
+    const restrictedSandboxesCount =
+      (teamUsage?.privateProjectsQuantity ?? 0) -
+      TEAM_FREE_LIMITS.private_repos;
+    if (restrictedSandboxesCount > 0) {
+      return `${restrictedSandboxesCount} sandbox${
+        restrictedSandboxesCount === 1 ? '' : 'es'
+      } will be restricted`;
+    }
+
+    return `Limited to ${TEAM_FREE_LIMITS.public_sandboxes} public sandboxes`;
+  };
+
+  // Private repositories are a Pro feature only. If the
+  // team downgrades, these will become restricted.
+  // Public repositories do not get restricted on
+  // downgrading but are limited to a certain amount
+  // if the team does not have an active subscription.
+  const getRepositoriesLabel = () => {
+    const restrictedRepositoriesCount =
+      (teamUsage?.privateProjectsQuantity ?? 0) -
+      TEAM_FREE_LIMITS.private_repos;
+    if (restrictedRepositoriesCount > 0) {
+      return `${restrictedRepositoriesCount} sandbox${
+        restrictedRepositoriesCount === 1 ? '' : 'es'
+      } will be restricted`;
+    }
+
+    return `Limited to ${TEAM_FREE_LIMITS.public_repos} public repositories`;
+  };
 
   return (
     <Stack
@@ -63,9 +107,9 @@ export const SubscriptionCancellationModal: React.FC = () => {
         direction="vertical"
         gap={6}
       >
-        <StyledListItem>Limited to 5 editors seats</StyledListItem>
-        <StyledListItem>Limited to 20 public sandboxes</StyledListItem>
-        <StyledListItem>Limited to 3 public repositories</StyledListItem>
+        <StyledListItem>{getEditorsLabel()}</StyledListItem>
+        <StyledListItem>{getSandboxesLabel()}</StyledListItem>
+        <StyledListItem>{getRepositoriesLabel()}</StyledListItem>
         <StyledListItem>Only public NPM packages</StyledListItem>
         <StyledListItem>Only basic privacy settings</StyledListItem>
         <StyledListItem>-67% GB RAM</StyledListItem>
