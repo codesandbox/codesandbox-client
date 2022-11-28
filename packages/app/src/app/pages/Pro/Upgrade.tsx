@@ -1,7 +1,13 @@
 import React, { useEffect } from 'react';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { useAppState, useActions } from 'app/overmind';
-import { ThemeProvider, Stack, Element, Text } from '@codesandbox/components';
+import {
+  ThemeProvider,
+  Stack,
+  Element,
+  Text,
+  Icon,
+} from '@codesandbox/components';
 import { Helmet } from 'react-helmet';
 import { Navigation } from 'app/pages/common/Navigation';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
@@ -22,6 +28,8 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
+
+// TODO: Add personal pro
 
 export const ProUpgrade = () => {
   const {
@@ -134,45 +142,6 @@ export const ProUpgrade = () => {
       >
         <Navigation showActions={false} />
 
-        {/* TODO: something with this and make sure that we actually need this here */}
-        {hasAnotherPaymentProvider && (
-          <Text
-            size={3}
-            variant="muted"
-            css={{
-              width: '100%',
-              maxWidth: '713px',
-              margin: '0 auto',
-              display: 'flex',
-              padding: '40px 1em 16px',
-              alignItems: 'center',
-              color: '#808080',
-              svg: {
-                display: 'none',
-                '@media (min-width: 720px)': {
-                  display: 'block',
-                  marginRight: '.5em',
-                },
-              },
-            }}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 12 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M6 10.625C3.44568 10.625 1.375 8.55432 1.375 6C1.375 3.44568 3.44568 1.375 6 1.375C8.55432 1.375 10.625 3.44568 10.625 6C10.625 8.55432 8.55432 10.625 6 10.625ZM0.625 6C0.625 8.96853 3.03147 11.375 6 11.375C8.96853 11.375 11.375 8.96853 11.375 6C11.375 3.03147 8.96853 0.625002 6 0.625002C3.03147 0.625002 0.625 3.03147 0.625 6ZM6 8.875C6.20711 8.875 6.375 8.70711 6.375 8.5V6C6.375 5.79289 6.20711 5.625 6 5.625C5.79289 5.625 5.625 5.79289 5.625 6V8.5C5.625 8.70711 5.79289 8.875 6 8.875ZM6 4.5C6.2071 4.5 6.375 4.33211 6.375 4.125L6.375 4.0625C6.375 3.8554 6.20711 3.6875 6 3.6875C5.7929 3.6875 5.625 3.85539 5.625 4.0625L5.625 4.125C5.625 4.3321 5.79289 4.5 6 4.5Z"
-                fill="#808080"
-              />
-            </svg>
-            CodeSandbox is migrating to a new payment provider. Previous active
-            subscriptions will not be affected.
-          </Text>
-        )}
-
         <Element css={{ height: '48px' }} />
 
         <Stack gap={10} direction="vertical">
@@ -244,12 +213,19 @@ export const ProUpgrade = () => {
             <SubscriptionCard
               title="Organization"
               features={ORG_FEATURES}
-              cta={{
-                text: 'Contact us',
-                // TODO: Can we manage origanization plans in Stripe?
-                href: 'https://codesandbox.typeform.com/organization',
-                variant: hasCustomSubscription ? 'light' : 'dark',
-              }}
+              cta={
+                hasCustomSubscription
+                  ? {
+                      text: 'Contact support',
+                      href: 'mailto:support@codesandbox.io',
+                      variant: 'light',
+                    }
+                  : {
+                      text: 'Contact us',
+                      href: 'https://codesandbox.typeform.com/organization',
+                      variant: 'dark',
+                    }
+              }
               isHighlighted={hasCustomSubscription}
             >
               <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
@@ -264,6 +240,21 @@ export const ProUpgrade = () => {
             </SubscriptionCard>
           </Stack>
         </Stack>
+
+        {hasAnotherPaymentProvider ? (
+          <Stack
+            gap={2}
+            align="center"
+            justify="center"
+            css={{ color: '#999999', padding: '32px' }}
+          >
+            <Icon name="info" size={16} />
+            <Text size={3} variant="muted">
+              CodeSandbox is migrating to a new payment provider. Previous
+              active subscriptions will not be affected.
+            </Text>
+          </Stack>
+        ) : null}
       </Element>
     </ThemeProvider>
   );
