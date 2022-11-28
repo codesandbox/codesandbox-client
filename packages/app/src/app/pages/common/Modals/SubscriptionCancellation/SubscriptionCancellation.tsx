@@ -1,5 +1,5 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Button, Stack } from '@codesandbox/components';
+import { Button, Stack, IconButton, Text } from '@codesandbox/components';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useActions, useAppState } from 'app/overmind';
@@ -24,12 +24,27 @@ export const SubscriptionCancellationModal: React.FC = () => {
       }}
       direction="vertical"
     >
-      hello, world.
+      <Stack>
+        <Text
+          as="h1"
+          css={{
+            margin: 0,
+            lineHeight: '28px',
+            letterSpacing: '-0.019em',
+          }}
+          size={19}
+          weight="normal"
+        >
+          You&apos;ll lose access to all Pro features if you decide to cancel
+        </Text>
+        <IconButton name="cross" title="Close" />
+      </Stack>
       <Stack
         css={{
           flexWrap: 'wrap',
           marginLeft: 'auto',
           marginRight: 0,
+          marginTop: '32px',
         }}
         gap={6}
       >
