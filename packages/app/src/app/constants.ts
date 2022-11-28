@@ -42,6 +42,22 @@ export const PRO_FEATURES: Feature[] = [
     label: 'Unlimited private repositories',
   },
   { key: 'npm', label: 'Private NPM packages' },
+  { key: 'vm_mem', label: '6GB RAM' },
+  { key: 'vm_cpu', label: '4vCPUs' },
+  { key: 'vm_disk', label: '12GB Disk' },
+];
+
+export const PRO_FEATURES_WITH_PILLS: Feature[] = [
+  { key: 'editors', label: 'Up to 20 editors' },
+  {
+    key: 'limit_sandboxes',
+    label: 'Unlimited private sandboxes',
+  },
+  {
+    key: 'limit_repositories',
+    label: 'Unlimited private repositories',
+  },
+  { key: 'npm', label: 'Private NPM packages' },
   { key: 'vm_mem', label: '6GB RAM', pill: '1.5x capacity' },
   { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
   { key: 'vm_disk', label: '12GB Disk', pill: '3x storage' },
