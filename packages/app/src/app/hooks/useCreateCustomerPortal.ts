@@ -3,7 +3,7 @@ import { useEffects } from 'app/overmind';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 
 type CheckoutOptions = {
-  team_id: string;
+  team_id?: string;
   return_path?: string;
 };
 
@@ -15,6 +15,10 @@ export const useCreateCustomerPortal = ({
   const { api } = useEffects();
 
   const createCustomerPortal = async () => {
+    if (!team_id) {
+      return;
+    }
+
     try {
       setLoading(true);
       const payload = await api.stripeCustomerPortal(

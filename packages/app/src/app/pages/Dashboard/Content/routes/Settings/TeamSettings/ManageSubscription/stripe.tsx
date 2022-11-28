@@ -2,22 +2,12 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Stack, Text, Link } from '@codesandbox/components';
 // import track from '@codesandbox/common/lib/utils/analytics';
-import { useActions, useAppState } from 'app/overmind';
-import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
+import { useActions } from 'app/overmind';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
-export const Stripe: React.FC<{ hasActiveTrial: boolean }> = ({
-  hasActiveTrial,
-}) => {
+export const Stripe: React.FC = () => {
   const { openCancelSubscriptionModal } = useActions();
-  const { activeTeam, activeTeamInfo: team } = useAppState();
-  const [
-    loading,
-    // createCustomerPortal
-  ] = useCreateCustomerPortal({
-    team_id: activeTeam,
-  });
-
-  const ctaText = hasActiveTrial ? 'Cancel trial' : 'Manage subscription';
+  const { subscription, hasActiveTeamTrial } = useWorkspaceSubscription();
 
   return (
     <Stack direction="vertical" gap={2}>
@@ -34,22 +24,21 @@ export const Stripe: React.FC<{ hasActiveTrial: boolean }> = ({
           //     event_source: 'UI',
           //   });
           // }
-          // createCustomerPortal();
 
           openCancelSubscriptionModal();
         }}
         size={3}
         variant="active"
       >
-        {loading ? 'Loading...' : ctaText}
+        {hasActiveTeamTrial ? 'Cancel trial' : 'Manage subscription'}
       </Link>
 
-      {!loading && team.subscription.cancelAt && (
+      {subscription?.cancelAt ? (
         <Text size={3} css={{ color: '#F7CC66' }}>
           Your subscription expires on{' '}
-          {format(new Date(team.subscription.cancelAt), 'PP')}.{' '}
+          {format(new Date(subscription.cancelAt), 'PP')}.{' '}
         </Text>
-      )}
+      ) : null}
     </Stack>
   );
 };
