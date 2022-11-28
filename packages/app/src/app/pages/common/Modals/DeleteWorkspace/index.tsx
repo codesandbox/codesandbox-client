@@ -12,7 +12,7 @@ export const DeleteWorkspace: FunctionComponent = () => {
     teamPerson => teamPerson.id !== user.id
   ).length;
   return (
-    <Alert title="Delete Team">
+    <Alert title="Delete team">
       <Text size={3} block variant="muted">
         Are you sure you want to delete this team? This action is{' '}
         <b>irreversible</b> and it will <b>delete all sandboxes</b> in this team

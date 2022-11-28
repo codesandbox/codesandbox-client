@@ -73,7 +73,7 @@ export const ManageSubscription = () => {
         css={{ height: '100%' }}
       >
         <Stack direction="vertical" gap={4}>
-          <Text size={4} weight="bold" maxWidth="100%">
+          <Text size={4} maxWidth="100%" weight="500">
             Team Pro {hasActiveTeamTrial ? 'trial' : ''}
           </Text>
 
