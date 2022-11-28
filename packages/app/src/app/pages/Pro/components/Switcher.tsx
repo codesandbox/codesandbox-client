@@ -17,24 +17,17 @@ import {
   TeamMemberAuthorization,
 } from 'app/graphql/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useActions, useAppState } from 'app/overmind';
 
 export const Switcher: React.FC<{
   workspaces: TeamFragmentDashboardFragment[];
   setActiveTeam: (payload?: { id: string }) => Promise<void>;
-  workspaceType: 'pro' | 'teamPro';
   activeTeamInfo: CurrentTeamInfoFragmentFragment;
   personalWorkspaceId: string;
-  userId: string;
-  openCreateTeamModal: () => void;
-}> = ({
-  workspaces,
-  setActiveTeam,
-  personalWorkspaceId,
-  activeTeamInfo,
-  userId,
-  openCreateTeamModal,
-}) => {
+}> = ({ workspaces, setActiveTeam, personalWorkspaceId, activeTeamInfo }) => {
   const { isFree } = useWorkspaceSubscription();
+  const { openCreateTeamModal } = useActions();
+  const { user } = useAppState();
   // TODO: move this check up a component, shouldn't happen
   if (!workspaces || workspaces.length === 0) return null;
 
@@ -59,7 +52,7 @@ export const Switcher: React.FC<{
             if (!workspace) return null;
 
             const isAdmin =
-              workspace.userAuthorizations.find(team => team.userId === userId)
+              workspace.userAuthorizations.find(team => team.userId === user.id)
                 .authorization === TeamMemberAuthorization.Admin;
 
             const isPro = [

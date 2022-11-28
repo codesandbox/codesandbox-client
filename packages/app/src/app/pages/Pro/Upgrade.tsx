@@ -27,7 +27,6 @@ export const ProUpgrade = () => {
   const {
     pro: { pageMounted },
     setActiveTeam,
-    openCreateTeamModal,
   } = useActions();
   const {
     activeTeamInfo,
@@ -36,8 +35,6 @@ export const ProUpgrade = () => {
     hasLoadedApp,
     isLoggedIn,
     personalWorkspaceId,
-    user,
-    pro: { prices },
   } = useAppState();
   const location = useLocation();
 
@@ -99,7 +96,7 @@ export const ProUpgrade = () => {
           isLoading: checkout.state === 'LOADING',
         };
 
-  if (!hasLoadedApp || !isLoggedIn || !prices || !activeTeamInfo) return null;
+  if (!hasLoadedApp || !isLoggedIn || !activeTeamInfo) return null;
 
   /**
    * Workspace
@@ -107,8 +104,6 @@ export const ProUpgrade = () => {
   const personalWorkspace = dashboard.teams.find(team => {
     return team.id === personalWorkspaceId;
   })!;
-  const workspaceType =
-    (activeTeamInfo?.id === personalWorkspaceId ? 'pro' : 'teamPro') ?? 'pro';
 
   const workspacesList = [
     personalWorkspace,
@@ -139,6 +134,7 @@ export const ProUpgrade = () => {
       >
         <Navigation showActions={false} />
 
+        {/* TODO: something with this and make sure that we actually need this here */}
         {hasAnotherPaymentProvider && (
           <Text
             size={3}
@@ -182,13 +178,10 @@ export const ProUpgrade = () => {
         <Stack gap={10} direction="vertical">
           <Stack gap={3} direction="vertical" align="center">
             <Switcher
-              workspaceType={workspaceType}
               workspaces={workspacesList}
               setActiveTeam={setActiveTeam}
               personalWorkspaceId={personalWorkspaceId}
               activeTeamInfo={activeTeamInfo}
-              userId={user.id}
-              openCreateTeamModal={openCreateTeamModal}
             />
 
             <Text
