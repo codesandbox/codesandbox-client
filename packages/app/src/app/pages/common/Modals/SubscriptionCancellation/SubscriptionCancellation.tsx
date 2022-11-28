@@ -3,6 +3,7 @@ import { Button, IconButton, Stack, Text } from '@codesandbox/components';
 import { TEAM_FREE_LIMITS } from 'app/constants';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
 import styled from 'styled-components';
@@ -17,6 +18,7 @@ const StyledListItem = styled('li')`
 export const SubscriptionCancellationModal: React.FC = () => {
   const { activeTeamInfo } = useAppState();
   const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { hasActiveTeamTrial } = useWorkspaceSubscription();
   const { modalClosed } = useActions();
   const [loadingCustomerPortal, createCustomerPortal] = useCreateCustomerPortal(
     {
@@ -65,8 +67,8 @@ export const SubscriptionCancellationModal: React.FC = () => {
       (teamUsage?.privateProjectsQuantity ?? 0) -
       TEAM_FREE_LIMITS.private_repos;
     if (restrictedRepositoriesCount > 0) {
-      return `${restrictedRepositoriesCount} sandbox${
-        restrictedRepositoriesCount === 1 ? '' : 'es'
+      return `${restrictedRepositoriesCount} repositor${
+        restrictedRepositoriesCount === 1 ? 'y' : 'ies'
       } will be restricted`;
     }
 
@@ -126,7 +128,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
         gap={6}
       >
         <Button onClick={modalClosed} variant="link" autoWidth>
-          Continue trial
+          {hasActiveTeamTrial ? 'Continue trial' : 'Keep subscription'}
         </Button>
         <Button
           css={{ padding: '0 32px' }}
