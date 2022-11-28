@@ -126,7 +126,9 @@ const MinimumPrivacy = ({ disabled }: { disabled: boolean }) => {
     >
       <Stack direction="vertical" gap={8}>
         <Stack direction="vertical" gap={8}>
-          <Text size={4}>Default Privacy</Text>
+          <Text size={4} weight="500">
+            Default Privacy
+          </Text>
 
           <Stack direction="vertical" gap={3}>
             <Select
@@ -233,7 +235,9 @@ const SandboxSecurity = ({ disabled }: { disabled: boolean }) => {
       <Stack direction="vertical" gap={8}>
         <Stack direction="vertical" gap={8}>
           <Stack justify="space-between">
-            <Text size={4}>Sandbox Security</Text>
+            <Text size={4} weight="500">
+              Sandbox Security
+            </Text>
           </Stack>
 
           <Stack as="label" justify="space-between" align="center">

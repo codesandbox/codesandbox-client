@@ -28,7 +28,7 @@ export const Upgrade: React.FC<{
       }}
     >
       <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
-        <Text size={4} weight="bold">
+        <Text size={4} weight="500">
           Upgrade to Personal Pro
         </Text>
         <List direction="vertical" gap={1} as="ul">

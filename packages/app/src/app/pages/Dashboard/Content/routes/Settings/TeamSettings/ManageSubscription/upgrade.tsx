@@ -41,9 +41,18 @@ export const Upgrade = () => {
         backgroundColor: 'white',
       }}
     >
-      <Stack direction="vertical" gap={4} css={css({ color: 'grays.800' })}>
+      <Stack
+        direction="vertical"
+        gap={4}
+        css={css({ color: 'grays.800', fontWeight: '500' })}
+      >
         <Text size={4}>Upgrade to Team Pro</Text>
-        <List direction="vertical" gap={1} as="ul">
+        <List
+          direction="vertical"
+          gap={1}
+          as="ul"
+          css={css({ fontWeight: '400' })}
+        >
           <Text as="li" size={3}>
             Advanced privacy settings
           </Text>
