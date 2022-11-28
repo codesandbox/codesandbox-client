@@ -116,10 +116,13 @@ const SubscriptionCard = ({
         }}
       >
         {features.map(feature => (
-          <Stack as="li" justify="space-between" align="center">
-            <Text key={feature.key} css={{ padding: '8px 0' }}>
-              {feature.label}
-            </Text>
+          <Stack
+            key={feature.key}
+            as="li"
+            justify="space-between"
+            align="center"
+          >
+            <Text css={{ padding: '8px 0' }}>{feature.label}</Text>
             {feature.pill ? (
               <Badge variant="highlight">{feature.pill}</Badge>
             ) : null}
