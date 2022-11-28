@@ -1,14 +1,7 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { useAppState, useActions } from 'app/overmind';
-import {
-  ThemeProvider,
-  Stack,
-  Element,
-  Text,
-  Badge,
-} from '@codesandbox/components';
+import { ThemeProvider, Stack, Element, Text } from '@codesandbox/components';
 import { Helmet } from 'react-helmet';
 import { Navigation } from 'app/pages/common/Navigation';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
@@ -16,180 +9,19 @@ import { sortBy } from 'lodash-es';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation } from 'react-router-dom';
 import {
-  Feature,
   FREE_FEATURES,
   ORG_FEATURES,
   PRO_FEATURES,
   PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
 
-// TODO: remove
-// import {
-//   UpgradeButton,
-//   Caption,
-//   Summary,
-//   BoxPlaceholder,
-//   SwitchPlan,
-//   PlanTitle,
-// } from './components/elements';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
-
-// TODO: move SubscriptionCard
-const StyledCard = styled.div<{ isHighlighted?: boolean }>`
-  min-width: 222px;
-  flex-grow: 0;
-  padding: 24px;
-  font-size: 13px;
-
-  ${props =>
-    props.isHighlighted
-      ? `
-    background-color: #FFFFFF;
-    color: #0E0E0E;
-    `
-      : `
-    background-color: #252525;
-    color: #999999;
-  `}
-
-  @media (min-width: 887px) {
-    width: 320px;
-  }
-`;
-
-interface CTABase {
-  text: string;
-  variant: 'highlight' | 'dark' | 'light';
-  isLoading?: boolean;
-}
-
-type CTAOptional =
-  | {
-      href: string;
-      onClick?: never;
-    }
-  | {
-      href?: never;
-      onClick: () => void;
-    };
-
-interface SubscriptionCardProps {
-  title: string;
-  children: React.ReactNode;
-  features: Feature[];
-  cta?: CTABase & CTAOptional;
-  isHighlighted?: boolean;
-}
-
-const SubscriptionCard = ({
-  title,
-  children,
-  features,
-  cta,
-  isHighlighted,
-}: SubscriptionCardProps) => {
-  return (
-    <StyledCard
-      isHighlighted={isHighlighted}
-      as={Stack}
-      gap={9}
-      direction="vertical"
-    >
-      <Text size={16} weight="500">
-        {title}
-      </Text>
-      {children}
-      <Stack
-        as="ul"
-        direction="vertical"
-        gap={1}
-        // Reset ul styles
-        css={{
-          margin: 0,
-          padding: 0,
-          listStyle: 'none',
-        }}
-      >
-        {features.map(feature => (
-          <Stack
-            key={feature.key}
-            as="li"
-            justify="space-between"
-            align="center"
-          >
-            <Text css={{ padding: '8px 0' }}>{feature.label}</Text>
-            {feature.pill ? (
-              <Badge variant="highlight">{feature.pill}</Badge>
-            ) : null}
-          </Stack>
-        ))}
-      </Stack>
-      {cta ? (
-        <StyledSubscriptionLink
-          variant={cta.variant}
-          {...(cta.href
-            ? {
-                href: cta.href,
-              }
-            : {
-                as: 'button',
-                onClick: cta.onClick,
-              })}
-        >
-          {cta.isLoading ? 'Loading...' : cta.text}
-        </StyledSubscriptionLink>
-      ) : (
-        <Element css={{ height: '48px' }} />
-      )}
-    </StyledCard>
-  );
-};
-
-// TODO: Move StyledSubscriptionLink
-const subLinkBackgrounds = {
-  highlight: { base: '#0E0E0E', hover: '#252525' },
-  dark: { base: '#323232', hover: '#292929' },
-  light: { base: '#EBEBEB', hover: '#E0E0E0' },
-};
-
-const subLinkColors = {
-  highlight: { base: '#FFFFFF', hover: '#FFFFFF' },
-  dark: { base: '#FFFFFF', hover: '#F5F5F5' },
-  light: { base: '#0E0E0E', hover: '#161616' },
-};
-
-const StyledSubscriptionLink = styled.a<{
-  variant: 'highlight' | 'dark' | 'light';
-}>`
-  padding: 12px 20px;
-  text-align: center;
-  font-size: 16px;
-  line-height: 24px;
-  font-family: inherit;
-  font-weight: 500;
-  border-radius: 4px;
-  text-decoration: none;
-  border: none;
-
-  ${props => `
-    background-color: ${subLinkBackgrounds[props.variant].base};
-    color: ${subLinkColors[props.variant].base};
-    
-    &:hover, &:focus {
-      background-color: ${subLinkBackgrounds[props.variant].hover};
-      color: ${subLinkColors[props.variant].hover};
-    }
-  `}
-
-  &:focus {
-    outline: 1px solid #ac9cff;
-  }
-`;
+import { SubscriptionCard } from './components/SubscriptionCard';
 
 export const ProUpgrade = () => {
   const {
