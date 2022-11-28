@@ -9,9 +9,11 @@ export const SubscriptionCancellationModal: React.FC = () => {
   const { activeTeam } = useAppState();
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { modalClosed } = useActions();
-  const [loading, createCustomerPortal] = useCreateCustomerPortal({
-    team_id: isTeamAdmin ? activeTeam : undefined,
-  });
+  const [loadingCustomerPortal, createCustomerPortal] = useCreateCustomerPortal(
+    {
+      team_id: isTeamAdmin ? activeTeam : undefined,
+    }
+  );
 
   return (
     <Stack
@@ -37,6 +39,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
         <Button
           css={{ padding: '0 32px' }}
           disabled={!isTeamAdmin}
+          loading={loadingCustomerPortal}
           onClick={() => {
             if (!isTeamAdmin) {
               return;
@@ -55,7 +58,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
           }}
           autoWidth
         >
-          {loading ? 'Loading...' : 'I understand'}
+          I understand
         </Button>
       </Stack>
     </Stack>
