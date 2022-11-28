@@ -11,7 +11,7 @@ import {
 } from '@codesandbox/components';
 import { Helmet } from 'react-helmet';
 import { Navigation } from 'app/pages/common/Navigation';
-// import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
+import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import { sortBy } from 'lodash-es';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation } from 'react-router-dom';
@@ -20,6 +20,7 @@ import {
   FREE_FEATURES,
   ORG_FEATURES,
   PRO_FEATURES,
+  PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
 
 // TODO: remove
@@ -61,14 +62,32 @@ const StyledCard = styled.div<{ isHighlighted?: boolean }>`
   }
 `;
 
+interface CTABase {
+  text: string;
+  variant: 'highlight' | 'dark' | 'light';
+  isLoading?: boolean;
+}
+
+type CTAOptional =
+  | {
+      href: string;
+      onClick?: never;
+    }
+  | {
+      href?: never;
+      onClick: () => void;
+    };
+
 interface SubscriptionCardProps {
+  title: string;
   children: React.ReactNode;
   features: Feature[];
-  cta?: { text: string; href: string; variant: 'highlight' | 'dark' | 'light' };
+  cta?: CTABase & CTAOptional;
   isHighlighted?: boolean;
 }
 
 const SubscriptionCard = ({
+  title,
   children,
   features,
   cta,
@@ -81,6 +100,9 @@ const SubscriptionCard = ({
       gap={9}
       direction="vertical"
     >
+      <Text size={16} weight="500">
+        {title}
+      </Text>
       {children}
       <Stack
         as="ul"
@@ -105,8 +127,18 @@ const SubscriptionCard = ({
         ))}
       </Stack>
       {cta ? (
-        <StyledSubscriptionLink href={cta.href} variant={cta.variant}>
-          {cta.text}
+        <StyledSubscriptionLink
+          variant={cta.variant}
+          {...(cta.href
+            ? {
+                href: cta.href,
+              }
+            : {
+                as: 'button',
+                onClick: cta.onClick,
+              })}
+        >
+          {cta.isLoading ? 'Loading...' : cta.text}
         </StyledSubscriptionLink>
       ) : (
         <Element css={{ height: '48px' }} />
@@ -135,9 +167,11 @@ const StyledSubscriptionLink = styled.a<{
   text-align: center;
   font-size: 16px;
   line-height: 24px;
+  font-family: inherit;
   font-weight: 500;
   border-radius: 4px;
   text-decoration: none;
+  border: none;
 
   ${props => `
     background-color: ${subLinkBackgrounds[props.variant].base};
@@ -197,7 +231,6 @@ export const ProUpgrade = () => {
   // const isFree = false; // DEBUG
   // const isPro = true; // DEBUG
   const { numberOfEditors } = useWorkspaceLimits();
-
   // TODO: Is ther another way to find out if team has a custom subscription?
   const hasCustomSubscription = numberOfEditors && numberOfEditors > 20;
   // const hasCustomSubscription = true; // DEBUG
@@ -208,11 +241,28 @@ export const ProUpgrade = () => {
     cancel_path: '/pro',
   });
 
-  // TODO
-  // const [
-  //   loadingCustomerPortal,
-  //   createCustomerPortal,
-  // ] = useCreateCustomerPortal({ team_id: activeTeam });
+  const [
+    isCustomerPortalLoading,
+    createCustomerPortal,
+  ] = useCreateCustomerPortal({ team_id: activeTeam });
+
+  const proCta: React.ComponentProps<typeof SubscriptionCard>['cta'] =
+    // eslint-disable-next-line no-nested-ternary
+    hasCustomSubscription
+      ? undefined
+      : isPro
+      ? {
+          text: 'Manage subscription',
+          onClick: createCustomerPortal,
+          variant: 'light',
+          isLoading: isCustomerPortalLoading,
+        }
+      : {
+          text: 'Proceed to checkout',
+          href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback?
+          variant: 'highlight',
+          isLoading: checkout.state === 'LOADING',
+        };
 
   if (!hasLoadedApp || !isLoggedIn || !prices || !activeTeamInfo) return null;
 
@@ -336,10 +386,7 @@ export const ProUpgrade = () => {
               },
             }}
           >
-            <SubscriptionCard features={FREE_FEATURES}>
-              <Text size={16} weight="500">
-                Free plan
-              </Text>
+            <SubscriptionCard title="Free plan" features={FREE_FEATURES}>
               <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
                 <Text aria-hidden size={32} weight="400">
                   $0
@@ -350,25 +397,11 @@ export const ProUpgrade = () => {
             </SubscriptionCard>
 
             <SubscriptionCard
-              features={PRO_FEATURES}
-              cta={
-                hasCustomSubscription
-                  ? undefined
-                  : {
-                      text: isPro
-                        ? 'Manage subscription'
-                        : 'Proceed to checkout',
-                      // TODO for href: customerPortal link when isPro
-                      href:
-                        checkout.state === 'READY' ? checkout.url : undefined, // TODO fallback or loading?
-                      variant: isPro ? 'light' : 'highlight',
-                    }
-              }
+              title="Team Pro"
+              features={isPro ? PRO_FEATURES : PRO_FEATURES_WITH_PILLS}
+              cta={proCta}
               isHighlighted={!hasCustomSubscription}
             >
-              <Text size={16} weight="500">
-                Team Pro
-              </Text>
               <Stack gap={1} direction="vertical">
                 <Text aria-hidden size={32} weight="500">
                   $15
@@ -381,17 +414,16 @@ export const ProUpgrade = () => {
             </SubscriptionCard>
 
             <SubscriptionCard
+              title="Organization"
               features={ORG_FEATURES}
               cta={{
                 text: 'Contact us',
+                // TODO: Can we manage origanization plans in Stripe?
                 href: 'https://codesandbox.typeform.com/organization',
                 variant: hasCustomSubscription ? 'light' : 'dark',
               }}
               isHighlighted={hasCustomSubscription}
             >
-              <Text size={16} weight="500">
-                Organization
-              </Text>
               <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
                 <Text aria-hidden size={32} weight="400">
                   custom
