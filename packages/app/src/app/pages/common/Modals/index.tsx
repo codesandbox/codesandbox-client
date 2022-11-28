@@ -48,6 +48,7 @@ import { NotFoundBranchModal } from './NotFoundBranchModal';
 import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
 import { NewTeamModal } from './NewTeamModal';
+import { SubscriptionCancellationModal } from './SubscriptionCancellation';
 
 const modals = {
   preferences: {
@@ -203,6 +204,10 @@ const modals = {
     Component: NewTeamModal,
     top: 15,
     width: 724,
+  },
+  subscriptionCancellation: {
+    Component: SubscriptionCancellationModal,
+    width: 444,
   },
 };
 
