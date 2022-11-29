@@ -50,6 +50,11 @@ export function selectBlock(
   if (query.type === `style` && query.index != null) {
     const style = descriptor.styles[Number(query.index)];
 
+    // Deletion `style` tag
+    if (!style) {
+      return { transpiledCode: '' };
+    }
+
     return {
       transpiledCode:
         style.content + convertSourceMapToInline(style.map, '/*#', '*/'),
