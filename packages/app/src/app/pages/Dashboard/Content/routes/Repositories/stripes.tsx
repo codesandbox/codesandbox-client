@@ -71,7 +71,7 @@ export const MaxPublicReposFreeTeam: React.FC = () => {
   return (
     <MessageStripe justify="space-between" variant="trial">
       Free teams are limited to 3 public repositories. Upgrade for unlimited
-      repositories.
+      public and private repositories.
       {isTeamAdmin ? (
         <MessageStripe.Action
           {...(checkout.state === 'READY'

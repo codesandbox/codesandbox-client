@@ -59,7 +59,7 @@ export const RegistrySettings = () => {
       {isFree ? (
         <MessageStripe justify="space-between">
           <span>
-            You need a <Text weight="bold">Team Pro subscription</Text> to set a
+            You need a <Text weight="bold">Team Pro</Text> subscription to set a
             custom npm Registry.
           </span>
           {isTeamAdmin ? (

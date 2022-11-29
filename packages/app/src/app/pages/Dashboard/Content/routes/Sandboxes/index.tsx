@@ -101,7 +101,7 @@ export const SandboxesPage = () => {
         <Element paddingX={4} paddingY={2}>
           <MessageStripe justify="space-between">
             Free teams are limited to 20 public sandboxes. Upgrade for unlimited
-            sandboxes.
+            public and private sandboxes.
             {isTeamAdmin ? (
               <MessageStripe.Action
                 {...(checkout.state === 'READY'

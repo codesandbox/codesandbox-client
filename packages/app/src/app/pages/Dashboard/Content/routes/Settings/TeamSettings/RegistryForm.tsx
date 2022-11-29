@@ -151,7 +151,7 @@ export const RegistryForm = ({
           >
             <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
               <Stack gap={2} align="center">
-                <Text weight="bold" size={4}>
+                <Text size={4} weight="500">
                   Registry
                 </Text>
 
@@ -243,7 +243,7 @@ export const RegistryForm = ({
               />
             </Stack>
             <Stack css={css({ width: '100%' })} gap={5} direction="vertical">
-              <Text weight="bold" size={4}>
+              <Text size={4} weight="500">
                 Scopes
               </Text>
 
