@@ -37,7 +37,7 @@ export const ImportRepositoryCard: React.FC<{ disabled?: boolean }> = ({
       disabled={disabled}
     >
       <Icon color="#999999" name="plus" size={20} />
-      <Text color={disabled ? '#999999' : '#e5e5e5'} size={14}>
+      <Text color={disabled ? '#808080' : '#999'} size={13} weight={500}>
         Import repository
       </Text>
     </Stack>
