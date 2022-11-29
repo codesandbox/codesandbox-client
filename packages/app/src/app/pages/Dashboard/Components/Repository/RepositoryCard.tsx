@@ -1,14 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { css } from '@styled-system/css';
-import {
-  Icon,
-  IconButton,
-  Stack,
-  Text,
-  Element,
-  Badge,
-} from '@codesandbox/components';
+import { Icon, IconButton, Stack, Text, Badge } from '@codesandbox/components';
 import { RepositoryProps } from './types';
 
 export const RepositoryCard: React.FC<RepositoryProps> = ({
@@ -25,12 +18,11 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
       as={Link}
       aria-label={labels.repository}
       css={css({
-        cursor: 'pointer', // TODO: revisit cursor.
-        position: 'relative',
+        cursor: 'pointer',
         overflow: 'hidden',
-        height: 240,
+        height: '100%',
         width: '100%',
-        padding: 4,
+        padding: '24px',
         borderRadius: '4px',
         border: '1px solid',
         borderColor: selected ? 'focusBorder' : 'transparent',
@@ -52,54 +44,50 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
         },
       })}
       direction="vertical"
-      gap={4}
       to={isBeingRemoved ? undefined : repository.url}
       onContextMenu={onContextMenu}
       {...props}
     >
-      {isViewOnly ? (
-        <Element css={{ position: 'absolute', top: 20, left: 20 }}>
-          <Badge variant="trial">View only</Badge>
-        </Element>
-      ) : null}
-      <IconButton
-        css={css({
-          marginLeft: 'auto',
-          marginRight: 0,
-        })}
-        variant="square"
-        name="more"
-        size={14}
-        title="Repository actions"
-        onClick={evt => {
-          evt.stopPropagation();
-          onContextMenu(evt);
-        }}
-      />
+      <Stack
+        direction="vertical"
+        justify="space-between"
+        css={{ height: '100%' }}
+      >
+        <Stack direction="vertical" gap={1}>
+          <Stack justify="space-between" align="center">
+            <Text color="#999" size={12}>
+              {repository.owner}
+            </Text>
+            <IconButton
+              variant="square"
+              name="more"
+              size={12}
+              title="Repository actions"
+              onClick={evt => {
+                evt.stopPropagation();
+                onContextMenu(evt);
+              }}
+            />
+          </Stack>
+          <Text color={isViewOnly ? '#999' : '#e5e5e5'} size={14}>
+            {repository.name}
+          </Text>
+        </Stack>
 
-      <Stack align="center" direction="vertical" gap={6}>
-        <Icon color="#999" name="repository" size={24} />{' '}
-        <Stack align="center" direction="vertical" gap={2}>
-          <Text
-            css={css({
-              color: isViewOnly ? '#999999' : '#E5E5E5',
-              textAlign: 'center',
-              minHeight: 42,
-              paddingX: 6,
-            })}
-            size={16}
-          >
-            {repository.owner}/{repository.name}
-          </Text>
-          <Text
-            css={css({
-              color: '#808080',
-              textAlign: 'center',
-            })}
-            size={13}
-          >
-            {labels.branches}
-          </Text>
+        <Stack justify="space-between">
+          <Stack align="center" gap={2}>
+            {repository.private ? (
+              <Icon color="#808080" name="lock" size={12} />
+            ) : null}
+            <Stack align="center" gap={1}>
+              <Icon color="#808080" name="branch" />
+              <Text color="#808080" size={12}>
+                {labels.branches}
+              </Text>
+            </Stack>
+          </Stack>
+
+          {isViewOnly ? <Badge variant="trial">Restricted</Badge> : null}
         </Stack>
       </Stack>
     </Stack>
