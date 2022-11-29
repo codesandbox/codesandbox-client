@@ -24,7 +24,6 @@ import {
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
-import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
@@ -70,10 +69,13 @@ export const ProUpgrade = () => {
   const { isFree, isPro } = useWorkspaceSubscription();
   // const isFree = false; // DEBUG
   // const isPro = true; // DEBUG
-  const { numberOfEditors } = useWorkspaceLimits();
-  // TODO: Is ther another way to find out if team has a custom subscription?
-  const hasCustomSubscription = numberOfEditors && numberOfEditors > 20;
-  // const hasCustomSubscription = true; // DEBUG
+
+  /**
+   * There is currently no way to know if teams have a custom subscription. This means we will
+   * always show the manage subscription button for the pro tier, together with the link to TypeForm
+   * to upgrade to a custom subscription. Keeping this variable here for future reference.
+   */
+  const hasCustomSubscription = false;
 
   const checkout = useGetCheckoutURL({
     team_id: isTeamAdmin && isFree ? activeTeam : undefined,
