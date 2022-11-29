@@ -82,6 +82,7 @@ export const ProUpgrade = () => {
     team_id: isTeamAdmin && isFree ? activeTeam : undefined,
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: '/pro',
+    // recurring_interval: 'year', // TODO: defaulting to year does not enable the interval switch in stripe
   });
 
   const [
