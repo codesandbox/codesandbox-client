@@ -53,7 +53,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
         justify="space-between"
         css={{ height: '100%' }}
       >
-        <Stack direction="vertical" gap={1}>
+        <Stack direction="vertical">
           <Stack justify="space-between" align="center">
             <Text color="#999" size={12}>
               {repository.owner}
@@ -77,11 +77,11 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
         <Stack justify="space-between">
           <Stack align="center" gap={2}>
             {repository.private ? (
-              <Icon color="#808080" name="lock" size={12} />
+              <Icon color="#999" name="lock" size={12} />
             ) : null}
             <Stack align="center" gap={1}>
-              <Icon color="#808080" name="branch" />
-              <Text color="#808080" size={12}>
+              <Icon color="#999" name="branch" />
+              <Text color="#999" size={12}>
                 {labels.branches}
               </Text>
             </Stack>
