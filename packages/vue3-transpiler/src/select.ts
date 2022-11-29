@@ -27,6 +27,11 @@ export function selectBlock(
     // that contains that block, so the block is guaranteed to exist.
     const template = descriptor.template!;
 
+    // Deletion `template` tag
+    if (!template) {
+      return { transpiledCode: '' };
+    }
+
     return {
       transpiledCode: template.content,
       sourceMap: template.map,
@@ -39,6 +44,11 @@ export function selectBlock(
     // I still don't know when & why `scriptCompiled` would be empty
     // need to work out a better fix later
     const script = (descriptor as any).scriptCompiled || descriptor.script;
+
+    // Deletion `script` tag
+    if (!script) {
+      return { transpiledCode: '' };
+    }
 
     return {
       transpiledCode: script.content + convertSourceMapToInline(script.map),
