@@ -19,6 +19,9 @@ import {
   ORG_FEATURES,
   PRO_FEATURES,
   PRO_FEATURES_WITH_PILLS,
+  PERSONAL_FREE_FEATURES,
+  PERSONAL_FEATURES,
+  PERSONAL_FEATURES_WITH_PILLS,
 } from 'app/constants';
 
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
@@ -27,8 +30,6 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Switcher } from './components/Switcher';
 import { SubscriptionPaymentProvider } from '../../graphql/types';
 import { SubscriptionCard } from './components/SubscriptionCard';
-
-// TODO: Add personal pro
 
 export const ProUpgrade = () => {
   const {
@@ -65,7 +66,7 @@ export const ProUpgrade = () => {
     }
   }, [hasLoadedApp, location, setActiveTeam, personalWorkspaceId, dashboard]);
 
-  const { isTeamAdmin } = useWorkspaceAuthorization();
+  const { isPersonalSpace, isTeamAdmin } = useWorkspaceAuthorization();
   const { isFree, isPro } = useWorkspaceSubscription();
   // const isFree = false; // DEBUG
   // const isPro = true; // DEBUG
@@ -88,7 +89,23 @@ export const ProUpgrade = () => {
     createCustomerPortal,
   ] = useCreateCustomerPortal({ team_id: activeTeam });
 
-  const proCta: React.ComponentProps<typeof SubscriptionCard>['cta'] =
+  const personalProCta: React.ComponentProps<
+    typeof SubscriptionCard
+  >['cta'] = isPro
+    ? {
+        text: 'Manage subscription',
+        onClick: createCustomerPortal,
+        variant: 'light',
+        isLoading: isCustomerPortalLoading,
+      }
+    : {
+        text: 'Proceed to checkout',
+        href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback?
+        variant: 'highlight',
+        isLoading: checkout.state === 'LOADING',
+      };
+
+  const teamProCta: React.ComponentProps<typeof SubscriptionCard>['cta'] =
     // eslint-disable-next-line no-nested-ternary
     hasCustomSubscription
       ? undefined
@@ -185,7 +202,12 @@ export const ProUpgrade = () => {
               },
             }}
           >
-            <SubscriptionCard title="Free plan" features={FREE_FEATURES}>
+            <SubscriptionCard
+              title="Free plan"
+              features={
+                isPersonalSpace ? PERSONAL_FREE_FEATURES : FREE_FEATURES
+              }
+            >
               <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
                 <Text aria-hidden size={32} weight="400">
                   $0
@@ -195,51 +217,75 @@ export const ProUpgrade = () => {
               </Stack>
             </SubscriptionCard>
 
-            <SubscriptionCard
-              title="Team Pro"
-              features={isPro ? PRO_FEATURES : PRO_FEATURES_WITH_PILLS}
-              cta={proCta}
-              isHighlighted={!hasCustomSubscription}
-            >
-              <Stack gap={1} direction="vertical">
-                <Text aria-hidden size={32} weight="500">
-                  $15
-                </Text>
-                <VisuallyHidden>Fifteen dollars</VisuallyHidden>
-                <Text>
-                  per editor per month, billed anually, or $18 per month.
-                </Text>
-              </Stack>
-            </SubscriptionCard>
+            {isPersonalSpace ? (
+              <SubscriptionCard
+                title="Personal Pro"
+                features={
+                  isPro ? PERSONAL_FEATURES : PERSONAL_FEATURES_WITH_PILLS
+                }
+                cta={personalProCta}
+                isHighlighted
+              >
+                <Stack gap={1} direction="vertical">
+                  <Text aria-hidden size={32} weight="500">
+                    $9
+                  </Text>
+                  <VisuallyHidden>Nine dollars</VisuallyHidden>
+                  <Text>
+                    <div>per month, billed anually</div>{' '}
+                    <div>or $12 per month.</div>
+                  </Text>
+                </Stack>
+              </SubscriptionCard>
+            ) : (
+              <>
+                <SubscriptionCard
+                  title="Team Pro"
+                  features={isPro ? PRO_FEATURES : PRO_FEATURES_WITH_PILLS}
+                  cta={teamProCta}
+                  isHighlighted={!hasCustomSubscription}
+                >
+                  <Stack gap={1} direction="vertical">
+                    <Text aria-hidden size={32} weight="500">
+                      $15
+                    </Text>
+                    <VisuallyHidden>Fifteen dollars</VisuallyHidden>
+                    <Text>
+                      per editor per month, billed anually, or $18 per month.
+                    </Text>
+                  </Stack>
+                </SubscriptionCard>
 
-            <SubscriptionCard
-              title="Organization"
-              features={ORG_FEATURES}
-              cta={
-                hasCustomSubscription
-                  ? {
-                      text: 'Contact support',
-                      href: 'mailto:support@codesandbox.io',
-                      variant: 'light',
-                    }
-                  : {
-                      text: 'Contact us',
-                      href: 'https://codesandbox.typeform.com/organization',
-                      variant: 'dark',
-                    }
-              }
-              isHighlighted={hasCustomSubscription}
-            >
-              <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
-                <Text aria-hidden size={32} weight="400">
-                  custom
-                </Text>
-                <Text>
-                  <div>tailor-made plan.</div>
-                  <div>bulk pricing for seats.</div>
-                </Text>
-              </Stack>
-            </SubscriptionCard>
+                <SubscriptionCard
+                  title="Organization"
+                  features={ORG_FEATURES}
+                  cta={
+                    hasCustomSubscription
+                      ? {
+                          text: 'Contact support',
+                          href: 'mailto:support@codesandbox.io',
+                          variant: 'light',
+                        }
+                      : {
+                          text: 'Contact us',
+                          href: 'https://codesandbox.typeform.com/organization',
+                          variant: 'dark',
+                        }
+                  }
+                  isHighlighted={hasCustomSubscription}
+                >
+                  <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
+                    <Text aria-hidden size={32} weight="400">
+                      custom
+                    </Text>
+                    <Text>
+                      <div>tailor-made plan.</div>
+                      <div>bulk pricing for seats.</div>
+                    </Text>
+                  </Stack>
+                </SubscriptionCard>
+              </>
+            )}
           </Stack>
         </Stack>
 

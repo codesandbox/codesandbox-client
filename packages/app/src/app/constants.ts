@@ -15,6 +15,51 @@ export interface Feature {
   pill?: string;
 }
 
+export const PERSONAL_FREE_FEATURES: Feature[] = [
+  { key: 'editors', label: '1 editor' },
+  {
+    key: 'limit_sandboxes',
+    label: 'Unlimited public sandboxes',
+  },
+  {
+    key: 'limit_repositories',
+    label: 'Unlimited public repositories',
+  },
+  { key: 'vm_mem', label: '4GB RAM' },
+  { key: 'vm_cpu', label: '2 vCPUs' },
+  { key: 'vm_disk', label: '4GB Disk' },
+];
+
+export const PERSONAL_FEATURES: Feature[] = [
+  { key: 'editors', label: '1 editor' },
+  {
+    key: 'limit_sandboxes',
+    label: 'Unlimited private sandboxes',
+  },
+  {
+    key: 'limit_repositories',
+    label: 'Unlimited private repositories',
+  },
+  { key: 'vm_mem', label: '6GB RAM' },
+  { key: 'vm_cpu', label: '4vCPUs' },
+  { key: 'vm_disk', label: '12GB Disk' },
+];
+
+export const PERSONAL_FEATURES_WITH_PILLS: Feature[] = [
+  { key: 'editors', label: '1 editor' },
+  {
+    key: 'limit_sandboxes',
+    label: 'Unlimited private sandboxes',
+  },
+  {
+    key: 'limit_repositories',
+    label: 'Unlimited private repositories',
+  },
+  { key: 'vm_mem', label: '6GB RAM', pill: '1.5x capacity' },
+  { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
+  { key: 'vm_disk', label: '12GB Disk', pill: '3x storage' },
+];
+
 export const FREE_FEATURES: Feature[] = [
   { key: 'editors', label: 'Up to 5 editors' },
   {
