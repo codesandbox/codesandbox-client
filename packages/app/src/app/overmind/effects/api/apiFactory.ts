@@ -17,7 +17,7 @@ export type Params = {
   [key: string]: string;
 };
 
-export type Options = {
+type Options = {
   shouldCamelize: boolean;
 };
 
@@ -97,7 +97,7 @@ export default (config: ApiConfig) => {
   return api;
 };
 
-export function handleResponse(
+function handleResponse(
   response: AxiosResponse,
   { shouldCamelize = true } = {}
 ) {

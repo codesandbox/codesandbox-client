@@ -8,7 +8,7 @@ import { useActions, useAppState } from 'app/overmind';
 import { formatCurrency } from 'app/utils/currency';
 import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 type Feature = {
@@ -86,7 +86,7 @@ export const TeamSubscription: React.FC = () => {
   };
 
   const { isTeamAdmin } = useWorkspaceAuthorization();
-  const { isEligibleForTrial } = useSubscription();
+  const { isEligibleForTrial } = useWorkspaceSubscription();
 
   const isCheckoutDisabled =
     !isEligibleForTrial || !isTeamAdmin || checkout.status === 'loading';

@@ -4,7 +4,7 @@ import css from '@styled-system/css';
 import { Column, Grid, SkeletonText, Stack } from '@codesandbox/components';
 import { ViewMode } from '../../types';
 
-export const SolidCardSkeleton: React.FC = () => (
+const SolidCardSkeleton: React.FC = () => (
   <Stack
     direction="vertical"
     gap={4}
@@ -21,7 +21,7 @@ export const SolidCardSkeleton: React.FC = () => (
   </Stack>
 );
 
-export const SolidListItemSkeleton: React.FC = () => (
+const SolidListItemSkeleton: React.FC = () => (
   <Stack>
     <Grid css={{ width: 'calc(100% - 26px - 8px)' }}>
       <Column

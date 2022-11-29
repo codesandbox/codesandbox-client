@@ -10,11 +10,6 @@ export const Container = styled.div`
   `}
 `;
 
-export const Header = styled.header`
-  margin: auto;
-  width: 1280px;
-`;
-
 export const Content = styled.div`
   display: flex;
   flex-direction: column;
@@ -34,21 +29,6 @@ export const Title = styled.h1`
 export const Subtitle = styled.h2`
   display: flex;
   justify-content: center;
-`;
-
-export const Actions = styled.section`
-  display: flex;
-  justify-content: center;
-  padding: 0 1rem;
-
-  > a {
-    display: inline-flex;
-    align-items: center;
-
-    &:not(:first-child) {
-      margin-left: 1rem;
-    }
-  }
 `;
 
 export const ButtonIcon = styled.span`

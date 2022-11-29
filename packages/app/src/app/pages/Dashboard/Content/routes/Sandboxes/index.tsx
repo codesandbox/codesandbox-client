@@ -10,8 +10,9 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useSubscription } from 'app/hooks/useSubscription';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 
@@ -29,14 +30,11 @@ export const SandboxesPage = () => {
   } = useAppState();
 
   const { isTeamAdmin } = useWorkspaceAuthorization();
-  const {
-    hasActiveSubscription,
-    isEligibleForTrial,
-    hasMaxPublicSandboxes,
-  } = useSubscription();
+  const { isFree, isEligibleForTrial } = useWorkspaceSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin && !hasActiveSubscription ? activeTeam : undefined,
+    team_id: isTeamAdmin && isFree ? activeTeam : undefined,
     success_path: dashboardUrls.sandboxes(activeTeam),
     cancel_path: dashboardUrls.sandboxes(activeTeam),
   });
@@ -99,11 +97,11 @@ export const SandboxesPage = () => {
         showSortOptions={Boolean(currentPath)}
       />
 
-      {!hasActiveSubscription && hasMaxPublicSandboxes ? (
+      {isFree && hasMaxPublicSandboxes ? (
         <Element paddingX={4} paddingY={2}>
           <MessageStripe justify="space-between">
             Free teams are limited to 20 public sandboxes. Upgrade for unlimited
-            sandboxes.
+            public and private sandboxes.
             {isTeamAdmin ? (
               <MessageStripe.Action
                 {...(checkout.state === 'READY'

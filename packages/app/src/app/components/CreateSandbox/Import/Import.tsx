@@ -3,10 +3,11 @@ import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
-import { useSubscription } from 'app/hooks/useSubscription';
 import { useActions, useAppState } from 'app/overmind';
 import React from 'react';
 
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { useImportAndRedirect } from './useImportAndRedirect';
@@ -58,7 +59,8 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const importAndRedirect = useImportAndRedirect();
 
-  const { hasActiveSubscription, hasMaxPublicRepositories } = useSubscription();
+  const { isFree } = useWorkspaceSubscription();
+  const { hasMaxPublicRepositories } = useWorkspaceLimits();
 
   const [isImporting, setIsImporting] = React.useState(false);
   const [shouldFetch, setShouldFetch] = React.useState(false);
@@ -79,7 +81,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     onCompleted: async repo => {
       setShouldFetch(false);
 
-      if (repo.private && !hasActiveSubscription) {
+      if (repo.private && isFree) {
         setPrivateRepoFreeAccountError(url.raw);
         return;
       }

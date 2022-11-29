@@ -10,7 +10,7 @@ import {
 import { useActions, useAppState } from 'app/overmind';
 import { quotes } from 'app/utils/quotes';
 import { PageTypes } from 'app/overmind/namespaces/dashboard/types';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Context, MenuItem } from '../ContextMenu';
 
 type RepositoryMenuProps = {
@@ -30,7 +30,7 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
   const history = useHistory();
   const state = useAppState();
   const actions = useActions();
-  const { hasActiveSubscription } = useSubscription();
+  const { isFree } = useWorkspaceSubscription();
 
   const [experimentalMode] = useState(() => {
     return window.localStorage.getItem('CSB_DEBUG') === 'ENABLED';
@@ -38,7 +38,7 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
 
   const { repository: providerRepository } = repository;
 
-  const isViewOnly = !hasActiveSubscription && providerRepository.private;
+  const isViewOnly = isFree && providerRepository.private;
 
   const repositoryUrl = dashboard.repository({
     owner: providerRepository.owner,

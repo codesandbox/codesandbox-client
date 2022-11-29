@@ -1,7 +1,6 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { useSubscription } from 'app/hooks/useSubscription';
 import { Element, SkipNav } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
@@ -18,6 +17,8 @@ import {
   sandboxUrl,
   dashboard as dashboardUrls,
 } from '@codesandbox/common/lib/utils/url-generator';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { DragPreview } from './DragPreview';
 import { ContextMenu } from './ContextMenu';
 import {
@@ -151,7 +152,8 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   const actions = useActions();
   const { dashboard, activeTeam } = useAppState();
   const { analytics } = useEffects();
-  const { hasActiveSubscription, hasMaxPublicSandboxes } = useSubscription();
+  const { isFree } = useWorkspaceSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>, itemId: string) => {
     if (event.ctrlKey || event.metaKey) {
@@ -283,7 +285,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
   let viewMode: 'grid' | 'list';
   const location = useLocation();
 
-  if (location.pathname.includes('archive')) viewMode = 'list';
+  if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = dashboard.viewMode;
 
   const history = useHistory();
@@ -445,7 +447,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     }
 
     if (sandboxIds.length) {
-      if (dropPage === 'archive') {
+      if (dropPage === 'deleted') {
         actions.dashboard.deleteSandbox({ ids: sandboxIds });
       } else if (dropPage === 'templates') {
         actions.dashboard.makeTemplates({ sandboxIds });
@@ -455,7 +457,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           collectionPath: activeTeam ? null : '/',
         });
       } else if (dropPage === 'sandboxes') {
-        if (!hasActiveSubscription && hasMaxPublicSandboxes) {
+        if (isFree && hasMaxPublicSandboxes) {
           return;
         }
 
@@ -464,7 +466,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           collectionPath: dropResult.path,
           deleteFromCurrentPath:
             page === 'sandboxes' ||
-            page === 'archive' ||
+            page === 'deleted' ||
             page === 'templates' ||
             page === 'drafts',
         });
@@ -472,7 +474,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
     }
 
     if (folderPaths.length) {
-      if (dropResult.path === 'archive') {
+      if (dropResult.path === 'deleted') {
         folderPaths.forEach(path => actions.dashboard.deleteFolder({ path }));
       } else if (dropResult.path === 'templates') {
         // folders can't be dropped into templates

@@ -3,7 +3,7 @@ import { SidebarCollectionDashboardFragment as Collection } from 'app/graphql/ty
 export type PageTypes =
   | 'search'
   | 'recent'
-  | 'archive'
+  | 'deleted'
   | 'templates'
   | 'drafts'
   | 'sandboxes'

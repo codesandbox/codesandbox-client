@@ -9,7 +9,8 @@ import { GitHubIcon } from 'app/components/CreateSandbox/Icons';
 import { useActions, useAppState } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { GUTTER } from '../VariableGrid';
 import { TemplatesGrid } from './elements';
 
@@ -17,7 +18,8 @@ export const TemplatesRow: React.FC = () => {
   const officialTemplates = useOfficialTemplates();
   const actions = useActions();
   const { dashboard } = useAppState();
-  const { hasActiveSubscription, hasMaxPublicSandboxes } = useSubscription();
+  const { isFree } = useWorkspaceSubscription();
+  const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   const handleOpenTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
@@ -85,7 +87,7 @@ export const TemplatesRow: React.FC = () => {
               .map(template => (
                 <TemplateCard
                   key={template.id}
-                  disabled={!hasActiveSubscription && hasMaxPublicSandboxes}
+                  disabled={isFree && hasMaxPublicSandboxes}
                   template={template}
                   onOpenTemplate={handleOpenTemplate}
                   onSelectTemplate={handleSelectTemplate}

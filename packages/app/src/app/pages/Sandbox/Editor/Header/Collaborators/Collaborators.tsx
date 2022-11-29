@@ -3,6 +3,7 @@ import { Element } from '@codesandbox/components';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import { Overlay } from 'app/components/Overlay';
 import { useAppState } from 'app/overmind';
+import OutsideClickHandler from 'react-outside-click-handler';
 
 import { Container, HorizontalSeparator } from './elements';
 import { AddCollaboratorForm } from './AddCollaboratorForm';
@@ -71,21 +72,24 @@ export const Collaborators: FunctionComponent<{
   };
 
   return (
-    <Overlay event="Collaborators" content={CollaboratorContent}>
-      {open => (
-        <>
-          <OnBoarding
-            visibility={onboardingVisibility}
-            onClose={onCloseOnboarding}
-          />
-          {renderButton({
-            onClick: () => {
-              open();
-              onCloseOnboarding();
-            },
-          })}
-        </>
-      )}
-    </Overlay>
+    <OutsideClickHandler onOutsideClick={onCloseOnboarding}>
+      <Overlay event="Collaborators" content={CollaboratorContent}>
+        {open => (
+          <>
+            <OnBoarding
+              visibility={onboardingVisibility}
+              onClose={onCloseOnboarding}
+            />
+
+            {renderButton({
+              onClick: () => {
+                open();
+                onCloseOnboarding();
+              },
+            })}
+          </>
+        )}
+      </Overlay>
+    </OutsideClickHandler>
   );
 };

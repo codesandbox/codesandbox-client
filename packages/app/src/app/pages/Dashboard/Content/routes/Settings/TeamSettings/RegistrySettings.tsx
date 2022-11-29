@@ -3,8 +3,8 @@ import { Text, Button, MessageStripe, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 import { useActions, useAppState } from 'app/overmind';
-import { useSubscription } from 'app/hooks/useSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { CreateRegistryParams, RegistryForm } from './RegistryForm';
 import { Alert } from '../components/Alert';
 
@@ -14,7 +14,7 @@ export const RegistrySettings = () => {
   const [loading, setLoading] = React.useState(true);
   const [submitting, setSubmitting] = React.useState(false);
   const [resetting, setResetting] = React.useState(false);
-  const { hasActiveSubscription } = useSubscription();
+  const { isFree, isPro } = useWorkspaceSubscription();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
   React.useEffect(() => {
@@ -56,10 +56,10 @@ export const RegistrySettings = () => {
 
   return (
     <Stack direction="vertical" gap={6}>
-      {hasActiveSubscription ? null : (
+      {isFree ? (
         <MessageStripe justify="space-between">
           <span>
-            You need a <Text weight="bold">Team Pro subscription</Text> to set a
+            You need a <Text weight="bold">Team Pro</Text> subscription to set a
             custom npm Registry.
           </span>
           {isTeamAdmin ? (
@@ -77,9 +77,9 @@ export const RegistrySettings = () => {
             </MessageStripe.Action>
           )}
         </MessageStripe>
-      )}
+      ) : null}
 
-      {hasActiveSubscription && !isTeamAdmin ? (
+      {isPro && !isTeamAdmin ? (
         <Alert message="Please contact your admin to set a custom npm registry." />
       ) : null}
 
@@ -91,9 +91,8 @@ export const RegistrySettings = () => {
           borderColor: 'transparent',
           borderRadius: 'medium',
           position: 'relative',
-          opacity: !hasActiveSubscription || !isTeamAdmin ? 0.4 : 1,
-          pointerEvents:
-            !hasActiveSubscription || !isTeamAdmin ? 'none' : 'all',
+          opacity: isFree || !isTeamAdmin ? 0.4 : 1,
+          pointerEvents: isFree || !isTeamAdmin ? 'none' : 'all',
         })}
       >
         {!resetting && (
@@ -104,12 +103,12 @@ export const RegistrySettings = () => {
             onSubmit={onSubmit}
             isSubmitting={submitting}
             registry={dashboard.workspaceSettings.npmRegistry}
-            disabled={!hasActiveSubscription || !isTeamAdmin}
+            disabled={isFree || !isTeamAdmin}
           />
         )}
       </Stack>
 
-      {hasActiveSubscription && isTeamAdmin ? (
+      {isPro && isTeamAdmin ? (
         <Stack justify="center" align="center">
           <Button
             variant="link"

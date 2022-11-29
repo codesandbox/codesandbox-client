@@ -17,7 +17,7 @@ import {
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 
-import { useSubscription } from 'app/hooks/useSubscription';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Header } from '../../../../Components/Header';
 import { Card } from '../components';
 import { ManageSubscription } from './ManageSubscription';
@@ -25,7 +25,7 @@ import { ManageSubscription } from './ManageSubscription';
 export const WorkspaceSettings = () => {
   const { user, activeTeam } = useAppState();
   const actions = useActions();
-  const { hasActiveSubscription } = useSubscription();
+  const { isFree } = useWorkspaceSubscription();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -183,7 +183,7 @@ export const WorkspaceSettings = () => {
 
               <Stack direction="vertical" css={{ width: 'calc(100% - 64px)' }}>
                 <Stack justify="space-between">
-                  <Text size={4} weight="bold" maxWidth="100%" variant="body">
+                  <Text size={4} weight="500" maxWidth="100%" variant="body">
                     {user.username}
                   </Text>
                   <IconButton
@@ -194,7 +194,7 @@ export const WorkspaceSettings = () => {
                     onClick={() => setEditing(false)}
                   />
                 </Stack>
-                {!hasActiveSubscription && (
+                {isFree && (
                   <Stack>
                     <Badge variant="trial">Free</Badge>
                   </Stack>
@@ -245,7 +245,7 @@ export const WorkspaceSettings = () => {
 
             <Stack direction="vertical" css={{ width: 'calc(100% - 64px)' }}>
               <Stack justify="space-between">
-                <Text size={4} weight="bold" maxWidth="100%" variant="body">
+                <Text size={4} weight="500" maxWidth="100%" variant="body">
                   {user.username}
                 </Text>
                 <IconButton
@@ -256,7 +256,7 @@ export const WorkspaceSettings = () => {
                   onClick={() => setEditing(true)}
                 />
               </Stack>
-              {!hasActiveSubscription && (
+              {isFree && (
                 <Stack>
                   <Badge variant="trial">Free</Badge>
                 </Stack>
@@ -299,8 +299,8 @@ export const WorkspaceSettings = () => {
               }}
             >
               {user.deletionRequested
-                ? 'Undo Account Deletion'
-                : 'Request Account Deletion'}
+                ? 'Undo account deletion'
+                : 'Request account deletion'}
             </Button>
           )}
         </Stack>

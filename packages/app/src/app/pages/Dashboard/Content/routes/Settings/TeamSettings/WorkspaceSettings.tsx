@@ -27,11 +27,14 @@ import { TeamAvatar } from 'app/components/TeamAvatar';
 import {
   TeamMemberAuthorization,
   CurrentTeamInfoFragmentFragment,
+  SubscriptionOrigin,
 } from 'app/graphql/types';
-import { MAX_PRO_EDITORS, useSubscription } from 'app/hooks/useSubscription';
+import { MAX_PRO_EDITORS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
 import track from '@codesandbox/common/lib/utils/analytics';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
@@ -63,14 +66,19 @@ export const WorkspaceSettings = () => {
   const [file, setFile] = useState<{ name: string; url: string } | null>(null);
 
   const {
-    hasActiveSubscription,
+    isPro,
+    isFree,
     isEligibleForTrial,
     numberOfSeats,
+    subscription,
+  } = useWorkspaceSubscription();
+  const {
     numberOfEditors,
     hasMaxNumberOfEditors,
     numberOfEditorsIsOverTheLimit,
-  } = useSubscription();
+  } = useWorkspaceLimits();
   const { isTeamAdmin, userRole, isTeamEditor } = useWorkspaceAuthorization();
+
   const checkout = useGetCheckoutURL({
     team_id: isTeamAdmin ? team?.id : undefined,
     cancel_path: dashboard.settings(team?.id),
@@ -142,11 +150,10 @@ export const WorkspaceSettings = () => {
   // if the user is going to be charged for adding a member
   // throw them a confirmation modal
   const confirmNewMemberAddition =
-    hasActiveSubscription &&
+    isPro &&
     numberOfUnusedSeats === 0 &&
     newMemberRole !== TeamMemberAuthorization.Read;
-  const confirmMemberRoleChange =
-    hasActiveSubscription && numberOfUnusedSeats === 0;
+  const confirmMemberRoleChange = isPro && numberOfUnusedSeats === 0;
 
   const onInviteSubmit = async event => {
     event.preventDefault();
@@ -315,7 +322,7 @@ export const WorkspaceSettings = () => {
               />
               <Stack direction="vertical" css={{ width: '100%' }} gap={1}>
                 <Stack justify="space-between" align="center">
-                  <Text size={4} weight="bold" css={{ wordBreak: 'break-all' }}>
+                  <Text size={4} weight="500" css={{ wordBreak: 'break-all' }}>
                     {team.name}
                   </Text>
                   {isTeamAdmin && (
@@ -330,9 +337,7 @@ export const WorkspaceSettings = () => {
                 </Stack>
 
                 <Stack>
-                  {hasActiveSubscription ? null : (
-                    <Badge variant="trial">Free</Badge>
-                  )}
+                  {isFree ? <Badge variant="trial">Free</Badge> : null}
                 </Stack>
 
                 <Text size={3} css={{ marginTop: '8px' }} variant="muted">
@@ -350,7 +355,7 @@ export const WorkspaceSettings = () => {
             css={{ height: '100%' }}
           >
             <Stack direction="vertical" gap={4}>
-              <Text size={4} weight="bold">
+              <Text size={4} weight="500">
                 {team.users.length}{' '}
                 {team.users.length === 1 ? 'member' : 'members'}
               </Text>
@@ -391,7 +396,7 @@ export const WorkspaceSettings = () => {
                   actions.modalOpened({ modal: 'deleteWorkspace' })
                 }
               >
-                Delete Team
+                Delete team
               </Button>
             )}
           </Stack>
@@ -521,24 +526,25 @@ export const WorkspaceSettings = () => {
       {/**
        * Soft limit for pro teams.
        */}
-      {numberOfEditors > MAX_PRO_EDITORS && (
-        <MessageStripe justify="space-between">
-          <span>
-            You have over {MAX_PRO_EDITORS} editors. Upgrade to the Organization
-            plan for more benefits.
-          </span>
-          <MessageStripe.Action
-            as="a"
-            href="https://codesandbox.typeform.com/organization"
-            onClick={() =>
-              track('Limit banner - team editors - Custom plan contact')
-            }
-            target="_blank"
-          >
-            Contact us
-          </MessageStripe.Action>
-        </MessageStripe>
-      )}
+      {numberOfEditors > MAX_PRO_EDITORS &&
+        subscription.origin !== SubscriptionOrigin.Pilot && (
+          <MessageStripe justify="space-between">
+            <span>
+              You have over {MAX_PRO_EDITORS} editors. Upgrade to the
+              Organization plan for more benefits.
+            </span>
+            <MessageStripe.Action
+              as="a"
+              href="https://codesandbox.typeform.com/organization"
+              onClick={() =>
+                track('Limit banner - team editors - Custom plan contact')
+              }
+              target="_blank"
+            >
+              Contact us
+            </MessageStripe.Action>
+          </MessageStripe>
+        )}
 
       <div>
         <MemberList

@@ -13,12 +13,6 @@ import { TestDetails as TestDetailsContent } from './TestDetails';
 import { TestSummary } from './TestSummary';
 import { TestOverview } from './TestOverview';
 
-export type IMessage = {
-  type: 'message' | 'command' | 'return';
-  logType: 'log' | 'warn' | 'info' | 'error';
-  arguments: any[];
-};
-
 export type Status = 'idle' | 'running' | 'pass' | 'fail';
 
 export type TestError = Error & {

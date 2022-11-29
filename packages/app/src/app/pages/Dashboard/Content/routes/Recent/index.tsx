@@ -12,8 +12,8 @@ import { Helmet } from 'react-helmet';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { Element } from '@codesandbox/components';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
-import { useSubscription } from 'app/hooks/useSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 export const Recent = () => {
   const {
@@ -34,8 +34,8 @@ export const Recent = () => {
   const dataIsLoading =
     sandboxes.RECENT_BRANCHES === null || sandboxes.RECENT_SANDBOXES === null;
 
-  const { hasActiveSubscription } = useSubscription();
-  const { isPersonalSpace } = useWorkspaceAuthorization();
+  const { isFree } = useWorkspaceSubscription();
+  const { isTeamSpace } = useWorkspaceAuthorization();
 
   const items: DashboardGridItem[] = dataIsLoading
     ? [
@@ -80,7 +80,7 @@ export const Recent = () => {
       <Helmet>
         <title>Dashboard - CodeSandbox</title>
       </Helmet>
-      {!hasActiveSubscription && !isPersonalSpace && (
+      {isFree && isTeamSpace && (
         <Element
           css={{
             width: `calc(100% - ${2 * GUTTER}px)`,
