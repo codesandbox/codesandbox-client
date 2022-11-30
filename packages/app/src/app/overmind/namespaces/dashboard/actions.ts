@@ -1966,7 +1966,14 @@ export const getRepositoriesByTeam = async (
 
     dashboard.repositories = syncedRepositories.sort(sortByNameAscending);
   } catch (error) {
-    // Fail silently since this is a secondary request.
+    if (!bypassLoading && error?.response?.status === 504) {
+      // Fail silently since this is a secondary request.
+      return;
+    }
+
+    effects.notificationToast.error(
+      'There was a problem getting your repositories'
+    );
   }
 };
 
