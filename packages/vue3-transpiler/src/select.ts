@@ -27,6 +27,11 @@ export function selectBlock(
     // that contains that block, so the block is guaranteed to exist.
     const template = descriptor.template!;
 
+    // Deletion `template` tag
+    if (!template) {
+      return { transpiledCode: '' };
+    }
+
     return {
       transpiledCode: template.content,
       sourceMap: template.map,
@@ -40,6 +45,11 @@ export function selectBlock(
     // need to work out a better fix later
     const script = (descriptor as any).scriptCompiled || descriptor.script;
 
+    // Deletion `script` tag
+    if (!script) {
+      return { transpiledCode: '' };
+    }
+
     return {
       transpiledCode: script.content + convertSourceMapToInline(script.map),
       sourceMap: script.map,
@@ -49,6 +59,11 @@ export function selectBlock(
   // styles
   if (query.type === `style` && query.index != null) {
     const style = descriptor.styles[Number(query.index)];
+
+    // Deletion `style` tag
+    if (!style) {
+      return { transpiledCode: '' };
+    }
 
     return {
       transpiledCode:

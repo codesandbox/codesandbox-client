@@ -3,6 +3,7 @@ import { LoaderContext } from 'sandpack-core';
 import loaderUtils from 'sandpack-core/lib/transpiler/utils/loader-utils';
 import { compileTemplate, TemplateCompiler } from 'vue3-browser-compiler';
 import { WarningStructure } from 'sandpack-core/lib/transpiler/utils/worker-warning-handler';
+import { v4 as uuid } from 'uuid';
 
 import { VueLoaderOptions } from './index';
 import { formatError } from './formatError';
@@ -33,6 +34,7 @@ function TemplateLoader(source: string, loaderContext: LoaderContext) {
   }
 
   const compiled = compileTemplate({
+    id: uuid(),
     source,
     inMap,
     filename: loaderContext.path,
