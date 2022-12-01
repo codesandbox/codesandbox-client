@@ -5,6 +5,7 @@ import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState } from 'app/overmind';
+import { pluralize } from 'app/utils/pluralize';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -49,8 +50,11 @@ export const SubscriptionCancellationModal: React.FC = () => {
       (teamUsage?.privateProjectsQuantity ?? 0) -
       TEAM_FREE_LIMITS.private_repos;
     if (restrictedSandboxesCount > 0) {
-      return `${restrictedSandboxesCount} sandbox${
-        restrictedSandboxesCount === 1 ? '' : 'es'
+      return `${restrictedSandboxesCount} ${pluralize({
+        word: 'sandbox',
+        count: restrictedSandboxesCount,
+        suffixPlural: 'es',
+      })}
       } will be restricted`;
     }
 
