@@ -12,12 +12,13 @@ import {
   Tooltip,
 } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 export const Paddle = () => {
   const { subscription } = useWorkspaceSubscription();
   const actions = useActions();
 
-  if (!subscription.cancelAt) {
+  if (subscription.cancelAt) {
     return (
       <Stack
         css={{
@@ -95,7 +96,14 @@ export const Paddle = () => {
           color: 'errorForeground',
           padding: 0,
         })}
-        onClick={() => actions.openCancelSubscriptionModal()}
+        onClick={() => {
+          track('Team Settings: Cancel subscription', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
+
+          actions.openCancelSubscriptionModal();
+        }}
       >
         Cancel subscription
       </Button>

@@ -1,4 +1,3 @@
-import { format, subDays } from 'date-fns';
 import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
 import { Step, Plan, PaymentSummary, PaymentPreview } from './types';
@@ -95,20 +94,9 @@ export const updateSubscriptionBillingInterval = async (
 
 export const cancelWorkspaceSubscription = async ({
   state,
-  actions,
   effects,
+  actions,
 }: Context) => {
-  const nextBillDate = state.activeTeamInfo!.subscription!.nextBillDate;
-  const expirationDate = format(subDays(new Date(nextBillDate), 1), 'PP');
-
-  const confirmed = await actions.modals.alertModal.open({
-    title: 'Cancel Subscription',
-    message: `Are you sure? Your subscription will expire on the next billing date - ${expirationDate}.`,
-    type: 'danger',
-  });
-
-  if (!confirmed) return;
-
   try {
     const response = await effects.gql.mutations.softCancelSubscription({
       teamId: state.activeTeam,
@@ -122,6 +110,8 @@ export const cancelWorkspaceSubscription = async ({
     effects.notificationToast.error(
       'There was a problem cancelling your subscription. Please email us at support@codesandbox.io'
     );
+  } finally {
+    actions.modalClosed();
   }
 };
 

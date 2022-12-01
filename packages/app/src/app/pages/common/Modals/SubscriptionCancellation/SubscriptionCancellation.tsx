@@ -17,8 +17,9 @@ const StyledListItem = styled('li')`
 
 export const SubscriptionCancellationModal: React.FC = () => {
   const { activeTeamInfo } = useAppState();
-  const { hasActiveTeamTrial } = useWorkspaceSubscription();
-  const { modalClosed } = useActions();
+  const { hasActiveTeamTrial, isPaddle } = useWorkspaceSubscription();
+  const [paddleLoading, setPaddeLoading] = React.useState(false);
+  const { modalClosed, pro } = useActions();
   const [loadingCustomerPortal, createCustomerPortal] = useCreateCustomerPortal(
     {
       team_id: activeTeamInfo?.id,
@@ -134,25 +135,45 @@ export const SubscriptionCancellationModal: React.FC = () => {
         <Button onClick={modalClosed} variant="link" autoWidth>
           {hasActiveTeamTrial ? 'Continue trial' : 'Keep subscription'}
         </Button>
-        <Button
-          css={{ padding: '0 32px' }}
-          loading={loadingCustomerPortal}
-          onClick={() => {
-            // TO DO: confirm event name.
-            track(
-              'Team Settings - Open stripe portal from subscription cancellation modal',
-              {
+        {isPaddle ? (
+          <Button
+            css={{ padding: '0 32px' }}
+            loading={paddleLoading}
+            onClick={() => {
+              setPaddeLoading(true);
+              // TO DO: confirm event name.
+              track('Team Settings - Cancel paddle subscription', {
                 codesandbox: 'V1',
                 event_source: 'UI',
-              }
-            );
+              });
 
-            createCustomerPortal();
-          }}
-          autoWidth
-        >
-          I understand
-        </Button>
+              pro.cancelWorkspaceSubscription();
+            }}
+            autoWidth
+          >
+            I understand
+          </Button>
+        ) : (
+          <Button
+            css={{ padding: '0 32px' }}
+            loading={loadingCustomerPortal}
+            onClick={() => {
+              // TO DO: confirm event name.
+              track(
+                'Team Settings - Open stripe portal from subscription cancellation modal',
+                {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                }
+              );
+
+              createCustomerPortal();
+            }}
+            autoWidth
+          >
+            I understand
+          </Button>
+        )}
       </Stack>
     </Stack>
   );
