@@ -14,6 +14,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
       hasMaxNumberOfEditors: undefined,
       numberOfEditorsIsOverTheLimit: undefined,
       hasMaxPublicRepositories: undefined,
+      hasMaxPrivateRepositories: undefined,
       hasMaxPublicSandboxes: undefined,
     };
   }
@@ -45,6 +46,14 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     maxPublicProjects !== null &&
     publicProjectsQuantity >= maxPublicProjects;
 
+  const privateRepositoriesQuantity = usage.privateProjectsQuantity;
+  const maxPrivateRepositories = limits.maxPrivateProjects;
+
+  const hasMaxPrivateRepositories =
+    isFree === true &&
+    maxPrivateRepositories !== null &&
+    privateRepositoriesQuantity > maxPrivateRepositories;
+
   const publicSandboxesQuantity = usage.publicSandboxesQuantity;
   const maxPublicSandboxes = limits.maxPublicSandboxes;
 
@@ -58,6 +67,7 @@ export const useWorkspaceLimits = (): WorkspaceLimitsReturn => {
     hasMaxNumberOfEditors,
     numberOfEditorsIsOverTheLimit,
     hasMaxPublicRepositories,
+    hasMaxPrivateRepositories,
     hasMaxPublicSandboxes,
   };
 };
@@ -68,6 +78,7 @@ export type WorkspaceLimitsReturn =
       hasMaxNumberOfEditors: undefined;
       numberOfEditorsIsOverTheLimit: undefined;
       hasMaxPublicRepositories: undefined;
+      hasMaxPrivateRepositories: undefined;
       hasMaxPublicSandboxes: undefined;
     }
   | {
@@ -75,5 +86,6 @@ export type WorkspaceLimitsReturn =
       hasMaxNumberOfEditors: boolean;
       numberOfEditorsIsOverTheLimit: boolean;
       hasMaxPublicRepositories: boolean;
+      hasMaxPrivateRepositories: boolean;
       hasMaxPublicSandboxes: boolean;
     };

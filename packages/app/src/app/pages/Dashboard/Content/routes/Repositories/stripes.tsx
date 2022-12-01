@@ -57,7 +57,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
   );
 };
 
-export const MaxPublicReposFreeTeam: React.FC = () => {
+export const MaxReposFreeTeam: React.FC = () => {
   const { activeTeam } = useAppState();
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { isTeamAdmin, isPersonalSpace } = useWorkspaceAuthorization();
