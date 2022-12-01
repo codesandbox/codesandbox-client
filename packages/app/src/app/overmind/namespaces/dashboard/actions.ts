@@ -1052,6 +1052,12 @@ export const addSandboxesToFolder = async (
     existingCollection.sandboxCount += sandboxIds.length;
   }
 
+  if (teamId !== state.activeTeam) {
+    effects.analytics.track('Dashboard - Moved Sandboxes to different team', {
+      dashboardVersion: 2,
+    });
+  }
+
   try {
     await effects.gql.mutations.addSandboxToFolder({
       sandboxIds,
