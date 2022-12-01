@@ -9,4 +9,4 @@ export const pluralize = ({
   word,
   suffixSingular = '',
   suffixPlural = 's',
-}: PluralOptions) => `$${word}${count === 1 ? suffixSingular : suffixPlural}`;
+}: PluralOptions) => `${word}${count === 1 ? suffixSingular : suffixPlural}`;

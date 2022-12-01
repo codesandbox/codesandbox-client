@@ -54,8 +54,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
         word: 'sandbox',
         count: restrictedSandboxesCount,
         suffixPlural: 'es',
-      })}
-      } will be restricted`;
+      })} will be restricted`;
     }
 
     return `Limited to ${TEAM_FREE_LIMITS.public_sandboxes} public sandboxes`;
@@ -71,9 +70,12 @@ export const SubscriptionCancellationModal: React.FC = () => {
       (teamUsage?.privateProjectsQuantity ?? 0) -
       TEAM_FREE_LIMITS.private_repos;
     if (restrictedRepositoriesCount > 0) {
-      return `${restrictedRepositoriesCount} repositor${
-        restrictedRepositoriesCount === 1 ? 'y' : 'ies'
-      } will be restricted`;
+      return `${restrictedRepositoriesCount} ${pluralize({
+        word: 'repositor',
+        count: restrictedRepositoriesCount,
+        suffixPlural: 'ies',
+        suffixSingular: 'y',
+      })} will be restricted`;
     }
 
     return `Limited to ${TEAM_FREE_LIMITS.public_repos} public repositories`;
