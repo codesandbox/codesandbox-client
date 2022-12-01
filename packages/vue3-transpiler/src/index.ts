@@ -18,7 +18,6 @@ import { selectBlock } from './select';
 import { genHotReloadCode } from './hotReload';
 import { genCSSModulesCode } from './cssModules';
 import { formatError } from './formatError';
-import { v4 as uuid } from 'uuid';
 
 import vueTemplateLoader from './transpilers/template-loader';
 import vueStylePostLoader from './transpilers/style-post-loader';
@@ -91,7 +90,7 @@ export default function loader(
   // module id for scoped CSS & hot-reload
   const rawShortFilePath = path
     .relative(rootContext || process.cwd(), resourcePath)
-    .replace(/^(\.\.[\/\\])+/, '');
+    .replace(/^(\.\.[/\\])+/, '');
   const shortFilePath = rawShortFilePath.replace(/\\/g, '/') + resourceQuery;
   const id = hash(isProduction ? shortFilePath + '\n' + source : shortFilePath);
 
@@ -111,7 +110,7 @@ export default function loader(
       // eslint-disable-next-line no-multi-assign
       script = (descriptor as any).scriptCompiled = compileScript(descriptor, {
         babelParserPlugins: options.babelParserPlugins,
-        id: uuid(),
+        id,
       });
     } catch (e) {
       loaderContext.emitError(e);
