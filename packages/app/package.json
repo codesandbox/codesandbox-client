@@ -90,7 +90,7 @@
     "@typeform/embed": "^0.12.0",
     "@types/rc-slider": "^8.6.5",
     "@types/socket.io-client": "^1.4.32",
-    "airtable": "^0.5.8",
+    "airtable": "^0.11.6",
     "apollo-boost": "^0.4.4",
     "apollo-link-batch-http": "^1.2.12",
     "apollo-link-context": "^1.0.18",
