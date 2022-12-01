@@ -97,7 +97,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
         >
           You&apos;ll lose access to all Pro features if you decide to cancel
         </Text>
-        <IconButton name="cross" title="Close" />
+        <IconButton name="cross" title="Close" onClick={modalClosed} />
       </Stack>
       <Stack
         as="ul"
