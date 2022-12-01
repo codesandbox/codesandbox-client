@@ -2,7 +2,6 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { Button, IconButton, Stack, Text } from '@codesandbox/components';
 import { TEAM_FREE_LIMITS } from 'app/constants';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState } from 'app/overmind';
 import { pluralize } from 'app/utils/pluralize';
@@ -18,12 +17,11 @@ const StyledListItem = styled('li')`
 
 export const SubscriptionCancellationModal: React.FC = () => {
   const { activeTeamInfo } = useAppState();
-  const { isTeamAdmin } = useWorkspaceAuthorization();
   const { hasActiveTeamTrial } = useWorkspaceSubscription();
   const { modalClosed } = useActions();
   const [loadingCustomerPortal, createCustomerPortal] = useCreateCustomerPortal(
     {
-      team_id: isTeamAdmin ? activeTeamInfo?.id : undefined,
+      team_id: activeTeamInfo?.id,
     }
   );
   // TO DO: if we need this info more often, extract
@@ -138,13 +136,8 @@ export const SubscriptionCancellationModal: React.FC = () => {
         </Button>
         <Button
           css={{ padding: '0 32px' }}
-          disabled={!isTeamAdmin}
           loading={loadingCustomerPortal}
           onClick={() => {
-            if (!isTeamAdmin) {
-              return;
-            }
-
             // TO DO: confirm event name.
             track(
               'Team Settings - Open stripe portal from subscription cancellation modal',
