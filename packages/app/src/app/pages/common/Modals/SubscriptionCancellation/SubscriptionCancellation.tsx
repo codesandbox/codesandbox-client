@@ -1,19 +1,66 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Button, IconButton, Stack, Text } from '@codesandbox/components';
+import {
+  Badge,
+  Button,
+  IconButton,
+  Stack,
+  Text,
+} from '@codesandbox/components';
 import { TEAM_FREE_LIMITS } from 'app/constants';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useActions, useAppState } from 'app/overmind';
 import { pluralize } from 'app/utils/pluralize';
 import React from 'react';
-import styled from 'styled-components';
 
-const StyledListItem = styled('li')`
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 1;
-  color: #ef7a7a;
-`;
+type FeatureComp = {
+  key: string;
+  free: string;
+  pro: string;
+  pill?: string;
+};
+const FEATURES: FeatureComp[] = [
+  {
+    key: 'editors',
+    pro: 'Up to 20 editors',
+    free: 'Limited to 5 editors',
+  },
+  {
+    key: 'sandboxes',
+    pro: 'Unlimited private sandboxes',
+    free: 'Limited to 20 public sandboxes',
+  },
+  {
+    key: 'repos',
+    pro: 'Unlimited private repositories',
+    free: 'Limited to 3 public repositories',
+  },
+  {
+    key: 'npm',
+    pro: 'Private NPM packages',
+    free: 'Limited to public NPM packages',
+  },
+  {
+    key: 'ram',
+    pro: '6GB RAM',
+    free: '4GB RAM',
+    pill: '-33% capacity',
+  },
+  {
+    key: 'cpu',
+    pro: '4 vCPUs',
+    free: '2 vCPUs',
+    pill: '-2 vCPUs',
+  },
+  {
+    key: 'disk',
+    pro: '12GB Disk',
+    free: '4GB Disk',
+    pill: '-67% storage',
+  },
+];
+
+const FEATURES_WITH_DYNAMIC_PILLS = ['editors', 'sandboxes', 'repos'];
 
 export const SubscriptionCancellationModal: React.FC = () => {
   const { activeTeamInfo } = useAppState();
@@ -25,6 +72,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
       team_id: activeTeamInfo?.id,
     }
   );
+
   // TO DO: if we need this info more often, extract
   // to a custom useWorkspaceUsage similar to
   // useWorkspaceLimits.
@@ -33,51 +81,35 @@ export const SubscriptionCancellationModal: React.FC = () => {
   const getEditorsLabel = () => {
     if (teamUsage && teamUsage.editorsQuantity > TEAM_FREE_LIMITS.editors) {
       const lostSeats = teamUsage.editorsQuantity - TEAM_FREE_LIMITS.editors;
-      return `-${lostSeats} editor seat${lostSeats === 1 ? '' : 's'}`;
+      return `-${lostSeats} editor ${pluralize({
+        word: 'seat',
+        count: lostSeats,
+      })}`;
     }
 
-    return `Limited to ${TEAM_FREE_LIMITS.editors} editors seats`;
+    return undefined;
   };
 
-  // Private sandboxes are a Pro feature only. If the
-  // team downgrades, these will become restricted.
-  // Public sandboxes do not get restricted on
-  // downgrading but are limited to a certain amount
-  // if the team does not have an active subscription.
   const getSandboxesLabel = () => {
     const restrictedSandboxesCount =
       (teamUsage?.privateProjectsQuantity ?? 0) -
       TEAM_FREE_LIMITS.private_repos;
     if (restrictedSandboxesCount > 0) {
-      return `${restrictedSandboxesCount} ${pluralize({
-        word: 'sandbox',
-        count: restrictedSandboxesCount,
-        suffixPlural: 'es',
-      })} will be restricted`;
+      return `${restrictedSandboxesCount} restricted`;
     }
 
-    return `Limited to ${TEAM_FREE_LIMITS.public_sandboxes} public sandboxes`;
+    return undefined;
   };
 
-  // Private repositories are a Pro feature only. If the
-  // team downgrades, these will become restricted.
-  // Public repositories do not get restricted on
-  // downgrading but are limited to a certain amount
-  // if the team does not have an active subscription.
-  const getRepositoriesLabel = () => {
+  const getReposLabel = () => {
     const restrictedRepositoriesCount =
       (teamUsage?.privateProjectsQuantity ?? 0) -
       TEAM_FREE_LIMITS.private_repos;
     if (restrictedRepositoriesCount > 0) {
-      return `${restrictedRepositoriesCount} ${pluralize({
-        word: 'repositor',
-        count: restrictedRepositoriesCount,
-        suffixPlural: 'ies',
-        suffixSingular: 'y',
-      })} will be restricted`;
+      return `${restrictedRepositoriesCount} restricted`;
     }
 
-    return `Limited to ${TEAM_FREE_LIMITS.public_repos} public repositories`;
+    return undefined;
   };
 
   return (
@@ -89,7 +121,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
       }}
       direction="vertical"
     >
-      <Stack>
+      <Stack justify="space-between">
         <Text
           as="h1"
           css={{
@@ -100,7 +132,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
           size={19}
           weight="normal"
         >
-          You&apos;ll lose access to all Pro features if you decide to cancel
+          You&apos;ll lose access to all Pro features
         </Text>
         <IconButton name="cross" title="Close" onClick={modalClosed} />
       </Stack>
@@ -114,14 +146,34 @@ export const SubscriptionCancellationModal: React.FC = () => {
         direction="vertical"
         gap={6}
       >
-        <StyledListItem>{getEditorsLabel()}</StyledListItem>
-        <StyledListItem>{getSandboxesLabel()}</StyledListItem>
-        <StyledListItem>{getRepositoriesLabel()}</StyledListItem>
-        <StyledListItem>Only public NPM packages</StyledListItem>
-        <StyledListItem>Only basic privacy settings</StyledListItem>
-        <StyledListItem>-67% GB RAM</StyledListItem>
-        <StyledListItem>-33% Disk space</StyledListItem>
-        <StyledListItem>-2 vCPUs</StyledListItem>
+        {FEATURES.map(f => {
+          let badge = f.pill;
+          if (FEATURES_WITH_DYNAMIC_PILLS.includes(f.key)) {
+            badge = {
+              editors: getEditorsLabel(),
+              sandboxes: getSandboxesLabel(),
+              repos: getReposLabel(),
+            }[f.key];
+          }
+
+          return (
+            <Stack direction="vertical" key={f.key} gap={1}>
+              <Text
+                css={{
+                  textDecoration: 'line-through',
+                  color: '#999999',
+                }}
+                size={13}
+              >
+                {f.pro}
+              </Text>
+              <Stack gap={3}>
+                <Text size={13}>{f.free}</Text>
+                {badge ? <Badge variant="warning">{badge}</Badge> : null}
+              </Stack>
+            </Stack>
+          );
+        })}
       </Stack>
       <Stack
         css={{
