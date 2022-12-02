@@ -176,7 +176,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
               >
                 {f.pro}
               </Text>
-              <Stack gap={3}>
+              <Stack align="baseline" gap={3}>
                 <Text size={13}>{f.free}</Text>
                 {badge ? <Badge variant="warning">{badge}</Badge> : null}
               </Stack>
@@ -194,7 +194,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
         gap={6}
       >
         <Button onClick={handleCloseModal} variant="link" autoWidth>
-          {hasActiveTeamTrial ? 'Continue trial' : 'Keep subscription'}
+          {hasActiveTeamTrial ? 'Continue trial' : 'Continue subscription'}
         </Button>
         {isPaddle ? (
           <Button
@@ -227,7 +227,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
             }}
             autoWidth
           >
-            Ok
+            OK
           </Button>
         )}
       </Stack>
