@@ -227,7 +227,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
             }}
             autoWidth
           >
-            I understand
+            Ok
           </Button>
         )}
       </Stack>
