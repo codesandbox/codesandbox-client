@@ -10,7 +10,7 @@ import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { Feature, FREE_FEATURES, PRO_FEATURES } from 'app/constants';
+import { Feature, TEAM_FREE_FEATURES, TEAM_PRO_FEATURES } from 'app/constants';
 
 const pricingLabel = (
   price: { currency: string; unitAmount: number } | undefined
@@ -106,13 +106,13 @@ export const TeamSubscription: React.FC = () => {
         >
           <FeatureList
             title="Free Plan"
-            features={FREE_FEATURES}
+            features={TEAM_FREE_FEATURES}
             background="#1c1c1c"
             textColor="#c2c2c2"
           />
           <FeatureList
             title="Team Pro"
-            features={PRO_FEATURES}
+            features={TEAM_PRO_FEATURES}
             background="white"
             textColor="#0E0E0E"
           />

@@ -60,7 +60,7 @@ export const PERSONAL_FEATURES_WITH_PILLS: Feature[] = [
   { key: 'vm_disk', label: '12GB Disk', pill: '3x storage' },
 ];
 
-export const FREE_FEATURES: Feature[] = [
+export const TEAM_FREE_FEATURES: Feature[] = [
   { key: 'editors', label: 'Up to 5 editors' },
   {
     key: 'limit_sandboxes',
@@ -76,7 +76,7 @@ export const FREE_FEATURES: Feature[] = [
   { key: 'vm_disk', label: '4GB Disk' },
 ];
 
-export const PRO_FEATURES: Feature[] = [
+export const TEAM_PRO_FEATURES: Feature[] = [
   { key: 'editors', label: 'Up to 20 editors' },
   {
     key: 'limit_sandboxes',
@@ -92,7 +92,7 @@ export const PRO_FEATURES: Feature[] = [
   { key: 'vm_disk', label: '12GB Disk' },
 ];
 
-export const PRO_FEATURES_WITH_PILLS: Feature[] = [
+export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
   { key: 'editors', label: 'Up to 20 editors' },
   {
     key: 'limit_sandboxes',

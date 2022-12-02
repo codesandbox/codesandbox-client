@@ -15,10 +15,10 @@ import { sortBy } from 'lodash-es';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { useLocation } from 'react-router-dom';
 import {
-  FREE_FEATURES,
   ORG_FEATURES,
-  PRO_FEATURES,
-  PRO_FEATURES_WITH_PILLS,
+  TEAM_FREE_FEATURES,
+  TEAM_PRO_FEATURES,
+  TEAM_PRO_FEATURES_WITH_PILLS,
   PERSONAL_FREE_FEATURES,
   PERSONAL_FEATURES,
   PERSONAL_FEATURES_WITH_PILLS,
@@ -206,7 +206,7 @@ export const ProUpgrade = () => {
             <SubscriptionCard
               title="Free plan"
               features={
-                isPersonalSpace ? PERSONAL_FREE_FEATURES : FREE_FEATURES
+                isPersonalSpace ? PERSONAL_FREE_FEATURES : TEAM_FREE_FEATURES
               }
             >
               <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
@@ -242,7 +242,9 @@ export const ProUpgrade = () => {
               <>
                 <SubscriptionCard
                   title="Team Pro"
-                  features={isPro ? PRO_FEATURES : PRO_FEATURES_WITH_PILLS}
+                  features={
+                    isPro ? TEAM_PRO_FEATURES : TEAM_PRO_FEATURES_WITH_PILLS
+                  }
                   cta={teamProCta}
                   isHighlighted={!hasCustomSubscription}
                 >
