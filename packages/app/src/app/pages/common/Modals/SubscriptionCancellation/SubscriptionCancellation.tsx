@@ -73,6 +73,15 @@ export const SubscriptionCancellationModal: React.FC = () => {
     }
   );
 
+  const handleCloseModal = () => {
+    track('Team Settings: close cancel subscription modal', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+
+    modalClosed();
+  };
+
   // TO DO: if we need this info more often, extract
   // to a custom useWorkspaceUsage similar to
   // useWorkspaceLimits.
@@ -134,7 +143,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
         >
           You&apos;ll lose access to all Pro features
         </Text>
-        <IconButton name="cross" title="Close" onClick={modalClosed} />
+        <IconButton name="cross" title="Close" onClick={handleCloseModal} />
       </Stack>
       <Stack
         as="ul"
@@ -184,7 +193,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
         }}
         gap={6}
       >
-        <Button onClick={modalClosed} variant="link" autoWidth>
+        <Button onClick={handleCloseModal} variant="link" autoWidth>
           {hasActiveTeamTrial ? 'Continue trial' : 'Keep subscription'}
         </Button>
         {isPaddle ? (
