@@ -983,7 +983,10 @@ export const getAlwaysOnSandboxes = async ({ state, effects }: Context) => {
   }
 };
 
-export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
+export const getPage = async (
+  { actions, state }: Context,
+  page: sandboxesTypes
+) => {
   const { dashboard } = actions;
 
   switch (page) {
@@ -1001,7 +1004,12 @@ export const getPage = async ({ actions }: Context, page: sandboxesTypes) => {
       break;
     case sandboxesTypes.SEARCH:
       dashboard.getSearchSandboxes();
-      dashboard.getRepositoriesByTeam({ bypassLoading: true });
+      if (state.activeTeam) {
+        dashboard.getRepositoriesByTeam({
+          teamId: state.activeTeam,
+          bypassLoading: true,
+        });
+      }
       break;
     case sandboxesTypes.ALWAYS_ON:
       dashboard.getAlwaysOnSandboxes();
@@ -1919,27 +1927,28 @@ export const getContributionBranches = async ({ state, effects }: Context) => {
 };
 
 type RepositoriesActionOptions = {
-  bypassLoading: boolean;
+  teamId: string;
+  bypassLoading?: boolean;
 };
 export const getRepositoriesByTeam = async (
   { state, effects }: Context,
-  options?: RepositoriesActionOptions
+  { teamId, bypassLoading = false }: RepositoriesActionOptions
 ) => {
-  const { activeTeam, dashboard } = state;
-  const { bypassLoading = false } = options ?? {};
+  const { dashboard } = state;
+  const _repositories = dashboard.repositories;
 
   // If we should show the loading state, we need to make two
   // queries (synced and unsynced) since the waiting time to
   // get up-to-date data from GitHub is too long.
   if (!bypassLoading) {
     try {
-      dashboard.repositories = null;
+      dashboard.repositories = { ..._repositories, [teamId]: null };
 
       // First fetch data without syncing with GitHub
       // to decrease waiting time.
       const unsyncedRepositoriesData = await effects.gql.queries.getRepositoriesByTeam(
         {
-          teamId: activeTeam,
+          teamId,
           syncData: false,
         }
       );
@@ -1948,7 +1957,10 @@ export const getRepositoriesByTeam = async (
         return;
       }
 
-      dashboard.repositories = unsyncedRepositories.sort(sortByNameAscending);
+      dashboard.repositories = {
+        ..._repositories,
+        [teamId]: unsyncedRepositories.sort(sortByNameAscending),
+      };
     } catch (error) {
       effects.notificationToast.error(
         'There was a problem getting your repositories'
@@ -1961,7 +1973,7 @@ export const getRepositoriesByTeam = async (
   try {
     const syncedRepositoriesData = await effects.gql.queries.getRepositoriesByTeam(
       {
-        teamId: activeTeam,
+        teamId,
         syncData: true,
       }
     );
@@ -1970,7 +1982,10 @@ export const getRepositoriesByTeam = async (
       return;
     }
 
-    dashboard.repositories = syncedRepositories.sort(sortByNameAscending);
+    dashboard.repositories = {
+      ..._repositories,
+      [teamId]: syncedRepositories.sort(sortByNameAscending),
+    };
   } catch (error) {
     if (!bypassLoading && error?.response?.status === 504) {
       // Fail silently since this is a secondary request.
@@ -1989,9 +2004,14 @@ export const getRepositoryByDetails = async (
   { state, effects }: Context,
   { owner, name }: { owner: string; name: string }
 ) => {
-  const { dashboard } = state;
+  const { activeTeam, dashboard } = state;
+  if (!activeTeam) {
+    return;
+  }
+
   try {
-    dashboard.repositories = null;
+    const _repositories = dashboard.repositories ?? {};
+    dashboard.repositories = { ..._repositories, [activeTeam]: null };
 
     const repositoryData = await effects.gql.queries.getRepositoryByDetails({
       owner,
@@ -2002,7 +2022,7 @@ export const getRepositoryByDetails = async (
       return;
     }
 
-    dashboard.repositories = [repository];
+    dashboard.repositories = { ..._repositories, [activeTeam]: [repository] };
   } catch (error) {
     effects.notificationToast.error(
       `There was a problem getting repository ${name} from ${owner}`
@@ -2063,13 +2083,16 @@ type BranchToRemove = {
   page: PageTypes;
 };
 export const removeBranchFromRepository = async (
-  context: Context,
+  { actions, effects, state }: Context,
   branch: BranchToRemove
 ) => {
-  const { actions, effects, state } = context;
+  const { activeTeam, dashboard } = state;
+  if (!activeTeam) {
+    return;
+  }
   const { id, owner, repoName, name, page } = branch;
 
-  state.dashboard.removingBranch = { id };
+  dashboard.removingBranch = { id };
 
   try {
     await effects.api.removeBranchFromRepository(owner, repoName, name);
@@ -2077,7 +2100,7 @@ export const removeBranchFromRepository = async (
     // Manually remove the data from the state based on the
     // current page. Then sync in the background.
     if (page === 'repositories') {
-      const repository = state.dashboard.repositories?.find(
+      const repository = dashboard.repositories?.[activeTeam]?.find(
         r => r.repository.owner === owner && r.repository.name === repoName
       );
 
@@ -2085,20 +2108,22 @@ export const removeBranchFromRepository = async (
         repository.branches = repository.branches.filter(b => b.id !== id);
       }
 
-      actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
+      actions.dashboard.getRepositoriesByTeam({
+        teamId: activeTeam,
+        bypassLoading: true,
+      });
     }
 
     if (page === 'my-contributions') {
-      state.dashboard.contributions =
-        state.dashboard.contributions?.filter(b => b.id !== id) ?? [];
+      dashboard.contributions =
+        dashboard.contributions?.filter(b => b.id !== id) ?? [];
 
       actions.dashboard.getContributionBranches();
     }
 
     if (page === 'recent') {
-      state.dashboard.sandboxes.RECENT_BRANCHES =
-        state.dashboard.sandboxes.RECENT_BRANCHES?.filter(b => b.id !== id) ??
-        [];
+      dashboard.sandboxes.RECENT_BRANCHES =
+        dashboard.sandboxes.RECENT_BRANCHES?.filter(b => b.id !== id) ?? [];
 
       actions.dashboard.getStartPageSandboxes();
     }
@@ -2107,7 +2132,7 @@ export const removeBranchFromRepository = async (
       `Failed to remove branch ${name} from ${owner}/${repoName}`
     );
   } finally {
-    state.dashboard.removingBranch = null;
+    dashboard.removingBranch = null;
   }
 };
 
@@ -2118,21 +2143,25 @@ type ProjectToRemove = {
   page: PageTypes;
 };
 export const removeRepositoryFromTeam = async (
-  context: Context,
+  { actions, state, effects }: Context,
   project: ProjectToRemove
 ) => {
-  const { actions, state, effects } = context;
+  const { activeTeam, dashboard } = state;
+  if (!activeTeam) {
+    return;
+  }
+
   const { owner, name, teamId, page } = project;
 
-  state.dashboard.removingRepository = { owner, name };
+  dashboard.removingRepository = { owner, name };
 
   try {
     await effects.api.removeRepositoryFromTeam(owner, name, teamId);
 
     if (page === 'recent') {
       // First, manually remove the data from the state.
-      state.dashboard.sandboxes.RECENT_BRANCHES =
-        state.dashboard.sandboxes.RECENT_BRANCHES?.filter(b => {
+      dashboard.sandboxes.RECENT_BRANCHES =
+        dashboard.sandboxes.RECENT_BRANCHES?.filter(b => {
           const branchRepo = b.project.repository;
 
           return branchRepo.owner === owner && branchRepo.name === name;
@@ -2142,18 +2171,28 @@ export const removeRepositoryFromTeam = async (
       actions.dashboard.getStartPageSandboxes();
     } else {
       // First, manually remove the data from the state.
-      state.dashboard.repositories =
-        state.dashboard.repositories?.filter(
+      const _repositories = dashboard.repositories ?? {};
+      const filteredRepositoriesByTeam =
+        _repositories[activeTeam]?.filter(
           r => r.repository.owner !== owner || r.repository.name !== name
         ) ?? [];
+
+      dashboard.repositories = {
+        ..._repositories,
+        [activeTeam]: filteredRepositoriesByTeam,
+      };
+
       // Then sync in the background.
-      actions.dashboard.getRepositoriesByTeam({ bypassLoading: true });
+      actions.dashboard.getRepositoriesByTeam({
+        teamId: activeTeam,
+        bypassLoading: true,
+      });
     }
   } catch (error) {
     effects.notificationToast.error(
       `Failed to remove project ${owner}/${name}`
     );
   } finally {
-    state.dashboard.removingRepository = null;
+    dashboard.removingRepository = null;
   }
 };
