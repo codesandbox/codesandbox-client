@@ -1928,11 +1928,11 @@ export const getRepositoriesByTeam = async (
   const { activeTeam, dashboard } = state;
   const { bypassLoading = false } = options ?? {};
 
-  // If we should bypass the loading state, we don't need to make two
-  // queries (synced and unsynced) since the loading time won't be
-  // perceived by the user.
-  try {
-    if (!bypassLoading) {
+  // If we should show the loading state, we need to make two
+  // queries (synced and unsynced) since the waiting time to
+  // get up-to-date data from GitHub is too long.
+  if (!bypassLoading) {
+    try {
       dashboard.repositories = null;
 
       // First fetch data without syncing with GitHub
@@ -1949,10 +1949,16 @@ export const getRepositoriesByTeam = async (
       }
 
       dashboard.repositories = unsyncedRepositories.sort(sortByNameAscending);
+    } catch (error) {
+      effects.notificationToast.error(
+        'There was a problem getting your repositories'
+      );
     }
+  }
 
-    // Then fetch data synced with GitHub to make sure
-    // what we show is up-to-date.
+  // Fetch data synced with GitHub to make sure
+  // what we show is up-to-date.
+  try {
     const syncedRepositoriesData = await effects.gql.queries.getRepositoriesByTeam(
       {
         teamId: activeTeam,
@@ -1966,8 +1972,13 @@ export const getRepositoriesByTeam = async (
 
     dashboard.repositories = syncedRepositories.sort(sortByNameAscending);
   } catch (error) {
+    if (!bypassLoading && error?.response?.status === 504) {
+      // Fail silently since this is a secondary request.
+      return;
+    }
+
     effects.notificationToast.error(
-      'There was a problem getting your repositories'
+      'There was a problem syncing your repositories with GitHub, data shown might not be up to date'
     );
   }
 };
