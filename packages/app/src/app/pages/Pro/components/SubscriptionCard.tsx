@@ -5,7 +5,7 @@ import { Feature } from 'app/constants';
 import { Text, Stack, Element, Badge } from '@codesandbox/components';
 
 const StyledCard = styled.div<{ isHighlighted?: boolean }>`
-  min-width: 222px;
+  width: 320px;
   flex-grow: 0;
   padding: 24px;
   font-size: 13px;
@@ -20,10 +20,6 @@ const StyledCard = styled.div<{ isHighlighted?: boolean }>`
     background-color: #252525;
     color: #999999;
   `}
-
-  @media (min-width: 887px) {
-    width: 320px;
-  }
 `;
 
 const subLinkBackgrounds = {

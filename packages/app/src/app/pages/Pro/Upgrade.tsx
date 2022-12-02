@@ -192,10 +192,11 @@ export const ProUpgrade = () => {
             gap={2}
             justify="center"
             css={{
+              // The only way to change the stack styles responsively
+              // with CSS rules only.
               '@media (max-width: 888px)': {
-                // The only way to change the stack styles responsively
-                // with CSS rules only.
-                display: 'block',
+                flexDirection: 'column',
+                alignItems: 'center',
                 '& > *:not(:last-child)': {
                   marginRight: 0,
                   marginBottom: '8px',
