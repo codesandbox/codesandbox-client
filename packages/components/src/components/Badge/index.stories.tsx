@@ -15,5 +15,8 @@ export const Examples = () => (
     <Badge icon="bell" variant="trial">
       Free with icon
     </Badge>
+    <Badge icon="warning" variant="warning">
+      Warning
+    </Badge>
   </Stack>
 );
