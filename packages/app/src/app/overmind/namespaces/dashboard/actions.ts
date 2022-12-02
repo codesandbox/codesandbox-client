@@ -1972,7 +1972,7 @@ export const getRepositoriesByTeam = async (
     }
 
     effects.notificationToast.error(
-      'There was a problem getting your repositories'
+      'There was a problem syncing your repositories with GitHub, data show might not be up to date'
     );
   }
 };
