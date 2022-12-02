@@ -70,8 +70,8 @@ export const Stripe: React.FC = () => {
         onClick={() => {
           track(
             hasActiveTeamTrial
-              ? 'Team Settings - Cancel trial'
-              : 'Team Settings: Cancel subscription',
+              ? 'Team Settings: open cancel trial modal'
+              : 'Team Settings: open cancel subscription modal',
             {
               codesandbox: 'V1',
               event_source: 'UI',

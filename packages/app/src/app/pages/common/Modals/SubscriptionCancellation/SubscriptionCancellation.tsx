@@ -193,8 +193,7 @@ export const SubscriptionCancellationModal: React.FC = () => {
             loading={paddleLoading}
             onClick={() => {
               setPaddeLoading(true);
-              // TO DO: confirm event name.
-              track('Team Settings - Cancel paddle subscription', {
+              track('Team Settings - confirm paddle cancel subscription', {
                 codesandbox: 'V1',
                 event_source: 'UI',
               });
@@ -210,14 +209,10 @@ export const SubscriptionCancellationModal: React.FC = () => {
             css={{ padding: '0 32px' }}
             loading={loadingCustomerPortal}
             onClick={() => {
-              // TO DO: confirm event name.
-              track(
-                'Team Settings - Open stripe portal from subscription cancellation modal',
-                {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                }
-              );
+              track('Team Settings: confirm cancellation from modal', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
 
               createCustomerPortal();
             }}

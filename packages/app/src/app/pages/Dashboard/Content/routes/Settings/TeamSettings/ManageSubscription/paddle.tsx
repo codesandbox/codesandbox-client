@@ -40,7 +40,14 @@ export const Paddle = () => {
             padding: 0,
             fontSize: 3,
           })}
-          onClick={() => actions.pro.reactivateWorkspaceSubscription()}
+          onClick={() => {
+            track('Team Settings - Renew subscription', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+
+            actions.pro.reactivateWorkspaceSubscription();
+          }}
         >
           Upgrade to pro
         </Button>
@@ -48,23 +55,19 @@ export const Paddle = () => {
     );
   }
 
+  const nextInvoiceDate = format(new Date(subscription.nextBillDate), 'PP');
+  const nextInvoiceValue = (
+    (subscription.quantity * subscription.unitPrice) /
+    100
+  ).toFixed(2);
   return (
     <Stack direction="vertical" gap={2}>
       <Tooltip
-        label={`Next invoice of ${subscription.currency} ${(
-          (subscription.quantity * subscription.unitPrice) /
-          100
-        ).toFixed(2)} (excl. tax) scheduled for ${format(
-          new Date(subscription.nextBillDate),
-          'PP'
-        )}`}
+        label={`Next invoice of ${subscription.currency} ${nextInvoiceValue} (excl. tax) scheduled for ${nextInvoiceDate}`}
       >
         <Stack align="center" gap={1}>
           <Text size={3} variant="muted">
-            Next invoice: {subscription.currency}{' '}
-            {((subscription.quantity * subscription.unitPrice) / 100).toFixed(
-              2
-            )}{' '}
+            Next invoice: {subscription.currency} {nextInvoiceValue}{' '}
           </Text>
           <Text variant="muted">
             <Icon name="info" size={12} />
@@ -76,6 +79,12 @@ export const Paddle = () => {
         variant="active"
         href={subscription.updateBillingUrl}
         css={css({ fontWeight: 'medium' })}
+        onClick={() =>
+          track('Team Settings - Update payment details', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          })
+        }
       >
         Update payment information
       </Link>
@@ -84,6 +93,12 @@ export const Paddle = () => {
         variant="active"
         href="/pro"
         css={css({ fontWeight: 'medium' })}
+        onClick={() =>
+          track('Team Settings - Update billing interval', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          })
+        }
       >
         Change billing interval
       </Link>
@@ -97,7 +112,7 @@ export const Paddle = () => {
           padding: 0,
         })}
         onClick={() => {
-          track('Team Settings: Cancel subscription', {
+          track('Team Settings: open cancel subscription modal', {
             codesandbox: 'V1',
             event_source: 'UI',
           });
