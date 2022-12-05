@@ -15,7 +15,9 @@ const VercelSignIn = () => {
   useEffect(() => {
     if (document.location.search.match(/\?code=(.*)/)) {
       // eslint-disable-next-line
-      const [_, code] = document.location.search.match(/\?code=(.*)/);
+      const queryParams = new URLSearchParams(document.location.search);
+      const code = queryParams.get('code');
+
       if (window.opener) {
         if (window.opener.location.origin === window.location.origin) {
           window.opener.postMessage(
