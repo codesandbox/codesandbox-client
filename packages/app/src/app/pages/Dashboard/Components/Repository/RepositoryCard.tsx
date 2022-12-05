@@ -17,7 +17,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
   selected,
   onContextMenu,
   isBeingRemoved,
-  isViewOnly,
+  restricted,
   ...props
 }) => {
   return (
@@ -57,9 +57,9 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
       onContextMenu={onContextMenu}
       {...props}
     >
-      {isViewOnly ? (
+      {restricted ? (
         <Element css={{ position: 'absolute', top: 20, left: 20 }}>
-          <Badge variant="trial">View only</Badge>
+          <Badge variant="trial">Restricted</Badge>
         </Element>
       ) : null}
       <IconButton
@@ -82,7 +82,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
         <Stack align="center" direction="vertical" gap={2}>
           <Text
             css={css({
-              color: isViewOnly ? '#999999' : '#E5E5E5',
+              color: restricted ? '#999999' : '#E5E5E5',
               textAlign: 'center',
               minHeight: 42,
               paddingX: 6,

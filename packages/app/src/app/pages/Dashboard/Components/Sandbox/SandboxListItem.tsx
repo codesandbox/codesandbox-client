@@ -37,7 +37,7 @@ export const SandboxListItem = ({
   onInputKeyDown,
   onSubmit,
   onInputBlur,
-  isViewOnly,
+  restricted,
   // drag preview
   thumbnailRef,
   opacity,
@@ -134,7 +134,7 @@ export const SandboxListItem = ({
                       size={3}
                       weight="medium"
                       maxWidth="100%"
-                      css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+                      css={{ color: restricted ? '#999999' : '#E5E5E5' }}
                     >
                       {sandboxTitle}
                     </Text>
@@ -146,9 +146,9 @@ export const SandboxListItem = ({
         </Column>
         {/* Column span 0 on mobile because the Grid is bugged */}
         <Column span={[0, 2, 2]}>
-          {isViewOnly ? (
+          {restricted ? (
             <Stack align="center">
-              <Badge variant="trial">View only</Badge>
+              <Badge variant="trial">Restricted</Badge>
             </Stack>
           ) : null}
         </Column>

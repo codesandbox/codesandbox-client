@@ -40,7 +40,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
   const folderUrl = getFolderUrl(item, activeTeam);
 
   const label = isTemplate ? 'template' : 'sandbox';
-  const isViewOnly = isFree && sandbox.privacy !== 0;
+  const restricted = isFree && sandbox.privacy !== 0;
 
   // TODO(@CompuIves): remove the `item.sandbox.teamId === null` check, once the server is not
   // responding with teamId == null for personal templates anymore.
@@ -169,7 +169,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
               openInNewWindow: true,
             });
           }}
-          disabled={isViewOnly}
+          disabled={restricted}
         >
           Fork sandbox
         </MenuItem>
@@ -234,7 +234,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 1,
                 })
               }
-              disabled={isViewOnly}
+              disabled={restricted}
             >
               Make {label} unlisted
             </MenuItem>
@@ -247,7 +247,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                   privacy: 2,
                 })
               }
-              disabled={isViewOnly}
+              disabled={restricted}
             >
               Make {label} private
             </MenuItem>
@@ -257,7 +257,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
       {hasAccess && activeWorkspaceAuthorization !== 'READ' && (
         <>
           <Menu.Divider />
-          <MenuItem onSelect={() => setRenaming(true)} disabled={isViewOnly}>
+          <MenuItem onSelect={() => setRenaming(true)} disabled={restricted}>
             Rename {label}
           </MenuItem>
         </>
@@ -273,7 +273,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 isFrozen: false,
               });
             }}
-            disabled={isViewOnly}
+            disabled={restricted}
           >
             Unfreeze {label}
           </MenuItem>
@@ -285,7 +285,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 isFrozen: true,
               });
             }}
-            disabled={isViewOnly}
+            disabled={restricted}
           >
             Freeze {label}
           </MenuItem>
@@ -299,7 +299,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 templateIds: [sandbox.id],
               });
             }}
-            disabled={isViewOnly}
+            disabled={restricted}
           >
             Convert to sandbox
           </MenuItem>
@@ -310,7 +310,7 @@ export const SandboxMenu: React.FC<SandboxMenuProps> = ({
                 sandboxIds: [sandbox.id],
               });
             }}
-            disabled={isViewOnly}
+            disabled={restricted}
           >
             Make sandbox a template
           </MenuItem>

@@ -46,7 +46,7 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
   const { isFree } = useWorkspaceSubscription();
 
   const isPrivate = branch?.project?.repository?.private;
-  const isViewOnly = isFree && isPrivate && page === 'recent';
+  const restricted = isFree && isPrivate && page === 'recent';
 
   const props = {
     branch,
@@ -56,7 +56,7 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
       removingBranch?.id === branch.id || isParentRepositoryBeingRemoved,
     onContextMenu: handleContextMenu,
     onClick: handleClick,
-    isViewOnly,
+    restricted,
     /**
      * If we ever need selection for branch entries, `data-selection-id` must be set
      * 'data-selection-id': branch.id,
