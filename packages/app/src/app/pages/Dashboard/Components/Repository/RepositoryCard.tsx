@@ -73,7 +73,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               }}
             />
           </Stack>
-          <Text color={isViewOnly ? '#999' : '#e5e5e5'} size={13} weight={500}>
+          <Text color={isViewOnly ? '#999' : '#e5e5e5'} size={13} weight="500">
             {repository.name}
           </Text>
         </Stack>
