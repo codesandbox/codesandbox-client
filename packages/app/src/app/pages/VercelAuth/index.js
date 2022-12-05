@@ -13,10 +13,10 @@ const VercelSignIn = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (document.location.search.match(/\?code=(.*)/)) {
-      const queryParams = new URLSearchParams(document.location.search);
-      const code = queryParams.get('code');
+    const queryParams = new URLSearchParams(document.location.search);
+    const code = queryParams.get('code');
 
+    if (code) {
       if (window.opener) {
         if (window.opener.location.origin === window.location.origin) {
           window.opener.postMessage(
