@@ -56,9 +56,7 @@ export const ManageSubscription = () => {
     }
 
     if (isStripe) {
-      return (
-        <Stripe hasActiveTrial={hasActiveTeamTrial && !subscription.cancelAt} />
-      );
+      return <Stripe />;
     }
 
     return null;

@@ -637,3 +637,7 @@ export const getSandboxesLimits = async ({ effects, state }: Context) => {
 
   state.sandboxesLimits = limits;
 };
+
+export const openCancelSubscriptionModal = ({ state }: Context) => {
+  state.currentModal = 'subscriptionCancellation';
+};
