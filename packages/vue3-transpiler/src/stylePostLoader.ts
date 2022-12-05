@@ -11,13 +11,12 @@ const StylePostLoader = function (
 ) {
   const inMap = undefined;
   const query = qs.parse(loaderContext.resourceQuery.slice(1));
-  const { code, map, errors } = compileStyle({
+  const { code, errors } = compileStyle({
     source: source as string,
     filename: loaderContext.path,
     id: `data-v-${query.id}`,
     map: inMap,
     scoped: !!query.scoped,
-    vars: !!query.vars,
     trim: true,
   });
 

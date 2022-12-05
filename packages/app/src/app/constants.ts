@@ -14,3 +14,11 @@ export const SUBSCRIPTION_DOCS_URLS = {
 // we should prompt CTAs to enable
 // custom pricing.
 export const MAX_PRO_EDITORS = 20;
+
+export const TEAM_FREE_LIMITS = {
+  editors: 5,
+  public_sandboxes: 20,
+  private_sandboxes: 0,
+  public_repos: 3,
+  private_repos: 0,
+};

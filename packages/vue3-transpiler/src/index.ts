@@ -90,7 +90,7 @@ export default function loader(
   // module id for scoped CSS & hot-reload
   const rawShortFilePath = path
     .relative(rootContext || process.cwd(), resourcePath)
-    .replace(/^(\.\.[\/\\])+/, '');
+    .replace(/^(\.\.[/\\])+/, '');
   const shortFilePath = rawShortFilePath.replace(/\\/g, '/') + resourceQuery;
   const id = hash(isProduction ? shortFilePath + '\n' + source : shortFilePath);
 
@@ -107,8 +107,10 @@ export default function loader(
   let scriptImport = `const script = {}`;
   if (descriptor.script || descriptor.scriptSetup) {
     try {
+      // eslint-disable-next-line no-multi-assign
       script = (descriptor as any).scriptCompiled = compileScript(descriptor, {
         babelParserPlugins: options.babelParserPlugins,
+        id,
       });
     } catch (e) {
       loaderContext.emitError(e);

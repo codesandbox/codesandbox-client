@@ -9,7 +9,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
-import { MaxPublicReposFreeTeam, PrivateRepoFreeTeam } from './stripes';
+import { MaxReposFreeTeam, PrivateRepoFreeTeam } from './stripes';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -49,7 +49,10 @@ export const RepositoriesPage = () => {
   }, [path]);
 
   const { isFree } = useWorkspaceSubscription();
-  const { hasMaxPublicRepositories } = useWorkspaceLimits();
+  const {
+    hasMaxPublicRepositories,
+    hasMaxPrivateRepositories,
+  } = useWorkspaceLimits();
 
   const pageType: PageTypes = 'repositories';
   let selectedRepo:
@@ -103,7 +106,7 @@ export const RepositoriesPage = () => {
     if (viewMode === 'grid' && repoItems.length > 0) {
       repoItems.unshift({
         type: 'import-repository',
-        disabled: isFree && hasMaxPublicRepositories,
+        disabled: hasMaxPublicRepositories,
       });
     }
 
@@ -111,8 +114,7 @@ export const RepositoriesPage = () => {
   };
 
   const itemsToShow = getItemsToShow();
-  const readOnly =
-    isFree && (selectedRepo?.private || hasMaxPublicRepositories);
+  const isReadOnlyRepo = isFree && selectedRepo?.private;
 
   return (
     <SelectionProvider
@@ -130,17 +132,21 @@ export const RepositoriesPage = () => {
         showBetaBadge
         nestedPageType={pageType}
         selectedRepo={selectedRepo}
-        readOnly={readOnly}
+        readOnly={isReadOnlyRepo}
       />
 
-      {readOnly && (
+      {isReadOnlyRepo && (
         <Element paddingX={4} paddingY={2}>
           {selectedRepo?.private && <PrivateRepoFreeTeam />}
-          {hasMaxPublicRepositories && !selectedRepo && (
-            <MaxPublicReposFreeTeam />
-          )}
         </Element>
       )}
+
+      {!selectedRepo &&
+      (hasMaxPublicRepositories || hasMaxPrivateRepositories) ? (
+        <Element paddingX={4} paddingY={2}>
+          <MaxReposFreeTeam />
+        </Element>
+      ) : null}
 
       <VariableGrid
         page={pageType}
