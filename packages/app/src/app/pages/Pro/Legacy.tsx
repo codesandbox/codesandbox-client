@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Switch, Route } from 'react-router-dom';
-import { ThemeProvider, Stack } from '@codesandbox/components';
+import { ThemeProvider, Element, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
@@ -11,42 +11,13 @@ import { WorkspacePlanSelection } from './legacy-pages/WorkspacePlanSelection';
 import { InlineCheckout } from './legacy-pages/InlineCheckout';
 import { ConfirmBillingInterval } from './legacy-pages/ConfirmBillingInterval';
 import { PaymentSuccess } from './legacy-pages/PaymentSuccess';
-import { SignIn } from '../SignIn/SignIn';
 
 export const ProLegacy: React.FC = () => {
   const { pageMounted } = useActions().pro;
-  const { hasLoadedApp, isLoggedIn } = useAppState();
 
   React.useEffect(() => {
     pageMounted();
   }, [pageMounted]);
-
-  const getContent = () => {
-    if (!hasLoadedApp) return null;
-    /**
-     * Probably never reaching this code, ProLegacy component is used
-     * in ProPage but only renders when isPaddle or isPatron. Since you
-     * have to be logged in for those you're never not logged in here?
-     */
-    if (!isLoggedIn) {
-      return (
-        <div style={{ marginTop: 120 }}>
-          <SignIn />
-        </div>
-      );
-    }
-
-    return (
-      <Switch>
-        <Route path={'/pro/success'}>
-          <PaymentSuccess />
-        </Route>
-        <Route path={`/pro`}>
-          <StartOrModifySubscription />
-        </Route>
-      </Switch>
-    );
-  };
 
   return (
     <ThemeProvider>
@@ -57,19 +28,28 @@ export const ProLegacy: React.FC = () => {
           rel="stylesheet"
         />
       </Helmet>
-      <Stack
-        direction="vertical"
-        css={css({
-          backgroundColor: 'grays.900',
-          color: 'white',
-          width: '100vw',
+      <Element
+        css={{
+          backgroundColor: '#0E0E0E',
+          color: '#E5E5E5',
+          width: '100%',
           minHeight: '100vh',
-          fontFamily: 'Lato, sans-serif',
-        })}
+          fontFamily: 'Inter, sans-serif',
+        }}
       >
-        <Navigation title="CodeSandbox Pro" />
-        {getContent()}
-      </Stack>
+        <Navigation title="CodeSandbox Pro" showActions={false} />
+
+        <Element css={{ height: '48px' }} />
+
+        <Switch>
+          <Route path={'/pro/success'}>
+            <PaymentSuccess />
+          </Route>
+          <Route path={`/pro`}>
+            <StartOrModifySubscription />
+          </Route>
+        </Switch>
+      </Element>
     </ThemeProvider>
   );
 };
