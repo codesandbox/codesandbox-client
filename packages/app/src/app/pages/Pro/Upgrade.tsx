@@ -108,7 +108,7 @@ export const ProUpgrade = () => {
 
   const teamProCta: React.ComponentProps<typeof SubscriptionCard>['cta'] =
     // eslint-disable-next-line no-nested-ternary
-    hasCustomSubscription
+    hasCustomSubscription || !isTeamAdmin
       ? undefined
       : isPro
       ? {
