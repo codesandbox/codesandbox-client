@@ -1,4 +1,7 @@
 import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import { sortBy } from 'lodash-es';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { useAppState, useActions } from 'app/overmind';
 import {
@@ -8,12 +11,10 @@ import {
   Text,
   Icon,
 } from '@codesandbox/components';
-import { Helmet } from 'react-helmet';
 import { Navigation } from 'app/pages/common/Navigation';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
-import { sortBy } from 'lodash-es';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import { useLocation } from 'react-router-dom';
+import track from '@codesandbox/common/lib/utils/analytics';
 import {
   ORG_FEATURES,
   TEAM_FREE_FEATURES,
@@ -95,7 +96,10 @@ export const ProUpgrade = () => {
   >['cta'] = isPro
     ? {
         text: 'Manage subscription',
-        onClick: createCustomerPortal,
+        onClick: () => {
+          track('subscription page - manage pro subscription');
+          createCustomerPortal();
+        },
         variant: 'light',
         isLoading: isCustomerPortalLoading,
       }
@@ -104,6 +108,9 @@ export const ProUpgrade = () => {
         href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback?
         variant: 'highlight',
         isLoading: checkout.state === 'LOADING',
+        onClick: () => {
+          track('subscription page - personal pro checkout');
+        },
       };
 
   const teamProCta: React.ComponentProps<typeof SubscriptionCard>['cta'] =
@@ -113,7 +120,10 @@ export const ProUpgrade = () => {
       : isPro
       ? {
           text: 'Manage subscription',
-          onClick: createCustomerPortal,
+          onClick: () => {
+            track('subscription page - manage pro subscription');
+            createCustomerPortal();
+          },
           variant: 'light',
           isLoading: isCustomerPortalLoading,
         }
@@ -122,6 +132,9 @@ export const ProUpgrade = () => {
           href: checkout.state === 'READY' ? checkout.url : undefined, // TODO: Fallback?
           variant: 'highlight',
           isLoading: checkout.state === 'LOADING',
+          onClick: () => {
+            track('subscription page - team pro checkout');
+          },
         };
 
   if (!hasLoadedApp || !isLoggedIn || !activeTeamInfo) return null;
@@ -168,7 +181,10 @@ export const ProUpgrade = () => {
           <Stack gap={3} direction="vertical" align="center">
             <Switcher
               workspaces={workspacesList}
-              setActiveTeam={setActiveTeam}
+              setActiveTeam={payload => {
+                track('subscription page - change team');
+                return setActiveTeam(payload);
+              }}
               personalWorkspaceId={personalWorkspaceId}
               activeTeamInfo={activeTeamInfo}
             />
@@ -269,11 +285,19 @@ export const ProUpgrade = () => {
                           text: 'Contact support',
                           href: 'mailto:support@codesandbox.io',
                           variant: 'light',
+                          onClick: () => {
+                            track(
+                              'subscription page - manage org subscription'
+                            );
+                          },
                         }
                       : {
                           text: 'Contact us',
                           href: 'https://codesandbox.typeform.com/organization',
                           variant: 'dark',
+                          onClick: () => {
+                            track('subscription page - contact us');
+                          },
                         }
                   }
                   isHighlighted={hasCustomSubscription}
