@@ -17,7 +17,7 @@ export const BranchCard: React.FC<BranchProps> = ({
   isBeingRemoved,
   selected,
   onContextMenu,
-  isViewOnly,
+  restricted,
   ...props
 }) => {
   const { name: branchName, project, contribution } = branch;
@@ -60,7 +60,7 @@ export const BranchCard: React.FC<BranchProps> = ({
     >
       <Stack
         css={css({
-          backgroundColor: isViewOnly ? '#252525' : '#161616',
+          backgroundColor: restricted ? '#252525' : '#161616',
           paddingY: 11,
           position: 'relative',
         })}
@@ -69,9 +69,9 @@ export const BranchCard: React.FC<BranchProps> = ({
       >
         <Icon color="#808080" name="branch" size={32} />
       </Stack>
-      {isViewOnly ? (
+      {restricted ? (
         <Element css={{ position: 'absolute', top: 8, left: 8 }}>
-          <Badge variant="trial">View only</Badge>
+          <Badge variant="trial">Restricted</Badge>
         </Element>
       ) : null}
       <Stack
@@ -88,7 +88,7 @@ export const BranchCard: React.FC<BranchProps> = ({
           <Tooltip label={branchName}>
             <Text
               css={css({
-                color: isViewOnly ? '#999999' : '#E5E5E5',
+                color: restricted ? '#999999' : '#E5E5E5',
                 flex: 1,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',

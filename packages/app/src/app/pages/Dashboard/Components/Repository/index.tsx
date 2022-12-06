@@ -33,7 +33,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
   const { isFree } = useWorkspaceSubscription();
 
   const isPrivate = providerRepository?.private;
-  const isViewOnly = isFree && isPrivate;
+  const restricted = isFree && isPrivate;
 
   const props: RepositoryProps = {
     repository: {
@@ -53,7 +53,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
     isBeingRemoved:
       removingRepository?.owner === providerRepository.owner &&
       removingRepository?.name === providerRepository.name,
-    isViewOnly,
+    restricted,
   };
 
   return {

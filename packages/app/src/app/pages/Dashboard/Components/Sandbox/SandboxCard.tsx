@@ -45,7 +45,7 @@ type SandboxTitleProps = {
   isFrozen: boolean;
   prNumber?: number;
   originalGit?: RepoFragmentDashboardFragment['originalGit'];
-  isViewOnly?: boolean;
+  restricted?: boolean;
 } & Pick<
   SandboxItemComponentProps,
   | 'editing'
@@ -74,7 +74,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
     PrivacyIcon,
     newTitle,
     sandboxTitle,
-    isViewOnly,
+    restricted,
   }) => (
     <Stack justify="space-between" marginLeft={5} marginRight={2}>
       {editing ? (
@@ -111,7 +111,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           <Text
             size={3}
             weight="medium"
-            css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+            css={{ color: restricted ? '#999999' : '#E5E5E5' }}
           >
             {sandboxTitle}
           </Text>
@@ -221,7 +221,7 @@ export const SandboxCard = ({
   onInputKeyDown,
   onSubmit,
   onInputBlur,
-  isViewOnly,
+  restricted,
   // drag preview
   thumbnailRef,
   opacity,
@@ -266,9 +266,9 @@ export const SandboxCard = ({
         },
       }}
     >
-      {isViewOnly ? (
+      {restricted ? (
         <Element css={{ position: 'absolute', top: 8, left: 8 }}>
-          <Badge variant="trial">View only</Badge>
+          <Badge variant="trial">Restricted</Badge>
         </Element>
       ) : null}
 
@@ -300,7 +300,7 @@ export const SandboxCard = ({
           PrivacyIcon={PrivacyIcon}
           newTitle={newTitle}
           sandboxTitle={sandboxTitle}
-          isViewOnly={isViewOnly}
+          restricted={restricted}
         />
         <SandboxStats
           noDrag={noDrag}
