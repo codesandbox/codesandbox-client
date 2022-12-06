@@ -21,16 +21,18 @@ export const RepositoriesPage = () => {
   } = useAppState();
   const pathRef = React.useRef<string>(null);
 
+  const teamRepos = repositories?.[activeTeam] ?? null;
+
   React.useEffect(() => {
     // If no repositories were fetched yet and the user tries
     // to directly access a repository, we should fetch said
     // repository only.
-    if (repositories === null) {
+    if (!teamRepos) {
       if (path) {
         const [, owner, name] = path.split('/');
         actions.dashboard.getRepositoryByDetails({ owner, name });
       } else {
-        actions.dashboard.getRepositoriesByTeam();
+        actions.dashboard.getRepositoriesByTeam({ teamId: activeTeam });
       }
     }
 
@@ -40,13 +42,13 @@ export const RepositoriesPage = () => {
     if (
       path === '' &&
       pathRef.current?.startsWith('github') &&
-      repositories.length === 1
+      teamRepos.length === 1
     ) {
-      actions.dashboard.getRepositoriesByTeam();
+      actions.dashboard.getRepositoriesByTeam({ teamId: activeTeam });
     }
 
     pathRef.current = path;
-  }, [path]);
+  }, [path, activeTeam]);
 
   const { isFree } = useWorkspaceSubscription();
   const {
@@ -60,13 +62,13 @@ export const RepositoriesPage = () => {
     | undefined;
 
   const getItemsToShow = (): DashboardGridItem[] => {
-    if (repositories === null) {
+    if (teamRepos === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
 
     if (path) {
       const [, owner, name] = path.split('/');
-      const currentRepository = repositories.find(
+      const currentRepository = teamRepos.find(
         r => r.repository.owner === owner && r.repository.name === name
       );
 
@@ -98,10 +100,11 @@ export const RepositoriesPage = () => {
       return branchItems;
     }
 
-    const repoItems: DashboardGridItem[] = repositories.map(repository => ({
-      type: 'repository' as const,
-      repository,
-    }));
+    const repoItems: DashboardGridItem[] =
+      teamRepos?.map(repository => ({
+        type: 'repository' as const,
+        repository,
+      })) ?? [];
 
     if (viewMode === 'grid' && repoItems.length > 0) {
       repoItems.unshift({
