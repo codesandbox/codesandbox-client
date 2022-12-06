@@ -520,7 +520,6 @@ export const setActiveTeam = async (
 
   // reset dashboard data on team change
   state.dashboard.sandboxes = { ...DEFAULT_DASHBOARD_SANDBOXES };
-  state.dashboard.repositories = null;
   state.dashboard.contributions = null;
 
   actions.internal.replaceWorkspaceParameterInUrl();

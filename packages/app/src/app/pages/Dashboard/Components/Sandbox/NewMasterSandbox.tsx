@@ -20,7 +20,7 @@ interface NewMasterSandboxProps {
     name: string;
     branch: string;
   };
-  isViewOnly?: boolean;
+  restricted?: boolean;
 }
 
 export const NewMasterSandbox = (props: NewMasterSandboxProps) => {
@@ -37,7 +37,7 @@ export const NewMasterSandbox = (props: NewMasterSandboxProps) => {
 
 const NewMasterSandboxListItem = ({
   repo,
-  isViewOnly,
+  restricted,
 }: NewMasterSandboxProps) => {
   const { onRightClick } = useSelection();
   return (
@@ -81,7 +81,7 @@ const NewMasterSandboxListItem = ({
               <Text
                 size={3}
                 weight="medium"
-                css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+                css={{ color: restricted ? '#999999' : '#E5E5E5' }}
               >
                 {repo.name}
               </Text>
@@ -89,9 +89,9 @@ const NewMasterSandboxListItem = ({
           </Stack>
         </Column>
         <Column span={[0, 2, 2]}>
-          {isViewOnly ? (
+          {restricted ? (
             <Stack align="center">
-              <Badge variant="trial">View only</Badge>
+              <Badge variant="trial">Restricted</Badge>
             </Stack>
           ) : null}
         </Column>
@@ -114,7 +114,7 @@ const NewMasterSandboxListItem = ({
   );
 };
 
-const NewMasterSandboxCard = ({ repo, isViewOnly }: NewMasterSandboxProps) => {
+const NewMasterSandboxCard = ({ repo, restricted }: NewMasterSandboxProps) => {
   const { onRightClick } = useSelection();
   return (
     <Stack
@@ -139,9 +139,9 @@ const NewMasterSandboxCard = ({ repo, isViewOnly }: NewMasterSandboxProps) => {
         },
       })}
     >
-      {isViewOnly ? (
+      {restricted ? (
         <Element css={{ position: 'absolute', top: 8, left: 8 }}>
-          <Badge variant="trial">View only</Badge>
+          <Badge variant="trial">Restricted</Badge>
         </Element>
       ) : null}
       <Stack
@@ -178,7 +178,7 @@ const NewMasterSandboxCard = ({ repo, isViewOnly }: NewMasterSandboxProps) => {
             <Text
               size={3}
               weight="medium"
-              css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+              css={{ color: restricted ? '#999999' : '#E5E5E5' }}
             >
               master
             </Text>

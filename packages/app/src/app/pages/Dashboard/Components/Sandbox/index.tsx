@@ -149,7 +149,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   const selected = selectedIds.includes(sandbox.id);
   const isDragging = isAnythingDragging && selected;
-  const isViewOnly = isFree && sandbox.privacy !== 0;
+  const restricted = isFree && sandbox.privacy !== 0;
 
   const sandboxAnalyticsEvent = !autoFork
     ? MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]
@@ -291,7 +291,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     TemplateIcon,
     PrivacyIcon,
     screenshotUrl,
-    isViewOnly,
+    restricted,
     // edit mode
     editing: isRenaming && selected,
     newTitle,

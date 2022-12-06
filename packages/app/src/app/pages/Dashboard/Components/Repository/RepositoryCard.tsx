@@ -10,7 +10,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
   selected,
   onContextMenu,
   isBeingRemoved,
-  isViewOnly,
+  restricted,
   ...props
 }) => {
   return (
@@ -73,7 +73,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               }}
             />
           </Stack>
-          <Text color={isViewOnly ? '#999' : '#e5e5e5'} size={13} weight="500">
+          <Text color={restricted ? '#999' : '#e5e5e5'} size={13} weight="500">
             {repository.name}
           </Text>
         </Stack>
@@ -91,7 +91,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
             </Stack>
           </Stack>
 
-          {isViewOnly ? <Badge variant="trial">Restricted</Badge> : null}
+          {restricted ? <Badge variant="trial">Restricted</Badge> : null}
         </Stack>
       </Stack>
     </Stack>

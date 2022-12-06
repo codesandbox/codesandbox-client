@@ -20,7 +20,7 @@ export const BranchListItem = ({
   selected,
   isBeingRemoved,
   onContextMenu,
-  isViewOnly,
+  restricted,
 }: BranchProps) => {
   const { name: branchName, project, contribution } = branch;
   const { repository } = project;
@@ -91,7 +91,7 @@ export const BranchListItem = ({
                     size={3}
                     weight="medium"
                     maxWidth="100%"
-                    css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+                    css={{ color: restricted ? '#999999' : '#E5E5E5' }}
                   >
                     {branchName}
                   </Text>
@@ -100,9 +100,9 @@ export const BranchListItem = ({
             </Stack>
           </Column>
           <Column span={[0, 2, 2]}>
-            {isViewOnly ? (
+            {restricted ? (
               <Stack align="center">
-                <Badge variant="trial">View only</Badge>
+                <Badge variant="trial">Restricted</Badge>
               </Stack>
             ) : null}
           </Column>

@@ -7,5 +7,5 @@ export type BranchProps = {
   selected: boolean;
   onContextMenu: (evt: React.MouseEvent) => void;
   onClick: (evt: React.MouseEvent) => void;
-  isViewOnly?: boolean;
+  restricted?: boolean;
 };

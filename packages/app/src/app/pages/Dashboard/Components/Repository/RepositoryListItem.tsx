@@ -20,7 +20,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
   selected,
   onContextMenu,
   isBeingRemoved,
-  isViewOnly,
+  restricted,
   ...props
 }) => {
   return (
@@ -70,7 +70,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
               <Text
                 css={{
                   fontSize: '14px',
-                  color: isViewOnly ? '#999999' : '#E5E5E5',
+                  color: restricted ? '#999999' : '#E5E5E5',
                 }}
               >
                 {repository.name}
@@ -87,7 +87,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
               gap={2}
               css={{ paddingRight: '16px' }}
             >
-              {isViewOnly ? (
+              {restricted ? (
                 <Stack align="center">
                   <Badge variant="trial">Restricted</Badge>
                 </Stack>
