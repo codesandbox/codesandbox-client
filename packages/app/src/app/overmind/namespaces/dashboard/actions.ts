@@ -2211,6 +2211,9 @@ export const importGitHubRepository = async (
   { owner, name }: { owner: string; name: string }
 ) => {
   const { activeTeam } = state;
+  if (!activeTeam) {
+    return;
+  }
 
   try {
     await effects.gql.mutations.importProject({
