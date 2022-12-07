@@ -22,7 +22,7 @@ const useSearchedSandboxes = (query: string) => {
   }, [actions.dashboard, state.activeTeam]);
 
   useEffect(() => {
-    const index = searchIndex(state.dashboard);
+    const index = searchIndex(state.dashboard, state.activeTeam);
     if (index) {
       setFoundResults(index.search(query));
     }
@@ -32,7 +32,7 @@ const useSearchedSandboxes = (query: string) => {
   return foundResults;
 };
 
-export const searchIndex = (dashboard: any) => {
+const searchIndex = (dashboard: any, activeTeam: string) => {
   const sandboxes = dashboard.sandboxes.SEARCH;
   if (sandboxes == null) {
     return null;
@@ -44,7 +44,8 @@ export const searchIndex = (dashboard: any) => {
     }))
     .filter(f => f.title);
 
-  const repositories = dashboard.repositories?.map((repo: Repository) => {
+  const teamRepos = dashboard.repositories?.[activeTeam] ?? [];
+  const repositories = teamRepos.map((repo: Repository) => {
     return {
       title: repo.repository.name,
       /**

@@ -65,40 +65,43 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
         {...props}
       >
         <Grid css={{ width: 'calc(100% - 26px - 8px)' }} columnGap={4}>
-          <Column
-            span={[10, 5, 4]}
-            css={{
-              display: 'block',
-              overflow: 'hidden',
-              paddingBottom: 4,
-              paddingTop: 4,
-            }}
-          >
-            <Stack gap={4} align="center" marginLeft={2}>
-              <Icon color="#999" name="repository" size={16} width="32px" />
-              <Element css={{ overflow: 'hidden' }}>
-                <Text
-                  size={3}
-                  weight="medium"
-                  maxWidth="100%"
-                  css={{ color: restricted ? '#999999' : '#E5E5E5' }}
-                >
-                  {repository.owner}/{repository.name}
-                </Text>
-              </Element>
+          <Column span={[12, 8, 8]}>
+            <Stack gap={3} align="center" marginLeft={2}>
+              <Text
+                css={{
+                  fontSize: '14px',
+                  color: restricted ? '#999999' : '#E5E5E5',
+                }}
+              >
+                {repository.name}
+              </Text>
+              <Text size={2} color="#999">
+                {repository.owner}
+              </Text>
             </Stack>
           </Column>
-          <Column span={[0, 2, 2]}>
-            {restricted ? (
-              <Stack align="center">
-                <Badge variant="trial">Restricted</Badge>
+          <Column span={[0, 4, 4]} as={Stack} align="center">
+            <Stack
+              justify="flex-end"
+              align="center"
+              gap={2}
+              css={{ paddingRight: '16px' }}
+            >
+              {restricted ? (
+                <Stack align="center">
+                  <Badge variant="trial">Restricted</Badge>
+                </Stack>
+              ) : null}
+              {repository.private ? (
+                <Icon color="#808080" name="lock" size={12} />
+              ) : null}
+              <Stack gap={1}>
+                <Icon color="#999" name="branch" size={12} />
+                <Text size={3} variant="muted" maxWidth="100%">
+                  {labels.branches}
+                </Text>
               </Stack>
-            ) : null}
-          </Column>
-          <Column span={[0, 5, 6]} as={Stack} align="center">
-            <Text size={3} variant="muted" maxWidth="100%">
-              {labels.branches}
-            </Text>
+            </Stack>
           </Column>
         </Grid>
         <IconButton

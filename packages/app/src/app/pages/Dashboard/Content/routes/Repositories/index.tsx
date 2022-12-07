@@ -151,7 +151,13 @@ export const RepositoriesPage = () => {
         </Element>
       ) : null}
 
-      <VariableGrid page={pageType} items={itemsToShow} />
+      <VariableGrid
+        page={pageType}
+        items={itemsToShow}
+        customGridElementHeight={
+          selectedRepo ? undefined : 154
+        } /* 154 just for repo cards */
+      />
     </SelectionProvider>
   );
 };

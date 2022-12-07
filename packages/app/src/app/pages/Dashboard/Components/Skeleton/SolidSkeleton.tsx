@@ -10,7 +10,7 @@ const SolidCardSkeleton: React.FC = () => (
     gap={4}
     css={css({
       width: '100%',
-      height: 240,
+      height: '100%',
       border: '1px solid',
       borderColor: 'grays.600',
       borderRadius: '4px',

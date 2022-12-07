@@ -39,13 +39,12 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
     repository: {
       owner: providerRepository.owner,
       name: providerRepository.name,
+      private: providerRepository.private,
       url: repositoryUrl,
     },
     labels: {
       repository: `View branches from repository ${providerRepository.name} by ${providerRepository.owner}`,
-      branches: `${branches.length} ${
-        branches.length === 1 ? 'branch' : 'branches'
-      }`,
+      branches: `${branches.length}`,
     },
     selected: selectedIds.includes(repositoryId),
     onClick: () => trackImprovedDashboardEvent('Dashboard - Open Repository'),

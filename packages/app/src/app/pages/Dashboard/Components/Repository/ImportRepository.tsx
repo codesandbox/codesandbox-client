@@ -1,6 +1,6 @@
 import React from 'react';
 import { useActions } from 'app/overmind';
-import { Stack, Text, Icon, Element } from '@codesandbox/components';
+import { Stack, Text, Icon } from '@codesandbox/components';
 import css from '@styled-system/css';
 
 export const ImportRepositoryCard: React.FC<{ disabled?: boolean }> = ({
@@ -9,24 +9,22 @@ export const ImportRepositoryCard: React.FC<{ disabled?: boolean }> = ({
   const { openCreateSandboxModal } = useActions();
 
   return (
-    <Element
+    <Stack
       as="button"
+      direction="vertical"
+      justify="space-between"
       onClick={() => openCreateSandboxModal({ initialTab: 'import' })}
       css={css({
-        display: 'flex',
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: 3,
+        cursor: disabled ? 'not-allowed' : 'default',
         fontFamily: 'inherit',
-        fontWeight: 'normal',
-        color: disabled ? '#999999' : '#808080',
-        height: 240,
+        width: '100%',
+        height: '100%',
         outline: 'none',
+        padding: '24px',
         backgroundColor: 'card.background',
         border: '1px solid',
         borderColor: 'transparent',
-        borderRadius: 'medium',
+        borderRadius: '4px',
         transition: 'background ease-in',
         transitionDuration: theme => theme.speeds[2],
         ':not([disabled]):hover': {
@@ -38,15 +36,10 @@ export const ImportRepositoryCard: React.FC<{ disabled?: boolean }> = ({
       })}
       disabled={disabled}
     >
-      <Stack
-        direction="vertical"
-        align="center"
-        gap={4}
-        css={disabled ? { opacity: 0.4 } : undefined}
-      >
-        <Icon name="plus" size={32} />
-        <Text>Import repository</Text>
-      </Stack>
-    </Element>
+      <Icon color="#999999" name="plus" size={20} />
+      <Text color={disabled ? '#808080' : '#999'} size={13} weight="500">
+        Import repository
+      </Text>
+    </Stack>
   );
 };
