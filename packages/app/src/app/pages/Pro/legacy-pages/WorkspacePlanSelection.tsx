@@ -1,18 +1,14 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 import { format } from 'date-fns';
 import { sortBy } from 'lodash-es';
 import { useLocation } from 'react-router-dom';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
-import css from '@styled-system/css';
-import { Stack, Element, Text, Button, Link } from '@codesandbox/components';
-import track from '@codesandbox/common/lib/utils/analytics';
+import { Stack, Text } from '@codesandbox/components';
+// TODO: Tracking
+// import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
-import { Step, Plan } from 'app/overmind/namespaces/pro/types';
-import {
-  TeamMemberAuthorization,
-  SubscriptionType,
-  SubscriptionInterval,
-} from 'app/graphql/types';
+import { Step } from 'app/overmind/namespaces/pro/types';
+import { SubscriptionType, SubscriptionInterval } from 'app/graphql/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import {
@@ -21,103 +17,92 @@ import {
   TEAM_FREE_FEATURES,
   TEAM_PRO_FEATURES,
 } from 'app/constants';
-import { plans } from './plans';
 import { Switcher } from '../components/Switcher';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 
-// https://www.notion.so/codesandbox-app/Sunset-Paddle-7087eb6c04b34c729dad3b41fd4517eb
-
-const getBillingPerSeatText = (
-  numberOfSeats: number,
-  { currency, unit, multiplier, billingInterval }: Plan
-) => {
-  const price = numberOfSeats * unit * multiplier;
+/**
+ * TODO: Update with actual subscription instead of selected plan
+ */
+const getBillingText = ({
+  quantity,
+  unitPrice,
+  billingInterval,
+}: {
+  quantity: number;
+  unitPrice: number;
+  billingInterval: SubscriptionInterval;
+}) => {
   const isMonthly = billingInterval === SubscriptionInterval.Monthly;
+  const multiplier = isMonthly ? 1 : 12;
+  const price = quantity * unitPrice * multiplier;
 
-  return `a total of ${currency}${price} will be billed each ${
+  return `a total of $${price} will be billed each ${
     isMonthly ? 'month' : 'year'
   }`;
 };
 
-export const WorkspacePlanSelection: React.FC<{
-  loading: boolean;
-}> = ({ loading }) => {
+type CancelButtonProps = {
+  children: string;
+  onClick: ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
+};
+
+const CancelButton = ({ children, onClick }: CancelButtonProps) => (
+  <Text
+    as="button"
+    variant="danger"
+    onClick={onClick}
+    css={{
+      display: 'block',
+      margin: '0 auto',
+      border: 'none',
+      padding: 0,
+      background: 'transparent',
+      '&:hover': {
+        textDecoration: 'underline',
+      },
+    }}
+  >
+    {children}
+  </Text>
+);
+
+export const WorkspacePlanSelection: React.FC = () => {
   const {
     personalWorkspaceId,
     user,
     activeTeam,
     activeTeamInfo,
     dashboard,
-    pro: { selectedPlan },
   } = useAppState();
   const {
     setActiveTeam,
     modalOpened,
-    pro: { setStep, updateSelectedPlan },
+    pro: { setStep },
     patron: { cancelSubscriptionClicked },
   } = useActions();
 
   const location = useLocation();
-  // const { isPersonalSpace, isTeamAdmin } = useWorkspaceAuthorization();
-  const isPersonalSpace = false; // DEBUG
-  const isTeamAdmin = true; // DEBUG
-  const { numberOfSeats } = useWorkspaceSubscription();
+  const { isPersonalSpace, isTeamAdmin } = useWorkspaceAuthorization();
+  // const isPersonalSpace = false; // DEBUG
+  // const isTeamAdmin = true; // DEBUG
+  const { subscription } = useWorkspaceSubscription();
 
+  // Based on the 'type' search param we redirect to the personal pro page if
+  // it's not yet active.
   const searchParams = new URLSearchParams(location.search);
-  const type = searchParams.get('type') as SubscriptionType | null;
-  const interval = searchParams.get('interval') as SubscriptionInterval | null;
-  const billingInterval = interval || SubscriptionInterval.Monthly;
+  const subTypeParam = searchParams.get('type') as SubscriptionType | null;
 
   React.useEffect(
-    // TODO: can we remove this?
-    function setPlan() {
-      let newPlan: typeof plans[keyof typeof plans];
-      if (isPersonalSpace) {
-        if (billingInterval === SubscriptionInterval.Yearly) {
-          newPlan = plans.PERSONAL_PRO_ANNUAL;
-        } else {
-          newPlan = plans.PERSONAL_PRO_MONTHLY;
-        }
-      } else if (billingInterval === SubscriptionInterval.Yearly) {
-        newPlan = plans.TEAM_PRO_ANNUAL;
-      } else {
-        newPlan = plans.TEAM_PRO_MONTHLY;
-      }
-
-      updateSelectedPlan(newPlan);
-    },
-    [isPersonalSpace, billingInterval, updateSelectedPlan]
-  );
-
-  React.useEffect(
-    // TODO: Remove this and replace it with not having CTAs
-    function switchToWorkspaceWithAdminRights() {
-      // if type is PERSONAL_PRO, switch to personal account
-      if (type === SubscriptionType.PersonalPro) {
+    function switchToPersonalWorkspaceBasedOnParam() {
+      if (!isPersonalSpace && subTypeParam === SubscriptionType.PersonalPro) {
         setActiveTeam({ id: personalWorkspaceId });
-        return;
-      }
-
-      // if you land on an account where you are not the admin
-      // switch accounts to one where you are an admin
-      // if none, switch to personal account
-      if (!isTeamAdmin && dashboard.teams.length) {
-        const workspaceWithAdminRights = dashboard.teams.find(
-          team => team.id !== personalWorkspaceId && isTeamAdmin
-        );
-
-        if (workspaceWithAdminRights) {
-          setActiveTeam({ id: workspaceWithAdminRights.id });
-        } else {
-          setActiveTeam({ id: personalWorkspaceId });
-        }
       }
     },
-    [isTeamAdmin, type, dashboard.teams, setActiveTeam, personalWorkspaceId]
+    [isPersonalSpace, subTypeParam, setActiveTeam, personalWorkspaceId]
   );
 
-  // does this ever occur with the checks in /pro/index.tsx and Legacy.tsx?
-  if (!activeTeam || !dashboard.teams.length || !selectedPlan) return null;
+  // TODO: Does this ever occur with the checks in /pro/index.tsx and Legacy.tsx?
+  if (!activeTeam || !dashboard.teams.length) return null;
 
   const currentSubscription = activeTeamInfo?.subscription;
 
@@ -132,6 +117,36 @@ export const WorkspacePlanSelection: React.FC<{
       team => team.name.toLowerCase()
     ),
   ];
+
+  const personalProCta: React.ComponentProps<typeof SubscriptionCard>['cta'] = {
+    text: 'Manage subscription',
+    onClick: () => {
+      modalOpened({ modal: 'legacyPayment' });
+    },
+    variant: 'light',
+  };
+
+  // TODO: Since all the subscription management was based on creating a new subscription
+  // we will probably remove most of the CTAs and replace them with just "Contact suport".
+  const teamProCta: React.ComponentProps<
+    typeof SubscriptionCard
+    // eslint-disable-next-line no-nested-ternary
+  >['cta'] = isTeamAdmin
+    ? // Only allowed to change from monthly to yearly
+      currentSubscription.billingInterval === SubscriptionInterval.Monthly
+      ? {
+          text: 'Update billing interval',
+          onClick: () => {
+            setStep(Step.ConfirmBillingInterval);
+          },
+          variant: 'light',
+        }
+      : {
+          text: 'Contact support',
+          href: 'mailto:support@codesandbox.io',
+          variant: 'light',
+        }
+    : undefined;
 
   return (
     <div>
@@ -190,16 +205,15 @@ export const WorkspacePlanSelection: React.FC<{
           {isPersonalSpace ? (
             <SubscriptionCard
               title={
-                // TODO: clean this up?
                 user.subscription.plan === 'patron' ? 'Patron' : 'Personal Pro'
               }
               features={PERSONAL_FEATURES}
+              cta={personalProCta}
               isHighlighted
             >
               <Stack gap={1} direction="vertical">
                 <Text size={32} weight="500">
-                  {selectedPlan.currency}
-                  {selectedPlan.unit}
+                  ${user.subscription.amount}
                 </Text>
                 {user.subscription.duration === 'yearly' ? (
                   <Text>
@@ -219,18 +233,22 @@ export const WorkspacePlanSelection: React.FC<{
             <SubscriptionCard
               title="Team Pro"
               features={TEAM_PRO_FEATURES}
+              cta={teamProCta}
               isHighlighted
             >
               <Stack gap={1} direction="vertical">
                 <Text size={32} weight="500">
-                  {selectedPlan.currency}
-                  {selectedPlan.unit}
+                  ${subscription.unitPrice}
                 </Text>
                 <Text>
                   <div>per editor</div>
                   {isTeamAdmin ? (
                     <div>
-                      {getBillingPerSeatText(numberOfSeats, selectedPlan)}
+                      {getBillingText({
+                        quantity: subscription.quantity,
+                        unitPrice: subscription.unitPrice,
+                        billingInterval: subscription.billingInterval,
+                      })}
                     </div>
                   ) : null}
                 </Text>
@@ -238,104 +256,13 @@ export const WorkspacePlanSelection: React.FC<{
             </SubscriptionCard>
           )}
         </Stack>
+
+        {isPersonalSpace ? (
+          <CancelButton onClick={cancelSubscriptionClicked}>
+            cancel your subscription
+          </CancelButton>
+        ) : null}
       </Stack>
-
-      <Element padding={100} />
-
-      {isPersonalSpace ? (
-        <Stack direction="vertical" gap={4}>
-          <Stack
-            direction="vertical"
-            gap={1}
-            css={css({
-              padding: 4,
-              border: '1px solid',
-              borderColor: 'grays.500',
-              borderRadius: 'small',
-              overflow: 'hidden',
-            })}
-          >
-            <Text size={3}>Current plan</Text>
-            <Text variant="muted">
-              {user.subscription.plan === 'patron' ? 'Patron' : 'Personal Pro'}
-            </Text>
-            <Text variant="muted">
-              You will be billed{' '}
-              {user.subscription.duration === 'yearly' ? (
-                <>
-                  and charged annually on{' '}
-                  {format(new Date(user.subscription.since), 'MMM dd')}.
-                </>
-              ) : (
-                <>
-                  on the {format(new Date(user.subscription.since), 'do')} of
-                  each month.
-                </>
-              )}
-            </Text>
-          </Stack>
-
-          <Text variant="muted">
-            You can{' '}
-            <Link
-              variant="active"
-              onClick={e => {
-                e.preventDefault();
-
-                modalOpened({ modal: 'legacyPayment' });
-              }}
-            >
-              update your payment details
-            </Link>{' '}
-            or{' '}
-            <Link
-              variant="active"
-              onClick={e => {
-                e.preventDefault();
-                cancelSubscriptionClicked();
-              }}
-            >
-              cancel your subscription.
-            </Link>
-          </Text>
-        </Stack>
-      ) : (
-        <Stack direction="vertical" gap={6}>
-          {currentSubscription ? (
-            <>
-              <Button
-                loading={loading}
-                disabled={
-                  // non-admins can't upgrade
-                  !isTeamAdmin ||
-                  // you are not allowed to change from yearly to monthly
-                  currentSubscription.billingInterval ===
-                    SubscriptionInterval.Yearly ||
-                  // if it's already the same, then nothing to do here
-                  selectedPlan.billingInterval ===
-                    currentSubscription.billingInterval
-                }
-                onClick={() => setStep(Step.ConfirmBillingInterval)}
-                css={css({
-                  fontSize: 3,
-                  height: 10,
-                  fontWeight: 700,
-                })}
-              >
-                Update billing interval
-              </Button>
-              {currentSubscription.billingInterval ===
-                SubscriptionInterval.Yearly &&
-              selectedPlan.billingInterval === SubscriptionInterval.Monthly ? (
-                <Text align="center">
-                  Changing billing interval from Yearly to Monthly is not
-                  supported yet. Please email us at support@codesandbox.io
-                </Text>
-              ) : null}
-            </>
-          ) : null}
-        </Stack>
-      )}
     </div>
   );
 };
