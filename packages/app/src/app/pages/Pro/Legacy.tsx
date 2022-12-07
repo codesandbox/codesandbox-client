@@ -1,8 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Switch, Route } from 'react-router-dom';
-import { ThemeProvider, Element, Stack } from '@codesandbox/components';
-import css from '@styled-system/css';
+import { ThemeProvider, Element } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
 import { Navigation } from 'app/pages/common/Navigation';
@@ -23,10 +22,6 @@ export const ProLegacy: React.FC = () => {
     <ThemeProvider>
       <Helmet>
         <title>Pro - CodeSandbox</title>
-        <link
-          href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap"
-          rel="stylesheet"
-        />
       </Helmet>
       <Element
         css={{
@@ -37,7 +32,7 @@ export const ProLegacy: React.FC = () => {
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        <Navigation title="CodeSandbox Pro" showActions={false} />
+        <Navigation showActions={false} />
 
         <Element css={{ height: '48px' }} />
 
@@ -46,7 +41,7 @@ export const ProLegacy: React.FC = () => {
             <PaymentSuccess />
           </Route>
           <Route path={`/pro`}>
-            <StartOrModifySubscription />
+            <ModifySubscription />
           </Route>
         </Switch>
       </Element>
@@ -54,7 +49,7 @@ export const ProLegacy: React.FC = () => {
   );
 };
 
-const StartOrModifySubscription = () => {
+const ModifySubscription = () => {
   /**
    * The user flow forks based on the account.
    *
@@ -75,11 +70,7 @@ const StartOrModifySubscription = () => {
   } = useAppState().pro;
 
   return (
-    <Stack
-      justify="center"
-      align="center"
-      css={css({ fontSize: 3, width: 560, marginTop: 120, marginX: 'auto' })}
-    >
+    <div>
       {step === Step.WorkspacePlanSelection ||
       (step === Step.InlineCheckout && !isPaddleInitialised) ||
       (step === Step.ConfirmBillingInterval && !isBillingAmountLoaded) ? (
@@ -102,6 +93,6 @@ const StartOrModifySubscription = () => {
         </div>
       )}
       {step === Step.ConfirmBillingInterval && <ConfirmBillingInterval />}
-    </Stack>
+    </div>
   );
 };

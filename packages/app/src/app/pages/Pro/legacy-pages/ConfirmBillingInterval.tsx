@@ -105,7 +105,6 @@ export const ConfirmBillingInterval: React.FC = () => {
           css={css({
             fontSize: 3,
             height: 10,
-            fontFamily: 'Lato, sans-serif',
             fontWeight: 700,
           })}
         >
