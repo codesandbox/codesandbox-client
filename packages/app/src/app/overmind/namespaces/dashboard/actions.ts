@@ -12,6 +12,9 @@ import {
   CreateOrUpdateNpmRegistryMutationVariables,
   DeleteNpmRegistryMutationVariables,
 } from 'app/graphql/types';
+import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { notificationState } from '@codesandbox/common/lib/utils/notifications';
+import { NotificationStatus } from '@codesandbox/notifications';
 import { getDecoratedCollection, sortByNameAscending } from './utils';
 import { OrderBy, PageTypes, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
@@ -2016,6 +2019,7 @@ export const getRepositoryByDetails = async (
     const repositoryData = await effects.gql.queries.getRepositoryByDetails({
       owner,
       name,
+      teamId: activeTeam,
     });
     const repository = repositoryData?.project;
     if (!repository) {
@@ -2095,7 +2099,12 @@ export const removeBranchFromRepository = async (
   dashboard.removingBranch = { id };
 
   try {
-    await effects.api.removeBranchFromRepository(owner, repoName, name);
+    await effects.api.removeBranchFromRepository(
+      activeTeam,
+      owner,
+      repoName,
+      name
+    );
 
     // Manually remove the data from the state based on the
     // current page. Then sync in the background.
@@ -2194,5 +2203,30 @@ export const removeRepositoryFromTeam = async (
     );
   } finally {
     dashboard.removingRepository = null;
+  }
+};
+
+export const importGitHubRepository = async (
+  { state, effects }: Context,
+  { owner, name }: { owner: string; name: string }
+) => {
+  const { activeTeam } = state;
+
+  try {
+    await effects.gql.mutations.importProject({
+      name,
+      owner,
+      teamId: activeTeam,
+    });
+
+    // TODO: Add teamId in the url path
+    // First needs the v2 editor to support that
+    window.location.href = v2DraftBranchUrl(owner, name);
+  } catch (error) {
+    notificationState.addNotification({
+      message: JSON.stringify(error),
+      title: 'Failed to import repository',
+      status: NotificationStatus.ERROR,
+    });
   }
 };

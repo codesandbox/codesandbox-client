@@ -81,6 +81,8 @@ import {
   UpdateAlbumMutationVariables,
   CreateAlbumMutation,
   CreateAlbumMutationVariables,
+  ImportProjectMutation,
+  ImportProjectMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -675,6 +677,17 @@ export const updateAlbum: Query<
 > = gql`
   mutation updateAlbum($id: ID!, $title: String!) {
     updateAlbum(id: $id, title: $title) {
+      id
+    }
+  }
+`;
+
+export const importProject: Query<
+  ImportProjectMutation,
+  ImportProjectMutationVariables
+> = gql`
+  mutation importProject($owner: String!, $name: String!, $teamId: ID!) {
+    importProject(provider: GITHUB, owner: $owner, name: $name, team: $teamId) {
       id
     }
   }
