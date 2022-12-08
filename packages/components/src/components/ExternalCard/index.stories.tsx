@@ -26,3 +26,5 @@ const video = {
 export const ArticleVariant = () => <ArticleCard {...article} />;
 
 export const VideoVariant = () => <VideoCard {...video} />;
+
+export const ThumblessVariant = () => <VideoCard {...video} thumbnail="" />;

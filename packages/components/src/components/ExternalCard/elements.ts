@@ -7,10 +7,12 @@ export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
   overflow: hidden;
   height: 156px;
   width: 276px;
-  background: #999999;
+  background-color: #161616;
   border-radius: 4px;
+  transition: background linear;
+  transition-duration: 200ms;
 
-  &:after {
+  :after {
     position: absolute;
     content: '';
     display: block;
@@ -26,7 +28,11 @@ export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
     transition-duration: 200ms;
   }
 
-  &:hover::after {
+  :hover {
+    background-color: #292929;
+  }
+
+  :hover::after {
     transform: scale(1.02);
   }
 `;
