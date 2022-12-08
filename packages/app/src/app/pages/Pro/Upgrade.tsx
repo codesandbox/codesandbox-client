@@ -97,7 +97,10 @@ export const ProUpgrade = () => {
     ? {
         text: 'Manage subscription',
         onClick: () => {
-          track('subscription page - manage pro subscription');
+          track('subscription page - manage pro subscription', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
           createCustomerPortal();
         },
         variant: 'light',
@@ -109,7 +112,10 @@ export const ProUpgrade = () => {
         variant: 'highlight',
         isLoading: checkout.state === 'LOADING',
         onClick: () => {
-          track('subscription page - personal pro checkout');
+          track('subscription page - personal pro checkout', {
+            codesandbox: 'V1',
+            event_source: 'UI',
+          });
         },
       };
 
@@ -121,7 +127,10 @@ export const ProUpgrade = () => {
       ? {
           text: 'Manage subscription',
           onClick: () => {
-            track('subscription page - manage pro subscription');
+            track('subscription page - manage pro subscription', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
             createCustomerPortal();
           },
           variant: 'light',
@@ -133,7 +142,10 @@ export const ProUpgrade = () => {
           variant: 'highlight',
           isLoading: checkout.state === 'LOADING',
           onClick: () => {
-            track('subscription page - team pro checkout');
+            track('subscription page - team pro checkout', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
           },
         };
 
@@ -182,7 +194,10 @@ export const ProUpgrade = () => {
             <Switcher
               workspaces={workspacesList}
               setActiveTeam={payload => {
-                track('subscription page - change team');
+                track('subscription page - change team', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                });
                 return setActiveTeam(payload);
               }}
               personalWorkspaceId={personalWorkspaceId}
@@ -287,7 +302,11 @@ export const ProUpgrade = () => {
                           variant: 'light',
                           onClick: () => {
                             track(
-                              'subscription page - manage org subscription'
+                              'subscription page - manage org subscription',
+                              {
+                                codesandbox: 'V1',
+                                event_source: 'UI',
+                              }
                             );
                           },
                         }
@@ -296,7 +315,10 @@ export const ProUpgrade = () => {
                           href: 'https://codesandbox.typeform.com/organization',
                           variant: 'dark',
                           onClick: () => {
-                            track('subscription page - contact us');
+                            track('subscription page - contact us', {
+                              codesandbox: 'V1',
+                              event_source: 'UI',
+                            });
                           },
                         }
                   }
