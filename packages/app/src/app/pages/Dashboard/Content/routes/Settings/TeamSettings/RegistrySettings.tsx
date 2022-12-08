@@ -63,7 +63,7 @@ export const RegistrySettings = () => {
             custom npm Registry.
           </span>
           {isTeamAdmin ? (
-            <MessageStripe.Action as="a" href="/pro">
+            <MessageStripe.Action as="a" href="/pro?utm_source=dashboard_npm">
               Upgrade now
             </MessageStripe.Action>
           ) : (
