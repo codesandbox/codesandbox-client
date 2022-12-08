@@ -31,8 +31,8 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
       {...props}
     >
       <StyledContent>
-        <StyledDetails>
-          <StyledTitle>{title}</StyledTitle>
+        <StyledDetails gap={3}>
+          <StyledTitle clamp>{title}</StyledTitle>
           <Icon
             css={{
               color: '#999999',

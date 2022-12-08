@@ -16,6 +16,7 @@ const article = {
 
 const video = {
   duration: '7:21',
+  durationLabel: '7 minutes, 21 seconds',
   title:
     "Updated pricing, Cloud sandboxes and more | What's new at CodeSandbox November 2022",
   url: 'https://www.youtube.com/watch?v=VDA41MYOYNI',

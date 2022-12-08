@@ -3,6 +3,7 @@ import { Stack } from '../Stack';
 import { Text } from '../Text';
 
 export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
+  flex-direction: column;
   position: relative;
   overflow: hidden;
   height: 156px;
@@ -43,9 +44,6 @@ export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
     border-color: #9581ff;
   }
 `;
-StyledWrapper.defaultProps = {
-  direction: 'vertical',
-};
 
 export const StyledContent = styled(Stack)`
   position: absolute;
@@ -67,14 +65,11 @@ export const StyledContent = styled(Stack)`
 export const StyledDetails = styled(Stack)`
   width: 100%;
   margin: auto 24px 24px;
+  align-items: center;
+  justify-content: space-between;
 `;
-StyledDetails.defaultProps = {
-  align: 'center',
-  gap: 3,
-  justify: 'space-between',
-};
 
-export const StyledTitle = styled(Text)<{ clamp?: boolean }>`
+export const StyledTitle = styled(Text)<{ clamp: boolean }>`
   margin: 0;
   color: #ebebeb;
   font-size: 13px;
@@ -91,7 +86,3 @@ export const StyledTitle = styled(Text)<{ clamp?: boolean }>`
   -webkit-box-orient: vertical;
   `}
 `;
-StyledTitle.defaultProps = {
-  as: 'p',
-  clamp: true,
-};

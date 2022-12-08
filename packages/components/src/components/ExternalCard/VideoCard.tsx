@@ -10,6 +10,7 @@ import {
 
 type Video = {
   duration: string;
+  durationLabel: string;
   title: string;
   thumbnail: string;
   url: string;
@@ -19,6 +20,7 @@ type VideoCardProps = { onClick?: () => void } & Video;
 
 export const VideoCard: React.FC<VideoCardProps> = ({
   duration,
+  durationLabel,
   title,
   thumbnail,
   url,
@@ -34,7 +36,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({
       {...props}
     >
       <StyledContent>
-        <StyledDetails>
+        <StyledDetails gap={3}>
           <Stack
             align="center"
             css={{
@@ -49,8 +51,10 @@ export const VideoCard: React.FC<VideoCardProps> = ({
           >
             <Icon name="start" />
           </Stack>
-          <StyledTitle>{title}</StyledTitle>
-          <StyledTitle clamp={false}>{duration}</StyledTitle>
+          <StyledTitle clamp>{title}</StyledTitle>
+          <StyledTitle aria-label={durationLabel} clamp={false}>
+            {duration}
+          </StyledTitle>
         </StyledDetails>
       </StyledContent>
     </StyledWrapper>
