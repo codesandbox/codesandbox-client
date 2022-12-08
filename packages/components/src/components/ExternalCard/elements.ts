@@ -8,7 +8,9 @@ export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
   height: 156px;
   width: 276px;
   background-color: #161616;
+  outline: none;
   border-radius: 4px;
+  border: 1px solid #161616;
   transition: background linear;
   transition-duration: 200ms;
 
@@ -32,8 +34,13 @@ export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
     background-color: #292929;
   }
 
-  :hover::after {
+  :hover::after,
+  :focus::after {
     transform: scale(1.02);
+  }
+
+  :focus-visible {
+    border-color: #9581ff;
   }
 `;
 StyledWrapper.defaultProps = {
@@ -58,6 +65,7 @@ export const StyledContent = styled(Stack)`
 `;
 
 export const StyledDetails = styled(Stack)`
+  width: 100%;
   margin: auto 24px 24px;
 `;
 StyledDetails.defaultProps = {

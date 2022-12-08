@@ -23,8 +23,15 @@ const video = {
     'https://i.ytimg.com/vi/VDA41MYOYNI/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDn88tm1ouxCTFFnhBdQ5zznDWfWg',
 };
 
+const thumbless = {
+  title: 'Uploading Static Files',
+  url:
+    'https://codesandbox.io/docs/learn/sandboxes/editors#uploading-static-files',
+  thumbnail: 'https://malformed-url.com',
+};
+
 export const ArticleVariant = () => <ArticleCard {...article} />;
 
-export const VideoVariant = () => <VideoCard {...video} />;
+export const ThumblessVariant = () => <ArticleCard {...thumbless} />;
 
-export const ThumblessVariant = () => <VideoCard {...video} thumbnail="" />;
+export const VideoVariant = () => <VideoCard {...video} />;
