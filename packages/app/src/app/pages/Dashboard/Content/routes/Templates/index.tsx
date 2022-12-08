@@ -52,7 +52,7 @@ export const Templates = () => {
   return (
     <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
-        <title>{activeTeam ? 'Team' : 'My'} Templates - CodeSandbox</title>
+        <title>Templates - CodeSandbox</title>
       </Helmet>
       <Header
         title="Templates"

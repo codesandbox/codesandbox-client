@@ -84,7 +84,7 @@ export const SandboxesPage = () => {
     >
       <Helmet>
         <title>
-          {currentPath.split('/').pop() || 'Dashboard'} - CodeSandbox
+          {currentPath.split('/').pop() || 'Sandboxes'} - CodeSandbox
         </title>
       </Helmet>
       <Header
