@@ -22,7 +22,8 @@ export const CreateCard: React.FC<CreateCardProps> = ({
       css={{
         position: 'relative',
         overflow: 'hidden',
-        maxWidth: '276px',
+        width: '100%',
+        height: '100%',
         padding: '24px',
         flex: 1,
         justifyContent: 'space-between',
