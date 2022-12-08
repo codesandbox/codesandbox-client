@@ -3,15 +3,10 @@ import { Icon, IconNames } from '../Icon';
 import { Stack } from '../Stack';
 import { Text } from '../Text';
 
-type AnchorProps = { as: 'a' } & React.AnchorHTMLAttributes<HTMLAnchorElement>;
-type ButtonProps = { as: 'button' } & React.ButtonHTMLAttributes<
-  HTMLButtonElement
->;
-
 type CreateCardProps = {
   icon: IconNames;
   label: string;
-} & (AnchorProps | ButtonProps);
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const CreateCard: React.FC<CreateCardProps> = ({
   icon,
@@ -20,6 +15,7 @@ export const CreateCard: React.FC<CreateCardProps> = ({
 }) => {
   return (
     <Stack
+      as="button"
       css={{
         position: 'relative',
         overflow: 'hidden',
