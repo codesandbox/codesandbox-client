@@ -10,7 +10,7 @@ export const AdminUpgradeToTeamPro = () => (
     </Text>
     <Link
       as={RouterLink}
-      to="/pro"
+      to="/pro?utm_source=side_banner_team_pro"
       title="Upgrade to Team PRO"
       css={{
         fontSize: '12px',
