@@ -22,12 +22,12 @@ export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
     background-size: cover;
     background-position: center;
     transform: scale(1);
-    transition: transform ease-in-out;
-    transition-duration: 100ms;
+    transition: transform linear;
+    transition-duration: 200ms;
   }
 
   &:hover::after {
-    transform: scale(1.01);
+    transform: scale(1.02);
   }
 `;
 StyledWrapper.defaultProps = {
