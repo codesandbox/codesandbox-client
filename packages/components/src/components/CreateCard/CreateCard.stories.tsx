@@ -15,13 +15,21 @@ const CardWrapper = styled.div`
 
 export const SimpleVariant = () => (
   <CardWrapper>
-    <CreateCard icon="github" label="Import from GitHub" />
+    <CreateCard
+      as="a"
+      href="#"
+      target="_blank"
+      icon="github"
+      label="Import from GitHub"
+    />
   </CardWrapper>
 );
 
 export const LongLabelVariant = () => (
   <CardWrapper>
     <CreateCard
+      as="button"
+      onClick={() => alert('hello')}
       icon="plus"
       label="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla, est tempor pellentesque dapibus, ligula dolor egestas ante, tempor pharetra."
     />

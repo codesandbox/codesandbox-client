@@ -3,22 +3,23 @@ import { Icon, IconNames } from '../Icon';
 import { Stack } from '../Stack';
 import { Text } from '../Text';
 
-type StackProps = React.ComponentProps<typeof Stack>;
+type AnchorProps = { as: 'a' } & React.AnchorHTMLAttributes<HTMLAnchorElement>;
+type ButtonProps = { as: 'button' } & React.ButtonHTMLAttributes<
+  HTMLButtonElement
+>;
 
 type CreateCardProps = {
   icon: IconNames;
   label: string;
-} & StackProps;
+} & (AnchorProps | ButtonProps);
 
 export const CreateCard: React.FC<CreateCardProps> = ({
-  as = 'button',
   icon,
   label,
   ...props
 }) => {
   return (
     <Stack
-      as={as}
       css={{
         position: 'relative',
         overflow: 'hidden',
@@ -33,17 +34,19 @@ export const CreateCard: React.FC<CreateCardProps> = ({
         backgroundColor: '#161616',
         outline: 'none',
         textDecoration: 'none',
-        transition: 'background ease-in-out, opacity ease-in-out',
+        transition: 'background ease-in-out',
         transitionDuration: theme => theme.speeds[2],
-        '&:hover, &:active': {
+
+        ':hover': {
           backgroundColor: 'card.backgroundHover',
         },
-        '&:focus-visible': {
+
+        ':focus-visible': {
           borderColor: 'focusBorder',
         },
       }}
       direction="vertical"
-      gap={4}
+      justify="space-between"
       {...props}
     >
       <Icon color="#999999" name={icon} size={20} />
