@@ -32,7 +32,7 @@ export const Liked = () => {
   return (
     <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>
       <Helmet>
-        <title>Liked Sandboxes - CodeSandbox</title>
+        <title>Likes - CodeSandbox</title>
       </Helmet>
       <Header
         title="Liked sandboxes"

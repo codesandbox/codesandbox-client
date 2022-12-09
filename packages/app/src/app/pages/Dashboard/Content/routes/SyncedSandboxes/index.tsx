@@ -78,7 +78,7 @@ export const SyncedSandboxesPage = () => {
       items={itemsToShow}
     >
       <Helmet>
-        <title>{param || 'Dashboard'} - CodeSandbox</title>
+        <title>{param || 'Synced sandboxes'} - CodeSandbox</title>
       </Helmet>
       <Header
         activeTeam={activeTeam}

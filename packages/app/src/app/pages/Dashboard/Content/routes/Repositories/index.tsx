@@ -126,7 +126,7 @@ export const RepositoriesPage = () => {
       items={itemsToShow}
     >
       <Helmet>
-        <title>{path || 'Dashboard'} - CodeSandbox</title>
+        <title>{path || 'Repositories'} - CodeSandbox</title>
       </Helmet>
       <Header
         activeTeam={activeTeam}

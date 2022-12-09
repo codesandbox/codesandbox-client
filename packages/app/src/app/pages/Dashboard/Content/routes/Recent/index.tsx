@@ -78,7 +78,7 @@ export const Recent = () => {
       items={items}
     >
       <Helmet>
-        <title>Dashboard - CodeSandbox</title>
+        <title>Recent - CodeSandbox</title>
       </Helmet>
       {isFree && isTeamSpace && (
         <Element

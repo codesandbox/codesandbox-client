@@ -32,7 +32,7 @@ export const Shared = () => {
   return (
     <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>
       <Helmet>
-        <title>Shared with Me - CodeSandbox</title>
+        <title>Shared with me - CodeSandbox</title>
       </Helmet>
       <Header
         title="Sandboxes shared with me"
