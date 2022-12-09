@@ -1,126 +1,16 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAppState, useActions } from 'app/overmind';
-import { Element, MessageStripe, Stack, Text } from '@codesandbox/components';
-import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
-import track from '@codesandbox/common/lib/utils/analytics';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import {
-  GRID_MAX_WIDTH,
-  GUTTER,
-  VariableGrid,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
-import { useGetCheckoutURL } from 'app/hooks/useCreateCheckout';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
-import styled from 'styled-components';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
-
-const StripeWarning: React.FC = () => {
-  const { isTeamAdmin } = useWorkspaceAuthorization();
-  const { isEligibleForTrial, isFree } = useWorkspaceSubscription();
-  const { activeTeam } = useAppState();
-
-  const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin && isFree ? activeTeam : undefined,
-    success_path: dashboardUrls.sandboxes(activeTeam),
-    cancel_path: dashboardUrls.sandboxes(activeTeam),
-  });
-
-  return (
-    <Element paddingX={4} paddingY={2}>
-      <MessageStripe justify="space-between">
-        Free teams are limited to 20 public sandboxes. Upgrade for unlimited
-        public and private sandboxes.
-        {isTeamAdmin ? (
-          <MessageStripe.Action
-            {...(checkout.state === 'READY'
-              ? {
-                  as: 'a',
-                  href: checkout.url,
-                }
-              : {
-                  as: Link,
-                  to: '/pro',
-                })}
-            onClick={() =>
-              isEligibleForTrial
-                ? track('Limit banner: sandboxes - Start Trial', {
-                    codesandbox: 'V1',
-                    event_source: 'UI',
-                  })
-                : track('Limit banner: sandboxes - Upgrade', {
-                    codesandbox: 'V1',
-                    event_source: 'UI',
-                  })
-            }
-          >
-            {isEligibleForTrial ? 'Start free trial' : 'Upgrade now'}
-          </MessageStripe.Action>
-        ) : (
-          <MessageStripe.Action
-            as="a"
-            href="https://codesandbox.io/docs/learn/plan-billing/trials"
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => {
-              track('Limit banner: sandboxes - Learn More', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
-            }}
-          >
-            Learn more
-          </MessageStripe.Action>
-        )}
-      </MessageStripe>
-    </Element>
-  );
-};
-
-const StyledEmptyDescription = styled(Text)`
-  font-size: 16px;
-  line-height: 1.5;
-  color: #999999;
-`;
-
-const EmptyState: React.FC = () => {
-  const { isPersonalSpace } = useWorkspaceAuthorization();
-  return (
-    <Stack
-      css={{
-        width: `calc(100% - ${2 * GUTTER}px)`,
-        maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-        margin: '24px auto 0',
-      }}
-      direction="vertical"
-    >
-      {isPersonalSpace ? (
-        <StyledEmptyDescription as="p">
-          Sandboxes are a great way to prototype your ideas with zero startup
-          costs and with everything you need: a code editor, previews, dev
-          servers, unit tests, Storybook and many other devtools.
-        </StyledEmptyDescription>
-      ) : (
-        <Stack direction="vertical" gap={6}>
-          <StyledEmptyDescription as="p">
-            Sandboxes are a great way to prototype your ideas with zero startup
-            costs and with everything you need: a code editor, previews, dev
-            servers, unit tests, Storybook and many other devtools.
-          </StyledEmptyDescription>
-          <StyledEmptyDescription as="p">
-            Sandboxes in this section are visible to all team members.
-          </StyledEmptyDescription>
-        </Stack>
-      )}
-    </Stack>
-  );
-};
+import { MaxSandboxesBanner } from './MaxSandboxesBanner';
+import { EmptyState } from './EmptyState';
 
 export const SandboxesPage = () => {
   const [level, setLevel] = React.useState(0);
@@ -135,7 +25,6 @@ export const SandboxesPage = () => {
     activeTeam,
   } = useAppState();
 
-  const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
 
   React.useEffect(() => {
@@ -197,7 +86,7 @@ export const SandboxesPage = () => {
         showSortOptions={Boolean(currentPath)}
       />
 
-      {isFree && hasMaxPublicSandboxes ? <StripeWarning /> : null}
+      {hasMaxPublicSandboxes ? <MaxSandboxesBanner /> : null}
 
       {itemsToShow.length > 0 ? (
         <VariableGrid
