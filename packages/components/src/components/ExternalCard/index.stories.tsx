@@ -1,6 +1,13 @@
 import React from 'react';
+import styled from 'styled-components';
 import { ArticleCard } from './ArticleCard';
 import { VideoCard } from './VideoCard';
+
+const StyledWraperGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  height: 154px;
+`;
 
 export default {
   title: 'components/facelift/ExternalCard',
@@ -31,8 +38,20 @@ const thumbless = {
   thumbnail: 'https://malformed-url.com',
 };
 
-export const ArticleVariant = () => <ArticleCard {...article} />;
+export const ArticleVariant = () => (
+  <StyledWraperGrid>
+    <ArticleCard {...article} />
+  </StyledWraperGrid>
+);
 
-export const ThumblessVariant = () => <ArticleCard {...thumbless} />;
+export const ThumblessVariant = () => (
+  <StyledWraperGrid>
+    <ArticleCard {...thumbless} />
+  </StyledWraperGrid>
+);
 
-export const VideoVariant = () => <VideoCard {...video} />;
+export const VideoVariant = () => (
+  <StyledWraperGrid>
+    <VideoCard {...video} />
+  </StyledWraperGrid>
+);

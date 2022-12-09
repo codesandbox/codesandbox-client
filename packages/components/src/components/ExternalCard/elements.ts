@@ -6,8 +6,8 @@ export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  height: 156px;
-  width: 276px;
+  width: 100%;
+  height: 100%;
   background-color: #161616;
   outline: none;
   border-radius: 4px;

@@ -40,16 +40,15 @@ export const VideoCard: React.FC<VideoCardProps> = ({
           <Stack
             align="center"
             css={{
+              padding: '8px',
               flexShrink: 0,
-              height: '32px',
-              width: '32px',
               borderRadius: '50%',
               background: 'rgba(255, 255, 255, 0.2)',
               backdropFilter: 'blur(2.68809px)',
             }}
             justify="center"
           >
-            <Icon name="start" />
+            <Icon css={{}} name="start" />
           </Stack>
           <StyledTitle clamp>{title}</StyledTitle>
           <StyledTitle aria-label={durationLabel} clamp={false}>
