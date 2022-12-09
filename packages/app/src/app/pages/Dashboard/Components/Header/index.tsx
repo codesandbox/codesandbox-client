@@ -86,14 +86,13 @@ export const Header = ({
     <Stack
       align="center"
       justify="space-between"
-      paddingBottom={2}
       css={css({
         width: `calc(100% - ${2 * GUTTER}px)`,
         maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-        marginX: 'auto',
+        margin: '-8px auto 0', // Negative margin top to align visually w/ the sidebar
       })}
     >
-      <Stack align="center" marginBottom={1} marginTop={-2} gap={2}>
+      <Stack align="center" gap={2}>
         {loading ? (
           <SkeletonText css={css({ height: 6 })} />
         ) : (
