@@ -2,11 +2,19 @@ import React from 'react';
 import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Stack, Text, Button } from '@codesandbox/components';
 import css from '@styled-system/css';
+import { SubscriptionInterval } from 'app/graphql/types';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+
+import {
+  StyledCard,
+  StyledSubscriptionLink,
+} from '../components/SubscriptionCard';
 
 export const ConfirmBillingInterval: React.FC = () => {
   const {
     seats,
-    selectedPlan,
+    // TODO: Remove all things selectedPlan
+    // selectedPlan,
     paymentPreview,
     updatingSubscription,
   } = useAppState().pro;
@@ -16,19 +24,18 @@ export const ConfirmBillingInterval: React.FC = () => {
     updateSubscriptionBillingInterval,
   } = useActions().pro;
 
-  React.useEffect(() => {
-    previewUpdateSubscriptionBillingInterval({
-      billingInterval: selectedPlan.billingInterval,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { subscription } = useWorkspaceSubscription();
 
-  if (!paymentPreview) return null;
+  if (!paymentPreview) {
+    previewUpdateSubscriptionBillingInterval({
+      billingInterval: SubscriptionInterval.Yearly,
+    });
+  }
 
   const changeBillingInterval = async () => {
     try {
       await updateSubscriptionBillingInterval({
-        billingInterval: selectedPlan.billingInterval,
+        billingInterval: SubscriptionInterval.Yearly,
       });
     } catch {
       notificationToast.error(
@@ -37,67 +44,80 @@ export const ConfirmBillingInterval: React.FC = () => {
     }
   };
 
-  return (
-    <div style={{ paddingBottom: 64, width: 500 }}>
-      <Text size={7} as="h1" block align="center" marginBottom={12}>
-        Change Billing Interval
-      </Text>
+  // TODO loading state instead?
+  if (!paymentPreview) return null;
 
-      <Stack direction="vertical" gap={10}>
-        <Stack
-          direction="vertical"
-          gap={2}
-          css={css({
-            padding: 4,
-            marginBottom: 8,
-            border: '1px solid',
-            borderColor: 'grays.500',
-            borderRadius: 'small',
-            overflow: 'hidden',
-          })}
-        >
-          <Text size={3}>Team editors</Text>
-          <Stack justify="space-between">
-            <Text variant="muted" size={3}>
-              {seats} {seats === 1 ? 'seat' : 'seats'}
-              <Text size={2}> ✕ </Text>
-              {paymentPreview.nextPayment.currency}{' '}
-              {(paymentPreview.nextPayment.amount / 100 / seats).toFixed(2)}
-            </Text>
-            <Text variant="muted" size={3}>
-              {paymentPreview.nextPayment.currency}{' '}
-              {(paymentPreview.nextPayment.amount / 100).toFixed(2)}
-            </Text>
-          </Stack>
-          <Stack justify="space-between">
-            <Text variant="muted" size={3}>
-              Proration for days left in subscription
-            </Text>
-            <Text variant="muted" size={3}>
-              - {paymentPreview.nextPayment.currency}{' '}
-              {(
-                (paymentPreview.nextPayment.amount -
-                  paymentPreview.immediatePayment.amount) /
-                100
-              ).toFixed(2)}
-            </Text>
-          </Stack>
-          <Stack
-            justify="space-between"
-            css={css({
-              borderTop: '1px solid',
-              borderColor: 'grays.500',
-              paddingTop: 10,
-            })}
+  return (
+    <div>
+      <Stack gap={10} direction="vertical">
+        <Stack gap={3} direction="vertical" align="center">
+          <Text
+            as="h1"
+            fontFamily="everett"
+            size={48}
+            weight="500"
+            align="center"
+            lineHeight="56px"
+            margin={0}
           >
-            <Text size={3}>Total</Text>
-            <Text weight="bold">
-              {paymentPreview.immediatePayment.currency}{' '}
-              {(paymentPreview.immediatePayment.amount / 100).toFixed(2)} (incl.
-              tax)
-            </Text>
-          </Stack>
+            Change to yearly billing.
+          </Text>
         </Stack>
+
+        <Stack justify="center">
+          <StyledCard isHighlighted>
+            <Stack direction="vertical" gap={9}>
+              <Stack direction="vertical" gap={6}>
+                <Stack direction="vertical" gap={1}>
+                  <Stack justify="space-between" gap={2}>
+                    <Text>
+                      {subscription.quantity}{' '}
+                      {subscription.quantity === 1 ? 'seat' : 'seats'}
+                    </Text>
+                    <Text>
+                      {paymentPreview.nextPayment.currency}{' '}
+                      {(
+                        paymentPreview.nextPayment.amount /
+                        100 /
+                        seats
+                      ).toFixed(2)}
+                    </Text>
+                  </Stack>
+                  <Stack justify="space-between" gap={2}>
+                    <Text>Proration for days left in subscription</Text>
+                    <Text>
+                      - {paymentPreview.nextPayment.currency}{' '}
+                      {(
+                        (paymentPreview.nextPayment.amount -
+                          paymentPreview.immediatePayment.amount) /
+                        100
+                      ).toFixed(2)}
+                    </Text>
+                  </Stack>
+                </Stack>
+                <Stack justify="space-between" gap={2}>
+                  <Text weight="bold" size={4}>
+                    Total
+                  </Text>
+                  <Text weight="bold" size={4}>
+                    {paymentPreview.immediatePayment.currency}{' '}
+                    {(paymentPreview.immediatePayment.amount / 100).toFixed(2)}{' '}
+                    (incl. tax)
+                  </Text>
+                </Stack>
+              </Stack>
+              <StyledSubscriptionLink
+                as="button"
+                onClick={changeBillingInterval}
+                variant="highlight"
+              >
+                Update billing interval
+              </StyledSubscriptionLink>
+            </Stack>
+          </StyledCard>
+        </Stack>
+
+        {/* TODO: loading, disabled, etc. */}
         <Button
           onClick={changeBillingInterval}
           loading={updatingSubscription}

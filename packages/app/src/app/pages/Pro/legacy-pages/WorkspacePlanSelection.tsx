@@ -126,8 +126,6 @@ export const WorkspacePlanSelection: React.FC = () => {
     variant: 'light',
   };
 
-  // TODO: Since all the subscription management was based on creating a new subscription
-  // we will probably remove most of the CTAs and replace them with just "Contact suport".
   const teamProCta: React.ComponentProps<
     typeof SubscriptionCard
     // eslint-disable-next-line no-nested-ternary
@@ -135,7 +133,7 @@ export const WorkspacePlanSelection: React.FC = () => {
     ? // Only allowed to change from monthly to yearly
       currentSubscription.billingInterval === SubscriptionInterval.Monthly
       ? {
-          text: 'Update billing interval',
+          text: 'Change to yearly billing',
           onClick: () => {
             setStep(Step.ConfirmBillingInterval);
           },
