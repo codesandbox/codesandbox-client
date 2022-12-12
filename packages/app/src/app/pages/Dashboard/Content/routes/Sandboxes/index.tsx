@@ -9,7 +9,7 @@ import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
-import { MaxSandboxesBanner } from './MaxSandboxesBanner';
+import { RestrictionsBanner } from './RestrictionsBanner';
 import { EmptyState } from './EmptyState';
 
 export const SandboxesPage = () => {
@@ -86,7 +86,7 @@ export const SandboxesPage = () => {
         showSortOptions={Boolean(currentPath)}
       />
 
-      {hasMaxPublicSandboxes ? <MaxSandboxesBanner /> : null}
+      {hasMaxPublicSandboxes ? <RestrictionsBanner /> : null}
 
       {itemsToShow.length > 0 ? (
         <VariableGrid
