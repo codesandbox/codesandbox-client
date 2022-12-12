@@ -2,7 +2,6 @@ import { SubscriptionType, SubscriptionInterval } from 'app/graphql/types';
 
 export enum Step {
   WorkspacePlanSelection = 'WorkspacePlanSelection',
-  InlineCheckout = 'InlineCheckout',
   ConfirmBillingInterval = 'ConfirmBillingInterval',
 }
 

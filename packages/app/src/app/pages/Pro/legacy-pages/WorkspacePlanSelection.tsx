@@ -66,6 +66,7 @@ const CancelButton = ({ children, onClick }: CancelButtonProps) => (
   </Text>
 );
 
+// TODO: Rename
 export const WorkspacePlanSelection: React.FC = () => {
   const {
     personalWorkspaceId,

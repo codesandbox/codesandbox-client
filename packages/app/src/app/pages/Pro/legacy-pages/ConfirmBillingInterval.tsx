@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { Stack, Text, Button } from '@codesandbox/components';
-import css from '@styled-system/css';
+import { Stack, Text } from '@codesandbox/components';
 import { SubscriptionInterval } from 'app/graphql/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
@@ -44,7 +43,8 @@ export const ConfirmBillingInterval: React.FC = () => {
     }
   };
 
-  // TODO loading state instead?
+  // Rendering null when paymentPreview is unavailable, if we render something it will show up on the same page
+  // as WorkspacePlanSelection.
   if (!paymentPreview) return null;
 
   return (
@@ -110,26 +110,15 @@ export const ConfirmBillingInterval: React.FC = () => {
                 as="button"
                 onClick={changeBillingInterval}
                 variant="highlight"
+                disabled={updatingSubscription}
               >
-                Update billing interval
+                {updatingSubscription
+                  ? 'Loading...'
+                  : 'Update billing interval'}
               </StyledSubscriptionLink>
             </Stack>
           </StyledCard>
         </Stack>
-
-        {/* TODO: loading, disabled, etc. */}
-        <Button
-          onClick={changeBillingInterval}
-          loading={updatingSubscription}
-          disabled={updatingSubscription}
-          css={css({
-            fontSize: 3,
-            height: 10,
-            fontWeight: 700,
-          })}
-        >
-          Update billing interval
-        </Button>
       </Stack>
     </div>
   );

@@ -7,7 +7,6 @@ import { Step } from 'app/overmind/namespaces/pro/types';
 import { Navigation } from 'app/pages/common/Navigation';
 
 import { WorkspacePlanSelection } from './legacy-pages/WorkspacePlanSelection';
-import { InlineCheckout } from './legacy-pages/InlineCheckout';
 import { ConfirmBillingInterval } from './legacy-pages/ConfirmBillingInterval';
 import { PaymentSuccess } from './legacy-pages/PaymentSuccess';
 
@@ -66,33 +65,17 @@ const ModifySubscription = () => {
 
   const {
     step,
-    isPaddleInitialised,
+    // TODO: iets
+    // isPaddleInitialised,
     isBillingAmountLoaded,
   } = useAppState().pro;
 
   return (
     <div>
       {step === Step.WorkspacePlanSelection ||
-      (step === Step.InlineCheckout && !isPaddleInitialised) ||
       (step === Step.ConfirmBillingInterval && !isBillingAmountLoaded) ? (
-        <WorkspacePlanSelection
-          loading={
-            (step === Step.InlineCheckout && !isPaddleInitialised) ||
-            (step === Step.ConfirmBillingInterval && !isBillingAmountLoaded)
-          }
-        />
+        <WorkspacePlanSelection />
       ) : null}
-      {step === Step.InlineCheckout && (
-        <div
-          style={{
-            width: isPaddleInitialised ? 'auto' : 0,
-            height: isPaddleInitialised ? 'auto' : 0,
-            overflow: 'hidden',
-          }}
-        >
-          <InlineCheckout />
-        </div>
-      )}
       {step === Step.ConfirmBillingInterval && <ConfirmBillingInterval />}
     </div>
   );
