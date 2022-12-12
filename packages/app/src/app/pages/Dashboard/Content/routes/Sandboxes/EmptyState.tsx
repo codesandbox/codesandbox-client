@@ -27,6 +27,13 @@ const StyledEmptyDescription = styled(Text)`
   color: #999999;
 `;
 
+const TEMPLATE_IDS = [
+  'k8dsq1', // NodeJS (cloud)
+  'vanilla', // Vanilla JS (browser)
+  'uo1h0', // NextJS (cloud)
+  '9qputt', // React + Vite (browser)
+];
+
 export const EmptyState: React.FC = () => {
   const { isPersonalSpace } = useWorkspaceAuthorization();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
@@ -115,6 +122,7 @@ export const EmptyState: React.FC = () => {
             position: 'relative',
             overflow: 'hidden',
             display: 'grid',
+            listStyle: 'none',
             gap: '16px',
             gridTemplateColumns: 'repeat(auto-fill, minmax(268px, 1fr))',
             gridAutoRows: 'minmax(156px, 1fr)',
@@ -133,15 +141,19 @@ export const EmptyState: React.FC = () => {
             ))}
           {officialTemplates.state === 'ready' &&
             officialTemplates.templates.length > 0 &&
-            officialTemplates.templates.map(template => (
-              <TemplateCard
-                key={template.id}
-                disabled={hasMaxPublicSandboxes}
-                template={template}
-                onOpenTemplate={handleOpenTemplate}
-                onSelectTemplate={handleSelectTemplate}
-              />
-            ))}
+            officialTemplates.templates
+              .filter(t => TEMPLATE_IDS.includes(t.sandbox.id))
+              .map(template => (
+                <Stack as="li" key={template.id}>
+                  <TemplateCard
+                    key={template.id}
+                    disabled={hasMaxPublicSandboxes}
+                    template={template}
+                    onOpenTemplate={handleOpenTemplate}
+                    onSelectTemplate={handleSelectTemplate}
+                  />
+                </Stack>
+              ))}
 
           {((officialTemplates.state === 'ready' &&
             officialTemplates.templates.length === 0) ||
