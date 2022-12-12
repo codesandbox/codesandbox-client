@@ -36,7 +36,6 @@ export const ProLegacy: React.FC = () => {
         <Element css={{ height: '48px' }} />
 
         <Switch>
-          {/* TODO */}
           <Route path={'/pro/success'}>
             <PaymentSuccess />
           </Route>
