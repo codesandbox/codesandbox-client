@@ -27,7 +27,12 @@ const useSearchedSandboxes = (query: string) => {
       setFoundResults(index.search(query));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, searchIndex]);
+  }, [
+    query,
+    searchIndex,
+    state.dashboard.sandboxes.SEARCH,
+    state.dashboard.repositories,
+  ]);
 
   return foundResults;
 };

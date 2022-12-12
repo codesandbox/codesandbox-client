@@ -126,8 +126,9 @@ const SearchInputGroup = () => {
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
-
-    if (event.target.value.length >= 2) debouncedSearch(event.target.value);
+    if (event.target.value.length >= 1) {
+      debouncedSearch(event.target.value);
+    }
     if (!event.target.value) {
       history.push(dashboardUrls.sandboxes('/', activeTeam));
     }
