@@ -138,11 +138,11 @@ export const RepositoriesPage = () => {
         readOnly={isReadOnlyRepo}
       />
 
-      {isReadOnlyRepo && (
+      {isReadOnlyRepo ? (
         <Element paddingX={4} paddingY={2}>
-          {selectedRepo?.private && <PrivateRepoFreeTeam />}
+          <PrivateRepoFreeTeam />
         </Element>
-      )}
+      ) : null}
 
       {!selectedRepo &&
       (hasMaxPublicRepositories || hasMaxPrivateRepositories) ? (
@@ -151,13 +151,15 @@ export const RepositoriesPage = () => {
         </Element>
       ) : null}
 
-      <VariableGrid
-        page={pageType}
-        items={itemsToShow}
-        customGridElementHeight={
-          selectedRepo ? undefined : 154
-        } /* 154 just for repo cards */
-      />
+      {itemsToShow.length > 0 ? (
+        <VariableGrid
+          page={pageType}
+          items={itemsToShow}
+          customGridElementHeight={
+            selectedRepo ? undefined : 154
+          } /* 154 just for repo cards */
+        />
+      ) : null}
     </SelectionProvider>
   );
 };
