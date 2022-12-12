@@ -16,28 +16,38 @@ const useSearchedSandboxes = (query: string) => {
     | (SandboxFragmentDashboardFragment | SidebarCollectionDashboardFragment)[]
     | null
   >(null);
+  const [searchIndex, setSearchindex] = React.useState<Fuse<
+    SandboxFragmentDashboardFragment | SidebarCollectionDashboardFragment,
+    unknown
+  > | null>(null);
 
   useEffect(() => {
     actions.dashboard.getPage(sandboxesTypes.SEARCH);
   }, [actions.dashboard, state.activeTeam]);
 
+  useEffect(
+    () => {
+      setSearchindex(calculateSearchIndex(state.dashboard, state.activeTeam));
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      state.dashboard.sandboxes.SEARCH,
+      state.dashboard.repositories,
+      state.activeTeam,
+    ]
+  );
+
   useEffect(() => {
-    const index = searchIndex(state.dashboard, state.activeTeam);
-    if (index) {
-      setFoundResults(index.search(query));
+    if (searchIndex) {
+      setFoundResults(searchIndex.search(query));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    query,
-    searchIndex,
-    state.dashboard.sandboxes.SEARCH,
-    state.dashboard.repositories,
-  ]);
+  }, [query, searchIndex]);
 
   return foundResults;
 };
 
-const searchIndex = (dashboard: any, activeTeam: string) => {
+const calculateSearchIndex = (dashboard: any, activeTeam: string) => {
   const sandboxes = dashboard.sandboxes.SEARCH;
   if (sandboxes == null) {
     return null;
