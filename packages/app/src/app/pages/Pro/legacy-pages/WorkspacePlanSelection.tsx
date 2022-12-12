@@ -98,7 +98,8 @@ export const WorkspacePlanSelection: React.FC = () => {
     [isPersonalSpace, subTypeParam, setActiveTeam, personalWorkspaceId]
   );
 
-  // TODO: Does this ever occur with the checks in /pro/index.tsx and Legacy.tsx?
+  // TODO: Does this ever occur with the checks in /pro/index.tsx and Legacy.tsx? it
+  // might so I'm leaving this here for now.
   if (!activeTeam || !dashboard.teams.length) return null;
 
   const currentSubscription = activeTeamInfo?.subscription;
