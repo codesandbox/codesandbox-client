@@ -50,33 +50,26 @@ export const ProLegacy: React.FC = () => {
 };
 
 const ModifySubscription = () => {
+  const { step } = useAppState().pro;
+
   /**
    * The user flow forks based on the account.
    *
-   * step 1 - choose account (personal or team) and plan
-   * step 2 -
-   *    if subscription doesn't exist - Inline Checkout
-   *    if subscription already exists - Confirm Amount Change
-   * step 3 - redirect to pro/success
+   * step 1 - Choose account (personal or team) and plan
+   * step 2 - Confirm Amount Change
+   * step 3 - Redirect to pro/success
    *
    * We don't treat these as separate pages because steps transition into
    * each other with data from the previous step
    */
 
-  const {
-    step,
-    // TODO: iets
-    // isPaddleInitialised,
-    isBillingAmountLoaded,
-  } = useAppState().pro;
+  if (step === Step.WorkspacePlanSelection) {
+    return <WorkspacePlanSelection />;
+  }
 
-  return (
-    <div>
-      {step === Step.WorkspacePlanSelection ||
-      (step === Step.ConfirmBillingInterval && !isBillingAmountLoaded) ? (
-        <WorkspacePlanSelection />
-      ) : null}
-      {step === Step.ConfirmBillingInterval && <ConfirmBillingInterval />}
-    </div>
-  );
+  if (step === Step.ConfirmBillingInterval) {
+    return <ConfirmBillingInterval />;
+  }
+
+  return null;
 };

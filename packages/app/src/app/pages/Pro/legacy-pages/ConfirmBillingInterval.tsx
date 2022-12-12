@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { Stack, Text } from '@codesandbox/components';
+import { Stack, Text, SkeletonText } from '@codesandbox/components';
 import { SubscriptionInterval } from 'app/graphql/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
@@ -43,10 +43,6 @@ export const ConfirmBillingInterval: React.FC = () => {
     }
   };
 
-  // Rendering null when paymentPreview is unavailable, if we render something it will show up on the same page
-  // as WorkspacePlanSelection.
-  if (!paymentPreview) return null;
-
   return (
     <div>
       <Stack gap={10} direction="vertical">
@@ -74,36 +70,50 @@ export const ConfirmBillingInterval: React.FC = () => {
                       {subscription.quantity}{' '}
                       {subscription.quantity === 1 ? 'seat' : 'seats'}
                     </Text>
-                    <Text>
-                      {paymentPreview.nextPayment.currency}{' '}
-                      {(
-                        paymentPreview.nextPayment.amount /
-                        100 /
-                        seats
-                      ).toFixed(2)}
-                    </Text>
+                    {paymentPreview ? (
+                      <Text>
+                        {paymentPreview.nextPayment.currency}{' '}
+                        {(
+                          paymentPreview.nextPayment.amount /
+                          100 /
+                          seats
+                        ).toFixed(2)}
+                      </Text>
+                    ) : (
+                      <SkeletonText css={{ width: '50px' }} />
+                    )}
                   </Stack>
                   <Stack justify="space-between" gap={2}>
                     <Text>Proration for days left in subscription</Text>
-                    <Text>
-                      - {paymentPreview.nextPayment.currency}{' '}
-                      {(
-                        (paymentPreview.nextPayment.amount -
-                          paymentPreview.immediatePayment.amount) /
-                        100
-                      ).toFixed(2)}
-                    </Text>
+                    {paymentPreview ? (
+                      <Text>
+                        - {paymentPreview.nextPayment.currency}{' '}
+                        {(
+                          (paymentPreview.nextPayment.amount -
+                            paymentPreview.immediatePayment.amount) /
+                          100
+                        ).toFixed(2)}
+                      </Text>
+                    ) : (
+                      <SkeletonText css={{ width: '50px' }} />
+                    )}
                   </Stack>
                 </Stack>
                 <Stack justify="space-between" gap={2}>
                   <Text weight="bold" size={4}>
                     Total
                   </Text>
-                  <Text weight="bold" size={4}>
-                    {paymentPreview.immediatePayment.currency}{' '}
-                    {(paymentPreview.immediatePayment.amount / 100).toFixed(2)}{' '}
-                    (incl. tax)
-                  </Text>
+                  {paymentPreview ? (
+                    <Text weight="bold" size={4}>
+                      {paymentPreview.immediatePayment.currency}{' '}
+                      {(paymentPreview.immediatePayment.amount / 100).toFixed(
+                        2
+                      )}{' '}
+                      (incl. tax)
+                    </Text>
+                  ) : (
+                    <SkeletonText css={{ width: '100px' }} />
+                  )}
                 </Stack>
               </Stack>
               <StyledSubscriptionLink
@@ -112,7 +122,7 @@ export const ConfirmBillingInterval: React.FC = () => {
                 variant="highlight"
                 disabled={updatingSubscription}
               >
-                {updatingSubscription
+                {!paymentPreview || updatingSubscription
                   ? 'Loading...'
                   : 'Update billing interval'}
               </StyledSubscriptionLink>
