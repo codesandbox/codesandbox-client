@@ -10,6 +10,7 @@ import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { MaxReposFreeTeam, PrivateRepoFreeTeam } from './stripes';
+import { EmptyState } from './EmptyState';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -159,7 +160,9 @@ export const RepositoriesPage = () => {
             selectedRepo ? undefined : 154
           } /* 154 just for repo cards */
         />
-      ) : null}
+      ) : (
+        <EmptyState />
+      )}
     </SelectionProvider>
   );
 };
