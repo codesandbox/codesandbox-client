@@ -4,8 +4,7 @@ import { sortBy } from 'lodash-es';
 import { useLocation } from 'react-router-dom';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
 import { Stack, Text } from '@codesandbox/components';
-// TODO: Tracking
-// import track from '@codesandbox/common/lib/utils/analytics';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions } from 'app/overmind';
 import { Step } from 'app/overmind/namespaces/pro/types';
 import { SubscriptionType, SubscriptionInterval } from 'app/graphql/types';
@@ -136,6 +135,11 @@ export const WorkspacePlanSelection: React.FC = () => {
       ? {
           text: 'Change to yearly billing',
           onClick: () => {
+            track('legacy subscription page - change to yearly billing', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+
             setStep(Step.ConfirmBillingInterval);
           },
           variant: 'light',
@@ -144,6 +148,12 @@ export const WorkspacePlanSelection: React.FC = () => {
           text: 'Contact support',
           href: 'mailto:support@codesandbox.io',
           variant: 'light',
+          onClick: () => {
+            track('legacy subscription page - contact support', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+          },
         }
     : undefined;
 
@@ -257,7 +267,16 @@ export const WorkspacePlanSelection: React.FC = () => {
         </Stack>
 
         {isPersonalSpace ? (
-          <CancelButton onClick={cancelSubscriptionClicked}>
+          <CancelButton
+            onClick={() => {
+              track('legacy subscription page - cancel subscription', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+
+              cancelSubscriptionClicked();
+            }}
+          >
             cancel your subscription
           </CancelButton>
         ) : null}

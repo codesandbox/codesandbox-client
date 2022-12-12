@@ -55,7 +55,7 @@ const ModifySubscription = () => {
    * The user flow forks based on the account.
    *
    * step 1 - Choose account (personal or team) and plan
-   * step 2 - Confirm Amount Change
+   * step 2 - Confirm billing Change
    * step 3 - Redirect to pro/success
    *
    * We don't treat these as separate pages because steps transition into

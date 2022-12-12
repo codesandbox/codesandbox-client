@@ -1,6 +1,7 @@
 import React from 'react';
-import { useAppState, useActions, useEffects } from 'app/overmind';
 import { Stack, Text, SkeletonText } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { useAppState, useActions, useEffects } from 'app/overmind';
 import { SubscriptionInterval } from 'app/graphql/types';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
@@ -31,7 +32,12 @@ export const ConfirmBillingInterval: React.FC = () => {
     });
   }
 
-  const changeBillingInterval = async () => {
+  const updateBillingInterval = async () => {
+    track('legacy subscription page - update billing interval', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+
     try {
       await updateSubscriptionBillingInterval({
         billingInterval: SubscriptionInterval.Yearly,
@@ -118,7 +124,7 @@ export const ConfirmBillingInterval: React.FC = () => {
               </Stack>
               <StyledSubscriptionLink
                 as="button"
-                onClick={changeBillingInterval}
+                onClick={updateBillingInterval}
                 variant="highlight"
                 disabled={updatingSubscription}
               >
