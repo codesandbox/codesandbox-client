@@ -1,6 +1,7 @@
 import { Context } from 'app/overmind';
 import { withLoadApp } from 'app/overmind/factories';
-import { Step, Plan, PaymentSummary, PaymentPreview } from './types';
+import { SubscriptionInterval } from 'app/graphql/types';
+import { Step, PaymentSummary, PaymentPreview } from './types';
 
 export const getPrices = async ({ state, effects }: Context) => {
   try {
@@ -32,17 +33,13 @@ export const billingAmountLoaded = ({ state }: Context) => {
   state.pro.isBillingAmountLoaded = true;
 };
 
-export const updateSelectedPlan = ({ state }: Context, plan: Plan) => {
-  state.pro.selectedPlan = plan;
-};
-
 // TODO
 export const previewUpdateSubscriptionBillingInterval = async (
   { state, effects }: Context,
   {
     billingInterval,
   }: {
-    billingInterval: Plan['billingInterval'];
+    billingInterval: SubscriptionInterval;
   }
 ) => {
   try {
@@ -72,7 +69,7 @@ export const updateSubscriptionBillingInterval = async (
   {
     billingInterval,
   }: {
-    billingInterval: Plan['billingInterval'];
+    billingInterval: SubscriptionInterval;
   }
 ) => {
   state.pro.updatingSubscription = true;

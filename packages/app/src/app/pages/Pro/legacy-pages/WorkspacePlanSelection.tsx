@@ -19,9 +19,6 @@ import {
 import { Switcher } from '../components/Switcher';
 import { SubscriptionCard } from '../components/SubscriptionCard';
 
-/**
- * TODO: Update with actual subscription instead of selected plan
- */
 const getBillingText = ({
   quantity,
   unitPrice,

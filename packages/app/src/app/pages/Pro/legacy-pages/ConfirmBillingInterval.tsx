@@ -11,13 +11,7 @@ import {
 } from '../components/SubscriptionCard';
 
 export const ConfirmBillingInterval: React.FC = () => {
-  const {
-    seats,
-    // TODO: Remove all things selectedPlan
-    // selectedPlan,
-    paymentPreview,
-    updatingSubscription,
-  } = useAppState().pro;
+  const { seats, paymentPreview, updatingSubscription } = useAppState().pro;
   const { notificationToast } = useEffects();
   const {
     previewUpdateSubscriptionBillingInterval,
