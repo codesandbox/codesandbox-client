@@ -59,7 +59,7 @@ export const SyncedSandbox = ({
     onDoubleClick,
     onContextMenu,
     onBlur,
-    isViewOnly: false,
+    restricted: false,
     isScrolling: props.isScrolling,
     'data-selection-id': path,
   };

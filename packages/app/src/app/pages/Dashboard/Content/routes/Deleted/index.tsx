@@ -61,7 +61,7 @@ export const Deleted = () => {
   return (
     <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
-        <title>Deleted sandboxes - CodeSandbox</title>
+        <title>Recently deleted - CodeSandbox</title>
       </Helmet>
       <Header
         title="Recently deleted"

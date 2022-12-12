@@ -508,7 +508,7 @@ export const WorkspaceSettings = () => {
                 }
               : {
                   as: RouterLink,
-                  to: '/pro',
+                  to: '/pro?utm_source=dashboard_workspace_settings',
                 })}
             onClick={() =>
               track(

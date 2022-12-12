@@ -29,7 +29,7 @@ export interface SandboxItemComponentProps {
   onInputKeyDown: (evt: React.KeyboardEvent<HTMLInputElement>) => void;
   onSubmit: (evt: React.FormEvent<HTMLFormElement>) => void;
   onInputBlur: (evt: React.FocusEvent<HTMLInputElement>) => void;
-  isViewOnly?: boolean;
+  restricted?: boolean;
 
   thumbnailRef: React.Ref<HTMLDivElement>;
   opacity: number;

@@ -40,7 +40,7 @@ export const MaxPublicSandboxes: React.FC<MaxPublicReposProps> = ({
               }
             : {
                 as: Link,
-                to: '/pro',
+                to: '/pro?utm_source=dashboard_upgrade_banner',
               })}
           onClick={() => {
             if (!checkoutUrl) {

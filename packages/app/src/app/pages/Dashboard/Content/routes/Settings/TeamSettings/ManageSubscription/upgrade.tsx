@@ -67,7 +67,11 @@ export const Upgrade = () => {
 
         <Button
           as="a"
-          href={checkout.state === 'READY' ? checkout.url : '/pro'}
+          href={
+            checkout.state === 'READY'
+              ? checkout.url
+              : '/pro?utm_source=settings_upgrade'
+          }
           marginTop={2}
           variant="trial"
           onClick={() => {

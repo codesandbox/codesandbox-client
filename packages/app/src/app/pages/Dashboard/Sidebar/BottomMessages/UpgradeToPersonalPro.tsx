@@ -10,7 +10,7 @@ export const UpgradeToPersonalPro = () => (
     </Text>
     <Link
       as={RouterLink}
-      to="/pro"
+      to="/pro?utm_source=personal_pro_side_banner"
       title="Upgrade to Personal PRO"
       css={{
         fontSize: '12px',

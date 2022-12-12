@@ -66,8 +66,15 @@ export type State = {
   };
   curatedAlbums: DashboardAlbum[];
   contributions: Branch[] | null;
-  /** v2 repositories (formerly projects) */
-  repositories: Repository[] | null;
+  /**
+   * v2 repositories (formerly projects)
+   * stores as a record of team id and repositories (or null).
+   * implemented this way to overcome an issue where the
+   * delayed synced repositories fetch on a previous team
+   * overrides the current team data.
+   * @see {@link https://linear.app/codesandbox/issue/XTD-375}
+   */
+  repositories: Record<string, Repository[] | null> | null;
   starredRepos: Array<{ owner: string; name: string }>;
   /**
    * Use these variables to track if items are being removed. This way

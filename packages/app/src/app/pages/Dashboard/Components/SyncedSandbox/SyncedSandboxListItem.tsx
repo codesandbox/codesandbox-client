@@ -20,7 +20,7 @@ export const SyncedSandboxListItem = ({
   onDoubleClick,
   onContextMenu,
   isScrolling,
-  isViewOnly,
+  restricted,
   ...props
 }) => {
   const [stoppedScrolling, setStoppedScrolling] = React.useState(false);
@@ -74,7 +74,7 @@ export const SyncedSandboxListItem = ({
               <Text
                 size={3}
                 weight="medium"
-                css={{ color: isViewOnly ? '#999999' : '#E5E5E5' }}
+                css={{ color: restricted ? '#999999' : '#E5E5E5' }}
               >
                 {name}
                 {props.branch !== 'master' ? `:${props.branch}` : ''}
@@ -83,9 +83,9 @@ export const SyncedSandboxListItem = ({
           </Stack>
         </Column>
         <Column span={[0, 2, 2]}>
-          {isViewOnly ? (
+          {restricted ? (
             <Stack align="center">
-              <Badge variant="trial">View only</Badge>
+              <Badge variant="trial">Restricted</Badge>
             </Stack>
           ) : null}
         </Column>

@@ -42,7 +42,7 @@ export const MyContributionsPage = () => {
       items={itemsToShow}
     >
       <Helmet>
-        <title>{param || 'Dashboard'} - CodeSandbox</title>
+        <title>My contributions - CodeSandbox</title>
       </Helmet>
       <Header
         activeTeam={activeTeam}

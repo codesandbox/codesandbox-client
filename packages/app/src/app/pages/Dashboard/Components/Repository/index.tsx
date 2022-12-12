@@ -33,19 +33,18 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
   const { isFree } = useWorkspaceSubscription();
 
   const isPrivate = providerRepository?.private;
-  const isViewOnly = isFree && isPrivate;
+  const restricted = isFree && isPrivate;
 
   const props: RepositoryProps = {
     repository: {
       owner: providerRepository.owner,
       name: providerRepository.name,
+      private: providerRepository.private,
       url: repositoryUrl,
     },
     labels: {
       repository: `View branches from repository ${providerRepository.name} by ${providerRepository.owner}`,
-      branches: `${branches.length} ${
-        branches.length === 1 ? 'branch' : 'branches'
-      }`,
+      branches: `${branches.length}`,
     },
     selected: selectedIds.includes(repositoryId),
     onClick: () => trackImprovedDashboardEvent('Dashboard - Open Repository'),
@@ -53,7 +52,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
     isBeingRemoved:
       removingRepository?.owner === providerRepository.owner &&
       removingRepository?.name === providerRepository.name,
-    isViewOnly,
+    restricted,
   };
 
   return {

@@ -71,7 +71,7 @@ interface CTABase {
 type CTAOptional =
   | {
       href: string;
-      onClick?: never;
+      onClick?: () => void;
     }
   | {
       href?: never;
@@ -135,6 +135,7 @@ export const SubscriptionCard = ({
           {...(cta.href
             ? {
                 href: cta.href,
+                onClick: cta.onClick,
               }
             : {
                 as: 'button',

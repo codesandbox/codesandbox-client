@@ -1,7 +1,7 @@
 import { ProjectFragment as Repository } from 'app/graphql/types';
 
 export type RepositoryProps = {
-  repository: Pick<Repository['repository'], 'owner' | 'name'> & {
+  repository: Pick<Repository['repository'], 'owner' | 'name' | 'private'> & {
     url: string;
   };
   labels: {
@@ -12,5 +12,5 @@ export type RepositoryProps = {
   onClick: (evt: React.MouseEvent) => void;
   selected: boolean;
   isBeingRemoved: boolean;
-  isViewOnly?: boolean;
+  restricted?: boolean;
 };

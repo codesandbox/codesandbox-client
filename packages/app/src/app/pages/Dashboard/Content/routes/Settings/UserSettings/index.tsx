@@ -19,7 +19,7 @@ export const UserSettings = () => {
   return (
     <>
       <Helmet>
-        <title>Personal Settings - CodeSandbox</title>
+        <title>Settings - CodeSandbox</title>
       </Helmet>
       <Header title="Settings" activeTeam={activeTeam} />
       <Element
