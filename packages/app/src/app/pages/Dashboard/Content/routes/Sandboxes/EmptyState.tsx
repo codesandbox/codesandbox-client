@@ -48,6 +48,14 @@ export const EmptyState: React.FC = () => {
   const actions = useActions();
   const { dashboard } = useAppState();
 
+  const filteredTemplates = React.useMemo(() => {
+    return officialTemplates.state === 'ready'
+      ? officialTemplates.templates.filter(t =>
+          TEMPLATE_IDS.includes(t.sandbox.id)
+        )
+      : undefined;
+  }, [officialTemplates]);
+
   const handleOpenTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
 
@@ -130,22 +138,20 @@ export const EmptyState: React.FC = () => {
             gridAutoRows: 'minmax(156px, 1fr)',
           }}
         >
-          {officialTemplates.state === 'loading' &&
-            new Array(4).fill(undefined).map((_, i) => (
-              <SkeletonText
-                // eslint-disable-next-line react/no-array-index-key
-                key={`templates-skeleton-${i}`}
-                css={{
-                  width: '100%',
-                  height: '100%',
-                }}
-              />
-            ))}
-          {officialTemplates.state === 'ready' &&
-            officialTemplates.templates.length > 0 &&
-            officialTemplates.templates
-              .filter(t => TEMPLATE_IDS.includes(t.sandbox.id))
-              .map(template => (
+          {officialTemplates.state === 'loading'
+            ? new Array(4).fill(undefined).map((_, i) => (
+                <SkeletonText
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`templates-skeleton-${i}`}
+                  css={{
+                    width: '100%',
+                    height: '100%',
+                  }}
+                />
+              ))
+            : null}
+          {filteredTemplates && filteredTemplates.length > 0
+            ? filteredTemplates.map(template => (
                 <Stack as="li" key={template.id}>
                   <TemplateCard
                     key={template.id}
@@ -155,11 +161,11 @@ export const EmptyState: React.FC = () => {
                     onSelectTemplate={handleSelectTemplate}
                   />
                 </Stack>
-              ))}
+              ))
+            : null}
 
-          {((officialTemplates.state === 'ready' &&
-            officialTemplates.templates.length === 0) ||
-            officialTemplates.state === 'error') && (
+          {filteredTemplates?.length === 0 ||
+          officialTemplates.state === 'error' ? (
             <CreateCard
               icon="plus"
               label="New from a template"
@@ -171,7 +177,7 @@ export const EmptyState: React.FC = () => {
                 actions.openCreateSandboxModal();
               }}
             />
-          )}
+          ) : null}
         </Element>
       </Stack>
     </Stack>
