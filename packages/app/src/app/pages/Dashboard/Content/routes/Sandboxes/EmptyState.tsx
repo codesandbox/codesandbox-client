@@ -34,6 +34,13 @@ const TEMPLATE_IDS = [
   '9qputt', // React + Vite (browser)
 ];
 
+const DESCRIPTIONS = {
+  TEAM:
+    'Sandboxes are a great way to prototype your ideas with zero startup costs and with everything you need: a code editor, previews, dev servers, unit tests, Storybook and many other devtools.<br /><br />Sandboxes in this folder are visible to all team members.',
+  PERSONAL:
+    'Sandboxes are a great way to prototype your ideas with zero startup costs and with everything you need: a code editor, previews, dev servers, unit tests, Storybook and many other devtools.',
+};
+
 export const EmptyState: React.FC = () => {
   const { isPersonalSpace } = useWorkspaceAuthorization();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
@@ -84,11 +91,10 @@ export const EmptyState: React.FC = () => {
       gap={10}
     >
       {isPersonalSpace ? (
-        <StyledEmptyDescription as="p">
-          Sandboxes are a great way to prototype your ideas with zero startup
-          costs and with everything you need: a code editor, previews, dev
-          servers, unit tests, Storybook and many other devtools.
-        </StyledEmptyDescription>
+        <StyledEmptyDescription
+          as="p"
+          dangerouslySetInnerHTML={{ __html: DESCRIPTIONS.PERSONAL }}
+        />
       ) : (
         <Stack
           css={{
@@ -100,14 +106,10 @@ export const EmptyState: React.FC = () => {
           direction="vertical"
           gap={6}
         >
-          <StyledEmptyDescription as="p">
-            Sandboxes are a great way to prototype your ideas with zero startup
-            costs and with everything you need: a code editor, previews, dev
-            servers, unit tests, Storybook and many other devtools.
-          </StyledEmptyDescription>
-          <StyledEmptyDescription as="p">
-            Sandboxes in this section are visible to all team members.
-          </StyledEmptyDescription>
+          <StyledEmptyDescription
+            as="p"
+            dangerouslySetInnerHTML={{ __html: DESCRIPTIONS.TEAM }}
+          />
         </Stack>
       )}
       <Stack direction="vertical" gap={6}>
