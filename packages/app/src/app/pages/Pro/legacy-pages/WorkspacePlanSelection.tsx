@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes } from 'react';
+import React from 'react';
 import { format } from 'date-fns';
 import { sortBy } from 'lodash-es';
 import { useLocation } from 'react-router-dom';
@@ -37,31 +37,6 @@ const getBillingText = ({
   }`;
 };
 
-type CancelButtonProps = {
-  children: string;
-  onClick: ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
-};
-
-const CancelButton = ({ children, onClick }: CancelButtonProps) => (
-  <Text
-    as="button"
-    variant="danger"
-    onClick={onClick}
-    css={{
-      display: 'block',
-      margin: '0 auto',
-      border: 'none',
-      padding: 0,
-      background: 'transparent',
-      '&:hover': {
-        textDecoration: 'underline',
-      },
-    }}
-  >
-    {children}
-  </Text>
-);
-
 // TODO: Rename
 export const WorkspacePlanSelection: React.FC = () => {
   const {
@@ -75,7 +50,6 @@ export const WorkspacePlanSelection: React.FC = () => {
     setActiveTeam,
     modalOpened,
     pro: { setStep },
-    patron: { cancelSubscriptionClicked },
   } = useActions();
 
   const location = useLocation();
@@ -263,21 +237,6 @@ export const WorkspacePlanSelection: React.FC = () => {
             </SubscriptionCard>
           )}
         </Stack>
-
-        {isPersonalSpace ? (
-          <CancelButton
-            onClick={() => {
-              track('legacy subscription page - cancel subscription', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
-
-              cancelSubscriptionClicked();
-            }}
-          >
-            cancel your subscription
-          </CancelButton>
-        ) : null}
       </Stack>
     </div>
   );
