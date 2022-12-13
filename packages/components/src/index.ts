@@ -8,6 +8,7 @@ export * from './components/Badge';
 export * from './components/Banner';
 export * from './components/Button';
 export * from './components/Checkbox';
+export * from './components/CreateCard';
 export * from './components/Icon';
 export * from './components/IconButton';
 export * from './components/Input';

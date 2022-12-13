@@ -34,7 +34,7 @@ export const CreateCard: React.FC<CreateCardProps> = ({
         transitionDuration: theme => theme.speeds[2],
 
         ':hover': {
-          backgroundColor: 'card.backgroundHover',
+          backgroundColor: '#252525',
         },
 
         ':focus-visible': {
