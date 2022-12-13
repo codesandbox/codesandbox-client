@@ -118,6 +118,10 @@ export const Dependency = ({
     return null;
   }
 
+  const versionFromDropdown = versions.find(
+    v => v === dependencies[dependency]
+  );
+
   return (
     <>
       <ListAction
@@ -185,9 +189,14 @@ export const Dependency = ({
           {versions.length === 0 ? null : (
             <Select
               css={{ width: '80px' }}
-              value={versions.find(v => v === dependencies[dependency])}
+              value={versionFromDropdown}
               onChange={e => onRefresh(dependency, e.target.value)}
             >
+              {versionFromDropdown === undefined && (
+                <option key={dependencies[dependency]}>
+                  {dependencies[dependency]}
+                </option>
+              )}
               {versions.map(a => (
                 <option key={a}>{a}</option>
               ))}
