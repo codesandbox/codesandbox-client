@@ -60,7 +60,12 @@ export const TemplateCard = ({
       }}
       disabled={disabled}
     >
-      <Stack css={{ height: '100%' }} direction="vertical" gap={4}>
+      <Stack
+        css={{ height: '100%', width: '100%' }}
+        direction="vertical"
+        justify="space-between"
+        gap={4}
+      >
         <Stack
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
