@@ -28,8 +28,6 @@ export const Switcher: React.FC<{
   const { isFree } = useWorkspaceSubscription();
   const { openCreateTeamModal } = useActions();
   const { user } = useAppState();
-  // TODO: move this check up a component, shouldn't happen
-  if (!workspaces || workspaces.length === 0) return null;
 
   return (
     <Menu>

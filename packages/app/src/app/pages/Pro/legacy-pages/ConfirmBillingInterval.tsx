@@ -1,34 +1,43 @@
 import React from 'react';
+import { Stack, Text, SkeletonText } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { Stack, Text, Button } from '@codesandbox/components';
-import css from '@styled-system/css';
+import { SubscriptionInterval } from 'app/graphql/types';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+
+import {
+  StyledCard,
+  StyledSubscriptionLink,
+} from '../components/SubscriptionCard';
+
+// Base unit to calculate price from cents to full currency.
+const BASE_UNIT = 100;
 
 export const ConfirmBillingInterval: React.FC = () => {
-  const {
-    seats,
-    selectedPlan,
-    paymentPreview,
-    updatingSubscription,
-  } = useAppState().pro;
+  const { seats, paymentPreview, updatingSubscription } = useAppState().pro;
   const { notificationToast } = useEffects();
   const {
     previewUpdateSubscriptionBillingInterval,
     updateSubscriptionBillingInterval,
   } = useActions().pro;
 
-  React.useEffect(() => {
+  const { subscription } = useWorkspaceSubscription();
+
+  if (!paymentPreview) {
     previewUpdateSubscriptionBillingInterval({
-      billingInterval: selectedPlan.billingInterval,
+      billingInterval: SubscriptionInterval.Yearly,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
 
-  if (!paymentPreview) return null;
+  const updateBillingInterval = async () => {
+    track('legacy subscription page - update billing interval', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
 
-  const changeBillingInterval = async () => {
     try {
       await updateSubscriptionBillingInterval({
-        billingInterval: selectedPlan.billingInterval,
+        billingInterval: SubscriptionInterval.Yearly,
       });
     } catch {
       notificationToast.error(
@@ -38,79 +47,91 @@ export const ConfirmBillingInterval: React.FC = () => {
   };
 
   return (
-    <div style={{ paddingBottom: 64, width: 500 }}>
-      <Text size={7} as="h1" block align="center" marginBottom={12}>
-        Change Billing Interval
-      </Text>
-
-      <Stack direction="vertical" gap={10}>
-        <Stack
-          direction="vertical"
-          gap={2}
-          css={css({
-            padding: 4,
-            marginBottom: 8,
-            border: '1px solid',
-            borderColor: 'grays.500',
-            borderRadius: 'small',
-            overflow: 'hidden',
-          })}
-        >
-          <Text size={3}>Team editors</Text>
-          <Stack justify="space-between">
-            <Text variant="muted" size={3}>
-              {seats} {seats === 1 ? 'seat' : 'seats'}
-              <Text size={2}> ✕ </Text>
-              {paymentPreview.nextPayment.currency}{' '}
-              {(paymentPreview.nextPayment.amount / 100 / seats).toFixed(2)}
-            </Text>
-            <Text variant="muted" size={3}>
-              {paymentPreview.nextPayment.currency}{' '}
-              {(paymentPreview.nextPayment.amount / 100).toFixed(2)}
-            </Text>
-          </Stack>
-          <Stack justify="space-between">
-            <Text variant="muted" size={3}>
-              Proration for days left in subscription
-            </Text>
-            <Text variant="muted" size={3}>
-              - {paymentPreview.nextPayment.currency}{' '}
-              {(
-                (paymentPreview.nextPayment.amount -
-                  paymentPreview.immediatePayment.amount) /
-                100
-              ).toFixed(2)}
-            </Text>
-          </Stack>
-          <Stack
-            justify="space-between"
-            css={css({
-              borderTop: '1px solid',
-              borderColor: 'grays.500',
-              paddingTop: 10,
-            })}
+    <div>
+      <Stack gap={10} direction="vertical">
+        <Stack gap={3} direction="vertical" align="center">
+          <Text
+            as="h1"
+            fontFamily="everett"
+            size={48}
+            weight="500"
+            align="center"
+            lineHeight="56px"
+            margin={0}
           >
-            <Text size={3}>Total</Text>
-            <Text weight="bold">
-              {paymentPreview.immediatePayment.currency}{' '}
-              {(paymentPreview.immediatePayment.amount / 100).toFixed(2)} (incl.
-              tax)
-            </Text>
-          </Stack>
+            Change to yearly billing.
+          </Text>
         </Stack>
-        <Button
-          onClick={changeBillingInterval}
-          loading={updatingSubscription}
-          disabled={updatingSubscription}
-          css={css({
-            fontSize: 3,
-            height: 10,
-            fontFamily: 'Lato, sans-serif',
-            fontWeight: 700,
-          })}
-        >
-          Update billing interval
-        </Button>
+
+        <Stack justify="center">
+          <StyledCard isHighlighted>
+            <Stack direction="vertical" gap={9}>
+              <Stack direction="vertical" gap={6}>
+                <Stack direction="vertical" gap={1}>
+                  <Stack justify="space-between" gap={2}>
+                    <Text>
+                      {subscription.quantity}{' '}
+                      {subscription.quantity === 1 ? 'seat' : 'seats'}
+                    </Text>
+                    {paymentPreview ? (
+                      <Text>
+                        {paymentPreview.nextPayment.currency}{' '}
+                        {(
+                          paymentPreview.nextPayment.amount /
+                          BASE_UNIT /
+                          seats
+                        ).toFixed(2)}
+                      </Text>
+                    ) : (
+                      <SkeletonText css={{ width: '50px' }} />
+                    )}
+                  </Stack>
+                  <Stack justify="space-between" gap={2}>
+                    <Text>Proration for days left in subscription</Text>
+                    {paymentPreview ? (
+                      <Text>
+                        - {paymentPreview.nextPayment.currency}{' '}
+                        {(
+                          (paymentPreview.nextPayment.amount -
+                            paymentPreview.immediatePayment.amount) /
+                          BASE_UNIT
+                        ).toFixed(2)}
+                      </Text>
+                    ) : (
+                      <SkeletonText css={{ width: '50px' }} />
+                    )}
+                  </Stack>
+                </Stack>
+                <Stack justify="space-between" gap={2}>
+                  <Text weight="bold" size={4}>
+                    Total
+                  </Text>
+                  {paymentPreview ? (
+                    <Text weight="bold" size={4}>
+                      {paymentPreview.immediatePayment.currency}{' '}
+                      {(
+                        paymentPreview.immediatePayment.amount / BASE_UNIT
+                      ).toFixed(2)}{' '}
+                      (incl. tax)
+                    </Text>
+                  ) : (
+                    <SkeletonText css={{ width: '100px' }} />
+                  )}
+                </Stack>
+              </Stack>
+              <StyledSubscriptionLink
+                as="button"
+                onClick={updateBillingInterval}
+                variant="highlight"
+                disabled={updatingSubscription}
+              >
+                {!paymentPreview || updatingSubscription
+                  ? 'Loading...'
+                  : 'Update billing interval'}
+              </StyledSubscriptionLink>
+            </Stack>
+          </StyledCard>
+        </Stack>
       </Stack>
     </div>
   );
