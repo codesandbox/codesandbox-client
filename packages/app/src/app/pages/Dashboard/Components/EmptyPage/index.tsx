@@ -23,14 +23,22 @@ const StyledGrid = styled(Element)`
   position: relative;
   overflow: hidden;
   display: grid;
-  liststyle: none;
+  list-style: none;
   gap: 16px;
   grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
   grid-auto-rows: minmax(156px, 1fr);
+`;
+
+const StyledGridTitle = styled(Text)`
+  margin: 0;
+  font-size: 16px;
+  line-height: 25px;
+  font-weight: 400;
 `;
 
 export const EmptyPage = {
   StyledWrapper,
   StyledDescription,
   StyledGrid,
+  StyledGridTitle,
 };
