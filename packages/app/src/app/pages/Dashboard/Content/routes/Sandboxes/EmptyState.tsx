@@ -1,31 +1,14 @@
-import {
-  CreateCard,
-  Element,
-  SkeletonText,
-  Stack,
-  Text,
-} from '@codesandbox/components';
+import { CreateCard, SkeletonText, Stack } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
-import {
-  GRID_MAX_WIDTH,
-  GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
-import styled from 'styled-components';
 import { useOfficialTemplates } from 'app/components/CreateSandbox/useOfficialTemplates';
 import { TemplateCard } from 'app/components/CreateSandbox/TemplateCard';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { TemplateFragment } from 'app/graphql/types';
 import { useActions, useAppState } from 'app/overmind';
-
-const StyledEmptyDescription = styled(Text)`
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #999999;
-`;
+import { EmptyPage } from '../../../Components/EmptyPage';
 
 const TEMPLATE_IDS = [
   'k8dsq1', // NodeJS (cloud)
@@ -87,60 +70,34 @@ export const EmptyState: React.FC = () => {
   };
 
   return (
-    <Stack
-      css={{
-        width: `calc(100% - ${2 * GUTTER}px)`,
-        maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-        margin: '24px auto 0',
-      }}
-      direction="vertical"
-      gap={10}
-    >
-      {isPersonalSpace ? (
-        <StyledEmptyDescription
+    <EmptyPage.StyledWrapper>
+      <Stack
+        css={{
+          width: '100%',
+
+          '@media screen and (min-width: 768px)': {
+            width: isPersonalSpace ? '100%' : '560px',
+          },
+        }}
+      >
+        <EmptyPage.StyledDescription
           as="p"
-          dangerouslySetInnerHTML={{ __html: DESCRIPTIONS.PERSONAL }}
+          dangerouslySetInnerHTML={{
+            __html: isPersonalSpace ? DESCRIPTIONS.PERSONAL : DESCRIPTIONS.TEAM,
+          }}
         />
-      ) : (
-        <Stack
-          css={{
-            width: '100%',
-            '@media screen and (min-width: 768px)': {
-              width: '560px',
-            },
-          }}
-          direction="vertical"
-          gap={6}
-        >
-          <StyledEmptyDescription
-            as="p"
-            dangerouslySetInnerHTML={{ __html: DESCRIPTIONS.TEAM }}
-          />
-        </Stack>
-      )}
+      </Stack>
       <Stack direction="vertical" gap={6}>
-        <Text as="h2" margin={0} lineHeight="25px" size={16} weight="normal">
+        <EmptyPage.StyledGridTitle as="h2">
           Start from a template
-        </Text>
-        <Element
-          as="ul"
-          css={{
-            margin: 0,
-            padding: 0,
-            position: 'relative',
-            overflow: 'hidden',
-            display: 'grid',
-            listStyle: 'none',
-            gap: '16px',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(268px, 1fr))',
-            gridAutoRows: 'minmax(156px, 1fr)',
-          }}
-        >
+        </EmptyPage.StyledGridTitle>
+        <EmptyPage.StyledGrid as="ul">
           {officialTemplates.state === 'loading'
             ? new Array(4).fill(undefined).map((_, i) => (
                 <SkeletonText
                   // eslint-disable-next-line react/no-array-index-key
                   key={`templates-skeleton-${i}`}
+                  as="li"
                   css={{
                     width: '100%',
                     height: '100%',
@@ -176,8 +133,8 @@ export const EmptyState: React.FC = () => {
               }}
             />
           ) : null}
-        </Element>
+        </EmptyPage.StyledGrid>
       </Stack>
-    </Stack>
+    </EmptyPage.StyledWrapper>
   );
 };

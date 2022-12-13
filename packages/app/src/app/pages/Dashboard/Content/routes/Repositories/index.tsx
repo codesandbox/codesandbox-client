@@ -57,6 +57,7 @@ export const RepositoriesPage = () => {
   };
 
   const itemsToShow = getItemsToShow();
+  const isEmpty = itemsToShow.length === 0;
 
   return (
     <SelectionProvider
@@ -69,7 +70,7 @@ export const RepositoriesPage = () => {
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        showViewOptions
+        showViewOptions={!isEmpty}
         showBetaBadge
         title="All repositories"
       />
@@ -80,11 +81,11 @@ export const RepositoriesPage = () => {
         </Element>
       ) : null}
 
-      <VariableGrid
+      {isEmpty ? <VariableGrid
         page={pageType}
         items={itemsToShow}
         customGridElementHeight={154}
-      />
+      /> : null}
     </SelectionProvider>
   );
 };
