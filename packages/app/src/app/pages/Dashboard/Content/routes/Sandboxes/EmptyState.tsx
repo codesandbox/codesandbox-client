@@ -84,8 +84,6 @@ export const EmptyState: React.FC = () => {
         collectionId: collection?.id,
       },
     });
-
-    actions.modals.newSandboxModal.close();
   };
 
   return (
