@@ -10,6 +10,9 @@ import {
   StyledSubscriptionLink,
 } from '../components/SubscriptionCard';
 
+// Base unit to calculate price from cents to full currency.
+const BASE_UNIT = 100;
+
 export const ConfirmBillingInterval: React.FC = () => {
   const { seats, paymentPreview, updatingSubscription } = useAppState().pro;
   const { notificationToast } = useEffects();
@@ -75,7 +78,7 @@ export const ConfirmBillingInterval: React.FC = () => {
                         {paymentPreview.nextPayment.currency}{' '}
                         {(
                           paymentPreview.nextPayment.amount /
-                          100 /
+                          BASE_UNIT /
                           seats
                         ).toFixed(2)}
                       </Text>
@@ -91,7 +94,7 @@ export const ConfirmBillingInterval: React.FC = () => {
                         {(
                           (paymentPreview.nextPayment.amount -
                             paymentPreview.immediatePayment.amount) /
-                          100
+                          BASE_UNIT
                         ).toFixed(2)}
                       </Text>
                     ) : (
@@ -106,9 +109,9 @@ export const ConfirmBillingInterval: React.FC = () => {
                   {paymentPreview ? (
                     <Text weight="bold" size={4}>
                       {paymentPreview.immediatePayment.currency}{' '}
-                      {(paymentPreview.immediatePayment.amount / 100).toFixed(
-                        2
-                      )}{' '}
+                      {(
+                        paymentPreview.immediatePayment.amount / BASE_UNIT
+                      ).toFixed(2)}{' '}
                       (incl. tax)
                     </Text>
                   ) : (

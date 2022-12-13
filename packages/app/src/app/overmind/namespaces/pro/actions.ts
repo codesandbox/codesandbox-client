@@ -33,7 +33,7 @@ export const billingAmountLoaded = ({ state }: Context) => {
   state.pro.isBillingAmountLoaded = true;
 };
 
-// TODO
+// TODO: Refactor since billingInterval is always Yearly.
 export const previewUpdateSubscriptionBillingInterval = async (
   { state, effects }: Context,
   {

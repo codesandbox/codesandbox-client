@@ -27,7 +27,7 @@ export const PaymentSuccess = () => (
           <Stack justify="center">
             <Icon name="simpleCheck" color="#5DCC67" size={48} />
           </Stack>
-          <Text>We sent the details of your order to your email address.</Text>
+          <Text>We sent the order details to your email address.</Text>
           <StyledSubscriptionLink
             href="/dashboard/settings"
             variant="highlight"
