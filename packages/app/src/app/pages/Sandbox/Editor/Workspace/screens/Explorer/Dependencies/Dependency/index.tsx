@@ -189,7 +189,7 @@ export const Dependency = ({
           {versions.length === 0 ? null : (
             <Select
               css={{ width: '80px' }}
-              value={versionFromDropdown}
+              value={versionFromDropdown || dependencies[dependency]}
               onChange={e => onRefresh(dependency, e.target.value)}
             >
               {versionFromDropdown === undefined && (
