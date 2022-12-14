@@ -9,7 +9,7 @@ import { DashboardGridItem } from 'app/pages/Dashboard/types';
 import React from 'react';
 
 const TRENDING_COLLECTION_ID = 'nynbnp';
-const SANDBOXES_TO_SHOW_COUNT = 5;
+const SANDBOXES_TO_SHOW_COUNT = 4;
 
 const DESCRIPTION =
   'Discover, explore and share the love. There are more than 30 million sandboxes created with CodeSandbox.<br />Share your appreciation for your favorites and they will appear here.';
