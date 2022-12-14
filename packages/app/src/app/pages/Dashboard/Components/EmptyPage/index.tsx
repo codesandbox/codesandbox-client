@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid/constants';
 
 const StyledWrapper = styled(Stack)`
+  position: relative;
   width: calc(100% - ${2 * GUTTER}px);
-  max-width: ${GRID_MAX_WIDTH} - 2 * ${GUTTER};
+  max-width: calc(${GRID_MAX_WIDTH}px - 2 * ${GUTTER}px);
+  height: 100%;
   margin: 28px auto 0;
   flex-direction: column;
   gap: 40px;
@@ -25,7 +27,7 @@ const StyledGrid = styled(Element)`
   display: grid;
   list-style: none;
   gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(274px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
   grid-auto-rows: minmax(156px, 1fr);
 `;
 

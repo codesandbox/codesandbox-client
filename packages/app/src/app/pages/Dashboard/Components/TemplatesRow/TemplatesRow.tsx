@@ -10,6 +10,13 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { EmptyPage } from '../EmptyPage';
 import { PageTypes } from '../../types';
 
+const TEMPLATE_IDS = [
+  'k8dsq1', // NodeJS (cloud)
+  'vanilla', // Vanilla JS (browser)
+  'uo1h0', // NextJS (cloud)
+  '9qputt', // React + Vite (browser)
+];
+
 const MAP_PAGE_TYPE_TO_NAME: Record<PageTypes, string> = {
   search: 'Search',
   recent: 'Recent',
@@ -29,13 +36,8 @@ const MAP_PAGE_TYPE_TO_NAME: Record<PageTypes, string> = {
 type TemplatesRowProps = {
   page: PageTypes;
   title?: string;
-  templateIds: string[];
 };
-export const TemplatesRow: React.FC<TemplatesRowProps> = ({
-  title,
-  templateIds = [],
-  page,
-}) => {
+export const TemplatesRow: React.FC<TemplatesRowProps> = ({ title, page }) => {
   const officialTemplates = useOfficialTemplates();
   const actions = useActions();
   const { dashboard } = useAppState();
@@ -44,10 +46,10 @@ export const TemplatesRow: React.FC<TemplatesRowProps> = ({
   const filteredTemplates = React.useMemo(() => {
     return officialTemplates.state === 'ready'
       ? officialTemplates.templates.filter(t =>
-          templateIds.includes(t.sandbox.id)
+          TEMPLATE_IDS.includes(t.sandbox.id)
         )
       : undefined;
-  }, [officialTemplates, templateIds]);
+  }, [officialTemplates]);
 
   const handleOpenTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
@@ -81,14 +83,12 @@ export const TemplatesRow: React.FC<TemplatesRowProps> = ({
 
   return (
     <Stack direction="vertical" gap={6}>
-      {title !== undefined && title !== '' ? (
-        <EmptyPage.StyledGridTitle as="h2">
-          Start from a template
-        </EmptyPage.StyledGridTitle>
-      ) : null}
+      <EmptyPage.StyledGridTitle as="h2">
+        Start from a template
+      </EmptyPage.StyledGridTitle>
       <EmptyPage.StyledGrid as="ul">
         {officialTemplates.state === 'loading'
-          ? templateIds.map(templateId => (
+          ? TEMPLATE_IDS.map(templateId => (
               <SkeletonText
                 key={templateId}
                 as="li"

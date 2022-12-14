@@ -14,6 +14,7 @@ import { Element } from '@codesandbox/components';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { EmptyRecent } from './EmptyRecent';
 
 export const Recent = () => {
   const {
@@ -84,7 +85,7 @@ export const Recent = () => {
         <Element
           css={{
             width: `calc(100% - ${2 * GUTTER}px)`,
-            maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
+            maxWwidth: `calc(${GRID_MAX_WIDTH}px - 2 * ${GUTTER}px)`,
             margin: '0 auto 48px',
           }}
         >
@@ -97,7 +98,12 @@ export const Recent = () => {
         loading={dataIsLoading}
         showViewOptions
       />
-      <VariableGrid page={pageType} items={items} />
+
+      {items.length > 0 ? (
+        <VariableGrid page={pageType} items={items} />
+      ) : (
+        <EmptyRecent />
+      )}
     </SelectionProvider>
   );
 };
