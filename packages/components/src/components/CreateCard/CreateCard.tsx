@@ -32,6 +32,7 @@ export const CreateCard: React.FC<CreateCardProps> = ({
         textDecoration: 'none',
         transition: 'background ease-in-out',
         transitionDuration: theme => theme.speeds[2],
+        fontFamily: 'inherit',
 
         ':hover': {
           backgroundColor: '#252525',
