@@ -88,10 +88,9 @@ export const TemplatesRow: React.FC<TemplatesRowProps> = ({
       ) : null}
       <EmptyPage.StyledGrid as="ul">
         {officialTemplates.state === 'loading'
-          ? new Array(templateIds.length).fill(undefined).map((_, i) => (
+          ? templateIds.map(templateId => (
               <SkeletonText
-                // eslint-disable-next-line react/no-array-index-key
-                key={`templates-skeleton-${i}`}
+                key={templateId}
                 as="li"
                 css={{
                   width: '100%',
