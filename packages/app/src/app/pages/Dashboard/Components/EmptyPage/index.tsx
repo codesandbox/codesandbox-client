@@ -25,7 +25,7 @@ const StyledGrid = styled(Element)`
   display: grid;
   list-style: none;
   gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(274px, 1fr));
   grid-auto-rows: minmax(156px, 1fr);
 `;
 
