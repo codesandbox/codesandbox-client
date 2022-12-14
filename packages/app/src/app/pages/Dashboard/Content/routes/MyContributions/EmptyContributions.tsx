@@ -9,7 +9,7 @@ import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import React from 'react';
 
 const DESCRIPTION =
-  "Open any open-source repository on CodeSandbox and just click 'Branch' to start contributing.<br />Don't worry about forking and setting up a new repository. We'll take care of everything for you.";
+  "Open any open-source repository on CodeSandbox and click on 'Branch' to start contributing.<br />Don't worry about forking and setting up a new repository. We'll take care of everything for you.";
 
 const SUGGESTED_REPOS = [
   {
