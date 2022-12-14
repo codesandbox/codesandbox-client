@@ -6,6 +6,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import { EmptyContributions } from './EmptyContributions';
 
 export const MyContributionsPage = () => {
   const params = useParams<{ path: string }>();
@@ -53,7 +54,11 @@ export const MyContributionsPage = () => {
         showFilters={Boolean(param)}
         showSortOptions={Boolean(param)}
       />
-      <VariableGrid page={pageType} items={itemsToShow} />
+      {itemsToShow.length > 0 ? (
+        <VariableGrid page={pageType} items={itemsToShow} />
+      ) : (
+        <EmptyContributions />
+      )}
     </SelectionProvider>
   );
 };
