@@ -7,7 +7,11 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SandboxFragmentDashboardFragment } from 'app/graphql/types';
+import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { getPossibleTemplates } from '../../utils';
+
+const DESCRIPTION =
+  'Drag sandboxes or templates to this page to delete them.<br />Any deleted sandboxes or templates will be permanentely excluded after 30 days.';
 
 export const Deleted = () => {
   const {
@@ -70,7 +74,16 @@ export const Deleted = () => {
         showSortOptions
         templates={getPossibleTemplates(sandboxes.DELETED)}
       />
-      <VariableGrid page={pageType} items={items} />
+      {items.length > 0 ? (
+        <VariableGrid page={pageType} items={items} />
+      ) : (
+        <EmptyPage.StyledWrapper>
+          <EmptyPage.StyledDescription
+            as="p"
+            dangerouslySetInnerHTML={{ __html: DESCRIPTION }}
+          />
+        </EmptyPage.StyledWrapper>
+      )}
     </SelectionProvider>
   );
 };
