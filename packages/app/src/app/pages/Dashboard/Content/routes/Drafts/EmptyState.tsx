@@ -13,9 +13,9 @@ const TEMPLATE_IDS = [
 
 const DESCRIPTIONS = {
   TEAM:
-    'Sandboxes are a great way to prototype your ideas with zero startup costs and with everything you need: a code editor, previews, dev servers, unit tests, Storybook and many other devtools.<br /><br />Sandboxes in this folder are visible to all team members.',
+    'By default, every sandbox you create will show up on this folder.<br />Sandboxes in My Drafts are not visible to your team members unless moved to the "All sandboxes" section.',
   PERSONAL:
-    'Sandboxes are a great way to prototype your ideas with zero startup costs and with everything you need: a code editor, previews, dev servers, unit tests, Storybook and many other devtools.',
+    'By default, every sandbox you create will show up on this folder.<br />Find all your work in progress easily before moving these sandboxes to a dedicated folder.',
 };
 
 export const EmptyState: React.FC = () => {
