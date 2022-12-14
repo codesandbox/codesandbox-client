@@ -1852,6 +1852,10 @@ export const getCuratedAlbumById = async (
   const { dashboard } = state;
   try {
     const data = await effects.gql.queries.curatedAlbumById(params);
+    if (!data.album) {
+      throw new Error('Unable to find the requested collection');
+    }
+
     dashboard.curatedAlbumsById[params.albumId] = data.album;
   } catch (error) {
     effects.notificationToast.error(
