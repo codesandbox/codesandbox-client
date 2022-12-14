@@ -1,29 +1,63 @@
 import React from 'react';
-import css from '@styled-system/css';
-import { Icon, SkeletonText, Stack, Text } from '@codesandbox/components';
+import { CreateCard, SkeletonText, Stack } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOfficialTemplates } from 'app/components/CreateSandbox/useOfficialTemplates';
 import { TemplateCard } from 'app/components/CreateSandbox/TemplateCard';
-import { TemplateButton } from 'app/components/CreateSandbox/elements';
-import { GitHubIcon } from 'app/components/CreateSandbox/Icons';
 import { useActions, useAppState } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
-import { GUTTER } from '../VariableGrid';
-import { TemplatesGrid } from './elements';
+import { EmptyPage } from '../EmptyPage';
+import { PageTypes } from '../../types';
 
-export const TemplatesRow: React.FC = () => {
+const MAP_PAGE_TYPE_TO_NAME: Record<PageTypes, string> = {
+  search: 'Search',
+  recent: 'Recent',
+  deleted: 'Deleted',
+  templates: 'Templates',
+  drafts: 'Drafts',
+  sandboxes: 'Sandboxes',
+  'synced-sandboxes': 'Synced sandboxes',
+  'my-contributions': 'Contribution branches',
+  repositories: 'Repositories',
+  shared: 'Shared sandboxes',
+  liked: 'Liked sandboxes',
+  discover: 'Discovery',
+  external: 'External',
+};
+
+type TemplatesRowProps = {
+  page: PageTypes;
+  title?: string;
+  templateIds: string[];
+};
+export const TemplatesRow: React.FC<TemplatesRowProps> = ({
+  title,
+  templateIds = [],
+  page,
+}) => {
   const officialTemplates = useOfficialTemplates();
   const actions = useActions();
   const { dashboard } = useAppState();
-  const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
+
+  const filteredTemplates = React.useMemo(() => {
+    return officialTemplates.state === 'ready'
+      ? officialTemplates.templates.filter(t =>
+          templateIds.includes(t.sandbox.id)
+        )
+      : undefined;
+  }, [officialTemplates, templateIds]);
 
   const handleOpenTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
     const url = sandboxUrl(sandbox);
+
+    track(`${MAP_PAGE_TYPE_TO_NAME[page]} - open template from empty state`, {
+      codesandbox: 'V1',
+      event_source: 'UI',
+    });
+
     window.open(url, '_blank');
   };
 
@@ -31,7 +65,7 @@ export const TemplatesRow: React.FC = () => {
     const { sandbox } = template;
     const collection = dashboard.allCollections?.find(c => c.path === '/');
 
-    track('Recent - open template from empty state', {
+    track(`${MAP_PAGE_TYPE_TO_NAME[page]} - fork template from empty state`, {
       codesandbox: 'V1',
       event_source: 'UI',
     });
@@ -43,110 +77,60 @@ export const TemplatesRow: React.FC = () => {
         collectionId: collection?.id,
       },
     });
-
-    actions.modals.newSandboxModal.close();
   };
 
   return (
-    <Stack
-      as="section"
-      css={css({
-        width: `calc(100% - ${2 * GUTTER}px)`,
-        marginX: 'auto',
-      })}
-      direction="vertical"
-      gap={4}
-    >
-      <Text
-        as="h2"
-        css={css({
-          margin: 0,
-        })}
-        weight="400"
-        size={4}
-      >
-        Start from a template or import from GitHub
-      </Text>
-      <TemplatesGrid>
-        {officialTemplates.state === 'loading' &&
-          new Array(5).fill(undefined).map((_, i) => (
-            <SkeletonText
-              // eslint-disable-next-line react/no-array-index-key
-              key={`templates-skeleton-${i}`}
-              css={css({
-                width: '100%',
-                height: '116px',
-              })}
-            />
-          ))}
-
-        {officialTemplates.state === 'ready' && (
-          <>
-            {officialTemplates.templates
-              .slice(0, 3) // TODO: define which templates to show
-              .map(template => (
+    <Stack direction="vertical" gap={6}>
+      {title !== undefined && title !== '' ? (
+        <EmptyPage.StyledGridTitle as="h2">
+          Start from a template
+        </EmptyPage.StyledGridTitle>
+      ) : null}
+      <EmptyPage.StyledGrid as="ul">
+        {officialTemplates.state === 'loading'
+          ? templateIds.map(templateId => (
+              <SkeletonText
+                key={templateId}
+                as="li"
+                css={{
+                  width: '100%',
+                  height: '100%',
+                }}
+              />
+            ))
+          : null}
+        {filteredTemplates && filteredTemplates.length > 0
+          ? filteredTemplates.map(template => (
+              <Stack as="li" key={template.id}>
                 <TemplateCard
                   key={template.id}
-                  disabled={isFree && hasMaxPublicSandboxes}
+                  disabled={hasMaxPublicSandboxes}
                   template={template}
                   onOpenTemplate={handleOpenTemplate}
                   onSelectTemplate={handleSelectTemplate}
                 />
-              ))}
-            <TemplateButton
-              onClick={() => {
-                track('Recent - import repo from empty state', {
+              </Stack>
+            ))
+          : null}
+
+        {filteredTemplates?.length === 0 ||
+        officialTemplates.state === 'error' ? (
+          <CreateCard
+            icon="plus"
+            label="New from a template"
+            onClick={() => {
+              track(
+                `${MAP_PAGE_TYPE_TO_NAME[page]} - open import modal from empty state`,
+                {
                   codesandbox: 'V1',
                   event_source: 'UI',
-                });
-                actions.openCreateSandboxModal({ initialTab: 'import' });
-              }}
-            >
-              <Stack
-                css={{
-                  height: '100%',
-                }}
-                direction="vertical"
-                gap={4}
-              >
-                <GitHubIcon size={32} />
-                <Stack
-                  align="center"
-                  css={{
-                    flex: 1,
-                  }}
-                >
-                  <Text
-                    css={{
-                      fontSize: '14px',
-                      fontWeight: 500,
-                      textOverflow: 'ellipsis',
-                      overflow: 'hidden',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    Open from GitHub
-                  </Text>
-                </Stack>
-              </Stack>
-            </TemplateButton>
-            <TemplateButton
-              aria-label="Open create sandbox modal"
-              onClick={() => {
-                track('Recent - open import modal from empty state', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
-                actions.openCreateSandboxModal();
-              }}
-            >
-              <Stack align="center" justify="center">
-                <Icon name="plus" size={32} />
-              </Stack>
-            </TemplateButton>
-          </>
-        )}
-      </TemplatesGrid>
+                }
+              );
+              actions.openCreateSandboxModal();
+            }}
+          />
+        ) : null}
+      </EmptyPage.StyledGrid>
     </Stack>
   );
 };

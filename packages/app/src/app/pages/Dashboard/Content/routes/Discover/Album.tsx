@@ -10,7 +10,7 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import {
   GRID_MAX_WIDTH,
   GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+} from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import { DashboardCommunitySandbox } from 'app/pages/Dashboard/types';
 
 export const Album = ({ match }) => {

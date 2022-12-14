@@ -16,7 +16,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import {
   GRID_MAX_WIDTH,
   GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+} from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import {
   DashboardCommunitySandbox,
   DashboardAlbum,

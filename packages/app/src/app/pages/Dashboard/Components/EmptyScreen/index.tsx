@@ -5,7 +5,7 @@ import css from '@styled-system/css';
 import { useActions } from 'app/overmind';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { PageTypes } from '../../types';
-import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid';
+import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid/constants';
 import { TemplatesRow } from '../TemplatesRow';
 
 interface EmptyScreenProps {
@@ -293,7 +293,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
   if (page === 'recent') {
     return (
       <Element marginTop={32}>
-        <TemplatesRow />
+        <TemplatesRow page={page} templateIds={[]} />
       </Element>
     );
   }
