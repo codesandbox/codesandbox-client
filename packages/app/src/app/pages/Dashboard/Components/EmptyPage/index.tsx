@@ -1,6 +1,6 @@
 import { Element, Stack, Text } from '@codesandbox/components';
 import styled from 'styled-components';
-import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid';
+import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid/constants';
 
 const StyledWrapper = styled(Stack)`
   width: calc(100% - ${2 * GUTTER}px);

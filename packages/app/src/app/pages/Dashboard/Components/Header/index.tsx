@@ -15,7 +15,7 @@ import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
 import { SortOptions } from '../Filters/SortOptions';
-import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid';
+import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid/constants';
 import { TemplateFilter } from '../../Content/utils';
 
 interface IAction {

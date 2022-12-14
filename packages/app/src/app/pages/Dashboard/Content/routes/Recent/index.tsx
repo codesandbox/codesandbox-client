@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
+import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import {
   GRID_MAX_WIDTH,
   GUTTER,
-  VariableGrid,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+} from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Helmet } from 'react-helmet';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
