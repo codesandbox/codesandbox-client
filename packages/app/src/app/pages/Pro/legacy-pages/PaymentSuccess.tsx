@@ -1,35 +1,41 @@
 import React from 'react';
-import { Stack, Text, Icon, Button } from '@codesandbox/components';
-import css from '@styled-system/css';
+import { Stack, Text, Icon } from '@codesandbox/components';
+
+import {
+  StyledCard,
+  StyledSubscriptionLink,
+} from '../components/SubscriptionCard';
 
 export const PaymentSuccess = () => (
-  <Stack
-    direction="vertical"
-    justify="center"
-    align="center"
-    css={css({
-      fontSize: 3,
-      width: 560,
-      marginTop: 120,
-      marginX: 'auto',
-      textAlign: 'center',
-    })}
-  >
-    <Icon name="simpleCheck" color="#5DCC67" size={64} />
-    <Text as="h1" size={8}>
-      Your Payment was Successful
-    </Text>
-    <Stack direction="vertical" align="center" gap={10}>
-      <Text variant="muted" size={4}>
-        We have emailed you the details of your order.
-      </Text>
-      <Button
-        as="a"
-        href="/dashboard/settings"
-        style={{ fontSize: 13, height: 40 }}
+  <Stack gap={10} direction="vertical" align="center">
+    <Stack gap={3} direction="vertical">
+      <Text
+        as="h1"
+        fontFamily="everett"
+        size={48}
+        weight="500"
+        align="center"
+        lineHeight="56px"
+        margin={0}
       >
-        Go to Dashboard
-      </Button>
+        Your payment was successful.
+      </Text>
+    </Stack>
+    <Stack>
+      <StyledCard isHighlighted>
+        <Stack direction="vertical" gap={4}>
+          <Stack justify="center">
+            <Icon name="simpleCheck" color="#5DCC67" size={48} />
+          </Stack>
+          <Text>We sent the order details to your email address.</Text>
+          <StyledSubscriptionLink
+            href="/dashboard/settings"
+            variant="highlight"
+          >
+            Go to dashboard
+          </StyledSubscriptionLink>
+        </Stack>
+      </StyledCard>
     </Stack>
   </Stack>
 );
