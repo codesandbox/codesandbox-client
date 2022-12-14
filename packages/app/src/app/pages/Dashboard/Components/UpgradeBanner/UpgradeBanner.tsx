@@ -19,6 +19,25 @@ import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
+// TODO: Move addStripeSuccessParam to a different file.
+// TODO: Implement everything that should happen when param is present.
+
+/**
+ * @param {string} pathNameAndSearch The pathname and search params you want to add the stripe
+ * success param to, for example  `/dashboard?workspace=xxxx`. Exclude the url base.
+ */
+const addStripeSuccessParam = (pathNameAndSearch: string) => {
+  try {
+    const newUrl = new URL(pathNameAndSearch, window.location.origin);
+    newUrl.searchParams.append('stripe', 'success');
+
+    // Return only param and search
+    return `${newUrl.pathname}${newUrl.search}`;
+  } catch {
+    return pathNameAndSearch;
+  }
+};
+
 const StyledTitle = styled(Text)`
   font-size: 24px;
   line-height: 32px;
@@ -136,7 +155,9 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
                         createCheckout({
                           team_id: teamId,
                           recurring_interval: 'month',
-                          success_path: dashboard.recent(teamId),
+                          success_path: addStripeSuccessParam(
+                            dashboard.recent(teamId)
+                          ),
                           cancel_path: dashboard.recent(teamId),
                         });
                       }}
