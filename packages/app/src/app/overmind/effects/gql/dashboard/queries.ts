@@ -474,6 +474,17 @@ export const curatedAlbums: Query<
   ${sandboxFragmentDashboard}
 `;
 
+export const curatedAlbumById = gql`
+  query CuratedAlbumById($albumId: ID!) {
+    album(albumId: $albumId) {
+      title
+      sandboxes {
+        title
+      }
+    }
+  }
+`;
+
 export const getContributionBranches: Query<
   ContributionBranchesQuery,
   ContributionBranchesQueryVariables
