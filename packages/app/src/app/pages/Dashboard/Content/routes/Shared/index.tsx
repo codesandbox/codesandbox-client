@@ -6,6 +6,9 @@ import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
+import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
+import { ArticleCard } from '@codesandbox/components';
+import track from '@codesandbox/common/lib/utils/analytics';
 import { getPossibleTemplates } from '../../utils';
 
 export const Shared = () => {
@@ -42,7 +45,25 @@ export const Shared = () => {
         showFilters
       />
 
-      <VariableGrid items={items} page={pageType} />
+      {items.length > 0 ? (
+        <VariableGrid items={items} page={pageType} />
+      ) : (
+        <EmptyPage.StyledWrapper>
+          <EmptyPage.StyledDescription as="p">
+            There are currently no sandboxes shared with you.
+          </EmptyPage.StyledDescription>
+          <EmptyPage.StyledGrid>
+            <ArticleCard
+              title="Get feedback in context"
+              thumbnail="/static/img/thumbnails/shared.png"
+              url="https://codesandbox.io/team"
+              onClick={() =>
+                track('Shared sandboxes - open docs from empty state')
+              }
+            />
+          </EmptyPage.StyledGrid>
+        </EmptyPage.StyledWrapper>
+      )}
     </SelectionProvider>
   );
 };

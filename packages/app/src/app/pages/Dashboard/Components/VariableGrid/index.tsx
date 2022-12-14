@@ -251,13 +251,13 @@ interface VariableGridProps {
   customGridElementHeight?: number;
 }
 
-export const VariableGrid = ({
+export const VariableGrid: React.FC<VariableGridProps> = ({
   items,
   collectionId,
   page,
   viewMode: propViewMode,
   customGridElementHeight,
-}: VariableGridProps) => {
+}) => {
   const { dashboard } = useAppState();
   const location = useLocation();
   const params = useParams<{ path: string }>();

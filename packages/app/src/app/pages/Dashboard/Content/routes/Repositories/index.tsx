@@ -157,8 +157,10 @@ export const RepositoriesPage = () => {
           page={pageType}
           items={itemsToShow}
           customGridElementHeight={
-            selectedRepo ? undefined : 154
-          } /* 154 just for repo cards */
+            path /* selectedRepo is undefined when the page is loading, so we ned to check agains the path. */
+              ? undefined
+              : 154 /* 154 just for repo cards */
+          }
         />
       ) : (
         <EmptyState />
