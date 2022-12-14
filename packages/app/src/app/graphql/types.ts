@@ -3397,8 +3397,17 @@ export type CuratedAlbumByIdQueryVariables = Exact<{
 
 export type CuratedAlbumByIdQuery = { __typename?: 'RootQueryType' } & {
   album: Maybe<
-    { __typename?: 'Album' } & Pick<Album, 'title'> & {
-        sandboxes: Array<{ __typename?: 'Sandbox' } & Pick<Sandbox, 'title'>>;
+    { __typename?: 'Album' } & Pick<Album, 'id' | 'title'> & {
+        sandboxes: Array<
+          { __typename?: 'Sandbox' } & Pick<
+            Sandbox,
+            'forkCount' | 'likeCount'
+          > & {
+              author: Maybe<
+                { __typename?: 'User' } & Pick<User, 'username' | 'avatarUrl'>
+              >;
+            } & SandboxFragmentDashboardFragment
+        >;
       }
   >;
 };

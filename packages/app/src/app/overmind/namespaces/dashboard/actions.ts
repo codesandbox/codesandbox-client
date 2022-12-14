@@ -1856,7 +1856,11 @@ export const getCuratedAlbumById = async (
       throw new Error('Unable to find the requested collection');
     }
 
-    dashboard.curatedAlbumsById[params.albumId] = data.album;
+    const _curatedAlbumsById = dashboard.curatedAlbumsById ?? {};
+    dashboard.curatedAlbumsById = {
+      ..._curatedAlbumsById,
+      [params.albumId]: data.album,
+    };
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting the requested collection'

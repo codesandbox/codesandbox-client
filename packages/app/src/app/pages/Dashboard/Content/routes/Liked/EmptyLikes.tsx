@@ -1,7 +1,11 @@
-import { Stack } from '@codesandbox/components';
+import { Element, Stack } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
-import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
+import {
+  VariableGrid,
+  GUTTER,
+} from 'app/pages/Dashboard/Components/VariableGrid';
+import { DashboardGridItem } from 'app/pages/Dashboard/types';
 import React from 'react';
 
 const TRENDING_COLLECTION_ID = 'nynbnp';
@@ -24,7 +28,7 @@ export const EmptyLikes: React.FC = () => {
     }
   }, []);
 
-  const getItemsToShow = () => {
+  const getItemsToShow = (): DashboardGridItem[] => {
     if (!suggestedSandboxes) {
       return [{ type: 'skeleton-row' }];
     }
@@ -45,11 +49,19 @@ export const EmptyLikes: React.FC = () => {
         as="p"
         dangerouslySetInnerHTML={{ __html: DESCRIPTION }}
       />
-      <Stack direction="vertical" gap={6}>
+      <Stack css={{ flex: 1 }} direction="vertical" gap={6}>
         <EmptyPage.StyledGridTitle>
           Discover exciting projects
         </EmptyPage.StyledGridTitle>
-        <VariableGrid items={itemsToShow} page="liked" />
+        <Element
+          css={{
+            height: '100%',
+            // Override the margins built-in the VariableGrid.
+            margin: `-28px -${GUTTER}px 0`,
+          }}
+        >
+          <VariableGrid items={itemsToShow} page="liked" />
+        </Element>
       </Stack>
     </EmptyPage.StyledWrapper>
   );

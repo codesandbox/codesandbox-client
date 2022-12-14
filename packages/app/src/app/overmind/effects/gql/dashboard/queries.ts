@@ -477,12 +477,20 @@ export const curatedAlbums: Query<
 export const curatedAlbumById = gql`
   query CuratedAlbumById($albumId: ID!) {
     album(albumId: $albumId) {
+      id
       title
       sandboxes {
-        title
+        ...sandboxFragmentDashboard
+        forkCount
+        likeCount
+        author {
+          username
+          avatarUrl
+        }
       }
     }
   }
+  ${sandboxFragmentDashboard}
 `;
 
 export const getContributionBranches: Query<
