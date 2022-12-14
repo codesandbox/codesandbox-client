@@ -1,4 +1,3 @@
-import { Stack } from '@codesandbox/components';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import React from 'react';
 import { TemplatesRow } from 'app/pages/Dashboard/Components/TemplatesRow';
@@ -23,24 +22,14 @@ export const EmptyState: React.FC = () => {
 
   return (
     <EmptyPage.StyledWrapper>
-      <Stack
-        css={{
-          width: '100%',
-
-          '@media screen and (min-width: 768px)': {
-            width: isPersonalSpace ? '100%' : '560px',
-          },
+      <EmptyPage.StyledDescription
+        as="p"
+        dangerouslySetInnerHTML={{
+          __html: isPersonalSpace ? DESCRIPTIONS.PERSONAL : DESCRIPTIONS.TEAM,
         }}
-      >
-        <EmptyPage.StyledDescription
-          as="p"
-          dangerouslySetInnerHTML={{
-            __html: isPersonalSpace ? DESCRIPTIONS.PERSONAL : DESCRIPTIONS.TEAM,
-          }}
-        />
-      </Stack>
+      />
       <TemplatesRow
-        page="drafts"
+        page={'drafts' as const}
         title="Start from a template"
         templateIds={TEMPLATE_IDS}
       />

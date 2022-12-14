@@ -120,10 +120,13 @@ export const TemplatesRow: React.FC<TemplatesRowProps> = ({
             icon="plus"
             label="New from a template"
             onClick={() => {
-              track('Sandboxes - open import modal from empty state', {
-                codesandbox: 'V1',
-                event_source: 'UI',
-              });
+              track(
+                `${MAP_PAGE_TYPE_TO_NAME[page]} - open import modal from empty state`,
+                {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                }
+              );
               actions.openCreateSandboxModal();
             }}
           />
