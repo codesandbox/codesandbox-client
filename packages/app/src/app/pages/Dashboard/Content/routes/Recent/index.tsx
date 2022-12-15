@@ -14,6 +14,7 @@ import { Element } from '@codesandbox/components';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useIsFirstVisit } from 'app/hooks/useIsFirstVisit';
 
 export const Recent = () => {
   const {
@@ -36,6 +37,7 @@ export const Recent = () => {
 
   const { isFree } = useWorkspaceSubscription();
   const { isTeamSpace } = useWorkspaceAuthorization();
+  const isFirstVisit = useIsFirstVisit();
 
   const items: DashboardGridItem[] = dataIsLoading
     ? [
@@ -80,7 +82,7 @@ export const Recent = () => {
       <Helmet>
         <title>Recent - CodeSandbox</title>
       </Helmet>
-      {isFree && isTeamSpace && (
+      {isFree && isTeamSpace && !isFirstVisit && (
         <Element
           css={{
             width: `calc(100% - ${2 * GUTTER}px)`,
