@@ -275,6 +275,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
           ...baseInteractions,
           // Recent page does not support selection
           'data-selection-id': sandbox.id,
+          tabIndex: '0',
           onClick,
           onMouseDown,
           onDoubleClick,

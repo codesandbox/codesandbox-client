@@ -247,9 +247,10 @@ export const SandboxCard = ({
         position: 'relative',
         width: '100%',
         height: 240,
+        outline: 'none',
         backgroundColor: selected ? '#292929' : '#1D1D1D',
         border: '1px solid',
-        borderColor: selected ? '#242424' : 'transparent',
+        borderColor: selected ? '#9581FF' : 'transparent',
         borderRadius: '4px',
         overflow: 'hidden',
         transition: 'background ease-in-out',
@@ -262,7 +263,7 @@ export const SandboxCard = ({
           backgroundColor: '#1D1D1D',
         },
         ':focus-visible': {
-          borderColor: '#242424',
+          borderColor: '#9581FF',
         },
       }}
     >
