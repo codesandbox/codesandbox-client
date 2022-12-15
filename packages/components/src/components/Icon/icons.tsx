@@ -1262,3 +1262,20 @@ export const addMember = props => (
     />
   </Element>
 );
+
+export const team = props => (
+  <Element
+    as="svg"
+    fill="none"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fill="currentColor"
+      fillRule="evenodd"
+      d="M2.2 12a1.8 1.8 0 1 0 3.6 0 1.8 1.8 0 0 0-3.6 0ZM4 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM10.2 12a1.8 1.8 0 1 0 3.6 0 1.8 1.8 0 0 0-3.6 0ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM6.2 4a1.8 1.8 0 1 0 3.6 0 1.8 1.8 0 0 0-3.6 0ZM8 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"
+      clipRule="evenodd"
+    />
+  </Element>
+);
