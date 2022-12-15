@@ -1,10 +1,8 @@
 import { Element, Stack } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
-import {
-  VariableGrid,
-  GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
+import { GUTTER } from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import { DashboardGridItem } from 'app/pages/Dashboard/types';
 import React from 'react';
 
