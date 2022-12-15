@@ -86,8 +86,9 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
     <Element
       css={{
         width: `calc(100% - ${2 * GUTTER}px)`,
-        maxWwidth: `calc(${GRID_MAX_WIDTH}px - 2 * ${GUTTER}px)`,
-        margin: '0 auto 48px',
+        maxWidth: `calc(${GRID_MAX_WIDTH}px - 2 * ${GUTTER}px)`,
+        margin: '0 auto',
+        paddingBottom: '48px', // Because the stack gap is 0, it overrides the margin bottom so we need to use padding.
       }}
     >
       <Banner
