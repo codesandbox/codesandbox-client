@@ -582,8 +582,8 @@ export const openCreateSandboxModal = (
   actions.modals.newSandboxModal.open(props);
 };
 
-export const openCreateTeamModal = ({ state }: Context) => {
-  state.currentModal = 'newTeam';
+export const openCreateTeamModal = ({ actions }: Context) => {
+  actions.modals.newTeamModal.open();
 };
 
 export const validateUsername = async (

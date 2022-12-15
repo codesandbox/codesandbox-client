@@ -8,6 +8,7 @@
 */
 
 import { AlertModalComponents } from 'app/pages/common/Modals/GenericAlertModal';
+import { TeamStep } from 'app/pages/Dashboard/Components/NewTeamModal';
 
 export const forkFrozenModal = {
   result: 'fork' as 'fork' | 'cancel' | 'unfreeze',
@@ -54,4 +55,12 @@ export const alertModal: {
 
 export const extensionInstalledModal = {
   result: true,
+};
+
+export const newTeamModal: {
+  state: { step?: TeamStep };
+  result: undefined;
+} = {
+  state: { step: undefined },
+  result: undefined,
 };
