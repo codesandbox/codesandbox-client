@@ -1,14 +1,17 @@
 import track from '@codesandbox/common/lib/utils/analytics';
+import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { CreateCard, VideoCard } from '@codesandbox/components';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { TemplatesRow } from 'app/pages/Dashboard/Components/TemplatesRow';
+import { useHistory } from 'react-router-dom';
 import React from 'react';
 import { DocumentationRow } from './DocumentationRow';
 
 export const EmptyRecent: React.FC = () => {
   const actions = useActions();
+  const history = useHistory();
   const { isPersonalSpace } = useWorkspaceAuthorization();
 
   return (
@@ -40,10 +43,10 @@ export const EmptyRecent: React.FC = () => {
         />
         {isPersonalSpace ? (
           <CreateCard
-            icon="addMember"
+            icon="team"
             label="Create a team"
             onClick={() => {
-              track('Empty State Card - Create Team', {
+              track('Empty State Card - Create team', {
                 codesandbox: 'V1',
                 event_source: 'UI',
                 card_type: 'get-started-action',
@@ -52,7 +55,18 @@ export const EmptyRecent: React.FC = () => {
             }}
           />
         ) : (
-          <CreateCard icon="addMember" label="Invite team members" />
+          <CreateCard
+            icon="addMember"
+            label="Invite team members"
+            onClick={() => {
+              track('Empty State Card - Invite members', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+                card_type: 'get-started-action',
+              });
+              history.push(dashboard.settings());
+            }}
+          />
         )}
         <VideoCard
           title="Getting Started with CodeSandbox"
