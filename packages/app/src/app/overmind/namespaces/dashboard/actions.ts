@@ -11,6 +11,7 @@ import {
   TeamMemberAuthorization,
   CreateOrUpdateNpmRegistryMutationVariables,
   DeleteNpmRegistryMutationVariables,
+  CuratedAlbumByIdQueryVariables,
 } from 'app/graphql/types';
 import { getDecoratedCollection, sortByNameAscending } from './utils';
 import { OrderBy, PageTypes, sandboxesTypes } from './types';
@@ -1840,6 +1841,29 @@ export const getCuratedAlbums = async ({ state, effects }: Context) => {
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting curated collections'
+    );
+  }
+};
+
+export const getCuratedAlbumById = async (
+  { state, effects }: Context,
+  params: CuratedAlbumByIdQueryVariables
+) => {
+  const { dashboard } = state;
+  try {
+    const data = await effects.gql.queries.curatedAlbumById(params);
+    if (!data.album) {
+      throw new Error('Unable to find the requested collection');
+    }
+
+    const _curatedAlbumsById = dashboard.curatedAlbumsById ?? {};
+    dashboard.curatedAlbumsById = {
+      ..._curatedAlbumsById,
+      [params.albumId]: data.album,
+    };
+  } catch (error) {
+    effects.notificationToast.error(
+      'There was a problem getting the requested collection'
     );
   }
 };

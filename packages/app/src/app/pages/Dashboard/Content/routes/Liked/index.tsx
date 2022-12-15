@@ -7,6 +7,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { getPossibleTemplates } from '../../utils';
+import { EmptyLikes } from './EmptyLikes';
 
 export const Liked = () => {
   const {
@@ -42,7 +43,11 @@ export const Liked = () => {
         showFilters
       />
 
-      <VariableGrid items={items} page={pageType} />
+      {items.length > 0 ? (
+        <VariableGrid items={items} page={pageType} />
+      ) : (
+        <EmptyLikes />
+      )}
     </SelectionProvider>
   );
 };
