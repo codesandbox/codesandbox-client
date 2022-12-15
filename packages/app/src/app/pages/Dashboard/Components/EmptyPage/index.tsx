@@ -4,7 +4,8 @@ import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid/constants';
 
 const StyledWrapper = styled(Stack)`
   width: calc(100% - ${2 * GUTTER}px);
-  max-width: ${GRID_MAX_WIDTH} - 2 * ${GUTTER};
+  max-width: calc(${GRID_MAX_WIDTH}px - 2 * ${GUTTER}px);
+  height: 100%;
   margin: 28px auto 0;
   flex-direction: column;
   gap: 40px;
