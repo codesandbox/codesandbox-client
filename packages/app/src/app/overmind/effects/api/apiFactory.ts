@@ -36,13 +36,14 @@ export type ApiConfig = {
 };
 
 export default (config: ApiConfig) => {
-  const createHeaders = (provideJwt: () => string | null) =>
-    provideJwt()
+  const createHeaders = (provideJwt: () => string | null) => ({
+    'x-codesandbox-client': 'legacy-web',
+    ...(provideJwt()
       ? {
           Authorization: `Bearer ${provideJwt()}`,
         }
-      : {};
-
+      : {}),
+  });
   const api: Api = {
     get(path, params, options) {
       return axios

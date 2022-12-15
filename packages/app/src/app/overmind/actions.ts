@@ -63,6 +63,11 @@ export const onInitializeOvermind = async (
   if (hasDevAuth) {
     gqlOptions.headers = () => ({
       Authorization: `Bearer ${localStorage.getItem('devJwt')}`,
+      'x-codesandbox-client': 'legacy-web',
+    });
+  } else {
+    gqlOptions.headers = () => ({
+      'x-codesandbox-client': 'legacy-web',
     });
   }
 
