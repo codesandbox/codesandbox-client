@@ -1935,14 +1935,16 @@ export const getRepositoriesByTeam = async (
   { teamId, bypassLoading = false }: RepositoriesActionOptions
 ) => {
   const { dashboard } = state;
-  const _repositories = dashboard.repositories;
 
   // If we should show the loading state, we need to make two
   // queries (synced and unsynced) since the waiting time to
   // get up-to-date data from GitHub is too long.
   if (!bypassLoading) {
     try {
-      dashboard.repositories = { ..._repositories, [teamId]: null };
+      dashboard.repositoriesByTeamId = {
+        ...dashboard.repositoriesByTeamId,
+        [teamId]: null,
+      };
 
       // First fetch data without syncing with GitHub
       // to decrease waiting time.
@@ -1957,8 +1959,8 @@ export const getRepositoriesByTeam = async (
         return;
       }
 
-      dashboard.repositories = {
-        ..._repositories,
+      dashboard.repositoriesByTeamId = {
+        ...dashboard.repositoriesByTeamId,
         [teamId]: unsyncedRepositories.sort(sortByNameAscending),
       };
     } catch (error) {
@@ -1982,8 +1984,8 @@ export const getRepositoriesByTeam = async (
       return;
     }
 
-    dashboard.repositories = {
-      ..._repositories,
+    dashboard.repositoriesByTeamId = {
+      ...dashboard.repositoriesByTeamId,
       [teamId]: syncedRepositories.sort(sortByNameAscending),
     };
   } catch (error) {
@@ -1998,21 +2000,21 @@ export const getRepositoriesByTeam = async (
   }
 };
 
-// If the repository page is accessed directly, we can use this
-// to avoid fetching all repos.
-export const getRepositoryByDetails = async (
+// Fetch the repository with all its branches
+// Cached by `team/owner/name` key
+export const getRepositoryByWithBranches = async (
   { state, effects }: Context,
-  { owner, name }: { owner: string; name: string }
+  {
+    activeTeam,
+    owner,
+    name,
+  }: { activeTeam: string; owner: string; name: string }
 ) => {
-  const { activeTeam, dashboard } = state;
-  if (!activeTeam) {
-    return;
-  }
+  const { dashboard } = state;
+
+  const repoKey = `${activeTeam}/${owner}/${name}`;
 
   try {
-    const _repositories = dashboard.repositories ?? {};
-    dashboard.repositories = { ..._repositories, [activeTeam]: null };
-
     const repositoryData = await effects.gql.queries.getRepositoryByDetails({
       owner,
       name,
@@ -2022,7 +2024,10 @@ export const getRepositoryByDetails = async (
       return;
     }
 
-    dashboard.repositories = { ..._repositories, [activeTeam]: [repository] };
+    dashboard.repositoriesWithBranches = {
+      ...dashboard.repositoriesWithBranches,
+      [repoKey]: repository,
+    };
   } catch (error) {
     effects.notificationToast.error(
       `There was a problem getting repository ${name} from ${owner}`
@@ -2097,34 +2102,28 @@ export const removeBranchFromRepository = async (
   try {
     await effects.api.removeBranchFromRepository(owner, repoName, name);
 
-    // Manually remove the data from the state based on the
-    // current page. Then sync in the background.
-    if (page === 'repositories') {
-      const repository = dashboard.repositories?.[activeTeam]?.find(
-        r => r.repository.owner === owner && r.repository.name === repoName
-      );
+    // Clean the branch references from all possible locations in the state
+    const key = `${activeTeam}/${owner}/${repoName}`;
+    const repository = dashboard.repositoriesWithBranches[key];
 
-      if (repository) {
-        repository.branches = repository.branches.filter(b => b.id !== id);
-      }
-
-      actions.dashboard.getRepositoriesByTeam({
-        teamId: activeTeam,
-        bypassLoading: true,
-      });
+    if (repository) {
+      dashboard.repositoriesWithBranches = {
+        ...dashboard.repositoriesWithBranches,
+        [key]: {
+          ...repository,
+          branches: repository.branches.filter(b => b.id !== id),
+        },
+      };
     }
 
-    if (page === 'my-contributions') {
-      dashboard.contributions =
-        dashboard.contributions?.filter(b => b.id !== id) ?? [];
+    dashboard.contributions =
+      dashboard.contributions?.filter(b => b.id !== id) ?? [];
 
-      actions.dashboard.getContributionBranches();
-    }
+    dashboard.sandboxes.RECENT_BRANCHES =
+      dashboard.sandboxes.RECENT_BRANCHES?.filter(b => b.id !== id) ?? [];
 
     if (page === 'recent') {
-      dashboard.sandboxes.RECENT_BRANCHES =
-        dashboard.sandboxes.RECENT_BRANCHES?.filter(b => b.id !== id) ?? [];
-
+      // Trigger re-fetching of recent page data to fill in the free spot
       actions.dashboard.getStartPageSandboxes();
     }
   } catch (error) {
@@ -2158,6 +2157,17 @@ export const removeRepositoryFromTeam = async (
   try {
     await effects.api.removeRepositoryFromTeam(owner, name, teamId);
 
+    const teamRepositories = dashboard.repositoriesByTeamId[activeTeam];
+
+    if (teamRepositories) {
+      dashboard.repositoriesByTeamId = {
+        ...dashboard.repositoriesByTeamId,
+        [activeTeam]: teamRepositories.filter(
+          r => r.repository.owner !== owner || r.repository.name !== name
+        ),
+      };
+    }
+
     if (page === 'recent') {
       // First, manually remove the data from the state.
       dashboard.sandboxes.RECENT_BRANCHES =
@@ -2169,24 +2179,6 @@ export const removeRepositoryFromTeam = async (
 
       // Then sync in the background.
       actions.dashboard.getStartPageSandboxes();
-    } else {
-      // First, manually remove the data from the state.
-      const _repositories = dashboard.repositories ?? {};
-      const filteredRepositoriesByTeam =
-        _repositories[activeTeam]?.filter(
-          r => r.repository.owner !== owner || r.repository.name !== name
-        ) ?? [];
-
-      dashboard.repositories = {
-        ..._repositories,
-        [activeTeam]: filteredRepositoriesByTeam,
-      };
-
-      // Then sync in the background.
-      actions.dashboard.getRepositoriesByTeam({
-        teamId: activeTeam,
-        bypassLoading: true,
-      });
     }
   } catch (error) {
     effects.notificationToast.error(

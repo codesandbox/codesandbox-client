@@ -6,6 +6,7 @@ import {
   TeamFragmentDashboardFragment,
   BranchFragment as Branch,
   ProjectFragment as Repository,
+  ProjectWithBranchesFragment as RepositoryWithBranches,
 } from 'app/graphql/types';
 import { DashboardAlbum } from 'app/pages/Dashboard/types';
 import isSameWeek from 'date-fns/isSameWeek';
@@ -74,7 +75,12 @@ export type State = {
    * overrides the current team data.
    * @see {@link https://linear.app/codesandbox/issue/XTD-375}
    */
-  repositories: Record<string, Repository[] | null> | null;
+  repositoriesByTeamId: Record<string, Repository[] | null>;
+
+  /**
+   * Repository with branches cached based on `team/owner/repo`
+   */
+  repositoriesWithBranches: Record<string, RepositoryWithBranches | null>;
   starredRepos: Array<{ owner: string; name: string }>;
   /**
    * Use these variables to track if items are being removed. This way
@@ -196,7 +202,8 @@ export const state: State = {
     }
   ),
   contributions: null,
-  repositories: null,
+  repositoriesByTeamId: {},
+  repositoriesWithBranches: {},
   starredRepos: [],
   removingRepository: null,
   removingBranch: null,
