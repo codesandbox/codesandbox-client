@@ -2,590 +2,242 @@ import React from 'react';
 import { format } from 'date-fns';
 import { sortBy } from 'lodash-es';
 import { useLocation } from 'react-router-dom';
-import { Stack, Text, Menu, Icon, Button, Link } from '@codesandbox/components';
-import css from '@styled-system/css';
-import { useAppState, useActions } from 'app/overmind';
-import { Step, Plan } from 'app/overmind/namespaces/pro/types';
-import { TeamAvatar } from 'app/components/TeamAvatar';
-import {
-  TeamMemberAuthorization,
-  ProSubscription,
-  SubscriptionType,
-  SubscriptionInterval,
-} from 'app/graphql/types';
+import { VisuallyHidden } from 'reakit/VisuallyHidden';
+import { Stack, Text } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { plans } from './plans';
+import { useAppState, useActions } from 'app/overmind';
+import { Step } from 'app/overmind/namespaces/pro/types';
+import { SubscriptionType, SubscriptionInterval } from 'app/graphql/types';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import {
+  PERSONAL_FREE_FEATURES,
+  PERSONAL_FEATURES,
+  TEAM_FREE_FEATURES,
+  TEAM_PRO_FEATURES,
+} from 'app/constants';
+import { Switcher } from '../components/Switcher';
+import { SubscriptionCard } from '../components/SubscriptionCard';
 
-const prettyPermissions = {
-  ADMIN: 'Admin',
-  WRITE: 'Editor',
-  READ: 'Viewer',
+const getBillingText = ({
+  quantity,
+  unitPrice,
+  billingInterval,
+}: {
+  quantity: number;
+  unitPrice: number;
+  billingInterval: SubscriptionInterval;
+}) => {
+  const isMonthly = billingInterval === SubscriptionInterval.Monthly;
+  const multiplier = isMonthly ? 1 : 12;
+  const price = quantity * unitPrice * multiplier;
+
+  return `a total of $${price} will be billed each ${
+    isMonthly ? 'month' : 'year'
+  }`;
 };
 
-export const WorkspacePlanSelection: React.FC<{
-  loading: boolean;
-}> = ({ loading }) => {
+// TODO: Rename
+export const WorkspacePlanSelection: React.FC = () => {
   const {
     personalWorkspaceId,
     user,
     activeTeam,
     activeTeamInfo,
     dashboard,
-    pro: { selectedPlan },
   } = useAppState();
   const {
     setActiveTeam,
     modalOpened,
-    pro: { setStep, updateSelectedPlan, updateSeats },
-    patron: { cancelSubscriptionClicked },
-    openCreateTeamModal,
+    pro: { setStep },
   } = useActions();
 
   const location = useLocation();
+  const { isPersonalSpace, isTeamAdmin } = useWorkspaceAuthorization();
+  // const isPersonalSpace = false; // DEBUG
+  // const isTeamAdmin = true; // DEBUG
+  const { subscription } = useWorkspaceSubscription();
 
+  // Based on the 'type' search param we redirect to the personal pro page if
+  // it's not yet active.
   const searchParams = new URLSearchParams(location.search);
-  const type = searchParams.get('type') as SubscriptionType;
-  const interval = searchParams.get('interval') as SubscriptionInterval;
-
-  const [billingInterval, setBillingInterval] = React.useState<
-    Plan['billingInterval']
-  >(interval || SubscriptionInterval.Monthly);
-
-  const isPersonalWorkspace = personalWorkspaceId === activeTeam;
+  const subTypeParam = searchParams.get('type') as SubscriptionType | null;
 
   React.useEffect(
-    function setPlan() {
-      let newPlan: typeof plans[keyof typeof plans];
-      if (isPersonalWorkspace) {
-        if (billingInterval === SubscriptionInterval.Yearly) {
-          newPlan = plans.PERSONAL_PRO_ANNUAL;
-        } else {
-          newPlan = plans.PERSONAL_PRO_MONTHLY;
-        }
-      } else if (billingInterval === SubscriptionInterval.Yearly) {
-        newPlan = plans.TEAM_PRO_ANNUAL;
-      } else {
-        newPlan = plans.TEAM_PRO_MONTHLY;
+    function switchToPersonalWorkspaceBasedOnParam() {
+      if (!isPersonalSpace && subTypeParam === SubscriptionType.PersonalPro) {
+        setActiveTeam({ id: personalWorkspaceId });
       }
-
-      updateSelectedPlan(newPlan);
     },
-    [isPersonalWorkspace, billingInterval, updateSelectedPlan]
+    [isPersonalSpace, subTypeParam, setActiveTeam, personalWorkspaceId]
   );
+
+  // TODO: Does this ever occur with the checks in /pro/index.tsx and Legacy.tsx? it
+  // might so I'm leaving this here for now.
+  if (!activeTeam || !dashboard.teams.length) return null;
+
+  const currentSubscription = activeTeamInfo?.subscription;
 
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
   )!;
 
-  const getUserAuthorization = React.useCallback(
-    workspace => {
-      const userAuthorization = workspace.userAuthorizations.find(
-        authorization => authorization.userId === user.id
-      ).authorization;
-      return userAuthorization;
-    },
-    [user]
-  );
-
-  const workspaces = [
+  const workspacesList = [
     personalWorkspace,
     ...sortBy(
-      dashboard.teams.filter(t => t.id !== personalWorkspaceId),
-      [getUserAuthorization, 'name']
+      dashboard.teams.filter(team => team.id !== personalWorkspaceId),
+      team => team.name.toLowerCase()
     ),
-  ].filter(exists => exists);
+  ];
 
-  const activeWorkspace = workspaces.find(
-    workspace => workspace.id === activeTeam
-  );
-  const activeUserAuthorization =
-    activeWorkspace && getUserAuthorization(activeWorkspace);
+  const personalProCta: React.ComponentProps<typeof SubscriptionCard>['cta'] = {
+    text: 'Manage subscription',
+    onClick: () => {
+      modalOpened({ modal: 'legacyPayment' });
+    },
+    variant: 'light',
+  };
 
-  React.useEffect(
-    function switchToWorkspaceWithAdminRights() {
-      // if type is PERSONAL_PRO, switch to personal account
-      if (type === SubscriptionType.PersonalPro) {
-        setActiveTeam({ id: personalWorkspaceId });
-        return;
-      }
+  const teamProCta: React.ComponentProps<
+    typeof SubscriptionCard
+    // eslint-disable-next-line no-nested-ternary
+  >['cta'] = isTeamAdmin
+    ? // Only allowed to change from monthly to yearly
+      currentSubscription.billingInterval === SubscriptionInterval.Monthly
+      ? {
+          text: 'Change to yearly billing',
+          onClick: () => {
+            track('legacy subscription page - change to yearly billing', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
 
-      // if you land on an account where you are not the admin
-      // switch accounts to one where you are an admin
-      // if none, switch to personal account
-      if (
-        activeUserAuthorization !== TeamMemberAuthorization.Admin &&
-        dashboard.teams.length
-      ) {
-        const workspaceWithAdminRights = dashboard.teams.find(
-          team =>
-            team.id !== personalWorkspaceId &&
-            getUserAuthorization(team) === TeamMemberAuthorization.Admin
-        );
-
-        if (workspaceWithAdminRights) {
-          setActiveTeam({ id: workspaceWithAdminRights.id });
-        } else {
-          setActiveTeam({ id: personalWorkspaceId });
+            setStep(Step.ConfirmBillingInterval);
+          },
+          variant: 'light',
         }
-      }
-    },
-    [
-      type,
-      activeUserAuthorization,
-      dashboard.teams,
-      setActiveTeam,
-      personalWorkspaceId,
-      getUserAuthorization,
-    ]
-  );
-
-  React.useEffect(
-    function trackingPlanChoice() {
-      track('Pro - Set billing interval', { billingInterval });
-    },
-    [billingInterval]
-  );
-
-  React.useEffect(
-    function trackingWorkspace() {
-      track('Pro - Change Team selection');
-    },
-    [activeWorkspace]
-  );
-
-  if (!activeTeam || !dashboard.teams.length || !selectedPlan) return null;
-
-  const numberOfEditors = activeWorkspace.userAuthorizations.filter(
-    ({ authorization }) => authorization !== TeamMemberAuthorization.Read
-  ).length;
-  updateSeats(numberOfEditors);
-
-  const isLegacyPersonalPro = isPersonalWorkspace && user.subscription;
-  const currentSubscription = activeTeamInfo?.subscription;
-
-  // if there is mismatch of intent - team/personal
-  // or you don't have access to upgrade
-  // open the account switcher on load
-  const switcherDefaultOpen =
-    (type === SubscriptionType.TeamPro && isPersonalWorkspace) ||
-    activeUserAuthorization !== TeamMemberAuthorization.Admin;
+      : {
+          text: 'Contact support',
+          href: 'mailto:support@codesandbox.io',
+          variant: 'light',
+          onClick: () => {
+            track('legacy subscription page - contact support', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+          },
+        }
+    : undefined;
 
   return (
-    <div style={{ width: '100%' }}>
-      <Text
-        size={7}
-        as="h1"
-        block
-        weight="bold"
-        align="center"
-        marginBottom={4}
-      >
-        Upgrade to Pro
-      </Text>
-      <Text
-        size={3}
-        variant="muted"
-        block
-        align="center"
-        marginBottom={8}
-        css={{ maxWidth: 560 }}
-      >
-        Join our community of creators from {selectedPlan.currency}
-        {selectedPlan.unit}/month.
-        <br /> Cancel at any time, effective at the end of the payment period.
-      </Text>
-      <Stack direction="vertical" gap={1} marginBottom={6}>
-        <Text>Account</Text>
-        <Stack
-          css={css({
-            button: {
-              border: '1px solid',
-              borderColor: 'grays.500',
-              borderRadius: 'small',
-              paddingY: 1,
-              img: { size: 6 },
-              span: { fontSize: 3, maxWidth: 'calc(100% - 16px)' },
-            },
-          })}
-        >
-          <Menu defaultOpen={switcherDefaultOpen}>
-            <Stack
-              as={Menu.Button}
-              justify="space-between"
-              align="center"
-              css={css({
-                width: '100%',
-                height: '100%',
-                paddingLeft: 2,
-                borderRadius: 0,
-                '&:hover': {
-                  backgroundColor: 'grays.600',
-                },
-              })}
-            >
-              <Stack gap={2} as="span" align="center">
-                <Stack as="span" align="center" justify="center">
-                  <TeamAvatar
-                    avatar={activeWorkspace.avatarUrl}
-                    name={activeWorkspace.name}
-                  />
-                </Stack>
-                <Text size={4} weight="normal" maxWidth={140}>
-                  {activeWorkspace.name}
-                </Text>
-              </Stack>
-              <Icon name="caret" size={8} />
-            </Stack>
-            <Menu.List
-              css={css({
-                width: '560px',
-                marginTop: '-4px',
-                backgroundColor: 'grays.600',
-              })}
-              style={{ backgroundColor: '#242424', borderColor: '#343434' }} // TODO: find a way to override reach styles without the selector mess
-            >
-              {workspaces.map(workspace => {
-                const userAuthorization = getUserAuthorization(workspace);
+    <div>
+      <Stack gap={10} direction="vertical">
+        <Stack gap={3} direction="vertical" align="center">
+          <Switcher
+            workspaces={workspacesList}
+            setActiveTeam={setActiveTeam}
+            personalWorkspaceId={personalWorkspaceId}
+            activeTeamInfo={activeTeamInfo}
+          />
 
-                return (
-                  <Stack
-                    as={Menu.Item}
-                    key={workspace.id}
-                    justify="space-between"
-                    align="center"
-                    css={css({
-                      height: 10,
-                      textAlign: 'left',
-                      backgroundColor: 'grays.600',
-                      borderBottom: '1px solid',
-                      borderColor: 'grays.500',
-                      '&[data-reach-menu-item][data-component=MenuItem][data-selected]': {
-                        backgroundColor: 'grays.500',
-                      },
-                    })}
-                    style={{ paddingLeft: 8 }}
-                    data-disabled={
-                      userAuthorization !== TeamMemberAuthorization.Admin
-                        ? true
-                        : null
-                    }
-                    onSelect={event => {
-                      if (userAuthorization === TeamMemberAuthorization.Admin) {
-                        setActiveTeam({ id: workspace.id });
-                      } else event.preventDefault();
-                    }}
-                  >
-                    <Stack gap={2} align="center" css={{ width: '100%' }}>
-                      <TeamAvatar
-                        avatar={workspace.avatarUrl}
-                        name={workspace.name}
-                        size="small"
-                      />
-                      <Text size={3} maxWidth="100%">
-                        {workspace.name}
-                      </Text>
-                    </Stack>
-
-                    {activeWorkspace.id === workspace.id && (
-                      <Icon name="simpleCheck" />
-                    )}
-
-                    {userAuthorization !== TeamMemberAuthorization.Admin &&
-                      prettyPermissions[userAuthorization]}
-                  </Stack>
-                );
-              })}
-              <Stack
-                as={Menu.Item}
-                align="center"
-                gap={2}
-                css={css({ height: 10, textAlign: 'left' })}
-                style={{ paddingLeft: 8 }}
-                onSelect={openCreateTeamModal}
-              >
-                <Stack
-                  justify="center"
-                  align="center"
-                  css={css({
-                    size: 6,
-                    borderRadius: 'small',
-                    border: '1px solid',
-                    borderColor: 'grays.500',
-                  })}
-                >
-                  <Icon name="plus" size={10} />
-                </Stack>
-                <Text size={3}>Create a new team</Text>
-              </Stack>
-            </Menu.List>
-          </Menu>
-        </Stack>
-      </Stack>
-
-      {isLegacyPersonalPro ? (
-        <Stack direction="vertical" gap={4}>
-          <Stack
-            direction="vertical"
-            gap={1}
-            css={css({
-              padding: 4,
-              border: '1px solid',
-              borderColor: 'grays.500',
-              borderRadius: 'small',
-              overflow: 'hidden',
-            })}
+          <Text
+            as="h1"
+            fontFamily="everett"
+            size={48}
+            weight="500"
+            align="center"
+            lineHeight="56px"
+            margin={0}
           >
-            <Text size={3}>Current plan</Text>
-            <Text variant="muted">
-              {user.subscription.plan === 'patron' ? 'Patron' : 'Personal Pro'}
-            </Text>
-            <Text variant="muted">
-              You will be billed{' '}
-              {user.subscription.duration === 'yearly' ? (
-                <>
-                  and charged annually on{' '}
-                  {format(new Date(user.subscription.since), 'MMM dd')}.
-                </>
-              ) : (
-                <>
-                  on the {format(new Date(user.subscription.since), 'do')} of
-                  each month.
-                </>
-              )}
-            </Text>
-          </Stack>
-
-          <Text variant="muted">
-            You can{' '}
-            <Link
-              variant="active"
-              onClick={e => {
-                e.preventDefault();
-
-                modalOpened({ modal: 'legacyPayment' });
-              }}
-            >
-              update your payment details
-            </Link>{' '}
-            or{' '}
-            <Link
-              variant="active"
-              onClick={e => {
-                e.preventDefault();
-                cancelSubscriptionClicked();
-              }}
-            >
-              cancel your subscription.
-            </Link>
+            You have an active Pro subscription.
           </Text>
         </Stack>
-      ) : (
-        <Stack direction="vertical" gap={6}>
-          <Stack gap={7}>
-            {isPersonalWorkspace ? (
-              <>
-                <PlanCard
-                  plan={plans.PERSONAL_PRO_MONTHLY}
-                  billingInterval={billingInterval}
-                  setBillingInterval={setBillingInterval}
-                  currentSubscription={currentSubscription}
-                />
-                <PlanCard
-                  plan={plans.PERSONAL_PRO_ANNUAL}
-                  billingInterval={billingInterval}
-                  setBillingInterval={setBillingInterval}
-                  currentSubscription={currentSubscription}
-                />
-              </>
-            ) : (
-              <>
-                <PlanCard
-                  plan={plans.TEAM_PRO_MONTHLY}
-                  billingInterval={billingInterval}
-                  setBillingInterval={setBillingInterval}
-                  currentSubscription={currentSubscription}
-                />
-                <PlanCard
-                  plan={plans.TEAM_PRO_ANNUAL}
-                  billingInterval={billingInterval}
-                  setBillingInterval={setBillingInterval}
-                  currentSubscription={currentSubscription}
-                />
-              </>
-            )}
-          </Stack>
-
-          <Stack
-            direction="vertical"
-            gap={1}
-            css={css({
-              padding: 4,
-              border: '1px solid',
-              borderColor: 'grays.500',
-              borderRadius: 'small',
-              overflow: 'hidden',
-              button: {
-                fontSize: 3,
-                height: 10,
-                fontFamily: 'Lato, sans-serif',
-                fontWeight: 700,
+        <Stack
+          gap={2}
+          justify="center"
+          css={{
+            // The only way to change the stack styles responsively
+            // with CSS rules only.
+            '@media (max-width: 888px)': {
+              flexDirection: 'column',
+              alignItems: 'center',
+              '& > *:not(:last-child)': {
+                marginRight: 0,
+                marginBottom: '8px',
               },
-            })}
+            },
+          }}
+        >
+          <SubscriptionCard
+            title="Free plan"
+            features={
+              isPersonalSpace ? PERSONAL_FREE_FEATURES : TEAM_FREE_FEATURES
+            }
           >
-            <Text size={3}>Team editors</Text>
-            <Stack justify="space-between">
-              <Stack direction="vertical" gap={4}>
-                <Text variant="muted" size={3}>
-                  {numberOfEditors} {numberOfEditors === 1 ? 'seat' : 'seats'}
-                  <Text size={2}> ✕ </Text> {selectedPlan.currency}
-                  {selectedPlan.unit}{' '}
-                  {selectedPlan.multiplier > 1 ? (
-                    <>
-                      <Text size={2}> ✕</Text> {selectedPlan.multiplier}
-                    </>
+            <Stack gap={1} direction="vertical" css={{ flexGrow: 1 }}>
+              <Text aria-hidden size={32} weight="400">
+                $0
+              </Text>
+              <VisuallyHidden>Zero dollar</VisuallyHidden>
+              <Text>forever</Text>
+            </Stack>
+          </SubscriptionCard>
+
+          {isPersonalSpace ? (
+            <SubscriptionCard
+              title={
+                user.subscription.plan === 'patron' ? 'Patron' : 'Personal Pro'
+              }
+              features={PERSONAL_FEATURES}
+              cta={personalProCta}
+              isHighlighted
+            >
+              <Stack gap={1} direction="vertical">
+                <Text size={32} weight="500">
+                  ${user.subscription.amount}
+                </Text>
+                {user.subscription.duration === 'yearly' ? (
+                  <Text>
+                    charged annually on{' '}
+                    {format(new Date(user.subscription.since), 'MMM dd')}
+                  </Text>
+                ) : (
+                  <Text>
+                    charged on the{' '}
+                    {format(new Date(user.subscription.since), 'do')} of each
+                    month
+                  </Text>
+                )}
+              </Stack>
+            </SubscriptionCard>
+          ) : (
+            <SubscriptionCard
+              title="Team Pro"
+              features={TEAM_PRO_FEATURES}
+              cta={teamProCta}
+              isHighlighted
+            >
+              <Stack gap={1} direction="vertical">
+                <Text size={32} weight="500">
+                  ${subscription.unitPrice}
+                </Text>
+                <Text>
+                  <div>per editor</div>
+                  {isTeamAdmin ? (
+                    <div>
+                      {getBillingText({
+                        quantity: subscription.quantity,
+                        unitPrice: subscription.unitPrice,
+                        billingInterval: subscription.billingInterval,
+                      })}
+                    </div>
                   ) : null}
                 </Text>
-                <Text variant="muted">
-                  Prices listed in USD. Taxes may apply.
-                </Text>
               </Stack>
-              <Text weight="bold" size={4}>
-                {selectedPlan.currency}
-                {numberOfEditors *
-                  selectedPlan.unit *
-                  selectedPlan.multiplier}{' '}
-                /{' '}
-                {selectedPlan.billingInterval === SubscriptionInterval.Monthly
-                  ? 'month'
-                  : 'year'}
-              </Text>
-            </Stack>
-          </Stack>
-
-          {currentSubscription ? (
-            <>
-              <Button
-                loading={loading}
-                disabled={
-                  // non-admins can't upgrade
-                  activeUserAuthorization !== TeamMemberAuthorization.Admin ||
-                  // you are not allowed to change from yearly to monthly
-                  currentSubscription.billingInterval ===
-                    SubscriptionInterval.Yearly ||
-                  // if it's already the same, then nothing to do here
-                  selectedPlan.billingInterval ===
-                    currentSubscription.billingInterval
-                }
-                onClick={() => setStep(Step.ConfirmBillingInterval)}
-                css={css({
-                  fontSize: 3,
-                  height: 10,
-                  fontFamily: 'Lato, sans-serif',
-                  fontWeight: 700,
-                })}
-              >
-                Update billing interval
-              </Button>
-              {currentSubscription.billingInterval ===
-                SubscriptionInterval.Yearly &&
-              selectedPlan.billingInterval === SubscriptionInterval.Monthly ? (
-                <Text align="center">
-                  Changing billing interval from Yearly to Monthly is not
-                  supported yet. Please email us at support@codesandbox.io
-                </Text>
-              ) : null}
-            </>
-          ) : (
-            <Button
-              loading={loading}
-              disabled={
-                // non-admins can't upgrade
-                activeUserAuthorization !== TeamMemberAuthorization.Admin
-              }
-              onClick={() => setStep(Step.InlineCheckout)}
-              css={css({
-                fontSize: 3,
-                height: 10,
-                fontFamily: 'Lato, sans-serif',
-                fontWeight: 700,
-              })}
-            >
-              Continue
-            </Button>
+            </SubscriptionCard>
           )}
         </Stack>
-      )}
-    </div>
-  );
-};
-
-const PlanCard: React.FC<{
-  plan: Plan;
-  billingInterval: Plan['billingInterval'];
-  setBillingInterval: (billingInterval: Plan['billingInterval']) => void;
-  // Omitting new trialEnd, trialStart, cancelAtPeriodEnd and active
-  currentSubscription: Omit<
-    ProSubscription,
-    'trialEnd' | 'trialStart' | 'cancelAtPeriodEnd' | 'active'
-  > | null;
-}> = ({ plan, billingInterval, setBillingInterval, currentSubscription }) => {
-  const isSelected = plan.billingInterval === billingInterval;
-  const isCurrent =
-    plan.billingInterval === currentSubscription?.billingInterval;
-
-  return (
-    <Stack
-      as="label"
-      direction="vertical"
-      css={css({
-        flexGrow: 1,
-        padding: 4,
-        border: '1px solid',
-        borderRadius: 'small',
-        borderColor: isSelected ? 'blues.600' : 'grays.600',
-        backgroundColor: isSelected ? 'blues.900' : 'transparent',
-        transition: 'borderColor, backgroundColor',
-        transitionDuration: theme => theme.speeds[3],
-      })}
-    >
-      <Stack justify="space-between" align="center">
-        <Stack direction="vertical" gap={1}>
-          <Text size={4} weight="bold">
-            {plan.billingInterval === SubscriptionInterval.Yearly
-              ? 'Annual'
-              : 'Monthly'}
-            {isCurrent ? ' (Current)' : null}
-          </Text>
-          <Text size={3}>{plan.name}</Text>
-          <Text size={3} variant="muted">
-            {plan.currency}
-            {plan.unit}{' '}
-            {plan.type === SubscriptionType.TeamPro ? 'per editor' : null} per
-            month
-          </Text>
-        </Stack>
-        <div>
-          <input
-            type="radio"
-            hidden
-            checked={isSelected}
-            onChange={() => setBillingInterval(plan.billingInterval)}
-          />
-          <Stack
-            justify="center"
-            align="center"
-            css={css({
-              size: 6,
-              border: '2px solid',
-              borderRadius: '50%',
-              borderColor: isSelected ? 'blues.600' : 'grays.600',
-              backgroundColor: isSelected ? 'blues.600' : 'transparent',
-            })}
-          >
-            {isSelected && <Icon size={13} name="simpleCheck" />}
-          </Stack>
-        </div>
       </Stack>
-    </Stack>
+    </div>
   );
 };

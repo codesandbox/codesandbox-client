@@ -1,7 +1,6 @@
-import { Step, Plan, PaymentSummary, PaymentPreview, Pricing } from './types';
+import { Step, PaymentSummary, PaymentPreview, Pricing } from './types';
 
 type State = {
-  selectedPlan: Plan | null;
   step: Step;
   seats: number;
   isPaddleInitialised: boolean;
@@ -13,7 +12,6 @@ type State = {
 };
 
 export const state: State = {
-  selectedPlan: null,
   step: Step.WorkspacePlanSelection,
   seats: 1,
   isPaddleInitialised: false,

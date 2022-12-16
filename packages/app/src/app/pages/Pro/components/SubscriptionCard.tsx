@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Feature } from 'app/constants';
 import { Text, Stack, Element, Badge } from '@codesandbox/components';
 
-const StyledCard = styled.div<{ isHighlighted?: boolean }>`
+export const StyledCard = styled.div<{ isHighlighted?: boolean }>`
   width: 320px;
   flex-grow: 0;
   padding: 24px;
@@ -34,7 +34,7 @@ const subLinkColors = {
   light: { base: '#0E0E0E', hover: '#161616' },
 };
 
-const StyledSubscriptionLink = styled.a<{
+export const StyledSubscriptionLink = styled.a<{
   variant: 'highlight' | 'dark' | 'light';
 }>`
   padding: 12px 20px;
