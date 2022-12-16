@@ -19,6 +19,12 @@ import { TeamSubscription } from './TeamSubscription';
 
 export type TeamStep = 'info' | 'members' | 'subscription';
 
+const NEXT_STEP: Record<TeamStep, TeamStep | null> = {
+  info: 'members',
+  members: 'subscription',
+  subscription: null,
+};
+
 export const NewTeamModal: React.FC = () => {
   const actions = useActions();
   const { activeTeam, modals } = useAppState();
@@ -35,6 +41,13 @@ export const NewTeamModal: React.FC = () => {
     // will be displayed.
     if (currentStep !== 'info') {
       history.push(dashboard.recent(activeTeam));
+    }
+  };
+
+  const handleStepCompletion = () => {
+    const nextStep = NEXT_STEP[currentStep];
+    if (nextStep) {
+      setCurrentStep(nextStep);
     }
   };
 
@@ -90,12 +103,8 @@ export const NewTeamModal: React.FC = () => {
           >
             {
               {
-                info: <TeamInfo onComplete={() => setCurrentStep('members')} />,
-                members: (
-                  <TeamMembers
-                    onComplete={() => setCurrentStep('subscription')}
-                  />
-                ),
+                info: <TeamInfo onComplete={handleStepCompletion} />,
+                members: <TeamMembers onComplete={handleStepCompletion} />,
                 subscription: <TeamSubscription />,
               }[currentStep]
             }

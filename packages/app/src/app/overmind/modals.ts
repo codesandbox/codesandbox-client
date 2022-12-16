@@ -58,9 +58,9 @@ export const extensionInstalledModal = {
 };
 
 export const newTeamModal: {
-  state: { step?: TeamStep };
+  state: { step: TeamStep | null };
   result: undefined;
 } = {
-  state: { step: undefined },
+  state: { step: null },
   result: undefined,
 };
