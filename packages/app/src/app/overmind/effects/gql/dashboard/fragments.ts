@@ -254,6 +254,20 @@ export const branchFragment = gql`
 
 export const projectFragment = gql`
   fragment project on Project {
+    branchCount
+    repository {
+      ... on GitHubRepository {
+        owner
+        name
+        defaultBranch
+        private
+      }
+    }
+  }
+`;
+
+export const projectWithBranchesFragment = gql`
+  fragment projectWithBranches on Project {
     branches {
       ...branch
     }
