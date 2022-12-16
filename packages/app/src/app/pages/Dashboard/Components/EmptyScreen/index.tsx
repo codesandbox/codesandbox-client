@@ -293,7 +293,7 @@ export const EmptyScreen: React.FC<EmptyScreenProps> = ({
   if (page === 'recent') {
     return (
       <Element marginTop={32}>
-        <TemplatesRow page={page} templateIds={[]} />
+        <TemplatesRow page={page} />
       </Element>
     );
   }
