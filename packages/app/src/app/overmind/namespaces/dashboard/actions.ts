@@ -2161,7 +2161,10 @@ export const removeRepositoryFromTeam = async (
     const key = getProjectUniqueKey({ teamId, owner, name });
     const repositoryWithBranches = dashboard.repositoriesWithBranches[key];
     if (repositoryWithBranches) {
-      delete dashboard.repositoriesWithBranches[key];
+      dashboard.repositoriesWithBranches = {
+        ...dashboard.repositoriesWithBranches,
+        [key]: undefined,
+      };
     }
 
     dashboard.sandboxes.RECENT_BRANCHES =

@@ -35,7 +35,7 @@ export const RepositoryBranchesPage = () => {
         name,
       });
     }
-  }, [path, activeTeam]);
+  }, [activeTeam]);
 
   const { isFree } = useWorkspaceSubscription();
   const isPrivate = repositoryProject?.repository.private;
