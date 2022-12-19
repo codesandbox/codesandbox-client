@@ -38,11 +38,11 @@ Object.entries(Icons).forEach(([name, Icon]) => {
         expect(ids.length).toEqual(new Set(ids).size);
       });
 
-      // Because ViteIcon and AstroIcon have linear gradients with
+      // Because ViteIcon, NextIcon and AstroIcon have linear gradients with
       // ids this will result in the same ids for all the instances.
       // We can skip this test for those icons.
       testIf(
-        !['ViteIcon', 'AstroIcon'].includes(name),
+        !['ViteIcon', 'NextIcon', 'AstroIcon'].includes(name),
         `each icon instance generates unique ids`,
         () => {
           // render the icon once
