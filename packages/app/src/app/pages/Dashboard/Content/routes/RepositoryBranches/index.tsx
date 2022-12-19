@@ -9,6 +9,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { PrivateRepoFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
+import { getProjectUniqueKey } from 'app/overmind/namespaces/dashboard/utils';
 
 export const RepositoryBranchesPage = () => {
   const params = useParams<{ path: string }>();
@@ -20,7 +21,7 @@ export const RepositoryBranchesPage = () => {
     dashboard: { repositoriesWithBranches, viewMode },
   } = useAppState();
 
-  const key = `${activeTeam}/${owner}/${name}`;
+  const key = getProjectUniqueKey({ teamId: activeTeam, owner, name });
   const repositoryProject = repositoriesWithBranches[key] || undefined;
 
   React.useEffect(() => {

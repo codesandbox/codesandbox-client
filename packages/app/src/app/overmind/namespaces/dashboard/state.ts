@@ -69,13 +69,13 @@ export type State = {
   contributions: Branch[] | null;
   /**
    * v2 repositories (formerly projects)
-   * stores as a record of team id and repositories (or null).
+   * stores as a record of team id and repositories (or undefined).
    * implemented this way to overcome an issue where the
    * delayed synced repositories fetch on a previous team
    * overrides the current team data.
    * @see {@link https://linear.app/codesandbox/issue/XTD-375}
    */
-  repositoriesByTeamId: Record<string, Repository[] | null>;
+  repositoriesByTeamId: Record<string, Repository[] | undefined>;
 
   /**
    * Repository with branches cached based on `team/owner/repo`
