@@ -26,14 +26,16 @@ export const Drafts = () => {
 
   const items: DashboardGridItem[] = sandboxes.DRAFTS
     ? getFilteredSandboxes(sandboxes.DRAFTS)
-        .filter(s => s.authorId === user?.id)
-        .map(sandbox => ({
-          type: 'sandbox',
-          sandbox,
-        }))
+      .filter(s => s.authorId === user?.id)
+      .map(sandbox => ({
+        type: 'sandbox',
+        sandbox,
+      }))
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const pageType: PageTypes = 'drafts';
+  const isEmpty = items.length === 0;
+
   return (
     <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
@@ -43,14 +45,14 @@ export const Drafts = () => {
         title="My drafts"
         activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.DRAFTS)}
-        showViewOptions
-        showFilters
-        showSortOptions
+        showViewOptions={!isEmpty}
+        showFilters={!isEmpty}
+        showSortOptions={!isEmpty}
       />
-      {items.length > 0 ? (
-        <VariableGrid page={pageType} items={items} />
-      ) : (
+      {isEmpty ? (
         <EmptyDrafts />
+      ) : (
+        <VariableGrid page={pageType} items={items} />
       )}
     </SelectionProvider>
   );
