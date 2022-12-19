@@ -7,7 +7,7 @@ import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { getPossibleTemplates } from '../../utils';
-import { EmptyState } from './EmptyState';
+import { EmptyDrafts } from './EmptyDrafts';
 
 export const Drafts = () => {
   const {
@@ -50,7 +50,7 @@ export const Drafts = () => {
       {items.length > 0 ? (
         <VariableGrid page={pageType} items={items} />
       ) : (
-        <EmptyState />
+        <EmptyDrafts />
       )}
     </SelectionProvider>
   );

@@ -7,7 +7,7 @@ import { EmptyPage } from '../../../Components/EmptyPage';
 const DESCRIPTION =
   'Save hours every week by shortening the review cycle and empowering everyone to contribute.<br />Every branch in Repositories is connected to git and has its own sandbox running in a fast microVM.';
 
-export const EmptyState: React.FC = () => {
+export const EmptyRepositories: React.FC = () => {
   const actions = useActions();
 
   return (
