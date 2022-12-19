@@ -125,7 +125,7 @@ export const useGetItems = ({ query, getFilteredSandboxes }) => {
               type: 'repository',
               repository: {
                 // @ts-ignore
-                branches: found.branches,
+                branchCount: found.branchCount,
                 // @ts-ignore
                 repository: found.repository,
               },
