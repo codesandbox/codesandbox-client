@@ -14,6 +14,22 @@ type CheckoutOptions = {
   cancel_path?: string;
 };
 
+/**
+ * @param {string} pathNameAndSearch The pathname and search params you want to add the stripe
+ * success param to, for example  `/dashboard?workspace=xxxx`. Exclude the url base.
+ */
+const addStripeSuccessParam = (pathNameAndSearch: string): string => {
+  try {
+    const newUrl = new URL(pathNameAndSearch, window.location.origin);
+    newUrl.searchParams.append('stripe', 'success');
+
+    // Return only pathname and search
+    return `${newUrl.pathname}${newUrl.search}`;
+  } catch {
+    return pathNameAndSearch;
+  }
+};
+
 export const useCreateCheckout = (): [
   CheckoutStatus,
   (args: CheckoutOptions) => void
@@ -36,7 +52,7 @@ export const useCreateCheckout = (): [
       setStatus({ status: 'loading' });
 
       const payload = await api.stripeCreateCheckout({
-        success_path,
+        success_path: addStripeSuccessParam(success_path),
         cancel_path,
         team_id,
         recurring_interval,
@@ -93,7 +109,7 @@ export const useGetCheckoutURL = ({
       });
 
       const payload = await api.stripeCreateCheckout({
-        success_path,
+        success_path: addStripeSuccessParam(success_path),
         cancel_path,
         team_id,
         recurring_interval,
