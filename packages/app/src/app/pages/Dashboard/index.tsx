@@ -75,7 +75,7 @@ export const Dashboard: FunctionComponent = () => {
         status: NotificationStatus.SUCCESS,
         title: 'Successfully activated subscription',
         message: isProDelayed
-          ? 'Please reload to update the dashboard'
+          ? 'Please reload to update the dashboard.'
           : undefined,
         actions: isProDelayed
           ? {
