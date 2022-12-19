@@ -32,7 +32,7 @@ const useSearchedSandboxes = (query: string) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       state.dashboard.sandboxes.SEARCH,
-      state.dashboard.repositories,
+      state.dashboard.repositoriesByTeamId,
       state.activeTeam,
     ]
   );
@@ -59,7 +59,7 @@ const calculateSearchIndex = (dashboard: any, activeTeam: string) => {
     }))
     .filter(f => f.title);
 
-  const teamRepos = dashboard.repositories?.[activeTeam] ?? [];
+  const teamRepos = dashboard.repositoriesByTeamId[activeTeam] ?? [];
   const repositories = teamRepos.map((repo: Repository) => {
     return {
       title: repo.repository.name,
