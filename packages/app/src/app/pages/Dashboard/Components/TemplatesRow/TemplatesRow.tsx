@@ -8,7 +8,6 @@ import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { EmptyPage } from '../EmptyPage';
-import { PageTypes } from '../../types';
 
 const TEMPLATE_IDS = [
   'k8dsq1', // NodeJS (cloud)
@@ -17,27 +16,7 @@ const TEMPLATE_IDS = [
   '9qputt', // React + Vite (browser)
 ];
 
-const MAP_PAGE_TYPE_TO_NAME: Record<PageTypes, string> = {
-  search: 'Search',
-  recent: 'Recent',
-  deleted: 'Deleted',
-  templates: 'Templates',
-  drafts: 'Drafts',
-  sandboxes: 'Sandboxes',
-  'synced-sandboxes': 'Synced sandboxes',
-  'my-contributions': 'Contribution branches',
-  repositories: 'Repositories',
-  shared: 'Shared sandboxes',
-  liked: 'Liked sandboxes',
-  discover: 'Discovery',
-  external: 'External',
-};
-
-type TemplatesRowProps = {
-  page: PageTypes;
-  title?: string;
-};
-export const TemplatesRow: React.FC<TemplatesRowProps> = ({ title, page }) => {
+export const TemplatesRow: React.FC = () => {
   const officialTemplates = useOfficialTemplates();
   const actions = useActions();
   const { dashboard } = useAppState();
@@ -51,14 +30,20 @@ export const TemplatesRow: React.FC<TemplatesRowProps> = ({ title, page }) => {
       : undefined;
   }, [officialTemplates]);
 
+  const handleTemplateTracking = (id: string, action: 'open' | 'fork') => {
+    track('Empty State Card - Sandbox template', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+      card_type: `sbx-template-${id}`,
+      action,
+    });
+  };
+
   const handleOpenTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
     const url = sandboxUrl(sandbox);
 
-    track(`${MAP_PAGE_TYPE_TO_NAME[page]} - open template from empty state`, {
-      codesandbox: 'V1',
-      event_source: 'UI',
-    });
+    handleTemplateTracking(sandbox.id, 'open');
 
     window.open(url, '_blank');
   };
@@ -67,10 +52,7 @@ export const TemplatesRow: React.FC<TemplatesRowProps> = ({ title, page }) => {
     const { sandbox } = template;
     const collection = dashboard.allCollections?.find(c => c.path === '/');
 
-    track(`${MAP_PAGE_TYPE_TO_NAME[page]} - fork template from empty state`, {
-      codesandbox: 'V1',
-      event_source: 'UI',
-    });
+    handleTemplateTracking(sandbox.id, 'fork');
 
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
@@ -119,13 +101,13 @@ export const TemplatesRow: React.FC<TemplatesRowProps> = ({ title, page }) => {
             icon="plus"
             label="New from a template"
             onClick={() => {
-              track(
-                `${MAP_PAGE_TYPE_TO_NAME[page]} - open import modal from empty state`,
-                {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                }
-              );
+              track('Empty State Card - Open create modal', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+                card_type: 'get-started-action',
+                tab: 'default',
+              });
+
               actions.openCreateSandboxModal();
             }}
           />
