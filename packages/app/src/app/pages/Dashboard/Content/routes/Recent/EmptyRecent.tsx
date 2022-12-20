@@ -8,6 +8,7 @@ import { TemplatesRow } from 'app/pages/Dashboard/Components/TemplatesRow';
 import { useHistory } from 'react-router-dom';
 import React from 'react';
 import { DocumentationRow, appendOnboardingTracking } from './DocumentationRow';
+import { InstructionsRow } from './InstructionsRow';
 
 export const EmptyRecent: React.FC = () => {
   const actions = useActions();
@@ -87,6 +88,7 @@ export const EmptyRecent: React.FC = () => {
           )}
         />
       </EmptyPage.StyledGrid>
+      <InstructionsRow />
       <TemplatesRow />
       <DocumentationRow />
     </EmptyPage.StyledWrapper>
