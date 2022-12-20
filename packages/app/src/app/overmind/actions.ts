@@ -585,12 +585,16 @@ export const openCreateSandboxModal = (
 
 type OpenCreateTeamModalParams = {
   step: TeamStep;
+  hasNextStep?: boolean;
 };
 export const openCreateTeamModal = (
   { actions }: Context,
   props?: OpenCreateTeamModalParams
 ) => {
-  actions.modals.newTeamModal.open({ step: props?.step ?? 'info' });
+  actions.modals.newTeamModal.open({
+    step: props?.step ?? 'info',
+    hasNextStep: props?.hasNextStep ?? true,
+  });
 };
 
 export const validateUsername = async (
