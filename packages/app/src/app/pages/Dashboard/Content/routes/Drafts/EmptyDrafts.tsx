@@ -21,7 +21,7 @@ export const EmptyDrafts: React.FC = () => {
           __html: isPersonalSpace ? DESCRIPTIONS.PERSONAL : DESCRIPTIONS.TEAM,
         }}
       />
-      <TemplatesRow page="drafts" />
+      <TemplatesRow />
     </EmptyPage.StyledWrapper>
   );
 };

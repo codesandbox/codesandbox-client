@@ -7,6 +7,7 @@ import {
 } from '@codesandbox/components';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import React from 'react';
+import { appendOnboardingTracking } from '../Recent/DocumentationRow';
 
 const DESCRIPTION =
   "Open any open-source repository on CodeSandbox and click on 'Branch' to start contributing.<br />Don't worry about forking and setting up a new repository. We'll take care of everything for you.";
@@ -51,15 +52,13 @@ export const EmptyContributions: React.FC = () => {
                   label={r.owner}
                   title={r.name}
                   onClick={() => {
-                    track(
-                      'Contribution branches: open suggested repo from empty state',
-                      {
-                        repo: slug,
-                        codesandbox: 'V1',
-                        event_source: 'UI',
-                      }
-                    );
-                    window.open(r.url);
+                    track('Empty State Card - Open suggested repository', {
+                      repo: slug,
+                      codesandbox: 'V1',
+                      event_source: 'UI',
+                      card_type: 'get-started-action',
+                    });
+                    window.open(appendOnboardingTracking(r.url));
                   }}
                 />
               </Element>
@@ -68,7 +67,16 @@ export const EmptyContributions: React.FC = () => {
           <ArticleCard
             title="More about Contribution Branches"
             thumbnail="/static/img/thumbnails/contributions.png"
-            url="https://codesandbox.io/docs/learn/getting-started/open-source#introducing-contribution-branches"
+            onClick={() =>
+              track('Empty State Card - Content card', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+                card_type: 'blog-contribution-branches',
+              })
+            }
+            url={appendOnboardingTracking(
+              'https://codesandbox.io/docs/learn/getting-started/open-source#introducing-contribution-branches'
+            )}
           />
         </EmptyPage.StyledGrid>
       </Stack>
