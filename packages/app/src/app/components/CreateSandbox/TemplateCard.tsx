@@ -64,7 +64,7 @@ export const TemplateCard = ({
         <Stack
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
-          <UserIcon height={20} width={20} />
+          <UserIcon height="20" width="20" />
           {isV2 && <Badge icon="cloud">Beta</Badge>}
         </Stack>
         <Stack direction="vertical" gap={1}>
