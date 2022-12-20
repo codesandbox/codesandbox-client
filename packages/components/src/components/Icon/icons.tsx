@@ -1230,3 +1230,18 @@ export const sandbox = props => (
     />
   </svg>
 );
+
+export const start = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M2 2.34612C2 1.3014 3.13971 0.656109 4.03554 1.19361L13.5196 6.88403C14.3896 7.40607 14.3896 8.66702 13.5196 9.18905L4.03554 14.8795C3.13971 15.417 2 14.7717 2 13.727V2.34612Z"
+      fill="currentColor"
+    />
+  </Element>
+);

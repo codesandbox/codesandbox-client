@@ -40,7 +40,11 @@ export const PermissionSettings = () => {
             subscription to change sandbox permissions.
           </span>
           {isTeamAdmin || isPersonalSpace ? (
-            <MessageStripe.Action as="a" href="/pro" onClick={proTracking}>
+            <MessageStripe.Action
+              as="a"
+              href="/pro?utm_source=dashboard_permission_settings"
+              onClick={proTracking}
+            >
               Upgrade now
             </MessageStripe.Action>
           ) : (

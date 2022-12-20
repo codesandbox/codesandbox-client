@@ -124,7 +124,7 @@ export const PrivateRepoFreeTeam: React.FC = () => {
             }
           : {
               as: RouterLink,
-              to: '/pro',
+              to: '/pro?utm_source=dashboard_import_limits',
             })}
         css={{
           padding: 0,
