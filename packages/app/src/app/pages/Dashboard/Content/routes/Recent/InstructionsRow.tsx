@@ -59,7 +59,7 @@ export const InstructionsRow: React.FC = () => {
   return (
     <Stack direction="vertical" gap={6}>
       <EmptyPage.StyledGridTitle>
-        Optimize your workflow
+        Get started with CodeSandbox
       </EmptyPage.StyledGridTitle>
       <EmptyPage.StyledGrid as="ul">
         {DOCS.map(({ url, ...item }) => {
