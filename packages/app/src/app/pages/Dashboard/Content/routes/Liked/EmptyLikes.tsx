@@ -21,7 +21,7 @@ export const EmptyLikes: React.FC = () => {
   React.useEffect(() => {
     if (!suggestedSandboxes) {
       actions.dashboard.getCuratedAlbumById({
-        albumId: 'foo-bar',
+        albumId: TRENDING_COLLECTION_ID,
       });
     }
   }, []);

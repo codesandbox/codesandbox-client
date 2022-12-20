@@ -70,7 +70,7 @@ export type State = {
    * currently used by the "Liked sandboxes" page when it's
    * empty.
    */
-  curatedAlbumsById: Record<string, DashboardAlbum> | null;
+  curatedAlbumsById: Record<string, DashboardAlbum | null> | null;
   contributions: Branch[] | null;
   /**
    * v2 repositories (formerly projects)
