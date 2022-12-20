@@ -21,7 +21,7 @@ export const EmptyLikes: React.FC = () => {
   React.useEffect(() => {
     if (!suggestedSandboxes) {
       actions.dashboard.getCuratedAlbumById({
-        albumId: TRENDING_COLLECTION_ID,
+        albumId: 'foo-bar',
       });
     }
   }, []);
@@ -41,26 +41,37 @@ export const EmptyLikes: React.FC = () => {
 
   const itemsToShow = getItemsToShow();
 
+  let pageState: 'loading' | 'empty' | 'ready';
+  if (!suggestedSandboxes) {
+    pageState = 'loading';
+  } else if (itemsToShow.length === 0) {
+    pageState = 'empty'; // error or no items
+  } else {
+    pageState = 'ready';
+  }
+
   return (
     <EmptyPage.StyledWrapper>
       <EmptyPage.StyledDescription
         as="p"
         dangerouslySetInnerHTML={{ __html: DESCRIPTION }}
       />
-      <Stack css={{ flex: 1 }} direction="vertical" gap={6}>
-        <EmptyPage.StyledGridTitle>
-          Discover exciting projects
-        </EmptyPage.StyledGridTitle>
-        <Element
-          css={{
-            height: '100%',
-            // Override the margins built-in the VariableGrid.
-            margin: `-28px -${GUTTER}px 0`,
-          }}
-        >
-          <VariableGrid items={itemsToShow} page="liked" />
-        </Element>
-      </Stack>
+      {pageState !== 'empty' ? (
+        <Stack css={{ flex: 1 }} direction="vertical" gap={6}>
+          <EmptyPage.StyledGridTitle>
+            Discover exciting projects
+          </EmptyPage.StyledGridTitle>
+          <Element
+            css={{
+              height: '100%',
+              // Override the margins built-in the VariableGrid.
+              margin: `-28px -${GUTTER}px 0`,
+            }}
+          >
+            <VariableGrid items={itemsToShow} page="liked" />
+          </Element>
+        </Stack>
+      ) : null}
     </EmptyPage.StyledWrapper>
   );
 };
