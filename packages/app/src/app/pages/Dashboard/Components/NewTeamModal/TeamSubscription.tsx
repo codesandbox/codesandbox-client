@@ -50,6 +50,10 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
   const isCheckoutDisabled =
     !isEligibleForTrial || !isTeamAdmin || checkout.status === 'loading';
 
+  if (!activeTeamInfo) {
+    return null;
+  }
+
   return (
     <Stack
       css={css({

@@ -41,12 +41,16 @@ export const TeamMembers: React.FC<{
   const { gql } = useEffects();
   const { copyToClipboard } = useEffects().browser;
   const [addressesString, setAddressesString] = useState<string>('');
-  const [invalidEmails, setInvalidEmails] = useState<string[]>([]);
-  const [inviteError, setInviteError] = useState<string>('');
+  const [invalidEmails, setInvalidEmails] = useState<string[] | null>(null);
+  const [inviteError, setInviteError] = useState<string | null>(null);
   const [inviteLoading, setInviteLoading] = useState<boolean>(false);
   const [linkCopied, setLinkCopied] = React.useState(false);
 
   const copyLinkTimeoutRef = React.useRef<ReturnType<typeof setTimeout>>();
+
+  if (!activeTeamInfo) {
+    return null;
+  }
 
   const inviteLink = teamInviteLink(activeTeamInfo.inviteToken);
 
@@ -180,7 +184,7 @@ export const TeamMembers: React.FC<{
             setAddressesString(e.target.value);
           }}
         />
-        {invalidEmails?.length > 0 ? (
+        {invalidEmails && invalidEmails.length > 0 ? (
           <Text size={2} variant="danger">
             {invalidEmails.length > 1
               ? 'There seem to be errors in some email addresses, '

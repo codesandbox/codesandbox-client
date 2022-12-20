@@ -105,7 +105,7 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
 export const NewTeamModal: React.FC = () => {
   const actions = useActions();
   const { activeTeam, modals } = useAppState();
-  const previousTeam = React.useRef(null);
+  const previousTeam = React.useRef<string | null>(null);
   const history = useHistory();
 
   const handleModalClose = () => {
