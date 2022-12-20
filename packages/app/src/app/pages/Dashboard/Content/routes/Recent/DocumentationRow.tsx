@@ -1,12 +1,16 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ArticleCard, VideoCard, Stack } from '@codesandbox/components';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import React from 'react';
 
 type ArticleProps = React.ComponentProps<typeof ArticleCard>;
 type VideoProps = React.ComponentProps<typeof VideoCard>;
 
-type DocsItem = { label: string } & (VideoProps | ArticleProps);
+type DocsItem = { label: string; workspaceType?: 'personal' | 'team' } & (
+  | VideoProps
+  | ArticleProps
+);
 
 export const appendOnboardingTracking = (url: string): string => {
   const baseUrl = new URL(url);
@@ -32,6 +36,7 @@ const DOCS: DocsItem[] = [
     durationLabel: '5 minutes, 33 seconds',
     url: 'https://www.youtube.com/watch?v=HCs49B6VVl8',
     thumbnail: '/static/img/thumbnails/video_contribution-branches.png',
+    workspaceType: 'personal',
   },
 
   {
@@ -72,6 +77,8 @@ const DOCS: DocsItem[] = [
 ];
 
 export const DocumentationRow: React.FC = () => {
+  const { isPersonalSpace, isTeamSpace } = useWorkspaceAuthorization();
+
   const handleTrack = (label: string) => {
     track('Empty State Card - Content card', {
       codesandbox: 'V1',
@@ -88,6 +95,15 @@ export const DocumentationRow: React.FC = () => {
       <EmptyPage.StyledGrid as="ul">
         {DOCS.map(({ url, ...item }) => {
           const urlWithTracking = appendOnboardingTracking(url);
+
+          if (
+            (item.workspaceType &&
+              item.workspaceType === 'personal' &&
+              !isPersonalSpace) ||
+            (item.workspaceType === 'team' && !isTeamSpace)
+          ) {
+            return null;
+          }
 
           return (
             <Stack as="li" key={item.label}>
