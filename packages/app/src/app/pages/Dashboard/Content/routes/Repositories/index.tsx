@@ -8,6 +8,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { MaxReposFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
+import { EmptyRepositories } from './EmptyRepositories';
 
 export const RepositoriesPage = () => {
   const actions = useActions();
@@ -81,11 +82,12 @@ export const RepositoriesPage = () => {
         </Element>
       ) : null}
 
-      {isEmpty ? <VariableGrid
-        page={pageType}
-        items={itemsToShow}
-        customGridElementHeight={154}
-      /> : null}
+      {isEmpty ? EmptyRepositories
+        : <VariableGrid
+          page={pageType}
+          items={itemsToShow}
+          customGridElementHeight={154}
+        />}
     </SelectionProvider>
   );
 };

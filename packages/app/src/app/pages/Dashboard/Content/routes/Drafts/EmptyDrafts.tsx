@@ -10,7 +10,7 @@ const DESCRIPTIONS = {
     'By default, every sandbox you create will show up on this folder.<br />Find all your work in progress easily before moving these sandboxes to a dedicated folder.',
 };
 
-export const EmptyState: React.FC = () => {
+export const EmptyDrafts: React.FC = () => {
   const { isPersonalSpace } = useWorkspaceAuthorization();
 
   return (
