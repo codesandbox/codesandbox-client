@@ -119,6 +119,7 @@ export const RepositoriesPage = () => {
 
   const itemsToShow = getItemsToShow();
   const isReadOnlyRepo = isFree && selectedRepo?.private;
+  const isEmpty = itemsToShow.length === 0;
 
   return (
     <SelectionProvider
@@ -132,7 +133,7 @@ export const RepositoriesPage = () => {
       <Header
         activeTeam={activeTeam}
         path={path}
-        showViewOptions
+        showViewOptions={!isEmpty}
         showBetaBadge
         nestedPageType={pageType}
         selectedRepo={selectedRepo}
@@ -146,13 +147,15 @@ export const RepositoriesPage = () => {
       ) : null}
 
       {!selectedRepo &&
-      (hasMaxPublicRepositories || hasMaxPrivateRepositories) ? (
+        (hasMaxPublicRepositories || hasMaxPrivateRepositories) ? (
         <Element paddingX={4} paddingY={2}>
           <MaxReposFreeTeam />
         </Element>
       ) : null}
 
-      {itemsToShow.length > 0 ? (
+      {isEmpty ? (
+        <EmptyRepositories />
+      ) : (
         <VariableGrid
           page={pageType}
           items={itemsToShow}
@@ -162,8 +165,6 @@ export const RepositoriesPage = () => {
               : 154 /* 154 just for repo cards */
           }
         />
-      ) : (
-        <EmptyRepositories />
       )}
     </SelectionProvider>
   );

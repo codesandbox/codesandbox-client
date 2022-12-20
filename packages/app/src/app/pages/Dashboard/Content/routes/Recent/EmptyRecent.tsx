@@ -19,7 +19,7 @@ export const EmptyRecent: React.FC = () => {
       <EmptyPage.StyledGrid>
         <CreateCard
           icon="plus"
-          label="New from a template"
+          title="New from a template"
           onClick={() => {
             track('Empty State Card - Create Sandbox', {
               codesandbox: 'V1',
@@ -31,7 +31,7 @@ export const EmptyRecent: React.FC = () => {
         />
         <CreateCard
           icon="github"
-          label="Import from GitHub"
+          title="Import from GitHub"
           onClick={() => {
             track('Empty State Card - Import Repo', {
               codesandbox: 'V1',
@@ -44,7 +44,7 @@ export const EmptyRecent: React.FC = () => {
         {isPersonalSpace ? (
           <CreateCard
             icon="team"
-            label="Create a team"
+            title="Create a team"
             onClick={() => {
               track('Empty State Card - Create team', {
                 codesandbox: 'V1',
@@ -57,7 +57,7 @@ export const EmptyRecent: React.FC = () => {
         ) : (
           <CreateCard
             icon="addMember"
-            label="Invite team members"
+            title="Invite team members"
             onClick={() => {
               track('Empty State Card - Invite members', {
                 codesandbox: 'V1',

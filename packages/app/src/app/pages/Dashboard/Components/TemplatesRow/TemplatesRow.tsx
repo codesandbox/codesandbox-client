@@ -117,7 +117,7 @@ export const TemplatesRow: React.FC<TemplatesRowProps> = ({ title, page }) => {
         officialTemplates.state === 'error' ? (
           <CreateCard
             icon="plus"
-            label="New from a template"
+            title="New from a template"
             onClick={() => {
               track(
                 `${MAP_PAGE_TYPE_TO_NAME[page]} - open import modal from empty state`,

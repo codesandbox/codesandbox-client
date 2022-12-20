@@ -61,6 +61,7 @@ export const Deleted = () => {
       ];
 
   const pageType: PageTypes = 'deleted';
+  const isEmpty = items.length === 0;
 
   return (
     <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
@@ -70,19 +71,19 @@ export const Deleted = () => {
       <Header
         title="Recently deleted"
         activeTeam={activeTeam}
-        showFilters
-        showSortOptions
+        showFilters={!isEmpty}
+        showSortOptions={!isEmpty}
         templates={getPossibleTemplates(sandboxes.DELETED)}
       />
-      {items.length > 0 ? (
-        <VariableGrid page={pageType} items={items} />
-      ) : (
+      {isEmpty ? (
         <EmptyPage.StyledWrapper>
           <EmptyPage.StyledDescription
             as="p"
             dangerouslySetInnerHTML={{ __html: DESCRIPTION }}
           />
         </EmptyPage.StyledWrapper>
+      ) : (
+        <VariableGrid page={pageType} items={items} />
       )}
     </SelectionProvider>
   );
