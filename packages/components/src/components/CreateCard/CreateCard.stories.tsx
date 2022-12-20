@@ -25,7 +25,20 @@ export const SimpleVariant = () => (
   </CardWrapper>
 );
 
-export const LongLabelVariant = () => (
+export const LabelVariant = () => (
+  <CardWrapper>
+    <CreateCard
+      as="a"
+      href="#"
+      target="_blank"
+      icon="github"
+      label="codesandbox"
+      title="sandpack"
+    />
+  </CardWrapper>
+);
+
+export const LongTitleVariant = () => (
   <CardWrapper>
     <CreateCard
       as="button"

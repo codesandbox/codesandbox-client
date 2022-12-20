@@ -43,11 +43,13 @@ export const EmptyContributions: React.FC = () => {
         <EmptyPage.StyledGrid as="ul">
           {SUGGESTED_REPOS.map(r => {
             const slug = `${r.owner}/${r.name}`;
+
             return (
               <Element as="li" key={slug}>
                 <CreateCard
                   icon="github"
-                  title={slug}
+                  label={r.owner}
+                  title={r.name}
                   onClick={() => {
                     track(
                       'Contribution branches: open suggested repo from empty state',

@@ -12,6 +12,7 @@ type CreateCardProps = {
 export const CreateCard: React.FC<CreateCardProps> = ({
   icon,
   title,
+  label,
   ...props
 }) => {
   return (
@@ -48,7 +49,12 @@ export const CreateCard: React.FC<CreateCardProps> = ({
       {...props}
     >
       <Icon color="#999999" name={icon} size={20} />
-      <Stack direction="vertical">
+      <Stack css={{ width: '100%' }} direction="vertical" gap={1}>
+        {label && label !== '' ? (
+          <Text color="#999" size={12}>
+            {label}
+          </Text>
+        ) : null}
         <Text
           css={{
             width: '100%',
