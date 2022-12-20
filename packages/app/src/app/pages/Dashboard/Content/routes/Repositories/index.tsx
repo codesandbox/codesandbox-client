@@ -10,7 +10,7 @@ import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { MaxReposFreeTeam, PrivateRepoFreeTeam } from './stripes';
-import { EmptyState } from './EmptyState';
+import { EmptyRepositories } from './EmptyRepositories';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -163,7 +163,7 @@ export const RepositoriesPage = () => {
           }
         />
       ) : (
-        <EmptyState />
+        <EmptyRepositories />
       )}
     </SelectionProvider>
   );

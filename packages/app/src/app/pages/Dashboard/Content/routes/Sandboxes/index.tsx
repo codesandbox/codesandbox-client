@@ -10,7 +10,7 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 import { RestrictionsBanner } from './RestrictionsBanner';
-import { EmptyState } from './EmptyState';
+import { EmptySandboxes } from './EmptySandboxes';
 
 export const SandboxesPage = () => {
   const [level, setLevel] = React.useState(0);
@@ -95,7 +95,7 @@ export const SandboxesPage = () => {
           items={itemsToShow}
         />
       ) : (
-        <EmptyState />
+        <EmptySandboxes />
       )}
     </SelectionProvider>
   );

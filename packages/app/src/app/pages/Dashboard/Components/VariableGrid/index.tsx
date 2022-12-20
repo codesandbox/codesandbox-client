@@ -11,7 +11,6 @@ import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
 import { SyncedSandbox } from '../SyncedSandbox';
 import { CommunitySandbox } from '../CommunitySandbox';
-import { EmptyScreen } from '../EmptyScreen';
 import {
   DashboardGridItem,
   DashboardSandbox,
@@ -335,9 +334,6 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
       }
     };
   });
-
-  if (items.length === 0)
-    return <EmptyScreen page={page} collectionId={collectionId} />;
 
   return (
     <Element style={{ width: '100%', height: '100%' }}>
