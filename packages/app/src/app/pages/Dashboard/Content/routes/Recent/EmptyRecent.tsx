@@ -7,7 +7,7 @@ import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { TemplatesRow } from 'app/pages/Dashboard/Components/TemplatesRow';
 import { useHistory } from 'react-router-dom';
 import React from 'react';
-import { DocumentationRow } from './DocumentationRow';
+import { DocumentationRow, appendOnboardingTracking } from './DocumentationRow';
 
 export const EmptyRecent: React.FC = () => {
   const actions = useActions();
@@ -21,10 +21,11 @@ export const EmptyRecent: React.FC = () => {
           icon="plus"
           title="New from a template"
           onClick={() => {
-            track('Empty State Card - Create Sandbox', {
+            track('Empty State Card - Open create modal', {
               codesandbox: 'V1',
               event_source: 'UI',
               card_type: 'get-started-action',
+              tab: 'default',
             });
             actions.openCreateSandboxModal();
           }}
@@ -33,10 +34,11 @@ export const EmptyRecent: React.FC = () => {
           icon="github"
           title="Import from GitHub"
           onClick={() => {
-            track('Empty State Card - Import Repo', {
+            track('Empty State Card - Open create modal', {
               codesandbox: 'V1',
               event_source: 'UI',
               card_type: 'get-started-action',
+              tab: 'github',
             });
             actions.openCreateSandboxModal({ initialTab: 'import' });
           }}
@@ -73,10 +75,19 @@ export const EmptyRecent: React.FC = () => {
           duration="4:40"
           durationLabel="4 minutes, 40 seconds"
           thumbnail="/static/img/thumbnails/recent_intro.png"
-          url="https://www.youtube.com/watch?v=qcJECnz7vqM"
+          onClick={() =>
+            track('Empty State Card - Content Card', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+              card_type: 'intro-video',
+            })
+          }
+          url={appendOnboardingTracking(
+            'https://www.youtube.com/watch?v=qcJECnz7vqM'
+          )}
         />
       </EmptyPage.StyledGrid>
-      <TemplatesRow page="recent" />
+      <TemplatesRow />
       <DocumentationRow />
     </EmptyPage.StyledWrapper>
   );

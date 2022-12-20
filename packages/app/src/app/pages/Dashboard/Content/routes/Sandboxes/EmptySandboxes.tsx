@@ -32,7 +32,7 @@ export const EmptySandboxes: React.FC = () => {
           }}
         />
       </Stack>
-      <TemplatesRow page="sandboxes" />
+      <TemplatesRow />
     </EmptyPage.StyledWrapper>
   );
 };
