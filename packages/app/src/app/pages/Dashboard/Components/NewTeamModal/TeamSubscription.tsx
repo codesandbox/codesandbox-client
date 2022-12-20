@@ -118,7 +118,7 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
         </Stack>
 
         <Stack
-          css={{ width: '100%', paddingBottom: 12 }}
+          css={{ width: '100%', paddingBottom: 24 }}
           direction="vertical"
           gap={4}
         >

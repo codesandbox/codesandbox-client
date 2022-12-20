@@ -49,13 +49,8 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
   };
 
   return (
-    <Stack
-      css={css({
-        maxHeight: '700px',
-        overflow: 'hidden',
-      })}
-      direction="vertical"
-    >
+    <>
+      {' '}
       <Element padding={6}>
         <Stack align="center" justify="space-between">
           <Text
@@ -98,7 +93,7 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
           }[currentStep]
         }
       </Stack>
-    </Stack>
+    </>
   );
 };
 
