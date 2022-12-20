@@ -32,16 +32,18 @@ function formatInvalidEmails(invalidEmails: string[]) {
   });
 }
 
-export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
-  onComplete,
-}) => {
+export const TeamMembers: React.FC<{
+  hideSkip?: boolean;
+  onComplete: () => void;
+}> = ({ hideSkip, onComplete }) => {
   const { activeTeamInfo } = useAppState();
   const actions = useActions();
   const { gql } = useEffects();
   const { copyToClipboard } = useEffects().browser;
-  const [addressesString, setAddressesString] = useState<string>();
-  const [invalidEmails, setInvalidEmails] = useState<string[]>();
-  const [inviteError, setInviteError] = useState<string>();
+  const [addressesString, setAddressesString] = useState<string>('');
+  const [invalidEmails, setInvalidEmails] = useState<string[]>([]);
+  const [inviteError, setInviteError] = useState<string>('');
+  const [inviteLoading, setInviteLoading] = useState<boolean>(false);
   const [linkCopied, setLinkCopied] = React.useState(false);
 
   const copyLinkTimeoutRef = React.useRef<ReturnType<typeof setTimeout>>();
@@ -96,6 +98,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
 
     if (invalid.length === 0) {
       setInvalidEmails(null);
+      setInviteLoading(true);
 
       track('New Team - Invite Members', {
         codesandbox: 'V1',
@@ -110,6 +113,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
           authorization: TeamMemberAuthorization.Write,
         });
 
+        setInviteLoading(false);
         onComplete();
       } catch (error) {
         // ❗️ TODO: Validate if this works!
@@ -187,20 +191,24 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
           </Text>
         ) : null}
 
-        <StyledButton type="submit">Invite members</StyledButton>
+        <StyledButton loading={inviteLoading} type="submit">
+          Invite members
+        </StyledButton>
       </Stack>
-      <Button
-        onClick={() => {
-          track('New Team - Skip Team Invite', {
-            codesandbox: 'V1',
-            event_source: 'UI',
-          });
-          onComplete();
-        }}
-        variant="link"
-      >
-        Skip
-      </Button>
+      {hideSkip ? null : (
+        <Button
+          onClick={() => {
+            track('New Team - Skip Team Invite', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+            onComplete();
+          }}
+          variant="link"
+        >
+          Skip
+        </Button>
+      )}
 
       <Button
         onClick={copyTeamInviteLink}
