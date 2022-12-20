@@ -112,10 +112,14 @@ export const TeamMembers: React.FC<{
           email: addressesString,
           authorization: TeamMemberAuthorization.Write,
         });
-
         setInviteLoading(false);
+
         onComplete();
       } catch (error) {
+        // Setting it here instead of finally so the error message
+        // does not appear before the loading is removed.
+        setInviteLoading(false);
+
         // ❗️ TODO: Validate if this works!
         // Copied logic from inviteToTeam function in dashboard/actions.ts
         const message =
