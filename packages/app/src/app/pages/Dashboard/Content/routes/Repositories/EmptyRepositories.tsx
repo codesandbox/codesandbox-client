@@ -19,7 +19,7 @@ export const EmptyRepositories: React.FC = () => {
       <EmptyPage.StyledGrid>
         <CreateCard
           icon="github"
-          label="Import from GitHub"
+          title="Import from GitHub"
           onClick={() => {
             track('Repositories - open import modal from empty state', {
               codesandbox: 'V1',

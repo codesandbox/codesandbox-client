@@ -30,6 +30,8 @@ export const Liked = () => {
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const pageType: PageTypes = 'liked';
+  const isEmpty = items.length === 0;
+
   return (
     <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>
       <Helmet>
@@ -39,14 +41,14 @@ export const Liked = () => {
         title="Liked sandboxes"
         activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.LIKED)}
-        showViewOptions
-        showFilters
+        showViewOptions={!isEmpty}
+        showFilters={!isEmpty}
       />
 
-      {items.length > 0 ? (
-        <VariableGrid items={items} page={pageType} />
-      ) : (
+      {isEmpty ? (
         <EmptyLikes />
+      ) : (
+        <VariableGrid items={items} page={pageType} />
       )}
     </SelectionProvider>
   );

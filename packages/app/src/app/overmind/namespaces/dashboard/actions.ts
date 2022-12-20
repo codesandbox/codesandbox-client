@@ -1853,18 +1853,33 @@ export const getCuratedAlbumById = async (
   params: CuratedAlbumByIdQueryVariables
 ) => {
   const { dashboard } = state;
+  const _curatedAlbumsById = dashboard.curatedAlbumsById ?? {};
   try {
+    dashboard.curatedAlbumsById = {
+      ..._curatedAlbumsById,
+      [params.albumId]: null,
+    };
+
     const data = await effects.gql.queries.curatedAlbumById(params);
+
     if (!data.album) {
       throw new Error('Unable to find the requested collection');
     }
 
-    const _curatedAlbumsById = dashboard.curatedAlbumsById ?? {};
     dashboard.curatedAlbumsById = {
       ..._curatedAlbumsById,
       [params.albumId]: data.album,
     };
   } catch (error) {
+    /**
+     * Adds fake album to the state because we don't differentiate
+     * between error and empty.
+     */
+    dashboard.curatedAlbumsById = {
+      ..._curatedAlbumsById,
+      [params.albumId]: { id: params.albumId, title: '', sandboxes: [] },
+    };
+
     effects.notificationToast.error(
       'There was a problem getting the requested collection'
     );

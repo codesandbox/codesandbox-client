@@ -39,13 +39,13 @@ export const SandboxesPage = () => {
   const activeSandboxes = sandboxes.ALL && sandboxes.ALL[cleanParam];
   const itemsToShow: DashboardGridItem[] = allCollections
     ? [
-        creating && {
-          type: 'new-folder' as 'new-folder',
-          basePath: currentPath,
-          setCreating,
-        },
-        ...items,
-      ].filter(Boolean)
+      creating && {
+        type: 'new-folder' as 'new-folder',
+        basePath: currentPath,
+        setCreating,
+      },
+      ...items,
+    ].filter(Boolean)
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const currentCollection = allCollections?.find(
@@ -53,6 +53,7 @@ export const SandboxesPage = () => {
   );
 
   const pageType: PageTypes = 'sandboxes';
+  const isEmpty = itemsToShow.length === 0;
 
   return (
     <SelectionProvider
@@ -63,10 +64,10 @@ export const SandboxesPage = () => {
       createNewSandbox={
         currentCollection && !hasMaxPublicSandboxes
           ? () => {
-              actions.modals.newSandboxModal.open({
-                collectionId: currentCollection.id,
-              });
-            }
+            actions.modals.newSandboxModal.open({
+              collectionId: currentCollection.id,
+            });
+          }
           : null
       }
     >
@@ -81,21 +82,21 @@ export const SandboxesPage = () => {
         path={currentPath}
         templates={getPossibleTemplates(activeSandboxes || [])}
         createNewFolder={() => setCreating(true)}
-        showViewOptions
-        showFilters={Boolean(currentPath)}
-        showSortOptions={Boolean(currentPath)}
+        showViewOptions={!isEmpty}
+        showFilters={!isEmpty && Boolean(currentPath)}
+        showSortOptions={!isEmpty && Boolean(currentPath)}
       />
 
       {hasMaxPublicSandboxes ? <RestrictionsBanner /> : null}
 
-      {itemsToShow.length > 0 ? (
+      {isEmpty ? (
+        <EmptySandboxes />
+      ) : (
         <VariableGrid
           page={pageType}
           collectionId={currentCollection?.id}
           items={itemsToShow}
         />
-      ) : (
-        <EmptySandboxes />
       )}
     </SelectionProvider>
   );
