@@ -92,7 +92,9 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
                 onComplete={handleStepCompletion}
               />
             ),
-            subscription: <TeamSubscription />,
+            subscription: (
+              <TeamSubscription onComplete={handleStepCompletion} />
+            ),
           }[currentStep]
         }
       </Stack>
@@ -107,7 +109,7 @@ export const NewTeamModal: React.FC = () => {
   const history = useHistory();
 
   const handleModalClose = () => {
-    //     If the user is still at the first step, no Team
+    // If the user is still at the first step, no Team
     // has been created and closing the modal should
     // not perform any further actions. Else, the user
     // must be redirected to the  recent page where the
@@ -136,14 +138,14 @@ export const NewTeamModal: React.FC = () => {
       <Modal
         isOpen={modals.newTeamModal.isCurrent}
         onClose={handleModalClose}
-        maxWidth={724}
+        width={724}
         top={15}
         fullWidth={window.screen.availWidth < 800}
       >
         <NewTeam
           step={modals.newTeamModal.step}
           hasNextStep={modals.newTeamModal.hasNextStep}
-          onClose={actions.modals.newTeamModal.close}
+          onClose={handleModalClose}
         />
       </Modal>
     </ThemeProvider>
