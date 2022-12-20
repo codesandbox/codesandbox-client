@@ -47,7 +47,7 @@ export const EmptyContributions: React.FC = () => {
               <Element as="li" key={slug}>
                 <CreateCard
                   icon="github"
-                  label={slug}
+                  title={slug}
                   onClick={() => {
                     track(
                       'Contribution branches: open suggested repo from empty state',

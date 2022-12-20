@@ -20,7 +20,7 @@ export const SimpleVariant = () => (
       href="#"
       target="_blank"
       icon="github"
-      label="Import from GitHub"
+      title="Import from GitHub"
     />
   </CardWrapper>
 );
@@ -31,7 +31,7 @@ export const LongLabelVariant = () => (
       as="button"
       onClick={() => alert('hello')}
       icon="plus"
-      label="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla, est tempor pellentesque dapibus, ligula dolor egestas ante, tempor pharetra."
+      title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla, est tempor pellentesque dapibus, ligula dolor egestas ante, tempor pharetra."
     />
   </CardWrapper>
 );

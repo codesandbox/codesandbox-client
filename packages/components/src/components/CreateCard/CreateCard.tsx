@@ -5,12 +5,13 @@ import { Text } from '../Text';
 
 type CreateCardProps = {
   icon: IconNames;
-  label: string;
+  title: string;
+  label?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const CreateCard: React.FC<CreateCardProps> = ({
   icon,
-  label,
+  title,
   ...props
 }) => {
   return (
@@ -47,20 +48,22 @@ export const CreateCard: React.FC<CreateCardProps> = ({
       {...props}
     >
       <Icon color="#999999" name={icon} size={20} />
-      <Text
-        css={{
-          width: '100%',
-          textOverflow: 'ellipsis',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-        }}
-        color="#EBEBEB"
-        lineHeight="16px"
-        size={13}
-        weight="medium"
-      >
-        {label}
-      </Text>
+      <Stack direction="vertical">
+        <Text
+          css={{
+            width: '100%',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+          }}
+          color="#EBEBEB"
+          lineHeight="16px"
+          size={13}
+          weight="medium"
+        >
+          {title}
+        </Text>
+      </Stack>
     </Stack>
   );
 };
