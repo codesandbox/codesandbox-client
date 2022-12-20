@@ -57,8 +57,7 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
       direction="vertical"
       gap={6}
       css={{
-        paddingTop: '60px',
-        paddingBottom: '48px',
+        padding: '60px 0',
         maxWidth: '370px',
         width: '100%',
       }}

@@ -145,7 +145,7 @@ export const TeamMembers: React.FC<{
       gap={4}
       css={{
         paddingTop: '60px',
-        paddingBottom: '32px',
+        paddingBottom: '40px',
         maxWidth: '370px',
         width: '100%',
       }}
@@ -220,7 +220,7 @@ export const TeamMembers: React.FC<{
 
       <Button
         onClick={copyTeamInviteLink}
-        style={{ marginTop: 24 }}
+        style={{ marginTop: 48 }}
         variant="link"
       >
         <Icon
