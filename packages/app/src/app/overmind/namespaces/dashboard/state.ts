@@ -80,7 +80,7 @@ export type State = {
   /**
    * Repository with branches cached based on `team/owner/repo`
    */
-  repositoriesWithBranches: Record<string, RepositoryWithBranches | null>;
+  repositoriesWithBranches: Record<string, RepositoryWithBranches | undefined>;
   starredRepos: Array<{ owner: string; name: string }>;
   /**
    * Use these variables to track if items are being removed. This way

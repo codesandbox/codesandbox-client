@@ -21,16 +21,12 @@ export const RepositoriesPage = () => {
   React.useEffect(() => {
     // If no repositories were fetched yet for the teamId
     // trigger the call to get the server cached data for rapid loading
-    // If data is already cached on the client, call the backend
+    // If data already exists on the client, call the backend
     // to sync the data with GitHub, as this is not perceived as slow
-    if (!teamRepos) {
-      actions.dashboard.getRepositoriesByTeam({ teamId: activeTeam });
-    } else {
-      actions.dashboard.getRepositoriesByTeam({
-        teamId: activeTeam,
-        syncData: true,
-      });
-    }
+    actions.dashboard.getRepositoriesByTeam({
+      teamId: activeTeam,
+      fetchCachedDataFirst: teamRepos === undefined,
+    });
   }, [activeTeam]);
 
   const {

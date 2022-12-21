@@ -29,7 +29,7 @@ export const RepositoryBranchesPage = () => {
     // to directly access a repository, we should fetch said
     // repository only.
     if (!repositoryProject && activeTeam) {
-      actions.dashboard.getRepositoryByWithBranches({
+      actions.dashboard.getRepositoryWithBranches({
         activeTeam,
         owner,
         name,

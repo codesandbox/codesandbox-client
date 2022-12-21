@@ -1931,20 +1931,20 @@ export const getContributionBranches = async ({ state, effects }: Context) => {
 
 type RepositoriesActionOptions = {
   teamId: string;
-  syncData?: boolean;
+  fetchCachedDataFirst?: boolean;
 };
 export const getRepositoriesByTeam = async (
   { state, effects, actions }: Context,
-  { teamId, syncData = false }: RepositoriesActionOptions
+  { teamId, fetchCachedDataFirst = false }: RepositoriesActionOptions
 ) => {
   const { dashboard } = state;
 
   try {
-    // First fetch data without syncing with GitHub
-    // to decrease waiting time.
+    // syncData: true tells backend to return the repositories from the cache,
+    // avoiding the GitHub API for the request
     const response = await effects.gql.queries.getRepositoriesByTeam({
       teamId,
-      syncData,
+      syncData: !fetchCachedDataFirst,
     });
     const repositories = response?.me?.team?.projects;
     if (!repositories) {
@@ -1956,24 +1956,26 @@ export const getRepositoriesByTeam = async (
       [teamId]: repositories.sort(sortByNameAscending),
     };
 
-    // If syncData was false, the initial call was made (faster), so we can
+    // If fetchCachedDataFirst was true, the initial call was made (faster), so we can
     // safely trigger the second call to sync with GitHub (slower)
-    if (!syncData) {
-      actions.dashboard.getRepositoriesByTeam({ teamId, syncData: true });
+    if (fetchCachedDataFirst) {
+      actions.dashboard.getRepositoriesByTeam({
+        teamId,
+      });
     }
   } catch (error) {
-    if (syncData && error?.response?.status === 504) {
+    if (!fetchCachedDataFirst && error?.response?.status === 504) {
       // Fail silently for timeout requests (unlikely to happen anymore)
       return;
     }
 
-    if (syncData) {
+    if (fetchCachedDataFirst) {
       effects.notificationToast.error(
-        'There was a problem syncing your repositories with GitHub, data shown might not be up to date'
+        'There was a problem getting your repositories'
       );
     } else {
       effects.notificationToast.error(
-        'There was a problem getting your repositories'
+        'There was a problem syncing your repositories with GitHub, data shown might not be up to date'
       );
     }
   }
@@ -1981,7 +1983,7 @@ export const getRepositoriesByTeam = async (
 
 // Fetch the repository with all its branches
 // Cached by `team/owner/name` key
-export const getRepositoryByWithBranches = async (
+export const getRepositoryWithBranches = async (
   { state, effects }: Context,
   {
     activeTeam,
@@ -2179,7 +2181,7 @@ export const removeRepositoryFromTeam = async (
       actions.dashboard.getStartPageSandboxes();
     }
 
-    // Redirect to main dashboard page when removin the repo from within the page
+    // Redirect to main dashboard page when removing the repo from within the page
     if (page === 'repository-branches') {
       effects.router.redirectToDashboard();
     }
