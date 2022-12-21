@@ -1,4 +1,5 @@
 import track from '@codesandbox/common/lib/utils/analytics';
+import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
   ArticleCard,
   VideoCard,
@@ -6,19 +7,13 @@ import {
   CreateCard,
 } from '@codesandbox/components';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
+import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import React from 'react';
 
 type ArticleProps = React.ComponentProps<typeof ArticleCard>;
 type VideoProps = React.ComponentProps<typeof VideoCard>;
 
 type DocsItem = { label: string } & (VideoProps | ArticleProps);
-
-export const appendOnboardingTracking = (url: string): string => {
-  const baseUrl = new URL(url);
-  baseUrl.searchParams.append('utm_source', 'dashboard_onboarding');
-
-  return baseUrl.toString();
-};
 
 const DOCS: DocsItem[] = [
   {
@@ -35,17 +30,14 @@ const SUGGESTED_REPOS = [
   {
     owner: 'facebook',
     name: 'lexical',
-    url: 'https://codesandbox.io/p/github/facebook/lexical',
   },
   {
     owner: 'codesandbox',
     name: 'sandpack',
-    url: 'https://codesandbox.io/p/github/codesandbox/sandpack',
   },
   {
     owner: 'pallets',
     name: 'flask',
-    url: 'https://codesandbox.io/p/github/pallets/flask',
   },
 ];
 
@@ -85,15 +77,18 @@ export const OpenSourceRow: React.FC = () => {
             </Stack>
           );
         })}
-        {SUGGESTED_REPOS.map(r => {
-          const slug = `${r.owner}/${r.name}`;
+        {SUGGESTED_REPOS.map(({ owner, name }) => {
+          const slug = `${owner}/${name}`;
+          const url = v2DefaultBranchUrl(owner, name, {
+            utm_source: 'dashboard_onboarding',
+          });
 
           return (
             <Stack as="li" key={slug}>
               <CreateCard
                 icon="github"
-                label={r.owner}
-                title={r.name}
+                label={owner}
+                title={name}
                 onClick={() => {
                   track('Empty State Card - Open suggested repository', {
                     repo: slug,
@@ -101,7 +96,8 @@ export const OpenSourceRow: React.FC = () => {
                     event_source: 'UI',
                     card_type: 'get-started-action',
                   });
-                  window.open(appendOnboardingTracking(r.url));
+
+                  window.location.href = url;
                 }}
               />
             </Stack>

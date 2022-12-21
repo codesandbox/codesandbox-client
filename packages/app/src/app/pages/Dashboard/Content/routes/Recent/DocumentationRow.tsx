@@ -1,19 +1,13 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { ArticleCard, VideoCard, Stack } from '@codesandbox/components';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
+import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import React from 'react';
 
 type ArticleProps = React.ComponentProps<typeof ArticleCard>;
 type VideoProps = React.ComponentProps<typeof VideoCard>;
 
 type DocsItem = { label: string } & (VideoProps | ArticleProps);
-
-export const appendOnboardingTracking = (url: string): string => {
-  const baseUrl = new URL(url);
-  baseUrl.searchParams.append('utm_source', 'dashboard_onboarding');
-
-  return baseUrl.toString();
-};
 
 const DOCS: DocsItem[] = [
   {
