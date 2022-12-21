@@ -7,10 +7,12 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
+import {
+  appendOnboardingTracking,
+  getPossibleTemplates,
+} from 'app/pages/Dashboard/Content/utils';
 import { ArticleCard } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { getPossibleTemplates } from '../../utils';
-import { appendOnboardingTracking } from '../Recent/DocumentationRow';
 
 export const Shared = () => {
   const {

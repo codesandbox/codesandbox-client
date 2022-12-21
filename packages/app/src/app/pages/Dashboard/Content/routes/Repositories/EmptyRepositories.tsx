@@ -2,8 +2,8 @@ import { ArticleCard, CreateCard } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import React from 'react';
 import { useActions } from 'app/overmind';
+import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import { EmptyPage } from '../../../Components/EmptyPage';
-import { appendOnboardingTracking } from '../Recent/DocumentationRow';
 
 const DESCRIPTION =
   'Save hours every week by shortening the review cycle and empowering everyone to contribute.<br />Every branch in Repositories is connected to git and has its own sandbox running in a fast microVM.';

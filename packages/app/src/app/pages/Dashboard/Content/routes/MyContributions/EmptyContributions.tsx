@@ -1,4 +1,5 @@
 import track from '@codesandbox/common/lib/utils/analytics';
+import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import {
   ArticleCard,
   CreateCard,
@@ -6,8 +7,8 @@ import {
   Stack,
 } from '@codesandbox/components';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
+import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import React from 'react';
-import { appendOnboardingTracking } from '../Recent/DocumentationRow';
 
 const DESCRIPTION =
   "Open any open-source repository on CodeSandbox and click on 'Branch' to start contributing.<br />Don't worry about forking and setting up a new repository. We'll take care of everything for you.";
@@ -16,17 +17,14 @@ const SUGGESTED_REPOS = [
   {
     owner: 'codesandbox',
     name: 'sandpack',
-    url: 'https://codesandbox.io/p/github/codesandbox/sandpack/main',
   },
   {
     owner: 'excalidraw',
     name: 'excalidraw',
-    url: 'https://codesandbox.io/p/github/excalidraw/excalidraw/master',
   },
   {
     owner: 'pmndrs',
     name: 'react-three-fiber',
-    url: 'https://codesandbox.io/p/github/pmndrs/react-three-fiber/master',
   },
 ];
 
@@ -42,15 +40,18 @@ export const EmptyContributions: React.FC = () => {
           Start contributing
         </EmptyPage.StyledGridTitle>
         <EmptyPage.StyledGrid as="ul">
-          {SUGGESTED_REPOS.map(r => {
-            const slug = `${r.owner}/${r.name}`;
+          {SUGGESTED_REPOS.map(({ owner, name }) => {
+            const slug = `${owner}/${name}`;
+            const url = v2DefaultBranchUrl(owner, name, {
+              utm_source: 'dashboard_onboarding',
+            });
 
             return (
               <Element as="li" key={slug}>
                 <CreateCard
                   icon="github"
-                  label={r.owner}
-                  title={r.name}
+                  label={owner}
+                  title={name}
                   onClick={() => {
                     track('Empty State Card - Open suggested repository', {
                       repo: slug,
@@ -58,7 +59,8 @@ export const EmptyContributions: React.FC = () => {
                       event_source: 'UI',
                       card_type: 'get-started-action',
                     });
-                    window.open(appendOnboardingTracking(r.url));
+
+                    window.location.href = url;
                   }}
                 />
               </Element>
