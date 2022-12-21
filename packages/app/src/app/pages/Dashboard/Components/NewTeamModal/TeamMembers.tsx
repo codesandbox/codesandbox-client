@@ -32,19 +32,25 @@ function formatInvalidEmails(invalidEmails: string[]) {
   });
 }
 
-export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
-  onComplete,
-}) => {
+export const TeamMembers: React.FC<{
+  hideSkip?: boolean;
+  onComplete: () => void;
+}> = ({ hideSkip, onComplete }) => {
   const { activeTeamInfo } = useAppState();
   const actions = useActions();
   const { gql } = useEffects();
   const { copyToClipboard } = useEffects().browser;
-  const [addressesString, setAddressesString] = useState<string>();
-  const [invalidEmails, setInvalidEmails] = useState<string[]>();
-  const [inviteError, setInviteError] = useState<string>();
+  const [addressesString, setAddressesString] = useState<string>('');
+  const [invalidEmails, setInvalidEmails] = useState<string[] | null>(null);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+  const [inviteLoading, setInviteLoading] = useState<boolean>(false);
   const [linkCopied, setLinkCopied] = React.useState(false);
 
   const copyLinkTimeoutRef = React.useRef<ReturnType<typeof setTimeout>>();
+
+  if (!activeTeamInfo) {
+    return null;
+  }
 
   const inviteLink = teamInviteLink(activeTeamInfo.inviteToken);
 
@@ -96,6 +102,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
 
     if (invalid.length === 0) {
       setInvalidEmails(null);
+      setInviteLoading(true);
 
       track('New Team - Invite Members', {
         codesandbox: 'V1',
@@ -109,9 +116,14 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
           email: addressesString,
           authorization: TeamMemberAuthorization.Write,
         });
+        setInviteLoading(false);
 
         onComplete();
       } catch (error) {
+        // Setting it here instead of finally so the error message
+        // does not appear before the loading is removed.
+        setInviteLoading(false);
+
         // ❗️ TODO: Validate if this works!
         // Copied logic from inviteToTeam function in dashboard/actions.ts
         const message =
@@ -133,7 +145,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
       gap={4}
       css={{
         paddingTop: '60px',
-        paddingBottom: '32px',
+        paddingBottom: '40px',
         maxWidth: '370px',
         width: '100%',
       }}
@@ -172,7 +184,7 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
             setAddressesString(e.target.value);
           }}
         />
-        {invalidEmails?.length > 0 ? (
+        {invalidEmails && invalidEmails.length > 0 ? (
           <Text size={2} variant="danger">
             {invalidEmails.length > 1
               ? 'There seem to be errors in some email addresses, '
@@ -187,24 +199,28 @@ export const TeamMembers: React.FC<{ onComplete: () => void }> = ({
           </Text>
         ) : null}
 
-        <StyledButton type="submit">Invite members</StyledButton>
+        <StyledButton loading={inviteLoading} type="submit">
+          Invite members
+        </StyledButton>
       </Stack>
-      <Button
-        onClick={() => {
-          track('New Team - Skip Team Invite', {
-            codesandbox: 'V1',
-            event_source: 'UI',
-          });
-          onComplete();
-        }}
-        variant="link"
-      >
-        Skip
-      </Button>
+      {hideSkip ? null : (
+        <Button
+          onClick={() => {
+            track('New Team - Skip Team Invite', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+            onComplete();
+          }}
+          variant="link"
+        >
+          Skip
+        </Button>
+      )}
 
       <Button
         onClick={copyTeamInviteLink}
-        style={{ marginTop: 24 }}
+        style={{ marginTop: 48 }}
         variant="link"
       >
         <Icon

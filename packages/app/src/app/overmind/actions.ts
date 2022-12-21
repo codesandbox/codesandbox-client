@@ -7,6 +7,7 @@ import {
 import { protocolAndHost } from '@codesandbox/common/lib/utils/url-generator';
 
 import { NotificationStatus } from '@codesandbox/notifications';
+import { TeamStep } from 'app/pages/Dashboard/Components/NewTeamModal';
 import { withLoadApp } from './factories';
 import * as internalActions from './internalActions';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
@@ -587,8 +588,18 @@ export const openCreateSandboxModal = (
   actions.modals.newSandboxModal.open(props);
 };
 
-export const openCreateTeamModal = ({ state }: Context) => {
-  state.currentModal = 'newTeam';
+type OpenCreateTeamModalParams = {
+  step: TeamStep;
+  hasNextStep?: boolean;
+};
+export const openCreateTeamModal = (
+  { actions }: Context,
+  props?: OpenCreateTeamModalParams
+) => {
+  actions.modals.newTeamModal.open({
+    step: props?.step ?? 'info',
+    hasNextStep: props?.hasNextStep ?? true,
+  });
 };
 
 export const validateUsername = async (

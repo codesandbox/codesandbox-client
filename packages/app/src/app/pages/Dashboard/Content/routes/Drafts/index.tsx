@@ -26,11 +26,11 @@ export const Drafts = () => {
 
   const items: DashboardGridItem[] = sandboxes.DRAFTS
     ? getFilteredSandboxes(sandboxes.DRAFTS)
-      .filter(s => s.authorId === user?.id)
-      .map(sandbox => ({
-        type: 'sandbox',
-        sandbox,
-      }))
+        .filter(s => s.authorId === user?.id)
+        .map(sandbox => ({
+          type: 'sandbox',
+          sandbox,
+        }))
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const pageType: PageTypes = 'drafts';
