@@ -54,7 +54,6 @@ const ForkAction = ({
   const variant = isPrimaryAction ? 'primary' : 'secondary';
 
   if (user) {
-    // If not pro and the sandbox is unlisted or private
     if (!isPro && isUnlistedOrPrivate) {
       return (
         <TooltipButton
