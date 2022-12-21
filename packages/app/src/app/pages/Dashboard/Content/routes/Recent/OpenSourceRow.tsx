@@ -1,5 +1,11 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { ArticleCard, VideoCard, Stack } from '@codesandbox/components';
+import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  ArticleCard,
+  VideoCard,
+  Stack,
+  CreateCard,
+} from '@codesandbox/components';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import React from 'react';
@@ -18,30 +24,24 @@ const DOCS: DocsItem[] = [
     url: 'https://www.youtube.com/watch?v=HCs49B6VVl8',
     thumbnail: '/static/img/thumbnails/docs_contribution-branches.png',
   },
+];
+
+const SUGGESTED_REPOS = [
   {
-    label: 'blog_github-app',
-    title: 'Review code faster with our GitHub App',
-    url: 'https://codesandbox.io/post/introducing-the-codesandbox-github-app',
-    thumbnail: '/static/img/thumbnails/docs_github-app.png',
+    owner: 'facebook',
+    name: 'lexical',
   },
   {
-    label: 'video_vs-code',
-    title: 'Working locally with the VSCode Extension',
-    duration: '3:02',
-    durationLabel: '3 minutes, 2 seconds',
-    url: 'https://www.youtube.com/watch?v=ZJ1sNiTZw5M',
-    thumbnail: '/static/img/thumbnails/docs_vscode-extension.png',
+    owner: 'codesandbox',
+    name: 'sandpack',
   },
   {
-    label: 'blog-iOS',
-    title: 'Code with our native iOS App',
-    url:
-      'https://codesandbox.io/post/how-to-code-your-app-using-the-codesandbox-ipad-ide',
-    thumbnail: '/static/img/thumbnails/docs_ipad.png',
+    owner: 'pallets',
+    name: 'flask',
   },
 ];
 
-export const DocumentationRow: React.FC = () => {
+export const OpenSourceRow: React.FC = () => {
   const handleTrack = (label: string) => {
     track('Empty State Card - Content card', {
       codesandbox: 'V1',
@@ -53,7 +53,7 @@ export const DocumentationRow: React.FC = () => {
   return (
     <Stack direction="vertical" gap={6}>
       <EmptyPage.StyledGridTitle>
-        Optimize your workflow
+        Open source development
       </EmptyPage.StyledGridTitle>
       <EmptyPage.StyledGrid as="ul">
         {DOCS.map(({ url, ...item }) => {
@@ -74,6 +74,32 @@ export const DocumentationRow: React.FC = () => {
                   {...item}
                 />
               )}
+            </Stack>
+          );
+        })}
+        {SUGGESTED_REPOS.map(({ owner, name }) => {
+          const slug = `${owner}/${name}`;
+          const url = v2DefaultBranchUrl(owner, name, {
+            utm_source: 'dashboard_onboarding',
+          });
+
+          return (
+            <Stack as="li" key={slug}>
+              <CreateCard
+                icon="github"
+                label={owner}
+                title={name}
+                onClick={() => {
+                  track('Empty State Card - Open suggested repository', {
+                    repo: slug,
+                    codesandbox: 'V1',
+                    event_source: 'UI',
+                    card_type: 'get-started-action',
+                  });
+
+                  window.location.href = url;
+                }}
+              />
             </Stack>
           );
         })}
