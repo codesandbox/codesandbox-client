@@ -34,7 +34,7 @@ export const EmptyRepositories: React.FC = () => {
         />
         <ArticleCard
           title="More about repositories"
-          thumbnail="/static/img/thumbnails/repositories.jpg"
+          thumbnail="/static/img/thumbnails/repositories.png"
           url={appendOnboardingTracking(
             'https://codesandbox.io/docs/learn/repositories/overview'
           )}
