@@ -18,11 +18,11 @@ type DocsItem = { label: string } & (VideoProps | ArticleProps);
 const DOCS: DocsItem[] = [
   {
     label: 'video_contribution-branches',
-    title: 'Contribute easily with Contribution branches',
+    title: 'Easy open source with Contribution branches',
     duration: '5:33',
     durationLabel: '5 minutes, 33 seconds',
     url: 'https://www.youtube.com/watch?v=HCs49B6VVl8',
-    thumbnail: '/static/img/thumbnails/docs_contribution-branches.png',
+    thumbnail: '/static/img/thumbnails/video_contribution-branches.png',
   },
 ];
 

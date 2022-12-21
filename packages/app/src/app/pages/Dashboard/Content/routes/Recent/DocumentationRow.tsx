@@ -30,9 +30,8 @@ const DOCS: DocsItem[] = [
     durationLabel: '5 minutes, 33 seconds',
     url: 'https://www.youtube.com/watch?v=HCs49B6VVl8',
     thumbnail: '/static/img/thumbnails/video_contribution-branches.png',
-    workspaceType: 'personal',
+    workspaceType: 'team',
   },
-
   {
     label: 'video_command-palette',
     title: 'Using the Command Palette',
