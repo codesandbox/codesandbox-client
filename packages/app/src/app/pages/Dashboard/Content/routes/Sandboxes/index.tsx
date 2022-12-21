@@ -39,13 +39,13 @@ export const SandboxesPage = () => {
   const activeSandboxes = sandboxes.ALL && sandboxes.ALL[cleanParam];
   const itemsToShow: DashboardGridItem[] = allCollections
     ? [
-      creating && {
-        type: 'new-folder' as 'new-folder',
-        basePath: currentPath,
-        setCreating,
-      },
-      ...items,
-    ].filter(Boolean)
+        creating && {
+          type: 'new-folder' as 'new-folder',
+          basePath: currentPath,
+          setCreating,
+        },
+        ...items,
+      ].filter(Boolean)
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const currentCollection = allCollections?.find(
@@ -64,10 +64,10 @@ export const SandboxesPage = () => {
       createNewSandbox={
         currentCollection && !hasMaxPublicSandboxes
           ? () => {
-            actions.modals.newSandboxModal.open({
-              collectionId: currentCollection.id,
-            });
-          }
+              actions.modals.newSandboxModal.open({
+                collectionId: currentCollection.id,
+              });
+            }
           : null
       }
     >

@@ -22,6 +22,7 @@ import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
 import { NUOCT22 } from '../SignIn/Onboarding';
+import { NewTeamModal } from './Components/NewTeamModal';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
@@ -136,6 +137,7 @@ export const Dashboard: FunctionComponent = () => {
           </Stack>
         </Stack>
       </DndProvider>
+      <NewTeamModal />
     </ThemeProvider>
   );
 };
