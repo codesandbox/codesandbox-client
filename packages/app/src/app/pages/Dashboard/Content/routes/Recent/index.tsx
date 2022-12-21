@@ -83,7 +83,6 @@ export const Recent = () => {
         loading={dataIsLoading}
         showViewOptions={!isEmpty}
       />
-
       {isEmpty ? (
         <EmptyRecent />
       ) : (

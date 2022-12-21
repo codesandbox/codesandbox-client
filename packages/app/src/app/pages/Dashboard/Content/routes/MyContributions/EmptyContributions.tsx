@@ -1,11 +1,6 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
-import {
-  ArticleCard,
-  CreateCard,
-  Element,
-  Stack,
-} from '@codesandbox/components';
+import { ArticleCard, CreateCard, Element } from '@codesandbox/components';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import React from 'react';
@@ -35,7 +30,7 @@ export const EmptyContributions: React.FC = () => {
         as="p"
         dangerouslySetInnerHTML={{ __html: DESCRIPTION }}
       />
-      <Stack direction="vertical" gap={4}>
+      <EmptyPage.StyledGridWrapper>
         <EmptyPage.StyledGridTitle>
           Start contributing
         </EmptyPage.StyledGridTitle>
@@ -81,7 +76,7 @@ export const EmptyContributions: React.FC = () => {
             )}
           />
         </EmptyPage.StyledGrid>
-      </Stack>
+      </EmptyPage.StyledGridWrapper>
     </EmptyPage.StyledWrapper>
   );
 };
