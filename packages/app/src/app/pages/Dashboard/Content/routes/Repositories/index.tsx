@@ -147,7 +147,7 @@ export const RepositoriesPage = () => {
       ) : null}
 
       {!selectedRepo &&
-        (hasMaxPublicRepositories || hasMaxPrivateRepositories) ? (
+      (hasMaxPublicRepositories || hasMaxPrivateRepositories) ? (
         <Element paddingX={4} paddingY={2}>
           <MaxReposFreeTeam />
         </Element>

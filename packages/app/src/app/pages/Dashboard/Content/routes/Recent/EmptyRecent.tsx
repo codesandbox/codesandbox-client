@@ -1,18 +1,15 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
-import { CreateCard, VideoCard } from '@codesandbox/components';
+import { CreateCard } from '@codesandbox/components';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { TemplatesRow } from 'app/pages/Dashboard/Components/TemplatesRow';
-import { useHistory } from 'react-router-dom';
 import React from 'react';
-import { DocumentationRow, appendOnboardingTracking } from './DocumentationRow';
+import { DocumentationRow } from './DocumentationRow';
 import { InstructionsRow } from './InstructionsRow';
 
 export const EmptyRecent: React.FC = () => {
   const actions = useActions();
-  const history = useHistory();
   const { isPersonalSpace } = useWorkspaceAuthorization();
 
   return (
@@ -67,26 +64,13 @@ export const EmptyRecent: React.FC = () => {
                 event_source: 'UI',
                 card_type: 'get-started-action',
               });
-              history.push(dashboard.settings());
+              actions.openCreateTeamModal({
+                step: 'members',
+                hasNextStep: false,
+              });
             }}
           />
         )}
-        <VideoCard
-          title="Getting Started with CodeSandbox"
-          duration="4:40"
-          durationLabel="4 minutes, 40 seconds"
-          thumbnail="/static/img/thumbnails/recent_intro.png"
-          onClick={() =>
-            track('Empty State Card - Content Card', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-              card_type: 'intro-video',
-            })
-          }
-          url={appendOnboardingTracking(
-            'https://www.youtube.com/watch?v=qcJECnz7vqM'
-          )}
-        />
       </EmptyPage.StyledGrid>
       <InstructionsRow />
       <TemplatesRow />
