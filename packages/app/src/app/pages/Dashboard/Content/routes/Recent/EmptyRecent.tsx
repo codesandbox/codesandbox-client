@@ -6,6 +6,7 @@ import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { TemplatesRow } from 'app/pages/Dashboard/Components/TemplatesRow';
 import React from 'react';
 import { DocumentationRow } from './DocumentationRow';
+import { OpenSourceRow } from './OpenSourceRow';
 
 export const EmptyRecent: React.FC = () => {
   const actions = useActions();
@@ -73,6 +74,7 @@ export const EmptyRecent: React.FC = () => {
       </EmptyPage.StyledGrid>
       <TemplatesRow />
       <DocumentationRow />
+      {isPersonalSpace ? <OpenSourceRow /> : null}
     </EmptyPage.StyledWrapper>
   );
 };
