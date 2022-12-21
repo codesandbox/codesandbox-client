@@ -2085,7 +2085,7 @@ export const removeBranchFromRepository = async (
 
     // Clean the branch references from all possible locations in the state
     // 1. Repository with branches
-    // 2. Contributiob branches
+    // 2. Contribution branches
     // 3. Recent branches
     const key = getProjectUniqueKey({
       teamId: activeTeam,
