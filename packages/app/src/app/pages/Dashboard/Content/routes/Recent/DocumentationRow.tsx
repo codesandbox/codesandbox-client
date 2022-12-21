@@ -93,14 +93,12 @@ export const DocumentationRow: React.FC = () => {
         Optimize your workflow
       </EmptyPage.StyledGridTitle>
       <EmptyPage.StyledGrid as="ul">
-        {DOCS.map(({ url, ...item }) => {
+        {DOCS.map(({ url, workspaceType, ...item }) => {
           const urlWithTracking = appendOnboardingTracking(url);
 
           if (
-            (item.workspaceType &&
-              item.workspaceType === 'personal' &&
-              !isPersonalSpace) ||
-            (item.workspaceType === 'team' && !isTeamSpace)
+            (workspaceType === 'personal' && !isPersonalSpace) ||
+            (workspaceType === 'team' && !isTeamSpace)
           ) {
             return null;
           }
