@@ -1,3 +1,4 @@
+import track from '@codesandbox/common/lib/utils/analytics';
 import { ArticleCard, VideoCard, Stack } from '@codesandbox/components';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import React from 'react';
@@ -6,6 +7,13 @@ type ArticleProps = React.ComponentProps<typeof ArticleCard>;
 type VideoProps = React.ComponentProps<typeof VideoCard>;
 
 type DocsItem = { label: string } & (VideoProps | ArticleProps);
+
+export const appendOnboardingTracking = (url: string): string => {
+  const baseUrl = new URL(url);
+  baseUrl.searchParams.append('utm_source', 'dashboard_onboarding');
+
+  return baseUrl.toString();
+};
 
 const DOCS: DocsItem[] = [
   {
@@ -40,21 +48,41 @@ const DOCS: DocsItem[] = [
 ];
 
 export const DocumentationRow: React.FC = () => {
+  const handleTrack = (label: string) => {
+    track('Empty State Card - Content card', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+      card_type: label,
+    });
+  };
+
   return (
     <Stack direction="vertical" gap={6}>
       <EmptyPage.StyledGridTitle>
         Optimize your workflow
       </EmptyPage.StyledGridTitle>
       <EmptyPage.StyledGrid as="ul">
-        {DOCS.map(item => (
-          <Stack as="li" key={item.url}>
-            {'duration' in item ? (
-              <VideoCard {...item} />
-            ) : (
-              <ArticleCard {...item} />
-            )}
-          </Stack>
-        ))}
+        {DOCS.map(({ url, ...item }) => {
+          const urlWithTracking = appendOnboardingTracking(url);
+
+          return (
+            <Stack as="li" key={item.label}>
+              {'duration' in item ? (
+                <VideoCard
+                  onClick={() => handleTrack(item.label)}
+                  url={urlWithTracking}
+                  {...item}
+                />
+              ) : (
+                <ArticleCard
+                  onClick={() => handleTrack(item.label)}
+                  url={urlWithTracking}
+                  {...item}
+                />
+              )}
+            </Stack>
+          );
+        })}
       </EmptyPage.StyledGrid>
     </Stack>
   );

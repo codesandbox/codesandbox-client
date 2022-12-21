@@ -3,11 +3,12 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import React from 'react';
 import { useActions } from 'app/overmind';
 import { EmptyPage } from '../../../Components/EmptyPage';
+import { appendOnboardingTracking } from '../Recent/DocumentationRow';
 
 const DESCRIPTION =
   'Save hours every week by shortening the review cycle and empowering everyone to contribute.<br />Every branch in Repositories is connected to git and has its own sandbox running in a fast microVM.';
 
-export const EmptyState: React.FC = () => {
+export const EmptyRepositories: React.FC = () => {
   const actions = useActions();
 
   return (
@@ -19,20 +20,31 @@ export const EmptyState: React.FC = () => {
       <EmptyPage.StyledGrid>
         <CreateCard
           icon="github"
-          label="Import from GitHub"
+          title="Import from GitHub"
           onClick={() => {
-            track('Repositories - open import modal from empty state', {
+            track('Empty State Card - Open create modal', {
               codesandbox: 'V1',
               event_source: 'UI',
+              card_type: 'get-started-action',
+              tab: 'github',
             });
+
             actions.openCreateSandboxModal({ initialTab: 'import' });
           }}
         />
         <ArticleCard
           title="More about repositories"
           thumbnail="/static/img/thumbnails/repositories.jpg"
-          url="https://codesandbox.io/docs/learn/repositories/overview"
-          onClick={() => track('Repositories - open docs from empty state')}
+          url={appendOnboardingTracking(
+            'https://codesandbox.io/docs/learn/repositories/overview'
+          )}
+          onClick={() =>
+            track('Empty State Card - Content Card', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+              card_type: 'blog-repositories-overview',
+            })
+          }
         />
       </EmptyPage.StyledGrid>
     </EmptyPage.StyledWrapper>

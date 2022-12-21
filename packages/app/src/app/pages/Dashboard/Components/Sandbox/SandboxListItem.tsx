@@ -58,7 +58,7 @@ export const SandboxListItem = ({
         cursor: 'default',
         backgroundColor: selected ? 'purpleOpaque' : 'list.hoverBackground',
       },
-      ':has(button:hover)': {
+      ':has(button:hover), :has(button:focus-visible)': {
         backgroundColor: 'transparent',
       },
     })}
@@ -69,6 +69,7 @@ export const SandboxListItem = ({
         alignItems: 'center',
         width: '100%',
         height: '100%',
+        outline: 'none',
       })}
       onClick={onClick}
       onDoubleClick={onDoubleClick}

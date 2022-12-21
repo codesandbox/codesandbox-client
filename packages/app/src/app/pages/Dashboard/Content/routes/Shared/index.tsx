@@ -10,6 +10,7 @@ import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { ArticleCard } from '@codesandbox/components';
 import track from '@codesandbox/common/lib/utils/analytics';
 import { getPossibleTemplates } from '../../utils';
+import { appendOnboardingTracking } from '../Recent/DocumentationRow';
 
 export const Shared = () => {
   const {
@@ -32,6 +33,8 @@ export const Shared = () => {
     : [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
 
   const pageType: PageTypes = 'shared';
+  const isEmpty = items.length === 0;
+
   return (
     <SelectionProvider page={pageType} activeTeamId={activeTeam} items={items}>
       <Helmet>
@@ -41,13 +44,11 @@ export const Shared = () => {
         title="Sandboxes shared with me"
         activeTeam={activeTeam}
         templates={getPossibleTemplates(sandboxes.SHARED)}
-        showViewOptions
-        showFilters
+        showViewOptions={!isEmpty}
+        showFilters={!isEmpty}
       />
 
-      {items.length > 0 ? (
-        <VariableGrid items={items} page={pageType} />
-      ) : (
+      {isEmpty ? (
         <EmptyPage.StyledWrapper>
           <EmptyPage.StyledDescription as="p">
             There are currently no sandboxes shared with you.
@@ -56,13 +57,19 @@ export const Shared = () => {
             <ArticleCard
               title="Get feedback in context"
               thumbnail="/static/img/thumbnails/shared.png"
-              url="https://codesandbox.io/team"
+              url={appendOnboardingTracking('https://codesandbox.io/team')}
               onClick={() =>
-                track('Shared sandboxes - open docs from empty state')
+                track('Empty State Card - Content card', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                  card_type: 'landing-team-intro',
+                })
               }
             />
           </EmptyPage.StyledGrid>
         </EmptyPage.StyledWrapper>
+      ) : (
+        <VariableGrid items={items} page={pageType} />
       )}
     </SelectionProvider>
   );

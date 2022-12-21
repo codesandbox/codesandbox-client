@@ -11,7 +11,7 @@ const DESCRIPTIONS = {
     'Sandboxes are a great way to prototype your ideas with zero startup costs and with everything you need: a code editor, previews, dev servers, unit tests, Storybook and many other devtools.',
 };
 
-export const EmptyState: React.FC = () => {
+export const EmptySandboxes: React.FC = () => {
   const { isPersonalSpace } = useWorkspaceAuthorization();
 
   return (
@@ -32,7 +32,7 @@ export const EmptyState: React.FC = () => {
           }}
         />
       </Stack>
-      <TemplatesRow page="sandboxes" />
+      <TemplatesRow />
     </EmptyPage.StyledWrapper>
   );
 };

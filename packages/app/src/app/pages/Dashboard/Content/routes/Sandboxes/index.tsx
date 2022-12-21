@@ -10,7 +10,7 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 import { RestrictionsBanner } from './RestrictionsBanner';
-import { EmptyState } from './EmptyState';
+import { EmptySandboxes } from './EmptySandboxes';
 
 export const SandboxesPage = () => {
   const [level, setLevel] = React.useState(0);
@@ -53,6 +53,7 @@ export const SandboxesPage = () => {
   );
 
   const pageType: PageTypes = 'sandboxes';
+  const isEmpty = itemsToShow.length === 0;
 
   return (
     <SelectionProvider
@@ -81,21 +82,21 @@ export const SandboxesPage = () => {
         path={currentPath}
         templates={getPossibleTemplates(activeSandboxes || [])}
         createNewFolder={() => setCreating(true)}
-        showViewOptions
-        showFilters={Boolean(currentPath)}
-        showSortOptions={Boolean(currentPath)}
+        showViewOptions={!isEmpty}
+        showFilters={!isEmpty && Boolean(currentPath)}
+        showSortOptions={!isEmpty && Boolean(currentPath)}
       />
 
       {hasMaxPublicSandboxes ? <RestrictionsBanner /> : null}
 
-      {itemsToShow.length > 0 ? (
+      {isEmpty ? (
+        <EmptySandboxes />
+      ) : (
         <VariableGrid
           page={pageType}
           collectionId={currentCollection?.id}
           items={itemsToShow}
         />
-      ) : (
-        <EmptyState />
       )}
     </SelectionProvider>
   );

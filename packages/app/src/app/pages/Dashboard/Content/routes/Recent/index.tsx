@@ -81,13 +81,13 @@ export const Recent = () => {
         title={isEmpty ? "Let's start building" : 'Recent'}
         activeTeam={activeTeamId}
         loading={dataIsLoading}
-        showViewOptions
+        showViewOptions={!isEmpty}
       />
 
-      {items.length > 0 ? (
-        <VariableGrid page={pageType} items={items} />
-      ) : (
+      {isEmpty ? (
         <EmptyRecent />
+      ) : (
+        <VariableGrid page={pageType} items={items} />
       )}
     </SelectionProvider>
   );

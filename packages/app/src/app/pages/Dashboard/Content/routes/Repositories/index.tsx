@@ -10,7 +10,7 @@ import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { MaxReposFreeTeam, PrivateRepoFreeTeam } from './stripes';
-import { EmptyState } from './EmptyState';
+import { EmptyRepositories } from './EmptyRepositories';
 
 export const RepositoriesPage = () => {
   const params = useParams<{ path: string }>();
@@ -119,6 +119,7 @@ export const RepositoriesPage = () => {
 
   const itemsToShow = getItemsToShow();
   const isReadOnlyRepo = isFree && selectedRepo?.private;
+  const isEmpty = itemsToShow.length === 0;
 
   return (
     <SelectionProvider
@@ -132,7 +133,7 @@ export const RepositoriesPage = () => {
       <Header
         activeTeam={activeTeam}
         path={path}
-        showViewOptions
+        showViewOptions={!isEmpty}
         showBetaBadge
         nestedPageType={pageType}
         selectedRepo={selectedRepo}
@@ -152,7 +153,9 @@ export const RepositoriesPage = () => {
         </Element>
       ) : null}
 
-      {itemsToShow.length > 0 ? (
+      {isEmpty ? (
+        <EmptyRepositories />
+      ) : (
         <VariableGrid
           page={pageType}
           items={itemsToShow}
@@ -162,8 +165,6 @@ export const RepositoriesPage = () => {
               : 154 /* 154 just for repo cards */
           }
         />
-      ) : (
-        <EmptyState />
       )}
     </SelectionProvider>
   );
