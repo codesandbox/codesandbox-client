@@ -10,7 +10,7 @@ import { RepositoryProps } from './types';
 import { useSelection } from '../Selection';
 
 export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
-  const { branches, repository: providerRepository } = repository;
+  const { branchCount, repository: providerRepository } = repository;
   const {
     activeTeam,
     dashboard: { viewMode, removingRepository },
@@ -44,7 +44,7 @@ export const Repository: React.FC<DashboardRepository> = ({ repository }) => {
     },
     labels: {
       repository: `View branches from repository ${providerRepository.name} by ${providerRepository.owner}`,
-      branches: `${branches.length}`,
+      branches: `${branchCount}`,
     },
     selected: selectedIds.includes(repositoryId),
     onClick: () => trackImprovedDashboardEvent('Dashboard - Open Repository'),

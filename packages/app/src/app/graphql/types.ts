@@ -98,8 +98,6 @@ export type Branch = {
   name: Scalars['String'];
   /** Branch owner, in the case of a contribution branch by a read-only user */
   owner: Maybe<User>;
-  /** @deprecated Pooled branches are no longer supported */
-  poolSize: Scalars['Int'];
   /** Parent project of this branch */
   project: Project;
   /** Open pull requests from this head branch */
@@ -202,8 +200,6 @@ export type CurrentUser = {
   __typename?: 'CurrentUser';
   /** @deprecated Deprecated for open beta */
   betaAccess: Scalars['Boolean'];
-  /** @deprecated Use teams and projects instead */
-  betaSandboxes: Array<SandboxV2>;
   bookmarkedTemplates: Array<Template>;
   collaboratorSandboxes: Array<Sandbox>;
   collection: Maybe<Collection>;
@@ -302,18 +298,6 @@ export enum Direction {
   Asc = 'ASC',
   Desc = 'DESC',
 }
-
-/** SOFT DEPRECATED: No longer used to communicate branch resources */
-export type Environment = {
-  __typename?: 'Environment';
-  description: Scalars['String'];
-  id: Scalars['UUID4'];
-  limitCpu: Scalars['Int'];
-  limitMemory: Scalars['String'];
-  limitStorage: Scalars['String'];
-  name: Scalars['String'];
-  order: Scalars['Int'];
-};
 
 /** A feature flag */
 export type FeatureFlag = {
@@ -418,7 +402,16 @@ export enum GithubRepoAuthorization {
   Write = 'WRITE',
 }
 
-/** Repository as it appears on GitHub */
+/**
+ * Repository as it appears on GitHub
+ *
+ * Repositories may be imported to CodeSandbox multiple times (for multiple teams). When possible,
+ * data in this object will match what is currently available on GitHub. Note that some data may
+ * be out of date.
+ *
+ * Over time, multiple distinct repositories (with different IDs) may have the same owner and name.
+ * CodeSandbox will always communicate information about the most recent repository it knows about.
+ */
 export type GitHubRepository = {
   __typename?: 'GitHubRepository';
   /** Whether the repository can be forked; may be disabled in the GitHub repository settings */
@@ -458,14 +451,6 @@ export type GitHubRepository = {
 export enum GitProvider {
   Github = 'GITHUB',
 }
-
-/** A git object specifically for v2 that combines git_branch and git_repo */
-export type GitV2 = {
-  __typename?: 'GitV2';
-  branch: Maybe<Scalars['String']>;
-  owner: Maybe<Scalars['String']>;
-  repo: Maybe<Scalars['String']>;
-};
 
 export type ImageReference = {
   fileName: Scalars['String'];
@@ -511,6 +496,14 @@ export type LastCommit = {
   sha: Scalars['String'];
   timestamp: Scalars['String'];
   user: Maybe<User>;
+};
+
+export type Limits = {
+  __typename?: 'Limits';
+  personalFree: TeamLimits;
+  personalPro: TeamLimits;
+  teamFree: TeamLimits;
+  teamPro: TeamLimits;
 };
 
 export type MemberAuthorization = {
@@ -592,8 +585,8 @@ export type Project = {
   __typename?: 'Project';
   /** Whether the CodeSandbox GitHub App is installed */
   appInstalled: Scalars['Boolean'];
-  /** @deprecated Field no longer supported */
-  availableEnvironments: Array<Environment>;
+  /** Number of branches imported to CodeSandbox for this project. It is asynchronously updated when a create or delete happens. */
+  branchCount: Scalars['Int'];
   /** Repository branches that have been imported to (or created in) CodeSandbox */
   branches: Array<Branch>;
   /** Active users connected to a branch of this project */
@@ -602,8 +595,6 @@ export type Project = {
   defaultBranch: Branch;
   /** @deprecated Use repository->description instead */
   description: Maybe<Scalars['String']>;
-  /** @deprecated Field no longer supported */
-  environment: Maybe<Environment>;
   /** CodeSandbox ID for the project (specific to this repository-team pair) */
   id: Scalars['ID'];
   /** Timestamp of the last time the current user accessed one of this project's branches on CodeSandbox */
@@ -620,7 +611,13 @@ export type Project = {
   repo: Scalars['String'];
   /** Git repository for the project, as it appears on the original git provider */
   repository: Repository;
-  /** Team to which this project is assigned. If `null`, the project is read-only */
+  /**
+   * Team to which this project is assigned
+   *
+   * If `null`, the project is read-only. Loading only the `id` of the team is optimized to avoid
+   * unnecessary queries. Loading any field other than the `id` will incur the additional cost of
+   * looking up the team.
+   */
   team: Maybe<Team>;
   /**
    * SOFT DEPRECATED: Teams that have bookmarked the current project.
@@ -640,6 +637,12 @@ export type ProSubscription = {
   id: Maybe<Scalars['UUID4']>;
   nextBillDate: Maybe<Scalars['DateTime']>;
   origin: Maybe<SubscriptionOrigin>;
+  /**
+   * Whether or not this subscription has a payment method attached to it. It will
+   * almost always be true, except when a team started a trial without a credit
+   * card and has not yet added one.
+   */
+  paymentMethodAtached: Maybe<Scalars['Boolean']>;
   paymentProvider: Maybe<SubscriptionPaymentProvider>;
   quantity: Maybe<Scalars['Int']>;
   status: SubscriptionStatus;
@@ -679,12 +682,8 @@ export type PullRequest = {
   prMergedAt: Maybe<Scalars['DateTime']>;
   /** When information about a PR was last changed */
   prUpdatedAt: Scalars['DateTime'];
-  /** @deprecated Subfields other than `name` will not resolve */
-  sourceBranch: Branch;
   /** Current state of the pull request (ex. `open` or `closed`) */
   state: Scalars['String'];
-  /** @deprecated Subfields other than `name` will not resolve */
-  targetBranch: Branch;
   /** Title of the PR as it appears on GitHub */
   title: Scalars['String'];
 };
@@ -744,6 +743,30 @@ export type RootMutationType = {
   /** Clear notification unread count */
   clearNotificationCount: User;
   createAlbum: Album;
+  /**
+   * Create or import a branch to a team-associated project
+   *
+   * This endpoint allows users to create a new branch on CodeSandbox. The branch may already exist
+   * in the git provider, or not. Depending on the user's level of access to the repository, the
+   * branch could be a _contribution branch_, which will automatically fork a new repository and
+   * project on the first commit.
+   *
+   * A team ID is required for this mutation. To import an existing branch into a read-only project
+   * that is not team-associated, see `mutation importReadOnlyBranch`.
+   *
+   * Example (for `codesandbox/test-repo` branch `test-branch`):
+   *
+   * ```gql
+   * mutation createBranch(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo",
+   *   team: "ebfeb17e-3301-4069-a476-447b2fcb525c",
+   *   branch: "test-branch"
+   * ) { id }
+   * ```
+   */
+  createBranch: Branch;
   createCodeComment: Comment;
   /** Create a collection */
   createCollection: Collection;
@@ -763,17 +786,39 @@ export type RootMutationType = {
   deleteCurrentUser: Scalars['String'];
   /** Delete a private registry */
   deletePrivateNpmRegistry: Maybe<PrivateRegistry>;
+  /**
+   * Removes a project from CodeSandbox
+   *
+   * Does not affect other copies of the project related to the same repository in other teams, and
+   * does not affect the repository in the git provider. Branches related to the project will be
+   * removed, potentially losing uncommitted work-in-progress.
+   *
+   * Returns the scalar `true` on success, and errors otherwise.
+   *
+   * Example (for `https://github.com/codesandbox/test-repo.git`)
+   *
+   * ```gql
+   * mutation deleteProject(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo",
+   *   team: "0fd70d0b-7642-4426-a8b3-38ee18c7c9cc"
+   * )
+   * ```
+   */
+  deleteProject: Scalars['Boolean'];
   /** Delete sandboxes */
   deleteSandboxes: Array<Sandbox>;
   deleteWorkspace: Scalars['String'];
   /** Enable beta-access for team and all members */
   enableTeamBetaAccess: Team;
   /**
-   * Import a Repository to a specific team.
+   * Import a repository to a specific team
    *
    * This endpoint should be called when a signed-in user **explicitly** wants to import a
    * Repository. It will have immediate effect on the team's usage limits. For implicit loading of a
-   * project, see the `project` top-level query.
+   * project, see the `project` top-level query. For importing a read-only project for a public
+   * repository, see the `importReadOnlyProject` mutation.
    *
    * Example (for `https://github.com/codesandbox/test-repo.git`)
    *
@@ -787,6 +832,43 @@ export type RootMutationType = {
    * ```
    */
   importProject: Project;
+  /**
+   * Import an existing branch from a public repository
+   *
+   * Anonymous users and users without git credentials may only view branches that exist in the git
+   * provider. This endpoint allows users to import such a branch to the read-only copy of a project.
+   * See `mutation createBranch` for creating a new branch on a user-writable project.
+   *
+   * Example (for `codesandbox/test-repo` branch `test-branch`):
+   *
+   * ```gql
+   * mutation importReadOnlyBranch(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo",
+   *   branch: "test-branch"
+   * ) { id }
+   * ```
+   */
+  importReadOnlyBranch: Branch;
+  /**
+   * Import a public repository as a read-only project
+   *
+   * This endpoint should be called when a user **explicitly** wants to import a Repository. The
+   * repository must be public. For importing private repositories, or importing a repository to
+   * a specific team for editing, see the `importProject` mutation.
+   *
+   * Example (for `https://github.com/codesandbox/test-repo.git`)
+   *
+   * ```gql
+   * mutation importReadOnlyProject(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo"
+   * ) { id }
+   * ```
+   */
+  importReadOnlyProject: Project;
   /** Invite someone to a team */
   inviteToTeam: Team;
   /** Invite someone to a team via email */
@@ -849,8 +931,6 @@ export type RootMutationType = {
   updateNotificationPreferences: NotificationPreferences;
   /** Update notification read status */
   updateNotificationReadStatus: Notification;
-  /** @deprecated Field no longer supported */
-  updateProjectEnvironment: Project;
   /** update subscription details (not billing details) */
   updateSubscription: ProSubscription;
   updateSubscriptionBillingInterval: ProSubscription;
@@ -912,6 +992,15 @@ export type RootMutationTypeChangeTeamMemberAuthorizationsArgs = {
 export type RootMutationTypeCreateAlbumArgs = {
   description: Maybe<Scalars['String']>;
   title: Scalars['String'];
+};
+
+export type RootMutationTypeCreateBranchArgs = {
+  branch: Maybe<Scalars['String']>;
+  from: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+  team: Scalars['ID'];
 };
 
 export type RootMutationTypeCreateCodeCommentArgs = {
@@ -992,6 +1081,13 @@ export type RootMutationTypeDeletePrivateNpmRegistryArgs = {
   teamId: Scalars['UUID4'];
 };
 
+export type RootMutationTypeDeleteProjectArgs = {
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+  team: Scalars['ID'];
+};
+
 export type RootMutationTypeDeleteSandboxesArgs = {
   sandboxIds: Array<Scalars['ID']>;
 };
@@ -1009,6 +1105,19 @@ export type RootMutationTypeImportProjectArgs = {
   owner: Scalars['String'];
   provider: GitProvider;
   team: Scalars['ID'];
+};
+
+export type RootMutationTypeImportReadOnlyBranchArgs = {
+  branch: Scalars['String'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+};
+
+export type RootMutationTypeImportReadOnlyProjectArgs = {
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
 };
 
 export type RootMutationTypeInviteToTeamArgs = {
@@ -1209,13 +1318,6 @@ export type RootMutationTypeUpdateNotificationReadStatusArgs = {
   read: Scalars['Boolean'];
 };
 
-export type RootMutationTypeUpdateProjectEnvironmentArgs = {
-  environmentId: Maybe<Scalars['UUID4']>;
-  gitProvider?: Maybe<GitProvider>;
-  owner: Scalars['String'];
-  repo: Scalars['String'];
-};
-
 export type RootMutationTypeUpdateSubscriptionArgs = {
   quantity: Maybe<Scalars['Int']>;
   subscriptionId: Scalars['UUID4'];
@@ -1232,6 +1334,53 @@ export type RootQueryType = {
   __typename?: 'RootQueryType';
   album: Maybe<Album>;
   albums: Array<Album>;
+  /**
+   * Get a single branch by its short ID.
+   *
+   * Returns a "not found" error if the branch does not exist or is inaccessible by the current user.
+   * Anonymous users may use this endpoint for branches that exist on read-only projects (see
+   * `mutation importReadOnlyProject`).
+   *
+   * Branches represent real or potential git branches on a particular team's project. Branch short
+   * IDs are short alphanumeric strings that point to a particular repository + team + branch name.
+   * Remember that a user may have access to the same branch on multiple teams' projects.
+   *
+   * To look up a branch by repository + team + branch name, see `query branchByName`.
+   *
+   * Example (for branch with short ID `abc123`):
+   *
+   * ```gql
+   * query branchById(id: "abc123") {
+   *   name
+   * }
+   * ```
+   */
+  branchById: Branch;
+  /**
+   * Get a single branch by its repository, team, and name.
+   *
+   * Returns a "not found" error if the branch does not exist or is inaccessible by the current user.
+   * Anonymous users may use this endpoint for branches that exist on read-only projects (see
+   * `mutation importReadOnlyProject`).
+   *
+   * Branches represent real or potential git branches on a particular team's project. Remember that
+   * a user may have access to the same branch on multiple teams' projects.
+   *
+   * To look up a branch by its short ID, see `query branchById`.
+   *
+   * Example (for `codesandbox/test-repo` branch `test-branch`):
+   *
+   * ```gql
+   * query branchByName(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo",
+   *   branch: "test-branch",
+   *   team: "987b6fcd-2a3b-41fe-b1e6-ac33565824b9"
+   * )
+   * ```
+   */
+  branchByName: Branch;
   curatedAlbums: Array<Album>;
   /** @deprecated Field no longer supported */
   featureFlags: Array<FeatureFlag>;
@@ -1247,10 +1396,47 @@ export type RootQueryType = {
   githubOrganizationRepos: Maybe<Array<GithubRepo>>;
   /** Get a repository as it appears on GitHub */
   githubRepo: Maybe<GithubRepo>;
+  /** The various limits in place for free and paying users and teams */
+  limits: Limits;
   /** Get current user */
   me: Maybe<CurrentUser>;
-  /** Get a V2 project by git details */
+  /**
+   * Get a single project by its repository and team.
+   *
+   * Projects are identified by repository-team pairs. For public repositories, there may also be a
+   * single project that does not have an associated team. For a list of all projects for a given
+   * repository, see `query projectsByRepository`.
+   *
+   * Example (for `https://github.com/codesandbox/test-repo.git`):
+   *
+   * ```gql
+   * query project(
+   *   git_provider: GITHUB,
+   *   owner: "codesandbox",
+   *   repo: "test-repo",
+   *   team: "57ca3ef5-475b-47bf-9530-a686c527e174"
+   * ) { id }
+   * ```
+   */
   project: Maybe<Project>;
+  /**
+   * Get all projects for the given repository accessible by the current user.
+   *
+   * Projects are identified by repository-team pairs. For public repositories, there may also be a
+   * single project that does not have an associated team. This query returns all of the projects
+   * accessible by the current user (as many as `[# of user teams] + 1`). For information about
+   * a project associated with a specific team, see `query project`.
+   *
+   * Example (for `https://github.com/codesandbox/test-repo.git`):
+   *
+   * ```gql
+   * query projects(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo"
+   * ) { id }
+   */
+  projects: Array<Project>;
   /** Get a sandbox */
   sandbox: Maybe<Sandbox>;
   /** A team from an invite token */
@@ -1263,6 +1449,18 @@ export type RootQueryTypeAlbumArgs = {
 
 export type RootQueryTypeAlbumsArgs = {
   username: Scalars['String'];
+};
+
+export type RootQueryTypeBranchByIdArgs = {
+  id: Scalars['String'];
+};
+
+export type RootQueryTypeBranchByNameArgs = {
+  branch: Scalars['String'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+  team: Maybe<Scalars['ID']>;
 };
 
 export type RootQueryTypeGitArgs = {
@@ -1288,6 +1486,12 @@ export type RootQueryTypeProjectArgs = {
   owner: Scalars['String'];
   repo: Scalars['String'];
   team: Maybe<Scalars['ID']>;
+};
+
+export type RootQueryTypeProjectsArgs = {
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
 };
 
 export type RootQueryTypeSandboxArgs = {
@@ -1317,19 +1521,19 @@ export type RootSubscriptionType = {
   invitationCreated: Invitation;
   invitationRemoved: Invitation;
   /**
-   * Receive updates if a new commit is made via the CodeSandbox UI.
+   * Receive updates if a new commit is made via the CodeSandbox UI
    *
    * Omit `branchId` to receive updates from all branches in the project.
    */
   projectCommits: BranchLastCommit;
   /**
-   * Receive updates if users connect to or disconnect from a branch.
+   * Receive updates if users connect to or disconnect from a branch
    *
    * Omit `branchId` to receive updates from all branches in the project.
    */
   projectConnections: BranchConnections;
   /**
-   * Receive updates when the status of a branch changes.
+   * Receive updates when the status of a branch changes
    *
    * Omit `branchId` to receive updates from all branches in the project.
    */
@@ -1458,21 +1662,6 @@ export type SandboxProtectionSettings = {
   preventSandboxLeaving: Scalars['Boolean'];
 };
 
-/** A blank v2 sandbox */
-export type SandboxV2 = {
-  __typename?: 'SandboxV2';
-  alias: Maybe<Scalars['String']>;
-  authorization: Authorization;
-  collaborators: Array<Collaborator>;
-  /** @deprecated Field no longer supported */
-  gitv2: Maybe<GitV2>;
-  id: Scalars['ID'];
-  insertedAt: Scalars['String'];
-  isV2: Scalars['Boolean'];
-  removedAt: Maybe<Scalars['String']>;
-  updatedAt: Scalars['String'];
-};
-
 export type Source = {
   __typename?: 'Source';
   id: Maybe<Scalars['UUID4']>;
@@ -1544,6 +1733,17 @@ export type Team = {
   limits: TeamLimits;
   name: Scalars['String'];
   privateRegistry: Maybe<PrivateRegistry>;
+  /**
+   * Projects assigned to the team
+   *
+   * By default, repository and permission data older than a certain TTL will be synced from the
+   * GitHub API. Using `syncData: false`, clients can request a faster but possibly incorrect
+   * response. The incorrect response will be "safe", defaulting to "no" or "read-only" access
+   * when a definitive answer isn't available.
+   *
+   * Projects are returned in the order of the most recent recorded commit on the related
+   * repository. Manual ordering by `lastAccessedAt` may be desired.
+   */
   projects: Array<Project>;
   sandboxes: Array<Sandbox>;
   settings: Maybe<WorkspaceSandboxSettings>;
@@ -2407,7 +2607,17 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
     };
   };
 
-export type ProjectFragment = { __typename?: 'Project' } & {
+export type ProjectFragment = { __typename?: 'Project' } & Pick<
+  Project,
+  'branchCount'
+> & {
+    repository: { __typename?: 'GitHubRepository' } & Pick<
+      GitHubRepository,
+      'owner' | 'name' | 'defaultBranch' | 'private'
+    >;
+  };
+
+export type ProjectWithBranchesFragment = { __typename?: 'Project' } & {
   branches: Array<{ __typename?: 'Branch' } & BranchFragment>;
   repository: { __typename?: 'GitHubRepository' } & Pick<
     GitHubRepository,
@@ -3341,7 +3551,7 @@ export type RepositoryByDetailsQueryVariables = Exact<{
 }>;
 
 export type RepositoryByDetailsQuery = { __typename?: 'RootQueryType' } & {
-  project: Maybe<{ __typename?: 'Project' } & ProjectFragment>;
+  project: Maybe<{ __typename?: 'Project' } & ProjectWithBranchesFragment>;
 };
 
 export type RecentNotificationFragment = { __typename?: 'Notification' } & Pick<

@@ -163,6 +163,7 @@ export default class App extends React.PureComponent<
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${this.jwt()}`,
+              'x-codesandbox-client': 'legacy-embed',
             },
           }
         )
@@ -264,6 +265,7 @@ export default class App extends React.PureComponent<
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${jwt}`,
+          'x-codesandbox-client': 'legacy-embed',
         },
         body: JSON.stringify({
           id: this.state.sandbox.id,
@@ -301,6 +303,7 @@ export default class App extends React.PureComponent<
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${jwt}`,
+          'x-codesandbox-client': 'legacy-embed',
         },
       })
         .then(x => x.json())
