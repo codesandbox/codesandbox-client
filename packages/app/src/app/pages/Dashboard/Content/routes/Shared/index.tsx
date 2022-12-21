@@ -58,7 +58,7 @@ export const Shared = () => {
           <EmptyPage.StyledGrid>
             <ArticleCard
               title="Get feedback in context"
-              thumbnail="/static/img/thumbnails/shared.png"
+              thumbnail="/static/img/thumbnails/page_shared.png"
               url={appendOnboardingTracking('https://codesandbox.io/team')}
               onClick={() =>
                 track('Empty State Card - Content card', {

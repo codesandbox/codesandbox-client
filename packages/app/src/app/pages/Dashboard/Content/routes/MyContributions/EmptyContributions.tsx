@@ -68,7 +68,7 @@ export const EmptyContributions: React.FC = () => {
           })}
           <ArticleCard
             title="More about Contribution Branches"
-            thumbnail="/static/img/thumbnails/contributions.png"
+            thumbnail="/static/img/thumbnails/page_contributions.png"
             onClick={() =>
               track('Empty State Card - Content card', {
                 codesandbox: 'V1',
