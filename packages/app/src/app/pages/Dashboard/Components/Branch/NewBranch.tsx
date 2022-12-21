@@ -6,12 +6,17 @@ import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 export const NewBranchCard: React.FC<{
   owner: string;
   repoName: string;
+  workspaceId?: string;
   disabled?: boolean;
-}> = ({ owner, repoName, disabled }) => {
+}> = ({ owner, repoName, workspaceId, disabled }) => {
   return (
     <Element
       as={disabled ? undefined : 'a'}
-      href={disabled ? undefined : v2DraftBranchUrl(owner, repoName)}
+      href={
+        disabled
+          ? undefined
+          : v2DraftBranchUrl({ owner, repoName, workspaceId })
+      }
       css={css({
         display: 'flex',
         alignItems: 'center',

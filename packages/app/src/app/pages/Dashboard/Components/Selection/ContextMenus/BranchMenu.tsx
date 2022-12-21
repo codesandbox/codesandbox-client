@@ -27,7 +27,12 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
   const { visible, setVisibility, position } = React.useContext(Context);
 
   const { id, name, project, contribution } = branch;
-  const branchUrl = v2BranchUrl({ name, project });
+  const branchUrl = v2BranchUrl({
+    owner: project.repository.owner,
+    repoName: project.repository.name,
+    branchName: name,
+    workspaceId: project.team?.id || null,
+  });
 
   const { name: repoName, owner, defaultBranch } = project.repository;
 

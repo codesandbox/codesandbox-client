@@ -154,6 +154,7 @@ const ComponentForTypes: IComponentForTypes = {
     <NewBranchCard
       owner={item.repo.owner}
       repoName={item.repo.name}
+      workspaceId={item.workspaceId}
       disabled={item.disabled}
     />
   ),

@@ -2604,6 +2604,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
         GitHubRepository,
         'defaultBranch' | 'name' | 'owner' | 'private'
       >;
+      team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
     };
   };
 
@@ -2615,6 +2616,7 @@ export type ProjectFragment = { __typename?: 'Project' } & Pick<
       GitHubRepository,
       'owner' | 'name' | 'defaultBranch' | 'private'
     >;
+    team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
   };
 
 export type ProjectWithBranchesFragment = { __typename?: 'Project' } & {
@@ -2623,6 +2625,7 @@ export type ProjectWithBranchesFragment = { __typename?: 'Project' } & {
     GitHubRepository,
     'owner' | 'name' | 'defaultBranch' | 'private'
   >;
+  team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'id'>>;
 };
 
 export type _CreateTeamMutationVariables = Exact<{

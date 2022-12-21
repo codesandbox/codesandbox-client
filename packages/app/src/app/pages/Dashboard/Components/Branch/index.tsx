@@ -26,7 +26,12 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
   const { selectedIds, onRightClick, onMenuEvent } = useSelection();
   const { name, project } = branch;
 
-  const branchUrl = v2BranchUrl({ name, project });
+  const branchUrl = v2BranchUrl({
+    owner: project.repository.owner,
+    repoName: project.repository.name,
+    branchName: name,
+    workspaceId: project.team?.id || null,
+  });
 
   const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();

@@ -248,6 +248,9 @@ export const branchFragment = gql`
           private
         }
       }
+      team {
+        id
+      }
     }
   }
 `;
@@ -262,6 +265,9 @@ export const projectFragment = gql`
         defaultBranch
         private
       }
+    }
+    team {
+      id
     }
   }
 `;
@@ -278,6 +284,9 @@ export const projectWithBranchesFragment = gql`
         defaultBranch
         private
       }
+    }
+    team {
+      id
     }
   }
   ${branchFragment}

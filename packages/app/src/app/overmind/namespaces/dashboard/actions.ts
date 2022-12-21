@@ -2220,9 +2220,11 @@ export const importGitHubRepository = async (
       teamId: activeTeam,
     });
 
-    // TODO: Add teamId in the url path
-    // First needs the v2 editor to support that
-    window.location.href = v2DraftBranchUrl(owner, name);
+    window.location.href = v2DraftBranchUrl({
+      owner,
+      repoName: name,
+      workspaceId: activeTeam,
+    });
   } catch (error) {
     notificationState.addNotification({
       message: JSON.stringify(error),

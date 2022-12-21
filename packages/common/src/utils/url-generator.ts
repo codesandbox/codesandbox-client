@@ -119,19 +119,6 @@ export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
   return `${baseUrl}${sandboxDetails.id}`;
 };
 
-export const v2BranchUrl = (branchDetails: {
-  name: string;
-  project: { repository: { owner: string; name: string } };
-}) => {
-  const {
-    name: branchName,
-    project: { repository },
-  } = branchDetails;
-  return `${v2EditorUrl()}github/${repository.owner}/${
-    repository.name
-  }/${branchName}`;
-};
-
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
     const { git } = sandbox;
@@ -302,18 +289,55 @@ export const teamInviteLink = (inviteToken: string) =>
 
 export { dashboard };
 
-export const v2DefaultBranchUrl = (
-  owner: string,
-  name: string,
-  qsObject: Record<string, string> = {}
-) => {
-  const searchParams = new URLSearchParams({
-    ...qsObject,
-  });
+// This function handles all the scenarios of v2 branch editor urls
+// It is not exported from the package to avoid miss-using it
+const v2EditorBranchUrl = ({
+  owner,
+  repoName,
+  branchName,
+  workspaceId,
+  createDraftBranch,
+}: {
+  owner: string;
+  repoName: string;
+  branchName?: string;
+  workspaceId?: string;
+  createDraftBranch?: boolean;
+}) => {
+  const queryString = new URLSearchParams({
+    ...(workspaceId ? { workspaceId } : {}),
+    ...(createDraftBranch ? { create: 'true' } : {}),
+  }).toString();
 
-  return `${v2EditorUrl()}github/${owner}/${name}?${searchParams.toString()}`;
+  return `${v2EditorUrl()}github/${owner}/${repoName}${
+    branchName ? '/' + branchName : ''
+  }${queryString ? '?' + queryString : ''}`;
 };
 
-export const v2DraftBranchUrl = (owner: string, name: string) => {
-  return `${v2DefaultBranchUrl(owner, name, { create: 'true' })}`;
+export const v2BranchUrl = (params: {
+  owner: string;
+  repoName: string;
+  branchName: string;
+  workspaceId?: string;
+}) => {
+  return v2EditorBranchUrl(params);
+};
+
+export const v2DefaultBranchUrl = (params: {
+  owner: string;
+  repoName: string;
+  workspaceId?: string;
+}) => {
+  return v2EditorBranchUrl(params);
+};
+
+export const v2DraftBranchUrl = (params: {
+  owner: string;
+  repoName: string;
+  workspaceId?: string;
+}) => {
+  return v2EditorBranchUrl({
+    ...params,
+    createDraftBranch: true,
+  });
 };

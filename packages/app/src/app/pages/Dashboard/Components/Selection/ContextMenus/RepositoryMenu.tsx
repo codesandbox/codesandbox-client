@@ -36,7 +36,7 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
     return window.localStorage.getItem('CSB_DEBUG') === 'ENABLED';
   });
 
-  const { repository: providerRepository } = repository;
+  const { repository: providerRepository, team: assignedTeam } = repository;
 
   const restricted = isFree && providerRepository.private;
 
@@ -44,14 +44,16 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
     owner: providerRepository.owner,
     name: providerRepository.name,
   });
-  const branchFromDefaultUrl = v2DraftBranchUrl(
-    providerRepository.owner,
-    providerRepository.name
-  );
-  const defaultBranchUrl = v2DefaultBranchUrl(
-    providerRepository.owner,
-    providerRepository.name
-  );
+  const branchFromDefaultUrl = v2DraftBranchUrl({
+    owner: providerRepository.owner,
+    repoName: providerRepository.name,
+    workspaceId: assignedTeam?.id,
+  });
+  const defaultBranchUrl = v2DefaultBranchUrl({
+    owner: providerRepository.owner,
+    repoName: providerRepository.name,
+    workspaceId: assignedTeam?.id,
+  });
 
   const repositoryIsStarred = state.dashboard.starredRepos.find(
     repo =>
