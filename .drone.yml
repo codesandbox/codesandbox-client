@@ -12,7 +12,7 @@ steps:
         path: /cache
 
   - name: install packages
-    image: node:10.22.1-buster
+    image: node:10.24.1-buster
     volumes:
       - name: yarn-cache
         path: /usr/local/share/.cache/yarn/v4
@@ -20,7 +20,7 @@ steps:
       - yarn
 
   - name: build
-    image: node:10.22.1-buster
+    image: node:10.24.1-buster
     commands:
       - export STAGING_BRANCH=pr$DRONE_PULL_REQUEST
       - yarn build
@@ -110,7 +110,7 @@ steps:
         path: /cache
 
   - name: install packages
-    image: node:10.22.1-buster
+    image: node:10.24.1-buster
     volumes:
       - name: yarn-cache
         path: /usr/local/share/.cache/yarn/v4
@@ -118,7 +118,7 @@ steps:
       - yarn
 
   - name: build
-    image: node:10.22.1-buster
+    image: node:10.24.1-buster
     commands:
       - export STAGING_BRANCH=$DRONE_BRANCH
       - yarn build
