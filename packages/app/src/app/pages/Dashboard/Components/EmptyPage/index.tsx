@@ -20,6 +20,11 @@ const StyledDescription = styled(Text)`
   color: #999999;
 `;
 
+const StyledGridWrapper = styled(Stack)`
+  flex-direction: column;
+  gap: 16px;
+`;
+
 const StyledGrid = styled(Element)`
   margin: 0;
   padding: 0;
@@ -40,6 +45,7 @@ const StyledGridTitle = styled(Text)`
 export const EmptyPage = {
   StyledWrapper,
   StyledDescription,
+  StyledGridWrapper,
   StyledGrid,
   StyledGridTitle,
 };

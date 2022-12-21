@@ -67,6 +67,10 @@ export const Recent = () => {
   const pageType: PageTypes = 'recent';
   const isEmpty = !dataIsLoading && items.length === 0;
 
+  if (isEmpty) {
+    return <EmptyRecent />;
+  }
+
   return (
     <SelectionProvider
       activeTeamId={activeTeamId}
@@ -83,7 +87,6 @@ export const Recent = () => {
         loading={dataIsLoading}
         showViewOptions={!isEmpty}
       />
-
       {isEmpty ? (
         <EmptyRecent />
       ) : (

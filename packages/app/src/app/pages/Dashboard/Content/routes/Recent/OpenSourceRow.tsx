@@ -51,7 +51,7 @@ export const OpenSourceRow: React.FC = () => {
   };
 
   return (
-    <Stack direction="vertical" gap={6}>
+    <EmptyPage.StyledGridWrapper>
       <EmptyPage.StyledGridTitle>
         Open source development
       </EmptyPage.StyledGridTitle>
@@ -104,6 +104,6 @@ export const OpenSourceRow: React.FC = () => {
           );
         })}
       </EmptyPage.StyledGrid>
-    </Stack>
+    </EmptyPage.StyledGridWrapper>
   );
 };

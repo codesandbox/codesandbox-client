@@ -81,7 +81,7 @@ export const DocumentationRow: React.FC = () => {
   };
 
   return (
-    <Stack direction="vertical" gap={6}>
+    <EmptyPage.StyledGridWrapper>
       <EmptyPage.StyledGridTitle>
         Optimize your workflow
       </EmptyPage.StyledGridTitle>
@@ -115,6 +115,6 @@ export const DocumentationRow: React.FC = () => {
           );
         })}
       </EmptyPage.StyledGrid>
-    </Stack>
+    </EmptyPage.StyledGridWrapper>
   );
 };

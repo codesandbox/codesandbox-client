@@ -64,7 +64,7 @@ export const TemplatesRow: React.FC = () => {
   };
 
   return (
-    <Stack direction="vertical" gap={6}>
+    <EmptyPage.StyledGridWrapper>
       <EmptyPage.StyledGridTitle as="h2">
         Start from a template
       </EmptyPage.StyledGridTitle>
@@ -114,6 +114,6 @@ export const TemplatesRow: React.FC = () => {
           />
         ) : null}
       </EmptyPage.StyledGrid>
-    </Stack>
+    </EmptyPage.StyledGridWrapper>
   );
 };
