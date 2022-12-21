@@ -87,6 +87,7 @@ export const TemplatesRow: React.FC = () => {
                 <TemplateCard
                   key={template.id}
                   disabled={hasMaxPublicSandboxes}
+                  padding={24}
                   template={template}
                   onOpenTemplate={handleOpenTemplate}
                   onSelectTemplate={handleSelectTemplate}

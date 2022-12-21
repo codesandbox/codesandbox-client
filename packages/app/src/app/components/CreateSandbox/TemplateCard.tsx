@@ -11,6 +11,7 @@ interface TemplateCardProps {
   template: TemplateFragment;
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
+  padding?: number | string;
 }
 
 export const TemplateCard = ({
@@ -18,6 +19,7 @@ export const TemplateCard = ({
   template,
   onSelectTemplate,
   onOpenTemplate,
+  padding,
 }: TemplateCardProps) => {
   const { isLoggedIn } = useAppState();
   const { UserIcon } = getTemplateIcon(
@@ -32,6 +34,7 @@ export const TemplateCard = ({
   return (
     <TemplateButton
       title={sandboxTitle}
+      css={{ padding }}
       type="button"
       onClick={evt => {
         if (disabled) {

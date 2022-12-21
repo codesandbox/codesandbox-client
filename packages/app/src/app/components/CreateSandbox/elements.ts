@@ -97,10 +97,10 @@ export const TemplateButton = styled.button`
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+  padding: 16px;
   background: #1d1d1d;
   border: 1px solid transparent;
   text-align: left;
-  padding: 24px;
   border-radius: 2px;
   color: #e5e5e5;
   transition: background ${props => props.theme.speeds[2]} ease-out;
