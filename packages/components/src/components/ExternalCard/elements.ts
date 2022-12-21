@@ -12,8 +12,8 @@ export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
   outline: none;
   border-radius: 4px;
   border: 1px solid #161616;
-  transition: background linear;
-  transition-duration: 200ms;
+  transition: background ease-in-out;
+  transition-duration: ${props => props.theme.speeds[2]};
 
   :after {
     position: absolute;
@@ -27,8 +27,8 @@ export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
     background-size: cover;
     background-position: center;
     transform: scale(1);
-    transition: transform linear;
-    transition-duration: 200ms;
+    transition: transform ease-in-out;
+    transition-duration: ${props => props.theme.speeds[2]};
   }
 
   :hover {
