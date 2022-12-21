@@ -22,7 +22,19 @@ export function sortByNameAscending(
   a: ProjectFragment,
   b: ProjectFragment
 ): number {
-  const repoA = a.repository.owner + '/' + a.repository.name;
-  const repoB = b.repository.owner + '/' + b.repository.name;
-  return repoA < repoB ? -1 : 1;
+  return a.repository.name.toLowerCase() < b.repository.name.toLowerCase()
+    ? -1
+    : 1;
+}
+
+export function getProjectUniqueKey({
+  teamId,
+  owner,
+  name,
+}: {
+  teamId: string;
+  owner: string;
+  name: string;
+}): string {
+  return `${teamId}/${owner}/${name}`;
 }

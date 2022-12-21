@@ -6,7 +6,7 @@ import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 export interface BreadcrumbProps {
   path: string;
   activeTeam: string;
-  nestedPageType?: 'repositories' | 'synced-sandboxes';
+  nestedPageType?: 'repository-branches' | 'synced-sandboxes';
   albumId?: string;
 }
 
@@ -19,7 +19,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   let link = dashboard.sandboxes('/', activeTeam);
   if (nestedPageType) {
     link = {
-      repositories: dashboard.repositories(activeTeam),
+      'repository-branches': dashboard.repositories(activeTeam),
       'synced-sandboxes': dashboard.syncedSandboxes(activeTeam),
     }[nestedPageType];
   } else if (albumId) link = dashboard.discover(activeTeam);
@@ -28,7 +28,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   if (nestedPageType) {
     prefix = {
       'synced-sandboxes': 'Synced sandboxes',
-      repositories: 'All repositories',
+      'repository-branches': 'All repositories',
     }[nestedPageType];
   } else if (albumId) prefix = 'Discover';
 
@@ -42,7 +42,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
         {prefix} {path && ' / '}
       </Link>
       {path &&
-        nestedPageType !== 'repositories' &&
+        nestedPageType !== 'repository-branches' &&
         path.split('/').map((currentPath, i, arr) => {
           const partPath = path
             .split('/')
@@ -70,7 +70,7 @@ export const Breadcrumbs: React.FC<BreadcrumbProps> = ({
             </Link>
           );
         })}
-      {path && nestedPageType === 'repositories' && <span>{path}</span>}
+      {path && nestedPageType === 'repository-branches' && <span>{path}</span>}
     </Text>
   );
 };

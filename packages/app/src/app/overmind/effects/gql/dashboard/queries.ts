@@ -66,6 +66,7 @@ import {
   teamFragmentDashboard,
   branchFragment,
   projectFragment,
+  projectWithBranchesFragment,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -504,7 +505,6 @@ export const getRepositoriesByTeam: Query<
     }
   }
   ${projectFragment}
-  ${branchFragment}
 `;
 
 export const getRepositoryByDetails: Query<
@@ -513,9 +513,9 @@ export const getRepositoryByDetails: Query<
 > = gql`
   query RepositoryByDetails($owner: String!, $name: String!) {
     project(gitProvider: GITHUB, owner: $owner, repo: $name) {
-      ...project
+      ...projectWithBranches
     }
   }
-  ${projectFragment}
+  ${projectWithBranchesFragment}
   ${branchFragment}
 `;
