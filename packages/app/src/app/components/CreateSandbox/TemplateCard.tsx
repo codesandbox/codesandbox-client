@@ -78,12 +78,13 @@ export const TemplateCard = ({
         <Stack direction="vertical" gap={1}>
           <Text
             css={{
-              fontSize: '13px',
-              fontWeight: 400,
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
             }}
+            size={13}
+            lineHeight="16px"
+            weight="500"
           >
             {sandboxTitle}
           </Text>
