@@ -64,14 +64,14 @@ export const TemplateCard = ({
         <Stack
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
-          <UserIcon />
+          <UserIcon height="20" width="20" />
           {isV2 && <Badge icon="cloud">Beta</Badge>}
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text
             css={{
-              fontSize: '14px',
-              fontWeight: 500,
+              fontSize: '13px',
+              fontWeight: 400,
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',

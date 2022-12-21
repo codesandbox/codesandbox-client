@@ -225,9 +225,8 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
                       css={{ svg: { filter: 'grayscale(1)', opacity: 0.1 } }}
                     >
                       <item.Icon
-                        // @ts-ignore
-                        width={viewMode === 'list' ? 16 : 60}
-                        height={viewMode === 'list' ? 16 : 60}
+                        width={viewMode === 'list' ? '16' : '60'}
+                        height={viewMode === 'list' ? '16' : '60'}
                       />
                     </Stack>
                   ) : null}
