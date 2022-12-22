@@ -101,6 +101,7 @@ export const TemplateButton = styled.button`
   background: #1d1d1d;
   border: 1px solid transparent;
   text-align: left;
+  font-family: inherit;
   border-radius: 2px;
   color: #e5e5e5;
   transition: background ${props => props.theme.speeds[2]} ease-out;
