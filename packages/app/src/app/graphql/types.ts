@@ -2629,7 +2629,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
 
 export type ProjectFragment = { __typename?: 'Project' } & Pick<
   Project,
-  'branchCount'
+  'branchCount' | 'lastAccessedAt'
 > & {
     repository: { __typename?: 'GitHubRepository' } & Pick<
       GitHubRepository,

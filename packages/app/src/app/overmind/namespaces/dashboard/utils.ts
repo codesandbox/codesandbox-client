@@ -1,7 +1,4 @@
-import {
-  ProjectFragment,
-  SidebarCollectionDashboardFragment as Collection,
-} from 'app/graphql/types';
+import { SidebarCollectionDashboardFragment as Collection } from 'app/graphql/types';
 import { DELETE_ME_COLLECTION } from './types';
 
 export function getDecoratedCollection(
@@ -18,13 +15,11 @@ export function getDecoratedCollection(
   };
 }
 
-export function sortByNameAscending(
-  a: ProjectFragment,
-  b: ProjectFragment
+export function sortByLastAccessed(
+  a: { lastAccessedAt: string },
+  b: { lastAccessedAt: string }
 ): number {
-  return a.repository.name.toLowerCase() < b.repository.name.toLowerCase()
-    ? -1
-    : 1;
+  return new Date(a.lastAccessedAt) < new Date(b.lastAccessedAt) ? 1 : -1;
 }
 
 export function getProjectUniqueKey({

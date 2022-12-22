@@ -256,6 +256,7 @@ export const branchFragment = gql`
 export const projectFragment = gql`
   fragment project on Project {
     branchCount
+    lastAccessedAt
     repository {
       ... on GitHubRepository {
         owner

@@ -9,7 +9,10 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { PrivateRepoFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
-import { getProjectUniqueKey } from 'app/overmind/namespaces/dashboard/utils';
+import {
+  getProjectUniqueKey,
+  sortByLastAccessed,
+} from 'app/overmind/namespaces/dashboard/utils';
 
 export const RepositoryBranchesPage = () => {
   const params = useParams<{ path: string }>();
@@ -55,9 +58,7 @@ export const RepositoryBranchesPage = () => {
       b => !b.lastAccessedAt
     );
     const orderedBranches = [
-      ...accessedBranches.sort((a, b) =>
-        a.lastAccessedAt > b.lastAccessedAt ? -1 : 1
-      ),
+      ...accessedBranches.sort(sortByLastAccessed),
       ...unaccessedBranches,
     ];
 
