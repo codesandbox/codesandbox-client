@@ -232,7 +232,6 @@ const Item = React.memo(
           width: eachItemWidth,
           left: leftOffset,
           height: (style.height as number) - GUTTER,
-          ...margins,
         }}
       >
         <Component item={item} page={page} isScrolling={isScrolling} />

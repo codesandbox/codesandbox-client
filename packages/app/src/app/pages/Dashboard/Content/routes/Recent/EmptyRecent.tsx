@@ -22,6 +22,7 @@ export const EmptyRecent: React.FC<{ showUpgradeBanner: boolean }> = ({
         gap: '48px',
         height: 'auto',
         paddingBottom: '64px',
+        marginTop: '28px',
       }}
     >
       <Stack direction="vertical" gap={9}>
