@@ -8,6 +8,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { MaxReposFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
+import { EmptyRepositories } from './EmptyRepositories';
 
 export const RepositoriesPage = () => {
   const actions = useActions();
@@ -57,6 +58,7 @@ export const RepositoriesPage = () => {
   };
 
   const itemsToShow = getItemsToShow();
+  const isEmpty = itemsToShow.length === 0;
 
   return (
     <SelectionProvider
@@ -69,7 +71,7 @@ export const RepositoriesPage = () => {
       </Helmet>
       <Header
         activeTeam={activeTeam}
-        showViewOptions
+        showViewOptions={!isEmpty}
         showBetaBadge
         title="All repositories"
       />
@@ -80,11 +82,15 @@ export const RepositoriesPage = () => {
         </Element>
       ) : null}
 
-      <VariableGrid
-        page={pageType}
-        items={itemsToShow}
-        customGridElementHeight={154}
-      />
+      {isEmpty ? (
+        <EmptyRepositories />
+      ) : (
+        <VariableGrid
+          page={pageType}
+          items={itemsToShow}
+          customGridElementHeight={154}
+        />
+      )}
     </SelectionProvider>
   );
 };

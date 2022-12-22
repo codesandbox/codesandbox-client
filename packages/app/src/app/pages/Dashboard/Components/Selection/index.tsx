@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { Element, SkipNav } from '@codesandbox/components';
+import { Element, SkipNav, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
   ARROW_LEFT,
@@ -636,15 +636,15 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         activeTeamId,
       }}
     >
-      <Element
+      <Stack
         id="selection-container"
         onContextMenu={onContainerContextMenu}
         css={css({
           paddingTop: 8,
-          paddingBottom: 8,
           width: '100%',
           height: '100%',
         })}
+        direction="vertical"
         {...(interactive
           ? {
               onKeyDown: onContainerKeyDown,
@@ -659,7 +659,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           onFocus={() => setSelectedIds([selectionItems[0]])}
         />
         {children}
-      </Element>
+      </Stack>
       {drawingRect && selectionRect.end.x && (
         <Element
           id="selection-rectangle"

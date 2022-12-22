@@ -3,7 +3,6 @@ import css from '@styled-system/css';
 
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Stack, Text } from '@codesandbox/components';
-import history from 'app/utils/history';
 import { useActions, useAppState } from 'app/overmind';
 import { formatCurrency } from 'app/utils/currency';
 import { useCreateCheckout } from 'app/hooks';
@@ -25,11 +24,12 @@ const pricingLabel = (
   })} ${price.currency.toUpperCase()} per editor per month`;
 };
 
-export const TeamSubscription: React.FC = () => {
+export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
+  onComplete,
+}) => {
   const { activeTeamInfo, pro } = useAppState();
   const {
     pro: { pageMounted },
-    modalClosed,
   } = useActions();
   const [checkout, createCheckout] = useCreateCheckout();
 
@@ -44,16 +44,15 @@ export const TeamSubscription: React.FC = () => {
     });
   }, []);
 
-  const handleDismiss = () => {
-    modalClosed();
-    history.push(dashboard.recent(activeTeamInfo.id));
-  };
-
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
 
   const isCheckoutDisabled =
     !isEligibleForTrial || !isTeamAdmin || checkout.status === 'loading';
+
+  if (!activeTeamInfo) {
+    return null;
+  }
 
   return (
     <Stack
@@ -119,7 +118,7 @@ export const TeamSubscription: React.FC = () => {
         </Stack>
 
         <Stack
-          css={{ width: '100%', paddingBottom: 12 }}
+          css={{ width: '100%', paddingBottom: 24 }}
           direction="vertical"
           gap={4}
         >
@@ -166,7 +165,7 @@ export const TeamSubscription: React.FC = () => {
                 codesandbox: 'V1',
                 event_source: 'UI',
               });
-              handleDismiss();
+              onComplete();
             }}
             variant="link"
           >

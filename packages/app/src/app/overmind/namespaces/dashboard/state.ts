@@ -66,6 +66,12 @@ export type State = {
     older: Sandbox[];
   };
   curatedAlbums: DashboardAlbum[];
+  /**
+   * This is populated when we need a specific album, it's
+   * currently used by the "Liked sandboxes" page when it's
+   * empty.
+   */
+  curatedAlbumsById: Record<string, DashboardAlbum | null> | null;
   contributions: Branch[] | null;
   /**
    * v2 repositories (formerly projects)
@@ -115,6 +121,7 @@ export const state: State = {
     npmRegistry: null,
   },
   curatedAlbums: [],
+  curatedAlbumsById: null,
   deletedSandboxesByTime: derived(({ sandboxes }: State) => {
     const deletedSandboxes = sandboxes.DELETED;
     if (!deletedSandboxes)

@@ -2,34 +2,33 @@ import React, { useEffect } from 'react';
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
 import { Header } from 'app/pages/Dashboard/Components/Header';
-import {
-  GRID_MAX_WIDTH,
-  GUTTER,
-  VariableGrid,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Helmet } from 'react-helmet';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
-import { Element } from '@codesandbox/components';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { Element } from '@codesandbox/components';
+import {
+  GRID_MAX_WIDTH,
+  GUTTER,
+} from 'app/pages/Dashboard/Components/VariableGrid/constants';
+import { EmptyRecent } from './EmptyRecent';
 
 export const Recent = () => {
   const {
-    activeTeamInfo,
+    activeTeam,
     dashboard: { sandboxes },
   } = useAppState();
   const {
     dashboard: { getPage },
   } = useActions();
 
-  const activeTeamId = activeTeamInfo?.id;
-
   useEffect(() => {
     getPage(sandboxesTypes.RECENT);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTeamId]);
+  }, [activeTeam]);
 
   const dataIsLoading =
     sandboxes.RECENT_BRANCHES === null || sandboxes.RECENT_SANDBOXES === null;
@@ -69,31 +68,33 @@ export const Recent = () => {
         .slice(0, 12);
 
   const pageType: PageTypes = 'recent';
+  const showUpgradeBanner = isFree && isTeamSpace;
   const isEmpty = !dataIsLoading && items.length === 0;
 
+  if (isEmpty) {
+    return <EmptyRecent showUpgradeBanner={showUpgradeBanner} />;
+  }
+
   return (
-    <SelectionProvider
-      activeTeamId={activeTeamId}
-      page={pageType}
-      items={items}
-    >
+    <SelectionProvider activeTeamId={activeTeam} page={pageType} items={items}>
       <Helmet>
         <title>Recent - CodeSandbox</title>
       </Helmet>
-      {isFree && isTeamSpace && (
+      {showUpgradeBanner && (
         <Element
           css={{
             width: `calc(100% - ${2 * GUTTER}px)`,
-            maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-            margin: '0 auto 48px',
+            maxWidth: `calc(${GRID_MAX_WIDTH}px - 2 * ${GUTTER}px)`,
+            margin: '0 auto',
+            paddingBottom: '48px', // Because the stack gap is 0, it overrides the margin bottom so we need to use padding.
           }}
         >
-          <UpgradeBanner teamId={activeTeamId} />
+          <UpgradeBanner teamId={activeTeam} />
         </Element>
       )}
       <Header
-        title={isEmpty ? "Let's start building" : 'Recent'}
-        activeTeam={activeTeamId}
+        title="Recent"
+        activeTeam={activeTeam}
         loading={dataIsLoading}
         showViewOptions
       />

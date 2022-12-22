@@ -3525,6 +3525,27 @@ export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
   >;
 };
 
+export type CuratedAlbumByIdQueryVariables = Exact<{
+  albumId: Scalars['ID'];
+}>;
+
+export type CuratedAlbumByIdQuery = { __typename?: 'RootQueryType' } & {
+  album: Maybe<
+    { __typename?: 'Album' } & Pick<Album, 'id' | 'title'> & {
+        sandboxes: Array<
+          { __typename?: 'Sandbox' } & Pick<
+            Sandbox,
+            'forkCount' | 'likeCount'
+          > & {
+              author: Maybe<
+                { __typename?: 'User' } & Pick<User, 'username' | 'avatarUrl'>
+              >;
+            } & SandboxFragmentDashboardFragment
+        >;
+      }
+  >;
+};
+
 export type ContributionBranchesQueryVariables = Exact<{
   [key: string]: never;
 }>;
