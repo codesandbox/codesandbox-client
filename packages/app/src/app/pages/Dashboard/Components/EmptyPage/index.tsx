@@ -7,7 +7,7 @@ const StyledWrapper = styled(Stack)`
   width: calc(100% - ${2 * GUTTER}px);
   max-width: calc(${GRID_MAX_WIDTH}px - 2 * ${GUTTER}px);
   height: 100%;
-  margin: 28px auto 0;
+  margin: 0 auto;
   padding-bottom: 28px;
   flex-direction: column;
   gap: 40px;

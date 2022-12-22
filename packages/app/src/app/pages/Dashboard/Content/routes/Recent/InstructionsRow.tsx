@@ -57,7 +57,7 @@ export const InstructionsRow: React.FC = () => {
   };
 
   return (
-    <Stack direction="vertical" gap={6}>
+    <EmptyPage.StyledGridWrapper>
       <EmptyPage.StyledGridTitle>
         Get started with CodeSandbox
       </EmptyPage.StyledGridTitle>
@@ -84,6 +84,6 @@ export const InstructionsRow: React.FC = () => {
           );
         })}
       </EmptyPage.StyledGrid>
-    </Stack>
+    </EmptyPage.StyledGridWrapper>
   );
 };
