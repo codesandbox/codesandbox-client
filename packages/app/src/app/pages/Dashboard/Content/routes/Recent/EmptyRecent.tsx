@@ -19,7 +19,7 @@ export const EmptyRecent: React.FC = () => {
         marginTop: '28px',
       }}
     >
-      <RecentHeader />
+      <RecentHeader title="Let's start building" />
       <InstructionsRow />
       <TemplatesRow />
       <DocumentationRow />

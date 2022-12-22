@@ -7,7 +7,7 @@ import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { UpgradeBanner } from 'app/pages/Dashboard/Components/UpgradeBanner';
 import React from 'react';
 
-export const RecentHeader: React.FC = () => {
+export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const { activeTeam } = useAppState();
   const actions = useActions();
   const { isFree } = useWorkspaceSubscription();
@@ -28,7 +28,7 @@ export const RecentHeader: React.FC = () => {
           margin: 0,
         }}
       >
-        Let&apos;s start building
+        {title}
       </Text>
       <EmptyPage.StyledGrid>
         <CreateCard
