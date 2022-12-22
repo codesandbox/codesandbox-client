@@ -1990,17 +1990,9 @@ export const getRepositoriesByTeam = async (
       return;
     }
 
-    const accessedRepositories = repositories.filter(r => r.lastAccessedAt);
-    const unaccessedRepositories = repositories.filter(r => !r.lastAccessedAt);
-
-    const orderedRepositories = [
-      ...accessedRepositories.sort(sortByLastAccessed),
-      ...unaccessedRepositories,
-    ];
-
     dashboard.repositoriesByTeamId = {
       ...dashboard.repositoriesByTeamId,
-      [teamId]: orderedRepositories,
+      [teamId]: repositories.sort(sortByLastAccessed),
     };
 
     // If fetchCachedDataFirst was true, the initial call was made (faster), so we can
