@@ -19,18 +19,20 @@ const LinkButton = styled.button`
 `;
 
 export const FreeViewOnlyStripe = () => {
-  const { changeSandboxPrivacyToPublic } = useActions().workspace;
+  const { sandboxPrivacyChanged } = useActions().workspace;
   const { isTeamAdmin } = useWorkspaceAuthorization();
+
+  const changeToPublic = () => {
+    sandboxPrivacyChanged({ privacy: 0, source: 'editor-view-only-stripe' });
+  };
 
   return (
     <MessageStripe>
       <span>
         You are no longer in a <Text weight="bold">PRO account</Text>. This
         sandbox is in view mode only.{' '}
-        <LinkButton onClick={changeSandboxPrivacyToPublic}>
-          Make it public
-        </LinkButton>{' '}
-        or upgrade to <Text weight="bold">PRO</Text>.
+        <LinkButton onClick={changeToPublic}>Make it public</LinkButton> or
+        upgrade to <Text weight="bold">PRO</Text>.
       </span>
       {isTeamAdmin ? (
         <MessageStripe.Action
