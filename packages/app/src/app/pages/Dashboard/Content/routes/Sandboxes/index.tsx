@@ -1,7 +1,10 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
+import track from '@codesandbox/common/lib/utils/analytics';
+import { CreateCard } from '@codesandbox/components';
 import { useAppState, useActions } from 'app/overmind';
+import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { Header } from 'app/pages/Dashboard/Components/Header';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
@@ -10,7 +13,6 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { getPossibleTemplates } from '../../utils';
 import { useFilteredItems } from './useFilteredItems';
 import { RestrictionsBanner } from './RestrictionsBanner';
-import { EmptySandboxes } from './EmptySandboxes';
 
 export const SandboxesPage = () => {
   const [level, setLevel] = React.useState(0);
@@ -90,7 +92,24 @@ export const SandboxesPage = () => {
       {hasMaxPublicSandboxes ? <RestrictionsBanner /> : null}
 
       {isEmpty ? (
-        <EmptySandboxes />
+        <EmptyPage.StyledWrapper>
+          <EmptyPage.StyledGrid>
+            <CreateCard
+              icon="plus"
+              title="New sandbox"
+              onClick={() => {
+                track('Empty State Card - Open create modal', {
+                  codesandbox: 'V1',
+                  event_source: 'UI',
+                  card_type: 'get-started-action',
+                  tab: 'default',
+                });
+
+                actions.openCreateSandboxModal();
+              }}
+            />
+          </EmptyPage.StyledGrid>
+        </EmptyPage.StyledWrapper>
       ) : (
         <VariableGrid
           page={pageType}
