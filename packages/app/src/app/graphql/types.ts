@@ -778,6 +778,22 @@ export type RootMutationType = {
   /** Create a team */
   createTeam: Team;
   deleteAlbum: Scalars['String'];
+  /**
+   * Remove a branch from CodeSandbox
+   *
+   * Does not affect other copies of the same branch related to projects in other teams, and does
+   * not affect the branch in the git provider. The branch VM will be archived, possibly losing
+   * uncommitted work-in-progress.
+   *
+   * Returns the scalar `true` on success, and errors otherwise.
+   *
+   * Example (for branch with short ID `abc123`)
+   *
+   * ```gql
+   * mutation deleteBranch(id: "abc123")
+   * ```
+   */
+  deleteBranch: Scalars['Boolean'];
   /** Delete a collection and all subfolders */
   deleteCollection: Array<Collection>;
   /** Soft delete a comment. Note: all child comments will also be deleted. */
@@ -787,7 +803,7 @@ export type RootMutationType = {
   /** Delete a private registry */
   deletePrivateNpmRegistry: Maybe<PrivateRegistry>;
   /**
-   * Removes a project from CodeSandbox
+   * Remove a project from CodeSandbox
    *
    * Does not affect other copies of the project related to the same repository in other teams, and
    * does not affect the repository in the git provider. Branches related to the project will be
@@ -1065,6 +1081,10 @@ export type RootMutationTypeCreateTeamArgs = {
 
 export type RootMutationTypeDeleteAlbumArgs = {
   id: Scalars['ID'];
+};
+
+export type RootMutationTypeDeleteBranchArgs = {
+  id: Scalars['String'];
 };
 
 export type RootMutationTypeDeleteCollectionArgs = {
@@ -3503,6 +3523,27 @@ export type CuratedAlbumsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
   curatedAlbums: Array<
+    { __typename?: 'Album' } & Pick<Album, 'id' | 'title'> & {
+        sandboxes: Array<
+          { __typename?: 'Sandbox' } & Pick<
+            Sandbox,
+            'forkCount' | 'likeCount'
+          > & {
+              author: Maybe<
+                { __typename?: 'User' } & Pick<User, 'username' | 'avatarUrl'>
+              >;
+            } & SandboxFragmentDashboardFragment
+        >;
+      }
+  >;
+};
+
+export type CuratedAlbumByIdQueryVariables = Exact<{
+  albumId: Scalars['ID'];
+}>;
+
+export type CuratedAlbumByIdQuery = { __typename?: 'RootQueryType' } & {
+  album: Maybe<
     { __typename?: 'Album' } & Pick<Album, 'id' | 'title'> & {
         sandboxes: Array<
           { __typename?: 'Sandbox' } & Pick<

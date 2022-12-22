@@ -11,6 +11,7 @@ import {
   TeamMemberAuthorization,
   CreateOrUpdateNpmRegistryMutationVariables,
   DeleteNpmRegistryMutationVariables,
+  CuratedAlbumByIdQueryVariables,
 } from 'app/graphql/types';
 import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -1847,6 +1848,44 @@ export const getCuratedAlbums = async ({ state, effects }: Context) => {
   } catch (error) {
     effects.notificationToast.error(
       'There was a problem getting curated collections'
+    );
+  }
+};
+
+export const getCuratedAlbumById = async (
+  { state, effects }: Context,
+  params: CuratedAlbumByIdQueryVariables
+) => {
+  const { dashboard } = state;
+  const _curatedAlbumsById = dashboard.curatedAlbumsById ?? {};
+  try {
+    dashboard.curatedAlbumsById = {
+      ..._curatedAlbumsById,
+      [params.albumId]: null,
+    };
+
+    const data = await effects.gql.queries.curatedAlbumById(params);
+
+    if (!data.album) {
+      throw new Error('Unable to find the requested collection');
+    }
+
+    dashboard.curatedAlbumsById = {
+      ..._curatedAlbumsById,
+      [params.albumId]: data.album,
+    };
+  } catch (error) {
+    /**
+     * Adds fake album to the state because we don't differentiate
+     * between error and empty.
+     */
+    dashboard.curatedAlbumsById = {
+      ..._curatedAlbumsById,
+      [params.albumId]: { id: params.albumId, title: '', sandboxes: [] },
+    };
+
+    effects.notificationToast.error(
+      'There was a problem getting the requested collection'
     );
   }
 };

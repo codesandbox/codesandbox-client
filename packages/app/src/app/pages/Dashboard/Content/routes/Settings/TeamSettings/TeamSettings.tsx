@@ -7,7 +7,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import {
   GRID_MAX_WIDTH,
   GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+} from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import {
   Route,
   BrowserRouter,

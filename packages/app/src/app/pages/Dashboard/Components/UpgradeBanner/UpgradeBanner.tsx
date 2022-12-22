@@ -15,8 +15,8 @@ import {
 import { useCreateCheckout, useDismissible } from 'app/hooks';
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
+import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 
 const StyledTitle = styled(Text)`

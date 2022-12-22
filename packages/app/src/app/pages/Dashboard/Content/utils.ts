@@ -63,3 +63,10 @@ export function shuffleSeed(array, inputSeed) {
   }
   return result;
 }
+
+export const appendOnboardingTracking = (url: string): string => {
+  const baseUrl = new URL(url);
+  baseUrl.searchParams.append('utm_source', 'dashboard_onboarding');
+
+  return baseUrl.toString();
+};

@@ -23,7 +23,7 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import {
   GRID_MAX_WIDTH,
   GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid';
+} from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import { CommunitySandbox } from 'app/pages/Dashboard/Components/CommunitySandbox';
 import { Stats } from 'app/pages/Dashboard/Components/CommunitySandbox/CommunitySandboxCard';
 import { AnonymousAvatar } from 'app/pages/Dashboard/Components/CommunitySandbox/AnonymousAvatar';
