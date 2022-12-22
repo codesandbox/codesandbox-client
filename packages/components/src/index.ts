@@ -13,6 +13,7 @@ export * from './components/ExternalCard';
 export * from './components/Icon';
 export * from './components/IconButton';
 export * from './components/Input';
+export * from './components/Loading';
 export * from './components/Label';
 export * from './components/Link';
 export * from './components/Radio';
