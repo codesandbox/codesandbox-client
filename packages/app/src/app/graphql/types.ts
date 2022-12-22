@@ -1230,6 +1230,53 @@ export type RootQueryType = {
   __typename?: 'RootQueryType';
   album: Maybe<Album>;
   albums: Array<Album>;
+  /**
+   * Get a single branch by its short ID.
+   *
+   * Returns a "not found" error if the branch does not exist or is inaccessible by the current user.
+   * Anonymous users may use this endpoint for branches that exist on read-only projects (see
+   * `mutation importReadOnlyProject`).
+   *
+   * Branches represent real or potential git branches on a particular team's project. Branch short
+   * IDs are short alphanumeric strings that point to a particular repository + team + branch name.
+   * Remember that a user may have access to the same branch on multiple teams' projects.
+   *
+   * To look up a branch by repository + team + branch name, see `query branchByName`.
+   *
+   * Example (for branch with short ID `abc123`):
+   *
+   * ```gql
+   * query branchById(id: "abc123") {
+   *   name
+   * }
+   * ```
+   */
+  branchById: Branch;
+  /**
+   * Get a single branch by its repository, team, and name.
+   *
+   * Returns a "not found" error if the branch does not exist or is inaccessible by the current user.
+   * Anonymous users may use this endpoint for branches that exist on read-only projects (see
+   * `mutation importReadOnlyProject`).
+   *
+   * Branches represent real or potential git branches on a particular team's project. Remember that
+   * a user may have access to the same branch on multiple teams' projects.
+   *
+   * To look up a branch by its short ID, see `query branchById`.
+   *
+   * Example (for `codesandbox/test-repo` branch `test-branch`):
+   *
+   * ```gql
+   * query branchById(
+   *   provider: GITHUB,
+   *   owner: "codesandbox",
+   *   name: "test-repo",
+   *   branch: "test-branch",
+   *   team: "987b6fcd-2a3b-41fe-b1e6-ac33565824b9"
+   * )
+   * ```
+   */
+  branchByName: Branch;
   curatedAlbums: Array<Album>;
   /** @deprecated Field no longer supported */
   featureFlags: Array<FeatureFlag>;
@@ -1298,6 +1345,18 @@ export type RootQueryTypeAlbumArgs = {
 
 export type RootQueryTypeAlbumsArgs = {
   username: Scalars['String'];
+};
+
+export type RootQueryTypeBranchByIdArgs = {
+  id: Scalars['String'];
+};
+
+export type RootQueryTypeBranchByNameArgs = {
+  branch: Scalars['String'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  provider: GitProvider;
+  team: Maybe<Scalars['ID']>;
 };
 
 export type RootQueryTypeGitArgs = {
@@ -3327,6 +3386,27 @@ export type CuratedAlbumsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CuratedAlbumsQuery = { __typename?: 'RootQueryType' } & {
   curatedAlbums: Array<
+    { __typename?: 'Album' } & Pick<Album, 'id' | 'title'> & {
+        sandboxes: Array<
+          { __typename?: 'Sandbox' } & Pick<
+            Sandbox,
+            'forkCount' | 'likeCount'
+          > & {
+              author: Maybe<
+                { __typename?: 'User' } & Pick<User, 'username' | 'avatarUrl'>
+              >;
+            } & SandboxFragmentDashboardFragment
+        >;
+      }
+  >;
+};
+
+export type CuratedAlbumByIdQueryVariables = Exact<{
+  albumId: Scalars['ID'];
+}>;
+
+export type CuratedAlbumByIdQuery = { __typename?: 'RootQueryType' } & {
+  album: Maybe<
     { __typename?: 'Album' } & Pick<Album, 'id' | 'title'> & {
         sandboxes: Array<
           { __typename?: 'Sandbox' } & Pick<

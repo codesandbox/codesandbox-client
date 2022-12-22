@@ -1245,3 +1245,37 @@ export const start = props => (
     />
   </Element>
 );
+
+export const addMember = props => (
+  <Element
+    as="svg"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fill="currentColor"
+      fillRule="evenodd"
+      d="M8.886 7.777a4.069 4.069 0 1 0-3.348 0A7.215 7.215 0 0 0 0 14.794a.555.555 0 0 0 1.11 0 6.103 6.103 0 0 1 9.963-4.726 3.656 3.656 0 0 1 1.107-.502 7.197 7.197 0 0 0-3.294-1.789Zm1.285-3.709a2.959 2.959 0 1 1-5.918 0 2.959 2.959 0 0 1 5.918 0Zm2.58 7.15a.573.573 0 1 1 1.145 0v1.532h1.531a.573.573 0 1 1 0 1.146h-1.531v1.531a.573.573 0 1 1-1.146 0v-1.531h-1.532a.573.573 0 1 1 0-1.146h1.532v-1.532Z"
+      clipRule="evenodd"
+    />
+  </Element>
+);
+
+export const team = props => (
+  <Element
+    as="svg"
+    fill="none"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fill="currentColor"
+      fillRule="evenodd"
+      d="M2.2 12a1.8 1.8 0 1 0 3.6 0 1.8 1.8 0 0 0-3.6 0ZM4 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM10.2 12a1.8 1.8 0 1 0 3.6 0 1.8 1.8 0 0 0-3.6 0ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM6.2 4a1.8 1.8 0 1 0 3.6 0 1.8 1.8 0 0 0-3.6 0ZM8 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"
+      clipRule="evenodd"
+    />
+  </Element>
+);

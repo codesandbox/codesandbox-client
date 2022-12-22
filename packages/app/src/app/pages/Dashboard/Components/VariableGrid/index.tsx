@@ -11,7 +11,6 @@ import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
 import { SyncedSandbox } from '../SyncedSandbox';
 import { CommunitySandbox } from '../CommunitySandbox';
-import { EmptyScreen } from '../EmptyScreen';
 import {
   DashboardGridItem,
   DashboardSandbox,
@@ -38,16 +37,16 @@ import { Repository } from '../Repository';
 import { NewBranchCard } from '../Branch/NewBranch';
 import { ImportRepositoryCard } from '../Repository/ImportRepository';
 import { DefaultSkeleton, SolidSkeleton } from '../Skeleton';
-
-export const GRID_MAX_WIDTH = 3840;
-const MAX_COLUMN_COUNT = 10;
-export const GUTTER = 16;
-const ITEM_MIN_WIDTH = 260;
-const ITEM_HEIGHT_GRID = 240;
-const ITEM_HEIGHT_LIST = 64;
-const HEADER_HEIGHT = 64;
-// const GRID_VERTICAL_OFFSET = 120;
-const ITEM_VERTICAL_OFFSET = 32;
+import {
+  GRID_MAX_WIDTH,
+  MAX_COLUMN_COUNT,
+  GUTTER,
+  ITEM_MIN_WIDTH,
+  ITEM_HEIGHT_GRID,
+  ITEM_HEIGHT_LIST,
+  HEADER_HEIGHT,
+  ITEM_VERTICAL_OFFSET,
+} from './constants';
 
 type WindowItemProps = {
   data: {
@@ -233,7 +232,6 @@ const Item = React.memo(
           width: eachItemWidth,
           left: leftOffset,
           height: (style.height as number) - GUTTER,
-          ...margins,
         }}
       >
         <Component item={item} page={page} isScrolling={isScrolling} />
@@ -335,9 +333,6 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
       }
     };
   });
-
-  if (items.length === 0)
-    return <EmptyScreen page={page} collectionId={collectionId} />;
 
   return (
     <Element style={{ width: '100%', height: '100%' }}>

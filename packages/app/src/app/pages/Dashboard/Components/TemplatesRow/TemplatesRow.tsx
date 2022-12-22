@@ -1,29 +1,50 @@
 import React from 'react';
-import css from '@styled-system/css';
-import { Icon, SkeletonText, Stack, Text } from '@codesandbox/components';
+import { CreateCard, SkeletonText, Stack } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { useOfficialTemplates } from 'app/components/CreateSandbox/useOfficialTemplates';
 import { TemplateCard } from 'app/components/CreateSandbox/TemplateCard';
-import { TemplateButton } from 'app/components/CreateSandbox/elements';
-import { GitHubIcon } from 'app/components/CreateSandbox/Icons';
 import { useActions, useAppState } from 'app/overmind';
 import { TemplateFragment } from 'app/graphql/types';
 import track from '@codesandbox/common/lib/utils/analytics';
-import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
-import { GUTTER } from '../VariableGrid';
-import { TemplatesGrid } from './elements';
+import { EmptyPage } from '../EmptyPage';
+
+const TEMPLATE_IDS = [
+  'k8dsq1', // NodeJS (cloud)
+  'vanilla', // Vanilla JS (browser)
+  'uo1h0', // NextJS (cloud)
+  '9qputt', // React + Vite (browser)
+];
 
 export const TemplatesRow: React.FC = () => {
   const officialTemplates = useOfficialTemplates();
   const actions = useActions();
   const { dashboard } = useAppState();
-  const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
+
+  const filteredTemplates = React.useMemo(() => {
+    return officialTemplates.state === 'ready'
+      ? officialTemplates.templates.filter(t =>
+          TEMPLATE_IDS.includes(t.sandbox.id)
+        )
+      : undefined;
+  }, [officialTemplates]);
+
+  const handleTemplateTracking = (id: string, action: 'open' | 'fork') => {
+    track('Empty State Card - Sandbox template', {
+      codesandbox: 'V1',
+      event_source: 'UI',
+      card_type: `sbx-template-${id}`,
+      action,
+    });
+  };
 
   const handleOpenTemplate = (template: TemplateFragment) => {
     const { sandbox } = template;
     const url = sandboxUrl(sandbox);
+
+    handleTemplateTracking(sandbox.id, 'open');
+
     window.open(url, '_blank');
   };
 
@@ -31,10 +52,7 @@ export const TemplatesRow: React.FC = () => {
     const { sandbox } = template;
     const collection = dashboard.allCollections?.find(c => c.path === '/');
 
-    track('Recent - open template from empty state', {
-      codesandbox: 'V1',
-      event_source: 'UI',
-    });
+    handleTemplateTracking(sandbox.id, 'fork');
 
     actions.editor.forkExternalSandbox({
       sandboxId: sandbox.id,
@@ -43,110 +61,59 @@ export const TemplatesRow: React.FC = () => {
         collectionId: collection?.id,
       },
     });
-
-    actions.modals.newSandboxModal.close();
   };
 
   return (
-    <Stack
-      as="section"
-      css={css({
-        width: `calc(100% - ${2 * GUTTER}px)`,
-        marginX: 'auto',
-      })}
-      direction="vertical"
-      gap={4}
-    >
-      <Text
-        as="h2"
-        css={css({
-          margin: 0,
-        })}
-        weight="400"
-        size={4}
-      >
-        Start from a template or import from GitHub
-      </Text>
-      <TemplatesGrid>
-        {officialTemplates.state === 'loading' &&
-          new Array(5).fill(undefined).map((_, i) => (
-            <SkeletonText
-              // eslint-disable-next-line react/no-array-index-key
-              key={`templates-skeleton-${i}`}
-              css={css({
-                width: '100%',
-                height: '116px',
-              })}
-            />
-          ))}
-
-        {officialTemplates.state === 'ready' && (
-          <>
-            {officialTemplates.templates
-              .slice(0, 3) // TODO: define which templates to show
-              .map(template => (
+    <EmptyPage.StyledGridWrapper>
+      <EmptyPage.StyledGridTitle as="h2">
+        Start from a template
+      </EmptyPage.StyledGridTitle>
+      <EmptyPage.StyledGrid as="ul">
+        {officialTemplates.state === 'loading'
+          ? TEMPLATE_IDS.map(templateId => (
+              <SkeletonText
+                key={templateId}
+                as="li"
+                css={{
+                  width: '100%',
+                  height: '100%',
+                }}
+              />
+            ))
+          : null}
+        {filteredTemplates && filteredTemplates.length > 0
+          ? filteredTemplates.map(template => (
+              <Stack as="li" key={template.id}>
                 <TemplateCard
                   key={template.id}
-                  disabled={isFree && hasMaxPublicSandboxes}
+                  disabled={hasMaxPublicSandboxes}
+                  padding={24}
                   template={template}
                   onOpenTemplate={handleOpenTemplate}
                   onSelectTemplate={handleSelectTemplate}
                 />
-              ))}
-            <TemplateButton
-              onClick={() => {
-                track('Recent - import repo from empty state', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
-                actions.openCreateSandboxModal({ initialTab: 'import' });
-              }}
-            >
-              <Stack
-                css={{
-                  height: '100%',
-                }}
-                direction="vertical"
-                gap={4}
-              >
-                <GitHubIcon size={32} />
-                <Stack
-                  align="center"
-                  css={{
-                    flex: 1,
-                  }}
-                >
-                  <Text
-                    css={{
-                      fontSize: '14px',
-                      fontWeight: 500,
-                      textOverflow: 'ellipsis',
-                      overflow: 'hidden',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    Open from GitHub
-                  </Text>
-                </Stack>
               </Stack>
-            </TemplateButton>
-            <TemplateButton
-              aria-label="Open create sandbox modal"
-              onClick={() => {
-                track('Recent - open import modal from empty state', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
-                actions.openCreateSandboxModal();
-              }}
-            >
-              <Stack align="center" justify="center">
-                <Icon name="plus" size={32} />
-              </Stack>
-            </TemplateButton>
-          </>
-        )}
-      </TemplatesGrid>
-    </Stack>
+            ))
+          : null}
+
+        {filteredTemplates?.length === 0 ||
+        officialTemplates.state === 'error' ? (
+          <CreateCard
+            icon="plus"
+            title="New from a template"
+            onClick={() => {
+              track('Empty State Card - Open create modal', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+                card_type: 'get-started-action',
+                tab: 'default',
+              });
+
+              actions.openCreateSandboxModal();
+            }}
+          />
+        ) : null}
+      </EmptyPage.StyledGrid>
+    </EmptyPage.StyledGridWrapper>
   );
 };
