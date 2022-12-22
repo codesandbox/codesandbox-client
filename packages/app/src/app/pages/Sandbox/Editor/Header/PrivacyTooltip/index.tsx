@@ -1,11 +1,12 @@
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import track from '@codesandbox/common/lib/utils/analytics';
 import theme from '@codesandbox/components/lib/design-language/theme';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState, useActions } from 'app/overmind';
 import React, { FunctionComponent } from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import { Container, Link, Select, Text } from './elements';
+import { Container, Link, Select, Text, Button } from './elements';
 import { Private, Public, Unlisted } from './icons';
 
 export const PrivacyTooltip: FunctionComponent = () => {
@@ -14,8 +15,8 @@ export const PrivacyTooltip: FunctionComponent = () => {
     editor: {
       currentSandbox: { owned, privacy },
     },
-    activeTeamInfo,
   } = useAppState();
+  const { isPro, isFree } = useWorkspaceSubscription();
 
   const config = {
     0: {
@@ -43,13 +44,12 @@ export const PrivacyTooltip: FunctionComponent = () => {
   const { description, Icon } = config[privacy];
 
   const Owned = () =>
-    activeTeamInfo?.subscription ? (
+    isPro ? (
       <>Adjust privacy settings.</>
     ) : (
       <Text color="grays.300">
-        You can change privacy of a sandbox as a Pro.
-        <br />
-        <Link href="/pro">Upgrade to Pro</Link>
+        You can only change the privacy of a sandbox to public.{' '}
+        <Link href="/pro">Upgrade to Pro</Link> for more options.
       </Text>
     );
 
@@ -57,26 +57,44 @@ export const PrivacyTooltip: FunctionComponent = () => {
     <ThemeProvider theme={theme}>
       <Container>
         <Tooltip
+          // visible // 🚧 DEBUG
           content={
             <>
               <Text size="3" marginBottom={4}>
                 {owned ? <Owned /> : 'The author has set privacy to'}
               </Text>
 
+              <Text
+                as="label"
+                htmlFor="privacy-select"
+                size="3"
+                color="grays.300"
+                css={{ display: 'block', marginBottom: '4px' }}
+              >
+                Privacy
+              </Text>
+
               <Select
-                disabled={!activeTeamInfo?.subscription || !owned}
+                id="privacy-select"
+                disabled={!owned}
                 marginBottom={2}
                 onChange={onChange}
                 value={privacy}
               >
                 <option value={0}>Public</option>
 
-                <option value={1}>Unlisted</option>
+                <option value={1} disabled={isFree}>
+                  Unlisted
+                </option>
 
-                <option value={2}>Private</option>
+                <option value={2} disabled={isFree}>
+                  Private
+                </option>
               </Select>
 
-              <Text size="2" color="grays.300">
+              {isFree ? <Button type="button">Chance privacy</Button> : null}
+
+              <Text css={{ paddingTop: '12px' }} size="2" color="grays.300">
                 {description}
               </Text>
             </>

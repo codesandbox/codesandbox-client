@@ -86,3 +86,16 @@ export const Select = (styled(Element).attrs({ as: 'select' })(({ theme }) =>
   any,
   StyledComponentInnerOtherProps<typeof Element>
 >;
+
+// Wasn't able to use the Button from the components package due to missing
+// theme values.
+export const Button = styled.button`
+  border: none;
+  font-family: Inter, sans-serif;
+  background-color: #343434;
+  color: #ffffff;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 2px;
+`;
