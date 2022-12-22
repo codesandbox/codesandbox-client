@@ -240,6 +240,5 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
         </Stack>
       </Element>
     </Banner>
-    // </Element>
   );
 };
