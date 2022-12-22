@@ -239,6 +239,7 @@ export const branchFragment = gql`
     name
     contribution
     lastAccessedAt
+    upstream
     project {
       repository {
         ... on GitHubRepository {

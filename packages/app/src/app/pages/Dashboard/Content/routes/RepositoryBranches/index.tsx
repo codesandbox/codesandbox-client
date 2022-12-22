@@ -48,12 +48,23 @@ export const RepositoryBranchesPage = () => {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
 
-    const branchItems: DashboardGridItem[] = repositoryProject.branches.map(
-      branch => ({
-        type: 'branch',
-        branch,
-      })
+    const accessedBranches = repositoryProject.branches.filter(
+      b => b.lastAccessedAt
     );
+    const unaccessedBranches = repositoryProject.branches.filter(
+      b => !b.lastAccessedAt
+    );
+    const orderedBranches = [
+      ...accessedBranches.sort((a, b) =>
+        a.lastAccessedAt > b.lastAccessedAt ? -1 : 1
+      ),
+      ...unaccessedBranches,
+    ];
+
+    const branchItems: DashboardGridItem[] = orderedBranches.map(branch => ({
+      type: 'branch',
+      branch,
+    }));
 
     if (viewMode === 'grid') {
       branchItems.unshift({
