@@ -36,7 +36,7 @@ export const TeamMembers: React.FC<{
   hideSkip?: boolean;
   onComplete: () => void;
 }> = ({ hideSkip, onComplete }) => {
-  const { activeTeamInfo } = useAppState();
+  const { activeTeamInfo, activeWorkspaceAuthorization } = useAppState();
   const actions = useActions();
   const { gql } = useEffects();
   const { copyToClipboard } = useEffects().browser;
@@ -114,7 +114,10 @@ export const TeamMembers: React.FC<{
         await gql.mutations.inviteToTeamViaEmail({
           teamId: activeTeamInfo.id,
           email: addressesString,
-          authorization: TeamMemberAuthorization.Write,
+          authorization:
+            activeWorkspaceAuthorization === TeamMemberAuthorization.Admin
+              ? TeamMemberAuthorization.Write
+              : TeamMemberAuthorization.Read,
         });
         setInviteLoading(false);
 
