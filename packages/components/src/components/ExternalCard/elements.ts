@@ -8,10 +8,10 @@ export const StyledWrapper = styled(Stack)<{ thumbnail: string }>`
   overflow: hidden;
   width: 100%;
   height: 100%;
-  background-color: #161616;
+  background-color: #1d1d1d;
   outline: none;
   border-radius: 4px;
-  border: 1px solid #161616;
+  border: 1px solid #1d1d1d;
   transition: background ease-in-out;
   transition-duration: ${props => props.theme.speeds[2]};
 

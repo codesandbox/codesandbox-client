@@ -30,7 +30,7 @@ export const CreateCard: React.FC<CreateCardProps> = ({
         border: '1px solid',
         borderColor: 'transparent',
         borderRadius: '4px',
-        backgroundColor: '#161616',
+        backgroundColor: '#1D1D1D',
         outline: 'none',
         textDecoration: 'none',
         transition: 'background ease-in-out',
