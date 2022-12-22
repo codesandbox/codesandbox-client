@@ -347,6 +347,41 @@ export const sandboxPrivacyChanged = async (
   }
 };
 
+export const changeSandboxPrivacyToPublic = async ({
+  actions,
+  effects,
+  state,
+}: Context) => {
+  effects.analytics.track('Sandbox - Update Privacy to public', {
+    source: 'editor',
+  });
+
+  try {
+    const sandboxId = state.editor.currentSandbox.id;
+
+    await effects.gql.mutations.changePrivacy({
+      sandboxIds: [sandboxId],
+      privacy: 0,
+    });
+
+    // Change new privacy in state
+    state.editor.currentSandbox.privacy = 0;
+    // Update editing restriction
+    state.editor.currentSandbox.freePlanEditingRestricted = false;
+
+    if (getTemplate(state.editor.currentSandbox.template).isServer) {
+      // Privacy changed from private to unlisted/public or other way around, restart
+      // the sandbox to notify containers
+      actions.server.restartContainer();
+    }
+  } catch (error) {
+    actions.internal.handleError({
+      message: "We weren't able to update the sandbox privacy",
+      error,
+    });
+  }
+};
+
 export const setWorkspaceItem = (
   { state, effects }: Context,
   {
