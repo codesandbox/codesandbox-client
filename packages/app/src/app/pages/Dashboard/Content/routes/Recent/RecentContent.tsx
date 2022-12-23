@@ -77,13 +77,21 @@ export const RecentContent: React.FC<RecentContentProps> = ({
           page={page}
           items={recentItems}
         >
-          <StyledItemsWrapper viewMode={viewMode}>
+          <StyledItemsWrapper
+            as="ul"
+            css={{
+              listStyleType: 'none',
+              margin: 0,
+              padding: 0,
+            }}
+            viewMode={viewMode}
+          >
             {recentItems.map(item => {
               const itemId =
                 item.type === 'branch' ? item.branch.id : item.sandbox.id;
 
               return (
-                <>
+                <Stack as="li" css={{ '> *': { width: '100%' } }} key={itemId}>
                   {item.type === 'sandbox' && (
                     <Sandbox
                       key={itemId}
@@ -100,7 +108,7 @@ export const RecentContent: React.FC<RecentContentProps> = ({
                       type="branch"
                     />
                   )}
-                </>
+                </Stack>
               );
             })}
           </StyledItemsWrapper>
