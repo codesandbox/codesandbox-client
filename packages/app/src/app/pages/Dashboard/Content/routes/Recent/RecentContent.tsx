@@ -23,17 +23,15 @@ import { RecentHeader } from './RecentHeader';
 
 const StyledWrapper = styled(Stack)`
   width: calc(100% - ${2 * GUTTER}px);
-  max-width: calc(${GRID_MAX_WIDTH}px - 2 * ${GUTTER}px);
+  max-width: ${GRID_MAX_WIDTH}px;
+  padding: 0 ${GUTTER}px 64px;
   overflow: auto;
   margin: 28px auto 0;
-  padding-bottom: 64px;
   flex-direction: column;
   gap: 48px;
 `;
 
 const StyledItemsWrapper = styled(Element)<{ viewMode: 'grid' | 'list' }>`
-  margin: 0;
-  padding: 0;
   display: grid;
 
   ${props =>
