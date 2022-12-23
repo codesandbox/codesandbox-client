@@ -93,20 +93,10 @@ export const RecentContent: React.FC<RecentContentProps> = ({
               return (
                 <Stack as="li" css={{ '> *': { width: '100%' } }} key={itemId}>
                   {item.type === 'sandbox' && (
-                    <Sandbox
-                      key={itemId}
-                      isScrolling={false}
-                      item={item}
-                      page={page}
-                    />
+                    <Sandbox isScrolling={false} item={item} page={page} />
                   )}
                   {item.type === 'branch' && (
-                    <Branch
-                      key={itemId}
-                      branch={item.branch}
-                      page={page}
-                      type="branch"
-                    />
+                    <Branch branch={item.branch} page={page} type="branch" />
                   )}
                 </Stack>
               );
