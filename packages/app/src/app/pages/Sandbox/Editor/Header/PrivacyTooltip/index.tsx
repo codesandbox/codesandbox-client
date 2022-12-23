@@ -3,7 +3,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import theme from '@codesandbox/components/lib/design-language/theme';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { useAppState, useActions } from 'app/overmind';
-import React, { FunctionComponent } from 'react';
+import React, { ChangeEvent, FunctionComponent, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import { Container, Link, Select, Text, Button } from './elements';
@@ -17,6 +17,7 @@ export const PrivacyTooltip: FunctionComponent = () => {
     },
   } = useAppState();
   const { isPro, isFree } = useWorkspaceSubscription();
+  const [privacyValue, setPrivacyValue] = useState<0 | 1 | 2>(privacy);
 
   const config = {
     0: {
@@ -34,13 +35,20 @@ export const PrivacyTooltip: FunctionComponent = () => {
     },
   };
 
-  const onChange = event => {
-    const value = event.target.value;
-    sandboxPrivacyChanged({
-      privacy: Number(value) as 0 | 1 | 2,
-      source: 'tooltip',
-    });
+  const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = Number(event.target.value) as 0 | 1 | 2;
+
+    if (isPro) {
+      sandboxPrivacyChanged({ privacy: value, source: 'tooltip' });
+    }
+
+    setPrivacyValue(value);
   };
+
+  const handlePrivacyChange = () => {
+    sandboxPrivacyChanged({ privacy: privacyValue, source: 'tooltip' });
+  };
+
   const { description, Icon } = config[privacy];
 
   const Owned = () =>
@@ -92,7 +100,12 @@ export const PrivacyTooltip: FunctionComponent = () => {
                 </option>
               </Select>
 
-              {isFree ? <Button type="button">Chance privacy</Button> : null}
+              {/* TODO form submit */}
+              {isFree ? (
+                <Button type="button" onClick={handlePrivacyChange}>
+                  Chance privacy
+                </Button>
+              ) : null}
 
               <Text css={{ paddingTop: '12px' }} size="2" color="grays.300">
                 {description}
