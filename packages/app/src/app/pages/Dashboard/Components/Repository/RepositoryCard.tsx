@@ -32,7 +32,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
             backgroundColor: '#252525',
           },
           ':has(button:hover)': {
-            backgroundColor: 'card.background',
+            backgroundColor: '#1D1D1D',
           },
           height: '100%',
           display: 'flex',
@@ -51,6 +51,10 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               {repository.owner}
             </Text>
             <IconButton
+              css={{
+                marginRight: '-4px',
+                zIndex: 1,
+              }} /* Align icon to top-right corner */
               variant="square"
               name="more"
               size={16}
