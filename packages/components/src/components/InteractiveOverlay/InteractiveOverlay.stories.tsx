@@ -32,7 +32,9 @@ export const AsButton = () => (
   <Element css={{ padding: '20px' }}>
     <InteractiveOverlay>
       <Card>
-        <InteractiveOverlay.Item as="button">hi there</InteractiveOverlay.Item>
+        <InteractiveOverlay.Item as="button">
+          Interactive item
+        </InteractiveOverlay.Item>
         <div>other content</div>
         <DummyAnchor />
         <DummyButton />
@@ -46,12 +48,42 @@ export const AsAnchor = () => (
     <InteractiveOverlay>
       <Card>
         <InteractiveOverlay.Item as="a" href="#">
-          hi there
+          Interactive item
         </InteractiveOverlay.Item>
         <div>other content</div>
         <DummyAnchor />
         <DummyButton />
       </Card>
     </InteractiveOverlay>
+  </Element>
+);
+
+export const WrapperElement = () => (
+  <Element css={{ padding: '20px' }}>
+    <Element paddingBottom={4}>Without wrapper element:</Element>
+    <div>
+      <span>Next to the overlay </span>
+      <InteractiveOverlay>
+        <span>
+          <InteractiveOverlay.Item as="a" href="#">
+            Interactive item
+          </InteractiveOverlay.Item>
+        </span>
+      </InteractiveOverlay>
+    </div>
+
+    <Element paddingBottom={8} />
+
+    <Element paddingBottom={4}>With wrapper element:</Element>
+    <div>
+      <span>Above to the overlay </span>
+      <InteractiveOverlay isElement>
+        <span>
+          <InteractiveOverlay.Item as="a" href="#">
+            Interactive item
+          </InteractiveOverlay.Item>
+        </span>
+      </InteractiveOverlay>
+    </div>
   </Element>
 );

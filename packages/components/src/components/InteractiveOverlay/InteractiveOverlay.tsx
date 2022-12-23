@@ -119,8 +119,9 @@ const Wrapper = styled(
 // with extending `styled` component with `.Item`.
 export const InteractiveOverlay = ({
   children,
-}: Pick<WrapperProps, 'children'>) => {
-  return <Wrapper>{children}</Wrapper>;
+  isElement,
+}: Pick<WrapperProps, 'children' | 'isElement'>) => {
+  return <Wrapper isElement={isElement}>{children}</Wrapper>;
 };
 
 InteractiveOverlay.Item = Item;
