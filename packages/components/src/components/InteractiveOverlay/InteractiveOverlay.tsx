@@ -1,9 +1,7 @@
 import React, { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
-import { Element } from '../Element';
-
-const StyledItem = styled(Element)`
+const StyledItem = styled.a`
   // Reset button styles
   // The actual styling of the element should happen in the children
   border: none;
@@ -16,7 +14,7 @@ const StyledItem = styled(Element)`
   color: inherit;
 
   &::before {
-    // todo: border-radius;
+    // TODO: border-radius;
 
     content: '';
     position: absolute;
@@ -32,28 +30,11 @@ const StyledItem = styled(Element)`
 
     &::before {
       outline: #ac9cff solid 2px;
+      outline-offset: -2px;
     }
   }
 
-  // Hover styles should be part of the Overlay children?
-`;
-
-/**
- * The `StyledOverlay` is used to wrap content inside a clickable (button or anchor) area while ensuring
- * semantic html.
- *
- * Inspired by the Chakra LinkOverlay: https://chakra-ui.com/docs/navigation/link-overlay
- * More information on nested links: https://www.sarasoueidan.com/blog/nested-links
- */
-const StyledOverlay = styled.div`
-  position: relative;
-
-  // Elevate the anchors with href and buttons (except StyledItem) up
-  & a[href]:not(${StyledItem}),
-  button:not(${StyledItem}) {
-    position: relative;
-    z-index: 1;
-  }
+  // Hover styles should be part of the wrapped children
 `;
 
 type ItemElementProps =
@@ -79,40 +60,67 @@ const Item = ({ children, as, ...restProps }: ItemProps) => {
   );
 };
 
-// TODO: Add property to conditionally render div around children
-type OverlayProps = {
+type WrapperProps = {
   children: JSX.Element;
+  isElement?: boolean;
+
+  // className from styled function
+  className?: never;
 };
 
-const Overlay = ({ children }: OverlayProps) => {
-  if (React.Children.count(children) > 1) {
-    throw new Error('The Overlay component can only contain one child.');
-  }
-
-  // eslint-disable-next-line consistent-return
-  const augmentedChildren = React.Children.map(children, child => {
-    if (React.isValidElement(child)) {
-      // TODO: fix ts-ignore "Property 'className' does not exist on type 'unknown'.""
-      // @ts-ignore
-      const newClassName = `${child.props.className} ${StyledOverlay}`;
-
-      // TODO: fix ts-ignore "Property 'className' does not exist on type 'unknown'."
-      // @ts-ignore
-      return React.cloneElement(child, { className: newClassName });
+/**
+ * The styled `Wrapper` is used to wrap content inside a clickable (button or anchor) area while ensuring
+ * semantic html.
+ *
+ * Inspired by the Chakra LinkOverlay: https://chakra-ui.com/docs/navigation/link-overlay
+ * More information on nested links: https://www.sarasoueidan.com/blog/nested-links
+ */
+const Wrapper = styled(
+  ({
+    children,
+    isElement = false,
+    className: styledClassName,
+  }: WrapperProps) => {
+    if (React.Children.count(children) > 1) {
+      throw new Error('The Wrapper component can only contain one child.');
     }
-  });
 
-  if (augmentedChildren) {
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <>{augmentedChildren}</>;
+    if (!isElement) {
+      const augmentedChildren = React.Children.map(children, child => {
+        if (React.isValidElement(child)) {
+          // TODO: fix ts-ignore "Property 'className' does not exist on type 'unknown'."
+          // @ts-ignore
+          return React.cloneElement(child, { className: styledClassName });
+        }
+
+        return child;
+      });
+
+      if (augmentedChildren.length) {
+        // eslint-disable-next-line react/jsx-no-useless-fragment
+        return <>{augmentedChildren}</>;
+      }
+    }
+
+    return <div className={styledClassName}>{children}</div>;
   }
+)`
+  position: relative;
 
-  return <StyledOverlay>{children}</StyledOverlay>;
-};
+  // Elevate the anchors with href and buttons (except StyledItem) up
+  & a[href]:not(${StyledItem}),
+  button:not(${StyledItem}) {
+    position: relative;
+    z-index: 1;
+  }
+`;
 
-// TODO: we might need another prop type because it's a compound / dot notation component?
-export const InteractiveOverlay = ({ children }: OverlayProps) => {
-  return <Overlay>{children}</Overlay>;
+// Wrapper around Wrapper to ensure compound component works. There seems to be an issue
+// with extending `styled` component with `.Item`.
+export const InteractiveOverlay = ({
+  children,
+}: Pick<WrapperProps, 'children'>) => {
+  return <Wrapper>{children}</Wrapper>;
 };
 
 InteractiveOverlay.Item = Item;
