@@ -16,7 +16,7 @@ import {
 import {
   getDecoratedCollection,
   getProjectUniqueKey,
-  sortByNameAscending,
+  sortByLastAccessed,
 } from './utils';
 import { OrderBy, PageTypes, sandboxesTypes } from './types';
 import * as internalActions from './internalActions';
@@ -1992,7 +1992,7 @@ export const getRepositoriesByTeam = async (
 
     dashboard.repositoriesByTeamId = {
       ...dashboard.repositoriesByTeamId,
-      [teamId]: repositories.sort(sortByNameAscending),
+      [teamId]: repositories.sort(sortByLastAccessed),
     };
 
     // If fetchCachedDataFirst was true, the initial call was made (faster), so we can

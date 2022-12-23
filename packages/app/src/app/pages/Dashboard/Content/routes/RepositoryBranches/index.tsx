@@ -9,7 +9,10 @@ import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import { Element } from '@codesandbox/components';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { PrivateRepoFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
-import { getProjectUniqueKey } from 'app/overmind/namespaces/dashboard/utils';
+import {
+  getProjectUniqueKey,
+  sortByLastAccessed,
+} from 'app/overmind/namespaces/dashboard/utils';
 
 export const RepositoryBranchesPage = () => {
   const params = useParams<{ path: string }>();
@@ -48,12 +51,13 @@ export const RepositoryBranchesPage = () => {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
 
-    const branchItems: DashboardGridItem[] = repositoryProject.branches.map(
-      branch => ({
-        type: 'branch',
-        branch,
-      })
-    );
+    const branches = [...repositoryProject.branches];
+    const orderedBranches = branches.sort(sortByLastAccessed);
+
+    const branchItems: DashboardGridItem[] = orderedBranches.map(branch => ({
+      type: 'branch',
+      branch,
+    }));
 
     if (viewMode === 'grid') {
       branchItems.unshift({
