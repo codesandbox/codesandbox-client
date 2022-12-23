@@ -1,7 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { css } from '@styled-system/css';
-import { Icon, IconButton, Stack, Text, Badge } from '@codesandbox/components';
+import {
+  Card,
+  Icon,
+  IconButton,
+  Stack,
+  Text,
+  Badge,
+  InteractiveOverlay,
+} from '@codesandbox/components';
 import { RepositoryProps } from './types';
 
 export const RepositoryCard: React.FC<RepositoryProps> = ({
@@ -14,50 +21,31 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
   ...props
 }) => {
   return (
-    <Stack
-      as={Link}
-      aria-label={labels.repository}
-      css={css({
-        cursor: 'pointer',
-        overflow: 'hidden',
-        height: '100%',
-        width: '100%',
-        padding: '24px',
-        borderRadius: '4px',
-        border: '1px solid',
-        borderColor: selected ? 'focusBorder' : 'transparent',
-        backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
-        outline: 'none',
-        opacity: isBeingRemoved ? 0.5 : 1,
-        pointerEvents: isBeingRemoved ? 'none' : 'all',
-        transition: 'background ease-in-out, opacity ease-in-out',
-        transitionDuration: theme => theme.speeds[2],
-        textDecoration: 'none',
-        ':hover': {
-          backgroundColor: 'card.backgroundHover',
-        },
-        ':has(button:hover)': {
-          backgroundColor: 'card.background',
-        },
-        ':focus-visible': {
-          borderColor: 'focusBorder',
-        },
-      })}
-      direction="vertical"
-      to={isBeingRemoved ? undefined : repository.url}
-      onContextMenu={onContextMenu}
-      {...props}
-    >
-      <Stack
-        direction="vertical"
-        justify="space-between"
-        css={{ height: '100%' }}
+    <InteractiveOverlay>
+      <Card
+        css={{
+          opacity: isBeingRemoved ? 0.5 : 1,
+          pointerEvents: isBeingRemoved ? 'none' : 'all',
+          transition: 'background ease-in-out, opacity ease-in-out',
+          transitionDuration: '75ms',
+          ':hover': {
+            backgroundColor: '#252525',
+          },
+          ':has(button:hover)': {
+            backgroundColor: 'card.background',
+          },
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          position: 'relative',
+        }}
       >
         <Stack direction="vertical" gap={1}>
           <Stack
+            css={{ height: '16px' }}
             justify="space-between"
             align="center"
-            css={{ height: '16px' }}
           >
             <Text color="#999" size={12}>
               {repository.owner}
@@ -65,7 +53,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
             <IconButton
               variant="square"
               name="more"
-              size={12}
+              size={16}
               title="Repository actions"
               onClick={evt => {
                 evt.stopPropagation();
@@ -73,9 +61,20 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               }}
             />
           </Stack>
-          <Text color={restricted ? '#999' : '#e5e5e5'} size={13} weight="500">
-            {repository.name}
-          </Text>
+          <InteractiveOverlay.Item
+            as={Link}
+            to={isBeingRemoved ? undefined : repository.url}
+            onContextMenu={onContextMenu}
+            {...props}
+          >
+            <Text
+              color={restricted ? '#999' : '#e5e5e5'}
+              size={13}
+              weight="500"
+            >
+              {repository.name}
+            </Text>
+          </InteractiveOverlay.Item>
         </Stack>
 
         <Stack justify="space-between" gap={4}>
@@ -93,7 +92,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
 
           {restricted ? <Badge variant="trial">Restricted</Badge> : null}
         </Stack>
-      </Stack>
-    </Stack>
+      </Card>
+    </InteractiveOverlay>
   );
 };
