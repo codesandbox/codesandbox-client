@@ -640,7 +640,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         id="selection-container"
         onContextMenu={onContainerContextMenu}
         css={css({
-          paddingTop: 8,
+          paddingTop: page === 'recent' ? 0 : 8, // In the recent page, this component is nested so the padding top isn't needed.
           width: '100%',
           height: '100%',
         })}

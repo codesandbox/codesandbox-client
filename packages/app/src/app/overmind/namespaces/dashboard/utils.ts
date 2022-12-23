@@ -1,4 +1,5 @@
 import {
+  BranchFragment,
   ProjectFragment,
   SidebarCollectionDashboardFragment as Collection,
 } from 'app/graphql/types';
@@ -18,13 +19,15 @@ export function getDecoratedCollection(
   };
 }
 
-export function sortByNameAscending(
-  a: ProjectFragment,
-  b: ProjectFragment
+export function sortByLastAccessed(
+  a: ProjectFragment | BranchFragment,
+  b: ProjectFragment | BranchFragment
 ): number {
-  return a.repository.name.toLowerCase() < b.repository.name.toLowerCase()
-    ? -1
-    : 1;
+  if (!a.lastAccessedAt || !b.lastAccessedAt) {
+    return 1;
+  }
+
+  return new Date(a.lastAccessedAt) < new Date(b.lastAccessedAt) ? 1 : -1;
 }
 
 export function getProjectUniqueKey({
