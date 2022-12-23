@@ -50,6 +50,9 @@ export const RepositoriesPage = () => {
     if (viewMode === 'grid' && repoItems.length > 0) {
       repoItems.unshift({
         type: 'import-repository',
+        onImportClicked: () => {
+          actions.openCreateSandboxModal({ initialTab: 'import' });
+        },
         disabled: hasMaxPublicRepositories || hasMaxPrivateRepositories,
       });
     }

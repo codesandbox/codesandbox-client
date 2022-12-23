@@ -5,6 +5,7 @@ import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Sandbox } from '../Sandbox';
 import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
@@ -34,8 +35,6 @@ import {
 import { CreateFolder } from '../Folder/CreateFolder';
 import { Branch } from '../Branch';
 import { Repository } from '../Repository';
-import { NewBranchCard } from '../Branch/NewBranch';
-import { ImportRepositoryCard } from '../Repository/ImportRepository';
 import { DefaultSkeleton, SolidSkeleton } from '../Skeleton';
 import {
   GRID_MAX_WIDTH,
@@ -47,6 +46,7 @@ import {
   HEADER_HEIGHT,
   ITEM_VERTICAL_OFFSET,
 } from './constants';
+import { ActionCard } from '../shared/ActionCard';
 
 type WindowItemProps = {
   data: {
@@ -150,13 +150,25 @@ const ComponentForTypes: IComponentForTypes = {
   branch: ({ item, page }) => <Branch page={page} {...item} />,
   repository: ({ item }) => <Repository {...item} />,
   'new-branch': ({ item }) => (
-    <NewBranchCard
-      owner={item.repo.owner}
-      repoName={item.repo.name}
+    <ActionCard
+      as="a"
+      href={v2DraftBranchUrl(item.repo.owner, item.repo.name)}
+      icon="plus"
       disabled={item.disabled}
-    />
+    >
+      Create branch
+    </ActionCard>
   ),
-  'import-repository': ({ item }) => <ImportRepositoryCard {...item} />,
+  'import-repository': ({ item }) => (
+    <ActionCard
+      as="button"
+      onClick={item.onImportClicked}
+      icon="plus"
+      disabled={item.disabled}
+    >
+      Import repository
+    </ActionCard>
+  ),
 };
 
 const getSkeletonForPage = (
