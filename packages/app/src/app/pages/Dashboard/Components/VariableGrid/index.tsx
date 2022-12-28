@@ -175,7 +175,11 @@ const getSkeletonForPage = (
   page: PageTypes,
   path: string
 ): DashboardSkeleton['type'] => {
-  if ((page === 'synced-sandboxes' || page === 'repositories') && !path) {
+  if (
+    page === 'synced-sandboxes' ||
+    page === 'repositories' ||
+    page === 'repository-branches'
+  ) {
     return 'solid-skeleton';
   }
 
@@ -476,7 +480,7 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 style={{
                   overflowX: 'hidden',
                   userSelect: 'none',
-                  paddingBottom: 40,
+                  paddingBottom: 24,
                   boxSizing: 'border-box',
                 }}
               >

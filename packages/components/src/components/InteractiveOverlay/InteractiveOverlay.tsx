@@ -8,6 +8,7 @@ const StyledItem = styled.a`
   padding: 0;
   background: transparent;
   display: flex;
+  overflow: hidden;
 
   // Reset anchor and button styles
   // The actual styling of the element should happen in the children
