@@ -1,24 +1,14 @@
-import React, { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
+import React from 'react';
 import {
   Icon,
   IconNames,
   InteractiveOverlay,
   Text,
+  InteractiveOverlayItemProps,
 } from '@codesandbox/components';
 import { StyledCard } from './StyledCard';
 
-// TODO: Reuse from @codesandbox/components but didn't see an elegant way to export the type
-type ItemElementProps =
-  | (AnchorHTMLAttributes<HTMLAnchorElement> & {
-      as: 'a';
-      href: string;
-    })
-  | (ButtonHTMLAttributes<HTMLButtonElement> & {
-      as: 'button';
-      href?: never;
-    });
-
-type ActionCardProps = ItemElementProps & {
+type ActionCardProps = InteractiveOverlayItemProps & {
   disabled?: boolean;
   icon: IconNames;
 };
