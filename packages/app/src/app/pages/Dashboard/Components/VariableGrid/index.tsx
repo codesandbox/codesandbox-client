@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink, useLocation, useParams } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useAppState } from 'app/overmind';
 import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
@@ -171,10 +171,7 @@ const ComponentForTypes: IComponentForTypes = {
   ),
 };
 
-const getSkeletonForPage = (
-  page: PageTypes,
-  path: string
-): DashboardSkeleton['type'] => {
+const getSkeletonForPage = (page: PageTypes): DashboardSkeleton['type'] => {
   if (
     page === 'synced-sandboxes' ||
     page === 'repositories' ||
@@ -267,15 +264,12 @@ interface VariableGridProps {
 
 export const VariableGrid: React.FC<VariableGridProps> = ({
   items,
-  collectionId,
   page,
   viewMode: propViewMode,
   customGridElementHeight,
 }) => {
   const { dashboard } = useAppState();
   const location = useLocation();
-  const params = useParams<{ path: string }>();
-  const path = params.path ?? '';
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
@@ -370,7 +364,7 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
           > = [];
           const blankItem = { type: 'blank' as const };
           const skeletonItem = {
-            type: getSkeletonForPage(page, path),
+            type: getSkeletonForPage(page),
             viewMode,
           };
 
