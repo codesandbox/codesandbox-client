@@ -5,6 +5,7 @@ import { useAppState, useActions } from 'app/overmind';
 import { UserMenu } from 'app/pages/common/UserMenu';
 import React, { useEffect, useState } from 'react';
 import { Notifications } from 'app/components/Notifications';
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import track from '@codesandbox/common/lib/utils/analytics';
 
 import {
@@ -29,6 +30,64 @@ const TooltipButton = ({ tooltip, ...props }) => {
   );
 };
 
+type ForkActionProps = {
+  isPrimaryAction: boolean;
+  handleFork: (teamId: string) => void;
+  handleSignIn: () => void;
+};
+
+const ForkAction = ({
+  isPrimaryAction,
+  handleFork,
+  handleSignIn,
+}: ForkActionProps) => {
+  const {
+    user,
+    editor: { isForkingSandbox, currentSandbox },
+  } = useAppState();
+  const { isPro } = useWorkspaceSubscription();
+
+  const { privacy, permissions } = currentSandbox;
+  const isUnlistedOrPrivate = privacy === 1 || privacy === 2;
+  const preventSandboxLeaving = permissions?.preventSandboxLeaving;
+
+  const variant = isPrimaryAction ? 'primary' : 'secondary';
+
+  if (user) {
+    if (!isPro && isUnlistedOrPrivate) {
+      return (
+        <TooltipButton
+          tooltip="You do not have permission to fork this sandbox"
+          variant={variant}
+          disabled
+        >
+          <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
+        </TooltipButton>
+      );
+    }
+
+    return (
+      <ForkButton user={user} forkClicked={handleFork} variant={variant} />
+    );
+  }
+
+  return (
+    <TooltipButton
+      tooltip={
+        preventSandboxLeaving
+          ? 'You do not have permission to fork this sandbox'
+          : null
+      }
+      loading={isForkingSandbox}
+      variant={variant}
+      onClick={handleSignIn}
+      disabled={preventSandboxLeaving}
+    >
+      <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
+    </TooltipButton>
+  );
+};
+
 export const Actions = () => {
   const {
     signInClicked,
@@ -43,7 +102,7 @@ export const Actions = () => {
     user,
     activeWorkspaceAuthorization,
     live: { isLive },
-    editor: { isForkingSandbox, currentSandbox },
+    editor: { currentSandbox },
   } = useAppState();
   const {
     id,
@@ -53,7 +112,6 @@ export const Actions = () => {
     description,
     likeCount,
     userLiked,
-    permissions,
   } = currentSandbox;
   const [fadeIn, setFadeIn] = useState(false);
 
@@ -171,29 +229,13 @@ export const Actions = () => {
         </Button>
       )}
 
-      {user ? (
-        <ForkButton
-          user={user}
-          forkClicked={teamId => forkSandboxClicked({ teamId })}
-          variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
-        />
-      ) : (
-        <TooltipButton
-          tooltip={
-            permissions.preventSandboxLeaving
-              ? 'You do not have permission to fork this sandbox'
-              : null
-          }
-          loading={isForkingSandbox}
-          variant={primaryAction === 'Fork' ? 'primary' : 'secondary'}
-          onClick={() => {
-            signInClicked({ onCancel: () => forkSandboxClicked({}) });
-          }}
-          disabled={permissions.preventSandboxLeaving}
-        >
-          <ForkIcon css={css({ height: 3, marginRight: 1 })} /> Fork
-        </TooltipButton>
-      )}
+      <ForkAction
+        isPrimaryAction={primaryAction === 'Fork'}
+        handleFork={teamId => forkSandboxClicked({ teamId })}
+        handleSignIn={() => {
+          signInClicked({ onCancel: () => forkSandboxClicked({}) });
+        }}
+      />
 
       <Button
         variant="secondary"
