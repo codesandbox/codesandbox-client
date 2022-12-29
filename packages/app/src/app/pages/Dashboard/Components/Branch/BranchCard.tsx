@@ -54,7 +54,7 @@ export const BranchCard: React.FC<BranchProps> = ({
                 ) : (
                   <Icon color="#999999" name="branch" size={16} />
                 )}
-                <InteractiveOverlay.Item>
+                <InteractiveOverlay.Item radius={4}>
                   <Text
                     as="a"
                     aria-label={ariaLabel}

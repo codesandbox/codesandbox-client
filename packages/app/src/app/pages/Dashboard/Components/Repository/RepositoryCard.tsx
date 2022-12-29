@@ -44,7 +44,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               }}
             />
           </Stack>
-          <InteractiveOverlay.Item>
+          <InteractiveOverlay.Item radius={4}>
             <Link
               to={isBeingRemoved ? undefined : repository.url}
               onContextMenu={onContextMenu}
