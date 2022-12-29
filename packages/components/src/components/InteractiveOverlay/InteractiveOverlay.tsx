@@ -7,11 +7,14 @@ const StyledItem = styled.a`
   border: none;
   padding: 0;
   background: transparent;
+  display: flex;
+  overflow: hidden;
 
-  // Reset anchor styles
+  // Reset anchor and button styles
   // The actual styling of the element should happen in the children
   text-decoration: none;
   color: inherit;
+  font-family: inherit;
 
   &::before {
     // TODO: border-radius;

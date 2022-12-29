@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Card,
   Icon,
   IconButton,
   Stack,
@@ -10,6 +9,7 @@ import {
   InteractiveOverlay,
 } from '@codesandbox/components';
 import { RepositoryProps } from './types';
+import { StyledCard } from '../shared/StyledCard';
 
 export const RepositoryCard: React.FC<RepositoryProps> = ({
   labels,
@@ -22,25 +22,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
 }) => {
   return (
     <InteractiveOverlay>
-      <Card
-        css={{
-          opacity: isBeingRemoved ? 0.5 : 1,
-          pointerEvents: isBeingRemoved ? 'none' : 'all',
-          transition: 'background ease-in-out, opacity ease-in-out',
-          transitionDuration: '75ms',
-          ':hover': {
-            backgroundColor: '#252525',
-          },
-          ':has(button:hover)': {
-            backgroundColor: '#1D1D1D',
-          },
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          position: 'relative',
-        }}
-      >
+      <StyledCard dimmed={isBeingRemoved}>
         <Stack direction="vertical" gap={1}>
           <Stack
             css={{ height: '16px' }}
@@ -51,10 +33,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               {repository.owner}
             </Text>
             <IconButton
-              css={{
-                marginRight: '-4px',
-                zIndex: 1,
-              }} /* Align icon to top-right corner */
+              css={{ marginRight: '-4px' }} /* Align icon to top-right corner */
               variant="square"
               name="more"
               size={16}
@@ -96,7 +75,7 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
 
           {restricted ? <Badge variant="trial">Restricted</Badge> : null}
         </Stack>
-      </Card>
+      </StyledCard>
     </InteractiveOverlay>
   );
 };

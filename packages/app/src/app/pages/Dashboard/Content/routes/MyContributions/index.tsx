@@ -57,7 +57,11 @@ export const MyContributionsPage = () => {
       {isEmpty ? (
         <EmptyContributions />
       ) : (
-        <VariableGrid page={pageType} items={itemsToShow} />
+        <VariableGrid
+          customGridElementHeight={154}
+          page={pageType}
+          items={itemsToShow}
+        />
       )}
     </SelectionProvider>
   );
