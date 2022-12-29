@@ -6,7 +6,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import {
   DashboardGridItem,
-  DashboardRepoSandbox,
+  DashboardSyncedRepoSandbox,
   PageTypes,
 } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
@@ -61,8 +61,8 @@ export const SyncedSandboxesPage = () => {
   const itemsToShow = getItemsToShow();
 
   const possibleTemplates = itemsToShow
-    .filter((s: DashboardRepoSandbox) => s.sandbox)
-    .map((s: DashboardRepoSandbox) => s.sandbox);
+    .filter((s: DashboardSyncedRepoSandbox) => s.sandbox)
+    .map((s: DashboardSyncedRepoSandbox) => s.sandbox);
 
   const templates =
     activeSandboxes.length && param && items[0] && items[0].type === 'sandbox'
@@ -89,7 +89,11 @@ export const SyncedSandboxesPage = () => {
         showSortOptions={Boolean(param)}
         nestedPageType={pageType}
       />
-      <VariableGrid page={pageType} items={itemsToShow} />
+      <VariableGrid
+        customGridElementHeight={154}
+        page={pageType}
+        items={itemsToShow}
+      />
     </SelectionProvider>
   );
 };
