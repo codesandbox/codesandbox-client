@@ -31,7 +31,7 @@ type AnchorProps = {
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
 const StyledAnchor = styled.a<
-  // Override `as` and other styled comopnent props
+  // Override `as` and other styled component props
   AnchorProps
 >`
   // Reset anchor styles
@@ -45,7 +45,7 @@ const StyledAnchor = styled.a<
 `;
 
 const StyledButton = styled.button<
-  // Override `as` and other styled comopnent props
+  // Override `as` and other styled component props
   ButtonHTMLAttributes<HTMLButtonElement>
 >`
   // Reset button styles
