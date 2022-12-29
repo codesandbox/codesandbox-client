@@ -97,7 +97,7 @@ export const InteractiveOverlayAnchor = () => (
 
 export const WithWrapperElement = () => (
   <Element css={{ padding: '20px' }}>
-    <InteractiveOverlay>
+    <InteractiveOverlay isElement>
       <NewCard>
         <InteractiveOverlay.Item>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
