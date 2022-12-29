@@ -54,22 +54,22 @@ export const BranchCard: React.FC<BranchProps> = ({
                 ) : (
                   <Icon color="#999999" name="branch" size={16} />
                 )}
-                <InteractiveOverlay.Item
-                  as="a"
-                  aria-label={ariaLabel}
-                  href={isBeingRemoved ? undefined : branchUrl}
-                  onContextMenu={onContextMenu}
-                  {...props}
-                >
+                <InteractiveOverlay.Item>
                   <Text
+                    as="a"
+                    aria-label={ariaLabel}
+                    href={isBeingRemoved ? undefined : branchUrl}
                     css={{
                       color: restricted ? '#999999' : '#E5E5E5',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
+                      textDecoration: 'none',
                     }}
                     weight="medium"
                     size={13}
+                    onContextMenu={onContextMenu}
+                    {...props}
                   >
                     {branchName}
                   </Text>
