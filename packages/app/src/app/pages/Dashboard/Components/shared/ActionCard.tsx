@@ -28,7 +28,7 @@ export const ActionCard: React.FC<ActionCardProps> = ({
           <Text size={13}>{children}</Text>
         </InteractiveOverlay.Anchor>
       ) : (
-        <InteractiveOverlay.Button {...props}>
+        <InteractiveOverlay.Button disabled={disabled} {...props}>
           <Text size={13}>{children}</Text>
         </InteractiveOverlay.Button>
       )}
