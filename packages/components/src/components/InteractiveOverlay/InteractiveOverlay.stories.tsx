@@ -87,3 +87,50 @@ export const WrapperElement = () => (
     </div>
   </Element>
 );
+
+const HoverComponent = ({
+  children,
+  className,
+}: {
+  children: any;
+  className?: never;
+}) => (
+  <Element
+    className={className}
+    css={{
+      background: 'green',
+      '&:hover': {
+        background: 'orange',
+      },
+    }}
+  >
+    {children}
+  </Element>
+);
+
+export const WithChildHoverStyles = () => (
+  <Element css={{ padding: '20px' }}>
+    <InteractiveOverlay>
+      <HoverComponent>
+        <div>text</div>
+        <InteractiveOverlay.Item
+          as="button"
+          onClick={() => {
+            // console.log('clicked overlay item');
+          }}
+        >
+          button
+        </InteractiveOverlay.Item>
+        <div>text</div>
+        <button
+          type="button"
+          onClick={() => {
+            // console.log('clicked nested button');
+          }}
+        >
+          nested button
+        </button>
+      </HoverComponent>
+    </InteractiveOverlay>
+  </Element>
+);

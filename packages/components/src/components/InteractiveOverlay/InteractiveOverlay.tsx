@@ -53,6 +53,9 @@ type ItemProps = {
 
 // TODO rename Item to Trigger?
 const Item = ({ children, as, ...restProps }: ItemProps) => {
+  // asChild ? Slot : 'a' || 'button'
+  //
+
   return (
     <StyledItem as={as} {...restProps}>
       {children}
@@ -125,3 +128,5 @@ export const InteractiveOverlay = ({
 };
 
 InteractiveOverlay.Item = Item;
+// .Button
+// .Link
