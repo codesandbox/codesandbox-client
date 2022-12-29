@@ -85,7 +85,7 @@ const StyledItem = styled(
       return child;
     });
 
-    if (augmentedChildren.length) {
+    if (augmentedChildren.length > 0) {
       // eslint-disable-next-line react/jsx-no-useless-fragment
       return <>{augmentedChildren}</>;
     }
@@ -119,7 +119,7 @@ const Wrapper = styled(
   }: WrapperProps) => {
     if (React.Children.count(children) > 1) {
       throw new Error(
-        'The StyledOverlay component can only contain one child.'
+        'The InteractiveOverlay component can only contain one child.'
       );
     }
 
@@ -134,7 +134,7 @@ const Wrapper = styled(
         return child;
       });
 
-      if (augmentedChildren.length) {
+      if (augmentedChildren.length > 0) {
         // eslint-disable-next-line react/jsx-no-useless-fragment
         return <>{augmentedChildren}</>;
       }
