@@ -25,6 +25,10 @@ const DefaultWrapper = ({ children }) => children;
 export type Props = {
   sandbox: Sandbox;
   privacy?: number;
+  /**
+   * We only use preview secrets for private sandboxes (I think it is to identify the user in the
+   * preview, because that lives on csb.app and therefore doesn’t have the regular user cookie).
+   */
   previewSecret?: string;
   settings: Settings;
   customNpmRegistries: NpmRegistry[];
