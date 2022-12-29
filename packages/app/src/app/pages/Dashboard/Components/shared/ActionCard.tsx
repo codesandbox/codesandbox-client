@@ -4,11 +4,10 @@ import {
   IconNames,
   InteractiveOverlay,
   Text,
-  InteractiveOverlayItemProps,
 } from '@codesandbox/components';
 import { StyledCard } from './StyledCard';
 
-type ActionCardProps = InteractiveOverlayItemProps & {
+type ActionCardProps = React.ComponentProps<typeof InteractiveOverlay.Item> & {
   disabled?: boolean;
   icon: IconNames;
 };

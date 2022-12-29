@@ -50,12 +50,12 @@ type ItemElementProps =
       href?: never;
     });
 
-export type InteractiveOverlayItemProps = {
+type ItemProps = {
   children: React.ReactNode;
 } & ItemElementProps;
 
 // TODO rename Item to Trigger?
-const Item = ({ children, as, ...restProps }: InteractiveOverlayItemProps) => {
+const Item = ({ children, as, ...restProps }: ItemProps) => {
   return (
     <StyledItem as={as} {...restProps}>
       {children}
