@@ -26,7 +26,7 @@ import {
   DashboardSandbox,
   DashboardFolder,
   DashboardGridItem,
-  DashboardRepo,
+  DashboardSyncedRepo,
   DashboardCommunitySandbox,
   PageTypes,
   DashboardBranch,
@@ -108,14 +108,14 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'sandbox' ||
       item.type === 'template' ||
       item.type === 'folder' ||
-      item.type === 'repo' ||
+      item.type === 'synced-sandbox-repo' ||
       item.type === 'community-sandbox' ||
       item.type === 'branch'
   ) as Array<
     | DashboardSandbox
     | DashboardTemplate
     | DashboardFolder
-    | DashboardRepo
+    | DashboardSyncedRepo
     | DashboardCommunitySandbox
     | DashboardBranch
     | DashboardRepository
@@ -128,7 +128,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       return `${providerRepository.owner}-${providerRepository.name}`;
     }
     if (item.type === 'folder') return item.path;
-    if (item.type === 'repo') return item.name;
+    if (item.type === 'synced-sandbox-repo') return item.name;
     return item.sandbox.id;
   });
 

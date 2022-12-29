@@ -23,8 +23,8 @@ import {
   DashboardBlank,
   DashboardSkeleton,
   DashboardNewFolder,
-  DashboardRepo,
-  DashboardNewMasterBranch,
+  DashboardSyncedRepo,
+  DashboardSyncedRepoDefaultBranch,
   DashboardCommunitySandbox,
   DashboardBranch,
   DashboardRepository,
@@ -71,10 +71,12 @@ interface IComponentForTypes {
   sandbox: React.FC<DecoratedItemProps<DashboardSandbox>>;
   template: React.FC<DecoratedItemProps<DashboardTemplate>>;
   folder: React.FC<DecoratedItemProps<DashboardFolder>>;
-  repo: React.FC<DecoratedItemProps<DashboardRepo>>;
+  'synced-sandbox-repo': React.FC<DecoratedItemProps<DashboardSyncedRepo>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
   'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
-  'new-master-branch': React.FC<DecoratedItemProps<DashboardNewMasterBranch>>;
+  'synced-sandbox-default-branch': React.FC<
+    DecoratedItemProps<DashboardSyncedRepoDefaultBranch>
+  >;
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
@@ -104,12 +106,14 @@ const ComponentForTypes: IComponentForTypes = {
     />
   )),
   folder: props => <Folder key={props.item.name} {...props.item} />,
-  repo: props => (
+  'synced-sandbox-repo': props => (
     <SyncedSandbox {...props.item} isScrolling={props.isScrolling} />
   ),
   'new-folder': props => <CreateFolder {...props.item} />,
   'new-sandbox': () => <NewSandbox />,
-  'new-master-branch': props => <NewMasterSandbox {...props.item} />,
+  'synced-sandbox-default-branch': props => (
+    <NewMasterSandbox {...props.item} />
+  ),
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
       <Text block weight="regular" css={css({ userSelect: 'none' })}>

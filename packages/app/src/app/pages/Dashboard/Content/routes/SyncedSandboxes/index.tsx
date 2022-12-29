@@ -44,7 +44,7 @@ export const SyncedSandboxesPage = () => {
     if (sandboxes.REPOS[param] && sandboxes.REPOS[param].sandboxes) {
       return [
         {
-          type: 'new-master-branch',
+          type: 'synced-sandbox-default-branch',
           repo: {
             owner: sandboxes.REPOS[param].owner,
             name: sandboxes.REPOS[param].name,

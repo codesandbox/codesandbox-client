@@ -4,13 +4,13 @@ import { useAppState } from 'app/overmind';
 import { SyncedSandboxCard } from './SyncedSandboxCard';
 import { SyncedSandboxListItem } from './SyncedSandboxListItem';
 import { useSelection } from '../Selection';
-import { DashboardRepo } from '../../types';
+import { DashboardSyncedRepo } from '../../types';
 
 export const SyncedSandbox = ({
   name = '',
   path = null,
   ...props
-}: DashboardRepo) => {
+}: DashboardSyncedRepo) => {
   const { dashboard } = useAppState();
 
   const Component =
