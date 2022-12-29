@@ -27,6 +27,7 @@ export interface ITextProps extends React.HTMLAttributes<HTMLSpanElement> {
   weight?: string;
   fontStyle?: string;
   block?: boolean;
+  truncate?: boolean;
   maxWidth?: number | string;
   variant?: 'body' | 'muted' | 'danger' | 'active';
   dateTime?: string;
@@ -44,6 +45,7 @@ export const Text = styled(Element).attrs(p => ({
     align,
     weight,
     block,
+    truncate,
     variant = 'body',
     maxWidth,
     lineHeight,
@@ -62,5 +64,6 @@ export const Text = styled(Element).attrs(p => ({
       maxWidth,
       fontFamily: fontFamilies[fontFamily],
       ...(maxWidth ? overflowStyles : {}),
+      ...(truncate ? overflowStyles : {}),
     })
 );
