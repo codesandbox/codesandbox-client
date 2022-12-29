@@ -71,11 +71,38 @@ export const InteractiveOverlayItem = () => (
   </Element>
 );
 
+export const InteractiveOverlayItemDisabled = () => (
+  <Element css={{ padding: '20px' }}>
+    <InteractiveOverlay>
+      <NewCard>
+        <InteractiveOverlay.Item>
+          {/* eslint-disable-next-line react/button-has-type */}
+          <button disabled>Interactive item</button>
+        </InteractiveOverlay.Item>
+        <DummyContent />
+      </NewCard>
+    </InteractiveOverlay>
+  </Element>
+);
+
 export const InteractiveOverlayButton = () => (
   <Element css={{ padding: '20px' }}>
     <InteractiveOverlay>
       <NewCard>
         <InteractiveOverlay.Button>Interactive item</InteractiveOverlay.Button>
+        <DummyContent />
+      </NewCard>
+    </InteractiveOverlay>
+  </Element>
+);
+
+export const InteractiveOverlayButtonDisabled = () => (
+  <Element css={{ padding: '20px' }}>
+    <InteractiveOverlay>
+      <NewCard>
+        <InteractiveOverlay.Button disabled>
+          Interactive item
+        </InteractiveOverlay.Button>
         <DummyContent />
       </NewCard>
     </InteractiveOverlay>
@@ -90,6 +117,19 @@ export const InteractiveOverlayAnchor = () => (
           Interactive item
         </InteractiveOverlay.Anchor>
         <DummyContent />
+      </NewCard>
+    </InteractiveOverlay>
+  </Element>
+);
+
+export const WithBorderRadius = () => (
+  <Element css={{ padding: '20px' }}>
+    <InteractiveOverlay>
+      <NewCard>
+        <InteractiveOverlay.Item radius={4}>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <a href="#">Interactive item</a>
+        </InteractiveOverlay.Item>
       </NewCard>
     </InteractiveOverlay>
   </Element>
