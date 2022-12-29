@@ -12,9 +12,6 @@ export const StyledCard = styled(Card)<StyledCardProps>(({ dimmed }) => ({
   '&:hover': {
     backgroundColor: '#252525',
   },
-  '&:has(button:hover)': {
-    backgroundColor: '#1D1D1D',
-  },
   color: '#999999',
   height: '100%',
   display: 'flex',

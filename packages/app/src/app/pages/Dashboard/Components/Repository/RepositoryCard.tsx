@@ -44,19 +44,21 @@ export const RepositoryCard: React.FC<RepositoryProps> = ({
               }}
             />
           </Stack>
-          <InteractiveOverlay.Item
-            as={Link}
-            to={isBeingRemoved ? undefined : repository.url}
-            onContextMenu={onContextMenu}
-            {...props}
-          >
-            <Text
-              color={restricted ? '#999' : '#e5e5e5'}
-              size={13}
-              weight="500"
+          <InteractiveOverlay.Item>
+            <Link
+              to={isBeingRemoved ? undefined : repository.url}
+              onContextMenu={onContextMenu}
+              css={{ textDecoration: 'none' }}
+              {...props}
             >
-              {repository.name}
-            </Text>
+              <Text
+                color={restricted ? '#999' : '#e5e5e5'}
+                size={13}
+                weight="500"
+              >
+                {repository.name}
+              </Text>
+            </Link>
           </InteractiveOverlay.Item>
         </Stack>
 

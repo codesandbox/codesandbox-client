@@ -155,7 +155,6 @@ const ComponentForTypes: IComponentForTypes = {
   repository: ({ item }) => <Repository {...item} />,
   'new-branch': ({ item }) => (
     <ActionCard
-      as="a"
       href={v2DraftBranchUrl(item.repo.owner, item.repo.name)}
       icon="plus"
       disabled={item.disabled}
@@ -165,7 +164,6 @@ const ComponentForTypes: IComponentForTypes = {
   ),
   'import-repository': ({ item }) => (
     <ActionCard
-      as="button"
       onClick={item.onImportClicked}
       icon="plus"
       disabled={item.disabled}
