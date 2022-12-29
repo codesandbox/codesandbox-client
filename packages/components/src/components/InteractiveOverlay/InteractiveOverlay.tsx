@@ -145,10 +145,10 @@ const Wrapper = styled(
 )`
   position: relative;
 
-  // TODO: Update :not(StyledItem) to include all the comopund children
   // Elevate the anchors with href and buttons (except StyledItem) up
-  & a[href]:not(${StyledItem}),
-  button:not(${StyledItem}) {
+  // TODO: Is there an easier way to target just one class instead of having to chain :not?
+  & a[href]:not(${StyledItem}):not(${StyledAnchor}),
+  button:not(${StyledItem}):not(${StyledButton}) {
     position: relative;
     z-index: 1;
   }
