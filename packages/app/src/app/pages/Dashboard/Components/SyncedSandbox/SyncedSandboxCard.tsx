@@ -6,7 +6,6 @@ import {
   InteractiveOverlay,
   Badge,
 } from '@codesandbox/components';
-import { noop } from 'overmind';
 import { Link } from 'react-router-dom';
 import { StyledCard } from '../shared/StyledCard';
 
@@ -33,19 +32,26 @@ export const SyncedSandboxCard = ({ name, path, url, ...props }) => {
             </Text>
             <Stack gap={2}>
               <Icon name="github" size={16} title="Synced sandbox" />
-              <InteractiveOverlay.Item as={Link} to={url} onContextMenu={noop}>
-                <Text
-                  weight="medium"
-                  size={13}
+              <InteractiveOverlay.Item>
+                <Link
+                  to={url}
                   css={{
-                    color: '#E5E5E5',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
+                    textDecoration: 'none',
                   }}
                 >
-                  {name}
-                </Text>
+                  <Text
+                    weight="medium"
+                    size={13}
+                    css={{
+                      color: '#E5E5E5',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {name}
+                  </Text>
+                </Link>
               </InteractiveOverlay.Item>
             </Stack>
           </Stack>
