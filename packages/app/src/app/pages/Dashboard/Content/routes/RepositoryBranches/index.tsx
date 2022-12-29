@@ -109,7 +109,11 @@ export const RepositoryBranchesPage = () => {
         </Element>
       )}
 
-      <VariableGrid page={pageType} items={itemsToShow} />
+      <VariableGrid
+        customGridElementHeight={154}
+        page={pageType}
+        items={itemsToShow}
+      />
     </SelectionProvider>
   );
 };

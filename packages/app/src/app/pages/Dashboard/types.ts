@@ -164,6 +164,7 @@ export type DashboardRepository = {
 export type DashboardImportRepository = {
   type: 'import-repository';
   disabled?: boolean;
+  onImportClicked: () => void;
 };
 
 export type PageTypes = PT;
