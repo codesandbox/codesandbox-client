@@ -1,21 +1,7 @@
 import React, { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-const StyledItem = styled.a`
-  // Reset button styles
-  // The actual styling of the element should happen in the children
-  border: none;
-  padding: 0;
-  background: transparent;
-  display: flex;
-  overflow: hidden;
-
-  // Reset anchor and button styles
-  // The actual styling of the element should happen in the children
-  text-decoration: none;
-  color: inherit;
-  font-family: inherit;
-
+const overlayStyles = css`
   &::before {
     // TODO: border-radius;
 
@@ -40,31 +26,75 @@ const StyledItem = styled.a`
   // Hover styles should be part of the wrapped children
 `;
 
-type ItemElementProps =
-  | (AnchorHTMLAttributes<HTMLAnchorElement> & {
-      as: 'a';
-      href: string;
-    })
-  | (ButtonHTMLAttributes<HTMLButtonElement> & {
-      as: 'button';
-      href?: never;
-    });
+type AnchorProps = {
+  href: string;
+} & AnchorHTMLAttributes<HTMLAnchorElement>;
+
+const StyledAnchor = styled.a<
+  // Override `as` and other styled comopnent props
+  AnchorProps
+>`
+  // Reset anchor styles
+  // The actual styling of the element should happen in the children
+  display: flex;
+  text-decoration: none;
+  color: inherit;
+  font-family: inherit;
+
+  ${overlayStyles}
+`;
+
+const StyledButton = styled.button<
+  // Override `as` and other styled comopnent props
+  ButtonHTMLAttributes<HTMLButtonElement>
+>`
+  // Reset button styles
+  // The actual styling of the element should happen in the children
+  display: flex;
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+
+  ${overlayStyles}
+`;
 
 type ItemProps = {
-  children: React.ReactNode;
-} & ItemElementProps;
+  children: JSX.Element;
 
-// TODO rename Item to Trigger?
-const Item = ({ children, as, ...restProps }: ItemProps) => {
-  // asChild ? Slot : 'a' || 'button'
-  //
-
-  return (
-    <StyledItem as={as} {...restProps}>
-      {children}
-    </StyledItem>
-  );
+  // className from styled function
+  className?: never;
 };
+
+const StyledItem = styled(
+  ({ children, className: styledClassName }: ItemProps) => {
+    if (React.Children.count(children) > 1) {
+      throw new Error(
+        'The StyledOverlay.Item component can only contain one child.'
+      );
+    }
+
+    const augmentedChildren = React.Children.map(children, child => {
+      if (React.isValidElement(child)) {
+        // TODO: fix ts-ignore "Property 'className' does not exist on type 'unknown'."
+        // @ts-ignore
+        return React.cloneElement(child, { className: styledClassName });
+      }
+
+      return child;
+    });
+
+    if (augmentedChildren.length) {
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+      return <>{augmentedChildren}</>;
+    }
+
+    return children;
+  }
+)<ItemProps>`
+  ${overlayStyles}
+`;
 
 type WrapperProps = {
   children: JSX.Element;
@@ -88,7 +118,9 @@ const Wrapper = styled(
     className: styledClassName,
   }: WrapperProps) => {
     if (React.Children.count(children) > 1) {
-      throw new Error('The Wrapper component can only contain one child.');
+      throw new Error(
+        'The StyledOverlay component can only contain one child.'
+      );
     }
 
     if (!isElement) {
@@ -113,6 +145,7 @@ const Wrapper = styled(
 )`
   position: relative;
 
+  // TODO: Update :not(StyledItem) to include all the comopund children
   // Elevate the anchors with href and buttons (except StyledItem) up
   & a[href]:not(${StyledItem}),
   button:not(${StyledItem}) {
@@ -122,7 +155,7 @@ const Wrapper = styled(
 `;
 
 // Wrapper around Wrapper to ensure compound component works. There seems to be an issue
-// with extending `styled` component with `.Item`.
+// with extending `styled` component with `.Item` etcetera.
 export const InteractiveOverlay = ({
   children,
   isElement,
@@ -130,6 +163,6 @@ export const InteractiveOverlay = ({
   return <Wrapper isElement={isElement}>{children}</Wrapper>;
 };
 
-InteractiveOverlay.Item = Item;
-// .Button
-// .Link
+InteractiveOverlay.Item = StyledItem;
+InteractiveOverlay.Button = StyledButton;
+InteractiveOverlay.Anchor = StyledAnchor;

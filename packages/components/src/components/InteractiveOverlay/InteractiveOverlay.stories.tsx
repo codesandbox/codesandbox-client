@@ -1,7 +1,10 @@
 import React from 'react';
-import { InteractiveOverlay } from './InteractiveOverlay';
-import { Element } from '../Element';
+import styled from 'styled-components';
+
 import { Card } from '../Card/Card';
+import { Element } from '../Element';
+
+import { InteractiveOverlay } from './InteractiveOverlay';
 
 export default {
   title: 'components/facelift/InteractiveOverlay',
@@ -9,6 +12,9 @@ export default {
 };
 
 const dummyStyles = {
+  fontFamily: 'Inter, sans-serif',
+  fontSize: '14px',
+  lineHeight: '14px',
   padding: '8px',
   border: '1px solid red',
   '&:hover': {
@@ -17,7 +23,14 @@ const dummyStyles = {
 };
 
 const DummyAnchor = () => (
-  <Element as="a" href="#" css={dummyStyles}>
+  <Element
+    as="a"
+    href="#"
+    css={{
+      textDecoration: 'none',
+      ...dummyStyles,
+    }}
+  >
     anchor
   </Element>
 );
@@ -28,109 +41,69 @@ const DummyButton = () => (
   </Element>
 );
 
-export const AsButton = () => (
+const DummyContent = () => (
+  <>
+    <p>This is other content.</p>
+    <DummyAnchor />
+    <DummyButton />
+  </>
+);
+
+// Add hover styles to Card
+// TODO: add this to Card
+const NewCard = styled(Card)`
+  &:hover {
+    background-color: #252525;
+  }
+`;
+
+export const InteractiveOverlayItem = () => (
   <Element css={{ padding: '20px' }}>
     <InteractiveOverlay>
-      <Card>
-        <InteractiveOverlay.Item as="button">
-          Interactive item
+      <NewCard>
+        <InteractiveOverlay.Item>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <a href="#">Interactive item</a>
         </InteractiveOverlay.Item>
-        <div>other content</div>
-        <DummyAnchor />
-        <DummyButton />
-      </Card>
+        <DummyContent />
+      </NewCard>
     </InteractiveOverlay>
   </Element>
 );
 
-export const AsAnchor = () => (
+export const InteractiveOverlayButton = () => (
   <Element css={{ padding: '20px' }}>
     <InteractiveOverlay>
-      <Card>
-        <InteractiveOverlay.Item as="a" href="#">
-          Interactive item
-        </InteractiveOverlay.Item>
-        <div>other content</div>
-        <DummyAnchor />
-        <DummyButton />
-      </Card>
+      <NewCard>
+        <InteractiveOverlay.Button>Interactive item</InteractiveOverlay.Button>
+        <DummyContent />
+      </NewCard>
     </InteractiveOverlay>
   </Element>
 );
 
-export const WrapperElement = () => (
-  <Element css={{ padding: '20px' }}>
-    <Element paddingBottom={4}>Without wrapper element:</Element>
-    <div>
-      <span>Next to the overlay </span>
-      <InteractiveOverlay>
-        <span>
-          <InteractiveOverlay.Item as="a" href="#">
-            Interactive item
-          </InteractiveOverlay.Item>
-        </span>
-      </InteractiveOverlay>
-    </div>
-
-    <Element paddingBottom={8} />
-
-    <Element paddingBottom={4}>With wrapper element:</Element>
-    <div>
-      <span>Above to the overlay </span>
-      <InteractiveOverlay isElement>
-        <span>
-          <InteractiveOverlay.Item as="a" href="#">
-            Interactive item
-          </InteractiveOverlay.Item>
-        </span>
-      </InteractiveOverlay>
-    </div>
-  </Element>
-);
-
-const HoverComponent = ({
-  children,
-  className,
-}: {
-  children: any;
-  className?: never;
-}) => (
-  <Element
-    className={className}
-    css={{
-      background: 'green',
-      '&:hover': {
-        background: 'orange',
-      },
-    }}
-  >
-    {children}
-  </Element>
-);
-
-export const WithChildHoverStyles = () => (
+export const InteractiveOverlayAnchor = () => (
   <Element css={{ padding: '20px' }}>
     <InteractiveOverlay>
-      <HoverComponent>
-        <div>text</div>
-        <InteractiveOverlay.Item
-          as="button"
-          onClick={() => {
-            // console.log('clicked overlay item');
-          }}
-        >
-          button
+      <NewCard>
+        <InteractiveOverlay.Anchor href="#">
+          Interactive item
+        </InteractiveOverlay.Anchor>
+        <DummyContent />
+      </NewCard>
+    </InteractiveOverlay>
+  </Element>
+);
+
+export const WithWrapperElement = () => (
+  <Element css={{ padding: '20px' }}>
+    <InteractiveOverlay>
+      <NewCard>
+        <InteractiveOverlay.Item>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <a href="#">Interactive item</a>
         </InteractiveOverlay.Item>
-        <div>text</div>
-        <button
-          type="button"
-          onClick={() => {
-            // console.log('clicked nested button');
-          }}
-        >
-          nested button
-        </button>
-      </HoverComponent>
+      </NewCard>
     </InteractiveOverlay>
   </Element>
 );
