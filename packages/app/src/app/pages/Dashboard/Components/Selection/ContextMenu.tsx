@@ -15,7 +15,6 @@ import {
   MultiMenu,
   SandboxMenu,
   FolderMenu,
-  RepoMenu,
   MasterMenu,
   ContainerMenu,
   CommunitySandboxMenu,
@@ -154,8 +153,6 @@ export const ContextMenu: React.FC<IContextMenuProps> = ({
     menu = <SandboxMenu item={selectedItems[0]} setRenaming={setRenaming} />;
   } else if (selectedItems[0].type === 'folder') {
     menu = <FolderMenu folder={selectedItems[0]} setRenaming={setRenaming} />;
-  } else if (selectedItems[0].type === 'synced-sandbox-repo') {
-    menu = <RepoMenu repo={selectedItems[0]} />;
   } else if (selectedItems[0].type === 'synced-sandbox-default-branch') {
     menu = <MasterMenu repo={selectedItems[0].repo} />;
   } else if (selectedItems[0].type === 'community-sandbox') {
