@@ -308,6 +308,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {teamDataLoaded && showBottomMessage && (
           <Element css={{ margin: '24px', paddingTop: 0 }}>
             {isTeamAdmin &&
+              isFree &&
               (isEligibleForTrial ? (
                 <AdminStartTrial activeTeam={activeTeam} />
               ) : (

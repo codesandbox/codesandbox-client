@@ -35,15 +35,7 @@ export const BranchCard: React.FC<BranchProps> = ({
           <Stack justify="space-between">
             <Stack direction="vertical" gap={1} css={{ overflow: 'hidden' }}>
               {showRepo && (
-                <Text
-                  css={{
-                    color: '#808080',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                  size={12}
-                >
+                <Text color="#999" size={12} truncate>
                   {repository.owner}/{repository.name}
                 </Text>
               )}
@@ -54,26 +46,23 @@ export const BranchCard: React.FC<BranchProps> = ({
                 ) : (
                   <Icon color="#999999" name="branch" size={16} />
                 )}
-                <InteractiveOverlay.Item radius={4}>
+                <InteractiveOverlay.Anchor
+                  href={isBeingRemoved ? undefined : branchUrl}
+                  aria-label={ariaLabel}
+                  onContextMenu={onContextMenu}
+                  css={{ overflow: 'hidden' }}
+                  radius={4}
+                  {...props}
+                >
                   <Text
-                    as="a"
-                    aria-label={ariaLabel}
-                    href={isBeingRemoved ? undefined : branchUrl}
-                    css={{
-                      color: restricted ? '#999999' : '#E5E5E5',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      textDecoration: 'none',
-                    }}
+                    color={restricted ? '#999999' : '#E5E5E5'}
                     weight="medium"
                     size={13}
-                    onContextMenu={onContextMenu}
-                    {...props}
+                    truncate
                   >
                     {branchName}
                   </Text>
-                </InteractiveOverlay.Item>
+                </InteractiveOverlay.Anchor>
               </Stack>
             </Stack>
             <Stack css={{ height: '16px' }} align="center">
