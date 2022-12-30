@@ -12,6 +12,7 @@ export interface FolderItemComponentProps {
   // editing
   editing: boolean;
   isNewFolder: boolean;
+  isDragging: boolean;
   newName: string;
   onChange: (evt: React.FormEvent<HTMLInputElement>) => void;
   onInputKeyDown: (evt: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -21,5 +22,4 @@ export interface FolderItemComponentProps {
   showDropStyles?: boolean;
   // drag preview
   thumbnailRef?: React.Ref<HTMLDivElement>;
-  opacity?: number;
 }

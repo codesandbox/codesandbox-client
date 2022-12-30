@@ -187,6 +187,7 @@ export const Folder = (folderItem: DashboardFolder) => {
     // edit mode
     editing: isRenaming && selected,
     isNewFolder: false,
+    isDragging,
     newName,
     onChange,
     onInputKeyDown,
@@ -194,7 +195,6 @@ export const Folder = (folderItem: DashboardFolder) => {
     onInputBlur,
     // drag preview
     thumbnailRef,
-    opacity: isDragging ? 0.25 : 1,
   };
 
   return (
