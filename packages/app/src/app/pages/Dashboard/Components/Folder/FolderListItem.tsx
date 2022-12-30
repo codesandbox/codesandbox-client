@@ -44,6 +44,7 @@ export const FolderListItem = ({
 
   return (
     <ListAction
+      as="button"
       onClick={onClick}
       onDoubleClick={onDoubleClick}
       onContextMenu={onContextMenu}
