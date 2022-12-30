@@ -19,15 +19,7 @@ export const SyncedSandboxCard = ({ name, path, url, ...props }) => {
           css={{ height: '100%' }}
         >
           <Stack direction="vertical" gap={1}>
-            <Text
-              css={{
-                color: '#808080',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-              size={12}
-            >
+            <Text color="#999" size={12} truncate>
               {props.owner}
             </Text>
             <Stack gap={2}>
@@ -36,19 +28,12 @@ export const SyncedSandboxCard = ({ name, path, url, ...props }) => {
                 <Link
                   to={url}
                   css={{
+                    display: 'flex',
+                    overflow: 'hidden',
                     textDecoration: 'none',
                   }}
                 >
-                  <Text
-                    weight="medium"
-                    size={13}
-                    css={{
-                      color: '#E5E5E5',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
+                  <Text weight="medium" size={13} truncate color="#E5E5E5">
                     {name}
                   </Text>
                 </Link>
