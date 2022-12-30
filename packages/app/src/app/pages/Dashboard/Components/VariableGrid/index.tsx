@@ -33,7 +33,7 @@ import {
 import { CreateFolder } from '../Folder/CreateFolder';
 import { Branch } from '../Branch';
 import { Repository } from '../Repository';
-import { DefaultSkeleton, SolidSkeleton } from '../Skeleton';
+import { SolidSkeleton } from '../Skeleton';
 import {
   GRID_MAX_WIDTH,
   MAX_COLUMN_COUNT,
@@ -77,7 +77,6 @@ interface IComponentForTypes {
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
-  'default-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'solid-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
   branch: React.FC<DecoratedItemProps<DashboardBranch>>;
@@ -140,9 +139,6 @@ const ComponentForTypes: IComponentForTypes = {
     </Link>
   ),
   blank: () => <div />,
-  'default-skeleton': ({ item }) => (
-    <DefaultSkeleton viewMode={item.viewMode} />
-  ),
   'solid-skeleton': ({ item }) => <SolidSkeleton viewMode={item.viewMode} />,
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
@@ -167,18 +163,6 @@ const ComponentForTypes: IComponentForTypes = {
       Import repository
     </ActionCard>
   ),
-};
-
-const getSkeletonForPage = (page: PageTypes): DashboardSkeleton['type'] => {
-  if (
-    page === 'synced-sandboxes' ||
-    page === 'repositories' ||
-    page === 'repository-branches'
-  ) {
-    return 'solid-skeleton';
-  }
-
-  return 'default-skeleton';
 };
 
 const Item = React.memo(
@@ -362,7 +346,7 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
           > = [];
           const blankItem = { type: 'blank' as const };
           const skeletonItem = {
-            type: getSkeletonForPage(page),
+            type: 'solid-skeleton',
             viewMode,
           };
 

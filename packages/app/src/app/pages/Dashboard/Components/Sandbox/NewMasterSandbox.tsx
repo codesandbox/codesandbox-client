@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Element,
   Stack,
   Text,
   Icon,
@@ -8,11 +7,12 @@ import {
   Column,
   Grid,
   ListAction,
-  Badge,
+  InteractiveOverlay,
 } from '@codesandbox/components';
 import { useAppState } from 'app/overmind';
 import css from '@styled-system/css';
 import { useSelection } from '../Selection';
+import { StyledCard } from '../shared/StyledCard';
 
 interface NewMasterSandboxProps {
   repo: {
@@ -20,7 +20,6 @@ interface NewMasterSandboxProps {
     name: string;
     branch: string;
   };
-  restricted?: boolean;
 }
 
 export const NewMasterSandbox = (props: NewMasterSandboxProps) => {
@@ -35,10 +34,7 @@ export const NewMasterSandbox = (props: NewMasterSandboxProps) => {
   return <NewMasterSandboxListItem {...props} />;
 };
 
-const NewMasterSandboxListItem = ({
-  repo,
-  restricted,
-}: NewMasterSandboxProps) => {
+const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
   const { onRightClick } = useSelection();
   return (
     <ListAction
@@ -78,23 +74,13 @@ const NewMasterSandboxListItem = ({
               <Icon color="#999" name="github" size={24} />
             </Stack>
             <Stack justify="space-between" align="center">
-              <Text
-                size={3}
-                weight="medium"
-                css={{ color: restricted ? '#999999' : '#E5E5E5' }}
-              >
+              <Text size={3} weight="medium" color="#E5E5E5">
                 {repo.name}
               </Text>
             </Stack>
           </Stack>
         </Column>
-        <Column span={[0, 2, 2]}>
-          {restricted ? (
-            <Stack align="center">
-              <Badge variant="trial">Restricted</Badge>
-            </Stack>
-          ) : null}
-        </Column>
+        <Column span={[0, 2, 2]} />
         <Column span={[0, 4, 4]} as={Stack} align="center">
           <Text size={3} block variant="muted">
             {repo.owner}
@@ -114,91 +100,46 @@ const NewMasterSandboxListItem = ({
   );
 };
 
-const NewMasterSandboxCard = ({ repo, restricted }: NewMasterSandboxProps) => {
+const NewMasterSandboxCard = ({ repo }: NewMasterSandboxProps) => {
   const { onRightClick } = useSelection();
   return (
-    <Stack
-      onDoubleClick={() => {
-        window.location.href = `https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
-      }}
-      onContextMenu={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
-      direction="vertical"
-      css={css({
-        position: 'relative',
-        width: '100%',
-        height: 240,
-        backgroundColor: 'card.background',
-        borderRadius: 'medium',
-        transition: 'background ease-in-out',
-        transitionDuration: theme => theme.speeds[2],
-        ':hover': {
-          backgroundColor: 'card.backgroundHover',
-        },
-        ':focus-visible': {
-          borderColor: 'focusBorder',
-        },
-      })}
-    >
-      {restricted ? (
-        <Element css={{ position: 'absolute', top: 8, left: 8 }}>
-          <Badge variant="trial">Restricted</Badge>
-        </Element>
-      ) : null}
-      <Stack
-        justify="center"
-        align="center"
-        css={css({
-          height: 120,
-          paddingY: 11,
-          backgroundColor: 'rgba(255, 255,255,0.05)',
-        })}
-      >
-        <Icon color="#999" name="github" size={32} />
-      </Stack>
-
-      <Stack
-        justify="space-between"
-        direction="vertical"
-        marginLeft={5}
-        marginRight={2}
-        css={css({
-          flexGrow: 1,
-          paddingBottom: 5,
-          paddingTop: 4,
-        })}
-      >
-        <Stack
-          justify="space-between"
-          align="center"
-          css={css({
-            minHeight: 26,
-          })}
-        >
-          <Stack gap={1} align="center">
-            <Text
-              size={3}
-              weight="medium"
-              css={{ color: restricted ? '#999999' : '#E5E5E5' }}
+    <InteractiveOverlay>
+      <StyledCard>
+        <Stack justify="space-between">
+          <Stack gap={2} align="center">
+            <Icon name="branch" size={16} />
+            <InteractiveOverlay.Button
+              onDoubleClick={() => {
+                window.location.href = `https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
+              }}
+              onContextMenu={e => {
+                e.preventDefault();
+                // @ts-ignore
+                onRightClick(e, `/github/${repo.owner}/${repo.name}`);
+              }}
             >
-              master
-            </Text>
+              <Text size={3} weight="medium" color="#E5E5E5">
+                master
+              </Text>
+            </InteractiveOverlay.Button>
           </Stack>
 
           <IconButton
             name="more"
-            size={9}
+            variant="square"
+            size={16}
             title="Sandbox actions"
             // @ts-ignore
             onClick={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
           />
         </Stack>
 
-        <Stack gap={1} align="center">
-          <Text size={3} variant="muted">
-            {repo.owner}
+        <Stack align="center">
+          <Text size={12} variant="muted">
+            {repo.owner}/{repo.name}
           </Text>
         </Stack>
-      </Stack>
-    </Stack>
+      </StyledCard>
+    </InteractiveOverlay>
   );
 };

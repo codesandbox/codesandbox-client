@@ -113,7 +113,7 @@ type DashboardBlankRowFill = {
 };
 
 export type DashboardSkeleton = {
-  type: 'default-skeleton' | 'solid-skeleton';
+  type: 'solid-skeleton';
   viewMode: ViewMode;
 };
 

@@ -56,8 +56,10 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
         <form onSubmit={onSubmit}>
           <Input
             css={{
-              marginTop: '-5px',
-              marginLeft: '15px',
+              border: 0,
+              marginTop: '-4px',
+              marginLeft: '16px',
+              fontWeight: 500,
             }}
             autoFocus
             value={newTitle}
@@ -182,16 +184,12 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
 export const SandboxCard = ({
   sandbox,
   sandboxTitle,
-  sandboxLocation,
   noDrag,
-  autoFork,
   lastUpdated,
-  viewCount,
   TemplateIcon,
   PrivacyIcon,
   screenshotUrl,
   // interactions
-  isScrolling,
   selected,
   onClick,
   onDoubleClick,
