@@ -1,7 +1,7 @@
 import React, { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
-const overlayStyles = css`
+const overlayStyles = css<{ radius?: number }>`
   &::before {
     // TODO: border-radius;
 
@@ -12,6 +12,10 @@ const overlayStyles = css`
     left: 0;
     width: 100%;
     height: 100%;
+
+    // TODO: Ideally we have specific radius variants, or a way to inherit border
+    // radius from the item wrapping the ::before.
+    border-radius: ${({ radius }) => (radius ? `${radius}px` : `initial`)};
   }
 
   &:focus-visible {
@@ -28,6 +32,7 @@ const overlayStyles = css`
 
 type AnchorProps = {
   href: string;
+  radius?: number;
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
 const StyledAnchor = styled.a<
@@ -44,9 +49,13 @@ const StyledAnchor = styled.a<
   ${overlayStyles}
 `;
 
+type ButtonProps = {
+  radius?: number;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
+
 const StyledButton = styled.button<
   // Override `as` and other styled component props
-  ButtonHTMLAttributes<HTMLButtonElement>
+  ButtonProps
 >`
   // Reset button styles
   // The actual styling of the element should happen in the children
@@ -62,6 +71,7 @@ const StyledButton = styled.button<
 
 type ItemProps = {
   children: JSX.Element;
+  radius?: number;
 
   // className from styled function
   className?: never;

@@ -24,11 +24,11 @@ export const ActionCard: React.FC<ActionCardProps> = ({
     <StyledCard dimmed={disabled}>
       <Icon name={icon} size={20} />
       {href ? (
-        <InteractiveOverlay.Anchor href={href} {...props}>
+        <InteractiveOverlay.Anchor href={href} radius={4} {...props}>
           <Text size={13}>{children}</Text>
         </InteractiveOverlay.Anchor>
       ) : (
-        <InteractiveOverlay.Button {...props}>
+        <InteractiveOverlay.Button disabled={disabled} radius={4} {...props}>
           <Text size={13}>{children}</Text>
         </InteractiveOverlay.Button>
       )}

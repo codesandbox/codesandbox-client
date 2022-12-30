@@ -51,6 +51,7 @@ export const BranchCard: React.FC<BranchProps> = ({
                   aria-label={ariaLabel}
                   onContextMenu={onContextMenu}
                   css={{ overflow: 'hidden' }}
+                  radius={4}
                   {...props}
                 >
                   <Text
