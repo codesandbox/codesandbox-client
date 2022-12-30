@@ -6,13 +6,13 @@ export interface FolderItemComponentProps {
   numberOfSandboxes: number;
   // interactions
   selected: boolean;
-  onClick?: (evt: React.MouseEvent<HTMLDivElement>) => void;
-  onDoubleClick?: (evt: React.MouseEvent<HTMLDivElement>) => void;
+  onClick?: (evt: React.MouseEvent<HTMLButtonElement>) => void;
+  onDoubleClick?: (evt: React.MouseEvent<HTMLButtonElement>) => void;
   onContextMenu?: (evt: React.MouseEvent) => void;
   // editing
   editing: boolean;
   isNewFolder: boolean;
-  isDragging: boolean;
+  isDragging?: boolean;
   newName: string;
   onChange: (evt: React.FormEvent<HTMLInputElement>) => void;
   onInputKeyDown: (evt: React.KeyboardEvent<HTMLInputElement>) => void;

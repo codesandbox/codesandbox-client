@@ -88,11 +88,7 @@ export const RepositoriesPage = () => {
       {isEmpty ? (
         <EmptyRepositories />
       ) : (
-        <VariableGrid
-          page={pageType}
-          items={itemsToShow}
-          customGridElementHeight={154}
-        />
+        <VariableGrid page={pageType} items={itemsToShow} />
       )}
     </SelectionProvider>
   );
