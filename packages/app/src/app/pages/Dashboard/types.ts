@@ -91,10 +91,6 @@ export type DashboardHeader = {
   showMoreLabel?: string;
 };
 
-export type DashboardNewSandbox = {
-  type: 'new-sandbox';
-};
-
 export type DashboardSkeletonRow = {
   type: 'skeleton-row';
 };
@@ -176,7 +172,6 @@ export type DashboardGridItem =
   | DashboardHeader
   | DashboardHeaderLink
   | DashboardNewFolder
-  | DashboardNewSandbox
   | DashboardSkeletonRow
   | DashboardSyncedRepoDefaultBranch
   | DashboardBlank

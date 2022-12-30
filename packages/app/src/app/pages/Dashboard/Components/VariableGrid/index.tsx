@@ -7,7 +7,6 @@ import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Sandbox } from '../Sandbox';
-import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
 import { SyncedSandbox } from '../SyncedSandbox';
@@ -17,7 +16,6 @@ import {
   DashboardSandbox,
   DashboardTemplate,
   DashboardFolder,
-  DashboardNewSandbox,
   DashboardHeader,
   DashboardHeaderLink,
   DashboardBlank,
@@ -73,7 +71,6 @@ interface IComponentForTypes {
   folder: React.FC<DecoratedItemProps<DashboardFolder>>;
   'synced-sandbox-repo': React.FC<DecoratedItemProps<DashboardSyncedRepo>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
-  'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
   'synced-sandbox-default-branch': React.FC<
     DecoratedItemProps<DashboardSyncedRepoDefaultBranch>
   >;
@@ -110,7 +107,6 @@ const ComponentForTypes: IComponentForTypes = {
     <SyncedSandbox {...props.item} isScrolling={props.isScrolling} />
   ),
   'new-folder': props => <CreateFolder {...props.item} />,
-  'new-sandbox': () => <NewSandbox />,
   'synced-sandbox-default-branch': props => (
     <NewMasterSandbox {...props.item} />
   ),
@@ -376,7 +372,6 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 'header',
                 'skeleton-row',
                 'blank-row-fill',
-                'new-sandbox',
                 'template',
                 'sandbox',
                 'search-result',
@@ -402,8 +397,6 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                   });
                 }
               }
-            } else if (item.type === 'new-sandbox' && viewMode === 'grid') {
-              filledItems.push(item);
             } else if (item.type === 'sandbox' || item.type === 'template') {
               if (
                 item.type === 'template' &&
@@ -413,10 +406,7 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 // If it's optional we don't show it if we're on the second row already
                 const previousRowItem = items[index - columnCount];
 
-                if (
-                  previousRowItem?.type === 'template' ||
-                  previousRowItem?.type === 'new-sandbox'
-                ) {
+                if (previousRowItem?.type === 'template') {
                   // Don't add if this one is optional and we're on the second row
                   return;
                 }

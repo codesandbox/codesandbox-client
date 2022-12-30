@@ -198,8 +198,9 @@ export const Folder = (folderItem: DashboardFolder) => {
   };
 
   return (
-    <div {...dragProps}>
+    <div {...dragProps} style={{ height: '100%' }}>
       <motion.div
+        style={{ height: '100%' }}
         initial={{ scale: 1 }}
         animate={{ scale: isOver && canDrop ? 1.02 : 1 }}
         {...dropProps}

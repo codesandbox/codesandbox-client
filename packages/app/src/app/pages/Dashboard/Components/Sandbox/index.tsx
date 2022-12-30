@@ -302,7 +302,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     onInputBlur,
     // drag preview
     thumbnailRef,
-    opacity: isDragging ? 0.25 : 1,
+    isDragging,
   };
 
   const dragProps = sandboxProps.noDrag
@@ -329,7 +329,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   }
 
   return (
-    <div {...dragProps}>
+    <div {...dragProps} css={{ height: '100%' }}>
       <Component
         {...sandboxProps}
         {...interactionProps}

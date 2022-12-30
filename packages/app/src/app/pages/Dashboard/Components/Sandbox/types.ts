@@ -32,5 +32,5 @@ export interface SandboxItemComponentProps {
   restricted?: boolean;
 
   thumbnailRef: React.Ref<HTMLDivElement>;
-  opacity: number;
+  isDragging: boolean;
 }

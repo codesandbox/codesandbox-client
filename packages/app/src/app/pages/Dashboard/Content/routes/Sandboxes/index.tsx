@@ -112,6 +112,7 @@ export const SandboxesPage = () => {
         </EmptyPage.StyledWrapper>
       ) : (
         <VariableGrid
+          customGridElementHeight={154}
           page={pageType}
           collectionId={currentCollection?.id}
           items={itemsToShow}
