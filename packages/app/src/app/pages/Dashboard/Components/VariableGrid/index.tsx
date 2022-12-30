@@ -340,7 +340,7 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
             }
           > = [];
           const blankItem = { type: 'blank' as const };
-          const skeletonItem = {
+          const skeletonItem: DashboardSkeleton = {
             type: 'solid-skeleton',
             viewMode,
           };
