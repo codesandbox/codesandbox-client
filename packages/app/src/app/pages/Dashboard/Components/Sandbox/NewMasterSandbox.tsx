@@ -41,7 +41,10 @@ const NewMasterSandboxListItem = ({ repo }: NewMasterSandboxProps) => {
       onDoubleClick={() => {
         window.location.href = `https://codesandbox.io/s/github/${repo.owner}/${repo.name}/tree/${repo.branch}`;
       }}
-      onContextMenu={e => onRightClick(e, `/github/${repo.owner}/${repo.name}`)}
+      onContextMenu={e => {
+        e.preventDefault();
+        onRightClick(e, `/github/${repo.owner}/${repo.name}`);
+      }}
       css={css({
         paddingX: 0,
         ':hover, :focus, :focus-within': {
