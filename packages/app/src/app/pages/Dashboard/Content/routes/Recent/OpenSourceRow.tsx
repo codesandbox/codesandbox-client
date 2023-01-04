@@ -79,8 +79,10 @@ export const OpenSourceRow: React.FC = () => {
         })}
         {SUGGESTED_REPOS.map(({ owner, name }) => {
           const slug = `${owner}/${name}`;
-          const url = v2DefaultBranchUrl(owner, name, {
-            utm_source: 'dashboard_onboarding',
+          const url = v2DefaultBranchUrl({
+            owner,
+            repoName: name,
+            source: 'dashboard_onboarding',
           });
 
           return (
