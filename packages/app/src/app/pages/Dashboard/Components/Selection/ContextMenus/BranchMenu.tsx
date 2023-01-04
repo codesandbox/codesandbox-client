@@ -48,6 +48,7 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
   const history = useHistory();
 
   const canRemoveBranch = name !== defaultBranch;
+  const branchIsOnGitHub = branch.upstream;
 
   return (
     <Menu.ContextMenu
@@ -66,7 +67,7 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
       <MenuItem onSelect={() => window.open(branchUrl, '_blank')}>
         Open branch in a new tab
       </MenuItem>
-      {!contribution && (
+      {branchIsOnGitHub && !contribution && (
         <MenuItem onSelect={() => window.open(githubUrl, '_blank')}>
           Open on GitHub
         </MenuItem>

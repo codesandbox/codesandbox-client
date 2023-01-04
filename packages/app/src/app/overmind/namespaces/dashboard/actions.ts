@@ -18,8 +18,8 @@ import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import {
   getDecoratedCollection,
-  sortByNameAscending,
   getProjectUniqueKey,
+  sortByLastAccessed,
 } from './utils';
 
 import { OrderBy, PageTypes, sandboxesTypes } from './types';
@@ -1994,9 +1994,15 @@ export const getRepositoriesByTeam = async (
       return;
     }
 
+    const accessedRepositories = repositories.filter(r => r.lastAccessedAt);
+    const unaccessedRepositories = repositories.filter(r => !r.lastAccessedAt);
+
     dashboard.repositoriesByTeamId = {
       ...dashboard.repositoriesByTeamId,
-      [teamId]: repositories.sort(sortByNameAscending),
+      [teamId]: [
+        ...accessedRepositories.sort(sortByLastAccessed),
+        ...unaccessedRepositories,
+      ],
     };
 
     // If fetchCachedDataFirst was true, the initial call was made (faster), so we can

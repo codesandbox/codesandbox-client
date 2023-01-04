@@ -2617,7 +2617,7 @@ export type NpmRegistryFragment = { __typename?: 'PrivateRegistry' } & Pick<
 
 export type BranchFragment = { __typename?: 'Branch' } & Pick<
   Branch,
-  'id' | 'name' | 'contribution' | 'lastAccessedAt'
+  'id' | 'name' | 'contribution' | 'lastAccessedAt' | 'upstream'
 > & {
     project: { __typename?: 'Project' } & {
       repository: { __typename?: 'GitHubRepository' } & Pick<
@@ -2630,7 +2630,7 @@ export type BranchFragment = { __typename?: 'Branch' } & Pick<
 
 export type ProjectFragment = { __typename?: 'Project' } & Pick<
   Project,
-  'branchCount'
+  'branchCount' | 'lastAccessedAt'
 > & {
     repository: { __typename?: 'GitHubRepository' } & Pick<
       GitHubRepository,

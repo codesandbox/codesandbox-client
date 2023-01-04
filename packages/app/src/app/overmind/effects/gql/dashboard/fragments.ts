@@ -239,6 +239,7 @@ export const branchFragment = gql`
     name
     contribution
     lastAccessedAt
+    upstream
     project {
       repository {
         ... on GitHubRepository {
@@ -258,6 +259,7 @@ export const branchFragment = gql`
 export const projectFragment = gql`
   fragment project on Project {
     branchCount
+    lastAccessedAt
     repository {
       ... on GitHubRepository {
         owner
