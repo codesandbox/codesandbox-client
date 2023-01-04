@@ -50,8 +50,9 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
     sandboxTitle,
     restricted,
     TemplateIcon,
+    ...props
   }) => (
-    <Stack css={{ zIndex: 1 }} justify="space-between">
+    <Stack css={{ zIndex: 2 }} justify="space-between">
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input
@@ -79,6 +80,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
             onDoubleClick={editing ? undefined : onDoubleClick}
             onBlur={onBlur}
             onContextMenu={onContextMenu}
+            {...props}
           >
             <Text
               size={13}
@@ -150,7 +152,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         justify="space-between"
         align="center"
         css={{
-          zIndex: 1,
+          zIndex: 2,
           height: '16px',
           color: hasThumbnail ? '#fff' : '#999',
         }}
@@ -181,6 +183,22 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
   }
 );
 
+// TODO: Colors experiment (WIP)
+// export const TEMPLATE_COLORS: Record<string, string> = {
+//   'create-react-app': '#202a2a',
+//   next: '#202020',
+//   'vue-cli': '#202a20',
+//   node: '#202a20',
+//   nuxt: '#202a20',
+//   parcel: '#2a2a20',
+//   static: '#2a2320',
+//   'angular-cli': '#2a2020',
+//   svelte: '#2a2320',
+//   'preact-cli': '#2a202a',
+//   gatsby: '#2a202a',
+//   remix: '2a2a2a',
+// };
+
 export const SandboxCard = ({
   sandbox,
   sandboxTitle,
@@ -206,12 +224,16 @@ export const SandboxCard = ({
   // drag preview
   thumbnailRef,
   isDragging,
+  ...props
 }: SandboxItemComponentProps) => {
   const sandboxThumbnail = useSandboxThumbnail({
     sandboxId: sandbox.id,
     screenshotOutdated: sandbox.screenshotOutdated,
     screenshotUrl,
   });
+
+  // TODO: Colors experiment (WIP)
+  // const color = TEMPLATE_COLORS[sandbox.source.template] || '#1a1a1a';
 
   return (
     <InteractiveOverlay>
@@ -220,6 +242,7 @@ export const SandboxCard = ({
         selected={selected}
         css={{
           position: 'relative',
+          // background: color,
         }}
       >
         <SandboxTitle
@@ -236,6 +259,7 @@ export const SandboxCard = ({
           sandboxTitle={sandboxTitle}
           TemplateIcon={TemplateIcon}
           restricted={restricted}
+          {...props}
         />
         <SandboxStats
           noDrag={noDrag}
@@ -248,17 +272,31 @@ export const SandboxCard = ({
           showBetaBadge={sandbox.isV2}
           hasThumbnail={!!sandboxThumbnail}
         />
+        {/* <Element
+          css={{
+            position: 'absolute',
+            height: '100%',
+            width: '100%',
+            top: 0,
+            right: 0,
+            zIndex: 1,
+            borderRadius: '4px',
+            background: `linear-gradient(135deg, ${color}, transparent)`,
+          }}
+        /> */}
         <Element
           className="thumbnail"
           ref={thumbnailRef}
           css={{
             opacity: 0.2,
+            // opacity: 0.5,
             position: 'absolute',
             height: '100%',
             width: '100%',
             top: 0,
             right: 0,
             zIndex: 0,
+            borderRadius: '4px',
             backgroundSize: 'cover',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
