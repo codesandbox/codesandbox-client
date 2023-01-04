@@ -31,7 +31,7 @@ export const useSandboxThumbnail = ({
   screenshotOutdated,
 }): string | undefined => {
   // 0. Use template icon as starting point and fallback
-  // 1. se sandbox.screenshotUrl if it can be successfully loaded (might not exist)
+  // 1. Use sandbox.screenshotUrl if it can be successfully loaded (might not exist)
   // 2. If screenshot is outdated, lazily load a newer screenshot. Switch when image loaded.
   const SCREENSHOT_TIMEOUT = 5000;
 
