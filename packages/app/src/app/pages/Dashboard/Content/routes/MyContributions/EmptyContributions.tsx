@@ -1,6 +1,7 @@
 import track from '@codesandbox/common/lib/utils/analytics';
 import { v2DefaultBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { ArticleCard, CreateCard, Element } from '@codesandbox/components';
+import { useAppState } from 'app/overmind';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import React from 'react';
@@ -24,6 +25,8 @@ const SUGGESTED_REPOS = [
 ];
 
 export const EmptyContributions: React.FC = () => {
+  const { activeTeam } = useAppState();
+
   return (
     <EmptyPage.StyledWrapper>
       <EmptyPage.StyledDescription
@@ -37,8 +40,11 @@ export const EmptyContributions: React.FC = () => {
         <EmptyPage.StyledGrid as="ul">
           {SUGGESTED_REPOS.map(({ owner, name }) => {
             const slug = `${owner}/${name}`;
-            const url = v2DefaultBranchUrl(owner, name, {
-              utm_source: 'dashboard_onboarding',
+            const url = v2DefaultBranchUrl({
+              owner,
+              repoName: name,
+              workspaceId: activeTeam,
+              source: 'dashboard_onboarding',
             });
 
             return (
