@@ -167,6 +167,12 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
+    if (searchQuery) {
+      track('New Sandbox Modal - Search Templates', { query: searchQuery });
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
     if (searchQuery && tabState.selectedId) {
       setSearchQuery('');
     }
