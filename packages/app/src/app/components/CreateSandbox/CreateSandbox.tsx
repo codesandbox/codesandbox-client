@@ -168,7 +168,11 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
   useEffect(() => {
     if (searchQuery) {
-      track('New Sandbox Modal - Search Templates', { query: searchQuery });
+      track('Create New - Search Templates', {
+        query: searchQuery,
+        codesandbox: 'V1',
+        event_source: 'UI',
+      });
     }
   }, [searchQuery]);
 
