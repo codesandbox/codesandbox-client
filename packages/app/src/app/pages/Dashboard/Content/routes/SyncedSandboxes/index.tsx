@@ -89,11 +89,7 @@ export const SyncedSandboxesPage = () => {
         showSortOptions={Boolean(param)}
         nestedPageType={pageType}
       />
-      <VariableGrid
-        customGridElementHeight={154}
-        page={pageType}
-        items={itemsToShow}
-      />
+      <VariableGrid page={pageType} items={itemsToShow} />
     </SelectionProvider>
   );
 };
