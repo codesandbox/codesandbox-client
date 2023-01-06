@@ -37,7 +37,7 @@ export const FolderCard: React.FC<FolderItemComponentProps> = ({
   <InteractiveOverlay>
     <StyledCard dimmed={isDragging} selected={selected || showDropStyles}>
       <Stack justify="space-between">
-        <Icon size={16} name="folder" color="#E3FF73" />
+        <Icon size={20} name="folder" color="#E3FF73" />
         {!isNewFolder ? (
           <IconButton
             css={{
