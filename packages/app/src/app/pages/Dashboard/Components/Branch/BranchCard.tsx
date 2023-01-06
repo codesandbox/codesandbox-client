@@ -81,7 +81,7 @@ export const BranchCard: React.FC<BranchProps> = ({
               />
             </Stack>
           </Stack>
-          <Stack justify="space-between" align="center">
+          <Stack justify="flex-end">
             {restricted ? <Badge variant="trial">Restricted</Badge> : null}
           </Stack>
         </Stack>
