@@ -287,7 +287,7 @@ export const SandboxCard = ({
           className="thumbnail"
           ref={thumbnailRef}
           css={{
-            opacity: 0.2,
+            opacity: 0.1,
             // opacity: 0.5,
             position: 'absolute',
             height: '100%',
