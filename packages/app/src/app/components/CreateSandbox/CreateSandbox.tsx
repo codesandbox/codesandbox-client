@@ -167,6 +167,16 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
+    if (searchQuery) {
+      track('Create New - Search Templates', {
+        query: searchQuery,
+        codesandbox: 'V1',
+        event_source: 'UI',
+      });
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
     if (searchQuery && tabState.selectedId) {
       setSearchQuery('');
     }
