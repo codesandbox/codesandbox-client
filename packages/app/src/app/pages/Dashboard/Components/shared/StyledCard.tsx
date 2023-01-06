@@ -1,4 +1,4 @@
-import { Card } from '@codesandbox/components';
+import { Card, InteractiveOverlay } from '@codesandbox/components';
 import styled from 'styled-components';
 
 interface StyledCardProps {
@@ -16,6 +16,13 @@ export const StyledCard = styled(Card)<StyledCardProps>(
       : {
           backgroundColor: '#252525',
         },
+
+    [`&:has(${InteractiveOverlay.Button}:not(:hover)),
+      &:has(${InteractiveOverlay.Anchor}:not(:hover)),
+      &:has(${InteractiveOverlay.Item}:not(:hover))`]: {
+      backgroundColor: '#1D1D1D',
+    },
+
     color: '#999999',
     height: '100%',
     display: 'flex',
