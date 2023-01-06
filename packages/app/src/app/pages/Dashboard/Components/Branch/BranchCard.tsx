@@ -35,7 +35,7 @@ export const BranchCard: React.FC<BranchProps> = ({
           <Stack justify="space-between">
             <Stack direction="vertical" gap={1} css={{ overflow: 'hidden' }}>
               {showRepo && (
-                <Text color="#999" size={12} truncate>
+                <Text color="#999" size={12} truncate css={{ height: '16px' }}>
                   {repository.owner}/{repository.name}
                 </Text>
               )}

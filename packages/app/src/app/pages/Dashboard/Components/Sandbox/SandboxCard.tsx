@@ -182,7 +182,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         css={{
           zIndex: 2,
           height: '16px',
-          color: hasThumbnail ? '#fff' : '#999',
+          color: hasThumbnail ? '#C2C2C2' : '#999',
         }}
       >
         <Stack gap={2} align="center">
@@ -204,7 +204,6 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
           ) : null}
           {noDrag ? null : lastUpdatedText}
         </Stack>
-
         {badge}
       </Stack>
     );
