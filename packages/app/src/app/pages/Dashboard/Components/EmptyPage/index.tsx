@@ -6,7 +6,7 @@ const StyledWrapper = styled(Stack)`
   overflow: auto;
   width: calc(100% - ${2 * GUTTER}px);
   max-width: ${GRID_MAX_WIDTH}px;
-  padding: 0 ${GUTTER}px;
+  padding: 0;
   height: 100%;
   margin: 0 auto;
   padding-bottom: 28px;
