@@ -451,7 +451,7 @@ export class TranspiledModule {
         };
 
         let transpiledModule: TranspiledModule | undefined;
-        if (!overwrite) {
+        if (overwrite) {
           try {
             transpiledModule = manager.getTranspiledModule(
               moduleCopy,
