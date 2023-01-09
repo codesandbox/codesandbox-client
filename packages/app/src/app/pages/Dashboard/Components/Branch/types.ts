@@ -8,4 +8,5 @@ export type BranchProps = {
   onContextMenu: (evt: React.MouseEvent) => void;
   onClick: (evt: React.MouseEvent) => void;
   restricted?: boolean;
+  showRepo: boolean;
 };

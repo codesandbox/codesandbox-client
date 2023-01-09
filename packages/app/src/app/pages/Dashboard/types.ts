@@ -53,8 +53,8 @@ export type DashboardFolder = DELETE_ME_COLLECTION &
     type: 'folder';
   };
 
-export type DashboardRepo = {
-  type: 'repo';
+export type DashboardSyncedRepo = {
+  type: 'synced-sandbox-repo';
   path?: string;
   lastEdited?: Date;
   branch: string;
@@ -64,9 +64,18 @@ export type DashboardRepo = {
   isScrolling?: boolean;
 };
 
-export type DashboardRepoSandbox = {
+export type DashboardSyncedRepoSandbox = {
   type: 'sandbox';
   sandbox: RepoFragmentDashboardFragment;
+};
+
+export type DashboardSyncedRepoDefaultBranch = {
+  type: 'synced-sandbox-default-branch';
+  repo: {
+    owner: string;
+    name: string;
+    branch: string;
+  };
 };
 
 export type DashboardNewFolder = {
@@ -80,10 +89,6 @@ export type DashboardHeader = {
   title: string;
   showMoreLink?: string;
   showMoreLabel?: string;
-};
-
-export type DashboardNewSandbox = {
-  type: 'new-sandbox';
 };
 
 export type DashboardSkeletonRow = {
@@ -108,17 +113,8 @@ type DashboardBlankRowFill = {
 };
 
 export type DashboardSkeleton = {
-  type: 'default-skeleton' | 'solid-skeleton';
+  type: 'solid-skeleton';
   viewMode: ViewMode;
-};
-
-export type DashboardNewMasterBranch = {
-  type: 'new-master-branch';
-  repo: {
-    owner: string;
-    name: string;
-    branch: string;
-  };
 };
 
 export type DashboardCommunitySandbox = {
@@ -164,6 +160,7 @@ export type DashboardRepository = {
 export type DashboardImportRepository = {
   type: 'import-repository';
   disabled?: boolean;
+  onImportClicked: () => void;
 };
 
 export type PageTypes = PT;
@@ -175,12 +172,11 @@ export type DashboardGridItem =
   | DashboardHeader
   | DashboardHeaderLink
   | DashboardNewFolder
-  | DashboardNewSandbox
   | DashboardSkeletonRow
-  | DashboardNewMasterBranch
+  | DashboardSyncedRepoDefaultBranch
   | DashboardBlank
-  | DashboardRepo
-  | DashboardRepoSandbox
+  | DashboardSyncedRepo
+  | DashboardSyncedRepoSandbox
   | DashboardBlankRowFill
   | DashboardSkeleton
   | DashboardCommunitySandbox

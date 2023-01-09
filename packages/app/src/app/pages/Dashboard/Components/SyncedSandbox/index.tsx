@@ -1,47 +1,24 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { useAppState } from 'app/overmind';
 import { SyncedSandboxCard } from './SyncedSandboxCard';
 import { SyncedSandboxListItem } from './SyncedSandboxListItem';
 import { useSelection } from '../Selection';
-import { DashboardRepo } from '../../types';
+import { DashboardSyncedRepo } from '../../types';
 
 export const SyncedSandbox = ({
   name = '',
   path = null,
   ...props
-}: DashboardRepo) => {
+}: DashboardSyncedRepo) => {
   const { dashboard } = useAppState();
 
   const Component =
     dashboard.viewMode === 'list' ? SyncedSandboxListItem : SyncedSandboxCard;
 
   // interactions
-  const {
-    selectedIds,
-    onClick: onSelectionClick,
-    onMouseDown,
-    onRightClick,
-    onMenuEvent,
-    onBlur,
-  } = useSelection();
+  const { onRightClick, onMenuEvent } = useSelection();
 
-  const selected = selectedIds.includes(path);
-
-  const onClick = event => {
-    onSelectionClick(event, path);
-  };
-
-  const history = useHistory();
-  const onDoubleClick = event => {
-    // TODO: map repo type to url
-    const url = '/dashboard/synced-sandboxes' + path;
-    if (event.ctrlKey || event.metaKey) {
-      window.open(url, '_blank');
-    } else {
-      history.push(url);
-    }
-  };
+  const url = '/dashboard/synced-sandboxes' + path;
 
   const onContextMenu = event => {
     event.preventDefault();
@@ -50,26 +27,12 @@ export const SyncedSandbox = ({
     else onMenuEvent(event, path);
   };
 
-  const interactionProps = {
-    tabIndex: 0, // make div focusable
-    style: { outline: 'none' }, // we handle outline with border
-    selected,
-    onClick,
-    onMouseDown,
-    onDoubleClick,
-    onContextMenu,
-    onBlur,
-    restricted: false,
-    isScrolling: props.isScrolling,
-    'data-selection-id': path,
-  };
-
-  const folderProps = {
+  const syncedSandboxProps = {
     name,
     path,
-    onClick,
-    onDoubleClick,
+    url,
+    onContextMenu,
   };
 
-  return <Component {...folderProps} {...interactionProps} {...props} />;
+  return <Component {...syncedSandboxProps} {...props} />;
 };

@@ -4,12 +4,11 @@ import {
   IconButton,
   Stack,
   Text,
-  Tooltip,
-  Element,
   Badge,
+  InteractiveOverlay,
 } from '@codesandbox/components';
-import { css } from '@styled-system/css';
 import { BranchProps } from './types';
+import { StyledCard } from '../shared/StyledCard';
 
 export const BranchCard: React.FC<BranchProps> = ({
   branch,
@@ -18,6 +17,7 @@ export const BranchCard: React.FC<BranchProps> = ({
   selected,
   onContextMenu,
   restricted,
+  showRepo,
   ...props
 }) => {
   const { name: branchName, project, contribution } = branch;
@@ -25,110 +25,67 @@ export const BranchCard: React.FC<BranchProps> = ({
   const ariaLabel = `Open branch ${branchName} from ${repository.name} by ${repository.owner} in the editor`;
 
   return (
-    <Stack
-      as="a"
-      aria-label={ariaLabel}
-      css={css({
-        position: 'relative',
-        overflow: 'hidden',
-        height: 240,
-        width: '100%',
-        borderRadius: '4px',
-        border: '1px solid',
-        borderColor: selected ? 'focusBorder' : 'transparent',
-        backgroundColor: selected ? 'card.backgroundHover' : 'card.background',
-        opacity: isBeingRemoved ? 0.5 : 1,
-        pointerEvents: isBeingRemoved ? 'none' : 'all',
-        transition: 'background ease-in-out, opacity ease-in-out',
-        transitionDuration: theme => theme.speeds[2],
-        textDecoration: 'none',
-        outline: 'none',
-        ':hover': {
-          backgroundColor: 'card.backgroundHover',
-        },
-        ':has(button:hover)': {
-          backgroundColor: 'card.background',
-        },
-        ':focus-visible': {
-          borderColor: 'focusBorder',
-        },
-      })}
-      direction="vertical"
-      href={isBeingRemoved ? undefined : branchUrl}
-      onContextMenu={onContextMenu}
-      {...props}
-    >
-      <Stack
-        css={css({
-          backgroundColor: restricted ? '#252525' : '#161616',
-          paddingY: 11,
-          position: 'relative',
-        })}
-        align="center"
-        justify="center"
-      >
-        <Icon color="#808080" name="branch" size={32} />
-      </Stack>
-      {restricted ? (
-        <Element css={{ position: 'absolute', top: 8, left: 8 }}>
-          <Badge variant="trial">Restricted</Badge>
-        </Element>
-      ) : null}
-      <Stack
-        css={css({
-          paddingY: 5,
-          paddingLeft: 5,
-          paddingRight: 2,
-          justifyContent: 'space-between',
-          height: '100%',
-        })}
-        direction="vertical"
-      >
-        <Stack align="center" justify="space-between">
-          <Tooltip label={branchName}>
-            <Text
-              css={css({
-                color: restricted ? '#999999' : '#E5E5E5',
-                flex: 1,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              })}
-              weight="medium"
-              size={13}
-            >
-              {branchName}
-            </Text>
-          </Tooltip>
-          <IconButton
-            variant="square"
-            name="more"
-            size={14}
-            title="Branch actions"
-            onClick={evt => {
-              evt.stopPropagation();
-              onContextMenu(evt);
-            }}
-          />
+    <InteractiveOverlay>
+      <StyledCard dimmed={isBeingRemoved}>
+        <Stack
+          css={{ height: '100%' }}
+          direction="vertical"
+          justify="space-between"
+        >
+          <Stack justify="space-between">
+            <Stack direction="vertical" gap={1} css={{ overflow: 'hidden' }}>
+              {showRepo && (
+                <Text color="#999" size={12} truncate css={{ height: '16px' }}>
+                  {repository.owner}/{repository.name}
+                </Text>
+              )}
+
+              <Stack gap={2}>
+                {contribution ? (
+                  <Icon color="#EDFFA5" name="contribution" size={16} />
+                ) : (
+                  <Icon color="#999999" name="branch" size={16} />
+                )}
+                <InteractiveOverlay.Anchor
+                  href={isBeingRemoved ? undefined : branchUrl}
+                  aria-label={ariaLabel}
+                  onContextMenu={onContextMenu}
+                  css={{ overflow: 'hidden' }}
+                  radius={4}
+                  {...props}
+                >
+                  <Text
+                    color={restricted ? '#999999' : '#E5E5E5'}
+                    weight="medium"
+                    size={13}
+                    truncate
+                  >
+                    {branchName}
+                  </Text>
+                </InteractiveOverlay.Anchor>
+              </Stack>
+            </Stack>
+            <Stack css={{ height: '16px' }} align="center">
+              <IconButton
+                css={{
+                  marginRight: '-4px',
+                }} /* Align icon to top-right corner */
+                variant="square"
+                name="more"
+                size={16}
+                title="Branch actions"
+                onClick={evt => {
+                  evt.stopPropagation();
+                  onContextMenu(evt);
+                }}
+              />
+            </Stack>
+          </Stack>
+          <Stack justify="flex-end">
+            {restricted ? <Badge variant="trial">Restricted</Badge> : null}
+          </Stack>
         </Stack>
-        <Stack gap={2}>
-          {contribution && (
-            <Icon color="#EDFFA5" name="contribution" size={16} />
-          )}
-          <Text
-            css={css({
-              color: '#808080',
-              flex: 1,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            })}
-            size={13}
-          >
-            {repository.owner}/{repository.name}
-          </Text>
-        </Stack>
-      </Stack>
-    </Stack>
+      </StyledCard>
+    </InteractiveOverlay>
   );
 };
