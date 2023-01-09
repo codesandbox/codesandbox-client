@@ -2534,7 +2534,7 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'ProSubscription' } & Pick<
         ProSubscription,
-        'origin' | 'type' | 'paymentProvider'
+        'origin' | 'type' | 'paymentProvider' | 'paymentMethodAttached'
       >
     >;
   };
@@ -2567,21 +2567,22 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'ProSubscription' } & Pick<
         ProSubscription,
-        | 'id'
-        | 'type'
-        | 'status'
-        | 'origin'
-        | 'quantity'
-        | 'unitPrice'
-        | 'currency'
         | 'billingInterval'
-        | 'updateBillingUrl'
-        | 'nextBillDate'
-        | 'paymentProvider'
         | 'cancelAt'
         | 'cancelAtPeriodEnd'
-        | 'trialStart'
+        | 'currency'
+        | 'id'
+        | 'nextBillDate'
+        | 'origin'
+        | 'paymentMethodAttached'
+        | 'paymentProvider'
+        | 'quantity'
+        | 'status'
         | 'trialEnd'
+        | 'trialStart'
+        | 'type'
+        | 'unitPrice'
+        | 'updateBillingUrl'
       >
     >;
     limits: { __typename?: 'TeamLimits' } & Pick<
