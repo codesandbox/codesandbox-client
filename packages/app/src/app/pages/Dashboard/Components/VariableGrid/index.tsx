@@ -1,12 +1,12 @@
 import React from 'react';
-import { Link as RouterLink, useLocation, useParams } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useAppState } from 'app/overmind';
 import { Element, Stack, Text, Link } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { VariableSizeGrid, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { Sandbox } from '../Sandbox';
-import { NewSandbox } from '../Sandbox/NewSandbox';
 import { NewMasterSandbox } from '../Sandbox/NewMasterSandbox';
 import { Folder } from '../Folder';
 import { SyncedSandbox } from '../SyncedSandbox';
@@ -16,14 +16,13 @@ import {
   DashboardSandbox,
   DashboardTemplate,
   DashboardFolder,
-  DashboardNewSandbox,
   DashboardHeader,
   DashboardHeaderLink,
   DashboardBlank,
   DashboardSkeleton,
   DashboardNewFolder,
-  DashboardRepo,
-  DashboardNewMasterBranch,
+  DashboardSyncedRepo,
+  DashboardSyncedRepoDefaultBranch,
   DashboardCommunitySandbox,
   DashboardBranch,
   DashboardRepository,
@@ -34,9 +33,7 @@ import {
 import { CreateFolder } from '../Folder/CreateFolder';
 import { Branch } from '../Branch';
 import { Repository } from '../Repository';
-import { NewBranchCard } from '../Branch/NewBranch';
-import { ImportRepositoryCard } from '../Repository/ImportRepository';
-import { DefaultSkeleton, SolidSkeleton } from '../Skeleton';
+import { SolidSkeleton } from '../Skeleton';
 import {
   GRID_MAX_WIDTH,
   MAX_COLUMN_COUNT,
@@ -47,6 +44,7 @@ import {
   HEADER_HEIGHT,
   ITEM_VERTICAL_OFFSET,
 } from './constants';
+import { ActionCard } from '../shared/ActionCard';
 
 type WindowItemProps = {
   data: {
@@ -71,14 +69,14 @@ interface IComponentForTypes {
   sandbox: React.FC<DecoratedItemProps<DashboardSandbox>>;
   template: React.FC<DecoratedItemProps<DashboardTemplate>>;
   folder: React.FC<DecoratedItemProps<DashboardFolder>>;
-  repo: React.FC<DecoratedItemProps<DashboardRepo>>;
+  'synced-sandbox-repo': React.FC<DecoratedItemProps<DashboardSyncedRepo>>;
   'new-folder': React.FC<DecoratedItemProps<DashboardNewFolder>>;
-  'new-sandbox': React.FC<DecoratedItemProps<DashboardNewSandbox>>;
-  'new-master-branch': React.FC<DecoratedItemProps<DashboardNewMasterBranch>>;
+  'synced-sandbox-default-branch': React.FC<
+    DecoratedItemProps<DashboardSyncedRepoDefaultBranch>
+  >;
   header: React.FC<DecoratedItemProps<DashboardHeader>>;
   'header-link': React.FC<DecoratedItemProps<DashboardHeaderLink>>;
   blank: React.FC<DecoratedItemProps<DashboardBlank>>;
-  'default-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'solid-skeleton': React.FC<DecoratedItemProps<DashboardSkeleton>>;
   'community-sandbox': React.FC<DecoratedItemProps<DashboardCommunitySandbox>>;
   branch: React.FC<DecoratedItemProps<DashboardBranch>>;
@@ -104,12 +102,13 @@ const ComponentForTypes: IComponentForTypes = {
     />
   )),
   folder: props => <Folder key={props.item.name} {...props.item} />,
-  repo: props => (
+  'synced-sandbox-repo': props => (
     <SyncedSandbox {...props.item} isScrolling={props.isScrolling} />
   ),
   'new-folder': props => <CreateFolder {...props.item} />,
-  'new-sandbox': () => <NewSandbox />,
-  'new-master-branch': props => <NewMasterSandbox {...props.item} />,
+  'synced-sandbox-default-branch': props => (
+    <NewMasterSandbox {...props.item} />
+  ),
   header: ({ item }) => (
     <Stack justify="space-between" align="center">
       <Text block weight="regular" css={css({ userSelect: 'none' })}>
@@ -140,9 +139,6 @@ const ComponentForTypes: IComponentForTypes = {
     </Link>
   ),
   blank: () => <div />,
-  'default-skeleton': ({ item }) => (
-    <DefaultSkeleton viewMode={item.viewMode} />
-  ),
   'solid-skeleton': ({ item }) => <SolidSkeleton viewMode={item.viewMode} />,
   'community-sandbox': React.memo(props => (
     <CommunitySandbox item={props.item} isScrolling={props.isScrolling} />
@@ -150,25 +146,27 @@ const ComponentForTypes: IComponentForTypes = {
   branch: ({ item, page }) => <Branch page={page} {...item} />,
   repository: ({ item }) => <Repository {...item} />,
   'new-branch': ({ item }) => (
-    <NewBranchCard
-      owner={item.repo.owner}
-      repoName={item.repo.name}
-      workspaceId={item.workspaceId}
+    <ActionCard
+      href={v2DraftBranchUrl({
+        owner: item.repo.owner,
+        repoName: item.repo.name,
+        workspaceId: item.workspaceId,
+      })}
+      icon="plus"
       disabled={item.disabled}
-    />
+    >
+      Create branch
+    </ActionCard>
   ),
-  'import-repository': ({ item }) => <ImportRepositoryCard {...item} />,
-};
-
-const getSkeletonForPage = (
-  page: PageTypes,
-  path: string
-): DashboardSkeleton['type'] => {
-  if ((page === 'synced-sandboxes' || page === 'repositories') && !path) {
-    return 'solid-skeleton';
-  }
-
-  return 'default-skeleton';
+  'import-repository': ({ item }) => (
+    <ActionCard
+      onClick={item.onImportClicked}
+      icon="plus"
+      disabled={item.disabled}
+    >
+      Import repository
+    </ActionCard>
+  ),
 };
 
 const Item = React.memo(
@@ -247,29 +245,21 @@ interface VariableGridProps {
   collectionId?: string;
   page: PageTypes;
   viewMode?: 'grid' | 'list';
-  customGridElementHeight?: number;
 }
 
 export const VariableGrid: React.FC<VariableGridProps> = ({
   items,
-  collectionId,
   page,
   viewMode: propViewMode,
-  customGridElementHeight,
 }) => {
   const { dashboard } = useAppState();
   const location = useLocation();
-  const params = useParams<{ path: string }>();
-  const path = params.path ?? '';
 
   let viewMode: 'grid' | 'list';
   if (location.pathname.includes('deleted')) viewMode = 'list';
   else viewMode = propViewMode || dashboard.viewMode;
 
-  const ITEM_HEIGHT =
-    viewMode === 'list'
-      ? ITEM_HEIGHT_LIST
-      : customGridElementHeight || ITEM_HEIGHT_GRID;
+  const ITEM_HEIGHT = viewMode === 'list' ? ITEM_HEIGHT_LIST : ITEM_HEIGHT_GRID;
 
   const getRowHeight = (rowIndex, columnCount, filledItems) => {
     const item = filledItems[rowIndex * columnCount];
@@ -354,8 +344,8 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
             }
           > = [];
           const blankItem = { type: 'blank' as const };
-          const skeletonItem = {
-            type: getSkeletonForPage(page, path),
+          const skeletonItem: DashboardSkeleton = {
+            type: 'solid-skeleton',
             viewMode,
           };
 
@@ -365,7 +355,6 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 'header',
                 'skeleton-row',
                 'blank-row-fill',
-                'new-sandbox',
                 'template',
                 'sandbox',
                 'search-result',
@@ -391,8 +380,6 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                   });
                 }
               }
-            } else if (item.type === 'new-sandbox' && viewMode === 'grid') {
-              filledItems.push(item);
             } else if (item.type === 'sandbox' || item.type === 'template') {
               if (
                 item.type === 'template' &&
@@ -402,10 +389,7 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 // If it's optional we don't show it if we're on the second row already
                 const previousRowItem = items[index - columnCount];
 
-                if (
-                  previousRowItem?.type === 'template' ||
-                  previousRowItem?.type === 'new-sandbox'
-                ) {
+                if (previousRowItem?.type === 'template') {
                   // Don't add if this one is optional and we're on the second row
                   return;
                 }
@@ -465,7 +449,7 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 style={{
                   overflowX: 'hidden',
                   userSelect: 'none',
-                  paddingBottom: 40,
+                  paddingBottom: 24,
                   boxSizing: 'border-box',
                 }}
               >

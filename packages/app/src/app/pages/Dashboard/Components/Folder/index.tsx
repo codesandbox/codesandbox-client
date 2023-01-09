@@ -187,6 +187,7 @@ export const Folder = (folderItem: DashboardFolder) => {
     // edit mode
     editing: isRenaming && selected,
     isNewFolder: false,
+    isDragging,
     newName,
     onChange,
     onInputKeyDown,
@@ -194,12 +195,12 @@ export const Folder = (folderItem: DashboardFolder) => {
     onInputBlur,
     // drag preview
     thumbnailRef,
-    opacity: isDragging ? 0.25 : 1,
   };
 
   return (
-    <div {...dragProps}>
+    <div {...dragProps} style={{ height: '100%' }}>
       <motion.div
+        style={{ height: '100%' }}
         initial={{ scale: 1 }}
         animate={{ scale: isOver && canDrop ? 1.02 : 1 }}
         {...dropProps}

@@ -50,6 +50,9 @@ export const RepositoriesPage = () => {
     if (viewMode === 'grid' && repoItems.length > 0) {
       repoItems.unshift({
         type: 'import-repository',
+        onImportClicked: () => {
+          actions.openCreateSandboxModal({ initialTab: 'import' });
+        },
         disabled: hasMaxPublicRepositories || hasMaxPrivateRepositories,
       });
     }
@@ -85,11 +88,7 @@ export const RepositoriesPage = () => {
       {isEmpty ? (
         <EmptyRepositories />
       ) : (
-        <VariableGrid
-          page={pageType}
-          items={itemsToShow}
-          customGridElementHeight={154}
-        />
+        <VariableGrid page={pageType} items={itemsToShow} />
       )}
     </SelectionProvider>
   );
