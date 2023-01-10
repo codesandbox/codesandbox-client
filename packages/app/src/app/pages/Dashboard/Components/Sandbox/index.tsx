@@ -258,6 +258,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     page === 'recent'
       ? {
           ...baseInteractions,
+          interaction: 'link' as const,
           as: sandbox.isV2 ? 'a' : Link,
           to: sandbox.isV2 ? undefined : url,
           href: sandbox.isV2 ? url : undefined,
@@ -267,12 +268,12 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
             }
           },
           style: {
-            outline: 'none',
             textDecoration: 'none',
           },
         }
       : {
           ...baseInteractions,
+          interaction: 'button' as const,
           // Recent page does not support selection
           'data-selection-id': sandbox.id,
           tabIndex: '0',
@@ -302,7 +303,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
     onInputBlur,
     // drag preview
     thumbnailRef,
-    opacity: isDragging ? 0.25 : 1,
+    isDragging,
   };
 
   const dragProps = sandboxProps.noDrag
@@ -329,7 +330,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   }
 
   return (
-    <div {...dragProps}>
+    <div {...dragProps} css={{ height: '100%' }}>
       <Component
         {...sandboxProps}
         {...interactionProps}

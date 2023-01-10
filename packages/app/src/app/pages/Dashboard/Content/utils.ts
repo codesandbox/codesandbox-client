@@ -5,7 +5,7 @@ import {
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
 } from 'app/graphql/types';
-import { DashboardRepoSandbox } from '../types';
+import { DashboardSyncedRepoSandbox } from '../types';
 
 export type TemplateFilter = {
   id: string;
@@ -19,7 +19,7 @@ export function getPossibleTemplates(
     | SandboxFragmentDashboardFragment
     | RepoFragmentDashboardFragment
     | TemplateFragmentDashboardFragment
-    | DashboardRepoSandbox
+    | DashboardSyncedRepoSandbox
   >
 ): TemplateFilter[] {
   if (!sandboxes) return [];

@@ -40,14 +40,14 @@ export const SandboxListItem = ({
   restricted,
   // drag preview
   thumbnailRef,
-  opacity,
+  isDragging,
   ...props
 }: SandboxItemComponentProps) => (
   <ListAction
     align="center"
     css={css({
       paddingX: 0,
-      opacity,
+      opacity: isDragging ? 0.25 : 1,
       height: 64,
       borderBottom: '1px solid',
       borderBottomColor: 'grays.600',

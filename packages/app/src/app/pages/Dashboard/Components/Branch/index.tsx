@@ -57,6 +57,7 @@ export const Branch: React.FC<BranchProps> = ({ branch, page }) => {
     onContextMenu: handleContextMenu,
     onClick: handleClick,
     restricted,
+    showRepo: page !== 'repository-branches',
     /**
      * If we ever need selection for branch entries, `data-selection-id` must be set
      * 'data-selection-id': branch.id,
