@@ -146,7 +146,6 @@ export const teamFragmentDashboard = gql`
       origin
       type
       paymentProvider
-      paymentMethodAttached
     }
   }
 `;

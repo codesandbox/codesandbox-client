@@ -2534,7 +2534,7 @@ export type TeamFragmentDashboardFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'ProSubscription' } & Pick<
         ProSubscription,
-        'origin' | 'type' | 'paymentProvider' | 'paymentMethodAttached'
+        'origin' | 'type' | 'paymentProvider'
       >
     >;
   };
