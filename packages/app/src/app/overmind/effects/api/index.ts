@@ -690,7 +690,7 @@ export default {
       workspace_id: workspaceId,
     });
   },
-  removeRepositoryFromTeam(owner: string, repo: string, teamId: string) {
+  removeLinkedProjectFromTeam(owner: string, repo: string, teamId: string) {
     return api.delete(`/beta/repos/link/github/${owner}/${repo}/${teamId}`);
   },
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu } from '@codesandbox/components';
-import { BranchFragment as Branch } from 'app/graphql/types';
+import { BranchFragment as Branch, ProjectFragment } from 'app/graphql/types';
 import {
   githubRepoUrl,
   v2BranchUrl,
@@ -21,7 +21,6 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
     removeRepositoryFromTeam,
   } = useActions().dashboard;
   const {
-    activeTeam,
     dashboard: { removingBranch, removingRepository },
   } = useAppState();
   const { visible, setVisibility, position } = React.useContext(Context);
@@ -99,10 +98,8 @@ export const BranchMenu: React.FC<BranchMenuProps> = ({ branch, page }) => {
           onSelect={() =>
             !removingRepository &&
             removeRepositoryFromTeam({
-              owner,
-              name: repoName,
-              teamId: activeTeam,
               page,
+              project: project as ProjectFragment,
             })
           }
         >

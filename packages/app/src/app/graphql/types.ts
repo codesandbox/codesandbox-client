@@ -642,7 +642,7 @@ export type ProSubscription = {
    * almost always be true, except when a team started a trial without a credit
    * card and has not yet added one.
    */
-  paymentMethodAtached: Maybe<Scalars['Boolean']>;
+  paymentMethodAttached: Scalars['Boolean'];
   paymentProvider: Maybe<SubscriptionPaymentProvider>;
   quantity: Maybe<Scalars['Int']>;
   status: SubscriptionStatus;
@@ -3137,6 +3137,17 @@ export type ImportProjectMutationVariables = Exact<{
 export type ImportProjectMutation = { __typename?: 'RootMutationType' } & {
   importProject: { __typename?: 'Project' } & Pick<Project, 'id'>;
 };
+
+export type DeleteProjectMutationVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+  teamId: Scalars['ID'];
+}>;
+
+export type DeleteProjectMutation = { __typename?: 'RootMutationType' } & Pick<
+  RootMutationType,
+  'deleteProject'
+>;
 
 export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
   [key: string]: never;

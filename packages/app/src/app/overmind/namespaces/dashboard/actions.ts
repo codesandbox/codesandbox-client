@@ -12,6 +12,7 @@ import {
   CreateOrUpdateNpmRegistryMutationVariables,
   DeleteNpmRegistryMutationVariables,
   CuratedAlbumByIdQueryVariables,
+  ProjectFragment,
 } from 'app/graphql/types';
 import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
@@ -2178,27 +2179,34 @@ export const removeBranchFromRepository = async (
   }
 };
 
-type ProjectToRemove = {
-  owner: string;
-  name: string;
-  teamId: string;
+type RemoveRepositoryParams = {
+  project: ProjectFragment;
   page: PageTypes;
 };
 export const removeRepositoryFromTeam = async (
   { actions, state, effects }: Context,
-  project: ProjectToRemove
+  { project, page }: RemoveRepositoryParams
 ) => {
   const { activeTeam, dashboard } = state;
   if (!activeTeam) {
     return;
   }
 
-  const { owner, name, teamId, page } = project;
+  const { team: assignedTeam } = project;
+  const { owner, name } = project.repository;
 
   dashboard.removingRepository = { owner, name };
 
   try {
-    await effects.api.removeRepositoryFromTeam(owner, name, teamId);
+    if (assignedTeam?.id) {
+      await effects.gql.mutations.deleteProject({
+        owner,
+        name,
+        teamId: activeTeam,
+      });
+    } else {
+      await effects.api.removeLinkedProjectFromTeam(owner, name, activeTeam);
+    }
 
     // Remove all cached data about repository
     // 1. From repositories list
@@ -2215,7 +2223,7 @@ export const removeRepositoryFromTeam = async (
       };
     }
 
-    const key = getProjectUniqueKey({ teamId, owner, name });
+    const key = getProjectUniqueKey({ teamId: activeTeam, owner, name });
     const repositoryWithBranches = dashboard.repositoriesWithBranches[key];
     if (repositoryWithBranches) {
       dashboard.repositoriesWithBranches = {

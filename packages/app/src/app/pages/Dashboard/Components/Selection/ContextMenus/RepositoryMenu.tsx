@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Menu } from '@codesandbox/components';
-import { ProjectFragment as Repository } from 'app/graphql/types';
+import { ProjectFragment } from 'app/graphql/types';
 import {
   dashboard,
   v2DefaultBranchUrl,
@@ -14,15 +14,15 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Context, MenuItem } from '../ContextMenu';
 
 type RepositoryMenuProps = {
-  repository: Repository;
+  repository: ProjectFragment;
   page: PageTypes;
 };
 export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
-  repository,
+  // Rename this as project to avoid confusion with internal repository fields
+  repository: project,
   page,
 }) => {
   const {
-    activeTeam,
     dashboard: { removingRepository },
   } = useAppState();
   const { removeRepositoryFromTeam } = useActions().dashboard;
@@ -36,32 +36,30 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
     return window.localStorage.getItem('CSB_DEBUG') === 'ENABLED';
   });
 
-  const { repository: providerRepository, team: assignedTeam } = repository;
+  const { repository, team: assignedTeam } = project;
 
-  const restricted = isFree && providerRepository.private;
+  const restricted = isFree && repository.private;
 
   const repositoryUrl = dashboard.repository({
-    owner: providerRepository.owner,
-    name: providerRepository.name,
+    owner: repository.owner,
+    name: repository.name,
   });
   const branchFromDefaultUrl = v2DraftBranchUrl({
-    owner: providerRepository.owner,
-    repoName: providerRepository.name,
+    owner: repository.owner,
+    repoName: repository.name,
     workspaceId: assignedTeam?.id,
   });
   const defaultBranchUrl = v2DefaultBranchUrl({
-    owner: providerRepository.owner,
-    repoName: providerRepository.name,
+    owner: repository.owner,
+    repoName: repository.name,
     workspaceId: assignedTeam?.id,
   });
 
   const repositoryIsStarred = state.dashboard.starredRepos.find(
-    repo =>
-      repo.owner === providerRepository.owner &&
-      repo.name === providerRepository.name
+    repo => repo.owner === repository.owner && repo.name === repository.name
   );
 
-  const githubUrl = `https://github.com/${providerRepository.owner}/${providerRepository.name}`;
+  const githubUrl = `https://github.com/${repository.owner}/${repository.name}`;
 
   return (
     <Menu.ContextMenu
@@ -75,10 +73,10 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
           window.location.href = defaultBranchUrl;
         }}
       >
-        Open {quotes(providerRepository.defaultBranch)} branch
+        Open {quotes(repository.defaultBranch)} branch
       </MenuItem>
       <MenuItem onSelect={() => window.open(defaultBranchUrl, '_blank')}>
-        Open {quotes(providerRepository.defaultBranch)} in a new tab
+        Open {quotes(repository.defaultBranch)} in a new tab
       </MenuItem>
       <MenuItem onSelect={() => window.open(githubUrl, '_blank')}>
         Open on GitHub
@@ -100,9 +98,9 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
         <MenuItem
           onSelect={() => {
             if (repositoryIsStarred) {
-              actions.dashboard.unstarRepo(providerRepository);
+              actions.dashboard.unstarRepo(repository);
             } else {
-              actions.dashboard.starRepo(providerRepository);
+              actions.dashboard.starRepo(repository);
             }
           }}
         >
@@ -116,9 +114,7 @@ export const RepositoryMenu: React.FC<RepositoryMenuProps> = ({
         onSelect={() =>
           !removingRepository &&
           removeRepositoryFromTeam({
-            owner: providerRepository.owner,
-            name: providerRepository.name,
-            teamId: activeTeam,
+            project,
             page,
           })
         }

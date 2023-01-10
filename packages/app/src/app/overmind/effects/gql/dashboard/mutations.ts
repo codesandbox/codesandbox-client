@@ -83,6 +83,8 @@ import {
   CreateAlbumMutationVariables,
   ImportProjectMutation,
   ImportProjectMutationVariables,
+  DeleteProjectMutation,
+  DeleteProjectMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -690,5 +692,14 @@ export const importProject: Query<
     importProject(provider: GITHUB, owner: $owner, name: $name, team: $teamId) {
       id
     }
+  }
+`;
+
+export const deleteProject: Query<
+  DeleteProjectMutation,
+  DeleteProjectMutationVariables
+> = gql`
+  mutation deleteProject($owner: String!, $name: String!, $teamId: ID!) {
+    deleteProject(provider: GITHUB, owner: $owner, name: $name, team: $teamId)
   }
 `;
