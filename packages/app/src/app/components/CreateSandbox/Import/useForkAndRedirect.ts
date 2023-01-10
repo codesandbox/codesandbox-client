@@ -1,16 +1,20 @@
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
-import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { v2BranchUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { NotificationStatus } from '@codesandbox/notifications';
-import { forkRepository } from '../utils/api';
+import { forkRepository, ForkSource, ForkDestination } from '../utils/api';
 
 export const useForkAndRedirect = () => {
-  async function forkAndRedirect(...params: Parameters<typeof forkRepository>) {
+  async function forkAndRedirect(params: {
+    source: ForkSource;
+    destination: ForkDestination;
+  }) {
     try {
-      const response = await forkRepository(...params);
-      window.location.href = v2DraftBranchUrl({
-        // TODO: Figure out how to pass workspaceId here
+      const response = await forkRepository(params);
+      window.location.href = v2BranchUrl({
+        workspaceId: params.destination.teamId,
         owner: response.owner,
         repoName: response.repo,
+        branchName: response.branch,
       });
     } catch (error) {
       notificationState.addNotification({
