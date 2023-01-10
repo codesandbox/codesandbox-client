@@ -21,6 +21,7 @@ export const ManageSubscription = () => {
     isPaddle,
     isStripe,
     subscription,
+    hasPaymentMethod,
   } = useWorkspaceSubscription();
   const { isTeamAdmin } = useWorkspaceAuthorization();
 
@@ -75,19 +76,27 @@ export const ManageSubscription = () => {
             Team Pro {hasActiveTeamTrial ? 'trial' : ''}
           </Text>
 
-          <Stack direction="vertical" gap={1}>
-            <Text variant="muted" size={3}>{`${numberOfSeats} paid seat${
-              numberOfSeats > 1 ? 's' : ''
-            }`}</Text>
+          {hasPaymentMethod ? (
+            <Stack direction="vertical" gap={1}>
+              <Text variant="muted" size={3}>{`${numberOfSeats} paid seat${
+                numberOfSeats > 1 ? 's' : ''
+              }`}</Text>
 
-            {/* TODO: the logic for figuring out a canceled vs an active trial should be revisited */}
-            {hasActiveTeamTrial && !subscription.cancelAt ? (
-              <Text variant="muted" size={3}>
-                Your free trial ends on{' '}
-                {printLocalDateFormat(subscription.trialEnd)}
-              </Text>
-            ) : null}
-          </Stack>
+              {/* TODO: the logic for figuring out a canceled vs an active trial should be revisited */}
+              {hasActiveTeamTrial && !subscription.cancelAt ? (
+                <Text variant="muted" size={3}>
+                  Your free trial ends on{' '}
+                  {printLocalDateFormat(subscription.trialEnd)}
+                </Text>
+              ) : null}
+            </Stack>
+          ) : (
+            <Text variant="muted" size={3}>
+              {`Your trial ends on ${printLocalDateFormat(
+                subscription.trialEnd
+              )}. After this period, you'll need to update your payment method to continue using Pro features.`}
+            </Text>
+          )}
         </Stack>
 
         {renderProvider()}
