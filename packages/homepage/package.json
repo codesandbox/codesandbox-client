@@ -35,7 +35,7 @@
     "@juggle/resize-observer": "^2.5.0",
     "@react-hook/mouse-position": "^1.0.3",
     "@sindresorhus/slugify": "^0.9.1",
-    "algoliasearch": "^3.24.5",
+    "algoliasearch": "^4.0.0",
     "babel-plugin-macros": "^2.4.2",
     "babel-preset-gatsby": "^0.2.8",
     "cannon": "^0.6.2",
