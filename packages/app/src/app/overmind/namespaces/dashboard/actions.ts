@@ -14,7 +14,10 @@ import {
   CuratedAlbumByIdQueryVariables,
   ProjectFragment,
 } from 'app/graphql/types';
-import { v2DraftBranchUrl } from '@codesandbox/common/lib/utils/url-generator';
+import {
+  v2BranchUrl,
+  v2DraftBranchUrl,
+} from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
 import {
@@ -2277,11 +2280,50 @@ export const importGitHubRepository = async (
       owner,
       repoName: name,
       workspaceId: activeTeam,
+      importFlag: true,
     });
   } catch (error) {
     notificationState.addNotification({
       message: JSON.stringify(error),
       title: 'Failed to import repository',
+      status: NotificationStatus.ERROR,
+    });
+  }
+};
+
+export type ForkSource = {
+  owner: string;
+  name: string;
+};
+export type ForkDestination = {
+  organization?: string;
+  name: string;
+  teamId: string;
+};
+
+export const forkGitHubRepository = async (
+  { effects }: Context,
+  params: {
+    source: ForkSource;
+    destination: ForkDestination;
+  }
+) => {
+  try {
+    const response = await effects.api.forkRepository(
+      params.source,
+      params.destination
+    );
+    window.location.href = v2BranchUrl({
+      workspaceId: params.destination.teamId,
+      importFlag: true,
+      owner: response.owner,
+      repoName: response.repo,
+      branchName: response.branch,
+    });
+  } catch (error) {
+    notificationState.addNotification({
+      message: JSON.stringify(error),
+      title: 'Failed to fork repository',
       status: NotificationStatus.ERROR,
     });
   }

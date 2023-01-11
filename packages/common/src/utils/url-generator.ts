@@ -297,6 +297,7 @@ const v2EditorBranchUrl = ({
   branchName,
   workspaceId,
   createDraftBranch,
+  importFlag,
   source,
 }: {
   owner: string;
@@ -304,11 +305,13 @@ const v2EditorBranchUrl = ({
   branchName?: string;
   workspaceId?: string;
   createDraftBranch?: boolean;
+  importFlag?: boolean;
   source?: string;
 }) => {
   const queryString = new URLSearchParams({
     ...(workspaceId ? { workspaceId } : {}),
     ...(createDraftBranch ? { create: 'true' } : {}),
+    ...(importFlag ? { import: 'true' } : {}),
     ...(source ? { utm_source: source } : {}),
   }).toString();
 
@@ -322,6 +325,7 @@ export const v2BranchUrl = (params: {
   repoName: string;
   branchName: string;
   workspaceId?: string;
+  importFlag?: boolean;
   source?: string;
 }) => {
   return v2EditorBranchUrl(params);
@@ -331,6 +335,7 @@ export const v2DefaultBranchUrl = (params: {
   owner: string;
   repoName: string;
   workspaceId?: string;
+  importFlag?: boolean;
   source?: string;
 }) => {
   return v2EditorBranchUrl(params);
@@ -340,6 +345,7 @@ export const v2DraftBranchUrl = (params: {
   owner: string;
   repoName: string;
   workspaceId?: string;
+  importFlag?: boolean;
   source?: string;
 }) => {
   return v2EditorBranchUrl({
