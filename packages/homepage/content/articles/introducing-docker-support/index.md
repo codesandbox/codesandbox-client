@@ -30,6 +30,8 @@ But enough chit-chat! Let’s see it in action as I build a simple project with 
 
 ## Building a project with Deno
 
+First of all, here's a template that you can fork to get started with Docker yourself: https://codesandbox.io/p/sandbox/docker-example-hsd8ke.
+
 If getting Deno to work on CodeSandbox before was a bit of a headache, now it’s strikingly simple!
 
 The only thing I really have to do is to create a Dockerfile at `.codesandbox/Dockerfile` to run Deno:
