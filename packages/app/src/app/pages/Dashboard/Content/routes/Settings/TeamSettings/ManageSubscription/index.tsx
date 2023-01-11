@@ -86,16 +86,14 @@ export const ManageSubscription = () => {
               {/* TODO: the logic for figuring out a canceled vs an active trial should be revisited */}
               {hasActiveTeamTrial && !subscription.cancelAt ? (
                 <Text variant="muted" size={3}>
-                  Your free trial ends on{' '}
-                  {printLocalDateFormat(subscription.trialEnd)}.{' '}
-                  {hasPaymentMethod
-                    ? `After this period you'll be automatically charged per ${
-                        subscription.billingInterval ===
-                        SubscriptionInterval.Monthly
-                          ? 'month'
-                          : 'year'
-                      }.`
-                    : null}
+                  {`Your free trial ends on ${printLocalDateFormat(
+                    subscription.trialEnd
+                  )}. After this period you'll be automatically charged per ${
+                    subscription.billingInterval ===
+                    SubscriptionInterval.Monthly
+                      ? 'month'
+                      : 'year'
+                  }.`}
                 </Text>
               ) : null}
             </Stack>
