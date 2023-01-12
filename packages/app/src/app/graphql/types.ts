@@ -642,7 +642,7 @@ export type ProSubscription = {
    * almost always be true, except when a team started a trial without a credit
    * card and has not yet added one.
    */
-  paymentMethodAtached: Maybe<Scalars['Boolean']>;
+  paymentMethodAttached: Scalars['Boolean'];
   paymentProvider: Maybe<SubscriptionPaymentProvider>;
   quantity: Maybe<Scalars['Int']>;
   status: SubscriptionStatus;
@@ -2567,21 +2567,22 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'ProSubscription' } & Pick<
         ProSubscription,
-        | 'id'
-        | 'type'
-        | 'status'
-        | 'origin'
-        | 'quantity'
-        | 'unitPrice'
-        | 'currency'
         | 'billingInterval'
-        | 'updateBillingUrl'
-        | 'nextBillDate'
-        | 'paymentProvider'
         | 'cancelAt'
         | 'cancelAtPeriodEnd'
-        | 'trialStart'
+        | 'currency'
+        | 'id'
+        | 'nextBillDate'
+        | 'origin'
+        | 'paymentMethodAttached'
+        | 'paymentProvider'
+        | 'quantity'
+        | 'status'
         | 'trialEnd'
+        | 'trialStart'
+        | 'type'
+        | 'unitPrice'
+        | 'updateBillingUrl'
       >
     >;
     limits: { __typename?: 'TeamLimits' } & Pick<
