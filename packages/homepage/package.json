@@ -64,7 +64,7 @@
     "gatsby-remark-prismjs": "^1.2.24",
     "gatsby-source-filesystem": "^2.1.7",
     "gatsby-transformer-json": "^2.2.2",
-    "gatsby-transformer-remark": "^2.6.10",
+    "gatsby-transformer-remark": "^5.25.1",
     "gatsby-transformer-sharp": "^2.2.5",
     "gsap": "^2.1.3",
     "hast-to-hyperscript": "^10.0.1",
