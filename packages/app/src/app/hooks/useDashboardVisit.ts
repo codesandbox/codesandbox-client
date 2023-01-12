@@ -4,9 +4,7 @@ import { useEffects } from 'app/overmind';
 const KEY = 'DASHBOARD_VISIT';
 type VisitTracker = number | undefined;
 
-export const useDashboardVisit = (
-  currentTeam: string
-): [boolean, () => void] => {
+export const useDashboardVisit = (): [boolean, () => void] => {
   const { browser } = useEffects();
   const [hasVisited, setHasVisited] = React.useState(() => {
     const visitCount = browser.storage.get<VisitTracker>(KEY);
