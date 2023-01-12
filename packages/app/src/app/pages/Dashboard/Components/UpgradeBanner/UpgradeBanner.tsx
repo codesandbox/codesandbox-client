@@ -72,7 +72,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
   );
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
-  const [hasVisited] = useDashboardVisit();
+  const { hasVisited } = useDashboardVisit();
 
   if (isBannerDismissed || !hasVisited) {
     return null;

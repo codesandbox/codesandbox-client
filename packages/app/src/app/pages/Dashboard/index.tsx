@@ -35,7 +35,7 @@ export const Dashboard: FunctionComponent = () => {
   const { browser, notificationToast } = useEffects();
   const actions = useActions();
   const { subscription } = useWorkspaceSubscription();
-  const [, trackVisit] = useDashboardVisit();
+  const { trackVisit } = useDashboardVisit();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
