@@ -18,6 +18,7 @@ import track from '@codesandbox/common/lib/utils/analytics';
 import { SUBSCRIPTION_DOCS_URLS } from 'app/constants';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 
 const StyledTitle = styled(Text)`
   font-size: 24px;
@@ -71,8 +72,9 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
   );
   const { isTeamAdmin } = useWorkspaceAuthorization();
   const { isEligibleForTrial } = useWorkspaceSubscription();
+  const [hasVisited] = useDashboardVisit();
 
-  if (isBannerDismissed) {
+  if (isBannerDismissed || !hasVisited) {
     return null;
   }
 
