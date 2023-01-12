@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffects } from 'app/overmind';
 
 const KEY = 'DASHBOARD_VISIT';
-type VisitTracker = Record<string | number> | undefined;
+type VisitTracker = number | undefined;
 
 export const useDashboardVisit = (
   currentTeam: string
@@ -14,7 +14,7 @@ export const useDashboardVisit = (
   });
 
   const trackVisit = () => {
-    const visitCount = browser.storage.get<VisitCount>(KEY) || undefined;
+    const visitCount = browser.storage.get<VisitTracker>(KEY) || undefined;
 
     const updatedCount = (visitCount || 0) + 1;
     browser.storage.set(KEY, updatedCount);
