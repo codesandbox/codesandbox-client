@@ -5,6 +5,7 @@ import { Stack, Text } from '@codesandbox/components';
 
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { SubscriptionInterval } from 'app/graphql/types';
 import { Card } from '../../components';
 import { Upgrade } from './upgrade';
 import { Paddle } from './paddle';
@@ -85,8 +86,14 @@ export const ManageSubscription = () => {
               {/* TODO: the logic for figuring out a canceled vs an active trial should be revisited */}
               {hasActiveTeamTrial && !subscription.cancelAt ? (
                 <Text variant="muted" size={3}>
-                  Your free trial ends on{' '}
-                  {printLocalDateFormat(subscription.trialEnd)}
+                  {`Your free trial ends on ${printLocalDateFormat(
+                    subscription.trialEnd
+                  )}. After this period you'll be automatically charged per ${
+                    subscription.billingInterval ===
+                    SubscriptionInterval.Monthly
+                      ? 'month'
+                      : 'year'
+                  }.`}
                 </Text>
               ) : null}
             </Stack>
