@@ -14,7 +14,6 @@ import {
   Stack,
   Input,
   Button,
-  Link,
   Icon,
   IconButton,
   List,
@@ -53,19 +52,29 @@ export const Header: React.FC<HeaderProps> = React.memo(
           color: 'titleBar.activeForeground',
         })}
       >
-        <Link
-          href="/?from-app=1"
-          as="a"
-          css={css({ display: ['none', 'none', 'block'] })}
+        <UserMenu
+          css={css({
+            display: ['none', 'none', 'block'],
+          })}
         >
-          <LogoIcon
-            style={{
-              marginLeft: 0,
-              marginTop: 2, // Logo positioning tweak
-            }}
-            height={18}
-          />
-        </Link>
+          <Button
+            as={UserMenu.Button}
+            variant="link"
+            css={css({
+              marginLeft: '2px',
+            })}
+          >
+            <LogoIcon
+              width="18px"
+              height="18px"
+              css={css({
+                marginRight: '8px',
+              })}
+            />
+            <Icon name="chevronDown" size={8} title="User actions" />
+          </Button>
+        </UserMenu>
+
         <IconButton
           name="menu"
           size={16}
@@ -73,28 +82,26 @@ export const Header: React.FC<HeaderProps> = React.memo(
           onClick={onSidebarToggle}
           css={css({ display: ['block', 'block', 'none'] })}
         />
-
         <SearchInputGroup />
-
         <Stack align="center" gap={2}>
           <Button
-            variant="primary"
-            css={css({ width: 'auto', paddingX: 4 })}
+            variant="ghost"
+            css={css({ width: 'auto' })}
             disabled={activeWorkspaceAuthorization === 'READ'}
             onClick={() => {
               openCreateSandboxModal({});
             }}
           >
+            <Icon
+              name="plus"
+              size={20}
+              title="New"
+              css={css({ paddingRight: 2 })}
+            />
             Create
           </Button>
 
           {user && <Notifications />}
-
-          <UserMenu>
-            <Button as={UserMenu.Button} variant="secondary" css={{ size: 26 }}>
-              <Icon name="more" size={16} title="User actions" />
-            </Button>
-          </UserMenu>
         </Stack>
       </Stack>
     );
@@ -144,14 +151,12 @@ const SearchInputGroup = () => {
 
   return (
     <Stack
+      align="center"
       css={css({
-        flexGrow: 1,
-        minWidth: 280,
         width: 320,
-        display: ['none', 'none', 'block'],
-        position: 'absolute',
-        left: '50%',
-        transform: 'translateX(-50%)',
+        display: ['none', 'none', 'flex'],
+        position: 'fixed',
+        left: '288px',
       })}
     >
       <Combobox
@@ -165,74 +170,95 @@ const SearchInputGroup = () => {
           }
         }}
       >
-        <ComboboxInput
-          as={Input}
-          value={query}
-          onChange={onChange}
-          onKeyPress={handleEnter}
-          placeholder="Search"
-          icon="search"
+        <Stack
+          align="center"
           css={css({
-            background: 'transparent',
+            position: 'relative',
           })}
-        />
-        {SHOW_COMMUNITY_SEARCH && query.length >= 2 && (
-          <ComboboxPopover
+        >
+          <Icon
+            name="search"
+            size={16}
+            title="Search"
             css={css({
-              zIndex: 4,
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 3,
+              position: 'absolute',
+              top: '50%',
+              left: 0,
+              transform: 'translateY(-50%)',
+              pointerEvents: 'none',
             })}
-          >
-            <ComboboxList
-              as={List}
+          />
+          <ComboboxInput
+            as={Input}
+            value={query}
+            onChange={onChange}
+            onKeyPress={handleEnter}
+            placeholder="Search"
+            icon="search"
+            css={css({
+              background: 'transparent',
+              border: 'none',
+              paddingLeft: '24px',
+            })}
+          />
+          {SHOW_COMMUNITY_SEARCH && query.length >= 2 && (
+            <ComboboxPopover
               css={css({
-                backgroundColor: 'menuList.background',
-                borderRadius: 3,
-                boxShadow: 2,
-                border: '1px solid',
-                borderColor: 'menuList.border',
+                zIndex: 4,
+                fontFamily: 'Inter, sans-serif',
+                fontSize: 3,
               })}
             >
-              <ComboboxOption
-                value={query}
-                justify="space-between"
+              <ComboboxList
+                as={List}
                 css={css({
-                  outline: 'none',
-                  height: 7,
-                  paddingX: 2,
-                  color: 'list.foreground',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  ':hover, &[aria-selected="true"]': {
-                    color: 'list.hoverForeground',
-                    backgroundColor: 'list.hoverBackground',
-                    cursor: 'pointer',
-                  },
+                  backgroundColor: 'menuList.background',
+                  borderRadius: 3,
+                  boxShadow: 2,
+                  border: '1px solid',
+                  borderColor: 'menuList.border',
                 })}
               >
-                <span>{query}</span>
-                <span>
-                  {searchType === 'COMMUNITY' ? 'Workspace' : 'Community'} ⏎
-                </span>
-              </ComboboxOption>
-            </ComboboxList>
-            <Text
-              size={3}
-              variant="muted"
-              css={css({
-                position: 'absolute',
-                width: 'fit-content',
-                top: -5,
-                right: 0,
-                paddingX: 2,
-              })}
-            >
-              {searchType === 'COMMUNITY' ? 'in community' : 'in workspace'} ⏎
-            </Text>
-          </ComboboxPopover>
-        )}
+                <ComboboxOption
+                  value={query}
+                  justify="space-between"
+                  css={css({
+                    outline: 'none',
+                    height: 7,
+                    paddingX: 2,
+                    color: 'list.foreground',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    ':hover, &[aria-selected="true"]': {
+                      color: 'list.hoverForeground',
+                      backgroundColor: 'list.hoverBackground',
+                      cursor: 'pointer',
+                    },
+                  })}
+                >
+                  <span>{query}</span>
+                  <span>
+                    {searchType === 'COMMUNITY' ? 'Workspace' : 'Community'} ⏎
+                  </span>
+                </ComboboxOption>
+              </ComboboxList>
+              <Text
+                size={3}
+                variant="muted"
+                css={css({
+                  position: 'absolute',
+                  width: 'fit-content',
+                  top: -5,
+                  right: 0,
+                  paddingX: 2,
+                })}
+              >
+                {searchType === 'COMMUNITY' ? 'in community' : 'in workspace'} ⏎
+              </Text>
+            </ComboboxPopover>
+          )}
+        </Stack>
       </Combobox>
     </Stack>
   );
