@@ -46,6 +46,19 @@ const variantStyles = {
       color: 'foreground',
     },
   },
+  ghost: {
+    backgroundColor: 'transparent',
+    color: 'mutedForeground',
+    // same technique as primary
+    ':hover:not(:disabled)': {
+      color: 'foreground',
+      backgroundColor: '#E5E5E51A',
+    },
+    ':focus:not(:disabled)': {
+      color: 'foreground',
+      backgroundColor: '#E5E5E51A',
+    },
+  },
   danger: {
     backgroundColor: 'dangerButton.background',
     color: 'dangerButton.foreground',
@@ -90,16 +103,16 @@ const commonStyles = {
   flex: 'none', // as a flex child
   cursor: 'pointer',
   fontFamily: 'Inter, sans-serif',
-  paddingY: 0,
+  paddingY: '4px',
+  paddingX: '8px',
   width: '100%',
-  paddingX: 2,
-  height: '26px', // match with inputs
-  fontSize: 2,
+  height: '28px', // match with inputs
+  fontSize: '13px',
   fontWeight: 'medium',
-  lineHeight: 1, // trust the height
+  lineHeight: '16px', // trust the height
   border: 'none',
-  borderRadius: 'small',
-  transition: 'all ease-in',
+  borderRadius: '4px',
+  transition: 'background .3s',
   textDecoration: 'none',
   transitionDuration: theme => theme.speeds[2],
 
@@ -128,6 +141,7 @@ export interface ButtonProps
   variant?:
     | 'primary'
     | 'secondary'
+    | 'ghost'
     | 'link'
     | 'danger'
     | 'light'
