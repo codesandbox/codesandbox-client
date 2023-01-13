@@ -1,8 +1,6 @@
 import {
   curatorUrl,
-  dashboardUrl,
   profileUrl,
-  searchUrl,
   docsUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { Menu, Stack, Element, Icon, Text } from '@codesandbox/components';
@@ -52,19 +50,17 @@ export const UserMenu: FunctionComponent & {
         )}
 
         <Menu.List>
-          <Menu.Link to={profileUrl(user.username)}>
+          <Menu.Link href={profileUrl(user.username)}>
             <Stack align="center" gap={2}>
               <Icon name="profile" size={16} />
               <Text>Profile</Text>
             </Stack>
           </Menu.Link>
 
-          <Menu.Divider />
-
-          <Menu.Link to={dashboardUrl()}>
+          <Menu.Link href="http://codesandbox.io/discover">
             <Stack align="center" gap={2}>
-              <Icon name="dashboard" size={16} />
-              <Text>Dashboard</Text>
+              <Icon name="discover" size={16} />
+              <Text>Discover</Text>
             </Stack>
           </Menu.Link>
 
@@ -75,12 +71,12 @@ export const UserMenu: FunctionComponent & {
             </Stack>
           </Menu.Link>
 
-          <Menu.Link to={searchUrl()}>
+          <Menu.Item onClick={() => modalOpened({ modal: 'feedback' })}>
             <Stack align="center" gap={2}>
-              <Icon name="searchBubble" size={16} />
-              <Text>Search Sandboxes</Text>
+              <Icon name="feedback" size={16} />
+              <Text>Feedback</Text>
             </Stack>
-          </Menu.Link>
+          </Menu.Item>
 
           {showCurator && (
             <Menu.Link to={curatorUrl()}>
@@ -127,14 +123,12 @@ export const UserMenu: FunctionComponent & {
 
           <Menu.Divider />
 
-          <Menu.Item onClick={() => modalOpened({ modal: 'feedback' })}>
+          <Menu.Link href="/?from-app=1">
             <Stack align="center" gap={2}>
-              <Icon name="feedback" size={16} />
-              <Text>Feedback</Text>
+              <Icon name="external" size={16} />
+              <Text>codesandbox.io</Text>
             </Stack>
-          </Menu.Item>
-
-          <Menu.Divider />
+          </Menu.Link>
 
           <Menu.Item onClick={() => signOutClicked()}>
             <Stack align="center" gap={2}>
