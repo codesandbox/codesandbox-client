@@ -13,6 +13,7 @@ import {
   Element,
 } from '@codesandbox/components';
 import { shortDistance } from '@codesandbox/common/lib/utils/short-distance';
+import styled from 'styled-components';
 import { SandboxItemComponentProps } from './types';
 import { StyledCard } from '../shared/StyledCard';
 import { useSandboxThumbnail } from './useSandboxThumbnail';
@@ -54,7 +55,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
     interaction,
     ...props
   }) => (
-    <Stack css={{ zIndex: 2 }} justify="space-between">
+    <Stack justify="space-between">
       {editing ? (
         <form onSubmit={onSubmit}>
           <Input
@@ -132,6 +133,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
         size={16}
         title="Sandbox Actions"
         onClick={onContextMenu}
+        className="sandbox-actions"
       />
     </Stack>
   )
@@ -143,6 +145,7 @@ type SandboxStatsProps = {
   restricted: boolean;
   showBetaBadge: boolean;
   hasThumbnail: boolean;
+  hasCustomThumbnail: boolean;
   originalGit?: RepoFragmentDashboardFragment['originalGit'];
 } & Pick<SandboxItemComponentProps, 'noDrag' | 'lastUpdated' | 'PrivacyIcon'>;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
@@ -180,10 +183,10 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         justify="space-between"
         align="center"
         css={{
-          zIndex: 2,
           height: '16px',
-          color: hasThumbnail ? '#C2C2C2' : '#999',
+          color: hasThumbnail ? '#EBEBEB' : '#999999',
         }}
+        className="sandbox-stats"
       >
         <Stack gap={2} align="center">
           <PrivacyIcon />
@@ -210,22 +213,6 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
   }
 );
 
-// TODO: Colors experiment (WIP)
-// export const TEMPLATE_COLORS: Record<string, string> = {
-//   'create-react-app': '#202a2a',
-//   next: '#202020',
-//   'vue-cli': '#202a20',
-//   node: '#202a20',
-//   nuxt: '#202a20',
-//   parcel: '#2a2a20',
-//   static: '#2a2320',
-//   'angular-cli': '#2a2020',
-//   svelte: '#2a2320',
-//   'preact-cli': '#2a202a',
-//   gatsby: '#2a202a',
-//   remix: '2a2a2a',
-// };
-
 export const SandboxCard = ({
   sandbox,
   noDrag,
@@ -240,14 +227,13 @@ export const SandboxCard = ({
   isDragging,
   ...props
 }: SandboxItemComponentProps) => {
+  const hasCustomThumbnail = screenshotUrl?.includes('uploads');
+
   const sandboxThumbnail = useSandboxThumbnail({
     sandboxId: sandbox.id,
     screenshotOutdated: sandbox.screenshotOutdated,
     screenshotUrl,
   });
-
-  // TODO: Colors experiment (WIP)
-  // const color = TEMPLATE_COLORS[sandbox.source.template] || '#1a1a1a';
 
   return (
     <InteractiveOverlay>
@@ -255,56 +241,128 @@ export const SandboxCard = ({
         dimmed={isDragging}
         selected={selected}
         css={{
-          position: 'relative',
-          // background: color,
+          overflow: 'hidden',
+
+          // TODO: Selected state
+          // TODO: More distinct focus state
+
+          // Reset padding for now as it's set in the card
+          // content component instead.
+          padding: 0,
+
+          // Display grid to overlap the children without needing
+          // position absolute.
+          display: 'grid',
+          gridTemplate: '1fr / 1fr',
+
+          // Hide sandbox stats and context menu button if the
+          // sandbox hasCustomThumbnail.
+          '.sandbox-stats, .sandbox-actions': hasCustomThumbnail
+            ? {
+                opacity: 0,
+              }
+            : undefined,
+
+          '&:hover, &:focus-within': {
+            // update background color in case there is
+            // no thumbnail.
+            backgroundColor: '#252525',
+
+            [`${CardThumbnail}`]: {
+              '&::before': hasCustomThumbnail
+                ? {
+                    // show scrim
+                    opacity: 0.8,
+                  }
+                : {
+                    // change scrim color
+                    backgroundColor: '#252525',
+                  },
+            },
+
+            // Show sandbox stats and context menu button if the
+            // sandbox hasCustomThumbnail
+            '.sandbox-stats, .sandbox-actions': hasCustomThumbnail
+              ? {
+                  opacity: 1,
+                }
+              : undefined,
+          },
         }}
       >
-        <SandboxTitle restricted={restricted} {...props} />
-        <SandboxStats
-          noDrag={noDrag}
-          originalGit={sandbox.originalGit}
-          prNumber={sandbox.prNumber}
-          lastUpdated={lastUpdated}
-          isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
-          PrivacyIcon={PrivacyIcon}
-          restricted={restricted}
-          showBetaBadge={sandbox.isV2}
-          hasThumbnail={!!sandboxThumbnail}
-        />
-        {/* <Element
-          css={{
-            position: 'absolute',
-            height: '100%',
-            width: '100%',
-            top: 0,
-            right: 0,
-            zIndex: 1,
-            borderRadius: '4px',
-            background: `linear-gradient(135deg, ${color}, transparent)`,
-          }}
-        /> */}
-        <Element
-          className="thumbnail"
-          ref={thumbnailRef}
-          css={{
-            opacity: 0.15,
-            // opacity: 0.5,
-            position: 'absolute',
-            height: '100%',
-            width: '100%',
-            top: 0,
-            right: 0,
-            zIndex: 0,
-            borderRadius: '4px',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat',
-            backgroundImage: sandboxThumbnail
-              ? `url(${sandboxThumbnail})`
-              : undefined,
-          }}
-        />
+        {sandboxThumbnail ? (
+          <CardThumbnail
+            // The thumbnailRef is used for the drag and
+            // drop preview.
+            ref={thumbnailRef}
+            hasCustomThumbnail={hasCustomThumbnail}
+            source={sandboxThumbnail}
+          />
+        ) : null}
+
+        <CardContent>
+          <SandboxTitle restricted={restricted} {...props} />
+          <SandboxStats
+            noDrag={noDrag}
+            originalGit={sandbox.originalGit}
+            prNumber={sandbox.prNumber}
+            lastUpdated={lastUpdated}
+            isFrozen={sandbox.isFrozen && !sandbox.customTemplate}
+            PrivacyIcon={PrivacyIcon}
+            restricted={restricted}
+            showBetaBadge={sandbox.isV2}
+            hasThumbnail={!!sandboxThumbnail}
+            hasCustomThumbnail={hasCustomThumbnail}
+          />
+        </CardContent>
       </StyledCard>
     </InteractiveOverlay>
   );
 };
+
+const CardThumbnail = styled.div<{
+  source: string;
+  hasCustomThumbnail: boolean;
+}>`
+  grid-row: 1 / -1;
+  grid-column: 1 / -1;
+
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-image: url(${({ source }) => source});
+
+  // The ::before pseudo elements acts as a scrim over the thumbnail
+  // image.
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    // top: 0;
+    // right: 0;
+    background-color: #212121;
+
+    // For custom thumbs we only show the scrim on hover.
+    opacity: ${({ hasCustomThumbnail }) => (hasCustomThumbnail ? 0 : 0.8)};
+  }
+
+  // Target siblings and add position relative to make sure the
+  // siblings overlap the absolute positioned scrim.
+  & ~ * {
+    position: relative;
+  }
+`;
+
+const CardContent = styled.div`
+  grid-row: 1 / -1;
+  grid-column: 1 / -1;
+
+  // Set padding on this element instead of on the parent
+  // to allow the thumbnail and scrim to be full width.
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
