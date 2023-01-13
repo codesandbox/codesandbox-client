@@ -361,7 +361,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     }}
                     stopId="cloud-templates"
                   >
-                    Cloud templates (Beta)
+                    Cloud Templates (Beta)
                   </Tab>
 
                   <Tab
@@ -485,7 +485,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
 
                   <Panel tab={tabState} id="cloud-templates">
                     <TemplateCategoryList
-                      title="Cloud templates"
+                      title="Cloud Templates"
                       checkoutUrl={checkoutUrl}
                       isInCollection={Boolean(collectionId)}
                       templates={officialTemplates.filter(
