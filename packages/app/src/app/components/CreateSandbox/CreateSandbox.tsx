@@ -361,7 +361,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     }}
                     stopId="cloud-templates"
                   >
-                    Cloud templates (Beta)
+                    Cloud Templates (Beta)
                   </Tab>
 
                   <Tab
