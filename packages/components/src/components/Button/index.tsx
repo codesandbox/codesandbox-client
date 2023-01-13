@@ -101,7 +101,6 @@ const commonStyles = {
   justifyContent: 'center',
   alignItems: 'center',
   flex: 'none', // as a flex child
-  cursor: 'pointer',
   fontFamily: 'Inter, sans-serif',
   paddingY: '4px',
   paddingX: '8px',
