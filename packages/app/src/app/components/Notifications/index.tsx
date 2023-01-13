@@ -28,9 +28,8 @@ export const Notifications = () => {
     >
       {open => (
         <Button
-          variant="secondary"
+          variant="ghost"
           css={css({
-            size: 26,
             ':hover .border-for-bell': {
               background: theme => theme.colors.secondaryButton.hoverBackground,
             },
@@ -41,6 +40,7 @@ export const Notifications = () => {
             css={css({
               position: 'relative',
               top: '2px',
+              paddingRight: 2,
             })}
           >
             <Icon name="bell" size={16} title="Notifications" />
@@ -52,7 +52,7 @@ export const Notifications = () => {
                     width: '6px',
                     height: '6px',
                     borderRadius: '50%',
-                    backgroundColor: 'blues.600',
+                    backgroundColor: '#ED6C6C',
                     top: '-2px',
                     left: '6px',
                     zIndex: 10,
@@ -74,6 +74,7 @@ export const Notifications = () => {
               </>
             ) : null}
           </Element>
+          Notifications
         </Button>
       )}
     </Overlay>
