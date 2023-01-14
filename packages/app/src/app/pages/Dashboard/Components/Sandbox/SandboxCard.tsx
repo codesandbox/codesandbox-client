@@ -239,7 +239,6 @@ export const SandboxCard = ({
     <InteractiveOverlay>
       <StyledCard
         dimmed={isDragging}
-        selected={selected}
         css={{
           overflow: 'hidden',
 
@@ -300,7 +299,7 @@ export const SandboxCard = ({
           />
         ) : null}
 
-        <CardContent>
+        <CardContent selected={selected}>
           <SandboxTitle restricted={restricted} {...props} />
           <SandboxStats
             noDrag={noDrag}
@@ -354,7 +353,7 @@ const CardThumbnail = styled.div<{
   }
 `;
 
-const CardContent = styled.div`
+const CardContent = styled.div<{ selected: boolean }>`
   grid-row: 1 / -1;
   grid-column: 1 / -1;
 
@@ -365,4 +364,11 @@ const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  ${({ selected }) =>
+    selected &&
+    `
+    outline: #ac9cff solid 2px;
+    outline-offset: -2px;
+    `}
 `;

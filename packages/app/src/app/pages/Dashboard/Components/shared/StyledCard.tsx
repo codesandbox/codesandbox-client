@@ -29,6 +29,8 @@ export const StyledCard = styled(Card)<StyledCardProps>(
     flexDirection: 'column',
     justifyContent: 'space-between',
 
+    // FolderCard is still using this selected style, but we're not
+    // using it in SandboxCard anymore
     ...(selected
       ? { outline: '#ac9cff solid 2px', outlineOffset: '-2px' }
       : {}),
