@@ -583,6 +583,7 @@ interface TemplateInfoProps {
 
 const TemplateInfo = ({ template }: TemplateInfoProps) => {
   const { UserIcon } = getTemplateIcon(
+    template.sandbox.title,
     template.iconUrl,
     template.sandbox?.source?.template
   );
