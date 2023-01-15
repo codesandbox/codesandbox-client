@@ -374,7 +374,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     }}
                     stopId="official-templates"
                   >
-                    Official templates
+                    Official Templates
                   </Tab>
 
                   {essentialState.state === 'success'
