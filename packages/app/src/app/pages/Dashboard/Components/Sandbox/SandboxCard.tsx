@@ -253,8 +253,7 @@ export const SandboxCard = ({
         css={{
           overflow: 'hidden',
 
-          // TODO: Selected state
-          // TODO: More distinct focus state
+          // TODO: More distinct hover state for auto-generated thumbnails
 
           // Reset padding for now as it's set in the card
           // content component instead.
