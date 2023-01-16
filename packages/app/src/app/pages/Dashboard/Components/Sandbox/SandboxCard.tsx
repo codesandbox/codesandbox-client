@@ -17,9 +17,11 @@ import styled from 'styled-components';
 import { SandboxItemComponentProps } from './types';
 import { StyledCard } from '../shared/StyledCard';
 import { useSandboxThumbnail } from './useSandboxThumbnail';
+import { useImageBrightness, Brightness } from './useImageBrightness';
 
 type SandboxTitleProps = {
   restricted?: boolean;
+  brightness?: Brightness;
 } & Pick<
   SandboxItemComponentProps,
   | 'editing'
@@ -53,90 +55,90 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
     restricted,
     TemplateIcon,
     interaction,
+    brightness,
     ...props
-  }) => (
-    <Stack justify="space-between">
-      {editing ? (
-        <form onSubmit={onSubmit}>
-          <Input
-            css={{
-              border: 0,
-              marginTop: '-4px',
-              marginLeft: '16px',
-              fontWeight: 500,
-            }}
-            autoFocus
-            value={newTitle}
-            onChange={onChange}
-            onKeyDown={onInputKeyDown}
-            onBlur={onInputBlur}
-          />
-        </form>
-      ) : (
-        <Stack gap={2} align="flex-start" css={{ overflow: 'hidden' }}>
-          <TemplateIcon width="16" height="16" />
+  }) => {
+    // eslint-disable-next-line no-nested-ternary
+    const textColor = restricted
+      ? '#999999'
+      : brightness === 'light'
+      ? '#000000'
+      : '#ffffff';
 
-          {interaction === 'button' ? (
-            <InteractiveOverlay.Button
-              css={{ overflow: 'hidden' }}
-              radius={4}
-              onClick={onClick}
-              onDoubleClick={editing ? undefined : onDoubleClick}
-              onBlur={onBlur}
-              onContextMenu={onContextMenu}
-              {...props}
-            >
-              <Text
-                size={13}
-                weight="medium"
-                color={restricted ? '#999999' : '#E5E5E5'}
-                truncate
-              >
-                {sandboxTitle}
-              </Text>
-            </InteractiveOverlay.Button>
-          ) : (
-            <InteractiveOverlay.Item radius={4}>
-              <Element
-                css={{
-                  display: 'flex',
-                  overflow: 'hidden',
-                  lineHeight: '16px',
-                }}
+    return (
+      <Stack justify="space-between">
+        {editing ? (
+          <form onSubmit={onSubmit}>
+            <Input
+              css={{
+                border: 0,
+                marginTop: '-4px',
+                marginLeft: '16px',
+                fontWeight: 500,
+              }}
+              autoFocus
+              value={newTitle}
+              onChange={onChange}
+              onKeyDown={onInputKeyDown}
+              onBlur={onInputBlur}
+            />
+          </form>
+        ) : (
+          <Stack gap={2} align="flex-start" css={{ overflow: 'hidden' }}>
+            <TemplateIcon width="16" height="16" />
+
+            {interaction === 'button' ? (
+              <InteractiveOverlay.Button
+                css={{ overflow: 'hidden' }}
+                radius={4}
                 onClick={onClick}
                 onDoubleClick={editing ? undefined : onDoubleClick}
                 onBlur={onBlur}
                 onContextMenu={onContextMenu}
                 {...props}
               >
-                <Text
-                  size={13}
-                  weight="medium"
-                  color={restricted ? '#999999' : '#E5E5E5'}
-                  truncate
-                >
+                <Text size={13} weight="medium" color={textColor} truncate>
                   {sandboxTitle}
                 </Text>
-              </Element>
-            </InteractiveOverlay.Item>
-          )}
-        </Stack>
-      )}
+              </InteractiveOverlay.Button>
+            ) : (
+              <InteractiveOverlay.Item radius={4}>
+                <Element
+                  css={{
+                    display: 'flex',
+                    overflow: 'hidden',
+                    lineHeight: '16px',
+                  }}
+                  onClick={onClick}
+                  onDoubleClick={editing ? undefined : onDoubleClick}
+                  onBlur={onBlur}
+                  onContextMenu={onContextMenu}
+                  {...props}
+                >
+                  <Text size={13} weight="medium" color={textColor} truncate>
+                    {sandboxTitle}
+                  </Text>
+                </Element>
+              </InteractiveOverlay.Item>
+            )}
+          </Stack>
+        )}
 
-      <IconButton
-        css={{
-          marginRight: '-4px',
-          marginTop: '-4px',
-        }} /* Align icon to top-right corner */
-        variant="square"
-        name="more"
-        size={16}
-        title="Sandbox Actions"
-        onClick={onContextMenu}
-        className="sandbox-actions"
-      />
-    </Stack>
-  )
+        <IconButton
+          css={{
+            marginRight: '-4px',
+            marginTop: '-4px',
+          }} /* Align icon to top-right corner */
+          variant="square"
+          name="more"
+          size={16}
+          title="Sandbox Actions"
+          onClick={onContextMenu}
+          className="sandbox-actions"
+        />
+      </Stack>
+    );
+  }
 );
 
 type SandboxStatsProps = {
@@ -235,6 +237,12 @@ export const SandboxCard = ({
     screenshotUrl,
   });
 
+  // TODO: combine with (or use inside useSandboxThumbnail);
+  // TODO: add skip when the thumbnail is not custom
+  const thumbnailBrightness = useImageBrightness(screenshotUrl);
+
+  // console.log(`thumbnailBrightness for ${sandbox.title}`, thumbnailBrightness);
+
   return (
     <InteractiveOverlay>
       <StyledCard
@@ -300,7 +308,11 @@ export const SandboxCard = ({
         ) : null}
 
         <CardContent selected={selected}>
-          <SandboxTitle restricted={restricted} {...props} />
+          <SandboxTitle
+            restricted={restricted}
+            brightness={thumbnailBrightness.brightness}
+            {...props}
+          />
           <SandboxStats
             noDrag={noDrag}
             originalGit={sandbox.originalGit}
