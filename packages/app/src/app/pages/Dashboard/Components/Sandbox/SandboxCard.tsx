@@ -58,13 +58,6 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
     brightness,
     ...props
   }) => {
-    // eslint-disable-next-line no-nested-ternary
-    const textColor = restricted
-      ? '#999999'
-      : brightness === 'light'
-      ? '#000000'
-      : '#ffffff';
-
     return (
       <Stack justify="space-between">
         {editing ? (
@@ -97,7 +90,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
                 onContextMenu={onContextMenu}
                 {...props}
               >
-                <Text size={13} weight="medium" color={textColor} truncate>
+                <Text size={13} weight="medium" color="inherit" truncate>
                   {sandboxTitle}
                 </Text>
               </InteractiveOverlay.Button>
@@ -108,6 +101,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
                     display: 'flex',
                     overflow: 'hidden',
                     lineHeight: '16px',
+                    color: 'inherit',
                   }}
                   onClick={onClick}
                   onDoubleClick={editing ? undefined : onDoubleClick}
@@ -115,7 +109,7 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
                   onContextMenu={onContextMenu}
                   {...props}
                 >
-                  <Text size={13} weight="medium" color={textColor} truncate>
+                  <Text size={13} weight="medium" color="inherit" truncate>
                     {sandboxTitle}
                   </Text>
                 </Element>
@@ -243,6 +237,15 @@ export const SandboxCard = ({
 
   // console.log(`thumbnailBrightness for ${sandbox.title}`, thumbnailBrightness);
 
+  let textColor = '#EBEBEB'; // default
+
+  if (restricted) {
+    textColor = '#999999';
+  } else if (thumbnailBrightness.brightness && hasCustomThumbnail) {
+    textColor =
+      thumbnailBrightness.brightness === 'light' ? '#0E0E0E' : '#FFFFFF';
+  }
+
   return (
     <InteractiveOverlay>
       <StyledCard
@@ -262,6 +265,9 @@ export const SandboxCard = ({
           display: 'grid',
           gridTemplate: '1fr / 1fr',
 
+          // Text color based on restricted and brightness
+          color: textColor,
+
           // Hide sandbox stats and context menu button if the
           // sandbox hasCustomThumbnail.
           '.sandbox-stats, .sandbox-actions': hasCustomThumbnail
@@ -274,6 +280,9 @@ export const SandboxCard = ({
             // update background color in case there is
             // no thumbnail.
             backgroundColor: '#252525',
+
+            // update text color to contrast scrim
+            color: '#EBEBEB',
 
             [`${CardThumbnail}`]: {
               '&::before': hasCustomThumbnail
