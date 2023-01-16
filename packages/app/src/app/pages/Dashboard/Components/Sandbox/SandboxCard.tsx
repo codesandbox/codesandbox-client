@@ -17,7 +17,7 @@ import styled from 'styled-components';
 import { SandboxItemComponentProps } from './types';
 import { StyledCard } from '../shared/StyledCard';
 import { useSandboxThumbnail } from './useSandboxThumbnail';
-import { useImageBrightness, Brightness } from './useImageBrightness';
+import { Brightness } from './useImageBrightness';
 
 type SandboxTitleProps = {
   restricted?: boolean;
@@ -223,27 +223,18 @@ export const SandboxCard = ({
   isDragging,
   ...props
 }: SandboxItemComponentProps) => {
-  const hasCustomThumbnail = screenshotUrl?.includes('uploads');
-
-  const sandboxThumbnail = useSandboxThumbnail({
+  const thumbnail = useSandboxThumbnail({
     sandboxId: sandbox.id,
     screenshotOutdated: sandbox.screenshotOutdated,
     screenshotUrl,
   });
 
-  // TODO: combine with (or use inside useSandboxThumbnail);
-  // TODO: add skip when the thumbnail is not custom
-  const thumbnailBrightness = useImageBrightness(screenshotUrl);
-
-  // console.log(`thumbnailBrightness for ${sandbox.title}`, thumbnailBrightness);
-
   let textColor = '#EBEBEB'; // default
 
   if (restricted) {
     textColor = '#999999';
-  } else if (thumbnailBrightness.brightness && hasCustomThumbnail) {
-    textColor =
-      thumbnailBrightness.brightness === 'light' ? '#0E0E0E' : '#FFFFFF';
+  } else if (thumbnail?.brightness && thumbnail.isCustom) {
+    textColor = thumbnail.brightness === 'light' ? '#0E0E0E' : '#FFFFFF';
   }
 
   return (
@@ -268,8 +259,8 @@ export const SandboxCard = ({
           color: textColor,
 
           // Hide sandbox stats and context menu button if the
-          // sandbox hasCustomThumbnail.
-          '.sandbox-stats, .sandbox-actions': hasCustomThumbnail
+          // sandbox thumbnail isCustom.
+          '.sandbox-stats, .sandbox-actions': thumbnail.isCustom
             ? {
                 opacity: 0,
               }
@@ -284,7 +275,7 @@ export const SandboxCard = ({
             color: '#EBEBEB',
 
             [`${CardThumbnail}`]: {
-              '&::before': hasCustomThumbnail
+              '&::before': thumbnail.isCustom
                 ? {
                     // show scrim
                     opacity: 0.8,
@@ -296,8 +287,8 @@ export const SandboxCard = ({
             },
 
             // Show sandbox stats and context menu button if the
-            // sandbox hasCustomThumbnail
-            '.sandbox-stats, .sandbox-actions': hasCustomThumbnail
+            // sandbox thumbnail isCustom
+            '.sandbox-stats, .sandbox-actions': thumbnail.isCustom
               ? {
                   opacity: 1,
                 }
@@ -305,20 +296,20 @@ export const SandboxCard = ({
           },
         }}
       >
-        {sandboxThumbnail ? (
+        {thumbnail?.isLoaded ? (
           <CardThumbnail
             // The thumbnailRef is used for the drag and
             // drop preview.
             ref={thumbnailRef}
-            hasCustomThumbnail={hasCustomThumbnail}
-            source={sandboxThumbnail}
+            hasCustomThumbnail={thumbnail.isCustom}
+            source={thumbnail.src}
           />
         ) : null}
 
         <CardContent selected={selected}>
           <SandboxTitle
             restricted={restricted}
-            brightness={thumbnailBrightness.brightness}
+            brightness={thumbnail.brightness}
             {...props}
           />
           <SandboxStats
@@ -330,8 +321,8 @@ export const SandboxCard = ({
             PrivacyIcon={PrivacyIcon}
             restricted={restricted}
             showBetaBadge={sandbox.isV2}
-            hasThumbnail={!!sandboxThumbnail}
-            hasCustomThumbnail={hasCustomThumbnail}
+            hasThumbnail={!!thumbnail.src}
+            hasCustomThumbnail={thumbnail.isCustom}
           />
         </CardContent>
       </StyledCard>

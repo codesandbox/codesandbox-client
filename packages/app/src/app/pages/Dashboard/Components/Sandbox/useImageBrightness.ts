@@ -33,7 +33,7 @@ type ImageBrightness = {
   brightness: Brightness | undefined;
 };
 
-export const useImageBrightness = (src: string): ImageBrightness => {
+export const useImageBrightness = (src?: string): ImageBrightness => {
   const [isLoaded, setLoaded] = useState<boolean>(false);
   const [brightness, setBrightness] = useState<Brightness | undefined>(
     undefined
@@ -100,7 +100,10 @@ export const useImageBrightness = (src: string): ImageBrightness => {
       }
     }
 
-    calculateBrightness();
+    // Only calculate brightness when image src is present
+    if (src) {
+      calculateBrightness();
+    }
   }, [src]);
 
   return {
