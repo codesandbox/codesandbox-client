@@ -7,7 +7,6 @@
     "lib": ["es6", "dom", "es2017.object", "es2017.sharedmemory"],
     "outDir": "lib",
     "declaration": true,
-    "emitDeclarationOnly": true,
     "allowJs": false,
     "jsx": "preserve",
     "resolveJsonModule": true,
