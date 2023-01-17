@@ -84,8 +84,8 @@ export const Header: React.FC<HeaderProps> = React.memo(
             })}
           >
             <LogoIcon
-              width="18px"
-              height="18px"
+              width={18}
+              height={18}
               css={css({
                 marginRight: '8px',
               })}
