@@ -375,6 +375,7 @@ const CardContent = styled.div<{ selected: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
 
   ${({ selected }) =>
     selected &&
