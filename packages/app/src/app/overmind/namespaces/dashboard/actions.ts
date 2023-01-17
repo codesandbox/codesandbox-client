@@ -2126,7 +2126,7 @@ export const removeBranchFromRepository = async (
   dashboard.removingBranch = { id };
 
   try {
-    await effects.api.removeBranchFromRepository(owner, repoName, name);
+    await effects.gql.mutations.deleteBranch({ branchId: id });
 
     // Clean the branch references from all possible locations in the state
     // 1. Repository with branches

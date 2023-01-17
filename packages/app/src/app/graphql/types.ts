@@ -3126,6 +3126,15 @@ export type UpdateAlbumMutation = { __typename?: 'RootMutationType' } & {
   updateAlbum: { __typename?: 'Album' } & Pick<Album, 'id'>;
 };
 
+export type DeleteBranchMutationVariables = Exact<{
+  branchId: Scalars['String'];
+}>;
+
+export type DeleteBranchMutation = { __typename?: 'RootMutationType' } & Pick<
+  RootMutationType,
+  'deleteBranch'
+>;
+
 export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{
   [key: string]: never;
 }>;
