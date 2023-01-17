@@ -111,7 +111,7 @@ const commonStyles = {
   lineHeight: '16px', // trust the height
   border: 'none',
   borderRadius: '4px',
-  transition: 'background .3s',
+  transition: 'background .3s, color .3s',
   textDecoration: 'none',
   transitionDuration: theme => theme.speeds[2],
 

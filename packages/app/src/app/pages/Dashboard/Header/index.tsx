@@ -62,6 +62,17 @@ export const Header: React.FC<HeaderProps> = React.memo(
             variant="link"
             css={css({
               marginLeft: '2px',
+              transition: 'color .3s',
+
+              '.chevron': {
+                transition: 'transform .3s',
+              },
+
+              '&:hover': {
+                '.chevron': {
+                  transform: 'translateY(2px)',
+                },
+              },
             })}
           >
             <LogoIcon
@@ -71,7 +82,12 @@ export const Header: React.FC<HeaderProps> = React.memo(
                 marginRight: '8px',
               })}
             />
-            <Icon name="chevronDown" size={8} title="User actions" />
+            <Icon
+              className="chevron"
+              name="chevronDown"
+              size={6}
+              title="User actions"
+            />
           </Button>
         </UserMenu>
 
@@ -180,12 +196,14 @@ const SearchInputGroup = () => {
             name="search"
             size={16}
             title="Search"
+            className="icon"
             css={css({
               position: 'absolute',
               top: '50%',
               left: 0,
               transform: 'translateY(-50%)',
               pointerEvents: 'none',
+              color: '#999999',
             })}
           />
           <ComboboxInput
@@ -199,6 +217,24 @@ const SearchInputGroup = () => {
               background: 'transparent',
               border: 'none',
               paddingLeft: '24px',
+              color: '#999999',
+
+              '&::placeholder': {
+                color: '#999999',
+                transition: 'color .3s',
+              },
+
+              '&:hover': {
+                '&::placeholder': {
+                  color: '#ffffff',
+                },
+              },
+
+              '&:focus': {
+                '&::placeholder': {
+                  color: '#717171',
+                },
+              },
             })}
           />
           {SHOW_COMMUNITY_SEARCH && query.length >= 2 && (
