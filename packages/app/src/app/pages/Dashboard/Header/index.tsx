@@ -52,6 +52,14 @@ export const Header: React.FC<HeaderProps> = React.memo(
           color: 'titleBar.activeForeground',
         })}
       >
+        <IconButton
+          name="menu"
+          size={16}
+          title="Menu"
+          onClick={onSidebarToggle}
+          css={css({ display: ['block', 'block', 'none'] })}
+        />
+
         <UserMenu
           css={css({
             display: ['none', 'none', 'block'],
@@ -91,13 +99,6 @@ export const Header: React.FC<HeaderProps> = React.memo(
           </Button>
         </UserMenu>
 
-        <IconButton
-          name="menu"
-          size={16}
-          title="Menu"
-          onClick={onSidebarToggle}
-          css={css({ display: ['block', 'block', 'none'] })}
-        />
         <SearchInputGroup />
         <Stack align="center" gap={2}>
           <Button
