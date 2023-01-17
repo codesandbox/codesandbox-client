@@ -48,7 +48,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
         css={css({
           boxSizing: 'border-box',
           fontFamily: 'Inter, sans-serif',
-          height: 12,
+          padding: '16px',
           color: 'titleBar.activeForeground',
         })}
       >
@@ -111,7 +111,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
           >
             <Icon
               name="plus"
-              size={20}
+              size={22}
               title="New"
               css={css({ paddingRight: 2 })}
             />
