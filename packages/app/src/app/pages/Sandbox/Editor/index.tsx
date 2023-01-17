@@ -21,6 +21,7 @@ import SplitPane from 'react-split-pane';
 import styled, { ThemeProvider } from 'styled-components';
 
 import { SubscriptionStatus } from 'app/graphql/types';
+import { UpgradeSSEToV2Stripe } from 'app/components/StripeMessages/UpgradeSSEToV2';
 import { MainWorkspace as Content } from './Content';
 import { Container } from './elements';
 import ForkFrozenSandboxModal from './ForkFrozenSandboxModal';
@@ -120,7 +121,8 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
     if (
       state.activeTeamInfo?.subscription?.status ===
         SubscriptionStatus.Unpaid ||
-      sandbox?.freePlanEditingRestricted
+      sandbox?.freePlanEditingRestricted ||
+      sandbox?.isSse
     ) {
       // Header height + MessageStripe
       return 3 * 16 + 42;
@@ -152,6 +154,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               SubscriptionStatus.Unpaid && <PaymentPending />}
 
             {sandbox?.freePlanEditingRestricted ? <FreeViewOnlyStripe /> : null}
+            {sandbox?.isSse ? <UpgradeSSEToV2Stripe /> : null}
             <Header />
           </ComponentsThemeProvider>
         )}

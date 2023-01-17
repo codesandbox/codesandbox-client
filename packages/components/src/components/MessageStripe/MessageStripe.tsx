@@ -6,7 +6,7 @@ import { Button } from '../Button';
 import { Text } from '../Text';
 import { IconButton } from '../IconButton';
 
-type Variant = 'trial' | 'warning';
+type Variant = 'trial' | 'warning' | 'primary';
 
 interface MessageActionProps
   extends Omit<React.ComponentProps<typeof Button>, 'variant'> {
@@ -22,7 +22,11 @@ export const MessageAction = ({
   return (
     <Element as="div" css={{ flexShrink: 0 }}>
       <Button
-        variant={({ trial: 'light', warning: 'dark' } as const)[variant]}
+        variant={
+          ({ trial: 'light', warning: 'dark', primary: 'dark' } as const)[
+            variant
+          ]
+        }
         {...buttonProps}
       >
         {children}
@@ -34,11 +38,13 @@ export const MessageAction = ({
 const backgroundVariants: Record<Variant, string> = {
   trial: '#644ED7',
   warning: '#F7CC66',
+  primary: 'button.background',
 };
 
 const colorVariants: Record<Variant, string> = {
   trial: 'inherit',
   warning: '#0E0E0E',
+  primary: 'button.foreground',
 };
 
 interface MessageStripeProps {
