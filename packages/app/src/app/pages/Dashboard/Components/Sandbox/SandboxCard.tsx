@@ -224,9 +224,7 @@ export const SandboxCard = ({
   ...props
 }: SandboxItemComponentProps) => {
   const thumbnail = useSandboxThumbnail({
-    sandboxId: sandbox.id,
-    screenshotOutdated: sandbox.screenshotOutdated,
-    screenshotUrl,
+    thumbnailUrl: screenshotUrl,
   });
 
   let textColor = '#EBEBEB'; // default
@@ -243,8 +241,6 @@ export const SandboxCard = ({
         dimmed={isDragging}
         css={{
           overflow: 'hidden',
-
-          // TODO: More distinct hover state for auto-generated thumbnails
 
           // Reset padding for now as it's set in the card
           // content component instead.
