@@ -78,7 +78,9 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
           </form>
         ) : (
           <Stack gap={2} align="flex-start" css={{ overflow: 'hidden' }}>
-            <TemplateIcon width="16" height="16" />
+            <Element css={{ flexShrink: 0 }}>
+              <TemplateIcon width="16" height="16" />
+            </Element>
 
             {interaction === 'button' ? (
               <InteractiveOverlay.Button
