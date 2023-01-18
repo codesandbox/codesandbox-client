@@ -2,9 +2,11 @@ import React from 'react';
 import { useEffects, useAppState } from 'app/overmind';
 import { MessageStripe } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
+import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 
 export const UpgradeSSEToV2Stripe = () => {
   const state = useAppState();
+  const effects = useEffects();
   const updateSandbox = useEffects().api.updateSandbox;
 
   return (
@@ -16,19 +18,40 @@ export const UpgradeSSEToV2Stripe = () => {
       <MessageStripe.Action
         onClick={async () => {
           const sandboxId = state.editor.currentSandbox.id;
-          const alias = state.editor.currentSandbox.alias;
 
-          await updateSandbox(sandboxId, {
-            v2: true,
-          });
+          if (
+            hasPermission(
+              state.editor.currentSandbox.authorization,
+              'write_code'
+            )
+          ) {
+            const alias = state.editor.currentSandbox.alias;
 
-          const sandboxV2Url = sandboxUrl({
-            id: sandboxId,
-            alias,
-            isV2: true,
-          });
+            await updateSandbox(sandboxId, {
+              v2: true,
+            });
 
-          window.location.href = sandboxV2Url;
+            const sandboxV2Url = sandboxUrl({
+              id: sandboxId,
+              alias,
+              isV2: true,
+            });
+
+            window.location.href = sandboxV2Url;
+          } else {
+            const forkedSandbox = await effects.api.forkSandbox(sandboxId, {
+              isV2: true,
+              teamId: state.activeTeam,
+            });
+
+            const sandboxV2Url = sandboxUrl({
+              id: forkedSandbox.id,
+              alias: forkedSandbox.alias,
+              isV2: true,
+            });
+
+            window.location.href = sandboxV2Url;
+          }
         }}
       >
         Yes, Convert
