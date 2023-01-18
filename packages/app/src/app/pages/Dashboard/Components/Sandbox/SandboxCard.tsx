@@ -303,11 +303,7 @@ export const SandboxCard = ({
         ) : null}
 
         <CardContent selected={selected}>
-          <SandboxTitle
-            restricted={restricted}
-            brightness={thumbnail.brightness}
-            {...props}
-          />
+          <SandboxTitle brightness={thumbnail.brightness} {...props} />
           <SandboxStats
             noDrag={noDrag}
             originalGit={sandbox.originalGit}
