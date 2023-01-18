@@ -6,6 +6,7 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
+import { EmptyContributions } from './EmptyContributions';
 
 export const MyContributionsPage = () => {
   const params = useParams<{ path: string }>();
@@ -20,8 +21,6 @@ export const MyContributionsPage = () => {
     actions.dashboard.getContributionBranches();
   }, [actions.dashboard]);
 
-  const pageType: PageTypes = 'my-contributions';
-
   const getItemsToShow = (): DashboardGridItem[] => {
     if (contributions === null) {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
@@ -34,6 +33,8 @@ export const MyContributionsPage = () => {
   };
 
   const itemsToShow = getItemsToShow();
+  const pageType: PageTypes = 'my-contributions';
+  const isEmpty = itemsToShow.length === 0;
 
   return (
     <SelectionProvider
@@ -48,12 +49,16 @@ export const MyContributionsPage = () => {
         activeTeam={activeTeam}
         title="My contributions"
         path={param}
-        showViewOptions
+        showViewOptions={!isEmpty}
         showBetaBadge
-        showFilters={Boolean(param)}
-        showSortOptions={Boolean(param)}
+        showFilters={!isEmpty && Boolean(param)}
+        showSortOptions={!isEmpty && Boolean(param)}
       />
-      <VariableGrid page={pageType} items={itemsToShow} />
+      {isEmpty ? (
+        <EmptyContributions />
+      ) : (
+        <VariableGrid page={pageType} items={itemsToShow} />
+      )}
     </SelectionProvider>
   );
 };

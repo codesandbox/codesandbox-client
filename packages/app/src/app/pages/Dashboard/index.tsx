@@ -17,12 +17,14 @@ import css from '@styled-system/css';
 
 import { PaymentPending } from 'app/components/StripeMessages';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
+import { useDashboardVisit } from 'app/hooks/useDashboardVisit';
 import { SubscriptionStatus } from 'app/graphql/types';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { SIDEBAR_WIDTH } from './Sidebar/constants';
 import { Content } from './Content';
 import { NUOCT22 } from '../SignIn/Onboarding';
+import { NewTeamModal } from './Components/NewTeamModal';
 
 const GlobalStyles = createGlobalStyle({
   body: { overflow: 'hidden' },
@@ -33,6 +35,7 @@ export const Dashboard: FunctionComponent = () => {
   const { browser, notificationToast } = useEffects();
   const actions = useActions();
   const { subscription } = useWorkspaceSubscription();
+  const { trackVisit } = useDashboardVisit();
 
   // only used for mobile
   const [sidebarVisible, setSidebarVisibility] = React.useState(false);
@@ -91,6 +94,10 @@ export const Dashboard: FunctionComponent = () => {
       });
     }
   }, [location.search, actions, activeTeamInfo, notificationToast]);
+
+  useEffect(() => {
+    trackVisit();
+  }, []);
 
   if (!hasLogIn) {
     return <Redirect to={signInPageUrl(location.pathname)} />;
@@ -168,6 +175,7 @@ export const Dashboard: FunctionComponent = () => {
           </Stack>
         </Stack>
       </DndProvider>
+      <NewTeamModal />
     </ThemeProvider>
   );
 };

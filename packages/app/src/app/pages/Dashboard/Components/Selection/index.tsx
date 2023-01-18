@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useAppState, useActions, useEffects } from 'app/overmind';
-import { Element, SkipNav } from '@codesandbox/components';
+import { Element, SkipNav, Stack } from '@codesandbox/components';
 import css from '@styled-system/css';
 import {
   ARROW_LEFT,
@@ -26,7 +26,7 @@ import {
   DashboardSandbox,
   DashboardFolder,
   DashboardGridItem,
-  DashboardRepo,
+  DashboardSyncedRepo,
   DashboardCommunitySandbox,
   PageTypes,
   DashboardBranch,
@@ -108,14 +108,14 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       item.type === 'sandbox' ||
       item.type === 'template' ||
       item.type === 'folder' ||
-      item.type === 'repo' ||
+      item.type === 'synced-sandbox-repo' ||
       item.type === 'community-sandbox' ||
       item.type === 'branch'
   ) as Array<
     | DashboardSandbox
     | DashboardTemplate
     | DashboardFolder
-    | DashboardRepo
+    | DashboardSyncedRepo
     | DashboardCommunitySandbox
     | DashboardBranch
     | DashboardRepository
@@ -128,7 +128,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
       return `${providerRepository.owner}-${providerRepository.name}`;
     }
     if (item.type === 'folder') return item.path;
-    if (item.type === 'repo') return item.name;
+    if (item.type === 'synced-sandbox-repo') return item.name;
     return item.sandbox.id;
   });
 
@@ -636,15 +636,15 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
         activeTeamId,
       }}
     >
-      <Element
+      <Stack
         id="selection-container"
         onContextMenu={onContainerContextMenu}
         css={css({
-          paddingTop: 8,
-          paddingBottom: 8,
+          paddingTop: page === 'recent' ? 0 : 8, // In the recent page, this component is nested so the padding top isn't needed.
           width: '100%',
           height: '100%',
         })}
+        direction="vertical"
         {...(interactive
           ? {
               onKeyDown: onContainerKeyDown,
@@ -659,7 +659,7 @@ export const SelectionProvider: React.FC<SelectionProviderProps> = ({
           onFocus={() => setSelectedIds([selectionItems[0]])}
         />
         {children}
-      </Element>
+      </Stack>
       {drawingRect && selectionRect.end.x && (
         <Element
           id="selection-rectangle"

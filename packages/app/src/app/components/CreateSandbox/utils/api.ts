@@ -100,6 +100,7 @@ export const importRepository: ImportRepositoryFn = ({
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'x-codesandbox-client': 'legacy-web',
       authorization: token ? `Bearer ${token}` : '',
     },
     method: 'POST',
@@ -132,6 +133,7 @@ export const validateRepositoryDestination: ValidateRepositoryDestinationFn = de
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'x-codesandbox-client': 'legacy-web',
       authorization: token ? `Bearer ${token}` : '',
     },
   })
@@ -174,6 +176,7 @@ export const forkRepository: ForkRepositoryFn = ({ source, destination }) => {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'x-codesandbox-client': 'legacy-web',
       authorization: token ? `Bearer ${token}` : '',
     },
     method: 'POST',

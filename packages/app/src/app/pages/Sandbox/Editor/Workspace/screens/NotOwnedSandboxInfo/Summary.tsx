@@ -66,6 +66,7 @@ export const Summary = () => {
             {customTemplate ? (
               <Stack gap={2} align="center">
                 <TemplateIcon
+                  templateName={customTemplate.title}
                   iconUrl={customTemplate.iconUrl}
                   environment={template}
                 />
@@ -182,8 +183,8 @@ export const Summary = () => {
   );
 };
 
-const TemplateIcon = ({ iconUrl, environment }) => {
-  const { UserIcon } = getTemplateIcon(iconUrl, environment);
+const TemplateIcon = ({ iconUrl, templateName, environment }) => {
+  const { UserIcon } = getTemplateIcon(templateName, iconUrl, environment);
 
   return <UserIcon />;
 };

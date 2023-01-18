@@ -5,7 +5,7 @@ import {
   SandboxFragmentDashboardFragment,
   RepoFragmentDashboardFragment,
 } from 'app/graphql/types';
-import { DashboardRepoSandbox } from '../types';
+import { DashboardSyncedRepoSandbox } from '../types';
 
 export type TemplateFilter = {
   id: string;
@@ -19,7 +19,7 @@ export function getPossibleTemplates(
     | SandboxFragmentDashboardFragment
     | RepoFragmentDashboardFragment
     | TemplateFragmentDashboardFragment
-    | DashboardRepoSandbox
+    | DashboardSyncedRepoSandbox
   >
 ): TemplateFilter[] {
   if (!sandboxes) return [];
@@ -63,3 +63,10 @@ export function shuffleSeed(array, inputSeed) {
   }
   return result;
 }
+
+export const appendOnboardingTracking = (url: string): string => {
+  const baseUrl = new URL(url);
+  baseUrl.searchParams.append('utm_source', 'dashboard_onboarding');
+
+  return baseUrl.toString();
+};

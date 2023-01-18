@@ -31,6 +31,8 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
 
   const numberOfSeats = subscription.quantity || 1;
 
+  const hasPaymentMethod = subscription.paymentMethodAttached;
+
   const isPatron =
     subscription.origin === SubscriptionOrigin.Legacy ||
     subscription.origin === SubscriptionOrigin.Patron;
@@ -48,6 +50,7 @@ export const useWorkspaceSubscription = (): WorkspaceSubscriptionReturn => {
     isFree,
     isEligibleForTrial: false,
     hasActiveTeamTrial,
+    hasPaymentMethod,
     isPatron,
     isPaddle,
     isStripe,
@@ -61,6 +64,7 @@ const NO_WORKSPACE = {
   isFree: undefined,
   isEligibleForTrial: undefined,
   hasActiveTeamTrial: undefined,
+  hasPaymentMethod: undefined,
   isPatron: undefined,
   isPaddle: undefined,
   isStripe: undefined,
@@ -73,6 +77,7 @@ const NO_SUBSCRIPTION = {
   isFree: true,
   isEligibleForTrial: true,
   hasActiveTeamTrial: false,
+  hasPaymentMethod: false,
   isPatron: false,
   isPaddle: false,
   isStripe: false,
@@ -94,6 +99,7 @@ export type WorkspaceSubscriptionReturn =
       isFree: boolean;
       isEligibleForTrial: false;
       hasActiveTeamTrial: boolean;
+      hasPaymentMethod: boolean;
       isPatron: boolean;
       isPaddle: boolean;
       isStripe: boolean;

@@ -30,7 +30,7 @@ import { SidebarContext } from './utils';
 import { RowItem } from './RowItem';
 import { NestableRowItem } from './NestableRowItem';
 
-const END_OF_TRIAL_DAYS_NOTIFICATION = 5;
+const DAYS_LEFT_TO_SHOW_UPGRADE_MESSAGE = 5;
 
 interface SidebarProps {
   visible: boolean;
@@ -101,6 +101,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     subscription,
     isFree,
     hasActiveTeamTrial,
+    hasPaymentMethod,
     isEligibleForTrial,
   } = useWorkspaceSubscription();
 
@@ -109,9 +110,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     ? getDaysUntil(subscription?.trialEnd)
     : null;
 
-  const showBottomMessage =
-    isFree ||
-    (trialDaysLeft !== null && trialDaysLeft <= END_OF_TRIAL_DAYS_NOTIFICATION);
+  const showDaysLeftMessage =
+    trialDaysLeft !== null &&
+    trialDaysLeft <= DAYS_LEFT_TO_SHOW_UPGRADE_MESSAGE;
 
   return (
     <SidebarContext.Provider value={{ onSidebarToggle, menuState }}>
@@ -305,34 +306,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <Element marginTop={3} />
         </List>
 
-        {teamDataLoaded && showBottomMessage && (
+        {teamDataLoaded && isFree ? (
           <Element css={{ margin: '24px', paddingTop: 0 }}>
-            {isTeamAdmin &&
-              (isEligibleForTrial ? (
-                <AdminStartTrial activeTeam={activeTeam} />
-              ) : (
-                <AdminUpgradeToTeamPro />
-              ))}
-
-            {isTeamSpace && isFree && !isTeamAdmin ? (
-              <UserUpgradeToTeamPro />
+            {isTeamAdmin && isEligibleForTrial ? (
+              <AdminStartTrial activeTeam={activeTeam} />
             ) : null}
 
-            {isPersonalSpace && isFree ? <UpgradeToPersonalPro /> : null}
+            {isTeamAdmin && !isEligibleForTrial ? (
+              <AdminUpgradeToTeamPro />
+            ) : null}
 
-            {hasActiveTeamTrial &&
-              trialDaysLeft !== null &&
-              trialDaysLeft <= END_OF_TRIAL_DAYS_NOTIFICATION && (
-                <TrialExpiring
-                  activeTeam={activeTeam}
-                  cancelAtPeriodEnd={subscription?.cancelAtPeriodEnd}
-                  daysLeft={trialDaysLeft}
-                  isAdmin={isTeamAdmin}
-                />
-              )}
+            {isTeamSpace && !isTeamAdmin ? <UserUpgradeToTeamPro /> : null}
+
+            {isPersonalSpace ? <UpgradeToPersonalPro /> : null}
           </Element>
-        )}
+        ) : null}
+
+        {teamDataLoaded && showDaysLeftMessage ? (
+          <Element css={{ margin: '24px', paddingTop: 0 }}>
+            <TrialExpiring
+              activeTeam={activeTeam}
+              cancelAtPeriodEnd={subscription?.cancelAtPeriodEnd}
+              hasPaymentMethod={hasPaymentMethod}
+              daysLeft={trialDaysLeft}
+              isAdmin={isTeamAdmin}
+            />
+          </Element>
+        ) : null}
       </Stack>
+
       <AnimatePresence>
         {visible && (
           <Element

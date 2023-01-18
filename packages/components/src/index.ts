@@ -7,10 +7,14 @@ export * from './components/Avatar';
 export * from './components/Badge';
 export * from './components/Banner';
 export * from './components/Button';
+export * from './components/Card/Card';
 export * from './components/Checkbox';
+export * from './components/CreateCard';
+export * from './components/ExternalCard';
 export * from './components/Icon';
 export * from './components/IconButton';
 export * from './components/Input';
+export * from './components/Loading';
 export * from './components/Label';
 export * from './components/Link';
 export * from './components/Radio';
@@ -35,6 +39,7 @@ export * from './components/Tags/Tag';
 export * from './components/Tooltip';
 export * from './components/Banner/Banner';
 export * from './components/MessageStripe/MessageStripe';
+export * from './components/InteractiveOverlay/InteractiveOverlay';
 
 // layout
 export * from './components/Grid';

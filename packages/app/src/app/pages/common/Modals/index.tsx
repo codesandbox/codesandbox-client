@@ -47,7 +47,6 @@ import { UndoAccountDeletionConfirmationModal } from './UndoAccountDeletion/Undo
 import { NotFoundBranchModal } from './NotFoundBranchModal';
 import { GithubPagesLogs } from './GithubPagesLogs';
 import { CropThumbnail } from './CropThumbnail';
-import { NewTeamModal } from './NewTeamModal';
 import { SubscriptionCancellationModal } from './SubscriptionCancellation';
 
 const modals = {
@@ -199,11 +198,6 @@ const modals = {
   notFoundBranchModal: {
     Component: NotFoundBranchModal,
     width: 450,
-  },
-  newTeam: {
-    Component: NewTeamModal,
-    top: 15,
-    width: 724,
   },
   subscriptionCancellation: {
     Component: SubscriptionCancellationModal,

@@ -184,21 +184,22 @@ export const currentTeamInfoFragment = gql`
     }
 
     subscription {
-      id
-      type
-      status
-      origin
-      quantity
-      unitPrice
-      currency
       billingInterval
-      updateBillingUrl
-      nextBillDate
-      paymentProvider
       cancelAt
       cancelAtPeriodEnd
-      trialStart
+      currency
+      id
+      nextBillDate
+      origin
+      paymentMethodAttached
+      paymentProvider
+      quantity
+      status
       trialEnd
+      trialStart
+      type
+      unitPrice
+      updateBillingUrl
     }
 
     limits {
@@ -239,6 +240,7 @@ export const branchFragment = gql`
     name
     contribution
     lastAccessedAt
+    upstream
     project {
       repository {
         ... on GitHubRepository {
@@ -254,6 +256,21 @@ export const branchFragment = gql`
 
 export const projectFragment = gql`
   fragment project on Project {
+    branchCount
+    lastAccessedAt
+    repository {
+      ... on GitHubRepository {
+        owner
+        name
+        defaultBranch
+        private
+      }
+    }
+  }
+`;
+
+export const projectWithBranchesFragment = gql`
+  fragment projectWithBranches on Project {
     branches {
       ...branch
     }

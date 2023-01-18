@@ -11,6 +11,7 @@ interface TemplateCardProps {
   template: TemplateFragment;
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
+  padding?: number | string;
 }
 
 export const TemplateCard = ({
@@ -18,9 +19,11 @@ export const TemplateCard = ({
   template,
   onSelectTemplate,
   onOpenTemplate,
+  padding,
 }: TemplateCardProps) => {
   const { isLoggedIn } = useAppState();
   const { UserIcon } = getTemplateIcon(
+    template.sandbox.title,
     template.iconUrl,
     template.sandbox?.source?.template
   );
@@ -32,6 +35,7 @@ export const TemplateCard = ({
   return (
     <TemplateButton
       title={sandboxTitle}
+      css={{ padding }}
       type="button"
       onClick={evt => {
         if (disabled) {
@@ -60,22 +64,28 @@ export const TemplateCard = ({
       }}
       disabled={disabled}
     >
-      <Stack css={{ height: '100%' }} direction="vertical" gap={4}>
+      <Stack
+        css={{ height: '100%', width: '100%' }}
+        direction="vertical"
+        justify="space-between"
+        gap={4}
+      >
         <Stack
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
-          <UserIcon />
+          <UserIcon height="20" width="20" />
           {isV2 && <Badge icon="cloud">Beta</Badge>}
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text
             css={{
-              fontSize: '14px',
-              fontWeight: 500,
               textOverflow: 'ellipsis',
               overflow: 'hidden',
               whiteSpace: 'nowrap',
             }}
+            size={13}
+            lineHeight="16px"
+            weight="500"
           >
             {sandboxTitle}
           </Text>

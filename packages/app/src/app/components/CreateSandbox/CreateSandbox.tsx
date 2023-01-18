@@ -167,6 +167,16 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
+    if (searchQuery) {
+      track('Create New - Search Templates', {
+        query: searchQuery,
+        codesandbox: 'V1',
+        event_source: 'UI',
+      });
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
     if (searchQuery && tabState.selectedId) {
       setSearchQuery('');
     }
@@ -351,7 +361,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     }}
                     stopId="cloud-templates"
                   >
-                    Cloud templates (Beta)
+                    Cloud Templates (Beta)
                   </Tab>
 
                   <Tab
@@ -364,7 +374,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
                     }}
                     stopId="official-templates"
                   >
-                    Official templates
+                    Official Templates
                   </Tab>
 
                   {essentialState.state === 'success'
@@ -573,6 +583,7 @@ interface TemplateInfoProps {
 
 const TemplateInfo = ({ template }: TemplateInfoProps) => {
   const { UserIcon } = getTemplateIcon(
+    template.sandbox.title,
     template.iconUrl,
     template.sandbox?.source?.template
   );

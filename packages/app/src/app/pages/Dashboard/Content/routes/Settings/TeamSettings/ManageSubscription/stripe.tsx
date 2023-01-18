@@ -9,7 +9,11 @@ import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 export const Stripe: React.FC = () => {
   const { openCancelSubscriptionModal } = useActions();
   const { activeTeam } = useAppState();
-  const { subscription, hasActiveTeamTrial } = useWorkspaceSubscription();
+  const {
+    subscription,
+    hasActiveTeamTrial,
+    hasPaymentMethod,
+  } = useWorkspaceSubscription();
   const [loading, createCustomerPortal] = useCreateCustomerPortal({
     team_id: activeTeam,
   });
@@ -18,6 +22,7 @@ export const Stripe: React.FC = () => {
     return null;
   }
 
+  // When the subscription has been actively cancelled by the team admin
   if (subscription.cancelAt) {
     return (
       <Stack
@@ -49,6 +54,10 @@ export const Stripe: React.FC = () => {
     );
   }
 
+  const updateSubscriptionText = `${
+    hasPaymentMethod ? 'Update' : 'Add'
+  } payment details`;
+
   return (
     <Stack direction="vertical" gap={2}>
       <Link
@@ -63,7 +72,7 @@ export const Stripe: React.FC = () => {
         size={3}
         variant="active"
       >
-        {loading ? 'Loading...' : 'Update payment details'}
+        {loading ? 'Loading...' : updateSubscriptionText}
       </Link>
       <Link
         color="#EE8269"

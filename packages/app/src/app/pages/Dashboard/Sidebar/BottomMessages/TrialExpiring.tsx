@@ -3,33 +3,48 @@ import { Stack, Text, Button } from '@codesandbox/components';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import track from '@codesandbox/common/lib/utils/analytics';
 
+const DAYS_LEFT_TO_SHOW_PAYMENT_MESSAGE = 2;
+
 export const TrialExpiring: React.FC<{
   activeTeam: string;
   daysLeft: number;
   isAdmin: boolean;
   cancelAtPeriodEnd: boolean;
-}> = ({ daysLeft, isAdmin, activeTeam, cancelAtPeriodEnd }) => {
+  hasPaymentMethod: boolean;
+}> = ({
+  daysLeft,
+  isAdmin,
+  activeTeam,
+  cancelAtPeriodEnd,
+  hasPaymentMethod,
+}) => {
   const [loading, createCustomerPortal] = useCreateCustomerPortal({
     team_id: activeTeam,
   });
 
+  const showPaymentDetailsMessage =
+    daysLeft <= DAYS_LEFT_TO_SHOW_PAYMENT_MESSAGE && !hasPaymentMethod;
+
   return (
     <Stack align="flex-start" direction="vertical" gap={2}>
       <Text css={{ color: '#c2c2c2', fontWeight: 500, fontSize: 12 }}>
-        {daysLeft === 0 && <>Your trial expires today.</>}
-        {daysLeft === 1 && <>Your trial expires tomorrow.</>}
+        {daysLeft === 0 && <>Your trial ends today.</>}
+        {daysLeft === 1 && <>Your trial ends tomorrow.</>}
         {daysLeft > 1 && <>{daysLeft} days left on your trial.</>}
       </Text>
-      <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
-        {cancelAtPeriodEnd ? (
-          <>After this period, your Team will be migrated to the Free plan.</>
-        ) : (
-          <>
-            After this period, your Team Pro subscription will be automatically
-            renewed.
-          </>
-        )}
-      </Text>
+
+      {cancelAtPeriodEnd ? (
+        <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
+          After this period, your Team will be migrated to the Free plan.
+        </Text>
+      ) : (
+        <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
+          {showPaymentDetailsMessage
+            ? 'Update your payment method to continue this Pro subscription.'
+            : 'After this period, your Team Pro subscription will be automatically renewed.'}
+        </Text>
+      )}
+
       {isAdmin && (
         <Button
           autoWidth
@@ -43,15 +58,24 @@ export const TrialExpiring: React.FC<{
             padding: '4px 0',
           }}
           onClick={() => {
-            track('Side banner - Manage Subscription', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
+            track(
+              `Side banner - ${
+                showPaymentDetailsMessage
+                  ? 'Add payment details'
+                  : 'Manage subscription'
+              }`,
+              {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              }
+            );
 
             createCustomerPortal();
           }}
         >
-          Manage subscription
+          {showPaymentDetailsMessage
+            ? 'Add payment details'
+            : 'Manage subscription'}
         </Button>
       )}
     </Stack>

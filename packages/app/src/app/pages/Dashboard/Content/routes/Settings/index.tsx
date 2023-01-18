@@ -8,7 +8,7 @@ import { Header } from '../../../Components/Header';
 import { TeamSettings } from './TeamSettings';
 import { UserSettings } from './UserSettings';
 
-import { GRID_MAX_WIDTH } from '../../../Components/VariableGrid';
+import { GRID_MAX_WIDTH } from '../../../Components/VariableGrid/constants';
 
 export const Settings = () => {
   const {

@@ -66,6 +66,7 @@ import {
   teamFragmentDashboard,
   branchFragment,
   projectFragment,
+  projectWithBranchesFragment,
 } from './fragments';
 
 export const deletedPersonalSandboxes: Query<
@@ -474,6 +475,25 @@ export const curatedAlbums: Query<
   ${sandboxFragmentDashboard}
 `;
 
+export const curatedAlbumById = gql`
+  query CuratedAlbumById($albumId: ID!) {
+    album(albumId: $albumId) {
+      id
+      title
+      sandboxes {
+        ...sandboxFragmentDashboard
+        forkCount
+        likeCount
+        author {
+          username
+          avatarUrl
+        }
+      }
+    }
+  }
+  ${sandboxFragmentDashboard}
+`;
+
 export const getContributionBranches: Query<
   ContributionBranchesQuery,
   ContributionBranchesQueryVariables
@@ -504,7 +524,6 @@ export const getRepositoriesByTeam: Query<
     }
   }
   ${projectFragment}
-  ${branchFragment}
 `;
 
 export const getRepositoryByDetails: Query<
@@ -513,9 +532,9 @@ export const getRepositoryByDetails: Query<
 > = gql`
   query RepositoryByDetails($owner: String!, $name: String!) {
     project(gitProvider: GITHUB, owner: $owner, repo: $name) {
-      ...project
+      ...projectWithBranches
     }
   }
-  ${projectFragment}
+  ${projectWithBranchesFragment}
   ${branchFragment}
 `;
