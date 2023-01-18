@@ -41,9 +41,7 @@ export const useImageBrightness = (src?: string): ImageBrightness => {
 
   useEffect(() => {
     async function calculateBrightness() {
-      if (setLoaded) {
-        setLoaded(false);
-      }
+      setLoaded(false);
 
       try {
         const loadedImage = await loadImage(src);
