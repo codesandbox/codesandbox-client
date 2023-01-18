@@ -45,8 +45,8 @@ export const PrivacyTooltip: FunctionComponent = () => {
     setPrivacyValue(value);
   };
 
-  const handlePrivacyChange = () => {
-    sandboxPrivacyChanged({ privacy: privacyValue, source: 'tooltip' });
+  const setPrivacyToPublic = () => {
+    sandboxPrivacyChanged({ privacy: 0, source: 'tooltip' });
   };
 
   const { description, Icon } = config[privacy];
@@ -56,8 +56,8 @@ export const PrivacyTooltip: FunctionComponent = () => {
       <>Adjust privacy settings.</>
     ) : (
       <Text color="grays.300">
-        You can only change the privacy of a sandbox to public.{' '}
-        <Link href="/pro">Upgrade to Pro</Link> for more options.
+        This sandbox is currently restricted.{' '}
+        <Link href="/pro">Upgrade to Pro</Link> or make it public to edit.
       </Text>
     );
 
@@ -65,29 +65,38 @@ export const PrivacyTooltip: FunctionComponent = () => {
     <ThemeProvider theme={theme}>
       <Container>
         <Tooltip
-          // visible // 🚧 DEBUG
+          visible // 🚧 DEBUG
           content={
             <>
-              <Text size="3" marginBottom={4}>
+              <Text size="3" marginBottom={3}>
                 {owned ? <Owned /> : 'The author has set privacy to'}
               </Text>
+
+              {isFree ? (
+                <Button type="button" onClick={setPrivacyToPublic}>
+                  Make sandbox public
+                </Button>
+              ) : null}
 
               <Text
                 as="label"
                 htmlFor="privacy-select"
                 size="3"
                 color="grays.300"
-                css={{ display: 'block', marginBottom: '4px' }}
+                css={{
+                  display: 'block',
+                  marginBottom: '4px',
+                  marginTop: '24px',
+                }}
               >
                 Privacy
               </Text>
 
               <Select
                 id="privacy-select"
-                disabled={!owned}
-                marginBottom={2}
+                disabled={!owned || !isPro}
                 onChange={onChange}
-                value={privacy}
+                value={privacyValue}
               >
                 <option value={0}>Public</option>
 
@@ -100,14 +109,7 @@ export const PrivacyTooltip: FunctionComponent = () => {
                 </option>
               </Select>
 
-              {/* TODO form submit */}
-              {isFree ? (
-                <Button type="button" onClick={handlePrivacyChange}>
-                  Chance privacy
-                </Button>
-              ) : null}
-
-              <Text css={{ paddingTop: '12px' }} size="2" color="grays.300">
+              <Text css={{ paddingTop: '8px' }} size="2" color="grays.300">
                 {description}
               </Text>
             </>
