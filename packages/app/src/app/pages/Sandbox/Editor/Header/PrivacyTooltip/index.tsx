@@ -77,7 +77,6 @@ export const PrivacyTooltip: FunctionComponent = () => {
     <ThemeProvider theme={theme}>
       <Container>
         <Tooltip
-          visible // 🚧 DEBUG
           content={
             <>
               <Text size="3" marginBottom={3}>
