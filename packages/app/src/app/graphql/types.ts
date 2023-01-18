@@ -2567,21 +2567,22 @@ export type CurrentTeamInfoFragmentFragment = { __typename?: 'Team' } & Pick<
     subscription: Maybe<
       { __typename?: 'ProSubscription' } & Pick<
         ProSubscription,
-        | 'id'
-        | 'type'
-        | 'status'
-        | 'origin'
-        | 'quantity'
-        | 'unitPrice'
-        | 'currency'
         | 'billingInterval'
-        | 'updateBillingUrl'
-        | 'nextBillDate'
-        | 'paymentProvider'
         | 'cancelAt'
         | 'cancelAtPeriodEnd'
-        | 'trialStart'
+        | 'currency'
+        | 'id'
+        | 'nextBillDate'
+        | 'origin'
+        | 'paymentMethodAttached'
+        | 'paymentProvider'
+        | 'quantity'
+        | 'status'
         | 'trialEnd'
+        | 'trialStart'
+        | 'type'
+        | 'unitPrice'
+        | 'updateBillingUrl'
       >
     >;
     limits: { __typename?: 'TeamLimits' } & Pick<
@@ -3147,6 +3148,15 @@ export type DeleteProjectMutationVariables = Exact<{
 export type DeleteProjectMutation = { __typename?: 'RootMutationType' } & Pick<
   RootMutationType,
   'deleteProject'
+>;
+
+export type DeleteBranchMutationVariables = Exact<{
+  branchId: Scalars['String'];
+}>;
+
+export type DeleteBranchMutation = { __typename?: 'RootMutationType' } & Pick<
+  RootMutationType,
+  'deleteBranch'
 >;
 
 export type RecentlyDeletedPersonalSandboxesQueryVariables = Exact<{

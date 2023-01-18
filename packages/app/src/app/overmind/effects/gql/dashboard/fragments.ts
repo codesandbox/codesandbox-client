@@ -184,21 +184,22 @@ export const currentTeamInfoFragment = gql`
     }
 
     subscription {
-      id
-      type
-      status
-      origin
-      quantity
-      unitPrice
-      currency
       billingInterval
-      updateBillingUrl
-      nextBillDate
-      paymentProvider
       cancelAt
       cancelAtPeriodEnd
-      trialStart
+      currency
+      id
+      nextBillDate
+      origin
+      paymentMethodAttached
+      paymentProvider
+      quantity
+      status
       trialEnd
+      trialStart
+      type
+      unitPrice
+      updateBillingUrl
     }
 
     limits {
