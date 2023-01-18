@@ -51,15 +51,27 @@ export const PrivacyTooltip: FunctionComponent = () => {
 
   const { description, Icon } = config[privacy];
 
-  const Owned = () =>
-    isPro ? (
-      <>Adjust privacy settings.</>
-    ) : (
+  const Owned = () => {
+    if (isPro) {
+      return <Text color="grays.300">Adjust privacy settings.</Text>;
+    }
+
+    if (privacy !== 0) {
+      return (
+        <Text color="grays.300">
+          This sandbox is currently restricted.{' '}
+          <Link href="/pro">Upgrade to Pro</Link> or make it public to edit.
+        </Text>
+      );
+    }
+
+    return (
       <Text color="grays.300">
-        This sandbox is currently restricted.{' '}
-        <Link href="/pro">Upgrade to Pro</Link> or make it public to edit.
+        This sandbox is public. <Link href="/pro">Upgrade to Pro</Link> to
+        update the privacy.
       </Text>
     );
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -69,10 +81,10 @@ export const PrivacyTooltip: FunctionComponent = () => {
           content={
             <>
               <Text size="3" marginBottom={3}>
-                {owned ? <Owned /> : 'The author has set privacy to'}
+                {owned ? <Owned /> : `The author has set privacy to ${privacy}`}
               </Text>
 
-              {isFree ? (
+              {isFree && privacy !== 0 ? (
                 <Button type="button" onClick={setPrivacyToPublic}>
                   Make sandbox public
                 </Button>
