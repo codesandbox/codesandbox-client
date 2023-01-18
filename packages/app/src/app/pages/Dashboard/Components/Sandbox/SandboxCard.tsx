@@ -20,7 +20,6 @@ import { useSandboxThumbnail } from './useSandboxThumbnail';
 import { Brightness } from './useImageBrightness';
 
 type SandboxTitleProps = {
-  restricted?: boolean;
   brightness?: Brightness;
 } & Pick<
   SandboxItemComponentProps,
@@ -52,7 +51,6 @@ const SandboxTitle: React.FC<SandboxTitleProps> = React.memo(
     onInputBlur,
     newTitle,
     sandboxTitle,
-    restricted,
     TemplateIcon,
     interaction,
     brightness,
