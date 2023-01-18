@@ -81,6 +81,8 @@ import {
   UpdateAlbumMutationVariables,
   CreateAlbumMutation,
   CreateAlbumMutationVariables,
+  DeleteBranchMutation,
+  DeleteBranchMutationVariables,
 } from 'app/graphql/types';
 import { gql, Query } from 'overmind-graphql';
 
@@ -677,5 +679,14 @@ export const updateAlbum: Query<
     updateAlbum(id: $id, title: $title) {
       id
     }
+  }
+`;
+
+export const deleteBranch: Query<
+  DeleteBranchMutation,
+  DeleteBranchMutationVariables
+> = gql`
+  mutation deleteBranch($branchId: String!) {
+    deleteBranch(id: $branchId)
   }
 `;
