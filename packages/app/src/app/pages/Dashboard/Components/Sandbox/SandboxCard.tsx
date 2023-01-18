@@ -253,12 +253,16 @@ export const SandboxCard = ({
 
           // Text color based on restricted and brightness
           color: textColor,
+          transition: 'color ease-in, background-color ease-in',
+          transitionDuration: '.1s', // === theme.speeds[2]
 
           // Hide sandbox stats and context menu button if the
           // sandbox thumbnail isCustom.
           '.sandbox-stats, .sandbox-actions': thumbnail.isCustom
             ? {
                 opacity: 0,
+                transition: 'opacity ease-in',
+                transitionDuration: '.150s', // === theme.speeds[3]
               }
             : undefined,
 
@@ -345,8 +349,11 @@ const CardThumbnail = styled.div<{
     // right: 0;
     background-color: #212121;
 
-    // For custom thumbs we only show the scrim on hover.
+    // For custom thumbs we only show the scrim on hover. The hover is triggered
+    // from the css property on the StyledCard comopnent.
     opacity: ${({ hasCustomThumbnail }) => (hasCustomThumbnail ? 0 : 0.8)};
+    transition: opacity ease-in;
+    transition-duration: ${({ theme }) => theme.speeds[2]}; // 100ms
   }
 
   // Target siblings and add position relative to make sure the
