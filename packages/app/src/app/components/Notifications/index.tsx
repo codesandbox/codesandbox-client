@@ -7,7 +7,7 @@ import css from '@styled-system/css';
 import { Overlay } from 'app/components/Overlay';
 import { NotificationsContent } from './Content';
 
-export const Notifications = ({ dashboard }: any) => {
+export const Notifications = ({ dashboard }: { dashboard?: boolean }) => {
   const {
     notificationsOpened: notificationsMenuOpened,
     unreadCount,
