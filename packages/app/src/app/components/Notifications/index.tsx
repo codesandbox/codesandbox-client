@@ -7,7 +7,7 @@ import css from '@styled-system/css';
 import { Overlay } from 'app/components/Overlay';
 import { NotificationsContent } from './Content';
 
-export const Notifications = () => {
+export const Notifications = ({ dashboard }) => {
   const {
     notificationsOpened: notificationsMenuOpened,
     unreadCount,
@@ -28,7 +28,7 @@ export const Notifications = () => {
     >
       {open => (
         <Button
-          variant="ghost"
+          variant={dashboard ? 'secondary' : 'ghost'}
           css={css({
             ':hover .border-for-bell': {
               background: theme => theme.colors.secondaryButton.hoverBackground,
@@ -40,7 +40,7 @@ export const Notifications = () => {
             css={css({
               position: 'relative',
               top: '2px',
-              paddingRight: 2,
+              paddingRight: !dashboard ? 2 : 0,
             })}
           >
             <Icon name="bell" size={16} title="Notifications" />
@@ -74,7 +74,7 @@ export const Notifications = () => {
               </>
             ) : null}
           </Element>
-          Notifications
+          {!dashboard && 'Notifications'}
         </Button>
       )}
     </Overlay>

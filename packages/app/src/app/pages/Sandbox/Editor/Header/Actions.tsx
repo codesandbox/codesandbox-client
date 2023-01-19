@@ -252,7 +252,7 @@ export const Actions = () => {
         Create
       </Button>
 
-      {hasLogIn && <Notifications />}
+      {hasLogIn && <Notifications dashboard />}
       {hasLogIn ? (
         <UserMenu>
           {user?.experiments.collaborator ? (
