@@ -50,11 +50,7 @@ const variantStyles = {
     backgroundColor: 'transparent',
     color: 'mutedForeground',
     // same technique as primary
-    ':hover:not(:disabled)': {
-      color: 'foreground',
-      backgroundColor: '#E5E5E51A',
-    },
-    ':focus:not(:disabled)': {
+    ':hover:not(:disabled), :focus:not(:disabled)': {
       color: 'foreground',
       backgroundColor: '#E5E5E51A',
     },
@@ -113,7 +109,6 @@ const commonStyles = {
   borderRadius: '4px',
   transition: 'background .3s, color .3s',
   textDecoration: 'none',
-  transitionDuration: theme => theme.speeds[2],
 
   ':focus': {
     outline: 'none',
