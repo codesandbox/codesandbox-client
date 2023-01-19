@@ -185,9 +185,7 @@ export const TeamMembers: React.FC<{
               onChange={e => {
                 setAddressesString(e.target.value);
               }}
-              css={{
-                resize: 'none',
-              }}
+              resize={false}
               rows={3}
               autoFocus
               required
