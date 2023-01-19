@@ -239,8 +239,8 @@ export const TeamMembers: React.FC<{
         css={{
           width: '100%',
           padding: '48px 56px',
-          justifyContent: 'space-between',
         }}
+        justify={hideSkip ? 'center' : 'space-between'}
       >
         <Button
           css={{ width: 'auto' }}
