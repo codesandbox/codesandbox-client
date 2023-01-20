@@ -178,6 +178,7 @@ export const TeamMembers: React.FC<{
         >
           <Stack gap={4} direction="vertical">
             <Textarea
+              aria-describedby="invitees-role"
               id="member"
               label="Invite team members (Insert emails separated by a comma)"
               name="members"
@@ -214,6 +215,7 @@ export const TeamMembers: React.FC<{
             css={{
               margin: 0,
             }}
+            id="invitees-role"
             align="center"
             as="p"
             size={2}

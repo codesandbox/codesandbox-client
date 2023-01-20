@@ -12,7 +12,7 @@ const StyledTextarea = styled.textarea<{ resize: boolean }>`
   line-height: 24px;
   border: none;
   border-radius: 2px;
-  resize: ${props => (props.resize ? 'initial' : 'none')}
+  resize: ${props => (props.resize ? 'initial' : 'none')};
 
   &:hover {
     box-shadow: 0 0 0 2px #e5e5e51a;
@@ -36,9 +36,11 @@ export const Textarea = ({
   name,
   resize = true,
   ...restProps
-}: TextareaProps) => (
-  <Stack gap={2} direction="vertical">
-    <Label htmlFor={id}>{label}</Label>
-    <StyledTextarea id={id} name={name} resize={resize} {...restProps} />
-  </Stack>
-);
+}: TextareaProps) => {
+  return (
+    <Stack gap={2} direction="vertical">
+      <Label htmlFor={id}>{label}</Label>
+      <StyledTextarea id={id} name={name} resize={resize} {...restProps} />
+    </Stack>
+  );
+};
