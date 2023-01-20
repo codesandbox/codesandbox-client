@@ -140,13 +140,10 @@ type SandboxStatsProps = {
   prNumber?: number;
   restricted: boolean;
   showBetaBadge: boolean;
-  hasThumbnail: boolean;
-  hasCustomThumbnail: boolean;
   originalGit?: RepoFragmentDashboardFragment['originalGit'];
 } & Pick<SandboxItemComponentProps, 'noDrag' | 'lastUpdated' | 'PrivacyIcon'>;
 const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
   ({
-    hasThumbnail,
     isFrozen,
     restricted,
     showBetaBadge,
@@ -180,7 +177,6 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         align="center"
         css={{
           height: '16px',
-          color: hasThumbnail ? '#EBEBEB' : '#999999',
         }}
         className="sandbox-stats"
       >
@@ -257,14 +253,15 @@ export const SandboxCard = ({
           transitionDuration: '.1s', // === theme.speeds[2]
 
           // Hide sandbox stats and context menu button if the
-          // sandbox thumbnail isCustom.
-          '.sandbox-stats, .sandbox-actions': thumbnail.isCustom
-            ? {
-                opacity: 0,
-                transition: 'opacity ease-in',
-                transitionDuration: '.150s', // === theme.speeds[3]
-              }
-            : undefined,
+          // sandbox thumbnail isCustom and not restricted
+          '.sandbox-stats, .sandbox-actions':
+            thumbnail.isCustom && !restricted
+              ? {
+                  opacity: 0,
+                  transition: 'opacity ease-in',
+                  transitionDuration: '.150s', // === theme.speeds[3]
+                }
+              : undefined,
 
           '&:hover, &:focus-within': {
             // update background color in case there is
@@ -275,24 +272,28 @@ export const SandboxCard = ({
             color: '#EBEBEB',
 
             [`${CardThumbnail}`]: {
-              '&::before': thumbnail.isCustom
-                ? {
-                    // show scrim
-                    opacity: 0.8,
-                  }
-                : {
-                    // change scrim color
-                    backgroundColor: '#252525',
-                  },
+              '&::before':
+                thumbnail.isCustom && !restricted
+                  ? {
+                      // show scrim
+                      opacity: 0.8,
+                    }
+                  : {
+                      // change scrim color when it's already
+                      // shown without hover
+                      backgroundColor: '#252525',
+                    },
             },
 
             // Show sandbox stats and context menu button if the
-            // sandbox thumbnail isCustom
-            '.sandbox-stats, .sandbox-actions': thumbnail.isCustom
-              ? {
-                  opacity: 1,
-                }
-              : undefined,
+            // sandbox thumbnail isCustom and not restricted as it's
+            // already shown in that case
+            '.sandbox-stats, .sandbox-actions':
+              thumbnail.isCustom && !restricted
+                ? {
+                    opacity: 1,
+                  }
+                : undefined,
           },
         }}
       >
@@ -302,6 +303,7 @@ export const SandboxCard = ({
             // drop preview.
             ref={thumbnailRef}
             hasCustomThumbnail={thumbnail.isCustom}
+            forceScrim={restricted}
             source={thumbnail.src}
           />
         ) : null}
@@ -317,8 +319,6 @@ export const SandboxCard = ({
             PrivacyIcon={PrivacyIcon}
             restricted={restricted}
             showBetaBadge={sandbox.isV2}
-            hasThumbnail={!!thumbnail.src}
-            hasCustomThumbnail={thumbnail.isCustom}
           />
         </CardContent>
       </StyledCard>
@@ -329,6 +329,7 @@ export const SandboxCard = ({
 const CardThumbnail = styled.div<{
   source: string;
   hasCustomThumbnail: boolean;
+  forceScrim: boolean;
 }>`
   grid-row: 1 / -1;
   grid-column: 1 / -1;
@@ -351,7 +352,8 @@ const CardThumbnail = styled.div<{
 
     // For custom thumbs we only show the scrim on hover. The hover is triggered
     // from the css property on the StyledCard comopnent.
-    opacity: ${({ hasCustomThumbnail }) => (hasCustomThumbnail ? 0 : 0.8)};
+    opacity: ${({ hasCustomThumbnail, forceScrim }) =>
+      hasCustomThumbnail && !forceScrim ? 0 : 0.8};
     transition: opacity ease-in;
     transition-duration: ${({ theme }) => theme.speeds[2]}; // 100ms
   }
