@@ -57,7 +57,7 @@ export const EmptyLikes: React.FC = () => {
         dangerouslySetInnerHTML={{ __html: DESCRIPTION }}
       />
       {pageState !== 'empty' ? (
-        <Stack css={{ flex: 1 }} direction="vertical" gap={6}>
+        <Stack css={{ flex: 1 }} direction="vertical" gap={4}>
           <EmptyPage.StyledGridTitle>
             Discover exciting projects
           </EmptyPage.StyledGridTitle>
@@ -65,7 +65,7 @@ export const EmptyLikes: React.FC = () => {
             css={{
               height: '100%',
               // Override the margins built-in the VariableGrid.
-              margin: `-28px -${GUTTER}px 0`,
+              margin: `0 -${GUTTER}px `,
             }}
           >
             <VariableGrid items={itemsToShow} page="liked" />
