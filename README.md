@@ -287,3 +287,7 @@ Thanks goes to these wonderful people
 
 Thanks to [Chromatic](https://www.chromaticqa.com/) for providing the visual
 testing platform that helps us catch unexpected changes.
+
+<hr />
+
+<div align="center">Made with ❤️ by <a href="https://codesandbox.io" target="_blank">codesandbox</a></div>
