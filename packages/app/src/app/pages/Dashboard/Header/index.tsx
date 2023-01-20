@@ -37,7 +37,7 @@ const SHOW_COMMUNITY_SEARCH = localStorage.SHOW_COMMUNITY_SEARCH;
 export const Header: React.FC<HeaderProps> = React.memo(
   ({ onSidebarToggle }) => {
     const { openCreateSandboxModal } = useActions();
-    const { activeWorkspaceAuthorization, user } = useAppState();
+    const { activeWorkspaceAuthorization, hasLogIn } = useAppState();
 
     return (
       <Stack
@@ -60,46 +60,49 @@ export const Header: React.FC<HeaderProps> = React.memo(
           css={css({ display: ['block', 'block', 'none'] })}
         />
 
-        <UserMenu
-          css={css({
-            display: ['none', 'none', 'block'],
-          })}
-        >
-          <Button
-            as={UserMenu.Button}
-            variant="link"
+        <div>
+          <UserMenu
             css={css({
-              marginLeft: '2px',
-              transition: 'color .3s',
-
-              '.chevron': {
-                transition: 'transform .3s',
-              },
-
-              '&:hover': {
-                '.chevron': {
-                  transform: 'translateY(2px)',
-                },
-              },
+              display: ['none', 'none', 'block'],
             })}
           >
-            <LogoIcon
-              width={18}
-              height={18}
+            <Button
+              as={UserMenu.Button}
+              variant="link"
               css={css({
-                marginRight: '8px',
+                marginLeft: '2px',
+                transition: 'color .3s',
+
+                '.chevron': {
+                  transition: 'transform .3s',
+                },
+
+                '&:hover': {
+                  '.chevron': {
+                    transform: 'translateY(2px)',
+                  },
+                },
               })}
-            />
-            <Icon
-              className="chevron"
-              name="chevronDown"
-              size={6}
-              title="User actions"
-            />
-          </Button>
-        </UserMenu>
+            >
+              <LogoIcon
+                width={18}
+                height={18}
+                css={css({
+                  marginRight: '8px',
+                })}
+              />
+              <Icon
+                className="chevron"
+                name="chevronDown"
+                size={6}
+                title="User actions"
+              />
+            </Button>
+          </UserMenu>
+        </div>
 
         <SearchInputGroup />
+
         <Stack align="center" gap={2}>
           <Button
             variant="ghost"
@@ -118,7 +121,7 @@ export const Header: React.FC<HeaderProps> = React.memo(
             Create
           </Button>
 
-          {user && <Notifications />}
+          {hasLogIn && <Notifications dashboard />}
         </Stack>
       </Stack>
     );

@@ -26,7 +26,34 @@ export const UserMenu: FunctionComponent & {
   } = useAppState();
 
   if (!user) {
-    return null;
+    return (
+      <Element>
+        <Menu>
+          {props.children}
+          <Menu.List>
+            <Menu.Link href="http://codesandbox.io/discover">
+              <Stack align="center" gap={2}>
+                <Icon name="discover" size={16} />
+                <Text>Discover</Text>
+              </Stack>
+            </Menu.Link>
+            <Menu.Link href={docsUrl()}>
+              <Stack align="center" gap={2}>
+                <Icon name="documentation" size={16} />
+                <Text>Documentation</Text>
+              </Stack>
+            </Menu.Link>
+            <Menu.Divider />
+            <Menu.Link href="/?from-app=1">
+              <Stack align="center" gap={2}>
+                <Icon name="external" size={16} />
+                <Text>codesandbox.io</Text>
+              </Stack>
+            </Menu.Link>
+          </Menu.List>
+        </Menu>
+      </Element>
+    );
   }
 
   const showCurator = user.curatorAt;
