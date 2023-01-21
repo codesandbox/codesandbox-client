@@ -177,6 +177,7 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         align="center"
         css={{
           height: '16px',
+          color: restricted ? '#EBEBEB' : 'inherit',
         }}
         className="sandbox-stats"
       >
