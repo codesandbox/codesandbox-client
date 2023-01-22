@@ -186,7 +186,7 @@ export const WorkspacePlanSelection: React.FC = () => {
           {isPersonalSpace ? (
             <SubscriptionCard
               title={
-                user.subscription.plan === 'patron' ? 'Patron' : 'Personal Pro'
+                user.subscription?.plan === 'patron' ? 'Patron' : 'Personal Pro'
               }
               features={PERSONAL_FEATURES}
               cta={personalProCta}
@@ -194,17 +194,17 @@ export const WorkspacePlanSelection: React.FC = () => {
             >
               <Stack gap={1} direction="vertical">
                 <Text size={32} weight="500">
-                  ${user.subscription.amount}
+                  ${user.subscription?.amount}
                 </Text>
-                {user.subscription.duration === 'yearly' ? (
+                {user.subscription?.duration === 'yearly' ? (
                   <Text>
                     charged annually on{' '}
-                    {format(new Date(user.subscription.since), 'MMM dd')}
+                    {format(new Date(user.subscription?.since), 'MMM dd')}
                   </Text>
                 ) : (
                   <Text>
                     charged on the{' '}
-                    {format(new Date(user.subscription.since), 'do')} of each
+                    {format(new Date(user.subscription?.since), 'do')} of each
                     month
                   </Text>
                 )}
