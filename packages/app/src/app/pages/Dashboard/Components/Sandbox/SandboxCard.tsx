@@ -177,7 +177,6 @@ const SandboxStats: React.FC<SandboxStatsProps> = React.memo(
         align="center"
         css={{
           height: '16px',
-          color: restricted ? '#EBEBEB' : 'inherit',
         }}
         className="sandbox-stats"
       >
@@ -227,7 +226,7 @@ export const SandboxCard = ({
   let textColor = '#EBEBEB'; // default
 
   if (restricted) {
-    textColor = '#999999';
+    textColor = thumbnail.isCustom ? textColor : '#999999';
   } else if (thumbnail?.brightness && thumbnail.isCustom) {
     textColor = thumbnail.brightness === 'light' ? '#0E0E0E' : '#FFFFFF';
   }
