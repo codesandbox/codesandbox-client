@@ -596,7 +596,7 @@ const TemplateInfo = ({ template }: TemplateInfoProps) => {
           {template.sandbox.title}
         </Text>
         <Text size={2} css={{ color: '#999', marginTop: '4px' }}>
-          {template.sandbox.collection?.team?.name}
+          {template.sandbox?.team?.name}
         </Text>
       </Stack>
       <Text size={2} css={{ color: '#999', lineHeight: '1.4' }}>

@@ -30,8 +30,9 @@ export const TemplateCard = ({
 
   const sandboxTitle = template.sandbox?.title || template.sandbox?.alias;
   const isV2 = template.sandbox?.isV2;
+
   const teamName =
-    template.sandbox?.collection?.team?.name ||
+    template.sandbox?.team?.name ||
     template.sandbox?.author?.username ||
     'GitHub';
 
