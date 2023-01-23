@@ -527,7 +527,7 @@ export const WorkspaceSettings = () => {
        * Soft limit for pro teams.
        */}
       {numberOfEditors > MAX_PRO_EDITORS &&
-        subscription.origin !== SubscriptionOrigin.Pilot && (
+        subscription?.origin !== SubscriptionOrigin.Pilot && (
           <MessageStripe justify="space-between">
             <span>
               You have over {MAX_PRO_EDITORS} editors. Upgrade to the

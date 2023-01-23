@@ -100,7 +100,7 @@ export type TemplateType =
   | 'docusaurus'
   | 'babel-repl'
   | 'esm-react'
-  | 'remix'
+  | 'remix-starter'
   | 'solid';
 
 export default function getDefinition(theme?: TemplateType | null) {

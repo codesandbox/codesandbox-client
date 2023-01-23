@@ -15,7 +15,7 @@ const StyledSelect = styled.select`
   color: #e5e5e5;
   line-height: 24px;
   border: none;
-  border-radius: 2px;
+  border-radius: 4px;
 
   &:hover {
     box-shadow: 0 0 0 2px #e5e5e51a;

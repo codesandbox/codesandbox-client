@@ -33,7 +33,7 @@ export const CommunitySandboxMenu: React.FC<MenuProps> = ({ item }) => {
           window.open(`https://codesandbox.io${url}`, '_blank');
         }}
       >
-        Open Sandbox in New Tab
+        Open sandbox in a new tab
       </MenuItem>
       <MenuItem
         onSelect={() => {
@@ -43,14 +43,14 @@ export const CommunitySandboxMenu: React.FC<MenuProps> = ({ item }) => {
           });
         }}
       >
-        Fork Sandbox
+        Fork sandbox
       </MenuItem>
       <MenuItem
         onSelect={() => {
           effects.browser.copyToClipboard(`https://codesandbox.io${url}`);
         }}
       >
-        Copy Sandbox Link
+        Copy sandbox link
       </MenuItem>
     </Menu.ContextMenu>
   );

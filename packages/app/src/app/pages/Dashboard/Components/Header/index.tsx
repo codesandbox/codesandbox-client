@@ -130,7 +130,7 @@ export const Header = ({
               title="New"
               css={css({ paddingRight: 2 })}
             />
-            New Folder
+            New folder
           </Button>
         )}
         {repositoriesListPage && dashboard.viewMode === 'list' && (

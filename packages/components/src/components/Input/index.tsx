@@ -17,13 +17,13 @@ export const Input = styled(Element).attrs(p => ({
   as: ((p as unknown) as { as: string }).as || 'input',
 }))<IInputProps>(
   css({
-    height: '26px',
+    height: '28px',
     width: '100%',
-    paddingX: 2,
-    fontSize: 3,
-    lineHeight: 'auto',
+    paddingX: '8px',
+    fontSize: '13px',
+    lineHeight: '16px',
     fontFamily: 'Inter, sans-serif',
-    borderRadius: 'small',
+    borderRadius: '4px',
     backgroundColor: 'input.background',
     border: '1px solid',
     borderColor: 'input.border',

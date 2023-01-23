@@ -2,7 +2,7 @@ import Template from './template';
 import { decorateSelector } from '../utils/decorate-selector';
 
 export default new Template(
-  'remix',
+  'remix-starter',
   'Remix',
   'https://remix.run/',
   'https://github.com/remix-run',
