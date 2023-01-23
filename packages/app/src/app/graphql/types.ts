@@ -1912,11 +1912,7 @@ export type TemplateFragment = { __typename?: 'Template' } & Pick<
         | 'updatedAt'
         | 'isV2'
       > & {
-          collection: Maybe<
-            { __typename?: 'Collection' } & {
-              team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
-            }
-          >;
+          team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
           author: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
           source: { __typename?: 'Source' } & Pick<Source, 'template'>;
         }

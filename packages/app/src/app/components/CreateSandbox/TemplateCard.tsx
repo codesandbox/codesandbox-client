@@ -30,7 +30,11 @@ export const TemplateCard = ({
 
   const sandboxTitle = template.sandbox?.title || template.sandbox?.alias;
   const isV2 = template.sandbox?.isV2;
-  const teamName = template.sandbox?.collection?.team?.name;
+
+  const teamName =
+    template.sandbox?.team?.name ||
+    template.sandbox?.author?.username ||
+    'GitHub';
 
   return (
     <TemplateButton
@@ -92,7 +96,7 @@ export const TemplateCard = ({
 
           <Text size={2} css={{ color: '#999' }}>
             <VisuallyHidden>by </VisuallyHidden>
-            {teamName || 'GitHub'}
+            {teamName}
           </Text>
         </Stack>
       </Stack>
