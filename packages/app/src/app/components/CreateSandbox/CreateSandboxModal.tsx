@@ -2,7 +2,7 @@ import { ThemeProvider } from '@codesandbox/components';
 import Modal from 'app/components/Modal';
 import { useAppState, useActions } from 'app/overmind';
 import { DELETE_ME_COLLECTION } from 'app/overmind/namespaces/dashboard/types';
-import * as React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { COLUMN_MEDIA_THRESHOLD, CreateSandbox } from './CreateSandbox';
@@ -33,15 +33,37 @@ function getImplicitCollectionIdFromFolder(
 }
 
 const collectionPathRegex = /^.*dashboard\/sandboxes/;
+
+const useHasNavigated = ({ pathname }: ReturnType<typeof useLocation>) => {
+  const previousLocationRef = useRef<string>();
+
+  useEffect(() => {
+    previousLocationRef.current = pathname;
+  }, [pathname]);
+
+  if (previousLocationRef.current === pathname) {
+    return true;
+  }
+
+  return false;
+};
+
 export const CreateSandboxModal = () => {
   const { modals, dashboard } = useAppState();
   const { modals: modalsActions } = useActions();
-
   const location = useLocation();
+  const hasNavigated = useHasNavigated(location);
+
   const implicitCollection = getImplicitCollectionIdFromFolder(
     location.pathname,
     dashboard.allCollections
   );
+
+  useEffect(() => {
+    if (hasNavigated) {
+      modalsActions.newSandboxModal.close();
+    }
+  }, [hasNavigated, modalsActions.newSandboxModal]);
 
   return (
     <ThemeProvider>
