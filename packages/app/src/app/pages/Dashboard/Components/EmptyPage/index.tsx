@@ -1,6 +1,11 @@
 import { Element, Stack, Text } from '@codesandbox/components';
 import styled from 'styled-components';
-import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid/constants';
+import {
+  GRID_MAX_WIDTH,
+  GUTTER,
+  ITEM_HEIGHT_GRID,
+  ITEM_MIN_WIDTH,
+} from '../VariableGrid/constants';
 
 const StyledWrapper = styled(Stack)`
   overflow: auto;
@@ -32,8 +37,8 @@ const StyledGrid = styled(Element)`
   display: grid;
   list-style: none;
   gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
-  grid-auto-rows: minmax(156px, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(${ITEM_MIN_WIDTH}px, 1fr));
+  grid-auto-rows: minmax(${ITEM_HEIGHT_GRID}px, 1fr);
 `;
 
 const StyledGridTitle = styled(Text)`
