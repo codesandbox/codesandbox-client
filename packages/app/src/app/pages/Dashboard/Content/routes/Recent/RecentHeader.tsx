@@ -11,7 +11,11 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
   const { activeTeam } = useAppState();
   const actions = useActions();
   const { isFree } = useWorkspaceSubscription();
-  const { isTeamSpace } = useWorkspaceAuthorization();
+  const {
+    isTeamSpace,
+    isPersonalSpace,
+    isTeamViewer,
+  } = useWorkspaceAuthorization();
   const showUpgradeBanner = isFree && isTeamSpace;
 
   return (
@@ -57,7 +61,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
             actions.openCreateSandboxModal({ initialTab: 'import' });
           }}
         />
-        {isTeamSpace ? (
+        {isTeamSpace && !isTeamViewer ? (
           <CreateCard
             icon="addMember"
             title="Invite team members"
@@ -73,7 +77,8 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
               });
             }}
           />
-        ) : (
+        ) : null}
+        {isPersonalSpace ? (
           <CreateCard
             icon="team"
             title="Create a team"
@@ -86,7 +91,7 @@ export const RecentHeader: React.FC<{ title: string }> = ({ title }) => {
               actions.openCreateTeamModal();
             }}
           />
-        )}
+        ) : null}
       </EmptyPage.StyledGrid>
     </Stack>
   );

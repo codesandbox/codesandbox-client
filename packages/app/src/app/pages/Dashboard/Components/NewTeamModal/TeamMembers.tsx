@@ -142,97 +142,134 @@ export const TeamMembers: React.FC<{
   };
 
   return (
-    <Stack
-      align="center"
-      direction="vertical"
-      gap={4}
-      css={{
-        paddingTop: '60px',
-        paddingBottom: '40px',
-        maxWidth: '370px',
-        width: '100%',
-      }}
-    >
-      <Text
-        as="h2"
-        size={32}
-        weight="500"
-        align="center"
-        css={{
-          margin: 0,
-          color: '#ffffff',
-          fontFamily: 'Everett, sans-serif',
-          lineHeight: '42px',
-          letterSpacing: '-0.01em',
-        }}
-      >
-        {activeTeamInfo.name}
-      </Text>
+    <>
       <Stack
-        as="form"
-        onSubmit={handleSubmit}
+        align="center"
         direction="vertical"
         gap={6}
-        css={{ width: '100%' }}
+        css={{
+          paddingTop: '60px',
+          paddingBottom: '40px',
+          maxWidth: '370px',
+          width: '100%',
+        }}
       >
-        <Textarea
-          label="Invite team members (Insert emails separated by a comma)"
-          name="members"
-          id="member"
-          autoFocus
-          required
-          rows={3}
-          value={addressesString}
-          onChange={e => {
-            setAddressesString(e.target.value);
+        <Text
+          as="h2"
+          size={32}
+          weight="500"
+          align="center"
+          css={{
+            margin: 0,
+            color: '#ffffff',
+            fontFamily: 'Everett, sans-serif',
+            lineHeight: '42px',
+            letterSpacing: '-0.01em',
           }}
-        />
-        {invalidEmails && invalidEmails.length > 0 ? (
-          <Text size={2} variant="danger">
-            {invalidEmails.length > 1
-              ? 'There seem to be errors in some email addresses, '
-              : 'Email is invalid, '}
-            please review: {formatInvalidEmails(invalidEmails)}
-          </Text>
-        ) : null}
+        >
+          {activeTeamInfo.name}
+        </Text>
+        <Stack
+          as="form"
+          onSubmit={handleSubmit}
+          direction="vertical"
+          gap={6}
+          css={{ width: '100%' }}
+        >
+          <Stack gap={4} direction="vertical">
+            <Textarea
+              aria-describedby="invitees-role"
+              id="member"
+              label="Invite team members (Insert emails separated by a comma)"
+              name="members"
+              value={addressesString}
+              onChange={e => {
+                setAddressesString(e.target.value);
+              }}
+              resize={false}
+              rows={3}
+              autoFocus
+              required
+            />
 
-        {inviteError ? (
-          <Text size={2} variant="danger">
-            {inviteError}
-          </Text>
-        ) : null}
+            {invalidEmails && invalidEmails.length > 0 ? (
+              <Text size={2} variant="danger">
+                {invalidEmails.length > 1
+                  ? 'There seem to be errors in some email addresses, '
+                  : 'Email is invalid, '}
+                please review: {formatInvalidEmails(invalidEmails)}
+              </Text>
+            ) : null}
 
-        <StyledButton loading={inviteLoading} type="submit">
-          Invite members
-        </StyledButton>
+            {inviteError ? (
+              <Text size={2} variant="danger">
+                {inviteError}
+              </Text>
+            ) : null}
+
+            <StyledButton loading={inviteLoading} type="submit">
+              Invite members
+            </StyledButton>
+          </Stack>
+          <Text
+            css={{
+              margin: 0,
+            }}
+            id="invitees-role"
+            align="center"
+            as="p"
+            size={2}
+            variant="muted"
+          >
+            Team members will be invited as{' '}
+            <Text color="#C2C2C2">
+              {
+                // The modal is visible only to admins and editors.
+                {
+                  [TeamMemberAuthorization.Admin]: 'editors',
+                  [TeamMemberAuthorization.Write]: 'viewers',
+                }[activeWorkspaceAuthorization]
+              }
+            </Text>
+            .
+          </Text>
+        </Stack>
       </Stack>
-      {hideSkip ? null : (
+      <Stack
+        css={{
+          width: '100%',
+          padding: '48px 56px',
+        }}
+        justify={hideSkip ? 'center' : 'space-between'}
+      >
         <Button
-          onClick={() => {
-            track('New Team - Skip Team Invite', {
-              codesandbox: 'V1',
-              event_source: 'UI',
-            });
-            onComplete();
-          }}
+          css={{ width: 'auto' }}
+          onClick={copyTeamInviteLink}
           variant="link"
         >
-          Skip
+          <Icon
+            size={12}
+            style={{ marginRight: 8 }}
+            name={linkCopied ? 'simpleCheck' : 'link'}
+          />
+          {linkCopied ? 'Link Copied!' : 'Copy Invite URL'}
         </Button>
-      )}
-
-      <Button
-        onClick={copyTeamInviteLink}
-        style={{ marginTop: 48 }}
-        variant="link"
-      >
-        <Icon
-          size={12}
-          style={{ marginRight: 8 }}
-          name={linkCopied ? 'simpleCheck' : 'link'}
-        />
-        {linkCopied ? 'Link Copied!' : 'Copy Invite URL'}
-      </Button>
-    </Stack>
+        {hideSkip ? null : (
+          <Button
+            css={{ width: 'auto' }}
+            onClick={() => {
+              track('New Team - Skip Team Invite', {
+                codesandbox: 'V1',
+                event_source: 'UI',
+              });
+              onComplete();
+            }}
+            variant="link"
+          >
+            Skip
+          </Button>
+        )}
+      </Stack>
+    </>
   );
 };
