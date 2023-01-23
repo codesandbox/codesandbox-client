@@ -3,8 +3,6 @@ import { Stack, Text, Button } from '@codesandbox/components';
 import { useCreateCustomerPortal } from 'app/hooks/useCreateCustomerPortal';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-const DAYS_LEFT_TO_SHOW_PAYMENT_MESSAGE = 2;
-
 export const TrialExpiring: React.FC<{
   activeTeam: string;
   daysLeft: number;
@@ -22,9 +20,6 @@ export const TrialExpiring: React.FC<{
     team_id: activeTeam,
   });
 
-  const showPaymentDetailsMessage =
-    daysLeft <= DAYS_LEFT_TO_SHOW_PAYMENT_MESSAGE && !hasPaymentMethod;
-
   return (
     <Stack align="flex-start" direction="vertical" gap={2}>
       <Text css={{ color: '#c2c2c2', fontWeight: 500, fontSize: 12 }}>
@@ -39,9 +34,9 @@ export const TrialExpiring: React.FC<{
         </Text>
       ) : (
         <Text css={{ color: '#999', fontWeight: 400, fontSize: 12 }}>
-          {showPaymentDetailsMessage
-            ? 'Update your payment method to continue this Pro subscription.'
-            : 'After this period, your Team Pro subscription will be automatically renewed.'}
+          {hasPaymentMethod
+            ? 'After this period, your Team Pro subscription will be automatically renewed.'
+            : 'Update your payment method to continue this Pro subscription.'}
         </Text>
       )}
 
@@ -60,9 +55,7 @@ export const TrialExpiring: React.FC<{
           onClick={() => {
             track(
               `Side banner - ${
-                showPaymentDetailsMessage
-                  ? 'Add payment details'
-                  : 'Manage subscription'
+                hasPaymentMethod ? 'Manage subscription' : 'Add payment details'
               }`,
               {
                 codesandbox: 'V1',
@@ -73,9 +66,7 @@ export const TrialExpiring: React.FC<{
             createCustomerPortal();
           }}
         >
-          {showPaymentDetailsMessage
-            ? 'Add payment details'
-            : 'Manage subscription'}
+          {hasPaymentMethod ? 'Manage subscription' : 'Add payment details'}
         </Button>
       )}
     </Stack>
