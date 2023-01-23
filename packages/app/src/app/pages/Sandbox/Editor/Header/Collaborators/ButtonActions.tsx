@@ -49,7 +49,11 @@ export const ButtonActions = () => {
       >
         Embed
       </Button>
-      <Button css={css({ width: 128 })} variant="secondary" onClick={copyLink}>
+      <Button
+        css={css({ width: 'initial' })}
+        variant="secondary"
+        onClick={copyLink}
+      >
         {linkCopied ? (
           <motion.div
             key="copied"
@@ -76,7 +80,7 @@ export const ButtonActions = () => {
             initial={mounted ? { scale: 0.8, opacity: 0.7 } : false}
             animate={{ scale: 1, opacity: 1 }}
           >
-            Copy Sandbox Link
+            Copy link
           </motion.div>
         )}
       </Button>

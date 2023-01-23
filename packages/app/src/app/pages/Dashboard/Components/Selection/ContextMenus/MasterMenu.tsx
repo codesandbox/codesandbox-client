@@ -39,7 +39,7 @@ export const MasterMenu = ({ repo }: MasterMenuProps) => {
           )
         }
       >
-        View Master
+        View master
       </MenuItem>
       <MenuItem
         onSelect={() => {
