@@ -57,9 +57,7 @@ const Results = (props: ResultsProps) => {
       source: {
         template: hit.template,
       },
-      collection: {
-        team: hit.team,
-      },
+      team: hit.team,
     },
   }));
 
