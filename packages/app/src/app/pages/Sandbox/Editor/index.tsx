@@ -122,7 +122,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
       state.activeTeamInfo?.subscription?.status ===
         SubscriptionStatus.Unpaid ||
       sandbox?.freePlanEditingRestricted ||
-      sandbox?.isSse
+      (state.hasLogIn && sandbox?.isSse)
     ) {
       // Header height + MessageStripe
       return 3 * 16 + 42;
@@ -154,7 +154,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
               SubscriptionStatus.Unpaid && <PaymentPending />}
 
             {sandbox?.freePlanEditingRestricted ? <FreeViewOnlyStripe /> : null}
-            {sandbox?.isSse ? <UpgradeSSEToV2Stripe /> : null}
+            {state.hasLogIn && sandbox?.isSse ? <UpgradeSSEToV2Stripe /> : null}
             <Header />
           </ComponentsThemeProvider>
         )}
