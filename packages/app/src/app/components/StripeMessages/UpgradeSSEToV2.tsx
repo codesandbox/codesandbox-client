@@ -42,7 +42,7 @@ export const UpgradeSSEToV2Stripe = () => {
             window.location.href = sandboxV2Url;
           } else {
             const forkedSandbox = await effects.api.forkSandbox(sandboxId, {
-              isV2: true,
+              v2: true,
               teamId: state.activeTeam,
             });
 
