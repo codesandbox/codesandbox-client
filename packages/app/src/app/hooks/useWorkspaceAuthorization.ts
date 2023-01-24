@@ -28,11 +28,16 @@ export const useWorkspaceAuthorization = () => {
     isTeamSpace &&
     activeWorkspaceAuthorization === TeamMemberAuthorization.Write;
 
+  const isTeamViewer =
+    isTeamSpace &&
+    activeWorkspaceAuthorization === TeamMemberAuthorization.Read;
+
   return {
     isPersonalSpace,
     isTeamSpace,
     isTeamAdmin,
     isTeamEditor,
+    isTeamViewer,
     userRole: activeWorkspaceAuthorization,
   };
 };

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Stack } from '@codesandbox/components';
 import { Label } from './Label';
 
-const StyledTextarea = styled.textarea`
+const StyledTextarea = styled.textarea<{ resize: boolean }>`
   padding: 12px 16px;
   background-color: #2a2a2a;
   font-family: 'Inter', sans-serif;
@@ -12,6 +12,7 @@ const StyledTextarea = styled.textarea`
   line-height: 24px;
   border: none;
   border-radius: 2px;
+  resize: ${props => (props.resize ? 'initial' : 'none')};
 
   &:hover {
     box-shadow: 0 0 0 2px #e5e5e51a;
@@ -26,11 +27,20 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   id: string;
   label: string;
   name: string;
+  resize?: boolean;
 }
 
-export const Textarea = ({ id, label, name, ...restProps }: TextareaProps) => (
-  <Stack gap={2} direction="vertical">
-    <Label htmlFor={id}>{label}</Label>
-    <StyledTextarea id={id} name={name} {...restProps} />
-  </Stack>
-);
+export const Textarea = ({
+  id,
+  label,
+  name,
+  resize = true,
+  ...restProps
+}: TextareaProps) => {
+  return (
+    <Stack gap={2} direction="vertical">
+      <Label htmlFor={id}>{label}</Label>
+      <StyledTextarea id={id} name={name} resize={resize} {...restProps} />
+    </Stack>
+  );
+};

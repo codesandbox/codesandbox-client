@@ -1,61 +1,35 @@
-import React from 'react';
+import { useImageBrightness, Brightness } from './useImageBrightness';
 
-const useImageLoaded = (url: string) => {
-  const [loaded, setLoaded] = React.useState(false);
-  React.useEffect(() => {
-    const img = new Image();
-
-    if (url) {
-      img.onload = () => {
-        setLoaded(true);
-      };
-
-      img.src = url;
-
-      if (img.complete) {
-        setLoaded(true);
-      }
-    }
-
-    return function cleanup() {
-      img.src = '';
-    };
-  }, [url]);
-
-  return loaded;
+type SandboxThumbnail = {
+  isLoaded: boolean;
+  src: string | undefined;
+  isCustom: boolean;
+  brightness: Brightness;
 };
 
+// 1. Use sandbox.screenshotUrl with brightness when the thumbnail is custom
+// 2. Don't use a thumbnail when the screenshot isn't custom
 export const useSandboxThumbnail = ({
-  sandboxId,
-  screenshotUrl,
-  screenshotOutdated,
-}): string | undefined => {
-  // 0. Use template icon as starting point and fallback
-  // 1. Use sandbox.screenshotUrl if it can be successfully loaded (might not exist)
-  // 2. If screenshot is outdated, lazily load a newer screenshot. Switch when image loaded.
-  const SCREENSHOT_TIMEOUT = 5000;
+  thumbnailUrl,
+}): SandboxThumbnail | undefined => {
+  const isCustom = thumbnailUrl?.includes('uploads');
 
-  const [latestScreenshotUrl, setLatestScreenshotUrl] = React.useState(null);
-
-  const screenshotUrlLoaded = useImageLoaded(screenshotUrl);
-  const latestScreenshotUrlLoaded = useImageLoaded(latestScreenshotUrl);
-
-  let screenshotToUse: string;
-  if (latestScreenshotUrlLoaded) screenshotToUse = latestScreenshotUrl;
-  else if (screenshotUrlLoaded) screenshotToUse = screenshotUrl;
-
-  React.useEffect(
-    function lazyLoadLatestScreenshot() {
-      const timer = window.setTimeout(() => {
-        if (!screenshotOutdated) return;
-        const url = `https://codesandbox.io/api/v1/sandboxes/${sandboxId}/screenshot.png`;
-        setLatestScreenshotUrl(url);
-      }, SCREENSHOT_TIMEOUT);
-
-      return () => window.clearTimeout(timer);
-    },
-    [sandboxId, screenshotOutdated, setLatestScreenshotUrl]
+  // Image brightness is only relevant when the thumbnail is custom since
+  // we don't use generated screenshots anymore
+  const thumbnailBrightness = useImageBrightness(
+    isCustom ? thumbnailUrl : undefined
   );
 
-  return screenshotToUse;
+  let src: string;
+
+  if (thumbnailBrightness.isLoaded) {
+    src = thumbnailUrl;
+  }
+
+  return {
+    isLoaded: thumbnailBrightness.isLoaded,
+    src,
+    isCustom,
+    brightness: thumbnailBrightness.brightness,
+  };
 };

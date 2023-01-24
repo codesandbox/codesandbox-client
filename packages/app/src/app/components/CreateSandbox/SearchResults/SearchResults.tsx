@@ -60,12 +60,7 @@ export const SearchResults = ({
         <Configure
           query={search}
           hitsPerPage={50}
-          facetFilters={[
-            [
-              'custom_template.published: true',
-              'custom_template.published: false',
-            ],
-          ]}
+          facetFilters={['is_template: true', 'is_git: false']}
         />
 
         <Stack css={{ height: '100%' }} direction="vertical" gap={6}>

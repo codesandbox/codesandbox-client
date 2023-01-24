@@ -611,6 +611,8 @@ export type Project = {
   repo: Scalars['String'];
   /** Git repository for the project, as it appears on the original git provider */
   repository: Repository;
+  /** Compute resources for the project, based on settings and team subscription */
+  resources: Resources;
   /**
    * Team to which this project is assigned
    *
@@ -714,6 +716,21 @@ export type Repository = GitHubRepository;
 
 /** GitHub webhook event about a repository. */
 export type RepositoryEvent = InstallationEvent;
+
+/**
+ * Available computing resources for the project
+ *
+ * These resources may be custom for a project, or they may be determined by the team's subscription.
+ */
+export type Resources = {
+  __typename?: 'Resources';
+  /** CPU core count */
+  cpu: Scalars['Int'];
+  /** RAM in Gi */
+  memory: Scalars['Int'];
+  /** Disk space in Gi */
+  storage: Scalars['Int'];
+};
 
 export type RootMutationType = {
   __typename?: 'RootMutationType';
@@ -1895,11 +1912,7 @@ export type TemplateFragment = { __typename?: 'Template' } & Pick<
         | 'updatedAt'
         | 'isV2'
       > & {
-          collection: Maybe<
-            { __typename?: 'Collection' } & {
-              team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
-            }
-          >;
+          team: Maybe<{ __typename?: 'Team' } & Pick<Team, 'name'>>;
           author: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
           source: { __typename?: 'Source' } & Pick<Source, 'template'>;
         }
@@ -2450,7 +2463,9 @@ export type SandboxFragmentDashboardFragment = {
   | 'teamId'
 > & {
     source: { __typename?: 'Source' } & Pick<Source, 'template'>;
-    customTemplate: Maybe<{ __typename?: 'Template' } & Pick<Template, 'id'>>;
+    customTemplate: Maybe<
+      { __typename?: 'Template' } & Pick<Template, 'id' | 'iconUrl'>
+    >;
     forkedTemplate: Maybe<
       { __typename?: 'Template' } & Pick<Template, 'id' | 'color' | 'iconUrl'>
     >;

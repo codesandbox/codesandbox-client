@@ -14,10 +14,9 @@ const TEMPLATE_FRAGMENT = gql`
       insertedAt
       updatedAt
       isV2
-      collection {
-        team {
-          name
-        }
+
+      team {
+        name
       }
 
       author {

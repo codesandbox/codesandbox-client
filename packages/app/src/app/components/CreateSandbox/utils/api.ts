@@ -55,7 +55,11 @@ const mapAPIResponseToTemplateInfo = (
       source: {
         template: sandbox.environment,
       },
-      collection: sandbox.collection,
+      // TODO: Update /official and /essential endpoints to return
+      // team -> name instead of collection -> team -> name
+      team: {
+        name: 'CodeSandbox',
+      },
       isV2: sandbox.v2,
       git: sandbox.git && {
         id: sandbox.git.id,
