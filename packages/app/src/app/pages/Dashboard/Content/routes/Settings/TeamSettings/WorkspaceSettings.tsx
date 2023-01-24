@@ -59,7 +59,11 @@ const ROLES_TEXT_MAP = {
 export const WorkspaceSettings = () => {
   const actions = useActions();
   const effects = useEffects();
-  const { user: currentUser, activeTeamInfo: team } = useAppState();
+  const {
+    user: currentUser,
+    activeTeamInfo: team,
+    dashboard: { teams },
+  } = useAppState();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -119,10 +123,14 @@ export const WorkspaceSettings = () => {
     const trimmedName = value?.trim() ?? '';
 
     // Validate if the name input is filled with whitespaces.
-    if (trimmedName) {
-      event.target.setCustomValidity('');
-    } else {
+    if (!trimmedName) {
       event.target.setCustomValidity('Team name is required.');
+    } else if (teams.find(t => t.name === trimmedName)) {
+      event.target.setCustomValidity(
+        'Name already taken, please choose a new name.'
+      );
+    } else {
+      event.target.setCustomValidity('');
     }
   };
 
