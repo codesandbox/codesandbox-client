@@ -2198,7 +2198,7 @@ export const removeRepositoryFromTeam = async (
   try {
     if (assignedTeam?.id) {
       const confirmed = await actions.modals.alertModal.open({
-        title: 'Are you sure?',
+        title: 'Remove repository',
         type: 'danger',
         message:
           'This action will remove the repository and all the branches from CodeSandbox. Any code that is not pushed on GitHub will be lost.',
