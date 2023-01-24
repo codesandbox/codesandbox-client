@@ -4,7 +4,9 @@ import Modal from 'app/components/Modal';
 import { Alert } from '../Common/Alert';
 import { MemberPaymentConfirmation } from '../MemberPaymentConfirmation';
 
-export const AlertModalComponents = { MemberPaymentConfirmation };
+export const AlertModalComponents = {
+  MemberPaymentConfirmation,
+};
 
 export const GenericAlertModal = () => {
   const { alertModal } = useActions().modals;

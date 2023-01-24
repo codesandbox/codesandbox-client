@@ -2197,6 +2197,19 @@ export const removeRepositoryFromTeam = async (
 
   try {
     if (assignedTeam?.id) {
+      const confirmed = await actions.modals.alertModal.open({
+        title: 'Are you sure?',
+        type: 'danger',
+        message:
+          'This action will remove the repository and all the branches from CodeSandbox. Any code that is not pushed on GitHub will be lost.',
+      });
+
+      if (!confirmed) {
+        return;
+      }
+
+      effects.analytics.track('Dashboard - Remove Assigned Repository');
+
       await effects.gql.mutations.deleteProject({
         owner,
         name,
