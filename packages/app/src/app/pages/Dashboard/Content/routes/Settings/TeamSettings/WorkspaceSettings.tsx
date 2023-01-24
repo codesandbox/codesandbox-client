@@ -112,10 +112,30 @@ export const WorkspaceSettings = () => {
     });
   };
 
+  const handleTeamNameChange = event => {
+    const { value } = event.target;
+
+    // Get the input and remove any whitespace from both ends.
+    const trimmedName = value?.trim() ?? '';
+
+    // Validate if the name input is filled with whitespaces.
+    if (trimmedName) {
+      event.target.setCustomValidity('');
+    } else {
+      event.target.setCustomValidity('Team name is required.');
+    }
+  };
+
   const onSubmit = async event => {
     event.preventDefault();
-    const name = event.target.name.value;
-    const description = event.target.description.value;
+
+    const name = event.target.name.value?.trim();
+    const description = event.target.description.value?.trim();
+
+    if (!name) {
+      return;
+    }
+
     setLoading(true);
     try {
       await actions.dashboard.setTeamInfo({
@@ -286,6 +306,7 @@ export const WorkspaceSettings = () => {
                     required
                     defaultValue={team.name}
                     placeholder="Enter team name"
+                    onChange={handleTeamNameChange}
                   />
                   <Textarea
                     name="description"
