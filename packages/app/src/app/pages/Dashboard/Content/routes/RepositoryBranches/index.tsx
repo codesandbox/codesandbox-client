@@ -51,16 +51,28 @@ export const RepositoryBranchesPage = () => {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
 
-    const accessedBranches = repositoryProject.branches.filter(
+    const defaultBranch = repositoryProject.branches.find(
+      b => b.name === repositoryProject.repository.defaultBranch
+    );
+
+    const branchesWithoutDefault = repositoryProject.branches.filter(
+      b => b.id !== defaultBranch?.id
+    );
+
+    const accessedBranches = branchesWithoutDefault.filter(
       b => b.lastAccessedAt
     );
-    const unaccessedBranches = repositoryProject.branches.filter(
+    const unaccessedBranches = branchesWithoutDefault.filter(
       b => !b.lastAccessedAt
     );
     const orderedBranches = [
       ...accessedBranches.sort(sortByLastAccessed),
       ...unaccessedBranches,
     ];
+
+    if (defaultBranch) {
+      orderedBranches.unshift(defaultBranch);
+    }
 
     const branchItems: DashboardGridItem[] = orderedBranches.map(branch => ({
       type: 'branch',
