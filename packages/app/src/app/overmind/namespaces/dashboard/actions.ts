@@ -16,7 +16,7 @@ import {
 } from 'app/graphql/types';
 import {
   v2BranchUrl,
-  v2DraftBranchUrl,
+  v2DefaultBranchUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
 import { notificationState } from '@codesandbox/common/lib/utils/notifications';
 import { NotificationStatus } from '@codesandbox/notifications';
@@ -2271,7 +2271,7 @@ export const importGitHubRepository = async (
       teamId: activeTeam,
     });
 
-    window.location.href = v2DraftBranchUrl({
+    window.location.href = v2DefaultBranchUrl({
       owner,
       repoName: name,
       workspaceId: activeTeam,

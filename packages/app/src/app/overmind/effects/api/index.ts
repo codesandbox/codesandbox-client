@@ -704,7 +704,6 @@ export default {
     let body: Record<string, string | boolean> = {
       name: destination.name,
       team_id: destination.teamId,
-      create_branch: true,
     };
     if (destination.organization) {
       body = { ...body, organization: destination.organization };
