@@ -93,7 +93,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
     >
       <Element css={{ overflow: 'hidden' }}>
         <StyledTitle color="#EDFFA5" weight="500" block>
-          Upgrade to Pro
+          {isEligibleForTrial ? 'Try Team Pro for free' : 'Upgrade to Pro'}
         </StyledTitle>
         <Stack
           css={{
@@ -103,7 +103,9 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
         >
           <Stack direction="vertical" justify="space-between">
             <StyledTitle block>
-              Enjoy the full CodeSandbox experience.
+              {isEligibleForTrial
+                ? '14 days free trial. No credit card required.'
+                : 'Enjoy the full CodeSandbox experience.'}
             </StyledTitle>
             <Stack
               css={{
