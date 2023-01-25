@@ -20,7 +20,6 @@ export type PendingUserType = {
 } | null;
 
 type State = {
-  isPatron: boolean;
   isFirstVisit: boolean;
   isLoggedIn: boolean;
   hasLogIn: boolean;
@@ -82,13 +81,6 @@ export const state: State = {
   pendingUserId: null,
   pendingUser: null,
   isFirstVisit: false,
-  /**
-   * Important, only use this to see if someone has patron, you should not check this to see if someone
-   * has pro.
-   */
-  isPatron: derived(({ user }: State) =>
-    Boolean(user && user.subscription && user.subscription.since)
-  ),
   isLoggedIn: derived(({ hasLogIn: has, user }: State) => has && Boolean(user)),
   // TODO: Should not reference store directly here, rather initialize
   // the state with "onInitialize" setting the jwt
