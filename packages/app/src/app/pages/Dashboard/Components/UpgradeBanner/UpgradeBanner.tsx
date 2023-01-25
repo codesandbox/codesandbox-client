@@ -37,8 +37,8 @@ type Feature = {
 };
 const FEATURES: Feature[] = [
   {
-    icon: 'profile',
-    label: 'Up to 20 editors',
+    icon: 'server',
+    label: '6GB RAM, 12GB Disk, 4 vCPUs',
   },
   {
     icon: 'npm',
@@ -57,8 +57,8 @@ const FEATURES: Feature[] = [
     label: 'Unlimited private repositories',
   },
   {
-    icon: 'server',
-    label: '6GB RAM, 12GB Disk, 4 vCPUs',
+    icon: 'profile',
+    label: 'Up to 20 editors',
   },
 ];
 
