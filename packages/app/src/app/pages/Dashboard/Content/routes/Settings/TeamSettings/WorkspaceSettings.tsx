@@ -59,7 +59,11 @@ const ROLES_TEXT_MAP = {
 export const WorkspaceSettings = () => {
   const actions = useActions();
   const effects = useEffects();
-  const { user: currentUser, activeTeamInfo: team } = useAppState();
+  const {
+    user: currentUser,
+    activeTeamInfo: team,
+    dashboard: { teams },
+  } = useAppState();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -112,21 +116,43 @@ export const WorkspaceSettings = () => {
     });
   };
 
+  const handleTeamNameChange = event => {
+    const { value } = event.target;
+
+    // Get the input and remove any whitespace from both ends.
+    const trimmedName = value?.trim() ?? '';
+
+    // Validate if the name input is filled with whitespaces.
+    if (!trimmedName) {
+      event.target.setCustomValidity('Team name is required.');
+    } else if (teams.find(t => t.name === trimmedName)) {
+      event.target.setCustomValidity(
+        'Name already taken, please choose a new name.'
+      );
+    } else {
+      event.target.setCustomValidity('');
+    }
+  };
+
   const onSubmit = async event => {
     event.preventDefault();
-    const name = event.target.name.value;
-    const description = event.target.description.value;
-    setLoading(true);
-    try {
-      await actions.dashboard.setTeamInfo({
-        name,
-        description,
-        file,
-      });
-      setEditing(false);
-    } finally {
-      setLoading(false);
+
+    const name = event.target.name.value?.trim();
+    const description = event.target.description.value?.trim();
+
+    if (!name) {
+      return;
     }
+
+    setLoading(true);
+    // no try/catch because setTeamInfo dispatches
+    // a notification toast on error.
+    await actions.dashboard.setTeamInfo({
+      name,
+      description,
+      file,
+    });
+    setEditing(false);
   };
 
   const [inviteValue, setInviteValue] = useState('');
@@ -286,6 +312,7 @@ export const WorkspaceSettings = () => {
                     required
                     defaultValue={team.name}
                     placeholder="Enter team name"
+                    onChange={handleTeamNameChange}
                   />
                   <Textarea
                     name="description"
