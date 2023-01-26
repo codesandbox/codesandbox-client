@@ -145,16 +145,14 @@ export const WorkspaceSettings = () => {
     }
 
     setLoading(true);
-    try {
-      await actions.dashboard.setTeamInfo({
-        name,
-        description,
-        file,
-      });
-      setEditing(false);
-    } finally {
-      setLoading(false);
-    }
+    // no try/catch because setTeamInfo dispatches
+    // a notification toast on error.
+    await actions.dashboard.setTeamInfo({
+      name,
+      description,
+      file,
+    });
+    setEditing(false);
   };
 
   const [inviteValue, setInviteValue] = useState('');
