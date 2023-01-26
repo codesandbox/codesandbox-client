@@ -191,7 +191,7 @@ export const WorkspacePlanSelection: React.FC = () => {
             >
               <Stack gap={1} direction="vertical">
                 <Text size={32} weight="500">
-                  {`${subscription.currency}${subscription.unitPrice}`}
+                  {`${subscription.currency || '$'}${subscription.unitPrice}`}
                 </Text>
                 {subscription.billingInterval ===
                 SubscriptionInterval.Yearly ? (
