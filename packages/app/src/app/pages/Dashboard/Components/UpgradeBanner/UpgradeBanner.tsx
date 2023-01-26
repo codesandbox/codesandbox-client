@@ -37,24 +37,24 @@ type Feature = {
 };
 const FEATURES: Feature[] = [
   {
+    icon: 'sandbox',
+    label: 'Unlimited private sandboxes',
+  },
+  {
     icon: 'server',
     label: '6GB RAM, 12GB Disk, 4 vCPUs',
   },
   {
-    icon: 'npm',
-    label: 'Private NPM packages',
-  },
-  {
-    icon: 'sandbox',
-    label: 'Unlimited private sandboxes',
+    icon: 'repository',
+    label: 'Unlimited private repositories',
   },
   {
     icon: 'lock',
     label: 'Advanced privacy settings',
   },
   {
-    icon: 'repository',
-    label: 'Unlimited private repositories',
+    icon: 'npm',
+    label: 'Private NPM packages',
   },
   {
     icon: 'profile',
