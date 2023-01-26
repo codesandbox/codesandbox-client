@@ -10,6 +10,7 @@ type ResultsProps = InfiniteHitsProvided<AlgoliaSandboxHit> & {
   disableTemplates?: boolean;
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
+  officialTemplates: TemplateFragment[];
 };
 
 const Results = (props: ResultsProps) => {
@@ -45,6 +46,7 @@ const Results = (props: ResultsProps) => {
     color: hit.custom_template.color,
     iconUrl: hit.custom_template.icon_url,
     published: hit.custom_template.published,
+    forks: hit.fork_count,
     sandbox: {
       id: hit.objectID,
       alias: hit.alias,
@@ -70,10 +72,12 @@ const Results = (props: ResultsProps) => {
           template={template}
           onSelectTemplate={props.onSelectTemplate}
           onOpenTemplate={props.onOpenTemplate}
+          forks={template.forks}
+          isOfficial={props.officialTemplates.some(t => t.id === template.id)}
         />
       ))}
       <div
-        style={{ minHeight: 130, width: 1, backgroundColor: 'transparent' }}
+        style={{ minHeight: 105, width: 1, backgroundColor: 'transparent' }}
         ref={bottomDetectionEl}
         id="bottom-detection-element"
       />

@@ -1,5 +1,11 @@
 import React from 'react';
-import { Badge, Stack, Text } from '@codesandbox/components';
+import {
+  Badge,
+  formatNumber,
+  Icon,
+  Stack,
+  Text,
+} from '@codesandbox/components';
 import { getTemplateIcon } from '@codesandbox/common/lib/utils/getTemplateIcon';
 import { TemplateFragment } from 'app/graphql/types';
 import { VisuallyHidden } from 'reakit/VisuallyHidden';
@@ -12,6 +18,8 @@ interface TemplateCardProps {
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
   padding?: number | string;
+  forks?: number;
+  isOfficial?: boolean;
 }
 
 export const TemplateCard = ({
@@ -20,6 +28,8 @@ export const TemplateCard = ({
   onSelectTemplate,
   onOpenTemplate,
   padding,
+  forks,
+  isOfficial,
 }: TemplateCardProps) => {
   const { isLoggedIn } = useAppState();
   const { UserIcon } = getTemplateIcon(
@@ -78,7 +88,8 @@ export const TemplateCard = ({
           css={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
         >
           <UserIcon height="20" width="20" />
-          {isV2 && <Badge icon="cloud">Beta</Badge>}
+          {isOfficial && <Badge>Official</Badge>}
+          {!isOfficial && isV2 && <Badge icon="cloud">Beta</Badge>}
         </Stack>
         <Stack direction="vertical" gap={1}>
           <Text
@@ -94,10 +105,18 @@ export const TemplateCard = ({
             {sandboxTitle}
           </Text>
 
-          <Text size={2} css={{ color: '#999' }}>
-            <VisuallyHidden>by </VisuallyHidden>
-            {teamName}
-          </Text>
+          <Stack justify="space-between" css={{ color: '#999', width: '100%' }}>
+            <Text truncate size={2} css={{ flex: 1 }}>
+              <VisuallyHidden>by </VisuallyHidden>
+              {isOfficial ? 'CodeSandbox' : teamName}
+            </Text>
+            {forks ? (
+              <Stack gap={1} align="center">
+                <Icon size={12} name="fork" />
+                <Text size={2}>{formatNumber(forks)}</Text>
+              </Stack>
+            ) : null}
+          </Stack>
         </Stack>
       </Stack>
     </TemplateButton>

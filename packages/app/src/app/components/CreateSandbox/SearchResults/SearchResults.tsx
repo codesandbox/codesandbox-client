@@ -24,7 +24,7 @@ const GlobalSearchStyles = createGlobalStyle`
 .ais-InstantSearch__root {
   display: flex;
   flex-direction: column;
-  height: 496px;
+  height: 100%;
 }
 `;
 
@@ -34,6 +34,7 @@ export const SearchResults = ({
   search,
   onSelectTemplate,
   onOpenTemplate,
+  officialTemplates,
 }: {
   // Receiving as prop to avoid fetching the checkout
   // url every time the templates list re-renders.
@@ -42,6 +43,7 @@ export const SearchResults = ({
   search: string;
   onSelectTemplate: (template: TemplateFragment) => void;
   onOpenTemplate: (template: TemplateFragment) => void;
+  officialTemplates: TemplateFragment[];
 }) => {
   const { isEligibleForTrial } = useWorkspaceSubscription();
   const { hasMaxPublicSandboxes } = useWorkspaceLimits();
@@ -63,7 +65,7 @@ export const SearchResults = ({
           facetFilters={['is_template: true', 'is_git: false']}
         />
 
-        <Stack css={{ height: '100%' }} direction="vertical" gap={6}>
+        <Stack css={{ height: '100%' }} direction="vertical" gap={4}>
           <Text
             as="h2"
             size={4}
@@ -93,6 +95,7 @@ export const SearchResults = ({
             disableTemplates={limitNewSandboxes}
             onSelectTemplate={onSelectTemplate}
             onOpenTemplate={onOpenTemplate}
+            officialTemplates={officialTemplates}
           />
         </Stack>
       </InstantSearch>
