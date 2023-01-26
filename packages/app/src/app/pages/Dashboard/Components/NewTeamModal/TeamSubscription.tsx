@@ -73,11 +73,6 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
         gap={6}
       >
         <Stack direction="vertical" gap={3}>
-          <Stack align="center" justify="center" gap={3}>
-            <Text as="p" size={3}>
-              {activeTeamInfo.name}
-            </Text>
-          </Stack>
           <Text
             as="h2"
             css={{

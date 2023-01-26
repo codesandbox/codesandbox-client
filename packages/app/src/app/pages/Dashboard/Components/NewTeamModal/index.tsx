@@ -31,6 +31,7 @@ type NewTeamProps = {
   onClose: () => void;
 };
 const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
+  const { activeTeamInfo } = useAppState();
   const [currentStep, setCurrentStep] = React.useState<TeamStep>(
     step ?? 'info'
   );
@@ -59,7 +60,9 @@ const NewTeam: React.FC<NewTeamProps> = ({ step, hasNextStep, onClose }) => {
             })}
             size={3}
           >
-            New team
+            {activeTeamInfo && currentStep !== 'info'
+              ? activeTeamInfo.name
+              : 'New team'}
           </Text>
           <IconButton
             name="cross"
