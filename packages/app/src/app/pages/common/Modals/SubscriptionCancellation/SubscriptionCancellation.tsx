@@ -55,8 +55,8 @@ const FEATURES: FeatureComp[] = [
   {
     key: 'disk',
     pro: '12GB Disk',
-    free: '4GB Disk',
-    pill: '-67% storage',
+    free: '6GB Disk',
+    pill: '-50% storage',
   },
 ];
 
