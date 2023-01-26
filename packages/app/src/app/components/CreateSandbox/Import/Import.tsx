@@ -10,7 +10,7 @@ import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { useImportAndRedirect } from './useImportAndRedirect';
-import { checkRepoInput, getOwnerAndRepoFromInput } from './utils';
+import { getOwnerAndRepoFromInput } from './utils';
 import { MaxPublicRepos, PrivateRepoFreeTeam } from './importLimits';
 
 const UnauthenticatedImport: React.FC = () => {
@@ -99,15 +99,17 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     const value = event.target.value;
     if (!value) {
       setUrl({ raw: value, parsed: null, error: null });
-    } else if (!checkRepoInput(value)) {
+      return;
+    }
+
+    const parsedInput = getOwnerAndRepoFromInput(value);
+    if (!parsedInput) {
       setUrl({
         raw: value,
         parsed: null,
         error: 'The URL provided is not valid.',
       });
     } else {
-      const parsedInput = getOwnerAndRepoFromInput(value);
-
       setUrl({
         raw: value,
         parsed: {

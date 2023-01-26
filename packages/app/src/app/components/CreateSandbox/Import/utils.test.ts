@@ -1,4 +1,4 @@
-import { getOwnerAndRepoFromInput, checkRepoInput } from './utils';
+import { getOwnerAndRepoFromInput } from './utils';
 
 const VALID_REPOS = [
   'github.com/owner/repo',
@@ -24,20 +24,6 @@ const INVALID_REPOS = [
   'www.github.com/',
   'www.github.com/user/',
 ];
-
-describe('checkRepoInput', () => {
-  VALID_REPOS.forEach(possibleRepo => {
-    test(`${possibleRepo} is a valid input`, () => {
-      expect(checkRepoInput(possibleRepo)).toBe(true);
-    });
-  });
-
-  INVALID_REPOS.forEach(possibleRepo => {
-    test(`${possibleRepo} is an invalid input`, () => {
-      expect(checkRepoInput(possibleRepo)).toBe(false);
-    });
-  });
-});
 
 describe('getOwnerAndRepoFromInput', () => {
   VALID_REPOS.forEach(possibleRepo => {

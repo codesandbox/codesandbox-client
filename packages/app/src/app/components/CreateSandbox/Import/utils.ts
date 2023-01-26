@@ -10,11 +10,6 @@ const REGEX_PROTOCOLLESS = /(www\.)?github\.com\/(?<owner>[\w-]+)\/(?<repo>[\w-]
 // Will match: owner/repo
 const REGEX_PLAIN = /(?<owner>[\w-]+)\/(?<repo>[\w-]+)$/i;
 
-export const checkRepoInput = (input: string) =>
-  [REGEX_SSH, REGEX_HTTPS, REGEX_PROTOCOLLESS, REGEX_PLAIN].some(exp =>
-    exp.test(input)
-  );
-
 export const getOwnerAndRepoFromInput = (input: string) => {
   const match =
     REGEX_SSH.exec(input) ||
