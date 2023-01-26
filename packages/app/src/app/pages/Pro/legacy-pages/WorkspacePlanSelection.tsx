@@ -41,7 +41,6 @@ const getBillingText = ({
 export const WorkspacePlanSelection: React.FC = () => {
   const {
     personalWorkspaceId,
-    user,
     activeTeam,
     activeTeamInfo,
     dashboard,
@@ -56,7 +55,7 @@ export const WorkspacePlanSelection: React.FC = () => {
   const { isPersonalSpace, isTeamAdmin } = useWorkspaceAuthorization();
   // const isPersonalSpace = false; // DEBUG
   // const isTeamAdmin = true; // DEBUG
-  const { subscription } = useWorkspaceSubscription();
+  const { subscription, isPatron } = useWorkspaceSubscription();
 
   // Based on the 'type' search param we redirect to the personal pro page if
   // it's not yet active.
@@ -72,11 +71,11 @@ export const WorkspacePlanSelection: React.FC = () => {
     [isPersonalSpace, subTypeParam, setActiveTeam, personalWorkspaceId]
   );
 
-  // TODO: Does this ever occur with the checks in /pro/index.tsx and Legacy.tsx? it
-  // might so I'm leaving this here for now.
+  // Q: Does this ever occur with the checks in /pro/index.tsx and Legacy.tsx?
+  // A: It doesn't ever occur because before this component is rendered we check for
+  // isPaddle or isPatron which are part of activeTeam. However, we can't guarantee
+  // that this comopnent will only be used there so we will keep this check for now.
   if (!activeTeam || !dashboard.teams.length) return null;
-
-  const currentSubscription = activeTeamInfo?.subscription;
 
   const personalWorkspace = dashboard.teams.find(
     t => t.id === personalWorkspaceId
@@ -103,7 +102,7 @@ export const WorkspacePlanSelection: React.FC = () => {
     // eslint-disable-next-line no-nested-ternary
   >['cta'] = isTeamAdmin
     ? // Only allowed to change from monthly to yearly
-      currentSubscription.billingInterval === SubscriptionInterval.Monthly
+      subscription.billingInterval === SubscriptionInterval.Monthly
       ? {
           text: 'Change to yearly billing',
           onClick: () => {
@@ -185,26 +184,25 @@ export const WorkspacePlanSelection: React.FC = () => {
 
           {isPersonalSpace ? (
             <SubscriptionCard
-              title={
-                user.subscription.plan === 'patron' ? 'Patron' : 'Personal Pro'
-              }
+              title={isPatron ? 'Patron' : 'Personal Pro'}
               features={PERSONAL_FEATURES}
               cta={personalProCta}
               isHighlighted
             >
               <Stack gap={1} direction="vertical">
                 <Text size={32} weight="500">
-                  ${user.subscription.amount}
+                  {`${subscription.currency}${subscription.unitPrice}`}
                 </Text>
-                {user.subscription.duration === 'yearly' ? (
+                {subscription.billingInterval ===
+                SubscriptionInterval.Yearly ? (
                   <Text>
                     charged annually on{' '}
-                    {format(new Date(user.subscription.since), 'MMM dd')}
+                    {format(new Date(subscription.nextBillDate), 'MMM dd')}
                   </Text>
                 ) : (
                   <Text>
                     charged on the{' '}
-                    {format(new Date(user.subscription.since), 'do')} of each
+                    {format(new Date(subscription.nextBillDate), 'do')} of each
                     month
                   </Text>
                 )}
