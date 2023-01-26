@@ -21,11 +21,6 @@ type FeatureComp = {
 };
 const FEATURES: FeatureComp[] = [
   {
-    key: 'editors',
-    pro: 'Up to 20 editors',
-    free: 'Limited to 5 editors',
-  },
-  {
     key: 'sandboxes',
     pro: 'Unlimited private sandboxes',
     free: 'Limited to 20 public sandboxes',
@@ -34,6 +29,11 @@ const FEATURES: FeatureComp[] = [
     key: 'repos',
     pro: 'Unlimited private repositories',
     free: 'Limited to 3 public repositories',
+  },
+  {
+    key: 'editors',
+    pro: 'Up to 20 editors',
+    free: 'Limited to 5 editors',
   },
   {
     key: 'npm',

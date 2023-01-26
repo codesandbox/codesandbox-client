@@ -93,7 +93,6 @@ export const TEAM_PRO_FEATURES: Feature[] = [
 ];
 
 export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
-  { key: 'editors', label: 'Up to 20 editors' },
   {
     key: 'limit_sandboxes',
     label: 'Unlimited private sandboxes',
@@ -102,6 +101,7 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
     key: 'limit_repositories',
     label: 'Unlimited private repositories',
   },
+  { key: 'editors', label: 'Up to 20 editors' },
   { key: 'npm', label: 'Private NPM packages' },
   { key: 'vm_mem', label: '6GB RAM', pill: '1.5x capacity' },
   { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
@@ -109,7 +109,6 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
 ];
 
 export const ORG_FEATURES: Feature[] = [
-  { key: 'editors', label: 'No editor limit' },
   {
     key: 'limit_sandboxes',
     label: 'Unlimited private sandboxes',
@@ -118,6 +117,7 @@ export const ORG_FEATURES: Feature[] = [
     key: 'limit_repositories',
     label: 'Unlimited private repositories',
   },
+  { key: 'editors', label: 'No editor limit' },
   { key: 'npm', label: 'Private NPM packages' },
   { key: 'vm_mem', label: 'Custom VM Specs' },
   { key: 'vm_cpu', label: '+ Custom support and Slack channel' },
