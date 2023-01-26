@@ -12,6 +12,7 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
   const { dashboard } = useAppState();
   const actions = useActions();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [existingTeamError, setExistingTeamError] = useState(false);
 
   const onSubmit = async event => {
@@ -24,14 +25,16 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
         event_source: 'UI',
       });
 
+      setError(null);
       setLoading(true);
       try {
         await actions.dashboard.createTeam({
           teamName,
         });
-        setLoading(false);
         onComplete();
       } catch {
+        setError('There was a problem creating your team');
+      } finally {
         setLoading(false);
       }
     }
@@ -124,6 +127,12 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
         {existingTeamError && (
           <Text size={2} variant="danger">
             Name already taken, please choose a new name.
+          </Text>
+        )}
+
+        {error && (
+          <Text size={2} variant="danger">
+            {error}
           </Text>
         )}
 
