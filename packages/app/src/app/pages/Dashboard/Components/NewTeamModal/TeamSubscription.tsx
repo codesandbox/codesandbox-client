@@ -1,10 +1,10 @@
 import React from 'react';
 import css from '@styled-system/css';
+import styled from 'styled-components';
 
 import { dashboard } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Stack, Text } from '@codesandbox/components';
 import { useActions, useAppState } from 'app/overmind';
-import { formatCurrency } from 'app/utils/currency';
 import { useCreateCheckout } from 'app/hooks';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
@@ -15,23 +15,18 @@ import {
   TEAM_PRO_FEATURES_WITH_PILLS,
 } from 'app/constants';
 
-const pricingLabel = (
-  price: { currency: string; unitAmount: number } | undefined
-) => {
-  if (typeof price === 'undefined') {
-    return '';
-  }
-
-  return ` ${formatCurrency({
-    currency: price.currency,
-    amount: price.unitAmount,
-  })} ${price.currency.toUpperCase()} per editor per month`;
-};
+const StyledTitle = styled(Text)`
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.019em;
+  margin: 0;
+  color: #c2c2c2;
+`;
 
 export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
   onComplete,
 }) => {
-  const { activeTeamInfo, pro } = useAppState();
+  const { activeTeamInfo } = useAppState();
   const {
     pro: { pageMounted },
   } = useActions();
@@ -71,6 +66,7 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
         css={css({
           width: '510px',
           flex: 1,
+          paddingBottom: 24,
         })}
         align="center"
         direction="vertical"
@@ -99,104 +95,85 @@ export const TeamSubscription: React.FC<{ onComplete: () => void }> = ({
               : 'Upgrade to Team Pro'}
           </Text>
         </Stack>
+        {isEligibleForTrial && (
+          <StyledTitle block>
+            14 days free trial. No credit card required.
+          </StyledTitle>
+        )}
+      </Stack>
 
-        <Stack
-          css={css({
-            width: '510px',
-            flex: 1,
-          })}
-          gap={2}
-        >
-          <FeatureList
-            title="Free Plan"
-            features={TEAM_FREE_FEATURES}
-            background="#1c1c1c"
-            textColor="#c2c2c2"
-          />
-          <FeatureList
-            title="Team Pro"
-            features={TEAM_PRO_FEATURES_WITH_PILLS}
-            background="white"
-            textColor="#0E0E0E"
-          />
-        </Stack>
+      <Stack
+        css={css({
+          width: '510px',
+          flex: 1,
+        })}
+        gap={2}
+      >
+        <FeatureList
+          title="Free Plan"
+          features={TEAM_FREE_FEATURES}
+          background="#1c1c1c"
+          textColor="#c2c2c2"
+        />
+        <FeatureList
+          title="Team Pro"
+          features={TEAM_PRO_FEATURES_WITH_PILLS}
+          background="white"
+          textColor="#0E0E0E"
+        />
+      </Stack>
 
-        <Stack
-          css={{ width: '100%', paddingBottom: 24 }}
-          direction="vertical"
-          gap={4}
-        >
-          <Stack direction="vertical" align="center" gap={1}>
-            <Button
-              css={css({
-                height: '32px',
-                maxWidth: '370px',
-              })}
-              onClick={() => {
-                if (isCheckoutDisabled) {
-                  return;
-                }
-
-                track('New Team - Start Trial', {
-                  codesandbox: 'V1',
-                  event_source: 'UI',
-                });
-
-                createCheckout({
-                  team_id: activeTeamInfo.id,
-                  recurring_interval: 'month' as string,
-                  success_path: dashboard.recent(activeTeamInfo.id),
-                  cancel_path: dashboard.recent(activeTeamInfo.id),
-                });
-              }}
-              loading={checkout.status === 'loading'}
-              disabled={isCheckoutDisabled}
-              type="button"
-            >
-              {isEligibleForTrial
-                ? 'Start 14 day free trial'
-                : 'Proceed to checkout'}
-            </Button>
-            {checkout.status === 'error' && (
-              <Text variant="danger" size={2}>
-                {checkout.error}. Please try again.
-              </Text>
-            )}
-          </Stack>
+      <Stack css={{ width: '100%', padding: 24 }} direction="vertical" gap={4}>
+        <Stack direction="vertical" align="center" gap={1}>
           <Button
+            css={css({
+              height: '32px',
+              maxWidth: '370px',
+            })}
             onClick={() => {
-              track('New Team - Skip trial', {
+              if (isCheckoutDisabled) {
+                return;
+              }
+
+              track('New Team - Start Trial', {
                 codesandbox: 'V1',
                 event_source: 'UI',
               });
-              onComplete();
+
+              createCheckout({
+                team_id: activeTeamInfo.id,
+                recurring_interval: 'month' as string,
+                success_path: dashboard.recent(activeTeamInfo.id),
+                cancel_path: dashboard.recent(activeTeamInfo.id),
+              });
             }}
-            variant="link"
+            loading={checkout.status === 'loading'}
+            disabled={isCheckoutDisabled}
+            type="button"
           >
-            Continue with free plan
+            {isEligibleForTrial
+              ? 'Start 14 day free trial'
+              : 'Proceed to checkout'}
           </Button>
+          {checkout.status === 'error' && (
+            <Text variant="danger" size={2}>
+              {checkout.error}. Please try again.
+            </Text>
+          )}
         </Stack>
-      </Stack>
-      {isEligibleForTrial ? (
-        <Stack
-          css={css({
-            width: '100%',
-            padding: 6,
-            borderTop: '1px solid rgba(153, 153, 153, 0.2)',
-          })}
-          direction="vertical"
+        <Button
+          onClick={() => {
+            track('New Team - Skip trial', {
+              codesandbox: 'V1',
+              event_source: 'UI',
+            });
+            onComplete();
+          }}
+          variant="link"
         >
-          <Text css={css({ color: '#999999' })} size={2}>
-            You&apos;ll be notified before trial ends.
-          </Text>
-          <Text css={css({ color: '#999999' })} size={2}>
-            {`After trial, you will be charged${pricingLabel(
-              pro.prices?.teamPro.month
-            )}`}
-            . Taxes may apply.
-          </Text>
-        </Stack>
-      ) : null}
+          Continue with free plan
+        </Button>
+      </Stack>
     </Stack>
   );
 };
