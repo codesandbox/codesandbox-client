@@ -115,9 +115,11 @@ class BabelTranspiler extends WorkerTranspiler {
         const syntaxInfo = getSyntaxInfoFromAst(ast);
         if (!syntaxInfo.jsx) {
           // If the code is ESM we transform it to commonjs and return it
-          if (syntaxInfo.esm) {
+          if (syntaxInfo.esm || syntaxInfo.dynamicImports) {
             measure(`esconvert-${path}`);
-            convertEsModule(ast);
+            if (syntaxInfo.esm) {
+              convertEsModule(ast);
+            }
             // We collect requires instead of doing this in convertESModule as some modules also use require
             // Which is actually invalid but we probably don't wanna break anyone's code if it works in other bundlers...
             const deps = collectDependenciesFromAST(ast);
