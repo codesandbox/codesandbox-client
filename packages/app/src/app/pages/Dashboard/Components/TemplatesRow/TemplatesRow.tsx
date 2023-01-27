@@ -12,7 +12,8 @@ import { EmptyPage } from '../EmptyPage';
 const TEMPLATE_IDS = [
   'k8dsq1', // NodeJS (cloud)
   'vanilla', // Vanilla JS (browser)
-  'uo1h0', // NextJS (cloud)
+  'fxis37', // NextJS (cloud)
+  'hsd8ke', // Docker Starter (cloud)
   '9qputt', // React + Vite (browser)
 ];
 
