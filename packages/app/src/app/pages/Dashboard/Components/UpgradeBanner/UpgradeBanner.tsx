@@ -24,7 +24,6 @@ const StyledTitle = styled(Text)`
   font-size: 24px;
   line-height: 32px;
   letter-spacing: -0.019em;
-  margin: 0;
 `;
 
 // When flex wraps and the list of features is
