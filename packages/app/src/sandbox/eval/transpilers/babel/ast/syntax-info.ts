@@ -88,6 +88,9 @@ export function getSyntaxInfoFromCode(code: string, path: string): SyntaxInfo {
     get esm() {
       return isESModule(code);
     },
+    get dynamicImports() {
+      return code.includes('import(')
+    }
   };
 
   if (path.endsWith('.min.js')) {
@@ -95,6 +98,7 @@ export function getSyntaxInfoFromCode(code: string, path: string): SyntaxInfo {
     return {
       jsx: false,
       esm: false,
+      dynamicImports: false,
     };
   }
 
