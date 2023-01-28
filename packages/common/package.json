@@ -76,7 +76,7 @@
     "semver": "^7.3.5",
     "sha1": "^1.1.1",
     "styled-components": "^5.2.0",
-    "template-icons": "^1.0.0",
+    "@codesandbox/template-icons": "^2.0.2",
     "typeface-inter": "^3.10.0"
   },
   "devDependencies": {

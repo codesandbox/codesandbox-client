@@ -105,6 +105,7 @@ export const CreateSandbox: React.FC<CreateSandboxProps> = ({
   const teamTemplatesData = useTeamTemplates({
     isUser,
     teamId: activeTeamInfo?.id,
+    hasLogIn,
   });
 
   const officialTemplates =
