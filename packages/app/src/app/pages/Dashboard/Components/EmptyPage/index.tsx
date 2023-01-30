@@ -38,7 +38,7 @@ const StyledGrid = styled(Element)`
   list-style: none;
   gap: ${GUTTER}px;
   grid-template-columns: repeat(auto-fill, minmax(${ITEM_MIN_WIDTH}px, 1fr));
-  grid-auto-rows: minmax(${ITEM_HEIGHT_GRID}px, 1fr);
+  grid-auto-rows: ${ITEM_HEIGHT_GRID}px;
 `;
 
 const StyledGridTitle = styled(Text)`
