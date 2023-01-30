@@ -28,7 +28,7 @@ const StyledDescription = styled(Text)`
 
 const StyledGridWrapper = styled(Stack)`
   flex-direction: column;
-  gap: 16px;
+  gap: ${GUTTER}px;
 `;
 
 const StyledGrid = styled(Element)`
@@ -36,7 +36,7 @@ const StyledGrid = styled(Element)`
   padding: 0;
   display: grid;
   list-style: none;
-  gap: 16px;
+  gap: ${GUTTER}px;
   grid-template-columns: repeat(auto-fill, minmax(${ITEM_MIN_WIDTH}px, 1fr));
   grid-auto-rows: minmax(${ITEM_HEIGHT_GRID}px, 1fr);
 `;
