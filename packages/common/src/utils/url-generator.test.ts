@@ -1,3 +1,4 @@
+import { sandboxUrl } from '../../lib/utils/url-generator';
 import { gitHubRepoPattern, gitHubToSandboxUrl } from './url-generator';
 
 const invalidUrls = [
@@ -42,6 +43,14 @@ describe('url-generator', () => {
       test(`validates ${inputUrl} as falsy`, () => {
         expect(gitHubRepoPattern.test(inputUrl)).toBeFalsy();
       });
+    });
+  });
+
+  describe('sandboxUrl', () => {
+    test(`handles query params`, () => {
+      expect(
+        sandboxUrl({ id: 'sandbox-id', isV2: true, query: { welcome: 'true' } })
+      ).toBe('/p/sandbox/sandbox-id?welcome=true');
     });
   });
 });

@@ -112,11 +112,17 @@ export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
     ? `${v2EditorUrl()}sandbox/`
     : editorUrl();
 
-  if (sandboxDetails.alias) {
-    return `${baseUrl}${sandboxDetails.alias}`;
+  let queryParams = '';
+
+  if (sandboxDetails.query) {
+    queryParams = `?${new URLSearchParams(sandboxDetails.query).toString()}`;
   }
 
-  return `${baseUrl}${sandboxDetails.id}`;
+  if (sandboxDetails.alias) {
+    return `${baseUrl}${sandboxDetails.alias}${queryParams}`;
+  }
+
+  return `${baseUrl}${sandboxDetails.id}${queryParams}`;
 };
 
 export const v2BranchUrl = (branchDetails: {
