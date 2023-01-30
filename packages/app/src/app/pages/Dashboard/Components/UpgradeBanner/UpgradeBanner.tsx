@@ -24,7 +24,6 @@ const StyledTitle = styled(Text)`
   font-size: 24px;
   line-height: 32px;
   letter-spacing: -0.019em;
-  margin: 0;
 `;
 
 // When flex wraps and the list of features is
@@ -37,28 +36,28 @@ type Feature = {
 };
 const FEATURES: Feature[] = [
   {
-    icon: 'profile',
-    label: 'Up to 20 editors',
-  },
-  {
-    icon: 'npm',
-    label: 'Private NPM packages',
-  },
-  {
     icon: 'sandbox',
     label: 'Unlimited private sandboxes',
   },
   {
-    icon: 'lock',
-    label: 'Advanced privacy settings',
+    icon: 'server',
+    label: '6GB RAM, 12GB Disk, 4 vCPUs',
   },
   {
     icon: 'repository',
     label: 'Unlimited private repositories',
   },
   {
-    icon: 'server',
-    label: '6GB RAM, 12GB Disk, 4 vCPUs',
+    icon: 'lock',
+    label: 'Advanced privacy settings',
+  },
+  {
+    icon: 'npm',
+    label: 'Private NPM packages',
+  },
+  {
+    icon: 'profile',
+    label: 'Up to 20 editors',
   },
 ];
 
@@ -93,7 +92,7 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
     >
       <Element css={{ overflow: 'hidden' }}>
         <StyledTitle color="#EDFFA5" weight="500" block>
-          Upgrade to Pro
+          {isEligibleForTrial ? 'Try Team Pro for free' : 'Upgrade to Pro'}
         </StyledTitle>
         <Stack
           css={{
@@ -103,7 +102,9 @@ export const UpgradeBanner: React.FC<UpgradeBannerProps> = ({ teamId }) => {
         >
           <Stack direction="vertical" justify="space-between">
             <StyledTitle block>
-              Enjoy the full CodeSandbox experience.
+              {isEligibleForTrial
+                ? '14 days free trial. No credit card required.'
+                : 'Enjoy the full CodeSandbox experience.'}
             </StyledTitle>
             <Stack
               css={{
