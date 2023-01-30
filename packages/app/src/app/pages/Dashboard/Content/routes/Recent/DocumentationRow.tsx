@@ -1,6 +1,7 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { ArticleCard, VideoCard, Stack } from '@codesandbox/components';
+import { ArticleCard, VideoCard } from '@codesandbox/components';
 import { useWorkspaceAuthorization } from 'app/hooks/useWorkspaceAuthorization';
+import { Carousel } from 'app/pages/Dashboard/Components/Carousel/Carousel';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import { appendOnboardingTracking } from 'app/pages/Dashboard/Content/utils';
 import React from 'react';
@@ -80,41 +81,35 @@ export const DocumentationRow: React.FC = () => {
     });
   };
 
+  const buildItems = () => {
+    return DOCS.map(({ label, url, workspaceType, ...item }) => {
+      if (
+        (workspaceType === 'personal' && !isPersonalSpace) ||
+        (workspaceType === 'team' && !isTeamSpace)
+      ) {
+        return null;
+      }
+
+      const urlWithTracking = appendOnboardingTracking(url);
+
+      return {
+        id: label,
+        Component: 'duration' in item ? VideoCard : ArticleCard,
+        props: {
+          onClick: () => handleTrack(label),
+          url: urlWithTracking,
+          ...item,
+        },
+      };
+    }).filter(Boolean);
+  };
+
   return (
     <EmptyPage.StyledGridWrapper>
       <EmptyPage.StyledGridTitle>
         Optimize your workflow
       </EmptyPage.StyledGridTitle>
-      <EmptyPage.StyledGrid as="ul">
-        {DOCS.map(({ url, workspaceType, ...item }) => {
-          const urlWithTracking = appendOnboardingTracking(url);
-
-          if (
-            (workspaceType === 'personal' && !isPersonalSpace) ||
-            (workspaceType === 'team' && !isTeamSpace)
-          ) {
-            return null;
-          }
-
-          return (
-            <Stack as="li" key={item.label}>
-              {'duration' in item ? (
-                <VideoCard
-                  onClick={() => handleTrack(item.label)}
-                  url={urlWithTracking}
-                  {...item}
-                />
-              ) : (
-                <ArticleCard
-                  onClick={() => handleTrack(item.label)}
-                  url={urlWithTracking}
-                  {...item}
-                />
-              )}
-            </Stack>
-          );
-        })}
-      </EmptyPage.StyledGrid>
+      <Carousel items={buildItems()} />
     </EmptyPage.StyledGridWrapper>
   );
 };
