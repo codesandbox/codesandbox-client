@@ -1,6 +1,10 @@
 import { satisfies, valid } from 'semver';
 import { Module } from '../../../types/module';
 import { FetchProtocol, Meta } from '../fetch-npm-module';
+import {
+  getSandpackSecret,
+  requestSandpackSecretFromApp,
+} from './sandpack-secret';
 import { fetchWithRetries } from './utils';
 import { TarStore } from './utils/tar-store';
 
@@ -120,12 +124,26 @@ export class NpmRegistryFetcher implements FetchProtocol {
     return this.getProxiedUrl(join(this.registryLocation, encodedName));
   }
 
-  private getRequestInit(): RequestInit {
+  private async getRequestInit(): Promise<RequestInit> {
     const headers = new Headers();
     headers.append('Accept', NPM_REGISTRY_ACCEPT_HEADER);
     headers.append('Content-Type', 'application/json');
     if (this.authToken) {
       headers.append('Authorization', `Bearer ${this.authToken}`);
+      /**
+       * @TODO: scoped conditional and throws an error if
+       * it doesn't find secret
+       */
+    } else {
+      if (!getSandpackSecret()) {
+        const token = await requestSandpackSecretFromApp(
+          'https://pszt7g-3000.preview.csb.app'
+        );
+
+        headers.append('Authorization', `Bearer ${token}`);
+      } else {
+        headers.append('Authorization', `Bearer ${getSandpackSecret()}`);
+      }
     }
 
     return {
@@ -136,8 +154,8 @@ export class NpmRegistryFetcher implements FetchProtocol {
     };
   }
 
-  private fetchRegistry(url: string): Promise<PackageRegistryInfo> {
-    return fetchWithRetries(url, 3, this.getRequestInit())
+  private async fetchRegistry(url: string): Promise<PackageRegistryInfo> {
+    return fetchWithRetries(url, 3, await this.getRequestInit())
       .then(x => x.json())
       .catch(async e => {
         let errorMessage = 'Make sure the right auth token and URL are set';
@@ -222,7 +240,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
       versionInfo.version,
       versionInfo.dist.tarball
     );
-    return this.tarStore.file(name, tarball, path, this.getRequestInit());
+    return this.tarStore.file(name, tarball, path, await this.getRequestInit());
   }
 
   public async meta(name: string, version: string): Promise<Meta> {
@@ -233,7 +251,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
       versionInfo.version,
       versionInfo.dist.tarball
     );
-    return this.tarStore.meta(name, tarball, this.getRequestInit());
+    return this.tarStore.meta(name, tarball, await this.getRequestInit());
   }
 
   public async massFiles(name: string, version: string): Promise<Module[]> {
@@ -244,7 +262,7 @@ export class NpmRegistryFetcher implements FetchProtocol {
       versionInfo.version,
       versionInfo.dist.tarball
     );
-    return this.tarStore.massFiles(name, tarball, this.getRequestInit());
+    return this.tarStore.massFiles(name, tarball, await this.getRequestInit());
   }
 
   public condition = (name: string, version: string): boolean => {

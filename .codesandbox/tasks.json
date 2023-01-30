@@ -32,6 +32,17 @@
         "files": ["yarn.lock", "packages/app/scripts/*"]
       }
     },
+    "app:fast:stream": {
+      "name": "Application (fast + stream)",
+      "command": "yarn start:fast:stream",
+      "runAtStart": true,
+      "preview": {
+        "port": 3000
+      },
+      "restartOn": {
+        "files": ["yarn.lock", "packages/app/scripts/*"]
+      }
+    },
     "app:home:fast": {
       "name": "Application home (fast)",
       "command": "yarn start:home:fast",

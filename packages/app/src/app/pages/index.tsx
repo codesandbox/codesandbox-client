@@ -67,6 +67,9 @@ const VercelSignIn = Loadable(
 const PreviewAuth = Loadable(
   () => import(/* webpackChunkName: 'page-vercel' */ './PreviewAuth')
 );
+const SandpackSecret = Loadable(
+  () => import(/* webpackChunkName: 'page-vercel' */ './SandpackSecret')
+);
 const NotFound = Loadable(() =>
   import(/* webpackChunkName: 'page-not-found' */ './common/NotFound').then(
     module => ({
@@ -222,6 +225,7 @@ const RoutesComponent: React.FC = () => {
             <Route path="/vscode/login" component={VSCodeAuth} />
             <Route path="/auth/zeit" component={VercelSignIn} />
             <Route path="/auth/sandbox/:id" component={PreviewAuth} />
+            <Route path="/auth/sandpack" component={SandpackSecret} />
             {(process.env.LOCAL_SERVER || process.env.STAGING) && (
               <Route path="/auth/dev" component={DevAuthPage} />
             )}
