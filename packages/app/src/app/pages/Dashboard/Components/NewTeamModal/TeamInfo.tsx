@@ -12,27 +12,29 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
   const { dashboard } = useAppState();
   const actions = useActions();
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [existingTeamError, setExistingTeamError] = useState(false);
 
   const onSubmit = async event => {
     event.preventDefault();
-    const teamName = event.target.name.value;
+    const teamName = event.target.name.value?.trim();
 
-    if (teamName && teamName.trim()) {
+    if (teamName) {
       track('New Team - Create Team', {
         codesandbox: 'V1',
         event_source: 'UI',
       });
 
-      event.target.name.setCustomValidity('');
+      setError(null);
       setLoading(true);
       try {
         await actions.dashboard.createTeam({
           teamName,
         });
-        setLoading(false);
         onComplete();
       } catch {
+        setError('There was a problem creating your team');
+      } finally {
         setLoading(false);
       }
     }
@@ -40,16 +42,22 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
 
   const handleInput = e => {
     const { value } = e.target;
-    setName(value.trim());
 
-    if (value && value.trim()) {
+    // Get the input and remove any whitespace from both ends.
+    const trimmedName = value?.trim() ?? '';
+
+    // Validate if the name input is filled with whitespaces.
+    if (trimmedName) {
       e.target.setCustomValidity('');
     } else {
       e.target.setCustomValidity('Team name is required.');
     }
-  };
 
-  const error = Boolean(dashboard.teams.find(team => team.name === name));
+    // Check if there's any team with the same name.
+    setExistingTeamError(
+      Boolean(dashboard.teams.find(team => team.name === trimmedName))
+    );
+  };
 
   return (
     <Stack
@@ -114,18 +122,23 @@ export const TeamInfo: React.FC<{ onComplete: () => void }> = ({
           required
           autoFocus
           onChange={handleInput}
-          value={name}
         />
 
-        {error && (
+        {existingTeamError && (
           <Text size={2} variant="danger">
             Name already taken, please choose a new name.
           </Text>
         )}
 
+        {error && (
+          <Text size={2} variant="danger">
+            {error}
+          </Text>
+        )}
+
         <StyledButton
           loading={loading}
-          disabled={loading || error}
+          disabled={loading || existingTeamError}
           type="submit"
         >
           Create Team

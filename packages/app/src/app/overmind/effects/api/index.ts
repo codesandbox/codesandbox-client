@@ -58,29 +58,7 @@ export default {
 
     return response.jwt;
   },
-  createPatronSubscription(
-    token: string,
-    amount: number,
-    duration: 'monthly' | 'yearly',
-    coupon: string
-  ) {
-    return api.post<CurrentUser>('/users/current_user/subscription', {
-      subscription: {
-        amount,
-        coupon,
-        token,
-        duration,
-      },
-    });
-  },
-  updatePatronSubscription(amount: number, coupon: string) {
-    return api.patch<CurrentUser>('/users/current_user/subscription', {
-      subscription: {
-        amount,
-        coupon,
-      },
-    });
-  },
+  // We only use this function related to current_user/subscription
   cancelPatronSubscription() {
     return api.delete<CurrentUser>('/users/current_user/subscription');
   },

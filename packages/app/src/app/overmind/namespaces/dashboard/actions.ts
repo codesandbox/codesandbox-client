@@ -1105,16 +1105,14 @@ export const createTeam = async (
     teamName: string;
   }
 ) => {
-  try {
-    effects.analytics.track('Team - Create Team', { dashboardVersion: 2 });
-    const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
-      name: teamName,
-    });
-    state.dashboard.teams = [...state.dashboard.teams, newTeam];
-    actions.setActiveTeam({ id: newTeam.id });
-  } catch {
-    effects.notificationToast.error('There was a problem creating your team');
-  }
+  // Do not try/catch to let errors propagate to `TeamInfo` that will
+  // then handle it by showing a notification if creating a team fails.
+  effects.analytics.track('Team - Create Team', { dashboardVersion: 2 });
+  const { createTeam: newTeam } = await effects.gql.mutations.createTeam({
+    name: teamName,
+  });
+  state.dashboard.teams = [...state.dashboard.teams, newTeam];
+  actions.setActiveTeam({ id: newTeam.id });
 };
 
 export const revokeTeamInvitation = async (

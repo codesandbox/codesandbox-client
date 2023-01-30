@@ -13,6 +13,13 @@ import {
   getProjectUniqueKey,
   sortByLastAccessed,
 } from 'app/overmind/namespaces/dashboard/utils';
+import { BranchFragment } from 'app/graphql/types';
+
+type MappedBranches = {
+  defaultBranch: BranchFragment | null;
+  accessedBranches: BranchFragment[];
+  unaccessedBranches: BranchFragment[];
+};
 
 export const RepositoryBranchesPage = () => {
   const params = useParams<{ path: string }>();
@@ -51,16 +58,35 @@ export const RepositoryBranchesPage = () => {
       return [{ type: 'skeleton-row' }, { type: 'skeleton-row' }];
     }
 
-    const accessedBranches = repositoryProject.branches.filter(
-      b => b.lastAccessedAt
+    // Use a reducer to create an object to store the following values:
+    // default branch, accessed branches and unaccessed branches. This
+    // way, we get the data we need in a single loop.
+    const branches = repositoryProject.branches.reduce(
+      (acc, branch) => {
+        if (branch.name === repositoryProject.repository.defaultBranch) {
+          acc.defaultBranch = branch;
+        } else if (branch.lastAccessedAt) {
+          acc.accessedBranches.push(branch);
+        } else {
+          acc.unaccessedBranches.push(branch);
+        }
+        return acc;
+      },
+      {
+        defaultBranch: null,
+        accessedBranches: [],
+        unaccessedBranches: [],
+      } as MappedBranches
     );
-    const unaccessedBranches = repositoryProject.branches.filter(
-      b => !b.lastAccessedAt
-    );
+
     const orderedBranches = [
-      ...accessedBranches.sort(sortByLastAccessed),
-      ...unaccessedBranches,
+      ...branches.accessedBranches.sort(sortByLastAccessed),
+      ...branches.unaccessedBranches,
     ];
+
+    if (branches.defaultBranch) {
+      orderedBranches.unshift(branches.defaultBranch);
+    }
 
     const branchItems: DashboardGridItem[] = orderedBranches.map(branch => ({
       type: 'branch',

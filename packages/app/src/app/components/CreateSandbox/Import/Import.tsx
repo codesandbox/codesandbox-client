@@ -1,5 +1,4 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { gitHubRepoPattern } from '@codesandbox/common/lib/utils/url-generator';
 import { Button, Element, Input, Stack, Text } from '@codesandbox/components';
 import css from '@styled-system/css';
 import { GithubRepoAuthorization } from 'app/graphql/types';
@@ -10,7 +9,7 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
-import { getOwnerAndNameFromInput } from './utils';
+import { getOwnerAndRepoFromInput } from './utils';
 import { MaxPublicRepos, PrivateRepoFreeTeam } from './importLimits';
 
 const UnauthenticatedImport: React.FC = () => {
@@ -104,19 +103,26 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     const value = event.target.value;
     if (!value) {
       setUrl({ raw: value, parsed: null, error: null });
-    } else if (!gitHubRepoPattern.test(value)) {
+      return;
+    }
+
+    const parsedInput = getOwnerAndRepoFromInput(value);
+    if (!parsedInput) {
       setUrl({
         raw: value,
         parsed: null,
         error: 'The URL provided is not valid.',
       });
     } else {
-      const { owner, name } = getOwnerAndNameFromInput(value.trim());
       setUrl({
         raw: value,
         parsed: {
-          owner,
-          name,
+          // getOwnerAndRepoFromInput might return null
+          // but that won't be the case since there's an
+          // earlier check to see if the input is valid.
+          // using optional chaining to appease typescript.
+          owner: parsedInput?.owner,
+          name: parsedInput?.repo,
         },
         error: null,
       });

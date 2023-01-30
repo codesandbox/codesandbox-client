@@ -32131,11 +32131,6 @@ tempfile@^2.0.0:
     temp-dir "^1.0.0"
     uuid "^3.0.1"
 
-template-icons@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/template-icons/-/template-icons-1.0.0.tgz#f6bd6d8e98c5057665d3f447e702924f0b1f8dfb"
-  integrity sha512-Uk5YycqkrB5nBqDrODBQt8tbpmEV6vNVXgDOlLiRYgL8FGyl1PLkV8mS9D+PB85cIHa5ZAOcI/iQfZcd1hvX9w==
-
 term-size@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/term-size/-/term-size-1.2.0.tgz#458b83887f288fc56d6fffbfad262e26638efa69"

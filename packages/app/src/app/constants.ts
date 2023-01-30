@@ -27,7 +27,7 @@ export const PERSONAL_FREE_FEATURES: Feature[] = [
   },
   { key: 'vm_mem', label: '4GB RAM' },
   { key: 'vm_cpu', label: '2 vCPUs' },
-  { key: 'vm_disk', label: '4GB Disk' },
+  { key: 'vm_disk', label: '6GB Disk' },
 ];
 
 export const PERSONAL_FEATURES: Feature[] = [
@@ -73,7 +73,7 @@ export const TEAM_FREE_FEATURES: Feature[] = [
   { key: 'npm', label: 'Public NPM packages' },
   { key: 'vm_mem', label: '4GB RAM' },
   { key: 'vm_cpu', label: '2vCPUs' },
-  { key: 'vm_disk', label: '4GB Disk' },
+  { key: 'vm_disk', label: '6GB Disk' },
 ];
 
 export const TEAM_PRO_FEATURES: Feature[] = [

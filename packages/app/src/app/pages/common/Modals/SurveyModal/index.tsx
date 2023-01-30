@@ -4,12 +4,13 @@ import React, { FunctionComponent } from 'react';
 
 import { useAppState, useActions } from 'app/overmind';
 
+import { useWorkspaceSubscription } from 'app/hooks/useWorkspaceSubscription';
 import { Alert } from '../Common/Alert';
 
 export const SurveyModal: FunctionComponent = () => {
   const { modalClosed } = useActions();
-  const { isPatron, user, activeTeamInfo } = useAppState();
-  const isPro = Boolean(activeTeamInfo?.subscription);
+  const { user } = useAppState();
+  const { isPro, isPatron } = useWorkspaceSubscription();
 
   const initializeTypeform = (el?: HTMLDivElement) => {
     if (el) {

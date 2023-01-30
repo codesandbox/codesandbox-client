@@ -3,6 +3,7 @@ import { useEffects, useAppState } from 'app/overmind';
 import { MessageStripe } from '@codesandbox/components';
 import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
+import track from '@codesandbox/common/lib/utils/analytics';
 
 export const UpgradeSSEToV2Stripe = () => {
   const state = useAppState();
@@ -25,6 +26,8 @@ export const UpgradeSSEToV2Stripe = () => {
         onClick={async () => {
           setIsLoading(true);
           const sandboxId = state.editor.currentSandbox.id;
+
+          track('Editor - Convert to Cloud Sandbox', { owned: canConvert });
 
           if (canConvert) {
             const alias = state.editor.currentSandbox.alias;

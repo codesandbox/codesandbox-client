@@ -14,16 +14,21 @@ const ESM_TYPES: Set<string> = new Set([
 export interface SyntaxInfo {
   jsx: boolean;
   esm: boolean;
+  dynamicImports: boolean;
 }
 
 export function getSyntaxInfoFromAst(ast: ESTreeAST): SyntaxInfo {
-  const syntaxInfo: SyntaxInfo = { jsx: false, esm: false };
+  const syntaxInfo: SyntaxInfo = {
+    jsx: false,
+    esm: false,
+    dynamicImports: false,
+  };
 
   walk(ast.program, {
     enter(node) {
       // TODO: Figure out if we can exit the walk entirely
       // Just skip everything if we already know it's esm and jsx
-      if (syntaxInfo.jsx && syntaxInfo.esm) {
+      if (syntaxInfo.jsx && syntaxInfo.esm && syntaxInfo.dynamicImports) {
         this.skip();
         return;
       }
@@ -39,6 +44,11 @@ export function getSyntaxInfoFromAst(ast: ESTreeAST): SyntaxInfo {
 
       if (node.type === n.JSXElement) {
         syntaxInfo.jsx = true;
+        this.skip();
+      }
+
+      if (node.type === n.ImportExpression) {
+        syntaxInfo.dynamicImports = true;
         this.skip();
       }
     },
@@ -78,6 +88,9 @@ export function getSyntaxInfoFromCode(code: string, path: string): SyntaxInfo {
     get esm() {
       return isESModule(code);
     },
+    get dynamicImports() {
+      return code.includes('import(')
+    }
   };
 
   if (path.endsWith('.min.js')) {
@@ -85,6 +98,7 @@ export function getSyntaxInfoFromCode(code: string, path: string): SyntaxInfo {
     return {
       jsx: false,
       esm: false,
+      dynamicImports: false,
     };
   }
 
