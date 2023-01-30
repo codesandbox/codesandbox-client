@@ -9,9 +9,9 @@ import {
 
 const StyledWrapper = styled(Stack)`
   overflow: auto;
-  width: calc(100% - ${2 * GUTTER}px);
+  width: 100%;
   max-width: ${GRID_MAX_WIDTH}px;
-  padding: 0;
+  padding: 0 calc(2 * ${GUTTER}px);
   height: 100%;
   margin: 0 auto;
   padding-bottom: 28px;

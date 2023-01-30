@@ -11,11 +11,12 @@ import { EmptyPage } from '../EmptyPage';
 export const StyledWrapper = styled(Element)`
   position: relative;
   overflow: hidden;
+  margin-right: calc(-2 * ${GUTTER}px);
 `;
 
 export const StyledInvisibleGrid = styled(EmptyPage.StyledGrid)`
   position: absolute;
-  width: 100%;
+  width: calc(100% - 2 * ${GUTTER}px);
   height: 0;
   visibility: hidden;
 `;
