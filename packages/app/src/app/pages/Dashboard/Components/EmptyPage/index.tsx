@@ -17,6 +17,12 @@ const StyledWrapper = styled(Stack)`
   padding-bottom: 28px;
   flex-direction: column;
   gap: 40px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 const StyledDescription = styled(Text)`
