@@ -13,7 +13,7 @@ import { Title } from 'app/components/Title';
 // a sandbox from the root domain and return the preview secret.
 // This is purely used to auth a sandbox. It should return a postMessage
 // with the previewSecret to the parent
-const PreviewAuth = (props: RouteComponentProps<{ id: string }>) => {
+const SandpackSecret = (props: RouteComponentProps<{ id: string }>) => {
   const { hasLogIn } = useAppState();
   const { api } = useEffects();
   const { genericPageMounted } = useActions();
@@ -65,4 +65,4 @@ const PreviewAuth = (props: RouteComponentProps<{ id: string }>) => {
 };
 
 // eslint-disable-next-line import/no-default-export
-export default withRouter(PreviewAuth);
+export default withRouter(SandpackSecret);
