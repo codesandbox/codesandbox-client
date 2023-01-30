@@ -81,35 +81,33 @@ export const DocumentationRow: React.FC = () => {
     });
   };
 
-  const buildItems = () => {
-    return DOCS.map(({ label, url, workspaceType, ...item }) => {
-      if (
-        (workspaceType === 'personal' && !isPersonalSpace) ||
-        (workspaceType === 'team' && !isTeamSpace)
-      ) {
-        return null;
-      }
+  const items = DOCS.map(({ label, url, workspaceType, ...item }) => {
+    if (
+      (workspaceType === 'personal' && !isPersonalSpace) ||
+      (workspaceType === 'team' && !isTeamSpace)
+    ) {
+      return null;
+    }
 
-      const urlWithTracking = appendOnboardingTracking(url);
+    const urlWithTracking = appendOnboardingTracking(url);
 
-      return {
-        id: label,
-        Component: 'duration' in item ? VideoCard : ArticleCard,
-        props: {
-          onClick: () => handleTrack(label),
-          url: urlWithTracking,
-          ...item,
-        },
-      };
-    }).filter(Boolean);
-  };
+    return {
+      id: label,
+      Component: 'duration' in item ? VideoCard : ArticleCard,
+      props: {
+        onClick: () => handleTrack(label),
+        url: urlWithTracking,
+        ...item,
+      },
+    };
+  }).filter(Boolean);
 
   return (
     <EmptyPage.StyledGridWrapper>
       <EmptyPage.StyledGridTitle>
         Optimize your workflow
       </EmptyPage.StyledGridTitle>
-      <Carousel items={buildItems()} />
+      <Carousel items={items} />
     </EmptyPage.StyledGridWrapper>
   );
 };

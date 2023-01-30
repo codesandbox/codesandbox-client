@@ -25,6 +25,7 @@ export const StyledCarousel = styled(Stack)`
   position: relative;
   width: 100%;
   padding: 0;
+  padding-right: calc(2 * ${GUTTER}px);
   margin: 0;
   overflow-x: scroll;
   white-space: nowrap;
