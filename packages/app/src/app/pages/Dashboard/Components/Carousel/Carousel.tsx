@@ -10,6 +10,7 @@ import { EmptyPage } from '../EmptyPage';
 
 export const StyledWrapper = styled(Element)`
   position: relative;
+  overflow: hidden;
 `;
 
 export const StyledInvisibleGrid = styled(EmptyPage.StyledGrid)`
@@ -32,8 +33,9 @@ export const StyledCarousel = styled(Stack)`
   gap: ${GUTTER}px;
   scrollbar-width: none;
 
-  &::-webkit-scrollbar: {
-    display: none;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 
   > * {
@@ -86,6 +88,7 @@ export const Carousel: React.FC<CarouselProps> = ({ items }) => {
                 style={{
                   width: `${columnWidth}px`,
                   height: `${ITEM_HEIGHT_GRID}px`,
+                  whiteSpace: 'normal',
                 }}
               >
                 <Component {...props} />

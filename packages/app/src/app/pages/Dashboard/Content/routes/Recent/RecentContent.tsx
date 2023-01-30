@@ -29,6 +29,12 @@ const StyledWrapper = styled(Stack)`
   margin: 28px auto 0;
   flex-direction: column;
   gap: 48px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 const StyledItemsWrapper = styled(Element)<{ viewMode: 'grid' | 'list' }>`
