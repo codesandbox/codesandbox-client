@@ -23,7 +23,6 @@ export const EmptyRecent: React.FC = () => {
       <InstructionsRow />
       <TemplatesRow />
       <DocumentationRow />
-      <OpenSourceRow />
       {isPersonalSpace ? <OpenSourceRow /> : null}
     </EmptyPage.StyledWrapper>
   );
