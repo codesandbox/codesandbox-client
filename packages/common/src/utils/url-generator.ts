@@ -14,15 +14,19 @@ const sandboxHost = {
 export const CSBProjectGitHubRepository = ({
   owner,
   repo,
+  welcome,
 }: {
   owner: string;
-  repo;
+  repo: string;
+  welcome: boolean;
 }) => {
   const origin = process.env.STAGING_API
     ? 'https://codesandbox.stream'
     : 'https://codesandbox.io';
 
-  return `${origin}/p/github/${owner}/${repo}?create=true`;
+  return `${origin}/p/github/${owner}/${repo}?create=true${
+    welcome ? '&welcome=true' : ''
+  }`;
 };
 
 const buildEncodedUri = (
