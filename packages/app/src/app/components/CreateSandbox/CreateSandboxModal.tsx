@@ -60,14 +60,10 @@ export const CreateSandboxModal = () => {
   );
 
   useEffect(() => {
-    if (hasNavigated && modals.newSandboxModal.isCurrent) {
+    if (hasNavigated) {
       modalsActions.newSandboxModal.close();
     }
-  }, [
-    hasNavigated,
-    modals.newSandboxModal.isCurrent,
-    modalsActions.newSandboxModal,
-  ]);
+  }, [hasNavigated, modalsActions.newSandboxModal]);
 
   return (
     <ThemeProvider>
