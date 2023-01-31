@@ -57,7 +57,7 @@ export const PERSONAL_FEATURES_WITH_PILLS: Feature[] = [
   },
   { key: 'vm_mem', label: '6GB RAM', pill: '1.5x capacity' },
   { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
-  { key: 'vm_disk', label: '12GB Disk', pill: '3x storage' },
+  { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
 ];
 
 export const TEAM_FREE_FEATURES: Feature[] = [
@@ -105,7 +105,7 @@ export const TEAM_PRO_FEATURES_WITH_PILLS: Feature[] = [
   { key: 'npm', label: 'Private NPM packages' },
   { key: 'vm_mem', label: '6GB RAM', pill: '1.5x capacity' },
   { key: 'vm_cpu', label: '4vCPUs', pill: '2x faster' },
-  { key: 'vm_disk', label: '12GB Disk', pill: '3x storage' },
+  { key: 'vm_disk', label: '12GB Disk', pill: '2x storage' },
 ];
 
 export const ORG_FEATURES: Feature[] = [
