@@ -86,7 +86,13 @@ export const WorkspaceSettings = () => {
     >
       <Card css={{ 'grid-column': '1/3' }}>
         {editing ? (
-          <Stack as="form" onSubmit={onSubmit} direction="vertical" gap={2}>
+          <Stack
+            as="form"
+            id="user-settings"
+            onSubmit={onSubmit}
+            direction="vertical"
+            gap={2}
+          >
             <Stack gap={4}>
               <Element css={css({ position: 'relative', height: 56 })}>
                 <Element css={css({ position: 'relative', height: 56 })}>
@@ -317,6 +323,7 @@ export const WorkspaceSettings = () => {
               </Button>
               <Button
                 type="submit"
+                form="user-settings"
                 css={{ width: 100 }}
                 disabled={loading}
                 loading={loading}
