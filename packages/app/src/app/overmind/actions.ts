@@ -539,7 +539,11 @@ export const setActiveTeam = async (
         const res = await effects.gql.queries.getPersonalWorkspaceId({});
         personalWorkspaceId = res.me?.personalWorkspaceId;
       }
+
       if (personalWorkspaceId) {
+        // This toast was triggered when the getTeam query inside getActiveTeamInfo
+        // failed due to an invalid workspace id in the url or localStorage. We now
+        // check for id validity when initializing.
         effects.notificationToast.add({
           title: 'Could not find current workspace',
           message: "We've switched you to your personal workspace",
@@ -563,6 +567,9 @@ export const getActiveTeamInfo = async ({
     await actions.internal.setActiveTeamFromUrlOrStore();
   }
 
+  // The getTeam query below used to fail because we weren't sure if the id in
+  // the localStorage or url was valid. We check this now when initializing the
+  // team, so this shouldn't error anymore.
   const team = await effects.gql.queries.getTeam({
     teamId: state.activeTeam,
   });

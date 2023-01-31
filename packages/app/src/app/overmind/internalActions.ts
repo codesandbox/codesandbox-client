@@ -12,6 +12,7 @@ import { NotificationStatus } from '@codesandbox/notifications';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import values from 'lodash-es/values';
 
+import { TeamFragmentDashboardFragment } from 'app/graphql/types';
 import { ApiError } from './effects/api/apiFactory';
 import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
@@ -590,61 +591,114 @@ export const setViewModeForDashboard = ({ effects, state }: Context) => {
   }
 };
 
-export const setActiveTeamFromUrlOrStore = async ({ actions }: Context) =>
-  actions.internal.setActiveTeamFromUrl() ||
-  actions.internal.setActiveTeamFromLocalStorage() ||
-  actions.internal.setActiveTeamFromPersonalWorkspaceId();
+const INVALID_ID_TITLE = 'Workspace not recognized.';
+const INVALID_ID_MESSAGE =
+  "The workspace in the URL or stored in your browser is unknown. We've automatically switched to your personal workspace.";
 
-export const setActiveTeamFromLocalStorage = ({
+// Rename to initializeTeam (because we also use personalWorkspaceId);
+export const setActiveTeamFromUrlOrStore = async ({
+  actions,
+  effects,
+}: Context) => {
+  const { id, isValid } = await actions.internal.getTeamIdFromUrlOrStore();
+
+  if (isValid) {
+    // Set active team from url or storage.
+    actions.setActiveTeam({ id });
+  } else {
+    // If an id was set but it's not valid we show a toast message informing the user
+    // we changed the workspace to the personal workspace. If no id was set we silently
+    // activate the personal team.
+    if (id) {
+      effects.notificationToast.add({
+        title: INVALID_ID_TITLE,
+        message: INVALID_ID_MESSAGE,
+        status: NotificationStatus.NOTICE,
+      });
+    }
+
+    // Change to personal workspace.
+    actions.internal.setActiveTeamFromPersonalWorkspaceId();
+  }
+};
+
+export const getTeamIdFromUrlOrStore = async ({
+  state,
   effects,
   actions,
 }: Context) => {
-  const localStorageTeam = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
+  const suggestedTeamId =
+    actions.internal.getTeamIdFromUrl() ||
+    actions.internal.getTeamIdFromLocalStorage();
+  const hasTeams = state.dashboard?.teams && state.dashboard.teams.length > 0;
 
-  if (typeof localStorageTeam === 'string') {
-    actions.setActiveTeam({ id: localStorageTeam });
-    return localStorageTeam;
+  let userTeams: TeamFragmentDashboardFragment[] | undefined;
+
+  if (hasTeams) {
+    userTeams = state.dashboard.teams;
+  } else {
+    // TODO: Instead of actions.dashboard.getTeams();
+    // We might be able to use it though, and then use state.dashboard.teams!
+    const teams = await effects.gql.queries.getTeams({});
+
+    if (teams?.me) {
+      userTeams = teams.me.workspaces;
+
+      // Also set state while we're at it
+      state.dashboard.teams = teams.me.workspaces;
+      state.personalWorkspaceId = teams.me.personalWorkspaceId;
+    }
+  }
+
+  const isSuggestedTeamValid = userTeams?.some(
+    team => team.id === suggestedTeamId
+  );
+
+  return {
+    id: suggestedTeamId,
+    isValid: isSuggestedTeamValid,
+  };
+};
+
+export const getTeamIdFromUrl = () => {
+  const url = typeof document === 'undefined' ? null : document.location.href;
+
+  if (url) {
+    return new URL(url).searchParams.get('workspace');
   }
 
   return null;
 };
 
-export const setActiveTeamFromUrl = ({ actions }: Context) => {
-  const currentUrl =
-    typeof document === 'undefined' ? null : document.location.href;
-  if (!currentUrl) {
-    return null;
-  }
+export const getTeamIdFromLocalStorage = ({ effects }) => {
+  const localStorageTeamId = effects.browser.storage.get(TEAM_ID_LOCAL_STORAGE);
+  const isValidStorageItem = typeof localStorageTeamId === 'string';
 
-  const searchParams = new URL(currentUrl).searchParams;
-
-  const workspaceParam = searchParams.get('workspace');
-  if (workspaceParam) {
-    actions.setActiveTeam({ id: workspaceParam });
-    return workspaceParam;
+  if (isValidStorageItem) {
+    return localStorageTeamId;
   }
 
   return null;
 };
 
+/**
+ * Function to activate the personal workspace. We call this function when
+ * no initial team id is known (from url or localStorage).
+ */
 export const setActiveTeamFromPersonalWorkspaceId = async ({
   actions,
   state,
   effects,
 }: Context) => {
-  const personalWorkspaceId = state.personalWorkspaceId;
+  if (state.personalWorkspaceId) {
+    actions.setActiveTeam({ id: state.personalWorkspaceId });
+  } else {
+    const res = await effects.gql.queries.getPersonalWorkspaceId({});
 
-  if (personalWorkspaceId) {
-    actions.setActiveTeam({ id: personalWorkspaceId });
-    return personalWorkspaceId;
+    if (res.me) {
+      actions.setActiveTeam({ id: res.me.personalWorkspaceId });
+    }
   }
-  const res = await effects.gql.queries.getPersonalWorkspaceId({});
-  if (res.me) {
-    actions.setActiveTeam({ id: res.me.personalWorkspaceId });
-    return res.me.personalWorkspaceId;
-  }
-
-  return null;
 };
 
 export const replaceWorkspaceParameterInUrl = ({ state }: Context) => {
