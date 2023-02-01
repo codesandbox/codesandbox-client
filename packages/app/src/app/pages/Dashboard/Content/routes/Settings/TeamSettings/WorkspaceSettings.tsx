@@ -430,7 +430,7 @@ export const WorkspaceSettings = () => {
 
         <ManageSubscription />
       </Element>
-      {canInviteOtherMembers && confirmNewMemberAddition ? (
+      {isTeamAdmin && confirmNewMemberAddition ? (
         <AdditionalEditorsCharges />
       ) : null}
       <Stack align="center" justify="space-between" gap={2}>
