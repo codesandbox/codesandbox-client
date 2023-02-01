@@ -221,39 +221,21 @@ export const leaveTeam = async ({ state, effects, actions }: Context) => {
 };
 
 export const inviteToTeam = async (
-  { state, actions, effects }: Context,
+  { state, effects }: Context,
   {
     value,
     authorization = null,
-    confirm = false,
     triggerPlace,
     inviteLink,
   }: {
     value: string;
     authorization?: TeamMemberAuthorization | null;
-    confirm?: boolean;
     triggerPlace: 'settings' | 'invite-modal';
     inviteLink: string;
   }
 ) => {
   if (!state.activeTeam) return;
   const isEmail = value.includes('@');
-
-  if (confirm) {
-    const confirmed = await actions.modals.alertModal.open({
-      title: 'Add New Member',
-      customComponent: 'MemberPaymentConfirmation',
-    });
-
-    // if the user cancels the function, bail
-    if (!confirmed) {
-      effects.analytics.track('Team - Cancel Add Member', {
-        dashboardVersion: 2,
-        isEmail,
-      });
-      return;
-    }
-  }
 
   try {
     effects.analytics.track('Team - Add Member', {
@@ -1377,16 +1359,6 @@ export const changeAuthorization = async (
     confirm?: Boolean;
   }
 ) => {
-  if (confirm) {
-    const confirmed = await actions.modals.alertModal.open({
-      title: 'Change Authorization',
-      customComponent: 'MemberPaymentConfirmation',
-    });
-
-    // if the user cancels the function, bail
-    if (!confirmed) return;
-  }
-
   // optimistic update
   const oldAuthorization = state.activeTeamInfo!.userAuthorizations.find(
     user => user.userId === userId

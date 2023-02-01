@@ -38,6 +38,7 @@ import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { Card } from '../components';
 import { MemberList, User } from '../components/MemberList';
 import { ManageSubscription } from './ManageSubscription';
+import { AdditionalEditorsCharges } from './AdditionalEditorsCharges';
 
 const INVITE_ROLES_MAP = {
   [TeamMemberAuthorization.Admin]: [
@@ -181,7 +182,7 @@ export const WorkspaceSettings = () => {
     newMemberRole !== TeamMemberAuthorization.Read;
   const confirmMemberRoleChange = isPro && numberOfUnusedSeats === 0;
 
-  const onInviteSubmit = async event => {
+  const handleInviteSubmit = async event => {
     event.preventDefault();
 
     const trimmedValue = inviteValue.trim();
@@ -197,7 +198,6 @@ export const WorkspaceSettings = () => {
     await actions.dashboard.inviteToTeam({
       value: trimmedValue,
       authorization: newMemberRole,
-      confirm: confirmNewMemberAddition,
       triggerPlace: 'settings',
       inviteLink,
     });
@@ -210,14 +210,6 @@ export const WorkspaceSettings = () => {
 
   const onCopyInviteUrl = async event => {
     event.preventDefault();
-
-    if (confirmNewMemberAddition) {
-      const confirmed = await actions.modals.alertModal.open({
-        title: 'Invite New Member',
-        customComponent: 'MemberPaymentConfirmation',
-      });
-      if (!confirmed) return;
-    }
 
     const inviteLink = teamInviteLink(team.inviteToken);
 
@@ -438,11 +430,7 @@ export const WorkspaceSettings = () => {
 
         <ManageSubscription />
       </Element>
-      {confirmNewMemberAddition ? (
-        <MessageStripe>
-          By adding an extra editor, I confirm an additional{' '}
-        </MessageStripe>
-      ) : null}
+      {confirmNewMemberAddition ? <AdditionalEditorsCharges /> : null}
       <Stack align="center" justify="space-between" gap={2}>
         <Text
           css={css({
@@ -457,7 +445,7 @@ export const WorkspaceSettings = () => {
         {canInviteOtherMembers && (
           <Stack
             as="form"
-            onSubmit={inviteLoading ? undefined : onInviteSubmit}
+            onSubmit={inviteLoading ? undefined : handleInviteSubmit}
             css={{ display: 'flex', flexGrow: 1, maxWidth: 480 }}
           >
             <div style={{ position: 'relative', width: '100%' }}>
