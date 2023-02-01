@@ -438,6 +438,11 @@ export const WorkspaceSettings = () => {
 
         <ManageSubscription />
       </Element>
+      {confirmNewMemberAddition ? (
+        <MessageStripe>
+          By adding an extra editor, I confirm an additional{' '}
+        </MessageStripe>
+      ) : null}
       <Stack align="center" justify="space-between" gap={2}>
         <Text
           css={css({
