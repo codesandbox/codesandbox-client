@@ -4,6 +4,7 @@ import { Element } from '@codesandbox/components';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import css from '@styled-system/css';
 import { useAppState, useActions } from 'app/overmind';
+import { GUTTER } from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import { Templates } from './routes/Templates';
 import { Deleted } from './routes/Deleted';
 import { Drafts } from './routes/Drafts';
@@ -47,6 +48,7 @@ export const Content = withRouter(({ history }) => {
         width: '100%',
         height: '100%',
         margin: '0 auto',
+        padding: `${GUTTER}px`,
         display: 'flex',
         justifyContent: 'center',
       })}

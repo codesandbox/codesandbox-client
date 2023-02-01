@@ -10,20 +10,15 @@ import {
   Link,
   Avatar,
 } from '@codesandbox/components';
+import { Header } from 'app/pages/Dashboard/Components/Header';
 import css from '@styled-system/css';
 import {
   dashboard,
   sandboxUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
-
 import { useAppState, useActions } from 'app/overmind';
 import { sandboxesTypes } from 'app/overmind/namespaces/dashboard/types';
-
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import {
-  GRID_MAX_WIDTH,
-  GUTTER,
-} from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import { CommunitySandbox } from 'app/pages/Dashboard/Components/CommunitySandbox';
 import { Stats } from 'app/pages/Dashboard/Components/CommunitySandbox/CommunitySandboxCard';
 import { AnonymousAvatar } from 'app/pages/Dashboard/Components/CommunitySandbox/AnonymousAvatar';
@@ -32,11 +27,7 @@ import {
   DashboardAlbum,
 } from 'app/pages/Dashboard/types';
 import { shuffleSeed } from '../../utils';
-import {
-  FEATURED_SANDBOXES_ALBUM,
-  TRENDING_SANDBOXES_ALBUM,
-  banner,
-} from './contants';
+import { FEATURED_SANDBOXES_ALBUM, TRENDING_SANDBOXES_ALBUM } from './contants';
 
 const today = new Date();
 const SEED = today.getDate() + today.getMonth() + today.getFullYear();
@@ -104,13 +95,12 @@ export const Discover = () => {
         <Element
           css={css({
             marginX: 'auto',
-            width: `calc(100% - ${2 * GUTTER}px)`,
-            maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
+            width: `100%`,
             paddingY: 0,
             userSelect: 'none',
           })}
         >
-          <Banner />
+          <Header title="Discover" />
 
           <Stack direction="vertical" gap={16}>
             {randomAlbums.map(album => (
@@ -128,49 +118,49 @@ export const Discover = () => {
   );
 };
 
-const Banner = () => (
-  <Stack
-    as={Link}
-    href={banner.link}
-    target="_blank"
-    align="center"
-    css={css({
-      width: '100%',
-      height: 195,
-      background: 'linear-gradient(#422677, #392687)',
-      borderRadius: 'medium',
-      overflow: 'hidden',
-      position: 'relative',
-      marginBottom: 12,
-      willChange: 'transform',
-      transition: 'transform',
-      transitionDuration: theme => theme.speeds[4],
-      ':hover, :focus': {
-        transform: 'scale(1.01)',
-      },
-    })}
-  >
-    <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
-      <Text size={32} weight="regular" marginTop={2}>
-        {banner.title}
-      </Text>
-      <Text size={4} marginTop={2} css={{ opacity: 0.6 }}>
-        {banner.subtitle}
-      </Text>
-    </Stack>
-    <Element
-      as="img"
-      src={banner.image}
-      css={css({
-        position: 'absolute',
-        height: '100%',
-        right: 0,
-        zIndex: 1,
-        opacity: [0.25, 1, 1],
-      })}
-    />
-  </Stack>
-);
+// const Banner = () => (
+//   <Stack
+//     as={Link}
+//     href={banner.link}
+//     target="_blank"
+//     align="center"
+//     css={css({
+//       width: '100%',
+//       height: 195,
+//       background: 'linear-gradient(#422677, #392687)',
+//       borderRadius: 'medium',
+//       overflow: 'hidden',
+//       position: 'relative',
+//       marginBottom: 12,
+//       willChange: 'transform',
+//       transition: 'transform',
+//       transitionDuration: theme => theme.speeds[4],
+//       ':hover, :focus': {
+//         transform: 'scale(1.01)',
+//       },
+//     })}
+//   >
+//     <Stack direction="vertical" marginLeft={6} css={{ zIndex: 2 }}>
+//       <Text size={32} weight="regular" marginTop={2}>
+//         {banner.title}
+//       </Text>
+//       <Text size={4} marginTop={2} css={{ opacity: 0.6 }}>
+//         {banner.subtitle}
+//       </Text>
+//     </Stack>
+//     <Element
+//       as="img"
+//       src={banner.image}
+//       css={css({
+//         position: 'absolute',
+//         height: '100%',
+//         right: 0,
+//         zIndex: 1,
+//         opacity: [0.25, 1, 1],
+//       })}
+//     />
+//   </Stack>
+// );
 
 export const FeaturedSandbox = ({ sandbox }) => {
   const {

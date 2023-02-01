@@ -26,6 +26,8 @@ import { UserMenu } from 'app/pages/common/UserMenu';
 import { Notifications } from 'app/components/Notifications';
 import { dashboard as dashboardUrls } from '@codesandbox/common/lib/utils/url-generator';
 import { ENTER } from '@codesandbox/common/lib/utils/keycodes';
+import { GUTTER } from 'app/pages/Dashboard/Components/VariableGrid/constants';
+import { SIDEBAR_WIDTH } from '../Sidebar/constants';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
@@ -176,7 +178,7 @@ const SearchInputGroup = () => {
         width: 320,
         display: ['none', 'none', 'flex'],
         position: 'fixed',
-        left: '288px',
+        left: `${SIDEBAR_WIDTH + GUTTER * 2}px`,
       })}
     >
       <Combobox

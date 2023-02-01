@@ -145,7 +145,7 @@ export const DragPreview: React.FC<DragPreviewProps> = React.memo(
               position: 'absolute',
               border: viewMode === 'list' ? '1px solid' : 'none',
               borderColor: 'grays.700',
-              padding: viewMode === 'list' ? 2 : 0,
+
               borderRadius: 'medium',
               boxShadow: 2,
             })}

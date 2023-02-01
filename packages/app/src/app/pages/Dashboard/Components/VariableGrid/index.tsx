@@ -322,7 +322,12 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
   });
 
   return (
-    <Element style={{ width: '100%', height: '100%' }}>
+    <Element
+      style={{
+        width: '100%',
+        height: '100%',
+      }}
+    >
       <AutoSizer onResize={onResize}>
         {({ width, height }) => {
           const cappedWith = Math.min(width, GRID_MAX_WIDTH);
@@ -426,7 +431,7 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 ref={gridRef}
                 columnCount={columnCount}
                 rowCount={Math.ceil(filledItems.length / columnCount)}
-                width={width}
+                width={width + GUTTER * 2}
                 height={height}
                 columnWidth={index => width / columnCount}
                 rowHeight={rowIndex =>
@@ -438,7 +443,7 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                 itemData={{
                   columnCount,
                   filledItems,
-                  containerWidth: width,
+                  containerWidth: width + GUTTER * 2,
                   viewMode,
                   page,
                 }}
@@ -447,6 +452,8 @@ export const VariableGrid: React.FC<VariableGridProps> = ({
                   userSelect: 'none',
                   paddingBottom: 24,
                   boxSizing: 'border-box',
+                  marginLeft: '-16px',
+                  marginRight: '-16px',
                 }}
               >
                 {Item}

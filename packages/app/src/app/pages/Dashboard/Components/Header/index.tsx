@@ -15,7 +15,6 @@ import { Breadcrumbs, BreadcrumbProps } from '../Breadcrumbs';
 import { FilterOptions } from '../Filters/FilterOptions';
 import { ViewOptions } from '../Filters/ViewOptions';
 import { SortOptions } from '../Filters/SortOptions';
-import { GRID_MAX_WIDTH, GUTTER } from '../VariableGrid/constants';
 import { TemplateFilter } from '../../Content/utils';
 
 interface IAction {
@@ -87,9 +86,7 @@ export const Header = ({
       align="center"
       justify="space-between"
       css={{
-        width: `calc(100% - ${2 * GUTTER}px)`,
-        maxWidth: GRID_MAX_WIDTH - 2 * GUTTER,
-        margin: '0 auto', // Negative margin top to align visually w/ the sidebar
+        width: '100%',
       }}
       paddingBottom={7}
     >

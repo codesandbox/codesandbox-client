@@ -27,7 +27,6 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
     <ListAction
       align="center"
       css={css({
-        paddingX: 0,
         height: 64,
         borderBottom: '1px solid',
         borderBottomColor: 'grays.600',
@@ -81,12 +80,7 @@ export const RepositoryListItem: React.FC<RepositoryProps> = ({
             </Stack>
           </Column>
           <Column span={[0, 4, 4]} as={Stack} align="center">
-            <Stack
-              justify="flex-end"
-              align="center"
-              gap={2}
-              css={{ paddingRight: '16px' }}
-            >
+            <Stack justify="flex-end" align="center" gap={2}>
               {restricted ? (
                 <Stack align="center">
                   <Badge variant="trial">Restricted</Badge>

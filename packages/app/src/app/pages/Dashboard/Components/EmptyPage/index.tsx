@@ -1,7 +1,6 @@
 import { Element, Stack, Text } from '@codesandbox/components';
 import styled from 'styled-components';
 import {
-  GRID_MAX_WIDTH,
   GUTTER,
   ITEM_HEIGHT_GRID,
   ITEM_MIN_WIDTH,
@@ -10,8 +9,6 @@ import {
 const StyledWrapper = styled(Stack)`
   overflow: auto;
   width: 100%;
-  max-width: ${GRID_MAX_WIDTH}px;
-  padding: 0 calc(2 * ${GUTTER}px);
   height: 100%;
   margin: 0 auto;
   padding-bottom: 28px;

@@ -5,6 +5,7 @@ import { DndProvider } from 'react-dnd';
 import Media from 'react-media';
 import Backend from 'react-dnd-html5-backend';
 import { useAppState, useActions, useEffects } from 'app/overmind';
+import { GUTTER } from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import {
   ThemeProvider,
   Stack,
@@ -169,7 +170,7 @@ export const Dashboard: FunctionComponent = () => {
               as="main"
               css={css({
                 width: '100%',
-                height: 'calc(100vh - 48px)',
+                height: `calc(100% + ${GUTTER}px)`,
                 paddingLeft: [0, 0, SIDEBAR_WIDTH + 24],
               })}
             >

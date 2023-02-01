@@ -5,11 +5,9 @@ import { ViewOptions } from 'app/pages/Dashboard/Components/Filters/ViewOptions'
 import { Sandbox } from 'app/pages/Dashboard/Components/Sandbox';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
 import {
-  GRID_MAX_WIDTH,
   ITEM_MIN_WIDTH,
   ITEM_HEIGHT_GRID,
   ITEM_HEIGHT_LIST,
-  GUTTER,
 } from 'app/pages/Dashboard/Components/VariableGrid/constants';
 import {
   DashboardBranch,
@@ -23,10 +21,7 @@ import { RecentHeader } from './RecentHeader';
 
 const StyledWrapper = styled(Stack)`
   width: 100%;
-  max-width: ${GRID_MAX_WIDTH}px;
-  padding: 0 calc(2 * ${GUTTER}px) 64px;
   overflow: auto;
-  margin: 28px auto 0;
   flex-direction: column;
   gap: 48px;
   scrollbar-width: none;
