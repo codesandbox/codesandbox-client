@@ -128,7 +128,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         css={css({
           width: SIDEBAR_WIDTH,
           zIndex: 3,
-          paddingTop: '23px',
+          paddingTop: '24px',
           // We set sidebar as absolute so that content can
           // take 100% width, this helps us enable dragging
           // sandboxes onto the sidebar more freely.
