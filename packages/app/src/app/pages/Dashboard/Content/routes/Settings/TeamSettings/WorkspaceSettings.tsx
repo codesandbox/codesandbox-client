@@ -183,12 +183,19 @@ export const WorkspaceSettings = () => {
 
   const onInviteSubmit = async event => {
     event.preventDefault();
+
+    const trimmedValue = inviteValue.trim();
+
+    if (!trimmedValue) {
+      return;
+    }
+
     setInviteLoading(true);
 
     const inviteLink = teamInviteLink(team.inviteToken);
 
     await actions.dashboard.inviteToTeam({
-      value: inviteValue,
+      value: trimmedValue,
       authorization: newMemberRole,
       confirm: confirmNewMemberAddition,
       triggerPlace: 'settings',
