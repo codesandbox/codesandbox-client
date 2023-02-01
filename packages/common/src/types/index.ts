@@ -146,6 +146,16 @@ export type CurrentUser = {
   };
   sendSurvey: boolean;
   deletionRequested: boolean;
+  githubProfile: {
+    data: {
+      avatarUrl: string;
+      id: string;
+      login: string;
+      name?: string;
+      scopes: string[];
+    } | null;
+    error: { code: string; message: string } | null;
+  };
 };
 
 export type CustomTemplate = {
