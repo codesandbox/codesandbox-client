@@ -12,7 +12,11 @@ import { GithubRepoToImport } from './types';
 import { useGithubRepo } from './useGithubRepo';
 import { useImportAndRedirect } from './useImportAndRedirect';
 import { getOwnerAndRepoFromInput } from './utils';
-import { MaxPublicRepos, PrivateRepoFreeTeam } from './importLimits';
+import {
+  MaxPublicRepos,
+  PrivateRepoFreeTeam,
+  UnauthorizedGitHub,
+} from './importLimits';
 
 const UnauthenticatedImport: React.FC = () => {
   const actions = useActions();
@@ -59,8 +63,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const { hasLogIn, activeTeam } = useAppState();
   const importAndRedirect = useImportAndRedirect();
 
-  useGitHubAuthorization();
-
+  const ghAuth = useGitHubAuthorization();
   const { isFree } = useWorkspaceSubscription();
   const { hasMaxPublicRepositories } = useWorkspaceLimits();
 
@@ -150,6 +153,8 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const limitImportBasedOnSubscription =
     privateRepoFreeAccountError === url.raw;
 
+  const disableImport = hasMaxPublicRepositories || !ghAuth.allowsPublicRepos;
+
   return (
     <Stack direction="vertical" gap={4}>
       <Text
@@ -165,14 +170,11 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
         Enter the GitHub repository URL to import
       </Text>
       {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
+      {!ghAuth.allowsPublicRepos ? <UnauthorizedGitHub /> : null}
       <Element
-        {...(hasMaxPublicRepositories
+        {...(disableImport
           ? {
               as: 'div',
-              css: {
-                opacity: hasMaxPublicRepositories ? 0.4 : 1,
-                pointerEvents: hasMaxPublicRepositories ? 'none' : 'initial',
-              },
             }
           : { as: 'form', onSubmit: handleFormSubmit })}
       >
@@ -187,12 +189,12 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
             type="text"
             value={url.raw}
             onChange={handleUrlInputChange}
+            disabled={disableImport}
             required
           />
           <Button
             css={{ height: '32px', paddingRight: 24, paddingLeft: 24 }}
-            aria-disabled={hasMaxPublicRepositories}
-            disabled={Boolean(url.error) || isLoading}
+            disabled={disableImport || Boolean(url.error) || isLoading}
             tabIndex={hasMaxPublicRepositories ? -1 : 0}
             type="submit"
             autoWidth

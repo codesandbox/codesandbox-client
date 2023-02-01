@@ -154,3 +154,15 @@ export const PrivateRepoFreeTeam: React.FC = () => {
     </>
   );
 };
+
+export const UnauthorizedGitHub = () => {
+  return (
+    <MessageStripe justify="space-between" variant="warning">
+      Adjust your GitHub App permissions to have full access to your
+      repositories.
+      <MessageStripe.Action onClick={() => alert('foo')}>
+        Review GH permissions
+      </MessageStripe.Action>
+    </MessageStripe>
+  );
+};

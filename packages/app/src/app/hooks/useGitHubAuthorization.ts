@@ -1,15 +1,23 @@
 import { useAppState } from 'app/overmind';
 
-export const useGitHubAuthorization = () => {
+const NO_AUTH = {
+  allowsPrivateRepos: false,
+  allowsPublicRepos: false,
+};
+
+export const useGitHubAuthorization = (): {
+  allowsPrivateRepos: boolean;
+  allowsPublicRepos: boolean;
+} => {
   const { hasLogIn, user } = useAppState();
 
   if (!hasLogIn || !user) {
-    return null;
+    return NO_AUTH;
   }
 
   const { data, error } = user.githubProfile;
   if (error) {
-    return null;
+    return NO_AUTH;
   }
 
   const scopes = data.scopes;
