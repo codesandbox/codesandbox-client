@@ -40,6 +40,9 @@ export const UpgradeSSEToV2Stripe = () => {
               id: sandboxId,
               alias,
               isV2: true,
+              query: {
+                welcome: 'true',
+              },
             });
 
             window.location.href = sandboxV2Url;
@@ -53,6 +56,9 @@ export const UpgradeSSEToV2Stripe = () => {
               id: forkedSandbox.id,
               alias: forkedSandbox.alias,
               isV2: true,
+              query: {
+                welcome: 'true',
+              },
             });
 
             window.location.href = sandboxV2Url;
