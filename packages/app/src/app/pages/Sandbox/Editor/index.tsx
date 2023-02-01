@@ -125,7 +125,7 @@ export const Editor = ({ showNewSandboxModal }: EditorTypes) => {
       (state.hasLogIn && sandbox?.isSse)
     ) {
       // Header height + MessageStripe
-      return 3 * 16 + 42;
+      return 3 * 16 + 44;
     }
 
     // Header height

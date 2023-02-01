@@ -95,6 +95,8 @@ export const Dashboard: FunctionComponent = () => {
     }
   }, [location.search, actions, activeTeamInfo, notificationToast]);
 
+  const hasTopBarBanner = subscription?.status === SubscriptionStatus.Unpaid;
+
   useEffect(() => {
     trackVisit();
   }, []);
@@ -160,7 +162,8 @@ export const Dashboard: FunctionComponent = () => {
             as="main"
             css={css({
               width: '100%',
-              height: 'calc(100vh - 48px)',
+              // 100vh - (topbar height - gap between topbar and content) - (banner height or 0)
+              height: `calc(100vh - 32px - ${hasTopBarBanner ? '44' : '0'}px)`,
               paddingLeft: [0, 0, SIDEBAR_WIDTH + 24],
             })}
           >
