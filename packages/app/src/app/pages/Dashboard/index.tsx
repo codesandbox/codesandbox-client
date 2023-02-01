@@ -63,6 +63,9 @@ export const Dashboard: FunctionComponent = () => {
 
     if (searchParams.get('workspace')) {
       // Change workspace based on workspace param
+
+      // TODO: We might want to update this because this is also triggered in
+      // overmind already? We can check if it is triggered multiple times.
       actions.setActiveTeam({ id: searchParams.get('workspace') });
     }
 
