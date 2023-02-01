@@ -173,9 +173,7 @@ export const Summary = () => {
           <Stack as="section" direction="vertical" gap={4} paddingX={2}>
             {!isPro && isUnlistedOrPrivate ? (
               <Text variant="muted" size={3}>
-                You are on a free team and this is a{' '}
-                {privacy === 1 ? 'private' : 'unlisted'}
-                sandbox.{' '}
+                This is {privacy === 1 ? 'a private' : 'an unlisted'} sandbox.{' '}
                 <Link href="/pro" css={{ color: 'white' }}>
                   Upgrade to{' '}
                   <Element as="span" css={{ textTransform: 'uppercase' }}>
@@ -188,7 +186,7 @@ export const Summary = () => {
               <Text variant="muted" size={3}>
                 This sandbox is in sync with{' '}
                 <Text weight="bold">{currentSandbox.git.branch}</Text> on
-                GitHub. You have to fork to make changes
+                GitHub. You have to fork to make changes.
               </Text>
             )}
             <Button
