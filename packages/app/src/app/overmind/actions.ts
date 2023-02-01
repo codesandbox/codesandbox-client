@@ -75,7 +75,7 @@ export const onInitializeOvermind = async (
   effects.gql.initialize(gqlOptions, () => effects.live.socket);
 
   if (state.hasLogIn) {
-    await actions.internal.setActiveTeamFromUrlOrStore();
+    await actions.internal.setActiveWorkspaceFromUrlOrStore();
   }
 
   effects.notifications.initialize({
@@ -564,7 +564,7 @@ export const getActiveTeamInfo = async ({
   actions,
 }: Context) => {
   if (!state.activeTeam) {
-    await actions.internal.setActiveTeamFromUrlOrStore();
+    await actions.internal.setActiveWorkspaceFromUrlOrStore();
   }
 
   // The getTeam query below used to fail because we weren't sure if the id in

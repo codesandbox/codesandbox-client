@@ -595,8 +595,9 @@ const INVALID_ID_TITLE = 'Workspace not recognized.';
 const INVALID_ID_MESSAGE =
   "The workspace in the URL or stored in your browser is unknown. We've automatically switched to your personal workspace.";
 
-// Rename to initializeTeam (because we also use personalWorkspaceId);
-export const setActiveTeamFromUrlOrStore = async ({
+// TODO we could rename the function to initializeTeam (because we also use
+// personalWorkspaceId);
+export const setActiveWorkspaceFromUrlOrStore = async ({
   actions,
   effects,
 }: Context) => {
