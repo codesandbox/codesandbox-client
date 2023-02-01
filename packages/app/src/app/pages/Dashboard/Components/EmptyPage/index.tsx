@@ -9,14 +9,20 @@ import {
 
 const StyledWrapper = styled(Stack)`
   overflow: auto;
-  width: calc(100% - ${2 * GUTTER}px);
+  width: 100%;
   max-width: ${GRID_MAX_WIDTH}px;
-  padding: 0;
+  padding: 0 calc(2 * ${GUTTER}px);
   height: 100%;
   margin: 0 auto;
   padding-bottom: 28px;
   flex-direction: column;
   gap: 40px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 const StyledDescription = styled(Text)`
@@ -28,7 +34,7 @@ const StyledDescription = styled(Text)`
 
 const StyledGridWrapper = styled(Stack)`
   flex-direction: column;
-  gap: 16px;
+  gap: ${GUTTER}px;
 `;
 
 const StyledGrid = styled(Element)`
@@ -36,9 +42,9 @@ const StyledGrid = styled(Element)`
   padding: 0;
   display: grid;
   list-style: none;
-  gap: 16px;
+  gap: ${GUTTER}px;
   grid-template-columns: repeat(auto-fill, minmax(${ITEM_MIN_WIDTH}px, 1fr));
-  grid-auto-rows: minmax(${ITEM_HEIGHT_GRID}px, 1fr);
+  grid-auto-rows: ${ITEM_HEIGHT_GRID}px;
 `;
 
 const StyledGridTitle = styled(Text)`

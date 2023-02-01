@@ -1,5 +1,6 @@
 import track from '@codesandbox/common/lib/utils/analytics';
-import { ArticleCard, VideoCard, Stack } from '@codesandbox/components';
+import { ArticleCard, VideoCard } from '@codesandbox/components';
+import { Carousel } from 'app/pages/Dashboard/Components/Carousel/Carousel';
 import { EmptyPage } from 'app/pages/Dashboard/Components/EmptyPage';
 import React from 'react';
 
@@ -61,29 +62,21 @@ export const InstructionsRow: React.FC = () => {
       <EmptyPage.StyledGridTitle>
         Get started with CodeSandbox
       </EmptyPage.StyledGridTitle>
-      <EmptyPage.StyledGrid as="ul">
-        {DOCS.map(({ url, ...item }) => {
+      <Carousel
+        items={DOCS.map(({ label, url, ...item }) => {
           const urlWithTracking = appendOnboardingTracking(url);
 
-          return (
-            <Stack as="li" key={item.label}>
-              {'duration' in item ? (
-                <VideoCard
-                  onClick={() => handleTrack(item.label)}
-                  url={urlWithTracking}
-                  {...item}
-                />
-              ) : (
-                <ArticleCard
-                  onClick={() => handleTrack(item.label)}
-                  url={urlWithTracking}
-                  {...item}
-                />
-              )}
-            </Stack>
-          );
+          return {
+            id: label,
+            Component: 'duration' in item ? VideoCard : ArticleCard,
+            props: {
+              onClick: () => handleTrack(label),
+              url: urlWithTracking,
+              ...item,
+            },
+          };
         })}
-      </EmptyPage.StyledGrid>
+      />
     </EmptyPage.StyledGridWrapper>
   );
 };

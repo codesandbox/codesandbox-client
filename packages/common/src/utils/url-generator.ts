@@ -14,15 +14,19 @@ const sandboxHost = {
 export const CSBProjectGitHubRepository = ({
   owner,
   repo,
+  welcome,
 }: {
   owner: string;
-  repo;
+  repo: string;
+  welcome: boolean;
 }) => {
   const origin = process.env.STAGING_API
     ? 'https://codesandbox.stream'
     : 'https://codesandbox.io';
 
-  return `${origin}/p/github/${owner}/${repo}?create=true`;
+  return `${origin}/p/github/${owner}/${repo}?create=true${
+    welcome ? '&welcome=true' : ''
+  }`;
 };
 
 const buildEncodedUri = (
@@ -112,11 +116,17 @@ export const sandboxUrl = (sandboxDetails: SandboxUrlSourceData) => {
     ? `${v2EditorUrl()}sandbox/`
     : editorUrl();
 
-  if (sandboxDetails.alias) {
-    return `${baseUrl}${sandboxDetails.alias}`;
+  let queryParams = '';
+
+  if (sandboxDetails.query) {
+    queryParams = `?${new URLSearchParams(sandboxDetails.query).toString()}`;
   }
 
-  return `${baseUrl}${sandboxDetails.id}`;
+  if (sandboxDetails.alias) {
+    return `${baseUrl}${sandboxDetails.alias}${queryParams}`;
+  }
+
+  return `${baseUrl}${sandboxDetails.id}${queryParams}`;
 };
 
 export const embedUrl = (sandbox: Sandbox) => {

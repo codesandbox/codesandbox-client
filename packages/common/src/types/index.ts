@@ -802,6 +802,7 @@ export type SandboxUrlSourceData = {
   alias?: string | null;
   git?: GitInfo | null;
   isV2?: boolean;
+  query?: Record<string, string>;
 };
 
 export type DevToolsTabPosition = {

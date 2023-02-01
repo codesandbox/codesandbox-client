@@ -175,6 +175,7 @@ export const createRepoClicked = async ({
     window.location.href = CSBProjectGitHubRepository({
       owner: git.username,
       repo: git.repo,
+      welcome: true,
     });
   } catch (error) {
     actions.internal.handleError({
