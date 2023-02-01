@@ -10,6 +10,7 @@ type AliasesDict = { [key: string]: string };
 
 export interface ProcessedPackageJSON {
   aliases: AliasesDict;
+  hasExports: boolean;
 }
 
 export function processPackageJSON(
@@ -17,7 +18,7 @@ export function processPackageJSON(
   pkgRoot: string
 ): ProcessedPackageJSON {
   if (!content || typeof content !== 'object') {
-    return { aliases: {} };
+    return { aliases: {}, hasExports: false };
   }
 
   const aliases: AliasesDict = {};
@@ -48,8 +49,11 @@ export function processPackageJSON(
     }
   }
 
+  let hasExports = false;
+
   // load exports if it's not the root pkg.json
   if (content.exports && pkgRoot !== '/') {
+    hasExports = true;
     if (typeof content.exports === 'string') {
       aliases[pkgRoot] = normalizeAliasFilePath(content.exports, pkgRoot);
     } else if (typeof content.exports === 'object') {
@@ -64,5 +68,5 @@ export function processPackageJSON(
     }
   }
 
-  return { aliases };
+  return { aliases, hasExports };
 }
