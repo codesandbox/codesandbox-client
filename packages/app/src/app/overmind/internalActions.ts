@@ -18,6 +18,7 @@ import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Context } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
+import { AuthOptions } from './utils/auth';
 
 /**
  * After getting the current user we need to hydrate the app with new data from that user.
@@ -48,10 +49,7 @@ export const initializeNewUser = async ({
 
 export const signIn = async (
   { state, effects, actions }: Context,
-  options: {
-    useExtraScopes?: boolean;
-    provider: 'apple' | 'google' | 'github';
-  }
+  options: AuthOptions
 ) => {
   effects.analytics.track('Sign In', {
     provider: options.provider,
@@ -163,11 +161,10 @@ export const authorize = async ({ state, effects }: Context) => {
 };
 export const runProviderAuth = (
   { effects, state }: Context,
-  {
-    provider,
-    useExtraScopes,
-  }: { useExtraScopes?: boolean; provider?: 'apple' | 'github' | 'google' }
+  options: AuthOptions
 ) => {
+  const { provider } = options;
+
   // When in development, check if there's authentication.
   const isInitialDevelopmentAuth =
     process.env.NODE_ENV === 'development' && !state.hasLogIn;
@@ -190,11 +187,10 @@ export const runProviderAuth = (
   authPath.searchParams.set('version', '2');
 
   if (provider === 'github') {
-    if (useExtraScopes) {
-      authPath.searchParams.set('scope', 'user:email,repo,workflow');
-    } else {
-      authPath.searchParams.set('scope', 'user:email');
-    }
+    authPath.searchParams.set(
+      'scope',
+      'useExtraScopes' in options ? 'user:email,repo,workflow' : 'user:email'
+    );
   }
 
   const popup = effects.browser.openPopup(authPath.toString(), 'sign in');
