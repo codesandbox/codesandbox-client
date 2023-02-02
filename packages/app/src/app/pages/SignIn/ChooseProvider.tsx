@@ -29,10 +29,7 @@ export const ChooseProvider: React.FC<ChooseProviderProps> = ({
   const handleSignIn = async (provider: 'github' | 'google' | 'apple') => {
     setLoadingAuth(provider);
 
-    await signInButtonClicked({
-      provider,
-      useExtraScopes: provider === 'github' ? false : undefined,
-    });
+    await signInButtonClicked({ provider });
 
     if (onSignIn) {
       return onSignIn();
