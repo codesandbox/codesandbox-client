@@ -189,7 +189,9 @@ export const runProviderAuth = (
   if (provider === 'github') {
     authPath.searchParams.set(
       'scope',
-      'useExtraScopes' in options ? 'user:email,repo,workflow' : 'user:email'
+      'useExtraScopes' in options && Boolean(options.useExtraScopes)
+        ? 'user:email,repo,workflow'
+        : 'user:email'
     );
   }
 
