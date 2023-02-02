@@ -14,6 +14,7 @@ import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
 import { FinalizeSignUpOptions } from './effects/api/types';
+import { AuthOptions } from './utils/auth';
 
 export const internal = internalActions;
 
@@ -75,7 +76,7 @@ export const onInitializeOvermind = async (
   effects.gql.initialize(gqlOptions, () => effects.live.socket);
 
   if (state.hasLogIn) {
-    await actions.internal.setActiveTeamFromUrlOrStore();
+    await actions.internal.setActiveWorkspaceFromUrlOrStore();
   }
 
   effects.notifications.initialize({
@@ -304,25 +305,9 @@ export const toggleSignInModal = ({ state }: Context) => {
 
 export const signInButtonClicked = async (
   { actions, state }: Context,
-  options: {
-    useExtraScopes?: boolean;
-    provider: 'apple' | 'google' | 'github';
-  }
+  options: AuthOptions
 ) => {
-  const { useExtraScopes, provider } = options || {};
-  if (!useExtraScopes) {
-    await actions.internal.signIn({
-      provider,
-      useExtraScopes: false,
-    });
-    state.signInModalOpen = false;
-    state.cancelOnLogin = null;
-    return;
-  }
-  await actions.internal.signIn({
-    useExtraScopes,
-    provider,
-  });
+  await actions.internal.signIn(options);
   state.signInModalOpen = false;
   state.cancelOnLogin = null;
 };
@@ -539,7 +524,11 @@ export const setActiveTeam = async (
         const res = await effects.gql.queries.getPersonalWorkspaceId({});
         personalWorkspaceId = res.me?.personalWorkspaceId;
       }
+
       if (personalWorkspaceId) {
+        // This toast was triggered when the getTeam query inside getActiveTeamInfo
+        // failed due to an invalid workspace id in the url or localStorage. We now
+        // check for id validity when initializing.
         effects.notificationToast.add({
           title: 'Could not find current workspace',
           message: "We've switched you to your personal workspace",
@@ -560,9 +549,12 @@ export const getActiveTeamInfo = async ({
   actions,
 }: Context) => {
   if (!state.activeTeam) {
-    await actions.internal.setActiveTeamFromUrlOrStore();
+    await actions.internal.setActiveWorkspaceFromUrlOrStore();
   }
 
+  // The getTeam query below used to fail because we weren't sure if the id in
+  // the localStorage or url was valid. We check this now when initializing the
+  // team, so this shouldn't error anymore.
   const team = await effects.gql.queries.getTeam({
     teamId: state.activeTeam,
   });

@@ -67,7 +67,7 @@ export const ProUpgrade = () => {
     }
   }, [hasLoadedApp, location, setActiveTeam, personalWorkspaceId, dashboard]);
 
-  const { isPersonalSpace, isTeamAdmin } = useWorkspaceAuthorization();
+  const { isPersonalSpace, isTeamAdmin, isAdmin } = useWorkspaceAuthorization();
   const { isFree, isPro } = useWorkspaceSubscription();
   // const isFree = false; // DEBUG
   // const isPro = true; // DEBUG
@@ -80,7 +80,7 @@ export const ProUpgrade = () => {
   const hasCustomSubscription = false;
 
   const checkout = useGetCheckoutURL({
-    team_id: isTeamAdmin && isFree ? activeTeam : undefined,
+    team_id: isAdmin && isFree ? activeTeam : undefined,
     success_path: dashboardUrls.settings(activeTeam),
     cancel_path: '/pro',
     // recurring_interval: 'year', // TODO: defaulting to year does not enable the interval switch in stripe
