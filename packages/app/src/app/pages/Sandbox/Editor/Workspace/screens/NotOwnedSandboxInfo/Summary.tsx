@@ -26,9 +26,6 @@ import {
 } from '@codesandbox/components';
 import css from '@styled-system/css';
 
-// Comment to trigger the CI that keeps on failing on manual restart, without there
-// being actual issues.
-
 import { BookmarkTemplateButton } from './BookmarkTemplateButton';
 import { GitHubIcon } from '../GitHub/Icons';
 
@@ -173,7 +170,7 @@ export const Summary = () => {
           <Stack as="section" direction="vertical" gap={4} paddingX={2}>
             {!isPro && isUnlistedOrPrivate ? (
               <Text variant="muted" size={3}>
-                This is {privacy === 1 ? 'a private' : 'an unlisted'} sandbox.{' '}
+                This is {privacy === 2 ? 'a private' : 'an unlisted'} sandbox.{' '}
                 <Link href="/pro" css={{ color: 'white' }}>
                   Upgrade to{' '}
                   <Element as="span" css={{ textTransform: 'uppercase' }}>
