@@ -15,14 +15,19 @@ export const useWorkspaceAuthorization = () => {
   const isPersonalSpace = activeTeam === personalWorkspaceId;
 
   /**
+   * User states
+   */
+
+  const isAdmin =
+    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+
+  /**
    * Team states
    */
 
   const isTeamSpace = activeTeam !== null && !isPersonalSpace;
 
-  const isTeamAdmin =
-    isTeamSpace &&
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+  const isTeamAdmin = isTeamSpace && isAdmin;
 
   const isTeamEditor =
     isTeamSpace &&
@@ -38,6 +43,7 @@ export const useWorkspaceAuthorization = () => {
     isTeamAdmin,
     isTeamEditor,
     isTeamViewer,
+    isAdmin,
     userRole: activeWorkspaceAuthorization,
   };
 };
