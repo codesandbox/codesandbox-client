@@ -21,8 +21,9 @@ export const useWorkspaceAuthorization = () => {
   const isTeamSpace = activeTeam !== null && !isPersonalSpace;
 
   const isTeamAdmin =
-    isTeamSpace &&
-    activeWorkspaceAuthorization === TeamMemberAuthorization.Admin;
+    (isTeamSpace &&
+      activeWorkspaceAuthorization === TeamMemberAuthorization.Admin) ||
+    isPersonalSpace;
 
   const isTeamEditor =
     isTeamSpace &&
