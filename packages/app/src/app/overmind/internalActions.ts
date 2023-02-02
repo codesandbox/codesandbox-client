@@ -168,10 +168,23 @@ export const runProviderAuth = (
     useExtraScopes,
   }: { useExtraScopes?: boolean; provider?: 'apple' | 'github' | 'google' }
 ) => {
-  const hasDevAuth = process.env.LOCAL_SERVER || process.env.STAGING;
+  // When in development, check if there's authentication.
+  const isInitialDevelopmentAuth =
+    process.env.NODE_ENV === 'development' && !state.hasLogIn;
+  // Use dev auth if local server or staging and there's no
+  // authentication or the provider isn't GitHub. This is
+  // needed to allow us to go to GitHub to authorize extra
+  // scopes during development.
+  const useDevAuth =
+    (process.env.LOCAL_SERVER || process.env.STAGING) &&
+    (isInitialDevelopmentAuth || provider !== 'github');
+  // Base path
+  const baseUrl = useDevAuth
+    ? location.origin
+    : process.env.ENDPOINT || 'https://codesandbox.io';
 
   const authPath = new URL(
-    location.origin + (hasDevAuth ? '/auth/dev' : `/auth/${provider}`)
+    baseUrl + (useDevAuth ? '/auth/dev' : `/auth/${provider}`)
   );
 
   authPath.searchParams.set('version', '2');
@@ -189,7 +202,7 @@ export const runProviderAuth = (
   const signInPromise = effects.browser
     .waitForMessage('signin')
     .then((data: any) => {
-      if (hasDevAuth) {
+      if (useDevAuth) {
         localStorage.setItem('devJwt', data.jwt);
 
         // Today + 30 days
