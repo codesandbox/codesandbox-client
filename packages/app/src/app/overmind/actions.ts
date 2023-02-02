@@ -14,6 +14,7 @@ import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
 import { Context } from '.';
 import { DEFAULT_DASHBOARD_SANDBOXES } from './namespaces/dashboard/state';
 import { FinalizeSignUpOptions } from './effects/api/types';
+import { AuthOptions } from './utils/auth';
 
 export const internal = internalActions;
 
@@ -304,25 +305,9 @@ export const toggleSignInModal = ({ state }: Context) => {
 
 export const signInButtonClicked = async (
   { actions, state }: Context,
-  options: {
-    useExtraScopes?: boolean;
-    provider: 'apple' | 'google' | 'github';
-  }
+  options: AuthOptions
 ) => {
-  const { useExtraScopes, provider } = options || {};
-  if (!useExtraScopes) {
-    await actions.internal.signIn({
-      provider,
-      useExtraScopes: false,
-    });
-    state.signInModalOpen = false;
-    state.cancelOnLogin = null;
-    return;
-  }
-  await actions.internal.signIn({
-    useExtraScopes,
-    provider,
-  });
+  await actions.internal.signIn(options);
   state.signInModalOpen = false;
   state.cancelOnLogin = null;
 };
