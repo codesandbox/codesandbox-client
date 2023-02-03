@@ -43,8 +43,8 @@ const FEATURES: FeatureComp[] = [
   {
     key: 'ram',
     pro: '6GB RAM',
-    free: '4GB RAM',
-    pill: '-33% capacity',
+    free: '3GB RAM',
+    pill: '-50% capacity',
   },
   {
     key: 'cpu',
