@@ -15,7 +15,7 @@ export const TerminalUpgradeComponent: React.FC<StyledProps> = ({
   hidden,
   theme,
 }) => {
-  const { perform, loading, canConvert } = useUpgradeFromV1ToV2();
+  const { perform, loading, canConvert } = useUpgradeFromV1ToV2('Terminal Tab');
 
   if (hidden) {
     return null;

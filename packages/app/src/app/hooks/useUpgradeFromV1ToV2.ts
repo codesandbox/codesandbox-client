@@ -4,7 +4,7 @@ import { sandboxUrl } from '@codesandbox/common/lib/utils/url-generator';
 import { hasPermission } from '@codesandbox/common/lib/utils/permission';
 import track from '@codesandbox/common/lib/utils/analytics';
 
-export const useUpgradeFromV1ToV2 = () => {
+export const useUpgradeFromV1ToV2 = (trackingLocation: string) => {
   const state = useAppState();
   const effects = useEffects();
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +24,9 @@ export const useUpgradeFromV1ToV2 = () => {
       setIsLoading(true);
       const sandboxId = state.editor.currentSandbox.id;
 
-      track('Editor - Convert to Cloud Sandbox', { owned: canConvert });
+      track(`Editor - ${trackingLocation} Convert to Cloud Sandbox`, {
+        owned: canConvert,
+      });
 
       if (canConvert) {
         const alias = state.editor.currentSandbox.alias;
