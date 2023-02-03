@@ -4,7 +4,9 @@ import { useEffects } from 'app/overmind';
 /**
  * Localstorage keys used for dismissible modals and banners.
  */
-type DismissibleKeys = 'DASHBOARD_RECENT_UPGRADE';
+type DismissibleKeys =
+  | 'DASHBOARD_RECENT_UPGRADE'
+  | 'DASHBOARD_REPOSITORIES_GH_AUTH';
 
 type Dismissibles = Partial<Record<DismissibleKeys, true>>;
 

@@ -5,7 +5,9 @@ import { Header } from 'app/pages/Dashboard/Components/Header';
 import { VariableGrid } from 'app/pages/Dashboard/Components/VariableGrid';
 import { DashboardGridItem, PageTypes } from 'app/pages/Dashboard/types';
 import { SelectionProvider } from 'app/pages/Dashboard/Components/Selection';
-import { Element } from '@codesandbox/components';
+import { Element, MessageStripe } from '@codesandbox/components';
+// import { useDismissible } from 'app/hooks';
+import { useGitHubAuthorization } from 'app/hooks/useGitHubAuthorization';
 import { useWorkspaceLimits } from 'app/hooks/useWorkspaceLimits';
 import { MaxReposFreeTeam } from 'app/pages/Dashboard/Components/Repository/stripes';
 import { EmptyRepositories } from './EmptyRepositories';
@@ -14,8 +16,13 @@ export const RepositoriesPage = () => {
   const actions = useActions();
   const {
     activeTeam,
+    isLoadingGithub,
     dashboard: { repositoriesByTeamId, viewMode },
   } = useAppState();
+  const { allowsPrivateRepos } = useGitHubAuthorization();
+  // const [isGHBannerDismissed, dismissGHBanner] = useDismissible(
+  //   'DASHBOARD_REPOSITORIES_GH_AUTH'
+  // );
 
   const teamRepos = repositoriesByTeamId[activeTeam] || undefined;
 
@@ -82,6 +89,30 @@ export const RepositoriesPage = () => {
       {hasMaxPublicRepositories || hasMaxPrivateRepositories ? (
         <Element paddingX={4} paddingY={2}>
           <MaxReposFreeTeam />
+        </Element>
+      ) : null}
+
+      {!allowsPrivateRepos ? (
+        // && !isGHBannerDismissed
+        <Element padding={4}>
+          <MessageStripe
+            justify="space-between"
+            // Re-enable dismissal after updating the variable grid
+            // to render a footer message.
+            // onDismiss={dismissGHBanner}
+            variant="warning"
+          >
+            Adjust your GitHub permissions to have full access to your
+            repositories.
+            <MessageStripe.Action
+              loading={isLoadingGithub}
+              // Temporarily ask for private repo access because
+              // public access only returns an API error.
+              onClick={() => actions.signInGithubClicked('private_repos')}
+            >
+              Review GH permissions
+            </MessageStripe.Action>
+          </MessageStripe>
         </Element>
       ) : null}
 
