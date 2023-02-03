@@ -192,7 +192,8 @@ export const runProviderAuth = (
       'includedScopes' in options &&
       typeof options.includedScopes !== 'undefined'
     ) {
-      scope = MAP_GH_SCOPE_OPTIONS[options.includedScopes];
+      scope =
+        GH_BASE_SCOPE + ',' + MAP_GH_SCOPE_OPTIONS[options.includedScopes];
     }
     authPath.searchParams.set('scope', scope);
   }

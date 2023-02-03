@@ -156,11 +156,19 @@ export const PrivateRepoFreeTeam: React.FC = () => {
 };
 
 export const UnauthorizedGitHub = () => {
+  const { signInGithubClicked } = useActions();
+  const { isLoadingGithub } = useAppState();
+
   return (
     <MessageStripe justify="space-between" variant="warning">
       Adjust your GitHub App permissions to have full access to your
       repositories.
-      <MessageStripe.Action onClick={() => alert('foo')}>
+      <MessageStripe.Action
+        loading={isLoadingGithub}
+        // Temporarily ask for private repo access because
+        // public access only returns an API error.
+        onClick={() => signInGithubClicked('private_repos')}
+      >
         Review GH permissions
       </MessageStripe.Action>
     </MessageStripe>
