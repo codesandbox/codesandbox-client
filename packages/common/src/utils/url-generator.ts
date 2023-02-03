@@ -86,6 +86,7 @@ export const newDojoSandboxUrl = () =>
   `/s/github/dojo/dojo-codesandbox-template`;
 export const newPreactSandboxUrl = () => `/s/preact`;
 export const newVueSandboxUrl = () => `/s/vue`;
+export const importFromGitHubUrl = () => `/s/github`;
 export const newSvelteSandboxUrl = () => `/s/svelte`;
 export const newAngularSandboxUrl = () => `/s/angular`;
 export const newCxJSSandboxUrl = () =>
