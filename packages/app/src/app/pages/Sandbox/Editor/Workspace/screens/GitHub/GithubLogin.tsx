@@ -37,7 +37,7 @@ export const GithubLogin = () => {
             </Stack>
             <Button
               disabled={isLoadingGithub}
-              onClick={() => signInGithubClicked()}
+              onClick={() => signInGithubClicked('private_repos')}
             >
               Sign In
             </Button>

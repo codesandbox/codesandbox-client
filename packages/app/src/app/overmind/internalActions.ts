@@ -18,7 +18,7 @@ import { defaultOpenedModule, mainModule } from './utils/main-module';
 import { parseConfigurations } from './utils/parse-configurations';
 import { Context } from '.';
 import { TEAM_ID_LOCAL_STORAGE } from './utils/team';
-import { AuthOptions } from './utils/auth';
+import { AuthOptions, GH_BASE_SCOPE, MAP_GH_SCOPE_OPTIONS } from './utils/auth';
 
 /**
  * After getting the current user we need to hydrate the app with new data from that user.
@@ -187,12 +187,14 @@ export const runProviderAuth = (
   authPath.searchParams.set('version', '2');
 
   if (provider === 'github') {
-    authPath.searchParams.set(
-      'scope',
-      'useExtraScopes' in options && Boolean(options.useExtraScopes)
-        ? 'user:email,repo,workflow'
-        : 'user:email'
-    );
+    let scope = GH_BASE_SCOPE;
+    if (
+      'includedScopes' in options &&
+      typeof options.includedScopes !== 'undefined'
+    ) {
+      scope = MAP_GH_SCOPE_OPTIONS[options.includedScopes];
+    }
+    authPath.searchParams.set('scope', scope);
   }
 
   const popup = effects.browser.openPopup(authPath.toString(), 'sign in');

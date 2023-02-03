@@ -16,7 +16,7 @@ export const useGitHubAuthorization = (): {
   }
 
   const { data, error } = user.githubProfile;
-  if (error) {
+  if (error || !data) {
     return NO_AUTH;
   }
 
