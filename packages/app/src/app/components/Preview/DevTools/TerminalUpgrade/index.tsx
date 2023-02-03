@@ -62,7 +62,7 @@ export const TerminalUpgradeComponent: React.FC<StyledProps> = ({
                 paddingRight: '1rem',
               }}
             >
-              Yes, convert
+              Yes, {canConvert ? 'convert' : 'fork'}
             </Button>
             <Button
               as="a"

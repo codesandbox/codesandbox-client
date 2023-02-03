@@ -17,7 +17,6 @@ export const useUpgradeFromV1ToV2 = () => {
   return {
     loading: isLoading,
     canConvert,
-
     perform: async () => {
       setIsLoading(true);
       const sandboxId = state.editor.currentSandbox.id;
