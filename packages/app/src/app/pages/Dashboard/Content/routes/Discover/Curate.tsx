@@ -243,7 +243,6 @@ export const Collection: React.FC<CollectionTypes> = ({ album }) => {
               item={{
                 type: 'community-sandbox',
                 noDrag: true,
-                autoFork: false,
                 sandbox,
               }}
             />

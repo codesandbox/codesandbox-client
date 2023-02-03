@@ -30,7 +30,6 @@ export type DashboardSandbox = {
     originalGit?: RepoFragmentDashboardFragment['originalGit'];
   };
   noDrag?: boolean;
-  autoFork?: boolean;
 };
 
 export type DashboardTemplate = {
@@ -41,7 +40,6 @@ export type DashboardTemplate = {
     originalGit?: RepoFragmentDashboardFragment['originalGit'];
   };
   noDrag?: boolean;
-  autoFork?: boolean;
   /**
    * Whether this column should be hidden if it's on the second row of subsequent templates
    */
@@ -120,7 +118,6 @@ export type DashboardSkeleton = {
 export type DashboardCommunitySandbox = {
   type: 'community-sandbox';
   noDrag: true;
-  autoFork: false;
   sandbox: Pick<
     DashboardSandbox['sandbox'],
     'id' | 'alias' | 'title' | 'description' | 'screenshotUrl' | 'source'

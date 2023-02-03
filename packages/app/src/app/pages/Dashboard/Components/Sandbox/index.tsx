@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useHistory, Link } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import { zonedTimeToUtc } from 'date-fns-tz';
@@ -102,8 +102,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
 
   /* Drag logic */
 
-  const location = useLocation();
-
   const [, dragRef, preview] = useDrag({
     item,
     end: (_item, monitor) => {
@@ -116,19 +114,20 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   });
 
   /* View logic */
-  let viewMode: string;
+  let { viewMode } = dashboard;
 
-  if (location.pathname.includes('deleted')) viewMode = 'list';
-  else viewMode = dashboard.viewMode;
+  if (page === 'deleted') {
+    viewMode = 'list';
+  }
 
   const Component: React.FC<SandboxItemComponentProps> =
     viewMode === 'list' ? SandboxListItem : SandboxCard;
 
   /** Access restrictions */
-  let { noDrag, autoFork } = item;
+  let { noDrag } = item;
+
   if (activeWorkspaceAuthorization === 'READ') {
     noDrag = true;
-    autoFork = false;
   }
 
   // interactions
@@ -151,10 +150,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   const isDragging = isAnythingDragging && selected;
   const restricted = isFree && sandbox.privacy !== 0;
 
-  const sandboxAnalyticsEvent = !autoFork
-    ? MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]
-    : null;
-
   const onClick = event => {
     onSelectionClick(event, sandbox.id);
   };
@@ -169,39 +164,18 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   );
 
   const history = useHistory();
-  const onDoubleClick = event => {
-    // Can't open deleted items, they don't exist anymore
-    if (location.pathname.includes('deleted')) {
-      onContextMenu(event);
-      return;
-    }
 
-    // Templates in Home should fork, everything else opens
-    if (event.ctrlKey || event.metaKey) {
-      if (autoFork) {
-        track('Dashboard - Recent template forked', {
-          source: 'Home',
-          dashboardVersion: 2,
-        });
-        actions.editor.forkExternalSandbox({
-          sandboxId: sandbox.id,
-          openInNewWindow: true,
-        });
-      } else {
-        if (sandboxAnalyticsEvent) {
-          trackImprovedDashboardEvent(sandboxAnalyticsEvent);
-        }
-        window.open(url, '_blank');
-      }
-    } else if (autoFork) {
-      actions.editor.forkExternalSandbox({
-        sandboxId: sandbox.id,
-      });
+  const onDoubleClick = event => {
+    if (page === 'deleted') {
+      // Can't open deleted items, they don't exist anymore so we open
+      // the context menu instead.
+      onContextMenu(event);
     } else {
-      if (sandboxAnalyticsEvent) {
-        trackImprovedDashboardEvent(sandboxAnalyticsEvent);
-      }
-      if (sandbox.isV2) {
+      trackImprovedDashboardEvent(MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]);
+
+      if (event.ctrlKey || event.metaKey) {
+        window.open(url, '_blank');
+      } else if (sandbox.isV2) {
         window.location.href = url;
       } else {
         history.push(url);
@@ -263,9 +237,10 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
           to: sandbox.isV2 ? undefined : url,
           href: sandbox.isV2 ? url : undefined,
           onClick: () => {
-            if (sandboxAnalyticsEvent) {
-              trackImprovedDashboardEvent(sandboxAnalyticsEvent);
-            }
+            // On the recent page the sandbox card is an anchor, so we only have
+            // to track using onclick, the sandbox is opened through native anchor
+            // functionality (including pressing meta keys for new tab).
+            trackImprovedDashboardEvent(MAP_SANDBOX_EVENT_TO_PAGE_TYPE[page]);
           },
           style: {
             textDecoration: 'none',
@@ -283,7 +258,6 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
         };
 
   const sandboxProps = {
-    autoFork,
     noDrag,
     sandboxTitle,
     sandboxLocation,
@@ -340,4 +314,7 @@ const GenericSandbox = ({ isScrolling, item, page }: GenericSandboxProps) => {
   );
 };
 
+/**
+ * Used on the Recent page and in the VariableGrid
+ */
 export const Sandbox = GenericSandbox;
