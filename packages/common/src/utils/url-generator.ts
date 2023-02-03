@@ -208,6 +208,9 @@ export const frameUrl = (
   }${sHost}/${path}`;
 };
 
+export const forkSandboxUrl = (sandbox: Sandbox) =>
+  `${sandboxUrl(sandbox)}/fork`;
+
 export const signInPageUrl = (redirectTo?: string) => {
   let url = `/signin`;
 
