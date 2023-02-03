@@ -9,15 +9,18 @@ export const useUpgradeFromV1ToV2 = () => {
   const effects = useEffects();
   const [isLoading, setIsLoading] = useState(false);
   const updateSandbox = useEffects().api.updateSandbox;
-  const canConvert = hasPermission(
-    state.editor.currentSandbox?.authorization,
-    'write_code'
-  );
+  const canConvert = state.editor.currentSandbox
+    ? hasPermission(state.editor.currentSandbox.authorization, 'write_code')
+    : false;
 
   return {
     loading: isLoading,
     canConvert,
     perform: async () => {
+      if (!state.editor.currentSandbox) {
+        return;
+      }
+
       setIsLoading(true);
       const sandboxId = state.editor.currentSandbox.id;
 
