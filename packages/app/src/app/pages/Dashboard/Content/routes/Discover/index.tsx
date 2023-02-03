@@ -95,7 +95,7 @@ export const Discover = () => {
         <Element
           css={css({
             marginX: 'auto',
-            width: `100%`,
+            width: '100%',
             paddingY: 0,
             userSelect: 'none',
           })}
