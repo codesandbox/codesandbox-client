@@ -47,7 +47,7 @@ export const TerminalUpgradeComponent: React.FC<StyledProps> = ({
             add servers, databases, and much more. See a preview below.
           </Text>
           <img
-            alt="A screenshot of the new cloud sandbox UI"
+            alt=""
             src="/static/img/terminal_upgrade_screenshot.png"
           />
           <Text>
