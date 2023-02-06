@@ -12,7 +12,7 @@ export const UpgradeSSEToV2Stripe = () => {
         {canConvert ? 'convert' : 'fork'} it to a Cloud Sandbox?
       </span>
       <MessageStripe.Action loading={loading} onClick={perform}>
-        Yes, convert
+        {canConvert ? 'Yes, convert' : 'Yes, fork'}
       </MessageStripe.Action>
     </MessageStripe>
   );
