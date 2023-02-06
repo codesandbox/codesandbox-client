@@ -101,6 +101,11 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
     },
   });
 
+  const isLoading = githubRepo.state === 'loading' || isImporting;
+  const limitImportBasedOnSubscription =
+    privateRepoFreeAccountError === url.raw;
+  const disableImport = hasMaxPublicRepositories || !allowsPublicRepos;
+
   const handleUrlInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     if (!value) {
@@ -134,7 +139,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (hasMaxPublicRepositories) {
+    if (disableImport) {
       return;
     }
 
@@ -148,12 +153,6 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
   if (!hasLogIn) {
     return <UnauthenticatedImport />;
   }
-
-  const isLoading = githubRepo.state === 'loading' || isImporting;
-  const limitImportBasedOnSubscription =
-    privateRepoFreeAccountError === url.raw;
-
-  const disableImport = hasMaxPublicRepositories || !allowsPublicRepos;
 
   return (
     <Stack direction="vertical" gap={4}>
@@ -171,13 +170,7 @@ export const Import: React.FC<ImportProps> = ({ onRepoSelect }) => {
       </Text>
       {hasMaxPublicRepositories ? <MaxPublicRepos /> : null}
       {!allowsPublicRepos ? <UnauthorizedGitHub /> : null}
-      <Element
-        {...(disableImport
-          ? {
-              as: 'div',
-            }
-          : { as: 'form', onSubmit: handleFormSubmit })}
-      >
+      <Element as="form" onSubmit={handleFormSubmit}>
         <Stack gap={2}>
           <Input
             aria-disabled={hasMaxPublicRepositories}
