@@ -58,11 +58,7 @@ export type ViewConfig = {
 
 const CLIENT_VIEWS: ViewConfig[] = [
   {
-    views: [
-      { id: 'codesandbox.browser' },
-      { id: 'codesandbox.tests' },
-      { id: 'codesandbox.terminalUpgrade' },
-    ],
+    views: [{ id: 'codesandbox.browser' }, { id: 'codesandbox.tests' }],
   },
   {
     views: [{ id: 'codesandbox.console' }, { id: 'codesandbox.problems' }],
