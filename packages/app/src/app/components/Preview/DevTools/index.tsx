@@ -13,7 +13,6 @@ import { problems } from './Problems';
 import { reactDevTools } from './React-Devtools';
 import { DevToolTabs } from './Tabs';
 import { terminal } from './Terminal';
-import { terminalUpgrade } from './TerminalUpgrade';
 import { tests } from './Tests';
 
 function unFocus(document, window) {
@@ -81,7 +80,6 @@ const VIEWS: IViews = {
   [tests.id]: tests,
   [terminal.id]: terminal,
   [reactDevTools.id]: reactDevTools,
-  [terminalUpgrade.id]: terminalUpgrade,
 };
 
 type Props = {

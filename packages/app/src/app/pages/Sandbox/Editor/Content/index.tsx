@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import { ThemeProvider } from 'styled-components';
 
+import { terminalUpgrade } from 'app/components/Preview/DevTools/TerminalUpgrade';
 import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 import { Preview } from './Preview';
 import { EditorToast } from './EditorToast';
@@ -219,6 +220,7 @@ export const MainWorkspace: React.FC<{ theme: any }> = ({ theme }) => {
                     devToolsOpen={devToolsOpen}
                     addedViews={{
                       'codesandbox.browser': browserConfig,
+                      [terminalUpgrade.id]: terminalUpgrade,
                     }}
                     setDragging={dragging => {
                       if (dragging) {
